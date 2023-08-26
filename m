@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D11E7893FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 07:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A615B7893FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 08:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbjHZFxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 01:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
+        id S231686AbjHZF7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 01:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbjHZFxb (ORCPT
+        with ESMTP id S231546AbjHZF7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 01:53:31 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783A126AD
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 22:53:28 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdbbede5d4so13334545ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 22:53:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693029208; x=1693634008;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8a8yRHibxZaMQvp8EuhSuU+8SaRLddJ0DMHrupkDBok=;
-        b=GjP+E8MXeN21Nul3dWASH87dmTBT6gsSnR60OTl16V9oleYd7rPu9Z3KvsUuectm4G
-         9A7AbakZbHykqI2zkLqfFnNVIzrQjl14tbuV4vjAT6d7qFKQ2ucP0tao/lhQq7eI4WUW
-         67OxTAvIdz24IBVov+9wc4hEo3/y2uNOy7T2Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693029208; x=1693634008;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8a8yRHibxZaMQvp8EuhSuU+8SaRLddJ0DMHrupkDBok=;
-        b=eK60YsVMMFaRz7zMQtyeqOe2kca2QhCfvFOgDH3sKwKEYqGcE9ImMO30fvHyRS3x/d
-         BuDr9uy/tRS/3UEUMlcUROvCHpvyFHnV/O2siAmkGeg9WlpQypf6pSzSzIqA42gEflpb
-         ZAK5XHlLbschqKSM1jFKLZ2Pju0307e2kij5LJRN500P3wJItuLHmTEFYkvE+OWk/q4H
-         +fPYA8egDpTlCuEOnH4c4U3ugnbgnir1h2WPCzhG+MjgcORAPM06YFVN1K0tpaMCX2w4
-         J/w4jdEjEDXGi7AL3E99lTjjtdySCaUkGI2xIaphICi5h/1ImdTEHoP3gOS6hlyLXRYG
-         OgoQ==
-X-Gm-Message-State: AOJu0YyLcM5tJXepASs+QlbpMkVdGU3R1UY4+iQhUy2Hfw9RdDx6mR6n
-        PaHdKE3JRrd4m7/77hrd9nLDFg==
-X-Google-Smtp-Source: AGHT+IF++SrkXFK38Qj/F9y/LukAEEKLFdwReys5NfnrdSUHs8pNQlTgTge+TbQzhGVzZyJoZBj/Yw==
-X-Received: by 2002:a17:902:e5cd:b0:1b0:f8:9b2d with SMTP id u13-20020a170902e5cd00b001b000f89b2dmr23972880plf.29.1693029207746;
-        Fri, 25 Aug 2023 22:53:27 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id f11-20020a170902ce8b00b001b694140d96sm2776475plg.170.2023.08.25.22.53.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 22:53:27 -0700 (PDT)
-Date:   Sat, 26 Aug 2023 14:53:21 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Ying Sun <sunying@nj.iscas.ac.cn>,
-        Jesse T <mr.bossman075@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH] kconfig: introduce listunknownconfig
-Message-ID: <20230826055321.GF3913@google.com>
-References: <20230820024519.GK907732@google.com>
- <CAK7LNAS9KC1GjPgadMEivSpy4TMYU8mQ+BrtfJpNs2kvhK18yA@mail.gmail.com>
- <20230820072119.GM907732@google.com>
- <20230820073332.GN907732@google.com>
- <CAK7LNARTZXvWD8PrA3bC+Ok7LK85qO=pkMs4kOPGn90OBooL6w@mail.gmail.com>
- <20230822061203.GA610023@google.com>
- <CAK7LNAS0qEZk+xAq84=7SuJSQz5F3dNBjYKPoeKTd_caq-QMKg@mail.gmail.com>
- <20230824012027.GD3913@google.com>
- <CAK7LNATvDBwN7X8X0mVqcQn6dKxGFhkgt9Qb5CZ6p+6Eafxd0w@mail.gmail.com>
- <CAK7LNARMOpzpr6E6XG-ro5dUgFWMP9r5rqET1WquOvvsckbKyA@mail.gmail.com>
+        Sat, 26 Aug 2023 01:59:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD6926A5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 22:59:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693029548; x=1724565548;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JAf9bJ52chH87/HILStlWSZpikaAPYbuILpRJipkCrA=;
+  b=eM34MtLO/wVh3P+0ut/osr6y0JqojfqFbSET+dfCEXQ8Bbwr5+4qS/rt
+   FOEdp6dsZeRSy0sTiVFp8m+GYRNY9McvXDkpEPsuBcfyb0oYHWeT4uYID
+   DgCNjEglrMhr+5gLeW9Of0K8ka/dD1jjulgSrw4X25fvqUgNMR6JfwUES
+   8PpexgIuxlfw1JrsUjMJpN+9OertbneqtIDCGU2ThosTbWdrPr3CmrMGF
+   OB+Cg+/gsgm18ALPUz42K/IBXDKIb/8SsOMA6y9bjN/3VLnfJ53SEnHwg
+   i3SNFOxwcIhRTIiQm8Cu3A9sG1s71lkKXFEBAv/J6OUiH70x+Y7efly2U
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="374824720"
+X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
+   d="scan'208";a="374824720"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 22:59:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="731267495"
+X-IronPort-AV: E=Sophos;i="6.02,203,1688454000"; 
+   d="scan'208";a="731267495"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 25 Aug 2023 22:59:01 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qZmIR-0004Ot-09;
+        Sat, 26 Aug 2023 05:58:03 +0000
+Date:   Sat, 26 Aug 2023 13:56:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Muchun Song <songmuchun@bytedance.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH 10/12] hugetlb: batch PMD split for bulk vmemmap dedup
+Message-ID: <202308261325.ipTttZHZ-lkp@intel.com>
+References: <20230825190436.55045-11-mike.kravetz@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNARMOpzpr6E6XG-ro5dUgFWMP9r5rqET1WquOvvsckbKyA@mail.gmail.com>
+In-Reply-To: <20230825190436.55045-11-mike.kravetz@oracle.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,43 +80,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/26 14:38), Masahiro Yamada wrote:
-> > I am fine with implementing both.
-> >
-> > But, I'd like to implement them as separate options.
-> > (one option for warn unknown symbols,
-> > another for for turning warnings into errors)
-> >
-> >
-> >
-> > As I replied to Tomasz, I am considering about
-> > env variables vs command line options associated with W= option.
-> 
-> 
-> 
-> With a little more thought, the command line option approach
-> would require more code changes and efforts.
-> 
+Hi Mike,
 
-Sounds good.
+kernel test robot noticed the following build errors:
 
-> So, I am OK with adding new env variables.
-> Could you add two env variables?
+[auto build test ERROR on next-20230825]
+[cannot apply to akpm-mm/mm-everything v6.5-rc7 v6.5-rc6 v6.5-rc5 linus/master v6.5-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Absolutely.
+url:    https://github.com/intel-lab-lkp/linux/commits/Mike-Kravetz/hugetlb-clear-flags-in-tail-pages-that-will-be-freed-individually/20230826-030805
+base:   next-20230825
+patch link:    https://lore.kernel.org/r/20230825190436.55045-11-mike.kravetz%40oracle.com
+patch subject: [PATCH 10/12] hugetlb: batch PMD split for bulk vmemmap dedup
+config: s390-randconfig-001-20230826 (https://download.01.org/0day-ci/archive/20230826/202308261325.ipTttZHZ-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230826/202308261325.ipTttZHZ-lkp@intel.com/reproduce)
 
-> I think
-> 
-> the first two hunks (show warnings for symbols not found in Kconfig)
->         -> KCONFIG_WARN_UNKNOWN_SYMBOLS
-> 
-> the last hunk (turn warnings into errors)
->         -> KCONFIG_WERROR
-> 
-> (You can suggest a better naming if you have, but I guess
-> KCONFIG_WARN_*  will be consistent in case
-> more warning requests come up.)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308261325.ipTttZHZ-lkp@intel.com/
 
-Looks good.
+All error/warnings (new ones prefixed by >>):
 
-I'll send a patch in the coming days.
+   mm/hugetlb_vmemmap.c:661:6: warning: no previous prototype for function 'hugetlb_vmemmap_optimize_bulk' [-Wmissing-prototypes]
+     661 | void hugetlb_vmemmap_optimize_bulk(const struct hstate *h, struct page *head,
+         |      ^
+   mm/hugetlb_vmemmap.c:661:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     661 | void hugetlb_vmemmap_optimize_bulk(const struct hstate *h, struct page *head,
+         | ^
+         | static 
+>> mm/hugetlb_vmemmap.c:667:6: warning: no previous prototype for function 'hugetlb_vmemmap_split' [-Wmissing-prototypes]
+     667 | void hugetlb_vmemmap_split(const struct hstate *h, struct page *head)
+         |      ^
+   mm/hugetlb_vmemmap.c:667:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     667 | void hugetlb_vmemmap_split(const struct hstate *h, struct page *head)
+         | ^
+         | static 
+>> mm/hugetlb_vmemmap.c:698:28: error: use of undeclared identifier 'TLB_FLUSH_ALL'
+     698 |         flush_tlb_kernel_range(0, TLB_FLUSH_ALL);
+         |                                   ^
+   2 warnings and 1 error generated.
+
+
+vim +/TLB_FLUSH_ALL +698 mm/hugetlb_vmemmap.c
+
+   666	
+ > 667	void hugetlb_vmemmap_split(const struct hstate *h, struct page *head)
+   668	{
+   669		unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
+   670		unsigned long vmemmap_reuse;
+   671	
+   672		if (!vmemmap_should_optimize(h, head))
+   673			return;
+   674	
+   675		static_branch_inc(&hugetlb_optimize_vmemmap_key);
+   676	
+   677		vmemmap_end     = vmemmap_start + hugetlb_vmemmap_size(h);
+   678		vmemmap_reuse   = vmemmap_start;
+   679		vmemmap_start   += HUGETLB_VMEMMAP_RESERVE_SIZE;
+   680	
+   681		/*
+   682		 * Remap the vmemmap virtual address range [@vmemmap_start, @vmemmap_end)
+   683		 * to the page which @vmemmap_reuse is mapped to, then free the pages
+   684		 * which the range [@vmemmap_start, @vmemmap_end] is mapped to.
+   685		 */
+   686		if (vmemmap_remap_split(vmemmap_start, vmemmap_end, vmemmap_reuse))
+   687			static_branch_dec(&hugetlb_optimize_vmemmap_key);
+   688	}
+   689	
+   690	void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list)
+   691	{
+   692		struct folio *folio;
+   693		LIST_HEAD(vmemmap_pages);
+   694	
+   695		list_for_each_entry(folio, folio_list, lru)
+   696			hugetlb_vmemmap_split(h, &folio->page);
+   697	
+ > 698		flush_tlb_kernel_range(0, TLB_FLUSH_ALL);
+   699	
+   700		list_for_each_entry(folio, folio_list, lru)
+   701			hugetlb_vmemmap_optimize_bulk(h, &folio->page, &vmemmap_pages);
+   702	
+   703		free_vmemmap_page_list(&vmemmap_pages);
+   704	}
+   705	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
