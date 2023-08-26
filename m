@@ -2,158 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 665BE789938
+	by mail.lfdr.de (Postfix) with ESMTP id EAF27789939
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 23:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjHZVNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 17:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        id S229869AbjHZVNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 17:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjHZVNJ (ORCPT
+        with ESMTP id S229787AbjHZVNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 17:13:09 -0400
-Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301C010A
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:13:05 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id a0abqZrV1DlJea0abq57Aj; Sat, 26 Aug 2023 23:13:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693084382;
-        bh=xbL88xDGbRjdox9sHNbVsz1K4Rs691eTCqMLK3X/0TM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=PFyw5u66DNtz1PsMVVwmdocS8cfwl/siahnsEKJUckSHqVKKdYNRNrc41bEO9uqHg
-         VNYvksCW4Gr7/pzvgUqxVsEcNciyDcN/h7/y42PnSyxtGWMiws95s/Skk2Bjfs4LHZ
-         iGi4SPGwr6pxEH0LI4+uQPAzaFisKYjxZahl1alkokiGgg8FGpU+Fy5MGRDI1D5Oma
-         pGFg8Hfxa5u5QI6CFtxVv445f2/CB4G/jDbLkhif5c0UvarTYfwCn+CRgTsuEz5MZg
-         JeRWj/E4KL9WZ8ZbENGxPxcEmfxPEVgn23jwRKOAFgKrmJpSZFGJSYp4aMMrLlXPg+
-         9Nz0sq+zeIqUg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Aug 2023 23:13:02 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <b35c9f99-bdbc-6d7c-e7bd-0971fe72ccf2@wanadoo.fr>
-Date:   Sat, 26 Aug 2023 23:13:01 +0200
+        Sat, 26 Aug 2023 17:13:14 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC765E1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:13:11 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-410904c823bso12630451cf.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693084391; x=1693689191;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dxBlAav8Zz0D9zczblfMAjObARWz8Ttnug16VaVeiRU=;
+        b=XOmLr57DehjSWK7Sr0d2wM6Cee6pCSp+K7erAfF0eQBAi4YNvsRd733NxZ2qpaaNvL
+         0OTMHKGm5Yw1iyZ1mQSrLARbo37zTmZbHx16VNjVbx7SdKNdEOlKsKvPGpff/SFU2NRx
+         8HThL149YEvqIm0iEusUg1dwcSj+WvYA7fEGNlsJIdBCflxhEa4tUfe9UQxxnI5EWVaM
+         Qs5JxvGqzWwmjwyEk5HWudh7IDvOvD9n6hRVv60qjFnOfu5Kbm+/Foy57TsJzps7Ti3r
+         BGngRxzQK0oApP5idiBCDfQpFxGNnZe0ajEdNK063mZjcJc4wtkneCl8HZN84CEPno1t
+         KcDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693084391; x=1693689191;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dxBlAav8Zz0D9zczblfMAjObARWz8Ttnug16VaVeiRU=;
+        b=YCXtdnvRxws90rZXqW+G4A51jbeu3rUc7l7NAB0UXcQ2RPI35zEZG/yIfkZB6myp3Z
+         +XQqm0tlearJ92SUJA53nbd7QvJGhtJaQHsrzyhi7MlB8PX4yKQePiuP9xcAqWOaLJI6
+         Xo6XzZUH6Llk8GB4b3ZRH4+PAPZrXC7rzm01+S6YChUc0mpSuBqvXoKAvZg9ZAZwEk0m
+         5oWohDnBFmoFqnXsa47uiYuLwkj54AbiHp2zBNxBGe8HxVhU1jqooIpNXkycS4c5m9m7
+         d6mfh6YuQtRlhob+PxTbHutTLSjyz0sDUvYLB+EOKZf5JxLkGusrTxU7oI/7jvnKk2ID
+         NX7A==
+X-Gm-Message-State: AOJu0Yw9+dZQ2G/yIJVdNgCm1ncdWcOxPIlm9fZFVP1UAeLere/nnKpR
+        MF+pwpLhgGr00fH94uTUcJY=
+X-Google-Smtp-Source: AGHT+IHSSHE+Vdi69ofKRVlQLK/u/lkgZQMr+2PtfVW1S+KbGlJ1oOZ4Q95Vmz6W4SORvm/aEDw3Ag==
+X-Received: by 2002:a05:622a:1c1:b0:403:971a:44ab with SMTP id t1-20020a05622a01c100b00403971a44abmr27156550qtw.58.1693084390742;
+        Sat, 26 Aug 2023 14:13:10 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
+        by smtp.gmail.com with ESMTPSA id s14-20020ac85ece000000b00410a9dd3d88sm1312553qtx.68.2023.08.26.14.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 14:13:10 -0700 (PDT)
+Date:   Sat, 26 Aug 2023 18:13:06 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     Nam Cao <namcaov@gmail.com>
+Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v2 1/4] staging: vme_user: fix check alignment of open
+ parenthesis in vme_fake.c
+Message-ID: <ZOpq4t22iRXewekD@alolivei-thinkpadt480s.gru.csb>
+References: <ZOoWgZ7ZnGyWHUKe@alolivei-thinkpadt480s.gru.csb>
+ <ZOpWxBjONs0QpFlU@nam-dell>
+ <ZOpfUjRy3jDwZixX@alolivei-thinkpadt480s.gru.csb>
+ <ZOphYXeTMM+QhnTk@nam-dell>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] HID: nvidia-shield: Introduce thunderstrike_destroy()
-Content-Language: fr
-To:     kernel test robot <lkp@intel.com>, rrameshbabu@nvidia.com,
-        jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <4c9a8c7f6b4eb879dd7ef4d44bb6a80b3f126d25.1693070958.git.christophe.jaillet@wanadoo.fr>
- <202308270307.EDe7t62T-lkp@intel.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <202308270307.EDe7t62T-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOphYXeTMM+QhnTk@nam-dell>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 26/08/2023 à 22:00, kernel test robot a écrit :
-> Hi Christophe,
+On Sat, Aug 26, 2023 at 10:32:33PM +0200, Nam Cao wrote:
+> On Sat, Aug 26, 2023 at 05:23:46PM -0300, Alexon Oliveira wrote:
+> > On Sat, Aug 26, 2023 at 09:47:16PM +0200, Nam Cao wrote:
+> > > On Sat, Aug 26, 2023 at 12:13:05PM -0300, Alexon Oliveira wrote:
+> > > > Fixed all CHECK: Alignment should match open parenthesis
+> > > > as reported by checkpatch to adhere to the Linux kernel
+> > > > coding-style guidelines.
+> > > > 
+> > > > Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> > > 
+> > > Patch series should be in a single email thread. But your 4 patches are sent
+> > > separately :(
+> > >
+> > 
+> > Hmm, ACK, I didn't know that.
+> > 
+> > > Have a look at how your patches are sent on https://lore.kernel.org/linux-staging/
+> > > and you will see what I am referring to.
+> > > 
+> > 
+> > Indeed they were sent as separate emails.
+> > 
+> > > Here's an example of how patch series should be:
+> > > https://lore.kernel.org/linux-staging/736c8159-90e9-4575-3c22-5a62515d5c03@gmail.com/T/#t
+> > >
+> > 
+> > Please, if you don't mind me to ask, how's the best way to do that?
+> > I've already wrote the cover letter, generated the patches' files again,
+> > but I don't know how is the best way to send them as you instructed me
+> > using mutt.
 > 
-> kernel test robot noticed the following build warnings:
+> You must use the argument "--thread=shallow" while generating patch series
+> with git format-patch. Then mutt should correctly send them in a single thread.
 > 
-> [auto build test WARNING on linux-next/master]
-> [cannot apply to linus/master v6.5-rc7]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Christophe-JAILLET/HID-nvidia-shield-Fix-a-missing-led_classdev_unregister-in-the-probe-error-handling-path/20230827-014602
-> base:   linux-next/master
-> patch link:    https://lore.kernel.org/r/4c9a8c7f6b4eb879dd7ef4d44bb6a80b3f126d25.1693070958.git.christophe.jaillet%40wanadoo.fr
-> patch subject: [PATCH 3/3] HID: nvidia-shield: Introduce thunderstrike_destroy()
-> config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20230827/202308270307.EDe7t62T-lkp@intel.com/config)
-> compiler: hppa-linux-gcc (GCC) 13.2.0
+> The instructions can also be found here:
+> https://kernelnewbies.org/FirstKernelPatch
+>
 
-On x86_64, gcc 12.3.0 does not complain. :(
+Yep, I did like that, however mutt was not sending them as it should,
+in a single email thread. I had to send them using "git send-email"
+after all. I hope it's correct now. Thank you for your heads up and help
+with this.
 
-Let see first if there is some comment on the serie, then I'll send a v2 
-to fix the warning.
+> Best regards,
+> Nam 
 
-CJ
+Best regards.
 
-> reproduce: (https://download.01.org/0day-ci/archive/20230827/202308270307.EDe7t62T-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308270307.EDe7t62T-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->     drivers/hid/hid-nvidia-shield.c: In function 'shield_probe':
->>> drivers/hid/hid-nvidia-shield.c:1046:31: warning: variable 'ts' set but not used [-Wunused-but-set-variable]
->      1046 |         struct thunderstrike *ts;
->           |                               ^~
-> 
-> 
-> vim +/ts +1046 drivers/hid/hid-nvidia-shield.c
-> 
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1042
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1043  static int shield_probe(struct hid_device *hdev, const struct hid_device_id *id)
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1044  {
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1045  	struct shield_device *shield_dev = NULL;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08 @1046  	struct thunderstrike *ts;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1047  	int ret;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1048
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1049  	ret = hid_parse(hdev);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1050  	if (ret) {
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1051  		hid_err(hdev, "Parse failed\n");
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1052  		return ret;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1053  	}
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1054
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1055  	switch (id->product) {
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1056  	case USB_DEVICE_ID_NVIDIA_THUNDERSTRIKE_CONTROLLER:
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1057  		shield_dev = thunderstrike_create(hdev);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1058  		break;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1059  	}
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1060
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1061  	if (unlikely(!shield_dev)) {
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1062  		hid_err(hdev, "Failed to identify SHIELD device\n");
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1063  		return -ENODEV;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1064  	}
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1065  	if (IS_ERR(shield_dev)) {
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1066  		hid_err(hdev, "Failed to create SHIELD device\n");
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1067  		return PTR_ERR(shield_dev);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1068  	}
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1069
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1070  	ts = container_of(shield_dev, struct thunderstrike, base);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1071
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1072  	ret = hid_hw_start(hdev, HID_CONNECT_HIDINPUT);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1073  	if (ret) {
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1074  		hid_err(hdev, "Failed to start HID device\n");
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1075  		goto err_haptics;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1076  	}
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1077
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1078  	ret = hid_hw_open(hdev);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1079  	if (ret) {
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1080  		hid_err(hdev, "Failed to open HID device\n");
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1081  		goto err_stop;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1082  	}
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1083
-> 3ab196f882377ed Rahul Rameshbabu   2023-08-07  1084  	thunderstrike_device_init_info(shield_dev);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1085
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1086  	return ret;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1087
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1088  err_stop:
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1089  	hid_hw_stop(hdev);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1090  err_haptics:
-> 2cc4637842495c6 Christophe JAILLET 2023-08-26  1091  	thunderstrike_destroy(hdev);
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1092  	return ret;
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1093  }
-> 09308562d4afb1a Rahul Rameshbabu   2023-06-08  1094
-> 
-
+Alexon Oliveira
