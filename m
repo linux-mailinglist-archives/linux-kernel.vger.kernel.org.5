@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6C07895FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0A0789602
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 12:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbjHZKaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 06:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S232174AbjHZKah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 06:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbjHZK3k (ORCPT
+        with ESMTP id S232177AbjHZKa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 06:29:40 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9EC2105
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:29:37 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5009969be25so2714873e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:29:37 -0700 (PDT)
+        Sat, 26 Aug 2023 06:30:27 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5221FEC
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:30:24 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5007616b756so2650064e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 03:30:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693045776; x=1693650576;
+        d=linaro.org; s=google; t=1693045823; x=1693650623;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GsNUN6pqnz0TuH+F4mwwIbD9xuCZQL0gzpUGeQXtpFk=;
-        b=zH/Q/+pqS2Wa0vxdtDigAdNP/6bkDMG3RFWXZpRmekjXovIYMERoHRRNgAAM6iLlPU
-         ClAIeXYP6NUWLSYmTGnAT5540Pi1/fGVysbqW07j8N0MmxM3Iv2yrYf3g5Q7Oofu5NZr
-         cob+Uyegkg7xjfquST6JirXlWA9RLaMIHYpwQfamH71Zk8JKqMIyUM3vi6dGTUN/sAcn
-         HV8ekoWqwQBni/ngVeHNuOCna9yY8XcknUNOq2XLf99oOZcQRbBixD+kYsfbzh+89AdL
-         imUgjYgcYzkaEpzymMv4F3KjtiSuAHBBQYDRbp9cayO5GiEze8tF0M28El4E0nbJXbAE
-         j4ng==
+        bh=WvCLjs9YLOF9i8wNeEp7LVv0uxwU1zCl6+4ptie1PJc=;
+        b=eO77/OQ7CFfG4k+g0LebKwDZKRMglgLyAK6kYhxsU/CgjatlShgB9GQ5dmhT3rma6V
+         YGn0RRymVMfI51crfJQWT6743m9S0R5zSbej0Z/4WKAMGd5QloU+gpS9zz0cg399j0cT
+         Vfof2nbtPmcqXHyqt2rqkS74kod8xxkE7b6tfS0VFI0WOi3apwTMk5K0evgN4zHnmf3D
+         RF/3lUHCv8FTOSK3BVCokg43iAUxMCGwt9ZvjcrwltVaiIiikM/9k/aYDzlw23mxTXAN
+         MCBACoGdWQ+iY+UjhSAhj++xwVMy41B6XXGt7etBo0alXxfi37vyAiRDVm1kJZ6nPt0L
+         6iQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693045776; x=1693650576;
+        d=1e100.net; s=20221208; t=1693045823; x=1693650623;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GsNUN6pqnz0TuH+F4mwwIbD9xuCZQL0gzpUGeQXtpFk=;
-        b=TNTRSK68hRnSxzvskyptJb3rgCl8eEooaHmNIktZGCblOhkx5uxynwmKYtB+3oJj5b
-         2HUfOZ+fC68UPUSIf/7wQr847AYlpjxt+SZDcNUFSe9Pp84+/+0R6jQ3IBuC7qzQnkYe
-         k4oR79Qt4Hat9hnXyVKp4RfnhpaQo8wZ67Qbx0NXsPkkA2cFkz3h/YYFIFZ2AQWrTCds
-         pQNSy8K6f5LDR4B/SZzXgtawWBiGQokz+p3UeulYUL+2lMfAAJDT/urLUI8fxcl4U9k1
-         TYD/nL69QJJxBk6mdgMilylUVT4YuaRF4CkjcOMH+9Nm0zBsYtM9M/1jdt5KaVBgXaqV
-         nVHg==
-X-Gm-Message-State: AOJu0YzegYipP928res2w1naZipozX0xNZKiHPqb25t/Ir6DNH6xy8vM
-        GPM0vyQz1gxBZsNSGpwR1nMKdg==
-X-Google-Smtp-Source: AGHT+IFRhChplWciczblVbM/j/a6uTbdRJi9ezDFTRStIJxdY0CuJl0LLWZ0Gy1mgmRsbdt8h/9GwA==
-X-Received: by 2002:a05:6512:33c5:b0:4f9:cd02:4af1 with SMTP id d5-20020a05651233c500b004f9cd024af1mr16860889lfg.34.1693045775850;
-        Sat, 26 Aug 2023 03:29:35 -0700 (PDT)
+        bh=WvCLjs9YLOF9i8wNeEp7LVv0uxwU1zCl6+4ptie1PJc=;
+        b=OoM9s2ju9GDhx0IhREhT1tiNzg8wEx7O+BO9hJOd0H/uDTaCa6n0gAdz1hB0rTFInt
+         1WQcY71DQg8R/94/6/7b61aeKeH/BTapmEgXHB7AeHibNN6H/6fa8cpE30ivWkwznGWZ
+         p7F8+Bb4PFQgMOyK7dspHupZAhQcWQguR++ViCj2hE0plyxQS/AKy7AZhDTHF8nOWTuK
+         sBRNmoPGYzpeUQJQXF6ZzKuQBGDFshmaZe3epIPeOif4GxFDqTpoGgCf0tm5jUWYp3cP
+         kUmlzSuZAmhWnlEMtb1QTtK6JEfwhtO//vQ925/i0lPXfNsoWD291MOSqH2nrn72GRoA
+         tgjw==
+X-Gm-Message-State: AOJu0YzLed499b35iTNmA58o0bSzAfDY+iHt0UnL/M5jadrEvWyiWhxR
+        HQ0FXgSB7cadQVtIzy8NxaWXgg==
+X-Google-Smtp-Source: AGHT+IHDe10VH8SD0XeByT9XailgVCADz6Rp9kfj2MYi/eVzDu924iQVp26NRQsCsDOjVxVhXEzqjQ==
+X-Received: by 2002:a19:911a:0:b0:500:acf1:b432 with SMTP id t26-20020a19911a000000b00500acf1b432mr1752523lfd.63.1693045822953;
+        Sat, 26 Aug 2023 03:30:22 -0700 (PDT)
 Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id o13-20020ac2434d000000b004fe4d45f56bsm658996lfl.68.2023.08.26.03.29.34
+        by smtp.gmail.com with ESMTPSA id o13-20020ac2434d000000b004fe4d45f56bsm658996lfl.68.2023.08.26.03.30.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 03:29:35 -0700 (PDT)
-Message-ID: <790bfcec-48dc-4a6a-8ca5-fd6d11f93d50@linaro.org>
-Date:   Sat, 26 Aug 2023 12:29:34 +0200
+        Sat, 26 Aug 2023 03:30:22 -0700 (PDT)
+Message-ID: <b234ae5b-e702-49d9-9017-e4acd0937a40@linaro.org>
+Date:   Sat, 26 Aug 2023 12:30:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: msm8916-samsung-gt510: Add display
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: msm8916-samsung-gt58: Add display
  panel
 Content-Language: en-US
 To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
@@ -65,9 +65,9 @@ To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
-        Jasper Korten <jja2000@gmail.com>
+        Siddharth Manthan <siddharth.manthan@gmail.com>
 References: <20230725-gt5-panel-v1-0-7c787e33a614@trvn.ru>
- <20230725-gt5-panel-v1-1-7c787e33a614@trvn.ru>
+ <20230725-gt5-panel-v1-2-7c787e33a614@trvn.ru>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -104,7 +104,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230725-gt5-panel-v1-1-7c787e33a614@trvn.ru>
+In-Reply-To: <20230725-gt5-panel-v1-2-7c787e33a614@trvn.ru>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -118,11 +118,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25.07.2023 13:52, Nikita Travkin wrote:
-> From: Jasper Korten <jja2000@gmail.com>
+> From: Siddharth Manthan <siddharth.manthan@gmail.com>
 > 
-> The device has a 9.7 inch ltl101at01 display. Add it to the device tree.
+> The device has a 8 inch lsl080al03 display. Add it to the device tree.
 > 
-> Signed-off-by: Jasper Korten <jja2000@gmail.com>
+> Signed-off-by: Siddharth Manthan <siddharth.manthan@gmail.com>
 > Co-developed-by: Nikita Travkin <nikita@trvn.ru>
 > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 > ---
