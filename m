@@ -2,202 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 531157893E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 07:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5757893E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 07:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjHZFAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 01:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55246 "EHLO
+        id S230042AbjHZFJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 01:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjHZE7s (ORCPT
+        with ESMTP id S229518AbjHZFIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 00:59:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522491BF6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 21:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693025986; x=1724561986;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=AtYTgN/93K8mlTqgagQpB+5fFgSl2TZCnO4BqMEpJHI=;
-  b=TNBxA4wgK7zIyG4p+aG3CuIWTyjQoHDNoFq1cLg1NKrSsghe2nUHEW0l
-   vsHKX6pxiLkrFFovhbMVszYQvxa8+Ixpbb75gp4LUxDXfJ81GvI9tP5ko
-   tcgTf7CZ9UUBtk2G1sl48i7sq9pPRsJ0Ewh8Fnv7t6naSDhIKei4Z77c9
-   /SScXJSo5NYRsHrGrC0ZlN/B7jUbvpHvHOZtUql6iScUWUDPvXv6XeBb1
-   VOkfBvnR5pt+na/LD3QwTIl9nOqsTQDZyxrkriaTOiVxNoLiE5naMEfLY
-   X9J1ZjUhMucI1lVSMvabDJI2WZIKZDVr4KeWjfYq9oSq9axg0xcDVlzQa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="441195637"
-X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
-   d="scan'208";a="441195637"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2023 21:59:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10813"; a="1068446745"
-X-IronPort-AV: E=Sophos;i="6.02,202,1688454000"; 
-   d="scan'208";a="1068446745"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga005.fm.intel.com with ESMTP; 25 Aug 2023 21:59:44 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 25 Aug 2023 21:59:44 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 25 Aug 2023 21:59:43 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 25 Aug 2023 21:59:43 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 25 Aug 2023 21:59:43 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hp5SK/y+hORm56SUjFGCpORPwiRRoidSt5YAC/aOc0G7fyaAKW9VdqIAa2bnwlqO0XgnRwSc8kUmEBV6fMufwLh9LpjiznjpdnlxxFHMSCtcaPjrNKh3KgXoPG5Ol9xJKSlIDtl7/ZWlRDeL3ILrSFdCxjfbta9F+3WsR0JAgVtSOfHGinDxOoy5R5jkI8lalKELFOvISmUGPLauMtkWHJ/symeh5gl19UsE0uUC4s27CNhZM1u0Adag+YuEy5k02e1Fjc0pFhK3xrrmP5meE4lO7KkxMh6+9YsN8HL8PRpSjcGdwpzgq0MWXuXT+w1yjdb4ps0z8xiTbkErG0QiHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AtYTgN/93K8mlTqgagQpB+5fFgSl2TZCnO4BqMEpJHI=;
- b=leYjR7HQh8Qxq+BfuctfuYxA7yYsWuJ+/FyQgU+T4tv+B2L06R13g6pzGwGliZuAW1hCKr3Izsb/9SepTibBmGhGkRUT7T4LrgxL5R2ix9lqu+/ylcs3FlGRUOaLi6bhc4LCcKYWNzM+y2FmSfa3dZ3UHSCg4NqNgOskFPUFApID59TXaSUVHfpCSPo4DdQCzzLR8idNOPT0Yk9E/C2/e4q9JeiiD9BY+RlfSAS2hZYXp8V/z/z7seQjaJbfl8vt5IWB1J4O3oQ+9LsfnMyRektDX5yYPb1DciiOF6BYjMRYYnk/QCdonM+eEklmYFKAScYADl/PBjmvdP35UiEWEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by BN9PR11MB5322.namprd11.prod.outlook.com (2603:10b6:408:137::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Sat, 26 Aug
- 2023 04:59:35 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6699.028; Sat, 26 Aug 2023
- 04:59:34 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-CC:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
-Subject: Re: [PATCH v4 07/12] x86/tdx: Make TDX_HYPERCALL asm similar to
- TDX_MODULE_CALL
-Thread-Topic: [PATCH v4 07/12] x86/tdx: Make TDX_HYPERCALL asm similar to
- TDX_MODULE_CALL
-Thread-Index: AQHZz2d7UQsEDFsUOEaymlW0GXBdza/7uv0AgAAUuQCAAEWtgA==
-Date:   Sat, 26 Aug 2023 04:59:33 +0000
-Message-ID: <8edee3c83760b5662911d40d106ecee54431e9aa.camel@intel.com>
-References: <cover.1692096753.git.kai.huang@intel.com>
-         <0cbf25e7aee3256288045023a31f65f0cef90af4.1692096753.git.kai.huang@intel.com>
-         <20230825233558.xzqukr3vbccii7f4@box>
-         <1a40b4dc8d155618723671685e7ad53e3fce0aa4.camel@intel.com>
-In-Reply-To: <1a40b4dc8d155618723671685e7ad53e3fce0aa4.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|BN9PR11MB5322:EE_
-x-ms-office365-filtering-correlation-id: 5c401e19-cb36-4748-cd8e-08dba5f13d6e
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tAj5hWkJnWPMGFdVVTTfBBHeZY0yRZUHVvbBlkO8DVHp/YfVhFWZdvofsOIssGIf1otAdNrvcqGHuIYlLWTHc2/edW7FpvanswY6cx0xhxIEz2Rn9XN5YQNjdAbWJ0Lc1ZoD6AxiAdmHlpAlkv72xrmhyQOC7iRF8yC3mME7z3XrbOhx1HLgeIgXZm0X5kxd76ouZBzUKV1/dHLq1+kjAUpMaac4wPnzTzuGE0imXWY2CnEj3i9ByCSkq2+t5CFgJzE9teEiUc4TaBP1EopxErBDZfBYCo60r31jtyfG+s77B0U6K10mFag2/MQpzOqEtuaqCGdx/JMJ2c7UbSHSOeMRoDEI9yH+8m1YoKFIttY2y2ebpErcgf9WJzGdeoiC+vdajOnsqIZpfExhFqjRyG8rEr8hrevZtw645gYyZdnPE940uOk8VVaM9LzbRgmT7L/jFmJYImVFbZMJp8oQ9glht9nU0WidXjXrLTT5zp6Shvj/cgwG6ZDKzqbvkCPU8i5GN27BY3aRnCrCOhK+fW8vmXNJ1hYOebGbL4xkicKTlntS5Px4cq9PYyPTC7ntAKs8kF3kI/aMOWgokfypYJ3zbtCMu6gbwiSEYrbMmsA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(136003)(396003)(1800799009)(186009)(451199024)(2616005)(5660300002)(8676002)(4326008)(8936002)(36756003)(83380400001)(7416002)(26005)(71200400001)(38100700002)(38070700005)(82960400001)(122000001)(6916009)(66946007)(66476007)(64756008)(66446008)(6506007)(54906003)(66556008)(316002)(76116006)(91956017)(478600001)(966005)(41300700001)(6486002)(2906002)(6512007)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Y0k5bTBzM3dIa2FNV3c1LzI1N0dOU0Q4Q0xIY21sQXhxMmwxcUVFWkcyRzFL?=
- =?utf-8?B?aWNNUkplM1lyT3IxaDdGcDVOWWFMWUtsbW1pbjdTNUZ3SXkwNXlOU3RqVXpG?=
- =?utf-8?B?OVplU2tab2JIMkR0TENLNTliQkV4YmxQam0wRnI1ZUtLUDN2SlQ2MWdMWk5H?=
- =?utf-8?B?dHJUdjUyL0xxbUlUQzFRTnNkbGNuMEhnOWFDWERNbEk4QTNqY0k2SkNvTlRr?=
- =?utf-8?B?VkVsOGFoRlhiSTg4OW5xMnFFQ3EwQ1JkbTRkR3k0QXBRTmNtZHV0RVZuZklR?=
- =?utf-8?B?L0xlSEZhODJnSFN2ek45M3RSQTJxZ3JOUDRBd3RQcys4QUg5REs0cFpGVEpr?=
- =?utf-8?B?TFZrS1RNNDIwbnk0RHhCR25JNUxBdXduRmwvYWhaRDFPMFg3cjMvOU1hbUVI?=
- =?utf-8?B?dFlwNkREejV2Z3RVU2VwdmRpRjhtYmI1ZlpEUWJQT3NCNDFtRmZDSldHbnpO?=
- =?utf-8?B?RXpxTWtLb24rU056Z1ljb0VVaUNwY3Znb2owNzA3T0s5eVZtOVpDTFRMQ29v?=
- =?utf-8?B?eTgwd2c3OTN4b1RVMWdmNElMRlBBRktmb0gxd1JTR2IvMzRZUVE4cGwxa1dK?=
- =?utf-8?B?bC9aalE0YjVvSjR0TUZiZVVnaFY2MWVXTzM3eGprc2RFcklvZzRYUXNEVHY3?=
- =?utf-8?B?Y21WZ0xaMXZpcVdCUUpGcnBESUh0bkcvbDZZekVqNk5QUjNJZ1EzcU9maWN4?=
- =?utf-8?B?bkRZL3RDT0NtbldxVTVBZ1krL2xtYkNXRlB1Z3F2di9kTXNlODZFNks2MURr?=
- =?utf-8?B?MDdacWV1STBQWDd4RGFXd1dUUGZCNmdsaFdyMFZuY0g1aDFCcUdCMEM1QjMw?=
- =?utf-8?B?QTJnbG1CdTZ2eXIwbStFbWJLbnl1QW5PcXI1V0dVRlIzOStWZDc3SFZXektK?=
- =?utf-8?B?ZDhKYXRmaHJ0b0M4MmhTbHNsME5kbkhNUHJyRkNCTFI3MXp1RE9Ma0tMSTdK?=
- =?utf-8?B?b3VWbmpNZGtiWUVibEg1d0xnSDdzWlRrRFFmQnpiVElSZ1pldEd4RlNuRVlm?=
- =?utf-8?B?TEVjcEJBckMrTEdmWGdIMFFYS2dtM0hSYmYwdzY1TE5EeXpuY1RnZWhhaDI5?=
- =?utf-8?B?d0grT0JxSFNEVXBtRHFBN2o0bXF1d2pFWlBRaTZRUG1IN1BVM1B1ekRpK3hC?=
- =?utf-8?B?Yk5ENmtxSXRRNzZvS01PT3BreDRONWpyZHArMDRFZXJJWHlBZXcyellsUUho?=
- =?utf-8?B?ODlqeUsvcWlvSENxR1YrajJ5RUZ6OUdxWmRGVzhXdHZTZTVWamlZMUE0K1ND?=
- =?utf-8?B?OTY2dkVlNzE1WDlWY0d0ZDF0TCtJR1QyZ3JLUW9xRnhWT0YvSHBtNTVUakJM?=
- =?utf-8?B?OW1CT0RDUmg0YWFwNkdHd2RPbDZxM3JxUnB4NHNQY00vZkgzQnEwRjd2bWJ4?=
- =?utf-8?B?YzhWTTRCcSsxZU1kL3pUQ0JqQnU3OXI5RlpBWlExNnVwMHN1OWo5S3BZV2k1?=
- =?utf-8?B?SWl3NGF0ZXBja2ZVY2Vod0RaaUk3cUZhVVRxdVFydWJVTUZ1MHVhcGthY2VJ?=
- =?utf-8?B?VTgzUDdtWHNtbnJ1SGpvMjE0dTVkbjJDUUlHTTJTQ2JVZjJpcWIvQ2Ivczhn?=
- =?utf-8?B?UUZJZ2hoc2llNG1KekFkbXJrSkZtbVRHWTdGSHl4MWJtZmpEWHAxS3N4NS9B?=
- =?utf-8?B?RGVCUlR6dlNVTnlsY0dHUisyZXRRTUtsU2svK1lTUXFJMDRlUmcxYjhWMU5S?=
- =?utf-8?B?SzNZbTEzS3orbE5VdldwZDNNb3FpVGFpVm5LaXNJdHJMNDhOLzk5TFdRU0Ji?=
- =?utf-8?B?QmNhRjJqdnI3MjNDNUo2QXBUQlB5bldTMktrdmp1QTI0MEsyTFJ4WFd6YjdF?=
- =?utf-8?B?VC9pR0RoRy9TNFoxL1VvMGtta05RSzc4UHRjeWcyZzQ3UlhVeW9XKzd5Z2hM?=
- =?utf-8?B?c2xkc3VzVC9HbnVYRXhZbS9hWDljQ3ZUY2RLZDBIU3BMUXh2U24yUnFYSDJP?=
- =?utf-8?B?VU5zUldodms3ZGlIaXRkVHpXam0vdjkzd2VHMmIzRXJaUTVQWVMyVkI2NC91?=
- =?utf-8?B?R2szL1QzZVdJVGVtVjZGZzVsNGtYaUVVVmhHQ1ZCV0dZQmdWL0pkSHVhWWlP?=
- =?utf-8?B?WDFseW9IQXN4c0RZWGdxS1Vrdnd0cW8vZC9YYXFlV0lINWkxNnBDeWVHdk5D?=
- =?utf-8?Q?XNwCBvaU+em5Ad/tN/O6kVNG5?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <02F3019520EC6B47B453DF4EE42028D2@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Sat, 26 Aug 2023 01:08:49 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3005E2685
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 22:08:46 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1c0888c175fso15373545ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 22:08:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693026525; x=1693631325;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cFS8hm8LjjBHweqoBE1nJ1SrxNNm5BjNxKLsW9d8J1g=;
+        b=cAzp/H6vjxXngE8rI0CJaJZuwwD3zFz5ClQdZaoo7PrNEzooVqDXOLDFHehPt1UyyC
+         9/pqOY7IUN2gMoAbpXWzJRjel7n2I+dsHCRdeuVY6aOq2Sg0YqFS3n/CeGJ4yG+xPYqv
+         JNYhPiA1F2r0YKJwuRi36NC0srahcseSYZq4XV98moa7aOpFOhtyP0NIcfItxE70VNiD
+         ByIVN+w2OVpowvPoQPzAWZP0yG9m08p1musXMin0AEEakztEH/tBaKWi2R2zhXcnMxLu
+         +KDUpjeaCzD+oIonyvfZbeX7ALqQSKaQwQ7veRwLVhdrbXmFSdAgfgdvlbrrL0AGu7iU
+         LlZA==
+X-Gm-Message-State: AOJu0YyB6gNubULN8qI5t80ws9ElIK7fMNQDc0irjPYvgI2FQPmgh8R9
+        rHmq3nK6o2SWI1+qNImvShxmvyxeGIXEiJVfkIDrK8I225FJ6gdF2Q==
+X-Google-Smtp-Source: AGHT+IGKR5/4TCkmzoTlf5ed7EE6+ocwY0jjHkBU90nHsJK50Kw6dUU1dpIwnRM+jsYm5ULojM0ekNuvbT6X/SJYLrt6M4Fj3MDA
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c401e19-cb36-4748-cd8e-08dba5f13d6e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2023 04:59:33.8899
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: usR5vrGu/vsVxPwpagaFHsGmAfnO4G8eKqIZNbLH9B+nSuF2Oqqa5q2JnFi4s8f0shqeXdfnggATUgUSE/7CkQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5322
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:dace:b0:1b5:bd8:5aaa with SMTP id
+ q14-20020a170902dace00b001b50bd85aaamr7088565plx.1.1693026525655; Fri, 25 Aug
+ 2023 22:08:45 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 22:08:45 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a838aa0603cc74d6@google.com>
+Subject: [syzbot] [media?] [usb?] KASAN: slab-out-of-bounds Read in imon_probe
+From:   syzbot <syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, sean@mess.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIzLTA4LTI2IGF0IDAwOjUwICswMDAwLCBIdWFuZywgS2FpIHdyb3RlOg0KPiBP
-biBTYXQsIDIwMjMtMDgtMjYgYXQgMDI6MzUgKzAzMDAsIGtpcmlsbC5zaHV0ZW1vdkBsaW51eC5p
-bnRlbC5jb20gd3JvdGU6DQo+ID4gT24gVHVlLCBBdWcgMTUsIDIwMjMgYXQgMTE6MDI6MDFQTSAr
-MTIwMCwgS2FpIEh1YW5nIHdyb3RlOg0KPiA+ID4gKwkvKg0KPiA+ID4gKwkgKiBGYWlsdXJlIG9m
-IF9fdGRjYWxsX2h5cGVyY2FsbCgpIGluZGljYXRlcyBhIGZhaWx1cmUgb2YgdGhlIFREVk1DQUxM
-DQo+ID4gPiArCSAqIG1lY2hhbmlzbSBpdHNlbGYgYW5kIHRoYXQgc29tZXRoaW5nIGhhcyBnb25l
-IGhvcnJpYmx5IHdyb25nIHdpdGgNCj4gPiA+ICsJICogdGhlIFREWCBtb2R1bGUuICBfX3RkeF9o
-eXBlcmNhbGxfZmFpbGVkKCkgbmV2ZXIgcmV0dXJucy4NCj4gPiA+ICsJICovDQo+ID4gPiArCWlm
-IChfX3RkY2FsbF9oeXBlcmNhbGwoVERHX1ZQX1ZNQ0FMTCwgJm1hcmdzKSkNCj4gPiA+ICsJCV9f
-dGR4X2h5cGVyY2FsbF9mYWlsZWQoKTsNCj4gPiANCj4gPiBEbyB3ZSBldmVuIG5lZWQgX190ZHhf
-aHlwZXJjYWxsX2ZhaWxlZCgpIGFueW1vcmU/IEp1c3QgY2FsbCBwYW5pYygpDQo+ID4gZGlyZWN0
-bHksIG5vPw0KPiA+IA0KPiANCj4gX190ZHhfaHlwZXJjYWxsKCkgaXMgY3VycmVudGx5IGFubm90
-YXRlZCB3aXRoICdub2luc3RyJyAod2hpY2ggaXMgYWxzbyB0aGUNCj4gYmVoYXZpb3VyIG9mIHRo
-ZSBvbGQgY29kZSkuICBXZSBuZWVkIGl0IG90aGVyd2lzZSB3ZSB3aWxsIGdldCBidWlsZCB3YXJu
-aW5nIGxpa2UNCj4gYmVsb3c6DQo+IA0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sL2Ey
-M2NlOGZkMjg5MTQxY2VhM2ExYjRmM2RhY2UyMjFkY2E4NDcyMzguY2FtZWxAaW50ZWwuY29tL1Qv
-I20yMDViMjljZTNlMzM5ODNlYzZiZTczM2MyYWZmZmJmZDVjYjY1M2ZmDQoNCkZvcmdvdCB0byBz
-YXksIF9fdGR4X2h5cGVyY2FsbCgpIGlzIGEgY29tbW9uIGNvZGUgc2hhcmVkIGJ5IHRoZSBjb21w
-cmVzc2VkIGNvZGUsDQp3aGljaCBhbHNvIGhhcyBpdCdzIG93biB2ZXJzaW9uIG9mIF9fdGR4X2h5
-cGVyY2FsbF9mYWlsZWQoKS4gIFdlIG5lZWQgc3VjaA0Kd3JhcHBlciBhbnl3YXkgYmVjYXVzZSBj
-b21wcmVzc2VkIGNvZGUgY2FsbHMgZXJyb3IoKSB3aGlsZSB0aGUgbWFpbiBrZXJuZWwgY2FsbHMN
-CnBhbmljKCkuDQo=
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    47d9bb711707 Add linux-next specific files for 20230821
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=123e50b7a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20999f779fa96017
+dashboard link: https://syzkaller.appspot.com/bug?extid=59875ffef5cb9c9b29e9
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b08160680000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ffbe03c733b7/disk-47d9bb71.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a61a31d6caf9/vmlinux-47d9bb71.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/37e6f882b2d9/bzImage-47d9bb71.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
+
+usb 1-1: 2:1 : UAC_AS_GENERAL descriptor not found
+==================================================================
+BUG: KASAN: slab-out-of-bounds in imon_init_intf1 drivers/media/rc/imon.c:2323 [inline]
+BUG: KASAN: slab-out-of-bounds in imon_probe+0x298f/0x38f0 drivers/media/rc/imon.c:2449
+Read of size 1 at addr ffff888069cbac71 by task kworker/1:3/5066
+
+CPU: 1 PID: 5066 Comm: kworker/1:3 Not tainted 6.5.0-rc7-next-20230821-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ imon_init_intf1 drivers/media/rc/imon.c:2323 [inline]
+ imon_probe+0x298f/0x38f0 drivers/media/rc/imon.c:2449
+ usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x11f1/0x1b40 drivers/base/core.c:3623
+ usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
+ usb_generic_driver_probe+0xca/0x130 drivers/usb/core/generic.c:238
+ usb_probe_device+0xda/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x11f1/0x1b40 drivers/base/core.c:3623
+ usb_new_device+0xd80/0x1960 drivers/usb/core/hub.c:2589
+ hub_port_connect drivers/usb/core/hub.c:5440 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
+ port_event drivers/usb/core/hub.c:5740 [inline]
+ hub_event+0x2daf/0x4e00 drivers/usb/core/hub.c:5822
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+
+Allocated by task 5066:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1004 [inline]
+ __kmalloc+0x60/0x100 mm/slab_common.c:1017
+ kmalloc include/linux/slab.h:604 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ snd_card_new+0x74/0x110 sound/core/init.c:184
+ snd_usb_audio_create sound/usb/card.c:621 [inline]
+ usb_audio_probe+0x1905/0x3c60 sound/usb/card.c:827
+ usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x11f1/0x1b40 drivers/base/core.c:3623
+ usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
+ usb_generic_driver_probe+0xca/0x130 drivers/usb/core/generic.c:238
+ usb_probe_device+0xda/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x11f1/0x1b40 drivers/base/core.c:3623
+ usb_new_device+0xd80/0x1960 drivers/usb/core/hub.c:2589
+ hub_port_connect drivers/usb/core/hub.c:5440 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
+ port_event drivers/usb/core/hub.c:5740 [inline]
+ hub_event+0x2daf/0x4e00 drivers/usb/core/hub.c:5822
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+The buggy address belongs to the object at ffff888069cba000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 1 bytes to the right of
+ allocated 3184-byte region [ffff888069cba000, ffff888069cbac70)
+
+The buggy address belongs to the physical page:
+page:ffffea0001a72e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x69cb8
+head:ffffea0001a72e00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c42140 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d2820(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 27, tgid 27 (kworker/1:1), ts 97911259229, free_ts 34249861969
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1530
+ prep_new_page mm/page_alloc.c:1537 [inline]
+ get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3213
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4469
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x251/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8be/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1003 [inline]
+ __kmalloc_node_track_caller+0x50/0x100 mm/slab_common.c:1024
+ kmalloc_reserve+0xef/0x270 net/core/skbuff.c:575
+ __alloc_skb+0x12b/0x330 net/core/skbuff.c:644
+ alloc_skb include/linux/skbuff.h:1286 [inline]
+ nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:748 [inline]
+ nsim_dev_trap_report drivers/net/netdevsim/dev.c:805 [inline]
+ nsim_dev_trap_report_work+0x29e/0xc70 drivers/net/netdevsim/dev.c:850
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1130 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2342
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2435
+ free_contig_range+0xb6/0x190 mm/page_alloc.c:6385
+ destroy_args+0x768/0x990 mm/debug_vm_pgtable.c:1028
+ debug_vm_pgtable+0x1d7e/0x3e00 mm/debug_vm_pgtable.c:1408
+ do_one_initcall+0x117/0x630 init/main.c:1232
+ do_initcall_level init/main.c:1294 [inline]
+ do_initcalls init/main.c:1310 [inline]
+ do_basic_setup init/main.c:1329 [inline]
+ kernel_init_freeable+0x5c2/0x900 init/main.c:1547
+ kernel_init+0x1c/0x2a0 init/main.c:1437
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Memory state around the buggy address:
+ ffff888069cbab00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888069cbab80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888069cbac00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc
+                                                             ^
+ ffff888069cbac80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888069cbad00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
