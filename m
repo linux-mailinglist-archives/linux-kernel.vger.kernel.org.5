@@ -2,82 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DFB7892B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 02:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D997892BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 02:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbjHZAX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Aug 2023 20:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        id S231169AbjHZAbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Aug 2023 20:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbjHZAXd (ORCPT
+        with ESMTP id S230050AbjHZAae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Aug 2023 20:23:33 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26102117;
-        Fri, 25 Aug 2023 17:23:31 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37Q0M31M012741;
-        Sat, 26 Aug 2023 00:23:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=UVrA7hFTknaYMrfth6agguVc8LsTfqzkHFmMYsvCLEc=;
- b=Aw/IX2WpSBXMMfSTZOyKy0IvbTq7OM8DwyUZwxiClnj7pX4Sae0QKAlIenwEXsiZUFeM
- jaZ9ARUFYxI0UyTfE1ezL9Y6hyDROVP0VPBkiCke/k8rPCWTTRwThCUZEqj0ppY1lZrI
- ZQhOaTATyA2yEEExtaMaCmjWBOtY7o7Gkd3rwH6piyHOC+25RdQl9UdxWYJF6D3gjAnV
- N34eR+EV3iYSNEpEVM2dGJtk6uQfNRutsQJbeCZalLcf0qA8tTgJGX0If2K3WVJ0QnZf
- GO4vzbvJZSGXVHXNXJdhDO+bgwVzshOpZu+GDAMO84/CkwgdzvPM6RiEkIMwdKPT6jCd gQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3spmm6a96k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Aug 2023 00:23:15 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37Q0NF2H018497
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Aug 2023 00:23:15 GMT
-Received: from [10.110.6.4] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 25 Aug
- 2023 17:23:14 -0700
-Message-ID: <6772a956-e511-484d-771e-529df8fbc199@quicinc.com>
-Date:   Fri, 25 Aug 2023 17:23:13 -0700
+        Fri, 25 Aug 2023 20:30:34 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4452118
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 17:30:32 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76d7224c5bcso86568685a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Aug 2023 17:30:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693009832; x=1693614632;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9ZyTeNGFnmQqE613GDKmKhvLAFe/AnQBwlsX/erp5GQ=;
+        b=lBAbfPJmyYr7D+xhXIJ4YlXKgiw1v/rQRbN7gs6i9aXXb+yHcLxmQO6diIOdHwDr8H
+         3JEvbxn/uYkWU88LxZDBF0jDV6Ry3jfFkUSV1i9Z38wNXI0Sr5+bzF0aq2CM0d7qOUy0
+         Na/Pcc51GOHtZNfYuhxMdkUR2iI1GHSJPRnhAwcBLzDkuSv5w8yWCiGPhza5v3RRxCei
+         xw+sqsZmRAeLqfWQ5jPEyDKTuQRzhmWfzTstc6f70MP/0JCfHfNEr+yvIx2i6y7/InLQ
+         TsNObOQVDPmY7eeKrRd4Lk+/zyrwm9ZduKtsBC0tD9SiouW5gdv9niBdgZUEATAaY6tM
+         fLmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693009832; x=1693614632;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ZyTeNGFnmQqE613GDKmKhvLAFe/AnQBwlsX/erp5GQ=;
+        b=IXuATpyhecLD0Zas3ihc83CXrbxQK/kZOezanAuQS/nE46pNWgXNbVevWRFQYd59Fy
+         zUYt4we9EoQCJOGg2sEDuI7y9hR5XKuy2IxpUv2zPZV6V3Fqf+JYwEk1RY7h9ADmScYB
+         o+04pNYnn+NQQ+KKnDLrImh6a8/onvjEs/SGp1654DRFMLslTPIvOSx5/G8X4U7kOwv5
+         fXU4PpI3oOshIAI/JENQr7d4N4yT1UYS5DGDmmpy0QB8qRNvzKwqO1igFKgvQyA/dDdD
+         s8IkEG7s6KWoWc57cpUkxTiuqrY01q9TIByKd/Nyz57BCkmwNkCxtLxlnGjcKjPhZYRz
+         BkkA==
+X-Gm-Message-State: AOJu0YwY4IJ2nwsP+F9s4FEwMn7X9OqwGXnWHariA5W3QkXY4rvV1Xmd
+        UGpYhqpAiT8zQvNf1UVwd9MQieBmzto=
+X-Google-Smtp-Source: AGHT+IHdQMAbKiU8+7Ds3mrCtSx4VtAtS4KB91c27s3l8W/W893AhW7DAtd/kGWb6/gzHLi2XTIGRA==
+X-Received: by 2002:a0c:c502:0:b0:64f:69a3:af37 with SMTP id x2-20020a0cc502000000b0064f69a3af37mr7616094qvi.13.1693009831703;
+        Fri, 25 Aug 2023 17:30:31 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
+        by smtp.gmail.com with ESMTPSA id x4-20020a0cda04000000b0063d162a8b8bsm903510qvj.19.2023.08.25.17.30.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 17:30:31 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 21:30:26 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH] staging: vme_user: fix check unnecessary space after a cast
+ in vme_fake.c
+Message-ID: <ZOlHos18LFnsKg0i@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v4 4/4] drm/msm/dsi: Enable widebus for DSI
-Content-Language: en-US
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-CC:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20230822-add-widebus-support-v4-0-9dc86083d6ea@quicinc.com>
- <20230822-add-widebus-support-v4-4-9dc86083d6ea@quicinc.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20230822-add-widebus-support-v4-4-9dc86083d6ea@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DAuK1jenotUUm5yEXhV82UoS-ocl2ec9
-X-Proofpoint-GUID: DAuK1jenotUUm5yEXhV82UoS-ocl2ec9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-25_19,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 malwarescore=0 phishscore=0
- clxscore=1015 mlxscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0
- mlxlogscore=716 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308260001
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,20 +69,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixed all CHECK: No space is necessary after a cast
+as reported by checkpatch to adhere to the Linux kernel
+coding-style guidelines.
 
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+---
+ drivers/staging/vme_user/vme_fake.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 8/22/2023 10:42 AM, Jessica Zhang wrote:
-> DSI 6G v2.5.x+ supports a data-bus widen mode that allows DSI to send
-> 48 bits of compressed data instead of 24.
-> 
-> Enable this mode whenever DSC is enabled for supported chipsets.
-> 
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/dsi/dsi.c      |  2 +-
->   drivers/gpu/drm/msm/dsi/dsi.h      |  1 +
->   drivers/gpu/drm/msm/dsi/dsi_host.c | 31 +++++++++++++++++++++++++++----
->   3 files changed, 29 insertions(+), 5 deletions(-)
-> 
+diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
+index 4258ed6033e7..4ccb16dd0d0b 100644
+--- a/drivers/staging/vme_user/vme_fake.c
++++ b/drivers/staging/vme_user/vme_fake.c
+@@ -95,7 +95,7 @@ static void fake_VIRQ_tasklet(unsigned long data)
+ 	struct vme_bridge *fake_bridge;
+ 	struct fake_driver *bridge;
+ 
+-	fake_bridge = (struct vme_bridge *) data;
++	fake_bridge = (struct vme_bridge *)data;
+ 	bridge = fake_bridge->driver_priv;
+ 
+ 	vme_irq_handler(fake_bridge, bridge->int_level, bridge->int_statid);
+@@ -1092,7 +1092,7 @@ static int __init fake_init(void)
+ 	mutex_init(&fake_device->vme_int);
+ 	mutex_init(&fake_bridge->irq_mtx);
+ 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
+-		     (unsigned long) fake_bridge);
++		     (unsigned long)fake_bridge);
+ 
+ 	strcpy(fake_bridge->name, driver_name);
+ 
+-- 
+2.41.0
 
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
