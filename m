@@ -2,163 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DEF7894F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 11:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089A97894FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 11:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbjHZI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 04:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S232174AbjHZJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 05:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232154AbjHZI7K (ORCPT
+        with ESMTP id S232198AbjHZJCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 04:59:10 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729CA1FC3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 01:59:08 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so2594456e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 01:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693040347; x=1693645147;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=VMV0LkL6XTvk7F0cHIqMZf1QrNVpfMIvkj9fG41FagQ=;
-        b=lgk2m4D5SV3fD/P2u4/1d+8AR6SPFpPi+2GPAd3p+2w4cKz0cR+4UosIMI/GZIwuiG
-         32WstuPhV1vP1jVIZPJad66p7yFiwZe6qAuseRXmMNCWjqJ3GWKNjP0H2gGTHIcewCe7
-         YrZvAbTwmF3C+Vi6Limdkzb8MihLQYT2aQNni5guI4Tk0994CuKSg+yQY+ZYQY1NRxr8
-         603vcX7SftjJaZsKCRFS24pAiQqbtVirE4Ci4AigQjRhaXw1nkXmW/ZFUCAai0dw5EhQ
-         OGzkuXdUa8DmlxtyHKY+zNd+lyPkCuGHHyZ2+1suZOUxANqqfoVI9weuDEbQuvZLdUg2
-         iC5A==
+        Sat, 26 Aug 2023 05:02:37 -0400
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6C82683
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:02:34 -0700 (PDT)
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-573271f9cb1so1821964eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:02:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693040347; x=1693645147;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VMV0LkL6XTvk7F0cHIqMZf1QrNVpfMIvkj9fG41FagQ=;
-        b=iedpXCMAQHX62jXL4jCY895Iz0F/Qsd0vt43LVLMbLG7GdSZE0hOwobnfz9+rm4PGc
-         naTChoodjqbElgIUOEJAazverL+BwQWqR6EFzVLixgcoW6o7P/bPOIRbehj9HacYmzRO
-         m6EOu5F4f7oAETSLlPKKuVblEO+K5EL8I2J0WQuRM+xGdsHPzd7jiWFZbLq7DV67+BZg
-         gSy2P8vN/QcDaRvN177TOkVRUPb/aDW0Ewc5Qx2CgDftxez9ZjAozz6VuttX/dpgOzsW
-         KhelgskkTkA68s/cGMZO5oMdZRiA9AdWuyawqhi1AozKfgs9J7sQhFTeS8sl1xuHxkDN
-         74Rw==
-X-Gm-Message-State: AOJu0YxNAQ3PvwzQ74uWZfrXjNGZU7Ia+HphPLqqI3+nzACOFbsvXcyK
-        dh6q+wLZsC9tRePP2N+WJxqN5g==
-X-Google-Smtp-Source: AGHT+IGNz3iCa5gUvcXoBK3a6bk4ESqUsl3Vqx26TgGDafVng3nY3NLrZPaFN8CklqhDuZLTOwb8nA==
-X-Received: by 2002:ac2:4c82:0:b0:4ff:87f6:6ee5 with SMTP id d2-20020ac24c82000000b004ff87f66ee5mr13340004lfl.10.1693040346718;
-        Sat, 26 Aug 2023 01:59:06 -0700 (PDT)
-Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id w12-20020a05651204cc00b004fe0760354bsm631206lfq.275.2023.08.26.01.59.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 01:59:06 -0700 (PDT)
-Message-ID: <83b9eb79-ba6d-4485-a945-c9a14bbd18d2@linaro.org>
-Date:   Sat, 26 Aug 2023 10:59:04 +0200
+        d=1e100.net; s=20221208; t=1693040553; x=1693645353;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oE4f8Rvv3+vmtQRhVaCr0eNUNgXe/6FEv0J/Vrd1Mtk=;
+        b=bAqs0fF4pMTZ1wude9kyN+QYEZ1AZRnA5ALnQ2vhfNwAUEI+47HzC4tnIj312OJ/u1
+         PiTSSj6vAH2ykflu9fxr0XQro/oKn8cE4YOX3m/cOFXFUcmf2cJuTGTwcf9CaRXf+E09
+         p0dTglwv8JRXH7A1vnk+M7saPHOeAir3Mn+cSTaNW5pqNPoJ3n3bheiUroWAZGKB2cfw
+         PKEUDw29VtI7ip9tOiVkKKRo13gFZnCBiXVjo6pw1WyMlogKSPrlvaZRgZpzSEZqRfZt
+         KfLh8Ltq92+/sPCIKEGp+S1ddgyj8ulfRmp/8BCCNHoSK+UZgLSM4sB9iMpWYiUa8Z1N
+         IrGA==
+X-Gm-Message-State: AOJu0YwBoCFT1MQx0TLatlcd6g5ief2yegHOo5504PVrfV/KIf2Z33ve
+        Na79aEtva9Z/PkWKCQze7Vhw1xbFaOFYL3fqsvXwlPRIHdyV
+X-Google-Smtp-Source: AGHT+IHJTEVn7HmJt2JjgYFhRdDigyaZnI+sPDdsIwuzrBs1DS2RvFC7TL0IXPK90H+z7XwxUX1FvAwps1SetpXyJSGugy5xj0JH
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/msm/adreno: Fix SM6375 GPU ID
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230825-topic-6375_gpu_id-v1-1-e24f46d7f139@linaro.org>
- <CAF6AEGsNr+5zaXqKRhyeY6NV+iRD+Yz8ftqiX6Z08esoyh=DzQ@mail.gmail.com>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <CAF6AEGsNr+5zaXqKRhyeY6NV+iRD+Yz8ftqiX6Z08esoyh=DzQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:9575:b0:1c0:ffa6:4c60 with SMTP id
+ v53-20020a056870957500b001c0ffa64c60mr467633oal.9.1693040553139; Sat, 26 Aug
+ 2023 02:02:33 -0700 (PDT)
+Date:   Sat, 26 Aug 2023 02:02:33 -0700
+In-Reply-To: <20230826080830.3403-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2a6cd0603cfb86c@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
+From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.08.2023 03:29, Rob Clark wrote:
-> On Fri, Aug 25, 2023 at 2:11 PM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> SM6375 comes with a patchlevel=1. Fix the chipid up to reflect that.
->>
->> Fixes: 90b593ce1c9e ("drm/msm/adreno: Switch to chip-id for identifying GPU")
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  drivers/gpu/drm/msm/adreno/adreno_device.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
->> index 575e7c56219f..f2d9d34ed50f 100644
->> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
->> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
->> @@ -331,7 +331,7 @@ static const struct adreno_info gpulist[] = {
->>                 ),
->>         }, {
->>                 .machine = "qcom,sm6375",
->> -               .chip_ids = ADRENO_CHIP_IDS(0x06010900),
->> +               .chip_ids = ADRENO_CHIP_IDS(0x06010901),
-> 
-> r-b, but maybe we should list both to be safe?  But unsure if any
-> patchlevel=0 things are out there in the wild...
-AFAICT only 1 for this soc
+Hello,
 
-Konrad
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Read in l2cap_chan_del
 
-I guess we could add
-> it back in later if needed
-> 
-> BR,
-> -
-> 
->>                 .family = ADRENO_6XX_GEN1,
->>                 .revn = 619,
->>                 .fw = {
->>
->> ---
->> base-commit: 6269320850097903b30be8f07a5c61d9f7592393
->> change-id: 20230825-topic-6375_gpu_id-cf1596e2b147
->>
->> Best regards,
->> --
->> Konrad Dybcio <konrad.dybcio@linaro.org>
->>
+==================================================================
+BUG: KASAN: slab-use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1549 [inline]
+BUG: KASAN: slab-use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1519 [inline]
+BUG: KASAN: slab-use-after-free in l2cap_chan_del+0xa0b/0xa70 net/bluetooth/l2cap_core.c:668
+Read of size 8 at addr ffff888073cb0718 by task kworker/1:0/23
+
+CPU: 1 PID: 23 Comm: kworker/1:0 Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ hci_conn_drop include/net/bluetooth/hci_core.h:1549 [inline]
+ hci_conn_drop include/net/bluetooth/hci_core.h:1519 [inline]
+ l2cap_chan_del+0xa0b/0xa70 net/bluetooth/l2cap_core.c:668
+ l2cap_chan_close+0xff/0xa20 net/bluetooth/l2cap_core.c:851
+ l2cap_chan_timeout+0x17d/0x2f0 net/bluetooth/l2cap_core.c:452
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+
+Allocated by task 78:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ kmem_cache_alloc_node+0x185/0x3f0 mm/slub.c:3523
+ kmalloc_reserve+0x167/0x270 net/core/skbuff.c:559
+ pskb_expand_head+0x236/0x1170 net/core/skbuff.c:2087
+ netlink_trim+0x1eb/0x240 net/netlink/af_netlink.c:1324
+ netlink_broadcast_filtered+0xc5/0xf00 net/netlink/af_netlink.c:1531
+ netlink_broadcast+0x39/0x50 net/netlink/af_netlink.c:1576
+ nlmsg_multicast include/net/netlink.h:1079 [inline]
+ genlmsg_multicast_netns include/net/genetlink.h:454 [inline]
+ devlink_trap_notify net/devlink/leftover.c:8813 [inline]
+ devlink_trap_notify+0x1a9/0x240 net/devlink/leftover.c:8791
+ devlink_trap_unregister+0x127/0x3a0 net/devlink/leftover.c:8871
+ devl_traps_unregister+0x233/0x2f0 net/devlink/leftover.c:8978
+ nsim_dev_traps_exit+0x53/0x170 drivers/net/netdevsim/dev.c:936
+ nsim_dev_reload_destroy+0x1e0/0x560 drivers/net/netdevsim/dev.c:1663
+ nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:965
+ devlink_reload+0x11c/0x450 net/devlink/dev.c:363
+ devlink_pernet_pre_exit+0x1ce/0x2a0 net/devlink/core.c:282
+ ops_pre_exit_list net/core/net_namespace.c:160 [inline]
+ cleanup_net+0x46c/0xb20 net/core/net_namespace.c:602
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Freed by task 78:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ kmem_cache_free+0xf0/0x480 mm/slub.c:3831
+ skb_kfree_head net/core/skbuff.c:937 [inline]
+ skb_kfree_head net/core/skbuff.c:934 [inline]
+ skb_free_head+0x17f/0x1b0 net/core/skbuff.c:951
+ skb_release_data+0x5ba/0x870 net/core/skbuff.c:981
+ skb_release_all net/core/skbuff.c:1047 [inline]
+ __kfree_skb net/core/skbuff.c:1061 [inline]
+ consume_skb net/core/skbuff.c:1277 [inline]
+ consume_skb+0xd2/0x170 net/core/skbuff.c:1271
+ netlink_broadcast_filtered+0x3d4/0xf00 net/netlink/af_netlink.c:1554
+ netlink_broadcast+0x39/0x50 net/netlink/af_netlink.c:1576
+ nlmsg_multicast include/net/netlink.h:1079 [inline]
+ genlmsg_multicast_netns include/net/genetlink.h:454 [inline]
+ devlink_trap_notify net/devlink/leftover.c:8813 [inline]
+ devlink_trap_notify+0x1a9/0x240 net/devlink/leftover.c:8791
+ devlink_trap_unregister+0x127/0x3a0 net/devlink/leftover.c:8871
+ devl_traps_unregister+0x233/0x2f0 net/devlink/leftover.c:8978
+ nsim_dev_traps_exit+0x53/0x170 drivers/net/netdevsim/dev.c:936
+ nsim_dev_reload_destroy+0x1e0/0x560 drivers/net/netdevsim/dev.c:1663
+ nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:965
+ devlink_reload+0x11c/0x450 net/devlink/dev.c:363
+ devlink_pernet_pre_exit+0x1ce/0x2a0 net/devlink/core.c:282
+ ops_pre_exit_list net/core/net_namespace.c:160 [inline]
+ cleanup_net+0x46c/0xb20 net/core/net_namespace.c:602
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+The buggy address belongs to the object at ffff888073cb0600
+ which belongs to the cache skbuff_small_head of size 640
+The buggy address is located 280 bytes inside of
+ freed 640-byte region [ffff888073cb0600, ffff888073cb0880)
+
+The buggy address belongs to the physical page:
+page:ffffea0001cf2c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x73cb0
+head:ffffea0001cf2c00 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888019a6a8c0 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000150015 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0x1d28c0(GFP_NOWAIT|__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 78, tgid 78 (kworker/u4:5), ts 454224323940, free_ts 453753622092
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3219
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4475
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x251/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8be/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ kmem_cache_alloc_node+0x137/0x3f0 mm/slub.c:3523
+ kmalloc_reserve+0x167/0x270 net/core/skbuff.c:559
+ pskb_expand_head+0x236/0x1170 net/core/skbuff.c:2087
+ netlink_trim+0x1eb/0x240 net/netlink/af_netlink.c:1324
+ netlink_broadcast_filtered+0xc5/0xf00 net/netlink/af_netlink.c:1531
+ netlink_broadcast+0x39/0x50 net/netlink/af_netlink.c:1576
+ nlmsg_multicast include/net/netlink.h:1079 [inline]
+ genlmsg_multicast_netns include/net/genetlink.h:454 [inline]
+ devlink_trap_notify net/devlink/leftover.c:8813 [inline]
+ devlink_trap_notify+0x1a9/0x240 net/devlink/leftover.c:8791
+ devlink_trap_unregister+0x127/0x3a0 net/devlink/leftover.c:8871
+ devl_traps_unregister+0x233/0x2f0 net/devlink/leftover.c:8978
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1136 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2348
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2441
+ __stack_depot_save+0x193/0x510 lib/stackdepot.c:443
+ kasan_save_stack+0x43/0x50 mm/kasan/common.c:46
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ nf_nat_masq_schedule.part.0+0x290/0x610 net/netfilter/nf_nat_masquerade.c:118
+ nf_nat_masq_schedule net/netfilter/nf_nat_masquerade.c:108 [inline]
+ masq_device_event+0xee/0x120 net/netfilter/nf_nat_masquerade.c:162
+ notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
+ call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1970
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ dev_close_many+0x305/0x640 net/core/dev.c:1563
+ unregister_netdevice_many_notify+0x41b/0x1a20 net/core/dev.c:10908
+ unregister_netdevice_many net/core/dev.c:10991 [inline]
+ unregister_netdevice_queue+0x2e5/0x3c0 net/core/dev.c:10871
+ unregister_netdevice include/linux/netdevice.h:3106 [inline]
+ __tun_detach+0x116f/0x1470 drivers/net/tun.c:684
+ tun_detach drivers/net/tun.c:700 [inline]
+ tun_chr_close+0xc8/0x240 drivers/net/tun.c:3496
+ __fput+0x3f7/0xa70 fs/file_table.c:384
+
+Memory state around the buggy address:
+ ffff888073cb0600: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888073cb0680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888073cb0700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff888073cb0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888073cb0800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+Tested on:
+
+commit:         7271b2a5 Add linux-next specific files for 20230818
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1372b89fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11e1e55ba80000
+
