@@ -2,160 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98D97897A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11B37897A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 17:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjHZPHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 11:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
+        id S230210AbjHZPIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 11:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjHZPGh (ORCPT
+        with ESMTP id S230255AbjHZPHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 11:06:37 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3961AE7A
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:06:35 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf078d5f33so15263755ad.3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693062394; x=1693667194;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sZDr/QoX1SGI6WCegd87zMXpRP3udrKlKAnd69niEvM=;
-        b=ZWCwvK9RPU4SWKMiLQR1mm6HX/q+eWJmewxcNZuVA9OSS1DRFoZVX+EUBCAZfAm1Hw
-         aJDYuRHlMCxU9kbTlcOiO7srSkYpbR1K67u7vMlqL/W3pLHfuAcVcAsLsu4x3y2Q7MIS
-         +4KTqRHB9Gc4U1sb4kw5RpQgiERp/TQhBJjN6iPlb0hu519rAATR8/cy3r7mxZCDWcGX
-         YkCZ6SaaJItlk8Krh86UdwM+Bc8pnEpe9dYVvpz8P/9LaXVGQciMXD8eIpy18jS5w0Nf
-         aib4uqJFTzACj+NXUsV4PIEJ1NcuVGSLlOOO8XjsVVpMO2NvOEYojemvAx4NNLRzlDzh
-         4jdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693062394; x=1693667194;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sZDr/QoX1SGI6WCegd87zMXpRP3udrKlKAnd69niEvM=;
-        b=PTsUv2DJoGrc2/RyIJ2R3jnpStZL8XaC+TjwNAVHpRjpJ6NowdOmXrKjyCN39rgLIT
-         WzSUE/3B/I0xEuTRyVP+UfeHuQNuzMwav14owiEj/1Hnhgg3srzfFrhxbo2AJtZcFNHD
-         iuv0wfYK47r/FzP3zJXz62vD+scKv8TlPlQzWqv3PjsWigz/QUNwjZmRtE7iICdNVa9u
-         tZJEIOnwaZG8MlQ7Ytf2MyGC2GoJZMQXC9miZAABx880dygQQsSQ1+/Si7l6QI6PqzBj
-         n0HDVNiKAzWWzX6DBPZntyt+v1nZAVh2hQ/xVk/YwLbVNeWt04CIhW9SdVwApPfc2sw2
-         HS2Q==
-X-Gm-Message-State: AOJu0Yx/0Z7QdprAdSOq+CQSRADDVSm4BOAGZ8JcDkVFrphPBPS9m2YF
-        UU3Bk/lHkSh4p5tH0FUGwjBeI1gyDbS/cSzPwg==
-X-Google-Smtp-Source: AGHT+IE4u92j97rFy4KPYSk0a6QYrzQJQye05JIdyOapYHU5tlwJrXqptPMTXQ5r3XHF+Mg6wMH/Dg==
-X-Received: by 2002:a17:902:e54f:b0:1bc:61d6:5fcc with SMTP id n15-20020a170902e54f00b001bc61d65fccmr27215634plf.51.1693062394654;
-        Sat, 26 Aug 2023 08:06:34 -0700 (PDT)
-Received: from localhost.localdomain ([117.206.116.138])
-        by smtp.gmail.com with ESMTPSA id k5-20020a170902e90500b001b8052d58a0sm3801231pld.305.2023.08.26.08.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 08:06:34 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     lpieralisi@kernel.org, kw@linux.com
-Cc:     kishon@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] PCI: epf-mhi: Really use "align" from EPF core
-Date:   Sat, 26 Aug 2023 20:36:26 +0530
-Message-Id: <20230826150626.23309-1-manivannan.sadhasivam@linaro.org>
+        Sat, 26 Aug 2023 11:07:49 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DD010D7
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 08:07:44 -0700 (PDT)
+X-QQ-mid: bizesmtp67t1693062427tn000v0e
+Received: from linux-lab-host.localdomain ( [116.30.128.222])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 26 Aug 2023 23:07:05 +0800 (CST)
+X-QQ-SSF: 01200000000000E0Y000000A0000000
+X-QQ-FEAT: 5q30pvLz2ieEBQx0nw4AwVbcsW2lf9AQtedbunJNKIq0umdPrlU1WYxaGQJTB
+        /xLXCQ64QjlcZRbHq7jhW5yGut+QHQxkQLr84/OH3jNGS3VC4CvpOYAXkK3GwhuwTU/bs5S
+        4CIxMZVwLFJD8lTUd8VJVS0vT/6OK9GGgP92Ibn+qJmHJR06X7qysw0X82SmfEhUSO+4I0F
+        9PHtDB68M6Acop+iZMlDFXG44X0MXdosR2aJjI6hAHs63iTFNdOnCn0YOwdjZNRaE5Q288R
+        BrM2F0ZzLFMqM7A359j3T2MaoxvUgn3x7XRLUJBgX/18FaEaa0aY3BWk+kdA3XlJdQpIeoV
+        u4oom7NNpcEcKGPaz/KoRX/xYyHsgZ2mpFQ6hzlDnJpa4wFUjMZsCdhVS/rWJRRgzGF/Q5U
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 7776601677145500224
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     ammarfaizi2@gnuweeb.org
+Cc:     falcon@tinylab.org, gwml@vger.gnuweeb.org, inori@vnlx.org,
+        linux-kernel@vger.kernel.org, linux@weissschuh.net,
+        moe@gnuweeb.org, w@1wt.eu
+Subject: Re: [PATCH v1 1/1] tools/nolibc: i386: Fix a stack misalign bug on _start
+Date:   Sat, 26 Aug 2023 23:07:04 +0800
+Message-Id: <20230826150704.7588-1-falcon@tinylab.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230826141632.1488740-2-ammarfaizi2@gnuweeb.org>
+References: <20230826141632.1488740-2-ammarfaizi2@gnuweeb.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit <15fe2e279c19> was supposed to make use of "align" parameter from
-the EPF core, but it incorrectly used the outbound window "page_size".
-Fix it!
+Hi, Ammar, Hi, Nicholas
 
-Fixes: 15fe2e279c19 ("PCI: epf-mhi: Make use of the alignment restriction from EPF core")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/endpoint/functions/pci-epf-mhi.c | 22 ++++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+Thanks very much for your report and fixup, sorry for the missing alignment for
+the new single one push instruction.
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-index bb7de6884824..bb4669eafcca 100644
---- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-@@ -92,6 +92,7 @@ static const struct pci_epf_mhi_ep_info sdx55_info = {
- };
- 
- struct pci_epf_mhi {
-+	const struct pci_epc_features *epc_features;
- 	const struct pci_epf_mhi_ep_info *info;
- 	struct mhi_ep_cntrl mhi_cntrl;
- 	struct pci_epf *epf;
-@@ -102,9 +103,9 @@ struct pci_epf_mhi {
- 	int irq;
- };
- 
--static size_t get_align_offset(struct pci_epc *epc, u64 addr)
-+static size_t get_align_offset(struct pci_epf_mhi *epf_mhi, u64 addr)
- {
--	return addr % epc->mem->window.page_size;
-+	return addr % epf_mhi->epc_features->align;
- }
- 
- static int __pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
-@@ -138,8 +139,7 @@ static int pci_epf_mhi_alloc_map(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
- 				 size_t size)
- {
- 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
--	struct pci_epc *epc = epf_mhi->epf->epc;
--	size_t offset = get_align_offset(epc, pci_addr);
-+	size_t offset = get_align_offset(epf_mhi, pci_addr);
- 
- 	return __pci_epf_mhi_alloc_map(mhi_cntrl, pci_addr, paddr, vaddr,
- 				      offset, size);
-@@ -164,9 +164,7 @@ static void pci_epf_mhi_unmap_free(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr,
- 				   size_t size)
- {
- 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
--	struct pci_epf *epf = epf_mhi->epf;
--	struct pci_epc *epc = epf->epc;
--	size_t offset = get_align_offset(epc, pci_addr);
-+	size_t offset = get_align_offset(epf_mhi, pci_addr);
- 
- 	__pci_epf_mhi_unmap_free(mhi_cntrl, pci_addr, paddr, vaddr, offset,
- 				 size);
-@@ -190,8 +188,7 @@ static int pci_epf_mhi_read_from_host(struct mhi_ep_cntrl *mhi_cntrl, u64 from,
- 				      void *to, size_t size)
- {
- 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
--	struct pci_epc *epc = epf_mhi->epf->epc;
--	size_t offset = get_align_offset(epc, from);
-+	size_t offset = get_align_offset(epf_mhi, from);
- 	void __iomem *tre_buf;
- 	phys_addr_t tre_phys;
- 	int ret;
-@@ -219,8 +216,7 @@ static int pci_epf_mhi_write_to_host(struct mhi_ep_cntrl *mhi_cntrl,
- 				     void *from, u64 to, size_t size)
- {
- 	struct pci_epf_mhi *epf_mhi = to_epf_mhi(mhi_cntrl);
--	struct pci_epc *epc = epf_mhi->epf->epc;
--	size_t offset = get_align_offset(epc, to);
-+	size_t offset = get_align_offset(epf_mhi, to);
- 	void __iomem *tre_buf;
- 	phys_addr_t tre_phys;
- 	int ret;
-@@ -277,6 +273,10 @@ static int pci_epf_mhi_core_init(struct pci_epf *epf)
- 		return ret;
- 	}
- 
-+	epf_mhi->epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
-+	if (!epf_mhi->epc_features)
-+		return -ENODATA;
-+
- 	return 0;
- }
- 
--- 
-2.25.1
+> The ABI mandates that the %esp register must be a multiple of 16 when
+> executing a call instruction.
+> 
+> Commit 2ab446336b17 simplified the _start function, but it didn't take
+> care of the %esp alignment, causing SIGSEGV on SSE and AVX programs that
+> use aligned move instruction (e.g., movdqa, movaps, and vmovdqa).
+> 
+> Ensure the %esp is a multiple of 16 when executing the call instruction.
+> 
+> Cc: Zhangjin Wu <falcon@tinylab.org>
+> Fixes: 2ab446336b17aad362c6decee29b4efd83a01979 ("tools/nolibc: i386: shrink _start with _start_c")
+> Reported-by: Nicholas Rosenberg <inori@vnlx.org>
+> Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+> ---
+>  tools/include/nolibc/arch-i386.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/include/nolibc/arch-i386.h b/tools/include/nolibc/arch-i386.h
+> index 64415b9fac77f996..4edf238eeac67aa2 100644
+> --- a/tools/include/nolibc/arch-i386.h
+> +++ b/tools/include/nolibc/arch-i386.h
+> @@ -167,7 +167,8 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
+>  	__asm__ volatile (
+>  		"xor  %ebp, %ebp\n"       /* zero the stack frame                                */
+>  		"mov  %esp, %eax\n"       /* save stack pointer to %eax, as arg1 of _start_c     */
+> -		"and  $-16, %esp\n"       /* last pushed argument must be 16-byte aligned        */
+> +		"and  $-16, %esp\n"       /* align stack to 16 bytes                             */
+> +		"sub  $12, %esp\n"        /* last pushed argument must be 16-byte aligned        */
 
+Ammar, the new call of _start_c() only requires a single push, it pushes
+the argument and minus %esp by 4, so, the alignment of %esp requires to
+minus 12 to reserve 16-byte alignment, is this description right?
+
+If so, What about further?
+
+    "and  $-16, %esp\n"       /* align stack to 16 bytes                             */
+    "sub ($16 - $4), %esp"    /* the 'push %eax' breaks stack alignment, fix up it   */
+
+Thanks,
+Zhangjin Wu
+
+>  		"push %eax\n"             /* push arg1 on stack to support plain stack modes too */
+>  		"call _start_c\n"         /* transfer to c runtime                               */
+>  		"hlt\n"                   /* ensure it does not return                           */
+> -- 
+> Ammar Faizi
