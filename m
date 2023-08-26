@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3658F78973A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 16:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B4A78973F
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 16:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjHZOOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 10:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        id S230471AbjHZORO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 10:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjHZOO2 (ORCPT
+        with ESMTP id S230022AbjHZOQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 10:14:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9778B173F
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 07:14:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BC1E616CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 14:14:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E7AC433C7;
-        Sat, 26 Aug 2023 14:14:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693059265;
-        bh=9R8YO3MXdr5KgQbfCte9z6M2Z+Y4ytGOjtrgTyNoZpU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lLfxsuzk0BwrNWznvTH0XAIm1Kq1zVea306iXZmftpU99r6IwznvvlLEJS7l4xCkt
-         JlvBdCNHwiOkEF4mPKQCUhV+oJ8/iI9P3JT24TPkiGf01o2RgSE1b1bNek28SkFPb4
-         hd3UsAjxjsuiyRkA5hZBjFCtvZjppHkh09IGhaN/nh/XmAx4KSpxzyPTuYiOvNkq9M
-         tdu8yqt7sm5pwC3RFloX9GlHPd/2C7jDhtRZfvq6tHRW3uUfY53uvPWADvJl39yp3W
-         wXt6M3swdlI5deMminPKdLzO4FRgXC84btBJHuNdkE1WIX32L6Xri4l/tn6S836uEk
-         jjBugv54Fi2Qg==
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] auxdisplay for 6.6
-Date:   Sat, 26 Aug 2023 16:14:12 +0200
-Message-ID: <20230826141412.41764-1-ojeda@kernel.org>
+        Sat, 26 Aug 2023 10:16:55 -0400
+Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7C1173F
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 07:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
+        s=default; t=1693059411;
+        bh=jG4wfsNEpwe3we+Lpb64W15qznopGnPznQ18oTfIcV8=;
+        h=From:To:Cc:Subject:Date;
+        b=CYflKv9p31Oesd2yyBQjJw5VisVsqEiG2hUs8osfJopCG+4LUnkw7br314qqssdha
+         pHskgP2Z5/Lgw3hgLFs4qCyDr24lB3ts8Tn32IrxPAU7yCEmCeYi9UFDOIk0jvIWI0
+         eUjGQe/CYn2hAgQqeY4ZYPpcTm88W2TEEf1vC14FuP8Z6IzxzE2yAuHcO4pwlk2o78
+         RtlAqKnjM4deMDyAidU5qVll5UQAJMUshb9j09m+KuQpmy+jTA57Qbyf+Od9T88mTZ
+         l3NGswBa3ZbDx3zznULq/itDG+Sl9NQXDGY8RhX4Kqkx/z5Rn6IcUofXZk2ATL36Z3
+         GErk3quI8NVUQ==
+Received: from localhost.localdomain (unknown [182.253.126.208])
+        by gnuweeb.org (Postfix) with ESMTPSA id 2196B24B1BC;
+        Sat, 26 Aug 2023 21:16:47 +0700 (WIB)
+From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
+To:     Willy Tarreau <w@1wt.eu>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        Zhangjin Wu <falcon@tinylab.org>,
+        Nicholas Rosenberg <inori@vnlx.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
+        Michael William Jonathan <moe@gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 0/1] Fix a stack misalign bug on _start
+Date:   Sat, 26 Aug 2023 21:16:31 +0700
+Message-Id: <20230826141632.1488740-1-ammarfaizi2@gnuweeb.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Willy,
 
-A small update for auxdisplay. It has been in linux-next for a week.
+Just a single quick fix.
 
-Please pull for v6.6 -- thanks!
+The ABI mandates that the %esp register must be a multiple of 16 when
+executing a call instruction.
 
-Cheers,
-Miguel
+Commit 2ab446336b17 simplified the _start function, but it didn't take
+care of the %esp alignment, causing SIGSEGV on SSE and AVX programs that
+use aligned move instruction (e.g., movdqa, movaps, and vmovdqa).
 
-The following changes since commit 2ccdd1b13c591d306f0401d98dedc4bdcd02b421:
+  $eax   : 0x56559000  →  0x00003f90
+  $ebx   : 0x56559000  →  0x00003f90
+  $ecx   : 0x1
+  $edx   : 0xf7fcaaa0  →   endbr32 
+  $esp   : 0xffffcdbc  →  0x00000001
+  $ebp   : 0x0
+  $esi   : 0xffffce7c  →  0xffffd096
+  $edi   : 0x56556060  →  <_start+0> xor %ebp, %ebp
+  $eip   : 0x56556489  →  <sse_pq_add+25> movaps %xmm0, 0x30(%esp)
 
-  Linux 6.5-rc6 (2023-08-13 11:29:55 -0700)
+    <sse_pq_add+11>  pop    %eax
+    <sse_pq_add+12>  add    $0x2b85, %eax
+    <sse_pq_add+18>  movups -0x1fd0(%eax), %xmm0
+  → <sse_pq_add+25>  movaps %xmm0, 0x30(%esp)     <== trapping instruction
+    <sse_pq_add+30>  movups -0x1fe0(%eax), %xmm1
+    <sse_pq_add+37>  movaps %xmm1, 0x20(%esp)
+    <sse_pq_add+42>  movups -0x1ff0(%eax), %xmm2
+    <sse_pq_add+49>  movaps %xmm2, 0x10(%esp)
+    <sse_pq_add+54>  movups -0x2000(%eax), %xmm3
 
-are available in the Git repository at:
+  [#0] Id 1, Name: "test", stopped 0x56556489 in sse_pq_add (), reason: SIGSEGV
 
-  https://github.com/ojeda/linux.git tags/auxdisplay-6.6
+  (gdb)  bt
+  #0  0x56556489 in sse_pq_add ()
+  #1  0x5655608e in main ()
 
-for you to fetch changes up to 35b464e32c8bccef435e415db955787ead4ab44c:
+Ensure the %esp is a multiple of 16 when executing the call instruction.
 
-  auxdisplay: hd44780: move cursor home after clear display command (2023-08-19 21:53:49 +0200)
+Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+---
+Ammar Faizi (1):
+  tools/nolibc: i386: Fix a stack misalign bug on _start
 
-----------------------------------------------------------------
-auxdisplay update for v6.6
+ tools/include/nolibc/arch-i386.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- - hd44780: move cursor home after clear display command
 
-   The change allows to support displays like the NewHaven
-   NHD-0220DZW-AG5 which has a non-standard controller.
+base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+-- 
+Ammar Faizi
 
-----------------------------------------------------------------
-Hugo Villeneuve (1):
-      auxdisplay: hd44780: move cursor home after clear display command
-
- drivers/auxdisplay/hd44780_common.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
