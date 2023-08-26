@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683D2789592
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 11:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05849789597
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 11:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjHZJwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 05:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
+        id S230421AbjHZJx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 05:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbjHZJwR (ORCPT
+        with ESMTP id S232445AbjHZJxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 05:52:17 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B8B1BDB
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:52:11 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50043cf2e29so2519195e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:52:11 -0700 (PDT)
+        Sat, 26 Aug 2023 05:53:19 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490BD1BE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:53:17 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5007f3d3235so2574290e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 02:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693043530; x=1693648330;
+        d=linaro.org; s=google; t=1693043595; x=1693648395;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RcCJka8GaBPp1JWKaEMYYjB5JT7EHUSr4X2gpzZXC9g=;
-        b=pnl4MhHP53c380d37z7A+ixNSi3Xr+ZO/n0gY/FXrhnuC3Tgt+qDvopTltBePdDHUK
-         MZY6OBxHnj0arQ+GfS3Oi+bB0pO+g070Q3evp4v337aL81SHzFGrsmxr6RDSr/lng2zq
-         hhlEk62QQmvgrySwPE+Z3AigeHBoXh0nSbilc3jPoraW4DexahW8l3U/PtNHZWINrWQh
-         FxNzvqN+TFPnngqv+ipTyl2yDsMylinXUda4LVcsDXKAc2ZRtVJj1x6f9X75tb5uuKm0
-         YbT7Zl1kmjEfNwHEZK6KPXiof0xYl/+LLenWTi8lsf4FkG9FPKHTxmzwMwbhNRmUOzVf
-         FaNw==
+        bh=bxT0u5ag8dXMl0rBiE83QPDzaQ4lBfHYgvTwi16o0do=;
+        b=bGi+63scwQrXV3sKXQkfHUDbDO/oYtlJTHrURTsIjevz4rubZgBW2uEsCwQSmqiDEC
+         E3Src3l81hUvoicLKtbCc35bkI4o6BIW7be9LyIZUKj1Y2WTY/EpUXwOwsItOx+f40+2
+         MxTtkGdfvw8V5PnQOpf5K3On/eOXAJvHKkUU2hU/ynJVSOPfw8ZEKICYAp82L7eBto1B
+         ZJRnZakzTJXgXWaz/Jx4gG6VEpUTPvvl8LdaW4EpCkEt6GlS9BjUBw8tEzKNO4il0hXX
+         5QPeH1aMN02RTp7cyq+N/JBY6QQKx2BzVDTz0xZ+WQNf2JzWhZCRf8v7GwISlQqq1isl
+         BQPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693043530; x=1693648330;
+        d=1e100.net; s=20221208; t=1693043595; x=1693648395;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RcCJka8GaBPp1JWKaEMYYjB5JT7EHUSr4X2gpzZXC9g=;
-        b=HJuLF3PN1MCcCnyXKewlcvLreqB5WFASaDxrfA9AgpSpe05Bcn7QZdoh+H9Mria3W/
-         utbD2xFejozszA/ll6GVgWnV9ZI/zJEwgjUZ6dW0WN9pOjtT7Spf7W5tB1OGIiXSVSkv
-         46X3nSGAjL7Ofa2ghTXsUaBGakWoGCpT2c/8JSaU7CFgxUE3juegI002iyDPL8PI9EwT
-         jU1GYqZviwvbeWjy5vAxXhYUD43m7w2cjtMLh0sNwG0KryRIH3SBAEAITisLFAEI5Ung
-         iV8EnHmX5xkO4Uapag7ct4Hu1hs5dM1KVPnTyhW2an2xIFqxejvLr+Nt7TTnu8otX0bx
-         quQA==
-X-Gm-Message-State: AOJu0YyPuvX44RuXIVvWNtr0kMzje9Vn9URIZTu/6CqM7BVCuY88zdDc
-        kfduFKLdLIsb5pwsyy0+XNUDrQ==
-X-Google-Smtp-Source: AGHT+IH/6EoQPI/jxdprlMmW/GOjCqqBLDpSULcNdofMvV+kmS2E2NnKymyAllE0jIvAIGAZaKcl4A==
-X-Received: by 2002:a19:791d:0:b0:4fd:cbd6:d2ff with SMTP id u29-20020a19791d000000b004fdcbd6d2ffmr12826691lfc.33.1693043529828;
-        Sat, 26 Aug 2023 02:52:09 -0700 (PDT)
+        bh=bxT0u5ag8dXMl0rBiE83QPDzaQ4lBfHYgvTwi16o0do=;
+        b=LMGoWtJvhRcNNvGLXb6XURBhvnoU3FidcVRFqfBpofmeIGZ/MYBe08F4BxbDs/limS
+         A8Un2sFXH1on4L6i/G77r/3KeszQxfkydAKH59oITp8v83yRR+eDJELJIiDJOSGNZA3z
+         ucBEedymqI+ACPEu0Wth0TL88fRrzpJ8BJxiXz68JfBwo1TLUqYP6Dm2uhrIxJ8gLqwg
+         2wopMePy6/Nn6r1w/Y4eiIhOxLL1UaUGyqoWE0pWZqPqy/WKoFMLp5cSiJFeEarBQHyv
+         6qLgvfP/Dmx6vm1eTOl0I2GSfjDeXb7LKHOE95xwXh7KvP9sKy6YIFUkFq48pw8Gly8W
+         suOg==
+X-Gm-Message-State: AOJu0YxCZMGoeb4HmQZkBRdlxrIULhOqCPuyUY22nXKb+80COLbLkNI+
+        T1I1nTSjQUEl7dqa7TjPvA3eJA==
+X-Google-Smtp-Source: AGHT+IFVw25TED1aPUwqZVGvr4oXEBWUL0cmH8qxm/6LTB0SP8LMxC3ZNHs15rhHtloIZ4dsNI/MDQ==
+X-Received: by 2002:ac2:4c0f:0:b0:500:ac0b:8d51 with SMTP id t15-20020ac24c0f000000b00500ac0b8d51mr1945997lfq.37.1693043595562;
+        Sat, 26 Aug 2023 02:53:15 -0700 (PDT)
 Received: from [192.168.1.101] (abyl74.neoplus.adsl.tpnet.pl. [83.9.31.74])
-        by smtp.gmail.com with ESMTPSA id u8-20020ac25188000000b00500a44e158csm649584lfi.235.2023.08.26.02.52.08
+        by smtp.gmail.com with ESMTPSA id u8-20020ac25188000000b00500a44e158csm649584lfi.235.2023.08.26.02.53.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 02:52:09 -0700 (PDT)
-Message-ID: <832569a3-096e-435e-8a60-c6a501fd385a@linaro.org>
-Date:   Sat, 26 Aug 2023 11:52:08 +0200
+        Sat, 26 Aug 2023 02:53:15 -0700 (PDT)
+Message-ID: <c85f884a-cfa0-4769-a8fe-4f1b1638d188@linaro.org>
+Date:   Sat, 26 Aug 2023 11:53:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] ARM: dts: qcom: add common dt for MSM8x26 Lumias
- along with Nokia Lumia 630
+Subject: Re: [PATCH v2 5/6] ARM: dts: qcom: add device tree for Nokia Lumia
+ 735
 Content-Language: en-US
 To:     Rayyan Ansari <rayyan@ansari.sh>, linux-arm-msm@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht,
@@ -68,7 +68,7 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
 References: <20230813152623.64989-1-rayyan@ansari.sh>
- <20230813152623.64989-3-rayyan@ansari.sh>
+ <20230813152623.64989-6-rayyan@ansari.sh>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -105,7 +105,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230813152623.64989-3-rayyan@ansari.sh>
+In-Reply-To: <20230813152623.64989-6-rayyan@ansari.sh>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -119,20 +119,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 13.08.2023 17:23, Rayyan Ansari wrote:
-> Add a common device tree for Lumia phones based on the Qualcomm MSM8x26
-> family of chipsets.
-> 
-> Currently supports:
-> - Framebuffer
-> - Touchscreen
-> - Keys
-> - Regulators
-> - MMC
-> - USB
-> - UART
-> 
-> Also add an initial device tree for the Nokia Lumia 630, codenamed
-> "moneypenny".
+> Add an initial device tree for the Nokia Lumia 735, codenamed
+> "superman-lte".
 > 
 > Co-authored-by: Dominik Kobinski <dominikkobinski314@gmail.com>
 > Co-authored-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
@@ -142,123 +130,81 @@ On 13.08.2023 17:23, Rayyan Ansari wrote:
 > Signed-off-by: Jack Matthews <jm5112356@gmail.com>
 > Signed-off-by: Rayyan Ansari <rayyan@ansari.sh>
 > ---
->  arch/arm/boot/dts/qcom/Makefile               |   1 +
->  .../qcom/qcom-msm8226-microsoft-common.dtsi   | 329 ++++++++++++++++++
->  .../qcom-msm8226-microsoft-moneypenny.dts     |  23 ++
->  3 files changed, 353 insertions(+)
->  create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi
->  create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-moneypenny.dts
+>  arch/arm/boot/dts/qcom/Makefile               |  1 +
+>  .../qcom-msm8926-microsoft-superman-lte.dts   | 52 +++++++++++++++++++
+>  2 files changed, 53 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-superman-lte.dts
 > 
 > diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
-> index 3dfb1c8cefb8..b2569059ce8d 100644
+> index 487e0a5987ce..7982620ec9f9 100644
 > --- a/arch/arm/boot/dts/qcom/Makefile
 > +++ b/arch/arm/boot/dts/qcom/Makefile
-> @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
->  	qcom-ipq4019-ap.dk07.1-c2.dtb \
->  	qcom-ipq8064-ap148.dtb \
->  	qcom-ipq8064-rb3011.dtb \
-> +	qcom-msm8226-microsoft-moneypenny.dtb \
->  	qcom-msm8226-samsung-s3ve3g.dtb \
->  	qcom-msm8660-surf.dtb \
->  	qcom-msm8916-samsung-e5.dtb \
-> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi
+> @@ -32,6 +32,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
+>  	qcom-msm8916-samsung-e7.dtb \
+>  	qcom-msm8916-samsung-grandmax.dtb \
+>  	qcom-msm8916-samsung-serranove.dtb \
+> +	qcom-msm8926-microsoft-superman-lte.dtb \
+>  	qcom-msm8960-cdp.dtb \
+>  	qcom-msm8960-samsung-expressatt.dtb \
+>  	qcom-msm8974-lge-nexus5-hammerhead.dtb \
+> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-superman-lte.dts b/arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-superman-lte.dts
 > new file mode 100644
-> index 000000000000..ddfe7965f564
+> index 000000000000..e612d752f2b9
 > --- /dev/null
-> +++ b/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi
-> @@ -0,0 +1,329 @@
+> +++ b/arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-superman-lte.dts
+> @@ -0,0 +1,52 @@
 > +// SPDX-License-Identifier: BSD-3-Clause
 > +/*
-> + * Common Board Device Tree for Microsoft MSM8x26-based Lumias
-> + *
 > + * Copyright (c) 2023, Jack Matthews <jm5112356@gmail.com>
 > + * Copyright (c) 2023, Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
 > + * Copyright (c) 2023, Dominik Kobinski <dominikkobinski314@gmail.com>
 > + * Copyright (c) 2023, Rayyan Ansari <rayyan@ansari.sh>
 > + */
 > +
-> +#include "qcom-msm8226.dtsi"
-> +#include "qcom-pm8226.dtsi"
-> +#include <dt-bindings/input/input.h>
+> +/dts-v1/;
 > +
-> +/*
-> + * Delete all generic (msm8226.dtsi) reserved
-> + * memory mappings which are different on these devices.
-> + */
-> +/delete-node/ &smem_region;
+> +#include "qcom-msm8226-microsoft-common.dtsi"
 > +
 > +/ {
-> +	aliases {
-> +		mmc0 = &sdhc_1; /* eMMC */
-> +		mmc1 = &sdhc_2; /* microSD */
-> +		display0 = &framebuffer;
-> +	};
+> +	model = "Nokia Lumia 735";
+> +	compatible = "microsoft,superman-lte", "qcom,msm8926", "qcom,msm8226";
+> +	chassis-type = "handset";
+> +};
 > +
-> +	chosen {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges;
+> +&blsp1_i2c3 {
+> +	status = "okay";
 > +
-> +		stdout-path = "display0";
+> +	touchscreen@4b {
+> +		compatible = "syna,rmi4-i2c";
+> +		reg = <0x4b>;
 > +
-> +		framebuffer: framebuffer@3200000 {
-> +			compatible = "simple-framebuffer";
-> +			reg = <0x3200000 0x800000>;
-> +			format = "a8r8g8b8";
-> +			width = <720>;
-> +			height = <1280>;
-> +			stride = <(720 * 4)>;
+> +		interrupts-extended = <&tlmm 17 IRQ_TYPE_EDGE_FALLING>;
+> +		vdd-supply = <&pm8226_l15>;
+> +		vio-supply = <&pm8226_l6>;
 > +
-> +			clocks = <&mmcc MDSS_AHB_CLK>,
-> +				 <&mmcc MDSS_AXI_CLK>,
-> +				 <&mmcc MDSS_BYTE0_CLK>,
-> +				 <&mmcc MDSS_MDP_CLK>,
-> +				 <&mmcc MDSS_PCLK0_CLK>,
-> +				 <&mmcc MDSS_VSYNC_CLK>;
-> +			power-domains = <&mmcc MDSS_GDSC>;
-> +		};
-> +	};
-> +
-> +	gpio_keys: gpio-keys {
-> +		compatible = "gpio-keys";
-> +
-> +		pinctrl-0 = <&gpio_keys_default>;
+> +		pinctrl-0 = <&touchscreen_default>;
 > +		pinctrl-names = "default";
 > +
-> +		label = "GPIO Buttons";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
 > +
-> +		key-volume-up {
-> +			label = "Volume Up";
-> +			gpios = <&tlmm 106 GPIO_ACTIVE_LOW>;
-> +			linux,code = <KEY_VOLUMEUP>;
+> +		rmi4-f01@1 {
+> +			reg = <0x01>;
+> +			syna,nosleep-mode = <1>;
+> +		};
+> +
+> +		rmi4-f11@11 {
+> +			reg = <0x11>;
+> +			syna,sensor-type = <1>;
 > +		};
 > +	};
+> +};
 > +
-> +	/*
-> +	 * This device being a WP platform has a different
-> +	 * memory layout than other Android based devices.
-> +	 * This smem memory region is directly copied from
-> +	 * the original UEFI firmware.
-> +	 */
-> +	reserved-memory {
-> +		display_reserved: framebuffer@3200000 {
-> +			reg = <0x3200000 0x800000>;
-> +			no-map;
-> +		};
+> +&blsp1_i2c5 {
+> +	status = "disabled";
 > +
-> +		smem_region: smem@fa00000 {
-> +			reg = <0xfa00000 0x100000>;
-Padding the addr field to 8 hex digits would make this easier to 
-compare
-
-[...]
-
-> +	touchscreen_default: touchscreen-default-state {
-> +		irq-pins {
-> +			pins = "gpio17";
-> +			function = "gpio";
-> +
-> +			drive-strength = <8>;
-Drop newline above
+> +	/delete-node/ touchscreen@4b;
+use /delete-node/ &touchscreen (need to add a label in common dt),
+it's less error-prone
 
 Konrad
