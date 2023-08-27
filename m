@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B488F78A377
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 01:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BFD78A378
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 01:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbjH0Xc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 19:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
+        id S229642AbjH0Xc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 19:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjH0XcV (ORCPT
+        with ESMTP id S229607AbjH0XcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 19:32:21 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC45B5
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 16:32:19 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401bdff4cb4so16067195e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 16:32:19 -0700 (PDT)
+        Sun, 27 Aug 2023 19:32:23 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5A3D9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 16:32:20 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fef56f7222so25614515e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 16:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1693179138; x=1693783938;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1693179139; x=1693783939;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fFCzoEj222YOvKZmu/QASlOstFmAq8cTeKzq6GBcqv8=;
-        b=oPeuQP9SR40dh1ZhVoOKwREqhU5VDqMV9TCmS1XyyVy4V5Kc+3W1k9m5/q6La7UVCK
-         Why0ApkB6chSrJJ+2Lh8gnceaw6vPkvGh9icr45DvKaz+mQ/ejApMZU4AZgnGcOzfW1g
-         EaXxyT650SX088zB2MEwb2UfI2pzGKgKZju81jl0XGajyaQHsqURXL5abWK5yXtBo38Y
-         CpD1g6GopDdvnirmFPjmJoNqexrA+Eeel7uxylyRxnJJRcUgrDW9oBseuNyxAEOFBZE4
-         fYb6sMXwoW/UCp4DjtDLXcQ7fvtLFLoLzgYjn2n3mpVx2c+8DA/w9eZBIbpSOgcWVZQd
-         KmGg==
+        bh=aKKysv7DeWgPbTOyNyifgpcbSUovrPlrZuMk8nNVMOo=;
+        b=dFgXEbgdDCk8PUU90zCUl0B8csLXO17vnjUIxPsdtE8J47/h8mcK13ZrFFzAh+tiqZ
+         PF54exyacLV7X92B/oLbETb3PzAeqC4zzyiJZAzalwS7xuVoBko4njA7wbU7xhOPS1aQ
+         1AH+oDmWzaBZi2Wyu74x5RwgFEPPZco5BiDcGlz2kV/Ws3IblSlm/6mWJYG/Bo+RaRhO
+         KC4cpw58xcVuHa08WI3aRKsCtz2iIJG/usDO23U5RbwVZbE+2/Ya7IzdUY0hMF19WrR9
+         9lBB4+HDGKCkOJ71CpoITQpIGocTiBtfJzhqJwse/XW+FQ9JGWM39yFHYkAJ/zxAqHPY
+         CrIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693179138; x=1693783938;
+        d=1e100.net; s=20221208; t=1693179139; x=1693783939;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fFCzoEj222YOvKZmu/QASlOstFmAq8cTeKzq6GBcqv8=;
-        b=cFpMV2Mznx4TZVT/96QsUvG+Y4kzMYcHlMWSlXtpLFxVMvtYhENrpjuxiHs59XeeRd
-         6gQd11LcN8KIQ8XRmCdL9izg8TSMLSSetKKp0mxPg6zwbcqfWw4ALLLR+14JqrxN5J9z
-         Hi7vNHIsAharMf+pCUU5B0rzMUhduLeW1x6KjrqIAx1xIlQOMHcfRYmFOtzVWtR/2+a2
-         s8MaoBMe8bFfY+oiDBiK+VG8f/fvPXGJe4iVOMqxpfChL/nvWLFUwvk1ggBzvQqVn88e
-         DYl5LhcFcURAeKxbQQkyS7lZjWB1PzxNuXqHigR2B4bUgHFhbE6z+qSSmsiH2Kg/ttBs
-         lPZg==
-X-Gm-Message-State: AOJu0Yz2I8q1TMF6adlYU+t2w56VcWGFhYMmpozmegHozFHaoYlmKE84
-        fr7c5dsK7BPVrhMZvMxdkU/nfg==
-X-Google-Smtp-Source: AGHT+IGmJ1ukE6kgXP4BwFh90Slk9aIfq9ysM3sXxR7HHWBVq7U3l502sYX87//+jFgXaGb8io1fSQ==
-X-Received: by 2002:a05:600c:3653:b0:401:b0f2:88cf with SMTP id y19-20020a05600c365300b00401b0f288cfmr6665902wmq.40.1693179137900;
-        Sun, 27 Aug 2023 16:32:17 -0700 (PDT)
+        bh=aKKysv7DeWgPbTOyNyifgpcbSUovrPlrZuMk8nNVMOo=;
+        b=iJ+EvP9yopxbUxIpWrg2PI1AuNwQN00cnu53Q+tALP8nIRnRkD90/dw08KgyP2oKp6
+         gTNN09JrSbpuAP7o4Jt8R3Q9pqKSjsljiULTgrejL8Nh0JzNCu8cDd9iJKWqh2VkXKHa
+         S/jn5rju5YPIsXqh3A0jNS8zLlxiGVWFkKa+K8hjju+Od2sqemVMk6bmDGDWj7V3DB/+
+         m3KXhbkvHpsl2WvEGq6nfq+IcC56/dPe67x6WNNpmSIPsjvUU7CssiF0h3G4fWTbPNVP
+         k5PNlqByyWhf0SvHmYTCIlYG/cm6tVc+Cd+dWJqeeDVIZDaez16U5MjnIpi6eu1n04SB
+         T7oQ==
+X-Gm-Message-State: AOJu0YyE2qDmuxL0+gljbv08LK5SlONh8vUgI/UYfoe1AOOv4t5Ys25N
+        6e41A+J2cY0JzUpc9Q+/+nkA7A==
+X-Google-Smtp-Source: AGHT+IF9StEg0qazpZWzlZFuMzkvYcK1GqvIslrZtcKvNrbYJs1UMmIl4VRr/NlseTjAs9Khgatvkg==
+X-Received: by 2002:a05:600c:ac8:b0:401:bd2e:49f2 with SMTP id c8-20020a05600c0ac800b00401bd2e49f2mr4200758wmr.0.1693179138917;
+        Sun, 27 Aug 2023 16:32:18 -0700 (PDT)
 Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id 21-20020a05600c029500b003fe1a96845bsm12220395wmk.2.2023.08.27.16.32.17
+        by smtp.gmail.com with ESMTPSA id 21-20020a05600c029500b003fe1a96845bsm12220395wmk.2.2023.08.27.16.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 16:32:17 -0700 (PDT)
+        Sun, 27 Aug 2023 16:32:18 -0700 (PDT)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -60,9 +60,9 @@ To:     Ingo Molnar <mingo@kernel.org>,
 Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Lukasz Luba <lukasz.luba@arm.com>,
         Qais Yousef <qyousef@layalina.io>
-Subject: [RFC PATCH 4/7] sched: cpufreq: Remove magic 1.25 headroom from apply_dvfs_headroom()
-Date:   Mon, 28 Aug 2023 00:32:00 +0100
-Message-Id: <20230827233203.1315953-5-qyousef@layalina.io>
+Subject: [RFC PATCH 5/7] sched/schedutil: Add a new tunable to dictate response time
+Date:   Mon, 28 Aug 2023 00:32:01 +0100
+Message-Id: <20230827233203.1315953-6-qyousef@layalina.io>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230827233203.1315953-1-qyousef@layalina.io>
 References: <20230827233203.1315953-1-qyousef@layalina.io>
@@ -77,125 +77,191 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of the magical 1.25 headroom, use the new approximate_util_avg()
-to provide headroom based on the dvfs_update_delay; which is the period
-at which the cpufreq governor will send DVFS updates to the hardware.
+The new tunable, response_time_ms,  allow us to speed up or slow down
+the response time of the policy to meet the perf, power and thermal
+characteristic desired by the user/sysadmin. There's no single universal
+trade-off that we can apply for all systems even if they use the same
+SoC. The form factor of the system, the dominant use case, and in case
+of battery powered systems, the size of the battery and presence or
+absence of active cooling can play a big role on what would be best to
+use.
 
-Add a new percpu dvfs_update_delay that can be cheaply accessed whenever
-apply_dvfs_headroom() is called. We expect cpufreq governors that rely
-on util to drive its DVFS logic/algorithm to populate these percpu
-variables. schedutil is the only such governor at the moment.
+The new tunable provides sensible defaults, but yet gives the power to
+control the response time to the user/sysadmin, if they wish to.
+
+This tunable is applied when we map the util into frequency.
+
+TODO: to retain previous behavior, we must multiply default time with
+80%..
 
 Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 ---
- kernel/sched/core.c              |  3 ++-
- kernel/sched/cpufreq_schedutil.c | 10 +++++++++-
- kernel/sched/sched.h             | 25 ++++++++++++++-----------
- 3 files changed, 25 insertions(+), 13 deletions(-)
+ Documentation/admin-guide/pm/cpufreq.rst | 19 ++++++-
+ kernel/sched/cpufreq_schedutil.c         | 70 +++++++++++++++++++++++-
+ 2 files changed, 87 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 602e369753a3..f56eb44745a8 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -116,6 +116,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
- EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
+diff --git a/Documentation/admin-guide/pm/cpufreq.rst b/Documentation/admin-guide/pm/cpufreq.rst
+index 6adb7988e0eb..c43df0e716a7 100644
+--- a/Documentation/admin-guide/pm/cpufreq.rst
++++ b/Documentation/admin-guide/pm/cpufreq.rst
+@@ -417,7 +417,7 @@ is passed by the scheduler to the governor callback which causes the frequency
+ to go up to the allowed maximum immediately and then draw back to the value
+ returned by the above formula over time.
  
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
-+DEFINE_PER_CPU_SHARED_ALIGNED(u64, dvfs_update_delay);
+-This governor exposes only one tunable:
++This governor exposes two tunables:
  
- #ifdef CONFIG_SCHED_DEBUG
- /*
-@@ -7439,7 +7440,7 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
- 	 * frequency will be gracefully reduced with the utilization decay.
- 	 */
- 	if (type == FREQUENCY_UTIL) {
--		util = apply_dvfs_headroom(util_cfs) + cpu_util_rt(rq);
-+		util = apply_dvfs_headroom(util_cfs, cpu) + cpu_util_rt(rq);
- 		util = uclamp_rq_util_with(rq, util, p);
- 	} else {
- 		util = util_cfs + cpu_util_rt(rq);
+ ``rate_limit_us``
+ 	Minimum time (in microseconds) that has to pass between two consecutive
+@@ -427,6 +427,23 @@ This governor exposes only one tunable:
+ 	The purpose of this tunable is to reduce the scheduler context overhead
+ 	of the governor which might be excessive without it.
+ 
++``respone_time_ms``
++	Amount of time (in milliseconds) required to ramp the policy from
++	lowest to highest frequency. Can be decreased to speed up the
++	responsiveness of the system, or increased to slow the system down in
++	hope to save power. The best perf/watt will depend on the system
++	characteristics and the dominant workload you expect to run. For
++	userspace that has smart context on the type of workload running (like
++	in Android), one can tune this to suite the demand of that workload.
++
++	Note that when slowing the response down, you can end up effectively
++	chopping off the top frequencies for that policy as the util is capped
++	to 1024. On HMP systems where some CPUs have a capacity less than 1024,
++	unless affinity is used, the task would have probably migrated to
++	a bigger core before you reach the max performance of the policy. If
++	they're locked to that policy, then they should reach the max
++	performance after the specified time.
++
+ This governor generally is regarded as a replacement for the older `ondemand`_
+ and `conservative`_ governors (described below), as it is simpler and more
+ tightly integrated with the CPU scheduler, its overhead in terms of CPU context
 diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 0c7565ac31fb..04aa06846f31 100644
+index 04aa06846f31..42f4c4100902 100644
 --- a/kernel/sched/cpufreq_schedutil.c
 +++ b/kernel/sched/cpufreq_schedutil.c
-@@ -519,15 +519,21 @@ rate_limit_us_store(struct gov_attr_set *attr_set, const char *buf, size_t count
- 	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
- 	struct sugov_policy *sg_policy;
- 	unsigned int rate_limit_us;
-+	int cpu;
+@@ -11,6 +11,7 @@
+ struct sugov_tunables {
+ 	struct gov_attr_set	attr_set;
+ 	unsigned int		rate_limit_us;
++	unsigned int		response_time_ms;
+ };
  
- 	if (kstrtouint(buf, 10, &rate_limit_us))
- 		return -EINVAL;
+ struct sugov_policy {
+@@ -22,6 +23,7 @@ struct sugov_policy {
+ 	raw_spinlock_t		update_lock;
+ 	u64			last_freq_update_time;
+ 	s64			freq_update_delay_ns;
++	unsigned int		freq_response_time_ms;
+ 	unsigned int		next_freq;
+ 	unsigned int		cached_raw_freq;
  
- 	tunables->rate_limit_us = rate_limit_us;
+@@ -59,6 +61,45 @@ static DEFINE_PER_CPU(struct sugov_cpu, sugov_cpu);
  
--	list_for_each_entry(sg_policy, &attr_set->policy_list, tunables_hook)
-+	list_for_each_entry(sg_policy, &attr_set->policy_list, tunables_hook) {
+ /************************ Governor internals ***********************/
+ 
++static inline u64 sugov_calc_freq_response_ms(struct sugov_policy *sg_policy)
++{
++	int cpu = cpumask_first(sg_policy->policy->cpus);
++	unsigned long cap = capacity_orig_of(cpu);
 +
- 		sg_policy->freq_update_delay_ns = rate_limit_us * NSEC_PER_USEC;
- 
-+		for_each_cpu(cpu, sg_policy->policy->cpus)
-+			per_cpu(dvfs_update_delay, cpu) = rate_limit_us;
-+	}
++	return approximate_runtime(cap);
++}
 +
- 	return count;
- }
- 
-@@ -772,6 +778,8 @@ static int sugov_start(struct cpufreq_policy *policy)
- 		memset(sg_cpu, 0, sizeof(*sg_cpu));
- 		sg_cpu->cpu			= cpu;
- 		sg_cpu->sg_policy		= sg_policy;
++/*
++ * Shrink or expand how long it takes to reach the maximum performance of the
++ * policy.
++ *
++ * sg_policy->freq_response_time_ms is a constant value defined by PELT
++ * HALFLIFE and the capacity of the policy (assuming HMP systems).
++ *
++ * sg_policy->tunables->response_time_ms is a user defined response time. By
++ * setting it lower than sg_policy->freq_response_time_ms, the system will
++ * respond faster to changes in util, which will result in reaching maximum
++ * performance point quicker. By setting it higher, it'll slow down the amount
++ * of time required to reach the maximum OPP.
++ *
++ * This should be applied when selecting the frequency. By default no
++ * conversion is done and we should return util as-is.
++ */
++static inline unsigned long
++sugov_apply_response_time(struct sugov_policy *sg_policy, unsigned long util)
++{
++	unsigned long mult;
 +
-+		per_cpu(dvfs_update_delay, cpu) = sg_policy->tunables->rate_limit_us;
++	if (sg_policy->freq_response_time_ms == sg_policy->tunables->response_time_ms)
++		return util;
++
++	mult = sg_policy->freq_response_time_ms * SCHED_CAPACITY_SCALE;
++	mult /=	sg_policy->tunables->response_time_ms;
++	mult *= util;
++
++	return mult >> SCHED_CAPACITY_SHIFT;
++}
++
+ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
+ {
+ 	s64 delta_ns;
+@@ -143,6 +184,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+ 	unsigned int freq = arch_scale_freq_invariant() ?
+ 				policy->cpuinfo.max_freq : policy->cur;
+ 
++	util = sugov_apply_response_time(sg_policy, util);
+ 	freq = map_util_freq(util, freq, max);
+ 
+ 	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+@@ -539,8 +581,32 @@ rate_limit_us_store(struct gov_attr_set *attr_set, const char *buf, size_t count
+ 
+ static struct governor_attr rate_limit_us = __ATTR_RW(rate_limit_us);
+ 
++static ssize_t response_time_ms_show(struct gov_attr_set *attr_set, char *buf)
++{
++	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
++
++	return sprintf(buf, "%u\n", tunables->response_time_ms);
++}
++
++static ssize_t
++response_time_ms_store(struct gov_attr_set *attr_set, const char *buf, size_t count)
++{
++	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
++	unsigned int response_time_ms;
++
++	if (kstrtouint(buf, 10, &response_time_ms))
++		return -EINVAL;
++
++	tunables->response_time_ms = response_time_ms;
++
++	return count;
++}
++
++static struct governor_attr response_time_ms = __ATTR_RW(response_time_ms);
++
+ static struct attribute *sugov_attrs[] = {
+ 	&rate_limit_us.attr,
++	&response_time_ms.attr,
+ 	NULL
+ };
+ ATTRIBUTE_GROUPS(sugov);
+@@ -704,6 +770,7 @@ static int sugov_init(struct cpufreq_policy *policy)
  	}
  
- 	if (policy_is_shared(policy))
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2b889ad399de..e06e512af192 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -3001,6 +3001,15 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
- unsigned long approximate_util_avg(unsigned long util, u64 delta);
- u64 approximate_runtime(unsigned long util);
+ 	tunables->rate_limit_us = cpufreq_policy_transition_delay_us(policy);
++	tunables->response_time_ms = sugov_calc_freq_response_ms(sg_policy);
  
-+/*
-+ * Any governor that relies on util signal to drive DVFS, must populate these
-+ * percpu dvfs_update_delay variables.
-+ *
-+ * It should describe the rate/delay at which the governor sends DVFS freq
-+ * update to the hardware in us.
-+ */
-+DECLARE_PER_CPU_SHARED_ALIGNED(u64, dvfs_update_delay);
-+
- /*
-  * DVFS decision are made at discrete points. If CPU stays busy, the util will
-  * continue to grow, which means it could need to run at a higher frequency
-@@ -3010,20 +3019,14 @@ u64 approximate_runtime(unsigned long util);
-  * to run at adequate performance point.
-  *
-  * This function provides enough headroom to provide adequate performance
-- * assuming the CPU continues to be busy.
-- *
-- * At the moment it is a constant multiplication with 1.25.
-+ * assuming the CPU continues to be busy. This headroom is based on the
-+ * dvfs_update_delay of the cpufreq governor.
-  *
-- * TODO: The headroom should be a function of the delay. 25% is too high
-- * especially on powerful systems. For example, if the delay is 500us, it makes
-- * more sense to give a small headroom as the next decision point is not far
-- * away and will follow the util if it continues to rise. On the other hand if
-- * the delay is 10ms, then we need a bigger headroom so the CPU won't struggle
-- * at a lower frequency if it never goes to idle until then.
-+ * XXX: Should we provide headroom when the util is decaying?
-  */
--static inline unsigned long apply_dvfs_headroom(unsigned long util)
-+static inline unsigned long apply_dvfs_headroom(unsigned long util, int cpu)
- {
--	return util + (util >> 2);
-+	return approximate_util_avg(util, per_cpu(dvfs_update_delay, cpu));
- }
+ 	policy->governor_data = sg_policy;
+ 	sg_policy->tunables = tunables;
+@@ -763,7 +830,8 @@ static int sugov_start(struct cpufreq_policy *policy)
+ 	void (*uu)(struct update_util_data *data, u64 time, unsigned int flags);
+ 	unsigned int cpu;
  
- /*
+-	sg_policy->freq_update_delay_ns	= sg_policy->tunables->rate_limit_us * NSEC_PER_USEC;
++	sg_policy->freq_update_delay_ns		= sg_policy->tunables->rate_limit_us * NSEC_PER_USEC;
++	sg_policy->freq_response_time_ms	= sugov_calc_freq_response_ms(sg_policy);
+ 	sg_policy->last_freq_update_time	= 0;
+ 	sg_policy->next_freq			= 0;
+ 	sg_policy->work_in_progress		= false;
 -- 
 2.34.1
 
