@@ -2,140 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B0B789C1C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD024789C1E
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjH0IO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 04:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
+        id S230008AbjH0I0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 04:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjH0IOz (ORCPT
+        with ESMTP id S229810AbjH0I0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 04:14:55 -0400
-Received: from mx0a-0039f301.pphosted.com (mx0a-0039f301.pphosted.com [148.163.133.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1E3100
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 01:14:53 -0700 (PDT)
-Received: from pps.filterd (m0174676.ppops.net [127.0.0.1])
-        by mx0a-0039f301.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37QIf4h4000382;
-        Sun, 27 Aug 2023 08:14:31 GMT
-Received: from eur03-am7-obe.outbound.protection.outlook.com (mail-am7eur03lp2236.outbound.protection.outlook.com [104.47.51.236])
-        by mx0a-0039f301.pphosted.com (PPS) with ESMTPS id 3sq6k3t26e-1
+        Sun, 27 Aug 2023 04:26:39 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56815114
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 01:26:36 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37R7vtST007816;
+        Sun, 27 Aug 2023 08:26:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date : to :
+ from : subject : cc : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=/FesXZVNgy710RsQi60vBX2WHbCvzb4grzE77H1NoUU=;
+ b=T+C3XYK9nakYnzCs5CFm/n3CYHSeSnd9nF0pyIoK9XGffRb62cufe5McG1Yv75MaeF2L
+ RBZdtwEXuLAVonU07O/21+SaOb/QAvJAZGmr3PmwtcChV2jfgdcIdA1NBxNBqrsFR5L2
+ ihCWwVOgmr1w7TyfYSs7hOI7I+T2x03c5If6ql4gpQhcfXdsvHdXvf6W7BP2WzB4JnDo
+ 4JR5f7QITP2YuYrAs3MPpIvZmHtIORQqFpKjj5qvcv/KYRW8FWzSM1/AP+8sOrbD57bC
+ dQdwdK4uwT0/Rg/UMKVA3eWKS1weqXe9KSz3xAcWn2ooh3oC2kNOdgB/HReDMDJ+CMOj Eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr2j7g9md-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Aug 2023 08:14:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gzCzbME+Tx499srBVz/sZndrJB8fTLK2DkNLwOAFIj/6XCgxPDkE9tZ8wGHPLQzqXlPiBDVfww6XK+vhA0sUeJR5JlF+0aU4romdTawjtcNUkJYpHm3D6TvQSGfLgL5cbFiUDL5XmmN8ccrjfwfOrhCESlzCvGzCzUAhQwJBGichs0MJVCFmHX/Zd+crWR/+6hYRH0Vwf3WSSsOSQJ2Wh+0IKr2tBu6ACCARmwgZaFZ1xpoeNGcA7AfgTdWiT4Hkir6CQALyY0XCDx14E1nsLbkr7rkcuI3X7u97pVzvT6AYNeARIe7lF7DVUNsbBenB0Bj8AELwIBSI69kHU2LaTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=12SRTJncwVv9aT/1IBiZU3Ifjh03pi+EwRoN+gp/rxI=;
- b=T4G/oDaWNJS7zAHeLha+QtITIgWexac4HaKJG1WbdzJbzdzT82nPomYGPPR5UWC78RyZqp4zMZ2jKSF95AdBJoxqpiolJVuncUs4N7E+aX/XOty103VFdfd0LZYJtA4ULTcQ9siIbqAjJWNCLy2jyCtmu859Ch6G3Pb1le/e7vqEPS383vajuw7ApjTbbyczoKJldnSsHQc63c6/b4Sd2I/D6mHNUXYgsCmuEp0gOcvGxhziR0sCaUjmM/M8Wp8J7WNZemjaCChXrCgPV5OzvRsvjseveuig11/zc09kYJqE5H58F8O7U9Gd/oEtDVnA0xS7YEREQdf4c3716/8y2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
- dkim=pass header.d=epam.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=12SRTJncwVv9aT/1IBiZU3Ifjh03pi+EwRoN+gp/rxI=;
- b=fmSI3Qhyk6P2sf5BO38vejM/Zxoh0K2B+kcOV9/ytfHByNskBkzNyst8uEgVpdffwC8B+JdKDxbsltEYf55Wd1SYzRSVZTA0XUIt3NIPYa2ewXkj0gKYBVG07RDJ4bW41V8CamVXehRlhLoxwlAs1kVXj/T/V58ZQjqIX6dw3Ggfk3evXRG9/sq8jSd1HCGZHAHHzLBnz9zMzKWDmQSJZd0jUC1LNmnLdplwe3yQMq2nN4Pk6V8kOu4xyPnic7MPWXRv9jNIuteZL+rVh/lAOxo7ym+D/tLkExMIVpvpVHOfYZofBWtbEZsd/HBt3W8D0K+WPTlJMEViRxwyGXujtw==
-Received: from DB8PR03MB6108.eurprd03.prod.outlook.com (2603:10a6:10:ed::15)
- by AM9PR03MB6883.eurprd03.prod.outlook.com (2603:10a6:20b:282::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Sun, 27 Aug
- 2023 08:14:28 +0000
-Received: from DB8PR03MB6108.eurprd03.prod.outlook.com
- ([fe80::ac2a:7470:c441:365c]) by DB8PR03MB6108.eurprd03.prod.outlook.com
- ([fe80::ac2a:7470:c441:365c%6]) with mapi id 15.20.6699.034; Sun, 27 Aug 2023
- 08:14:27 +0000
-From:   Oleksandr Tyshchenko <Oleksandr_Tyshchenko@epam.com>
-To:     Juergen Gross <jgross@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>
-Subject: Re: [PATCH] xenbus: fix error exit in xenbus_init()
-Thread-Topic: [PATCH] xenbus: fix error exit in xenbus_init()
-Thread-Index: AQHZ1Niy5Jst2USBYE2HABrwl061oK/900WA
-Date:   Sun, 27 Aug 2023 08:14:27 +0000
-Message-ID: <72c8ea59-4ef1-4117-32d8-3b775d1f8661@epam.com>
-References: <20230822091138.4765-1-jgross@suse.com>
-In-Reply-To: <20230822091138.4765-1-jgross@suse.com>
-Accept-Language: en-US, ru-RU
+        Sun, 27 Aug 2023 08:26:23 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37R8MpS0010822;
+        Sun, 27 Aug 2023 08:26:23 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr2j7g9m7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 27 Aug 2023 08:26:23 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37R7oJVN009907;
+        Sun, 27 Aug 2023 08:26:22 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqw7jsydh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 27 Aug 2023 08:26:22 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37R8QLWk20382064
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 27 Aug 2023 08:26:22 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4EA85805A;
+        Sun, 27 Aug 2023 08:26:21 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B25C858051;
+        Sun, 27 Aug 2023 08:26:16 +0000 (GMT)
+Received: from [9.43.105.110] (unknown [9.43.105.110])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Sun, 27 Aug 2023 08:26:16 +0000 (GMT)
+Message-ID: <67f349e2-33f1-30a3-f92c-3c0a68d6d22f@linux.vnet.ibm.com>
+Date:   Sun, 27 Aug 2023 13:56:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB8PR03MB6108:EE_|AM9PR03MB6883:EE_
-x-ms-office365-filtering-correlation-id: c0d46753-1657-4a31-a650-08dba6d5a185
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eyzY4mYYHv/ZDx/F9MQ8B4NBsUzA9yd2+qqHwwDL8RRBSI5F8swl9zJEPQedXN+TaTX9HUnBeVzQUsaJbNvs8JBNZSYFQQkEe7HqeXuUgY/a5kP2yKBdoa/tok3y6NoIcRB8vNDb0uitE4HrOjqZEhYsfQgoNIHtCFA43A+OQIXDhvVN7PKfg9J2V8Pe3mbBnyVLRrqe5cyB7IPJfvYa4m+Xo9leYn592piUFMtJ7PzP/Dsiz/QO8aJfgmeqyqjXFzotQvPrNnpD3MFum3uPyk30fzMDdjYgIraQMEWAVjPSK1JBOzCTH6hs2wPXehSxJb3YRDL9COpgOVC9oEfMkdtfVqZeiuf+ObqAHoRLrppfEtokmBHNJCjzKgyk3eBZHeWXZtMq/symVmvBlxZ87AFR3tPBMqzocnaFfcbEWgIB/SBbszwv4iOq054U0qvvZ3SEUbQWG2AUJTm6XzvtfCwJFeTs+fRfAhLXZg/l3nGX8v44Z5Xv4GWDSGUlJ9LiVAQriAfk0mu5FZgBRkxBTRt6flBUtkzuJ7Ya3U/8LRCkXayYkWsiF93E4yEq7tI/G/3/g3aus1ydVw2CujkNXT5y34XQpAL89YmjGKbPxTUr84PftpI+/sq7bpv23KqwOke/JVDwqFbFlKJNSKN3Ww==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR03MB6108.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39860400002)(396003)(136003)(346002)(186009)(451199024)(1800799009)(71200400001)(31696002)(53546011)(6506007)(6486002)(2616005)(6512007)(86362001)(2906002)(76116006)(66946007)(5660300002)(41300700001)(8676002)(8936002)(54906003)(66476007)(36756003)(38070700005)(64756008)(66556008)(66446008)(4326008)(110136005)(316002)(91956017)(38100700002)(122000001)(478600001)(966005)(83380400001)(26005)(31686004)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?c0lJSzcyKzBuOXNTdTgzN1JnaCs2RjFYeEl5cmxCSmdPb0hUcVlWbS9yQy9o?=
- =?utf-8?B?RHJjWlU1RXZrVHRodXJvakdFUU4rR2FwQk9DWStMOEZxSC9reG5xZ1Z1NEFZ?=
- =?utf-8?B?UjJKOXRFUXZndXpHdk9La3BwbXZDVDd2WnlreS9IWU1ZZVNGOUZKQ2taY3Nt?=
- =?utf-8?B?TG1FZ25MRUhSQU90ejB5cC9KRnlFOFBXWjg2WDJueERCbjlJcyt1alVSMEpo?=
- =?utf-8?B?S1Zqc0Y2S3piMjlZb3ZqMFA4clRrOHp0QzNORm5SMS9ObVR2Wm5PM1E4OWcv?=
- =?utf-8?B?bjliYVMxT2htMEIrc29xNjFyMWVIUHdDVUZqL3NFZ2U5NGxzajRDbmhuZVF0?=
- =?utf-8?B?bTFkQklXQVlXblFFUHRtNklnb1ZFV24zUDlYZldWa3pSd3d6RW5iV0lWWG1v?=
- =?utf-8?B?K0wzMGtIRURNamxJTjU3dEM4Q1k3YSs4cFVDMkl0WUd2bmU5bDF4Z0tWVTZ0?=
- =?utf-8?B?SVRQV1QwZnRGa3NvZEhBN2xzMnNnUy96Z053aFFBaUdXZ1ZKR1hvZURuVzRw?=
- =?utf-8?B?YjJUb3NkNHphd3crNi9MQkJzM2o3YVlDdjVXaE10YW1xMndkMGV6cVFhK1hs?=
- =?utf-8?B?QnBWRTBTeXJSL1ZvbE00amhMS1F3Z00ybk9wb0p4NFVjUFVQZ3pNc2oxTGpR?=
- =?utf-8?B?OUtGU0o4WERiWnJZSGZLZ0ZQUTlCV0U2NE5DelUvOWlPVFF0a29NTk9XWTFa?=
- =?utf-8?B?M3lxNDFWOCtVcnhuUGtWeWl4SXdkYVVneFdYMGNOaGNaZVd3K1UvVVo5dW5w?=
- =?utf-8?B?dUFvY09HeUFKWk45V0NxUUZ6M2Vpbm1HOWMxMU5odkUxanp6dWZSN09mdDFB?=
- =?utf-8?B?TTgvcHljanE2Q1A1RzdqUUd2OUczUW03bmtzMWhiUnZmZTVJZlVwd2NSNmpD?=
- =?utf-8?B?Tm9XZlNPYStSbm9YUlNIeDkrV2tPNHdzSHlid2tjUkxpb3dxN0U1cStPMi9o?=
- =?utf-8?B?WG5JV21HbXNZeFl1S1VqL1JkcjhJZXVUSCtzT0FNamg1Tlc2djZmeWxWS0ZP?=
- =?utf-8?B?MGk4NlN5WkdTSUVBdyt1cHA5eWs2TlVpNUdSWjZKQjhuT0FBZFkxOERqY1Js?=
- =?utf-8?B?YjJkdDlVb3haSHZNaTVib0ZaOHlnQ0p2K3pwMmp6UUs5MXcrYkd5OTFLY3Zr?=
- =?utf-8?B?RTlqNmNhNVpBd1BYS3duZzJTbFFpMGdic2hjVkt6QXlhSEZkcG13VzhmL3dD?=
- =?utf-8?B?VkNnVGhqemF1ZFVZVkdXakpMckgvTmkvTmR6dUdWc0NJVDFiT3AxM0xQKzgz?=
- =?utf-8?B?REtnZ000ZldZMkZ5V0pqSmFXbFVCMGdzN0RhQlBxVzNwZXo5c3pIM3lLUUhC?=
- =?utf-8?B?NFFHaHBNMWJGVmtJUU9OUWxQbSs1aGxidUhFaHBJUzVDY3dMRDVGS2RGSUcw?=
- =?utf-8?B?a1hSZkdWTklHUE5JTDhSMlppU0ZmVUtJa1ZLZkdYeCthZmJ2TnhsS3dYd3Ix?=
- =?utf-8?B?TWhJZUpobC8zNFZlZmZCenpYSXlndjg3K2pjZjdoUnNabXp3THpHaEVCOW8w?=
- =?utf-8?B?SlNvWmVycm52MFZuaUp0elIwRnVONkxuY1I4YUZFOXVSYlhEUWR6WWgyVTJi?=
- =?utf-8?B?ZVphb0hBd05CSGVqNlZ6a0M0V2pETTNQRmRxU3MwQkpDQVJNVnFTSkc0Vno1?=
- =?utf-8?B?ZFhvUE9mTVU0U21QL2hsdkFNeGN2NC9samN3b0plaTFTTE1LZWVTSUFuc1Zv?=
- =?utf-8?B?VUJDeGNuUnhOSXRXbEYzQW9PaFRDUXVPY05PMmtmQ3ZwMkNsaC9wMlBGNWh0?=
- =?utf-8?B?UUgyZVlvTlk1WWtSQ2NqVVRZd3c2S1A4VjF6amt2K3FYYjZ6R3p3czdYSStO?=
- =?utf-8?B?WVFvc2RHaVVVM2QzOXhqcWZaNEtZaklvM09tWWo3TUVON2ViNHFZZFJHcG83?=
- =?utf-8?B?WUVjS0RtS3VrRmEvdmpUTnc0L2VBbmxTZ0ZINWNkZk91R1Y2eU4xYitFT0tn?=
- =?utf-8?B?NlRtcVJ1YkZHRzByanBDZHN2M0IxdEduS3oxRzl6U3dUZVR3RG5rcXVqM2kv?=
- =?utf-8?B?a3YwaVBYSFN1SEM2NmNaNlJScHh6YWw5aHZDRVJUQjhGVmRZOHJRRERQWS9Z?=
- =?utf-8?B?Z3NTM1JhckQrYmpEOE04TEFXSVdISmtZU3N2bFg1VUdVditQcFJsQnppL3BD?=
- =?utf-8?B?a2wzNUdIa2E4SnlaUjBxWTBzTmgxeWNpbFhGMHJBbjJLSmRqUm1taHlrQi9C?=
- =?utf-8?Q?Gx6TvW5zZz+wMEArjuxBnKw=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BCB881958AEC404A94469C7A03D7301A@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+To:     linux-kernel@vger.kernel.org
+From:   Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
+Subject: [linux-next][mainline/master] [IPR] [Function could be =
+ "__mutex_lock_slowpath(lock)"]OOPs kernel crash while performing IPR test
+Cc:     peterz@infradead.org, abdhalee@linux.vnet.ibm.com,
+        mingo@redhat.com, will@kernel.org, longman@redhat.com,
+        boqun.feng@gmail.com, sachinp@linux.vnet.com,
+        mputtash@linux.vnet.com
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PhJ9VuVnbUijDdCF7NlSz5ZYE-F9EVCZ
+X-Proofpoint-GUID: ZN9HN2C9UY77971yeHwXxQvO2i5bsv6U
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-OriginatorOrg: epam.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR03MB6108.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0d46753-1657-4a31-a650-08dba6d5a185
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2023 08:14:27.0740
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ys4J47srkteAw/Xs48++Vwhjwa6Jj4xYUxyO+C40U25F3sLe7L3CKMy8xlDAnlK4dwUHWp4sniYhJjTY36f+G6G0ovK6tXvvRtcbgmmb5eo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB6883
-X-Proofpoint-GUID: _gTzRrK4nrMydYJGv5tShd7G-gD02wdy
-X-Proofpoint-ORIG-GUID: _gTzRrK4nrMydYJGv5tShd7G-gD02wdy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-27_06,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
- clxscore=1011 spamscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308270076
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501 clxscore=1011
+ bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=834 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308270074
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -143,27 +94,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDIyLjA4LjIzIDEyOjExLCBKdWVyZ2VuIEdyb3NzIHdyb3RlOg0KDQoNCkhlbGxvIEp1
-ZXJnZW4NCg0KPiBJbiBjYXNlIGFuIGVycm9yIG9jY3VycyBpbiB4ZW5idXNfaW5pdCgpLCB4ZW5f
-c3RvcmVfZG9tYWluX3R5cGUgc2hvdWxkDQo+IGJlIHNldCB0byBYU19VTktOT1dOLg0KPiANCj4g
-Rml4IG9uZSBpbnN0YW5jZSB3aGVyZSB0aGlzIGFjdGlvbiBpcyBtaXNzaW5nLg0KPiANCj4gRml4
-ZXM6IDViMzM1Mzk0OWU4OSAoInhlbjogYWRkIHN1cHBvcnQgZm9yIGluaXRpYWxpemluZyB4ZW5z
-dG9yZSBsYXRlciBhcyBIVk0gZG9tYWluIikNCj4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJv
-Ym90IDxsa3BAaW50ZWwuY29tPg0KPiBSZXBvcnRlZC1ieTogRGFuIENhcnBlbnRlciA8ZXJyb3Iy
-N0BnbWFpbC5jb20+DQo+IExpbms6IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczov
-L2xvcmUua2VybmVsLm9yZy9yLzIwMjMwNDIwMDg0NS53N200a1haci1sa3BAaW50ZWwuY29tL19f
-OyEhR0ZfMjlkYmNRSVVCUEEheVZxbWJXdTZ1R3JnQ2wySFZPQXBJdFZ5c1pkelBRZEwwV3hlRks5
-dlZIZTVyUGJJNkI0dVF2ZG9ZY0VlQVF2WFRKVXJhZTlLTnlRa19KQlcxUVZMJCBbbG9yZVsuXWtl
-cm5lbFsuXW9yZ10NCj4gU2lnbmVkLW9mZi1ieTogSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2Uu
-Y29tPg0KDQoNClJldmlld2VkLWJ5OiBPbGVrc2FuZHIgVHlzaGNoZW5rbyA8b2xla3NhbmRyX3R5
-c2hjaGVua29AZXBhbS5jb20+DQoNCg0KPiAtLS0NCj4gICBkcml2ZXJzL3hlbi94ZW5idXMveGVu
-YnVzX3Byb2JlLmMgfCAyICstDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAx
-IGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy94ZW4veGVuYnVzL3hlbmJ1
-c19wcm9iZS5jIGIvZHJpdmVycy94ZW4veGVuYnVzL3hlbmJ1c19wcm9iZS5jDQo+IGluZGV4IDYz
-OWJmNjI4Mzg5Yi4uMzIwNWU1ZDcyNGM4IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3hlbi94ZW5i
-dXMveGVuYnVzX3Byb2JlLmMNCj4gKysrIGIvZHJpdmVycy94ZW4veGVuYnVzL3hlbmJ1c19wcm9i
-ZS5jDQo+IEBAIC0xMDI1LDcgKzEwMjUsNyBAQCBzdGF0aWMgaW50IF9faW5pdCB4ZW5idXNfaW5p
-dCh2b2lkKQ0KPiAgIAkJCWlmIChlcnIgPCAwKSB7DQo+ICAgCQkJCXByX2VycigieGVuc3RvcmVf
-bGF0ZV9pbml0IGNvdWxkbid0IGJpbmQgaXJxIGVycj0lZFxuIiwNCj4gICAJCQkJICAgICAgIGVy
-cik7DQo+IC0JCQkJcmV0dXJuIGVycjsNCj4gKwkJCQlnb3RvIG91dF9lcnJvcjsNCj4gICAJCQl9
-DQo+ICAgDQo+ICAgCQkJeHNfaW5pdF9pcnEgPSBlcnI7
+Greetings,
+
+[linux-next][mainline/master] [IPR] [Function could be = 
+"__mutex_lock_slowpath(lock)"]OOPs kernel crash while performing IPR test
+
+--- Traces ---
+
+--- Traces ---
+[65818.211823] Kernel attempted to read user page (380) - exploit 
+attempt? (uid: 0)
+[65818.211836] BUG: Kernel NULL pointer dereference on read at 0x00000380
+[65818.211840] Faulting instruction address: 0xc000000000f5f2e4
+[65818.211844] Oops: Kernel access of bad area, sig: 11 [#1]
+[65818.211846] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
+[65818.211850] Modules linked in: rpadlpar_io rpaphp nfnetlink xsk_diag 
+bonding tls rfkill sunrpc ses enclosure scsi_transport_sas vmx_crypto 
+pseries_rng binfmt_misc ip_tables ext4 mbcache jbd2 dm_service_time 
+sd_mod t10_pi crc64_rocksoft crc64 sg ibmvfc scsi_transport_fc ibmveth 
+ipr dm_multipath dm_mirror dm_region_hash dm_log dm_mod fuse
+[65818.211879] CPU: 16 PID: 613 Comm: kworker/16:3 Kdump: loaded Not 
+tainted 6.5.0-rc7-next-20230824-auto #1
+[65818.211883] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 
+0xf000006 of:IBM,FW1030.30 (NH1030_062) hv:phyp pSeries
+[65818.211887] Workqueue: events sg_remove_sfp_usercontext [sg]
+[65818.211894] NIP:  c000000000f5f2e4 LR: c000000000f5f2d8 CTR: 
+c00000000032df70
+[65818.211897] REGS: c0000000081c7a10 TRAP: 0300   Not tainted 
+(6.5.0-rc7-next-20230824-auto)
+[65818.211900] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  
+CR: 28000882  XER: 20040000
+[65818.211909] CFAR: c000000000f5b0a4 DAR: 0000000000000380 DSISR: 
+40000000 IRQMASK: 0
+[65818.211909] GPR00: c000000000f5f2d8 c0000000081c7cb0 c000000001451300 
+0000000000000000
+[65818.211909] GPR04: 00000000000000c0 00000000c0000000 c000000006c5a298 
+98a2c506000000c0
+[65818.211909] GPR08: c00000006408ab00 c0000000022a3515 0000000000000000 
+c008000000327d60
+[65818.211909] GPR12: c00000000032df70 c000000c1bc93f00 c000000000197cc8 
+c000000008797500
+[65818.211909] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+c000000003071ab0
+[65818.211909] GPR20: c000000003494c05 c000000c11340040 0000000000000000 
+c0000000b9bb4030
+[65818.211909] GPR24: c0000000b9bb4000 c00000005e8627c0 0000000000000000 
+c000000c19b91e00
+[65818.211909] GPR28: c0000000b9bb5328 c00000005e8627c0 0000000000000380 
+0000000000000380
+[65818.211946] NIP [c000000000f5f2e4] mutex_lock+0x34/0x90
+[65818.211953] LR [c000000000f5f2d8] mutex_lock+0x28/0x90
+[65818.211957] Call Trace:
+[65818.211959] [c0000000081c7cb0] [c000000000f5f2d8] 
+mutex_lock+0x28/0x90 (unreliable)
+[65818.211966] [c0000000081c7ce0] [c00000000032df9c] 
+blk_trace_remove+0x2c/0x80
+[65818.211971] [c0000000081c7d10] [c0080000003205fc] 
+sg_device_destroy+0x44/0x110 [sg]
+[65818.211976] [c0000000081c7d90] [c008000000322988] 
+sg_remove_sfp_usercontext+0x1d0/0x2c0 [sg]
+[65818.211981] [c0000000081c7e40] [c000000000188010] 
+process_scheduled_works+0x230/0x4f0
+[65818.211987] [c0000000081c7f10] [c00000000018b044] 
+worker_thread+0x1e4/0x500
+[65818.211992] [c0000000081c7f90] [c000000000197df8] kthread+0x138/0x140
+[65818.211996] [c0000000081c7fe0] [c00000000000df98] 
+start_kernel_thread+0x14/0x18
+[65818.212000] Code: 38422050 7c0802a6 60000000 7c0802a6 fbe1fff8 
+7c7f1b78 f8010010 f821ffd1 4bffbd95 60000000 39400000 e90d0908 
+<7d20f8a8> 7c295000 40c20010 7d00f9ad
+[65818.212013] ---[ end trace 0000000000000000 ]---
+
+
+Tried running gdb on the vmlinux code using faulting address. Looks like 
+the bug is initiated from the function "__mutex_lock_slowpath(lock);"
+
+[root@localhost ]# gdb vmlinux -ex "disassemble /m 0xc000000000f5f2e4"
+GNU gdb (GDB) Red Hat Enterprise Linux 8.2-15.el8
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later 
+<http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "ppc64le-redhat-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+     <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from vmlinux...done.
+Dump of assembler code for function mutex_lock:
+282    {
+    0xc000000000f5f2b0 <+0>:    addis   r2,r12,79
+    0xc000000000f5f2b4 <+4>:    addi    r2,r2,8272
+    0xc000000000f5f2b8 <+8>:    mflr    r0
+    0xc000000000f5f2bc <+12>:    bl      0xc0000000000807d4 <mcount>
+
+283        might_sleep();
+    0xc000000000f5f2c0 <+16>:    mflr    r0
+    0xc000000000f5f2c4 <+20>:    std     r31,-8(r1)
+    0xc000000000f5f2c8 <+24>:    mr      r31,r3
+    0xc000000000f5f2cc <+28>:    std     r0,16(r1)
+    0xc000000000f5f2d0 <+32>:    stdu    r1,-48(r1)
+    0xc000000000f5f2d4 <+36>:    bl      0xc000000000f5b068 
+<__cond_resched+8>
+    0xc000000000f5f2d8 <+40>:    nop
+
+284
+285        if (!__mutex_trylock_fast(lock))
+286            __mutex_lock_slowpath(lock);
+    0xc000000000f5f304 <+84>:    addi    r1,r1,48
+    0xc000000000f5f308 <+88>:    mr      r3,r31
+    0xc000000000f5f30c <+92>:    ld      r0,16(r1)
+--Type <RET> for more, q to quit, c to continue without paging--c
+    0xc000000000f5f310 <+96>:    ld      r31,-8(r1)
+    0xc000000000f5f314 <+100>:    mtlr    r0
+    0xc000000000f5f318 <+104>:    b       0xc000000000f5f298 
+<__mutex_lock_slowpath+8>
+    0xc000000000f5f31c <+108>:    nop
+    0xc000000000f5f320 <+112>:    addi    r1,r1,48
+    0xc000000000f5f324 <+116>:    ld      r0,16(r1)
+    0xc000000000f5f328 <+120>:    ld      r31,-8(r1)
+    0xc000000000f5f32c <+124>:    mtlr    r0
+    0xc000000000f5f330 <+128>:    blr
+    0xc000000000f5f334:    nop
+    0xc000000000f5f338:    nop
+    0xc000000000f5f33c:    nop
+
+End of assembler dump.
+
+[root@localhost ]# grep -irn "mutex_lock_slowpath(lock)"
+kernel/locking/mutex.c:286:
+
+-- 
+Regards,
+Tasmiya Nalatwad
+IBM Linux Technology Center
+
