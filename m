@@ -2,135 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA1E789B1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 05:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68594789B1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 05:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjH0DV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 23:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S229901AbjH0D1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 23:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjH0DVF (ORCPT
+        with ESMTP id S229883AbjH0D1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 23:21:05 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CBB120;
-        Sat, 26 Aug 2023 20:20:59 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a88e1a5286so1651811b6e.3;
-        Sat, 26 Aug 2023 20:20:59 -0700 (PDT)
+        Sat, 26 Aug 2023 23:27:25 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC3F1BB
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 20:27:22 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso31742431fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 20:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693106458; x=1693711258;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1693106840; x=1693711640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6FEyWeqX8Is1IEk36VE0KtAj4uBLFs02fZuBwFGkFHk=;
-        b=d9DMQwkK1yACkkeb4HY83v9R7FyFYVaqO8J1AReDI3dbQ41zO1M1OKlETYX1yQe/Ot
-         XsAU5XdUg00X8VbDReIlqbAcRX0gVUrwxVa7FAh0wR8Y+IC+ylpaW7UOUSmEoFwpDnRp
-         mUIPTNfNV2OgOyFsnUXHEqzaVuFjbpLp15E8s5CiKH7+678c4UogUN9695tN2kVWyi2H
-         KmainU/A+SgDRAh9gOomX91iiTW5HbbqQa0+TaC4vnqJmyfWEG4MGg/iSe4F3pX2nSEW
-         G6PRYMyV98NDPf5tNMKPRdRihOhi8oIUMlWi9MtaJOR6iJtfjBVQ5UU1Emq7gQ5UbuuO
-         7P2Q==
+        bh=VFuClnrxlnzijDXB/ZYm28FGDZrqZvXTpjgVHkF+lVY=;
+        b=rYKLIPZcgUc658lttS46V4n3y17njI/5lQrGz7qprb+W1yQUiqD5n+PPyPpr9Fev0Q
+         Ri7RkG4PlZE6BzwRZmyQwpEk59JGoHipVEL0vJ8pULjcmzHEtro5B1iVd3kHw7xctnmd
+         RUYQpn0S8yemjEY5kVSh2dkbopS/iibwD89V8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693106458; x=1693711258;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6FEyWeqX8Is1IEk36VE0KtAj4uBLFs02fZuBwFGkFHk=;
-        b=O2BYFxnKNtapbACbx6hxKg0q7aURF7C3DzCNwMqTguM8nRcf6ZFPotfzK+dv9eH6R6
-         zZhpeptxwxlKuhDcyjy9P8nr1QDYnnSbJUSOQesaGcFzlym4nqx0DbVFa8+XTtOl0Bcz
-         sm6dXQYqimWaF+iNvltNhFwlo01HKaYb/2HY+gmOBSalT++OLfKKLC2hSWYRe889/qTJ
-         BUD5CdqXkB05ruAGmAZ0NETPJBQ+IZGRyL0ikte1wO/hoK+OQapDTQR2Ww7JGOI1p949
-         ii2123wuBFLng+cgb0HcM4c96BA4CVClsD3Vb/uP5Rb2yPG1ayDdArF+vuv4NH/UsaE/
-         uxig==
-X-Gm-Message-State: AOJu0YxYUze0QweVtSsmlYTEm8skRiMnXampRUpCFjOauGOzHhQkIq1T
-        mk1KK1q5JUWimu9+FoV8CPBMx0SpjA0=
-X-Google-Smtp-Source: AGHT+IGZeMydH0CnYFnaoeGYczx3IPWLSTIX41Sx09NBOxgh2z+QEwkfMrNJzkgYUUYmbxhQ9Apw1g==
-X-Received: by 2002:aca:1719:0:b0:3a4:4b42:612b with SMTP id j25-20020aca1719000000b003a44b42612bmr7178019oii.42.1693106458533;
-        Sat, 26 Aug 2023 20:20:58 -0700 (PDT)
-Received: from [192.168.0.105] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id y17-20020aa78051000000b0064d74808738sm3986307pfm.214.2023.08.26.20.20.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 20:20:58 -0700 (PDT)
-Message-ID: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
-Date:   Sun, 27 Aug 2023 10:20:51 +0700
+        d=1e100.net; s=20221208; t=1693106840; x=1693711640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VFuClnrxlnzijDXB/ZYm28FGDZrqZvXTpjgVHkF+lVY=;
+        b=Hk2ulL8mytm0/07gkhpZstXpdOdqTazPL4/NTpzN2V82gZufcwk1sgAWLSmDQIcqLq
+         j91jtthy4tTSktjST0pc/T0Oon0bQlMeLPqMvWcwbgMstEhMylYC+ghEHrbedL5cPz4q
+         p8FZ7PijMm50esLLF9Y9ZCIuoiCZSlPPhX9lzPlLDYZFVKBrpHAJ3fy7npxSI7NhNkfU
+         eySeq2uYWK8iy+zm7uN/HAy4514JorN5NZ2ObVSXkyQEOr+lm8cvfSAi6TLV8dWZjjGr
+         V/8R9HAgDiNmpc6RtyWBmqsW+KMsb9L2c5XYVBJlTt/j8rZwxr04qxSASVaFx6A791mC
+         uvTg==
+X-Gm-Message-State: AOJu0YzcR/YZXa5RwwZei5ZtAJPmeBbGXBYreeKjejpC1+rq337hXSxV
+        To+05zobA6I2ClQHJBzrHs+C+aVFseb9ITYRTOyl3Q==
+X-Google-Smtp-Source: AGHT+IGNSytWMbiYTZDM2JN3ucYZuC5kuk2wpKr7D2qJaMGC19/0Opdza7R/QYv6z9hecjJ8L2O7zZRDuVeGBpXU39A=
+X-Received: by 2002:a2e:9646:0:b0:2bc:d7cb:8283 with SMTP id
+ z6-20020a2e9646000000b002bcd7cb8283mr10072806ljh.40.1693106840121; Sat, 26
+ Aug 2023 20:27:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Content-Language: en-US
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        dianlujitao@gmail.com
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: kernel bug when performing heavy IO operations
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
+ <87ttspct76.ffs@tglx> <03fe7084-0509-45fa-87ee-8f8705a221a6@paulmck-laptop>
+ <CAAhV-H5Z3s=2_OyA_AJ1-NqXBtNrcs-EmsqYcrjc+qXmJ=SitQ@mail.gmail.com>
+ <16827b4e-9823-456d-a6be-157fbfae64c3@paulmck-laptop> <CAAhV-H7uXA=r-w1nN7sBpRTba3LjjZs+wasJfGo7VZ6D9eMBAw@mail.gmail.com>
+ <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop> <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
+ <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop> <CAAhV-H5pfDG_tsRDL4dUYykaQ1ZwQYRDrQccpULBM5+kF4i2fA@mail.gmail.com>
+ <20230825232807.GA97898@google.com>
+In-Reply-To: <20230825232807.GA97898@google.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 26 Aug 2023 23:27:08 -0400
+Message-ID: <CAEXW_YSock304V471X_A7WrxCWtHJGx3APmSy0k7Lc0o69D9Hg@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     paulmck@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Aug 25, 2023 at 7:28=E2=80=AFPM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+>
+> On Fri, Aug 25, 2023 at 07:15:44PM +0800, Huacai Chen wrote:
+> > Hi, Paul,
+> >
+> > On Fri, Aug 25, 2023 at 2:28=E2=80=AFAM Paul E. McKenney <paulmck@kerne=
+l.org> wrote:
+[..]
+> > > > > > > > > > > On Thu, Aug 17, 2023 at 3:27=E2=80=AFAM Joel Fernande=
+s <joel@joelfernandes.org> wrote:
+> > > > > > > > > > >> > If  do_update_jiffies_64() cannot be used in NMI c=
+ontext,
+> > > > > > > > > > >>
+> > > > > > > > > > >> Can you not make the jiffies update conditional on w=
+hether it is
+> > > > > > > > > > >> called within NMI context?
+> > > > > > > > > >
+> > > > > > > > > > Which solves what? If KGDB has a breakpoint in the jiff=
+ies lock held
+> > > > > > > > > > region then you still dead lock.
+> > > > > > > > > >
+> > > > > > > > > > >> I dislike that..
+> > > > > > > > > > > Is this acceptable?
+> > > > > > > > > > >
+> > > > > > > > > > > void rcu_cpu_stall_reset(void)
+> > > > > > > > > > > {
+> > > > > > > > > > >         unsigned long delta;
+> > > > > > > > > > >
+> > > > > > > > > > >         delta =3D nsecs_to_jiffies(ktime_get_ns() - k=
+time_get_coarse_ns());
+> > > > > > > > > > >
+> > > > > > > > > > >         WRITE_ONCE(rcu_state.jiffies_stall,
+> > > > > > > > > > >                    jiffies + delta + rcu_jiffies_till=
+_stall_check());
+> > > > > > > > > > > }
+> > > > > > > > > > >
+> > > > > > > > > > > This can update jiffies_stall without updating jiffie=
+s (but has the
+> > > > > > > > > > > same effect).
+> > > > > > > > > >
+> > > > > > > > > > Now you traded the potential dead lock on jiffies lock =
+for a potential
+> > > > > > > > > > live lock vs. tk_core.seq. Not really an improvement, r=
+ight?
+> > > > > > > > > >
+> > > > > > > > > > The only way you can do the above is something like the=
+ incomplete and
+> > > > > > > > > > uncompiled below. NMI safe and therefore livelock proof=
+ time interfaces
+> > > > > > > > > > exist for a reason.
+> > > > > > > > >
+> > > > > > > > > Just for completeness, another approach, with its own adv=
+antages
+> > > > > > > > > and disadvantage, is to add something like ULONG_MAX/4 to
+> > > > > > > > > rcu_state.jiffies_stall, but also set a counter indicatin=
+g that this
+> > > > > > > > > has been done.  Then RCU's force-quiescent processing cou=
+ld decrement
+> > > > > > > > > that counter (if non-zero) and reset rcu_state.jiffies_st=
+all when it
+> > > > > > > > > does reach zero.
+> > > > > > > > >
+> > > > > > > > > Setting the counter to three should cover most cases, but=
+ "live by the
+> > > > > > > > > heuristic, die by the heuristic".  ;-)
+> > > > > > > > >
+> > > > > > > > > It would be good to have some indication when gdb exited,=
+ but things
+> > > > > > > > > like the gdb "next" command can make that "interesting" w=
+hen applied to
+> > > > > > > > > a long-running function.
+> > > > > > > >
+> > > > > > > > The original code is adding ULONG_MAX/2, so adding ULONG_MA=
+X/4 may
+> > > > > > > > make no much difference? The simplest way is adding 300*HZ,=
+ but Joel
+> > > > > > > > dislikes that.
+> > > > > > >
+> > > > > > > I am not seeing the ULONG_MAX/2, so could you please point me=
+ to that
+> > > > > > > original code?
+> > > > > >
+> > > > > > Maybe I misunderstand something, I say the original code means =
+code
+> > > > > > before commit a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP=
+ stall
+> > > > > > detection in rcu_cpu_stall_reset()").
+> > > > >
+> > > > > Yes, my suggestion would essentially revert that patch.  It would
+> > > > > compensate by resetting rcu_state.jiffies_stall after a few calls
+> > > > > to rcu_gp_fqs().
+> > > > >
+> > > > > Alternatively, we could simply provide a way for gdb users to man=
+ually
+> > > > > disable RCU CPU stall warnings at the beginning of their debug se=
+ssions
+> > > > > and to manually re-enable them when they are done.
+> > > >
+> > > > This problem is not KGDB-specific (though it is firstly found in th=
+e
+> > > > KGDB case), so I want to fix it in the rcu code rather than in the
+> > > > kgdb code.
+> > >
+> > > Sure, for example, there is also PowerPC XMON.
+> > >
+> > > But this problem also is not RCU-specific.  There are also hardlockup=
+s,
+> > > softlockups, workqueue lockups, networking timeouts, and who knows wh=
+at
+> > > all else.
+> > >
+> > > Plus, and again to Thomas's point, gdb breakpoints can happen anywher=
+e.
+> > > For example, immediately after RCU computes the RCU CPU stall time fo=
+r
+> > > a new grace period, and right before it stores it.  The gdb callout
+> > > updates rcu_state.jiffies_stall, but that update is overwritten with =
+a
+> > > stale value as soon as the system starts back up.
+> > >
+> > > Low probabillity, to be sure, but there are quite a few places in
+> > > the kernel right after a read from some timebase or another, and many
+> > > (perhaps all) of these can see similar stale-time-use problems.
+> > >
+> > > The only way I know of to avoid these sorts of false positives is for
+> > > the user to manually suppress all timeouts (perhaps using a kernel-bo=
+ot
+> > > parameter for your early-boot case), do the gdb work, and then unsupp=
+ress
+> > > all stalls.  Even that won't work for networking, because the other
+> > > system's clock will be running throughout.
+> > >
+> > > In other words, from what I know now, there is no perfect solution.
+> > > Therefore, there are sharp limits to the complexity of any solution t=
+hat
+> > > I will be willing to accept.
+> > I think the simplest solution is (I hope Joel will not angry):
+>
+> Not angry at all, just want to help. ;-). The problem is the 300*HZ solut=
+ion
+> will also effect the VM workloads which also do a similar reset.  Allow m=
+e few
+> days to see if I can take a shot at fixing it slightly differently. I am
+> trying Paul's idea of setting jiffies at a later time. I think it is doab=
+le.
+> I think the advantage of doing this is it will make stall detection more
+> robust in this face of these gaps in jiffie update. And that solution doe=
+s
+> not even need us to rely on ktime (and all the issues that come with that=
+).
+>
 
-I notice a bug report on Bugzilla [1]. Quoting from it:
+I wrote a patch similar to Paul's idea and sent it out for review, the
+advantage being it purely is based on jiffies. Could you try it out
+and let me know?
 
-> When the IO load is heavy (compiling AOSP in my case), there's a chance to crash the kernel, the only way to recover is to perform a hard reset. Logs look like follows:
-> 
-> 8月 25 13:52:23 arch-pc kernel: BUG: Bad page map in process tmux: client  pte:8000000462500025 pmd:b99c98067
-> 8月 25 13:52:23 arch-pc kernel: page:00000000460fa108 refcount:4 mapcount:-256 mapping:00000000612a1864 index:0x16 pfn:0x462500
-> 8月 25 13:52:23 arch-pc kernel: memcg:ffff8a1056ed0000
-> 8月 25 13:52:23 arch-pc kernel: aops:btrfs_aops [btrfs] ino:9c4635 dentry name:"locale-archive"
-> 8月 25 13:52:23 arch-pc kernel: flags: 0x2ffff5800002056(referenced|uptodate|lru|workingset|private|node=0|zone=2|lastcpupid=0xffff)
-> 8月 25 13:52:23 arch-pc kernel: page_type: 0xfffffeff(offline)
-> 8月 25 13:52:23 arch-pc kernel: raw: 02ffff5800002056 ffffe6e210c05248 ffffe6e20e714dc8 ffff8a10472a8c70
-> 8月 25 13:52:23 arch-pc kernel: raw: 0000000000000016 0000000000000001 00000003fffffeff ffff8a1056ed0000
-> 8月 25 13:52:23 arch-pc kernel: page dumped because: bad pte
-> 8月 25 13:52:23 arch-pc kernel: addr:00007f5fc9816000 vm_flags:08000071 anon_vma:0000000000000000 mapping:ffff8a10472a8c70 index:16
-> 8月 25 13:52:23 arch-pc kernel: file:locale-archive fault:filemap_fault mmap:btrfs_file_mmap [btrfs] read_folio:btrfs_read_folio [btrfs]
-> 8月 25 13:52:23 arch-pc kernel: CPU: 40 PID: 2033787 Comm: tmux: client Tainted: G           OE      6.4.11-zen2-1-zen #1 a571467d6effd6120b1e64d2f88f90c58106da17
-> 8月 25 13:52:23 arch-pc kernel: Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G Server, BIOS 5.11 06/30/2022
-> 8月 25 13:52:23 arch-pc kernel: Call Trace:
-> 8月 25 13:52:23 arch-pc kernel:  <TASK>
-> 8月 25 13:52:23 arch-pc kernel:  dump_stack_lvl+0x47/0x60
-> 8月 25 13:52:23 arch-pc kernel:  print_bad_pte+0x194/0x250
-> 8月 25 13:52:23 arch-pc kernel:  ? page_remove_rmap+0x8d/0x260
-> 8月 25 13:52:23 arch-pc kernel:  unmap_page_range+0xbb1/0x20f0
-> 8月 25 13:52:23 arch-pc kernel:  unmap_vmas+0x142/0x220
-> 8月 25 13:52:23 arch-pc kernel:  exit_mmap+0xe4/0x350
-> 8月 25 13:52:23 arch-pc kernel:  mmput+0x5f/0x140
-> 8月 25 13:52:23 arch-pc kernel:  do_exit+0x31f/0xbc0
-> 8月 25 13:52:23 arch-pc kernel:  do_group_exit+0x31/0x80
-> 8月 25 13:52:23 arch-pc kernel:  __x64_sys_exit_group+0x18/0x20
-> 8月 25 13:52:23 arch-pc kernel:  do_syscall_64+0x60/0x90
-> 8月 25 13:52:23 arch-pc kernel:  entry_SYSCALL_64_after_hwframe+0x77/0xe1
-> 8月 25 13:52:23 arch-pc kernel: RIP: 0033:0x7f5fca0da14d
-> 8月 25 13:52:23 arch-pc kernel: Code: Unable to access opcode bytes at 0x7f5fca0da123.
-> 8月 25 13:52:23 arch-pc kernel: RSP: 002b:00007fff54a44358 EFLAGS: 00000206 ORIG_RAX: 00000000000000e7
-> 8月 25 13:52:23 arch-pc kernel: RAX: ffffffffffffffda RBX: 00007f5fca23ffa8 RCX: 00007f5fca0da14d
-> 8月 25 13:52:23 arch-pc kernel: RDX: 00000000000000e7 RSI: fffffffffffffeb8 RDI: 0000000000000000
-> 8月 25 13:52:23 arch-pc kernel: RBP: 0000000000000002 R08: 00007fff54a442f8 R09: 00007fff54a4421f
-> 8月 25 13:52:23 arch-pc kernel: R10: 00007fff54a44130 R11: 0000000000000206 R12: 0000000000000000
-> 8月 25 13:52:23 arch-pc kernel: R13: 0000000000000000 R14: 00007f5fca23e680 R15: 00007f5fca23ffc0
-> 8月 25 13:52:23 arch-pc kernel:  </TASK>
-> 8月 25 13:52:23 arch-pc kernel: Disabling lock debugging due to kernel taint
-> 
-> Full log is available at https://fars.ee/HJw3
-> Notice that the issue is introduced by linux kernel released in recent months.
+thanks,
 
-See Bugzilla for the full thread.
-
-IMO, this looks like it is introduced by page cache (folio) feature.
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217823
-
--- 
-An old man doll... just what I always wanted! - Clara
+ - Joel
