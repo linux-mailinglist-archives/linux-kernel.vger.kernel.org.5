@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C064278A1F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F39E78A20A
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjH0ViP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 17:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
+        id S230356AbjH0Vq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 17:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjH0Vhn (ORCPT
+        with ESMTP id S230347AbjH0Vqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 17:37:43 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38685C5
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:37:41 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53BF21FB;
-        Sun, 27 Aug 2023 14:38:21 -0700 (PDT)
-Received: from [10.57.3.66] (unknown [10.57.3.66])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E24183F738;
-        Sun, 27 Aug 2023 14:37:39 -0700 (PDT)
-Message-ID: <382193a4-4f30-d804-47da-a9c705b6bee5@arm.com>
-Date:   Sun, 27 Aug 2023 22:37:38 +0100
+        Sun, 27 Aug 2023 17:46:32 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FA9126
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:46:29 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-792918c5f33so38067139f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:46:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693172789; x=1693777589;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6mcwO+IbeJ6pSmZ/BjxjTTVqEmFcInv2K/OfpA2NMnU=;
+        b=Az9zw+ATe3PlF3OhMMTM/WWPXUwi/94KCKAGjXJD7qM6Mr6OrjUiOn1sH+8o/EsaOn
+         cdsc5A9xXnfw+YW2bjmLdScXX0nuHHoHS6oiYGmQAQVOSwLzL/56I4CuEJMsWm4tQFNy
+         iS5GrBPzUdWHXbboY3hnu8CQNg2WGc4D72uA4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693172789; x=1693777589;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6mcwO+IbeJ6pSmZ/BjxjTTVqEmFcInv2K/OfpA2NMnU=;
+        b=H40GsHkCDZUgL3toWCDpU7eebW3vvxIRePMpSB2EX0YORqhSvEPo4toaaHnVKpFmS2
+         6e/rXMcZQmBG2r6s336w9VNZaieyoj19QG9t7WznG5GzWt8a+GVAjGJW3fVEEOu7ZRAn
+         o8XTTP3VVc9vFv53ausJKqfzyZoMdWXbgwTV38t0F4skjWcpXvKF9EDHB0JYMKWUm22J
+         aB5VZuBq3utqUvLQHwhPjWTXQOFuqayuIY/UdFbBOilxAai3ZlTKuHcuuAPImwy55jXV
+         e/w1/TtPYEMgJgFVpcTzCQWjobcLQ6xuEJ8J2rn7+4iniMY+MBH1ZtLUKyn7fxkoQR9q
+         pErg==
+X-Gm-Message-State: AOJu0YwYkdG+EZhqP7HN+FdM4/26FkHchz9oC7t6J5VEHnd12SOHzsp/
+        cyT4Vz19BCRUuO8qwd7BeDJIMA==
+X-Google-Smtp-Source: AGHT+IE2PDpFOgkg1eIeYAvpTEAZMfuuiEANqDy0KOpHgWijDj9rwgdkP6amMl/prwYlxtPA6KcOrg==
+X-Received: by 2002:a6b:f214:0:b0:790:ff32:eb3 with SMTP id q20-20020a6bf214000000b00790ff320eb3mr17389815ioh.17.1693172788924;
+        Sun, 27 Aug 2023 14:46:28 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id d13-20020a02a48d000000b0042b1cd4c096sm1992515jam.74.2023.08.27.14.46.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 14:46:28 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 5.10 1/2] torture: Avoid torture-test reboot loops
+Date:   Sun, 27 Aug 2023 21:46:20 +0000
+Message-ID: <20230827214622.240001-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH] coresight: tmc-etr: Don't fail probe when non-secure
- access is disabled
-To:     Yabin Cui <yabinc@google.com>, Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230825233930.1875819-1-yabinc@google.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230825233930.1875819-1-yabinc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/2023 00:39, Yabin Cui wrote:
-> Because the non-secure access can be enabled later on some devices.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-How can this be enabled ? Why not enable it before probing the ETR ?
-How can a user know if this has been done or not ? It is asking for
-trouble to continue without this.
+[ Upstream commit 10f84c2cfb5045e37d78cb5d4c8e8321e06ae18f ]
 
-Suzuki
+Currently, the various torture tests sometimes react to an early-boot
+bug by rebooting.  This is almost always counterproductive, needlessly
+consuming CPU time and bloating the console log.  This commit therefore
+adds the "-no-reboot" argument to qemu so that reboot requests will
+cause qemu to exit.
 
-> 
-> Signed-off-by: Yabin Cui <yabinc@google.com>
-> ---
->   drivers/hwtracing/coresight/coresight-tmc-core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> index c106d142e632..5ebfd12b627b 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> @@ -370,7 +370,7 @@ static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
->   	struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
->   
->   	if (!tmc_etr_has_non_secure_access(drvdata))
-> -		return -EACCES;
-> +		dev_warn(parent, "TMC ETR doesn't have non-secure access\n");
->   
->   	/* Set the unadvertised capabilities */
->   	tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 6dc2b49b85ea..bdd747dc61f2 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -9,7 +9,7 @@
+ #
+ # Usage: kvm-test-1-run.sh config builddir resdir seconds qemu-args boot_args
+ #
+-# qemu-args defaults to "-enable-kvm -nographic", along with arguments
++# qemu-args defaults to "-enable-kvm -nographic -no-reboot", along with arguments
+ #			specifying the number of CPUs and other options
+ #			generated from the underlying CPU architecture.
+ # boot_args defaults to value returned by the per_version_boot_params
+@@ -132,7 +132,7 @@ then
+ fi
+ 
+ # Generate -smp qemu argument.
+-qemu_args="-enable-kvm -nographic $qemu_args"
++qemu_args="-enable-kvm -nographic -no-reboot $qemu_args"
+ cpu_count=`configNR_CPUS.sh $resdir/ConfigFragment`
+ cpu_count=`configfrag_boot_cpus "$boot_args" "$config_template" "$cpu_count"`
+ if test "$cpu_count" -gt "$TORTURE_ALLOTED_CPUS"
+-- 
+2.42.0.rc1.204.g551eb34607-goog
 
