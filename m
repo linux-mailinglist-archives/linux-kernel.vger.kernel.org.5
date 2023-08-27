@@ -2,122 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E024778A160
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 22:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB00378A15E
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 22:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjH0UVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 16:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
+        id S230045AbjH0U0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 16:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjH0UU5 (ORCPT
+        with ESMTP id S230189AbjH0U0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 16:20:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2B2107
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 13:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693167607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zk+jyHlS4udgyaumJ7ZOq9OxrkbOZbwqog5PMYG+ER8=;
-        b=ThBi2cHgCWrRXNjnwpqgb9pgo8KgyHnNB2JDKcpcYiPyvUlc4DM1QaWVYcCeMWL/1Sc6xw
-        Wx4/jDJVDXShapt8FKav0L7YcoXfZ35mOOhdxTfZzrRX6jxDwEaf/SaiAGNWv2tEpE+nTu
-        7bVD7tlAw2GYfHEWDUSW4/OyG1/xgvY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-127--ufNaDsjO_W_5yWqcC5DDg-1; Sun, 27 Aug 2023 16:20:02 -0400
-X-MC-Unique: -ufNaDsjO_W_5yWqcC5DDg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7259E85CCE0;
-        Sun, 27 Aug 2023 20:20:01 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.39])
-        by smtp.corp.redhat.com (Postfix) with SMTP id F37C0401051;
-        Sun, 27 Aug 2023 20:19:58 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sun, 27 Aug 2023 22:19:13 +0200 (CEST)
-Date:   Sun, 27 Aug 2023 22:19:10 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Yonghong Song <yonghong.song@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yonghong Song <yhs@fb.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
- skip_if_dup_files check
-Message-ID: <20230827201909.GC28645@redhat.com>
-References: <20230825161842.GA16750@redhat.com>
- <20230825161947.GA16871@redhat.com>
- <20230825170406.GA16800@redhat.com>
- <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
+        Sun, 27 Aug 2023 16:26:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93264128
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 13:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693167959; x=1724703959;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ovndHV9hLKdTZvQnsCTnqeQ+3Wl+RwYyqBnW8kOuPFA=;
+  b=dXJRVYu1/igVMKyUuB2fzR2iVlsf+wX9vA3uJV1ho+xTueSbp23LMNV7
+   k6ptrM9phqqlEk+UyiyAA46lqKzQ5QlfTfrOoWpGZn9rP3rAeM9nBsmsE
+   ZQQ4wvUG80kIJHaNk0ewcS9i7+r01IXDCRd3z5ihGZ61KKbjl9rNqaS20
+   0vUU0+we/5E8+2S+gD6a4C3Rk3ToTJZilmpZ4YxthpUD5QuA5lB/5TS25
+   gvSERv9OUjTfs18krb+qM+0e8ohY86GUkRzQeTeUQOOFQNjV1A/hDybcC
+   vgldjN2H0idEAKKGCpF0v9FqhUcm1FBC0dOqiSXKCcEtuugG14IQtIN37
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="359963380"
+X-IronPort-AV: E=Sophos;i="6.02,205,1688454000"; 
+   d="scan'208";a="359963380"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2023 13:25:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="881709548"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 27 Aug 2023 13:26:02 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qaMKZ-0006AF-2z;
+        Sun, 27 Aug 2023 20:25:55 +0000
+Date:   Mon, 28 Aug 2023 04:25:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Andy Moreton <andy.moreton@amd.com>,
+        Simon Horman <simon.horman@corigine.com>
+Subject: drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within
+ 'struct efx_loopback_payload::(anonymous at
+ drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct
+ iphdr' and is usually due to 'struct efx_loopback_payload::(anonymous a...
+Message-ID: <202308280404.zWFYpWWE-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/25, Yonghong Song wrote:
->
-> On 8/25/23 10:04 AM, Oleg Nesterov wrote:
-> >Forgot to mention in the changelog...
-> >
-> >In any case this doesn't look right. ->group_leader can exit before other
-> >threads, call exit_files(), and in this case task_group_seq_get_next() will
-> >check task->files == NULL.
->
-> It is okay. This won't be affecting correctness. We will end with
-> calling bpf program for 'next_task'.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   85eb043618bb17124050197d71c453d4a1f556e5
+commit: 55c1528f9b97ff3b7efad73e8f79627fc2efb298 sfc: fix field-spanning memcpy in selftest
+date:   4 weeks ago
+config: arm-randconfig-r001-20230828 (https://download.01.org/0day-ci/archive/20230828/202308280404.zWFYpWWE-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230828/202308280404.zWFYpWWE-lkp@intel.com/reproduce)
 
-Well, I didn't mean it is necessarily wrong, I simply do not know.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308280404.zWFYpWWE-lkp@intel.com/
 
-But let's suppose that we have a thread group with the main thread M + 1000
-sub-threads. In the likely case they all have the same ->files, CLONE_THREAD
-without CLONE_FILES is not that common.
+All warnings (new ones prefixed by >>):
 
-Let's assume the BPF_TASK_ITER_TGID case for simplicity.
+>> drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within 'struct efx_loopback_payload::(anonymous at drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct iphdr' and is usually due to 'struct efx_loopback_payload::(anonymous at drivers/net/ethernet/sfc/selftest.c:46:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
+      48 |                 struct iphdr ip;
+         |                              ^
+>> drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within 'struct efx_loopback_payload::(unnamed at drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct iphdr' and is usually due to 'struct efx_loopback_payload::(unnamed at drivers/net/ethernet/sfc/selftest.c:46:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
+   2 warnings generated.
 
-Now lets look at task_file_seq_get_next() which passes skip_if_dup_files == 1
-to task_seq_get_next() and thus to task_group_seq_get_next().
 
-Now, in this case task_seq_get_next() will return non-NULL only once (OK, unless
-task_file_seq_ops.stop() was called), it will return the group leader M first,
-then after task_file_seq_get_next() "reports" all the fd's of M and increments
-info->tid, the next task_seq_get_next(&info->tid, true) should return NULL because
-of the skip_if_dup_files check in task_group_seq_get_next().
+vim +48 drivers/net/ethernet/sfc/selftest.c
 
-Right?
+93e5dfa59b0e26a drivers/net/ethernet/sfc/selftest.c Ben Hutchings   2012-02-28  37  
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  38  /*
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  39   * Loopback test packet structure
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  40   *
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  41   * The self-test should stress every RSS vector, and unfortunately
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  42   * Falcon only performs RSS on TCP/UDP packets.
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  43   */
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  44  struct efx_loopback_payload {
+cf60ed469629927 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-06-23  45  	char pad[2]; /* Ensures ip is 4-byte aligned */
+55c1528f9b97ff3 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  46  	struct_group_attr(packet, __packed,
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  47  		struct ethhdr header;
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07 @48  		struct iphdr ip;
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  49  		struct udphdr udp;
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  50  		__be16 iteration;
+1d20a16062e771b drivers/net/ethernet/sfc/selftest.c David S. Miller 2015-04-17  51  		char msg[64];
+55c1528f9b97ff3 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  52  	);
+cf60ed469629927 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-06-23  53  } __packed __aligned(4);
+55c1528f9b97ff3 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  54  #define EFX_LOOPBACK_PAYLOAD_LEN	\
+55c1528f9b97ff3 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  55  		sizeof_field(struct efx_loopback_payload, packet)
+3273c2e8c66a21a drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  56  
 
-But. if the group leader M exits then M->files == NULL. And in this case
-task_seq_get_next() will need to "inspect" all the sub-threads even if they all
-have the same ->files pointer.
+:::::: The code at line 48 was first introduced by commit
+:::::: 3273c2e8c66a21ae1c53b0c730ee937c6efde7e2 [netdrvr] sfc: sfc: Add self-test support
 
-No?
+:::::: TO: Ben Hutchings <bhutchings@solarflare.com>
+:::::: CC: Jeff Garzik <jgarzik@redhat.com>
 
-Again, I am not saying this is a bug and quite possibly I misread this code, but
-in any case the skip_if_dup_files logic looks sub-optimal and confusing to me.
-
-Nevermind, please forget. This is minor even if I am right.
-
-Thanks for rewiev!
-
-Oleg.
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
