@@ -2,133 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D9B789BAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED473789BA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjH0HG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 03:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
+        id S229975AbjH0HG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 03:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjH0HG3 (ORCPT
+        with ESMTP id S230120AbjH0HGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 03:06:29 -0400
-Received: from so254-32.mailgun.net (so254-32.mailgun.net [198.61.254.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D37018F
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 00:06:25 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt;
- s=mx; t=1693119984; x=1693127184; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Subject: Cc: To: To: From: From: Date:
- Sender: Sender; bh=a2QNVHpCy69phGF1UsAYo4X/AG2eDB3F/Vurqfii8Wo=;
- b=XoLrmrvvUEMbf1dzDmEFxWOfhNfO+VVJIak4YGVIXVwsqOqVwm+MVfnlUj2zZhVoEYB/iy1tLE6Tm896zz+Z5c79bW1tl5OBFL2H/7TvWVa5uUmOe+Mqc+JHd80F/w7dykkyqr3RB7lLWYw01B4IIH7nu1MBsQ5RinPBSlOB36jBYhxK95CxCwuQ+ciVvxZJCOup3/9zklPvzTugULv9zV8cw8v7HC7ii53VJQW0swniiIMD49u6Aa5ILJVuBReUOoTYZTFyg4dLKABCZBgdeEobaCZX2v+DIMpv5mgvpvwV0sWtmwJ3WhVMeRCuA3wuF4aGxKRJY4BFzmExSUcvDQ==
-X-Mailgun-Sending-Ip: 198.61.254.32
-X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
-Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 6fa3ba917c3f with SMTP id
- 64eaf5f0cd2de71bad0a6c9f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 27 Aug 2023 07:06:24 GMT
-Sender: james@equiv.tech
-Date:   Sun, 27 Aug 2023 00:06:23 -0700
-From:   James Seo <james@equiv.tech>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/12] scsi: mpt3sas: Make
- MPI2_CONFIG_PAGE_RAID_VOL_0::PhysDisk[] a flexible array
-Message-ID: <ZOr175KsKEoCss8U@equiv.tech>
-References: <20230806170604.16143-1-james@equiv.tech>
- <20230806170604.16143-4-james@equiv.tech>
- <202308251357.38AF364@keescook>
+        Sun, 27 Aug 2023 03:06:50 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E8D1A6;
+        Sun, 27 Aug 2023 00:06:47 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-500760b296aso2667735e87.0;
+        Sun, 27 Aug 2023 00:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693120006; x=1693724806;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dkjF5she7UB2ljrXeMoCqa57v0rZqp9RycOLvAQ5IBI=;
+        b=O2sCTNInG427q7ohexaFYYZZer3Yv3kMVyhFQW113Cjh6Ikl3i9NDB2trbTraCuwm+
+         IH1rcqVu3AGCARGWN4HUxEoZDNr/2Tk1d+V99Bipph+Kb2Kl9N3RTubzl0iiIyAoxKDM
+         XddduD3p8s8udOlcbxsdmbkpJGu7Qa4biRLA7qh/jDgGZj0zXZ/6KK4ys+L0FOtHmCLW
+         WYaNKILcWu19CoKdSScTQt1rAiieSZ0GhKGV1qNHAzqJszW2pwmBCSDHF3NHJiLjfw/J
+         8vaxEmVCNTv30LFcmjRAy5P0VLBJQVXrI1P1GALepKkrhpPvB4obvUy5Q1e5LxrvcXJ/
+         3m6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693120006; x=1693724806;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dkjF5she7UB2ljrXeMoCqa57v0rZqp9RycOLvAQ5IBI=;
+        b=gmvRLmpXOysLd9Ij+f3+ZDFS/lRO7ztp5j7Tle6a723LrShjXih9w2Z9KS64mS6npe
+         2zdFM+4ZKfq1vK2eTe6xpyzLNPNa6YMd+/EwUuDEW9mvxFHU4EYGKA6rjlYfYdBPqtuy
+         YycR2uiOxHp4t0kYBrgcZ4wy98/PTJzdfjd97rJU4l931a/l1Z3Y4cF2j9M712iO5I2q
+         TaOzKAbmMlzbNpDbyrapJIWeroOtLeAGWW9y896A5O9k3MLqkIP9P2IwjqbfBArcpv7L
+         txG42cYC09rhwRnH3UzKOSQU72af1gE0PT4F0ZeBc1Jm2QbBYaMUji+II312iy/LTuun
+         FzGg==
+X-Gm-Message-State: AOJu0YxV0UTIMkucj9idA1r2v/7qc3prvNg2QlDiULBFQgqS0N7IxwTl
+        tK83uM7Xz+l5UroYrdl2Kbw=
+X-Google-Smtp-Source: AGHT+IEZnvTP31rSNtj7ZBtqVy9JsE+B+3aRQDrWf0k9YBD6NoLuMUamPcOGu3t97IjhM7Mz33mDfg==
+X-Received: by 2002:ac2:4e01:0:b0:4f9:56b8:45e5 with SMTP id e1-20020ac24e01000000b004f956b845e5mr8619154lfr.25.1693120005575;
+        Sun, 27 Aug 2023 00:06:45 -0700 (PDT)
+Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id f20-20020ac25334000000b004fe4a1f046asm1006193lfh.266.2023.08.27.00.06.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 00:06:45 -0700 (PDT)
+Message-ID: <717acd48-b2fa-4baa-bb94-86490c1b92ef@gmail.com>
+Date:   Sun, 27 Aug 2023 10:06:55 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202308251357.38AF364@keescook>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: dma: ti: k3-bcdma: Describe cfg register
+ regions
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230810174356.3322583-1-vigneshr@ti.com>
+ <20230810174356.3322583-2-vigneshr@ti.com>
+Content-Language: en-US
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230810174356.3322583-2-vigneshr@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 02:03:23PM -0700, Kees Cook wrote:
-> On Sun, Aug 06, 2023 at 10:05:55AM -0700, James Seo wrote:
->> This terminal 1-length variable array can be directly converted into
->> a C99 flexible array member.
->> 
->> As all users of MPI2_CONFIG_PAGE_RAID_VOL_0 (Mpi2RaidVolPage0_t)
->> either calculate its size without depending on its sizeof() or do not
->> use PhysDisk[], no further source changes are required:
-> 
-> Tons of binary changes in this file too. I see this:
-> 
->         Mpi2RaidVolPage0_t config_page;
-> 	...
->         r = _config_request(ioc, &mpi_request, &mpi_reply,
->             MPT3_CONFIG_PAGE_DEFAULT_TIMEOUT, &config_page,
->             sizeof(Mpi2RaidVolPage0_t));
-> 
-> So it's already changing this size (and possibly under-allocating now).
 
-Yes. I didn't explicitly identify _config_request() as a user of the
-five structs for which I parted out changes into their own commits,
-as it's a generalized helper indirectly called when working with
-other config page structs as well. Rest assured that I took it into
-account, and that the reduced struct sizes don't represent
-under-allocations (see below).
 
->> - mpt3sas_config.c:mpt3sas_config_get_number_pds() fetches a
->>   Mpi2RaidVolPage0_t for itself, but does not use PhysDisk[].
+On 10/08/2023 20:43, Vignesh Raghavendra wrote:
+> Block copy DMA(BCDMA)module on K3 SoCs have ring cfg, TX and RX
+> channel cfg register regions which are usually configured by a Device
+> Management firmware. But certain entities such as bootloader (like
+> U-Boot) may have to access them directly. Describe this region in the
+> binding documentation for completeness of module description.
 > 
-> Is it certain that _config_request()'s use of mpt3sas_wait_for_ioc()
-> won't result in the hardware being upset that config_page_sz shrank?
- 
-Sorry if I missed it, but I don't see what config_page_sz has to do
-with _config_request()'s use of mpt3sas_wait_for_ioc(). Could you
-explain what you meant?
-
-More generally, changes in config_page_sz shouldn't faze the hardware
-because all usages of _config_request() occur in pairs - a
-preparatory call that returns the actual size of a given config page
-in mpi_reply, then a follow-up call during which a temporary
-DMA-capable buffer is allocated per the size in mpi_reply and the
-hardware reads/writes the entirety of this buffer. config_page_sz
-just determines the number of bytes copied between config_page and
-the temp buffer after a hardware read/before a hardware write.
-
-Well, as far I can tell, anyway. Maybe Broadcom knows otherwise.
-
->> @@ -1826,8 +1823,7 @@ typedef struct _MPI2_CONFIG_PAGE_RAID_VOL_0 {
->>  	U8                      Reserved2;         /*0x25 */
->>  	U8                      Reserved3;         /*0x26 */
->>  	U8                      InactiveStatus;    /*0x27 */
->> -	MPI2_RAIDVOL0_PHYS_DISK
->> -	PhysDisk[MPI2_RAID_VOL_PAGE_0_PHYSDISK_MAX]; /*0x28 */
->> +	MPI2_RAIDVOL0_PHYS_DISK PhysDisk[];        /*0x28 */
->>  } MPI2_CONFIG_PAGE_RAID_VOL_0,
+> Keep the binding compatible with existing DTS files by requiring first
+> five regions to be present at least.
 > 
-> Without the mpt3sas maintainers chiming in on this, I think the only
-> safe changes to make here are those with 0 binary differences. So for
-> things like this, it'll need to be:
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+>  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 25 +++++++++++++------
+>  1 file changed, 17 insertions(+), 8 deletions(-)
 > 
-> -	MPI2_RAIDVOL0_PHYS_DISK
-> -	PhysDisk[MPI2_RAID_VOL_PAGE_0_PHYSDISK_MAX]; /*0x28 */
-> +	union {
-> +		MPI2_RAIDVOL0_PHYS_DISK legacy_padding;        /*0x28 */
-> +		DECLARE_FLEX_ARRAY(MPI2_RAIDVOL0_PHYS_DISK, PhysDisk);
-> +	};
-> 
-> -- 
-> Kees Cook
+> diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+> index 4ca300a42a99..d166e284532b 100644
+> --- a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+> @@ -37,11 +37,11 @@ properties:
+>  
+>    reg:
+>      minItems: 3
+> -    maxItems: 5
+> +    maxItems: 8
+>  
+>    reg-names:
+>      minItems: 3
+> -    maxItems: 5
+> +    maxItems: 8
+>  
+>    "#dma-cells":
+>      const: 3
+> @@ -161,14 +161,19 @@ allOf:
+>        properties:
+>          reg:
+>            minItems: 5
+> +          maxItems: 8
+>  
+>          reg-names:
+> +          minItems: 5
+>            items:
+>              - const: gcfg
+>              - const: bchanrt
+>              - const: rchanrt
+>              - const: tchanrt
+>              - const: ringrt
+> +            - const: cfg
+> +            - const: tchan
+> +            - const: rchan
+>  
+>        required:
+>          - ti,sci-rm-range-bchan
+> @@ -216,12 +221,16 @@ examples:
+>              main_bcdma: dma-controller@485c0100 {
+>                  compatible = "ti,am64-dmss-bcdma";
+>  
+> -                reg = <0x0 0x485c0100 0x0 0x100>,
+> -                      <0x0 0x4c000000 0x0 0x20000>,
+> -                      <0x0 0x4a820000 0x0 0x20000>,
+> -                      <0x0 0x4aa40000 0x0 0x20000>,
+> -                      <0x0 0x4bc00000 0x0 0x100000>;
+> -                reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
+> +                reg = <0x00 0x485c0100 0x00 0x100>,
+> +                      <0x00 0x4c000000 0x00 0x20000>,
+> +                      <0x00 0x4a820000 0x00 0x20000>,
+> +                      <0x00 0x4aa40000 0x00 0x20000>,
+> +                      <0x00 0x4bc00000 0x00 0x100000>,
+> +                      <0x00 0x48600000 0x00 0x8000>,
 
-Thanks for clearing that up. Here's hoping those mpt3sas maintainers
-do chime in. I'll go with the union workaround if they don't.
+This is BCDMA_RING region and named as 'cfg'?
 
-James
+> +                      <0x00 0x484a4000 0x00 0x2000>,
+> +                      <0x00 0x484c2000 0x00 0x2000>;
+> +                reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
+> +                            "cfg", "tchan", "rchan";
+
+If you do this then add the bchan region also?
+
+>                  msi-parent = <&inta_main_dmss>;
+>                  #dma-cells = <3>;
+>  
+
+-- 
+Péter
