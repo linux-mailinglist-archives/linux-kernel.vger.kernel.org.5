@@ -2,49 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C98678A1F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C064278A1F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbjH0Vfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 17:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
+        id S230245AbjH0ViP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 17:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjH0VfX (ORCPT
+        with ESMTP id S229721AbjH0Vhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 17:35:23 -0400
+        Sun, 27 Aug 2023 17:37:43 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 687B0107
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:35:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38685C5
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:37:41 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61D6E1FB;
-        Sun, 27 Aug 2023 14:35:59 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53BF21FB;
+        Sun, 27 Aug 2023 14:38:21 -0700 (PDT)
 Received: from [10.57.3.66] (unknown [10.57.3.66])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D607B3F738;
-        Sun, 27 Aug 2023 14:35:17 -0700 (PDT)
-Message-ID: <1b2a035c-489e-ace9-f851-c1ec157ff9fa@arm.com>
-Date:   Sun, 27 Aug 2023 22:35:16 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E24183F738;
+        Sun, 27 Aug 2023 14:37:39 -0700 (PDT)
+Message-ID: <382193a4-4f30-d804-47da-a9c705b6bee5@arm.com>
+Date:   Sun, 27 Aug 2023 22:37:38 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH V2] coresight: tmc: Make etr buffer mode user configurable
- from sysfs
-To:     scclevenger@os.amperecomputing.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20230818082112.554638-1-anshuman.khandual@arm.com>
- <bedcf27e-b273-075f-3d7b-eb99b07e7c91@arm.com>
- <b2cf0173-c404-d7d6-9eb8-054e160ca4e5@os.amperecomputing.com>
- <ffa90e80-c249-42d5-26f1-dc022d91e5a9@os.amperecomputing.com>
- <391951c3-7da9-3965-acf8-f3b31f822879@os.amperecomputing.com>
+Subject: Re: [PATCH] coresight: tmc-etr: Don't fail probe when non-secure
+ access is disabled
+To:     Yabin Cui <yabinc@google.com>, Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230825233930.1875819-1-yabinc@google.com>
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <391951c3-7da9-3965-acf8-f3b31f822879@os.amperecomputing.com>
+In-Reply-To: <20230825233930.1875819-1-yabinc@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -54,184 +47,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve
+On 26/08/2023 00:39, Yabin Cui wrote:
+> Because the non-secure access can be enabled later on some devices.
 
-On 26/08/2023 01:14, Steve Clevenger wrote:
-> 
-> Unfortunately, I tested with the original patch not [PATCH V2]. I've
-> remedied this. My results below:
-> 
-> [root@sut01sys-b212 linux]# cat
-> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_modes_available
-> auto flat catu
-> [root@sut01sys-b212 linux]# cat
-> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_mode_preferred
-> auto
-> [root@sut01sys-b212 linux]# echo "catu" >
-> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_mode_preferred
-> [root@sut01sys-b212 linux]# cat
-> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_mode_preferred
-> catu
-> 
-> As with the V1 patch, auto defaults to catu.
-> 
-> I expected to see tmc-sg (former default) as an available mode, but do
-> not. As I recall, the buffer mode defaulted to ETR scatter-gather prior
-> to this patch. Must this capability now be explicitly advertised? I've
-> seen this done as "arm,scatter-gather" in device trees, but not used by
-> Ampere. Perhaps someone can enlighten me.
+How can this be enabled ? Why not enable it before probing the ETR ?
+How can a user know if this has been done or not ? It is asking for
+trouble to continue without this.
 
-Yes, you must add that property to the TMC-ETR node (for both DT and
-ACPI). In the past, almost all of the TMC-ETRs (except Juno board)
-locked up the system while using the SG mode (due to the interconnect
-issues, something to do with the transaction). Thus, we decided to
-add a property explicitly enabling this for a given platform.
-
-When you mentioned, it was using TMC-ETR SG mode, how did you verify
-this ? Please be aware that the table allocation code etc are shared
-by both TMC-SG and CATU.
-
-Kind regards
 Suzuki
 
 > 
-> Steve C.
+> Signed-off-by: Yabin Cui <yabinc@google.com>
+> ---
+>   drivers/hwtracing/coresight/coresight-tmc-core.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> On 8/23/2023 4:10 PM, Steve Clevenger wrote:
->>
->> Here's some quick feedback. My system shows two modes available; auto catu
->>
->> etr_buf_mode_current is writable. I expected to see tmc-sg (former
->> default) listed in etr_buf_modes_available but it doesn't show up.
->>
->> Note that both the auto and catu etr_buf_mode_current settings default
->> to catu. My understanding is auto should revert to the default behavior.
->> On my system the default was tmc-sg.
->>
->> More later.
->>
->> [root@sut01sys-b212 kernel]# cat
->> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_modes_available
->>
->> auto catu
->> [root@sut01sys-b212 kernel]# cat
->> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_mode_current
->> catu
->> [root@sut01sys-b212 kernel]# echo "catu" >
->> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_mode_current
->> [root@sut01sys-b212 kernel]# cat
->> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_mode_current
->> catu
->>
->> Steve C.
->>
->>
->> On 8/21/2023 12:40 PM, Steve Clevenger wrote:
->>>
->>> Hi Suzuki,
->>>
->>> I may be able to test it this week. You've already pointed me at the
->>> patch thread(s). The main holdup is I need to merge the 6.6 pending
->>> platform work in order to use the Ampere ACPI. I couldn't get these
->>> patches to apply directly to 6.4 last I tried.
->>>
->>> Steve C.
->>>
->>> On 8/18/2023 2:39 AM, Suzuki K Poulose wrote:
->>>> Cc: Steve
->>>>
->>>> Steve,
->>>>
->>>> Are you able to test this with CATU ?
->>>>
->>>>
->>>> On 18/08/2023 09:21, Anshuman Khandual wrote:
->>>>> Currently TMC-ETR automatically selects the buffer mode from all
->>>>> available
->>>>> methods in the following sequentially fallback manner - also in that
->>>>> order.
->>>>>
->>>>> 1. FLAT mode with or without IOMMU
->>>>> 2. TMC-ETR-SG (scatter gather) mode when available
->>>>> 3. CATU mode when available
->>>>>
->>>>> But this order might not be ideal for all situations. For example if
->>>>> there
->>>>> is a CATU connected to ETR, it may be better to use TMC-ETR scatter
->>>>> gather
->>>>> method, rather than CATU. But hard coding such order changes will prevent
->>>>> us from testing or using a particular mode. This change provides
->>>>> following
->>>>> new sysfs tunables for the user to control TMC-ETR buffer mode
->>>>> explicitly,
->>>>> if required. This adds following new sysfs files for buffer mode
->>>>> selection
->>>>> purpose explicitly in the user space.
->>>>>
->>>>> /sys/bus/coresight/devices/tmc_etr<N>/buf_modes_available
->>>>> /sys/bus/coresight/devices/tmc_etr<N>/buf_mode_preferred
->>>>>
->>>>> $ cat buf_modes_available
->>>>> auto flat tmc-sg catu    ------------------> Supported TMC-ETR buffer
->>>>> modes
->>>>>
->>>>> $ echo catu > buf_mode_preferred   -------> Explicit buffer mode request
->>>>>
->>>>> But explicit user request has to be within supported ETR buffer modes
->>>>> only.
->>>>> These sysfs interface files are exclussive to ETR, and hence these are
->>>>> not
->>>>> available for other TMC devices such as ETB or ETF etc.
->>>>>
->>>>> A new auto' mode (i.e ETR_MODE_AUTO) has been added to help fallback
->>>>> to the
->>>>> existing default behaviour, when user provided preferred buffer mode
->>>>> fails.
->>>>> ETR_MODE_FLAT and ETR_MODE_AUTO are always available as preferred modes.
->>>>>
->>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>> Cc: Mike Leach <mike.leach@linaro.org>
->>>>> Cc: James Clark <james.clark@arm.com>
->>>>> Cc: Leo Yan <leo.yan@linaro.org>
->>>>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->>>>> Cc: coresight@lists.linaro.org
->>>>> Cc: linux-arm-kernel@lists.infradead.org
->>>>> Cc: linux-kernel@vger.kernel.org
->>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>>> ---
->>>>> This applies on v6.5-rc6
->>>>>
->>>>> Changes in V2:
->>>>>
->>>>> - Renamed sysfs file etr_buf_modes_available as buf_modes_available
->>>>> - Renamed sysfs file buf_mode_current as buf_mode_preferred
->>>>> - Renamed etr_supports_flat_mode() as etr_can_use_flat_mode()
->>>>> - Renamed coresight_tmc_groups[] as coresight_etf_groups[]
->>>>> - Reused coresight_tmc_group[] for trigger_cntr and buffer_size
->>>>> - Fallback trying ETR_MODE_AUTO when user preferred mode fails
->>>>> - Moved ETR sysfs details into coresight-tmc-etr.c
->>>>> - Dropped etr_can_use_flat_mode() check while offering ETR_MODE_FLAT
->>>>> in sysfs
->>>>> - Moved struct etr_buf_hw inside coresight-tmc-etr.c
->>>>> - Moved get_etr_buf_hw() and etr_can_use_flat_mode() inside
->>>>> coresight-tmc-etr.c
->>>>> - Updated month in
->>>>> Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
->>>>>
->>>>> Changes in V1:
->>>>>
->>>>> https://lore.kernel.org/all/20230728084837.276551-1-anshuman.khandual@arm.com/
->>>>>
->>>>>    .../testing/sysfs-bus-coresight-devices-tmc   |  16 +++
->>>>>    .../hwtracing/coresight/coresight-tmc-core.c  |  15 ++-
->>>>>    .../hwtracing/coresight/coresight-tmc-etr.c   | 111 ++++++++++++++++--
->>>>>    drivers/hwtracing/coresight/coresight-tmc.h   |   3 +
->>>>>    4 files changed, 131 insertions(+), 14 deletions(-)
->>>>
->>>>
->>>> Looks good to me.
->>>>
->>>> Suzuki
->>>>
->>>>
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> index c106d142e632..5ebfd12b627b 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> @@ -370,7 +370,7 @@ static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
+>   	struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
+>   
+>   	if (!tmc_etr_has_non_secure_access(drvdata))
+> -		return -EACCES;
+> +		dev_warn(parent, "TMC ETR doesn't have non-secure access\n");
+>   
+>   	/* Set the unadvertised capabilities */
+>   	tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
 
