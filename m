@@ -2,182 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 480A978A1C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991B078A1C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjH0VOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 17:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        id S230283AbjH0VOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 17:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjH0VOY (ORCPT
+        with ESMTP id S229998AbjH0VOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 17:14:24 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AF7B9;
-        Sun, 27 Aug 2023 14:14:21 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31c73c21113so2295083f8f.1;
-        Sun, 27 Aug 2023 14:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693170860; x=1693775660;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFbgrL50bzSftgmNjyPujQR4Of2JfipVU9EaUv5eW7k=;
-        b=B5c+CBf7Yn/n8mBJmOnnd1TShNW0G5Opod/g1mWNmOZe5oaLLGZRiGXZKyloxPpTbv
-         54UdCUiSdKo49RguR4xMFZgQ7nm0X1/rlEWV3VyT6j6YHoo3i6S8M6NKrZ+4bJJV0Snt
-         zQS7SBZKvRpTys1e8bBSjKIbja4iIyGI4Cg0EMtViB3ZRSP4NCKUwCM+m0ajJyHGzZSp
-         Hk4qbPAFJslPNYW8/WvIGl+RAu3tbdvJh7jFc4ezLZ6YZvFrGYOO8iPx5waH4p5yqx0m
-         nZOIGymc2bCFybtOmuwb+4khu+gMa58aKmnTbrpxlnBFY+OGtqAcKms2/b6kNAXlsq4q
-         2eHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693170860; x=1693775660;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oFbgrL50bzSftgmNjyPujQR4Of2JfipVU9EaUv5eW7k=;
-        b=gTaREs3/veR3KUOaIOX55HVzRELFqoJeTYgzUDVjk0g30j98Qfc4x+c3o74ndqTggi
-         78PFY8RZc9GulW+UfDaG6rZy55mvxCpFma8A/Lm5eeb4UxeRgm/ynwQXxugou0w+H4nv
-         471GXVzkksD2aDOC6esZsUO6WBWsYyEWScGeyyiJEdr4WodLcpfbCfNu0j6Ge+JDb6Ln
-         ePPzBvxUPqVOGCrtM9q+gYVD9f44XXdggycKUk0/2hOMd4iZfu3RegcCiZIDShdo1F0P
-         Il31hTb3uTJaEccuaRA67kJ1V+dj8i+vY8kXH+Xk1UZr3lY717VttOE5CiJMCagFyf6t
-         Xn1g==
-X-Gm-Message-State: AOJu0YwZFXQJUkytkks+NhI1eUA0cq7MWuJUri4Zxvp3o9YxeV2gwPw9
-        /7RXD5T1+DO8QudOgVyTq91opL3uxBU=
-X-Google-Smtp-Source: AGHT+IGaKQafzwpIEkOUAjoanB8y3BbvHV7Le9YzTS+LmIdP/bFXe2qobbXbha1VypEqPKqR+cUVdQ==
-X-Received: by 2002:adf:f9c4:0:b0:314:420c:5ef7 with SMTP id w4-20020adff9c4000000b00314420c5ef7mr17282539wrr.11.1693170859784;
-        Sun, 27 Aug 2023 14:14:19 -0700 (PDT)
-Received: from xws.fritz.box ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id p14-20020a5d638e000000b0031971ab70c9sm8541997wru.73.2023.08.27.14.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 14:14:19 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Johan Hovold <johan@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 0/3] firmware: Add support for Qualcomm UEFI Secure Application
-Date:   Sun, 27 Aug 2023 23:14:03 +0200
-Message-ID: <20230827211408.689076-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Sun, 27 Aug 2023 17:14:11 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2061.outbound.protection.outlook.com [40.92.21.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40BFB9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:14:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RsuaXkjL2FhtB4SmZ6v/Q+HjeDSX7nD0nRth+R9k743soQivK0Z6gzj/5/91tTZhy+vZVQUBpRWAHh1U4ApemDZc6IgzAf8WolYbo/pKLlzE6u5qHpHi4Y2n4MALuDjef32ghNho2Y+U50ZP0BiLEhYH5q5wdyzu1l1Fo394RthgO9RuX/1vc656hK6TbahxUfTaf4pYN24EW9/YpyH5+fwBp01bFzDG8eHtW1QHWoULFgy0r9U0mEnh4HCAhXyE1rrIQQ4NjWQC0um7TX8OgiXngsAxl1qgyiOpDCFHXXpWvrXS3qQ1T5M6+RHowcxydGtbKV/7ECzpjMt6BMuTfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iYV+omyHyPP61oyBbJeHRbXe1Ob/QV2SjPYSWYGmmg0=;
+ b=IOzcKac/1YJ0jiUpQTx9JuYue6oIy++TrVHwFln3qY2g+ltOcLH4YHCzrt/9RUPphQK7+pWBa3d770pPcbu1i6jjrTdjLahVkCQ5SLlbdcaZQAZHgEQTrOyazQa9dUyvnQSFj6riYz6Spz4aWkkwbKIn62Z4sE+5+bd+ti4AC8V5yjpsQKjZOYxLPycDYVDyFJh4fomgwXAM0mQgiHXH2/k9eFniBR5yIobv60/09FfmOHjVESdqMhMqZ4aoF9AKXpmMOrQaJoKfGaynS9VulSwG5c8X/75Zp4/9lB8x+dV6i2RNcob15hCZcQdS8YbqHb9jq60+qJ3H9+0kEt37OQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iYV+omyHyPP61oyBbJeHRbXe1Ob/QV2SjPYSWYGmmg0=;
+ b=r5VaW9yTV9hp9/OnGKw38WcBPC8PDoqf9F8dK0eDbNnkjeMVA9IGFLPk0nIJWBKvOYPeT/V9cCGIyDVV0oaOkwl90mvUefizzt+WUefzQF6xoKDerCXragohJXaGdj8CSwXDTonvsdvzOMz6j6Vo+ytigM8dyiytboRqICWdGWZoKIm3H/23tqn09HbQfkFXSqeugDHh6PlwfDMdUpUoXqQu5e0GJvIk9EZfx9fZFMfreYFjdonrGL5YhP5S4cEuBOqp4ArsMEdnDbcCmr+fF2qIEpnP0Iqkg17z9cAHUNIXMUD2neL8Bs/ygkab9XCxxWjM7bKLZAVnvDTJ5bP+yw==
+Received: from PH7PR11MB7643.namprd11.prod.outlook.com (2603:10b6:510:27c::22)
+ by CY5PR11MB6115.namprd11.prod.outlook.com (2603:10b6:930:2c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Sun, 27 Aug
+ 2023 21:14:07 +0000
+Received: from PH7PR11MB7643.namprd11.prod.outlook.com
+ ([fe80::bfb7:d3a3:2ed:6e20]) by PH7PR11MB7643.namprd11.prod.outlook.com
+ ([fe80::bfb7:d3a3:2ed:6e20%7]) with mapi id 15.20.6699.034; Sun, 27 Aug 2023
+ 21:14:07 +0000
+Date:   Sun, 27 Aug 2023 17:14:04 -0400
+From:   Oliver Crumrine <ozlinux@hotmail.com>
+To:     gregkh@linuxfoundation.org, colin.i.king@gmail.com,
+        sumitraartsy@gmail.com, u.kleine-koenig@pengutronix.de,
+        geert@linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH 4/6] staging: octeon: clean up the octeon ethernet driver
+Message-ID: <PH7PR11MB76431AD0671A7D3F4CC0EBD4BCE1A@PH7PR11MB7643.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TMN:  [atUtHzHWdgADKiFe+ZSqzlwpLKirc11CzIbzTFPciuv3wGv03XlGoHX6ajc/JKOo]
+X-ClientProxiedBy: BLAP220CA0030.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::35) To PH7PR11MB7643.namprd11.prod.outlook.com
+ (2603:10b6:510:27c::22)
+X-Microsoft-Original-Message-ID: <4oouducumpbhyb6kybpf6ifl5s6ieavrpc2fkgcrneecultdyc@a7ocoierux5x>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB7643:EE_|CY5PR11MB6115:EE_
+X-MS-Office365-Filtering-Correlation-Id: cf3ce870-544e-4205-87e1-08dba7428c4c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uqlLWevWXf/P94/MlidRfI1uIkzeZZnGUSCgk1fs03T+aP0jOW480NRZCmZYioZfcaA6EavwwuOcWwqKu2oLUJ018/UNRfunH6zN9J5OfrGI5foPD1PQMTezNzCloI6gG5eECNPUqOETguao510ZH2mnmP6c1w0PHjXrQXs49zgJuRA9c7bpcv6g94+UkD4703dMGMWEb9Qbnf2Z9z61kD9ohTkCUYZDdb7yh3k809yP4sNXf0hKAXU5SnwTGj0pxF74yt0bmXOg3JyZ7fnEGdEf12YLHorwKy0jCZERY0d+uQnQU+2Nz+wxuNwGv6CpGfymg3zVtNptV2y9oZujdAgsX8IC4/Fw3zV5dypTcw/FNo7Mv9BsrDkJViw70JfyJjKKWqQ6hRLaAPTlwteCsI/pPW5yNFP9gq8JQ1ntsDMTFbC0/L1lqtxjM6qCSfDVWCY0771eWeMdBkn/FLCj+DIrySsYp09DchUUdrOLBteppqQQyCdQ25sUYQNKNcCLrg950PEbmyuJuTY/yEUQ+me+8T6+zaG026Ig1+tYoVJ/xCmKtua2KuIgVQd1mX0j
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jeMZEqebkPOZqw+54vcSrwOtl5VLBqu2rgGzO39Bfdqo7yXu/bphnhFQERvE?=
+ =?us-ascii?Q?6AWBK7NRgz7imxvJLSGr4qGL70rSP8qmKFzXAdBu5qMWzwW1hDAGG5DQGLfh?=
+ =?us-ascii?Q?nwY9xzVAlSfzSXtb4WvBUX/3XmgIxSiJk/UETwLJXLpxJuWDJYMfzIRtpfxm?=
+ =?us-ascii?Q?F2WXfzcE6oOllO1VOykDGoVIF3Q12QIIiSz/Sm5+yd9Y1zsbOmDSTK1kOXqR?=
+ =?us-ascii?Q?ljn1AMq+aEezGqGoFGRaI7+cpFbQB1bYex1dGQ6malA4iavkyPtowtS2gjIL?=
+ =?us-ascii?Q?T7dMWE1iAd7f0c9oh7QCoAXi6+BmR+tFOcjertLNkHJZhja9ABE7+J8GkZxH?=
+ =?us-ascii?Q?lQr7TVg+LDB0lHCoO6zIPSWeu9VG+clsl9Div6yjvS8oX2sKMjJs0r2P3+14?=
+ =?us-ascii?Q?JFLiSdHxxaH+fEss3J1dGRKIP6KItDqRph5G4HQ/vdYyyAxp/a1oLUzx7eg/?=
+ =?us-ascii?Q?iMyQ5TMtKcI0XwHnNcuFd64mpjSpQIJy1ypNZdflc8SBkwOdwtmhuZU6W2QH?=
+ =?us-ascii?Q?S3v6YuViciulJGgbv1w+AUFKhIQUMTOMxeNKrCPsPdrCIeDdL8Mo6owZBAmx?=
+ =?us-ascii?Q?gwLwrPkCzGG0PlUKTQsQFIapoMIUK9TPBp1S4JRdg4+Eg/tQ2Svd+qSigMwA?=
+ =?us-ascii?Q?s5OTVgMarcpv36ulcbTtsmRYuWpwo14JGFlwfjlY0/LpE9xzHuBXsmdvRaEQ?=
+ =?us-ascii?Q?UPcFrSzxkuxmcRgIgh3rCMka13KQbgcIBLBMLJ3XUIgHlXbBUej6/cZid23e?=
+ =?us-ascii?Q?qvNlo3hXgSj0jvuUzvtXZi+M0k2smtJ/lls9csjtYKw40NszpJW6LSjqLrxe?=
+ =?us-ascii?Q?3cgb+3ini5/GqMGOWzUGc74MUSxvBjAASX4zXomWf/zfcw1IfKOLBRs3LlmF?=
+ =?us-ascii?Q?5gVwaNDnlV13jvmdt3aQ+U1rXQW2jWq6YVS85Vs3rr3jObUg+DVNLXn0DdG8?=
+ =?us-ascii?Q?c/XGdQ82dFtv3lVhC0+dxn1GL0La8NKlflItsRLQ02ParrF2yDy1X1pYR3n4?=
+ =?us-ascii?Q?BmAkQSTLET2hPttEI0jzLBQVI5Vfs6STC71MEZM49U4Yxl+GdiS5HII16kwP?=
+ =?us-ascii?Q?F0SBhy3zDen9DEGW3keeiKPLTF6KGiRe1BSi/Prw0iDpCRoWhZBcHeqvnQ8R?=
+ =?us-ascii?Q?osxFyuzJ8p3ZMvS2GT3hjdx1jpkA0yiRfx9yb+KNLvbvzJ2Ub5ON37SIgH8M?=
+ =?us-ascii?Q?hhJ0OxUwTZBzZ423vCfQ/+7GOgRyRg2J2SGjhXQX7s44xv4NwptxFtKE5bZL?=
+ =?us-ascii?Q?mXp79qNJFqHcAyat8/0hXhDqDnjd+ZlnwKfpGZgUgw=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-e8f36.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf3ce870-544e-4205-87e1-08dba7428c4c
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7643.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2023 21:14:06.9988
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6115
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds basic support for the QSEECOM interface used to
-communicate with secure applications running in the TrustZone on certain
-Qualcomm devices. In addition to that, it also provides a driver for
-"uefisecapp", the secure application managing access to UEFI variables
-on such platforms.
+Make the octeon ethernet driver better adhere to the
+kernel coding standard
 
-For a more detailed description, see the blurb of v1.
+Signed-off-by: Oliver Crumrine <ozlinux@hotmail.com>
+---
+ drivers/staging/octeon/octeon-stubs.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Previous versions:
-
- - V5: https://lore.kernel.org/lkml/20230730161906.606163-1-luzmaximilian@gmail.com/t/
- - V4: https://lore.kernel.org/lkml/72c0359a-eda6-30ea-0ec0-b7e9b804b87b@gmail.com/t/
- - V3: https://lore.kernel.org/lkml/20230305022119.1331495-4-luzmaximilian@gmail.com/t/
- - V2: https://lore.kernel.org/lkml/20230127184650.756795-1-luzmaximilian@gmail.com/
- - V1: https://lore.kernel.org/lkml/20220723224949.1089973-1-luzmaximilian@gmail.com/
-
-Changes in v5:
-
- - Small code fixes (e.g., missing 'static inline', missing includes,
-   removal of unnecessary functions, improvements and fixes for
-   documentation and comments). No larger or structural changes.
-
-Changes in v5:
-
- - Re-introduce a dedicated platform device for managing QSEECOM client
-   devices. The device is now added via qcom_scm.c instead of the device
-   tree (as has been done in v3).
-
- - Replace ucs2_strlcpy() with ucs2_strscpy()
-
- - Drop "firmware: qcom_scm: Clear scm pointer on probe failure" and
-   sort out probe-related issue.
-
- - Clean up comments in qcom_qseecom_uefisecapp.c
-
-Changes in v4:
-
- - Integrate the QSEECOM interface into qcom_scm.c instead of
-   instantiating a custom device and requiring device-tree bindings for
-   it. With that, drop the respective patches exporting SCM call
-   functions from qcom_scm.c and the DT bindings.
-
- - Restructure management of DMA memory and move DMA mapping entirely
-   into the app_send() command, removing the need for DMA handling in
-   app client drivers.
-
- - Add support for EFI's query_variable_info() call.
-
- - Move UCS-2 string helpers to lib/ucs2_string.c (introduces patch 1).
-
- - Add fix for related cleanup-issue in qcom_scm.c (introduces patch 2).
-
- (Refer to individual patches for more details.)
-
-Changes in v3:
-
- - Fix doc comment in qcom_scm.c
- - Rebase on top of latest changes to qcom_scm.
-
-Changes in v2:
-
- - Bind the qseecom interface to a device.
-
- - Establish a device link between the new qseecom device and the SCM
-   device to ensure proper PM and remove ordering.
-
- - Remove the compatible for uefisecapp. Instead, introduce a compatible
-   for the qseecom device. This directly reflects ACPI tables and the
-   QCOM0476 device described therein, which is responsible for the
-   secure app / qseecom interface (i.e., the same purpose).
-
-   Client devices representing apps handled by the kernel (such as
-   uefisecapp) are now directly instantiated by the qseecom driver,
-   based on the respective platform-specific compatible.
-
- - Rename the base name (qctree -> qseecom) to allow differentiation
-   between old (qseecom) and new (smcinvoke) interfaces to the trusted
-   execution environment. This directly reflects downstream naming by
-   Qualcomm.
-
-Maximilian Luz (3):
-  lib/ucs2_string: Add UCS-2 strscpy function
-  firmware: qcom_scm: Add support for Qualcomm Secure Execution
-    Environment SCM interface
-  firmware: Add support for Qualcomm UEFI Secure Application
-
- MAINTAINERS                                |  12 +
- drivers/firmware/Kconfig                   |  32 +
- drivers/firmware/Makefile                  |   2 +
- drivers/firmware/qcom_qseecom.c            | 120 +++
- drivers/firmware/qcom_qseecom_uefisecapp.c | 871 +++++++++++++++++++++
- drivers/firmware/qcom_scm.c                | 394 ++++++++++
- include/linux/firmware/qcom/qcom_qseecom.h |  46 ++
- include/linux/firmware/qcom/qcom_scm.h     |  22 +
- include/linux/ucs2_string.h                |   1 +
- lib/ucs2_string.c                          |  52 ++
- 10 files changed, 1552 insertions(+)
- create mode 100644 drivers/firmware/qcom_qseecom.c
- create mode 100644 drivers/firmware/qcom_qseecom_uefisecapp.c
- create mode 100644 include/linux/firmware/qcom/qcom_qseecom.h
-
+diff --git a/drivers/staging/octeon/octeon-stubs.h b/drivers/staging/octeon/octeon-stubs.h
+index 4470c985dc5d..2cdbcbd8a97b 100644
+--- a/drivers/staging/octeon/octeon-stubs.h
++++ b/drivers/staging/octeon/octeon-stubs.h
+@@ -238,11 +238,11 @@ enum cvmx_pow_wait {
+ 	CVMX_POW_NO_WAIT = 0,
+ };
+ 
+-typedef enum {
++enum cvmx_pko_lock {
+ 	CVMX_PKO_LOCK_NONE = 0,
+ 	CVMX_PKO_LOCK_ATOMIC_TAG = 1,
+ 	CVMX_PKO_LOCK_CMD_QUEUE = 2,
+-} cvmx_pko_lock_t;
++};
+ 
+ typedef enum {
+ 	CVMX_PKO_SUCCESS,
+@@ -1381,12 +1381,12 @@ static inline union cvmx_gmxx_rxx_rx_inbnd cvmx_spi4000_check_speed(int interfac
+ }
+ 
+ static inline void cvmx_pko_send_packet_prepare(uint64_t port, uint64_t queue,
+-						cvmx_pko_lock_t use_locking)
++						enum cvmx_pko_lock use_locking)
+ { }
+ 
+ static inline cvmx_pko_status_t cvmx_pko_send_packet_finish(uint64_t port,
+ 		uint64_t queue, union cvmx_pko_command_word0 pko_command,
+-		union cvmx_buf_ptr packet, cvmx_pko_lock_t use_locking)
++		union cvmx_buf_ptr packet, enum cvmx_pko_lock use_locking)
+ {
+ 	return 0;
+ }
 -- 
-2.42.0
+2.39.3
 
