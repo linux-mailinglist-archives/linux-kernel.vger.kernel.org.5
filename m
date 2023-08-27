@@ -2,88 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6A478A04C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 18:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB5A78A069
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 19:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjH0QxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 12:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
+        id S229924AbjH0REz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 13:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbjH0QxB (ORCPT
+        with ESMTP id S229853AbjH0RE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 12:53:01 -0400
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80DA139;
-        Sun, 27 Aug 2023 09:52:55 -0700 (PDT)
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-565334377d0so1556061a12.2;
-        Sun, 27 Aug 2023 09:52:55 -0700 (PDT)
+        Sun, 27 Aug 2023 13:04:27 -0400
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0590712D;
+        Sun, 27 Aug 2023 10:04:25 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so37282541fa.3;
+        Sun, 27 Aug 2023 10:04:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693155175; x=1693759975;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ImkyWrYqH8lg/cu5/toGD9Vw+jK2UHolY7FUCZL6OdE=;
-        b=hwoyIGOuN4MJaB+1+5Fb0FIJaWkKb9UKcG+ZTWs5FSfhLzHAwu9wqzSWZnjyPfA+w9
-         RCjJLVmvULAGYD5DXYpal0MkHdRjk7K5ydL2W0N3+8GqhGdzlRsvle0plPcA+PnoaaGT
-         ozB1ErVvTyjz3qD6gscBhWDnw1KSOcdGuDTrBGioVyBnu0kXB/ZhLZ/h303FnnvGIctQ
-         E8DlbPRct/rVSWTuBfDyGTEODh0z02nKISVeql2RhUiJHcnYn3kQieLUbJcZxH6BhDKt
-         hWxT74KIgP9ZmWukTWMse5vxfZQRd1FtZC/9bNW8fIpsFaQHzaLod2ceIOzYZq9Mhx+U
-         Z+EA==
-X-Gm-Message-State: AOJu0YyXajby3gntrN3oChd0+/oleq0ZZg6tzHuQkXgKPW58wknCVsTH
-        mPENdQNIwL4suLb3aH3DK9c=
-X-Google-Smtp-Source: AGHT+IGQtRfWPaISyzI4T0Mr5/nRWzHuzFWUjp93ZJlkqnVi4QGK3coCaHFP+i/PC3lqhGoTNciR9w==
-X-Received: by 2002:a05:6a20:1444:b0:149:424e:b26a with SMTP id a4-20020a056a20144400b00149424eb26amr22909646pzi.19.1693155175186;
-        Sun, 27 Aug 2023 09:52:55 -0700 (PDT)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id fk22-20020a056a003a9600b006887037cde6sm5072546pfb.60.2023.08.27.09.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 09:52:54 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 01:52:52 +0900
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Rob Herring <robh@kernel.org>,
+        d=1e100.net; s=20221208; t=1693155863; x=1693760663;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ERbGcMk6gfakm9DN1/j10oG7dRsa1/HJVwOkOQiUYg=;
+        b=QB82P1/Zoei8Wskv8ZM5fkHfMCha7VG0U/0BQuxdE2f4ZU2B9iX5BaWjqV2hRhjaM1
+         VclHZdpG/2ZEkFaM2dgBudZ0Q+U82Aw6FOzq5HJnOxQXtukJ/gxGiGUzAcDX6ip40XrQ
+         XckT14k0RWChipnAa0JW55RHk50fzqco30TuRFsN8+FEazdk/0kN/qDcBHnUMl3O+ke8
+         GVIYwwWSmeaefQRYixLYsd4hzTY4BV6OACA3xwRyJJPTdsAktiJYnDWMOiWCq798WXG2
+         RJ33CKslbhnggSYVNsYXxsj3BpaCtmZRyNcXfddXeiVAHJXQ7NPJgRW7BxHOa7+YgvKz
+         Xu6Q==
+X-Gm-Message-State: AOJu0Yy5bPw5dm2YIHq5P44geJtehAkLAX5c9lBm3O/vKyfD20hoaaQw
+        Vq69AP/F35DC7D6Qt/9s56N6wMENeV5TlRfu
+X-Google-Smtp-Source: AGHT+IEF7d/5kTVF5MtR4cRbcAp149+5664NC2TYLcGNDPGf3jUEZ1dBbrgI5e/SqbeFgnAyHK3sug==
+X-Received: by 2002:a2e:9bd8:0:b0:2b1:c1ae:73e3 with SMTP id w24-20020a2e9bd8000000b002b1c1ae73e3mr17253046ljj.15.1693155862987;
+        Sun, 27 Aug 2023 10:04:22 -0700 (PDT)
+Received: from [192.168.86.246] (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net. [82.11.51.62])
+        by smtp.gmail.com with ESMTPSA id a1-20020a17090640c100b0099bcf9c2ec6sm3589439ejk.75.2023.08.27.10.04.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 10:04:22 -0700 (PDT)
+Message-ID: <70b3ba82-0920-4613-9480-919a3df6833c@linux.com>
+Date:   Sun, 27 Aug 2023 18:04:21 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V10 0/4] Add S4 SoC PLLs and Peripheral clock
+To:     Yu Tu <yu.tu@amlogic.com>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: PCI: qcom: fix SDX65 compatible
-Message-ID: <20230827165252.GB2932694@rocinante>
-References: <20230827085351.21932-1-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230827085351.21932-1-krzysztof.kozlowski@linaro.org>
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kelvin.zhang@amlogic.com, qi.duan@amlogic.com
+References: <20230822082750.27633-1-yu.tu@amlogic.com>
+Content-Language: en-US
+From:   Lucas Tanure <tanure@linux.com>
+In-Reply-To: <20230822082750.27633-1-yu.tu@amlogic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-> Commit c0aba9f32801 ("dt-bindings: PCI: qcom: Add SDX65 SoC") adding
-> SDX65 was not ever tested and is clearly bogus.  The qcom,sdx65-pcie-ep
-> compatible is followed by fallback in DTS and there is no driver
-> matching by this compatible.  Driver matches by its fallback
-> qcom,sdx55-pcie-ep.  This fixes also dtbs_check warnings like:
+On 22-08-2023 09:27, Yu Tu wrote:
+> 1. Add S4 SoC PLLs and Peripheral clock controller dt-bindings.
+> 2. Add PLLs and Peripheral clock controller driver for S4 SOC.
 > 
->   qcom-sdx65-mtp.dtb: pcie-ep@1c00000: compatible: ['qcom,sdx65-pcie-ep', 'qcom,sdx55-pcie-ep'] is too long
+> 
+> Yu Tu (4):
+>    dt-bindings: clock: document Amlogic S4 SoC PLL clock controller
+>    dt-bindings: clock: document Amlogic S4 SoC peripherals clock
+>      controller
+>    clk: meson: S4: add support for Amlogic S4 SoC PLL clock driver
+>    clk: meson: S4: add support for Amlogic S4 SoC peripheral clock
+>      controller
+> 
+> V9 -> V10:
+> 1. Change the relevant S4 CLK patch based on Neil's recently modified
+> patch.
+> 2. Change patch 0003/0004 clocks comment, format and clock flags suggested
+> by Jerome.
+> 
+> V8 -> V9: Add patch 0001/0002 dt-bindings tag. Suggested by Krzysztof.
+> V7 -> V8:
+> 1. Change patch 0001/0002 dt-bindings title description, remove "meson".
+> Suggested by Dmitry, Neil.
+> 2. Change patch 0003/0004 clocks comment, format and clock flags suggested by
+> Dmitry, Neil, Jerome.
+> 
+> V6 -> V7: Change send patch series as well change format and clock flags
+> suggested by Jerome. Change dt-bindings suggested by Krzysztof.
+> V5 -> V6: Change send patch series, as well change format and clock flags.
+> V4 -> V5: change format and clock flags and adjust the patch series
+> as suggested by Jerome.
+> V3 -> V4: change format and clock flags.
+> V2 -> V3: Use two clock controller.
+> V1 -> V2: Change format as discussed in the email.
+> 
+> Link:https://lore.kernel.org/linux-amlogic/20230517070215.28463-1-yu.tu@amlogic.com/
+> 
+>   .../clock/amlogic,s4-peripherals-clkc.yaml    |   96 +
+>   .../bindings/clock/amlogic,s4-pll-clkc.yaml   |   49 +
+>   drivers/clk/meson/Kconfig                     |   23 +
+>   drivers/clk/meson/Makefile                    |    2 +
+>   drivers/clk/meson/s4-peripherals.c            | 3787 +++++++++++++++++
+>   drivers/clk/meson/s4-peripherals.h            |   57 +
+>   drivers/clk/meson/s4-pll.c                    |  867 ++++
+>   drivers/clk/meson/s4-pll.h                    |   38 +
+>   .../clock/amlogic,s4-peripherals-clkc.h       |  236 +
+>   .../dt-bindings/clock/amlogic,s4-pll-clkc.h   |   43 +
+>   10 files changed, 5198 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/clock/amlogic,s4-peripherals-clkc.yaml
+>   create mode 100644 Documentation/devicetree/bindings/clock/amlogic,s4-pll-clkc.yaml
+>   create mode 100644 drivers/clk/meson/s4-peripherals.c
+>   create mode 100644 drivers/clk/meson/s4-peripherals.h
+>   create mode 100644 drivers/clk/meson/s4-pll.c
+>   create mode 100644 drivers/clk/meson/s4-pll.h
+>   create mode 100644 include/dt-bindings/clock/amlogic,s4-peripherals-clkc.h
+>   create mode 100644 include/dt-bindings/clock/amlogic,s4-pll-clkc.h
+> 
+> 
+> base-commit: bd0f6c57c2b324b6f92ccfe13a8005ff829287b8
+How similar is T7 and S4 regarding the clocks?
+Can S4 clock driver be used by T7 without modifications?
 
-Applied to controller/qcom, thank you!
-
-[1/1] dt-bindings: PCI: qcom: Fix SDX65 compatible
-      https://git.kernel.org/pci/pci/c/15d63a897f79
-
-	Krzysztof
+Thanks
+Lucas
