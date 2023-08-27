@@ -2,50 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3104878A040
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 18:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A3678A042
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 18:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjH0Qrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 12:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
+        id S229999AbjH0Qud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 12:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbjH0Qrk (ORCPT
+        with ESMTP id S229795AbjH0QuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 12:47:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A7AFA
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 09:47:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B7382619B9
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 16:47:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C62FBC433C7;
-        Sun, 27 Aug 2023 16:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693154857;
-        bh=/2yYss0mXQw0a3CVsDaLwI8APat97dVsnVdJ8zWStSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PhicOAyD28nAEWr9xc2z8+o1cKDLNIsQtH5yWLyh3YO9zmqrtppWipR3gh/C3bho7
-         7e9tW0q2fxd5pujoqQ60nefSa1MEbzDyxTXmEzWGAu4lcoQ64it+24XZ+3LtsW/8el
-         TvhYq4OOUph0LTGvvjUiPhnKsMMOPUFbE/M1/C4c=
-Date:   Sun, 27 Aug 2023 18:47:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     88c258bd-3d0c-de79-b411-6552841eb8d0@gmail.com
-Cc:     Linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, luisbg@kernel.org,
-        salah.triki@gmail.com,
-        syzbot+fc26c366038b54261e53@syzkaller.appspotmail.com
-Subject: Re: [PATCH] fs/befs: fix shift-out-of-bounds in befs_check_sb
-Message-ID: <2023082746-antelope-drop-down-5562@gregkh>
-References: <24deab57-5480-3af6-17e6-0874aeaef3db@gmail.com>
+        Sun, 27 Aug 2023 12:50:01 -0400
+Received: from exchange.fintech.ru (e10edge.fintech.ru [195.54.195.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0CAFA
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 09:49:57 -0700 (PDT)
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 27 Aug
+ 2023 19:49:54 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 27 Aug
+ 2023 19:49:54 +0300
+From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+CC:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+        <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <syzbot+9d014e6e0df70d97c103@syzkaller.appspotmail.com>
+Subject: [PATCH] fs: ntfs3: fix possible NULL-ptr-deref in ni_readpage_cmpr()
+Date:   Sun, 27 Aug 2023 09:49:44 -0700
+Message-ID: <20230827164944.52560-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24deab57-5480-3af6-17e6-0874aeaef3db@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.253.138]
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,20 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 04:46:40PM +0530, Manas Ghandat wrote:
-> Hi Greg,
-> 
-> Sorry for directly mailing to you but I tried to reach the maintainers for
-> quite some time now. I haven't received any response on my patch. I was told
-> to mail you in order to get my patch pulled.
-> 
+Syzkaller identified a possible issue with calling unlock_page() for
+pages that have not been correctly allocated by
+find_or_create_page(), leading to possible NULL pointer dereferences
+among other issues.
 
-I have no context here, sorry.
+Specifically, in case of an error with aforementioned
+find_or_create_page() function due to memory issues,
+ni_readpage_cmpr() attempts to erroneously unlock and release all
+elements of 'pages'.
 
-Also, I am not a filesystem developer or maintainer.  And befs?  I doubt
-that's maintained anymore as the operating system is long obsolete,
-right?
+This patch ensures that we only deal with the pages successfully
+allocated with calls to find_or_create_page().
 
-confused,
+Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
+Reported-by: syzbot+9d014e6e0df70d97c103@syzkaller.appspotmail.com
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ fs/ntfs3/frecord.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-greg k-h
+diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+index 16bd9faa2d28..9789b2ac7e2d 100644
+--- a/fs/ntfs3/frecord.c
++++ b/fs/ntfs3/frecord.c
+@@ -2095,7 +2095,7 @@ int ni_readpage_cmpr(struct ntfs_inode *ni, struct page *page)
+ 	struct page **pages = NULL; /* Array of at most 16 pages. stack? */
+ 	u8 frame_bits;
+ 	CLST frame;
+-	u32 i, idx, frame_size, pages_per_frame;
++	u32 i, idx, frame_size, pages_per_frame, pages_created = 0;
+ 	gfp_t gfp_mask;
+ 	struct page *pg;
+ 
+@@ -2138,6 +2138,7 @@ int ni_readpage_cmpr(struct ntfs_inode *ni, struct page *page)
+ 			goto out1;
+ 		}
+ 		pages[i] = pg;
++		pages_created++;
+ 	}
+ 
+ 	err = ni_read_frame(ni, frame_vbo, pages, pages_per_frame);
+@@ -2146,7 +2147,7 @@ int ni_readpage_cmpr(struct ntfs_inode *ni, struct page *page)
+ 	if (err)
+ 		SetPageError(page);
+ 
+-	for (i = 0; i < pages_per_frame; i++) {
++	for (i = 0; i < pages_created; i++) {
+ 		pg = pages[i];
+ 		if (i == idx)
+ 			continue;
+-- 
+2.25.1
+
