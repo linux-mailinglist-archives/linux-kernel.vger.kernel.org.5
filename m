@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D10789CDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 12:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA07789CE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 12:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjH0KFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 06:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
+        id S230429AbjH0KNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 06:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjH0KEm (ORCPT
+        with ESMTP id S229969AbjH0KM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 06:04:42 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65635124;
-        Sun, 27 Aug 2023 03:04:39 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-986d8332f50so291071066b.0;
-        Sun, 27 Aug 2023 03:04:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693130678; x=1693735478;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k3yLEQRh2p6qcn+rlG3lKXhYcStLscrFlLBAG5p3HJg=;
-        b=Uey3a9aRoN2566QD8aQhNQQQrFnRSZveCdNiPeiMm7Zm2/vxvjw6G4g7G7xpLoWYVF
-         Xpntcamiwz97i9YZBVqEHu/slkgRkRJBTG9gvTaKYbPd8ejawppuppnU39laD5qfajEo
-         /nTbJ+XGoitpvKdQ0cZ/HG8R0mc/jn+Ct1rRtOHdmzaQMFEUvOgxd90MLGuEjdRqOPGm
-         WIfNQgkNzMLZztijJsszb7AgcFQp35l+9aEGy434xpjQlbNLW6iYNVVb6NGKABq22qdH
-         8gRpj7A1gCAYRPZYI0Zzo1w7GIFbK4MdY/3+4k9cRHdajWTk1fHnGv8kQ7OfK2786pLG
-         ieuQ==
-X-Gm-Message-State: AOJu0YwqKO5cEkw6vB07zkMwWDHWMuguiL5570GjcdDgL2dCFJlJKR3r
-        fmTQmSiAT53lOWHXSh+bomQ=
-X-Google-Smtp-Source: AGHT+IGH1Bhx1BbidsnYdjWIJhV9dyqreMXlr2EtXDJOyKYP8FbqwIp6lVVa1c9wNDavJV05rKhi6g==
-X-Received: by 2002:a17:907:7635:b0:9a1:d915:d8dd with SMTP id jy21-20020a170907763500b009a1d915d8ddmr9873398ejc.10.1693130677691;
-        Sun, 27 Aug 2023 03:04:37 -0700 (PDT)
-Received: from [192.168.86.246] (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net. [82.11.51.62])
-        by smtp.gmail.com with ESMTPSA id ck8-20020a170906c44800b0099bd5d28dc4sm3252637ejb.195.2023.08.27.03.04.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Aug 2023 03:04:37 -0700 (PDT)
-Message-ID: <09735262-1bc0-40cf-b139-22cccf70bcab@linux.com>
-Date:   Sun, 27 Aug 2023 11:04:36 +0100
+        Sun, 27 Aug 2023 06:12:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC84125
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 03:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693131100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fg4otpgPmKt9KaByfspMaEC8zG3oBR6gcXrny0pY4kM=;
+        b=cwmCmVj62bzxRM290Fvc8YekKHrcPFL0REPOD1uS7p761UhxWNoxebzTHgWzzyvjq0nFYQ
+        dbAK5lYva+dsCEXTfaaQ+lA47Bw58wRruTYNk4PbCBvYTjegrLSM4lPSvNyD3lziQ3OHvf
+        ib9goopm0w+poJyFhPLIR1UltSxnq0Q=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-484-5aQtTWKvOGW19Ky3V7f6fg-1; Sun, 27 Aug 2023 06:11:36 -0400
+X-MC-Unique: 5aQtTWKvOGW19Ky3V7f6fg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BD2553806631;
+        Sun, 27 Aug 2023 10:11:35 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E5EE2166B25;
+        Sun, 27 Aug 2023 10:11:31 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        x86@kernel.org, linux-riscv@lists.infradead.org,
+        akpm@linux-foundation.org, catalin.marinas@arm.com,
+        thunder.leizhen@huawei.com, dyoung@redhat.com, prudo@redhat.com,
+        Baoquan He <bhe@redhat.com>
+Subject: [PATCH 0/8] kdump: use generic functions to simplify crashkernel reservation in architectures
+Date:   Sun, 27 Aug 2023 18:11:19 +0800
+Message-ID: <20230827101128.70931-1-bhe@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Revert "tty: serial: meson: Add a earlycon for the T7
- SoC"
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-References: <20230827082944.5100-1-tanure@linux.com>
- <7bf9e716-0ff2-56d5-07ab-db027901454e@linaro.org>
-Content-Language: en-US
-From:   Lucas Tanure <tanure@linux.com>
-In-Reply-To: <7bf9e716-0ff2-56d5-07ab-db027901454e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-08-2023 10:48, Neil Armstrong wrote:
-> Hi Lucas,
-> 
-> Le 27/08/2023 à 10:29, Lucas Tanure a écrit :
->> This reverts commit 6a4197f9763325043abf7690a21124a9facbf52e.
->> New SoC will use ttyS0 instead of ttyAML, so T7 SoC doesn't need a 
->> OF_EARLYCON_DECLARE.
->>
->> Signed-off-by: Lucas Tanure <tanure@linux.com>
->> ---
->> Since V1:
->> - add Signed-off-by:
->>
->>   drivers/tty/serial/meson_uart.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/tty/serial/meson_uart.c 
->> b/drivers/tty/serial/meson_uart.c
->> index c4f61d82fb727..790d910dafa5d 100644
->> --- a/drivers/tty/serial/meson_uart.c
->> +++ b/drivers/tty/serial/meson_uart.c
->> @@ -648,8 +648,6 @@ meson_serial_early_console_setup(struct 
->> earlycon_device *device, const char *opt
->>   OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
->>               meson_serial_early_console_setup);
->> -OF_EARLYCON_DECLARE(meson, "amlogic,t7-uart",
->> -            meson_serial_early_console_setup);
->>   #define MESON_SERIAL_CONSOLE_PTR(_devname) 
->> (&meson_serial_console_##_devname)
->>   #else
-> 
-> How do you use earlycon with this removed ?
-> 
-> Neil
-This is my kernel cmdline:
-console=ttyS0,921600 no_console_suspend earlycon=ttyS0,0xfe078000
+In the current arm64, crashkernel=,high support has been finished after
+several rounds of posting and careful reviewing. The code in arm64 which
+parses crashkernel kernel parameters firstly, then reserve memory can be
+a good example for other ARCH to refer to.
 
-And I can see my log:
-boot 64bit kernel
-[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd092]
-[    0.000000] Linux version 6.5.0-rc7-next-20230825+ (tanureal@ryzen) 
-(aarch64-none-linux-gnu-gcc (GNU Toolchain for the A-profile 
-Architecture 10.3-2021.07 (arm-10.29)) 10.3.1 20210621, GNU ld (GNU 
-Toolchain fo3
-[    0.000000] KASLR disabled due to lack of seed
-[    0.000000] Machine model: Khadas vim4
-[    0.000000] OF: reserved mem: 0x0000000005000000..0x00000000052fffff 
-(3072 KiB) nomap non-reusable secmon@5000000
-[    0.000000] OF: reserved mem: 0x0000000005300000..0x00000000072fffff 
-(32768 KiB) nomap non-reusable secmon@5300000
-...
-[    0.079368] io scheduler mq-deadline registered
-[    0.079374] io scheduler kyber registered
-[    0.079549] io scheduler bfq registered
-[    0.083373] fe078000.serial: ttyS0 at MMIO 0xfe078000 (irq = 14, 
-base_baud = 1500000) is a meson_uart
-[    0.083403] printk: console [ttyS0] enabled
+Whereas in x86_64, the code mixing crashkernel parameter parsing and
+memory reserving is twisted, and looks messy. Refactoring the code to
+make it more readable maintainable is necessary.
 
-As the log is OK, and T7 for now is binding against S4 code we should 
-drop this patch and add a S4 one if needed.
+Here, firstly abstract the crashkernel parameter parsing code into
+parse_crashkernel() to make it be able to parse crashkernel=,high|low.
+Then abstract the crashkernel memory reserving code into a generic
+function reserve_crashkernel_generic(). Finally, in ARCH which
+crashkernel=,high support is needed, a simple arch_reserve_crashkernel()
+can be added to call above two functions. This can remove the duplicated
+implmentation code in each ARCH, like arm64, x86_64.
 
-But just having this log is not enough for testing earlycon?
-I am assuming that by just having the log since 0.0000 is a good sign 
-that earlycon is working.
-Could you give further guidance?
+I only change the arm64 and x86_64 implementation to make use of the
+generic functions to simplify code. Risc-v can be done very easily refer
+to the steps in arm64 and x86_64.
 
-Lucas Tanure
+History:
+- RFC patchset:
+  https://lore.kernel.org/all/20230619055951.45620-1-bhe@redhat.com/T/#u
+  [RFC PATCH 0/4] kdump: add generic functions to simplify crashkernel crashkernel in architecture
+  Dave and Philipp commented the old parse_crashkernel_common() and
+  parse_crashkernel_generic() are quite confusing. In this formal post,
+  I made change to address the concern by unifying all crashkernel
+  parsing into parse_crashkernel().
+
+Baoquan He (8):
+  crash_core.c: remove unnecessary parameter of function
+  crash_core: change the prototype of function parse_crashkernel()
+  include/linux/kexec.h: move down crash_core.h including
+  crash_core: change parse_crashkernel() to support
+    crashkernel=,high|low parsing
+  crash_core: add generic function to do reservation
+  arm64: kdump: use generic interface to simplify crashkernel
+    reservation
+  x86: kdump: use generic interface to simplify crashkernel reservation
+    code
+  crash_core.c: remove unneeded functions
+
+ arch/arm/kernel/setup.c              |   3 +-
+ arch/arm64/Kconfig                   |   3 +
+ arch/arm64/include/asm/kexec.h       |   5 +
+ arch/arm64/mm/init.c                 | 140 ++--------------------
+ arch/ia64/kernel/setup.c             |   2 +-
+ arch/loongarch/kernel/setup.c        |   4 +-
+ arch/mips/kernel/setup.c             |   3 +-
+ arch/powerpc/kernel/fadump.c         |   2 +-
+ arch/powerpc/kexec/core.c            |   2 +-
+ arch/powerpc/mm/nohash/kaslr_booke.c |   2 +-
+ arch/riscv/mm/init.c                 |   2 +-
+ arch/s390/kernel/setup.c             |   4 +-
+ arch/sh/kernel/machine_kexec.c       |   2 +-
+ arch/x86/Kconfig                     |   3 +
+ arch/x86/include/asm/kexec.h         |  32 +++++
+ arch/x86/kernel/setup.c              | 143 +++-------------------
+ include/linux/crash_core.h           |  35 +++++-
+ include/linux/kexec.h                |  14 +--
+ kernel/crash_core.c                  | 170 +++++++++++++++++++++++----
+ 19 files changed, 266 insertions(+), 305 deletions(-)
+
+-- 
+2.41.0
 
