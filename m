@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FC8789FB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 16:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30640789FBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 16:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjH0OGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 10:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
+        id S230488AbjH0OG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 10:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbjH0OGK (ORCPT
+        with ESMTP id S229883AbjH0OGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Aug 2023 10:06:10 -0400
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B7C11C
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA5B128
         for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 07:06:05 -0700 (PDT)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-56c2d67da6aso1262671a12.2
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1c08a6763b3so28932515ad.3
         for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 07:06:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1693145165; x=1693749965;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=b2N/TnPyZDoq26EJgBgiN0g8Q5yVKc7sjg7lC8Qd+1g=;
-        b=EQzM+4djA7bEAPz8a3+jXsxIduBIW/XsPlPQSnKdQdpcSB4W7RPMdVYaEPf6gMBEbA
-         sVLJWXdSdy4bSLxiLnegdzHh726GKdSpWi982lue7jxnY0cQYs2E7OYoEQoPvmV/9iRh
-         ni+2Iv4fHcUwpx7I5jO09sY2WziisyixV5CvzbcEBCzbqNp+tnkmra0GWUK/FhlsBrXz
-         X3g98uhVMkRv5hZM7W2YHaryiivbrP0nS1zIu4njWEaJL1Yw3yGGMXYGu0gIjQ3yjOw+
-         mrn5/sBKyrqb6wEukiokm6mU6xX9CNDeYbsw+HmPSA0MSKm0ZJhpZlvZH429fzkwWpY7
-         lrUA==
-X-Gm-Message-State: AOJu0YwqXL+hFAy6Nn0VsA722W0JhCHJUMhRfXbXbGqJ+W+IUuB6eoxo
-        jJ6swzbigmN43HkFVBCYDJaQjwZxIAhtMXkHnBLvqRYcWWNs
-X-Google-Smtp-Source: AGHT+IFX56FxKIriBE10rK6BJmJ0rW9WlxcVyHIeBuMGDyX2OyGJnfXeNshjnmgvHWsQmsvXRmE42F5OEixjYJiw+3ifIULGjgVF
+        bh=DEsVrIr97VEhELJ+S8m4nEcUrnz7jIH9M5zgjazlI78=;
+        b=HSh7sGTVPqJGLDG7HORG3H++ATDSfO61RcZK/i7lVxNMYlf2o54rXOqfHRxeMP34VR
+         Vh+lSy0i0VFAPX+QxSvq1vAB6s8wa1FJFISE6gpxRieT5cwpQs89fm1JcdsFCEdj8OJO
+         OUkRNxUDn0+HKd1dzesd2ETqj8sHgunrJb195ukNKgGFvp4H4b0O3iNLNBaNpHDmMwOc
+         aI1KaQbwwmkeAc+ndzWziY8Wv31OlctAE4UVcLOcStwEASnhk42R//3lSOp06RBDdWwF
+         EtIRxCLEZX2xwlIxrlFukCzSuknmyLvhGQ/1WnhGD3AU0Sa+G4SDwU9u9C/2qftQXZx2
+         k3dw==
+X-Gm-Message-State: AOJu0YzqjpzvWCkpVs6Xe1xK20F3gNE9H5f5dS2ZAD3DIyupsy45Y+J5
+        Tm4jnydIF5FlZ1d+ly/ax5SF/zxBwkvMKTN5f4uXBTWZfqlDFDw=
+X-Google-Smtp-Source: AGHT+IHWrDKyUSOIV/Ua3zI464JtXwvhPeWH7YdvGxLbS0EZjCOvbGJETdl14zoIH3fDGS0QfSWpeaPeLJW2C3/hGz0qXUuOiMd+
 MIME-Version: 1.0
-X-Received: by 2002:a63:8f50:0:b0:56c:6b2:95bc with SMTP id
- r16-20020a638f50000000b0056c06b295bcmr3455262pgn.6.1693145165266; Sun, 27 Aug
+X-Received: by 2002:a17:902:d48e:b0:1bc:4c3d:eb08 with SMTP id
+ c14-20020a170902d48e00b001bc4c3deb08mr8010736plg.8.1693145165547; Sun, 27 Aug
  2023 07:06:05 -0700 (PDT)
 Date:   Sun, 27 Aug 2023 07:06:05 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002106de0603e814ef@google.com>
-Subject: [syzbot] Monthly serial report (Aug 2023)
-From:   syzbot <syzbot+listfbbd0645f826b13f6b41@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000025510c0603e814e3@google.com>
+Subject: [syzbot] Monthly wireless report (Aug 2023)
+From:   syzbot <syzbot+listf421a02dce8c614d0752@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -54,28 +54,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello serial maintainers/developers,
+Hello wireless maintainers/developers,
 
-This is a 31-day syzbot report for the serial subsystem.
+This is a 31-day syzbot report for the wireless subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/serial
+https://syzkaller.appspot.com/upstream/s/wireless
 
 During the period, 1 new issues were detected and 0 were fixed.
-In total, 13 issues are still open and 40 have been fixed so far.
+In total, 27 issues are still open and 114 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref Crashes Repro Title
-<1> 3604    Yes   BUG: sleeping function called from invalid context in console_lock (2)
-                  https://syzkaller.appspot.com/bug?extid=dbac96d8e73b61aa559c
-<2> 39      Yes   general protection fault in serial8250_tx_chars
-                  https://syzkaller.appspot.com/bug?extid=837b8c9032c053262db8
-<3> 16      Yes   BUG: sleeping function called from invalid context in gsm_send
-                  https://syzkaller.appspot.com/bug?extid=b687fe9bf10db0839715
-<4> 4       Yes   memory leak in gsmld_ioctl
-                  https://syzkaller.appspot.com/bug?extid=6e3e8f30f269f5028e5d
-<5> 1       Yes   INFO: rcu detected stall in console_callback
-                  https://syzkaller.appspot.com/bug?extid=32af18ae7b894a681f2d
+Ref  Crashes Repro Title
+<1>  4261    Yes   WARNING in __cfg80211_ibss_joined (2)
+                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
+<2>  3471    Yes   WARNING in ieee80211_rx_list
+                   https://syzkaller.appspot.com/bug?extid=8830db5d3593b5546d2e
+<3>  1969    Yes   WARNING in ieee80211_link_info_change_notify (2)
+                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
+<4>  1762    No    WARNING in ieee80211_ibss_csa_beacon (2)
+                   https://syzkaller.appspot.com/bug?extid=b10a54cb0355d83fd75c
+<5>  812     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
+                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
+<6>  801     Yes   WARNING in __rate_control_send_low
+                   https://syzkaller.appspot.com/bug?extid=fdc5123366fb9c3fdc6d
+<7>  689     Yes   WARNING in ieee80211_start_next_roc
+                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
+<8>  465     No    INFO: task hung in ath9k_hif_usb_firmware_cb (2)
+                   https://syzkaller.appspot.com/bug?extid=d5635158fb0281b27bff
+<9>  43      Yes   WARNING in carl9170_usb_submit_cmd_urb/usb_submit_urb
+                   https://syzkaller.appspot.com/bug?extid=9468df99cb63a4a4c4e1
+<10> 41      Yes   WARNING in ieee80211_free_ack_frame (2)
+                   https://syzkaller.appspot.com/bug?extid=ac648b0525be1feba506
 
 ---
 This report is generated by a bot. It may contain errors.
