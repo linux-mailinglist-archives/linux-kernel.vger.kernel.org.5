@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B0D78A003
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 17:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9343A78A001
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 17:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjH0PiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 11:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
+        id S230412AbjH0PiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 11:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjH0PiK (ORCPT
+        with ESMTP id S229696AbjH0PiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Aug 2023 11:38:10 -0400
-X-Greylist: delayed 388 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Aug 2023 08:38:07 PDT
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E283813E;
+X-Greylist: delayed 387 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Aug 2023 08:38:07 PDT
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40FCFC;
         Sun, 27 Aug 2023 08:38:07 -0700 (PDT)
 From:   Tobias Schramm <t.schramm@manjaro.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
         t=1693150298;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mJCkXIySq/iFwmfrnE/7WGXMl038R0X4mESkOBP9McM=;
-        b=ANMbIKdmPXocR5EkhrkUzYxoOrMxxM1/7bTNikyISMQHIxWNLZGCWI6z3+gLCYY8ovEtXs
-        IH0ROBJDGc2fplCKlFxUTaftE/lS7roa2C2s8yfIQb/bpTgv2ZZSPs4UIu3W/Z/tkiPkY6
-        4FtoQRXwh+3k9gw4l8rTfUHF9deJwCjuYl1Ryy7XskcSN+Rbpn99AjZFEhkWf7Od7nmjPQ
-        bIJB+fjh4rB2fqfgcbQKLpbaJxv5SQr6ifZBaHYSRTotuq9BlOOHo6FUa+a8q0yaOGSkBo
-        NhR+CmGbBlzO2BxzghQfQEttJo2IIyQtYMKQWYe37dPOV8o1ndBuuXAFzgM2fA==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9CFlQknagNZ7xplVnx26WwbwbBId9FT6aSVcWnKANcA=;
+        b=v7OvgJHrAZz+KB7S5cz0VREbnwljDRmKtVndhFB7GX0A2ygw0nsnk4an25vdjUhKvS87Kt
+        v4BTHtHkoWDSZlf6Poin1dt/3QK8FHLY0WNN/s6tnztm2WaRpqbStPx4I2Wlhwm0YXphap
+        BLdcfbJzW6hF0SLx2m6GCRfmRRnvQ74BpxgwH5z8E8ajnwjGby7jb7TsvyJDo286ynHxat
+        MBhlxm3OXABZP4/2hwKDI4pFfIbMXU7kDFmkS2uHDmZkLVsroaQyzY7ycdEHAnQd6npbCe
+        JCFyFu8cH2luBk9BiRbIpfuENHgc4g5atvSXguv+DKDyZmSUn0MLH2p6dmkdjQ==
 To:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         Samuel Holland <samuel@sholland.org>
 Cc:     linux-spi@vger.kernel.org, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH 0/2] spi: sun6i: fix RX data corruption in DMA mode
-Date:   Sun, 27 Aug 2023 17:25:56 +0200
-Message-ID: <20230827152558.5368-1-t.schramm@manjaro.org>
+Subject: [PATCH 1/2] spi: sun6i: reduce DMA RX transfer width to single byte
+Date:   Sun, 27 Aug 2023 17:25:57 +0200
+Message-ID: <20230827152558.5368-2-t.schramm@manjaro.org>
+In-Reply-To: <20230827152558.5368-1-t.schramm@manjaro.org>
+References: <20230827152558.5368-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Authentication-Results: ORIGINATING;
@@ -50,31 +53,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey folks,
+Through empirical testing it has been determined that sometimes RX SPI
+transfers with DMA enabled return corrupted data. This is down to single
+or even multiple bytes lost during DMA transfer from SPI peripheral to
+memory. It seems the RX FIFO within the SPI peripheral can become
+confused when performing bus read accesses wider than a single byte to it
+during an active SPI transfer.
 
-this set of patches fixes two bugs in the sun6i SPI driver that result in
-corruption of received data in DMA RX mode.
+This patch reduces the width of individual DMA read accesses to the
+RX FIFO to a single byte to mitigate that issue.
 
-The first bug seems to be related to an incompatibility of the SPI RX FIFO
-with wider than single byte read accesses during SPI transfers. I'm not
-sure if this bug affects all types of SPI controllers found in Allwinner
-SoCs supported by this driver. However reducing the access width should
-always be safe. I've tested this change on a V3s SoC. Further testing to
-narrow down the set of affected SoCs in the future would be welcome.
+Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+---
+ drivers/spi/spi-sun6i.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The second bug is a race between SPI RX DMA and FIFO drain logic for
-interrupt-based SPI operation. This bug affects all SPI controllers
-supported by this driver. Once again this change has been tested on the
-Allwinner V3s SoC.
-
-Tobias Schramm (2):
-  spi: sun6i: reduce DMA RX transfer width to single byte
-  spi: sun6i: fix race between DMA RX transfer completion and RX FIFO
-    drain
-
- drivers/spi/spi-sun6i.c | 31 +++++++++++++++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+index 30d541612253..8fcb2696ec09 100644
+--- a/drivers/spi/spi-sun6i.c
++++ b/drivers/spi/spi-sun6i.c
+@@ -207,7 +207,7 @@ static int sun6i_spi_prepare_dma(struct sun6i_spi *sspi,
+ 		struct dma_slave_config rxconf = {
+ 			.direction = DMA_DEV_TO_MEM,
+ 			.src_addr = sspi->dma_addr_rx,
+-			.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES,
++			.src_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE,
+ 			.src_maxburst = 8,
+ 		};
+ 
 -- 
 2.42.0
 
