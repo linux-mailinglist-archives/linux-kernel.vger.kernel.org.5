@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1296378A048
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 18:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6A478A04C
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 18:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjH0QwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 12:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
+        id S230001AbjH0QxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 12:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjH0Qvy (ORCPT
+        with ESMTP id S230073AbjH0QxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 12:51:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045A0FA;
-        Sun, 27 Aug 2023 09:51:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C8C3611FE;
-        Sun, 27 Aug 2023 16:51:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37361C433C7;
-        Sun, 27 Aug 2023 16:51:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693155110;
-        bh=TlQdo29IZv7MrO/bYku2qIiSdo/EQP4nkB2CM7ZXBQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EXHgQx9lmZ305uzl/tg0XGP5Q41kScb0RgwI4R6c6QE56Ova9jwAdfGthEm3HE0d1
-         cR2EAUC6G5lfE6YwmJ+O+DBBM2X5+62rFDauvvCp9mlQy7Dpvcat+phlxVX9V1UFPq
-         3e70CB9NB8FY6tLy4LmWTd2epqtCR5BN0OiOUVr3tPOL2nkFnNS9qh1npJEZ7Te1+c
-         Ocau9RXriup9XmticG7AbKFhr9GU1npSkvmn/WyNA2ypq9eLP9w4sZ8MsX5CZNWnT9
-         6XCz1fti2h1XFTySGimNQaNmKwbxpF4rmbaQUm7BkOhfhdzZ3nqxO/FY7fpYeivJXQ
-         8WzZGORmTM0Sg==
-Date:   Sun, 27 Aug 2023 18:51:30 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Mikhail Kobuk <m.kobuk@ispras.ru>
-Cc:     Siva Reddy Kallam <siva.kallam@broadcom.com>,
-        Prashant Sreedharan <prashant@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        lvc-project@linuxtesting.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Matt Carlson <mcarlson@broadcom.com>
-Subject: Re: [PATCH] ethernet: tg3: remove unreachable code
-Message-ID: <20230827165130.GV3523530@kernel.org>
-References: <20230825190443.48375-1-m.kobuk@ispras.ru>
+        Sun, 27 Aug 2023 12:53:01 -0400
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80DA139;
+        Sun, 27 Aug 2023 09:52:55 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-565334377d0so1556061a12.2;
+        Sun, 27 Aug 2023 09:52:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693155175; x=1693759975;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ImkyWrYqH8lg/cu5/toGD9Vw+jK2UHolY7FUCZL6OdE=;
+        b=hwoyIGOuN4MJaB+1+5Fb0FIJaWkKb9UKcG+ZTWs5FSfhLzHAwu9wqzSWZnjyPfA+w9
+         RCjJLVmvULAGYD5DXYpal0MkHdRjk7K5ydL2W0N3+8GqhGdzlRsvle0plPcA+PnoaaGT
+         ozB1ErVvTyjz3qD6gscBhWDnw1KSOcdGuDTrBGioVyBnu0kXB/ZhLZ/h303FnnvGIctQ
+         E8DlbPRct/rVSWTuBfDyGTEODh0z02nKISVeql2RhUiJHcnYn3kQieLUbJcZxH6BhDKt
+         hWxT74KIgP9ZmWukTWMse5vxfZQRd1FtZC/9bNW8fIpsFaQHzaLod2ceIOzYZq9Mhx+U
+         Z+EA==
+X-Gm-Message-State: AOJu0YyXajby3gntrN3oChd0+/oleq0ZZg6tzHuQkXgKPW58wknCVsTH
+        mPENdQNIwL4suLb3aH3DK9c=
+X-Google-Smtp-Source: AGHT+IGQtRfWPaISyzI4T0Mr5/nRWzHuzFWUjp93ZJlkqnVi4QGK3coCaHFP+i/PC3lqhGoTNciR9w==
+X-Received: by 2002:a05:6a20:1444:b0:149:424e:b26a with SMTP id a4-20020a056a20144400b00149424eb26amr22909646pzi.19.1693155175186;
+        Sun, 27 Aug 2023 09:52:55 -0700 (PDT)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id fk22-20020a056a003a9600b006887037cde6sm5072546pfb.60.2023.08.27.09.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 09:52:54 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 01:52:52 +0900
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: PCI: qcom: fix SDX65 compatible
+Message-ID: <20230827165252.GB2932694@rocinante>
+References: <20230827085351.21932-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230825190443.48375-1-m.kobuk@ispras.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230827085351.21932-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 10:04:41PM +0300, Mikhail Kobuk wrote:
+Hello,
 
-+ Matt Carlson <mcarlson@broadcom.com>
+> Commit c0aba9f32801 ("dt-bindings: PCI: qcom: Add SDX65 SoC") adding
+> SDX65 was not ever tested and is clearly bogus.  The qcom,sdx65-pcie-ep
+> compatible is followed by fallback in DTS and there is no driver
+> matching by this compatible.  Driver matches by its fallback
+> qcom,sdx55-pcie-ep.  This fixes also dtbs_check warnings like:
+> 
+>   qcom-sdx65-mtp.dtb: pcie-ep@1c00000: compatible: ['qcom,sdx65-pcie-ep', 'qcom,sdx55-pcie-ep'] is too long
 
-> 'tp->irq_max' value is either 1 [L16336] or 5 [L16354], as indicated in
-> tg3_get_invariants(). Therefore, 'i' can't exceed 4 in tg3_init_one()
-> that makes (i <= 4) always true. Moreover, 'intmbx' value set at the
-> last iteration is not used later in it's scope.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 78f90dcf184b ("tg3: Move napi_add calls below tg3_get_invariants")
-> Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
-> Reviewed-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-> ---
->  drivers/net/ethernet/broadcom/tg3.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-> index 5ef073a79ce9..6b6da2484dfe 100644
-> --- a/drivers/net/ethernet/broadcom/tg3.c
-> +++ b/drivers/net/ethernet/broadcom/tg3.c
-> @@ -17792,10 +17792,7 @@ static int tg3_init_one(struct pci_dev *pdev,
->  		tnapi->tx_pending = TG3_DEF_TX_RING_PENDING;
->  
->  		tnapi->int_mbox = intmbx;
-> -		if (i <= 4)
-> -			intmbx += 0x8;
-> -		else
-> -			intmbx += 0x4;
-> +		intmbx += 0x8;
->  
->  		tnapi->consmbox = rcvmbx;
->  		tnapi->prodmbox = sndmbx;
-> -- 
-> 2.42.0
-> 
-> 
+Applied to controller/qcom, thank you!
+
+[1/1] dt-bindings: PCI: qcom: Fix SDX65 compatible
+      https://git.kernel.org/pci/pci/c/15d63a897f79
+
+	Krzysztof
