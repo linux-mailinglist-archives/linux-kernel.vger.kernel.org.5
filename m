@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE96789FB6
+	by mail.lfdr.de (Postfix) with ESMTP id 87FC8789FB7
 	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 16:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbjH0OG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 10:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        id S230419AbjH0OGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 10:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjH0OGK (ORCPT
+        with ESMTP id S229925AbjH0OGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Aug 2023 10:06:10 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CAF11B
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B7C11C
         for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 07:06:05 -0700 (PDT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bf08cf3365so21269945ad.2
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-56c2d67da6aso1262671a12.2
         for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 07:06:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1693145165; x=1693749965;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=g8j55cLkIbZIaBh5Di7cu1MVcAsQCeGemB32jmMtS2o=;
-        b=d8ACsb589SXOSzNdHvlbRruMH91MUcevTwb+Coz3eAt3nW+QSq09E4Lt99wgGfThru
-         uJddG1S+BHqO3Aq2kVmBZNH2giXAb9QiA5Wi3iNejU1vez5sHubyz7Vk3KJXILYEVrp7
-         WGLzkJyoKWXZQR/agTUC9ibim8HZY7HXbdIJwwubcmL+JjukECZgCle3pzKF2CMd8+rV
-         aE5sh4VbD7kPoXdwPlRR8TqqOMOUJIFSAGn7GOvkPBSaqKbyodltdtmuqPlku4F8rMFl
-         lZfc/zolrS2hc1j2c16TVSZz9B3FNyrHmdDZ9QMcxS1mENR7BSpHxwfoMbeoPCD+XzTG
-         E7Vw==
-X-Gm-Message-State: AOJu0YycmwGIk23w22gaQdPM7Tap9nYcZZ30ZDWBUwjUctGDXJEccRBo
-        kfFgxEub/fYiqOvqfJd5YPPhoSnq4laI4zHp9eyEQ0N4KsEb
-X-Google-Smtp-Source: AGHT+IFz36RY6aJ1+m79ScTz3kSLlWL8ftzo288g9xZHVsEY5M7VDZJNbZ6B07rm/zhJdg6TJvcfnVGBXBaekIhUIjFiJ1wdZcOG
+        bh=b2N/TnPyZDoq26EJgBgiN0g8Q5yVKc7sjg7lC8Qd+1g=;
+        b=EQzM+4djA7bEAPz8a3+jXsxIduBIW/XsPlPQSnKdQdpcSB4W7RPMdVYaEPf6gMBEbA
+         sVLJWXdSdy4bSLxiLnegdzHh726GKdSpWi982lue7jxnY0cQYs2E7OYoEQoPvmV/9iRh
+         ni+2Iv4fHcUwpx7I5jO09sY2WziisyixV5CvzbcEBCzbqNp+tnkmra0GWUK/FhlsBrXz
+         X3g98uhVMkRv5hZM7W2YHaryiivbrP0nS1zIu4njWEaJL1Yw3yGGMXYGu0gIjQ3yjOw+
+         mrn5/sBKyrqb6wEukiokm6mU6xX9CNDeYbsw+HmPSA0MSKm0ZJhpZlvZH429fzkwWpY7
+         lrUA==
+X-Gm-Message-State: AOJu0YwqXL+hFAy6Nn0VsA722W0JhCHJUMhRfXbXbGqJ+W+IUuB6eoxo
+        jJ6swzbigmN43HkFVBCYDJaQjwZxIAhtMXkHnBLvqRYcWWNs
+X-Google-Smtp-Source: AGHT+IFX56FxKIriBE10rK6BJmJ0rW9WlxcVyHIeBuMGDyX2OyGJnfXeNshjnmgvHWsQmsvXRmE42F5OEixjYJiw+3ifIULGjgVF
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f54f:b0:1c0:d7a9:1c42 with SMTP id
- h15-20020a170902f54f00b001c0d7a91c42mr1410146plf.13.1693145164887; Sun, 27
- Aug 2023 07:06:04 -0700 (PDT)
-Date:   Sun, 27 Aug 2023 07:06:04 -0700
+X-Received: by 2002:a63:8f50:0:b0:56c:6b2:95bc with SMTP id
+ r16-20020a638f50000000b0056c06b295bcmr3455262pgn.6.1693145165266; Sun, 27 Aug
+ 2023 07:06:05 -0700 (PDT)
+Date:   Sun, 27 Aug 2023 07:06:05 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001b3c5c0603e814ab@google.com>
-Subject: [syzbot] Monthly dri report (Aug 2023)
-From:   syzbot <syzbot+list483e8258d68797e99c17@syzkaller.appspotmail.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000002106de0603e814ef@google.com>
+Subject: [syzbot] Monthly serial report (Aug 2023)
+From:   syzbot <syzbot+listfbbd0645f826b13f6b41@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -54,26 +54,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dri maintainers/developers,
+Hello serial maintainers/developers,
 
-This is a 31-day syzbot report for the dri subsystem.
+This is a 31-day syzbot report for the serial subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/dri
+https://syzkaller.appspot.com/upstream/s/serial
 
-During the period, 3 new issues were detected and 0 were fixed.
-In total, 11 issues are still open and 30 have been fixed so far.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 13 issues are still open and 40 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 345     Yes   WARNING in drm_wait_one_vblank
-                  https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
-<2> 62      Yes   WARNING in vkms_get_vblank_timestamp (2)
-                  https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
-<3> 33      Yes   inconsistent lock state in sync_info_debugfs_show
-                  https://syzkaller.appspot.com/bug?extid=007bfe0f3330f6e1e7d1
-<4> 4       Yes   divide error in drm_mode_vrefresh
-                  https://syzkaller.appspot.com/bug?extid=622bba18029bcde672e1
+<1> 3604    Yes   BUG: sleeping function called from invalid context in console_lock (2)
+                  https://syzkaller.appspot.com/bug?extid=dbac96d8e73b61aa559c
+<2> 39      Yes   general protection fault in serial8250_tx_chars
+                  https://syzkaller.appspot.com/bug?extid=837b8c9032c053262db8
+<3> 16      Yes   BUG: sleeping function called from invalid context in gsm_send
+                  https://syzkaller.appspot.com/bug?extid=b687fe9bf10db0839715
+<4> 4       Yes   memory leak in gsmld_ioctl
+                  https://syzkaller.appspot.com/bug?extid=6e3e8f30f269f5028e5d
+<5> 1       Yes   INFO: rcu detected stall in console_callback
+                  https://syzkaller.appspot.com/bug?extid=32af18ae7b894a681f2d
 
 ---
 This report is generated by a bot. It may contain errors.
