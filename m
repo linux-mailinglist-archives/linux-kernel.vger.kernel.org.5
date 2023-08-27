@@ -2,232 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A816789CD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 11:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D10789CDD
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 12:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjH0J6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 05:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
+        id S230367AbjH0KFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 06:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbjH0J6F (ORCPT
+        with ESMTP id S229920AbjH0KEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 05:58:05 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B1ABF;
-        Sun, 27 Aug 2023 02:58:02 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31aeef88a55so1829320f8f.2;
-        Sun, 27 Aug 2023 02:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693130281; x=1693735081;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=p6iUeeYfhNc0jytc1glHXmb17kdu3jEyQYgoQSwf9xI=;
-        b=AwDPUyiGFaJrcFCvk08U8sZnL8sr8JWcR3gErURPOXI6NMwb5IbDSf/qY8lLdASnCk
-         4JkCv++CuzCSq7iyyYUkoosMcg4SbN9foXu9kOcMfNZZrgP1owfIwAEbbobohJWg5afs
-         XbcWS/Yg0XacKnig9xX/+lo771O/2RHZ0Cm/6zgEG/A8jfSybWThzUsJUtP/pVONICF2
-         aqItufq8wWVbAgm2i+gMVpZjSgHT6qW82es2ioFJjYs4/8kYunkKNTeUrBNr+WcraXWX
-         z6TZ2I/c5WGc+EyAapTbImVj+xxfh6d7C5YT+Ql0ooF2aKNjuWYW1srU3BYicNXLT/Se
-         ITtw==
+        Sun, 27 Aug 2023 06:04:42 -0400
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65635124;
+        Sun, 27 Aug 2023 03:04:39 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-986d8332f50so291071066b.0;
+        Sun, 27 Aug 2023 03:04:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693130281; x=1693735081;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p6iUeeYfhNc0jytc1glHXmb17kdu3jEyQYgoQSwf9xI=;
-        b=beTK3FgBzG139HQq9bUyYJpgnyriVkzTnyyqOSXUwu6pkm6LUnicRN0ask7Uu/orqA
-         w1suPpeDL9vTXukuvOV689efobG61dlcIz6DOq6COOLpwAVpux6e85Lo5UR5O2ldEonh
-         OKnaLFWYEUIfyrWc/m/xsJ+/fpVay8zgIXPzNJMvHmkkyD7wA11ajA0dQzgsOgpExDnj
-         OOGDlZo+u4r432rdNvl8zEXArOmsqO+ezENqvOfihPEJ2G8sNhOvJHqjAXBI7W7dMgKb
-         3WglX8fnSdjhFjca0Db3bBkogVuyDV9VB8b9xtv3uSMBBU53GAQRQyO0xAO6WznmSyXP
-         ni9A==
-X-Gm-Message-State: AOJu0YzILDsgyipHj8n+FZwhypjQDm2o/excaZNF1G8gdOQVYnM3lNAg
-        1mK/sUDK9obTxA9Kv9hvGD0=
-X-Google-Smtp-Source: AGHT+IFfR0fmVFVB8vfVRxtlmjFKkb8JcdKMDM6TRXoZ1j9cpBuYRpeYwgBifR07kg+pf+CndaaJiw==
-X-Received: by 2002:a5d:4d85:0:b0:31a:d6cb:7f9d with SMTP id b5-20020a5d4d85000000b0031ad6cb7f9dmr16459293wru.24.1693130280835;
-        Sun, 27 Aug 2023 02:58:00 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id g10-20020a5d540a000000b00317e6f06e22sm7136717wrv.77.2023.08.27.02.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 02:57:59 -0700 (PDT)
-Date:   Sun, 27 Aug 2023 10:57:59 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kirill A Shutemov <kirill@shutemov.name>,
-        "Liam R. Howlett" <liam.howlett@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>
-Subject: Re: [PATCH v5 6/7] selftests: mm: Add a test for remapping within a
- range
-Message-ID: <08ce8c61-e7a2-417a-a3cc-d20861753ae8@lucifer.local>
-References: <20230822015501.791637-1-joel@joelfernandes.org>
- <20230822015501.791637-7-joel@joelfernandes.org>
+        d=1e100.net; s=20221208; t=1693130678; x=1693735478;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k3yLEQRh2p6qcn+rlG3lKXhYcStLscrFlLBAG5p3HJg=;
+        b=Uey3a9aRoN2566QD8aQhNQQQrFnRSZveCdNiPeiMm7Zm2/vxvjw6G4g7G7xpLoWYVF
+         Xpntcamiwz97i9YZBVqEHu/slkgRkRJBTG9gvTaKYbPd8ejawppuppnU39laD5qfajEo
+         /nTbJ+XGoitpvKdQ0cZ/HG8R0mc/jn+Ct1rRtOHdmzaQMFEUvOgxd90MLGuEjdRqOPGm
+         WIfNQgkNzMLZztijJsszb7AgcFQp35l+9aEGy434xpjQlbNLW6iYNVVb6NGKABq22qdH
+         8gRpj7A1gCAYRPZYI0Zzo1w7GIFbK4MdY/3+4k9cRHdajWTk1fHnGv8kQ7OfK2786pLG
+         ieuQ==
+X-Gm-Message-State: AOJu0YwqKO5cEkw6vB07zkMwWDHWMuguiL5570GjcdDgL2dCFJlJKR3r
+        fmTQmSiAT53lOWHXSh+bomQ=
+X-Google-Smtp-Source: AGHT+IGH1Bhx1BbidsnYdjWIJhV9dyqreMXlr2EtXDJOyKYP8FbqwIp6lVVa1c9wNDavJV05rKhi6g==
+X-Received: by 2002:a17:907:7635:b0:9a1:d915:d8dd with SMTP id jy21-20020a170907763500b009a1d915d8ddmr9873398ejc.10.1693130677691;
+        Sun, 27 Aug 2023 03:04:37 -0700 (PDT)
+Received: from [192.168.86.246] (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net. [82.11.51.62])
+        by smtp.gmail.com with ESMTPSA id ck8-20020a170906c44800b0099bd5d28dc4sm3252637ejb.195.2023.08.27.03.04.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 03:04:37 -0700 (PDT)
+Message-ID: <09735262-1bc0-40cf-b139-22cccf70bcab@linux.com>
+Date:   Sun, 27 Aug 2023 11:04:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230822015501.791637-7-joel@joelfernandes.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] Revert "tty: serial: meson: Add a earlycon for the T7
+ SoC"
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+References: <20230827082944.5100-1-tanure@linux.com>
+ <7bf9e716-0ff2-56d5-07ab-db027901454e@linaro.org>
+Content-Language: en-US
+From:   Lucas Tanure <tanure@linux.com>
+In-Reply-To: <7bf9e716-0ff2-56d5-07ab-db027901454e@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 01:54:59AM +0000, Joel Fernandes (Google) wrote:
-> Move a block of memory within a memory range. Any alignment optimization
-> on the source address may cause corruption. Verify using kselftest that
-> it works. I have also verified with tracing that such optimization does
-> not happen due to this check in can_align_down():
->
-> if (!for_stack && vma->vm_start <= addr_masked)
-> 	return false;
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  tools/testing/selftests/mm/mremap_test.c | 79 +++++++++++++++++++++++-
->  1 file changed, 78 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/mm/mremap_test.c b/tools/testing/selftests/mm/mremap_test.c
-> index d7366074e2a8..f45d1abedc9c 100644
-> --- a/tools/testing/selftests/mm/mremap_test.c
-> +++ b/tools/testing/selftests/mm/mremap_test.c
-> @@ -23,6 +23,7 @@
->  #define VALIDATION_NO_THRESHOLD 0	/* Verify the entire region */
->
->  #define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
-> +#define SIZE_MB(m) ((size_t)m * (1024 * 1024))
+On 27-08-2023 10:48, Neil Armstrong wrote:
+> Hi Lucas,
+> 
+> Le 27/08/2023 à 10:29, Lucas Tanure a écrit :
+>> This reverts commit 6a4197f9763325043abf7690a21124a9facbf52e.
+>> New SoC will use ttyS0 instead of ttyAML, so T7 SoC doesn't need a 
+>> OF_EARLYCON_DECLARE.
+>>
+>> Signed-off-by: Lucas Tanure <tanure@linux.com>
+>> ---
+>> Since V1:
+>> - add Signed-off-by:
+>>
+>>   drivers/tty/serial/meson_uart.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/drivers/tty/serial/meson_uart.c 
+>> b/drivers/tty/serial/meson_uart.c
+>> index c4f61d82fb727..790d910dafa5d 100644
+>> --- a/drivers/tty/serial/meson_uart.c
+>> +++ b/drivers/tty/serial/meson_uart.c
+>> @@ -648,8 +648,6 @@ meson_serial_early_console_setup(struct 
+>> earlycon_device *device, const char *opt
+>>   OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
+>>               meson_serial_early_console_setup);
+>> -OF_EARLYCON_DECLARE(meson, "amlogic,t7-uart",
+>> -            meson_serial_early_console_setup);
+>>   #define MESON_SERIAL_CONSOLE_PTR(_devname) 
+>> (&meson_serial_console_##_devname)
+>>   #else
+> 
+> How do you use earlycon with this removed ?
+> 
+> Neil
+This is my kernel cmdline:
+console=ttyS0,921600 no_console_suspend earlycon=ttyS0,0xfe078000
 
-Nit in this instance since you always just use an integer, but generally
-for good practice's sake - shouldn't we place m in parens e.g. (size_t)(m)
-to avoid broken macro expansion?
+And I can see my log:
+boot 64bit kernel
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd092]
+[    0.000000] Linux version 6.5.0-rc7-next-20230825+ (tanureal@ryzen) 
+(aarch64-none-linux-gnu-gcc (GNU Toolchain for the A-profile 
+Architecture 10.3-2021.07 (arm-10.29)) 10.3.1 20210621, GNU ld (GNU 
+Toolchain fo3
+[    0.000000] KASLR disabled due to lack of seed
+[    0.000000] Machine model: Khadas vim4
+[    0.000000] OF: reserved mem: 0x0000000005000000..0x00000000052fffff 
+(3072 KiB) nomap non-reusable secmon@5000000
+[    0.000000] OF: reserved mem: 0x0000000005300000..0x00000000072fffff 
+(32768 KiB) nomap non-reusable secmon@5300000
+...
+[    0.079368] io scheduler mq-deadline registered
+[    0.079374] io scheduler kyber registered
+[    0.079549] io scheduler bfq registered
+[    0.083373] fe078000.serial: ttyS0 at MMIO 0xfe078000 (irq = 14, 
+base_baud = 1500000) is a meson_uart
+[    0.083403] printk: console [ttyS0] enabled
 
->
->  struct config {
->  	unsigned long long src_alignment;
-> @@ -226,6 +227,79 @@ static void mremap_expand_merge_offset(FILE *maps_fp, unsigned long page_size)
->  		ksft_test_result_fail("%s\n", test_name);
->  }
->
-> +/*
-> + * Verify that an mremap within a range does not cause corruption
-> + * of unrelated part of range.
-> + *
-> + * Consider the following range which is 2MB aligned and is
-> + * a part of a larger 10MB range which is not shown. Each
-> + * character is 256KB below making the source and destination
-> + * 2MB each. The lower case letters are moved (s to d) and the
-> + * upper case letters are not moved. The below test verifies
-> + * that the upper case S letters are not corrupted by the
-> + * adjacent mremap.
-> + *
-> + * |DDDDddddSSSSssss|
-> + */
-> +static void mremap_move_within_range(char pattern_seed)
-> +{
-> +	char *test_name = "mremap mremap move within range";
-> +	void *src, *dest;
-> +	int i, success = 1;
-> +
-> +	size_t size = SIZE_MB(20);
-> +	void *ptr = mmap(NULL, size, PROT_READ | PROT_WRITE,
-> +			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +	if (ptr == MAP_FAILED) {
-> +		perror("mmap");
-> +		success = 0;
-> +		goto out;
-> +	}
-> +	memset(ptr, 0, size);
-> +
-> +	src = ptr + SIZE_MB(6);
-> +	src = (void *)((unsigned long)src & ~(SIZE_MB(2) - 1));
-> +
+As the log is OK, and T7 for now is binding against S4 code we should 
+drop this patch and add a S4 one if needed.
 
-It's nitty I know for a test (sorry!) but it'd be nice to place a bitwise
-alignment trick like this into a helper function or macro if it isn't
-otherwise avialable.
+But just having this log is not enough for testing earlycon?
+I am assuming that by just having the log since 0.0000 is a good sign 
+that earlycon is working.
+Could you give further guidance?
 
-> +	/* Set byte pattern for source block. */
-> +	srand(pattern_seed);
-> +	for (i = 0; i < SIZE_MB(2); i++) {
-> +		((char *)src)[i] = (char) rand();
-> +	}
-> +
-> +	dest = src - SIZE_MB(2);
-> +
-> +	void *new_ptr = mremap(src + SIZE_MB(1), SIZE_MB(1), SIZE_MB(1),
-> +						   MREMAP_MAYMOVE | MREMAP_FIXED, dest + SIZE_MB(1));
-> +	if (new_ptr == MAP_FAILED) {
-> +		perror("mremap");
-> +		success = 0;
-> +		goto out;
-> +	}
-> +
-> +	/* Verify byte pattern after remapping */
-> +	srand(pattern_seed);
-> +	for (i = 0; i < SIZE_MB(1); i++) {
-> +		char c = (char) rand();
-> +
-> +		if (((char *)src)[i] != c) {
-> +			ksft_print_msg("Data at src at %d got corrupted due to unrelated mremap\n",
-> +				       i);
-> +			ksft_print_msg("Expected: %#x\t Got: %#x\n", c & 0xff,
-> +					((char *) src)[i] & 0xff);
-> +			success = 0;
-> +		}
-> +	}
-> +
-> +out:
-> +	if (munmap(ptr, size) == -1)
-> +		perror("munmap");
-> +
-> +	if (success)
-> +		ksft_test_result_pass("%s\n", test_name);
-> +	else
-> +		ksft_test_result_fail("%s\n", test_name);
-> +}
-> +
->  /*
->   * Returns the start address of the mapping on success, else returns
->   * NULL on failure.
-> @@ -491,6 +565,7 @@ int main(int argc, char **argv)
->  	unsigned int threshold_mb = VALIDATION_DEFAULT_THRESHOLD;
->  	unsigned int pattern_seed;
->  	int num_expand_tests = 2;
-> +	int num_misc_tests = 1;
->  	struct test test_cases[MAX_TEST] = {};
->  	struct test perf_test_cases[MAX_PERF_TEST];
->  	int page_size;
-> @@ -572,7 +647,7 @@ int main(int argc, char **argv)
->  				(threshold_mb * _1MB >= _1GB);
->
->  	ksft_set_plan(ARRAY_SIZE(test_cases) + (run_perf_tests ?
-> -		      ARRAY_SIZE(perf_test_cases) : 0) + num_expand_tests);
-> +		      ARRAY_SIZE(perf_test_cases) : 0) + num_expand_tests + num_misc_tests);
->
->  	for (i = 0; i < ARRAY_SIZE(test_cases); i++)
->  		run_mremap_test_case(test_cases[i], &failures, threshold_mb,
-> @@ -590,6 +665,8 @@ int main(int argc, char **argv)
->
->  	fclose(maps_fp);
->
-> +	mremap_move_within_range(pattern_seed);
-> +
->  	if (run_perf_tests) {
->  		ksft_print_msg("\n%s\n",
->  		 "mremap HAVE_MOVE_PMD/PUD optimization time comparison for 1GB region:");
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->
+Lucas Tanure
 
-I drew a little diagram for myself and was thereby convinced this was a good test, therefore,
-
-Reviewed-by: Lorenzo Stoakes <lstoakes@gmail.com>
