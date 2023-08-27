@@ -2,140 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40216789BB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D820789BBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjH0HSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 03:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S230111AbjH0HTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 03:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjH0HR6 (ORCPT
+        with ESMTP id S229740AbjH0HTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 03:17:58 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A08129;
-        Sun, 27 Aug 2023 00:17:55 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37R7CM6S010096;
-        Sun, 27 Aug 2023 07:17:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=8TqO2I3AYHpbTmw9MMc+lTvNPXkao7+JWLACLYAasSI=;
- b=dL04pZ+gigjokI5elKluKbZxJusJR+umSCQe5nHcf2UAbuOEgh0UOgw9k7Z8MC5tbfFF
- KFDtFF8Ieh2Zj7gucXUA5xeHlMfzRZqoH1rnbciJZ+U8bRL5r64Nw+qTBJbAxtzyDgaY
- KJQbonJg6D+REFSFDWSCbS0VGbqMW7mBNlzvwwkscEsTb2Vdju5Tk2AnwytOlQxEgq3L
- vSMJkrq36WrsgYO0wA5b+vFUJN4sfENq2mrXL97WU3FJdS/H7RmNwUAnv7eR9YcrXyLm
- FldVs8BYPVzUO/b5r/Et3XS0vZcdjMP3N3cG+hbSVe6CEVpWtRwK8UbeWFa3KW+aFakE bA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr1860g3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Aug 2023 07:17:40 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37R78gc5031708;
-        Sun, 27 Aug 2023 07:17:39 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr1860g3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Aug 2023 07:17:39 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37R4wijx009855;
-        Sun, 27 Aug 2023 07:17:39 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqw7jskbu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Aug 2023 07:17:39 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37R7HZuS21431002
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 27 Aug 2023 07:17:35 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5FD72004B;
-        Sun, 27 Aug 2023 07:17:35 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7B93B20040;
-        Sun, 27 Aug 2023 07:17:33 +0000 (GMT)
-Received: from li-3c92a0cc-27cf-11b2-a85c-b804d9ca68fa.ibm.com (unknown [9.171.39.84])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Sun, 27 Aug 2023 07:17:33 +0000 (GMT)
-Date:   Sun, 27 Aug 2023 12:47:30 +0530
-From:   Aditya Gupta <adityag@linux.ibm.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     acme@kernel.org, jolsa@kernel.org, irogers@google.com,
-        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
-        kjain@linux.ibm.com, disgoel@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] Introduce perf build subcommand
-Message-ID: <mxcws2wtnrar2kiswwlkmdl2mqkbv3zvek3lx7qe7bpejea3aa@5ymqftm6zli7>
-References: <20230825061125.24312-1-adityag@linux.ibm.com>
- <CAM9d7cgBJ1WHRuVcZ4FArm=pctbs-npLB2Q8PLZWmdfaK3dCzg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cgBJ1WHRuVcZ4FArm=pctbs-npLB2Q8PLZWmdfaK3dCzg@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ViKBIEiWzXQV1JIEf0AMcWyNBAbyk9Ty
-X-Proofpoint-GUID: 9oGYJTrenTiPkQf4oSMBOd86caJGkkv2
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sun, 27 Aug 2023 03:19:11 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912B81B9;
+        Sun, 27 Aug 2023 00:18:49 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b962c226ceso33116511fa.3;
+        Sun, 27 Aug 2023 00:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693120727; x=1693725527;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S4MoG6zmEIEoss5hF5T8Ph2HnNBlyXezvZ47IyvuMWs=;
+        b=DXgZAE0zCyc+FSH4PBq0dSS9GLZEq5FKnhRYPebwZcI2Eu261Ax7MOlZbfOjCx/F+t
+         y2qlqnrYh5PfFD4KWMxbC27um40xkBOtfg2e4dUr5hZTULGDAdL4h+jsodYlMpuJkjZk
+         xmI5S4+J5aP8oBMFAFdHBJVnMvCLmgIpRj7b3MkLZNgXbvbbwWzb6LdwO3fj3mcZtm96
+         KtgdawTNz9Ag1nHE7v0bLHrHCbBWrfC2ThoqYZD8jsQDND9vC1aiIEfEvhclfeTkWM8g
+         /GN9c4JAseu6+uBf3IJRwOQr97VexGMREG0qRzdOLI8isJWJTAhFZjuLurslnNgzmIOv
+         L4sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693120727; x=1693725527;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4MoG6zmEIEoss5hF5T8Ph2HnNBlyXezvZ47IyvuMWs=;
+        b=g6HFGu7+KO0mEM+ZcmacuK13r7JdUvZicelva1FMFN2sAHVpGMlBxqlTtcj8UdyoLP
+         KR14ofDZJEomDpF+ALWtAE1uyr2bGv6W2g8LIn6e7KwLimEkycPGi9fb92F+s1um1aXe
+         o1U1cZtCxorSAM1CDw/MkwV/kVFiulE0R9ymasUS+XWDVJicRMSkj5bgiCwVOAU4siv/
+         FcZlaRPn6b9NH+b4WHZUpBDaox9PmTGdRJXkj6q0IOYP7Dv3mwkkQs5R6frjk8j/bdiE
+         6YV/qTj4Yj2WSgJIHxc7u+r0W1XJS/J6N840nu9jz4fNHJaYtp6xnxXLjspPRxNCRfTn
+         spKw==
+X-Gm-Message-State: AOJu0YwOU2jvPR8ciOY5+1hnOTZGxq4QRAQqQSyNI7Xs6H9QgXMDKPDn
+        3R/ppNMk1nwMp6cL1vhk77M=
+X-Google-Smtp-Source: AGHT+IGGsas71egMkpg/1x1jfdb/gWUoBY+smY73Pdlp3F6BUUHz+zbpxF21GiXcjtEdlh4IXmTXUg==
+X-Received: by 2002:a2e:a314:0:b0:2bc:d38e:b500 with SMTP id l20-20020a2ea314000000b002bcd38eb500mr11892233lje.42.1693120726926;
+        Sun, 27 Aug 2023 00:18:46 -0700 (PDT)
+Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id a5-20020a05651c010500b002bcc5e9aa66sm1114746ljb.101.2023.08.27.00.18.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 00:18:46 -0700 (PDT)
+Message-ID: <00bf501f-6829-4be3-bf1d-40ae8495d970@gmail.com>
+Date:   Sun, 27 Aug 2023 10:18:56 +0300
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-27_04,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- adultscore=0 phishscore=0 impostorscore=0 clxscore=1015 mlxlogscore=844
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308270064
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] dt-bindings: dma: ti: k3* : Update optional reg
+ regions
+Content-Language: en-US
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230810174356.3322583-1-vigneshr@ti.com>
+ <9a8f06e0-b986-4434-a194-9679c82035ca@gmail.com>
+ <1d2ab22e-9bbc-f876-f059-980f543551d4@ti.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <1d2ab22e-9bbc-f876-f059-980f543551d4@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Vignesh,
 
-On Fri, Aug 25, 2023 at 10:07:28AM -0700, Namhyung Kim wrote:
-> Hello,
+On 11/08/2023 19:04, Vignesh Raghavendra wrote:
 > 
-> On Thu, Aug 24, 2023 at 11:11 PM Aditya Gupta <adityag@linux.ibm.com> wrote:
-> >
-> > <...>
-> >
-> > Proposed solution
-> > =================
-> >
-> > As suggested by contributors in:
-> > https://lore.kernel.org/linux-perf-users/ZMPWk5K63tadmDlU@kernel.org/
-> >
-> > Introduce a subcommand "perf build --has", with which
-> > scripts can test for presence of a feature, such as:
-> >
-> >     perf build --has HAVE_FEATURE
-> >
-> > <...>
+> There is been a relook at the arch post this driver was upstreamed. 
+> System firmware (SYSFW) is now two separate components:  TI Foundational 
+> Security (TIFS) running in a secure island and Device Management (DM) 
+> firmware (runs on boot R5 core) [0] shows boot flow diagram for AM62x.
+
+I see, I cannot argue with that.
+Is this change affecting the entire K3 family or only the new members?
+If the later then I would seek for conditionality for the new regions as
+non relooked SoCs these regions are off-limit for the SW.
+
+> Security critical items such as PSIL pairing, channel firewalls and 
+> credential configurations are under TIFS and is handled via TI SCI calls 
+> at all times.
 > 
-> I'm not sure 'perf build' is a good name, it sounds like it needs to build
-> something.  Maybe 'perf check --feature XXX' ?
+> But, things related to resource configuration (to ensure different cores 
+> dont step on each other) is under DM. Linux still needs to talk to DM 
+> for configuring these regions. But, when primary bootloader (R5 SPL) is 
+> running, there isn't a DM firmware (as it runs on the same core after R5 
+> SPL), it would need to configure DMA resources on its own. 
 > 
-> Then we can extend the perf check command to *check* system
-> settings like perf_event_paranoid, kptr_restrict, nmi_watchdog
-> and so on, and possibly provides some advice or even change
-> the values easily.
+> This update is mainly to aid R5 SPL to reuse kernel DT as is. 
+> Hope that helps
+
+Right, so Linux will need to use these soon ;)
+
 > 
-> What do you think?
+> 
+> [0] https://u-boot.readthedocs.io/en/latest/board/ti/am62x_sk.html?highlight=am62#boot-flow
+> (Similar boot flow for rest of K3 devices barring am65 and am64)
+
+OK, if the R5 needs to use DMA before DM then surely there is a need to
+configure the channel(s).
+I expect that R5 or DM will reset things back before booting the main CPU.
+
+> 
+>>
+>>>
+>>> Vignesh Raghavendra (3):
+>>>    dt-bindings: dma: ti: k3-bcdma: Describe cfg register regions
+>>>    dt-bindings: dma: ti: k3-pktdma: Describe cfg register regions
+>>>    dt-bindings: dma: ti: k3-udma: Describe cfg register regions
+>>>
+>>>   .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 25 +++++++++++++------
+>>>   .../devicetree/bindings/dma/ti/k3-pktdma.yaml | 18 ++++++++++---
+>>>   .../devicetree/bindings/dma/ti/k3-udma.yaml   | 14 ++++++++---
+>>>   3 files changed, 43 insertions(+), 14 deletions(-)
+>>>
+>>
 > 
 
-Sure, the said confusion due to 'build' makes sense. I will discuss with athira
-also and post a V2 with suggested change.
-
-And, since a new subcommand is being introduced, where do I add a
-documentation, such that it can be visible in a manpage etc, similar to
-perf-version(1) ?
-
-Thanks,
-Aditya Gupta
-
+-- 
+Péter
