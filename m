@@ -2,60 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B59789FDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 17:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B645789FDA
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 17:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjH0PHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 11:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        id S230405AbjH0PIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 11:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjH0PGh (ORCPT
+        with ESMTP id S229890AbjH0PHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 11:06:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF62FE;
-        Sun, 27 Aug 2023 08:06:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6101961A38;
-        Sun, 27 Aug 2023 15:06:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B478EC433C8;
-        Sun, 27 Aug 2023 15:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693148792;
-        bh=wZARqDEoybHeA99iKsn+pqaNyfaKDn+gLfEPtsaPwC0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CWRPqdCOplrixkBFZFCmy5q4mPhchFHimcYHkcwZvNgfYswQQk0NKRwMIQ7MIxk8C
-         V1WjanuD86UQzUpAio+c8xOWkHDJYe+csOnK5zvngFZq/SVuU46hs1+6r67P+oqXqk
-         ZXeYAp7g3L6YoSDvHWA8VFar5W+mc8QUp0VuLisSJTcQnJEd2Ly7QCzlVY6PdMiClG
-         xGU0rqBxvv5FUHwMMDjypex6bCo7yoci19WCiFv3jHZsPGP5aKUvTpVRl19I1z6ihP
-         MOzMmCJ5WHZNmlheqfCiw5Vj/apF+8P9TMQfa1PrAwmsZq+pFPO449VPdrLlcBkOba
-         Tts7w/9oBUTZg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9776DC395DF;
-        Sun, 27 Aug 2023 15:06:32 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 6.5-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <4fa74fe53f7a1302b1c4c7c4e17590aa97f9ecc5.camel@HansenPartnership.com>
-References: <4fa74fe53f7a1302b1c4c7c4e17590aa97f9ecc5.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4fa74fe53f7a1302b1c4c7c4e17590aa97f9ecc5.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 1bd3a76880b2bce017987cf53780b372cf59528e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 85eb043618bb17124050197d71c453d4a1f556e5
-Message-Id: <169314879249.32068.2436191817520744905.pr-tracker-bot@kernel.org>
-Date:   Sun, 27 Aug 2023 15:06:32 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        Sun, 27 Aug 2023 11:07:53 -0400
+X-Greylist: delayed 85351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Aug 2023 08:07:50 PDT
+Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EAAC1;
+        Sun, 27 Aug 2023 08:07:50 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        by mail.enpas.org (Postfix) with ESMTPSA id F301D101349;
+        Sun, 27 Aug 2023 15:07:45 +0000 (UTC)
+Message-ID: <84c7f090-b84e-fbea-4e2e-9730a39e2db8@enpas.org>
+Date:   Mon, 28 Aug 2023 00:07:39 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/2] xpad: XTYPE_XBOX: Report analog buttons
+To:     Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Vicki Pfau <vi@endrift.com>,
+        Pavel Rojtberg <rojtberg@gmail.com>,
+        Roderick Colenbrander <roderick@gaikai.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230826152111.13525-1-max@enpas.org>
+ <20230826152111.13525-2-max@enpas.org> <87fs45u4o2.fsf@protonmail.com>
+Content-Language: en-US
+From:   Max Staudt <max@enpas.org>
+In-Reply-To: <87fs45u4o2.fsf@protonmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,15 +49,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 27 Aug 2023 08:01:03 +0100:
+On 8/27/23 01:52, Rahul Rameshbabu wrote:
+> You will want to update the commit message subject to use the prefix
+> "Input: xpad -" instead of "xpad:".
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+Thanks, will do!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/85eb043618bb17124050197d71c453d4a1f556e5
 
-Thank you!
+>> +/* used for analog face buttons mapped to axes */
+>> +static const signed short xpad_abs_analog_face_buttons[] = {
+>> +	ABS_MISC + 0, ABS_MISC + 1, /* A, B */
+>> +	ABS_MISC + 3, ABS_MISC + 4, /* X, Y */
+>> +	ABS_MISC + 2, ABS_MISC + 5, /* C, Z */
+>> +	-1
+>> +};
+> 
+> Would it make more sense to use an enum for this?
+> Something like the below enum.
+> 
+>    enum xpad_abs_analog_face_btn {
+>         XPAD_ABS_ANALOG_FACE_BTN_A = ABS_MISC,
+>         XPAD_ABS_ANALOG_FACE_BTN_B,
+>         XPAD_ABS_ANALOG_FACE_BTN_C,
+>         XPAD_ABS_ANALOG_FACE_BTN_X,
+>         XPAD_ABS_ANALOG_FACE_BTN_Y,
+>         XPAD_ABS_ANALOG_FACE_BTN_Z,
+>         XPAD_ABS_ANALOG_FACE_BTN_END, /* Must remain as the last element */
+>    };
+> 
+> This would clean up both xpad_process_packet and xpad_set_up_abs a bit
+> in my opinion. Your loop for xpad_set_up_abs would look like the
+> following.
+> 
+>    enum xpad_abs_analog_face_btn btn;
+> 
+>    ...
+> 
+>    for (btn = XPAD_ABS_ANALOG_FACE_BTN_A; btn != XPAD_ABS_ANALOG_FACE_BTN_END; ++btn)
+>            xpad_set_up_abs(input_dev, btn);
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I agree, that looks cleaner.
+
+Since it's a step closer to standardising a mapping for those analog buttons, I'd like to wait and see whether there is a consensus across drivers and maintainers. Maybe we can include something like this enum in input-event-codes.h and have a really clean solution.
+
+
+
+Thanks!
+
+Max
+
