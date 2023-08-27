@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B645789FDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 17:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B0D78A003
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 17:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjH0PIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 11:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
+        id S230486AbjH0PiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 11:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjH0PHx (ORCPT
+        with ESMTP id S229995AbjH0PiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 11:07:53 -0400
-X-Greylist: delayed 85351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Aug 2023 08:07:50 PDT
-Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EAAC1;
-        Sun, 27 Aug 2023 08:07:50 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.enpas.org (Postfix) with ESMTPSA id F301D101349;
-        Sun, 27 Aug 2023 15:07:45 +0000 (UTC)
-Message-ID: <84c7f090-b84e-fbea-4e2e-9730a39e2db8@enpas.org>
-Date:   Mon, 28 Aug 2023 00:07:39 +0900
+        Sun, 27 Aug 2023 11:38:10 -0400
+X-Greylist: delayed 388 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Aug 2023 08:38:07 PDT
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E283813E;
+        Sun, 27 Aug 2023 08:38:07 -0700 (PDT)
+From:   Tobias Schramm <t.schramm@manjaro.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+        t=1693150298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mJCkXIySq/iFwmfrnE/7WGXMl038R0X4mESkOBP9McM=;
+        b=ANMbIKdmPXocR5EkhrkUzYxoOrMxxM1/7bTNikyISMQHIxWNLZGCWI6z3+gLCYY8ovEtXs
+        IH0ROBJDGc2fplCKlFxUTaftE/lS7roa2C2s8yfIQb/bpTgv2ZZSPs4UIu3W/Z/tkiPkY6
+        4FtoQRXwh+3k9gw4l8rTfUHF9deJwCjuYl1Ryy7XskcSN+Rbpn99AjZFEhkWf7Od7nmjPQ
+        bIJB+fjh4rB2fqfgcbQKLpbaJxv5SQr6ifZBaHYSRTotuq9BlOOHo6FUa+a8q0yaOGSkBo
+        NhR+CmGbBlzO2BxzghQfQEttJo2IIyQtYMKQWYe37dPOV8o1ndBuuXAFzgM2fA==
+To:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     linux-spi@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tobias Schramm <t.schramm@manjaro.org>
+Subject: [PATCH 0/2] spi: sun6i: fix RX data corruption in DMA mode
+Date:   Sun, 27 Aug 2023 17:25:56 +0200
+Message-ID: <20230827152558.5368-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] xpad: XTYPE_XBOX: Report analog buttons
-To:     Rahul Rameshbabu <sergeantsagara@protonmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Vicki Pfau <vi@endrift.com>,
-        Pavel Rojtberg <rojtberg@gmail.com>,
-        Roderick Colenbrander <roderick@gaikai.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230826152111.13525-1-max@enpas.org>
- <20230826152111.13525-2-max@enpas.org> <87fs45u4o2.fsf@protonmail.com>
-Content-Language: en-US
-From:   Max Staudt <max@enpas.org>
-In-Reply-To: <87fs45u4o2.fsf@protonmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=t.schramm@manjaro.org smtp.mailfrom=t.schramm@manjaro.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/23 01:52, Rahul Rameshbabu wrote:
-> You will want to update the commit message subject to use the prefix
-> "Input: xpad -" instead of "xpad:".
+Hey folks,
 
-Thanks, will do!
+this set of patches fixes two bugs in the sun6i SPI driver that result in
+corruption of received data in DMA RX mode.
 
+The first bug seems to be related to an incompatibility of the SPI RX FIFO
+with wider than single byte read accesses during SPI transfers. I'm not
+sure if this bug affects all types of SPI controllers found in Allwinner
+SoCs supported by this driver. However reducing the access width should
+always be safe. I've tested this change on a V3s SoC. Further testing to
+narrow down the set of affected SoCs in the future would be welcome.
 
->> +/* used for analog face buttons mapped to axes */
->> +static const signed short xpad_abs_analog_face_buttons[] = {
->> +	ABS_MISC + 0, ABS_MISC + 1, /* A, B */
->> +	ABS_MISC + 3, ABS_MISC + 4, /* X, Y */
->> +	ABS_MISC + 2, ABS_MISC + 5, /* C, Z */
->> +	-1
->> +};
-> 
-> Would it make more sense to use an enum for this?
-> Something like the below enum.
-> 
->    enum xpad_abs_analog_face_btn {
->         XPAD_ABS_ANALOG_FACE_BTN_A = ABS_MISC,
->         XPAD_ABS_ANALOG_FACE_BTN_B,
->         XPAD_ABS_ANALOG_FACE_BTN_C,
->         XPAD_ABS_ANALOG_FACE_BTN_X,
->         XPAD_ABS_ANALOG_FACE_BTN_Y,
->         XPAD_ABS_ANALOG_FACE_BTN_Z,
->         XPAD_ABS_ANALOG_FACE_BTN_END, /* Must remain as the last element */
->    };
-> 
-> This would clean up both xpad_process_packet and xpad_set_up_abs a bit
-> in my opinion. Your loop for xpad_set_up_abs would look like the
-> following.
-> 
->    enum xpad_abs_analog_face_btn btn;
-> 
->    ...
-> 
->    for (btn = XPAD_ABS_ANALOG_FACE_BTN_A; btn != XPAD_ABS_ANALOG_FACE_BTN_END; ++btn)
->            xpad_set_up_abs(input_dev, btn);
+The second bug is a race between SPI RX DMA and FIFO drain logic for
+interrupt-based SPI operation. This bug affects all SPI controllers
+supported by this driver. Once again this change has been tested on the
+Allwinner V3s SoC.
 
-I agree, that looks cleaner.
+Tobias Schramm (2):
+  spi: sun6i: reduce DMA RX transfer width to single byte
+  spi: sun6i: fix race between DMA RX transfer completion and RX FIFO
+    drain
 
-Since it's a step closer to standardising a mapping for those analog buttons, I'd like to wait and see whether there is a consensus across drivers and maintainers. Maybe we can include something like this enum in input-event-codes.h and have a really clean solution.
+ drivers/spi/spi-sun6i.c | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
 
-
-
-Thanks!
-
-Max
+-- 
+2.42.0
 
