@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A0D789C54
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44579789C55
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbjH0ItW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 04:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        id S230325AbjH0ItY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 04:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjH0ItB (ORCPT
+        with ESMTP id S230257AbjH0ItB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Aug 2023 04:49:01 -0400
 Received: from smtprelay02.ispgateway.de (smtprelay02.ispgateway.de [80.67.18.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C61BAF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E93AB;
         Sun, 27 Aug 2023 01:48:54 -0700 (PDT)
 Received: from [77.64.243.219] (helo=note-book.lan)
         by smtprelay02.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <git@apitzsch.eu>)
-        id 1qaBRz-0000Bt-QE; Sun, 27 Aug 2023 10:48:51 +0200
+        id 1qaBS0-0000Bt-Fc; Sun, 27 Aug 2023 10:48:52 +0200
 From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-Subject: [PATCH v4 0/2] arm64: dts: qcom: msm8939-longcheer-l9100: Add
- initial dts
-Date:   Sun, 27 Aug 2023 10:47:58 +0200
-Message-Id: <20230827-bq_m5-v4-0-f8435fb8f955@apitzsch.eu>
+Date:   Sun, 27 Aug 2023 10:47:59 +0200
+Subject: [PATCH v4 1/2] dt-bindings: arm: qcom: Add BQ Aquaris M5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAL4N62QC/2XMQQ6CMBCF4auQrq0pU8hQV97DGFPKIF0I2GKjE
- u5uISFBXb7JfP/IPDlLnh2SkTkK1tuujSPbJcw0ur0St1XcDARIgZDx8n655bw0StcksaiLisX
- f3lFtn0vndI67sX7o3GvJhnS+/hZCygVPUYsChUZZ0lH3dnh70+zpweZGgK3LVwfRKURlIFOay
- vTfya3D1cnoqjonADSoKvHtpmn6AAgywUsMAQAA
+Message-Id: <20230827-bq_m5-v4-1-f8435fb8f955@apitzsch.eu>
+References: <20230827-bq_m5-v4-0-f8435fb8f955@apitzsch.eu>
+In-Reply-To: <20230827-bq_m5-v4-0-f8435fb8f955@apitzsch.eu>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -56,56 +53,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
-2015.
+Add a compatible for BQ Aquaris M5 (Longcheer L9100).
 
-Add a device tree with initial support for:
-
-- GPIO keys
-- Hall sensor
-- SDHCI
-- WCNSS (BT/WIFI)
-- Accelerometer/Magnetometer
-- Vibrator
-- Touchscreen
-- Front flash
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: André Apitzsch <git@apitzsch.eu>
 ---
-Changes in v4:
-- replace "interrupt-parent" and "interrupts" by "interrupts-extended"
-- add R-b to second patch
-- Link to v3: https://lore.kernel.org/r/20230727-bq_m5-v3-0-df5e227c79d0@apitzsch.eu
+ Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes in v3:
-- use "id-gpios" instead of "id-gpio" to avoid conflicts with
-  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
-  (v2 only contained the changelog entry, but not the actual change) 
-- Link to v2: https://lore.kernel.org/r/20230725-bq_m5-v2-0-9779c249aeb1@apitzsch.eu
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index adbfaea32343..9faf37017e2b 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -189,6 +189,7 @@ properties:
+ 
+       - items:
+           - enum:
++              - longcheer,l9100
+               - samsung,a7
+               - sony,kanuti-tulip
+               - square,apq8039-t2
 
-Changes in v2:
-- add R-b to first patch
-- sort node extends/overrides by name, but keep &tlmm last, as done in
-  msm8939-samsung-a7.dts
-- use id-gpios, to avoid conflict with
-  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
-- don't enable mdss for now; postpone it till display support is added
-- Link to v1: https://lore.kernel.org/r/20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu
-
----
-André Apitzsch (2):
-      dt-bindings: arm: qcom: Add BQ Aquaris M5
-      arm64: dts: qcom: msm8939-longcheer-l9100: Add initial device tree
-
- Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
- arch/arm64/boot/dts/qcom/Makefile                  |   1 +
- .../boot/dts/qcom/msm8939-longcheer-l9100.dts      | 334 +++++++++++++++++++++
- 3 files changed, 336 insertions(+)
----
-base-commit: 6269320850097903b30be8f07a5c61d9f7592393
-change-id: 20230724-bq_m5-bc9afe378f8d
-
-Best regards,
 -- 
-André Apitzsch <git@apitzsch.eu>
+2.42.0
 
