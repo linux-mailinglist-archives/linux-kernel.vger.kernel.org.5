@@ -2,128 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD02789B10
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 04:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33A2789B12
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 04:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjH0CvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 22:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
+        id S229833AbjH0CyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 22:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbjH0Cux (ORCPT
+        with ESMTP id S229823AbjH0Cx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 22:50:53 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FD4FA;
-        Sat, 26 Aug 2023 19:50:51 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41095b84d8eso13897451cf.2;
-        Sat, 26 Aug 2023 19:50:51 -0700 (PDT)
+        Sat, 26 Aug 2023 22:53:58 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679DF1AC
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 19:53:56 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34cb979c9b9so8259205ab.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 19:53:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693104650; x=1693709450;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MIw9Q5r09NfZUTqarX7Iy/jkPLDDRLQ9DQT1RqFnR3Y=;
-        b=kOl2hRWSxWCriLB9sFGb002Zaoa8KZGxKdfMb4QBHLderLFmnWMv7HAY9oKY2hgPt3
-         rsCsEvkVqdTi+qJGudo1xbfiMGoDNtmKO2scFOdew5c1otjzENK/Jphlk3lGqgubR+ho
-         SbPAbptbz2slPYs4PppPNc/dm+0UDentv8R+hO8eqO6/3sNKWO0CkX/aLpT8pRVSPdV7
-         C8rGQUcU3A9Jwth5rUbxnckXtpkmtp4TOu51+QEwcc7D1n9h1WDhHteFjyGuZtWJqAyU
-         PERGSnFnDvJz0Mpv6gq6snSpTJIymm5IE976PQYsw56M6/S+oddNSLSLbY/6ajehopjj
-         mdTA==
+        d=joelfernandes.org; s=google; t=1693104835; x=1693709635;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m+p7c6hBX/kTnboG8LhQNLZuVYdMHSGC3d9ZfEphxqY=;
+        b=Pcb8Y8KRWhAvPSfQFUbAZrxgmWa5wvP7a+72bMsOE9xMs/O3hnwNzpWJU2RilxP6gl
+         26X1f8AaQRcdXebB0XZSXclB9XfYQSj2cgi2HCwGWjHJ+PtjlbCyjQ5i/zIgl2oAYRMj
+         o/PxO6Kpp0pZ3H/yAdkSuJhyWLf6xml6r88d4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693104650; x=1693709450;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MIw9Q5r09NfZUTqarX7Iy/jkPLDDRLQ9DQT1RqFnR3Y=;
-        b=KTNygRfXvJeUraqBrV1DPaQNYFjmcT3F9oVAEn1MHT9HRdi5Rwwf2uv1TgqNmeVryn
-         s493sWbz8tYlV0FAm4usMRCeJRGr1K4EVKJnHdg7oHZKnoGFHRqzMLe9y+8djBjspVKc
-         XDQ9zZp9xuSMoqhMczhzvJrodLlR2EkmP7/p0YwY4Wz5n5QRLS4h/yXKHONGehe6OKhA
-         Y0jL3tK/pVMdI9BlMpPZH/MccE8PEBhqN8x/WV9AlPc9t8HQ75aIUqRAwOVSHUx9S4nK
-         TCQJlK/QHZesZwbjAr2vKeRQ02OtfVKUBJoqWHgI69PCpzIwVu4kYE0+RuoLPfgtbFcd
-         F9Kw==
-X-Gm-Message-State: AOJu0YxEZ7WECboiXq1CZae15lxc/6CbrTKISQdiPdYAKVkOzoU9llnO
-        J9vyH8lAy8b0wXxlxfvMPHfL8Lxe0rA=
-X-Google-Smtp-Source: AGHT+IFKtR6ptyowRAiBmNvqL6eepFITkIOnRdFz5KyEAkPiJJqcLS3WFsT7VTVVAbWOSGjuSpue0Q==
-X-Received: by 2002:ac8:5909:0:b0:403:c687:bfbb with SMTP id 9-20020ac85909000000b00403c687bfbbmr25298335qty.1.1693104650429;
-        Sat, 26 Aug 2023 19:50:50 -0700 (PDT)
-Received: from [192.168.0.105] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id u7-20020a17090341c700b001bdb8f757besm4440223ple.23.2023.08.26.19.50.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 19:50:49 -0700 (PDT)
-Message-ID: <e644366b-8387-c228-78cb-f108453b0b1d@gmail.com>
-Date:   Sun, 27 Aug 2023 09:50:46 +0700
+        d=1e100.net; s=20221208; t=1693104835; x=1693709635;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m+p7c6hBX/kTnboG8LhQNLZuVYdMHSGC3d9ZfEphxqY=;
+        b=DTrB584ZT6/qRc8WYGyiTjsfM/QU0/QpI22ynSQ0wNpz59UY92moatraUUc3owG/Mv
+         ERtKAqA25B9NUdCYoWwXpg1xRtdv/W9eWm5Fvvb1zoPEQLU558rtb9hqxLiiWpX+ItMD
+         lI7zjN34/yo35H+PHghN+D0CEmBfS7JSKApMYOfVOkOmhbcD82xv00sb4c+BV2mQs0nn
+         1KrwYYWQBVbPMIbRyYHxHBFiXZ+3zSA7mtjbO6z0PztGRwMZbXBx0cgwsvN6l9uQsrp+
+         6NHejISDyeeVfr5MzXgdXlod8kqb7+ksNKH/3daPI7zw17ZuVLWCZP4t5VGgIwi+2hYm
+         5csw==
+X-Gm-Message-State: AOJu0YwqiJJruvlMiesNHjhi1BvB87h9/RFjg4JfhVpeFsnkOuig95XN
+        Uuq0YFkITG1AeF6ERgcQoQhfzCos77IZfRc9d54=
+X-Google-Smtp-Source: AGHT+IGNPWk4GwwEbRb4wE6Vurb3F5YErVqgDyYhJ1bSfPtG2nCj0VypbCDtSPWZ5aeS82/NU5fJwQ==
+X-Received: by 2002:a05:6e02:104b:b0:348:7396:184b with SMTP id p11-20020a056e02104b00b003487396184bmr11997913ilj.24.1693104835288;
+        Sat, 26 Aug 2023 19:53:55 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id v9-20020a92c809000000b003498df5ca0fsm1558209iln.20.2023.08.26.19.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 19:53:54 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org
+Subject: [PATCH] rcu/tree: Defer setting of jiffies during stall reset
+Date:   Sun, 27 Aug 2023 02:53:47 +0000
+Message-ID: <20230827025349.4161262-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: Cache coherency bug: stale reads on /dev/sda1
-Content-Language: en-US
-To:     Joshua Hudson <joshudson@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux IDE and libata <linux-ide@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-References: <CA+jjjYTk=5wn2o46uNB+bJYX8xLgMP==dsJuvC94DvtN2f_6Yw@mail.gmail.com>
- <ZOqg9VovoVanfuR0@debian.me>
- <CA+jjjYT6+NJwB2Kn0jWLKtmz3dWH6UnVJNA6vDbPXnnJnHMf9Q@mail.gmail.com>
- <20230827020635.GQ3390869@ZenIV>
- <CA+jjjYRr3SHvXhVZLfACkUrN98n3W8aMBe1e8zqUNDuRZt17=A@mail.gmail.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <CA+jjjYRr3SHvXhVZLfACkUrN98n3W8aMBe1e8zqUNDuRZt17=A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/2023 09:38, Joshua Hudson wrote:
-> "Whole disk and all partitions have page caches of their own."
-> 
-> That's so bad.
-> 
-> I can think of numerous cases where this will cause problems; including
-> some I encountered last year and did not understand at the time. Manipulating
-> EFI partitions through the whole disk device makes sense because FAT filesystems
-> *know their offset on the disk*, and some of the existing tools really
-> don't like being
-> given a partition device.
-> 
-> There's also the astounding: write stuff to disk, umount everything,
-> copy one disk to
-> another using the whole disk device doesn't work because reading the whole disk
-> yields a stale cache (sometimes).
-> 
-> On the other hand, I can think of very few cases where the file vs
-> disk buffer pool
-> matters, because the loop device is unaffected (writing to a loop
-> block device is
-> coherent with the file).
-> 
+There are instances where rcu_cpu_stall_reset() is called when jiffies
+did not get a chance to update for a long time. Before jiffies is
+updated, the CPU stall detector can go off triggering false-positives
+where a just-started grace period appears to be ages old. In the past,
+we disabled stall detection in rcu_cpu_stall_reset() however this got
+changed [1]. This is resulting in false-positives in KGDB usecase [2].
 
-tl;dr:
+Fix this by deferring the update of jiffies to the third run of the FQS
+loop. This is more robust, as, even if rcu_cpu_stall_reset() is called
+just before jiffies is read, we would end up pushing out the jiffies
+read by 3 more FQS loops. Meanwhile the CPU stall detection will be
+delayed and we will not get any false positives.
 
-> A: http://en.wikipedia.org/wiki/Top_post
-> Q: Were do I find info about this thing called top-posting?
-> A: Because it messes up the order in which people normally read text.
-> Q: Why is top-posting such a bad thing?
-> A: Top-posting.
-> Q: What is the most annoying thing in e-mail?
-> 
-> A: No.
-> Q: Should I include quotations after my reply?
-> 
-> http://daringfireball.net/2007/07/on_top
+[1] https://lore.kernel.org/all/20210521155624.174524-2-senozhatsky@chromium.org/
+[2] https://lore.kernel.org/all/20230814020045.51950-2-chenhuacai@loongson.cn/
 
-What cases on the loop devices?
+Tested with rcutorture.cpu_stall option as well to verify stall behavior
+with/without patch.
 
+Reported-by: Huacai Chen <chenhuacai@loongson.cn>
+Closes: https://lore.kernel.org/all/20230814020045.51950-2-chenhuacai@loongson.cn/
+Suggested-by: Paul  McKenney <paulmck@kernel.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/tree.c       | 11 +++++++++++
+ kernel/rcu/tree.h       |  4 ++++
+ kernel/rcu/tree_stall.h | 20 ++++++++++++++++++--
+ 3 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1449cb69a0e0..9273f2318ea1 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1552,10 +1552,21 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
+  */
+ static void rcu_gp_fqs(bool first_time)
+ {
++	int nr_fqs = READ_ONCE(rcu_state.nr_fqs_jiffies_stall);
+ 	struct rcu_node *rnp = rcu_get_root();
+ 
+ 	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+ 	WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
++
++	WARN_ON_ONCE(nr_fqs > 3);
++	if (nr_fqs) {
++		if (nr_fqs == 1) {
++			WRITE_ONCE(rcu_state.jiffies_stall,
++				   jiffies + rcu_jiffies_till_stall_check());
++		}
++		WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, --nr_fqs);
++	}
++
+ 	if (first_time) {
+ 		/* Collect dyntick-idle snapshots. */
+ 		force_qs_rnp(dyntick_save_progress_counter);
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 192536916f9a..e9821a8422db 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -386,6 +386,10 @@ struct rcu_state {
+ 						/*  in jiffies. */
+ 	unsigned long jiffies_stall;		/* Time at which to check */
+ 						/*  for CPU stalls. */
++	int nr_fqs_jiffies_stall;		/* Number of fqs loops after
++						 * which read jiffies and set
++						 * jiffies_stall. Stall
++						 * warnings disabled if !0. */
+ 	unsigned long jiffies_resched;		/* Time at which to resched */
+ 						/*  a reluctant CPU. */
+ 	unsigned long n_force_qs_gpstart;	/* Snapshot of n_force_qs at */
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b10b8349bb2a..a2fa6b22e248 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -149,12 +149,17 @@ static void panic_on_rcu_stall(void)
+ /**
+  * rcu_cpu_stall_reset - restart stall-warning timeout for current grace period
+  *
++ * To perform the reset request from the caller, disable stall detection until
++ * 3 fqs loops have passed. This is required to ensure a fresh jiffies is
++ * loaded.  It should be safe to do from the fqs loop as enough timer
++ * interrupts and context switches should have passed.
++ *
+  * The caller must disable hard irqs.
+  */
+ void rcu_cpu_stall_reset(void)
+ {
+-	WRITE_ONCE(rcu_state.jiffies_stall,
+-		   jiffies + rcu_jiffies_till_stall_check());
++	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 3);
++	WRITE_ONCE(rcu_state.jiffies_stall, ULONG_MAX);
+ }
+ 
+ //////////////////////////////////////////////////////////////////////////////
+@@ -170,6 +175,7 @@ static void record_gp_stall_check_time(void)
+ 	WRITE_ONCE(rcu_state.gp_start, j);
+ 	j1 = rcu_jiffies_till_stall_check();
+ 	smp_mb(); // ->gp_start before ->jiffies_stall and caller's ->gp_seq.
++	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 0);
+ 	WRITE_ONCE(rcu_state.jiffies_stall, j + j1);
+ 	rcu_state.jiffies_resched = j + j1 / 2;
+ 	rcu_state.n_force_qs_gpstart = READ_ONCE(rcu_state.n_force_qs);
+@@ -725,6 +731,16 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	    !rcu_gp_in_progress())
+ 		return;
+ 	rcu_stall_kick_kthreads();
++
++	/*
++	 * Check if it was requested (via rcu_cpu_stall_reset()) that the FQS
++	 * loop has to set jiffies to ensure a non-stale jiffies value. This
++	 * is required to have good jiffies value after coming out of long
++	 * breaks of jiffies updates. Not doing so can cause false positives.
++	 */
++	if (READ_ONCE(rcu_state.nr_fqs_jiffies_stall) > 0)
++		return;
++
+ 	j = jiffies;
+ 
+ 	/*
 -- 
-An old man doll... just what I always wanted! - Clara
+2.42.0.rc1.204.g551eb34607-goog
 
