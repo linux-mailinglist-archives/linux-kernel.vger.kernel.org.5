@@ -2,339 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2345789B3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 05:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07CE789B45
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 05:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbjH0DfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 23:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S230054AbjH0Dq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 23:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjH0Der (ORCPT
+        with ESMTP id S229696AbjH0Dpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 23:34:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED9A123
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 20:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693107284; x=1724643284;
-  h=date:from:to:cc:subject:message-id;
-  bh=jbA3aXgzKOYgfsLAwUQLKYWLY6YpSXa9ZETpJyEJk7I=;
-  b=VFa7G0/rtAwSVH38H0Zc+p7koVl/gMAErdLEZ8Pt13EbbXS84DLrWKkU
-   ZU6jdYcyDN7vcfWKrpABx6trpfhlb8eSrzx8f0t9i4I4Z3b2FIB2MsTXS
-   +9rWqjauvytNNA/hp6enALX2CALBrjkgydsqVtFFZj+3IM+Na/TTZGqun
-   f1Xx6KDlgOOcOrITNGTEfWCkK6ffK6IN5zYuAK+BQTVImxLWhE7/am+8/
-   hxz9ty31Kop+GOMWF5Hg8BMXIq1XGsAasVY4xgd441Yz8HL+ujphXbKVh
-   b49AWFkXt3DkVfi18p8o9dw3RIt91ty3gBDaIsKeSBXKlOYZ+fOJlBoCx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="378696711"
-X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
-   d="scan'208";a="378696711"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 20:34:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="731429829"
-X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
-   d="scan'208";a="731429829"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 26 Aug 2023 20:34:42 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qa6Xx-0005L1-33;
-        Sun, 27 Aug 2023 03:34:41 +0000
-Date:   Sun, 27 Aug 2023 11:33:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.08.22a] BUILD REGRESSION
- 354957ec11dc80eac68c4b1e10c237d69adc1833
-Message-ID: <202308271110.PIIQ4wZk-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 26 Aug 2023 23:45:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E88131;
+        Sat, 26 Aug 2023 20:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=VNKySBcBtgRUWUvinnikTDnBGhT+X/ZTvI6YzOLk/ew=; b=GK0DH9dlNOYtWoGFiq9LLQCjlZ
+        RFQy/iog1VW11LrdjAxaxvy/vmAx3xOJzQ+MyUwAIGqmWXM8FwsIFDjOw4mW+E4zlXrEM66BjJRfA
+        oo/vi94oac7dm7dhvpvH/HwaUGqmEQ0NkH64prISTc92hDRKN9oK8PDmztwvQEmWWy4drDZR5iw+R
+        KqmHR+PU4dy0UdLryWx0ysKyIjoNa2Xj0pkI880t1R3+Y7R3YluqoX5PeQSz2/XhzVwIsk9gFCxMh
+        HaNgtQ5mEhk9+HnNDAgcVikYSlsEEIwi2iPWQp/sAlee9H+T7ASDo6C6TctNfcpDRtPRywynvX6C/
+        FAjTzenw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qa6id-009RaN-HK; Sun, 27 Aug 2023 03:45:43 +0000
+Date:   Sun, 27 Aug 2023 04:45:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, dianlujitao@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
+Subject: Re: Fwd: kernel bug when performing heavy IO operations
+Message-ID: <ZOrG5698LPKTp5xM@casper.infradead.org>
+References: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.08.22a
-branch HEAD: 354957ec11dc80eac68c4b1e10c237d69adc1833  locktorture: Dump CPUs running writer tasks when RCU stalls
+On Sun, Aug 27, 2023 at 10:20:51AM +0700, Bagas Sanjaya wrote:
+> > When the IO load is heavy (compiling AOSP in my case), there's a chance to crash the kernel, the only way to recover is to perform a hard reset. Logs look like follows:
+> > 
+> > 8月 25 13:52:23 arch-pc kernel: BUG: Bad page map in process tmux: client  pte:8000000462500025 pmd:b99c98067
+> > 8月 25 13:52:23 arch-pc kernel: page:00000000460fa108 refcount:4 mapcount:-256 mapping:00000000612a1864 index:0x16 pfn:0x462500
+> > 8月 25 13:52:23 arch-pc kernel: memcg:ffff8a1056ed0000
+> > 8月 25 13:52:23 arch-pc kernel: aops:btrfs_aops [btrfs] ino:9c4635 dentry name:"locale-archive"
+> > 8月 25 13:52:23 arch-pc kernel: flags: 0x2ffff5800002056(referenced|uptodate|lru|workingset|private|node=0|zone=2|lastcpupid=0xffff)
+> > 8月 25 13:52:23 arch-pc kernel: page_type: 0xfffffeff(offline)
 
-Error/Warning reports:
+This is interesting.  PG_offline is set.
 
-https://lore.kernel.org/oe-kbuild-all/202308250917.NOqF6Mad-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308250940.ak8AUxEz-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308250944.F8nVkKh9-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308251055.cPX2KFlo-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308251416.XkaIr6BV-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308251435.gwLevKf4-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308251616.7HOmYRfg-lkp@intel.com
+$ git grep SetPageOffline
+arch/powerpc/platforms/powernv/memtrace.c:              __SetPageOffline(pfn_to_page(pfn));
+drivers/hv/hv_balloon.c:                        __SetPageOffline(pg);
+drivers/hv/hv_balloon.c:                        __SetPageOffline(pg + j);
+drivers/misc/vmw_balloon.c:             __SetPageOffline(page + i);
+drivers/virtio/virtio_mem.c:            __SetPageOffline(page);
+drivers/xen/balloon.c:  __SetPageOffline(page);
+include/linux/balloon_compaction.h:     __SetPageOffline(page);
+include/linux/balloon_compaction.h:     __SetPageOffline(page);
 
-Error/Warning: (recently discovered and may have been fixed)
+But there's no indication that this kernel is running under a
+hypervisor:
 
-ERROR: modpost: "dump_cpu_task" [kernel/locking/locktorture.ko] undefined!
-kernel/locking/locktorture.c:279:13: warning: no previous prototype for 'spinlock_dump' [-Wmissing-prototypes]
-kernel/locking/locktorture.c:279:13: warning: no previous prototype for function 'spinlock_dump' [-Wmissing-prototypes]
-kernel/locking/locktorture.c:280:13: warning: no previous prototype for 'spinlock_dump' [-Wmissing-prototypes]
-kernel/locking/locktorture.c:280:13: warning: no previous prototype for function 'spinlock_dump' [-Wmissing-prototypes]
-kernel/locking/qspinlock.c:660:19: error: redefinition of 'tail_to_cpu'
-kernel/locking/qspinlock.c:665:19: error: redefinition of 'tail_to_idx'
-kernel/locking/qspinlock.c:670:29: error: redefinition of 'next_to_prev'
-kernel/locking/qspinlock.c:691:29: error: redefinition of 'next_to_cpu_idx'
-kernel/locking/qspinlock.c:691:6: error: redefinition of 'spinlock_dump'
-kernel/locking/qspinlock.c:691:6: warning: no previous prototype for 'spinlock_dump' [-Wmissing-prototypes]
-kernel/locking/qspinlock.c:691:6: warning: no previous prototype for function 'spinlock_dump' [-Wmissing-prototypes]
-kernel/locking/qspinlock.c:709:102: warning: format specifies type 'unsigned long' but the argument has type 'unsigned int' [-Wformat]
-kernel/locking/qspinlock.c:712:6: error: redefinition of 'spinlock_dump'
-kernel/locking/qspinlock.c:712:6: warning: no previous prototype for function 'spinlock_dump' [-Wmissing-prototypes]
-kernel/locking/qspinlock.c:730:102: warning: format specifies type 'unsigned long' but the argument has type 'unsigned int' [-Wformat]
+> > 8月 25 13:52:23 arch-pc kernel: Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G Server, BIOS 5.11 06/30/2022
 
-Error/Warning ids grouped by kconfigs:
+So I'd agree with Artem, this looks like bad RAM.
 
-gcc_recent_errors
-|-- arc-allmodconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- arc-allyesconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- arm-randconfig-r031-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- csky-allmodconfig
-|   |-- ERROR:dump_cpu_task-kernel-locking-locktorture.ko-undefined
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- csky-allyesconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- i386-randconfig-013-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- i386-randconfig-014-20230825
-|   |-- ERROR:dump_cpu_task-kernel-locking-locktorture.ko-undefined
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- loongarch-allmodconfig
-|   |-- ERROR:dump_cpu_task-kernel-locking-locktorture.ko-undefined
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- loongarch-allyesconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- m68k-allmodconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- m68k-allyesconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- microblaze-allmodconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- microblaze-allyesconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- openrisc-allmodconfig
-|   |-- ERROR:dump_cpu_task-kernel-locking-locktorture.ko-undefined
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- openrisc-allyesconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- parisc-allmodconfig
-|   |-- ERROR:dump_cpu_task-kernel-locking-locktorture.ko-undefined
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- parisc-allyesconfig
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- riscv-randconfig-r022-20230825
-|   `-- ERROR:dump_cpu_task-kernel-locking-locktorture.ko-undefined
-|-- x86_64-defconfig
-|   `-- kernel-locking-qspinlock.c:warning:no-previous-prototype-for-spinlock_dump
-|-- x86_64-randconfig-001-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- x86_64-randconfig-003-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- x86_64-randconfig-004-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-|-- x86_64-randconfig-005-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-`-- x86_64-randconfig-006-20230825
-    `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-spinlock_dump
-clang_recent_errors
-|-- i386-buildonly-randconfig-001-20230825
-|   |-- kernel-locking-qspinlock.c:error:redefinition-of-next_to_cpu_idx
-|   |-- kernel-locking-qspinlock.c:error:redefinition-of-next_to_prev
-|   |-- kernel-locking-qspinlock.c:error:redefinition-of-spinlock_dump
-|   |-- kernel-locking-qspinlock.c:error:redefinition-of-tail_to_cpu
-|   |-- kernel-locking-qspinlock.c:error:redefinition-of-tail_to_idx
-|   `-- kernel-locking-qspinlock.c:warning:format-specifies-type-unsigned-long-but-the-argument-has-type-unsigned-int
-|-- i386-randconfig-001-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- i386-randconfig-002-20230825
-|   |-- ERROR:dump_cpu_task-kernel-locking-locktorture.ko-undefined
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- i386-randconfig-003-20230825
-|   |-- kernel-locking-qspinlock.c:warning:format-specifies-type-unsigned-long-but-the-argument-has-type-unsigned-int
-|   `-- kernel-locking-qspinlock.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- i386-randconfig-004-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- i386-randconfig-005-20230825
-|   |-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-|   |-- kernel-locking-qspinlock.c:warning:format-specifies-type-unsigned-long-but-the-argument-has-type-unsigned-int
-|   `-- kernel-locking-qspinlock.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- i386-randconfig-006-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- mips-randconfig-r023-20230825
-|   |-- kernel-locking-qspinlock.c:warning:format-specifies-type-unsigned-long-but-the-argument-has-type-unsigned-int
-|   `-- kernel-locking-qspinlock.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- mips-randconfig-r025-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- riscv-randconfig-r032-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-|-- x86_64-buildonly-randconfig-006-20230825
-|   `-- kernel-locking-locktorture.c:warning:no-previous-prototype-for-function-spinlock_dump
-`-- x86_64-rhel-8.3-rust
-    |-- kernel-locking-qspinlock.c:error:redefinition-of-next_to_cpu_idx
-    |-- kernel-locking-qspinlock.c:error:redefinition-of-next_to_prev
-    |-- kernel-locking-qspinlock.c:error:redefinition-of-spinlock_dump
-    |-- kernel-locking-qspinlock.c:error:redefinition-of-tail_to_cpu
-    `-- kernel-locking-qspinlock.c:error:redefinition-of-tail_to_idx
+> IMO, this looks like it is introduced by page cache (folio) feature.
 
-elapsed time: 3214m
-
-configs tested: 140
-configs skipped: 2
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230825   gcc  
-arc                  randconfig-r011-20230825   gcc  
-arc                  randconfig-r034-20230825   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         at91_dt_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                         mv78xx0_defconfig   clang
-arm                   randconfig-001-20230825   clang
-arm                  randconfig-r003-20230825   gcc  
-arm                  randconfig-r031-20230825   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r014-20230825   gcc  
-hexagon               randconfig-001-20230825   clang
-hexagon               randconfig-002-20230825   clang
-hexagon              randconfig-r004-20230825   clang
-i386         buildonly-randconfig-001-20230825   clang
-i386         buildonly-randconfig-002-20230825   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230825   clang
-i386                  randconfig-002-20230825   clang
-i386                  randconfig-003-20230825   clang
-i386                  randconfig-004-20230825   clang
-i386                  randconfig-005-20230825   clang
-i386                  randconfig-006-20230825   clang
-i386                  randconfig-013-20230825   gcc  
-i386                  randconfig-014-20230825   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230825   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze           randconfig-r005-20230825   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath79_defconfig   clang
-mips                 randconfig-r023-20230825   clang
-mips                 randconfig-r025-20230825   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r012-20230825   gcc  
-nios2                randconfig-r033-20230825   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc             randconfig-r035-20230825   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r016-20230825   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                    ge_imp3a_defconfig   clang
-powerpc64                        alldefconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230825   clang
-riscv                randconfig-r021-20230825   gcc  
-riscv                randconfig-r022-20230825   gcc  
-riscv                randconfig-r032-20230825   clang
-riscv                randconfig-r036-20230825   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230825   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                   randconfig-r026-20230825   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r001-20230825   gcc  
-sparc                randconfig-r006-20230825   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64              randconfig-r024-20230825   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r002-20230825   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-002-20230825   clang
-x86_64       buildonly-randconfig-006-20230825   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230825   gcc  
-x86_64                randconfig-002-20230825   gcc  
-x86_64                randconfig-003-20230825   gcc  
-x86_64                randconfig-004-20230825   gcc  
-x86_64                randconfig-005-20230825   gcc  
-x86_64                randconfig-006-20230825   gcc  
-x86_64                randconfig-016-20230825   clang
-x86_64                randconfig-076-20230825   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa               randconfig-r013-20230825   gcc  
-xtensa               randconfig-r015-20230825   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+... because the string "folio" appears in the crash report?  Come on,
+Bagas, you can do better than that.
