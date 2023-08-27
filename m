@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57667789ABB
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 03:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6AE789AC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 03:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbjH0BEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 21:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
+        id S229765AbjH0BF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 21:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjH0BDy (ORCPT
+        with ESMTP id S229649AbjH0BFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 21:03:54 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F171A6;
-        Sat, 26 Aug 2023 18:03:52 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68a529e1974so1524715b3a.3;
-        Sat, 26 Aug 2023 18:03:52 -0700 (PDT)
+        Sat, 26 Aug 2023 21:05:33 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEE619A;
+        Sat, 26 Aug 2023 18:05:30 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcc187e0b5so31909871fa.1;
+        Sat, 26 Aug 2023 18:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693098232; x=1693703032;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k/qLKUalhcdgMAE/M/Hw6b4WKmXW6Syqr6CakMdx2sM=;
-        b=OE7amlXr9Jn9SDuBNtaQpTUIEHq36f29Reeefk1QJKdDiNpLt8gC9vvt1c5qU/zeYG
-         11Ah8GrK0FsuAnylxEErUw91VaiK2iNE3y3+Xf5aaUhEdYg9jVew8YcnGSsEjP9B7HAN
-         ZM3+VVUgdqyTyxg+6zCUWt1VFuxdPQMAdaYOIy3R0gxeOGwjJNJgpkb3Nf0BQsU1U51p
-         SmP68iIiF6HLBLty9KOCTYX9pLF7qXLfQisS9W4TXBnffbhbaBd8Oh9HqxAD13C1m+VN
-         1FA2rvcWVZXVHjDpnQXoENXao1z7JqyU9p5Bf1eyhcv3RS3EiyBVOKFEMYnmcMXasS98
-         XO2Q==
+        d=gmail.com; s=20221208; t=1693098329; x=1693703129;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wh08RvjtMadNV8YyJ9pJe6FtKaLPWrZmhvyrDo+tDiY=;
+        b=frkaAwktoorcXwQ2lF0D4PouETVI7MnarulLVDj54omSxdzlMT/d5DfMOCYYM3uVbD
+         KdI9s+TvWDyPw7dIGBxQjkHq8amEsK5D6wcd/fWDXsrukkSjeBQrNyOm2VTp9T0VSwJ+
+         Nt0x7ePCJhUssJBuO3t4sl1dh4pVkW6zMfTsnSs0HQbx6b3GaHoM7g2bniZScSiy4tI0
+         K6p8XVOknpAoUjjK0k9KlX0q+qwr0+74SJGoHmwm91DoZW6HcbMUFEYldPGWXUgwRQRa
+         E1MuX5EziEJ+DoI79D+uLfeneuyCPvneGiyQZ+U7ZJF7t4HKF+KvRtFkpzn4m9FPVAC2
+         eC4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693098232; x=1693703032;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k/qLKUalhcdgMAE/M/Hw6b4WKmXW6Syqr6CakMdx2sM=;
-        b=ZudWTu2L6cQcGJ+9XhOLGNcKhQ4C1fJbV/q/CaSBi9nz6A2Bi1yEpr/GjgndAHAWuA
-         yWRrEBH/z1+JpJnMFBYf6NEiz/NvgFrFkFGIl57oKP/DVVeOAY+s9musVbRU86Ry1aWW
-         AUYW9D50rJjwINZcSr7L5rkNlbYJ/hIxhopiJ/fKGMs5VF4ufJNxDyjLJyIUZ+TFibr+
-         mSUu7vI3sRXjOg3nVeKFz2ZISMAyfipFDqUZEARkW3YPhxmy03mca6b1o6UEHg5YWXRB
-         CM+Sv3X5Xn7ZSEAm0SQnKo6zG7Zsd/V5Fr2l2pH3sYDqBoaOkx0KgD/jqA5b9qi2M6wB
-         02tA==
-X-Gm-Message-State: AOJu0YwFnqxxoOGmKzTqvioFRXYqiTJLmzjeTrC/BHIAvSvClyTimJU5
-        VSY2IzZyATNLSoWvgANykfA=
-X-Google-Smtp-Source: AGHT+IG6S1JGV2M5+BySXE0JJy+cmc6kzd66vB9IxXCIorqYmJLIUgkUf2Fw6je+92Y42wTQIfFkvA==
-X-Received: by 2002:a17:902:e808:b0:1c0:ecbb:1832 with SMTP id u8-20020a170902e80800b001c0ecbb1832mr1429865plg.26.1693098231653;
-        Sat, 26 Aug 2023 18:03:51 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id iw20-20020a170903045400b001b8a2edab6asm4365104plb.244.2023.08.26.18.03.50
+        d=1e100.net; s=20221208; t=1693098329; x=1693703129;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wh08RvjtMadNV8YyJ9pJe6FtKaLPWrZmhvyrDo+tDiY=;
+        b=i79SJi1ZdRFkIughkMULsZe679ofMwJccA/XtbF7/TqbssEnwE4O53D1gsnJF5fZs8
+         UTBMS0d15j/GKmx18rTlTVsqhOo6sQJku1Mqs2tu04xkCImX6uWF/mvHZ2SE5dqPYXao
+         8sJ4jSW852Lm8sp1DJcydQkDMwmWv05kKMHhXisJidPYdLDgjE54dKPliSz4SoJxW/eN
+         7gY8meDDSxU9tGF6WWrhAF9Zr2GEx38R04hUfNrv9oKfr30D0zbTNSKk3Z0vw6c7j5Dd
+         5ZY8z7KzjAhcLdjCDiSTVcQzxAovKS09izA6F4hQAnBIjoS1vWaL/pJH1Iq8caplPwOw
+         QnuQ==
+X-Gm-Message-State: AOJu0YxUgco347Ow2gdHTc7t0UDomZBjjSwawvGuxi7VOaGlGFjK+rsB
+        3/+TXKQ/7IWM9WoGpWk/kko=
+X-Google-Smtp-Source: AGHT+IH0UZuuaxknJzE6dFxZoiFGxR4nMxrJELQhqMeeO4NGfTXq2f+Ep7uv2zM0/BtVTCJzV2giSg==
+X-Received: by 2002:a2e:9699:0:b0:2bc:d6d8:fd35 with SMTP id q25-20020a2e9699000000b002bcd6d8fd35mr10569761lji.47.1693098328914;
+        Sat, 26 Aug 2023 18:05:28 -0700 (PDT)
+Received: from mobilestation ([95.79.200.178])
+        by smtp.gmail.com with ESMTPSA id e25-20020a2e8199000000b002b702dfb510sm1000375ljg.39.2023.08.26.18.05.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 18:03:51 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 3F8B481CCAD6; Sun, 27 Aug 2023 08:03:49 +0700 (WIB)
-Date:   Sun, 27 Aug 2023 08:03:49 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Joshua Hudson <joshudson@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux IDE and libata <linux-ide@vger.kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Subject: Re: Cache coherency bug: stale reads on /dev/sda1
-Message-ID: <ZOqg9VovoVanfuR0@debian.me>
+        Sat, 26 Aug 2023 18:05:28 -0700 (PDT)
+Date:   Sun, 27 Aug 2023 04:05:26 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Rohan G Thomas <rohan.g.thomas@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: Synopsys XGMII MAC and USXGMII interfaces
+Message-ID: <q325fnweuebsmjrsfi3xfnttetgjmjsssvlscgq6lftg6acjsh@zkku2kmtpbmk>
+References: <ZOXmWLB4TKGKvkiE@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bjVAAIN2A5eZ8tod"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+jjjYTk=5wn2o46uNB+bJYX8xLgMP==dsJuvC94DvtN2f_6Yw@mail.gmail.com>
+In-Reply-To: <ZOXmWLB4TKGKvkiE@shell.armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,56 +85,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 23, 2023 at 11:58:32AM +0100, Russell King (Oracle) wrote:
+> Part 2 of the discussion...
+> 
+> A similar issue applies to PHY_INTERFACE_MODE_USXGMII, but is reversed.
+> USXGMII supports 10M, 100M, 1G, 2.5G, 5G and 10G. Phylink allows all of
+> these because that's what the appropriate standard says. dwxgmac2
+> initialises config register settings for speeds from 10M up to 10G.
+> However, the PHY_INTERFACE_MODE_USXGMII switch() block in
+> stmmac_mac_link_up() only handles 2.5G, 5G and 10G. Shouldn't it handle
+> the other speed cases - it looks like the MAC does support them.
 
---bjVAAIN2A5eZ8tod
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+AFAICS yes, it should.
 
-On Sat, Aug 26, 2023 at 02:59:45PM -0700, Joshua Hudson wrote:
-> uname -a
-> Linux nova 6.4.12 #1 SMP PREEMPT_DYNAMIC Sat Aug 26 09:11:27 PDT 2023
-> x86_64 GNU/Linux
->=20
-> Kernel source is
-> https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.4.12.tar.xz
->=20
-> Can reliably reproduce as follows:
->=20
-> # hexedit /dev/sda1 (this is my EFI partition)
-> PgDn
-> # hexedit /dev/sda
-> G 100000  (your value may vary--we want to seek to the start of the
-> EFI partition)
-> PgDn
-> PgDn
-> ^C
-> write a marker to the padding between the BPB and the first FAT sector.
-> (If your system doesn't have one, edit an error message in the boot secto=
-r)
-> ^X
-> # hexedit /dev/sda1
-> PgDn
-> Look for marker written above, find it's not there !!!
-> ^C
->=20
-> I discovered this one trying to defragment my EFI partition after a
-> grub upgrade left it very fragmented due to replacing logos.
+> 
+> The initialisation done by dwxgmac2_setup() does setup control register
+> masks for everything from 10M to 10G, so on the face of it, it looks
+> like a mistake in stmmac_mac_link_up().
 
-Are you sure this is hardware issue?
+Right.
 
---=20
-An old man doll... just what I always wanted! - Clara
+> 
+> If it's something outside of the MAC that doesn't support these speeds
+> when operating as USXGMII, then that needs to be handled.
 
---bjVAAIN2A5eZ8tod
-Content-Type: application/pgp-signature; name="signature.asc"
+Based on what USXGMII is mentioned on just a single Synopsys PCS/PHY
+page on the Synopsys site I guess that DW XGMAC doesn't know anything
+about the USXGMII interface. As I explained in my comment to part 1 it
+just exposes a multi-protocol port(s) capable of working as XGMII,
+GMII or MII. Then XPCS consumes/supplies the data from/to the
+activated interface and performs a respective data encoding/decoding.
+On the lowest level DW PMA/PHY does the serdes-ing. See the brief
+description on the Synopsys 10G PHY page (on the "Downloads and
+Documentation" menu):
+https://www.synopsys.com/dw/ipdir.php?ds=dwc_multi_protocol_10g_phy
+it has two layers:
+- Multi-protocol PCS
+- Multi-protocol PHY
+both are designed to provide USXGMII and SGMII interfaces. 
 
------BEGIN PGP SIGNATURE-----
+> 
+> The other weird thing is that when using PHY_INTERFACE_MODE_USXGMII
+> with XPCS, XPCS supports 1G, 2.5G and 10G ethtool link modes, but not
+> 5G. So combining the implementation in stmmac_mac_link_up(), that
+> means only 2.5G and 10G can actually be functional. Is that a fair
+> assessment of the USXGMII situation with stmmac?
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZOqg9AAKCRD2uYlJVVFO
-o+GuAP0fuH1LfzqXEc0cXxDCfobYSdm23I8M4IxXm6sdEFlIDwD/RGivalsKTtjI
-wY9DMYZ1BpSscGRwW4c2H2dtmZHKRgY=
-=bkK1
------END PGP SIGNATURE-----
+AFAICS assessment seems quite fair. If USXGMII is an external
+interface then these ethtool link modes are just irrelevant. Despite
+of the XLGMII case I don't just see of how USXGMII mode could be used
+as an internal MAC-PCS. Since it's an external interface then the
+actual link modes are supposed to be retrieved from an external PHY.
+Seeing STMMAC driver doesn't support an external PHY attached if XPCS
+performs C73 auto-negotiation, then the xpcs_usxgmii_features array
+should have been filled with all the USXGMII-speed-compatible link
+modes.
 
---bjVAAIN2A5eZ8tod--
+-Serge(y)
+
+> 
+> Thanks.
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
