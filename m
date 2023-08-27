@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E7A78A10C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 20:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6230578A114
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 20:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjH0Sim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 14:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        id S229815AbjH0Sq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 14:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjH0SiX (ORCPT
+        with ESMTP id S229601AbjH0Sq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 14:38:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA0BEB;
-        Sun, 27 Aug 2023 11:38:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 472DA61DA5;
-        Sun, 27 Aug 2023 18:38:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 107D2C433C7;
-        Sun, 27 Aug 2023 18:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693161499;
-        bh=FbU1liP+ZktUczLaa83cudoedJjS0x2zXv05trLJ0vU=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=I2I3k8pEMMzprJSJIeQCFkoH0wUglfytHt03Wv5DeXvsmnhzZThCV77OIJkhPpebv
-         R8Gl/WRxbxcaPjB+G6rRORn+M+a0Tp5uL5RMXccwOuYycuAngNk1Q3oGgLCmtp8nOG
-         u5FZJoIJ5a/RSr7d3kjw3s1TgTPtQdlgZygFgk2Qt0TuhYPpXsYZdft9rQm/eRWMl2
-         n1zqXjucgY2SIE6lKmxc/Cs+YjVxCym5e/AST9/AOTFKC8J/lB0mTua0TiDUmTmGpn
-         R3JqSoPQIZfMWwxp1tdEJZ3ek/W32XByRH8NvV0MxHkjKbslB83VwzrsbIEwK5Ihkw
-         Mr8qoz2JlDckw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Sun, 27 Aug 2023 21:38:15 +0300
-Message-Id: <CV3JNOUEC8MH.3SE01XJKM6F43@suppilovahvero>
-Cc:     <stable@vger.kernel.org>, "kernel test robot" <lkp@intel.com>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Jethro Beekman" <jethro@fortanix.com>,
-        "Serge Ayoun" <serge.ayoun@intel.com>,
-        "Sean Christopherson" <seanjc@google.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/sgx: Describe the parameters of
- sgx_calc_section_metric()
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Dave Hansen" <dave.hansen@intel.com>, <linux-sgx@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230822102853.15078-1-jarkko@kernel.org>
- <ba319881-b4e9-7129-123f-1884bfeb50ec@intel.com>
-In-Reply-To: <ba319881-b4e9-7129-123f-1884bfeb50ec@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 27 Aug 2023 14:46:27 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087C7EB;
+        Sun, 27 Aug 2023 11:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=s31663417; t=1693161981; x=1693766781; i=j.neuschaefer@gmx.net;
+ bh=vfCrl3xTZlAlJ4jDNXucspu42u1OeEtKo9/uQ35+XNg=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=ubJ3uHXRZFform7vw2uF9RHHDqO6P57ZfBEy2QwTE9C8AWAc6Cm3FpmrcEKhs+j8Z4KC5ut
+ +kZsr14wxNnUulKwfgw6PbYkWVq6yunxpZdWRNcaAExjDpZ3UMJA3N3FTqDla6YuokQpSAy0z
+ vNeRlrlOsc2oS187XMgg11Bm7z7OPPWsK2Ks7ysrLi5ZYk2i4T9tLpZec3UcWYh0MUP2uiqVP
+ 0Tax0z/N89pFOSxcJ0J2oEkzSKOv4E250BRorw5QVZOLra6cj7PdwNZEFr90RHq6sBeLxkvdR
+ DzKBJLPrjixGMXxWB+Cji1bUw0J+MojiY1q5RIA7F/FfW3FH0Q1g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([94.218.119.195]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MMobU-1qJuLw495A-00Ii0I; Sun, 27
+ Aug 2023 20:46:21 +0200
+Date:   Sun, 27 Aug 2023 20:46:18 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Mikhail Kobuk <m.kobuk@ispras.ru>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        lvc-project@linuxtesting.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        openbmc@lists.ozlabs.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: Re: [PATCH] pinctrl: nuvoton: wpcm450: fix out of bounds write
+Message-ID: <ZOuZ+n3PZWqxsG35@probook>
+References: <20230825101532.6624-1-m.kobuk@ispras.ru>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="R079PLSdubHOUllH"
+Content-Disposition: inline
+In-Reply-To: <20230825101532.6624-1-m.kobuk@ispras.ru>
+X-Provags-ID: V03:K1:siUKjmJQMOOsosCdZvA+NvPJoj4rupQ6qsUddR4Exd5YARSKzD+
+ HK5apaMUtP530gLVsxDkQa8Bzt09WyoU3TFvkicyyLcaU23AqbEKoIpnv19cfGK034jVdzv
+ ZkFOr40iHkBuZZgnUVZjUVPl7RFEf568k8OoILaMeEYKOX7PHmx/hloVj1aHPuMXJf9oobj
+ nkvyFzxLQXkXu/7HqP2Ww==
+UI-OutboundReport: notjunk:1;M01:P0:jDVIOE0RUD4=;u+RS0RRyx0ZYt28yQ9wu7oJVKVo
+ tzwtjf6n5tExaojB5pyHxKR0Jyf4RRx+bv9hXlBa58nDL/Jh7Yoca0qSfVRiwPU5NZoyjcATx
+ 3RXqdws3+hqKGju4kqdlMqFhZMUR6kyXvei8cZlDpIS+PiwZDOBixBswO9omr+jaIXGAiZ7bi
+ ruRA3Y+Yod7KoyA2egRseb+U1Gz0RRnhA5OV6THYBzpnaElTcb/I56nRqIYXMeUc+2BrfTytD
+ ETBIb1v0vA9CEUrTznpFuEW3yJW/MH2ezRn3w4MEeW8cGMemswWOJhiTYQh6ZmW8o6RYJjHAx
+ BfATn9rbPieEqSJ+G6a9hKW7NgIlcWecSjMwTf4qhRHktSwkdp0Rc32aF+zkDYRvEuJ8SGf2/
+ 8DVWu45xvdapeSd/repljTi8u7GeBGNBJNsGyXCluQ22HKsbBI9T3BkQlijxpEgY6kaBa6lcw
+ qBQADBDjWsPL7I5Bs8+9VONgAAlKgpOeDLoxylNQkvTNnKrTviT/OYfSr2Cd5nDqU/SUe0CuM
+ w/dn8VB5i+cx6Y4OoyQbUurfGWssSsDEfiEnBJCP7VYLKCZMfcGC9E8stQ7TRzhlpjHeBIUPI
+ i8JISvn7I57vrvbV+eqShJa0Q7JcKVauGSWaqS5nFe8EBN/ZQFBW9kHj705+gOXBEFDBD+uGb
+ zAiqGqhPf+shiCD+EIMZGZ+ezF6SWsbA7T/6B7Es7RUR8XJc668xw1lnA83r0ZM66lG1tF7fk
+ RPiEFwAn9q1eChHV4FOLTc1CmPhgR1FzuritbuRwZLWDXzK+CrgL1BIgptcATBU2ix6BmIRQ2
+ +TdZ2oM/I/eLAst/7LQl9F6yRzEkfbiDeXGXbrLOnyHLPH1kV9NGJJ2cju0fc9FJLKDr7W1/D
+ /m8OmyCUriSaELBdHLTqn0n4f8ZCz/e9S/dJqnFb0cGb13rkX28ZmkcFzeMPDAG3w/PL6GwRU
+ KKnvKg==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Aug 25, 2023 at 6:18 PM EEST, Dave Hansen wrote:
-> On 8/22/23 03:28, Jarkko Sakkinen wrote:
-> > Cc: stable@vger.kernel.org # v5.11+
-> > Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cac=
-he (EPC) sections")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202308221542.11UpkVfp-lkp=
-@intel.com/
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
->
-> -ENOCHANGELOG
 
-ack
+--R079PLSdubHOUllH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >  /**
-> > + * sgx_calc_section_metric() - Calculate an EPC section metric
-> > + * @low:	low 32-bit word from CPUID:0x12:{2, ...}
-> > + * @high:	high 32-bit word from CPUID:0x12:{2, ...}
-> > + *
-> >   * A section metric is concatenated in a way that @low bits 12-31 defi=
-ne the
-> >   * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 =
-of the
-> >   * metric.
->
-> Shouldn't we just do:
->
-> -  /**
-> +  /*
->
-> ?  This doesn't need kerneldoc comments.
+On Fri, Aug 25, 2023 at 01:15:28PM +0300, Mikhail Kobuk wrote:
+> Write into 'pctrl->gpio_bank' happens before the check for GPIO index
+> validity, so out of bounds write may happen.
 
-Yeah, I added it because of parameter descriptions, which I think are
-still useful.
+Good point.
 
-If checkpatch does not complain, I can change the comment type.
+Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
 
-BR, Jarkko
+Thanks!
+
+
+>=20
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>=20
+> Fixes: a1d1e0e3d80a ("pinctrl: nuvoton: Add driver for WPCM450")
+> Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
+> Reviewed-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+> ---
+>  drivers/pinctrl/nuvoton/pinctrl-wpcm450.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c b/drivers/pinctrl/=
+nuvoton/pinctrl-wpcm450.c
+> index 2d1c1652cfd9..8a9961ac8712 100644
+> --- a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+> +++ b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+> @@ -1062,13 +1062,13 @@ static int wpcm450_gpio_register(struct platform_=
+device *pdev,
+>  		if (ret < 0)
+>  			return ret;
+> =20
+> -		gpio =3D &pctrl->gpio_bank[reg];
+> -		gpio->pctrl =3D pctrl;
+> -
+>  		if (reg >=3D WPCM450_NUM_BANKS)
+>  			return dev_err_probe(dev, -EINVAL,
+>  					     "GPIO index %d out of range!\n", reg);
+> =20
+> +		gpio =3D &pctrl->gpio_bank[reg];
+> +		gpio->pctrl =3D pctrl;
+> +
+>  		bank =3D &wpcm450_banks[reg];
+>  		gpio->bank =3D bank;
+> =20
+> --=20
+> 2.42.0
+>=20
+
+--R079PLSdubHOUllH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmTrmdgACgkQCDBEmo7z
+X9sfNg/+JMEeSuR+27aDQ0RK06u4N58JgUVNTW7QY2Y/Q3L/s/SnqbtHdt5+fy/y
+3OSCbm8x9e5GkwWvrfel6V8lw6LH05U+Q3y69N2yDTONzxUdjvpMtPApCU/IAf0o
+TaoMHnF2kbEjLvxCy16MtXXu7/cb+/qs8+ZXPvhwB9uZB1Dwneya4bU+TZIgUlHY
+06Lwc5fYXumglMlATdxNi7JlUvMID7K+Fa/VrexK8RGFQIV9IGg3hnk2sL/6k2Ov
+bW9s0rDmA64f7AwUd/VpoHIIJrqHY3CcJoqsyybNhyCXMAD6gDniHz4xVLG4APaR
+e5j+IaUKFs5jVKnJ6XO+B/60r7LEucQHHxW+7deaa++sqanJZNrv/5KnJJscZgec
+2qKw/4mLouuD9I5sWjF9EFjFNzcmmjzpfa9RN1omP68MtERXDT+4jAYaMZDSfK2h
+eD4fDldrqYCUcfQdM2T1VG8T0rTNBF6RG48ezzJ5sFM7QYeKn3sElhqt6p6Ns1K0
+04I+8kdz4h6AUf7JrE7JuXpWAPObSR9g4hh/+Dw3aAxw82KmGTULFKGmWDYDPrWQ
+y4MSW4HGYLhnmXsa8Z7TSK2cVgupYB7NQ+vaPpOpLe5q/28EbiIBngewNxGVButP
+ZqzgL0QFoczYgk4APhdr15Q6ZQ+9VM4Av69MFknms31aOp0HldI=
+=93BM
+-----END PGP SIGNATURE-----
+
+--R079PLSdubHOUllH--
