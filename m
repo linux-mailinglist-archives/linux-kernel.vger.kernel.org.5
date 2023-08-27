@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A5A789B91
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 08:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF57789B89
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 08:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjH0GV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 02:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        id S229684AbjH0G0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 02:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjH0GVu (ORCPT
+        with ESMTP id S229644AbjH0G00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 02:21:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A9C183;
-        Sat, 26 Aug 2023 23:21:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D148861BFD;
-        Sun, 27 Aug 2023 06:21:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 27B7AC433C9;
-        Sun, 27 Aug 2023 06:21:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693117307;
-        bh=6UUXpO9T2ZjC/jSRr1ot3zZfncDhgWdLHcdF5xDh8zk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FO5tXPdOEjpQmNZOqrRATWIad10KITbXuBLgewxwStt1JiDPZCd0dhDxMzc66WPxV
-         yiklSu54L3pE4rHSiCdpcfV0+j1ZdKGc6DLDVpr0FPps2G4R+RUu7wilxXlyWJpize
-         6kEmJAnGOliHg5rcHU5vvhJxB5HepbCR8ScvCGR65WXFUOm8U/HY+MiKAo62TeqBIX
-         pnAQN+sGNzxJv1ditKAvOpny/ODkllPi176IecAYDCYjtCh9Q/mfeChQ7OUq01MWUS
-         TSDLBXdBLWvMq8HE2opTzevd9JQTE8lYywNRcwawF+DM7rVkaV240dX/whs59B1E9q
-         0RP6Zh6oKuV+A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0BB27E33083;
-        Sun, 27 Aug 2023 06:21:47 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Sun, 27 Aug 2023 02:26:26 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF0B183;
+        Sat, 26 Aug 2023 23:26:24 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bcac140aaaso1699659a34.2;
+        Sat, 26 Aug 2023 23:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693117584; x=1693722384;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=is4hdEOI3RMC28ap7RXYRRn6XWAL9LuOlIIP2UK2EQk=;
+        b=AjjdpOHvzg779w/Of0surKdzNRDpKMXy3ylVm6dM1w5Kz4JdNFUup9W7VPDvpHBFhd
+         Ph/0bfvPoY5HRmfNIMS8oyhItl2/AljKrpmPAUJXUhZEIer8AAGq+E9bvd34pxA/T0eE
+         x6WFG8iBVl7gm6XmhI8SPhU7HMxqcHTFirbQaGMGi4mlkGxsL9p5narZKuDcOu2vIKEs
+         /HJxbkcvzIVd7xGlx/qe+y8XPkBA4cCBW9pAZWi3gy+FqW8v16FInYrS9TW4sHxRd0yC
+         XzAPIksdEgk83r6Cbo60dB1fpHLCTjTg5JYmrPA27h/PtxoVxA7HuqrGAdagY+MxDOLN
+         y8JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693117584; x=1693722384;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=is4hdEOI3RMC28ap7RXYRRn6XWAL9LuOlIIP2UK2EQk=;
+        b=M1EvBFbR1MUDK6T22JZwCThl4IFZLs81vX2/aUU5iEB/6NHipHZIXkIStHU/edy6ah
+         R5GdsqOsFN4o9Gh+kZhI3sMJeVMTK1huyHdzjRWRKb5aZtI1y2CbkUaJIFmJgL1AeY97
+         J+SU46uJ2BdDhYawnBYZreNEV0JvarIdxZpDKv38D9u0MHaFJrNdD4qae/3YeV7lJIk4
+         Ib+9JmxLWlw3G3r90z6Wjxac1V3Auq+ioTa4/3ClZ2kSNXkcXHwNOWiWSnYXjyIbyNG6
+         xVBAKpHsid8J29CZDP4iVHid/7WDF6y7YhmSgnXN5uips9fXHjA6UTxN8XcibmKJLnjr
+         tl7w==
+X-Gm-Message-State: AOJu0YxJVJ6cfJke1XwP/H7gD5UwjrTxf24SSAqETWCkHz2gsam+/2qv
+        kBFFs3l2TZvxGa1sHVg1FGIoMa+TcQ5bxHO6
+X-Google-Smtp-Source: AGHT+IGX6VzJTxTXQ9al6dPCPbl1CP2jEd1WjWsEJ289iODA18d7miCRF+f+vYUhxB/CrGwoToljDw==
+X-Received: by 2002:a05:6830:45:b0:6b7:4a52:a33a with SMTP id d5-20020a056830004500b006b74a52a33amr9632937otp.14.1693117583908;
+        Sat, 26 Aug 2023 23:26:23 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:c560:3cd7:28f4:78dd:ed95])
+        by smtp.gmail.com with ESMTPSA id y1-20020a1709029b8100b001b86492d724sm244009plp.223.2023.08.26.23.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 23:26:23 -0700 (PDT)
+From:   Anup Sharma <anupnewsmail@gmail.com>
+X-Google-Original-From: Anup Sharma <AnupSharma>
+Date:   Sun, 27 Aug 2023 11:56:17 +0530
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     anupnewsmail@gmail.com
+Subject: [GSoC 23] Adding Support for Gecko Converter: Final Report
+Message-ID: <ZOrsiZA+C0zbWEQS@yoga>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v7 0/5] Introduce IEP driver and packet timestamping support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169311730704.334.2679024548095794148.git-patchwork-notify@kernel.org>
-Date:   Sun, 27 Aug 2023 06:21:47 +0000
-References: <20230824114618.877730-1-danishanwar@ti.com>
-In-Reply-To: <20230824114618.877730-1-danishanwar@ti.com>
-To:     MD Danish Anwar <danishanwar@ti.com>
-Cc:     rdunlap@infradead.org, rogerq@kernel.org,
-        simon.horman@corigine.com, vigneshr@ti.com, andrew@lunn.ch,
-        richardcochran@gmail.com, conor+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
-        davem@davemloft.net, nm@ti.com, srk@ti.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Dear Perf Tool  Community,
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+I hope this email finds you well. I'm excited to share the final report
+for the "Perf Data Converter" project, which I had the privilege to
+work on as part of the Google Summer of Code 2023 program.
+This project aimed to enhance the capabilities of the perf tool by adding
+support for the Gecko converter, and I'm pleased to present the outcomes
+of my efforts.
 
-On Thu, 24 Aug 2023 17:16:13 +0530 you wrote:
-> This series introduces Industrial Ethernet Peripheral (IEP) driver to
-> support timestamping of ethernet packets and thus support PTP and PPS
-> for PRU ICSSG ethernet ports.
-> 
-> This series also adds 10M full duplex support for ICSSG ethernet driver.
-> 
-> There are two IEP instances. IEP0 is used for packet timestamping while IEP1
-> is used for 10M full duplex support.
-> 
-> [...]
+Project Title: Perf Data Converter
+Organization: Linux Perf Tool, Linux Foundation, Google Summer of Code 2023
+GitHub: https://github.com/TwilightTechie
 
-Here is the summary with links:
-  - [v7,1/5] dt-bindings: net: Add ICSS IEP
-    https://git.kernel.org/netdev/net-next/c/f0035689c036
-  - [v7,2/5] dt-bindings: net: Add IEP property in ICSSG
-    https://git.kernel.org/netdev/net-next/c/b12056278378
-  - [v7,3/5] net: ti: icss-iep: Add IEP driver
-    https://git.kernel.org/netdev/net-next/c/c1e0230eeaab
-  - [v7,4/5] net: ti: icssg-prueth: add packet timestamping and ptp support
-    https://git.kernel.org/netdev/net-next/c/186734c15886
-  - [v7,5/5] net: ti: icssg-prueth: am65x SR2.0 add 10M full duplex support
-    https://git.kernel.org/netdev/net-next/c/443a2367ba3c
+Final Report Link: https://gist.github.com/TwilightTechie/94f6fc54413e7d88b751615ff280af17
+Short Presentation: https://www.youtube.com/watch?v=kfQLnkX3U2Y
+(will make it public very soon, looking for feedbacks).
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Throughout the summer, I collaborated closely with you all and other
+contributors to successfully integrate the Gecko converter into the
+perf tool. This integration enables effortless analysis using the
+Firefox profiler and streamlines the process of performance analysis.
+Notably, the project includes the addition of support to launch the
+profiler UI on the default browser, enhancing the user experience.
 
+Key Achievements:
 
+- Gecko Converter Integration
+- Profiler UI Launch Support
+- Comprehensive Testing and Test Coverage
+- Command Line Flexibility
+- Process Visualization Options
+
+I invite you to read the detailed final report to learn more about
+the project's achievements, contributions, and the next steps. Your
+feedback and insights are highly valuable to me as I continue to
+contribute to the Linux Perf Tool community.
+
+I would like to express my gratitude to the entire community for the
+support and guidance I received throughout this journey. Your contributions
+and feedback have been instrumental in making this project a success.
+
+I am thankful for the opportunity to be part of this dynamic and collaborative
+community, and I look forward to your thoughts on the final report.
+
+Best regards,
+Anup Sharma
