@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF9F78A0BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 19:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DF278A0C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 19:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbjH0R5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 13:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S230245AbjH0R5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 13:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjH0R40 (ORCPT
+        with ESMTP id S230061AbjH0R43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 13:56:26 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C595D12E
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 10:56:24 -0700 (PDT)
+        Sun, 27 Aug 2023 13:56:29 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5639102
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 10:56:26 -0700 (PDT)
 Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2B7C2660732C;
-        Sun, 27 Aug 2023 18:56:22 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 127E66607383;
+        Sun, 27 Aug 2023 18:56:23 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693158983;
-        bh=ORmQKCUGsF8kgAPa3hHKOLWJTvNflLrF3tBCEJ4kehU=;
+        s=mail; t=1693158985;
+        bh=iD/RGR8vyEtS3p/My8ajCUUp4er25O/60kSxAeFzEeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H33nsLUwQUH0+9Xfnh5h5huhD0SAGk1CaReMMOHciJYQd4dJYYdbNPjHyA84/8Ibc
-         FHgCTRuodoLINJAB7PiNEQ0d/XsbPw1HY6QnZ+ZswGVZ71WfDmgiAe9yDJDZf6uY9n
-         3BhxC+io9BBlOTTKUG8qvpfO4uf3vzlywWSG3lsvqbaWXu/zxZjZJP53OnoELMh7km
-         Gs9NxeaAmD6x9bL1C4oNAVYv6fKUnP5SpuFzUwed39F4vz/DiAaJA/dqWxhhgSlcGm
-         I8dYwFmee0SeqzxtXd8i2PPFD/9UAzU/OYt2O6fLt+Qn8g+ssx8ZaSXzACAkFls1RM
-         uHFQ16+B7l4Ng==
+        b=BQNUgE+IuOdVGDcx/E8UE81kIHEC/0ZTMdcT48uhszsRe0Z7AlfsI9ZAE+Ohu5Ti1
+         mBjCKYjFpiYY4GWmE7MApv4RqDplbKFuU1svi47CAjuRciC2vRmi9MIUeDXat4SxAg
+         q3Bra4UmssMzm2JuV9YCD2DRzOWVKDy+qPOSEcOLga1i4WU0h/bhVjRfvBWTI2gX27
+         z/C99KXG9CCdCpxvPRBo/c2HDqLh+w2ZrOEo5lTN5rnigrKnglAl0shRSCf1fbKL4a
+         hm/hagzPFNbg2chb1SAHzWM/ASYhsIVLHVWVJZ4enpAZSCC63ECE6b1pB57xVjeRxc
+         Lk3GKgXcZOeMQ==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@gmail.com>,
         Gerd Hoffmann <kraxel@redhat.com>,
@@ -52,9 +52,9 @@ To:     David Airlie <airlied@gmail.com>,
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org,
         intel-gfx@lists.freedesktop.org
-Subject: [PATCH v15 19/23] drm/shmem-helper: Export drm_gem_shmem_get_pages_sgt_locked()
-Date:   Sun, 27 Aug 2023 20:54:45 +0300
-Message-ID: <20230827175449.1766701-20-dmitry.osipenko@collabora.com>
+Subject: [PATCH v15 20/23] drm/virtio: Pin display framebuffer BO
+Date:   Sun, 27 Aug 2023 20:54:46 +0300
+Message-ID: <20230827175449.1766701-21-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
 References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
@@ -69,48 +69,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export drm_gem_shmem_get_pages_sgt_locked() that will be used by virtio-gpu
-shrinker during GEM swap-in operation done under the held reservation lock.
+Prepare to addition of memory shrinker support by pinning display
+framebuffer BO pages in memory while they are in use by display on host.
+Shrinker is free to relocate framebuffer BO pages if it doesn't know that
+pages are in use, thus pin the pages to disallow shrinker to move them.
 
+Acked-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c | 3 ++-
- include/drm/drm_gem_shmem_helper.h     | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/virtio/virtgpu_drv.h   |  2 ++
+ drivers/gpu/drm/virtio/virtgpu_gem.c   | 19 +++++++++++++++++++
+ drivers/gpu/drm/virtio/virtgpu_plane.c | 17 +++++++++++++++--
+ 3 files changed, 36 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index f0f708e0ff00..62958af90383 100644
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -888,7 +888,7 @@ struct sg_table *drm_gem_shmem_get_sg_table(struct drm_gem_shmem_object *shmem)
- }
- EXPORT_SYMBOL_GPL(drm_gem_shmem_get_sg_table);
+diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+index 4126c384286b..5a4b74b7b318 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_drv.h
++++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+@@ -313,6 +313,8 @@ void virtio_gpu_array_put_free(struct virtio_gpu_object_array *objs);
+ void virtio_gpu_array_put_free_delayed(struct virtio_gpu_device *vgdev,
+ 				       struct virtio_gpu_object_array *objs);
+ void virtio_gpu_array_put_free_work(struct work_struct *work);
++int virtio_gpu_gem_pin(struct virtio_gpu_object *bo);
++void virtio_gpu_gem_unpin(struct virtio_gpu_object *bo);
  
--static struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_object *shmem)
-+struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_object *shmem)
+ /* virtgpu_vq.c */
+ int virtio_gpu_alloc_vbufs(struct virtio_gpu_device *vgdev);
+diff --git a/drivers/gpu/drm/virtio/virtgpu_gem.c b/drivers/gpu/drm/virtio/virtgpu_gem.c
+index 7db48d17ee3a..625c05d625bf 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_gem.c
++++ b/drivers/gpu/drm/virtio/virtgpu_gem.c
+@@ -294,3 +294,22 @@ void virtio_gpu_array_put_free_work(struct work_struct *work)
+ 	}
+ 	spin_unlock(&vgdev->obj_free_lock);
+ }
++
++int virtio_gpu_gem_pin(struct virtio_gpu_object *bo)
++{
++	int err;
++
++	if (virtio_gpu_is_shmem(bo)) {
++		err = drm_gem_shmem_pin(&bo->base);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
++void virtio_gpu_gem_unpin(struct virtio_gpu_object *bo)
++{
++	if (virtio_gpu_is_shmem(bo))
++		drm_gem_shmem_unpin(&bo->base);
++}
+diff --git a/drivers/gpu/drm/virtio/virtgpu_plane.c b/drivers/gpu/drm/virtio/virtgpu_plane.c
+index a2e045f3a000..def57b01a826 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_plane.c
++++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
+@@ -238,20 +238,28 @@ static int virtio_gpu_plane_prepare_fb(struct drm_plane *plane,
+ 	struct virtio_gpu_device *vgdev = dev->dev_private;
+ 	struct virtio_gpu_framebuffer *vgfb;
+ 	struct virtio_gpu_object *bo;
++	int err;
+ 
+ 	if (!new_state->fb)
+ 		return 0;
+ 
+ 	vgfb = to_virtio_gpu_framebuffer(new_state->fb);
+ 	bo = gem_to_virtio_gpu_obj(vgfb->base.obj[0]);
+-	if (!bo || (plane->type == DRM_PLANE_TYPE_PRIMARY && !bo->guest_blob))
++
++	err = virtio_gpu_gem_pin(bo);
++	if (err)
++		return err;
++
++	if (plane->type == DRM_PLANE_TYPE_PRIMARY && !bo->guest_blob)
+ 		return 0;
+ 
+ 	if (bo->dumb && (plane->state->fb != new_state->fb)) {
+ 		vgfb->fence = virtio_gpu_fence_alloc(vgdev, vgdev->fence_drv.context,
+ 						     0);
+-		if (!vgfb->fence)
++		if (!vgfb->fence) {
++			virtio_gpu_gem_unpin(bo);
+ 			return -ENOMEM;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -261,15 +269,20 @@ static void virtio_gpu_plane_cleanup_fb(struct drm_plane *plane,
+ 					struct drm_plane_state *state)
  {
- 	struct drm_gem_object *obj = &shmem->base;
- 	int ret;
-@@ -927,6 +927,7 @@ static struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_
- 	drm_gem_shmem_put_pages_locked(shmem);
- 	return ERR_PTR(ret);
+ 	struct virtio_gpu_framebuffer *vgfb;
++	struct virtio_gpu_object *bo;
+ 
+ 	if (!state->fb)
+ 		return;
+ 
+ 	vgfb = to_virtio_gpu_framebuffer(state->fb);
++	bo = gem_to_virtio_gpu_obj(vgfb->base.obj[0]);
++
+ 	if (vgfb->fence) {
+ 		dma_fence_put(&vgfb->fence->f);
+ 		vgfb->fence = NULL;
+ 	}
++
++	virtio_gpu_gem_unpin(bo);
  }
-+EXPORT_SYMBOL_GPL(drm_gem_shmem_get_pages_sgt_locked);
  
- /**
-  * drm_gem_shmem_get_pages_sgt - Pin pages, dma map them, and return a
-diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-index 112dbe5208c0..e10ba533f74d 100644
---- a/include/drm/drm_gem_shmem_helper.h
-+++ b/include/drm/drm_gem_shmem_helper.h
-@@ -161,6 +161,7 @@ void drm_gem_shmem_purge_locked(struct drm_gem_shmem_object *shmem);
- 
- struct sg_table *drm_gem_shmem_get_sg_table(struct drm_gem_shmem_object *shmem);
- struct sg_table *drm_gem_shmem_get_pages_sgt(struct drm_gem_shmem_object *shmem);
-+struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_object *shmem);
- 
- void drm_gem_shmem_print_info(const struct drm_gem_shmem_object *shmem,
- 			      struct drm_printer *p, unsigned int indent);
+ static void virtio_gpu_cursor_plane_update(struct drm_plane *plane,
 -- 
 2.41.0
 
