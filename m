@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C32789FAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 15:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4026789FAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 15:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjH0NyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 09:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S230247AbjH0NyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 09:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbjH0Nxx (ORCPT
+        with ESMTP id S230114AbjH0Nx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 09:53:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197EFCE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 06:53:51 -0700 (PDT)
+        Sun, 27 Aug 2023 09:53:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DC311B
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 06:53:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ABBA762BD9
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 13:53:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 888A8C433CA;
-        Sun, 27 Aug 2023 13:53:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D3C2E61DDF
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 13:53:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87EFAC433CB;
+        Sun, 27 Aug 2023 13:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693144430;
-        bh=2bvndDeKIa1am5zfMWn8oY7XCThEt0L62331HK8Om4I=;
+        s=k20201202; t=1693144435;
+        bh=Kr78mWGRf6MBDQoDlE1Lr7eQQGJaKlhNBXFLknzw88E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HpsKqOzZidGunvuUuKkUzRb3nxHPc6vpjly9uclBMCkpdnASEMbh1YnJNIzuIbDs7
-         YwPRHtAGPCt0WsivqZnsO/4j80+ouaxH2miPPoKo+rWIj31qs9kXie4PLbSMlmHwCP
-         MM1fG7LvhxkHPtPod8gs8W8m93I6nxiQdniWVkYsm3BfU6+paCY7ZtlP2O6vGb0Icc
-         sjJb8ffbiBVdGNnWamtfou93biN5+pYsY+gWElJtkrWDnRLG18sNjH0gg3MaBiYRyu
-         njcB1BQ9+akEOgCe7fu1pN/JXOGheQfy7Wxjb6nqDwuVHu/6SiVGMcZ7vtfZg4rf5f
-         wZqSpIl1vo4+A==
+        b=C7vmYP/FTlRo1iYOX8JaWg3RpiLfbWcc9THwvP5MyglGp/uzIsXymKqNF+fpKxm04
+         zo6hBgBwaq718v9Z4/9Zm0nqRgWr9S+lbD+C+yGAQCjH7uFda/RUm1sDTJLLDepUeY
+         w03vlgFGfE6epFLES3kwrH0haVsSwlF5zcBtC7ROqx1yeEOXzUxhc48b01H0/hzZfB
+         9ktrd0wdZseXfGo2Z39S1+8Z4NRKxRimxKmWW2nJxgAmxcQy25S+MidFIQRa8DrbwT
+         2kmo57GpHGbLueVXJMUal/jtTGcyrdVvGYZfHrCdhbro5oBNIiNVwSdvfzDCCGvgkA
+         SwhQjXvaMXnig==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Emil Renner Berthing <kernel@esmil.dk>,
         Samin Guo <samin.guo@starfivetech.com>,
@@ -46,9 +46,9 @@ To:     Emil Renner Berthing <kernel@esmil.dk>,
         Maxime Coquelin <mcoquelin.stm32@gmail.com>
 Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/2] net: stmmac: dwmac-starfive: improve error handling during probe
-Date:   Sun, 27 Aug 2023 21:41:49 +0800
-Message-Id: <20230827134150.2918-2-jszhang@kernel.org>
+Subject: [PATCH net-next 2/2] net: stmmac: dwmac-starfive: remove unnecessary clk_get_rate()
+Date:   Sun, 27 Aug 2023 21:41:50 +0800
+Message-Id: <20230827134150.2918-3-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230827134150.2918-1-jszhang@kernel.org>
 References: <20230827134150.2918-1-jszhang@kernel.org>
@@ -64,74 +64,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After stmmac_probe_config_dt() succeeds, when error happens later,
-stmmac_remove_config_dt() needs to be called for proper error handling.
+In starfive_dwmac_fix_mac_speed(), the rate gotten by clk_get_rate()
+is not necessary, remove the clk_get_rate() calling.
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 34 ++++++++++++-------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-index 892612564694..b68f42795eaa 100644
+index b68f42795eaa..422138ef565e 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-@@ -111,18 +111,24 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
- 				     "dt configuration failed\n");
+@@ -30,8 +30,6 @@ static void starfive_dwmac_fix_mac_speed(void *priv, unsigned int speed, unsigne
+ 	unsigned long rate;
+ 	int err;
  
- 	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
--	if (!dwmac)
--		return -ENOMEM;
-+	if (!dwmac) {
-+		err = -ENOMEM;
-+		goto err_remove_config_dt;
-+	}
+-	rate = clk_get_rate(dwmac->clk_tx);
+-
+ 	switch (speed) {
+ 	case SPEED_1000:
+ 		rate = 125000000;
+@@ -44,7 +42,7 @@ static void starfive_dwmac_fix_mac_speed(void *priv, unsigned int speed, unsigne
+ 		break;
+ 	default:
+ 		dev_err(dwmac->dev, "invalid speed %u\n", speed);
+-		break;
++		return;
+ 	}
  
- 	dwmac->clk_tx = devm_clk_get_enabled(&pdev->dev, "tx");
--	if (IS_ERR(dwmac->clk_tx))
--		return dev_err_probe(&pdev->dev, PTR_ERR(dwmac->clk_tx),
--				     "error getting tx clock\n");
-+	if (IS_ERR(dwmac->clk_tx)) {
-+		err = dev_err_probe(&pdev->dev, PTR_ERR(dwmac->clk_tx),
-+				    "error getting tx clock\n");
-+		goto err_remove_config_dt;
-+	}
- 
- 	clk_gtx = devm_clk_get_enabled(&pdev->dev, "gtx");
--	if (IS_ERR(clk_gtx))
--		return dev_err_probe(&pdev->dev, PTR_ERR(clk_gtx),
--				     "error getting gtx clock\n");
-+	if (IS_ERR(clk_gtx)) {
-+		err = dev_err_probe(&pdev->dev, PTR_ERR(clk_gtx),
-+				    "error getting gtx clock\n");
-+		goto err_remove_config_dt;
-+	}
- 
- 	/* Generally, the rgmii_tx clock is provided by the internal clock,
- 	 * which needs to match the corresponding clock frequency according
-@@ -139,15 +145,17 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
- 
- 	err = starfive_dwmac_set_mode(plat_dat);
- 	if (err)
--		return err;
-+		goto err_remove_config_dt;
- 
- 	err = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
--	if (err) {
--		stmmac_remove_config_dt(pdev, plat_dat);
--		return err;
--	}
-+	if (err)
-+		goto err_remove_config_dt;
- 
- 	return 0;
-+
-+err_remove_config_dt:
-+	stmmac_remove_config_dt(pdev, plat_dat);
-+	return err;
- }
- 
- static const struct of_device_id starfive_dwmac_match[] = {
+ 	err = clk_set_rate(dwmac->clk_tx, rate);
 -- 
 2.40.1
 
