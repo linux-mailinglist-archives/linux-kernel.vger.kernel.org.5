@@ -2,154 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB4478A225
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1878978A26F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 00:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjH0V6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 17:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        id S229809AbjH0WAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 18:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjH0V5w (ORCPT
+        with ESMTP id S229586AbjH0WAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 17:57:52 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D303D126
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:57:48 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34bad74fb3dso10512935ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693173468; x=1693778268;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tpwry7cZckhaZOVm86wEaftE2qjDhkYwPPejvoB+vIs=;
-        b=TavA5FViEbC3XFaeegx94HW3K8aYY1Yqkph5Kla7avQofEC4I+Atumu0xokEq1Kotg
-         nEJBjamcdAJSQDXrnxxfs61dRt99fRg2YPYw2W1p4dmlz/JtwMZ2TTdxDd0aAwatczxu
-         V9feqxzi2diiX1Sm2CsbCwCYchtGCDtUMEDWc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693173468; x=1693778268;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tpwry7cZckhaZOVm86wEaftE2qjDhkYwPPejvoB+vIs=;
-        b=QL+9EsxAc7yEUefuHLko9O086BNJPXvJ0SOsKSuxga+Tq8hqHL6VECqgrLZ5x5TUnD
-         jaqLccaC9F0+PiWrV4H6mcIfwO1k7m7Ul5/0fwpjF78BOWBn3C54YMjDfbLdWRXdIroe
-         K1wN8CAkExuPkf4v0ZeIxfyWFBnvUvxHzd2SDqSeOeJPAD0nftTCGYx0E170fbJS/q+F
-         gfkxE9KXf8n2vK/j4NCCEzhXxwYcWk2BCH4GnfWFC7YrfIggfXu6QPoDYtPkL3AVeCX2
-         stmVp8BCCf/jJr+HLgTVG+FHaCCN3OUhtfFRpUY8Xb90QGHHJzwfCPqhoAIkCa6ZzI52
-         VDGw==
-X-Gm-Message-State: AOJu0Yz4GMrhABVWHTny6Ib+6bipLMQVVJxdMmzu2wV/q4tvR1dv7Ntn
-        zyZpg/5dM11DcX/xlh8CGfntAtZ3YMO06VRcdoA=
-X-Google-Smtp-Source: AGHT+IFPi/2W1na5QzhWbnb/XTWv0JvVtQaaGHgMi+F+0VcYbsWna3rQGZgh0fnRH0iBAnEgZ1Ohpg==
-X-Received: by 2002:a05:6e02:1212:b0:349:849d:bdf7 with SMTP id a18-20020a056e02121200b00349849dbdf7mr14904424ilq.17.1693173468226;
-        Sun, 27 Aug 2023 14:57:48 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id bp7-20020a056e02348700b0034ce78e2450sm1304854ilb.39.2023.08.27.14.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.15 2/2] rcu: Prevent expedited GP from enabling tick on offline CPU
-Date:   Sun, 27 Aug 2023 21:57:40 +0000
-Message-ID: <20230827215741.246948-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-In-Reply-To: <20230827215741.246948-1-joel@joelfernandes.org>
-References: <20230827215741.246948-1-joel@joelfernandes.org>
+        Sun, 27 Aug 2023 18:00:13 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8659811B;
+        Sun, 27 Aug 2023 15:00:10 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37RLxwdo029031;
+        Sun, 27 Aug 2023 21:59:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=w2vFr4rO5I1Ua8kQ34OWFnCU/OtD7f9ZKbhNxtWIsBI=;
+ b=f7TYpN2XUx7JZUjrwVZ448YHeYcuy4/HyGqbkfZzF2DC6WIYmyl0lwyOnham7i5g3MAT
+ LmlOKXja13/7ih/YqPtR+N6PDcLK8mXHA0J+NTOp9k+TgVFvHrfSKjmw15NOkyY+Tctw
+ nX4Hd5HODxcVHlz1hyKev5US8pUjmfI+8GcDPaT2HuFba1ZkhQbjKq/MCsCZ+P5dgRcr
+ qHs/B5g5pPdbm4sHV8vv1iLiDFqe2RzsSkavzTYNrIwttQu58vIe2ow2fqWd8jWOsszs
+ X7nVHmdILZU4/zr6pIWLuE8gSl5eM3XNFHgHQGr44WdhdTglJdS5PbEZ2a2Rjr3uZlm1 2w== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sq907j4ct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 27 Aug 2023 21:59:57 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37RLxubL029093
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 27 Aug 2023 21:59:56 GMT
+Received: from [10.110.11.89] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 27 Aug
+ 2023 14:59:55 -0700
+Message-ID: <89294acf-501f-5c2c-1619-cfc2b3dc893a@quicinc.com>
+Date:   Sun, 27 Aug 2023 14:59:54 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v6 3/3] firmware: Add support for Qualcomm UEFI Secure
+ Application
+Content-Language: en-US
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Johan Hovold <johan@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>
+References: <20230827211408.689076-1-luzmaximilian@gmail.com>
+ <20230827211408.689076-4-luzmaximilian@gmail.com>
+ <0d7697fd-11b3-1d4a-78da-7e5eb293d186@quicinc.com>
+ <072b3df6-09fb-98a8-2b58-41dfcabd98c0@gmail.com>
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <072b3df6-09fb-98a8-2b58-41dfcabd98c0@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Jc1u73hZUQZW3u4ttQLPdUCPTrlXGLHh
+X-Proofpoint-ORIG-GUID: Jc1u73hZUQZW3u4ttQLPdUCPTrlXGLHh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-27_19,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
+ mlxscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308270208
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On 8/27/2023 2:53 PM, Maximilian Luz wrote:
+> On 8/27/23 23:26, Trilok Soni wrote:
+>> On 8/27/2023 2:14 PM, Maximilian Luz wrote:
+>>>   +config QCOM_QSEECOM_UEFISECAPP
+>>> +    bool "Qualcomm SEE UEFI Secure App client driver"
+>>
+>> Why not "tristate"? This driver can be a loadable module, right?
+> 
+> As I understand, modular efivars have still not been fully sorted out in
+> the kernel. For example, userspace could try and mount efivarfs before
+> the module has been loaded and by that erroneously determine that the
+> system doesn't support efivars. So requiring it to be built in for now
+> is more of a workaround (which has been suggested by Johan Hovold).
+> 
+> There is no technical limitation in this part of the code itself, so
+> enabling it (and QCOM_QSEECOM for that matter) to be built as module
+> should be fairly straightforward once that's been sorted out.
 
-[ Upstream commit 147f04b14adde831eb4a0a1e378667429732f9e8 ]
+If not this application I would atleast like the QSEECOM driver to be a loadable module due to GKI (Generic Kernel Image) needs. Can we mark QSEECOM as "tristate" please? If not then there is a problem which we are not solving right now as you are documenting above and just moving it it for future and downstream vendors will keep having their additional changes to make it fit for loadable module needs. 
 
-If an RCU expedited grace period starts just when a CPU is in the process
-of going offline, so that the outgoing CPU has completed its pass through
-stop-machine but has not yet completed its final dive into the idle loop,
-RCU will attempt to enable that CPU's scheduling-clock tick via a call
-to tick_dep_set_cpu().  For this to happen, that CPU has to have been
-online when the expedited grace period completed its CPU-selection phase.
-
-This is pointless:  The outgoing CPU has interrupts disabled, so it cannot
-take a scheduling-clock tick anyway.  In addition, the tick_dep_set_cpu()
-function's eventual call to irq_work_queue_on() will splat as follows:
-
-smpboot: CPU 1 is now offline
-WARNING: CPU: 6 PID: 124 at kernel/irq_work.c:95
-+irq_work_queue_on+0x57/0x60
-Modules linked in:
-CPU: 6 PID: 124 Comm: kworker/6:2 Not tainted 5.15.0-rc1+ #3
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-+rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-Workqueue: rcu_gp wait_rcu_exp_gp
-RIP: 0010:irq_work_queue_on+0x57/0x60
-Code: 8b 05 1d c7 ea 62 a9 00 00 f0 00 75 21 4c 89 ce 44 89 c7 e8
-+9b 37 fa ff ba 01 00 00 00 89 d0 c3 4c 89 cf e8 3b ff ff ff eb ee <0f> 0b eb b7
-+0f 0b eb db 90 48 c7 c0 98 2a 02 00 65 48 03 05 91
- 6f
-RSP: 0000:ffffb12cc038fe48 EFLAGS: 00010282
-RAX: 0000000000000001 RBX: 0000000000005208 RCX: 0000000000000020
-RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9ad01f45a680
-RBP: 000000000004c990 R08: 0000000000000001 R09: ffff9ad01f45a680
-R10: ffffb12cc0317db0 R11: 0000000000000001 R12: 00000000fffecee8
-R13: 0000000000000001 R14: 0000000000026980 R15: ffffffff9e53ae00
-FS:  0000000000000000(0000) GS:ffff9ad01f580000(0000)
-+knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000000de0c000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- tick_nohz_dep_set_cpu+0x59/0x70
- rcu_exp_wait_wake+0x54e/0x870
- ? sync_rcu_exp_select_cpus+0x1fc/0x390
- process_one_work+0x1ef/0x3c0
- ? process_one_work+0x3c0/0x3c0
- worker_thread+0x28/0x3c0
- ? process_one_work+0x3c0/0x3c0
- kthread+0x115/0x140
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x22/0x30
----[ end trace c5bf75eb6aa80bc6 ]---
-
-This commit therefore avoids invoking tick_dep_set_cpu() on offlined
-CPUs to limit both futility and false-positive splats.
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree_exp.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index f46c0c1a5eb3..407941a2903b 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -507,7 +507,10 @@ static void synchronize_rcu_expedited_wait(void)
- 				if (rdp->rcu_forced_tick_exp)
- 					continue;
- 				rdp->rcu_forced_tick_exp = true;
--				tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+				preempt_disable();
-+				if (cpu_online(cpu))
-+					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+				preempt_enable();
- 			}
- 		}
- 		j = READ_ONCE(jiffies_till_first_fqs);
 -- 
-2.42.0.rc1.204.g551eb34607-goog
+---Trilok Soni
 
