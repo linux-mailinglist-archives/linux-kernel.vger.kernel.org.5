@@ -2,223 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FEE78A358
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 01:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2C078A35A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 01:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjH0XPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 19:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        id S229520AbjH0XPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 19:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjH0XPJ (ORCPT
+        with ESMTP id S229507AbjH0XPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 19:15:09 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CE2124;
-        Sun, 27 Aug 2023 16:15:06 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so39907741fa.3;
-        Sun, 27 Aug 2023 16:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693178104; x=1693782904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IDyOSgiaTZBOTyCSK6opZGFKNTnmThLJYrBi96TQhjw=;
-        b=bTHuEAmnT6JOXukEZ1V4X4jfm3+86j1EBtBDVMWkL0ZLgc6qashFc9bnY2Uy1EMB/7
-         mGZbOfqtiPwmidNjkyOyOEKsk2Ld19JiDqSzfYka5b2JyGFfkxX4VPKC27ABIJzxPpOz
-         Wnoagux2hZS9EfxuF9k0zrnjOOJfQ0CV0q3yVm1C6ufdUhvDEXXoyUi6BV0b3Z844kjA
-         FjwVmXRdPDtfo9ov8Dr1exQymcKrq8UsP8b6b/0x+NyXY0EDBcW+J+mnAreQetPW8VQR
-         Ey8M0IEzw/ftWN4AmcK+iZJ9/V7FQTM3NJFbIxE4IUDWNICtPG/nBMhQzu3vtARdePKe
-         Cicw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693178104; x=1693782904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IDyOSgiaTZBOTyCSK6opZGFKNTnmThLJYrBi96TQhjw=;
-        b=XMQYfwSu80h0TZhAek1Lxpdo6oAGXoQ3wtycmAkfRpLBtI1YNt/BZgAUz1Lez8V+Nc
-         JZf2tdIbIyf2hRT5dSuj7cx27G905GEIpfaEGbddirhKXbmo0YKPTzM7XWFEevRiHmx1
-         0RlmFi+t7IU5urHAqcfyY0LnpyG/ISxZvDXPG6I6/bFy3aIwZnq0oZZILVbB/UmeT6oF
-         1XLvJyni1Atchu8I2Fl7jXCR8MgjmTokJI+dx5VF1mkD0Wvm4ISnzVh9efOKVmfVFYZt
-         fSOSFBTYIAQFyuGa5ZjAGnjO2T/j9jQIpVe75UlaB/krY+GhMfflcmA+TIfkBn6i8A2M
-         nbeg==
-X-Gm-Message-State: AOJu0YyXWLYoh6dm9sUoo+OrDTzFaxEoYrZJ95PCzFxwYWQsQQgmWupZ
-        rVJADUucZ7PeBhwXLobCL2ysIPVYDe44H42OhD4=
-X-Google-Smtp-Source: AGHT+IFTLhSC/X57Eee7vJx7GkarEgudwMA51wceosPi5cv22aXm4ogyqwY/Wgz4IJ11cpeytqMgTta5hWoKHE0rNJc=
-X-Received: by 2002:a2e:8717:0:b0:2bc:c11c:4471 with SMTP id
- m23-20020a2e8717000000b002bcc11c4471mr16078819lji.21.1693178104154; Sun, 27
- Aug 2023 16:15:04 -0700 (PDT)
+        Sun, 27 Aug 2023 19:15:39 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619C6124
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 16:15:36 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 25B7F5C003D;
+        Sun, 27 Aug 2023 19:15:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 27 Aug 2023 19:15:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1693178134; x=1693264534; bh=AbibuSICgE
+        UTeMVyy2LtST99AtEW/cx+46pzl83Ho0Q=; b=ZdKmMBnlSOO0X9/4EqERpeM3wE
+        7CQxy/Ztwh+yb+FXx458D/ZsBECv6PefAg/7S1JM/WYZYd5sRhqj6W3MXMjokAHI
+        /nueVlI8eh2I7ZNCDieur3eK1vtjO0ZFuMF2QlDgzzgfdaAHtaNAf98tbWsVycI/
+        a5Er34UqZ3Px4VjcGVTi5B5Tc/B78lYGVYvM7BZXUXDhfL4jWIKCFY4SSITeun7r
+        0cHPouyHD8MMMpNzBbIaJacomEcPX6v58zXBq9jtqazYt9Dohv3XYcjy3w49EOWC
+        QiIUj9L3Xad0auEjQmOulSS04AYM9ruZ8meRQzxgR6F3l+TbYRtHUOPsLeCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1693178134; x=1693264534; bh=AbibuSICgEUTe
+        MVyy2LtST99AtEW/cx+46pzl83Ho0Q=; b=qD2QXdUMh/LRZIicMsJyX97jMwaQ/
+        G7xh5tn/YtoiUxJ7b7wooXf3dNbN3Ig8UzD+Kj8lUmOAdtoxVxHpKKz7q+bcem7s
+        H1MDFBGGCdzYKHEke1chyUhTckDP1/n+/CefoufhwGyB2iFu7vHZpHVBz3PQob0C
+        BosUs/O+XsIVKmgS5Wc7ws80qWEXCZypQMLOCFLHKRDKXlq62LVqi91MXGCbAlnQ
+        ZqVW7lwFadqOcyc7pPi90KtcsYI+eQYAKKCTIMvyBJUQ4xaSj9+ehmj/Jd/ctv11
+        YJk3VeE5uHKJHKmn67+/zXYo97djRBxPP935gpwjaDaG8hAi7MZxbb2/A==
+X-ME-Sender: <xms:FdnrZEp6krl40lXBxii4QTUkm4Z3ZiLAPGLGoDQjbiBI2Purv0X98g>
+    <xme:FdnrZKqpas09e3UV2tHZl2i6H_pEAgV0275H8-fblBN4AJrdJPmrC8bfOD8bxyraE
+    KfuNx_CfDXmUFwj3Q8>
+X-ME-Received: <xmr:FdnrZJNR8RYfjcT3YWCI2HFBeFcyRPVDbbQsqQ8zdZBJBe4qan_XMSGrb8QW>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeffedgvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhho
+    nhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgfdujedthfduudekffefkeeiffdttd
+    dvhfegudduueffuefhfefggeefteevvdegnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:FdnrZL45cYb8X2kwKZ8xD3VAi6G3IRtpLp5FEffJmmkRiHjZgWJqFg>
+    <xmx:FdnrZD4OgjNdfRu_R-kFZ6YuyNn1sIcJyVPIEO9LofJZYtP84yRWoQ>
+    <xmx:FdnrZLhgOi2S4nVlUaGVNA1qGfw9JuAKkLxvbK75zlQJOW7glTq47A>
+    <xmx:FtnrZDFlXbiHOO82TFrDCszXF4-AxzqC82faTBm2ppsvVLDo8fvL8A>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 27 Aug 2023 19:15:31 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     hdegoede@redhat.com
+Cc:     corentin.chary@gmail.com, markgross@kernel.org,
+        linux-kernel@vger.kernel.org, "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH] platform/x86: asus-wmi: corrections to egpu safety check
+Date:   Mon, 28 Aug 2023 11:15:25 +1200
+Message-ID: <20230827231525.78693-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230628232417.120844-1-linux@treblig.org> <ZK80mu/YbHLEABAB@gallifrey>
- <CAH2r5mvrhr52hXFv87O9O=Qw45AXRXr0NQAsTk4Wj-6s19-2bA@mail.gmail.com>
- <CAH2r5mss4RsEF1b6gJo8LFWsN9-YBSEP6GV7axsNhX7ihj5CqA@mail.gmail.com>
- <ZLhchajZaWEVM6D7@gallifrey> <79bbb44c-f3b1-5c5c-1ad4-bcaab0069666@oracle.com>
-In-Reply-To: <79bbb44c-f3b1-5c5c-1ad4-bcaab0069666@oracle.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sun, 27 Aug 2023 18:14:52 -0500
-Message-ID: <CAH2r5muFqOx91jiukxSVy3iqxZm+NOEZy7-oXKOT0G+yrUF3yw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] dedupe smb unicode files
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc:     "Dr. David Alan Gilbert" <linux@treblig.org>,
-        linkinjeon@kernel.org, tom@talpey.com, shaggy@kernel.org,
-        linux-cifs@vger.kernel.org, krisman@collabora.com,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shaggy,
-I can add these - am updating the series to include your RB
+An incorrect if statement was preventing the enablement of the egpu.
 
-On Wed, Jul 19, 2023 at 5:06=E2=80=AFPM Dave Kleikamp <dave.kleikamp@oracle=
-.com> wrote:
->
-> On 7/19/23 4:58PM, Dr. David Alan Gilbert wrote:
-> > * Steve French (smfrench@gmail.com) wrote:
-> >> The related question is which tree to send it from, if no problems
-> >> reported (presumably mine since it mostly affect cifs.ko and ksmbd.ko,
-> >> and because there hasn't been activity in fs/nls for years)
-> >
-> > That was my hope, given that ~half of the patches are directly on that
-> > code, and it's the only very active tree this touches as far as I can
-> > tell.
-> >
-> >> On Wed, Jul 19, 2023 at 12:56=E2=80=AFPM Steve French <smfrench@gmail.=
-com> wrote:
-> >>>
-> >>> No objections to this on my part.  If Shaggy is ok with the JFS
-> >>> change, we could target it for 6.6-rc1 if it tests out ok
->
-> For the series:
-> Reviewed-by: Dave Kleikamp <dave.kleikamp@oracle.com>
->
-> Steve,
-> Feel free to pull in even the 4th patch into your tree with my consent.
-> Or if you're more comfortable, I could submit it after yours hits mainlin=
-e.
->
-> Shaggy
->
-> >
-> > Thanks.
-> >
-> > Dave
-> >
-> >>> On Wed, Jul 12, 2023 at 6:28=E2=80=AFPM Dr. David Alan Gilbert <dave@=
-treblig.org> wrote:
-> >>>>
-> >>>> * linux@treblig.org (linux@treblig.org) wrote:
-> >>>>> From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> >>>>>
-> >>>>> The smb client and server code have (mostly) duplicated code
-> >>>>> for unicode manipulation, in particular upper case handling.
-> >>>>>
-> >>>>> Flatten this lot into shared code.
-> >>>>
-> >>>> Gentle two week ping on this please.
-> >>>>
-> >>>> Dave
-> >>>>
-> >>>> (Apologies to the 3 of you who already got a copy of this ping,
-> >>>> recent due to a missing header ',' )
-> >>>>
-> >>>>> There's some code that's slightly different between the two, and
-> >>>>> I've not attempted to share that - this should be strictly a no
-> >>>>> behaviour change set.
-> >>>>>
-> >>>>> In addition, the same tables and code are shared in jfs, however
-> >>>>> there's very little testing available for the unicode in there,
-> >>>>> so just share the raw data tables.
-> >>>>>
-> >>>>> I suspect there's more UCS-2 code that can be shared, in the NLS co=
-de
-> >>>>> and in the UCS-2 code used by the EFI interfaces.
-> >>>>>
-> >>>>> Lightly tested with a module and a monolithic build, and just mount=
-ing
-> >>>>> itself.
-> >>>>>
-> >>>>> This dupe was found using PMD:
-> >>>>>    https://pmd.github.io/pmd/pmd_userdocs_cpd.html
-> >>>>>
-> >>>>> Dave
-> >>>>>
-> >>>>> Version 2
-> >>>>>    Moved the shared code to fs/nls after v1 feedback.
-> >>>>>    Renamed shared tables from Smb to Nls prefix
-> >>>>>    Move UniStrcat as well
-> >>>>>    Share the JFS tables
-> >>>>>
-> >>>>> Dr. David Alan Gilbert (4):
-> >>>>>    fs/smb: Remove unicode 'lower' tables
-> >>>>>    fs/smb: Swing unicode common code from smb->NLS
-> >>>>>    fs/smb/client: Use common code in client
-> >>>>>    fs/jfs: Use common ucs2 upper case table
-> >>>>>
-> >>>>>   fs/jfs/Kconfig               |   1 +
-> >>>>>   fs/jfs/Makefile              |   2 +-
-> >>>>>   fs/jfs/jfs_unicode.h         |  17 +-
-> >>>>>   fs/jfs/jfs_uniupr.c          | 121 -------------
-> >>>>>   fs/nls/Kconfig               |   8 +
-> >>>>>   fs/nls/Makefile              |   1 +
-> >>>>>   fs/nls/nls_ucs2_data.h       |  15 ++
-> >>>>>   fs/nls/nls_ucs2_utils.c      | 144 +++++++++++++++
-> >>>>>   fs/nls/nls_ucs2_utils.h      | 285 ++++++++++++++++++++++++++++++
-> >>>>>   fs/smb/client/Kconfig        |   1 +
-> >>>>>   fs/smb/client/cifs_unicode.c |   1 -
-> >>>>>   fs/smb/client/cifs_unicode.h | 330 +-----------------------------=
------
-> >>>>>   fs/smb/client/cifs_uniupr.h  | 239 -------------------------
-> >>>>>   fs/smb/server/Kconfig        |   1 +
-> >>>>>   fs/smb/server/unicode.c      |   1 -
-> >>>>>   fs/smb/server/unicode.h      | 325 +-----------------------------=
-----
-> >>>>>   fs/smb/server/uniupr.h       | 268 ----------------------------
-> >>>>>   17 files changed, 467 insertions(+), 1293 deletions(-)
-> >>>>>   delete mode 100644 fs/jfs/jfs_uniupr.c
-> >>>>>   create mode 100644 fs/nls/nls_ucs2_data.h
-> >>>>>   create mode 100644 fs/nls/nls_ucs2_utils.c
-> >>>>>   create mode 100644 fs/nls/nls_ucs2_utils.h
-> >>>>>   delete mode 100644 fs/smb/client/cifs_uniupr.h
-> >>>>>   delete mode 100644 fs/smb/server/uniupr.h
-> >>>>>
-> >>>>> --
-> >>>>> 2.41.0
-> >>>>>
-> >>>> --
-> >>>>   -----Open up your eyes, open up your mind, open up your code -----=
---
-> >>>> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy =
- \
-> >>>> \        dave @ treblig.org |                               | In Hex=
- /
-> >>>>   \ _________________________|_____ http://www.treblig.org   |______=
-_/
-> >>>
-> >>>
-> >>>
-> >>> --
-> >>> Thanks,
-> >>>
-> >>> Steve
-> >>
-> >>
-> >>
-> >> --
-> >> Thanks,
-> >>
-> >> Steve
+Fixes: 1bddf53ccac0 ("platform/x86: asus-wmi: don't allow eGPU switching if eGPU not connected")
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+---
+ drivers/platform/x86/asus-wmi.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 6db2d18a61e0..b51586986450 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -731,19 +731,18 @@ static ssize_t egpu_enable_store(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_EGPU_CONNECTED);
+-	if (err < 0)
+-		return err;
+-	if (err < 1) {
+-		err = -ENODEV;
+-		pr_warn("Failed to set egpu disable: %d\n", err);
++	if (err < 0) {
++		pr_warn("Failed to get egpu connection status: %d\n", err);
+ 		return err;
+ 	}
+ 
+ 	if (asus->gpu_mux_mode_available) {
+ 		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPU_MUX);
+-		if (result < 0)
++		if (result < 0) {
+ 			/* An error here may signal greater failure of GPU handling */
++			pr_warn("Failed to get gpu mux status: %d\n", err);
+ 			return result;
++		}
+ 		if (!result && enable) {
+ 			err = -ENODEV;
+ 			pr_warn("Can not enable eGPU when the MUX is in dGPU mode: %d\n", err);
+@@ -753,12 +752,12 @@ static ssize_t egpu_enable_store(struct device *dev,
+ 
+ 	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_EGPU, enable, &result);
+ 	if (err) {
+-		pr_warn("Failed to set egpu disable: %d\n", err);
++		pr_warn("Failed to set egpu state: %d\n", err);
+ 		return err;
+ 	}
+ 
+ 	if (result > 1) {
+-		pr_warn("Failed to set egpu disable (retval): 0x%x\n", result);
++		pr_warn("Failed to set egpu state (retval): 0x%x\n", result);
+ 		return -EIO;
+ 	}
+ 
+-- 
+2.41.0
 
-
---=20
-Thanks,
-
-Steve
