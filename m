@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F4D789B02
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 04:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E124789B07
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 04:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjH0Chg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 22:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
+        id S229795AbjH0CjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 22:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjH0Chb (ORCPT
+        with ESMTP id S229833AbjH0CjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 22:37:31 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9248C18E;
-        Sat, 26 Aug 2023 19:37:27 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-57355a16941so944084eaf.2;
-        Sat, 26 Aug 2023 19:37:27 -0700 (PDT)
+        Sat, 26 Aug 2023 22:39:11 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76FD198;
+        Sat, 26 Aug 2023 19:39:09 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-44d4c3fa6a6so896140137.0;
+        Sat, 26 Aug 2023 19:39:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693103847; x=1693708647;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693103948; x=1693708748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VZGOqorazSp+I1MKjY1gVz7xYjbzwYMSJxTzcyCljzo=;
-        b=OPBaC6TiPZ50X9Puq1TDuSWAMR9dhpAx1Jd9KmmBXToJBmzhB0F/i4qOQtOVSA7VI8
-         CMoT/MpVFa83wr0JQAwnB0wd3yz0gB+1iJIBOq00TULCQlx4SdPrnmEj88Fts4+48jt5
-         qrTlydjGQeXamK3TD1xNdJKoAq690hZnY0oRsCcNcAvgC2wCCd2dX9OfwxlYb3PxzTJx
-         Yqbkbab5fH4pj1qO4gszaH28eNgUpPk1QiLZ/DA2T7jz2yiUgaj5BTWPYzjft97643po
-         PPX2/b3058RdlpwALuhoU1mMByGccPCCKVJgbVOe9O9OMJhiIH1PZJHKvnpqH4lIdfGQ
-         240Q==
+        bh=YclM2rcAOdd8l+ascUQHzxjafV7NOlnSyJsVWi30UWg=;
+        b=U26QKM0Kler819ZCbbhEZdjf6T4w1wy/aEndDNqNI8I5iTbJXJa2MZnBoKt4oP9FuB
+         JLTNLU/iqVrRyvFRHn304FP+QGAvcd8G98Wrh5zjJ8nPlokJSKpTv13DDZ3oA1l5/U6W
+         LeNK14er1mqiOVI4kb0ocZnPXy+Y/pKV1TvcLCuZ6PO7tMJWxwrcE0BearX3w8mbrtTO
+         NQ9qe4iv2MN2ote/KTV7vbTj7a8W43XwahQYykJ0ai7Ai0ysYLucpv+MhtNw2z9zbFXE
+         FHFYOGvgYGRkoS9o3AD8jxCb+lMkzB+m78XMaGZXYtWchYBRM0ord2W6oZknxMPgQYT/
+         AAUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693103847; x=1693708647;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VZGOqorazSp+I1MKjY1gVz7xYjbzwYMSJxTzcyCljzo=;
-        b=jePAtAqEyajjAHWi/AearJge6PEWqDdZo0ISwYlPurNI3QB9tHWG39QTNGxB0RXTI0
-         0ERcVLo2dgfitcA3vR7U1rnwHiFfpPVdYpR+CE+dOSKL/T2E7DT3/vHAcptfJ1Be8kvT
-         fcsZtF1YcwgIYcKyx+fB0s/fbsJyMr9cXzwoi5hNV7QFDLBjIZ/m7oKqv+EJyrqCh5hz
-         kA08zh87VMMqXUx/en4rzm4I6oAjg8kwPGpSx8/IaxuSuokY3U5dIRJkZfD9p2KAucdU
-         3vOWwYDkf1gOGmu9ypjFqCNhqzvvzNx0x5l2666b24p4ty+wgTllhHdEHxXITfp6+tfJ
-         UOqw==
-X-Gm-Message-State: AOJu0Yx2gRiJ0ZOfnOZJP9PbTZhgsbZ13lxjpg9t7xLLUrcftmjG2NZo
-        bOi4rLes+RtrfmYdu3w2LzIWQVCUSDc=
-X-Google-Smtp-Source: AGHT+IGeYO4GsiwQZbi7GrBe/9XKREJ4gAcr0G77cOje1bpL7RoMtD7mVFJvF/YYCfNxLS9ldun1bw==
-X-Received: by 2002:a05:6358:949f:b0:134:c4dc:9e28 with SMTP id i31-20020a056358949f00b00134c4dc9e28mr25951691rwb.17.1693103846781;
-        Sat, 26 Aug 2023 19:37:26 -0700 (PDT)
-Received: from [192.168.0.105] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id t9-20020a170902e84900b001b5656b0bf9sm4421249plg.286.2023.08.26.19.37.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 19:37:26 -0700 (PDT)
-Message-ID: <5a7f2a6e-46a4-a5c8-fe6a-c2581496b5cd@gmail.com>
-Date:   Sun, 27 Aug 2023 09:37:21 +0700
+        d=1e100.net; s=20221208; t=1693103948; x=1693708748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YclM2rcAOdd8l+ascUQHzxjafV7NOlnSyJsVWi30UWg=;
+        b=TvYc8y8n+SOL5iWvyc7Q2xU9oqQAkQwTlnnG9hVlCbsSs+A7YIP7x7s7OPlwoEzUKU
+         P0Ps9EK24KpkT38RfZEUw0q10N6+ZF/VJva6ObrdroIWadeuIvJam9Q7e3lW2IDMsQy8
+         PBrdiDfHnkQ6A9ESi6avBvwO7W8r5b0Io3T0TViu6ibLV+Vl8o6R/IAJYLn4xI3rmpWX
+         QsJWzkK6A0iwdyvH1oucb+45vgB7KWrF6U+WwVlsk7w9PU+pFlVrNa8+LRPhQxxHSrN3
+         cCTAG3M7w5Ol0sfmkuXLqkTh9beXljv/79642p7Ey5jG8zd+g0WxjVeOeQDXuNpHz2pK
+         e8nw==
+X-Gm-Message-State: AOJu0YxYBdDVmVxAb0WLmPea0WX/etU5XjQIe4Emy7F1qm1HzsxH6Abw
+        NGsR6EkpYS0MyPwwmMgEaPo1I+92OaAR2+vRptI=
+X-Google-Smtp-Source: AGHT+IG9u7CSk9MsLZztwz3f86zjhb0y3DSMpyidSYZ5VzUruGpbbFj3bjz7OWEUTkJSxRZyFBCO3YxV0q2uQgXyOZM=
+X-Received: by 2002:a67:f845:0:b0:44d:57aa:532f with SMTP id
+ b5-20020a67f845000000b0044d57aa532fmr14706132vsp.31.1693103948658; Sat, 26
+ Aug 2023 19:39:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Content-Language: en-US
-To:     Ping-Ke Shih <pkshih@realtek.com>, Kalle Valo <kvalo@kernel.org>,
-        Brett Hassall <brett.hassall@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: 5c8a79e8e12b ("wifi: rtw88: correct PS calculation for
- SUPPORTS_DYNAMIC_PS", 2023-05-27) increases CPU usage usage for irq
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CA+jjjYTk=5wn2o46uNB+bJYX8xLgMP==dsJuvC94DvtN2f_6Yw@mail.gmail.com>
+ <ZOqg9VovoVanfuR0@debian.me> <CA+jjjYT6+NJwB2Kn0jWLKtmz3dWH6UnVJNA6vDbPXnnJnHMf9Q@mail.gmail.com>
+ <20230827020635.GQ3390869@ZenIV>
+In-Reply-To: <20230827020635.GQ3390869@ZenIV>
+From:   Joshua Hudson <joshudson@gmail.com>
+Date:   Sat, 26 Aug 2023 19:38:57 -0700
+Message-ID: <CA+jjjYRr3SHvXhVZLfACkUrN98n3W8aMBe1e8zqUNDuRZt17=A@mail.gmail.com>
+Subject: Re: Cache coherency bug: stale reads on /dev/sda1
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux IDE and libata <linux-ide@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,37 +76,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+"Whole disk and all partitions have page caches of their own."
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+That's so bad.
 
-> This commit improves power saving - it enables the kernel to achieve package C8. To achieve package C8, 3 Ubuntu VMD commits must be applied as well. The combined patch for the 3 Ubuntu VMD commits is attached (just in case). Package C8 lowers power usage on the laptop from 5.6W to 2.6W.
-> 
-> However, a side-effect of this commit is that CPU usage for irq/155-rtw88_pci has increased noticeably. This commit was introduced in 6.4-rc6. To confirm this commit is the cause, a branch was created from 6.4-rc5. This commit and the 3 Ubuntu VMD commits were applied. The resulting kernel was built and tested - it can achieve package C8 and exhibits the increased CPU usage on irq/155-rtw88_pci.
-> 
-> Booting and running top for 30 min with the system otherwise idle, gives these results for CPU on irq/155-rtw88_pci:
-> 6.4-rc5     - 00:02.9, mostly   0% and 0.3% displayed
-> patched rc5 - 00:13.4, mostly 0.7% and 1.0% displayed
-> By comparison, an 8th Gen Dell with an Intel WIFI has CPU usage of 00:01.7 under the same conditions.
-> 
-> Laptop is a HP 15s-fq4011TU 11th Gen (Tiger Lake) Intel with (from lspci) Realtek Semiconductor Co., Ltd. RTL8822CE 802.11ac PCIe Wireless Network Adapter and Intel Corporation Volume Management Device NVMe RAID Controller.
-> 
-> Ubuntu bug https://bugs.launchpad.net/ubuntu/+source/linux-hwe-6.2/+bug/2025040 provides further background.
-> 
-> Please advise if I can assist with further testing.
+I can think of numerous cases where this will cause problems; including
+some I encountered last year and did not understand at the time. Manipulati=
+ng
+EFI partitions through the whole disk device makes sense because FAT filesy=
+stems
+*know their offset on the disk*, and some of the existing tools really
+don't like being
+given a partition device.
 
-See Bugzilla for the full thread and attached proposed patch(es) that fix
-this regression.
+There's also the astounding: write stuff to disk, umount everything,
+copy one disk to
+another using the whole disk device doesn't work because reading the whole =
+disk
+yields a stale cache (sometimes).
 
-Anyway, I'm adding this regression to be tracked by regzbot:
+On the other hand, I can think of very few cases where the file vs
+disk buffer pool
+matters, because the loop device is unaffected (writing to a loop
+block device is
+coherent with the file).
 
-#regzbot introduced: 26a125f550a3bf https://bugzilla.kernel.org/show_bug.cgi?id=217828
-#regzbot title: correcting SUPPORTS_DYNAMIC_PS calculation for rtw88 increases CPU utilization
-#regzbot link: https://bugs.launchpad.net/ubuntu/+source/linux-hwe-6.2/+bug/2025040
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217828
-
--- 
-An old man doll... just what I always wanted! - Clara
+On Sat, Aug 26, 2023 at 7:06=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
+rote:
+>
+> On Sat, Aug 26, 2023 at 06:25:58PM -0700, Joshua Hudson wrote:
+> > I am presuming you mean "Are you sure this not a hardware issue?"
+> >
+> > I am sure it is not, for two reasons.
+> >
+> > 1) If it were a hardware issue I would still expect the two device
+> > nodes (whole disk and partition) to report the *same* data.
+> >
+> > 2) I have since developed a workaround involving BLKFLSDEV. The
+> > workaround is really ugly.
+>
+> Whole disk and all partitions have page caches of their own.
+> There is no coherency between those; write through one, then
+> read through another and you are not guaranteed that read won't
+> see the stale cached data.
+>
+> Doctor, it hurts when I do it...
+>
+> Incidentally, read from device/write to the place you've read via
+> file/read from device again also has no coherency warranties, for
+> exact same reason.
+>
+> IOW, not a bug.
