@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B00CC789C6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 11:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1AD789C8F
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 11:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjH0JAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 05:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
+        id S230401AbjH0JSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 05:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjH0I7v (ORCPT
+        with ESMTP id S230504AbjH0JSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 04:59:51 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB49CAC;
-        Sun, 27 Aug 2023 01:59:34 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so34226031fa.3;
-        Sun, 27 Aug 2023 01:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693126773; x=1693731573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wDTbBWfZTyLSY1GxTLcGBmj9Y3R8+oQOjLKgrRVSRoI=;
-        b=QsTJuukBOy9Wx5+UjxISZ03vjGGYXro+mcZAYFcirguMTn9wzEcqwl3AWIhPfbjSyk
-         luVnPk0eM9dz9PKRvwu4DR210UOLRAd4/aBqeq6Fv8e7VamaG42C6935IR6Ypka1P2z6
-         5lokt1yKQIEyNSrNa9Wpt4jrLPhkDto+udqpKpNpxXYxTBTLnYZreMAFn0Kthsq5TUzZ
-         NsvqrXNK56usF0VJbCp4Fm2TE8tIzLSj/0agSbXp762Jtu6yFvc3ywz4kfYBRYXEcYRb
-         A6yXEtiwgi0ehzbg2Ke0OYKeokPz9JJabP62Sk+aTjTDgwJkCq8s/CZWe2iEVVHcIeaF
-         vhOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693126773; x=1693731573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wDTbBWfZTyLSY1GxTLcGBmj9Y3R8+oQOjLKgrRVSRoI=;
-        b=ek+f/g3VbPd5gRkSVCcJz4pvZWu4aE+S5MO/Z/X9xOR3TbbW2ONSf+WY6IbOsqc/Em
-         5m1dSqd82T5GqTUzeMHiqKG9MgCE9qtm3s56yOVfrWRajXDHi+7L+YcSZTqg/tADKTKh
-         mfR38jDIf8sZITmdgPWcK6QS3PslT1+jX9+y1Axvc9uPqP+Oo9cvG+NFCbOwGfnV0ik3
-         XQlZ0KBl/rbrWyuJHvNB6bFDVeet2CRZgxjYfkRZ8hU8WPQUGwEH0rrnbRjTrH1TPBvd
-         ngO5X9dwuFJV++o1TuLwf8N1g8oZ4WSYEZgwREISKm0mtPqjG2E8T6Q+jNv9GD0AFBZ2
-         M2hg==
-X-Gm-Message-State: AOJu0YxA0GvdIhoJJWxdBRtCHdbh9iTmx+VQMgF2aQWW3wzy1Il4UJjc
-        +/DBvFRYeWFKK0A/sK4hcup2P2mW2OuHlP7AjIc=
-X-Google-Smtp-Source: AGHT+IELcxDKtVSIb76h/AeuCg5XOvMcz/LwNeD+AyhN6t71aP3KPCKwg35DFtyslslGZGaVHIe92vXp93/iEL4SPfM=
-X-Received: by 2002:a2e:93c4:0:b0:2b4:6e21:637e with SMTP id
- p4-20020a2e93c4000000b002b46e21637emr14351630ljh.16.1693126772636; Sun, 27
- Aug 2023 01:59:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1690364259.git.haibo1.xu@intel.com> <ZMrVrXlvu/FJEayx@google.com>
-In-Reply-To: <ZMrVrXlvu/FJEayx@google.com>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Sun, 27 Aug 2023 16:59:21 +0800
-Message-ID: <CAJve8onbxHjJoC-k-TtOm1BBtjm38moaW-Kk8siKsxt9nwZZZw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Sun, 27 Aug 2023 05:18:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8E8D8
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 02:18:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C637861374
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 09:18:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A92D2C433C8;
+        Sun, 27 Aug 2023 09:18:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693127914;
+        bh=Tsf6e5Pg927isx5zwcv/xL0jKM1+YyRgn6zbNLSS1+4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=W/EzN40VCzy7Rc8zno7ucaZFINYPX8zWE9ayA96yjuse9VlM8G8rHaoYXGIuI/SJN
+         onBOUmyLlkEHfT5AYNMfOO2CFU5v2tsFUuB2RnAqMRbR55qyC1Y9EpZBKWhuXD/R07
+         zg8iTsX8k5zZYT4D+nsp1E4+GIBCM6Cjntui3KKwC22Iw4ZPx5OyOMZNnJdBSe+gks
+         0SqpMGTjIvGndD9v7ezFdi5pbZ3K1jKtBiChGjHaUhDM7jbdxhLVul8v2ewqql+Kvv
+         0KdQdcIzuezTzOfRHmkx2z5uHJX265CVKKgs4pW7jZM90es9RhlmNFRtXbT2BjeSym
+         w3k5Roqwh/wlw==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        Vishal Annapurve <vannapurve@google.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: mm: update T-Head memory type definitions
+Date:   Sun, 27 Aug 2023 17:06:44 +0800
+Message-Id: <20230827090644.1318-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 6:16=E2=80=AFAM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> On Thu, Jul 27, 2023, Haibo Xu wrote:
-> > The sstc_timer selftest is used to validate Sstc timer functionality
-> > in a guest, which sets up periodic timer interrupts and check the
-> > basic interrupt status upon its receipt.
-> >
-> > This KVM selftest was ported from aarch64 arch_timer and tested
-> > with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
-> >
-> > Haibo Xu (4):
-> >   tools: riscv: Add header file csr.h
-> >   KVM: riscv: selftests: Add exception handling support
-> >   KVM: riscv: selftests: Add guest helper to get vcpu id
-> >   KVM: riscv: selftests: Add sstc_timer test
->
-> FYI, patch 4 will conflict with the in-flight guest printf changes[*], as=
- will
-> reworking the existing arch_timer test.  My plan is to create an immutabl=
-e tag
-> later this week (waiting to make sure nothing explodes).  I highly recomm=
-end basing
-> v2 on top of that.
->
+Update T-Head memory type definitions according to C910 doc [1]
+For NC and IO, SH property isn't configurable, hardcoded as SH,
+so set SH for NOCACHE and IO.
 
-Hi Sean,
+And also set bit[61](Bufferable) for NOCACHE according to the
+table 6.1 in the doc [1].
 
-Could you help point me to the immutable tag for the guest printf changes?
+Link: https://github.com/T-head-Semi/openc910 [1]
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/include/asm/pgtable-64.h | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Regards,
-Haibo
+diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
+index 7a5097202e15..9a2c780a11e9 100644
+--- a/arch/riscv/include/asm/pgtable-64.h
++++ b/arch/riscv/include/asm/pgtable-64.h
+@@ -126,14 +126,18 @@ enum napot_cont_order {
+ 
+ /*
+  * [63:59] T-Head Memory Type definitions:
+- *
+- * 00000 - NC   Weakly-ordered, Non-cacheable, Non-bufferable, Non-shareable, Non-trustable
++ * bit[63] SO - Strong Order
++ * bit[62] C - Cacheable
++ * bit[61] B - Bufferable
++ * bit[60] SH - Shareable
++ * bit[59] Sec - Trustable
++ * 00110 - NC   Weakly-ordered, Non-cacheable, Bufferable, Shareable, Non-trustable
+  * 01110 - PMA  Weakly-ordered, Cacheable, Bufferable, Shareable, Non-trustable
+- * 10000 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Non-shareable, Non-trustable
++ * 10010 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Shareable, Non-trustable
+  */
+ #define _PAGE_PMA_THEAD		((1UL << 62) | (1UL << 61) | (1UL << 60))
+-#define _PAGE_NOCACHE_THEAD	0UL
+-#define _PAGE_IO_THEAD		(1UL << 63)
++#define _PAGE_NOCACHE_THEAD	((1UL < 61) | (1UL << 60))
++#define _PAGE_IO_THEAD		((1UL << 63) | (1UL << 60))
+ #define _PAGE_MTMASK_THEAD	(_PAGE_PMA_THEAD | _PAGE_IO_THEAD | (1UL << 59))
+ 
+ static inline u64 riscv_page_mtmask(void)
+-- 
+2.40.1
 
-> [*] https://lore.kernel.org/all/20230729003643.1053367-1-seanjc@google.co=
-m
