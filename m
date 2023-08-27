@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 045DC789C05
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB25789C08
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbjH0IDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 04:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S229708AbjH0IF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 04:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjH0ID1 (ORCPT
+        with ESMTP id S230118AbjH0IFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 04:03:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747E2102
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 01:03:23 -0700 (PDT)
+        Sun, 27 Aug 2023 04:05:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6167DC
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 01:05:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0863A62719
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 08:03:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B223C433C7;
-        Sun, 27 Aug 2023 08:03:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6539A60B8F
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 08:05:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3795C433C7;
+        Sun, 27 Aug 2023 08:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693123402;
-        bh=6ROsNKyZUhL4Bd6PfZNL3uGG5Z56tuz4TeApV51H+HI=;
+        s=k20201202; t=1693123538;
+        bh=bgFpKrbb5BKBRFqPi18KpBHYxGjE5puzerlvZWDQ17A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=btSosVZTBWwh5P8KqOLifVDjFsVsj67ROlFM3hhVziLw/pFXqKbb2BGJgQPrJxBfG
-         /rDt6JnMYpNmhQqkGoLM9rqAGKeKa3muyOUi3o/LmmYL0mgRtxmGeka2kxNS9UAZpJ
-         XCdZVizb0DRUL19vZVJFebUYla4+kfYkS19q22ij9TbJOOBsr0b+vaLLdL/t0klLPD
-         Z1+Ktyc989waz8bHJzJHyH7Hg6Rz1ZDb66Eo+RlQVx432jagBx7SwU4SZznDfKntsA
-         3ECXI9ftUwWHY4j9QrAsQCd7sRYrQj5/FYmY11tXaklbU9bDt4weaCCLjP0lSnk6yL
-         2cT0kP2aLbrZw==
-Date:   Sun, 27 Aug 2023 10:03:14 +0200
+        b=G7jI+fyHyygOeBw/iXHQqZiebINK9a96l2XPhsAEELxL4UkNEO9tkjgME8vP3XD57
+         sIpYru6738QMDZ+U7bv/xiIjM5KIko/XysZm55n0cU/rwWFF7W8IWArU98ivQR6oGa
+         83tRPKA2pQHZLwI56xo8h+RjMupTGwo4Up7oYYH2lW8nvpnsMLzfb3tIUIpHjkg21r
+         TqxHwLYe8ZLFT7dNclJXnAdF1b9d2lZ0b0FugX99aypAEGXpz//i/KAW+eyGaE2WJo
+         IKjvUksVNTV6HzeDxpDPeGJIag50Ogv8NvLI7B1Jna/jdLuCeRZp203u0SjsDu47io
+         aRPIperAhApvA==
+Date:   Sun, 27 Aug 2023 10:05:31 +0200
 From:   Simon Horman <horms@kernel.org>
 To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
 Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
@@ -41,17 +41,17 @@ Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
         pabeni@redhat.com, richardcochran@gmail.com, sd@queasysnail.net,
         sebastian.tobuschat@nxp.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next v2 3/5] net: phy: nxp-c45-tja11xx add MACsec
- support
-Message-ID: <20230827080314.GQ3523530@kernel.org>
+Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
+ mdo_insert_tx_tag
+Message-ID: <20230827080531.GR3523530@kernel.org>
 References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
- <20230824091615.191379-4-radu-nicolae.pirea@oss.nxp.com>
+ <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230824091615.191379-4-radu-nicolae.pirea@oss.nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,47 +59,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:16:13PM +0300, Radu Pirea (NXP OSS) wrote:
-> Add MACsec support.
-> The MACsec block has four TX SCs and four RX SCs. The driver supports up
-> to four SecY. Each SecY with one TX SC and one RX SC.
-> The RX SCs can have two keys, key A and key B, written in hardware and
-> enabled at the same time.
-> The TX SCs can have two keys written in hardware, but only one can be
-> active at a given time.
-> On TX, the SC is selected using the MAC source address. Due of this
-> selection mechanism, each offloaded netdev must have a unique MAC
-> address.
-> On RX, the SC is selected by SCI(found in SecTAG or calculated using MAC
-> SA), or using RX SC 0 as implicit.
+On Thu, Aug 24, 2023 at 12:16:15PM +0300, Radu Pirea (NXP OSS) wrote:
+> Implement mdo_insert_tx_tag to insert the TLV header in the ethernet
+> frame.
+> 
+> If extscs parameter is set to 1, then the TLV header will contain the
+> TX SC that will be used to encrypt the frame, otherwise the TX SC will
+> be selected using the MAC source address.
 > 
 > Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+> ---
+>  drivers/net/phy/nxp-c45-tja11xx-macsec.c | 66 ++++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+> 
+> diff --git a/drivers/net/phy/nxp-c45-tja11xx-macsec.c b/drivers/net/phy/nxp-c45-tja11xx-macsec.c
 
 ...
 
-> diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-> index c945ed9bd14b..ee53e2fdb968 100644
-> --- a/drivers/net/phy/Makefile
-> +++ b/drivers/net/phy/Makefile
-> @@ -83,6 +83,10 @@ obj-$(CONFIG_MICROSEMI_PHY)	+= mscc/
->  obj-$(CONFIG_MOTORCOMM_PHY)	+= motorcomm.o
->  obj-$(CONFIG_NATIONAL_PHY)	+= national.o
->  obj-$(CONFIG_NCN26000_PHY)	+= ncn26000.o
-> +nxp-c45-tja11xx-objs		+= nxp-c45-tja11xx.o
+> @@ -167,6 +171,18 @@
+>  #define MACSEC_INPBTS			0x0638
+>  #define MACSEC_IPSNFS			0x063C
+>  
+> +#define TJA11XX_TLV_TX_NEEDED_HEADROOM	(32)
+> +#define TJA11XX_TLV_NEEDED_TAILROOM	(0)
+> +
+> +#define MACSEC_TLV_CP			BIT(0)
+> +#define MACSEC_TLV_SC_ID_OFF		(2)
+> +
+> +#define ETH_P_TJA11XX_TLV		(0x4e58)
+> +
+> +bool extscs;
 
 Hi Radu,
 
-The coincidence of "nxp-c45-tja11x" on both sides of the "+=" operator
-seems to cause a build failure (for x86_64 allmodconfig with gcc-13).
+Sparse suggests that extscs should be static.
 
-Circular drivers/net/phy/nxp-c45-tja11xx.o <- drivers/net/phy/nxp-c45-tja11xx.o dependency dropped.
-
-> +ifdef CONFIG_MACSEC
-> +nxp-c45-tja11xx-objs		+= nxp-c45-tja11xx-macsec.o
-> +endif
-
->  obj-$(CONFIG_NXP_C45_TJA11XX_PHY)	+= nxp-c45-tja11xx.o
->  obj-$(CONFIG_NXP_CBTX_PHY)	+= nxp-cbtx.o
->  obj-$(CONFIG_NXP_TJA11XX_PHY)	+= nxp-tja11xx.o
+> +module_param(extscs, bool, 0);
+> +MODULE_PARM_DESC(extscs, "Select the TX SC using TLV header information.");
 
 ...
