@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1250789BAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF68789BAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjH0HJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 03:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
+        id S229907AbjH0HKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 03:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjH0HJa (ORCPT
+        with ESMTP id S229996AbjH0HKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 03:09:30 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57951E0;
-        Sun, 27 Aug 2023 00:09:25 -0700 (PDT)
-X-QQ-mid: bizesmtp76t1693120152to4qhmj2
-Received: from linux-lab-host.localdomain ( [116.30.127.49])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 27 Aug 2023 15:09:11 +0800 (CST)
-X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: mhgCCnGOC3zBXXZrve8spmu5rA4BAZw/BqKCcFYCz5lTN2Pboydlj1TV8z8Xe
-        Qb4n3CE0MiqiRCAWbt2GGlsH962GOO0A/so6v2Y6B7znXDJttgiZ1KvhExRBvZ6uVnpEDBI
-        kMdVCtZ2Lgt5fQ8S5d7zaxX90+00vgACUesXi1q3FtqedEAf4UajobgDdoy7WOwUnCBQHmR
-        HPcCVJ0wYannfKUGi7si/QG293pbexmstR+CPxgl1iN8k4ODEAjwhXViSprLOIdNfVi9kpr
-        opJum8+ahjJGcVfHgRDSchBxKV5ts9iOupKiRn8YBgVEACD2z6yr3DFzrKGh3Eo8TNUgBCv
-        PN3Ai5KMCvHOo+0zJGgr2ephFZN7wDaI1vWsdf43IJ2mYpCFYW1w9UHLI3rWw==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3324772232417533549
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     tanyuan@tinylab.org
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
-        thomas@t-8ch.de, w@1wt.eu
-Subject: Re: [PATCH v2 3/3] selftests/nolibc: fix up O= option support
-Date:   Sun, 27 Aug 2023 15:09:09 +0800
-Message-Id: <20230827070909.6999-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <B0DD4BA059591F13+4c61dc98-4d70-4ab2-b4ca-81c0e6596482@tinylab.org>
-References: <B0DD4BA059591F13+4c61dc98-4d70-4ab2-b4ca-81c0e6596482@tinylab.org>
+        Sun, 27 Aug 2023 03:10:03 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE14E4;
+        Sun, 27 Aug 2023 00:10:00 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5009d4a4897so3382760e87.0;
+        Sun, 27 Aug 2023 00:10:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693120199; x=1693724999;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IzOMGTlsUXfchyGera0EDmmhjbWGxdlJgkRc3qJ1V74=;
+        b=Hbj3Q0bIJNKETVveN6SO4qN5rM3fQv4iUdIS5vgGfpVglyQ7ZjbMuO7ioMDjDiTUBb
+         b7r8U/n+I1gCweak+Ar/7QiDatqhS4/eurDyzfei7JTBXgljAYQyWfEHT83r/RBKZoD4
+         /NEAX28gk+CpfCbJJLtg92K7w+ognbJIZMTJwraFtywwrMEcKkz3pAYjvaK2fy32pQM9
+         oQrHnQePLU54XXNTThBjW8OuJTuwwOyUdQaPqlc00MqDfK/4xEW1RPbE5TVdCnKOX0Mr
+         QfldmIfpdCokR1CoNLgjwqjrt3towj+CCRIScA4uslBbwqUhLvZ4QFMVhnhKWseIwU5g
+         hXAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693120199; x=1693724999;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IzOMGTlsUXfchyGera0EDmmhjbWGxdlJgkRc3qJ1V74=;
+        b=RKkbF9bxkJZ4vABewqxpIoLKzRXpxNQCdBjkqB3vlf53GgR4Ko1WNMxOD+Wj05ns9F
+         9fEX3xulk4tWh6AkIhefFgFlwSFhICiytO0aSy2dg/Z2SlfOQ6yk/FUVuAfgHGnhlYwp
+         ABEt2V6/1E8f+EO9PblPDXw/FsBfBduWjj+mewDTm8wrWxMMrzOG1l71KhC2HYSlm/Rm
+         ooC4P8I+83rnKRONDjphyfuIB8+9EUUcxuoXTSAOyBLAeQ0IkSyGXYAGrxKt4yAgraCP
+         FKvZjrpmw8dflvh6ud8tLdI2E3pRgDdlv94+/7HKvGHIRgB+bF7y9ro7BM5/lCGkNo0P
+         ST5w==
+X-Gm-Message-State: AOJu0YyyDsVYMJK7NT3gbqTnVwA/zPt86YjGOcB8ZmcbbsTn2wXRlKDc
+        CoxPMwdof8lGjVeFvjhJmAU=
+X-Google-Smtp-Source: AGHT+IFvuXonDoK3DoXZNe2l0wFzs17CVwkuaiDqsboRy1omHg2mR7/E6Tinu1/0f0jAz77iQxkceA==
+X-Received: by 2002:a19:791d:0:b0:4fe:711:2931 with SMTP id u29-20020a19791d000000b004fe07112931mr15704328lfc.22.1693120198823;
+        Sun, 27 Aug 2023 00:09:58 -0700 (PDT)
+Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id f17-20020ac25331000000b00500a2091e2bsm1025065lfh.99.2023.08.27.00.09.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 00:09:58 -0700 (PDT)
+Message-ID: <26d10fbf-8b85-47bd-ad8a-6b885575f714@gmail.com>
+Date:   Sun, 27 Aug 2023 10:10:08 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: dma: ti: k3-pktdma: Describe cfg
+ register regions
+Content-Language: en-US
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230810174356.3322583-1-vigneshr@ti.com>
+ <20230810174356.3322583-3-vigneshr@ti.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230810174356.3322583-3-vigneshr@ti.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yuan
 
-> Hi Zhangjin and Willy,
+
+On 10/08/2023 20:43, Vignesh Raghavendra wrote:
+> Packet DMA (PKTDMA) module on K3 SoCs have ring cfg, TX and RX channel
+> cfg and RX flow cfg register regions which are usually configured by a
+> Device Management firmware. But certain entities such as bootloader
+> (like U-Boot) may have to access them directly. Describe this region in
+> the binding documentation for completeness of module description.
 > 
-> On 8/26/2023 12:30 PM, Zhangjin Wu wrote:
-[...]
-> >
-> >      ubuntu@linux-lab:/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc$ find sysroot/ -name "errno.h"
-> >      sysroot/i386/include/errno.h
-> >      sysroot/i386/include/asm-generic/errno.h
-> >      sysroot/i386/include/asm/errno.h             --> here it is
-> >      sysroot/i386/include/linux/errno.h
-> >      sysroot/x86/include/errno.h
-> >      sysroot/x86/include/asm-generic/errno.h
-> >      sysroot/x86/include/asm/errno.h              --> here it is
-> >      sysroot/x86/include/linux/errno.h
-> >
-> > That also means, to use O=out for run-user, we also need to use O=out for
-> > defconfig (and kernel ...) too, otherwise, the top-level source code tree will
-> > be polluated.
-> >
-> > Seems a manual mrproper on top-level source code tree is always required for a
-> > new iteration, so, it may be ok to pick this patch with a note on the potential
-> > error.
+> Keep the binding compatible with existing DTS files by requiring first
+> four regions to be present at least.
 > 
-> There are two potential solutions for addressing this issue.
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+>  .../devicetree/bindings/dma/ti/k3-pktdma.yaml  | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
 > 
-> The first option involves copying 
-> 'linux/arch/x86/include/generated/uapi/asm/' to 'sysroot/x86/include/' 
-> during the make of target headers_standalone.
->
+> diff --git a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+> index a69f62f854d8..5f9ba4bb05f6 100644
+> --- a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+> @@ -45,14 +45,20 @@ properties:
+>        The second cell is the ASEL value for the channel
+>  
+>    reg:
+> -    maxItems: 4
+> +    minItems: 4
+> +    maxItems: 8
+>  
+>    reg-names:
+> +    minItems: 4
+>      items:
+>        - const: gcfg
+>        - const: rchanrt
+>        - const: tchanrt
+>        - const: ringrt
+> +      - const: cfg
+> +      - const: tchan
+> +      - const: rchan
+> +      - const: rflow
+>  
+>    msi-parent: true
+>  
+> @@ -136,8 +142,14 @@ examples:
+>                  reg = <0x0 0x485c0000 0x0 0x100>,
+>                        <0x0 0x4a800000 0x0 0x20000>,
+>                        <0x0 0x4aa00000 0x0 0x40000>,
+> -                      <0x0 0x4b800000 0x0 0x400000>;
+> -                reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
+> +                      <0x0 0x4b800000 0x0 0x400000>,
+> +                      <0x00 0x485e0000 0x00 0x20000>,
 
-Will this work when linux/arch/x86/include/generated/uapi/asm/ is stale?
-for example, when linux/arch/x86/include/generated/uapi/asm/ is there
-for v6.1, but we are installing v6.5 sysroot?
+This is RING (PKTDMA_RING), why it is named cfg?
 
-> The second approach entails displaying an error message when the code 
-> tree is not clean and prompting users to manually execute 'make 
-> mrproper'. In this case, we can utilize the target 'outputmakefile' from 
-> the root makefile directly.
->
+> +                      <0x00 0x484a0000 0x00 0x4000>,
+> +                      <0x00 0x484c0000 0x00 0x2000>,
+> +                      <0x00 0x48430000 0x00 0x4000>;
+> +                reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
+> +                            "cfg", "tchan", "rchan", "rflow";
+> +
+>                  msi-parent = <&inta_main_dmss>;
+>                  #dma-cells = <2>;
+>  
 
-A question is, without O= option, will this 'outputmakefile' always
-require to do mrproper (when we have already done defconfig, kernel or
-run without O=)? but currently, seems we don't require to do so. 
-
-Currently, the asm/errno.h is installed whenever the source code tree is
-clean or not, the issue is asm/errno.h will not be installed only when
-O= specified. The root solution may be the generic-y (or generated-y?) in
-scripts/Makefile.asm-generic should be corrected to work with O= option?
-but this common code want us to be more careful.
-
-> Willy, which method do you prefer? Do you have any alternative 
-> suggestions? :)
-> 
-> 
-> Besides. using x86_64-linux-gnu- won't reproduce this issue. It searched 
-> and found 'asm/errno.h' in '/usr/include/x86_64-linux-gnu', whereas 
-> 'x86_64-linux' lacks these libraries.
->
-
-So, the -gnu- toolchain may hide some issues in
-scripts/Makefile.asm-generic for O= option.
-
-Thanks,
-Zhangjin
+-- 
+Péter
