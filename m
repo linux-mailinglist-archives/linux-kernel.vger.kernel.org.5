@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD854789FB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 16:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE96789FB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 16:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjH0N7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 09:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
+        id S230439AbjH0OG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 10:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbjH0N7Y (ORCPT
+        with ESMTP id S229902AbjH0OGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 09:59:24 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1094ACE;
-        Sun, 27 Aug 2023 06:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JVvm7fYZ5VOK8prRPe7vWiswKOsY/Xrn4DbAyJv08DE=; b=blS9u+03U+DRRvi7hm21XlM3e7
-        jIeTjieA1Ygwew0uEhAWoM5fwMeoLP9JQzFdcMWw50IosMfbGiUixW4x14+oezpz0bIDclAfDpatp
-        6tYDEILCgxVH98uuSohS4ecTtSrPsj55rxc0E1Intxpj0vwk1q67bO+kSGA66lAguXKt5pqnZoSv/
-        6ROtW203TwgoiJ0E4EefRvryEwMWPduUjarUX6+Fp1ti9raeKwW6HTar9vyAncD6M2WZVDghdjKxM
-        NVi5eUxX+QATiCkNDIaIfaqnmKuotb1PPs4MMre+yy+4OV0adtPlWbbJMneiiJ3mLPTHyzHzhGSk9
-        tDQ+0rCA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44638)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qaGI1-0006xW-0x;
-        Sun, 27 Aug 2023 14:58:53 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qaGHx-0002ZZ-Gq; Sun, 27 Aug 2023 14:58:49 +0100
-Date:   Sun, 27 Aug 2023 14:58:49 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: stmmac: dwmac-starfive: improve error
- handling during probe
-Message-ID: <ZOtWmedBsa6wQQ6+@shell.armlinux.org.uk>
-References: <20230827134150.2918-1-jszhang@kernel.org>
- <20230827134150.2918-2-jszhang@kernel.org>
+        Sun, 27 Aug 2023 10:06:10 -0400
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CAF11B
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 07:06:05 -0700 (PDT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bf08cf3365so21269945ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 07:06:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693145165; x=1693749965;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g8j55cLkIbZIaBh5Di7cu1MVcAsQCeGemB32jmMtS2o=;
+        b=d8ACsb589SXOSzNdHvlbRruMH91MUcevTwb+Coz3eAt3nW+QSq09E4Lt99wgGfThru
+         uJddG1S+BHqO3Aq2kVmBZNH2giXAb9QiA5Wi3iNejU1vez5sHubyz7Vk3KJXILYEVrp7
+         WGLzkJyoKWXZQR/agTUC9ibim8HZY7HXbdIJwwubcmL+JjukECZgCle3pzKF2CMd8+rV
+         aE5sh4VbD7kPoXdwPlRR8TqqOMOUJIFSAGn7GOvkPBSaqKbyodltdtmuqPlku4F8rMFl
+         lZfc/zolrS2hc1j2c16TVSZz9B3FNyrHmdDZ9QMcxS1mENR7BSpHxwfoMbeoPCD+XzTG
+         E7Vw==
+X-Gm-Message-State: AOJu0YycmwGIk23w22gaQdPM7Tap9nYcZZ30ZDWBUwjUctGDXJEccRBo
+        kfFgxEub/fYiqOvqfJd5YPPhoSnq4laI4zHp9eyEQ0N4KsEb
+X-Google-Smtp-Source: AGHT+IFz36RY6aJ1+m79ScTz3kSLlWL8ftzo288g9xZHVsEY5M7VDZJNbZ6B07rm/zhJdg6TJvcfnVGBXBaekIhUIjFiJ1wdZcOG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230827134150.2918-2-jszhang@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:f54f:b0:1c0:d7a9:1c42 with SMTP id
+ h15-20020a170902f54f00b001c0d7a91c42mr1410146plf.13.1693145164887; Sun, 27
+ Aug 2023 07:06:04 -0700 (PDT)
+Date:   Sun, 27 Aug 2023 07:06:04 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001b3c5c0603e814ab@google.com>
+Subject: [syzbot] Monthly dri report (Aug 2023)
+From:   syzbot <syzbot+list483e8258d68797e99c17@syzkaller.appspotmail.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 09:41:49PM +0800, Jisheng Zhang wrote:
-> After stmmac_probe_config_dt() succeeds, when error happens later,
-> stmmac_remove_config_dt() needs to be called for proper error handling.
+Hello dri maintainers/developers,
 
-Have you thought about converting to use devm_stmmac_probe_config_dt()
-which will call stmmac_remove_config_dt() if the probe fails or when
-the device is unbound?
+This is a 31-day syzbot report for the dri subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/dri
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+During the period, 3 new issues were detected and 0 were fixed.
+In total, 11 issues are still open and 30 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 345     Yes   WARNING in drm_wait_one_vblank
+                  https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
+<2> 62      Yes   WARNING in vkms_get_vblank_timestamp (2)
+                  https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
+<3> 33      Yes   inconsistent lock state in sync_info_debugfs_show
+                  https://syzkaller.appspot.com/bug?extid=007bfe0f3330f6e1e7d1
+<4> 4       Yes   divide error in drm_mode_vrefresh
+                  https://syzkaller.appspot.com/bug?extid=622bba18029bcde672e1
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
