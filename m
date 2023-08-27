@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7699789DB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 13:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1A9789DBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 13:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjH0Lyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 07:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
+        id S229918AbjH0Lz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 07:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjH0Lyl (ORCPT
+        with ESMTP id S229740AbjH0LzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 07:54:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A12EC
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 04:54:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DE7860A72
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 11:54:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C82C433C7;
-        Sun, 27 Aug 2023 11:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693137278;
-        bh=HCKLU4HFrSpkJ4paDMdbG9pku8cUYKPpuatOjyuNsbM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iW45c6CFIS1kelrm4x0b8zs7WioFmM2OjgyGFXP3jcNJk0+8qKXZpJFips+FVuPJm
-         7IHW2a6YO8q+NeZxxBGmrGWyDTqKBZZCegYrY7u6wiBcm74B1Jlg27aphea8Lsv8By
-         ILZWiF+MOv0GpLn+1/Uyiykqs6XZO3D7zRoFAcb7MtL+0wqyyGIYrexj6+srE98VRr
-         igbKIvFoy8WXYefXXwjGaVKH6zsE0ElTGd7uzg8/+4qsyySR/9CxTep/TDo9lxtdTp
-         DIfuVagnM6TnF8myMijK0OgNBeDiOMfqayAKc5Kw+p2TUMYTN5GsqIyhSbyNS2WJ+e
-         uge25g38OXc2A==
-Date:   Sun, 27 Aug 2023 12:54:35 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Sun, 27 Aug 2023 07:55:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8F713E;
+        Sun, 27 Aug 2023 04:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=lRX3XcY7QZhlnMmis+AtWCcFQ1ER+dbenUbYjT1H8Bw=; b=oy8ciNpaP7G3VnJYSU4pe0vef0
+        4wnwFaobTQcFhQXV6XFwQzQXV1WwdyowU4EuHTH6QQ77K6dFQkdZQ21cu/+YbdMGug1WHOZVamIMG
+        mUWZWP3M8ryUg5Kp8uP+Ryh8iYpYuEUJUkto4GQbWQ75iyto9oQjeldsAsLRNhHPTPrnrz1kh70co
+        U5Ehg0u/NbzRf3ZeysjbcLBrKo7Q/lZN3Gn7jDgbbLfpbJJDaC+tTmfeV50Ns6Oe/pi65fZkVj+Tf
+        ulVcAbfDynZ0Z8Sd9MVtq6QnsfirPnvLQjiWAO9Wb60/1fDfdLiaVEZafJICAUzAcgIgz1IflqJ0g
+        XiSuSoog==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qaEM4-00BUYj-0B; Sun, 27 Aug 2023 11:54:56 +0000
+Date:   Sun, 27 Aug 2023 12:54:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     dianlujitao <dianlujitao@gmail.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: Question about simple-audio-card with dummy CODEC
-Message-ID: <ZOs5exw+95zzzawK@finisterre.sirena.org.uk>
-References: <CAHCN7xKQ549ExO83Yur=_MPv3aYFdR0nfzUSuEXO74OddAr5gQ@mail.gmail.com>
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
+Subject: Re: Fwd: kernel bug when performing heavy IO operations
+Message-ID: <ZOs5j93aAmZhrA/G@casper.infradead.org>
+References: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
+ <ZOrG5698LPKTp5xM@casper.infradead.org>
+ <7d8b4679-5cd5-4ba1-9996-1a239f7cb1c5@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="T0pIQEA2r2aEwbrh"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHCN7xKQ549ExO83Yur=_MPv3aYFdR0nfzUSuEXO74OddAr5gQ@mail.gmail.com>
-X-Cookie: Give him an evasive answer.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7d8b4679-5cd5-4ba1-9996-1a239f7cb1c5@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 27, 2023 at 12:34:54PM +0800, dianlujitao wrote:
+> 
+> 在 2023/8/27 11:45, Matthew Wilcox 写道:
+> > On Sun, Aug 27, 2023 at 10:20:51AM +0700, Bagas Sanjaya wrote:
+> > > > When the IO load is heavy (compiling AOSP in my case), there's a chance to crash the kernel, the only way to recover is to perform a hard reset. Logs look like follows:
+> > > > 
+> > > > 8月 25 13:52:23 arch-pc kernel: BUG: Bad page map in process tmux: client  pte:8000000462500025 pmd:b99c98067
+> > > > 8月 25 13:52:23 arch-pc kernel: page:00000000460fa108 refcount:4 mapcount:-256 mapping:00000000612a1864 index:0x16 pfn:0x462500
+> > > > 8月 25 13:52:23 arch-pc kernel: memcg:ffff8a1056ed0000
+> > > > 8月 25 13:52:23 arch-pc kernel: aops:btrfs_aops [btrfs] ino:9c4635 dentry name:"locale-archive"
+> > > > 8月 25 13:52:23 arch-pc kernel: flags: 0x2ffff5800002056(referenced|uptodate|lru|workingset|private|node=0|zone=2|lastcpupid=0xffff)
+> > > > 8月 25 13:52:23 arch-pc kernel: page_type: 0xfffffeff(offline)
+> > This is interesting.  PG_offline is set.
+> > 
+> > $ git grep SetPageOffline
+> > arch/powerpc/platforms/powernv/memtrace.c:              __SetPageOffline(pfn_to_page(pfn));
+> > drivers/hv/hv_balloon.c:                        __SetPageOffline(pg);
+> > drivers/hv/hv_balloon.c:                        __SetPageOffline(pg + j);
+> > drivers/misc/vmw_balloon.c:             __SetPageOffline(page + i);
+> > drivers/virtio/virtio_mem.c:            __SetPageOffline(page);
+> > drivers/xen/balloon.c:  __SetPageOffline(page);
+> > include/linux/balloon_compaction.h:     __SetPageOffline(page);
+> > include/linux/balloon_compaction.h:     __SetPageOffline(page);
+> > 
+> > But there's no indication that this kernel is running under a
+> > hypervisor:
+> > 
+> > > > 8月 25 13:52:23 arch-pc kernel: Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G Server, BIOS 5.11 06/30/2022
+> Yes, I'm running on bare metal hardware.
+> > So I'd agree with Artem, this looks like bad RAM.
+> > 
+> I ran memtest86+ 6.20 for a cycle and it passed. However, could an OOM
+> trigger the bug? e.g., kernel bug fired before the OOM killer has a
+> chance to start? Just a guess because the last log entry in journalctl
+> before "BUG" is an hour earlier.
 
---T0pIQEA2r2aEwbrh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Aug 26, 2023 at 11:15:30PM -0500, Adam Ford wrote:
-
-> I am asking what is the best way to let simple-audio-card  use a dummy
-> codec?  If the dummy codec is the better option, what compatible name
-> should I use?
-
-We have a driver for DMICs, dmic.c - you should use that.  In general
-you should never use the dummy CODEC, you should use a driver for the
-specific thing on the board which will at least describe the
-capabilities of the hardware even if it doesn't have any ops that do
-anything.
-
---T0pIQEA2r2aEwbrh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTrOXcACgkQJNaLcl1U
-h9BzZggAgccl5OyRQ19/3VMkvr0tLY6x0rAQCt8tQ7ni/4Dy4L/4RAIhcPc3jqJv
-eORZtWbC4Gkj/vGVY9qEV78awLZsZ3+77LuwX1bznEJBzV0pe/RFeOSA+BdJ8UGd
-cKopGGCieXIaW9t3nwGQbzd/Co4YST7r3dKlXctEy0WiD/tMTyAj809hhoWA5Ipj
-BXpnMvv8Z4HtUbNyULHyzCNWYv5ZqGYjDmIbRmzmpVFHaPLOSjyJqOzro8KxbM13
-f7bX0kfn4N4KgIXSr1yDWib/Pp3Uoyds5NEyN3XbEWCKANWRtKXcx/rZpV4ZHJhr
-xDHPWsW6job7+554QriRZ98Lg+KzcQ==
-=XbPJ
------END PGP SIGNATURE-----
-
---T0pIQEA2r2aEwbrh--
+The problem is that OOM doesn't SetPageOffline.  The only things that
+do are hypervisor guest drivers.  So we've got a random bit being
+cleared, and either that's a stray write which happens to land in
+the struct page in question, or it's bad hardware.  Since it's a
+single bit that's being cleared, bad hardware is the most likely
+explanation, but it's not impossible for there to be a bug that's
+doing this.  The problem is that it could be almost anything ...
