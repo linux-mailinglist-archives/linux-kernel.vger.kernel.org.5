@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A36A7899EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 02:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5DB7899EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 02:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbjH0ASh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 20:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
+        id S229782AbjH0AiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 20:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjH0ASK (ORCPT
+        with ESMTP id S229475AbjH0Ahh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 20:18:10 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423F01BE;
-        Sat, 26 Aug 2023 17:18:08 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso31704451fa.1;
-        Sat, 26 Aug 2023 17:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693095486; x=1693700286;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R0O9+Nd81lV61HUqL9J8WFR0wEb+50cA6S0W+jgCLe8=;
-        b=c/affskxQbENShZrDrcXcKAkTEXbHsnQQKmV0Pou8bPhhXgqTFq+jOGmmDB/J9k+Z3
-         Lwj8SoVltyelWC4dq4f05GgIu1Vl3mAC1moPIvkwCjrkQda++FmI0T73NwWdda9WZ4tl
-         ZPUL61i4oIuWMvnAWboCGhLHW5Yiz4OTRdctRiGAv3YePFte8v7Eb0sfg1dqQeEuzE6p
-         GI41iMMFHl97rHL/QlgVJZnR2W2SO8laQCgdHK0nAUme/x6tOqEILrLVU82JZDGO5H0c
-         NVJNCC7/BocOfV9X13sU7FSmqaC1KEGSjvkPH9+ez455BpePqhA8J5kTYASrGoC8D72D
-         8fLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693095486; x=1693700286;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R0O9+Nd81lV61HUqL9J8WFR0wEb+50cA6S0W+jgCLe8=;
-        b=Q3AYhm4zZscO12pAJVRhSPBUI7l0GxSsBWQSfJVy2iNG7MLXS4vB5k6i1nMW0nHl3k
-         T+uR/DOCzlG2Wdt9y+DyzTX4X8Gjv9QcD1cCjK5FaDUnfw6Pc6iODecqMCK3glPu17W9
-         H0NgrYBwHPRiS75UGmV7eTy8UOCHUGlI0PK00uUj7EKhkt5MJgo+JqLOVu6jtVdK5ZpS
-         qppoYOC3B3G/NGSWUoHLy4qX9bUOYZkhU+NmlhBItQ/BK1ZVnxOyn2kE5iaf7mrKxCOX
-         S1uTy78cWNGcnxG9t/wMsr39AjtkI7faqgo62oMAlM+NWI+O5zn+dtZNNS4C2S8sErzp
-         mfOw==
-X-Gm-Message-State: AOJu0YzvD6HKCWvxd7uHdoRTbl9i1RLUMxzpnzr2IFZv7pfT3lhSOw/Q
-        oHjTXiYlcLJggj6Wp2PEs2DzbcToP0nFCw==
-X-Google-Smtp-Source: AGHT+IETf2PT2oT9j6J9nHb3QF2V2wh+kc6yhG5eIffZAbTs9nY9WVTgxgZMkeph09QnN5G5PyYhHw==
-X-Received: by 2002:a2e:3c0e:0:b0:2b6:3651:f12f with SMTP id j14-20020a2e3c0e000000b002b63651f12fmr17021462lja.3.1693095486177;
-        Sat, 26 Aug 2023 17:18:06 -0700 (PDT)
-Received: from mobilestation ([95.79.200.178])
-        by smtp.gmail.com with ESMTPSA id x1-20020a05651c104100b002bcd2653872sm1015042ljm.30.2023.08.26.17.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 17:18:05 -0700 (PDT)
-Date:   Sun, 27 Aug 2023 03:18:03 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Rohan G Thomas <rohan.g.thomas@intel.com>
-Cc:     alexandre.torgue@foss.st.com, conor+dt@kernel.org,
-        conor.dooley@microchip.com, davem@davemloft.net,
-        devicetree@vger.kernel.org, edumazet@google.com,
-        joabreu@synopsys.com, krzysztof.kozlowski+dt@linaro.org,
-        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, peppe.cavallaro@st.com, robh+dt@kernel.org
-Subject: Re: [PATCH net-next v5 1/2] dt-bindings: net: snps,dwmac: Tx queues
- with coe
-Message-ID: <stdtvjzyaudpnxoj4pxdqw4okrmq2bkmbefvyapbs2racx4dhv@of5t463f4nm5>
-References: <l7yajzhpuotn62pjkxk43qtcn3u4zltpyqcvo224737bjg3eab@bzu6pirxbvh2>
- <20230823171004.6825-1-rohan.g.thomas@intel.com>
+        Sat, 26 Aug 2023 20:37:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055EF109
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 17:37:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C7CF61DD3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 00:37:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67961C433C8;
+        Sun, 27 Aug 2023 00:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693096653;
+        bh=I6+EjuMhnMqA0A4SsaSLYkN9eETY2McANvNftJkI0dM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Lo1DIY8gtf7Th1wUHVHnXZJ3Je8HOVS7taKpYUE+ksqp1o3qqQAi8al7eP48M5cN+
+         GmG3Vqx/Bw8Cdmp8aIippxj1Or6nMYiNT/Eb2pC5XUgj011KZd4sLeKySRbWdSGTxG
+         CA50E5u+hRNcxigWAd2byVptPZbNQElXZ9f7fNIJzGjx7qq0FjqfSA2ahVPDnkysmH
+         gTrM485E4xuUdgtBCU8us98C6IYD424xWrIMR17/kc2ZQFETWgJ+IuQc67NHRGH7Zt
+         WG8jgH85rjBPuhISdj4mqrlUtJ7aCQa++ElPL23Q0QJ63OGyc4tKTX5ZTNq/OPHaic
+         ureLkSb8a+7LQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     damon@lists.linux.dev
+Cc:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] mm/damon/core: use number of passed access sampling as a timer
+Date:   Sun, 27 Aug 2023 00:37:27 +0000
+Message-Id: <20230827003727.49369-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823171004.6825-1-rohan.g.thomas@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,78 +54,210 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 01:10:04AM +0800, Rohan G Thomas wrote:
-> >On Tue, Aug 22, 2023 at 05:15:25PM -0700, Jakub Kicinski wrote:
-> >> On Sat, 19 Aug 2023 10:31:31 +0800 Rohan G Thomas wrote:
-> >> > +      snps,tx-queues-with-coe:
-> >> > +        $ref: /schemas/types.yaml#/definitions/uint32
-> >> > +        description: number of TX queues that support TX checksum offloading
-> >> 
-> >
-> >> Is it going to be obvious that if not present all queues support
-> >> checksum offload? I think we should document the default.
-> >
-> >This question is debatable:
-> >1. By default the DW xGMAC and DW QoS Eth IP-cores are
-> >synthesized with only the very first Tx queue having Tx COE enabled.
-> >2. If TSO is disabled then the Tx COE can be individually enabled
-> >for each queue available on DW QoS Eth controller and for the very
-> >first N queues on DW xGMAC controller.
-> >3. If TSO is enabled then the Tx COE will be automatically and always
-> >enabled for as many first queues as there are TSO-capable
-> >DMA-channels.
-> >4. At the current state the STMMAC driver assumes that all Tx Queues
-> >support Tx COE.
-> >
-> >The entry 4 can't be changed since we'll risk to catch regressions on
-> >the platforms with no property specified. On the other hand it partly
-> >contradicts to the rest of the entries. I don't know what would be a
-> >correct way to specify the default value in this case. Most likely
-> >just keep the entry 4 and be done with it.
-> >
-> >BTW I just noticed that but the suggested "snps,tx-queues-with-coe"
-> >property semantic will only cover a DW XGMAC-part of the case 2. DW
-> >QoS Eth can be synthesized with Tx COE individually enabled for a
-> >particular queue if TSO is unavailable.
-> 
-> Hi Serge,
-> 
-> Didn't know about a different IP configuration supported by DW QoS Eth IP. If
-> this is the case, I think we can have a flag 'coe-unsupported' for any TX
-> queue subnode as below.
-> 
-> +          snps,coe-unsupported:
+DAMON sleeps for sampling interval after each sampling, and check if
+it's time for further doing aggregation and ops updating using
+ktime_get_coarse_ts64() and baseline timestamps for the two periodic
+operations.  That's for making the operations occur at deterministic
+timing.  However, it turned out it could still result in indeterministic
+and even not-that-intuitive results.
 
-> +            $ref: /schemas/types.yaml#/definitions/flag
+After all, timer functions, and especially sleep functions that DAMON
+uses to wait for specific timing, could contain some errors.  Those
+errors are legal, so no problem.  However, depending on such legal
+timing errors, the nr_accesses can be larger than aggregation interval
+divided by sampling interval.  For example, with the default setting (5
+ms sampling interval and 100 ms aggregation interval) we frequently show
+regions having nr_accesses larger than 20.  Also, if the execution of a
+DAMOS scheme takes a long time, next aggregation could happen before
+enough number of samples are collected.
 
-AFAIR tKrzysztof preferred to use type: boolean for the flags.
+Since access check sampling is the smallest unit work of DAMON, using
+the number of passed sampling intervals as the DAMON-internal timer can
+easily avoid these problems.  That is, convert aggregation and ops
+update intervals to numbers of sampling intervals that need to be passed
+before those operations be executed, count the number of passed sampling
+intervals, and invoke the operations as soon as the specific amount of
+sampling intervals passed.  Make the change.
 
-> +            description:
-> +              TX checksum offload is unsupported by the TX queue. 
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ include/linux/damon.h | 14 ++++++--
+ mm/damon/core.c       | 84 +++++++++++++++++++------------------------
+ 2 files changed, 48 insertions(+), 50 deletions(-)
 
-> +              If TX checksum
-> +              offload is requested for a packet to be transmitted through this
-> +              TX queue then have a software fallback in the driver for checksum
-> +              calculation.
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index ab3089de1478..9a32b8fd0bd3 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -524,8 +524,18 @@ struct damon_ctx {
+ 	struct damon_attrs attrs;
+ 
+ /* private: internal use only */
+-	struct timespec64 last_aggregation;
+-	struct timespec64 last_ops_update;
++	/* number of sample intervals that passed since this context started */
++	unsigned long passed_sample_intervals;
++	/*
++	 * number of sample intervals that should be passed before next
++	 * aggregation
++	 */
++	unsigned long next_aggregation_sis;
++	/*
++	 * number of sample intervals that should be passed before next ops
++	 * update
++	 */
++	unsigned long next_ops_update_sis;
+ 
+ /* public: */
+ 	struct task_struct *kdamond;
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 988dc39e44b1..83af336bb0e6 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -456,8 +456,11 @@ struct damon_ctx *damon_new_ctx(void)
+ 	ctx->attrs.aggr_interval = 100 * 1000;
+ 	ctx->attrs.ops_update_interval = 60 * 1000 * 1000;
+ 
+-	ktime_get_coarse_ts64(&ctx->last_aggregation);
+-	ctx->last_ops_update = ctx->last_aggregation;
++	ctx->passed_sample_intervals = 0;
++	ctx->next_aggregation_sis = ctx->attrs.aggr_interval /
++		ctx->attrs.sample_interval;
++	ctx->next_ops_update_sis = ctx->attrs.ops_update_interval /
++		ctx->attrs.sample_interval;
+ 
+ 	mutex_init(&ctx->kdamond_lock);
+ 
+@@ -577,6 +580,9 @@ static void damon_update_monitoring_results(struct damon_ctx *ctx,
+  */
+ int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+ {
++	unsigned long sample_interval;
++	unsigned long remaining_interval_us;
++
+ 	if (attrs->min_nr_regions < 3)
+ 		return -EINVAL;
+ 	if (attrs->min_nr_regions > attrs->max_nr_regions)
+@@ -584,6 +590,20 @@ int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+ 	if (attrs->sample_interval > attrs->aggr_interval)
+ 		return -EINVAL;
+ 
++	sample_interval = attrs->sample_interval ? attrs->sample_interval : 1;
++
++	/* adjust next_aggregation_sis */
++	remaining_interval_us = ctx->attrs.sample_interval *
++		(ctx->next_aggregation_sis - ctx->passed_sample_intervals);
++	ctx->next_aggregation_sis = ctx->passed_sample_intervals +
++		remaining_interval_us / sample_interval;
++
++	/* adjust next_ops_update_sis */
++	remaining_interval_us = ctx->attrs.sample_interval *
++		(ctx->next_ops_update_sis - ctx->passed_sample_intervals);
++	ctx->next_ops_update_sis = ctx->passed_sample_intervals +
++		remaining_interval_us / sample_interval;
++
+ 	damon_update_monitoring_results(ctx, attrs);
+ 	ctx->attrs = *attrs;
+ 	return 0;
+@@ -757,38 +777,6 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs)
+ 	return err;
+ }
+ 
+-/*
+- * damon_check_reset_time_interval() - Check if a time interval is elapsed.
+- * @baseline:	the time to check whether the interval has elapsed since
+- * @interval:	the time interval (microseconds)
+- *
+- * See whether the given time interval has passed since the given baseline
+- * time.  If so, it also updates the baseline to current time for next check.
+- *
+- * Return:	true if the time interval has passed, or false otherwise.
+- */
+-static bool damon_check_reset_time_interval(struct timespec64 *baseline,
+-		unsigned long interval)
+-{
+-	struct timespec64 now;
+-
+-	ktime_get_coarse_ts64(&now);
+-	if ((timespec64_to_ns(&now) - timespec64_to_ns(baseline)) <
+-			interval * 1000)
+-		return false;
+-	*baseline = now;
+-	return true;
+-}
+-
+-/*
+- * Check whether it is time to flush the aggregated information
+- */
+-static bool kdamond_aggregate_interval_passed(struct damon_ctx *ctx)
+-{
+-	return damon_check_reset_time_interval(&ctx->last_aggregation,
+-			ctx->attrs.aggr_interval);
+-}
+-
+ /*
+  * Reset the aggregated monitoring results ('nr_accesses' of each region).
+  */
+@@ -1292,18 +1280,6 @@ static void kdamond_split_regions(struct damon_ctx *ctx)
+ 	last_nr_regions = nr_regions;
+ }
+ 
+-/*
+- * Check whether it is time to check and apply the operations-related data
+- * structures.
+- *
+- * Returns true if it is.
+- */
+-static bool kdamond_need_update_operations(struct damon_ctx *ctx)
+-{
+-	return damon_check_reset_time_interval(&ctx->last_ops_update,
+-			ctx->attrs.ops_update_interval);
+-}
+-
+ /*
+  * Check whether current monitoring should be stopped
+  *
+@@ -1436,6 +1412,8 @@ static int kdamond_fn(void *data)
+ 	sz_limit = damon_region_sz_limit(ctx);
+ 
+ 	while (!kdamond_need_stop(ctx)) {
++		unsigned long sample_interval;
++
+ 		if (kdamond_wait_activation(ctx))
+ 			break;
+ 
+@@ -1446,11 +1424,17 @@ static int kdamond_fn(void *data)
+ 			break;
+ 
+ 		kdamond_usleep(ctx->attrs.sample_interval);
++		ctx->passed_sample_intervals++;
+ 
+ 		if (ctx->ops.check_accesses)
+ 			max_nr_accesses = ctx->ops.check_accesses(ctx);
+ 
+-		if (kdamond_aggregate_interval_passed(ctx)) {
++		sample_interval = ctx->attrs.sample_interval ?
++			ctx->attrs.sample_interval : 1;
++		if (ctx->passed_sample_intervals ==
++				ctx->next_aggregation_sis) {
++			ctx->next_aggregation_sis +=
++				ctx->attrs.aggr_interval / sample_interval;
+ 			kdamond_merge_regions(ctx,
+ 					max_nr_accesses / 10,
+ 					sz_limit);
+@@ -1465,7 +1449,11 @@ static int kdamond_fn(void *data)
+ 				ctx->ops.reset_aggregated(ctx);
+ 		}
+ 
+-		if (kdamond_need_update_operations(ctx)) {
++		if (ctx->passed_sample_intervals ==
++				ctx->next_ops_update_sis) {
++			ctx->next_ops_update_sis +=
++				ctx->attrs.ops_update_interval /
++				sample_interval;
+ 			if (ctx->ops.update)
+ 				ctx->ops.update(ctx);
+ 			sz_limit = damon_region_sz_limit(ctx);
+-- 
+2.25.1
 
-This is redundant in the HW description.
-
-> 
-
-> If this is okay, I can rework the patch based on this. Covers both DW QoS Eth IP
-> and DW XGMAC IP cases.
-
-I guess that's the only choice we have seeing the driver already
-expects all the Tx queues having the COE supported.
-
--Serge(y)
-
-> 
-> >
-> >-Serge(y)
-> >
-> >> -- 
-> >> pw-bot: cr
-> 
-> BR,
-> Rohan
