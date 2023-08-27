@@ -2,362 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EF9789AF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 04:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1736789AF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 04:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbjH0CSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 22:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
+        id S229690AbjH0CTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 22:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjH0CRa (ORCPT
+        with ESMTP id S229677AbjH0CTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 22:17:30 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2091.outbound.protection.outlook.com [40.92.45.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD211122;
-        Sat, 26 Aug 2023 19:17:26 -0700 (PDT)
+        Sat, 26 Aug 2023 22:19:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31F1124
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 19:19:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693102756; x=1724638756;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=vyhJeu+qy5rINhT6TPkbLSNglM1dB1xC9pLrqF1cH0w=;
+  b=b0p+1YKtr2Npvn6K4pCETpyN0G++VABJ0XnfjiSufWn0pWBuX94suZi/
+   lbEWO5X1O7di4Ja08HimO96cij3LQt8Srwi5RYtl0Vcp5ed5HW73IW6dy
+   uLD5U6bdiLPEKMLj9KvqRBiHUpRD72UqE/zWNcdGVtdF+QEyDg3lC0wsQ
+   FK/fX6B0v0N3KsIZObl7h6nkJvfxUdFM3BMoAEchJU3u/b18luDg+AdAk
+   EBMLE04HtrOdzHEz3wMECfiqnL1PmCFuL00ocGsCJX5q1tfUyro8KqWvz
+   EiJyUf4m2ubTtDGs/88xe1tJ/LKjACYC8HsWbCiCQAlFDD+0Zp0qbzhXw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="354436997"
+X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
+   d="scan'208";a="354436997"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 19:19:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="687713104"
+X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
+   d="scan'208";a="687713104"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga003.jf.intel.com with ESMTP; 26 Aug 2023 19:19:16 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sat, 26 Aug 2023 19:19:15 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Sat, 26 Aug 2023 19:19:15 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Sat, 26 Aug 2023 19:19:09 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kF+/080n4c1sF5JpjDgh7DR2sC4i80zzB6fZ6pyuzcETyZNa3u+xuJ5wZOBoT7lZ36qX4tOLl/AfeKTgQqx36+cW+6d7B/Swr4+ceaNepV/8FnWmONmgEYszUyEgenmC9MQdCOqemsV6+sli3lGiIeGMglAvlrEW7l4tU2e+r6b5Wnd0DAQ84kfYDZwgSz4XK4uF7zUl2D/Kw6pN/Gux0ZUrJCgVR62FDwNfolOSSsN9ukPLdj7d3iTg4rRZN2ahzRaHegGawyJM3HofxN5o9Egg94/S0uBLERSCew4N8flXYZzODcJg6od04WhyWKmABmaPXpoIA6gV/EoMR96RbA==
+ b=P5ZMvP9JUxnYTkwqS+TpeKpXbQdBqkWgqL7oXhcp6K4ARw8jMt2uyZjYWPQ7hYSIwHj0HZIhyRCSr5YglJXF2XdIbZKM9LbITBAm4QRw9tRF/XgiLoz0JZXAMh1LDkrRXTXnSMP3Hwy0AP2BbU4a0DUiMfv9jw2/v8J9R6+g4Pee/JN509kfWmsG591UHiv5driDWgaYhmGJyiSZGsqNuRwmkz+cidu21VmaiomCOgFYY8c4bZgmv1ThcRhjoWJcvOIC/ZCLSTAIQfbZk7IeKeW0A2NsH3856ztr4GBAsSd9okD0VvYkXvXQ2HtDN7aMuTUkJkguaQIOlCxyJFY9mw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=haSnHquAyFrluQx5SsuWrV8AwA7HZAt9CC0SfqrYJhU=;
- b=cVB++7re0K9BH44NsBAP9zzrleFEuCP6Rm420ccfntZElhtoh9dBOX9x3JDO3D9NpAjFrU28UdnLsKv+RO10LEYPLxA3oMm4VVKTP10vvE8nU/q7vsgt2fjUv8zakpSehP3p6+dZ5LuHl15ENuM6w3Fsg9o468OIjQsExS8RFdjhzoPQ9s+4ufUr1sHscWtoY2dMlNlG9SUodvXZc/vpX8W7Ph6D4IaPgWSUsk5UIMBDBn70Bj9ESjVcgA9lcZPk1PiBNE1M4klJw9awZk7OrustPGjBwgXKvce4YGJs5LaP4bm90XLizx2JwENP31VNzeVF/9ywixBOfGJkKaqxUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=haSnHquAyFrluQx5SsuWrV8AwA7HZAt9CC0SfqrYJhU=;
- b=iZrYkH0gDSuJdq4T9JWLxb3xzWJiIOCak3iLttJNg/w5m8z7Osg83TUx5vT3ETkj22198ToHlFao81aIjjr3cpq6Wd+qAIVrMqkNrlZQQV87lu7Lid0ZLoR1JCwYDkMxdePBVOGvhbwvB9iki4o4lVIOqaT/l8Gd2B0MRIal/whdkZCp/1nOmG6c0oE0FLNbWEwpKbvxFC/8rQFvufFcaJKPE9JP/GBPzhhYwZQAtUByJ4eu3drtPKeS82RYZ2U2Jn5tUT37iLzGYdJUZfYCZv5OMgmWZ0mbeh+0RYIMeY3kivYuKP0xlBiyZ4qS2Bv8zoQhWVHk+NO7+5/OTYwMEQ==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by CY5PR20MB5045.namprd20.prod.outlook.com (2603:10b6:930:33::18) with
+ bh=c06nD1PIi8XOq88lvOOV7zaPm5JHdl8IUZiiwbFG2E8=;
+ b=KjKhU0xW5DG8jbsJ347+dLUnpDb9gignU0DOPLFfNDSTHaLJj99Wh1AlUp9dbGtEKcufUwCm4Fpcc9B+L43G8lAIr43bcChP8/u4mRpYAlfs8TycdDsqeClrvuhWH1cAkm76rBRh+0RjCPvxyHbkIrbeLUlSgXD6xtupbwAvX6eHcVhjPGxIHyw6j3lBpkWgovjPCPzowgVYo+Iq8N0IZ1YKR9jfm9K45SDbMpzpYt2luX9B4ZfSnPUASXPytm+TL77YY1j3UkeGHhOyJnTyIBiWrTviFQQ55W+iPnRWPHRUX89XadfZVsMegjwniG3ammdOQi7almMl1qzWOFOC8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+ by SN7PR11MB8111.namprd11.prod.outlook.com (2603:10b6:806:2e9::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Sun, 27 Aug
- 2023 02:17:24 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::cbad:4566:1f3e:4e1f]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::cbad:4566:1f3e:4e1f%4]) with mapi id 15.20.6699.034; Sun, 27 Aug 2023
- 02:17:24 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Inochi Amaoto <inochiama@outlook.com>,
-        Heiko Stuebner <heiko@sntech.de>, Wei Fu <wefu@redhat.com>,
-        Pei Chen <cp0613@linux.alibaba.com>,
-        Wenhan Chen <chenwenhan.cwh@alibaba-inc.com>,
-        Guo Ren <guoren@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: dts: allwinner: d1: Add PMU event node
-Date:   Sun, 27 Aug 2023 10:18:05 +0800
-Message-ID: <IA1PR20MB4953C22B0FE8381C4F35A827BBE1A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230827-cricket-ooze-0bf6b7399da9@spud>
-References: <20230827-cricket-ooze-0bf6b7399da9@spud>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-TMN:  [fAufJkJA7CVpcJhAUn8SKV3rWyBaZJaYfyhMAtFvb64=]
-X-ClientProxiedBy: SI2PR04CA0011.apcprd04.prod.outlook.com
- (2603:1096:4:197::10) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20230827021805.204837-1-inochiama@outlook.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Sun, 27 Aug
+ 2023 02:19:08 +0000
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::d718:207a:ec74:2556]) by BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::d718:207a:ec74:2556%5]) with mapi id 15.20.6699.034; Sun, 27 Aug 2023
+ 02:19:07 +0000
+Date:   Sun, 27 Aug 2023 10:18:57 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+CC:     kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Liu, Yujie" <yujie.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [gustavoars:testing/fam01-next20230817] BUILD SUCCESS WITH
+ WARNING dbd3e479335bc8b09ea540102109ac38b0a73336
+Message-ID: <ZOqykd6tVGip+Swy@rli9-mobl>
+References: <202308181544.cTQDCUcQ-lkp@intel.com>
+ <d8fd6210-84eb-6d32-6486-1d90c86186ca@embeddedor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d8fd6210-84eb-6d32-6486-1d90c86186ca@embeddedor.com>
+X-ClientProxiedBy: SG2PR04CA0162.apcprd04.prod.outlook.com (2603:1096:4::24)
+ To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CY5PR20MB5045:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18555715-7a70-465e-3e09-08dba6a3c072
-X-MS-Exchange-SLBlob-MailProps: lrlGrSszMGaVpEKWeJ2EJGY7AqS4jq8l2DhAyUjwzSk5/0mZN5diIHR9lXn6b65gO5+zed3q0GOIB+PwxSRT+t98W+aDRb6YXoEH07nc/MEP+Erbn1wxnyI0Wn+OYuBk5Ie83N6x9kRJMoAvJFjNGdm62q+EIiunT6TtXr2ZgWANSZlPZCueDkQUE84k6VDhuu9+1iqJVw2u7ISk9d71BCMkB7Zya6CI5R4yHddSQVCHlLAyFs/RjZbwWr7xgCzZuDEqsxZvsX1Q43H4YpqMllica8/KgXCV6Yj3Mk/im7S6yKhJi1pDdLRlxBmCR+sG/HYNFOu4skHWJ2jmrQ9yEYe9UEMZJyN84VQ1byJg05e+RDexK1ywSc87A5AzvG6ofa9IYrdX4BQ8D/CGAdcZmgRyoeBYSXbS6TUmfXIkYr62qvRSGyHjA1y0YNmLwfo7y8UM+XdUVGl/o44LPB6joEfr6rLXi86CI941XLCVfbvz0NnW6YoRRn5M+wlylMhp9LvPjv36eM67enn1s3t1jeP0IeF8c7T8p39/vsofDcc49+/bzAgU2wv4VcQB07vgPuuPaTSQrlSCDeYiF4IGg41kWXt/4TzLbKMSwp+tAnMav8mOao2W74X9NsNWSlh89gDrmHZ2hiQXK6tTaxhknje6VtYhKHWPowVH4wxq9kvxRWZ3P6VfoqB38WHRGf12wDbg3GtXyjvW+8UFEA/GumiSX06b/QIz8McVOvn2zCPbNpjzQlYdOHeGHhND8JgSGkqD5PxSpZ/BI5HPGRERDAPcr85Zz5pfbRpIrY3kNnsgi0iMKCWBv/AVIYu8JDNJhaH5dZymO5fFzooTMlgeAN3bZ6iagLb9lXVBe22AtRV3UHoUdOOZ81d1YGo4klu/ZXM9Ml0jjWE6vqqS7nUG0rZQ81E60eL+/PVaAqpi5lk=
+X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|SN7PR11MB8111:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb3c88a6-c843-4b86-a82b-08dba6a3fdab
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Sze/8WyIyETqmXhGt0rhBCbfUbLKv76OjPWK/VV33VGJCAUcftPb5PQoq8i1tzbEFrPloxyPLjmWGjS02ciavMuqbJvmoUho0oTj/69tvQ7q+RIWvlFn4S0YEnBlSWDwrrusCpLHcsq1iaDfZV9RoZjhgUSiytHO27cJ3OdheoMRwp3W1Xd8a9ZfbRt0V34AgM2bxxprONeo7nhmfkH40dzX31x3ILsNjBIk6G0kRsuYvx2OHxdxvrK80EMy21qWe6Zr/Opavx3HN0pd35rFIhupX1XHhhwgNKTJCD2iPPl54LnoTSrI+WMZGvR3t0pc2FgGA72YgGGX+mVXTpLJDwkv7sSIGLy8mdupez7czxhLKcJLSWLdMkmRVS+fV4h34AqxqvPP0Yqr4QpCKMY8NGIHBGXqe1egcZOE9QLGq+6T8+Q/wIAcvA4gHyeQOodzoVVZ923cvXqt3S0vCraZR7OXp3iPYrDWIk1eDHtuxCnP6v/8SADWL0NYSadSDh+1gyV1X3xuiwr/TjeCMQWO6YANtu+/Bg5IXl8EeYA+0gd+PEXigslK/SehZGEppSPFzXn1nZYAPJ1Dt9K7HKuJcz402aJmCpsvzTBZh42YQrw=
+X-Microsoft-Antispam-Message-Info: XX1Wbb/qg2lPi6AnE+7rY5s/2Kf+ppobQl0pGaZke9YkhyOK0cQpfZupkpjNpAP1XEor2xKH0LnURBnWfNwfsGIe1G3GEa872BK7v0VJRgBPTxroKYv9LDbF7fYxSEUSheMsR+83RmjfjphdGhd13P+onaYc2lhprXbBr8c6az+0Hrr1RvrCfN0KB7/Go40eiJ4PAvJhnkVg/E4DVYXm2zYGTpRcYT4QkgCDFniMYy1/keVW9b/JGQz95COyYW5/AtdNT3755V9Xv7pDMhVKrasFXxxb6uSNpHpmFhpn5FOBB3t4bGis/6DfY0oa4FA1dnh+1x8BeON5Tdk+i7fko/molmAU9WqjzxQCNQI9jYfRWNudGVl01teROcb6fgRY6djzPCN98hYoDIffnmXFV8GyWL8mCz4c9TK3Uy4kToi/JAZa2eJ+exaC4SWmCdahlmw+lMTSket8gedBAjTYHUCLzeRz47DkAtyLAsEf3d+vuGS5fGu61ghoaUO38O/FQJV7raHqGd75tWWU7KaI8fF+ONBvoaEeBqtpA5MNyELAdeyC6nOESBXScnfw678aA9PNqI/PtjhfV1OMV7BFdOBUOkS4tujA6yIemOv4tbw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(376002)(136003)(366004)(39860400002)(346002)(186009)(451199024)(1800799009)(41300700001)(33716001)(38100700002)(6666004)(86362001)(83380400001)(82960400001)(966005)(478600001)(26005)(9686003)(6512007)(53546011)(6506007)(6486002)(66556008)(66476007)(54906003)(6916009)(2906002)(316002)(66946007)(5660300002)(8676002)(8936002)(4326008)(44832011)(67856001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Za4mLMAThWbFNAijSv4PL7CSTtt6ufldo644KOLcSC1syIkHZaUofYnApuCQ?=
- =?us-ascii?Q?B13lfs8hNu5c5otGihU73eTEWoWtrr9OaQ4ydUbP+PxTObQ/U1TFQoboptCT?=
- =?us-ascii?Q?CD0KbMPqZGwPPAYuMNg6+TKW5EhxxZDin4Q0+twP6PopoaceSfa38NInqenr?=
- =?us-ascii?Q?bDBb//j0kN1G8fcenBieXFV4LA9bBLLiDj2To3LtGGwo69oJX4nzz6mVegXf?=
- =?us-ascii?Q?BThmp4KOov1hlFgX8pogNIdsCxf+hm9eiirG5f5R0xy3tZB9cHfvoRZ/kUlL?=
- =?us-ascii?Q?+S94RtRWbqG5E6BJvukZ+RPiC29fCByRQor9o5to6yNjdfjVBPUhgWolrUAW?=
- =?us-ascii?Q?9VJCW5mk8Xb3UqZOS3LJu7rrVKjYkS+gLb4fTQBJ+IKloU4cvV2oEc/nK2eh?=
- =?us-ascii?Q?YddMlyEGJBV3hZT7ThhrnoY+Ol//WBH4NkExPiP2TXrSQmCEN0wE8J4ewA7B?=
- =?us-ascii?Q?mB7JWezobOt1/kwZZHbQyXMcF7BeqMP8x4tjpjgs5ZrHXr/wbNY6XYVmohqf?=
- =?us-ascii?Q?6Lf0efsjcmkA91D1fbd6MD0euVRRFT6ATyAdDj3n1L47TiE9U6CZQ8swD4bF?=
- =?us-ascii?Q?+htvG0gesix2N+9pgD1WgpE9tNDxGGZbYgfEr2rywPYGjX5HJu7Tt40vnEsd?=
- =?us-ascii?Q?J6YE6da19if+0t86TmcZPhqkZNJ4YWZ9qKqp7T52cb6dU1LYLy+gmTv5o6/b?=
- =?us-ascii?Q?KVOnDJ2EOya9Fxd9nCbRRc5cao6CU20qCoFJ9p2s829mQOEJRnCU1XcmicfA?=
- =?us-ascii?Q?r7yv38+f8McJc4YPJxk5I9RPEE0qkzHrCZ2gxiMm7IUDsj+O79fvr6SMW3+l?=
- =?us-ascii?Q?TN5hIiRvbsiJefSuUQ7d009SBGg2Ufrg+aIYo5Qjaa2IY2zTF5zzK4MxIl0m?=
- =?us-ascii?Q?eyB8u/MMs+wAGPNWwTMwPdzHqW9rElraOCQ9cDDj65SRAIgzl4uN0mvTfb1U?=
- =?us-ascii?Q?YuS3JtttVl4DIp49iawg4OS/3Y5F6lq6rDPgRp2lLbNbW4DR2oRHS5PFbSTq?=
- =?us-ascii?Q?JnIJdhkqT1tyGYa6Ue6VelktLUCqv1GREeoosE5wbbT0ENoP7zFwIk65BU3j?=
- =?us-ascii?Q?Hqm9XdRZELwuEKjIHVi1cOqz600hvte+m9kirm0fIVAu4/ZWx/aAt9Ajs6Fd?=
- =?us-ascii?Q?qlgj5ZQWFmYnLeR2zGuy8Sn/xkL1UF0EMnUsYyk7EVW5YdWlxqdU6V+frP1a?=
- =?us-ascii?Q?HLi0l+etjdvIU42w9EFqD3Bj9XPIyC24nvRpAnXkN+kLRwXVs/XfkX/OTVo?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18555715-7a70-465e-3e09-08dba6a3c072
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?z8q1D+MpbsNVY2FXozSSIh/LLm6nPxa/948Jw47qR8WzxHShrnw/iE8tX4Ty?=
+ =?us-ascii?Q?hBJlpkIhoWWHOQrgPVzfFJmIUy3yc5wNtMh1bMqFjRSWw4zggW9uSPiDPLeb?=
+ =?us-ascii?Q?G5Bs0fPGAeIeHDArix43eQeICP/kmmaFi6LPMtxFYOT+LU1/zdP54tgFRsrY?=
+ =?us-ascii?Q?frg4rC45wP+53v5PhDumLLqKDkGmSd/Hegd2znob5HwAQQwQ3edza9dK+sbx?=
+ =?us-ascii?Q?JEzXIeOrHb+8hL9hpydn9O2ATG1NMOrflUejgawO7ILNr7UJ3pnuEyEQjzd/?=
+ =?us-ascii?Q?nnMmQ8xbdXqK9NWZLj3lmJiEB+Mf+MQo5drGs2TlpxAdqePvQRhTh13S/Wsz?=
+ =?us-ascii?Q?kZw1Vaxf7SWSug71qAEh3tksSMm61fTdYiCud8VpgYwLKhF5rZPElRtZQEyf?=
+ =?us-ascii?Q?Ehm35dBTQeaVteVq8MBYeyMHS0/AjJpMG3myr7zkDGc1lUyga7TVPTVvBSJ9?=
+ =?us-ascii?Q?mZwdujko5zLLHp3Dne9D6r7JKcIGC/svGdc8SuR63GnarviF3pfht5G4HDbL?=
+ =?us-ascii?Q?/3di0AezuyRxtBmh5TDH5MzCNtsE39yvJ0IuKdR2QndaXHZYTmWBlT7TblHp?=
+ =?us-ascii?Q?vhqwEyq2zLuInPUIm3aWDqq37p68L0nNcCId6Y/mkswMzaih6wUrjWhcl9cb?=
+ =?us-ascii?Q?2xUbzkd8XHNieRS+rue0HpaGF4UKk3POjAQskiFU0CludTGBvLx9/db4fKXY?=
+ =?us-ascii?Q?vAFCSYcClZpiYkWHie/upOqKNk2wLzEoopo6fHec3rR4aQAnpnPX3U4bCkxv?=
+ =?us-ascii?Q?3QN3iSmiFnMWGWMMJX3eA5UEFSnHBRWa38w+I0r/5/GTmaMOM3AVVhAD1PXq?=
+ =?us-ascii?Q?GxMj3c55sW+ilQS+pwGRV/kDaezJyxYxA1VFj+P3rGj4qwfpv61p5OsTPmjI?=
+ =?us-ascii?Q?QQ9T5fyE3MHieBR3URAznhYTVgUiCp003mFRQu27suNLYSsQ05rUrE1PfJ2x?=
+ =?us-ascii?Q?X5vuPhqgAdn055V4URBMEgjfFRCbP/+pWgltOAzb8gkut2FYtGPlVovekiPr?=
+ =?us-ascii?Q?DULJO8crXv2hfop8CTHqrxSx7nYywKgntXKljWTM541NzZBzije0TtV4Q4jA?=
+ =?us-ascii?Q?Uq/X8kuhhdTl90Y8S2eGvZRFChRp4q4N4ggGmoopumc5ghc1OQWWp82ZIX+v?=
+ =?us-ascii?Q?XxuyaN1z79r45IE3zp+oWQ1ZIRF6I+aJNKKqmHEndsZt0W8c3FjF2Iyhuefo?=
+ =?us-ascii?Q?zzTas4Yl+9EiwQL/ZLku3lPkYppVLsRtUjU04NJsiZF3mI2El/kaBjHKA37t?=
+ =?us-ascii?Q?HRrfOQ5IxFtNc73v/vLQNDzzcZ1UOXjLVfdxC73qiTwhhojRbhPxH1MWDNLf?=
+ =?us-ascii?Q?P7CEMQaQj39yMUi/EVH0Vig7/KsMEhlfqv8uVqZzPVQ8l0nHNGvxmhpscSD6?=
+ =?us-ascii?Q?UtxTcpFPDjjtK+oDpetr6AytUjOB8yALzGQuhUsDTXf5FvdlHxnrpcqHh8Ln?=
+ =?us-ascii?Q?wupwD6YeLa5Lq4vhObEhYGiF7/dt92EITvfwKNZ/3JUoFMy+WQy9jAPx1eMb?=
+ =?us-ascii?Q?k8M3jLQMc18O3vRmrWptzoBE+Yjc3edgE674WG+hJUrCvKlWp4IpiVNh07My?=
+ =?us-ascii?Q?rpY5/Z1DPb5/Itipj00XNIGt5/+UIjBWInLrQKof?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb3c88a6-c843-4b86-a82b-08dba6a3fdab
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2023 02:17:24.4520
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2023 02:19:07.2935
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR20MB5045
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kb5E2njp0lA686y3Uu3i8KPM3Jjz7hWYDN25BKqwNzYWIHzy5186ShqZ/9h6CAfTwqjI1keV1fbnHkQ5BNuVSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB8111
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On Sat, Aug 26, 2023 at 08:25:04PM +0800, Inochi Amaoto wrote:
->> D1 has several pmu events supported by opensbi.
->> These events can be used by perf for profiling.
->>
->> The event value and mapping can be found in the R1S0 version of C906
->> documentation:
->> https://dl.linux-sunxi.org/D1/Xuantie_C906_R1S0_User_Manual.pdf
->
->Link: https://dl.linux-sunxi.org/D1/Xuantie_C906_R1S0_User_Manual.pdf
+On Mon, Aug 21, 2023 at 11:26:17AM -0600, Gustavo A. R. Silva wrote:
+> Hi there!
+> 
+> It'd be great to add to these reports the versions of the compilers you are using
+> to build the kernel.
+> 
+> It's not uncommon that some compiler versions contain bugs. And in cases where kernel
+> developers are aware of those issues, knowing the exact version used to build the
+> kernel will help us determine whether the issues reported may be false positives or
+> not.
+> 
+> Maybe just one line at the beginning mentioning the versions:
+> 
+> `GCC 13.2.0 and Clang 16.0.0 builds`
 
-Thanks.
+Thanks Gustavo for the input, we will add detail version of compiler in the
+summary report.
 
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> ---
->> The meaning of T-HEAD events can be found in this pending patch:
->> https://lore.kernel.org/linux-perf-users/IA1PR20MB4953DD82D0116EC291C217=
-77BBE2A@IA1PR20MB4953.namprd20.prod.outlook.com
->>
->> The patch above also provides a detailed example that shows how to setup
->> environment and use perf with T-HEAD events.
->> ---
->
->Firstly, you need to move the PMU node out of the soc bus:
->
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi:76.7-114.5: Warning (simple_=
-bus_reg): /soc/pmu: missing or empty reg/ranges property
->
->And secondly, and I dunno WTF the fix for this is, but what you've got
->here is completely invalid as per the binding...
->The fix for this might well be moving it out of the soc bus (I think I
->fixed the same errors in QEMU's pmu node), but it shows that you didn't
->actually test this :/ Please do so:
->
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv.dtb:=
- soc: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpmcounters': [[3=
-, 3, 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536, 16384], [6553=
-7, 65537, 32768], [65538, 65538, 65536], [65539, 65539, 131072], [65561, 65=
-561, 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[3, 0, 1], [4, =
-0, 2], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65537, 0, 13], [=
-65538, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]], 'riscv,raw-ev=
-ent-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0, 2, 4294967295=
-, 4294967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4, 4294967295, 4=
-294967295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 4294967295, 429=
-4967295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 4294967295, 429=
-4967295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 13, 4294967295,=
- 4294967295, 32768], [0, 14, 4294967295, 4294967295, 65536], [0, 15, 429496=
-7295, 4294967295, 131072]]} should not be valid under {'type': 'object'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha=
--stu.dtb: soc: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpmcount=
-ers': [[3, 3, 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536, 1638=
-4], [65537, 65537, 32768], [65538, 65538, 65536], [65539, 65539, 131072], [=
-65561, 65561, 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[3, 0,=
- 1], [4, 0, 2], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65537, =
-0, 13], [65538, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]], 'ris=
-cv,raw-event-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0, 2, 4=
-294967295, 4294967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4, 4294=
-967295, 4294967295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 429496=
-7295, 4294967295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 429496=
-7295, 4294967295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 13, 42=
-94967295, 4294967295, 32768], [0, 14, 4294967295, 4294967295, 65536], [0, 1=
-5, 4294967295, 4294967295, 131072]]} should not be valid under {'type': 'ob=
-ject'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1-mangopi-mq-pro=
-.dtb: soc: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpmcounters'=
-: [[3, 3, 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536, 16384], =
-[65537, 65537, 32768], [65538, 65538, 65536], [65539, 65539, 131072], [6556=
-1, 65561, 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[3, 0, 1],=
- [4, 0, 2], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65537, 0, 1=
-3], [65538, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]], 'riscv,r=
-aw-event-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0, 2, 42949=
-67295, 4294967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4, 42949672=
-95, 4294967295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 4294967295=
-, 4294967295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 4294967295=
-, 4294967295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 13, 429496=
-7295, 4294967295, 32768], [0, 14, 4294967295, 4294967295, 65536], [0, 15, 4=
-294967295, 4294967295, 131072]]} should not be valid under {'type': 'object=
-'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-dock=
-.dtb: soc: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpmcounters'=
-: [[3, 3, 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536, 16384], =
-[65537, 65537, 32768], [65538, 65538, 65536], [65539, 65539, 131072], [6556=
-1, 65561, 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[3, 0, 1],=
- [4, 0, 2], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65537, 0, 1=
-3], [65538, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]], 'riscv,r=
-aw-event-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0, 2, 42949=
-67295, 4294967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4, 42949672=
-95, 4294967295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 4294967295=
-, 4294967295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 4294967295=
-, 4294967295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 13, 429496=
-7295, 4294967295, 32768], [0, 14, 4294967295, 4294967295, 65536], [0, 15, 4=
-294967295, 4294967295, 131072]]} should not be valid under {'type': 'object=
-'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-p=
-anel-720p.dtb: soc: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpm=
-counters': [[3, 3, 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536,=
- 16384], [65537, 65537, 32768], [65538, 65538, 65536], [65539, 65539, 13107=
-2], [65561, 65561, 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[=
-3, 0, 1], [4, 0, 2], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65=
-537, 0, 13], [65538, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]],=
- 'riscv,raw-event-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0,=
- 2, 4294967295, 4294967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4,=
- 4294967295, 4294967295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 4=
-294967295, 4294967295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 4=
-294967295, 4294967295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 1=
-3, 4294967295, 4294967295, 32768], [0, 14, 4294967295, 4294967295, 65536], =
-[0, 15, 4294967295, 4294967295, 131072]]} should not be valid under {'type'=
-: 'object'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1s-mangopi-mq.dt=
-b: soc: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpmcounters': [=
-[3, 3, 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536, 16384], [65=
-537, 65537, 32768], [65538, 65538, 65536], [65539, 65539, 131072], [65561, =
-65561, 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[3, 0, 1], [4=
-, 0, 2], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65537, 0, 13],=
- [65538, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]], 'riscv,raw-=
-event-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0, 2, 42949672=
-95, 4294967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4, 4294967295,=
- 4294967295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 4294967295, 4=
-294967295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 4294967295, 4=
-294967295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 13, 429496729=
-5, 4294967295, 32768], [0, 14, 4294967295, 4294967295, 65536], [0, 15, 4294=
-967295, 4294967295, 131072]]} should not be valid under {'type': 'object'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1-nezha.dtb: soc=
-: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpmcounters': [[3, 3,=
- 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536, 16384], [65537, 6=
-5537, 32768], [65538, 65538, 65536], [65539, 65539, 131072], [65561, 65561,=
- 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[3, 0, 1], [4, 0, 2=
-], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65537, 0, 13], [6553=
-8, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]], 'riscv,raw-event-=
-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0, 2, 4294967295, 42=
-94967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4, 4294967295, 42949=
-67295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 4294967295, 4294967=
-295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 4294967295, 4294967=
-295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 13, 4294967295, 429=
-4967295, 32768], [0, 14, 4294967295, 4294967295, 65536], [0, 15, 4294967295=
-, 4294967295, 131072]]} should not be valid under {'type': 'object'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->/tmp/tmp.SOQ8Wz6Pug/arch/riscv/boot/dts/allwinner/sun20i-d1-lichee-rv-86-p=
-anel-480p.dtb: soc: pmu: {'compatible': ['riscv,pmu'], 'riscv,event-to-mhpm=
-counters': [[3, 3, 8], [4, 4, 16], [5, 5, 512], [6, 6, 256], [65536, 65536,=
- 16384], [65537, 65537, 32768], [65538, 65538, 65536], [65539, 65539, 13107=
-2], [65561, 65561, 64], [65569, 65569, 32]], 'riscv,event-to-mhpmevent': [[=
-3, 0, 1], [4, 0, 2], [5, 0, 7], [6, 0, 6], [10, 0, 11], [65536, 0, 12], [65=
-537, 0, 13], [65538, 0, 14], [65539, 0, 15], [65561, 0, 4], [65569, 0, 3]],=
- 'riscv,raw-event-to-mhpmcounters': [[0, 1, 4294967295, 4294967295, 8], [0,=
- 2, 4294967295, 4294967295, 16], [0, 3, 4294967295, 4294967295, 32], [0, 4,=
- 4294967295, 4294967295, 64], [0, 5, 4294967295, 4294967295, 128], [0, 6, 4=
-294967295, 4294967295, 256], [0, 7, 4294967295, 4294967295, 512], [0, 11, 4=
-294967295, 4294967295, 8192], [0, 12, 4294967295, 4294967295, 16384], [0, 1=
-3, 4294967295, 4294967295, 32768], [0, 14, 4294967295, 4294967295, 65536], =
-[0, 15, 4294967295, 4294967295, 131072]]} should not be valid under {'type'=
-: 'object'}
->	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
->
->Thanks,
->Conor.
->
+We will start with the line you suggested, and later will look for a way
+to add it to the warning line since multiple gcc/clang could be involved
+in one round test.
 
-Sorry for this as I only test the compilation.
-I will run the check and fix this.
+Thanks
 
-Thanks,
-Inochi
-
->>  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 40 +++++++++++++++++++
->>  1 file changed, 40 insertions(+)
->>
->> diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/=
-boot/dts/allwinner/sun20i-d1s.dtsi
->> index 8275630af977..d9031ccdec89 100644
->> --- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
->> +++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
->> @@ -72,5 +72,45 @@ plic: interrupt-controller@10000000 {
->>  			#address-cells =3D <0>;
->>  			#interrupt-cells =3D <2>;
->>  		};
->> +
->> +		pmu {
->> +			compatible =3D "riscv,pmu";
->> +			riscv,event-to-mhpmcounters =3D
->> +				<0x00003 0x00003 0x00000008>,
->> +				<0x00004 0x00004 0x00000010>,
->> +				<0x00005 0x00005 0x00000200>,
->> +				<0x00006 0x00006 0x00000100>,
->> +				<0x10000 0x10000 0x00004000>,
->> +				<0x10001 0x10001 0x00008000>,
->> +				<0x10002 0x10002 0x00010000>,
->> +				<0x10003 0x10003 0x00020000>,
->> +				<0x10019 0x10019 0x00000040>,
->> +				<0x10021 0x10021 0x00000020>;
->> +			riscv,event-to-mhpmevent =3D
->> +				<0x00003 0x00000000 0x00000001>,
->> +				<0x00004 0x00000000 0x00000002>,
->> +				<0x00005 0x00000000 0x00000007>,
->> +				<0x00006 0x00000000 0x00000006>,
->> +				<0x0000a 0x00000000 0x0000000b>,
->> +				<0x10000 0x00000000 0x0000000c>,
->> +				<0x10001 0x00000000 0x0000000d>,
->> +				<0x10002 0x00000000 0x0000000e>,
->> +				<0x10003 0x00000000 0x0000000f>,
->> +				<0x10019 0x00000000 0x00000004>,
->> +				<0x10021 0x00000000 0x00000003>;
->> +			riscv,raw-event-to-mhpmcounters =3D
->> +				<0x00000000 0x00000001 0xffffffff 0xffffffff 0x00000008>,
->> +				<0x00000000 0x00000002 0xffffffff 0xffffffff 0x00000010>,
->> +				<0x00000000 0x00000003 0xffffffff 0xffffffff 0x00000020>,
->> +				<0x00000000 0x00000004 0xffffffff 0xffffffff 0x00000040>,
->> +				<0x00000000 0x00000005 0xffffffff 0xffffffff 0x00000080>,
->> +				<0x00000000 0x00000006 0xffffffff 0xffffffff 0x00000100>,
->> +				<0x00000000 0x00000007 0xffffffff 0xffffffff 0x00000200>,
->> +				<0x00000000 0x0000000b 0xffffffff 0xffffffff 0x00002000>,
->> +				<0x00000000 0x0000000c 0xffffffff 0xffffffff 0x00004000>,
->> +				<0x00000000 0x0000000d 0xffffffff 0xffffffff 0x00008000>,
->> +				<0x00000000 0x0000000e 0xffffffff 0xffffffff 0x00010000>,
->> +				<0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00020000>;
->> +		};
->>  	};
->>  };
->> --
->> 2.41.0
->>
->
+> 
+> Thank you!
+> --
+> Gustavo
+> 
+> 
+> On 8/18/23 01:55, kernel test robot wrote:
+> > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230817
+> > branch HEAD: dbd3e479335bc8b09ea540102109ac38b0a73336  net: sched: cls_u32: Fix allocation in u32_init()
+> > 
+> > Warning: (recently discovered and may have been fixed)
+> > 
+> > arch/arc/include/asm/io.h:129:9: warning: array subscript 0 is outside array bounds of 'volatile void[0]' [-Warray-bounds]
+> > arch/loongarch/include/asm/atomic.h:174:9: warning: array subscript 1 is outside array bounds of 'struct cpumask[1]' [-Warray-bounds]
+> > arch/sparc/include/asm/string.h:15:25: warning: '__builtin_memcpy' forming offset [132, 257] is out of the bounds [0, 132] of object 'send_data' with type 'u8[132]' {aka 'unsigned char[132]'} [-Warray-bounds]
+> > include/asm-generic/unaligned.h:14:15: warning: array subscript -1 is outside array bounds of 'unsigned char[2147483647]' [-Warray-bounds]
+> > lib/vsprintf.c:2893:33: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+> > mm/mempolicy.c:3117:26: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+> > 
+> > Warning ids grouped by kconfigs:
+> > 
+> > gcc_recent_errors
+> > |-- arc-allyesconfig
+> > |   `-- arch-arc-include-asm-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
+> > |-- arc-randconfig-r043-20230818
+> > |   `-- arch-arc-include-asm-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
+> > |-- loongarch-randconfig-r001-20230818
+> > |   `-- arch-loongarch-include-asm-atomic.h:warning:array-subscript-is-outside-array-bounds-of-struct-cpumask
+> > |-- mips-randconfig-r012-20230818
+> > |   `-- include-asm-generic-unaligned.h:warning:array-subscript-is-outside-array-bounds-of-unsigned-char
+> > |-- sparc-randconfig-r026-20230818
+> > |   `-- arch-sparc-include-asm-string.h:warning:__builtin_memcpy-forming-offset-is-out-of-the-bounds-of-object-send_data-with-type-u8-aka-unsigned-char
+> > `-- x86_64-defconfig
+> >      |-- lib-vsprintf.c:warning:writing-byte-into-a-region-of-size
+> >      `-- mm-mempolicy.c:warning:writing-byte-into-a-region-of-size
+> > 
+> > elapsed time: 845m
+> > 
+> > configs tested: 111
+> > configs skipped: 4
+> > 
