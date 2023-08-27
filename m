@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C78B1789D3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 13:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3600C789D3D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 13:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjH0LQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 07:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
+        id S229737AbjH0LQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 07:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjH0LPy (ORCPT
+        with ESMTP id S229823AbjH0LQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 07:15:54 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2682113E
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 04:15:52 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68bed8de5b9so1493685b3a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 04:15:52 -0700 (PDT)
+        Sun, 27 Aug 2023 07:16:53 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE687109
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 04:16:46 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a85b9c6ccdso1859598b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 04:16:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693134951; x=1693739751;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Yb9ywtrv/VosRqMU0PvJeYqFdA2q0hHR5WEiWHTEQo=;
-        b=VbXYT8MSBbfPtxYCoDDenmi/fEbHKGio/6h0Gll1oi5aBP+Q/iJExw5R2H46pWlKTe
-         ioMN7F7h3qYfzpPqGGxQonTG6n/EaNBA3eQVlIr5n8vHozpYoIxlfjhx+0SOHOrzQrIC
-         y5uZJa155RFS/qPJrXeL7x/Nc2eEd4gbXxX2GNrrYaEwIuO74br//oJxJptIkSd6h30i
-         RldleW4oyV5FTE6H2EADHYVE14V6pWi3IZnQMPU3lnz/+lmpwLp37Sc8J05DPhAkObEF
-         P3i7OUI9wOjZGS1yAx1oVsuzYySxqiQO1wX3zxdTCdsN8V+OexQXE16CwlhXf/Wv1cwC
-         An4Q==
+        d=gmail.com; s=20221208; t=1693135006; x=1693739806;
+        h=content-transfer-encoding:subject:from:reply-to:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rJmYrWmRmpXxOujg+OQiE1K3Sx+g8h3tcHh7bhFexXI=;
+        b=aa5zTc1Cb8tV/b2O3cRWLmGPwUbCfUELxsGhzzogTH4qcw61HXJVY/SpzY3R1dEoFP
+         JpA2dnP22KvxtNvjfUm4roW+K7mVl5tM4QLTKWLNSWgKMwP1UlbOuOH960dm8w/DnnRo
+         z/z+xIivziHZqW9OsxNaAvuKlEfnS22eP9N2CE6hi0XLCmS0vlMt1pTiWaNEbOvU6UUy
+         aelEaTR3AvOMgYXk3pLf93NNZ82vkfmJA4438KOaXD02zID38DxRZxOQrQw86yqUiOhN
+         JKUQbAl5Ln4eWuuVelJoTPt4QowJDjYIqylHLs2Fr9/w6D4xf8t3zcHBtxygZBFeC0Nb
+         qbpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693134951; x=1693739751;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Yb9ywtrv/VosRqMU0PvJeYqFdA2q0hHR5WEiWHTEQo=;
-        b=JJxcHjESubjfACei3NCHi2Xq3xLcLItUAlQa8C3JfHlQ7AvJHTyKwKWe4kheoh5c4a
-         olNJ0TDM7cLfr65XxKnZkE+eU25/SPXSIwfGSxu0yIEe1j/9eng4tvt7u35QNvesPlJi
-         qX3pLLD/6D2F36Xhk0DvATmofr8XMECypYeBr3nWLsn84Nz88OlyJe4fsIRUObCwIfr9
-         3j4zC3ZqFZmZhMGTxBcAkHIBiiOjBNnENKDkqRhFVIeGyAyOy3zzKi1CEyA9sfg+2Ivw
-         UgLtpKIaQ2KqBBJOcdFUpoAlaSmViGHzUzNk5NOAu8KqZS0bLvrscsscn0VoXgoTAyoi
-         YjQQ==
-X-Gm-Message-State: AOJu0YyRlmBIx0k7XWRNjS22wJwWYtA2Oyoo9vBaR0DjtnlLALBOiPPA
-        42sDC8VpQiaUrns6z3aaKGE=
-X-Google-Smtp-Source: AGHT+IFWJVeHxuSa/N6as2E1vzawmgZYP44JJ6nbtGg4KzCf5GkZarut6qJryU/+4i9JmFVLxKCZYg==
-X-Received: by 2002:a17:902:d345:b0:1bb:1e69:28be with SMTP id l5-20020a170902d34500b001bb1e6928bemr17853040plk.42.1693134951550;
-        Sun, 27 Aug 2023 04:15:51 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id k1-20020a170902c40100b001bde877a7casm5058546plk.264.2023.08.27.04.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 04:15:50 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id C853581BD5A2; Sun, 27 Aug 2023 18:15:48 +0700 (WIB)
-Date:   Sun, 27 Aug 2023 18:15:48 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: 6.1.48 regression at boot : WARNING: CPU: 0 PID: 0 at
- arch/x86/kernel/alternative.c:572 apply_returns+0x1e4/0x210
-Message-ID: <ZOswZJ/uVtm0Qvjy@debian.me>
-References: <3d6fbd04-2861-91a8-938c-45195f307eed@gmx.de>
- <ZOqeRpAHzqLDrlno@debian.me>
- <875888ab-9934-b29c-b69f-189b195ba68d@gmx.de>
+        d=1e100.net; s=20221208; t=1693135006; x=1693739806;
+        h=content-transfer-encoding:subject:from:reply-to:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rJmYrWmRmpXxOujg+OQiE1K3Sx+g8h3tcHh7bhFexXI=;
+        b=KQYfC4WrhcOKFG+3oIQny3ZgcgtUtrdsFP1zgmRVOcKdo1eSN8T2PZ7uwofzWxiXTx
+         MTzaUMdDwvjWvVnc7GS62ujwFrYA/wCXDkamOH3Q1nh0ie1QVa34evs+z1X6L4aAqvT5
+         T2VfilwRzgh4gGVteseFrwLzW9XHfgkGyJ3GzzLN2HeBQwx/4zos1Fv4E3QjOaxlTbjO
+         C7lC/xL7/LJqsv51g82phSTfhgGWt0hIs+uvHjfh+Ix8fMz9rp0Qjfw3w3ghNVP6c2ca
+         Myli6hUibKYUKrV+y1S89mdrIWItcfsS4QqYb/YQb4QKvXSS+rSUTdQwFB3MYUdOsFZe
+         27mA==
+X-Gm-Message-State: AOJu0YxupnYIiEYRn0ILnuOfPtLdK2dCF7UUpv6al3fhGvjVoPfei7gL
+        CBnBQoJMQHEq9b1vYwFaUHqN+mi732TVzD4k
+X-Google-Smtp-Source: AGHT+IGTYj4MItsxKHcKFDgUktBntcZHWgfBzG560nKtJGQNI6VXo6O3t+2NFSbm7mS2xghDGP9SqA==
+X-Received: by 2002:aca:1c17:0:b0:3a7:4fa4:edfe with SMTP id c23-20020aca1c17000000b003a74fa4edfemr8124630oic.54.1693135005812;
+        Sun, 27 Aug 2023 04:16:45 -0700 (PDT)
+Received: from [10.0.2.15] ([103.37.201.178])
+        by smtp.gmail.com with ESMTPSA id p13-20020aa7860d000000b00687790191a2sm4629446pfn.58.2023.08.27.04.16.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 04:16:45 -0700 (PDT)
+Message-ID: <24deab57-5480-3af6-17e6-0874aeaef3db@gmail.com>
+Date:   Sun, 27 Aug 2023 16:46:40 +0530
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DPyTEa0P8mrOep6q"
-Content-Disposition: inline
-In-Reply-To: <875888ab-9934-b29c-b69f-189b195ba68d@gmx.de>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, luisbg@kernel.org,
+        salah.triki@gmail.com,
+        syzbot+fc26c366038b54261e53@syzkaller.appspotmail.com
+Reply-To: 88c258bd-3d0c-de79-b411-6552841eb8d0@gmail.com
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+Subject: [PATCH] fs/befs: fix shift-out-of-bounds in befs_check_sb
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,39 +76,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
---DPyTEa0P8mrOep6q
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry for directly mailing to you but I tried to reach the maintainers 
+for quite some time now. I haven't received any response on my patch. I 
+was told to mail you in order to get my patch pulled.
 
-On Sun, Aug 27, 2023 at 12:52:14PM +0200, Toralf F=C3=B6rster wrote:
-> On 8/27/23 02:52, Bagas Sanjaya wrote:
-> > Do you have any external modules?
->=20
-> No.
-> And I can confirm, it is a regression.
-> Latest mainline I'd like to avoid at this system.
->=20
-
-Sorry, but to have your regression fixed, you have to check the mainline
-to see if it still persists or not. And it is also helpful to perform
-bisection (see Documentation/admin-guide/bug-bisect.rst for how).
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---DPyTEa0P8mrOep6q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZOswZAAKCRD2uYlJVVFO
-o1DxAQCIrvbDpue1aIGNHoWSIdX/aTZY+ikpJ9kfZwYnEwSqMAEA13UxZu7e2viO
-hncZtf0yU/EmHnZYcajuQKAZ/Ci4MgA=
-=o94C
------END PGP SIGNATURE-----
-
---DPyTEa0P8mrOep6q--
