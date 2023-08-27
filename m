@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE5178A1D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D39478A1EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbjH0V1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 17:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        id S230360AbjH0Vcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 17:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjH0V07 (ORCPT
+        with ESMTP id S230245AbjH0Vcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 17:26:59 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD52EB;
-        Sun, 27 Aug 2023 14:26:57 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37RLMqnK029582;
-        Sun, 27 Aug 2023 21:26:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=vtUbiwv+rQk5LNZDpZ3ag1UdVFuCpZM5Zp0LLUtoAKA=;
- b=Jtriqobv3xiJBD2zyu/JP+L4xq3Mnmyd7SStC7/3ylyndTNfPzuruy7Uf6pEA/o3tr5H
- oTQw1p0MwGoLQAoQSIhIg7O5iaekyKuSecRT5uGLLYO3kOWeG9yHzlAG1QsZFBbSaWqI
- wEilfHg9UvG1L53gt2AJ/z5tRBbXO2pGyCrObVOdj/zAbZcFcvmZzx2bShsONyYotFb+
- 0sdnpm/6Abvgy3/+etvABpV0Jjh1wuXUYwa+rehSJizOXcWuCCUoh6Ral+gXB4EsZiX6
- 6zxlpGig2AaPitDuYKKZETG9Hfg5GMe37qj7JMcvkCPaWNPiOh+VazRRoJcaHAweyvxh Zg== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqapfj68y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Aug 2023 21:26:36 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37RLQZAL006083
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Aug 2023 21:26:35 GMT
-Received: from [10.110.11.89] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 27 Aug
- 2023 14:26:34 -0700
-Message-ID: <0d7697fd-11b3-1d4a-78da-7e5eb293d186@quicinc.com>
-Date:   Sun, 27 Aug 2023 14:26:33 -0700
+        Sun, 27 Aug 2023 17:32:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F91CEC;
+        Sun, 27 Aug 2023 14:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/6hpsLsV03ieW4vELbhOk4pxiCIUuyn6Bpw1V8QuWjA=; b=vTYL9F6nmyMC1z4vgUQ57UMuze
+        c8bgt9vFOKWzPspRsbeTFLgLHz/hKRnLtd9UWTyKshqJF7eN4C3F+EMjcufK9pmtU6JnMc8dQv1Vt
+        5InC4HIkUznFa/hnNRczUUX7xHbrfZD4svYR9Kg0wslB46dSko8l2iAdkLRH/H5iWuiyt8iN5XazN
+        QityxWl2yb3p6DSle3T84m2jiGMPG15FtuhdmZtjHlUbcKD8n1NBcGDOexBbj8JBeLDTA1BEKmInL
+        888FPoRnfrZ00U1GiFcxw/e4IZGsn0ijlmA9d45AXC5VifFlQ9hZQtQ/XxGEdq6/5qdn+lFw1Ut3Y
+        +YmC6jBQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qaNMq-00DvXM-Sy; Sun, 27 Aug 2023 21:32:21 +0000
+Date:   Sun, 27 Aug 2023 22:32:20 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hao Xu <hao.xu@linux.dev>
+Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Message-ID: <ZOvA5DJDZN0FRymp@casper.infradead.org>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v6 3/3] firmware: Add support for Qualcomm UEFI Secure
- Application
-Content-Language: en-US
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Johan Hovold <johan@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>
-References: <20230827211408.689076-1-luzmaximilian@gmail.com>
- <20230827211408.689076-4-luzmaximilian@gmail.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <20230827211408.689076-4-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: qrO8u05cilapbf4kZF0uXmt1BHCeQA01
-X-Proofpoint-GUID: qrO8u05cilapbf4kZF0uXmt1BHCeQA01
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-27_19,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 clxscore=1011 impostorscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=723 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308270203
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230827132835.1373581-8-hao.xu@linux.dev>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/2023 2:14 PM, Maximilian Luz wrote:
+On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+> From: Hao Xu <howeyxu@tencent.com>
+> 
+> Add a boolean parameter for file_accessed() to support nowait semantics.
+> Currently it is true only with io_uring as its initial caller.
+
+So why do we need to do this as part of this series?  Apparently it
+hasn't caused any problems for filemap_read().
+
+> +++ b/mm/filemap.c
+> @@ -2723,7 +2723,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+>  		folio_batch_init(&fbatch);
+>  	} while (iov_iter_count(iter) && iocb->ki_pos < isize && !error);
 >  
-> +config QCOM_QSEECOM_UEFISECAPP
-> +	bool "Qualcomm SEE UEFI Secure App client driver"
-
-Why not "tristate"? This driver can be a loadable module, right?
-
-> +	depends on QCOM_QSEECOM
-> +	depends on EFI
-> +	help
-
-
--- 
----Trilok Soni
-
+> -	file_accessed(filp);
+> +	file_accessed(filp, false);
+>  
+>  	return already_read ? already_read : error;
+>  }
+> @@ -2809,7 +2809,7 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  		retval = kiocb_write_and_wait(iocb, count);
+>  		if (retval < 0)
+>  			return retval;
+> -		file_accessed(file);
+> +		file_accessed(file, false);
+>  
+>  		retval = mapping->a_ops->direct_IO(iocb, iter);
+>  		if (retval >= 0) {
+> @@ -2978,7 +2978,7 @@ ssize_t filemap_splice_read(struct file *in, loff_t *ppos,
+>  
+>  out:
+>  	folio_batch_release(&fbatch);
+> -	file_accessed(in);
+> +	file_accessed(in, false);
+>  
+>  	return total_spliced ? total_spliced : error;
+>  }
