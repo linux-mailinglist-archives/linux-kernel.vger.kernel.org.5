@@ -2,111 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0DD78A21E
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFDC78A221
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 23:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbjH0Vx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 17:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
+        id S230163AbjH0V5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 17:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjH0VxQ (ORCPT
+        with ESMTP id S230402AbjH0V5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 17:53:16 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C6E11A;
-        Sun, 27 Aug 2023 14:53:12 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-977e0fbd742so320792266b.2;
-        Sun, 27 Aug 2023 14:53:11 -0700 (PDT)
+        Sun, 27 Aug 2023 17:57:51 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D1211B
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34c9f8c9876so8047875ab.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693173190; x=1693777990;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GocKa5UOi/aiFmRligoG1tT/pviU6d8PTd0vn4Yclz0=;
-        b=eRWZervuaUqcigeHgXK3VmyNgcfH/XDshw1CtSgAQOa0sszno3rLn8V+Gf9vCx4NuF
-         JdmIq2aqa3fLg+cAJGwdfKSMMF/A7gpugVZSAWVZXdmBihCFAdYjcFxRcw6v02reEDFT
-         bkjN+/cZJg1PdDorpEhiR7TIy18dsZWDv36qHy8SbSnaFS0n85Gk7plCcVbCrshWyBmc
-         mhucdLYctHWlttv/SArGUQKaLME7dO9JDEMnv3j6l75E5zXX/18YKQdaGeYntClZZdGq
-         ca89Jut9NBUVvD9ulclUZz3q/gF3QURCOqwA8nP8SddwFhfvQ7TIAB/jrOo2+bpaF4Sl
-         7omQ==
+        d=joelfernandes.org; s=google; t=1693173467; x=1693778267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tMLyT+uZwYb4Deta17XMTPAVJ7dCE9N9HyBB8/EDtN8=;
+        b=wBMOSUUs9xF3PVGUmoVRyMRXL8VFPR6zsl0Eff0da4ImM8InJzsyvNwJMLypNeAwEK
+         23kWGuVo/y2LG0dVyyiNG0wrMYXevKy5YOtIBBOvf40XDwao6TNKIZhRlmWsOrz5zoA4
+         bRbdFrx79sNawzdu1ZCLfcvCKVHDONZL35o/Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693173190; x=1693777990;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GocKa5UOi/aiFmRligoG1tT/pviU6d8PTd0vn4Yclz0=;
-        b=Ci3BEis9Hh4fW825bWipEp/DLS2vzFLVNiKLNa0Ryu/Tvgg2/2A4C1LAQ6MKSXnJVg
-         8zz0bI4vG06ihqKc6YTERkFTg1u+Zw/KsqEM3V6jL+SeR5c90rYqIPb1+zIyaHNhzhyG
-         ApFj6cSkaPSeQUM1OerDAXd4Q07Lq6tJ2tAWdEQ3TYJiNzS749OURLRb+iA+rvJQr9GJ
-         +o5agylZQGQSm/p/LxUQJAZDkslun2Hsox/kEAYEFoOthR8Aamgsi4Mdqxv7H4t8QFwj
-         4v6FT+xzlXFQQ3JXwacASGERT1ErIFrci2i0HDYiI9+r+8yjOjDj6VU050vhpDipdtvK
-         pWNQ==
-X-Gm-Message-State: AOJu0Yyz8M20rmAaaA+p9KFTPkfWPy5YLTZm2mJjkzx9uIa3pLnBcb3x
-        sXuhtvjw962SKVBcflEXirk=
-X-Google-Smtp-Source: AGHT+IG31K+a/W3LsxcnJSQ9rJiOwWSXhFJfKchBBJ71wvewS6il8CYS9l1oBRgA8hRx1mB/cBbStw==
-X-Received: by 2002:a17:906:5394:b0:9a2:96d2:b1e7 with SMTP id g20-20020a170906539400b009a296d2b1e7mr6403563ejo.52.1693173190401;
-        Sun, 27 Aug 2023 14:53:10 -0700 (PDT)
-Received: from [192.168.2.135] (pd9ea3ad4.dip0.t-ipconnect.de. [217.234.58.212])
-        by smtp.gmail.com with ESMTPSA id g19-20020a170906595300b0098733a40bb7sm3877628ejr.155.2023.08.27.14.53.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Aug 2023 14:53:09 -0700 (PDT)
-Message-ID: <072b3df6-09fb-98a8-2b58-41dfcabd98c0@gmail.com>
-Date:   Sun, 27 Aug 2023 23:53:08 +0200
+        d=1e100.net; s=20221208; t=1693173467; x=1693778267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tMLyT+uZwYb4Deta17XMTPAVJ7dCE9N9HyBB8/EDtN8=;
+        b=N4ElVHTBZseOlOVqiuEDSPjtuhWCJa/EFSTLwi88L7eioMlZMSUh5GoObK4RrERs9f
+         j/JbuYRjmGq62MA9mmmgQQFzqJzxlKHgYBpHTgStAqcvIaI4+W5qEtPJeGFhJlGv2SMN
+         kPfb1ebqAqhXgVeIs3GSpoxsd2YlLSDlvzigdTN4UWt56homHvWGKyAQFWmCJ6MMr0Ee
+         l0Ql5u3fyfnLjkTKzqLwA2jHjaGdKBKRt2pH203axdjgauCEnkS+ED4v9v/4j0rrgjth
+         LOh4vrwFGwCRoS+V6tQSsh6WysuTlLABYZ/B1niM8/dRVBtDoCBnDzONG4kV7g+konjx
+         Yk+A==
+X-Gm-Message-State: AOJu0YxRdW6nHyBgNU3MZPDZmL9E2Pr5yLuoOYYvq1fu167Wesz76PmM
+        LNkfWrY5xowy+OJTxXsYmgQUmA==
+X-Google-Smtp-Source: AGHT+IEEjxh4GT5vEG0rUWZyQ66spPnr+ZYJKNPTafYEmf0NGvM7lZHG6N9E0BM7FIIVhHSidzxkwA==
+X-Received: by 2002:a05:6e02:12e2:b0:34c:ecc8:98e0 with SMTP id l2-20020a056e0212e200b0034cecc898e0mr4228111iln.11.1693173467084;
+        Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id bp7-20020a056e02348700b0034ce78e2450sm1304854ilb.39.2023.08.27.14.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 14:57:46 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 5.15 1/2] torture: Avoid torture-test reboot loops
+Date:   Sun, 27 Aug 2023 21:57:39 +0000
+Message-ID: <20230827215741.246948-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 3/3] firmware: Add support for Qualcomm UEFI Secure
- Application
-To:     Trilok Soni <quic_tsoni@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Johan Hovold <johan@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>
-References: <20230827211408.689076-1-luzmaximilian@gmail.com>
- <20230827211408.689076-4-luzmaximilian@gmail.com>
- <0d7697fd-11b3-1d4a-78da-7e5eb293d186@quicinc.com>
-Content-Language: en-US
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <0d7697fd-11b3-1d4a-78da-7e5eb293d186@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/23 23:26, Trilok Soni wrote:
-> On 8/27/2023 2:14 PM, Maximilian Luz wrote:
->>   
->> +config QCOM_QSEECOM_UEFISECAPP
->> +	bool "Qualcomm SEE UEFI Secure App client driver"
-> 
-> Why not "tristate"? This driver can be a loadable module, right?
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-As I understand, modular efivars have still not been fully sorted out in
-the kernel. For example, userspace could try and mount efivarfs before
-the module has been loaded and by that erroneously determine that the
-system doesn't support efivars. So requiring it to be built in for now
-is more of a workaround (which has been suggested by Johan Hovold).
+[ Upstream commit 10f84c2cfb5045e37d78cb5d4c8e8321e06ae18f ]
 
-There is no technical limitation in this part of the code itself, so
-enabling it (and QCOM_QSEECOM for that matter) to be built as module
-should be fairly straightforward once that's been sorted out.
+Currently, the various torture tests sometimes react to an early-boot
+bug by rebooting.  This is almost always counterproductive, needlessly
+consuming CPU time and bloating the console log.  This commit therefore
+adds the "-no-reboot" argument to qemu so that reboot requests will
+cause qemu to exit.
 
->> +	depends on QCOM_QSEECOM
->> +	depends on EFI
->> +	help
-> 
-> 
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index f4c8055dbf7a..c57be9563214 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -9,9 +9,10 @@
+ #
+ # Usage: kvm-test-1-run.sh config resdir seconds qemu-args boot_args_in
+ #
+-# qemu-args defaults to "-enable-kvm -nographic", along with arguments
+-#			specifying the number of CPUs and other options
+-#			generated from the underlying CPU architecture.
++# qemu-args defaults to "-enable-kvm -nographic -no-reboot", along with
++#			arguments specifying the number of CPUs and
++#			other options generated from the underlying
++#			CPU architecture.
+ # boot_args_in defaults to value returned by the per_version_boot_params
+ #			shell function.
+ #
+@@ -141,7 +142,7 @@ then
+ fi
+ 
+ # Generate -smp qemu argument.
+-qemu_args="-enable-kvm -nographic $qemu_args"
++qemu_args="-enable-kvm -nographic -no-reboot $qemu_args"
+ cpu_count=`configNR_CPUS.sh $resdir/ConfigFragment`
+ cpu_count=`configfrag_boot_cpus "$boot_args_in" "$config_template" "$cpu_count"`
+ if test "$cpu_count" -gt "$TORTURE_ALLOTED_CPUS"
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
