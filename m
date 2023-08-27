@@ -2,52 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86281789DFC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 15:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7629789EBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 15:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbjH0NUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 09:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52524 "EHLO
+        id S229902AbjH0N1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 09:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjH0NTb (ORCPT
+        with ESMTP id S230018AbjH0N1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 09:19:31 -0400
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4522BA9
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 06:19:29 -0700 (PDT)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-26d4ced65c1so2600298a91.2
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 06:19:29 -0700 (PDT)
+        Sun, 27 Aug 2023 09:27:18 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6D71AD
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 06:27:08 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-400e8ab9325so7679655e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 06:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693142827; x=1693747627;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=q6sLDsBM3SAzSIk/9s8j5DkZWsAjuzBKZnQbC8hmoRw=;
+        b=OBtIR8Ou680PclG8/4zyKtzBbSO0Trn3da/2JCkmSCR6vBcku2OsxRKPMhXNDNbFhk
+         r6PuCRs1ACRngsRrF8NUBaqw+bneZrKyotc8fShw8EyYMmkVXft6QkTZ3v/1eVEFycSb
+         hls+n5tAufuwckFDpwrU3POCh4kzvNiWtzZ8iabIharEmAMZHIDQRc9NxUZgmHrlBfZ/
+         URdwhJqyRM+lWIP2cssszhBVMdZKMhC404rS0XQC0Ayi2VAYOWRgA5AhmMzX9mO4cUMC
+         b/eJPqtFpJqjaUap1PjMnmvfSfqJCG5QwecZMU4We44JsOOmvUHwHL4GfHrouLZ82bhI
+         oFyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693142368; x=1693747168;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20221208; t=1693142827; x=1693747627;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8Bl24Vs9jVS4Sx9cEf6BXxIhWboxCJ7gVQAZ6Ue3AY=;
-        b=UKEKvZILSVUNKXFqPiIY0W5fUfeDZyPkUS44d1wc1t8s1XJRy6kGoEH9W1JRipBFq+
-         uFw1LRyCLsxSn7Hk3uROVGfLHDKd7rk7X6bqWIq4Nd9Eg5MO93557ZhxIcQvMnR9awP6
-         wDeHN0rPtzmx/uvUhCH9SOwYLDOwi1DV9xTZ610NDBMvPhawdH3myjp+0ES+c+GBxpLM
-         YSen4XuOohLmAghnsaGxspBHKaqWWz8Lg5RR5D19kPg+hMOnzB/LnXbg6ld7olfrSBIE
-         dZm3ZAsndQirvNTbntN/l2zHWpbA8AtyM9uvOWr4wz+ms3tOe4N4QvCLdyxfEA+iLkEz
-         pZNg==
-X-Gm-Message-State: AOJu0YzmxiT8defP3/Ubh9YHFaiBRzxqPfaHQTrlqGaklGpPD6S658t5
-        GhHDuCxglX4ZJloSuxi40Swsug2dkr8mL5JZl42UC0DhDweq
-X-Google-Smtp-Source: AGHT+IHR+VJ9+SoQI4tOXSQ0M7qJryYCXnyA+Zqxam3A31JMJdn53qqELqrc9PvZrVYMKECi0d22ELa9Gqz1jzxse6L7LJD0R0B3
+        bh=q6sLDsBM3SAzSIk/9s8j5DkZWsAjuzBKZnQbC8hmoRw=;
+        b=aojt9YwsF+q/v1Z5TPgc2GZsLmyQiuStnFcX0Ippz752Hvz8HnOz6HOtZeps3T+1yT
+         MwYXKQG19VRTI2kttHZ0WCuqSkRbcC6lnTQymE4Dh5dG46EdHe9eOilwa2BGBy3ccSTh
+         pIlN5LldEAE9eDVeVaspYmXsL3aGlFSbqJ8ub23fByjTpXT/PkFZnWe/n7y/cFAPs/JH
+         qPnJYhzTxrQ+sTMilAm2iNVcCc2sxOUyv8XtOYlq67xJqZMQ6KzpAhU7D+zzEszuc5rw
+         d6uFXIf2M7lSIXnQFGKBxImFcY4Fd2zfU4C3+HgIiYcVSJGSaJ3yMYEP2wlK1iJIkto6
+         IpZQ==
+X-Gm-Message-State: AOJu0YzfsQDzjWoCSkFQ3AYzB+FTUB4r7d/Z9rMvmNsndX6rLjONwQKX
+        m+2r0GdUz0BE0iRaBYLph5fIvpycov7cQQ==
+X-Google-Smtp-Source: AGHT+IGTGqLCV/QwDDyrKOss383GlZ0N8H5bi13noXwZAEByQAc/inqAd/FeA2tqryFPCpu0gaKcCA==
+X-Received: by 2002:a5d:65c5:0:b0:319:8dcf:5c10 with SMTP id e5-20020a5d65c5000000b003198dcf5c10mr16624350wrw.6.1693142826571;
+        Sun, 27 Aug 2023 06:27:06 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id j11-20020adfe50b000000b003143867d2ebsm7642369wrm.63.2023.08.27.06.27.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 06:27:06 -0700 (PDT)
+Date:   Sun, 27 Aug 2023 15:27:04 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8192e: Remove unsupported mode IW_MODE_ADHOC
+Message-ID: <20230827132704.GA12506@matrix-ESPRIMO-P710>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:885:b0:26b:4c47:eeae with SMTP id
- bj5-20020a17090b088500b0026b4c47eeaemr4839642pjb.5.1693142368745; Sun, 27 Aug
- 2023 06:19:28 -0700 (PDT)
-Date:   Sun, 27 Aug 2023 06:19:28 -0700
-In-Reply-To: <20230827123619.3750-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000071802f0603e76d83@google.com>
-Subject: Re: [syzbot] [kernfs?] KASAN: slab-use-after-free Read in kernfs_test_super
-From:   syzbot <syzbot+f25c61df1ec3d235d52f@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,20 +67,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Remove unsupported mode IW_MODE_ADHOC because this mode is only partially
+coded in the driver.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+rtllib_rx_mgt() can only handle probe requests in IW_MODE_ADHOC and no
+authentication or association frames.
 
-Reported-and-tested-by: syzbot+f25c61df1ec3d235d52f@syzkaller.appspotmail.com
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+The only feature that is partially working in IW_MODE_ADHOC mode are
+beacons. Older Android Smartphones can see the beacons but Ubuntu 22.04
+and Windows 11 not. No Device is able to connect.
 
-Tested on:
+Debug code shows that only frames with ff:ff:ff:ff:ff:ff in addr1 field
+reach rtllib_rx_InfraAdhoc() when in IW_MODE_ADHOC mode.
 
-commit:         28c736b0 Add linux-next specific files for 20230822
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=13e2b3bba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20999f779fa96017
-dashboard link: https://syzkaller.appspot.com/bug?extid=f25c61df1ec3d235d52f
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1362b3bba80000
+Using wireshark to monitor packets shows beacons and probe requests and
+probe responses but no further traffic.
 
-Note: testing is done by a robot and is best-effort only.
+When this patch is accepted approximately 600 lines of code can be
+removed from the driver.
+
+Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
+Transferred this patch over wlan connection of rtl8192e.
+---
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+index 0b690f0ffeef..48703d93df30 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+@@ -258,7 +258,6 @@ int rtllib_wx_set_mode(struct rtllib_device *ieee, struct iw_request_info *a,
+ 	mutex_lock(&ieee->wx_mutex);
+ 	switch (wrqu->mode) {
+ 	case IW_MODE_MONITOR:
+-	case IW_MODE_ADHOC:
+ 	case IW_MODE_INFRA:
+ 		break;
+ 	case IW_MODE_AUTO:
+-- 
+2.41.0
+
