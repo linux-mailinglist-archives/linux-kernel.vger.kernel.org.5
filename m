@@ -2,127 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7340578A117
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 20:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A3978A118
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 20:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbjH0SyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 14:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
+        id S229920AbjH0S4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 14:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjH0Sx6 (ORCPT
+        with ESMTP id S229850AbjH0Szx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 14:53:58 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECCDEB;
-        Sun, 27 Aug 2023 11:53:55 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a9b41ffe11so1562384b6e.2;
-        Sun, 27 Aug 2023 11:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693162435; x=1693767235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KaI3PfD8joR99TjMB7Mb3TjzWqZ8IotMwduAcjhk/lk=;
-        b=UBOTVkj6afa8ANx8oC3soCEe93c7nuROSgHLTdnbhSsGHkrjseEaM/x7ttpL+nGNhX
-         FNgPudGf0JGGEJg3vGkMZAWjWFXqfeypEwVBDcGbywBUtDxoTNURfV+wmQx0OYREVO0m
-         N+53okvoOAqFrGIop8anyx/hvDx1BOxk8eGqirtZ+c1GCHJd4xxoHkOKK656F0tBi28K
-         m3LvQxcDT24oFk+IwGn6NvCFGzIhdGnrdz9zjJZXnELi/ylK+r4ZvRE5q3zFefMFdKFX
-         PpEAd+Ps1a+gztiEPgAksBvQcjCfh5RpTHMNL7y+otyLClzW7HHys5WhgKKMiNeYo/Zj
-         8hjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693162435; x=1693767235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KaI3PfD8joR99TjMB7Mb3TjzWqZ8IotMwduAcjhk/lk=;
-        b=dZL5Zg8MKa+q0FMaykyJzMHn+GkJOnOuqK5V0p1IqS3ri/PIUZpEwSv51mk2Nxspzz
-         +ckc9rcO4EkmwfX7HEzg9Z5zfU9I8ak08/Rg+ULndIdtLOs8Hp+vNgFwPUUN4zLaE5tu
-         RVQXw3xxU4Bgrs32Mq8KFjIER8OqDb2A3A8Cf1hZk5QEfz7uyRmDVaUi6MjRxoA43A0B
-         XuS3rr8Dhqs3/VnDowcHlyMNSm4D1Djf+f1Mg8zKPRspyqpXgzeha14ojK9HZt6G2cX6
-         Vue/e5KHYD5So1mXaor2bg+4fN+9YsFNvELxQYrzo4GmaZzAheSM3EpXICTHR1JiwzY3
-         2rmw==
-X-Gm-Message-State: AOJu0YyYpm/i0WleWUA25LYNVSAq4WmggtW6NPc/T4CsA19KjUzQdyC+
-        8DHs8qGIwX0AJICVXeFTkjJQ40nqNhY=
-X-Google-Smtp-Source: AGHT+IFXksIvo10D/RzlONjGABJrmWT89zl4Fs/Y/OpspCazjc4yZk2UhbkiHhh2cd8y7fYSSY5sAA==
-X-Received: by 2002:a54:4482:0:b0:3a8:72e9:e173 with SMTP id v2-20020a544482000000b003a872e9e173mr8301399oiv.24.1693162434875;
-        Sun, 27 Aug 2023 11:53:54 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:100a:a3bb:1543:4287:715f:7d])
-        by smtp.gmail.com with ESMTPSA id j5-20020aa783c5000000b0066684d8115bsm5310497pfn.178.2023.08.27.11.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 11:53:54 -0700 (PDT)
-From:   coolrrsh@gmail.com
-To:     hverkuil@xs4all.nl, mchehab@kernel.org, slark_xiao@163.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Rajeshwar R Shinde <coolrrsh@gmail.com>,
-        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
-Subject: [PATCH v5] media: gspca: cpia1: shift-out-of-bounds in set_flicker
-Date:   Mon, 28 Aug 2023 00:23:48 +0530
-Message-Id: <20230827185348.34768-1-coolrrsh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 27 Aug 2023 14:55:53 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id CEAD6EB
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 11:55:50 -0700 (PDT)
+Received: (qmail 325084 invoked by uid 1000); 27 Aug 2023 14:55:50 -0400
+Date:   Sun, 27 Aug 2023 14:55:50 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Milan Broz <gmazyland@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: usb-storage: how to extend quirks flags to 64bit?
+Message-ID: <2d580337-eaf3-47fb-afa7-1006d9a257ea@rowland.harvard.edu>
+References: <f9e8acb5-32d5-4a30-859f-d4336a86b31a@gmail.com>
+ <6f8b825b-bc41-4080-8128-4a6f0a43f779@rowland.harvard.edu>
+ <34aa2eea-5417-4e46-91a0-aac1a46a84cf@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <34aa2eea-5417-4e46-91a0-aac1a46a84cf@gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On Sun, Aug 27, 2023 at 06:45:55PM +0200, Milan Broz wrote:
+> On 8/27/23 17:50, Alan Stern wrote:
+> > On Sun, Aug 27, 2023 at 11:32:05AM +0200, Milan Broz wrote:
+> > > Hello,
+> > > 
+> > > I tried to extend USB storage for the passthrough of Opal
+> > > security commands,
+> > 
+> > What sort of changes are needed?  Where is this passthrough mechanism
+> > documented?
+> 
+> We are currently adding support for optional OPAL hw encryption to
+> cryptsetup/LUKS2 (that uses kernel OPAL ioctl interface) and I tried
+> to make USB adapters to work with it too.
+> 
+> I'll send RFC patchset (it is quite simple) where I explain it in detail.
+> The patch for USB storage is actually one liner, the rest is in SCSI driver :)
+> 
+> Basically, USB adapters (not supporting UAS) cannot work as
+> required SCSI SECURITY IN/OUT SCSI commands do not work here.
+> 
+> But we can use ATA12 pass-thru (as used with original sedutils
+> and some other tools we used in research; it is a documented feature).
+> It works once ATA12 wrapper is added to block layer and USB storage enables
+> the "security_supported" bit.
+> 
+> > 
+> > >   and some adapters are clearly "not perfect".
+> > 
+> > Which ones?
+> 
+> Namely Realtek 9210 family (NVME to USB bridge). Everything OPAL related
+> works, but the adapter always set write-protected bit for the whole
+> drive (even if OPAL locking range is just covering part of the disk).
+> 
+> I spent quite a lot time trying new firmware versions - this issue is
+> still there.
 
-Syzkaller reported the following issue:
-UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27
-shift exponent 245 is too large for 32-bit type 'int'
+It sounds like the sort of thing that should be reported as a bug to 
+Realtek.  I can't imagine their customers would be very happy about this 
+behavior.
 
-When the value of the variable "sd->params.exposure.gain" exceeds the
-number of bits in an integer, a shift-out-of-bounds error is reported. It
-is triggered because the variable "currentexp" cannot be left-shifted by
-more than the number of bits in an integer. In order to avoid invalid
-range during left-shift, the conditional expression is added.
+> On the other side, many other USB to SATA bridges works nicely.
+> I think this is the exact situation where we should set a new quirks flag
+> to disable it. (The nasty thing is that for unbricking it you need PSID reset
+> - PSID is a number written on the label of the drive - followed by physical
+> disconnect for recovery.)
+> 
+> 
+> Anyway, I intentionally sent this 32bit flags question separately as it
+> is actually a generic issue - we are just out of flag space now...
+> 
+> Even if the patches mentioned above are rejected, someone will need
+> a new flag for something else later.
 
+Certainly.  We knew this was bound to come up eventually.
 
-Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
-Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
----
-v1->v2
-Changed the patch. Instead of avoiding shift operation for invalid
-input of 'exposure.gain', throw an error for invalid range.
-v2->v3
-Changed the commit message details
-v3->v4
-Removed the trailing spaces in commit message
-v4->v5
-Replaced the hardcoded value with inbuilt macro
----
- drivers/media/usb/gspca/cpia1.c | 3 +++
- 1 file changed, 3 insertions(+)
+> > > I would need to introduce a new quirks flag to turn it off.
+> > > 
+> > > Seems that we are already out of quirks flags on 32bit
+> > > for usb storage - in usb_usual.h the last entry in mainline is
+> > >    US_FLAG(SENSE_AFTER_SYNC, 0x80000000)
+> > > 
+> > > Adding a new flag will work for 64-bit systems but not
+> > > for platforms with 32-bit unsigned long like i686.
+> > > 
+> > > How do we allow new flag definitions?
+> > > 
+> > > Struct us_data fflags can be made 64bit (defined in
+> > > drivers/usb/storage/usb.h), but the major problem is that these
+> > > are transferred through the generic driver_info field
+> > > defined in linux/mod_devicetable.h as unsigned long).
+> > > Making this 64bit is IMO an extensive API change (if even possible).
+> > > I guess this is not the way to go.
+> > > 
+> > > Could USB maintainers please help to advise what is the correct
+> > > solution? I am not familiar with the USB driver model here
+> > > and I see no easy way how it can be solved by a trivial static
+> > > allocation inside the USB storage driver.
+> > > 
+> > > Someone will need a new quirks flag in the future anyway... :)
+> > 
+> > I can think of only one way to accomplish this on 32-bit systems: Change
+> > the driver_info field from a bit array to an index into a static table
+> > of 64-bit flags values.  Each unusual_devs structure would have its own
+> > entry in this table.  As far as I can tell, the other unusual_*.h tables
+> > could retain their current driver_info interpretations, since no new
+> > quirk bits are likely to be relevant to them.
+> > 
+> > Making this change would be an awkward nuisance, but it should be
+> > doable.
+> 
+> Hm, yes, thanks for the idea,that is a possible solution.
+> It will need to modify all unusual macros, though. Just I am not sure I want
+> to spent time patching all the drivers as I have not way how to test it.
 
-diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
-index 46ed95483e22..5f5fa851ca64 100644
---- a/drivers/media/usb/gspca/cpia1.c
-+++ b/drivers/media/usb/gspca/cpia1.c
-@@ -18,6 +18,7 @@
+I don't think it will be necessary to change all those macros, just the 
+ones in usual_tables.c.  And to create the new table containing the 
+actual flag values, of course.
+
+There will also have to be a new argument to usb_stor_probe1() 
+specifying whether the id->driver_info field is standard (i.e., it 
+contains the flags directly) or is one of the new indirect index values.  
+
+And you'll have to figure out a comparable change to the dynamic device 
+ID table mechanism.
+
+(If you want to be really fancy about it, you could design things in 
+such a way that the indirect flags approach is used only on 32-bit 
+systems.  64-bit systems can put the new flag bits directly into the 
+driver_info field.  However, it's probably best not to worry about this 
+initially.)
  
- #include <linux/input.h>
- #include <linux/sched/signal.h>
-+#include <linux/bitops.h>
- 
- #include "gspca.h"
- 
-@@ -1028,6 +1029,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
- 			sd->params.exposure.expMode = 2;
- 			sd->exposure_status = EXPOSURE_NORMAL;
- 		}
-+		if (sd->params.exposure.gain >= BITS_PER_TYPE(currentexp))
-+			return -EINVAL;
- 		currentexp = currentexp << sd->params.exposure.gain;
- 		sd->params.exposure.gain = 0;
- 		/* round down current exposure to nearest value */
--- 
-2.25.1
-
+Alan Stern
