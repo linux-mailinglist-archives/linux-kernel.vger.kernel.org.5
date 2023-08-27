@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC31789BA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D9B789BAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 09:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjH0HFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 03:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
+        id S229927AbjH0HG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 03:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjH0HFs (ORCPT
+        with ESMTP id S229888AbjH0HG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 03:05:48 -0400
-Received: from rs227.mailgun.us (rs227.mailgun.us [209.61.151.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F54E120
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 00:05:44 -0700 (PDT)
+        Sun, 27 Aug 2023 03:06:29 -0400
+Received: from so254-32.mailgun.net (so254-32.mailgun.net [198.61.254.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D37018F
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 00:06:25 -0700 (PDT)
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt;
- s=mx; t=1693119943; x=1693127143; h=In-Reply-To: Content-Type: MIME-Version:
+ s=mx; t=1693119984; x=1693127184; h=In-Reply-To: Content-Type: MIME-Version:
  References: Message-ID: Subject: Subject: Cc: To: To: From: From: Date:
- Sender: Sender; bh=UjuesKPnJwRzVtkwhdjgtAQ4JQBOmAT2m5YexU2KHy4=;
- b=WzWm1RfxieQRoXsfZXL8ruaE9goRYXMUmdgYFz9otJBkDmqi+dCjb+m6MCjSFRuENqe+NjaswHApS7WztwD7BPGDivkAlvmgL/x1jJEa/IQ+dgo1v/KOUNB2wbt82HNnzJ4Ygc4yQm8qKZAg6Tn2FRwbt0Ku4lAWV9xRWyWoB9jqu+iPgFqqNBA0+wTivKngZyYLLD1eTBNfctDlNgvMJGHCHCo1kCKVvMMrh/0UfibSfZfQIXR2W54A2/MuSwo1Bk/5f1qhlh2N4sQ5ozJe/yRUfbUt+KznxQ4iBvuWVXrBllo7NQpP85NY869myBWezyeQiFgpSwK/VRFAtFScRg==
-X-Mailgun-Sending-Ip: 209.61.151.227
+ Sender: Sender; bh=a2QNVHpCy69phGF1UsAYo4X/AG2eDB3F/Vurqfii8Wo=;
+ b=XoLrmrvvUEMbf1dzDmEFxWOfhNfO+VVJIak4YGVIXVwsqOqVwm+MVfnlUj2zZhVoEYB/iy1tLE6Tm896zz+Z5c79bW1tl5OBFL2H/7TvWVa5uUmOe+Mqc+JHd80F/w7dykkyqr3RB7lLWYw01B4IIH7nu1MBsQ5RinPBSlOB36jBYhxK95CxCwuQ+ciVvxZJCOup3/9zklPvzTugULv9zV8cw8v7HC7ii53VJQW0swniiIMD49u6Aa5ILJVuBReUOoTYZTFyg4dLKABCZBgdeEobaCZX2v+DIMpv5mgvpvwV0sWtmwJ3WhVMeRCuA3wuF4aGxKRJY4BFzmExSUcvDQ==
+X-Mailgun-Sending-Ip: 198.61.254.32
 X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
-Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 83b843cc0f41 with SMTP id
- 64eaf5c7cb0a642b60bfb239 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 27 Aug 2023 07:05:43 GMT
+Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 6fa3ba917c3f with SMTP id
+ 64eaf5f0cd2de71bad0a6c9f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 27 Aug 2023 07:06:24 GMT
 Sender: james@equiv.tech
-Date:   Sun, 27 Aug 2023 00:05:42 -0700
+Date:   Sun, 27 Aug 2023 00:06:23 -0700
 From:   James Seo <james@equiv.tech>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
@@ -38,59 +38,97 @@ Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/12] scsi: mpt3sas: Make
- MPI2_CONFIG_PAGE_IO_UNIT_8::Sensor[] a flexible array
-Message-ID: <ZOr1xqqM2GTK8K3X@equiv.tech>
+Subject: Re: [PATCH v2 03/12] scsi: mpt3sas: Make
+ MPI2_CONFIG_PAGE_RAID_VOL_0::PhysDisk[] a flexible array
+Message-ID: <ZOr175KsKEoCss8U@equiv.tech>
 References: <20230806170604.16143-1-james@equiv.tech>
- <20230806170604.16143-3-james@equiv.tech>
- <202308251334.A4A10C2@keescook>
+ <20230806170604.16143-4-james@equiv.tech>
+ <202308251357.38AF364@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202308251334.A4A10C2@keescook>
+In-Reply-To: <202308251357.38AF364@keescook>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 01:37:09PM -0700, Kees Cook wrote:
-> On Sun, Aug 06, 2023 at 10:05:54AM -0700, James Seo wrote:
->>     Note that iounit_pg8 occurs in the middle of the per-adapter
->>     struct, not at the end. The per-adapter struct is extensively
+On Fri, Aug 25, 2023 at 02:03:23PM -0700, Kees Cook wrote:
+> On Sun, Aug 06, 2023 at 10:05:55AM -0700, James Seo wrote:
+>> This terminal 1-length variable array can be directly converted into
+>> a C99 flexible array member.
+>> 
+>> As all users of MPI2_CONFIG_PAGE_RAID_VOL_0 (Mpi2RaidVolPage0_t)
+>> either calculate its size without depending on its sizeof() or do not
+>> use PhysDisk[], no further source changes are required:
 > 
-> This is especially bad/weird. Flex arrays aren't supposed to live there,
-> so I think it'd be best to avoid this conversion (see below).
->
->>     used throughout mpt3sas even if its iounit_pg8 member isn't,
->>     resulting in an especially large amount of noise when comparing
->>     binary changes attributable to this commit.
+> Tons of binary changes in this file too. I see this:
 > 
-> Since the size reduction makes it hard to validate, how about just
-> leaving it alone? Since nothing is using Sensor[], you could just make
-> it a single instance:
+>         Mpi2RaidVolPage0_t config_page;
+> 	...
+>         r = _config_request(ioc, &mpi_request, &mpi_reply,
+>             MPT3_CONFIG_PAGE_DEFAULT_TIMEOUT, &config_page,
+>             sizeof(Mpi2RaidVolPage0_t));
 > 
-> -     MPI2_IOUNIT8_SENSOR
-> -             Sensor[MPI2_IOUNITPAGE8_SENSOR_ENTRIES];/*0x10 */
-> +     MPI2_IOUNIT8_SENSOR     Sensor;                 /*0x10 */
-> 
-> 
-> or leave it as-is (i.e. drop this patch).
-> 
+> So it's already changing this size (and possibly under-allocating now).
 
-I'd prefer not to paper it over by just up and pretending it's not a
-flex array at all, but leaving things as-is feels like a waste, and I
-understand the need to be conservative with storage drivers.
+Yes. I didn't explicitly identify _config_request() as a user of the
+five structs for which I parted out changes into their own commits,
+as it's a generalized helper indirectly called when working with
+other config page structs as well. Rest assured that I took it into
+account, and that the reduced struct sizes don't represent
+under-allocations (see below).
 
-How do you feel about removing the struct containing the flex array
-from the middle of the per-adapter struct, as per patch 8 in this
-series? Moving that patch before this one in the ordering would
-cleanly fix the misplaced flex array, but I imagine you'd be
-especially keen on seeing Broadcom's approval for that one.
+>> - mpt3sas_config.c:mpt3sas_config_get_number_pds() fetches a
+>>   Mpi2RaidVolPage0_t for itself, but does not use PhysDisk[].
+> 
+> Is it certain that _config_request()'s use of mpt3sas_wait_for_ioc()
+> won't result in the hardware being upset that config_page_sz shrank?
+ 
+Sorry if I missed it, but I don't see what config_page_sz has to do
+with _config_request()'s use of mpt3sas_wait_for_ioc(). Could you
+explain what you meant?
 
-In any case, I'm fine with turning this into a single instance if it
-comes down to it.
+More generally, changes in config_page_sz shouldn't faze the hardware
+because all usages of _config_request() occur in pairs - a
+preparatory call that returns the actual size of a given config page
+in mpi_reply, then a follow-up call during which a temporary
+DMA-capable buffer is allocated per the size in mpi_reply and the
+hardware reads/writes the entirety of this buffer. config_page_sz
+just determines the number of bytes copied between config_page and
+the temp buffer after a hardware read/before a hardware write.
 
+Well, as far I can tell, anyway. Maybe Broadcom knows otherwise.
+
+>> @@ -1826,8 +1823,7 @@ typedef struct _MPI2_CONFIG_PAGE_RAID_VOL_0 {
+>>  	U8                      Reserved2;         /*0x25 */
+>>  	U8                      Reserved3;         /*0x26 */
+>>  	U8                      InactiveStatus;    /*0x27 */
+>> -	MPI2_RAIDVOL0_PHYS_DISK
+>> -	PhysDisk[MPI2_RAID_VOL_PAGE_0_PHYSDISK_MAX]; /*0x28 */
+>> +	MPI2_RAIDVOL0_PHYS_DISK PhysDisk[];        /*0x28 */
+>>  } MPI2_CONFIG_PAGE_RAID_VOL_0,
+> 
+> Without the mpt3sas maintainers chiming in on this, I think the only
+> safe changes to make here are those with 0 binary differences. So for
+> things like this, it'll need to be:
+> 
+> -	MPI2_RAIDVOL0_PHYS_DISK
+> -	PhysDisk[MPI2_RAID_VOL_PAGE_0_PHYSDISK_MAX]; /*0x28 */
+> +	union {
+> +		MPI2_RAIDVOL0_PHYS_DISK legacy_padding;        /*0x28 */
+> +		DECLARE_FLEX_ARRAY(MPI2_RAIDVOL0_PHYS_DISK, PhysDisk);
+> +	};
+> 
+> -- 
+> Kees Cook
+
+Thanks for clearing that up. Here's hoping those mpt3sas maintainers
+do chime in. I'll go with the union workaround if they don't.
+
+James
