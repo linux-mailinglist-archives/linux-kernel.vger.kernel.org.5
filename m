@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB25789C08
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277CE789C0C
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjH0IF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 04:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S230016AbjH0IIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 04:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjH0IFm (ORCPT
+        with ESMTP id S229552AbjH0IIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 04:05:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6167DC
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 01:05:39 -0700 (PDT)
+        Sun, 27 Aug 2023 04:08:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FC2DC;
+        Sun, 27 Aug 2023 01:08:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6539A60B8F
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 08:05:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3795C433C7;
-        Sun, 27 Aug 2023 08:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693123538;
-        bh=bgFpKrbb5BKBRFqPi18KpBHYxGjE5puzerlvZWDQ17A=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD22B60C48;
+        Sun, 27 Aug 2023 08:08:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCBB4C433C8;
+        Sun, 27 Aug 2023 08:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693123707;
+        bh=MHJjt4eg563LiNA4ksLlQeSWc1mSO+P5YUvp3Qw59eQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G7jI+fyHyygOeBw/iXHQqZiebINK9a96l2XPhsAEELxL4UkNEO9tkjgME8vP3XD57
-         sIpYru6738QMDZ+U7bv/xiIjM5KIko/XysZm55n0cU/rwWFF7W8IWArU98ivQR6oGa
-         83tRPKA2pQHZLwI56xo8h+RjMupTGwo4Up7oYYH2lW8nvpnsMLzfb3tIUIpHjkg21r
-         TqxHwLYe8ZLFT7dNclJXnAdF1b9d2lZ0b0FugX99aypAEGXpz//i/KAW+eyGaE2WJo
-         IKjvUksVNTV6HzeDxpDPeGJIag50Ogv8NvLI7B1Jna/jdLuCeRZp203u0SjsDu47io
-         aRPIperAhApvA==
-Date:   Sun, 27 Aug 2023 10:05:31 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com, sd@queasysnail.net,
-        sebastian.tobuschat@nxp.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
- mdo_insert_tx_tag
-Message-ID: <20230827080531.GR3523530@kernel.org>
-References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
- <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
+        b=cCLZGT5atK53aCSn14SJGisOnhcx97NH6PVBwJ65LgfZC2QXmpGQJZndYTrpVfmnG
+         j2gz5jtZxrgegiW2ANHkQfdSyRFZMLyNbPgbAw0MM/h8zvGj/yjEZy/+0bs3W8EwQH
+         5+6UMdmKxxS7YX0bvY5+ofzGExSHcLA3YW6FJ1+M=
+Date:   Sun, 27 Aug 2023 10:08:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lucas Tanure <tanure@linux.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH] Revert "tty: serial: meson: Add a earlycon for the T7
+ SoC"
+Message-ID: <2023082710-synergy-spectrum-57aa@gregkh>
+References: <20230827080113.2790-1-tanure@linux.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <20230827080113.2790-1-tanure@linux.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,42 +56,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:16:15PM +0300, Radu Pirea (NXP OSS) wrote:
-> Implement mdo_insert_tx_tag to insert the TLV header in the ethernet
-> frame.
+On Sun, Aug 27, 2023 at 09:01:13AM +0100, Lucas Tanure wrote:
+> This reverts commit 6a4197f9763325043abf7690a21124a9facbf52e.
+> New SoC will use ttyS0 instead of ttyAML, so T7 SoC doesn't need a OF_EARLYCON_DECLARE.
 > 
-> If extscs parameter is set to 1, then the TLV header will contain the
-> TX SC that will be used to encrypt the frame, otherwise the TX SC will
-> be selected using the MAC source address.
-> 
-> Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
 > ---
->  drivers/net/phy/nxp-c45-tja11xx-macsec.c | 66 ++++++++++++++++++++++++
->  1 file changed, 66 insertions(+)
+>  drivers/tty/serial/meson_uart.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> diff --git a/drivers/net/phy/nxp-c45-tja11xx-macsec.c b/drivers/net/phy/nxp-c45-tja11xx-macsec.c
-
-...
-
-> @@ -167,6 +171,18 @@
->  #define MACSEC_INPBTS			0x0638
->  #define MACSEC_IPSNFS			0x063C
+> diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
+> index c4f61d82fb727..790d910dafa5d 100644
+> --- a/drivers/tty/serial/meson_uart.c
+> +++ b/drivers/tty/serial/meson_uart.c
+> @@ -648,8 +648,6 @@ meson_serial_early_console_setup(struct earlycon_device *device, const char *opt
 >  
-> +#define TJA11XX_TLV_TX_NEEDED_HEADROOM	(32)
-> +#define TJA11XX_TLV_NEEDED_TAILROOM	(0)
-> +
-> +#define MACSEC_TLV_CP			BIT(0)
-> +#define MACSEC_TLV_SC_ID_OFF		(2)
-> +
-> +#define ETH_P_TJA11XX_TLV		(0x4e58)
-> +
-> +bool extscs;
+>  OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
+>  		    meson_serial_early_console_setup);
+> -OF_EARLYCON_DECLARE(meson, "amlogic,t7-uart",
+> -		    meson_serial_early_console_setup);
+>  
+>  #define MESON_SERIAL_CONSOLE_PTR(_devname) (&meson_serial_console_##_devname)
+>  #else
+> -- 
+> 2.42.0
+> 
 
-Hi Radu,
+Hi,
 
-Sparse suggests that extscs should be static.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-> +module_param(extscs, bool, 0);
-> +MODULE_PARM_DESC(extscs, "Select the TX SC using TLV header information.");
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-...
+- Your patch does not have a Signed-off-by: line.  Please read the
+  kernel file, Documentation/process/submitting-patches.rst and resend
+  it after adding that line.  Note, the line needs to be in the body of
+  the email, before the patch, not at the bottom of the patch or in the
+  email signature.
+
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
