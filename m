@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECDD789C48
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A0D789C54
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbjH0IpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 04:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
+        id S230311AbjH0ItW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 04:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbjH0Io2 (ORCPT
+        with ESMTP id S230262AbjH0ItB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 04:44:28 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A35EDE;
-        Sun, 27 Aug 2023 01:44:25 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so1893744f8f.1;
-        Sun, 27 Aug 2023 01:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693125864; x=1693730664;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O8fElRcs3PkUY8Q02I9sE417svoQVgtmV0B5qTTy35g=;
-        b=PWoIC2Fqvh4JPT0mV5SHB697KI4aSaB086YLt9z5rFSms+bENpXTDDprLakZ2h5lae
-         OS7JepK6YVfLGTiMEDpMSIzk7JGzt0AeZtpXfhJrk8YmFvUWByPSClCrN990pjaF2r4k
-         QSEQOUOGfmZeLNvh/KW82X+KuEIkJ1Avag5bEfbNKUKTV6QQTXLqA6Zc0Y4s1y6Zwy19
-         tK4oYFXGHE/HFSofCn7TnPpWj2Y2ET7Agw404Q7e/jcQj0WWa6eTtE5l/wDat62dsqJT
-         JTAvkkbFHr9mb+M5MszYXclJyqRu3CBkmjbvKQ7NgLaJ8M5Fmb94Aw1eiIDDmlUWhSgx
-         WOww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693125864; x=1693730664;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O8fElRcs3PkUY8Q02I9sE417svoQVgtmV0B5qTTy35g=;
-        b=JtXteySypG4bzpwvoV+673+BpLDVwU3J5EDNZ2JKGoIEjDjJvYpQ5Avo6kqWbQmPKW
-         XCY4UJuqSVwSw3JAaL5raU9uYtw/k4HDz9rdBsoF0FrP8s7Vge3M8x67OUzNXoRYDPpD
-         XupbedbPHcHiyrgzubp6YgDXq14c1t0Nncadjnoe4U2HlZwfKyleFjhofXs+ecA3r6L8
-         vnh0zDnpRLFM8wV3UOZLh/zrfaZiG7jvxq3CZ2649oNbRrUSLHPlGOmmEeWDWVibceLE
-         k6hOsPxDqjeQzDEaDX1suOKiZ5jZVY6Gw6Z8xXI5b+T+FdkUoK4gntZh+r3pF97tctmq
-         MMkw==
-X-Gm-Message-State: AOJu0YwkUdLNN1X3Hafo88kOyjkENLsDvVfHSQzwW6zInGI+Sv4eabTU
-        NcMy9qJJmwfm6KMxvlXnC2g=
-X-Google-Smtp-Source: AGHT+IGFh9IYLC2/wjGRLv3SITjKE0sIgxuBuO/y76BZulsNmwpk0RjC+eZ3P+DtP+ZRyw+cifNOBQ==
-X-Received: by 2002:adf:fa52:0:b0:317:393f:6e6a with SMTP id y18-20020adffa52000000b00317393f6e6amr18476798wrr.59.1693125863878;
-        Sun, 27 Aug 2023 01:44:23 -0700 (PDT)
-Received: from debian ([63.135.72.41])
-        by smtp.gmail.com with ESMTPSA id w4-20020adfde84000000b003143b14848dsm6948603wrl.102.2023.08.27.01.44.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 01:44:23 -0700 (PDT)
-Date:   Sun, 27 Aug 2023 09:44:21 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 0/4] 6.1.49-rc1 review
-Message-ID: <ZOsM5e50dwZhw3JY@debian>
-References: <20230826154625.450325166@linuxfoundation.org>
+        Sun, 27 Aug 2023 04:49:01 -0400
+Received: from smtprelay02.ispgateway.de (smtprelay02.ispgateway.de [80.67.18.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C61BAF;
+        Sun, 27 Aug 2023 01:48:54 -0700 (PDT)
+Received: from [77.64.243.219] (helo=note-book.lan)
+        by smtprelay02.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qaBRz-0000Bt-QE; Sun, 27 Aug 2023 10:48:51 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Subject: [PATCH v4 0/2] arm64: dts: qcom: msm8939-longcheer-l9100: Add
+ initial dts
+Date:   Sun, 27 Aug 2023 10:47:58 +0200
+Message-Id: <20230827-bq_m5-v4-0-f8435fb8f955@apitzsch.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230826154625.450325166@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAL4N62QC/2XMQQ6CMBCF4auQrq0pU8hQV97DGFPKIF0I2GKjE
+ u5uISFBXb7JfP/IPDlLnh2SkTkK1tuujSPbJcw0ur0St1XcDARIgZDx8n655bw0StcksaiLisX
+ f3lFtn0vndI67sX7o3GvJhnS+/hZCygVPUYsChUZZ0lH3dnh70+zpweZGgK3LVwfRKURlIFOay
+ vTfya3D1cnoqjonADSoKvHtpmn6AAgywUsMAQAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
+2015.
 
-On Sat, Aug 26, 2023 at 05:47:56PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.49 release.
-> There are 4 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 28 Aug 2023 15:46:14 +0000.
-> Anything received after that time might be too late.
+Add a device tree with initial support for:
 
-Build test (gcc version 13.2.1 20230826):
-mips: 52 configs -> no failure
-arm: 100 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
+- GPIO keys
+- Hall sensor
+- SDHCI
+- WCNSS (BT/WIFI)
+- Accelerometer/Magnetometer
+- Vibrator
+- Touchscreen
+- Front flash
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
+---
+Changes in v4:
+- replace "interrupt-parent" and "interrupts" by "interrupts-extended"
+- add R-b to second patch
+- Link to v3: https://lore.kernel.org/r/20230727-bq_m5-v3-0-df5e227c79d0@apitzsch.eu
 
-[1]. https://openqa.qa.codethink.co.uk/tests/4805
-[2]. https://openqa.qa.codethink.co.uk/tests/4807
-[3]. https://openqa.qa.codethink.co.uk/tests/4806
+Changes in v3:
+- use "id-gpios" instead of "id-gpio" to avoid conflicts with
+  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
+  (v2 only contained the changelog entry, but not the actual change) 
+- Link to v2: https://lore.kernel.org/r/20230725-bq_m5-v2-0-9779c249aeb1@apitzsch.eu
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Changes in v2:
+- add R-b to first patch
+- sort node extends/overrides by name, but keep &tlmm last, as done in
+  msm8939-samsung-a7.dts
+- use id-gpios, to avoid conflict with
+  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
+- don't enable mdss for now; postpone it till display support is added
+- Link to v1: https://lore.kernel.org/r/20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu
 
+---
+André Apitzsch (2):
+      dt-bindings: arm: qcom: Add BQ Aquaris M5
+      arm64: dts: qcom: msm8939-longcheer-l9100: Add initial device tree
+
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+ .../boot/dts/qcom/msm8939-longcheer-l9100.dts      | 334 +++++++++++++++++++++
+ 3 files changed, 336 insertions(+)
+---
+base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+change-id: 20230724-bq_m5-bc9afe378f8d
+
+Best regards,
 -- 
-Regards
-Sudip
+André Apitzsch <git@apitzsch.eu>
+
