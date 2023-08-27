@@ -2,148 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18437789C64
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 10:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4963789C7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 11:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjH0Iy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 04:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
+        id S230431AbjH0JBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 05:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjH0IyK (ORCPT
+        with ESMTP id S230224AbjH0JBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 04:54:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F229136;
-        Sun, 27 Aug 2023 01:54:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Sun, 27 Aug 2023 05:01:13 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E7211A;
+        Sun, 27 Aug 2023 02:01:03 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id A5A33120007;
+        Sun, 27 Aug 2023 12:01:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A5A33120007
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1693126860;
+        bh=7Dkh0JmDKUZqtrQH3eRyUHxFoigQKcPTmgNWMbjNZmI=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=g5LOocW2h4LgJ3kw1kok7VcPCgjaCvo4f+7fkDiyF/UXVvCrI3b+onPSfxC3tMqoP
+         99J8l7E0Zv3Z+Rb371WOlun0+jqs+ehl1ADyHjgpHYmiXoJPimsUpAsuCt10dBw9C6
+         2NegaaYiFO8L6k9MVy/snNnuDs8/XSeCak0JO0kP6wL9+n9Cs+3hyAEiUN2qvQXPT8
+         mfTzMrVznhpw6eordKyr7AaLEmCNikC1/Ts3+baqtC75bnB0mUSkE6i7cFR2FGyPVR
+         WaIQVc17t7ZcfM/ra+FOdb8/UPXS6GNDJt+k7E9wZ2uNihHMpOsJppqWM4UtCVNjEB
+         YujH2A2N566yA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2DD862A62;
-        Sun, 27 Aug 2023 08:54:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A96E1C433C8;
-        Sun, 27 Aug 2023 08:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693126446;
-        bh=DVepnvk9nZnshKBUYaBYHbcRgcSiPVV2po4HFKIFZMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PYQNpGoYghPNAwhd4XaIzOnrSB7+Oo1nBfo8GYNTZS7GQIO3uReUUAbiLK6QQp4LF
-         JBiD4OFeQZxPxL8C4SrszXLJK02S3fC5xbKZJX17vRpnC+Wtje1SmpzFgzuo79DKal
-         1aHePaFrGqNaakzS/l/j2CupTN7BTmr7z6ojnKYQ=
-Date:   Sun, 27 Aug 2023 10:54:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Maximilian Heyne <mheyne@amazon.de>
-Cc:     stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Larabel <Michael@michaellarabel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] mm: allow a controlled amount of unfairness in the page
- lock
-Message-ID: <2023082731-crunching-second-ad89@gregkh>
-References: <20230823061642.76949-1-mheyne@amazon.de>
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Sun, 27 Aug 2023 12:01:00 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sun, 27 Aug 2023 12:00:39 +0300
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@salutedevices.com>
+Subject: [PATCH net-next v7 0/4] vsock/virtio/vhost: MSG_ZEROCOPY preparations
+Date:   Sun, 27 Aug 2023 11:54:32 +0300
+Message-ID: <20230827085436.941183-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823061642.76949-1-mheyne@amazon.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179455 [Aug 25 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;git.kernel.org:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/08/27 08:09:00
+X-KSMG-LinksScanning: Clean, bases: 2023/08/27 08:09:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/27 08:01:00 #21738748
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 06:16:42AM +0000, Maximilian Heyne wrote:
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> [ upstream commit 5ef64cc8987a9211d3f3667331ba3411a94ddc79 ]
-> 
-> Commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic") made
-> the page locking entirely fair, in that if a waiter came in while the
-> lock was held, the lock would be transferred to the lockers strictly in
-> order.
-> 
-> That was intended to finally get rid of the long-reported watchdog
-> failures that involved the page lock under extreme load, where a process
-> could end up waiting essentially forever, as other page lockers stole
-> the lock from under it.
-> 
-> It also improved some benchmarks, but it ended up causing huge
-> performance regressions on others, simply because fair lock behavior
-> doesn't end up giving out the lock as aggressively, causing better
-> worst-case latency, but potentially much worse average latencies and
-> throughput.
-> 
-> Instead of reverting that change entirely, this introduces a controlled
-> amount of unfairness, with a sysctl knob to tune it if somebody needs
-> to.  But the default value should hopefully be good for any normal load,
-> allowing a few rounds of lock stealing, but enforcing the strict
-> ordering before the lock has been stolen too many times.
-> 
-> There is also a hint from Matthieu Baerts that the fair page coloring
-> may end up exposing an ABBA deadlock that is hidden by the usual
-> optimistic lock stealing, and while the unfairness doesn't fix the
-> fundamental issue (and I'm still looking at that), it avoids it in
-> practice.
-> 
-> The amount of unfairness can be modified by writing a new value to the
-> 'sysctl_page_lock_unfairness' variable (default value of 5, exposed
-> through /proc/sys/vm/page_lock_unfairness), but that is hopefully
-> something we'd use mainly for debugging rather than being necessary for
-> any deep system tuning.
-> 
-> This whole issue has exposed just how critical the page lock can be, and
-> how contended it gets under certain locks.  And the main contention
-> doesn't really seem to be anything related to IO (which was the origin
-> of this lock), but for things like just verifying that the page file
-> mapping is stable while faulting in the page into a page table.
-> 
-> Link: https://lore.kernel.org/linux-fsdevel/ed8442fd-6f54-dd84-cd4a-941e8b7ee603@MichaelLarabel.com/
-> Link: https://www.phoronix.com/scan.php?page=article&item=linux-50-59&num=1
-> Link: https://lore.kernel.org/linux-fsdevel/c560a38d-8313-51fb-b1ec-e904bd8836bc@tessares.net/
-> Reported-and-tested-by: Michael Larabel <Michael@michaellarabel.com>
-> Tested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Cc: Dave Chinner <david@fromorbit.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> CC: <stable@vger.kernel.org> # 5.4
-> [ mheyne: fixed contextual conflict in mm/filemap.c due to missing
->   commit c7510ab2cf5c ("mm: abstract out wake_page_match() from
->   wake_page_function()"). Added WQ_FLAG_CUSTOM due to missing commit
->   7f26482a872c ("locking/percpu-rwsem: Remove the embedded rwsem") ]
-> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-> ---
->  include/linux/mm.h   |   2 +
->  include/linux/wait.h |   2 +
->  kernel/sysctl.c      |   8 +++
->  mm/filemap.c         | 160 ++++++++++++++++++++++++++++++++++---------
->  4 files changed, 141 insertions(+), 31 deletions(-)
+Hello,
 
-This was also backported here:
-	https://lore.kernel.org/r/20230821222547.483583-1-saeed.mirzamohammadi@oracle.com
-before yours.
+this patchset is first of three parts of another big patchset for
+MSG_ZEROCOPY flag support:
+https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
 
-I took that one, can you verify that it is identical to yours and works
-properly as well?
+During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+suggested to split it for three parts to simplify review and merging:
 
-thanks,
+1) virtio and vhost updates (for fragged skbs) <--- this patchset
+2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+   tx completions) and update for Documentation/.
+3) Updates for tests and utils.
 
-greg k-h
+This series enables handling of fragged skbs in virtio and vhost parts.
+Newly logic won't be triggered, because SO_ZEROCOPY options is still
+impossible to enable at this moment (next bunch of patches from big
+set above will enable it).
+
+I've included changelog to some patches anyway, because there were some
+comments during review of last big patchset from the link above.
+
+Head for this patchset is:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=b38460bc463c54e0c15ff3b37e81f7e2059bb9bb
+
+Link to v1:
+https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
+Link to v2:
+https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
+Link to v3:
+https://lore.kernel.org/netdev/20230720214245.457298-1-AVKrasnov@sberdevices.ru/
+Link to v4:
+https://lore.kernel.org/netdev/20230727222627.1895355-1-AVKrasnov@sberdevices.ru/
+Link to v5:
+https://lore.kernel.org/netdev/20230730085905.3420811-1-AVKrasnov@sberdevices.ru/
+Link to v6:
+https://lore.kernel.org/netdev/20230814212720.3679058-1-AVKrasnov@sberdevices.ru/
+
+Changelog:
+ v3 -> v4:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ v4 -> v5:
+ * See per-patch changelog after ---.
+ v5 -> v6:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+ v6 -> v7:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+
+Arseniy Krasnov (4):
+  vsock/virtio/vhost: read data from non-linear skb
+  vsock/virtio: support to send non-linear skb
+  vsock/virtio: non-linear skb handling for tap
+  vsock/virtio: MSG_ZEROCOPY flag support
+
+ drivers/vhost/vsock.c                   |  14 +-
+ include/linux/virtio_vsock.h            |   6 +
+ net/vmw_vsock/virtio_transport.c        |  87 ++++++-
+ net/vmw_vsock/virtio_transport_common.c | 303 ++++++++++++++++++------
+ 4 files changed, 330 insertions(+), 80 deletions(-)
+
+-- 
+2.25.1
+
