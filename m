@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DB3789B56
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 06:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E73789B59
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 06:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbjH0EPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 00:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S229599AbjH0ERa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 00:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjH0EPq (ORCPT
+        with ESMTP id S230025AbjH0ERW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 00:15:46 -0400
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E94E1AC
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 21:15:44 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1c504386370so1544201fac.1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 21:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693109742; x=1693714542;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Yt7H9ySicMeQ6CipjH35qj5+nF/2PyaMgGzn05Vybi8=;
-        b=VjNpwv46Ds0oNBdkjzqAcQmeeXEzwAZA0VnMUYxq2xHXIT2KlnzZ82nndTyc4BL7tj
-         MC0n8srTzz++vFBulgnkkZfW+VMV+fUYfU4lrNhExo+vt90av/TwTizVFchvjCZbpjEo
-         Ge4+q9SGK3JopZ8MStAdV++By+EHrz8EozzNq3LFx6eQbgZvYANOVrScaE4a78O8L8bu
-         S98d0/ydDhaTZ4ZMf6tXGpIlZd6qgx+zwbbXq+LtMGOQkmyL6rc8FLddIGYyFCIfXqQf
-         7+whShT1TQmiAviWLR9ZYf2Qj58X8JK60uDrMkoyYThTN8Pnj58/gVXjU7Q9fmmQU4ij
-         hc/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693109742; x=1693714542;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yt7H9ySicMeQ6CipjH35qj5+nF/2PyaMgGzn05Vybi8=;
-        b=MkKY1MQppnZ/gPklYulRl2HYwOqKqX638cTAriesR8Dy5fD1uK0prZ0kAbWefZjm+i
-         ie6ausSd68yjbi76WN73cnAFX51wN/3KdFfSns6FJGtrkjH+IVK7DC2O+Pflqg1b19Af
-         Zc4oopuaw1fvHwRPEzmLFQe7mXRd5l1f0EbAya/ZqnrQd5WG9QW/6gQs6xit8+cAePsn
-         Qrt66dPQH8MjHy9l/Getm+lR8XXG/AczJmRbzx9BdmFX2SxynxI2cP3NQXYZ+/vH8gyX
-         BJghFl/XIThajZ8of4ssZhqMEH5HqBXYawgzVHy7TELYB+vQm2WzCOm/8SfdOIcKolul
-         z7kw==
-X-Gm-Message-State: AOJu0YyfUKoy/lmJfgkeH1sqPSz3DS+zUfhIqpRxkt+Qp27nrTDWR5eB
-        4ljl+nCYVfOFL0Qm/F/cRhmPersUgahVhtpUYQc=
-X-Google-Smtp-Source: AGHT+IEoUvPk6fAL1zO2iNnHtZ/RsuPPopD1xHzzPzFvrD7UL4pz6gUMFIOeL8dZvsFYOgbLk6j47OuViMRaG+7y5H8=
-X-Received: by 2002:a05:6870:d60c:b0:1ba:caf2:acc3 with SMTP id
- a12-20020a056870d60c00b001bacaf2acc3mr7407554oaq.5.1693109741964; Sat, 26 Aug
- 2023 21:15:41 -0700 (PDT)
-MIME-Version: 1.0
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sat, 26 Aug 2023 23:15:30 -0500
-Message-ID: <CAHCN7xKQ549ExO83Yur=_MPv3aYFdR0nfzUSuEXO74OddAr5gQ@mail.gmail.com>
-Subject: Question about simple-audio-card with dummy CODEC
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Sun, 27 Aug 2023 00:17:22 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9808E1AC;
+        Sat, 26 Aug 2023 21:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P6YFESwJ8CS4wS0/xXDwMGJAD8dyySjIqkTublqcYoc=; b=XRa6jbgCFmTtisegbM3tfAuVdf
+        trUXr5rTH0/8dmrshEZoEPnfpgzdSKBSr84mgLrHql/rLKo0PREGguo+D8guZZc/znVZ0esCNVjWw
+        hK+h4EpG0Re6Qdh00B49hqOfAEyGT+7ry4IwFpJX9Pbq8Ru3lHzRgYepu8UNQL9TeBK+uKTeBMcER
+        zYKUQNIIM2fwr+9tPizytQs4QLA0as8W+088wngs3gI+Xjz8hG22PptQeBbJr1eHLnuNvKANOSInh
+        IYNs6Dx8C//O+4qa3/ag0vWriT7OUBJvoEzh8apTQ+Q1Rr5LUMCgKhF4LIBN5lekcjAyzAXgDc6mJ
+        JY1L1zfg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qa7DA-001EkI-1Q;
+        Sun, 27 Aug 2023 04:17:16 +0000
+Date:   Sun, 27 Aug 2023 05:17:16 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Joshua Hudson <joshudson@gmail.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Linux IDE and libata <linux-ide@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Subject: Re: Cache coherency bug: stale reads on /dev/sda1
+Message-ID: <20230827041716.GR3390869@ZenIV>
+References: <CA+jjjYTk=5wn2o46uNB+bJYX8xLgMP==dsJuvC94DvtN2f_6Yw@mail.gmail.com>
+ <ZOqg9VovoVanfuR0@debian.me>
+ <CA+jjjYT6+NJwB2Kn0jWLKtmz3dWH6UnVJNA6vDbPXnnJnHMf9Q@mail.gmail.com>
+ <20230827020635.GQ3390869@ZenIV>
+ <CA+jjjYRr3SHvXhVZLfACkUrN98n3W8aMBe1e8zqUNDuRZt17=A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+jjjYRr3SHvXhVZLfACkUrN98n3W8aMBe1e8zqUNDuRZt17=A@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I want to use a PDM microphone on a variety of i.MX8M (Mini/Nano/Plus)
-boards with the simple-audio-card driver.  I can get this device to
-enumerate when I use "fsl,imx-audio-card" and it appears that it
-connects to a dummy codec:
+On Sat, Aug 26, 2023 at 07:38:57PM -0700, Joshua Hudson wrote:
+> "Whole disk and all partitions have page caches of their own."
+> 
+> That's so bad.
+> 
+> I can think of numerous cases where this will cause problems; including
+> some I encountered last year and did not understand at the time. Manipulating
+> EFI partitions through the whole disk device makes sense because FAT filesystems
+> *know their offset on the disk*, and some of the existing tools really
+> don't like being
+> given a partition device.
 
-sysdefault:CARD=imxaudiomicfil
-    imx-audio-micfil, micfil hifi snd-soc-dummy-dai-0
-    Default Audio Device
+Explain, please.  How does FAT filesystem know its offset on disk?
+Since when?  It had always been possible to copy a FAT image into
+a partition verbatim and it works no matter where on disk that
+partition happens to be...
 
-When I attempt to use "simple-audio-card" with just the
-simple-audio-card,cpu  sound-dai node pointing to the micfil cpu
-without a codec node, nothing appears in arecord -L, and I don't see
-errors.
+Has that changed at some point?  Do you have any references?  Ideally
+with some kind of rationale for that weirdness...
 
-I am guessing the simple-audio-card driver is expecting a CODEC, so
-hacked soc-utils.c to give soc_dummy_driver an of_match_table and
-assigned it a corresponding 'compatible' name. I then routed the codec
-node on the simple-audio-card to the dummy CODEC and it enumerated
-just like it did with the custom fsl,imx-audio-card driver:
-
-sysdefault:CARD=soundpdm
-    sound-pdm, 30ca0000.audio-controller-snd-soc-dummy-dai snd-soc-dummy-dai-0
-    Default Audio Device
-
-I am asking what is the best way to let simple-audio-card  use a dummy
-codec?  If the dummy codec is the better option, what compatible name
-should I use?
-
-adam
+Or am I misparsing what you wrote?
