@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C4078A14C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 21:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A87278A14D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 21:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbjH0Txq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 15:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        id S230187AbjH0Tyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 15:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjH0Txb (ORCPT
+        with ESMTP id S230180AbjH0Tyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 15:53:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4F9BE;
-        Sun, 27 Aug 2023 12:53:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C87E360C81;
-        Sun, 27 Aug 2023 19:53:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F11C6C433C8;
-        Sun, 27 Aug 2023 19:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693166008;
-        bh=y9yVPCEcriR/n05MjZABboIIo7JC850DcSRHaghnx7g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GtovuFjDpIERjiLv2YugLZMtEsuWgLiMk9+wmF+eKblmCUf+S2WhOyOqrvqSElWjh
-         JDJt3PJqHcY7HI/4eg16UwbWG04t9z/QtpGiJndhYeO1LUi6vKawrmsIotjxo9QOLN
-         bkAfJQoTPALMZP2Vw+UrBbiqj7a2M588xV+UCMFNs2a5HyyXLWjtUILW5n4XUfCGF2
-         kunGtFxp0iviN49UC9dOCra6mZLehC3F8mEdtNt5NR/eZTN2y2KH+4k8NSjXiGl0h+
-         ZLGtHuBzxEeQcMXYn35TM5y0njCnrjf28j9W1tm4cWJgVONBcdxuXL1LaqwoHFRfuF
-         xNJdAqYVJ1ZGw==
-Date:   Sun, 27 Aug 2023 21:53:08 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Michael Chan <michael.chan@broadcom.com>
-Cc:     Mikhail Kobuk <m.kobuk@ispras.ru>,
-        Siva Reddy Kallam <siva.kallam@broadcom.com>,
-        Prashant Sreedharan <prashant@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        lvc-project@linuxtesting.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: Re: [PATCH] ethernet: tg3: remove unreachable code
-Message-ID: <20230827195308.GX3523530@kernel.org>
-References: <20230825190443.48375-1-m.kobuk@ispras.ru>
- <20230827165130.GV3523530@kernel.org>
- <CACKFLi=+BL3xZGhEV3_J0pcEu9Xm8QkE6hE0g4RHd9xZqzjD_Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACKFLi=+BL3xZGhEV3_J0pcEu9Xm8QkE6hE0g4RHd9xZqzjD_Q@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 27 Aug 2023 15:54:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB701C2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 12:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693166084; x=1724702084;
+  h=date:from:to:cc:subject:message-id;
+  bh=Lvk8Kdp0acgE+o6pqH9dxvohql7K6oElZYa4cootuPM=;
+  b=kB5RFOvZMtKHWAfn7v3TwBAuDY6CmfOYl81NfR/TtkNuWu7Xf3G1KwOg
+   QkStV1SJTrkBRaL5nEnqDUS2to7PWq97tZJLLQvqxyWYbAqTaAoV2vjFj
+   YjaF6KMx8ZpNJ2wFncYp3k9xGbyqgf+98/1SSq50GfjMvHLATCuV2FIVZ
+   UJF6Zi/0GcNrs4BcSn8hwyIT/V5nNleA9FRZIuiCjdIFgYjf/QtAGcMx/
+   WIWEmS5pLTqKCUm/7vz0HP0UACqeqRSEZXt/rW+UGuKeRJmWhCDELpC19
+   YyA2uRAW2jHAMShauVyKtEH9Bk32KVy0v5p3URJD5KBlAhllvqRPCKKb+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="359962246"
+X-IronPort-AV: E=Sophos;i="6.02,205,1688454000"; 
+   d="scan'208";a="359962246"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2023 12:54:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="731608403"
+X-IronPort-AV: E=Sophos;i="6.02,205,1688454000"; 
+   d="scan'208";a="731608403"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 27 Aug 2023 12:54:43 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qaLqM-00068r-2d;
+        Sun, 27 Aug 2023 19:54:42 +0000
+Date:   Mon, 28 Aug 2023 03:54:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/microcode] BUILD SUCCESS
+ 4d2b748305e96fb76202a0d1072a285b1500bff3
+Message-ID: <202308280329.99csCKNF-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 10:29:37AM -0700, Michael Chan wrote:
-> On Sun, Aug 27, 2023 at 9:51 AM Simon Horman <horms@kernel.org> wrote:
-> >
-> > On Fri, Aug 25, 2023 at 10:04:41PM +0300, Mikhail Kobuk wrote:
-> >
-> > + Matt Carlson <mcarlson@broadcom.com>
-> 
-> Matt Carlson is no longer working for Broadcom.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/microcode
+branch HEAD: 4d2b748305e96fb76202a0d1072a285b1500bff3  x86/microcode: Remove remaining references to CONFIG_MICROCODE_AMD
 
-Thanks, got it.
+elapsed time: 1888m
 
-> > > 'tp->irq_max' value is either 1 [L16336] or 5 [L16354], as indicated in
-> > > tg3_get_invariants(). Therefore, 'i' can't exceed 4 in tg3_init_one()
-> > > that makes (i <= 4) always true. Moreover, 'intmbx' value set at the
-> > > last iteration is not used later in it's scope.
-> > >
-> > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > >
-> > > Fixes: 78f90dcf184b ("tg3: Move napi_add calls below tg3_get_invariants")
-> > > Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
-> > > Reviewed-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-> 
-> Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+configs tested: 28
+configs skipped: 136
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-002-20230826   gcc  
+i386                  randconfig-004-20230826   gcc  
+i386                  randconfig-015-20230826   clang
+i386                  randconfig-016-20230826   clang
+x86_64                            allnoconfig   gcc  
+x86_64       buildonly-randconfig-006-20230826   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20230826   clang
+x86_64                randconfig-002-20230826   clang
+x86_64                randconfig-003-20230826   clang
+x86_64                randconfig-004-20230826   clang
+x86_64                randconfig-005-20230826   clang
+x86_64                randconfig-006-20230826   clang
+x86_64                randconfig-011-20230826   gcc  
+x86_64                randconfig-012-20230826   gcc  
+x86_64                randconfig-014-20230826   gcc  
+x86_64                randconfig-071-20230826   gcc  
+x86_64                randconfig-072-20230826   gcc  
+x86_64                randconfig-073-20230826   gcc  
+x86_64                randconfig-074-20230826   gcc  
+x86_64                randconfig-075-20230826   gcc  
+x86_64                randconfig-076-20230826   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
