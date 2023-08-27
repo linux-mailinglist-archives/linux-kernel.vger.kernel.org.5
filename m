@@ -2,109 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF69789B84
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 07:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A5A789B91
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 08:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjH0Fyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 01:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
+        id S229656AbjH0GV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 02:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjH0FyH (ORCPT
+        with ESMTP id S229644AbjH0GVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 01:54:07 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE6A121;
-        Sat, 26 Aug 2023 22:53:57 -0700 (PDT)
-Received: from leknes.fjasle.eu ([46.142.97.125]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MUokB-1q9uju3HLV-00QnIT; Sun, 27 Aug 2023 07:52:55 +0200
-Received: by leknes.fjasle.eu (Postfix, from userid 1000)
-        id B485D3E71A; Sun, 27 Aug 2023 07:52:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1693115573; bh=PEBDu2LsYY9cfkceNFyC5Y0UToOR2TEeQSWUUb4j1EY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JCf0AfwHTDyJG1qgVCiprdeiykbLHvErIpo0x7UTB/0gmVSCUg1uzVwkcrUDGHUoQ
-         72PMany4IEdzQXz86FVIak/eHwGo/UMjsszLFXnZ2MuPBlYFOkpK8JmZsu3A++zAXw
-         oXXdPN13opbRFW2Z0qoA7PjqiUxkog34/G114yB4=
-Date:   Sun, 27 Aug 2023 07:52:53 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Guru Das Srinagesh <quic_gurus@quicinc.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, u.kleine-koenig@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] scripts: Add add-maintainer.py
-Message-ID: <ZOrktcX1L6WHmLBi@fjasle.eu>
-References: <cover.1691049436.git.quic_gurus@quicinc.com>
- <829b08342568735095bbd3f8c44f435f44688018.1691049436.git.quic_gurus@quicinc.com>
- <ZOYicEP8D7kNGFin@fjasle.eu>
- <20230824214436.GA22659@quicinc.com>
- <ZOiUOcMOeYvMzq58@bergen.fjasle.eu>
- <20230825170001.GB22659@quicinc.com>
+        Sun, 27 Aug 2023 02:21:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A9C183;
+        Sat, 26 Aug 2023 23:21:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D148861BFD;
+        Sun, 27 Aug 2023 06:21:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 27B7AC433C9;
+        Sun, 27 Aug 2023 06:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693117307;
+        bh=6UUXpO9T2ZjC/jSRr1ot3zZfncDhgWdLHcdF5xDh8zk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=FO5tXPdOEjpQmNZOqrRATWIad10KITbXuBLgewxwStt1JiDPZCd0dhDxMzc66WPxV
+         yiklSu54L3pE4rHSiCdpcfV0+j1ZdKGc6DLDVpr0FPps2G4R+RUu7wilxXlyWJpize
+         6kEmJAnGOliHg5rcHU5vvhJxB5HepbCR8ScvCGR65WXFUOm8U/HY+MiKAo62TeqBIX
+         pnAQN+sGNzxJv1ditKAvOpny/ODkllPi176IecAYDCYjtCh9Q/mfeChQ7OUq01MWUS
+         TSDLBXdBLWvMq8HE2opTzevd9JQTE8lYywNRcwawF+DM7rVkaV240dX/whs59B1E9q
+         0RP6Zh6oKuV+A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0BB27E33083;
+        Sun, 27 Aug 2023 06:21:47 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825170001.GB22659@quicinc.com>
-X-Provags-ID: V03:K1:SHb9/Jr2C2NWaPBXsZy0Asb6ySKk1dxrD8lEMkQnI7Yz5bn3Bws
- wL9hkEZV66e+uhHiooIZXq4Tnyy/vy+IIljkiMhA5PM8a+heCD9cEm2wwwDbZiUCN6idND/
- csJbRciSBbi9Qgh7tTo3VJTx1yNtNI7UUnZvNM+zLKXo68/Ry78e2VSL9D4lDWIw4Zj/ich
- ZmHumxiXlyy67Rxf8Mywg==
-UI-OutboundReport: notjunk:1;M01:P0:pb8TgKev4sc=;b+LNStGfk+7SG1dylUYX4fWyXEd
- GbmjoydExqsKwip/t1r6MtoRY7AnqFmu9TNDE/nUN/xJLzo1tV6euglY0ZfYbSb4kOFwoFHKh
- IDOzWdcS9oYgfz5GqC3owEfMVj92Qj+/iFcMSGiJh46P+zl/sXpLbEsFlQ2YNdEJG5hgHX384
- 43YHVrB//kpPGKhvJsDlLD7UxfbGR+Wi69Fothe6it4KdUSDpS5Uh5GfIk89QIBW6M0RrzhNh
- vi7d+OXCMIIMzabHWWfKJFGqKN5cvqp3nSlgivMCP5nWHu03gD6jKzdgRSN/Y15bi4NuSy5HQ
- 12D2C1g5kBem/A8k/F8QYO3qMFlX2lGZycBftGe6pp4Go0YOS7dXDHUW+Rym9iesU5zlwqdQQ
- Gtk9sKmtvNV69WoQRHmCrdHyVWdE040og8Hjr/TnSRvUY6Y3l93+uhgdj96IkQwsZ2IHp2aJ+
- I6OJ1azevh+sppDxhvsGTpXIUBa3zKDzdb8WVg1EPqqTNo5ul0Yr04diXMXYI9o6syaLbJ+9B
- d4AUpB1oZvl/nboFTAPdo0iwyqkkfpKoqnh3ETd5yJC+aQE8Jg+S6j7AEmhSu8+jToES3jfUk
- iGlRAETOWyIwzqRVj00WpFNnGvfVqb9Al4asIRwXrr8KbbtzQYV/+hrLrYTZmSkdeeU9jzMLP
- Rs5HpSKn2c+9/dDb3W7u0mhLx6Ot0WFGmE4ERf6T4fmWGxaBB8UgNW1ysdSdn8lQcFt2wKHQx
- UG9j0htsw9TCJqfGXcbT9Z44xbUAVcmp6XtQMGSwQueKN83/wCNM7tFl0Syhdr8IrYfcs7JB6
- wRGeDNWUnsokLK7BdKfPWQq9eQ0djKw56yR+HenDPiBMbGRh4vnqmdE8AQ+//gSKOCbJ+wb9d
- r9dwLWIR7CxYN4g==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 0/5] Introduce IEP driver and packet timestamping support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169311730704.334.2679024548095794148.git-patchwork-notify@kernel.org>
+Date:   Sun, 27 Aug 2023 06:21:47 +0000
+References: <20230824114618.877730-1-danishanwar@ti.com>
+In-Reply-To: <20230824114618.877730-1-danishanwar@ti.com>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     rdunlap@infradead.org, rogerq@kernel.org,
+        simon.horman@corigine.com, vigneshr@ti.com, andrew@lunn.ch,
+        richardcochran@gmail.com, conor+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
+        davem@davemloft.net, nm@ti.com, srk@ti.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 10:00:01AM -0700 Guru Das Srinagesh wrote:
-> On Aug 25 2023 13:44, Nicolas Schier wrote:
-> > On Thu 24 Aug 2023 14:44:36 GMT, Guru Das Srinagesh wrote:
-> > > > While testing, I thought that adding addresses without filtering-out duplicates
-> > > > was odd; but as git-send-email does the unique filtering, it doesn't matter.
-> > > 
-> > > Since I'm using `set()` in this script, the uniqueness is guaranteed here as
-> > > well - there won't be any duplicates.
-> > 
-> > I thought about patch files that already have 'To/Cc' headers (e.g.  
-> > 'git format-patch --to=... --cc=...' or by running add-maintainer.py 
-> > multiple times for updating the lists of recipients.  The result is a 
-> > patch file with possible duplicated lines; but as written: it does 
-> > matter, effectively.
-> 
-> Sorry, did you mean "does" or "does *not*"?
+Hello:
 
-I'm sorry, "it doe not matter".
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Nicolas
+On Thu, 24 Aug 2023 17:16:13 +0530 you wrote:
+> This series introduces Industrial Ethernet Peripheral (IEP) driver to
+> support timestamping of ethernet packets and thus support PTP and PPS
+> for PRU ICSSG ethernet ports.
+> 
+> This series also adds 10M full duplex support for ICSSG ethernet driver.
+> 
+> There are two IEP instances. IEP0 is used for packet timestamping while IEP1
+> is used for 10M full duplex support.
+> 
+> [...]
 
-> I'll make sure to test v3 of this script out on patches that have To/Cc already
-> included and also run it multiple times on the same patch (effectively the same
-> thing).
-> 
-> Thank you.
-> 
-> Guru Das.
+Here is the summary with links:
+  - [v7,1/5] dt-bindings: net: Add ICSS IEP
+    https://git.kernel.org/netdev/net-next/c/f0035689c036
+  - [v7,2/5] dt-bindings: net: Add IEP property in ICSSG
+    https://git.kernel.org/netdev/net-next/c/b12056278378
+  - [v7,3/5] net: ti: icss-iep: Add IEP driver
+    https://git.kernel.org/netdev/net-next/c/c1e0230eeaab
+  - [v7,4/5] net: ti: icssg-prueth: add packet timestamping and ptp support
+    https://git.kernel.org/netdev/net-next/c/186734c15886
+  - [v7,5/5] net: ti: icssg-prueth: am65x SR2.0 add 10M full duplex support
+    https://git.kernel.org/netdev/net-next/c/443a2367ba3c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
