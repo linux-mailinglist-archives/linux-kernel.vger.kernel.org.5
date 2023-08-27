@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD00F789CE1
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 12:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C560789CE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 12:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbjH0KNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 06:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
+        id S230501AbjH0KNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 06:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjH0KM3 (ORCPT
+        with ESMTP id S230430AbjH0KMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 06:12:29 -0400
+        Sun, 27 Aug 2023 06:12:41 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89147127
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 03:11:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAB4128
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 03:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693131107;
+        s=mimecast20190719; t=1693131115;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YK7T85vx8iCEMaXbCChNlA1g9PhGLEkKTHdrd3z3JaA=;
-        b=VDYsSHv3byXQ2B+vDXtln87B7oYnaaIEaIR+mhohwt2Lh/xd4UB+mcRWshrai8+/bUFAdO
-        px91/Fp3HrXoindkNguwdMf8g8u7K/iStR1c1kmkaBUozbL+pDJPNADe5iG94POkrKxZl6
-        6Da871oL5Y7UjcoOaKOtMQqXMFzzNEw=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-258-lTvJkyeNO62CNkI-e2tH1g-1; Sun, 27 Aug 2023 06:11:46 -0400
-X-MC-Unique: lTvJkyeNO62CNkI-e2tH1g-1
+        bh=iV2wLAfcAl+D7MYwEotIMI/hG+PsohPBamGW1ll7QSU=;
+        b=N0fWT95n/idPE3VjgiK7O5ElErLRV1fmPU159EAM7JwO1/IGCDGFvsoJp5xvkIgweYcAxv
+        +kW9a7h9DYNl9sJ1H7+JeuynzrFNuGty7sfm0YtUUdc4J1lyfpDsR7WObKc3M7lGBj7N7E
+        4ho3wyK/+UMuOv5HvHHx0QWfEZUuQ+g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-372-dcQi-t8wMe-jYcKP77Qj1Q-1; Sun, 27 Aug 2023 06:11:50 -0400
+X-MC-Unique: dcQi-t8wMe-jYcKP77Qj1Q-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 77EB63806630;
-        Sun, 27 Aug 2023 10:11:45 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5E1C185CBE0;
+        Sun, 27 Aug 2023 10:11:50 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BA8A2166B25;
-        Sun, 27 Aug 2023 10:11:40 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2624C2166B25;
+        Sun, 27 Aug 2023 10:11:45 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
@@ -45,9 +45,9 @@ Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
         akpm@linux-foundation.org, catalin.marinas@arm.com,
         thunder.leizhen@huawei.com, dyoung@redhat.com, prudo@redhat.com,
         Baoquan He <bhe@redhat.com>
-Subject: [PATCH 2/8] crash_core: change the prototype of function parse_crashkernel()
-Date:   Sun, 27 Aug 2023 18:11:21 +0800
-Message-ID: <20230827101128.70931-3-bhe@redhat.com>
+Subject: [PATCH 3/8] include/linux/kexec.h: move down crash_core.h including
+Date:   Sun, 27 Aug 2023 18:11:22 +0800
+Message-ID: <20230827101128.70931-4-bhe@redhat.com>
 In-Reply-To: <20230827101128.70931-1-bhe@redhat.com>
 References: <20230827101128.70931-1-bhe@redhat.com>
 MIME-Version: 1.0
@@ -64,232 +64,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two parameters 'low_size' and 'high' to function parse_crashkernel(),
-later crashkernel=,high|low parsing will be added. Make adjustments in all
-call sites of parse_crashkernel() in arch.
+Later generic macros related to crash_core will be added into
+<linux/crash_core.h>, and the corresponding arch specific macros will be
+added to override them if needed. And Kconfig option KEXEC_CORE selects
+CRASH_CORE. So move <linux/crash_core.h> including after <asm/kexec.h>.
+
+And also move the crash_res|low_res and crash_notes delcarations after
+<linux/crash_core.h> including because they are all defined in
+kernel/kexec_core.c, and note_buf_t is definied in crash_core.h.
+
+This is a preparation patch.
 
 Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- arch/arm/kernel/setup.c              |  3 ++-
- arch/arm64/mm/init.c                 |  2 +-
- arch/ia64/kernel/setup.c             |  2 +-
- arch/loongarch/kernel/setup.c        |  4 +++-
- arch/mips/kernel/setup.c             |  3 ++-
- arch/powerpc/kernel/fadump.c         |  2 +-
- arch/powerpc/kexec/core.c            |  2 +-
- arch/powerpc/mm/nohash/kaslr_booke.c |  2 +-
- arch/riscv/mm/init.c                 |  2 +-
- arch/s390/kernel/setup.c             |  4 ++--
- arch/sh/kernel/machine_kexec.c       |  2 +-
- arch/x86/kernel/setup.c              |  3 ++-
- include/linux/crash_core.h           |  3 ++-
- kernel/crash_core.c                  | 15 ++++++++++++---
- 14 files changed, 32 insertions(+), 17 deletions(-)
+ include/linux/kexec.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
-index c66b560562b3..e2bb7afd0683 100644
---- a/arch/arm/kernel/setup.c
-+++ b/arch/arm/kernel/setup.c
-@@ -1010,7 +1010,8 @@ static void __init reserve_crashkernel(void)
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 22b5cd24f581..8768fd9e2a66 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -15,25 +15,25 @@
  
- 	total_mem = get_total_mem();
- 	ret = parse_crashkernel(boot_command_line, total_mem,
--				&crash_size, &crash_base);
-+				&crash_size, &crash_base,
-+				NULL, NULL);
- 	/* invalid value specified or crashkernel=0 */
- 	if (ret || !crash_size)
- 		return;
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index d31c3a9290c5..36967b82c150 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -115,7 +115,7 @@ static void __init reserve_crashkernel(void)
+ #if !defined(__ASSEMBLY__)
  
- 	/* crashkernel=X[@offset] */
- 	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
--				&crash_size, &crash_base);
-+				&crash_size, &crash_base, NULL, NULL);
- 	if (ret == -ENOENT) {
- 		ret = parse_crashkernel_high(cmdline, 0, &crash_size, &crash_base);
- 		if (ret || !crash_size)
-diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
-index 5a55ac82c13a..4faea2d2cf07 100644
---- a/arch/ia64/kernel/setup.c
-+++ b/arch/ia64/kernel/setup.c
-@@ -277,7 +277,7 @@ static void __init setup_crashkernel(unsigned long total, int *n)
- 	int ret;
+-#include <linux/crash_core.h>
+ #include <asm/io.h>
+ #include <linux/range.h>
  
- 	ret = parse_crashkernel(boot_command_line, total,
--			&size, &base);
-+			&size, &base, NULL, NULL);
- 	if (ret == 0 && size > 0) {
- 		if (!base) {
- 			sort_regions(rsvd_region, *n);
-diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
-index 9d830ab4e302..776a068d8718 100644
---- a/arch/loongarch/kernel/setup.c
-+++ b/arch/loongarch/kernel/setup.c
-@@ -267,7 +267,9 @@ static void __init arch_parse_crashkernel(void)
- 	unsigned long long crash_base, crash_size;
+ #include <uapi/linux/kexec.h>
+ #include <linux/verification.h>
  
- 	total_mem = memblock_phys_mem_size();
--	ret = parse_crashkernel(boot_command_line, total_mem, &crash_size, &crash_base);
-+	ret = parse_crashkernel(boot_command_line, total_mem,
-+				&crash_size, &crash_base,
-+				NULL, NULL);
- 	if (ret < 0 || crash_size <= 0)
- 		return;
- 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index cb871eb784a7..08321c945ac4 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -460,7 +460,8 @@ static void __init mips_parse_crashkernel(void)
- 
- 	total_mem = memblock_phys_mem_size();
- 	ret = parse_crashkernel(boot_command_line, total_mem,
--				&crash_size, &crash_base);
-+				&crash_size, &crash_base,
-+				NULL, NULL);
- 	if (ret != 0 || crash_size <= 0)
- 		return;
- 
-diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
-index ea0a073abd96..7dbdeba56e74 100644
---- a/arch/powerpc/kernel/fadump.c
-+++ b/arch/powerpc/kernel/fadump.c
-@@ -313,7 +313,7 @@ static __init u64 fadump_calculate_reserve_size(void)
- 	 * memory at a predefined offset.
- 	 */
- 	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
--				&size, &base);
-+				&size, &base, NULL, NULL);
- 	if (ret == 0 && size > 0) {
- 		unsigned long max_size;
- 
-diff --git a/arch/powerpc/kexec/core.c b/arch/powerpc/kexec/core.c
-index de64c7962991..9346c960b296 100644
---- a/arch/powerpc/kexec/core.c
-+++ b/arch/powerpc/kexec/core.c
-@@ -109,7 +109,7 @@ void __init reserve_crashkernel(void)
- 	total_mem_sz = memory_limit ? memory_limit : memblock_phys_mem_size();
- 	/* use common parsing */
- 	ret = parse_crashkernel(boot_command_line, total_mem_sz,
--			&crash_size, &crash_base);
-+			&crash_size, &crash_base, NULL, NULL);
- 	if (ret == 0 && crash_size > 0) {
- 		crashk_res.start = crash_base;
- 		crashk_res.end = crash_base + crash_size - 1;
-diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
-index 2fb3edafe9ab..b4f2786a7d2b 100644
---- a/arch/powerpc/mm/nohash/kaslr_booke.c
-+++ b/arch/powerpc/mm/nohash/kaslr_booke.c
-@@ -178,7 +178,7 @@ static void __init get_crash_kernel(void *fdt, unsigned long size)
- 	int ret;
- 
- 	ret = parse_crashkernel(boot_command_line, size, &crash_size,
--				&crash_base);
-+				&crash_base, NULL, NULL);
- 	if (ret != 0 || crash_size == 0)
- 		return;
- 	if (crash_base == 0)
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index e4c35ac2357f..a9ef0824f905 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -1332,7 +1332,7 @@ static void __init reserve_crashkernel(void)
- 	}
- 
- 	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
--				&crash_size, &crash_base);
-+				&crash_size, &crash_base, NULL, NULL);
- 	if (ret || !crash_size)
- 		return;
- 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 00d76448319d..386a36181ceb 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -625,8 +625,8 @@ static void __init reserve_crashkernel(void)
- 	phys_addr_t low, high;
- 	int rc;
- 
--	rc = parse_crashkernel(boot_command_line, ident_map_size, &crash_size,
--			       &crash_base);
-+	rc = parse_crashkernel(boot_command_line, ident_map_size,
-+			       &crash_size, &crash_base, NULL, NULL);
- 
- 	crash_base = ALIGN(crash_base, KEXEC_CRASH_MEM_ALIGN);
- 	crash_size = ALIGN(crash_size, KEXEC_CRASH_MEM_ALIGN);
-diff --git a/arch/sh/kernel/machine_kexec.c b/arch/sh/kernel/machine_kexec.c
-index 223c14f44af7..fa3a7b36190a 100644
---- a/arch/sh/kernel/machine_kexec.c
-+++ b/arch/sh/kernel/machine_kexec.c
-@@ -154,7 +154,7 @@ void __init reserve_crashkernel(void)
- 	int ret;
- 
- 	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
--			&crash_size, &crash_base);
-+			&crash_size, &crash_base, NULL, NULL);
- 	if (ret == 0 && crash_size > 0) {
- 		crashk_res.start = crash_base;
- 		crashk_res.end = crash_base + crash_size - 1;
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index fd975a4a5200..382c66d2cf71 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -558,7 +558,8 @@ static void __init reserve_crashkernel(void)
- 	total_mem = memblock_phys_mem_size();
- 
- 	/* crashkernel=XM */
--	ret = parse_crashkernel(boot_command_line, total_mem, &crash_size, &crash_base);
-+	ret = parse_crashkernel(boot_command_line, total_mem,
-+				&crash_size, &crash_base, NULL, NULL);
- 	if (ret != 0 || crash_size <= 0) {
- 		/* crashkernel=X,high */
- 		ret = parse_crashkernel_high(boot_command_line, total_mem,
-diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-index de62a722431e..2e76289699ff 100644
---- a/include/linux/crash_core.h
-+++ b/include/linux/crash_core.h
-@@ -78,7 +78,8 @@ Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
- void final_note(Elf_Word *buf);
- 
- int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
--		unsigned long long *crash_size, unsigned long long *crash_base);
-+		unsigned long long *crash_size, unsigned long long *crash_base,
-+		unsigned long long *low_size, bool *high);
- int parse_crashkernel_high(char *cmdline, unsigned long long system_ram,
- 		unsigned long long *crash_size, unsigned long long *crash_base);
- int parse_crashkernel_low(char *cmdline, unsigned long long system_ram,
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index f27b4e45d410..f6a5c219e2e1 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -280,10 +280,19 @@ static int __init __parse_crashkernel(char *cmdline,
- int __init parse_crashkernel(char *cmdline,
- 			     unsigned long long system_ram,
- 			     unsigned long long *crash_size,
--			     unsigned long long *crash_base)
-+			     unsigned long long *crash_base,
-+			     unsigned long long *low_size,
-+			     bool *high)
- {
--	return __parse_crashkernel(cmdline, system_ram, crash_size, crash_base,
--				NULL);
-+	int ret;
+-/* Location of a reserved region to hold the crash kernel.
+- */
+-extern struct resource crashk_res;
+-extern struct resource crashk_low_res;
+-extern note_buf_t __percpu *crash_notes;
+-
+ #ifdef CONFIG_KEXEC_CORE
+ #include <linux/list.h>
+ #include <linux/compat.h>
+ #include <linux/ioport.h>
+ #include <linux/module.h>
+ #include <asm/kexec.h>
++#include <linux/crash_core.h>
 +
-+	/* crashkernel=X[@offset] */
-+	ret = __parse_crashkernel(cmdline, system_ram, crash_size,
-+				crash_base, NULL);
-+	if (!high)
-+		return ret;
-+
-+	return 0;
- }
++/* Location of a reserved region to hold the crash kernel.
++ */
++extern struct resource crashk_res;
++extern struct resource crashk_low_res;
++extern note_buf_t __percpu *crash_notes;
  
- int __init parse_crashkernel_high(char *cmdline,
+ /* Verify architecture specific macros are defined */
+ 
 -- 
 2.41.0
 
