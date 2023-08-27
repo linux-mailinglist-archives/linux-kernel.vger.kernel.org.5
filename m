@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAB178A12C
+	by mail.lfdr.de (Postfix) with ESMTP id 1086A78A12B
 	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 21:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjH0Tdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 15:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        id S229954AbjH0Tdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 15:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbjH0TdO (ORCPT
+        with ESMTP id S230014AbjH0Td0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 15:33:14 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1B4C6
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 12:33:11 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bd3317144fso2153983a34.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 12:33:11 -0700 (PDT)
+        Sun, 27 Aug 2023 15:33:26 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFA5130
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 12:33:23 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bdc27e00a1so2049238a34.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 12:33:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693164791; x=1693769591;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hrAfmkDjeLWsX6v8VmGfNgFeSlaJo1JXSit4j9nwvGA=;
-        b=mDUWt8SCZ1zQzTOlBmBQG44QpsxPWbmCJ1jzAQS+NXrQmFAOGHUYBf7/FQyhX7Rabm
-         nkJ7jVDE4qN7K29ax84fxHSIEsMAGj76FE9bRRnkPL4YHTNB7Za5Qq70k72ET476kJK5
-         kn8DNJOTRkeNhXJCiwHsP679WyYo5AGxIMa0g+f3JcCtHqCO2oAywAXuNUHCdZf6MWKL
-         wQNKUPcMvIezI7/BSJ98YVDnhYFGNsMNvM6ZK3fxclWXXCSp5bv0ffGIi4OGu1tehq9E
-         NXqYNQuQPPiG694NZzG6g68teAm80orvBIVCnMbl5xmy16ZHQThddoPL1nvl4Y6zvKnI
-         wL1A==
+        d=gmail.com; s=20221208; t=1693164802; x=1693769602;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z9H2w3sipUZvxDTjX+nw9m5xGTNAIR1eJebJktROgBs=;
+        b=WRtC/TgPndqjS0ZdQhgth38KJvwUa9qZuDIhMtHVAJDk7/kLSLry8QYGEdV4TnFd0j
+         hDZ/IkQ0VjBHpjSIIGWUxTDLhG46FgCXa0LCrv2LATNXoKoyvko68gjQCY5M1/37qbnn
+         q1Be6X640jApdK6ogZ4BBAh6p93Stc5eyIQoczHokxVZhtQhuRWwmHs65RjKj44NvyPv
+         WcZkM9JRioEdbBvk+JhQiHiTJ4xVIFxMzKoixf2qDjDPIJ5Fqlo017QhPSteylNYBcJq
+         EBJtewjn0kgXVxU0mMBl5PchHTByOVGQL/hFdenejWG8eBP6w6sHTrQfTKvjyljmde66
+         h6ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693164791; x=1693769591;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hrAfmkDjeLWsX6v8VmGfNgFeSlaJo1JXSit4j9nwvGA=;
-        b=YBySKfQicq3RiotVowFzjyCZccy3tF1ubOqXYHY4eQ8WmDpeWKhYiFr+NbAZjjOXP9
-         UxOWTRxK1yUBBLy4rnzfWRgGHQXD1eRFmwyqeboMehCEAuzGVdCmthxZlHOw8FlfxAs7
-         eGpQsn6XJmD1rXnprIDqLs42sM6bt4ITw+WtNLmfmOJUxBLuRb38eV0XRkp/c4D5lASO
-         hgr5YRCAz09w8DsJUF64gHAIKzuIZHAUeSvw0rO710gb7DRoctKt4a1onOEd9DIT046s
-         Sv9uWqJQZtskee7Mou/4yav3ffjhAPxTtMs2iRzBUK5FyqyAi8XgsB8bfz4Hp4QJwZtm
-         a/wA==
-X-Gm-Message-State: AOJu0Yy9t9FUdBtR5IJzpznYz69DYmEh8G6rJOu/KEZU6Fvdq+NMLRls
-        TgHWAKkAkG5Q09zyuCjhJa4=
-X-Google-Smtp-Source: AGHT+IEjka/+VDKBRuPl/I58rzTsE4cLX6zW7HtFlTr0vDBD4+zQeVcSMY3O31H4NuOtdmZNJc8czg==
-X-Received: by 2002:a9d:7d98:0:b0:6b9:1af3:3307 with SMTP id j24-20020a9d7d98000000b006b91af33307mr12166928otn.17.1693164791248;
-        Sun, 27 Aug 2023 12:33:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693164802; x=1693769602;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z9H2w3sipUZvxDTjX+nw9m5xGTNAIR1eJebJktROgBs=;
+        b=hEURZUanip5NUJ8aIziedW9sB5MaG56mXBhvSWP8faw4dxFoOIefeQTNnspWBBL90X
+         lpqrlkaH8DE9VkRDCVYZ5pitxu7Z44fuqi34cmi5RsZ6BbUfC6lxOcm33RHYD6yCqfW3
+         1O/rZXoA2gp9ur6wpklSORRxusNx9nezKDlaQDkziwu5RSTzoxbcZ2NThQMM5T4axwMA
+         8bPJJEOCFZFHKx2LlUTnEBjr+zSsyDjJTGb7M6TTrjVtsuG464eODm5m71UTe15cIOH9
+         t3XYvupAbe5OUy4IKhOb68hhPNkUhR9tT8hIal4pRuvkmccML5H51UwIjC8+migUngQB
+         KF/w==
+X-Gm-Message-State: AOJu0YzzBYpprRplS/PEwNUJ8huZV6bm9zxN+ycgo0d/pnVaEmV85LZ7
+        VLax+rMC05ePyvTMEcVZiuI=
+X-Google-Smtp-Source: AGHT+IFCHK0aCBaKZX56HE0dVaojp0Wa33UZ/+gATPFI0QfSo76215wVkVop+rC4u0hYC86Ix61CJg==
+X-Received: by 2002:a05:6830:1d83:b0:6bc:952a:1032 with SMTP id y3-20020a0568301d8300b006bc952a1032mr12097268oti.14.1693164802576;
+        Sun, 27 Aug 2023 12:33:22 -0700 (PDT)
 Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:82ea:8c7c:b784:3f92:988a])
-        by smtp.gmail.com with ESMTPSA id l8-20020a9d7348000000b006b96384ba1csm1640272otk.77.2023.08.27.12.33.08
+        by smtp.gmail.com with ESMTPSA id l8-20020a9d7348000000b006b96384ba1csm1640272otk.77.2023.08.27.12.33.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 12:33:10 -0700 (PDT)
+        Sun, 27 Aug 2023 12:33:22 -0700 (PDT)
 From:   Alexon Oliveira <alexondunkan@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
         linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
         Alexon Oliveira <alexondunkan@gmail.com>
-Subject: [PATCH v4 0/4] staging: vme_user: fix checks reported in vme_fake.c
-Date:   Sun, 27 Aug 2023 16:32:48 -0300
-Message-ID: <cover.1693164540.git.alexondunkan@gmail.com>
+Subject: [PATCH v4 1/4] staging: vme_user: fix check alignment of open parenthesis in vme_fake.c
+Date:   Sun, 27 Aug 2023 16:32:50 -0300
+Message-ID: <639fc19f5c5bce6557a813728b28c299c5134ecf.1693164540.git.alexondunkan@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1693164540.git.alexondunkan@gmail.com>
+References: <cover.1693164540.git.alexondunkan@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,22 +73,272 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The goal of this series is to fix all warnings related to
-aligment of open parenthesis, lines not ending with '(',
-unnecessary blank lines and unnecessary space after a cast
-in the vme_fake.c file, as reported by checkpatch to adhere
-to the Linux kernel coding-style guidelines.
+Fixed all CHECK: Alignment should match open parenthesis
+as reported by checkpatch to adhere to the Linux kernel
+coding-style guidelines.
 
-Alexon Oliveira (4):
-  staging: vme_user: fix check alignment of open parenthesis in
-    vme_fake.c
-  staging: vme_user: fix check lines not ending with '(' in vme_fake.c
-  staging: vme_user: fix check unnecessary blank lines in vme_fake.c
-  staging: vme_user: fix check unnecessary space after a cast in
-    vme_fake.c
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+---
 
- drivers/staging/vme_user/vme_fake.c | 72 ++++++++++++++---------------
- 1 file changed, 35 insertions(+), 37 deletions(-)
+Changes in v2:
+- Fixed summary phrase with tags to indicate commit order
+in the patch series, noted by Greg KH
 
+Changes in v3:
+- Sent patch series in a single email thread, noted by Nam Cao
+
+Changes in v4:
+- Versioning the patch series with the forgotten information
+about the changes in the previous versions, noted by Greg KH
+
+ drivers/staging/vme_user/vme_fake.c | 65 +++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
+index 7c53a8a7b79b..a88d2c8a785b 100644
+--- a/drivers/staging/vme_user/vme_fake.c
++++ b/drivers/staging/vme_user/vme_fake.c
+@@ -105,7 +105,7 @@ static void fake_VIRQ_tasklet(unsigned long data)
+  * Configure VME interrupt
+  */
+ static void fake_irq_set(struct vme_bridge *fake_bridge, int level,
+-		int state, int sync)
++			 int state, int sync)
+ {
+ 	/* Nothing to do */
+ }
+@@ -125,7 +125,7 @@ static dma_addr_t fake_ptr_to_pci(void *addr)
+  * interrupt to be acked.
+  */
+ static int fake_irq_generate(struct vme_bridge *fake_bridge, int level,
+-		int statid)
++			     int statid)
+ {
+ 	struct fake_driver *bridge;
+ 
+@@ -152,8 +152,8 @@ static int fake_irq_generate(struct vme_bridge *fake_bridge, int level,
+  * Initialize a slave window with the requested attributes.
+  */
+ static int fake_slave_set(struct vme_slave_resource *image, int enabled,
+-		unsigned long long vme_base, unsigned long long size,
+-		dma_addr_t buf_base, u32 aspace, u32 cycle)
++			  unsigned long long vme_base, unsigned long long size,
++			  dma_addr_t buf_base, u32 aspace, u32 cycle)
+ {
+ 	unsigned int i, granularity = 0;
+ 	unsigned long long vme_bound;
+@@ -221,8 +221,8 @@ static int fake_slave_set(struct vme_slave_resource *image, int enabled,
+  * Get slave window configuration.
+  */
+ static int fake_slave_get(struct vme_slave_resource *image, int *enabled,
+-		unsigned long long *vme_base, unsigned long long *size,
+-		dma_addr_t *buf_base, u32 *aspace, u32 *cycle)
++			  unsigned long long *vme_base, unsigned long long *size,
++			  dma_addr_t *buf_base, u32 *aspace, u32 *cycle)
+ {
+ 	unsigned int i;
+ 	struct fake_driver *bridge;
+@@ -249,8 +249,8 @@ static int fake_slave_get(struct vme_slave_resource *image, int *enabled,
+  * Set the attributes of an outbound window.
+  */
+ static int fake_master_set(struct vme_master_resource *image, int enabled,
+-		unsigned long long vme_base, unsigned long long size,
+-		u32 aspace, u32 cycle, u32 dwidth)
++			   unsigned long long vme_base, unsigned long long size,
++			   u32 aspace, u32 cycle, u32 dwidth)
+ {
+ 	int retval = 0;
+ 	unsigned int i;
+@@ -335,8 +335,8 @@ static int fake_master_set(struct vme_master_resource *image, int enabled,
+  * Set the attributes of an outbound window.
+  */
+ static int __fake_master_get(struct vme_master_resource *image, int *enabled,
+-		unsigned long long *vme_base, unsigned long long *size,
+-		u32 *aspace, u32 *cycle, u32 *dwidth)
++			     unsigned long long *vme_base, unsigned long long *size,
++			     u32 *aspace, u32 *cycle, u32 *dwidth)
+ {
+ 	unsigned int i;
+ 	struct fake_driver *bridge;
+@@ -356,15 +356,15 @@ static int __fake_master_get(struct vme_master_resource *image, int *enabled,
+ }
+ 
+ static int fake_master_get(struct vme_master_resource *image, int *enabled,
+-		unsigned long long *vme_base, unsigned long long *size,
+-		u32 *aspace, u32 *cycle, u32 *dwidth)
++			   unsigned long long *vme_base, unsigned long long *size,
++			   u32 *aspace, u32 *cycle, u32 *dwidth)
+ {
+ 	int retval;
+ 
+ 	spin_lock(&image->lock);
+ 
+ 	retval = __fake_master_get(image, enabled, vme_base, size, aspace,
+-			cycle, dwidth);
++				   cycle, dwidth);
+ 
+ 	spin_unlock(&image->lock);
+ 
+@@ -511,7 +511,7 @@ static noinline_for_stack u32 fake_vmeread32(struct fake_driver *bridge,
+ }
+ 
+ static ssize_t fake_master_read(struct vme_master_resource *image, void *buf,
+-		size_t count, loff_t offset)
++				size_t count, loff_t offset)
+ {
+ 	int retval;
+ 	u32 aspace, cycle, dwidth;
+@@ -700,7 +700,7 @@ static noinline_for_stack void fake_vmewrite32(struct fake_driver *bridge,
+ }
+ 
+ static ssize_t fake_master_write(struct vme_master_resource *image, void *buf,
+-		size_t count, loff_t offset)
++				 size_t count, loff_t offset)
+ {
+ 	int retval = 0;
+ 	u32 aspace, cycle, dwidth;
+@@ -739,7 +739,7 @@ static ssize_t fake_master_write(struct vme_master_resource *image, void *buf,
+ 		if ((addr + done) & 0x2) {
+ 			if ((count - done) < 2) {
+ 				fake_vmewrite8(bridge, (u8 *)(buf + done),
+-						addr + done, aspace, cycle);
++					       addr + done, aspace, cycle);
+ 				done += 1;
+ 				goto out;
+ 			} else {
+@@ -768,7 +768,7 @@ static ssize_t fake_master_write(struct vme_master_resource *image, void *buf,
+ 		count32 = (count - done);
+ 		while (done < count32) {
+ 			fake_vmewrite8(bridge, (u8 *)(buf + done), addr + done,
+-					aspace, cycle);
++				       aspace, cycle);
+ 			done += 1;
+ 		}
+ 
+@@ -784,7 +784,7 @@ static ssize_t fake_master_write(struct vme_master_resource *image, void *buf,
+ 
+ 	if ((count - done) & 0x1) {
+ 		fake_vmewrite8(bridge, (u8 *)(buf + done), addr + done, aspace,
+-				cycle);
++			       cycle);
+ 		done += 1;
+ 	}
+ 
+@@ -802,8 +802,8 @@ static ssize_t fake_master_write(struct vme_master_resource *image, void *buf,
+  * Requires a previously configured master window, returns final value.
+  */
+ static unsigned int fake_master_rmw(struct vme_master_resource *image,
+-		unsigned int mask, unsigned int compare, unsigned int swap,
+-		loff_t offset)
++				    unsigned int mask, unsigned int compare,
++				    unsigned int swap, loff_t offset)
+ {
+ 	u32 tmp, base;
+ 	u32 aspace, cycle;
+@@ -848,7 +848,7 @@ static unsigned int fake_master_rmw(struct vme_master_resource *image,
+  * callback is attached and disabled when the last callback is removed.
+  */
+ static int fake_lm_set(struct vme_lm_resource *lm, unsigned long long lm_base,
+-		u32 aspace, u32 cycle)
++		       u32 aspace, u32 cycle)
+ {
+ 	int i;
+ 	struct vme_bridge *fake_bridge;
+@@ -894,7 +894,8 @@ static int fake_lm_set(struct vme_lm_resource *lm, unsigned long long lm_base,
+  * or disabled.
+  */
+ static int fake_lm_get(struct vme_lm_resource *lm,
+-		unsigned long long *lm_base, u32 *aspace, u32 *cycle)
++		       unsigned long long *lm_base,
++		       u32 *aspace, u32 *cycle)
+ {
+ 	struct fake_driver *bridge;
+ 
+@@ -917,7 +918,7 @@ static int fake_lm_get(struct vme_lm_resource *lm,
+  * Callback will be passed the monitor triggered.
+  */
+ static int fake_lm_attach(struct vme_lm_resource *lm, int monitor,
+-		void (*callback)(void *), void *data)
++			  void (*callback)(void *), void *data)
+ {
+ 	struct vme_bridge *fake_bridge;
+ 	struct fake_driver *bridge;
+@@ -995,7 +996,7 @@ static int fake_slot_get(struct vme_bridge *fake_bridge)
+ }
+ 
+ static void *fake_alloc_consistent(struct device *parent, size_t size,
+-		dma_addr_t *dma)
++				   dma_addr_t *dma)
+ {
+ 	void *alloc = kmalloc(size, GFP_KERNEL);
+ 
+@@ -1006,7 +1007,7 @@ static void *fake_alloc_consistent(struct device *parent, size_t size,
+ }
+ 
+ static void fake_free_consistent(struct device *parent, size_t size,
+-		void *vaddr, dma_addr_t dma)
++				 void *vaddr, dma_addr_t dma)
+ {
+ 	kfree(vaddr);
+ /*
+@@ -1094,7 +1095,7 @@ static int __init fake_init(void)
+ 	mutex_init(&fake_device->vme_int);
+ 	mutex_init(&fake_bridge->irq_mtx);
+ 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
+-			(unsigned long) fake_bridge);
++		     (unsigned long) fake_bridge);
+ 
+ 	strcpy(fake_bridge->name, driver_name);
+ 
+@@ -1118,10 +1119,10 @@ static int __init fake_init(void)
+ 			VME_PROG | VME_DATA;
+ 		master_image->width_attr = VME_D16 | VME_D32;
+ 		memset(&master_image->bus_resource, 0,
+-				sizeof(struct resource));
++		       sizeof(struct resource));
+ 		master_image->kern_base  = NULL;
+ 		list_add_tail(&master_image->list,
+-				&fake_bridge->master_resources);
++			      &fake_bridge->master_resources);
+ 	}
+ 
+ 	/* Add slave windows to list */
+@@ -1144,7 +1145,7 @@ static int __init fake_init(void)
+ 			VME_2eSST267 | VME_2eSST320 | VME_SUPER | VME_USER |
+ 			VME_PROG | VME_DATA;
+ 		list_add_tail(&slave_image->list,
+-				&fake_bridge->slave_resources);
++			      &fake_bridge->slave_resources);
+ 	}
+ 
+ 	/* Add location monitor to list */
+@@ -1179,7 +1180,7 @@ static int __init fake_init(void)
+ 	fake_bridge->free_consistent = fake_free_consistent;
+ 
+ 	pr_info("Board is%s the VME system controller\n",
+-			(geoid == 1) ? "" : " not");
++		(geoid == 1) ? "" : " not");
+ 
+ 	pr_info("VME geographical address is set to %d\n", geoid);
+ 
+@@ -1220,7 +1221,7 @@ static int __init fake_init(void)
+ 	/* resources are stored in link list */
+ 	list_for_each_safe(pos, n, &fake_bridge->master_resources) {
+ 		master_image = list_entry(pos, struct vme_master_resource,
+-				list);
++					  list);
+ 		list_del(pos);
+ 		kfree(master_image);
+ 	}
+@@ -1275,7 +1276,7 @@ static void __exit fake_exit(void)
+ 	/* resources are stored in link list */
+ 	list_for_each_safe(pos, tmplist, &fake_bridge->master_resources) {
+ 		master_image = list_entry(pos, struct vme_master_resource,
+-				list);
++					  list);
+ 		list_del(pos);
+ 		kfree(master_image);
+ 	}
 -- 
 2.41.0
+
