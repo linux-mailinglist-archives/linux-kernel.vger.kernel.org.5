@@ -2,186 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA067899ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 02:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159157899F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 02:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjH0AlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 20:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
+        id S229500AbjH0AqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 20:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjH0Aku (ORCPT
+        with ESMTP id S229460AbjH0Ap7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 20:40:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF2910D;
-        Sat, 26 Aug 2023 17:40:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A10A61EA0;
-        Sun, 27 Aug 2023 00:40:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0F7EC433C7;
-        Sun, 27 Aug 2023 00:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693096847;
-        bh=OVEU+9mCgeRFNww8ePJ6l3hvkB0OBAcU0yHXtNzZZ3w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PA3hihX4jrkqeaCm7VD5UQqCiLGakqPf3cZXPo7690IMZ20lmf/pGoRNV1/ugXUQ7
-         CWmTIOz0ozXtmC1oE5t09kvxRr0mQ+PIAcMhC7AKbBRvU4qhDAOEQcpKXdEHkFtQJx
-         Opyg792baEpl5hq3O++Mqtb2RL7qh8RK+VZPRt++iJ+CrpN+qu07xPs6tD/snL3SbF
-         5uBNFRvplrqs3bfN/Qa/21P9Z5Hj7QKP+DE2sLiMGEz6KOzYPXcyM/OHeWZJPKcZwE
-         /9afwHZpMn1gCEkmLzqJ57Scn4XeyxXGFAoJ3OB0sPrJz3HYlV/LcJXVhobBekaona
-         EQIpIF4jKtIew==
-From:   SeongJae Park <sj@kernel.org>
-To:     damon@lists.linux.dev
-Cc:     SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] mm/damon/core: add a tracepoint for damos apply target regions
-Date:   Sun, 27 Aug 2023 00:40:45 +0000
-Message-Id: <20230827004045.49516-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Sat, 26 Aug 2023 20:45:59 -0400
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3683419A;
+        Sat, 26 Aug 2023 17:45:57 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-68a3082c771so1416469b3a.0;
+        Sat, 26 Aug 2023 17:45:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693097156; x=1693701956;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x0noXuCw4diQPVVy5tMWjuaRU2NrMA9lPR9xkJ2qTPY=;
+        b=azA0pKXL4z+pCUgeG6MDwvEnAEn7gpMCm1RcrMk9EyVa1DSibYdGFZC5DO6/GTEkyx
+         MykGtdgr2BtbMkUES9hSqswzybjc0miW73hRKIPuPkN4lhoVo+K0Wqe3Bbfqx0eLZPWS
+         S9rEnIMyMNc169VA1ApWUBVFr7Z8OvPf+ptbavvkHVh723DdGlZIMYnLS5R1723QeFyt
+         Vjl7wuulTG8DUh/OiAzy75ldlGXapJP3zfcPphkTFt3P3evzuOCok5pYY7G1onTJMJ85
+         lhuvkqZsG7kf3sx1h21Te1wfak105VgF/m/z00sIE2xRB8hjMUHN/YbXIwdFpYCdDBuP
+         dFjw==
+X-Gm-Message-State: AOJu0YypGh7bvBbqiZBzCbY8/1jsIo/zacC3dLikm2EI858eEhQb1EYG
+        9swcGQCD3bX2jNo9KLjAbeI=
+X-Google-Smtp-Source: AGHT+IEgibIA76mDWHaRopAmphTXDvMSnqQaRh2bxRTFviWwjc2MyEgi19ys/Gu6OUOtT4Kq3DUVsQ==
+X-Received: by 2002:a05:6a00:a1f:b0:68a:6149:71cb with SMTP id p31-20020a056a000a1f00b0068a614971cbmr24088914pfh.5.1693097156403;
+        Sat, 26 Aug 2023 17:45:56 -0700 (PDT)
+Received: from ?IPV6:2601:647:5f00:5f5:4a46:e57b:bee0:6bc6? ([2601:647:5f00:5f5:4a46:e57b:bee0:6bc6])
+        by smtp.gmail.com with ESMTPSA id x15-20020a056a00270f00b0068a4cd8b530sm3858797pfv.139.2023.08.26.17.45.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Aug 2023 17:45:55 -0700 (PDT)
+Message-ID: <c48a294c-a8a9-63ae-182f-e1d757f6179e@acm.org>
+Date:   Sat, 26 Aug 2023 17:45:53 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 0/6] blk-mq: optimize the queue_rqs() support
+To:     Chengming Zhou <chengming.zhou@linux.dev>, axboe@kernel.dk,
+        hch@lst.de, ming.lei@redhat.com, kbusch@kernel.org
+Cc:     mst@redhat.com, sagi@grimberg.me, damien.lemoal@opensource.wdc.com,
+        kch@nvidia.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
+References: <20230824144403.2135739-1-chengming.zhou@linux.dev>
+ <e4701e0e-57a3-6ee3-8686-6b1d3750c124@acm.org>
+ <84c857f7-9966-6125-92c4-1b2fa96fb98d@linux.dev>
+Content-Language: en-US
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <84c857f7-9966-6125-92c4-1b2fa96fb98d@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DAMON provides damon_aggregated tracepoint, which exposes details of
-each region and its access monitoring results.  It is useful for
-getting whole monitoring results, e.g., for recording purposes.
+On 8/25/23 01:24, Chengming Zhou wrote:
+> I don't know the details of the UFS devices bad performance problem.
+> But I feel it maybe caused by the too lazy queue idle handling, which
+> is now only handled in queue timeout work.
 
-For investigations of DAMOS, DAMON Sysfs interface provides DAMOS
-statistics and tried_regions directory.  But, those provides only
-statistics and snapshots.  If the scheme is frequently applied and if
-the user needs to know every detail of DAMOS behavior, the
-snapshot-based interface could be insufficient and expensive.
+Hi Chengming,
 
-As a last resort, userspace users need to record the all monitoring
-results via damon_aggregated tracepoint and simulate how DAMOS would
-worked.  It is unnecessarily complicated.  DAMON kernel API users,
-meanwhile, can do that easily via before_damos_apply() callback field of
-'struct damon_callback', though.
+The root cause of the UFS performance problem is the fair sharing
+algorithm itself: reducing the active queue count only happens after
+the request queue timeout has expired. This is way too slow. Last time
+it was proposed to remove that algorithm Yu Kuai promised to replace it
+by a better algorithm. Since progress on the replacement algorithm has
+stalled I'm asking again whether everyone agrees to remove the fairness
+algorithm.
 
-Add a tracepoint that will be called just after before_damos_apply()
-callback for more convenient investigations of DAMOS.  The tracepoint
-exposes all details about each regions, similar to damon_aggregated
-tracepoint.
+Thanks,
 
-Please note that DAMOS is currently not only for memory management but
-also for query-like efficient monitoring results retrievals (when 'stat'
-action is used).  Until now, only statistics or snapshots were
-supported.  Addition of this tracepoint allows efficient full recording
-of DAMOS-based filtered monitoring results.
-
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- include/trace/events/damon.h | 37 ++++++++++++++++++++++++++++++++++++
- mm/damon/core.c              | 27 +++++++++++++++++++++++++-
- 2 files changed, 63 insertions(+), 1 deletion(-)
-
-diff --git a/include/trace/events/damon.h b/include/trace/events/damon.h
-index 0b8d13bde17a..c942c5033b5f 100644
---- a/include/trace/events/damon.h
-+++ b/include/trace/events/damon.h
-@@ -9,6 +9,43 @@
- #include <linux/types.h>
- #include <linux/tracepoint.h>
- 
-+TRACE_EVENT(damos_before_apply,
-+
-+	TP_PROTO(unsigned int context_idx, unsigned int scheme_idx,
-+		unsigned int target_idx, struct damon_region *r,
-+		unsigned int nr_regions),
-+
-+	TP_ARGS(context_idx, target_idx, scheme_idx, r, nr_regions),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, context_idx)
-+		__field(unsigned int, scheme_idx)
-+		__field(unsigned long, target_idx)
-+		__field(unsigned int, nr_regions)
-+		__field(unsigned long, start)
-+		__field(unsigned long, end)
-+		__field(unsigned int, nr_accesses)
-+		__field(unsigned int, age)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->context_idx = context_idx;
-+		__entry->scheme_idx = scheme_idx;
-+		__entry->target_idx = target_idx;
-+		__entry->nr_regions = nr_regions;
-+		__entry->start = r->ar.start;
-+		__entry->end = r->ar.end;
-+		__entry->nr_accesses = r->nr_accesses;
-+		__entry->age = r->age;
-+	),
-+
-+	TP_printk("ctx_idx=%u scheme_idx=%u target_idx=%lu nr_regions=%u %lu-%lu: %u %u",
-+			__entry->context_idx, __entry->scheme_idx,
-+			__entry->target_idx, __entry->nr_regions,
-+			__entry->start, __entry->end,
-+			__entry->nr_accesses, __entry->age)
-+);
-+
- TRACE_EVENT(damon_aggregated,
- 
- 	TP_PROTO(unsigned int target_id, struct damon_region *r,
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 83af336bb0e6..22fe81abd35d 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -963,6 +963,28 @@ static void damos_apply_scheme(struct damon_ctx *c, struct damon_target *t,
- 	struct timespec64 begin, end;
- 	unsigned long sz_applied = 0;
- 	int err = 0;
-+	/*
-+	 * We plan to support multiple context per kdamond, as DAMON sysfs
-+	 * implies with 'nr_contexts' file.  Nevertheless, only single context
-+	 * per kdamond is supported for now.  So, we can simply use '0' context
-+	 * index here.
-+	 */
-+	unsigned int cidx = 0;
-+	struct damos *siter;		/* schemes iterator */
-+	unsigned int sidx = 0;
-+	struct damon_target *titer;	/* targets iterator */
-+	unsigned int tidx = 0;
-+
-+	damon_for_each_scheme(siter, c) {
-+		if (siter == s)
-+			break;
-+		sidx++;
-+	}
-+	damon_for_each_target(titer, c) {
-+		if (titer == t)
-+			break;
-+		tidx++;
-+	}
- 
- 	if (c->ops.apply_scheme) {
- 		if (quota->esz && quota->charged_sz + sz > quota->esz) {
-@@ -986,8 +1008,11 @@ static void damos_apply_scheme(struct damon_ctx *c, struct damon_target *t,
- 		ktime_get_coarse_ts64(&begin);
- 		if (c->callback.before_damos_apply)
- 			err = c->callback.before_damos_apply(c, t, r, s);
--		if (!err)
-+		if (!err) {
-+			trace_damos_before_apply(cidx, sidx, tidx, r,
-+					damon_nr_regions(t));
- 			sz_applied = c->ops.apply_scheme(c, t, r, s);
-+		}
- 		ktime_get_coarse_ts64(&end);
- 		quota->total_charged_ns += timespec64_to_ns(&end) -
- 			timespec64_to_ns(&begin);
--- 
-2.25.1
-
+Bart.
