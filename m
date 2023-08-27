@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D6878A290
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 00:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF2178A28E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 00:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbjH0WR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 18:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        id S230074AbjH0WRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 18:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjH0WRB (ORCPT
+        with ESMTP id S230001AbjH0WRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 18:17:01 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EE7127;
-        Sun, 27 Aug 2023 15:16:58 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E92D8FF804;
-        Sun, 27 Aug 2023 22:16:56 +0000 (UTC)
+        Sun, 27 Aug 2023 18:17:02 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48EB128;
+        Sun, 27 Aug 2023 15:16:59 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C05FE1C0004;
+        Sun, 27 Aug 2023 22:16:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1693174617;
+        t=1693174618;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UIrssUFHb/fsBM0yYCwVRgwSBV5otAGYvYhv5InKtoo=;
-        b=Y9YMzG76crayhCiu70bc2wCVQCzI27l0nyA4QPaCRhEFsWHZeH3uOqj+JfhPq7dNGPwle+
-        JaJDqBCMMRvSGsVOUtyn9FvsMJZNfFWI7GlYFkphl8LjRKTicx3w3Cnf4iYI+aqR9+tMgT
-        felY8uA+qq4mWO6FhWrQHYk5wTYFmvU+tmLBW+JtF+vbFqg60kNNzq4tgc6Exy16rzNrUD
-        suZZ7yPbMDSx52GAewfhNQ+W/Ms1F1VdFVoCVIWyMgoRwnPQ3c+8Swa/8XIuLnvP+LBgna
-        q2TQwtvoC7sj7gGM3/BySKVVSSS6vlGyEwnIGVMmDq/Md23xkTPItNAjq3mELA==
+        bh=GONRYTr9Cqo/Rszgxee03LICOiSqOFkzcMKhwAqHUr0=;
+        b=QCDXqVPr7aRXJMthNS6xde+4JhARkW4SnrprCBQdhgV/O2SLu5tx7I/KZ3znG77nS+/JZV
+        GShFIV4y/OwrBofs4kX5l1MX5gvGc9AgGx8rxBnRD0yycyGqrdJyJp7CQr1kaLoc+wvtsj
+        Ic8nabuGCGVQLnK3njoW6TC0orbdlIqkZPRbVvgK/eFWtRXepIvR0U7/zGyjUw0EYVP/Pp
+        BOsMsgSVs/RRAmjVVvsP3INBOkuXfKhBdJ+2tArFAJm5yEtymO6WhyzJHBT3wH9DhnFeDh
+        oHLPXXeCNhcMOYbBcu/9jMxnsH1MEUmlUgQjLhK2oT0Q/UIP9bh0LGgovO+XEA==
 From:   alexandre.belloni@bootlin.com
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] rtc: twl: remove unnecessary messages
-Date:   Mon, 28 Aug 2023 00:16:41 +0200
-Message-ID: <20230827221643.544259-2-alexandre.belloni@bootlin.com>
+Cc:     patches@opensource.cirrus.com, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] rtc: wm8350: remove unnecessary messages
+Date:   Mon, 28 Aug 2023 00:16:42 +0200
+Message-ID: <20230827221643.544259-3-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230827221643.544259-1-alexandre.belloni@bootlin.com>
 References: <20230827221643.544259-1-alexandre.belloni@bootlin.com>
@@ -58,34 +59,36 @@ registering fails, it is not necessary to have more in the driver.
 
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- drivers/rtc/rtc-twl.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/rtc/rtc-wm8350.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/rtc/rtc-twl.c b/drivers/rtc/rtc-twl.c
-index f8f0d774a06e..13f8ce08243c 100644
---- a/drivers/rtc/rtc-twl.c
-+++ b/drivers/rtc/rtc-twl.c
-@@ -555,7 +555,6 @@ static int twl_rtc_probe(struct platform_device *pdev)
- 			REG_INT_MSK_STS_A);
- 	}
+diff --git a/drivers/rtc/rtc-wm8350.c b/drivers/rtc/rtc-wm8350.c
+index 947f8071803f..3c773cff2b39 100644
+--- a/drivers/rtc/rtc-wm8350.c
++++ b/drivers/rtc/rtc-wm8350.c
+@@ -386,8 +386,6 @@ static int wm8350_rtc_probe(struct platform_device *pdev)
+ 	/* enable the RTC if it's not already enabled */
+ 	power5 = wm8350_reg_read(wm8350, WM8350_POWER_MGMT_5);
+ 	if (!(power5 &  WM8350_RTC_TICK_ENA)) {
+-		dev_info(wm8350->dev, "Starting RTC\n");
+-
+ 		wm8350_reg_unlock(wm8350);
  
--	dev_info(&pdev->dev, "Enabling TWL-RTC\n");
- 	ret = twl_rtc_write_u8(twl_rtc, BIT_RTC_CTRL_REG_STOP_RTC_M,
- 			       REG_RTC_CTRL_REG);
- 	if (ret < 0)
-@@ -577,11 +576,8 @@ static int twl_rtc_probe(struct platform_device *pdev)
+ 		ret = wm8350_set_bits(wm8350, WM8350_POWER_MGMT_5,
+@@ -426,11 +424,8 @@ static int wm8350_rtc_probe(struct platform_device *pdev)
  
- 	twl_rtc->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
- 					&twl_rtc_ops, THIS_MODULE);
--	if (IS_ERR(twl_rtc->rtc)) {
--		dev_err(&pdev->dev, "can't register RTC device, err %ld\n",
--			PTR_ERR(twl_rtc->rtc));
-+	if (IS_ERR(twl_rtc->rtc))
- 		return PTR_ERR(twl_rtc->rtc);
+ 	wm_rtc->rtc = devm_rtc_device_register(&pdev->dev, "wm8350",
+ 					&wm8350_rtc_ops, THIS_MODULE);
+-	if (IS_ERR(wm_rtc->rtc)) {
+-		ret = PTR_ERR(wm_rtc->rtc);
+-		dev_err(&pdev->dev, "failed to register RTC: %d\n", ret);
+-		return ret;
 -	}
++	if (IS_ERR(wm_rtc->rtc))
++		return PTR_ERR(wm_rtc->rtc);
  
- 	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 					twl_rtc_interrupt,
+ 	ret = wm8350_register_irq(wm8350, WM8350_IRQ_RTC_SEC,
+ 			    wm8350_rtc_update_handler, 0,
 -- 
 2.41.0
 
