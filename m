@@ -2,424 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C8D789CAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 11:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADF0789C8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Aug 2023 11:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbjH0J3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 05:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        id S230435AbjH0JRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 05:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjH0J3S (ORCPT
+        with ESMTP id S230403AbjH0JRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 05:29:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B142DE1;
-        Sun, 27 Aug 2023 02:29:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 425CD62AE9;
-        Sun, 27 Aug 2023 09:29:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F6CC433CD;
-        Sun, 27 Aug 2023 09:29:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693128553;
-        bh=N0z/mAcH5A42iMJ93kXBC2uZ63EjyJPqNExfpzvdmW8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SVeN30ygf3Xtuih17pubQ3tds5iE0xQnGX3NzyAMcuUxMFqyEkMtAFwrxbuqB5oe/
-         292+6aDzcvpwouxfCXu/4Tdu+XUFJjrj1ACKA2IKfC/uzpwnHXnY4/v+gAvcb22csC
-         bQEJdBzGU/OZEVOUlL41R9ri4y61uX4lA6n8jhQDb/5/Hlycc9Rcd9Ex+yGNYzY+d+
-         BicmoZqbuKYxWIm5mRf861O1CqHvrT8NbGS2/z6Zv7oDMI75z/U35RK3DSXCgxmZWX
-         6FBtPUufoQl80dAskvyUTwThmjfSCR6pjQURdW5aB1q3Cactk01vYc3CAmnO9xAaY+
-         T4UAWm9miQinw==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, Maxime@vger.kernel.org,
-        Coquelin@vger.kernel.org, Simon Horman <simon.horman@corigine.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH net-next v2 3/3] net: stmmac: add glue layer for T-HEAD TH1520 SoC
-Date:   Sun, 27 Aug 2023 17:17:10 +0800
-Message-Id: <20230827091710.1483-4-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230827091710.1483-1-jszhang@kernel.org>
-References: <20230827091710.1483-1-jszhang@kernel.org>
+        Sun, 27 Aug 2023 05:17:24 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F1DD8;
+        Sun, 27 Aug 2023 02:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1693127840; bh=aRJKFd9sKgnazdGKOyVd+fvtS1NGVQjpl7eMhYJHOl0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JWhIIEAzWfF2tU6/PXNoIogAPSl1nFXssAgehfs+D1V4g+H5KD70UXFXav4eyxhcL
+         8TZqS7ZvbsyK8X/BvcokWf4RnN20Llw6jOq4fTjqsKA4AKtKznZYTRJNVKk2yomxwl
+         6snoWQIpWgzSsAxTqEL37DNmMcRsVMwPnw6Ni/R0=
+Date:   Sun, 27 Aug 2023 11:17:19 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     w@1wt.eu, arnd@arndb.de, david.laight@aculab.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org
+Subject: Re: [RFC] tools/nolibc: replace duplicated -ENOSYS return with
+ single -ENOSYS return
+Message-ID: <1ffa33a8-dd97-480f-b8f4-2ce49c60cabb@t-8ch.de>
+References: <20230827083225.7534-1-falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230827083225.7534-1-falcon@tinylab.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dwmac glue driver to support the dwmac on the T-HEAD TH1520 SoC.
+Hi Zhangjin,
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
- drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
- .../net/ethernet/stmicro/stmmac/dwmac-thead.c | 302 ++++++++++++++++++
- 3 files changed, 314 insertions(+)
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+thanks for the RFC discussion!
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 06c6871f8788..1bf71804c270 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-+++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -216,6 +216,17 @@ config DWMAC_SUN8I
- 	  stmmac device driver. This driver is used for H3/A83T/A64
- 	  EMAC ethernet controller.
- 
-+config DWMAC_THEAD
-+	tristate "T-HEAD dwmac support"
-+	depends on OF && (ARCH_THEAD || COMPILE_TEST)
-+	select MFD_SYSCON
-+	help
-+	  Support for ethernet controllers on T-HEAD RISC-V SoCs
-+
-+	  This selects the T-HEAD platform specific glue layer support for
-+	  the stmmac device driver. This driver is used for T-HEAD TH1520
-+	  ethernet controller.
-+
- config DWMAC_IMX8
- 	tristate "NXP IMX8 DWMAC support"
- 	default ARCH_MXC
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index 5b57aee19267..d73171ed6ad7 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-+++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-@@ -27,6 +27,7 @@ obj-$(CONFIG_DWMAC_STI)		+= dwmac-sti.o
- obj-$(CONFIG_DWMAC_STM32)	+= dwmac-stm32.o
- obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
- obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
-+obj-$(CONFIG_DWMAC_THEAD)	+= dwmac-thead.o
- obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
- obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
- obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
-new file mode 100644
-index 000000000000..85135ef05906
---- /dev/null
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
-@@ -0,0 +1,302 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * T-HEAD DWMAC platform driver
-+ *
-+ * Copyright (C) 2021 Alibaba Group Holding Limited.
-+ * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-+ *
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_net.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#include "stmmac_platform.h"
-+
-+#define GMAC_CLK_EN			0x00
-+#define  GMAC_TX_CLK_EN			BIT(1)
-+#define  GMAC_TX_CLK_N_EN		BIT(2)
-+#define  GMAC_TX_CLK_OUT_EN		BIT(3)
-+#define  GMAC_RX_CLK_EN			BIT(4)
-+#define  GMAC_RX_CLK_N_EN		BIT(5)
-+#define  GMAC_EPHY_REF_CLK_EN		BIT(6)
-+#define GMAC_RXCLK_DELAY_CTRL		0x04
-+#define  GMAC_RXCLK_BYPASS		BIT(15)
-+#define  GMAC_RXCLK_INVERT		BIT(14)
-+#define  GMAC_RXCLK_DELAY_MASK		GENMASK(4, 0)
-+#define  GMAC_RXCLK_DELAY_VAL(x)	FIELD_PREP(GMAC_RXCLK_DELAY_MASK, (x))
-+#define GMAC_TXCLK_DELAY_CTRL		0x08
-+#define  GMAC_TXCLK_BYPASS		BIT(15)
-+#define  GMAC_TXCLK_INVERT		BIT(14)
-+#define  GMAC_TXCLK_DELAY_MASK		GENMASK(4, 0)
-+#define  GMAC_TXCLK_DELAY_VAL(x)	FIELD_PREP(GMAC_RXCLK_DELAY_MASK, (x))
-+#define GMAC_PLLCLK_DIV			0x0c
-+#define  GMAC_PLLCLK_DIV_EN		BIT(31)
-+#define  GMAC_PLLCLK_DIV_MASK		GENMASK(7, 0)
-+#define  GMAC_PLLCLK_DIV_NUM(x)		FIELD_PREP(GMAC_PLLCLK_DIV_MASK, (x))
-+#define GMAC_GTXCLK_SEL			0x18
-+#define  GMAC_GTXCLK_SEL_PLL		BIT(0)
-+#define GMAC_INTF_CTRL			0x1c
-+#define  PHY_INTF_MASK			BIT(0)
-+#define  PHY_INTF_RGMII			FIELD_PREP(PHY_INTF_MASK, 1)
-+#define  PHY_INTF_MII_GMII		FIELD_PREP(PHY_INTF_MASK, 0)
-+#define GMAC_TXCLK_OEN			0x20
-+#define  TXCLK_DIR_MASK			BIT(0)
-+#define  TXCLK_DIR_OUTPUT		FIELD_PREP(TXCLK_DIR_MASK, 0)
-+#define  TXCLK_DIR_INPUT		FIELD_PREP(TXCLK_DIR_MASK, 1)
-+
-+#define GMAC_GMII_RGMII_RATE	125000000
-+#define GMAC_MII_RATE		25000000
-+
-+struct thead_dwmac {
-+	struct plat_stmmacenet_data *plat;
-+	struct regmap *apb_regmap;
-+	struct device *dev;
-+	u32 rx_delay;
-+	u32 tx_delay;
-+};
-+
-+static int thead_dwmac_set_phy_if(struct plat_stmmacenet_data *plat)
-+{
-+	struct thead_dwmac *dwmac = plat->bsp_priv;
-+	u32 phyif;
-+
-+	switch (plat->interface) {
-+	case PHY_INTERFACE_MODE_MII:
-+		phyif = PHY_INTF_MII_GMII;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII:
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+		phyif = PHY_INTF_RGMII;
-+		break;
-+	default:
-+		dev_err(dwmac->dev, "unsupported phy interface %d\n",
-+			plat->interface);
-+		return -EINVAL;
-+	};
-+
-+	regmap_write(dwmac->apb_regmap, GMAC_INTF_CTRL, phyif);
-+
-+	return 0;
-+}
-+
-+static int thead_dwmac_set_txclk_dir(struct plat_stmmacenet_data *plat)
-+{
-+	struct thead_dwmac *dwmac = plat->bsp_priv;
-+	u32 txclk_dir;
-+
-+	switch (plat->interface) {
-+	case PHY_INTERFACE_MODE_MII:
-+		txclk_dir = TXCLK_DIR_INPUT;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII:
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+		txclk_dir = TXCLK_DIR_OUTPUT;
-+		break;
-+	default:
-+		dev_err(dwmac->dev, "unsupported phy interface %d\n",
-+			plat->interface);
-+		return -EINVAL;
-+	};
-+
-+	regmap_write(dwmac->apb_regmap, GMAC_TXCLK_OEN, txclk_dir);
-+
-+	return 0;
-+}
-+
-+static void thead_dwmac_fix_speed(void *priv, unsigned int speed, unsigned int mode)
-+{
-+	struct thead_dwmac *dwmac = priv;
-+	struct plat_stmmacenet_data *plat = dwmac->plat;
-+	unsigned long rate;
-+	u32 div;
-+
-+	switch (plat->interface) {
-+	/* For MII, rxc/txc is provided by phy */
-+	case PHY_INTERFACE_MODE_MII:
-+		return;
-+
-+	case PHY_INTERFACE_MODE_RGMII:
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+		rate = clk_get_rate(plat->stmmac_clk);
-+		if (!rate || rate % GMAC_GMII_RGMII_RATE != 0 ||
-+		    rate % GMAC_MII_RATE != 0) {
-+			dev_err(dwmac->dev, "invalid gmac rate %ld\n", rate);
-+			return;
-+		}
-+
-+		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV, GMAC_PLLCLK_DIV_EN, 0);
-+
-+		switch (speed) {
-+		case SPEED_1000:
-+			div = rate / GMAC_GMII_RGMII_RATE;
-+			break;
-+		case SPEED_100:
-+			div = rate / GMAC_MII_RATE;
-+			break;
-+		case SPEED_10:
-+			div = rate * 10 / GMAC_MII_RATE;
-+			break;
-+		default:
-+			dev_err(dwmac->dev, "invalid speed %u\n", speed);
-+			return;
-+		}
-+		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
-+				   GMAC_PLLCLK_DIV_MASK, GMAC_PLLCLK_DIV_NUM(div));
-+
-+		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
-+				   GMAC_PLLCLK_DIV_EN, GMAC_PLLCLK_DIV_EN);
-+		break;
-+	default:
-+		dev_err(dwmac->dev, "unsupported phy interface %d\n",
-+			plat->interface);
-+		return;
-+	}
-+}
-+
-+static int thead_dwmac_enable_clk(struct plat_stmmacenet_data *plat)
-+{
-+	struct thead_dwmac *dwmac = plat->bsp_priv;
-+	u32 reg;
-+
-+	switch (plat->interface) {
-+	case PHY_INTERFACE_MODE_MII:
-+		reg = GMAC_RX_CLK_EN | GMAC_TX_CLK_EN;
-+		break;
-+
-+	case PHY_INTERFACE_MODE_RGMII:
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+		/* use pll */
-+		regmap_write(dwmac->apb_regmap, GMAC_GTXCLK_SEL, GMAC_GTXCLK_SEL_PLL);
-+
-+		reg = GMAC_TX_CLK_EN | GMAC_TX_CLK_N_EN | GMAC_TX_CLK_OUT_EN |
-+		      GMAC_RX_CLK_EN | GMAC_RX_CLK_N_EN;
-+		break;
-+
-+	default:
-+		dev_err(dwmac->dev, "unsupported phy interface %d\n",
-+			plat->interface);
-+		return -EINVAL;
-+	}
-+
-+	regmap_write(dwmac->apb_regmap, GMAC_CLK_EN, reg);
-+
-+	return 0;
-+}
-+
-+static int thead_dwmac_init(struct platform_device *pdev,
-+			    struct plat_stmmacenet_data *plat)
-+{
-+	struct thead_dwmac *dwmac = plat->bsp_priv;
-+	int ret;
-+
-+	ret = thead_dwmac_set_phy_if(plat);
-+	if (ret)
-+		return ret;
-+
-+	ret = thead_dwmac_set_txclk_dir(plat);
-+	if (ret)
-+		return ret;
-+
-+	regmap_write(dwmac->apb_regmap, GMAC_RXCLK_DELAY_CTRL,
-+		     GMAC_RXCLK_DELAY_VAL(dwmac->rx_delay));
-+	regmap_write(dwmac->apb_regmap, GMAC_TXCLK_DELAY_CTRL,
-+		     GMAC_TXCLK_DELAY_VAL(dwmac->tx_delay));
-+
-+	thead_dwmac_fix_speed(dwmac, SPEED_1000, 0);
-+
-+	return thead_dwmac_enable_clk(plat);
-+}
-+
-+static int thead_dwmac_probe(struct platform_device *pdev)
-+{
-+	struct plat_stmmacenet_data *plat;
-+	struct stmmac_resources stmmac_res;
-+	struct thead_dwmac *dwmac;
-+	struct device_node *np = pdev->dev.of_node;
-+	u32 delay_ps;
-+	int ret;
-+
-+	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "failed to get resources\n");
-+
-+	plat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-+	if (IS_ERR(plat))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(plat),
-+				     "dt configuration failed\n");
-+
-+	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
-+	if (!dwmac) {
-+		ret = -ENOMEM;
-+		goto err_remove_config_dt;
-+	}
-+
-+	if (!of_property_read_u32(np, "rx-internal-delay-ps", &delay_ps))
-+		dwmac->rx_delay = delay_ps;
-+	if (!of_property_read_u32(np, "tx-internal-delay-ps", &delay_ps))
-+		dwmac->tx_delay = delay_ps;
-+
-+	dwmac->apb_regmap = syscon_regmap_lookup_by_phandle(np, "thead,gmacapb");
-+	if (IS_ERR(dwmac->apb_regmap)) {
-+		ret = dev_err_probe(&pdev->dev, PTR_ERR(dwmac->apb_regmap),
-+				    "Failed to get gmac apb syscon\n");
-+		goto err_remove_config_dt;
-+	}
-+
-+	dwmac->dev = &pdev->dev;
-+	dwmac->plat = plat;
-+	plat->bsp_priv = dwmac;
-+	plat->fix_mac_speed = thead_dwmac_fix_speed;
-+
-+	ret = thead_dwmac_init(pdev, plat);
-+	if (ret)
-+		goto err_remove_config_dt;
-+
-+	ret = stmmac_dvr_probe(&pdev->dev, plat, &stmmac_res);
-+	if (ret)
-+		goto err_remove_config_dt;
-+
-+	return 0;
-+
-+err_remove_config_dt:
-+	stmmac_remove_config_dt(pdev, plat);
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id thead_dwmac_match[] = {
-+	{ .compatible = "thead,th1520-dwmac" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, thead_dwmac_match);
-+
-+static struct platform_driver thead_dwmac_driver = {
-+	.probe = thead_dwmac_probe,
-+	.remove_new = stmmac_pltfr_remove,
-+	.driver = {
-+		.name = "thead-dwmac",
-+		.pm = &stmmac_pltfr_pm_ops,
-+		.of_match_table = thead_dwmac_match,
-+	},
-+};
-+module_platform_driver(thead_dwmac_driver);
-+
-+MODULE_AUTHOR("T-HEAD");
-+MODULE_AUTHOR("Jisheng Zhang <jszhang@kernel.org>");
-+MODULE_DESCRIPTION("T-HEAD dwmac platform driver");
-+MODULE_LICENSE("GPL");
--- 
-2.40.1
+On 2023-08-27 16:32:25+0800, Zhangjin Wu wrote:
+> Since we have already finished the size inflate regression task [1], to share
+> and discuss the progress about the -ENOSYS return work, here launchs a new
+> thread, it is split from [2].
+> 
+> [1]: https://lore.kernel.org/lkml/ZNtszQeigYuItaKA@1wt.eu/
+> [2]: https://lore.kernel.org/lkml/20230814172233.225944-1-falcon@tinylab.org/#R
+> 
+> This is only for brain storming, it is far from a solution ;-)
+> 
+> > 
+> > > [...]
+> > > > > 
+> > > > >     /* __systry2() is used to select one of two provided low level syscalls */
+> > > > >     #define __systry2(a, sys_a, sys_b) \
+> > > > >     	((NOLIBC__NR_##a != NOLIBC__NR_NOSYS) ? (sys_a) : (sys_b))
+> > > > 
+> > > > But this supposes that all of them are manually defined as you did above.
+> > > > I'd rather implement an ugly is_numeric() macro based on argument
+> > > > resolution. I've done it once in another project, I don't remember
+> > > > precisely where it is but I vaguely remember that it used to check
+> > > > that the string resolution of the argument gave a letter (when it
+> > > > does not exist) or a digit (when it does). I can look into that later
+> > > > if needed. But please avoid extra macro definitions as much as possible,
+> > > > they're a real pain to handle in the code. There's no error when one is
+> > > > missing or has a typo, it's difficult to follow them and they don't
+> > > > appear in the debugger.
+> > > >
+> > > 
+> > > Yeah, your reply inspired me to look into the IS_ENABLED() from
+> > > ../include/linux/kconfig.h macro again, there was a __is_defined() there, let's
+> > > throw away the ugly sysnr.h. I thought of IS_ENABLED() was only for y/n/m
+> > > before, but it does return 0 when the macro is not defined, it uses the same
+> > > trick in syscall() to calculate the number of arguments, if the macro is not
+> > > defined, then, 0 "argument".
+> > >
+> > 
+> > The above trick is only for ""#define something 1" ;-)
+> >
+> 
+> Here shares a little progress on this, I have found it is easy to implement an
+> ugly is_numeric() like macro as following:
+> 
+>     /* Imported from include/linux/stringify.h */
+>     #define __stringify_1(x...)     #x
+>     #define __stringify(x...)       __stringify_1(x)
+> 
+>     /*
+>      * Check __NR_* definition by stringizing
+>      *
+>      * - The stringizing is to silence compile error about undefined macro
+>      * - If defined, the result looks like "3", "(4000 + 168)", not begin with '_'
+>      * - If not defined, the result looks like "__NR_read", begins with '_'
+>      */
+> 
+>     #define __is_nr_defined(nr)     ___is_nr_defined(__stringify(nr))
+>     #define ___is_nr_defined(str)   (str[0] != '_')
+> 
+> __is_nr_defined() is able to check if __NR_xxx is defined, but the harder part
+> is getting the number of defined __NR_* without the error about undefined
+> macro.
+> 
+> Of course, we can also use the __stringify() trick to do so, but it is
+> expensive (bigger size, worse performance) to unstringify and get the number
+> again, the expensive atoi() 'works' for the numeric __NR_*, but not work for
+> (__NR_*_base + offset) like __NR_* definitions (used by ARM and MIPS), a simple
+> interpreter is required for such cases and it is more expensive than atoi().
+> 
+>     /* not for ARM and MIPS */
+> 
+>     static int atoi(const char *s);
+>     #define __get_nr(name)          __nr_atoi(__stringify(__NR_##name))
+>     #define __nr_atoi(str)          (str[0] == '_' ? -1L : ___nr_atoi(str))
+>     #define ___nr_atoi(str)         (str[0] == '(' ? -1L : atoi(str))
+> 
+> Welcome more discussion or let's simply throw away this direction ;-)
+> 
+> But it may really help us to drop tons of duplicated code pieces like this:
+> 
+>     #ifdef __NR_xxxx
+>     ...
+>     #else
+>         return -ENOSYS;
+>     #endif
+> 
+> David, Thomas and Arnd, any inspiration on this, or is this really impossible
+> (or make things worse) in language level? ;-)
+> 
+> What I'm thinking about is something like this or similar (As Willy commented
+> before, the __sysdef() itself is not that good, please ignore itself, the core
+> target here is using a single -ENOSYS return for all of the undefined
+> branches):
+> 
+>     #define __sysdef(name, ...)     \
+>     	(__is_nr_defined(__NR_##name) ? my_syscall(__get_nr(name), ##__VA_ARGS__) : (long)-ENOSYS)
+> 
+> Or as Arnd replied in an old email thread before, perhaps the whole #ifdef's
+> code piece (and even the input types and return types of sys_*) above can be
+> generated from .tbl or the generic unistd.h automatically in the sysroot
+> installation stage?
 
+To be honest I don't see a problem with the current aproach.
+It is very obvious what is going on, the same pattern is used by other
+projects and the "overhead" is very small.
+
+
+It seems the macros will only work for simple cases which only test the
+availability of a single syscall number.
+
+Of these we currently only have:
+gettimeofday(), lseek(), statx(), wait4()
+
+So in it's current form we save 4 * 4 = 16 lines of code.
+The proposed solution introduces 14 + 2 (empty) = 16 lines of new code,
+and a bunch of mental overhead.
+
+In case multiple underlying syscalls can be used these take different
+arguments which a simple macro won't be able to encode sanely.
+
+Thomas
