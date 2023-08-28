@@ -2,137 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A0E78A54A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F26F78A551
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjH1FgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S229532AbjH1Flb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjH1FgG (ORCPT
+        with ESMTP id S229505AbjH1Fk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:36:06 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F2FDE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:35:59 -0700 (PDT)
-Received: from nazgul.tnic (dynamic-046-114-154-102.46.114.pool.telefonica.de [46.114.154.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 28 Aug 2023 01:40:58 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED4F115;
+        Sun, 27 Aug 2023 22:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1693201254;
+        bh=G9UV5wckH8VHKU7MNBAoL9GfMYZgLKj+fBgSXynMfzA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BqwthwOGOowh0PgeHpsT+0NjRAP4+v4Ks891U3OIo9bZbxPkot+xXTFZM4YdpbzWH
+         vlme3aAYIBF2hXxo8IIDmf7PubCYG0NxsczoUOgRvw5cUjlBZK+xhCJRVAuHAydIH0
+         SGG6cYo0BfBScpV9imjEUkdz17JpF5i1RTeyv9yi03Wj63IdcaubjVqkonkWW6JEQ7
+         WLrwt6eHAiJwsliyth9g5D/7iDnFzy6OhLp1iOi/GRSwPgcppoJv2H3dpzm7xv7qLh
+         eCO5QujkyNxH5R3bKodTpHwSwXt1z6OLD4mHBXNohIhpJLl/+kl4DZTLFvkpGf7t6n
+         yC7y+JoStcMRA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 590861EC00F4;
-        Mon, 28 Aug 2023 07:35:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1693200952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=n3muETB9kQ9v2gMm10xe/CMarCqmpVu9kcQDhfVRD6k=;
-        b=e9NURplLsrZ02Bi3bYYHZOtmYOGvslEUGAkP5nPlpABjUs9dnLQd+0O9Ek6rMv+1BAWoO5
-        cL9ziFgnVEp0st/kbJUfDh08biH6t/dg5mYKag5O7m39C2fedrUQb4tAaEDxdH3dhY2evc
-        RLHcHREaOu/HLGjIbNc8wUnbrhzeIrQ=
-Date:   Mon, 28 Aug 2023 07:35:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/boot for v6.6-rc1
-Message-ID: <20230828053543.GAZOwyL40QMun5zKU5@fat_crate.local>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RYztZ1tmCz4wbP;
+        Mon, 28 Aug 2023 15:40:54 +1000 (AEST)
+Date:   Mon, 28 Aug 2023 15:40:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the vhost tree
+Message-ID: <20230828154052.661f17e5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/bhWkHvFtJL5dloTfizHUefo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/bhWkHvFtJL5dloTfizHUefo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-please pull the set of x86/boot changes for 6.6.
+Hi all,
 
-Thx.
+Commit
 
----
+  74de20d838d7 ("virtio_ring: fix avail_wrap_counter in virtqueue_add_packe=
+d")
 
-The following changes since commit bee6cf1a80b54548a039e224c651bb15b644a480:
+is missing a Signed-off-by from its committer.
 
-  x86/sev: Do not try to parse for the CC blob on non-AMD hardware (2023-08-07 18:05:13 +0200)
+--=20
+Cheers,
+Stephen Rothwell
 
-are available in the Git repository at:
+--Sig_/bhWkHvFtJL5dloTfizHUefo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_boot_for_v6.6_rc1
+-----BEGIN PGP SIGNATURE-----
 
-for you to fetch changes up to a1b87d54f4e45ff5e0d081fb1d9db3bf1a8fb39a:
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTsM2QACgkQAVBC80lX
+0GxD4wf9ExY9NPYb1CxUIUOJhBbcNIRsEyYCMg65tvYlz8yANSR8xVgtq3lLAjaX
+rzc4AZpSIRuOSMgkBjnQwsGd4c4LYFo/KfvQbYt02X6ypASPz6RfKTmQh153zzL9
+VGig7UCj0Hq9d6L/28WmswqHHVfT/5nJoED5j1me+Hyj9jfXwNGVVfdcnmRsBD1K
+0HIlo8nrXkYdipiQxNSD2h3xZJ+tevVdy6LOkkjltVQ+qeNqCRdUnrnBbi5U131d
+74MD31Yk2fqbLuT5f+ibDwNu8CGRUuNNayXjpTeW1jTy/M0WROUBWME6XL6yoP/X
+G72WJrpyTlsbdQI4SMGAaDQj0UZ5cQ==
+=cHvN
+-----END PGP SIGNATURE-----
 
-  x86/efistub: Avoid legacy decompressor when doing EFI boot (2023-08-07 21:07:43 +0200)
-
-----------------------------------------------------------------
-- Avoid the baremetal decompressor code when booting on an EFI machine.
-  This is mandated by the current tightening of EFI executables
-  requirements when used in a secure boot scenario. More specifically,
-  an EFI executable cannot have a single section with RWX permissions,
-  which conflicts with the in-place kernel decompression that is done
-  today. Instead, the things required by the booting kernel image are
-  done in the EFI stub now. Work by Ard Biesheuvel.
-
-----------------------------------------------------------------
-Ard Biesheuvel (23):
-      x86/decompressor: Don't rely on upper 32 bits of GPRs being preserved
-      x86/head_64: Store boot_params pointer in callee save register
-      x86/efistub: Branch straight to kernel entry point from C code
-      x86/efistub: Simplify and clean up handover entry code
-      x86/decompressor: Avoid magic offsets for EFI handover entrypoint
-      x86/efistub: Clear BSS in EFI handover protocol entrypoint
-      x86/decompressor: Store boot_params pointer in callee save register
-      x86/decompressor: Assign paging related global variables earlier
-      x86/decompressor: Call trampoline as a normal function
-      x86/decompressor: Use standard calling convention for trampoline
-      x86/decompressor: Avoid the need for a stack in the 32-bit trampoline
-      x86/decompressor: Call trampoline directly from C code
-      x86/decompressor: Only call the trampoline when changing paging levels
-      x86/decompressor: Pass pgtable address to trampoline directly
-      x86/decompressor: Merge trampoline cleanup with switching code
-      x86/efistub: Perform 4/5 level paging switch from the stub
-      x86/efistub: Prefer EFI memory attributes protocol over DXE services
-      decompress: Use 8 byte alignment
-      x86/decompressor: Move global symbol references to C code
-      x86/decompressor: Factor out kernel decompression and relocation
-      efi/libstub: Add limit argument to efi_random_alloc()
-      x86/efistub: Perform SNP feature test while running in the firmware
-      x86/efistub: Avoid legacy decompressor when doing EFI boot
-
- Documentation/arch/x86/boot.rst                |   2 +-
- arch/x86/boot/compressed/Makefile              |   5 +
- arch/x86/boot/compressed/efi_mixed.S           | 107 ++++------
- arch/x86/boot/compressed/head_32.S             |  32 ---
- arch/x86/boot/compressed/head_64.S             | 280 ++++++++----------------
- arch/x86/boot/compressed/misc.c                |  44 ++--
- arch/x86/boot/compressed/misc.h                |   2 -
- arch/x86/boot/compressed/pgtable.h             |  10 +-
- arch/x86/boot/compressed/pgtable_64.c          |  87 ++++----
- arch/x86/boot/compressed/sev.c                 | 112 ++++++----
- arch/x86/include/asm/boot.h                    |   8 +
- arch/x86/include/asm/efi.h                     |   7 +-
- arch/x86/include/asm/sev.h                     |   6 +
- arch/x86/kernel/head_64.S                      |  32 ++-
- drivers/firmware/efi/libstub/Makefile          |   1 +
- drivers/firmware/efi/libstub/arm64-stub.c      |   2 +-
- drivers/firmware/efi/libstub/efi-stub-helper.c |   2 +
- drivers/firmware/efi/libstub/efistub.h         |   3 +-
- drivers/firmware/efi/libstub/randomalloc.c     |  10 +-
- drivers/firmware/efi/libstub/x86-5lvl.c        |  95 +++++++++
- drivers/firmware/efi/libstub/x86-stub.c        | 281 ++++++++++++++-----------
- drivers/firmware/efi/libstub/x86-stub.h        |  17 ++
- drivers/firmware/efi/libstub/zboot.c           |   2 +-
- include/linux/decompress/mm.h                  |   2 +-
- 24 files changed, 587 insertions(+), 562 deletions(-)
- create mode 100644 drivers/firmware/efi/libstub/x86-5lvl.c
- create mode 100644 drivers/firmware/efi/libstub/x86-stub.h
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--Sig_/bhWkHvFtJL5dloTfizHUefo--
