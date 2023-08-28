@@ -2,166 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5A078A984
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E89178A985
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjH1KAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48476 "EHLO
+        id S230281AbjH1KBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjH1J74 (ORCPT
+        with ESMTP id S230309AbjH1KAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:59:56 -0400
-Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5AD91
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:59:53 -0700 (PDT)
-Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-68a3cae6d3aso2603250b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:59:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693216793; x=1693821593;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=estplTWSxKrAsxyRRN46bbjvd0eh61f81Ark1D69GWA=;
-        b=emf7sqSjJa/59WyH26XFX3ewi3I15f76OEVv9l8K4+KG4HrlCctujr667vRyZSIrl7
-         BF5lD9sQOtLavpKdD2sqmq/yqqgHAwH4LRhSmHWrH/SW++be3OuvOLYDHIExmIAdWQA2
-         4Miuaj6dSTfwMjZeDUMjUWhqaRI/TPDutPsodNYoMbg2n1c10Gw5JJkqAyKWtfQqVKFt
-         xqA46fxXhhMVXyNjfZlmY3thGQqWyIBluwH8RZYn/VCE2uMBgD0hwlj6j1bCJrwLXoGS
-         FNsGBkJ+CHBANb+cvmS17/WIlabnrFyE1uNm75KEjVVRVzLAFdFbXTc+zpoFkL6QS1bk
-         fIrA==
-X-Gm-Message-State: AOJu0YxHPXe3MUwaPdvONeX4JLFjGlPIpfLpGsVuwUCKRJIq1rXuhOFH
-        RWTPTk16EBwNrkd2kmU/fXF0ppQQZWRyyh6QyjFkFrt07htA
-X-Google-Smtp-Source: AGHT+IHDaei6qWidJDdm6CroNx2NnLungXrApU1x38pM+tfjRV+A7R3/jLv4RjTrp/jWHptaEUjMDiPX48kuppPUbzaKJFAqKslX
+        Mon, 28 Aug 2023 06:00:43 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3A1103
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:00:37 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B9A226607181;
+        Mon, 28 Aug 2023 11:00:35 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693216836;
+        bh=jdAjlOCLEGq6B7K+3PQcFTyPGl+kF+eJra2e4ngwQ80=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K/P3ciXuWQaaWe6Go8PTEApuBCeuYZPOKw+5md6zEo71hJz13EVK7Or7Yu9BfIWSF
+         DdeV8YttKG6m7IO6gMq/5lVE8rapts5wzeU+Af5RcW1f0OcndggGBW5tQzKzV7y308
+         SVY3uplFsar4hPSUf9VP5RDSCjfWyZK+XpxDAvDAjx95+GlJmB+AI5c+hk7XMf1C/0
+         T23/sLygho0vj72iAYzmXpPlfaxAL81+RoEtjVSisRIiWbvQepx0D6YXBI/RZBfnls
+         8F1cxbx507UIXI+EXjCJAJN99mBnw5Pj+eiPuUInJ881rGdlifNDHhTVfhA7mBeExT
+         C/wF73u5SiB0Q==
+Date:   Mon, 28 Aug 2023 12:00:32 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v15 16/23] drm/shmem-helper: Use kref for vmap_use_count
+Message-ID: <20230828120032.3d86cb15@collabora.com>
+In-Reply-To: <20230827175449.1766701-17-dmitry.osipenko@collabora.com>
+References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
+        <20230827175449.1766701-17-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:2d24:b0:68b:de2e:74f9 with SMTP id
- fa36-20020a056a002d2400b0068bde2e74f9mr3688060pfb.1.1693216792721; Mon, 28
- Aug 2023 02:59:52 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 02:59:52 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000753fbd0603f8c10b@google.com>
-Subject: [syzbot] [io-uring?] general protection fault in io_sqpoll_wq_cpu_affinity
-From:   syzbot <syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, 27 Aug 2023 20:54:42 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-syzbot found the following issue on:
+> Use kref helper for vmap_use_count to make refcounting consistent with
+> pages_use_count and pages_pin_count that use kref. This will allow to
+> optimize unlocked vmappings by skipping reservation locking if refcnt > 1.
 
-HEAD commit:    626932085009 Add linux-next specific files for 20230825
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a97797a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
-dashboard link: https://syzkaller.appspot.com/bug?extid=c74fea926a78b8a91042
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+The core is taking the resv lock before calling ->v[un]map(), so
+switching to a kref sounds a bit premature/useless, unless there are
+plans to delegate the locking to the drivers. The only thing it brings
+is standard overflow/underflow checks. Not really sure it's worth
+transitioning to a kref for this field until we have a real use case.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 37 ++++++++++++++------------
+>  include/drm/drm_gem_shmem_helper.h     |  2 +-
+>  2 files changed, 21 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 17a0177acb5d..d96fee3d6166 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -144,7 +144,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  	} else if (!shmem->imported_sgt) {
+>  		dma_resv_lock(shmem->base.resv, NULL);
+>  
+> -		drm_WARN_ON(obj->dev, shmem->vmap_use_count);
+> +		drm_WARN_ON(obj->dev, kref_read(&shmem->vmap_use_count));
+>  
+>  		if (shmem->sgt) {
+>  			dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
+> @@ -359,23 +359,25 @@ int drm_gem_shmem_vmap_locked(struct drm_gem_shmem_object *shmem,
+>  
+>  		dma_resv_assert_held(shmem->base.resv);
+>  
+> -		if (shmem->vmap_use_count++ > 0) {
+> +		if (kref_get_unless_zero(&shmem->vmap_use_count)) {
+>  			iosys_map_set_vaddr(map, shmem->vaddr);
+>  			return 0;
+>  		}
+>  
+>  		ret = drm_gem_shmem_pin_locked(shmem);
+>  		if (ret)
+> -			goto err_zero_use;
+> +			return ret;
+>  
+>  		if (shmem->map_wc)
+>  			prot = pgprot_writecombine(prot);
+>  		shmem->vaddr = vmap(shmem->pages, obj->size >> PAGE_SHIFT,
+>  				    VM_MAP, prot);
+> -		if (!shmem->vaddr)
+> +		if (!shmem->vaddr) {
+>  			ret = -ENOMEM;
+> -		else
+> +		} else {
+>  			iosys_map_set_vaddr(map, shmem->vaddr);
+> +			kref_init(&shmem->vmap_use_count);
+> +		}
+>  	}
+>  
+>  	if (ret) {
+> @@ -388,13 +390,22 @@ int drm_gem_shmem_vmap_locked(struct drm_gem_shmem_object *shmem,
+>  err_put_pages:
+>  	if (!obj->import_attach)
+>  		drm_gem_shmem_unpin_locked(shmem);
+> -err_zero_use:
+> -	shmem->vmap_use_count = 0;
+>  
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_vmap_locked);
+>  
+> +static void drm_gem_shmem_kref_vunmap(struct kref *kref)
+> +{
+> +	struct drm_gem_shmem_object *shmem;
+> +
+> +	shmem = container_of(kref, struct drm_gem_shmem_object,
+> +			     vmap_use_count);
+> +
+> +	vunmap(shmem->vaddr);
+> +	drm_gem_shmem_unpin_locked(shmem);
+> +}
+> +
+>  /*
+>   * drm_gem_shmem_vunmap_locked - Unmap a virtual mapping for a shmem GEM object
+>   * @shmem: shmem GEM object
+> @@ -416,15 +427,7 @@ void drm_gem_shmem_vunmap_locked(struct drm_gem_shmem_object *shmem,
+>  		dma_buf_vunmap(obj->import_attach->dmabuf, map);
+>  	} else {
+>  		dma_resv_assert_held(shmem->base.resv);
+> -
+> -		if (drm_WARN_ON_ONCE(obj->dev, !shmem->vmap_use_count))
+> -			return;
+> -
+> -		if (--shmem->vmap_use_count > 0)
+> -			return;
+> -
+> -		vunmap(shmem->vaddr);
+> -		drm_gem_shmem_unpin_locked(shmem);
+> +		kref_put(&shmem->vmap_use_count, drm_gem_shmem_kref_vunmap);
+>  	}
+>  
+>  	shmem->vaddr = NULL;
+> @@ -663,7 +666,7 @@ void drm_gem_shmem_print_info(const struct drm_gem_shmem_object *shmem,
+>  		return;
+>  
+>  	drm_printf_indent(p, indent, "pages_use_count=%u\n", kref_read(&shmem->pages_use_count));
+> -	drm_printf_indent(p, indent, "vmap_use_count=%u\n", shmem->vmap_use_count);
+> +	drm_printf_indent(p, indent, "vmap_use_count=%u\n", kref_read(&shmem->vmap_use_count));
+>  	drm_printf_indent(p, indent, "vaddr=%p\n", shmem->vaddr);
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_print_info);
+> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
+> index 400ecd63f45f..0e0ccd380f66 100644
+> --- a/include/drm/drm_gem_shmem_helper.h
+> +++ b/include/drm/drm_gem_shmem_helper.h
+> @@ -81,7 +81,7 @@ struct drm_gem_shmem_object {
+>  	 * Reference count on the virtual address.
+>  	 * The address are un-mapped when the count reaches zero.
+>  	 */
+> -	unsigned int vmap_use_count;
+> +	struct kref vmap_use_count;
+>  
+>  	/**
+>  	 * @got_sgt:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc000000011d: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000008e8-0x00000000000008ef]
-CPU: 1 PID: 27342 Comm: syz-executor.5 Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:io_sqpoll_wq_cpu_affinity+0x8c/0xe0 io_uring/sqpoll.c:433
-Code: 48 c1 ea 03 80 3c 02 00 75 64 4c 8b a3 a8 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bc 24 e8 08 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 37 49 8b bc 24 e8 08 00 00 48 89 ee e8 7e ac 02 00
-RSP: 0018:ffffc900051dfe00 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffff888056c72400 RCX: 0000000000000000
-RDX: 000000000000011d RSI: ffffffff841f12be RDI: 00000000000008e8
-RBP: ffffc900051dfec8 R08: 0000000000000000 R09: ffffed100ad8e482
-R10: ffffc900051dfde8 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000011 R15: ffffc900051dfec8
-FS:  00007f1f3e2bc6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe2c9b3010 CR3: 0000000029652000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __io_register_iowq_aff io_uring/io_uring.c:4207 [inline]
- __io_register_iowq_aff+0xa7/0xe0 io_uring/io_uring.c:4198
- io_register_iowq_aff io_uring/io_uring.c:4240 [inline]
- __io_uring_register io_uring/io_uring.c:4447 [inline]
- __do_sys_io_uring_register+0xf58/0x2250 io_uring/io_uring.c:4539
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f1f3d47cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f1f3e2bc0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
-RAX: ffffffffffffffda RBX: 00007f1f3d59bf80 RCX: 00007f1f3d47cae9
-RDX: 0000000020000140 RSI: 0000000000000011 RDI: 0000000000000003
-RBP: 00007f1f3d4c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f1f3d59bf80 R15: 00007fffb91ba9f8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:io_sqpoll_wq_cpu_affinity+0x8c/0xe0 io_uring/sqpoll.c:433
-Code: 48 c1 ea 03 80 3c 02 00 75 64 4c 8b a3 a8 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bc 24 e8 08 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 37 49 8b bc 24 e8 08 00 00 48 89 ee e8 7e ac 02 00
-RSP: 0018:ffffc900051dfe00 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffff888056c72400 RCX: 0000000000000000
-RDX: 000000000000011d RSI: ffffffff841f12be RDI: 00000000000008e8
-RBP: ffffc900051dfec8 R08: 0000000000000000 R09: ffffed100ad8e482
-R10: ffffc900051dfde8 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000011 R15: ffffc900051dfec8
-FS:  00007f1f3e2bc6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6671b75198 CR3: 0000000029652000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	48 c1 ea 03          	shr    $0x3,%rdx
-   4:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   8:	75 64                	jne    0x6e
-   a:	4c 8b a3 a8 00 00 00 	mov    0xa8(%rbx),%r12
-  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  18:	fc ff df
-  1b:	49 8d bc 24 e8 08 00 	lea    0x8e8(%r12),%rdi
-  22:	00
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	75 37                	jne    0x67
-  30:	49 8b bc 24 e8 08 00 	mov    0x8e8(%r12),%rdi
-  37:	00
-  38:	48 89 ee             	mov    %rbp,%rsi
-  3b:	e8 7e ac 02 00       	call   0x2acbe
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
