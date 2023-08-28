@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E811E78B609
+	by mail.lfdr.de (Postfix) with ESMTP id 91F3A78B608
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjH1RJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        id S229578AbjH1RJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbjH1RJd (ORCPT
+        with ESMTP id S229912AbjH1RJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:09:33 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61474CE5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:08:59 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52683b68c2fso4673546a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:08:59 -0700 (PDT)
+        Mon, 28 Aug 2023 13:09:21 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2371BE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:08:38 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so51267401fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693242505; x=1693847305;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CgmSxEVlzi5fMkwnrM8LhIHtQEbm/jAUKGlrVKGkYss=;
-        b=iFiaXdvNyP/PGupmYZQ4VDhihu4roD+VOTAYUOk648A8zr/NnetU0xeTBrkoG+AsPR
-         2wxI9+4xAQyl3Xxl94EeAyF+UIHsPMJF7wGK0pCn3gzC4W2F4540PibPlUl5Zn6MTaR2
-         o9vymucc9ynm4RNh82v145GN+bLsUwc0gP3U/tWXkGAjscoX/fm2tFx7pnKGjTA5r+bw
-         1SR9g8zkzT/uibLlIedBK0SvUKoCFVbB3i1kaLcB1K4BYwKWqBKKzLSRxsgdcTYodIoi
-         FusqkfeL0/iUTIn/J+n7J3p1yNB/tRDgBAeMhHmPuu5uQZq3RL4xZ0uTD5pWqvRs5dNW
-         PSjw==
+        d=linaro.org; s=google; t=1693242491; x=1693847291;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OJ0nWzzimdg838fa/lzoTVDxFGZxON94cAcpz1zfgRE=;
+        b=DLCWu4qssYAxO6MpNH7v985v2dDP3T9gYeek8LCjZThUXgz5fxyKzreeWppQjmloxL
+         71ehSFk3Hr/A7WDYapYYHueXbu4tSPYY886yeYVzTxTa1SphD4ep2Im/ogxE2vEDGoGT
+         JcfRZKDU0squBVCwHKAlNqKDUD5D3ZhmI56R+pXe3dgk0leNcAx82Leww8t7ux03hoa+
+         aHhwj5vijuts4QOYB+uwsmueid58WCJo/K+yxrEiH+VfruxWeTdqyVONEASnAs7vkmqY
+         0Cs0v/ah6AT/lcH+fuH8+nTJQSVJuG3wehIzywwc4U5X6gHdWXLEkTqXO9MA/m6PMZ7H
+         o9hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693242505; x=1693847305;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CgmSxEVlzi5fMkwnrM8LhIHtQEbm/jAUKGlrVKGkYss=;
-        b=hqRLYZPjjcpcGT19hBBBfyk3qXjk9lYHcHGGvosMf/DqNzvqwPy+Mq5K+3HThx11x3
-         SZJEo8FUe86p5XZLZKDYm2S2JRpgwCDvVIPzopxOaV7QbIctiXygUO/eYRsTFy5eQB1a
-         aTmAaQHy/mK4s5S3u4VWI2eR7cbBCBDDYC9KUjDOdPkesFmCbiritpOMysAGYn6qt36P
-         Ci95j+4e9ZPYpsV7lhe3jG72yYXlwBN4IKHXewITRcSvpvi74bpIWgTTjAqnEdk2ZdzT
-         5spy1qblssVYW/bZdcLT1WAoSkn6ia7qn9cSKW9oOpUvjHEdsU12G7b/qTb3duceFkhb
-         UwOw==
-X-Gm-Message-State: AOJu0Yz1qGRJobBxhDDAn9BNnBMUVBLZqPaQmFbb+9XiJIWVXQYN4AGK
-        /2o7D71esxV7l0w030i6AGi2dRoenG3o6BuGu+Q0Mw==
-X-Google-Smtp-Source: AGHT+IEebaOPHNuzP7D5Utx3nzTPX+fvnhl+LnF5mzhFALZEervRMpT4j2HBe8/3OWEpuNkUYvYhIzytsgarWkOfJOw=
-X-Received: by 2002:a17:906:2092:b0:9a5:852f:10ac with SMTP id
- 18-20020a170906209200b009a5852f10acmr5947834ejq.53.1693242505112; Mon, 28 Aug
- 2023 10:08:25 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693242491; x=1693847291;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJ0nWzzimdg838fa/lzoTVDxFGZxON94cAcpz1zfgRE=;
+        b=as/MJl33cw08jxdyQmRsmZjBuHRFsUnRWnggQtrceuoxDqjhi3Z+TbrUnfqUcT5CjW
+         M3CFXINKH+EshnrXoq4zKe9ow4Jr00jRbhxxKohyZtB5MfBtqmEskZVe4sOxbrrpOQ1v
+         SBSE0OzC1CobwyCGGXH2V5QgVJP/+cSRMV6vv6pNqZONChyXgXTsjfFMAt1/ntxt+irp
+         u/n1dFXkwliDr3n/3Rs27IpfYKFKGLlZglxpl/lSVDb5MDww59SJQ3AMHEQe5P0Nl+le
+         AJGe2bsVaAdSmm7ZHfShtXNbbxrWqXBAoJGXRNFnlGfjptvU6njw5A93kYwBkXOW32nb
+         qMsA==
+X-Gm-Message-State: AOJu0Yxq74+A8rtPEY6ZGo118IaJFG7PF6t/Rk0Tom651PP/onxFnre7
+        aULY2jcbLdwEtc3xRcxbdtDCYA==
+X-Google-Smtp-Source: AGHT+IEcPUROefoidY84rNmIPDcccxjgx8VyhG+jU810O5raCTKXVm4HvVuhMFOnJHbYLVNBvJkswA==
+X-Received: by 2002:a05:651c:2045:b0:2bc:fb79:d165 with SMTP id t5-20020a05651c204500b002bcfb79d165mr5073014ljo.39.1693242491588;
+        Mon, 28 Aug 2023 10:08:11 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id rs25-20020a170907037900b0099bd1a78ef5sm4826212ejb.74.2023.08.28.10.08.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 10:08:11 -0700 (PDT)
+Message-ID: <3f26449e-4208-f1a2-dd3c-3ecc095f4ea0@linaro.org>
+Date:   Mon, 28 Aug 2023 19:08:09 +0200
 MIME-Version: 1.0
-References: <20230821205458.1764662-4-yosryahmed@google.com>
- <ZOR6eyYfJYlxdMet@dhcp22.suse.cz> <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
- <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
- <ZOcDLD/1WaOwWis9@dhcp22.suse.cz> <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
- <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
- <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz> <CAJD7tkYPyb+2zOKqctQw-vhuwYRg85e6v2Y44xWJofHZ+F+YQw@mail.gmail.com>
- <ZOzBgfzlGdrPD4gk@dhcp22.suse.cz> <CAJD7tkakMcaR_6NygEXCt6GF8TOuzYAUQe1im+vu2F3G4jtz=w@mail.gmail.com>
- <CALvZod7uxDd3Lrd3VwTTC-SDvqhdj2Ly-dYVswO=TBM=XTnkcg@mail.gmail.com>
-In-Reply-To: <CALvZod7uxDd3Lrd3VwTTC-SDvqhdj2Ly-dYVswO=TBM=XTnkcg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 28 Aug 2023 10:07:48 -0700
-Message-ID: <CAJD7tkbnvMCNfQwY_dmVe2SWR5NeN+3RzFhsVyimM1ATaX0D5A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] misc: bm92txx: Add driver for the ROHM BM92Txx
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     azkali <a.ffcc7@gmail.com>, Adam Jiang <chaoj@nvidia.com>,
+        CTCaer <ctcaer@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230824153059.212244-1-linkmauve@linkmauve.fr>
+ <20230824153059.212244-3-linkmauve@linkmauve.fr>
+ <f79087c0-cc44-4fb6-fa2e-b43db5dfd6d4@linaro.org> <ZOy33RB8aj3455ZQ@desktop>
+ <faf53a03-341c-994e-e66f-46cf88aeaa8e@linaro.org>
+In-Reply-To: <faf53a03-341c-994e-e66f-46cf88aeaa8e@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,66 +85,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 10:00=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
- wrote:
->
-> On Mon, Aug 28, 2023 at 9:15=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> [...]
-> > >
-> > > Well, I really have to say that I do not like the notion that reading
-> > > stats is unpredictable. This just makes it really hard to use. If
-> > > the precision is to be sarificed then this should be preferable over
-> > > potentially high global lock contention. We already have that model i=
-n
-> > > place of /proc/vmstat (configurable timeout for flusher and a way to
-> > > flush explicitly). I appreciate you would like to have a better
-> > > precision but as you have explored the locking is really hard to get =
-rid
-> > > of here.
-> >
-> > Reading the stats *is* unpredictable today. In terms of
-> > accuracy/staleness and cost. Avoiding the flush entirely on the read
-> > path will surely make the cost very stable and cheap, but will make
-> > accuracy even less predictable.
-> >
->
-> On average you would get the stats at most 2 second old, so I would
-> not say it is less predictable.
->
-> > >
-> > > So from my POV I would prefer to avoid flushing from the stats readin=
-g
-> > > path and implement force flushing by writing to stat file. If the 2s
-> > > flushing interval is considered to coarse I would be OK to allow sett=
-ing
-> > > it from userspace. This way this would be more in line with /proc/vms=
-tat
-> > > which seems to be working quite well.
-> > >
-> > > If this is not accaptable or deemed a wrong approach long term then i=
-t
-> > > would be good to reonsider the current cgroup_rstat_lock at least.
-> > > Either by turning it into mutex or by dropping the yielding code whic=
-h
-> > > can severly affect the worst case latency AFAIU.
-> >
-> > Honestly I think it's better if we do it the other way around. We make
-> > flushing on the stats reading path non-unified and deterministic. That
-> > model also exists and is used for cpu.stat. If we find a problem with
-> > the locking being held from userspace, we can then remove flushing
-> > from the read path and add interface(s) to configure the periodic
-> > flusher and do a force flush.
-> >
->
-> Here I agree with you. Let's go with the approach which is easy to
-> undo for now. Though I prefer the new explicit interface for flushing,
-> that step would be very hard to undo. Let's reevaluate if the proposed
-> approach shows negative impact on production traffic and I think
-> Cloudflare folks can give us the results soon.
+On 28/08/2023 19:05, Krzysztof Kozlowski wrote:
+> On 28/08/2023 17:06, Emmanuel Gil Peyrot wrote:
+>> Hi,
+>>
+>> On Thu, Aug 24, 2023 at 06:28:07PM +0200, Krzysztof Kozlowski wrote:
+>>> On 24/08/2023 17:30, Emmanuel Gil Peyrot wrote:
+>>>> From: azkali <a.ffcc7@gmail.com>
+>>>>
+>>>> This is used as the USB-C Power Delivery controller of the Nintendo
+>>>> Switch.
+>>>>
+>>>> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+>>>> Signed-off-by: azkali <a.ffcc7@gmail.com>
+>>>> Signed-off-by: Adam Jiang <chaoj@nvidia.com>
+>>>> Signed-off-by: CTCaer <ctcaer@gmail.com>
+>>>
+>>> These do not look like real identities. In this and previous patchset
+>>> your author emails bounces, so I propose to drop all stale addresses and
+>>> all anonymous entries.
+>>
+>> I and the authors find that policy inacceptable, our work should be
+>> credited and our copyright should hold despite our choice of name.
+> 
+> Which authors? The ones who do not want to give real, working email? Or
+> the ones who do not want to provide known identity, which is required by
+> our submission process?
+> 
 
-Do you prefer we also switch to using a mutex (with preemption
-disabled) to avoid the scenario Michal described where flushers give
-up the lock and sleep resulting in an unbounded wait time in the worst
-case?
+BTW, you mistake copyrights with DCO... DCO does not automatically give
+any of the intermediate people copyrights.
+
+Best regards,
+Krzysztof
+
