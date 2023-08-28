@@ -2,212 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5516878B7BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9825C78B7C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbjH1TA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 15:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
+        id S233251AbjH1TCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 15:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233259AbjH1TA2 (ORCPT
+        with ESMTP id S233255AbjH1TBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 15:00:28 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A80FF;
-        Mon, 28 Aug 2023 12:00:22 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fea0640d7aso33892565e9.0;
-        Mon, 28 Aug 2023 12:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693249221; x=1693854021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nWVaklve78TY8Ndro9SxAEjWhaM4lUPv6QRMiokVKjk=;
-        b=A0HvRBvLv+ZUbs5yBJuawXPTe5T27ocbRvkAiVZCtL9aYA7Serw7K8Pd0SmR7bmDIw
-         fgARXAfql8f4I5PQg8MvRrYZo0xxBJ34E/J/Bt9KSqsVxTPk4wuBNvpDXIllYAgY684X
-         KJI9N1MhnDT37N8B3srSSWc5hWiwSVMBp33f3ghQCN29lJZurGCOorLkfx9KHQ5vjyLT
-         LndP90pd3pEMda0uNE8eTHiWiRhLsunQti7oW4gGcaTy5Hue/MWXjRm1o/97zpNTg/aW
-         wa1katQl0yOGTcsh/yZnbPC0QCmcZYrlDdyjAShClx5tKzIiGVS4rjyFLSZhkKhHJbId
-         Xzlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693249221; x=1693854021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nWVaklve78TY8Ndro9SxAEjWhaM4lUPv6QRMiokVKjk=;
-        b=G3tdaDPZ3qCJKkExbNCfc1otcl4aKT/oOHiv7rPlMdzOWLBo+BkpFsr+tzN97M0cOg
-         ngBscEgV0OBKrrjHDB1LTnK9XXN+AeOQnAZ+Ag6svg32AAXX8MepclkrXnmD8TSPxz0M
-         kOw0u12NMrPodIZeBNxduPabrcYJSUEJKvCwJJek9gS2q0JnISlHy2BUqyap5P9xLRg6
-         oJr14OD1XUKaKRkcY3KxcnhSRQzoaDFTzyCCPWZxiy3HxdK8x79sgCRbfEmxg0o3Lw4r
-         qpZmc0HNtuNZoLhrmGkWaQJcpDujkU1wRP2rC03R+2uD/v2KLqvpPtTckM4YKH2vsfR3
-         eqjA==
-X-Gm-Message-State: AOJu0YxEE8DcNF6nuO0ZRL+UKZKeRZl7Uny0XHukDGBaT6stDfIdIT/S
-        MbmYT1zIaSvd11VyZfBG4p4=
-X-Google-Smtp-Source: AGHT+IE1B2gPj/pPtcZ4/vI/oz1diEErn2Krz1vr8bos9oo17Wv8vTp0dxrT8KTKied+xZLC+qSgRw==
-X-Received: by 2002:a7b:cc8e:0:b0:401:b3a5:ec03 with SMTP id p14-20020a7bcc8e000000b00401b3a5ec03mr8009357wma.1.1693249220534;
-        Mon, 28 Aug 2023 12:00:20 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id 10-20020a05600c234a00b003feeb082a9fsm11662696wmq.3.2023.08.28.12.00.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 12:00:19 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 20:00:18 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kirill A Shutemov <kirill@shutemov.name>,
-        "Liam R. Howlett" <liam.howlett@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>
-Subject: Re: [PATCH v5 2/7] mm/mremap: Allow moves within the same VMA
-Message-ID: <8891681e-532c-4d7b-bc28-b4ad3e017331@lucifer.local>
-References: <20230822015501.791637-1-joel@joelfernandes.org>
- <20230822015501.791637-3-joel@joelfernandes.org>
- <46196ba1-c54d-4c1d-954f-a0006602af99@lucifer.local>
- <20230828183240.GA1621761@google.com>
+        Mon, 28 Aug 2023 15:01:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B01E0;
+        Mon, 28 Aug 2023 12:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693249291; x=1724785291;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KZPfLYpGnJSu/C8KGBRwKECa7cxJe+NwZDmDiVii1JA=;
+  b=h6yayN5tWLhqY10XMaQmmyaHwv1Luwb4E2VhzZ8uOg6hPd7P+UiAy7wW
+   6HRMJlKb0phl/pPvSRllsvNJOgvKkPogjH/c8EIP8GcNZdMIhEQO1mx4E
+   OQWGKawIi2tedClJTRW84RnC2S+vnuujtDdx2tVEHeclz8CpqDyjD3jat
+   aaKs3CS61eWIRSby0oE4WUpvlbs2BgJ/8Cx+U+vSfgevaXwz8Q1h0LQMV
+   m7dntPLPzFpQsby19CgvBgkatS5neoyoIQitAKL96QSZtWEPlfSDGckBV
+   tTvSoSpi0TkCNmT4lzCw0KIX1UBgjj9RxN2wSwciNHi2C+4pnflvTSPga
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="378961561"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="378961561"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 12:01:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="715220950"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="715220950"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 12:01:30 -0700
+Date:   Mon, 28 Aug 2023 12:01:28 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v4 5/7] x86/resctrl: Determine if Sub-NUMA Cluster is
+ enabled and initialize.
+Message-ID: <ZOzvCHcDy6xaEsB8@agluck-desk3>
+References: <20230713163207.219710-1-tony.luck@intel.com>
+ <20230722190740.326190-1-tony.luck@intel.com>
+ <20230722190740.326190-6-tony.luck@intel.com>
+ <7c8650d5-eb69-dd28-81fc-7a97d45f9bfb@intel.com>
+ <ZOjpugXNDVx/cGRl@agluck-desk3>
+ <15b289cd-3e9c-3757-c1b0-7f5f79244564@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230828183240.GA1621761@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <15b289cd-3e9c-3757-c1b0-7f5f79244564@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 06:32:40PM +0000, Joel Fernandes wrote:
-> On Sun, Aug 27, 2023 at 10:21:14AM +0100, Lorenzo Stoakes wrote:
-> [..]
-> > >
-> > >  /*
-> > >   * Flags used by change_protection().  For now we make it a bitmap so
-> > > diff --git a/mm/mremap.c b/mm/mremap.c
-> > > index 035fbf542a8f..06baa13bd2c8 100644
-> > > --- a/mm/mremap.c
-> > > +++ b/mm/mremap.c
-> > > @@ -490,12 +490,13 @@ static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
-> > >  }
-> > >
-> > >  /*
-> > > - * A helper to check if a previous mapping exists. Required for
-> > > - * move_page_tables() and realign_addr() to determine if a previous mapping
-> > > - * exists before we can do realignment optimizations.
-> > > + * A helper to check if aligning down is OK. The aligned address should fall
-> > > + * on *no mapping*. For the stack moving down, that's a special move within
-> > > + * the VMA that is created to span the source and destination of the move,
-> > > + * so we make an exception for it.
-> > >   */
-> > >  static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_align,
-> > > -			       unsigned long mask)
-> > > +			    unsigned long mask, bool for_stack)
-> > >  {
-> > >  	unsigned long addr_masked = addr_to_align & mask;
-> > >
-> > > @@ -504,7 +505,7 @@ static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_ali
-> > >  	 * of the corresponding VMA, we can't align down or we will destroy part
-> > >  	 * of the current mapping.
-> > >  	 */
-> > > -	if (vma->vm_start != addr_to_align)
-> > > +	if (!for_stack && vma->vm_start != addr_to_align)
-> > >  		return false;
-> >
-> > I'm a little confused by this exception, is it very specifically for the
-> > shift_arg_pages() case where can assume we are safe to just discard the
-> > lower portion of the stack?
-> >
-> > Wouldn't the find_vma_intersection() line below fail in this case? I may be
-> > missing something here :)
->
-> I think you are right. In v4, this was not an issue as we did this:
->
->
-> +	if (!for_stack && vma->vm_start != addr_to_align)
-> +		return false;
-> +
-> +	cur = find_vma_prev(vma->vm_mm, vma->vm_start, &prev);
-> +	if (WARN_ON_ONCE(cur != vma))
-> +		return false;
->
-> Which essentially means this patch is a NOOP in v5 for the stack case.
+On Mon, Aug 28, 2023 at 10:05:50AM -0700, Reinette Chatre wrote:
+> Hi Tony,
+> 
+> On 8/25/2023 10:49 AM, Tony Luck wrote:
+> > On Fri, Aug 11, 2023 at 10:32:29AM -0700, Reinette Chatre wrote:
+> >> On 7/22/2023 12:07 PM, Tony Luck wrote:
+> 
+> ...
+> 
+> >>> +static const struct x86_cpu_id snc_cpu_ids[] __initconst = {
+> >>> +	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X, 0),
+> >>> +	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, 0),
+> >>> +	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X, 0),
+> >>> +	{}
+> >>> +};
+> >>> +
+> >>> +/*
+> >>> + * There isn't a simple enumeration bit to show whether SNC mode
+> >>> + * is enabled. Look at the ratio of number of NUMA nodes to the
+> >>> + * number of distinct L3 caches. Take care to skip memory-only nodes.
+> >>> + */
+> >>> +static __init int get_snc_config(void)
+> >>> +{
+> >>> +	unsigned long *node_caches;
+> >>> +	int mem_only_nodes = 0;
+> >>> +	int cpu, node, ret;
+> >>> +
+> >>> +	if (!x86_match_cpu(snc_cpu_ids))
+> >>> +		return 1;
+> >>> +
+> >>> +	node_caches = kcalloc(BITS_TO_LONGS(nr_node_ids), sizeof(*node_caches), GFP_KERNEL);
+> >>> +	if (!node_caches)
+> >>> +		return 1;
+> >>> +
+> >>> +	cpus_read_lock();
+> >>> +	for_each_node(node) {
+> >>> +		cpu = cpumask_first(cpumask_of_node(node));
+> >>> +		if (cpu < nr_cpu_ids)
+> >>> +			set_bit(get_cpu_cacheinfo_id(cpu, 3), node_caches);
+> >>> +		else
+> >>> +			mem_only_nodes++;
+> >>> +	}
+> >>> +	cpus_read_unlock();
+> >>
+> >> I am not familiar with the numa code at all so please correct me
+> >> where I am wrong. I do see that nr_node_ids is initialized with __init code
+> >> so it should be accurate at this point. It looks to me like this initialization
+> >> assumes that at least one CPU per node will be online at the time it is run.
+> >> It is not clear to me that this assumption would always be true. 
+> > 
+> > Resctrl initialization is kicked off as a late_initcall(). So all CPUs
+> > and devices are fully initialized before this code runs.
+> > 
+> > Resctrl can't be moved to an "init" state before CPUs are brought online
+> > because it makes a call to cpuhp_setup_state() to get callbacks for
+> > online/offline CPU events ... that call can't be done early.
+> 
+> Apologies but this is not so obvious to me. From what I understand a
+> system need not be booted with all CPUs online. CPUs can be brought
+> online at any time.
 
->
-> So what we really want is the VMA previous to @vma and whether than subsumes
-> the masked address.
->
-> Should I just change it back to the v4 version then as above for both patch 1
-> and 2 and carry your review tags?
+So you are concerned about the case where the system was booted with a
+maxcpus=N boot argument, and additional CPUs are brought online later?
 
-You will not be surprised to hear that I'd rather not :) I think if we did
-revert to that approach it'd need rework anyway, so I'd ask for a respin w/o
-tag if we were to go down that road.
+My code will fail to detect SNC mode if someone does that. I don't see
+any possible way to recover from this in a safe way later when additional
+CPUs are brought online. Those CPUs could be brought online in any order
+by the user, and there is no way to know when they are all done. Without an
+explicit enumeration of SNC mode there is no fool-proof way to detect
+SNC mode in the face of CPU hot plug post-boot.
 
-HOWEVER let's first clarify what we want to check.
+I could add a pr_warn() into this code:
 
-My understand (please correct me if mistaken) is that there are two
-acceptable cases:-
+ 915 static int __init nrcpus(char *str)
+ 916 {
+ 917         int nr_cpus;
+ 918
+ 919         if (get_option(&str, &nr_cpus) && nr_cpus > 0 && nr_cpus < nr_cpu_ids)
+ 920                 set_nr_cpu_ids(nr_cpus);
+ 921
+ 922         return 0;
+ 923 }
+ 924
+ 925 early_param("nr_cpus", nrcpus);
 
-1. !for_stack
+But this feels like a "user shot themself in the foot" case. I don't
+think it necessary to add checks and warnings for every possible strange
+way a user could configure a system.
 
- addr_masked         addr_to_align
- |                   |
- v                   v
- .                   |-----|
- . <-must be empty-> | vma |
- .                   |-----|
+> >>> +
+> >>> +	ret = (nr_node_ids - mem_only_nodes) / bitmap_weight(node_caches, nr_node_ids);
+> >>> +	kfree(node_caches);
+> >>> +
+> >>> +	if (ret > 1)
+> >>> +		rdt_resources_all[RDT_RESOURCE_L3].r_resctrl.mon_scope = MON_SCOPE_NODE;
+> >>> +
+> >>> +	return ret;
+> >>> +}
+> >>> +
 
-2. for_stack
-
-      addr_masked         addr_to_align
-      |                   |
-      v                   v
- |----.-------------------.-----|
- |    .        vma        .     |
- |----.-------------------.-----|
-
-Meaning that there are only two cases that we should care about:-
-
-1. !for_stack: addr_to_align == vma->vm_start and no other VMA exists
-   between this and addr_masked
-
-2. for_stack: addr_masked is in the same VMA as addr_to_align.
-
-In this case, the check can surely be:-
-
-return find_vma_intersection(vma->vm_mm, addr_masked, addr_to_align) ==
-	(for_stack ? vma : NULL);
-
-(maybe would be less ugly to actually assign the intersection value to a
-local var and check that)
-
->
-> This is also hard to test as it requires triggering the execve stack move
-> case. Though it is not a bug (as it is essentially a NOOP), it still would be
-> nice to test it. This is complicated by also the fact that mremap(2) itself
-> does not allow overlapping moves. I could try to hardcode the unfavorable
-> situation as I have done in the past to force that mremap warning.
-
-I find this exception a bit confusing, why are we so adamant on performing
-the optimisation in this case when it makes the code uglier and is rather
-hard to understand? Does it really matter that much?
-
-I wonder whether it wouldn't be better to just drop that (unless you really
-felt strongly about it) for the patch set and then perhaps address it in a
-follow up?
-
-This may entirely be a product of my simply not entirely understanding this
-case so do forgive the probing, I just want to make sure we handle it
-correctly!
-
->
-> thanks,
->
->  - Joel
->
+-Tony
