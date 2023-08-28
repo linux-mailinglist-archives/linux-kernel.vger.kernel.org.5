@@ -2,169 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AC078B6D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2693B78B6D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbjH1R5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
+        id S232965AbjH1R6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbjH1R4z (ORCPT
+        with ESMTP id S233027AbjH1R60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:56:55 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF71C185;
-        Mon, 28 Aug 2023 10:56:52 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SGJ4Hx000814;
-        Mon, 28 Aug 2023 17:56:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=1x5rlXTyf3rFYzB2POOoRa7o3PGeg4tEVqJTmUMWTPU=;
- b=cEAxZRb918yS38Jw1ls7ftTUFznu3xcfKYr2/WYmMGSxshKGzUs89XlvYz16iq0TumRf
- rVdapYNQcP/xA4D2l5EgtqKjfEPHmxICXcGD/AbyNJX+Rn8dHbupOivUSJbCrfiwAo9T
- U99Lhsf6wniiAMAD/iHrv7FmZ0gLKRJYA4KHIFVHHIhJVgIxlYEiuu/fmpiEHFBADVA1
- AmqXSTYUb73AAFiVYI6ZI+wTJCveYjfBzeqo6q4OFDQNyDY640sk39UPSsAngOrSr3+j
- Hs/u7awfpxT+IFQ1ONSBQqZOEAeToukCCJOf2mALHQTZlgbYv5o9RyFemqawcSsXgNNG Qg== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sq9sdm2jx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 17:56:34 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SHuXtU017889
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 17:56:33 GMT
-Received: from quicinc.com (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 28 Aug
- 2023 10:56:31 -0700
-Date:   Mon, 28 Aug 2023 10:56:29 -0700
-From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <quic_pkondeti@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <workflows@vger.kernel.org>,
-        <tools@linux.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
-Message-ID: <20230828175629.GC23466@quicinc.com>
-Mail-Followup-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com, workflows@vger.kernel.org,
-        tools@linux.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-References: <cover.1693037031.git.quic_gurus@quicinc.com>
- <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
- <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
+        Mon, 28 Aug 2023 13:58:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0293F9;
+        Mon, 28 Aug 2023 10:58:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 40905616E2;
+        Mon, 28 Aug 2023 17:58:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6936C433C8;
+        Mon, 28 Aug 2023 17:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693245501;
+        bh=bXx/kmNErccJ1kDScOf9v40zDw4ERKiaA2oGHkRg8LY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FNzzYv/5GDgzpkVMgp8TtGso8ENsEfSH51zpHazWPFVIoncBn9jIoksrPz+2GciLd
+         hmaX4TgfETJBMyNRu2SZPr2GN04CL8xE+a15H9VUYYnHnxft9HPMzBpos2PcWTAfo/
+         wheuvfG4DqWv0Rt3nbqpf6lDj+u3VAZvplwf1mCBmY3A93JEPvNrXSngeNEEXpvEWW
+         hvl5gVC6jH+6Dk+PqjelcBXSTwzwqLt/2pvB89teYOJMukdRtF34qInFnE9cT6lJzp
+         HvbNvl98TeBL4ASEHGvgD5DaZk3lR1let1pfEhfpah0hdnTc4ntQ6XDOYCeGji9wyS
+         ABuyr9fRcmCAg==
+Date:   Mon, 28 Aug 2023 18:58:16 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Evan Green <evan@rivosinc.com>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org,
+        Andrew Jones <ajones@ventanamicro.com>
+Subject: Re: [PATCH v5] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
+Message-ID: <20230828-stonewall-eaten-d79cd057c845@spud>
+References: <20230825231139.1145522-1-evan@rivosinc.com>
+ <20230826-anguished-tutu-81d63b3081a7@spud>
+ <20230826-copper-suffocate-5f4f0e67f9a7@spud>
+ <CALs-HsvwLpcUMPeKEs3ZW3tOwLGeGRQSe=grxE5L14Tj8b+XHw@mail.gmail.com>
+ <20230828-dangling-decency-ededaa58d014@spud>
+ <CALs-Hss8KNV9zkEHujVmzb7Rf8Zp9OGkDF9Fj8BCjQuFDYaHHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="NE90RS6KjVwl6f8L"
 Content-Disposition: inline
-In-Reply-To: <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ninS63_k0bFr28tw0dwIdU5DGWC9_-x_
-X-Proofpoint-ORIG-GUID: ninS63_k0bFr28tw0dwIdU5DGWC9_-x_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_15,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 adultscore=0 impostorscore=0 spamscore=0
- phishscore=0 clxscore=1015 mlxlogscore=651 mlxscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280158
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CALs-Hss8KNV9zkEHujVmzb7Rf8Zp9OGkDF9Fj8BCjQuFDYaHHA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 28 2023 10:21, Krzysztof Kozlowski wrote:
-> On 26/08/2023 10:07, Guru Das Srinagesh wrote:
-> > This script runs get_maintainer.py on a given patch file (or multiple
-> > patch files) and adds its output to the patch file in place with the
-> > appropriate email headers "To: " or "Cc: " as the case may be. These new
-> > headers are added after the "From: " line in the patch.
-> > 
-> > Currently, for a single patch, maintainers and reviewers are added as
-> > "To: ", mailing lists and all other roles are added as "Cc: ".
-> > 
-> > For a series of patches, however, a set-union scheme is employed in
-> > order to solve the all-too-common problem of ending up sending only
-> > subsets of a patch series to some lists, which results in important
-> > pieces of context such as the cover letter (or other patches in the
-> > series) being dropped from those lists. This scheme is as follows:
-> > 
-> > - Create set-union of all maintainers and reviewers from all patches and
-> >   use this to do the following per patch:
-> >   - add only that specific patch's maintainers and reviewers as "To: "
-> >   - add the other maintainers and reviewers from the other patches as "Cc: "
-> > 
-> > - Create set-union of all mailing lists corresponding to all patches and
-> >   add this to all patches as "Cc: "
-> > 
-> > - Create set-union of all other roles corresponding to all patches and
-> >   add this to all patches as "Cc: "
-> > 
-> > Please note that patch files that don't have any "Maintainer"s or
-> > "Reviewers" explicitly listed in their `get_maintainer.pl` output will
-> 
-> So before you will ignoring the reviewers, right? One more reason to not
-> get it right...
 
-In v2, Reviewers were added as "Cc:" whereas here in v3 they are added as
-"To:". Not sure where you're getting "ignoring the reviewers" from.
+--NE90RS6KjVwl6f8L
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > not have any "To: " entries added to them; developers are expected to
-> > manually make edits to the added entries in such cases to convert some
-> > "Cc: " entries to "To: " as desired.
-> > 
-> > The script is quiet by default (only prints errors) and its verbosity
-> > can be adjusted via an optional parameter.
-> > 
-> > Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
-> > ---
-> >  MAINTAINERS               |   5 ++
-> >  scripts/add-maintainer.py | 164 ++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 169 insertions(+)
-> >  create mode 100755 scripts/add-maintainer.py
-> > 
-> 
-> I do not see the benefits of this script. For me - it's unnecessarily
-> more complicated instead of my simple bash function which makes
+On Mon, Aug 28, 2023 at 10:18:24AM -0700, Evan Green wrote:
+> On Mon, Aug 28, 2023 at 9:53=E2=80=AFAM Conor Dooley <conor@kernel.org> w=
+rote:
+> >
+> > On Mon, Aug 28, 2023 at 09:24:03AM -0700, Evan Green wrote:
+> > > On Sat, Aug 26, 2023 at 2:56=E2=80=AFAM Conor Dooley <conor@kernel.or=
+g> wrote:
+> > > >
+> > > > On Sat, Aug 26, 2023 at 12:26:25AM +0100, Conor Dooley wrote:
+> > > > > On Fri, Aug 25, 2023 at 04:11:38PM -0700, Evan Green wrote:
+> > > > > > In /proc/cpuinfo, most of the information we show for each proc=
+essor is
+> > > > > > specific to that hart: marchid, mvendorid, mimpid, processor, h=
+art,
+> > > > > > compatible, and the mmu size. But the ISA string gets filtered =
+through a
+> > > > > > lowest common denominator mask, so that if one CPU is missing a=
+n ISA
+> > > > > > extension, no CPUs will show it.
+> > > > > >
+> > > > > > Now that we track the ISA extensions for each hart, let's repor=
+t ISA
+> > > > > > extension info accurately per-hart in /proc/cpuinfo. We cannot =
+change
+> > > > > > the "isa:" line, as usermode may be relying on that line to sho=
+w only
+> > > > > > the common set of extensions supported across all harts. Add a =
+new "hart
+> > > > > > isa" line instead, which reports the true set of extensions for=
+ that
+> > > > > > hart.
+> > > > > >
+> > > > > > Signed-off-by: Evan Green <evan@rivosinc.com>
+> > > > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > > > >
+> > > > > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > > > >
+> > > > > Can you drop this if you repost?
+> > >
+> > > Will do.
+> > >
+> > > > >
+> > > > > > +"isa" vs "hart isa" lines in /proc/cpuinfo
+> > > > > > +------------------------------------------
+> > > > > > +
+> > > > > > +The "isa" line in /proc/cpuinfo describes the lowest common de=
+nominator of
+> > > > > > +RISC-V ISA extensions recognized by the kernel and implemented=
+ on all harts. The
+> > > > > > +"hart isa" line, in contrast, describes the set of extensions =
+recognized by the
+> > > > > > +kernel on the particular hart being described, even if those e=
+xtensions may not
+> > > > > > +be present on all harts in the system.
+> > > > >
+> > > > > > In both cases, the presence of a feature
+> > > > > > +in these lines guarantees only that the hardware has the descr=
+ibed capability.
+> > > > > > +Additional kernel support or policy control changes may be req=
+uired before a
+> > > > > > +feature is fully usable by userspace programs.
+> > > > >
+> > > > > I do not think that "in both cases" matches the expectations of
+> > > > > userspace for the existing line. It's too late at night for me to=
+ think
+> > > > > properly, but I think our existing implementation does work like =
+you
+> > > > > have documented for FD/V. I think I previously mentioned that it =
+could
+> > > > > misreport things for vector during the review of the vector serie=
+s but
+> > > > > forgot about it until now.
+> > > >
+> > > > I went and checked, and yes it does currently do that for vector. I
+> > > > don't think that that is what userspace would expect, that Google
+> > > > cpu_features project for example would draw incorrect conclusions.
+> > >
+> > > I'm lost, could you explain a little more?
+> >
+> > There (may be/)are userspace programs that will interpret the appearance
+> > of extensions in cpuinfo as meaning they can be used without performing
+> > any further checks.
+> >
+> > > My goal was to say that
+> > > there's no blanket guarantee that the feature is 100% ready to go for
+> > > userspace just because it's seen here.
+> >
+> > Right. I was agreeing that this is true, but it is also not how some
+> > userspace programs have interpreted things. Consider a platform & kernel
+> > that support the V extension but vector has not been enabled by default
+> > or by early userspace. If someone cats cpuinfo, they'll see v there, but
+> > it won't be usable. That Google cpu_features project (or a punter) may
+> > then assume they can use it, as that's been the case so far in general*.
+> >
+> > The caveat producing the * being that the same problem actually exists
+> > for F/D too AFAICT, but it's likely that nobody really encountered it
+> > as they didn't build non-FP userspaces & then try to use FP in some
+> > userspace applications.
+> >
+> > > For some extensions, it may in
+> > > fact end up meaning just that (hence the "additional ... may be
+> > > required" rather than "is required").
+> >
+> > > This is true for FD (maybe,
+> > > depending on history?),
+> >
+> > AFAICT, it's not true for FD. The FPU config option not being set, or
+> > either of F and D being missing will lead to unusable extensions
+> > appearing.
+>=20
+> Ah ok.
+>=20
+> >
+> > > or extensions whose minimal/zero kernel
+> > > support was unconditionally added at the same time as its parsing for
+> > > it. But it's not true solely by virtue of being in /proc/cpuinfo. In
+> > > other words, I'm trying to establish the floor of what /proc/cpuinfo
+> > > guarantees, without fully specifying the ceiling.
+> >
+> > > Are you saying that
+> > > we need to spell out the guarantees for each extension?
+> >
+> > No, I don't want that!
+> >
+> > > Or are you
+> > > saying the floor I've defined in general is incorrect or insufficient?
+> >
+> > I think the floor that you have defined is probably misleading to users.
+> > It's also the floor that has existed for quite a while, so this might be
+> > a case of the userspace devs messing up due to an absence of any
+> > explanation of what to do here.
+> > Things will get abhorrently messy if we try to do what these userspace
+> > programs expect, and I don't think we should go there. We just need to
+> > bear in mind that the behaviour we have & the behaviour that you are
+> > documenting flys in the face of what some userspace expects.
+>=20
+> Thanks, I think I understand now. You're saying the floor I'm defining
+> might surprise some users, who were expecting the floor to be "fully
+> enabled and ready to party".
 
-Your function adds mailing lists also in "To:" which is not ideal, in my view.
-You've mentioned before that To or Cc doesn't matter [1] which I disagree
-with: it doesn't matter, why does Cc exist as a concept at all?
+Yes.
 
-[1] https://lore.kernel.org/lkml/af1eca37-9fd2-1e83-ab27-ebb51480904b@linaro.org/
+> Given there was no documentation about it
+> before, and this documentation is consistent with what we actually do
+> (and there seems to be consensus this is a maintainable position to
+> hold), can we just tell those users they're holding it wrong?
 
-Thank you.
+I think we have to. Dealing with the vector prctls & sysctls here would
+be horrid, as I discussed with Andy on one of the versions of that
+series.
 
-Guru Das.
+> > > I'm also open to direct suggestions of wording if you've got something
+> > > in mind :)
+> >
+> > Someone mentioned it recently, but it really is starting to feel more
+> > and more like lscpu should grow support for hwprobe and funnel people
+> > into using that instead of /proc/cpuinfo when all they want is to see
+> > what their hardware can do.
+>=20
+> Maybe for the fiddly microarchitectural bits, yeah. But I'd think our
+> newly proposed documentation for /proc/cpuinfo of keeping it closer to
+> what the hardware can do would suit the lscpu folks' mission well. (In
+> ChromeOS at least, we didn't have lscpu, but snarfed /proc/cpuinfo
+> directly into feedback reports that consented to sending along system
+> info). Really I'd think it's the application/library writers who want
+> to know "am I ready to go right now" are who we should be pushing to
+> use hwprobe, since we can define those bits to be as specific as we
+> want (eg V is on AND it's a full moon, so go for it).
+>=20
+> Depending on your thoughts on this, if there are changes requested on
+> this patch, let me know what they are.
+
+Nah, I think it's fine & the r-b I left on the previous version can stay
+:)
+
+--NE90RS6KjVwl6f8L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOzgOAAKCRB4tDGHoIJi
+0sGqAP0WR+lKNV6sYI3gk9/Pb8lzcwHW5J9KJX2jJTtEj7OCegEAkf2RsZ4lbi1Y
+t20plNNZNamNXHrilwTeFNa4KklKkgo=
+=A3qg
+-----END PGP SIGNATURE-----
+
+--NE90RS6KjVwl6f8L--
