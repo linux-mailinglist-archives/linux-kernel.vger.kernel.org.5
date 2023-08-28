@@ -2,219 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B09E78B52D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EF278B52E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbjH1QNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 12:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
+        id S232712AbjH1QNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 12:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbjH1QM5 (ORCPT
+        with ESMTP id S232702AbjH1QNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 12:12:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA10EBF;
-        Mon, 28 Aug 2023 09:12:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45696629C7;
-        Mon, 28 Aug 2023 16:12:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98108C433CA;
-        Mon, 28 Aug 2023 16:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693239172;
-        bh=UlOpgZ1tTkEvhgiFkpB4fX52Blna1Vdbp2aw+mf4OyI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PaQaZTm0bop52Wh7cRun2MIqNp2xzkJRnte2fNo1uK4IXlOx1giGdjBJ8pSZr67td
-         Jyx4nv7OkHMmbn4NjSC+657pCJ/JWbrAxPoSUDnwQc1Var2pGb4p/9fLx2qDUAhVYW
-         rsB17DrlJI4mhtrNwBdunYfT5yIY/Rk+RHeDEuonrxFLOSrgiQyVqgzkYveTBn9rSj
-         kYovnFPOTYgNHhS+XDenTzXSrj84KPN7JW/NKwTbF/Clqcabsp6U1Qa96gKoJ5VPhj
-         hvLXdYXOch/nSzwXrg+QKTSNfrQVXx7XpuJHBPwve/Kq4vR36UtUlspaht00Ialop6
-         KIognVKQekHug==
-Date:   Mon, 28 Aug 2023 09:12:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jan Cincera <hcincera@gmail.com>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] exfat: add ioctls for accessing attributes
-Message-ID: <20230828161251.GA28160@frogsfrogsfrogs>
-References: <30bfc906-1d73-01c9-71d0-aa441ac34b96@gmail.com>
+        Mon, 28 Aug 2023 12:13:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A7611A;
+        Mon, 28 Aug 2023 09:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693239193; x=1724775193;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CCg1Tzv3/cUU5JGg90l/prfzt3naVzQnRhwxaGpFSCQ=;
+  b=icnLNE2rKID9PBpo5hBt/NzRjxBnWljpgHUNNUvTL9pweffxzloNpIHH
+   i2RqkGiE4pNoT763sIx2onsG0qdDE3DlXbYZluQe16LthChj/VNg2ucuO
+   lE0mP8jwnZBTlGFzU0kzK0KeNyHQKW931lNJDps6nJAYLPLY44u27xe4h
+   mAfsdnC0hl54v+2spLaFcE0LOZxzSOl+CBz/evDUd+q4qIHhSEFh+ZRFI
+   5kcgaMLQ8yfk2IUWfBi9MkW+RuCquo4eY8uefAVjifacPcVyK5bibEK4a
+   +OhCY12at2dNjNKvKhd1XGTa8ifmDeZ/Hy4hltv8KT849SODXTZsynKjb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="372551886"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="372551886"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 09:13:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="715160213"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="715160213"
+Received: from slysokob-mobl1.ccr.corp.intel.com (HELO box.shutemov.name) ([10.252.47.178])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 09:13:07 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 10DE4109E62; Mon, 28 Aug 2023 19:13:04 +0300 (+03)
+Date:   Mon, 28 Aug 2023 19:13:04 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [RFC PATCH 1/1] x86/mm: Mark CoCo VM pages invalid while moving
+ between private and shared
+Message-ID: <20230828161304.dolvx6bgnxrqilmj@box.shutemov.name>
+References: <1688661719-60329-1-git-send-email-mikelley@microsoft.com>
+ <20230806221949.ckoi6ssomsuaeaab@box.shutemov.name>
+ <BYAPR21MB16887FF9CC6DFA6323D10464D715A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <BYAPR21MB16884D7E004A4544F3EA6314D7E0A@BYAPR21MB1688.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30bfc906-1d73-01c9-71d0-aa441ac34b96@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <BYAPR21MB16884D7E004A4544F3EA6314D7E0A@BYAPR21MB1688.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 12:42:07PM +0200, Jan Cincera wrote:
-> Add GET and SET attributes ioctls to enable attribute modification.
-> We already do this in FAT and a few userspace utils made for it would
-> benefit from this also working on exFAT, namely fatattr.
+On Mon, Aug 28, 2023 at 02:22:11PM +0000, Michael Kelley (LINUX) wrote:
+> From: Michael Kelley (LINUX) <mikelley@microsoft.com> Sent: Tuesday, August 15, 2023 7:54 PM
+> > 
+> > From: kirill.shutemov@linux.intel.com <kirill.shutemov@linux.intel.com> Sent: Sunday,
+> > August 6, 2023 3:20 PM
+> > >
+> > > On Thu, Jul 06, 2023 at 09:41:59AM -0700, Michael Kelley wrote:
+> > > > In a CoCo VM when a page transitions from private to shared, or vice
+> > > > versa, attributes in the PTE must be updated *and* the hypervisor must
+> > > > be notified of the change. Because there are two separate steps, there's
+> > > > a window where the settings are inconsistent.  Normally the code that
+> > > > initiates the transition (via set_memory_decrypted() or
+> > > > set_memory_encrypted()) ensures that the memory is not being accessed
+> > > > during a transition, so the window of inconsistency is not a problem.
+> > > > However, the load_unaligned_zeropad() function can read arbitrary memory
+> > > > pages at arbitrary times, which could access a transitioning page during
+> > > > the window.  In such a case, CoCo VM specific exceptions are taken
+> > > > (depending on the CoCo architecture in use).  Current code in those
+> > > > exception handlers recovers and does "fixup" on the result returned by
+> > > > load_unaligned_zeropad().  Unfortunately, this exception handling and
+> > > > fixup code is tricky and somewhat fragile.  At the moment, it is
+> > > > broken for both TDX and SEV-SNP.
+> > >
+> > 
+> > Thanks for looking at this.  I'm finally catching up after being out on
+> > vacation for a week.
+> > 
+> > > I believe it is not fixed for TDX. Is it still a problem for SEV-SNP?
+> > 
+> > I presume you meant "now fixed for TDX", which I agree with.  Tom
+> > Lendacky has indicated that there's still a problem with SEV-SNP.   He
+> > could fix that problem, but this approach of marking the pages
+> > invalid obviates the need for Tom's fix.
+> > 
+> > >
+> > > > There's also a problem with the current code in paravisor scenarios:
+> > > > TDX Partitioning and SEV-SNP in vTOM mode. The exceptions need
+> > > > to be forwarded from the paravisor to the Linux guest, but there
+> > > > are no architectural specs for how to do that.
+> > 
+> > The TD Partitioning case (and the similar SEV-SNP vTOM mode case) is
+> > what doesn't have a solution.  To elaborate, with TD Partitioning, #VE
+> > is sent to the containing VM, not the main Linux guest VM.  For
+> > everything except an EPT violation, the containing VM can handle
+> > the exception on behalf of the main Linux guest by doing the
+> > appropriate emulation.  But for an EPT violation, the containing
+> > VM can only terminate the guest.  It doesn't have sufficient context
+> > to handle a "valid" #VE with EPT violation generated due to
+> > load_unaligned_zeropad().  My proposed scheme of marking the
+> > pages invalid avoids generating those #VEs and lets TD Partitioning
+> > (and similarly for SEV-SNP vTOM) work as intended with a paravisor.
+> > 
+> > > >
+> > > > To avoid these complexities of the CoCo exception handlers, change
+> > > > the core transition code in __set_memory_enc_pgtable() to do the
+> > > > following:
+> > > >
+> > > > 1.  Remove aliasing mappings
+> > > > 2.  Remove the PRESENT bit from the PTEs of all transitioning pages
+> > > > 3.  Flush the TLB globally
+> > > > 4.  Flush the data cache if needed
+> > > > 5.  Set/clear the encryption attribute as appropriate
+> > > > 6.  Notify the hypervisor of the page status change
+> > > > 7.  Add back the PRESENT bit
+> > >
+> > > Okay, looks safe.
+> > >
+> > > > With this approach, load_unaligned_zeropad() just takes its normal
+> > > > page-fault-based fixup path if it touches a page that is transitioning.
+> > > > As a result, load_unaligned_zeropad() and CoCo VM page transitioning
+> > > > are completely decoupled.  CoCo VM page transitions can proceed
+> > > > without needing to handle architecture-specific exceptions and fix
+> > > > things up. This decoupling reduces the complexity due to separate
+> > > > TDX and SEV-SNP fixup paths, and gives more freedom to revise and
+> > > > introduce new capabilities in future versions of the TDX and SEV-SNP
+> > > > architectures. Paravisor scenarios work properly without needing
+> > > > to forward exceptions.
+> > > >
+> > > > This approach may make __set_memory_enc_pgtable() slightly slower
+> > > > because of touching the PTEs three times instead of just once. But
+> > > > the run time of this function is already dominated by the hypercall
+> > > > and the need to flush the TLB at least once and maybe twice. In any
+> > > > case, this function is only used for CoCo VM page transitions, and
+> > > > is already unsuitable for hot paths.
+> > > >
+> > > > The architecture specific callback function for notifying the
+> > > > hypervisor typically must translate guest kernel virtual addresses
+> > > > into guest physical addresses to pass to the hypervisor.  Because
+> > > > the PTEs are invalid at the time of callback, the code for doing the
+> > > > translation needs updating.  virt_to_phys() or equivalent continues
+> > > > to work for direct map addresses.  But vmalloc addresses cannot use
+> > > > vmalloc_to_page() because that function requires the leaf PTE to be
+> > > > valid. Instead, slow_virt_to_phys() must be used. Both functions
+> > > > manually walk the page table hierarchy, so performance is the same.
+> > >
+> > > Uhmm.. But why do we expected slow_virt_to_phys() to work on non-present
+> > > page table entries? It seems accident for me that it works now. Somebody
+> > > forgot pte_present() check.
+> > 
+> > I didn't research the history of slow_virt_to_phys(), but I'll do so.
+> > 
 > 
-> Signed-off-by: Jan Cincera <hcincera@gmail.com>
-> ---
-> Changes in v2:
->   - Removed irrelevant comments.
->   - Now masking reserved fields.
-> 
->  fs/exfat/exfat_fs.h |  6 +++
->  fs/exfat/file.c     | 93 +++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 99 insertions(+)
-> 
-> diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-> index 729ada9e26e8..ebe8c4b928f4 100644
-> --- a/fs/exfat/exfat_fs.h
-> +++ b/fs/exfat/exfat_fs.h
-> @@ -149,6 +149,12 @@ enum {
->  #define DIR_CACHE_SIZE		\
->  	(DIV_ROUND_UP(EXFAT_DEN_TO_B(ES_MAX_ENTRY_NUM), SECTOR_SIZE) + 1)
->  
-> +/*
-> + * attribute ioctls, same as their FAT equivalents.
-> + */
-> +#define EXFAT_IOCTL_GET_ATTRIBUTES	_IOR('r', 0x10, __u32)
-> +#define EXFAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
+> The history of slow_virt_to_phys() doesn't show any discussion of
+> whether it is expected to work for non-present PTEs.  However, the
+> page table walking is done by lookup_address(), which explicitly
+> *does* work for non-present PTEs.  For example, lookup_address()
+> is used in cpa_flush() to find a PTE.  cpa_flush() then checks to see if
+> the PTE is present.
 
-Can you reuse the definitions from include/uapi/linux/msdos_fs.h instead
-of redefining them here?
+Which is totally fine thing to do. Present bit is the only info you can
+always rely to be valid for non-present PTE.
 
-Otherwise this looks like a mostly straight port of the fs/fat/
-versions of these functions.
+But it is nitpicking on my side. Here you control lifecycle of the PTE, so
+you know that PFN will stay valid for the PTE.
 
---D
+I guess the right thing to do is to use lookup_address() and get pfn from
+the PTE with the comment why it is valid.
 
-> +
->  struct exfat_dentry_namebuf {
->  	char *lfn;
->  	int lfnbuf_len; /* usually MAX_UNINAME_BUF_SIZE */
-> diff --git a/fs/exfat/file.c b/fs/exfat/file.c
-> index 3cbd270e0cba..b31ce0868ddd 100644
-> --- a/fs/exfat/file.c
-> +++ b/fs/exfat/file.c
-> @@ -8,6 +8,8 @@
->  #include <linux/cred.h>
->  #include <linux/buffer_head.h>
->  #include <linux/blkdev.h>
-> +#include <linux/fsnotify.h>
-> +#include <linux/security.h>
->  
->  #include "exfat_raw.h"
->  #include "exfat_fs.h"
-> @@ -316,6 +318,92 @@ int exfat_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  	return error;
->  }
->  
-> +/*
-> + * modified ioctls from fat/file.c by Welmer Almesberger
-> + */
-> +static int exfat_ioctl_get_attributes(struct inode *inode, u32 __user *user_attr)
-> +{
-> +	u32 attr;
-> +
-> +	inode_lock_shared(inode);
-> +	attr = exfat_make_attr(inode);
-> +	inode_unlock_shared(inode);
-> +
-> +	return put_user(attr, user_attr);
-> +}
-> +
-> +static int exfat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
-> +{
-> +	struct inode *inode = file_inode(file);
-> +	struct exfat_sb_info *sbi = EXFAT_SB(inode->i_sb);
-> +	int is_dir = S_ISDIR(inode->i_mode);
-> +	u32 attr, oldattr;
-> +	struct iattr ia;
-> +	int err;
-> +
-> +	err = get_user(attr, user_attr);
-> +	if (err)
-> +		goto out;
-> +
-> +	err = mnt_want_write_file(file);
-> +	if (err)
-> +		goto out;
-> +	inode_lock(inode);
-> +
-> +	oldattr = exfat_make_attr(inode);
-> +
-> +	/*
-> +	 * Mask attributes so we don't set reserved fields.
-> +	 */
-> +	attr &= (ATTR_READONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_ARCHIVE);
-> +	attr |= (is_dir ? ATTR_SUBDIR : 0);
-> +
-> +	/* Equivalent to a chmod() */
-> +	ia.ia_valid = ATTR_MODE | ATTR_CTIME;
-> +	ia.ia_ctime = current_time(inode);
-> +	if (is_dir)
-> +		ia.ia_mode = exfat_make_mode(sbi, attr, 0777);
-> +	else
-> +		ia.ia_mode = exfat_make_mode(sbi, attr, 0666 | (inode->i_mode & 0111));
-> +
-> +	/* The root directory has no attributes */
-> +	if (inode->i_ino == EXFAT_ROOT_INO && attr != ATTR_SUBDIR) {
-> +		err = -EINVAL;
-> +		goto out_unlock_inode;
-> +	}
-> +
-> +	if (((attr | oldattr) & ATTR_SYSTEM) &&
-> +	    !capable(CAP_LINUX_IMMUTABLE)) {
-> +		err = -EPERM;
-> +		goto out_unlock_inode;
-> +	}
-> +
-> +	/*
-> +	 * The security check is questionable...  We single
-> +	 * out the RO attribute for checking by the security
-> +	 * module, just because it maps to a file mode.
-> +	 */
-> +	err = security_inode_setattr(file_mnt_idmap(file),
-> +				     file->f_path.dentry, &ia);
-> +	if (err)
-> +		goto out_unlock_inode;
-> +
-> +	/* This MUST be done before doing anything irreversible... */
-> +	err = exfat_setattr(file_mnt_idmap(file), file->f_path.dentry, &ia);
-> +	if (err)
-> +		goto out_unlock_inode;
-> +
-> +	fsnotify_change(file->f_path.dentry, ia.ia_valid);
-> +
-> +	exfat_save_attr(inode, attr);
-> +	mark_inode_dirty(inode);
-> +out_unlock_inode:
-> +	inode_unlock(inode);
-> +	mnt_drop_write_file(file);
-> +out:
-> +	return err;
-> +}
-> +
->  static int exfat_ioctl_fitrim(struct inode *inode, unsigned long arg)
->  {
->  	struct fstrim_range range;
-> @@ -346,8 +434,13 @@ static int exfat_ioctl_fitrim(struct inode *inode, unsigned long arg)
->  long exfat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  {
->  	struct inode *inode = file_inode(filp);
-> +	u32 __user *user_attr = (u32 __user *)arg;
->  
->  	switch (cmd) {
-> +	case EXFAT_IOCTL_GET_ATTRIBUTES:
-> +		return exfat_ioctl_get_attributes(inode, user_attr);
-> +	case EXFAT_IOCTL_SET_ATTRIBUTES:
-> +		return exfat_ioctl_set_attributes(filp, user_attr);
->  	case FITRIM:
->  		return exfat_ioctl_fitrim(inode, arg);
->  	default:
-> -- 
-> 2.40.1
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
