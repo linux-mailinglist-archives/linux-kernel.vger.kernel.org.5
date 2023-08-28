@@ -2,223 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD42D78A56A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590F778A56F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbjH1Fxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
+        id S229605AbjH1F53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjH1Fxc (ORCPT
+        with ESMTP id S229599AbjH1F47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:53:32 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5107B115
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:53:28 -0700 (PDT)
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D37AE3F186
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 05:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1693202006;
-        bh=XBlNT+SJA1xULw0LphVVt+nl/FhzT+DOY2urbcNDsHQ=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=BuDR1MbtD1pL7mtB/L6vmrN9FDa4IQZq5UgWxu6Ro0eyphQlfa2PhY00FTHdbBSD5
-         Im16IncUHcF8m4XaXarnO/GKQcvo3tFIWEfD0ewyDyMapmjEv7Rh5guHMP4uNEWqq9
-         7vUReb+OWUaxnt1z4qyYEZyp5AWN/Br6IEIgNr1fehp4QwmaXJcKkGtw1jOh65q0c+
-         BgN7qz6D8VmTJUSRcUumUsKF/sJ64KzQgQ8kEXD06kMjrR06sgN/icThpU2974Y6nk
-         6QvK5MniUq53VBrpXCBoWfR0J4t4344RSk+7l2zx0yMJ/hnrbWeeFzRArS8IAUR5xO
-         fCkGgSXhTvVoA==
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-68bf02547dbso3529086b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:53:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693202005; x=1693806805;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XBlNT+SJA1xULw0LphVVt+nl/FhzT+DOY2urbcNDsHQ=;
-        b=Xhtox24HPCaXZgjzqD5M15n0oiace4q+j+IloDKlEzCyHz3hSIZq3LN2REA4PE5ly+
-         W+hwNL/li5ctUcskgW5qOx6LRvT3jQSZB4iB0thMWoxZqj5CLm+nKSqTNVywEDfPANjn
-         gvlQQMSwXbbBCECW2CE3GxBHPmwgZCSjyF4rs0My6pj8i500M7E6RZRFAMhi8IyU4XZ2
-         OxEXrY8KstsbUmfEocS/bO1k4bhyAL6ht0va3rYoyZobmikBnhm/VaHUENLMPvEIkw8k
-         F+hxI7WV0kqv3KYwIL+RH5W8hoBovtWZWyyYsDqgRqy9Vlq1GjjRdCBDFBrgIlgV9IHq
-         gNDA==
-X-Gm-Message-State: AOJu0YxFvLbe43i1/zQz3cscAPNaZ/h5JsvCBw30kzPIVwCbS0A4/XWz
-        9eIMwmDxXEDzBRV3Uhjzh7VrQmHdxkDpbC6Wd010TCNWwwoshNPdM77Wqya+Jryx8vnrdRf/Qbg
-        ti7tKCK1d87lPl1GN1uYUAbx+pqB59N3wGlMpC7EqIg==
-X-Received: by 2002:a05:6a00:1702:b0:68a:31b2:5219 with SMTP id h2-20020a056a00170200b0068a31b25219mr27171273pfc.22.1693202005335;
-        Sun, 27 Aug 2023 22:53:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IETOr5QON36PnUzijEjXWZZvvLEKX4zMQcUsq6iqBwE+qP9e8IOTfUvNUd2cjJ6MZMldHklNw==
-X-Received: by 2002:a05:6a00:1702:b0:68a:31b2:5219 with SMTP id h2-20020a056a00170200b0068a31b25219mr27171261pfc.22.1693202005029;
-        Sun, 27 Aug 2023 22:53:25 -0700 (PDT)
-Received: from chengendu.. (111-248-129-25.dynamic-ip.hinet.net. [111.248.129.25])
-        by smtp.gmail.com with ESMTPSA id e14-20020a63ae4e000000b0056946623d7esm6452028pgp.55.2023.08.27.22.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 22:53:24 -0700 (PDT)
-From:   Chengen Du <chengen.du@canonical.com>
-To:     trond.myklebust@hammerspace.com
-Cc:     anna@kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chengen Du <chengen.du@canonical.com>
-Subject: [PATCH v3 RESEND] NFS: Add mount option 'fasc'
-Date:   Mon, 28 Aug 2023 13:53:10 +0800
-Message-Id: <20230828055310.21391-1-chengen.du@canonical.com>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
+        Mon, 28 Aug 2023 01:56:59 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2040.outbound.protection.outlook.com [40.107.243.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9F7A9;
+        Sun, 27 Aug 2023 22:56:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eHHqd84MmclxzsOioAZaKL3le/dV8O37ex5VJ3imvFwdd0htq4x9ZVhG8mCDlFdPvUfP1fwT0KYat4rOnJK5pPTmtF1ikHYshH6f4EaDtg2W/H3wcacULXxCKt8LgZlXC9UstfxwSa/Q/lLQ9FRBS41hqVZYGEy3lWhQjNI8+z/nQwH997JN/PdXKYgEO6JO3dM2BYz/ntp1J/psIb0gqECzONyucrFxpuctliqTHAiyGcqXhuuqoZfnPcSfNIlkDzwpislzc1WUU1XE+qr91mcnDDUT8+gudo+tvl67LgjzQVp4EpeACrTCD7VJ6tyJGfxKBbZjAp0uOJRru9YHig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eHN8+OjQMk3jl/guE/GK5p/E93q3CRsBtEGpayG1VW4=;
+ b=Ukx/SdcYF2pSQgh6FwRAWm7AtlOWFc6llspqxJN9xnjfFevlyR0v1CV4KPVFnQn4jCNDnjQGyMCo8tGVeszvTRGtY7O/nECnev2dgnw3M55BDs5mPcMuC426rteItkADz+WLXZRll8WGg3ZDDCKmBLwSjAz5OBvVibXduIqckOAWNNw8xjvHQ7wLES8YzZGtbDkWSmgebX3IY1XR0zFqDQ6Bh3Zzs33CYgebuaNIKKe3+3pIuAyb7nuCuM0QIp+nRcmNJUP7isRDf99PfW4sVPnBMDvD6YP6aKEgOhqXZxsjX8EnzjtvS/u2rg7UYMVZJyQfsQtSOQwBRo9UqYGe+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eHN8+OjQMk3jl/guE/GK5p/E93q3CRsBtEGpayG1VW4=;
+ b=M0XcT3RZ++OSPd1B02xEBcnDXyICUlSvDu3a3QPf1xTKebxKldb59FOEDf3K+0ksloSH05I3L94/PfHAd8YuDPKQxEN7J5syyRW+ilN63dtvClKuriRHYwsg8W+jq5nYTKThwvBzjFnRZRfhmZqUJQHS1RwAwUQTvV4V6dRUDSQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by DM6PR12MB4089.namprd12.prod.outlook.com (2603:10b6:5:213::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
+ 2023 05:56:52 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
+ 05:56:52 +0000
+Message-ID: <7cc6172e-b068-341c-f4b0-e6a8d1b968e7@amd.com>
+Date:   Mon, 28 Aug 2023 07:56:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Linaro-mm-sig] [PATCH v2] dma-buf/sw_sync: Avoid recursive lock
+ during fence signal
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230818145939.39697-1-robdclark@gmail.com>
+ <a05e0c2e-fd62-4a8e-9fa4-dffaf86f7730@gmail.com>
+ <CAF6AEGs+6cveKbv=onEJSZJERk8m56YJzza6A2+eLd3+6MuWMg@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <CAF6AEGs+6cveKbv=onEJSZJERk8m56YJzza6A2+eLd3+6MuWMg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR0P281CA0169.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b4::11) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|DM6PR12MB4089:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb498fa0-fb9e-4c2f-e6d5-08dba78b9393
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MqTnKf2iMup8Af8bdohE8pzGYPZFKfOxjGwsMnxoQfu/8a7XKDEwFQ15wvOapRdzff8sSPVk+uD6J/0Gu3z79l8hFB571cmGj8msBOasLvAqwL1eoPs5xedxXBKzpPhjVA+0UDbwwkszqQO1dLAhuiqBnLL6AZqPZ5bYdVkNFLmdnYVCa9tT/jc2Q7ipN/DB9KldODQoXHbBNztnTGAP8f+kEtn9qWY2SC/uLbSQx802OOhQCPZAPRhPsihs9/k8FE+FkPYTDQ61iLwHBr9AEUIOR/MWSP+8b6EdMHRBeir3mWPMMqO43Rvry/YBUkKoqrBf5iYbwiFLvbW29CO7dwu7KCsqKaYiham4essIN4DZ6M90mpXaj4rzq1L7cPlBY3+zlExVPwVny7FctA6xsABdhVN/mWQ0YW+UKs/Gmrl2JZFG0nXick8vbt8xqBt3eFJXNJBfEbuYaRQVUSKO7W6IuWDjuT6/iUwMysbUw1edU6G5lsgdhk0JnvIrssEDff3iJ/ISmW5eGoxVoOfwfZ+gv1+3En3eVj9yYIwAefJa4ZqIfDGs9pb8FcEydKfIS7VEOKwMEpYvnNJqGlFzhL7KNqOyv68xdQI3/ztkHSadEQTHP19v9ZFqJ4GZmUw5bWkl7v1mcMfacRfA+AhDAw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(39860400002)(366004)(136003)(186009)(1800799009)(451199024)(31686004)(6506007)(6486002)(6512007)(6666004)(36756003)(86362001)(38100700002)(31696002)(2616005)(2906002)(26005)(53546011)(966005)(478600001)(83380400001)(41300700001)(66556008)(110136005)(66946007)(4326008)(66574015)(8936002)(5660300002)(8676002)(7416002)(54906003)(316002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dlZ6YXFlR09oTi9YME9GbE5DbHhBVWx6V0dpUytYZTcvM1BaWU9lU2lhYk8r?=
+ =?utf-8?B?aldqMmR4eVNUNmsvRlhOaFJZeGFicjY5ekhEZVNkQTN5L3MzUlBGZnM5RTlr?=
+ =?utf-8?B?WGR6L1dEa2hnbWdxUWhjR0hFTk10MWQweTBnWlFPdWM1OStHWlc3aThNM0Rt?=
+ =?utf-8?B?ZnZmWGFYQTJ2QTJMQWYzVHNWeVBsQ25KTGZvNTdCUVlMcEFIWXhKc1V0MzJK?=
+ =?utf-8?B?cmpCVHZmSk5FNUtLQks4ZFdDMHpkKzZvelpmZnZ5Q1FIUzQ2VWNNazlsK1RR?=
+ =?utf-8?B?RW45aTZ4Z3U3OEcveXd2M2d2cHhyVy9jYy90Qi9QcjlVRndzMFBCYkxRQjV0?=
+ =?utf-8?B?eEJKUWcycUhwc0hwQ0ZrV1VDVEF4WXhWZ0hiUFdxSzZtd3BOTXMvZ0JPVnZk?=
+ =?utf-8?B?QmdoamVjTFB0Q0JwSVZUWEgrUHF1TnhOVWU1TGJLd2s1djc4R0l4ZFZrZjdr?=
+ =?utf-8?B?NTMrOWhJQ2xPNGZ2d0hXbG1lUkxiVTlyVHozU2J0OEFXL01uVWNQWkZzbTBT?=
+ =?utf-8?B?ZEM2OHRPdE5lSGsrZFNVREZZU1J2R0lMVFpDN0VVQzQ1RG5GNitrL2VOVnQ4?=
+ =?utf-8?B?bDd1UnJqMFFiMWxUSTYzUzdSeVIzQ1FRWW43V1hsL0I1Yk84MS9SbzhDQzNq?=
+ =?utf-8?B?WXMxMFdZNFNKc2Mzem40UitQNTFZN2RhSWhnbXBIMXppZ2ZVRVpaQWpsSGk3?=
+ =?utf-8?B?OXlTTENIdnc5RTljckdrUmw5S01ISHA3VFp5QUozRmdVSzE5Q1F5dW5venJs?=
+ =?utf-8?B?Z3k1bnBUcFo2dzduSktCNTkwRGQ3RHNEaVVsMDlhMDQxRXMxL3hEUkMrSFV2?=
+ =?utf-8?B?QzRrckpVRE0zWWNEMGMvSWJScGxYMHdsWXQybUJrNHhRZStVMDQveWpoSHMr?=
+ =?utf-8?B?L0RWTGExSXhjSlBiNExGRDVtdklIaWZ6eGRqL0IvOVNHWklPK1pyY1g4cjRj?=
+ =?utf-8?B?c0tWUjZNMHY0MnplekgxMmdXUi9KYWZBN0dhMnN4ajV4TGFNMHBUdUU1YVRi?=
+ =?utf-8?B?Z0VIS0p0dUp5YUwxYmdxTDlhTjJjRmVQMDl2d2cxNCtSaklkMkcvdzhZWitO?=
+ =?utf-8?B?dXJETlJOV3dFU2tWZ2VMeE5JZjdxOFR6aFNKckp1Rm5HZUZ6YVdTOFNCcnJs?=
+ =?utf-8?B?ZnBEblgvTVVocE9hZVhnb2tFR00xUWs0YlpsZWxwOCszS0wrMHpoakVrRG1w?=
+ =?utf-8?B?UFdKMnVnYkhFeFZodmozbGpBcFd6dXdsZ2JKUVRlaExXMW45RU9ZVStQL0kr?=
+ =?utf-8?B?SHZpRExVSUh6Uml3VjRsUVcxaFlrNThFMENBQk9IVFQwa3FLRG1YYjJlV3A4?=
+ =?utf-8?B?bk4rQThDRjNuRU5rTDJNK0Z6QzY2cE5DZXR1MXVFWmdGcXlVdzRhck1xWnBo?=
+ =?utf-8?B?WVgrd2w3WHVhaGxxMkZCKzVEamNIbkNyeEVjaFVHeS9HMDVrWTZLcGU0THVC?=
+ =?utf-8?B?SWlrSlY3aHdHUU9zTkl4ZGh5QkxjT1EyTlhsVjRmaEQ4c0tmV2E5cjF4Nm5w?=
+ =?utf-8?B?S1VnUnNsSDBaQTkvMnVmR0d4cUJ0c3hHM1QvMm5BaVhZdW1Nc0RFcURwZ3Nt?=
+ =?utf-8?B?dnlrQjMwYXFpdFVIU2kxNzBzYXVkTVZTaVMyTkZrQ1pIZHRsQ2piNmZISzJz?=
+ =?utf-8?B?QW4xaFRnWEFwbzd6aXlQMWZvWVJLL1BXLzZsdmNXVUNRdVU1dlMzQy85UEpj?=
+ =?utf-8?B?aDYxUUN0WW1GWWw1K3hlOWFNUnRmNWRKWVh3VzZyZTF3REExKytBMnpTNUNF?=
+ =?utf-8?B?OWMwTTBDcWN3WHVxNnBXSkJCM0JBTjJ3QkxEdjAvTURYL3NLcU9ESEpsc3lQ?=
+ =?utf-8?B?VFZYQ3NKSmd0dktRSGNhTW0wSjFIT2ZsMUZVbWt6UHk5ZmJuU1hTQU0wVkxM?=
+ =?utf-8?B?MUljMTZLUWJPbmQzRDZuUzRNZ05yaHdBZy9BdW1NdDdjaVJnOVd0NXl0Qnhm?=
+ =?utf-8?B?KzN6WG1sWTJFN2RJYzliUTd0ekpaNFRpbEM3T01ROVBrRGJUUk1lYzdRNjVk?=
+ =?utf-8?B?ZEp5dGJlVzFLMHZyUjVzS200enpDdXFFQ2ZobHBERjYwbGl5ditzeGtEd2pM?=
+ =?utf-8?B?Y1dxZVNVOEwxbXlCODZVNk9INWlVSEJjdzRhYzNHZXE0dS9DZmF5SjdLMTRO?=
+ =?utf-8?Q?ohsSAafCge20o1q6zEBK44BEG?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb498fa0-fb9e-4c2f-e6d5-08dba78b9393
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 05:56:52.3973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vj0wd6KvvG/TfDm+7tsBpMcNYgpWbbLKjAevrUCOXotNcbF0sIT/vNVxou5JnUO+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4089
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In certain instances, users or applications switch to other privileged
-users by executing commands like 'su' to carry out operations on NFS-
-mounted folders. However, when this happens, the login time for the
-privileged user is reset, and any NFS ACCESS operations must be resent,
-which can result in a decrease in performance. In specific production
-environments where the access cache can be trusted due to stable group
-membership, there's no need to verify the cache stall situation.
-To maintain the initial behavior and performance, a new mount option
-called 'fasc' has been introduced. This option triggers the mechanism
-of clearing the file access cache upon login.
+Am 22.08.23 um 19:15 schrieb Rob Clark:
+> On Tue, Aug 22, 2023 at 6:01 AM Christian König
+> <ckoenig.leichtzumerken@gmail.com> wrote:
+>> Am 18.08.23 um 16:59 schrieb Rob Clark:
+>>> From: Rob Clark <robdclark@chromium.org>
+>>>
+>>> If a signal callback releases the sw_sync fence, that will trigger a
+>>> deadlock as the timeline_fence_release recurses onto the fence->lock
+>>> (used both for signaling and the the timeline tree).
+>>>
+>>> To avoid that, temporarily hold an extra reference to the signalled
+>>> fences until after we drop the lock.
+>>>
+>>> (This is an alternative implementation of https://patchwork.kernel.org/patch/11664717/
+>>> which avoids some potential UAF issues with the original patch.)
+>>>
+>>> v2: Remove now obsolete comment, use list_move_tail() and
+>>>       list_del_init()
+>>>
+>>> Reported-by: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+>>> Fixes: d3c6dd1fb30d ("dma-buf/sw_sync: Synchronize signal vs syncpt free")
+>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+>> Reviewed-by: Christian König <christian.koenig@amd.com>
+> Thanks, any chance you could take this via drm-misc?
 
-Signed-off-by: Chengen Du <chengen.du@canonical.com>
----
- fs/nfs/dir.c              | 21 ++++++++++++---------
- fs/nfs/fs_context.c       |  5 +++++
- fs/nfs/super.c            |  1 +
- include/linux/nfs_fs_sb.h |  1 +
- 4 files changed, 19 insertions(+), 9 deletions(-)
+I've already pushed this quite a while ago.
 
-diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index 8f3112e71a6a..cefdb23d4cd7 100644
---- a/fs/nfs/dir.c
-+++ b/fs/nfs/dir.c
-@@ -2951,12 +2951,14 @@ static struct nfs_access_entry *nfs_access_search_rbtree(struct inode *inode, co
- 	return NULL;
- }
- 
--static u64 nfs_access_login_time(const struct task_struct *task,
--				 const struct cred *cred)
-+static inline
-+bool nfs_check_access_stale(const struct task_struct *task,
-+			    const struct cred *cred,
-+			    const struct nfs_access_entry *cache)
- {
- 	const struct task_struct *parent;
- 	const struct cred *pcred;
--	u64 ret;
-+	u64 login_time;
- 
- 	rcu_read_lock();
- 	for (;;) {
-@@ -2966,15 +2968,15 @@ static u64 nfs_access_login_time(const struct task_struct *task,
- 			break;
- 		task = parent;
- 	}
--	ret = task->start_time;
-+	login_time = task->start_time;
- 	rcu_read_unlock();
--	return ret;
-+
-+	return ((s64)(login_time - cache->timestamp) > 0);
- }
- 
- static int nfs_access_get_cached_locked(struct inode *inode, const struct cred *cred, u32 *mask, bool may_block)
- {
- 	struct nfs_inode *nfsi = NFS_I(inode);
--	u64 login_time = nfs_access_login_time(current, cred);
- 	struct nfs_access_entry *cache;
- 	bool retry = true;
- 	int err;
-@@ -3003,7 +3005,8 @@ static int nfs_access_get_cached_locked(struct inode *inode, const struct cred *
- 		retry = false;
- 	}
- 	err = -ENOENT;
--	if ((s64)(login_time - cache->timestamp) > 0)
-+	if ((NFS_SERVER(inode)->flags & NFS_MOUNT_FASC) &&
-+	    nfs_check_access_stale(current, cred, cache))
- 		goto out;
- 	*mask = cache->mask;
- 	list_move_tail(&cache->lru, &nfsi->access_cache_entry_lru);
-@@ -3023,7 +3026,6 @@ static int nfs_access_get_cached_rcu(struct inode *inode, const struct cred *cre
- 	 * but do it without locking.
- 	 */
- 	struct nfs_inode *nfsi = NFS_I(inode);
--	u64 login_time = nfs_access_login_time(current, cred);
- 	struct nfs_access_entry *cache;
- 	int err = -ECHILD;
- 	struct list_head *lh;
-@@ -3038,7 +3040,8 @@ static int nfs_access_get_cached_rcu(struct inode *inode, const struct cred *cre
- 		cache = NULL;
- 	if (cache == NULL)
- 		goto out;
--	if ((s64)(login_time - cache->timestamp) > 0)
-+	if ((NFS_SERVER(inode)->flags & NFS_MOUNT_FASC) &&
-+	    nfs_check_access_stale(current, cred, cache))
- 		goto out;
- 	if (nfs_check_cache_invalid(inode, NFS_INO_INVALID_ACCESS))
- 		goto out;
-diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
-index 853e8d609bb3..2fbc2d1bd775 100644
---- a/fs/nfs/fs_context.c
-+++ b/fs/nfs/fs_context.c
-@@ -92,6 +92,7 @@ enum nfs_param {
- 	Opt_wsize,
- 	Opt_write,
- 	Opt_xprtsec,
-+	Opt_fasc,
- };
- 
- enum {
-@@ -199,6 +200,7 @@ static const struct fs_parameter_spec nfs_fs_parameters[] = {
- 	fsparam_enum  ("write",		Opt_write, nfs_param_enums_write),
- 	fsparam_u32   ("wsize",		Opt_wsize),
- 	fsparam_string("xprtsec",	Opt_xprtsec),
-+	fsparam_flag  ("fasc",		Opt_fasc),
- 	{}
- };
- 
-@@ -925,6 +927,9 @@ static int nfs_fs_context_parse_param(struct fs_context *fc,
- 	case Opt_sloppy:
- 		ctx->sloppy = true;
- 		break;
-+	case Opt_fasc:
-+		ctx->flags |= NFS_MOUNT_FASC;
-+		break;
- 	}
- 
- 	return 0;
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index 2284f749d892..7a0c5280e388 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -448,6 +448,7 @@ static void nfs_show_mount_options(struct seq_file *m, struct nfs_server *nfss,
- 		{ NFS_MOUNT_NORDIRPLUS, ",nordirplus", "" },
- 		{ NFS_MOUNT_UNSHARED, ",nosharecache", "" },
- 		{ NFS_MOUNT_NORESVPORT, ",noresvport", "" },
-+		{ NFS_MOUNT_FASC, ",fasc", "" },
- 		{ 0, NULL, NULL }
- 	};
- 	const struct proc_nfs_info *nfs_infop;
-diff --git a/include/linux/nfs_fs_sb.h b/include/linux/nfs_fs_sb.h
-index 20eeba8b009d..6a88ba36f7a8 100644
---- a/include/linux/nfs_fs_sb.h
-+++ b/include/linux/nfs_fs_sb.h
-@@ -155,6 +155,7 @@ struct nfs_server {
- #define NFS_MOUNT_WRITE_WAIT		0x02000000
- #define NFS_MOUNT_TRUNK_DISCOVERY	0x04000000
- #define NFS_MOUNT_SHUTDOWN			0x08000000
-+#define NFS_MOUNT_FASC			0x10000000
- 
- 	unsigned int		fattr_valid;	/* Valid attributes */
- 	unsigned int		caps;		/* server capabilities */
--- 
-2.39.2
+At the moment I have problem answering because AMD has a new security 
+policy which makes it impossible to push patches and access mails at the 
+same time.
+
+We are working with our IT to get this fixed, but at the moment its 
+eating my time.
+
+Sorry for the delay,
+Christian.
+
+>
+> BR,
+> -R
+>
+>>> ---
+>>>    drivers/dma-buf/sw_sync.c | 18 +++++++++---------
+>>>    1 file changed, 9 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/dma-buf/sw_sync.c b/drivers/dma-buf/sw_sync.c
+>>> index 63f0aeb66db6..f0a35277fd84 100644
+>>> --- a/drivers/dma-buf/sw_sync.c
+>>> +++ b/drivers/dma-buf/sw_sync.c
+>>> @@ -191,6 +191,7 @@ static const struct dma_fence_ops timeline_fence_ops = {
+>>>     */
+>>>    static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
+>>>    {
+>>> +     LIST_HEAD(signalled);
+>>>        struct sync_pt *pt, *next;
+>>>
+>>>        trace_sync_timeline(obj);
+>>> @@ -203,21 +204,20 @@ static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
+>>>                if (!timeline_fence_signaled(&pt->base))
+>>>                        break;
+>>>
+>>> -             list_del_init(&pt->link);
+>>> +             dma_fence_get(&pt->base);
+>>> +
+>>> +             list_move_tail(&pt->link, &signalled);
+>>>                rb_erase(&pt->node, &obj->pt_tree);
+>>>
+>>> -             /*
+>>> -              * A signal callback may release the last reference to this
+>>> -              * fence, causing it to be freed. That operation has to be
+>>> -              * last to avoid a use after free inside this loop, and must
+>>> -              * be after we remove the fence from the timeline in order to
+>>> -              * prevent deadlocking on timeline->lock inside
+>>> -              * timeline_fence_release().
+>>> -              */
+>>>                dma_fence_signal_locked(&pt->base);
+>>>        }
+>>>
+>>>        spin_unlock_irq(&obj->lock);
+>>> +
+>>> +     list_for_each_entry_safe(pt, next, &signalled, link) {
+>>> +             list_del_init(&pt->link);
+>>> +             dma_fence_put(&pt->base);
+>>> +     }
+>>>    }
+>>>
+>>>    /**
 
