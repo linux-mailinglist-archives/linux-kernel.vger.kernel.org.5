@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AE478B9C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A1378B9C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjH1Uvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
+        id S232457AbjH1Ux1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232655AbjH1Uvb (ORCPT
+        with ESMTP id S232738AbjH1UxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:51:31 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BDF188
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:51:26 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34ba9d6f033so12896525ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:51:26 -0700 (PDT)
+        Mon, 28 Aug 2023 16:53:09 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9B911A
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:53:06 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34deab8010dso361525ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:53:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693255886; x=1693860686;
+        d=joelfernandes.org; s=google; t=1693255986; x=1693860786;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/RRrCS1VOjSue2iqf5lDVAh4p7y1PlwPwihpyQqkBBI=;
-        b=RU3s+/zpXsqwVIIxAeyU4TA7Zi8TUbfWRLx3PQEzSQR3GdAguMvp9rYYQBmYIzZtIx
-         VTMdMlt0DYPRZN12Eg2XrC1xI7NHZ4eIm2FO6f2wQ7TBQencya+/XuIccapDWQqMO9rI
-         pb+0K0X5KB6j7aif6r11JA+jOB9cyt5LHhQEM=
+        bh=6EHvhYNt+YdRhsmSbNDmpyOVgrF3DogD6lN7EDypwxg=;
+        b=fUyGPpig19ciAcQynM5TiTE3a40epaqfni/gNELFb5tc1i1ZByAz4rt/CujuRxITrX
+         uEOxX8K4G5OFl2xChFLTHWX/obMq4aUWF77Bp6CWd4plBSLrkymkEEfauakLysTCH1Xn
+         vcYGEALttnHeWZhI0/UmxNrXf3IOAeAKlFbn8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693255886; x=1693860686;
+        d=1e100.net; s=20221208; t=1693255986; x=1693860786;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/RRrCS1VOjSue2iqf5lDVAh4p7y1PlwPwihpyQqkBBI=;
-        b=Duj3TMJvewWVImsST4/Ba4PE8kxco4OGIyEWNGwEXvKq+StsmIgEmtboaVAwkF9ieH
-         WwE3U2BHHHnH+azwUkGETuA65O8tnUcsbwkBeKTHaJYHuDEUxrelSZRCYhT4VgauQ1WX
-         9SYcCWk7rpfAbCbeiuEsnBSbXdHF0VsyKvcocApDlaieDHLwwpLO7oLJSiN4/tFxLHgj
-         79giwvAvtm+Y10SNnWhmLdgATEEnATbhWTnN0TA5VIjeFlgI+g708s4+2CRXycj6ploI
-         rTSj6Tcz5zaI+1rN961+uxHhbWy6qP7K4jjVqfSG878RNRw0lKwgQZnbyg6quLKg11Og
-         exkQ==
-X-Gm-Message-State: AOJu0YyvUQfVCo1PsC2imF7WG8UqLOglDZ/VG8fIppbxFUKTenC5Uum1
-        b9FfitT6YV5bkVeV6UfaJ7W1JA==
-X-Google-Smtp-Source: AGHT+IGOHHkHWDdYPEc57VIDJSmAi9D/bcAlPpB0fiy+mkf4XLdcr36knXBbP+o17hB3+49Ajt7HHA==
-X-Received: by 2002:a05:6e02:1ca8:b0:345:fae5:666c with SMTP id x8-20020a056e021ca800b00345fae5666cmr20361505ill.4.1693255885813;
-        Mon, 28 Aug 2023 13:51:25 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id z23-20020a02ceb7000000b0042b39f1c3d2sm2722979jaq.144.2023.08.28.13.51.25
+        bh=6EHvhYNt+YdRhsmSbNDmpyOVgrF3DogD6lN7EDypwxg=;
+        b=Ycqt22LGqU1WWQR8sNKqXEAMLLhHy/e96FeZTzA6+MlWMOApFgv5CnIyWyP7qTsp30
+         e+4/RDCEh3W9fJLbXhgJFtU1nbdfq8tsHwRTWYTH29AT/KoM7PrEKyPetiCizRjucub4
+         GV2rEmo4WdtCGzNQDajrUw/EXA7AyWb71O2ZDuc2OliNJFkevcmsHC5icn7Mq5SF2rJb
+         IKBH2/T8OjFXQuwLMzisPx/AYLa9maTfkKtxM0QnBtGZzrnhGFni3wkcC6jxGqIVLyAP
+         B+09dRyLmxKJRNnT5bqVZ/Ka9XixxP3hDX6nJvkdivXG9learKE8SPQL20OJyzU20J9K
+         fDeQ==
+X-Gm-Message-State: AOJu0YyAq7Iyiw6MGruT4/XaKi6f4UfzppmDQ3slzP5at6l7Qo30hmMZ
+        GzlriuAn+dKw2OEOTHAsfyjePA==
+X-Google-Smtp-Source: AGHT+IFKePN5jQUllnPWZpOthmuFkVluxrH6XoeS0AmoQO9fLpkllywkeTVAIWDXE5M2PoyafqTulA==
+X-Received: by 2002:a92:caca:0:b0:34a:c61f:9e99 with SMTP id m10-20020a92caca000000b0034ac61f9e99mr17646978ilq.9.1693255985709;
+        Mon, 28 Aug 2023 13:53:05 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
+        by smtp.gmail.com with ESMTPSA id i15-20020a02cc4f000000b0039deb26853csm2744432jaq.10.2023.08.28.13.53.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 13:51:25 -0700 (PDT)
+        Mon, 28 Aug 2023 13:53:05 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -54,9 +54,9 @@ To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.15] rcu: Prevent expedited GP from enabling tick on offline CPU
-Date:   Mon, 28 Aug 2023 20:51:21 +0000
-Message-ID: <20230828205122.1659823-1-joel@joelfernandes.org>
+Subject: [PATCH 5.10] rcu: Prevent expedited GP from enabling tick on offline CPU
+Date:   Mon, 28 Aug 2023 20:53:01 +0000
+Message-ID: <20230828205302.1660666-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -133,7 +133,7 @@ Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index f46c0c1a5eb3..407941a2903b 100644
+index 401c1f331caf..07a284a18645 100644
 --- a/kernel/rcu/tree_exp.h
 +++ b/kernel/rcu/tree_exp.h
 @@ -507,7 +507,10 @@ static void synchronize_rcu_expedited_wait(void)
