@@ -2,104 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054C178AB7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAAD78AB2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbjH1KbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
+        id S231252AbjH1K2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231529AbjH1KbG (ORCPT
+        with ESMTP id S231425AbjH1K2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:31:06 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2637319A;
-        Mon, 28 Aug 2023 03:30:51 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-98377c5d53eso386036466b.0;
-        Mon, 28 Aug 2023 03:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693218649; x=1693823449;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MiKi/TKlvIbc3sNkJh8jRuCHA25ICsx20PEexiy1mcA=;
-        b=JeECIXoDP+alNRW0eSh7bgGm2v6c43o90r6svTuf+En4ezPQbJMkmNAGtJ50YMW5Eo
-         7sryg29Ie+23VAN+DUYMAE4oIgPUxK4wfZZDji8rN7XkKrOJt0ANppR3Sz1epP+Spvyj
-         Sq5ahqAd5vLnKT5M6cZjsi2Uq81Kq/9bZX4nT46AmHKb1k4tbUugJsn5SLgrOojnzAl4
-         iNqMHPPVcq9KgZICPWgWGj9cAdHQB0FJxM/uH3J3iYR1TCLfI79/kj25DAgQzQB9u+4F
-         jDsQkxRHeyWMMkVd3V+GzE8LXQAQBmRNQHrLaOn9NVpS6wirIaA0QoBYJnoUYDQSuk/d
-         Pywg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693218649; x=1693823449;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MiKi/TKlvIbc3sNkJh8jRuCHA25ICsx20PEexiy1mcA=;
-        b=jDhA4YbxWKNb+pEYMfAx0AczAZVpHWah4xIdIMQQrckyDGaB6DCzkmTcmZtWNfWrv8
-         MHM9ZjG/BUmJ45yyaM4CUgGYLQaMx/+uPPntfluFe/ZDLbzqLXoXR55OqJnkqfHaIDp1
-         6QETKsip9RMYvLsvktMVXs32IQOwWJcKFhEWx4bgbVDeinETsCDxs4J7lgOVeQosgMNl
-         Xd9pTavIOQFLfVk+sp6+1JbhundH0/Ri66/bBZYY+Cgl3oy1tSBwqX2Xb2uRttuvwPzI
-         gVfF2+gO2Hinem9bKknFozErFkm9xfYyTnftLrYS39r38fPnN9M7Cif5xkKnmksTd7W/
-         NUIw==
-X-Gm-Message-State: AOJu0YxNFK8cpFe5Iqf1QRP1XTii+cSVqh0t5RW4BUvKOIfdsW/frspN
-        nC0uDG3jYEZunNW6vXulkK8D+/n8MDLvbw==
-X-Google-Smtp-Source: AGHT+IFMIaCCcDZoYpunAsRhOgK+O4zynTdJpthd60JRcNlmWJicgI5wy+fP0w6n37NqjiFNaWT6SA==
-X-Received: by 2002:a17:906:5dd9:b0:993:d617:bdc2 with SMTP id p25-20020a1709065dd900b00993d617bdc2mr16824143ejv.75.1693218649168;
-        Mon, 28 Aug 2023 03:30:49 -0700 (PDT)
-Received: from fedora.. (87-97-90-214.pool.digikabel.hu. [87.97.90.214])
-        by smtp.gmail.com with ESMTPSA id w24-20020a17090649d800b009930308425csm4473505ejv.31.2023.08.28.03.30.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 03:30:48 -0700 (PDT)
-From:   Andras Sebok <sebokandris2009@gmail.com>
-To:     linux-serial@vger.kernel.org
-Cc:     andriseseboke@gmail.com, linux-kernel@vger.kernel.org,
-        jirislaby@kernel.org, gregkh@linuxfoundation.org,
-        Andras Sebok <sebokandris2009@gmail.com>
-Subject: [PATCH 2/2] Add disabled text to indicate inactive commands in sysrq help menu
-Date:   Mon, 28 Aug 2023 12:27:56 +0200
-Message-ID: <20230828102753.4811-5-sebokandris2009@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230828102753.4811-2-sebokandris2009@gmail.com>
-References: <20230828102753.4811-2-sebokandris2009@gmail.com>
+        Mon, 28 Aug 2023 06:28:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B3119A;
+        Mon, 28 Aug 2023 03:28:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3609563BC7;
+        Mon, 28 Aug 2023 10:28:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B186C433C9;
+        Mon, 28 Aug 2023 10:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693218503;
+        bh=n4XE7nxHzlz8l0Qrwy0GwtxS3jAaS4ZgOwDJ7QBRvMM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ET27Az6rATIIp9xTqGzMsJiDJ4oiH1GvmgM9gOR9s7J7H7cSv76GEx9ldL7/JMQeO
+         ExJldwFcv2I95wkwSkTCX7rer3fUFVuTfJjpM+pfFx+kA+W49ib0+hEQ/xRSA1uiSN
+         IFBsegGUQAfMXrsI1hRWSquPpQ1JvwD6v4bQ1Vn3S7tut/kKpRC/MSCC74Q5Afa18o
+         V2XtmMvpkRswzCkC0T4THDncHwjfqCM61zy7StNNcVmkyqZ5a434c6oeXOBFge5W24
+         //TQnh34uEheMdhBvcx38ooqHUscmeT6YfANwhePuUO8jKgXABX5PMtVHRElaHRdOd
+         Deq/GSrJUlr5A==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50078eba7afso4780914e87.0;
+        Mon, 28 Aug 2023 03:28:23 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxTaGGCGaHqewRXHdP8J42pUJ0fCWG6NRu/UaQhskAePfJ1bxlH
+        UQLC9Vp48xc/4RSW1j7a7ElLOioxUAKRBHBm+U0=
+X-Google-Smtp-Source: AGHT+IFkiw41hE2snmkem3YKEjAH2DwCq9IQe+ZWejBMSWZ61AhN8HbfynocOGTt6GHuZjv5/B8zMOj3BCjAwiJPErw=
+X-Received: by 2002:a05:6512:220c:b0:4f4:b13a:d683 with SMTP id
+ h12-20020a056512220c00b004f4b13ad683mr22435552lfu.69.1693218501656; Mon, 28
+ Aug 2023 03:28:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230806024715.3061589-1-xiao.w.wang@intel.com>
+ <CAMj1kXHicVpT7PDSB=BgYEuhBxgufHqd9X8ZCg19k0_U+rjvEg@mail.gmail.com>
+ <DM8PR11MB5751DA69DEEAAC9B06623E0BB80FA@DM8PR11MB5751.namprd11.prod.outlook.com>
+ <DM8PR11MB575198187CB962EBE663B7F0B8E1A@DM8PR11MB5751.namprd11.prod.outlook.com>
+In-Reply-To: <DM8PR11MB575198187CB962EBE663B7F0B8E1A@DM8PR11MB5751.namprd11.prod.outlook.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 28 Aug 2023 12:28:09 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGCGVhA=bc+2gNZwb7s_H4K6yk54J04pUQ1XPW+8-2COA@mail.gmail.com>
+Message-ID: <CAMj1kXGCGVhA=bc+2gNZwb7s_H4K6yk54J04pUQ1XPW+8-2COA@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
+Cc:     "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "Li, Haicheng" <haicheng.li@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds disabled text after disabled commands in sysrq help.
+On Sun, 27 Aug 2023 at 11:26, Wang, Xiao W <xiao.w.wang@intel.com> wrote:
+>
+> Hi,
+>
+> A gentle ping.
+> Any other comments or suggestions for this patch? Or maybe we would review it in the Linux 6.7 development cycle?
+>
 
-before:
-sak : k
+This is going to be 6.7 material at the earliest in any case.
 
-after:
-sak : k (disabled)
+I am fine with the change as far as the EFI code is concerned, but I'd
+suggest dropping EFI_ from the macro name, as it could be #define'd
+for other reasons too.
 
-Signed-off-by: Andras Sebok <sebokandris2009@gmail.com>
----
- drivers/tty/sysrq.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 831cdadf366f..1af78f76232e 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -617,6 +617,9 @@ void __handle_sysrq(int key, bool check_mask)
- 				if (j != i)
- 					continue;
- 				pr_cont("%s ", sysrq_key_table[i]->help_msg);
-+				if (!check_mask || (check_mask &&
-+					!sysrq_on_mask(sysrq_key_table[i]->enable_mask)))
-+					pr_cont("(disabled)");
- 				pr_cont("\n");
- 			}
- 		}
--- 
-2.41.0
-
+>
+> > -----Original Message-----
+> > From: Wang, Xiao W
+> > Sent: Sunday, August 6, 2023 6:24 PM
+> > To: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: paul.walmsley@sifive.com; palmer@dabbelt.com;
+> > aou@eecs.berkeley.edu; anup@brainfault.org; Li, Haicheng
+> > <haicheng.li@intel.com>; linux-riscv@lists.infradead.org; linux-
+> > efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: RE: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> >
+> > Hi,
+> >
+> > > -----Original Message-----
+> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > Sent: Sunday, August 6, 2023 5:39 PM
+> > > To: Wang, Xiao W <xiao.w.wang@intel.com>
+> > > Cc: paul.walmsley@sifive.com; palmer@dabbelt.com;
+> > > aou@eecs.berkeley.edu; anup@brainfault.org; Li, Haicheng
+> > > <haicheng.li@intel.com>; linux-riscv@lists.infradead.org; linux-
+> > > efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> > >
+> > > On Sun, 6 Aug 2023 at 04:39, Xiao Wang <xiao.w.wang@intel.com> wrote:
+> > > >
+> > > > This patch leverages the alternative mechanism to dynamically optimize
+> > > > bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
+> > > > Zbb ext is not supported by the runtime CPU, legacy implementation is
+> > > > used. If Zbb is supported, then the optimized variants will be selected
+> > > > via alternative patching.
+> > > >
+> > > > The legacy bitops support is taken from the generic C implementation as
+> > > > fallback.
+> > > >
+> > > > If the parameter is a build-time constant, we leverage compiler builtin to
+> > > > calculate the result directly, this approach is inspired by x86 bitops
+> > > > implementation.
+> > > >
+> > > > EFI stub runs before the kernel, so alternative mechanism should not be
+> > > > used there, this patch introduces a macro EFI_NO_ALTERNATIVE for this
+> > > > purpose.
+> > > >
+> > >
+> > > Why? The unpatched sequences work fine, no?
+> >
+> > It works. But there would be build warning: orphan section `.init.alternative'
+> > from `./drivers/firmware/efi/libstub/gop.stub.o' being placed in section
+> > `.init.alternative'. Besides, w/o this MACRO, the optimized variant would
+> > never be used at runtime, so this patch choose to disable alternative.
+> >
+> > BRs,
+> > Xiao
+> >
+> > >
+> > >
+> > > > Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/bitops.h       | 266
+> > +++++++++++++++++++++++++-
+> > > >  drivers/firmware/efi/libstub/Makefile |   2 +-
+> > > >  2 files changed, 264 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/bitops.h
+> > > b/arch/riscv/include/asm/bitops.h
+> > > > index 3540b690944b..f727f6489cd5 100644
+> > > > --- a/arch/riscv/include/asm/bitops.h
+> > > > +++ b/arch/riscv/include/asm/bitops.h
+> > > > @@ -15,13 +15,273 @@
+> > > >  #include <asm/barrier.h>
+> > > >  #include <asm/bitsperlong.h>
+> > > >
+> > > > +#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(EFI_NO_ALTERNATIVE)
+> > > >  #include <asm-generic/bitops/__ffs.h>
+> > > > -#include <asm-generic/bitops/ffz.h>
+> > > > -#include <asm-generic/bitops/fls.h>
+> > > >  #include <asm-generic/bitops/__fls.h>
+> > > > +#include <asm-generic/bitops/ffs.h>
+> > > > +#include <asm-generic/bitops/fls.h>
+> > > > +
+> > > > +#else
+> > > > +#include <asm/alternative-macros.h>
+> > > > +#include <asm/hwcap.h>
+> > > > +
+> > > > +#if (BITS_PER_LONG == 64)
+> > > > +#define CTZW   "ctzw "
+> > > > +#define CLZW   "clzw "
+> > > > +#elif (BITS_PER_LONG == 32)
+> > > > +#define CTZW   "ctz "
+> > > > +#define CLZW   "clz "
+> > > > +#else
+> > > > +#error "Unexpected BITS_PER_LONG"
+> > > > +#endif
+> > [...]
