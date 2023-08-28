@@ -2,149 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA13A78BA34
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA34078BA37
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbjH1VX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        id S232570AbjH1VYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbjH1VXe (ORCPT
+        with ESMTP id S232671AbjH1VYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:23:34 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61A4E1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:23:29 -0700 (PDT)
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SEW6u9030599;
-        Mon, 28 Aug 2023 21:23:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pps0720; bh=RE5lJIOiz6aK1DwWwez3sfaKDAm6m/N2HPoBtVSVfr0=;
- b=b+eeY/EEh4GXupcn0cHjOtZcl2gMydLeaF/mTOm6ozHKEWC0oj+aCpHNNZJrz/03hdAn
- o6DP7O4lxrvH3TlTRSe7VG+YpwVcHZHIzm5oOA4NrbtoBBXWqloxOBqYqRoKigpNdR+v
- LpOjoJaf8WkKFO8ZTLpSH0qXKq9NiUEQZ7SGJQgAUG4dMzI8bDPv95i2gDYFWgWui88R
- GHhlGFEyTjS+XeGLdcnzl/Orpx7ZrLsiIjzH8ABvI6g27JFVFq6vMyfrNGwyB8vakyne
- 66C3S3fz5HSwS8tQ24cnowNkDziDL0A6ZOAueKWJGP085F4TNMrynvuqg5a3EpqP/iFF Bg== 
-Received: from p1lg14880.it.hpe.com ([16.230.97.201])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3srrevp9d8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 21:23:00 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14880.it.hpe.com (Postfix) with ESMTPS id D8A4F801734;
-        Mon, 28 Aug 2023 21:22:59 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.231.227.39])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id 448F98048E5;
-        Mon, 28 Aug 2023 21:22:58 +0000 (UTC)
-Date:   Mon, 28 Aug 2023 16:22:56 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/platform/uv: Use alternate source for socket to node
- data
-Message-ID: <ZO0QMNcm0+V4eV34@swahl-home.5wahls.com>
-References: <20230807141730.1117278-1-steve.wahl@hpe.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807141730.1117278-1-steve.wahl@hpe.com>
-X-Proofpoint-ORIG-GUID: 5sXb24AibLI9ZFY9j1VvxsG9LH4X98cG
-X-Proofpoint-GUID: 5sXb24AibLI9ZFY9j1VvxsG9LH4X98cG
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 28 Aug 2023 17:24:14 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462E8186
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:24:11 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-791b8525b59so1386036241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693257850; x=1693862650;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7lV67ue8O8irkvkGHuS/WBKm22CaGpU8fd8tzzbnekE=;
+        b=YKgZ07SBHl90UfeK1BOTq1Cl7cD+BDiGvhvbKGCn8XWQcwQ0GUVGGnIjxVmFLkuYOZ
+         zol/G6ktBYRNUNTGU3DYy2KRnznB3neeUD+iv+8T+v1d27tdu4EYg/HJUN8gXLDzvEGK
+         adbNRy2apTHmXCczeRARWGunDOP+MvHHLgYyMrE88PMCpBnP7RAm+o4+RFawz11exgZW
+         bjSx3HvyI/sROjNARxXjA9vRoG4GZ5AntMcuBCl744E0K5nMn0D1jHvdjk+fE2ENWM+2
+         DueZmhbaLNpxfLi3y+quM0VXblHvTfj9EIIZCigLWepdrIE7A8WOyy/snlAsqGHma9w4
+         VN1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693257850; x=1693862650;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7lV67ue8O8irkvkGHuS/WBKm22CaGpU8fd8tzzbnekE=;
+        b=QAQRCoTue+/aIN4tkqVOQS7aXS483Rng56eNS4VIzwyvEv6XFGze1UAHfHCa7+E/mR
+         YwIcJ1DqjRiUDYxpPk0GSJwB5sDol40ayGBmgUTrZI1lnJAOO+17IxXBJMDxPzRCfUFE
+         9KTqPNw9LaNkU7WPRa3abSTbB7l3dk5KqJWZ06lN93sv8GJ9U3GnOzMnbJRWs+owU0yU
+         xZvhGOAB8Ue17iOM7ikdpixIagVW42Njv6v9rBgrYlC8okA6TpVHRrUyTFpZ/JVrIhv9
+         /XAxdsrXguP1imWramtuPxt1DgTxMvBt7ycTHax8lXvPmlwuRzIHsU01Js9jgJYVq/kz
+         9Ynw==
+X-Gm-Message-State: AOJu0Yyh2QUc6jtOQTzvIrcBJgDGpZLatXDqXIBQz2ydLM56Np9lYCOi
+        me16vZEyJJEbAGrh3vOy4U3Sc0KdKb16pFi0aGX6gA==
+X-Google-Smtp-Source: AGHT+IGREmO10YLmOwqdXyZCDAQIWVCiwCAVv/qlPkk2x3End3xHg5+MrsahL1WcwopFckKtTRbphYhNItA8ysw5Cis=
+X-Received: by 2002:a67:ef90:0:b0:44d:5c17:d067 with SMTP id
+ r16-20020a67ef90000000b0044d5c17d067mr16776983vsp.8.1693257850001; Mon, 28
+ Aug 2023 14:24:10 -0700 (PDT)
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_18,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- phishscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
- mlxscore=0 clxscore=1011 impostorscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308280184
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+In-Reply-To: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 29 Aug 2023 00:23:59 +0300
+Message-ID: <CAA8EJpp_Uu62TDknZ-X0DQYinnwxxoriPpetfppCySxg_25YQg@mail.gmail.com>
+Subject: Re: [PATCH 00/11] arm64: qcom: add and enable SHM Bridge support
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 09:17:30AM -0500, Steve Wahl wrote:
-> When nr_cpus is set to a smaller number than actually present, the
-> cpu_to_node() mapping information for unused CPUs is not available to
-> build_socket_tables().  This results in an incomplete table and will
-> later cause use of a -1 value for some array indexing, and eventual
-> kernel page faults.
-> 
-> Switch to using the __apicid_to_node array, which still contains all
-> the information mapping apicids to nodes, even for CPUs disabled with
-> a reduced nr_cpus setting.
-> 
-> Fixes: 8a50c5851927 ("x86/platform/uv: UV support for sub-NUMA clustering")
-> Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-> ---
->  arch/x86/kernel/apic/x2apic_uv_x.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> This is essentially version 2 of "[PATCH] x86/platform/uv: Abort UV
-> initialization when reduced nr_cpus requires it".  However, the title
-> was no longer accurate, aborting UV initialization is no longer needed.
-> 
-> Previous discussion can be found here:
-> https://lore.kernel.org/lkml/20230711202618.85562-1-steve.wahl@hpe.com/
-> 
-> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-> index d9384d5b4b8e..35acc95c6dd5 100644
-> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
-> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-> @@ -1571,7 +1571,7 @@ static void __init build_socket_tables(void)
->  {
->  	struct uv_gam_range_entry *gre = uv_gre_table;
->  	int nums, numn, nump;
-> -	int cpu, i, lnid;
-> +	int i, lnid, apicid;
->  	int minsock = _min_socket;
->  	int maxsock = _max_socket;
->  	int minpnode = _min_pnode;
-> @@ -1622,15 +1622,14 @@ static void __init build_socket_tables(void)
->  
->  	/* Set socket -> node values: */
->  	lnid = NUMA_NO_NODE;
-> -	for_each_possible_cpu(cpu) {
-> -		int nid = cpu_to_node(cpu);
-> -		int apicid, sockid;
-> +	for (apicid = 0; apicid < ARRAY_SIZE(__apicid_to_node); apicid++) {
-> +		int nid = __apicid_to_node[apicid];
-> +		int sockid;
->  
-> -		if (lnid == nid)
-> +		if ((nid == NUMA_NO_NODE) || (lnid == nid))
->  			continue;
->  		lnid = nid;
->  
-> -		apicid = per_cpu(x86_cpu_to_apicid, cpu);
->  		sockid = apicid >> uv_cpuid.socketid_shift;
->  
->  		if (_socket_to_node[sockid - minsock] == SOCK_EMPTY)
-> -- 
-> 2.26.2
-> 
+On Mon, 28 Aug 2023 at 22:29, Bartosz Golaszewski
+<bartosz.golaszewski@linaro.org> wrote:
+>
+> SHM Bridge is a mechanism allowing to map limited areas of kernel's
+> virtual memory to physical addresses and share those with the
+> trustzone in order to not expose the entire RAM for SMC calls.
+>
+> This series adds support for Qualcomm SHM Bridge in form of a platform
+> driver and library functions available to users. It enables SHM Bridge
+> support for three platforms and contains a bunch of cleanups for
+> qcom-scm.
 
-Gentle ping on this patch?  Thanks.
+Which users do you expect for this API?
 
---> Steve Wahl
+Also, could you please describe your design a bit more? Why have you
+implemented the shm-bridge as a separate driver rather than a part of
+the SCM driver?
+
+>
+> Bartosz Golaszewski (11):
+>   firmware: qcom-scm: drop unneeded 'extern' specifiers
+>   firmware: qcom-scm: order includes alphabetically
+>   firmware: qcom-scm: atomically assign and read the global __scm
+>     pointer
+>   firmware: qcom-scm: add support for SHM bridge operations
+>   dt-bindings: document the Qualcomm TEE Shared Memory Bridge
+>   firmware: qcom-shm-bridge: new driver
+>   firmware: qcom-scm: use SHM bridge if available
+>   arm64: defconfig: enable Qualcomm SHM bridge module
+>   arm64: dts: qcom: sm8450: enable SHM bridge
+>   arm64: dts: qcom: sa8775p: enable SHM bridge
+>   arm64: dts: qcom: sm8150: enable SHM bridge
+>
+>  .../bindings/firmware/qcom,shm-bridge.yaml    |  36 ++
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi         |   4 +
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi          |   4 +
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi          |   4 +
+>  arch/arm64/configs/defconfig                  |   1 +
+>  drivers/firmware/Kconfig                      |   8 +
+>  drivers/firmware/Makefile                     |   1 +
+>  drivers/firmware/qcom-shm-bridge.c            | 452 ++++++++++++++++++
+>  drivers/firmware/qcom_scm-smc.c               |  20 +-
+>  drivers/firmware/qcom_scm.c                   | 106 +++-
+>  drivers/firmware/qcom_scm.h                   |   3 +
+>  include/linux/firmware/qcom/qcom_scm.h        | 109 +++--
+>  include/linux/firmware/qcom/shm-bridge.h      |  32 ++
+>  13 files changed, 712 insertions(+), 68 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+>  create mode 100644 drivers/firmware/qcom-shm-bridge.c
+>  create mode 100644 include/linux/firmware/qcom/shm-bridge.h
+>
+> --
+> 2.39.2
+>
+
 
 -- 
-Steve Wahl, Hewlett Packard Enterprise
+With best wishes
+Dmitry
