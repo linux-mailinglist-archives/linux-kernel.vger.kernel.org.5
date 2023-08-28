@@ -2,211 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9D078B603
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2AF78B674
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjH1RIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40954 "EHLO
+        id S232835AbjH1RaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbjH1RIZ (ORCPT
+        with ESMTP id S229628AbjH1RaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:08:25 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5F9AD;
-        Mon, 28 Aug 2023 10:07:55 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a250aa012so4647409a12.3;
-        Mon, 28 Aug 2023 10:07:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693242459; x=1693847259;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/LS43YliouTR1Tmc7pmJvHEse7b+ov00zdmVcklEZbk=;
-        b=WjbBuRKf73KWIf9F16bsplRaKkQYbBrXNhZKRfwSUCn7V2kGzFBhkn6zr7JmpUCbjQ
-         zNyiBMSz7sqLugek3VQ2I2FiSZdtVsFMT3gReHzS54UJGdAqdCWO9OBn1by4L6mEiwfP
-         qFBHIBzYKHW+eQs89YthaCQsVJVQa0214HBThV99zm0ul3mmSRGJoe8njjAjcFxwRCVR
-         hpiwlS2K55g6zHjQrOqGvX4OXLg//NgNs+f+5ytuKfdV+AX9NnMAm/zNRGT5gjhJtaNv
-         gs09FmAyghk5vRq2pTJkyQ4YqIj3sca26atVb2EMZ+z2DYPX1plM48V9ugWPSIEBFQfN
-         dDvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693242459; x=1693847259;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/LS43YliouTR1Tmc7pmJvHEse7b+ov00zdmVcklEZbk=;
-        b=RMlc5KLkzKdjVGjGRW9hDdqwf9cL9dwY5obDinCKrl5DzLEm77+yD1oU5qBE5M24y9
-         76L91gMZu5SnC5KwCZrglXLpOYOv+Gcoyc10uPDfS6gD25RPqWIpeDI16HAU/vObCkEA
-         2OkPZqQEXCmleaoco7OS4ZydEAls0bcUM5PiOKVn3ZsAQmxoXR5LjGhPkR0atYMUofRc
-         rPM69kMuwMuGeM2nb1kwNkiz3XLsdP9RSeuJMdQZVPqP36SqfVAvtDQen5u+AzZtoMv3
-         wxxuvU4kBtORdbdwGC++litn2TB7vwTRox6RBre+ViqWyiE8ldrvh1EUWCaK+i3HsMRL
-         9Daw==
-X-Gm-Message-State: AOJu0YwXQp8GorjV7+TEWNdXellffklxNC0G4yw7+8fpRRLlwpdzgTfN
-        51o5P1MYIVCL4loMZDQQFJs=
-X-Google-Smtp-Source: AGHT+IGJHHsPMMf5Pt7kdbB0Fc2JnHdPcucxkbCKZJkRQy5+4EkECR+NWw0nSebMXoWkv12Q3+E4Bg==
-X-Received: by 2002:aa7:d995:0:b0:525:44c5:48e2 with SMTP id u21-20020aa7d995000000b0052544c548e2mr18222390eds.22.1693242459025;
-        Mon, 28 Aug 2023 10:07:39 -0700 (PDT)
-Received: from f.. (cst-prg-30-15.cust.vodafone.cz. [46.135.30.15])
-        by smtp.gmail.com with ESMTPSA id i15-20020a056402054f00b005236410a16bsm4667696edx.35.2023.08.28.10.07.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 10:07:38 -0700 (PDT)
-From:   Mateusz Guzik <mjguzik@gmail.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        bp@alien8.de, Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH] x86: bring back rep movsq for user access on CPUs without ERMS
-Date:   Mon, 28 Aug 2023 19:07:32 +0200
-Message-Id: <20230828170732.2526618-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 28 Aug 2023 13:30:02 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEA7E1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:29:59 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SCvbaY028458;
+        Mon, 28 Aug 2023 17:07:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=xEccys44Fa+AJGa9f2dY+rdMM3FMR0fIeCsJUZ5s5tQ=;
+ b=Ll6RCeOF23jaLgtc4cr3toiBM0Zpj7caCmpNkam7y5KXs0EENXG8zE4iQPd1RnYnl/0n
+ 2dYPAQqL7T3gRaWAhxl+uR2VCAKFVfjrXgJJ4EKpBI3c35aR0FVKtPtRhiUbox++qMfm
+ 4cZZtepTIJm/jMau5AWDr1j5ZGWoYMTLhf1VwCEy1n3OktmRf56L4Xsz4F/3hZ0nzNPg
+ qxKmZHPcExsWgfc/7WBZnRByF1nnFCJaZHtOFkh8APRvA9RltMLVdyYT/ToCJOQj1FB+
+ ilfmK5JPG1T9u04Tdn2A8uCnYsEmeHC233leN2MohGlDDnsbj5uk8Bgk1ztmxT3UHsME EQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqapfm685-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 17:07:35 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SH7Ysf007515
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 17:07:34 GMT
+Received: from [10.71.110.104] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 28 Aug
+ 2023 10:07:33 -0700
+Message-ID: <7571be78-5560-13bf-d754-cabc8ad6140d@quicinc.com>
+Date:   Mon, 28 Aug 2023 10:07:33 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
+Content-Language: en-US
+To:     <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maxime Ripard <mripard@kernel.org>
+CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        <quic_parellan@quicinc.com>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+ <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
+ <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+ <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
+ <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
+ <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
+ <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
+ <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
+ <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
+ <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
+ <0cb96702-b396-4223-870f-b798d32991ee@linaro.org>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <0cb96702-b396-4223-870f-b798d32991ee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _DN47vvQS2ZocwQv_MbTX0YZQUSCADuS
+X-Proofpoint-GUID: _DN47vvQS2ZocwQv_MbTX0YZQUSCADuS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-28_14,2023-08-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1011 impostorscore=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308280151
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I spotted rep_movs_alternative on a flamegraph while building the kernel
-on an AMD CPU and I was surprised to find it does not have ERMS.
+Hi Neil
 
-The 64 byte loop there can be trivially replaced with movsq and I don't
-think there are any reasons to NOT do it. If anything I'm surprised the
-non-ERMS case was left hanging around after the 32KB regression reported
-by Eric Dumazet.
+Sorry I didnt respond earlier on this thread.
 
-Anyhow patch below remedies it.
+On 8/28/2023 1:49 AM, neil.armstrong@linaro.org wrote:
+> Hi Jessica,
+> 
+> On 25/08/2023 20:37, Jessica Zhang wrote:
+>>
+>>
+>> On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
+>>> Hi Maxime,
+>>>
+>>> On 21/08/2023 10:17, Maxime Ripard wrote:
+>>>> Hi,
+>>>>
+>>>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org 
+>>>> wrote:
+>>>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
+>>>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
+>>>>>>> Sending HS commands will always work on any controller, it's all
+>>>>>>> about LP commands. The Samsung panels you listed only send HS
+>>>>>>> commands so they can use prepare_prev_first and work on any
+>>>>>>> controllers.
+>>>>>>
+>>>>>> I think there is some misunderstanding there, supported by the
+>>>>>> description of the flag.
+>>>>>>
+>>>>>> If I remember correctly, some hosts (sunxi) can not send DCS
+>>>>>> commands after enabling video stream and switching to HS mode, see
+>>>>>> [1]. Thus, as you know, most of the drivers have all DSI panel setup
+>>>>>> commands in drm_panel_funcs::prepare() /
+>>>>>> drm_bridge_funcs::pre_enable() callbacks, not paying attention
+>>>>>> whether these commands are to be sent in LP or in HS mode.
+>>>>>>
+>>>>>> Previously DSI source drivers could power on the DSI link either in
+>>>>>> mode_set() or in pre_enable() callbacks, with mode_set() being the
+>>>>>> hack to make panel/bridge drivers to be able to send commands from
+>>>>>> their prepare() / pre_enable() callbacks.
+>>>>>>
+>>>>>> With the prev_first flags being introduced, we have established that
+>>>>>> DSI link should be enabled in DSI host's pre_enable() callback and
+>>>>>> switched to HS mode (be it command or video) in the enable()
+>>>>>> callback.
+>>>>>>
+>>>>>> So far so good.
+>>>>>
+>>>>> It seems coherent, I would like first to have a state of all DSI host
+>>>>> drivers and make this would actually work first before adding the
+>>>>> prev_first flag to all the required panels.
+>>>>
+>>>> This is definitely what we should do in an ideal world, but at least 
+>>>> for
+>>>> sunxi there's no easy way for it at the moment. There's no 
+>>>> documentation
+>>>> for it and the driver provided doesn't allow this to happen.
+>>>>
+>>>> Note that I'm not trying to discourage you or something here, I'm 
+>>>> simply
+>>>> pointing out that this will be something that we will have to take into
+>>>> account. And it's possible that other drivers are in a similar
+>>>> situation.
+>>>>
+>>>>>> Unfortunately this change is not fully backwards-compatible. This
+>>>>>> requires that all DSI panels sending commands from prepare() should
+>>>>>> have the prepare_prev_first flag. In some sense, all such patches
+>>>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
+>>>>>> flag to drm_panel").
+>>>>>
+>>>>> This kind of migration should be done *before* any possible
+>>>>> regression, not the other way round.
+>>>>>
+>>>>> If all panels sending commands from prepare() should have the
+>>>>> prepare_prev_first flag, then it should be first, check for
+>>>>> regressions then continue.
+>>>>>
+>>>>> <snip>
+>>>>>
+>>>>>>>
+>>>>>>> I understand, but this patch doesn't qualify as a fix for
+>>>>>>> 9e15123eca79 and is too late to be merged in drm-misc-next for
+>>>>>>> v6.6, and since 9e15123eca79 actually breaks some support it
+>>>>>>> should be reverted (+ deps) since we are late in the rc cycles.
+>>>>>>
+>>>>>> If we go this way, we can never reapply these patches. There will be
+>>>>>> no guarantee that all panel drivers are completely converted. We
+>>>>>> already have a story without an observable end -
+>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+>>>>>
+>>>>> I don't understand this point, who would block re-applying the 
+>>>>> patches ?
+>>>>>
+>>>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
+>>>>> Linux version and went smoothly because we reverted regressing patches
+>>>>> and restarted when needed, I don't understand why we can't do this
+>>>>> here aswell.
+>>>>>
+>>>>>> I'd consider that the DSI driver is correct here and it is about the
+>>>>>> panel drivers that require fixes patches. If you care about the
+>>>>>> particular Fixes tag, I have provided one several lines above.
+>>>>>
+>>>>> Unfortunately it should be done in the other way round, prepare for
+>>>>> migration, then migrate,
+>>>>>
+>>>>> I mean if it's a required migration, then it should be done and I'll
+>>>>> support it from both bridge and panel PoV.
+>>>>>
+>>>>> So, first this patch has the wrong Fixes tag, and I would like a
+>>>>> better explanation on the commit message in any case. Then I would
+>>>>> like to have an ack from some drm-misc maintainers before applying it
+>>>>> because it fixes a patch that was sent via the msm tree thus per the
+>>>>> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
+>>>>
+>>>> Sorry, it's not clear to me what you'd like our feedback on exactly?
+>>>
+>>> So let me resume the situation:
+>>>
+>>> - pre_enable_prev_first was introduced in [1]
+>>> - some panels made use of pre_enable_prev_first
+>>> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 
+>>> kernels and before
+>>> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on 
+>>> SM8550 systems (and probably other Video mode panels on Qcom platforms)
+>>> - this fix was sent late, and is now too late to be merged via 
+>>> drm-misc-next
+>>
+>> Hi Neil and Maxime,
+>>
+>> I agree with Neil that 9e15123eca79 was the commit that introduced the 
+>> issue (since it changed the MSM DSI host behavior).
+>>
+>> However, I'm not too keen on simply reverting that patch because
+>>
+>> 1) it's not wrong to have the dsi_power_on in pre_enable. Arguably, it 
+>> actually makes more sense to power on DSI host in pre_enable than in 
+>> modeset (since modeset is meant for setting the bridge mode), and
+> 
+> I never objected that, it's the right path to go.
+> 
 
-The patch initially had:
- SYM_FUNC_START(rep_movs_alternative)
-        cmpq $64,%rcx
--       jae .Llarge
-+       ALTERNATIVE "jae .Lrep_movsq", "jae .Lrep_movsb", X86_FEATURE_ERMS
+Ack.
 
+>>
+>> 2) I think it would be good practice to keep specific bridge chip 
+>> checks out of the DSI host driver.
+> 
+> We discussed about a plan with Maxime and Dmitry about that, and it 
+> would require adding
+> a proper atomic panel API to handle a "negociation" with the host 
+> controller.
+> 
 
-But then I found the weird nops and after reading the thread which
-resulted in bringing back ERMS I see why
-https://lore.kernel.org/lkml/CANn89iKUbyrJ=r2+_kK+sb2ZSSHifFZ7QkPLDpAtkJ8v4WUumA@mail.gmail.com/
+May I know what type of negotiation is needed here?
 
-That said, whacking the 64 byte loop in favor of rep movsq is definitely
-the right to do and the patch below is one way to do it.
+>>
+>>
+>> That being said, what do you think about setting the default value of 
+>> prepare_prev_first to true (possibly in panel_bridge_attach)?
+> 
+> As Dmitry pointed, all panels sending LP commands in pre_enable() should 
+> have prepare_prev_first to true.
+> 
 
-What I don't get is what's up with ERMS availability on AMD CPUs. I was
-told newer uarchs support it, but the bit may be disabled in bios(?).
+I wanted to respond to this earlier but didnt get a chance.
 
-Anyhow, I temporarily got an instance on Amazon EC2 with EPYC 7R13 and
-the bit is not there, whether this is a config problem or not.
+ From the documentation of this flag, this has nothing to do whether 
+panels are sending the LP commands (commands sent in LP mode) OR HS 
+commands (commands sent in HS mode).
 
-I also note there is quite a mess concerning other string ops, which I'm
-going to tackle in another thread later(tm).
+This is more about sending the commands whether the lanes are in LP11 
+state before sending the ON commands.
 
-================ cut here ================
+195 	 * The previous controller should be prepared first, before the prepare
+196 	 * for the panel is called. This is largely required for DSI panels
+197 	 * where the DSI host controller should be initialised to LP-11 before
+198 	 * the panel is powered up.
+199 	 */
+200 	bool prepare_prev_first;
 
-Intel CPUs ship with ERMS for over a decade, but this is not true for
-AMD. 
+These are conceptually different and thats what I explained Dmitry in 
+our call.
 
-Hand-rolled mov loops executing in this case are quite pessimal compared
-to rep movsq for bigger sizes. While the upper limit depends on uarch,
-everyone is well south of 1KB AFAICS and sizes bigger than that are
-common. The problem can be easily remedied so do it.
+Sending ON commands in LP11 state is a requirement I have seen with many 
+panels and its actually the right expectation as well to send the 
+commands when the lanes are in a well-defined LP11 state.
 
-Sample result from read1_processes from will-it-scale on EPYC 7R13
-(4KB reads/s):
-before:	1507021
-after:	1721828 (+14%)
+ From the panels which I have seen, the opposite is never true (OR i 
+have never seen it this way).
 
-Note that the cutoff point for rep usage is set to 64 bytes, which is
-way too conservative but I'm sticking to what was done in 47ee3f1dd93b
-("x86: re-introduce support for ERMS copies for user space accesses").
-That is to say *some* copies will now go slower, which is fixable but
-beyond the scope of this patch.
+The parade chip was the only exception and that issue was never 
+root-caused leading us to have bridge specific handling in MSM driver.
 
-While here make sure labels are unique.
+In other words, it would be very unlikely that a panel should be broken 
+or shouldn't work when the ON commands are sent when the lanes are in 
+LP11 state.
 
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
- arch/x86/lib/copy_user_64.S | 61 +++++++++++--------------------------
- 1 file changed, 17 insertions(+), 44 deletions(-)
+So I agree with Jessica, that we should set the default value of this 
+flag to true in the framework so that only the bridges/panels which need 
+this to be false do that explicitly. From the examples I pointed out 
+including MTK, even those vendors are powering on their DSI in 
+pre_enable() which means none of these panels will work there too.
 
-diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
-index 01c5de4c279b..2fe61de81a22 100644
---- a/arch/x86/lib/copy_user_64.S
-+++ b/arch/x86/lib/copy_user_64.S
-@@ -68,55 +68,28 @@ SYM_FUNC_START(rep_movs_alternative)
- 	_ASM_EXTABLE_UA( 3b, .Lcopy_user_tail)
- 
- .Llarge:
--0:	ALTERNATIVE "jmp .Lunrolled", "rep movsb", X86_FEATURE_ERMS
--1:	RET
-+4:	ALTERNATIVE "jmp .Llarge_movsq", "rep movsb", X86_FEATURE_ERMS
-+5:	RET
- 
--        _ASM_EXTABLE_UA( 0b, 1b)
-+	_ASM_EXTABLE_UA( 4b, 5b)
- 
--	.p2align 4
--.Lunrolled:
--10:	movq (%rsi),%r8
--11:	movq 8(%rsi),%r9
--12:	movq 16(%rsi),%r10
--13:	movq 24(%rsi),%r11
--14:	movq %r8,(%rdi)
--15:	movq %r9,8(%rdi)
--16:	movq %r10,16(%rdi)
--17:	movq %r11,24(%rdi)
--20:	movq 32(%rsi),%r8
--21:	movq 40(%rsi),%r9
--22:	movq 48(%rsi),%r10
--23:	movq 56(%rsi),%r11
--24:	movq %r8,32(%rdi)
--25:	movq %r9,40(%rdi)
--26:	movq %r10,48(%rdi)
--27:	movq %r11,56(%rdi)
--	addq $64,%rsi
--	addq $64,%rdi
--	subq $64,%rcx
--	cmpq $64,%rcx
--	jae .Lunrolled
--	cmpl $8,%ecx
--	jae .Lword
-+.Llarge_movsq:
-+	movq %rcx,%r8
-+	movq %rcx,%rax
-+	shrq $3,%rcx
-+	andl $7,%eax
-+6:	rep movsq
-+	movl %eax,%ecx
- 	testl %ecx,%ecx
- 	jne .Lcopy_user_tail
- 	RET
- 
--	_ASM_EXTABLE_UA(10b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(11b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(12b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(13b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(14b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(15b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(16b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(17b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(20b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(21b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(22b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(23b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(24b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(25b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(26b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(27b, .Lcopy_user_tail)
-+/*
-+ * Recovery after failed rep movsq
-+ */
-+7:	movq %r8,%rcx
-+	jmp .Lcopy_user_tail
-+
-+	_ASM_EXTABLE_UA( 6b, 7b)
- SYM_FUNC_END(rep_movs_alternative)
- EXPORT_SYMBOL(rep_movs_alternative)
--- 
-2.39.2
+>>
+>> It seems to me that most panel drivers send DCS commands during 
+>> pre_enable, so maybe it would make more sense to power on DSI host 
+>> before panel enable() by default. Any panel that needs DSI host to be 
+>> powered on later could then explicitly set the flag to false in their 
+>> respective drivers.
+> 
+> A proper migration should be done, yes, but not as a fix on top of v6.5.
+> 
 
+I am fine to drop this fix in favor of making the prepare_prev_first as 
+default true but we need an agreement first. From what I can see, parade 
+chip will be the only one which will need this to be set to false and we 
+can make that change.
+
+Let me know if this works as a migration plan.
+
+> Neil
+> 
+>>
+>> Thanks,
+>>
+>> Jessica Zhang
+>>
+>>
+>>>
+>>> I do not consider it's the right way to fix regression caused by [2]
+>>> I consider [2] should be reverted, panels migrated to 
+>>> pre_enable_prev_first when needed, tested and the [2] applied again
+>>>
+>>> I have no objection about [2] and it should be done widely over the 
+>>> whole DSI controllers
+>>> and DSI Video panels.
+>>>
+>>> I also object about the Fixes tag of this patch, which is wrong, and 
+>>> Dmitry considers [1]
+>>> should be used but it's even more wrong since [2] really caused the 
+>>> regression.
+>>>
+>>> And if [2] was to correct one to use, it was pushed via the MSM tree 
+>>> so it couldn't be
+>>> applied via drm-misc-next-fixes, right ?
+>>>
+>>> [1] 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to 
+>>> alter bridge init order")
+>>> [2] 9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI 
+>>> hosts at modeset")
+>>>
+>>> Thanks,
+>>> Neil
+>>>
+>>>>
+>>>> Maxime
+>>>
+> 
