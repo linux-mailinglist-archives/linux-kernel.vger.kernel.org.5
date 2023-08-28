@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C500678A60F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B3878A612
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbjH1GtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 02:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
+        id S229498AbjH1Guz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 02:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjH1GtH (ORCPT
+        with ESMTP id S229500AbjH1Gur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 02:49:07 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9414C10D;
-        Sun, 27 Aug 2023 23:49:05 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37S6196F021198;
-        Mon, 28 Aug 2023 06:48:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ZkKeM4FclNAHL+N6xLWvTF+AySgNT0OlDIdrec2T3hM=;
- b=GZVD8uLF7iary1yUcjjQ82tYYf57VtUakrCt4jZ48c6DoRnNqhT1tmp7rP1MzKNg3jKe
- ngeAPdHPRA3r3sREWuLwE/GieHQIucQPIrdxZBDqLCGfx2s6mXt/gyJyYzmEG6kifD1I
- LXIXtH0uwrnEBlRshqA72M+DWUp6eMH0QVPfYIuoAP8aH1D/aDaeSHIVwaITw9XBCuvz
- Cg6KRBvELuewUzP5CYHPx5gR9GIBfxUgG16fMlHZIej667Ia3rlGjt5u6P4c2b7frN+d
- 8iMrshmoGgBwjEGjfn6VcaOsO5kjv4HwdNPushoQ+f0GBZaogzlwo+aciKdwbUFvg2aY iQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqa5ptv53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 06:48:49 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37S6ml4d025319
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 06:48:47 GMT
-Received: from [10.217.216.47] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 27 Aug
- 2023 23:48:42 -0700
-Message-ID: <ef1439f8-4a9b-53b4-34be-1229b39d2310@quicinc.com>
-Date:   Mon, 28 Aug 2023 12:18:30 +0530
+        Mon, 28 Aug 2023 02:50:47 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F351610D
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 23:50:44 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52a4b62c2f5so3742175a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 23:50:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693205443; x=1693810243;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rpIeeMqt1NLo0grI9YIWzRKrep1/kjmHHkzp8+x9//g=;
+        b=W6uJ30dKG/Das5v/TNC5c17ulSdSZNoQ1q/3ouSW50L/psreaDvU7HhTVYreF5mrtb
+         KDgpQVg6Esk3wLMRW1yvwAurQ/XS83OIUhrfbQqnm8zEciKRaSAXL35NGOz/KYSaLOCp
+         0BzT6ztFDB7b4LqBXP0PpcJg0MZgd5ya1rqz1c6MxcU9wjegY0lPYvCF1MzFSLMVQIlu
+         vuOQ9Xg0oHLt53r/uKZlc8njQi7wt+59M9bXxJtBlKq/2l21doKx26kBRTphlgYlp0jv
+         aFD7KjNyUzjYRdLHqFlbbTszP1Te+0HIhexT/RJtkW3dWtyjNvySVrPli8OuU9VdNTJE
+         Clyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693205443; x=1693810243;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rpIeeMqt1NLo0grI9YIWzRKrep1/kjmHHkzp8+x9//g=;
+        b=lJ64IvulyRX9YmxCTEyx9JfxnOqn64qbGY4ueO7WSKYO4+p3+/JeI2TQsm6awZBd02
+         0stIlgo0ySQcf36xpqfgnC786luFLd6qIDpwb7JTo2PqvkI3ng7QfzSI9MfxKvKWM5AA
+         21kUS9a+Pc6PNzxnjMDzcQba9xy4VufpVjuUX9CQbXDz98r2v4cI7TwzLpoNjAsyIMBc
+         n5VYo/Lgm8olEHEfAz39UipBo0Zym2l+xvLap4C/cwjP39jAB2D+uFtUImhrjKvXZdLw
+         8wypiLKJW/jtxqGeQqiQNZbRolYt1TH+d7Avj/WAE7hHk3MMN963BLTjkttqKjf0qKoO
+         t1jw==
+X-Gm-Message-State: AOJu0Yzn9e9OmU5xROdfuh9fI1xHOg+w/7XG0s0VlwSCTejhGcw7WVp6
+        ZR1KTkgG+WMEr3B0LUw7MPhav6bNRUlpv8KbWyg=
+X-Google-Smtp-Source: AGHT+IGurpQrZEy3X49gFow8zRA9SDTeDSsML8wtlTFlqUUBzEZvwp2Q6sQ+S6iZn45VltI8g5Hoag==
+X-Received: by 2002:a17:906:cc0e:b0:9a5:852f:10bd with SMTP id ml14-20020a170906cc0e00b009a5852f10bdmr4500123ejb.62.1693205443354;
+        Sun, 27 Aug 2023 23:50:43 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id 17-20020a170906059100b0098963eb0c3dsm4263545ejn.26.2023.08.27.23.50.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 23:50:42 -0700 (PDT)
+Message-ID: <d3c9e032-e20f-97e1-2d08-9bd87691d43c@linaro.org>
+Date:   Mon, 28 Aug 2023 08:50:41 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 4/6] clk: qcom: Use HW_CTRL_TRIGGER flag to switch
- video GDSC to HW mode
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] riscv: dts: allwinner: d1: Add PMU event node
+To:     Inochi Amaoto <inochiama@outlook.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Stuebner <heiko@sntech.de>, Wei Fu <wefu@redhat.com>,
+        Pei Chen <cp0613@linux.alibaba.com>,
+        Wenhan Chen <chenwenhan.cwh@alibaba-inc.com>,
+        Guo Ren <guoren@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230828-cupid-muck-130c4ef218f6@wendy>
+ <IA1PR20MB49533ABEA8426D21C00311F8BBE0A@IA1PR20MB4953.namprd20.prod.outlook.com>
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-CC:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Andy Gross" <agross@kernel.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        Taniya Das <tdas@qti.qualcomm.com>, <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>
-References: <20230816145741.1472721-1-abel.vesa@linaro.org>
- <20230816145741.1472721-5-abel.vesa@linaro.org>
- <2fc0d771-cee2-4826-a62a-56ed4bfad3a2@linaro.org>
- <ZOXiUzxfs1cj3SWT@linaro.org>
- <07e93a9d-69ac-41b7-aa21-b855b97bf801@linaro.org>
-From:   Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <07e93a9d-69ac-41b7-aa21-b855b97bf801@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <IA1PR20MB49533ABEA8426D21C00311F8BBE0A@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xUzvyVDW9nBF7cT3b23So4sTWTa4jiaO
-X-Proofpoint-GUID: xUzvyVDW9nBF7cT3b23So4sTWTa4jiaO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_03,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- suspectscore=0 clxscore=1011 mlxlogscore=721 lowpriorityscore=0
- spamscore=0 adultscore=0 phishscore=0 impostorscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280060
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/26/2023 4:17 PM, Konrad Dybcio wrote:
-> On 23.08.2023 12:41, Abel Vesa wrote:
->> On 23-08-16 19:56:46, Konrad Dybcio wrote:
->>> On 16.08.2023 16:57, Abel Vesa wrote:
->>>> From: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>
->>>> The current HW_CTRL flag switches the video GDSC to HW control mode as
->>>> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
->>>> give consumer drivers more control and switch the GDSC mode as and when
->>>> required.
->>>>
->>>> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
->>>> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
->>>>
->>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
->>>> ---
->>> Do we have any use for the HW_CTRL flag?
+On 28/08/2023 08:41, Inochi Amaoto wrote:
+>> On Mon, Aug 28, 2023 at 12:30:22PM +0800, Inochi Amaoto wrote:
+>>> D1 has several pmu events supported by opensbi.
+>>> These events can be used by perf for profiling.
 >>>
->>> Perhaps it should be renamed to HW_CTRL_ALWAYS?
->>>
->>> Or even better, *if and only if* that is necessary, add a common
->>> property like "always_hw_managed" to the genpd code?
+>>> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+>>> Link: https://dl.linux-sunxi.org/D1/Xuantie_C906_R1S0_User_Manual.pdf
+>>> Link: https://github.com/T-head-Semi/openc906/blob/main/C906_RTL_FACTORY/gen_rtl/pmu/rtl/aq_hpcp_top.v#L657
+>>> ---
+>>> changed from v3:
+>>> 1. remove wrong event mapping of 0x0000a
+>>> 2. add reference url of c906 events implementation (D1 only support events
+>>> described in R1S0 user manual, but event mapping is the same)
 >>
->> The HW_CTRL flag is still needed for the consumers that expect the GDSC
->> to be have the HW control bit set right after it gets enabled.
-> Guess the correct question here would be.. Are there any?
+>> Why'd you drop my ack? There's nothing here that'd invalidate it AFAICT.
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>>
+>> Thanks,
+>> Conor.
 > 
+> Sorry for this, I am not sure whether to preserve the ack.
+> Thank you for your ack again, and I will reserve this if no big change
+> happens.
 
-Yes, Display GDSC(mdss_gdsc) is required to be controlled always in HW 
-control mode when it is enabled.
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
-Thanks,
-Jagadeesh
+Best regards,
+Krzysztof
 
-> Konrad
