@@ -2,120 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C7B78B73C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDD778B73F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbjH1ScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
+        id S232453AbjH1Sc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbjH1ScQ (ORCPT
+        with ESMTP id S232151AbjH1Scs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:32:16 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF2AB9;
-        Mon, 28 Aug 2023 11:32:14 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1c26bb27feeso2557144fac.0;
-        Mon, 28 Aug 2023 11:32:14 -0700 (PDT)
+        Mon, 28 Aug 2023 14:32:48 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55EEBE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:32:42 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7927f24140eso115378539f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:32:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693247534; x=1693852334;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cYaqHdJguh90lafMBaasjNFY4ARPGILI9uHRSPA4ax0=;
-        b=WaN1WnyIpgFgFrSnbiC+pmTNY+frEr0GkIEolN7JLhgfXZKyX/rwMPyfAiAoieu30l
-         Ymxt5je2MV7wOdBK1S0z9WKckbxpHd0SOcuBurD6lLYFiwJp6BLrolHlbRi2pCuMVBPg
-         hby6/zEF36UVyG1uVrk50FPOnt8shrUC/g+QF40H+bb7M2xYS0GmqX/knUgIOn06zI0J
-         mY+bJJ/graQm8+XS8JeFhCIuLlz4jROAoGCak9TalWjfxrBVhdmvdD6eAclRP873Jgqc
-         uvb344LLVkgA+eDhNGMvs9uCbP9oLUGMae+hLA6TPDEcqQCH5zLxJ8OKHffQc/x0h78G
-         4Q7w==
+        d=joelfernandes.org; s=google; t=1693247562; x=1693852362;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vlH1F433gTQcUsEtLxKZUpHNUAMNhRhkYP0DbGmnz0M=;
+        b=nFrb0GNPs/wTaQ8nE94D2sT5zOH75np79gen6grO8f06qzDww14rcelBIZ8AryJmtx
+         ykbAJyUCuQOhz4qfjy3SCSQ6Zk7nW9JNYgSZn4AUNdQ4WCSRwZ8/RtnIKDm68XSqo3Zh
+         jcaqMY9hihGchweqJvZBajTMOa2WtIolhXueg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693247534; x=1693852334;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cYaqHdJguh90lafMBaasjNFY4ARPGILI9uHRSPA4ax0=;
-        b=YFvr4h3eblPofRWyFX7rkDEL5mXKFRzikt8s4IH5bekpQx3lZKkYHT+a8xSu0QKhnt
-         GE8jNzk2UdENWxcb7UxhH1iyTWUhcQ6JveB/3E+NdklOKukOCAJlLCPtJRbOjWPFwz+Z
-         Nv8QNC1Xhosws5qsbTa8v5iDrscXYTh9etofkLLDNObAylX3PTPKOuD5QiXTud5P2BUG
-         8hnc2Q1K3QfvT4RKFXMvt2p7u3/K84S9Ef7mRDEFs2P4r/dxSkfVnMO+eWUDbyhFcJXA
-         oa8+CVYwON+ZpZb5O6bokVaoJXHk4Ci2OT29ledz3DzRrCj0KmiYCzeUyaeMXegXzc6W
-         K/ww==
-X-Gm-Message-State: AOJu0Yy2m4Ea+wiSatEJglp0wyG3psIJRMUiLW9Bu65V+MBBy70VLagw
-        bpA6D3MTArbKMaVUke+Xkrht21Y95e+DMD5GR74A9rWN
-X-Google-Smtp-Source: AGHT+IHUPTewo1PRtYNHwfExAdqJdNNvUQ3kkD61NwAtILCe0SKA7kIknktEZiR1TY+D+exvLpENJ+3DM0TalR+wGPk=
-X-Received: by 2002:a05:6870:b624:b0:1c6:ac86:d56 with SMTP id
- cm36-20020a056870b62400b001c6ac860d56mr13305221oab.14.1693247533710; Mon, 28
- Aug 2023 11:32:13 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693247562; x=1693852362;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vlH1F433gTQcUsEtLxKZUpHNUAMNhRhkYP0DbGmnz0M=;
+        b=TBBhuOJK9t6WASFR0owrsTfcK0eVwzXol5GUtQcHad3BfkvslVfKQFi0qComlyitk1
+         gDML42YvD1j4JFi19zshoqXM8ZGEeOg062psWGi5TGrXs5oHWoO+U1p0q1Kpxb1HbV1s
+         My8mMqgM+q2TSJD0QUiN+jai9fBqn25oPBP6olfGvAbuHQMvpUBrhwwAjjtwvcPnMwWZ
+         /yI0t2Y6tHfzHbiPEK9BMxj9WPZBZJujhIcrdxor0ARc/x7ajVtSeWNQFGdgYwDA8EKj
+         f1TmelWcoe5KfO/9SqbQqq7wpcz+uwuaa1Lcg9KNFHiHCR7uCjI2ivU7rCjBEbHNon62
+         5wFA==
+X-Gm-Message-State: AOJu0Yxs8zSPBoplMYaYk/3foHaPRgXjJrf9Qs1xD9gLNExDJpLM4T93
+        CLLJydjOas+R2rdCTPrx2viCsA==
+X-Google-Smtp-Source: AGHT+IFBKaZS5q2OBtEoOJhIJR2uV7Jev+fXXzpRuiK0lkyhalyR6TxJ2IhnOS+W5HHEfqZbHItCdg==
+X-Received: by 2002:a5d:9718:0:b0:786:f47b:c063 with SMTP id h24-20020a5d9718000000b00786f47bc063mr17281322iol.21.1693247562178;
+        Mon, 28 Aug 2023 11:32:42 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id f7-20020a6bdd07000000b007922dc27aa6sm2677118ioc.24.2023.08.28.11.32.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 11:32:41 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 18:32:40 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kirill A Shutemov <kirill@shutemov.name>,
+        "Liam R. Howlett" <liam.howlett@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>
+Subject: Re: [PATCH v5 2/7] mm/mremap: Allow moves within the same VMA
+Message-ID: <20230828183240.GA1621761@google.com>
+References: <20230822015501.791637-1-joel@joelfernandes.org>
+ <20230822015501.791637-3-joel@joelfernandes.org>
+ <46196ba1-c54d-4c1d-954f-a0006602af99@lucifer.local>
 MIME-Version: 1.0
-Received: by 2002:a8a:1141:0:b0:4f0:1250:dd51 with HTTP; Mon, 28 Aug 2023
- 11:32:13 -0700 (PDT)
-In-Reply-To: <CAHk-=wgrsfz4HmJE2fgdHrh-xUuVqk7t08=k2scz8Cgix0hBwg@mail.gmail.com>
-References: <20230828170732.2526618-1-mjguzik@gmail.com> <CAHk-=wi1BO1KQaPOTzs7N4QrLh2UCiRuNnW0MPVTDLrRxZhDww@mail.gmail.com>
- <CAGudoHGGXNP5dBpZLadBUTVeD-JPEuikQXONruJzvnRJrp5+KA@mail.gmail.com> <CAHk-=wgrsfz4HmJE2fgdHrh-xUuVqk7t08=k2scz8Cgix0hBwg@mail.gmail.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Mon, 28 Aug 2023 20:32:13 +0200
-Message-ID: <CAGudoHF6T5SCE0Tn9=YUOV9ZcbQOSUe9Z=0tNbf72yvNqmP0oQ@mail.gmail.com>
-Subject: Re: [PATCH] x86: bring back rep movsq for user access on CPUs without ERMS
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46196ba1-c54d-4c1d-954f-a0006602af99@lucifer.local>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> On Mon, 28 Aug 2023 at 11:04, Mateusz Guzik <mjguzik@gmail.com> wrote:
->>
->> Other files do it (e.g., see __copy_user_nocache), but I have no
->> strong opinion myself.
->
-> So the __copy_user_nocache() thing is a case of that second issue -
-> see my comment about "some sane visually sensible grouping" of the
-> numbers.
->
-> Look closer, and you'll notice that they aren't actually sequential.
-> They are of the form XY where the X is the grouping, and Y is the
-> local number within that grouping.
->
-> That case also comes with a fair amount of comments about each group
-> for the extable entries.
->
-> But yes, we also do have a number of thos e"sequential labels". See
-> for example arch/x86/lib/getuser.S, where we then end up having all
-> the exception handling at the end because it is mostly shared across
-> cases. It's ugly.
->
-> We also have a lot of ugly cases that probably shouldn't use numbers
-> at all, eg csum_partial(). I think that goes back to some darker age
-> when things like "assembly is so trivial that it doesn't need any
-> fancy explanatory labels for code" was ok.
->
-> See also arch/x86/lib/memmove_64.S for similar horrors. I wonder if it
-> is a case of "use compiler to get almost the right code, then massage
-> things manually". Nasty, nasty. That should use legible names, not
-> random numbers.
->
-> I also suspect some people really thought that the numbers need to be
-> unique, and just didn't know to use local numbering.
->
+On Sun, Aug 27, 2023 at 10:21:14AM +0100, Lorenzo Stoakes wrote:
+[..] 
+> >
+> >  /*
+> >   * Flags used by change_protection().  For now we make it a bitmap so
+> > diff --git a/mm/mremap.c b/mm/mremap.c
+> > index 035fbf542a8f..06baa13bd2c8 100644
+> > --- a/mm/mremap.c
+> > +++ b/mm/mremap.c
+> > @@ -490,12 +490,13 @@ static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
+> >  }
+> >
+> >  /*
+> > - * A helper to check if a previous mapping exists. Required for
+> > - * move_page_tables() and realign_addr() to determine if a previous mapping
+> > - * exists before we can do realignment optimizations.
+> > + * A helper to check if aligning down is OK. The aligned address should fall
+> > + * on *no mapping*. For the stack moving down, that's a special move within
+> > + * the VMA that is created to span the source and destination of the move,
+> > + * so we make an exception for it.
+> >   */
+> >  static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_align,
+> > -			       unsigned long mask)
+> > +			    unsigned long mask, bool for_stack)
+> >  {
+> >  	unsigned long addr_masked = addr_to_align & mask;
+> >
+> > @@ -504,7 +505,7 @@ static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_ali
+> >  	 * of the corresponding VMA, we can't align down or we will destroy part
+> >  	 * of the current mapping.
+> >  	 */
+> > -	if (vma->vm_start != addr_to_align)
+> > +	if (!for_stack && vma->vm_start != addr_to_align)
+> >  		return false;
+> 
+> I'm a little confused by this exception, is it very specifically for the
+> shift_arg_pages() case where can assume we are safe to just discard the
+> lower portion of the stack?
+> 
+> Wouldn't the find_vma_intersection() line below fail in this case? I may be
+> missing something here :)
 
-That was bad example, I meant stuff was already *unique* in other
-files and it is sequential in some of them. In the very func I'm
-modifying here there is 0/1 followed by 2/3 pair already, so it looked
-like the convention to follow.
+I think you are right. In v4, this was not an issue as we did this:
 
-Anyhow this is bullshit detail I'm not going to argue about, you made
-your position clear and I see no problem adhering to it -- consider
-this bit patched in v2.
 
-Can we drop this aspect please ;)
++	if (!for_stack && vma->vm_start != addr_to_align)
++		return false;
++
++	cur = find_vma_prev(vma->vm_mm, vma->vm_start, &prev);
++	if (WARN_ON_ONCE(cur != vma))
++		return false;
 
--- 
-Mateusz Guzik <mjguzik gmail.com>
+Which essentially means this patch is a NOOP in v5 for the stack case.
+
+So what we really want is the VMA previous to @vma and whether than subsumes
+the masked address.
+
+Should I just change it back to the v4 version then as above for both patch 1
+and 2 and carry your review tags?
+
+This is also hard to test as it requires triggering the execve stack move
+case. Though it is not a bug (as it is essentially a NOOP), it still would be
+nice to test it. This is complicated by also the fact that mremap(2) itself
+does not allow overlapping moves. I could try to hardcode the unfavorable
+situation as I have done in the past to force that mremap warning.
+
+thanks,
+
+ - Joel
+
