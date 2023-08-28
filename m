@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DD878B768
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B24578B76F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbjH1SnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S233087AbjH1SoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233182AbjH1SnI (ORCPT
+        with ESMTP id S233104AbjH1SoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:43:08 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F27B191
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:43:01 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0c6d4d650so28102355ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:43:01 -0700 (PDT)
+        Mon, 28 Aug 2023 14:44:00 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28F1FF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:43:57 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a8506f5b73so2567853b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:43:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693248181; x=1693852981;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VGFv0KOXFwsFGIQtlmNnnSy3onBLZ4jPiluBZd43jh0=;
-        b=hUZVBfBLCfOF12nM/nYgd6df9d5R8HJiXNKOSMqu8RIUN6buEMM3WGbSYLxeOzjE3N
-         UobeVxtDcb/nHM5zkWqfnlhNhyk2vRcDRHANQHz8JFqevOk2SdwCanRGqlced4BUGl8y
-         hQQmcGZS8lNNT2Jve7F7YtLgz9ZTdxx0TDKbU=
+        d=gmail.com; s=20221208; t=1693248237; x=1693853037;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=txjj3QvXdwOFCbvITIz9cY62QS5vUcgoe9+VToaiTZA=;
+        b=aLj9ubWh9jaezxggBtluSGaJOlPEWdRUQZQrWfNm0HilGSgd2QspPAvPBTCsgU+Yr9
+         BGLj4/tCsIYb4wVILPpAsE6IWBB4EMsenOPnlXJy3mVfYkZ0gefu7BWJQxFUj8MrwqSz
+         jPLZfmIS7YCcWDjR+zQTdf94rIW6Z40XDnshxAU4bzyoE6rYNDr4igYMcgW/BxQZ+l7O
+         v8zPq/8PjkMDCqe8Vdi/Y1P64Zzd1QzA8GixjHGeiaMoKvMJzZgdTpkdG8Yc/Tmildbl
+         Nczfzr1mG28VzcRiZZvYW1wfD0Wkap/mBG1nZcm79snDu3GVzhNLKPThliwhZrLjsdKK
+         Z9Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693248181; x=1693852981;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VGFv0KOXFwsFGIQtlmNnnSy3onBLZ4jPiluBZd43jh0=;
-        b=RGh1xmWt6aSUZUK4yeOF2RysrPh+QJiUtE/FSPe4FqPXPMQicP/iqWacoT7XKFdOmh
-         b+mXvkV0tQwUUKCGPxyRSFeiaNmdCSO8p8Yz2984hgWYFuKjaFc/rilg9dPCoyzzPtSN
-         EosfLqaj+yGy8dIlL5AxTGe4BP5f0KZpE9MYOjl7p3G/SQ0jlaxO3Z1cDnI8STxPk3vg
-         KPk416hMfrCumhrWqu90Tg54nVigO+Z+wkRq+ToQLFrRDaeinELb/DYPeqD1veAZHCvd
-         QyqxIFoN1HjpfvEOhfokiuIEMkvR5aPmjbK5fkz/i6MUTSOTEodsHT+37756BiusorB8
-         0XPg==
-X-Gm-Message-State: AOJu0YyAIcOCCmlutTfs2thkBfKqwizJhU5Tozsn/nCsl+LVme9x5qUR
-        87/fWjcggteeVjgWm4cAYtaMDQ==
-X-Google-Smtp-Source: AGHT+IHfsRAH75dLN1s6nCHDyMpbBQ/eXRvdSO0cOOqA/mrXdTkhjPXt1U0oyo+eGP8cGzaqa9cR7A==
-X-Received: by 2002:a17:902:ea0f:b0:1b8:1bac:3782 with SMTP id s15-20020a170902ea0f00b001b81bac3782mr30568804plg.6.1693248180686;
-        Mon, 28 Aug 2023 11:43:00 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d11-20020a170902c18b00b001bb9d6b1baasm7693185pld.198.2023.08.28.11.42.58
+        d=1e100.net; s=20221208; t=1693248237; x=1693853037;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=txjj3QvXdwOFCbvITIz9cY62QS5vUcgoe9+VToaiTZA=;
+        b=CrFmE9Pt7W7ngEOR8PueoZ11RdKPO3znPA19G525PyFzfsTtYPOK2TxdpgU8wMX94l
+         tkH5eFYDaNue8qTBf8Y9z8ZkQH6vVgf1gEpdDUES8rCbjRUZipbn/ToPQIQveKKblqgI
+         BXYNSw+ji2xy6XThcMnMCRGOHZcMMQVgrksI816GEGEUm7L7mR72ZZIOGhmpFO5h+Gvv
+         hqxFd/qc7wj2K49z4ZIk6Tf67o/wpf4bw1y+3FfTthB+l/wKxdkgve/Rmt68aqp0CTOD
+         SsSH5ATs4oFr/Y2fTnO45ssiVi6HDDClVpgDlUhjK1oau3YUSjqJSVnkItA+gzA/Ypa6
+         kUhQ==
+X-Gm-Message-State: AOJu0YxfMVw7D84m/oBFogkexcA2T9WBdI514N+UDaNlWqEEEZrirD+r
+        Sa8/evspR25ZGLt9g5z/YhhA5ffwyYc=
+X-Google-Smtp-Source: AGHT+IE3pjNiFnyF0aParH6X3A6V84B2Q/ee3PteyQhfQBkKkjvQX7lAQUZKwVpQIQCQh5xdufCg6w==
+X-Received: by 2002:a05:6808:1511:b0:3a3:60f0:5e0c with SMTP id u17-20020a056808151100b003a360f05e0cmr15484236oiw.17.1693248236682;
+        Mon, 28 Aug 2023 11:43:56 -0700 (PDT)
+Received: from localhost ([2600:6c5e:2a00:5805:e348:56d4:5da8:636d])
+        by smtp.gmail.com with ESMTPSA id a27-20020a056808099b00b00396050dca14sm3669022oic.28.2023.08.28.11.43.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 11:42:59 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 11:42:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
+        Mon, 28 Aug 2023 11:43:55 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        David Windsor <dwindsor@gmail.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Marco Elver <elver@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Song Liu <song@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-hardening@vger.kernel.org
-Subject: [GIT PULL] hardening updates for v6.6-rc1
-Message-ID: <202308281138.5E9835A@keescook>
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH 00/12] bitmap: rework bitmap_{bit,}remap()
+Date:   Mon, 28 Aug 2023 11:43:40 -0700
+Message-Id: <20230828184353.5145-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,130 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This series adds a test, const-time optimizaton and fixes O(N^2)
+complexity problem for the functions. It's based on discussion in
+bitmap: optimize bitmap_remap() series [1], but there's much more work
+here, so I decided to give it a separete run, and don't name it as v2.
 
-Please pull these hardening updates for v6.6-rc1. As has become normal,
-changes are scattered around the tree (either explicitly maintainer
-Acked or for trivial stuff that went ignored). Details in the log below,
-and all have been in -next for a while.
+bitmap_remap() API has just one user in generic code, and few more in
+drivers, so this may look like an overkill. But the work gives ~10x
+better performance for a 1000-bit bitmaps, which is typical for nodemasks
+in major distros like Ubuntu.
 
-Thanks!
+Anyways, the work is done, so guys please review.
 
--Kees
+[1] https://lore.kernel.org/lkml/20230815235934.47782-1-yury.norov@gmail.com/T/
+Yury Norov (12):
+  bitmap: add find_nth_bit_from()
+  bitmap: add bitmap_weight_from()
+  bitmap: add test for bitmap_remap()
+  bitmap: add test for bitmap_bitremap()
+  bitmap: update comment for bitmap_{bit,}remap()
+  bitmap: add small_cont_nbits() optimization for bitmap_remap()
+  bitmap: add small_const_nbits() optimization for bitmap_bitremap()
+  bitmap: optiimze bitmap_bitremap()
+  bitmap: optimize bitmap_remap() when 'new' is empty map
+  bitmap: separate handling of identity and remapping parts in
+    bitmap_remap()
+  bitmap: defer calculating weight of 'new' in bitmap_remap()
+  bitmap: don't count bits from the beginning in bitmap_remap()
 
-The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
-
-  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.6-rc1
-
-for you to fetch changes up to 5f536ac6a5a7b67351e4e5ae4f9e1e57d31268e6:
-
-  LoadPin: Annotate struct dm_verity_loadpin_trusted_root_digest with __counted_by (2023-08-25 16:07:30 -0700)
-
-----------------------------------------------------------------
-hardening updates for v6.6-rc1
-
-- Carve out the new CONFIG_LIST_HARDENED as a more focused subset of
-  CONFIG_DEBUG_LIST (Marco Elver).
-
-- Fix kallsyms lookup failure under Clang LTO (Yonghong Song).
-
-- Clarify documentation for CONFIG_UBSAN_TRAP (Jann Horn).
-
-- Flexible array member conversion not carried in other tree (Gustavo
-  A. R. Silva).
-
-- Various strlcpy() and strncpy() removals not carried in other trees
-  (Azeem Shaikh, Justin Stitt).
-
-- Convert nsproxy.count to refcount_t (Elena Reshetova).
-
-- Add handful of __counted_by annotations not carried in other trees,
-  as well as an LKDTM test.
-
-- Fix build failure with gcc-plugins on GCC 14+.
-
-- Fix selftests to respect SKIP for signal-delivery tests.
-
-- Fix CFI warning for paravirt callback prototype.
-
-- Clarify documentation for seq_show_option_n() usage.
-
-----------------------------------------------------------------
-Azeem Shaikh (4):
-      soc: fsl: qe: Replace all non-returning strlcpy with strscpy
-      um: Remove strlcpy declaration
-      perf: Replace strlcpy with strscpy
-      EISA: Replace all non-returning strlcpy with strscpy
-
-Elena Reshetova (1):
-      nsproxy: Convert nsproxy.count to refcount_t
-
-Gustavo A. R. Silva (1):
-      alpha: Replace one-element array with flexible-array member
-
-Jann Horn (1):
-      ubsan: Clarify Kconfig text for CONFIG_UBSAN_TRAP
-
-Justin Stitt (2):
-      um: vector: refactor deprecated strncpy
-      um: refactor deprecated strncpy to memcpy
-
-Kees Cook (8):
-      seq_file: seq_show_option_n() is used for precise sizes
-      x86/paravirt: Fix tlb_remove_table function callback prototype warning
-      selftests/harness: Actually report SKIP for signal tests
-      gcc-plugins: Rename last_stmt() for GCC 14+
-      Compiler Attributes: counted_by: Adjust name and identifier expansion
-      lkdtm: Add FAM_BOUNDS test for __counted_by
-      integrity: Annotate struct ima_rule_opt_list with __counted_by
-      LoadPin: Annotate struct dm_verity_loadpin_trusted_root_digest with __counted_by
-
-Marco Elver (4):
-      compiler_types: Introduce the Clang __preserve_most function attribute
-      list_debug: Introduce inline wrappers for debug checks
-      list: Introduce CONFIG_LIST_HARDENED
-      hardening: Move BUG_ON_DATA_CORRUPTION to hardening options
-
-Yonghong Song (2):
-      kallsyms: Fix kallsyms_selftest failure
-      kallsyms: Change func signature for cleanup_symbol_name()
-
- arch/alpha/kernel/osf_sys.c                 |  2 +-
- arch/arm64/kvm/hyp/nvhe/Makefile            |  2 +-
- arch/arm64/kvm/hyp/nvhe/list_debug.c        |  8 ++-
- arch/um/drivers/mconsole_kern.c             |  4 +-
- arch/um/drivers/vector_user.c               |  4 +-
- arch/um/include/shared/user.h               |  1 -
- arch/um/os-Linux/umid.c                     |  6 +-
- arch/x86/kernel/paravirt.c                  |  8 ++-
- drivers/eisa/eisa-bus.c                     |  2 +-
- drivers/misc/lkdtm/bugs.c                   | 51 +++++++++++++++--
- drivers/soc/fsl/qe/qe.c                     |  4 +-
- include/linux/compiler_attributes.h         | 26 ++++-----
- include/linux/compiler_types.h              | 28 +++++++++
- include/linux/dm-verity-loadpin.h           |  2 +-
- include/linux/list.h                        | 89 +++++++++++++++++++++++++++--
- include/linux/nsproxy.h                     |  7 +--
- include/linux/seq_file.h                    |  7 ++-
- include/uapi/linux/stddef.h                 |  4 ++
- kernel/events/core.c                        |  6 +-
- kernel/kallsyms.c                           | 27 ++++-----
- kernel/kallsyms_selftest.c                  | 23 +-------
- kernel/nsproxy.c                            |  4 +-
- lib/Kconfig.debug                           | 21 +++----
- lib/Kconfig.ubsan                           | 10 +++-
- lib/Makefile                                |  2 +-
- lib/list_debug.c                            | 16 +++---
- scripts/gcc-plugins/gcc-common.h            |  4 ++
- security/Kconfig.hardening                  | 23 ++++++++
- security/integrity/ima/ima_policy.c         |  4 +-
- security/loadpin/loadpin.c                  |  3 +-
- tools/testing/selftests/kselftest_harness.h | 11 ++--
- 31 files changed, 286 insertions(+), 123 deletions(-)
+ include/linux/bitmap.h | 116 +++++++++++++++++++++++++++++++--
+ include/linux/find.h   |  37 +++++++++++
+ lib/bitmap.c           | 145 ++++++++++++++++++++---------------------
+ lib/find_bit.c         |  29 +++++++++
+ lib/test_bitmap.c      | 142 +++++++++++++++++++++++++++++++++++++++-
+ 5 files changed, 388 insertions(+), 81 deletions(-)
 
 -- 
-Kees Cook
+2.39.2
+
