@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9690A78A41F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0096A78A47B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjH1CEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S229567AbjH1CGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjH1CEK (ORCPT
+        with ESMTP id S229831AbjH1CGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:04:10 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1173BD8;
-        Sun, 27 Aug 2023 19:04:08 -0700 (PDT)
-Received: from [192.168.2.140] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D444B6603102;
-        Mon, 28 Aug 2023 03:04:04 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693188246;
-        bh=MdQMfqcGXQs/ECA9S10/I1u8YJnIw7F7oF5+4wksxLc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=K27UlQU54MNEWFjw4/pjdCvmw8V2jPGqr/EpQr3Hd+Xp8jK5ohJMz+n4u3Qc48Zoe
-         mM3e3FH69TukH+BRwi9G9Mf4Mqrnk3iK4KENJwPGzT/Z3jyyJAWHxzAii9OkBoJhPu
-         r0hiFq0RPtafLkeCHg6F+9GO6JZFH61NW+lt32f+q0PE0PG+jkkPm8/HABB3ozuwtA
-         kJaTYzp0HxP2cdv3hIqFOPrDu6iJkDJgmPBe9xPNb+1zBL6KrRVSbhbqteWM5mlr3u
-         ThOMGx0FsoaZN4F/Ooo3A0pnvisyoo5TdhenI4pMVO7k7uJs80xnHHn+mc36G+bYV2
-         rpQAsCYMtsSNA==
-Message-ID: <54b14ebe-b51b-2744-328d-2adcdaaf6d0e@collabora.com>
-Date:   Mon, 28 Aug 2023 05:04:02 +0300
+        Sun, 27 Aug 2023 22:06:21 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18371CFD;
+        Sun, 27 Aug 2023 19:06:03 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c0a4333e03so5775515ad.0;
+        Sun, 27 Aug 2023 19:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693188362; x=1693793162;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YKYYZEyVm+BiUsLPy2rcN9Etj63llB8S5gjiMWg5j8E=;
+        b=aPTb49Iyfk6AfzUdyFj1UD7ONuB3gucR0+MsrGm4JqAMsBawzcqP8AF0eaEVPuTxWm
+         FAt90WGRYTXisQEiyitP+Q9C4+sNsgHn5JzhyRqcPaE5d6KzKu/LtKQb/SbqkQaB+0OE
+         9NJFHXpR7jI7eRN1/ljYGdLHyqhVGd76lyAgbaIC1pW5VCCw2Ir7UW+PYOX2MDeQgsHU
+         qcZvCGrlYvWknB4hVU6OrApwe8Vt96NykrOft9f6leoLFXTruizy8CMrhAHIJr4S1EUc
+         CJ2p0YfsESQOKmJkpGuN5lS/OUl1nrPs+udbFLmjPL/eU3eCg1rxQt1wu7o80MmeDuvi
+         iV8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693188362; x=1693793162;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YKYYZEyVm+BiUsLPy2rcN9Etj63llB8S5gjiMWg5j8E=;
+        b=W7uVm5Wp8+q7cTgwj2r1paMuLJ8YWYoZDdc+cG38Sv04E2k5VUJkG8mkkf3dJlP1Y/
+         uueVZ8JPyVkmfeopPsAWCKzf+KttmvED+w27goaN60VB4i+G1/lLaK833v/aT9UebVb3
+         R6u4F8D8JT/xhG0XcINxUrdK6cw8y9RwCxBOmHtOGA/1l2yOHW+hTkITMb3jXeraYTvy
+         CmUWQJ1YxyCaq9qyoBTY43FY2RK+wqSVt77GG9164902p6m3JD9SwicM+lRYdCCMHXad
+         +q7rwVoDtbuVb9Si0YpN7ZWHNSXay+TXAe2uWRd4pMi+Beu4tD2nn3mEHzKkEZCEBb+E
+         C93Q==
+X-Gm-Message-State: AOJu0YxJz7uqLymmX6QH+58mVw9QI/mdFZKZThc4nYbuZg1iuRrPuCFY
+        53hz1oY9VzOLBy/fLXVxJtY=
+X-Google-Smtp-Source: AGHT+IE5+jf1rQRanBF2mhIbGjT/QURbaONE4gwwEnEIF16YRCLRbOzpogstUkxWv0CwKqPi+patUQ==
+X-Received: by 2002:a17:90a:64c9:b0:263:2312:60c2 with SMTP id i9-20020a17090a64c900b00263231260c2mr22013816pjm.3.1693188362363;
+        Sun, 27 Aug 2023 19:06:02 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id mg24-20020a17090b371800b002630c9d78aasm5834501pjb.5.2023.08.27.19.06.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 19:06:01 -0700 (PDT)
+Date:   Sun, 27 Aug 2023 19:05:58 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, nm@ti.com, srk@ti.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 0/5] Introduce IEP driver and packet timestamping
+ support
+Message-ID: <ZOwBBjNz4IiIEr4V@hoboy.vegasvil.org>
+References: <20230817114527.1585631-1-danishanwar@ti.com>
+ <20230821190732.62710f21@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
- uncanceled work
-Content-Language: en-US
-To:     Zheng Hacker <hackerzheng666@gmail.com>
-Cc:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com,
-        bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
-        security@kernel.org, 1395428693sheep@gmail.com,
-        alex000young@gmail.com, Collabora Kernel ML <kernel@collabora.com>
-References: <20230707092414.866760-1-zyytlz.wz@163.com>
- <8c8bd3ec-a5a4-32e4-45b5-ee16eeeac246@collabora.com>
- <CAJedcCxPG1mKtgB7AcJSwaQB_qvODObwq3gz6eM_1w777b2PfQ@mail.gmail.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <CAJedcCxPG1mKtgB7AcJSwaQB_qvODObwq3gz6eM_1w777b2PfQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821190732.62710f21@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,111 +86,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/23 11:20, Zheng Hacker wrote:
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> 于2023年8月23日周三 02:51写道：
+On Mon, Aug 21, 2023 at 07:07:32PM -0700, Jakub Kicinski wrote:
+> On Thu, 17 Aug 2023 17:15:22 +0530 MD Danish Anwar wrote:
+> > This series introduces Industrial Ethernet Peripheral (IEP) driver to
+> > support timestamping of ethernet packets and thus support PTP and PPS
+> > for PRU ICSSG ethernet ports.
 > 
->>
->> Hello Zheng,
->>
->> On 7/7/23 12:24, Zheng Wang wrote:
->>> In mtk_jpeg_probe, &jpeg->job_timeout_work is bound with
->>> mtk_jpeg_job_timeout_work. Then mtk_jpeg_dec_device_run
->>> and mtk_jpeg_enc_device_run may be called to start the
->>> work.
->>> If we remove the module which will call mtk_jpeg_remove
->>> to make cleanup, there may be a unfinished work. The
->>> possible sequence is as follows, which will cause a
->>> typical UAF bug.
->>>
->>> Fix it by canceling the work before cleanup in the mtk_jpeg_remove
->>>
->>> CPU0                  CPU1
->>>
->>>                     |mtk_jpeg_job_timeout_work
->>> mtk_jpeg_remove     |
->>>   v4l2_m2m_release  |
->>>     kfree(m2m_dev); |
->>>                     |
->>>                     | v4l2_m2m_get_curr_priv
->>>                     |   m2m_dev->curr_ctx //use
->>> Fixes: b2f0d2724ba4 ("[media] vcodec: mediatek: Add Mediatek JPEG Decoder Driver")
->>> Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
->>> ---
->>> - v2: use cancel_delayed_work_sync instead of cancel_delayed_work suggested by Kyrie.
->>> ---
->>>  drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
->>> index 0051f372a66c..6069ecf420b0 100644
->>> --- a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
->>> +++ b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
->>> @@ -1816,6 +1816,7 @@ static void mtk_jpeg_remove(struct platform_device *pdev)
->>>  {
->>>       struct mtk_jpeg_dev *jpeg = platform_get_drvdata(pdev);
->>>
->>> +     cancel_delayed_work_sync(&jpeg->job_timeout_work);
->>>       pm_runtime_disable(&pdev->dev);
->>>       video_unregister_device(jpeg->vdev);
->>>       v4l2_m2m_release(jpeg->m2m_dev);
->>
->> AFAICS, there is a fundamental problem here. The job_timeout_work uses
->> v4l2_m2m_get_curr_priv() and at the time when driver module is unloaded,
->> all the v4l contexts must be closed and released. Hence the
->> v4l2_m2m_get_curr_priv() shall return NULL and crash the kernel when
->> work is executed before cancel_delayed_work_sync().
->>
-> 
-> Hi Dmitry,
-> 
-> Thanks for your reply. I think you're right. As m2m_dev is freed in
-> v4l2_m2m_release,
-> the invoking in v4l2_m2m_get_curr_priv might cause either UAF or null
-> pointer dereference
-> bug. I am sure that context is closed when we invoke mtk_jpeg_remove.
-> But I'm not sure if
-> context is released when mtk_jpegdec_timeout_work running.
-> 
->> At the time when mtk_jpeg_remove() is invoked, there shall be no
->> job_timeout_work running in background because all jobs should be
->> completed before context is released. If you'll look at
->> v4l2_m2m_cancel_job(), you can see that it waits for the task completion
->> before closing context.
-> 
-> Yes, so I think the better way is to put the cancel_delayed_work_sync
-> invoking into
-> v4l2_m2m_ctx_release function?
+> Richard, let us know if you'd like to TAL or we're good to apply.
 
-The v4l2_m2m_ctx_release() already should wait for the job_timeout_work
-completion or for the interrupt fire. Apparently it doesn't work in
-yours case. You'll need to debug why v4l job or job_timeout_work is
-running after v4l2_m2m_ctx_release(), it shouldn't happen.
+Sorry, I was at the thermal spa last week and not reading email!
 
-The interrupt handler cancels job_timeout_work, you shouldn't need to
-flush the work.
+LGTM
 
-Technically, interrupt handler may race with job_timeout_work, but the
-timeout is set to 1 second and in practice should be difficult to
-trigger the race. The interrupt handler needs to be threaded, it should
-use cancel_delayed_work_sync() and check the return value of this function.
-
->>
->> You shouldn't be able to remove driver module while it has active/opened
->> v4l contexts. If you can do that, then this is yours bug that needs to
->> be fixed.
->>
->> In addition to this all, the job_timeout_work is initialized only for
->> the single-core JPEG device. I'd expect this patch should crash
->> multi-core JPEG devices.
->>
-> 
-> I think that's true. As I'm not familiar with the code here. Could you
-> please give me some advice about the patch?
-
-We'll need to understand why v4l2_m2m_ctx_release() doesn't work as
-expected before thinking about the patch.
-
--- 
-Best regards,
-Dmitry
-
+Thanks,
+Richard
