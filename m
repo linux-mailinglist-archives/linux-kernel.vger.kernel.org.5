@@ -2,52 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C78E678BB54
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 01:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2BA78BB57
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 01:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbjH1XEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 19:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
+        id S234313AbjH1XHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 19:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234022AbjH1XEE (ORCPT
+        with ESMTP id S234307AbjH1XHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 19:04:04 -0400
-Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CAF185
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:04:00 -0700 (PDT)
-Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-68bec4380edso4277749b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:04:00 -0700 (PDT)
+        Mon, 28 Aug 2023 19:07:23 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E78A11C
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:07:20 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bc9811558cso2782582a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693264039; x=1693868839;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4dJsPDY1wc6Rd90H+LVb1zFytXCquhEUSx6/I+3/14g=;
+        b=Oa2ZwoJwnZCfWBcxUj8ZCbNQk7C17nQ0scxd1+LdnO66zqlsvw1hi2HnyeJc2N+Mii
+         +eOaWAtYgQGsPjDOT2xfhzxjYA5WZxr1RJBFsmE1wc8f1uR8oHx50Xfno9iZ1wnIZSW3
+         1bN2Vma4GV67WOEqTA0qO9knJ1EbZ25JhzTidUC2kccd5kVli6CxjqgsHMCfWdCrO/7I
+         SpJihhZTkC2HYWBa9K959ihKSIV0JTPyZsxx1J4D8hh9CMg8ql74sBlNg09/6AIvmQ5O
+         zAHLf9gQThiyg5+vtvOE4DHfCjz0mfg4mt8qL+lcWIYF7ty+/TZj/mthR0ik75+geVTl
+         5VIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693263839; x=1693868639;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3EyD6GCV33sbZCnmHBElQNnpDXQGgPdQoSKWur56f0=;
-        b=YbZ24qeDzxLXdnEnK5R3uQ19w8RZtrD2xmv9RoI75tQHq3rrw39w5EEGBKZIeTB38l
-         lNxHKiUxocSi6VUvbJRmT1PGaIti1/zNTR4mU26upnw/hdzrjJtbxcdXL+9ue7ccMWMi
-         pp3RoWnwJLImAcNOTrq5/5TyzwSm/QzCbf/2j/RQLP0ox/D87uekCpvCybxq4jvvztBg
-         g30LUq34JnoaJWA0Xe+rNDuVmKPphy/4XPB/1byCheKMZfDw7kfdPYil9D2Jal1RWpdi
-         yvNDBnBqN46TGW85y3oEILUtJy1qeWQfcBZUmXFdbK5NeqY2jonS9DbKSJkAgqHWELvp
-         Vu0A==
-X-Gm-Message-State: AOJu0YzcrJEHqMs+WzA96z3KnTAMQjUo13kgsvwFDNxo4opEgLrhzlOB
-        BrKzp8LCe/+URKTjdGB4vBf6Ebl3sE85ng3MQtrFKI1vSWle
-X-Google-Smtp-Source: AGHT+IG0HW+vNihFOqgV4qEIL6QZcE4QeLNSfjjxp/5WphEN9H4NozDr6k9hpYRP0Dre90e1eu6RQxMFW9N501mHJOvW7IGCpeyQ
+        d=1e100.net; s=20221208; t=1693264039; x=1693868839;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4dJsPDY1wc6Rd90H+LVb1zFytXCquhEUSx6/I+3/14g=;
+        b=HUlv2iUjay34sC35jgt3CWXoou47LvCuKi1EcR+uEvDF+cye76Q6Y9rpppAiO1lwfK
+         H230lDhbBcOyFciCTOunurZSNdpo0QFAtenET2Rj6KRe5MStkRVxom9H7WLFRFUpIpOg
+         oickuNG+Ycha+CuIR0s0c7hciAt9xuc/irPa0FSnHmmr9dL9i+Qs0uvNEubWw4JrH+LA
+         1Oj2r6hIMn1Ap0cFUmKFTQ9CmcczwJ7nf0kBShixyt9nDHV3xM8OLthNzjs58PgVSKtE
+         gqBQJh9ybjlHV7zcP75Klzex4zgfhrvVhvuf2gEYibspvpAddPkaL3NAma1pno1klAOw
+         E4YQ==
+X-Gm-Message-State: AOJu0YzT0bGNuWNZ7iExAqw9WD0tFRB/YGEF5h7zqpxlqZeHIt+CCAAg
+        +G31evLZ+wz/B2nSc44cDczC4Ott1RWE+v2OyM0=
+X-Google-Smtp-Source: AGHT+IFYQPU3iSnzJWyMqBwsehjvz22SJJcmHsL8RCq/wY70zd2/tTPuoEQTnEgkj6+LXbBIl96tEeN3UVVyKr7sF9Y=
+X-Received: by 2002:a05:6871:6a1:b0:1b7:4521:14b6 with SMTP id
+ l33-20020a05687106a100b001b7452114b6mr13680225oao.5.1693264039496; Mon, 28
+ Aug 2023 16:07:19 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:4a12:b0:68a:6787:8413 with SMTP id
- do18-20020a056a004a1200b0068a67878413mr216060pfb.3.1693263839604; Mon, 28 Aug
- 2023 16:03:59 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 16:03:59 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000abba27060403b5bd@google.com>
-Subject: [syzbot] [btrfs?] possible deadlock in __btrfs_release_delayed_node (3)
-From:   syzbot <syzbot+a379155f07c134ea9879@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de> <CAHCN7xKasndWCkvU31Lqftty0Y1aDD370WJhaZio+_E4oajLrg@mail.gmail.com>
+In-Reply-To: <CAHCN7xKasndWCkvU31Lqftty0Y1aDD370WJhaZio+_E4oajLrg@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Mon, 28 Aug 2023 18:07:08 -0500
+Message-ID: <CAHCN7x+jhW9a+v6pc1bNUjj59gZQWvCT4TLSUZ6jKouGNUZasw@mail.gmail.com>
+Subject: Re: [PATCH 0/5] drm/bridge: samsung-dsim: fix various modes with
+ ADV7535 bridge
+To:     Michael Tretter <m.tretter@pengutronix.de>
+Cc:     Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@pengutronix.de,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,210 +81,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Aug 28, 2023 at 11:13=E2=80=AFAM Adam Ford <aford173@gmail.com> wro=
+te:
+>
+> On Mon, Aug 28, 2023 at 10:59=E2=80=AFAM Michael Tretter
+> <m.tretter@pengutronix.de> wrote:
+> >
+> > I tested the i.MX8M Nano EVK with the NXP supplied MIPI-DSI adapter,
+> > which uses an ADV7535 MIPI-DSI to HDMI converter. I found that a few
+> > modes were working, but in many modes my monitor stayed dark.
+> >
+> > This series fixes the Samsung DSIM bridge driver to bring up a few more
+> > modes:
+> >
+> > The driver read the rate of the PLL ref clock only during probe.
+> > However, if the clock is re-parented to the VIDEO_PLL, changes to the
+> > pixel clock have an effect on the PLL ref clock. Therefore, the driver
+> > must read and potentially update the PLL ref clock on every modeset.
+> >
+> > I also found that the rounding mode of the porches and active area has
+> > an effect on the working modes. If the driver rounds up instead of
+> > rounding down and be calculates them in Hz instead of kHz, more modes
+> > start to work.
+> >
+> > The following table shows the modes that were working in my test withou=
+t
+> > this patch set and the modes that are working now:
+> >
+> > |            Mode | Before | Now |
+> > | 1920x1080-60.00 | X      | X   |
+> > | 1920x1080-59.94 |        | X   |
+> > | 1920x1080-50.00 |        | X   |
+> > | 1920x1080-30.00 |        | X   |
+> > | 1920x1080-29.97 |        | X   |
+> > | 1920x1080-25.00 |        | X   |
+> > | 1920x1080-24.00 |        |     |
+> > | 1920x1080-23.98 |        |     |
+> > | 1680x1050-59.88 |        | X   |
+> > | 1280x1024-75.03 | X      | X   |
+> > | 1280x1024-60.02 | X      | X   |
+> > |  1200x960-59.99 |        | X   |
+> > |  1152x864-75.00 | X      | X   |
+> > |  1280x720-60.00 |        |     |
+> > |  1280x720-59.94 |        |     |
+> > |  1280x720-50.00 |        | X   |
+> > |  1024x768-75.03 |        | X   |
+> > |  1024x768-60.00 |        | X   |
+> > |   800x600-75.00 | X      | X   |
+> > |   800x600-60.32 | X      | X   |
+> > |   720x576-50.00 | X      | X   |
+> > |   720x480-60.00 |        |     |
+> > |   720x480-59.94 | X      |     |
+> > |   640x480-75.00 | X      | X   |
+> > |   640x480-60.00 |        | X   |
+> > |   640x480-59.94 |        | X   |
+> > |   720x400-70.08 |        |     |
+> >
+>
+> Nice!
+>
+> > Interestingly, the 720x480-59.94 mode stopped working. However, I am
+> > able to bring up the 720x480 modes by manually hacking the active area
+> > (hsa) to 40 and carefully adjusting the clocks, but something still
+> > seems to be off.
+>
+> Checkout my
+>
+> branch: https://github.com/aford173/linux/commit/183cf6d154afeb9b0300500b=
+09d7b8ec53047a12
+>
+> I found that certain resolutions don't properly round, and it seemed
+> to be related to the size of HFP.  HFP of 110 when divded between 4
+> lanes, required a round-up, but then I had to recalculate the rest of
+> the horizontal timings to compensate.
+>
+> I was going to push that as an RFC, but I will investigate your patch
+> series first.  With my small rounding correction, I am able to get
+> 720x480 and 720p on my imx8mp, but not my mini/nano, so I am hoping
+> your patch series fixes that issue for me.
+>
+> >
+> > Unfortunately, a few more modes are still not working at all. The NXP
+> > downstream kernel has some quirks to handle some of the modes especiall=
+y
+> > wrt. to the porches, but I cannot figure out, what the driver should
+> > actually do in these cases. Maybe there is still an error in the
+> > calculation of the porches and someone at NXP can chime in.
+>
+> Hopefully the comment in my above patch explains how the calculation
+> is corrected and adjusted to get some of the missing resolutions.
 
-syzbot found the following issue on:
+I tested my above patch and it works to sync 720p-60 on my imx8mp, but
+it doesn't seem to sync on my imx8mm using the same monitor and HDMI
+cable.  I don't have a DSI analyzer, so I might still send out a
+modified version of my patch as an RFC once this gets approved.
 
-HEAD commit:    93f5de5f648d Merge tag 'acpi-6.5-rc8' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f71340680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=a379155f07c134ea9879
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12684fa7a80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9f3fa40677fd/disk-93f5de5f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1aa00d4d7c58/vmlinux-93f5de5f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/361b7a3f46b3/bzImage-93f5de5f.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/696d28540778/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a379155f07c134ea9879@syzkaller.appspotmail.com
-
-BTRFS info (device loop2): enabling ssd optimizations
-======================================================
-WARNING: possible circular locking dependency detected
-6.5.0-rc7-syzkaller-00024-g93f5de5f648d #0 Not tainted
-------------------------------------------------------
-syz-executor.2/13257 is trying to acquire lock:
-ffff88801835c0c0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
-
-but task is already holding lock:
-ffff88802a5ab8e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_lock+0x3c/0x2a0 fs/btrfs/locking.c:198
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (btrfs-tree-00){++++}-{3:3}:
-       __lock_release kernel/locking/lockdep.c:5475 [inline]
-       lock_release+0x36f/0x9d0 kernel/locking/lockdep.c:5781
-       up_write+0x79/0x580 kernel/locking/rwsem.c:1625
-       btrfs_tree_unlock_rw fs/btrfs/locking.h:189 [inline]
-       btrfs_unlock_up_safe+0x179/0x3b0 fs/btrfs/locking.c:239
-       search_leaf fs/btrfs/ctree.c:1986 [inline]
-       btrfs_search_slot+0x2511/0x2f80 fs/btrfs/ctree.c:2230
-       btrfs_insert_empty_items+0x9c/0x180 fs/btrfs/ctree.c:4376
-       btrfs_insert_delayed_item fs/btrfs/delayed-inode.c:746 [inline]
-       btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:824 [inline]
-       __btrfs_commit_inode_delayed_items+0xd24/0x2410 fs/btrfs/delayed-inode.c:1111
-       __btrfs_run_delayed_items+0x1db/0x430 fs/btrfs/delayed-inode.c:1153
-       flush_space+0x269/0xe70 fs/btrfs/space-info.c:723
-       btrfs_async_reclaim_metadata_space+0x106/0x350 fs/btrfs/space-info.c:1078
-       process_one_work+0x92c/0x12c0 kernel/workqueue.c:2600
-       worker_thread+0xa63/0x1210 kernel/workqueue.c:2751
-       kthread+0x2b8/0x350 kernel/kthread.c:389
-       ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
--> #0 (&delayed_node->mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3142 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-       validate_chain kernel/locking/lockdep.c:3876 [inline]
-       __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
-       lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
-       __mutex_lock_common+0x1d8/0x2530 kernel/locking/mutex.c:603
-       __mutex_lock kernel/locking/mutex.c:747 [inline]
-       mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
-       __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
-       btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
-       __btrfs_run_delayed_items+0x2b5/0x430 fs/btrfs/delayed-inode.c:1156
-       btrfs_commit_transaction+0x859/0x2ff0 fs/btrfs/transaction.c:2276
-       btrfs_sync_file+0xf56/0x1330 fs/btrfs/file.c:1988
-       vfs_fsync_range fs/sync.c:188 [inline]
-       vfs_fsync fs/sync.c:202 [inline]
-       do_fsync fs/sync.c:212 [inline]
-       __do_sys_fsync fs/sync.c:220 [inline]
-       __se_sys_fsync fs/sync.c:218 [inline]
-       __x64_sys_fsync+0x196/0x1e0 fs/sync.c:218
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(btrfs-tree-00);
-                               lock(&delayed_node->mutex);
-                               lock(btrfs-tree-00);
-  lock(&delayed_node->mutex);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.2/13257:
- #0: ffff88802c1ee370 (btrfs_trans_num_writers){++++}-{0:0}, at: spin_unlock include/linux/spinlock.h:391 [inline]
- #0: ffff88802c1ee370 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0xb87/0xe00 fs/btrfs/transaction.c:287
- #1: ffff88802c1ee398 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0xbb2/0xe00 fs/btrfs/transaction.c:288
- #2: ffff88802a5ab8e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_lock+0x3c/0x2a0 fs/btrfs/locking.c:198
-
-stack backtrace:
-CPU: 0 PID: 13257 Comm: syz-executor.2 Not tainted 6.5.0-rc7-syzkaller-00024-g93f5de5f648d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2195
- check_prev_add kernel/locking/lockdep.c:3142 [inline]
- check_prevs_add kernel/locking/lockdep.c:3261 [inline]
- validate_chain kernel/locking/lockdep.c:3876 [inline]
- __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
- lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
- __mutex_lock_common+0x1d8/0x2530 kernel/locking/mutex.c:603
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
- __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
- btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
- __btrfs_run_delayed_items+0x2b5/0x430 fs/btrfs/delayed-inode.c:1156
- btrfs_commit_transaction+0x859/0x2ff0 fs/btrfs/transaction.c:2276
- btrfs_sync_file+0xf56/0x1330 fs/btrfs/file.c:1988
- vfs_fsync_range fs/sync.c:188 [inline]
- vfs_fsync fs/sync.c:202 [inline]
- do_fsync fs/sync.c:212 [inline]
- __do_sys_fsync fs/sync.c:220 [inline]
- __se_sys_fsync fs/sync.c:218 [inline]
- __x64_sys_fsync+0x196/0x1e0 fs/sync.c:218
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3ad047cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3ad12510c8 EFLAGS: 00000246 ORIG_RAX: 000000000000004a
-RAX: ffffffffffffffda RBX: 00007f3ad059bf80 RCX: 00007f3ad047cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 00007f3ad04c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f3ad059bf80 R15: 00007ffe56af92f8
- </TASK>
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -17)
-WARNING: CPU: 1 PID: 13257 at fs/btrfs/delayed-inode.c:1158 __btrfs_run_delayed_items+0x3d3/0x430 fs/btrfs/delayed-inode.c:1158
-Modules linked in:
-CPU: 1 PID: 13257 Comm: syz-executor.2 Not tainted 6.5.0-rc7-syzkaller-00024-g93f5de5f648d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:__btrfs_run_delayed_items+0x3d3/0x430 fs/btrfs/delayed-inode.c:1158
-Code: fe c1 38 c1 0f 8c b5 fc ff ff 48 89 ef e8 55 66 43 fe e9 a8 fc ff ff e8 9b 94 ea fd 48 c7 c7 60 93 4b 8b 89 de e8 0d ae b1 fd <0f> 0b e9 69 ff ff ff f3 0f 1e fa e8 7d 94 ea fd 48 8b 44 24 10 42
-RSP: 0018:ffffc9000c68f950 EFLAGS: 00010246
-RAX: 326a4566d401f400 RBX: 00000000ffffffef RCX: ffff888023010000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff888075a44ca0 R08: ffffffff8152d442 R09: 1ffff920018d1ea0
-R10: dffffc0000000000 R11: fffff520018d1ea1 R12: dffffc0000000000
-R13: ffff888075a44c78 R14: 0000000000000000 R15: ffff888075a44ca0
-FS:  00007f3ad12516c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa51c7f8290 CR3: 0000000022fbc000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_commit_transaction+0x859/0x2ff0 fs/btrfs/transaction.c:2276
- btrfs_sync_file+0xf56/0x1330 fs/btrfs/file.c:1988
- vfs_fsync_range fs/sync.c:188 [inline]
- vfs_fsync fs/sync.c:202 [inline]
- do_fsync fs/sync.c:212 [inline]
- __do_sys_fsync fs/sync.c:220 [inline]
- __se_sys_fsync fs/sync.c:218 [inline]
- __x64_sys_fsync+0x196/0x1e0 fs/sync.c:218
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3ad047cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3ad12510c8 EFLAGS: 00000246 ORIG_RAX: 000000000000004a
-RAX: ffffffffffffffda RBX: 00007f3ad059bf80 RCX: 00007f3ad047cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 00007f3ad04c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f3ad059bf80 R15: 00007ffe56af92f8
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+adam
+>
+> > Michael
+> >
+> > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+>
+> I'll try to reivew this week and respond with my feedback.
+>
+> adam
+>
+> > ---
+> > Marco Felsch (1):
+> >       drm/bridge: samsung-dsim: add more mipi-dsi device debug informat=
+ion
+> >
+> > Michael Tretter (4):
+> >       drm/bridge: samsung-dsim: reread ref clock before configuring PLL
+> >       drm/bridge: samsung-dsim: update PLL reference clock
+> >       drm/bridge: samsung-dsim: adjust porches by rounding up
+> >       drm/bridge: samsung-dsim: calculate porches in Hz
+> >
+> >  drivers/gpu/drm/bridge/samsung-dsim.c | 42 +++++++++++++++++++++++++--=
+--------
+> >  include/drm/bridge/samsung-dsim.h     |  1 +
+> >  2 files changed, 31 insertions(+), 12 deletions(-)
+> > ---
+> > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> > change-id: 20230818-samsung-dsim-42346444bce5
+> >
+> > Best regards,
+> > --
+> > Michael Tretter <m.tretter@pengutronix.de>
+> >
