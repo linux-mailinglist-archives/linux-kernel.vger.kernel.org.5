@@ -2,355 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DCA78B133
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 14:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D451378B12F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 14:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjH1M6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 08:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        id S231567AbjH1M6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 08:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbjH1M6a (ORCPT
+        with ESMTP id S230487AbjH1M6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 08:58:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBF1119
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 05:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693227462;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NOz0d+DONXgrsdDVPVVga2kkMlrujdq0Q46zC+MGPCs=;
-        b=ZY0d5RpuGEmyfsLaiiiI4+cgFZApCJ1U4xRDVceRBoqbtgNzuSxfIjztaap6BTV2f0sq0D
-        P3HJbGRJx5uNAXRa+hAARzTPp2VSEN0bu+WKuT9NcA1xQVX25/tlHpjwXeF9mmeymgVH16
-        4ZcirC3nJdReyszOXHm6qK1D/KyFTD8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-106-TR7YY8FuNDem5N5dKErxVQ-1; Mon, 28 Aug 2023 08:57:39 -0400
-X-MC-Unique: TR7YY8FuNDem5N5dKErxVQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D72183394A;
-        Mon, 28 Aug 2023 12:57:38 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D112F1121318;
-        Mon, 28 Aug 2023 12:57:36 +0000 (UTC)
-Date:   Mon, 28 Aug 2023 20:57:33 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
-        kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        x86@kernel.org, linux-riscv@lists.infradead.org,
-        akpm@linux-foundation.org, catalin.marinas@arm.com,
-        thunder.leizhen@huawei.com, dyoung@redhat.com, prudo@redhat.com
-Subject: Re: [PATCH 5/8] crash_core: add generic function to do reservation
-Message-ID: <ZOyZvawxNOSUJcsa@MiWiFi-R3L-srv>
-References: <20230827101128.70931-6-bhe@redhat.com>
- <202308272150.p3kRkMoF-lkp@intel.com>
+        Mon, 28 Aug 2023 08:58:11 -0400
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B12F11A;
+        Mon, 28 Aug 2023 05:58:08 -0700 (PDT)
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-573128cd77dso538905eaf.0;
+        Mon, 28 Aug 2023 05:58:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693227488; x=1693832288;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AcC0NwRtz8BRXXrALTbmTwDgHHxjiLSWqbQlSzdPqCI=;
+        b=P+J/zFlYxALRku/lmaVBc37/J8hasS/t/kfptHcYUpd1M3USP/IRLUhKVC21CJjhDw
+         fP0ZgyX7aKonQLPuXX2o5JujDi7V7tKaZFUYXNfNjDbYW9zXF5jv1AUgMbrL7WY71Fd0
+         2tllznmhQfhvcOxFpRYdtKKUaMbJyveok/r/TNiE/3fzt1dCN3HaPuCwzTR3XpOpUE7E
+         L1QGa8BDm3vyeZzNYHKnMHPu2a7gbBH+CcdZ/etIMjJBu5UjCWmzMCM/DqkP27Ehmcm2
+         Y+RAIXSJ6E2EnQpw4UxPFsa7jw5DxEQw9JvrXw+KAT6FQk0UtkkIMepss59fKL7Cu65y
+         cWPQ==
+X-Gm-Message-State: AOJu0YwWjdPZtoEzerKRMaA8QKURNHhmmdy1wrcV5LQoqCJY/w1JwxIk
+        BVe8MjKy43NpuRgyu2wXg5G/deaaKCYLCyfmrMk6rKyM+Jk=
+X-Google-Smtp-Source: AGHT+IHOTjYU+8aWo7ejeABgwwVL58psYEkU8H+PUodCCG8/9ZHjZnk2cLIyVx6aorNUAsVPFlgKhQWMFP57mALY27s=
+X-Received: by 2002:a4a:da10:0:b0:56e:6532:467a with SMTP id
+ e16-20020a4ada10000000b0056e6532467amr23436697oou.1.1693227487727; Mon, 28
+ Aug 2023 05:58:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202308272150.p3kRkMoF-lkp@intel.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 28 Aug 2023 14:57:53 +0200
+Message-ID: <CAJZ5v0jLOQhXnfE2z9OjmYOh=7MPtJ8=OSNSVVAoZ7=brRgqvg@mail.gmail.com>
+Subject: [GIT PULL] Power management updates for v6.6-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/27/23 at 09:53pm, kernel test robot wrote:
-> Hi Baoquan,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on tip/x86/core]
-> [also build test ERROR on powerpc/next powerpc/fixes linus/master v6.5-rc7]
-> [cannot apply to arm64/for-next/core next-20230825]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/crash_core-c-remove-unnecessary-parameter-of-function/20230827-181555
-> base:   tip/x86/core
-> patch link:    https://lore.kernel.org/r/20230827101128.70931-6-bhe%40redhat.com
-> patch subject: [PATCH 5/8] crash_core: add generic function to do reservation
-> config: csky-defconfig (https://download.01.org/0day-ci/archive/20230827/202308272150.p3kRkMoF-lkp@intel.com/config)
-> compiler: csky-linux-gcc (GCC) 13.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230827/202308272150.p3kRkMoF-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308272150.p3kRkMoF-lkp@intel.com/
+Hi Linus,
 
-Thanks for reporting this. The error is caused by patch 3:
-[PATCH 3/8] include/linux/kexec.h: move down crash_core.h including
+Please pull from the tag
 
-In this lkp's config, CONFIG_CRASH_CORE=y and CONFIG_KEXEC_CORE=n, the
-moving down of crash_core.h including will triger the error. I will
-think of another way to fix this.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-6.6-rc1
 
-> 
-> All errors (new ones prefixed by >>):
-> 
->      537 | void __weak arch_crash_save_vmcoreinfo(void)
->          |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:540:20: warning: no previous prototype for 'paddr_vmcoreinfo_note' [-Wmissing-prototypes]
->      540 | phys_addr_t __weak paddr_vmcoreinfo_note(void)
->          |                    ^~~~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c: In function 'crash_save_vmcoreinfo_init':
->    kernel/crash_core.c:554:45: error: 'VMCOREINFO_NOTE_SIZE' undeclared (first use in this function)
->      554 |         vmcoreinfo_note = alloc_pages_exact(VMCOREINFO_NOTE_SIZE,
->          |                                             ^~~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:563:9: error: implicit declaration of function 'VMCOREINFO_OSRELEASE' [-Werror=implicit-function-declaration]
->      563 |         VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
->          |         ^~~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:564:9: error: implicit declaration of function 'VMCOREINFO_BUILD_ID' [-Werror=implicit-function-declaration]
->      564 |         VMCOREINFO_BUILD_ID();
->          |         ^~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:565:9: error: implicit declaration of function 'VMCOREINFO_PAGESIZE' [-Werror=implicit-function-declaration]
->      565 |         VMCOREINFO_PAGESIZE(PAGE_SIZE);
->          |         ^~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:567:9: error: implicit declaration of function 'VMCOREINFO_SYMBOL' [-Werror=implicit-function-declaration]
->      567 |         VMCOREINFO_SYMBOL(init_uts_ns);
->          |         ^~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:568:9: error: implicit declaration of function 'VMCOREINFO_OFFSET' [-Werror=implicit-function-declaration]
->      568 |         VMCOREINFO_OFFSET(uts_namespace, name);
->          |         ^~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:568:27: error: 'uts_namespace' undeclared (first use in this function)
->      568 |         VMCOREINFO_OFFSET(uts_namespace, name);
->          |                           ^~~~~~~~~~~~~
->    kernel/crash_core.c:568:42: error: 'name' undeclared (first use in this function)
->      568 |         VMCOREINFO_OFFSET(uts_namespace, name);
->          |                                          ^~~~
->    kernel/crash_core.c:571:9: error: implicit declaration of function 'VMCOREINFO_SYMBOL_ARRAY' [-Werror=implicit-function-declaration]
->      571 |         VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
->          |         ^~~~~~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:588:9: error: implicit declaration of function 'VMCOREINFO_STRUCT_SIZE' [-Werror=implicit-function-declaration]
->      588 |         VMCOREINFO_STRUCT_SIZE(page);
->          |         ^~~~~~~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:588:32: error: 'page' undeclared (first use in this function)
->      588 |         VMCOREINFO_STRUCT_SIZE(page);
->          |                                ^~~~
->    kernel/crash_core.c:589:32: error: 'pglist_data' undeclared (first use in this function)
->      589 |         VMCOREINFO_STRUCT_SIZE(pglist_data);
->          |                                ^~~~~~~~~~~
->    kernel/crash_core.c:590:32: error: 'zone' undeclared (first use in this function)
->      590 |         VMCOREINFO_STRUCT_SIZE(zone);
->          |                                ^~~~
->    kernel/crash_core.c:591:32: error: 'free_area' undeclared (first use in this function)
->      591 |         VMCOREINFO_STRUCT_SIZE(free_area);
->          |                                ^~~~~~~~~
->    kernel/crash_core.c:592:32: error: 'list_head' undeclared (first use in this function)
->      592 |         VMCOREINFO_STRUCT_SIZE(list_head);
->          |                                ^~~~~~~~~
->    kernel/crash_core.c:593:9: error: implicit declaration of function 'VMCOREINFO_SIZE' [-Werror=implicit-function-declaration]
->      593 |         VMCOREINFO_SIZE(nodemask_t);
->          |         ^~~~~~~~~~~~~~~
->    kernel/crash_core.c:593:25: error: expected expression before 'nodemask_t'
->      593 |         VMCOREINFO_SIZE(nodemask_t);
->          |                         ^~~~~~~~~~
->    kernel/crash_core.c:594:33: error: 'flags' undeclared (first use in this function); did you mean 'fls'?
->      594 |         VMCOREINFO_OFFSET(page, flags);
->          |                                 ^~~~~
->          |                                 fls
->    kernel/crash_core.c:595:33: error: '_refcount' undeclared (first use in this function); did you mean 'seqcount'?
->      595 |         VMCOREINFO_OFFSET(page, _refcount);
->          |                                 ^~~~~~~~~
->          |                                 seqcount
->    kernel/crash_core.c:596:33: error: 'mapping' undeclared (first use in this function)
->      596 |         VMCOREINFO_OFFSET(page, mapping);
->          |                                 ^~~~~~~
->    kernel/crash_core.c:597:33: error: 'lru' undeclared (first use in this function)
->      597 |         VMCOREINFO_OFFSET(page, lru);
->          |                                 ^~~
->    kernel/crash_core.c:598:33: error: '_mapcount' undeclared (first use in this function); did you mean 'nmi_count'?
->      598 |         VMCOREINFO_OFFSET(page, _mapcount);
->          |                                 ^~~~~~~~~
->          |                                 nmi_count
->    kernel/crash_core.c:599:33: error: 'private' undeclared (first use in this function); did you mean 'PG_private'?
->      599 |         VMCOREINFO_OFFSET(page, private);
->          |                                 ^~~~~~~
->          |                                 PG_private
->    kernel/crash_core.c:600:27: error: 'folio' undeclared (first use in this function)
->      600 |         VMCOREINFO_OFFSET(folio, _folio_dtor);
->          |                           ^~~~~
->    kernel/crash_core.c:600:34: error: '_folio_dtor' undeclared (first use in this function)
->      600 |         VMCOREINFO_OFFSET(folio, _folio_dtor);
->          |                                  ^~~~~~~~~~~
->    kernel/crash_core.c:601:34: error: '_folio_order' undeclared (first use in this function); did you mean 'folio_order'?
->      601 |         VMCOREINFO_OFFSET(folio, _folio_order);
->          |                                  ^~~~~~~~~~~~
->          |                                  folio_order
->    kernel/crash_core.c:602:33: error: 'compound_head' undeclared (first use in this function); did you mean '_compound_head'?
->      602 |         VMCOREINFO_OFFSET(page, compound_head);
->          |                                 ^~~~~~~~~~~~~
->          |                                 _compound_head
->    kernel/crash_core.c:603:40: error: 'node_zones' undeclared (first use in this function); did you mean 'node_zonelist'?
->      603 |         VMCOREINFO_OFFSET(pglist_data, node_zones);
->          |                                        ^~~~~~~~~~
->          |                                        node_zonelist
->    kernel/crash_core.c:604:40: error: 'nr_zones' undeclared (first use in this function)
->      604 |         VMCOREINFO_OFFSET(pglist_data, nr_zones);
->          |                                        ^~~~~~~~
-> >> kernel/crash_core.c:606:40: error: 'node_mem_map' undeclared (first use in this function); did you mean 'node_remap'?
->      606 |         VMCOREINFO_OFFSET(pglist_data, node_mem_map);
->          |                                        ^~~~~~~~~~~~
->          |                                        node_remap
->    kernel/crash_core.c:608:40: error: 'node_start_pfn' undeclared (first use in this function)
->      608 |         VMCOREINFO_OFFSET(pglist_data, node_start_pfn);
->          |                                        ^~~~~~~~~~~~~~
->    kernel/crash_core.c:609:40: error: 'node_spanned_pages' undeclared (first use in this function); did you mean 'zone_managed_pages'?
->      609 |         VMCOREINFO_OFFSET(pglist_data, node_spanned_pages);
->          |                                        ^~~~~~~~~~~~~~~~~~
->          |                                        zone_managed_pages
->    kernel/crash_core.c:610:40: error: 'node_id' undeclared (first use in this function)
->      610 |         VMCOREINFO_OFFSET(pglist_data, node_id);
->          |                                        ^~~~~~~
->    kernel/crash_core.c:612:33: error: 'vm_stat' undeclared (first use in this function); did you mean 'vfs_stat'?
->      612 |         VMCOREINFO_OFFSET(zone, vm_stat);
->          |                                 ^~~~~~~
->          |                                 vfs_stat
->    kernel/crash_core.c:613:33: error: 'spanned_pages' undeclared (first use in this function); did you mean 'shake_page'?
->      613 |         VMCOREINFO_OFFSET(zone, spanned_pages);
->          |                                 ^~~~~~~~~~~~~
->          |                                 shake_page
->    kernel/crash_core.c:614:38: error: 'free_list' undeclared (first use in this function); did you mean 'kfree_link'?
->      614 |         VMCOREINFO_OFFSET(free_area, free_list);
->          |                                      ^~~~~~~~~
->          |                                      kfree_link
->    kernel/crash_core.c:615:38: error: 'next' undeclared (first use in this function); did you mean 'net'?
->      615 |         VMCOREINFO_OFFSET(list_head, next);
->          |                                      ^~~~
->          |                                      net
->    kernel/crash_core.c:616:38: error: 'prev' undeclared (first use in this function)
->      616 |         VMCOREINFO_OFFSET(list_head, prev);
->          |                                      ^~~~
->    kernel/crash_core.c:617:27: error: 'vmap_area' undeclared (first use in this function)
->      617 |         VMCOREINFO_OFFSET(vmap_area, va_start);
->          |                           ^~~~~~~~~
->    kernel/crash_core.c:617:38: error: 'va_start' undeclared (first use in this function); did you mean '_start'?
->      617 |         VMCOREINFO_OFFSET(vmap_area, va_start);
->          |                                      ^~~~~~~~
->          |                                      _start
->    kernel/crash_core.c:618:38: error: 'list' undeclared (first use in this function)
->      618 |         VMCOREINFO_OFFSET(vmap_area, list);
->          |                                      ^~~~
->    kernel/crash_core.c:619:9: error: implicit declaration of function 'VMCOREINFO_LENGTH' [-Werror=implicit-function-declaration]
->      619 |         VMCOREINFO_LENGTH(zone.free_area, MAX_ORDER + 1);
->          |         ^~~~~~~~~~~~~~~~~
->    kernel/crash_core.c:622:9: error: implicit declaration of function 'VMCOREINFO_NUMBER' [-Werror=implicit-function-declaration]
->      622 |         VMCOREINFO_NUMBER(NR_FREE_PAGES);
->          |         ^~~~~~~~~~~~~~~~~
->    cc1: some warnings being treated as errors
-> 
-> 
-> vim +606 kernel/crash_core.c
-> 
-> 692f66f26a4c19d Hari Bathini            2017-05-08  545  
-> 692f66f26a4c19d Hari Bathini            2017-05-08  546  static int __init crash_save_vmcoreinfo_init(void)
-> 692f66f26a4c19d Hari Bathini            2017-05-08  547  {
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  548  	vmcoreinfo_data = (unsigned char *)get_zeroed_page(GFP_KERNEL);
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  549  	if (!vmcoreinfo_data) {
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  550  		pr_warn("Memory allocation for vmcoreinfo_data failed\n");
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  551  		return -ENOMEM;
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  552  	}
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  553  
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  554  	vmcoreinfo_note = alloc_pages_exact(VMCOREINFO_NOTE_SIZE,
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  555  						GFP_KERNEL | __GFP_ZERO);
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  556  	if (!vmcoreinfo_note) {
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  557  		free_page((unsigned long)vmcoreinfo_data);
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  558  		vmcoreinfo_data = NULL;
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  559  		pr_warn("Memory allocation for vmcoreinfo_note failed\n");
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  560  		return -ENOMEM;
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  561  	}
-> 203e9e41219b4e7 Xunlei Pang             2017-07-12  562  
-> 692f66f26a4c19d Hari Bathini            2017-05-08  563  	VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
-> 44e8a5e9120bf4f Stephen Boyd            2021-07-07  564  	VMCOREINFO_BUILD_ID();
-> 692f66f26a4c19d Hari Bathini            2017-05-08  565  	VMCOREINFO_PAGESIZE(PAGE_SIZE);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  566  
-> 692f66f26a4c19d Hari Bathini            2017-05-08  567  	VMCOREINFO_SYMBOL(init_uts_ns);
-> ca4a9241cc5e718 Alexander Egorenkov     2020-12-15  568  	VMCOREINFO_OFFSET(uts_namespace, name);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  569  	VMCOREINFO_SYMBOL(node_online_map);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  570  #ifdef CONFIG_MMU
-> eff4345e7fba0aa Omar Sandoval           2018-08-21  571  	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  572  #endif
-> 692f66f26a4c19d Hari Bathini            2017-05-08  573  	VMCOREINFO_SYMBOL(_stext);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  574  	VMCOREINFO_SYMBOL(vmap_area_list);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  575  
-> a9ee6cf5c60ed10 Mike Rapoport           2021-06-28  576  #ifndef CONFIG_NUMA
-> 692f66f26a4c19d Hari Bathini            2017-05-08  577  	VMCOREINFO_SYMBOL(mem_map);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  578  	VMCOREINFO_SYMBOL(contig_page_data);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  579  #endif
-> 692f66f26a4c19d Hari Bathini            2017-05-08  580  #ifdef CONFIG_SPARSEMEM
-> a0b1280368d1e91 Kirill A. Shutemov      2018-01-12  581  	VMCOREINFO_SYMBOL_ARRAY(mem_section);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  582  	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  583  	VMCOREINFO_STRUCT_SIZE(mem_section);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  584  	VMCOREINFO_OFFSET(mem_section, section_mem_map);
-> 4f5aecdff25f59f Pingfan Liu             2021-06-15  585  	VMCOREINFO_NUMBER(SECTION_SIZE_BITS);
-> 1d50e5d0c505244 Bhupesh Sharma          2020-05-14  586  	VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  587  #endif
-> 692f66f26a4c19d Hari Bathini            2017-05-08  588  	VMCOREINFO_STRUCT_SIZE(page);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  589  	VMCOREINFO_STRUCT_SIZE(pglist_data);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  590  	VMCOREINFO_STRUCT_SIZE(zone);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  591  	VMCOREINFO_STRUCT_SIZE(free_area);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  592  	VMCOREINFO_STRUCT_SIZE(list_head);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  593  	VMCOREINFO_SIZE(nodemask_t);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  594  	VMCOREINFO_OFFSET(page, flags);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  595  	VMCOREINFO_OFFSET(page, _refcount);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  596  	VMCOREINFO_OFFSET(page, mapping);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  597  	VMCOREINFO_OFFSET(page, lru);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  598  	VMCOREINFO_OFFSET(page, _mapcount);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  599  	VMCOREINFO_OFFSET(page, private);
-> 1c5509be58f636a Matthew Wilcox (Oracle  2023-01-11  600) 	VMCOREINFO_OFFSET(folio, _folio_dtor);
-> 1c5509be58f636a Matthew Wilcox (Oracle  2023-01-11  601) 	VMCOREINFO_OFFSET(folio, _folio_order);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  602  	VMCOREINFO_OFFSET(page, compound_head);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  603  	VMCOREINFO_OFFSET(pglist_data, node_zones);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  604  	VMCOREINFO_OFFSET(pglist_data, nr_zones);
-> 43b02ba93b25b1c Mike Rapoport           2021-06-28  605  #ifdef CONFIG_FLATMEM
-> 692f66f26a4c19d Hari Bathini            2017-05-08 @606  	VMCOREINFO_OFFSET(pglist_data, node_mem_map);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  607  #endif
-> 692f66f26a4c19d Hari Bathini            2017-05-08  608  	VMCOREINFO_OFFSET(pglist_data, node_start_pfn);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  609  	VMCOREINFO_OFFSET(pglist_data, node_spanned_pages);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  610  	VMCOREINFO_OFFSET(pglist_data, node_id);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  611  	VMCOREINFO_OFFSET(zone, free_area);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  612  	VMCOREINFO_OFFSET(zone, vm_stat);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  613  	VMCOREINFO_OFFSET(zone, spanned_pages);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  614  	VMCOREINFO_OFFSET(free_area, free_list);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  615  	VMCOREINFO_OFFSET(list_head, next);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  616  	VMCOREINFO_OFFSET(list_head, prev);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  617  	VMCOREINFO_OFFSET(vmap_area, va_start);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  618  	VMCOREINFO_OFFSET(vmap_area, list);
-> 23baf831a32c04f Kirill A. Shutemov      2023-03-15  619  	VMCOREINFO_LENGTH(zone.free_area, MAX_ORDER + 1);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  620  	log_buf_vmcoreinfo_setup();
-> 692f66f26a4c19d Hari Bathini            2017-05-08  621  	VMCOREINFO_LENGTH(free_area.free_list, MIGRATE_TYPES);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  622  	VMCOREINFO_NUMBER(NR_FREE_PAGES);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  623  	VMCOREINFO_NUMBER(PG_lru);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  624  	VMCOREINFO_NUMBER(PG_private);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  625  	VMCOREINFO_NUMBER(PG_swapcache);
-> 1cbf29da3628b66 Petr Tesarik            2018-04-13  626  	VMCOREINFO_NUMBER(PG_swapbacked);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  627  	VMCOREINFO_NUMBER(PG_slab);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  628  #ifdef CONFIG_MEMORY_FAILURE
-> 692f66f26a4c19d Hari Bathini            2017-05-08  629  	VMCOREINFO_NUMBER(PG_hwpoison);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  630  #endif
-> 692f66f26a4c19d Hari Bathini            2017-05-08  631  	VMCOREINFO_NUMBER(PG_head_mask);
-> 6e292b9be7f4358 Matthew Wilcox          2018-06-07  632  #define PAGE_BUDDY_MAPCOUNT_VALUE	(~PG_buddy)
-> 692f66f26a4c19d Hari Bathini            2017-05-08  633  	VMCOREINFO_NUMBER(PAGE_BUDDY_MAPCOUNT_VALUE);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  634  #ifdef CONFIG_HUGETLB_PAGE
-> 692f66f26a4c19d Hari Bathini            2017-05-08  635  	VMCOREINFO_NUMBER(HUGETLB_PAGE_DTOR);
-> e04b742f74c2362 David Hildenbrand       2019-03-05  636  #define PAGE_OFFLINE_MAPCOUNT_VALUE	(~PG_offline)
-> e04b742f74c2362 David Hildenbrand       2019-03-05  637  	VMCOREINFO_NUMBER(PAGE_OFFLINE_MAPCOUNT_VALUE);
-> 692f66f26a4c19d Hari Bathini            2017-05-08  638  #endif
-> 692f66f26a4c19d Hari Bathini            2017-05-08  639  
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-> 
+with top-most commit 422ec6fe2704593c87c14a8ef296d92f6b368c53
 
+ Merge tag 'opp-updates-6.6' of
+git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm
+
+on top of commit 706a741595047797872e669b3101429ab8d378ef
+
+ Linux 6.5-rc7
+
+to receive power management updates for 6.6-rc1.
+
+These rework cpuidle governors to call tick_nohz_get_sleep_length() less
+often and fix one of them, rework hibernation to avoid storing pages
+filled with zeros in hibernation images, switch over some cpufreq
+drivers to use void remove callbacks, fix and clean up multiple
+cpufreq drivers, fix the devfreq core, update the cpupower utility and
+make other assorted improvements.
+
+Specifics:
+
+ - Rework the menu and teo cpuidle governors to avoid calling
+   tick_nohz_get_sleep_length(), which is likely to become quite
+   expensive going forward, too often and improve making decisions
+   regarding whether or not to stop the scheduler tick in the teo
+   governor (Rafael Wysocki).
+
+ - Improve the performance of cpufreq_stats_create_table() in some
+   cases (Liao Chang).
+
+ - Fix two issues in the amd-pstate-ut cpufreq driver (Swapnil Sapkal).
+
+ - Use clamp() helper macro to improve the code readability in
+   cpufreq_verify_within_limits() (Liao Chang).
+
+ - Set stale CPU frequency to minimum in intel_pstate (Doug Smythies).
+
+ - Migrate cpufreq drivers for various platforms to use void remove
+   callback (Yangtao Li).
+
+ - Add online/offline/exit hooks for Tegra driver (Sumit Gupta).
+
+ - Explicitly include correct DT includes in cpufreq (Rob Herring).
+
+ - Frequency domain updates for qcom-hw driver (Neil Armstrong).
+
+ - Modify AMD pstate driver to return the highest_perf value (Meng Li).
+
+ - Generic cleanups for cppc, mediatek and powernow driver (Liao Chang,
+   Konrad Dybcio).
+
+ - Add more platforms to cpufreq-arm driver's blocklist (AngeloGioacchino
+   Del Regno and Konrad Dybcio).
+
+ - brcmstb-avs-cpufreq: Fix -Warray-bounds bug (Gustavo A. R. Silva).
+
+ - Add device PM helpers to allow a device to remain powered-on during
+   system-wide transitions (Ulf Hansson).
+
+ - Rework hibernation memory snapshotting to avoid storing pages filled
+   with zeros in hibernation image files (Brian Geffon).
+
+ - Add check to make sure that CPU latency QoS constraints do not use
+   negative values (Clive Lin).
+
+ - Optimize rp->domains memory allocation in the Intel RAPL power
+   capping driver (xiongxin).
+
+ - Remove recursion while parsing zones in the arm_scmi power capping
+   driver (Cristian Marussi).
+
+ - Fix memory leak in devfreq_dev_release() (Boris Brezillon).
+
+ - Rewrite devfreq_monitor_start() kerneldoc comment (Manivannan
+   Sadhasivam).
+
+ - Explicitly include correct DT includes in devfreq (Rob Herring).
+
+ - Remove unused pm_runtime_update_max_time_suspended() extern
+   declaration (YueHaibing).
+
+ - Add turbo-boost support to cpupower (Wyes Karny).
+
+ - Add support for amd_pstate mode change to cpupower (Wyes Karny).
+
+ - Fix 'cpupower idle_set' command to accept only numeric values of
+   arguments (Likhitha Korrapati).
+
+ - Clean up OPP code and add new frequency related APIs to it (Viresh
+   Kumar, Manivannan Sadhasivam).
+
+ - Convert ti cpufreq/opp bindings to json schema (Nishanth Menon).
+
+Thanks!
+
+
+---------------
+
+AngeloGioacchino Del Regno (1):
+      cpufreq: blocklist MSM8998 in cpufreq-dt-platdev
+
+Ben Hutchings (1):
+      cpupower: Bump soname version
+
+Boris Brezillon (1):
+      PM / devfreq: Fix leak in devfreq_dev_release()
+
+Brian Geffon (1):
+      PM: hibernate: don't store zero pages in the image file
+
+Clive Lin (1):
+      PM: QoS: Add check to make sure CPU latency is non-negative
+
+Cristian Marussi (1):
+      powercap: arm_scmi: Remove recursion while parsing zones
+
+Doug Smythies (1):
+      cpufreq: intel_pstate: set stale CPU frequency to minimum
+
+Gustavo A. R. Silva (1):
+      cpufreq: brcmstb-avs-cpufreq: Fix -Warray-bounds bug
+
+Konrad Dybcio (2):
+      cpufreq: blocklist more Qualcomm platforms in cpufreq-dt-platdev
+      cpufreq: mediatek-hw: Remove unused define
+
+Liao Chang (6):
+      cpufreq: Prefer to print cpuid in MIN/MAX QoS register error message
+      cpufreq: cppc: cppc_cpufreq_get_rate() returns zero in all error cases.
+      cpufreq: cppc: Set fie_disabled to FIE_DISABLED if fails to
+create kworker_fie
+      cpufreq: stats: Improve the performance of cpufreq_stats_create_table()
+      cpufreq: Use clamp() helper macro to improve the code readability
+      cpufreq: powernow-k8: Use related_cpus instead of cpus in driver.exit()
+
+Likhitha Korrapati (1):
+      cpupower: Fix cpuidle_set to accept only numeric values for
+idle-set operation.
+
+Manivannan Sadhasivam (6):
+      OPP: Introduce dev_pm_opp_find_freq_{ceil/floor}_indexed() APIs
+      PM / devfreq: Reword the kernel-doc comment for
+devfreq_monitor_start() API
+      OPP: Introduce dev_pm_opp_get_freq_indexed() API
+      OPP: Fix potential null ptr dereference in
+dev_pm_opp_get_required_pstate()
+      OPP: Fix passing 0 to PTR_ERR in _opp_attach_genpd()
+      dt-bindings: opp: Increase maxItems for opp-hz property
+
+Meng Li (1):
+      cpufreq: amd-pstate-ut: Modify the function to get the highest_perf value
+
+Neil Armstrong (2):
+      dt-bindings: cpufreq: qcom-hw: add a 4th frequency domain
+      cpufreq: qcom-cpufreq-hw: add support for 4 freq domains
+
+Nishanth Menon (2):
+      dt-bindings: opp: Convert ti-omap5-opp-supply to json schema
+      dt-bindings: cpufreq: Convert ti-cpufreq to json schema
+
+Rafael J. Wysocki (8):
+      cpuidle: teo: Update idle duration estimate when choosing shallower state
+      cpuidle: teo: Avoid stopping the tick unnecessarily when bailing out
+      cpuidle: teo: Drop utilized from struct teo_cpu
+      cpuidle: teo: Do not call tick_nohz_get_sleep_length() upfront
+      cpuidle: teo: Skip tick_nohz_get_sleep_length() call in some cases
+      cpuidle: teo: Gather statistics regarding whether or not to stop the tick
+      cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases
+      cpuidle: teo: Avoid unnecessary variable assignments
+
+Rob Herring (2):
+      cpufreq: Explicitly include correct DT includes
+      PM / devfreq: Explicitly include correct DT includes
+
+Sumit Gupta (2):
+      cpufreq: tegra194: add online/offline hooks
+      cpufreq: tegra194: remove opp table in exit hook
+
+Swapnil Sapkal (2):
+      cpufreq: amd-pstate-ut: Remove module parameter access
+      cpufreq: amd-pstate-ut: Fix kernel panic when loading the driver
+
+Ulf Hansson (1):
+      PM: sleep: Add helpers to allow a device to remain powered-on
+
+Viresh Kumar (5):
+      OPP: Rearrange entries in pm_opp.h
+      OPP: Add dev_pm_opp_find_freq_exact_indexed()
+      OPP: Update _read_freq() to return the correct frequency
+      OPP: Reuse dev_pm_opp_get_freq_indexed()
+      OPP: Fix argument name in doc comment
+
+Wyes Karny (5):
+      cpupower: Recognise amd-pstate active mode driver
+      cpupower: Add is_valid_path API
+      cpupower: Add EPP value change support
+      cpupower: Add support for amd_pstate mode change
+      cpupower: Add turbo-boost support in cpupower
+
+Yangtao Li (19):
+      cpufreq: sun50i: Convert to platform remove callback returning void
+      cpufreq: dt: Convert to platform remove callback returning void
+      cpufreq: qcom-cpufreq-hw: Convert to platform remove callback
+returning void
+      cpufreq: vexpress: Convert to platform remove callback returning void
+      cpufreq: imx6q: Convert to platform remove callback returning void
+      cpufreq: mediatek-hw: Convert to platform remove callback returning void
+      cpufreq: scpi: Convert to platform remove callback returning void
+      cpufreq: tegra194: Convert to platform remove callback returning void
+      cpufreq: brcmstb-avs-cpufreq: Convert to platform remove
+callback returning void
+      cpufreq: imx-cpufreq-dt: Convert to platform remove callback
+returning void
+      cpufreq: davinci: Convert to platform remove callback returning void
+      cpufreq: raspberrypi: Convert to platform remove callback returning void
+      cpufreq: pcc-cpufreq: Convert to platform remove callback returning void
+      cpufreq: kirkwood: Convert to platform remove callback returning void
+      cpufreq: qcom-nvmem: Convert to platform remove callback returning void
+      cpufreq: tegra186: Convert to platform remove callback returning void
+      cpufreq: acpi: Convert to platform remove callback returning void
+      cpufreq: qoriq: Convert to platform remove callback returning void
+      cpufreq: omap: Convert to platform remove callback returning void
+
+YueHaibing (1):
+      PM: runtime: Remove unsued extern declaration of
+pm_runtime_update_max_time_suspended()
+
+xiongxin (1):
+      powercap: intel_rapl: Optimize rp->domains memory allocation
+
+---------------
+
+ .../bindings/cpufreq/cpufreq-qcom-hw.yaml          |   5 +-
+ .../devicetree/bindings/cpufreq/ti-cpufreq.txt     | 132 ------------
+ .../bindings/opp/operating-points-v2-ti-cpu.yaml   |  92 ++++++++
+ .../devicetree/bindings/opp/opp-v2-base.yaml       |   2 +-
+ .../bindings/opp/ti,omap-opp-supply.yaml           | 101 +++++++++
+ .../bindings/opp/ti-omap5-opp-supply.txt           |  63 ------
+ drivers/cpufreq/acpi-cpufreq.c                     |   6 +-
+ drivers/cpufreq/amd-pstate-ut.c                    |  50 ++---
+ drivers/cpufreq/armada-37xx-cpufreq.c              |   4 +-
+ drivers/cpufreq/brcmstb-avs-cpufreq.c              |  12 +-
+ drivers/cpufreq/cppc_cpufreq.c                     |  13 +-
+ drivers/cpufreq/cpufreq-dt-platdev.c               |   7 +
+ drivers/cpufreq/cpufreq-dt.c                       |   5 +-
+ drivers/cpufreq/cpufreq.c                          |   8 +-
+ drivers/cpufreq/cpufreq_stats.c                    |   3 +-
+ drivers/cpufreq/davinci-cpufreq.c                  |   6 +-
+ drivers/cpufreq/imx-cpufreq-dt.c                   |   6 +-
+ drivers/cpufreq/imx6q-cpufreq.c                    |   6 +-
+ drivers/cpufreq/intel_pstate.c                     |   5 +
+ drivers/cpufreq/kirkwood-cpufreq.c                 |   6 +-
+ drivers/cpufreq/mediatek-cpufreq-hw.c              |   9 +-
+ drivers/cpufreq/mediatek-cpufreq.c                 |   2 -
+ drivers/cpufreq/omap-cpufreq.c                     |   6 +-
+ drivers/cpufreq/pcc-cpufreq.c                      |   6 +-
+ drivers/cpufreq/powernow-k8.c                      |   3 +-
+ drivers/cpufreq/ppc_cbe_cpufreq.c                  |   2 +-
+ drivers/cpufreq/ppc_cbe_cpufreq_pmi.c              |   1 -
+ drivers/cpufreq/qcom-cpufreq-hw.c                  |   8 +-
+ drivers/cpufreq/qcom-cpufreq-nvmem.c               |   7 +-
+ drivers/cpufreq/qoriq-cpufreq.c                    |   6 +-
+ drivers/cpufreq/raspberrypi-cpufreq.c              |   6 +-
+ drivers/cpufreq/scpi-cpufreq.c                     |   7 +-
+ drivers/cpufreq/sti-cpufreq.c                      |   2 +-
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c             |   6 +-
+ drivers/cpufreq/tegra186-cpufreq.c                 |   6 +-
+ drivers/cpufreq/tegra194-cpufreq.c                 |  35 ++-
+ drivers/cpufreq/ti-cpufreq.c                       |   2 +-
+ drivers/cpufreq/vexpress-spc-cpufreq.c             |   6 +-
+ drivers/cpuidle/governors/gov.h                    |  14 ++
+ drivers/cpuidle/governors/menu.c                   |  65 +++---
+ drivers/cpuidle/governors/teo.c                    | 235 +++++++++++++--------
+ drivers/devfreq/devfreq.c                          |  10 +-
+ drivers/devfreq/imx-bus.c                          |   2 +-
+ drivers/devfreq/imx8m-ddrc.c                       |   2 +-
+ drivers/devfreq/mtk-cci-devfreq.c                  |   1 -
+ drivers/devfreq/tegra30-devfreq.c                  |   2 +-
+ drivers/opp/core.c                                 | 117 ++++++++--
+ drivers/opp/cpu.c                                  |   4 +-
+ drivers/powercap/arm_scmi_powercap.c               | 159 ++++++++------
+ drivers/powercap/intel_rapl_common.c               |   2 +-
+ include/linux/cpufreq.h                            |  16 +-
+ include/linux/pm_opp.h                             |  62 ++++--
+ include/linux/pm_runtime.h                         |   2 -
+ include/linux/pm_wakeup.h                          |  10 +
+ kernel/power/qos.c                                 |   9 +-
+ kernel/power/snapshot.c                            | 187 ++++++++++++----
+ tools/power/cpupower/Makefile                      |   2 +-
+ tools/power/cpupower/lib/cpupower.c                |   7 +
+ tools/power/cpupower/lib/cpupower_intern.h         |   1 +
+ tools/power/cpupower/utils/cpuidle-set.c           |  16 +-
+ tools/power/cpupower/utils/cpupower-set.c          |  65 +++++-
+ tools/power/cpupower/utils/helpers/helpers.h       |  11 +
+ tools/power/cpupower/utils/helpers/misc.c          |  57 ++++-
+ 63 files changed, 1097 insertions(+), 613 deletions(-)
