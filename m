@@ -2,140 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E2778B68A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CC778B68C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbjH1Re3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
+        id S231786AbjH1Re6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbjH1Rdw (ORCPT
+        with ESMTP id S232926AbjH1Rer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:33:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B251911A;
-        Mon, 28 Aug 2023 10:33:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4475E630EC;
-        Mon, 28 Aug 2023 17:33:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB94AC433C9;
-        Mon, 28 Aug 2023 17:33:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693244029;
-        bh=KInp4zOqJ0MZH/kkJeuYTn3BkEi3fw9HxcUrey2AjMw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gzwYkafSSkZEcvP0NkSjRDv2Cc+rOQsG4mT4G237OxPH/JW++GibV0gOx20EJ6jo8
-         44d1Eztanc4pf2J8UF1UzsvNKqGhmOvHUKXyASYErXRN9pFY6glGrq0Xf20WeROZbr
-         IPJWAJfjyLXAAI2HpnUjcu7rxScBk21Pbm+M2xaZh0M5mDOYxBLQRHPKrByyPi9HAQ
-         M1TyfW1g0jaYDAvqIoHtaWwa0iHbLc/c9gx0tFdQ/9ywsfCx0B4zzKYbALMNYx4YO8
-         UOQIAWgetretDqgZGBqow8y9rMOH3x35kHeqrR5eFEPAqk7k67hDlAhbo/eHQWo66h
-         47dcG92qgVV/Q==
-Date:   Mon, 28 Aug 2023 18:34:02 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>,
-        Dumitru Ceclan <mitrutzceclan@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Okan Sahin <okan.sahin@analog.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        Lee Jones <lee@kernel.org>, Haibo Chen <haibo.chen@nxp.com>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Leonard =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iio: adc: ad717x: add AD717X driver
-Message-ID: <20230828183402.785b6ede@jic23-huawei>
-In-Reply-To: <ZNUEBDsMg6UfeOtl@smile.fi.intel.com>
-References: <20230810093322.593259-1-mitrutzceclan@gmail.com>
-        <20230810093322.593259-2-mitrutzceclan@gmail.com>
-        <34f5e2118a4714048231e6ee9a8f244248616bd0.camel@gmail.com>
-        <ZNUEBDsMg6UfeOtl@smile.fi.intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 28 Aug 2023 13:34:47 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A2E18D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:34:43 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a21b6d105cso445321866b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693244081; x=1693848881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U/hj4zAJGTB+R9zOcfvDXuXZl9jn964RzT9PqzJAHP0=;
+        b=WsUalkF2WJkUXm1iyLayE+cKxReFkBrRh13idRWzabm5RlUS3+llbD48GNuWbXOn6t
+         m79Y5p3vy/j2ej5wSdbTU+RbeLlXG/TtgvC2/4b3d9MNF4P+auj1xkKh1nECoyo2GjlP
+         AiquHhh7ECeNSmHYAyZyX5hjm28PFYD9BMIU8VPi/jb5h+bl6wWiwmMYTEBhm/CF5qsA
+         nBuBFz12D51f2rwaBPuJhtTAb14y7VSjx2IZ9gTHei44RAOwaZD0pSar7GYubwwlfJDJ
+         A+Ubk0r+am8VuaiZvIOysukbCejD2iiz124Vc3u+LfUCpFr9JMKN1MSWolcnDzE5cHZu
+         aDDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693244081; x=1693848881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U/hj4zAJGTB+R9zOcfvDXuXZl9jn964RzT9PqzJAHP0=;
+        b=RpI+hfcXdHJqGeEV1lfN7FEnq1mu7tmsOCl3HVtf4POE8BUsIIhON1NpTB8g2iKmTM
+         FCDdf5dGLvLt0yVMBAWKFnqdQjHlIUFQJWo7WI1t4EDlbqVNfOhP0LdaESiQxNfsH73m
+         rRT1ctN4aTLCYjkVuT50pVuUFkUAhW7PVli2RN0HwDdtc7VT/B8C3iAxy7m5FSVv2AuU
+         2QGAqtQU9fhFapw7qgVjVTfUByrmyH3gY45w2n2qrsOMA+Ibbzb3RnxNKgabxr2R++uu
+         GCduGqQ6hez7dWWWru5Zq+pR+Ar3+Y90jUNEUtf2HDU3Jp13fYWilRm8Ubw9dumdoEIn
+         lvJA==
+X-Gm-Message-State: AOJu0Yy4aXQ19/MC9lOIXFO/cqyOt2borAITR1gYxPnI9AFFbrnl9XC4
+        KRz414rqSVOFdTMeUZYTGm9uZBZ241uriY4zqcIwFw==
+X-Google-Smtp-Source: AGHT+IEi7YigMwKZgkfNgXjdZC1iYDHnDNwgtE8RWJJovsbRv4Z9jhMYkK8lC5NEiWocERzRNBdblIzhv+vC1k/SjvE=
+X-Received: by 2002:a17:906:2189:b0:99c:85af:7aa6 with SMTP id
+ 9-20020a170906218900b0099c85af7aa6mr18646688eju.28.1693244081274; Mon, 28 Aug
+ 2023 10:34:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230826034401.640861-1-liushixin2@huawei.com>
+In-Reply-To: <20230826034401.640861-1-liushixin2@huawei.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 28 Aug 2023 10:34:05 -0700
+Message-ID: <CAJD7tka1tYs6v8nEq3xKpvgXMywz_FUz0TF_cTvzZ86J8L3SRQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: vmscan: try to reclaim swapcache pages if no swap space
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Huang Ying <ying.huang@intel.com>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 18:36:36 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On Fri, Aug 25, 2023 at 7:49=E2=80=AFPM Liu Shixin <liushixin2@huawei.com> =
+wrote:
+>
+> When spaces of swap devices are exhausted, only file pages can be reclaim=
+ed.
+> But there are still some swapcache pages in anon lru list. This can lead
+> to a premature out-of-memory.
+>
+> This problem can be fixed by checking number of swapcache pages in
+> can_reclaim_anon_pages().
+>
+> Add a new bit swapcache_only in struct scan_control to skip isolating ano=
+n
+> pages that are not in the swap cache when only swap cache can be reclaime=
+d.
+>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 
-> On Thu, Aug 10, 2023 at 01:57:02PM +0200, Nuno S=C3=A1 wrote:
-> > On Thu, 2023-08-10 at 12:33 +0300, Dumitru Ceclan wrote: =20
->=20
-> ...
->=20
-> > Is ad717x_gpio_cleanup() being used anywhere? Moreover I would maybe ju=
-st get rid of
-> > the #ifdef wrapper and just select GPIOLIB. How often will it be disabl=
-ed anyways? =20
->=20
-> The agreement is that users are depend on and not selecting GPIOLIB.
-> Any news in these agreement terms?
->=20
-> ...
->=20
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0id &=3D AD717X_ID_MASK;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (id !=3D st->info->id)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0dev_warn(&st->sd.spi->dev, "Unexpected device id: %=
-x, expected:
-> > > %x\n",
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 id, st->info->id);
-> > > + =20
-> >=20
-> > Shouldn't we error out? =20
->=20
-> It seems a new way of thinking about unsupported CHIP ID. Dunno if hw ven=
-dors
-> won't ever do a dirty trick that new ID must be programmed differently and
-> otherwise burn hardware to a smoke...
->=20
-> I'm with you here, unknown chips mustn't be supported.
+I can confirm that with the reproducer I posted on v2 this patch fixes
+the problem, feel free to add:
 
-Some discussions with DT maintainers on this led me to change my mind...
-They are very strongly of the view that if a DT firmware claims a device is=
- compatible
-then a device ID register that has an unknown value should be ignored. It g=
-ets
-more tricky if we have a known wrong value (in which case we assume that it
-is the value the hardware is claiming whatever DT says).
+Tested-by: Yosry Ahmed <yosryahmed@google.com>
 
-Argument is that lots of new versions of devices that are fully compatible =
-with
-exception of ID registers are released and if you have an old kernel but a =
-new
-device tree (typically running a distro that hasn't caught up yet) then the
-fallback compatible is there to make things work.
+The code LGTM. I personally prefer that we add NR_SWAPCACHE to
+memcg1_stats, so that it's obvious that it is used by cgroup v1 code,
+but perhaps maintainers have opinions against that.
 
-I changed the way we handle this case in IIO to follow this policy - with
-the slight tweak that we print a message whenever such a mismatch occurs.
-
-Jonathan
-
+> ---
+>  include/linux/swap.h |  6 ++++++
+>  mm/memcontrol.c      |  8 ++++++++
+>  mm/vmscan.c          | 29 +++++++++++++++++++++++++++--
+>  3 files changed, 41 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 456546443f1f..0318e918bfa4 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry=
+_t entry, unsigned int nr_p
+>  }
+>
+>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>  #else
+>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t e=
+ntry)
+> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(stru=
+ct mem_cgroup *memcg)
+>         return get_nr_swap_pages();
+>  }
+>
+> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *=
+memcg)
+> +{
+> +       return total_swapcache_pages();
+> +}
+> +
+>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>  {
+>         return vm_swap_full();
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e8ca4bdcb03c..c465829db92b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgrou=
+p *memcg)
+>         return nr_swap_pages;
+>  }
+>
+> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+> +{
+> +       if (mem_cgroup_disabled())
+> +               return total_swapcache_pages();
+> +
+> +       return memcg_page_state(memcg, NR_SWAPCACHE);
+> +}
+> +
+>  bool mem_cgroup_swap_full(struct folio *folio)
+>  {
+>         struct mem_cgroup *memcg;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 7c33c5b653ef..5cb4adf6642b 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -137,6 +137,9 @@ struct scan_control {
+>         /* Always discard instead of demoting to lower tier memory */
+>         unsigned int no_demotion:1;
+>
+> +       /* Swap space is exhausted, only reclaim swapcache for anon LRU *=
+/
+> +       unsigned int swapcache_only:1;
+> +
+>         /* Allocation order */
+>         s8 order;
+>
+> @@ -613,10 +616,20 @@ static inline bool can_reclaim_anon_pages(struct me=
+m_cgroup *memcg,
+>                  */
+>                 if (get_nr_swap_pages() > 0)
+>                         return true;
+> +               /* Is there any swapcache pages to reclaim? */
+> +               if (total_swapcache_pages() > 0) {
+> +                       sc->swapcache_only =3D 1;
+> +                       return true;
+> +               }
+>         } else {
+>                 /* Is the memcg below its swap limit? */
+>                 if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>                         return true;
+> +               /* Is there any swapcache pages in memcg to reclaim? */
+> +               if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
+> +                       sc->swapcache_only =3D 1;
+> +                       return true;
+> +               }
+>         }
+>
+>         /*
+> @@ -2280,6 +2293,19 @@ static bool skip_cma(struct folio *folio, struct s=
+can_control *sc)
+>  }
+>  #endif
+>
+> +static bool skip_isolate(struct folio *folio, struct scan_control *sc,
+> +                        enum lru_list lru)
+> +{
+> +       if (folio_zonenum(folio) > sc->reclaim_idx)
+> +               return true;
+> +       if (skip_cma(folio, sc))
+> +               return true;
+> +       if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
+> +           !folio_test_swapcache(folio)))
+> +               return true;
+> +       return false;
+> +}
+> +
+>  /*
+>   * Isolating page from the lruvec to fill in @dst list by nr_to_scan tim=
+es.
+>   *
+> @@ -2326,8 +2352,7 @@ static unsigned long isolate_lru_folios(unsigned lo=
+ng nr_to_scan,
+>                 nr_pages =3D folio_nr_pages(folio);
+>                 total_scan +=3D nr_pages;
+>
+> -               if (folio_zonenum(folio) > sc->reclaim_idx ||
+> -                               skip_cma(folio, sc)) {
+> +               if (skip_isolate(folio, sc, lru)) {
+>                         nr_skipped[folio_zonenum(folio)] +=3D nr_pages;
+>                         move_to =3D &folios_skipped;
+>                         goto move;
+> --
+> 2.25.1
+>
