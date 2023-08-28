@@ -2,205 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F3278A836
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F95278A83C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjH1IwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
+        id S229834AbjH1Iwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjH1Ivv (ORCPT
+        with ESMTP id S229758AbjH1IwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:51:51 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0ADBF;
-        Mon, 28 Aug 2023 01:51:48 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-649a653479bso16353976d6.0;
-        Mon, 28 Aug 2023 01:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693212707; x=1693817507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6QlQsqhbMuO0FCtthsUOG1XI6SmEnrXMxQcpEIHQeP4=;
-        b=LdZr+dgSjzgr+iamC9Y2A7MI3nBpu/wEkh3x7NyO6aB/PqziDjNZyVzR9y+VZHC/h/
-         ee/EtlsCSd7+mSEUQrWm42l+GGRZgfRp6ZKoPvoRh0lGab5DrT1t0ZcbDE21DbE+Xy1B
-         CRBcKNYqz1UzUYnXzBML5fSEjPqG2DfivkvRREFCvrnqneGtJnidqsdREAuWLWgmDIyQ
-         4Qzd+5Z1hNSSsfODsrWKV3b+aR2CE2zjaWkqlfq7IXHDXItI34FksR+YeNF3lvxh+mkR
-         OV1q2Vbll7EE7fryenjc28UP++jQFwCjiUAfb13Eo/fwwhKN+J+uAX5bj1igrp7o2vb2
-         grkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693212707; x=1693817507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6QlQsqhbMuO0FCtthsUOG1XI6SmEnrXMxQcpEIHQeP4=;
-        b=mASCGU8cZ6ro4LHKgIVLSBX0wEH1OYKC2PSdpMAC77Bi3e7QgITAg8rsrZgiaNqfC9
-         crxFwE+Mxgv+QOMGZHryDCCccRXPGxC7RPpCdTfNuSK9l7pif+4A9PlIOXuBXuQEuAlR
-         nhCK7ViYxxfrqCBx2Irzr6lf+Nq2jh0rmagCNFpP0i1d5v8TxWHbJ79zguRCIv8RDZFV
-         VPBlAlojC5Vp6cVwZuNZSFpvDMC4xXLIvw7qJT+BG2jEs/Cm3AaY2xpYt2U7B03CU648
-         lFlnK4B27BaS7fxmP7vOCW5U4GO+zJvxb6vCh0IFd3YwCmlNoM459upOiKJM/N/+v0rx
-         pg8g==
-X-Gm-Message-State: AOJu0Yy65G+s181XewBCDnjy3ZlFjNdRqpFH3+3wOnunvWq7u93S07lo
-        AC9hfXmzSqTISU1lI9u63yrrc+1qsgleFIrOtxeY053VQE0=
-X-Google-Smtp-Source: AGHT+IGvcGpJ/BkF2tzwfwhnDeHi0Sl7YUGemSsVyjafNd6vWGXzxLfatq2nynP+7qkXioJZBv/dybpjBkJ3VJz1WCg=
-X-Received: by 2002:a0c:e392:0:b0:64e:c5da:49e0 with SMTP id
- a18-20020a0ce392000000b0064ec5da49e0mr23572729qvl.13.1693212707398; Mon, 28
- Aug 2023 01:51:47 -0700 (PDT)
+        Mon, 28 Aug 2023 04:52:24 -0400
+Received: from out-251.mta0.migadu.com (out-251.mta0.migadu.com [IPv6:2001:41d0:1004:224b::fb])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D171BE8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:52:20 -0700 (PDT)
+Message-ID: <2be1ab83-f047-245f-68ad-62c4478914a5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693212739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HEJsS6jb2rjW3BlTwJdUWZlMga7O4tMNsD6ueh6tNuo=;
+        b=o3l1IVK7r0+Z4CQcoBcbchRU5K6PCrcAkToafNCBk26Klx80OUlGIoybH+neXCeigVeDQ6
+        esOYi1Os6Q/MdJgN51tIUDj7sgIedjc0kfYu4Fu3E96cHSbCNx27fmLWYOBzXeywvDvJvq
+        STtbusveaKpFLJgPkSukqCG/0I48vz0=
+Date:   Mon, 28 Aug 2023 16:52:10 +0800
 MIME-Version: 1.0
-References: <20230823061734.27479-1-wenchao.chen@unisoc.com> <CAPDyKFqbY5yLNwhODDq0XimKtnf0V93rEbmSdG+qZ2FrYWJFsw@mail.gmail.com>
-In-Reply-To: <CAPDyKFqbY5yLNwhODDq0XimKtnf0V93rEbmSdG+qZ2FrYWJFsw@mail.gmail.com>
-From:   Wenchao Chen <wenchao.chen666@gmail.com>
-Date:   Mon, 28 Aug 2023 16:51:35 +0800
-Message-ID: <CA+Da2qw+JR5oVONzX9C3YtSZfXjTZnDa=3+iUpwvCqN6m1ApLQ@mail.gmail.com>
-Subject: Re: [PATCH V2 0/2] mmc: hsq: Dynamically adjust hsq_depth to improve performance
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhenxiong.lai@unisoc.com,
-        yuelin.tang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [v3 3/4] memblock: introduce MEMBLOCK_RSRV_NOINIT_VMEMMAP flag
+To:     Mike Rapoport <rppt@kernel.org>,
+        Usama Arif <usama.arif@bytedance.com>
+Cc:     linux-mm@kvack.org, mike.kravetz@oracle.com,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        punit.agrawal@bytedance.com
+References: <20230825111836.1715308-1-usama.arif@bytedance.com>
+ <20230825111836.1715308-4-usama.arif@bytedance.com>
+ <20230828074729.GC3223@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230828074729.GC3223@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 6:26=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org=
-> wrote:
+
+
+On 2023/8/28 15:47, Mike Rapoport wrote:
+> On Fri, Aug 25, 2023 at 12:18:35PM +0100, Usama Arif wrote:
+>> For reserved memory regions marked with this flag,
+>> reserve_bootmem_region is not called during memmap_init_reserved_pages.
+>> This can be used to avoid struct page initialization for
+>> regions which won't need them, for e.g. hugepages with
+>> HVO enabled.
+>>
+>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+>> ---
+>>   include/linux/memblock.h | 10 ++++++++++
+>>   mm/memblock.c            | 32 +++++++++++++++++++++++++++-----
+>>   2 files changed, 37 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+>> index f71ff9f0ec81..6d681d053880 100644
+>> --- a/include/linux/memblock.h
+>> +++ b/include/linux/memblock.h
+>> @@ -40,6 +40,8 @@ extern unsigned long long max_possible_pfn;
+>>    * via a driver, and never indicated in the firmware-provided memory map as
+>>    * system RAM. This corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED in the
+>>    * kernel resource tree.
+>> + * @MEMBLOCK_RSRV_NOINIT_VMEMMAP: memory region for which struct pages are
+>> + * not initialized (only for reserved regions).
+>>    */
+>>   enum memblock_flags {
+>>   	MEMBLOCK_NONE		= 0x0,	/* No special request */
+>> @@ -47,6 +49,8 @@ enum memblock_flags {
+>>   	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
+>>   	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
+>>   	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
+>> +	/* don't initialize struct pages associated with this reserver memory block */
+>> +	MEMBLOCK_RSRV_NOINIT_VMEMMAP	= 0x10,
+> The flag means that struct page shouldn't be initialized, it may be used
+> not only by vmemmap optimizations.
+> Please drop _VMEMMAP.
+
+The area at where the struct pages located is vmemmap, I think the
+"vmemap" suffix does not mean that it is for "vmemmap optimization",
+it could specify the target which will not be initialized. For me,
+MEMBLOCK_RSRV_NOINIT does not tell me what should not be initialized,
+memblock itself or its struct page (aka vmemmap pages)? So maybe
+the suffix is better to keep?
+
 >
-> On Wed, 23 Aug 2023 at 08:18, Wenchao Chen <wenchao.chen@unisoc.com> wrot=
-e:
-> >
-> > Change in v2:
-> > - Support for dynamic adjustment of hsq_depth.
-> >
-> > Test
-> > =3D=3D=3D=3D=3D
-> > I tested 3 times for each case and output a average speed.
-> > Ran 'fio' to evaluate the performance:
-> > 1.Fixed hsq_depth
-> > 1) Sequential write:
-> > Speed: 168 164 165
-> > Average speed: 165.67MB/S
-> >
-> > 2) Sequential read:
-> > Speed: 326 326 326
-> > Average speed: 326MB/S
-> >
-> > 3) Random write:
-> > Speed: 82.6 83 83
-> > Average speed: 82.87MB/S
-> >
-> > 4) Random read:
-> > Speed: 48.2 48.3 47.6
-> > Average speed: 48.03MB/S
-> >
-> > 2.Dynamic hsq_depth
-> > 1) Sequential write:
-> > Speed: 167 166 166
-> > Average speed: 166.33MB/S
-> >
-> > 2) Sequential read:
-> > Speed: 327 326 326
-> > Average speed: 326.3MB/S
-> >
-> > 3) Random write:
-> > Speed: 86.1 86.2 87.7
-> > Average speed: 86.67MB/S
-> >
-> > 4) Random read:
-> > Speed: 48.1 48 48
-> > Average speed: 48.03MB/S
-> >
-> > Based on the above data, dynamic hsq_depth can improve the performance =
-of random writes.
-> > Random write improved by 4.6%.
+> And I agree with Muchun's remarks about the comments.
 >
-> Thanks for sharing this, interesting!
 >
-> >
-> > Test cmd
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > 1)write: fio -filename=3D/dev/mmcblk0p72 -direct=3D1 -rw=3Dwrite -bs=3D=
-512K -size=3D512M -group_reporting -name=3Dtest -numjobs=3D8 -thread -iodep=
-th=3D64
-> > 2)read: fio -filename=3D/dev/mmcblk0p72 -direct=3D1 -rw=3Dread -bs=3D51=
-2K -size=3D512M -group_reporting -name=3Dtest -numjobs=3D8 -thread -iodepth=
-=3D64
-> > 3)randwrite: fio -filename=3D/dev/mmcblk0p72 -direct=3D1 -rw=3Drandwrit=
-e -bs=3D4K -size=3D512M -group_reporting -name=3Dtest -numjobs=3D8 -thread =
--iodepth=3D64
-> > 4)randread: fio -filename=3D/dev/mmcblk0p72 -direct=3D1 -rw=3Drandread =
--bs=3D4K -size=3D512M -group_reporting -name=3Dtest -numjobs=3D8 -thread -i=
-odepth=3D64
-> >
 >
-> The buffer you used for randwrite/randread is 4K blocks. Did you try
-> with something bigger too?
+>>   };
+>>   
+>>   /**
+>> @@ -125,6 +129,7 @@ int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
+>>   int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+>>   int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
+>>   int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+>> +int memblock_reserved_mark_noinit_vmemmap(phys_addr_t base, phys_addr_t size);
+> memblock does not care about vmemmap, please drop _vmemmap here and below as well.
+>    
+>>   void memblock_free_all(void);
+>>   void memblock_free(void *ptr, size_t size);
+>> @@ -259,6 +264,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
+>>   	return m->flags & MEMBLOCK_NOMAP;
+>>   }
+>>   
+>> +static inline bool memblock_is_noinit_vmemmap(struct memblock_region *m)
+> memblock_is_reserved_noinit please.
 >
-Hi Uffe
-I tried bs=3D8k and bs=3D16k, the random read and random write performance
-improvement was not noticeable.
-
-1.Fixed hsq_depth
-1) Random write(bs=3D8K):
-Speed: 116 114 115
-Average speed: 115MB/S
-
-2) Random read(bs=3D8K):
-Speed: 83 83 82.5
-Average speed: 82.8MB/S
-
-3) Random write(bs=3D16K):
-Speed: 141 142 141
-Average speed: 141.3MB/S
-
-4) Random read(bs=3D16K):
-Speed: 132 132 132
-Average speed: 132MB/S
-
-2.Dynamic hsq_depth
-1) Random write(bs=3D8K):
-Speed: 115 115 115
-Average speed: 115MB/S
-
-2) Random read(bs=3D8K):
-Speed: 82.7 82.9 82.8
-Average speed: 82.8MB/S
-
-3) Random write(bs=3D16K):
-Speed: 143 141 141
-Average speed: 141.6MB/S
-
-4) Random read(bs=3D16K):
-Speed: 132 132 132
-Average speed: 132MB/S
-
-> Or maybe we are afraid of introducing a bigger latency if we
-> dynamically change the hsq_depth to match something bigger than 4K?
+>> +{
+>> +	return m->flags & MEMBLOCK_RSRV_NOINIT_VMEMMAP;
+>> +}
+>> +
+>>   static inline bool memblock_is_driver_managed(struct memblock_region *m)
+>>   {
+>>   	return m->flags & MEMBLOCK_DRIVER_MANAGED;
+>> diff --git a/mm/memblock.c b/mm/memblock.c
+>> index 43cb4404d94c..a9782228c840 100644
+>> --- a/mm/memblock.c
+>> +++ b/mm/memblock.c
+>> @@ -991,6 +991,23 @@ int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
+>>   	return memblock_setclr_flag(&memblock.memory, base, size, 0, MEMBLOCK_NOMAP);
+>>   }
+>>   
+>> +/**
+>> + * memblock_reserved_mark_noinit_vmemmap - Mark a reserved memory region with flag
+>> + * MEMBLOCK_RSRV_NOINIT_VMEMMAP.
+> this should be about what marking RSRV_NOINIT does, not what flag it uses
 >
+>> + * @base: the base phys addr of the region
+>> + * @size: the size of the region
+>> + *
+>> + * struct pages will not be initialized for reserved memory regions marked with
+>> + * %MEMBLOCK_RSRV_NOINIT_VMEMMAP.
+>> + *
+>> + * Return: 0 on success, -errno on failure.
+>> + */
+>> +int __init_memblock memblock_reserved_mark_noinit_vmemmap(phys_addr_t base, phys_addr_t size)
+>> +{
+>> +	return memblock_setclr_flag(&memblock.reserved, base, size, 1,
+>> +				    MEMBLOCK_RSRV_NOINIT_VMEMMAP);
+>> +}
+>> +
+>>   static bool should_skip_region(struct memblock_type *type,
+>>   			       struct memblock_region *m,
+>>   			       int nid, int flags)
+>> @@ -2107,13 +2124,18 @@ static void __init memmap_init_reserved_pages(void)
+>>   		memblock_set_node(start, end, &memblock.reserved, nid);
+>>   	}
+>>   
+>> -	/* initialize struct pages for the reserved regions */
+>> +	/*
+>> +	 * initialize struct pages for reserved regions that don't have
+>> +	 * the MEMBLOCK_RSRV_NOINIT_VMEMMAP flag set
+>> +	 */
+>>   	for_each_reserved_mem_region(region) {
+>> -		nid = memblock_get_region_node(region);
+>> -		start = region->base;
+>> -		end = start + region->size;
+>> +		if (!memblock_is_noinit_vmemmap(region)) {
+>> +			nid = memblock_get_region_node(region);
+>> +			start = region->base;
+>> +			end = start + region->size;
+>>   
+>> -		reserve_bootmem_region(start, end, nid);
+>> +			reserve_bootmem_region(start, end, nid);
+>> +		}
+>>   	}
+>>   }
+>>   
+>> -- 
+>> 2.25.1
+>>
 
-Increasing hsq_depth cannot improve 8k and 16k random read/write performanc=
-e.
-To reduce latency, we dynamically increase hsq_depth only for 4k random wri=
-tes.
-
-> >
-> > Wenchao Chen (2):
-> >   mmc: queue: replace immediate with hsq->depth
-> >   mmc: hsq: dynamic adjustment of hsq->depth
-> >
-> >  drivers/mmc/core/queue.c   |  6 +-----
-> >  drivers/mmc/host/mmc_hsq.c | 27 +++++++++++++++++++++++++++
-> >  drivers/mmc/host/mmc_hsq.h |  8 ++++++++
-> >  include/linux/mmc/host.h   |  1 +
-> >  4 files changed, 37 insertions(+), 5 deletions(-)
-> >
->
-> Kind regards
-> Uffe
