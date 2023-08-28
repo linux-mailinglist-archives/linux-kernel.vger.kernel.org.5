@@ -2,173 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630B978BAFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 00:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74A678BB0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 00:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbjH1W0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 18:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        id S233853AbjH1Wgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 18:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232225AbjH1WZ6 (ORCPT
+        with ESMTP id S233385AbjH1WgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 18:25:58 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCF8139
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:25:55 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59501b014f4so28003657b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693261555; x=1693866355;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WL1tQymiA0QNtSV27nV5+wlwcB60k6N2NSD+c5q8HQg=;
-        b=JoHOoN5AHuQ86eXhnjG3U070yK9cvNyS2AVvroFNhguy50VpeQ6WU9xS9/gk+nVAW8
-         cB8tMKGkgUUYQ7fBsfIXzzgEUTzDq1UXuakUOvqqjLSyjTSUfSlvxTT2LARSAcZCsL+6
-         qb2mda588RKdSlMncA/n0D8yWn/Pb/YH/EzPY/9s+I2xe65rmxP+Zibu7Uj+CeUAwaFK
-         LnYAkfhxfXxdUg66d9HTkdIepibDIgth6uCGBkmKPmIdVHDcWJKPY2US7FNfuaioy3Z6
-         Z0kBxnEJ61tDFKgoC79rSf2QJwuSxRyoBJCn1REEKlemHGgSt2TQ/310romCB3WlO2oN
-         tO9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693261555; x=1693866355;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WL1tQymiA0QNtSV27nV5+wlwcB60k6N2NSD+c5q8HQg=;
-        b=eUoZTZHz0mQ5ogYgF6eAmahLJ/Taej0q71TUTirJvXjaWhzk3EwZDSCtD0kKaYk2Ga
-         D9/Lfg1JaQtyGz41Gl6CdYJH4zm2ThUKTWjHDcGolIY49roMmkvLd4DkVlgk5ccZyH7Y
-         V87L99eAundG56bOJpJQMH5hr7UYH4piNOp2c8BpzRZbI0jQrTlfPSsfZd3kt6kay/+N
-         V2e3Lu8uGds83NqFGF5SouUw/MfGttWW9aSc+FV9AfmTis/yqvJzUNntyXAJdvwwi4mz
-         942eEBchIlCEvLu/v5o8UACF7e4SCe/7MsqZZdbtPqr64YObmUXOwbUx0JOMVfoa2vz0
-         3xXg==
-X-Gm-Message-State: AOJu0Yz+NjLaF7tvnqnLaOvsapah1lsCi478DP+j2r2hqkjAhNAOzyuI
-        HHQqvBQfvoSOGN/j5OFFTnSu8q4aYcRLdhVI8KE=
-X-Google-Smtp-Source: AGHT+IEHx1L4auj/EdI7SADc9H3MwvX/vPnn5w8vp1/S1Yz4HvTE6wVG99CwlClV81ou70LXLC9pxdtTeMr8Ap710PU=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:b64:7817:9989:9eba])
- (user=ndesaulniers job=sendgmr) by 2002:a81:ae06:0:b0:573:87b9:7ee9 with SMTP
- id m6-20020a81ae06000000b0057387b97ee9mr829678ywh.4.1693261555125; Mon, 28
- Aug 2023 15:25:55 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 15:25:48 -0700
-In-Reply-To: <20230828-scsi_fortify-v1-0-8dde624a3b2c@google.com>
-Mime-Version: 1.0
-References: <20230828-scsi_fortify-v1-0-8dde624a3b2c@google.com>
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693261549; l=3338;
- i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=QVZghMLPP42usKlaJQTZjiZHzXDWVKPfY+QwZHJyIKk=; b=PtTKGhzagQppTiG/eusxtBe/ncoCdao9ylHQtdEesrL9MNPm094c3VNQzvmSFiFi+bCIdx0j0
- /87XN3v+sIwCZ8O5qbGc7RbENymwoeWEuxMauBVAgPfdGfwDIBsvuap
-X-Mailer: b4 0.12.3
-Message-ID: <20230828-scsi_fortify-v1-2-8dde624a3b2c@google.com>
-Subject: [PATCH 2/2] scsi: myrs: fix -Wfortify-source
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Hannes Reinecke <hare@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Tom Rix <trix@redhat.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 28 Aug 2023 18:36:20 -0400
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0047139
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:36:16 -0700 (PDT)
+Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
+        by cmsmtp with ESMTP
+        id ajwQqMpMDbK1VakqGqKpe2; Mon, 28 Aug 2023 22:36:16 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id akqFqoqgelcNfakqGqfAGn; Mon, 28 Aug 2023 22:36:16 +0000
+X-Authority-Analysis: v=2.4 cv=UIjOoQTy c=1 sm=1 tr=0 ts=64ed2160
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=o9+P6fCbD8VCllGnyBTCQCE6h4voI3rfT2ANK4Dkumk=; b=Q52wgxSe5zARX6JpCDhU4gh408
+        3duq3UaGA66+Fvot4aZ0n2+Cu7BV8rTc7vMXoVr2G8fm+raSO/NrIPBpRWff+axmBIr1KW65j1FU5
+        nh8VZTOTfGgStQIVZzWVzL/WJO2WG8wbtH5mrFD3zKVgccdFnMqM9LJ8uBOvTyUlf4JOyp/9pJQct
+        90v570wVvXDjuXDnWsrAnUi0rEqxqrR/6ejFQKHI9d6nBNcaDmbUxBDZbTFPfp+PZeLdCl7XKWCNG
+        NO9bgEUftXvzUYOAncjHEsbnhA/Jhw9Gye9so59gBOhd0fqlgeXKBMih+Zj6Joky55hIbz5ELrK+X
+        C8IEAYAQ==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:53442 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qakqD-000L4C-1u;
+        Mon, 28 Aug 2023 16:36:13 -0600
+Subject: Re: [PATCH 6.4 000/129] 6.4.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230828101157.383363777@linuxfoundation.org>
+In-Reply-To: <20230828101157.383363777@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <26308695-25e9-34ec-bcf4-5d3df1ab7b90@w6rz.net>
+Date:   Mon, 28 Aug 2023 15:36:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qakqD-000L4C-1u
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:53442
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfBpfoWd7j8TLpW2MPpf+2mzBAhhAfouEdmvK52BbsjoL494GroEMMSEuv76xxJw2okLa9exO5o3bjpxgIbrxOs8bEtLZsVfSi1qTZllsZHvlNNfw4AAG
+ 2q4m8iryLRVmfQYCgHS4dIXJQ8wZN/CY/3DfoBC3MQACqLpGNtgbbKwTy2xVF4exQulUq/eSFek2uH6joYWAY62eUyRaRSoE6aA=
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang-18 has improved its support for detecting operations that will
-truncate values at runtime via -Wfortify-source.
+On 8/28/23 3:11 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.13 release.
+> There are 129 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Fixes the warning:
-  drivers/scsi/myrs.c:1089:10: warning: 'snprintf' will always be
-  truncated; specified size is 32, but format string expands to at least
-  34 [-Wfortify-source]
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-In particular, the string literal "physical device - not rebuilding\n"
-is indeed 34B by my count.
-
-When we have a string literal that does not contain any format flags,
-rather than use snprintf (sometimes with a size that's too small), let's
-use sprintf.
-
-This is pattern is cleaned up throughout the file.
-
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1923
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- drivers/scsi/myrs.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/scsi/myrs.c b/drivers/scsi/myrs.c
-index a1eec65a9713..729f08379bd0 100644
---- a/drivers/scsi/myrs.c
-+++ b/drivers/scsi/myrs.c
-@@ -939,7 +939,7 @@ static ssize_t raid_state_show(struct device *dev,
- 	int ret;
- 
- 	if (!sdev->hostdata)
--		return snprintf(buf, 16, "Unknown\n");
-+		return sprintf(buf, "Unknown\n");
- 
- 	if (sdev->channel >= cs->ctlr_info->physchan_present) {
- 		struct myrs_ldev_info *ldev_info = sdev->hostdata;
-@@ -1058,7 +1058,7 @@ static ssize_t raid_level_show(struct device *dev,
- 	const char *name = NULL;
- 
- 	if (!sdev->hostdata)
--		return snprintf(buf, 16, "Unknown\n");
-+		return sprintf(buf, "Unknown\n");
- 
- 	if (sdev->channel >= cs->ctlr_info->physchan_present) {
- 		struct myrs_ldev_info *ldev_info;
-@@ -1086,7 +1086,7 @@ static ssize_t rebuild_show(struct device *dev,
- 	unsigned char status;
- 
- 	if (sdev->channel < cs->ctlr_info->physchan_present)
--		return snprintf(buf, 32, "physical device - not rebuilding\n");
-+		return sprintf(buf, "physical device - not rebuilding\n");
- 
- 	ldev_info = sdev->hostdata;
- 	ldev_num = ldev_info->ldev_num;
-@@ -1102,7 +1102,7 @@ static ssize_t rebuild_show(struct device *dev,
- 				(size_t)ldev_info->rbld_lba,
- 				(size_t)ldev_info->cfg_devsize);
- 	} else
--		return snprintf(buf, 32, "not rebuilding\n");
-+		return sprintf(buf, "not rebuilding\n");
- }
- 
- static ssize_t rebuild_store(struct device *dev,
-@@ -1190,7 +1190,7 @@ static ssize_t consistency_check_show(struct device *dev,
- 	unsigned short ldev_num;
- 
- 	if (sdev->channel < cs->ctlr_info->physchan_present)
--		return snprintf(buf, 32, "physical device - not checking\n");
-+		return sprintf(buf, "physical device - not checking\n");
- 
- 	ldev_info = sdev->hostdata;
- 	if (!ldev_info)
-@@ -1202,7 +1202,7 @@ static ssize_t consistency_check_show(struct device *dev,
- 				(size_t)ldev_info->cc_lba,
- 				(size_t)ldev_info->cfg_devsize);
- 	else
--		return snprintf(buf, 32, "not checking\n");
-+		return sprintf(buf, "not checking\n");
- }
- 
- static ssize_t consistency_check_store(struct device *dev,
-@@ -1376,7 +1376,7 @@ static ssize_t processor_show(struct device *dev,
- 			       info->cpu[1].cpu_name,
- 			       second_processor, info->cpu[1].cpu_count);
- 	else
--		ret = snprintf(buf, 64, "1: absent\n2: absent\n");
-+		ret = sprintf(buf, "1: absent\n2: absent\n");
- 
- 	return ret;
- }
-
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+Tested-by: Ron Economos <re@w6rz.net>
 
