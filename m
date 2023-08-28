@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F3578A438
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323C278A435
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbjH1CFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        id S229772AbjH1CFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjH1CEv (ORCPT
+        with ESMTP id S229600AbjH1CEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Aug 2023 22:04:51 -0400
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCC5D8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C15D123;
         Sun, 27 Aug 2023 19:04:48 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RYv560f0bz4f3nqh;
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RYv563tnkz4f3lx6;
         Mon, 28 Aug 2023 10:04:42 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S5;
+        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S6;
         Mon, 28 Aug 2023 10:04:45 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
@@ -27,21 +27,21 @@ To:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v2 01/28] md: use READ_ONCE/WRITE_ONCE for 'suspend_lo' and 'suspend_hi'
-Date:   Mon, 28 Aug 2023 09:59:54 +0800
-Message-Id: <20230828020021.2489641-2-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v2 02/28] md: use 'mddev->suspended' for is_md_suspended()
+Date:   Mon, 28 Aug 2023 09:59:55 +0800
+Message-Id: <20230828020021.2489641-3-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 References: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF4fAw13JF4xAFyfAF1DWrg_yoW8tw4rp3
-        yIqFWYgw45Jas5A34Ut3WkCFy5XwsxKrWqyrZrWry7A3W7Gw1rGr15XF43XFyF9as7CFsx
-        Gws8A3W8A348GFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw18JryUAFWfCFyxAF1UJrb_yoW8Gry8pF
+        WIqFWFvrWUAFyayw4DJa4kua45Z3ZxKrWvyry3Can3u3W3Zrn8WF1fuFZ0vr1v9FySkrnx
+        Xw4Ut348CF18Cr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
         Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
         A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
         0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
@@ -51,7 +51,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7CF4fAw13JF4xAFyfAF1DWrg_yoW8tw4rp3
         6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2
         Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
         Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
-        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU2_M3UUUUU
+        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHbyAUUUUU
         =
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
@@ -66,72 +66,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Because reading 'suspend_lo' and 'suspend_hi' from md_handle_request()
-is not protected, use READ_ONCE/WRITE_ONCE to prevent reading abnormal
-value.
+'pers->prepare_suspend' is introduced to prevent a deadlock for raid456,
+this change prepares to clean this up in later patches while refactoring
+mddev_suspend(). Specifically allow reshape to make progress while
+waiting for 'active_io' to be 0.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/md/md.c | 2 +-
+ drivers/md/md.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 46badd13a687..9d8dff9d923c 100644
+index 9d8dff9d923c..7fa311a14317 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -359,11 +359,11 @@ static bool is_suspended(struct mddev *mddev, struct bio *bio)
+@@ -355,7 +355,7 @@ static DEFINE_SPINLOCK(all_mddevs_lock);
+  */
+ static bool is_suspended(struct mddev *mddev, struct bio *bio)
+ {
+-	if (is_md_suspended(mddev))
++	if (is_md_suspended(mddev) || percpu_ref_is_dying(&mddev->active_io))
  		return true;
  	if (bio_data_dir(bio) != WRITE)
  		return false;
--	if (mddev->suspend_lo >= mddev->suspend_hi)
-+	if (READ_ONCE(mddev->suspend_lo) >= READ_ONCE(mddev->suspend_hi))
- 		return false;
--	if (bio->bi_iter.bi_sector >= mddev->suspend_hi)
-+	if (bio->bi_iter.bi_sector >= READ_ONCE(mddev->suspend_hi))
- 		return false;
--	if (bio_end_sector(bio) < mddev->suspend_lo)
-+	if (bio_end_sector(bio) < READ_ONCE(mddev->suspend_lo))
- 		return false;
- 	return true;
- }
-@@ -5171,7 +5171,8 @@ __ATTR(sync_max, S_IRUGO|S_IWUSR, max_sync_show, max_sync_store);
- static ssize_t
- suspend_lo_show(struct mddev *mddev, char *page)
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index b628c292506e..fb3b123f16dd 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -584,7 +584,7 @@ static inline bool md_is_rdwr(struct mddev *mddev)
+ 
+ static inline bool is_md_suspended(struct mddev *mddev)
  {
--	return sprintf(page, "%llu\n", (unsigned long long)mddev->suspend_lo);
-+	return sprintf(page, "%llu\n",
-+		       (unsigned long long)READ_ONCE(mddev->suspend_lo));
+-	return percpu_ref_is_dying(&mddev->active_io);
++	return READ_ONCE(mddev->suspended);
  }
  
- static ssize_t
-@@ -5191,7 +5192,7 @@ suspend_lo_store(struct mddev *mddev, const char *buf, size_t len)
- 		return err;
- 
- 	mddev_suspend(mddev);
--	mddev->suspend_lo = new;
-+	WRITE_ONCE(mddev->suspend_lo, new);
- 	mddev_resume(mddev);
- 
- 	mddev_unlock(mddev);
-@@ -5203,7 +5204,8 @@ __ATTR(suspend_lo, S_IRUGO|S_IWUSR, suspend_lo_show, suspend_lo_store);
- static ssize_t
- suspend_hi_show(struct mddev *mddev, char *page)
- {
--	return sprintf(page, "%llu\n", (unsigned long long)mddev->suspend_hi);
-+	return sprintf(page, "%llu\n",
-+		       (unsigned long long)READ_ONCE(mddev->suspend_hi));
- }
- 
- static ssize_t
-@@ -5223,7 +5225,7 @@ suspend_hi_store(struct mddev *mddev, const char *buf, size_t len)
- 		return err;
- 
- 	mddev_suspend(mddev);
--	mddev->suspend_hi = new;
-+	WRITE_ONCE(mddev->suspend_hi, new);
- 	mddev_resume(mddev);
- 
- 	mddev_unlock(mddev);
+ static inline int __must_check mddev_lock(struct mddev *mddev)
 -- 
 2.39.2
 
