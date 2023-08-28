@@ -2,210 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3FE78BBA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 01:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94CD78BBC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 01:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbjH1Xn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 19:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
+        id S234345AbjH1XqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 19:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234594AbjH1Xm4 (ORCPT
+        with ESMTP id S234337AbjH1Xp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 19:42:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C51B95;
-        Mon, 28 Aug 2023 16:42:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 273A62186E;
-        Mon, 28 Aug 2023 23:42:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693266171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WyLuViKwB7yRpzKJOiXJzu2kk1HfpR7YifPRHxHPzIA=;
-        b=ouNNcGOYz1WGNu2XCTPHToawqKRzLcdyv78t53NqxpLcsAgO+7IkOJNGCzTwdd4LvNvaxD
-        o8nvcPo3DsQgFZolt1ZTp3jWgZvqpv/4NlqOQNQ56EuLmAGEy4nTZhFNNXOkIThSl+LX2p
-        kUHSwO9CDKnjQsY4eIRgtLNY6a3QWdM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693266171;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WyLuViKwB7yRpzKJOiXJzu2kk1HfpR7YifPRHxHPzIA=;
-        b=0wvIadsZ8d5FkaX2hFHXLMPVrttrVIDMKB4TqlwXeyYUg72i6mFimVRJ4xWpvqZ1NIdjyA
-        gdyZsB8DfGnFVTAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4069139CC;
-        Mon, 28 Aug 2023 23:42:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id aVnUMfow7WReWwAAMHmgww
-        (envelope-from <krisman@suse.de>); Mon, 28 Aug 2023 23:42:50 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     syzbot <syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: [PATCH] io_uring: Don't set affinity on a dying sqpoll thread
-In-Reply-To: <000000000000753fbd0603f8c10b@google.com> (syzbot's message of
-        "Mon, 28 Aug 2023 02:59:52 -0700")
-References: <000000000000753fbd0603f8c10b@google.com>
-Date:   Mon, 28 Aug 2023 19:42:49 -0400
-Message-ID: <87v8cybuo6.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Mon, 28 Aug 2023 19:45:56 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6823795;
+        Mon, 28 Aug 2023 16:45:53 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SNN4xO031541;
+        Mon, 28 Aug 2023 23:45:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=KzpLzC0OmLztcMVqXQpb/mV3LqixUhSoPm43iK/1Ih4=;
+ b=LeCUUQad8+VjaLeEqIf74gD1af6xhu0vVFipb9XHwX/64MyCvncn3evEDwKAWIMFZrbO
+ TWFDbx3aXFJvbDAh7rQCqArZfnHHfCuKrZsLpShlCYUrJ9hJWjFfHH4BKRr7mbGKOFO6
+ 2uHkBVD80kUmsoJ7aZgfHkBCrLpWN1l9FP0H9wrt2rp41HV3meEPOe13hbYIcyRWK1+5
+ YnnIu5Ug5A18HxvhmenOWU+ZQqS/Uh7K6xHrvYVR+0GKpkx63IzNTve24UOSogajbhso
+ DN4HUYPiGwDEHgwkVwAmVFz1sY4qEsyg2sMAXqNfxNH49v39jc6JA0zqbgTQDvtqygf0 0g== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sq8ddmmb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 23:45:19 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SNjIVq001735
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 23:45:18 GMT
+Received: from [10.71.109.168] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 28 Aug
+ 2023 16:45:17 -0700
+Message-ID: <ae98c379-2ddb-6b4e-0de3-2b1c68a99ee7@quicinc.com>
+Date:   Mon, 28 Aug 2023 16:45:17 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v5 02/10] drm: Introduce solid fill DRM plane property
+Content-Language: en-US
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        <quic_abhinavk@quicinc.com>, <ppaalanen@gmail.com>,
+        <contact@emersion.fr>, <laurent.pinchart@ideasonboard.com>,
+        <sebastian.wick@redhat.com>, <ville.syrjala@linux.intel.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>,
+        <wayland-devel@lists.freedesktop.org>
+References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
+ <20230728-solid-fill-v5-2-053dbefa909c@quicinc.com>
+ <CAA8EJpq=pbDoYc9wqKKrX+RahXp8zWTPFqVqA=S-0TkWXXJUjQ@mail.gmail.com>
+ <26b4bb91-8786-c7cf-a821-eb2b881a42ab@quicinc.com>
+ <656526F6-C123-4A5A-9E62-6ED092474113@linaro.org>
+ <1dfcd37e-11a6-fa77-6440-f0e6bd06998d@quicinc.com>
+In-Reply-To: <1dfcd37e-11a6-fa77-6440-f0e6bd06998d@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: yfA8ljycEPFAuUUYHS3pkUhtW2-BmOnO
+X-Proofpoint-GUID: yfA8ljycEPFAuUUYHS3pkUhtW2-BmOnO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-28_18,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 mlxscore=0 clxscore=1011 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308280202
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot <syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com> writes:
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    626932085009 Add linux-next specific files for 20230825
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12a97797a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c74fea926a78b8a91042
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com
->
-> general protection fault, probably for non-canonical address 0xdffffc000000011d: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x00000000000008e8-0x00000000000008ef]
-> CPU: 1 PID: 27342 Comm: syz-executor.5 Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-> RIP: 0010:io_sqpoll_wq_cpu_affinity+0x8c/0xe0 io_uring/sqpoll.c:433
 
-Jens,
+On 8/8/2023 3:57 PM, Jessica Zhang wrote:
+> 
+> 
+> On 8/7/2023 6:07 PM, Dmitry Baryshkov wrote:
+>>
+>>
+>> On 8 August 2023 00:41:07 GMT+03:00, Jessica Zhang 
+>> <quic_jesszhan@quicinc.com> wrote:
+>>>
+>>>
+>>> On 8/4/2023 6:27 AM, Dmitry Baryshkov wrote:
+>>>> On Fri, 28 Jul 2023 at 20:03, Jessica Zhang 
+>>>> <quic_jesszhan@quicinc.com> wrote:
+>>>>>
+>>>>> Document and add support for solid_fill property to drm_plane. In
+>>>>> addition, add support for setting and getting the values for 
+>>>>> solid_fill.
+>>>>>
+>>>>> To enable solid fill planes, userspace must assign a property blob to
+>>>>> the "solid_fill" plane property containing the following information:
+>>>>>
+>>>>> struct drm_mode_solid_fill {
+>>>>>           u32 version;
+>>>>>           u32 r, g, b;
+>>>>> };
+>>>>>
+>>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+>>>>> ---
+>>>>>    drivers/gpu/drm/drm_atomic_state_helper.c |  9 +++++
+>>>>>    drivers/gpu/drm/drm_atomic_uapi.c         | 55 
+>>>>> +++++++++++++++++++++++++++++++
+>>>>>    drivers/gpu/drm/drm_blend.c               | 30 +++++++++++++++++
+>>>>>    include/drm/drm_blend.h                   |  1 +
+>>>>>    include/drm/drm_plane.h                   | 35 ++++++++++++++++++++
+>>>>>    include/uapi/drm/drm_mode.h               | 24 ++++++++++++++
+>>>>>    6 files changed, 154 insertions(+)
+>>>>>
+>>>>
+>>>> [skipped most of the patch]
+>>>>
+>>>>> diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+>>>>> index 43691058d28f..53c8efa5ad7f 100644
+>>>>> --- a/include/uapi/drm/drm_mode.h
+>>>>> +++ b/include/uapi/drm/drm_mode.h
+>>>>> @@ -259,6 +259,30 @@ struct drm_mode_modeinfo {
+>>>>>           char name[DRM_DISPLAY_MODE_LEN];
+>>>>>    };
+>>>>>
+>>>>> +/**
+>>>>> + * struct drm_mode_solid_fill - User info for solid fill planes
+>>>>> + *
+>>>>> + * This is the userspace API solid fill information structure.
+>>>>> + *
+>>>>> + * Userspace can enable solid fill planes by assigning the plane 
+>>>>> "solid_fill"
+>>>>> + * property to a blob containing a single drm_mode_solid_fill 
+>>>>> struct populated with an RGB323232
+>>>>> + * color and setting the pixel source to "SOLID_FILL".
+>>>>> + *
+>>>>> + * For information on the plane property, see 
+>>>>> drm_plane_create_solid_fill_property()
+>>>>> + *
+>>>>> + * @version: Version of the blob. Currently, there is only support 
+>>>>> for version == 1
+>>>>> + * @r: Red color value of single pixel
+>>>>> + * @g: Green color value of single pixel
+>>>>> + * @b: Blue color value of single pixel
+>>>>> + */
+>>>>> +struct drm_mode_solid_fill {
+>>>>> +       __u32 version;
+>>>>> +       __u32 r;
+>>>>> +       __u32 g;
+>>>>> +       __u32 b;
+>>>>
+>>>> Another thought about the drm_mode_solid_fill uABI. I still think we
+>>>> should add alpha here. The reason is the following:
+>>>>
+>>>> It is true that we have  drm_plane_state::alpha and the plane's
+>>>> "alpha" property. However it is documented as "the plane-wide opacity
+>>>> [...] It can be combined with pixel alpha. The pixel values in the
+>>>> framebuffers are expected to not be pre-multiplied by the global alpha
+>>>> associated to the plane.".
+>>>>
+>>>> I can imagine a use case, when a user might want to enable plane-wide
+>>>> opacity, set "pixel blend mode" to "Coverage" and then switch between
+>>>> partially opaque framebuffer and partially opaque solid-fill without
+>>>> touching the plane's alpha value.
+>>>
+>>> Hi Dmitry,
+>>>
+>>> I don't really agree that adding a solid fill alpha would be a good 
+>>> idea. Since the intent behind solid fill is to have a single color 
+>>> for the entire plane, I think it makes more sense to have solid fill 
+>>> rely on the global plane alpha.
+>>>
+>>> As stated in earlier discussions, I think having both a 
+>>> solid_fill.alpha and a plane_state.alpha would be redundant and serve 
+>>> to confuse the user as to which one to set.
+>>
+>> That depends on the blending mode: in Coverage mode one has 
+>> independent plane and contents alpha values. And I consider alpha 
+>> value to be a part of the colour in the rgba/bgra modes.
+> 
+> Acked -- taking Sebastian's concern into consideration, I think I'll 
+> have "PIXEL_SOURCE_SOLID_FILL_RGB" and add a separate 
+> "PIXEL_SOURCE_SOLID_FILL_RGBA".
 
-I'm not sure I got the whole story on this one, but it seems fairly
-trivial to reproduce and I can't see another way it could be
-triggered. What do you think?
+Hi Dmitry,
+
+Since it looks like there's still some ongoing discussion with Pekka 
+about whether to support an RGBA solid fill source, I'll just leave a 
+note to add an RGBA source in the future.
 
 Thanks,
 
--- >8 --
-Subject: [PATCH] io_uring: Don't set affinity on a dying sqpoll thread
+Jessica Zhang
 
-Syzbot reported a null-ptr-deref of sqd->thread inside
-io_sqpoll_wq_cpu_affinity.  It turns out the sqd->thread can go away
-from under us during io_uring_register, in case the process gets a
-fatal signal during io_uring_register.
-
-It is not particularly hard to hit the race, and while I am not sure
-this is the exact case hit by syzbot, it solves it.  Finally, checking
-->thread is enough to close the race because we locked sqd while
-"parking" the thread, thus preventing it from going away.
-
-I reproduced it fairly consistently with a program that does:
-
-int main(void) {
-  ...
-  io_uring_queue_init(RING_LEN, &ring1, IORING_SETUP_SQPOLL);
-  while (1) {
-    io_uring_register_iowq_aff(ring, 1, &mask);
-  }
-}
-
-Executed in a loop with timeout to trigger SIGTERM:
-  while true; do timeout 1 /a.out ; done
-
-This will hit the following BUG() in very few attempts.
-
-BUG: kernel NULL pointer dereference, address: 00000000000007a8
-PGD 800000010e949067 P4D 800000010e949067 PUD 10e46e067 PMD 0
-Oops: 0000 [#1] PREEMPT SMP PTI
-CPU: 0 PID: 15715 Comm: dead-sqpoll Not tainted 6.5.0-rc7-next-20230825-g193296236fa0-dirty #23
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-RIP: 0010:io_sqpoll_wq_cpu_affinity+0x27/0x70
-Code: 90 90 90 0f 1f 44 00 00 55 53 48 8b 9f 98 03 00 00 48 85 db 74 4f
-48 89 df 48 89 f5 e8 e2 f8 ff ff 48 8b 43 38 48 85 c0 74 22 <48> 8b b8
-a8 07 00 00 48 89 ee e8 ba b1 00 00 48 89 df 89 c5 e8 70
-RSP: 0018:ffffb04040ea7e70 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff93c010749e40 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: ffffffffa7653331 RDI: 00000000ffffffff
-RBP: ffffb04040ea7eb8 R08: 0000000000000000 R09: c0000000ffffdfff
-R10: ffff93c01141b600 R11: ffffb04040ea7d18 R12: ffff93c00ea74840
-R13: 0000000000000011 R14: 0000000000000000 R15: ffff93c00ea74800
-FS:  00007fb7c276ab80(0000) GS:ffff93c36f200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000007a8 CR3: 0000000111634003 CR4: 0000000000370ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ? __die_body+0x1a/0x60
- ? page_fault_oops+0x154/0x440
- ? do_user_addr_fault+0x174/0x7b0
- ? exc_page_fault+0x63/0x140
- ? asm_exc_page_fault+0x22/0x30
- ? io_sqpoll_wq_cpu_affinity+0x27/0x70
- __io_register_iowq_aff+0x2b/0x60
- __io_uring_register+0x614/0xa70
- __x64_sys_io_uring_register+0xaa/0x1a0
- do_syscall_64+0x3a/0x90
- entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-RIP: 0033:0x7fb7c226fec9
-Code: 2e 00 b8 ca 00 00 00 0f 05 eb a5 66 0f 1f 44 00 00 48 89 f8 48 89
-f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
-f0 ff ff 73 01 c3 48 8b 0d 97 7f 2d 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffe2c0674f8 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb7c226fec9
-RDX: 00007ffe2c067530 RSI: 0000000000000011 RDI: 0000000000000003
-RBP: 00007ffe2c0675d0 R08: 00007ffe2c067550 R09: 00007ffe2c067550
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe2c067750 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
-CR2: 00000000000007a8
----[ end trace 0000000000000000 ]---
-
-Reported-by: syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com
-Fixes: ebdfefc09c6d ("io_uring/sqpoll: fix io-wq affinity when IORING_SETUP_SQPOLL is used")
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
----
- io_uring/sqpoll.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-index ee2d2c687fda..bd6c2c7959a5 100644
---- a/io_uring/sqpoll.c
-+++ b/io_uring/sqpoll.c
-@@ -430,7 +430,9 @@ __cold int io_sqpoll_wq_cpu_affinity(struct io_ring_ctx *ctx,
- 
- 	if (sqd) {
- 		io_sq_thread_park(sqd);
--		ret = io_wq_cpu_affinity(sqd->thread->io_uring, mask);
-+		/* Don't set affinity for a dying thread */
-+		if (sqd->thread)
-+			ret = io_wq_cpu_affinity(sqd->thread->io_uring, mask);
- 		io_sq_thread_unpark(sqd);
- 	}
- 
--- 
-2.41.0
-
-
-
+> 
+> Thanks,
+> 
+> Jessica Zhang
+> 
+>>
+>>
+>>>
+>>> Thanks,
+>>>
+>>> Jessica Zhang
+>>>
+>>>>
+>>>> -- 
+>>>> With best wishes
+>>>> Dmitry
+>>
+>> -- 
+>> With best wishes
+>> Dmitry
