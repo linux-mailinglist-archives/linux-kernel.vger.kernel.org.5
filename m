@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AC878A8A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D54A78A8AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbjH1JTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        id S229965AbjH1JTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjH1JSz (ORCPT
+        with ESMTP id S229913AbjH1JS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:18:55 -0400
+        Mon, 28 Aug 2023 05:18:56 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 30031107;
-        Mon, 28 Aug 2023 02:18:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB8EA109;
+        Mon, 28 Aug 2023 02:18:53 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qaYOX-0004JP-00; Mon, 28 Aug 2023 11:18:49 +0200
+        id 1qaYOY-0004JR-00; Mon, 28 Aug 2023 11:18:50 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 43C5BC01A3; Mon, 28 Aug 2023 11:10:59 +0200 (CEST)
-Date:   Mon, 28 Aug 2023 11:10:59 +0200
+        id B0F28C0234; Mon, 28 Aug 2023 11:11:19 +0200 (CEST)
+Date:   Mon, 28 Aug 2023 11:11:19 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/8] MIPS: TXx9: Do PCI error checks on own line
-Message-ID: <ZOxko5RB0ZilMHv5@alpha.franken.de>
-References: <20230827133705.12991-1-ilpo.jarvinen@linux.intel.com>
- <20230827133705.12991-3-ilpo.jarvinen@linux.intel.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v4 0/4] Modify die() for MIPS
+Message-ID: <ZOxkt/6EkQIy+Jkt@alpha.franken.de>
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230827133705.12991-3-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -44,21 +41,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 04:36:59PM +0300, Ilpo Järvinen wrote:
-> Instead of if conditions with line splits, use the usual error handling
-> pattern with a separate variable to improve readability.
+On Sat, Aug 19, 2023 at 04:36:19PM +0800, Tiezhu Yang wrote:
+> v4:
+>   -- Add BUG() at the end of nmi_exception_handler()
+>   -- Return earlier in die() if notify_die() returns NOTIFY_STOP
+>   -- Update the patch titles and commit messages
 > 
-> The second check can use reverse logic which reduces indentation level.
+> v3:
+>   -- Make each patch can be built without errors and warnings.
 > 
-> No functional changes intended.
+> v2: 
+>   -- Update the commit message to give more detailed info, split into
+>      three individual patches, suggested by Maciej, thank you.
 > 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-> ---
->  arch/mips/txx9/generic/pci.c | 43 +++++++++++++++++++-----------------
->  1 file changed, 23 insertions(+), 20 deletions(-)
+> Tiezhu Yang (4):
+>   MIPS: Add BUG() at the end of nmi_exception_handler()
+>   MIPS: Do not kill the task in die() if notify_die() returns
+>     NOTIFY_STOP
+>   MIPS: Return earlier in die() if notify_die() returns NOTIFY_STOP
+>   MIPS: Add identifier names to arguments of die() declaration
+> 
+>  arch/mips/include/asm/ptrace.h |  2 +-
+>  arch/mips/kernel/traps.c       | 15 +++++++++------
+>  2 files changed, 10 insertions(+), 7 deletions(-)
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 
