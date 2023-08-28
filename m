@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B143778A637
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440B578A638
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbjH1HAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S229618AbjH1HAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjH1HAM (ORCPT
+        with ESMTP id S229672AbjH1HA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:00:12 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E531A6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:00:03 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a88e1a5286so2300825b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:00:03 -0700 (PDT)
+        Mon, 28 Aug 2023 03:00:28 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C199010D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:00:24 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a069edca6so4040064a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693206003; x=1693810803;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TcvDWImdRFz5jCiU++2QTtVKsjAo9nhqa75faNfZ0Kk=;
-        b=SJ5o4ovS9lhckyxuxHtr83OpMUr4s24UJSs2LXZj70aWfby1dkCOcTN9cj3d3LxdYT
-         YI8hobvxjzwqFljlJTs5LwuQ7NnPvFP8YkqKXK6Tqm+pmwkEGWuwh7ez5Q8nFbOsaRdG
-         GQ0D3vnzR+JgRaSoPD/tTeBmY4W5sYpWFh2JSfZc+7TfadwxsyUvXFUPLkmSxzt0g+4/
-         Fz5HO+sTxiaZa10gNxq6kg3Kf5rz/4aH1q6/RuntnPW7jL3FaDn6XKoLwvr12DwsSJQu
-         k5QlJ0urjRc/6RgIy3/2lK8Zt0X8xawbiDl3ssng42wo/9H0lDYN93/kcsNQoTyzOLSl
-         hL4w==
+        d=linaro.org; s=google; t=1693206023; x=1693810823;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pf0wRFcbL4aMUzhOgl330QqnoThqb8W2rL7xxb0kxd8=;
+        b=EF17grfKST859AXxoziBXteUD2v3MLDQPINYg40woqOpSLYfMkAbGRrQzLiNPFgGpu
+         2lokci78mVM0kZSrt2djoIriNhK2XBIdZeA7FufxwI5xPRmbcYLUSCmEya4J4lbBT7i3
+         qUm9S/CYv4WO4ECCY7IFg0MNKmuBb1qNGJAJX862tb4RfijZu6gIcOdPOqkIvIGnLn/L
+         aDw3rt7WndHZmtiMWCByjpA1T06PhHuYA3luSS6NZuNzJmfod0ZFf56/UoDmLu4gOWOx
+         nNM/rHxKEd/CHqOg39V4cTDYTPjYPrCSFlNJcbsmSBIFkZkjtLF3+b3Sn4n9N6AHQ3A7
+         Rd7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693206003; x=1693810803;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TcvDWImdRFz5jCiU++2QTtVKsjAo9nhqa75faNfZ0Kk=;
-        b=CF1qOVGymrnRMXZzsUT4IjjFX0VmPxrSY0BOBllWhapLfzUNmREsm+B/f70+hjd9am
-         jbcJ5qwmEOZKFUAAW3uKNTyhFzv9oRZ4jj5qdjQ2YfAdV7Uvj5YnyWfF23kW/YABNH1b
-         fb42SYcDpnqApOTABq2uhmKbMQM9ZpfeIe86hJnb9NWaJ4l+GGm4VMuQ7fw3/rI3SstE
-         TZsLH+hHusvpNX+ToVPwvA3domun85U1nHFv3830p7t1jLvwGE0fPuYE24FumeUsmusp
-         TqxAWwbrtVxXU4YZY9RVVtqD7IUQjZW2Uj14jwo6FOWer4lx883slwXuFuCJGw8rYPUH
-         gXRg==
-X-Gm-Message-State: AOJu0YzcsYrf4uogWbcKDQA9j0ax5LvoTl9Ng/3L0P3OmmNcOcwWSn4P
-        6bpWlmV8zvcZiH1crH7i3tDS3VJhsIZ+JTgwtjU=
-X-Google-Smtp-Source: AGHT+IG8ceQ3DNz1itVtRa0Gbp3Hl/oH8yZjPPYTmA2VmclhNWasPUuE57b/6wPAyCZBfoAkz/9+5A==
-X-Received: by 2002:aca:1719:0:b0:3a4:4b42:612b with SMTP id j25-20020aca1719000000b003a44b42612bmr10049764oii.42.1693206003310;
-        Mon, 28 Aug 2023 00:00:03 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id t25-20020aa79399000000b0068be4ce33easm6046003pfe.96.2023.08.28.00.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 00:00:02 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 12:30:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: Fix inconsistency in error messages of
- cpufreq_resume/suspend()
-Message-ID: <20230828070000.ooymfbw3qhs5xl5y@vireshk-i7>
-References: <20230826095201.1137288-1-liaochang1@huawei.com>
+        d=1e100.net; s=20221208; t=1693206023; x=1693810823;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pf0wRFcbL4aMUzhOgl330QqnoThqb8W2rL7xxb0kxd8=;
+        b=BzFMN1NgVC3/RAxvfxz8TFdMDeI16V1BPtr2lD7leuzsGotjyMPZMEA/62va9VLUvw
+         QH02xko/aNh1v5QyGQc8lWM/sb08G7+vTxtZ6ZgXmr1iHnEo1CSbPJTIuWrlJXR3T6wQ
+         BGOmti1r9d9Iysuv+A8cyotLGp2tYIw2MjVLWsJ71kCZiPe5u2dSm1WzUibBlhVZelQn
+         hwP4vfRdFq51OGzGC6I/MSE8E28jS58TK1D3x1j7PxUyzz/gtyHLGyHnQpfqS/QnDJ60
+         ryOSm3gRIUNBvJOw2RxOQz78UGr785+CoiLz/STTujXeGZTfLefZtBxbhmUah1b0g6Vk
+         8vWg==
+X-Gm-Message-State: AOJu0Yxi5nJx2OnIxZ+1LUH/V0ddagGLw05wK9jF8bJg7YU3AGR+BvCA
+        gUz6CaReLbNAudqUOQb831iPCg==
+X-Google-Smtp-Source: AGHT+IHJIJHbmAUXWTWOFrG36GyISApUvcmXozjbLuJzr5rzOPmIqVa1Z+iqbTN0a+JO/lztEB3ulQ==
+X-Received: by 2002:a17:906:32c2:b0:9a1:c495:66bb with SMTP id k2-20020a17090632c200b009a1c49566bbmr11676537ejk.60.1693206023201;
+        Mon, 28 Aug 2023 00:00:23 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id lx16-20020a170906af1000b0098de7d28c34sm4302280ejb.193.2023.08.28.00.00.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 00:00:22 -0700 (PDT)
+Message-ID: <7859abb1-ae99-d33f-a8fc-c76304057df9@linaro.org>
+Date:   Mon, 28 Aug 2023 09:00:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230826095201.1137288-1-liaochang1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm7225-fp4: Revert "arm64: dts:
+ qcom: sm7225-fairphone-fp4: Add AW8695 haptics"
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230827122842.63741-1-krzysztof.kozlowski@linaro.org>
+ <20230827122842.63741-3-krzysztof.kozlowski@linaro.org>
+ <CV3ZCVK29BLY.D7Y8AEEOYLO3@otso>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CV3ZCVK29BLY.D7Y8AEEOYLO3@otso>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-08-23, 09:52, Liao Chang wrote:
-> The error message printed by cpufreq_resume() currently is the pointer
-> value of the policy structure, while the error message printed by
-> cpufreq_suspend() is the name of the driver. In order to make the error
-> messages more consistent and easier to understand, change the error
-> message printed by cpufreq_resume() to the name of driver.
-
-Also I don't think printing kernel addresses will help much anyway,
-and it also may not be recommended.
-
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  drivers/cpufreq/cpufreq.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On 28/08/2023 08:56, Luca Weiss wrote:
+> Hi Krzysztof,
 > 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index c835ff117386..2199c04ac64d 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1943,8 +1943,8 @@ void cpufreq_resume(void)
->  
->  	for_each_active_policy(policy) {
->  		if (cpufreq_driver->resume && cpufreq_driver->resume(policy)) {
-> -			pr_err("%s: Failed to resume driver: %p\n", __func__,
-> -				policy);
-> +			pr_err("%s: Failed to resume driver: %s\n", __func__,
-> +				cpufreq_driver->name);
->  		} else if (has_target()) {
->  			down_write(&policy->rwsem);
->  			ret = cpufreq_start_governor(policy);
+> On Sun Aug 27, 2023 at 2:28 PM CEST, Krzysztof Kozlowski wrote:
+>> This reverts commit 413821b7777d062b57f8dc66ab088ed390cbc3ec because it
+>> was never reviewed, was buggy (report from kernel test robot:
+>> https://lore.kernel.org/all/202204090333.QZXMI2tu-lkp@intel.com/) and
+> 
+> (I wouldn't say this part is accurate, the robot just didn't use a tree
+> with the i2c10 node already present, it was sent in an earlier patch
+> IIRC, but whatever)
+> 
+>> used undocumented, broken bindings.  Half of the properties in this
+>> device are questioned, thus adding DTS node causes only errors and does
+>> not make the device usable without the bindings and driver part:
+>>
+>>   sm7225-fairphone-fp4.dtb: haptics@5a: failed to match any schema with compatible: ['awinic,aw8695']
+>>   sm7225-fairphone-fp4.dtb: haptics@5a: awinic,tset: b'\x12' is not of type 'object', 'array', 'boolean', 'null'
+>>   sm7225-fairphone-fp4.dtb: haptics@5a: awinic,r-spare: b'h' is not of type 'object', 'array', 'boolean', 'null'
+>>
+>> Since bindings were abandoned (4 months since review), revert the commit
+>> to avoid false sense of supporting something which is not supported.
+> 
+> I've been avoiding touching this topic again since I'm really not sure
+> how to resolve.
 
-There is another print down here which prints policy, please update
-that too in a similar way.
+Happens, but the DTS should not have been applied in such case.
 
--- 
-viresh
+> 
+> There's a bunch of magic registers being written to in the downstream
+> driver, I don't have any documentation for that so I'm not exactly sure
+> what I can do to make nice bindings with proper properties.
+> 
+> Would you recommend just hardcoding some of these properties in the
+> driver, assuming they're constant for every AW8695, even though the
+> downstream driver has these properties in devicetree? Because of that I
+> assumed these properties could differ per implementation / usage of the
+> AW8695 in different devices.
+
+Yes, keep them in the driver.
+
+Best regards,
+Krzysztof
+
