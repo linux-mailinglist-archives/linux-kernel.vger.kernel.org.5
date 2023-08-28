@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A55178B4F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BCC78B501
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjH1P7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S232600AbjH1QA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 12:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbjH1P7W (ORCPT
+        with ESMTP id S229746AbjH1QAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:59:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCCA123
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:59:19 -0700 (PDT)
-Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <m.tretter@pengutronix.de>)
-        id 1qaee1-0005pk-FX; Mon, 28 Aug 2023 17:59:13 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-Date:   Mon, 28 Aug 2023 17:59:10 +0200
-Subject: [PATCH 5/5] drm/bridge: samsung-dsim: calculate porches in Hz
+        Mon, 28 Aug 2023 12:00:03 -0400
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789FFCA;
+        Mon, 28 Aug 2023 09:00:00 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d7260fae148so3329989276.1;
+        Mon, 28 Aug 2023 09:00:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693238399; x=1693843199;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LVKo28epBiUG3SEESqk0GaOO1fQ+tGlFjow4pbPvDOc=;
+        b=f7mZjlRSsKdEAJTd2HmQUIXry+VBbv9QBjhY3v0GISsyaOpNoNxowo85p8cxej0pL9
+         DMZu7WRuL9pSQbMsetk5rbEPm9AbQE7prX+9aAoppUp35BkVnQDKAMUhc9cusSiGnreS
+         poouBn10o8J9dkv+dvdoKhTMDPtTUrgCKMbUkGnPbTgL4UQLYBzem7l8cuFeeQAYCFwe
+         tBMMiJfQowBrfmlxrinSnjVVFC/Ee3up4T12wDSgHfgoSyhWkEY+R9f3yC3/LbtabCuw
+         S40Qfk60bXr8eLohUhxJ+Bdx6wgPEwbDX3ys9/q6vk03o1et8yXv/MGDCwYsR9Qj2qrg
+         z/yA==
+X-Gm-Message-State: AOJu0YzTwy2sRDZ+jBSaT1fzYTrLbRhjLuRzk9uyUapuQKs68rYHKucq
+        wAlRjwruayLr8cr2SBvvMcybwHGWoMQIgA==
+X-Google-Smtp-Source: AGHT+IH+AFBVI3DPXh919wgqnRzEPxzRq+uwunyVsV2JXLy5zIepDPTI+3vWzY5m60dUrLlmwZ6Erw==
+X-Received: by 2002:a25:d807:0:b0:d71:5afb:7741 with SMTP id p7-20020a25d807000000b00d715afb7741mr25038389ybg.60.1693238399368;
+        Mon, 28 Aug 2023 08:59:59 -0700 (PDT)
+Received: from localhost ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id f205-20020a25cfd6000000b00d05bb67965dsm1723919ybg.8.2023.08.28.08.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 08:59:58 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, hch@infradead.org, hawkinsw@obs.cr,
+        dthaler@microsoft.com, bpf@ietf.org
+Subject: [PATCH bpf-next 0/3] Clean up some standardization stuff
+Date:   Mon, 28 Aug 2023 10:59:45 -0500
+Message-ID: <20230828155948.123405-1-void@manifault.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230818-samsung-dsim-v1-5-b39716db6b7a@pengutronix.de>
-References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
-In-Reply-To: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
-To:     Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Michael Tretter <m.tretter@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::54
-X-SA-Exim-Mail-From: m.tretter@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calculating the byte_clk in kHz is imprecise for a hs_clock of 55687500
-Hz, which may be used with a pixel clock of 74.25 MHz with mode
-1920x1080-30.
+The Documentation/bpf/standardization subdirectory contains documents
+that will be standardized with the IETF. There are a few things we can
+do to clean it up:
 
-Fix the calculation by using HZ instead of kHZ.
+- Move linux-notes.rst back to Documentation/bpf. It doesn't belong in
+  the standardization directory.
+- Move ABI-specific verbiage from instruction-set.rst into a new abi.rst
+  document. This document will be expanded significantly over time. For
+  now, we just need to get anything describing ABI out of
+  instruction-set.rst.
+- Say BPF instead of eBPF in our documents. It's just creating
+  confusion.
 
-This requires to change the type to u64 to prevent overflows of the
-integer type.
+There is more we can and should do. For example, we should create a
+maps.rst document that will be a proposed standard for cross platform
+map types, and remove any relevant content from instruction-set.rst.
+This can be done in a subsequent patch set.
 
-Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
----
- drivers/gpu/drm/bridge/samsung-dsim.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+David Vernet (3):
+  bpf,docs: Move linux-notes.rst to root bpf docs tree
+  bpf,docs: Add abi.rst document to standardization subdirectory
+  bpf,docs: s/eBPF/BPF in standards documents
 
-diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index 459be953be55..eb7aca2b9ab7 100644
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -973,10 +973,12 @@ static void samsung_dsim_set_display_mode(struct samsung_dsim *dsi)
- 	u32 reg;
- 
- 	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO) {
--		int byte_clk_khz = dsi->hs_clock / 1000 / 8;
--		int hfp = DIV_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk_khz, m->clock);
--		int hbp = DIV_ROUND_UP((m->htotal - m->hsync_end) * byte_clk_khz, m->clock);
--		int hsa = DIV_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk_khz, m->clock);
-+		u64 byte_clk = dsi->hs_clock / 8;
-+		u64 pix_clk = m->clock * 1000;
-+
-+		int hfp = DIV64_U64_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk, pix_clk);
-+		int hbp = DIV64_U64_ROUND_UP((m->htotal - m->hsync_end) * byte_clk, pix_clk);
-+		int hsa = DIV64_U64_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk, pix_clk);
- 
- 		/* remove packet overhead when possible */
- 		hfp = max(hfp - 6, 0);
+ Documentation/bpf/index.rst                   |  1 +
+ .../bpf/{standardization => }/linux-notes.rst |  0
+ Documentation/bpf/standardization/abi.rst     | 25 ++++++++++++
+ Documentation/bpf/standardization/index.rst   |  2 +-
+ .../bpf/standardization/instruction-set.rst   | 38 ++++++-------------
+ 5 files changed, 38 insertions(+), 28 deletions(-)
+ rename Documentation/bpf/{standardization => }/linux-notes.rst (100%)
+ create mode 100644 Documentation/bpf/standardization/abi.rst
 
 -- 
-2.39.2
+2.41.0
 
