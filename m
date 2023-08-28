@@ -2,228 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA1E78AD65
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C61478AD75
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbjH1KsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
+        id S232050AbjH1Ksd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbjH1Krh (ORCPT
+        with ESMTP id S232111AbjH1KsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:47:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E76713E;
-        Mon, 28 Aug 2023 03:47:25 -0700 (PDT)
+        Mon, 28 Aug 2023 06:48:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0311B4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:48:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693219645; x=1724755645;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=cPwIp2Gwq82heGCC/XbBEwjei8l9lzdIWv0QM6Erri4=;
-  b=Dq6EXoeB41T3FnaEW+F83itliRH8XBWqwT2EkHhnPsn1+cHoD30k2sDM
-   Cqnj4+jB7JL21N2eAwunuIBjxiUmb+1g05OE8mIJEeqRj/7zaf9t0ydPP
-   9cUkwg97lEqCjE30DOqehQ0E9GwwASiQZWoZz9UZ3CzZjJcGxVg+dFkUO
-   3IjEHhVw7oFRXOQIfbQq5aGHiN8USxZfFgFNWkyflToVrD4URDwkqbM24
-   UPV1UK0xaQ3YnKdyx13fyxp9aaGEfXOgz3flzNLCHJtkbGOox9gm8I4ya
-   T4xelOf71sjnl06GCosFh3C90JD47cT/3r5ZV7/QtzsXA4c04eW0l1HUy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="406062537"
+  t=1693219682; x=1724755682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hqTn4OWArUED+Sh4oIj6OK93XFWFbPb60hshBveyuLU=;
+  b=OYgqUmcbzUkYzYF9f4Za9xPXbN10xOp7TFjjnaugNc2LZJCCd6cWeNHR
+   NoCvtyq9xSdTm/E3LDBGtkElznno5YkIrIS/I/RptFOJiNWzdGFYy5DtE
+   8kefs8MlH/gLwNakbtJXeW5Q0Ew1vrGaVx05dd7piPt/QZul/T6lS0JIB
+   ryPbtNLeqG4fWANygNcwC9qZW77xXOEBCNKfZwKwqmNElG5mLpb4/dbAi
+   n1Bfg4T+2cXcN5wM23Gtl3IXUvM3PDo/f4XyEgTqka1PDs/p7YKwjZT6c
+   l6EpB7VDIlO25KyeWKJKW4e8HDdBRVoEPiLbJhxMM92O7REBZCMxag6iV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="373961580"
 X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="406062537"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 03:47:25 -0700
+   d="scan'208";a="373961580"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 03:48:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="741344814"
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="738201018"
 X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="741344814"
-Received: from gliakhov-mobl.ger.corp.intel.com ([10.251.214.48])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 03:47:23 -0700
-Date:   Mon, 28 Aug 2023 13:47:20 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        fenghua.yu@intel.com, Reinette Chatre <reinette.chatre@intel.com>
-Subject: Re: [PATCH v2 2/2] selftests/resctrl: Move run_benchmark() to a more
- fitting file
-In-Reply-To: <e527be8b871212823ff83f3800b6eecc2a75e455.1693213468.git.maciej.wieczor-retman@intel.com>
-Message-ID: <b4ead49-e91f-429-5980-279ba0df439@linux.intel.com>
-References: <cover.1693213468.git.maciej.wieczor-retman@intel.com> <e527be8b871212823ff83f3800b6eecc2a75e455.1693213468.git.maciej.wieczor-retman@intel.com>
+   d="scan'208";a="738201018"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP; 28 Aug 2023 03:47:56 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qaZmk-00Er8N-1m;
+        Mon, 28 Aug 2023 13:47:54 +0300
+Date:   Mon, 28 Aug 2023 13:47:54 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, perex@perex.cz,
+        pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com,
+        13916275206@139.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+        mengdong.lin@intel.com, baojun.xu@ti.com,
+        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
+        broonie@kernel.org, gentuser@gmail.com
+Subject: Re: [PATCH v5 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+Message-ID: <ZOx7WjdGPzPkqiQv@smile.fi.intel.com>
+References: <20230828022556.578-1-shenghao-ding@ti.com>
+ <87cyz71y7j.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1858072575-1693219644=:3654"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87cyz71y7j.wl-tiwai@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, Aug 28, 2023 at 08:24:16AM +0200, Takashi Iwai wrote:
+> On Mon, 28 Aug 2023 04:25:55 +0200,
+> Shenghao Ding wrote:
+> > 
+> > Integrate tas2781 configs for Lenovo Laptops. All of the tas2781s in the
+> > laptop will be aggregated as one audio device. The code support realtek
+> > as the primary codec.
+> > 
+> > Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+> 
+> Shenghao, your previous patches have been already merged!
+> Please take the latest sound.git tree before the submission.
+> 
+> Make your changes on top of the latest sound.git tree in a
+> fine-grained incremental way, and submit those instead *ASAP*, so that
+> the necessary fixes can be merged for 6.6-rc1.
 
---8323329-1858072575-1693219644=:3654
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 28 Aug 2023, Wieczor-Retman, Maciej wrote:
-
-> Resctrlfs.c file contains mostly functions that interact in some way
-> with resctrl FS entries while functions inside resctrl_val.c deal with
-> measurements and benchmarking.
-> 
-> Run_benchmark() function is located in resctrlfs.c file even though it's
-> purpose is not interacting with the resctrl FS but to execute cache
-> checking logic.
-> 
-> Move run_benchmark() to resctrl_val.c just before resctrl_val() function
-> that makes use of run_benchmark().
-> 
-> Remove return comment from kernel-doc since the function is type void.
-> 
-> Changelog v2:
-> - Add dots at the end of patch msg sentences.
-> - Remove "Return: void" from run_benchmark() kernel-doc comment.
-> 
-> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+...with Cc'ing me, please.
 
 -- 
- i.
+With Best Regards,
+Andy Shevchenko
 
 
-> ---
->  tools/testing/selftests/resctrl/resctrl_val.c | 50 ++++++++++++++++++
->  tools/testing/selftests/resctrl/resctrlfs.c   | 52 -------------------
->  2 files changed, 50 insertions(+), 52 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-> index f0f6c5f6e98b..5c8dc0a7bab9 100644
-> --- a/tools/testing/selftests/resctrl/resctrl_val.c
-> +++ b/tools/testing/selftests/resctrl/resctrl_val.c
-> @@ -621,6 +621,56 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
->  	return 0;
->  }
->  
-> +/*
-> + * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-> + *		   in specified signal. Direct benchmark stdio to /dev/null.
-> + * @signum:	signal number
-> + * @info:	signal info
-> + * @ucontext:	user context in signal handling
-> + */
-> +void run_benchmark(int signum, siginfo_t *info, void *ucontext)
-> +{
-> +	int operation, ret, memflush;
-> +	char **benchmark_cmd;
-> +	size_t span;
-> +	bool once;
-> +	FILE *fp;
-> +
-> +	benchmark_cmd = info->si_ptr;
-> +
-> +	/*
-> +	 * Direct stdio of child to /dev/null, so that only parent writes to
-> +	 * stdio (console)
-> +	 */
-> +	fp = freopen("/dev/null", "w", stdout);
-> +	if (!fp)
-> +		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
-> +
-> +	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
-> +		/* Execute default fill_buf benchmark */
-> +		span = strtoul(benchmark_cmd[1], NULL, 10);
-> +		memflush =  atoi(benchmark_cmd[2]);
-> +		operation = atoi(benchmark_cmd[3]);
-> +		if (!strcmp(benchmark_cmd[4], "true"))
-> +			once = true;
-> +		else if (!strcmp(benchmark_cmd[4], "false"))
-> +			once = false;
-> +		else
-> +			PARENT_EXIT("Invalid once parameter");
-> +
-> +		if (run_fill_buf(span, memflush, operation, once))
-> +			fprintf(stderr, "Error in running fill buffer\n");
-> +	} else {
-> +		/* Execute specified benchmark */
-> +		ret = execvp(benchmark_cmd[0], benchmark_cmd);
-> +		if (ret)
-> +			perror("wrong\n");
-> +	}
-> +
-> +	fclose(stdout);
-> +	PARENT_EXIT("Unable to run specified benchmark");
-> +}
-> +
->  /*
->   * resctrl_val:	execute benchmark and measure memory bandwidth on
->   *			the benchmark
-> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-> index 0f9644e5a25e..72dd8c3f655a 100644
-> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> @@ -291,58 +291,6 @@ int taskset_benchmark(pid_t bm_pid, int cpu_no)
->  	return 0;
->  }
->  
-> -/*
-> - * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-> - *		   in specified signal. Direct benchmark stdio to /dev/null.
-> - * @signum:	signal number
-> - * @info:	signal info
-> - * @ucontext:	user context in signal handling
-> - *
-> - * Return: void
-> - */
-> -void run_benchmark(int signum, siginfo_t *info, void *ucontext)
-> -{
-> -	int operation, ret, memflush;
-> -	char **benchmark_cmd;
-> -	size_t span;
-> -	bool once;
-> -	FILE *fp;
-> -
-> -	benchmark_cmd = info->si_ptr;
-> -
-> -	/*
-> -	 * Direct stdio of child to /dev/null, so that only parent writes to
-> -	 * stdio (console)
-> -	 */
-> -	fp = freopen("/dev/null", "w", stdout);
-> -	if (!fp)
-> -		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
-> -
-> -	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
-> -		/* Execute default fill_buf benchmark */
-> -		span = strtoul(benchmark_cmd[1], NULL, 10);
-> -		memflush =  atoi(benchmark_cmd[2]);
-> -		operation = atoi(benchmark_cmd[3]);
-> -		if (!strcmp(benchmark_cmd[4], "true"))
-> -			once = true;
-> -		else if (!strcmp(benchmark_cmd[4], "false"))
-> -			once = false;
-> -		else
-> -			PARENT_EXIT("Invalid once parameter");
-> -
-> -		if (run_fill_buf(span, memflush, operation, once))
-> -			fprintf(stderr, "Error in running fill buffer\n");
-> -	} else {
-> -		/* Execute specified benchmark */
-> -		ret = execvp(benchmark_cmd[0], benchmark_cmd);
-> -		if (ret)
-> -			perror("wrong\n");
-> -	}
-> -
-> -	fclose(stdout);
-> -	PARENT_EXIT("Unable to run specified benchmark");
-> -}
-> -
->  /*
->   * create_grp - Create a group only if one doesn't exist
->   * @grp_name:	Name of the group
-> 
---8323329-1858072575-1693219644=:3654--
