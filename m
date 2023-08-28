@@ -2,245 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE6978B989
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E3078B98C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjH1U0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
+        id S232573AbjH1U1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjH1U0o (ORCPT
+        with ESMTP id S231683AbjH1U07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:26:44 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC8DFF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:26:40 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34bae9d9d54so13757925ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693254400; x=1693859200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GdS5U3zAZC1OpDhYKXHHzRAYVsQHuMtwD7yrhm4gv74=;
-        b=KMraxVfGuS98aLRGVM4TJJO4fib8huPrdCiceopE0W7CyIMgd1A32MB5ehYm+3xloP
-         OGMbQNmR2zPKHhuYVGMHm3x2TCLlFpPMDBIxEXZ2WujuyYB/61GSSViRCJqFH03qaW72
-         8YXQ1NQxemTFe7uQKp9atnC6u4WfRI2Mup9Ug=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693254400; x=1693859200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GdS5U3zAZC1OpDhYKXHHzRAYVsQHuMtwD7yrhm4gv74=;
-        b=VO22M8uAEjkghRwfOYhL24En0J9c6qsVgreAG1bxTLMoKCXo1mbewIoYB/luVIWqEw
-         +5kbbSaM6CGOKnY3GnNueT83NemcEPrMIeAMaa1iakHntHOxkVtUaiwziN41dhDVVHwS
-         Vh5kVS3Jn8lQn9Bxj834q5xUQzHVic/Ixmm6RZRtcrHJl9Zj5r1MsqzdPuO6lcB3tWdK
-         bE3uxMoI13Ofcl7DxPEM1nNKVOzX8nbcf8MDCd+aUpnqxV6wD+5tIMt9gcsAIVWgNDB5
-         zjgnDkjlriS9gH8xX1oIh98yri3qGJvNGH5E0I2nIqMneyfrPOCkwZbC4LhxPi7rNW+y
-         beeA==
-X-Gm-Message-State: AOJu0YyRBNiIgpPXlKiEzP0pqXGILJMcMIpLC/2uYZDkLcAK3PNOb0uM
-        nGk4PzxVjV68c+75yTsPtl+KTQ==
-X-Google-Smtp-Source: AGHT+IGRLCtFYkksB6W0I4qT0QxymU8BO3DUqCwvOEFrU8Ok9D94zjEg8TO2rLD8je6BGtvYtCaOKQ==
-X-Received: by 2002:a92:d7c7:0:b0:34a:c618:b904 with SMTP id g7-20020a92d7c7000000b0034ac618b904mr18628179ilq.22.1693254400046;
-        Mon, 28 Aug 2023 13:26:40 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id f11-20020a056638118b00b0042b3042ccd8sm2666957jas.13.2023.08.28.13.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 13:26:39 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 20:26:38 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kirill A Shutemov <kirill@shutemov.name>,
-        "Liam R. Howlett" <liam.howlett@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>
-Subject: Re: [PATCH v5 2/7] mm/mremap: Allow moves within the same VMA
-Message-ID: <20230828202638.GA1646335@google.com>
-References: <20230822015501.791637-1-joel@joelfernandes.org>
- <20230822015501.791637-3-joel@joelfernandes.org>
- <46196ba1-c54d-4c1d-954f-a0006602af99@lucifer.local>
- <20230828183240.GA1621761@google.com>
- <8891681e-532c-4d7b-bc28-b4ad3e017331@lucifer.local>
+        Mon, 28 Aug 2023 16:26:59 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFF4A8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:26:57 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RZMXv6rpHzB9;
+        Mon, 28 Aug 2023 22:26:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1693254416; bh=uHHF3nZhiVLDjoHVhsmpzg+C/ZezK9ES/3zOBvv6Ljc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jqvRf9Qh9iG+pJUK5O4J7+iTBB/6T54G428X7Atf39IOIsxNprxpLGBoBTDUtZEu8
+         tGFLNb95IJRQ9POO3yPOnqh8VfG2Xq1+5OLZ9lQK0a9Je7hXfsVJfBWjitmXWgzZJI
+         jqHntPDacY7xHrASCCettdbiH6Be5hZNG2MZPMkKLAKlN+NpRWPFxPg7Azxh/geXij
+         3YLhgg9sohkTx5MWuETVkHE1bHIjhmeTkA2U4tjHH/oKpnUGads7jRAh2blZQ0PaLK
+         8Tu9K25DbOEUm0yPAvNRKDxwklm+Xwga5tDmhEST7yjQ3ayxOrFTkSAmThQ+QQPCJ/
+         SV+j2BAI2HQ9A==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Mon, 28 Aug 2023 22:26:54 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: Re: [PATCH 6/6] regulator: core: simplify lock_two()
+Message-ID: <ZO0DDkNUZ4FwYTrz@qmqm.qmqm.pl>
+References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
+ <682e260d8cb75c34f79ff7fcc3c4bb8586140cc4.1692484240.git.mirq-linux@rere.qmqm.pl>
+ <CAD=FV=XbfBf9y1sdt9T=81cTCRcRUbVqo3oKrHvBQZC+hHQpCQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8891681e-532c-4d7b-bc28-b4ad3e017331@lucifer.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XbfBf9y1sdt9T=81cTCRcRUbVqo3oKrHvBQZC+hHQpCQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 08:00:18PM +0100, Lorenzo Stoakes wrote:
-> On Mon, Aug 28, 2023 at 06:32:40PM +0000, Joel Fernandes wrote:
-> > On Sun, Aug 27, 2023 at 10:21:14AM +0100, Lorenzo Stoakes wrote:
-> > [..]
-> > > >
-> > > >  /*
-> > > >   * Flags used by change_protection().  For now we make it a bitmap so
-> > > > diff --git a/mm/mremap.c b/mm/mremap.c
-> > > > index 035fbf542a8f..06baa13bd2c8 100644
-> > > > --- a/mm/mremap.c
-> > > > +++ b/mm/mremap.c
-> > > > @@ -490,12 +490,13 @@ static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
-> > > >  }
-> > > >
-> > > >  /*
-> > > > - * A helper to check if a previous mapping exists. Required for
-> > > > - * move_page_tables() and realign_addr() to determine if a previous mapping
-> > > > - * exists before we can do realignment optimizations.
-> > > > + * A helper to check if aligning down is OK. The aligned address should fall
-> > > > + * on *no mapping*. For the stack moving down, that's a special move within
-> > > > + * the VMA that is created to span the source and destination of the move,
-> > > > + * so we make an exception for it.
-> > > >   */
-> > > >  static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_align,
-> > > > -			       unsigned long mask)
-> > > > +			    unsigned long mask, bool for_stack)
-> > > >  {
-> > > >  	unsigned long addr_masked = addr_to_align & mask;
-> > > >
-> > > > @@ -504,7 +505,7 @@ static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_ali
-> > > >  	 * of the corresponding VMA, we can't align down or we will destroy part
-> > > >  	 * of the current mapping.
-> > > >  	 */
-> > > > -	if (vma->vm_start != addr_to_align)
-> > > > +	if (!for_stack && vma->vm_start != addr_to_align)
-> > > >  		return false;
-> > >
-> > > I'm a little confused by this exception, is it very specifically for the
-> > > shift_arg_pages() case where can assume we are safe to just discard the
-> > > lower portion of the stack?
-> > >
-> > > Wouldn't the find_vma_intersection() line below fail in this case? I may be
-> > > missing something here :)
+On Mon, Aug 21, 2023 at 09:51:08AM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Sat, Aug 19, 2023 at 3:46 PM Michał Mirosław <mirq-linux@rere.qmqm.pl> wrote:
 > >
-> > I think you are right. In v4, this was not an issue as we did this:
+> > Make regulator_lock_two() shorter by observing that we have only two
+> > locks and when swapped earlier the retry code becomes identical to the
+> > normal (optimistic) path.
 > >
-> >
-> > +	if (!for_stack && vma->vm_start != addr_to_align)
-> > +		return false;
-> > +
-> > +	cur = find_vma_prev(vma->vm_mm, vma->vm_start, &prev);
-> > +	if (WARN_ON_ONCE(cur != vma))
-> > +		return false;
-> >
-> > Which essentially means this patch is a NOOP in v5 for the stack case.
+> > Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> > ---
+> >  drivers/regulator/core.c | 28 ++++++++++------------------
+> >  1 file changed, 10 insertions(+), 18 deletions(-)
 > 
-> >
-> > So what we really want is the VMA previous to @vma and whether than subsumes
-> > the masked address.
-> >
-> > Should I just change it back to the v4 version then as above for both patch 1
-> > and 2 and carry your review tags?
+> This is quite nearly a direct revert of commit 37473397b852
+> ("regulator: core: Make regulator_lock_two() logic easier to follow"),
+> which was requested by Stephen in:
 > 
-> You will not be surprised to hear that I'd rather not :) I think if we did
-> revert to that approach it'd need rework anyway, so I'd ask for a respin w/o
-> tag if we were to go down that road.
+> https://lore.kernel.org/r/CAE-0n53Eb1BeDPmjBycXUaQAF4ppiAM6UDWje_jiB9GAmR8MMw@mail.gmail.com
 > 
-> HOWEVER let's first clarify what we want to check.
-> 
-> My understand (please correct me if mistaken) is that there are two
-> acceptable cases:-
-> 
-> 1. !for_stack
-> 
->  addr_masked         addr_to_align
->  |                   |
->  v                   v
->  .                   |-----|
->  . <-must be empty-> | vma |
->  .                   |-----|
-> 
-> 2. for_stack
-> 
->       addr_masked         addr_to_align
->       |                   |
->       v                   v
->  |----.-------------------.-----|
->  |    .        vma        .     |
->  |----.-------------------.-----|
-> 
-> Meaning that there are only two cases that we should care about:-
-> 
-> 1. !for_stack: addr_to_align == vma->vm_start and no other VMA exists
->    between this and addr_masked
-> 
-> 2. for_stack: addr_masked is in the same VMA as addr_to_align.
-> 
-> In this case, the check can surely be:-
-> 
-> return find_vma_intersection(vma->vm_mm, addr_masked, addr_to_align) ==
-> 	(for_stack ? vma : NULL);
-> 
-> (maybe would be less ugly to actually assign the intersection value to a
-> local var and check that)
+> I don't personally have a strong opinion, but do prefer not to flip-flop. ;-)
 
-For completness: Lorenzo made some valid points on IRC and we'll do this
-patch (2/7) like this for v6 after sufficient testing.
+Indeed they are quite similar. I did remove a bit more code than that,
+though: in this case there is no early success return before the loop.
 
-static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_align,
-                              unsigned long mask, bool for_stack)
-{
-       unsigned long addr_masked = addr_to_align & mask;
-       /*
-        * If @addr_to_align of either source or destination is not the beginning
-        * of the corresponding VMA, we can't align down or we will destroy part
-        * of the current mapping for cases other than the stack.
-        */
-       if (!for_stack && vma->vm_start != addr_to_align)
-	       return false;
+Instead of saying:
 
-       /* In the stack case we explicitly permit in-VMA alignment. */
-       if (for_stack && addr_masked >= vma->vm_start)
-	       return true;
+lock A
+lock B
+if ok return
+if that failed, loop:
+  unlock A
+  lock B harder
+  lock A
+  if ok return
+  swap A <-> B
+  lock B
 
-       /*
-        * Make sure the realignment doesn't cause the address to fall on an
-        * existing mapping.
-        */
-       return find_vma_intersection(vma->vm_mm, addr_masked, vma->vm_start) == NULL;
-}
+Now it's:
 
-Thanks Lorenzo for the suggestion!
+lock A
+loop forever:
+  lock B
+  if ok, return
+  unlock A
+  swap them
+  lock A harder
 
-> >
-> > This is also hard to test as it requires triggering the execve stack move
-> > case. Though it is not a bug (as it is essentially a NOOP), it still would be
-> > nice to test it. This is complicated by also the fact that mremap(2) itself
-> > does not allow overlapping moves. I could try to hardcode the unfavorable
-> > situation as I have done in the past to force that mremap warning.
-> 
-> I find this exception a bit confusing, why are we so adamant on performing
-> the optimisation in this case when it makes the code uglier and is rather
-> hard to understand? Does it really matter that much?
+With the same condition 'A held' at the start of an iteration.
 
-Let me know if you still felt it made the code uglier, but it looks like just
-one more if() condition. And who knows may be in the future we want to do
-such overlapping moves for other cases? ;)
-
-> I wonder whether it wouldn't be better to just drop that (unless you really
-> felt strongly about it) for the patch set and then perhaps address it in a
-> follow up?
-> This may entirely be a product of my simply not entirely understanding this
-> case so do forgive the probing, I just want to make sure we handle it
-> correctly!
-
-It was just to avoid that false-positive warning where we can align down the
-stack move to avoid warnings about zero'd PMDs. We could certainly do it in
-this series or as a follow-up but since we came up with the above snippet, I
-will keep it in this series for now and hopefully you are ok with that.
-
-thanks,
-
- - Joel
-
+Best Regards
+Michał Mirosław
