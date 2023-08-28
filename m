@@ -2,141 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD85B78B7BC
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF7178B7BB
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbjH1S7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
+        id S233238AbjH1S7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbjH1S7S (ORCPT
+        with ESMTP id S233243AbjH1S7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:59:18 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13659BF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:59:15 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-77a62a84855so127553239f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693249154; x=1693853954;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XOayUphw9rbYNSf22YYGNwEHqwC4UHEhlEANqh7uDo0=;
-        b=tutcRQkkszGs2rz30qhCqzDMHK1Fv1Cbu+U0xiv7yVDh9UpJdnCNZqzuQrIKQy5BsW
-         93rV5Fn0MoAIIWfwBWrqIL3acQGhgWuSA9ocdGWWK3z01nLvKv47zoZVozhi9cMbvzOX
-         WlXj8LI8GK8PgGk8CP0cViYlFHoawo3RSWQWs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693249154; x=1693853954;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XOayUphw9rbYNSf22YYGNwEHqwC4UHEhlEANqh7uDo0=;
-        b=jFCxDDrsry9fcmRsxUEYtzfnD8Vnt3XxUKgzj/JNJY9iTseypChCsMdWkOoxOCzy3h
-         LA8awX4V1FZWmqTVDoJw4UEpojMH0dksoR1P2tEqpj5HNQAledGX3/UyZx6gZCKzfSe4
-         pDPi9ZJ6CAJbLIZ/Q9keKfYMbRHjOW4/abINMJhK+JefJaQfarVHq49s1tRkkR1JH3Ap
-         YjeiDcLqoHu4pYQuYPsgTjoZcSN9LU80WikMj1kauoOVG1TSmur1ogufFbwVtavNwavT
-         beCId7LCx+vE6QADmUFojw3YVxVsLF/pm9HupETrJ28ByfQiSYWv3LUzM3AMU3MqRgdh
-         qHHQ==
-X-Gm-Message-State: AOJu0Yy1lzXHGBu22AEBhnziHdplXkhxJ6psjk71Zcb0XhYPA9dbF8db
-        LPc+XNESQTg9B9DeOt6QQC5SFw==
-X-Google-Smtp-Source: AGHT+IEisyycO3POm2i80EtJIXlOwXcfn9iugZNdRMdhUFEp8AluNkfyKgouYOqpSK7cSrTi9P/vkw==
-X-Received: by 2002:a92:607:0:b0:34c:fed8:8df2 with SMTP id x7-20020a920607000000b0034cfed88df2mr3603955ilg.21.1693249154409;
-        Mon, 28 Aug 2023 11:59:14 -0700 (PDT)
-Received: from localhost (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
-        by smtp.gmail.com with ESMTPSA id u13-20020a02cbcd000000b0042b4b55f46fsm2553131jaq.117.2023.08.28.11.59.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 14:59:16 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E3BBF;
         Mon, 28 Aug 2023 11:59:13 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 18:59:12 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kirill A Shutemov <kirill@shutemov.name>,
-        "Liam R. Howlett" <liam.howlett@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>
-Subject: Re: [PATCH v5 6/7] selftests: mm: Add a test for remapping within a
- range
-Message-ID: <20230828185912.GD1621761@google.com>
-References: <20230822015501.791637-1-joel@joelfernandes.org>
- <20230822015501.791637-7-joel@joelfernandes.org>
- <08ce8c61-e7a2-417a-a3cc-d20861753ae8@lucifer.local>
- <fb429d82-4576-42d7-b51f-7a72f7f8caec@lucifer.local>
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1F36B2D8;
+        Mon, 28 Aug 2023 20:57:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693249071;
+        bh=lj9zY3kfb/0sPuanCW50QZKhu0uw+ImuMXKaFbQem7Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S0pH0O3u9gv9E88/GC6EqYtLTIoqY5ea9/xRc5xfKSvk9Iwm4ELM3/hdRSxb5g3dE
+         vQPBETXbcBr229rfpH8Tj4TdfH+V4sOaLDNnNXUkuRYq1eIaD92OUA7OqnTRW2rCq8
+         ZYlp6diRIhxA9ABdfGPIbn60RmtOGvillPyvdUIo=
+Date:   Mon, 28 Aug 2023 21:59:21 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 11/15] media: qcom: camss: Functionally decompose
+ CSIPHY clock lookups
+Message-ID: <20230828185921.GP14596@pendragon.ideasonboard.com>
+References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
+ <20230823104444.1954663-12-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <fb429d82-4576-42d7-b51f-7a72f7f8caec@lucifer.local>
+In-Reply-To: <20230823104444.1954663-12-bryan.odonoghue@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 11:15:20AM +0100, Lorenzo Stoakes wrote:
-> On Sun, Aug 27, 2023 at 10:57:59AM +0100, Lorenzo Stoakes wrote:
-> [snip]
+Hi Bryan,
+
+Thank you for the patch.
+
+On Wed, Aug 23, 2023 at 11:44:40AM +0100, Bryan O'Donoghue wrote:
+> The csiphyX_timer and csiX_phy values need not be hard-coded. We can
+> functionally decompose the string matching inside of a loop.
 > 
-> > > +/*
-> > > + * Verify that an mremap within a range does not cause corruption
-> > > + * of unrelated part of range.
-> > > + *
-> > > + * Consider the following range which is 2MB aligned and is
-> > > + * a part of a larger 10MB range which is not shown. Each
-> > > + * character is 256KB below making the source and destination
+> Static string values are brittle, difficult to extend and not required
+> anyway since the camss->res->csiphy_num value informs us of the number
+> of CSIPHYs and hence the set of potential clocks for a given CSIPHY.
 > 
-> Just noticed, I think you misspeak here, as this test doens't seem to
-> offset by 256 KiB? That is the strategy for mremap_move_1mb_from_start()
-> rather than this test so perhaps comment needs to be moved around?
+> In simple terms if we have five CSIPHYs we can have no more and no less
+> than five csiphy_timer clocks. Similarly csi_phy core clocks have a 1:1
+> relationship with the PHY they clock.
 > 
->  * 2MB each. The lower case letters are moved (s to d) and the
->  * upper case letters are not moved. The below test verifies
->  * that the upper case S letters are not corrupted by the
->  * adjacent mremap.
->  *
->  * |DDDDddddSSSSssss|
->  */
->  static void mremap_move_within_range(char pattern_seed)
-
-Here we are moving 1MB within a 4MB zone of a large mapping. Each character
-'s' or 'd' is 256KB. The 256KB there is just for illustration and not really
-significant as such. The 'ssss' is moved to 'dddd' 1MB each. Here we make
-sure that this move did not accidentally corrupt 'SSSS' and 'DDDD' due to
-alignment optimization. Basically to protect from this, we check in the code
-that the source address is beginning of the VMA:
-+	if (vma->vm_start != addr_to_align)
-+		return false;
-
-But you did point an issue which is I need to change the comment from 'larger
-10MB' to 'larger 20MB'.
-
-In the mremap_move_1mb_from_start() test, I request for an alignment of
-1.25MB so that when I align down, I fall no mapping. This is to catch a bug
-that Linus found which is that just because an aligned down address did not
-fall on a mapping, that doesn't mean we can just move it at PMD-level
-otherwise we destroy the mapping.
-
-I do need to update the test name in mremap_move_1mb_from_start() to: "mremap
-move 1mb from start at 1MB+256KB aligned src". So thanks for point this!
-
-Would that sort it out or is there still something in the comment I am
-missing?
-
-Thanks!
-
- - Joel
-
-
-
-
-
-
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>  .../media/platform/qcom/camss/camss-csiphy.c  | 37 ++++++++++++-------
+>  1 file changed, 23 insertions(+), 14 deletions(-)
 > 
-> [snip]
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> index 0e8c2a59ea241..baf78c525fbfc 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> @@ -536,6 +536,15 @@ static int csiphy_init_formats(struct v4l2_subdev *sd,
+>  	return csiphy_set_format(sd, fh ? fh->state : NULL, &format);
+>  }
+>  
+> +static bool csiphy_match_clock_name(const char *clock_name, const char *format,
+> +				    int index)
+> +{
+> +	char name[CAMSS_RES_MAX];
+> +
+> +	snprintf(name, sizeof(name), format, index);
+> +	return !strcmp(clock_name, name);
+
+This is very error-prone. You hide the buffer size from the caller,
+which will make it prone to buffer overflows.
+
+> +}
+> +
+>  /*
+>   * msm_csiphy_subdev_init - Initialize CSIPHY device structure and resources
+>   * @csiphy: CSIPHY device
+> @@ -550,7 +559,7 @@ int msm_csiphy_subdev_init(struct camss *camss,
+>  {
+>  	struct device *dev = camss->dev;
+>  	struct platform_device *pdev = to_platform_device(dev);
+> -	int i, j;
+> +	int i, j, k;
+>  	int ret;
+>  
+>  	csiphy->camss = camss;
+> @@ -666,19 +675,19 @@ int msm_csiphy_subdev_init(struct camss *camss,
+>  		for (j = 0; j < clock->nfreqs; j++)
+>  			clock->freq[j] = res->clock_rate[i][j];
+>  
+> -		if (!strcmp(clock->name, "csiphy0_timer") ||
+> -		    !strcmp(clock->name, "csiphy1_timer") ||
+> -		    !strcmp(clock->name, "csiphy2_timer") ||
+> -		    !strcmp(clock->name, "csiphy3_timer") ||
+> -		    !strcmp(clock->name, "csiphy4_timer") ||
+> -		    !strcmp(clock->name, "csiphy5_timer"))
+> -			csiphy->rate_set[i] = true;
+> -
+> -		if (camss->res->version == CAMSS_660 &&
+> -		    (!strcmp(clock->name, "csi0_phy") ||
+> -		     !strcmp(clock->name, "csi1_phy") ||
+> -		     !strcmp(clock->name, "csi2_phy")))
+> -			csiphy->rate_set[i] = true;
+> +		for (k = 0; k < camss->res->csiphy_num; k++) {
+> +			csiphy->rate_set[i] = csiphy_match_clock_name(clock->name,
+> +								      "csiphy%d_timer", k);
+> +			if (csiphy->rate_set[i])
+> +				break;
+> +
+> +			if (camss->res->version == CAMSS_660) {
+> +				csiphy->rate_set[i] = csiphy_match_clock_name(clock->name,
+> +									      "csi%d_phy", k);
+> +				if (csiphy->rate_set[i])
+> +					break;
+> +			}
+> +		}
+>  	}
+>  
+>  	return 0;
+
+-- 
+Regards,
+
+Laurent Pinchart
