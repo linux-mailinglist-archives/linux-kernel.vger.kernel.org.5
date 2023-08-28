@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E430A78A6CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEF678A702
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjH1Hvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        id S229551AbjH1IEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjH1HvP (ORCPT
+        with ESMTP id S229473AbjH1ID6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:51:15 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1216114;
-        Mon, 28 Aug 2023 00:51:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RZ2mp2VZcz4f4XWm;
-        Mon, 28 Aug 2023 15:51:06 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgC3RqntUexkiIAVBw--.11528S2;
-        Mon, 28 Aug 2023 15:51:09 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] vfs: use helpers for calling f_op->{read,write}_iter() in read_write.c
-Date:   Mon, 28 Aug 2023 23:50:56 +0800
-Message-Id: <20230828155056.4100924-1-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 28 Aug 2023 04:03:58 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AE5114;
+        Mon, 28 Aug 2023 01:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1693209835; x=1724745835;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=W6UvRcQNcknRhKMqAymfgYVMc/oAF9o4ms5wsMxD9pw=;
+  b=vogpT6sSKhUWe95dTItTx7+scjwl9ttkhf4gBCS79D2WpzqEYXL2xXIa
+   /Jw2FSZPerU9f88SfqoI8UtzNSI/XLxlUj8gtEwR3TuaU/DfO7i6LxFII
+   upeQNpUANmDkWthzQVN9rCQ3ql1QxqwEh4FAl6eOJDDYbIK/aV8SPPEBH
+   F0lTn0+atp+pF8VRPvQMsisEVfK8DldeB7/OAmWfrfZhIjrEn9uWSabL+
+   CsCeTaZmZ0lJz0sVtEb4E946GambkbbSwRUUpbV543o3Q7xOsczv6ZvKP
+   2OJU93Zdmvfct6eE991DT5AcH8UQEnj0sVNFqxl0gVPGyAMfKOOi1kUd/
+   g==;
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="1641246"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Aug 2023 01:03:53 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 28 Aug 2023 01:03:24 -0700
+Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Mon, 28 Aug 2023 01:03:23 -0700
+Message-ID: <5c680292-bcfe-881a-1c23-299c05b377ee@microchip.com>
+Date:   Mon, 28 Aug 2023 10:03:14 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgC3RqntUexkiIAVBw--.11528S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruF1fXw4kGrW7XrWxWw47CFg_yoWDZrc_CF
-        nFyr1xJFWqkrs7J348C3ZIvFy0gw4Y9Fn5Wr4vyrWDKa1xWFykZrZ5Zr1DAF1YqanFgFsx
-        Cws2v345JryUCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl8c
-        AvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq
-        3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gc
-        CE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxI
-        r21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87
-        Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0sqXJUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND] i2c: at91: Use dev_err_probe() instead of
+ dev_err()
+Content-Language: en-US, fr-FR
+To:     Yann Sionneau <yann@sionneau.net>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+CC:     <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230825143234.38336-1-yann@sionneau.net>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <20230825143234.38336-1-yann@sionneau.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-use helpers for calling f_op->{read,write}_iter() in read_write.c
+On 25/08/2023 at 16:32, Yann Sionneau wrote:
+> Change
+> if (IS_ERR(x)) { dev_err(...); return PTR_ERR(x); }
+> into
+> return dev_err_probe()
+> 
+> Also, return the correct error instead of hardcoding -ENODEV
+> This change has also the advantage of handling the -EPROBE_DEFER situation.
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- fs/read_write.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Is it found using a tool like Coccinelle or you just ran into it and 
+figured out it could be good to change?
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index a21ba3be7dbe..2f816f1212f4 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -425,7 +425,7 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 	init_sync_kiocb(&kiocb, file);
- 	kiocb.ki_pos = pos ? *pos : 0;
- 	iov_iter_kvec(&iter, ITER_DEST, &iov, 1, iov.iov_len);
--	ret = file->f_op->read_iter(&kiocb, &iter);
-+	ret = call_read_iter(file, &kiocb, &iter);
- 	if (ret > 0) {
- 		if (pos)
- 			*pos = kiocb.ki_pos;
-@@ -514,7 +514,7 @@ ssize_t __kernel_write_iter(struct file *file, struct iov_iter *from, loff_t *po
- 
- 	init_sync_kiocb(&kiocb, file);
- 	kiocb.ki_pos = pos ? *pos : 0;
--	ret = file->f_op->write_iter(&kiocb, from);
-+	ret = call_write_iter(file, &kiocb, from);
- 	if (ret > 0) {
- 		if (pos)
- 			*pos = kiocb.ki_pos;
--- 
-2.30.0
+Regards,
+   Nicolas
+
+> Signed-off-by: Yann Sionneau <yann@sionneau.net>
+> ---
+>   drivers/i2c/busses/i2c-at91-core.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-at91-core.c b/drivers/i2c/busses/i2c-at91-core.c
+> index 05ad3bc3578a..b7bc17b0e5f0 100644
+> --- a/drivers/i2c/busses/i2c-at91-core.c
+> +++ b/drivers/i2c/busses/i2c-at91-core.c
+> @@ -227,10 +227,9 @@ static int at91_twi_probe(struct platform_device *pdev)
+>          platform_set_drvdata(pdev, dev);
+> 
+>          dev->clk = devm_clk_get(dev->dev, NULL);
+> -       if (IS_ERR(dev->clk)) {
+> -               dev_err(dev->dev, "no clock defined\n");
+> -               return -ENODEV;
+> -       }
+> +       if (IS_ERR(dev->clk))
+> +               return dev_err_probe(dev->dev, PTR_ERR(dev->clk), "no clock defined\n");
+> +
+>          clk_prepare_enable(dev->clk);
+> 
+>          snprintf(dev->adapter.name, sizeof(dev->adapter.name), "AT91");
+> --
+> 2.34.1
+> 
 
