@@ -2,349 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1CF78AEBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5832278AEC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjH1LZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
+        id S231928AbjH1L0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjH1LZM (ORCPT
+        with ESMTP id S232446AbjH1L0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:25:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D093A92
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:25:08 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D452B6600873;
-        Mon, 28 Aug 2023 12:25:06 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693221907;
-        bh=Yp7jdeCyY04l1EqN86XVk/9TxjMQ5qvhg9QJtLvBdBw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k5IpxC8Ia5v/fqEiPNfuXbQNG0bIInAV3eq3fTeXwj4LihA3YlLtpMu0UPoVIQNRD
-         BleVteOx7Q5wivd8LVac11Q2+AQySZ9rzY1c9bIq2jP82p3eyqqGwIx1Tdvj4BR88/
-         eBsL/v04eHkTy0UW4O5y/U7w0C2qZyOMVYIPHyyoLU9zU/t2AyF2wlfNkx+U/AZiWj
-         P0GN8fE+VToknOqoPqe4IXrdi2o22mMFXZ2kzXRilz2Udpw8jhEnCiWhrSSiAbnjjz
-         9o38rwX13Ms98P90krbOaGHhI6ePIXTA2lZvuMUzHAl/u4j2IR56PT0iWcgDhiZ9Qo
-         YFpf0HwnyKbbg==
-Date:   Mon, 28 Aug 2023 13:25:03 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v15 03/23] drm/gem: Change locked/unlocked postfix of
- drm_gem_v/unmap() function names
-Message-ID: <20230828132503.166f83d8@collabora.com>
-In-Reply-To: <20230827175449.1766701-4-dmitry.osipenko@collabora.com>
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
-        <20230827175449.1766701-4-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 28 Aug 2023 07:26:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C220C4;
+        Mon, 28 Aug 2023 04:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693221958; x=1724757958;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=uDOPRWJwnuj9yetysIpW8KOjZrjExoaKm2NnunU/4Bk=;
+  b=fUHAfaSVaXsifPNf2Q/AZ2jPh82vetOpwkaqtl8TGuOaUzDwNJwFPwfM
+   WJarA/ZqSMHy3+HfDnH6M+6eO01/VgE8Fr9K2IjnSD7mriz4CZmsQMGOT
+   jVU8InXmlb6FzwJXQkKw9YN7izfs8fwTY/EYTDOcHIWK66jJ+r9qjViD4
+   90/HGm6Gwq6OQ/poIBfY5GGbWdfdD/x4JIWVqT5VBdGBk4eWHmHzzSHiD
+   w1Nw1D+4gaQnp+T/uNsALJ3BeMgBtCzbW/4Tv11fQ3vYm7p08l6sVJQ8D
+   y76zWgsPizCXvXrJIz0kYT/RrGxQvg7sYnW7Lg/t5IiTie8TTPJgBUKA3
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="378854398"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="378854398"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 04:25:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="688072113"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="688072113"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.213.104])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 04:25:52 -0700
+Message-ID: <0bf5f881-f264-bf2e-431e-444f51c97ee0@intel.com>
+Date:   Mon, 28 Aug 2023 14:25:49 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.14.0
+Subject: Re: [PATCH v7 4/6] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+Content-Language: en-US
+To:     Yang Jihong <yangjihong1@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
+        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20230826032608.107261-1-yangjihong1@huawei.com>
+ <20230826032608.107261-5-yangjihong1@huawei.com>
+ <CAM9d7cibRU6ViyhxtEYG2UMSYUWbu__Oct-+J1PzvGwu_D=SPA@mail.gmail.com>
+ <bbef4fc2-cb4b-72a9-44ed-a68c71886dc6@huawei.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <bbef4fc2-cb4b-72a9-44ed-a68c71886dc6@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Aug 2023 20:54:29 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> Make drm/gem API function names consistent by having locked function
-> use the _locked postfix in the name, while the unlocked variants don't
-> use the _unlocked postfix. Rename drm_gem_v/unmap() function names to
-> make them consistent with the rest of the API functions.
+On 28/08/23 06:03, Yang Jihong wrote:
+> Hello,
 > 
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-> ---
->  drivers/gpu/drm/drm_client.c                 |  6 +++---
->  drivers/gpu/drm/drm_gem.c                    | 20 ++++++++++----------
->  drivers/gpu/drm/drm_gem_framebuffer_helper.c |  6 +++---
->  drivers/gpu/drm/drm_internal.h               |  4 ++--
->  drivers/gpu/drm/drm_prime.c                  |  4 ++--
->  drivers/gpu/drm/lima/lima_sched.c            |  4 ++--
->  drivers/gpu/drm/panfrost/panfrost_dump.c     |  4 ++--
->  drivers/gpu/drm/panfrost/panfrost_perfcnt.c  |  6 +++---
->  include/drm/drm_gem.h                        |  4 ++--
->  9 files changed, 29 insertions(+), 29 deletions(-)
+> On 2023/8/26 22:59, Namhyung Kim wrote:
+>> Hello,
+>>
+>> On Fri, Aug 25, 2023 at 8:29 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>>
+>>> User space tasks can migrate between CPUs, we need to track side-band
+>>> events for all CPUs.
+>>>
+>>> The specific scenarios are as follows:
+>>>
+>>>           CPU0                                 CPU1
+>>>    perf record -C 0 start
+>>>                                taskA starts to be created and executed
+>>>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+>>>                                     events only deliver to CPU1
+>>>                                ......
+>>>                                  |
+>>>                            migrate to CPU0
+>>>                                  |
+>>>    Running on CPU0    <----------/
+>>>    ...
+>>>
+>>>    perf record -C 0 stop
+>>>
+>>> Now perf samples the PC of taskA. However, perf does not record the
+>>> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
+>>> Therefore, the comm and symbols of taskA cannot be parsed.
+>>>
+>>> The solution is to record sideband events for all CPUs when tracing
+>>> selected CPUs. Because this modifies the default behavior, add related
+>>> comments to the perf record man page.
+>>>
+>>> The sys_perf_event_open invoked is as follows:
+>>>
+>>>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
+>>>    <SNIP>
+>>>    Opening: cpu-clock
+>>>    ------------------------------------------------------------
+>>>    perf_event_attr:
+>>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>>      size                             136
+>>>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+>>>      { sample_period, sample_freq }   4000
+>>>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+>>>      read_format                      ID|LOST
+>>>      disabled                         1
+>>>      inherit                          1
+>>>      freq                             1
+>>>      sample_id_all                    1
+>>>      exclude_guest                    1
+>>>    ------------------------------------------------------------
+>>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+>>>    Opening: dummy:u
+>>>    ------------------------------------------------------------
+>>>    perf_event_attr:
+>>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>>      size                             136
+>>>      config                           0x9 (PERF_COUNT_SW_DUMMY)
+>>>      { sample_period, sample_freq }   1
+>>>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+>>>      read_format                      ID|LOST
+>>>      inherit                          1
+>>>      exclude_kernel                   1
+>>>      exclude_hv                       1
+>>>      mmap                             1
+>>>      comm                             1
+>>>      task                             1
+>>>      sample_id_all                    1
+>>>      exclude_guest                    1
+>>>      mmap2                            1
+>>>      comm_exec                        1
+>>>      ksymbol                          1
+>>>      bpf_event                        1
+>>>    ------------------------------------------------------------
+>>>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+>>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+>>>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+>>>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+>>>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+>>>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+>>>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+>>>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+>>>    <SNIP>
+>>>
+>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>>> ---
+>>>   tools/perf/Documentation/perf-record.txt |  3 ++
+>>>   tools/perf/builtin-record.c              | 44 +++++++++++++++++++++++-
+>>>   2 files changed, 46 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>>> index d5217be012d7..1889f66addf2 100644
+>>> --- a/tools/perf/Documentation/perf-record.txt
+>>> +++ b/tools/perf/Documentation/perf-record.txt
+>>> @@ -374,6 +374,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
+>>>   In per-thread mode with inheritance mode on (default), samples are captured only when
+>>>   the thread executes on the designated CPUs. Default is to monitor all CPUs.
+>>>
+>>> +User space tasks can migrate between CPUs, so when tracing selected CPUs,
+>>> +a dummy event is created to track sideband for all CPUs.
+>>> +
+>>>   -B::
+>>>   --no-buildid::
+>>>   Do not save the build ids of binaries in the perf.data files. This skips
+>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>>> index 83bd1f117191..21c571018148 100644
+>>> --- a/tools/perf/builtin-record.c
+>>> +++ b/tools/perf/builtin-record.c
+>>> @@ -906,10 +906,44 @@ static int record__config_off_cpu(struct record *rec)
+>>>          return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts);
+>>>   }
+>>>
+>>> +static bool record__tracking_system_wide(struct record *rec)
+>>> +{
+>>> +       struct record_opts *opts = &rec->opts;
+>>> +       struct evlist *evlist = rec->evlist;
+>>> +       struct evsel *evsel;
+>>> +
+>>> +       /*
+>>> +        * If all (non-dummy) evsel have exclude_user,
+>>> +        * system_wide is not needed.
+>>
+>> Maybe I missed some earlier discussion but why is it not
+>> needed when exclude_user is set?  I think it still needs
+>> FORK or COMM at least..
+>>
 > 
-> diff --git a/drivers/gpu/drm/drm_client.c b/drivers/gpu/drm/drm_client.c
-> index 037e36f2049c..29306657117a 100644
-> --- a/drivers/gpu/drm/drm_client.c
-> +++ b/drivers/gpu/drm/drm_client.c
-> @@ -265,7 +265,7 @@ void drm_client_dev_restore(struct drm_device *dev)
->  static void drm_client_buffer_delete(struct drm_client_buffer *buffer)
->  {
->  	if (buffer->gem) {
-> -		drm_gem_vunmap_unlocked(buffer->gem, &buffer->map);
-> +		drm_gem_vunmap(buffer->gem, &buffer->map);
->  		drm_gem_object_put(buffer->gem);
->  	}
->  
-> @@ -349,7 +349,7 @@ drm_client_buffer_vmap(struct drm_client_buffer *buffer,
->  	 * fd_install step out of the driver backend hooks, to make that
->  	 * final step optional for internal users.
->  	 */
-> -	ret = drm_gem_vmap_unlocked(buffer->gem, map);
-> +	ret = drm_gem_vmap(buffer->gem, map);
->  	if (ret)
->  		return ret;
->  
-> @@ -371,7 +371,7 @@ void drm_client_buffer_vunmap(struct drm_client_buffer *buffer)
->  {
->  	struct iosys_map *map = &buffer->map;
->  
-> -	drm_gem_vunmap_unlocked(buffer->gem, map);
-> +	drm_gem_vunmap(buffer->gem, map);
->  }
->  EXPORT_SYMBOL(drm_client_buffer_vunmap);
->  
-> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
-> index 6129b89bb366..fae5832bb0bd 100644
-> --- a/drivers/gpu/drm/drm_gem.c
-> +++ b/drivers/gpu/drm/drm_gem.c
-> @@ -1173,7 +1173,7 @@ void drm_gem_unpin(struct drm_gem_object *obj)
->  		obj->funcs->unpin(obj);
->  }
->  
-> -int drm_gem_vmap(struct drm_gem_object *obj, struct iosys_map *map)
-> +int drm_gem_vmap_locked(struct drm_gem_object *obj, struct iosys_map *map)
->  {
->  	int ret;
->  
-> @@ -1190,9 +1190,9 @@ int drm_gem_vmap(struct drm_gem_object *obj, struct iosys_map *map)
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL(drm_gem_vmap);
-> +EXPORT_SYMBOL(drm_gem_vmap_locked);
->  
-> -void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
-> +void drm_gem_vunmap_locked(struct drm_gem_object *obj, struct iosys_map *map)
->  {
->  	dma_resv_assert_held(obj->resv);
->  
-> @@ -1205,27 +1205,27 @@ void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
->  	/* Always set the mapping to NULL. Callers may rely on this. */
->  	iosys_map_clear(map);
->  }
-> -EXPORT_SYMBOL(drm_gem_vunmap);
-> +EXPORT_SYMBOL(drm_gem_vunmap_locked);
->  
-> -int drm_gem_vmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map)
-> +int drm_gem_vmap(struct drm_gem_object *obj, struct iosys_map *map)
->  {
->  	int ret;
->  
->  	dma_resv_lock(obj->resv, NULL);
-> -	ret = drm_gem_vmap(obj, map);
-> +	ret = drm_gem_vmap_locked(obj, map);
->  	dma_resv_unlock(obj->resv);
->  
->  	return ret;
->  }
-> -EXPORT_SYMBOL(drm_gem_vmap_unlocked);
-> +EXPORT_SYMBOL(drm_gem_vmap);
->  
-> -void drm_gem_vunmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map)
-> +void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
->  {
->  	dma_resv_lock(obj->resv, NULL);
-> -	drm_gem_vunmap(obj, map);
-> +	drm_gem_vunmap_locked(obj, map);
->  	dma_resv_unlock(obj->resv);
->  }
-> -EXPORT_SYMBOL(drm_gem_vunmap_unlocked);
-> +EXPORT_SYMBOL(drm_gem_vunmap);
->  
->  /**
->   * drm_gem_lock_reservations - Sets up the ww context and acquires
-> diff --git a/drivers/gpu/drm/drm_gem_framebuffer_helper.c b/drivers/gpu/drm/drm_gem_framebuffer_helper.c
-> index 3bdb6ba37ff4..3808f47310bf 100644
-> --- a/drivers/gpu/drm/drm_gem_framebuffer_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_framebuffer_helper.c
-> @@ -362,7 +362,7 @@ int drm_gem_fb_vmap(struct drm_framebuffer *fb, struct iosys_map *map,
->  			ret = -EINVAL;
->  			goto err_drm_gem_vunmap;
->  		}
-> -		ret = drm_gem_vmap_unlocked(obj, &map[i]);
-> +		ret = drm_gem_vmap(obj, &map[i]);
->  		if (ret)
->  			goto err_drm_gem_vunmap;
->  	}
-> @@ -384,7 +384,7 @@ int drm_gem_fb_vmap(struct drm_framebuffer *fb, struct iosys_map *map,
->  		obj = drm_gem_fb_get_obj(fb, i);
->  		if (!obj)
->  			continue;
-> -		drm_gem_vunmap_unlocked(obj, &map[i]);
-> +		drm_gem_vunmap(obj, &map[i]);
->  	}
->  	return ret;
->  }
-> @@ -411,7 +411,7 @@ void drm_gem_fb_vunmap(struct drm_framebuffer *fb, struct iosys_map *map)
->  			continue;
->  		if (iosys_map_is_null(&map[i]))
->  			continue;
-> -		drm_gem_vunmap_unlocked(obj, &map[i]);
-> +		drm_gem_vunmap(obj, &map[i]);
->  	}
->  }
->  EXPORT_SYMBOL(drm_gem_fb_vunmap);
-> diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
-> index ba12acd55139..243d9aa52881 100644
-> --- a/drivers/gpu/drm/drm_internal.h
-> +++ b/drivers/gpu/drm/drm_internal.h
-> @@ -175,8 +175,8 @@ void drm_gem_print_info(struct drm_printer *p, unsigned int indent,
->  
->  int drm_gem_pin(struct drm_gem_object *obj);
->  void drm_gem_unpin(struct drm_gem_object *obj);
-> -int drm_gem_vmap(struct drm_gem_object *obj, struct iosys_map *map);
-> -void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map);
-> +int drm_gem_vmap_locked(struct drm_gem_object *obj, struct iosys_map *map);
-> +void drm_gem_vunmap_locked(struct drm_gem_object *obj, struct iosys_map *map);
->  
->  /* drm_debugfs.c drm_debugfs_crc.c */
->  #if defined(CONFIG_DEBUG_FS)
-> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> index 63b709a67471..57ac5623f09a 100644
-> --- a/drivers/gpu/drm/drm_prime.c
-> +++ b/drivers/gpu/drm/drm_prime.c
-> @@ -682,7 +682,7 @@ int drm_gem_dmabuf_vmap(struct dma_buf *dma_buf, struct iosys_map *map)
->  {
->  	struct drm_gem_object *obj = dma_buf->priv;
->  
-> -	return drm_gem_vmap(obj, map);
-> +	return drm_gem_vmap_locked(obj, map);
->  }
->  EXPORT_SYMBOL(drm_gem_dmabuf_vmap);
->  
-> @@ -698,7 +698,7 @@ void drm_gem_dmabuf_vunmap(struct dma_buf *dma_buf, struct iosys_map *map)
->  {
->  	struct drm_gem_object *obj = dma_buf->priv;
->  
-> -	drm_gem_vunmap(obj, map);
-> +	drm_gem_vunmap_locked(obj, map);
->  }
->  EXPORT_SYMBOL(drm_gem_dmabuf_vunmap);
->  
-> diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lima_sched.c
-> index ffd91a5ee299..843487128544 100644
-> --- a/drivers/gpu/drm/lima/lima_sched.c
-> +++ b/drivers/gpu/drm/lima/lima_sched.c
-> @@ -371,7 +371,7 @@ static void lima_sched_build_error_task_list(struct lima_sched_task *task)
->  		} else {
->  			buffer_chunk->size = lima_bo_size(bo);
->  
-> -			ret = drm_gem_vmap_unlocked(&bo->base.base, &map);
-> +			ret = drm_gem_vmap(&bo->base.base, &map);
->  			if (ret) {
->  				kvfree(et);
->  				goto out;
-> @@ -379,7 +379,7 @@ static void lima_sched_build_error_task_list(struct lima_sched_task *task)
->  
->  			memcpy(buffer_chunk + 1, map.vaddr, buffer_chunk->size);
->  
-> -			drm_gem_vunmap_unlocked(&bo->base.base, &map);
-> +			drm_gem_vunmap(&bo->base.base, &map);
->  		}
->  
->  		buffer_chunk = (void *)(buffer_chunk + 1) + buffer_chunk->size;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_dump.c b/drivers/gpu/drm/panfrost/panfrost_dump.c
-> index e7942ac449c6..0f30bbea9895 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_dump.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_dump.c
-> @@ -209,7 +209,7 @@ void panfrost_core_dump(struct panfrost_job *job)
->  			goto dump_header;
->  		}
->  
-> -		ret = drm_gem_vmap_unlocked(&bo->base.base, &map);
-> +		ret = drm_gem_vmap(&bo->base.base, &map);
->  		if (ret) {
->  			dev_err(pfdev->dev, "Panfrost Dump: couldn't map Buffer Object\n");
->  			iter.hdr->bomap.valid = 0;
-> @@ -236,7 +236,7 @@ void panfrost_core_dump(struct panfrost_job *job)
->  		vaddr = map.vaddr;
->  		memcpy(iter.data, vaddr, bo->base.base.size);
->  
-> -		drm_gem_vunmap_unlocked(&bo->base.base, &map);
-> +		drm_gem_vunmap(&bo->base.base, &map);
->  
->  		iter.hdr->bomap.valid = 1;
->  
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_perfcnt.c b/drivers/gpu/drm/panfrost/panfrost_perfcnt.c
-> index ba9b6e2b2636..52befead08c6 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_perfcnt.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_perfcnt.c
-> @@ -106,7 +106,7 @@ static int panfrost_perfcnt_enable_locked(struct panfrost_device *pfdev,
->  		goto err_close_bo;
->  	}
->  
-> -	ret = drm_gem_vmap_unlocked(&bo->base, &map);
-> +	ret = drm_gem_vmap(&bo->base, &map);
->  	if (ret)
->  		goto err_put_mapping;
->  	perfcnt->buf = map.vaddr;
-> @@ -165,7 +165,7 @@ static int panfrost_perfcnt_enable_locked(struct panfrost_device *pfdev,
->  	return 0;
->  
->  err_vunmap:
-> -	drm_gem_vunmap_unlocked(&bo->base, &map);
-> +	drm_gem_vunmap(&bo->base, &map);
->  err_put_mapping:
->  	panfrost_gem_mapping_put(perfcnt->mapping);
->  err_close_bo:
-> @@ -195,7 +195,7 @@ static int panfrost_perfcnt_disable_locked(struct panfrost_device *pfdev,
->  		  GPU_PERFCNT_CFG_MODE(GPU_PERFCNT_CFG_MODE_OFF));
->  
->  	perfcnt->user = NULL;
-> -	drm_gem_vunmap_unlocked(&perfcnt->mapping->obj->base.base, &map);
-> +	drm_gem_vunmap(&perfcnt->mapping->obj->base.base, &map);
->  	perfcnt->buf = NULL;
->  	panfrost_gem_close(&perfcnt->mapping->obj->base.base, file_priv);
->  	panfrost_mmu_as_put(pfdev, perfcnt->mapping->mmu);
-> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
-> index c0b13c43b459..f338f8cfacf7 100644
-> --- a/include/drm/drm_gem.h
-> +++ b/include/drm/drm_gem.h
-> @@ -518,8 +518,8 @@ struct page **drm_gem_get_pages(struct drm_gem_object *obj);
->  void drm_gem_put_pages(struct drm_gem_object *obj, struct page **pages,
->  		bool dirty, bool accessed);
->  
-> -int drm_gem_vmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map);
-> -void drm_gem_vunmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map);
-> +int drm_gem_vmap(struct drm_gem_object *obj, struct iosys_map *map);
-> +void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map);
->  
->  int drm_gem_objects_lookup(struct drm_file *filp, void __user *bo_handles,
->  			   int count, struct drm_gem_object ***objs_out);
+> This is Adrian's suggestion earlier, I think it's probably because if exclude_user is set, MMAP information is not needed, that's my guess.
+> 
+> However, as you said, even if exclude_user is set, at least FORK and COMM are required.
+> 
+> Therefore, the conditions here need to be changed to:
+> "system_wide is need as long as there is a non-dummy event."
+> 
+> @Adrian, is this change okay?
+
+If you wish.  I think we use FORK to get mappings, so not sure it
+would be needed.  There is PID, TID so COMM is not essential.
+There are FORK, COMM etc from the CPUs being traced of course.
 
