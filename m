@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7604F78A534
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A787178A53B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjH1F0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        id S229521AbjH1Fci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjH1F0g (ORCPT
+        with ESMTP id S229456AbjH1FcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:26:36 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDB892
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:26:31 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-4121130e7afso15591891cf.2
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1693200391; x=1693805191;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=108AsllHoPT0Lzt6ytjY6pwVBBXW6+UeWb5fHpdiN2Q=;
-        b=ldkG786to9BGWtLjh1WpxPRqStCYl8LmG4rHbPoL584Ls+asn+5YyMI61vJLYr6C4t
-         2fmq2AzgCsmbCOMiBqUszMj3zNyh9TcrZRbKwG4w4ulMng1rF9U39n1QYbXcMwqMl9mw
-         YTmukQHhLrSUlJeclpPyPGv9x4XYuLCD/EVOt2l3sRuMUOFkPha71hxR9S1i1sVc530C
-         TRJoYH624KKJC61vtkAJYiKDE+NAzAIIDnM9fJrG/+3B8/IW4DTJhPOtbxJX1OSgt0Zd
-         JKfXUgJ5WriQuw+RZOisBtZYZqkwfLR66g527y4cNsWVAQ6cCcO8kAiUmku2CsbPLZVH
-         VuOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693200391; x=1693805191;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=108AsllHoPT0Lzt6ytjY6pwVBBXW6+UeWb5fHpdiN2Q=;
-        b=ap4WjpWmiYh0iw6oFfniKcA3VXw/Q+vVJMtIOa6Q7Z3wWag0ID99HYnR/JO82zVGvO
-         D5IaNk9avTa0xC27a6+bBeC9lJD3He7y4hICcLzEc+J2tA1UiN7oBe3gymRHpv/4y6JT
-         io4oB3lc/5l8pQ023rX/QqnIEuwcDnnvR10up/xMdTHjsF9a6soic+QdoU73gTTbBrir
-         UI5W/z/y+gsuOt/7c7/99fH+lfrCSI89dNK8MXoVvAFn604nGAyTvthejG8eB3Q3ZZxo
-         kN2VUQUye7wK697jVZ+JTQqB53izjMNjYpPvbC1mdC9DyKa9g1LQ9S8V45NJkjOUKFUr
-         8pGw==
-X-Gm-Message-State: AOJu0YzMImiu5JTTk9SPC1xgUPUDy8DmjP0dIcfGBfA1j17OUMcgLoqD
-        KgTOV5TctjzE2i2skfVlIO+Wzg==
-X-Google-Smtp-Source: AGHT+IHEQKuNBZ6qJ4N2xNz7ofrzmnsHi+TY1oiaRD1gEJ0FxfGbS6fr0a1lahg4MRvwzZ6B70mZTw==
-X-Received: by 2002:a05:622a:1182:b0:410:9855:aae with SMTP id m2-20020a05622a118200b0041098550aaemr25612358qtk.19.1693200391084;
-        Sun, 27 Aug 2023 22:26:31 -0700 (PDT)
-Received: from ?IPV6:2600:1700:2000:b002:6140:58e3:2550:7e99? ([2600:1700:2000:b002:6140:58e3:2550:7e99])
-        by smtp.gmail.com with ESMTPSA id bt4-20020ac86904000000b00403f1a7be90sm2084094qtb.88.2023.08.27.22.26.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Aug 2023 22:26:30 -0700 (PDT)
-Message-ID: <15058508-9e21-0d10-4eca-2c8a5562d36c@sifive.com>
-Date:   Mon, 28 Aug 2023 00:26:29 -0500
+        Mon, 28 Aug 2023 01:32:25 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E109A92;
+        Sun, 27 Aug 2023 22:32:22 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37S4Xj9a006854;
+        Mon, 28 Aug 2023 05:32:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=sDumSUEEqZ5zLBEK3Ni6BUoqqetakJvnpH6yY0Eb1xY=;
+ b=mWNeUrmsYcGJGWeV8tqpNkqoV7clYJdGGGoznas7NELOnxArUK+eAlzlNhULiFOkYMwu
+ izTY2ekl6jbziiGpgRDmyKX4nRY5kWbyniM7JSe0yMXwnq5kSnN/NtQ3wrZneyh1aksD
+ WSt3Csw2NLNsoFRKN639/JHCogLCc5QcNtc5nKlNsu1q16yNDEQhQnlcOQIeN+FMvPkK
+ +iLlHs0GaWYotzIIfQAN2/W74VsliiV1NlWCvZsPMd729tI3qyBCKG5hC6IhVvZK+5iY
+ NVYzcUZQiH7iNSbltI8hOPYHVG0nIEPzBKLjT6dL9ii5/WzMv7jvXZCsIwwVyqVptwjQ 3A== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sq9g1jmvy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 05:32:18 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37S5WHJw012297
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 05:32:17 GMT
+Received: from fenglinw2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sun, 27 Aug 2023 22:32:14 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <dmitry.baryshkov@linaro.org>
+CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
+        <quic_fenglinw@quicinc.com>, <quic_kamalw@quicinc.com>,
+        <jestar@qti.qualcomm.com>
+Subject: [RESEND PATCH v6 0/3] Add support for vibrator in multiple PMICs
+Date:   Mon, 28 Aug 2023 13:32:02 +0800
+Message-ID: <20230828053205.218950-1-quic_fenglinw@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/8] crash_core.c: remove unneeded functions
-Content-Language: en-US
-To:     Baoquan He <bhe@redhat.com>
-Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        x86@kernel.org, linux-riscv@lists.infradead.org,
-        akpm@linux-foundation.org, catalin.marinas@arm.com,
-        thunder.leizhen@huawei.com, dyoung@redhat.com, prudo@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20230827101128.70931-1-bhe@redhat.com>
- <20230827101128.70931-9-bhe@redhat.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20230827101128.70931-9-bhe@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FfsDHUoxffREtDJHlyFXK6XsyvWzT0_4
+X-Proofpoint-GUID: FfsDHUoxffREtDJHlyFXK6XsyvWzT0_4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-28_02,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=949
+ malwarescore=0 suspectscore=0 clxscore=1015 phishscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ adultscore=0 mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2308280049
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,65 +78,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,
+Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
+It is very similar to the vibrator module inside PM8916 which is supported in
+pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
+and the register base offset in each PMIC is different.
 
-On 2023-08-27 5:11 AM, Baoquan He wrote:
-> So far, nobody calls functions parse_crashkernel_high() and
-> parse_crashkernel_high(), remove both of them.
+Changes in v6:
+  1. Add "qcom,pmi632-vib" as a standalone compatible string.
 
-minor typo: should be parse_crashkernel_low().
+Changes in v5:
+  1. Drop "qcom,spmi-vib-gen2" generic compatible string as requested
+     and use device specific compatible strings only.
 
-Regards,
-Samuel
+Changes in v4:
+  1. Update to use the combination of the HW type and register offset
+     as the constant match data, the register base address defined in
+     'reg' property will be added when accessing SPMI registers using
+     regmap APIs.
+  2. Remove 'qcom,spmi-vib-gen1' generic compatible string.
 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  include/linux/crash_core.h |  4 ----
->  kernel/crash_core.c        | 18 ------------------
->  2 files changed, 22 deletions(-)
-> 
-> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-> index 2f732493e922..0c512a80a768 100644
-> --- a/include/linux/crash_core.h
-> +++ b/include/linux/crash_core.h
-> @@ -80,10 +80,6 @@ void final_note(Elf_Word *buf);
->  int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
->  		unsigned long long *crash_size, unsigned long long *crash_base,
->  		unsigned long long *low_size, bool *high);
-> -int parse_crashkernel_high(char *cmdline, unsigned long long system_ram,
-> -		unsigned long long *crash_size, unsigned long long *crash_base);
-> -int parse_crashkernel_low(char *cmdline, unsigned long long system_ram,
-> -		unsigned long long *crash_size, unsigned long long *crash_base);
->  
->  #ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
->  #ifndef DEFAULT_CRASH_KERNEL_LOW_SIZE
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 6bc00cc390b5..61a8ea3b23a2 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -323,24 +323,6 @@ int __init parse_crashkernel(char *cmdline,
->  	return 0;
->  }
->  
-> -int __init parse_crashkernel_high(char *cmdline,
-> -			     unsigned long long system_ram,
-> -			     unsigned long long *crash_size,
-> -			     unsigned long long *crash_base)
-> -{
-> -	return __parse_crashkernel(cmdline, system_ram, crash_size, crash_base,
-> -				suffix_tbl[SUFFIX_HIGH]);
-> -}
-> -
-> -int __init parse_crashkernel_low(char *cmdline,
-> -			     unsigned long long system_ram,
-> -			     unsigned long long *crash_size,
-> -			     unsigned long long *crash_base)
-> -{
-> -	return __parse_crashkernel(cmdline, system_ram, crash_size, crash_base,
-> -				suffix_tbl[SUFFIX_LOW]);
-> -}
-> -
->  /*
->   * Add a dummy early_param handler to mark crashkernel= as a known command line
->   * parameter and suppress incorrect warnings in init/main.c.
+Changes in v3:
+  1. Refactor the driver to support different type of the vibrators with
+    better flexibility by introducing the HW type with corresponding
+    register fields definitions.
+  2. Add 'qcom,spmi-vib-gen1' and 'qcom,spmi-vib-gen2' compatible
+    strings, and add PMI632, PM7250B, PM7325B, PM7550BA as compatbile as
+    spmi-vib-gen2.
+
+Changes in v2:
+  Remove the "pm7550ba-vib" compatible string as it's compatible with pm7325b.
+
+
+Fenglin Wu (3):
+  input: pm8xxx-vib: refactor to easily support new SPMI vibrator
+  dt-bindings: input: qcom,pm8xxx-vib: add new SPMI vibrator module
+  input: pm8xxx-vibrator: add new SPMI vibrator support
+
+ .../bindings/input/qcom,pm8xxx-vib.yaml       |  16 +-
+ drivers/input/misc/pm8xxx-vibrator.c          | 171 ++++++++++++------
+ 2 files changed, 132 insertions(+), 55 deletions(-)
+
+-- 
+2.25.1
 
