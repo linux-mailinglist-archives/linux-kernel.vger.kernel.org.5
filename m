@@ -2,110 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C6578A867
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE4478A868
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjH1I7V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Aug 2023 04:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        id S229721AbjH1I7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbjH1I6s (ORCPT
+        with ESMTP id S229950AbjH1I7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:58:48 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00C3102;
-        Mon, 28 Aug 2023 01:58:45 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-57328758a72so828336eaf.1;
-        Mon, 28 Aug 2023 01:58:45 -0700 (PDT)
+        Mon, 28 Aug 2023 04:59:50 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D29103;
+        Mon, 28 Aug 2023 01:59:47 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76da8e70ed3so177940485a.3;
+        Mon, 28 Aug 2023 01:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693213187; x=1693817987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g6/obRJ5ioyT4HGrPxjoMWXiWDYdXVyzHpHN+4tAdfM=;
+        b=LZwzEb5BQgbi7VGf5ZmGZmOIyzdEHmzuHd6TEPDu/fVJ3uvGT5KpXxnrC4wbDzHU2y
+         F5CNZQ8ClIWDeQiIarBLbsL/lGwMgn6UvCyEu/L1eSr4jE2wPJN+lQhUGwLe/t5Wgy7f
+         sdhvG7PoBA4Xf5WsSBd/bax03neNJcoiwjyKa1nrJ3RUWnGRdCHqPlBlr2AAmb8GfOia
+         uHSF5ID7XAeRul0dOMhTp8dA99k/1uKllM9M/aOaF4nkDf5nx0GXIVCX1UgnlQdR3idu
+         HblpvC+qxCrJZD969XuYZcl5gR6YiE1sIWasNnjWhkbYtlopbVHPksM+6Q0cmVx/fWQh
+         /vdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693213125; x=1693817925;
+        d=1e100.net; s=20221208; t=1693213187; x=1693817987;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g3FZcTZH37FUS4WWZ6lFpJNi4D7JTyraivRiz2TeBYU=;
-        b=U1ipCtiNFyWzWpBocewkjMS3ZFazqtgVu3IcByP4H9gWeqPXtCD1dHNWMJtSqXXDKT
-         IYrxc9FCyauNT0jyt8BV1n8o9GqgnU8hGJK5xEDPtDCiqZxGckk7k6DsCc9DAb6I397h
-         Jql5oVNR3PKKTGvfJ6pe/F8cv/OTDvR4L+EFVff4UURbyKdIVwZO8ZbVVIqZSxGL/BaX
-         Qzkw5uPJ+vRnOlHd+Ks0z80tKClDl6+rSF15D0NShrBvh+jV4FNf+xCzzem3/igx4b3u
-         vTefdAN6z/PEyjAHWYzBrZ+p/zXvRS1XCkceKA9GWd731uAr62AmIGUyb3BQT8pYkEDY
-         FeGg==
-X-Gm-Message-State: AOJu0YzDEeTfftdiYwYMdBbraGNh3xdLLox8z7BlX8y3j5ONvAlPKlrG
-        WDTuFjl0Jqrvrsrny0LQoHgGSw3jqG9gnQ9jJlo=
-X-Google-Smtp-Source: AGHT+IE8sxryy1AJOeaiDLv29IhQTJIUO6CF9gxlFEOQ8Jnp8t4887JIJavWAtb+nBh00Y3kU4BtKeDE0l7/d49Q8gI=
-X-Received: by 2002:a4a:d137:0:b0:571:1906:47f0 with SMTP id
- n23-20020a4ad137000000b00571190647f0mr13319897oor.1.1693213125014; Mon, 28
- Aug 2023 01:58:45 -0700 (PDT)
+        bh=g6/obRJ5ioyT4HGrPxjoMWXiWDYdXVyzHpHN+4tAdfM=;
+        b=cKfiZ2LtPdV3K9XPyAkbFI++VghkFNwOj0DGp4U7HH3Zs9EZczmDpw6C9lRjIF1zN4
+         vY0qYs5Aa4FfwMmIOVc6zHt7vRdtQ/XINehtMoo2FWVkp+fpYRul6xnspOpEclpAB8Xo
+         1b4IB3KbRTdylr4Y07bLgEbcMY3VM1omC+1enq2smPcjS0eqUEI1JwGwOTlEFl79tLrN
+         vziDjc2m0LZUGRABcDg4LknhPs/pm8mxuj5Gxp5sHygLTnurjplVo8N9us9mgVHZ/anF
+         PKclhwQ+HK/H6cl5Tjp+yGMGbonA1A5wUi+4tM7uGDKirh3z69Fj8kpY8Qp6vK96IuOo
+         4XXg==
+X-Gm-Message-State: AOJu0YxXgEFZrCLmUBGuTBzEL8Sz7KeUkdU/tFmvJ7saa9dZvPggG8l4
+        CEUo/jYyCvPNTNiJeqj71BfJiyPJoj1FYBH4EIV6xagIz9Y=
+X-Google-Smtp-Source: AGHT+IH1zyaLI3bOrANccKAtefGchSmSDUk3GJooSvfC2L+NnKMoE4zItrP3AArM78MhyWE/WgW4LlDQkapZNYMqYFU=
+X-Received: by 2002:a0c:c547:0:b0:64f:3882:512a with SMTP id
+ y7-20020a0cc547000000b0064f3882512amr23079371qvi.13.1693213186970; Mon, 28
+ Aug 2023 01:59:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230826095836.1138608-1-liaochang1@huawei.com>
- <20230828072347.ly23mbptu3yw4zkv@vireshk-i7> <bcac1b3c-a2f7-7f18-4c2f-5cf27f4e89b5@huawei.com>
- <20230828085248.sz6aljr5aln7j435@vireshk-i7>
-In-Reply-To: <20230828085248.sz6aljr5aln7j435@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 28 Aug 2023 10:58:30 +0200
-Message-ID: <CAJZ5v0iGikZ=JSA5Nyx5Dc4QunSC5BObNO5yzQh44UYjrtRKYg@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: Fix the race condition while updating the
- transition_task of policy
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Liao, Chang" <liaochang1@huawei.com>, rafael@kernel.org,
-        srivatsa.bhat@linux.vnet.ibm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230823061734.27479-1-wenchao.chen@unisoc.com>
+ <20230823061734.27479-3-wenchao.chen@unisoc.com> <CAPDyKFriZ_uu-WACjqXK5um1bYJSDaHsghOMGwwPJXM8pYCoGw@mail.gmail.com>
+In-Reply-To: <CAPDyKFriZ_uu-WACjqXK5um1bYJSDaHsghOMGwwPJXM8pYCoGw@mail.gmail.com>
+From:   Wenchao Chen <wenchao.chen666@gmail.com>
+Date:   Mon, 28 Aug 2023 16:59:35 +0800
+Message-ID: <CA+Da2qzsDv9MVvmXwG=DsF6B70geR1PCy+KG63n8dqJecHzXUg@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] mmc: hsq: dynamic adjustment of hsq->depth
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhenxiong.lai@unisoc.com,
+        yuelin.tang@unisoc.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 10:52 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Thu, Aug 24, 2023 at 6:37=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org=
+> wrote:
 >
-> On 28-08-23, 16:29, Liao, Chang wrote:
-> > Task B does not necessarily go to sleep when it calls wait_event(), it depends on
-> > the condition to wait for evaluate false or not. So there is a small race window
-> > where Task A already set 'transition_ongoing' to false and Task B can cross wait_event()
-> > immediately.
+> On Wed, 23 Aug 2023 at 08:18, Wenchao Chen <wenchao.chen@unisoc.com> wrot=
+e:
 > >
-> > wait_event:
-> > do {
-> >       might_sleep();
-> >       if (condition) // !transition_ongoing
-> >               break;
-> >       __wait_event();
-> > };
+> > Increasing hsq_depth improves random write performance.
 > >
-> > I hope I do not miss something important in the code above.
+> > Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> > ---
+> >  drivers/mmc/host/mmc_hsq.c | 26 ++++++++++++++++++++++++++
+> >  drivers/mmc/host/mmc_hsq.h |  2 ++
+> >  2 files changed, 28 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/mmc_hsq.c b/drivers/mmc/host/mmc_hsq.c
+> > index 8556cacb21a1..8682a3d16a76 100644
+> > --- a/drivers/mmc/host/mmc_hsq.c
+> > +++ b/drivers/mmc/host/mmc_hsq.c
+> > @@ -21,6 +21,30 @@ static void mmc_hsq_retry_handler(struct work_struct=
+ *work)
+> >         mmc->ops->request(mmc, hsq->mrq);
+> >  }
+> >
+> > +static void mmc_hsq_modify_threshold(struct mmc_hsq *hsq)
+> > +{
+> > +       struct mmc_host *mmc =3D hsq->mmc;
+> > +       struct mmc_request *mrq;
+> > +       struct hsq_slot *slot;
+> > +       int need_change =3D 0;
+> > +       int tag;
+> > +
+> > +       for (tag =3D 0; tag < HSQ_NUM_SLOTS; tag++) {
+> > +               slot =3D &hsq->slot[tag];
+> > +               mrq =3D slot->mrq;
+> > +               if (mrq && mrq->data && (mrq->data->blocks =3D=3D HSQ_D=
+ATA_IS_4K)
 >
-> > Yes, if the CPU uses weak memroy model, it is possible for the instructions to be reordered.
-> > therefore, it is a good idea to insert an smb() between these two lines if there is race here.
+> This assumes mrq->data->blksz is 512 (which at least for now is always
+> the case), but perhaps better to compute the request size instead?
+> Hence:
 >
-> Maybe it would be better to do this instead ?
+> "mrq->data->blksz * mrq->data->blocks =3D=3D 4096"
 >
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 6b52ebe5a890..f11b01b25e8d 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -455,8 +455,10 @@ void cpufreq_freq_transition_end(struct cpufreq_policy *policy,
->                             policy->cur,
->                             policy->cpuinfo.max_freq);
->
-> +       spin_lock(&policy->transition_lock);
->         policy->transition_ongoing = false;
->         policy->transition_task = NULL;
-> +       spin_unlock(&policy->transition_lock);
->
->         wake_up(&policy->transition_wait);
->  }
->
-> --
 
-I was about to suggest the same thing.
+I will update it in the next version. Thanks.
 
-wake_up() is a full memory barrier only if it actually wakes up a task
-and if it doesn't do that, without the locking the other task may see
-a state in which transition_ongoing is false already and
-transition_task is still NULL regardless of the relative ordering of
-the statements before the wake_up() call.
+> > +                               && (mrq->data->flags & MMC_DATA_WRITE))
+> > +                       need_change++;
+> > +               else
+> > +                       break;
+> > +       }
+> > +
+> > +       if (need_change > 1)
+> > +               mmc->hsq_depth =3D HSQ_PERFORMANCE_DEPTH;
+> > +       else
+> > +               mmc->hsq_depth =3D HSQ_NORMAL_DEPTH;
+> > +}
+> > +
+> >  static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
+> >  {
+> >         struct mmc_host *mmc =3D hsq->mmc;
+> > @@ -42,6 +66,8 @@ static void mmc_hsq_pump_requests(struct mmc_hsq *hsq=
+)
+> >                 return;
+> >         }
+> >
+> > +       mmc_hsq_modify_threshold(hsq);
+> > +
+> >         slot =3D &hsq->slot[hsq->next_tag];
+> >         hsq->mrq =3D slot->mrq;
+> >         hsq->qcnt--;
+> > diff --git a/drivers/mmc/host/mmc_hsq.h b/drivers/mmc/host/mmc_hsq.h
+> > index aa5c4543b55f..fc031e38f1e0 100644
+> > --- a/drivers/mmc/host/mmc_hsq.h
+> > +++ b/drivers/mmc/host/mmc_hsq.h
+> > @@ -10,6 +10,8 @@
+> >   * flight to avoid a long latency.
+> >   */
+> >  #define HSQ_NORMAL_DEPTH       2
+> > +#define HSQ_PERFORMANCE_DEPTH  5
+> > +#define HSQ_DATA_IS_4K 8
+>
+> Perhaps re-phrase the comment a few lines above to explain why/when
+> '5' can be good too.
+>
+
+Ok, I'll add that in the next version. Thanks.
+
+For 4k random writes, we allow hsq_depth to increase to 5 for better
+performance.
+
+> >
+> >  struct hsq_slot {
+> >         struct mmc_request *mrq;
+>
+> Kind regards
+> Uffe
