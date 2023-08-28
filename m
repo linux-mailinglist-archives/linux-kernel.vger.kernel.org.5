@@ -2,125 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1725178B012
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 14:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC2878B01C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 14:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbjH1M0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 08:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
+        id S231366AbjH1M1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 08:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231214AbjH1MZu (ORCPT
+        with ESMTP id S232563AbjH1M1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 08:25:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B793C123
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 05:25:38 -0700 (PDT)
-Received: from nazgul.tnic (unknown [78.130.214.203])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A13BF1EC00D9;
-        Mon, 28 Aug 2023 14:25:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1693225536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=u039bQisaevab5OcXO8iHcE5EypFcCNlyJCatMkBM6w=;
-        b=ViTdcJDz62F6Cd559ad2Bj2I4zVJ3kC8HOzyWjN25qaVra0z+8VB7KUBULEVCti4FBdM/D
-        Ds08foCmAOxTUGpbIF+SUHoOZm9aEk0CUdXcrnaIZaFqCdqoZryiAlYsPZxP9ZzXPjeuUL
-        DbICqXieQF9k2aDwoWAZLjbMaVsbStQ=
-Date:   Mon, 28 Aug 2023 14:25:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/microcode for v6.6-rc1
-Message-ID: <20230828122533.GBZOySPQIjw25NiUqI@fat_crate.local>
+        Mon, 28 Aug 2023 08:27:13 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2071.outbound.protection.outlook.com [40.107.95.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B77107
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 05:27:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RF4ys2mb19ehBfSiAvyRUm2mZ8Uh+1F5IHmi+OXbH+LQRDsEct4dz1he1I2UgLuNBvSs+nTV7MV514oXuKiYPRmIhsjUDV2tGdF/8GP1X6AJmbkgPfz6wnmKMjJd4xo8Rw7L0+6y212RT41oDrQrvTTA4AqZ1AypgJ/IKwJinXE41Lof5rPtcUqi4CUNID6pJJv8BLSSZgaVGkc6gGwkv87G9E6cpxS19l1C7Kj2av8c4irhllBCMVd8Hr6RTpXU1XTJTRkL3kn70GwhHO3pj0tRPQG0VBV5gi+AnKP3cGTQBU0YYY6fyO57itvGOb0GQvDmThdhMbopaOhojrmRPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2WzLBkFEq0P/CGAn96QF99owWXAxiiXnVdVXF6XaNkg=;
+ b=RRhrF4AKXIEGWhxIdz2MlA8wn9ZfaN7fiuMZmZgE2xI0Ra5sgYmWIBlexSNXsirVuj4p+qddxHAXEsTYhxB8fXWP/0It/3yllnkWu/tEq9zBhLz8/s3/8ZaRYKlBcE7qAJisfgIsEQm2eEpxjox9wGxCcXDXt6aLOCINvqRdqBvPYEsk1zemc587ovEntbbv0roM7MH73FXR659P0uVSeUdRkt8x3AH7zCFiH+/mhyF1fSvhAWI8/Navrzc4BT54lRD79EAvHHikWFx0iUQtg9KyXboUhWtDpJCbuze6Uv8zgvWpoT6WMme7vpVjgQ0/CoCcA0nM1VfXDs0qvKA6Tw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2WzLBkFEq0P/CGAn96QF99owWXAxiiXnVdVXF6XaNkg=;
+ b=bbX5YzbCQHiOF99w/1exQmHpR2YUfImchZQI/hmvT6XcAKYbEG5AdZAYLUzjDdV8SNHo6Sa3TVtuL7w46hJiav4mqBFyujoUG8z2nXfXbIwfDefJJtsmiIizXPEZarWQnnVz6axNpO9Y/atwuQT9WRDN/ZUvhOLheGVRIklaQE0=
+Received: from CY8PR12CA0034.namprd12.prod.outlook.com (2603:10b6:930:49::22)
+ by SA3PR12MB8024.namprd12.prod.outlook.com (2603:10b6:806:312::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
+ 2023 12:26:58 +0000
+Received: from CY4PEPF0000E9D5.namprd05.prod.outlook.com
+ (2603:10b6:930:49:cafe::de) by CY8PR12CA0034.outlook.office365.com
+ (2603:10b6:930:49::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35 via Frontend
+ Transport; Mon, 28 Aug 2023 12:26:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000E9D5.mail.protection.outlook.com (10.167.241.76) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6745.17 via Frontend Transport; Mon, 28 Aug 2023 12:26:58 +0000
+Received: from rtg-Artic.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 28 Aug
+ 2023 07:26:52 -0500
+From:   Arvind Yadav <Arvind.Yadav@amd.com>
+To:     <Christian.Koenig@amd.com>, <alexander.deucher@amd.com>,
+        <shashank.sharma@amd.com>, <Xinhui.Pan@amd.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>, <Felix.Kuehling@amd.com>,
+        <amd-gfx@lists.freedesktop.org>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        "Arvind Yadav" <Arvind.Yadav@amd.com>
+Subject: [PATCH v3 0/7] GPU workload hints for better performance
+Date:   Mon, 28 Aug 2023 17:56:07 +0530
+Message-ID: <20230828122614.3815122-1-Arvind.Yadav@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D5:EE_|SA3PR12MB8024:EE_
+X-MS-Office365-Filtering-Correlation-Id: 94f97efe-1d3b-4f83-d7b5-08dba7c212fd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HGcrCefQo2Ph7swI7VI+g0lPc45giauYZJBomD66ApLxb9h2G4e9IbYkNzDrxm6v4cw7LEwiWreBkcX/xqHh3Fb2lKyLxyFclIkMFjt3z/XRGciV9xeQAj3oyG+mu5f4UC2B4I/gzErzyNgf30KaJEyXLXNjZzUECz0HvVth5hhsw8rFcQHXXVXoo+s9fRP3YSp4p/V9xlXt5IRqTPJ+3FoNSc8NKmmG/yS1UMwZPPIcVSUBqaFPOIuyBnjClLQiJVzw1yZpSW9jmnydHc//Vp6Xln2MdqM32zVF1zRk+UhPAOpwzc+g4x7l4DG96Qesm/RXHI2Q2nJ2Qw/29tOtZ9vXdlnykpFiUXMRF5dx8T/UH0wUiZoQo+QqSFiCH2JdVoG0+kMcdBOK5LdN7ngKXR0/5P9YMeEL03xls8nPk/hnRhZCrh7kYoxWAObBx+w5y3WVMZu3o4FJNDioQReHMCXYThVaTtwoBFWNsVZyVduV2rHpEpykl4rFbGVgxk7B8onjPc2Okst0m2aYvO66JgJdz7StcSZIxd5AdV9NQ72hZtmZu5cYyFwiwsTHOTtJRcEyNfy+kbty/6J8vGDn/Zk8L2KAhmf1JIGiJ71rDRIWZrykjonCzrOvIaROLpjMq1k1vksBOJYTBSRnTSxP9+m6aElrNhs9CBKc4KeSXYqNneQWLp7rOFsMxleytDYdUQQxwhuOuyMLjEmcWTAuwm0rHMjlSQA2WMg4/IQONwWnTwwHdZP9VBcdvIqbPDcZgNn11xDdKZfZWlydeug+nw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(346002)(376002)(39860400002)(451199024)(1800799009)(82310400011)(186009)(36840700001)(40470700004)(46966006)(356005)(478600001)(81166007)(83380400001)(82740400003)(16526019)(26005)(426003)(336012)(47076005)(36860700001)(1076003)(2616005)(40480700001)(7696005)(110136005)(6666004)(86362001)(5660300002)(2906002)(316002)(8936002)(4326008)(70206006)(36756003)(41300700001)(54906003)(8676002)(70586007)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 12:26:58.6083
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94f97efe-1d3b-4f83-d7b5-08dba7c212fd
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D5.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8024
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+AMDGPU SOCs supports dynamic workload based power profiles, which can
+provide fine-tuned performance for a particular type of workload.
+This patch series adds an interface to set/reset these power profiles
+based on the submitted job. The driver can dynamically switch
+the power profiles based on submitted job. This can optimize the power
+performance when the particular workload is on. 
 
-please pull the first part of Thomas' microcode loader work, for 6.6.
-The other part wasn't fully ready in time so it will follow on later.
+v2:
+- Splitting workload_profile_set and workload_profile_put
+  into two separate patches.
+- Addressed review comment.
+- Added new suspend function.
+- Added patch to switches the GPU workload mode for KFD. 
 
-Thx.
+v3:
+- Addressed all review comment.
+- Changed the function name from *_set() to *_get().
+- Now clearing all the profile in work handler.
+- Added *_clear_all function to clear all the power profile.
 
----
 
-The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
+Arvind Yadav (7):
+  drm/amdgpu: Added init/fini functions for workload
+  drm/amdgpu: Add new function to set GPU power profile
+  drm/amdgpu: Add new function to put GPU power profile
+  drm/amdgpu: Add suspend function to clear the GPU power profile.
+  drm/amdgpu: Set/Reset GPU workload profile
+  drm/amdgpu: switch workload context to/from compute
+  Revert "drm/amd/amdgpu: switch on/off vcn power profile mode"
 
-  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_microcode_for_v6.6_rc1
-
-for you to fetch changes up to 4d2b748305e96fb76202a0d1072a285b1500bff3:
-
-  x86/microcode: Remove remaining references to CONFIG_MICROCODE_AMD (2023-08-26 13:37:55 +0200)
-
-----------------------------------------------------------------
-- The first, cleanup part of the microcode loader reorg tglx has been
-  working on. This part makes the loader core code as it is practically
-  enabled on pretty much every baremetal machine so there's no need to
-  have the Kconfig items. In addition, there are cleanups which prepare
-  for future feature enablement.
-
-----------------------------------------------------------------
-Ashok Raj (2):
-      x86/microcode: Include vendor headers into microcode.h
-      x86/microcode/intel: Rename get_datasize() since its used externally
-
-Borislav Petkov (AMD) (1):
-      x86/microcode/AMD: Rip out static buffers
-
-Lukas Bulwahn (1):
-      x86/microcode: Remove remaining references to CONFIG_MICROCODE_AMD
-
-Sebastian Andrzej Siewior (1):
-      x86/microcode: Remove microcode_mutex
-
-Thomas Gleixner (7):
-      x86/mm: Remove unused microcode.h include
-      x86/microcode: Hide the config knob
-      x86/microcode/intel: Move microcode functions out of cpu/intel.c
-      x86/microcode: Make reload_early_microcode() static
-      x86/microcode: Move core specific defines to local header
-      x86/microcode/intel: Remove debug code
-      x86/microcode/intel: Remove pointless mutex
-
- arch/x86/Kconfig                         |  38 +---
- arch/x86/configs/i386_defconfig          |   1 -
- arch/x86/configs/x86_64_defconfig        |   1 -
- arch/x86/include/asm/microcode.h         | 154 +++++-----------
- arch/x86/include/asm/microcode_amd.h     |  58 ------
- arch/x86/include/asm/microcode_intel.h   |  88 ---------
- arch/x86/kernel/cpu/common.c             |   4 +-
- arch/x86/kernel/cpu/intel.c              | 176 +-----------------
- arch/x86/kernel/cpu/microcode/Makefile   |   4 +-
- arch/x86/kernel/cpu/microcode/amd.c      | 133 +++++++-------
- arch/x86/kernel/cpu/microcode/core.c     |  17 +-
- arch/x86/kernel/cpu/microcode/intel.c    | 304 +++++++++++++++++++++----------
- arch/x86/kernel/cpu/microcode/internal.h | 131 +++++++++++++
- arch/x86/mm/init.c                       |   1 -
- drivers/platform/x86/intel/ifs/load.c    |   7 +-
- 15 files changed, 466 insertions(+), 651 deletions(-)
- delete mode 100644 arch/x86/include/asm/microcode_amd.h
- delete mode 100644 arch/x86/include/asm/microcode_intel.h
- create mode 100644 arch/x86/kernel/cpu/microcode/internal.h
-
+ drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c    |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   6 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_job.c       |   5 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c       |  14 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 226 ++++++++++++++++++
+ drivers/gpu/drm/amd/include/amdgpu_workload.h |  61 +++++
+ 8 files changed, 309 insertions(+), 16 deletions(-)
+ create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+ create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
 
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
