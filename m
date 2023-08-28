@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D3E78B368
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2AF78B36B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjH1OoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
+        id S231371AbjH1Ooo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 10:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjH1On7 (ORCPT
+        with ESMTP id S230156AbjH1OoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:43:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F516CC
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693233837; x=1724769837;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2T7YmPEkHAGcBSdCnZHnLBzweMp4XlU5zeIDJecLyZs=;
-  b=nnueU0bnQHnPwcMBb0uWhwELSqgYECKSdr4gLcNakeiMzhb9keK+Fcky
-   sYXOdWbCxaPfihAT+64TpcPo8jzHntW0NvJSTHyTZDcBrVwtVmUrUFFD3
-   2YZJ9Fbbtxl1QRYekPFqv485FkKvWxHFtElNigetDn+eG91+Ozw9dmaI1
-   qkbdmiBVQupT57LIuiVkwnu6cQYc3kDFot+BHxLiSWlh1Dh1QdVGlAUSI
-   K0o0+9s6TC1kIAxqpAOJZnLsOOqJdIgIo2AF+EQdMhl3i/BECe2BZZVFP
-   4uVhqU6VIRRnGSGcOv/X3W99eZb0JNcq01BUrVfssS87vuk6ThZeA33ps
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="360120605"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="360120605"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 07:43:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="738255434"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="738255434"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 28 Aug 2023 07:43:45 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qadSx-004eOJ-2H;
-        Mon, 28 Aug 2023 17:43:43 +0300
-Date:   Mon, 28 Aug 2023 17:43:43 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     syzbot <syzbot+bdfb03b1ec8b342c12cb@syzkaller.appspotmail.com>,
-        hdanton@sina.com
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [kernel?] general protection fault in
- nfc_register_device
-Message-ID: <ZOyyn+5I5sYt/Udj@smile.fi.intel.com>
-References: <0000000000001b6a0c0603f8ab85@google.com>
- <ZOyGeUk89gwLAKPJ@smile.fi.intel.com>
- <ZOyWNNNjnClWlUQg@smile.fi.intel.com>
+        Mon, 28 Aug 2023 10:44:14 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 60C7DDA
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:44:10 -0700 (PDT)
+Received: (qmail 352516 invoked by uid 1000); 28 Aug 2023 10:44:09 -0400
+Date:   Mon, 28 Aug 2023 10:44:09 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     andrey.konovalov@linux.dev
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Justin Chen <justin.chen@broadcom.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] usb: gadget: clarify usage of
+ USB_GADGET_DELAYED_STATUS
+Message-ID: <4945ba1a-296c-49da-be09-fbbc3aba6738@rowland.harvard.edu>
+References: <5c2913d70556b03c9bb1893c6941e8ece04934b0.1693188390.git.andreyknvl@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZOyWNNNjnClWlUQg@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <5c2913d70556b03c9bb1893c6941e8ece04934b0.1693188390.git.andreyknvl@gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 03:42:28PM +0300, Andy Shevchenko wrote:
-> On Mon, Aug 28, 2023 at 02:35:22PM +0300, Andy Shevchenko wrote:
-> > On Mon, Aug 28, 2023 at 02:53:37AM -0700, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following issue on:
-> > 
-> > Thanks! Will work on it ASAP.
+On Mon, Aug 28, 2023 at 04:10:30AM +0200, andrey.konovalov@linux.dev wrote:
+> From: Andrey Konovalov <andreyknvl@gmail.com>
 > 
-> So, can somebody from syzbot explain me what this is?
+> USB_GADGET_DELAYED_STATUS was introduced in commit 1b9ba000177e ("usb:
+> gadget: composite: Allow function drivers to pause control transfers").
+> It was initially intended for the composite framework to allow delaying
+> completing the status stage of a SET_CONFIGURATION request until all
+> functions are ready.
 > 
-> My readings as follows:
-> 1) syzbot inserts fault injection into
+> Unfortunately, that commit had an unintended side-effect of returning
+> USB_GADGET_DELAYED_STATUS from the ->setup() call of the composite
+> framework gadget driver.
 > 
->         dev_set_name(&dev->dev, "nfc%d", dev->idx);
+> As a result of this and the incomplete documentation, some UDC drivers
+> started relying on USB_GADGET_DELAYED_STATUS to decide when to avoid
+> autocompleting the status stage for 0-length control transfers. dwc3 was
+> the first in commit 5bdb1dcc6330 ("usb: dwc3: ep0: handle delayed_status
+> again"). And a number of other UDC drivers followed later, probably
+> relying on the dwc3 behavior as a reference.
 > 
-> 2) that becomes a NULL in the corresponding kobj->name, correct?
-> 3) which leads to the device_add() to exercise the paths that check for name
->    being NULL, i.e.
+> Unfortunately, this violated the interface between the UDC and the
+> gadget driver for 0-length control transfers: the UDC driver must only
+> proceed with the status stage for a 0-length control transfer once the
+> gadget driver queued a response to EP0.
 > 
->      if (dev->init_name) {
->         error = dev_set_name(dev, "%s", dev->init_name);
->         dev->init_name = NULL;
->      }
+> As a result, a few gadget drivers are partially broken when used with
+> a UDC that only delays the status stage for 0-length transfers when
+> USB_GADGET_DELAYED_STATUS is returned from the setup() callback.
 > 
->      if (dev_name(dev))
->          error = 0;
->      /* subsystems can specify simple device enumeration */
->      else if (dev->bus && dev->bus->dev_name)
->          error = dev_set_name(dev, "%s%u", dev->bus->dev_name, dev->id);
->      if (error)
->          goto name_error;
+> This includes Raw Gadget and GadgetFS. For FunctionFS, a workaround was
+> added in commit 946ef68ad4e4 ("usb: gadget: ffs: Let setup() return
+> USB_GADGET_DELAYED_STATUS") and commit 4d644abf2569 ("usb: gadget: f_fs:
+> Only return delayed status when len is 0").
 > 
->    so, either we have init_name or bus->name defined, but this seems not
->    the case; anyway in both cases the dev_set_name() may fail in strchr()
->    if and only if the fmt is NULL, which is not, as above calls have it
->    hard coded literals.
+> The proper solution to this issue would be to contain
+> USB_GADGET_DELAYED_STATUS within the composite framework and make all
+> UDC drivers to not complete the status stage for 0-length requests on
+> their own.
 > 
-> What's going on here?
+> Unfortunately, there is quite a few UDC drivers that need to get fixed
+> and the required changes for some of them are not trivial.
 > 
-> (The error check for dev_set_name() in nfc_allocate_device() probably fixes
->  this, but it must not affect the code execution, right?)
+> For now, update the comments to clarify that USB_GADGET_DELAYED_STATUS
+> must not be used by the UDC drivers.
 > 
-> P.S.
-> Of course the test patch from hdanton@ doesn't fix it, the error is checked in
-> the code later on.
+> The following two commits also add workarounds to Raw Gadget and GadgetFS
+> to make them compatible with the broken UDC drivers until they are fixed.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
+> ---
 
-Looking at the second patch from @hdanton I understand what may have happened.
-The value of "error" has been rewritten to 0 and dev_name() the new code
-doesn't trigger the bail out.
-
-I'll send the patch soon.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
