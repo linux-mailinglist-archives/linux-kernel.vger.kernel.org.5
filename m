@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D01B78A629
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F8078A62E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjH1G6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 02:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54264 "EHLO
+        id S229604AbjH1G7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 02:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjH1G6J (ORCPT
+        with ESMTP id S229576AbjH1G6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 02:58:09 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5225CA2;
-        Sun, 27 Aug 2023 23:58:00 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.217.254])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 860806606E9D;
-        Mon, 28 Aug 2023 07:57:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693205878;
-        bh=HhsU8AkTByw0hcLD8Of9x5RBa5g/fpRR/eFqHC92OFs=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=ndlTZXvtxIZR+jz3o5U447EFR3/LjVag2wTe//HGvH8z6NEdkiOSClZrEjEDeHkv5
-         5IaXWMOeDutPhGS/bZOk4S0E9O4bHjIznUT4jae24qHDZdGcB2NnchnWqbT84j/CuC
-         iujMeg1+4OK2osK3PNUn1IMrf56T9aORvJ0Z6+VSdClyQEYIBDIOVEcbwuv+QY0h3E
-         3eeF3PP/LHuku+DDJ+ECAYVzx5NMx7Qpn9mf1+Ki5ZgXKkHC0HaYkU2eZ0hUzCU8OP
-         3BgiC8XZSnj6mFgsnlbnET4OClM2e8nA1aRO1/k5y+FPUhlPEXYalNYZcO6N9NbPFr
-         iepHsSDRVGm3Q==
-Message-ID: <31981423-9edd-46b6-b5f8-17aae07b8336@collabora.com>
-Date:   Mon, 28 Aug 2023 11:57:44 +0500
+        Mon, 28 Aug 2023 02:58:37 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D602E0
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 23:58:34 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso1798960a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 23:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693205912; x=1693810712;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OsZ4PYkksl2Z8LuGRY4k7e471htU4x9LtGFbo6V1i60=;
+        b=TuVb55xBcsGHkiLQRQqCHC52wDMkxqyZMBEB4E/SO+/bgyNb5hP9KYyM6Tv6aLhAwT
+         5sRRxDFx97PN6sJY7ydODM/gO9sEGK3hJnFLABlUfT3nZo+yM49q63w3VELDmYk8gEc7
+         abbXKrh8neYynegrRvEVCXu5BeHHZQNzMfWiKdskqSFBkcWzt2xlM8FifQKGwnW54UGa
+         gB6+pTSORTVzUmB+xO0d2NSx0ZiFcKVX9sYQPGP04NPKKG/QuR/Mq+TiFRw0Av/lQSmb
+         ufEdfDqkbeVw/b8rPAcUpcQR0wKeajakB0H830qpL1TvYsmW1U5suG6LYAxhxJjrkh8n
+         vHzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693205912; x=1693810712;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OsZ4PYkksl2Z8LuGRY4k7e471htU4x9LtGFbo6V1i60=;
+        b=kGQ+d/I7DKFoacas+WqssI2feMp+axLMuWAxW1uRrJ+/wwPuZRX1lY0GhPhsm0yJ69
+         6nJwF54MsjPslos+MJkYDmzVImjY6EWVqqQvIX7/nOtgfah4I6KH8YoEosj8miYoh42g
+         dK9K2fD6ub9ovoezSgh6gwRBxSEZU479IjPTf1vIXdcYqc090COGQSdFHgapwiG6tKH1
+         peIKzMKB7I0miytxr5phQ0GPRU+N17171UgVry+sZ94zM11zzEE0u3+vvYjj1cJmfGtF
+         2uXmF8MTeYh8/rMIihhnUWp0LhYT8AHuWhazIaQkgsXQYvHvjbHesdVHvdZJSKQtLHBJ
+         uSDg==
+X-Gm-Message-State: AOJu0YwVZeYtCXPYpTedW9V7o5GINf31jQAiW50uxnanVwoNhf77ichW
+        XYs3v08hwV52ayQqvNp01HHj2Q==
+X-Google-Smtp-Source: AGHT+IGOJdi3bdWqq58P4lkBUQArH19QV7szZwfpc+gLL4zEowMV2nVFxe15AvzDXno7DvE31yt3dg==
+X-Received: by 2002:aa7:c38e:0:b0:523:3e5d:8aa2 with SMTP id k14-20020aa7c38e000000b005233e5d8aa2mr19724002edq.14.1693205912287;
+        Sun, 27 Aug 2023 23:58:32 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id f2-20020a056402150200b005233609e39dsm4170009edw.30.2023.08.27.23.58.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Aug 2023 23:58:31 -0700 (PDT)
+Message-ID: <9f499fe5-db59-f4c8-6a50-93725b7287fd@linaro.org>
+Date:   Mon, 28 Aug 2023 08:58:30 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@Oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH v33 2/6] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-To:     Andrew Morton <akpm@linux-foundation.org>
-References: <20230821141518.870589-1-usama.anjum@collabora.com>
- <20230821141518.870589-3-usama.anjum@collabora.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] Minerva: Add Meta openBMC Minerva dts file.
 Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20230821141518.870589-3-usama.anjum@collabora.com>
+To:     peteryin <peteryin.openbmc@gmail.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
+        daniel-hsu@quantatw.com
+References: <20230828031714.107382-1-peteryin.openbmc@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230828031714.107382-1-peteryin.openbmc@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 7:15 PM, Muhammad Usama Anjum wrote:
-> The PAGEMAP_SCAN IOCTL on the pagemap file can be used to get or optionally
-> clear the info about page table entries. The following operations are
-> supported in this IOCTL:
-> - Scan the address range and get the memory ranges matching the provided
->   criteria. This is performed when the output buffer is specified.
-> - Write-protect the pages. The PM_SCAN_WP_MATCHING is used to write-protect
->   the pages of interest. The PM_SCAN_CHECK_WPASYNC aborts the operation if
->   non-Async Write Protected pages are found. The ``PM_SCAN_WP_MATCHING``
->   can be used with or without PM_SCAN_CHECK_WPASYNC.
-> - Both of those operations can be combined into one atomic operation where
->   we can get and write protect the pages as well.
+On 28/08/2023 05:17, peteryin wrote:
+> This is for Meta openBMC Minerva dts.
 > 
-> Following flags about pages are currently supported:
-> - PAGE_IS_WPALLOWED - Page has async-write-protection enabled
-> - PAGE_IS_WRITTEN - Page has been written to from the time it was write protected
-> - PAGE_IS_FILE - Page is file backed
-> - PAGE_IS_PRESENT - Page is present in the memory
-> - PAGE_IS_SWAPPED - Page is in swapped
-> - PAGE_IS_PFNZERO - Page has zero PFN
-> - PAGE_IS_HUGE - Page is THP or Hugetlb backed
-> 
-> This IOCTL can be extended to get information about more PTE bits. The
-> entire address range passed by user [start, end) is scanned until either
-> the user provided buffer is full or max_pages have been found.
-> 
-> Reviewed-by: Andrei Vagin <avagin@gmail.com>
-> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Now we have the reviewed-by tags as well. The reviewers are happy with
-current version. Can you please have a look and possibly pick these up?
+> Kernel:dev-6.1
 
--- 
-BR,
-Muhammad Usama Anjum
+??? NAK. We do not develop there.
+
+Also subject is totally wrong. Drop redundant pieces, drop full stop.
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
+
+> 
+> Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
+> 
+> ---
+> v1 link : https://lore.kernel.org/all/fb09f5e6-8381-312f-2f1e-f2b471cec68a@linaro.org/
+> 
+> Change log:
+> v1:
+>     1. Create minerva dts file.
+> v2:
+>     1.Add facebook,minerva-bmc in aspeed.yaml
+>     2.use stdout-path
+>     3.Add Makefile
+> ---
+> 
+>  .../bindings/arm/aspeed/aspeed.yaml           |   1 +
+
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
+
+
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 329 ++++++++++++++++++
+>  3 files changed, 331 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> index fb4ce5df2fa0..9d1b26e7ca6b 100644
+> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> @@ -79,6 +79,7 @@ properties:
+>                - facebook,elbert-bmc
+>                - facebook,fuji-bmc
+>                - facebook,greatlakes-bmc
+> +              - facebook,minerva-bmc
+>                - ibm,everest-bmc
+>                - ibm,rainier-bmc
+>                - ibm,tacoma-bmc
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 6a897ff40ff0..e7c00905a08b 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1603,6 +1603,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>  	aspeed-bmc-facebook-wedge400.dtb \
+>  	aspeed-bmc-facebook-yamp.dtb \
+>  	aspeed-bmc-facebook-yosemitev2.dtb \
+> +	aspeed-bmc-facebook-minerva.dtb \
+
+Wrong order. 'm' is not after 'y'.
+
+...
+
+> +	/*X0-X7*/	"","","","","","","","",
+> +	/*Y0-Y7*/	"","","","","","","","",
+> +	/*Z0-Z7*/	"","","","","","","","";
+> +};
+> +
+
+Still redundant blank line.
+
+Best regards,
+Krzysztof
+
