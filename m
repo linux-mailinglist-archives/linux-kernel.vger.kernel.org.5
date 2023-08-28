@@ -2,393 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1492678AE43
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466C378AE49
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbjH1K7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        id S232350AbjH1K7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbjH1K6k (ORCPT
+        with ESMTP id S232354AbjH1K7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:58:40 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA62C2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:58:33 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b52875b8d9so277815ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:58:33 -0700 (PDT)
+        Mon, 28 Aug 2023 06:59:06 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66D4CEE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:58:47 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso46278171fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:58:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693220313; x=1693825113; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ljL1zThljNasYQ4d5IYv4Q1vKQ9tJwA3CVawyxE2lvA=;
-        b=CBhMy1Zhg0aT9q7W2gF8mS2/k7YTOOK7XS92x+cNEAEeS/3LfKKWfWRlOhn5Moh6lF
-         Cmoq76ipQaDHrZ1u/J0VxMAA3pLQ0q9BKRhE14XOUC7Gb+Dd77p1FAi60SqR8/OxCS0p
-         3Ts3UUDgbP7hJlievl+l99XsNtE72lBLJ3wik1yu1LVJhiblaudGq/68hEXu6yZlYCsC
-         gjIF6oeOV3AmVAVOroHQt+2+89LFGYyQNV/nteOSS18tsV5P//6dF+t7KMw5ysGbtvcU
-         j48uz+b5AOfxe8PajF6nTt91FcaMkNmgayYx5MOJrpJy1w032x41qfuxbwlhHEVXkt/A
-         OQWw==
+        d=linaro.org; s=google; t=1693220326; x=1693825126;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d/OB7PKo07RgUFZpiehXJXNKqPXLjU99gDHLTVOVii8=;
+        b=cJXfrHMJNPS/QKMrTTlE5vfpH974HXftpuSY9uJs9MfVS7vc2mXinUh9ADC2STqq3k
+         5WNnPwsOq3rjlCr/JlQZURcjtrH2q2IdRvWytQYT1l+kcjhVAqDM5ELFcurx9w5rEXed
+         yaO4gDOcAp5aORCgm32uLrh+lUesOUFQRzDaKjVsy1NqQ269QA0T0ACauz8czEnt/9p+
+         I8/VwRP8mVEyupf+HtVu2tm/p+Wfcj9+cRYArd2exPuJqTY77Wc+2o1lElpn93LqLXBd
+         6er4vDPQ7rF0zfitvBwtpmn9UkrQVTY79hvkSXx1oOk7iVaG6Ft2xtj95vpS/nTnAHW3
+         6tOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693220313; x=1693825113;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ljL1zThljNasYQ4d5IYv4Q1vKQ9tJwA3CVawyxE2lvA=;
-        b=kRe/NvhRneYk299o40nGlE8WxMaPujIFDI/IcisXazQ1QB6DXGw9J/cW219BslLZXR
-         tz7Bvk6/S66YNeWNl5OkAUKBhQqyC89fkm4c2OZjpHs+NXLeBNXYV6z9zmlflRcdLBXQ
-         hrgo2MkQ8sT5DgRYoco6pootdI7Q4KJxOk54KKoLD4/tuLOI0kgAhJOqTPv7RavjLDEl
-         N2PhBoGo+OZD59VYZKKhRdnbk0j8KVAdbwvBtRlQY+4UkjXAyVL0zuBxr30rQ6jkRMVk
-         9E1wLo4SCuet50QJXMh37VNCRz7gMyl1tBAl3lJOtKmE8Xpx01FPSbQiQg609tY1ENKR
-         NI0A==
-X-Gm-Message-State: AOJu0YyLDhLsMUwZJUSL39orcgz1QtOyBBxnMNxdJj2tW1h4GODdrhQM
-        QMNwULUWHATjrITkhMp0ERcC7yxCkMOuJRgoU3zYGg==
-X-Google-Smtp-Source: AGHT+IG+mcjH46KFJbv9Xyf6eAr40t0VLQkMB5ZkYJptXrUwi91WHySh6jdFgXtg+sKU+2XFGOfguluz1NTx/E9D9gQ=
-X-Received: by 2002:a17:902:c64a:b0:1b9:c5de:9aa with SMTP id
- s10-20020a170902c64a00b001b9c5de09aamr307146pls.27.1693220313032; Mon, 28 Aug
- 2023 03:58:33 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693220326; x=1693825126;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d/OB7PKo07RgUFZpiehXJXNKqPXLjU99gDHLTVOVii8=;
+        b=RABgIDPp8Ra/wQMcpVbiWN8f+QUw6IZfFdktIf/9mITbmynJw7xvQrc4g8y2hmGUcI
+         whPTNcXdPZe6xQAEd/Kx9ud9dsRHOuMW/vTHFTrLri7Job++cWc7/UORAeDnFaTajcE4
+         tg6hD+8ifq4bbzn7LK02AmU6DJp+/XhJ1PaIjkLgD4fneeV/81YYMQkY3UCLQ7U6xqZ1
+         dLOuAjLmO3iAlwk3Q1KQpJDEjAf3QByrvCaUxSfmMU4PfHpj8Fwzp8ESVqGRhxSyzASW
+         Gdn+qrEe138IuomQ0xadakroOk0GeZb8cmtei5cw4ifNjn1fD04spuwpZ/6x8wNP3pNv
+         735g==
+X-Gm-Message-State: AOJu0YyHWii9eh2eeOu83zQsVcTgcVjO9uRLMFN7zNnicWX/7gURmVth
+        B+She6TQ5v6DY/fZe+j0Yr4NdA==
+X-Google-Smtp-Source: AGHT+IG/gueuI9Cxw+c3jnrN0MdQrB+kDMkFMyE8XslmGTM4ZZFnIcaUdSesgvMKixU6F+4T33HR+A==
+X-Received: by 2002:a2e:81d3:0:b0:2bc:db5a:9545 with SMTP id s19-20020a2e81d3000000b002bcdb5a9545mr11327243ljg.14.1693220326336;
+        Mon, 28 Aug 2023 03:58:46 -0700 (PDT)
+Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
+        by smtp.gmail.com with ESMTPSA id w16-20020a2e9990000000b002b6d7682050sm1698240lji.89.2023.08.28.03.58.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 03:58:46 -0700 (PDT)
+Message-ID: <cb5194fc-cb66-44a5-8127-a7155f0dade6@linaro.org>
+Date:   Mon, 28 Aug 2023 12:58:45 +0200
 MIME-Version: 1.0
-References: <391c4270-637a-2afb-210d-6b6dfef01efa@intel.com> <20230828100313.3051403-1-benchuanggli@gmail.com>
-In-Reply-To: <20230828100313.3051403-1-benchuanggli@gmail.com>
-From:   =?UTF-8?Q?Stanis=C5=82aw_Kardach?= <skardach@google.com>
-Date:   Mon, 28 Aug 2023 12:57:56 +0200
-Message-ID: <CADj_en4DkCKwRuLqUpCMPeAxMX5v7upifGabDrhW+d+kwKNDZw@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix
- SoCs can suspend
-To:     Ben Chuang <benchuanggli@gmail.com>
-Cc:     adrian.hunter@intel.com, SeanHY.chen@genesyslogic.com.tw,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw,
-        jason.lai@genesyslogic.com.tw, jasonlai.genesyslogic@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        reniuschengl@gmail.com, stable@vger.kernel.org,
-        svenva@chromium.org, ulf.hansson@linaro.org,
-        victor.shih@genesyslogic.com.tw, victorshihgli@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: misc: eud: Fix missing IRQ check in eud_probe()
+Content-Language: en-US
+To:     Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     quic_schowdhu@quicinc.com, agross@kernel.org, andersson@kernel.org,
+        gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <tencent_C40B301A0F71853A540809BE1BB85AB12D07@qq.com>
+ <f9df2e02-9fae-4e16-9412-d378ef168903@linaro.org>
+ <tencent_D0AA2D25300E0F108559545E899C9B8EDA07@qq.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <tencent_D0AA2D25300E0F108559545E899C9B8EDA07@qq.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
+On 26.08.2023 16:17, Zhang Shurong wrote:
+> 在 2023年8月26日星期六 CST 下午6:49:27，Konrad Dybcio 写道：
+>> On 26.08.2023 12:47, Zhang Shurong wrote:
+>>> This func misses checking for platform_get_irq()'s call and may passes the
+>>> negative error codes to request_irq(), which takes unsigned IRQ #,
+>>> causing it to fail with -EINVAL, overriding an original error code.
+>>>
+>>> Fix this by stop calling request_irq() with invalid IRQ #s.
+>>>
+>>> Fixes: 9a1bf58ccd44 ("usb: misc: eud: Add driver support for Embedded USB
+>>> Debugger(EUD)") Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+>>> ---
+>>>
+>>>  drivers/usb/misc/qcom_eud.c | 7 ++++++-
+>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/usb/misc/qcom_eud.c b/drivers/usb/misc/qcom_eud.c
+>>> index 7f371ea1248c..b33c615a2037 100644
+>>> --- a/drivers/usb/misc/qcom_eud.c
+>>> +++ b/drivers/usb/misc/qcom_eud.c
+>>> @@ -204,7 +204,12 @@ static int eud_probe(struct platform_device *pdev)
+>>>
+>>>  	if (IS_ERR(chip->mode_mgr))
+>>>  	
+>>>  		return PTR_ERR(chip->mode_mgr);
+>>>
+>>> -	chip->irq = platform_get_irq(pdev, 0);
+>>> +	ret = platform_get_irq(pdev, 0);
+>>> +	if (ret < 0)
+>>> +		return ret;
+>>> +
+>>> +	chip->irq = ret;chip->irq = plat..
+>>
+>> if (chip->irq < 0)
+>> 	return chip->irq
+>>
+>> ?
+>>
+>> Konrad
+> Thank you for your thoughtful response. To clarify, are you suggesting that I 
+> replace the usage of `ret` with `chip->irq`? If that is the case, I will 
+> proceed with creating a patch for version 2.
+Yes please
 
-Thanks for reviewing our patch.
-
-On Mon, Aug 28, 2023 at 12:03=E2=80=AFPM Ben Chuang <benchuanggli@gmail.com=
-> wrote:
->
-> Hi,
->
-> On 24/08/23 20:18, Adrian Hunter wrote:
-> > On 24/08/23 14:50, Stanis=C5=82aw Kardach wrote:
-> > > Hi Adrian,
-> > >
-> > > Thanks for reviewing our patches.
-> > >
-> > > On Thu, Aug 24, 2023 at 1:47=E2=80=AFPM Adrian Hunter <adrian.hunter@=
-intel.com <mailto:adrian.hunter@intel.com>> wrote:
-> > >
-> > >     Hi
-> > >
-> > >     Looks OK - a few minor comments below
-> > >
-> > >     On 23/08/23 20:41, Sven van Ashbrook wrote:
-> > >     > To improve the r/w performance of GL9763E, the current driver i=
-nhibits LPM
-> > >     > negotiation while the device is active.
-> > >     >
-> > >     > This prevents a large number of SoCs from suspending, notably x=
-86 systems
-> > >
-> > >     If possible, can you give example of which SoCs / products
-> > >
-> > >     > which use S0ix as the suspend mechanism:
-> > >     > 1. Userspace initiates s2idle suspend (e.g. via writing to
-> > >     >    /sys/power/state)
-> > >     > 2. This switches the runtime_pm device state to active, which d=
-isables
-> > >     >    LPM negotiation, then calls the "regular" suspend callback
-> > >     > 3. With LPM negotiation disabled, the bus cannot enter low-powe=
-r state
-> > >     > 4. On a large number of SoCs, if the bus not in a low-power sta=
-te, S0ix
-> > >     >    cannot be entered, which in turn prevents the SoC from enter=
-ing
-> > >     >    suspend.
-> > >     >
-> > >     > Fix by re-enabling LPM negotiation in the device's suspend call=
-back.
-> > >     >
-> > >     > Suggested-by: Stanislaw Kardach <skardach@google.com <mailto:sk=
-ardach@google.com>>
-> > >     > Fixes: f9e5b33934ce ("mmc: host: Improve I/O read/write perform=
-ance for GL9763E")
-> > >     > Cc: stable@vger.kernel.org <mailto:stable@vger.kernel.org>
-> > >     > Signed-off-by: Sven van Ashbrook <svenva@chromium.org <mailto:s=
-venva@chromium.org>>
-> > >     >      # on gladios device
-> > >     >      # on 15590.0.0 with v5.10 and upstream (v6.4) kernels
-> > >     >
-> > >
-> > >     3 extraneous lines here - please remove
-> > >
-> > >     > ---
-> > >     >
-> > >     > Changes in v2:
-> > >     > - improved symmetry and error path in s2idle suspend callback (=
-internal review)
-> > >     >
-> > >     >  drivers/mmc/host/sdhci-pci-gli.c | 102 +++++++++++++++++++----=
---------
-> > >     >  1 file changed, 64 insertions(+), 38 deletions(-)
-> > >     >
-> > >     > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/hos=
-t/sdhci-pci-gli.c
-> > >     > index 1792665c9494a..19f577cc8bceb 100644
-> > >     > --- a/drivers/mmc/host/sdhci-pci-gli.c
-> > >     > +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> > >     > @@ -745,42 +745,6 @@ static u32 sdhci_gl9750_readl(struct sdhci=
-_host *host, int reg)
-> > >     >       return value;
-> > >     >  }
-> > >     >
-> > >     > -#ifdef CONFIG_PM_SLEEP
-> > >     > -static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
-> > >     > -{
-> > >     > -     struct sdhci_pci_slot *slot =3D chip->slots[0];
-> > >     > -
-> > >     > -     pci_free_irq_vectors(slot->chip->pdev);
-> > >     > -     gli_pcie_enable_msi(slot);
-> > >     > -
-> > >     > -     return sdhci_pci_resume_host(chip);
-> > >     > -}
-> > >     > -
-> > >     > -static int sdhci_cqhci_gli_resume(struct sdhci_pci_chip *chip)
-> > >     > -{
-> > >     > -     struct sdhci_pci_slot *slot =3D chip->slots[0];
-> > >     > -     int ret;
-> > >     > -
-> > >     > -     ret =3D sdhci_pci_gli_resume(chip);
-> > >     > -     if (ret)
-> > >     > -             return ret;
-> > >     > -
-> > >     > -     return cqhci_resume(slot->host->mmc);
-> > >     > -}
-> > >     > -
-> > >     > -static int sdhci_cqhci_gli_suspend(struct sdhci_pci_chip *chip=
-)
-> > >     > -{
-> > >     > -     struct sdhci_pci_slot *slot =3D chip->slots[0];
-> > >     > -     int ret;
-> > >     > -
-> > >     > -     ret =3D cqhci_suspend(slot->host->mmc);
-> > >     > -     if (ret)
-> > >     > -             return ret;
-> > >     > -
-> > >     > -     return sdhci_suspend_host(slot->host);
-> > >     > -}
-> > >     > -#endif
-> > >     > -
-> > >     >  static void gl9763e_hs400_enhanced_strobe(struct mmc_host *mmc=
-,
-> > >     >                                         struct mmc_ios *ios)
-> > >     >  {
-> > >     > @@ -1029,6 +993,68 @@ static int gl9763e_runtime_resume(struct =
-sdhci_pci_chip *chip)
-> > >     >  }
-> > >     >  #endif
-> > >     >
-> > >     > +#ifdef CONFIG_PM_SLEEP
-> > >     > +static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
-> > >     > +{
-> > >     > +     struct sdhci_pci_slot *slot =3D chip->slots[0];
-> > >     > +
-> > >     > +     pci_free_irq_vectors(slot->chip->pdev);
-> > >     > +     gli_pcie_enable_msi(slot);
-> > >     > +
-> > >     > +     return sdhci_pci_resume_host(chip);
-> > >     > +}
->
-> sdhci_pci_gli_resume() is the same as before. Is there any reason to move=
- it here?
-To avoid having multiple #ifdef CONFIG_PM_SLEEP blocks. We can leave
-it, where it
-was if you prefer.
->
-> > >     > +
-> > >     > +static int gl9763e_resume(struct sdhci_pci_chip *chip)
-> > >     > +{
-> > >     > +     struct sdhci_pci_slot *slot =3D chip->slots[0];
-> > >     > +     int ret;
-> > >     > +
-> > >     > +     ret =3D sdhci_pci_gli_resume(chip);
-> > >     > +     if (ret)
-> > >     > +             return ret;
-> > >     > +
-> > >     > +     ret =3D cqhci_resume(slot->host->mmc);
-> > >     > +     if (ret)
-> > >     > +             return ret;
-> > >     > +
-> > >     > +     /* Disable LPM negotiation to bring device back in sync
-> > >     > +      * with its runtime_pm state.
-> > >     > +      */
-> > >
-> > >     I would prefer the comment style:
-> > >
-> > >             /*
-> > >              * Blah, blah ...
-> > >              * Blah, blah, blah.
-> > >              */
-> > >
-> > >     > +     gl9763e_set_low_power_negotiation(slot, false);
->
-> There is a situation for your reference.
-> If `allow_runtime_pm' is set to false and the system resumes from suspend=
-, GL9763E
-> LPM negotiation will be always disabled on S0. GL9763E will stay L0 and n=
-ever
-> enter L1 because GL9763E LPM negotiation is disabled.
->
-> This patch enables allow_runtime_pm. The simple flow is
-> gl9763e_suspend() -> LPM enabled -> gl9763e_resume() -> LPM disabled -> (=
-a)
-> (a) -+--> idle -->  gl9763e_runtime_suspend() -> LPM enabled
->      |
->      +--> no idle -> gl9763e_runtime_resume() -> LPM disabled
-Is the lower branch of this sequence possible? I mean please correct
-me if I'm wrong
-but after the s2idle resume, devices are considered runtime active unless d=
-eemed
-otherwise, so gl_9763e_resume() -> fl9763e_runtime_resume() should not
-happen, right?
->
-> This patch disables allow_runtime_pm. The simple flow is
-> gl9763e_suspend() -> LPM enabled -> gl9763e_resume() -> LPM disabled (no =
-runtime_pm)
->
-> Although that may not be the case with the current configuration, it's on=
-ly a
-> possibility.
-Actually last year there was a patch to improve R/W performance of GL9763E:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
-id=3Df9e5b33934cec24b8c024add5c5d65d2f93ade05
-If I'm reading the code right we're not modifying allow_runtime_pm,
-rather we're disabling
-the L1 negotiation in the same manner as the abovementioned patch does
-in the runtime
-PM flow. So in a way we're restoring whatever setting was there except
-a situation where
-the runtime PM was disabled from the start on the device and we do not
-restore the
-original state of the LPM negotiation fields. Not sure if such case is
-really possible.
->
-> > >     > +
-> > >     > +     return 0;
-> > >     > +}
-> > >     > +
-> > >     > +static int gl9763e_suspend(struct sdhci_pci_chip *chip)
-> > >     > +{
-> > >     > +     struct sdhci_pci_slot *slot =3D chip->slots[0];
-> > >     > +     int ret;
-> > >     > +
-> > >     > +     /* Certain SoCs can suspend only with the bus in low-
-> > >
-> > >     Ditto re comment style
-> > >
-> > >     > +      * power state, notably x86 SoCs when using S0ix.
-> > >     > +      * Re-enable LPM negotiation to allow entering L1 state
-> > >     > +      * and entering system suspend.
-> > >     > +      */
-> > >     > +     gl9763e_set_low_power_negotiation(slot, true);
-> > >
-> > >     Couldn't this be at the end of the function, save
-> > >     an error path
-> > >
-> > > Please correct me if I'm wrong but writing to device config
-> > > space could trigger a side effect, so it's probably better to
-> > > do it before calling functions suspending the device?
-> >
-> > sdhci doesn't know anything about the bus.  It is independent
-> > of PCI, so I can't see how it would make any difference.
-> > One of the people cc'ed might know more.  Jason Lai (cc'ed)
-> > added it for runtime PM.
-> >
->
-> As far as I know, when disabling LPM negotiation, the GL9763E will stop e=
-ntering
-> L1. It doesn't other side effect. Does Jason.Lai and Victor.Shih have any=
- comments
-> or suggestions?
-The reason we've put the LPM negotiation handling at the start of
-suspend and finish
-of resume was mostly for semantical reasons - first do device logic,
-then call base
-framework/module logic which might expect all the device-specific steps to =
-be
-performed already. Maybe it does not make any difference in the real world =
-for
-SDHCI controllers but it just seemed to look better. Also suspend and resum=
-e
-callbacks already have such ordering when it comes to cqhci_* and sdhci_*
-functions.
->
-> Best regards,
-> Ben Chuang
->
-> > >
-> > >
-> > >     > +
-> > >     > +     ret =3D cqhci_suspend(slot->host->mmc);
-> > >     > +     if (ret)
-> > >     > +             goto err_suspend;
-> > >     > +
-> > >     > +     ret =3D sdhci_suspend_host(slot->host);
-> > >     > +     if (ret)
-> > >     > +             goto err_suspend_host;
-> > >     > +
-> > >     > +     return 0;
-> > >     > +
-> > >     > +err_suspend_host:
-> > >     > +     cqhci_resume(slot->host->mmc);
-> > >     > +err_suspend:
-> > >     > +     gl9763e_set_low_power_negotiation(slot, false);
-> > >     > +     return ret;
-> > >     > +}
-> > >     > +#endif
-> > >     > +
-> > >     >  static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
-> > >     >  {
-> > >     >       struct pci_dev *pdev =3D slot->chip->pdev;
-> > >     > @@ -1113,8 +1139,8 @@ const struct sdhci_pci_fixes sdhci_gl9763=
-e =3D {
-> > >     >       .probe_slot     =3D gli_probe_slot_gl9763e,
-> > >     >       .ops            =3D &sdhci_gl9763e_ops,
-> > >     >  #ifdef CONFIG_PM_SLEEP
-> > >     > -     .resume         =3D sdhci_cqhci_gli_resume,
-> > >     > -     .suspend        =3D sdhci_cqhci_gli_suspend,
-> > >     > +     .resume         =3D gl9763e_resume,
-> > >     > +     .suspend        =3D gl9763e_suspend,
-> > >     >  #endif
-> > >     >  #ifdef CONFIG_PM
-> > >     >       .runtime_suspend =3D gl9763e_runtime_suspend,
-> > >
-> > >
-> > >
-> > > --
-> > > Best Regards,
-> > > Stanis=C5=82aw Kardach
-> >
-> >
-
-
-
---=20
-Best Regards,
-Stanis=C5=82aw Kardach
+Konrad
