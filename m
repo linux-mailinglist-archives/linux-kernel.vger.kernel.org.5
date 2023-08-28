@@ -2,106 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CA878A747
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBFE78A74D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbjH1IJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
+        id S229878AbjH1IOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjH1IJa (ORCPT
+        with ESMTP id S229604AbjH1INl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:09:30 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA455125;
-        Mon, 28 Aug 2023 01:09:25 -0700 (PDT)
-X-UUID: 31364fd0457a11eeb20a276fd37b9834-20230828
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=xpSTtdmJy4jDo8cdoWEQV989S/wRfkzHbnC1sar0k10=;
-        b=oqHGyVrrJ8qbQ072Vf27BSbQ3ZtfSLd7AAJYfIw3NbX2X4+0nj99rqli0KU98cPL12SL8KVdiCFRsB6mUsP+lX4kL/xsA+3iCmgCDK+Bk/ANgwKEjv3lbS2IFcfg9jJpxWDiiATjGqc2oA4JP3r+Bn/OjRHrdxyedgErkyuykZw=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:738263b0-efcd-4cd4-90db-91853a8f1bef,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:0ad78a4,CLOUDID:bef305ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 31364fd0457a11eeb20a276fd37b9834-20230828
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1385141874; Mon, 28 Aug 2023 16:09:20 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 28 Aug 2023 16:09:17 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 28 Aug 2023 16:09:17 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH] spidev: add compatible string for MediaTek IoT (Genio) boards
-Date:   Mon, 28 Aug 2023 16:09:09 +0800
-Message-ID: <20230828080909.16610-1-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 28 Aug 2023 04:13:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EDAC3;
+        Mon, 28 Aug 2023 01:13:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6810061BB0;
+        Mon, 28 Aug 2023 08:13:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E30FC433C7;
+        Mon, 28 Aug 2023 08:13:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693210417;
+        bh=hd/R5+8WKXSM6MSDGplXLgC6cLPA3Fl48ZQBoeKIDsQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wzos5I9hdoFPrgs+BtNj5RiQjPZGxbvTpScJuk1li3qZb8mHcqa89joZ69lMhUbMb
+         icnTVYywEO2cDVkUKA2BrvpBgjQPcuUHiKbxFvhMmn03BquvnXCBSeaNqBi47wfhXQ
+         nX6eeIEMDS7YP/ommi1ivpRTsjEQFWCq78tflHbMUUSblktGaHRzfLgzGFOztMJDJD
+         o/VFaFuIyyjy3NnAmnu7K1SiLgn/yybVWzVDqZ92u69gVEQqpqYthrlgDxLBlscAyj
+         B/8kD3/vyjLzBarNn9n/LeY4unBJ8qaa5RYEsFZ2QbEqZPnzllXLdMEOk1OScSwzBI
+         XAo+Chi/aCK5Q==
+Date:   Mon, 28 Aug 2023 13:43:23 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Subject: Re: [PATCH V5 3/6] scsi: ufs: qcom: Add multiple frequency support
+ for unipro clk attributes
+Message-ID: <20230828081323.GF5148@thinkpad>
+References: <20230823154413.23788-1-quic_nitirawa@quicinc.com>
+ <20230823154413.23788-4-quic_nitirawa@quicinc.com>
+ <20230828080522.GD5148@thinkpad>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230828080522.GD5148@thinkpad>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string for MediaTek IoT (Genio) boards.
+On Mon, Aug 28, 2023 at 01:35:37PM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Aug 23, 2023 at 09:14:10PM +0530, Nitin Rawat wrote:
+> > Add Support to configure CORE_CLK_1US_CYCLES, PA_VS_CORE_CLK_40NS_CYCLES
+> > for multiple unipro clock frequencies. Currently this is handled only for
+> > only 150Mhz and 75MHz.
+> > 
+> > Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> > Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> > Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> > ---
+> >  drivers/ufs/host/ufs-qcom.c | 88 ++++++++++++++++++++++++++++++++-----
+> >  drivers/ufs/host/ufs-qcom.h |  9 ++++
+> >  2 files changed, 87 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > index abc0e7f7d1b0..8162b19191a9 100644
+> > --- a/drivers/ufs/host/ufs-qcom.c
+> > +++ b/drivers/ufs/host/ufs-qcom.c
+> > @@ -671,6 +671,45 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
+> >  	return 0;
+> >  }
+> > 
+> > +static int ufs_qcom_cfg_core_clk_ctrl(struct ufs_hba *hba)
+> > +{
+> > +	struct list_head *head = &hba->clk_list_head;
+> > +	struct ufs_clk_info *clki;
+> > +	u32 max_freq = 0;
+> > +	int err;
+> 
+> Let's use "ret" from now onwards. Existing "err" can be cleaned up later.
+> 
+> > +
+> > +	list_for_each_entry(clki, head, list) {
+> > +		if (!IS_ERR_OR_NULL(clki->clk) &&
+> > +			!strcmp(clki->name, "core_clk_unipro")) {
+> 
+> Odd indentation.
+> 
+> > +			max_freq = clki->max_freq;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	switch (max_freq) {
+> > +	case MHZ_403:
+> 
+> UNIPRO_CORE_CLK_FREQ_403_MHZ?
+> 
+> Same applies to other defines.
+> 
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 403, 16);
+> 
+> #define to_cycles_per_1us(freq)		(freq / (1000 * 1000))
+> 
+> 		ret = ufs_qcom_set_core_clk_ctrl(hba, to_cycles_per_1us(max_freq), 16);
+> 
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
----
- drivers/spi/spidev.c | 2 ++
- 1 file changed, 2 insertions(+)
+You could also use:
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index d13dc15cc191..9d7952dbbaa6 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -714,6 +714,7 @@ static const struct spi_device_id spidev_spi_ids[] = {
- 	{ .name = "spi-authenta" },
- 	{ .name = "em3581" },
- 	{ .name = "si3210" },
-+	{ .name = "genio-board" },
- 	{},
- };
- MODULE_DEVICE_TABLE(spi, spidev_spi_ids);
-@@ -742,6 +743,7 @@ static const struct of_device_id spidev_dt_ids[] = {
- 	{ .compatible = "semtech,sx1301", .data = &spidev_of_check },
- 	{ .compatible = "silabs,em3581", .data = &spidev_of_check },
- 	{ .compatible = "silabs,si3210", .data = &spidev_of_check },
-+	{ .compatible = "mediatek,genio-board", .data = &spidev_of_check },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, spidev_dt_ids);
+#define to_cycles_per_40us(freq) (freq / (25 * 1000 * 1000))
+
+		ret = ufs_qcom_set_core_clk_ctrl(hba, to_cycles_per_1us(max_freq),
+						 to_cycles_per_40us(max_freq));
+
+This also gives me an impression that the caller could just pass the max_freq
+and the ufs_qcom_set_core_clk_ctrl() function could internally calculate 1us and
+40us cycles value.
+
+- Mani
+
+> > +		break;
+> > +	case MHZ_300:
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 300, 12);
+> > +		break;
+> > +	case MHZ_201_5:
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 202, 8);
+> > +		break;
+> > +	case MHZ_150:
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
+> > +		break;
+> > +	case MHZ_100:
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4);
+> > +		break;
+> > +	default:
+> > +		dev_err(hba->dev, "unipro max_freq=%u entry missing\n", max_freq);
+> 
+> "UNIPRO clk max frequency (%u) not supported!"
+> 
+> > +		err = -EINVAL;
+> 
+> -ERANGE
+> 
+> > +		break;
+> > +	}
+> > +
+> > +	return err;
+> > +}
+> >  static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
+> >  					enum ufs_notify_change_status status)
+> >  {
+> > @@ -686,12 +725,15 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
+> >  			return -EINVAL;
+> >  		}
+> > 
+> > -		if (ufs_qcom_cap_qunipro(host))
+> > -			/*
+> > -			 * set unipro core clock cycles to 150 & clear clock
+> > -			 * divider
+> > -			 */
+> > -			err = ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
+> > +		if (ufs_qcom_cap_qunipro(host)) {
+> > +			err = ufs_qcom_cfg_core_clk_ctrl(hba);
+> > +			if (err) {
+> > +				dev_err(hba->dev,
+> > +					"%s cfg core clk ctrl failed\n",
+> 
+> "Failed to configure UNIPRO core clk"
+> 
+> > +					__func__);
+> > +				return err;
+> > +			}
+> > +		}
+> > 
+> >  		/*
+> >  		 * Some UFS devices (and may be host) have issues if LCC is
+> > @@ -1369,8 +1411,7 @@ static int ufs_qcom_clk_scale_up_post_change(struct ufs_hba *hba)
+> >  	if (!ufs_qcom_cap_qunipro(host))
+> >  		return 0;
+> > 
+> > -	/* set unipro core clock cycles to 150 and clear clock divider */
+> > -	return ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
+> > +	return ufs_qcom_cfg_core_clk_ctrl(hba);
+> >  }
+> > 
+> >  static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
+> > @@ -1401,12 +1442,39 @@ static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
+> >  static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
+> >  {
+> >  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> > +	struct list_head *head = &hba->clk_list_head;
+> > +	struct ufs_clk_info *clki;
+> > +	u32 curr_freq = 0;
+> > +	int err;
+> > 
+> >  	if (!ufs_qcom_cap_qunipro(host))
+> >  		return 0;
+> > 
+> > -	/* set unipro core clock cycles to 75 and clear clock divider */
+> > -	return ufs_qcom_set_core_clk_ctrl(hba, 75, 3);
+> > +
+> > +	list_for_each_entry(clki, head, list) {
+> > +		if (!IS_ERR_OR_NULL(clki->clk) &&
+> > +			!strcmp(clki->name, "core_clk_unipro")) {
+> > +			curr_freq = clk_get_rate(clki->clk);
+> > +			break;
+> > +		}
+> > +	}
+> > +	switch (curr_freq) {
+> > +	case MHZ_37_5:
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 38, 2);
+> > +		break;
+> > +	case MHZ_75:
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 75, 3);
+> > +		break;
+> > +	case MHZ_100:
+> > +		err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4);
+> > +		break;
+> > +	default:
+> > +		err = -EINVAL;
+> > +		dev_err(hba->dev, "unipro curr_freq=%u entry missing\n", curr_freq);
+> > +		break;
+> > +	}
+> > +
+> > +	return err;
+> 
+> Why can't you use the existing ufs_qcom_cfg_core_clk_ctrl() function?
+> 
+> - Mani
+> 
+> >  }
+> > 
+> >  static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
+> > diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+> > index 325f08aca260..56550fd36c4e 100644
+> > --- a/drivers/ufs/host/ufs-qcom.h
+> > +++ b/drivers/ufs/host/ufs-qcom.h
+> > @@ -79,6 +79,15 @@ enum {
+> >  	UFS_MEM_CQIS_VS		= 0x8,
+> >  };
+> > 
+> > +/* QCOM UFS host controller core clk frequencies */
+> > +#define MHZ_37_5	37500000
+> > +#define MHZ_50		50000000
+> > +#define MHZ_75		75000000
+> > +#define MHZ_100		100000000
+> > +#define MHZ_150		150000000
+> > +#define MHZ_300		300000000
+> > +#define MHZ_201_5	201500000
+> > +#define MHZ_403		403000000
+> >  #define UFS_CNTLR_2_x_x_VEN_REGS_OFFSET(x)	(0x000 + x)
+> >  #define UFS_CNTLR_3_x_x_VEN_REGS_OFFSET(x)	(0x400 + x)
+> > 
+> > --
+> > 2.17.1
+> > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
+
 -- 
-2.18.0
-
+மணிவண்ணன் சதாசிவம்
