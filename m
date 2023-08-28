@@ -2,217 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A14878A486
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E612C78A485
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbjH1CNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
+        id S229441AbjH1CNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjH1CM6 (ORCPT
+        with ESMTP id S230408AbjH1CNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:12:58 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1880B189;
-        Sun, 27 Aug 2023 19:12:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CX9R1kxdUj+y52cUQTFACZQW2a8MqOXqK0LNtAhEoTrR3OmFANv0wKhQiWdveSW810QrzennddnwxpXUpxHBYoLtGHBXYh+ZdsuIaWuZSpv/Nyb0sdl3GT3NVkJmo6ITcDe5ngdC8gcFrqYzgrwZXxn7mj75z4WTa1xl0iSDP+JlytNlEmCrqBSsFm+YWQuJHol5wE8j9gkbAb2Eyye4Z3NtT2c7cJ7FyHS+Pz2060qBmOAes5F6bK6LKtInm3RKSTNLzru84fc4hxh+T/lDl531g90dw5M00z6ElS/fiB7Pyfnx6lZpL6P6+eXacQOY2zCN9QA27tzWzmDLk/9+1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gX3y5OrJiX/FX8YjMnFUOuqfTjqAPks9TA4vK2pp7MY=;
- b=hgcZJJtSCrmisz4dTsANq6n9F1w1JpcoycOwf9J4h6HJ0L01A0UvCT832p22qV2FgSzkedzRrXjGAVjdtpjxUCOh8zNsrSFLkLS3OZl8pFrt9HpnxXf80dP9rXmIaslPV7H8F3Cr6LxybQJcRZVDhxuIokUfU3ZHVH1wo2MNP3RP9Uv9je8NbXEd8343335T0YZ3GHYiM8u3eKCfX4C3TDqCug/nW6deEMD0vUfp96V6Q3lBC4jWf0uD+132zxx2xeP4752dkEVb/N6Fvzg2NZUOSApiZ2cjOLRxrSePvr1PesHQLSe8rMtqym6KHsD7fNoejsoI+WsEhvVNH9Mb6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gX3y5OrJiX/FX8YjMnFUOuqfTjqAPks9TA4vK2pp7MY=;
- b=JCiElC4GNf4KMa4G3DNe7jtGNXHVlJ44dd/88uwABpyKPvcAxjTsVrzH/OyKjjFKSwz4GIf0LX7kTX7fwefstIbTKkm/SLk5Q5Jhxf3hfyHqza0J3c266h/25yavHqzTRyVM5ZIHmspwAMrLgAy2oh7r5jCuWhR1UoRGL7uFHqA=
-Received: from DM6PR12MB2619.namprd12.prod.outlook.com (2603:10b6:5:45::18) by
- SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Mon, 28 Aug
- 2023 02:11:28 +0000
-Received: from DM6PR12MB2619.namprd12.prod.outlook.com
- ([fe80::56a5:d451:bf62:2b06]) by DM6PR12MB2619.namprd12.prod.outlook.com
- ([fe80::56a5:d451:bf62:2b06%7]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
- 02:11:28 +0000
-From:   "Quan, Evan" <Evan.Quan@amd.com>
-To:     Simon Horman <horms@kernel.org>
-CC:     "lenb@kernel.org" <lenb@kernel.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [V10 1/8] ACPI: Add support for AMD ACPI based Wifi band RFI
- mitigation feature
-Thread-Topic: [V10 1/8] ACPI: Add support for AMD ACPI based Wifi band RFI
- mitigation feature
-Thread-Index: AQHZ1y/QeOXojhql1U2XgrjLS9EoQa/+S/8AgACvUpA=
-Date:   Mon, 28 Aug 2023 02:11:27 +0000
-Message-ID: <DM6PR12MB2619013F8683DFBBADC68502E4E0A@DM6PR12MB2619.namprd12.prod.outlook.com>
-References: <20230825083846.4001973-1-evan.quan@amd.com>
- <20230825083846.4001973-2-evan.quan@amd.com>
- <20230827154312.GT3523530@kernel.org>
-In-Reply-To: <20230827154312.GT3523530@kernel.org>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
+        Sun, 27 Aug 2023 22:13:16 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25756132;
+        Sun, 27 Aug 2023 19:12:46 -0700 (PDT)
+Received: from kwepemm000004.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RYvCw4N0xzrSMt;
+        Mon, 28 Aug 2023 10:10:36 +0800 (CST)
+Received: from dggpeml500007.china.huawei.com (7.185.36.75) by
+ kwepemm000004.china.huawei.com (7.193.23.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 28 Aug 2023 10:12:12 +0800
+Received: from dggpeml500007.china.huawei.com ([7.185.36.75]) by
+ dggpeml500007.china.huawei.com ([7.185.36.75]) with mapi id 15.01.2507.031;
+ Mon, 28 Aug 2023 10:12:12 +0800
+From:   mengkanglai <mengkanglai2@huawei.com>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "Fengtao (fengtao, Euler)" <fengtao40@huawei.com>,
+        "Yanan (Euler)" <yanan@huawei.com>
+Subject: ltp testcases failed due to commit cf3128a7aca
+Thread-Topic: ltp testcases failed due to commit cf3128a7aca
+Thread-Index: AdnZVQldr3VMVyCYRUKKPDyUsJEoDA==
+Date:   Mon, 28 Aug 2023 02:12:12 +0000
+Message-ID: <dd2a5ae913a84a36bded3dfeb4dbe466@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=f0bf4386-1b7f-4740-98a7-61ea3ff406eb;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-08-28T02:10:42Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB2619:EE_|SA1PR12MB7199:EE_
-x-ms-office365-filtering-correlation-id: f223e4e2-019f-4610-ae61-08dba76c1697
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XsdTRD2MV74vUAn0Lwz6Srt8DthvQSXiskNue7wbY9/1MuHJW8cULeEqzqeBIJO3facRC/VDzs0Kua22dJcKwbpSMHH2cw7U6F6TXambVtg2qgKV3c0vgl8x4nOCxa48z+nqgj8RAdqwX0W53nsl61sdzGy2P0V/JKMW9b4PTcFE+mqYJtcM4k7mO6WZRw95+4dhxXcTkKHN0X/qg+lnWDN82zgZWFj/1A5Lv6SldakWK8VaTkVlpEXsRQO+cdkr/jFv0623J6y9eyujwzw/LdB8LXXfEXTvf1Ba6IcP/gv51swp/AROVOH287412EA0+y4Djz14bLpWGCFBuduTG1/tLrzftBe1OsmIRo04IkBRgRUFTLKC7NbzLDXC1tInK/4QEWRzw906ASzQx/l9yYEJDD/dbwQpWl87UAKlcBdLdXZP3A5Be962NdFhBEbd8tJKRjp/I4t8R4B5sMwxNcTWY7RHGcOAPbEmEQthFitKnu06s28L6y/PuKWNZAtOw6fxo+uc/p02oxXgIyab3RVauQjlJLh3TKfWFsgy8F4btyv01LuZETR2yEK/bY4u7wJJAY6TZBdq9uLFueyaB26fDPyN412z9g+71GBecJY56mLKH4CsPOIEUn9li2AP
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2619.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(376002)(39860400002)(136003)(1800799009)(186009)(451199024)(7416002)(83380400001)(55016003)(9686003)(478600001)(26005)(5660300002)(2906002)(52536014)(8676002)(4326008)(8936002)(122000001)(38100700002)(38070700005)(64756008)(6916009)(66946007)(66556008)(76116006)(86362001)(71200400001)(41300700001)(53546011)(7696005)(54906003)(316002)(66446008)(33656002)(6506007)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?p3g7/WfUJyAdpkxoi4IOESjTqFBZ8vasW5wsyXOY++hAtsA7yGxhYUtsp9XZ?=
- =?us-ascii?Q?TmA9m44S4zQPQ7ai5FZCL/wQYStPWh3Ovft9390s8+ilaG2hwwWtEzR1OU3R?=
- =?us-ascii?Q?pqwtpDjc8HU631jEVz9GRBUMfCGAlhkuwjTfJ5L8IA6yJoPXAZgs6YwtfuUW?=
- =?us-ascii?Q?H9KUhwT9VOSewdQAjR6fY9MDgA31vlBpVu/Dd1sctMa4WXvqY8IqZjTT4LEf?=
- =?us-ascii?Q?XsFNZZbEexhR2vkes71dz4hnoImYS3B/hicGwB0NMDvB+jAQewLoIM71m2jm?=
- =?us-ascii?Q?RnBfzvMR913WuwGIvdD5zKDHy75QVaufF3n/JteOKV1wtJp1oHWL7P0QE6lV?=
- =?us-ascii?Q?E7+3XTHszEYYn6vIf6OmVAI/cJvxT+lfaQnT/ABL+34aIVvCwlXW3ud/BTkU?=
- =?us-ascii?Q?V+TOWWMhv0xEXvenA48YqRzvzpfsJEplHXiTJWznHC1V5TVNdFrIDIsQ0D6q?=
- =?us-ascii?Q?QvUnaJqOdV4ZpcO0Pu56uhPOCq6J3Zc5+CJ9a3YVxPiYlOwtkBWG68RvpTgm?=
- =?us-ascii?Q?OZvmapdTb96JpXSRinoCBSFClWfQbXvyF9kHYhpx9156dDYj/wm7GY+Rg0za?=
- =?us-ascii?Q?O+ULwAAzwgMRAGxJuQCOZqMAmIzOsx3RytC6waHHtI64c7ljZmZ9HsYDHBu8?=
- =?us-ascii?Q?egIa6zWoYwo3ZYNohddp71dF1LcRuMwhAyKqMllqcITxSDxg/czzFJrM3ATP?=
- =?us-ascii?Q?vCY9yGdYntHroJZD0qTUksvsB2UqmnUyoyEC5ufZX/SUfkhDHOUdJovZvS7v?=
- =?us-ascii?Q?3YNy3n7CQhh3g0PlqPNiNf1cpX707/UpM8oHIo/oyibGJB91KvFWD0D56Nzt?=
- =?us-ascii?Q?BeDj5DbIXOqFormJ8+Na8AhGwK1/kCtfBSf4qhJzKNe641kOR6qBE2JoSbrR?=
- =?us-ascii?Q?vwlWuFS6ZTCG4arbMkQkSlzoF+vILyLjPXCo/mzBp2Lrf9ExmZP3YL15zu8T?=
- =?us-ascii?Q?aj8JsdiK0HPRQazZl+SKd21U09e6T/VaFghDEcO6m13m8eCgpEXhLPSDHqYg?=
- =?us-ascii?Q?s2NPwJeE6EEZnHywHN51Hm0iUa2euOKQdupDUq6frIPXZNBKL3hLutJl/moS?=
- =?us-ascii?Q?vG7PvaPxysCZV4Dq3LjsTCWGxcoYekPwnwz+PTT4mFUBkPyiUbiDh9WP5XIa?=
- =?us-ascii?Q?q5fl5ISw+j+INpTqaPBKAk4y9FejNqLTi07oIZnQzHobgRtM37+63Lf/FtSh?=
- =?us-ascii?Q?lg3zSEJOGAusyCPIVa5S9u8ZM3Q5OOkCwxtDsA2ISObdif4awTRuQ4Db45oh?=
- =?us-ascii?Q?pGmSRvXFwqmgijnQEUKmKJ47MwiRdZJMVuT2uwyL4DlIuSJBqHmYfXscd1Fj?=
- =?us-ascii?Q?+/8aXZWgaWxHXQhQWLR3V4jE3JOWkrkTeejfBF4nAWHvBrKN4e7KgTxmPDG5?=
- =?us-ascii?Q?l8p4ZN+0sk1nJ0v5Q3wycChi9kUde+cAKiFvPU4UpJ648nb4S3yGoK+uOtBc?=
- =?us-ascii?Q?MQgWes2gSiwtriphWC3NPJnhPWQVtFHf7jv4ieNVkkgTeyWD5PpPzxMIYN83?=
- =?us-ascii?Q?AUajgl3dk/9jFiObKSRzqzAtd/1b9wdjbr5nZdPlSj4hVWI05kFWOA1EMAGe?=
- =?us-ascii?Q?cUVUC4nDL89P5k7fJnY=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+x-originating-ip: [10.136.115.4]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2619.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f223e4e2-019f-4610-ae61-08dba76c1697
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2023 02:11:27.9947
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uPa9os8XPcWkTITB0HIdmqIsQHa4FQtnZF+h1hFZ3g+DJsPqwmAKnIDWU0jZPWPz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7199
-X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - General]
-
-> -----Original Message-----
-> From: Simon Horman <horms@kernel.org>
-> Sent: Sunday, August 27, 2023 11:43 PM
-> To: Quan, Evan <Evan.Quan@amd.com>
-> Cc: lenb@kernel.org; johannes@sipsolutions.net; davem@davemloft.net;
-> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; Deucher,
-> Alexander <Alexander.Deucher@amd.com>; rafael@kernel.org; Lazar, Lijo
-> <Lijo.Lazar@amd.com>; Limonciello, Mario <Mario.Limonciello@amd.com>;
-> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; amd-
-> gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-
-> wireless@vger.kernel.org; netdev@vger.kernel.org
-> Subject: Re: [V10 1/8] ACPI: Add support for AMD ACPI based Wifi band RFI
-> mitigation feature
->
-> On Fri, Aug 25, 2023 at 04:38:39PM +0800, Evan Quan wrote:
-> > Due to electrical and mechanical constraints in certain platform
-> > designs there may be likely interference of relatively high-powered
-> > harmonics of the (G-)DDR memory clocks with local radio module
-> > frequency bands used by Wifi 6/6e/7.
-> >
-> > To mitigate this, AMD has introduced a mechanism that devices can use
-> > to notify active use of particular frequencies so that other devices
-> > can make relative internal adjustments as necessary to avoid this reson=
-ance.
-> >
-> > Signed-off-by: Evan Quan <evan.quan@amd.com>
->
-> ...
->
-> > diff --git a/drivers/acpi/amd_wbrf.c b/drivers/acpi/amd_wbrf.c
->
-> ...
->
-> > +/**
-> > + * acpi_amd_wbrf_add_exclusion - broadcast the frequency band the
-> device
-> > + *                               is using
-> > + *
-> > + * @dev: device pointer
-> > + * @in: input structure containing the frequency band the device is
-> > +using
-> > + *
-> > + * Broadcast to other consumers the frequency band the device starts
-> > + * to use. Underneath the surface the information is cached into an
-> > + * internal buffer first. Then a notification is sent to all those
-> > + * registered consumers. So then they can retrieve that buffer to
-> > + * know the latest active frequency bands. The benifit with such
-> > +design
->
-> nit: ./checkpatch.pl --codespell suggests benifit -> benefit.
-Thanks, will fix that.
-
-Evan
->
-> > + * is for those consumers which have not been registered yet, they
-> > +can
-> > + * still have a chance to retrieve such information later.
-> > + */
-> > +int acpi_amd_wbrf_add_exclusion(struct device *dev,
-> > +                           struct wbrf_ranges_in_out *in)
-> > +{
-> > +   struct acpi_device *adev =3D ACPI_COMPANION(dev);
-> > +   int ret;
-> > +
-> > +   if (!adev)
-> > +           return -ENODEV;
-> > +
-> > +   ret =3D wbrf_record(adev, WBRF_RECORD_ADD, in);
-> > +   if (ret)
-> > +           return ret;
-> > +
-> > +   blocking_notifier_call_chain(&wbrf_chain_head,
-> > +                                WBRF_CHANGED,
-> > +                                NULL);
-> > +
-> > +   return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_add_exclusion);
->
-> ...
+V2hlbiBJIHJ1biBsYXRlc3QgbHRwIHRlc3RjYXNlIHRlc3RjYXNlcy9uZXR3b3JrL3N0cmVzcy91
+ZHAvdW5pLWJhc2ljL3VkcDYtdW5pLWJhc2ljMDcgd2l0aCBsYXRlc3Qga2VybmVsIDYuNSwgaXQg
+ZmFpbGVkIGluIKGwbHRwYXBpY21kLmM6MTg4OiBGYWlsZWQgdG8gY29uZmlndXJlIFNBRC9TUEQg
+b24gdGhlIGxvY2FsIGhvc3ShsS4NCkkgZm91bmQgdGhhdCB0aGUgcmVhc29uIGZvciBmYWlsdXJl
+IHdhcyB0aGlzIGNvbW1hbmQ6DQpvdXRwdXRfaXBzZWNfY29uZiBzcmMgXA0KICAgICAgICAkSVBT
+RUNfUFJPVE8gJElQU0VDX01PREUgJFNQSSAkbGhvc3RfYWRkciAkcmhvc3RfYWRkciBcDQogICAg
+ICAgICAgICB8ICBzZXRrZXkgLWMgMj4mMSB8IHRlZSAkaXBzZWNfbG9nDQoNClRoaXMgY29tbWFu
+ZCBldmVudHVhbGx5IHVzZSBzZXRrZXkgLWMgdG8gYWRkIHNwZGFkZCBlbnRyeSBmYWlsZWQ6DQpz
+cGRhZGQgJHNyY19pcGFkZHIgJGRzdF9pcGFkZHIgYW55DQqhoaGhLVAgb3V0IGlwc2VjICRwcm90
+b2NvbC90dW5uZWwvJHtzcmNfaXBhZGRyfS0ke2RzdF9pcGFkZHJ9L3VzZSA7IA0KDQpJdCByZXR1
+cm5zIEludmFsaWQgYXJndW1lbnQuDQoNCkkgZm91bmQgdGhpcyBmYWlsZWQgZHVlIHRvIGNvbW1p
+dCBjZjMxMjhhN2FjYShhZl9rZXk6IFJlamVjdCBvcHRpb25hbCB0dW5uZWwvQkVFVCBtb2RlIHRl
+bXBsYXRlcyBpbiBvdXRib3VuZCBwb2xpY2llcyksIGlzIGxhdGVzdCBsdHAgdGVzdGNhc2VzIGFy
+ZSBub3QgYWRhcHRlZD8gDQo=
