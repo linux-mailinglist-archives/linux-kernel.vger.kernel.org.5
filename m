@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 214F478B218
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B1A78B22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjH1Nhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        id S230041AbjH1Nnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232114AbjH1Nhd (ORCPT
+        with ESMTP id S230386AbjH1NnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:37:33 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B43CFB;
-        Mon, 28 Aug 2023 06:37:05 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SDX8qX028394;
-        Mon, 28 Aug 2023 13:35:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=GViM3/tL3UvdQVk3UIxa1wz7l24gOeny5OvFavC9lV8=;
- b=jH5/HuldpUTeT70uNeD4VFg6+UEa61e2DXokpukY5AyaPXwboYOox8a1ahkaofSMtq4O
- 1WFxYB8t+ieNJYc4SWI8P41YN27nK7KMqdxsdOkBbLMNQhi/S2bqYDXKmHB+3WHjPOES
- Hvzie8sgjRAyg2oX5NV++8GLo0U/gmspeRtN68wmkGAA6CIz7eaRNJLSOORvivhG+wOg
- qTCposvXtf0g9j6/dR24q7kqEp5kAs0/c88cpbHgbnCeovRHr3GpXEvf1fCDgrhpi6ka
- pG1zrfar4pVm8rDBMt3iGdEcwvomI2YoLrjpgQUVIKxS4JEShpbUvwBaoV0eFHvdooZr Jw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sruhnr41h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:35:58 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SDZv6U017410
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:35:57 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+        Mon, 28 Aug 2023 09:43:24 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C1B91;
+        Mon, 28 Aug 2023 06:43:20 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id D2769100005;
+        Mon, 28 Aug 2023 16:43:16 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D2769100005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1693230196;
+        bh=PdBVE+1DEWWUYFrS8SRgT2KGE33BoBLbqE+EMHtbU/U=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=uPWpFfTkY5oCV0GcA7TP1v0RoEzhz0CM/wjUwPatiiDxg09JqwR/IfVXLCG8ZIwQu
+         qFQS0LrnSXvI3Z6aE/Wu4fghWGLsUmIenyPfypFcQjDSt4mHTwXzp8us2RS4gBdGIT
+         t2KJ/UH7zSaPFkbFhS+lA4uwJage2v8kQhPWMUKaTdKNdvcvj+xK8DBg8miWkA2oIr
+         FWZhuUEFju179UzjXTlSGjf+gm487ySKgrm5UnxQ7ZVCvCPxftPSDjF49UQB1JSFR6
+         WRlDXZ7sX3bOv+xfinAH1QEDdtjhPzcsGRF/3t0DEyIBsWiyU0d4hIVJeqSRTkP+oE
+         wjWulBCYlg3OA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Mon, 28 Aug 2023 16:43:16 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 28 Aug 2023 06:35:55 -0700
-Date:   Mon, 28 Aug 2023 06:35:54 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Jani Nikula <jani.nikula@intel.com>
-CC:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <quic_pkondeti@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <workflows@vger.kernel.org>,
-        <tools@linux.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
-Message-ID: <20230828133554.GA818859@hu-bjorande-lv.qualcomm.com>
-References: <cover.1693037031.git.quic_gurus@quicinc.com>
- <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
- <87jztf37ny.fsf@intel.com>
+ 15.2.1118.30; Mon, 28 Aug 2023 16:43:09 +0300
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+        Liang Yang <liang.yang@amlogic.com>,
+        Arseniy Krasnov <avkrasnov@salutedevices.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] arm64: dts: amlogic: meson-axg: Meson NAND node
+Date:   Mon, 28 Aug 2023 16:36:47 +0300
+Message-ID: <20230828133647.3712644-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <87jztf37ny.fsf@intel.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 239poMfsD4Fp-ipujqWFyvgT-Qa-f9Ny
-X-Proofpoint-ORIG-GUID: 239poMfsD4Fp-ipujqWFyvgT-Qa-f9Ny
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_09,2023-08-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 mlxlogscore=734 suspectscore=0 clxscore=1011 phishscore=0
- impostorscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280118
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179484 [Aug 28 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 528 528 4b912e27f7408903f04ab5d0a88bd271cc7c0a60, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/28 11:35:00 #21756980
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 11:14:41AM +0300, Jani Nikula wrote:
-> On Sat, 26 Aug 2023, Guru Das Srinagesh <quic_gurus@quicinc.com> wrote:
-> > This script runs get_maintainer.py on a given patch file (or multiple
-> > patch files) and adds its output to the patch file in place with the
-> > appropriate email headers "To: " or "Cc: " as the case may be. These new
-> > headers are added after the "From: " line in the patch.
-> 
-> FWIW, I personally prefer tooling to operate on git branches and commits
-> than patches. For me, the patches are just an intermediate step in
-> getting the commits from my git branch to the mailing list. That's not
-> where I add the Cc's, but rather in the commits in my local branch,
-> where they're preserved. YMMV.
-> 
+Add description of the Meson NAND controller node.
 
-May I ask how you add/carry the recipients in a commit?
+Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Regards,
-Bjorn
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+index 768d0ed78dbe..a49aa62e3f9f 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+@@ -1908,6 +1908,19 @@ sd_emmc_c: mmc@7000 {
+ 				resets = <&reset RESET_SD_EMMC_C>;
+ 			};
+ 
++			nfc: nand-controller@7800 {
++				compatible = "amlogic,meson-axg-nfc";
++				reg = <0x0 0x7800 0x0 0x100>,
++				      <0x0 0x7000 0x0 0x800>;
++				reg-names = "nfc", "emmc";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
++				clocks = <&clkc CLKID_SD_EMMC_C>,
++					 <&clkc CLKID_FCLK_DIV2>;
++				clock-names = "core", "device";
++			};
++
+ 			usb2_phy1: phy@9020 {
+ 				compatible = "amlogic,meson-gxl-usb2-phy";
+ 				#phy-cells = <0>;
+-- 
+2.35.0
+
