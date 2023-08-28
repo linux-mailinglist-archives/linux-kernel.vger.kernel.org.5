@@ -2,246 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A7878B6BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C80678B6BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbjH1Rsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
+        id S232929AbjH1RtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbjH1RsN (ORCPT
+        with ESMTP id S232993AbjH1RtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:48:13 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9678F12E
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:48:07 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so4747296a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693244886; x=1693849686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3qyIITZmt6yIxcf2AHhToVSoBW9CwGLT+eBWC1sVHAU=;
-        b=odR1gCkyLODs1etSs5WhGACv3cH24ciJWMHclQ8UrrQaRT6tp7Lbt47muVULy3Meim
-         8wuqYAWxhVce2vZ7/dfTM7BZS4Oo3i/RYoVWgFHgFZ2ZjPmKjmncyidLczu0yTTiFgll
-         PDD+lw45/CTMK1++RScIQI/jhRnm+BwqwkdXs/QDWzlRXgjhLzeGavE/LTHXKfCAOrEo
-         MgAP1SJcFvGysfQFYXfu8HgRykHJF9vFOpgWurKmLBAkuhQDQ8dLCgvnUhZqO5XqEptl
-         4z0K1QMbiwW3pM5x+gBfYM2ij7UlC+hu21m4mnXexyzPqfZNAv2b5D7ENphu8fUOLN0C
-         H8lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693244886; x=1693849686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3qyIITZmt6yIxcf2AHhToVSoBW9CwGLT+eBWC1sVHAU=;
-        b=ZKMjNXQYhzyERpzLs7vm7OBNZnGc14kR10Tdj6X5LCt6WveZOOyp/zqdIfUj6TSo9j
-         5gjmMP5KrNGzDBLpSBJyL7LLJYikioRi8BWHI0ZcJRs7de52ME5BEa15pcCLEp9/KyJV
-         7MyBX5NKEeUHFi5aQhUqry93/cVy0lrX4Q1sKhHqco/h1fm14fmmB6OotJ4BqNm1f52v
-         NRHnSIp4kRck3wsm+FTh/kgW8z3OHGrRZg6Lzuv0mHmr0XHFikYp7EvssvXT+gS6ij1t
-         KluLJSXfug0xNanNDInRzGSMZFCmqTOfWhK2TJaYvbQUUTix8Y/RTuqsnEDX2mmis4Ic
-         U8gw==
-X-Gm-Message-State: AOJu0YxrTiWaP9Lwvr5PZpSlIu+iCBo2GnH5E0q649IYnxxa0zBjsSI5
-        lsDgT/1nobESNv4JL2GBvHJeEIpfvezcZgVVkxzmkA==
-X-Google-Smtp-Source: AGHT+IG5s5Adb1+6Jj4dIei4PAmaE17im1X0zrZxagxFiTM+4t42Iq+COd07+PtZk1fzQuinZ/VGGkYh9+gBNhC9H6A=
-X-Received: by 2002:a05:6402:510:b0:523:2c05:7d24 with SMTP id
- m16-20020a056402051000b005232c057d24mr23565515edv.24.1693244886029; Mon, 28
- Aug 2023 10:48:06 -0700 (PDT)
+        Mon, 28 Aug 2023 13:49:06 -0400
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8442A12E
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:49:03 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,208,1688396400"; 
+   d="scan'208";a="174236471"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 29 Aug 2023 02:49:02 +0900
+Received: from localhost.localdomain (unknown [10.226.92.234])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id D72F34048F0A;
+        Tue, 29 Aug 2023 02:48:58 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2] ASoC: cs42xx8-i2c: Simplify probe()
+Date:   Mon, 28 Aug 2023 18:48:56 +0100
+Message-Id: <20230828174856.122559-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230825-wip-selftests-v1-0-c862769020a8@kernel.org>
- <20230825182316.m2ksjoxe4s7dsapn@google.com> <65800771171dcaff9901dae47de960ec66602f7e.camel@gmail.com>
-In-Reply-To: <65800771171dcaff9901dae47de960ec66602f7e.camel@gmail.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Mon, 28 Aug 2023 10:47:52 -0700
-Message-ID: <CAFhGd8rNtEWpfJKFs+nKj_cLya0q6JSFyuzqqMCYmoi9xxBL6Q@mail.gmail.com>
-Subject: Re: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Benjamin Tissoires <bentiss@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eduard,
+Simplify probe() by replacing of_match_device->i2c_get_match_data() and
+extend matching support for ID table. Also replace
+dev_err()->dev_err_probe() to simplify the code.
 
-On Fri, Aug 25, 2023 at 11:54=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Fri, 2023-08-25 at 18:23 +0000, Justin Stitt wrote:
-> > On Fri, Aug 25, 2023 at 10:36:30AM +0200, Benjamin Tissoires wrote:
-> > > These fixes have been triggered by [0]:
-> > > basically, if you do not recompile the kernel first, and are
-> > > running on an old kernel, vmlinux.h doesn't have the required
-> > > symbols and the compilation fails.
-> > >
-> > > The tests will fail if you run them on that very same machine,
-> > > of course, but the binary should compile.
-> > >
-> > > And while I was sorting out why it was failing, I realized I
-> > > could do a couple of improvements on the Makefile.
-> > >
-> > > [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c=
-153dcb2@redhat.com/T/#t
-> > >
-> > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > > ---
-> > > Benjamin Tissoires (3):
-> > >       selftests/hid: ensure we can compile the tests on kernels pre-6=
-.3
-> > >       selftests/hid: do not manually call headers_install
-> > >       selftests/hid: force using our compiled libbpf headers
-> > >
-> > >  tools/testing/selftests/hid/Makefile                | 10 ++++------
-> > >  tools/testing/selftests/hid/progs/hid.c             |  3 ---
-> > >  tools/testing/selftests/hid/progs/hid_bpf_helpers.h | 20 +++++++++++=
-+++++++++
-> > >  3 files changed, 24 insertions(+), 9 deletions(-)
-> > > ---
-> > > base-commit: 1d7546042f8fdc4bc39ab91ec966203e2d64f8bd
-> > > change-id: 20230825-wip-selftests-9a7502b56542
-> > >
-> > > Best regards,
-> > > --
-> > > Benjamin Tissoires <bentiss@kernel.org>
-> > >
-> >
-> > Benjamin, thanks for the work here. Your series fixed up _some_ of the
-> > errors I had while building on my 6.3.11 kernel. I'm proposing a single
-> > patch that should be applied on top of your series that fully fixes
-> > _all_ of the build errors I'm experiencing.
-> >
-> > Can you let me know if it works and potentially formulate a new series
-> > so that `b4 shazam` applies it cleanly?
-> >
-> > PATCH BELOW
-> > ---
-> > From 5378d70e1b3f7f75656332f9bff65a37122bb288 Mon Sep 17 00:00:00 2001
-> > From: Justin Stitt <justinstitt@google.com>
-> > Date: Fri, 25 Aug 2023 18:10:33 +0000
-> > Subject: [PATCH 4/3] selftests/hid: more fixes to build with older kern=
-el
-> >
-> > I had to use the clever trick [1] on some other symbols to get my build=
-s
-> > working.
-> >
-> > Apply this patch on top of Benjamin's series [2].
-> >
-> > This is now a n=3D4 patch series which has fixed my builds when running=
-:
-> > > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers
-> > > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 -C tools/testing/selftests TARGET=
-S=3Dhid
-> >
-> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git=
-/tree/tools/testing/selftests/bpf/progs/bpf_iter.h#n3
-> > [2]: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020=
-a8@kernel.org/
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> >  .../selftests/hid/progs/hid_bpf_helpers.h     | 29 +++++++++++++++++++
-> >  1 file changed, 29 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tool=
-s/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > index 749097f8f4d9..e2eace2c0029 100644
-> > --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > @@ -7,12 +7,26 @@
-> >
-> >  /* "undefine" structs in vmlinux.h, because we "override" them below *=
-/
-> >  #define hid_bpf_ctx hid_bpf_ctx___not_used
-> > +#define hid_report_type hid_report_type___not_used
-> > +#define hid_class_request hid_class_request___not_used
-> > +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
-> >  #include "vmlinux.h"
-> >  #undef hid_bpf_ctx
-> > +#undef hid_report_type
-> > +#undef hid_class_request
-> > +#undef hid_bpf_attach_flags
-> >
-> >  #include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_tracing.h>
-> > +#include <linux/const.h>
-> >
-> > +enum hid_report_type {
-> > +     HID_INPUT_REPORT                =3D 0,
-> > +     HID_OUTPUT_REPORT               =3D 1,
-> > +     HID_FEATURE_REPORT              =3D 2,
-> > +
-> > +     HID_REPORT_TYPES,
-> > +};
-> >
-> >  struct hid_bpf_ctx {
-> >       __u32 index;
-> > @@ -25,6 +39,21 @@ struct hid_bpf_ctx {
-> >       };
-> >  };
->
-> Note, vmlinux.h has the following preamble/postamble:
->
->     #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
->     #pragma clang attribute push (__attribute__((preserve_access_index)),=
- apply_to =3D record)
->     #endif
->     ...
->     #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
->     #pragma clang attribute pop
->     #endif
->
-> You might want to use it or add __attribute__((preserve_access_index))
-> to structure definitions, depending on whether or not you need CO-RE
-> functionality for these tests.
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+Note:
+ This patch is only compile tested.
 
-I have no idea whether or not CO-RE is needed for these tests or not.
-My main motivation is getting these selftests building with LLVM=3D1
-[1].
+v1->v2:
+ * Added Ack from Charles Keepax.
+ * Restored the error EINVAL.
+---
+ sound/soc/codecs/cs42xx8-i2c.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-Perhaps Benjamin could provide some more insight on whether this is
-needed or not and roll out a v2 containing my patch on top + any CO-RE
-semantics  -- if deemed necessary.
+diff --git a/sound/soc/codecs/cs42xx8-i2c.c b/sound/soc/codecs/cs42xx8-i2c.c
+index a422472820fb..9028c0f0fe77 100644
+--- a/sound/soc/codecs/cs42xx8-i2c.c
++++ b/sound/soc/codecs/cs42xx8-i2c.c
+@@ -18,21 +18,15 @@
+ 
+ #include "cs42xx8.h"
+ 
+-static const struct of_device_id cs42xx8_of_match[];
+-
+ static int cs42xx8_i2c_probe(struct i2c_client *i2c)
+ {
+ 	int ret;
+ 	struct cs42xx8_driver_data *drvdata;
+-	const struct of_device_id *of_id;
+-
+-	of_id = of_match_device(cs42xx8_of_match, &i2c->dev);
+-	if (!of_id) {
+-		dev_err(&i2c->dev, "failed to find driver data\n");
+-		return -EINVAL;
+-	}
+ 
+-	drvdata = (struct cs42xx8_driver_data *)of_id->data;
++	drvdata = (struct cs42xx8_driver_data *)i2c_get_match_data(i2c);
++	if (!drvdata)
++		return dev_err_probe(&i2c->dev, -EINVAL,
++				     "failed to find driver data\n");
+ 
+ 	ret = cs42xx8_probe(&i2c->dev,
+ 		devm_regmap_init_i2c(i2c, &cs42xx8_regmap_config), drvdata);
+-- 
+2.25.1
 
->
-> >
-> > +enum hid_class_request {
-> > +     HID_REQ_GET_REPORT              =3D 0x01,
-> > +     HID_REQ_GET_IDLE                =3D 0x02,
-> > +     HID_REQ_GET_PROTOCOL            =3D 0x03,
-> > +     HID_REQ_SET_REPORT              =3D 0x09,
-> > +     HID_REQ_SET_IDLE                =3D 0x0A,
-> > +     HID_REQ_SET_PROTOCOL            =3D 0x0B,
-> > +};
-> > +
-> > +enum hid_bpf_attach_flags {
-> > +     HID_BPF_FLAG_NONE =3D 0,
-> > +     HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
-> > +     HID_BPF_FLAG_MAX,
-> > +};
-> > +
-> >  /* following are kfuncs exported by HID for HID-BPF */
-> >  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> >                             unsigned int offset,
-> > --
-> > 2.42.0.rc1.204.g551eb34607-goog
-> >
->
-
-[1]: https://github.com/ClangBuiltLinux/linux/issues/1698
-
-Thanks
-Justin
