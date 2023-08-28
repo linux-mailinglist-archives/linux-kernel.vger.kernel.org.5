@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BCC78B501
+	by mail.lfdr.de (Postfix) with ESMTP id A2A5778B502
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbjH1QA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 12:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
+        id S232657AbjH1QA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 12:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjH1QAD (ORCPT
+        with ESMTP id S232644AbjH1QAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 12:00:03 -0400
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789FFCA;
-        Mon, 28 Aug 2023 09:00:00 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d7260fae148so3329989276.1;
-        Mon, 28 Aug 2023 09:00:00 -0700 (PDT)
+        Mon, 28 Aug 2023 12:00:05 -0400
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17CC10B;
+        Mon, 28 Aug 2023 09:00:01 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-58fae4a5285so40344587b3.0;
+        Mon, 28 Aug 2023 09:00:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693238399; x=1693843199;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LVKo28epBiUG3SEESqk0GaOO1fQ+tGlFjow4pbPvDOc=;
-        b=f7mZjlRSsKdEAJTd2HmQUIXry+VBbv9QBjhY3v0GISsyaOpNoNxowo85p8cxej0pL9
-         DMZu7WRuL9pSQbMsetk5rbEPm9AbQE7prX+9aAoppUp35BkVnQDKAMUhc9cusSiGnreS
-         poouBn10o8J9dkv+dvdoKhTMDPtTUrgCKMbUkGnPbTgL4UQLYBzem7l8cuFeeQAYCFwe
-         tBMMiJfQowBrfmlxrinSnjVVFC/Ee3up4T12wDSgHfgoSyhWkEY+R9f3yC3/LbtabCuw
-         S40Qfk60bXr8eLohUhxJ+Bdx6wgPEwbDX3ys9/q6vk03o1et8yXv/MGDCwYsR9Qj2qrg
-         z/yA==
-X-Gm-Message-State: AOJu0YzTwy2sRDZ+jBSaT1fzYTrLbRhjLuRzk9uyUapuQKs68rYHKucq
-        wAlRjwruayLr8cr2SBvvMcybwHGWoMQIgA==
-X-Google-Smtp-Source: AGHT+IH+AFBVI3DPXh919wgqnRzEPxzRq+uwunyVsV2JXLy5zIepDPTI+3vWzY5m60dUrLlmwZ6Erw==
-X-Received: by 2002:a25:d807:0:b0:d71:5afb:7741 with SMTP id p7-20020a25d807000000b00d715afb7741mr25038389ybg.60.1693238399368;
-        Mon, 28 Aug 2023 08:59:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693238401; x=1693843201;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l44VFUL+FDV3oNtmEFVudfrfsvVSq51rS4XMBKotbrE=;
+        b=ja1p+PxdkbzzNSkhoQRCHXSkrOrIPpv/n3WmtUngDhGgHNiYmJB+CDDctveJba6Sl4
+         77MSFQigGQIpsK8dN/mDPDODMOT6Klc4KVv5Eh1xHwoM5KAw4I9CSx/04Hbo6Y1aaCKd
+         85Syr5Yl5e0San3UssSWyi4UCDkV52x9KKo0RjnnpQfvAafyJKamJ0hcQJLl5ePlmlUk
+         8HVM9dHBnXj774RIjY9ibrEzMERt1DloOnhcaWw+kF9br68NkFwx2aQYINCVq3ak2PHb
+         /pBAZ5URc4copJ4c6WGMz2E8k1vdVmYF6GNY72chIFkOKEDPo0rZxaBG7fX4BW2mUVxf
+         n6Pg==
+X-Gm-Message-State: AOJu0Yz9yJgBguQKUT6wE4kPrQVF4FWU37xkGawZVmDWuuYnf4XQ67QD
+        PPInkaEO3TgVWXJuNSMX2Xp9ZBfNMoXv0A==
+X-Google-Smtp-Source: AGHT+IE9ibDLAltsnoNQ4RK6viZOGuq4TBDw1i/bdN3m/D01sFB2/zauT6bmKleDUlcGQ2gWGUKDuQ==
+X-Received: by 2002:a0d:ccd4:0:b0:58c:8b7e:a1e4 with SMTP id o203-20020a0dccd4000000b0058c8b7ea1e4mr29973302ywd.23.1693238400657;
+        Mon, 28 Aug 2023 09:00:00 -0700 (PDT)
 Received: from localhost ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id f205-20020a25cfd6000000b00d05bb67965dsm1723919ybg.8.2023.08.28.08.59.58
+        by smtp.gmail.com with ESMTPSA id j125-20020a0df983000000b005772abf6234sm2203214ywf.11.2023.08.28.09.00.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 08:59:58 -0700 (PDT)
+        Mon, 28 Aug 2023 09:00:00 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -46,10 +46,12 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, hch@infradead.org, hawkinsw@obs.cr,
         dthaler@microsoft.com, bpf@ietf.org
-Subject: [PATCH bpf-next 0/3] Clean up some standardization stuff
-Date:   Mon, 28 Aug 2023 10:59:45 -0500
-Message-ID: <20230828155948.123405-1-void@manifault.com>
+Subject: [PATCH bpf-next 1/3] bpf,docs: Move linux-notes.rst to root bpf docs tree
+Date:   Mon, 28 Aug 2023 10:59:46 -0500
+Message-ID: <20230828155948.123405-2-void@manifault.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230828155948.123405-1-void@manifault.com>
+References: <20230828155948.123405-1-void@manifault.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -62,38 +64,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Documentation/bpf/standardization subdirectory contains documents
-that will be standardized with the IETF. There are a few things we can
-do to clean it up:
+In commit 4d496be9ca05 ("bpf,docs: Create new standardization
+subdirectory"), I added a standardization/ directory to the BPF
+documentation, which will contain the docs that will be standardized as
+part of the effort with the IETF.
 
-- Move linux-notes.rst back to Documentation/bpf. It doesn't belong in
-  the standardization directory.
-- Move ABI-specific verbiage from instruction-set.rst into a new abi.rst
-  document. This document will be expanded significantly over time. For
-  now, we just need to get anything describing ABI out of
-  instruction-set.rst.
-- Say BPF instead of eBPF in our documents. It's just creating
-  confusion.
+I included linux-notes.rst in that directory, but I shouldn't have. It
+doesn't contain anything that will be standardized. Let's move it back
+to Documentation/bpf.
 
-There is more we can and should do. For example, we should create a
-maps.rst document that will be a proposed standard for cross platform
-map types, and remove any relevant content from instruction-set.rst.
-This can be done in a subsequent patch set.
-
-David Vernet (3):
-  bpf,docs: Move linux-notes.rst to root bpf docs tree
-  bpf,docs: Add abi.rst document to standardization subdirectory
-  bpf,docs: s/eBPF/BPF in standards documents
-
- Documentation/bpf/index.rst                   |  1 +
- .../bpf/{standardization => }/linux-notes.rst |  0
- Documentation/bpf/standardization/abi.rst     | 25 ++++++++++++
- Documentation/bpf/standardization/index.rst   |  2 +-
- .../bpf/standardization/instruction-set.rst   | 38 ++++++-------------
- 5 files changed, 38 insertions(+), 28 deletions(-)
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ Documentation/bpf/index.rst                             | 1 +
+ Documentation/bpf/{standardization => }/linux-notes.rst | 0
+ Documentation/bpf/standardization/index.rst             | 1 -
+ 3 files changed, 1 insertion(+), 1 deletion(-)
  rename Documentation/bpf/{standardization => }/linux-notes.rst (100%)
- create mode 100644 Documentation/bpf/standardization/abi.rst
 
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 1ff177b89d66..aeaeb35e6d4a 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -29,6 +29,7 @@ that goes into great technical depth about the BPF Architecture.
+    bpf_licensing
+    test_debug
+    clang-notes
++   linux-notes
+    other
+    redirect
+ 
+diff --git a/Documentation/bpf/standardization/linux-notes.rst b/Documentation/bpf/linux-notes.rst
+similarity index 100%
+rename from Documentation/bpf/standardization/linux-notes.rst
+rename to Documentation/bpf/linux-notes.rst
+diff --git a/Documentation/bpf/standardization/index.rst b/Documentation/bpf/standardization/index.rst
+index 09c6ba055fd7..d7b946f71261 100644
+--- a/Documentation/bpf/standardization/index.rst
++++ b/Documentation/bpf/standardization/index.rst
+@@ -12,7 +12,6 @@ for the working group charter, documents, and more.
+    :maxdepth: 1
+ 
+    instruction-set
+-   linux-notes
+ 
+ .. Links:
+ .. _IETF BPF Working Group: https://datatracker.ietf.org/wg/bpf/about/
 -- 
 2.41.0
 
