@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2BA78BB57
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 01:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66A078BB59
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 01:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbjH1XHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 19:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        id S234335AbjH1XKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 19:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234307AbjH1XHX (ORCPT
+        with ESMTP id S234317AbjH1XKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 19:07:23 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E78A11C
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:07:20 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bc9811558cso2782582a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:07:20 -0700 (PDT)
+        Mon, 28 Aug 2023 19:10:01 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E2D11C
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:09:58 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52bcb8b199aso803788a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693264039; x=1693868839;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4dJsPDY1wc6Rd90H+LVb1zFytXCquhEUSx6/I+3/14g=;
-        b=Oa2ZwoJwnZCfWBcxUj8ZCbNQk7C17nQ0scxd1+LdnO66zqlsvw1hi2HnyeJc2N+Mii
-         +eOaWAtYgQGsPjDOT2xfhzxjYA5WZxr1RJBFsmE1wc8f1uR8oHx50Xfno9iZ1wnIZSW3
-         1bN2Vma4GV67WOEqTA0qO9knJ1EbZ25JhzTidUC2kccd5kVli6CxjqgsHMCfWdCrO/7I
-         SpJihhZTkC2HYWBa9K959ihKSIV0JTPyZsxx1J4D8hh9CMg8ql74sBlNg09/6AIvmQ5O
-         zAHLf9gQThiyg5+vtvOE4DHfCjz0mfg4mt8qL+lcWIYF7ty+/TZj/mthR0ik75+geVTl
-         5VIA==
+        d=linux-foundation.org; s=google; t=1693264197; x=1693868997;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fFckp5W8sKS5vhwIF1lyeyi4w6qS96hoCmy4zB/z3t8=;
+        b=Am9Cc7rYsoLBswLjcDgFukMpVqC08ZxdsRDGnSTPHPmqJwpWQXftB+fSwhwoRRVJ3R
+         7sE//AJbAy3E0VKJeJZW4n/joMRGOzrTYMGPyx1I/YOaiw6Pl77Rb9Um4fokGu1kDjAC
+         0qcOaVFZrT3AEdu3WRhNWpwYheOhdughqdiMQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693264039; x=1693868839;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4dJsPDY1wc6Rd90H+LVb1zFytXCquhEUSx6/I+3/14g=;
-        b=HUlv2iUjay34sC35jgt3CWXoou47LvCuKi1EcR+uEvDF+cye76Q6Y9rpppAiO1lwfK
-         H230lDhbBcOyFciCTOunurZSNdpo0QFAtenET2Rj6KRe5MStkRVxom9H7WLFRFUpIpOg
-         oickuNG+Ycha+CuIR0s0c7hciAt9xuc/irPa0FSnHmmr9dL9i+Qs0uvNEubWw4JrH+LA
-         1Oj2r6hIMn1Ap0cFUmKFTQ9CmcczwJ7nf0kBShixyt9nDHV3xM8OLthNzjs58PgVSKtE
-         gqBQJh9ybjlHV7zcP75Klzex4zgfhrvVhvuf2gEYibspvpAddPkaL3NAma1pno1klAOw
-         E4YQ==
-X-Gm-Message-State: AOJu0YzT0bGNuWNZ7iExAqw9WD0tFRB/YGEF5h7zqpxlqZeHIt+CCAAg
-        +G31evLZ+wz/B2nSc44cDczC4Ott1RWE+v2OyM0=
-X-Google-Smtp-Source: AGHT+IFYQPU3iSnzJWyMqBwsehjvz22SJJcmHsL8RCq/wY70zd2/tTPuoEQTnEgkj6+LXbBIl96tEeN3UVVyKr7sF9Y=
-X-Received: by 2002:a05:6871:6a1:b0:1b7:4521:14b6 with SMTP id
- l33-20020a05687106a100b001b7452114b6mr13680225oao.5.1693264039496; Mon, 28
- Aug 2023 16:07:19 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693264197; x=1693868997;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fFckp5W8sKS5vhwIF1lyeyi4w6qS96hoCmy4zB/z3t8=;
+        b=LjL4VyjhDTPycgR3RMKFVxXmPP1Lio6oHM4XSerw5fm8CXvgtKCut/HQWCfyEqFbdM
+         VzqAAG2GHLPuJU/0QyAdizufDKZ02Ck6ACOs4VLX7CHznTk3leU7EjBNBYAdZnqbNBIw
+         x3xGy51GTb64lp5lY6xRTv6pvMFQ6t/KtvVefnwzkHB8fMbz/ifVXtYuTTeXajV4vA6l
+         /8IaKOxvSVzrIK9pg2O0pXSmgS3MN/aMIwPJoTKc7/IcNZHgcHGfKUlb+YuHgz7Y+pfo
+         lIoPEZwK15vPBeSYkiE60U3BGKdft6MgXN3bBIkzNSRNHoUeYCtQicnw7wqm5bL7N5o4
+         AaHQ==
+X-Gm-Message-State: AOJu0YyXRBgBqKbUN98WNsOJAOiu3uylTuOiHbd2P6KlAEG6a/rM2EJT
+        O2PSYVaXcdp8l053ivpJyB8NMIQbSeUIOxdEnqu/5g==
+X-Google-Smtp-Source: AGHT+IGpPeVS/Lz27WSntxBUxlm4tWnObKo/TNK4U85b0rzIk7DiNITrIm8wdLDcl08P3eioej8G1g==
+X-Received: by 2002:aa7:db58:0:b0:523:3631:876c with SMTP id n24-20020aa7db58000000b005233631876cmr19431061edt.18.1693264197203;
+        Mon, 28 Aug 2023 16:09:57 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id n20-20020a056402515400b00525bc41b406sm4987967edd.44.2023.08.28.16.09.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 16:09:56 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-98377c5d53eso482152166b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:09:56 -0700 (PDT)
+X-Received: by 2002:a17:906:5307:b0:9a5:9f3c:9615 with SMTP id
+ h7-20020a170906530700b009a59f3c9615mr4246118ejo.63.1693264196404; Mon, 28 Aug
+ 2023 16:09:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de> <CAHCN7xKasndWCkvU31Lqftty0Y1aDD370WJhaZio+_E4oajLrg@mail.gmail.com>
-In-Reply-To: <CAHCN7xKasndWCkvU31Lqftty0Y1aDD370WJhaZio+_E4oajLrg@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 28 Aug 2023 18:07:08 -0500
-Message-ID: <CAHCN7x+jhW9a+v6pc1bNUjj59gZQWvCT4TLSUZ6jKouGNUZasw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] drm/bridge: samsung-dsim: fix various modes with
- ADV7535 bridge
-To:     Michael Tretter <m.tretter@pengutronix.de>
-Cc:     Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@pengutronix.de,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230828122533.GBZOySPQIjw25NiUqI@fat_crate.local>
+In-Reply-To: <20230828122533.GBZOySPQIjw25NiUqI@fat_crate.local>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Aug 2023 16:09:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjPNoHZm4ukpSXRCpxoCSb59GLgiDZBTgs-yn0=082TFw@mail.gmail.com>
+Message-ID: <CAHk-=wjPNoHZm4ukpSXRCpxoCSb59GLgiDZBTgs-yn0=082TFw@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/microcode for v6.6-rc1
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,131 +74,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 11:13=E2=80=AFAM Adam Ford <aford173@gmail.com> wro=
-te:
+On Mon, 28 Aug 2023 at 05:25, Borislav Petkov <bp@alien8.de> wrote:
 >
-> On Mon, Aug 28, 2023 at 10:59=E2=80=AFAM Michael Tretter
-> <m.tretter@pengutronix.de> wrote:
-> >
-> > I tested the i.MX8M Nano EVK with the NXP supplied MIPI-DSI adapter,
-> > which uses an ADV7535 MIPI-DSI to HDMI converter. I found that a few
-> > modes were working, but in many modes my monitor stayed dark.
-> >
-> > This series fixes the Samsung DSIM bridge driver to bring up a few more
-> > modes:
-> >
-> > The driver read the rate of the PLL ref clock only during probe.
-> > However, if the clock is re-parented to the VIDEO_PLL, changes to the
-> > pixel clock have an effect on the PLL ref clock. Therefore, the driver
-> > must read and potentially update the PLL ref clock on every modeset.
-> >
-> > I also found that the rounding mode of the porches and active area has
-> > an effect on the working modes. If the driver rounds up instead of
-> > rounding down and be calculates them in Hz instead of kHz, more modes
-> > start to work.
-> >
-> > The following table shows the modes that were working in my test withou=
-t
-> > this patch set and the modes that are working now:
-> >
-> > |            Mode | Before | Now |
-> > | 1920x1080-60.00 | X      | X   |
-> > | 1920x1080-59.94 |        | X   |
-> > | 1920x1080-50.00 |        | X   |
-> > | 1920x1080-30.00 |        | X   |
-> > | 1920x1080-29.97 |        | X   |
-> > | 1920x1080-25.00 |        | X   |
-> > | 1920x1080-24.00 |        |     |
-> > | 1920x1080-23.98 |        |     |
-> > | 1680x1050-59.88 |        | X   |
-> > | 1280x1024-75.03 | X      | X   |
-> > | 1280x1024-60.02 | X      | X   |
-> > |  1200x960-59.99 |        | X   |
-> > |  1152x864-75.00 | X      | X   |
-> > |  1280x720-60.00 |        |     |
-> > |  1280x720-59.94 |        |     |
-> > |  1280x720-50.00 |        | X   |
-> > |  1024x768-75.03 |        | X   |
-> > |  1024x768-60.00 |        | X   |
-> > |   800x600-75.00 | X      | X   |
-> > |   800x600-60.32 | X      | X   |
-> > |   720x576-50.00 | X      | X   |
-> > |   720x480-60.00 |        |     |
-> > |   720x480-59.94 | X      |     |
-> > |   640x480-75.00 | X      | X   |
-> > |   640x480-60.00 |        | X   |
-> > |   640x480-59.94 |        | X   |
-> > |   720x400-70.08 |        |     |
-> >
->
-> Nice!
->
-> > Interestingly, the 720x480-59.94 mode stopped working. However, I am
-> > able to bring up the 720x480 modes by manually hacking the active area
-> > (hsa) to 40 and carefully adjusting the clocks, but something still
-> > seems to be off.
->
-> Checkout my
->
-> branch: https://github.com/aford173/linux/commit/183cf6d154afeb9b0300500b=
-09d7b8ec53047a12
->
-> I found that certain resolutions don't properly round, and it seemed
-> to be related to the size of HFP.  HFP of 110 when divded between 4
-> lanes, required a round-up, but then I had to recalculate the rest of
-> the horizontal timings to compensate.
->
-> I was going to push that as an RFC, but I will investigate your patch
-> series first.  With my small rounding correction, I am able to get
-> 720x480 and 720p on my imx8mp, but not my mini/nano, so I am hoping
-> your patch series fixes that issue for me.
->
-> >
-> > Unfortunately, a few more modes are still not working at all. The NXP
-> > downstream kernel has some quirks to handle some of the modes especiall=
-y
-> > wrt. to the porches, but I cannot figure out, what the driver should
-> > actually do in these cases. Maybe there is still an error in the
-> > calculation of the porches and someone at NXP can chime in.
->
-> Hopefully the comment in my above patch explains how the calculation
-> is corrected and adjusted to get some of the missing resolutions.
+> please pull the first part of Thomas' microcode loader work, for 6.6.
 
-I tested my above patch and it works to sync 720p-60 on my imx8mp, but
-it doesn't seem to sync on my imx8mm using the same monitor and HDMI
-cable.  I don't have a DSI analyzer, so I might still send out a
-modified version of my patch as an RFC once this gets approved.
+Bah.
 
-adam
->
-> > Michael
-> >
-> > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
->
-> I'll try to reivew this week and respond with my feedback.
->
-> adam
->
-> > ---
-> > Marco Felsch (1):
-> >       drm/bridge: samsung-dsim: add more mipi-dsi device debug informat=
-ion
-> >
-> > Michael Tretter (4):
-> >       drm/bridge: samsung-dsim: reread ref clock before configuring PLL
-> >       drm/bridge: samsung-dsim: update PLL reference clock
-> >       drm/bridge: samsung-dsim: adjust porches by rounding up
-> >       drm/bridge: samsung-dsim: calculate porches in Hz
-> >
-> >  drivers/gpu/drm/bridge/samsung-dsim.c | 42 +++++++++++++++++++++++++--=
---------
-> >  include/drm/bridge/samsung-dsim.h     |  1 +
-> >  2 files changed, 31 insertions(+), 12 deletions(-)
-> > ---
-> > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> > change-id: 20230818-samsung-dsim-42346444bce5
-> >
-> > Best regards,
-> > --
-> > Michael Tretter <m.tretter@pengutronix.de>
-> >
+The Zenbleed fix conflicted with this because of how it declared the
+amd_check_microcode() function.
+
+The natural way to do it would have been in the new
+microcode/internal.h file, but that isn't included by the caller, and
+while I could have just done something like
+
+    #include "microcode/internal.h"
+
+in the common.c file, that seemed to be against the spirit here.
+
+So I hacked something up in <asm/microcode.h> instead.
+
+That is probably not what either you or Thomas wanted, but the Intel
+code has some similar hacks in that header, so it's not _entirely_ out
+of line.
+
+Please just let me know how much I messed up.
+
+I apologize in advance.
+
+                 Linus
