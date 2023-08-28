@@ -2,101 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0099E78A4BB
+	by mail.lfdr.de (Postfix) with ESMTP id 5758778A4BC
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 05:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjH1DDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 23:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S229880AbjH1DDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 23:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjH1DCv (ORCPT
+        with ESMTP id S229603AbjH1DDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 23:02:51 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDFC92;
-        Sun, 27 Aug 2023 20:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1693191763;
-        bh=mJNe4evVth2/AWKRqtAnNN94HeG55RTJys8PpJZtFiw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LQMG7OMYYuLdjhOxAzmcjx9D9EDmgfxnA46DeRpvlBYNp+92y4BnsgnRpikL4uXyZ
-         0r2gxHAkQTP+dtKjghaMR0cvCYfD59DvGGG2fjOFrFJr74rbWwSRkqoL77ManTGq1W
-         sKGu711BhF4Bgriv5pQUv/+3//T/fWaBvlG2CMr268QxeLDP+L1TVDsKJ7EHqmWIPv
-         L5fMLBEgk+KveKO+uGb7uOVUpgKnp57PxGiP5kn7u2EFUOiLPceB2NRZ2WERVHUR32
-         YYsJpbD3OArVqhx0wHz3ghOc+YrJJeH5Iny2iUHSq2ua+2lpZhity2iOjrRrPN0Ro7
-         FMJvKgyC/6iRg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RYwN256DSz4wxR;
-        Mon, 28 Aug 2023 13:02:42 +1000 (AEST)
-Date:   Mon, 28 Aug 2023 13:02:40 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Karan Tilak Kumar <kartilak@cisco.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the scsi-mkp tree with Linus' tree
-Message-ID: <20230828130240.4814c106@canb.auug.org.au>
+        Sun, 27 Aug 2023 23:03:18 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F87119;
+        Sun, 27 Aug 2023 20:03:15 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RYwJS5l3kzNmpq;
+        Mon, 28 Aug 2023 10:59:36 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 28 Aug 2023 11:03:12 +0800
+Subject: Re: [PATCH v7 4/6] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <irogers@google.com>,
+        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
+        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20230826032608.107261-1-yangjihong1@huawei.com>
+ <20230826032608.107261-5-yangjihong1@huawei.com>
+ <CAM9d7cibRU6ViyhxtEYG2UMSYUWbu__Oct-+J1PzvGwu_D=SPA@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <bbef4fc2-cb4b-72a9-44ed-a68c71886dc6@huawei.com>
+Date:   Mon, 28 Aug 2023 11:03:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tfQOdNv5/EzCIf/_+xus8aO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAM9d7cibRU6ViyhxtEYG2UMSYUWbu__Oct-+J1PzvGwu_D=SPA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tfQOdNv5/EzCIf/_+xus8aO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+On 2023/8/26 22:59, Namhyung Kim wrote:
+> Hello,
+> 
+> On Fri, Aug 25, 2023 at 8:29 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> User space tasks can migrate between CPUs, we need to track side-band
+>> events for all CPUs.
+>>
+>> The specific scenarios are as follows:
+>>
+>>           CPU0                                 CPU1
+>>    perf record -C 0 start
+>>                                taskA starts to be created and executed
+>>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+>>                                     events only deliver to CPU1
+>>                                ......
+>>                                  |
+>>                            migrate to CPU0
+>>                                  |
+>>    Running on CPU0    <----------/
+>>    ...
+>>
+>>    perf record -C 0 stop
+>>
+>> Now perf samples the PC of taskA. However, perf does not record the
+>> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
+>> Therefore, the comm and symbols of taskA cannot be parsed.
+>>
+>> The solution is to record sideband events for all CPUs when tracing
+>> selected CPUs. Because this modifies the default behavior, add related
+>> comments to the perf record man page.
+>>
+>> The sys_perf_event_open invoked is as follows:
+>>
+>>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
+>>    <SNIP>
+>>    Opening: cpu-clock
+>>    ------------------------------------------------------------
+>>    perf_event_attr:
+>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>      size                             136
+>>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+>>      { sample_period, sample_freq }   4000
+>>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+>>      read_format                      ID|LOST
+>>      disabled                         1
+>>      inherit                          1
+>>      freq                             1
+>>      sample_id_all                    1
+>>      exclude_guest                    1
+>>    ------------------------------------------------------------
+>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+>>    Opening: dummy:u
+>>    ------------------------------------------------------------
+>>    perf_event_attr:
+>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>      size                             136
+>>      config                           0x9 (PERF_COUNT_SW_DUMMY)
+>>      { sample_period, sample_freq }   1
+>>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+>>      read_format                      ID|LOST
+>>      inherit                          1
+>>      exclude_kernel                   1
+>>      exclude_hv                       1
+>>      mmap                             1
+>>      comm                             1
+>>      task                             1
+>>      sample_id_all                    1
+>>      exclude_guest                    1
+>>      mmap2                            1
+>>      comm_exec                        1
+>>      ksymbol                          1
+>>      bpf_event                        1
+>>    ------------------------------------------------------------
+>>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+>>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+>>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+>>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+>>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+>>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+>>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+>>    <SNIP>
+>>
+>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>> ---
+>>   tools/perf/Documentation/perf-record.txt |  3 ++
+>>   tools/perf/builtin-record.c              | 44 +++++++++++++++++++++++-
+>>   2 files changed, 46 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>> index d5217be012d7..1889f66addf2 100644
+>> --- a/tools/perf/Documentation/perf-record.txt
+>> +++ b/tools/perf/Documentation/perf-record.txt
+>> @@ -374,6 +374,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
+>>   In per-thread mode with inheritance mode on (default), samples are captured only when
+>>   the thread executes on the designated CPUs. Default is to monitor all CPUs.
+>>
+>> +User space tasks can migrate between CPUs, so when tracing selected CPUs,
+>> +a dummy event is created to track sideband for all CPUs.
+>> +
+>>   -B::
+>>   --no-buildid::
+>>   Do not save the build ids of binaries in the perf.data files. This skips
+>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>> index 83bd1f117191..21c571018148 100644
+>> --- a/tools/perf/builtin-record.c
+>> +++ b/tools/perf/builtin-record.c
+>> @@ -906,10 +906,44 @@ static int record__config_off_cpu(struct record *rec)
+>>          return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts);
+>>   }
+>>
+>> +static bool record__tracking_system_wide(struct record *rec)
+>> +{
+>> +       struct record_opts *opts = &rec->opts;
+>> +       struct evlist *evlist = rec->evlist;
+>> +       struct evsel *evsel;
+>> +
+>> +       /*
+>> +        * If all (non-dummy) evsel have exclude_user,
+>> +        * system_wide is not needed.
+> 
+> Maybe I missed some earlier discussion but why is it not
+> needed when exclude_user is set?  I think it still needs
+> FORK or COMM at least..
+> 
 
-Today's linux-next merge of the scsi-mkp tree got a conflict in:
+This is Adrian's suggestion earlier, I think it's probably because if 
+exclude_user is set, MMAP information is not needed, that's my guess.
 
-  drivers/scsi/fnic/fnic.h
+However, as you said, even if exclude_user is set, at least FORK and 
+COMM are required.
 
-between commit:
+Therefore, the conditions here need to be changed to:
+"system_wide is need as long as there is a non-dummy event."
 
-  5a43b07a8783 ("scsi: fnic: Replace return codes in fnic_clean_pending_abo=
-rts()")
+@Adrian, is this change okay?
 
-from Linus' tree and commit:
-
-  15924b050363 ("scsi: fnic: Replace sgreset tag with max_tag_id")
-
-from the scsi-mkp tree.
-
-I fixed it up (it was just the version number, so I used the latter) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/tfQOdNv5/EzCIf/_+xus8aO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTsDlAACgkQAVBC80lX
-0Gyv4Qf9FdJk0RQmxDy874to3/kNOeQEcNtX3byUFPCTsJEkdSj9rdISPDRAQdy8
-7kW0qOhy/J26yE4+yLjMSsEkRrlJmclqATCNLfR8YE7J5i88JPZLfDmQZdjueTfC
-GPg1y7rC84HTRl1p5Ztp69IjcyP+WH4TG1aN6wV3H6EofTSdEpF7QYAMUWktuRI2
-LwONigfKuexMK1ma+NAz4rhXEA70AraAxfLc1WSgOyEHp/PoZqaMsBKpqpaWc7Ev
-Ra7XhcYCfcnMVBZqE0GaxceWhrgsdcfTSmBsoP85IxSDbSrWo2Z4FvXUeutFfi/7
-W3IGf1m8GlcGdCWN8pNfE+gZVcxqmQ==
-=4BYA
------END PGP SIGNATURE-----
-
---Sig_/tfQOdNv5/EzCIf/_+xus8aO--
+Thanks,
+Yang
