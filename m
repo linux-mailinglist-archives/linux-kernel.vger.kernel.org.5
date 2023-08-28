@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DB678AEEF
+	by mail.lfdr.de (Postfix) with ESMTP id C470B78AEF0
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbjH1Ley (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S232271AbjH1Le4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbjH1Lea (ORCPT
+        with ESMTP id S232239AbjH1Leh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:34:30 -0400
-Received: from out-250.mta0.migadu.com (out-250.mta0.migadu.com [91.218.175.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93350C3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:34:27 -0700 (PDT)
+        Mon, 28 Aug 2023 07:34:37 -0400
+Received: from out-249.mta1.migadu.com (out-249.mta1.migadu.com [95.215.58.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E5CC3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:34:34 -0700 (PDT)
 Content-Type: text/plain;
         charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693222465;
+        t=1693222472;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=DRnBVmo3DqIJBhnJXFu4mrZmcPdTw6TB48chGflHSQo=;
-        b=jLDHp/fW0ZFEyBVC1B8yr1RaUdS0s11uyb5GHbfG6vpiBhjWbkUSTGxXUNjkyxMLbQgAEs
-        03I3jR5QDowd3vVakYqmXTWNcRvorVbJxTJHULOK5hpBSL4MaypJWxC9BU4H243VOocBOC
-        g1tznq1EXlB2HAsMZ2msACd5tkSeenQ=
+        b=lZgHbUggbNpgog0DzDuq0Vmuhz7R5AxpVrJP8rYTvsLg8lCIFIdQi4wN7DOeTEc1OY4epV
+        qP4pk79q0IIvO6iNIPfdAqocWZaH6c75wXhLnuMorprQ9g0qPi8+DACx7iSUaWOwy9MwgZ
+        7Xbi3T4A+wc9QP6s4Qk7jik+WzxtEc0=
 Mime-Version: 1.0
 Subject: Re: [v3 4/4] mm: hugetlb: Skip initialization of gigantic tail struct
  pages if freed by HVO
@@ -49,7 +49,8 @@ To:     Usama Arif <usama.arif@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
