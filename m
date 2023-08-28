@@ -2,184 +2,490 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A23FD78B224
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD69978B226
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbjH1Nkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
+        id S230033AbjH1NlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbjH1NkX (ORCPT
+        with ESMTP id S230329AbjH1Nk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:40:23 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2044.outbound.protection.outlook.com [40.92.19.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF407B0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 06:40:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XmwsLzPbxNI7SbVoGTbhMW1fcxju1FAaMxuVUv2Q5GIgELrP8pcxzDeidJz+QbD+NAJppadtOvRBWI0C8D95kFAT9gwjn9JijDszn/7lmR7RlrJoUdi9kNN9/VR84bwnrnTfN9ayJ3WEe9Q863m9w+LrxNXWomZGNfvEY0PJoSRydJX0tCvOLvGiQ2orhYSgTujufq6JmbmVnthbQXzFQ8poMmOWWWc6VHA7NamOkZZl8apv5/UHwPmGBpsYsWhL1APsMk+he1MULK7f+Me7oDp6saqDWw2L6yfp0slQiCnp59wNTYeTSIPy4ZqZwTIlYARZMkD6qIPNTFS6+pk5Jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9hn69V79SOUQHhXoiSJ9I/wSOI0ikr8NuuZiGEyLuBY=;
- b=NkMCXupTJf4/Dq4MhfjmHZej4k3hu+iwOjZ9RnRr0btDvEX1+SdTi6Dd7TVN4rz335yqmA06x9dO60YRYHNf+1TRnR89f4F0uayK1lLqLIpZC3msjlBguHA3VasBGD0u7U/Uw6uIHKacy6pOa4QHLdfR04H03/FZS3ZJR8H0DzBtWS3i4+MTNC+ZXrX/E8MIree+jPwqhhQY0qPvMVF6ONOOvhW5yg6T4VXN0qxAGWOXuTcpNrMcYkcpqGdEpLeZWtu24W386TXN4sSEcIs2LpEw9ZvxaqnIFmObyONH53zkMPN4b3pyhLE9BWQBm9FRCJzS0vG+4cwGj4zR9G2clw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9hn69V79SOUQHhXoiSJ9I/wSOI0ikr8NuuZiGEyLuBY=;
- b=cVPtZH01N6/wYAXFcW03L+kh7sBM8VFLkcfV6/O5BrRNCG8wAQbdRC7agJpJzK9DSilwuGqKrc4jMNoCiB3MUxLgNA8u/SvgkY9FGLEM006y8+xuRhZLmIVmyffpc+SV5C3Nhmj05eHTJQuGw+OGby4jXNN9fuPo3SRuVVNbjadHcHpGdQ5wDx7uQ00qga47MmSPi8MbyTAZO8yy0aApy/eAXtvWZlIci6rPVIzTuWhrPf1wFzLpEcMJMvGLW3e0nAC/cdC9svIVClF3sApU59JwwT8lXajDfYoIr1G+ifrp1oVloCz2zlJWcV3McACdsgqBmubUtlvrT43itRNTqQ==
-Received: from PH7PR11MB7643.namprd11.prod.outlook.com (2603:10b6:510:27c::22)
- by CH3PR11MB8773.namprd11.prod.outlook.com (2603:10b6:610:1cb::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Mon, 28 Aug
- 2023 13:40:19 +0000
-Received: from PH7PR11MB7643.namprd11.prod.outlook.com
- ([fe80::bfb7:d3a3:2ed:6e20]) by PH7PR11MB7643.namprd11.prod.outlook.com
- ([fe80::bfb7:d3a3:2ed:6e20%7]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
- 13:40:19 +0000
-From:   Oliver Crumrine <ozlinux@hotmail.com>
-To:     gregkh@linuxfoundation.org, colin.i.king@gmail.com,
-        sumitraartsy@gmail.com, u.kleine-koenig@pengutronix.de,
-        geert@linux-m68k.org
-Cc:     Oliver Crumrine <ozlinux@hotmail.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH v4 6/6] staging: octeon: clean up the octeon ethernet driver
-Date:   Mon, 28 Aug 2023 09:39:19 -0400
-Message-ID: <PH7PR11MB7643E52AF72688CEFDA4DAFABCE0A@PH7PR11MB7643.namprd11.prod.outlook.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <cover.1693229582.git.ozlinux@hotmail.com>
-References: <cover.1693229582.git.ozlinux@hotmail.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [Wcj4upEAaSx8vgGVScVMhJC4XSCAKy71u+cW44KtJgVbdtr7bqUGZ6/VtgtmoPYh]
-X-ClientProxiedBy: MN2PR19CA0008.namprd19.prod.outlook.com
- (2603:10b6:208:178::21) To PH7PR11MB7643.namprd11.prod.outlook.com
- (2603:10b6:510:27c::22)
-X-Microsoft-Original-Message-ID: <5f5e9ee60edff26fbf12c47928943699509272c0.1693229582.git.ozlinux@hotmail.com>
+        Mon, 28 Aug 2023 09:40:29 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFA290;
+        Mon, 28 Aug 2023 06:40:25 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4ff9b389677so4968110e87.3;
+        Mon, 28 Aug 2023 06:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693230023; x=1693834823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yhXqmBfkWu2HDIuTC08kUGflD20qYcRYbObZBFSabWw=;
+        b=pTEQOkvTOqx4jmQFEV2f4eL+xsgHXTvC4vvCpwTeoCVPRRu+97BFuUi5/7/IVyp2yb
+         vDu5jkn7VXKJlE2FclUa02+GiSJ5dcum3s3nL1PtG0flIRIrffIUYWv8aYQwOefZxiBZ
+         GbIv4lxNTOJ+SYoSoYNqBjwFYGk/YWCjgTUWo6nkHlOrZmc6Z+Z1cSolUPshK5q9/L/X
+         Y4WmIBCkH78I0G7uVHx+Y+NI41hemWwJdoyrMgRqy+gzoS6bkKqK7WRkvCktTIedTj2d
+         0c+Z177IwJ1D/z3u/icY2JoCgI/kRDVN3FXiT/CYxsEM7/iEXoxGa53huWV7cuYtOuHU
+         ycbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693230023; x=1693834823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yhXqmBfkWu2HDIuTC08kUGflD20qYcRYbObZBFSabWw=;
+        b=PJOnkhBfnFBREOotIFype/ReEZO7tQCV6590MjxjXue/MiJU4UbNUtPIhUjugyQ4Ap
+         6dK0Ixfs+DreX5HNvBxmdg2JYJ1qeU5ehft3tz7nLk3utPDuApz6EdtQZr/S11IwaSnI
+         3Xihr8ih55eihEkgca/af74BnzqOCUJLhzVz3xJahaJl5hb0ne8XIWYKRpO2NOJxaoXF
+         wj8jCCHz+TSTHBRFX5wJchFEyVnbtx+rffqXp604iuCncJjNLpZqA0qLp2UQczdmip0L
+         HUtjz+b9YqB+ug9jV8aJhwg6/S/NilzE5Xk0EwZI3mDU8QZh73m5HyRF5kTfJTvaumuo
+         nWTQ==
+X-Gm-Message-State: AOJu0YweVH8QgRDwDJGEoi5PNR4mvSf79mJeu2wmcAfO2FsH7D9cUlRT
+        Iy5HZyNy/OkMUD0Fs27IAmbJrr+2DnnoOw==
+X-Google-Smtp-Source: AGHT+IG7KNTcxXzgMfuLkjHcdmWdzGVbZVp0SfSbqgA4+JTQaOHX/wehu97KHkC2AaS96XGUltCynA==
+X-Received: by 2002:a05:6512:3b92:b0:4fe:7e1f:b044 with SMTP id g18-20020a0565123b9200b004fe7e1fb044mr20910444lfv.15.1693230023231;
+        Mon, 28 Aug 2023 06:40:23 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id y1-20020a197501000000b004fdbb36a677sm1585902lfe.288.2023.08.28.06.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 06:40:22 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 16:40:19 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, Maxime@web.codeaurora.org,
+        Coquelin@web.codeaurora.org,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH net-next v2 3/3] net: stmmac: add glue layer for T-HEAD
+ TH1520 SoC
+Message-ID: <maj7mkdtkhp3z7xzcwvopnup3lhm5h5wyxz3j2ljryjbwpwilx@xdizgwctqukn>
+References: <20230827091710.1483-1-jszhang@kernel.org>
+ <20230827091710.1483-4-jszhang@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB7643:EE_|CH3PR11MB8773:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee372cae-cb68-483e-ba3d-08dba7cc51bd
-X-MS-Exchange-SLBlob-MailProps: AZnQBsB9Xmr1VCrDDYJl/lCLgD1Tr5zrrErctzovFMAyPOmh8m/0VDJhwbEeVYnckXHZD6tHeBrmWmvCGrx+BD55OYNf1IKp8rr62kGMYGNxMPyfuIPI7TY4cSblf/e3m2NUe+ApGbfpGfJmTYvuu/RKIL/uAqD+GJQGCB0rSbIjNQaHpapmsabBFiMfDQOMw9KV0b0PqbwyIIp72AY79oaypUBXCS9KUsVKALXRikirk6Cadn3Te9rM4YS22jDhf20hxuofRCVBgkXGLukg/zR/Q7WOU2abdNd7c2Txi1PGMx7moNLXZhNl3yCXTw+MD8/cx6I1s5Rd03fzDdSZc2rQm7X8JKWUWUIOx5aebSYiWDllrZrXP3603RcSm/JwZNQzBnkb3GrBpPvg2foJbxRNRyoJ9KPej8YVW60sCQxDUGIc3sTjtG8MkWaaBjxVolPHUwHGJYqT/G/UD+ktK5BA7lPfFvtLNxu95qIL+++ZDC1KDpYfoMopl/g2NRA6UhnwfxT5mlKFOPNgMEX/GnPjZovckehiODkJ88SoGrfJ9OA3KRDPeezxgoi6buXQqBSD3Vp9fBRrTS5p0RDswS7ytntRsj9YJy92tMIhvQq5Q3LhfyWq79M4PjYXqScio1mqQYM8vVod9WI4u3TT4ve/YDs++lhb6H1lGfogksQzFpxQQcpqunG3bRMCazrzr5UEhrMf0V2kjw9crc20ezDT+tsw/2FyOVDQpuqLU/3dUk+6OocSU38POhYJD1yiZosAbApgO0M=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5d07+gccOpWkD7979oPFuo56m8e3ypccGTuygZou4pottV3JcF2EiT3TQGEGQIaRcMB9MZa09T2Cr5bBnblRuO8gr6rmLfWSf36TsTBWlrcRyvEN9j/Jy3012S5XdCTG4cjbxcQ/9XEt2xCi3joEVRqOI6EpJ69c7OgiWL3jQXizPQxtBCztectgpcFyifUezHMjHV/y2uERYqZleEK9OlGbgNPo3yY1t/iMWyUTJW+p+BwSI0CD4b2NRBiLRg+EcZVmJaXKv8bllUjbudlPCJWwZkSmwsKqfKy7DfQ+5zx6T5fKyZlIglZldHoP6RISD489ZjsReEoBK/yhCHYuDUTtjj5DugcWpv94hfh/06rxQKp6Wn59Gzi5kT6ag454HCR3vqAZEDDcYAaQjW+aeYRM1fBz8hIPBP7dfBlG5PJeqbin9ZW/fR0mTU4aSjq6740OW+gWxVr2K2RW0CgHUQ1zYjyi2Rz70bw1Evy6FADIwalyr+dD9164cakQ+f8RHS5VTKgU/ZjqO2iX2spDj8g/o2m2tOzCUc2osqK+VGpT2AtFaDTC6Z2yBQIs4jG3TGoA2PXil4FnakIce1ebOY3Fcxu+kRipn+vYJHmpnUjwtjl59qRhztQCQ265+JXn
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yA/Ztdf9rrV6G7IQJdKCBFkJ/3B/vumrEpGF4aRb/X1lL6q/2nIuUH46wWJJ?=
- =?us-ascii?Q?8v3ljd088Px4+Mc6/nB8hSu/jceMrpRd8Hqq0r3WafM+Fw8JohKxFihkKz2V?=
- =?us-ascii?Q?Egc3tZ2Ll1FDtG5eDGMcKD1SPTMvmoQtKMZ/PZXRY1FIJ217VqtbfU0wtrr7?=
- =?us-ascii?Q?g3iVrKatcK3vQYxvwLLkYQQT2wBoc7b2NNIcYGtyHm2L77WnNPdphNnyAmFM?=
- =?us-ascii?Q?4POWuV6fo0eVry5qRhNz/KnWnRrbV6lxvcq+DkGkeVmIXKn23qW4d188ns9m?=
- =?us-ascii?Q?bgllVMQabluHucqoV7iozDuu/BDpDA29ZNEu23GMhVnryFmEgKJDWCBqq/h7?=
- =?us-ascii?Q?03v5ug1u7MVNF27bAsrhrm4q9c6ta4x4fRvLErzajDIqCAnz+Yvn0hKCs0OV?=
- =?us-ascii?Q?sxPoeHkD1bsj6lZtNUOwModGsHlGJKRSXwhJNO7uInrFc8OB3wNv6ZrBDct2?=
- =?us-ascii?Q?j5r8fSgCGgwgMlavrdBnjjpZO7CEx0pCZ1evwcp99Mn6EVG93Q3MsC9Ehgon?=
- =?us-ascii?Q?+YYDonk2097Ja6+xa62t/w2/0I7h4NyIQ25+Xe749IGVI3+vr5KcFbG3ih5I?=
- =?us-ascii?Q?YLtv7xQOEjA0mJdOd7GLNPxT6vnBj5gijon4InD5iJ12oGBwu74JY+Ar6sfg?=
- =?us-ascii?Q?VtMvWNJoTqsLc0kFJ7QXPYnS7mnyxL/+CTgErO5ZA2QmJFV9ijzDIx4tHgww?=
- =?us-ascii?Q?jSUzreR7cW84F/cgEKiaNVLpRg7WfSqa0C+p7i648if23410Fe9Y/yulc3Na?=
- =?us-ascii?Q?YFTdudT87BwXZWN5+uYFqFTWoekKnj/Jl1HSwAnz4ZT+A9NLsWyHi3qxBDQh?=
- =?us-ascii?Q?fpBYsjVtv1RaEdllrqpDkHxqPLAeqqccXIoxCfqcrTfUfxBOFlpUura8C5uz?=
- =?us-ascii?Q?z3DrYXQa3MGVvcLHu/0DLrDdXu/ZVa2t+x4+lxmeteCVUlSZawbwJhYV/+UM?=
- =?us-ascii?Q?T6fcLsOHv/Bh1Lzh6TPQP7l5vr6NFPB5jVQ+QOl/FjrLWWM+H/HU4etT+cbr?=
- =?us-ascii?Q?46dGG1WsbGJ9fo65+M3JVmNwrW2DQiQNwjEUW1Gh2YoQ1u77X4reZWcpw9N0?=
- =?us-ascii?Q?4Dxz/E2eNvr6G8X9qHh+wCY7nYUFUOljxFzNGEMhr50fG73zpP9W/UqCh5LZ?=
- =?us-ascii?Q?KMpBT3AEA59GvL3i1kcrTkzcQDxtWaRr6qQgsLhGd8HQbzTS5l58QVaKenNO?=
- =?us-ascii?Q?ibzQztKjLk4Vhhlg0HrJTdKF27ZejBplMcsHtBYLdJm+f8yRPP63IcVe9meU?=
- =?us-ascii?Q?HmuWchBQwKzsexxW9iG/BS6Ph8WbCy2xMmHSthZf/g=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-e8f36.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee372cae-cb68-483e-ba3d-08dba7cc51bd
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7643.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 13:40:19.2984
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8773
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230827091710.1483-4-jszhang@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the octeon ethernet driver better adhere to the
-kernel coding standard
+On Sun, Aug 27, 2023 at 05:17:10PM +0800, Jisheng Zhang wrote:
+> Add dwmac glue driver to support the dwmac on the T-HEAD TH1520 SoC.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
+>  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+>  .../net/ethernet/stmicro/stmmac/dwmac-thead.c | 302 ++++++++++++++++++
+>  3 files changed, 314 insertions(+)
+>  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> index 06c6871f8788..1bf71804c270 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> @@ -216,6 +216,17 @@ config DWMAC_SUN8I
+>  	  stmmac device driver. This driver is used for H3/A83T/A64
+>  	  EMAC ethernet controller.
+>  
+> +config DWMAC_THEAD
+> +	tristate "T-HEAD dwmac support"
+> +	depends on OF && (ARCH_THEAD || COMPILE_TEST)
+> +	select MFD_SYSCON
+> +	help
+> +	  Support for ethernet controllers on T-HEAD RISC-V SoCs
+> +
+> +	  This selects the T-HEAD platform specific glue layer support for
+> +	  the stmmac device driver. This driver is used for T-HEAD TH1520
+> +	  ethernet controller.
+> +
+>  config DWMAC_IMX8
+>  	tristate "NXP IMX8 DWMAC support"
+>  	default ARCH_MXC
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
+> index 5b57aee19267..d73171ed6ad7 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
+> +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
+> @@ -27,6 +27,7 @@ obj-$(CONFIG_DWMAC_STI)		+= dwmac-sti.o
+>  obj-$(CONFIG_DWMAC_STM32)	+= dwmac-stm32.o
+>  obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
+>  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
+> +obj-$(CONFIG_DWMAC_THEAD)	+= dwmac-thead.o
+>  obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
+>  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
+>  obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+> new file mode 100644
+> index 000000000000..85135ef05906
+> --- /dev/null
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+> @@ -0,0 +1,302 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * T-HEAD DWMAC platform driver
+> + *
+> + * Copyright (C) 2021 Alibaba Group Holding Limited.
+> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> + *
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_net.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "stmmac_platform.h"
+> +
+> +#define GMAC_CLK_EN			0x00
+> +#define  GMAC_TX_CLK_EN			BIT(1)
+> +#define  GMAC_TX_CLK_N_EN		BIT(2)
+> +#define  GMAC_TX_CLK_OUT_EN		BIT(3)
+> +#define  GMAC_RX_CLK_EN			BIT(4)
+> +#define  GMAC_RX_CLK_N_EN		BIT(5)
+> +#define  GMAC_EPHY_REF_CLK_EN		BIT(6)
+> +#define GMAC_RXCLK_DELAY_CTRL		0x04
+> +#define  GMAC_RXCLK_BYPASS		BIT(15)
+> +#define  GMAC_RXCLK_INVERT		BIT(14)
+> +#define  GMAC_RXCLK_DELAY_MASK		GENMASK(4, 0)
+> +#define  GMAC_RXCLK_DELAY_VAL(x)	FIELD_PREP(GMAC_RXCLK_DELAY_MASK, (x))
+> +#define GMAC_TXCLK_DELAY_CTRL		0x08
+> +#define  GMAC_TXCLK_BYPASS		BIT(15)
+> +#define  GMAC_TXCLK_INVERT		BIT(14)
+> +#define  GMAC_TXCLK_DELAY_MASK		GENMASK(4, 0)
+> +#define  GMAC_TXCLK_DELAY_VAL(x)	FIELD_PREP(GMAC_RXCLK_DELAY_MASK, (x))
+> +#define GMAC_PLLCLK_DIV			0x0c
+> +#define  GMAC_PLLCLK_DIV_EN		BIT(31)
+> +#define  GMAC_PLLCLK_DIV_MASK		GENMASK(7, 0)
+> +#define  GMAC_PLLCLK_DIV_NUM(x)		FIELD_PREP(GMAC_PLLCLK_DIV_MASK, (x))
+> +#define GMAC_GTXCLK_SEL			0x18
+> +#define  GMAC_GTXCLK_SEL_PLL		BIT(0)
+> +#define GMAC_INTF_CTRL			0x1c
+> +#define  PHY_INTF_MASK			BIT(0)
+> +#define  PHY_INTF_RGMII			FIELD_PREP(PHY_INTF_MASK, 1)
+> +#define  PHY_INTF_MII_GMII		FIELD_PREP(PHY_INTF_MASK, 0)
+> +#define GMAC_TXCLK_OEN			0x20
+> +#define  TXCLK_DIR_MASK			BIT(0)
+> +#define  TXCLK_DIR_OUTPUT		FIELD_PREP(TXCLK_DIR_MASK, 0)
+> +#define  TXCLK_DIR_INPUT		FIELD_PREP(TXCLK_DIR_MASK, 1)
+> +
+> +#define GMAC_GMII_RGMII_RATE	125000000
+> +#define GMAC_MII_RATE		25000000
+> +
+> +struct thead_dwmac {
+> +	struct plat_stmmacenet_data *plat;
+> +	struct regmap *apb_regmap;
+> +	struct device *dev;
+> +	u32 rx_delay;
+> +	u32 tx_delay;
+> +};
+> +
+> +static int thead_dwmac_set_phy_if(struct plat_stmmacenet_data *plat)
+> +{
+> +	struct thead_dwmac *dwmac = plat->bsp_priv;
+> +	u32 phyif;
+> +
+> +	switch (plat->interface) {
+> +	case PHY_INTERFACE_MODE_MII:
+> +		phyif = PHY_INTF_MII_GMII;
+> +		break;
+> +	case PHY_INTERFACE_MODE_RGMII:
+> +	case PHY_INTERFACE_MODE_RGMII_ID:
+> +	case PHY_INTERFACE_MODE_RGMII_TXID:
+> +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> +		phyif = PHY_INTF_RGMII;
+> +		break;
+> +	default:
+> +		dev_err(dwmac->dev, "unsupported phy interface %d\n",
+> +			plat->interface);
+> +		return -EINVAL;
+> +	};
+> +
+> +	regmap_write(dwmac->apb_regmap, GMAC_INTF_CTRL, phyif);
+> +
+> +	return 0;
+> +}
+> +
+> +static int thead_dwmac_set_txclk_dir(struct plat_stmmacenet_data *plat)
+> +{
+> +	struct thead_dwmac *dwmac = plat->bsp_priv;
+> +	u32 txclk_dir;
+> +
+> +	switch (plat->interface) {
+> +	case PHY_INTERFACE_MODE_MII:
+> +		txclk_dir = TXCLK_DIR_INPUT;
+> +		break;
+> +	case PHY_INTERFACE_MODE_RGMII:
+> +	case PHY_INTERFACE_MODE_RGMII_ID:
+> +	case PHY_INTERFACE_MODE_RGMII_TXID:
+> +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> +		txclk_dir = TXCLK_DIR_OUTPUT;
+> +		break;
+> +	default:
+> +		dev_err(dwmac->dev, "unsupported phy interface %d\n",
+> +			plat->interface);
+> +		return -EINVAL;
+> +	};
+> +
+> +	regmap_write(dwmac->apb_regmap, GMAC_TXCLK_OEN, txclk_dir);
+> +
+> +	return 0;
+> +}
+> +
+> +static void thead_dwmac_fix_speed(void *priv, unsigned int speed, unsigned int mode)
+> +{
+> +	struct thead_dwmac *dwmac = priv;
+> +	struct plat_stmmacenet_data *plat = dwmac->plat;
+> +	unsigned long rate;
+> +	u32 div;
+> +
+> +	switch (plat->interface) {
+> +	/* For MII, rxc/txc is provided by phy */
+> +	case PHY_INTERFACE_MODE_MII:
+> +		return;
+> +
+> +	case PHY_INTERFACE_MODE_RGMII:
+> +	case PHY_INTERFACE_MODE_RGMII_ID:
+> +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> +	case PHY_INTERFACE_MODE_RGMII_TXID:
 
-Signed-off-by: Oliver Crumrine <ozlinux@hotmail.com>
----
-v2: Actually send the patch set properly
-v3: Fixed a bug where I forgot to change all instances of a struct
-v4: Actually fix that bug (this is my first patch, give me a break)
+> +		rate = clk_get_rate(plat->stmmac_clk);
+> +		if (!rate || rate % GMAC_GMII_RGMII_RATE != 0 ||
+> +		    rate % GMAC_MII_RATE != 0) {
+> +			dev_err(dwmac->dev, "invalid gmac rate %ld\n", rate);
+> +			return;
+> +		}
+> +
+> +		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV, GMAC_PLLCLK_DIV_EN, 0);
+> +
+> +		switch (speed) {
+> +		case SPEED_1000:
+> +			div = rate / GMAC_GMII_RGMII_RATE;
+> +			break;
+> +		case SPEED_100:
+> +			div = rate / GMAC_MII_RATE;
+> +			break;
+> +		case SPEED_10:
+> +			div = rate * 10 / GMAC_MII_RATE;
+> +			break;
+> +		default:
+> +			dev_err(dwmac->dev, "invalid speed %u\n", speed);
+> +			return;
+> +		}
+> +		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
+> +				   GMAC_PLLCLK_DIV_MASK, GMAC_PLLCLK_DIV_NUM(div));
+> +
+> +		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
+> +				   GMAC_PLLCLK_DIV_EN, GMAC_PLLCLK_DIV_EN);
 
- drivers/staging/octeon/ethernet.c     |  4 ++--
- drivers/staging/octeon/octeon-stubs.h | 12 ++++++------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+This chunk looks like a hard-coded implementation of the
+CLK_SET_RATE_GATE Tx-clocks rate setup which parental clock is the
+"stmmaceth" clock. I suggest to move it to the respective driver, add
+a "tx" clock to the bindings and use the common clock kernel API
+methods here only.
 
-diff --git a/drivers/staging/octeon/ethernet.c b/drivers/staging/octeon/ethernet.c
-index 023b107e077a..8e1f4b987a25 100644
---- a/drivers/staging/octeon/ethernet.c
-+++ b/drivers/staging/octeon/ethernet.c
-@@ -201,8 +201,8 @@ EXPORT_SYMBOL(cvm_oct_free_work);
-  */
- static struct net_device_stats *cvm_oct_common_get_stats(struct net_device *dev)
- {
--	cvmx_pip_port_status_t rx_status;
--	cvmx_pko_port_status_t tx_status;
-+	struct cvmx_pip_port_status rx_status;
-+	struct cvmx_pko_port_status tx_status;
- 	struct octeon_ethernet *priv = netdev_priv(dev);
- 
- 	if (priv->port < CVMX_PIP_NUM_INPUT_PORTS) {
-diff --git a/drivers/staging/octeon/octeon-stubs.h b/drivers/staging/octeon/octeon-stubs.h
-index b9852994882b..579c755cfdc0 100644
---- a/drivers/staging/octeon/octeon-stubs.h
-+++ b/drivers/staging/octeon/octeon-stubs.h
-@@ -384,7 +384,7 @@ union cvmx_ipd_sub_port_qos_cnt {
- 	} s;
- };
- 
--typedef struct {
-+struct cvmx_pip_port_status {
- 	uint32_t dropped_octets;
- 	uint32_t dropped_packets;
- 	uint32_t pci_raw_packets;
-@@ -407,13 +407,13 @@ typedef struct {
- 	uint32_t inb_packets;
- 	uint64_t inb_octets;
- 	uint16_t inb_errors;
--} cvmx_pip_port_status_t;
-+};
- 
--typedef struct {
-+struct cvmx_pko_port_status {
- 	uint32_t packets;
- 	uint64_t octets;
- 	uint64_t doorbell;
--} cvmx_pko_port_status_t;
-+};
- 
- union cvmx_pip_frm_len_chkx {
- 	uint64_t u64;
-@@ -1258,11 +1258,11 @@ static inline int octeon_is_simulation(void)
- }
- 
- static inline void cvmx_pip_get_port_status(uint64_t port_num, uint64_t clear,
--					    cvmx_pip_port_status_t *status)
-+					    struct cvmx_pip_port_status *status)
- { }
- 
- static inline void cvmx_pko_get_port_status(uint64_t port_num, uint64_t clear,
--					    cvmx_pko_port_status_t *status)
-+					    struct cvmx_pko_port_status *status)
- { }
- 
- static inline enum cvmx_helper_interface_mode cvmx_helper_interface_get_mode(int
--- 
-2.39.3
+> +		break;
+> +	default:
+> +		dev_err(dwmac->dev, "unsupported phy interface %d\n",
+> +			plat->interface);
+> +		return;
+> +	}
+> +}
+> +
+> +static int thead_dwmac_enable_clk(struct plat_stmmacenet_data *plat)
+> +{
+> +	struct thead_dwmac *dwmac = plat->bsp_priv;
+> +	u32 reg;
+> +
+> +	switch (plat->interface) {
+> +	case PHY_INTERFACE_MODE_MII:
+> +		reg = GMAC_RX_CLK_EN | GMAC_TX_CLK_EN;
+> +		break;
+> +
+> +	case PHY_INTERFACE_MODE_RGMII:
+> +	case PHY_INTERFACE_MODE_RGMII_ID:
+> +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> +	case PHY_INTERFACE_MODE_RGMII_TXID:
+> +		/* use pll */
+> +		regmap_write(dwmac->apb_regmap, GMAC_GTXCLK_SEL, GMAC_GTXCLK_SEL_PLL);
+> +
 
+> +		reg = GMAC_TX_CLK_EN | GMAC_TX_CLK_N_EN | GMAC_TX_CLK_OUT_EN |
+> +		      GMAC_RX_CLK_EN | GMAC_RX_CLK_N_EN;
+
+Similarly settings these flags looks like just clock gates which can
+also be moved to the clock driver.
+
+> +		break;
+> +
+> +	default:
+> +		dev_err(dwmac->dev, "unsupported phy interface %d\n",
+> +			plat->interface);
+> +		return -EINVAL;
+> +	}
+> +
+> +	regmap_write(dwmac->apb_regmap, GMAC_CLK_EN, reg);
+> +
+> +	return 0;
+> +}
+> +
+> +static int thead_dwmac_init(struct platform_device *pdev,
+> +			    struct plat_stmmacenet_data *plat)
+> +{
+> +	struct thead_dwmac *dwmac = plat->bsp_priv;
+> +	int ret;
+> +
+> +	ret = thead_dwmac_set_phy_if(plat);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = thead_dwmac_set_txclk_dir(plat);
+> +	if (ret)
+> +		return ret;
+> +
+> +	regmap_write(dwmac->apb_regmap, GMAC_RXCLK_DELAY_CTRL,
+> +		     GMAC_RXCLK_DELAY_VAL(dwmac->rx_delay));
+> +	regmap_write(dwmac->apb_regmap, GMAC_TXCLK_DELAY_CTRL,
+> +		     GMAC_TXCLK_DELAY_VAL(dwmac->tx_delay));
+> +
+> +	thead_dwmac_fix_speed(dwmac, SPEED_1000, 0);
+> +
+> +	return thead_dwmac_enable_clk(plat);
+> +}
+> +
+> +static int thead_dwmac_probe(struct platform_device *pdev)
+> +{
+> +	struct plat_stmmacenet_data *plat;
+> +	struct stmmac_resources stmmac_res;
+> +	struct thead_dwmac *dwmac;
+> +	struct device_node *np = pdev->dev.of_node;
+> +	u32 delay_ps;
+> +	int ret;
+> +
+> +	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret,
+> +				     "failed to get resources\n");
+> +
+
+> +	plat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
+
+This can be replaced with devm_stmmac_probe_config_dt() so the
+stmmac_remove_config_dt() invocation would be dropped.
+
+> +	if (IS_ERR(plat))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(plat),
+> +				     "dt configuration failed\n");
+> +
+> +	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
+> +	if (!dwmac) {
+> +		ret = -ENOMEM;
+> +		goto err_remove_config_dt;
+> +	}
+> +
+> +	if (!of_property_read_u32(np, "rx-internal-delay-ps", &delay_ps))
+> +		dwmac->rx_delay = delay_ps;
+> +	if (!of_property_read_u32(np, "tx-internal-delay-ps", &delay_ps))
+> +		dwmac->tx_delay = delay_ps;
+> +
+> +	dwmac->apb_regmap = syscon_regmap_lookup_by_phandle(np, "thead,gmacapb");
+> +	if (IS_ERR(dwmac->apb_regmap)) {
+> +		ret = dev_err_probe(&pdev->dev, PTR_ERR(dwmac->apb_regmap),
+> +				    "Failed to get gmac apb syscon\n");
+> +		goto err_remove_config_dt;
+> +	}
+> +
+> +	dwmac->dev = &pdev->dev;
+> +	dwmac->plat = plat;
+> +	plat->bsp_priv = dwmac;
+> +	plat->fix_mac_speed = thead_dwmac_fix_speed;
+> +
+
+> +	ret = thead_dwmac_init(pdev, plat);
+> +	if (ret)
+> +		goto err_remove_config_dt;
+> +
+> +	ret = stmmac_dvr_probe(&pdev->dev, plat, &stmmac_res);
+
+This can be replaced with:
+plat->init = thead_dwmac_init;
+ret = devm_stmmac_pltfr_probe();
+
+> +	if (ret)
+> +		goto err_remove_config_dt;
+> +
+> +	return 0;
+> +
+
+> +err_remove_config_dt:
+> +	stmmac_remove_config_dt(pdev, plat);
+> +
+> +	return ret;
+
+This can be dropped if devm_stmmac_probe_config_dt() is utilized.
+
+> +}
+> +
+> +static const struct of_device_id thead_dwmac_match[] = {
+
+> +	{ .compatible = "thead,th1520-dwmac" },
+
+See my comment to the bindings about the compatible string suffix.
+
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, thead_dwmac_match);
+> +
+> +static struct platform_driver thead_dwmac_driver = {
+> +	.probe = thead_dwmac_probe,
+
+> +	.remove_new = stmmac_pltfr_remove,
+
+This can be dropped if devm_stmmac_probe_config_dt() and
+devm_stmmac_pltfr_probe() are utilized.
+
+> +	.driver = {
+> +		.name = "thead-dwmac",
+> +		.pm = &stmmac_pltfr_pm_ops,
+> +		.of_match_table = thead_dwmac_match,
+> +	},
+> +};
+> +module_platform_driver(thead_dwmac_driver);
+> +
+> +MODULE_AUTHOR("T-HEAD");
+> +MODULE_AUTHOR("Jisheng Zhang <jszhang@kernel.org>");
+
+> +MODULE_DESCRIPTION("T-HEAD dwmac platform driver");
+                              ^
+                              |
+Capitalize? ------------------+
+
+-Serge(y)
+
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.40.1
+> 
+> 
