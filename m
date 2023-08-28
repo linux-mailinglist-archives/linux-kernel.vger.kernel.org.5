@@ -2,104 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6427978A7AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A8378A7AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjH1I17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
+        id S229722AbjH1I3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjH1I1h (ORCPT
+        with ESMTP id S229555AbjH1I3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:27:37 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8C1A0;
-        Mon, 28 Aug 2023 01:27:33 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id CFF701864F2E;
-        Mon, 28 Aug 2023 11:27:30 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id g40DCzp0QuPr; Mon, 28 Aug 2023 11:27:30 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 753F41864EF4;
-        Mon, 28 Aug 2023 11:27:30 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Uc5eHaw1c0Xb; Mon, 28 Aug 2023 11:27:30 +0300 (MSK)
-Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.233.169])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id 315211862F57;
-        Mon, 28 Aug 2023 11:27:28 +0300 (MSK)
-From:   Alexandra Diupina <adiupina@astralinux.ru>
-To:     Zhao Qiang <qiang.zhao@nxp.com>
-Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH v2] fsl_ucc_hdlc: add a check of the return value from hdlc_open
-Date:   Mon, 28 Aug 2023 11:27:03 +0300
-Message-Id: <20230828082703.3246-1-adiupina@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <bd4a41b6-339e-67aa-a725-9d833efa6c79@csgroup.eu>
-References: 
+        Mon, 28 Aug 2023 04:29:10 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC4F9C;
+        Mon, 28 Aug 2023 01:29:07 -0700 (PDT)
+Received: from kwepemd100002.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RZ3XQ5zYfzNnKb;
+        Mon, 28 Aug 2023 16:25:26 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.23; Mon, 28 Aug 2023 16:29:03 +0800
+Message-ID: <bcac1b3c-a2f7-7f18-4c2f-5cf27f4e89b5@huawei.com>
+Date:   Mon, 28 Aug 2023 16:29:02 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] cpufreq: Fix the race condition while updating the
+ transition_task of policy
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rafael@kernel.org>, <srivatsa.bhat@linux.vnet.ibm.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230826095836.1138608-1-liaochang1@huawei.com>
+ <20230828072347.ly23mbptu3yw4zkv@vireshk-i7>
+From:   "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <20230828072347.ly23mbptu3yw4zkv@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.108]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Process the result of hold_open() and return it from
-uhdlc_open() in case of an error
-It is necessary to pass the error code up the control flow,
-similar to a possible error in request_irq()
+Hi Viresh.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+在 2023/8/28 15:23, Viresh Kumar 写道:
+> On 26-08-23, 09:58, Liao Chang wrote:
+>> The field 'transition_task' of policy structure is used to track the
+>> task which is performing the frequency transition. Using this field to
+>> print a warning once detect a case where the same task is calling
+>> _begin() again before completing the preivous frequency transition via
+>> the _end().
+>>
+>> However, there is a potential race condition in _end() and _begin() APIs
+>> while updating the field 'transition_task' of policy, the scenario is
+>> depicted below:
+>>
+>>              Task A                            Task B
+>>
+>>         /* 1st freq transition */
+>>         Invoke _begin() {
+>>                 ...
+>>                 ...
+>>         }
+>>                                         /* 2nd freq transition */
+>>                                         Invoke _begin() {
+>>                                                 ... //waiting for A to
+>>                                                 ... //clear
+>>                                                 ... //transition_ongoing
+>>                                                 ... //in _end() for
+>>                                                 ... //the 1st transition
+>>                                                         |
+>>         Change the frequency                            |
+>>                                                         |
+>>         Invoke _end() {                                 |
+>>                 ...                                     |
+>>                 ...                                     |
+>>                 transition_ongoing = false;             V
+>>                                                 transition_ongoing = true;
+>>                                                 transition_task = current;
+> 
+> Task B here won't move ahead until "wake_up(&policy->transition_wait)"
+> is called, isn't it ?
 
-Fixes: c19b6d246a35 ("drivers/net: support hdlc function for QE-UCC")
-Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
----
-v2: Remove the 'rc' variable (stores the return value of the=20
-hdlc_open()) as Christophe Leroy <christophe.leroy@csgroup.eu> suggested
- drivers/net/wan/fsl_ucc_hdlc.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Task B does not necessarily go to sleep when it calls wait_event(), it depends on
+the condition to wait for evaluate false or not. So there is a small race window
+where Task A already set 'transition_ongoing' to false and Task B can cross wait_event()
+immediately.
 
-diff --git a/drivers/net/wan/fsl_ucc_hdlc.c b/drivers/net/wan/fsl_ucc_hdl=
-c.c
-index cdd9489c712e..4164abea7725 100644
---- a/drivers/net/wan/fsl_ucc_hdlc.c
-+++ b/drivers/net/wan/fsl_ucc_hdlc.c
-@@ -708,7 +708,6 @@ static int uhdlc_open(struct net_device *dev)
- 	hdlc_device *hdlc =3D dev_to_hdlc(dev);
- 	struct ucc_hdlc_private *priv =3D hdlc->priv;
- 	struct ucc_tdm *utdm =3D priv->utdm;
--	int rc =3D 0;
-=20
- 	if (priv->hdlc_busy !=3D 1) {
- 		if (request_irq(priv->ut_info->uf_info.irq,
-@@ -732,12 +731,10 @@ static int uhdlc_open(struct net_device *dev)
- 		napi_enable(&priv->napi);
- 		netdev_reset_queue(dev);
- 		netif_start_queue(dev);
--		rc =3D hdlc_open(dev);
--		if (rc)
--			return rc;
-+		return hdlc_open(dev);
- 	}
-=20
--	return rc;
-+	return 0;
- }
-=20
- static void uhdlc_memclean(struct ucc_hdlc_private *priv)
---=20
-2.30.2
+wait_event:
+do {
+	might_sleep();
+	if (condition) // !transition_ongoing
+		break;
+	__wait_event();
+};
 
+I hope I do not miss something important in the code above.
+
+> 
+> Also I think the CPU is free to change the order of the two
+> instructions and so this commit won't make a difference. Also I don't
+
+Yes, if the CPU uses weak memroy model, it is possible for the instructions to be reordered.
+therefore, it is a good idea to insert an smb() between these two lines if there is race here.
+
+Thanks.
+
+> feel there is a race here as wake_up() hasn't happened.
+> 
+>>                 transition_task = NULL;
+>>                 ... //A overwrites the task
+>>                 ... //performing the transition
+>>                 ... //result in error warning.
+>>         }
+>>
+>> To fix this race condition, the order of the updates to the
+>> 'transition_task' and 'transition_ongoing' fields has been changed, the
+>> 'transition_task' field is now cleared before the 'transition_ongoing'
+>> field, which ensure that only one task can update the 'transition_task'
+>> field at a time.
+>>
+>> Fixes: ca654dc3a93d ("cpufreq: Catch double invocations of cpufreq_freq_transition_begin/end")
+>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+>> ---
+>>  drivers/cpufreq/cpufreq.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+>> index a757f90aa9d6..f8eb6dde57f2 100644
+>> --- a/drivers/cpufreq/cpufreq.c
+>> +++ b/drivers/cpufreq/cpufreq.c
+>> @@ -455,8 +455,8 @@ void cpufreq_freq_transition_end(struct cpufreq_policy *policy,
+>>  			    policy->cur,
+>>  			    policy->cpuinfo.max_freq);
+>>  
+>> -	policy->transition_ongoing = false;
+>>  	policy->transition_task = NULL;
+>> +	policy->transition_ongoing = false;
+>>  
+>>  	wake_up(&policy->transition_wait);
+>>  }
+>> -- 
+>> 2.34.1
+> 
+
+-- 
+BR
+Liao, Chang
