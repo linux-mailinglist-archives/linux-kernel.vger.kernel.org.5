@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98ECF78A462
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F0C78A467
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjH1CFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
+        id S229985AbjH1CF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjH1CEy (ORCPT
+        with ESMTP id S229730AbjH1CEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:04:54 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C835D8;
+        Sun, 27 Aug 2023 22:04:55 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF77DDA;
         Sun, 27 Aug 2023 19:04:52 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RYv5B4DDtz4f3mLt;
-        Mon, 28 Aug 2023 10:04:46 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S15;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RYv5F6pYxz4f3kpX;
         Mon, 28 Aug 2023 10:04:49 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S16;
+        Mon, 28 Aug 2023 10:04:50 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
         song@kernel.org, xni@redhat.com
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v2 11/28] md/raid5-cache: use new apis to suspend array for r5c_disable_writeback_async()
-Date:   Mon, 28 Aug 2023 10:00:04 +0800
-Message-Id: <20230828020021.2489641-12-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v2 12/28] md/raid5-cache: use new apis to suspend array for r5c_journal_mode_store()
+Date:   Mon, 28 Aug 2023 10:00:05 +0800
+Message-Id: <20230828020021.2489641-13-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 References: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S15
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4fZrW7WFy7tw17Ary3XFb_yoW8Gry7pa
-        1IqFWFvw18uFyFvF4UGr4DGFy5Ga10grWIkr9xGan5ZayrZryxGF1rWryUJrykAFyfZr43
-        Jw45tw18Ar18trUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S16
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1fWr4rArWkGF15Ar15CFg_yoW8Gr43pa
+        nFgFWru3409rWrAF1kXF4q9FykJ3y8KrZF9r9rC3Z3uayrXr17GF1FqF1UWr92vFyfGa13
+        Jw4UJ3WkC348KrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -66,42 +66,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Convert to use new apis, the old apis will be removed eventually.
+r5c_journal_mode_set() will suspend array and it has only 2 caller, the
+other caller raid_ctl() already suspend the array with new apis.
+
+This is not hot path, so performance is not concerned.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid5-cache.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/md/raid5-cache.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/md/raid5-cache.c b/drivers/md/raid5-cache.c
-index 889bba60d6ff..109367fec7c0 100644
+index 109367fec7c0..38d38f2e33bc 100644
 --- a/drivers/md/raid5-cache.c
 +++ b/drivers/md/raid5-cache.c
-@@ -686,7 +686,6 @@ static void r5c_disable_writeback_async(struct work_struct *work)
- 					   disable_writeback_work);
- 	struct mddev *mddev = log->rdev->mddev;
- 	struct r5conf *conf = mddev->private;
--	int locked = 0;
+@@ -2584,9 +2584,7 @@ int r5c_journal_mode_set(struct mddev *mddev, int mode)
+ 	    mode == R5C_JOURNAL_MODE_WRITE_BACK)
+ 		return -EINVAL;
  
- 	if (log->r5c_journal_mode == R5C_JOURNAL_MODE_WRITE_THROUGH)
- 		return;
-@@ -696,13 +695,12 @@ static void r5c_disable_writeback_async(struct work_struct *work)
- 	/* wait superblock change before suspend */
- 	wait_event(mddev->sb_wait,
- 		   !READ_ONCE(conf->log) ||
--		   (!test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags) &&
--		    (locked = mddev_trylock(mddev))));
--	if (locked) {
--		mddev_suspend(mddev);
-+		   !test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags));
-+
-+	if (READ_ONCE(conf->log)) {
-+		__mddev_suspend(mddev);
- 		log->r5c_journal_mode = R5C_JOURNAL_MODE_WRITE_THROUGH;
--		mddev_resume(mddev);
--		mddev_unlock(mddev);
-+		__mddev_resume(mddev);
- 	}
+-	mddev_suspend(mddev);
+ 	conf->log->r5c_journal_mode = mode;
+-	mddev_resume(mddev);
+ 
+ 	pr_debug("md/raid:%s: setting r5c cache mode to %d: %s\n",
+ 		 mdname(mddev), mode, r5c_journal_mode_str[mode]);
+@@ -2611,11 +2609,11 @@ static ssize_t r5c_journal_mode_store(struct mddev *mddev,
+ 		if (strlen(r5c_journal_mode_str[mode]) == len &&
+ 		    !strncmp(page, r5c_journal_mode_str[mode], len))
+ 			break;
+-	ret = mddev_lock(mddev);
++	ret = mddev_suspend_and_lock(mddev);
+ 	if (ret)
+ 		return ret;
+ 	ret = r5c_journal_mode_set(mddev, mode);
+-	mddev_unlock(mddev);
++	mddev_unlock_and_resume(mddev);
+ 	return ret ?: length;
  }
  
 -- 
