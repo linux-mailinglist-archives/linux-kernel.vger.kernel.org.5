@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B54478B35A
+	by mail.lfdr.de (Postfix) with ESMTP id B405978B35B
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbjH1Ok2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
+        id S231822AbjH1Ok3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 10:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbjH1OkV (ORCPT
+        with ESMTP id S231982AbjH1OkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:40:21 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06128136
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:40:12 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso107235e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693233610; x=1693838410; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j2UbLxhYqoo5RujlArsNRFXdGVrlcSizT9E5D+JEpAc=;
-        b=MY2Ms4p01VDARLLYyDuGjTRafr6ajxadr+5qBJJyeFxtTqZtBvsbWiU2P+OvCZd0tE
-         nr2k2gjZ8btB/ikUWq5yJ8IHSi25UMeBvUBO4vjcJvtGC7BMdP62otxoIRHLhOoWVKvN
-         unlLrvgg/DDEBzXleZsUVnE53p0gmby2K+p6VdzpjfdbY+4pqQMtJozbU6PQ0OnD8KhO
-         FOiMPZrwRaS7sjyS/I50VF/dge0wyo5GwHotaJsUdx7kd+FOS4N0vYBGVC4ZUWVGql6r
-         x4hWflo2fM5H1xvbEA311948iwPYyuRkYttDSjrsWWvcEk00aoOxbjSE7PPeZ/ke+Usf
-         ioHg==
+        Mon, 28 Aug 2023 10:40:20 -0400
+Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DB8125
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:40:03 -0700 (PDT)
+Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-68beecae979so3140846b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:40:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693233610; x=1693838410;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j2UbLxhYqoo5RujlArsNRFXdGVrlcSizT9E5D+JEpAc=;
-        b=d1hW6Wsk/8nJSjWKrdq6ipPTI9wMKnBXdpIYCvb0Q2QQD3cvBh8FAv1IM/sVJKsyKQ
-         E4BAK9B6D6pjlPYBxFh55AaAdu9mN7/0aYvtDyWFutcjGPiBCINmMt7E2HJ9dkGd3Jhc
-         ypPOG48nxr3/POmtX1eIFdpvxnA/F/SURLSnlPQi8CL9cZa/Q4FYFoQDwskY3bZxLlcB
-         A/FuahLpgNGmQ/JQT5w9N0fwfvkRKjvLm9C9cnxsBp+DTo2fGzltsi0Ax8mm1tRn/u+U
-         VqLg2KSVk9AlFZsb2BJpD13KQABVKr4+d7UMLWI6hXfj8qQpesdIXwWJRCFslBhHPHqL
-         kblA==
-X-Gm-Message-State: AOJu0Yx3lIbztTyZvJChE4NLSiYe0EXoKYEslbppAgBQDB1p3O3rZ96a
-        zbS8y8piaUQ0kh6xHGE0q8KzGRothgg65vOvu1+oZg==
-X-Google-Smtp-Source: AGHT+IG89PQvGlyyexU2ilvXeGop6BLWwAi3Qpxw0oEo0DLUWmBEPba4+VZw3sP1uOUhmoGBub9dfKhA7O/cwHW0Vho=
-X-Received: by 2002:a05:600c:1da6:b0:400:c6de:6a20 with SMTP id
- p38-20020a05600c1da600b00400c6de6a20mr306793wms.3.1693233610358; Mon, 28 Aug
- 2023 07:40:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693233603; x=1693838403;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hXm95atR3/kTaW7ZQT6rFBULl00iH/6dVcnDXDrfk9A=;
+        b=Rl0i2ftTlWfyVymWabeCIdFdDksfYjAJy67ukfE/zpEZ9htRUBgyo6FSAqNIsVnLt1
+         C8m2HyB8weYEXGfN/EuO+U52QWxyN/UnDeig2NM09bO4StZN7YfCNEp9d+pRvOo203YW
+         usWGLWl25idrK9imcmee3jMVcWtVgb9pU9GzCKtAMv22KVDl/bq3K5Tc1nQhirpj5OmM
+         c79zO3TQ/Le9Q/WdXK/OOWXJkM0YynBiy6PN3l1j2C0SdrH9q5hmgxu+XOhgFpcl9w4G
+         TFvKojnzG8hS/WIwqz6CF4H0NgIpm6hM1XLIfetPMPfpPhjNCzFxVDYu/KLLAFqeHBUe
+         4xxA==
+X-Gm-Message-State: AOJu0YwhZudhLbYSzoqNC5/c9+KEjNit0xe5MPXCtc/bSUx8IUpJuZI1
+        ubYqOqmxdVnm3OL6cHrReazULcJpkBPVE05cFiDwzTxsVhTC
+X-Google-Smtp-Source: AGHT+IHk5716Ca10XTl59GGFCRhNTZ++7d+1/qS6le4ntpw38yoiawKpbVdirHbxDUVwiYODTWuEPcXT99H90Y2zkTjpezKUVune
 MIME-Version: 1.0
-References: <20230825211426.3798691-1-jannh@google.com> <CACT4Y+YT6A_ZgkWTF+rxKO_mvZ3AEt+BJtcVR1sKL6LKWDC+0Q@mail.gmail.com>
-In-Reply-To: <CACT4Y+YT6A_ZgkWTF+rxKO_mvZ3AEt+BJtcVR1sKL6LKWDC+0Q@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 28 Aug 2023 16:39:33 +0200
-Message-ID: <CAG48ez34DN_xsj7hio8epvoE8hM3F_xFoqwWYM-_LVZb39_e9A@mail.gmail.com>
-Subject: Re: [PATCH] slub: Introduce CONFIG_SLUB_RCU_DEBUG
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
+X-Received: by 2002:a05:6a00:2d27:b0:68a:4d66:cb4 with SMTP id
+ fa39-20020a056a002d2700b0068a4d660cb4mr8029052pfb.4.1693233602960; Mon, 28
+ Aug 2023 07:40:02 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 07:40:02 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006d22850603fcabc3@google.com>
+Subject: [syzbot] [wireguard?] KCSAN: data-race in wg_socket_send_skb_to_peer
+ / wg_socket_send_skb_to_peer
+From:   syzbot <syzbot+b1c5c1efac7273c587fe@syzkaller.appspotmail.com>
+To:     Jason@zx2c4.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,66 +57,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 5:32=E2=80=AFAM Dmitry Vyukov <dvyukov@google.com> =
-wrote:
-> On Fri, 25 Aug 2023 at 23:15, Jann Horn <jannh@google.com> wrote:
-> > Currently, KASAN is unable to catch use-after-free in SLAB_TYPESAFE_BY_=
-RCU
-> > slabs because use-after-free is allowed within the RCU grace period by
-> > design.
-> >
-> > Add a SLUB debugging feature which RCU-delays every individual
-> > kmem_cache_free() before either actually freeing the object or handing =
-it
-> > off to KASAN, and change KASAN to poison freed objects as normal when t=
-his
-> > option is enabled.
-> >
-> > Note that this creates a 16-byte unpoisoned area in the middle of the
-> > slab metadata area, which kinda sucks but seems to be necessary in orde=
-r
-> > to be able to store an rcu_head in there without triggering an ASAN
-> > splat during RCU callback processing.
->
-> Nice!
->
-> Can't we unpoision this rcu_head right before call_rcu() and repoison
-> after receiving the callback?
+Hello,
 
-Yeah, I think that should work. It looks like currently
-kasan_unpoison() is exposed in include/linux/kasan.h but
-kasan_poison() is not, and its inline definition probably means I
-can't just move it out of mm/kasan/kasan.h into include/linux/kasan.h;
-do you have a preference for how I should handle this? Hmm, and it
-also looks like code outside of mm/kasan/ anyway wouldn't know what
-are valid values for the "value" argument to kasan_poison().
-I also have another feature idea that would also benefit from having
-something like kasan_poison() available in include/linux/kasan.h, so I
-would prefer that over adding another special-case function inside
-KASAN for poisoning this piece of slab metadata...
+syzbot found the following issue on:
 
-I guess I could define a wrapper around kasan_poison() in
-mm/kasan/generic.c that uses a new poison value for "some other part
-of the kernel told us to poison this area", and then expose that
-wrapper with a declaration in include/mm/kasan.h? Something like:
+HEAD commit:    4f9e7fabf864 Merge tag 'trace-v6.5-rc6' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f1991fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f12c32a009b80107
+dashboard link: https://syzkaller.appspot.com/bug?extid=b1c5c1efac7273c587fe
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-void kasan_poison_outline(const void *addr, size_t size, bool init)
-{
-  kasan_poison(addr, size, KASAN_CUSTOM, init);
-}
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> What happens on cache destruction?
-> Currently we purge quarantine on cache destruction to be able to
-> safely destroy the cache. I suspect we may need to somehow purge rcu
-> callbacks as well, or do something else.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/586c18cf5685/disk-4f9e7fab.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/26437f4b2bc8/vmlinux-4f9e7fab.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6be368a4b854/bzImage-4f9e7fab.xz
 
-Ooh, good point, I hadn't thought about that... currently
-shutdown_cache() assumes that all the objects have already been freed,
-then puts the kmem_cache on a list for
-slab_caches_to_rcu_destroy_workfn(), which then waits with an
-rcu_barrier() until the slab's pages are all gone.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b1c5c1efac7273c587fe@syzkaller.appspotmail.com
 
-Luckily kmem_cache_destroy() is already a sleepable operation, so
-maybe I should just slap another rcu_barrier() in there for builds
-with this config option enabled... I think that should be fine for an
-option mostly intended for debugging.
+==================================================================
+BUG: KCSAN: data-race in wg_socket_send_skb_to_peer / wg_socket_send_skb_to_peer
+
+read-write to 0xffff88813587e3d8 of 8 bytes by task 31333 on cpu 1:
+ wg_socket_send_skb_to_peer+0xe4/0x130 drivers/net/wireguard/socket.c:183
+ wg_packet_create_data_done drivers/net/wireguard/send.c:251 [inline]
+ wg_packet_tx_worker+0x128/0x320 drivers/net/wireguard/send.c:276
+ process_one_work+0x434/0x860 kernel/workqueue.c:2600
+ worker_thread+0x5f2/0xa10 kernel/workqueue.c:2751
+ kthread+0x1d7/0x210 kernel/kthread.c:389
+ ret_from_fork+0x2e/0x40 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+read-write to 0xffff88813587e3d8 of 8 bytes by task 8119 on cpu 0:
+ wg_socket_send_skb_to_peer+0xe4/0x130 drivers/net/wireguard/socket.c:183
+ wg_socket_send_buffer_to_peer+0xd6/0x100 drivers/net/wireguard/socket.c:200
+ wg_packet_send_handshake_initiation drivers/net/wireguard/send.c:40 [inline]
+ wg_packet_handshake_send_worker+0x10c/0x150 drivers/net/wireguard/send.c:51
+ process_one_work+0x434/0x860 kernel/workqueue.c:2600
+ worker_thread+0x5f2/0xa10 kernel/workqueue.c:2751
+ kthread+0x1d7/0x210 kernel/kthread.c:389
+ ret_from_fork+0x2e/0x40 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+value changed: 0x000000000000b4fc -> 0x000000000000b51c
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 8119 Comm: kworker/u4:63 Not tainted 6.5.0-rc7-syzkaller-00104-g4f9e7fabf864 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: wg-kex-wg0 wg_packet_handshake_send_worker
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
