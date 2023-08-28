@@ -2,140 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 819C378A961
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4A778A965
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjH1JzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
+        id S230197AbjH1Jzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjH1Jyh (ORCPT
+        with ESMTP id S230290AbjH1JzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:54:37 -0400
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CDF91;
-        Mon, 28 Aug 2023 02:54:32 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 2789A2800B3E2;
-        Mon, 28 Aug 2023 11:54:29 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 177F42F732C; Mon, 28 Aug 2023 11:54:29 +0200 (CEST)
-Date:   Mon, 28 Aug 2023 11:54:29 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v4 2/3] PCI: Enable support for 10-bit Tag during device
- enumeration
-Message-ID: <20230828095429.GA17864@wunner.de>
-References: <20230815212043.114913-1-Smita.KoralahalliChannabasappa@amd.com>
- <20230815212043.114913-3-Smita.KoralahalliChannabasappa@amd.com>
+        Mon, 28 Aug 2023 05:55:05 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DD7CA
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:55:02 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50078e52537so4531902e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693216500; x=1693821300;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3X1OvKh3M30efs7GIbR2zQZ3E1wXr2UIdynNowQXZOI=;
+        b=TUgrOT5snC6fcaEsbVTtMDXm9s9JRc7JBlgVDFSclVMGfK5zVogGBrK06p/11rMbaz
+         2id/WstV36zp6Na1ZQYFjnKR4yylvSGsLU/clLYj7wZV5g7/B4Y1ck7+zlKqa3bHe0ZZ
+         4cIbjNz0jdZubPGTpFDzDvb9ijoorQYgCdFl9HH3ba4PISfV6ACnnSUlGcGafkImuS8o
+         DEdkDQrqH+zDqTnhrGSZjtH8txqYQ+zdIi5oN5l8pSKrpADFsuL/VLZIfnOInhID0Y78
+         isk9QJO/+NSvqTMWsFwA3R9kOFgtT1as4vya1fU3X9FNdOyKBP/48R47XJ/JIGFM5Fmy
+         Yg8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693216500; x=1693821300;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3X1OvKh3M30efs7GIbR2zQZ3E1wXr2UIdynNowQXZOI=;
+        b=C/UmckMfiuJYTFkjnNojkIGqSnYknI3YNjh6QaW9hQFWQiiWhPRY20uVPvTm0YdrrC
+         M+VI568FHq/Z5x8ZonzqnU6QM1Wo7mPCCoGdHzhtPIJCnaakWCNjm585Zg82SONbmyz9
+         k4cc92h0yCrWBIF9c3+ditnZTEUhCo5Ui2AM+P/39NwNtlMFM0kbOzZxPVpRxoRIXhse
+         Exuvub3AbAdJTI2HvAxQFStnzduHLyRTycKQlfV5twGfEN1on/em40bio/OMsUzbnvNI
+         LZ8oQXBD4naGwdA4ylHjbkoJbstpP/MDL0cjq5b/HAxeb7W+BWMmvGB5TikLAcFJTVEa
+         nPVA==
+X-Gm-Message-State: AOJu0YwBKyogfi6RDlH91LQhEsnZfhaE7/EQ6TaO5+v0+Vrq2jCsbxzO
+        GRY+LnXkUfNu/NGQ+oXz9d6eIA==
+X-Google-Smtp-Source: AGHT+IGepXbA+XBxl27EhTRg8lSPVLMrhH4NlMYP5B+AQb2q1jvHRg6AObKfOIQKHHxPjA1nBkxaTQ==
+X-Received: by 2002:a05:6512:704:b0:4ff:a25b:bca1 with SMTP id b4-20020a056512070400b004ffa25bbca1mr16539503lfs.33.1693216500504;
+        Mon, 28 Aug 2023 02:55:00 -0700 (PDT)
+Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
+        by smtp.gmail.com with ESMTPSA id a5-20020a19f805000000b0050078c9b53asm1501045lff.231.2023.08.28.02.54.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 02:55:00 -0700 (PDT)
+Message-ID: <77be3e0f-e154-478e-a40b-e98ebd349e10@linaro.org>
+Date:   Mon, 28 Aug 2023 11:54:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815212043.114913-3-Smita.KoralahalliChannabasappa@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] ARM: dts: qcom: sdx65: add missing GCC clocks
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230827114519.48797-1-krzysztof.kozlowski@linaro.org>
+ <20230827114519.48797-2-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230827114519.48797-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 09:20:42PM +0000, Smita Koralahalli wrote:
-> +void pci_configure_ten_bit_tag(struct pci_dev *dev)
-> +{
-> +	struct pci_dev *bridge;
-> +	u32 cap;
-> +
-> +	if (!pci_is_pcie(dev))
-> +		return;
-> +
-> +	bridge = dev->bus->self;
-> +	if (!bridge)
-> +		return;
+On 27.08.2023 13:45, Krzysztof Kozlowski wrote:
+> The SDX65 GCC clock controller expects two required clocks:
+> pcie_pipe_clk and usb3_phy_wrapper_gcc_usb30_pipe_clk.  The first one is
+> provided by existing phy node, but second is not yet implemented.
+> 
+>   qcom-sdx65-mtp.dtb: clock-controller@100000: clocks: [[11, 0], [11, 1], [12]] is too short
+>   qcom-sdx65-mtp.dtb: clock-controller@100000: clock-names: ['bi_tcxo', 'bi_tcxo_ao', 'sleep_clk'] is too short
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-I think you need to use bridge = pcie_find_root_port(dev) because
-"dev" may be further down in the hierarchy with several switches
-in-between it and the Root Port.
-
-Note that pcie_find_root_port(dev) returns NULL if !pci_is_pcie(dev),
-so the check above may become unnecessary.
-
-If pcie_find_root_port(dev) == dev, then dev itself is a Root Port,
-in which case you need to bail out.
-
-
-> +	/*
-> +	 * According to PCIe r6.0 sec 7.5.3.15, Requester Supported can only be
-> +	 * set if 10-Bit Tag Completer Supported bit is set.
-> +	 */
-> +	pcie_capability_read_dword(bridge, PCI_EXP_DEVCAP2, &cap);
-> +	if (!(cap & PCI_EXP_DEVCAP2_10BIT_TAG_COMP))
-> +		goto out;
-> +
-> +	if (cap & PCI_EXP_DEVCAP2_10BIT_TAG_REQ) {
-
-Hm, if Requester Supported cannot be set unless Completer Supported is
-also set, why check for Completer Supported at all?
-
-
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2476,6 +2476,7 @@ static void pci_init_capabilities(struct pci_dev *dev)
->  	pci_pm_init(dev);		/* Power Management */
->  	pci_vpd_init(dev);		/* Vital Product Data */
->  	pci_configure_ari(dev);		/* Alternative Routing-ID Forwarding */
-> +	pci_configure_ten_bit_tag(dev); /* 10-bit Tag Requester */
->  	pci_iov_init(dev);		/* Single Root I/O Virtualization */
->  	pci_ats_init(dev);		/* Address Translation Services */
->  	pci_pri_init(dev);		/* Page Request Interface */
-
-Hm, isn't this too late to disable 10-bit tags if a hot-plugged device
-doesn't support it?  There are plenty of config space reads/writes
-happening before pci_configure_ten_bit_tag() and if the Root Port
-has 10-bit tags enabled by BIOS because a previously unplugged
-device supported it, I assume the Root Port may use 10-bit tags for
-those config space accesses, despite the newly hotplugged device not
-supporting them?
-
-If so, you may indeed have to unconditionally disable 10-bit tags
-upon device removal and re-enable them once a 10-bit capable device
-is hotplugged.
-
-I'm wondering what happens if there are switches between the hotplugged
-device and the Root Port.  In that case, there may be further devices
-in the hierarchy below the Root Port.  I assume 10-bit tags can only be
-enabled if *all* devices below the Root Port support them, is that correct?
-
-The corollary would be that if there's an unoccupied hotplug port somewhere
-in the hierarchy below a Root Port, 10-bit tags cannot be enabled at all
-on the Root Port.  Maybe we can leave 10-bit tags enabled on hot-removal
-and only disable them on hot-add?  That wouldn't work however if TLPs
-are sent to the hot-added device without operating system involvement
-prior to enumeration by the operating system.  Don't CXL devices
-autonomously send PM messages upstream on hot-add?
-
-There's another quagmire:  Endpoint devices may talk to each other via
-p2pdma (see drivers/pci/p2pdma.c) and if either of them doesn't support
-10-bit tags, we need to disable 10-bit tags on them upon commencing
-p2pdma.  We may re-enable 10-bit tags once either of the devices is
-hot-removed or p2pdma between them is stopped.
-
-Finally, PCIe r6.0 added 14-bit tag support.  It may be worth adding
-10-bit tag support in a way that 14-bit tag support can easily be added
-later on (or is added together with 10-bit tag support).
-
-Thanks,
-
-Lukas
+Konrad
