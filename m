@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8BA78B3E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F081A78B405
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbjH1PAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S232140AbjH1PJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbjH1PAX (ORCPT
+        with ESMTP id S232462AbjH1PIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:00:23 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD20FBF;
-        Mon, 28 Aug 2023 08:00:20 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50091b91a83so5032386e87.3;
-        Mon, 28 Aug 2023 08:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693234819; x=1693839619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v/Iv+UJrS/3Ac+CBpzamiE2539VuRhYJEwYN53j5C48=;
-        b=XEC6EQXO+tUhRz9PO98p2Sa2QVpVl4AhyDeqQHMbryX4dXPEF3x8ZPiEBi8CPvSMcb
-         GzjyoPH5RYGrnrxYPeQVIszcalsKk+YzRKY8BRn+VB+TZ6cN7bpysBwaOaGgtBziwF+4
-         CmtglG6KPwGlbOvqEKC28fE5jbhIVyuLmF5FG/l5PYKDtphIs8ROePpWrY8sdQtBCwfP
-         7QOnrBm7t+ZWgcDf0PBZQRZa1kAI45N0NFjUUPt58dvwQQApbSM6LxfSeflfISRSc0no
-         hI08V8pI/f54n6qZrfmNOyY1np8jmBLkHPGpeVq7OTE27D17OyZzz0C9iUxxJeTBzX5V
-         ZbwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693234819; x=1693839619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v/Iv+UJrS/3Ac+CBpzamiE2539VuRhYJEwYN53j5C48=;
-        b=LYJ+wClaX9T/ZufxQ6mVqKHv8NxPL7rYgTfCKk6GtIrB8Bed1Ehsgr1vNm+BC2GKDR
-         vcR+a/2GDAfvNiWY8DB9UuNPeJlgdzvjv1Q3Kgoag5LAbQmdbtGDab1pXMmboYzsL6+A
-         D3Xu/jOpdiaec7taBqXO6nNRNnUGxrlPMpa//xPjgAWUsEEfPPgpwoH2aKyrmII+6zxF
-         2hwnESZ4gylbh2pi/xpWM9HxjvEZsXPbVUNUVSo4MzNBz/wyzyUen3Jgvx/h531Ka9RF
-         BWI14ktjhBOGtYlAq8TgCBL/m5TKhm5n3NJEDsVuDVmqJeu3fahIujXkcHCn+IphHoE1
-         dSmw==
-X-Gm-Message-State: AOJu0YwyDKeXCbwv3KDe6S2FBpdQx/f7ZcjGA0Ih8nxKRAFW39p4InHp
-        MrZ+MsBsDxkvHWNQjKSm0MUFU/pLqne8V66DxSY=
-X-Google-Smtp-Source: AGHT+IETY9abOfDkwuwAfP8oxiTrbKWtuyVO2Jf40soOOV3pmIaGIJrqyaxIUb/iRIeotvbn3JYjwWDVrv8Su0Xk6mQ=
-X-Received: by 2002:a05:6512:1088:b0:4fb:89b3:3373 with SMTP id
- j8-20020a056512108800b004fb89b33373mr21789410lfg.43.1693234818641; Mon, 28
- Aug 2023 08:00:18 -0700 (PDT)
+        Mon, 28 Aug 2023 11:08:52 -0400
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F921AD;
+        Mon, 28 Aug 2023 08:08:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1693235318;
+        bh=jSltvEstbop3NROWcEwdZJbmP1v8gLHUw94pJQsaf3A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=pNw2iT/qbyWCGBLuhbcCv7cCEMZNdVn8fFoCL+QUImBa6sMTuen1oeRZE01b1IylE
+         hH2C8JNQaYPlbVL/tlPbSLvL801cB/JQfacoTVg57o54LPqoiXspDPzLg0jUtvwRMX
+         a/zLB8LbBrX1a15qHWUxjhVX72ZogzqE2E2n165Y=
+Received: from localhost.localdomain ([122.14.229.192])
+        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+        id 8738A04; Mon, 28 Aug 2023 23:02:07 +0800
+X-QQ-mid: xmsmtpt1693234927t8a1x7jf4
+Message-ID: <tencent_CF6E986A75B63EC09E3D98143650B5241809@qq.com>
+X-QQ-XMAILINFO: MeK9O+zTyEgNs+LeEp8wuw1W+ZzSO1xt89C05fPo+KhYxR40w2ZLaCnt7UoQYP
+         1LsuFXgH5yk7FsRZrDt/fIqNHWDOhKl6e2a/0KP79uUqIyBDmpSauM746pTQOXM0KfZy1ScFdJqr
+         fQyr5SmAeTi5MmtXu34Qpz7M4eJ5Kto6Pr5NJtr1EPjoM6bvBtp6U1ClinRqyXslYpYUPLOe9C4Z
+         3xfrahIgwaHA2wkKlwsILr4K3raS7jtQ+FGWoQ2ocpAOrhJNt1SG1o6vXXLcW2YT/sr2AKFphzLN
+         OXviIH2CZueQR5hK89KyIHIitiQsEFCoJKX5jZZ36Dkvd8dtfoOnvTr/BBBE/D4Y94lnJICStTYf
+         8Aw7fkCbWa6O0FthHHmmCof9Wh9ckxPLO1mOHJZLMLNUurTX+GWUuQKJY4MrVLpZREhJ1rDcvPMp
+         qjetfGoM7hTH5XXEjcTt3JDE36uDURCN7ktDrOXH/UQeiX1GB8IMnlSKJ2srdKyOz2JLsPGA5T9c
+         eu4kT5GD95hEtRwOm9VKP/bu3jCWy7TuDvg99h509XaHKPpDRQwUIcOSvLQCUxdG23Eg089Y/HEZ
+         1MqtHrKRjEJgDufwyYJ7M6YyTpvk0zsJ3OfnQxUnDB3xZYVn8+NPsRtbqfv30hcrD+nXTTvo86oa
+         wfeel8s2T0+O9T701m0O4tHVTX9UWd5N/1qyize4oHfs2kRfiFV3K14qumHpFwN22EePVBDtJMNP
+         Je/fK5yYmUbmOsr5wR5aQ2w437Tetulqbzkpc2g75iOzlgsMs+qthpa150x/3hvYkqdHgXIPY7M+
+         gbWptpFW4o+7xprMGGO39en5bcSpFnPav2S0xOCsa4syW+CFzohnSH5yjdXhUKeMiiq7IEoumbeC
+         YO6FyTNE/ew2PV/95/EvgleJn8LPvxyBsMsa0FL+nZ3qqjoloNqocUUIkRVmggK/rckR0nzudnx0
+         ZmvKRi5lfafiV3ojyvJjbaw10zZ0hASq0pEr0gxc0xFvrAKcGYAdhaqTX6pDFM
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From:   Zhang Shurong <zhang_shurong@foxmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     lars@metafoo.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] io: adc: stm32-adc: fix potential NULL pointer dereference in
+ stm32_adc_probe()
+Date:   Mon, 28 Aug 2023 23:02:07 +0800
+X-OQ-MSGID: <5984351.lOV4Wx5bFT@localhost.localdomain>
+In-Reply-To: <20230716170821.3305e3fa@jic23-huawei>
+References: <tencent_994DA85912C937E3B5405BA960B31ED90A08@qq.com>
+ <20230716170821.3305e3fa@jic23-huawei>
 MIME-Version: 1.0
-References: <20230824013604.466224-1-adrian.larumbe@collabora.com> <20230824013604.466224-7-adrian.larumbe@collabora.com>
-In-Reply-To: <20230824013604.466224-7-adrian.larumbe@collabora.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 28 Aug 2023 08:00:06 -0700
-Message-ID: <CAF6AEGtXUTs3ta0N+0hiORa+Tsyh94AXPYm9XdaK6xZbqf+nzA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] drm/drm-file: Allow size unit selection in drm_show_memory_stats
-To:     =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-        sean@poorly.run, marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, healych@amazon.com,
-        kernel@collabora.com, Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,167 +70,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 6:36=E2=80=AFPM Adri=C3=A1n Larumbe
-<adrian.larumbe@collabora.com> wrote:
->
-> The current implementation will try to pick the highest available
-> unit. This is rather unflexible, and allowing drivers to display BO size
-> statistics through fdinfo in units of their choice might be desirable.
->
-> The new argument to drm_show_memory_stats is to be interpreted as the
-> integer multiplier of a 10-power of 2, so 1 would give us size in Kib and=
- 2
-> in Mib. If we want drm-file functions to pick the highest unit, then 0
-> should be passed.
->
-> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
-> ---
->  drivers/gpu/drm/drm_file.c              | 22 +++++++++++++---------
->  drivers/gpu/drm/msm/msm_drv.c           |  2 +-
->  drivers/gpu/drm/panfrost/panfrost_drv.c |  2 +-
->  include/drm/drm_file.h                  |  5 +++--
->  4 files changed, 18 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-> index 762965e3d503..517e1fb8072a 100644
-> --- a/drivers/gpu/drm/drm_file.c
-> +++ b/drivers/gpu/drm/drm_file.c
-> @@ -873,7 +873,7 @@ void drm_send_event(struct drm_device *dev, struct dr=
-m_pending_event *e)
->  EXPORT_SYMBOL(drm_send_event);
->
->  static void print_size(struct drm_printer *p, const char *stat,
-> -                      const char *region, u64 sz)
-> +                      const char *region, u64 sz, unsigned int unit)
->  {
->         const char *units[] =3D {"", " KiB", " MiB"};
->         unsigned u;
-> @@ -881,6 +881,8 @@ static void print_size(struct drm_printer *p, const c=
-har *stat,
->         for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
->                 if (sz < SZ_1K)
->                         break;
-> +               if (unit > 0 && unit =3D=3D u)
-> +                       break;
->                 sz =3D div_u64(sz, SZ_1K);
->         }
->
-> @@ -898,17 +900,18 @@ static void print_size(struct drm_printer *p, const=
- char *stat,
->  void drm_print_memory_stats(struct drm_printer *p,
->                             const struct drm_memory_stats *stats,
->                             enum drm_gem_object_status supported_status,
-> -                           const char *region)
-> +                           const char *region,
-> +                           unsigned int unit)
+=E5=9C=A8 2023=E5=B9=B47=E6=9C=8817=E6=97=A5=E6=98=9F=E6=9C=9F=E4=B8=80 CST=
+ =E4=B8=8A=E5=8D=8812:08:21=EF=BC=8CJonathan Cameron =E5=86=99=E9=81=93=EF=
+=BC=9A
+> On Sat, 15 Jul 2023 23:55:50 +0800
+>=20
+> Zhang Shurong <zhang_shurong@foxmail.com> wrote:
+> > of_match_device() may fail and returns a NULL pointer.
+> >=20
+> > Fix this by checking the return value of of_match_device().
+> >=20
+> > Fixes: 64ad7f6438f3 ("iio: adc: stm32: introduce compatible data cfg")
+> > Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+>=20
+> Hi Zhang,
+>=20
+> I'm not sure we can actually make this bug happen. Do you have
+> a way of triggering it?  The driver is only probed on devices where
+> that match will work.
+>=20
+> Also, assuming the match table is the same one associated with this probe
+> function, then us priv->cfg =3D of_device_get_match_data() and check the
+> output of that which is what we really care about.
+>=20
+> Jonathan
+>=20
+> > ---
+> >=20
+> >  drivers/iio/adc/stm32-adc-core.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/iio/adc/stm32-adc-core.c
+> > b/drivers/iio/adc/stm32-adc-core.c index 48f02dcc81c1..70011fdbf5f6
+> > 100644
+> > --- a/drivers/iio/adc/stm32-adc-core.c
+> > +++ b/drivers/iio/adc/stm32-adc-core.c
+> > @@ -706,6 +706,8 @@ static int stm32_adc_probe(struct platform_device
+> > *pdev)>=20
+> >  	struct stm32_adc_priv *priv;
+> >  	struct device *dev =3D &pdev->dev;
+> >  	struct device_node *np =3D pdev->dev.of_node;
+> >=20
+> > +	const struct of_device_id *of_id;
+> > +
+> >=20
+> >  	struct resource *res;
+> >  	u32 max_rate;
+> >  	int ret;
+> >=20
+> > @@ -718,8 +720,11 @@ static int stm32_adc_probe(struct platform_device
+> > *pdev)>=20
+> >  		return -ENOMEM;
+> >  =09
+> >  	platform_set_drvdata(pdev, &priv->common);
+> >=20
+> > -	priv->cfg =3D (const struct stm32_adc_priv_cfg *)
+> > -		of_match_device(dev->driver->of_match_table, dev)->data;
+> > +	of_id =3D of_match_device(dev->driver->of_match_table, dev);
+> > +	if (!of_id)
+> > +		return -ENODEV;
+> > +
+> > +	priv->cfg =3D (const struct stm32_adc_priv_cfg *)of_id->data;
+> >=20
+> >  	priv->nb_adc_max =3D priv->cfg->num_adcs;
+> >  	spin_lock_init(&priv->common.lock);
+Hello Jonathan,
 
-I'm not really adverse to changing what units we use.. or perhaps
-changing the threshold to go to higher units to be 10000x or 100000x
-of the previous unit.  But I'm less excited about having different
-drivers using different units.
+I think we can make it happen by designing the platform device in a way tha=
+t=20
+its name aligns with that of the driver. In such a scenario, when the drive=
+r=20
+is probed, the of_match_device function will return null. You can verify th=
+is=20
+functionality by reviewing the following function:
 
-BR,
--R
+static int platform_match(struct device *dev, struct device_driver *drv)
+
+Best regards,
+Shurong
 
 
->  {
-> -       print_size(p, "total", region, stats->private + stats->shared);
-> -       print_size(p, "shared", region, stats->shared);
-> -       print_size(p, "active", region, stats->active);
-> +       print_size(p, "total", region, stats->private + stats->shared, un=
-it);
-> +       print_size(p, "shared", region, stats->shared, unit);
-> +       print_size(p, "active", region, stats->active, unit);
->
->         if (supported_status & DRM_GEM_OBJECT_RESIDENT)
-> -               print_size(p, "resident", region, stats->resident);
-> +               print_size(p, "resident", region, stats->resident, unit);
->
->         if (supported_status & DRM_GEM_OBJECT_PURGEABLE)
-> -               print_size(p, "purgeable", region, stats->purgeable);
-> +               print_size(p, "purgeable", region, stats->purgeable, unit=
-);
->  }
->  EXPORT_SYMBOL(drm_print_memory_stats);
->
-> @@ -916,11 +919,12 @@ EXPORT_SYMBOL(drm_print_memory_stats);
->   * drm_show_memory_stats - Helper to collect and show standard fdinfo me=
-mory stats
->   * @p: the printer to print output to
->   * @file: the DRM file
-> + * @unit: multipliyer of power of two exponent of desired unit
->   *
->   * Helper to iterate over GEM objects with a handle allocated in the spe=
-cified
->   * file.
->   */
-> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
-> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file,=
- unsigned int unit)
->  {
->         struct drm_gem_object *obj;
->         struct drm_memory_stats status =3D {};
-> @@ -967,7 +971,7 @@ void drm_show_memory_stats(struct drm_printer *p, str=
-uct drm_file *file)
->         }
->         spin_unlock(&file->table_lock);
->
-> -       drm_print_memory_stats(p, &status, supported_status, "memory");
-> +       drm_print_memory_stats(p, &status, supported_status, "memory", un=
-it);
->  }
->  EXPORT_SYMBOL(drm_show_memory_stats);
->
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.=
-c
-> index 2a0e3529598b..cd1198151744 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -1067,7 +1067,7 @@ static void msm_show_fdinfo(struct drm_printer *p, =
-struct drm_file *file)
->
->         msm_gpu_show_fdinfo(priv->gpu, file->driver_priv, p);
->
-> -       drm_show_memory_stats(p, file);
-> +       drm_show_memory_stats(p, file, 0);
->  }
->
->  static const struct file_operations fops =3D {
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/pa=
-nfrost/panfrost_drv.c
-> index 93d5f5538c0b..79c08cee3e9d 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -563,7 +563,7 @@ static void panfrost_show_fdinfo(struct drm_printer *=
-p, struct drm_file *file)
->
->         panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
->
-> -       drm_show_memory_stats(p, file);
-> +       drm_show_memory_stats(p, file, 1);
->  }
->
->  static const struct file_operations panfrost_drm_driver_fops =3D {
-> diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
-> index 010239392adf..21a3b022dd63 100644
-> --- a/include/drm/drm_file.h
-> +++ b/include/drm/drm_file.h
-> @@ -466,9 +466,10 @@ enum drm_gem_object_status;
->  void drm_print_memory_stats(struct drm_printer *p,
->                             const struct drm_memory_stats *stats,
->                             enum drm_gem_object_status supported_status,
-> -                           const char *region);
-> +                           const char *region,
-> +                           unsigned int unit);
->
-> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)=
-;
-> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file,=
- unsigned int unit);
->  void drm_show_fdinfo(struct seq_file *m, struct file *f);
->
->  struct file *mock_drm_getfile(struct drm_minor *minor, unsigned int flag=
-s);
-> --
-> 2.42.0
->
+
