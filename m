@@ -2,63 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 619F478BA65
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C14078BA68
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbjH1Vgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
+        id S232905AbjH1Vii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233927AbjH1VgV (ORCPT
+        with ESMTP id S231415AbjH1ViO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:36:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9255218F;
-        Mon, 28 Aug 2023 14:36:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CB1D61707;
-        Mon, 28 Aug 2023 21:36:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BCBEC433C8;
-        Mon, 28 Aug 2023 21:36:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693258572;
-        bh=oaay4dQ7Zg/xyNCBkGcO+PhVLgjzFow8Anit155lPiA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nXZFrcM3dG7KiY/4NA1Yu8lwwME4Lhx25oosoWagBjRSLW8jftDNCmJx+6HY1LKoE
-         6F3Opo1GyjLs5NV+qwMhQO9CvfCZuEBcoyjGA3vQnuwq4Fgz1N25NtW1NqQZHoAjhH
-         jHqF8k+wdwtsGTTVayIi9QT9qNy+QP6Qhmq6JJ3nnQ46c3Hw5YO/VLsIRv+POE4D9s
-         Np0gFLoADeknEOFmFummuxjaVWL2xQYOUFcsbNZxmpcEUw1USPcFw8XOXZLG1eHZG0
-         quMKfHBM1O80+UsYDsyAW6XB+3qL5UfNQ4si9Aqg5+qG/hRjDqfPlnQeTK4xF44TbF
-         TWoNw/pRwMRFw==
-Received: (nullmailer pid 387503 invoked by uid 1000);
-        Mon, 28 Aug 2023 21:36:10 -0000
-Date:   Mon, 28 Aug 2023 16:36:10 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Om Prakash Singh <quic_omprsing@quicinc.com>
-Subject: Re: [PATCH v3 4/6] dt-bindings: crypto: qcom,prng: document SM8550
-Message-ID: <20230828213610.GA386486-robh@kernel.org>
-References: <20230828-topic-sm8550-rng-v3-0-7a0678ca7988@linaro.org>
- <20230828-topic-sm8550-rng-v3-4-7a0678ca7988@linaro.org>
+        Mon, 28 Aug 2023 17:38:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FBD106
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:38:11 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693258689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NnRnRtBVRXEiVd5nK3Y8FaQXhhjR20vw2GnvdfoXL2c=;
+        b=JKP1E5tAJum0l2hu5GwWKLrVriW2x/qNfwVnhLuh30bgsw6q/7NxnQdCvFu4e944faeBLv
+        hGAxTIs6E977vYBRT52A7nvT/5+uq4Lxe/jbsxgoA/5VBrjOKEKN2Lso/CUcLzDvhsia/U
+        QDAQybwjYWOQ5F+B62Pw/Wo5jziqKyvv0bsjOsMIv3BiX80KfgKMPitC27zR9ylF607k2m
+        /bhfwYZDV/4PbhKntwNv/NgpuG2BOHpqXupGTq1QFD6Ixg4gHsFIKUQtA+lq1FjAWkI3Su
+        vGitXIzGqtl1ztS80GbK/8jxKCQo71BF3sGoKhMAmrKRLjNTR+bAREXMSkkM9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693258689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NnRnRtBVRXEiVd5nK3Y8FaQXhhjR20vw2GnvdfoXL2c=;
+        b=EbuxlkdW9Zny7yTPexad/1hjfeiSyMRpGIrK9DDi3BBO4+VTv7wWfbf44X5c0SL3emojb2
+        ek81bBiy5G4NBbCA==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [GIT pull] core/entry for v6.6-rc1
+In-Reply-To: <CAHk-=wjomZiu4QiyjAH=RSTsdZCpcjq-0yD42dLMN2+rcm4_cg@mail.gmail.com>
+References: <169322654636.420889.373907562030292433.tglx@xen13.tec.linutronix.de>
+ <CAHk-=wjomZiu4QiyjAH=RSTsdZCpcjq-0yD42dLMN2+rcm4_cg@mail.gmail.com>
+Date:   Mon, 28 Aug 2023 23:38:08 +0200
+Message-ID: <875y4y97b3.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828-topic-sm8550-rng-v3-4-7a0678ca7988@linaro.org>
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,34 +54,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 10:04:39AM +0200, Neil Armstrong wrote:
-> Document SM8550 compatible for the True Random Number Generator.
-> 
-> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+On Mon, Aug 28 2023 at 14:07, Linus Torvalds wrote:
+> On Mon, 28 Aug 2023 at 06:01, Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> A single update to the core entry code, which removes the empty user
+>> address limit check which is a leftover of the removed TIF_FSCHECK.
+>
+> Heh. Lovely. I wonder if we have other cases of #ifdef's that just
+> aren't #define'd anywhere any more.
 
-Where's Krzysztof's tag?
+I'm sure we have.
 
-> ---
->  Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
-> index 4245c9e424a3..633993f801c6 100644
-> --- a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
-> @@ -16,7 +16,9 @@ properties:
->            - qcom,prng  # 8916 etc.
->            - qcom,prng-ee  # 8996 and later using EE
->        - items:
-> -          - const: qcom,sm8450-trng
-> +          - enum:
-> +              - qcom,sm8450-trng
-> +              - qcom,sm8550-trng
->            - const: qcom,trng
->  
->    reg:
-> 
-> -- 
-> 2.34.1
-> 
+> But I'm too lazy and/or incompetent to write up some trivial script to check.
+
+There are a few people out there who are constantly trying to chase
+those:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/microcode&id=4d2b748305e96fb76202a0d1072a285b1500bff3
+
+is the most recent example. But obviously they miss stuff too. :)
+
+Thanks,
+
+        tglx
