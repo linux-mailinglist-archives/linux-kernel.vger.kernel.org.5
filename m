@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C31DE78B5C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365C978B5D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbjH1RAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
+        id S232758AbjH1RBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbjH1RAW (ORCPT
+        with ESMTP id S232808AbjH1RBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:00:22 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F7BB4;
-        Mon, 28 Aug 2023 10:00:19 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3F9105AA;
-        Mon, 28 Aug 2023 18:58:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693241937;
-        bh=wSes04bw3l6N6NXQnvUcioTMnfn9XPGaRGnnPYAbHtw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OkkOMlGu/iZXRT/6zuJNUXS7Tw7LYplCQlhomh9oLQGU7d+dOi1ic+gPdHC+yu2Xh
-         +UOfDQAQOk764H0JH9mLdtuClbq+V8Cck6yggWF3qA7EAuTVffQh/iqUU2r1/vjSGR
-         r7g3XuVFC+f6db5oBTv+4AYmZwNTRsjhQvcY3QoQ=
-Date:   Mon, 28 Aug 2023 20:00:27 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/9] media: qcom: camss: Fix pm_domain_on sequence in
- probe
-Message-ID: <20230828170027.GV14596@pendragon.ideasonboard.com>
-References: <20230822200626.1931129-1-bryan.odonoghue@linaro.org>
- <20230822200626.1931129-2-bryan.odonoghue@linaro.org>
+        Mon, 28 Aug 2023 13:01:18 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E08E1B1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:01:15 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so444064566b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693242073; x=1693846873;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xDl32jJjszuVVMG76jjK9jHJCUbyMcB/0j3qE3qQgvE=;
+        b=BE5cYmqsrzBI4oNggqYBdCuKBDJGyXKPblmSLEfwXZMkBJ8wTv+CZB5qMgfVB6pNtV
+         syR+Xeb74pmOtPnZn9JtrTAY/ske9jOMMNY0TFaOk1fKlvHc3EK9nEd1A22a6153rdqo
+         15AcRo9vJqXyi0SVH5KPCZdoYaHQY6eH6bzxqQ0hYLX+qN4fsfKRxM5aLujPC8Ms3++R
+         Fy7lS+VP4+t8JSGmJAHsB9pD0EaksxmMm8jMf/63DVpTQ5QI4DZ0YmjdqO/9ypP/JnnR
+         s2K/9kus0ArjoLrVTQ9kdnmPEmOlSrxFjaO8NK8XsFdnc+NwEDp4nRT8uJUHki1ZARPq
+         0BFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693242073; x=1693846873;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xDl32jJjszuVVMG76jjK9jHJCUbyMcB/0j3qE3qQgvE=;
+        b=idfJUbArxaKCC563NKOb5OKd82jXKbi3FncTjJIXtrkM2IIzzJpFUue/xpf0rWDR92
+         cv//BH0KMTk0drRL0kcZiXRcTypEpfjEssdPAlqZPfS2EgBVI6tPbvKD0F7NGl8WCqVu
+         ZzFVfh5L8hGL6TuaCFhNjadPJ0zSHnWecsV4MWh2qWBw3dlinY3e3qmqIq4W5lWKtGPm
+         MvvHwQYPjrMD9I/ofKgLGxPwLv4c+8NMW+OLyEZwaTofKp3nBsFCpaDp31L4J9ioOlOh
+         ze41LUaOQKhdV3O0I3bNOe/yE9o8wkkFy3recJwqpW3FwOl+RhuHFHj3KGD0J+3qAQvr
+         PfZQ==
+X-Gm-Message-State: AOJu0YwSvPmPd0isLSbHK9pPla5O0irg1bBTAwkhYGmmK6FPgIs4Hfp0
+        vyXtvehvkc0yXqwn1n3mrr3rjw==
+X-Google-Smtp-Source: AGHT+IEq2EPjr+zpoA7thVAZ2hP39XCel/awQo4OdHftziqA+uTonj00WvkOIKOLqyPVFOl/6m/Phw==
+X-Received: by 2002:a17:906:5199:b0:9a1:b705:75d1 with SMTP id y25-20020a170906519900b009a1b70575d1mr14747805ejk.51.1693242073550;
+        Mon, 28 Aug 2023 10:01:13 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id u22-20020a17090626d600b00993159ce075sm4861905ejc.210.2023.08.28.10.01.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 10:01:12 -0700 (PDT)
+Message-ID: <85e13939-a3cd-b2db-7b7c-a6c09f2c253c@linaro.org>
+Date:   Mon, 28 Aug 2023 19:01:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230822200626.1931129-2-bryan.odonoghue@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] dt-bindings: mips: loongson: Add LS1B demo board
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>
+Cc:     Keguang Zhang <keguang.zhang@gmail.com>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+References: <20230825124115.1177577-1-keguang.zhang@gmail.com>
+ <2856de1b-36cd-1d56-734a-401def967870@linaro.org>
+ <20230828150903.GA499616-robh@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230828150903.GA499616-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bryan,
-
-Thank you for the patch.
-
-On Tue, Aug 22, 2023 at 09:06:18PM +0100, Bryan O'Donoghue wrote:
-> We need to make sure camss_configure_pd() happens before
-> camss_register_entities() as the vfe_get() path relies on the pointer
-> provided by camss_configure_pd().
+On 28/08/2023 17:09, Rob Herring wrote:
+> On Fri, Aug 25, 2023 at 02:45:41PM +0200, Krzysztof Kozlowski wrote:
+>> On 25/08/2023 14:41, Keguang Zhang wrote:
+>>> Add compatible for LS1B demo board.
+>>
+>> Where is the user of this binding? We do not add bindings without users.
 > 
-> Fix the ordering sequence in probe to ensure the pointers vfe_get() demands
-> are present by the time camss_register_entities() runs.
-> 
-> In order to facilitate backporting to stable kernels I've moved the
-> configure_pd() call pretty early on the probe() function so that
-> irrespective of the existence of the old error handling jump labels this
-> patch should still apply to -next circa Aug 2023 to v5.13 inclusive.
-> 
-> Fixes: 2f6f8af67203 ("media: camss: Refactor VFE power domain toggling")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Maybe board compatibles should be an exception? They are rarely/never 
+> used by the kernel so the only user will be a board dts. I'm not sure we 
+> care about having every board upstream.
 
-It seems like the device links and power domains won't be properly
-cleaned up if probe fails. The problem predates this patch though, so
-even if moving genpd initialization may make it worse, it's not a reason
-to block this patch.
+If someone keeps DTS out of the kernel, then they could keep the binding
+patch there as well.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Boards upstream are the same useful as some drivers - allow others to
+play with it and investigate.
 
-Maybe a patch further in the series will fix this :-)
+Best regards,
+Krzysztof
 
-> ---
->  drivers/media/platform/qcom/camss/camss.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> index f11dc59135a5a..75991d849b571 100644
-> --- a/drivers/media/platform/qcom/camss/camss.c
-> +++ b/drivers/media/platform/qcom/camss/camss.c
-> @@ -1619,6 +1619,12 @@ static int camss_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		goto err_cleanup;
->  
-> +	ret = camss_configure_pd(camss);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to configure power domains: %d\n", ret);
-> +		goto err_cleanup;
-> +	}
-> +
->  	ret = camss_init_subdevices(camss);
->  	if (ret < 0)
->  		goto err_cleanup;
-> @@ -1678,12 +1684,6 @@ static int camss_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> -	ret = camss_configure_pd(camss);
-> -	if (ret < 0) {
-> -		dev_err(dev, "Failed to configure power domains: %d\n", ret);
-> -		return ret;
-> -	}
-> -
->  	pm_runtime_enable(dev);
->  
->  	return 0;
-
--- 
-Regards,
-
-Laurent Pinchart
