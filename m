@@ -2,39 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C5178BA54
+	by mail.lfdr.de (Postfix) with ESMTP id 456D078BA53
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbjH1Vdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        id S233693AbjH1Vds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233679AbjH1Vdj (ORCPT
+        with ESMTP id S233648AbjH1VdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:33:39 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5C1D8FC
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:33:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F05FB2F4;
-        Mon, 28 Aug 2023 14:34:14 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB5F03F740;
-        Mon, 28 Aug 2023 14:33:33 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Shengyu Qu <wiagn233@outlook.com>,
-        Martin Botka <martin.botka1@gmail.com>,
-        Matthew Croughan <matthew.croughan@nix.how>
-Subject: [PATCH v2] mfd: axp20x: Generalise handling without interrupt
-Date:   Mon, 28 Aug 2023 22:32:29 +0100
-Message-Id: <20230828213229.20332-1-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.35.8
+        Mon, 28 Aug 2023 17:33:14 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49156FC
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:33:10 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bf3f59905so473809966b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693258388; x=1693863188;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LTVfWBUstm/LcJQNRGzyJxx9fX5i3c498999odZFq5I=;
+        b=ZOAllAzLQ4SEeGn08TheeBs8HxsbZzUG43pYhMuWguECpRsnVcCvis0DSRAmwzMrRu
+         CxVZfBtsySHTgZp7TNkYhah3uu6i7qc1PD4cgOXjzK+Ps1k9wPTdZjm/WrmuvPDgVuOK
+         CsUAt8pmzDDKCThV9uPdou0urIyuFoIAVPVm4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693258388; x=1693863188;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LTVfWBUstm/LcJQNRGzyJxx9fX5i3c498999odZFq5I=;
+        b=d54+C4Tovhvl2LUoDnOK3n6jfq+xTs7XGB3jlhTo+8pDBqUmxzG+LtZO2ibRJaAUlW
+         6MemR+E4HMoAfaqsHvZ2xIcoSAF2q6R76n0f04+HnuxIxTbbf9n7faOvE5sx/WnbfnSD
+         qmmADNBxvQtbznM32DWKypALgCgzbGuW3WB2+3TwHAZo6+dE2eJMJGqseoJJLlU21EtY
+         5Ejd6ewt5fUlCqBCosxQPb8ahYnkmWhB+0P0/eQodLJODBZ9ErQb1MOD0wkP6w5HaV80
+         ZuuwMopPE12BsFelIQGj4bzDexgZQLG4IMce3igTnah5vF999ipr1sCSMQzH66PXhfKT
+         ncEA==
+X-Gm-Message-State: AOJu0YzOgKKEMa5mqTPj6DXTbN1bUaEHJmgk4bmmJPpXJnHYuSPa44on
+        H+LqD4QMxLNTkHQCJx4H3D+nlABI3kf8aGmic4buww==
+X-Google-Smtp-Source: AGHT+IF/CLU2AlMSCbdznsZ2UNeVVZkCQ38a11tSsD+n8cumNW4t4iCfwQvWJnaMFP14I5yJ0EXK3Q==
+X-Received: by 2002:a17:906:29a:b0:9a1:e231:67e5 with SMTP id 26-20020a170906029a00b009a1e23167e5mr10553238ejf.39.1693258388587;
+        Mon, 28 Aug 2023 14:33:08 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id dk24-20020a170906f0d800b009937dbabbd5sm5085553ejb.220.2023.08.28.14.33.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 14:33:08 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99bf3f59905so473808266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:33:08 -0700 (PDT)
+X-Received: by 2002:a17:906:76cf:b0:9a1:b98a:c723 with SMTP id
+ q15-20020a17090676cf00b009a1b98ac723mr16317105ejn.4.1693258387851; Mon, 28
+ Aug 2023 14:33:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <169322654636.420889.373907562030292433.tglx@xen13.tec.linutronix.de>
+ <CAHk-=wjomZiu4QiyjAH=RSTsdZCpcjq-0yD42dLMN2+rcm4_cg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjomZiu4QiyjAH=RSTsdZCpcjq-0yD42dLMN2+rcm4_cg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Aug 2023 14:32:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgiU+frgquJYSjkbQt+sQAshRrbg=9qnf7u58VKcjGgFA@mail.gmail.com>
+Message-ID: <CAHk-=wgiU+frgquJYSjkbQt+sQAshRrbg=9qnf7u58VKcjGgFA@mail.gmail.com>
+Subject: Re: [GIT pull] core/entry for v6.6-rc1
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,114 +74,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment we allow the AXP15060 and the AXP806 PMICs to omit the
-interrupt line to the SoC, and we skip registering the PEK (power key)
-driver in this case, since that crashes when no IRQ is described in the
-DT node.
-The IRQ pin potentially not being connected to anything does affect more
-PMICs, though, and the PEK driver is not the only one requiring an
-interrupt: at least the AC power supply driver crashes in a similar
-fashion.
+On Mon, 28 Aug 2023 at 14:07, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Heh. Lovely. I wonder if we have other cases of #ifdef's that just
+> aren't #define'd anywhere any more.
+>
+> But I'm too lazy and/or incompetent to write up some trivial script to check.
 
-Generalise the handling of AXP MFD devices when the platform tables
-describe no interrupt, by allowing each device to specify an alternative
-MFD list for this case. If no specific alternative is specified, we go
-with the safe default of "just the regulators", which matches the current
-situation.
+I shamed myself into writing two one-liner scripts to create a list of
+identifiers we do 'ifdef' on, and another list of identifiers we
+#define somewhere.
 
-This enables new devices using the AXP313a PMIC, but not connecting the
-IRQ pin.
+And then just run 'comm -13' on the two.
 
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
----
-Changelog v2 .. v1:
-- drop reordering approach, use separate cell lists
+And it turns out to be useless, because even after I filter out our
+config options (which get #define'd separately), we end up having a
+ton of identifiers that we just expect to be set from outside,. or are
+just random noise in drivers (some of it more random than others: the
+spca501.c tests for ALTER_GAMA in addition to ALTER_GAMMA, which I
+assume is just a typo).
 
- drivers/mfd/axp20x.c | 44 ++++++++++++++++++++++++--------------------
- 1 file changed, 24 insertions(+), 20 deletions(-)
+Several of them seem to be quite reasonable (ie deflate has
+UNALIGNED_OK, expecting people to use -DUNALIGNED_OK from the build),
+but it does mean that at least my trivial "let's see what symbols we
+test without ever defining" idea was just simplistic garbage.
 
-diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
-index c03bc5cda080a..239e7f18956ae 100644
---- a/drivers/mfd/axp20x.c
-+++ b/drivers/mfd/axp20x.c
-@@ -1133,6 +1133,8 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
- 	struct device *dev = axp20x->dev;
- 	const struct acpi_device_id *acpi_id;
- 	const struct of_device_id *of_id;
-+	const struct mfd_cell *cells_no_irq = NULL;
-+	int nr_cells_no_irq = 0;
- 
- 	if (dev->of_node) {
- 		of_id = of_match_device(dev->driver->of_match_table, dev);
-@@ -1207,14 +1209,15 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
- 		 * if there is no interrupt line.
- 		 */
- 		if (of_property_read_bool(axp20x->dev->of_node,
--					  "x-powers,self-working-mode") &&
--		    axp20x->irq > 0) {
-+					  "x-powers,self-working-mode")) {
- 			axp20x->nr_cells = ARRAY_SIZE(axp806_self_working_cells);
- 			axp20x->cells = axp806_self_working_cells;
- 		} else {
- 			axp20x->nr_cells = ARRAY_SIZE(axp806_cells);
- 			axp20x->cells = axp806_cells;
- 		}
-+		nr_cells_no_irq = ARRAY_SIZE(axp806_cells);
-+		cells_no_irq = axp806_cells;
- 		axp20x->regmap_cfg = &axp806_regmap_config;
- 		axp20x->regmap_irq_chip = &axp806_regmap_irq_chip;
- 		break;
-@@ -1238,24 +1241,8 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
- 		axp20x->regmap_irq_chip = &axp803_regmap_irq_chip;
- 		break;
- 	case AXP15060_ID:
--		/*
--		 * Don't register the power key part if there is no interrupt
--		 * line.
--		 *
--		 * Since most use cases of AXP PMICs are Allwinner SOCs, board
--		 * designers follow Allwinner's reference design and connects
--		 * IRQ line to SOC, there's no need for those variants to deal
--		 * with cases that IRQ isn't connected. However, AXP15660 is
--		 * used by some other vendors' SOCs that didn't connect IRQ
--		 * line, we need to deal with this case.
--		 */
--		if (axp20x->irq > 0) {
--			axp20x->nr_cells = ARRAY_SIZE(axp15060_cells);
--			axp20x->cells = axp15060_cells;
--		} else {
--			axp20x->nr_cells = ARRAY_SIZE(axp_regulator_only_cells);
--			axp20x->cells = axp_regulator_only_cells;
--		}
-+		axp20x->nr_cells = ARRAY_SIZE(axp15060_cells);
-+		axp20x->cells = axp15060_cells;
- 		axp20x->regmap_cfg = &axp15060_regmap_config;
- 		axp20x->regmap_irq_chip = &axp15060_regmap_irq_chip;
- 		break;
-@@ -1263,6 +1250,23 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
- 		dev_err(dev, "unsupported AXP20X ID %lu\n", axp20x->variant);
- 		return -EINVAL;
- 	}
-+
-+	/*
-+	 * Use an alternative cell array when no interrupt line is connected,
-+	 * since IRQs are required by some drivers.
-+	 * The default is the safe "regulator-only", as this works fine without
-+	 * an interrupt specified.
-+	 */
-+	if (axp20x->irq <= 0) {
-+		if (cells_no_irq) {
-+			axp20x->nr_cells = nr_cells_no_irq;
-+			axp20x->cells = cells_no_irq;
-+		} else {
-+			axp20x->nr_cells = ARRAY_SIZE(axp_regulator_only_cells);
-+			axp20x->cells = axp_regulator_only_cells;
-+		}
-+	}
-+
- 	dev_info(dev, "AXP20x variant %s found\n",
- 		 axp20x_model_names[axp20x->variant]);
- 
--- 
-2.35.8
+As so many of my ideas are...
 
+             Linus
