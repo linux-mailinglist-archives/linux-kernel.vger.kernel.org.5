@@ -2,161 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE4278B26F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5112978B27C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbjH1OBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42486 "EHLO
+        id S231279AbjH1OCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 10:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjH1OAw (ORCPT
+        with ESMTP id S231429AbjH1OCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:00:52 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48902BA;
-        Mon, 28 Aug 2023 07:00:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SqVOqSeGeqwU4JPR0YknDF4KfqCsZUTHVYzAMjlczz5igGxqv7nuoDBLjznbXRAfO4IE0RmrchECAeO0LNicE9eNasqJ+pO0bwbNx9ICrjrPYDFE+pe+CrJVaeZ9vIrGf3WNUocHiq2w4AwTu98thxPfC/I+gmaHJVLlCH++1qjdN65OpV+7PfhCnvOMFdPfvX4nak9rwgNaPzku2CbF97YrrzLJGYiXQgCFr7VyWhjc22L79rTBry7YESfwHiuLXKL1ul85MZTVriPYSaJ00/tfvd0XiO8uayirHPCPwKcI1bsX4Nv71obYxOzuZfR39afkFB3giAQx4BhsgZhYyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=S5aeD/kjPJq+SnAlXTcc7LVOz+F90Cp4fZJGg2FA3GI=;
- b=M+kDW0GfczwthOf2p/l14wxMsLvTnaTV2fEszqQWna17tv0cAFc6a0wH8Wx9Ho14OQt3auJt4QwMTROd2HbvWT5i3xs0HcnbQ5UsNR5csoBjn0stfdW5OS4vydfvD7gljJlIxKfsk4nzM64LgDUW2TvoKmN2ImdVfXK/TUty+Nr/I4d9mxwjnS7iTjbiG6Icb5osBa3JKRSfd8yabMaBD7E0SjeKyM7cWmZCge5bhAQebaXt6Zzm/C6plL4vPrWJ3+wd/j6YUI6XCUg+ZYpRF6cY3qvApkYemiEdS3fncs5ecxpIR2TYLad47aBsU1w8qCg04pS41aiPUnQrgFiU6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S5aeD/kjPJq+SnAlXTcc7LVOz+F90Cp4fZJGg2FA3GI=;
- b=aKpzWjMCEys2ducYb66+8q4PHFQMfM66wiXFEi6uCOhD/iIABfVVlbztCl8j5qbDLGWXjI8OVh8mwQgrs2qeHN9kUunhR0CloxeWPv8FOASF2IHHq5mlP+DLG+txHOHqphydvJmAB7e8R3mLgejUa+2LdsQVZ+ciZmBBEeYVc00=
-Received: from SA9PR13CA0132.namprd13.prod.outlook.com (2603:10b6:806:27::17)
- by LV8PR12MB9357.namprd12.prod.outlook.com (2603:10b6:408:1ff::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
- 2023 14:00:46 +0000
-Received: from SA2PEPF00001509.namprd04.prod.outlook.com
- (2603:10b6:806:27:cafe::c) by SA9PR13CA0132.outlook.office365.com
- (2603:10b6:806:27::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.17 via Frontend
- Transport; Mon, 28 Aug 2023 14:00:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF00001509.mail.protection.outlook.com (10.167.242.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6745.16 via Frontend Transport; Mon, 28 Aug 2023 14:00:46 +0000
-Received: from [192.168.137.2] (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 28 Aug
- 2023 09:00:43 -0500
-Message-ID: <b477d4bb-8647-f1a0-31c4-2658bfa082f1@amd.com>
-Date:   Mon, 28 Aug 2023 16:00:41 +0200
+        Mon, 28 Aug 2023 10:02:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C646DFA;
+        Mon, 28 Aug 2023 07:02:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FA2A62250;
+        Mon, 28 Aug 2023 14:02:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A812AC433C7;
+        Mon, 28 Aug 2023 14:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693231333;
+        bh=oXbm5HUQFgspXoQ6ulYoXlNKIjBkDY2eh8SYy0/lHbQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=k3GP9t+DTOCDFL4icNQkt8pX8qDrtpCzFrC7x3QITdifoi/QUHpNRvATDLp9i2loe
+         HWnK4+6/NOay2Gp6ihcP7mh04D/SFwxpRpUeFKLGQW5EsTPcBn0kPYFv53H6V5xB+Q
+         a4cxOS/YwmTQIUs548Fdd7sAg7Xe7qZIo7IDGjxwk+owLANf3ofYd3jPPpYF8JlTej
+         VLg11/JnK7Iz78309DhQoHfJ6A8Vcmne05MkMt+evB4eJL72BGtMa3b5QKYUOBpqhM
+         zXq1GYTuQm8vBfyI6pQzclHjg9qs8vq7WzAR4FRw72WBhrn5yyCB/vez9Tac1bdG32
+         y1/KedQB5S4qA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 22F03CE1C4E; Mon, 28 Aug 2023 07:02:12 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 07:02:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+Message-ID: <142b4bff-6a2e-4ea0-928c-3cfe9befa403@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop>
+ <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
+ <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop>
+ <CAAhV-H5pfDG_tsRDL4dUYykaQ1ZwQYRDrQccpULBM5+kF4i2fA@mail.gmail.com>
+ <20230825232807.GA97898@google.com>
+ <CAEXW_YSock304V471X_A7WrxCWtHJGx3APmSy0k7Lc0o69D9Hg@mail.gmail.com>
+ <CAAhV-H6PM_KZj4_h-SdJAaseMDK2nMqqJWL8fWHhL4vUA50bQg@mail.gmail.com>
+ <CAEXW_YS5dVVOQvO6tWwF7mrgtHiYgVKP_TAipzBNiaFqWDzdeQ@mail.gmail.com>
+ <2681134d-cc88-49a0-a1bc-4ec0816288f6@paulmck-laptop>
+ <20230828133348.GA1553000@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1] drivers: edac: Drop unnecessary error check for
- debugfs_create_dir
-Content-Language: en-US
-To:     Atul Kumar Pant <atulpant.linux@gmail.com>
-CC:     <shubhrajyoti.datta@amd.com>, <sai.krishna.potthuri@amd.com>,
-        <bp@alien8.de>, <tony.luck@intel.com>, <james.morse@arm.com>,
-        <mchehab@kernel.org>, <rric@kernel.org>,
-        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <shuah@kernel.org>
-References: <20230815203826.51792-1-atulpant.linux@gmail.com>
- <723e803b-6f8b-ceb3-e987-4a6f83d89222@amd.com>
- <20230828133547.GA58271@atom0118>
-From:   Michal Simek <michal.simek@amd.com>
-In-Reply-To: <20230828133547.GA58271@atom0118>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001509:EE_|LV8PR12MB9357:EE_
-X-MS-Office365-Filtering-Correlation-Id: 45d63c58-5a74-479d-de77-08dba7cf2d60
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c/HMuwMdB7zXpV2G+kx3WNL2TU9ewTw1v+I6Q/bVnLh428SVulNh4aMvFsyuNPNH+QbyjhLuYAJEMorbT3r4t8LyeDiT4U4zaM8fGk+pzY2TTeMyFRGSdYkz5u9dBhFqzkIMPT+f40D8lAmitHtl++CS3dW6bXF5LdgBkg3GuitDbXXYyBmbL0vSuwXGRQdZTqaaXu5qFwobfSj24LU8S0T4rCOSKyJ8ZT0Y/dzXEGlbCGova7CPfxnq+wgl1KGB3mK5Atxb79mgyE1LoLM+MSTHiez2nMGlb/29UCFdqyuX4rv5jRzgXPQCWY/UNeLNAD9mPH9LM6fUCYncDXEmA4r/XHUem2eepwC0Xjb/07K/ikOWrrOxeExUtaQzr7rKNnCltVUogYuzqRuk2JjKm92zieAWUesxWoe0IRS2Pbj1yNyMQog9s7KSlQNj5KvtZfr5fVq5ocKXIlV2r6ARMcC7Y+oDcTmlICALEAEM2ZwCTKwlZ+Ot/GOltLvDdHihhW+VzG3krHaT6Ug0RSUNbYdNI5oUm5fagEDF/LptYtWzDNPNeZWWcNffnJQ8q6g5GtcKT9qPIZSEUqWWzYa6mb7uo5Rqm8WVz7Nenh/+MDkaReBK0UQRxbgfGISGZA0Ldwj8iES4VBlPWu5crZgKkReY3OEsUt898CsR8bITiX68ZeRV+MEZuUhI/Ga0x8btZ/XV66iOkGE+LvDBge4CsEfke/acqD6ycokdGwLsQ6sFpnokuEssWQiGUnUpm7RDNA8rROIQ6trJg3AfmCiE9F4PQgjHzjJ0FD8OeihtPtY=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(39860400002)(376002)(451199024)(1800799009)(82310400011)(186009)(36840700001)(46966006)(40470700004)(83380400001)(478600001)(81166007)(356005)(82740400003)(26005)(16526019)(31686004)(426003)(336012)(47076005)(36860700001)(2616005)(40480700001)(53546011)(31696002)(86362001)(44832011)(2906002)(7416002)(316002)(16576012)(4326008)(6916009)(70206006)(8676002)(70586007)(41300700001)(8936002)(54906003)(36756003)(5660300002)(40460700003)(36900700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 14:00:46.3824
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45d63c58-5a74-479d-de77-08dba7cf2d60
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001509.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9357
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230828133348.GA1553000@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/28/23 15:35, Atul Kumar Pant wrote:
-> On Fri, Aug 25, 2023 at 09:31:54AM +0200, Michal Simek wrote:
->>
->>
->> On 8/15/23 22:38, Atul Kumar Pant wrote:
->>> This patch removes the error checking for debugfs_create_dir.
->>
->> Avoid using "This patch".
+On Mon, Aug 28, 2023 at 01:33:48PM +0000, Joel Fernandes wrote:
+> On Mon, Aug 28, 2023 at 03:47:12AM -0700, Paul E. McKenney wrote:
+> > On Sun, Aug 27, 2023 at 06:11:40PM -0400, Joel Fernandes wrote:
+> > > On Sun, Aug 27, 2023 at 1:51 AM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > > [..]
+> > > > > > > > The only way I know of to avoid these sorts of false positives is for
+> > > > > > > > the user to manually suppress all timeouts (perhaps using a kernel-boot
+> > > > > > > > parameter for your early-boot case), do the gdb work, and then unsuppress
+> > > > > > > > all stalls.  Even that won't work for networking, because the other
+> > > > > > > > system's clock will be running throughout.
+> > > > > > > >
+> > > > > > > > In other words, from what I know now, there is no perfect solution.
+> > > > > > > > Therefore, there are sharp limits to the complexity of any solution that
+> > > > > > > > I will be willing to accept.
+> > > > > > > I think the simplest solution is (I hope Joel will not angry):
+> > > > > >
+> > > > > > Not angry at all, just want to help. ;-). The problem is the 300*HZ solution
+> > > > > > will also effect the VM workloads which also do a similar reset.  Allow me few
+> > > > > > days to see if I can take a shot at fixing it slightly differently. I am
+> > > > > > trying Paul's idea of setting jiffies at a later time. I think it is doable.
+> > > > > > I think the advantage of doing this is it will make stall detection more
+> > > > > > robust in this face of these gaps in jiffie update. And that solution does
+> > > > > > not even need us to rely on ktime (and all the issues that come with that).
+> > > > > >
+> > > > >
+> > > > > I wrote a patch similar to Paul's idea and sent it out for review, the
+> > > > > advantage being it purely is based on jiffies. Could you try it out
+> > > > > and let me know?
+> > > > If you can cc my gmail <chenhuacai@gmail.com>, that could be better.
+> > > 
+> > > Sure, will do.
+> > > 
+> > > > I have read your patch, maybe the counter (nr_fqs_jiffies_stall)
+> > > > should be atomic_t and we should use atomic operation to decrement its
+> > > > value. Because rcu_gp_fqs() can be run concurrently, and we may miss
+> > > > the (nr_fqs == 1) condition.
+> > > 
+> > > I don't think so. There is only 1 place where RMW operation happens
+> > > and rcu_gp_fqs() is called only from the GP kthread. So a concurrent
+> > > RMW (and hence a lost update) is not possible.
+> > 
+> > Huacai, is your concern that the gdb user might have created a script
+> > (for example, printing a variable or two, then automatically continuing),
+> > so that breakpoints could happen in quick successsion, such that the
+> > second breakpoint might run concurrently with rcu_gp_fqs()?
+> > 
+> > If this can really happen, the point that Joel makes is a good one, namely
+> > that rcu_gp_fqs() is single-threaded and (absent rcutorture) runs only
+> > once every few jiffies.  And gdb breakpoints, even with scripting, should
+> > also be rather rare.  So if this is an issue, a global lock should do the
+> > trick, perhaps even one of the existing locks in the rcu_state structure.
+> > The result should then be just as performant/scalable and a lot simpler
+> > than use of atomics.
 > 
-> 	Thanks for pointing this out. I'll remember this.
+> Thanks Paul and Huacai, also I was thinking in the event of such concurrent
+> breakpoint stalling jiffies updates but GP thread / rcu_gp_fqs() chugging
+> along, we could also make the patch more robust for such a situation as
+> follows (diff on top of previous patch [1]). Thoughts?
 > 
->>
->>> Even if we get an error from this function, other debugfs APIs will
->>> handle the error value and doesn't crash in that case. Hence caller can
->>> safely ignore the errors that occur during the creation of debugfs nodes.
->>
->> First of all which issue do you have? Did you see that folder is not created?
+> Also if someone sets a breakpoint right after the "nr_fqs == 1" check, then
+> they are kind of asking for it anyway since the GP kthread getting
+> stalled is an actual reason for RCU stalls (infact rcutorture has a test mode
+> for it even :P) and as such the false-positive may not be that false. ;-)
+
+That would indeed be asking for it.  But then again, they might have set
+a breakpoint elsewhere that had the unintended side-effect of catching
+the RCU grace-period kthread right at that point.
+
+If that isn't something we are worried about, your original is fine.
+If it is something we are worried about, I recommend learning from my
+RCU CPU stall warning experiences and just using a lock.  ;-)
+
+							Thanx, Paul
+
+> Btw apologies for forgetting to CC Thomas on [1] since he is involved in the
+> timekeeping discussions. I relied on "git send-email" to populate the Cc list
+> but did not add Cc: to the patch.
 > 
-> 	I have not seen any issue as such. But going by the comments before
-> 	the debugfs_create_dir API (https://elixir.bootlin.com/linux/latest/source/fs/debugfs/inode.c#L583),
-> 	we can ignore safely ignore the return value from this API.
+> [1] https://lore.kernel.org/all/20230827025349.4161262-1-joel@joelfernandes.org/
 > 
->>
->> I am not quite sure if this is the right behavior.
->> In the code there is
->> 135         if (!parent)
->> 136                 parent = edac_debugfs;
->>
->> It means you are right that if creating ocm folder can fail and properties
->> will be still created under edac_debugfs but is this the right behavior?
->>
->> altera_edac/armada_xp_edac/i10nm/i5100/igen6/others are checking return
->> value that's why I can't see any reason to remove this checking from one
->> driver.
->>
->> If you want to fix all please send patch for all but I don't think it will
->> improve situation and it will just hide different issue if creating folder
->> fails.
+> ---8<-----------------------
 > 
-> 	Understood your point. Are you suggesting that we should keep these
-> 	checks as it is, or should I fix for all the drivers and upload the
-> 	patch ?
-
-Up to Boris to decide but I would say keep it as is. Even debugfs is not stable 
-interface I would like to be informed if something fails. But just 2c.
-
-Thanks,
-Michal
-
-
-
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 9273f2318ea1..ffb165a2ef41 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1559,13 +1559,15 @@ static void rcu_gp_fqs(bool first_time)
+>  	WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
+>  
+>  	WARN_ON_ONCE(nr_fqs > 3);
+> -	if (nr_fqs) {
+> +	/* Only countdown nr_fqs for stall purposes if jiffies moves. */
+> +	if (nr_fqs && jiffies != READ_ONCE(rcu_state.jiffies_last_fqs)) {
+>  		if (nr_fqs == 1) {
+>  			WRITE_ONCE(rcu_state.jiffies_stall,
+>  				   jiffies + rcu_jiffies_till_stall_check());
+>  		}
+>  		WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, --nr_fqs);
+>  	}
+> +	WRITE_ONCE(rcu_state.jiffies_last_fqs, jiffies);
+>  
+>  	if (first_time) {
+>  		/* Collect dyntick-idle snapshots. */
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index e9821a8422db..72128e348fa1 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -386,6 +386,8 @@ struct rcu_state {
+>  						/*  in jiffies. */
+>  	unsigned long jiffies_stall;		/* Time at which to check */
+>  						/*  for CPU stalls. */
+> +	unsigned long jiffies_last_fqs;		/* jiffies value at last FQS.
+> +						   to confirm jiffies moves. */
+>  	int nr_fqs_jiffies_stall;		/* Number of fqs loops after
+>  						 * which read jiffies and set
+>  						 * jiffies_stall. Stall
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index a2fa6b22e248..0ddd22afbc3a 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -160,6 +160,7 @@ void rcu_cpu_stall_reset(void)
+>  {
+>  	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 3);
+>  	WRITE_ONCE(rcu_state.jiffies_stall, ULONG_MAX);
+> +	WRITE_ONCE(rcu_state.jiffies_last_fqs, 0);
+>  }
+>  
+>  //////////////////////////////////////////////////////////////////////////////
+> @@ -177,6 +178,7 @@ static void record_gp_stall_check_time(void)
+>  	smp_mb(); // ->gp_start before ->jiffies_stall and caller's ->gp_seq.
+>  	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 0);
+>  	WRITE_ONCE(rcu_state.jiffies_stall, j + j1);
+> +	WRITE_ONCE(rcu_state.jiffies_last_fqs, 0);
+>  	rcu_state.jiffies_resched = j + j1 / 2;
+>  	rcu_state.n_force_qs_gpstart = READ_ONCE(rcu_state.n_force_qs);
+>  }
