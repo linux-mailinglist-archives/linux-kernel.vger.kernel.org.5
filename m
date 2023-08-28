@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE4478A48E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5419B78A495
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjH1CQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
+        id S229670AbjH1CSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjH1CPr (ORCPT
+        with ESMTP id S229629AbjH1CRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:15:47 -0400
-X-Greylist: delayed 256 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Aug 2023 19:15:45 PDT
-Received: from out-253.mta1.migadu.com (out-253.mta1.migadu.com [IPv6:2001:41d0:203:375::fd])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168AAF1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 19:15:45 -0700 (PDT)
+        Sun, 27 Aug 2023 22:17:48 -0400
+Received: from out-248.mta1.migadu.com (out-248.mta1.migadu.com [IPv6:2001:41d0:203:375::f8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF7BD9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 19:17:46 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693188643;
+        t=1693188644;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nn8j1xlZiIaYyk41MeUAjHTR8kw6djY6y6n4AYyo8oQ=;
-        b=wrlwc8wbRnTKtb9ELzWKJpvmI0XJrjleVVIVz4kg8r56fEO8pnD9pOR8/XkGaubISLoUnW
-        ATTS31e3wIVCX+E2p0KnOUt86TtX4co61EeXkuz3++9khWiCWdVMNDgso3pF50iZ8U5MEF
-        8EWqbJR3cVBaT5RYABn4KkAxXabW1ds=
+        bh=rtKvrVKkVQRnt5532V2eBTwRFEQ3kLH/lmwR/1FmH1s=;
+        b=nX51DTd6k2pYWpSmnb5tXrNcL7PyuZHU/VuPVXFkQycEyI73p4Ck5Zd3i6mIhYwxplI1OU
+        5x2GgSy80mXEG3edYDZ16LNYljPSqkJtJ54EuxeSCHqLUlv08XpVsouQghCSaIzq81AqLn
+        39nwhdXuhAOArDezqY66niYxhT+Ljmw=
 From:   andrey.konovalov@linux.dev
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alan Stern <stern@rowland.harvard.edu>
@@ -40,9 +39,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Al Cooper <alcooperx@gmail.com>,
         Herve Codina <herve.codina@bootlin.com>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] usb: raw-gadget: return USB_GADGET_DELAYED_STATUS from setup()
-Date:   Mon, 28 Aug 2023 04:10:31 +0200
-Message-Id: <739253b1efa3469e421c869c4520284e854dc48f.1693188390.git.andreyknvl@gmail.com>
+Subject: [PATCH 3/3] usb: gadgetfs: return USB_GADGET_DELAYED_STATUS from setup()
+Date:   Mon, 28 Aug 2023 04:10:32 +0200
+Message-Id: <35c01a524b2eb6c3f01bc08f16bdff2d72256a1f.1693188390.git.andreyknvl@gmail.com>
 In-Reply-To: <5c2913d70556b03c9bb1893c6941e8ece04934b0.1693188390.git.andreyknvl@gmail.com>
 References: <5c2913d70556b03c9bb1893c6941e8ece04934b0.1693188390.git.andreyknvl@gmail.com>
 MIME-Version: 1.0
@@ -68,37 +67,57 @@ always delay the status stage until a response is queued to EP0.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
 ---
- drivers/usb/gadget/legacy/raw_gadget.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/usb/gadget/legacy/inode.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/legacy/raw_gadget.c b/drivers/usb/gadget/legacy/raw_gadget.c
-index e549022642e5..b9ecc55a2ce2 100644
---- a/drivers/usb/gadget/legacy/raw_gadget.c
-+++ b/drivers/usb/gadget/legacy/raw_gadget.c
-@@ -25,6 +25,7 @@
- #include <linux/usb/ch9.h>
- #include <linux/usb/ch11.h>
+diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
+index 28249d0bf062..154bbf578ba2 100644
+--- a/drivers/usb/gadget/legacy/inode.c
++++ b/drivers/usb/gadget/legacy/inode.c
+@@ -31,6 +31,7 @@
+ 
+ #include <linux/usb/gadgetfs.h>
  #include <linux/usb/gadget.h>
 +#include <linux/usb/composite.h>
  
- #include <uapi/linux/usb/raw_gadget.h>
  
-@@ -363,6 +364,16 @@ static int gadget_setup(struct usb_gadget *gadget,
- out_unlock:
- 	spin_unlock_irqrestore(&dev->lock, flags);
- out:
-+	if (ret == 0 && ctrl->wLength == 0) {
-+		/*
-+		 * Return USB_GADGET_DELAYED_STATUS as a workaround to stop
-+		 * some UDC drivers (e.g. dwc3) from automatically proceeding
-+		 * with the status stage for 0-length transfers.
-+		 * Should be removed once all UDC drivers are fixed to always
-+		 * delay the status stage until a response is queued to EP0.
-+		 */
-+		return USB_GADGET_DELAYED_STATUS;
-+	}
- 	return ret;
- }
+ /*
+@@ -241,6 +242,7 @@ static DEFINE_MUTEX(sb_mutex);		/* Serialize superblock operations */
+ #define xprintk(d,level,fmt,args...) \
+ 	printk(level "%s: " fmt , shortname , ## args)
+ 
++#undef DBG
+ #ifdef DEBUG
+ #define DBG(dev,fmt,args...) \
+ 	xprintk(dev , KERN_DEBUG , fmt , ## args)
+@@ -256,8 +258,10 @@ static DEFINE_MUTEX(sb_mutex);		/* Serialize superblock operations */
+ 	do { } while (0)
+ #endif /* DEBUG */
+ 
++#undef ERROR
+ #define ERROR(dev,fmt,args...) \
+ 	xprintk(dev , KERN_ERR , fmt , ## args)
++#undef INFO
+ #define INFO(dev,fmt,args...) \
+ 	xprintk(dev , KERN_INFO , fmt , ## args)
+ 
+@@ -1511,7 +1515,16 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+ 			event->u.setup = *ctrl;
+ 			ep0_readable (dev);
+ 			spin_unlock (&dev->lock);
+-			return 0;
++			/*
++			 * Return USB_GADGET_DELAYED_STATUS as a workaround to
++			 * stop some UDC drivers (e.g. dwc3) from automatically
++			 * proceeding with the status stage for 0-length
++			 * transfers.
++			 * Should be removed once all UDC drivers are fixed to
++			 * always delay the status stage until a response is
++			 * queued to EP0.
++			 */
++			return w_length == 0 ? USB_GADGET_DELAYED_STATUS : 0;
+ 		}
+ 	}
  
 -- 
 2.25.1
