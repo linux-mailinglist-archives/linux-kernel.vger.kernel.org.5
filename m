@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7555178BA10
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B438C78BA12
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbjH1VOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
+        id S232713AbjH1VOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbjH1VOd (ORCPT
+        with ESMTP id S233592AbjH1VOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:14:33 -0400
+        Mon, 28 Aug 2023 17:14:34 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A2FC3;
-        Mon, 28 Aug 2023 14:14:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84511C3;
+        Mon, 28 Aug 2023 14:14:32 -0700 (PDT)
 Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 973B6660087A;
-        Mon, 28 Aug 2023 22:14:27 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C09E166071C7;
+        Mon, 28 Aug 2023 22:14:29 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693257269;
-        bh=kMWLY6tuvILGJ3usJxrB0TPO3XiaNxG6Cf6+Lo6rdrg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RMNPZO/Vg4Y6R4vwYhpxQUY1VAdEKCTsmFKQPKgOcbOtPRYThJQEHvXlQ9gAGH+WE
-         LYbU7idaQDV1eWwELh4Gg6uAY76d9fHg5o2clXfcQc6rgc3oeB2CGWPTV580aZBHY6
-         rqUP5JU99WeKQL3Dls4/thGN11p/BvD6gPj0aIl1IOz+3Sy8zzvfibq7PHS43pbyy9
-         7SoGu5ir4DRtMq2YKYRLx8EmlSgUa2oACKOqkONTCAHW9A+n3n+T+JmbgxmqgHu0LR
-         x+EipqMVAq2OARILiP/Rxzjj0CETuU6qYc8MtK6geZ3V3PWd97+QSN73Jba8rR+tyB
-         YSJdcmIKCcVhA==
+        s=mail; t=1693257271;
+        bh=z6VcAPJB2wzNAu89McnlY95dVXFDs/OIGdTL7JnPRB8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oMpynwLUhWpxC9zt87DMRf+/cOWkS7TxKvY8xxkT3Rc7jiscnNIOCObEfWqDDeiV3
+         CDHbA85yGrR1X7Q1S0Ce+CnHGFTJBMAUgCMRV8qXT6fgPEqiQeNC1DV3u+xZnx6JKN
+         /IP/zAVJj/LVs8UjmyEppHOPGLUq9aU07kPHXxq569kUcgbbNABV8JShJI/dwTNfXU
+         T69lu7TQVbPwsGRnOEE74iJUQnus/Ge/H2uXZj0PbS/tOGL1zmJstI9WSJuDFInGiJ
+         TBFpxgp/aH6lsFY33xbpEULkeza0HzT8Vqvjj4C9G8iv8LpkKSwFp+CrCdSkq6kZZT
+         Y3k62HKoNs8Eg==
 From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
         <nfraprado@collabora.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -42,11 +42,13 @@ Cc:     Mark Brown <broonie@kernel.org>, kernelci@lists.linux.dev,
         Bjorn Andersson <andersson@kernel.org>,
         =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
         <nfraprado@collabora.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 0/3] Add a test to catch unprobed Devicetree devices
-Date:   Mon, 28 Aug 2023 17:13:09 -0400
-Message-ID: <20230828211424.2964562-1-nfraprado@collabora.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/3] dt: dt-extract-compatibles: Handle cfile arguments in generator function
+Date:   Mon, 28 Aug 2023 17:13:10 -0400
+Message-ID: <20230828211424.2964562-2-nfraprado@collabora.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230828211424.2964562-1-nfraprado@collabora.com>
+References: <20230828211424.2964562-1-nfraprado@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -59,79 +61,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Move the handling of the cfile arguments to a separate generator
+function to avoid redundancy.
 
-Regressions that cause a device to no longer be probed by a driver can
-have a big impact on the platform's functionality, and despite being
-relatively common there isn't currently any generic test to detect them.
-As an example, bootrr [1] does test for device probe, but it requires
-defining the expected probed devices for each platform.
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-Given that the Devicetree already provides a static description of
-devices on the system, it is a good basis for building such a test on
-top.
+---
 
-This series introduces a test to catch regressions that prevent devices
-from probing.
-
-Patches 1 and 2 extend the existing dt-extract-compatibles to be able to
-output only the compatibles that can be expected to match a Devicetree
-node to a driver. Patch 2 adds a kselftest that walks over the
-Devicetree nodes on the current platform and compares the compatibles to
-the ones on the list, and on an ignore list, to point out devices that
-failed to be probed.
-
-A compatible list is needed because not all compatibles that can show up
-in a Devicetree node can be used to match to a driver, for example the
-code for that compatible might use "OF_DECLARE" type macros and avoid
-the driver framework, or the node might be controlled by a driver that
-was bound to a different node.
-
-An ignore list is needed for the few cases where it's common for a
-driver to match a device but not probe, like for the "simple-mfd"
-compatible, where the driver only probes if that compatible is the
-node's first compatible.
-
-The reason for parsing the kernel source instead of relying on
-information exposed by the kernel at runtime (say, looking at modaliases
-or introducing some other mechanism), is to be able to catch issues
-where a config was renamed or a driver moved across configs, and the
-.config used by the kernel not updated accordingly. We need to parse the
-source to find all compatibles present in the kernel independent of the
-current config being run.
-
-[1] https://github.com/kernelci/bootrr
-
-Changes in v3:
-- Added DT selftest path to MAINTAINERS
-- Enabled device probe test for nodes with 'status = "ok"'
-- Added pass/fail/skip totals to end of test output
+(no changes since v2)
 
 Changes in v2:
-- Extended dt-extract-compatibles script to be able to extract driver
-  matching compatibles, instead of adding a new one in Coccinelle
-- Made kselftest output in the KTAP format
+- Added this commit
 
-Nícolas F. R. A. Prado (3):
-  dt: dt-extract-compatibles: Handle cfile arguments in generator
-    function
-  dt: dt-extract-compatibles: Add flag for driver matching compatibles
-  kselftest: Add new test for detecting unprobed Devicetree devices
+ scripts/dtc/dt-extract-compatibles | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
- MAINTAINERS                                   |  1 +
- scripts/dtc/dt-extract-compatibles            | 74 +++++++++++++----
- tools/testing/selftests/Makefile              |  1 +
- tools/testing/selftests/dt/.gitignore         |  1 +
- tools/testing/selftests/dt/Makefile           | 21 +++++
- .../selftests/dt/compatible_ignore_list       |  1 +
- tools/testing/selftests/dt/ktap_helpers.sh    | 70 ++++++++++++++++
- .../selftests/dt/test_unprobed_devices.sh     | 83 +++++++++++++++++++
- 8 files changed, 236 insertions(+), 16 deletions(-)
- create mode 100644 tools/testing/selftests/dt/.gitignore
- create mode 100644 tools/testing/selftests/dt/Makefile
- create mode 100644 tools/testing/selftests/dt/compatible_ignore_list
- create mode 100644 tools/testing/selftests/dt/ktap_helpers.sh
- create mode 100755 tools/testing/selftests/dt/test_unprobed_devices.sh
-
+diff --git a/scripts/dtc/dt-extract-compatibles b/scripts/dtc/dt-extract-compatibles
+index 9df9f1face83..2b6d228602e8 100755
+--- a/scripts/dtc/dt-extract-compatibles
++++ b/scripts/dtc/dt-extract-compatibles
+@@ -49,6 +49,14 @@ def print_compat(filename, compatibles):
+ 	else:
+ 		print(*compatibles, sep='\n')
+ 
++def files_to_parse(path_args):
++	for f in path_args:
++		if os.path.isdir(f):
++			for filename in glob.iglob(f + "/**/*.c", recursive=True):
++				yield filename
++		else:
++			yield f
++
+ show_filename = False
+ 
+ if __name__ == "__main__":
+@@ -59,11 +67,6 @@ if __name__ == "__main__":
+ 
+ 	show_filename = args.with_filename
+ 
+-	for f in args.cfile:
+-		if os.path.isdir(f):
+-			for filename in glob.iglob(f + "/**/*.c", recursive=True):
+-				compat_list = parse_compatibles(filename)
+-				print_compat(filename, compat_list)
+-		else:
+-			compat_list = parse_compatibles(f)
+-			print_compat(f, compat_list)
++	for f in files_to_parse(args.cfile):
++		compat_list = parse_compatibles(f)
++		print_compat(f, compat_list)
 -- 
 2.42.0
 
