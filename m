@@ -2,129 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B40FB78B425
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006D878B429
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbjH1POX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        id S230421AbjH1POZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232554AbjH1PON (ORCPT
+        with ESMTP id S232573AbjH1POQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:14:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2CC11B;
-        Mon, 28 Aug 2023 08:14:07 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 860961F383;
-        Mon, 28 Aug 2023 15:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693235646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a7/Km/jKsLvw/NKxCW99seF9lWJLgqSMYTjISiIIMKY=;
-        b=juD3P3pg0IENzHff2mRHsgSANByBQnrGln5C3hvcCzhoqJYhonY1TUGpJLhJZGgf0MvXcP
-        +PtjfZah9cWEzPiDO9+Gvo9S+TGt9hH960NL/IiEVuDEDqEVWDLncPTnHthr0sf4alrAhT
-        fb9+7E0p4jOMihGKndQ3IVBUdJb8VL8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693235646;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a7/Km/jKsLvw/NKxCW99seF9lWJLgqSMYTjISiIIMKY=;
-        b=dvUTP6SlcF9q6wm+rNzL0rLC/Km4gFRV9ib+4Lm87cMoll/Oolti2EbwuhB3xhWG+WRWFB
-        7gf3JDwBCteRWTDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3502913A11;
-        Mon, 28 Aug 2023 15:14:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id y/UUDL657GTYdgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 28 Aug 2023 15:14:06 +0000
-Message-ID: <9aec0740-2482-d3ad-caf2-5e6278a050b3@suse.cz>
-Date:   Mon, 28 Aug 2023 17:14:05 +0200
+        Mon, 28 Aug 2023 11:14:16 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051A0E8;
+        Mon, 28 Aug 2023 08:14:13 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6bca5d6dcedso2606220a34.1;
+        Mon, 28 Aug 2023 08:14:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693235652; x=1693840452;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e+8NbH3OkSUgunICilRSyAwwlEnHmG2jLuoYIeResH8=;
+        b=fwH4lNAbodm77k3irT18eGvBOEwaRyUswtfokFti37S9kHSJ7yULFr0m49LSvC9OTU
+         a8rOvTPHNDbdurxf8vFLdZNZLztnoOsglCUHdeLdtyr4XzMXWZuAgYW9TBCXmAVYLlTE
+         xSMJFmna0W1AdYHIjHBXHC6O/Zx8yOIctPlaR2rraPNXHF0yEtmeRW+yZ/CPQtWvb8Md
+         8QAVfNhHPaWVKX16u1WIeKXc6waVFIU+v2yzGdYNqjwfWTNJUqDQoskrp5u6bU0eW73g
+         GgbVSB0GhxSIC07Qg/uyX7HSrdjpqhBHstQFG0zoP2GOy7wT/onvm4omLAWSNaLC0YcR
+         uC/Q==
+X-Gm-Message-State: AOJu0Yxu+lr4UyilXQS0E3vmK7ukUOU1Oysvcme2YTPz3Yf0L2xAek5J
+        cgsD1/xQRePjtybUsYaXFWs=
+X-Google-Smtp-Source: AGHT+IHehlIs0QtxM1G3arB1CsJ+l1ULiJfDx1nonQ34Og0tJzw+InmyhN+hI3mSyQkLfTcVgUYTRg==
+X-Received: by 2002:a05:6870:418d:b0:1ad:4c06:15c with SMTP id y13-20020a056870418d00b001ad4c06015cmr12264398oac.18.1693235652069;
+        Mon, 28 Aug 2023 08:14:12 -0700 (PDT)
+Received: from [192.168.51.14] ([98.51.102.78])
+        by smtp.gmail.com with ESMTPSA id 16-20020aa79250000000b0068bff979c33sm6708230pfp.188.2023.08.28.08.14.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 08:14:11 -0700 (PDT)
+Message-ID: <8e407992-d6da-46e2-a006-ad3b3cdfb101@acm.org>
+Date:   Mon, 28 Aug 2023 08:14:09 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH blktests v3 3/3] nvme: introduce
+ nvmet_target_{setup/cleanup} common code
 Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com, workflows@vger.kernel.org,
-        tools@linux.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-References: <cover.1693037031.git.quic_gurus@quicinc.com>
- <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
- <87jztf37ny.fsf@intel.com>
- <20230828133554.GA818859@hu-bjorande-lv.qualcomm.com>
- <CAMuHMdU+3oj+-3=f5WFVTRsKQjqCpU8SnVqKSZGk8XRxhsDcVQ@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAMuHMdU+3oj+-3=f5WFVTRsKQjqCpU8SnVqKSZGk8XRxhsDcVQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230822083812.24612-1-dwagner@suse.de>
+ <20230822083812.24612-4-dwagner@suse.de>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230822083812.24612-4-dwagner@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 15:48, Geert Uytterhoeven wrote:
-> Hi Bjorn,
-> 
-> On Mon, Aug 28, 2023 at 3:37 PM Bjorn Andersson
-> <quic_bjorande@quicinc.com> wrote:
->> On Mon, Aug 28, 2023 at 11:14:41AM +0300, Jani Nikula wrote:
->> > On Sat, 26 Aug 2023, Guru Das Srinagesh <quic_gurus@quicinc.com> wrote:
->> > > This script runs get_maintainer.py on a given patch file (or multiple
->> > > patch files) and adds its output to the patch file in place with the
->> > > appropriate email headers "To: " or "Cc: " as the case may be. These new
->> > > headers are added after the "From: " line in the patch.
->> >
->> > FWIW, I personally prefer tooling to operate on git branches and commits
->> > than patches. For me, the patches are just an intermediate step in
->> > getting the commits from my git branch to the mailing list. That's not
->> > where I add the Cc's, but rather in the commits in my local branch,
->> > where they're preserved. YMMV.
->> >
->>
->> May I ask how you add/carry the recipients in a commit?
-> 
-> I guess below a "---" line in the commit description?
+On 8/22/23 01:38, Daniel Wagner wrote:
+> +	while [[ $# -gt 0 ]]; do
+> +		case $1 in
+> +			--blkdev)
+> +				blkdev_type="$2"
+> +				shift 2
+> +				;;
+> +			--ctrlkey)
+> +				ctrlkey="$2"
+> +				shift 2
+> +				;;
+> +			--hostkey)
+> +				hostkey="$2"
+> +				shift 2
+> +				;;
+> +			*)
+> +				shift
+> +				;;
+> +		esac
+> +	done
 
-Does that do anything special in commit log? I'd expect (and I do it that
-way) it's rather just adding a
+So all arguments that are not recognized are ignored? That will
+make debugging typo's harder than necessary. Shouldn't this function
+complain if an unrecognized argument is encountered?
 
-Cc: Name <email>
+Thanks,
 
-in the tag area where s-o-b, reviewed-by etc are added.
-
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+Bart.
 
