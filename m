@@ -2,61 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 624E778A705
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F239C78A71F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbjH1IFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
+        id S229923AbjH1IGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjH1IE6 (ORCPT
+        with ESMTP id S229869AbjH1IFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:04:58 -0400
+        Mon, 28 Aug 2023 04:05:41 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360B7123;
-        Mon, 28 Aug 2023 01:04:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65278125;
+        Mon, 28 Aug 2023 01:05:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF07B63307;
-        Mon, 28 Aug 2023 08:04:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A39C9C433C7;
-        Mon, 28 Aug 2023 08:04:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EBC1C616BA;
+        Mon, 28 Aug 2023 08:05:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62984C433C8;
+        Mon, 28 Aug 2023 08:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693209894;
-        bh=21GDsKWpLyozjrrpuCacWmWY2wJcf8Nk1npOku7xMFw=;
+        s=k20201202; t=1693209937;
+        bh=gE6AAo7LpJHIX8SAFv0wwRy03H31xBkBS7hCtLUOaO8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZFMhvoAW56IXhXLpf2nwmmhjFpUMpVqp3hE4v1bjYw8J7bwUBzfE32nEMPoin5f8C
-         7jawMFhFgIzRKFE+SoBCYDSEO54cWXpWLeYC4plGzrj5ZLStJM1TvoNAwGC/mX9GbK
-         2Umi4UVrPyF1XlVRHpt2njOVxGFaoJ0kc21gpDzw7C/Zosil2sSiIPIW47Gs0VKz6A
-         /AsCx3COVmrRGPR6X1FOmrw5z6J/nqW1GICnLD7PO3dOvpdWbLjoneI+V8nQwmSAsU
-         OPMIfgbPl76xdGBr4AnDWf1uKfUgVqbhfVCPkWWB0d348v74kdsaub1pqHgfLbUSIf
-         bYw8f3ekxXPGg==
-Date:   Mon, 28 Aug 2023 10:04:51 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Frank Oltmanns <frank@oltmanns.dev>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Ondrej Jirman <x@xnux.eu>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: Re: [PATCH 0/3] Make Allwinner A64's pll-mipi keep its rate when
- parent rate changes
-Message-ID: <fd4beguej6ijxpo2hri56pes25re5gdwytxkbvllq4mskffolh@uyxe4j3eorq4>
-References: <20230825-pll-mipi_keep_rate-v1-0-35bc43570730@oltmanns.dev>
- <zrjpbtf7qwaj2tjvfz2no534tmz5j4yudp45tung2w5x2zcl6y@bal3bclzze4e>
- <87ledzqhwx.fsf@oltmanns.dev>
+        b=qAOpd3aAB5MxDARCQ4QrDCaSU8ylI0MXVkU/mqxVEvwxZK7imseh28543c+ZYTMnx
+         LqABG4kZ6la3bK5Jew+HaK7deWscP9o+YUiIwBgyIMcIkV9gzrLMXTqcNErXW11iaR
+         AVppITIqmcN6u5UbZXdF+iMY8IxMljJyci4yKcdntfTTtO681R4QIW+toek6Nn7TfG
+         cBMZmrt/3cniSXZHmB+V5YcATTpKPDrY9kD5/tSoZFwdd5xkTfsvEqj42F77s7/UUq
+         VE67U61S6IDnIsoPhkd7HkEeaSekUxk17NstamYAtF4ZgCy9rUC+8ZZGcu6moNkMCF
+         2/SN9khKBF4Zw==
+Date:   Mon, 28 Aug 2023 13:35:22 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Subject: Re: [PATCH V5 3/6] scsi: ufs: qcom: Add multiple frequency support
+ for unipro clk attributes
+Message-ID: <20230828080522.GD5148@thinkpad>
+References: <20230823154413.23788-1-quic_nitirawa@quicinc.com>
+ <20230823154413.23788-4-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87ledzqhwx.fsf@oltmanns.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230823154413.23788-4-quic_nitirawa@quicinc.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -66,158 +61,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 05:07:58PM +0200, Frank Oltmanns wrote:
-> Thank you for your feedback, Maxime!
->=20
-> On 2023-08-25 at 10:13:53 +0200, Maxime Ripard <mripard@kernel.org> wrote:
-> > [[PGP Signed Part:Undecided]]
-> > Hi,
-> >
-> > On Fri, Aug 25, 2023 at 07:36:36AM +0200, Frank Oltmanns wrote:
-> >> I would like to make the Allwinner A64's pll-mipi to keep its rate when
-> >> its parent's (pll-video0) rate changes. Keeping pll-mipi's rate is
-> >> required, to let the A64 drive both an LCD and HDMI display at the same
-> >> time, because both have pll-video0 as an ancestor.
-> >>
-> >> PATCH 1 adds this functionality as a feature into the clk framework (n=
-ew
-> >> flag: CLK_KEEP_RATE).
-> >>
-> >> Cores that use this flag, store a rate as req_rate when it or one of i=
-ts
-> >> descendants requests a new rate.
-> >>
-> >> That rate is then restored in the clk_change_rate recursion, which wal=
-ks
-> >> through the tree. It will reach the flagged core (e.g. pll-mipi) after
-> >> the parent's rate (e.g. pll-video0) has already been set to the new
-> >> rate. It will then call determine_rate (which requests the parent's
-> >> current, i.e. new, rate) to determine a rate that is close to the
-> >> flagged core's previous rate. Afterward it will re-calculate the rates
-> >> for the flagged core's subtree.
-> >
-> > I don't think it's the right way forward. It makes the core logic more
-> > complicated, for something that is redundant with the notifiers
-> > mechanism that has been the go-to for that kind of things so far.
->=20
-> Yeah, that was my initial idea as well. But I couldn't get it to work.
-> See details below.
->=20
-> Do you have an example of a clock that restores its previous rate after
-> the parent rate has changed? I've looked left and right, but to me it
-> seems that notifiers are mainly used for setting clocks into some kind
-> of "safe mode" prior to the rate change. Examples:
->=20
-> sunxi-ng:
-> https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/sunxi-ng/ccu_=
-mux.c#L273
-> https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/sunxi-ng/ccu_=
-common.c#L60
->=20
-> but also others:
-> https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/at91/clk-mast=
-er.c#L248
-> https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/meson/meson8b=
-=2Ec#L3755
-> https://elixir.bootlin.com/linux/v6.4.11/source/drivers/clk/qcom/clk-cpu-=
-8996.c#L546
+On Wed, Aug 23, 2023 at 09:14:10PM +0530, Nitin Rawat wrote:
+> Add Support to configure CORE_CLK_1US_CYCLES, PA_VS_CORE_CLK_40NS_CYCLES
+> for multiple unipro clock frequencies. Currently this is handled only for
+> only 150Mhz and 75MHz.
+> 
+> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 88 ++++++++++++++++++++++++++++++++-----
+>  drivers/ufs/host/ufs-qcom.h |  9 ++++
+>  2 files changed, 87 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index abc0e7f7d1b0..8162b19191a9 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -671,6 +671,45 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
+>  	return 0;
+>  }
+> 
+> +static int ufs_qcom_cfg_core_clk_ctrl(struct ufs_hba *hba)
+> +{
+> +	struct list_head *head = &hba->clk_list_head;
+> +	struct ufs_clk_info *clki;
+> +	u32 max_freq = 0;
+> +	int err;
 
-There's examples for phases and parents, but not for rates afaics. We
-shouldn't behave any differently though.
+Let's use "ret" from now onwards. Existing "err" can be cleaned up later.
 
-> > It's not really obvious to me why the notifiers don't work there.
-> >
-> >> This work is inspired by an out-of-tree patchset [1] [2] [3].
-> >> Unfortunately, the patchset uses clk_set_rate() in a notifier callback,
-> >> which the following comment on clk_notifier_register() forbids: "The
-> >> callbacks associated with the notifier must not re-enter into the clk
-> >> framework by calling any top-level clk APIs." [4] Furthermore, that
-> >> out-of-tree patchset no longer works with the current linux-next,
-> >> because setting pll-mipi is now also resetting pll-video0 [5].
-> >
-> > Is it because of the "The callbacks associated with the notifier must
-> > not re-enter into the clk framework by calling any top-level clk APIs."
-> > comment?
->=20
-> I don't think that's the reason.
+> +
+> +	list_for_each_entry(clki, head, list) {
+> +		if (!IS_ERR_OR_NULL(clki->clk) &&
+> +			!strcmp(clki->name, "core_clk_unipro")) {
 
-I'm not sure I follow you there. How can we find a solution to a problem
-you don't know about or can't know for sure?
+Odd indentation.
 
-> I'm fairly certain that the problem is, that pll-mipi tries to set the
-> parent rate. Maybe it should check if the parent is locked, before
-> determining a rate that requires the parent rate to change. =F0=9F=A4=94
+> +			max_freq = clki->max_freq;
+> +			break;
+> +		}
+> +	}
+> +
+> +	switch (max_freq) {
+> +	case MHZ_403:
 
-Why would the clock framework documentation mention an issue that only
-arises with a single clock on a single SoC?
+UNIPRO_CORE_CLK_FREQ_403_MHZ?
 
-That comment in the clock framework you linked to clearly stated that
-you can't use a top-level clock function in a notifier, and that's
-because of the locking.
+Same applies to other defines.
 
-If it's not what you're trying to fix, then I'd really like to know what
-issue you're trying to fix *in the framework* (so, not on the pll-mipi
-clock, or the A64).
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 403, 16);
 
-> Currently, it only calls clk_hw_can_set_rate_parent() which only
-> checks the flag, but does not check if it is really possible to change
-> the parent's rate.
->=20
-> Regardless, please don't prematurely dismiss my proposal. It has the
-> advantage that it is not specific for sunxi-ng, but could be used for
-> other drivers as well.
+#define to_cycles_per_1us(freq)		(freq / (1000 * 1000))
 
-Just like the two solutions I provided.
+		ret = ufs_qcom_set_core_clk_ctrl(hba, to_cycles_per_1us(max_freq), 16);
 
-> Maybe there other instances of exclusive locks today where the
-> CLK_KEEP_RATE flag might work equally well. =F0=9F=A4=B7
+> +		break;
+> +	case MHZ_300:
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 300, 12);
+> +		break;
+> +	case MHZ_201_5:
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 202, 8);
+> +		break;
+> +	case MHZ_150:
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
+> +		break;
+> +	case MHZ_100:
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4);
+> +		break;
+> +	default:
+> +		dev_err(hba->dev, "unipro max_freq=%u entry missing\n", max_freq);
 
-If exclusive locks work equally well, why would we need CLK_KEEP_RATE?
+"UNIPRO clk max frequency (%u) not supported!"
 
-> > If so, I think the thing we should emphasize is that it's about *any
-> > top-level clk API*, as in clk_set_rate() or clk_set_parent().
-> >
-> > The issue is that any consumer-facing API is taking the clk_prepare lock
-> > and thus we would have reentrancy. But we're a provider there, and none
-> > of the clk_hw_* functions are taking that lock. Neither do our own func=
-tion.
-> >
-> > So we could call in that notifier our set_rate callback directly, or we
-> > could create a clk_hw_set_rate() function.
-> >
-> > The first one will create cache issue between the actual rate that the
-> > common clock framework is running and the one we actually enforced, but
-> > we could create a function to flush the CCF cache.
-> >
-> > The second one is probably simpler.
->=20
-> I'm probably missing something, because I don't think this would work.
-> For reference, this is our tree:
->=20
->     pll-video0
->        hdmi-phy-clk
->        hdmi
->        tcon1
->        pll-mipi
->           tcon0
->              tcon-data-clock
->=20
-> When pll-video0's rate is changed (e.g. because a HDMI monitor is
-> plugged in), the rates of the complete subtree for pll-video0 are
-> recalculated, including tcon0 and tcon-data-clock. The rate of tcon0 is
-> based on the rate that was recalculated for pll-mipi, which - in turn -
-> was of course recalculated based on the pll-video0's new rate. These
-> values are stored by the clk framework in a private struct. They are
-> calculated before actually performing any rate changes.
->=20
-> So, if a notifier sets pll-mipi's rate to something else than was
-> previously recalculated, the clk framework would still try to set tcon0
-> to the value that it previously calculated.
->
-> So, we would have to recalculate pll-mipi's subtree after changing its
-> rate (that's what PATCH 1 is doing).
+> +		err = -EINVAL;
 
-Then we should make that function I was telling you about deal with all
-this.
+-ERANGE
 
-Maxime
+> +		break;
+> +	}
+> +
+> +	return err;
+> +}
+>  static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
+>  					enum ufs_notify_change_status status)
+>  {
+> @@ -686,12 +725,15 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
+>  			return -EINVAL;
+>  		}
+> 
+> -		if (ufs_qcom_cap_qunipro(host))
+> -			/*
+> -			 * set unipro core clock cycles to 150 & clear clock
+> -			 * divider
+> -			 */
+> -			err = ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
+> +		if (ufs_qcom_cap_qunipro(host)) {
+> +			err = ufs_qcom_cfg_core_clk_ctrl(hba);
+> +			if (err) {
+> +				dev_err(hba->dev,
+> +					"%s cfg core clk ctrl failed\n",
+
+"Failed to configure UNIPRO core clk"
+
+> +					__func__);
+> +				return err;
+> +			}
+> +		}
+> 
+>  		/*
+>  		 * Some UFS devices (and may be host) have issues if LCC is
+> @@ -1369,8 +1411,7 @@ static int ufs_qcom_clk_scale_up_post_change(struct ufs_hba *hba)
+>  	if (!ufs_qcom_cap_qunipro(host))
+>  		return 0;
+> 
+> -	/* set unipro core clock cycles to 150 and clear clock divider */
+> -	return ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
+> +	return ufs_qcom_cfg_core_clk_ctrl(hba);
+>  }
+> 
+>  static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
+> @@ -1401,12 +1442,39 @@ static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
+>  static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> +	struct list_head *head = &hba->clk_list_head;
+> +	struct ufs_clk_info *clki;
+> +	u32 curr_freq = 0;
+> +	int err;
+> 
+>  	if (!ufs_qcom_cap_qunipro(host))
+>  		return 0;
+> 
+> -	/* set unipro core clock cycles to 75 and clear clock divider */
+> -	return ufs_qcom_set_core_clk_ctrl(hba, 75, 3);
+> +
+> +	list_for_each_entry(clki, head, list) {
+> +		if (!IS_ERR_OR_NULL(clki->clk) &&
+> +			!strcmp(clki->name, "core_clk_unipro")) {
+> +			curr_freq = clk_get_rate(clki->clk);
+> +			break;
+> +		}
+> +	}
+> +	switch (curr_freq) {
+> +	case MHZ_37_5:
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 38, 2);
+> +		break;
+> +	case MHZ_75:
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 75, 3);
+> +		break;
+> +	case MHZ_100:
+> +		err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4);
+> +		break;
+> +	default:
+> +		err = -EINVAL;
+> +		dev_err(hba->dev, "unipro curr_freq=%u entry missing\n", curr_freq);
+> +		break;
+> +	}
+> +
+> +	return err;
+
+Why can't you use the existing ufs_qcom_cfg_core_clk_ctrl() function?
+
+- Mani
+
+>  }
+> 
+>  static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
+> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+> index 325f08aca260..56550fd36c4e 100644
+> --- a/drivers/ufs/host/ufs-qcom.h
+> +++ b/drivers/ufs/host/ufs-qcom.h
+> @@ -79,6 +79,15 @@ enum {
+>  	UFS_MEM_CQIS_VS		= 0x8,
+>  };
+> 
+> +/* QCOM UFS host controller core clk frequencies */
+> +#define MHZ_37_5	37500000
+> +#define MHZ_50		50000000
+> +#define MHZ_75		75000000
+> +#define MHZ_100		100000000
+> +#define MHZ_150		150000000
+> +#define MHZ_300		300000000
+> +#define MHZ_201_5	201500000
+> +#define MHZ_403		403000000
+>  #define UFS_CNTLR_2_x_x_VEN_REGS_OFFSET(x)	(0x000 + x)
+>  #define UFS_CNTLR_3_x_x_VEN_REGS_OFFSET(x)	(0x400 + x)
+> 
+> --
+> 2.17.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
