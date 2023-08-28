@@ -2,157 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BBA78B724
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CF678B730
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbjH1STu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
+        id S232985AbjH1SU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbjH1STe (ORCPT
+        with ESMTP id S233075AbjH1SUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:19:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE3213D;
-        Mon, 28 Aug 2023 11:19:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693246771; x=1724782771;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=sdcXLuTtB2arlZ+u3bQlzu2XgNPzGfRNBoR1eH8jtvM=;
-  b=JRaruXIhvATjO3rdlBHs0C0JDFpMgfcnOcbd0o2BeIof2IpUbS3PtN8U
-   BGqdK9qU1wESli2yQIlnLmJkSmtVowrbK4g7I9C5nGCgyVv0KYGU6RcEl
-   XkBmRJ7cdv1wEeADe4PSQ9b4PKK7lXhcz7YU2hNAzKf1uQapLPRXvivHr
-   7Cve8tD1K7hrTQbqyUy8sOXSA/1WwzPfCI0u4XZAQFYrJ2VteTUPwLih4
-   bBcY5K6wOLURjqZUHAFJC3QHAb8nvIdItunvPW+x9EwOQrflkoxCJ7CJV
-   mnJaFOEOCzXSvmfAzoEd/hyHCq7m5SkdcrYh119XcitTTXST1BhCs14q0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="375137253"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="375137253"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 11:19:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="852968164"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="852968164"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Aug 2023 11:19:30 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 28 Aug 2023 11:19:30 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 28 Aug 2023 11:19:28 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 28 Aug 2023 11:19:28 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.47) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 28 Aug 2023 11:19:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZLqDQVU+cO7qmI+aG9VgdxPJx7Uh/4JVx6mMo7Qs3oY7piNo0SXWHHr5uA3p8+TqG3icF+ig6ZKUTkeDw6A5fQs8l7babDaZCHxADrugXKiSUWmCqFm2lIOhHvfOPmGpnV4CdQkIupHQSzsXE1CDTzqVm3PM5LnAs0eT2kd/ITIWFm6cqWbDTejniiM/rCRefM1o6iwGBxDStGpiaLpaQWZlU1th+EJSbHJuMi4i4GZQsdCqbl3R1SCiVIeu6xXFPN9dv+03lvl2w5boTDmzf/bt0H1K+tVtnkR2umj3z/E1hQUT0uOiEZP9zb3mZ6rk3Qnw7Xdh1ht5f3UptqKYnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gOqZLAKKp9pjnl/zuPPLhTO+89kRbWQ5LAcbufQ4s3Y=;
- b=TPt5HRKc5m4jyZKSE1hMuMy8WVA2Rt6gX1Wwe4h2ZNB8QnNrEGbK/qv1Dtnpg0zznXHC7yCq7jbKpannaSgapXTnd8rkQQVBI7JMvJyo0uOBsvP2I+zzPNELO3s9wv3eD3UdhcKOZaINr4tbSxMFPcDdzTUodkvZ+wybXp5DvzvZy+NOdpb7xAq4KuHeSF4vSqlZ6Y26igpjCdaWhLAgwWlRnJagke4iW2RF00aXDdkcVR6JgSuzPJXWQSJnaIrEeFLT7fSDk13q8sQYBgq1Jhw1Ykt694f8XC4J3G4gAdKV9mriCrvmqbADnMypfMVjjri2Um79EePnXzOMGcv51A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by DM3PR11MB8735.namprd11.prod.outlook.com (2603:10b6:0:4b::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
- 2023 18:19:17 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::9563:9642:bbde:293f]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::9563:9642:bbde:293f%7]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
- 18:19:17 +0000
-Message-ID: <37795c12-85f2-a9fb-dafb-fd181e04b86f@intel.com>
-Date:   Mon, 28 Aug 2023 11:19:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Betterbird/102.13.0
-Subject: Re: [PATCH] dma: device: Remove redundant code
-To:     <coolrrsh@gmail.com>, <fenghua.yu@intel.com>, <vkoul@kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-kernel-mentees@lists.linuxfoundation.org>
-References: <20230813132203.139580-1-coolrrsh@gmail.com>
-Content-Language: en-US
-From:   Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20230813132203.139580-1-coolrrsh@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR05CA0015.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::28) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+        Mon, 28 Aug 2023 14:20:52 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925541A2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:20:43 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68bec3a1c0fso2462091b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1693246843; x=1693851643;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FN5cReRcE/IqZFfedM5lG8adhDURm6Zmxuc1ut1q7kk=;
+        b=WeAqtd1ntNS0YgTuYZvuwkU6ZM/B/cG/JTeGYaHbuwa0edGOkauQbjP9QUfPvy4HfV
+         V/dqiEUmTwtNGzDHpMLZfIfMKUuvWcBXOpPYUQXJScPwiKH5J2vjubVyl429W6rsHOlg
+         7grzBQjC/I1RSDdlZ8OR3H9Wfiuwp58UNWUe1N7PghhbLznb8OY8i3kA7um87TT5WD65
+         nSmShNf71KD8ueXVatdu9MqAK5eny/zPGYWLSsOzFt7YNsZ3NizZdDLnoWwkmwJiGX4u
+         bt281fUeocyL5evTiyh3ngIgkF02EH7ttH9l6H5s3i901Y7wEy2KrcN0Sz4biRp/5N05
+         EhWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693246843; x=1693851643;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FN5cReRcE/IqZFfedM5lG8adhDURm6Zmxuc1ut1q7kk=;
+        b=I2btH7DA38X2XyJKwc1qGRWM5zUOmHszKdaE0qGXZHeMKN3CXNAGuu9aLS7KT8shNk
+         8Y70PeOYRce7mT0n2aNwhOoCN2boRGktGZBF/k45TTWcOe1VfaW9MfLt4k7g04JTdd67
+         kodNsDdTatF4VXVIuTHWFJlqry13Iz7o4G4seuUB2ClDvx+DEfSzeMb8ZKLEKuS2CyDV
+         StEu7WUM/WyQVNVATH2lE8tDj4WgtwyqIpXBLFyhXfhDkP2St3t4McFL2Mr3ygvAoB98
+         P/jMhh/1f8ReT5YJv9entVy4ZetgNFgrGvLv0Slrs3Hv38RFEvGa6cZYIlDZq+FgS1nW
+         u7Gw==
+X-Gm-Message-State: AOJu0Yz7qU8EAzO8o+HY7zafJ7SU4u7Z+6Mn7pjw1urOTRS8xSG21gPd
+        HyC3/KDyV4fZ51ebK/u5So51Dw==
+X-Google-Smtp-Source: AGHT+IEBimujj4zlefxpuPomvv7iKDMVCw90Uhnkx9mm6W0jEamQc5Z5CAG92cyNacoMQoOSbNKXGw==
+X-Received: by 2002:a05:6a00:1a4e:b0:68a:553a:c0da with SMTP id h14-20020a056a001a4e00b0068a553ac0damr20938442pfv.24.1693246842918;
+        Mon, 28 Aug 2023 11:20:42 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:1499:9915:c376:361b])
+        by smtp.gmail.com with ESMTPSA id 23-20020aa79117000000b00686ec858fb0sm6887959pfh.190.2023.08.28.11.20.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 11:20:42 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 11:20:39 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu
+Subject: Re: [PATCH 1/5] riscv: Checksum header
+Message-ID: <ZOzld28wZjLpl4Hp@ghost>
+References: <20230827-turf-parched-b965bc697882@spud>
+ <mhng-d43dc0a3-7985-4195-9611-5ca0c38390e7@palmer-ri-x1c9>
+ <20230827-primer-conceal-b6f24b29e692@spud>
+ <20230827-divisive-happy-cf93058c49bf@spud>
+ <ZOzRlerSNjfzMYGH@ghost>
+ <20230828-deserve-paging-25666290e312@spud>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|DM3PR11MB8735:EE_
-X-MS-Office365-Filtering-Correlation-Id: 703b76b6-be48-4d00-bc9e-08dba7f34a3b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nb5He+hPGQJtIUxwVpwGTxzfVHZSSvHnqeSnRWLWYS2E6TAqEF+ML7wcSKRyK2LtNNbjGB5KcLQfgnzFxxf+hUG56V2wPJ1TuHNFjJebxUKx2W777v4mH26VJ6bYrpwzA1smzgFoZ5978SXOq/YPp+vruEULJS/VKo9QxpSiVop0MditocUdxBXmDbD/JjoVdeLyqzNq11t7tSTA/4ZwOdlhhIdPjtweEEtLpY39CGuwpWUpsJxWmsPEf/HE3ritmI6CcUT8rEKfkX+tHvtm5sSEFa5ALavH0sBJ/UfX4Io2Pf2RUkbxZUOUOf+jrZYopeBCm/LKjnc2VUaQKTBQq2KM74G/sjodvJ9H+agNl9zJzzAZTWVO9xEEoJTKa6uBWcOIzmb71TfDB2Dxkt1smL7lI2J4FD5MRg24eBPQy5/zUllyTbGkAQDxcfLdYE1Qa+3ZvdEZz0aQJCUOuvWRvZZMb5kXvrTNsdocbkDbeqbGMZ4Wgg5O/W182IU8K52lCdRrw+CtJV6SHGCKaBtlq5Jzn91YbbrymyIeBbN9yE+qzaadi8cK4Gk7q+jCPeL/PmUxKkNjrlxnM9DNb7dWqq88sfoS8TaHhIdEROoZe6F04xPDxjYEINHR2EmX23wEeNmRrz/VBcuJPtnY+rbqyw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(366004)(346002)(136003)(451199024)(1800799009)(186009)(8676002)(8936002)(4326008)(2906002)(36756003)(66946007)(66556008)(66476007)(316002)(5660300002)(44832011)(31686004)(41300700001)(6486002)(6506007)(26005)(53546011)(2616005)(6512007)(38100700002)(478600001)(83380400001)(82960400001)(31696002)(86362001)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S3prV3oxdlNQemE4cW9WSDBHeXIwK2hIOU1DUjRhUUJSaEgyNHJNQW5TWUhp?=
- =?utf-8?B?VUJ5aDhnYWhPT2VZVmZUY2M1Kzh1QjZaRGdIdnVvRGFaS3l0ZHhWVlpQbXpa?=
- =?utf-8?B?ZDBseXNwKzBkSERmZ3F3c1ZSejFscGhXdGFpWE9XWU1tWHlIejU1ekVnczQx?=
- =?utf-8?B?Skd0cnZMd2krWmhNSXhyeDJWVldyZ2lIc2hWSjNNMGQwYVh3MG44M3V0OTRC?=
- =?utf-8?B?U1NaMUZnTXBYT3JxdVJQVzZML2ExSGJTaCttcSs4bXNxTzNNMUhXSDFtcjVU?=
- =?utf-8?B?TkFON2J6NU5JNFJmUGk1ektkZ1ZJUnBNNzhBVzJWMVR4UmRmcVRsbDhqT1k1?=
- =?utf-8?B?Zk5JRm1UN0pSTmJSVmNjZDdiSWdPUkZrS2lnS3NTY2VrSWU2YUdkZkRmSjVD?=
- =?utf-8?B?RzIrZ2pKQmJnS3EvWDhWOTdXcFRscWJIbnpuaVdtaWhXOVBsU1hEbHduOStD?=
- =?utf-8?B?OXIvbXFDUEF2SE5XQjJOdDZFRmlSVDlqRTIxTzIrYzBHVGVBM2ZrRWpFUHNE?=
- =?utf-8?B?MVlJZElVNVN3Y1BabmdEMnBpVUFUVkR1SkcwUy9FeTNqRHN5N2gvaFplRDQx?=
- =?utf-8?B?WmFBS01nR3drVUd4QnJaU0VEL05zbzVlUTVLaFR6OTMxcnFCazZjMGVsYkJH?=
- =?utf-8?B?d0UxdnRvbE9ZdUpubUFkSW5IK1lJVDFDM0V5cy9jKzF4dU4xcktPRHZ2TS9h?=
- =?utf-8?B?TFNaaDVBWk9ZVTVMeng3TEVOMVdVOWt4Q1c4c3JsOWxJVnR2WGdhaW93RmJl?=
- =?utf-8?B?RlVqU0FlSWN3amlKV3ZwUTNsaUFMQllKTmpmT3p6NU1GKzhsVHBaNHpDMndX?=
- =?utf-8?B?eEQ1SStpdmRtaUE1RWNJdnk3dXNvTmR3eEViaGtpNU9TSU9WZkVGb0EyT1FD?=
- =?utf-8?B?RjM5QTFWeTJOTXdqMnB5S05GeXI4ZHJrQmV2QmpmK2RYU1E3dWtrZ0pSc0ZD?=
- =?utf-8?B?K2ExM0ZQcDZDdVFpMkQzM0ZoVWJENTNuVktlS3k2TWJyTVJ2dVFSc25rd0ZB?=
- =?utf-8?B?a1dmR25JQzRsUEw0V3kweUpCNVA2RDV6cXlxeUV4Q2ducE9hNVhxQUYxaGtH?=
- =?utf-8?B?a1F4NTJDaUVyd2pWb1U4a1ZZOGVxdXJMaVVucDQ4eXJRbUphcVhxM3U4YkNh?=
- =?utf-8?B?VUtUc24wdXZIOE5mRGJQYkhKUnc1VmVoVit6cE9mUEJJY2hyOHlMVStFaFBo?=
- =?utf-8?B?REpWZkZVVHYzWDZOd3JzeERQN0pmRldHcXN4MWdJOEhJT2crOW1nQWp2Wlhm?=
- =?utf-8?B?NTZTS0VhdDBFZUltR0Z4RWVIRkhyVFJpaml0cStZUlhBdkszVE12b3RHN2ZY?=
- =?utf-8?B?WVFOTzA3U29IVGs4Z0dQQUI0Y2NVemVJaWlPc3QxMnRDbjJ1L0x6Wk96ODBh?=
- =?utf-8?B?NFlVUTlSNFhmZllZcWl4SXBLOU84ZW5pRzhhWGxBdGp6aCtvZ3FMNUxpekhQ?=
- =?utf-8?B?WmxZQ3AzMGhmb29nTjRLYWRhbTN5QlFHUGx5bkxzS3FvTnBBQnhiNUl1THV0?=
- =?utf-8?B?Z1lyalZKMFBiUGlBMFY4OEszMExzL2NoekxoODhMTGZkeGR5cW5TeEZLYUh4?=
- =?utf-8?B?MmhMMTYvTHluRURXY0p0NVB4b3FlUG9kSkxYeExka2Vtd2dwVVQxOTBmYU9C?=
- =?utf-8?B?TjVOWXpxNERIblZyM1JsdndMU1ozQ0tiMVlTOG5iam9DNFVHZjdxeVhiMEov?=
- =?utf-8?B?Ry9KNjZrWnJzQng4U2JNc0YvbVVNRXQvRWZscjdVUHRQL2Y5Y2xVdFI1b0d0?=
- =?utf-8?B?eDJhYVBOOE5iN0JnNElDdCtKY3J6cXRZL2xlSjNjeEVJV1BZQVc1MDVlZjB1?=
- =?utf-8?B?ZjlkRWk3TkMyZ0d0M05tMmxKbmNmNmFrR0VlNlVOaHBEUk9mbmIyYWdSWmtp?=
- =?utf-8?B?N1FmYWFZV0hKSVJPRHVyYkVyZm84dEJyd2ZHQ3YxRHJzUm5WNTN6OTNlSzcv?=
- =?utf-8?B?M1BnbjBaMTErQng1ZGJFdTMrMTJua2JqZGVZYmRvbVBzcVpxY3k3bEFEbTNO?=
- =?utf-8?B?aWNnQlhNZ0xqczVvU1NQQmNFTXQ3TFA3R21iOVJOc003WHZzTlh6L2lUUWtW?=
- =?utf-8?B?RUNkZ2QyNTE2MUNzc3oraklOd2pPUE9UdDFmbW43YWNmSmFLcW5jd3c5TUN1?=
- =?utf-8?Q?uEUYtpa2Jj6tecyO14Mp+YhCQ?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 703b76b6-be48-4d00-bc9e-08dba7f34a3b
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 18:19:16.9789
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CMu9t8tA2HqpFA23tkosYUnC3qmYzsFarRdh/pqMNE8CDLrMW10sVeACt0fVqKPV4EX2ZM3mFBUlH7afPRoEFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8735
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828-deserve-paging-25666290e312@spud>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -160,42 +76,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/13/23 06:22, coolrrsh@gmail.com wrote:
-> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On Mon, Aug 28, 2023 at 06:08:40PM +0100, Conor Dooley wrote:
+> On Mon, Aug 28, 2023 at 09:55:49AM -0700, Charlie Jenkins wrote:
+> > On Sun, Aug 27, 2023 at 01:25:27PM +0100, Conor Dooley wrote:
+> > > On Sun, Aug 27, 2023 at 11:28:33AM +0100, Conor Dooley wrote:
+> > > > On Sat, Aug 26, 2023 at 07:00:47PM -0700, Palmer Dabbelt wrote:
+> > > > > On Sat, 26 Aug 2023 18:42:41 PDT (-0700), Conor Dooley wrote:
+> > > > > > On Sat, Aug 26, 2023 at 06:26:06PM -0700, Charlie Jenkins wrote:
+> > > > > > > Provide checksum algorithms that have been designed to leverage riscv
+> > > > > > > instructions such as rotate. In 64-bit, can take advantage of the larger
+> > > > > > > register to avoid some overflow checking.
+> > > > > > > 
+> > > > > > > Add configuration for Zba extension and add march for Zba and Zbb.
+> > > > > > > 
+> > > > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > > > > > ---
+> > > > > > >  arch/riscv/Kconfig                | 23 +++++++++++
+> > > > > > >  arch/riscv/Makefile               |  2 +
+> > > > > > >  arch/riscv/include/asm/checksum.h | 86 +++++++++++++++++++++++++++++++++++++++
+> > > > > > >  3 files changed, 111 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > > > > > index 4c07b9189c86..8d7e475ca28d 100644
+> > > > > > > --- a/arch/riscv/Kconfig
+> > > > > > > +++ b/arch/riscv/Kconfig
+> > > > > > > @@ -507,6 +507,29 @@ config RISCV_ISA_V_DEFAULT_ENABLE
+> > > > > > >  	  If you don't know what to do here, say Y.
+> > > > > > > +config TOOLCHAIN_HAS_ZBA
+> > > > > > > +	bool
+> > > > > > > +	default y
+> > > > > > > +	depends on !64BIT || $(cc-option,-mabi=lp64 -march=rv64ima_zba)
+> > > > > > > +	depends on !32BIT || $(cc-option,-mabi=ilp32 -march=rv32ima_zba)
+> > > > > > > +	depends on LLD_VERSION >= 150000 || LD_VERSION >= 23900
+> > > > > > > +	depends on AS_HAS_OPTION_ARCH
+> > > > > > > +
+> > > > > > > +config RISCV_ISA_ZBA
+> > > > > > > +	bool "Zba extension support for bit manipulation instructions"
+> > > > > > > +	depends on TOOLCHAIN_HAS_ZBA
+> > > > > > > +	depends on MMU
+> > > > > > > +	depends on RISCV_ALTERNATIVE
+> > > > > > > +	default y
+> > > > > > > +	help
+> > > > > > > +	   Adds support to dynamically detect the presence of the ZBA
+> > > > > > > +	   extension (basic bit manipulation) and enable its usage.
+> > > > > > > +
+> > > > > > > +	   The Zba extension provides instructions to accelerate a number
+> > > > > > > +	   of bit-specific address creation operations.
+> > > > > > > +
+> > > > > > > +	   If you don't know what to do here, say Y.
+> > > > > > > +
+> > > > > > >  config TOOLCHAIN_HAS_ZBB
+> > > > > > >  	bool
+> > > > > > >  	default y
+> > > > > > > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> > > > > > > index 6ec6d52a4180..51fa3f67fc9a 100644
+> > > > > > > --- a/arch/riscv/Makefile
+> > > > > > > +++ b/arch/riscv/Makefile
+> > > > > > > @@ -61,6 +61,8 @@ riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
+> > > > > > >  riscv-march-$(CONFIG_FPU)		:= $(riscv-march-y)fd
+> > > > > > >  riscv-march-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-y)c
+> > > > > > >  riscv-march-$(CONFIG_RISCV_ISA_V)	:= $(riscv-march-y)v
+> > > > > > > +riscv-march-$(CONFIG_RISCV_ISA_ZBA)	:= $(riscv-march-y)_zba
+> > > > > > > +riscv-march-$(CONFIG_RISCV_ISA_ZBB)	:= $(riscv-march-y)_zbb
+> > > > > > 
+> > > > > > AFAICT, this is going to break immediately on any system that enables
+> > > > > > RISCV_ISA_ZBA (which will happen by default) but does not support the
+> > > > > > extension. You made the option depend on RISCV_ALTERNATIVE, but I do
+> > > > > > not see any use of alternatives in the code to actually perform the
+> > > > > > dynamic detection of Zba.
+> > > > > 
+> > > > > I guess we kind of have an ambiguity here: for stuff like C we just
+> > > > > unconditionally use the instructions, but for the rest we probe first.  We
+> > > > > should probably have three states for each extension: disabled, dynamically
+> > > > > detected, and assumed.
+> > > > 
+> > > > You mean, just add some comments to the makefile surrounding each
+> > > > section or to some rst documentation?
+> > > 
+> > > Also, the code here doesn't build w/
+> > > 	warning: invalid argument to '-march': '_zba_zbb_zicsr_zifencei_zihintpause'
+> > > so there's something else wrong with TOOLCHAIN_HAS_ZBA :)
+> > It is odd that this is missing 'rv64ima' or 'rv32ima' at the beginning of
+> > this string. What configuration are you using that could cause that to
+> > be left off?
 > 
-> dma_alloc_coherent function already zeroes the array 'addr'.
-> So, memset function call is not needed.
+> I don't know, but that configuration is pretty pervasive. The patchwork
+> CI blew up too & that is using kernel.org toolchains built by Arnd:
+> https://mirrors.edge.kernel.org/pub/tools/crosstool/
 > 
-> This fixes warning such as:
-> drivers/dma/idxd/device.c:783:8-26:
-> WARNING: dma_alloc_coherent used in addr already zeroes out memory,
-> so memset is not needed.
+> > Compiling with defconfig automatically enables Zba and appears to not
+> > cause this issue. I realized that I put the header definitions for
+> > do_csum and csum_ipv6_magic in this patch instead of the next one so the
+> > code will fail to compile from this but not due to march settings.
+> > > 
+> > > > 
+> > > > > > Note that for fd & v, we add it to riscv-march-y, but then immediately
+> > > > > > remove it again before passing to the compiler, only allow them in
+> > > > > > AFLAGS:
+> > > > > > 	# Remove F,D,V from isa string for all. Keep extensions between "fd" and "v" by
+> > > > > > 	# matching non-v and non-multi-letter extensions out with the filter ([^v_]*)
+> > > > > > 	KBUILD_CFLAGS += -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)fd([^v_]*)v?/\1\2/')
+> > > > > > 
+> > > > > > What am I missing?
+> > > > > 
+> > > > > FD and V both have state that can be saved lazily, so we can't let arbitrary
+> > > > > code use them.  The extensions formally known as B don't add state, so they
+> > > > > are safe to flip on in arbitrary places (aside from the issues you pointed
+> > > > > out above).
+> > > > 
+> > > > I probably went about this badly since you missed the point. I was
+> > > > trying to point out that for anything other than the compressed
+> > > > extensions in the block above that we only pass them in march to the
+> > > > assembler, and not to the compiler, in contrast to this patch which just
+> > > > always passes them. I should have pointed to how we handled the
+> > > > in-kernel Zbb stuff & asked how this was any different, would probably
+> > > > have been clearer.
+> > > > 
+> > I supposed it might be better if I submit these changes in a different
+> > patch so we can have more discussion there. Zbb was previously only used
+> > by assembly files (arch/riscv/lib/strcmp.S, arch/riscv/lib/strlen.S,
+> > arch/riscv/lib/strncmp.S). I wanted to add them to the compiler so that
+> > that C programs could leverage these extensions. However, I neglected to
+> > consider machines that compile the kernel with these extensions but have
+> > cores without these extensions.
 > 
-> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
-
-Please rename subject line to:
-
-dmaengine: idxd: Remove redundant memset() for eventlog allocation
-
-With the change,
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-
-> ---
->   drivers/dma/idxd/device.c | 2 --
->   1 file changed, 2 deletions(-)
+> Less so cores, since we don't support heterogeneous stuff, and moreso
+> platforms that do not support the extensions. It's expected that the
+> same kernel could in theory be used across a wide variety of systems.
 > 
-> diff --git a/drivers/dma/idxd/device.c b/drivers/dma/idxd/device.c
-> index 5abbcc61c528..7c74bc60f582 100644
-> --- a/drivers/dma/idxd/device.c
-> +++ b/drivers/dma/idxd/device.c
-> @@ -786,8 +786,6 @@ static int idxd_device_evl_setup(struct idxd_device *idxd)
->   		goto err_alloc;
->   	}
->   
-> -	memset(addr, 0, size);
-> -
->   	spin_lock(&evl->lock);
->   	evl->log = addr;
->   	evl->dma = dma_addr;
+> > The purpose of using these extensions is
+> > to save a couple of clock cycles, so if it is necessary to first
+> > check if the extension is enabled it may not be worth it for these
+> > functions.
+> 
+> That's still possible, it's what the alternatives mechanism exists for.
+> During boot the codepaths are patched to use what works for a given
+> machine, check out the code that makes use of Zbb or
+> riscv_has_extension_[un]likely(). You'd need to do something like the
+> existing users of Zbb instructions does, with an alternative used to
+> avoid the custom asm implementations when the hardware does not support
+> them. (That's what the CONFIG_ALTERNATIVE & CONFIG_AS_HAS_OPTION_ARCH
+> options you made the TOOLCHAIN_HAS_ZBA depend on are for).
+
+I can see how to get this to work if I port this code into assembly and
+write two different versions (one with Zbb and one without), but
+I don't see how this would work in C. Unless I am mistaken, there would
+need to be some sort of wrapper around the C code that told the compiler
+to compile it multiple times for different extension combinations and
+then use the riscv_has_extension_[un]likely() functions to determine
+which version to use at runtime. Is this feasible?
