@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C2F78BAF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 00:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEF978BAFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 00:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbjH1W0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 18:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
+        id S233796AbjH1W0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 18:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbjH1WZy (ORCPT
+        with ESMTP id S231825AbjH1WZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 18:25:54 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA88413D
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:25:51 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-594e1154756so40498437b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:25:51 -0700 (PDT)
+        Mon, 28 Aug 2023 18:25:56 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F387113D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:25:53 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7814efcccbso4588919276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:25:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693261551; x=1693866351;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=whuv4S/qXJ8VQLIk5LEoFSmpFljXlYmrEoJuQBk2GD4=;
-        b=aEdfAKE2aENnO6tvTzasPUqknc7wJ6diEIJLvmUQxxJpKywDYrFsVaCYoE3h51sd7c
-         H+oNWaX4aq3A9uIj9bL7KrPvklouBN4OyA/O+XRgrZAULDLLXXawVpiMY5oabbtF/wrO
-         T4Y17/d+q5j7Mm+T/22mbRuV9bHjI2eqFaVVdQSE7hMYmEMWSjjjJb5MbTTUnpKCk0Xu
-         7xk5D3xPPMOUz/9r1kmavYv+JGeABhxJbcya7t+GEsGBOZ0ciJaeoY4ZWJy299oj0ESY
-         qDYS3ugO2ay3oFwjN3PzQ/KJQjiYf+YEkyAwmBnSaJWMkXK+sjdejHWq2+Umb4RQ3ZHZ
-         Q89Q==
+        d=google.com; s=20221208; t=1693261553; x=1693866353;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F4UULv7dEfmxkqrWSwHKGjuNFOLz/KrJvgWNb6lbuCs=;
+        b=2kejcxIi3hXJKdZ1GkMysAMauwtVpiO3wB0YJXxm7YLfO/aBFv5JnmffdBZJEtO1n4
+         vYy3Nj/ny3dFOO26EZvSSF7ssb/5RCa1/gNfHjWztYGwYMST20i5OgA4xd0Q9ZSLTEZe
+         8E05Pcd2zETrYDm76HD4gD/UW+wi0++6YhbZkcC/WK9cY5tbs1gwSyk6qlJ/v+jXbGGu
+         23sfZf9CyO1lVUYs5JUujdvX0fLdYXcDqwDu0VPZFbs0UiAaPzba4FXw59jipxriO6bp
+         aurqy2AcFS9uSKPfYLzJs0CXRpTAiBQWRDczqiBKps2GMFGa6eVLlGmKJN4I+0pV2Ywu
+         HErw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693261551; x=1693866351;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=whuv4S/qXJ8VQLIk5LEoFSmpFljXlYmrEoJuQBk2GD4=;
-        b=NiX0gr6jXT1FhbyxvQJ6NV2ti+AOsOqaTC6p8JNoOw1dmjbJ5ROste9ypqF50NJtPQ
-         w2/6Xz6ENq72UR1iKk36ggb5Js+jmiqfa7BMJ9tHkPAZafdXzNjyaBNLaxStFrdLZhEr
-         CCOhNeZ+GVycBWECEmH9TvawIGvDKJJDm5/wkcl7f3w7S0uzBXQVoMs0HenhrKBkfQ9B
-         QUF/XXRHTARHnh9jxEHTVMwUW7jwEcGNDf4jTvoTksJHQwZ1aRMykeQRA5khF9rleWl6
-         bnoNGD22dlp4aIl6BJvlQVRM4FbUsDoSFU0iQi8IRbnlNnQu0y+4SclpcaKSLntwVOE8
-         whwg==
-X-Gm-Message-State: AOJu0YxrfVSbzjNUvM+sl6GHItppGNwQ9/yLSA3mPgTnLSXp3cOxaYE+
-        +23AUSNSLPn+UgA+B6HenMqPz5c3NnwVMeA7b48=
-X-Google-Smtp-Source: AGHT+IE7Nhcb/ZUZVQuQ5+u99sOJ9CdIHBMpQ83N0Fim/iD9z8v4Zjz9mkQBdpgoc9W3GrUHfZjMtDEsE8i0aeHVjQI=
+        d=1e100.net; s=20221208; t=1693261553; x=1693866353;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F4UULv7dEfmxkqrWSwHKGjuNFOLz/KrJvgWNb6lbuCs=;
+        b=CYmPCtdN9Pponi0wvSCetlmvMM3kld2dUR5ZG1XAUGj5yhMl1i8iJ7YETPm9nQKzgQ
+         epTxG5PYAAi5naEQ5HyvSXIGY9286xO0elH04O2oAEB22Tokc82FBFYfxEl6+Z50D3EA
+         4zBo33aBlbkkZlRlCNfNiOU053lVETupXaWIjT/CjyXQDiJeCAZbKOKmWSuIf6ru8RUL
+         DS8y4q2FZAQ98Bp5buKabK+MkrUoZo9fQt36sKsid7/FY0546PP4w4ahZPAM33WoQmuf
+         zyxCHJ10XLWXzA/3KfbdGnkvuzjSbMpAMF6BiCDTHeiB64VxC5TshkhbvclYjYRT8Ro1
+         oc+Q==
+X-Gm-Message-State: AOJu0Yz9IrR5UpHlb8MVru4Ika7lM4hfXHWoHwVNy7MLZQUkBCYJZkAF
+        IyRCvVIyTv4TEEP8ZMq4p/kNu7DHLCic/soUEGY=
+X-Google-Smtp-Source: AGHT+IHebjexSi29sxNXIEYT2we/AIAJmtzB8YnCDOBzFlC85j7fdHzaoXP6O7kQ+CL4Fb+jcj+UYQmnlgWna+E5nYI=
 X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:b64:7817:9989:9eba])
- (user=ndesaulniers job=sendgmr) by 2002:a81:7653:0:b0:586:5d03:67c8 with SMTP
- id j19-20020a817653000000b005865d0367c8mr899523ywk.3.1693261550964; Mon, 28
- Aug 2023 15:25:50 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 15:25:46 -0700
+ (user=ndesaulniers job=sendgmr) by 2002:a25:ce44:0:b0:d72:8661:ee25 with SMTP
+ id x65-20020a25ce44000000b00d728661ee25mr835131ybe.2.1693261553140; Mon, 28
+ Aug 2023 15:25:53 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 15:25:47 -0700
+In-Reply-To: <20230828-scsi_fortify-v1-0-8dde624a3b2c@google.com>
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOoe7WQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCyML3eLk4sz4tPyiksy0Sl3LNIsUI3PLpDTLxEQloJaCotS0zAqwcdG xtbUAr2FdoF4AAAA=
+References: <20230828-scsi_fortify-v1-0-8dde624a3b2c@google.com>
 X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693261549; l=1211;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693261549; l=2310;
  i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=TGWROu4XNrgfx+3UVHqDnOnYYRlkH/LvjbNZAKHZcUI=; b=XYoq8WEHFYZk0OilZBxoZZDH9/jZiqs7gMqgs5QyaYYkDOElw0g9B4HqjTu1AEVRVmw6fBvvf
- Ta1Q02qYmpODS2FmJeLM2eUD1tbl9vpZGTd9Fq02p9gFPekMg5OCxXH
+ bh=Ftz8IPZZMe52YKzLHVvnEUhXYdkgyGJWBaj7UgdHpqk=; b=iH/FxqmBBcMZZaaHpoka8f2O5LUsN1gUPcfI94im4BVVB2bk2tNsg449r71D9h0uE967DIv+l
+ StL9iHKe4jeDQkraBppk0fVa0b2INXDjY9hVIKt4WfTZ/GlkIPGiKOW
 X-Mailer: b4 0.12.3
-Message-ID: <20230828-scsi_fortify-v1-0-8dde624a3b2c@google.com>
-Subject: [PATCH 0/2] scsi: fix 2 cases of -Wfortify-source
+Message-ID: <20230828-scsi_fortify-v1-1-8dde624a3b2c@google.com>
+Subject: [PATCH 1/2] scsi: myrb: fix -Wfortify-source
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Hannes Reinecke <hare@kernel.org>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
@@ -78,37 +78,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 clang-18 has improved its support for detecting operations that will
-truncate values at runtime via -wfortify-source resulting in two new
-warnings (or errors with CONFIG_WERROR=y):
+truncate values at runtime via -Wfortify-source.
 
+Fixes the warning:
   drivers/scsi/myrb.c:1906:10: warning: 'snprintf' will always be
   truncated; specified size is 32, but format string expands to at least
   34 [-Wfortify-source]
 
-  drivers/scsi/myrs.c:1089:10: warning: 'snprintf' will always be
-  truncated; specified size is 32, but format string expands to at least
-  34 [-Wfortify-source]
+In particular, the string literal "physical device - not rebuilding\n"
+is indeed 34B by my count.
 
 When we have a string literal that does not contain any format flags,
 rather than use snprintf (sometimes with a size that's too small), let's
 use sprintf.
 
-This is pattern is cleaned up throughout two files.
+This is pattern is cleaned up throughout the file.
 
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Closes: https://github.com/ClangBuiltLinux/linux/issues/1923
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
-Nick Desaulniers (2):
-      scsi: myrb: fix -Wfortify-source
-      scsi: myrs: fix -Wfortify-source
+ drivers/scsi/myrb.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- drivers/scsi/myrb.c |  8 ++++----
- drivers/scsi/myrs.c | 14 +++++++-------
- 2 files changed, 11 insertions(+), 11 deletions(-)
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230828-scsi_fortify-9f8d279bf9aa
+diff --git a/drivers/scsi/myrb.c b/drivers/scsi/myrb.c
+index ca2e932dd9b7..c2bdff36a6f1 100644
+--- a/drivers/scsi/myrb.c
++++ b/drivers/scsi/myrb.c
+@@ -1767,7 +1767,7 @@ static ssize_t raid_state_show(struct device *dev,
+ 	int ret;
+ 
+ 	if (!sdev->hostdata)
+-		return snprintf(buf, 16, "Unknown\n");
++		return sprintf(buf, "Unknown\n");
+ 
+ 	if (sdev->channel == myrb_logical_channel(sdev->host)) {
+ 		struct myrb_ldev_info *ldev_info = sdev->hostdata;
+@@ -1890,7 +1890,7 @@ static ssize_t raid_level_show(struct device *dev,
+ 					ldev_info->state);
+ 		return snprintf(buf, 32, "%s\n", name);
+ 	}
+-	return snprintf(buf, 32, "Physical Drive\n");
++	return sprintf(buf, "Physical Drive\n");
+ }
+ static DEVICE_ATTR_RO(raid_level);
+ 
+@@ -1903,13 +1903,13 @@ static ssize_t rebuild_show(struct device *dev,
+ 	unsigned char status;
+ 
+ 	if (sdev->channel < myrb_logical_channel(sdev->host))
+-		return snprintf(buf, 32, "physical device - not rebuilding\n");
++		return sprintf(buf, "physical device - not rebuilding\n");
+ 
+ 	status = myrb_get_rbld_progress(cb, &rbld_buf);
+ 
+ 	if (rbld_buf.ldev_num != sdev->id ||
+ 	    status != MYRB_STATUS_SUCCESS)
+-		return snprintf(buf, 32, "not rebuilding\n");
++		return sprintf(buf, "not rebuilding\n");
+ 
+ 	return snprintf(buf, 32, "rebuilding block %u of %u\n",
+ 			rbld_buf.ldev_size - rbld_buf.blocks_left,
 
-Best regards,
 -- 
-Nick Desaulniers <ndesaulniers@google.com>
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
