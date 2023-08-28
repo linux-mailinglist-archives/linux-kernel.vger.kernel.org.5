@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E35278B87E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030CA78B881
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbjH1TiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 15:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        id S232700AbjH1Tii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 15:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbjH1Thu (ORCPT
+        with ESMTP id S232533AbjH1TiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 15:37:50 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF2FBD
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:37:47 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-401187f8071so22736315e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:37:47 -0700 (PDT)
+        Mon, 28 Aug 2023 15:38:23 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AA0122;
+        Mon, 28 Aug 2023 12:38:20 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4018af103bcso22602645e9.1;
+        Mon, 28 Aug 2023 12:38:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693251466; x=1693856266; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=06m1OEDqS2WWK0uy+9uCEUWO2nWLWF2qXoN+kTPD3MI=;
-        b=h64K48DZTXPSjS/9SQDjG8Iv6CrCeKMeAKKCOyUXqMTlMgg3IbSuLDi+cb2vTxmnQl
-         TY09yDhMJyt3I6SM9NnWX2mlzTQjKZroMCnPySQzIGfy4k5xsrE34yLS5AGM1pqGrkxp
-         GZEzuHS8IIXYuSwHynmzjJ6DMFm9zrrWjKkV3/lpkqlqnSJroAdhL7t5S8DBoSuL2tJE
-         IF6L6v4coxXNYqu/nYcnQqv78pet0cB1mRQtcmO6WnAdANdlURhemmy3BrmWlS/N85w8
-         68Vg7lImvz+DGQOYzQGYXRb5FcrXVfxR34gV6PL58NYS9EmJZASlHO+6e8oPqmBFVtV9
-         vviA==
+        d=gmail.com; s=20221208; t=1693251499; x=1693856299;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=esAW1Vw3kz0RXHL7BJoZeroaJEwV9jtttk9VWFt4WEE=;
+        b=iqykqWkgqBJKKiRSkIywBrMOKAzPP7boOhrfuCqhthSMpVqq0V8sTXhDiOvewIxfkt
+         6kO+IEgGogUwOk6zkHPoBTNoPusYXqiN3O1oWoy20szfvJD4492odi+mh4uCKc5wOlpF
+         iDuQNjPrFfTfvza/3e/Pfi0d4uqiwezEdzgY5WbPDJb2a6vurgQ9KM4cDB6tcpdyhNyX
+         A222R7cirBODJ71VMGvQq1f1YMoNv94bkLozJpQj6XFdH6NlNHPvnB/WUNnMVrNZmbQB
+         3ljPVZzbPfhNKt5pNqfnMUAj4X2ubwJNXIZ8BEV7FrXoXVnKR9KLn/vs+fLHvERLAUcG
+         RoZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693251466; x=1693856266;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=06m1OEDqS2WWK0uy+9uCEUWO2nWLWF2qXoN+kTPD3MI=;
-        b=crgb5VHx1ikHEt9F/vKaDgqMKLenIscIFKn3Vex9kWqhWad0GEpxsK+IatABpuYA0i
-         WXDoNVW88iVMhXn6L2gFUPa5191QDFCiQl5+UnH3MpiEggb522J3CsQuRtX+S0E3+tcb
-         E4bxBuEhpslJ0D1hyhOPP6zc015rgePIFjeal2h3qTr/v/xPTI6NpSW69EKKVRcIvWWi
-         0JH9vV6uptyr52n8ehlVNcKkBhYBJVn+FuDzcmHuLfe+CAm2IGRNJuTMBRZtz7QkmDve
-         VtJ29K3l2M9JdtqnNSN+P4/QQwydd8/ZPUpAhYE+MsFZ2RSmH+UF3Sh7g6SOfp2KWkCf
-         dV+w==
-X-Gm-Message-State: AOJu0Yw8Avj6aNzCbpGUVHUcztPS9Is6QIbvMPV8UixHfwji56IIKKEt
-        MF1CO1FB8LifTEKAm3VpAU4ibg==
-X-Google-Smtp-Source: AGHT+IFOjaDHBzjrJFVkZNdcZ1pY7ToCu7MAz62GUl6zWqv7h//4qusu5V4posNlmfkBkemLRwv/AA==
-X-Received: by 2002:a05:600c:474c:b0:401:c7ec:b930 with SMTP id w12-20020a05600c474c00b00401c7ecb930mr370180wmo.10.1693251465827;
-        Mon, 28 Aug 2023 12:37:45 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id 19-20020a05600c235300b003fe4548188bsm14787725wmq.48.2023.08.28.12.37.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 12:37:45 -0700 (PDT)
-Message-ID: <9fb41649-b4fb-d652-3207-7c8ff8b32f24@linaro.org>
-Date:   Mon, 28 Aug 2023 20:37:44 +0100
+        d=1e100.net; s=20221208; t=1693251499; x=1693856299;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=esAW1Vw3kz0RXHL7BJoZeroaJEwV9jtttk9VWFt4WEE=;
+        b=WOis5uU+qHqbHqHUVLTrha9yxFjtMHo7vr5I7pAvqQwpTOuvQ8EtYL2Y13PGVRAqw+
+         hcDbD00tRof0af7m8kP/TrySkDCJVxoET1xcpGJGZtbK0F8WSr6u1KtvZZvIGV67WXYx
+         cLxoLBDXKTJFoCfgu1j+DKscVoUl7NljFsFUnCDtPUbA8j5/fKB1v9yHqjbDO6kNZqH2
+         mGTBw8RQs5FhdSXi/7T5LmkQ//Z74kAVw8PK6cXVH8yYwWkjXqpXKNymvfkVEU9eoBb+
+         2RZBFQbdhr5+xCJAVUOj/rJMRDmQStlo+kCcxwyLo+0Lo1krKvNuLgjbbUAJz3wbOhgQ
+         cmAA==
+X-Gm-Message-State: AOJu0Yymrj0LtMXvzfQTUOtIrdMl40IT5g3WuA6ZfZ7mqph54rqF3eFc
+        H3edoYROxlT1KDGBZEnv7E0=
+X-Google-Smtp-Source: AGHT+IGADrSrhqf8727bLcRqdBYN69xQAHTrH64+PqYVOOYIf9AbtKTLrSDzAfsWwY6YciG7gRruew==
+X-Received: by 2002:adf:f890:0:b0:318:720c:bb3 with SMTP id u16-20020adff890000000b00318720c0bb3mr373532wrp.20.1693251499037;
+        Mon, 28 Aug 2023 12:38:19 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id v7-20020a5d6107000000b0031c4d4be245sm11323906wrt.93.2023.08.28.12.38.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 12:38:18 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 20:38:17 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kirill A Shutemov <kirill@shutemov.name>,
+        "Liam R. Howlett" <liam.howlett@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>
+Subject: Re: [PATCH v5 6/7] selftests: mm: Add a test for remapping within a
+ range
+Message-ID: <ebcf8a58-84ac-4568-be2a-51826f384f4e@lucifer.local>
+References: <20230822015501.791637-1-joel@joelfernandes.org>
+ <20230822015501.791637-7-joel@joelfernandes.org>
+ <08ce8c61-e7a2-417a-a3cc-d20861753ae8@lucifer.local>
+ <fb429d82-4576-42d7-b51f-7a72f7f8caec@lucifer.local>
+ <20230828185912.GD1621761@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v3 07/15] media: qcom: camss: Capture VFE CSID dependency
- in a helper function
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
- <20230823104444.1954663-8-bryan.odonoghue@linaro.org>
- <20230828184716.GM14596@pendragon.ideasonboard.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230828184716.GM14596@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828185912.GD1621761@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,22 +85,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 19:47, Laurent Pinchart wrote:
-> Hi Bryan,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Aug 23, 2023 at 11:44:36AM +0100, Bryan O'Donoghue wrote:
->>  From sdm845 onwards we need to ensure the VFE is powered on prior to
->> switching on the CSID.
-> 
-> Based on the discussions with Konrad in the mail thread, I would record
-> here the reason for this requirement.
-> 
-> What happens if you unconditionally power up the VFE prior to switching
-> the CSID on ? Will this break something on platforms older than SDM845 ?
+On Mon, Aug 28, 2023 at 06:59:12PM +0000, Joel Fernandes wrote:
+> On Sun, Aug 27, 2023 at 11:15:20AM +0100, Lorenzo Stoakes wrote:
+> > On Sun, Aug 27, 2023 at 10:57:59AM +0100, Lorenzo Stoakes wrote:
+> > [snip]
+> >
+> > > > +/*
+> > > > + * Verify that an mremap within a range does not cause corruption
+> > > > + * of unrelated part of range.
+> > > > + *
+> > > > + * Consider the following range which is 2MB aligned and is
+> > > > + * a part of a larger 10MB range which is not shown. Each
+> > > > + * character is 256KB below making the source and destination
+> >
+> > Just noticed, I think you misspeak here, as this test doens't seem to
+> > offset by 256 KiB? That is the strategy for mremap_move_1mb_from_start()
+> > rather than this test so perhaps comment needs to be moved around?
+> >
+> >  * 2MB each. The lower case letters are moved (s to d) and the
+> >  * upper case letters are not moved. The below test verifies
+> >  * that the upper case S letters are not corrupted by the
+> >  * adjacent mremap.
+> >  *
+> >  * |DDDDddddSSSSssss|
+> >  */
+> >  static void mremap_move_within_range(char pattern_seed)
+>
+> Here we are moving 1MB within a 4MB zone of a large mapping. Each character
+> 's' or 'd' is 256KB. The 256KB there is just for illustration and not really
+> significant as such. The 'ssss' is moved to 'dddd' 1MB each. Here we make
 
-vfe->power_count will bump and you will be fine.
+Ahhh I see. I find that a little confusing here, perhaps clearer to say 'each
+block of letters is 1 MiB in size' or something?
 
----
-bod
+> sure that this move did not accidentally corrupt 'SSSS' and 'DDDD' due to
+> alignment optimization. Basically to protect from this, we check in the code
+> that the source address is beginning of the VMA:
+> +	if (vma->vm_start != addr_to_align)
+> +		return false;
+>
+> But you did point an issue which is I need to change the comment from 'larger
+> 10MB' to 'larger 20MB'.
+
+Did I? Well happy to take credit ;)
+
+>
+> In the mremap_move_1mb_from_start() test, I request for an alignment of
+> 1.25MB so that when I align down, I fall no mapping. This is to catch a bug
+> that Linus found which is that just because an aligned down address did not
+> fall on a mapping, that doesn't mean we can just move it at PMD-level
+> otherwise we destroy the mapping.
+
+Yeah that case it all makes sense in, just wondered if the comment belonged
+there but just me not reading your comment carefully!
+
+>
+> I do need to update the test name in mremap_move_1mb_from_start() to: "mremap
+> move 1mb from start at 1MB+256KB aligned src". So thanks for point this!
+>
+> Would that sort it out or is there still something in the comment I am
+> missing?
+
+Just the suggestion above re: clarification, however it's not a show
+stopper more of a small nit.
+
+>
+> Thanks!
+>
+>  - Joel
+
+Cheers!
+
+>
+>
+>
+>
+>
+>
+> >
+> > [snip]
