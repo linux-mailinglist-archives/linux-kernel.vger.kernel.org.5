@@ -2,115 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA65B78AE96
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E43478AE9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjH1LQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        id S230026AbjH1LRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjH1LQ0 (ORCPT
+        with ESMTP id S231140AbjH1LQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:16:26 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C418ACA;
-        Mon, 28 Aug 2023 04:16:23 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B117B4E6;
-        Mon, 28 Aug 2023 13:14:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693221299;
-        bh=wAOvC7LAehxVYXk6M4iIL52K0KDU5VksYyIuhU3qATY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jxIvWgITwBDI06yIRviN0q0gXqxt5EeuBkFTeTXTwYV76N64UfrUO2/vfc7mfeZMd
-         JPPLO+k6kyHM9LUApJhUOUUTKdd3R/tqye3/Qq4rGRsf2CCk5dLJmSIZz+H9i9pwdc
-         NNCQbF9fG/kmovIhcyf2ueqsq4d2gSaHQEjsZxEc=
-Date:   Mon, 28 Aug 2023 14:16:30 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: rdacm2: Remove an incorrect
- fwnode_handle_put() call
-Message-ID: <20230828111630.GH14596@pendragon.ideasonboard.com>
-References: <d9230082aefcb7bab6363c51c08598eb5ab62cfc.1693037086.git.christophe.jaillet@wanadoo.fr>
- <zijwh5kcrfsg4q4pmxtkzia7tdpg4wnau53npe2y2xe4j7n7wy@zqwigtmyftu3>
- <20230828105723.GF14596@pendragon.ideasonboard.com>
+        Mon, 28 Aug 2023 07:16:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F361B10E
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:16:52 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D4F5F6600873;
+        Mon, 28 Aug 2023 12:16:50 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693221411;
+        bh=BlJFXTWexWp6mvkGqWMB8M7CVKV2UlUeerfJzGgXkj0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Liu0JclTWTa5GwqIj76KMimjJxucjirjetPeMy/4zi/a7zAYY4bZ3rgno8MzwEZzP
+         U3CSKmxm5Cuh5UugQRoA9rE10Fl8VkICVV6Mh7BypkX1us9S2LaQKA9LPIfx5IkyPD
+         /mIL+3xjmSy4cFgwXl9ckAVZ4DUzWJOG0WLA1+/kexc5NoPto0b14XIARubx8ljK59
+         OKYdqNFjnDhYYFy95JblbGvPDYTS+sL5EAfoCZyDUd5nTxTTbTeUQ5HoyXdOTt4Yzf
+         c4Lj5EKxVLsHN5D8x0bx3uSxTFytFnMC3vvCvjqYkua/A3o6BkeK/l2c3OUc+0yqqY
+         kPtPA5MfPbOaw==
+Date:   Mon, 28 Aug 2023 13:16:47 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v15 01/23] drm/shmem-helper: Fix UAF in error path when
+ freeing SGT of imported GEM
+Message-ID: <20230828131647.18888896@collabora.com>
+In-Reply-To: <20230827175449.1766701-2-dmitry.osipenko@collabora.com>
+References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
+        <20230827175449.1766701-2-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230828105723.GF14596@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 01:57:24PM +0300, Laurent Pinchart wrote:
-> On Mon, Aug 28, 2023 at 09:48:10AM +0200, Jacopo Mondi wrote:
-> > Hi Christophe
-> > 
-> > On Sat, Aug 26, 2023 at 10:05:06AM +0200, Christophe JAILLET wrote:
-> > > The commit in Fixes has removed an fwnode_handle_put() call in the error
-> > > handling path of the probe.
-> > >
-> > > Remove the same call from the remove function.
-> > >
-> > > Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > 
-> > Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+On Sun, 27 Aug 2023 20:54:27 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> Freeing drm-shmem GEM right after creating it using
+> drm_gem_shmem_prime_import_sg_table() frees SGT of the imported dma-buf
+> and then dma-buf frees this SGT second time.
 > 
-> The subject line should read "rdacm21", not "rdacm2". with that fixed,
+> The v3d_prime_import_sg_table() is example of a error code path where
+> dma-buf's SGT is freed by drm-shmem and then it's freed second time by
+> dma_buf_unmap_attachment() in drm_gem_prime_import_dev().
 > 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Add drm-shmem GEM flag telling that this is imported SGT shall not be
+> treated as own SGT, fixing the use-after-free bug.
 > 
-> > > ---
-> > > /!\   This patch is highly speculative. Review with care.   /!\
-> > >
-> > > If it is correct, it is likely that other similar issue lurk in commit
-> > > 1029939b3782. I've not looked in detail and my cocci script did not
-> > > trigger on them but drivers/media/i2c/max9286.c also looks like a
-> > > similar candidate.
-> > 
-> > I think the call to  fwnode_handle_put(priv->sd.fwnode) in
-> > max9286_v4l2_unregister() can indeed be removed, yes!
+> Cc: stable@vger.kernel.org
+> Fixes: 2194a63a818d ("drm: Add library for shmem backed GEM objects")
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 3 ++-
+>  include/drm/drm_gem_shmem_helper.h     | 7 +++++++
+>  2 files changed, 9 insertions(+), 1 deletion(-)
 > 
-> I agree.
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index a783d2245599..78d9cf2355a5 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -141,7 +141,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  
+>  	if (obj->import_attach) {
+>  		drm_prime_gem_destroy(obj, shmem->sgt);
+> -	} else {
+> +	} else if (!shmem->imported_sgt) {
+>  		dma_resv_lock(shmem->base.resv, NULL);
+>  
+>  		drm_WARN_ON(obj->dev, shmem->vmap_use_count);
+> @@ -758,6 +758,7 @@ drm_gem_shmem_prime_import_sg_table(struct drm_device *dev,
+>  		return ERR_CAST(shmem);
+>  
+>  	shmem->sgt = sgt;
+> +	shmem->imported_sgt = true;
 
-drivers/media/platform/nxp/imx-mipi-csis.c also needs a fix.
 
-Christophe, do you plan to send patches for those ? If not, I can handle
-it.
+I feel like adding more fields that can be used to do the is_imported()
+check is going to be even more confusing. Can we instead have
 
-> > > ---
-> > >  drivers/media/i2c/rdacm21.c | 1 -
-> > >  1 file changed, 1 deletion(-)
-> > >
-> > > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> > > index a36a709243fd..3e22df36354f 100644
-> > > --- a/drivers/media/i2c/rdacm21.c
-> > > +++ b/drivers/media/i2c/rdacm21.c
-> > > @@ -608,7 +608,6 @@ static void rdacm21_remove(struct i2c_client *client)
-> > >  	v4l2_async_unregister_subdev(&dev->sd);
-> > >  	v4l2_ctrl_handler_free(&dev->ctrls);
-> > >  	i2c_unregister_device(dev->isp);
-> > > -	fwnode_handle_put(dev->sd.fwnode);
-> > >  }
-> > >
-> > >  static const struct of_device_id rdacm21_of_ids[] = {
+	/* drm_gem_shmem_prime_import_sg_table() can be called from a
+	 * driver specific ->import_sg_table() implementations that
+	 * have extra failable initialization steps. Assign
+	 * drm_gem_object::import_attach here (even though it's
+	 * assigned in drm_gem_prime_import_dev()), so we don't end up
+	 * with driver error paths calling drm_gem_shmem_free() with an
+	 * imported sg_table assigned to drm_gem_shmem_object::sgt and
+	 * drm_gem_object::import_attach left uninitialized.
+	 */
+	shmem->base.import_attach = attach;
 
--- 
-Regards,
+here?
 
-Laurent Pinchart
+>  
+>  	drm_dbg_prime(dev, "size = %zu\n", size);
+>  
+> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
+> index bf0c31aa8fbe..ec70a98a8fe1 100644
+> --- a/include/drm/drm_gem_shmem_helper.h
+> +++ b/include/drm/drm_gem_shmem_helper.h
+> @@ -73,6 +73,13 @@ struct drm_gem_shmem_object {
+>  	 */
+>  	unsigned int vmap_use_count;
+>  
+> +	/**
+> +	 * @imported_sgt:
+> +	 *
+> +	 * True if SG table belongs to imported dma-buf.
+> +	 */
+> +	bool imported_sgt : 1;
+> +
+>  	/**
+>  	 * @pages_mark_dirty_on_put:
+>  	 *
+
