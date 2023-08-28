@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A78778B3FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6D578B3FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbjH1PGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        id S230377AbjH1PGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjH1PGN (ORCPT
+        with ESMTP id S232418AbjH1PGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:06:13 -0400
-Received: from luna.linkmauve.fr (82-65-109-163.subs.proxad.net [82.65.109.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF31AF0;
-        Mon, 28 Aug 2023 08:06:07 -0700 (PDT)
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 00F208DA8B8; Mon, 28 Aug 2023 17:06:05 +0200 (CEST)
-Date:   Mon, 28 Aug 2023 17:06:05 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        azkali <a.ffcc7@gmail.com>, Adam Jiang <chaoj@nvidia.com>,
-        CTCaer <ctcaer@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] misc: bm92txx: Add driver for the ROHM BM92Txx
-Message-ID: <ZOy33RB8aj3455ZQ@desktop>
-References: <20230824153059.212244-1-linkmauve@linkmauve.fr>
- <20230824153059.212244-3-linkmauve@linkmauve.fr>
- <f79087c0-cc44-4fb6-fa2e-b43db5dfd6d4@linaro.org>
+        Mon, 28 Aug 2023 11:06:42 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C9C12A
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:06:38 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 61A751C0004; Mon, 28 Aug 2023 17:06:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1693235196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yylICwaQdM/26lHIrVTa5TKyfRjIX2nH4uItYnG9dAY=;
+        b=ajed7GrFSS+9MqlzOZkIPs88QvcXTfIDIxp2rmQJliUcX89JPxLm1mV9jdnaR4yrZlT2h2
+        K4LbbfyoWNx/n83dDbBRpzpAvEMq51U6hryYVWPL/bmx7W7Ep8HPNiHUfREY+iGVqca11s
+        o91fW1BKTxeaiIcH7rWO7B2ClzTJyBY=
+Date:   Mon, 28 Aug 2023 17:06:35 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Joshua Hudson <joshudson@gmail.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: System Call trashing registers
+Message-ID: <ZOy3+8qKfQxyrWez@duo.ucw.cz>
+References: <CA+jjjYQWeqDY3EFQWmVzV2pXyhfRaHm6s-XWYSXfe1CxvkeuEQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="D5ueYtbMZb/DnLu6"
 Content-Disposition: inline
-In-Reply-To: <f79087c0-cc44-4fb6-fa2e-b43db5dfd6d4@linaro.org>
-Jabber-ID: linkmauve@linkmauve.fr
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_DUL,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CA+jjjYQWeqDY3EFQWmVzV2pXyhfRaHm6s-XWYSXfe1CxvkeuEQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Thu, Aug 24, 2023 at 06:28:07PM +0200, Krzysztof Kozlowski wrote:
-> On 24/08/2023 17:30, Emmanuel Gil Peyrot wrote:
-> > From: azkali <a.ffcc7@gmail.com>
-> > 
-> > This is used as the USB-C Power Delivery controller of the Nintendo
-> > Switch.
-> > 
-> > Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> > Signed-off-by: azkali <a.ffcc7@gmail.com>
-> > Signed-off-by: Adam Jiang <chaoj@nvidia.com>
-> > Signed-off-by: CTCaer <ctcaer@gmail.com>
-> 
-> These do not look like real identities. In this and previous patchset
-> your author emails bounces, so I propose to drop all stale addresses and
-> all anonymous entries.
+--D5ueYtbMZb/DnLu6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I and the authors find that policy inacceptable, our work should be
-credited and our copyright should hold despite our choice of name.
+Hi!
 
-Given the amount of issues in this patchset I will drop it for now, we
-will come back with a better patchset for this particular device in a
-while.
+> 1) A lot of my old 32-bit programs don't work on x64 linux anymore
+> because int 80h now trashes ecx and edx. This hasn't been a serious
+> problem for me.
+>=20
+> 2) syscall is documented to trash rcx and r11.
+>=20
+> What I don't understand is why this hasn't ever led to a security
+> issue due to leaking values from kernel space (in the trashed
+> registers) back to userspace.
 
-> 
-> Best regards,
-> Krzysztof
-> 
+I guess you should cc x86 maintainers?
 
-Thanks for the review, I already tried to clean it up but it was clearly
-not as good as the expectations here.
+I guess this is a regression? When did it start?
 
--- 
-Link Mauve
+BR,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--D5ueYtbMZb/DnLu6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZOy3+wAKCRAw5/Bqldv6
+8vDsAKCrucLlvY0dt79g3t5++aDqyoK7gACfWQxnrH1RD5WgvF/Ced2bvFJzZf8=
+=BSgY
+-----END PGP SIGNATURE-----
+
+--D5ueYtbMZb/DnLu6--
