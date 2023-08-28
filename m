@@ -2,124 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0286B78A97C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35F378A97F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjH1J74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
+        id S230260AbjH1J77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjH1J7k (ORCPT
+        with ESMTP id S230250AbjH1J7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:59:40 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0821FCA
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:59:38 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d7481bc4d6fso2979344276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693216777; x=1693821577;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Ae2B/bJD6+pwU7iQXkYD7WW81UmVpdPoOKJ3dyD5y8=;
-        b=f8Yzvy+q9p7b+uTEWqZMvv9SEdH8DMylAj82MSyBNZMaceHWqEOUBmJ2QPp2Fq0Jhe
-         QZVJGaai3aWlYCwFJtU4A2K6OzSN0cFANsnL3Qjp2eilj8ChFys5NtfM3SC51dk7x0Li
-         AdPbQwd7PlborWBlILgSxNJm6rqtxx5fFfLlJp73GpBlt5hjU/Hm0Fpsou0XZiw6r5R3
-         0eg9Bghw94yVk/3e5KQqm3k0J02UvM+kA5BsCdeVpsvAqFoF2lvRh4wyiUzhak3DNBWH
-         BlNx7NDUaV0vY33rKkfDAdOOq0kuqp3oR6RFxMc/hrKsPOJmhC+HXH4EDZ9DiYPgNMSG
-         LkRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693216777; x=1693821577;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8Ae2B/bJD6+pwU7iQXkYD7WW81UmVpdPoOKJ3dyD5y8=;
-        b=lbmqUBjpk6wpk3jmcAOVc1GPB6OALE4XY3ZdMbvH3Gn2JWxnWkuagavSEAZVKEeyIH
-         hM/8ZXyYlPKso9NT1QfFO8PykMoPHGypFkkLD5fc+nMIL9Qw9x98Hcx5eF5NsSIwpGUS
-         5XQo8Gs56hFczsROiztbnM08JykfgBxbyV0xoT+R63Nn7asPX+IkjqkchvgmYipTVuTI
-         avC8iHg6mTeMtvhd5ilGnQ4yZ9tqsgRgvxvURCEK4AwcrhD5dNPeeLoYtf5f7hKXYsv1
-         axzIumbLnRiO2L6C1hNDuazwAr+Auvxnl/3bx0Mi/PYjCuTbgHwv8rPifPC+pU0RMegb
-         8ghw==
-X-Gm-Message-State: AOJu0YzdEuN25m3GodnjPxMVu6l3Tjl522pRHa8tx/OK0SKW//sSHFHx
-        t0KEILCIG7IHquAKVkNYPqaJC83YYLJElGwtJL5eLA==
-X-Google-Smtp-Source: AGHT+IEaCoCpMUCPjNNvMpqNFEuip8dU+C99qMdfR/6PRAdeSAMP7ht991M5faWrDlN7Kt9uuuksTVQFdukE70njB/g=
-X-Received: by 2002:a25:2641:0:b0:d7a:c626:538a with SMTP id
- m62-20020a252641000000b00d7ac626538amr6186920ybm.62.1693216777261; Mon, 28
- Aug 2023 02:59:37 -0700 (PDT)
+        Mon, 28 Aug 2023 05:59:47 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF08D91;
+        Mon, 28 Aug 2023 02:59:37 -0700 (PDT)
+X-UUID: 94a7f7e4458911eeb20a276fd37b9834-20230828
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=ULLZemRhMxAbFZxKNtJLD9ABVZO2iMvHhuIqtLS4lLw=;
+        b=E3cwQxcPYVQR8cxJIvlU+VpUcB694ACP19v5Ljx3qi0sp6iSYy1YI7K8D7Hre60Nk9XkrEUMf9QTmvcfnCJvDqkraZHOibfM+MfKesDDUjgkFpq8k17J046sfy45xq5vCLeSDLKvZQfCTETqk+JAf+7VEqCIuTgCAJJ3r3PoH6c=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:3c843121-223a-4bb5-8667-6265dbe0a20f,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:45
+X-CID-INFO: VERSION:1.1.31,REQID:3c843121-223a-4bb5-8667-6265dbe0a20f,IP:0,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+        elease,TS:45
+X-CID-META: VersionHash:0ad78a4,CLOUDID:3ef24413-4929-4845-9571-38c601e9c3c9,B
+        ulkID:230828123614SOTZ7U80,BulkQuantity:8,Recheck:0,SF:64|29|28|17|19|48|1
+        02,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,CO
+        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 94a7f7e4458911eeb20a276fd37b9834-20230828
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 265903182; Mon, 28 Aug 2023 17:59:30 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 28 Aug 2023 17:59:28 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Mon, 28 Aug 2023 17:59:25 +0800
+Message-ID: <986d8056-3708-ed3d-1896-0fbc034ca53c@mediatek.com>
+Date:   Mon, 28 Aug 2023 17:59:23 +0800
 MIME-Version: 1.0
-References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
- <CAPDyKFqsn6kVjPFUdVyRxNDiOaHO9hq=9c+6eAK4N-v-LVWUPw@mail.gmail.com>
- <PAXPR04MB91858254554272C90822FED1891DA@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <CAPDyKFoV2Z=-WUiF3SgXqhF+K+r5QqsLgz8_hau0WKfZxTzYpg@mail.gmail.com>
- <PAXPR04MB9185F6AA20B0440B8FAB847789E3A@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <4e2c18e3-b1ed-6361-3998-5de060d2bcf0@linaro.org>
-In-Reply-To: <4e2c18e3-b1ed-6361-3998-5de060d2bcf0@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 28 Aug 2023 11:59:00 +0200
-Message-ID: <CAPDyKFro6roynXuS1caARpMK08hvARQ7mQfiJcDgCyJXiw=nzw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Shenwei Wang <shenwei.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 3/4] arm64: dts: mediatek: mt6360: add PMIC MT6360 related
+ nodes
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "imx@lists.linux.dev" <imx@lists.linux.dev>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+References: <20230825114623.16884-1-macpaul.lin@mediatek.com>
+ <20230825114623.16884-3-macpaul.lin@mediatek.com>
+ <CAGXv+5FTuY=ZHB3-2Woit5amRZ=RxByGMq=LQp-es8tWEhAQUA@mail.gmail.com>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <CAGXv+5FTuY=ZHB3-2Woit5amRZ=RxByGMq=LQp-es8tWEhAQUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,
+        T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Aug 2023 at 19:31, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 25/08/2023 17:44, Shenwei Wang wrote:
-> >>
-> >> The genpd provider then needs to be a consumer of the resources it needs. In
-> >> this case a couple of regulators it seems like.
-> >>
-> >
-> > If I understood your reply correctly,  it seems that the current implementation of
-> > regulator-pd is what you have described. Please correct me if I'm mistaken.
-> >
-> > The following are the diff of scu-pd and this regulator-pd.
-> >
-> >     power-controller {                                                    power-controller {
-> >         compatible = "fsl,imx8qxp-scu-pd", "fsl,scu-pd";      |               compatible = "regulator-power-domain";
-> >         #power-domain-cells = <1>;                                    #power-domain-cells = <1>;
-> >                                                             >
-> >                                                             >         regulator-number = <2>;
-> >                                                             >         regulator-0-supply = <&reg1>;
-> >                                                             >         regulator-1-supply = <&reg2>;
-> >     };                                                                    };
-> >
-> > Are you suggesting to move the regulator-pd to the imx directory and add a company prefix
-> > to the compatible string?
->
-> There is no such part of iMX processor as such regulator-power-domain,
-> so I don't recommend that approach. DTS nodes represent hardware, not
-> your SW layers.
 
-I would agree if this was pure SW layers, but I don't think it is. At
-least, if I have understood the earlier discussions correctly [1],
-there are certainly one or more power-domains here. The power-domains
-just happen to be powered through something that can be modelled as a
-regular regulator(s). No?
+On 8/28/23 12:36, Chen-Yu Tsai wrote:
+> 	
+> 
+> External email : Please do not click links or open attachments until you 
+> have verified the sender or the content.
+> 
+> On Fri, Aug 25, 2023 at 7:46 PM Macpaul Lin <macpaul.lin@mediatek.com> wrote:
+>>
+>> MT6360 is the secondary PMIC for MT8195.
+>> It supports USB Type-C and PD functions.
+>> Add MT6360 related common nodes which is used for MT8195 platform, includes
+>>  - charger
+>>  - ADC
+>>  - LED
+>>  - regulators
+>>
+>> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+>> ---
+>>  arch/arm64/boot/dts/mediatek/mt6360.dtsi | 112 +++++++++++++++++++++++
 
-Note that, we already have other power-domains that are consumers of
-regulators too.
+[snip..]
 
-Kind regards
-Uffe
+>> +       regulator {
+>> +               compatible = "mediatek,mt6360-regulator";
+>> +               LDO_VIN3-supply = <&mt6360_buck2>;
+>> +
+>> +               mt6360_buck1: buck1 {
+>> +                       regulator-compatible = "BUCK1";
+>> +                       regulator-name = "mt6360,buck1";
+> 
+> Normally there's no need to provide a default name. Any used regulator
+> should have been named to match the power rail name from the board's
+> schematics.
+> 
 
-[1]
-https://lore.kernel.org/all/20220609150851.23084-1-max.oss.09@gmail.com/
+I have 2 schematics on hand. One is mt8195-demo board and the other is 
+genio-1200-evk board. There are 2 PMIC used on these board
+with "the same" sub power rail name for "BUCK1~BUCK4". One is mt6315, 
+and the other is mt6360.
+
+I've also inspected other dtsi of the regulators, such as mt6357 and 
+mt6359. They have regulator nodes with named for their purpose. For the
+schematics of mt8195-demo and genio-1200-evk boards, there are no 
+explicit usage for "BUCK1~BUCK4" for both mt6135 and mt6360. In order to 
+specify the sub power rail for mt6360, MediaTek chooses name like 
+"mt6360,buck1" instead of simple name "buck1" for distinguish with 
+"buck1" of mt6351.
+
+>> +                       regulator-min-microvolt = <300000>;
+>> +                       regulator-max-microvolt = <1300000>;
+> 
+> These values correspond to the regulator's range. They make no sense as
+> regulator constraints. The min/max values are supposed to be the most
+> restrictive set of voltages of the regulator consumers. If what is fed
+> by this regulator can only take 0.7V ~ 1.1V, then it should save 0.7V
+> and 1.1V here. If the regulator is unused, then there are no constraints,
+> and these can be left out.
+> 
+> Just leave them out of the file.
+> 
+> Both comments apply to all the regulators.
+> 
+> ChenYu
+
+There are some common circuit design for these regulators like mt6359, 
+mt6360 and mt6315 used on many products. MediaTek put the most common 
+and expected default values in their dtsi. However, some changes still 
+need to be applied to derivative boards according to product's 
+requirements. The actual value be used will be applied in board's dts 
+file to override the default settings in dtsi.
+
+The regulator node "mt6360,ldo6" is not used by mt8195-demo and 
+genio-1200-evk. I'll remove it in the next version.
+Thanks for the review.
+
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP
+>> +                                                  MT6360_OPMODE_ULP>;
+>> +               };
+>> +
+>> +               mt6360_buck2: buck2 {
+>> +                       regulator-compatible = "BUCK2";
+>> +                       regulator-name = "mt6360,buck2";
+>> +                       regulator-min-microvolt = <300000>;
+>> +                       regulator-max-microvolt = <1300000>;
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP
+>> +                                                  MT6360_OPMODE_ULP>;
+>> +               };
+>> +
+>> +               mt6360_ldo1: ldo1 {
+>> +                       regulator-compatible = "LDO1";
+>> +                       regulator-name = "mt6360,ldo1";
+>> +                       regulator-min-microvolt = <1200000>;
+>> +                       regulator-max-microvolt = <3600000>;
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP>;
+>> +               };
+>> +
+>> +               mt6360_ldo2: ldo2 {
+>> +                       regulator-compatible = "LDO2";
+>> +                       regulator-name = "mt6360,ldo2";
+>> +                       regulator-min-microvolt = <1200000>;
+>> +                       regulator-max-microvolt = <3600000>;
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP>;
+>> +               };
+>> +
+>> +               mt6360_ldo3: ldo3 {
+>> +                       regulator-compatible = "LDO3";
+>> +                       regulator-name = "mt6360,ldo3";
+>> +                       regulator-min-microvolt = <1200000>;
+>> +                       regulator-max-microvolt = <3600000>;
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP>;
+>> +               };
+>> +
+>> +               mt6360_ldo5: ldo5 {
+>> +                       regulator-compatible = "LDO5";
+>> +                       regulator-name = "mt6360,ldo5";
+>> +                       regulator-min-microvolt = <2700000>;
+>> +                       regulator-max-microvolt = <3600000>;
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP>;
+>> +               };
+>> +
+>> +               mt6360_ldo6: ldo6 {
+>> +                       regulator-compatible = "LDO6";
+>> +                       regulator-name = "mt6360,ldo6";
+>> +                       regulator-min-microvolt = <500000>;
+>> +                       regulator-max-microvolt = <2100000>;
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP>;
+>> +               };
+>> +
+>> +               mt6360_ldo7: ldo7 {
+>> +                       regulator-compatible = "LDO7";
+>> +                       regulator-name = "mt6360,ldo7";
+>> +                       regulator-min-microvolt = <500000>;
+>> +                       regulator-max-microvolt = <2100000>;
+>> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> +                                                  MT6360_OPMODE_LP>;
+>> +               };
+>> +       };
+>> +};
+>> --
+>> 2.18.0
+>>
+
+Best regards,
+Macpaul Lin.
