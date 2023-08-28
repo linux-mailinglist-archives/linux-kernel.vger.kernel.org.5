@@ -2,295 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB49C78B6E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892A978B6E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbjH1SAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        id S232974AbjH1SAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233001AbjH1R7u (ORCPT
+        with ESMTP id S233037AbjH1SAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:59:50 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141CC19B
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:59:45 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bc8a2f71eeso20067405ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:59:45 -0700 (PDT)
+        Mon, 28 Aug 2023 14:00:02 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7C012E
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:59:58 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so455414766b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693245584; x=1693850384;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cZlJbdWaIR63MB6+cKGfIWNhhvdxDwDKbDPjEhuXlc8=;
-        b=re2vWxTZsJngYqKRFCy6UaCblUfr8fKqPYK+fIVrV60MQdCGt7sP5+DUb8DKQP5DYD
-         oLbwVQ3qoS6hb2+KLIYFlDvt8th9hPvi8oo6wPIA4jTY79tQjLzHQrfbXqKZdxl8aDKU
-         bq8QoxGbQ4VMUb3+xnBM9SHB6UuUyNevVjww783ppAMD7vrvQqbFKzKvq+ZvsUxA9Gwc
-         uIjmhgU2pWeE7++1c6e6XDIDHzDckTTsjg1DKy/1i9TdstvFUKaet6jQw64VTRu+EvGf
-         JoXdp6xFNFTuM/kQJFl8wfzNtRLiopfOeys5dZCP4sFVp/eHP1mDh+wN7eHf35Rl71nl
-         oXDQ==
+        d=linaro.org; s=google; t=1693245597; x=1693850397;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BjrkEommxgzVsvPeELM83BT2d5xXvo75H1UStaGsfMI=;
+        b=JTayhNgjtHQx8fxD1S0ic9K2eV0gHdK4jVwPvnPUGd2lV1rXAApieBetsa8bytyDW5
+         kMywhMh+NFRhCXY36/qiT3S+8rQTEW+i/V9PBCqjsV/VcP8DScv2dhRyBuZWwt3ghzRB
+         m8KwSRIQ8hTxsukbALZVslO4oivb0kZSsuC3weid+ly8l8KNNyjRfAZzl3BH+KfHXmDv
+         cVrxK6SpS1YGApwo4iLhrKEIW2iBp1nGzCFWGASuUbfp94glhsFkKKjOQVqARPKZbGIs
+         fAxj62ynY1wCpC7pkNCdi5h+EA10oCOXTjyg2BuRZ+r78s9uIXEdtA/l+JpCzH4OUS7m
+         QCuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693245584; x=1693850384;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cZlJbdWaIR63MB6+cKGfIWNhhvdxDwDKbDPjEhuXlc8=;
-        b=Z/OqhDOnc2AzroR/IGsDrNTMEelFn61lk3euhYPpw+AyccwsxMf89mWZpvlMpyI6kD
-         FC0C/wwye1FjtHyjXFQdfBQX47ljn7pA8eZsRTmt/JemxLS5xh49ToelZJ1Y65y74u5L
-         klJftOUIgyY/yD6sx2U0pbHt4wKHUl/NCA6kDoA22DW/MFCsj4AJecH2gi93AY3CA2lo
-         AUHZr3TIwsRo1vPKYHADt8p64FxvUcGiG8tCSDHrVZqGxpaBINTiPAtBZKv9vTaxW1vH
-         SA6MNMKEaB/ESOX256/g6lfwdvtzoa8GVZqRfZ18y65DeI5OXxadfeSHZud/jHNwOD9P
-         U46A==
-X-Gm-Message-State: AOJu0Yz0Oulf9xDJO55rMVbdMVopSINfhdGv7zyi4myOfuSOrb90flcP
-        Hx355jf+lyUkgV+k16HFfldYLg==
-X-Google-Smtp-Source: AGHT+IHve46vr57tT4L0A+DoFQ2zYJAJtNF3aR+RJ/z+x45b5NMheAll5oulWOektSu43lHp5g9Nsg==
-X-Received: by 2002:a17:902:ef96:b0:1c0:bcbc:d5d with SMTP id iz22-20020a170902ef9600b001c0bcbc0d5dmr9540910plb.61.1693245584478;
-        Mon, 28 Aug 2023 10:59:44 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:3b:df05:c142:c2ef])
-        by smtp.gmail.com with ESMTPSA id jh12-20020a170903328c00b001bf5c12e9fesm7714881plb.125.2023.08.28.10.59.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 10:59:43 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 11:59:41 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v16 08/14] remoteproc: mediatek: Probe SCP cluster on
- multi-core SCP
-Message-ID: <ZOzgja8mfNefRqP7@p14s>
-References: <20230728023959.12293-1-tinghan.shen@mediatek.com>
- <20230728023959.12293-9-tinghan.shen@mediatek.com>
+        d=1e100.net; s=20221208; t=1693245597; x=1693850397;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BjrkEommxgzVsvPeELM83BT2d5xXvo75H1UStaGsfMI=;
+        b=M4Snw3NvUGDd3KDX/fdmpgCH9QpQij4tMXhAhFh1NmO6rsjmdIWKmZ7EUx/90VlaaN
+         kLH7L1L5dCGig+PfjIrsFAW2Cr9EnyhgBNuLiKcdCTKe3w3Mdb9KTVldgSun1tLymVUL
+         mPTB1I0GnOIy6af5EwcIGe57Wwh1eZre4XCdyuIKG6te48yFn/+3QBQQdYRiAV0a+P2X
+         lco8tx3TF4l8Q1xJjKDi3Ndp2fiAxxtNqKEcsGJlhiktwhHmC+4Di9foK3sJGpEmVj53
+         4m/K2DAFmDCnk8SvqHkibmPwdPt5QAO2+Lz0wnDBzc8fJ9RC/I/hqNZWsQh3+G6ikSoC
+         /IbQ==
+X-Gm-Message-State: AOJu0YzjxPLairze2jLakMLbE4aJDsCxNByuVCv8IyE5Ab/hvX9w4jBc
+        ko9E6uWHAELwBIuU51h8oNe9yQ==
+X-Google-Smtp-Source: AGHT+IEgWbg5t5ZGn+L+7J47VuL32+upXijCivlJd+5GNKo6BO3FJ+P2Y6r8QA61T+yNo9WfJ947sA==
+X-Received: by 2002:a17:906:2921:b0:99c:f966:9ea2 with SMTP id v1-20020a170906292100b0099cf9669ea2mr17270150ejd.25.1693245597040;
+        Mon, 28 Aug 2023 10:59:57 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id b8-20020a170906194800b009920e9a3a73sm4921968eje.115.2023.08.28.10.59.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 10:59:56 -0700 (PDT)
+Message-ID: <78aa33f9-ead8-b128-2a7a-40530a1a3ed0@linaro.org>
+Date:   Mon, 28 Aug 2023 19:59:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728023959.12293-9-tinghan.shen@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
+Content-Language: en-US
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        quic_pkondeti@quicinc.com, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com, workflows@vger.kernel.org,
+        tools@linux.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+References: <cover.1693037031.git.quic_gurus@quicinc.com>
+ <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
+ <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
+ <20230828175629.GC23466@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230828175629.GC23466@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tinghan,
-
-On Fri, Jul 28, 2023 at 10:39:53AM +0800, Tinghan Shen wrote:
-> The difference of single-core SCP and multi-core SCP device tree is
-> the presence of child device nodes described SCP cores. The SCP
-> driver populates the platform device and checks the child nodes
-> to identify whether it's a single-core SCP or a multi-core SCP.
+On 28/08/2023 19:56, Guru Das Srinagesh wrote:
+> On Aug 28 2023 10:21, Krzysztof Kozlowski wrote:
+>> On 26/08/2023 10:07, Guru Das Srinagesh wrote:
+>>> This script runs get_maintainer.py on a given patch file (or multiple
+>>> patch files) and adds its output to the patch file in place with the
+>>> appropriate email headers "To: " or "Cc: " as the case may be. These new
+>>> headers are added after the "From: " line in the patch.
+>>>
+>>> Currently, for a single patch, maintainers and reviewers are added as
+>>> "To: ", mailing lists and all other roles are added as "Cc: ".
+>>>
+>>> For a series of patches, however, a set-union scheme is employed in
+>>> order to solve the all-too-common problem of ending up sending only
+>>> subsets of a patch series to some lists, which results in important
+>>> pieces of context such as the cover letter (or other patches in the
+>>> series) being dropped from those lists. This scheme is as follows:
+>>>
+>>> - Create set-union of all maintainers and reviewers from all patches and
+>>>   use this to do the following per patch:
+>>>   - add only that specific patch's maintainers and reviewers as "To: "
+>>>   - add the other maintainers and reviewers from the other patches as "Cc: "
+>>>
+>>> - Create set-union of all mailing lists corresponding to all patches and
+>>>   add this to all patches as "Cc: "
+>>>
+>>> - Create set-union of all other roles corresponding to all patches and
+>>>   add this to all patches as "Cc: "
+>>>
+>>> Please note that patch files that don't have any "Maintainer"s or
+>>> "Reviewers" explicitly listed in their `get_maintainer.pl` output will
+>>
+>> So before you will ignoring the reviewers, right? One more reason to not
+>> get it right...
 > 
-> Add the remoteproc instances of multi-core SCP to the SCP cluster list.
-> When the SCP driver is removed, it cleanup resources by walking
-> through the cluster list.
+> In v2, Reviewers were added as "Cc:" whereas here in v3 they are added as
+> "To:". Not sure where you're getting "ignoring the reviewers" from.
 > 
-> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  drivers/remoteproc/mtk_scp.c | 118 +++++++++++++++++++++++++++++++++--
->  1 file changed, 113 insertions(+), 5 deletions(-)
+>>> not have any "To: " entries added to them; developers are expected to
+>>> manually make edits to the added entries in such cases to convert some
+>>> "Cc: " entries to "To: " as desired.
+>>>
+>>> The script is quiet by default (only prints errors) and its verbosity
+>>> can be adjusted via an optional parameter.
+>>>
+>>> Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
+>>> ---
+>>>  MAINTAINERS               |   5 ++
+>>>  scripts/add-maintainer.py | 164 ++++++++++++++++++++++++++++++++++++++
+>>>  2 files changed, 169 insertions(+)
+>>>  create mode 100755 scripts/add-maintainer.py
+>>>
+>>
+>> I do not see the benefits of this script. For me - it's unnecessarily
+>> more complicated instead of my simple bash function which makes
 > 
-> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-> index d67dcabdab9e..d9242c3eb0d7 100644
-> --- a/drivers/remoteproc/mtk_scp.c
-> +++ b/drivers/remoteproc/mtk_scp.c
-> @@ -855,7 +855,8 @@ static void scp_remove_rpmsg_subdev(struct mtk_scp *scp)
->  }
->  
->  static struct mtk_scp *scp_rproc_init(struct platform_device *pdev,
-> -				      struct mtk_scp_of_cluster *scp_cluster)
-> +				      struct mtk_scp_of_cluster *scp_cluster,
-> +				      const struct mtk_scp_of_data *of_data)
->  {
->  	struct device *dev = &pdev->dev;
->  	struct device_node *np = dev->of_node;
-> @@ -878,7 +879,7 @@ static struct mtk_scp *scp_rproc_init(struct platform_device *pdev,
->  	scp = rproc->priv;
->  	scp->rproc = rproc;
->  	scp->dev = dev;
-> -	scp->data = of_device_get_match_data(dev);
-> +	scp->data = of_data;
->  	scp->cluster = scp_cluster;
->  	platform_set_drvdata(pdev, scp);
->  
-> @@ -951,15 +952,15 @@ static void scp_free(struct mtk_scp *scp)
->  	mutex_destroy(&scp->send_lock);
->  }
->  
-> -static int scp_cluster_init(struct platform_device *pdev,
-> -			    struct mtk_scp_of_cluster *scp_cluster)
-> +static int scp_add_single_core(struct platform_device *pdev,
-> +			       struct mtk_scp_of_cluster *scp_cluster)
->  {
->  	struct device *dev = &pdev->dev;
->  	struct list_head *scp_list = &scp_cluster->mtk_scp_list;
->  	struct mtk_scp *scp;
->  	int ret;
->  
-> -	scp = scp_rproc_init(pdev, scp_cluster);
-> +	scp = scp_rproc_init(pdev, scp_cluster, of_device_get_match_data(dev));
->  	if (IS_ERR(scp))
->  		return PTR_ERR(scp);
->  
-> @@ -975,6 +976,102 @@ static int scp_cluster_init(struct platform_device *pdev,
->  	return 0;
->  }
->  
-> +static int scp_add_multi_core(struct platform_device *pdev,
-> +			      struct mtk_scp_of_cluster *scp_cluster)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev_of_node(dev);
-> +	struct platform_device *cpdev;
-> +	struct device_node *child;
-> +	struct list_head *scp_list = &scp_cluster->mtk_scp_list;
-> +	const struct mtk_scp_of_data **cluster_of_data;
-> +	struct mtk_scp *scp, *temp;
-> +	int core_id = 0;
-> +	int ret;
-> +
-> +	cluster_of_data = (const struct mtk_scp_of_data **)of_device_get_match_data(dev);
-> +
-> +	for_each_available_child_of_node(np, child) {
-> +		if (!cluster_of_data[core_id]) {
-> +			ret = -EINVAL;
-> +			dev_err(dev, "Not support core %d\n", core_id);
-> +			of_node_put(child);
-> +			goto init_fail;
-> +		}
-> +
-> +		cpdev = of_find_device_by_node(child);
-> +		if (!cpdev) {
-> +			ret = -ENODEV;
-> +			dev_err(dev, "Not found platform device for core %d\n", core_id);
-> +			of_node_put(child);
-> +			goto init_fail;
-> +		}
-> +
-> +		scp = scp_rproc_init(cpdev, scp_cluster, cluster_of_data[core_id]);
-> +		put_device(&cpdev->dev);
-> +		if (IS_ERR(scp)) {
-> +			ret = PTR_ERR(scp);
-> +			dev_err(dev, "Failed to initialize core %d rproc\n", core_id);
-> +			of_node_put(child);
-> +			goto init_fail;
-> +		}
-> +
-> +		ret = rproc_add(scp->rproc);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to add rproc of core %d\n", core_id);
-> +			of_node_put(child);
-> +			scp_free(scp);
-> +			goto init_fail;
-> +		}
-> +
-> +		list_add_tail(&scp->elem, scp_list);
-> +		core_id++;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, scp);
-> +
+> Your function adds mailing lists also in "To:" which is not ideal, in my view.
+> You've mentioned before that To or Cc doesn't matter [1] which I disagree
+> with: it doesn't matter, why does Cc exist as a concept at all?
 
-Here we are setting the platform device for @pdev to the last @scp that was
-created, which is needed because (1) scp_rproc_init() is calling
-platform_set_drvdata() on the child platform devices and (2) we need a handle to
-the cluster list in scp_remove().
+To/Cc does not matter when sending new patch, because maintainers know
+they are maintainers of which parts. I know what I handle.
 
-Please add a comment with the above just before calling platform_set_drvdata().
-Otherwise it will be very difficult for people not familiar with the driver to
-understand what is going on.
+To/Cc still makes sense in other cases, when for example you ping
+someone asking for reviews. It also makes much more sense in all
+corpo-worlds where such distinction is obvious. We are not a corpo-world
+here.
 
-Otherwise I think we are done.
 
-Thanks,
-Mathieu
+Best regards,
+Krzysztof
 
-> +	return 0;
-> +
-> +init_fail:
-> +	list_for_each_entry_safe_reverse(scp, temp, scp_list, elem) {
-> +		list_del(&scp->elem);
-> +		rproc_del(scp->rproc);
-> +		scp_free(scp);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int scp_is_single_core(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev_of_node(dev);
-> +	struct device_node *child;
-> +
-> +	child = of_get_next_available_child(np, NULL);
-> +	if (!child)
-> +		return dev_err_probe(dev, -ENODEV, "No child node\n");
-> +
-> +	of_node_put(child);
-> +	return of_node_name_eq(child, "cros-ec-rpmsg");
-> +}
-> +
-> +static int scp_cluster_init(struct platform_device *pdev, struct mtk_scp_of_cluster *scp_cluster)
-> +{
-> +	int ret;
-> +
-> +	ret = scp_is_single_core(pdev);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ret)
-> +		ret = scp_add_single_core(pdev, scp_cluster);
-> +	else
-> +		ret = scp_add_multi_core(pdev, scp_cluster);
-> +
-> +	return ret;
-> +}
-> +
->  static int scp_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -1007,6 +1104,10 @@ static int scp_probe(struct platform_device *pdev)
->  
->  	INIT_LIST_HEAD(&scp_cluster->mtk_scp_list);
->  
-> +	ret = devm_of_platform_populate(dev);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to populate platform devices\n");
-> +
->  	ret = scp_cluster_init(pdev, scp_cluster);
->  	if (ret)
->  		return ret;
-> @@ -1101,12 +1202,19 @@ static const struct mtk_scp_of_data mt8195_of_data_c1 = {
->  	.host_to_scp_int_bit = MT8195_CORE1_HOST_IPC_INT_BIT,
->  };
->  
-> +static const struct mtk_scp_of_data *mt8195_of_data_cores[] = {
-> +	&mt8195_of_data,
-> +	&mt8195_of_data_c1,
-> +	NULL
-> +};
-> +
->  static const struct of_device_id mtk_scp_of_match[] = {
->  	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
->  	{ .compatible = "mediatek,mt8186-scp", .data = &mt8186_of_data },
->  	{ .compatible = "mediatek,mt8188-scp", .data = &mt8188_of_data },
->  	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
->  	{ .compatible = "mediatek,mt8195-scp", .data = &mt8195_of_data },
-> +	{ .compatible = "mediatek,mt8195-scp-dual", .data = &mt8195_of_data_cores },
->  	{},
->  };
->  MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
-> -- 
-> 2.18.0
-> 
