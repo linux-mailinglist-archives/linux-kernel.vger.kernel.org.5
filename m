@@ -2,194 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC4178A4F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACDC78A4F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjH1EaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 00:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
+        id S229935AbjH1Egj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 00:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjH1E3r (ORCPT
+        with ESMTP id S229778AbjH1EgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 00:29:47 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2093.outbound.protection.outlook.com [40.92.22.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A224F11B;
-        Sun, 27 Aug 2023 21:29:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FlflKsYB5NJzWocOrM5WDuqAeFpd3+wqI6wgb5UfT47lbjx/gDenvamkQe/siHVSTyazMwsRuNaNhZmk+ORjYAwwdGaratXyJBPmF8jloFvM7rsVBlmqbOFVn+1fqIxcAel5DPGh1ahTJkDjKWz8CqAGIp7ywGo4KZP1Fhp4AX8iCMrQ9RYw5RXkjx6uYO17eVtH/Q8ImJEXnfwEQWQqQGXbfCcvExv/doAYuYnTxUrJoCoL39NaM87K2eJvi84l5AsLhN6XkGGr6lgdZzV0/aAUmVR6IwfcpRdC0ljSMGLvgI8rEVxpCHhIO4jSlGcE6HbJLN5sKI93Y2h2r5HNsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6NQE9upNQ3IadmN7eI59MzCMkoOLPkdZE0l6EUJlrXU=;
- b=E44lSHnBaP1vYM80jjvKh5jEPyLTLUXqHNH7dPuMAopyoHvkQYFbPNcqjZjEXMx3JXaYNL5u2MchkE7Ke22nNFVt2fj/gp6FFhrnoagU3w8aIspsPKI2I0KNR2krNyL4FxbcV8VpamIQzyFpYYroUp8g9Mg8vcrMhq3PbU4dNd9KVAIVo8364xZaPV1zh6nQDLhSNpLUI4J/RTAhgiQDpLNVk3d6GHgV/AmXn8FW2AEy6jSQJaEmEfPDkUKGCJanDbNdRovRxjgPjhDABOfgnMCqX1SvyM9I5+rubRkuIP3The0ybCsOxSNlLXKvY2pPLixdWvX6FYYMp3GEYMdczw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6NQE9upNQ3IadmN7eI59MzCMkoOLPkdZE0l6EUJlrXU=;
- b=jiHwIbyw10DT05AHJWbuxvq8Xoqfy8iDNe8Zkz9Fguczfilu5jvml85wwt7271bQzJUmLJHNSgGFq6A455nmf7lYDRCxf4LVxIjmQIF1/16CpHqrGsFoPfDThguvqLcrDJy3Pg79Fk8ByGnfduILoYwuHnogUBbe+8mJSft52UakpT6+4Qa1A6e3U2XcLKQUuioezVAc9FYBcIA2tI9/cQsrna31rO95u6wMR+pRY31Fvpjt4m9sVHEjQpMG3u6uSMT4gKOoEmKui+tszOAT0eloTQgYSC8COi6SzKcWblJAagLGKZpRkcNdlonvYUqAPyeKhkpKRjLVecT5qEpQbg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by MN2PR20MB3381.namprd20.prod.outlook.com (2603:10b6:208:266::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
- 2023 04:29:42 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::cbad:4566:1f3e:4e1f]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::cbad:4566:1f3e:4e1f%4]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
- 04:29:42 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        Mon, 28 Aug 2023 00:36:15 -0400
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD2C124
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 21:36:12 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48d2c072030so2383251e0c.0
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 21:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693197371; x=1693802171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nh8L7SPw4RViz9VA1sF9ySvJTG7C06Vhgexpn6PD42w=;
+        b=L/uZO4Gd3rjoW8dAVPF8qpTF14OjQc/iyfqEvuSjsN+vpmLaz2qz9kgrH/gJgSaHcx
+         a7qqgKWxqUd2UNVJ8CajAhS3p1JFPLDBSD1t+c//3GJXE+W9iXqUWGwES4VRDvAVl1Pk
+         oW81fzl2yq9uKzE2pqV22LqM6coCNGimOnZ7c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693197371; x=1693802171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nh8L7SPw4RViz9VA1sF9ySvJTG7C06Vhgexpn6PD42w=;
+        b=Qaxlz97ia98E+Z7stwB/um2LlMPD469NX7tRXbzHhm54FUM1Se0ngBchWKOV8pyeig
+         pCIW0z7OBIjnCYvGQJDVzApIot0bUBqFnU7DjIDfsYJ+IExq0Blj1ex/64dfee6hNtMn
+         3mhAnM9a2E2/k0zM4f2d7zpuuRQus2afxmAr9/RwlVsI9fyeVG5vJUZRQvwfGEuPslsL
+         Viwza0UJfY8/wQ7PeXZShSY0gk+BmXd29BohbxFW3job3tGcZ5S5nzH4XMl8vvBbrf+1
+         CXcmEIEE9M9XGS1VrDbUgad7OhvV5y7UScpdK0emRqgvtYRN0IvLIEm/Iw/wMXPCy5yO
+         wL0w==
+X-Gm-Message-State: AOJu0YwlrUqECf10t/AnuWYs0f07+mkdwMa+NUP8Zr1tG9SyVQLyKjSB
+        AsHAzdfUCmIZdQ9T6eiXWW1KGzgWSQMe9Zscjm110w==
+X-Google-Smtp-Source: AGHT+IHLoDWbp+A1vm+E06DTMTE8I9Noq3kCRigkWJtma4Wg5EkCXXdSuBcCU5DRQCse7QXtHEqJ0euy3T5dp2nQ+sA=
+X-Received: by 2002:a1f:c886:0:b0:490:1723:a491 with SMTP id
+ y128-20020a1fc886000000b004901723a491mr1909681vkf.5.1693197371386; Sun, 27
+ Aug 2023 21:36:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230825114623.16884-1-macpaul.lin@mediatek.com> <20230825114623.16884-3-macpaul.lin@mediatek.com>
+In-Reply-To: <20230825114623.16884-3-macpaul.lin@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 28 Aug 2023 12:36:00 +0800
+Message-ID: <CAGXv+5FTuY=ZHB3-2Woit5amRZ=RxByGMq=LQp-es8tWEhAQUA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: dts: mediatek: mt6360: add PMIC MT6360 related nodes
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Inochi Amaoto <inochiama@outlook.com>,
-        Heiko Stuebner <heiko@sntech.de>, Wei Fu <wefu@redhat.com>,
-        Pei Chen <cp0613@linux.alibaba.com>,
-        Wenhan Chen <chenwenhan.cwh@alibaba-inc.com>,
-        Guo Ren <guoren@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] riscv: dts: allwinner: d1: Add PMU event node
-Date:   Mon, 28 Aug 2023 12:30:22 +0800
-Message-ID: <IA1PR20MB49534918FCA69399CE2E0C53BBE0A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [NJyrwR3WLTYvrL3WfJLhyd9GOjEVD6HUdBDM5E5jJlQ=]
-X-ClientProxiedBy: TYCP301CA0025.JPNP301.PROD.OUTLOOK.COM
- (2603:1096:400:381::12) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20230828043022.252724-1-inochiama@outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MN2PR20MB3381:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1994859a-7c27-4fe8-a5dd-08dba77f6620
-X-MS-Exchange-SLBlob-MailProps: Om8TgR6f4ECsMdgbaV/b5CZ/hsW+YdiEPPQHgZGV3HoWHQgVcKP+niRMR92j1F4q8YNfbLB69Z9M5zm1MiasBr57csq3RvqObwi3B/pWCVmcNbdBlokxszblaISj7RWQkyJupb9zp0ZJUx6Gxgosw2tcO+23mVzzNDSk9Z5uQOzFtC6a30O/Ckrho95JzromeJbmrHVoJmphK6XaGwAWveuSu98iAr7xSbJmXuIc/mg4AM7e1FGN220fUwyP3Rky1xf7gnpjOcY2kcsElOR+Vgq7y3Wwk/FcvVILlh05Ke+3Hk07wmiHLOd6M7wZPXqu6EKd958jD3yjwv/CQwqZKf9vOm2436LvcZmIkVcfGOs5HK7cz9iDMWhdUT70HSujp9I4pmLSTYEdPlM7ITZmcI3CNFq5IPKpQ87TBIPb9ybsghAk7KkqhGnIYjOzvNQf63w0wAj/XM8oTQoZAsZFN9+1d1LwnAeES+TqBS3QLX12bR4GmgXmMXzMaxpuZ8HnbXqYGXrN48dT6iI6O0P7xA+oEz3zQQl5k1s1wWzDuxVVpo34rlkYenEIgIuqsl3BIWldOMqQ7v3YMhhad6yu+DM3ptiDr37CcQnT/LJkGYVU3hgNeq1kxIFJp+pOHNe6/m3ReojbssZ4lPUkSBKw40+W5KXk7GefSDYq8H/QNw+ELmSTlechaNLgh0qJnG0CJcprTxl/JhZk5mbIluG28DQqy0gRvVk25Nx+kMdSD/666J9LNYnCIDRJspy3a2Lgjrxbcy+hrPPW4zTJDPREz4ND1KOvQpL9xWyJ474kAomwAO2+R0kDXlXYU4GDCGCkeX5/cfBHU2BUfZ7lzLcoQtIuWaQa+wUf
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X/0yqGPCmbk8TZ5ZJ4hc82pNtJfpLqQaI1ckuF2axxP3e5J52RcqduwzB3bqrrNTrfxdhPp9aCMeG1EwTkNSRMKkGLub1iTk+fS6V4y0QATQKg4AOXFOJP87V+L3kRNDc1L7M8H+GR9buaUF/ZoJtxxJQK2LNwogRZ0JfNEf7Kj7jVaSHMsiv/YP4PcZFNiTc4jTdUIts+UGAdo1ekj0AFJpx/LGAM1XZ0TlyMvSbvI/lcZLN7Lzcb0ZH4BXEYD1h5ynjZf/hkbLMphum0E+GCWnBw9okY6x0uGd2DkD87G0p6z6cRU8QNhLz2cub8Hk2rdrZnSEdgL4tsOzscbJPJ5Osil6kzqCjVg58uU+6gLDT1eUEkEMMz0f+iyCx2yHiusDuTHwt+6LFcbVrbZ1imAuuAAF397UD7kmQ4joNv26GjHNLBKHvt4gVOv16hrPeUqbQp2VPhS+AYP9dtvx2qmAhET6LfMA/vEuKjTQINqZEi/6dJhl95k0/8cgGxQIa/fXuhVSYpbFyBkFQlDI4EwvsbwLeX5QL5LhTm/QEPEx4TWEmx1aw1gl644MDPQgGCuWitrynSPQ5NzCCMHfxdtWvJvf6VWgT4xGZL6l5Bg=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tKHtGRkrVrQpJW8ox/3Q72qPq6YZJZXPLQHQ3BzWSOawzDruiWs3MXXdow9q?=
- =?us-ascii?Q?E8tG/uvC6i7XT/Pa1PuIeVt/FQGNlAwuZNa0K7TeiRR606Q04fuxZzfsSXb+?=
- =?us-ascii?Q?/uvXsYD4oKmgSf62LdgJBAQAbVlFKDVCqlHNqkPVWpUqPG8KWnhu97EfvKMa?=
- =?us-ascii?Q?U6pbRfy3Zy6ot/2wJ9xugOIc/EZu89icug1bnKA6DEOkIvON5GKirvFkSMV6?=
- =?us-ascii?Q?8aTshjumpXyxSqGBn6gXjtyPEm3B2aafGw23iK9mXDG5iRL0y/Cx01HfoWwO?=
- =?us-ascii?Q?Qi9baoY2HzD0FVM3befeYBTYMcFdCOpCSiJMJFC/tfTUuTBYqxnePYADXNyY?=
- =?us-ascii?Q?Mk95b9VLxo5KSW3MmJJfouObZS1s3QQcoBKvGfZuH9FKz9phN2j0TY8NVwEO?=
- =?us-ascii?Q?4Ozz+/tglIAvZENBt3ebLZ0S1vOI2s8TeliKB4xQCNOvJh3zi5FbvrSC5uzO?=
- =?us-ascii?Q?ZyxU+bdR7Rf2rN61JNyEYot+xUO7NRAbiogZi+VikMZELbH+Kkeljlq5VWnL?=
- =?us-ascii?Q?+gvWcKdam4WfLj/ZXEIbSapKM7o3NeI5UvDsUGIbE64UQLnK+hq3argZwH8S?=
- =?us-ascii?Q?a25Mqs2ZhOVNv8JwHLRveway3ApxGLyY97lG11fmDZnSoxendC65QpAWj22c?=
- =?us-ascii?Q?7O+sJx+Q9AFRl7vHfh+G3zEOAaFfTN1LfdDppgnH8hNMXwn5PDL5sQyw964p?=
- =?us-ascii?Q?mL7baWJ4kZhICs0TQrTj2fL3hxf4UWvBEZmjnar3iXZwOZfgxyZFviwvzqYG?=
- =?us-ascii?Q?aaFWIx6UTCso0QbhzINJwFaCd9RbXitPDybLAEqqK5xC8e8WuZFq4b8iS3EX?=
- =?us-ascii?Q?TAgrlQhlC8Ta53z4kbZ6tLwWDPK/26XasqwF+Mc94tDPSWSNJcRSVl+5nDxu?=
- =?us-ascii?Q?cQ4M7eWaUx0fnpFw9OVTVisbTQEmbREtJtyAYQmLZFs5Ffb/S1jOUmTlBfiS?=
- =?us-ascii?Q?qurYFNB+73rAV3nwfnXrzr5B9jZP8ghuUA8khbPhX1qk+5kTB4cFHVwYlyIx?=
- =?us-ascii?Q?QIDoeql1LQ5iJ3xySR/C7ZAO70Cf4D4lmrPOS8B6D4E392BdmTzuuR5Wfy5g?=
- =?us-ascii?Q?lZqtxLEZumK0xKu465yXpL2Q1/h3G3AxdKN2tVnZWoB8KI4Ie81vV6LPb118?=
- =?us-ascii?Q?6fgywthjQ254aNMXJloW/XkGpm4W0YJ8L2EItHm7Uzp8NGMkd7gn2lEeXiwE?=
- =?us-ascii?Q?FMILFRMs5O0KC1TNkDUkaoWumcTvIBXZ3nE5Cv6kPelULNL1zota4/zTooQ?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1994859a-7c27-4fe8-a5dd-08dba77f6620
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 04:29:42.2759
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR20MB3381
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-D1 has several pmu events supported by opensbi.
-These events can be used by perf for profiling.
+On Fri, Aug 25, 2023 at 7:46=E2=80=AFPM Macpaul Lin <macpaul.lin@mediatek.c=
+om> wrote:
+>
+> MT6360 is the secondary PMIC for MT8195.
+> It supports USB Type-C and PD functions.
+> Add MT6360 related common nodes which is used for MT8195 platform, includ=
+es
+>  - charger
+>  - ADC
+>  - LED
+>  - regulators
+>
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt6360.dtsi | 112 +++++++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt6360.dtsi
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt6360.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt6360.dtsi
+> new file mode 100644
+> index 000000000000..e841f4e5a54b
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt6360.dtsi
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright (C) 2023 MediaTek Inc.
+> + */
+> +
+> +#include <dt-bindings/regulator/mediatek,mt6360-regulator.h>
+> +
+> +&mt6360 {
+> +       interrupt-controller;
+> +       interrupt-parent =3D <&pio>;
+> +       interrupt-names =3D "IRQB";
+> +
+> +       charger {
+> +               compatible =3D "mediatek,mt6360-chg";
+> +               richtek,vinovp-microvolt =3D <14500000>;
+> +
+> +               otg_vbus_regulator: usb-otg-vbus-regulator {
+> +                       regulator-compatible =3D "usb-otg-vbus";
+> +                       regulator-name =3D "usb-otg-vbus";
+> +                       regulator-min-microvolt =3D <4425000>;
+> +                       regulator-max-microvolt =3D <5825000>;
+> +               };
+> +       };
+> +
+> +       adc {
+> +               compatible =3D "mediatek,mt6360-adc";
+> +               #io-channel-cells =3D <1>;
+> +       };
+> +
+> +       led {
+> +               compatible =3D "mediatek,mt6360-led";
+> +       };
+> +
+> +       regulator {
+> +               compatible =3D "mediatek,mt6360-regulator";
+> +               LDO_VIN3-supply =3D <&mt6360_buck2>;
+> +
+> +               mt6360_buck1: buck1 {
+> +                       regulator-compatible =3D "BUCK1";
+> +                       regulator-name =3D "mt6360,buck1";
 
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-Link: https://dl.linux-sunxi.org/D1/Xuantie_C906_R1S0_User_Manual.pdf
-Link: https://github.com/T-head-Semi/openc906/blob/main/C906_RTL_FACTORY/gen_rtl/pmu/rtl/aq_hpcp_top.v#L657
----
-changed from v3:
-1. remove wrong event mapping of 0x0000a
-2. add reference url of c906 events implementation (D1 only support events
-described in R1S0 user manual, but event mapping is the same)
+Normally there's no need to provide a default name. Any used regulator
+should have been named to match the power rail name from the board's
+schematics.
 
-changed from v2:
-1. move pmu node from /soc to / to avoid warnings when checking.
+> +                       regulator-min-microvolt =3D <300000>;
+> +                       regulator-max-microvolt =3D <1300000>;
 
-The meaning of T-HEAD events can be found in this pending patch:
-https://lore.kernel.org/linux-perf-users/IA1PR20MB4953DD82D0116EC291C21777BBE2A@IA1PR20MB4953.namprd20.prod.outlook.com
+These values correspond to the regulator's range. They make no sense as
+regulator constraints. The min/max values are supposed to be the most
+restrictive set of voltages of the regulator consumers. If what is fed
+by this regulator can only take 0.7V ~ 1.1V, then it should save 0.7V
+and 1.1V here. If the regulator is unused, then there are no constraints,
+and these can be left out.
 
-The patch above also provides a example that shows how to setup
-environment and use perf with T-HEAD events.
----
- arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
+Just leave them out of the file.
 
-diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-index 8275630af977..53a984d78e3f 100644
---- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-+++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-@@ -73,4 +73,43 @@ plic: interrupt-controller@10000000 {
- 			#interrupt-cells = <2>;
- 		};
- 	};
-+
-+	pmu {
-+		compatible = "riscv,pmu";
-+		riscv,event-to-mhpmcounters =
-+			<0x00003 0x00003 0x00000008>,
-+			<0x00004 0x00004 0x00000010>,
-+			<0x00005 0x00005 0x00000200>,
-+			<0x00006 0x00006 0x00000100>,
-+			<0x10000 0x10000 0x00004000>,
-+			<0x10001 0x10001 0x00008000>,
-+			<0x10002 0x10002 0x00010000>,
-+			<0x10003 0x10003 0x00020000>,
-+			<0x10019 0x10019 0x00000040>,
-+			<0x10021 0x10021 0x00000020>;
-+		riscv,event-to-mhpmevent =
-+			<0x00003 0x00000000 0x00000001>,
-+			<0x00004 0x00000000 0x00000002>,
-+			<0x00005 0x00000000 0x00000007>,
-+			<0x00006 0x00000000 0x00000006>,
-+			<0x10000 0x00000000 0x0000000c>,
-+			<0x10001 0x00000000 0x0000000d>,
-+			<0x10002 0x00000000 0x0000000e>,
-+			<0x10003 0x00000000 0x0000000f>,
-+			<0x10019 0x00000000 0x00000004>,
-+			<0x10021 0x00000000 0x00000003>;
-+		riscv,raw-event-to-mhpmcounters =
-+			<0x00000000 0x00000001 0xffffffff 0xffffffff 0x00000008>,
-+			<0x00000000 0x00000002 0xffffffff 0xffffffff 0x00000010>,
-+			<0x00000000 0x00000003 0xffffffff 0xffffffff 0x00000020>,
-+			<0x00000000 0x00000004 0xffffffff 0xffffffff 0x00000040>,
-+			<0x00000000 0x00000005 0xffffffff 0xffffffff 0x00000080>,
-+			<0x00000000 0x00000006 0xffffffff 0xffffffff 0x00000100>,
-+			<0x00000000 0x00000007 0xffffffff 0xffffffff 0x00000200>,
-+			<0x00000000 0x0000000b 0xffffffff 0xffffffff 0x00002000>,
-+			<0x00000000 0x0000000c 0xffffffff 0xffffffff 0x00004000>,
-+			<0x00000000 0x0000000d 0xffffffff 0xffffffff 0x00008000>,
-+			<0x00000000 0x0000000e 0xffffffff 0xffffffff 0x00010000>,
-+			<0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00020000>;
-+	};
- };
---
-2.42.0
+Both comments apply to all the regulators.
 
+ChenYu
+
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP
+> +                                                  MT6360_OPMODE_ULP>;
+> +               };
+> +
+> +               mt6360_buck2: buck2 {
+> +                       regulator-compatible =3D "BUCK2";
+> +                       regulator-name =3D "mt6360,buck2";
+> +                       regulator-min-microvolt =3D <300000>;
+> +                       regulator-max-microvolt =3D <1300000>;
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP
+> +                                                  MT6360_OPMODE_ULP>;
+> +               };
+> +
+> +               mt6360_ldo1: ldo1 {
+> +                       regulator-compatible =3D "LDO1";
+> +                       regulator-name =3D "mt6360,ldo1";
+> +                       regulator-min-microvolt =3D <1200000>;
+> +                       regulator-max-microvolt =3D <3600000>;
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP>;
+> +               };
+> +
+> +               mt6360_ldo2: ldo2 {
+> +                       regulator-compatible =3D "LDO2";
+> +                       regulator-name =3D "mt6360,ldo2";
+> +                       regulator-min-microvolt =3D <1200000>;
+> +                       regulator-max-microvolt =3D <3600000>;
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP>;
+> +               };
+> +
+> +               mt6360_ldo3: ldo3 {
+> +                       regulator-compatible =3D "LDO3";
+> +                       regulator-name =3D "mt6360,ldo3";
+> +                       regulator-min-microvolt =3D <1200000>;
+> +                       regulator-max-microvolt =3D <3600000>;
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP>;
+> +               };
+> +
+> +               mt6360_ldo5: ldo5 {
+> +                       regulator-compatible =3D "LDO5";
+> +                       regulator-name =3D "mt6360,ldo5";
+> +                       regulator-min-microvolt =3D <2700000>;
+> +                       regulator-max-microvolt =3D <3600000>;
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP>;
+> +               };
+> +
+> +               mt6360_ldo6: ldo6 {
+> +                       regulator-compatible =3D "LDO6";
+> +                       regulator-name =3D "mt6360,ldo6";
+> +                       regulator-min-microvolt =3D <500000>;
+> +                       regulator-max-microvolt =3D <2100000>;
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP>;
+> +               };
+> +
+> +               mt6360_ldo7: ldo7 {
+> +                       regulator-compatible =3D "LDO7";
+> +                       regulator-name =3D "mt6360,ldo7";
+> +                       regulator-min-microvolt =3D <500000>;
+> +                       regulator-max-microvolt =3D <2100000>;
+> +                       regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
+> +                                                  MT6360_OPMODE_LP>;
+> +               };
+> +       };
+> +};
+> --
+> 2.18.0
+>
+>
