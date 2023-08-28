@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3780578B6FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF6F78B6FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbjH1SDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        id S232526AbjH1SE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjH1SDk (ORCPT
+        with ESMTP id S233057AbjH1SE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:03:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8082C10D;
-        Mon, 28 Aug 2023 11:03:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 164B863B78;
-        Mon, 28 Aug 2023 18:03:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61393C433C8;
-        Mon, 28 Aug 2023 18:03:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693245817;
-        bh=fD0aEQmXcmctWDnpYL4vRvHCqYkAfJIMUPSSSlGyof0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BZ1d5azlTAXaMimAqoSzlFNu6PhGzlI/X9NBULyTb01WmvJ1beGAoFyBvQVrdZOcJ
-         pAlSduRhW0LR5FD3v4PZyaHFd8iudEWOT7F+oMrC5xVDuk6BEaa1kyrDB3a9XtDvLR
-         58TT7uca/GOutciavzn2XjmQAJZP0eWBgm3rTaO4ObL+6r4d8tMoU5oZzdKxf0lBDi
-         wiz/yOBAbMkjq8LbCuif/A+5RitNdKCpyVsr2/yIX93X/50vncf5UgccuvwPd86mEM
-         Se6gYb1VHh89thyqOsRWK1QjtCHHM1eao11LjM/KBVdjeFX6IcSG5NhIADpOJr06sJ
-         Gi2MzIgBdIFbg==
-Date:   Mon, 28 Aug 2023 19:03:59 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc:     Ramona Bolboaca <ramona.bolboaca@analog.com>, nuno.sa@analog.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/3] Add new channels for adis16475
-Message-ID: <20230828190359.4d4ceb6d@jic23-huawei>
-In-Reply-To: <2505544e4b5fdd5280b3f8406b223cebae6086df.camel@gmail.com>
-References: <20230808075059.645525-1-ramona.bolboaca@analog.com>
-        <2505544e4b5fdd5280b3f8406b223cebae6086df.camel@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 28 Aug 2023 14:04:56 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2665312D;
+        Mon, 28 Aug 2023 11:04:54 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57355a16941so1806510eaf.2;
+        Mon, 28 Aug 2023 11:04:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693245893; x=1693850693;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ojSxv79wHQMsfeTbgLB/0/oKnfI9LSWvCqpNwR1k0CI=;
+        b=chTb2boVCw41yuBS6QK9ccvZ/dL97jM+EB+QY6tiABAEPYXcoEvi8vY1Q4ClbBb5Q3
+         AERyS4vcFfncpiVxZVAMyY1krkQUQKQjexnM8bNs5J9JwKRDJ8VIpnMeJ6lfsAaZsco1
+         NzavUnPFiRkg1t/nCOFFDkeyJlybN7SviMiJixjg/5LobTbdER3ORINT51GCDH8OmSWO
+         OKzn8s9lkn3TtEO3DyS0dg0jBmMrfg3vTNOyXs9IbbKnTcHGUAmiWlUf/MPiABystBE6
+         ZqleURihKrc9qtEr7yEXJSvCaN86pUD4IQNn4uyoxP4lCEy9V5EtkHg9s1aLsYqEf3bs
+         qMvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693245893; x=1693850693;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ojSxv79wHQMsfeTbgLB/0/oKnfI9LSWvCqpNwR1k0CI=;
+        b=D0snGj9bBZg8nSnX5ITP1GjnlcV6eUC3Qwho5yzVHq8ncR670YtlXgSd9f6hYOgJdD
+         1+n6xK2pW4TMhVWBgp/8uwMMTCCqnS+Hapwf62a/glvqYVXHY7MjOToO/Bo9uEMWAlCZ
+         5lMM4Vm39zBJ2Y4QuOaY0gYHtj+x3lEwpO/e+H3clLj3Uw1G2ZGAv7ZJVlUpxrpf+NEL
+         WTk29+bFis6rgAOOEGdGN/eaxBVh6qzUGjFCx8FLcrjP8uOCPX4KmlyEVKHqoOButR41
+         397J6LZfn7++dT4rOnduM6x/31Zd67tGsZUR6LX+S9BJyaJmZiWwP64c7I7hNWnHPqLy
+         PWlw==
+X-Gm-Message-State: AOJu0YwU0UKVRMQg0B6uobElDGlcOIxVUGuSgPbiKL9eqOZLNPoEyJF3
+        rqAdpesvlPBlA2piRUhQGQseF5QC91+ALWDVYzDlEtgs
+X-Google-Smtp-Source: AGHT+IH/TG63PAZtXL/cjEgVrtiDVk49PCnWuBOiq9aE7Mb0u+O/GjmNvlD0kbTR6cBR+TzRQMz/iG65d2u76uKswNk=
+X-Received: by 2002:a4a:255a:0:b0:573:4da2:4427 with SMTP id
+ v26-20020a4a255a000000b005734da24427mr7308192ooe.7.1693245893352; Mon, 28 Aug
+ 2023 11:04:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a8a:1141:0:b0:4f0:1250:dd51 with HTTP; Mon, 28 Aug 2023
+ 11:04:52 -0700 (PDT)
+In-Reply-To: <CAHk-=wi1BO1KQaPOTzs7N4QrLh2UCiRuNnW0MPVTDLrRxZhDww@mail.gmail.com>
+References: <20230828170732.2526618-1-mjguzik@gmail.com> <CAHk-=wi1BO1KQaPOTzs7N4QrLh2UCiRuNnW0MPVTDLrRxZhDww@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Mon, 28 Aug 2023 20:04:52 +0200
+Message-ID: <CAGudoHGGXNP5dBpZLadBUTVeD-JPEuikQXONruJzvnRJrp5+KA@mail.gmail.com>
+Subject: Re: [PATCH] x86: bring back rep movsq for user access on CPUs without ERMS
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 15:16:10 +0200
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+On 8/28/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Mon, 28 Aug 2023 at 10:07, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>>
+>> While here make sure labels are unique.
+>
+> I'll take a look at the other changes later, but this one I reacted
+> to: please don't do this.
+>
+> It's a disaster. It makes people make up random numbers, and then
+> pointlessly change them if the code moves around etc.
+>
+> Numeric labels should make sense *locally*.  The way to disambiguate
+> them is to have each use just have "f" and 'b" to distinguish whether
+> it refers forward or backwards.
+>
+[snip]
 
-> On Tue, 2023-08-08 at 10:50 +0300, Ramona Bolboaca wrote:
-> > changes in v5:
-> > =C2=A0 patch 1: added documentation for all supported attributes
-> > =C2=A0 patch 2: added documentation for all supported attributes
-> > =C2=A0 patch 3: no changes
-> >=20
-> > Ramona Bolboaca (3):
-> > =C2=A0 iio: Add IIO_DELTA_ANGL channel type
-> > =C2=A0 iio: Add IIO_DELTA_VELOCITY channel type
-> > =C2=A0 iio: imu: adis16475.c: Add delta angle and delta velocity channe=
-ls
-> >=20
-> > =C2=A0Documentation/ABI/testing/sysfs-bus-iio |=C2=A0 45 +++++++
-> > =C2=A0drivers/iio/imu/adis16475.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 165 +++++++++++++++++++++---
-> > =C2=A0drivers/iio/industrialio-core.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +
-> > =C2=A0include/uapi/linux/iio/types.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +
-> > =C2=A0tools/iio/iio_event_monitor.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 4 +
-> > =C2=A05 files changed, 199 insertions(+), 19 deletions(-)
-> >  =20
->=20
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
->=20
+Other files do it (e.g., see __copy_user_nocache), but I have no
+strong opinion myself.
 
-Series applied to the togreg branch of iio.git but given timing I plan
-to rebase that on rc1. In the meantime I'll push this out as testing to
-let 0-day see if it can find anything we missed.
+That said I'll wait for the rest of the review before sending a v2.
 
-Thanks for persisting the fiddly ABI definitions in this one!
-
-Jonathan
+-- 
+Mateusz Guzik <mjguzik gmail.com>
