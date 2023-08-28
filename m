@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33178B411
+	by mail.lfdr.de (Postfix) with ESMTP id E495478B412
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbjH1PJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+        id S232512AbjH1PJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbjH1PJV (ORCPT
+        with ESMTP id S232477AbjH1PJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:09:21 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDC21AA
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:09:16 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4013454fa93so28875295e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:09:16 -0700 (PDT)
+        Mon, 28 Aug 2023 11:09:23 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134D0EA
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:09:18 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401ceda85cdso4861735e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693235354; x=1693840154;
+        d=chromium.org; s=google; t=1693235356; x=1693840156;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QXssY8R3UfI51/fzerFRXliKac0QknXs4XkU/07pT5E=;
-        b=TXgobUHzdy1/oc00DCkfPuEhJu9AWsZDH7ItfMlZ9px/6av7xSZfC0WrjhZ16H5vnH
-         +BXZsUMOLMGBNanD+Ods+R3MJffoWBq5sR8yyAUkuszZbSoBMR1IFcOLTFENcXg98b7t
-         Yahy0kl0OhvBiWJFAmjSAeDAGABOGBOn3jPxs=
+        bh=gkrzJ6nrXmVMKGdRpiGhMw2iKfFp7Za5H8zwt1x/uYE=;
+        b=Gcfsc20eRAp56OKEVtMEAhiDJbVxd/eH0D9DHi7azczCvXZzjwAaYRmxarKUIMR+vQ
+         2XanoZWuX5BE9LnjXukHoeIX3vcDykgOXzBvFzYHi1NfOQfyLIgn3bbw3Ck9WAwB0Isi
+         39eyQXmVEHzX3V6dpy2y9FTf1Yo/Bpgl5L9hw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693235354; x=1693840154;
+        d=1e100.net; s=20221208; t=1693235356; x=1693840156;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QXssY8R3UfI51/fzerFRXliKac0QknXs4XkU/07pT5E=;
-        b=CEjxxbfcbIMn7C4ZcVN33X1Y4/5avd/9S/7OE+djoLG3TdQkj4Lo2unoRGVRagR73A
-         vrOU5HLH2I3Ggk4ok+dYiS5rULVXjLcK8U2G7OAajVnRDAHJSPQIhlsv9OpfVKGoWcrI
-         qvJJuMU3BtBhZD8Mgk84hRlSy5PQ0wgb59XvoCAv95CmkXgCRCW/pIcTfmcJna/GRXPM
-         0zcDxZKJ2RMy6HhPBTcS1WtUpZiUSqW8tmLziXb8gH/9TIhsdnDT0vnx3ckklEoBhUZ+
-         0YbkyJo3jW0gDLj3HRWq6HM8GjE/JMx44DFHMIKr/mkT1Hc9y6jZrP59pHMaeLz49UsA
-         UgwQ==
-X-Gm-Message-State: AOJu0YxTgJiRkMk0JcDd3nyniu3akR+GrpYK5sN0/eHxaCAdoUai8xGH
-        KHHijQ2NuhgYdFKmWcPF8of3PR/sjsvvP5nAR/M=
-X-Google-Smtp-Source: AGHT+IGqMEI1E4b+HWptK+/EKjF7xI4VmzXlfBLXmqDJvfgj+65VugBjpc0Hy94kYyiGhQQdqXzgkQ==
-X-Received: by 2002:a1c:7508:0:b0:3fb:739d:27b2 with SMTP id o8-20020a1c7508000000b003fb739d27b2mr19489637wmc.8.1693235354252;
-        Mon, 28 Aug 2023 08:09:14 -0700 (PDT)
+        bh=gkrzJ6nrXmVMKGdRpiGhMw2iKfFp7Za5H8zwt1x/uYE=;
+        b=EHUyJxKaYnwhyMXVr8F2T+yYGSwbIelcDDITzXIzL6ziLVI4gcTy1n4cxMaD7f/iSv
+         IqV4XmVnGxEDhEw260dAgbkfLSR2L+3sHeHMDZXyT0/XPB1ot89IZmXs3kH3sITk0MAh
+         DZcK7AOqa8e+3/oV2nW5HTBwC1oH5OJrCeVBY6m4cFsklKYogb+ovTbj3cuX2xNY0Oui
+         h3iOgLtYeIJr5T2chHHr3vX7Rdjg6khgBUh/0FurWZ65+UPePlu4Wn6W9n71s715qx4E
+         1dMuT7FExZJjQAefZvPwQ5zOS5MqOJSDPTGCgro4c+a9CkVh/Y8QNWxc2iWY61i1sSp2
+         mQqw==
+X-Gm-Message-State: AOJu0YwdlL1Wj8AU+9m2UXcbc+Tqrf4ZWTqHmBOid1Ji7ssHXA1AA09m
+        qVLmio6cvOcy3HOqgiIRmnZ4c4hL7UesIUbk5i0=
+X-Google-Smtp-Source: AGHT+IFPERDSa8GnxhdBv9hLnJGAV2jLF6UJnAF68SaqVArOPcEFQgITwMNi2q83UONR6SeCgjDrOA==
+X-Received: by 2002:a7b:ce91:0:b0:401:4542:5edf with SMTP id q17-20020a7bce91000000b0040145425edfmr9094986wmj.0.1693235356077;
+        Mon, 28 Aug 2023 08:09:16 -0700 (PDT)
 Received: from revest.zrh.corp.google.com ([2a00:79e0:9d:6:40c6:6cff:63b:c70a])
-        by smtp.gmail.com with ESMTPSA id v3-20020a5d43c3000000b003140fff4f75sm10730522wrr.17.2023.08.28.08.09.12
+        by smtp.gmail.com with ESMTPSA id v3-20020a5d43c3000000b003140fff4f75sm10730522wrr.17.2023.08.28.08.09.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 08:09:13 -0700 (PDT)
+        Mon, 28 Aug 2023 08:09:15 -0700 (PDT)
 From:   Florent Revest <revest@chromium.org>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
@@ -55,9 +55,9 @@ Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
         izbyshev@ispras.ru, broonie@kernel.org, szabolcs.nagy@arm.com,
         kpsingh@kernel.org, gthelen@google.com, toiwoton@gmail.com,
         ayush.jain3@amd.com, Florent Revest <revest@chromium.org>
-Subject: [PATCH v4 5/6] mm: Add a NO_INHERIT flag to the PR_SET_MDWE prctl
-Date:   Mon, 28 Aug 2023 17:08:57 +0200
-Message-ID: <20230828150858.393570-6-revest@chromium.org>
+Subject: [PATCH v4 6/6] kselftest: vm: Add tests for no-inherit memory-deny-write-execute
+Date:   Mon, 28 Aug 2023 17:08:58 +0200
+Message-ID: <20230828150858.393570-7-revest@chromium.org>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
 In-Reply-To: <20230828150858.393570-1-revest@chromium.org>
 References: <20230828150858.393570-1-revest@chromium.org>
@@ -73,141 +73,213 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This extends the current PR_SET_MDWE prctl arg with a bit to indicate
-that the process doesn't want MDWE protection to propagate to children.
+Add some tests to cover the new PR_MDWE_NO_INHERIT flag of the
+PR_SET_MDWE prctl.
 
-To implement this no-inherit mode, the tag in current->mm->flags must be
-absent from MMF_INIT_MASK. This means that the encoding for "MDWE but
-without inherit" is different in the prctl than in the mm flags. This
-leads to a bit of bit-mangling in the prctl implementation.
+Check that:
+- it can't be set without PR_SET_MDWE
+- MDWE flags can't be unset
+- when set, PR_SET_MDWE doesn't propagate to children
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Florent Revest <revest@chromium.org>
 ---
- include/linux/sched/coredump.h   | 10 ++++++++++
- include/uapi/linux/prctl.h       |  1 +
- kernel/fork.c                    |  2 +-
- kernel/sys.c                     | 32 ++++++++++++++++++++++++++------
- tools/include/uapi/linux/prctl.h |  1 +
- 5 files changed, 39 insertions(+), 7 deletions(-)
+ tools/testing/selftests/mm/mdwe_test.c | 114 +++++++++++++++++++++++--
+ 1 file changed, 108 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/sched/coredump.h b/include/linux/sched/coredump.h
-index 0ee96ea7a0e9..1b37fa8fc723 100644
---- a/include/linux/sched/coredump.h
-+++ b/include/linux/sched/coredump.h
-@@ -91,4 +91,14 @@ static inline int get_dumpable(struct mm_struct *mm)
- 				 MMF_DISABLE_THP_MASK | MMF_HAS_MDWE_MASK)
+diff --git a/tools/testing/selftests/mm/mdwe_test.c b/tools/testing/selftests/mm/mdwe_test.c
+index 1b84cf8e1bbe..200bedcdc32e 100644
+--- a/tools/testing/selftests/mm/mdwe_test.c
++++ b/tools/testing/selftests/mm/mdwe_test.c
+@@ -22,6 +22,9 @@
  
- #define MMF_VM_MERGE_ANY	29
-+#define MMF_HAS_MDWE_NO_INHERIT	30
+ TEST(prctl_flags)
+ {
++	EXPECT_LT(prctl(PR_SET_MDWE, PR_MDWE_NO_INHERIT, 0L, 0L, 7L), 0);
++	EXPECT_EQ(errno, EINVAL);
 +
-+static inline unsigned long mmf_init_flags(unsigned long flags)
+ 	EXPECT_LT(prctl(PR_SET_MDWE, 7L, 0L, 0L, 0L), 0);
+ 	EXPECT_EQ(errno, EINVAL);
+ 	EXPECT_LT(prctl(PR_SET_MDWE, 0L, 7L, 0L, 0L), 0);
+@@ -41,6 +44,84 @@ TEST(prctl_flags)
+ 	EXPECT_EQ(errno, EINVAL);
+ }
+ 
++FIXTURE(consecutive_prctl_flags) {};
++FIXTURE_SETUP(consecutive_prctl_flags) {}
++FIXTURE_TEARDOWN(consecutive_prctl_flags) {}
++
++FIXTURE_VARIANT(consecutive_prctl_flags)
 +{
-+	if (flags & (1UL << MMF_HAS_MDWE_NO_INHERIT))
-+		flags &= ~((1UL << MMF_HAS_MDWE) |
-+			   (1UL << MMF_HAS_MDWE_NO_INHERIT));
-+	return flags & MMF_INIT_MASK;
++	unsigned long first_flags;
++	unsigned long second_flags;
++	bool should_work;
++};
++
++FIXTURE_VARIANT_ADD(consecutive_prctl_flags, can_keep_no_flags)
++{
++	.first_flags = 0,
++	.second_flags = 0,
++	.should_work = true,
++};
++
++FIXTURE_VARIANT_ADD(consecutive_prctl_flags, can_keep_exec_gain)
++{
++	.first_flags = PR_MDWE_REFUSE_EXEC_GAIN,
++	.second_flags = PR_MDWE_REFUSE_EXEC_GAIN,
++	.should_work = true,
++};
++
++FIXTURE_VARIANT_ADD(consecutive_prctl_flags, can_keep_both_flags)
++{
++	.first_flags = PR_MDWE_REFUSE_EXEC_GAIN | PR_MDWE_NO_INHERIT,
++	.second_flags = PR_MDWE_REFUSE_EXEC_GAIN | PR_MDWE_NO_INHERIT,
++	.should_work = true,
++};
++
++FIXTURE_VARIANT_ADD(consecutive_prctl_flags, cant_disable_mdwe)
++{
++	.first_flags = PR_MDWE_REFUSE_EXEC_GAIN,
++	.second_flags = 0,
++	.should_work = false,
++};
++
++FIXTURE_VARIANT_ADD(consecutive_prctl_flags, cant_disable_mdwe_no_inherit)
++{
++	.first_flags = PR_MDWE_REFUSE_EXEC_GAIN | PR_MDWE_NO_INHERIT,
++	.second_flags = 0,
++	.should_work = false,
++};
++
++FIXTURE_VARIANT_ADD(consecutive_prctl_flags, cant_disable_no_inherit)
++{
++	.first_flags = PR_MDWE_REFUSE_EXEC_GAIN | PR_MDWE_NO_INHERIT,
++	.second_flags = PR_MDWE_REFUSE_EXEC_GAIN,
++	.should_work = false,
++};
++
++FIXTURE_VARIANT_ADD(consecutive_prctl_flags, cant_enable_no_inherit)
++{
++	.first_flags = PR_MDWE_REFUSE_EXEC_GAIN,
++	.second_flags = PR_MDWE_REFUSE_EXEC_GAIN | PR_MDWE_NO_INHERIT,
++	.should_work = false,
++};
++
++TEST_F(consecutive_prctl_flags, two_prctls)
++{
++	int ret;
++
++	EXPECT_EQ(prctl(PR_SET_MDWE, variant->first_flags, 0L, 0L, 0L), 0);
++
++	ret = prctl(PR_SET_MDWE, variant->second_flags, 0L, 0L, 0L);
++	if (variant->should_work) {
++		EXPECT_EQ(ret, 0);
++
++		ret = prctl(PR_GET_MDWE, 0L, 0L, 0L, 0L);
++		ASSERT_EQ(ret, variant->second_flags);
++	} else {
++		EXPECT_NE(ret, 0);
++		ASSERT_EQ(errno, EPERM);
++	}
 +}
 +
- #endif /* _LINUX_SCHED_COREDUMP_H */
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 9a85c69782bd..370ed14b1ae0 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -284,6 +284,7 @@ struct prctl_mm_map {
- /* Memory deny write / execute */
- #define PR_SET_MDWE			65
- # define PR_MDWE_REFUSE_EXEC_GAIN	(1UL << 0)
-+# define PR_MDWE_NO_INHERIT		(1UL << 1)
+ FIXTURE(mdwe)
+ {
+ 	void *p;
+@@ -53,28 +134,45 @@ FIXTURE_VARIANT(mdwe)
+ {
+ 	bool enabled;
+ 	bool forked;
++	bool inherit;
+ };
  
- #define PR_GET_MDWE			66
+ FIXTURE_VARIANT_ADD(mdwe, stock)
+ {
+ 	.enabled = false,
+ 	.forked = false,
++	.inherit = false,
+ };
  
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 7b8b63fb0438..9da5a1192c98 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1285,7 +1285,7 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
- 	hugetlb_count_init(mm);
+ FIXTURE_VARIANT_ADD(mdwe, enabled)
+ {
+ 	.enabled = true,
+ 	.forked = false,
++	.inherit = true,
+ };
  
- 	if (current->mm) {
--		mm->flags = current->mm->flags & MMF_INIT_MASK;
-+		mm->flags = mmf_init_flags(current->mm->flags);
- 		mm->def_flags = current->mm->def_flags & VM_INIT_DEF_MASK;
+-FIXTURE_VARIANT_ADD(mdwe, forked)
++FIXTURE_VARIANT_ADD(mdwe, inherited)
+ {
+ 	.enabled = true,
+ 	.forked = true,
++	.inherit = true,
+ };
+ 
++FIXTURE_VARIANT_ADD(mdwe, not_inherited)
++{
++	.enabled = true,
++	.forked = true,
++	.inherit = false,
++};
++
++static bool executable_map_should_fail(const FIXTURE_VARIANT(mdwe) *variant)
++{
++	return variant->enabled && (!variant->forked || variant->inherit);
++}
++
+ FIXTURE_SETUP(mdwe)
+ {
++	unsigned long mdwe_flags;
+ 	int ret, status;
+ 
+ 	self->p = NULL;
+@@ -84,13 +182,17 @@ FIXTURE_SETUP(mdwe)
+ 	if (!variant->enabled)
+ 		return;
+ 
+-	ret = prctl(PR_SET_MDWE, PR_MDWE_REFUSE_EXEC_GAIN, 0L, 0L, 0L);
++	mdwe_flags = PR_MDWE_REFUSE_EXEC_GAIN;
++	if (!variant->inherit)
++		mdwe_flags |= PR_MDWE_NO_INHERIT;
++
++	ret = prctl(PR_SET_MDWE, mdwe_flags, 0L, 0L, 0L);
+ 	ASSERT_EQ(ret, 0) {
+ 		TH_LOG("PR_SET_MDWE failed or unsupported");
+ 	}
+ 
+ 	ret = prctl(PR_GET_MDWE, 0L, 0L, 0L, 0L);
+-	ASSERT_EQ(ret, 1);
++	ASSERT_EQ(ret, mdwe_flags);
+ 
+ 	if (variant->forked) {
+ 		self->pid = fork();
+@@ -121,7 +223,7 @@ TEST_F(mdwe, mmap_READ_EXEC)
+ TEST_F(mdwe, mmap_WRITE_EXEC)
+ {
+ 	self->p = mmap(NULL, self->size, PROT_WRITE | PROT_EXEC, self->flags, 0, 0);
+-	if (variant->enabled) {
++	if (executable_map_should_fail(variant)) {
+ 		EXPECT_EQ(self->p, MAP_FAILED);
  	} else {
- 		mm->flags = default_dump_filter;
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 2410e3999ebe..4a8073c1b255 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -2368,19 +2368,41 @@ static int prctl_set_vma(unsigned long opt, unsigned long start,
- }
- #endif /* CONFIG_ANON_VMA_NAME */
+ 		EXPECT_NE(self->p, MAP_FAILED);
+@@ -147,7 +249,7 @@ TEST_F(mdwe, mprotect_add_EXEC)
+ 	ASSERT_NE(self->p, MAP_FAILED);
  
-+static inline unsigned long get_current_mdwe(void)
-+{
-+	unsigned long ret = 0;
-+
-+	if (test_bit(MMF_HAS_MDWE, &current->mm->flags))
-+		ret |= PR_MDWE_REFUSE_EXEC_GAIN;
-+	if (test_bit(MMF_HAS_MDWE_NO_INHERIT, &current->mm->flags))
-+		ret |= PR_MDWE_NO_INHERIT;
-+
-+	return ret;
-+}
-+
- static inline int prctl_set_mdwe(unsigned long bits, unsigned long arg3,
- 				 unsigned long arg4, unsigned long arg5)
- {
-+	unsigned long current_bits;
-+
- 	if (arg3 || arg4 || arg5)
- 		return -EINVAL;
+ 	ret = mprotect(self->p, self->size, PROT_READ | PROT_EXEC);
+-	if (variant->enabled) {
++	if (executable_map_should_fail(variant)) {
+ 		EXPECT_LT(ret, 0);
+ 	} else {
+ 		EXPECT_EQ(ret, 0);
+@@ -162,7 +264,7 @@ TEST_F(mdwe, mprotect_WRITE_EXEC)
+ 	ASSERT_NE(self->p, MAP_FAILED);
  
--	if (bits & ~(PR_MDWE_REFUSE_EXEC_GAIN))
-+	if (bits & ~(PR_MDWE_REFUSE_EXEC_GAIN | PR_MDWE_NO_INHERIT))
-+		return -EINVAL;
-+
-+	/* NO_INHERIT only makes sense with REFUSE_EXEC_GAIN */
-+	if (bits & PR_MDWE_NO_INHERIT && !(bits & PR_MDWE_REFUSE_EXEC_GAIN))
- 		return -EINVAL;
- 
-+	current_bits = get_current_mdwe();
-+	if (current_bits && current_bits != bits)
-+		return -EPERM; /* Cannot unset the flags */
-+
-+	if (bits & PR_MDWE_NO_INHERIT)
-+		set_bit(MMF_HAS_MDWE_NO_INHERIT, &current->mm->flags);
- 	if (bits & PR_MDWE_REFUSE_EXEC_GAIN)
- 		set_bit(MMF_HAS_MDWE, &current->mm->flags);
--	else if (test_bit(MMF_HAS_MDWE, &current->mm->flags))
--		return -EPERM; /* Cannot unset the flag */
- 
- 	return 0;
- }
-@@ -2390,9 +2412,7 @@ static inline int prctl_get_mdwe(unsigned long arg2, unsigned long arg3,
- {
- 	if (arg2 || arg3 || arg4 || arg5)
- 		return -EINVAL;
--
--	return test_bit(MMF_HAS_MDWE, &current->mm->flags) ?
--		PR_MDWE_REFUSE_EXEC_GAIN : 0;
-+	return get_current_mdwe();
- }
- 
- static int prctl_get_auxv(void __user *addr, unsigned long len)
-diff --git a/tools/include/uapi/linux/prctl.h b/tools/include/uapi/linux/prctl.h
-index 9a85c69782bd..370ed14b1ae0 100644
---- a/tools/include/uapi/linux/prctl.h
-+++ b/tools/include/uapi/linux/prctl.h
-@@ -284,6 +284,7 @@ struct prctl_mm_map {
- /* Memory deny write / execute */
- #define PR_SET_MDWE			65
- # define PR_MDWE_REFUSE_EXEC_GAIN	(1UL << 0)
-+# define PR_MDWE_NO_INHERIT		(1UL << 1)
- 
- #define PR_GET_MDWE			66
- 
+ 	ret = mprotect(self->p, self->size, PROT_WRITE | PROT_EXEC);
+-	if (variant->enabled) {
++	if (executable_map_should_fail(variant)) {
+ 		EXPECT_LT(ret, 0);
+ 	} else {
+ 		EXPECT_EQ(ret, 0);
 -- 
 2.42.0.rc2.253.gd59a3bf2b4-goog
 
