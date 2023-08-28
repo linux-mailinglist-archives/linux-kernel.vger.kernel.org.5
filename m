@@ -2,94 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252B378A560
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD42D78A56A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjH1FxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        id S229594AbjH1Fxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjH1Fwq (ORCPT
+        with ESMTP id S229577AbjH1Fxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:52:46 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE8EA9
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:52:44 -0700 (PDT)
-Received: from nazgul.tnic (dynamic-046-114-154-102.46.114.pool.telefonica.de [46.114.154.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 28 Aug 2023 01:53:32 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5107B115
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:53:28 -0700 (PDT)
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A70331EC00F4;
-        Mon, 28 Aug 2023 07:52:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1693201963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=j/Qx+36eU7KYfClJp570PFFK/VGOpisKllJLzShFeIM=;
-        b=IKljQRpAkfC8ZUF5NRTXc+UHJ/Wgd9Ghk5noCn2TNSsu5zyFiqr7v5e43AuvZsW5g5/3Tp
-        N55poMH84Tn9EW39JwkX0v2HFswbe9RVdFRxDFiESdN7uKY3pw3j2OLWFfQpvrLSSL/EI7
-        /K16YQ0yTeOpw9EA0bWpZjZbxKf6bBU=
-Date:   Mon, 28 Aug 2023 07:52:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] ras/core for v6.6-rc1
-Message-ID: <20230828055239.GCZOw2J+mTIHZIDkQ/@fat_crate.local>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D37AE3F186
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 05:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1693202006;
+        bh=XBlNT+SJA1xULw0LphVVt+nl/FhzT+DOY2urbcNDsHQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=BuDR1MbtD1pL7mtB/L6vmrN9FDa4IQZq5UgWxu6Ro0eyphQlfa2PhY00FTHdbBSD5
+         Im16IncUHcF8m4XaXarnO/GKQcvo3tFIWEfD0ewyDyMapmjEv7Rh5guHMP4uNEWqq9
+         7vUReb+OWUaxnt1z4qyYEZyp5AWN/Br6IEIgNr1fehp4QwmaXJcKkGtw1jOh65q0c+
+         BgN7qz6D8VmTJUSRcUumUsKF/sJ64KzQgQ8kEXD06kMjrR06sgN/icThpU2974Y6nk
+         6QvK5MniUq53VBrpXCBoWfR0J4t4344RSk+7l2zx0yMJ/hnrbWeeFzRArS8IAUR5xO
+         fCkGgSXhTvVoA==
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-68bf02547dbso3529086b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:53:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693202005; x=1693806805;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XBlNT+SJA1xULw0LphVVt+nl/FhzT+DOY2urbcNDsHQ=;
+        b=Xhtox24HPCaXZgjzqD5M15n0oiace4q+j+IloDKlEzCyHz3hSIZq3LN2REA4PE5ly+
+         W+hwNL/li5ctUcskgW5qOx6LRvT3jQSZB4iB0thMWoxZqj5CLm+nKSqTNVywEDfPANjn
+         gvlQQMSwXbbBCECW2CE3GxBHPmwgZCSjyF4rs0My6pj8i500M7E6RZRFAMhi8IyU4XZ2
+         OxEXrY8KstsbUmfEocS/bO1k4bhyAL6ht0va3rYoyZobmikBnhm/VaHUENLMPvEIkw8k
+         F+hxI7WV0kqv3KYwIL+RH5W8hoBovtWZWyyYsDqgRqy9Vlq1GjjRdCBDFBrgIlgV9IHq
+         gNDA==
+X-Gm-Message-State: AOJu0YxFvLbe43i1/zQz3cscAPNaZ/h5JsvCBw30kzPIVwCbS0A4/XWz
+        9eIMwmDxXEDzBRV3Uhjzh7VrQmHdxkDpbC6Wd010TCNWwwoshNPdM77Wqya+Jryx8vnrdRf/Qbg
+        ti7tKCK1d87lPl1GN1uYUAbx+pqB59N3wGlMpC7EqIg==
+X-Received: by 2002:a05:6a00:1702:b0:68a:31b2:5219 with SMTP id h2-20020a056a00170200b0068a31b25219mr27171273pfc.22.1693202005335;
+        Sun, 27 Aug 2023 22:53:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IETOr5QON36PnUzijEjXWZZvvLEKX4zMQcUsq6iqBwE+qP9e8IOTfUvNUd2cjJ6MZMldHklNw==
+X-Received: by 2002:a05:6a00:1702:b0:68a:31b2:5219 with SMTP id h2-20020a056a00170200b0068a31b25219mr27171261pfc.22.1693202005029;
+        Sun, 27 Aug 2023 22:53:25 -0700 (PDT)
+Received: from chengendu.. (111-248-129-25.dynamic-ip.hinet.net. [111.248.129.25])
+        by smtp.gmail.com with ESMTPSA id e14-20020a63ae4e000000b0056946623d7esm6452028pgp.55.2023.08.27.22.53.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 22:53:24 -0700 (PDT)
+From:   Chengen Du <chengen.du@canonical.com>
+To:     trond.myklebust@hammerspace.com
+Cc:     anna@kernel.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chengen Du <chengen.du@canonical.com>
+Subject: [PATCH v3 RESEND] NFS: Add mount option 'fasc'
+Date:   Mon, 28 Aug 2023 13:53:10 +0800
+Message-Id: <20230828055310.21391-1-chengen.du@canonical.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+In certain instances, users or applications switch to other privileged
+users by executing commands like 'su' to carry out operations on NFS-
+mounted folders. However, when this happens, the login time for the
+privileged user is reset, and any NFS ACCESS operations must be resent,
+which can result in a decrease in performance. In specific production
+environments where the access cache can be trusted due to stable group
+membership, there's no need to verify the cache stall situation.
+To maintain the initial behavior and performance, a new mount option
+called 'fasc' has been introduced. This option triggers the mechanism
+of clearing the file access cache upon login.
 
-please pull some RAS updates for 6.6.
-
-Thx.
-
+Signed-off-by: Chengen Du <chengen.du@canonical.com>
 ---
+ fs/nfs/dir.c              | 21 ++++++++++++---------
+ fs/nfs/fs_context.c       |  5 +++++
+ fs/nfs/super.c            |  1 +
+ include/linux/nfs_fs_sb.h |  1 +
+ 4 files changed, 19 insertions(+), 9 deletions(-)
 
-The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
-
-  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/ras_core_for_v6.6_rc1
-
-for you to fetch changes up to 4240e2ebe67941ce2c4f5c866c3af4b5ac7a0c67:
-
-  x86/MCE: Always save CS register on AMD Zen IF Poison errors (2023-08-18 13:05:52 +0200)
-
-----------------------------------------------------------------
-- Add a quirk for AMD Zen machines where Instruction Fetch unit poison
-  consumption MCEs are not delivered synchronously but still within the
-  same context, which can lead to erroneously increased error severity
-  and unneeded kernel panics
-
-- Do not log errors caught by polling shared MCA banks as they
-  materialize as duplicated error records otherwise
-
-----------------------------------------------------------------
-Borislav Petkov (AMD) (1):
-      x86/mce: Prevent duplicate error records
-
-Yazen Ghannam (1):
-      x86/MCE: Always save CS register on AMD Zen IF Poison errors
-
- arch/x86/kernel/cpu/mce/core.c     | 35 ++++++++++++++++++++++++++++++++++-
- arch/x86/kernel/cpu/mce/intel.c    | 19 ++++++++++++++++++-
- arch/x86/kernel/cpu/mce/internal.h |  6 +++++-
- 3 files changed, 57 insertions(+), 3 deletions(-)
-
+diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+index 8f3112e71a6a..cefdb23d4cd7 100644
+--- a/fs/nfs/dir.c
++++ b/fs/nfs/dir.c
+@@ -2951,12 +2951,14 @@ static struct nfs_access_entry *nfs_access_search_rbtree(struct inode *inode, co
+ 	return NULL;
+ }
+ 
+-static u64 nfs_access_login_time(const struct task_struct *task,
+-				 const struct cred *cred)
++static inline
++bool nfs_check_access_stale(const struct task_struct *task,
++			    const struct cred *cred,
++			    const struct nfs_access_entry *cache)
+ {
+ 	const struct task_struct *parent;
+ 	const struct cred *pcred;
+-	u64 ret;
++	u64 login_time;
+ 
+ 	rcu_read_lock();
+ 	for (;;) {
+@@ -2966,15 +2968,15 @@ static u64 nfs_access_login_time(const struct task_struct *task,
+ 			break;
+ 		task = parent;
+ 	}
+-	ret = task->start_time;
++	login_time = task->start_time;
+ 	rcu_read_unlock();
+-	return ret;
++
++	return ((s64)(login_time - cache->timestamp) > 0);
+ }
+ 
+ static int nfs_access_get_cached_locked(struct inode *inode, const struct cred *cred, u32 *mask, bool may_block)
+ {
+ 	struct nfs_inode *nfsi = NFS_I(inode);
+-	u64 login_time = nfs_access_login_time(current, cred);
+ 	struct nfs_access_entry *cache;
+ 	bool retry = true;
+ 	int err;
+@@ -3003,7 +3005,8 @@ static int nfs_access_get_cached_locked(struct inode *inode, const struct cred *
+ 		retry = false;
+ 	}
+ 	err = -ENOENT;
+-	if ((s64)(login_time - cache->timestamp) > 0)
++	if ((NFS_SERVER(inode)->flags & NFS_MOUNT_FASC) &&
++	    nfs_check_access_stale(current, cred, cache))
+ 		goto out;
+ 	*mask = cache->mask;
+ 	list_move_tail(&cache->lru, &nfsi->access_cache_entry_lru);
+@@ -3023,7 +3026,6 @@ static int nfs_access_get_cached_rcu(struct inode *inode, const struct cred *cre
+ 	 * but do it without locking.
+ 	 */
+ 	struct nfs_inode *nfsi = NFS_I(inode);
+-	u64 login_time = nfs_access_login_time(current, cred);
+ 	struct nfs_access_entry *cache;
+ 	int err = -ECHILD;
+ 	struct list_head *lh;
+@@ -3038,7 +3040,8 @@ static int nfs_access_get_cached_rcu(struct inode *inode, const struct cred *cre
+ 		cache = NULL;
+ 	if (cache == NULL)
+ 		goto out;
+-	if ((s64)(login_time - cache->timestamp) > 0)
++	if ((NFS_SERVER(inode)->flags & NFS_MOUNT_FASC) &&
++	    nfs_check_access_stale(current, cred, cache))
+ 		goto out;
+ 	if (nfs_check_cache_invalid(inode, NFS_INO_INVALID_ACCESS))
+ 		goto out;
+diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
+index 853e8d609bb3..2fbc2d1bd775 100644
+--- a/fs/nfs/fs_context.c
++++ b/fs/nfs/fs_context.c
+@@ -92,6 +92,7 @@ enum nfs_param {
+ 	Opt_wsize,
+ 	Opt_write,
+ 	Opt_xprtsec,
++	Opt_fasc,
+ };
+ 
+ enum {
+@@ -199,6 +200,7 @@ static const struct fs_parameter_spec nfs_fs_parameters[] = {
+ 	fsparam_enum  ("write",		Opt_write, nfs_param_enums_write),
+ 	fsparam_u32   ("wsize",		Opt_wsize),
+ 	fsparam_string("xprtsec",	Opt_xprtsec),
++	fsparam_flag  ("fasc",		Opt_fasc),
+ 	{}
+ };
+ 
+@@ -925,6 +927,9 @@ static int nfs_fs_context_parse_param(struct fs_context *fc,
+ 	case Opt_sloppy:
+ 		ctx->sloppy = true;
+ 		break;
++	case Opt_fasc:
++		ctx->flags |= NFS_MOUNT_FASC;
++		break;
+ 	}
+ 
+ 	return 0;
+diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+index 2284f749d892..7a0c5280e388 100644
+--- a/fs/nfs/super.c
++++ b/fs/nfs/super.c
+@@ -448,6 +448,7 @@ static void nfs_show_mount_options(struct seq_file *m, struct nfs_server *nfss,
+ 		{ NFS_MOUNT_NORDIRPLUS, ",nordirplus", "" },
+ 		{ NFS_MOUNT_UNSHARED, ",nosharecache", "" },
+ 		{ NFS_MOUNT_NORESVPORT, ",noresvport", "" },
++		{ NFS_MOUNT_FASC, ",fasc", "" },
+ 		{ 0, NULL, NULL }
+ 	};
+ 	const struct proc_nfs_info *nfs_infop;
+diff --git a/include/linux/nfs_fs_sb.h b/include/linux/nfs_fs_sb.h
+index 20eeba8b009d..6a88ba36f7a8 100644
+--- a/include/linux/nfs_fs_sb.h
++++ b/include/linux/nfs_fs_sb.h
+@@ -155,6 +155,7 @@ struct nfs_server {
+ #define NFS_MOUNT_WRITE_WAIT		0x02000000
+ #define NFS_MOUNT_TRUNK_DISCOVERY	0x04000000
+ #define NFS_MOUNT_SHUTDOWN			0x08000000
++#define NFS_MOUNT_FASC			0x10000000
+ 
+ 	unsigned int		fattr_valid;	/* Valid attributes */
+ 	unsigned int		caps;		/* server capabilities */
 -- 
-Regards/Gruss,
-    Boris.
+2.39.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
