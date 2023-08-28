@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E3A78A933
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FF278A940
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjH1JrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
+        id S229637AbjH1Jsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbjH1Jqx (ORCPT
+        with ESMTP id S230251AbjH1Js0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:46:53 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1872110
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:46:49 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso45258011fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:46:49 -0700 (PDT)
+        Mon, 28 Aug 2023 05:48:26 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A130103
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:48:20 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bcd7a207f7so44052521fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693216008; x=1693820808;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1693216098; x=1693820898;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=T8rRZcymCfarQdzwxtvOO3M0Qw7zmDLEl4iw2PwzWqc=;
-        b=os0YTBFhFu7jqH6VF4lm+dWhm+AnStmPLrr5MEoEIPwdpOS5I0x0RZSX37siwBzQV5
-         UCXWRzloRHNjpcnUC4uJ9iAc9gs65MYe3Jh+DqYXJrTLTxPBUOvmfDGFg+7XliVZqXvY
-         dkmgKpqtQGPAnLXvNJtx7UoUwfq+hxI/u8rcnRm8Yq0CQ+2yF8XPUiOnzztrZgse7Q7v
-         zfxCGjD2om6Fp/t0m/iVWp+O4I9SELDuyXp1omGusTXeffQmTUcUAEc3QA0kBMPuazlE
-         OgZ35dCvAsTW55oEYbQ6U0jm0y7ahf8zfKvWhm4iP2l+HxOg5l969JMH8aVPp7Vhg120
-         Qbhw==
+        bh=zKlHsSeuVGTpkMdRS5+LwSEAr5nAZTkLGPaU8OU91kw=;
+        b=vrxU9MRTJVI2wEm1w5KY5/AjXquGR/9cwq19GOMM2vAL4TN+chHOVLgl65J+ihKaYd
+         cw6fg/G5yyta6HEYoqqiz0a3BsTxT15fKa/D9DeaV3Jnmqoc4ImNvWZR+NjcPXD79WT+
+         RZcjAmPIh7Tx2CjVtRc/vX59lJ26PwF/CvNIaUHyM4UFq3jPuCfVtShZvR/rJV/EmYLv
+         In7l+lsK32Lbn5T2RauQTaJj2vSxZsXi8nRYCXDv3XCsB6S5zRdosn0J/H1ELmtnCnq0
+         Q54ziDSkHKfpKe0/yA46BAllP8kib/Rl/BVagnMVewiCH9opTSibxIVgvmTpFmsQc7V/
+         FwEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693216008; x=1693820808;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693216098; x=1693820898;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8rRZcymCfarQdzwxtvOO3M0Qw7zmDLEl4iw2PwzWqc=;
-        b=EZAsGuiN3cHMPhHBwhVfpojsQtBia23GZ3PKY9e1VtB9ORFZv5NzFUqJu9ENqtaQ+W
-         7ETudw0eoDPoJzvS31ICfziCa/gqzd9zQteauJ8Aot7u2thQL+f0Ur/FC7CQhxs/vlV4
-         6GwmlvMrMWISvipzdRRg7txKuJ3/Is3KhYt30uuGLwpGlgnLp3gmTVysB31lcti5sMS9
-         5QG5IWXHVmKLgAi+Lz9GZZ/wk7obyN1krOpAFVVYpTZ9sVAJDq8ZpP3FQQIhgtR/9Rii
-         Ihdr2gSBk5ammZ80MEZiSbIj3tZ/Tv1ZN9v3jLEy2IdhNcSqSgJk8LkBrsJVnO0wCbGs
-         Swow==
-X-Gm-Message-State: AOJu0Yx8Zm+YS3G6HF3yEdbz9P80MpwgbKJ7IAOIfAtzgftsYLcXzWYu
-        a4ssc1PYTCTD8eHVY5dytz44gg==
-X-Google-Smtp-Source: AGHT+IGUuF8rP3XpdZaT1fAE0Tj5KyoLrlpMMbFPfUjAlJ1fixZ18IYaK9TGF8w1jOUz4RoS7N610Q==
-X-Received: by 2002:a2e:9cd3:0:b0:2b9:b693:c906 with SMTP id g19-20020a2e9cd3000000b002b9b693c906mr18656504ljj.27.1693216008107;
-        Mon, 28 Aug 2023 02:46:48 -0700 (PDT)
+        bh=zKlHsSeuVGTpkMdRS5+LwSEAr5nAZTkLGPaU8OU91kw=;
+        b=PF9qycAKgb/L90KHx+sGPSQIej4Fqy5lzZcbtpWD5nx0nL9TNwV4IgUJFvVj0J0RkM
+         LW5xWZ6ZjMygraCMD3+zfO4l7rsCcrGLRQ+pVV9xH5UDw6bMpZTPv23j+VzzTwqg9v0Z
+         5eTGk5RvsAvyGJ1MPe/K7PkPiG+VBBPpY9i5MCMGvbF485jqpneQEVXXJ4/VeyU15R/i
+         RQGYQ9yg1mt9q2Y2Qm3ZyUGfv1HLe2uWVh1JqGPK+KCJJh6J5FQSDLsUm1evx7eBF4oj
+         f7siq80Vq5TNeEKlGG7U2+t12SGYu92IK8RG0I5bxFo3SGzdjARuC7wXpM33mREZyz2/
+         X2xw==
+X-Gm-Message-State: AOJu0YxQBeJCv2s2ja/z91K7jKgR/KG8orlOPayMzuSt5ahLI7n5tlae
+        pWqJeZ1PUXTUTNMDmIU41PdD4w==
+X-Google-Smtp-Source: AGHT+IFaYsQ3+vhNlH2eIC8IHFmDnZdOcTcoqkP4FAv7PIMBSDyzbC9UH4Sgw+Mag133BPvkVzGMWA==
+X-Received: by 2002:a2e:9b18:0:b0:2bc:db99:1306 with SMTP id u24-20020a2e9b18000000b002bcdb991306mr11760946lji.38.1693216098466;
+        Mon, 28 Aug 2023 02:48:18 -0700 (PDT)
 Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id h10-20020a2e900a000000b002ba130e9a29sm1682693ljg.76.2023.08.28.02.46.47
+        by smtp.gmail.com with ESMTPSA id h10-20020a2e900a000000b002ba130e9a29sm1682693ljg.76.2023.08.28.02.48.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 02:46:47 -0700 (PDT)
-Message-ID: <4caa328d-83ad-418a-a094-a24fadb45225@linaro.org>
-Date:   Mon, 28 Aug 2023 11:46:46 +0200
+        Mon, 28 Aug 2023 02:48:18 -0700 (PDT)
+Message-ID: <31b528cf-53e3-41f8-921c-691614296da4@linaro.org>
+Date:   Mon, 28 Aug 2023 11:48:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc8180x: drop incorrect cell-index
- from SPMI
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm7225-fp4: Revert "arm64: dts:
+ qcom: sm7225-fairphone-fp4: Add AW8695 haptics"
 Content-Language: en-US
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Andy Gross <agross@kernel.org>,
@@ -65,8 +65,9 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
+Cc:     Luca Weiss <luca.weiss@fairphone.com>
 References: <20230827122842.63741-1-krzysztof.kozlowski@linaro.org>
- <20230827122842.63741-2-krzysztof.kozlowski@linaro.org>
+ <20230827122842.63741-3-krzysztof.kozlowski@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -103,11 +104,11 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230827122842.63741-2-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230827122842.63741-3-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,13 +117,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 27.08.2023 14:28, Krzysztof Kozlowski wrote:
-> The SPMI controller (PMIC Arbiter) does not use nor allow 'cell-index'
-> property:
+> This reverts commit 413821b7777d062b57f8dc66ab088ed390cbc3ec because it
+> was never reviewed, was buggy (report from kernel test robot:
+> https://lore.kernel.org/all/202204090333.QZXMI2tu-lkp@intel.com/) and
+> used undocumented, broken bindings.  Half of the properties in this
+> device are questioned, thus adding DTS node causes only errors and does
+> not make the device usable without the bindings and driver part:
 > 
->   sc8180x-primus.dtb: spmi@c440000: Unevaluated properties are not allowed ('cell-index' was unexpected)
+>   sm7225-fairphone-fp4.dtb: haptics@5a: failed to match any schema with compatible: ['awinic,aw8695']
+>   sm7225-fairphone-fp4.dtb: haptics@5a: awinic,tset: b'\x12' is not of type 'object', 'array', 'boolean', 'null'
+>   sm7225-fairphone-fp4.dtb: haptics@5a: awinic,r-spare: b'h' is not of type 'object', 'array', 'boolean', 'null'
 > 
+> Since bindings were abandoned (4 months since review), revert the commit
+> to avoid false sense of supporting something which is not supported.
+> 
+> Cc: Luca Weiss <luca.weiss@fairphone.com>
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
