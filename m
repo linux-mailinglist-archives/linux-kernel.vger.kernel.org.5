@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7544D78B4A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851E478B4A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbjH1Pim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        id S230010AbjH1Pko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbjH1Pic (ORCPT
+        with ESMTP id S232390AbjH1Pka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:38:32 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96BE194
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:38:20 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso49528161fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693237099; x=1693841899;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oOBUP0ss/TxEKXtPE0CNLju64MbMYbKUX21GZjq3dUc=;
-        b=lRbLphjIATg19N4Za/9tYCX5wc34RXXxp2qF1vRQJkQjxZIV4z+O3cUYAL9oRiaq+9
-         jgvm6t82Ouz6beTFmD/v+hXhyZwlRtGE/lw1ngdaC78p3rAKHzZVZFNIUmJuuUnB20sa
-         XAnuxKp0M/qKyQqgfLEKEdCVCnoZzSCvkzBDvRc1WatYWLRScnyomSjn/VWtwbfYQHSB
-         HzrWjsGV4SxF9Y69lFW05gw5R4TgOn6j7ViToNoW/KOMpNZdOPvaO+Z5twQTd748++q6
-         gnXZZ3uOGce8FATlPZF33J4rDgbUNuIbHPMh/5kXNgVc591A14iLfINZQigT3TtZtcwt
-         vuoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693237099; x=1693841899;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oOBUP0ss/TxEKXtPE0CNLju64MbMYbKUX21GZjq3dUc=;
-        b=DX+8h8CzZdoL9RhJcJLMkvMjp/qdJkuWMBqpxhvkePVSyh1By8I+hgUQIU9omlEAqO
-         QvQfoQJBle7mfYHPAoum0k811Upz5eIfh9P6M+Mivk03EE+gKNIAxaMdo7r+FLt230QA
-         qaHRSuM5yXRNT61A9Em815KlyOURzGoOWlc4ylwdAXtiZkMjmjHkdaF5bS+ICYNp2lBW
-         xdwmhkZ5u4VY4bmtHNmVbT1n9T48yt0vhihCKrNtamJzzSWVTe+FAOG6bbguUaadTacR
-         kkDLEAr/3Z0yd9htpj1RCWxrxziTQvYfgX+I62Rb5O9xSg7FuS6frZZq23XVQgTwjRXj
-         stAw==
-X-Gm-Message-State: AOJu0Yzyl5YCDog0ROHDGpV+hihardRAjClHa8G1AKvomXEzSBjQTEUH
-        lZXZQHIBWGqa/6z720mYYxuyVQ==
-X-Google-Smtp-Source: AGHT+IF+Xo7ZUXD1LzO6MQw/ppbsocfOjvkWj48oUUWoV0Dei6vTwM1LFGsgzxi+fAENJFq0kzWwLw==
-X-Received: by 2002:a2e:7d12:0:b0:2bc:e51d:89a3 with SMTP id y18-20020a2e7d12000000b002bce51d89a3mr10007385ljc.29.1693237099086;
-        Mon, 28 Aug 2023 08:38:19 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id z10-20020a2e9b8a000000b002bcda31af0fsm1758578lji.74.2023.08.28.08.38.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 08:38:18 -0700 (PDT)
-Message-ID: <8310417c-bba9-49ed-9049-bee5b23c2e3f@linaro.org>
-Date:   Mon, 28 Aug 2023 17:38:17 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 15/15] media: qcom: camss: Comment CSID dt_id field
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
- <20230823104444.1954663-16-bryan.odonoghue@linaro.org>
- <4929aa72-a134-4eeb-850e-46d9255c011b@linaro.org>
- <b4545982-af6c-5460-d662-36b0eb80bb4e@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <b4545982-af6c-5460-d662-36b0eb80bb4e@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+        Mon, 28 Aug 2023 11:40:30 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2084.outbound.protection.outlook.com [40.92.19.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8823699
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:40:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YJ3uTCw6KkUTkM+4WzvLyLFP1LEv3aE/XNPde1FMX/mFrPMAHlShLeATM/a6CVNB1wAsXmarEvf6Jq3kf4KjqYhdsTem9NvJk+CyQM5rGJQC5mHe9Fs1UvadUgRp7JUk8A8ON0x7jaAinbu+O2k3uz6V6P9hOCNPW7CsqUyc94rh97zUKiZmPDrQ2X74jXL1RTFw1muXSdbnTzSs9TccoVraQXFVnD8brziEG/pmVRKv6doxnAI428SBXC+POnLM/BsP/DqG9YqkonvfBsPEYlOGJktAkP1NNKgOP0w8rx6XY4r5CivPoHaOzZUrBISvJ0az4KFcesGYIb1fSXi6jw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ioNbeEC6J0kDqQp2J9wH34rR299CMTj3Sl+zQiiCSAY=;
+ b=kKZy2O7yIoMXMFcErxQ5H6hNNZGKgEonX1J17bXkgmKl+lrAycf8c9Ic5pWpMAoGx+BODQoxcax2TmX/j9j8xceQoK/j5rf3Pl+6Cj1xecDGzmHDokniZQ+iao3qk7dcRUg/43opks0iOWVr8TNqkeTEoT7AE6sZiKIr3RzCaZ+KJ4jY2sWEAgvC592VA1fs8o0KjexmNF537MJb9y3TGFIxl5ZphMCt1a+DmRFp+3qTI8nnqNHnw1q9lRBMm1OIzVWQ/PxY2Omr88PjYF7qtF07iqLk53/RZ+8lEa30VhBBrq31S22E4ql/DAbi8s6xJ2va95cbPmkNNDcKcUihMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ioNbeEC6J0kDqQp2J9wH34rR299CMTj3Sl+zQiiCSAY=;
+ b=r7LLfvQYtPSsqj2iGijns6yFVS7RZbtUYw9XrGwin0durW8E4mcucH+xsuiU79nRNOZz0iBQfZ3oYQlCmDj1BDVHtxAYApE93fvZAcyCc/U4eRayB1KjqTMAO8NFhfEF6lLRnvrRcucFWuDuvwZ0YII/PbDcQbe3EKXO+Xy1iqIOvuOf0d3V9hIoWG6n6AuXc07o/l4KB3CLsi0BZh7c0WNVzQXRsrTY59ufgEur+f79vdca71zNrUOcMoEZcef3HYdn5aw7XRvIxhwzp4UeuOQfFnFZ9CQg4/NCtlefvbvFwSuMNT16taZhajR/rXcYNCZofNFVpMBtXWXi/K0mTA==
+Received: from PH7PR11MB7643.namprd11.prod.outlook.com (2603:10b6:510:27c::22)
+ by MN0PR11MB6088.namprd11.prod.outlook.com (2603:10b6:208:3cc::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
+ 2023 15:40:25 +0000
+Received: from PH7PR11MB7643.namprd11.prod.outlook.com
+ ([fe80::bfb7:d3a3:2ed:6e20]) by PH7PR11MB7643.namprd11.prod.outlook.com
+ ([fe80::bfb7:d3a3:2ed:6e20%7]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
+ 15:40:25 +0000
+From:   Oliver Crumrine <ozlinux@hotmail.com>
+To:     gregkh@linuxfoundation.org, colin.i.king@gmail.com,
+        sumitraartsy@gmail.com, u.kleine-koenig@pengutronix.de,
+        geert@linux-m68k.org
+Cc:     Oliver Crumrine <ozlinux@hotmail.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH v5 0/6] remove typedefs in octeon ethernet driver
+Date:   Mon, 28 Aug 2023 11:39:05 -0400
+Message-ID: <PH7PR11MB76438CCE5AB981A59423A942BCE0A@PH7PR11MB7643.namprd11.prod.outlook.com>
+X-Mailer: git-send-email 2.39.3
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [eUaDLuneDa0uLU2GqCsHzAT93/hHIRVYvq8ssOY043XKbIwVTLKTRmAYtsR+k8lB]
+X-ClientProxiedBy: MN2PR19CA0017.namprd19.prod.outlook.com
+ (2603:10b6:208:178::30) To PH7PR11MB7643.namprd11.prod.outlook.com
+ (2603:10b6:510:27c::22)
+X-Microsoft-Original-Message-ID: <cover.1693236450.git.ozlinux@hotmail.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB7643:EE_|MN0PR11MB6088:EE_
+X-MS-Office365-Filtering-Correlation-Id: fd7692da-82b2-40da-c69b-08dba7dd18e0
+X-MS-Exchange-SLBlob-MailProps: AZnQBsB9Xmr1VCrDDYJl/lCLgD1Tr5zrqkcZZirfezANu0sAO8v+bs38oJdSAsv90hDzG0L1rKiXNNqEfCh3y2l0jqr8HhfBJ1nulAp+6GLICwbe78gNzZSFVq4LdZmidrzE0xKHC9ktrzGp6tLM8VfxqinqZJOm/zfSTfe9lL43qb471jm6ipg69cjl+xeMg15VR+TqzH21C4o0emkvRCDMx4W9ednkyHA0QJ36FUk7ssKy+q/s28uttkfkBOjwcTLq5gMxg1NWejS4EELfE5qF0Syh/olGm2dTmqavOod6cnuweABB+w4H3IuKcMtp9fzrT6+8JCigCchz4uFjdNB8WB7TNDYv1gNTdmdyl/52bHveO1kqhxVjs0oBV4GKHLEKfZalJMOZmiC02Io0jy2Mn5jUySxvgWMFzkwJ/U+OkJCTHte2ZIr6xOa53J19bSMJgjhL6FT8eGTmSp2uA7xdClUxqJNEUpuRD2foNcu4SZIKPDdTtS/AmtIG9hTI1QEe8ESuRATouk59az7HgrgmMHRxXbc/u8CW7ukHeRx8PWwAeYkgglFCxb6gVesShNhd1XBhile9ho4fanXU2Vo1336MoudGRT4Sgy4a1q4rPBhk532T8DioWpBeNaxZOlMb5l54RGQkAwy2XvZVpWbZJNFeF9OookXchU/b8mMkbuIu3LzyC9zRPNv1/HV7pD16JzRNH0RbxvSqXGQsX1xEltt3B380p6nfMicT2Z52OSd96Kq3srYXS36H63xOyjnVBlZVaOs=
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1c4op/0jix5X9V3EP8ZiEEjp8cbXeKm2wQWlHxytK/7TDru7sNVWqq+1M1KO+9t27obOvDUYbdI9AnsAwG1kNhAOevhH+L61J679Bb98PocvCcCP+z1LM2GZ5IBMIdq1PQrBUIwLR0W8FMgByGUrq1CkAQqZfCWMqMphc6jPWJ6Hwz9ZUnfFl5LiRewbyUuklsnAzYcmOdIbWl3ElB76EuyscStMBwxDYSEGpuEwHu+UdB57BNipRihkCyzTI011i/vSyJYJo5U5egrDBqdEKhpxK9+2SADX+PQA1kiLdfaNR2oiEHnN/g+La+4hJ1t95Rg1pEF7HVqMzYZDMRn6tkbcfjYVvWuEbKXEFBk0A/olQg7mBzq0PObUWB2BrEFGMGu/StgS7sJeTsiuTE3sN2D+Qjfpeos7NNHcjKwa4UNDV/TSEDM38rlfAwvK+8O9hcZ+5yIWMZnIcRqpGHYNE560DDRibTCgZnT3UNAHVOrO3yiI+7cCyn4ShUp11CT34Lgq8Wc5Z8fEFyPh6ilwcYVbC2TtclGPM74/K+LnoxMgkd+teTC9+MaFaecLr35K7IwwHhF1tXhIri9qNcEHvwFImNMGQadaYqbdgvDuYnyrtxg1hbXiyhISUDfY7xIE
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Un8ayeRBtMqPnW9MdAQV0m8gSsckvg56+G92fp6k5GDdaU6S7QErv999XQdB?=
+ =?us-ascii?Q?Cnboxr6DQchT7Fm+2wmH4yL5t5B1iU0tRCy3rKzQRVnT1LvMR4pFfwB5/LFW?=
+ =?us-ascii?Q?FcAFQGRTgjSoQcO9O3suaz5wM6HcZo2hfGAUsBWxUl4AvbwjypqwmItSgLmB?=
+ =?us-ascii?Q?OLfJzI9EON5DXQOaAAl+nKxOHddEv6o7mXkkjiRO1sFe5ZtZ8zkBpW37C8le?=
+ =?us-ascii?Q?/W43/nFHNfv9RrSuc0anEJqk5u1k0vDuI4gHCOCP4DYMcpnb8RX1NPSt9SiX?=
+ =?us-ascii?Q?xDwg+g2Yl3SNBvTK8K/jYwvORzXsZB09R4yaaZKYjp1GxeJAVr2CT70uTHJ6?=
+ =?us-ascii?Q?/PHbXVoVYksS8bO9+ZSlxw4jAiC4lZNmC+A1xUEJjyNL1PL4bxSJjYL+p+IY?=
+ =?us-ascii?Q?gogGaCMcyMY+B/4fkTGKAJsscJM6ZC8B/z6PT5I1HCPgumTohyIYfxaeWX1L?=
+ =?us-ascii?Q?ng0GD0o55TOdgZF5qgypowcQ8SKbMAMTzCKofV/dm0OSjVL0qeBlV7bOIgrQ?=
+ =?us-ascii?Q?YM2FKluaZW+Q0uVqLrTiIC9GhrVQYHjicl/3xNeXewPGFVxMHx30RPWn0Lvl?=
+ =?us-ascii?Q?LtjLfcdBUJ/wYd4HjH41FFCEgo0Lmhz5rSAA5VGSfyjxY+DIjKHL+pC2WWnV?=
+ =?us-ascii?Q?n1yqbFKpmqjJ5Zq5J/HzV+f3PLWgnbkRtvuDcHEzvnLDFt0Xy/5Z1OwD4VIx?=
+ =?us-ascii?Q?ooqkJ8GBCtLkRXsjtXUQD/yZBCasYeekVVBQPfQu6O2CNyn1YJoWm886K023?=
+ =?us-ascii?Q?VbggFYVL+7aWAIhRxk9khliHI/fOAI2I+c5BnQCtBTMbvJLwtjwvGHaYO+wa?=
+ =?us-ascii?Q?r5AqCIoWwdF1SdXIlGoUSWznNR5NhNNUQcxN3eNVowK6s1ODhH/d1BVDbEgY?=
+ =?us-ascii?Q?EjFl+EWyz3SfPse7aAhsE8KU9Ogl8Ez2Snxi2DvMMslESkRxIeKKAVPfPvwq?=
+ =?us-ascii?Q?jupqRbsPdI1to99QnG5d6Q/AX2qig1gmirKHzSFnUiBdyetupb49qAeBDvHe?=
+ =?us-ascii?Q?4z5I/WsN/fIZZE/NADAN7i1+xuyl4Xg+upCiTkc3En2MBnhyiIET4175MgY2?=
+ =?us-ascii?Q?apvP6IQKNwjGXJ5Xsx0O1Kvg0sFEXg6P3qWT2EKJozH/ffg2wo3k1VqBfnCY?=
+ =?us-ascii?Q?pTA5RVOanT/BGOqr9FUJkJmDxs8dUMBgzw32UNdCjdIBiI3bshRVQtggSU46?=
+ =?us-ascii?Q?HGnj/p0je/KaXEdX+imWtOMzNAOnLxS6myqICt076YHMdkZ+/ORC4XJxdUiv?=
+ =?us-ascii?Q?+3VtajUBdsISFWfz+fGFpvATVfNBwgY/eJRZeMNZ2Q=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-e8f36.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd7692da-82b2-40da-c69b-08dba7dd18e0
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7643.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 15:40:25.4506
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6088
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.08.2023 17:34, Bryan O'Donoghue wrote:
-> On 26/08/2023 11:18, Konrad Dybcio wrote:
->>> +        /*
->>> +         * A value caled 'CID' gets generated internal to CAMSS logic
->>> +         * which is a concatenation of [vc:6 | dt_id:2] hence we reuse
->>> +         * the least significant two bits of the VC to 'stuff' the CID value.
->>> +         */
->>>           u8 dt_id = vc;
->> And where are you discarding the non-2-lsb?
-> 
-> At the assignment of dt_id
-> 
-> vc:6
-> dt_id:2
-> 
-> =>
-> 
-> cid:8 = [vc:6 | dt_id:2]
-> vc == 00110110
-> cid = [110110 | 10]
-> 
-> I have no more information what CID is or how the bitfield is populated than I have already indicated in the comment/commit log.
-> 
-OK so you're discarding the 2 lsb of the [vc:6|dt_id:2]
+Remove tyepdefs from the octeon ethernet driver, and rename enums and
+structs to omit the _t suffix
 
-however
+Oliver Crumrine (6):
+  staging: octeon: remove typedef in enum cvmx_spi_mode_t
+  staging: octeon: remove typedef in enum cvmx_helper_interface_mode_t
+  staging: octeon: remove typedef in enum cvmx_pow_wait_t
+  staging: octeon: remove typedef in struct cvmx_pko_lock_t
+  staging: octeon: remove typedef in enum cvmx_pko_status_t
+  staging: octeon: remove typedef in structs cvmx_pip_port_status_t and
+    cvmx_pko_port_status_t
 
-the way I read the comment would suggest that you're taking
-vc[6:2]
+ drivers/staging/octeon/ethernet.c     |  6 ++--
+ drivers/staging/octeon/octeon-stubs.h | 50 +++++++++++++--------------
+ 2 files changed, 28 insertions(+), 28 deletions(-)
 
-Konrad
+-- 
+2.39.3
+
