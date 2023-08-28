@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 997BA78B77F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF85778B778
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbjH1Soz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
+        id S233163AbjH1Soc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjH1SoU (ORCPT
+        with ESMTP id S233130AbjH1SoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:44:20 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B717795;
-        Mon, 28 Aug 2023 11:44:17 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SIHdns009279;
-        Mon, 28 Aug 2023 18:44:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=QaqMdWc/Rsbi339/IdfxxzQ9dJKTmw5qyHB2f8RHKVQ=;
- b=JhaK52/kMS0z/43fpS1JAaYQTRtGbnrqMMF1ldTnU/YVze8/JM68TMutSGkHsQnxn4rw
- JJe+rV8StwC5giPgfs63mRBy9eWJs0lCeTXzNeGK/Jb2Wdo1CCjLmt686FZo5KQK1KFl
- Fx7E3RlbWgojKxce7Hsr4nNM6yxJ5VgBHjQaySQQctMf7eDWZPuJzLdKX4l042BnmbB5
- gXfLOmLLdrhOxe1JEyqkO3K+XPnhYv4JWqPeVo1AwUC6IrP10cVGUBX2V1aTVXeR0Evo
- HNrkQGK1xEXVdSHYrA4mKY2rlz2kcrTAiaoQkjXjZ8t0XZkk5D90pA5C+LAVy4n2Xger pA== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sq8ddm6ge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 18:44:13 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SIiCpJ030675
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 18:44:12 GMT
-Received: from [10.110.74.192] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 28 Aug
- 2023 11:44:09 -0700
-Message-ID: <0abc0e3b-077c-d7b9-e561-2c2e01d46540@quicinc.com>
-Date:   Mon, 28 Aug 2023 11:44:08 -0700
+        Mon, 28 Aug 2023 14:44:13 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67626B3;
+        Mon, 28 Aug 2023 11:44:10 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 152117DB;
+        Mon, 28 Aug 2023 18:44:10 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 152117DB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1693248250; bh=6VI2H7gLRgPr4ukXUvV7bf1IPmuT5gXIgiO43jCaM7s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Nipej7Om2wYDdE/JHiIB4X+DAqfpf6NRVhlgRiYYg2dxmQNopi9Sv0zo+p2eT4467
+         MPYhYqCzfJABVNyK/0DC1G8Js2BeaqwF8BqSNx3e3CQrMRC8jLnAKdk9Bw/CNSXOCh
+         JC0+HfxlEH54jiqEe8RF44GIhmx0Cu7qstDxCsq5n1gh3H8iN/h3xmptWAmuKuTG3H
+         W1ZPvuZ/rkkk26Xyw/qQsoA2hIQ322ER23LfNKduv8jmffBlZGEA/Vn4Mv3l75m5qo
+         8X46wlbxuWkBoe7zcQ46t3qo6+Kxy5KktS93gnp3eU6qYM+zswnuK92ywuxvue1bQw
+         /FzHq9nUHLkeg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Marcus Folkesson <marcus.folkesson@gmail.com>
+Subject: Re: [PATCH] input: docs: pxrc: remove reference to phoenix-sim
+In-Reply-To: <20230824-pxrc-doc-v1-1-038b75a2ef05@gmail.com>
+References: <20230824-pxrc-doc-v1-1-038b75a2ef05@gmail.com>
+Date:   Mon, 28 Aug 2023 12:44:09 -0600
+Message-ID: <877cpf0zye.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [RFC PATCH 0/1] Add driver to read secondary bootloader (XBL) log
-Content-Language: en-US
-To:     Arun Kumar Neelakantam <quic_aneelaka@quicinc.com>,
-        Ninad Naik <quic_ninanaik@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>
-CC:     <psodagud@quicinc.com>, <quic_ppareek@quicinc.com>,
-        <quic_kprasan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>
-References: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
- <badd7471-b28f-4948-b6b4-eddb8bf1b0d6@quicinc.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <badd7471-b28f-4948-b6b4-eddb8bf1b0d6@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ghltwb4eMFXbIHZhal5VWW0eii8lOJHy
-X-Proofpoint-GUID: ghltwb4eMFXbIHZhal5VWW0eii8lOJHy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_15,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 mlxscore=0 clxscore=1015 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280164
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/2023 10:19 AM, Arun Kumar Neelakantam wrote:
-> 
-> 
-> On 8/22/2023 5:45 PM, Ninad Naik wrote:
->> Boot time logs for Qualcomm secondary boot-loader or XBL can help to
->> identify different set of information regarding firmware configuration,
->> SoC boot KPIs. A dedicated region is carved out in the memory map in order
->> to store this log in the memory.
->>
->> The objective of this driver is to read the XBL boot log stored in
->> this memory region post boot-up, and provide an entry in debugfs, which
->> can be used to read back the logs and print them on to the console.
->>
-> 
-> I see couple of use cases for this kind of logging like logs from boot, Hypervisor, Trusted Execution environments and also one in upstream for chromeos EC console. Can this be made a generic driver which take log name, log memory buffer address and size to read from debugfs.
+Marcus Folkesson <marcus.folkesson@gmail.com> writes:
 
-The one downside of generic solution here is that log format may not be consistent. Some may have binary format of logs which will need further parsing in kernel or userspace. 
+> The reference undeniably points to something unrelated nowadays.
+> Remove it.
+>
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> ---
+>  Documentation/input/devices/pxrc.rst | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/input/devices/pxrc.rst b/Documentation/input/devices/pxrc.rst
+> index ca11f646bae8..5a86df4ad079 100644
+> --- a/Documentation/input/devices/pxrc.rst
+> +++ b/Documentation/input/devices/pxrc.rst
+> @@ -5,7 +5,7 @@ pxrc - PhoenixRC Flight Controller Adapter
+>  :Author: Marcus Folkesson <marcus.folkesson@gmail.com>
+>  
+>  This driver let you use your own RC controller plugged into the
+> -adapter that comes with PhoenixRC [1]_ or other compatible adapters.
+> +adapter that comes with PhoenixRC or other compatible adapters.
+>  
+>  The adapter supports 7 analog channels and 1 digital input switch.
+>  
+> @@ -41,7 +41,7 @@ Manual Testing
+>  ==============
+>  
+>  To test this driver's functionality you may use `input-event` which is part of
+> -the `input layer utilities` suite [2]_.
+> +the `input layer utilities` suite [1]_.
+>  
+>  For example::
+>  
+> @@ -53,5 +53,4 @@ To print all input events from input `devnr`.
+>  References
+>  ==========
+>  
+> -.. [1] http://www.phoenix-sim.com/
+> -.. [2] https://www.kraxel.org/cgit/input/
+> +.. [1] https://www.kraxel.org/cgit/input/
 
-If we need to make such feature generic then it needs to be generic across arm64 / arm32 then and not SOC specific. 
+Hmm...that does indeed seem like a link that lacks value for kernel
+development.  Patch applied, thanks.
 
-
--- 
----Trilok Soni
-
+jon
