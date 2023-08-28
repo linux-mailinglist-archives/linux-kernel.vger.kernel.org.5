@@ -2,253 +2,1180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A91278B2B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFF878B2B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbjH1OKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
+        id S230427AbjH1OMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 10:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbjH1OKl (ORCPT
+        with ESMTP id S231247AbjH1OLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:10:41 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2044.outbound.protection.outlook.com [40.107.243.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0597CEE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:10:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UMW6RNETDD9PVUsiyEXesL+ZFdfDhxpOXXd3eMspom69c45hOAfix0bU7WYqfKeoZPecD1ZHOH8APP0DJLN0pNBRJHQ/W9hPrQMkTVjmF/9WkAowXBP2riRAMSlmIiaUK7n5tFHK5CobgH0z778U+YqA6w9MttnRVlG3oArVA5eTzt3aNy5EaukTtIuNOsNvd07afxgQNvq9ofoMxvX3it9atlKDaCo+aakO64v6rWiMVrOf8HklM9pgX22LhyvbCoZWfLiC2udLBYavm72l2l9UMK0QP2Z1sUj2torVvlYh6+LvuBWiATrJpdjRpXq0pJFmkvKHA/Hv+tI3RVYwWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cOl/pEE9u7WUvWfQdbrudJb41tdGJ5CKasohXZQHSQI=;
- b=PjnXLh6UnJqiIKWGN+nXAo6tU0oCazUwzfsjQEfOaSgKzxhne8dID+2cLCbTFVlYqUzzBHLTZQ/2nGG4Cr+Piu0yCOMtetconoQS/Py8JJsfOURyD/hDmxRr9wf5X957jASNcMPMhCjSBhgGlphdfm3HrUcjwGBwoac24BLO7XMOusGHwbmDxeM9Zkg8ZwGkaHGHlkJmuecLSgdPMDl8eQgq33tBXjAWpbkctYoNsry/apS9wzsr/GyEcTfEBl0Imi925fIwtBnhp/w+Q4HuFsJMCF53S31JiSbEjdMk/BvU1yjIvTDcmKVQuuM26ZxfI08gpNmMl3QCZkiee/9Apg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cOl/pEE9u7WUvWfQdbrudJb41tdGJ5CKasohXZQHSQI=;
- b=XPhqP4oF6uABWIg7eHoIwGq9DCImt/qNvaBlZptZ+LYuHZ8aiTVkOAy8GQl5Et+UzPrWxaPP7UkcByQsf5RuLD5aaGqAqjTrxDs4RiVg8ViSjA07DFd6H0SYx8ZtBq8+I0BNQl0X2mV4hv4kdT0bLVvem6Gzk4oA/GK82EBxxC3fl/WwNhoOgF8RodtfLJPltNdGrZIN+XOb8XysZjaOKx52ranl3ySo9eoyqMJeyuvJE3xBViVhbtEgiuyZST3B+7aFpGE+uK3gMry3rpEszAvyGjeNa/G2teH3Dzy0kIErIFfb0zqyA1NLN7j06Mm/9c6V6Pd6E3/EiYk4kDjMCg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL1PR12MB5730.namprd12.prod.outlook.com (2603:10b6:208:385::9)
- by BL3PR12MB6569.namprd12.prod.outlook.com (2603:10b6:208:38c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Mon, 28 Aug
- 2023 14:10:27 +0000
-Received: from BL1PR12MB5730.namprd12.prod.outlook.com
- ([fe80::926c:4184:7e6:de25]) by BL1PR12MB5730.namprd12.prod.outlook.com
- ([fe80::926c:4184:7e6:de25%7]) with mapi id 15.20.6699.035; Mon, 28 Aug 2023
- 14:10:27 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        ying.huang@intel.com, david@redhat.com,
-        Mike Kravetz <mike.kravetz@oracle.com>, hughd@google.com
-Subject: Re: [PATCH v2 4/8] mm: migrate: use a folio in
- migrate_misplaced_page()
-Date:   Mon, 28 Aug 2023 10:10:25 -0400
-X-Mailer: MailMate (1.14r5971)
-Message-ID: <855536BE-766C-49B2-B358-6C0548760929@nvidia.com>
-In-Reply-To: <20230821115624.158759-5-wangkefeng.wang@huawei.com>
-References: <20230821115624.158759-1-wangkefeng.wang@huawei.com>
- <20230821115624.158759-5-wangkefeng.wang@huawei.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_964CBF66-072E-4C00-810C-1AF32DCFE211_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BLAPR03CA0037.namprd03.prod.outlook.com
- (2603:10b6:208:32d::12) To BL1PR12MB5730.namprd12.prod.outlook.com
- (2603:10b6:208:385::9)
+        Mon, 28 Aug 2023 10:11:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE15A114;
+        Mon, 28 Aug 2023 07:10:58 -0700 (PDT)
+Received: from xpredator (unknown [IPv6:2a02:2f08:4c00:5d00:7656:3cff:fe3f:7ce9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: mvlad)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 18FF566003AE;
+        Mon, 28 Aug 2023 15:10:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693231853;
+        bh=qNT9bjwBwzbdfijWWQBiPp1qJ5+LhBT+GkoAfTEoB/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZFTQqSY+bfdj4rU+jglmrDBBnR2Bco4yCveJBfGaoVM8aN75IvmpyzsHIJADsk11k
+         piPn/cXeL//ttUOhMPjUuqzl37v2jgpD71Z94V0+yEJbb6ykyclCBQ/AYW2GIYjKJ6
+         tM92jhyieH1WuM8SCQ5mpeBduwsen65vzw1bGS7qhErinKnOkZfgbn5o57O52PLTjZ
+         I6rpvEmrUkuPjq5y0Vrm0TQZnDnMzP0aJF/VlpP7JVj49QHToO7oLfDDb6pVvHif2q
+         YpNC6LKA7sJIua4ToIkcKBMHqtsGwlVFNyIHK5L7oYg29Uet7YbjmeH8oRVDrxr71q
+         mQeA60nkOx2QQ==
+Date:   Mon, 28 Aug 2023 17:10:48 +0300
+From:   Marius Vlad <marius.vlad@collabora.com>
+To:     Brandon Pollack <brpol@chromium.org>
+Cc:     mairacanal@riseup.net, jshargo@chromium.org,
+        hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
+        linux-doc@vger.kernel.org, hirono@chromium.org, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        melissa.srw@gmail.com, mduggan@chromium.org, mripard@kernel.org,
+        tzimmermann@suse.de
+Subject: Re: [PATCH v5 4/7] drm/vkms: Add ConfigFS scaffolding to VKMS
+Message-ID: <ZOyq6B+xkrjP8BnM@xpredator>
+References: <20230828081929.3574228-1-brpol@chromium.org>
+ <20230828081929.3574228-5-brpol@chromium.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5730:EE_|BL3PR12MB6569:EE_
-X-MS-Office365-Filtering-Correlation-Id: a4b47aa0-ff09-47b7-1072-08dba7d0875c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I1stMQtL1FY1N9gKpJFYxQF0/fZCV8sKzLdphEc82EMSydqKNXa216D4xANzQDpRLh0ufpdXNdOsbOTzjDAuWRtAew+ZdWxatygVFyfJ2njN69MS+zAWc3UsvGOXB5LDZ28rbYXnBygBYV2FHtLtb6Nn5gPcXjZXijc6leooojoJtIwCr+AE3QMGvfYqRlpV7Rc8hER1y4p3vs5D3Vp7TxD/lZxK3ijz47z2BJJoEJTWHALqw1hRKoszeuUa5OAOu8sQX9NANx6BoO3f6CObgSk4Co+iij1ubVqwWqMVjytb4qSv5FoU3lMZVu7V91JQKXtM5E//XyvUMOnTJc/0V/VH3s1J1fgenHogts9F1j8bD6Xzc80ud/bBkzVrtyr7kjpZJEUCkmDnP9LXGlHTtTJxysMK11//c/4L41T8GbvXA9W4vpjo8vWH1+qZ0Ifi/CTlDPb6BKZihBAY4Bo910UYo6pSxaq3gb2X1QJB3Xd6UqmWMaNRDKwi1M9rPNdsPx/+aubM3KqM9QzWpPMO1NqWf3STu/Pi9qaLJtHeGm2clEYDh2zLi5Oocm7nmLw1XkHvCTQm0QlwoOKMApSlih87skZd85ip9pxp9IGENR2NDO/9ECNqrsUKIQGarjVcYDmqAGS50d90sGY+uLXXhg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5730.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(136003)(396003)(366004)(186009)(1800799009)(451199024)(6512007)(6506007)(6486002)(53546011)(478600001)(83380400001)(2616005)(26005)(2906002)(235185007)(6916009)(54906003)(316002)(66476007)(66556008)(66946007)(41300700001)(5660300002)(8936002)(8676002)(4326008)(33656002)(36756003)(38100700002)(86362001)(72826004)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?56jI5s7yo/yCfHoaj8/i5cdmpPu0/J1d+i/KI5t1U+ZEFwxED+3tWrT6Vxtn?=
- =?us-ascii?Q?kBjEUZ3Ak13qxaza/jsZy8UMpmxE9ENF3M7hFyHadTEPK04B504fl+E50XXM?=
- =?us-ascii?Q?+tWY+Pvsy2UHdyQjz0/nkG+QnhcuLjOzUbFX4CntYn+V1P4E7BK0duV+KxeL?=
- =?us-ascii?Q?5xcK/KhsuD6e16OmK1H5g9xok7quT/GB4ZPE4JjuxvPq7dyJMkwCQ4lhcmdQ?=
- =?us-ascii?Q?l3YxApL8xP0yOvqAEg8hZnkYKIx/Wky5qnVOT8EbP2thxIYEjm5X9K945l2M?=
- =?us-ascii?Q?XNBSB8U2I/H/+KPVhiX9yvZtArEXDNrmAibQySI01EHxrL25K/n+vhVHzSDw?=
- =?us-ascii?Q?h4e+HRQn2upSV9/Lh+G/gH0VAHgqmtOC25klbKxvboMvxGOGitlV4YepfkW9?=
- =?us-ascii?Q?/OHaZpr/aC2OyvDJllCJaEcTdZy5BXeebGWJSdsvLei6meqbHJvg2R/ii0Rn?=
- =?us-ascii?Q?FJhAGk2hK1Vol6t1/3SHnyX2fR7S2KBXYdyHU2LlYj1QpGuAj8mp3A+r1ZO+?=
- =?us-ascii?Q?qSCUwGesp0kz9PGtA2xucD+74ixZG6vJWPgeIlqlEtNx9CbrbRO4NNGgsWl8?=
- =?us-ascii?Q?XrkjZeh8htZHFvCr94h65yFvCd0xHDYXry7zyB4KmSZL02wMBYs4URU7FAmN?=
- =?us-ascii?Q?tpVySp5xTs7inF9F8cdzqc9Pbrl8DFPIC1o96zEDx2Suars+JL8JJQZMB1Xj?=
- =?us-ascii?Q?8MzzT+O4wNd1YmppmYyKsAdK1sH5HPSpbY1+6uH+3NGWWAg7ClaL/rdJklup?=
- =?us-ascii?Q?qUI9LPLPbSz22KiZn9EmOnKGKBsyW0QA0HMnjpdtnAVsy9qvuXxhaXskN3fn?=
- =?us-ascii?Q?/s2Gq/aeT9+gK9+I2fwlhrMl0VqQis75YxgXxoTIdv5PAWYLnnNXS+v2eQW8?=
- =?us-ascii?Q?E4kgphlBPbnsuCAZrETtHrRa7Ramrl36eDwmmgqTYLLkMZAMtKwMqBtrApCk?=
- =?us-ascii?Q?g0tVXMR6gc2gGvVWrRSTrkX883WvgoyN91YGCWNgZnXNe7RjXO3U8+MFgck/?=
- =?us-ascii?Q?BsK6cS/FBh5mYfanFsDuDWeKBSnTOju1CB5HZqewvjLeQGt3QGJZly7JmnNQ?=
- =?us-ascii?Q?0f6WX7j+/iyRZiwKL7zwXDDX14QuDZp8K/FCAyq4YA/XOy1K4F2F3qBnI9wd?=
- =?us-ascii?Q?BQ61Y3LCx2Xp4VciH6xy1ujuMaqdqDMjSR27K67T52Yt2/cGI1L3omjxZz2+?=
- =?us-ascii?Q?y+5sCykb5DZMCChHcFMyIHyYyXhfyd4T0o+GmJJeHNimJeU6anyY61C6482f?=
- =?us-ascii?Q?9gT1jvSpADeql3ssafxG/uFlGxjAABZsT8wBh8iRLXdyKxZQM/mRyiyKjXfe?=
- =?us-ascii?Q?7AJjiOOv5ls3H/gis7oDhCGaKOlAs/2SirUU0qJVtoYdMqLHwWqgIxYZkswj?=
- =?us-ascii?Q?yaIgxRXfLSwwyGH1E76NgHZXjHDDRza4/+rhgiGfEb7s5urFRfYRjKpVUxgQ?=
- =?us-ascii?Q?NJ+nN2ddmnjWDrJnXvCtCjYDFs57AULaJoeNuFDcxkkT/5Ldzl1BQKVQXwIe?=
- =?us-ascii?Q?oFV+Ms0zDnNszrD69YoN4lo1K2nxNoPBWGB/8flwW4a8k8ZPx09yO+L2iANk?=
- =?us-ascii?Q?Wkcqrhl/mM0VnmfVO8AO7adOmBH+mE33GeHlp/yb?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4b47aa0-ff09-47b7-1072-08dba7d0875c
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5730.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 14:10:27.0804
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zEeI1Tipp9Svevf8iyZ3HC8KToAqC9O5qBYmHdpuTXl7CaPixgoZ0hTKRFyMvY8K
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6569
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XKHxjJeNr/LLLTmV"
+Content-Disposition: inline
+In-Reply-To: <20230828081929.3574228-5-brpol@chromium.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_964CBF66-072E-4C00-810C-1AF32DCFE211_=
-Content-Type: text/plain
+
+--XKHxjJeNr/LLLTmV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 21 Aug 2023, at 7:56, Kefeng Wang wrote:
+Hi Brandon,
 
-> Use a folio in migrate_misplaced_page() to save compound_head() calls.
->
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+See some minor missing rmdirs for connector_other and encoder_other.
+
+On Mon, Aug 28, 2023 at 08:17:06AM +0000, Brandon Pollack wrote:
+> From: Jim Shargo <jshargo@chromium.org>
+>=20
+> This change adds the basic scaffolding for ConfigFS, including setting
+> up the default directories. It does not allow for the registration of
+> configfs-backed devices, which is complex and provided in a follow-up
+> commit.
+>=20
+> This CL includes docs about using ConfigFS with VKMS, but I'll summarize
+> in brief here as well (assuming ConfigFS is mounted at /config/):
+>=20
+> To create a new device, you can do so via `mkdir
+> /config/vkms/my-device`.
+>=20
+> This will create a number of directories and files automatically:
+>=20
+> 	/config
+> 	`-- vkms
+> 	    `-- my-device
+> 		|-- connectors
+> 		|-- crtcs
+> 		|-- encoders
+> 		|-- planes
+> 		`-- enabled
+>=20
+> You can then configure objects by mkdir'ing in each of the directories.
+>=20
+> When you're satisfied, you can `echo 1 > /config/vkms/my-device/enabled`.
+> This will create a new device according to your configuration.
+>=20
+> For now, this will fail, but the next change will add support for it.
+>=20
+> Signed-off-by: Jim Shargo <jshargo@chromium.org>
+> Signed-off-by: Brandon Pollack <brpol@chromium.org>
 > ---
->  mm/migrate.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
-
-LGTM. And a comment below. Reveiwed-by: Zi Yan <ziy@nvidia.com>
-
->
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 281eafdf8e63..fc728f9a383f 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -2521,17 +2521,18 @@ int migrate_misplaced_page(struct page *page, s=
-truct vm_area_struct *vma,
->  			   int node)
+>  Documentation/gpu/vkms.rst           |  18 +-
+>  drivers/gpu/drm/Kconfig              |   1 +
+>  drivers/gpu/drm/vkms/Makefile        |   1 +
+>  drivers/gpu/drm/vkms/vkms_configfs.c | 648 +++++++++++++++++++++++++++
+>  drivers/gpu/drm/vkms/vkms_drv.c      |  56 ++-
+>  drivers/gpu/drm/vkms/vkms_drv.h      |  92 +++-
+>  drivers/gpu/drm/vkms/vkms_output.c   |   5 +
+>  7 files changed, 804 insertions(+), 17 deletions(-)
+>  create mode 100644 drivers/gpu/drm/vkms/vkms_configfs.c
+>=20
+> diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
+> index ba04ac7c2167..c3875bf66dba 100644
+> --- a/Documentation/gpu/vkms.rst
+> +++ b/Documentation/gpu/vkms.rst
+> @@ -51,6 +51,12 @@ To disable the driver, use ::
+> =20
+>    sudo modprobe -r vkms
+> =20
+> +Configuration With ConfigFS
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> +
+> +.. kernel-doc:: drivers/gpu/drm/vkms/vkms_configfs.c
+> +   :doc: ConfigFS Support for VKMS
+> +
+>  Testing With IGT
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> @@ -135,22 +141,16 @@ project.
+>  Runtime Configuration
+>  ---------------------
+> =20
+> -We want to be able to reconfigure vkms instance without having to reload=
+ the
+> -module. Use/Test-cases:
+> +We want to be able to manipulate vkms instances without having to reload=
+ the
+> +module. Such configuration can be added as extensions to vkms's ConfigFS
+> +support. Use-cases:
+> =20
+>  - Hotplug/hotremove connectors on the fly (to be able to test DP MST han=
+dling
+>    of compositors).
+> =20
+> -- Configure planes/crtcs/connectors (we'd need some code to have more th=
+an 1 of
+> -  them first).
+> -
+>  - Change output configuration: Plug/unplug screens, change EDID, allow c=
+hanging
+>    the refresh rate.
+> =20
+> -The currently proposed solution is to expose vkms configuration through
+> -configfs. All existing module options should be supported through config=
+fs
+> -too.
+> -
+>  Writeback support
+>  -----------------
+> =20
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index ab9ef1c20349..e39ee0e8ca06 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -284,6 +284,7 @@ config DRM_VKMS
+>  	depends on DRM && MMU
+>  	select DRM_KMS_HELPER
+>  	select DRM_GEM_SHMEM_HELPER
+> +	select CONFIGFS_FS
+>  	select CRC32
+>  	default n
+>  	help
+> diff --git a/drivers/gpu/drm/vkms/Makefile b/drivers/gpu/drm/vkms/Makefile
+> index 1b28a6a32948..6b83907ad554 100644
+> --- a/drivers/gpu/drm/vkms/Makefile
+> +++ b/drivers/gpu/drm/vkms/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  vkms-y :=3D \
+> +	vkms_configfs.o \
+>  	vkms_drv.o \
+>  	vkms_plane.o \
+>  	vkms_output.o \
+> diff --git a/drivers/gpu/drm/vkms/vkms_configfs.c b/drivers/gpu/drm/vkms/=
+vkms_configfs.c
+> new file mode 100644
+> index 000000000000..f2439629b37b
+> --- /dev/null
+> +++ b/drivers/gpu/drm/vkms/vkms_configfs.c
+> @@ -0,0 +1,648 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +
+> +#include <linux/configfs.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <drm/drm_plane.h>
+> +#include <drm/drm_print.h>
+> +
+> +#include "vkms_drv.h"
+> +
+> +/**
+> + * DOC: ConfigFS Support for VKMS
+> + *
+> + * VKMS is instrumented with support for configuration via :doc:`ConfigFS
+> + * <../filesystems/configfs>`.
+> + *
+> + * With VKMS installed, you can mount ConfigFS at ``/config/`` like so::
+> + *
+> + *   mkdir -p /config/
+> + *   sudo mount -t configfs none /config
+> + *
+> + * This allows you to configure multiple virtual devices. Note
+> + * that the default device which can be enabled in the module params wit=
+h::
+> + *
+> + *  modprobe vkms default_device=3D1
+> + *
+> + * is immutable because we cannot pre-populate ConfigFS directories with=
+ normal
+> + * files.
+> + *
+> + * To set up a new device, create a new directory under the VKMS configfs
+> + * directory::
+> + *
+> + *   mkdir /config/vkms/test
+> + *
+> + * With your device created you'll find an new directory ready to be
+> + * configured::
+> + *
+> + *   /config
+> + *   `-- vkms
+> + *       `-- test
+> + *           |-- connectors
+> + *           |-- crtcs
+> + *           |-- encoders
+> + *           |-- planes
+> + *           `-- enabled
+> + *
+> + * Each directory you add within the connectors, crtcs, encoders, and pl=
+anes
+> + * directories will let you configure a new object of that type. Adding =
+new
+> + * objects will automatically create a set of default files and folders =
+you can
+> + * use to configure that object.
+> + *
+> + * For instance, we can set up a two-output device like so::
+> + *
+> + *   DRM_PLANE_TYPE_PRIMARY=3D1
+> + *   DRM_PLANE_TYPE_CURSOR=3D2
+> + *   DRM_PLANE_TYPE_OVERLAY=3D0
+> + *
+> + *   mkdir /config/vkms/test/planes/primary
+> + *   echo $DRM_PLANE_TYPE_PRIMARY > /config/vkms/test/planes/primary/type
+> + *
+> + *   mkdir /config/vkms/test/planes/other_primary
+> + *   echo $DRM_PLANE_TYPE_PRIMARY > /config/vkms/test/planes/other_prima=
+ry/type
+> + *
+> + *   mkdir /config/vkms/test/crtcs/crtc
+> + *   mkdir /config/vkms/test/crtcs/crtc_other
+> + *
+> + *   mkdir /config/vkms/test/encoders/encoder
+> + *   mkdir /config/vkms/test/encoders/encoder_other
+> + *
+> + *   mkdir /config/vkms/test/connectors/connector
+> + *   mkdir /config/vkms/test/connectors/connector_other
+> + *
+> + * You can see that specific attributes, such as ``.../<plane>/type``, c=
+an be
+> + * configured by writing into them. Associating objects together can be =
+done via
+> + * symlinks::
+> + *
+> + *   ln -s /config/vkms/test/encoders/encoder       /config/vkms/test/co=
+nnectors/connector/possible_encoders
+> + *   ln -s /config/vkms/test/encoders/encoder_other /config/vkms/test/co=
+nnectors/connector_other/possible_encoders
+> + *
+> + *   ln -s /config/vkms/test/crtcs/crtc             /config/vkms/test/pl=
+anes/primary/possible_crtcs/
+> + *   ln -s /config/vkms/test/crtcs/crtc_other       /config/vkms/test/pl=
+anes/other_primary/possible_crtcs/
+> + *
+> + *   ln -s /config/vkms/test/crtcs/crtc             /config/vkms/test/en=
+coders/encoder/possible_crtcs/
+> + *   ln -s /config/vkms/test/crtcs/crtc_other       /config/vkms/test/en=
+coders/encoder_other/possible_crtcs/
+> + *
+> + * Finally, to enable your configured device, just write 1 to the ``enab=
+led``
+> + * file::
+> + *
+> + *   echo 1 > /config/vkms/test/enabled
+> + *
+> + * When you're done with the virtual device, you can clean up the device=
+ like
+> + * so::
+> + *
+> + *   echo 0 > /config/vkms/test/enabled
+> + *
+> + *   rm /config/vkms/test/connectors/connector/possible_encoders/encoder
+> + *   rm /config/vkms/test/encoders/encoder/possible_crtcs/crtc
+> + *   rm /config/vkms/test/planes/primary/possible_crtcs/crtc
+> + *   rm /config/vkms/test/planes/cursor/possible_crtcs/crtc
+> + *   rm /config/vkms/test/planes/overlay/possible_crtcs/crtc
+> + *   rm /config/vkms/test/planes/overlay/possible_crtcs/crtc_other
+> + *   rm /config/vkms/test/planes/other_primary/possible_crtcs/crtc_other
+> + *
+> + *   rmdir /config/vkms/test/planes/primary
+> + *   rmdir /config/vkms/test/planes/other_primary
+> + *   rmdir /config/vkms/test/planes/cursor
+> + *   rmdir /config/vkms/test/planes/overlay
+> + *   rmdir /config/vkms/test/crtcs/crtc
+> + *   rmdir /config/vkms/test/crtcs/crtc_other
+> + *   rmdir /config/vkms/test/encoders/encoder
+rmdir /config/vkms/test/encoders/encoder_other
+> + *   rmdir /config/vkms/test/connectors/connector
+rmdir /config/vkms/test/connectors/connector_other
+> + *
+> + *   rmdir /config/vkms/test
+> + */
+> +
+> +/*
+> + * Common helpers (i.e. common sub-groups)
+> + */
+> +
+> +/* Possible CRTCs, e.g. /config/vkms/device/<object>/possible_crtcs/<sym=
+link> */
+> +
+> +static struct config_item_type crtc_type;
+> +
+> +static int possible_crtcs_allow_link(struct config_item *src,
+> +				     struct config_item *target)
+> +{
+> +	struct vkms_config_links *links =3D item_to_config_links(src);
+> +	struct vkms_config_crtc *crtc;
+> +
+> +	if (target->ci_type !=3D &crtc_type) {
+> +		DRM_ERROR("Unable to link non-CRTCs.\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	crtc =3D item_to_config_crtc(target);
+> +
+> +	if (links->linked_object_bitmap & BIT(crtc->crtc_config_idx)) {
+> +		DRM_ERROR(
+> +			"Tried to add two symlinks to the same CRTC from the same object\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	links->linked_object_bitmap |=3D BIT(crtc->crtc_config_idx);
+> +
+> +	return 0;
+> +}
+> +
+> +static void possible_crtcs_drop_link(struct config_item *src,
+> +				     struct config_item *target)
+> +{
+> +	struct vkms_config_links *links =3D item_to_config_links(src);
+> +	struct vkms_config_crtc *crtc =3D item_to_config_crtc(target);
+> +
+> +	links->linked_object_bitmap &=3D ~BIT(crtc->crtc_config_idx);
+> +}
+> +
+> +static struct configfs_item_operations possible_crtcs_item_ops =3D {
+> +	.allow_link =3D &possible_crtcs_allow_link,
+> +	.drop_link =3D &possible_crtcs_drop_link,
+> +};
+> +
+> +static struct config_item_type possible_crtcs_group_type =3D {
+> +	.ct_item_ops =3D &possible_crtcs_item_ops,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +static void add_possible_crtcs(struct config_group *parent,
+> +			       struct config_group *possible_crtcs)
+> +{
+> +	config_group_init_type_name(possible_crtcs, "possible_crtcs",
+> +				    &possible_crtcs_group_type);
+> +	configfs_add_default_group(possible_crtcs, parent);
+> +}
+> +
+> +/* Possible encoders, e.g. /config/vkms/device/connector/possible_encode=
+rs/<symlink> */
+> +
+> +static struct config_item_type encoder_type;
+> +
+> +static int possible_encoders_allow_link(struct config_item *src,
+> +					struct config_item *target)
+> +{
+> +	struct vkms_config_links *links =3D item_to_config_links(src);
+> +	struct vkms_config_encoder *encoder;
+> +
+> +	if (target->ci_type !=3D &encoder_type) {
+> +		DRM_ERROR("Unable to link non-encoders.\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	encoder =3D item_to_config_encoder(target);
+> +
+> +	if (links->linked_object_bitmap & BIT(encoder->encoder_config_idx)) {
+> +		DRM_ERROR(
+> +			"Tried to add two symlinks to the same encoder from the same object\n=
+");
+> +		return -EINVAL;
+> +	}
+> +
+> +	links->linked_object_bitmap |=3D BIT(encoder->encoder_config_idx);
+> +
+> +	return 0;
+> +}
+> +
+> +static void possible_encoders_drop_link(struct config_item *src,
+> +					struct config_item *target)
+> +{
+> +	struct vkms_config_links *links =3D item_to_config_links(src);
+> +	struct vkms_config_encoder *encoder =3D item_to_config_encoder(target);
+> +
+> +	links->linked_object_bitmap &=3D ~BIT(encoder->encoder_config_idx);
+> +}
+> +
+> +static struct configfs_item_operations possible_encoders_item_ops =3D {
+> +	.allow_link =3D &possible_encoders_allow_link,
+> +	.drop_link =3D &possible_encoders_drop_link,
+> +};
+> +
+> +static struct config_item_type possible_encoders_group_type =3D {
+> +	.ct_item_ops =3D &possible_encoders_item_ops,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +static void add_possible_encoders(struct config_group *parent,
+> +				  struct config_group *possible_encoders)
+> +{
+> +	config_group_init_type_name(possible_encoders, "possible_encoders",
+> +				    &possible_encoders_group_type);
+> +	configfs_add_default_group(possible_encoders, parent);
+> +}
+> +
+> +/*
+> + * Individual objects (connectors, crtcs, encoders, planes):
+> + */
+> +
+> +/*  Connector item, e.g. /config/vkms/device/connectors/ID */
+> +
+> +static struct config_item_type connector_type =3D {
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/*  Crtc item, e.g. /config/vkms/device/crtcs/ID */
+> +
+> +static struct config_item_type crtc_type =3D {
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/*  Encoder item, e.g. /config/vkms/device/encoder/ID */
+> +
+> +static struct config_item_type encoder_type =3D {
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/*  Plane item, e.g. /config/vkms/device/planes/ID */
+> +
+> +static ssize_t plane_type_show(struct config_item *item, char *buf)
+> +{
+> +	struct vkms_config_plane *plane =3D item_to_config_plane(item);
+> +	struct vkms_configfs *configfs =3D plane_item_to_configfs(item);
+> +	enum drm_plane_type plane_type;
+> +
+> +	mutex_lock(&configfs->lock);
+> +	plane_type =3D plane->type;
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	return sprintf(buf, "%u", plane_type);
+> +}
+> +
+> +static ssize_t plane_type_store(struct config_item *item, const char *bu=
+f,
+> +				size_t len)
+> +{
+> +	struct vkms_config_plane *plane =3D item_to_config_plane(item);
+> +	struct vkms_configfs *configfs =3D plane_item_to_configfs(item);
+> +	int val, ret;
+> +
+> +	ret =3D kstrtouint(buf, 10, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val !=3D DRM_PLANE_TYPE_PRIMARY && val !=3D DRM_PLANE_TYPE_CURSOR &&
+> +	    val !=3D DRM_PLANE_TYPE_OVERLAY)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&configfs->lock);
+> +	plane->type =3D val;
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	return len;
+> +}
+> +
+> +CONFIGFS_ATTR(plane_, type);
+> +
+> +static struct configfs_attribute *plane_attrs[] =3D {
+> +	&plane_attr_type,
+> +	NULL,
+> +};
+> +
+> +static struct config_item_type plane_type =3D {
+> +	.ct_attrs =3D plane_attrs,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/*
+> + * Directory groups, e.g. /config/vkms/device/{planes, crtcs, ...}
+> + */
+> +
+> +/* Connectors group: /config/vkms/device/connectors/ */
+> +
+> +static struct config_group *connectors_group_make(struct config_group *g=
+roup,
+> +						  const char *name)
+> +{
+> +	struct vkms_config_connector *connector =3D
+> +		kzalloc(sizeof(*connector), GFP_KERNEL);
+> +	if (!connector)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	config_group_init_type_name(&connector->config_group, name,
+> +				    &connector_type);
+> +	add_possible_encoders(&connector->config_group,
+> +			      &connector->possible_encoders.group);
+> +
+> +	return &connector->config_group;
+> +}
+> +
+> +static void connectors_group_drop(struct config_group *group,
+> +				  struct config_item *item)
+> +{
+> +	struct vkms_config_connector *connector =3D
+> +		item_to_config_connector(item);
+> +	kfree(connector);
+> +}
+> +
+> +static struct configfs_group_operations connectors_group_ops =3D {
+> +	.make_group =3D &connectors_group_make,
+> +	.drop_item =3D &connectors_group_drop,
+> +};
+> +
+> +static struct config_item_type connectors_group_type =3D {
+> +	.ct_group_ops =3D &connectors_group_ops,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/* CRTCs group: /config/vkms/device/crtcs/ */
+> +
+> +static struct config_group *crtcs_group_make(struct config_group *group,
+> +					     const char *name)
+> +{
+> +	struct vkms_configfs *configfs =3D
+> +		container_of(group, struct vkms_configfs, crtcs_group);
+> +	unsigned long next_idx;
+> +	struct vkms_config_crtc *crtc;
+> +
+> +	mutex_lock(&configfs->lock);
+> +
+> +	next_idx =3D find_first_zero_bit(&configfs->allocated_crtcs,
+> +				       VKMS_MAX_OUTPUT_OBJECTS);
+> +
+> +	if (next_idx =3D=3D VKMS_MAX_OUTPUT_OBJECTS) {
+> +		DRM_ERROR("Unable to allocate another CRTC.\n");
+> +		mutex_unlock(&configfs->lock);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	crtc =3D kzalloc(sizeof(*crtc), GFP_KERNEL);
+> +	if (!crtc) {
+> +		DRM_ERROR("Unable to allocate CRTC.\n");
+> +		mutex_unlock(&configfs->lock);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	config_group_init_type_name(&crtc->config_group, name, &crtc_type);
+> +	crtc->crtc_config_idx =3D next_idx;
+> +
+> +	set_bit(next_idx, &configfs->allocated_crtcs);
+> +
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	return &crtc->config_group;
+> +}
+> +
+> +static void crtcs_group_drop(struct config_group *group,
+> +			     struct config_item *item)
+> +{
+> +	struct vkms_config_crtc *crtc =3D item_to_config_crtc(item);
+> +
+> +	kfree(crtc);
+> +}
+> +
+> +static struct configfs_group_operations crtcs_group_ops =3D {
+> +	.make_group =3D &crtcs_group_make,
+> +	.drop_item =3D &crtcs_group_drop,
+> +};
+> +
+> +static struct config_item_type crtcs_group_type =3D {
+> +	.ct_group_ops =3D &crtcs_group_ops,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/* Encoders group: /config/vkms/device/encoders/ */
+> +
+> +static struct config_group *encoders_group_make(struct config_group *gro=
+up,
+> +						const char *name)
+> +{
+> +	struct vkms_configfs *configfs =3D
+> +		container_of(group, struct vkms_configfs, encoders_group);
+> +	unsigned long next_idx;
+> +	struct vkms_config_encoder *encoder;
+> +
+> +	mutex_lock(&configfs->lock);
+> +
+> +	next_idx =3D find_first_zero_bit(&configfs->allocated_encoders,
+> +				       VKMS_MAX_OUTPUT_OBJECTS);
+> +
+> +	if (next_idx =3D=3D VKMS_MAX_OUTPUT_OBJECTS) {
+> +		DRM_ERROR("Unable to allocate another encoder.\n");
+> +		mutex_unlock(&configfs->lock);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	encoder =3D kzalloc(sizeof(*encoder), GFP_KERNEL);
+> +	if (!encoder) {
+> +		DRM_ERROR("Unable to allocate encoder.\n");
+> +		mutex_unlock(&configfs->lock);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	config_group_init_type_name(&encoder->config_group, name,
+> +				    &encoder_type);
+> +	add_possible_crtcs(&encoder->config_group,
+> +			   &encoder->possible_crtcs.group);
+> +	encoder->encoder_config_idx =3D next_idx;
+> +	set_bit(next_idx, &configfs->allocated_encoders);
+> +
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	return &encoder->config_group;
+> +}
+> +
+> +static void encoders_group_drop(struct config_group *group,
+> +				struct config_item *item)
+> +{
+> +	struct vkms_config_encoder *encoder =3D item_to_config_encoder(item);
+> +
+> +	kfree(encoder);
+> +}
+> +
+> +static struct configfs_group_operations encoders_group_ops =3D {
+> +	.make_group =3D &encoders_group_make,
+> +	.drop_item =3D &encoders_group_drop,
+> +};
+> +
+> +static struct config_item_type encoders_group_type =3D {
+> +	.ct_group_ops =3D &encoders_group_ops,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/* Planes group: /config/vkms/device/planes/ */
+> +
+> +static struct config_group *make_plane_group(struct config_group *group,
+> +					     const char *name)
+> +{
+> +	struct vkms_config_plane *plane =3D kzalloc(sizeof(*plane), GFP_KERNEL);
+> +
+> +	if (!plane)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	config_group_init_type_name(&plane->config_group, name, &plane_type);
+> +	add_possible_crtcs(&plane->config_group, &plane->possible_crtcs.group);
+> +
+> +	return &plane->config_group;
+> +}
+> +
+> +static void drop_plane_group(struct config_group *group,
+> +			     struct config_item *item)
+> +{
+> +	struct vkms_config_plane *plane =3D item_to_config_plane(item);
+> +
+> +	kfree(plane);
+> +}
+> +
+> +static struct configfs_group_operations plane_group_ops =3D {
+> +	.make_group =3D &make_plane_group,
+> +	.drop_item =3D &drop_plane_group,
+> +};
+> +
+> +static struct config_item_type planes_group_type =3D {
+> +	.ct_group_ops =3D &plane_group_ops,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +/* Root directory group, e.g. /config/vkms/device */
+> +
+> +static ssize_t device_enabled_show(struct config_item *item, char *buf)
+> +{
+> +	struct vkms_configfs *configfs =3D item_to_configfs(item);
+> +	bool is_enabled;
+> +
+> +	mutex_lock(&configfs->lock);
+> +	is_enabled =3D configfs->vkms_device !=3D NULL;
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	return sprintf(buf, "%d", is_enabled);
+> +}
+> +
+> +static ssize_t device_enabled_store(struct config_item *item, const char=
+ *buf,
+> +				    size_t len)
+> +{
+> +	struct vkms_configfs *configfs =3D item_to_configfs(item);
+> +	struct vkms_device *device;
+> +	int value, ret;
+> +
+> +	ret =3D kstrtoint(buf, 0, &value);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (value !=3D 1)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&configfs->lock);
+> +
+> +	if (configfs->vkms_device) {
+> +		mutex_unlock(&configfs->lock);
+> +		return len;
+> +	}
+> +
+> +	device =3D vkms_add_device(configfs);
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	if (IS_ERR(device))
+> +		return -PTR_ERR(device);
+> +
+> +	return len;
+> +}
+> +
+> +CONFIGFS_ATTR(device_, enabled);
+> +
+> +static ssize_t device_id_show(struct config_item *item, char *buf)
+> +{
+> +	struct vkms_configfs *configfs =3D item_to_configfs(item);
+> +	int id =3D -1;
+> +
+> +	mutex_lock(&configfs->lock);
+> +	if (configfs->vkms_device)
+> +		id =3D configfs->vkms_device->platform->id;
+> +
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	return sprintf(buf, "%d", id);
+> +}
+> +
+> +CONFIGFS_ATTR_RO(device_, id);
+> +
+> +static struct configfs_attribute *device_group_attrs[] =3D {
+> +	&device_attr_id,
+> +	&device_attr_enabled,
+> +	NULL,
+> +};
+> +
+> +static struct config_item_type device_group_type =3D {
+> +	.ct_attrs =3D device_group_attrs,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +static void vkms_configfs_setup_default_groups(struct vkms_configfs *con=
+figfs,
+> +					       const char *name)
+> +{
+> +	config_group_init_type_name(&configfs->device_group, name,
+> +				    &device_group_type);
+> +
+> +	config_group_init_type_name(&configfs->connectors_group, "connectors",
+> +				    &connectors_group_type);
+> +	configfs_add_default_group(&configfs->connectors_group,
+> +				   &configfs->device_group);
+> +
+> +	config_group_init_type_name(&configfs->crtcs_group, "crtcs",
+> +				    &crtcs_group_type);
+> +	configfs_add_default_group(&configfs->crtcs_group,
+> +				   &configfs->device_group);
+> +
+> +	config_group_init_type_name(&configfs->encoders_group, "encoders",
+> +				    &encoders_group_type);
+> +	configfs_add_default_group(&configfs->encoders_group,
+> +				   &configfs->device_group);
+> +
+> +	config_group_init_type_name(&configfs->planes_group, "planes",
+> +				    &planes_group_type);
+> +	configfs_add_default_group(&configfs->planes_group,
+> +				   &configfs->device_group);
+> +}
+> +
+> +/* Root directory group and subsystem, e.g. /config/vkms/ */
+> +
+> +static struct config_group *make_root_group(struct config_group *group,
+> +					    const char *name)
+> +{
+> +	struct vkms_configfs *configfs =3D kzalloc(sizeof(*configfs), GFP_KERNE=
+L);
+> +
+> +	if (!configfs)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	vkms_configfs_setup_default_groups(configfs, name);
+> +	mutex_init(&configfs->lock);
+> +
+> +	return &configfs->device_group;
+> +}
+> +
+> +static void drop_root_group(struct config_group *group,
+> +			    struct config_item *item)
+> +{
+> +	struct vkms_configfs *configfs =3D item_to_configfs(item);
+> +
+> +	mutex_lock(&configfs->lock);
+> +	if (configfs->vkms_device)
+> +		vkms_remove_device(configfs->vkms_device);
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	kfree(configfs);
+> +}
+> +
+> +static struct configfs_group_operations root_group_ops =3D {
+> +	.make_group =3D &make_root_group,
+> +	.drop_item =3D &drop_root_group,
+> +};
+> +
+> +static struct config_item_type vkms_type =3D {
+> +	.ct_group_ops =3D &root_group_ops,
+> +	.ct_owner =3D THIS_MODULE,
+> +};
+> +
+> +static struct configfs_subsystem vkms_subsys =3D {
+> +	.su_group =3D {
+> +		.cg_item =3D {
+> +			.ci_name =3D "vkms",
+> +			.ci_type =3D &vkms_type,
+> +		},
+> +	},
+> +	.su_mutex =3D __MUTEX_INITIALIZER(vkms_subsys.su_mutex),
+> +};
+> +
+> +int vkms_init_configfs(void)
+> +{
+> +	config_group_init(&vkms_subsys.su_group);
+> +	return configfs_register_subsystem(&vkms_subsys);
+> +}
+> +
+> +void vkms_unregister_configfs(void)
+> +{
+> +	configfs_unregister_subsystem(&vkms_subsys);
+> +}
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_=
+drv.c
+> index 6c94c2b5d529..819e880a8cf7 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> @@ -9,8 +9,10 @@
+>   * the GPU in DRM API tests.
+>   */
+> =20
+> -#include "asm-generic/errno-base.h"
+> +#include <linux/configfs.h>
+>  #include <linux/device.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/err.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/dma-mapping.h>
+> @@ -172,8 +174,8 @@ static int vkms_modeset_init(struct vkms_device *vkms=
+dev)
+>  	dev->mode_config.preferred_depth =3D 0;
+>  	dev->mode_config.helper_private =3D &vkms_mode_config_helpers;
+> =20
+> -	return vkmsdev->is_default ? vkms_output_init_default(vkmsdev) :
+> -				     -EINVAL;
+> +	return vkmsdev->configfs ? vkms_output_init(vkmsdev) :
+> +				   vkms_output_init_default(vkmsdev);
+>  }
+> =20
+>  static int vkms_platform_probe(struct platform_device *pdev)
+> @@ -184,8 +186,10 @@ static int vkms_platform_probe(struct platform_devic=
+e *pdev)
+>  	void *grp;
+> =20
+>  	grp =3D devres_open_group(&pdev->dev, NULL, GFP_KERNEL);
+> -	if (!grp)
+> +	if (!grp) {
+> +		DRM_ERROR("Could not open devres group\n");
+>  		return -ENOMEM;
+> +	}
+> =20
+>  	vkms_device =3D devm_drm_dev_alloc(&pdev->dev, &vkms_driver,
+>  					 struct vkms_device, drm);
+> @@ -198,7 +202,7 @@ static int vkms_platform_probe(struct platform_device=
+ *pdev)
+>  	vkms_device->config.cursor =3D enable_cursor;
+>  	vkms_device->config.writeback =3D enable_writeback;
+>  	vkms_device->config.overlay =3D enable_overlay;
+> -	vkms_device->is_default =3D vkms_device_setup->is_default;
+> +	vkms_device->configfs =3D vkms_device_setup->configfs;
+> =20
+>  	ret =3D dma_coerce_mask_and_coherent(vkms_device->drm.dev,
+>  					   DMA_BIT_MASK(64));
+> @@ -258,12 +262,43 @@ static struct platform_driver vkms_platform_driver =
+=3D {
+>  	.driver.name =3D DRIVER_NAME,
+>  };
+> =20
+> +struct vkms_device *vkms_add_device(struct vkms_configfs *configfs)
+> +{
+> +	struct device *dev =3D NULL;
+> +	struct platform_device *pdev;
+> +	int max_id =3D 1;
+> +	struct vkms_device_setup vkms_device_setup =3D {
+> +		.configfs =3D configfs,
+> +	};
+> +
+> +	while ((dev =3D platform_find_device_by_driver(
+> +			dev, &vkms_platform_driver.driver))) {
+> +		pdev =3D to_platform_device(dev);
+> +		max_id =3D max(max_id, pdev->id);
+> +	}
+> +
+> +	pdev =3D platform_device_register_data(NULL, DRIVER_NAME, max_id + 1,
+> +					     &vkms_device_setup,
+> +					     sizeof(vkms_device_setup));
+> +	if (IS_ERR(pdev)) {
+> +		DRM_ERROR("Unable to register vkms device'\n");
+> +		return ERR_PTR(PTR_ERR(pdev));
+> +	}
+> +
+> +	return platform_get_drvdata(pdev);
+> +}
+> +
+> +void vkms_remove_device(struct vkms_device *vkms_device)
+> +{
+> +	platform_device_unregister(vkms_device->platform);
+> +}
+> +
+>  static int __init vkms_init(void)
 >  {
->  	pg_data_t *pgdat =3D NODE_DATA(node);
-> +	struct folio *folio =3D page_folio(page);
->  	int isolated;
->  	int nr_remaining;
->  	unsigned int nr_succeeded;
->  	LIST_HEAD(migratepages);
-> -	int nr_pages =3D thp_nr_pages(page);
-> +	int nr_pages =3D folio_nr_pages(folio);
->
->  	/*
->  	 * Don't migrate file pages that are mapped in multiple processes
->  	 * with execute permissions as they are probably shared libraries.
->  	 */
-> -	if (page_mapcount(page) !=3D 1 && page_is_file_lru(page) &&
-> +	if (page_mapcount(page) !=3D 1 && folio_is_file_lru(folio) &&
-
-page_mapcount() is not converted, since folio_mapcount() is not equivalen=
-t
-to page_mapcount(). It can be converted and this function can be converte=
-d
-to migrate_misplaced_folio() once we have something like folio_num_sharer=
-s().
-
->  	    (vma->vm_flags & VM_EXEC))
->  		goto out;
->
-> @@ -2539,29 +2540,29 @@ int migrate_misplaced_page(struct page *page, s=
-truct vm_area_struct *vma,
->  	 * Also do not migrate dirty pages as not all filesystems can move
->  	 * dirty pages in MIGRATE_ASYNC mode which is a waste of cycles.
->  	 */
-> -	if (page_is_file_lru(page) && PageDirty(page))
-> +	if (folio_is_file_lru(folio) && folio_test_dirty(folio))
->  		goto out;
->
-> -	isolated =3D numamigrate_isolate_folio(pgdat, page_folio(page));
-> +	isolated =3D numamigrate_isolate_folio(pgdat, folio);
->  	if (!isolated)
->  		goto out;
->
-> -	list_add(&page->lru, &migratepages);
-> +	list_add(&folio->lru, &migratepages);
->  	nr_remaining =3D migrate_pages(&migratepages, alloc_misplaced_dst_fol=
-io,
->  				     NULL, node, MIGRATE_ASYNC,
->  				     MR_NUMA_MISPLACED, &nr_succeeded);
->  	if (nr_remaining) {
->  		if (!list_empty(&migratepages)) {
-> -			list_del(&page->lru);
-> -			mod_node_page_state(page_pgdat(page), NR_ISOLATED_ANON +
-> -					page_is_file_lru(page), -nr_pages);
-> -			putback_lru_page(page);
-> +			list_del(&folio->lru);
-> +			node_stat_mod_folio(folio, NR_ISOLATED_ANON +
-> +					folio_is_file_lru(folio), -nr_pages);
-> +			folio_putback_lru(folio);
->  		}
->  		isolated =3D 0;
+>  	int ret;
+>  	struct platform_device *pdev;
+>  	struct vkms_device_setup vkms_device_setup =3D {
+> -		.is_default =3D true,
+> +		.configfs =3D NULL,
+>  	};
+> =20
+>  	ret =3D platform_driver_register(&vkms_platform_driver);
+> @@ -281,6 +316,13 @@ static int __init vkms_init(void)
+>  		return PTR_ERR(pdev);
 >  	}
->  	if (nr_succeeded) {
->  		count_vm_numa_events(NUMA_PAGE_MIGRATE, nr_succeeded);
-> -		if (!node_is_toptier(page_to_nid(page)) && node_is_toptier(node))
-> +		if (!node_is_toptier(folio_nid(folio)) && node_is_toptier(node))
->  			mod_node_page_state(pgdat, PGPROMOTE_SUCCESS,
->  					    nr_succeeded);
->  	}
-> @@ -2569,7 +2570,7 @@ int migrate_misplaced_page(struct page *page, str=
-uct vm_area_struct *vma,
->  	return isolated;
->
->  out:
-> -	put_page(page);
-> +	folio_put(folio);
+> =20
+> +	ret =3D vkms_init_configfs();
+> +	if (ret) {
+> +		DRM_ERROR("Unable to initialize configfs\n");
+> +		platform_device_unregister(pdev);
+> +		platform_driver_unregister(&vkms_platform_driver);
+> +	}
+> +
 >  	return 0;
 >  }
->  #endif /* CONFIG_NUMA_BALANCING */
-> -- =
+> =20
+> @@ -288,6 +330,8 @@ static void __exit vkms_exit(void)
+>  {
+>  	struct device *dev;
+> =20
+> +	vkms_unregister_configfs();
+> +
+>  	while ((dev =3D platform_find_device_by_driver(
+>  			NULL, &vkms_platform_driver.driver))) {
+>  		// platform_find_device_by_driver increments the refcount. Drop
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
+drv.h
+> index 4262dcffd7e1..8cdd7949f661 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -3,6 +3,7 @@
+>  #ifndef _VKMS_DRV_H_
+>  #define _VKMS_DRV_H_
+> =20
+> +#include <linux/configfs.h>
+>  #include <linux/hrtimer.h>
+> =20
+>  #include <drm/drm.h>
+> @@ -10,6 +11,7 @@
+>  #include <drm/drm_gem.h>
+>  #include <drm/drm_gem_atomic_helper.h>
+>  #include <drm/drm_encoder.h>
+> +#include <drm/drm_plane.h>
+>  #include <drm/drm_writeback.h>
+> =20
+>  #define XRES_MIN    10
+> @@ -138,14 +140,65 @@ struct vkms_config {
+>  	bool overlay;
+>  };
+> =20
+> +struct vkms_config_links {
+> +	struct config_group group;
+> +	unsigned long linked_object_bitmap;
+> +};
+> +
+> +struct vkms_config_connector {
+> +	struct config_group config_group;
+> +	struct vkms_config_links possible_encoders;
+> +};
+> +
+> +struct vkms_config_crtc {
+> +	struct config_group config_group;
+> +	unsigned long crtc_config_idx;
+> +};
+> +
+> +struct vkms_config_encoder {
+> +	struct config_group config_group;
+> +	struct vkms_config_links possible_crtcs;
+> +	unsigned long encoder_config_idx;
+> +};
+> +
+> +struct vkms_config_plane {
+> +	struct vkms_configfs *configfs;
+> +	struct config_group config_group;
+> +	struct vkms_config_links possible_crtcs;
+> +	enum drm_plane_type type;
+> +};
+> +
+> +struct vkms_configfs {
+> +	/* Directory group containing connector configs, e.g. /config/vkms/devi=
+ce/ */
+> +	struct config_group device_group;
+> +	/* Directory group containing connector configs, e.g. /config/vkms/devi=
+ce/connectors/ */
+> +	struct config_group connectors_group;
+> +	/* Directory group containing CRTC configs, e.g. /config/vkms/device/cr=
+tcs/ */
+> +	struct config_group crtcs_group;
+> +	/* Directory group containing encoder configs, e.g. /config/vkms/device=
+/encoders/ */
+> +	struct config_group encoders_group;
+> +	/* Directory group containing plane configs, e.g. /config/vkms/device/p=
+lanes/ */
+> +	struct config_group planes_group;
+> +
+> +	unsigned long allocated_crtcs;
+> +	unsigned long allocated_encoders;
+> +
+> +	struct mutex lock;
+> +
+> +	/* The platform device if this is registered, otherwise NULL */
+> +	struct vkms_device *vkms_device;
+> +};
+> +
+>  struct vkms_device_setup {
+> -	bool is_default;
+> +	// Is NULL in the case of the default card.
+> +	struct vkms_configfs *configfs;
+>  };
+> =20
+>  struct vkms_device {
+>  	struct drm_device drm;
+>  	struct platform_device *platform;
+> -	bool is_default;
+> +	// Is NULL in the case of the default card.
+> +	struct vkms_configfs *configfs;
+>  	struct vkms_output output;
+>  	struct vkms_config config;
+>  };
+> @@ -164,11 +217,42 @@ struct vkms_device {
+>  #define to_vkms_plane_state(target)\
+>  	container_of(target, struct vkms_plane_state, base.base)
+> =20
+> +#define item_to_configfs(item) \
+> +	container_of(to_config_group(item), struct vkms_configfs, device_group)
+> +
+> +#define item_to_config_connector(item)                                  =
+  \
+> +	container_of(to_config_group(item), struct vkms_config_connector, \
+> +		     config_group)
+> +
+> +#define item_to_config_crtc(item)                                    \
+> +	container_of(to_config_group(item), struct vkms_config_crtc, \
+> +		     config_group)
+> +
+> +#define item_to_config_encoder(item)                                    \
+> +	container_of(to_config_group(item), struct vkms_config_encoder, \
+> +		     config_group)
+> +
+> +#define item_to_config_plane(item)                                    \
+> +	container_of(to_config_group(item), struct vkms_config_plane, \
+> +		     config_group)
+> +
+> +#define item_to_config_links(item) \
+> +	container_of(to_config_group(item), struct vkms_config_links, group)
+> +
+> +#define plane_item_to_configfs(item)                                    =
+     \
+> +	container_of(to_config_group(item->ci_parent), struct vkms_configfs, \
+> +		     planes_group)
+> +
+> +/* Devices */
+> +struct vkms_device *vkms_add_device(struct vkms_configfs *configfs);
+> +void vkms_remove_device(struct vkms_device *vkms_device);
+> +
+>  /* CRTC */
+>  struct vkms_crtc *vkms_crtc_init(struct vkms_device *vkmsdev,
+>  				 struct drm_plane *primary,
+>  				 struct drm_plane *cursor);
+> =20
+> +int vkms_output_init(struct vkms_device *vkmsdev);
+>  int vkms_output_init_default(struct vkms_device *vkmsdev);
+> =20
+>  struct vkms_plane *vkms_plane_init(struct vkms_device *vkmsdev,
+> @@ -191,4 +275,8 @@ void vkms_writeback_row(struct vkms_writeback_job *wb=
+, const struct line_buffer
+>  int vkms_enable_writeback_connector(struct vkms_device *vkmsdev,
+>  				    struct vkms_crtc *vkms_crtc);
+> =20
+> +/* ConfigFS Support */
+> +int vkms_init_configfs(void);
+> +void vkms_unregister_configfs(void);
+> +
+>  #endif /* _VKMS_DRV_H_ */
+> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vk=
+ms_output.c
+> index bfc2e2362c6d..dc69959c5e1d 100644
+> --- a/drivers/gpu/drm/vkms/vkms_output.c
+> +++ b/drivers/gpu/drm/vkms/vkms_output.c
+> @@ -176,3 +176,8 @@ int vkms_output_init_default(struct vkms_device *vkms=
+dev)
+> =20
+>  	return ret;
+>  }
+> +
+> +int vkms_output_init(struct vkms_device *vkmsdev)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> --=20
+> 2.42.0.rc1.204.g551eb34607-goog
+>=20
 
-> 2.41.0
-
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_964CBF66-072E-4C00-810C-1AF32DCFE211_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+--XKHxjJeNr/LLLTmV
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmTsqtEPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUvCwP/1mf3r3n9NKMOg1ztR1HucGVrHmmVr1r3Awp
-XJ2hT52KP94xa8RqrcCRrugs11j/opPT39pCtg32GYhQnXLbH66gi+pro/wHWjD0
-fMKy/F5fNJFofro+jE/KfOowhvEVKd725qJEzWUNr5PfCw1v3Jaa0/k821hYuPm/
-Yo1wrUq2I3LAxbOLyRwOLgeARE1p/1sp3AIWHsUB0F7mMFx4aMMBr+tSxpBBlgX+
-pCH+PrmHBC4q1cAp9b8M6x0thEvi0s9JZYRYDCB5SSq7Zmf8eLHzcS4XqSJFK8qy
-vvSnu5w5jCsyhlCmrGymZ9jD6yNC8Mm/l/3jfOD6KiFIUQOuSfeMjQdyA7g/0WaD
-MXW4E2+VBj5cJRfwFywdxQUrlHHKhQDyAisZd0Kve7nPrfQTiyZVWmJkG8o/28Ha
-kjpZh+mckcD3Vlbmwv+v9KXFl8SlC4IpIA7g7s/8GHUoFXyZ3cHZkfs51v/B/0ik
-AM/DIdq9Ag2vehyoXn0aVZWhRA46yyHmMZLw++KlKQZhSZsYP+n8QvZiE5KMDUN1
-zNtqKOeKCqb7gk4IEotcUHNEExnNuVroM1NZizvU7EoEcoJBy4Hb04T2BGHj7EpQ
-16/DphXvw8GdV/9ysTyp6NLsjTrKKsq4B4foIxa6/8KT3mvNZyyZdoH/HiCZS5Uo
-0mOMCGdG
-=f1+h
+iQIzBAABCAAdFiEEcDKHej6x6uPk3J379jQS5glH1u8FAmTsqugACgkQ9jQS5glH
+1u82IA//ef8SDqo6MAvJWQ5GzyF0lceaqGGgq6EsRRQQOt/yF8LTWJV6o7aJJOvV
+OFEE3ufF66Sla9YAKkYxZOKGeO3TKQ3oh/5psW1nmTZwYoAYGHOibww/b/ECxUo6
+b/t0/lppm6DqDPFoTV4mVj0muzT+O08iMDqVyU0UH9r8y+Vz3HWy7vXehqlIhfxg
+m+eg9U6ZLCCW0SxndWi0RCEf2EVZm1t3XxZQIX1EPPh8bCJ+Ii+uifJTuseiQSTj
+c4Kv4IUCnvnS3f6RCS6K+whLT5NUq0LJj6Om270UvUCqh5su0bxqDLhvj9C34wH/
+Vd+0Vwdl1evPKBx2J2oNG8voS/FP2govWNBL5hPE72iJs2P0IVDNNMU5+AahFret
+VrMa1R1uENCIDwOXODBI/v6jw91/eJ4f5e++jZLKzgTPm2I7Jcf5kxk/OuNyq2E0
+ADWIwfPDYct38MSUQKKla4fzPvYfXR16d/JOfmx25tgX/iwv6G8BkGQ9eOH0+XKS
+ZbNpTRrVSIw7WijJHQFxgLBhvRCJFEy+1rDA6FkIEm//t0YWq9O7gZhlEpR3yyrq
+3sOQaD3RgXN+8V/wiJwfVN5MKgOMHEG52LdIBL+PKbBaKsOnO9tEQY/LCAXU97m2
+8OxBIZwFNrZ+WLWhwqZuO6pZU1DNNckJdr03wEf5/aNyqKuWmTM=
+=w4FC
 -----END PGP SIGNATURE-----
 
---=_MailMate_964CBF66-072E-4C00-810C-1AF32DCFE211_=--
+--XKHxjJeNr/LLLTmV--
