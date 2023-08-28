@@ -2,67 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A1378B9C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DF878B9D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbjH1Ux1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        id S232656AbjH1U4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbjH1UxJ (ORCPT
+        with ESMTP id S232731AbjH1Uzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:53:09 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9B911A
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:53:06 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34deab8010dso361525ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:53:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693255986; x=1693860786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6EHvhYNt+YdRhsmSbNDmpyOVgrF3DogD6lN7EDypwxg=;
-        b=fUyGPpig19ciAcQynM5TiTE3a40epaqfni/gNELFb5tc1i1ZByAz4rt/CujuRxITrX
-         uEOxX8K4G5OFl2xChFLTHWX/obMq4aUWF77Bp6CWd4plBSLrkymkEEfauakLysTCH1Xn
-         vcYGEALttnHeWZhI0/UmxNrXf3IOAeAKlFbn8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693255986; x=1693860786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6EHvhYNt+YdRhsmSbNDmpyOVgrF3DogD6lN7EDypwxg=;
-        b=Ycqt22LGqU1WWQR8sNKqXEAMLLhHy/e96FeZTzA6+MlWMOApFgv5CnIyWyP7qTsp30
-         e+4/RDCEh3W9fJLbXhgJFtU1nbdfq8tsHwRTWYTH29AT/KoM7PrEKyPetiCizRjucub4
-         GV2rEmo4WdtCGzNQDajrUw/EXA7AyWb71O2ZDuc2OliNJFkevcmsHC5icn7Mq5SF2rJb
-         IKBH2/T8OjFXQuwLMzisPx/AYLa9maTfkKtxM0QnBtGZzrnhGFni3wkcC6jxGqIVLyAP
-         B+09dRyLmxKJRNnT5bqVZ/Ka9XixxP3hDX6nJvkdivXG9learKE8SPQL20OJyzU20J9K
-         fDeQ==
-X-Gm-Message-State: AOJu0YyAq7Iyiw6MGruT4/XaKi6f4UfzppmDQ3slzP5at6l7Qo30hmMZ
-        GzlriuAn+dKw2OEOTHAsfyjePA==
-X-Google-Smtp-Source: AGHT+IFKePN5jQUllnPWZpOthmuFkVluxrH6XoeS0AmoQO9fLpkllywkeTVAIWDXE5M2PoyafqTulA==
-X-Received: by 2002:a92:caca:0:b0:34a:c61f:9e99 with SMTP id m10-20020a92caca000000b0034ac61f9e99mr17646978ilq.9.1693255985709;
-        Mon, 28 Aug 2023 13:53:05 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
-        by smtp.gmail.com with ESMTPSA id i15-20020a02cc4f000000b0039deb26853csm2744432jaq.10.2023.08.28.13.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 13:53:05 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.10] rcu: Prevent expedited GP from enabling tick on offline CPU
-Date:   Mon, 28 Aug 2023 20:53:01 +0000
-Message-ID: <20230828205302.1660666-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+        Mon, 28 Aug 2023 16:55:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CAA110
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:55:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693256104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=c4c200N53gZrjEvaNsh614tfBnADKQSF/1JCCxHNMoQ=;
+        b=A1jDpQqEZx/BY4xy9nJSwM9xiDn730jpeR9boJqek2n3Ik5TMxFuc7KnKGZ9RDhSYvnuhO
+        tHVC8VLjHLocebEfhqPy41dIammZgjyhGGm4PMtXzcLoaPdgdHKxOmZ2Ldx+rWhBazhxwt
+        BdaDm0mqZd2t6C4zE+t7e60IRkc1AM4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-361-W5c_rQVkOPmkKBsNiAZuDQ-1; Mon, 28 Aug 2023 16:54:59 -0400
+X-MC-Unique: W5c_rQVkOPmkKBsNiAZuDQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5C06D8D40A9;
+        Mon, 28 Aug 2023 20:54:59 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.22.17.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D01AC40C6F4C;
+        Mon, 28 Aug 2023 20:54:58 +0000 (UTC)
+From:   Audra Mitchell <aubaker@redhat.com>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        aubaker@redhat.com, nathanl@linux.ibm.com, keescook@chromium.org,
+        christophe.leroy@csgroup.eu, npiggin@gmail.com, mpe@ellerman.id.au
+Subject: [PATCH] Update creation of flash_block_cache to accout for potential panic
+Date:   Mon, 28 Aug 2023 16:54:53 -0400
+Message-Id: <20230828205453.307962-1-aubaker@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,84 +59,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+With PPC builds enabling CONFIG_HARDENED_USERCOPY, interacting with the RunTime
+Abstraction Services (RTAS) firmware by writing to
+/proc/powerpc/rtas/firmware_flash will end up triggering the mm/usercopy.c:101
+assertion:
 
-[ Upstream commit 147f04b14adde831eb4a0a1e378667429732f9e8 ]
+[   38.647148] rw /proc/powerpc/rtas/firmware_flash
+[   38.650254] usercopy: Kernel memory overwrite attempt detected to SLUB object 'rtas_flash_cache' (offset 0, size 34)!
+[   38.650264] ------------[ cut here ]------------
+[   38.650264] kernel BUG at mm/usercopy.c:101!
+[   38.650267] Oops: Exception in kernel mode, sig: 5 [#1]
+[   38.650283] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
+[   38.650287] Modules linked in: binfmt_misc loop rfkill bonding tls sunrpc pseries_rng drm fuse drm_panel_orientation_quirks xfs libcrc32c sd_mod t10_pi sg ibmveth ibmvscsi scsi_transport_srp vmx_crypto
+[   38.650306] CPU: 0 PID: 12898 Comm: echo Kdump: loaded Not tainted 5.14.0-299.el9.ppc64le #1
+[   38.650311] NIP:  c00000000056d870 LR: c00000000056d86c CTR: c000000000886090
+[   38.650314] REGS: c0000000ba6e78c0 TRAP: 0700   Not tainted  (5.14.0-299.el9.ppc64le)
+[   38.650318] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28002203  XER: 20040000
+[   38.650326] CFAR: c0000000001f76fc IRQMASK: 0
+[   38.650326] GPR00: c00000000056d86c c0000000ba6e7b60 c000000002b15a00 0000000000000069
+[   38.650326] GPR04: c000000fff447f90 c000000fff4ccd00 000000000000000f 0000000000000027
+[   38.650326] GPR08: 0000000000000000 c000000fff44adc0 0000000ffd2f0000 0000000000002000
+[   38.650326] GPR12: 6174722720746365 c000000002ea0000 0000000000000000 0000000000000000
+[   38.650326] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[   38.650326] GPR20: 0000000000000000 0000000000000000 0000000000000002 0000000000000001
+[   38.650326] GPR24: 0000000000000000 000000012eef55a0 c0000000025f39e0 c0000000b988d000
+[   38.650326] GPR28: c0000000b988d022 0000000000000022 0000000000000000 c00000000134d6e8
+[   38.650366] NIP [c00000000056d870] usercopy_abort+0xb0/0xc0
+[   38.650373] LR [c00000000056d86c] usercopy_abort+0xac/0xc0
+[   38.650377] Call Trace:
+[   38.650379] [c0000000ba6e7b60] [c00000000056d86c] usercopy_abort+0xac/0xc0 (unreliable)
+[   38.650384] [c0000000ba6e7be0] [c0000000005178f0] __check_heap_object+0xf0/0x120
+[   38.650389] [c0000000ba6e7c00] [c00000000056d5e0] check_heap_object+0x1f0/0x220
+[   38.650394] [c0000000ba6e7c40] [c00000000056d6a0] __check_object_size+0x90/0x1b0
+[   38.650399] [c0000000ba6e7c80] [c0000000000462fc] rtas_flash_write+0x11c/0x2b0
+[   38.650404] [c0000000ba6e7ce0] [c00000000064d2ec] proc_reg_write+0xfc/0x160
+[   38.650409] [c0000000ba6e7d10] [c000000000579e64] vfs_write+0xe4/0x390
+[   38.650413] [c0000000ba6e7d60] [c00000000057a414] ksys_write+0x84/0x140
+[   38.650417] [c0000000ba6e7db0] [c00000000002f314] system_call_exception+0x164/0x310
+[   38.650421] [c0000000ba6e7e10] [c00000000000bfe8] system_call_vectored_common+0xe8/0x278
+[   38.650426] --- interrupt: 3000 at 0x7fff87f3aa34
+[   38.650430] NIP:  00007fff87f3aa34 LR: 0000000000000000 CTR: 0000000000000000
+[   38.650433] REGS: c0000000ba6e7e80 TRAP: 3000   Not tainted  (5.14.0-299.el9.ppc64le)
+[   38.650436] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 42002408  XER: 00000000
+[   38.650446] IRQMASK: 0
 
-If an RCU expedited grace period starts just when a CPU is in the process
-of going offline, so that the outgoing CPU has completed its pass through
-stop-machine but has not yet completed its final dive into the idle loop,
-RCU will attempt to enable that CPU's scheduling-clock tick via a call
-to tick_dep_set_cpu().  For this to happen, that CPU has to have been
-online when the expedited grace period completed its CPU-selection phase.
+This used to be caught with a warning in __check_heap_object to allow impacted
+drivers time to update to kmem_cache_create_usercopy, but commit 53944f171a89d
+("mm: remove HARDENED_USERCOPY_FALLBACK") removed that check. To resolve this
+issue, update the creation of the flash_block_cache to use
+kmem_cache_create_usercopy with a default size of RTAS_BLK_SIZE.
 
-This is pointless:  The outgoing CPU has interrupts disabled, so it cannot
-take a scheduling-clock tick anyway.  In addition, the tick_dep_set_cpu()
-function's eventual call to irq_work_queue_on() will splat as follows:
-
-smpboot: CPU 1 is now offline
-WARNING: CPU: 6 PID: 124 at kernel/irq_work.c:95
-+irq_work_queue_on+0x57/0x60
-Modules linked in:
-CPU: 6 PID: 124 Comm: kworker/6:2 Not tainted 5.15.0-rc1+ #3
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-+rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-Workqueue: rcu_gp wait_rcu_exp_gp
-RIP: 0010:irq_work_queue_on+0x57/0x60
-Code: 8b 05 1d c7 ea 62 a9 00 00 f0 00 75 21 4c 89 ce 44 89 c7 e8
-+9b 37 fa ff ba 01 00 00 00 89 d0 c3 4c 89 cf e8 3b ff ff ff eb ee <0f> 0b eb b7
-+0f 0b eb db 90 48 c7 c0 98 2a 02 00 65 48 03 05 91
- 6f
-RSP: 0000:ffffb12cc038fe48 EFLAGS: 00010282
-RAX: 0000000000000001 RBX: 0000000000005208 RCX: 0000000000000020
-RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9ad01f45a680
-RBP: 000000000004c990 R08: 0000000000000001 R09: ffff9ad01f45a680
-R10: ffffb12cc0317db0 R11: 0000000000000001 R12: 00000000fffecee8
-R13: 0000000000000001 R14: 0000000000026980 R15: ffffffff9e53ae00
-FS:  0000000000000000(0000) GS:ffff9ad01f580000(0000)
-+knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000000de0c000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- tick_nohz_dep_set_cpu+0x59/0x70
- rcu_exp_wait_wake+0x54e/0x870
- ? sync_rcu_exp_select_cpus+0x1fc/0x390
- process_one_work+0x1ef/0x3c0
- ? process_one_work+0x3c0/0x3c0
- worker_thread+0x28/0x3c0
- ? process_one_work+0x3c0/0x3c0
- kthread+0x115/0x140
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x22/0x30
----[ end trace c5bf75eb6aa80bc6 ]---
-
-This commit therefore avoids invoking tick_dep_set_cpu() on offlined
-CPUs to limit both futility and false-positive splats.
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Audra Mitchell <aubaker@redhat.com>
 ---
- kernel/rcu/tree_exp.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/powerpc/kernel/rtas_flash.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 401c1f331caf..07a284a18645 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -507,7 +507,10 @@ static void synchronize_rcu_expedited_wait(void)
- 				if (rdp->rcu_forced_tick_exp)
- 					continue;
- 				rdp->rcu_forced_tick_exp = true;
--				tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+				preempt_disable();
-+				if (cpu_online(cpu))
-+					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+				preempt_enable();
- 			}
- 		}
- 		j = READ_ONCE(jiffies_till_first_fqs);
+diff --git a/arch/powerpc/kernel/rtas_flash.c b/arch/powerpc/kernel/rtas_flash.c
+index a99179d83538..0a156a600f31 100644
+--- a/arch/powerpc/kernel/rtas_flash.c
++++ b/arch/powerpc/kernel/rtas_flash.c
+@@ -710,9 +710,9 @@ static int __init rtas_flash_init(void)
+ 	if (!rtas_validate_flash_data.buf)
+ 		return -ENOMEM;
+ 
+-	flash_block_cache = kmem_cache_create("rtas_flash_cache",
++	flash_block_cache = kmem_cache_create_usercopy("rtas_flash_cache",
+ 					      RTAS_BLK_SIZE, RTAS_BLK_SIZE, 0,
+-					      NULL);
++					      0, RTAS_BLK_SIZE, NULL);
+ 	if (!flash_block_cache) {
+ 		printk(KERN_ERR "%s: failed to create block cache\n",
+ 				__func__);
 -- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+2.40.1
 
