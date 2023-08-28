@@ -2,164 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E58B78B97B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE6978B989
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbjH1UXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
+        id S230322AbjH1U0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbjH1UWi (ORCPT
+        with ESMTP id S230496AbjH1U0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:22:38 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477CAEC
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:22:34 -0700 (PDT)
-Received: from [192.168.100.156] (unknown [187.106.34.125])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C157866003B0;
-        Mon, 28 Aug 2023 21:22:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693254152;
-        bh=UsSSwRh76deZ9yEMUCPBsw5h1Rkm6TKJmIKyc4Pjt+4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Q+S8OZUoVSuLe0zV6vaLbJAxsnQ2H6Uk6ZSOS/ILslAUGqRbsiDMinfTpyQHYn6x0
-         TzreBPMqbY6B5uuYgXSmaWPlpvf2Nec0pOl94TF5ULy3xXjmbEgkFD+aBzQCGvbwCH
-         QBEgb7uqX7J108ht/AoOLK3IqZGY4RAKl6v3ciEMo+5WvxjAMAdWKYEsILx7dAdLZw
-         XwuYXgFNInOghCbPMxMHF/opO2SszqGZy5Lhb3n+z7QuG0dB2Qv1vJ/D15dnM3+gLW
-         2dqan/2uzcgfhyCJ1NDWCRpJsVsUhNkt0+vKsXJHL16sF+a4h6xFvGoljUic4+Go1T
-         0Eiu5vXT7FeWw==
-Message-ID: <49e88fe4-1d79-5664-d278-425826bf8647@collabora.com>
-Date:   Mon, 28 Aug 2023 17:22:25 -0300
+        Mon, 28 Aug 2023 16:26:44 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC8DFF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:26:40 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34bae9d9d54so13757925ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693254400; x=1693859200;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GdS5U3zAZC1OpDhYKXHHzRAYVsQHuMtwD7yrhm4gv74=;
+        b=KMraxVfGuS98aLRGVM4TJJO4fib8huPrdCiceopE0W7CyIMgd1A32MB5ehYm+3xloP
+         OGMbQNmR2zPKHhuYVGMHm3x2TCLlFpPMDBIxEXZ2WujuyYB/61GSSViRCJqFH03qaW72
+         8YXQ1NQxemTFe7uQKp9atnC6u4WfRI2Mup9Ug=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693254400; x=1693859200;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GdS5U3zAZC1OpDhYKXHHzRAYVsQHuMtwD7yrhm4gv74=;
+        b=VO22M8uAEjkghRwfOYhL24En0J9c6qsVgreAG1bxTLMoKCXo1mbewIoYB/luVIWqEw
+         +5kbbSaM6CGOKnY3GnNueT83NemcEPrMIeAMaa1iakHntHOxkVtUaiwziN41dhDVVHwS
+         Vh5kVS3Jn8lQn9Bxj834q5xUQzHVic/Ixmm6RZRtcrHJl9Zj5r1MsqzdPuO6lcB3tWdK
+         bE3uxMoI13Ofcl7DxPEM1nNKVOzX8nbcf8MDCd+aUpnqxV6wD+5tIMt9gcsAIVWgNDB5
+         zjgnDkjlriS9gH8xX1oIh98yri3qGJvNGH5E0I2nIqMneyfrPOCkwZbC4LhxPi7rNW+y
+         beeA==
+X-Gm-Message-State: AOJu0YyRBNiIgpPXlKiEzP0pqXGILJMcMIpLC/2uYZDkLcAK3PNOb0uM
+        nGk4PzxVjV68c+75yTsPtl+KTQ==
+X-Google-Smtp-Source: AGHT+IGRLCtFYkksB6W0I4qT0QxymU8BO3DUqCwvOEFrU8Ok9D94zjEg8TO2rLD8je6BGtvYtCaOKQ==
+X-Received: by 2002:a92:d7c7:0:b0:34a:c618:b904 with SMTP id g7-20020a92d7c7000000b0034ac618b904mr18628179ilq.22.1693254400046;
+        Mon, 28 Aug 2023 13:26:40 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id f11-20020a056638118b00b0042b3042ccd8sm2666957jas.13.2023.08.28.13.26.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 13:26:39 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 20:26:38 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kirill A Shutemov <kirill@shutemov.name>,
+        "Liam R. Howlett" <liam.howlett@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>
+Subject: Re: [PATCH v5 2/7] mm/mremap: Allow moves within the same VMA
+Message-ID: <20230828202638.GA1646335@google.com>
+References: <20230822015501.791637-1-joel@joelfernandes.org>
+ <20230822015501.791637-3-joel@joelfernandes.org>
+ <46196ba1-c54d-4c1d-954f-a0006602af99@lucifer.local>
+ <20230828183240.GA1621761@google.com>
+ <8891681e-532c-4d7b-bc28-b4ad3e017331@lucifer.local>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 0/7] GPU workload hints for better performance
-Content-Language: en-US
-To:     "Yadav, Arvind" <arvyadav@amd.com>,
-        Arvind Yadav <Arvind.Yadav@amd.com>
-Cc:     shashank.sharma@amd.com, Felix.Kuehling@amd.com,
-        Xinhui.Pan@amd.com, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        alexander.deucher@amd.com, Christian.Koenig@amd.com
-References: <7d09-64ecc080-1-3ebc5780@85497443>
- <b9452015-0284-3ede-973c-ced26ef18d2a@amd.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <b9452015-0284-3ede-973c-ced26ef18d2a@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8891681e-532c-4d7b-bc28-b4ad3e017331@lucifer.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/08/2023 17:14, Yadav, Arvind wrote:
+On Mon, Aug 28, 2023 at 08:00:18PM +0100, Lorenzo Stoakes wrote:
+> On Mon, Aug 28, 2023 at 06:32:40PM +0000, Joel Fernandes wrote:
+> > On Sun, Aug 27, 2023 at 10:21:14AM +0100, Lorenzo Stoakes wrote:
+> > [..]
+> > > >
+> > > >  /*
+> > > >   * Flags used by change_protection().  For now we make it a bitmap so
+> > > > diff --git a/mm/mremap.c b/mm/mremap.c
+> > > > index 035fbf542a8f..06baa13bd2c8 100644
+> > > > --- a/mm/mremap.c
+> > > > +++ b/mm/mremap.c
+> > > > @@ -490,12 +490,13 @@ static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
+> > > >  }
+> > > >
+> > > >  /*
+> > > > - * A helper to check if a previous mapping exists. Required for
+> > > > - * move_page_tables() and realign_addr() to determine if a previous mapping
+> > > > - * exists before we can do realignment optimizations.
+> > > > + * A helper to check if aligning down is OK. The aligned address should fall
+> > > > + * on *no mapping*. For the stack moving down, that's a special move within
+> > > > + * the VMA that is created to span the source and destination of the move,
+> > > > + * so we make an exception for it.
+> > > >   */
+> > > >  static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_align,
+> > > > -			       unsigned long mask)
+> > > > +			    unsigned long mask, bool for_stack)
+> > > >  {
+> > > >  	unsigned long addr_masked = addr_to_align & mask;
+> > > >
+> > > > @@ -504,7 +505,7 @@ static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_ali
+> > > >  	 * of the corresponding VMA, we can't align down or we will destroy part
+> > > >  	 * of the current mapping.
+> > > >  	 */
+> > > > -	if (vma->vm_start != addr_to_align)
+> > > > +	if (!for_stack && vma->vm_start != addr_to_align)
+> > > >  		return false;
+> > >
+> > > I'm a little confused by this exception, is it very specifically for the
+> > > shift_arg_pages() case where can assume we are safe to just discard the
+> > > lower portion of the stack?
+> > >
+> > > Wouldn't the find_vma_intersection() line below fail in this case? I may be
+> > > missing something here :)
+> >
+> > I think you are right. In v4, this was not an issue as we did this:
+> >
+> >
+> > +	if (!for_stack && vma->vm_start != addr_to_align)
+> > +		return false;
+> > +
+> > +	cur = find_vma_prev(vma->vm_mm, vma->vm_start, &prev);
+> > +	if (WARN_ON_ONCE(cur != vma))
+> > +		return false;
+> >
+> > Which essentially means this patch is a NOOP in v5 for the stack case.
 > 
-> On 8/28/2023 9:13 PM, Helen Mae Koike Fornazier wrote:
->> On Monday, August 28, 2023 09:26 -03, Arvind Yadav 
->> <Arvind.Yadav@amd.com> wrote:
->>
->>> AMDGPU SOCs supports dynamic workload based power profiles, which can
->>> provide fine-tuned performance for a particular type of workload.
->>> This patch series adds an interface to set/reset these power profiles
->>> based on the submitted job. The driver can dynamically switch
->>> the power profiles based on submitted job. This can optimize the power
->>> performance when the particular workload is on.
->> Hi Arvind,
->>
->> Would you mind to test your patchset with drm-ci ? There is a amdgpu
->> test there and I would love to get your feedback of the ci.
->>
->> You basically just need to apply the ci patch which is available on
->> https://cgit.freedesktop.org/drm/drm/log/?h=topic/drm-ci
->>
->> There are instruction on the docs, but in short: to configure it, you 
->> push
->> your branch to gitlab.freedesktop.org, go to the settings and change the
->> CI/CD configuration file from .gitlab-ci.yml to 
->> drivers/gpu/drm/ci/gitlab-ci.yml,
->> and you can trigger a pipeline on your branch to get tests running.
->>
->> (by the time of this writing, gitlab.fdo is under maintenance but should
->> be up soonish).
+> >
+> > So what we really want is the VMA previous to @vma and whether than subsumes
+> > the masked address.
+> >
+> > Should I just change it back to the v4 version then as above for both patch 1
+> > and 2 and carry your review tags?
 > 
-> Hi Helen,
+> You will not be surprised to hear that I'd rather not :) I think if we did
+> revert to that approach it'd need rework anyway, so I'd ask for a respin w/o
+> tag if we were to go down that road.
 > 
-> I tried the steps as mentioned by you but looks like something is 
-> missing and build itself is failing.
+> HOWEVER let's first clarify what we want to check.
 > 
-> https://gitlab.freedesktop.org/ArvindYadav/drm-next/-/commits/smu_workload
-
-Thanks for your feedback!
-
-You need to apply this patch 
-https://gitlab.freedesktop.org/ArvindYadav/drm-next/-/commit/cc6dcff192d07f9fe82645fbc4213c97e872156b
-
-This patch adds the file drivers/gpu/drm/ci/gitlab-ci.yml for you.
-
-And you can drop the patch where gitlab added the ci template.
-
-I replied here too 
-https://gitlab.freedesktop.org/ArvindYadav/drm-next/-/commit/cc6dcff192d07f9fe82645fbc4213c97e872156b
-
-Could you try again with that patch?
-
-Thanks a lot!
-Helen
-
-
+> My understand (please correct me if mistaken) is that there are two
+> acceptable cases:-
 > 
-> Regards,
-> ~Arvind
+> 1. !for_stack
 > 
->> Thank you!
->> Helen
->>
->>> v2:
->>> - Splitting workload_profile_set and workload_profile_put
->>>    into two separate patches.
->>> - Addressed review comment.
->>> - Added new suspend function.
->>> - Added patch to switches the GPU workload mode for KFD.
->>>
->>> v3:
->>> - Addressed all review comment.
->>> - Changed the function name from *_set() to *_get().
->>> - Now clearing all the profile in work handler.
->>> - Added *_clear_all function to clear all the power profile.
->>>
->>>
->>> Arvind Yadav (7):
->>>    drm/amdgpu: Added init/fini functions for workload
->>>    drm/amdgpu: Add new function to set GPU power profile
->>>    drm/amdgpu: Add new function to put GPU power profile
->>>    drm/amdgpu: Add suspend function to clear the GPU power profile.
->>>    drm/amdgpu: Set/Reset GPU workload profile
->>>    drm/amdgpu: switch workload context to/from compute
->>>    Revert "drm/amd/amdgpu: switch on/off vcn power profile mode"
->>>
->>>   drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +-
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   3 +
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c    |   8 +-
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   6 +
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_job.c       |   5 +
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c       |  14 +-
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 226 ++++++++++++++++++
->>>   drivers/gpu/drm/amd/include/amdgpu_workload.h |  61 +++++
->>>   8 files changed, 309 insertions(+), 16 deletions(-)
->>>   create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->>>   create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
->>>
->>> -- 
->>> 2.34.1
->>>
+>  addr_masked         addr_to_align
+>  |                   |
+>  v                   v
+>  .                   |-----|
+>  . <-must be empty-> | vma |
+>  .                   |-----|
+> 
+> 2. for_stack
+> 
+>       addr_masked         addr_to_align
+>       |                   |
+>       v                   v
+>  |----.-------------------.-----|
+>  |    .        vma        .     |
+>  |----.-------------------.-----|
+> 
+> Meaning that there are only two cases that we should care about:-
+> 
+> 1. !for_stack: addr_to_align == vma->vm_start and no other VMA exists
+>    between this and addr_masked
+> 
+> 2. for_stack: addr_masked is in the same VMA as addr_to_align.
+> 
+> In this case, the check can surely be:-
+> 
+> return find_vma_intersection(vma->vm_mm, addr_masked, addr_to_align) ==
+> 	(for_stack ? vma : NULL);
+> 
+> (maybe would be less ugly to actually assign the intersection value to a
+> local var and check that)
+
+For completness: Lorenzo made some valid points on IRC and we'll do this
+patch (2/7) like this for v6 after sufficient testing.
+
+static bool can_align_down(struct vm_area_struct *vma, unsigned long addr_to_align,
+                              unsigned long mask, bool for_stack)
+{
+       unsigned long addr_masked = addr_to_align & mask;
+       /*
+        * If @addr_to_align of either source or destination is not the beginning
+        * of the corresponding VMA, we can't align down or we will destroy part
+        * of the current mapping for cases other than the stack.
+        */
+       if (!for_stack && vma->vm_start != addr_to_align)
+	       return false;
+
+       /* In the stack case we explicitly permit in-VMA alignment. */
+       if (for_stack && addr_masked >= vma->vm_start)
+	       return true;
+
+       /*
+        * Make sure the realignment doesn't cause the address to fall on an
+        * existing mapping.
+        */
+       return find_vma_intersection(vma->vm_mm, addr_masked, vma->vm_start) == NULL;
+}
+
+Thanks Lorenzo for the suggestion!
+
+> >
+> > This is also hard to test as it requires triggering the execve stack move
+> > case. Though it is not a bug (as it is essentially a NOOP), it still would be
+> > nice to test it. This is complicated by also the fact that mremap(2) itself
+> > does not allow overlapping moves. I could try to hardcode the unfavorable
+> > situation as I have done in the past to force that mremap warning.
+> 
+> I find this exception a bit confusing, why are we so adamant on performing
+> the optimisation in this case when it makes the code uglier and is rather
+> hard to understand? Does it really matter that much?
+
+Let me know if you still felt it made the code uglier, but it looks like just
+one more if() condition. And who knows may be in the future we want to do
+such overlapping moves for other cases? ;)
+
+> I wonder whether it wouldn't be better to just drop that (unless you really
+> felt strongly about it) for the patch set and then perhaps address it in a
+> follow up?
+> This may entirely be a product of my simply not entirely understanding this
+> case so do forgive the probing, I just want to make sure we handle it
+> correctly!
+
+It was just to avoid that false-positive warning where we can align down the
+stack move to avoid warnings about zero'd PMDs. We could certainly do it in
+this series or as a follow-up but since we came up with the above snippet, I
+will keep it in this series for now and hopefully you are ok with that.
+
+thanks,
+
+ - Joel
+
