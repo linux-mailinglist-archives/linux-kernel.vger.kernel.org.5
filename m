@@ -2,194 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCE878B3DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8BA78B3E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232209AbjH1O75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
+        id S232140AbjH1PAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbjH1O7o (ORCPT
+        with ESMTP id S232276AbjH1PAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:59:44 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2BDDA;
-        Mon, 28 Aug 2023 07:59:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gtNLGZKlQMjoFqCUU8Sqebz00NHliHKy8i9wVKqklDkCO4vtIXqHJ0JoAM7+Gr/ly+Axp6vXGrIP9W2+FTnJMouYqnDbyFXRQXdkBobCyalGnV14K3LtqyaJaDYw2j59lQFiW3OIpvZlCp4tf8NIKGVWZU5bMKUIjML9TqgyEFg34YhlloIHhIxcVR1T4+/mg6d4svyQlFW0iKXRQ4By62JrVnjDMDamK4oRbiVIhKOEUsmzlnfxQdVu6IPawddPXeGgrxJO+OXBOMZwvW/ydn7RaaIku2xovqdkwv3AGm/1Clx0pFRERhaAZd1CI7VWwHP1b9W5OEOEYoaTwXSmpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YBugEgpNHH5ptwZZ2ho/bpfMJLxu0ihTRy/HgnxvITg=;
- b=Ykq1aJ+PG7jeSUuQrDiT1uGoPLaBxWSrIMmznRGcXgo4yHcU1QO62q02GKtlzMFquuopX391UfFxiyMBk654WYyrv5DBg8Nrt5Z6xW3bWM5rGgVbqSmHR6zliLfpnivXJNHtfdG2ryD20n5P5mKVTM7j6Szzrce7eCTluqP2sqYtBDr42e3Tkar1UkvmABqy5/QJtEM7JRYwztGA5n1kNG85slJpzxxlsr1UkBrX8siUuOnF/gEqgwOCxJfpjYWtMbIzZY/sjUg20JHGLOng6+pOBxCGdKfuXPTuP1HhVbOvq+JPuB8FNss9u0g8KlueWNfI5Wf4tgm27fR7lR8pHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=grandegger.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YBugEgpNHH5ptwZZ2ho/bpfMJLxu0ihTRy/HgnxvITg=;
- b=O3OermqtpiZRcTjzmBRX8u3pX+vEfduh0fPbRVFcSsao7bahzzPKluhvyee6MsJRW4x8uPgnzXqL4l+3gNxhM5Kff5f4C8Ig2EPq2B7Sx+Qa7fDAju/2lD31zu2kv9/Z82TQAyvh02nrc5Fu/1+LMh8Sf0Eby996lYQj4PGO5jg=
-Received: from MW4PR04CA0117.namprd04.prod.outlook.com (2603:10b6:303:83::32)
- by CY8PR12MB7146.namprd12.prod.outlook.com (2603:10b6:930:5e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
- 2023 14:59:38 +0000
-Received: from CO1PEPF000044F1.namprd05.prod.outlook.com
- (2603:10b6:303:83:cafe::df) by MW4PR04CA0117.outlook.office365.com
- (2603:10b6:303:83::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35 via Frontend
- Transport; Mon, 28 Aug 2023 14:59:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1PEPF000044F1.mail.protection.outlook.com (10.167.241.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6745.16 via Frontend Transport; Mon, 28 Aug 2023 14:59:38 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 28 Aug
- 2023 09:59:36 -0500
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Mon, 28 Aug 2023 09:59:31 -0500
-From:   Srinivas Goud <srinivas.goud@amd.com>
-To:     <wg@grandegger.com>, <mkl@pengutronix.de>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <p.zabel@pengutronix.de>
-CC:     <git@amd.com>, <michal.simek@amd.com>, <linux-can@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <appana.durga.rao@xilinx.com>,
-        <naga.sureshkumar.relli@xilinx.com>,
-        "Srinivas Goud" <srinivas.goud@amd.com>
-Subject: [PATCH v3 3/3] can: xilinx_can: Add ethtool stats interface for ECC errors
-Date:   Mon, 28 Aug 2023 20:28:45 +0530
-Message-ID: <1693234725-3615719-4-git-send-email-srinivas.goud@amd.com>
-X-Mailer: git-send-email 2.1.1
-In-Reply-To: <1693234725-3615719-1-git-send-email-srinivas.goud@amd.com>
-References: <1693234725-3615719-1-git-send-email-srinivas.goud@amd.com>
+        Mon, 28 Aug 2023 11:00:23 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD20FBF;
+        Mon, 28 Aug 2023 08:00:20 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50091b91a83so5032386e87.3;
+        Mon, 28 Aug 2023 08:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693234819; x=1693839619;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v/Iv+UJrS/3Ac+CBpzamiE2539VuRhYJEwYN53j5C48=;
+        b=XEC6EQXO+tUhRz9PO98p2Sa2QVpVl4AhyDeqQHMbryX4dXPEF3x8ZPiEBi8CPvSMcb
+         GzjyoPH5RYGrnrxYPeQVIszcalsKk+YzRKY8BRn+VB+TZ6cN7bpysBwaOaGgtBziwF+4
+         CmtglG6KPwGlbOvqEKC28fE5jbhIVyuLmF5FG/l5PYKDtphIs8ROePpWrY8sdQtBCwfP
+         7QOnrBm7t+ZWgcDf0PBZQRZa1kAI45N0NFjUUPt58dvwQQApbSM6LxfSeflfISRSc0no
+         hI08V8pI/f54n6qZrfmNOyY1np8jmBLkHPGpeVq7OTE27D17OyZzz0C9iUxxJeTBzX5V
+         ZbwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693234819; x=1693839619;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v/Iv+UJrS/3Ac+CBpzamiE2539VuRhYJEwYN53j5C48=;
+        b=LYJ+wClaX9T/ZufxQ6mVqKHv8NxPL7rYgTfCKk6GtIrB8Bed1Ehsgr1vNm+BC2GKDR
+         vcR+a/2GDAfvNiWY8DB9UuNPeJlgdzvjv1Q3Kgoag5LAbQmdbtGDab1pXMmboYzsL6+A
+         D3Xu/jOpdiaec7taBqXO6nNRNnUGxrlPMpa//xPjgAWUsEEfPPgpwoH2aKyrmII+6zxF
+         2hwnESZ4gylbh2pi/xpWM9HxjvEZsXPbVUNUVSo4MzNBz/wyzyUen3Jgvx/h531Ka9RF
+         BWI14ktjhBOGtYlAq8TgCBL/m5TKhm5n3NJEDsVuDVmqJeu3fahIujXkcHCn+IphHoE1
+         dSmw==
+X-Gm-Message-State: AOJu0YwyDKeXCbwv3KDe6S2FBpdQx/f7ZcjGA0Ih8nxKRAFW39p4InHp
+        MrZ+MsBsDxkvHWNQjKSm0MUFU/pLqne8V66DxSY=
+X-Google-Smtp-Source: AGHT+IETY9abOfDkwuwAfP8oxiTrbKWtuyVO2Jf40soOOV3pmIaGIJrqyaxIUb/iRIeotvbn3JYjwWDVrv8Su0Xk6mQ=
+X-Received: by 2002:a05:6512:1088:b0:4fb:89b3:3373 with SMTP id
+ j8-20020a056512108800b004fb89b33373mr21789410lfg.43.1693234818641; Mon, 28
+ Aug 2023 08:00:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F1:EE_|CY8PR12MB7146:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b33c171-3a23-4235-286d-08dba7d766a3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TkWQfWhKKCC4iGcw4RYigKuYEsOr8Pq+7XlKvpz0UhQFsofxhW3ojUiLbFsYjclALg31rVrjrgn0ZgTUk2v5jgmnIDfqqOceNxnuvGOTrWrDD2wskpU10JXBiEv3DkolIIZYHnDAdIfILR2fvaoxHqq6oDCdW+c9ejiDsTdY1WFAodE8k9H6paAf2WW2AwPBIXmKhm8eIy0rDEJXfR6sLwn8P7HY4lb3citK2kunz3gMkBUGeCDixPlIjA0VwTJ5XuPeKB7A47q/QVaq9dKMgKy6fGVV5eoWu6rJKhHWgT6Dq9J15toJjIZSM3ofEmzGflhD1pnV/NwXp+TDEJiwnB0cCumeYec77ba63dpxTwe3ZCgv3Z2ryxrloxWu+mCaGyiuIOr2hdwVF5crakHtAk7gSV+XGvLShBVzfobwN5q0XKF9u8gbmsbQeta6f0YFPUSYHzdiD1H41Tb/9PO7yanWbIpckdGl1hmchUPsbtwrpRT8UUMcbiavQc/LeJJG0J6pd7LbFmAjQYPuuM25XILiv1fWFpaylBDq6S7NxZhZjE2y9tt2gXr2dLvEVkxGry4rrgYYp2cuBQiSSHQ8kgGzuIyj014ksJHYqouY+hFRpnQKo1ucAjsByHRB3hqqbb1rpWGIfZuBFh90d8D73LsBu5BA27SjavBd4b/geNsbjq/gbHqUtvJPXHQc21LquxXqB/MR9aG8fmc6AK+NtPujbiUUq295tUHpINZOH9lY7ocLeR9S0EeGBxiSmaJKI9VOYgNZ6S7tcDUgXLwk0NJhWwKvTHTcd6yRj+UIuBI=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(39860400002)(376002)(451199024)(1800799009)(82310400011)(186009)(36840700001)(40470700004)(46966006)(83380400001)(921005)(81166007)(356005)(478600001)(82740400003)(336012)(426003)(36860700001)(47076005)(26005)(2616005)(40480700001)(6666004)(86362001)(5660300002)(2906002)(8936002)(54906003)(7416002)(316002)(70586007)(8676002)(4326008)(41300700001)(36756003)(110136005)(70206006)(40460700003)(44832011)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 14:59:38.3426
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b33c171-3a23-4235-286d-08dba7d766a3
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F1.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7146
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230824013604.466224-1-adrian.larumbe@collabora.com> <20230824013604.466224-7-adrian.larumbe@collabora.com>
+In-Reply-To: <20230824013604.466224-7-adrian.larumbe@collabora.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 28 Aug 2023 08:00:06 -0700
+Message-ID: <CAF6AEGtXUTs3ta0N+0hiORa+Tsyh94AXPYm9XdaK6xZbqf+nzA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] drm/drm-file: Allow size unit selection in drm_show_memory_stats
+To:     =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        sean@poorly.run, marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, healych@amazon.com,
+        kernel@collabora.com, Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ethtool stats interface for reading FIFO 1bit/2bit
-ECC errors information.
+On Wed, Aug 23, 2023 at 6:36=E2=80=AFPM Adri=C3=A1n Larumbe
+<adrian.larumbe@collabora.com> wrote:
+>
+> The current implementation will try to pick the highest available
+> unit. This is rather unflexible, and allowing drivers to display BO size
+> statistics through fdinfo in units of their choice might be desirable.
+>
+> The new argument to drm_show_memory_stats is to be interpreted as the
+> integer multiplier of a 10-power of 2, so 1 would give us size in Kib and=
+ 2
+> in Mib. If we want drm-file functions to pick the highest unit, then 0
+> should be passed.
+>
+> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/drm_file.c              | 22 +++++++++++++---------
+>  drivers/gpu/drm/msm/msm_drv.c           |  2 +-
+>  drivers/gpu/drm/panfrost/panfrost_drv.c |  2 +-
+>  include/drm/drm_file.h                  |  5 +++--
+>  4 files changed, 18 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+> index 762965e3d503..517e1fb8072a 100644
+> --- a/drivers/gpu/drm/drm_file.c
+> +++ b/drivers/gpu/drm/drm_file.c
+> @@ -873,7 +873,7 @@ void drm_send_event(struct drm_device *dev, struct dr=
+m_pending_event *e)
+>  EXPORT_SYMBOL(drm_send_event);
+>
+>  static void print_size(struct drm_printer *p, const char *stat,
+> -                      const char *region, u64 sz)
+> +                      const char *region, u64 sz, unsigned int unit)
+>  {
+>         const char *units[] =3D {"", " KiB", " MiB"};
+>         unsigned u;
+> @@ -881,6 +881,8 @@ static void print_size(struct drm_printer *p, const c=
+har *stat,
+>         for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
+>                 if (sz < SZ_1K)
+>                         break;
+> +               if (unit > 0 && unit =3D=3D u)
+> +                       break;
+>                 sz =3D div_u64(sz, SZ_1K);
+>         }
+>
+> @@ -898,17 +900,18 @@ static void print_size(struct drm_printer *p, const=
+ char *stat,
+>  void drm_print_memory_stats(struct drm_printer *p,
+>                             const struct drm_memory_stats *stats,
+>                             enum drm_gem_object_status supported_status,
+> -                           const char *region)
+> +                           const char *region,
+> +                           unsigned int unit)
 
-Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
----
-Changes in v3:
-None
+I'm not really adverse to changing what units we use.. or perhaps
+changing the threshold to go to higher units to be 10000x or 100000x
+of the previous unit.  But I'm less excited about having different
+drivers using different units.
 
-Changes in v2:
-Add ethtool stats interface
+BR,
+-R
 
- drivers/net/can/xilinx_can.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 798b32b..50e0c9d 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -219,6 +219,7 @@ struct xcan_devtype_data {
-  * @transceiver:		Optional pointer to associated CAN transceiver
-  * @rstc:			Pointer to reset control
-  * @ecc_enable:			ECC enable flag
-+ * @stats_lock:			Lock for synchronizing hardware stats
-  * @ecc_2bit_rxfifo_cnt:	RXFIFO 2bit ECC count
-  * @ecc_1bit_rxfifo_cnt:	RXFIFO 1bit ECC count
-  * @ecc_2bit_txolfifo_cnt:	TXOLFIFO 2bit ECC count
-@@ -245,6 +246,7 @@ struct xcan_priv {
- 	struct phy *transceiver;
- 	struct reset_control *rstc;
- 	bool ecc_enable;
-+	spinlock_t stats_lock; /* Lock for synchronizing hardware stats */
- 	u64 ecc_2bit_rxfifo_cnt;
- 	u64 ecc_1bit_rxfifo_cnt;
- 	u64 ecc_2bit_txolfifo_cnt;
-@@ -1164,6 +1166,9 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 
- 	if (priv->ecc_enable) {
- 		u32 reg_ecc;
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&priv->stats_lock, flags);
- 
- 		reg_ecc = priv->read_reg(priv, XCAN_RXFIFO_ECC_OFFSET);
- 		if (isr & XCAN_IXR_E2BERX_MASK) {
-@@ -1212,6 +1217,8 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 		 */
- 		priv->write_reg(priv, XCAN_ECC_CFG_OFFSET, XCAN_ECC_CFG_REECRX_MASK |
- 				XCAN_ECC_CFG_REECTXOL_MASK | XCAN_ECC_CFG_REECTXTL_MASK);
-+
-+		spin_unlock_irqrestore(&priv->stats_lock, flags);
- 	}
- 
- 	if (cf.can_id) {
-@@ -1639,6 +1646,23 @@ static int xcan_get_auto_tdcv(const struct net_device *ndev, u32 *tdcv)
- 	return 0;
- }
- 
-+static void ethtool_get_ethtool_stats(struct net_device *ndev,
-+				      struct ethtool_stats *stats, u64 *data)
-+{
-+	struct xcan_priv *priv = netdev_priv(ndev);
-+	unsigned long flags;
-+	int i = 0;
-+
-+	spin_lock_irqsave(&priv->stats_lock, flags);
-+	data[i++] = priv->ecc_2bit_rxfifo_cnt;
-+	data[i++] = priv->ecc_1bit_rxfifo_cnt;
-+	data[i++] = priv->ecc_2bit_txolfifo_cnt;
-+	data[i++] = priv->ecc_1bit_txolfifo_cnt;
-+	data[i++] = priv->ecc_2bit_txtlfifo_cnt;
-+	data[i++] = priv->ecc_1bit_txtlfifo_cnt;
-+	spin_unlock_irqrestore(&priv->stats_lock, flags);
-+}
-+
- static const struct net_device_ops xcan_netdev_ops = {
- 	.ndo_open	= xcan_open,
- 	.ndo_stop	= xcan_close,
-@@ -1648,6 +1672,7 @@ static const struct net_device_ops xcan_netdev_ops = {
- 
- static const struct ethtool_ops xcan_ethtool_ops = {
- 	.get_ts_info = ethtool_op_get_ts_info,
-+	.get_ethtool_stats = ethtool_get_ethtool_stats,
- };
- 
- /**
--- 
-2.1.1
-
+>  {
+> -       print_size(p, "total", region, stats->private + stats->shared);
+> -       print_size(p, "shared", region, stats->shared);
+> -       print_size(p, "active", region, stats->active);
+> +       print_size(p, "total", region, stats->private + stats->shared, un=
+it);
+> +       print_size(p, "shared", region, stats->shared, unit);
+> +       print_size(p, "active", region, stats->active, unit);
+>
+>         if (supported_status & DRM_GEM_OBJECT_RESIDENT)
+> -               print_size(p, "resident", region, stats->resident);
+> +               print_size(p, "resident", region, stats->resident, unit);
+>
+>         if (supported_status & DRM_GEM_OBJECT_PURGEABLE)
+> -               print_size(p, "purgeable", region, stats->purgeable);
+> +               print_size(p, "purgeable", region, stats->purgeable, unit=
+);
+>  }
+>  EXPORT_SYMBOL(drm_print_memory_stats);
+>
+> @@ -916,11 +919,12 @@ EXPORT_SYMBOL(drm_print_memory_stats);
+>   * drm_show_memory_stats - Helper to collect and show standard fdinfo me=
+mory stats
+>   * @p: the printer to print output to
+>   * @file: the DRM file
+> + * @unit: multipliyer of power of two exponent of desired unit
+>   *
+>   * Helper to iterate over GEM objects with a handle allocated in the spe=
+cified
+>   * file.
+>   */
+> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
+> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file,=
+ unsigned int unit)
+>  {
+>         struct drm_gem_object *obj;
+>         struct drm_memory_stats status =3D {};
+> @@ -967,7 +971,7 @@ void drm_show_memory_stats(struct drm_printer *p, str=
+uct drm_file *file)
+>         }
+>         spin_unlock(&file->table_lock);
+>
+> -       drm_print_memory_stats(p, &status, supported_status, "memory");
+> +       drm_print_memory_stats(p, &status, supported_status, "memory", un=
+it);
+>  }
+>  EXPORT_SYMBOL(drm_show_memory_stats);
+>
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.=
+c
+> index 2a0e3529598b..cd1198151744 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -1067,7 +1067,7 @@ static void msm_show_fdinfo(struct drm_printer *p, =
+struct drm_file *file)
+>
+>         msm_gpu_show_fdinfo(priv->gpu, file->driver_priv, p);
+>
+> -       drm_show_memory_stats(p, file);
+> +       drm_show_memory_stats(p, file, 0);
+>  }
+>
+>  static const struct file_operations fops =3D {
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_drv.c
+> index 93d5f5538c0b..79c08cee3e9d 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -563,7 +563,7 @@ static void panfrost_show_fdinfo(struct drm_printer *=
+p, struct drm_file *file)
+>
+>         panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
+>
+> -       drm_show_memory_stats(p, file);
+> +       drm_show_memory_stats(p, file, 1);
+>  }
+>
+>  static const struct file_operations panfrost_drm_driver_fops =3D {
+> diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
+> index 010239392adf..21a3b022dd63 100644
+> --- a/include/drm/drm_file.h
+> +++ b/include/drm/drm_file.h
+> @@ -466,9 +466,10 @@ enum drm_gem_object_status;
+>  void drm_print_memory_stats(struct drm_printer *p,
+>                             const struct drm_memory_stats *stats,
+>                             enum drm_gem_object_status supported_status,
+> -                           const char *region);
+> +                           const char *region,
+> +                           unsigned int unit);
+>
+> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)=
+;
+> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file,=
+ unsigned int unit);
+>  void drm_show_fdinfo(struct seq_file *m, struct file *f);
+>
+>  struct file *mock_drm_getfile(struct drm_minor *minor, unsigned int flag=
+s);
+> --
+> 2.42.0
+>
