@@ -2,56 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BD778A872
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BE978A876
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjH1JDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
+        id S229573AbjH1JFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjH1JCz (ORCPT
+        with ESMTP id S229556AbjH1JFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:02:55 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E25B9;
-        Mon, 28 Aug 2023 02:02:52 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 350A086458;
-        Mon, 28 Aug 2023 11:02:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693213370;
-        bh=RdzTUO3th0izOpoG5BBLTviGdACVKkyCwADBPUxpTus=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GTnh4Lsvu4FOcre4AgYJLINGFPOi6TpZ5Vxl4WR0XRnDaf+Bhip6qe1lSb2H1vQDH
-         5DPga4jlrvKFG/U3O9qJMsG5TLp2XLAG3c8K608XqwA7YvC1DODBxrtnuuZjFnRoPn
-         S1yXhtxMA+9Sx57Psme4ICUi7bRWDtSE4k+4B/PslK2huUalrrPKzFTvq2ttjSjzlo
-         K5h7AmSkudOYunhZV7FVLv82cT9fT51VQK83tpMga5yyMOPi/MqW6+BL5yGNuPXHry
-         YIKlGD4uOLLYxFaKhc0G1XnjTduEj7b1Xyb889ucQiEypLYQXUqV2fh1belDZYIqRs
-         gEiUkM4sinZdg==
-Date:   Mon, 28 Aug 2023 11:02:42 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     <Tristram.Ha@microchip.com>
-Cc:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
-        <edumazet@google.com>, <bigeasy@linutronix.de>,
-        <pabeni@redhat.com>, <koverskeid@gmail.com>,
-        <matthieu.baerts@tessares.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <davem@davemloft.net>
-Subject: Re: [PATCH] net: hsr : Provide fix for HSRv1 supervisor frames
- decoding
-Message-ID: <20230828110242.1ceb41a5@wsk>
-In-Reply-To: <BYAPR11MB355805618F510948EAE18278ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
-References: <20230825153111.228768-1-lukma@denx.de>
-        <BYAPR11MB355805618F510948EAE18278ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 28 Aug 2023 05:05:33 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87F3F3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:05:30 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-579de633419so34739037b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693213530; x=1693818330;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=J1RNMza/FYgHvj33jNjozA6gVKX8HFlv5PptHiwW4FU=;
+        b=d2aQfYsK32hUyp2Yu5cXAdJwNM7w09dyAa694IhAP449GN90ljg8UT03FZtYOHTkNe
+         0u/2vxFEiJTKr/tgpGfqFTAhyC0XRo1s0FRs45HRvNbVsSaMc0qfwLSg7VEou9TFparr
+         Hx4FXLlxnvbRbdx7G28RosE9WH4wbT6rT5BMxAuQcs5510Q0kYwew0iNmxj6EMkWSzJ/
+         XkMb1yZKN/sNq+mGq5nh7NoAmBZBfip9mQeteFqDFLqf6G65w6vUuhLiD9QEY3mE6bLa
+         Szcu5EB2I38TgAp0hXGn8Co0k0oODnhqI13xoG8zIVAXNkSb2FZT3CAXar5F/v+emPur
+         KfqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693213530; x=1693818330;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J1RNMza/FYgHvj33jNjozA6gVKX8HFlv5PptHiwW4FU=;
+        b=ewMA+zyumisfwfHxTztHWHrbYz7PFDa1GOBjT0j3v2iN78q0QW79415ZI1j57SYv36
+         up5J9vHO73GnSBW8LnAxInoo0Sap3U0AFDA/yd8AaXxTcVjJeGkrZBBGAAz7cMBZ44ry
+         q0WFxqAUkUt29chYagJMqQw1Gx968YsQfW0TyKrY1mXMDavOe9A9VazgfcoevxTV3kU5
+         xDf0Q4MdqlTTXizNQb8LkaVHusYP7KKLWtAmohECgMc+cIsa/jetNKrueA9dLEpdYh8U
+         vCCUIL53hbxbh4qyIhgiPxchm2nXKbKOeq1okG7+iHfCyp3YQxwu5WSnGkEhagC1gB7K
+         bNaw==
+X-Gm-Message-State: AOJu0Yw38vN2SYJy4UGZXVMwhvM/Mh1oYG/++eU/D+OnWUgLY9XKoTer
+        OyTvW91ewpr/ON+P0lEmnhWmfXFJnBmdG/2QzzwHhQ==
+X-Google-Smtp-Source: AGHT+IHq+aJHFLWI8UMIwAM1r5QOuuXEt5p+X5yVlU5MKm+roaUxdv6D3/izv+QX8vHNDmiY/hXGs6MNYvsLy/6tvqs=
+X-Received: by 2002:a25:23c6:0:b0:d7a:bfcf:2d3 with SMTP id
+ j189-20020a2523c6000000b00d7abfcf02d3mr5069144ybj.51.1693213530110; Mon, 28
+ Aug 2023 02:05:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mhBX9ugI8ZzUAr/PytQiphs";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+References: <769a67cb-1b32-fd4f-b37e-e3ec4dab5eb9@rock-chips.com>
+ <20230826162635.617-1-Sharp.Xia@mediatek.com> <95e9525e-3101-4433-27e2-cd69f254af1c@rock-chips.com>
+In-Reply-To: <95e9525e-3101-4433-27e2-cd69f254af1c@rock-chips.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 28 Aug 2023 11:04:54 +0200
+Message-ID: <CAPDyKFqgQmvdmXe8Sxnv2E5EY9cose+E2pBK3r0P_OzqAC79dg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mmc: Set optimal I/O size when mmc_setip_queue
+To:     sharp.xia@mediatek.com, Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     angelogioacchino.delregno@collabora.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-mmc@vger.kernel.org,
+        matthias.bgg@gmail.com, wsd_upstream@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -61,191 +69,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mhBX9ugI8ZzUAr/PytQiphs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 28 Aug 2023 at 04:28, Shawn Lin <shawn.lin@rock-chips.com> wrote:
+>
+> Hi Sharp
+>
+> On 2023/8/27 0:26, Sharp.Xia@mediatek.com wrote:
+> > On Fri, 2023-08-25 at 17:17 +0800, Shawn Lin wrote:
+> >>
+> >>
+>
+> After more testing, most of my platforms which runs at HS400/HS200 mode
+> shows nearly no differences with the readahead ranging from 128 to 1024.
+> Yet just a board shows a performance drop now. Highly suspect it's eMMC
+> chip depends. I would recommand leave it to the BSP guys to decide which
+> readahead value is best for their usage.
 
-Hi Tristram,
+That's a very good point. The SD/eMMC card certainly behaves
+differently, depending on the request-size.
 
-> > -       /* And leave the HSR tag. */
-> > +        * And leave the HSR tag.
-> > +        *
-> > +        * The HSRv1 supervisory frame encapsulates the v0 frame
-> > +        * with EtherType of 0x88FB
-> > +        */
-> >         if (ethhdr->h_proto =3D=3D htons(ETH_P_HSR)) {
-> > -               pull_size =3D sizeof(struct ethhdr);
-> > +               if (hsr->prot_version =3D=3D HSR_V1)
-> > +                       /* In the above step the DA, SA and
-> > EtherType
-> > +                        * (0x892F - HSRv1) bytes has been removed.
-> > +                        *
-> > +                        * As the HSRv1 has the HSR header added,
-> > one need
-> > +                        * to remove path_and_LSDU_size and
-> > sequence_nr fields.
-> > +                        *
-> > +                        */
-> > +                       pull_size =3D 4;
-> > +               else
-> > +                       pull_size =3D sizeof(struct hsr_tag);
-> > +
-> >                 skb_pull(skb, pull_size);
-> >                 total_pull_size +=3D pull_size;
-> >         }
-> > @@ -313,6 +328,19 @@ void hsr_handle_sup_frame(struct
-> > hsr_frame_info *frame) total_pull_size +=3D pull_size;
-> >=20
-> >         /* get HSR sup payload */
-> > +       if (hsr->prot_version =3D=3D HSR_V1) {
-> > +               /* In the HSRv1 supervisor frame, when
-> > +                * one with EtherType =3D 0x88FB is extracted, the
-> > Node A
-> > +                * MAC address is preceded with type and length
-> > elements of TLV
-> > +                * data field.
-> > +                *
-> > +                * It needs to be removed to get the remote peer
-> > MAC address.
-> > +                */
-> > +               pull_size =3D sizeof(struct hsr_sup_tlv);
-> > +               skb_pull(skb, pull_size);
-> > +               total_pull_size +=3D pull_size;
-> > +       }
-> > +
-> >         hsr_sp =3D (struct hsr_sup_payload *)skb->data; =20
->=20
-> I thought the fix is simply this:
->=20
-> 	if (ethhdr->h_proto =3D=3D htons(ETH_P_HSR)) {
-> -		pull_size =3D sizeof(struct ethhdr);
-> +		pull_size =3D sizeof(struct hsr_tag);
-> 		skb_pull(skb, pull_size);
-> 		total_pull_size +=3D pull_size;
-> 	}
->=20
-> -	pull_size =3D sizeof(struct hsr_tag);
-> +	pull_size =3D sizeof(struct hsr_sup_tag);
->=20
-> Note the sizes of hsr_tag and hsr_sup_tag are the same: 6 bytes.
-> The code in 5.15 before this refactored code uses those structures.
-> When using v0 the EtherType uses the PRP tag instead of the HSR tag so
-> the HSR related code is not executed.
->=20
+Another thing we could consider doing, could be to combine the
+information about the request-size from the mmc host, with some
+relevant information from the registers in the card (not sure exactly
+what though).
 
-This would not be enough it seems. Please find below skb->data dump
-when entering hsr_handle_sup_frame() [0]:
+>
+> >
+> > I tested with RK3568 and sdhci-of-dwcmshc.c driver, the performance improved by 2~3%.
+> >
+> > Before:
+> > root@OpenWrt:/mnt/mmcblk0p3# time dd if=test.img of=/dev/null
+> > 2097152+0 records in
+> > 2097152+0 records out
+> > real    0m 6.01s
+> > user    0m 0.84s
+> > sys     0m 2.89s
+> > root@OpenWrt:/mnt/mmcblk0p3# cat /sys/block/mmcblk0/queue/read_ahead_kb
+> > 128
+> >
+> > After:
+> > root@OpenWrt:/mnt/mmcblk0p3# echo 3 > /proc/sys/vm/drop_caches
+> > root@OpenWrt:/mnt/mmcblk0p3# time dd if=test.img of=/dev/null
+> > 2097152+0 records in
+> > 2097152+0 records out
+> > real    0m 5.86s
+> > user    0m 1.04s
+> > sys     0m 3.18s
+> > root@OpenWrt:/mnt/mmcblk0p3# cat /sys/block/mmcblk0/queue/read_ahead_kb
+> > 1024
+> >
+> > root@OpenWrt:/sys/kernel/debug/mmc0# cat ios
+> > clock:          200000000 Hz
+> > actual clock:   200000000 Hz
+> > vdd:            18 (3.0 ~ 3.1 V)
+> > bus mode:       2 (push-pull)
+> > chip select:    0 (don't care)
+> > power mode:     2 (on)
+> > bus width:      3 (8 bits)
+> > timing spec:    9 (mmc HS200)
+> > signal voltage: 1 (1.80 V)
+> > driver type:    0 (driver type B)
+> >
 
-SKB_I100000000: 01 15 4e 00 01 2d 00 10 a1 94 77 30 89 2f 00 34
-SKB_I100000010: 02 59 88 fb 00 01 84 15 17 06 00 10 a1 94 77 30
-SKB_I100000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000040: 00 00                                         =20
+Thanks for testing and sharing the data, both of you!
 
-With the newest kernel (before applying this patch) in [1] we do remove:
-01 15 4e 00 01 2d 00 10 a1 94 77 30 89 2f (which is equal to
-sizeof(struct ethhdr) =3D 6 + 6 + 2 B =3D 14 B)
-
-So we do have:
-
-							  00 34
-SKB_I100000010: 02 59 88 fb 00 01 84 15 17 06 00 10 a1 94 77 30
-SKB_I100000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000040: 00 00
-
-And we need to remove rest of the HSR v1 tag (4 Bytes).
-
-Then we do have:
-
-SKB_I100000010:       88 fb 00 01 84 15 17 06 00 10 a1 94 77 30
-SKB_I100000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000040: 00 00
-
-The 0x88FB is the PRP/HSRv0 supervisory frame ETH type, so the tag
-needs to be removed (6 Bytes) and then we do have TYPE (0x17) and
-Length (0x06), which indicate the other HSR host IP address.
-
-When I do apply your proposed changes we would have the DA and SA
-MAC addresses removed implicitly (as the struct hsr_tag and hsr_sup_tag
-are 6 bytes in size) and we end up with frame starting with HSR v1 tag -
-i.e.:
-
-SKB_I100000000:                                     89 2f 00 34
-SKB_I100000010: 02 59 88 fb 00 01 84 15 17 06 00 10 a1 94 77 30
-SKB_I100000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-SKB_I100000040: 00 00                                         =20
-
-
-Hence mine question - is my setup or understanding wrong (as the PRP
-supervisory frame is encapsulated in HSR v1 frame)?=20
-
-I do use the same kernel on two KSZ9477-EVB boards with Port[12]
-connected together to work with HSR. I also to explicitly force the HSR
-driver to use v1 of HSR (by default v0 is enforced).
-
-
-
-
-
-If you don't mind - I would also like to ask a question regarding the
-node_db for HSR.
-
-Why the output of:
-
-# cat /sys/kernel/debug/hsr/hsr0/node_table                =20
-Node Table entries for (HSR) device
-MAC-Address-A,    MAC-Address-B,    time_in[A], time_in[B],=20
-00:10:a1:94:77:30 00:00:00:00:00:00    1689193,    1689199,
-
-Address-B port, DAN-H
- 	0,        1
-
-Has the MAC-Address-B equal to 00:00:00:00:00:00 ?
-
-As I do have the same MAC addresses for both HSR ports (to facilitate
-frame duplication in KSZ9477 IC removal) I would expect to have this MAC
-address set to 00:10:a1:94:77:30 as well...
-
-Is this expected? Or is there any other issue to fix?
-
-
-Thanks in advance for your help and support :-)
-
-Links:
-
-[0] -
-https://elixir.bootlin.com/linux/v6.5-rc7/source/net/hsr/hsr_framereg.c#L281
-
-[1] -
-https://elixir.bootlin.com/linux/v6.5-rc7/source/net/hsr/hsr_framereg.c#L290
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/mhBX9ugI8ZzUAr/PytQiphs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTsYrIACgkQAR8vZIA0
-zr28vwgAkOuipkzk75zF4tVTE/iInSc/IircK9VM/SI6EdQc/HpVoTlPAa0rMsFh
-k6VmBG0/kB4yLvojVegUr765qNiVDmrmXxXa74BvfSvKyU2YkvofqeSa7wwgAPxR
-XgPqubQnPfhz4M0z01CTqMh/GCAzzrXs874KgdEpSqrfodR29X2bMxboZtZHvQN7
-FLOgNjukpoDMWyg6EjqtdWrGKDGR4YZEaI3UwE8rDizJ8wURiV/5zJMvjazovRzz
-DrkOzjwDn4x5GkNA2hmHjpKg8pwKovlqweeXmjdDovD3vWkMiO021z8ntUFRMdU9
-nGyOnq365aFFcs95lptzJI9EpC1bjQ==
-=fxwQ
------END PGP SIGNATURE-----
-
---Sig_/mhBX9ugI8ZzUAr/PytQiphs--
+Kind regards
+Uffe
