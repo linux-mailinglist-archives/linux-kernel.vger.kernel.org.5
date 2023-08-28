@@ -2,135 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0778678B9FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBDA78B9FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbjH1VLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
+        id S233506AbjH1VMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233492AbjH1VL1 (ORCPT
+        with ESMTP id S233492AbjH1VLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:11:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81B6C3;
-        Mon, 28 Aug 2023 14:11:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 53F06631D9;
-        Mon, 28 Aug 2023 21:11:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ACDFC433C7;
-        Mon, 28 Aug 2023 21:11:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693257083;
-        bh=CuIPNQ07mUdRKNEEdCDCs1DaOYgbGMZeHU/QMDCau2c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=SNbYvyr/S6MofsbcLWGC/v8Q/z6fsngz+tQFU6IQ4pDrWQTsO3aJasZ5yND6SX0/P
-         upbhNWzYyc00nO6x7oWjOcINTy9R4eZCpgbz4FHdizLdHvzYZiPWnyELPbicb4ymZY
-         2YGkfPfn9VQr0V+hCKcCktaQiI5MSAocDZVbDEMG19hk3bmCeFUzXzEFxTpNCiDPEF
-         sXXQms3QoUSvWqJd11MTNu6IFGPBe1tm2dQIfTjr3CQmwbrFIWRUWLTiAdIPDoZA6n
-         6N6QzWzZdMP/rdhTHgn1eTxRzOQxu5iy1uA6pIvGSDQuKnUyLg4cKDznAQYEvmMdwk
-         gCS4z/cVezlUQ==
-Date:   Mon, 28 Aug 2023 16:11:21 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>
-Subject: Re: [PATCH v6 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver
-Message-ID: <20230828211121.GA745436@bhelgaas>
+        Mon, 28 Aug 2023 17:11:35 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F9513E
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:11:32 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-317c3ac7339so3041410f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693257091; x=1693861891;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=AGV7fm9BOo/BTZfQQDSKq6tain38HNOfDc/SVkbBLyU=;
+        b=Ha8e4FOatxVIoLwNAY2swsz6p5CXDyjw4NNd2r4N5yQVuPxl9W9MOtU2qssA/aEtX2
+         Sg7j0X3int2h0523Jsn3ofVtt74Y8wQ1M0QWIqC4E1uX6Dia0S8Ng/+oa9146ILN+rM8
+         /O0e1r64sH1O4NTb1LEmfokxY+j1P9j4173QR5U3ZAyT3UPN5TzOBoywEnLDSxHSfuNn
+         9rOwvAW2AiX7494u4Ifif3IwtVpg34Jt+6XMk+0sa0NSEdLUyzuodpBG2WQpWvZlN2MI
+         C0HQEDarorTQ2I4MH1Qg6+I55hXwnnTwhJCdCXkbt8jfhrP/QAJkjuUQ9GBWhiIhrEdQ
+         7RIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693257091; x=1693861891;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AGV7fm9BOo/BTZfQQDSKq6tain38HNOfDc/SVkbBLyU=;
+        b=AnrbEJDznvQblUv5GWp74Oav5XPqFtXwH547gvDecWEGv6Hd88eP1vUM7sQhAuJ41L
+         iGcWXi//mWYNp4iGyXJL3TXk7QRq39p5EQ9kHGxE1ArYAT90XqgbB7SXzZLcxs2NE2ox
+         12rJ6BgasLxoLoo47TkSU/6gDlfQsg2/H6AiSBd8zRmaac1XI8AJ1LnQ5oiIVJOvCB6W
+         D3RN2xxJF7jRTwqA58xkjeAhDod1AzESFf/GSFqyo6DySrUBQrMLZAmn5f6NR7gOquK4
+         6X0K0RzZ+8VHfLEN0FIkwWVQJ44dvxYKqRmlIxKStIEJGeC66qqu9hAZu0XPKpiiSirM
+         XC9w==
+X-Gm-Message-State: AOJu0Yx6ODPTeVz+lP+OvYB6lH0IrKar5EfnUKSI5qRXp1pVLGSLK1ya
+        0TrK5sk+TvlML/qoqj7Me0c=
+X-Google-Smtp-Source: AGHT+IFPY7IxPmJiniTef/KLV+7hwXWgICNAQvq9yKq/rwhFkIjoaFsmvdxHF+VyjgM5yhQIn1XADw==
+X-Received: by 2002:a5d:4911:0:b0:314:1f6:2c24 with SMTP id x17-20020a5d4911000000b0031401f62c24mr19759626wrq.36.1693257090621;
+        Mon, 28 Aug 2023 14:11:30 -0700 (PDT)
+Received: from gmail.com (1F2EF3C0.nat.pool.telekom.hu. [31.46.243.192])
+        by smtp.gmail.com with ESMTPSA id y4-20020a5d6144000000b00316eb7770b8sm11724647wrt.5.2023.08.28.14.11.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 14:11:30 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 28 Aug 2023 23:11:28 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Subject: [GIT PULL] Scheduler changes for v6.6
+Message-ID: <ZO0NgNfvvS9oVUVW@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN7PR12MB7201459AEFB6DFF600E753928BE0A@SN7PR12MB7201.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:01:52PM +0000, Havalige, Thippeswamy wrote:
-> > > On Fri, Aug 18, 2023 at 03:05:07PM +0530, Thippeswamy Havalige wrote:
-> > > > ...
 
-> > > > +static bool xilinx_pl_dma_pcie_valid_device(struct pci_bus *bus,
-> > > > +					    unsigned int devfn)
-> > > > +{
-> > > > +	struct pl_dma_pcie *port = bus->sysdata;
-> > > > +
-> > > > +	/* Check if link is up when trying to access downstream ports */
-> > > > +	if (!pci_is_root_bus(bus)) {
-> > > > +		/*
-> > > > +		 * Checking whether link is up here is a last line of defence,
-> > > > +		 * if the link goes down after we check for link-up, we have a
-> > > > +		 * problem: if a PIO request is initiated while link-down, the
-> > > > +		 * whole controller hangs, and even after link comes up again,
-> > > > +		 * previous PIO requests won't work, and a reset of the whole
-> > > > +		 * PCIe controller is needed. Henceforth we need link-up
-> > > check
-> > > > +		 * here to avoid sending PIO request when link is down. This
-> > > > +		 * check is racy by definition and does not make controller
-> > > hang
-> > > > +		 * if the link goes down after this check is performed.
-> > >
-> > > This comment doesn't make sense to me.  "If PIO request initiated
-> > > while link- down, controller hangs ... This check is racy and does not
-> > > make controller hang if link goes down."  Which is it?
-> - Here checking link up treats device as invalid.
-> 
-> Please find comment that I ll update in next patch and 
-> Please letme know if any changes are needed.
-> 
->   /*
->                  * Checking whether the link is up. Here is the last line of
->                  * defence. If the link goes down after we check for link-up,
->                  * we have a problem. If a PIO request is initiated while link
->                  * is down, the whole controller hangs. Even after link comes up
->                  * again, previous PIO requests won't work, and a reset of the
->                  * whole PCIe controller is needed. Henceforth we need link-up
->                  * check here to treat device as invalid and avoid sending PIO
->                  * request when link is down and this check is inherently racy
->                  * by definition.
-> */
-> > >
-> > > My *guess* is that this check narrows the window but doesn't close it,
-> > > so if
-> > > xilinx_pl_dma_pcie_link_up() finds the link up, but the link goes down
-> > > before
-> > > pci_generic_config_read() initiates the PIO request, the controller
-> > > hangs, and a reset is required.
+Linus,
 
-Sorry, I dragged this out by not giving you a more useful suggestion
-to begin with.  Since advk_pcie_valid_device() has the same issue,
-copying its comment was a great place to start.
+Please pull the latest sched/core git tree from:
 
-But I think advk_pcie_valid_device(), altera_pcie_valid_device(),
-nwl_pcie_valid_device(), xilinx_pcie_valid_device(), and now
-xilinx_pl_dma_pcie_valid_device() all have the same race, but none of
-them really address it in the comment.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2023-08-28
 
-I'm looking for explicit acknowledgement that we can't reliably
-prevent this unrecoverable error, e.g., something like this:
+   # HEAD: 2f88c8e802c8b128a155976631f4eb2ce4f3c805 sched/eevdf/doc: Modify the documented knob to base_slice_ns as well
 
-  Sending a PIO request to a downstream device when the link is down
-  causes an unrecoverable error, and a reset of the entire PCIe
-  controller will be needed.  We can reduce the likelihood of that
-  unrecoverable error by checking whether the link is up, but can't
-  completely prevent it because the link may go down between the
-  link-up check and the PIO request.
+Scheduler changes for v6.6:
 
-Bjorn
+- The biggest change is introduction of a new iteration of the
+  SCHED_FAIR interactivity code: the EEVDF ("Earliest Eligible Virtual
+  Deadline First") scheduler.
+
+  EEVDF too is a virtual-time scheduler, with two parameters (weight
+  and relative deadline), compared to CFS that had weight only.
+  It completely reworks the base scheduler: placement, preemption,
+  picking -- everything.
+
+  LWN.net, as usual, has a terrific writeup about EEVDF:
+
+     https://lwn.net/Articles/925371/
+
+  Preemption (both tick and wakeup) is driven by testing against
+  a fresh pick. Because the tree is now effectively an interval
+  tree, and the selection is no longer the 'leftmost' task,
+  over-scheduling is less of a problem. A lot of the CFS
+  heuristics are removed or replaced by more natural latency-space
+  parameters & constructs.
+
+  In terms of expected performance regressions: we'll and can fix
+  everything where a 'good' workload misbehaves with the new scheduler,
+  but EEVDF inevitably changes workload scheduling in a binary fashion,
+  hopefully for the better in the overwhelming majority of cases,
+  but in some cases it won't, especially in adversarial loads that
+  got lucky with the previous code, such as some variants of hackbench.
+  We are trying hard to err on the side of fixing all performance
+  regressions, but we expect some inevitable post-release iterations
+  of that process.
+
+- Improve load-balancing on hybrid x86 systems: enable cluster
+  scheduling (again).
+
+- Improve & fix bandwidth-scheduling on nohz systems.
+
+- Improve bandwidth-throttling.
+
+- Use lock guards to simplify and de-goto-ify control flow.
+
+- Misc improvements, cleanups and fixes.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+ Thanks,
+
+	Ingo
+
+------------------>
+Chen Yu (1):
+      sched/topology: Align group flags when removing degenerate domain
+
+Chin Yik Ming (1):
+      sched/headers: Rename task_struct::state to task_struct::__state in the comments too
+
+Cruz Zhao (1):
+      sched/core: introduce sched_core_idle_cpu()
+
+Cyril Hrubis (2):
+      sched/rt: Fix sysctl_sched_rr_timeslice intial value
+      sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
+
+Johannes Weiner (1):
+      MAINTAINERS: Add Peter explicitly to the psi section
+
+Josh Don (2):
+      sched: don't account throttle time for empty groups
+      sched: add throttled time stat for throttled children
+
+Miaohe Lin (1):
+      sched/psi: make psi_cgroups_enabled static
+
+Peter Zijlstra (22):
+      x86/sched: Enable cluster scheduling on Hybrid
+      sched/debug: Dump domains' sched group flags
+      sched/fair: Add cfs_rq::avg_vruntime
+      sched/fair: Remove sched_feat(START_DEBIT)
+      sched/fair: Add lag based placement
+      rbtree: Add rb_add_augmented_cached() helper
+      sched/fair: Implement an EEVDF-like scheduling policy
+      sched/fair: Commit to lag based placement
+      sched/smp: Use lag to simplify cross-runqueue placement
+      sched/fair: Commit to EEVDF
+      sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice
+      sched/fair: Propagate enqueue flags into place_entity()
+      sched: Simplify get_nohz_timer_target()
+      sched: Simplify sysctl_sched_uclamp_handler()
+      sched: Simplify: migrate_swap_stop()
+      sched: Simplify wake_up_if_idle()
+      sched: Simplify ttwu()
+      sched: Simplify sched_exec()
+      sched: Simplify sched_tick_remote()
+      sched: Simplify try_steal_cookie()
+      sched: Simplify sched_core_cpu_{starting,deactivate}()
+      sched/eevdf: Curb wakeup-preemption
+
+Phil Auld (2):
+      sched, cgroup: Restore meaning to hierarchical_quota
+      sched/fair: Block nohz tick_stop when cfs bandwidth in use
+
+Randy Dunlap (1):
+      sched/psi: Select KERNFS as needed
+
+Ricardo Neri (1):
+      sched/fair: Consider the idle state of the whole core for load balance
+
+Shrikanth Hegde (1):
+      sched/eevdf/doc: Modify the documented knob to base_slice_ns as well
+
+Tim C Chen (3):
+      sched/fair: Determine active load balance for SMT sched groups
+      sched/topology: Record number of cores in sched group
+      sched/fair: Implement prefer sibling imbalance calculation between asymmetric groups
+
+Vincent Guittot (2):
+      sched/fair: Stabilize asym cpu capacity system idle cpu selection
+      sched/fair: remove util_est boosting
+
+Wander Lairson Costa (2):
+      kernel/fork: beware of __put_task_struct() calling context
+      sched: avoid false lockdep splat in put_task_struct()
+
+
+ Documentation/scheduler/sched-design-CFS.rst |    2 +-
+ MAINTAINERS                                  |    1 +
+ arch/x86/kernel/smpboot.c                    |   11 +-
+ include/linux/cgroup-defs.h                  |    2 +
+ include/linux/rbtree_augmented.h             |   26 +
+ include/linux/sched.h                        |   21 +-
+ include/linux/sched/task.h                   |   38 +-
+ init/Kconfig                                 |    1 +
+ kernel/cgroup/cgroup.c                       |   34 +
+ kernel/fork.c                                |    8 +
+ kernel/sched/core.c                          |  496 +++++-----
+ kernel/sched/debug.c                         |   49 +-
+ kernel/sched/fair.c                          | 1333 ++++++++++++++------------
+ kernel/sched/features.h                      |   24 +-
+ kernel/sched/psi.c                           |    2 +-
+ kernel/sched/rt.c                            |    5 +-
+ kernel/sched/sched.h                         |   57 +-
+ kernel/sched/topology.c                      |   15 +-
+ kernel/softirq.c                             |    2 +-
+ 19 files changed, 1217 insertions(+), 910 deletions(-)
