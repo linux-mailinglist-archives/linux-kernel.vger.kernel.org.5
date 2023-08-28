@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA37F78A5C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F2978A5C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjH1Gb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 02:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
+        id S229738AbjH1GYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 02:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjH1Gb0 (ORCPT
+        with ESMTP id S229513AbjH1GYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 02:31:26 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Aug 2023 23:31:23 PDT
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69253109
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 23:31:23 -0700 (PDT)
-Received: from localhost (unknown [124.16.138.129])
-        by APP-05 (Coremail) with SMTP id zQCowAA3PGCIPexk7dWPBg--.32603S2;
-        Mon, 28 Aug 2023 14:24:08 +0800 (CST)
-From:   Chen Ni <nichen@iscas.ac.cn>
-To:     oohall@gmail.com, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, dave.jiang@intel.com, ira.weiny@intel.com
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] nvdimm: of_pmem: Add kfree for kstrdup
-Date:   Mon, 28 Aug 2023 06:23:10 +0000
-Message-Id: <20230828062310.6802-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowAA3PGCIPexk7dWPBg--.32603S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrurykJFWUWFW8Jw4xury3Jwb_yoWfXrcEkF
-        1UXFWSqr48Ca9Ik39Fywna9r9Ika18ZF4rZr1ag3W5JFZrJF43JrWUZrn5G393Zrs7GF9I
-        kr1jkFn8Cry7GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYeHqDUUUU
-X-Originating-IP: [124.16.138.129]
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 28 Aug 2023 02:24:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB51BF
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 23:24:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 68F8F1F8D9;
+        Mon, 28 Aug 2023 06:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693203857; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NKEHERs7i6U7EDLAmsshFK6/5eHng7hUp10GpH4KXJM=;
+        b=npO1gIfHGN9fkqUcuijpWrnZZW8TOuAE1IMkDSkMvQNIk5wYmgY/663oY1woJZyK3MIao3
+        RtsdeXKM1Xd+C33GM9gR7EAk/1v/362b+UJVMZbpRszH6gI/L6HwTaciwj2XCSPJBwbwyB
+        IGYvHlmZseibheA33yBxcXuwd5dNeEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693203857;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NKEHERs7i6U7EDLAmsshFK6/5eHng7hUp10GpH4KXJM=;
+        b=hYtq/MuiqJM23aOpoS4DVO383/Nk75hHx9H16EZxozHy4l8fnvp0/aaMaNt2unn5IoCrax
+        YgPh+qPSyCcC4vCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FE5413A11;
+        Mon, 28 Aug 2023 06:24:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QjLyApE97GSxbgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 28 Aug 2023 06:24:17 +0000
+Date:   Mon, 28 Aug 2023 08:24:16 +0200
+Message-ID: <87cyz71y7j.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Shenghao Ding <shenghao-ding@ti.com>
+Cc:     <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <mengdong.lin@intel.com>, <baojun.xu@ti.com>,
+        <thomas.gfeller@q-drop.com>, <peeyush@ti.com>, <navada@ti.com>,
+        <broonie@kernel.org>, <gentuser@gmail.com>
+Subject: Re: [PATCH v5 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+In-Reply-To: <20230828022556.578-1-shenghao-ding@ti.com>
+References: <20230828022556.578-1-shenghao-ding@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kfree() for kstrdup() in order to avoid memory leak.
+On Mon, 28 Aug 2023 04:25:55 +0200,
+Shenghao Ding wrote:
+> 
+> Integrate tas2781 configs for Lenovo Laptops. All of the tas2781s in the
+> laptop will be aggregated as one audio device. The code support realtek
+> as the primary codec.
+> 
+> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- drivers/nvdimm/of_pmem.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Shenghao, your previous patches have been already merged!
+Please take the latest sound.git tree before the submission.
 
-diff --git a/drivers/nvdimm/of_pmem.c b/drivers/nvdimm/of_pmem.c
-index 10dbdcdfb9ce..fe6edb7e6631 100644
---- a/drivers/nvdimm/of_pmem.c
-+++ b/drivers/nvdimm/of_pmem.c
-@@ -31,11 +31,17 @@ static int of_pmem_region_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	priv->bus_desc.provider_name = kstrdup(pdev->name, GFP_KERNEL);
-+	if (!priv->bus_desc.provider_name) {
-+		kfree(priv);
-+		return -ENOMEM;
-+	}
-+
- 	priv->bus_desc.module = THIS_MODULE;
- 	priv->bus_desc.of_node = np;
- 
- 	priv->bus = bus = nvdimm_bus_register(&pdev->dev, &priv->bus_desc);
- 	if (!bus) {
-+		kfree(priv->bus_desc.provider_name);
- 		kfree(priv);
- 		return -ENODEV;
- 	}
--- 
-2.25.1
+Make your changes on top of the latest sound.git tree in a
+fine-grained incremental way, and submit those instead *ASAP*, so that
+the necessary fixes can be merged for 6.6-rc1.
 
+
+thanks,
+
+Takashi
