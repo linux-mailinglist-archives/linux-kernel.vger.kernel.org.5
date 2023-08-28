@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7C578B336
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689D178B337
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjH1OfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        id S230476AbjH1Ofg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 10:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbjH1OfB (ORCPT
+        with ESMTP id S230458AbjH1OfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:35:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5380C9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693233298; x=1724769298;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0GPJBVETKr0elJKyjYnsO6X1WEkBJ4D5Uo2VZCV0EuE=;
-  b=gZvGbaG0v341cfBohGNtg0Tf0f1SiDAqsfB+fmAij+Q7aJNvj3WyGmWF
-   BhN2N65DQm7Tw9XqPhdadEKe4JaSxuxuNr4KQ4IL8Z4jXGgrIAjvOEnIg
-   fAN+505ImKs2Lpt2QcQe2qDknddnf2eLY6la7CJfllv6TEv+EubSP+e6i
-   nH3C+qxZmOqjm1k5IwK4yHGEef5KNCUj0oYULCxCjcf7OCfkA9d9txo7H
-   EpsCf/fXxC5aiMXsE09/9eYLdWMAHgYEJfSxg16Ti02ToXChXXE01pz7/
-   Fg2SLvHaL1q43FeE1+Y/oPDoHuWQORkn14DVy0PUiQNSMmzMV8xrFiPNz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="461491140"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="461491140"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 07:34:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="773281598"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="773281598"
-Received: from avandeve-mobl1.amr.corp.intel.com (HELO [10.209.114.105]) ([10.209.114.105])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 07:34:32 -0700
-Message-ID: <abb65e60-4e8b-7036-4401-d21b273b6d67@linux.intel.com>
-Date:   Mon, 28 Aug 2023 07:34:32 -0700
+        Mon, 28 Aug 2023 10:35:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5C4C9;
+        Mon, 28 Aug 2023 07:35:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 83FB0649C7;
+        Mon, 28 Aug 2023 14:35:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17738C433C8;
+        Mon, 28 Aug 2023 14:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693233302;
+        bh=xvcD4T141QWQdLnTpjwFsaRzVQbDz33pxGbpyYMH39s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nsftVUsYbfugJ2EsSq4/XYJZ4RiwxXGDBsQIyj0SW4IaLjyUIJdvCIoE0qjgnujA/
+         BiWFMgKTVf3TEjJWy1fI4t8H5tDWLyaX9vsE4H/BR4WBSMeuCf7olL7XZ2ZfDK2A7o
+         lTjG8i7jq6+jrrYuzOEGFa3p/YPxFjtxuS75MBCKLBTH4FKQ9006ovnbbRqBcXZK9J
+         BfWh9A0cs1IgJAjC67SvPFk45bp6/40icq/pcEyZPHWrSJUE8arhwK5dvvGyggzCyR
+         VFiN0vJfvtzJjjv/Sy2x0dGtLwzNrp44VTm1rP+WD2kOVTeu/sMFTFJOQ+8MqW3ZIm
+         sQP2IIMl0o0uw==
+Date:   Mon, 28 Aug 2023 15:35:22 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ana-Maria Cusco <ana-maria.cusco@analog.com>
+Cc:     Michael Hennerich <michael.hennerich@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] iio: amplifiers: hmc425a: Add Support HMC540S 4-bit
+ Attenuator
+Message-ID: <20230828153522.754cb7ff@jic23-huawei>
+In-Reply-To: <20230816110906.144540-1-ana-maria.cusco@analog.com>
+References: <20230816110906.144540-1-ana-maria.cusco@analog.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [patch V4 24/41] x86/cpu: Provide cpu_init/parse_topology()
-Content-Language: en-US
-To:     K Prateek Nayak <kprateek.nayak@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Pu Wen <puwen@hygon.cn>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Gautham Shenoy <gautham.shenoy@amd.com>
-References: <20230814085006.593997112@linutronix.de>
- <20230814085113.471353147@linutronix.de>
- <934072fe-eca2-44df-94e7-9fed1dc8b502@amd.com> <87r0nn8ots.ffs@tglx>
- <4a4d5a89-b024-ea49-8740-1f3aef412c15@amd.com>
-From:   Arjan van de Ven <arjan@linux.intel.com>
-In-Reply-To: <4a4d5a89-b024-ea49-8740-1f3aef412c15@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,15 +62,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/2023 7:28 AM, K Prateek Nayak wrote:
->>     - Are these really different between AMD and Intel or is this some
->>       naming convention issue which needs to be resolved?
-> 	They do have different characteristics since, on Sapphire
-> 	Rapids, the LLC is at a socket boundary despite having multiple
-> 	tiles. (Please correct me if I'm wrong, I'm going off of
-> 	llc_id shared in this report by Qiuxu Zhuo -
-> 	https://lore.kernel.org/all/20230809161219.83084-1-qiuxu.zhuo@intel.com/)
-> 
+On Wed, 16 Aug 2023 14:09:05 +0300
+Ana-Maria Cusco <ana-maria.cusco@analog.com> wrote:
 
-Sapphire reports itself as 1 tile though (since logically it is) as far as I know
+> From: Michael Hennerich <michael.hennerich@analog.com>
+> 
+> This adds support for the Analog Devices HMC540s 1 dB LSB
+> Silicon MMIC 4-Bit Digital Positive Control Attenuator, 0.1 - 8 GHz
+> 
+> Signed-off-by: Ana-Maria Cusco <ana-maria.cusco@analog.com>
+
+Hi Ana-Maria
+
+Generally for all but single patch series, I'd prefer a cover letter.
+For new drivers, just put a short description of the device in there.
+There are various reasons, but the simplest one is that it provides
+a place where people can offer Reviewed-by etc for the whole series
+in a form that the b4 tool I (and lots of other maintainers) use can
+pick it up automatically.
+
+Anyhow, actual patches look great to me.
+
+Applied to the togreg branch of iio.git and pushed out as testing for now.
+I will be rebasing on 5.6-rc1 once it's available after which these should
+get picked up by linux-next.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/amplifiers/hmc425a.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/iio/amplifiers/hmc425a.c b/drivers/iio/amplifiers/hmc425a.c
+> index 108f0f1685ef..e87d35d50a95 100644
+> --- a/drivers/iio/amplifiers/hmc425a.c
+> +++ b/drivers/iio/amplifiers/hmc425a.c
+> @@ -21,6 +21,7 @@
+>  
+>  enum hmc425a_type {
+>  	ID_HMC425A,
+> +	ID_HMC540S,
+>  };
+>  
+>  struct hmc425a_chip_info {
+> @@ -70,6 +71,9 @@ static int hmc425a_read_raw(struct iio_dev *indio_dev,
+>  		case ID_HMC425A:
+>  			gain = ~code * -500;
+>  			break;
+> +		case ID_HMC540S:
+> +			gain = ~code * -1000;
+> +			break;
+>  		}
+>  
+>  		*val = gain / 1000;
+> @@ -106,6 +110,9 @@ static int hmc425a_write_raw(struct iio_dev *indio_dev,
+>  	case ID_HMC425A:
+>  		code = ~((abs(gain) / 500) & 0x3F);
+>  		break;
+> +	case ID_HMC540S:
+> +		code = ~((abs(gain) / 1000) & 0xF);
+> +		break;
+>  	}
+>  
+>  	mutex_lock(&st->lock);
+> @@ -157,6 +164,7 @@ static const struct iio_chan_spec hmc425a_channels[] = {
+>  /* Match table for of_platform binding */
+>  static const struct of_device_id hmc425a_of_match[] = {
+>  	{ .compatible = "adi,hmc425a", .data = (void *)ID_HMC425A },
+> +	{ .compatible = "adi,hmc540s", .data = (void *)ID_HMC540S },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, hmc425a_of_match);
+> @@ -171,6 +179,15 @@ static struct hmc425a_chip_info hmc425a_chip_info_tbl[] = {
+>  		.gain_max = 0,
+>  		.default_gain = -0x40, /* set default gain -31.5db*/
+>  	},
+> +	[ID_HMC540S] = {
+> +		.name = "hmc540s",
+> +		.channels = hmc425a_channels,
+> +		.num_channels = ARRAY_SIZE(hmc425a_channels),
+> +		.num_gpios = 4,
+> +		.gain_min = -15000,
+> +		.gain_max = 0,
+> +		.default_gain = -0x10, /* set default gain -15.0db*/
+> +	},
+>  };
+>  
+>  static int hmc425a_probe(struct platform_device *pdev)
 
