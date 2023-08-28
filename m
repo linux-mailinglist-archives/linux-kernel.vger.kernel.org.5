@@ -2,124 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8866578B91A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045EF78B933
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbjH1UK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S232490AbjH1ULf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbjH1UKT (ORCPT
+        with ESMTP id S232140AbjH1ULC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:10:19 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4285C6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:10:16 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79289fefdbeso94874339f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:10:16 -0700 (PDT)
+        Mon, 28 Aug 2023 16:11:02 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B595DC5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:10:58 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-6493389c56fso22775396d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:10:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693253416; x=1693858216;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ToWphglk+jIuHakrdkLEs6Kl6awIC29pkULLo3yXCKo=;
-        b=opnfX7b9FR3Qkgauj6UCrsY7xR+J5wJYa42+TByn5zs9WuIDdwBZ/EyWTlLxHjGozd
-         OWZE/Jpypl+dCk7Ci9R8//E58DBdZQD+ygj2hIVUa85drAGTVHz4nZCUeVcD3J36N4JP
-         Ye8g8HF+YWnBiCSglWYj4qaKxJdQBlO9dphiI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693253416; x=1693858216;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1693253458; x=1693858258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ToWphglk+jIuHakrdkLEs6Kl6awIC29pkULLo3yXCKo=;
-        b=RPBKxpd4PGHef5Qn2r0z6O/1BJNCn6cxIfJB49+KeunKOdHdYlQCTWhFLNwxfG78Sz
-         irwldXEVQk3zMIbe6c3Ye0tHbWZmogR+o3bIopXzcsQNEUPrH/n1cktGNZNY1P1CCach
-         WhYQ4RRMBX8gN3a43WCQkSD9mAAeMj4pHdrgCZ7ZomMrRkvThk1A5EFE8qJiCHAy2WoY
-         VCcBWtFB5hEsu2SWNNc05IWvuDmLO/yDTWoIwb2Bjc6++Nv6wbZ3EXGGNuGx58qJl6uj
-         INreHlUZkaDeyJefE+83jR055gVhXJOGoa3iGhPV2OzZew+DqJ7PLthEbdlPM1O5vO/Q
-         vj6g==
-X-Gm-Message-State: AOJu0Yw9VOWLKGskG+6ddoyGqNLBKdJvHHjdz+6uBDxzeKe7kDdDtmbR
-        BcD7rDeK2/Q0pq8eqWl0ctmAwQ==
-X-Google-Smtp-Source: AGHT+IERYLuZL1QL0QoiA84CN1/KLm1TA2o4+eMMfgLcKyh2olmnmGGumOzk6cul2wISK2HloiBTXQ==
-X-Received: by 2002:a05:6602:4250:b0:792:931e:a93a with SMTP id cc16-20020a056602425000b00792931ea93amr7871160iob.4.1693253416305;
-        Mon, 28 Aug 2023 13:10:16 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id s21-20020a02cf35000000b0041cd626ea0csm2704691jar.147.2023.08.28.13.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 13:10:15 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 20:10:15 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kirill A Shutemov <kirill@shutemov.name>,
-        "Liam R. Howlett" <liam.howlett@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>
-Subject: Re: [PATCH v5 6/7] selftests: mm: Add a test for remapping within a
- range
-Message-ID: <20230828201015.GE1621761@google.com>
-References: <20230822015501.791637-1-joel@joelfernandes.org>
- <20230822015501.791637-7-joel@joelfernandes.org>
- <08ce8c61-e7a2-417a-a3cc-d20861753ae8@lucifer.local>
- <fb429d82-4576-42d7-b51f-7a72f7f8caec@lucifer.local>
- <20230828185912.GD1621761@google.com>
- <ebcf8a58-84ac-4568-be2a-51826f384f4e@lucifer.local>
+        bh=YEj2FhwgEQBu2u6UWKCDUiStj2AeiFrde70HGTbVs2E=;
+        b=Tfhthi+MI4fV23bQm9BON0fbYEbXhtEhk6DL5PVVloNoK/aXp4+TL37t8Kzl1PBfyn
+         yNLzll/Gco47d/JhFPxE0SYlJqmAC6B7cMK6VqTMTYCD9wMKPMAzz1dfCyDm0kgvF4AE
+         rRJBvx6hKBn5vGAyMVKUKg4SH0KRuVz7WABmPMEpe9OlCfahaW+AQHYjqb50d+JOtNj3
+         zunJTRrCyH68fFfLVJyrSQA0gCX9BQxoVQ8xdzDPi6bQqDgbi6OxAfiKAwKkEkD52zJ6
+         Py9YZpOHmpU1R0fj4sgDSfI5UB2mZYdvgQjZ9TIn3+ga/uigF2i0/I03y4i7ZbQCzjaQ
+         tcOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693253458; x=1693858258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YEj2FhwgEQBu2u6UWKCDUiStj2AeiFrde70HGTbVs2E=;
+        b=hvMurb4z4tfugfWutlhFmpAJm2/jNZkFiaHTFVPkTlPupZVfA6oWztSYPRuYptTBjt
+         +xiJNxQkIAnqs3Fwki1AlYjHTKk8+r7siR9MP0PXJh+rgw3zCTSDS9WrDuyZgK+/V4IO
+         BOrCwGVQKjTs5YeVVuSo3kCH2hpWWLtTmknh0hxtUUM6OZLFYQIPTOCSamTAB6F4cZwY
+         cFhiEvhxqzXMgIxSYDuRaC+lRdOkOdAGPf1e/Nld+9MZhYrJfh1B4Ek9jclHHTulXnin
+         qTSG452X9FT0uvYO+VNj8nErJ8Lzzm4II0O7j1LYBt+r4S0MLWzw5+6KiN0g/AcWVf7V
+         /Osw==
+X-Gm-Message-State: AOJu0YyZ6H3+gTnkijmYTwJRz3TVBWd67VVwEgYneGb4lLTFsg8qrpcp
+        Mm8eA2jepFDGC3tQ55H5zDEBg4WRoSjSAwDZXDM6+Q==
+X-Google-Smtp-Source: AGHT+IF5SvoY7zvuJXy4YahE9LKj/ohiPFaQ4pKJboBPPj/76CWHq7H87yEtd3IhZWW+FGGyO5J3KsqGg4HZvg8aDzY=
+X-Received: by 2002:a0c:e188:0:b0:64f:59b8:cfd9 with SMTP id
+ p8-20020a0ce188000000b0064f59b8cfd9mr16575067qvl.18.1693253457739; Mon, 28
+ Aug 2023 13:10:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ebcf8a58-84ac-4568-be2a-51826f384f4e@lucifer.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <ZOkGCSNr0VN2VIJJ@p100> <CAHk-=wjZwSymfuGvf7TX3UQLU1OMN1FZMnEA-Hja0ruqyhMK4A@mail.gmail.com>
+ <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com> <cc5f4f5701674b96b0009b6b9b257cc8@AcuMS.aculab.com>
+In-Reply-To: <cc5f4f5701674b96b0009b6b9b257cc8@AcuMS.aculab.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 28 Aug 2023 13:10:46 -0700
+Message-ID: <CAKwvOdnrg9b3nF4mRWGYJSKytnEtGdKGz+aHPWSX3aHUm5eAYg@mail.gmail.com>
+Subject: Re: [PATCH] lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit kernels
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Helge Deller <deller@gmx.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chanho Min <chanho.min@lge.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 08:38:17PM +0100, Lorenzo Stoakes wrote:
-> On Mon, Aug 28, 2023 at 06:59:12PM +0000, Joel Fernandes wrote:
-> > On Sun, Aug 27, 2023 at 11:15:20AM +0100, Lorenzo Stoakes wrote:
-> > > On Sun, Aug 27, 2023 at 10:57:59AM +0100, Lorenzo Stoakes wrote:
-> > > [snip]
-> > >
-> > > > > +/*
-> > > > > + * Verify that an mremap within a range does not cause corruption
-> > > > > + * of unrelated part of range.
-> > > > > + *
-> > > > > + * Consider the following range which is 2MB aligned and is
-> > > > > + * a part of a larger 10MB range which is not shown. Each
-> > > > > + * character is 256KB below making the source and destination
-> > >
-> > > Just noticed, I think you misspeak here, as this test doens't seem to
-> > > offset by 256 KiB? That is the strategy for mremap_move_1mb_from_start()
-> > > rather than this test so perhaps comment needs to be moved around?
-> > >
-> > >  * 2MB each. The lower case letters are moved (s to d) and the
-> > >  * upper case letters are not moved. The below test verifies
-> > >  * that the upper case S letters are not corrupted by the
-> > >  * adjacent mremap.
-> > >  *
-> > >  * |DDDDddddSSSSssss|
-> > >  */
-> > >  static void mremap_move_within_range(char pattern_seed)
+On Mon, Aug 28, 2023 at 3:53=E2=80=AFAM David Laight <David.Laight@aculab.c=
+om> wrote:
+>
+> From: Linus Torvalds
+> > Sent: 25 August 2023 21:43
+> ....
+> > Clang turns this:
 > >
-> > Here we are moving 1MB within a 4MB zone of a large mapping. Each character
-> > 's' or 'd' is 256KB. The 256KB there is just for illustration and not really
-> > significant as such. The 'ssss' is moved to 'dddd' 1MB each. Here we make
-> 
-> Ahhh I see. I find that a little confusing here, perhaps clearer to say 'each
-> block of letters is 1 MiB in size' or something?
+> >         return __ffs64(val);
+> >
+> > into this horror:
+> >
+> >         pushq   %rax
+> >         movq    %rdi, (%rsp)
+> >         #APP
+> >         rep
+> >         bsfq    (%rsp), %rax
+> >         #NO_APP
+> >         popq    %rcx
+> >
+> > which is just incredibly broken on so many levels. It *should* be a
+> > single instruction, like gcc does:
+> >
+> >         rep; bsf %rdi,%rax      # tmp87, word
+> >
+> > but clang decides that it really wants to put the argument on the
+> > stack, and apparently also wants to do that nonsensical stack
+> > alignment thing to make things even worse.
+> >
+> > We use this:
+> >
+> >   static __always_inline unsigned long variable__ffs(unsigned long word=
+)
+> >   {
+> >         asm("rep; bsf %1,%0"
+> >                 : "=3Dr" (word)
+> >                 : "rm" (word));
+> >         return word;
+> >   }
+> >
+> > for the definition, and it looks like clang royally just screws up
+> > here. Yes, "m" is _allowed_ in that input set, but it damn well
+> > shouldn't be used for something that is already in a register, since
+> > "r" is also allowed, and is the first choice.
+>
+> Why don't we just remove the "m" option?
+>
+> Pretty much the only time it will be worse is it the value
+> is in memory and loading it into a register causes a spill
+> to stack.
+>
+> While it is possible to generate code where that happens it
+> is pretty unlikely.
 
-Sure, I'll do that.
- 
-> Cheers!
+As Linus expressed below, register exhaustion could occur.  Besides,
+this is a bug in clang that we acknowledge, and should fix.  I have
+the general idea where things are going wrong, I just don't yet have
+the muscle memory (or time) to dive into the register allocator.
 
-Cheers. And thanks for the reviews!
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+> Registration No: 1397386 (Wales)
 
- - Joel
+
+
+--=20
+Thanks,
+~Nick Desaulniers
