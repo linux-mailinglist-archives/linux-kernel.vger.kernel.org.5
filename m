@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDB278B779
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B1378B77B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbjH1Sod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
+        id S230442AbjH1Sos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbjH1SoN (ORCPT
+        with ESMTP id S233131AbjH1SoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:44:13 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3906B0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:10 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a9b41ffe11so2266637b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:10 -0700 (PDT)
+        Mon, 28 Aug 2023 14:44:14 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8478CB0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:12 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1c4d8eaa8ebso2581443fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693248250; x=1693853050;
+        d=gmail.com; s=20221208; t=1693248251; x=1693853051;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CnoQbut+iRr5Ecn/zMIRssht6/ZOy4Q1oQlXOYB7XO0=;
-        b=dQ+F8L5Rowmceo7LsbHVTb1oJP/Tcjc7KTaEEoFCaFgoc8fNS1O9exo3p9506uaM3h
-         8iqqaQT2hQRk6B9OaAXV/0KnTzEGO34BcW88F8DjKIPLtI82SH2IhJzDn7gcgnHdh8GF
-         Xe29FEO5Sf+n6ZVRUn05y8Ts26LvoTcsM3XK6hmpSwHuwrO4KREhL2gskb7UYY4A30Fo
-         KKqX06GNYHXKV60eAHzq0C8X/9oWV5ReBQmMfF9OBZrWnLI3tmftoLlNIxn29Yk88/pz
-         FYbKcHBp65RCR/GYhG9ThVNvfwZEb9iIs0l3c34SnxYSrOR+BIGCz86w7oyTv9yLLlDn
-         a97A==
+        bh=FgFnNChBwcTiKeUa47qLSJ3+y5tq48ar+mqpea6xw3o=;
+        b=m+JJ9p9W5ZEw25kxIfUumOUfiBD2gSE1elhHLoYbAZtF4WzvKYMTDpvrp5lMeDq542
+         20XvSvtYU/sx+yl1YzFNOXJdby2OxCz133IS+H1XNQMpCb4+vV06B0K1sRNtpkMHHEVn
+         Kolt4h8rauFNyZlCFtgUqSlIYU2KVCM+4fkLM6uENxcAgTIVLoZSOLq0sEUJDh1C7T+n
+         x/+WstWv7EnHOiBP0Gum6f/Tc6qNUIAofXG+LChq06mFwcQp+M2H5oQIb0hIvb315GQd
+         bTLTR6U/WGGh/DxxRMLuqogUv/f1h8xgmjNhh+U1iYVoevKjvYqrLjUKyhViMDu+Lq+G
+         CEmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693248250; x=1693853050;
+        d=1e100.net; s=20221208; t=1693248251; x=1693853051;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CnoQbut+iRr5Ecn/zMIRssht6/ZOy4Q1oQlXOYB7XO0=;
-        b=BhA8AURh7qa36mrNYrtQXg24kr30RJB86cNbJw2FNQURrgQrGdaltG6PF/zsIlS5Ec
-         RkEJx8YtWhkaceYTC07JPqtWKchkuy8522PWPe6abNpa7Tk5AuqzE4VdXBTB2YWjA4Ms
-         Yf5L8KdlgplrFWKlZcvO6cPVbIJkUXUhF65MZ7MOSuvpNgxVb0AD6Av7j/Y8EOaeqPdZ
-         8BCmzvYGn1UaC95i6N0OD3xLds/LRh0UytMvxK/E8rFGVc/8qZxX5NXgxnIsqL0rNHuG
-         S/sHqnqag39NWIVmwbGvcesImdYeUOYDbz0v1Q/StjUr7NZww8lEg/CghRlyww3Z4RNJ
-         CQnA==
-X-Gm-Message-State: AOJu0YwekmhoSgiUJ6EGuJ00TQjP7zpkqpKK05YjuXBWWsel4SrV6oXJ
-        2sMDOLbo1YNkGRLhZr79AbW0aSrRzE8=
-X-Google-Smtp-Source: AGHT+IEF1lqE8sJJyME9qTNmswVJZye5gOfZFtFNcdfaHcv2c1AqnINQLRPIwWcNvJogG8wmZTHd6A==
-X-Received: by 2002:a54:4e8e:0:b0:3a8:80ea:f0c6 with SMTP id c14-20020a544e8e000000b003a880eaf0c6mr11563399oiy.29.1693248249960;
-        Mon, 28 Aug 2023 11:44:09 -0700 (PDT)
+        bh=FgFnNChBwcTiKeUa47qLSJ3+y5tq48ar+mqpea6xw3o=;
+        b=eETuoC4oaidjUrcYda+F77VW9mjxocHO5ukpuoug6zpI8+/2Ve0AsWFmcg54DOXvJ0
+         QNVGKRPfb0Fxg718xTg+mFCOvnHmVFen55l4zUpYMXhXIX5Eul3hAbhUcfdTUTKC71ok
+         fquFFH/5crsWA4ebnhRIY43dN8gRcDFuXOlKup2qSWVvGAo4lZnR/uxQcqkR74rclgzw
+         qblyqATYs/V5dwu/x58SNwqFf6No4vtQH6DKVbyMP1QIra4UAeWv5vLvgUO4zF2AapFQ
+         JgaZ+oyclE64gzWEiWJbVBdwtld2plEfn8XtKSqoFDD8kowApCV0KlV36fbxO8MQhR6m
+         0eWA==
+X-Gm-Message-State: AOJu0Yyb8gw4dUJjNR/aeTY5anL15B934KmjY+ap+TZZCrAho07/6kQ5
+        uEjE3HwfttUfA2ok/C6dNUHPEgeUMS4=
+X-Google-Smtp-Source: AGHT+IFM0sXQ5G5lxLZ02JJZWjy/muQx+1MPzsLF8b0XlOH3jMR7cmqDtQIfae5SbOppmQUvH7M3JQ==
+X-Received: by 2002:a05:6870:1695:b0:1bb:c50d:7451 with SMTP id j21-20020a056870169500b001bbc50d7451mr13902536oae.46.1693248251417;
+        Mon, 28 Aug 2023 11:44:11 -0700 (PDT)
 Received: from localhost ([2600:6c5e:2a00:5805:e348:56d4:5da8:636d])
-        by smtp.gmail.com with ESMTPSA id k24-20020a544698000000b003a9a2362f66sm2178336oic.16.2023.08.28.11.44.09
+        by smtp.gmail.com with ESMTPSA id dt37-20020a0568705aa500b001c4fe8e78e1sm4595312oab.43.2023.08.28.11.44.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 11:44:09 -0700 (PDT)
+        Mon, 28 Aug 2023 11:44:11 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH 09/12] bitmap: optimize bitmap_remap() when 'new' is empty map
-Date:   Mon, 28 Aug 2023 11:43:49 -0700
-Message-Id: <20230828184353.5145-10-yury.norov@gmail.com>
+Subject: [PATCH 10/12] bitmap: separate handling of identity and remapping parts in bitmap_remap()
+Date:   Mon, 28 Aug 2023 11:43:50 -0700
+Message-Id: <20230828184353.5145-11-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828184353.5145-1-yury.norov@gmail.com>
 References: <20230828184353.5145-1-yury.norov@gmail.com>
@@ -73,30 +73,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When 'new' map is empty, we can skip remapping entirely and replace it
-with bitmap_copy().
+For unset bits in 'old' map (identity mapping), 'src' bits must be copied
+to 'dst'. Doing that separately from remapping in a for-loop has some
+advantages:
+ - implicitly initialize 'dst' without calling bitmap_zero();
+ - optimize performance of handling identity parts, because per-word
+   bitmap_andnot() is faster than per-bit set_bit() in a for-loop;
+ - make inner part of the loop unconditional;
+ - when 'old' map is empty, new logic simiply skips the for-loop part.
+
+While here, replace set_bit() with a non-atomic version, because the whole
+function is non-atomic anyways. If atomicity required, it should be handled
+by user.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- lib/bitmap.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ lib/bitmap.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 2e8deeb8bf99..50385d61e6ea 100644
+index 50385d61e6ea..f62ea97e942c 100644
 --- a/lib/bitmap.c
 +++ b/lib/bitmap.c
-@@ -1003,6 +1003,11 @@ void __bitmap_remap(unsigned long *dst, const unsigned long *src,
- 	bitmap_zero(dst, nbits);
+@@ -996,11 +996,10 @@ void __bitmap_remap(unsigned long *dst, const unsigned long *src,
+ 		const unsigned long *old, const unsigned long *new,
+ 		unsigned int nbits)
+ {
+-	unsigned int oldbit, w;
++	unsigned int oldbit, w, n;
+ 
+ 	if (dst == src)		/* following doesn't handle inplace remaps */
+ 		return;
+-	bitmap_zero(dst, nbits);
  
  	w = bitmap_weight(new, nbits);
-+	if (w == 0) {
-+		bitmap_copy(dst, src, nbits);
-+		return;
-+	}
-+
- 	for_each_set_bit(oldbit, src, nbits) {
- 		int n = bitmap_pos_to_ord(old, oldbit, nbits);
+ 	if (w == 0) {
+@@ -1008,13 +1007,13 @@ void __bitmap_remap(unsigned long *dst, const unsigned long *src,
+ 		return;
+ 	}
  
+-	for_each_set_bit(oldbit, src, nbits) {
+-		int n = bitmap_pos_to_ord(old, oldbit, nbits);
++	/* Identity part */
++	bitmap_andnot(dst, src, old, nbits);
+ 
+-		if (n < 0 || w == 0)
+-			set_bit(oldbit, dst);	/* identity map */
+-		else
+-			set_bit(find_nth_bit(new, nbits, n % w), dst);
++	/* Remapping part */
++	for_each_and_bit(oldbit, src, old, nbits) {
++		n = bitmap_weight(old, oldbit);
++		__set_bit(find_nth_bit(new, nbits, n % w), dst);
+ 	}
+ }
+ EXPORT_SYMBOL(__bitmap_remap);
 -- 
 2.39.2
 
