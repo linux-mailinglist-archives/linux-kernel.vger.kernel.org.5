@@ -2,175 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D24B78AF45
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973F078AF49
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbjH1Lr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
+        id S231231AbjH1Ls3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbjH1Lro (ORCPT
+        with ESMTP id S232661AbjH1LsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:47:44 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F9BCE8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:47:21 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EC92F660719F;
-        Mon, 28 Aug 2023 12:46:56 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693223217;
-        bh=t2fCeu+OfukEEpqeGoqYnE46rRWxUmeM0L2SCqoD4uQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AVRJUVWZMWdkkNkIwwQjHv2g46uUBb/77nyHYnON5KmS3tg1oGugPtkkG4iy1uFnG
-         kTlb7OcbTpp1xrWuUx1KJtpRSrF1SGbMkVsAeizaiKACfM9cB68eq5B66FxW/z0+7+
-         rahTU6MwaXdpYMvnA/jTzBi28EoNNGrm4GKtg7sBMn6mw2AUMannZ0SwQa2OdVBM8v
-         FDYapcT8+ESaQfWnpqZaOOsfWDIrV80adNPo2nlmyNaIV7hhiCZq6dzw4BFYNW34Vp
-         tnh+hpKP8Z/thw5o3hGvTMbyi34lpKi1lsc4s0MRM+WhRqdPxxGwXrcw3Kt75gWZGY
-         ss6gwo1Ls2YNw==
-Date:   Mon, 28 Aug 2023 13:46:54 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v15 12/23] drm/shmem-helper: Add and use pages_pin_count
-Message-ID: <20230828134654.7a2c6414@collabora.com>
-In-Reply-To: <20230827175449.1766701-13-dmitry.osipenko@collabora.com>
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
-        <20230827175449.1766701-13-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 28 Aug 2023 07:48:25 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E2E10C;
+        Mon, 28 Aug 2023 04:48:14 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1qaaj0-0002OB-5Q; Mon, 28 Aug 2023 13:48:06 +0200
+Date:   Mon, 28 Aug 2023 13:48:06 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        yuzhe@nfschina.com, u.kleine-koenig@pengutronix.de,
+        herbert@gondor.apana.org.au, olivia@selenic.com, alex@shruggie.ro
+Subject: Re: [PATCH] char: hw_random: xgene-rng: removed unneeded call to
+ platform_set_drvdata()
+Message-ID: <20230828114806.cjshfg7tpxiwyy6i@viti.kaiser.cx>
+References: <20230828102329.20867-1-aboutphysycs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828102329.20867-1-aboutphysycs@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Aug 2023 20:54:38 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+Andrei Coardos (aboutphysycs@gmail.com) wrote:
 
-> Add separate pages_pin_count for tracking of whether drm-shmem pages are
-> moveable or not. With the addition of memory shrinker support to drm-shmem,
-> the pages_use_count will no longer determine whether pages are hard-pinned
-> in memory, but whether pages exit and are soft-pinned (and could be swapped
-> out). The pages_pin_count > 1 will hard-pin pages in memory.
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Also,
+> the private data is defined in this driver, so there is no risk of it being
+> accessed outside of this driver file.
+
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 > ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 22 +++++++++++++++++-----
->  include/drm/drm_gem_shmem_helper.h     | 10 ++++++++++
->  2 files changed, 27 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index d545d3d227d7..1a7e5c332fd8 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -234,14 +234,22 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
->  
->  	dma_resv_assert_held(shmem->base.resv);
->  
-> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
-> +		return 0;
-> +
->  	ret = drm_gem_shmem_get_pages_locked(shmem);
-> +	if (!ret)
-> +		kref_init(&shmem->pages_pin_count);
->  
->  	return ret;
->  }
->  
-> -static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
-> +static void drm_gem_shmem_kref_unpin_pages(struct kref *kref)
->  {
-> -	dma_resv_assert_held(shmem->base.resv);
-> +	struct drm_gem_shmem_object *shmem;
-> +
-> +	shmem = container_of(kref, struct drm_gem_shmem_object,
-> +			     pages_pin_count);
->  
->  	drm_gem_shmem_put_pages_locked(shmem);
->  }
-> @@ -263,6 +271,9 @@ int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem)
->  
->  	drm_WARN_ON(obj->dev, obj->import_attach);
->  
-> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
-> +		return 0;
-> +
->  	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
->  	if (ret)
->  		return ret;
-> @@ -286,9 +297,10 @@ void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem)
->  
->  	drm_WARN_ON(obj->dev, obj->import_attach);
->  
-> -	dma_resv_lock(shmem->base.resv, NULL);
-> -	drm_gem_shmem_unpin_locked(shmem);
-> -	dma_resv_unlock(shmem->base.resv);
-> +	if (kref_put_dma_resv(&shmem->pages_pin_count,
-> +			      drm_gem_shmem_kref_unpin_pages,
-> +			      obj->resv, NULL))
-> +		dma_resv_unlock(obj->resv);
->  }
->  EXPORT_SYMBOL_GPL(drm_gem_shmem_unpin);
->  
-> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-> index ec2d8b24e3cf..afb7cd671e2a 100644
-> --- a/include/drm/drm_gem_shmem_helper.h
-> +++ b/include/drm/drm_gem_shmem_helper.h
-> @@ -39,6 +39,16 @@ struct drm_gem_shmem_object {
->  	 */
->  	unsigned int pages_use_count;
->  
-> +	/**
-> +	 * @pages_pin_count:
-> +	 *
-> +	 * Reference count on the pinned pages table.
-> +	 * The pages allowed to be evicted and purged by memory
-> +	 * shrinker only when the count is zero, otherwise pages
-> +	 * are hard-pinned in memory.
-> +	 */
-> +	struct kref pages_pin_count;
+>  drivers/char/hw_random/xgene-rng.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-I know it's tempting to use kref for the pages use/pin count, but I'm
-wondering if we wouldn't be better using a refcount_t, which provides
-overflow/underflow protection while still letting us control how we
-want to handle the locking for 0 <-> 1 transitions. By doing that, we
-avoid introducing core locking changes that might be more
-controversial/longer to get accepted. Besides, I suspect the resulting
-code (the one using a refcount_t) won't be more verbose/complicated (no
-release functions needed if you don't use kref_put(), which makes
-things closer to what we have right now).
+> diff --git a/drivers/char/hw_random/xgene-rng.c b/drivers/char/hw_random/xgene-rng.c
+> index 7c8f3cb7c6af..9d64b5931a27 100644
+> --- a/drivers/char/hw_random/xgene-rng.c
+> +++ b/drivers/char/hw_random/xgene-rng.c
+> @@ -321,7 +321,6 @@ static int xgene_rng_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
 
-> +
->  	/**
->  	 * @madv: State for madvise
->  	 *
+>  	ctx->dev = &pdev->dev;
+> -	platform_set_drvdata(pdev, ctx);
 
+>  	ctx->csr_base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(ctx->csr_base))
+> -- 
+> 2.34.1
+
+This one's ok, too. 67fb1e295839 ("hwrng: xgene - Simplify using
+devm_clk_get_optional_enabled()") removed the platform_get_drvdata call.
+
+Reviewed-by: Martin Kaiser <martin@kaiser.cx>
