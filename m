@@ -2,318 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CE278A752
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFDD78A761
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbjH1IPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
+        id S229930AbjH1IQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbjH1IOy (ORCPT
+        with ESMTP id S229633AbjH1IQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:14:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D1D126;
-        Mon, 28 Aug 2023 01:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693210489; x=1724746489;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=QLFf9ulvG0seTevyAaf2b7IoLOlWlrsa/M3s7UysrKw=;
-  b=g3s9mckMWLK/ulFO5M1mjgOWc3qRx9o4JVn9ZL9ZwtvX9GQwUhkHJkvI
-   RfBx26QRbGps+IMjTX0V3Ho6fokbt+7E1JlXMVh+hPHymh421RzG8ajoh
-   xVdF/sQbyqY+CaKLvZxqdhzlEQcC0ODnGlL6BZygmmXTai+1yJdw8Fa33
-   WyI+8IYB8TOoxdDU3uiGwmhHB4ilyvnJ6DtWwBMSpU5Z941PIA7RWQQku
-   iDbNo6OFBVO25nbToC4C+1grPzwBnTlqdYJ8pS96GJGASdJ6vuNSC7SQC
-   4Rl9ugLmhNYqZihL+3TJ0KP57FlvYULRLJ/CNv+i+oCyfz4EVimYrMbVj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="373936837"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="373936837"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 01:14:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="984786383"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="984786383"
-Received: from golubevv-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.57.84])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 01:14:43 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com
-Cc:     linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        workflows@vger.kernel.org, tools@linux.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>
-Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
-In-Reply-To: <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <cover.1693037031.git.quic_gurus@quicinc.com>
- <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
-Date:   Mon, 28 Aug 2023 11:14:41 +0300
-Message-ID: <87jztf37ny.fsf@intel.com>
+        Mon, 28 Aug 2023 04:16:22 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE7711B
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:16:20 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc63ef9959so22472075ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693210580; x=1693815380;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hD5oyc91zexss8iplnmDih5E3tUKOUqVxVKR2VyNeyI=;
+        b=ftU2e2RdnDVfMD3FFMtiZay9w1igiZJvdLHjDzCZh2mDV2QjnqogxSUgA6/k6VGMhq
+         EeCSYBef2LnimoHeQ5Lqv4gF/OkvVzBkDiQP1lux4TIzjYdg/cyozutpMmCBOA5zHA8O
+         tpjXilUIrGqCYS6rPg1dfCtvezEQ4qRhoS1Pg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693210580; x=1693815380;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hD5oyc91zexss8iplnmDih5E3tUKOUqVxVKR2VyNeyI=;
+        b=UNbWoKEO1Wx8veiLkZzLkDi/VKDTpIhfDjR4lFhOgFoblKh2cuwwBKbcl39Gh8SxI8
+         lIoLGL8VyzlB5FLUFanOk/TLuloZNVdNPbTbUdH946AvcDf6wSHwUn7AIdCmYe69N457
+         HoaHZle0vDzJZx6z40yN5ce5oIXZbVu4wHfSorU+nLxZYiBKNWzYO6uAEDXrsfMSIGtk
+         XgEKuXGnmLiR5QMZyy1dqK/kCtxQygUdq0PbVvd7zRSFkDS6n+PofOSWktVEqqaMM6l/
+         BovIBcdwRyRPFM+qYEam7BsJx3QcrfasoT3tYU3PK2NAV5YxiKM4niyWs5biIIp8pNnV
+         oReA==
+X-Gm-Message-State: AOJu0Yxny8JlbnTUxftAtYRUOfF43DV93fPqZOKM5Q7Bn3BQxjTyVtMI
+        JgebbZz1A63uw06GyUBTOj/5iQ==
+X-Google-Smtp-Source: AGHT+IHBCRkOdvz3bICLpxgNzt2TpU53Ks2o85GsbfP1PoYC+pS6KkoDT91ML3hyAlpG+R91OrKFyw==
+X-Received: by 2002:a17:903:4c5:b0:1bd:ec9e:59fe with SMTP id jm5-20020a17090304c500b001bdec9e59femr23569151plb.68.1693210579906;
+        Mon, 28 Aug 2023 01:16:19 -0700 (PDT)
+Received: from datalore.c.googlers.com.com (148.175.199.104.bc.googleusercontent.com. [104.199.175.148])
+        by smtp.gmail.com with ESMTPSA id jh12-20020a170903328c00b001bf5c12e9fesm6676568plb.125.2023.08.28.01.16.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 01:16:19 -0700 (PDT)
+From:   Brandon Pollack <brpol@chromium.org>
+To:     marius.vlad@collabora.com, jshargo@chromium.org
+Cc:     corbet@lwn.net, dri-devel@lists.freedesktop.org,
+        hamohammed.sa@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mairacanal@riseup.net,
+        melissa.srw@gmail.com, mripard@kernel.org,
+        rodrigosiqueiramelo@gmail.com, tzimmermann@suse.de,
+        airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mduggan@chromium.org,
+        hirono@chromium.org, Brandon Pollack <brpol@chromium.org>
+Subject: [v5,0/7] Adds support for ConfigFS to VKMS!
+Date:   Mon, 28 Aug 2023 08:14:42 +0000
+Message-ID: <20230828081609.3572937-1-brpol@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Aug 2023, Guru Das Srinagesh <quic_gurus@quicinc.com> wrote:
-> This script runs get_maintainer.py on a given patch file (or multiple
-> patch files) and adds its output to the patch file in place with the
-> appropriate email headers "To: " or "Cc: " as the case may be. These new
-> headers are added after the "From: " line in the patch.
+Since Jim is busy with other work and I'm working on some things that
+rely on this, I've taken up the task of doing the iterations.  I've
+addressed the comments as best I can (those replies are to each
+individual change) and here is the patch set to go with those.
 
-FWIW, I personally prefer tooling to operate on git branches and commits
-than patches. For me, the patches are just an intermediate step in
-getting the commits from my git branch to the mailing list. That's not
-where I add the Cc's, but rather in the commits in my local branch,
-where they're preserved. YMMV.
+I added my own signoff to each commit, but I've left jshargo@ as the
+author of all the commits he wrote.  I'm sure there is still more to
+address and the ICT tests that were writtein parallel to this may also
+need some additions, but I'm hoping we're in a good enough state to get
+this in and iterate from there soon.
 
-BR,
-Jani.
+Since V5:
+========
+Fixed some bad merge conflicts and locking behaviours as well as
+clarified some documentation, should be good to go now :)
 
+Since V4:
+========
+Fixed up some documentation as suggested by Marius
+Fixed up some bad locking as suggested by Marius
+Small fixes here and there (most have email responses to previous chain
+emails)
 
->
-> Currently, for a single patch, maintainers and reviewers are added as
-> "To: ", mailing lists and all other roles are added as "Cc: ".
->
-> For a series of patches, however, a set-union scheme is employed in
-> order to solve the all-too-common problem of ending up sending only
-> subsets of a patch series to some lists, which results in important
-> pieces of context such as the cover letter (or other patches in the
-> series) being dropped from those lists. This scheme is as follows:
->
-> - Create set-union of all maintainers and reviewers from all patches and
->   use this to do the following per patch:
->   - add only that specific patch's maintainers and reviewers as "To: "
->   - add the other maintainers and reviewers from the other patches as "Cc: "
->
-> - Create set-union of all mailing lists corresponding to all patches and
->   add this to all patches as "Cc: "
->
-> - Create set-union of all other roles corresponding to all patches and
->   add this to all patches as "Cc: "
->
-> Please note that patch files that don't have any "Maintainer"s or
-> "Reviewers" explicitly listed in their `get_maintainer.pl` output will
-> not have any "To: " entries added to them; developers are expected to
-> manually make edits to the added entries in such cases to convert some
-> "Cc: " entries to "To: " as desired.
->
-> The script is quiet by default (only prints errors) and its verbosity
-> can be adjusted via an optional parameter.
->
-> Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
-> ---
->  MAINTAINERS               |   5 ++
->  scripts/add-maintainer.py | 164 ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 169 insertions(+)
->  create mode 100755 scripts/add-maintainer.py
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0903d87b17cb..b670e9733f03 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8721,6 +8721,11 @@ M:	Joe Perches <joe@perches.com>
->  S:	Maintained
->  F:	scripts/get_maintainer.pl
->  
-> +ADD MAINTAINER SCRIPT
-> +M:	Guru Das Srinagesh <quic_gurus@quicinc.com>
-> +S:	Maintained
-> +F:	scripts/add-maintainer.py
-> +
->  GFS2 FILE SYSTEM
->  M:	Bob Peterson <rpeterso@redhat.com>
->  M:	Andreas Gruenbacher <agruenba@redhat.com>
-> diff --git a/scripts/add-maintainer.py b/scripts/add-maintainer.py
-> new file mode 100755
-> index 000000000000..5a5cc9482b06
-> --- /dev/null
-> +++ b/scripts/add-maintainer.py
-> @@ -0,0 +1,164 @@
-> +#! /usr/bin/env python3
-> +
-> +import argparse
-> +import logging
-> +import os
-> +import sys
-> +import subprocess
-> +import re
-> +
-> +def gather_maintainers_of_file(patch_file):
-> +    all_entities_of_patch = dict()
-> +
-> +    # Run get_maintainer.pl on patch file
-> +    logging.info("GET: Patch: {}".format(os.path.basename(patch_file)))
-> +    cmd = ['scripts/get_maintainer.pl']
-> +    cmd.extend([patch_file])
-> +
-> +    try:
-> +        p = subprocess.run(cmd, stdout=subprocess.PIPE, check=True)
-> +    except:
-> +        sys.exit(1)
-> +
-> +    logging.debug("\n{}".format(p.stdout.decode()))
-> +
-> +    entries = p.stdout.decode().splitlines()
-> +
-> +    maintainers = []
-> +    lists = []
-> +    others = []
-> +
-> +    for entry in entries:
-> +        entity = entry.split('(')[0].strip()
-> +        if any(role in entry for role in ["maintainer", "reviewer"]):
-> +            maintainers.append(entity)
-> +        elif "list" in entry:
-> +            lists.append(entity)
-> +        else:
-> +            others.append(entity)
-> +
-> +    all_entities_of_patch["maintainers"] = set(maintainers)
-> +    all_entities_of_patch["lists"] = set(lists)
-> +    all_entities_of_patch["others"] = set(others)
-> +
-> +    return all_entities_of_patch
-> +
-> +def find_pattern_in_lines(pattern, lines):
-> +    index = 0
-> +    for line in lines:
-> +        if re.search(pattern, line):
-> +            break;
-> +        index = index + 1
-> +
-> +    if index == len(lines):
-> +        logging.error("Couldn't find pattern {} in patch".format(pattern))
-> +        sys.exit(1)
-> +
-> +    return index
-> +
-> +def add_maintainers_to_file(patch_file, entities_per_file, all_entities_union):
-> +    logging.info("ADD: Patch: {}".format(os.path.basename(patch_file)))
-> +
-> +    # For each patch:
-> +    # - Add all lists from all patches in series as Cc:
-> +    # - Add all others from all patches in series as Cc:
-> +    # - Add only maintainers of that patch as To:
-> +    # - Add maintainers of other patches in series as Cc:
-> +
-> +    lists = list(all_entities_union["all_lists"])
-> +    others = list(all_entities_union["all_others"])
-> +    file_maintainers = all_entities_union["all_maintainers"].intersection(entities_per_file[os.path.basename(patch_file)].get("maintainers"))
-> +    other_maintainers = all_entities_union["all_maintainers"].difference(entities_per_file[os.path.basename(patch_file)].get("maintainers"))
-> +
-> +    # Specify email headers appropriately
-> +    cc_lists        = ["Cc: " + l for l in lists]
-> +    cc_others       = ["Cc: " + o for o in others]
-> +    to_maintainers  = ["To: " + m for m in file_maintainers]
-> +    cc_maintainers  = ["Cc: " + om for om in other_maintainers]
-> +    logging.debug("Cc Lists:\n{}".format('\n'.join(cc_lists)))
-> +    logging.debug("Cc Others:\n{}".format('\n'.join(cc_others)))
-> +    logging.debug("Cc Maintainers:\n{}".format('\n'.join(cc_maintainers) or None))
-> +    logging.debug("To Maintainers:\n{}\n".format('\n'.join(to_maintainers) or None))
-> +
-> +    # Edit patch file in place to add maintainers
-> +    with open(patch_file, "r") as pf:
-> +        lines = pf.readlines()
-> +
-> +    # Get the index of the first "From: <email address>" line in patch
-> +    from_line = find_pattern_in_lines("^(From: )(.*)<(.*)@(.*)>", lines)
-> +
-> +    # Insert our To: and Cc: headers after it.
-> +    next_line_after_from = from_line + 1
-> +
-> +    for l in cc_lists:
-> +        lines.insert(next_line_after_from, l + "\n")
-> +    for o in cc_others:
-> +        lines.insert(next_line_after_from, o + "\n")
-> +    for om in cc_maintainers:
-> +        lines.insert(next_line_after_from, om + "\n")
-> +    for m in to_maintainers:
-> +        lines.insert(next_line_after_from, m + "\n")
-> +
-> +    with open(patch_file, "w") as pf:
-> +        pf.writelines(lines)
-> +
-> +def add_maintainers(patch_files):
-> +    entities_per_file = dict()
-> +
-> +    for patch in patch_files:
-> +        entities_per_file[os.path.basename(patch)] = gather_maintainers_of_file(patch)
-> +
-> +    all_entities_union = {"all_maintainers": set(), "all_lists": set(), "all_others": set()}
-> +    for patch in patch_files:
-> +        all_entities_union["all_maintainers"] = all_entities_union["all_maintainers"].union(entities_per_file[os.path.basename(patch)].get("maintainers"))
-> +        all_entities_union["all_lists"] = all_entities_union["all_lists"].union(entities_per_file[os.path.basename(patch)].get("lists"))
-> +        all_entities_union["all_others"] = all_entities_union["all_others"].union(entities_per_file[os.path.basename(patch)].get("others"))
-> +
-> +    for patch in patch_files:
-> +        add_maintainers_to_file(patch, entities_per_file, all_entities_union)
-> +
-> +    logging.info("Maintainers added to all patch files successfully")
-> +
-> +def remove_to_cc_from_header(patch_files):
-> +    for patch in patch_files:
-> +        logging.info("UNDO: Patch: {}".format(os.path.basename(patch)))
-> +        with open(patch, "r") as pf:
-> +            lines = pf.readlines()
-> +
-> +        # Get the index of the first "From: <email address>" line in patch
-> +        from_line = find_pattern_in_lines("^(From: )(.*)<(.*)@(.*)>", lines)
-> +
-> +        # Get the index of the first "Date: " line in patch
-> +        date_line = find_pattern_in_lines("^(Date: )", lines)
-> +
-> +        # Delete everything in between From: and Date:
-> +        # These are the lines that this script adds - any To: or Cc: anywhere
-> +        # else in the patch will not be removed.
-> +        del lines[(from_line + 1):date_line]
-> +
-> +        with open(patch, "w") as pf:
-> +            pf.writelines(lines)
-> +
-> +    logging.info("Maintainers removed from all patch files successfully")
-> +
-> +def main():
-> +    parser = argparse.ArgumentParser(description='Add the respective maintainers and mailing lists to patch files')
-> +    parser.add_argument('patches', nargs='+', help="One or more patch files")
-> +    parser.add_argument('-v', '--verbosity', choices=['debug', 'info', 'error'], default='error', help="Verbosity level of script output")
-> +    parser.add_argument('-u', '--undo', action='store_true', help="Remove maintainers added by this script from patch(es)")
-> +    args = parser.parse_args()
-> +
-> +    logging.basicConfig(level=args.verbosity.upper(), format='%(levelname)s: %(message)s')
-> +
-> +    for patch in args.patches:
-> +        if not os.path.isfile(patch):
-> +            logging.error("File does not exist: {}".format(patch))
-> +            sys.exit(1)
-> +
-> +    if args.undo:
-> +        remove_to_cc_from_header(args.patches)
-> +    else:
-> +        add_maintainers(args.patches)
-> +
-> +if __name__ == "__main__":
-> +    main()
+Since V3:
+========
+I've added hotplug support in the latest patch.  This has been reviewed some
+and the notes from that review are addressed here as well.
+
+Relevant/Utilizing work:
+=======================
+I've built a while test framework based on this as proof it functions (though
+I'm sure there may be lingering bugs!).  You can check that out on
+crrev.com if you are interested and need to get started yourself (but be
+aware of any licensing that may differ from the kernel itself!  Make
+sure you understand the license:
+
+https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/platform/tast-tests/LICENSE
+
+That said, you can see the changes in review on the crrev gerrit:
+
+https://chromium-review.googlesource.com/c/chromiumos/platform/tast-tests/+/4666669
+
+Outro:
+=====
+I really appreciate everyone's input and tolerance in getting these
+changes in.  Jim's first patch series was this, and other than some
+small cleanups and documentation, taking over it is also mine.
+
+Thank you everyone :)
+
+Brandon Pollack (1):
+  drm/vkms Add hotplug support via configfs to VKMS.
+
+Jim Shargo (6):
+  drm/vkms: Back VKMS with DRM memory management instead of static
+    objects
+  drm/vkms: Support multiple DRM objects (crtcs, etc.) per VKMS device
+  drm/vkms: Provide platform data when creating VKMS devices
+  drm/vkms: Add ConfigFS scaffolding to VKMS
+  drm/vkms: Support enabling ConfigFS devices
+  drm/vkms: Add a module param to enable/disable the default device
+
+ Documentation/gpu/vkms.rst            |  20 +-
+ drivers/gpu/drm/Kconfig               |   1 +
+ drivers/gpu/drm/vkms/Makefile         |   1 +
+ drivers/gpu/drm/vkms/vkms_composer.c  |  30 +-
+ drivers/gpu/drm/vkms/vkms_configfs.c  | 721 ++++++++++++++++++++++++++
+ drivers/gpu/drm/vkms/vkms_crtc.c      | 102 ++--
+ drivers/gpu/drm/vkms/vkms_drv.c       | 206 +++++---
+ drivers/gpu/drm/vkms/vkms_drv.h       | 182 +++++--
+ drivers/gpu/drm/vkms/vkms_output.c    | 405 +++++++++++++--
+ drivers/gpu/drm/vkms/vkms_plane.c     |  44 +-
+ drivers/gpu/drm/vkms/vkms_writeback.c |  31 +-
+ 11 files changed, 1508 insertions(+), 235 deletions(-)
+ create mode 100644 drivers/gpu/drm/vkms/vkms_configfs.c
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.42.0.rc1.204.g551eb34607-goog
+
