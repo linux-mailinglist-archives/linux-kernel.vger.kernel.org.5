@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 420E778A46A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5465F78A46F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjH1CFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
+        id S230053AbjH1CFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjH1CE5 (ORCPT
+        with ESMTP id S229738AbjH1CE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:04:57 -0400
+        Sun, 27 Aug 2023 22:04:58 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31661DA;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5278123;
         Sun, 27 Aug 2023 19:04:55 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RYv5H3Lb1z4f3lVZ;
-        Mon, 28 Aug 2023 10:04:51 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S21;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RYv5J4tRqz4f3kp5;
         Mon, 28 Aug 2023 10:04:52 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S22;
+        Mon, 28 Aug 2023 10:04:53 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
         song@kernel.org, xni@redhat.com
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v2 17/28] md/raid5: replace suspend with quiesce() callback
-Date:   Mon, 28 Aug 2023 10:00:10 +0800
-Message-Id: <20230828020021.2489641-18-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v2 18/28] md: quiesce before md_kick_rdev_from_array() for md-cluster
+Date:   Mon, 28 Aug 2023 10:00:11 +0800
+Message-Id: <20230828020021.2489641-19-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 References: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S21
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFykZr18Cry7tr1kGFWfZrb_yoW5Xr4Dpw
-        s0gFsrXr4UWF9xu34DZa1kWFyrK3yUKrWkKryxW39Yva47Gr4kurWfJw45ZFy7G34FyFs7
-        t3y5J34kZFWvqrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S22
+X-Coremail-Antispam: 1UD129KBjvJXoWxAry5uF13ZrWruryfGw1rWFg_yoW5WrWkpa
+        y2gFyYgr4DXry3Jw13G3s8Ga45tr10krZ2y34xCa4Yy3W3Krs8C3WrWa45trZrAFyYyF1a
+        va15G3yDW3WxuFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -66,76 +66,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-raid5 is the only personality to suspend array in check_reshape() and
-start_reshape() callback, suspend and quiesce() callback can both wait
-for all normal io to be done, and prevent new io to be dispatched, the
-difference is that suspend is implemented in common layer, and quiesce()
-callback is implemented in raid5.
+md_kick_rdev_from_array() can be called from md_check_recovery() and
+md_reload_sb() for md-cluster, it's very complicated to use new apis to
+suspend the array before holding 'reconfig_mutex' in this case.
 
-In order to cleanup all the usage of mddev_suspend(), the new apis
-__mddev_suspend() need to be called before 'reconfig_mutex' is held,
-and it's not good to affect all the personalities in common layer just
-for raid5. Hence replace suspend with quiesce() callaback, prepare to
-reomove all the users of mddev_suspend().
+Fortunately, md-cluster is only supported for raid1 and raid10, and they
+both impelement quiesce() callback that is safe to be called from daemon
+thread. Hence use quiesce() callback to prevent io concurrent with
+removing rdev from the array.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid5.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/md/md.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index e6b8c0145648..d6de084a85e5 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -70,6 +70,8 @@ MODULE_PARM_DESC(devices_handle_discard_safely,
- 		 "Set to Y if all devices in each array reliably return zeroes on reads from discarded regions");
- static struct workqueue_struct *raid5_wq;
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index a3bc4968fa0f..3343767882bb 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -9609,6 +9609,21 @@ void md_check_recovery(struct mddev *mddev)
  
-+static void raid5_quiesce(struct mddev *mddev, int quiesce);
+ 		if (mddev_is_clustered(mddev)) {
+ 			struct md_rdev *rdev, *tmp;
++			bool suspended = false;
 +
- static inline struct hlist_head *stripe_hash(struct r5conf *conf, sector_t sect)
++			/*
++			 * md-cluster is used for raid1/raid10, and they both
++			 * implement quiesce() callback that is safe to be
++			 * called from daemon thread.
++			 */
++			rdev_for_each(rdev, mddev)
++				if (test_bit(ClusterRemove, &rdev->flags) &&
++				    rdev->raid_disk < 0) {
++					mddev->pers->quiesce(mddev, true);
++					suspended = true;
++					break;
++				}
++
+ 			/* kick the device if another node issued a
+ 			 * remove disk.
+ 			 */
+@@ -9617,6 +9632,9 @@ void md_check_recovery(struct mddev *mddev)
+ 						rdev->raid_disk < 0)
+ 					md_kick_rdev_from_array(rdev);
+ 			}
++
++			if (suspended)
++				mddev->pers->quiesce(mddev, false);
+ 		}
+ 
+ 		if (try_set_sync && !mddev->external && !mddev->in_sync) {
+@@ -9904,6 +9922,7 @@ static void check_sb_changes(struct mddev *mddev, struct md_rdev *rdev)
  {
- 	int hash = (sect >> RAID5_STRIPE_SHIFT(conf)) & HASH_MASK;
-@@ -2492,15 +2494,12 @@ static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
- 	unsigned long cpu;
- 	int err = 0;
+ 	struct mdp_superblock_1 *sb = page_address(rdev->sb_page);
+ 	struct md_rdev *rdev2, *tmp;
++	bool suspended = false;
+ 	int role, ret;
  
--	/*
--	 * Never shrink. And mddev_suspend() could deadlock if this is called
--	 * from raid5d. In that case, scribble_disks and scribble_sectors
--	 * should equal to new_disks and new_sectors
--	 */
-+	/* Never shrink. */
- 	if (conf->scribble_disks >= new_disks &&
- 	    conf->scribble_sectors >= new_sectors)
- 		return 0;
--	mddev_suspend(conf->mddev);
-+
-+	raid5_quiesce(conf->mddev, true);
- 	cpus_read_lock();
- 
- 	for_each_present_cpu(cpu) {
-@@ -2514,7 +2513,8 @@ static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
+ 	/*
+@@ -9918,6 +9937,22 @@ static void check_sb_changes(struct mddev *mddev, struct md_rdev *rdev)
+ 			md_bitmap_update_sb(mddev->bitmap);
  	}
  
- 	cpus_read_unlock();
--	mddev_resume(conf->mddev);
-+	raid5_quiesce(conf->mddev, false);
++	/*
++	 * md-cluster is used for raid1/raid10, and they both
++	 * implement quiesce() callback.
++	 */
++	rdev_for_each(rdev2, mddev) {
++		if (test_bit(Faulty, &rdev2->flags))
++			continue;
++		role = le16_to_cpu(sb->dev_roles[rdev2->desc_nr]);
++		if (test_bit(Candidate, &rdev2->flags) &&
++		    role == MD_DISK_ROLE_FAULTY) {
++			mddev->pers->quiesce(mddev, true);
++			suspended = true;
++			break;
++		}
++	}
 +
- 	if (!err) {
- 		conf->scribble_disks = new_disks;
- 		conf->scribble_sectors = new_sectors;
-@@ -8551,8 +8551,8 @@ static int raid5_start_reshape(struct mddev *mddev)
- 	 * the reshape wasn't running - like Discard or Read - have
- 	 * completed.
- 	 */
--	mddev_suspend(mddev);
--	mddev_resume(mddev);
-+	raid5_quiesce(mddev, true);
-+	raid5_quiesce(mddev, false);
+ 	/* Check for change of roles in the active devices */
+ 	rdev_for_each_safe(rdev2, tmp, mddev) {
+ 		if (test_bit(Faulty, &rdev2->flags))
+@@ -9966,6 +10001,9 @@ static void check_sb_changes(struct mddev *mddev, struct md_rdev *rdev)
+ 		}
+ 	}
  
- 	/* Add some new drives, as many as will fit.
- 	 * We know there are enough to make the newly sized array work.
++	if (suspended)
++		mddev->pers->quiesce(mddev, false);
++
+ 	if (mddev->raid_disks != le32_to_cpu(sb->raid_disks)) {
+ 		ret = update_raid_disks(mddev, le32_to_cpu(sb->raid_disks));
+ 		if (ret)
 -- 
 2.39.2
 
