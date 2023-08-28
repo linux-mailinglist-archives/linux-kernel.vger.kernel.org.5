@@ -2,206 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5831478B1C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C41278B125
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 14:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjH1NZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
+        id S231517AbjH1Mzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 08:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjH1NZZ (ORCPT
+        with ESMTP id S230335AbjH1MzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:25:25 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58BB124;
-        Mon, 28 Aug 2023 06:25:22 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SD7ZtI020130;
-        Mon, 28 Aug 2023 13:25:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=wZAjz4E7MEsOdY9HI/dOJ+RW62+KtVSEo0RkQ75UebY=;
- b=j57/lF8Tv/JQoGxZJbvUxl10p0Xb5f8VCO0TiRk7M1PQMDfjQ0cxapz41311fD0wE3Un
- PNhaNLFa37E+z3It2xCVmALxS8UE8r/Wi+y9CdWRWP8t6S24rZuOykknheS54/oj27bU
- StULUfSvmriA7hto3K2NfhzT4ewyoHbyrp6aIR4XD+RsZR3gHTyM7lFkfYEnltXKvJuE
- 1CpWo4rcmXmvSzS98LCShtu4iZYK+46ZdYFoVmXFZbG+zoP4TxMmG2/sCqH7y/O25xpA
- G6aGLQlcmgGISoTVDV76D8uWxVF3nzEsPN+7MganAfETKyzAwqdezgEf16onOKco2P0k jA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sradxwc4g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:25:17 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37SD8Do7024092;
-        Mon, 28 Aug 2023 13:25:17 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sradxwc17-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:25:16 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37SC0A4o020504;
-        Mon, 28 Aug 2023 12:55:01 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqv3y2xqr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 12:55:01 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37SCt0mH52691204
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Aug 2023 12:55:01 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9B0F558056;
-        Mon, 28 Aug 2023 12:55:00 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E000C5805A;
-        Mon, 28 Aug 2023 12:54:57 +0000 (GMT)
-Received: from [9.171.1.65] (unknown [9.171.1.65])
-        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Aug 2023 12:54:57 +0000 (GMT)
-Message-ID: <2dbf25a0-05a6-d899-3351-598e952a927d@linux.ibm.com>
-Date:   Mon, 28 Aug 2023 14:54:57 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v2 net-next 4/6] net/smc: support max connections per
- lgr negotiation
-To:     Guangguan Wang <guangguan.wang@linux.alibaba.com>,
-        jaka@linux.ibm.com, kgraul@linux.ibm.com, tonylu@linux.alibaba.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     horms@kernel.org, alibuda@linux.alibaba.com,
-        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230807062720.20555-1-guangguan.wang@linux.alibaba.com>
- <20230807062720.20555-5-guangguan.wang@linux.alibaba.com>
- <a7ed9f2d-5c50-b37f-07d4-088ceef6aeac@linux.ibm.com>
- <9f4292c4-4004-b73b-1079-41ce7b1a5750@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <9f4292c4-4004-b73b-1079-41ce7b1a5750@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dxp3Odo9LCCf7KpDDX-UWtNUORvU9bcv
-X-Proofpoint-ORIG-GUID: BrccTP5sTCCSuVjWTMmG94m7cO4vtnb8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 28 Aug 2023 08:55:23 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E505C3;
+        Mon, 28 Aug 2023 05:55:19 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-57328758a72so864615eaf.1;
+        Mon, 28 Aug 2023 05:55:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693227318; x=1693832118;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m38t+6ENHSM7sxq7lBG7ajN0dx0/1nAUuWaIrnX+J0s=;
+        b=H7IoMFL2SvlnyOgR80St5WGm6iHO/KI7bbo/842+A5Z2O+WFnKaHQ3OtLn5poRxArr
+         JKAoyvfTCo05ULqKqll0tYM/vjfg2afiz7Oikr/+xOe44mNVechT2K3Sbwb9A96tuR9k
+         FaTfEOQQK9v8UDjD8JZDSs9cg/vzJLOQDLuUTg5KJ/y0OussdQVQQXd9PAmwK1Ww18MG
+         teKUJwhn+snX6T7e2i1+UovELqYST83SHZy5D1cPUOrH2b0zpXtCdRUiRTWZPbZksLvB
+         I30+qATOaiHW83DFDlrw7Wl30uuGD79Nb7cqxUeuRXMWFkEqPqQVew+X4Vr0phYONodz
+         VAXA==
+X-Gm-Message-State: AOJu0YwpYiN3GuInM68wBkhpIlyjORzngozHhEa9rvO7BsLziExocXxP
+        9C1Fgl1E80PojJved0ktRks5CYzTdBDiXggJJ0SZVdcYjKY=
+X-Google-Smtp-Source: AGHT+IEbzDvsKN7NxRk6ArW8L89mABVQymOMbOmA8WutwQKDSp7CMy6s79khs/kh12Ky8UX2gDSuQb4MEy0pJQQfwkI=
+X-Received: by 2002:a4a:d137:0:b0:571:1906:47f0 with SMTP id
+ n23-20020a4ad137000000b00571190647f0mr13795453oor.1.1693227318607; Mon, 28
+ Aug 2023 05:55:18 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_09,2023-08-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 clxscore=1011
- suspectscore=0 malwarescore=0 mlxscore=0 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280114
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 28 Aug 2023 14:55:04 +0200
+Message-ID: <CAJZ5v0hsVwQ+F1NN5OfY7HG7tPcbcZi_X2SdgWXfF9ExW6r3hg@mail.gmail.com>
+Subject: [GIT PULL] ACPI updates for v6.6-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-6.6-rc1
+
+with top-most commit b483d3b8a54a544ab8854ca6dbb8d99c423b3ba4
+
+ Merge branch 'pnp'
+
+on top of commit 93f5de5f648d2b1ce3540a4ac71756d4a852dc23
+
+ Merge tag 'acpi-6.5-rc8' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive ACPI updates for 6.6-rc1.
+
+These include new ACPICA material, a rework of the ACPI thermal driver,
+a switch-over of the ACPI processor driver to using _OSC instead of
+(long deprecated) _PDC for CPU initialization, a rework of firmware
+notifications handling in several drivers, fixes and cleanups for
+suspend-to-idle handling on AMD systems, ACPI backlight driver
+updates and more.
+
+Specifics:
+
+ - Update the ACPICA code in the kernel to upstream revision 20230628
+   including the following changes:
+   * Suppress a GCC 12 dangling-pointer warning (Philip Prindeville).
+   * Reformat the ACPI_STATE_COMMON macro and its users (George Guo).
+   * Replace the ternary operator with ACPI_MIN() (Jiangshan Yi).
+   * Add support for _DSC as per ACPI 6.5 (Saket Dumbre).
+   * Remove a duplicate macro from zephyr header (Najumon B.A).
+   * Add data structures for GED and _EVT tracking (Jose Marinho).
+   * Fix misspelled CDAT DSMAS define (Dave Jiang).
+   * Simplify an error message in acpi_ds_result_push() (Christophe
+     Jaillet).
+   * Add a struct size macro related to SRAT (Dave Jiang).
+   * Add AML_NO_OPERAND_RESOLVE flag to Timer (Abhishek Mainkar).
+   * Add support for RISC-V external interrupt controllers in MADT (Sunil
+     V L).
+   * Add RHCT flags, CMO and MMU nodes (Sunil V L).
+   * Change ACPICA version to 20230628 (Bob Moore).
+
+ - Introduce new wrappers for ACPICA notify handler install/remove and
+   convert multiple drivers to using their own Notify() handlers instead
+   of the ACPI bus type .notify() slated for removal (Michal Wilczynski).
+
+ - Add backlight=native DMI quirk for Apple iMac12,1 and iMac12,2 (Hans
+   de Goede).
+
+ - Put ACPI video and its child devices explicitly into D0 on boot to
+   avoid platform firmware confusion (Kai-Heng Feng).
+
+ - Add backlight=native DMI quirk for Lenovo Ideapad Z470 (Jiri Slaby).
+
+ - Support obtaining physical CPU ID from MADT on LoongArch (Bibo Mao).
+
+ - Convert ACPI CPU initialization to using _OSC instead of _PDC that
+   has been deprecated since 2018 and dropped from the specification in
+   ACPI 6.5 (Michal Wilczynski, Rafael Wysocki).
+
+ - Drop non-functional nocrt parameter from ACPI thermal (Mario
+   Limonciello).
+
+ - Clean up the ACPI thermal driver, rework the handling of firmware
+   notifications in it and make it provide a table of generic trip point
+   structures to the core during initialization (Rafael Wysocki).
+
+ - Defer enumeration of devices with _DEP pointing to IVSC (Wentong Wu).
+
+ - Install SystemCMOS address space handler for ACPI000E (TAD) to meet
+   platform firmware expectations on some platforms (Zhang Rui).
+
+ - Fix finding the generic error data in the ACPi extlog driver for
+   compatibility with old and new firmware interface versions (Xiaochun
+   Lee).
+
+ - Remove assorted unused declarations of functions (Yue Haibing).
+
+ - Move AMBA bus scan handling into arm64 specific directory (Sudeep
+   Holla).
+
+ - Fix and clean up suspend-to-idle interface for AMD systems (Mario
+   Limonciello, Andy Shevchenko).
+
+ - Fix string truncation warning in pnpacpi_add_device() (Sunil V L).
+
+Thanks!
 
 
-On 15.08.23 08:31, Guangguan Wang wrote:
-> 
-> 
-> On 2023/8/10 00:04, Wenjia Zhang wrote:
->>
->>
->> On 07.08.23 08:27, Guangguan Wang wrote:
->>> Support max connections per lgr negotiation for SMCR v2.1,
->>> which is one of smc v2.1 features.
-> ...
->>> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
->>> index 6aa3db47a956..5de1fbaa6e28 100644
->>> --- a/net/smc/smc_core.c
->>> +++ b/net/smc/smc_core.c
->>> @@ -895,9 +895,11 @@ static int smc_lgr_create(struct smc_sock *smc, struct smc_init_info *ini)
->>>                lgr->uses_gateway = ini->smcrv2.uses_gateway;
->>>                memcpy(lgr->nexthop_mac, ini->smcrv2.nexthop_mac,
->>>                       ETH_ALEN);
->>> +            lgr->max_conns = ini->max_conns;
->>>            } else {
->>>                ibdev = ini->ib_dev;
->>>                ibport = ini->ib_port;
->>> +            lgr->max_conns = SMC_RMBS_PER_LGR_MAX;
->>
->>
->> It is kind of confused sometimes SMC_RMBS_PER_LGR_MAX is used and sometimes SMC_CONN_PER_LGR_MAX. IMO, you can use SMC_CONN_PER_LGR_MAX in the patches series for the new feature, because they are the same value and the name is more suiable.
-> 
-> OK, I will re-define the macros like this:
-> #define SMC_CONN_PER_LGR_MAX 255
-> #define SMC_CONN_PER_LGR_MIN 16
-> #define SMC_CONN_PER_LGR_PREFER 255 //vendors or distrubutions can modify this to a value between 16-255 as needed.
-> 
-> ...
->>> @@ -472,6 +473,9 @@ int smc_llc_send_confirm_link(struct smc_link *link,
->>>        confllc->link_num = link->link_id;
->>>        memcpy(confllc->link_uid, link->link_uid, SMC_LGR_ID_SIZE);
->>>        confllc->max_links = SMC_LLC_ADD_LNK_MAX_LINKS;
->>> +    if (link->lgr->smc_version == SMC_V2 &&
->>> +        link->lgr->peer_smc_release >= SMC_RELEASE_1)
->>> +        confllc->max_conns = link->lgr->max_conns;
->>>        /* send llc message */
->>>        rc = smc_wr_tx_send(link, pend);
->>>    put_out:
->>
->> Did I miss the negotiation process somewhere for the following scenario?
->> (Example 4 in the document)
->> Client                 Server
->>      Proposal(max conns(16))
->>      ----------------------->
->>
->>      Accept(max conns(32))
->>      <-----------------------
->>
->>      Confirm(max conns(32))
->>      ----------------------->
-> 
-> Did you mean the accepted max conns is different(not 32) from the Example 4 when the proposal max conns is 16?
-> 
-> As described in (https://www.ibm.com/support/pages/node/7009315) page 41:
-> ...
-> 2. Max conns and max links values sent in the CLC Proposal are the client preferred values.
-> 3. The v2.1 values sent in the Accept message are the final values. The client must accept the values or
-> DECLINE the connection.
-> 4. Max conns and links values sent in the CLC Accept are the final values (server dictates). The server can
-> either honor the client’s preferred values or return different (negotiated but final) values.
-> ...
-> 
-> If I understand correctly, the server dictates the final value of max conns, but how the server dictates the final
-> value of max conns is not defined in SMC v2.1. In this patch, the server use the minimum value of client preferred
-> value and server preferred value as the final value of max conns. The max links is negotiated with the same logic.
-> 
-> Client                 Server
->       Proposal(max conns(client preferred))
->       ----------------------->
->   
->       Accept(max conns(accepted value)) accepted value=min(client preferred, server preferred)
->       <-----------------------
->   
->       Confirm(max conns(accepted value))
->       ----------------------->
-> 
-> I also will add this description into commit message for better understanding.
-> 
-> Thanks,
-> Guangguan Wang
-> 
-> 
-> 
+---------------
 
-Sorry for the late answer, I'm just back from vacation.
+Abhishek Mainkar (1):
+      ACPICA: Add AML_NO_OPERAND_RESOLVE flag to Timer
 
-That's true that the protocol does not define how the server decides the 
-final value(s). I'm wondering if there is some reason for you to use the 
-minimum value instead of maximum (corresponding to the examples in the 
-document). If the both prefered values (client's and server's) are in 
-the range of the acceptable value, why not the maximum? Is there any 
-consideration on that?
+Andy Shevchenko (1):
+      ACPI: x86: s2idle: Add for_each_lpi_constraint() helper
 
-Best,
-Wenjia
+Bibo Mao (1):
+      ACPI: processor: LoongArch: Get physical ID from MADT
 
+Bob Moore (1):
+      ACPICA: Update version to 20230628
+
+Christophe Jaillet (1):
+      ACPICA: Slightly simplify an error message in acpi_ds_result_push()
+
+Dave Jiang (2):
+      ACPICA: Fix misspelled CDAT DSMAS define
+      ACPICA: Add a define for size of struct
+acpi_srat_generic_affinity device_handle
+
+George Guo (1):
+      ACPICA: Modify ACPI_STATE_COMMON
+
+Hans de Goede (1):
+      ACPI: video: Add backlight=native DMI quirk for Apple iMac12,1
+and iMac12,2
+
+Jiangshan Yi (1):
+      ACPICA: exserial.c: replace ternary operator with ACPI_MIN()
+
+Jiri Slaby (SUSE) (1):
+      ACPI: video: Add backlight=native DMI quirk for Lenovo Ideapad Z470
+
+Jose Marinho (2):
+      ACPICA: Detect GED device and keep track of _EVT
+      ACPICA: Add interrupt command to acpiexec
+
+Kai-Heng Feng (1):
+      ACPI: video: Put ACPI video and its child devices into D0 on boot
+
+Mario Limonciello (7):
+      ACPI: thermal: Drop nocrt parameter
+      ACPI: Adjust #ifdef for *_lps0_dev use
+      ACPI: x86: s2idle: Post-increment variables when getting constraints
+      ACPI: x86: s2idle: Catch multiple ACPI_TYPE_PACKAGE objects
+      ACPI: x86: s2idle: Fix a logic error parsing AMD constraints table
+      ACPI: x86: s2idle: Add more debugging for AMD constraints parsing
+      ACPI: x86: s2idle: Add a function to get LPS0 constraint for a device
+
+Michal Wilczynski (18):
+      ACPI: processor: Move MWAIT quirk out of acpi_processor.c
+      ACPI: processor: Move processor_physically_present() to acpi_processor.c
+      ACPI: processor: Refactor arch_acpi_set_pdc_bits()
+      ACPI: processor: Rename ACPI_PDC symbols
+      ACPI: processor: Clear C_C2C3_FFH and C_C1_FFH in
+arch_acpi_set_proc_cap_bits()
+      ACPI: processor: Set CAP_SMP_T_SWCOORD in arch_acpi_set_proc_cap_bits()
+      ACPI: processor: Introduce acpi_processor_osc()
+      ACPI: bus: Introduce wrappers for ACPICA notify handler install/remove
+      ACPI: bus: Set driver_data to NULL every time .add() fails
+      ACPI: AC: Install Notify() handler directly
+      ACPI: video: Install Notify() handler directly
+      ACPI: battery: Install Notify() handler directly
+      ACPI: HED: Install Notify() handler directly
+      ACPI: NFIT: Install Notify() handler directly
+      ACPI: NFIT: Remove unnecessary .remove callback
+      ACPI: thermal: Install Notify() handler directly
+      ACPI: processor: Use _OSC to convey OSPM processor support information
+      ACPI: processor: Remove acpi_hwp_native_thermal_lvt_osc()
+
+Najumon B.A (1):
+      ACPICA: fix for conflict macro definition on zephyr interface
+
+Philip Prindeville (1):
+      ACPICA: Fix GCC 12 dangling-pointer warning
+
+Rafael J. Wysocki (15):
+      ACPI: processor: Refine messages in acpi_early_processor_control_setup()
+      ACPI: thermal: Drop enabled flag from struct acpi_thermal_active
+      ACPI: thermal: Do not attach private data to ACPI handles
+      ACPI: thermal: Drop redundant local variable from acpi_thermal_resume()
+      thermal: core: Do not handle trip points with invalid temperature
+      thermal: core: Introduce thermal_zone_device_exec()
+      thermal: core: Add priv pointer to struct thermal_trip
+      ACPI: thermal: Clean up acpi_thermal_register_thermal_zone()
+      ACPI: thermal: Carry out trip point updates under zone lock
+      ACPI: thermal: Introduce struct acpi_thermal_trip
+      thermal: core: Rework and rename __for_each_thermal_trip()
+      ACPI: thermal: Use trip point table to register thermal zones
+      ACPI: thermal: Rework thermal_get_trend()
+      ACPI: thermal: Drop unnecessary thermal zone callbacks
+      ACPI: thermal: Eliminate code duplication from acpi_thermal_notify()
+
+Saket Dumbre (1):
+      ACPICA: Add support for _DSC as per ACPI 6.5
+
+Sudeep Holla (1):
+      ACPI: Move AMBA bus scan handling into arm64 specific directory
+
+Sunil V L (3):
+      ACPICA: MADT: Add RISC-V external interrupt controllers
+      ACPICA: RHCT: Add flags, CMO and MMU nodes
+      PNP: ACPI: Fix string truncation warning
+
+Wentong Wu (1):
+      ACPI: scan: Defer enumeration of devices with a _DEP pointing to
+IVSC device
+
+Xiaochun Lee (1):
+      ACPI: extlog: Fix finding the generic error data for v3 structure
+
+Yue Haibing (1):
+      ACPI: Remove assorted unused declarations of functions
+
+YueHaibing (1):
+      ACPI: Remove unused extern declaration acpi_paddr_to_node()
+
+Zhang Rui (1):
+      ACPI: TAD: Install SystemCMOS address space handler for ACPI000E
+
+---------------
+
+ Documentation/admin-guide/kernel-parameters.txt |   4 -
+ arch/ia64/include/asm/acpi.h                    |   6 +-
+ arch/x86/include/asm/acpi.h                     |  24 +-
+ arch/x86/xen/enlighten_pv.c                     |   8 +-
+ drivers/acpi/Makefile                           |   1 -
+ drivers/acpi/ac.c                               |  27 +-
+ drivers/acpi/acpi_cmos_rtc.c                    |  25 +-
+ drivers/acpi/acpi_extlog.c                      |   2 +-
+ drivers/acpi/acpi_processor.c                   | 124 +++++--
+ drivers/acpi/acpi_tad.c                         |  27 +-
+ drivers/acpi/acpi_video.c                       |  26 +-
+ drivers/acpi/acpica/acdebug.h                   |   2 +
+ drivers/acpi/acpica/acglobal.h                  |   1 +
+ drivers/acpi/acpica/aclocal.h                   |  38 +-
+ drivers/acpi/acpica/acpredef.h                  |   3 +
+ drivers/acpi/acpica/dbcmds.c                    |  58 +++
+ drivers/acpi/acpica/dbinput.c                   |   8 +
+ drivers/acpi/acpica/dswstate.c                  |   4 +-
+ drivers/acpi/acpica/exserial.c                  |   3 +-
+ drivers/acpi/acpica/psopcode.c                  |   2 +-
+ drivers/acpi/acpica/utdebug.c                   |   5 +
+ drivers/acpi/arm64/Makefile                     |   1 +
+ drivers/acpi/{acpi_amba.c => arm64/amba.c}      |   2 +-
+ drivers/acpi/arm64/init.c                       |   2 +
+ drivers/acpi/arm64/init.h                       |   1 +
+ drivers/acpi/battery.c                          |  24 +-
+ drivers/acpi/bus.c                              |  33 +-
+ drivers/acpi/hed.c                              |  15 +-
+ drivers/acpi/internal.h                         |  16 +-
+ drivers/acpi/nfit/core.c                        |  42 ++-
+ drivers/acpi/processor_core.c                   |  29 ++
+ drivers/acpi/processor_pdc.c                    |  97 +----
+ drivers/acpi/scan.c                             |   4 +-
+ drivers/acpi/thermal.c                          | 470 +++++++++++-------------
+ drivers/acpi/video_detect.c                     |  27 ++
+ drivers/acpi/x86/s2idle.c                       |  99 +++--
+ drivers/acpi/x86/utils.c                        |  35 ++
+ drivers/pnp/pnpacpi/core.c                      |   3 +
+ drivers/thermal/thermal_core.c                  |  22 +-
+ drivers/thermal/thermal_core.h                  |   4 -
+ drivers/thermal/thermal_trip.c                  |  18 +-
+ include/acpi/acnames.h                          |   1 +
+ include/acpi/acpi_bus.h                         |  17 +-
+ include/acpi/acpixf.h                           |   4 +-
+ include/acpi/actbl1.h                           |   2 +-
+ include/acpi/actbl2.h                           |  76 +++-
+ include/acpi/actbl3.h                           |   4 +-
+ include/acpi/pdc_intel.h                        |  36 --
+ include/acpi/platform/aclinux.h                 |   1 +
+ include/acpi/platform/aczephyr.h                |   3 -
+ include/acpi/proc_cap_intel.h                   |  40 ++
+ include/linux/acpi.h                            |  12 +-
+ include/linux/thermal.h                         |   9 +
+ 53 files changed, 967 insertions(+), 580 deletions(-)
