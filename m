@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F0B78B994
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683F378B996
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbjH1Ucu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
+        id S232619AbjH1Ue0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbjH1Ucn (ORCPT
+        with ESMTP id S232463AbjH1UeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:32:43 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C2CEC;
-        Mon, 28 Aug 2023 13:32:41 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68c3b9f8333so1719794b3a.1;
-        Mon, 28 Aug 2023 13:32:41 -0700 (PDT)
+        Mon, 28 Aug 2023 16:34:17 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9933F9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:34:14 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fee87dd251so34112895e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:34:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693254761; x=1693859561; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20221208; t=1693254853; x=1693859653;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=2DctLJ0sN1rLWYEamaeYJQ0hHmAoC8BkhI/utXkH6Aw=;
-        b=VvKs3rkGARBLGEpM3G8ywEMrZHgDQuchaZOaU3WtfgG/YtD1U8NvSurQYR7DAJ1sjB
-         dhjJDgAQ74ISsXXekf13niRLAXTbtq6Xi4jZkBSanw2MllQAY1K3v5xzFievOt9wmACX
-         H0uZvTBLmHXMDwszPcNPZzflva3udr4LEiFvjH3mNJVhfvYftjnH5LAR2JH493N5PKyH
-         Nx0A2nAENsfpjVudY1uHoRhbky8qzBu4os1M654Plm1Jrf1YLTXPjjFLzxf41mYJp7Mn
-         RUXgJghzcik104Ev9RINlkZRLZpSAEFhI9jCZ6X2ibAqprJ4/adxzzIJhoCna4t0BMlf
-         DlKw==
+        bh=zKX7FapVDlly7OXp3p4aUNBvruUHEMEBI5wW/7+/lMg=;
+        b=X+xjONnChkcJz8wdNQX4pwHVG+GN1Bch1xwQzhLV9+X/Ksic6T+j1V83WE0gPn2Nz6
+         jAvd7pRPqHcTskuIZnZAXxgCIF0N9A9AGLOR/y7TEsjvRWgbSxDYY678xrJ0LEh9B1Ub
+         6/aVmvpzRKXmRcYaxh32s3JipzUm1zYCDTx2OMt1As8wEuYzODRiVBORTKApr2jpgd2j
+         iM2sIMU3JBuUXYLd938JjvJsrB24DTFsZ8BhOrWHYAdx+Q1HZCHL+lLqtuaZNi0dhOR/
+         bLw0Rk+9eFIStp6XqYP5szNRl6sTG5edOP79UJPGHGIM5pHSCwsHEw0o78y9RahaMTRl
+         BXEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693254761; x=1693859561;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693254853; x=1693859653;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2DctLJ0sN1rLWYEamaeYJQ0hHmAoC8BkhI/utXkH6Aw=;
-        b=NfsV9kog3pbQD521TXRnIO+0s/lKPlw/p+RfW8jZCQIltzqGzqI3gOndVYw9bkZYNk
-         i4NJruX0sxcwaCMtwzJlKMx0TiBTDrdqNdiqU85kYT5M8WeYWxSvmNTKJx+CS7aaynZu
-         zAwVoSd8coM0SaoiP5hvh7wt6BHyPzvgEi8mEuSunHk5eSYo7R3mbaJjacVuFg6EM6YM
-         OjJ8S3pK5MM7CENo87sDv3clEhWO7SgI2pdnpyIS0vD7RWiIBLE4UaMEuUwmgAO6avHk
-         sQV4TrLY0DP9jk7hIbANzCae3nnIPfVW3MNyY/LbfnxvcGs8Ufcfdp3huja8VkvW/pw5
-         gSIg==
-X-Gm-Message-State: AOJu0YwJwM+bDcdiHHDgjDv+dBZxozVItcq5DYRuTJ65qiFoWjuJnRJ4
-        g0e/gM6+v9LDxd+XE7z4rOhAqSZRa2c=
-X-Google-Smtp-Source: AGHT+IExS4GSW+/X8U9BFi2G0OwOd4T6jCEWg8kgMcckw/tc7P9drIQDk7DlD2SzNFGol3eWBvEbmw==
-X-Received: by 2002:a05:6a00:35c4:b0:68c:59cb:2dd9 with SMTP id dc4-20020a056a0035c400b0068c59cb2dd9mr1026403pfb.1.1693254760933;
-        Mon, 28 Aug 2023 13:32:40 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m14-20020aa78a0e000000b0062cf75a9e6bsm7092592pfa.131.2023.08.28.13.32.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 13:32:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <ef24157c-75ff-6874-d8e5-723baa2ac7ea@roeck-us.net>
-Date:   Mon, 28 Aug 2023 13:32:38 -0700
+        bh=zKX7FapVDlly7OXp3p4aUNBvruUHEMEBI5wW/7+/lMg=;
+        b=k1CypsnF9I08Sp0xYByqWPBJja267jaQNB1plSTQiyEHsB3/YjiZxSPgwPP/RMBm/Q
+         Mbd38lRIgo6lsA2HuEBbeeVHxFlXpCr+gaW59kc8FBE7OIUCplFe5Qy6MidhsIL3WJzp
+         zg203tQSyIDEOflnlZrYE87/GCUlbArNaa6LymT4EQ75CWYAJvQam6/OZt2kbx8HO69S
+         D80vfX/32N44G9ppX2BHwLT3JEgrtkQMwkiaJejx0FIOFT1Aq0FWGWzd5UePfWWrSGlf
+         aorfgyLhNMzvZE+swIx/46CwdMyOLrXydTipwmE6CDEVoFherkMGS9RcwVSNLvn6X9uD
+         W4TA==
+X-Gm-Message-State: AOJu0Ywhhk8vk+l20JuJWkjUN5rBWVOuOtjfv7GMlaL1l7PoTebYNejc
+        vPiRgYkEZbe8g4B9pnmfu4U=
+X-Google-Smtp-Source: AGHT+IHzMSyKqcobZ6JHawcb3x9LZ9ysD9/j6616V/2SfybOIdMcCmDLNwEgwb1wXOupl2x1hGFboA==
+X-Received: by 2002:a05:600c:2157:b0:3fb:b248:67c with SMTP id v23-20020a05600c215700b003fbb248067cmr21141991wml.22.1693254852848;
+        Mon, 28 Aug 2023 13:34:12 -0700 (PDT)
+Received: from gmail.com (1F2EF3C0.nat.pool.telekom.hu. [31.46.243.192])
+        by smtp.gmail.com with ESMTPSA id c26-20020a05600c0ada00b003feee8d4b92sm11679851wmr.47.2023.08.28.13.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 13:34:12 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 28 Aug 2023 22:34:10 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: [GIT PULL] locking changes for v6.6
+Message-ID: <ZO0EwqEtfg/iczDM@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4.19 000/129] 4.19.293-rc1 review
-Content-Language: en-US
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230828101153.030066927@linuxfoundation.org>
- <CADVatmPpi8pLT=MKNuPjkTP5pLHPnCKu2v2Ms98YhzXUhAvyyA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <CADVatmPpi8pLT=MKNuPjkTP5pLHPnCKu2v2Ms98YhzXUhAvyyA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 13:20, Sudip Mukherjee wrote:
-> Hi Greg,
-> 
-> On Mon, 28 Aug 2023 at 11:24, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> This is the start of the stable review cycle for the 4.19.293 release.
->> There are 129 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
->> Anything received after that time might be too late.
-> 
-> Just an initial report.
-> 
-> mips builds are failing with the error:
-> arch/mips/alchemy/common/dbdma.c:33:10: fatal error:
-> linux/dma-map-ops.h: No such file or directory
-> 33 | #include <linux/dma-map-ops.h> /* for dma_default_coherent */
-> | ^~~~~~~~~~~~~~~~~~~~~
-> 
-> arm build has failed with:
-> arch/arm/mach-ep93xx/timer-ep93xx.c:12:10: fatal error: platform.h: No
-> such file or directory
-> 12 | #include "platform.h"
-> | ^~~~~~~~~~~~
-> 
-> 
-I'd guess that the mips dma patch which fail to build in v5.10.y
-(and by extension in all older kernels) have been applied to
-those older kernels. AFAICs the problem now affects all releases
-form v4.14.y to v5.10.y.
+Linus,
 
-Guenter
+Please pull the latest locking/core git tree from:
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-core-2023-08-28
+
+   # HEAD: f66c538098b61e2eb596bb88fae90dbd2cebb378 lockdep/selftests: Use SBRM APIs for wait context tests
+
+Simplify the locking self-tests via using the new <linux/cleanup.h>
+facilities for lock guards.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Boqun Feng (1):
+      lockdep/selftests: Use SBRM APIs for wait context tests
+
+
+ lib/locking-selftest.c | 133 +++++++++++++------------------------------------
+ 1 file changed, 34 insertions(+), 99 deletions(-)
