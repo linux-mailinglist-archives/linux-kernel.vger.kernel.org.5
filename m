@@ -2,210 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C909978A3C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 03:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574C278A3CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 03:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjH1BEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 21:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
+        id S229542AbjH1BGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 21:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjH1BEN (ORCPT
+        with ESMTP id S229473AbjH1BGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 21:04:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDFCF4;
-        Sun, 27 Aug 2023 18:04:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A8D8A61A98;
-        Mon, 28 Aug 2023 01:04:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E1A1C433D9;
-        Mon, 28 Aug 2023 01:04:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693184650;
-        bh=7d6QsySf2gd+L+AO0DGE52ifXzUav4vvh3Pzbz+MguI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h9r8Xs18EEJZy6xGdnpurwAcC4dI8Zo0XkCbPLZsQfEZ8h+twtCBqTaZN+iKLUk/F
-         ZOv1YpC6wlvRCCWCXaGzPtMX/B//7KpYhatc4+ErFMHjQMEznee9wzgYHonoMV0A8b
-         hV7Cih9zxqMGSVPWJf92hQOnVHToGZzWH5KjTLGRDclwMuFLPS7gJYd3voFEElpxhY
-         wQkve6zevEN4Cit56v6svNMujPuQ/xxnYkjcqgKt0CAwBy2ENQf/6YXKuk5h6nOrTU
-         Suvfx/Byjw5Z/LbQFR5+DPpXbv8KS32TrAD8jVFsmU4EOFvxtZnQEIRyCgB6ACgOv/
-         Ri/nBxhUeeqew==
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1ccb58b0099so1868910fac.0;
-        Sun, 27 Aug 2023 18:04:10 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz7azUPfiruzySZqwFYH5soEkq50mkGLwamGlVHBUfkr3nQl9PE
-        bb2Pkjw6dg0q163DOtYnNV8Kfj2jFgPRJpAIIs4=
-X-Google-Smtp-Source: AGHT+IEak5zcXFSIFNfF8EdO9/s3v9inAZbyIexqYgsn9SCfLTxxBE6ChlOh4wUhzQSAPtM3t40DM0c5ZfD6PzA7Hog=
-X-Received: by 2002:a05:6870:b523:b0:1c8:b870:4e55 with SMTP id
- v35-20020a056870b52300b001c8b8704e55mr10551563oap.49.1693184649240; Sun, 27
- Aug 2023 18:04:09 -0700 (PDT)
+        Sun, 27 Aug 2023 21:06:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164BBF4
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 18:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693184754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/V5zkCsRDA+Gue7miMjMHK0pSH94dkxubU/DgbGWqtQ=;
+        b=OG17NI0NCwLl9Iiv+XsDQYI43X8EKu+39lgxnqdIcLUn1xv6M5n4vT1Ce4UFiEICOpsaKd
+        khdt0AihIQS9N/maPohx9jcwR1Al5Oibt9cfHzL9pO4pCKaCVlaZehjCKoyfjSVE3SFQnL
+        S37dPVrtjmdUdMgyPGaucPaXfbgK1A4=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-dfpu9I_TMtqYmoCubGYG4w-1; Sun, 27 Aug 2023 21:05:53 -0400
+X-MC-Unique: dfpu9I_TMtqYmoCubGYG4w-1
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-780addd7382so211528239f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 18:05:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693184752; x=1693789552;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/V5zkCsRDA+Gue7miMjMHK0pSH94dkxubU/DgbGWqtQ=;
+        b=F1mY7LioljI0k+1h3Do3K8oodzdSzU+ZblUYrAsTVhTCCb7sMpxH7mMDGZlPa+2QvH
+         r5hLmcPhDezd+YYzkeOP7XNYT/EzUHBEoXb8Km9ASw1NwbOBj/HCf3BJzm0hrwylU+Iz
+         cCM5iv4KyxZow6/67jaEN28YvfAhWsjSiuVoPANiJhPR6dh8jrSmVQojpDjk0RNsOSLY
+         uCR+6tFvQx/sKOREhw25NthYFAbYZhNt7rCzW2pc0WvxwmL533secgPHEISJhu/k/Toz
+         XOhRtj5znPRL3h4D4bfny+hFtRUBzyjoFcPb7lH9tGTI/Fb+OeV+DyYP1/eHpjqyc6Hk
+         uq1w==
+X-Gm-Message-State: AOJu0YzhAttysXZJPQjI7J3ju4+GypxIVynf8zmDzGnzxz2ljtYe4fnn
+        U9ncCm7XVReudJLUDxGZfRxk6d/0nP07zHN3VD/XoVoI9y011qNswmo9jwVYdEX4Rsm18wRqp4I
+        wNt9eL3YskcAEoiuRmkIAsbZq
+X-Received: by 2002:a05:6e02:1bc3:b0:34c:cb72:32f7 with SMTP id x3-20020a056e021bc300b0034ccb7232f7mr15200950ilv.24.1693184752417;
+        Sun, 27 Aug 2023 18:05:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGBwlyJHli2Qu2Xz6/MKDcSTs2JPHM2rQb6JlupZKv5Ip5Isapx4Lhs3tCaLXGumwwptHqDEQ==
+X-Received: by 2002:a05:6e02:1bc3:b0:34c:cb72:32f7 with SMTP id x3-20020a056e021bc300b0034ccb7232f7mr15200932ilv.24.1693184752204;
+        Sun, 27 Aug 2023 18:05:52 -0700 (PDT)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id t16-20020a639550000000b0056f8b44058csm5927641pgn.12.2023.08.27.18.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 18:05:51 -0700 (PDT)
+Date:   Sun, 27 Aug 2023 18:05:50 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-integrity@vger.kernel.org, stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tpm: Enable hwrng only for Pluton on AMD CPUs
+Message-ID: <ct256e7tloa3th4muxmhgvysvod35c4vp2aczuybud3q6747ts@hglky2egrg7y>
+References: <20230822231510.2263255-1-jarkko@kernel.org>
 MIME-Version: 1.0
-References: <20230825194329.gonna.911-kees@kernel.org>
-In-Reply-To: <20230825194329.gonna.911-kees@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 28 Aug 2023 10:03:32 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATcTw+btQVri7SBA8gFbDNMYz7D2gMQaoZp9sQGFjCw8Q@mail.gmail.com>
-Message-ID: <CAK7LNATcTw+btQVri7SBA8gFbDNMYz7D2gMQaoZp9sQGFjCw8Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] kbuild: Show Kconfig fragments in "help"
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822231510.2263255-1-jarkko@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 4:55=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> Hi,
->
-> This is my series to show *.config targets in the "help" target so these
-> various topics can be more easily discoverd.
->
+On Wed, Aug 23, 2023 at 02:15:10AM +0300, Jarkko Sakkinen wrote:
+> The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
+> all AMD fTPMs") doesn't work properly on a number of Intel fTPMs.  On the
+> reported systems the TPM doesn't reply at bootup and returns back the
+> command code. This makes the TPM fail probe.
+> 
+> Since only Microsoft Pluton is the only known combination of AMD CPU and
+> fTPM from other vendor, disable hwrng otherwise. In order to make sysadmin
+> aware of this, print also info message to the klog.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
+> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> v3:
+> * Forgot to amend config flags.
 > v2:
->  - split .fragment from .config to hide "internal" fragments
+> * CONFIG_X86
+> * Removed "Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>"
+> * Removed "Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>"
+> ---
+>  drivers/char/tpm/tpm_crb.c | 33 ++++++++-------------------------
+>  1 file changed, 8 insertions(+), 25 deletions(-)
+> 
 
-Please do not do this churn.
-
-
-Like Randy, I did not get "why" part quiet well,
-but if you are eager about this,
-you can show help message only when the following
-("# Help:" prefix for example) is found in the first line.
-
-
-# Help: blah blah
-# other comment
-
-
+It looks like stable should be pinged as well. I saw a report yesterday for Fedora
+where someone is seeing issue where the tpm device no longer shows up with
+a 6.4.11 kernel. That kernel pulled in commit 554b841d4703. It pulled in a couple
+other tpm commits, and there is practically no info in the bug at this point,
+but I'm guessing the probe is failing due to 554b841d4703.
 
 
+> diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
+> index 65ff4d2fbe8d..ea085b14ab7c 100644
+> --- a/drivers/char/tpm/tpm_crb.c
+> +++ b/drivers/char/tpm/tpm_crb.c
+> @@ -463,28 +463,6 @@ static bool crb_req_canceled(struct tpm_chip *chip, u8 status)
+>  	return (cancel & CRB_CANCEL_INVOKE) == CRB_CANCEL_INVOKE;
+>  }
+>  
+> -static int crb_check_flags(struct tpm_chip *chip)
+> -{
+> -	u32 val;
+> -	int ret;
+> -
+> -	ret = crb_request_locality(chip, 0);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = tpm2_get_tpm_pt(chip, TPM2_PT_MANUFACTURER, &val, NULL);
+> -	if (ret)
+> -		goto release;
+> -
+> -	if (val == 0x414D4400U /* AMD */)
+> -		chip->flags |= TPM_CHIP_FLAG_HWRNG_DISABLED;
+> -
+> -release:
+> -	crb_relinquish_locality(chip, 0);
+> -
+> -	return ret;
+> -}
+> -
+>  static const struct tpm_class_ops tpm_crb = {
+>  	.flags = TPM_OPS_AUTO_STARTUP,
+>  	.status = crb_status,
+> @@ -827,9 +805,14 @@ static int crb_acpi_add(struct acpi_device *device)
+>  	if (rc)
+>  		goto out;
+>  
+> -	rc = crb_check_flags(chip);
+> -	if (rc)
+> -		goto out;
+> +#ifdef CONFIG_X86
+> +	/* A quirk for https://www.amd.com/en/support/kb/faq/pa-410 */
+> +	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
+> +	    priv->sm != ACPI_TPM2_COMMAND_BUFFER_WITH_PLUTON) {
+> +		dev_info(dev, "Disabling hwrng\n");
+> +		chip->flags |= TPM_CHIP_FLAG_HWRNG_DISABLED;
+> +	}
+> +#endif /* CONFIG_X86 */
+>  
+>  	rc = tpm_chip_register(chip);
+>  
+> -- 
+> 2.39.2
+> 
 
-
-
-
->  - fix various typos
->  - avoid duplicate entries
-> v1: https://lore.kernel.org/all/20230824223606.never.762-kees@kernel.org
->
-> Thanks!
->
-> -Kees
->
-> Kees Cook (2):
->   kbuild: Show Kconfig fragments in "help"
->   kbuild: Split internal config targets from .config into .fragment
->
->  Makefile                                      |  1 -
->  arch/arm/configs/dram_0x00000000.config       |  1 +
->  arch/arm/configs/dram_0xc0000000.config       |  1 +
->  arch/arm/configs/dram_0xd0000000.config       |  1 +
->  arch/arm/configs/lpae.config                  |  1 +
->  arch/arm64/configs/virt.config                |  1 +
->  arch/powerpc/Makefile                         | 26 +++++++++----------
->  .../{32-bit.config =3D> 32-bit.fragment}        |  1 +
->  arch/powerpc/configs/64-bit.config            |  1 -
->  arch/powerpc/configs/64-bit.fragment          |  2 ++
->  ...{85xx-32bit.config =3D> 85xx-32bit.fragment} |  1 +
->  ...{85xx-64bit.config =3D> 85xx-64bit.fragment} |  1 +
->  .../{85xx-hw.config =3D> 85xx-hw.fragment}      |  1 +
->  .../{85xx-smp.config =3D> 85xx-smp.fragment}    |  1 +
->  .../{86xx-hw.config =3D> 86xx-hw.fragment}      |  1 +
->  .../{86xx-smp.config =3D> 86xx-smp.fragment}    |  1 +
->  arch/powerpc/configs/altivec.config           |  1 -
->  arch/powerpc/configs/altivec.fragment         |  2 ++
->  arch/powerpc/configs/be.config                |  1 -
->  arch/powerpc/configs/be.fragment              |  2 ++
->  .../{book3s_32.config =3D> book3s_32.fragment}  |  1 +
->  ...enet_base.config =3D> corenet_base.fragment} |  1 +
->  arch/powerpc/configs/debug.config             |  1 +
->  arch/powerpc/configs/disable-werror.config    |  1 +
->  .../configs/{dpaa.config =3D> dpaa.fragment}    |  1 +
->  ...mb-nonhw.config =3D> fsl-emb-nonhw.fragment} |  1 +
->  .../configs/{guest.config =3D> guest.fragment}  |  1 +
->  arch/powerpc/configs/le.config                |  1 -
->  arch/powerpc/configs/le.fragment              |  2 ++
->  ...85xx_base.config =3D> mpc85xx_base.fragment} |  1 +
->  ...86xx_base.config =3D> mpc86xx_base.fragment} |  1 +
->  .../{ppc64le.config =3D> ppc64le.fragment}      |  1 +
->  arch/powerpc/configs/security.config          |  4 ++-
->  arch/riscv/configs/32-bit.config              |  1 +
->  arch/riscv/configs/64-bit.config              |  1 +
->  arch/s390/configs/btf.config                  |  1 +
->  arch/s390/configs/kasan.config                |  1 +
->  arch/x86/Makefile                             |  4 ---
->  arch/x86/configs/tiny.config                  |  2 ++
->  {kernel =3D> arch/x86}/configs/x86_debug.config |  1 +
->  arch/x86/configs/xen.config                   |  2 ++
->  kernel/configs/debug.config                   |  2 ++
->  kernel/configs/kvm_guest.config               |  1 +
->  kernel/configs/nopm.config                    |  2 ++
->  kernel/configs/rust.config                    |  1 +
->  kernel/configs/tiny-base.config               |  1 -
->  kernel/configs/tiny-base.fragment             |  2 ++
->  kernel/configs/tiny.config                    |  2 ++
->  kernel/configs/xen.config                     |  2 ++
->  scripts/Makefile.defconf                      | 12 ++++++---
->  scripts/kconfig/Makefile                      | 16 +++++++++---
->  51 files changed, 87 insertions(+), 32 deletions(-)
->  rename arch/powerpc/configs/{32-bit.config =3D> 32-bit.fragment} (53%)
->  delete mode 100644 arch/powerpc/configs/64-bit.config
->  create mode 100644 arch/powerpc/configs/64-bit.fragment
->  rename arch/powerpc/configs/{85xx-32bit.config =3D> 85xx-32bit.fragment}=
- (76%)
->  rename arch/powerpc/configs/{85xx-64bit.config =3D> 85xx-64bit.fragment}=
- (78%)
->  rename arch/powerpc/configs/{85xx-hw.config =3D> 85xx-hw.fragment} (98%)
->  rename arch/powerpc/configs/{85xx-smp.config =3D> 85xx-smp.fragment} (59=
-%)
->  rename arch/powerpc/configs/{86xx-hw.config =3D> 86xx-hw.fragment} (98%)
->  rename arch/powerpc/configs/{86xx-smp.config =3D> 86xx-smp.fragment} (58=
-%)
->  delete mode 100644 arch/powerpc/configs/altivec.config
->  create mode 100644 arch/powerpc/configs/altivec.fragment
->  delete mode 100644 arch/powerpc/configs/be.config
->  create mode 100644 arch/powerpc/configs/be.fragment
->  rename arch/powerpc/configs/{book3s_32.config =3D> book3s_32.fragment} (=
-52%)
->  rename arch/powerpc/configs/{corenet_base.config =3D> corenet_base.fragm=
-ent} (64%)
->  rename arch/powerpc/configs/{dpaa.config =3D> dpaa.fragment} (80%)
->  rename arch/powerpc/configs/{fsl-emb-nonhw.config =3D> fsl-emb-nonhw.fra=
-gment} (98%)
->  rename arch/powerpc/configs/{guest.config =3D> guest.fragment} (85%)
->  delete mode 100644 arch/powerpc/configs/le.config
->  create mode 100644 arch/powerpc/configs/le.fragment
->  rename arch/powerpc/configs/{mpc85xx_base.config =3D> mpc85xx_base.fragm=
-ent} (94%)
->  rename arch/powerpc/configs/{mpc86xx_base.config =3D> mpc86xx_base.fragm=
-ent} (86%)
->  rename arch/powerpc/configs/{ppc64le.config =3D> ppc64le.fragment} (65%)
->  rename {kernel =3D> arch/x86}/configs/x86_debug.config (90%)
->  delete mode 100644 kernel/configs/tiny-base.config
->  create mode 100644 kernel/configs/tiny-base.fragment
->
-> --
-> 2.34.1
->
-
-
---=20
-Best Regards
-Masahiro Yamada
