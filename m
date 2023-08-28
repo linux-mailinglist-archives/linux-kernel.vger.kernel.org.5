@@ -2,157 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466C378AE49
+	by mail.lfdr.de (Postfix) with ESMTP id AAA0478AE4A
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbjH1K7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
+        id S232388AbjH1K7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbjH1K7G (ORCPT
+        with ESMTP id S232410AbjH1K7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:59:06 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66D4CEE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:58:47 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso46278171fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693220326; x=1693825126;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d/OB7PKo07RgUFZpiehXJXNKqPXLjU99gDHLTVOVii8=;
-        b=cJXfrHMJNPS/QKMrTTlE5vfpH974HXftpuSY9uJs9MfVS7vc2mXinUh9ADC2STqq3k
-         5WNnPwsOq3rjlCr/JlQZURcjtrH2q2IdRvWytQYT1l+kcjhVAqDM5ELFcurx9w5rEXed
-         yaO4gDOcAp5aORCgm32uLrh+lUesOUFQRzDaKjVsy1NqQ269QA0T0ACauz8czEnt/9p+
-         I8/VwRP8mVEyupf+HtVu2tm/p+Wfcj9+cRYArd2exPuJqTY77Wc+2o1lElpn93LqLXBd
-         6er4vDPQ7rF0zfitvBwtpmn9UkrQVTY79hvkSXx1oOk7iVaG6Ft2xtj95vpS/nTnAHW3
-         6tOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693220326; x=1693825126;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d/OB7PKo07RgUFZpiehXJXNKqPXLjU99gDHLTVOVii8=;
-        b=RABgIDPp8Ra/wQMcpVbiWN8f+QUw6IZfFdktIf/9mITbmynJw7xvQrc4g8y2hmGUcI
-         whPTNcXdPZe6xQAEd/Kx9ud9dsRHOuMW/vTHFTrLri7Job++cWc7/UORAeDnFaTajcE4
-         tg6hD+8ifq4bbzn7LK02AmU6DJp+/XhJ1PaIjkLgD4fneeV/81YYMQkY3UCLQ7U6xqZ1
-         dLOuAjLmO3iAlwk3Q1KQpJDEjAf3QByrvCaUxSfmMU4PfHpj8Fwzp8ESVqGRhxSyzASW
-         Gdn+qrEe138IuomQ0xadakroOk0GeZb8cmtei5cw4ifNjn1fD04spuwpZ/6x8wNP3pNv
-         735g==
-X-Gm-Message-State: AOJu0YyHWii9eh2eeOu83zQsVcTgcVjO9uRLMFN7zNnicWX/7gURmVth
-        B+She6TQ5v6DY/fZe+j0Yr4NdA==
-X-Google-Smtp-Source: AGHT+IG/gueuI9Cxw+c3jnrN0MdQrB+kDMkFMyE8XslmGTM4ZZFnIcaUdSesgvMKixU6F+4T33HR+A==
-X-Received: by 2002:a2e:81d3:0:b0:2bc:db5a:9545 with SMTP id s19-20020a2e81d3000000b002bcdb5a9545mr11327243ljg.14.1693220326336;
-        Mon, 28 Aug 2023 03:58:46 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id w16-20020a2e9990000000b002b6d7682050sm1698240lji.89.2023.08.28.03.58.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 03:58:46 -0700 (PDT)
-Message-ID: <cb5194fc-cb66-44a5-8127-a7155f0dade6@linaro.org>
-Date:   Mon, 28 Aug 2023 12:58:45 +0200
+        Mon, 28 Aug 2023 06:59:15 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7B3194;
+        Mon, 28 Aug 2023 03:58:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 642301F460;
+        Mon, 28 Aug 2023 10:58:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1693220331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aSHjLwT5621N2H5F+CG6iKU6rfMRGgSjnRTgBYipbyw=;
+        b=mWumK8FuOisRNmZyfmZpOv3XsthQ/mF2rhApCLjO5TMZYwWbw2VR+wDJanQl2j6pkLgULq
+        fHBCxvmJhdH/AuBN5dLSTjtwIBjWoEVaMW4dxZaScToSK773ikHuHh/do6tHR6GWSs/x5Q
+        BOtizqLgFrp1VcJuzOEWzsFUhwTLNmc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1693220331;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aSHjLwT5621N2H5F+CG6iKU6rfMRGgSjnRTgBYipbyw=;
+        b=C1GThFEIJHinMmhS4iXrgLbawwYVhAsEF2CAqofe3AFSXtdWDtFD8jhGISozgz+QLY0Wg0
+        38NG2+mvoYANkRAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4BA7413A11;
+        Mon, 28 Aug 2023 10:58:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IlJuEut97GTYYwAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 28 Aug 2023 10:58:51 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id B3720A0774; Mon, 28 Aug 2023 12:58:50 +0200 (CEST)
+Date:   Mon, 28 Aug 2023 12:58:50 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Xueshi Hu <xueshi.hu@smartx.com>
+Cc:     hch@infradead.org, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, dave.jiang@intel.com,
+        jayalk@intworks.biz, daniel@ffwll.ch, deller@gmx.de,
+        bcrl@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        jack@suse.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        miklos@szeredi.hu, mike.kravetz@oracle.com, muchun.song@linux.dev,
+        djwong@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
+        hughd@google.com, nvdimm@lists.linux.dev,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2] fs: clean up usage of noop_dirty_folio
+Message-ID: <20230828105850.6g772iayb26odocx@quack3>
+References: <20230828075449.262510-1-xueshi.hu@smartx.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: misc: eud: Fix missing IRQ check in eud_probe()
-Content-Language: en-US
-To:     Zhang Shurong <zhang_shurong@foxmail.com>
-Cc:     quic_schowdhu@quicinc.com, agross@kernel.org, andersson@kernel.org,
-        gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <tencent_C40B301A0F71853A540809BE1BB85AB12D07@qq.com>
- <f9df2e02-9fae-4e16-9412-d378ef168903@linaro.org>
- <tencent_D0AA2D25300E0F108559545E899C9B8EDA07@qq.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <tencent_D0AA2D25300E0F108559545E899C9B8EDA07@qq.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828075449.262510-1-xueshi.hu@smartx.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.08.2023 16:17, Zhang Shurong wrote:
-> 在 2023年8月26日星期六 CST 下午6:49:27，Konrad Dybcio 写道：
->> On 26.08.2023 12:47, Zhang Shurong wrote:
->>> This func misses checking for platform_get_irq()'s call and may passes the
->>> negative error codes to request_irq(), which takes unsigned IRQ #,
->>> causing it to fail with -EINVAL, overriding an original error code.
->>>
->>> Fix this by stop calling request_irq() with invalid IRQ #s.
->>>
->>> Fixes: 9a1bf58ccd44 ("usb: misc: eud: Add driver support for Embedded USB
->>> Debugger(EUD)") Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
->>> ---
->>>
->>>  drivers/usb/misc/qcom_eud.c | 7 ++++++-
->>>  1 file changed, 6 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/usb/misc/qcom_eud.c b/drivers/usb/misc/qcom_eud.c
->>> index 7f371ea1248c..b33c615a2037 100644
->>> --- a/drivers/usb/misc/qcom_eud.c
->>> +++ b/drivers/usb/misc/qcom_eud.c
->>> @@ -204,7 +204,12 @@ static int eud_probe(struct platform_device *pdev)
->>>
->>>  	if (IS_ERR(chip->mode_mgr))
->>>  	
->>>  		return PTR_ERR(chip->mode_mgr);
->>>
->>> -	chip->irq = platform_get_irq(pdev, 0);
->>> +	ret = platform_get_irq(pdev, 0);
->>> +	if (ret < 0)
->>> +		return ret;
->>> +
->>> +	chip->irq = ret;chip->irq = plat..
->>
->> if (chip->irq < 0)
->> 	return chip->irq
->>
->> ?
->>
->> Konrad
-> Thank you for your thoughtful response. To clarify, are you suggesting that I 
-> replace the usage of `ret` with `chip->irq`? If that is the case, I will 
-> proceed with creating a patch for version 2.
-Yes please
+On Mon 28-08-23 15:54:49, Xueshi Hu wrote:
+> In folio_mark_dirty(), it can automatically fallback to
+> noop_dirty_folio() if a_ops->dirty_folio is not registered.
+> 
+> As anon_aops, dev_dax_aops and fb_deferred_io_aops becames empty, remove
+> them too.
+> 
+> Signed-off-by: Xueshi Hu <xueshi.hu@smartx.com>
 
-Konrad
+Looks good to me. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+> Changes in v2:
+> - make noop_dirty_folio() inline as suggested by Matthew
+> - v1: https://lore.kernel.org/linux-mm/ZOxAfrz9etoVUfLQ@infradead.org/T/#m073d45909b1df03ff09f382557dc4e84d0607c49
+> 
+>  drivers/dax/device.c                |  5 -----
+>  drivers/video/fbdev/core/fb_defio.c |  5 -----
+>  fs/aio.c                            |  1 -
+>  fs/ext2/inode.c                     |  1 -
+>  fs/ext4/inode.c                     |  1 -
+>  fs/fuse/dax.c                       |  1 -
+>  fs/hugetlbfs/inode.c                |  1 -
+>  fs/libfs.c                          |  5 -----
+>  fs/xfs/xfs_aops.c                   |  1 -
+>  include/linux/pagemap.h             |  1 -
+>  mm/page-writeback.c                 | 18 +++++-------------
+>  mm/secretmem.c                      |  1 -
+>  mm/shmem.c                          |  1 -
+>  mm/swap_state.c                     |  1 -
+>  14 files changed, 5 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+> index 30665a3ff6ea..018aa9f88ec7 100644
+> --- a/drivers/dax/device.c
+> +++ b/drivers/dax/device.c
+> @@ -345,10 +345,6 @@ static unsigned long dax_get_unmapped_area(struct file *filp,
+>  	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
+>  }
+>  
+> -static const struct address_space_operations dev_dax_aops = {
+> -	.dirty_folio	= noop_dirty_folio,
+> -};
+> -
+>  static int dax_open(struct inode *inode, struct file *filp)
+>  {
+>  	struct dax_device *dax_dev = inode_dax(inode);
+> @@ -358,7 +354,6 @@ static int dax_open(struct inode *inode, struct file *filp)
+>  	dev_dbg(&dev_dax->dev, "trace\n");
+>  	inode->i_mapping = __dax_inode->i_mapping;
+>  	inode->i_mapping->host = __dax_inode;
+> -	inode->i_mapping->a_ops = &dev_dax_aops;
+>  	filp->f_mapping = inode->i_mapping;
+>  	filp->f_wb_err = filemap_sample_wb_err(filp->f_mapping);
+>  	filp->f_sb_err = file_sample_sb_err(filp);
+> diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
+> index 274f5d0fa247..08be3592281f 100644
+> --- a/drivers/video/fbdev/core/fb_defio.c
+> +++ b/drivers/video/fbdev/core/fb_defio.c
+> @@ -221,10 +221,6 @@ static const struct vm_operations_struct fb_deferred_io_vm_ops = {
+>  	.page_mkwrite	= fb_deferred_io_mkwrite,
+>  };
+>  
+> -static const struct address_space_operations fb_deferred_io_aops = {
+> -	.dirty_folio	= noop_dirty_folio,
+> -};
+> -
+>  int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
+>  {
+>  	vma->vm_ops = &fb_deferred_io_vm_ops;
+> @@ -307,7 +303,6 @@ void fb_deferred_io_open(struct fb_info *info,
+>  {
+>  	struct fb_deferred_io *fbdefio = info->fbdefio;
+>  
+> -	file->f_mapping->a_ops = &fb_deferred_io_aops;
+>  	fbdefio->open_count++;
+>  }
+>  EXPORT_SYMBOL_GPL(fb_deferred_io_open);
+> diff --git a/fs/aio.c b/fs/aio.c
+> index 77e33619de40..4cf386f9cb1c 100644
+> --- a/fs/aio.c
+> +++ b/fs/aio.c
+> @@ -484,7 +484,6 @@ static int aio_migrate_folio(struct address_space *mapping, struct folio *dst,
+>  #endif
+>  
+>  static const struct address_space_operations aio_ctx_aops = {
+> -	.dirty_folio	= noop_dirty_folio,
+>  	.migrate_folio	= aio_migrate_folio,
+>  };
+>  
+> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+> index 75983215c7a1..ce191bdf1c78 100644
+> --- a/fs/ext2/inode.c
+> +++ b/fs/ext2/inode.c
+> @@ -971,7 +971,6 @@ const struct address_space_operations ext2_aops = {
+>  static const struct address_space_operations ext2_dax_aops = {
+>  	.writepages		= ext2_dax_writepages,
+>  	.direct_IO		= noop_direct_IO,
+> -	.dirty_folio		= noop_dirty_folio,
+>  };
+>  
+>  /*
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 43775a6ca505..67c1710c01b0 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3561,7 +3561,6 @@ static const struct address_space_operations ext4_da_aops = {
+>  static const struct address_space_operations ext4_dax_aops = {
+>  	.writepages		= ext4_dax_writepages,
+>  	.direct_IO		= noop_direct_IO,
+> -	.dirty_folio		= noop_dirty_folio,
+>  	.bmap			= ext4_bmap,
+>  	.swap_activate		= ext4_iomap_swap_activate,
+>  };
+> diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
+> index 8e74f278a3f6..50ca767cbd5e 100644
+> --- a/fs/fuse/dax.c
+> +++ b/fs/fuse/dax.c
+> @@ -1326,7 +1326,6 @@ bool fuse_dax_inode_alloc(struct super_block *sb, struct fuse_inode *fi)
+>  static const struct address_space_operations fuse_dax_file_aops  = {
+>  	.writepages	= fuse_dax_writepages,
+>  	.direct_IO	= noop_direct_IO,
+> -	.dirty_folio	= noop_dirty_folio,
+>  };
+>  
+>  static bool fuse_should_enable_dax(struct inode *inode, unsigned int flags)
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index 7b17ccfa039d..5404286f0c13 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -1266,7 +1266,6 @@ static void hugetlbfs_destroy_inode(struct inode *inode)
+>  static const struct address_space_operations hugetlbfs_aops = {
+>  	.write_begin	= hugetlbfs_write_begin,
+>  	.write_end	= hugetlbfs_write_end,
+> -	.dirty_folio	= noop_dirty_folio,
+>  	.migrate_folio  = hugetlbfs_migrate_folio,
+>  	.error_remove_page	= hugetlbfs_error_remove_page,
+>  };
+> diff --git a/fs/libfs.c b/fs/libfs.c
+> index 5b851315eeed..982f220a9ee3 100644
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -627,7 +627,6 @@ const struct address_space_operations ram_aops = {
+>  	.read_folio	= simple_read_folio,
+>  	.write_begin	= simple_write_begin,
+>  	.write_end	= simple_write_end,
+> -	.dirty_folio	= noop_dirty_folio,
+>  };
+>  EXPORT_SYMBOL(ram_aops);
+>  
+> @@ -1231,16 +1230,12 @@ EXPORT_SYMBOL(kfree_link);
+>  
+>  struct inode *alloc_anon_inode(struct super_block *s)
+>  {
+> -	static const struct address_space_operations anon_aops = {
+> -		.dirty_folio	= noop_dirty_folio,
+> -	};
+>  	struct inode *inode = new_inode_pseudo(s);
+>  
+>  	if (!inode)
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	inode->i_ino = get_next_ino();
+> -	inode->i_mapping->a_ops = &anon_aops;
+>  
+>  	/*
+>  	 * Mark the inode dirty from the very beginning,
+> diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+> index 451942fb38ec..300acea9ee63 100644
+> --- a/fs/xfs/xfs_aops.c
+> +++ b/fs/xfs/xfs_aops.c
+> @@ -590,6 +590,5 @@ const struct address_space_operations xfs_address_space_operations = {
+>  
+>  const struct address_space_operations xfs_dax_aops = {
+>  	.writepages		= xfs_dax_writepages,
+> -	.dirty_folio		= noop_dirty_folio,
+>  	.swap_activate		= xfs_iomap_swapfile_activate,
+>  };
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 716953ee1ebd..9de3be51dee2 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -1074,7 +1074,6 @@ bool folio_clear_dirty_for_io(struct folio *folio);
+>  bool clear_page_dirty_for_io(struct page *page);
+>  void folio_invalidate(struct folio *folio, size_t offset, size_t length);
+>  int __set_page_dirty_nobuffers(struct page *page);
+> -bool noop_dirty_folio(struct address_space *mapping, struct folio *folio);
+>  
+>  #ifdef CONFIG_MIGRATION
+>  int filemap_migrate_folio(struct address_space *mapping, struct folio *dst,
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index d3f42009bb70..d2d739109bfe 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2585,17 +2585,6 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
+>  	return ret;
+>  }
+>  
+> -/*
+> - * For address_spaces which do not use buffers nor write back.
+> - */
+> -bool noop_dirty_folio(struct address_space *mapping, struct folio *folio)
+> -{
+> -	if (!folio_test_dirty(folio))
+> -		return !folio_test_set_dirty(folio);
+> -	return false;
+> -}
+> -EXPORT_SYMBOL(noop_dirty_folio);
+> -
+>  /*
+>   * Helper function for set_page_dirty family.
+>   *
+> @@ -2799,10 +2788,13 @@ bool folio_mark_dirty(struct folio *folio)
+>  		 */
+>  		if (folio_test_reclaim(folio))
+>  			folio_clear_reclaim(folio);
+> -		return mapping->a_ops->dirty_folio(mapping, folio);
+> +		if (mapping->a_ops->dirty_folio)
+> +			return mapping->a_ops->dirty_folio(mapping, folio);
+>  	}
+>  
+> -	return noop_dirty_folio(mapping, folio);
+> +	if (!folio_test_dirty(folio))
+> +		return !folio_test_set_dirty(folio);
+> +	return false;
+>  }
+>  EXPORT_SYMBOL(folio_mark_dirty);
+>  
+> diff --git a/mm/secretmem.c b/mm/secretmem.c
+> index 86442a15d12f..3fe1c35f9c8d 100644
+> --- a/mm/secretmem.c
+> +++ b/mm/secretmem.c
+> @@ -157,7 +157,6 @@ static void secretmem_free_folio(struct folio *folio)
+>  }
+>  
+>  const struct address_space_operations secretmem_aops = {
+> -	.dirty_folio	= noop_dirty_folio,
+>  	.free_folio	= secretmem_free_folio,
+>  	.migrate_folio	= secretmem_migrate_folio,
+>  };
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index d963c747dabc..9bdef68a088a 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -4090,7 +4090,6 @@ static int shmem_error_remove_page(struct address_space *mapping,
+>  
+>  const struct address_space_operations shmem_aops = {
+>  	.writepage	= shmem_writepage,
+> -	.dirty_folio	= noop_dirty_folio,
+>  #ifdef CONFIG_TMPFS
+>  	.write_begin	= shmem_write_begin,
+>  	.write_end	= shmem_write_end,
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index f8ea7015bad4..3666439487db 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -30,7 +30,6 @@
+>   */
+>  static const struct address_space_operations swap_aops = {
+>  	.writepage	= swap_writepage,
+> -	.dirty_folio	= noop_dirty_folio,
+>  #ifdef CONFIG_MIGRATION
+>  	.migrate_folio	= migrate_folio,
+>  #endif
+> -- 
+> 2.40.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
