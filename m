@@ -2,238 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35F378A97F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5A078A984
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjH1J77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34238 "EHLO
+        id S230263AbjH1KAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjH1J7r (ORCPT
+        with ESMTP id S230217AbjH1J74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:59:47 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF08D91;
-        Mon, 28 Aug 2023 02:59:37 -0700 (PDT)
-X-UUID: 94a7f7e4458911eeb20a276fd37b9834-20230828
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=ULLZemRhMxAbFZxKNtJLD9ABVZO2iMvHhuIqtLS4lLw=;
-        b=E3cwQxcPYVQR8cxJIvlU+VpUcB694ACP19v5Ljx3qi0sp6iSYy1YI7K8D7Hre60Nk9XkrEUMf9QTmvcfnCJvDqkraZHOibfM+MfKesDDUjgkFpq8k17J046sfy45xq5vCLeSDLKvZQfCTETqk+JAf+7VEqCIuTgCAJJ3r3PoH6c=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:3c843121-223a-4bb5-8667-6265dbe0a20f,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:45
-X-CID-INFO: VERSION:1.1.31,REQID:3c843121-223a-4bb5-8667-6265dbe0a20f,IP:0,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-        elease,TS:45
-X-CID-META: VersionHash:0ad78a4,CLOUDID:3ef24413-4929-4845-9571-38c601e9c3c9,B
-        ulkID:230828123614SOTZ7U80,BulkQuantity:8,Recheck:0,SF:64|29|28|17|19|48|1
-        02,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,CO
-        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 94a7f7e4458911eeb20a276fd37b9834-20230828
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 265903182; Mon, 28 Aug 2023 17:59:30 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 28 Aug 2023 17:59:28 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Mon, 28 Aug 2023 17:59:25 +0800
-Message-ID: <986d8056-3708-ed3d-1896-0fbc034ca53c@mediatek.com>
-Date:   Mon, 28 Aug 2023 17:59:23 +0800
+        Mon, 28 Aug 2023 05:59:56 -0400
+Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5AD91
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:59:53 -0700 (PDT)
+Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-68a3cae6d3aso2603250b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:59:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693216793; x=1693821593;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=estplTWSxKrAsxyRRN46bbjvd0eh61f81Ark1D69GWA=;
+        b=emf7sqSjJa/59WyH26XFX3ewi3I15f76OEVv9l8K4+KG4HrlCctujr667vRyZSIrl7
+         BF5lD9sQOtLavpKdD2sqmq/yqqgHAwH4LRhSmHWrH/SW++be3OuvOLYDHIExmIAdWQA2
+         4Miuaj6dSTfwMjZeDUMjUWhqaRI/TPDutPsodNYoMbg2n1c10Gw5JJkqAyKWtfQqVKFt
+         xqA46fxXhhMVXyNjfZlmY3thGQqWyIBluwH8RZYn/VCE2uMBgD0hwlj6j1bCJrwLXoGS
+         FNsGBkJ+CHBANb+cvmS17/WIlabnrFyE1uNm75KEjVVRVzLAFdFbXTc+zpoFkL6QS1bk
+         fIrA==
+X-Gm-Message-State: AOJu0YxHPXe3MUwaPdvONeX4JLFjGlPIpfLpGsVuwUCKRJIq1rXuhOFH
+        RWTPTk16EBwNrkd2kmU/fXF0ppQQZWRyyh6QyjFkFrt07htA
+X-Google-Smtp-Source: AGHT+IHDaei6qWidJDdm6CroNx2NnLungXrApU1x38pM+tfjRV+A7R3/jLv4RjTrp/jWHptaEUjMDiPX48kuppPUbzaKJFAqKslX
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 3/4] arm64: dts: mediatek: mt6360: add PMIC MT6360 related
- nodes
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-References: <20230825114623.16884-1-macpaul.lin@mediatek.com>
- <20230825114623.16884-3-macpaul.lin@mediatek.com>
- <CAGXv+5FTuY=ZHB3-2Woit5amRZ=RxByGMq=LQp-es8tWEhAQUA@mail.gmail.com>
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <CAGXv+5FTuY=ZHB3-2Woit5amRZ=RxByGMq=LQp-es8tWEhAQUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,
-        T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6a00:2d24:b0:68b:de2e:74f9 with SMTP id
+ fa36-20020a056a002d2400b0068bde2e74f9mr3688060pfb.1.1693216792721; Mon, 28
+ Aug 2023 02:59:52 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 02:59:52 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000753fbd0603f8c10b@google.com>
+Subject: [syzbot] [io-uring?] general protection fault in io_sqpoll_wq_cpu_affinity
+From:   syzbot <syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 8/28/23 12:36, Chen-Yu Tsai wrote:
-> 	
-> 
-> External email : Please do not click links or open attachments until you 
-> have verified the sender or the content.
-> 
-> On Fri, Aug 25, 2023 at 7:46 PM Macpaul Lin <macpaul.lin@mediatek.com> wrote:
->>
->> MT6360 is the secondary PMIC for MT8195.
->> It supports USB Type-C and PD functions.
->> Add MT6360 related common nodes which is used for MT8195 platform, includes
->>  - charger
->>  - ADC
->>  - LED
->>  - regulators
->>
->> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
->> ---
->>  arch/arm64/boot/dts/mediatek/mt6360.dtsi | 112 +++++++++++++++++++++++
+syzbot found the following issue on:
 
-[snip..]
+HEAD commit:    626932085009 Add linux-next specific files for 20230825
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a97797a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
+dashboard link: https://syzkaller.appspot.com/bug?extid=c74fea926a78b8a91042
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
->> +       regulator {
->> +               compatible = "mediatek,mt6360-regulator";
->> +               LDO_VIN3-supply = <&mt6360_buck2>;
->> +
->> +               mt6360_buck1: buck1 {
->> +                       regulator-compatible = "BUCK1";
->> +                       regulator-name = "mt6360,buck1";
-> 
-> Normally there's no need to provide a default name. Any used regulator
-> should have been named to match the power rail name from the board's
-> schematics.
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I have 2 schematics on hand. One is mt8195-demo board and the other is 
-genio-1200-evk board. There are 2 PMIC used on these board
-with "the same" sub power rail name for "BUCK1~BUCK4". One is mt6315, 
-and the other is mt6360.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
 
-I've also inspected other dtsi of the regulators, such as mt6357 and 
-mt6359. They have regulator nodes with named for their purpose. For the
-schematics of mt8195-demo and genio-1200-evk boards, there are no 
-explicit usage for "BUCK1~BUCK4" for both mt6135 and mt6360. In order to 
-specify the sub power rail for mt6360, MediaTek chooses name like 
-"mt6360,buck1" instead of simple name "buck1" for distinguish with 
-"buck1" of mt6351.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com
 
->> +                       regulator-min-microvolt = <300000>;
->> +                       regulator-max-microvolt = <1300000>;
-> 
-> These values correspond to the regulator's range. They make no sense as
-> regulator constraints. The min/max values are supposed to be the most
-> restrictive set of voltages of the regulator consumers. If what is fed
-> by this regulator can only take 0.7V ~ 1.1V, then it should save 0.7V
-> and 1.1V here. If the regulator is unused, then there are no constraints,
-> and these can be left out.
-> 
-> Just leave them out of the file.
-> 
-> Both comments apply to all the regulators.
-> 
-> ChenYu
+general protection fault, probably for non-canonical address 0xdffffc000000011d: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000008e8-0x00000000000008ef]
+CPU: 1 PID: 27342 Comm: syz-executor.5 Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:io_sqpoll_wq_cpu_affinity+0x8c/0xe0 io_uring/sqpoll.c:433
+Code: 48 c1 ea 03 80 3c 02 00 75 64 4c 8b a3 a8 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bc 24 e8 08 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 37 49 8b bc 24 e8 08 00 00 48 89 ee e8 7e ac 02 00
+RSP: 0018:ffffc900051dfe00 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff888056c72400 RCX: 0000000000000000
+RDX: 000000000000011d RSI: ffffffff841f12be RDI: 00000000000008e8
+RBP: ffffc900051dfec8 R08: 0000000000000000 R09: ffffed100ad8e482
+R10: ffffc900051dfde8 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000011 R15: ffffc900051dfec8
+FS:  00007f1f3e2bc6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe2c9b3010 CR3: 0000000029652000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __io_register_iowq_aff io_uring/io_uring.c:4207 [inline]
+ __io_register_iowq_aff+0xa7/0xe0 io_uring/io_uring.c:4198
+ io_register_iowq_aff io_uring/io_uring.c:4240 [inline]
+ __io_uring_register io_uring/io_uring.c:4447 [inline]
+ __do_sys_io_uring_register+0xf58/0x2250 io_uring/io_uring.c:4539
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f1f3d47cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1f3e2bc0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
+RAX: ffffffffffffffda RBX: 00007f1f3d59bf80 RCX: 00007f1f3d47cae9
+RDX: 0000000020000140 RSI: 0000000000000011 RDI: 0000000000000003
+RBP: 00007f1f3d4c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f1f3d59bf80 R15: 00007fffb91ba9f8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:io_sqpoll_wq_cpu_affinity+0x8c/0xe0 io_uring/sqpoll.c:433
+Code: 48 c1 ea 03 80 3c 02 00 75 64 4c 8b a3 a8 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bc 24 e8 08 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 37 49 8b bc 24 e8 08 00 00 48 89 ee e8 7e ac 02 00
+RSP: 0018:ffffc900051dfe00 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff888056c72400 RCX: 0000000000000000
+RDX: 000000000000011d RSI: ffffffff841f12be RDI: 00000000000008e8
+RBP: ffffc900051dfec8 R08: 0000000000000000 R09: ffffed100ad8e482
+R10: ffffc900051dfde8 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000011 R15: ffffc900051dfec8
+FS:  00007f1f3e2bc6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6671b75198 CR3: 0000000029652000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	48 c1 ea 03          	shr    $0x3,%rdx
+   4:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   8:	75 64                	jne    0x6e
+   a:	4c 8b a3 a8 00 00 00 	mov    0xa8(%rbx),%r12
+  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  18:	fc ff df
+  1b:	49 8d bc 24 e8 08 00 	lea    0x8e8(%r12),%rdi
+  22:	00
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	75 37                	jne    0x67
+  30:	49 8b bc 24 e8 08 00 	mov    0x8e8(%r12),%rdi
+  37:	00
+  38:	48 89 ee             	mov    %rbp,%rsi
+  3b:	e8 7e ac 02 00       	call   0x2acbe
 
-There are some common circuit design for these regulators like mt6359, 
-mt6360 and mt6315 used on many products. MediaTek put the most common 
-and expected default values in their dtsi. However, some changes still 
-need to be applied to derivative boards according to product's 
-requirements. The actual value be used will be applied in board's dts 
-file to override the default settings in dtsi.
 
-The regulator node "mt6360,ldo6" is not used by mt8195-demo and 
-genio-1200-evk. I'll remove it in the next version.
-Thanks for the review.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP
->> +                                                  MT6360_OPMODE_ULP>;
->> +               };
->> +
->> +               mt6360_buck2: buck2 {
->> +                       regulator-compatible = "BUCK2";
->> +                       regulator-name = "mt6360,buck2";
->> +                       regulator-min-microvolt = <300000>;
->> +                       regulator-max-microvolt = <1300000>;
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP
->> +                                                  MT6360_OPMODE_ULP>;
->> +               };
->> +
->> +               mt6360_ldo1: ldo1 {
->> +                       regulator-compatible = "LDO1";
->> +                       regulator-name = "mt6360,ldo1";
->> +                       regulator-min-microvolt = <1200000>;
->> +                       regulator-max-microvolt = <3600000>;
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP>;
->> +               };
->> +
->> +               mt6360_ldo2: ldo2 {
->> +                       regulator-compatible = "LDO2";
->> +                       regulator-name = "mt6360,ldo2";
->> +                       regulator-min-microvolt = <1200000>;
->> +                       regulator-max-microvolt = <3600000>;
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP>;
->> +               };
->> +
->> +               mt6360_ldo3: ldo3 {
->> +                       regulator-compatible = "LDO3";
->> +                       regulator-name = "mt6360,ldo3";
->> +                       regulator-min-microvolt = <1200000>;
->> +                       regulator-max-microvolt = <3600000>;
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP>;
->> +               };
->> +
->> +               mt6360_ldo5: ldo5 {
->> +                       regulator-compatible = "LDO5";
->> +                       regulator-name = "mt6360,ldo5";
->> +                       regulator-min-microvolt = <2700000>;
->> +                       regulator-max-microvolt = <3600000>;
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP>;
->> +               };
->> +
->> +               mt6360_ldo6: ldo6 {
->> +                       regulator-compatible = "LDO6";
->> +                       regulator-name = "mt6360,ldo6";
->> +                       regulator-min-microvolt = <500000>;
->> +                       regulator-max-microvolt = <2100000>;
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP>;
->> +               };
->> +
->> +               mt6360_ldo7: ldo7 {
->> +                       regulator-compatible = "LDO7";
->> +                       regulator-name = "mt6360,ldo7";
->> +                       regulator-min-microvolt = <500000>;
->> +                       regulator-max-microvolt = <2100000>;
->> +                       regulator-allowed-modes = <MT6360_OPMODE_NORMAL
->> +                                                  MT6360_OPMODE_LP>;
->> +               };
->> +       };
->> +};
->> --
->> 2.18.0
->>
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Best regards,
-Macpaul Lin.
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
