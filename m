@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B13F78B4FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556C278B4FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbjH1P7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
+        id S232635AbjH1P76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjH1P7V (ORCPT
+        with ESMTP id S229664AbjH1P7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:59:21 -0400
+        Mon, 28 Aug 2023 11:59:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB1610C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755A010B
         for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:59:17 -0700 (PDT)
 Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <m.tretter@pengutronix.de>)
-        id 1qaedy-0005pk-Sk; Mon, 28 Aug 2023 17:59:10 +0200
+        id 1qaedz-0005pk-GH; Mon, 28 Aug 2023 17:59:11 +0200
 From:   Michael Tretter <m.tretter@pengutronix.de>
-Date:   Mon, 28 Aug 2023 17:59:06 +0200
-Subject: [PATCH 1/5] drm/bridge: samsung-dsim: add more mipi-dsi device
- debug information
+Date:   Mon, 28 Aug 2023 17:59:07 +0200
+Subject: [PATCH 2/5] drm/bridge: samsung-dsim: reread ref clock before
+ configuring PLL
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230818-samsung-dsim-v1-1-b39716db6b7a@pengutronix.de>
+Message-Id: <20230818-samsung-dsim-v1-2-b39716db6b7a@pengutronix.de>
 References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
 In-Reply-To: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
 To:     Inki Dae <inki.dae@samsung.com>,
@@ -41,8 +41,7 @@ To:     Inki Dae <inki.dae@samsung.com>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Michael Tretter <m.tretter@pengutronix.de>,
-        Marco Felsch <m.felsch@pengutronix.de>
+        kernel@pengutronix.de, Michael Tretter <m.tretter@pengutronix.de>
 X-Mailer: b4 0.12.0
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::54
 X-SA-Exim-Mail-From: m.tretter@pengutronix.de
@@ -57,33 +56,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Felsch <m.felsch@pengutronix.de>
+The PLL reference clock may change at runtime. Thus, reading the clock
+rate during probe is not sufficient to correctly configure the PLL for
+the expected hs clock.
 
-Since the MIPI configuration can be changed on demand it is very useful
-to print more MIPI settings during the MIPI device attach step.
+Read the actual rate of the reference clock before calculating the PLL
+configuration parameters.
 
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
 ---
- drivers/gpu/drm/bridge/samsung-dsim.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/bridge/samsung-dsim.c | 16 +++++++++-------
+ include/drm/bridge/samsung-dsim.h     |  1 +
+ 2 files changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index 73ec60757dbc..6778f1751faa 100644
+index 6778f1751faa..da90c2038042 100644
 --- a/drivers/gpu/drm/bridge/samsung-dsim.c
 +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -1711,7 +1711,10 @@ static int samsung_dsim_host_attach(struct mipi_dsi_host *host,
- 		return ret;
+@@ -611,7 +611,12 @@ static unsigned long samsung_dsim_set_pll(struct samsung_dsim *dsi,
+ 	u16 m;
+ 	u32 reg;
+ 
+-	fin = dsi->pll_clk_rate;
++	if (dsi->pll_clk)
++		fin = clk_get_rate(dsi->pll_clk);
++	else
++		fin = dsi->pll_clk_rate;
++	dev_dbg(dsi->dev, "PLL ref clock freq %lu\n", fin);
++
+ 	fout = samsung_dsim_pll_find_pms(dsi, fin, freq, &p, &m, &s);
+ 	if (!fout) {
+ 		dev_err(dsi->dev,
+@@ -1821,18 +1826,15 @@ static int samsung_dsim_parse_dt(struct samsung_dsim *dsi)
+ 	u32 lane_polarities[5] = { 0 };
+ 	struct device_node *endpoint;
+ 	int i, nr_lanes, ret;
+-	struct clk *pll_clk;
+ 
+ 	ret = samsung_dsim_of_read_u32(node, "samsung,pll-clock-frequency",
+ 				       &dsi->pll_clk_rate, 1);
+ 	/* If it doesn't exist, read it from the clock instead of failing */
+ 	if (ret < 0) {
+ 		dev_dbg(dev, "Using sclk_mipi for pll clock frequency\n");
+-		pll_clk = devm_clk_get(dev, "sclk_mipi");
+-		if (!IS_ERR(pll_clk))
+-			dsi->pll_clk_rate = clk_get_rate(pll_clk);
+-		else
+-			return PTR_ERR(pll_clk);
++		dsi->pll_clk = devm_clk_get(dev, "sclk_mipi");
++		if (IS_ERR(dsi->pll_clk))
++			return PTR_ERR(dsi->pll_clk);
  	}
  
--	DRM_DEV_INFO(dev, "Attached %s device\n", device->name);
-+	DRM_DEV_INFO(dev, "Attached %s device (lanes:%d bpp:%d mode-flags:0x%lx)\n",
-+		     device->name, device->lanes,
-+		     mipi_dsi_pixel_format_to_bpp(device->format),
-+		     device->mode_flags);
- 
- 	drm_bridge_add(&dsi->bridge);
- 
+ 	/* If it doesn't exist, use pixel clock instead of failing */
+diff --git a/include/drm/bridge/samsung-dsim.h b/include/drm/bridge/samsung-dsim.h
+index 05100e91ecb9..31ff88f152fb 100644
+--- a/include/drm/bridge/samsung-dsim.h
++++ b/include/drm/bridge/samsung-dsim.h
+@@ -87,6 +87,7 @@ struct samsung_dsim {
+ 	void __iomem *reg_base;
+ 	struct phy *phy;
+ 	struct clk **clks;
++	struct clk *pll_clk;
+ 	struct regulator_bulk_data supplies[2];
+ 	int irq;
+ 	struct gpio_desc *te_gpio;
 
 -- 
 2.39.2
