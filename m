@@ -2,86 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 892A978B6E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA5E78B6E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbjH1SAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
+        id S232983AbjH1SAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233037AbjH1SAC (ORCPT
+        with ESMTP id S232938AbjH1SAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:00:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7C012E
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:59:58 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so455414766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693245597; x=1693850397;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BjrkEommxgzVsvPeELM83BT2d5xXvo75H1UStaGsfMI=;
-        b=JTayhNgjtHQx8fxD1S0ic9K2eV0gHdK4jVwPvnPUGd2lV1rXAApieBetsa8bytyDW5
-         kMywhMh+NFRhCXY36/qiT3S+8rQTEW+i/V9PBCqjsV/VcP8DScv2dhRyBuZWwt3ghzRB
-         m8KwSRIQ8hTxsukbALZVslO4oivb0kZSsuC3weid+ly8l8KNNyjRfAZzl3BH+KfHXmDv
-         cVrxK6SpS1YGApwo4iLhrKEIW2iBp1nGzCFWGASuUbfp94glhsFkKKjOQVqARPKZbGIs
-         fAxj62ynY1wCpC7pkNCdi5h+EA10oCOXTjyg2BuRZ+r78s9uIXEdtA/l+JpCzH4OUS7m
-         QCuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693245597; x=1693850397;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BjrkEommxgzVsvPeELM83BT2d5xXvo75H1UStaGsfMI=;
-        b=M4Snw3NvUGDd3KDX/fdmpgCH9QpQij4tMXhAhFh1NmO6rsjmdIWKmZ7EUx/90VlaaN
-         kLH7L1L5dCGig+PfjIrsFAW2Cr9EnyhgBNuLiKcdCTKe3w3Mdb9KTVldgSun1tLymVUL
-         mPTB1I0GnOIy6af5EwcIGe57Wwh1eZre4XCdyuIKG6te48yFn/+3QBQQdYRiAV0a+P2X
-         lco8tx3TF4l8Q1xJjKDi3Ndp2fiAxxtNqKEcsGJlhiktwhHmC+4Di9foK3sJGpEmVj53
-         4m/K2DAFmDCnk8SvqHkibmPwdPt5QAO2+Lz0wnDBzc8fJ9RC/I/hqNZWsQh3+G6ikSoC
-         /IbQ==
-X-Gm-Message-State: AOJu0YzjxPLairze2jLakMLbE4aJDsCxNByuVCv8IyE5Ab/hvX9w4jBc
-        ko9E6uWHAELwBIuU51h8oNe9yQ==
-X-Google-Smtp-Source: AGHT+IEgWbg5t5ZGn+L+7J47VuL32+upXijCivlJd+5GNKo6BO3FJ+P2Y6r8QA61T+yNo9WfJ947sA==
-X-Received: by 2002:a17:906:2921:b0:99c:f966:9ea2 with SMTP id v1-20020a170906292100b0099cf9669ea2mr17270150ejd.25.1693245597040;
-        Mon, 28 Aug 2023 10:59:57 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.225])
-        by smtp.gmail.com with ESMTPSA id b8-20020a170906194800b009920e9a3a73sm4921968eje.115.2023.08.28.10.59.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 10:59:56 -0700 (PDT)
-Message-ID: <78aa33f9-ead8-b128-2a7a-40530a1a3ed0@linaro.org>
-Date:   Mon, 28 Aug 2023 19:59:54 +0200
+        Mon, 28 Aug 2023 14:00:12 -0400
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 372ECF9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:00:09 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,208,1688396400"; 
+   d="scan'208";a="177945066"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 29 Aug 2023 03:00:08 +0900
+Received: from localhost.localdomain (unknown [10.226.92.234])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id A5D5A400A8A4;
+        Tue, 29 Aug 2023 03:00:05 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2] ASoC: ak4642: Simplify probe()
+Date:   Mon, 28 Aug 2023 19:00:03 +0100
+Message-Id: <20230828180003.127896-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
-Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com, workflows@vger.kernel.org,
-        tools@linux.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-References: <cover.1693037031.git.quic_gurus@quicinc.com>
- <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
- <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
- <20230828175629.GC23466@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230828175629.GC23466@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,74 +46,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 19:56, Guru Das Srinagesh wrote:
-> On Aug 28 2023 10:21, Krzysztof Kozlowski wrote:
->> On 26/08/2023 10:07, Guru Das Srinagesh wrote:
->>> This script runs get_maintainer.py on a given patch file (or multiple
->>> patch files) and adds its output to the patch file in place with the
->>> appropriate email headers "To: " or "Cc: " as the case may be. These new
->>> headers are added after the "From: " line in the patch.
->>>
->>> Currently, for a single patch, maintainers and reviewers are added as
->>> "To: ", mailing lists and all other roles are added as "Cc: ".
->>>
->>> For a series of patches, however, a set-union scheme is employed in
->>> order to solve the all-too-common problem of ending up sending only
->>> subsets of a patch series to some lists, which results in important
->>> pieces of context such as the cover letter (or other patches in the
->>> series) being dropped from those lists. This scheme is as follows:
->>>
->>> - Create set-union of all maintainers and reviewers from all patches and
->>>   use this to do the following per patch:
->>>   - add only that specific patch's maintainers and reviewers as "To: "
->>>   - add the other maintainers and reviewers from the other patches as "Cc: "
->>>
->>> - Create set-union of all mailing lists corresponding to all patches and
->>>   add this to all patches as "Cc: "
->>>
->>> - Create set-union of all other roles corresponding to all patches and
->>>   add this to all patches as "Cc: "
->>>
->>> Please note that patch files that don't have any "Maintainer"s or
->>> "Reviewers" explicitly listed in their `get_maintainer.pl` output will
->>
->> So before you will ignoring the reviewers, right? One more reason to not
->> get it right...
-> 
-> In v2, Reviewers were added as "Cc:" whereas here in v3 they are added as
-> "To:". Not sure where you're getting "ignoring the reviewers" from.
-> 
->>> not have any "To: " entries added to them; developers are expected to
->>> manually make edits to the added entries in such cases to convert some
->>> "Cc: " entries to "To: " as desired.
->>>
->>> The script is quiet by default (only prints errors) and its verbosity
->>> can be adjusted via an optional parameter.
->>>
->>> Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
->>> ---
->>>  MAINTAINERS               |   5 ++
->>>  scripts/add-maintainer.py | 164 ++++++++++++++++++++++++++++++++++++++
->>>  2 files changed, 169 insertions(+)
->>>  create mode 100755 scripts/add-maintainer.py
->>>
->>
->> I do not see the benefits of this script. For me - it's unnecessarily
->> more complicated instead of my simple bash function which makes
-> 
-> Your function adds mailing lists also in "To:" which is not ideal, in my view.
-> You've mentioned before that To or Cc doesn't matter [1] which I disagree
-> with: it doesn't matter, why does Cc exist as a concept at all?
+Simpilfy probe() by replacing of_device_get_match_data() and id lookup for
+retrieving match data by i2c_get_match_data() and replace
+dev_err()->dev_err_probe().
 
-To/Cc does not matter when sending new patch, because maintainers know
-they are maintainers of which parts. I know what I handle.
+While at it, drop local variable np and use dev_fwnode() instead and
+remove comma in the terminator entry.
 
-To/Cc still makes sense in other cases, when for example you ping
-someone asking for reviews. It also makes much more sense in all
-corpo-worlds where such distinction is obvious. We are not a corpo-world
-here.
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+Note:
+ This patch is only compile tested.
 
+v1->v2:
+ * Removed forward declaration ak4642_of_match and ak4642_i2c_id.
+ * Restored error EINVAL.
+ * Used dev_fwnode() and replaced dev->of_node.
+ * Removed comma in the terminator entry.
+---
+ sound/soc/codecs/ak4642.c | 28 +++++++---------------------
+ 1 file changed, 7 insertions(+), 21 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 2a8984c1fa9c..8a40c6b3f4d8 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -628,37 +628,23 @@ static struct clk *ak4642_of_parse_mcko(struct device *dev)
+ #define ak4642_of_parse_mcko(d) 0
+ #endif
+ 
+-static const struct of_device_id ak4642_of_match[];
+-static const struct i2c_device_id ak4642_i2c_id[];
+ static int ak4642_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct device *dev = &i2c->dev;
+-	struct device_node *np = dev->of_node;
+-	const struct ak4642_drvdata *drvdata = NULL;
++	const struct ak4642_drvdata *drvdata;
+ 	struct regmap *regmap;
+ 	struct ak4642_priv *priv;
+ 	struct clk *mcko = NULL;
+ 
+-	if (np) {
+-		const struct of_device_id *of_id;
+-
++	if (dev_fwnode(dev)) {
+ 		mcko = ak4642_of_parse_mcko(dev);
+ 		if (IS_ERR(mcko))
+ 			mcko = NULL;
+-
+-		of_id = of_match_device(ak4642_of_match, dev);
+-		if (of_id)
+-			drvdata = of_id->data;
+-	} else {
+-		const struct i2c_device_id *id =
+-			i2c_match_id(ak4642_i2c_id, i2c);
+-		drvdata = (const struct ak4642_drvdata *)id->driver_data;
+ 	}
+ 
+-	if (!drvdata) {
+-		dev_err(dev, "Unknown device type\n");
+-		return -EINVAL;
+-	}
++	drvdata = i2c_get_match_data(i2c);
++	if (!drvdata)
++		return dev_err_probe(dev, -EINVAL, "Unknown device type\n");
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -681,7 +667,7 @@ static const struct of_device_id ak4642_of_match[] = {
+ 	{ .compatible = "asahi-kasei,ak4642",	.data = &ak4642_drvdata},
+ 	{ .compatible = "asahi-kasei,ak4643",	.data = &ak4643_drvdata},
+ 	{ .compatible = "asahi-kasei,ak4648",	.data = &ak4648_drvdata},
+-	{},
++	{}
+ };
+ MODULE_DEVICE_TABLE(of, ak4642_of_match);
+ 
+@@ -689,7 +675,7 @@ static const struct i2c_device_id ak4642_i2c_id[] = {
+ 	{ "ak4642", (kernel_ulong_t)&ak4642_drvdata },
+ 	{ "ak4643", (kernel_ulong_t)&ak4643_drvdata },
+ 	{ "ak4648", (kernel_ulong_t)&ak4648_drvdata },
+-	{ }
++	{}
+ };
+ MODULE_DEVICE_TABLE(i2c, ak4642_i2c_id);
+ 
+-- 
+2.25.1
 
