@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D966478AFC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 14:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BCD78AFCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 14:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjH1MNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 08:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S231702AbjH1MOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 08:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjH1MN2 (ORCPT
+        with ESMTP id S230326AbjH1MOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 08:13:28 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4964AD8;
-        Mon, 28 Aug 2023 05:13:26 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id EF67318679C9;
-        Mon, 28 Aug 2023 15:13:22 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id G81cKs3rJnHP; Mon, 28 Aug 2023 15:13:22 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 7AD351867508;
-        Mon, 28 Aug 2023 15:13:22 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EARIoZ7lm7Kq; Mon, 28 Aug 2023 15:13:22 +0300 (MSK)
-Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.233.169])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id BE91818634AE;
-        Mon, 28 Aug 2023 15:13:20 +0300 (MSK)
-From:   Alexandra Diupina <adiupina@astralinux.ru>
-To:     Zhao Qiang <qiang.zhao@nxp.com>
-Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH v3] fsl_ucc_hdlc: process the result of hold_open()
-Date:   Mon, 28 Aug 2023 15:12:35 +0300
-Message-Id: <20230828121235.13953-1-adiupina@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <896acfac-fadb-016b-20ff-a06e18edb4d9@csgroup.eu>
-References: 
+        Mon, 28 Aug 2023 08:14:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C45D8;
+        Mon, 28 Aug 2023 05:14:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC401616D5;
+        Mon, 28 Aug 2023 12:13:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 323EAC433C7;
+        Mon, 28 Aug 2023 12:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693224839;
+        bh=1h6zNsAq1l/WQb9ACNoRBi9h/GHNSaEsK1/Y2bqC2dE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tl+2tXWmTwiEKCfBiigkL7PI3K4KQZGOPyS/j+LPeeFa/9Gu/1Oz4fTFBrvmI89+n
+         6Gt9ltMa1FPWOMQsKXr9EeQR053hDLXQxF9Jm5O4xXRq2j3YXn21kje+W5FMLWa0Wu
+         cmHWJ5PWxtJQOFXTP9rwVx9bJKuyAxBPuj3B6RCplGhi5eXJ+4zR7kEN+BcCkcy2LQ
+         XT01LneleN3EZdcqtrbjOVV5hEH8Z1eKzgNHGfLu2R1b5TR7T8X8bDtc5kVivUNenM
+         EP3Z5eF3s4t7wDZlQdc6sX8/KXiwTAh80M0IOZGhU7+vPN2Ve4rj/1mnmoFmnDYUXc
+         4Z5bwUhXqxAAQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qab89-0003Dl-1a;
+        Mon, 28 Aug 2023 14:14:05 +0200
+Date:   Mon, 28 Aug 2023 14:14:05 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Michal Simek <michal.simek@amd.com>, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Subject: Re: [PATCH] spi: zynqmp-gqspi: fix clock imbalance on probe failure
+Message-ID: <ZOyPjWooMqAv3IWQ@hovoldconsulting.com>
+References: <20230622082435.7873-1-johan+linaro@kernel.org>
+ <168747016057.308826.7806530657100324752.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <168747016057.308826.7806530657100324752.b4-ty@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Process the result of hold_open() and return it from
-uhdlc_open() in case of an error
-It is necessary to pass the error code up the control flow,
-similar to a possible error in request_irq()
+Hi Mark,
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+On Thu, Jun 22, 2023 at 10:42:40PM +0100, Mark Brown wrote:
+> On Thu, 22 Jun 2023 10:24:35 +0200, Johan Hovold wrote:
+> > Make sure that the device is not runtime suspended before explicitly
+> > disabling the clocks on probe failure and on driver unbind to avoid a
+> > clock enable-count imbalance.
+> > 
+> > 
+> 
+> Applied to
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> 
+> Thanks!
+> 
+> [1/1] spi: zynqmp-gqspi: fix clock imbalance on probe failure
+>       commit: 1527b076ae2cb6a9c590a02725ed39399fcad1cf
 
-Fixes: c19b6d246a35 ("drivers/net: support hdlc function for QE-UCC")
-Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
----
-v3: Fix the commits tree
-v2: Remove the 'rc' variable (stores the return value of the=20
-hdlc_open()) as Christophe Leroy <christophe.leroy@csgroup.eu> suggested
- drivers/net/wan/fsl_ucc_hdlc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I noticed that this one is still sitting in your for-next (and for-6.4)
+branch but that it wasn't included in your 6.6 (or 6.5) pull request.
 
-diff --git a/drivers/net/wan/fsl_ucc_hdlc.c b/drivers/net/wan/fsl_ucc_hdl=
-c.c
-index 47c2ad7a3e42..4164abea7725 100644
---- a/drivers/net/wan/fsl_ucc_hdlc.c
-+++ b/drivers/net/wan/fsl_ucc_hdlc.c
-@@ -731,7 +731,7 @@ static int uhdlc_open(struct net_device *dev)
- 		napi_enable(&priv->napi);
- 		netdev_reset_queue(dev);
- 		netif_start_queue(dev);
--		hdlc_open(dev);
-+		return hdlc_open(dev);
- 	}
-=20
- 	return 0;
---=20
-2.30.2
+Did you intend to send it as a fix during the 6.6 cycle or as it fallen
+between the cracks somehow?
 
+Johan
