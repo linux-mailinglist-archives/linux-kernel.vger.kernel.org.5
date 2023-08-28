@@ -2,133 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D46978A5FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C500678A60F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 08:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbjH1GnV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Aug 2023 02:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
+        id S229491AbjH1GtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 02:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjH1Gm4 (ORCPT
+        with ESMTP id S229470AbjH1GtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 02:42:56 -0400
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B22C4;
-        Sun, 27 Aug 2023 23:42:54 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-58ca499456dso35642847b3.1;
-        Sun, 27 Aug 2023 23:42:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693204973; x=1693809773;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1ZAs6BPn0UEnVbrYLaaDeF3O9l7Iturm7FWJFQ5jda0=;
-        b=VAz5SDZnSv/j4h6SjG4uBv8sOT0HChvsC1/jJgIQymXVjMucFLcusx1WPA5CWMaW4O
-         MaqjxMuTCIiFvFr5nIgrOxTqh2L/nVlazbCQgK6V+u6eTrU21RWq+nCzAx6EOz8QRJh2
-         oxG7ltFhQ6dZ4mRdnecCxhGpVB9FUF4jIy6Xnr09PO5FHfs0gYqM0qFVFwUYRSAC2Mex
-         OXIux5OM34WtFn1QAcGXvpYYjHluYItgsqQhUvJ7HcA/Ljnj00FinMQxGV3EXDWLGSon
-         HdEwXybrMl/OIVwdC3zrujq8ACFZZPs7Ag97MtpZSuB84rDn8exZHRVce+TdfHrZRizE
-         tpkA==
-X-Gm-Message-State: AOJu0YxMvHtIySreGZUxGNS0Aj6gbLZeGwc5gaBPrbkL3/02tJMdbBOk
-        J8zV0oAqwt18awLH3ZLcnkePgv2u0PTbxA==
-X-Google-Smtp-Source: AGHT+IEmYuCZ2oQNMpW7RRwA17Ofyq/MfcmWHEuG57kibh5t95/QQvu+3sCttxs8+iZ3o97wiO+7kA==
-X-Received: by 2002:a25:42cc:0:b0:d77:94d6:aa6f with SMTP id p195-20020a2542cc000000b00d7794d6aa6fmr14827618yba.15.1693204973092;
-        Sun, 27 Aug 2023 23:42:53 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id 184-20020a2504c1000000b00c64533e4e20sm1554144ybe.33.2023.08.27.23.42.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Aug 2023 23:42:51 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d780bca9275so2580309276.1;
-        Sun, 27 Aug 2023 23:42:51 -0700 (PDT)
-X-Received: by 2002:a25:8502:0:b0:d7a:e348:1e47 with SMTP id
- w2-20020a258502000000b00d7ae3481e47mr3956815ybk.36.1693204971245; Sun, 27 Aug
- 2023 23:42:51 -0700 (PDT)
+        Mon, 28 Aug 2023 02:49:07 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9414C10D;
+        Sun, 27 Aug 2023 23:49:05 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37S6196F021198;
+        Mon, 28 Aug 2023 06:48:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ZkKeM4FclNAHL+N6xLWvTF+AySgNT0OlDIdrec2T3hM=;
+ b=GZVD8uLF7iary1yUcjjQ82tYYf57VtUakrCt4jZ48c6DoRnNqhT1tmp7rP1MzKNg3jKe
+ ngeAPdHPRA3r3sREWuLwE/GieHQIucQPIrdxZBDqLCGfx2s6mXt/gyJyYzmEG6kifD1I
+ LXIXtH0uwrnEBlRshqA72M+DWUp6eMH0QVPfYIuoAP8aH1D/aDaeSHIVwaITw9XBCuvz
+ Cg6KRBvELuewUzP5CYHPx5gR9GIBfxUgG16fMlHZIej667Ia3rlGjt5u6P4c2b7frN+d
+ 8iMrshmoGgBwjEGjfn6VcaOsO5kjv4HwdNPushoQ+f0GBZaogzlwo+aciKdwbUFvg2aY iQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqa5ptv53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 06:48:49 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37S6ml4d025319
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 06:48:47 GMT
+Received: from [10.217.216.47] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 27 Aug
+ 2023 23:48:42 -0700
+Message-ID: <ef1439f8-4a9b-53b4-34be-1229b39d2310@quicinc.com>
+Date:   Mon, 28 Aug 2023 12:18:30 +0530
 MIME-Version: 1.0
-References: <20230810141947.1236730-1-arnd@kernel.org> <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
- <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com> <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
- <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
-In-Reply-To: <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Aug 2023 08:42:39 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
-Message-ID: <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
-Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@quicinc.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 4/6] clk: qcom: Use HW_CTRL_TRIGGER flag to switch
+ video GDSC to HW mode
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+CC:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Andy Gross" <agross@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>, <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>
+References: <20230816145741.1472721-1-abel.vesa@linaro.org>
+ <20230816145741.1472721-5-abel.vesa@linaro.org>
+ <2fc0d771-cee2-4826-a62a-56ed4bfad3a2@linaro.org>
+ <ZOXiUzxfs1cj3SWT@linaro.org>
+ <07e93a9d-69ac-41b7-aa21-b855b97bf801@linaro.org>
+From:   Jagadeesh Kona <quic_jkona@quicinc.com>
+In-Reply-To: <07e93a9d-69ac-41b7-aa21-b855b97bf801@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: xUzvyVDW9nBF7cT3b23So4sTWTa4jiaO
+X-Proofpoint-GUID: xUzvyVDW9nBF7cT3b23So4sTWTa4jiaO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-28_03,2023-08-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 clxscore=1011 mlxlogscore=721 lowpriorityscore=0
+ spamscore=0 adultscore=0 phishscore=0 impostorscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308280060
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 12:44 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> (Incidentally - did you ever publish the m68k full history tree anywhere
-> in git?)
 
-You mean the gitified version of the Linux/m68k CVS tree Ralf created
-for me because my machine wasn't powerful enough?
-No, and I should look into doing that...
 
-Gr{oetje,eeting}s,
+On 8/26/2023 4:17 PM, Konrad Dybcio wrote:
+> On 23.08.2023 12:41, Abel Vesa wrote:
+>> On 23-08-16 19:56:46, Konrad Dybcio wrote:
+>>> On 16.08.2023 16:57, Abel Vesa wrote:
+>>>> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>>>
+>>>> The current HW_CTRL flag switches the video GDSC to HW control mode as
+>>>> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
+>>>> give consumer drivers more control and switch the GDSC mode as and when
+>>>> required.
+>>>>
+>>>> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
+>>>> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+>>>>
+>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>>> ---
+>>> Do we have any use for the HW_CTRL flag?
+>>>
+>>> Perhaps it should be renamed to HW_CTRL_ALWAYS?
+>>>
+>>> Or even better, *if and only if* that is necessary, add a common
+>>> property like "always_hw_managed" to the genpd code?
+>>
+>> The HW_CTRL flag is still needed for the consumers that expect the GDSC
+>> to be have the HW control bit set right after it gets enabled.
+> Guess the correct question here would be.. Are there any?
+> 
 
-                        Geert
+Yes, Display GDSC(mdss_gdsc) is required to be controlled always in HW 
+control mode when it is enabled.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
+Jagadeesh
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Konrad
