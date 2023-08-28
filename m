@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBF078B147
+	by mail.lfdr.de (Postfix) with ESMTP id 8025A78B146
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbjH1NBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S231755AbjH1NBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbjH1NBU (ORCPT
+        with ESMTP id S232658AbjH1NBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:01:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A85185
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 06:01:12 -0700 (PDT)
+        Mon, 28 Aug 2023 09:01:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026AE12E
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 06:01:14 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693227671;
+        s=2020; t=1693227672;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WNBk6mBKT0EzyMaKmzdJRFwiucQku0cSDbODc/+aTzc=;
-        b=E51t3P/jCDMJG9/UXmAoeqeuOtnPWhVE8D8u4T6kT+tNawEkKwFPUG/tY9oNTQFdLDlaay
-        0fcoSrYVCENknwvQXcGkdBQkeXUcDxJqkky80JSDdHYbzDUlgm1d1YEye1o/mguolxLwwz
-        xug1EN9GS8KBMCaZOwjdgeskB6q9v58T8aHkAkPpZ7Ocx73pB5LibQeuIFsyMCqvGLCWT6
-        pzHMIIIqnOcXzDmFY9KNeZQewrWq0v/z6bUiKbn4zjHSb6jJ/Nri3VpfxXk/4lc7S5KK28
-        +rubGOyMCnQQdFl8Apbjl7BuNTdgiYTI3efqROwuXMj077eYiJo3oSkGmBF0mQ==
+        bh=dS55/bQ5dKbHN1OhA1WYpdr7p8QVvwXXUTSe4DD/np4=;
+        b=cYRqt7Q2GgdKP+rJ9VnTo0n/1reupBcvhpPkbI/QEy5EZgXhsaq9od2p9XoKBZ8uFLlQeC
+        mrGt8RWDV5FW49Eu60a7RTkpR7cZyGxLH/W7fN0Lho0vO0MRYzNGuhaRVJ+N8JwvQm5m8b
+        sPb4Jiuk3ISyGiTMXVHXcYEBqnY3Nob9b2HJiwxYLxjItcLvE+KebCUUF7psSnGq5/cpnT
+        o/Dn8mcp6CcRfucS95hKtmKtpNK1EcxZqzI8qKVC7r83NNHrJFZHEeVkQ8F1++KNv327BS
+        mv+Oy0lx5tBFARgj4wd+vu+Xq7DjdBEg5gooLCYEVp/Bcb1Qj2UWKKxnpIHZGQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693227671;
+        s=2020e; t=1693227672;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WNBk6mBKT0EzyMaKmzdJRFwiucQku0cSDbODc/+aTzc=;
-        b=H/GjyCHmjp4o6Qv5KlYLeiZ7QV73BmzslxRnFQ9bTikeYXrW8tha2cbN9mKnrHKx8YHlXM
-        l121mxpXa3DD4CDA==
+        bh=dS55/bQ5dKbHN1OhA1WYpdr7p8QVvwXXUTSe4DD/np4=;
+        b=cvW7QvVLLDQ7q3nBG5xqKllQHthIsc5rWhHzmtWabMl0hQPhgCl3Z2Vz5xmzqaSxLLvzUn
+        UYCVDLh5H1CbRWAg==
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] irq/core for v6.6-rc1
+Subject: [GIT pull] smp/core for v6.6-rc1
 References: <169322654636.420889.373907562030292433.tglx@xen13.tec.linutronix.de>
-Message-ID: <169322654758.420889.12581588922728486948.tglx@xen13.tec.linutronix.de>
+Message-ID: <169322654880.420889.9261217338657613439.tglx@xen13.tec.linutronix.de>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date:   Mon, 28 Aug 2023 15:01:11 +0200 (CEST)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Date:   Mon, 28 Aug 2023 15:01:12 +0200 (CEST)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,714 +55,571 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-please pull the latest irq/core branch from:
+please pull the latest smp/core branch from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-core-2023-08=
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-2023-08=
 -28
 
-up to:  02362c9a99b6: Merge tag 'irqchip-6.6' of git://git.kernel.org/pub/scm=
-/linux/kernel/git/maz/arm-platforms into irq/core
+up to:  e0a99a839f04: Documentation: core-api/cpuhotplug: Fix state names
 
 
-Boring updates for the interrupt subsystem:
+Updates for the CPU hotplug core:
 
-  Core:
+  - Support partial SMT enablement.
 
-    - Prevent a deadlock of nested interrupt threads vs.
-      synchronize_hard()
+    So far the sysfs SMT control only allows to toggle between SMT on and
+    off. That's sufficient for x86 which usually has at max two threads
+    except for the Xeon PHI platform which has four threads per core.
 
-    - Removal of a stale extern declaration
+    Though PowerPC has up to 16 threads per core and so far it's only
+    possible to control the number of enabled threads per core via a
+    command line option. There is some way to control this at runtime, but
+    that lacks enforcement and the usability is awkward.
 
-  Drivers:
+    This update expands the sysfs interface and the core infrastructure to
+    accept numerical values so PowerPC can build SMT runtime control for
+    partial SMT enablement on top.
 
-    - The first new driver since v6.2 for Amlogic-C3 SoCs
+    The core support has also been provided to the PowerPC maintainers who
+    added the PowerPC related changes on top.
 
-    - The usual small fixes, cleanups and improvements all over
-      the place
+  - Minor cleanups and documentation updates.
 
 Thanks,
 
 	tglx
 
 ------------------>
-Arnd Bergmann (3):
-      irqchip/xtensa-pic: Include header for xtensa_pic_init_legacy()
-      irqchip/mips-gic: Mark gic_irq_domain_free() static
-      irqchipr/i8259: Mark i8259_of_init() static
+Anna-Maria Behnsen (1):
+      Documentation: core-api/cpuhotplug: Fix state names
 
-Bibo Mao (1):
-      irqchip/loongson-eiointc: Fix return value checking of eiointc_index
+Laurent Dufour (2):
+      cpu/hotplug: Remove dependancy against cpu_primary_thread_mask
+      cpu/SMT: Remove topology_smt_supported()
 
-Huqiang Qin (2):
-      dt-bindings: interrupt-controller: Add support for Amlogic-C3 SoCs
-      irqchip: Add support for Amlogic-C3 SoCs
+Michael Ellerman (5):
+      cpu/SMT: Move SMT prototypes into cpu_smt.h
+      cpu/SMT: Move smt/control simple exit cases earlier
+      cpu/SMT: Store the current/max number of threads
+      cpu/SMT: Create topology_smt_thread_allowed()
+      cpu/SMT: Allow enabling partial SMT states via sysfs
 
-Rob Herring (1):
-      irqchip: Explicitly include correct DT includes
+Yue Haibing (1):
+      cpu/hotplug: Remove unused function declaration cpu_set_state_online()
 
-Ruan Jinjie (2):
-      irqchip/imx-mu-msi: Do not check for 0 return after calling platform_ge=
-t_irq()
-      irqchip/irq-pruss-intc: Do not check for 0 return after calling platfor=
-m_get_irq()
-
-Vincent Whitchurch (1):
-      genirq: Prevent nested thread vs synchronize_hardirq() deadlock
-
-Yang Yingliang (1):
-      irqchip/orion: Use of_address_count() helper
-
-Yangtao Li (2):
-      irqchip/ls-scfg-msi: Use devm_platform_get_and_ioremap_resource()
-      irqchip/irq-mvebu-sei: Use devm_platform_get_and_ioremap_resource()
-
-YueHaibing (1):
-      genirq: Remove unused extern declaration
+Zhang Rui (1):
+      cpu/SMT: Fix cpu_smt_possible() comment
 
 
- .../amlogic,meson-gpio-intc.yaml                   |  1 +
- drivers/irqchip/irq-bcm6345-l1.c                   |  1 -
- drivers/irqchip/irq-bcm7038-l1.c                   |  1 -
- drivers/irqchip/irq-brcmstb-l2.c                   |  1 -
- drivers/irqchip/irq-gic-pm.c                       |  2 +-
- drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c        |  2 --
- drivers/irqchip/irq-i8259.c                        |  2 +-
- drivers/irqchip/irq-imx-intmux.c                   |  3 ++-
- drivers/irqchip/irq-imx-irqsteer.c                 |  3 ++-
- drivers/irqchip/irq-imx-mu-msi.c                   |  4 ++--
- drivers/irqchip/irq-keystone.c                     |  2 +-
- drivers/irqchip/irq-loongson-eiointc.c             |  2 +-
- drivers/irqchip/irq-loongson-htvec.c               |  1 -
- drivers/irqchip/irq-loongson-pch-pic.c             |  2 +-
- drivers/irqchip/irq-ls-scfg-msi.c                  |  3 +--
- drivers/irqchip/irq-madera.c                       |  4 +---
- drivers/irqchip/irq-meson-gpio.c                   |  5 +++++
- drivers/irqchip/irq-mips-gic.c                     |  2 +-
- drivers/irqchip/irq-mvebu-sei.c                    |  3 +--
- drivers/irqchip/irq-orion.c                        |  3 +--
- drivers/irqchip/irq-pruss-intc.c                   |  6 ++---
- drivers/irqchip/irq-qcom-mpm.c                     |  2 +-
- drivers/irqchip/irq-renesas-intc-irqpin.c          |  1 -
- drivers/irqchip/irq-st.c                           |  2 +-
- drivers/irqchip/irq-stm32-exti.c                   |  3 ++-
- drivers/irqchip/irq-sunxi-nmi.c                    |  1 -
- drivers/irqchip/irq-tb10x.c                        |  1 -
- drivers/irqchip/irq-ti-sci-inta.c                  |  4 ++--
- drivers/irqchip/irq-ti-sci-intr.c                  |  4 ++--
- drivers/irqchip/irq-uniphier-aidet.c               |  1 -
- drivers/irqchip/irq-xtensa-pic.c                   |  1 +
- drivers/irqchip/irqchip.c                          |  2 +-
- drivers/irqchip/qcom-pdc.c                         |  1 -
- kernel/irq/chip.c                                  | 11 ++++-----
- kernel/irq/internals.h                             |  4 ++--
- kernel/irq/manage.c                                | 26 ++++++++++++--------=
+ Documentation/ABI/testing/sysfs-devices-system-cpu |   1 +
+ Documentation/core-api/cpu_hotplug.rst             |  10 +-
+ arch/Kconfig                                       |   3 +
+ arch/x86/include/asm/topology.h                    |   4 +-
+ arch/x86/kernel/cpu/common.c                       |   2 +-
+ arch/x86/kernel/smpboot.c                          |   8 --
+ include/linux/cpu.h                                |  26 +---
+ include/linux/cpu_smt.h                            |  33 +++++
+ include/linux/cpuhotplug.h                         |   2 +-
+ kernel/cpu.c                                       | 144 +++++++++++++++----=
 --
- 36 files changed, 55 insertions(+), 62 deletions(-)
+ 10 files changed, 152 insertions(+), 81 deletions(-)
+ create mode 100644 include/linux/cpu_smt.h
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/amlogic,m=
-eson-gpio-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/=
-amlogic,meson-gpio-intc.yaml
-index e84e4f33b358..3d06db98e978 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/amlogic,meson-gp=
-io-intc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/amlogic,meson-gp=
-io-intc.yaml
-@@ -35,6 +35,7 @@ properties:
-               - amlogic,meson-sm1-gpio-intc
-               - amlogic,meson-a1-gpio-intc
-               - amlogic,meson-s4-gpio-intc
-+              - amlogic,c3-gpio-intc
-           - const: amlogic,meson-gpio-intc
+diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentati=
+on/ABI/testing/sysfs-devices-system-cpu
+index ecd585ca2d50..6dba65fb1956 100644
+--- a/Documentation/ABI/testing/sysfs-devices-system-cpu
++++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+@@ -555,6 +555,7 @@ Description:	Control Symmetric Multi Threading (SMT)
+ 			 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+ 			 "on"		  SMT is enabled
+ 			 "off"		  SMT is disabled
++			 "<N>"		  SMT is enabled with N threads per core.
+ 			 "forceoff"	  SMT is force disabled. Cannot be changed.
+ 			 "notsupported"   SMT is not supported by the CPU
+ 			 "notimplemented" SMT runtime toggling is not
+diff --git a/Documentation/core-api/cpu_hotplug.rst b/Documentation/core-api/=
+cpu_hotplug.rst
+index e6f5bc39cf5c..b9ae591d0b18 100644
+--- a/Documentation/core-api/cpu_hotplug.rst
++++ b/Documentation/core-api/cpu_hotplug.rst
+@@ -395,8 +395,8 @@ multi-instance state the following function is available:
+ * cpuhp_setup_state_multi(state, name, startup, teardown)
 =20
-   reg:
-diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l=
-1.c
-index 6341c0167c4a..9745a119d0e6 100644
---- a/drivers/irqchip/irq-bcm6345-l1.c
-+++ b/drivers/irqchip/irq-bcm6345-l1.c
-@@ -60,7 +60,6 @@
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/smp.h>
-diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l=
-1.c
-index a62b96237b82..24ca1d656adc 100644
---- a/drivers/irqchip/irq-bcm7038-l1.c
-+++ b/drivers/irqchip/irq-bcm7038-l1.c
-@@ -20,7 +20,6 @@
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/smp.h>
-diff --git a/drivers/irqchip/irq-brcmstb-l2.c b/drivers/irqchip/irq-brcmstb-l=
-2.c
-index 091b0fe7e324..5559c943f03f 100644
---- a/drivers/irqchip/irq-brcmstb-l2.c
-+++ b/drivers/irqchip/irq-brcmstb-l2.c
-@@ -15,7 +15,6 @@
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/io.h>
-diff --git a/drivers/irqchip/irq-gic-pm.c b/drivers/irqchip/irq-gic-pm.c
-index 3989d16f997b..a275a8071a25 100644
---- a/drivers/irqchip/irq-gic-pm.c
-+++ b/drivers/irqchip/irq-gic-pm.c
-@@ -4,7 +4,7 @@
-  */
- #include <linux/module.h>
- #include <linux/clk.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/irqchip/arm-gic.h>
- #include <linux/platform_device.h>
-diff --git a/drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c b/drivers/irqchip/ir=
-q-gic-v3-its-fsl-mc-msi.c
-index 634263dfd7b5..8e87fc35f8aa 100644
---- a/drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c
-+++ b/drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c
-@@ -9,8 +9,6 @@
+ The @state argument is either a statically allocated state or one of the
+-constants for dynamically allocated states - CPUHP_PREPARE_DYN,
+-CPUHP_ONLINE_DYN - depending on the state section (PREPARE, ONLINE) for
++constants for dynamically allocated states - CPUHP_BP_PREPARE_DYN,
++CPUHP_AP_ONLINE_DYN - depending on the state section (PREPARE, ONLINE) for
+ which a dynamic state should be allocated.
 =20
- #include <linux/acpi.h>
- #include <linux/acpi_iort.h>
--#include <linux/of_device.h>
--#include <linux/of_address.h>
- #include <linux/irq.h>
- #include <linux/msi.h>
- #include <linux/of.h>
-diff --git a/drivers/irqchip/irq-i8259.c b/drivers/irqchip/irq-i8259.c
-index b70ce0d3c092..115bdcffab24 100644
---- a/drivers/irqchip/irq-i8259.c
-+++ b/drivers/irqchip/irq-i8259.c
-@@ -340,7 +340,7 @@ static void i8259_irq_dispatch(struct irq_desc *desc)
- 	generic_handle_domain_irq(domain, hwirq);
+ The @name argument is used for sysfs output and for instrumentation. The
+@@ -588,7 +588,7 @@ notifications on online and offline operations::
+ Setup and teardown a dynamically allocated state in the ONLINE section
+ for notifications on offline operations::
+=20
+-   state =3D cpuhp_setup_state(CPUHP_ONLINE_DYN, "subsys:offline", NULL, sub=
+sys_cpu_offline);
++   state =3D cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "subsys:offline", NULL, =
+subsys_cpu_offline);
+    if (state < 0)
+        return state;
+    ....
+@@ -597,7 +597,7 @@ for notifications on offline operations::
+ Setup and teardown a dynamically allocated state in the ONLINE section
+ for notifications on online operations without invoking the callbacks::
+=20
+-   state =3D cpuhp_setup_state_nocalls(CPUHP_ONLINE_DYN, "subsys:online", su=
+bsys_cpu_online, NULL);
++   state =3D cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "subsys:online",=
+ subsys_cpu_online, NULL);
+    if (state < 0)
+        return state;
+    ....
+@@ -606,7 +606,7 @@ for notifications on online operations without invoking t=
+he callbacks::
+ Setup, use and teardown a dynamically allocated multi-instance state in the
+ ONLINE section for notifications on online and offline operation::
+=20
+-   state =3D cpuhp_setup_state_multi(CPUHP_ONLINE_DYN, "subsys:online", subs=
+ys_cpu_online, subsys_cpu_offline);
++   state =3D cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "subsys:online", s=
+ubsys_cpu_online, subsys_cpu_offline);
+    if (state < 0)
+        return state;
+    ....
+diff --git a/arch/Kconfig b/arch/Kconfig
+index aff2746c8af2..63c5d6a2022b 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -34,6 +34,9 @@ config ARCH_HAS_SUBPAGE_FAULTS
+ config HOTPLUG_SMT
+ 	bool
+=20
++config SMT_NUM_THREADS_DYNAMIC
++	bool
++
+ # Selected by HOTPLUG_CORE_SYNC_DEAD or HOTPLUG_CORE_SYNC_FULL
+ config HOTPLUG_CORE_SYNC
+ 	bool
+diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
+index caf41c4869a0..3235ba1e5b06 100644
+--- a/arch/x86/include/asm/topology.h
++++ b/arch/x86/include/asm/topology.h
+@@ -136,10 +136,11 @@ static inline int topology_max_smt_threads(void)
+ 	return __max_smt_threads;
  }
 =20
--int __init i8259_of_init(struct device_node *node, struct device_node *paren=
-t)
-+static int __init i8259_of_init(struct device_node *node, struct device_node=
- *parent)
- {
- 	struct irq_domain *domain;
- 	unsigned int parent_irq;
-diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmu=
-x.c
-index 80aaea82468a..6d9a08238c9d 100644
---- a/drivers/irqchip/irq-imx-intmux.c
-+++ b/drivers/irqchip/irq-imx-intmux.c
-@@ -50,8 +50,9 @@
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
- #include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/spinlock.h>
- #include <linux/pm_runtime.h>
++#include <linux/cpu_smt.h>
++
+ int topology_update_package_map(unsigned int apicid, unsigned int cpu);
+ int topology_update_die_map(unsigned int dieid, unsigned int cpu);
+ int topology_phys_to_logical_pkg(unsigned int pkg);
+-bool topology_smt_supported(void);
 =20
-diff --git a/drivers/irqchip/irq-imx-irqsteer.c b/drivers/irqchip/irq-imx-irq=
-steer.c
-index 96230a04ec23..bd9543314539 100644
---- a/drivers/irqchip/irq-imx-irqsteer.c
-+++ b/drivers/irqchip/irq-imx-irqsteer.c
-@@ -10,8 +10,9 @@
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
- #include <linux/kernel.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/spinlock.h>
+ extern struct cpumask __cpu_primary_thread_mask;
+ #define cpu_primary_thread_mask ((const struct cpumask *)&__cpu_primary_thre=
+ad_mask)
+@@ -162,7 +163,6 @@ static inline int topology_phys_to_logical_pkg(unsigned i=
+nt pkg) { return 0; }
+ static inline int topology_max_die_per_package(void) { return 1; }
+ static inline int topology_max_smt_threads(void) { return 1; }
+ static inline bool topology_is_primary_thread(unsigned int cpu) { return tru=
+e; }
+-static inline bool topology_smt_supported(void) { return false; }
+ #endif /* !CONFIG_SMP */
 =20
-diff --git a/drivers/irqchip/irq-imx-mu-msi.c b/drivers/irqchip/irq-imx-mu-ms=
-i.c
-index 229039eda1b1..90d41c1407ac 100644
---- a/drivers/irqchip/irq-imx-mu-msi.c
-+++ b/drivers/irqchip/irq-imx-mu-msi.c
-@@ -339,8 +339,8 @@ static int __init imx_mu_of_init(struct device_node *dn,
- 	msi_data->msiir_addr =3D res->start + msi_data->cfg->xTR;
+ static inline void arch_fix_phys_package_id(int num, u32 slot)
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 52683fddafaf..12a48a85da3d 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -2317,7 +2317,7 @@ void __init arch_cpu_finalize_init(void)
+ 	 * identify_boot_cpu() initialized SMT support information, let the
+ 	 * core code know.
+ 	 */
+-	cpu_smt_check_topology();
++	cpu_smt_set_num_threads(smp_num_siblings, smp_num_siblings);
 =20
- 	irq =3D platform_get_irq(pdev, 0);
--	if (irq <=3D 0)
--		return -ENODEV;
-+	if (irq < 0)
-+		return irq;
+ 	if (!IS_ENABLED(CONFIG_SMP)) {
+ 		pr_info("CPU: ");
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index e1aa2cd7734b..d4e897b820c4 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -326,14 +326,6 @@ static void notrace start_secondary(void *unused)
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+ }
 =20
- 	platform_set_drvdata(pdev, msi_data);
+-/**
+- * topology_smt_supported - Check whether SMT is supported by the CPUs
+- */
+-bool topology_smt_supported(void)
+-{
+-	return smp_num_siblings > 1;
+-}
+-
+ /**
+  * topology_phys_to_logical_pkg - Map a physical package id to a logical
+  * @phys_pkg:	The physical package id to map
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 6e6e57ec69e8..ed56b2534500 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -18,6 +18,7 @@
+ #include <linux/compiler.h>
+ #include <linux/cpumask.h>
+ #include <linux/cpuhotplug.h>
++#include <linux/cpu_smt.h>
 =20
-diff --git a/drivers/irqchip/irq-keystone.c b/drivers/irqchip/irq-keystone.c
-index ba9792e60329..a36396db4b08 100644
---- a/drivers/irqchip/irq-keystone.c
-+++ b/drivers/irqchip/irq-keystone.c
-@@ -15,7 +15,7 @@
- #include <linux/irqdomain.h>
- #include <linux/irqchip.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
+ struct device;
+ struct device_node;
+@@ -190,7 +191,6 @@ void arch_cpu_finalize_init(void);
+ static inline void arch_cpu_finalize_init(void) { }
+ #endif
 =20
-diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loo=
-ngson-eiointc.c
-index 92d8aa28bdf5..1623cd779175 100644
---- a/drivers/irqchip/irq-loongson-eiointc.c
-+++ b/drivers/irqchip/irq-loongson-eiointc.c
-@@ -144,7 +144,7 @@ static int eiointc_router_init(unsigned int cpu)
- 	int i, bit;
- 	uint32_t data;
- 	uint32_t node =3D cpu_to_eio_node(cpu);
--	uint32_t index =3D eiointc_index(node);
-+	int index =3D eiointc_index(node);
+-void cpu_set_state_online(int cpu);
+ void play_idle_precise(u64 duration_ns, u64 latency_ns);
 =20
- 	if (index < 0) {
- 		pr_err("Error: invalid nodemap!\n");
-diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loong=
-son-htvec.c
-index fc8bf1f5d41b..0bff728b25e3 100644
---- a/drivers/irqchip/irq-loongson-htvec.c
-+++ b/drivers/irqchip/irq-loongson-htvec.c
-@@ -15,7 +15,6 @@
- #include <linux/platform_device.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
- #include <linux/syscore_ops.h>
+ static inline void play_idle(unsigned long duration_us)
+@@ -204,30 +204,6 @@ void cpuhp_report_idle_dead(void);
+ static inline void cpuhp_report_idle_dead(void) { }
+ #endif /* #ifdef CONFIG_HOTPLUG_CPU */
 =20
- /* Registers */
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loo=
-ngson-pch-pic.c
-index 93a71f66efeb..63db8e2172e0 100644
---- a/drivers/irqchip/irq-loongson-pch-pic.c
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -12,9 +12,9 @@
- #include <linux/irqdomain.h>
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
- #include <linux/syscore_ops.h>
+-enum cpuhp_smt_control {
+-	CPU_SMT_ENABLED,
+-	CPU_SMT_DISABLED,
+-	CPU_SMT_FORCE_DISABLED,
+-	CPU_SMT_NOT_SUPPORTED,
+-	CPU_SMT_NOT_IMPLEMENTED,
+-};
+-
+-#if defined(CONFIG_SMP) && defined(CONFIG_HOTPLUG_SMT)
+-extern enum cpuhp_smt_control cpu_smt_control;
+-extern void cpu_smt_disable(bool force);
+-extern void cpu_smt_check_topology(void);
+-extern bool cpu_smt_possible(void);
+-extern int cpuhp_smt_enable(void);
+-extern int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval);
+-#else
+-# define cpu_smt_control		(CPU_SMT_NOT_IMPLEMENTED)
+-static inline void cpu_smt_disable(bool force) { }
+-static inline void cpu_smt_check_topology(void) { }
+-static inline bool cpu_smt_possible(void) { return false; }
+-static inline int cpuhp_smt_enable(void) { return 0; }
+-static inline int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval) { return=
+ 0; }
+-#endif
+-
+ extern bool cpu_mitigations_off(void);
+ extern bool cpu_mitigations_auto_nosmt(void);
 =20
- /* Registers */
-diff --git a/drivers/irqchip/irq-ls-scfg-msi.c b/drivers/irqchip/irq-ls-scfg-=
-msi.c
-index f5ba3f9f8415..f31a262fe438 100644
---- a/drivers/irqchip/irq-ls-scfg-msi.c
-+++ b/drivers/irqchip/irq-ls-scfg-msi.c
-@@ -349,8 +349,7 @@ static int ls_scfg_msi_probe(struct platform_device *pdev)
-=20
- 	msi_data->cfg =3D (struct ls_scfg_msi_cfg *) match->data;
-=20
--	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	msi_data->regs =3D devm_ioremap_resource(&pdev->dev, res);
-+	msi_data->regs =3D devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(msi_data->regs)) {
- 		dev_err(&pdev->dev, "failed to initialize 'regs'\n");
- 		return PTR_ERR(msi_data->regs);
-diff --git a/drivers/irqchip/irq-madera.c b/drivers/irqchip/irq-madera.c
-index 8b81271c823c..3eb1f8cdf674 100644
---- a/drivers/irqchip/irq-madera.c
-+++ b/drivers/irqchip/irq-madera.c
-@@ -10,12 +10,10 @@
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/irqdomain.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
- #include <linux/irqchip/irq-madera.h>
- #include <linux/mfd/madera/core.h>
- #include <linux/mfd/madera/pdata.h>
-diff --git a/drivers/irqchip/irq-meson-gpio.c b/drivers/irqchip/irq-meson-gpi=
-o.c
-index 7da18ef95211..f88df39f4129 100644
---- a/drivers/irqchip/irq-meson-gpio.c
-+++ b/drivers/irqchip/irq-meson-gpio.c
-@@ -150,6 +150,10 @@ static const struct meson_gpio_irq_params s4_params =3D {
- 	INIT_MESON_S4_COMMON_DATA(82)
- };
-=20
-+static const struct meson_gpio_irq_params c3_params =3D {
-+	INIT_MESON_S4_COMMON_DATA(55)
+diff --git a/include/linux/cpu_smt.h b/include/linux/cpu_smt.h
+new file mode 100644
+index 000000000000..0c1664294b57
+--- /dev/null
++++ b/include/linux/cpu_smt.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_CPU_SMT_H_
++#define _LINUX_CPU_SMT_H_
++
++enum cpuhp_smt_control {
++	CPU_SMT_ENABLED,
++	CPU_SMT_DISABLED,
++	CPU_SMT_FORCE_DISABLED,
++	CPU_SMT_NOT_SUPPORTED,
++	CPU_SMT_NOT_IMPLEMENTED,
 +};
 +
- static const struct of_device_id meson_irq_gpio_matches[] __maybe_unused =3D=
++#if defined(CONFIG_SMP) && defined(CONFIG_HOTPLUG_SMT)
++extern enum cpuhp_smt_control cpu_smt_control;
++extern unsigned int cpu_smt_num_threads;
++extern void cpu_smt_disable(bool force);
++extern void cpu_smt_set_num_threads(unsigned int num_threads,
++				    unsigned int max_threads);
++extern bool cpu_smt_possible(void);
++extern int cpuhp_smt_enable(void);
++extern int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval);
++#else
++# define cpu_smt_control               (CPU_SMT_NOT_IMPLEMENTED)
++# define cpu_smt_num_threads 1
++static inline void cpu_smt_disable(bool force) { }
++static inline void cpu_smt_set_num_threads(unsigned int num_threads,
++					   unsigned int max_threads) { }
++static inline bool cpu_smt_possible(void) { return false; }
++static inline int cpuhp_smt_enable(void) { return 0; }
++static inline int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval) { return=
+ 0; }
++#endif
++
++#endif /* _LINUX_CPU_SMT_H_ */
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 25b6e6e6ba6b..06dda85f0424 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -48,7 +48,7 @@
+  *    same section.
+  *
+  * If neither #1 nor #2 apply, please use the dynamic state space when
+- * setting up a state by using CPUHP_PREPARE_DYN or CPUHP_PREPARE_ONLINE
++ * setting up a state by using CPUHP_BP_PREPARE_DYN or CPUHP_AP_ONLINE_DYN
+  * for the @state argument of the setup function.
+  *
+  * See Documentation/core-api/cpu_hotplug.rst for further information and
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 88a7ede322bd..f6811c857102 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -592,7 +592,10 @@ static void lockdep_release_cpus_lock(void)
+ void __weak arch_smt_update(void) { }
+=20
+ #ifdef CONFIG_HOTPLUG_SMT
++
+ enum cpuhp_smt_control cpu_smt_control __read_mostly =3D CPU_SMT_ENABLED;
++static unsigned int cpu_smt_max_threads __ro_after_init;
++unsigned int cpu_smt_num_threads __read_mostly =3D UINT_MAX;
+=20
+ void __init cpu_smt_disable(bool force)
  {
- 	{ .compatible =3D "amlogic,meson8-gpio-intc", .data =3D &meson8_params },
- 	{ .compatible =3D "amlogic,meson8b-gpio-intc", .data =3D &meson8b_params },
-@@ -160,6 +164,7 @@ static const struct of_device_id meson_irq_gpio_matches[]=
- __maybe_unused =3D {
- 	{ .compatible =3D "amlogic,meson-sm1-gpio-intc", .data =3D &sm1_params },
- 	{ .compatible =3D "amlogic,meson-a1-gpio-intc", .data =3D &a1_params },
- 	{ .compatible =3D "amlogic,meson-s4-gpio-intc", .data =3D &s4_params },
-+	{ .compatible =3D "amlogic,c3-gpio-intc", .data =3D &c3_params },
- 	{ }
- };
-=20
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 6d5ecc10a870..76253e864f23 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -557,7 +557,7 @@ static int gic_irq_domain_alloc(struct irq_domain *d, uns=
-igned int virq,
- 	return gic_irq_domain_map(d, virq, hwirq);
+@@ -606,16 +609,33 @@ void __init cpu_smt_disable(bool force)
+ 		pr_info("SMT: disabled\n");
+ 		cpu_smt_control =3D CPU_SMT_DISABLED;
+ 	}
++	cpu_smt_num_threads =3D 1;
  }
-=20
--void gic_irq_domain_free(struct irq_domain *d, unsigned int virq,
-+static void gic_irq_domain_free(struct irq_domain *d, unsigned int virq,
- 			 unsigned int nr_irqs)
- {
- }
-diff --git a/drivers/irqchip/irq-mvebu-sei.c b/drivers/irqchip/irq-mvebu-sei.c
-index 4ecef6d83777..a48dbe91b036 100644
---- a/drivers/irqchip/irq-mvebu-sei.c
-+++ b/drivers/irqchip/irq-mvebu-sei.c
-@@ -377,8 +377,7 @@ static int mvebu_sei_probe(struct platform_device *pdev)
- 	mutex_init(&sei->cp_msi_lock);
- 	raw_spin_lock_init(&sei->mask_lock);
-=20
--	sei->res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	sei->base =3D devm_ioremap_resource(sei->dev, sei->res);
-+	sei->base =3D devm_platform_get_and_ioremap_resource(pdev, 0, &sei->res);
- 	if (IS_ERR(sei->base))
- 		return PTR_ERR(sei->base);
-=20
-diff --git a/drivers/irqchip/irq-orion.c b/drivers/irqchip/irq-orion.c
-index 17c2c7a07f10..4e4e874e09a8 100644
---- a/drivers/irqchip/irq-orion.c
-+++ b/drivers/irqchip/irq-orion.c
-@@ -57,8 +57,7 @@ static int __init orion_irq_init(struct device_node *np,
- 	struct resource r;
-=20
- 	/* count number of irq chips by valid reg addresses */
--	while (of_address_to_resource(np, num_chips, &r) =3D=3D 0)
--		num_chips++;
-+	num_chips =3D of_address_count(np);
-=20
- 	orion_irq_domain =3D irq_domain_add_linear(np,
- 				num_chips * ORION_IRQS_PER_CHIP,
-diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-int=
-c.c
-index fa8d89b02ec0..0f64ecb9b1f4 100644
---- a/drivers/irqchip/irq-pruss-intc.c
-+++ b/drivers/irqchip/irq-pruss-intc.c
-@@ -17,7 +17,7 @@
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
 =20
  /*
-@@ -565,8 +565,8 @@ static int pruss_intc_probe(struct platform_device *pdev)
- 			continue;
-=20
- 		irq =3D platform_get_irq_byname(pdev, irq_names[i]);
--		if (irq <=3D 0) {
--			ret =3D (irq =3D=3D 0) ? -EINVAL : irq;
-+		if (irq < 0) {
-+			ret =3D irq;
- 			goto fail_irq;
- 		}
-=20
-diff --git a/drivers/irqchip/irq-qcom-mpm.c b/drivers/irqchip/irq-qcom-mpm.c
-index d30614661eea..7124565234a5 100644
---- a/drivers/irqchip/irq-qcom-mpm.c
-+++ b/drivers/irqchip/irq-qcom-mpm.c
-@@ -14,7 +14,7 @@
- #include <linux/mailbox_client.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/slab.h>
-diff --git a/drivers/irqchip/irq-renesas-intc-irqpin.c b/drivers/irqchip/irq-=
-renesas-intc-irqpin.c
-index 26e4c17a7bf2..fa19585f3dee 100644
---- a/drivers/irqchip/irq-renesas-intc-irqpin.c
-+++ b/drivers/irqchip/irq-renesas-intc-irqpin.c
-@@ -17,7 +17,6 @@
- #include <linux/err.h>
- #include <linux/slab.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/pm_runtime.h>
-=20
- #define INTC_IRQPIN_MAX 8 /* maximum 8 interrupts per driver instance */
-diff --git a/drivers/irqchip/irq-st.c b/drivers/irqchip/irq-st.c
-index 819a12297b58..de71bb350d57 100644
---- a/drivers/irqchip/irq-st.c
-+++ b/drivers/irqchip/irq-st.c
-@@ -10,7 +10,7 @@
- #include <dt-bindings/interrupt-controller/irq-st.h>
- #include <linux/err.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-ext=
-i.c
-index b5fa76ce5046..d8ba5fba7450 100644
---- a/drivers/irqchip/irq-stm32-exti.c
-+++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -14,10 +14,11 @@
- #include <linux/irqchip.h>
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/syscore_ops.h>
-=20
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-diff --git a/drivers/irqchip/irq-sunxi-nmi.c b/drivers/irqchip/irq-sunxi-nmi.c
-index 21d49791f855..e760b1278143 100644
---- a/drivers/irqchip/irq-sunxi-nmi.c
-+++ b/drivers/irqchip/irq-sunxi-nmi.c
-@@ -19,7 +19,6 @@
- #include <linux/irqdomain.h>
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
- #include <linux/irqchip.h>
- #include <linux/irqchip/chained_irq.h>
-=20
-diff --git a/drivers/irqchip/irq-tb10x.c b/drivers/irqchip/irq-tb10x.c
-index 8a0e69298e83..680586354d12 100644
---- a/drivers/irqchip/irq-tb10x.c
-+++ b/drivers/irqchip/irq-tb10x.c
-@@ -13,7 +13,6 @@
- #include <linux/irqchip.h>
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/bitops.h>
-diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-i=
-nta.c
-index 7133f9fa6fd9..b83f5cbab123 100644
---- a/drivers/irqchip/irq-ti-sci-inta.c
-+++ b/drivers/irqchip/irq-ti-sci-inta.c
-@@ -15,9 +15,9 @@
- #include <linux/msi.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/of_address.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/irqchip/chained_irq.h>
- #include <linux/soc/ti/ti_sci_inta_msi.h>
- #include <linux/soc/ti/ti_sci_protocol.h>
-diff --git a/drivers/irqchip/irq-ti-sci-intr.c b/drivers/irqchip/irq-ti-sci-i=
-ntr.c
-index 1186f1e431a3..c027cd9e4a69 100644
---- a/drivers/irqchip/irq-ti-sci-intr.c
-+++ b/drivers/irqchip/irq-ti-sci-intr.c
-@@ -12,9 +12,9 @@
- #include <linux/io.h>
- #include <linux/irqchip.h>
- #include <linux/irqdomain.h>
--#include <linux/of_platform.h>
--#include <linux/of_address.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
-+#include <linux/platform_device.h>
- #include <linux/soc/ti/ti_sci_protocol.h>
-=20
- /**
-diff --git a/drivers/irqchip/irq-uniphier-aidet.c b/drivers/irqchip/irq-uniph=
-ier-aidet.c
-index 716b1bb88bf2..601f9343d5b3 100644
---- a/drivers/irqchip/irq-uniphier-aidet.c
-+++ b/drivers/irqchip/irq-uniphier-aidet.c
-@@ -12,7 +12,6 @@
- #include <linux/irqdomain.h>
- #include <linux/kernel.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_irq.h>
- #include <linux/platform_device.h>
- #include <linux/spinlock.h>
-diff --git a/drivers/irqchip/irq-xtensa-pic.c b/drivers/irqchip/irq-xtensa-pi=
-c.c
-index ab12328be5ee..0c18d1f1e264 100644
---- a/drivers/irqchip/irq-xtensa-pic.c
-+++ b/drivers/irqchip/irq-xtensa-pic.c
-@@ -16,6 +16,7 @@
- #include <linux/irqdomain.h>
- #include <linux/irq.h>
- #include <linux/irqchip.h>
-+#include <linux/irqchip/xtensa-pic.h>
- #include <linux/of.h>
-=20
- unsigned int cached_irq_mask;
-diff --git a/drivers/irqchip/irqchip.c b/drivers/irqchip/irqchip.c
-index 7899607fbee8..1eeb0d0156ce 100644
---- a/drivers/irqchip/irqchip.c
-+++ b/drivers/irqchip/irqchip.c
-@@ -10,7 +10,7 @@
-=20
- #include <linux/acpi.h>
- #include <linux/init.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/irqchip.h>
- #include <linux/platform_device.h>
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index d96916cf6a41..a32c0d28d038 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -14,7 +14,6 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/of_irq.h>
- #include <linux/soc/qcom/irq.h>
- #include <linux/spinlock.h>
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index ee8c0acf39df..dc94e0bf2c94 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -473,11 +473,12 @@ void handle_nested_irq(unsigned int irq)
- 	action =3D desc->action;
- 	if (unlikely(!action || irqd_irq_disabled(&desc->irq_data))) {
- 		desc->istate |=3D IRQS_PENDING;
--		goto out_unlock;
-+		raw_spin_unlock_irq(&desc->lock);
-+		return;
- 	}
-=20
- 	kstat_incr_irqs_this_cpu(desc);
--	irqd_set(&desc->irq_data, IRQD_IRQ_INPROGRESS);
-+	atomic_inc(&desc->threads_active);
- 	raw_spin_unlock_irq(&desc->lock);
-=20
- 	action_ret =3D IRQ_NONE;
-@@ -487,11 +488,7 @@ void handle_nested_irq(unsigned int irq)
- 	if (!irq_settings_no_debug(desc))
- 		note_interrupt(desc, action_ret);
-=20
--	raw_spin_lock_irq(&desc->lock);
--	irqd_clear(&desc->irq_data, IRQD_IRQ_INPROGRESS);
--
--out_unlock:
--	raw_spin_unlock_irq(&desc->lock);
-+	wake_threads_waitq(desc);
- }
- EXPORT_SYMBOL_GPL(handle_nested_irq);
-=20
-diff --git a/kernel/irq/internals.h b/kernel/irq/internals.h
-index bdd35bb9c735..bcc7f21db9ee 100644
---- a/kernel/irq/internals.h
-+++ b/kernel/irq/internals.h
-@@ -108,8 +108,6 @@ extern int __irq_get_irqchip_state(struct irq_data *data,
- 				   enum irqchip_irq_state which,
- 				   bool *state);
-=20
--extern void init_kstat_irqs(struct irq_desc *desc, int node, int nr);
--
- irqreturn_t __handle_irq_event_percpu(struct irq_desc *desc);
- irqreturn_t handle_irq_event_percpu(struct irq_desc *desc);
- irqreturn_t handle_irq_event(struct irq_desc *desc);
-@@ -121,6 +119,8 @@ void irq_resend_init(struct irq_desc *desc);
- bool irq_wait_for_poll(struct irq_desc *desc);
- void __irq_wake_thread(struct irq_desc *desc, struct irqaction *action);
-=20
-+void wake_threads_waitq(struct irq_desc *desc);
+  * The decision whether SMT is supported can only be done after the full
+  * CPU identification. Called from architecture code.
+  */
+-void __init cpu_smt_check_topology(void)
++void __init cpu_smt_set_num_threads(unsigned int num_threads,
++				    unsigned int max_threads)
+ {
+-	if (!topology_smt_supported())
++	WARN_ON(!num_threads || (num_threads > max_threads));
 +
- #ifdef CONFIG_PROC_FS
- extern void register_irq_proc(unsigned int irq, struct irq_desc *desc);
- extern void unregister_irq_proc(unsigned int irq, struct irq_desc *desc);
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index d2742af0f0fd..d309ba84e08a 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -108,6 +108,16 @@ bool synchronize_hardirq(unsigned int irq)
- }
- EXPORT_SYMBOL(synchronize_hardirq);
-=20
-+static void __synchronize_irq(struct irq_desc *desc)
-+{
-+	__synchronize_hardirq(desc, true);
++	if (max_threads =3D=3D 1)
+ 		cpu_smt_control =3D CPU_SMT_NOT_SUPPORTED;
++
++	cpu_smt_max_threads =3D max_threads;
++
 +	/*
-+	 * We made sure that no hardirq handler is running. Now verify that no
-+	 * threaded handlers are active.
++	 * If SMT has been disabled via the kernel command line or SMT is
++	 * not supported, set cpu_smt_num_threads to 1 for consistency.
++	 * If enabled, take the architecture requested number of threads
++	 * to bring up into account.
 +	 */
-+	wait_event(desc->wait_for_threads, !atomic_read(&desc->threads_active));
++	if (cpu_smt_control !=3D CPU_SMT_ENABLED)
++		cpu_smt_num_threads =3D 1;
++	else if (num_threads < cpu_smt_num_threads)
++		cpu_smt_num_threads =3D num_threads;
+ }
+=20
+ static int __init smt_cmdline_disable(char *str)
+@@ -625,9 +645,23 @@ static int __init smt_cmdline_disable(char *str)
+ }
+ early_param("nosmt", smt_cmdline_disable);
+=20
++/*
++ * For Archicture supporting partial SMT states check if the thread is allow=
+ed.
++ * Otherwise this has already been checked through cpu_smt_max_threads when
++ * setting the SMT level.
++ */
++static inline bool cpu_smt_thread_allowed(unsigned int cpu)
++{
++#ifdef CONFIG_SMT_NUM_THREADS_DYNAMIC
++	return topology_smt_thread_allowed(cpu);
++#else
++	return true;
++#endif
 +}
 +
- /**
-  *	synchronize_irq - wait for pending IRQ handlers (on other CPUs)
-  *	@irq: interrupt number to wait for
-@@ -127,16 +137,8 @@ void synchronize_irq(unsigned int irq)
+ static inline bool cpu_smt_allowed(unsigned int cpu)
  {
- 	struct irq_desc *desc =3D irq_to_desc(irq);
+-	if (cpu_smt_control =3D=3D CPU_SMT_ENABLED)
++	if (cpu_smt_control =3D=3D CPU_SMT_ENABLED && cpu_smt_thread_allowed(cpu))
+ 		return true;
 =20
--	if (desc) {
--		__synchronize_hardirq(desc, true);
--		/*
--		 * We made sure that no hardirq handler is
--		 * running. Now verify that no threaded handlers are
--		 * active.
--		 */
--		wait_event(desc->wait_for_threads,
--			   !atomic_read(&desc->threads_active));
+ 	if (topology_is_primary_thread(cpu))
+@@ -642,7 +676,7 @@ static inline bool cpu_smt_allowed(unsigned int cpu)
+ 	return !cpumask_test_cpu(cpu, &cpus_booted_once_mask);
+ }
+=20
+-/* Returns true if SMT is not supported of forcefully (irreversibly) disable=
+d */
++/* Returns true if SMT is supported and not forcefully (irreversibly) disabl=
+ed */
+ bool cpu_smt_possible(void)
+ {
+ 	return cpu_smt_control !=3D CPU_SMT_FORCE_DISABLED &&
+@@ -650,22 +684,8 @@ bool cpu_smt_possible(void)
+ }
+ EXPORT_SYMBOL_GPL(cpu_smt_possible);
+=20
+-static inline bool cpuhp_smt_aware(void)
+-{
+-	return topology_smt_supported();
+-}
+-
+-static inline const struct cpumask *cpuhp_get_primary_thread_mask(void)
+-{
+-	return cpu_primary_thread_mask;
+-}
+ #else
+ static inline bool cpu_smt_allowed(unsigned int cpu) { return true; }
+-static inline bool cpuhp_smt_aware(void) { return false; }
+-static inline const struct cpumask *cpuhp_get_primary_thread_mask(void)
+-{
+-	return cpu_present_mask;
+-}
+ #endif
+=20
+ static inline enum cpuhp_state
+@@ -1793,6 +1813,16 @@ static int __init parallel_bringup_parse_param(char *a=
+rg)
+ }
+ early_param("cpuhp.parallel", parallel_bringup_parse_param);
+=20
++static inline bool cpuhp_smt_aware(void)
++{
++	return cpu_smt_max_threads > 1;
++}
++
++static inline const struct cpumask *cpuhp_get_primary_thread_mask(void)
++{
++	return cpu_primary_thread_mask;
++}
++
+ /*
+  * On architectures which have enabled parallel bringup this invokes all BP
+  * prepare states for each of the to be onlined APs first. The last state
+@@ -2626,6 +2656,12 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+ 	for_each_online_cpu(cpu) {
+ 		if (topology_is_primary_thread(cpu))
+ 			continue;
++		/*
++		 * Disable can be called with CPU_SMT_ENABLED when changing
++		 * from a higher to lower number of SMT threads per core.
++		 */
++		if (ctrlval =3D=3D CPU_SMT_ENABLED && cpu_smt_thread_allowed(cpu))
++			continue;
+ 		ret =3D cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
+ 		if (ret)
+ 			break;
+@@ -2660,6 +2696,8 @@ int cpuhp_smt_enable(void)
+ 		/* Skip online CPUs and CPUs on offline nodes */
+ 		if (cpu_online(cpu) || !node_online(cpu_to_node(cpu)))
+ 			continue;
++		if (!cpu_smt_thread_allowed(cpu))
++			continue;
+ 		ret =3D _cpu_up(cpu, 0, CPUHP_ONLINE);
+ 		if (ret)
+ 			break;
+@@ -2838,20 +2876,19 @@ static const struct attribute_group cpuhp_cpu_root_at=
+tr_group =3D {
+=20
+ #ifdef CONFIG_HOTPLUG_SMT
+=20
++static bool cpu_smt_num_threads_valid(unsigned int threads)
++{
++	if (IS_ENABLED(CONFIG_SMT_NUM_THREADS_DYNAMIC))
++		return threads >=3D 1 && threads <=3D cpu_smt_max_threads;
++	return threads =3D=3D 1 || threads =3D=3D cpu_smt_max_threads;
++}
++
+ static ssize_t
+ __store_smt_control(struct device *dev, struct device_attribute *attr,
+ 		    const char *buf, size_t count)
+ {
+-	int ctrlval, ret;
+-
+-	if (sysfs_streq(buf, "on"))
+-		ctrlval =3D CPU_SMT_ENABLED;
+-	else if (sysfs_streq(buf, "off"))
+-		ctrlval =3D CPU_SMT_DISABLED;
+-	else if (sysfs_streq(buf, "forceoff"))
+-		ctrlval =3D CPU_SMT_FORCE_DISABLED;
+-	else
+-		return -EINVAL;
++	int ctrlval, ret, num_threads, orig_threads;
++	bool force_off;
+=20
+ 	if (cpu_smt_control =3D=3D CPU_SMT_FORCE_DISABLED)
+ 		return -EPERM;
+@@ -2859,21 +2896,39 @@ __store_smt_control(struct device *dev, struct device=
+_attribute *attr,
+ 	if (cpu_smt_control =3D=3D CPU_SMT_NOT_SUPPORTED)
+ 		return -ENODEV;
+=20
++	if (sysfs_streq(buf, "on")) {
++		ctrlval =3D CPU_SMT_ENABLED;
++		num_threads =3D cpu_smt_max_threads;
++	} else if (sysfs_streq(buf, "off")) {
++		ctrlval =3D CPU_SMT_DISABLED;
++		num_threads =3D 1;
++	} else if (sysfs_streq(buf, "forceoff")) {
++		ctrlval =3D CPU_SMT_FORCE_DISABLED;
++		num_threads =3D 1;
++	} else if (kstrtoint(buf, 10, &num_threads) =3D=3D 0) {
++		if (num_threads =3D=3D 1)
++			ctrlval =3D CPU_SMT_DISABLED;
++		else if (cpu_smt_num_threads_valid(num_threads))
++			ctrlval =3D CPU_SMT_ENABLED;
++		else
++			return -EINVAL;
++	} else {
++		return -EINVAL;
++	}
++
+ 	ret =3D lock_device_hotplug_sysfs();
+ 	if (ret)
+ 		return ret;
+=20
+-	if (ctrlval !=3D cpu_smt_control) {
+-		switch (ctrlval) {
+-		case CPU_SMT_ENABLED:
+-			ret =3D cpuhp_smt_enable();
+-			break;
+-		case CPU_SMT_DISABLED:
+-		case CPU_SMT_FORCE_DISABLED:
+-			ret =3D cpuhp_smt_disable(ctrlval);
+-			break;
+-		}
 -	}
-+	if (desc)
-+		__synchronize_irq(desc);
- }
- EXPORT_SYMBOL(synchronize_irq);
++	orig_threads =3D cpu_smt_num_threads;
++	cpu_smt_num_threads =3D num_threads;
++
++	force_off =3D ctrlval !=3D cpu_smt_control && ctrlval =3D=3D CPU_SMT_FORCE_=
+DISABLED;
++
++	if (num_threads > orig_threads)
++		ret =3D cpuhp_smt_enable();
++	else if (num_threads < orig_threads || force_off)
++		ret =3D cpuhp_smt_disable(ctrlval);
 =20
-@@ -1216,7 +1218,7 @@ static irqreturn_t irq_thread_fn(struct irq_desc *desc,
- 	return ret;
- }
-=20
--static void wake_threads_waitq(struct irq_desc *desc)
-+void wake_threads_waitq(struct irq_desc *desc)
+ 	unlock_device_hotplug();
+ 	return ret ? ret : count;
+@@ -2901,6 +2956,17 @@ static ssize_t control_show(struct device *dev,
  {
- 	if (atomic_dec_and_test(&desc->threads_active))
- 		wake_up(&desc->wait_for_threads);
-@@ -1944,7 +1946,7 @@ static struct irqaction *__free_irq(struct irq_desc *de=
-sc, void *dev_id)
- 	 * supports it also make sure that there is no (not yet serviced)
- 	 * interrupt in flight at the hardware level.
- 	 */
--	__synchronize_hardirq(desc, true);
-+	__synchronize_irq(desc);
+ 	const char *state =3D smt_states[cpu_smt_control];
 =20
- #ifdef CONFIG_DEBUG_SHIRQ
- 	/*
++#ifdef CONFIG_HOTPLUG_SMT
++	/*
++	 * If SMT is enabled but not all threads are enabled then show the
++	 * number of threads. If all threads are enabled show "on". Otherwise
++	 * show the state name.
++	 */
++	if (cpu_smt_control =3D=3D CPU_SMT_ENABLED &&
++	    cpu_smt_num_threads !=3D cpu_smt_max_threads)
++		return sysfs_emit(buf, "%d\n", cpu_smt_num_threads);
++#endif
++
+ 	return snprintf(buf, PAGE_SIZE - 2, "%s\n", state);
+ }
+=20
 
