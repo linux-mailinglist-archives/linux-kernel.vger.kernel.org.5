@@ -2,93 +2,459 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A136E78A4C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 05:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C13078A4C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 05:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjH1DNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 23:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50668 "EHLO
+        id S230018AbjH1DTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 23:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjH1DNJ (ORCPT
+        with ESMTP id S229993AbjH1DTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 23:13:09 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5414DC7;
-        Sun, 27 Aug 2023 20:13:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1693192386;
-        bh=xdPMWSNE6VetcUdvX74oZqwxtWMU1dNQ9ebGgJ2LfMs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RSxdFGRSSr2UsHez4nEGUlrsXwhLPM1dfqGSa8+VfnX/2KDfc2DozOroxgdOpfHjp
-         2ZcZ/Qd0vszxE0uzfIb+jd9DU9gkTfBHU6hwTMTLb6RDrxubulGW6NHLVnkf/lbnpH
-         Wl/4hXhdfEld1JRsMOBGsXDE3/dk7f7JzveBMTHjFKEv3VD1Qbj/eUaePCmQC39+8m
-         C6/39szSTH5DYEH4fFKlHP3AkxXlMqyi0DHWZzVukjqPu/3x0JUNBm8eFTQsLqMjq/
-         Wh4CUX6vJhZhESNYdzMekbqu0It6o/LXVBHyqP4m8CBfFtH/AYJp8R/IL0MYmvKYUd
-         jDeJEGUOD9Jlg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RYwc1601jz4wxN;
-        Mon, 28 Aug 2023 13:13:05 +1000 (AEST)
-Date:   Mon, 28 Aug 2023 13:13:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Nilesh Javali <njavali@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the scsi-mkp tree
-Message-ID: <20230828131304.269a2a40@canb.auug.org.au>
+        Sun, 27 Aug 2023 23:19:23 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3235F11D;
+        Sun, 27 Aug 2023 20:19:21 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a3f1d8be2so2185680b3a.3;
+        Sun, 27 Aug 2023 20:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693192760; x=1693797560;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SxV4l6mlHU3mQ/9fiFdjek9/eZeTL4eJfpQUf2P54nk=;
+        b=crjy+4Ni2Ghud4KSDqZ9Xh49ym3plna27hs3mhYzrf61xlv0dcU7SOMgs51cQk4Wg/
+         vAAG3teXVIX7JuSfkCyFO3JrsvcE0G4JkM9CHUWs2fsYLKftY69rSDEUpao5XVws/I0m
+         ufE5LVbMTav5ILfa/8NhUKDUWTwiqGbzZT5eH8QgN0KWgaC+4Ian1V/ZHSzwYu0wJ6Fs
+         6hGgj+8r0QvrGzJy91lARPsOJkZdmi+NupIhCtry0HekLhGCp90un9Xg9lvSI7WvmShc
+         cqXfESg16tnLeDjEVEqfx0q8RPlWZjLTdsRK74lJ0xCu3YdRgcY3d6X3H+SsmW19wCMf
+         1+tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693192760; x=1693797560;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SxV4l6mlHU3mQ/9fiFdjek9/eZeTL4eJfpQUf2P54nk=;
+        b=Xhpn+NwLDe65L7woP8YDFxaC9ztiI/7TjVT2f1ZHGNjhzIogH1t+3J1IGBWi9wkrEw
+         VUj/G6lweETvWfP7DqKkncjSbMW4on+KMwjhDsFpspuVgUKW4AdXgV2oF4FJ9ts5L24G
+         zpQYOahnl3MR8yifptTWfaPLWw1SPTmODbAjD7HQFBBqpmXA9Tub0+/RGOKFOhZb2tT5
+         aB4tXljPnR8hX3vE4HbAfVFaxYVFCOP3EpeVLiOEc2+9yV50ZjyjcAxAkUbjnFGWyCS8
+         KTfaVs6EXLeDByy36Nfo7LLwmkCTJa04+JCrT5FaLLT1k14D+ou2GnblIYa1GGoKqdYR
+         EpWg==
+X-Gm-Message-State: AOJu0YyPXddLsnqbePX6rusOy9tjlm6DtZM6MC1KuCeH8NmwmX8xtz1X
+        0v7G3duYumZQxzgBTGx+V07qKiJ3i4Is1w==
+X-Google-Smtp-Source: AGHT+IH4xCHiRJskVFoI5Npu1Zt5yppOy1NybY7nXwk0lGL08sZgItveAfmQEBPVj7vF3uyK2fcF+A==
+X-Received: by 2002:a05:6a21:78a3:b0:14b:e604:9f0a with SMTP id bf35-20020a056a2178a300b0014be6049f0amr14214767pzc.20.1693192760545;
+        Sun, 27 Aug 2023 20:19:20 -0700 (PDT)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902d90500b001b9df8f14d7sm5967026plz.267.2023.08.27.20.19.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 20:19:19 -0700 (PDT)
+From:   peteryin <peteryin.openbmc@gmail.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        joel@jms.id.au, andrew@aj.id.au, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
+        daniel-hsu@quantatw.com, peteryin <peteryin.openbmc@gmail.com>
+Subject: [PATCH v2] Minerva: Add Meta openBMC Minerva dts file.
+Date:   Mon, 28 Aug 2023 11:17:14 +0800
+Message-Id: <20230828031714.107382-1-peteryin.openbmc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tLvpup_R6e7phZvqXMqkbIi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tLvpup_R6e7phZvqXMqkbIi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This is for Meta openBMC Minerva dts.
 
-Hi all,
+Kernel:dev-6.1
 
-After merging the scsi-mkp tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
+Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
 
-drivers/scsi/qla2xxx/qla_nvme.c: In function 'qla2xxx_process_purls_pkt':
-drivers/scsi/qla2xxx/qla_nvme.c:1183:20: warning: unused variable 'fcport' =
-[-Wunused-variable]
- 1183 |         fc_port_t *fcport =3D uctx->fcport;
-      |                    ^~~~~~
+---
+v1 link : https://lore.kernel.org/all/fb09f5e6-8381-312f-2f1e-f2b471cec68a@linaro.org/
 
-Introduced by commit
+Change log:
+v1:
+    1. Create minerva dts file.
+v2:
+    1.Add facebook,minerva-bmc in aspeed.yaml
+    2.use stdout-path
+    3.Add Makefile
+---
 
-  27177862de96 ("scsi: qla2xxx: Fix nvme_fc_rcv_ls_req() undefined error")
+ .../bindings/arm/aspeed/aspeed.yaml           |   1 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 329 ++++++++++++++++++
+ 3 files changed, 331 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
 
-# CONFIG_NVME_FC is not set
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+index fb4ce5df2fa0..9d1b26e7ca6b 100644
+--- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
++++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+@@ -79,6 +79,7 @@ properties:
+               - facebook,elbert-bmc
+               - facebook,fuji-bmc
+               - facebook,greatlakes-bmc
++              - facebook,minerva-bmc
+               - ibm,everest-bmc
+               - ibm,rainier-bmc
+               - ibm,tacoma-bmc
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 6a897ff40ff0..e7c00905a08b 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1603,6 +1603,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-bmc-facebook-wedge400.dtb \
+ 	aspeed-bmc-facebook-yamp.dtb \
+ 	aspeed-bmc-facebook-yosemitev2.dtb \
++	aspeed-bmc-facebook-minerva.dtb \
+ 	aspeed-bmc-ibm-bonnell.dtb \
+ 	aspeed-bmc-ibm-everest.dtb \
+ 	aspeed-bmc-ibm-rainier.dtb \
+diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+new file mode 100644
+index 000000000000..fa4a803d68f2
+--- /dev/null
++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+@@ -0,0 +1,329 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright (c) 2023 Facebook Inc.
++/dts-v1/;
++
++#include "aspeed-g6.dtsi"
++#include <dt-bindings/gpio/aspeed-gpio.h>
++
++/ {
++	model = "Facebook Minerva";
++	compatible = "facebook,minerva-bmc", "aspeed,ast2600";
++
++	aliases {
++		serial0 = &uart1;
++		serial4 = &uart5;
++	};
++
++	chosen {
++		stdout-path = &uart5;
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x80000000>;
++	};
++
++	iio-hwmon {
++		compatible = "iio-hwmon";
++		io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
++			<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
++			<&adc1 2>;
++	};
++
++};
++
++// HOST BIOS Debug
++&uart1 {
++	status = "okay";
++};
++
++
++// SOL Host Console
++&uart2 {
++	status = "okay";
++	pinctrl-0 = <>;
++
++};
++
++// SOL BMC Console
++&uart4 {
++	status = "okay";
++	pinctrl-0 = <>;
++};
++
++// BMC Debug Console
++&uart5 {
++	status = "okay";
++};
++
++//MTIA
++&uart6 {
++	status = "okay";
++};
++
++&uart_routing {
++	status = "okay";
++};
++
++&vuart1 {
++	status = "okay";
++	virtual;
++	port=<0x3e8>;
++	sirq = <7>;
++	sirq-polarity = <0>;
++	dma-mode;
++	dma-channel = <12>;
++};
++
++&wdt1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wdtrst1_default>;
++	aspeed,reset-type = "soc";
++	aspeed,external-signal;
++	aspeed,ext-push-pull;
++	aspeed,ext-active-high;
++	aspeed,ext-pulse-duration = <256>;
++};
++
++
++&mac3 {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rmii4_default>;
++	no-hw-checksum;
++	use-ncsi;
++	ncsi-ctrl,start-redo-probe;
++	ncsi-ctrl,no-channel-monitor;
++	mlx,multi-host;
++	ncsi-package = <1>;
++	ncsi-channel = <1>;
++	ncsi-rexmit = <1>;
++	ncsi-timeout = <2>;
++};
++
++&rtc {
++	status = "okay";
++};
++
++&fmc {
++	status = "okay";
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "bmc";
++		spi-max-frequency = <50000000>;
++#include "openbmc-flash-layout-128.dtsi"
++	};
++	flash@1 {
++		status = "okay";
++		m25p,fast-read;
++		label = "alt-bmc";
++		spi-max-frequency = <50000000>;
++	};
++};
++
++
++//BIOS Flash
++&spi2 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_spi2_default>;
++
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "pnor";
++		spi-max-frequency = <12000000>;
++		spi-tx-bus-width = <2>;
++		spi-rx-bus-width = <2>;
++	};
++};
++
++
++&kcs2 {
++	status = "okay";
++	aspeed,lpc-io-reg = <0xca8>;
++};
++
++&kcs3 {
++	status = "okay";
++	aspeed,lpc-io-reg = <0xca2>;
++};
++
++
++&lpc_snoop {
++	status = "okay";
++	snoop-ports = <0x80>;
++};
++
++&peci0 {
++	status = "okay";
++	clock-frequency = <1000000>;
++};
++
++&sgpiom0 {
++	status = "okay";
++	max-ngpios = <128>;
++	ngpios = <128>;
++	bus-frequency = <2000000>;
++	gpio-line-names =
++	/*in - out - in - out */
++	/*A0-A7*/   "","","","","","enable_sensors","","",
++	/*A0-A7*/   "","","","","","","","",
++	/*B0-B7*/   "","","","","","","","",
++	/*B0-B7*/   "","","","","","","","",
++	/*C0-C7*/   "","","","","","","","",
++	/*C0-C7*/   "","","","","","","","",
++	/*D0-D7*/   "","","","","","","","",
++	/*D0-D7*/   "","","","","","","","",
++	/*E0-E7*/   "","","","","","","","",
++	/*E0-E7*/   "","","","","","","","",
++	/*F0-F7*/   "","","","","","","","",
++	/*F0-F7*/   "","","","","","","","",
++	/*G0-G7*/   "","","","","","","","",
++	/*G0-G7*/   "","","","","","","","",
++	/*H0-H7*/   "","","","","","","","",
++	/*H0-H7*/   "","","","","","","","";
++};
++
++&i2c0 {
++	status = "okay";
++};
++
++&i2c1 {
++	status = "okay";
++	tmp75@4B {
++		compatible = "ti,tmp75";
++		reg = <0x4B>;
++	};
++};
++
++&i2c2 {
++	status = "okay";
++};
++
++&i2c3 {
++	status = "okay";
++};
++
++&i2c4 {
++	status = "okay";
++};
++
++&i2c5 {
++	status = "okay";
++};
++
++&i2c6 {
++	status = "okay";
++};
++
++&i2c7 {
++	status = "okay";
++};
++
++&i2c8 {
++	status = "okay";
++};
++
++&i2c9 {
++	status = "okay";
++};
++
++&i2c11 {
++	status = "okay";
++};
++
++&i2c12 {
++	status = "okay";
++};
++
++&i2c13 {
++	status = "okay";
++};
++
++// To Debug card
++&i2c14 {
++	status = "okay";
++	multi-master;
++	aspeed,hw-timeout-ms = <1000>;
++};
++
++&i2c15 {
++	status = "okay";
++	// SCM FRU
++	eeprom@50 {
++		compatible = "atmel,24c64";
++		reg = <0x50>;
++	};
++	// BSM FRU
++	eeprom@56 {
++		compatible = "atmel,24c64";
++		reg = <0x56>;
++	};
++};
++
++&adc0 {
++	ref_voltage = <2500>;
++	status = "okay";
++
++	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
++		&pinctrl_adc2_default &pinctrl_adc3_default
++		&pinctrl_adc4_default &pinctrl_adc5_default
++		&pinctrl_adc6_default &pinctrl_adc7_default>;
++};
++
++&adc1 {
++	ref_voltage = <2500>;
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_adc10_default>;
++};
++
++&jtag1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_jtagm_default>;
++};
++
++&ehci1 {
++	status = "okay";
++};
++
++&gpio0 {
++	pinctrl-names = "default";
++	gpio-line-names =
++	/*A0-A7*/	"","","","","","","","",
++	/*B0-B7*/	"","","","","","","","",
++	/*C0-C7*/	"","","","","","","","",
++	/*D0-D7*/	"","","SOL_UART_SET","","","","","",
++	/*E0-E7*/	"","","","","","","","",
++	/*F0-F7*/	"","","","","","","","",
++	/*G0-G7*/	"","","","","","","","",
++	/*H0-H7*/	"","","","","","","","",
++	/*I0-I7*/	"","","","","","","","",
++	/*J0-J7*/	"","","","","","","","",
++	/*K0-K7*/	"","","","","","","","",
++	/*L0-L7*/	"","","","","","","","",
++	/*M0-M7*/	"","","","","","","","",
++	/*N0-N7*/	"LED_POSTCODE_0","LED_POSTCODE_1",
++			"LED_POSTCODE_2","LED_POSTCODE_3",
++			"LED_POSTCODE_4","LED_POSTCODE_5",
++			"LED_POSTCODE_6","LED_POSTCODE_7",
++	/*O0-O7*/	"","","","","","","","",
++	/*P0-P7*/	"","","","","","","","",
++	/*Q0-Q7*/	"","","","","","","","",
++	/*R0-R7*/	"","","","","","","","",
++	/*S0-S7*/	"","","","","","","","",
++	/*T0-T7*/	"","","","","","","","",
++	/*U0-U7*/	"","","","","","","","",
++	/*V0-V7*/	"","","","","","","","",
++	/*W0-W7*/	"","","","","","","","",
++	/*X0-X7*/	"","","","","","","","",
++	/*Y0-Y7*/	"","","","","","","","",
++	/*Z0-Z7*/	"","","","","","","","";
++};
++
+-- 
+2.25.1
 
---Sig_/tLvpup_R6e7phZvqXMqkbIi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTsEMAACgkQAVBC80lX
-0GzWigf+NCR/T7pwVC5tHg01hvW0zKPQYJvuV3m1Ej58ExxuiCLxDjyfNBig0RA0
-4OT8iMqOoBVGUzrSxx03GLM+a7m7bnQGsnvh50BCEK5WrdTod464+ODF+9M72Whb
-1JOzWZSNkLzWYiRGGgUpJYdcbGHJmXYEM+06wyzEsmmdA9W3tn5C9JpqrCEV98/I
-7MCm07Gthw0OEP0wepa92dd/fwQtn/Ac3Ka+XvEtEuPsHALXD4IWMZU8JSxg17Ai
-TDAun6btNQoPnhgIpIniDTWfAc54fLbte9x6r8QZdFuG2srEEmk5HIeZW6p+6yZ6
-FlU66Z9LNhzHLFh+AJ2rETPpWMYuHQ==
-=6p5s
------END PGP SIGNATURE-----
-
---Sig_/tLvpup_R6e7phZvqXMqkbIi--
