@@ -2,156 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FB978A531
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BB678A521
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbjH1FZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S229612AbjH1FS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjH1FYy (ORCPT
+        with ESMTP id S229520AbjH1FST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:24:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7E4129;
-        Sun, 27 Aug 2023 22:24:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3033460AAF;
-        Mon, 28 Aug 2023 05:24:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8A537C433C7;
-        Mon, 28 Aug 2023 05:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693200289;
-        bh=0Xk4uK/2TRf9VsLF/92kL0q0rtsuDOsk2AN3vjKX7jA=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=abUTbwgSeH3Oe6ZIl78vZ9Knd56LOALemfma5QsXC9wDcEx0KVsmi7CkgQzh4rcIx
-         qoXEKu03RIld5TNF1owSlkqIF+piz2cFMG4VxUIxf4E+ImZ0ngKOxr+0Lp9kpysyp5
-         6izzAXCJ66p6vNJ1tsehheY5PaTQKeCTBGOg5RmalSZK80hZclPMIf+g70luNJJ0zN
-         kLmZlSKQlafURgBNCW2MkTEN7YYOTXqnRBfmbH81VpguKJ03LP4+mDfNd0enhWVxkf
-         wYXCWdzWY1WwTv5pmiasYTkI6Rr3MDQ9AMDxr9SDmHM7CoBc+MAaIGgt6+u8JCjsWb
-         uxqvLWQMiT2KQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 6BC1BC83F13;
-        Mon, 28 Aug 2023 05:24:49 +0000 (UTC)
-From:   Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
-Date:   Mon, 28 Aug 2023 13:16:30 +0800
-Subject: [PATCH v3] usb: typec: qcom: check regulator enable status before
- disabling it
+        Mon, 28 Aug 2023 01:18:19 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9BC10D
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:18:17 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68c0d886ea0so1772250b3a.2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693199897; x=1693804697;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nVrl0kwRfWIHx+sVHv84+qMtSVVK7pEdsXcZRB61X88=;
+        b=j42PvIU0LosJj1YuVMu4dQ+rTM19D0TWC2wtKaBRZahCKd/Ufrb5W8/qo+A+ctpynl
+         yJL74iBtB007bdz3buPdzwEMBgqkr5Sk98te2CpfOBcemXDSrXQD7DJG1d1xBLai25Xp
+         kIHOOasBM6mLPk5yQD2gNrxcdt/NjDhim5ElPBpo51ETMKYPXectayNFhWXOdjkMGBq4
+         EJQgFstw/N8b6OeoiNNiPyMADwJ76Yfugvy4TzGJmHC0tzXvpIqBY7ISKcMFV7umZGcO
+         1SppT2QfbbWtwFdrMz/NQATuiWeZjzsesC+yOwNanKcgHnI15y1wzT12uPYypWiBkXzA
+         jXyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693199897; x=1693804697;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nVrl0kwRfWIHx+sVHv84+qMtSVVK7pEdsXcZRB61X88=;
+        b=WrxotmIZe3sIsxWE43HzledRqbnTvpUdNZJuSE2CuZ1G0QtgDahy4Wjk07qCIAekrD
+         65qCgf5NOi50Qo2Pa7S4o1qn7erTC0tca6tFtIpvg9z6MPa0TIo0zW0YPFGC/eX6cw+2
+         T1bhYFQPqEfMrEudw/hIxfRIzHPmb6u3Rw8PAk+9Mftbq7+JyPIH5iXTktTMUQxyyM+5
+         AOfpVgbVw4pl1XK0s+pHrYQCTje832l6dCVPeSWWAjGA3XeR9gKrJS5GYsWRCfOeB9fx
+         yvOSg8Szms6yTIXloqNLVX6agDnHEEEHafkIN+6UVieWUBzMe93qVFhFw2LtsBrVYCPu
+         snUQ==
+X-Gm-Message-State: AOJu0YzRasR6SEylIbXubuAoMMwIUCe1YynTFq4lOEU4diSKHhR98Sz9
+        5ecb51nbrlDQ4LpZrZ1pnfs=
+X-Google-Smtp-Source: AGHT+IHJDLh6ZnUudool1Bu9OGIuqJGJVjytyiThv56LlPeCD/a1AenfCnfmYlrLuYKsz8tQpuJGrQ==
+X-Received: by 2002:a05:6a20:6d9d:b0:138:5a28:e8cc with SMTP id gl29-20020a056a206d9d00b001385a28e8ccmr21011737pzb.37.1693199896992;
+        Sun, 27 Aug 2023 22:18:16 -0700 (PDT)
+Received: from vm.. (cm218-252-211-84.hkcable.com.hk. [218.252.211.84])
+        by smtp.gmail.com with ESMTPSA id ji18-20020a170903325200b001b8a00d4f7asm6205581plb.9.2023.08.27.22.18.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 22:18:16 -0700 (PDT)
+From:   Yuanheng Zhang <yuanhengzhang1214@gmail.com>
+To:     mark@fasheh.com
+Cc:     jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Yuanheng Zhang <yuanhengzhang1214@gmail.com>
+Subject: [PATCH] ocfs2: correct range->len in ocfs2_trim_fs()
+Date:   Mon, 28 Aug 2023 13:17:41 +0800
+Message-Id: <20230828051741.204577-1-yuanhengzhang1214@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230828-qcom-tcpc-v3-1-e95b7afa34d9@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAK4t7GQC/1WMyw7CIBBFf6VhLQYGaFpX/odxQQZqZ2EfUImm4
- d+lTUzq8tzcc1YWfSAf2aVaWfCJIo1DAXWqGPZ2eHhOrjADAUo0AHzG8ckXnJA7LVujLdams6z
- 8p+A7eu+t271wT3EZw2dPJ7mtv4o6VJLkkne2kVa0aIWpr/OLkAY8lwvbOgmOrj66UFzlXINKg
- za1/ndzzl/z4Xkg4AAAAA==
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        subbaram@quicinc.com, Hui Liu <quic_huliu@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693200287; l=2740;
- i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
- bh=PhtbUNi497LxsIT+PR23WnfyXiZjybQwxlZzIfUUR5o=;
- b=bCWEQzBXl080+WyLCKcjD4QwE7Jc4U3EfZtl4SMmaP4uobY/tBzbcihL2B/CSc8GrXaGvCs7L
- oyP1VIASZIlCv9FXNhvkMmx5I99EYk1it1tDwbhIU6H6eFNX/h7KMBC
-X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
- pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
-X-Endpoint-Received: by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
-X-Original-From: Hui Liu <quic_huliu@quicinc.com>
-Reply-To: <quic_huliu@quicinc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Liu <quic_huliu@quicinc.com>
+global bitmap is a cluster allocator,so after we traverse
+the global bitmap and finished the fstrim,the trimmed range
+should be 'trimmed * clustersize'.otherwise,the trimmed range
+printed by 'fstrim -v' is not as expected.
 
-Check regulator enable status before disabling it to avoid
-unbalanced regulator disable warnings.
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+Signed-off-by: Yuanheng Zhang <yuanhengzhang1214@gmail.com>
 ---
-Changes in v3:
-- Take Bryan's proposal to remove enable/disable operation in pdphy
-enable and pdphy disable function, then enable regulator in pdphy start
-function and disable it in pdphy stop function.
-- Link to v2: https://lore.kernel.org/r/20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com
+ fs/ocfs2/alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2:
-- Add Fixes tag
-- Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
----
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-index bb0b8479d80f..52c81378e36e 100644
---- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-+++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-@@ -381,10 +381,6 @@ static int qcom_pmic_typec_pdphy_enable(struct pmic_typec_pdphy *pmic_typec_pdph
- 	struct device *dev = pmic_typec_pdphy->dev;
- 	int ret;
- 
--	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
--	if (ret)
--		return ret;
--
- 	/* PD 2.0, DR=TYPEC_DEVICE, PR=TYPEC_SINK */
- 	ret = regmap_update_bits(pmic_typec_pdphy->regmap,
- 				 pmic_typec_pdphy->base + USB_PDPHY_MSG_CONFIG_REG,
-@@ -422,8 +418,6 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
- 	ret = regmap_write(pmic_typec_pdphy->regmap,
- 			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
- 
--	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
--
+diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+index 51c93929a146..bced551240cf 100644
+--- a/fs/ocfs2/alloc.c
++++ b/fs/ocfs2/alloc.c
+@@ -7642,7 +7642,7 @@ int ocfs2_trim_mainbm(struct super_block *sb, struct fstrim_range *range)
+ 		goto next_group;
+ 	}
+ out:
+-	range->len = trimmed * sb->s_blocksize;
++	range->len = trimmed * osb->s_clustersize;
  	return ret;
  }
  
-@@ -447,6 +441,10 @@ int qcom_pmic_typec_pdphy_start(struct pmic_typec_pdphy *pmic_typec_pdphy,
- 	int i;
- 	int ret;
- 
-+	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
-+	if (ret)
-+		return ret;
-+
- 	pmic_typec_pdphy->tcpm_port = tcpm_port;
- 
- 	ret = pmic_typec_pdphy_reset(pmic_typec_pdphy);
-@@ -467,6 +465,8 @@ void qcom_pmic_typec_pdphy_stop(struct pmic_typec_pdphy *pmic_typec_pdphy)
- 		disable_irq(pmic_typec_pdphy->irq_data[i].irq);
- 
- 	qcom_pmic_typec_pdphy_reset_on(pmic_typec_pdphy);
-+
-+	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
- }
- 
- struct pmic_typec_pdphy *qcom_pmic_typec_pdphy_alloc(struct device *dev)
-
----
-base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
-change-id: 20230822-qcom-tcpc-d41954ac65fa
-
-Best regards,
 -- 
-Hui Liu <quic_huliu@quicinc.com>
+2.34.1
 
