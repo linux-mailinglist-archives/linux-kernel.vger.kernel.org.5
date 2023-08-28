@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5B178BA69
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B1578BA6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbjH1Vjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S233676AbjH1VkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233869AbjH1Vje (ORCPT
+        with ESMTP id S233810AbjH1Vj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:39:34 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC6B106
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:39:30 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c0db66af1bso17923015ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1693258770; x=1693863570;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iHdUO+lDNPOvPW+3NlnVX1ng1CqewzDf9giLaK2K5LM=;
-        b=Wb6H3zIuPpR8Lq5VDhwqijTbRB6Kf5ZByIt9Toiaz/d8/hbHOohkKJegF/hH5dPnUI
-         KNwN94Ns94WWmg08zSo5bQiQZM4H0zYxd2Y0oQn5jIIrZIq7mBIRm2cK+1gToDLQO2Ls
-         ZTFlbQFLQdfWaaWrsv6rgVOj1n3O9lg2XqWn5wGhJmn4mpPHnx7SkMF/uZtIfhkpNfrE
-         WukdoHUIfKg0aGt2KAfmB4wwR8CNtQVoOIFW+HeISbem1cyyFwX2FqIuaHNjJBgu4aE0
-         GwDr7kn1H+7fmGOsLDDHC1NQnzhbcIj7GZ5fz9MWjRkOOxqXriOFc1rW/j2hN56ISmHD
-         znTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693258770; x=1693863570;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iHdUO+lDNPOvPW+3NlnVX1ng1CqewzDf9giLaK2K5LM=;
-        b=I0SQEeI/HBJxms5w7e6KFpl8PFvGhnkkaD7K9LeL9CBi/CoDn4KpL/8Gb0pU94bGcn
-         mMXjE8o1V2auc6RJJ0idpPU5EKEIFtGnta9O0RD3t35BRrxNDg70IjQgid9zupfdbxWK
-         GCXRv/AxEV4AAAbUdXKA4UeT/m0VmITZjkpHlFLHb5mnm6L0Mg/4LeIZF5kt4a8EFYKy
-         N1crjlzJb8opkLL3KtBx6EwkZ/OUOBox7bFUkXTCH/vf6P7XBbGbrnQXRlp6H61EwdUl
-         HXBRnI1qy6EmH32ghTRmaZKgpuHQoUlzqg9ZkdW0adK3aNxhpp7rUoEWX3INvDrP+gxe
-         wIGg==
-X-Gm-Message-State: AOJu0Yy7ZQssW98A21JzoFw6V65hNAc+xGbWqr3+/mp1SjPTsVR47wh9
-        9oPgX/hArX7aUOXX5CIUVVj0RQ==
-X-Google-Smtp-Source: AGHT+IFVLmk6Rdlv8hXXucmdwmu2DNBKVOmjpfe7MLkr+PNUxQE2kQu2zLgbt0LhtVq9J3QJDMGthA==
-X-Received: by 2002:a17:903:428c:b0:1c0:d8bc:dcf1 with SMTP id ju12-20020a170903428c00b001c0d8bcdcf1mr7500990plb.23.1693258770324;
-        Mon, 28 Aug 2023 14:39:30 -0700 (PDT)
-Received: from ghost ([50.221.140.188])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170902654a00b001bc445e249asm8045428pln.124.2023.08.28.14.39.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 14:39:29 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 14:39:27 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu
-Subject: Re: [PATCH 1/5] riscv: Checksum header
-Message-ID: <ZO0UD1+pmkjMDjvv@ghost>
-References: <20230827-turf-parched-b965bc697882@spud>
- <mhng-d43dc0a3-7985-4195-9611-5ca0c38390e7@palmer-ri-x1c9>
- <20230827-primer-conceal-b6f24b29e692@spud>
- <20230827-divisive-happy-cf93058c49bf@spud>
- <ZOzRlerSNjfzMYGH@ghost>
- <20230828-deserve-paging-25666290e312@spud>
- <ZOzld28wZjLpl4Hp@ghost>
- <20230828-stonewall-eloquence-8940f33bd2f0@spud>
+        Mon, 28 Aug 2023 17:39:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55010106;
+        Mon, 28 Aug 2023 14:39:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D340765207;
+        Mon, 28 Aug 2023 21:39:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9E32C433C8;
+        Mon, 28 Aug 2023 21:39:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693258794;
+        bh=SL7ZXvTZ/YyVDdVd/eFfQNA5PexazLts/zY3zovhkf4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q9vJMlmGIPuNgzKp+wOiKKVJMtFLxkoGHCrR5q1LjS1XoSYWj5N+AqH+ZlW+EpxTp
+         r75UQRVqdIN9oPEXgi50mVQFfGlcxuEi66L4BXOeFLsa/oIMhyehNRAndW8sQyJzIc
+         Ag6O5CX70dv2tidoUaCkZRolwwqLVmvq16cNOErSZy+7Ten/VSCH2MLQzdFlUV83uF
+         udW4j1OiMuyYZxhSa9ZJgXxEriqcRcHsTPWfIqaBogYQGjCn2Gi+CpE3jPktOCr2xM
+         ljDE69Fc6A8AkQO1f+kGsTCcSU7pPYDqrz/raP84wpicdKfZebWrowlXSfhxHIkQOF
+         Y2lSydIDGT7Qw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 13FB540722; Mon, 28 Aug 2023 18:39:51 -0300 (-03)
+Date:   Mon, 28 Aug 2023 18:39:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/18] perf s390 s390_cpumcfdg_dump: Don't scan all
+ PMUs
+Message-ID: <ZO0UJy9XdP7eFLxh@kernel.org>
+References: <20230824041330.266337-1-irogers@google.com>
+ <20230824041330.266337-7-irogers@google.com>
+ <ZOdiX4eJHFfFbQhi@kernel.org>
+ <428afeb4-d5ca-8115-73fc-881119a1cd51@linux.ibm.com>
+ <CAP-5=fVt1vxK0CJ=aYjZzs4mushbxAx8056uxVQZUfsLAKpVoQ@mail.gmail.com>
+ <4f2438fc-2360-8833-3751-fe3bc8b11afb@linux.ibm.com>
+ <ZOkVYoN17A8wwP3k@kernel.org>
+ <CAP-5=fUqLXdu2=TPSASFBbZ+B1oTFbuFra38z5YwYHWpX-V=hw@mail.gmail.com>
+ <ZOzdFPOLhNdd59PG@kernel.org>
+ <ZOzfHEuJkXfajmWO@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230828-stonewall-eloquence-8940f33bd2f0@spud>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZOzfHEuJkXfajmWO@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,166 +74,458 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 07:56:13PM +0100, Conor Dooley wrote:
-> On Mon, Aug 28, 2023 at 11:20:39AM -0700, Charlie Jenkins wrote:
-> > On Mon, Aug 28, 2023 at 06:08:40PM +0100, Conor Dooley wrote:
-> > > On Mon, Aug 28, 2023 at 09:55:49AM -0700, Charlie Jenkins wrote:
-> > > > On Sun, Aug 27, 2023 at 01:25:27PM +0100, Conor Dooley wrote:
-> > > > > On Sun, Aug 27, 2023 at 11:28:33AM +0100, Conor Dooley wrote:
-> > > > > > On Sat, Aug 26, 2023 at 07:00:47PM -0700, Palmer Dabbelt wrote:
-> > > > > > > On Sat, 26 Aug 2023 18:42:41 PDT (-0700), Conor Dooley wrote:
-> > > > > > > > On Sat, Aug 26, 2023 at 06:26:06PM -0700, Charlie Jenkins wrote:
-> > > > > > > > > Provide checksum algorithms that have been designed to leverage riscv
-> > > > > > > > > instructions such as rotate. In 64-bit, can take advantage of the larger
-> > > > > > > > > register to avoid some overflow checking.
-> > > > > > > > > 
-> > > > > > > > > Add configuration for Zba extension and add march for Zba and Zbb.
-> > > > > > > > > 
-> > > > > > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > > > > > > > ---
-> > > > > > > > >  arch/riscv/Kconfig                | 23 +++++++++++
-> > > > > > > > >  arch/riscv/Makefile               |  2 +
-> > > > > > > > >  arch/riscv/include/asm/checksum.h | 86 +++++++++++++++++++++++++++++++++++++++
-> > > > > > > > >  3 files changed, 111 insertions(+)
-> > > > > > > > > 
-> > > > > > > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > > > > > > > > index 4c07b9189c86..8d7e475ca28d 100644
-> > > > > > > > > --- a/arch/riscv/Kconfig
-> > > > > > > > > +++ b/arch/riscv/Kconfig
-> > > > > > > > > @@ -507,6 +507,29 @@ config RISCV_ISA_V_DEFAULT_ENABLE
-> > > > > > > > >  	  If you don't know what to do here, say Y.
-> > > > > > > > > +config TOOLCHAIN_HAS_ZBA
-> > > > > > > > > +	bool
-> > > > > > > > > +	default y
-> > > > > > > > > +	depends on !64BIT || $(cc-option,-mabi=lp64 -march=rv64ima_zba)
-> > > > > > > > > +	depends on !32BIT || $(cc-option,-mabi=ilp32 -march=rv32ima_zba)
-> > > > > > > > > +	depends on LLD_VERSION >= 150000 || LD_VERSION >= 23900
-> > > > > > > > > +	depends on AS_HAS_OPTION_ARCH
-> > > > > > > > > +
-> > > > > > > > > +config RISCV_ISA_ZBA
-> > > > > > > > > +	bool "Zba extension support for bit manipulation instructions"
-> > > > > > > > > +	depends on TOOLCHAIN_HAS_ZBA
-> > > > > > > > > +	depends on MMU
-> > > > > > > > > +	depends on RISCV_ALTERNATIVE
-> > > > > > > > > +	default y
-> > > > > > > > > +	help
-> > > > > > > > > +	   Adds support to dynamically detect the presence of the ZBA
-> > > > > > > > > +	   extension (basic bit manipulation) and enable its usage.
-> > > > > > > > > +
-> > > > > > > > > +	   The Zba extension provides instructions to accelerate a number
-> > > > > > > > > +	   of bit-specific address creation operations.
-> > > > > > > > > +
-> > > > > > > > > +	   If you don't know what to do here, say Y.
-> > > > > > > > > +
-> > > > > > > > >  config TOOLCHAIN_HAS_ZBB
-> > > > > > > > >  	bool
-> > > > > > > > >  	default y
-> > > > > > > > > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> > > > > > > > > index 6ec6d52a4180..51fa3f67fc9a 100644
-> > > > > > > > > --- a/arch/riscv/Makefile
-> > > > > > > > > +++ b/arch/riscv/Makefile
-> > > > > > > > > @@ -61,6 +61,8 @@ riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
-> > > > > > > > >  riscv-march-$(CONFIG_FPU)		:= $(riscv-march-y)fd
-> > > > > > > > >  riscv-march-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-y)c
-> > > > > > > > >  riscv-march-$(CONFIG_RISCV_ISA_V)	:= $(riscv-march-y)v
-> > > > > > > > > +riscv-march-$(CONFIG_RISCV_ISA_ZBA)	:= $(riscv-march-y)_zba
-> > > > > > > > > +riscv-march-$(CONFIG_RISCV_ISA_ZBB)	:= $(riscv-march-y)_zbb
-> > > > > > > > 
-> > > > > > > > AFAICT, this is going to break immediately on any system that enables
-> > > > > > > > RISCV_ISA_ZBA (which will happen by default) but does not support the
-> > > > > > > > extension. You made the option depend on RISCV_ALTERNATIVE, but I do
-> > > > > > > > not see any use of alternatives in the code to actually perform the
-> > > > > > > > dynamic detection of Zba.
-> > > > > > > 
-> > > > > > > I guess we kind of have an ambiguity here: for stuff like C we just
-> > > > > > > unconditionally use the instructions, but for the rest we probe first.  We
-> > > > > > > should probably have three states for each extension: disabled, dynamically
-> > > > > > > detected, and assumed.
-> > > > > > 
-> > > > > > You mean, just add some comments to the makefile surrounding each
-> > > > > > section or to some rst documentation?
-> > > > > 
-> > > > > Also, the code here doesn't build w/
-> > > > > 	warning: invalid argument to '-march': '_zba_zbb_zicsr_zifencei_zihintpause'
-> > > > > so there's something else wrong with TOOLCHAIN_HAS_ZBA :)
-> > > > It is odd that this is missing 'rv64ima' or 'rv32ima' at the beginning of
-> > > > this string. What configuration are you using that could cause that to
-> > > > be left off?
+Em Mon, Aug 28, 2023 at 02:53:32PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Aug 28, 2023 at 02:44:53PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Aug 25, 2023 at 03:56:54PM -0700, Ian Rogers escreveu:
+> > > On Fri, Aug 25, 2023 at 1:56 PM Arnaldo Carvalho de Melo
+> > > <acme@kernel.org> wrote:
+> > > >
+> > > > Em Fri, Aug 25, 2023 at 04:39:22PM +0200, Thomas Richter escreveu:
+> > > > > On 8/25/23 15:14, Ian Rogers wrote:
+> > > > > > On Fri, Aug 25, 2023 at 1:20 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
+> > > >
+> > > > > >> On 8/24/23 15:59, Arnaldo Carvalho de Melo wrote:
+> > > > > >>> Em Wed, Aug 23, 2023 at 09:13:18PM -0700, Ian Rogers escreveu:
+> > > > > >>>> Rather than scanning all PMUs for a counter name, scan the PMU
+> > > > > >>>> associated with the evsel of the sample. This is done to remove a
+> > > > > >>>> dependence on pmu-events.h.
+> > > >
+> > > > > >>> I'm applying this one, and CCing the S/390 developers so that they can
+> > > > > >>> try this and maybe provide an Acked-by/Tested-by,
+> > > >
+> > > > > >> I have downloaded this patch set of 18 patches (using b4), but they do not
+> > > > > >> apply on my git tree.
+> > > >
+> > > > > >> Which git branch do I have to use to test this. Thanks a lot.
+> > > >
+> > > > > > the changes are in the perf-tools-next tree:
+> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/
+> > > >
+> > > > > Unfurtunately this patch set fails again on s390.
+> > > > > Here is the test output from the current 6.5.0rc7 kernel:
+> > > > >
+> > > > > # ./perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+> > > > >   6: Parse event definition strings                                  :
+> > > > >   6.1: Test event parsing                                            : Ok
+> > > > >   6.2: Parsing of all PMU events from sysfs                          : Ok
+> > > > >   6.3: Parsing of given PMU events from sysfs                        : Ok
+> > > > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+> > > > >   6.5: Parsing of aliased events                                     : Ok
+> > > > >   6.6: Parsing of terms (event modifiers)                            : Ok
+> > > > >  10: PMU events                                                      :
+> > > > >  10.1: PMU event table sanity                                        : Ok
+> > > > >  10.2: PMU event map aliases                                         : Ok
+> > > > >  10.3: Parsing of PMU event table metrics                            : Ok
+> > > > >  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> > > > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+> > > > >  95: perf all metricgroups test                                      : Ok
+> > > > >  96: perf all metrics test                                           : Ok
+> > > > > #
+> > > > >
+> > > > > This looks good.
+> > > >
+> > > > Reproduced:
+> > > >
+> > > > # grep -E vendor_id\|^processor -m2 /proc/cpuinfo
+> > > > vendor_id       : IBM/S390
+> > > > processor 0: version = 00,  identification = 1A33E8,  machine = 2964
+> > > > #
+> > > > # perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+> > > >   6: Parse event definition strings                                  :
+> > > >   6.1: Test event parsing                                            : Ok
+> > > >   6.2: Parsing of all PMU events from sysfs                          : Ok
+> > > >   6.3: Parsing of given PMU events from sysfs                        : Ok
+> > > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+> > > >   6.5: Parsing of aliased events                                     : Ok
+> > > >   6.6: Parsing of terms (event modifiers)                            : Ok
+> > > >  10: PMU events                                                      :
+> > > >  10.1: PMU event table sanity                                        : Ok
+> > > >  10.2: PMU event map aliases                                         : Ok
+> > > >  10.3: Parsing of PMU event table metrics                            : Ok
+> > > >  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> > > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+> > > >  95: perf all metricgroups test                                      : Ok
+> > > >  96: perf all metrics test                                           : Ok
+> > > > # perf -v
+> > > > perf version 6.5.rc7.g6f0edbb833ec
+> > > > #
+> > > >
+> > > > > However when I use the check-out from perf-tools-next, I get this output:
+> > > > > # ./perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+> > > > >   6: Parse event definition strings                                  :
+> > > > >   6.1: Test event parsing                                            : Ok
+> > > > >   6.2: Parsing of all PMU events from sysfs                          : FAILED!
+> > > > >   6.3: Parsing of given PMU events from sysfs                        : Ok
+> > > > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+> > > > >   6.5: Parsing of aliased events                                     : FAILED!
+> > > > >   6.6: Parsing of terms (event modifiers)                            : Ok
+> > > > >  10: PMU events                                                      :
+> > > > >  10.1: PMU event table sanity                                        : Ok
+> > > > >  10.2: PMU event map aliases                                         : FAILED!
+> > > > >  10.3: Parsing of PMU event table metrics                            : Ok
+> > > > >  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> > > > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+> > > > >  93: perf all metricgroups test                                      : FAILED!
+> > > > >  94: perf all metrics test                                           : FAILED!
+> > > > > #
+> > > > >
+> > > > > So some tests are failing again.
+> > > > >
+> > > > > I am out for the next two weeks, Sumanth Korikkar (on to list) might be able to help.
+> > > > > Thanks a lot.
+> > > >
+> > > > [root@kernelqe3 linux]# git checkout perf-tools-next
+> > > > git Switched to branch 'perf-tools-next'
+> > > > Your branch is up to date with 'perf-tools-next/perf-tools-next'.
+> > > > [root@kernelqe3 linux]# git log --oneline -5
+> > > > eeb6b12992c4 (HEAD -> perf-tools-next, perf-tools-next/perf-tools-next) perf jevents: Don't append Unit to desc
+> > > > f208b2c6f984 (perf-tools-next/tmp.perf-tools-next) perf scripts python gecko: Launch the profiler UI on the default browser with the appropriate URL
+> > > > 43803cb16f99 perf scripts python: Add support for input args in gecko script
+> > > > f85d120c46e7 perf jevents: Sort strings in the big C string to reduce faults
+> > > > 8d4b6d37ea78 perf pmu: Lazily load sysfs aliases
+> > > > [root@kernelqe3 linux]# make BUILD_BPF_SKEL=1 -C tools/perf O=/tmp/build/perf install-bin
+> > > >
+> > > > [root@kernelqe3 linux]# perf -v
+> > > > perf version 6.5.rc5.geeb6b12992c4
+> > > > [root@kernelqe3 linux]# git log --oneline -1
+> > > > eeb6b12992c4 (HEAD -> perf-tools-next, perf-tools-next/perf-tools-next) perf jevents: Don't append Unit to desc
+> > > > [root@kernelqe3 linux]# perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+> > > >   6: Parse event definition strings                                  :
+> > > >   6.1: Test event parsing                                            : Ok
+> > > >   6.2: Parsing of all PMU events from sysfs                          : FAILED!
+> > > >   6.3: Parsing of given PMU events from sysfs                        : Ok
+> > > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+> > > >   6.5: Parsing of aliased events                                     : FAILED!
+> > > >   6.6: Parsing of terms (event modifiers)                            : Ok
+> > > >  10: PMU events                                                      :
+> > > >  10.1: PMU event table sanity                                        : Ok
+> > > >  10.2: PMU event map aliases                                         : FAILED!
+> > > >  10.3: Parsing of PMU event table metrics                            : Ok
+> > > >  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> > > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+> > > >  93: perf all metricgroups test                                      : FAILED!
+> > > >  94: perf all metrics test                                           : FAILED!
+> > > > [root@kernelqe3 linux]#
+> > > >
+> > > > Bisecting the first problem:
+> > > >
+> > > >  10.2: PMU event map aliases                                         : FAILED!
+> > > >
+> > > > make: Leaving directory '/root/git/linux/tools/perf'
+> > > >   6: Parse event definition strings                                  :
+> > > >   6.1: Test event parsing                                            : Ok
+> > > >   6.2: Parsing of all PMU events from sysfs                          : Ok
+> > > >   6.3: Parsing of given PMU events from sysfs                        : Ok
+> > > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+> > > >   6.5: Parsing of aliased events                                     : Ok
+> > > >   6.6: Parsing of terms (event modifiers)                            : Ok
+> > > >  10: PMU events                                                      :
+> > > >  10.1: PMU event table sanity                                        : Ok
+> > > >  10.2: PMU event map aliases                                         : FAILED!
+> > > >  10.3: Parsing of PMU event table metrics                            : Ok
+> > > >  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> > > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+> > > >  93: perf all metricgroups test                                      : Ok
+> > > >  94: perf all metrics test                                           : Ok
+> > > > [root@kernelqe3 linux]# git bisect bad
+> > > > 2e255b4f9f41f137d9e3dc4fae3603a9c2c3dd28 is the first bad commit
+> > > > commit 2e255b4f9f41f137d9e3dc4fae3603a9c2c3dd28
+> > > > Author: Ian Rogers <irogers@google.com>
+> > > > Date:   Wed Aug 23 21:13:16 2023 -0700
+> > > >
+> > > >     perf jevents: Group events by PMU
+> > > >
+> > > >     Prior to this change a cpuid would map to a list of events where the PMU
+> > > >     would be encoded alongside the event information. This change breaks
+> > > >     apart each group of events so that there is a group per PMU. A new table
+> > > >     is added with the PMU's name and the list of events, the original table
+> > > >     now holding an array of these per PMU tables.
+> > > >
+> > > >     These changes are to make it easier to get per PMU information about
+> > > >     events, rather than the current approach of scanning all events. The
+> > > >     perf binary size with BPF skeletons on x86 is reduced by about 1%. The
+> > > >     unidentified PMU is now always expanded to "cpu".
+> > > >
+> > > >     Signed-off-by: Ian Rogers <irogers@google.com>
+> > > >     Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > > >     Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > > >     Cc: Gaosheng Cui <cuigaosheng1@huawei.com>
+> > > >     Cc: Ingo Molnar <mingo@redhat.com>
+> > > >     Cc: James Clark <james.clark@arm.com>
+> > > >     Cc: Jing Zhang <renyu.zj@linux.alibaba.com>
+> > > >     Cc: Jiri Olsa <jolsa@kernel.org>
+> > > >     Cc: John Garry <john.g.garry@oracle.com>
+> > > >     Cc: Kajol Jain <kjain@linux.ibm.com>
+> > > >     Cc: Kan Liang <kan.liang@linux.intel.com>
+> > > >     Cc: Mark Rutland <mark.rutland@arm.com>
+> > > >     Cc: Namhyung Kim <namhyung@kernel.org>
+> > > >     Cc: Peter Zijlstra <peterz@infradead.org>
+> > > >     Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+> > > >     Cc: Rob Herring <robh@kernel.org>
+> > > >     Link: https://lore.kernel.org/r/20230824041330.266337-5-irogers@google.com
+> > > >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > > >
+> > > >  tools/perf/pmu-events/jevents.py | 181 +++++++++++++++++++++++++++++----------
+> > > >  tools/perf/tests/pmu-events.c    |  30 ++++---
+> > > >  2 files changed, 154 insertions(+), 57 deletions(-)
+> > > > [root@kernelqe3 linux]#
+> > > >
 > > > 
-> > > I don't know, but that configuration is pretty pervasive. The patchwork
-> > > CI blew up too & that is using kernel.org toolchains built by Arnd:
-> > > https://mirrors.edge.kernel.org/pub/tools/crosstool/
-> > > 
-> > > > Compiling with defconfig automatically enables Zba and appears to not
-> > > > cause this issue. I realized that I put the header definitions for
-> > > > do_csum and csum_ipv6_magic in this patch instead of the next one so the
-> > > > code will fail to compile from this but not due to march settings.
-> > > > > 
-> > > > > > 
-> > > > > > > > Note that for fd & v, we add it to riscv-march-y, but then immediately
-> > > > > > > > remove it again before passing to the compiler, only allow them in
-> > > > > > > > AFLAGS:
-> > > > > > > > 	# Remove F,D,V from isa string for all. Keep extensions between "fd" and "v" by
-> > > > > > > > 	# matching non-v and non-multi-letter extensions out with the filter ([^v_]*)
-> > > > > > > > 	KBUILD_CFLAGS += -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)fd([^v_]*)v?/\1\2/')
-> > > > > > > > 
-> > > > > > > > What am I missing?
-> > > > > > > 
-> > > > > > > FD and V both have state that can be saved lazily, so we can't let arbitrary
-> > > > > > > code use them.  The extensions formally known as B don't add state, so they
-> > > > > > > are safe to flip on in arbitrary places (aside from the issues you pointed
-> > > > > > > out above).
-> > > > > > 
-> > > > > > I probably went about this badly since you missed the point. I was
-> > > > > > trying to point out that for anything other than the compressed
-> > > > > > extensions in the block above that we only pass them in march to the
-> > > > > > assembler, and not to the compiler, in contrast to this patch which just
-> > > > > > always passes them. I should have pointed to how we handled the
-> > > > > > in-kernel Zbb stuff & asked how this was any different, would probably
-> > > > > > have been clearer.
-> > > > > > 
-> > > > I supposed it might be better if I submit these changes in a different
-> > > > patch so we can have more discussion there. Zbb was previously only used
-> > > > by assembly files (arch/riscv/lib/strcmp.S, arch/riscv/lib/strlen.S,
-> > > > arch/riscv/lib/strncmp.S). I wanted to add them to the compiler so that
-> > > > that C programs could leverage these extensions. However, I neglected to
-> > > > consider machines that compile the kernel with these extensions but have
-> > > > cores without these extensions.
-> > > 
-> > > Less so cores, since we don't support heterogeneous stuff, and moreso
-> > > platforms that do not support the extensions. It's expected that the
-> > > same kernel could in theory be used across a wide variety of systems.
-> > > 
-> > > > The purpose of using these extensions is
-> > > > to save a couple of clock cycles, so if it is necessary to first
-> > > > check if the extension is enabled it may not be worth it for these
-> > > > functions.
-> > > 
-> > > That's still possible, it's what the alternatives mechanism exists for.
-> > > During boot the codepaths are patched to use what works for a given
-> > > machine, check out the code that makes use of Zbb or
-> > > riscv_has_extension_[un]likely(). You'd need to do something like the
-> > > existing users of Zbb instructions does, with an alternative used to
-> > > avoid the custom asm implementations when the hardware does not support
-> > > them. (That's what the CONFIG_ALTERNATIVE & CONFIG_AS_HAS_OPTION_ARCH
-> > > options you made the TOOLCHAIN_HAS_ZBA depend on are for).
+> > > This change defaulted events without a specified PMU to being for the
+> > > PMU 'cpu', so that events in pmu-events.c were associated with a PMU
+> > > and we could find per-PMU information easily. The test events have no
+> > > PMU and so this has broken s390 where the the PMU should be "cpum_cf".
+> > > It has probably also broken x86 hybrid and arm where their default PMU
+> > > isn't cpu. I'll work on a fix, but the problem will be limited to the
+> > > test.
 > > 
-> > I can see how to get this to work if I port this code into assembly and
-> > write two different versions (one with Zbb and one without), but
-> > I don't see how this would work in C. Unless I am mistaken, there would
-> > need to be some sort of wrapper around the C code that told the compiler
-> > to compile it multiple times for different extension combinations and
-> > then use the riscv_has_extension_[un]likely() functions to determine
-> > which version to use at runtime. Is this feasible?
+> > So, with your "default_core" branche we go to:
+> > 
+> > [root@kernelqe3 linux]# perf test 10
+> >  10: PMU events                                                      :
+> >  10.1: PMU event table sanity                                        : Ok
+> >  10.2: PMU event map aliases                                         : Ok
+> >  10.3: Parsing of PMU event table metrics                            : Ok
+> >  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+> > [root@kernelqe3 linux]# perf --version
+> > perf version 6.5.rc5.g3d63ae82aa12
+> > [root@kernelqe3 linux]#
+> > 
+> > The other tests:
+> > 
+> > [root@kernelqe3 linux]# perf --version
+> > perf version 6.5.rc5.g3d63ae82aa12
+> > [root@kernelqe3 linux]# perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
+> >   6: Parse event definition strings                                  :
+> >   6.1: Test event parsing                                            : Ok
+> >   6.2: Parsing of all PMU events from sysfs                          : FAILED!
+> >   6.3: Parsing of given PMU events from sysfs                        : Ok
+> >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+> >   6.5: Parsing of aliased events                                     : FAILED!
+> >   6.6: Parsing of terms (event modifiers)                            : Ok
+> >  10: PMU events                                                      :
+> >  10.1: PMU event table sanity                                        : Ok
+> >  10.2: PMU event map aliases                                         : Ok
+> >  10.3: Parsing of PMU event table metrics                            : Ok
+> >  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
+> >  93: perf all metricgroups test                                      : FAILED!
+> >  94: perf all metrics test                                           : FAILED!
+> > [root@kernelqe3 linux]#
+> > 
+> > Trying to bisect it now.
 > 
-> IIRC, if you put all the code using Zbb etc into a compilation unit of
-> its own then you can set march for that unit alone, but it may well just
-> be easier to write a custom asm one for the Zbb case & use the c
-> implementation from this patch for the non-Zbb case.
-In include/linux/bitops.h there are implementations of rotations (i.e.
-ror32, ror16). Do you think it would be an acceptable solution to move
-those definitions into asm-generic and have riscv implement these
-functions in assembly with Zbb and non-Zbb versions and use the
-alternatives macro? Every other architecture would just use the
-existing definitions but could implement their own if they wanted. The
-code that would benefit from Zbb is a rotation.
+> make: Leaving directory '/root/git/linux/tools/perf'
+> [root@kernelqe3 linux]# perf test 6
+>   6: Parse event definition strings                                  :
+>   6.1: Test event parsing                                            : Ok
+>   6.2: Parsing of all PMU events from sysfs                          : FAILED!
+>   6.3: Parsing of given PMU events from sysfs                        : Ok
+>   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
+>   6.5: Parsing of aliased events                                     : FAILED!
+>   6.6: Parsing of terms (event modifiers)                            : Ok
+> [root@kernelqe3 linux]# git bisect bad
+> 8d4b6d37ea7862d230ad2e1bd4c7d2ff5e9acd53 is the first bad commit
+> commit 8d4b6d37ea7862d230ad2e1bd4c7d2ff5e9acd53
+> Author: Ian Rogers <irogers@google.com>
+> Date:   Wed Aug 23 21:13:28 2023 -0700
+> 
+>     perf pmu: Lazily load sysfs aliases
+> 
+>     Don't load sysfs aliases for a PMU when the PMU is first created, defer
+>     until an alias needs to be found. For the pmu-scan benchmark, average
+>     core PMU scanning is reduced by 30.8%, and average PMU scanning by
+>     12.6%.
+> 
+>     Signed-off-by: Ian Rogers <irogers@google.com>
+>     Cc: Adrian Hunter <adrian.hunter@intel.com>
+>     Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>     Cc: Gaosheng Cui <cuigaosheng1@huawei.com>
+>     Cc: Ingo Molnar <mingo@redhat.com>
+>     Cc: James Clark <james.clark@arm.com>
+>     Cc: Jing Zhang <renyu.zj@linux.alibaba.com>
+>     Cc: Jiri Olsa <jolsa@kernel.org>
+>     Cc: John Garry <john.g.garry@oracle.com>
+>     Cc: Kajol Jain <kjain@linux.ibm.com>
+>     Cc: Kan Liang <kan.liang@linux.intel.com>
+>     Cc: Mark Rutland <mark.rutland@arm.com>
+>     Cc: Namhyung Kim <namhyung@kernel.org>
+>     Cc: Peter Zijlstra <peterz@infradead.org>
+>     Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+>     Cc: Rob Herring <robh@kernel.org>
+>     Link: https://lore.kernel.org/r/20230824041330.266337-17-irogers@google.com
+>     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+>  tools/perf/tests/pmu-events.c |  2 ++
+>  tools/perf/util/pmu.c         | 81 ++++++++++++++++++++++---------------------
+>  tools/perf/util/pmu.h         |  2 ++
+>  3 files changed, 46 insertions(+), 39 deletions(-)
+> [root@kernelqe3 linux]#
+> 
+> It is segfaulting:
+> 
+>   6.2: Parsing of all PMU events from sysfs                          :
+> --- start ---
+> test child forked, pid 1202947
+> Using CPUID IBM,2964,400,N96,1.4,002f
+> perf: Segmentation fault
+> Obtained 16 stack frames.
+> perf(dump_stack+0x36) [0x1156dbe]
+> perf(sighandler_dump_stack+0x3a) [0x1156e8a]
+> [0x3fffd4790b6]
+> /lib64/libc.so.6(__strcasecmp+0x42) [0x3ffa889c51a]
+> perf() [0x11792ac]
+> perf(pmu_events_table__find_event+0x27c) [0x12432fc]
+> perf() [0x11777cc]
+> perf() [0x1179842]
+> perf(perf_pmu__check_alias+0x4f0) [0x1179e98]
+> perf(parse_events_add_pmu+0x72c) [0x1128e84]
+> perf(parse_events_parse+0x4d4) [0x11754d4]
+> perf(__parse_events+0xda) [0x112644a]
+> perf() [0x10cecb2]
+> perf() [0x10d3264]
+> perf() [0x10cb250]
+> perf(cmd_test+0x109e) [0x10cc756]
+> test child interrupted
+> ---- end ----
+> Parse event definition strings subtest 2: FAILED!
+> 
+> 
+> Starting program: /root/bin/perf test -F 6
+> [Thread debugging using libthread_db enabled]
+> Using host libthread_db library "/lib64/libthread_db.so.1".
+>   6: Parse event definition strings                                  :
+>   6.1: Test event parsing                                            : Ok
+>   6.2: Parsing of all PMU events from sysfs                          :
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x000003fffcf1c51a in strcasecmp () from /lib64/libc.so.6
+> #0  0x000003fffcf1c51a in strcasecmp () from /lib64/libc.so.6
+> #1  0x000000000123e518 in assign_str (name=0x1487cc3 "l1i_ondrawer_mem_sourced_writes", field=0x141eeba "value", old_str=0x18c12e0, new_str=0x1487d1f "event=0xb1") at util/pmu.c:449
+> #2  0x000000000123e82c in update_alias (pe=0x3ffffff8ac0, table=0x1555cb0 <pmu_events_map+160>, vdata=0x3ffffff8c40) at util/pmu.c:490
+> #3  0x000000000137b9dc in pmu_events_table.find_event ()
+> #4  0x000000000123ed4e in perf_pmu__new_alias (pmu=0x15ce490, name=0x23c2593 "L1I_ONDRAWER_MEM_SOURCED_WRITES", desc=0x0, val=0x0, val_fd=0x16058a0, pe=0x0) at util/pmu.c:569
+> #5  0x000000000123f370 in pmu_aliases_parse (pmu=0x15ce490) at util/pmu.c:673
+> #6  0x000000000123e3a2 in perf_pmu__find_alias (pmu=0x15ce490, name=0x238eb10 "L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV", load=true) at util/pmu.c:432
+> #7  0x0000000001241bb2 in pmu_find_alias (pmu=0x15ce490, term=0x18409d0) at util/pmu.c:1439
+> #8  0x0000000001241f82 in perf_pmu__check_alias (pmu=0x15ce490, head_terms=0x21b14d0, info=0x3ffffffa238, err=0x3ffffffc4c8) at util/pmu.c:1519
+> #9  0x00000000011bbbd4 in parse_events_add_pmu (parse_state=0x3ffffffc2f0, list=0x21afec0, name=0x21c6430 "cpum_cf", head_config=0x21b14d0, auto_merge_stats=false, loc_=0x3ffffffb4d8) at util/parse-events.c:1351
+> #10 0x000000000123aa4c in parse_events_parse (_parse_state=0x3ffffffc2f0, scanner=0x15b9310) at util/parse-events.y:299
+> #11 0x00000000011bd190 in parse_events__scanner (str=0x3ffffffc68a "cpum_cf/event=L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV/u", input=0x0, parse_state=0x3ffffffc2f0) at util/parse-events.c:1738
+> #12 0x00000000011bde00 in __parse_events (evlist=0x15b7030, str=0x3ffffffc68a "cpum_cf/event=L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV/u", pmu_filter=0x0, err=0x3ffffffc4c8, fake_pmu=0x0, warn_if_reordered=true) at util/parse-events.c:2010
+> #13 0x0000000001121884 in parse_events (evlist=0x15b7030, str=0x3ffffffc68a "cpum_cf/event=L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV/u", err=0x3ffffffc4c8) at /root/git/linux/tools/perf/util/parse-events.h:40
+> #14 0x0000000001134084 in test_event (e=0x3ffffffc5e0) at tests/parse-events.c:2393
+> #15 0x00000000011349ec in test__pmu_events (test=0x156b860 <suite.parse_events>, subtest=1) at tests/parse-events.c:2551
+> #16 0x000000000111f884 in run_test (test=0x156b860 <suite.parse_events>, subtest=1) at tests/builtin-test.c:242
+> #17 0x000000000111fa1a in test_and_print (t=0x156b860 <suite.parse_events>, subtest=1) at tests/builtin-test.c:271
+> #18 0x00000000011203fa in __cmd_test (argc=1, argv=0x3ffffffe5d0, skiplist=0x0) at tests/builtin-test.c:442
+> #19 0x0000000001120cca in cmd_test (argc=1, argv=0x3ffffffe5d0) at tests/builtin-test.c:564
+> #20 0x00000000011713a4 in run_builtin (p=0x1561190 <commands+600>, argc=3, argv=0x3ffffffe5d0) at perf.c:322
+> #21 0x0000000001171712 in handle_internal_command (argc=3, argv=0x3ffffffe5d0) at perf.c:375
+> #22 0x0000000001171920 in run_argv (argcp=0x3ffffffe304, argv=0x3ffffffe2f8) at perf.c:419
+> #23 0x0000000001171ce8 in main (argc=3, argv=0x3ffffffe5d0) at perf.c:535
+> (gdb)
+> 
+> (gdb) fr 1
+> #1  0x000000000123e518 in assign_str (name=0x1487cc3 "l1i_ondrawer_mem_sourced_writes", field=0x141eeba "value", old_str=0x18c12e0, new_str=0x1487d1f "event=0xb1") at util/pmu.c:449
+> 449		if (!new_str || !strcasecmp(*old_str, new_str))
+> (gdb) p new_str
+> $1 = 0x1487d1f "event=0xb1"
+> (gdb) p *old_str
+> $2 = 0x1 <error: Cannot access memory at address 0x1>
+> (gdb) p old_str
+> $3 = (char **) 0x18c12e0
+> (gdb)
+
+Same thing on a hybrid ARM system:
+
+  6.5: Parsing of aliased events                                     :
+--- start ---
+test child forked, pid 49658
+Using CPUID 0x00000000410fd082
+perf: Segmentation fault
+Obtained 16 stack frames.
+perf(sighandler_dump_stack+0x43) [0xaaaad58f5047]
+linux-vdso.so.1(+0x7a7) [0xffff978fb7a7]
+/lib/aarch64-linux-gnu/libc.so.6(__strcasecmp+0x2c) [0xffff96aa1dac]
+perf(+0x19378b) [0xaaaad591378b]
+perf(pmu_events_table__find_event+0x8b) [0xaaaad59d74cb]
+perf(+0x193f87) [0xaaaad5913f87]
+perf(+0x19433b) [0xaaaad591433b]
+perf(perf_pmu__have_event+0xd3) [0xaaaad5915c17]
+perf(parse_events_multi_pmu_add+0x137) [0xaaaad58cb787]
+perf(parse_events_parse+0x1247) [0xaaaad5912627]
+perf(+0x146c27) [0xaaaad58c6c27]
+perf(__parse_events+0x7b) [0xaaaad58c86bb]
+perf(+0xeed23) [0xaaaad586ed23]
+perf(+0xeb97b) [0xaaaad586b97b]
+perf(cmd_test+0x747) [0xaaaad586c477]
+perf(+0x11e64b) [0xaaaad589e64b]
+test child interrupted
+---- end ----
+Parse event definition strings subtest 5: FAILED!
+  6.6: Parsing of terms (event modifiers)                            :
+--- start ---
+test child forked, pid 49660
+running test 0 'config=10,config1,config2=3,config3=4,umask=1,read,r0xead'
+test child finished with 0
+---- end ----
+Parse event definition strings subtest 6: Ok
+root@roc-rk3399-pc:~# grep -i "model name" /proc/cpuinfo
+root@roc-rk3399-pc:~# grep -i "model" /proc/cpuinfo
+root@roc-rk3399-pc:~# cat /proc/cpuinfo
+processor	: 0
+BogoMIPS	: 48.00
+Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+CPU implementer	: 0x41
+CPU architecture: 8
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+processor	: 1
+BogoMIPS	: 48.00
+Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+CPU implementer	: 0x41
+CPU architecture: 8
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+processor	: 2
+BogoMIPS	: 48.00
+Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+CPU implementer	: 0x41
+CPU architecture: 8
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+processor	: 3
+BogoMIPS	: 48.00
+Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+CPU implementer	: 0x41
+CPU architecture: 8
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+processor	: 4
+BogoMIPS	: 48.00
+Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+CPU implementer	: 0x41
+CPU architecture: 8
+CPU variant	: 0x0
+CPU part	: 0xd08
+CPU revision	: 2
+
+processor	: 5
+BogoMIPS	: 48.00
+Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+CPU implementer	: 0x41
+CPU architecture: 8
+CPU variant	: 0x0
+CPU part	: 0xd08
+CPU revision	: 2
+
+root@roc-rk3399-pc:~#
