@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF0578AE27
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2C778ADED
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbjH1K5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
+        id S232192AbjH1Kwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjH1K4g (ORCPT
+        with ESMTP id S232349AbjH1Kwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:56:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E3A2D53;
-        Mon, 28 Aug 2023 03:56:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B10E4643BA;
-        Mon, 28 Aug 2023 10:55:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E05C43395;
-        Mon, 28 Aug 2023 10:55:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693220139;
-        bh=Bb5ceWlaWfPfAbTCvodCpwqGEOWqs3DzAgQJiJfYYLI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qR1SoaeXARfJ5B+C7d1LrT8ZNFXqBqyjUjWCQB+bcrZ+F//B5r4j/u0xcjOjgNkYT
-         4i9JwXyCuIBJQvQlEKkhPYGpxgfKdjeBFD0ZpGrcNWbfqqaI3ulRi3VCjloeGnH3jF
-         BteU6FCE4IZropHtFlCbLyH0sG/W4J0IAo5Djh7Q=
-Date:   Mon, 28 Aug 2023 12:51:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andras Sebok <sebokandris2009@gmail.com>
-Cc:     linux-serial@vger.kernel.org, andriseseboke@gmail.com,
-        linux-kernel@vger.kernel.org, jirislaby@kernel.org
-Subject: Re: [PATCH 1/2] Simplify sysrq help
-Message-ID: <2023082831-undefined-hut-11fd@gregkh>
-References: <20230828102753.4811-2-sebokandris2009@gmail.com>
+        Mon, 28 Aug 2023 06:52:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11CCCF0;
+        Mon, 28 Aug 2023 03:52:07 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693219905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Shw6L4hIM6NdCogVN/OfbxVTyZ7kVU78bQFuDvYBnc4=;
+        b=KiTnh2dTqEkfL3RuDHtjVkNbw7ZbDPrGjJ51HUP7Q7VaSvKwdEyWGsjVK/cUhEiNB5idq9
+        uz/B/EAIFO0oHq8DKZiGcvH7GLzf2y5OjWtQorbGl5HWjGqKoZ1ziOu2ICuLpomq/qv5c6
+        QOBxFT0oeE7hMxB4ZbvBXL3AQf6ei3WKu8BViAkK/sQrQz8NE2TB7U7EHh8sXACCKh38hB
+        zjWWvitifdc3JzyryeR2SGcuHRXPmlaLP9wkEpcDo6CW9u4rjvD/oAFkZ13ibUBoaYHJ4E
+        2JI4tedi6WX/sVIp9uKTG90Lqn6Ue/YTg6jDPiPm0N+nHettRrH5+pFkDDZ5cA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693219905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Shw6L4hIM6NdCogVN/OfbxVTyZ7kVU78bQFuDvYBnc4=;
+        b=kipFyot1x9kbN5bYEhWFb6QTzahH7fbQ0RJ5+H/3dWvrb7W1RlybfjvPsWFSJb857jkZvs
+        +pBPynKoOEJe6KCg==
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>,
+        Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>, jgg@ziepe.ca,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        rpearsonhpe@gmail.com,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Subject: Re: [PATCH v2 1/2] RDMA/rxe: Improve newline in printing messages
+In-Reply-To: <CAD=hENcu4wKELCt61O+p-RtOpaHHoaAQhr7Ygt9pdr9Hc4s2Wg@mail.gmail.com>
+References: <20230823061141.258864-1-lizhijian@fujitsu.com>
+ <f3f30d46-379a-8730-5797-400a77db61c3@linux.dev>
+ <87r0nnczp7.fsf@jogness.linutronix.de>
+ <CAD=hENcu4wKELCt61O+p-RtOpaHHoaAQhr7Ygt9pdr9Hc4s2Wg@mail.gmail.com>
+Date:   Mon, 28 Aug 2023 12:57:43 +0206
+Message-ID: <87fs43cudc.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828102753.4811-2-sebokandris2009@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:27:53PM +0200, Andras Sebok wrote:
-> This patch simplyfies sysrq help menu by moving each command to a 
-> separate line and by moving the key from brackets to after a semicolon.
-> 
-> before:
-> sysrq: HELP : loglevel(0-9) reboot(b) crash(c) terminate-all-tasks(e) memory-full-oom-kill(f) kill-all-tasks(i) thaw-filesystems(j) sak(k) show-backtrace-all-active-cpus(l) show-memory-usage(m) nice-all-RT-tasks(n) poweroff(o) show-registers(p) show-all-timers(q) unraw(r) sync(s) show-task-states(t) unmount(u) force-fb(v) show-blocked-tasks(w) dump-ftrace-buffer(z)
-> 
-> after:
-> sysrq: HELP :
-> loglevel : 0-9
-> reboot : b
-> crash : c
-> terminate-all-tasks : e
-> memory-full-oom-kill : f
-> kill-all-tasks : i
-> thaw-filesystems : j
-> sak : k
-> show-backtrace-all-active-cpus : l
-> show-memory-usage : m
-> nice-all-RT-tasks : n
-> poweroff : o
-> show-registers : p
-> show-all-timers : q
-> unraw : r
-> sync : s
-> show-task-states : t
-> unmount : u
-> force-fb : v
-> show-blocked-tasks : w
-> dump-ftrace-buffer : z
+On 2023-08-28, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+> Do you mean "a newline can help flushing messages out"?
+> That is, in printk, the message will be buffered until it is full or
+> it meets a newline?
 
-So now the options all scroll off the screen?  Are you sure this is
-wise?  What problem are you trying to solve here, it just looks like you
-are changing one "help text format for another", and doesn't actually
-change much of anything.
+Correct. A trailing newline is needed for the record to become
+"finalized". Only finalized records are pushed out to consoles.
 
-Note the:
-	sysrq: HELP :
+If there is no trailing newline, the message will be buffered until
+printk is called using a message with a trailing newline.
 
-line format being different from all the others makes this not even look
-correct?
+There are some other reasons why it may be flushed. But for sure the
+flushing will be delayed if there is no trailing newline.
 
-So I really do not see the point of this change here, why is it needed?
-
-thanks,
-
-greg k-h
+John Ogness
