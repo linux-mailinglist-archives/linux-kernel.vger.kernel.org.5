@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F8078BBC8
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABEF78BBC7
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 01:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234495AbjH1X46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 19:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
+        id S234487AbjH1X45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 19:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbjH1X4n (ORCPT
+        with ESMTP id S233755AbjH1X4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 19:56:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9F3132
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693266960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=ALnMfmrHHVOoMDKlXKGvleZgLroHOuLCEmICtk5Z3tM=;
-        b=aMn2suKxzYDja5zJzsfw4kM2nBpgJxSOrzQoTVPLqoqOzqzL79WMk7Ppc6pjjyjwSHN+sj
-        CAZxOVoBDQiLbjpF+lmWhXidaVsHSBFjfeJ2Kcvq4g6kQVdx7aRyHj65G5wVOoeusm7K4f
-        +JG5IoloueifMkjGgX/mR1YD4QuIv5o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-244-7kcOiANfOnGdhhFGP9dzyQ-1; Mon, 28 Aug 2023 19:55:56 -0400
-X-MC-Unique: 7kcOiANfOnGdhhFGP9dzyQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 41561101A528;
-        Mon, 28 Aug 2023 23:55:56 +0000 (UTC)
-Received: from localhost (unknown [10.22.32.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A33D40C2063;
-        Mon, 28 Aug 2023 23:55:55 +0000 (UTC)
-Date:   Mon, 28 Aug 2023 20:55:54 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        stable-rt <stable-rt@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 4.14.323-rt153
-Message-ID: <ZO00Cp6g8EuJREih@uudg.org>
+        Mon, 28 Aug 2023 19:56:23 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCC013D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:56:21 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500aed06ffcso4348975e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:56:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693266979; x=1693871779;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ca0K8QaLPVDB48KBeeAn11eON3QiDcCcdOpq7HRvOHM=;
+        b=UDYUbWdCwiBTSf9jsIgIz43zZ3g1hPOjRZ90DxCf5DFx/16wwqhvFdvcyjEo7migZT
+         kk92ZnOA11T/khIY+0tG+EAvDX7Hrp1mGXM20t/cQzQYiHhLUFSK7BQcb+A1qdxPOxcm
+         bHgnioElnadkZRI5F4XskL9jrMJorTN7TMRlU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693266979; x=1693871779;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ca0K8QaLPVDB48KBeeAn11eON3QiDcCcdOpq7HRvOHM=;
+        b=PDTP5MdSBib8Os/fLi/Tt8y4HwY6eJd0XRJOdSs0OcYdbrke2YZgcJesp4tq5x+rHp
+         AxLMGyX6oCudxeGpN0pBpdRKef5QP9X1sjDJCHbEuJ0aEgbsmjXJo3I8ZjJuFSVGxTpN
+         pfje0sz4Mv4FdOdGH5le+J3nymie0peinivUU4jjOtZcNQHDauT8PIFrEmBOW/emLn2N
+         jMIzR4/sHdE8+tWuaVortUayNmOBQ6Y/WvNpuUKMV4fLRHuHTbWXEVxey3uWwp4gbmj8
+         /De3//A1BaRyNy2qZAk0nmo3JFAvGZ4uHAduvvZk+0L6loDwfMD8AeGqyYuTrw9BZfCl
+         Xdpw==
+X-Gm-Message-State: AOJu0Yz/JEZEltYZpfUvvJ42GHRIJUy/K0LKO37cJfXfoxD9AU0W6wf1
+        ABiKpIisIJNBzOTaTv6w29jr0bUImhi5S8kN2tEdaw==
+X-Google-Smtp-Source: AGHT+IHOSDbRWNYiwE71728OWhwLV4db76Z9yJOLSKhcNFrDWfdDrZ76OLt30T2p9u4RH0p1A3oVew==
+X-Received: by 2002:ac2:4da8:0:b0:500:9031:bb1b with SMTP id h8-20020ac24da8000000b005009031bb1bmr11431244lfe.41.1693266979278;
+        Mon, 28 Aug 2023 16:56:19 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id m17-20020ac24ad1000000b004ff725d1a27sm1724571lfp.234.2023.08.28.16.56.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 16:56:18 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2b974031aeaso57912231fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 16:56:17 -0700 (PDT)
+X-Received: by 2002:a2e:8717:0:b0:2bc:c11c:4471 with SMTP id
+ m23-20020a2e8717000000b002bcc11c4471mr18323041lji.21.1693266977434; Mon, 28
+ Aug 2023 16:56:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202308281119.10472FC7@keescook>
+In-Reply-To: <202308281119.10472FC7@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Aug 2023 16:56:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi_WxZ2dEsQR0-wDtYAh4sxVEQkU7HK5JSboVv7v7NwcQ@mail.gmail.com>
+Message-ID: <CAHk-=wi_WxZ2dEsQR0-wDtYAh4sxVEQkU7HK5JSboVv7v7NwcQ@mail.gmail.com>
+Subject: Re: [GIT PULL] pstore updates for v6.6-rc1
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Enlin Mu <enlin.mu@unisoc.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yunlong Xing <yunlong.xing@unisoc.com>,
+        Yuxiao Zhang <yuxiaozhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Mon, 28 Aug 2023 at 11:21, Kees Cook <keescook@chromium.org> wrote:
+>
+> Please pull these pstore updates for v6.6-rc1. This contains a fair bit
+> of code _removal_ which is always nice.
 
-I'm pleased to announce the 4.14.323-rt153 stable release.
+Hmm. The diffstat certainly looks good, but the end result isn't great..
 
-This release is just an update to the new stable 4.14.323
-version and no RT specific changes have been made.
+I now get 124 lines of
 
-You can get this release via the git tree at:
+   pstore: zlib_inflate() failed, ret = -5!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+in my bootup dmesg.
 
-  branch: v4.14-rt
-  Head SHA1: 294cef4c51977f3cb87443eabef739748f6d674b
+Considering that there's no reason for pstore to even be active on
+this machine, I think it's because pstore now goes and tries to
+uncompress something entirely invalid.
 
-Or to build 4.14.323-rt153 directly, the following patches should be applied:
+The message itself does not seem to be new, but with the switch from
+the crypto code, it apparently used to be
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+    crypto_comp_decompress failed, ret = %d!
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.323.xz
+but the key word here is *apparently*. I never got that message
+before. So something else has changed, and I'm thinking that the old
+code probably didn't even try to decompress the bogus data it found?
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older/patch-4.14.323-rt153.patch.xz
+I dunno. But 124 lines of insane garbage in the kernel messages is not
+a good thing.
 
-Signing key fingerprint:
-
-  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
-
-All keys used for the above files and repositories can be found on the
-following git repository:
-
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Enjoy!
-Luis
-
+                  Linus
