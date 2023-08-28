@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0446678B739
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C7B78B73C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbjH1S0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        id S231308AbjH1ScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbjH1S0m (ORCPT
+        with ESMTP id S230135AbjH1ScQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:26:42 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1A719B
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:26:37 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2690803a368so821482a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:26:37 -0700 (PDT)
+        Mon, 28 Aug 2023 14:32:16 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF2AB9;
+        Mon, 28 Aug 2023 11:32:14 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1c26bb27feeso2557144fac.0;
+        Mon, 28 Aug 2023 11:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693247197; x=1693851997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FiPV4G5iHAtAG4UvFP/AL0UjoI+7fgafbUPgIedNHeY=;
-        b=hZRyflvdsgVf7Z/jfpA1eH6omfmqrfbtnaUVRqGynac978QClZRwXdwM5S4YzNbiIx
-         9CuNrESpSwwG3hBb4UCMzoYqjIBgnNl1s6SbU1GwRBplRSyLaOZLw3dC9iX0nCAQw1hL
-         k7AtYHIcp7Zm+ZfR1FIen1P1Rk1vve+N0dQPPNI3oAOmhUvm4q6SVlqSmYZq1qkl3pKF
-         mZOmBbbMaDjimrVgM7vOBkt77dWEM2QPZM2FpLtFFBOCvM5lkKE0qANOGCzzYDVqWVZe
-         BqDp/50Hlo3+4wMOD61LqQFmFhf2oiCx7JKlGUBiHS6SuWPoH7pcTzP2nPv1mumg+m5W
-         d+pw==
+        d=gmail.com; s=20221208; t=1693247534; x=1693852334;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cYaqHdJguh90lafMBaasjNFY4ARPGILI9uHRSPA4ax0=;
+        b=WaN1WnyIpgFgFrSnbiC+pmTNY+frEr0GkIEolN7JLhgfXZKyX/rwMPyfAiAoieu30l
+         Ymxt5je2MV7wOdBK1S0z9WKckbxpHd0SOcuBurD6lLYFiwJp6BLrolHlbRi2pCuMVBPg
+         hby6/zEF36UVyG1uVrk50FPOnt8shrUC/g+QF40H+bb7M2xYS0GmqX/knUgIOn06zI0J
+         mY+bJJ/graQm8+XS8JeFhCIuLlz4jROAoGCak9TalWjfxrBVhdmvdD6eAclRP873Jgqc
+         uvb344LLVkgA+eDhNGMvs9uCbP9oLUGMae+hLA6TPDEcqQCH5zLxJ8OKHffQc/x0h78G
+         4Q7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693247197; x=1693851997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FiPV4G5iHAtAG4UvFP/AL0UjoI+7fgafbUPgIedNHeY=;
-        b=NI3uwd+w5a9xVeuzp69trSoC9NcgXYsO0CS9R4szCd/Uic1i0IMGTdl0ELasIO2wDt
-         yGOp1SlmuoG8DuDcddaUjzOePuvcGJVxL0K+qu1dF5bW9ny9TTulSzxQVCvwRbLF5MXJ
-         ZathGzH+5RqYwCd6yEQVjnR3SN1G9Lg0QmxmqaHUM/NOGafbgqYhh/GKIIKeJE5+OXIA
-         aKJj7+JwThwBRn4beTVdpQTXe+TidBx/t3Rxqyo1BhXU0SgNtiaQZQ29ifj2irISRdqc
-         GYXN8CdY/Nkan80iUYcwdLjxJOkZYE0zUnrZcOX1qQcgD3gTxjgKAPjXCURrx14haMBg
-         NJaA==
-X-Gm-Message-State: AOJu0YwF4vFqLVGS9tTF7naOqvaC9e1vHgqSVn1Tp0YxvlWkWbVDIFMq
-        orS5URE2tIxK2MrO4uztFO4DOKYzq9733oJxyGQ=
-X-Google-Smtp-Source: AGHT+IGoMCQugWsIfzxKXbeAuTWuckm9aMkH0QVvfSGDqsCLi/h7IPshGXj6QQLYt0zErVLqJGKelTlnx9A0D0AYI8w=
-X-Received: by 2002:a17:90a:680e:b0:26d:2635:5a7c with SMTP id
- p14-20020a17090a680e00b0026d26355a7cmr24357519pjj.2.1693247197185; Mon, 28
- Aug 2023 11:26:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693247534; x=1693852334;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cYaqHdJguh90lafMBaasjNFY4ARPGILI9uHRSPA4ax0=;
+        b=YFvr4h3eblPofRWyFX7rkDEL5mXKFRzikt8s4IH5bekpQx3lZKkYHT+a8xSu0QKhnt
+         GE8jNzk2UdENWxcb7UxhH1iyTWUhcQ6JveB/3E+NdklOKukOCAJlLCPtJRbOjWPFwz+Z
+         Nv8QNC1Xhosws5qsbTa8v5iDrscXYTh9etofkLLDNObAylX3PTPKOuD5QiXTud5P2BUG
+         8hnc2Q1K3QfvT4RKFXMvt2p7u3/K84S9Ef7mRDEFs2P4r/dxSkfVnMO+eWUDbyhFcJXA
+         oa8+CVYwON+ZpZb5O6bokVaoJXHk4Ci2OT29ledz3DzRrCj0KmiYCzeUyaeMXegXzc6W
+         K/ww==
+X-Gm-Message-State: AOJu0Yy2m4Ea+wiSatEJglp0wyG3psIJRMUiLW9Bu65V+MBBy70VLagw
+        bpA6D3MTArbKMaVUke+Xkrht21Y95e+DMD5GR74A9rWN
+X-Google-Smtp-Source: AGHT+IHUPTewo1PRtYNHwfExAdqJdNNvUQ3kkD61NwAtILCe0SKA7kIknktEZiR1TY+D+exvLpENJ+3DM0TalR+wGPk=
+X-Received: by 2002:a05:6870:b624:b0:1c6:ac86:d56 with SMTP id
+ cm36-20020a056870b62400b001c6ac860d56mr13305221oab.14.1693247533710; Mon, 28
+ Aug 2023 11:32:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de> <20230818-samsung-dsim-v1-4-b39716db6b7a@pengutronix.de>
-In-Reply-To: <20230818-samsung-dsim-v1-4-b39716db6b7a@pengutronix.de>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 28 Aug 2023 15:26:25 -0300
-Message-ID: <CAOMZO5AFEDMT1de2O2sUUuw8E0ZRCyD4QVVCKxAtfRaisU5gVw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] drm/bridge: samsung-dsim: adjust porches by rounding up
-To:     Michael Tretter <m.tretter@pengutronix.de>
-Cc:     Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Received: by 2002:a8a:1141:0:b0:4f0:1250:dd51 with HTTP; Mon, 28 Aug 2023
+ 11:32:13 -0700 (PDT)
+In-Reply-To: <CAHk-=wgrsfz4HmJE2fgdHrh-xUuVqk7t08=k2scz8Cgix0hBwg@mail.gmail.com>
+References: <20230828170732.2526618-1-mjguzik@gmail.com> <CAHk-=wi1BO1KQaPOTzs7N4QrLh2UCiRuNnW0MPVTDLrRxZhDww@mail.gmail.com>
+ <CAGudoHGGXNP5dBpZLadBUTVeD-JPEuikQXONruJzvnRJrp5+KA@mail.gmail.com> <CAHk-=wgrsfz4HmJE2fgdHrh-xUuVqk7t08=k2scz8Cgix0hBwg@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Mon, 28 Aug 2023 20:32:13 +0200
+Message-ID: <CAGudoHF6T5SCE0Tn9=YUOV9ZcbQOSUe9Z=0tNbf72yvNqmP0oQ@mail.gmail.com>
+Subject: Re: [PATCH] x86: bring back rep movsq for user access on CPUs without ERMS
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        bp@alien8.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,14 +70,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On Mon, Aug 28, 2023 at 12:59=E2=80=AFPM Michael Tretter
-<m.tretter@pengutronix.de> wrote:
+On 8/28/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Mon, 28 Aug 2023 at 11:04, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>>
+>> Other files do it (e.g., see __copy_user_nocache), but I have no
+>> strong opinion myself.
 >
-> The porches must be rounded up to make the samsung-dsim work.
+> So the __copy_user_nocache() thing is a case of that second issue -
+> see my comment about "some sane visually sensible grouping" of the
+> numbers.
+>
+> Look closer, and you'll notice that they aren't actually sequential.
+> They are of the form XY where the X is the grouping, and Y is the
+> local number within that grouping.
+>
+> That case also comes with a fair amount of comments about each group
+> for the extable entries.
+>
+> But yes, we also do have a number of thos e"sequential labels". See
+> for example arch/x86/lib/getuser.S, where we then end up having all
+> the exception handling at the end because it is mostly shared across
+> cases. It's ugly.
+>
+> We also have a lot of ugly cases that probably shouldn't use numbers
+> at all, eg csum_partial(). I think that goes back to some darker age
+> when things like "assembly is so trivial that it doesn't need any
+> fancy explanatory labels for code" was ok.
+>
+> See also arch/x86/lib/memmove_64.S for similar horrors. I wonder if it
+> is a case of "use compiler to get almost the right code, then massage
+> things manually". Nasty, nasty. That should use legible names, not
+> random numbers.
+>
+> I also suspect some people really thought that the numbers need to be
+> unique, and just didn't know to use local numbering.
+>
 
-The commit log could be improved here.
+That was bad example, I meant stuff was already *unique* in other
+files and it is sequential in some of them. In the very func I'm
+modifying here there is 0/1 followed by 2/3 pair already, so it looked
+like the convention to follow.
 
-The way it is written gives the impression that samsung-dsim does not
-work currently.
+Anyhow this is bullshit detail I'm not going to argue about, you made
+your position clear and I see no problem adhering to it -- consider
+this bit patched in v2.
+
+Can we drop this aspect please ;)
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
