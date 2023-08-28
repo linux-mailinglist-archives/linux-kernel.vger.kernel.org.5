@@ -2,50 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C47478A67B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4689B78A67E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbjH1H3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        id S229547AbjH1H3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjH1H2p (ORCPT
+        with ESMTP id S229593AbjH1H3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:28:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EC412A;
-        Mon, 28 Aug 2023 00:28:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1393F6328C;
-        Mon, 28 Aug 2023 07:28:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2514FC433C7;
-        Mon, 28 Aug 2023 07:28:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693207711;
-        bh=slm9CrxF1yLvUV/zI70I+YlWfwClgXFNzqfBzAe14N0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HxArU1xS4V0VPOWdWywQeccFFA3omAgAH7MPdTUaMA3oAYM1t1Fmoqnm1dci+lfKu
-         hH6MY3PbCGmyL5v5cB03SO8xrNdkcS7R74Hg5l2ifwiu75A+OT0CENGVmYZnmCiECV
-         GJSaC8RVKM5iPJqQKESRTZwblhBBCq6sc2vADMZc=
-Date:   Mon, 28 Aug 2023 09:28:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anshul <anshulusr@gmail.com>
-Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, linux-alpha@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fixed formatting issues
-Message-ID: <2023082827-craftily-citric-06fa@gregkh>
-References: <20230828071829.64366-1-anshulusr@gmail.com>
+        Mon, 28 Aug 2023 03:29:10 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C57F1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:29:07 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-529fb04a234so3926137a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693207746; x=1693812546;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ncCz15Ca8yj1oTiFMyRiCrPjAtxLbzm5ILrKrkQBGa4=;
+        b=Y3ltKNaw4XNokhKNkRsZxIRn5Sl3hDxauYsqx/tDwYM2Y/30Nbo3jEhZYwMjwLGTqz
+         Cpqf2AyEf+KPajQMaPmZyAAtBLQUKEYZwu6lnYOod5mD/vCzAuRkmMd56sPV8qMAYG14
+         Diom48g2eF4cf3wlPX8EhJPIIQz+5xwYbeZ1oaFWaZ1IXNe32uogjHt2jEDXI5tXNTms
+         DdoRIKy0zeDK7Z4rYx620MtKiLyaSc7hJ5CCC41WKiLro2Syvj9rjQBfqpceKALj+Cly
+         FgCwsWouMB5a0VWyWQE54rIEWGIYKqNlU+nbuT3cCjAIlTftJC1jVvdbyZl5oy3gzbkb
+         WURA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693207746; x=1693812546;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ncCz15Ca8yj1oTiFMyRiCrPjAtxLbzm5ILrKrkQBGa4=;
+        b=bxeTGkMOsNj+XIfFQHBSlu/D6IAD8ZqI9hD7AM9YVEku5v/OKzCyLK3+sQaOT3REEo
+         j/ZxoWK5vzFbYCOfYYNbFP5+q161PQzoIoOE/HG5gXqbh30h07nubfyeq00q9cnGlVZo
+         bREhVrHKl2JZ4M1KTNazO+IUf3ekbblD3ARAkF887U8QKkp5Xxr1Y6T1Do7UkBss3r6A
+         49i5Ked24Bhh8hGUWIvCJNAeepCE3kYSNx8IttR0Wq45eLNMQxwImKM50yGOmUn5Lmxl
+         hzFOz1Bbf/WigZlo4O+de9OsalaiEWOF4qjrICABkFwU0EQezsJ39WS71SrE1oLTNblv
+         K7Sg==
+X-Gm-Message-State: AOJu0Yzbmw9vDeo2dwWi4iv1lo/blah30cSDHVtEPhHzo3yXsjfxvebk
+        kTy7h8kG5NgwLOv3jFBFkBP44Q==
+X-Google-Smtp-Source: AGHT+IEZVXu5s4APFn9qEPjvXInwBCeK+aeFnuvOZoEFe0yhJAfI53HIx6HUkp4PCUzag3ZJofaxbQ==
+X-Received: by 2002:aa7:d742:0:b0:525:4f9c:3505 with SMTP id a2-20020aa7d742000000b005254f9c3505mr19277217eds.29.1693207746256;
+        Mon, 28 Aug 2023 00:29:06 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id d8-20020a05640208c800b0052237dfa82fsm4155333edz.64.2023.08.28.00.29.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 00:29:05 -0700 (PDT)
+Message-ID: <44b72757-712e-0e01-2a66-5b2a694b0ab0@linaro.org>
+Date:   Mon, 28 Aug 2023 09:29:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828071829.64366-1-anshulusr@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/6] arm64: dts: freescale: add initial device tree for
+ TQMLS1043A/TQMLS1046A
+Content-Language: en-US
+To:     Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@ew.tq-group.com
+References: <20230823120952.317740-1-gregor.herburger@ew.tq-group.com>
+ <20230823120952.317740-4-gregor.herburger@ew.tq-group.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230823120952.317740-4-gregor.herburger@ew.tq-group.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,61 +81,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:48:25PM +0530, Anshul wrote:
-> Fixed minor formatting issues as per `scripts/checkpatch.pl`
+On 23/08/2023 14:09, Gregor Herburger wrote:
+> This adds support for the TQMLS1043A and TQMLS1046A SOM and the
+> MBLS10xxA baseboard. TQMLS1043A and TQMLS1046A share a common layout
+> and can be used on the MBLS10xxA.
 > 
-> Six changes to the file and their severity are as follows:
-> * [WARNING] Removed unnecessary braces from single statement blocks
-> * [ERROR]   5 fixes are to pointer formatting
-> * [ERROR]   Removed a trailing whitespace
-> 
-> 6 errors and 1 warning of the previously present 6 errors and 5
-> warnings have been fixed.
-> 
-> Signed-off-by: Anshul <anshulusr@gmail.com>
-> ---
->  arch/alpha/boot/main.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
+> Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
 
-Hi,
+...
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+> +&i2c3 {
+> +	status = "okay";
+> +
+> +	i2c-mux@70 {
+> +		compatible = "nxp,pca9544";
+> +		reg = <0x70>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		i2c@0 {
+> +			reg = <0x0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			gpioexp1: pca9555@20 {
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
 
-- You did not write a descriptive Subject: for the patch, allowing
-  everyone, to know what this patch is all about.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what a proper
-  Subject: line should look like.
+> +				compatible = "nxp,pca9555";
+> +				reg = <0x20>;
+> +				vcc-supply = <&reg_3v3>;
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +			};
 
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file,
-  Documentation/process/submitting-patches.rst for how to do this
-  correctly.
+...
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+> +
+> +&esdhc {
+> +	/* eSDHC or eMMC: set by bootloader */
+> +	non-removable;
+> +	disable-wp;
+> +	mmc-hs200-1_8v;
+> +	sd-uhs-sdr104;
+> +	sd-uhs-sdr50;
+> +	sd-uhs-sdr25;
+> +	sd-uhs-sdr12;
+> +};
+> +
 
-thanks,
+Stray blank line.
 
-greg k-h's patch email bot
+Best regards,
+Krzysztof
+
