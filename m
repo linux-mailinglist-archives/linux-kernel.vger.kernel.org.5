@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D3978B4A0
+	by mail.lfdr.de (Postfix) with ESMTP id 7544D78B4A2
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbjH1Pij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
+        id S232316AbjH1Pim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232362AbjH1PiQ (ORCPT
+        with ESMTP id S232521AbjH1Pic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:38:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87342129
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:38:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DF2C61962
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:38:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCCD2C433C7;
-        Mon, 28 Aug 2023 15:38:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693237092;
-        bh=dzYUC4x71hePfh1fMxxDPkaQ3t2Rx7GJtVY/gjCTlzM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ea/MPvMQD4k17skD6acHWPuYIycbRrR4yiRVYxBPwBYRzTROaEfLf0VsHFar/cTDX
-         2/kVhhrAfvSZ/sQkLZYSC+i5yy9UN9JSWs5GjHrAWHJh1aWTp23tZHzU3xkCw8zBpx
-         sL4Ze8Lz4XZeoZPOyK372/w+5kAUnYOo+thaHIdkosuLczd33cLTEHxqKypHvtwYOb
-         xMH1Gx+MjEV60CgGg+Z067NsVyD5IvrlWUOhLTnaVKuMKc79SwPaGlV769GIjvrSx3
-         1elETamOyfmNgN1UkoY2R+Sx1YH8SzSW+hvTbHEBYDF8z2Ab1Cw0wOIsjTc8HWJdoW
-         BPkwq08IB/Vhw==
-Date:   Mon, 28 Aug 2023 08:38:10 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Mina Almasry <almasrymina@google.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-Message-ID: <20230828083810.4f86b9a3@kernel.org>
-In-Reply-To: <CAKgT0UeHfQLCzNALUnYyJwtGpUnd=4JbMSy00srgdKZz=SFemw@mail.gmail.com>
-References: <20230816100113.41034-1-linyunsheng@huawei.com>
-        <20230816100113.41034-2-linyunsheng@huawei.com>
-        <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
-        <20230817091554.31bb3600@kernel.org>
-        <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
-        <20230817165744.73d61fb6@kernel.org>
-        <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
-        <20230818145145.4b357c89@kernel.org>
-        <1b8e2681-ccd6-81e0-b696-8b6c26e31f26@huawei.com>
-        <20230821113543.536b7375@kernel.org>
-        <5bd4ba5d-c364-f3f6-bbeb-903d71102ea2@huawei.com>
-        <20230822083821.58d5d26c@kernel.org>
-        <79a49ccd-b0c0-0b99-4b4d-c4a416d7e327@huawei.com>
-        <20230823072552.044d13b3@kernel.org>
-        <CAKgT0UeSOBbXohq1rZ3YsB4abB_-5ktkLtYbDKTah8dvaojruA@mail.gmail.com>
-        <5aae00a4-42c0-df8b-30cb-d47c91cf1095@huawei.com>
-        <20230825170850.517fad7d@kernel.org>
-        <CAKgT0UeHfQLCzNALUnYyJwtGpUnd=4JbMSy00srgdKZz=SFemw@mail.gmail.com>
+        Mon, 28 Aug 2023 11:38:32 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96BE194
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:38:20 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso49528161fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693237099; x=1693841899;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oOBUP0ss/TxEKXtPE0CNLju64MbMYbKUX21GZjq3dUc=;
+        b=lRbLphjIATg19N4Za/9tYCX5wc34RXXxp2qF1vRQJkQjxZIV4z+O3cUYAL9oRiaq+9
+         jgvm6t82Ouz6beTFmD/v+hXhyZwlRtGE/lw1ngdaC78p3rAKHzZVZFNIUmJuuUnB20sa
+         XAnuxKp0M/qKyQqgfLEKEdCVCnoZzSCvkzBDvRc1WatYWLRScnyomSjn/VWtwbfYQHSB
+         HzrWjsGV4SxF9Y69lFW05gw5R4TgOn6j7ViToNoW/KOMpNZdOPvaO+Z5twQTd748++q6
+         gnXZZ3uOGce8FATlPZF33J4rDgbUNuIbHPMh/5kXNgVc591A14iLfINZQigT3TtZtcwt
+         vuoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693237099; x=1693841899;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oOBUP0ss/TxEKXtPE0CNLju64MbMYbKUX21GZjq3dUc=;
+        b=DX+8h8CzZdoL9RhJcJLMkvMjp/qdJkuWMBqpxhvkePVSyh1By8I+hgUQIU9omlEAqO
+         QvQfoQJBle7mfYHPAoum0k811Upz5eIfh9P6M+Mivk03EE+gKNIAxaMdo7r+FLt230QA
+         qaHRSuM5yXRNT61A9Em815KlyOURzGoOWlc4ylwdAXtiZkMjmjHkdaF5bS+ICYNp2lBW
+         xdwmhkZ5u4VY4bmtHNmVbT1n9T48yt0vhihCKrNtamJzzSWVTe+FAOG6bbguUaadTacR
+         kkDLEAr/3Z0yd9htpj1RCWxrxziTQvYfgX+I62Rb5O9xSg7FuS6frZZq23XVQgTwjRXj
+         stAw==
+X-Gm-Message-State: AOJu0Yzyl5YCDog0ROHDGpV+hihardRAjClHa8G1AKvomXEzSBjQTEUH
+        lZXZQHIBWGqa/6z720mYYxuyVQ==
+X-Google-Smtp-Source: AGHT+IF+Xo7ZUXD1LzO6MQw/ppbsocfOjvkWj48oUUWoV0Dei6vTwM1LFGsgzxi+fAENJFq0kzWwLw==
+X-Received: by 2002:a2e:7d12:0:b0:2bc:e51d:89a3 with SMTP id y18-20020a2e7d12000000b002bce51d89a3mr10007385ljc.29.1693237099086;
+        Mon, 28 Aug 2023 08:38:19 -0700 (PDT)
+Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
+        by smtp.gmail.com with ESMTPSA id z10-20020a2e9b8a000000b002bcda31af0fsm1758578lji.74.2023.08.28.08.38.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 08:38:18 -0700 (PDT)
+Message-ID: <8310417c-bba9-49ed-9049-bee5b23c2e3f@linaro.org>
+Date:   Mon, 28 Aug 2023 17:38:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 15/15] media: qcom: camss: Comment CSID dt_id field
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
+ <20230823104444.1954663-16-bryan.odonoghue@linaro.org>
+ <4929aa72-a134-4eeb-850e-46d9255c011b@linaro.org>
+ <b4545982-af6c-5460-d662-36b0eb80bb4e@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <b4545982-af6c-5460-d662-36b0eb80bb4e@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,23 +115,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 07:50:33 -0700 Alexander Duyck wrote:
-> Actually we could keep it pretty simple. We just have to create a
-> #define using DMA_BIT_MASK for the size of the page pool DMA. We could
-> name it something like PP_DMA_BIT_MASK. The drivers would just have to
-> use that to define their bit mask when they call
-> dma_set_mask_and_coherent. In that case the DMA API would switch to
-> bounce buffers automatically in cases where the page DMA address would
-> be out of bounds.
+On 28.08.2023 17:34, Bryan O'Donoghue wrote:
+> On 26/08/2023 11:18, Konrad Dybcio wrote:
+>>> +        /*
+>>> +         * A value caled 'CID' gets generated internal to CAMSS logic
+>>> +         * which is a concatenation of [vc:6 | dt_id:2] hence we reuse
+>>> +         * the least significant two bits of the VC to 'stuff' the CID value.
+>>> +         */
+>>>           u8 dt_id = vc;
+>> And where are you discarding the non-2-lsb?
 > 
-> The other tweak we could look at doing would be to just look at the
-> dma_get_required_mask and add a warning and/or fail to load page pool
-> on systems where the page pool would not be able to process that when
-> ANDed with the device dma mask.
+> At the assignment of dt_id
 > 
-> With those two changes the setup should be rock solid in terms of any
-> risks of the DMA address being out of bounds, and with minimal
-> performance impact as we would have verified all possibilities before
-> we even get into the hot path.
+> vc:6
+> dt_id:2
+> 
+> =>
+> 
+> cid:8 = [vc:6 | dt_id:2]
+> vc == 00110110
+> cid = [110110 | 10]
+> 
+> I have no more information what CID is or how the bitfield is populated than I have already indicated in the comment/commit log.
+> 
+OK so you're discarding the 2 lsb of the [vc:6|dt_id:2]
 
-Sounds like a plan!
+however
+
+the way I read the comment would suggest that you're taking
+vc[6:2]
+
+Konrad
