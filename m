@@ -2,67 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44E078B37F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0783E78B383
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbjH1Or1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
+        id S231875AbjH1Or6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 10:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbjH1Oq4 (ORCPT
+        with ESMTP id S231868AbjH1OrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:46:56 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA5E131
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:46:51 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c0c6d4d650so25886435ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693234010; x=1693838810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uEYtr8V/fktSZTifRUB9ASx/4sFKcy6buk58qRmPz38=;
-        b=ZlMeB4JgOYuCVRgsXeqFonPY8IbqVcg0WlOyM2FEn8psyI4ZndgkyeFdJUIcLX4sxi
-         1EipQxeAbgjbhGie+/5gTPm9hASTTvC29zUd5U1pm1wvvwVwB6E4Zws9foVRayNuPBdt
-         dPpM7CMLQ9CNARZAfT5hRjaBF+ETLnKdqMtHw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693234010; x=1693838810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uEYtr8V/fktSZTifRUB9ASx/4sFKcy6buk58qRmPz38=;
-        b=W+zzG+93GRaTKU4EVS+rcUs2raENUpFm8pcEf9acPE5xuXZ8N2k+O44d7LWKXmvk8q
-         QyasEqt0c2XIK1yq/chFrvkEFKk64vJXC7fMEFg556LDuEwB6F33kUyjLCkVH7Pk0CGk
-         c5N6M1OM/xytUUg4R0WeQNC9QJ48x3H+AQTEpZ+oyLYkKLRrMcXI+dQVA550opxs+qzK
-         MaKPaU3IF1WugGifg2d52sc6FEyosBeml8psqXU5p35IOidTB0zAusTr3sa0IVO52srz
-         PInJ+Xl6inRBgVk4JYIDQWIV2V9VaaKBOSqe0h0eY3btbgYlsxt/roh9TmyEUcCpUL4R
-         fk8g==
-X-Gm-Message-State: AOJu0YxHrrDurTASkszXgUVFSYDd0NZ4NUN3IYDE4sk6wzXF4HE4AB6t
-        QzvHWHOUAT3NxdxEMtoSjkS4YOHG4xixsKB7elkJQw==
-X-Google-Smtp-Source: AGHT+IG4zpabqadmwypRX1FvyZoPXaUiVEvAlDzyWO2H5OwtbLF1xQRBmEVyynF11+a3Cx9U5SYwazsp0+Fwwqol9NM=
-X-Received: by 2002:a17:90b:2348:b0:268:e43a:dbfd with SMTP id
- ms8-20020a17090b234800b00268e43adbfdmr24068342pjb.1.1693234010758; Mon, 28
- Aug 2023 07:46:50 -0700 (PDT)
+        Mon, 28 Aug 2023 10:47:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F9211A;
+        Mon, 28 Aug 2023 07:47:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D38F649E5;
+        Mon, 28 Aug 2023 14:47:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CF44C433C7;
+        Mon, 28 Aug 2023 14:47:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693234032;
+        bh=t4UYsFixGBWU+iQLBjiupWXXolJDGFOG986A39rhGqo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fcyb3VRkhGoZGw9T/045gq6wy3bRR/5rGAtlNrFRlm8hbkAWx9gmdoEAx7ASCmlpt
+         XkzxG3rFG69tUteuUSj6/sB0X4YJCo1ydUt/pisYfLSzX0TFFGAEbMkcGXVg9HJb1m
+         BAeva63G3b5bXBQll6h1h030wIJ9mEv8DAuzYra8=
+Date:   Mon, 28 Aug 2023 16:47:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Lucas Tanure <tanure@linux.com>, Jiri Slaby <jirislaby@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH v2] Revert "tty: serial: meson: Add a earlycon for the T7
+ SoC"
+Message-ID: <2023082803-alone-tingle-b639@gregkh>
+References: <20230827082944.5100-1-tanure@linux.com>
+ <944f1370-c092-484e-a13d-b7f8211c4835@linaro.org>
 MIME-Version: 1.0
-References: <20230704153630.1591122-1-revest@chromium.org> <20230704153630.1591122-5-revest@chromium.org>
- <ZOtLWxokPxBCg0ao@arm.com>
-In-Reply-To: <ZOtLWxokPxBCg0ao@arm.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Mon, 28 Aug 2023 16:46:39 +0200
-Message-ID: <CABRcYmLYiwDBK-sMQMcpjZEcLicoj2PyRmJrs5hB0EaTHzX1Vg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] mm: Add a NO_INHERIT flag to the PR_SET_MDWE prctl
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        joey.gouly@arm.com, mhocko@suse.com, keescook@chromium.org,
-        david@redhat.com, peterx@redhat.com, izbyshev@ispras.ru,
-        broonie@kernel.org, szabolcs.nagy@arm.com, kpsingh@kernel.org,
-        gthelen@google.com, toiwoton@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <944f1370-c092-484e-a13d-b7f8211c4835@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,21 +56,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 3:10=E2=80=AFPM Catalin Marinas <catalin.marinas@ar=
-m.com> wrote:
->
-> On Tue, Jul 04, 2023 at 05:36:28PM +0200, Florent Revest wrote:
-> > @@ -2384,9 +2406,7 @@ static inline int prctl_get_mdwe(unsigned long ar=
-g2, unsigned long arg3,
-> >  {
-> >       if (arg2 || arg3 || arg4 || arg5)
-> >               return -EINVAL;
-> > -
-> > -     return test_bit(MMF_HAS_MDWE, &current->mm->flags) ?
-> > -             PR_MDWE_REFUSE_EXEC_GAIN : 0;
-> > +     return (int)get_current_mdwe();
->
-> Nitpick: the type conversion should be handled by the compiler as
-> prctl_get_mdwe() returns an int already.
+On Mon, Aug 28, 2023 at 02:31:06PM +0200, Neil Armstrong wrote:
+> Hi Greg,
+> 
+> On 27/08/2023 10:29, Lucas Tanure wrote:
+> > This reverts commit 6a4197f9763325043abf7690a21124a9facbf52e.
+> > New SoC will use ttyS0 instead of ttyAML, so T7 SoC doesn't need a OF_EARLYCON_DECLARE.
+> > 
+> > Signed-off-by: Lucas Tanure <tanure@linux.com>
+> > ---
+> > Since V1:
+> > - add Signed-off-by:
+> > 
+> >   drivers/tty/serial/meson_uart.c | 2 --
+> >   1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
+> > index c4f61d82fb727..790d910dafa5d 100644
+> > --- a/drivers/tty/serial/meson_uart.c
+> > +++ b/drivers/tty/serial/meson_uart.c
+> > @@ -648,8 +648,6 @@ meson_serial_early_console_setup(struct earlycon_device *device, const char *opt
+> >   OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
+> >   		    meson_serial_early_console_setup);
+> > -OF_EARLYCON_DECLARE(meson, "amlogic,t7-uart",
+> > -		    meson_serial_early_console_setup);
+> >   #define MESON_SERIAL_CONSOLE_PTR(_devname) (&meson_serial_console_##_devname)
+> >   #else
+> 
+> After some clarifications, it's ok to merge the revert:
+> 
+> Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Ah yes. Not sure why I added this one... :) thank you!
+Already merged :)
+
+thanks,
+
+greg k-h
