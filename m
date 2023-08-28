@@ -2,124 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0E878AAE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3381D78AB02
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbjH1KZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        id S231202AbjH1K1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjH1KZc (ORCPT
+        with ESMTP id S231189AbjH1K0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:25:32 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE33218B;
-        Mon, 28 Aug 2023 03:25:28 -0700 (PDT)
-X-UUID: 3414babc458d11ee9cb5633481061a41-20230828
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=jRXDdDGfcw2VGrYOWIzRIFvqKbDeBV/O8IucKucUEhk=;
-        b=K1YcmgA64iHvkZcGitOm1UcHqs7QSDmEObVDCBKZZ+Xar05GiRgEZzDeUQX9kYXG2+z3KFl8TnNxzwg3Sobcdm0ha2RQ5+kenMI3dKN7zZnIhh92cmZzbBr+ylWu+nkt5etHZ0ZZyxRCMl/L7HX7ZzDsSUt0gvtWjN/dbQVgvZ8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:d5ffd5ae-bd7e-452d-bada-d465bd3ebefc,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:bb825bc2-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 3414babc458d11ee9cb5633481061a41-20230828
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 355078162; Mon, 28 Aug 2023 18:25:26 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 28 Aug 2023 18:25:24 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs11n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Mon, 28 Aug 2023 18:25:24 +0800
-Message-ID: <35d2fd6a-167b-8df8-aa61-b40aa7224e3c@mediatek.com>
-Date:   Mon, 28 Aug 2023 18:25:22 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] spidev: add compatible string for MediaTek IoT (Genio)
- boards
-Content-Language: en-US
-To:     Michael Walle <mwalle@kernel.org>
-CC:     <angelogioacchino.delregno@collabora.com>,
-        <bear.wang@mediatek.com>, <broonie@kernel.org>,
-        <chunfeng.yun@mediatek.com>, <fparent@baylibre.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <macpaul@gmail.com>, <matthias.bgg@gmail.com>,
-        <pablo.sun@mediatek.com>
-References: <20230828080909.16610-1-macpaul.lin@mediatek.com>
- <20230828093326.3255275-1-mwalle@kernel.org>
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <20230828093326.3255275-1-mwalle@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 28 Aug 2023 06:26:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B17D7;
+        Mon, 28 Aug 2023 03:26:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 35D0E63AC0;
+        Mon, 28 Aug 2023 10:26:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B55FC433C8;
+        Mon, 28 Aug 2023 10:26:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693218387;
+        bh=tkjosulHP+16FnPz+CCatC7X/KqMbHjO933JFiN4Vyc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eMPXz575TzNzXB5u0LKu+9V+itGSDZneFKB5uJdztcOA2rwwbFShZQN/6z+VpbsMX
+         30erM4veQeEWbSEAtOfXAXtBHh2Sp04OKH8xbhFFk7LYLB0gt9F/F6IqyVn5ZVvHPh
+         Tc0jzALyAFyJ9FxmHC12DpDJq2B+i16sxwEPfpk8bJtc9TJM+ZaKZ1jdeX+F4/6n8M
+         gvcw5mt66PQ54yzm8M9xEs0pjauVBL9lxNuwMaXwcgm4kvWsAL5ydiTlIoSi6AFEKY
+         eNaHyMM4ZyfnZ5mSJKARVWPfazXNWhsZ7FSYWZnDLebdAaj6miy1xakfVGAuqiDU3G
+         dsUJXaiCr/ckA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qaZRx-008gst-4k;
+        Mon, 28 Aug 2023 11:26:25 +0100
+Date:   Mon, 28 Aug 2023 11:26:24 +0100
+Message-ID: <863503foof.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 1/2] irqchip/qcom-pdc: don't read version register if it is not available
+In-Reply-To: <CAA8EJppkJ1s=yjruBm0mntGQ4NBGut2jMLFRtZr6KquA5zn+=Q@mail.gmail.com>
+References: <20230825213552.1646321-1-dmitry.baryshkov@linaro.org>
+        <09d89b1c-8c78-7671-a385-99c6a8910fde@quicinc.com>
+        <CAA8EJppmn5hM5=zdkQoaGAYghw822vP8YoW0wQsNmAZY0v7dtA@mail.gmail.com>
+        <865y4zfppf.wl-maz@kernel.org>
+        <CAA8EJppkJ1s=yjruBm0mntGQ4NBGut2jMLFRtZr6KquA5zn+=Q@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dmitry.baryshkov@linaro.org, quic_mkshah@quicinc.com, agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, tglx@linutronix.de, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, neil.armstrong@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 17:33, Michael Walle wrote:
-> 	
+On Mon, 28 Aug 2023 11:18:10 +0100,
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
 > 
-> External email : Please do not click links or open attachments until you 
-> have verified the sender or the content.
+> On Mon, 28 Aug 2023 at 13:04, Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Mon, 28 Aug 2023 10:46:10 +0100,
+> > Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > > On Mon, 28 Aug 2023 at 12:36, Maulik Shah (mkshah)
+> > > <quic_mkshah@quicinc.com> wrote:
+> > > >
+> > > > Hi Dmitry,
+> > > >
+> > > > This patch may be useful if there was a case where some PDCs don't have
+> > > > version register populated/available,
+> > > > In all PDC versions, version register is always available but due to reg
+> > > > size not good enough in device tree for SM8150 it failed to read.
+> > > >
+> > > > reg size in device node must be expanded if its too small to access all
+> > > > registers and i think
+> > > > additional check in driver to check if size is good enough would not be
+> > > > of much use.
+> > >
+> > > Unfortunately, it doesn't work this way. DT files are ABI. Even if we
+> > > change the DT, the kernel should continue working with the older
+> > > version.
+> > > Thus, we have to add such bandaid code, which will keep the kernel
+> > > from crashing if old DT was used.
+> >
+> > You're missing the point: all existing PDC HW have version register.
+> > The fact that the DT is crap doesn't invalidate this simple fact. It
+> > is thus perfectly possible for the driver to *ignore* the crap and do
+> > the right thing by expanding the size of the mapping, rather than
+> > falling back to the non-versioned code.
 > 
-> 
->> Add compatible string for MediaTek IoT (Genio) boards.
-> 
-> This has already be discussed [1] and was naked.
-> 
-> https://lore.kernel.org/lkml/20230118-mt8365-spi-support-v1-2-842a21e50494@baylibre.com/
-> 
-> -michael
+> Ah. Interesting idea. If that's the overall consensus I can send v2
+> doing this. Not sure what is better though.
 
-Thanks for the reminding, I'll check previous discussion thread.
+Given that DT files are mostly generated using copy-paste by people
+making a point not to read specifications, odds are that your current
+patch would end-up applying the v0 behaviour to v3.2 HW.
 
->> Signed-off-by: Fabien Parent <fparent@baylibre.com>
->> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
->> ---
->>   drivers/spi/spidev.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
->> index d13dc15cc191..9d7952dbbaa6 100644
->> --- a/drivers/spi/spidev.c
->> +++ b/drivers/spi/spidev.c
->> @@ -714,6 +714,7 @@ static const struct spi_device_id spidev_spi_ids[] = {
->>   	{ .name = "spi-authenta" },
->>   	{ .name = "em3581" },
->>   	{ .name = "si3210" },
->> +	{ .name = "genio-board" },
->>   	{},
->>   };
->>   MODULE_DEVICE_TABLE(spi, spidev_spi_ids);
->> @@ -742,6 +743,7 @@ static const struct of_device_id spidev_dt_ids[] = {
->>   	{ .compatible = "semtech,sx1301", .data = &spidev_of_check },
->>   	{ .compatible = "silabs,em3581", .data = &spidev_of_check },
->>   	{ .compatible = "silabs,si3210", .data = &spidev_of_check },
->> +	{ .compatible = "mediatek,genio-board", .data = &spidev_of_check },
->>   	{},
->>   };
->>   MODULE_DEVICE_TABLE(of, spidev_dt_ids);
->> -- 
->> 2.18.0
+What could possibly go wrong?
 
-Regards,
-Macpaul Lin
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
