@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA0E78BA61
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619F478BA65
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbjH1Vf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S233767AbjH1Vgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233840AbjH1Vfu (ORCPT
+        with ESMTP id S233927AbjH1VgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:35:50 -0400
+        Mon, 28 Aug 2023 17:36:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD7311C
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:35:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9255218F;
+        Mon, 28 Aug 2023 14:36:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C221612CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 21:35:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF13FC433C7;
-        Mon, 28 Aug 2023 21:35:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CB1D61707;
+        Mon, 28 Aug 2023 21:36:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BCBEC433C8;
+        Mon, 28 Aug 2023 21:36:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693258547;
-        bh=NEgimGcrzmezQkF7I4C28Tb0IMasaq++3rxZDBFmRj8=;
+        s=k20201202; t=1693258572;
+        bh=oaay4dQ7Zg/xyNCBkGcO+PhVLgjzFow8Anit155lPiA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mg/VCPJRGBhdqqnZShz3cA0SHojyR5lr3FtT4zfN9APlDFO5w3m0aiCGCqqmF8Urp
-         /wq40aZGxXN/jrUk8HPqVvEB2jQj9rKvH/YO8qrZZroFecFrNYtZVoI7T4yXNHj4bs
-         Cz+U4kaJqmTeWKef1EcjKkJsn0W7mcXqy9lKOclKGwKxUIwDb5X60SHFGMXRKGQ4rC
-         Ve6RfCabaP6u0KkUcKFK141qgK8Q7EHs27J10xiW+uy+2h1BfZOlNsdKQQMAl5Xyei
-         T4g+ZwUw372fsSC3AE9KTPbfIpmu4KX7xKKaYHHVoA4Wf1XWIv2xR6wkOfAqGr+xyB
-         RJerCPZgNulAQ==
-Date:   Mon, 28 Aug 2023 22:35:37 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        kernel-team@android.com,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, yangyicong@huawei.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sami Mujawar <sami.mujawar@arm.com>,
-        Leo Yan <leo.yan@linaro.org>
-Subject: Re: [PATCH V5 0/4] coresight: trbe: Enable ACPI based devices
-Message-ID: <20230828213537.GA27629@willie-the-truck>
-References: <20230817055405.249630-1-anshuman.khandual@arm.com>
- <169237557557.1402587.14721093106016169238.b4-ty@kernel.org>
- <f8f13510-ec6a-b18b-d9ff-9247b250bc03@arm.com>
- <20230821112851.GC19469@willie-the-truck>
- <311d0ecf-dddf-dcf5-9545-3f8a51634a9a@arm.com>
+        b=nXZFrcM3dG7KiY/4NA1Yu8lwwME4Lhx25oosoWagBjRSLW8jftDNCmJx+6HY1LKoE
+         6F3Opo1GyjLs5NV+qwMhQO9CvfCZuEBcoyjGA3vQnuwq4Fgz1N25NtW1NqQZHoAjhH
+         jHqF8k+wdwtsGTTVayIi9QT9qNy+QP6Qhmq6JJ3nnQ46c3Hw5YO/VLsIRv+POE4D9s
+         Np0gFLoADeknEOFmFummuxjaVWL2xQYOUFcsbNZxmpcEUw1USPcFw8XOXZLG1eHZG0
+         quMKfHBM1O80+UsYDsyAW6XB+3qL5UfNQ4si9Aqg5+qG/hRjDqfPlnQeTK4xF44TbF
+         TWoNw/pRwMRFw==
+Received: (nullmailer pid 387503 invoked by uid 1000);
+        Mon, 28 Aug 2023 21:36:10 -0000
+Date:   Mon, 28 Aug 2023 16:36:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Om Prakash Singh <quic_omprsing@quicinc.com>
+Subject: Re: [PATCH v3 4/6] dt-bindings: crypto: qcom,prng: document SM8550
+Message-ID: <20230828213610.GA386486-robh@kernel.org>
+References: <20230828-topic-sm8550-rng-v3-0-7a0678ca7988@linaro.org>
+ <20230828-topic-sm8550-rng-v3-4-7a0678ca7988@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <311d0ecf-dddf-dcf5-9545-3f8a51634a9a@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230828-topic-sm8550-rng-v3-4-7a0678ca7988@linaro.org>
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 11:11:16PM +0100, Suzuki K Poulose wrote:
-> On 21/08/2023 12:28, Will Deacon wrote:
-> > Hmm, the rationale behind your change to make the pdata allocation
-> > per-device in ("coresight: trbe: Allocate platform data per device")
-> > confuses me: with Anshuman's change to allocate the pdata using
-> > devm_kzalloc(), there shouldn't be any connections for the coresight
-> > core to trip over, should there?
+On Mon, Aug 28, 2023 at 10:04:39AM +0200, Neil Armstrong wrote:
+> Document SM8550 compatible for the True Random Number Generator.
 > 
-> Anshuman's patch is working around the problem of "TRBE platform
-> device with ACPI doesn't have a valid companion device" - this is a problem
-> for the acpi_get_coresight_platform_data(). The work
-> around is to move the "allocation" from coresight_get_platform_data()
-> to the driver (given we don't need anything else from the ACPI except
-> the IRQ). That doesn't change *how* it is allocated.
-> Also please note that, the TRBE driver creates a TRBE coresight_device
-> per-CPU and the platform data is shared by all of these devices, which
-> the coresight core driver doesn't cope with. The other option is to
-> move the releasing of these platform-data to the individual drivers,
-> which is quite an invasive change. Or, make the core driver tolerate
-> a NULL platform data, which is also again invasive. So the merged fix
-> is correct and is still valid after this patch.
+> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Ah, ok, so the problem with TRBE isn't anything to do with its connections,
-but simply because the pdata is shared?
+Where's Krzysztof's tag?
 
-Will
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> index 4245c9e424a3..633993f801c6 100644
+> --- a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> @@ -16,7 +16,9 @@ properties:
+>            - qcom,prng  # 8916 etc.
+>            - qcom,prng-ee  # 8996 and later using EE
+>        - items:
+> -          - const: qcom,sm8450-trng
+> +          - enum:
+> +              - qcom,sm8450-trng
+> +              - qcom,sm8550-trng
+>            - const: qcom,trng
+>  
+>    reg:
+> 
+> -- 
+> 2.34.1
+> 
