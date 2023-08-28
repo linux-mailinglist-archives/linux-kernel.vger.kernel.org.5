@@ -2,57 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555B278B23A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DE578B23F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbjH1NsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        id S230098AbjH1NuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjH1NsE (ORCPT
+        with ESMTP id S231132AbjH1NuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:48:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA04BE;
-        Mon, 28 Aug 2023 06:48:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2C5C60AEB;
-        Mon, 28 Aug 2023 13:48:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57C04C433C8;
-        Mon, 28 Aug 2023 13:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693230481;
-        bh=GVS9K39HjDgBoCnUBCmug1eBB4QIhqQdI0YUhrZVE/M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Yl3PPRdTAjP1ANgSzYj7dO1c0/sYYOp9Qsij75FHVbZPpVHfE/A35tcHw0dSTztml
-         +TeTn1ltB7Sz46QLuJAzLDat2yBbGK/z+Pa8wJTLPSrudzSadilwmhrcwR2VhuvNP6
-         AeIzK5zOvPuVI3aPHtqj0lhNooW1T5rnfdvlQdQge9sK5+mV+cdnCYuAB4l4QhRN6s
-         p7il3FEaZBW/rVhhMR96acBbHIq3+Tgind1uFQt38mfAJVGDMQq2lMZ0Srxmc4eHHM
-         wjRz7w/XBeofdoL0HqIgFox7x7UWAqKf1rkFnWS5E95pkzEscKrc2Y5P8wB7Kctvab
-         fQg2Nc9zMJBXA==
-Date:   Mon, 28 Aug 2023 14:48:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     <Marius.Cristea@microchip.com>
-Cc:     <devicetree@vger.kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <lars@metafoo.de>,
-        <linux-iio@vger.kernel.org>, <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] iio: adc: adding support for MCP3564 ADC
-Message-ID: <20230828144820.5552aa0a@jic23-huawei>
-In-Reply-To: <1c0f578669737e7f27a8ff9e0416b6c96eb917f2.camel@microchip.com>
-References: <20230804142820.89593-1-marius.cristea@microchip.com>
-        <20230804142820.89593-3-marius.cristea@microchip.com>
-        <20230805185900.2441a20e@jic23-huawei>
-        <1c0f578669737e7f27a8ff9e0416b6c96eb917f2.camel@microchip.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 28 Aug 2023 09:50:12 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666EBC0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 06:50:09 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c0cb7285fso428297966b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 06:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693230608; x=1693835408;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eYLHQZ/VfLwLQyibj4IKPDu2aeAoL6UJSE7o4fV5D3k=;
+        b=EWucoSA6NQNmv6r92bln9D7hVGM10sQdVq+0ZKodxwMnW2akgpj6isYLJwfpWBTrEY
+         mLIuBD3gztqz/r8rkQoCx1e66ihra6fnIEWqjgmggwnDlc3KNhnqyBfWKZL0ly6T+M9q
+         bGRGFzIACsDkitfXZY1zyj4s7vtM+QeXWBfYNDiDD1RlzVzcgIsvIwYNQz/ea+FX6/3E
+         yo4oeub9+M39khJF7uq5T8SVx1BV0jTo8XEL92te3is5AyAoLlFacJQq0v5WRmNQcZR4
+         97+ZDXp/7lS5GvpX/xttTUxPxIR4vgKxQPz+wXtC2bMyb5VhcDxs5LDDkU4kUMlHuxKT
+         ztuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693230608; x=1693835408;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eYLHQZ/VfLwLQyibj4IKPDu2aeAoL6UJSE7o4fV5D3k=;
+        b=R7tr0VJgyMZlzpv6JN+3vj45Al2b9MHYhsOoX+yKXkgSDyrbDSoHvwY117Ag/efV3Y
+         NXIKAv408zj8FiaeOeF7RNQyaX9R/ms3YrvBrxjYRVaqGuM2qCwBTXH9niraaf+bcXp6
+         4/zeXGwqG5b4cQpJl5bLDKxSEfGXCG3NPJR+TWcJDNsQbBTTbkwAdjKtOUu7QhqYyb2Q
+         4hKS/fVV1/d3mj3m8KNTLQUQZeYPv0hdy5qN+1COAQhc+lUxv6PleHxIp5JTUhteaI/1
+         C4BCtUpAb8zaisa6oxM16LxFjx4NvvcGpXTigbdMiH2HmSfXw2BK8hVNTeR3c6o8Ah0M
+         UObQ==
+X-Gm-Message-State: AOJu0YyZuITeXjmQ3DaXytTdvQSdKrhiDJTytbWlD3rsf8O56Y7ZoH8l
+        xVcnoq+FDBdxdJyxo1Zdtr8=
+X-Google-Smtp-Source: AGHT+IEQC34b5l09N1nBCyWKKSCdGRenYmagb8UWJBwQctY4cJS3ep9dRRDx/kNRBmMD95wQPb8IYg==
+X-Received: by 2002:a17:906:53d9:b0:9a1:aa7b:482e with SMTP id p25-20020a17090653d900b009a1aa7b482emr13917168ejo.26.1693230607614;
+        Mon, 28 Aug 2023 06:50:07 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id p20-20020a17090635d400b0099bd8c1f67esm4696054ejb.109.2023.08.28.06.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 06:50:07 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 15:50:06 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        guoren@kernel.org
+Subject: Re: [PATCH] riscv: provide riscv-specific is_trap_insn()
+Message-ID: <ZOymDqhE9STgx4Mm@nam-dell>
+References: <20230827205641.46836-1-namcaov@gmail.com>
+ <874jkjl4e1.fsf@all.your.base.are.belong.to.us>
+ <ZOyhozSq3S36eRSq@nam-dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZOyhozSq3S36eRSq@nam-dell>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,55 +78,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 16:29:26 +0000
-<Marius.Cristea@microchip.com> wrote:
+On Mon, Aug 28, 2023 at 03:31:15PM +0200, Nam Cao wrote:
+> On Mon, Aug 28, 2023 at 02:48:06PM +0200, Björn Töpel wrote:
+> > Nam Cao <namcaov@gmail.com> writes:
+> > 
+> > > uprobes expects is_trap_insn() to return true for any trap instructions,
+> > > not just the one used for installing uprobe. The current default
+> > > implementation only returns true for 16-bit c.ebreak if C extension is
+> > > enabled. This can confuse uprobes if a 32-bit ebreak generates a trap
+> > > exception from userspace: uprobes asks is_trap_insn() who says there is no
+> > > trap, so uprobes assume a probe was there before but has been removed, and
+> > > return to the trap instruction. This cause an infinite loop of entering
+> > > and exiting trap handler.
+> > >
+> > > Instead of using the default implementation, implement this function
+> > > speficially for riscv which checks for both ebreak and c.ebreak.
+> > 
+> > I took this for a spin, and it indeed fixes this new hang! Nice!
+> 
+> Great! Thanks for testing it.
+>  
+> > However, when I tried setting an uprobe on the ebreak instruction
+> > (offset 0x118) from your example [1], the probe does not show up in the
+> > trace buffer.
+> > 
+> > Any ideas?
+> 
+> >From my understanding, both uprobes and kprobes refuse to install break points
+> into existing trap instructions. Otherwise, we may conflict with something else
+> that is also using trap instructions.
 
-> Hi Jonathan,
->=20
-> >  =20
-> > > @@ -0,0 +1,53 @@
-> > > +What:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> > > /sys/bus/iio/devices/iio:deviceX/boost_current
-> > > +KernelVersion:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.4
-> > > +Contact:=C2=A0=C2=A0=C2=A0=C2=A0 linux-iio@vger.kernel.org
-> > > +Description:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 This attribute is used to set the biasing circuit of
-> > > the
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 Delta-Sigma modulator. The different BOOST settings
-> > > are applied
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 to the entire modulator circuit, including the
-> > > voltage reference
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 buffers. =20
-> >=20
-> > Units?=C2=A0 Should be=C2=A0 mA given that is what we use for other cur=
-rent
-> > attributes
-> > in IIO.
-> >  =20
->=20
-> This should have no units because is a "gain" for the bias current. I
-> think it will be better to change the name of the attribute to
-> "boost_current_gain".
+I just realize you probably ask this because uprobe can still be installed before
+applying the patch. But I think that is another bug that my patch also
+accidentally fix: uprobes should not install breakpoint into ebreak instructions,
+but it incorrectly does so because it does not even know about the existence of
+32-bit ebreak.
 
-That's sounds reasonable to me as well.
-
-
->=20
->=20
-> > This one may cause us problems with generality of the description if
-> > we reuse
-> > if for other devices (and hence move it to the more general files),
-> > but we
-> > can figure this out at the time.
-> >  =20
-> > >  =20
->=20
-> Thanks and Best Regards,
-> Marius
->=20
-
+Best regards,
+Nam
