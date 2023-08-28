@@ -2,433 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E684678B8C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC2E78B8DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbjH1T5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 15:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
+        id S233536AbjH1T6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 15:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbjH1T4k (ORCPT
+        with ESMTP id S233517AbjH1T6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 15:56:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A7418D;
-        Mon, 28 Aug 2023 12:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693252597; x=1724788597;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=8X99Aw4m2qvERfvLZ5nTsuE77fnpThZ2uU0pZ04bess=;
-  b=AGDi9jWA1UBwdnQ01pqimPmWBN3yZ/jlV4M4/zCQcy2N6i8lnn0u8gNf
-   7ZKNpYYiRxepcr1LofF0xwF6QRecEQ28mdIUO9Vxgu+qYnFtET8J7i4rn
-   IqXHOAJGN+UijWF7nUrCo+QbV+BsNxCaRuUdBUB+RfWJteQEMeJif4kh5
-   X2+iNB6T8sVVbZUIheVKrzvTY6sxIo/K3Tt0uDScogkxlasX9Pn0aZq5Y
-   cguKSacKTw8KqjG7kR5VMcIVdeuxYR385xfrJMiRdJ7z/ADOHc3h9ukc9
-   n9zLqVm6gxkrcnZcI6hE7ksbImwt+CES0/IhNrBIOMcdU+bASioi9XRFU
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="365395301"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="365395301"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 12:56:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="852995699"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="852995699"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Aug 2023 12:56:35 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 28 Aug 2023 12:56:34 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 28 Aug 2023 12:56:33 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 28 Aug 2023 12:56:33 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 28 Aug 2023 12:56:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Icu7s/XB97ZNfzApei9pc7EFqYEPx2UZUEeuy5bLj/hZpYPSDqUfyFMslZnfEUEdsaPZVpp7RZ/NZgmC73liyT2qZiWCHnW/t+lNx6v7EK+pkJv+S+fCHONMuT8f9fD09U5qYnfGhZ4lFWajVXNpjM1ApQZusWXx8n9OjZlVTisbJ/p3QE6rY6YXgPSp5SAT+OFFLP4UGRiUBcBAXxuGwX22JlceqQABjQ7pFi7IKUY0vgbvVtkA6U16TkNGyHiLNXAjrkvhNE9dZBbalpk8fhkDO3/ez/wA03HpIhrJbwfZ2MffvIKyBYilOX/mT4k1ZKEc/zTDjZe8VZFoasklUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QyNJWGUJOIgfcqtcsgoTgw3Jwk9y5apVW4ByhubXo5g=;
- b=iZ1QkcbpKlHO4PTF+A8zbaIkshJPPAWHd5kU4cvbpn2iCtofivwhYNTfLy+ZcQMhBiqDbBtrWUgGr/XLQnyV2MOJCp0m02oFiVTBChJTMS8n7CCS1ygTGUxl2UqNCqB6RYxeJ1/fvTnV+LWdEadUfleD5us/eAFuJqUwbCMg7R5LTfu5oklTwr6pUEvwjY4GKMCUGpc+2/y+BrfE5gyARVgoAJOvHqwmhzUhjv1p6h1AnANMb6nhkL4L8jcI2WOiLUB5O6cJthUqHdGgvxTAbxJks+2zWUssdcWbrjyRDpToQE2lwUMEChvMcR0Pkm0wJTGSO3CnEYlc5ENGl0pjWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by CY5PR11MB6307.namprd11.prod.outlook.com (2603:10b6:930:21::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Mon, 28 Aug
- 2023 19:56:31 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0%3]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
- 19:56:31 +0000
-Message-ID: <5b5962d3-6a7b-cc60-4221-8267bfbc3bfd@intel.com>
-Date:   Mon, 28 Aug 2023 12:56:27 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 1/7] x86/resctrl: Create separate domains for control
- and monitoring
-Content-Language: en-US
-To:     Tony Luck <tony.luck@intel.com>
-CC:     Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, <x86@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <patches@lists.linux.dev>
-References: <20230713163207.219710-1-tony.luck@intel.com>
- <20230722190740.326190-1-tony.luck@intel.com>
- <20230722190740.326190-2-tony.luck@intel.com>
- <cc1a144f-6667-18fb-7fe7-cd15ebfedd08@intel.com>
- <ZOjfPx8iwTULTqdg@agluck-desk3>
- <da2c0e45-56d0-e04d-774d-4292d156e1d0@intel.com>
- <ZOzroJqc22HFZOXq@agluck-desk3>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <ZOzroJqc22HFZOXq@agluck-desk3>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0250.namprd03.prod.outlook.com
- (2603:10b6:303:b4::15) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Mon, 28 Aug 2023 15:58:17 -0400
+Received: from sonic317-38.consmr.mail.ne1.yahoo.com (sonic317-38.consmr.mail.ne1.yahoo.com [66.163.184.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA4B195
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693252692; bh=9uP6Rg4oC00NQB5WTQcmPKWTjed9/3CV4MlwP7Wfme0=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=erx8W1MvC3keAr2ToBPwntOJJ/mQld2LqHqTyYSWcIzUxno9LBRqoec9lr69hBw82p35U0fzL6nFqUgRWoAab8/JJxGHbMQF6iN6P2y0u3tPM/XJGr4rH99xJjUt1qeYFKYD50cJhZJ1LfYK+2OPdFk5Hx2vYbVY8K4AsGKSiszRhPUi6g+SwEYVNJmZ18/hDWlopyIjxn0caoEuDd0tRaJEZkwN+xlMzfaUF2Ib4SYx1I0Aa40FLZu/G7YPpl+KKTTPNljG/sqRGOFE1BsmGI7A0ELDc8Ny69SiqapCugB+M3R+jsKPwdT/oH/Lr0rJkmPTGFaHOPsqqGAJRZSd8g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693252692; bh=bSl74hFzLCZacqMitHWQ3CFXzAL4+OVFCFpj2pzaP24=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=j9O6KnD18ajbTtU/1yj9hakre6ledP2W+qc6fTpVwZCYBYijkNt82Zn4Klf2k/kXUclrpEvVHFTxODLwl6fQhBCGCLqf2flHiZvMAAVlL+eB7O6PpcEWOHzUVdLFtXnNR9ohgO/K25nUFP0huC+IigS8dwQXuA7vUERsVygAS4XFadxhl9fs3E9+rls0urmZJV3UVwO/BBXlGo4ERAKbqgLOUdUEpoj6G8K0laXaFvMlDhWZFt1rxUGqR9OkK1QHg+2v5vADIpan1DwfSfmTRBHu5EQoMdCyekkb5CNRpTKcd0xhc1rwnaV+8MeIe8jaZIDuAiq4q0U9GwjtYCthtw==
+X-YMail-OSG: 7Bn_iiYVM1m23UywXsEQW9K1RXavEDn227whOc_oKdnghBaY8i_IhfoCYcKcXv4
+ h1y8xuv9n0_yYbN86JRN4xIsdEpTfTKRH4ByLuD2YSdSbjP10s9JUIErhhKHgnPng6BfWHOal7Tc
+ 7M.zbUyUww_ubJDORSruPpqRSWbTt.CRC5P8pHgMXU8.kswzjIvjnIhf5DtcVsxBif0dLUGoJ8mR
+ e56hRsylt2kB.PdFZF9CtBQjcK70h5NmtrlnRgTyPSPYWYI.W..fOBA3s5jpUyXG7jbUCapFd3C0
+ JDnARsVCGUdH0QmPgtKF6WzYzxtopJSf3P5rrscs6Qne4IjYykDFJECPMnLNVCV1V6c4dvsLbPAw
+ VQuSzjpb8M2yOltNdLYFqURsUnYUjxvvp8tEqoyNaNm5ySGeo4CfqTRU9btKlkzlczUjswciV6_J
+ 3VjYUDjW1aIqQ_4gynj_JjKuQi3IbQzWdohcKtiZPP2J.NgcM8SKnyAxKe1BmfqclMC0wSq0qwBV
+ GjToHrcGK9Vvm1HWpjKtarmwY9jB.St_Ty8.Q2aCk7iIIyIg91br0L9Eofq6gYNxyTbkp3snzSC7
+ Fb4aRcLq25QlQnZcsU7S3L0is6LKxfRKeaTZ1YtnuiYgm8lQxPVzAndXWXkkKKF9zRUpqG5mUpz8
+ oMnhD_R1y7P3TI6qGF7Yk5duq_weMCezdctMG5h47Lv4Eyfy2E7KfvsmrlftfXPzHo8bQIwxUvxC
+ 1s22qfA815_hulV7_w0_uRHUcjYVs_.V8HFGXP8F68_7wV0IsjSGwVkPsPIVO5YNB5JzQqBeEzhd
+ scutrObLhird_fSToR_krSOP11G9tsvxWeo.pA9MGjE58Rg7TVCssBa552wtnOsP26.e4DKpwuUA
+ c5XTb55ywbyRq6kiANE396Fgx_AuhEp7sXDop0_xqcpykZRpYu6t2VvgUB7RrPm1occTku8YlKH1
+ m6icfPb7WO8.e7e7jQvirVkd8.LvofXluJYcrpnQrElvgLJTjf6KajxU4r6CknzXmIg4pIHKRSNZ
+ TJ_.urrvMePdL_7iGvC9bh2hp9jg_JyCs2IH6wZVNKbE9pXsTnG6GKjpLubZgAbp6SxFpi4AdUGq
+ LoPaMlnTV4SPC0bG0NWoReGZYZLtNWi_egjQ5b2Mh9Dl9HXl8BsuGgdRj_ELtS9PzZiNeY1YyGXm
+ rd1tazBQw0BMdytnN0bCiH.GprXTLOJwtmIxDgYuz5HOdVEWOhAafHYmxERbDSt_w_8G8OsAct6P
+ jkbApYpWoobUKt54VCdTp8LSaN42aG7dwyPLiKd1ZIYMkd8vjiq2XZKMkzWAhpEyd9O_kWm5gkbX
+ 42qpnEAr75jNgF.LgRKBl.YeZgR9uoMF89wW2dvQnRxOKdqYe8_QdOsDWma8G0ehVhA3O7Ft354F
+ 4R1JRiP0HobVTLNI4GPbugi99Zzy0gEnJMoy1u3HPv5ZtWG3yYMs1dMaHhCrzheI8eDq14oXIgDS
+ wvimIPDF4NEjPELtdT4_kHlCyM3ehzjn84IInA.nhcbsMGikI1t_HHrvEPZUR2MQA3w6B1s5kKfM
+ BWpfaKm7K.wy0d2fUFhIswQhs_zNFZimgRzMNXjmzGlYm5pvwxWYDNt6TaChWtE4faT41dHQLPWV
+ Aq8NQUGw9T6In3GI4.UlnxhF9.sbhSbQb4T.HtQDhJEWs__0UwZWN5xzAStI8b5fCPziwzfBwbXK
+ K0CWTQfFOwpjG7LNbNpQLlhX.1AE2_offiG4t.MOAJPoG4uBfxiNC2rGsmxphKh64Y_QdBlknoAC
+ qwjDMJK.2gXdV5RobowB79BlaUKXP2jkRgp1X6CeC..YPUkDRVry.V_Gb6UxFzkCd985v1.iowBV
+ r7g4bVIyGF_x9Q.zGZ.npYlBqjXoLPi.oka7_BhFXBw5oSoFQ75mWpck48Z40kNGgzAgvL2Bfwes
+ G3AUjWLGbBEcDGddGjBM_zBZbQKgsO3bEG_yzAH9aKMotRKpnRO9YD1LRPE.y53zasXnegDrpD1C
+ kZ0Vm.6XaTBcDGANEofperFAzhZq2SemgptimW9OSMbuodi18iQMZ3HVCZC4myp0gEre.IuaOp5W
+ QgprWE3omgTUwpGYiEhIBA4lj8enHDlTjlizlpcctIF58d1B036R_sT787PKSRNy569baZL.UOlL
+ R3tX7Bvh0DFN2PPDPFpxGesmlW1YGvJ_o7.C.IFAs2ATgy2YT6wXxRjgNrwsZsdqu4qdB_h8unsk
+ msnNtO4Hld2TOynKx4ljf6EtV8XxY_sVySJ_IXWrwp4g6.VFU2UbLoJvcDT.2jLJqGLHSwsHMJWl
+ s8jOw_rvi2A--
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: bc872c02-43c6-4339-9023-6c37d909c576
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Mon, 28 Aug 2023 19:58:12 +0000
+Received: by hermes--production-gq1-6b7c87dcf5-rj4xx (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5b607809d087525ffd4c5fd459fa4399;
+          Mon, 28 Aug 2023 19:58:07 +0000 (UTC)
+From:   Casey Schaufler <casey@schaufler-ca.com>
+To:     casey@schaufler-ca.com, paul@paul-moore.com,
+        linux-security-module@vger.kernel.org
+Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net
+Subject: [PATCH v14 00/11] LSM: Three basic syscalls
+Date:   Mon, 28 Aug 2023 12:57:50 -0700
+Message-ID: <20230828195802.135055-1-casey@schaufler-ca.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CY5PR11MB6307:EE_
-X-MS-Office365-Filtering-Correlation-Id: 144cd01b-d349-4115-bd47-08dba800dfa4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hzivSsN8iX5Hli9T0N0cquq+RKIwKcK6qM0+sModbvOKROdudU9hQ5z/pRLKQ9Q6sOMKHW31I2xOFdqyTJa/S4lpeHYhDMCMk5d6ZjfH2WJFM96/PZn77mBJeCH8msAiDiP/F7x/z5ZdETSoDvfCnSWOPpOV3bKiEibyIw1wfQTNyJHUfHtk0uRbegL4Fs/CJBJK24n06f6HoCvzLKPvjUuVgaqkRdiL7NJozMJjdta8Qw9HW/8D2kC4MHyzpWQ0EL7oZkGid+oOBLTmvRUkieZ8diArcOuzagY4JlUfItcII0hcxnQMWCgXrJmNkAW4Gm1pZU6FIQRQsWmoERDTzaUrVxQ9M5WQ4Nf9341YQ8YurcqHjPEo5WhiFkesdoS7Hjhgy24YMUzG3fMXsMB1zT4OTq1u8/l2SLy56BMBbkyiWiBZLaPUrco1XLW90/pSzdbCDYWSSpGI7F9Z7VdKps1NxZhk3C4b565JTKjIOOBUffbC31LS18R4oSbYe35sPNFsLjpgIB9gBc2zFbMUlu1W8+bBkwQFs4K7k4y4AAg8DPrg1M+IYf570eqRB6pxIRvG3WUT+rIYF8T+A1aoPnz/0g+nHUp6uWyQUV479yjdy5X39dcnp3P8ITo+G1LLx8HYnOiHkivgSG7UNv4wUw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(376002)(136003)(346002)(186009)(1800799009)(451199024)(6512007)(6666004)(6506007)(6486002)(53546011)(83380400001)(966005)(478600001)(26005)(2906002)(7416002)(54906003)(316002)(6636002)(37006003)(66476007)(66946007)(41300700001)(66556008)(44832011)(5660300002)(4326008)(8936002)(6862004)(8676002)(2616005)(36756003)(82960400001)(38100700002)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aEZ0aEs5eFVZYmhIcG1pMEsvbjMzSEg3aWI4OTl4ZXhvdUt0RGJFcnIvblBB?=
- =?utf-8?B?dUowb29HZVBjSjhZN0pvaFBjNWxZbFRzY00zWjJ6Kys2SE1rZWx1RFR1bWRl?=
- =?utf-8?B?WkZiVG9BYVNmQUVhR0MrejFKZ2dSdnpqTElhRjdRV3gvZ1dwbnJUMU9sSU5I?=
- =?utf-8?B?cnlhK2trQlExWkM0MVJMWThLNlpjOWtKd0Z2cU1Za3BCNVFoUlNWWDRteVlk?=
- =?utf-8?B?TnRueDdCREJOM0hQV01ReDRudkJFZjBmZVlJK2l4RTVZbWRkdUhRTmszK1Fm?=
- =?utf-8?B?OWJFOWNDWmZ2MEZ4VWJCOWd3VzJFelVQZ1lTSkpBSkhNU1BQcmd0WlB1Ym9w?=
- =?utf-8?B?cTVRdWVTRW9BNnpsVjBoWEl2VWNMRnVobmd3RU1zUDBVR1YySzRVU1dJeVFI?=
- =?utf-8?B?cFhKU3dWTjhNeWFHbjNQUVJ4RDhaQStSRE9rMmJSWHUvak4wRW43VWtZVnE1?=
- =?utf-8?B?VG9JbWNnMThkcE1NdTRJcGxXYVdqZ21QOEI0YmVzQ2owSFcxODlobHBYQk0w?=
- =?utf-8?B?MDQyamp4T0NvdmkxZ1dYWEJWNVdHUVMwVm5qbHBFOWE5VjgyQXJlRVpzY1U0?=
- =?utf-8?B?VUgxMWk4b21OMFVmdU94UlRrYTZNN3BlKy9CS28vODByNUpDNlU4UVAvOXpW?=
- =?utf-8?B?cmhGVkNhZGN4SHZnajNpZ0NyNXpvNGZVSWFsLytOMjYvRHVUWm9DZUhaRG5J?=
- =?utf-8?B?UDNGOFFjSWhYNXJMbjlXUXVRTXZCRURublVGQUtLRVJLd24yTE1XN29KSG5j?=
- =?utf-8?B?dUxRQWlZdFc3dTkrb1grTTMzU2ZHTlFod1FpNDk2eFZUWHFRRHJoMVdGSFRq?=
- =?utf-8?B?azU2S2FCN0N6OTRBVkh1Y2xwVVY0dXAveHBadHUyVGlmQ2l6M1FGazdYeTBV?=
- =?utf-8?B?RUw0NDhFUnUzRUhVNW16MFRsenVrdVQyQVRKeUtFSUdmNElnWHY4MjU1YTNR?=
- =?utf-8?B?SXE0a3c5cG85cVpkT2NZdGx1dkF3NmF2V3g3UC8vQlEvUFJyWCt2T3dKSjJ2?=
- =?utf-8?B?SFRsZ2I1WWR2OHpXeS9HTUs4bklPcE1La3lyc3pPMmpJVW1iblZRWVRieTZm?=
- =?utf-8?B?bTRZY1lyeGdJb1A4QjFPSldnS2RhK2c0UXVIY1JLVFZCYWlBVWZLNjdvY3p0?=
- =?utf-8?B?OUphTVVaL1VDM0JVWUl4WmdDYkxHeW1lR1pYU2dsMmRrUjVRdXJIOTAyR1l5?=
- =?utf-8?B?QnFFZWxxSjNPNmdLOGhFbDEwZndzTlhDRENNSWF1Z2h3bmFlYkNsVVFPbHp0?=
- =?utf-8?B?Mzh6N21GMFFmQmNWSmpYL1l2SG1NR3hPZ25MWS9QVW85c3ByNTc1WGFQN3Vl?=
- =?utf-8?B?L3FSZkJnaEQrUjhQTnQyUjJ5U2luOTQ4MzdTdEUrSFlqNkVHL1hzTnNpTVh6?=
- =?utf-8?B?SlhWWnJxd2YzTC95NlRkTzd1WEIzVVg4WXhIZ2xyTVlZOVVIenNhQjFZQ1JF?=
- =?utf-8?B?aTM2UUMzazNVM3l1L09MSDJ4SGk0YVBJVWZ1WmZXS2RKVzhPMENnK2pVWVpU?=
- =?utf-8?B?ZFlVRnRBSDhyZWt2WGgyVjE5QW1MamlrUnRrMHlLYXVpR1ZKc3JXL3dCUXdu?=
- =?utf-8?B?ZHFLWks0dDFvWjRBSEtsbm5BMGhIcGl1azNYWXU0amN0dkEwWDdEYUJRbk4z?=
- =?utf-8?B?WmM1Q0xjQ3ozOWdJWTlSRFJad3I2NDhpUVp2dlhQd2hJSzN2NHFkMlBYUEtw?=
- =?utf-8?B?VEdtVUNtMEhmNkRMYmV0N3lSM0N5aGYwOGJGRlNsVUw5VXl6N1IyZnQ1U3p4?=
- =?utf-8?B?d2FycEdOWHYxbEE1UzFxTm14SnBreDBoWEgrbTA5K2UzS1FQYUg1TmhsUGlo?=
- =?utf-8?B?VkR3TEdYckxDaGFrMDR1a3VjQTJiU0dSeUJIUVZuSjBHSmNhVkdsc25oRFQ3?=
- =?utf-8?B?SFBsVUxjbnRwRXlTbXpoWi9PM1IxYThINGJ6RCt3NGV5SXRoSS9aLzJic0p3?=
- =?utf-8?B?RDNIWTU4NStaY3M5MjhUcWoxeUZTMkxvZ1ByT2s2SDhoQmNBTHVrY2xYVXJJ?=
- =?utf-8?B?Ykp2Q0UrYmFFV2xFU2pGR1diWU0weDlHN21qVXVXcW9PTU42NmVVa0MyVGlX?=
- =?utf-8?B?L0lVYUlkWE1wenVxSFNHR1ZmT3Y0MUlHb2Jnd2hYSy94RytjbGgvQU82elVC?=
- =?utf-8?B?ME5tMHNqZFpqTWdPdStGU3pxcERQbW1VZ1BEUXVlUU9SUS9hTWtLZk5Yb2cz?=
- =?utf-8?B?MkE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 144cd01b-d349-4115-bd47-08dba800dfa4
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 19:56:31.0107
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pqpRIs/Lhejl1OqGKu4lseuXUMjWZ5cUYxFGxHzDgQZtR0m4IG+QQSsg8hkwVk+AaZGHmHhalkQ076GTj7Q1p+MxbMWMxHfC6e9E81v5F7g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6307
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+References: <20230828195802.135055-1-casey.ref@schaufler-ca.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+Add three system calls for the Linux Security Module ABI.
 
-On 8/28/2023 11:46 AM, Tony Luck wrote:
-> On Mon, Aug 28, 2023 at 10:05:31AM -0700, Reinette Chatre wrote:
->> Hi Tony,
->>
->> On 8/25/2023 10:05 AM, Tony Luck wrote:
->>> On Fri, Aug 11, 2023 at 10:29:25AM -0700, Reinette Chatre wrote:
->>>> On 7/22/2023 12:07 PM, Tony Luck wrote:
->>
->>>>> Change all places where monitoring functions walk the list of
->>>>> domains to use the new "mondomains" list instead of the old
->>>>> "domains" list.
->>>>
->>>> I would not refer to it as "the old domains list" as it creates
->>>> impression that this is being replaced. The changelog makes
->>>> no mention that domains list will remain and be dedicated to
->>>> control domains. I think this is important to include in description
->>>> of this change.
->>>
->>> I've rewritten the entire commit message incorporating your suggestions.
->>> V6 will be posted soon (after I get some time on an SNC SPR to check
->>> that it all works!)
->>
->> I seem to have missed v5.
-> 
-> I simply can't count. You are correct that next version to be posted
-> will be v5.
-> 
->>>
->>>>
->>>>>
->>>>> Signed-off-by: Tony Luck <tony.luck@intel.com>
->>>>> ---
->>>>>  include/linux/resctrl.h                   |  10 +-
->>>>>  arch/x86/kernel/cpu/resctrl/internal.h    |   2 +-
->>>>>  arch/x86/kernel/cpu/resctrl/core.c        | 195 +++++++++++++++-------
->>>>>  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |   2 +-
->>>>>  arch/x86/kernel/cpu/resctrl/monitor.c     |   2 +-
->>>>>  arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  30 ++--
->>>>>  6 files changed, 167 insertions(+), 74 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
->>>>> index 8334eeacfec5..1267d56f9e76 100644
->>>>> --- a/include/linux/resctrl.h
->>>>> +++ b/include/linux/resctrl.h
->>>>> @@ -151,9 +151,11 @@ struct resctrl_schema;
->>>>>   * @mon_capable:	Is monitor feature available on this machine
->>>>>   * @num_rmid:		Number of RMIDs available
->>>>>   * @cache_level:	Which cache level defines scope of this resource
->>>>> + * @mon_scope:		Scope of this resource if different from cache_level
->>>>
->>>> I think this addition should be deferred. As it is here it the "if different
->>>> from cache_level" also creates many questions (when will it be different?
->>>> how will it be determined that the scope is different in order to know that
->>>> mon_scope should be used?)
->>>
->>> I've gone in a different direction. V6 renames "cache_level" to
->>> "ctrl_scope". I think this makes intent clear from step #1.
->>>
->>
->> This change is not clear to me. Previously you changed this name
->> but kept using it in code specific to cache levels. It is not clear
->> to me how this time's rename would be different.
-> 
-> The current "cache_level" field in the structure is describing
-> the scope of each instance using the cache level (2 or 3) as the
-> method to describe which CPUs are considered part of a group. Currently
-> the scope is the same for both control and monitor resources.
+lsm_get_self_attr() provides the security module specific attributes
+that have previously been visible in the /proc/self/attr directory.
+For each security module that uses the specified attribute on the
+current process the system call will return an LSM identifier and
+the value of the attribute. The LSM and attribute identifier values
+are defined in include/uapi/linux/lsm.h
 
-Right.
+LSM identifiers are simple integers and reflect the order in which
+the LSM was added to the mainline kernel. This is a convention, not
+a promise of the API. LSM identifiers below the value of 100 are
+reserved for unspecified future uses. That could include information
+about the security infrastructure itself, or about how multiple LSMs
+might interact with each other.
 
-> 
-> Would you like to see patches in this progrssion:
-> 
-> 1) Rename "cache_level" to "scope". With commit comment that future
-> patches are going to base the scope on NUMA nodes in addtion to sharing
-> caches at particular levels, and will split into separate control and
-> monitor scope.
-> 
-> 2) Split the "scope" field from first patch into "ctrl_scope" and
-> "mon_scope" (also with the addition of the new list for the mon_scope).
-> 
-> 3) Add "node" as a new option for scope in addtion to L3 and L2 cache.
-> 
+A new LSM hook security_getselfattr() is introduced to get the
+required information from the security modules. This is similar
+to the existing security_getprocattr() hook, but specifies the
+format in which string data is returned and requires the module
+to put the information into a userspace destination.
 
-hmmm - my comment cannot be addressed through patch re-ordering.
-If I understand correctly you plan to change the name of "cache_level"
-to "ctrl_scope". My comment is that this obfuscates the code as long as
-you use this variable to compare against data that can only represent cache
-levels. This just repeats what I wrote in
-https://lore.kernel.org/lkml/09847c37-66d7-c286-a313-308eaa338c64@intel.com/
+lsm_set_self_attr() changes the specified LSM attribute. Only one
+attribute can be changed at a time, and then only if the specified
+security module allows the change.
 
+A new LSM hook security_setselfattr() is introduced to set the
+required information in the security modules. This is similar
+to the existing security_setprocattr() hook, but specifies the
+format in which string data is presented and requires the module
+to get the information from a userspace destination.
 
->> ...
->>
->>>>> @@ -502,61 +593,19 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
->>>>>   */
->>>>>  static void domain_add_cpu(int cpu, struct rdt_resource *r)
->>>>>  {
->>>>> -	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
->>>>> -	struct list_head *add_pos = NULL;
->>>>> -	struct rdt_hw_domain *hw_dom;
->>>>> -	struct rdt_domain *d;
->>>>> -	int err;
->>>>> -
->>>>> -	d = rdt_find_domain(r, id, &add_pos);
->>>>> -	if (IS_ERR(d)) {
->>>>> -		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
->>>>> -		return;
->>>>> -	}
->>>>> -
->>>>> -	if (d) {
->>>>> -		cpumask_set_cpu(cpu, &d->cpu_mask);
->>>>> -		if (r->cache.arch_has_per_cpu_cfg)
->>>>> -			rdt_domain_reconfigure_cdp(r);
->>>>> -		return;
->>>>> -	}
->>>>> -
->>>>> -	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
->>>>> -	if (!hw_dom)
->>>>> -		return;
->>>>> -
->>>>> -	d = &hw_dom->d_resctrl;
->>>>> -	d->id = id;
->>>>> -	cpumask_set_cpu(cpu, &d->cpu_mask);
->>>>> -
->>>>> -	rdt_domain_reconfigure_cdp(r);
->>>>> -
->>>>> -	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
->>>>> -		domain_free(hw_dom);
->>>>> -		return;
->>>>> -	}
->>>>> -
->>>>> -	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
->>>>> -		domain_free(hw_dom);
->>>>> -		return;
->>>>> -	}
->>>>> -
->>>>> -	list_add_tail(&d->list, add_pos);
->>>>> -
->>>>> -	err = resctrl_online_domain(r, d);
->>>>> -	if (err) {
->>>>> -		list_del(&d->list);
->>>>> -		domain_free(hw_dom);
->>>>> -	}
->>>>> +	if (r->alloc_capable)
->>>>> +		domain_add_cpu_ctrl(cpu, r);
->>>>> +	if (r->mon_capable)
->>>>> +		domain_add_cpu_mon(cpu, r);
->>>>>  }
->>>>
->>>> A resource could be both alloc and mon capable ... both
->>>> domain_add_cpu_ctrl() and domain_add_cpu_mon() can fail.
->>>> Should domain_add_cpu_mon() still be run for a CPU if
->>>> domain_add_cpu_ctrl() failed? 
->>>>
->>>> Looking ahead the CPU should probably also not be added
->>>> to the default groups mask if a failure occurred.
->>>
->>> Existing code doesn't do anything for the case where a CPU
->>> can't be added to a domain (probably the only real error case
->>> is failure to allocate memory for the domain structure).
->>
->> Is my statement about CPU being added to default group mask
->> incorrect? Seems like a potential issue related to domain's
->> CPU mask also.
->>
->> Please see my earlier question. Existing code does not proceed
->> with monitor initialization if control initialization fails and
->> undoes control initialization if monitor initialization fails. 
-> 
-> Existing code silently continues if a domain structure cannot
-> be allocated to add a CPU to a domain:
-> 
-> 503 static void domain_add_cpu(int cpu, struct rdt_resource *r)
-> 504 {
-> 505         int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
-> 506         struct list_head *add_pos = NULL;
-> 507         struct rdt_hw_domain *hw_dom;
-> 508         struct rdt_domain *d;
-> 509         int err;
-> 
-> ...
-> 
-> 523
-> 524         hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
-> 525         if (!hw_dom)
-> 526                 return;
-> 527
-> 
+lsm_list_modules() provides the LSM identifiers, in order, of the
+security modules that are active on the system. This has been
+available in the securityfs file /sys/kernel/security/lsm.
 
+Patch 0001 changes the LSM registration from passing the name
+of the module to passing a lsm_id structure that contains the
+name of the module, an LSM identifier number and an attribute
+identifier.
+Patch 0002 adds the registered lsm_ids to a table.
+Patch 0003 changes security_[gs]etprocattr() to use LSM IDs instead
+of LSM names.
+Patch 0004 implements lsm_get_self_attr() and lsm_set_self_attr().
+New LSM hooks security_getselfattr() and security_setselfattr() are
+defined.
+Patch 0005 implements lsm_list_modules().
+Patch 0006 wires up the syscalls.
+Patch 0007 implements helper functions to make it easier for
+security modules to use lsm_ctx structures.
+Patch 0008 provides the Smack implementation for [gs]etselfattr().
+Patch 0009 provides the AppArmor implementation for [gs]etselfattr().
+Patch 0010 provides the SELinux implementation for [gs]etselfattr().
+Patch 0011 implements selftests for the three new syscalls.
 
-Right ... and if it returns silently as above it runs:
+https://github.com/cschaufler/lsm-stacking.git#syscalls-6.5-rc7-v14
 
-static int resctrl_online_cpu(unsigned int cpu)
-{
+v14: Make the handling of LSM_FLAG_SINGLE easier to understand.
+     Tighten the comments and documentation.
+     Better use of const, static, and __ro_after_init.
+     Add selftests for LSM_FLAG_SINGLE cases.
+v13: Change the setselfattr code to do a single user copy.
+     Make the self tests more robust.
+     Improve use of const.
+     Change syscall numbers to reflect upstream additions.
+v12: Repair a registration time overflow check.
+v11: Remove redundent alignment code
+     Improve a few comments.
+     Use LSM_ATTR_UNDEF in place of 0 in a few places.
+     Correct a return of -EINVAL to -E2BIG.
+v10: Correct use of __user.
+     Improve a few comments.
+     Revert unnecessary changes in module initialization.
+v9: Support a flag LSM_FLAG_SINGLE in lsm_get_self_attr() that
+    instructs the call to provide only the attribute for the LSM
+    identified in the referenced lsm_ctx structure.
+    Fix a typing error.
+    Change some coding style.
+v8: Allow an LSM to provide more than one instance of an attribute,
+    even though none of the existing modules do so.
+    Pad the data returned by lsm_get_self_attr() to the size of
+    the struct lsm_ctx.
+    Change some displeasing varilable names.
+v7: Pass the attribute desired to lsm_[gs]et_self_attr in its own
+    parameter rather than encoding it in the flags.
+    Change the flags parameters to u32.
+    Don't shortcut out of calling LSM specific code in the
+    infrastructure, let the LSM report that doesn't support an
+    attribute instead. With that it is not necessary to maintain
+    a set of supported attributes in the lsm_id structure.
+    Fix a typing error.
+v6: Switch from reusing security_[gs]procattr() to using new
+    security_[gs]selfattr() hooks. Use explicit sized data types
+    in the lsm_ctx structure.
 
+v5: Correct syscall parameter data types.
 
-	for_each_capable_rdt_resource(r)
-		domain_add_cpu(cpu, r);
-	>>>>> cpumask_set_cpu(cpu, &rdtgroup_default.cpu_mask); <<<<<<<<
+v4: Restore "reserved" LSM ID values. Add explaination.
+    Squash patches that introduce fields in lsm_id.
+    Correct a wireup error.
 
-}
+v3: Add lsm_set_self_attr().
+    Rename lsm_self_attr() to lsm_get_self_attr().
+    Provide the values only for a specifed attribute in
+    lsm_get_self_attr().
+    Add selftests for the three new syscalls.
+    Correct some parameter checking.
 
-Also, note within domain_add_cpu():
+v2: Use user-interface safe data types.
+    Remove "reserved" LSM ID values.
+    Improve kerneldoc comments
+    Include copyright dates
+    Use more descriptive name for LSM counter
+    Add documentation
+    Correct wireup errors
 
-static void domain_add_cpu(int cpu, struct rdt_resource *r)
-{
+Casey Schaufler (11):
+  LSM: Identify modules by more than name
+  LSM: Maintain a table of LSM attribute data
+  proc: Use lsmids instead of lsm names for attrs
+  LSM: syscalls for current process attributes
+  LSM: Create lsm_list_modules system call
+  LSM: wireup Linux Security Module syscalls
+  LSM: Helpers for attribute names and filling lsm_ctx
+  Smack: implement setselfattr and getselfattr hooks
+  AppArmor: Add selfattr hooks
+  SELinux: Add selfattr hooks
+  LSM: selftests for Linux Security Module syscalls
 
+ Documentation/userspace-api/index.rst         |   1 +
+ Documentation/userspace-api/lsm.rst           |  73 +++++
+ MAINTAINERS                                   |   2 +
+ arch/alpha/kernel/syscalls/syscall.tbl        |   3 +
+ arch/arm/tools/syscall.tbl                    |   3 +
+ arch/arm64/include/asm/unistd.h               |   2 +-
+ arch/arm64/include/asm/unistd32.h             |   6 +
+ arch/ia64/kernel/syscalls/syscall.tbl         |   3 +
+ arch/m68k/kernel/syscalls/syscall.tbl         |   3 +
+ arch/microblaze/kernel/syscalls/syscall.tbl   |   3 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl     |   3 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl     |   3 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl     |   3 +
+ arch/parisc/kernel/syscalls/syscall.tbl       |   3 +
+ arch/powerpc/kernel/syscalls/syscall.tbl      |   3 +
+ arch/s390/kernel/syscalls/syscall.tbl         |   3 +
+ arch/sh/kernel/syscalls/syscall.tbl           |   3 +
+ arch/sparc/kernel/syscalls/syscall.tbl        |   3 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   3 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   3 +
+ arch/xtensa/kernel/syscalls/syscall.tbl       |   3 +
+ fs/proc/base.c                                |  29 +-
+ fs/proc/internal.h                            |   2 +-
+ include/linux/lsm_hook_defs.h                 |   4 +
+ include/linux/lsm_hooks.h                     |  17 +-
+ include/linux/security.h                      |  46 ++-
+ include/linux/syscalls.h                      |   6 +
+ include/uapi/asm-generic/unistd.h             |   9 +-
+ include/uapi/linux/lsm.h                      |  90 ++++++
+ kernel/sys_ni.c                               |   3 +
+ security/Makefile                             |   1 +
+ security/apparmor/include/procattr.h          |   2 +-
+ security/apparmor/lsm.c                       |  99 ++++++-
+ security/apparmor/procattr.c                  |  10 +-
+ security/bpf/hooks.c                          |   9 +-
+ security/commoncap.c                          |   8 +-
+ security/landlock/cred.c                      |   2 +-
+ security/landlock/fs.c                        |   2 +-
+ security/landlock/ptrace.c                    |   2 +-
+ security/landlock/setup.c                     |   6 +
+ security/landlock/setup.h                     |   1 +
+ security/loadpin/loadpin.c                    |   9 +-
+ security/lockdown/lockdown.c                  |   8 +-
+ security/lsm_syscalls.c                       | 120 ++++++++
+ security/safesetid/lsm.c                      |   9 +-
+ security/security.c                           | 247 +++++++++++++++-
+ security/selinux/hooks.c                      | 143 +++++++--
+ security/smack/smack_lsm.c                    | 103 ++++++-
+ security/tomoyo/tomoyo.c                      |   9 +-
+ security/yama/yama_lsm.c                      |   8 +-
+ .../arch/mips/entry/syscalls/syscall_n64.tbl  |   3 +
+ .../arch/powerpc/entry/syscalls/syscall.tbl   |   3 +
+ .../perf/arch/s390/entry/syscalls/syscall.tbl |   3 +
+ .../arch/x86/entry/syscalls/syscall_64.tbl    |   3 +
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/lsm/.gitignore        |   1 +
+ tools/testing/selftests/lsm/Makefile          |  17 ++
+ tools/testing/selftests/lsm/common.c          |  89 ++++++
+ tools/testing/selftests/lsm/common.h          |  33 +++
+ tools/testing/selftests/lsm/config            |   3 +
+ .../selftests/lsm/lsm_get_self_attr_test.c    | 275 ++++++++++++++++++
+ .../selftests/lsm/lsm_list_modules_test.c     | 140 +++++++++
+ .../selftests/lsm/lsm_set_self_attr_test.c    |  74 +++++
+ 63 files changed, 1688 insertions(+), 93 deletions(-)
+ create mode 100644 Documentation/userspace-api/lsm.rst
+ create mode 100644 include/uapi/linux/lsm.h
+ create mode 100644 security/lsm_syscalls.c
+ create mode 100644 tools/testing/selftests/lsm/.gitignore
+ create mode 100644 tools/testing/selftests/lsm/Makefile
+ create mode 100644 tools/testing/selftests/lsm/common.c
+ create mode 100644 tools/testing/selftests/lsm/common.h
+ create mode 100644 tools/testing/selftests/lsm/config
+ create mode 100644 tools/testing/selftests/lsm/lsm_get_self_attr_test.c
+ create mode 100644 tools/testing/selftests/lsm/lsm_list_modules_test.c
+ create mode 100644 tools/testing/selftests/lsm/lsm_set_self_attr_test.c
 
-	...
-	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
-		domain_free(hw_dom);
-		return;
-	}
-
-	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
-		domain_free(hw_dom);
-		return;
-	}
-
-	...
-}
-
-The above is the other item that I've been trying to discuss
-with you. Note that existing resctrl will not initialize monitoring if
-control could not be initialized.
-Compare with this submission:
-
-	if (r->alloc_capable)
-		domain_add_cpu_ctrl(cpu, r);
-	if (r->mon_capable)
-		domain_add_cpu_mon(cpu, r);
-
-
-
->>
->>> May be something to tackle in a future series if anyone
->>> thinks this is a serious problem and has suggestions on
->>> what to do. It seems like a catastrophic problem to not
->>> have some CPUs in some/all domains of some resources.
->>> Maybe this should disable mounting resctrl filesystem
->>> completely?
->>
->> It is not clear to me how this is catastrophic but I
->> do not think resctrl should claim support for a resource
->> on a CPU if it was not able to complete initialization
-> 
-> That's the status quo. See above code snippet.
-
-Could you please elaborate what you mean with status quo?
-
-Reinette
+-- 
+2.41.0
 
