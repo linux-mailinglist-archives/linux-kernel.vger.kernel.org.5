@@ -2,224 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656FB78B6D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AC078B6D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbjH1R4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        id S232921AbjH1R5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbjH1Rzw (ORCPT
+        with ESMTP id S232842AbjH1R4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:55:52 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B169A106
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:55:48 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4c0so139587a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693245347; x=1693850147; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y0ZGm2c8M5uCZpx5NsLqloIP7RYTRm5RGMmegNXhmtc=;
-        b=QD/fvPS84hhSpZsACY5HQkaY/XohpljOn1oQw5z0pvXOd3H8hsIMvkW7YEXWb8Md9H
-         yqJ8NXPBYibBQtae7bCjf5xZRudWds2LMitSn6/PvVw4ikSwhDtwvbbptZ4rqV1LTUl9
-         S3i9FyYWusdGB2kZx/n0W8KklrcL8kwAvSkjIuzaiZdYqcKnGvlBr654Otpj9TnBZ1cU
-         BMOHD3+j8nE+qvc4ThVgFfuXQOvss+ppoy21Vgf6L4DPpX5PMA+zMP6t2DruQXqW0sR+
-         u4GHPKmlhM04DKy/ZOzoQrDSFD8EL7oLrZYfCSs2oXBCmYZ0YrKPO7nehUo4UZOGl+9k
-         f+QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693245347; x=1693850147;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y0ZGm2c8M5uCZpx5NsLqloIP7RYTRm5RGMmegNXhmtc=;
-        b=RsdHMRFnmFgexOMyb88sL+R5CKGDzX/I0k+k5OyEzM/+iuUikYFIahfMLEe4eWidNj
-         SyINynYisBHXvcAy5IZvHg+gqLBMptkldCNE+46LPYCDJcISys2DQQH92AtfRDythM3+
-         DrElCBjCBifjBove2IYaOCp794WGC2Qe5lyTWAB6ezxwjXReC+6A0EQIbnB3zL22Img5
-         N7EGGjWJvvGHxEeFZ1zHHcRL2TuRlaYlipI1dtsr3fnmCxEUD/PtfkP/yN8Hc6r/p3dc
-         iZg/oXNqBGyikhtW9pB680Emn6uqSvach5YTztrQ3ITFVllapudEJs488jEjGT7XvYil
-         iJag==
-X-Gm-Message-State: AOJu0YwdaIEcdAKnvQx3cWhqMkCylTauj8C2ft/+9nHMJGUZ5dpif8RN
-        kxQ6IQ9AixtmZJkDUskB5DfTfA==
-X-Google-Smtp-Source: AGHT+IH54gGY3YgXrsJV+7+2XCu+45eXNW/T27xOMIUiGWecCGA9P4KGwAtfdsWavYmLKVIZDXY5Bw==
-X-Received: by 2002:a05:6402:3514:b0:523:4e41:2a37 with SMTP id b20-20020a056402351400b005234e412a37mr420275edd.11.1693245347138;
-        Mon, 28 Aug 2023 10:55:47 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.225])
-        by smtp.gmail.com with ESMTPSA id v10-20020aa7d80a000000b005233deb30aesm4646569edq.10.2023.08.28.10.55.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 10:55:46 -0700 (PDT)
-Message-ID: <75829c0e-b6f8-536e-c84e-a660be3f39d0@linaro.org>
-Date:   Mon, 28 Aug 2023 19:55:44 +0200
+        Mon, 28 Aug 2023 13:56:55 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF71C185;
+        Mon, 28 Aug 2023 10:56:52 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SGJ4Hx000814;
+        Mon, 28 Aug 2023 17:56:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=1x5rlXTyf3rFYzB2POOoRa7o3PGeg4tEVqJTmUMWTPU=;
+ b=cEAxZRb918yS38Jw1ls7ftTUFznu3xcfKYr2/WYmMGSxshKGzUs89XlvYz16iq0TumRf
+ rVdapYNQcP/xA4D2l5EgtqKjfEPHmxICXcGD/AbyNJX+Rn8dHbupOivUSJbCrfiwAo9T
+ U99Lhsf6wniiAMAD/iHrv7FmZ0gLKRJYA4KHIFVHHIhJVgIxlYEiuu/fmpiEHFBADVA1
+ AmqXSTYUb73AAFiVYI6ZI+wTJCveYjfBzeqo6q4OFDQNyDY640sk39UPSsAngOrSr3+j
+ Hs/u7awfpxT+IFQ1ONSBQqZOEAeToukCCJOf2mALHQTZlgbYv5o9RyFemqawcSsXgNNG Qg== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sq9sdm2jx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 17:56:34 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SHuXtU017889
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Aug 2023 17:56:33 GMT
+Received: from quicinc.com (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 28 Aug
+ 2023 10:56:31 -0700
+Date:   Mon, 28 Aug 2023 10:56:29 -0700
+From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <quic_pkondeti@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, <workflows@vger.kernel.org>,
+        <tools@linux.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
+Message-ID: <20230828175629.GC23466@quicinc.com>
+Mail-Followup-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        quic_pkondeti@quicinc.com, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com, workflows@vger.kernel.org,
+        tools@linux.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+References: <cover.1693037031.git.quic_gurus@quicinc.com>
+ <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
+ <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH net-next v2 2/3] dt-bindings: net: add T-HEAD dwmac
- support
-Content-Language: en-US
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, Maxime@web.codeaurora.org,
-        Coquelin@web.codeaurora.org,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org
-References: <20230827091710.1483-1-jszhang@kernel.org>
- <20230827091710.1483-3-jszhang@kernel.org>
- <qc2nyqmuouig6qww2q7orlwzvcprjyruyeuyr5dqdpxysajjpv@6fzsgjgokry7>
- <ZOy6kLGZ1lR0I2sC@xhacker>
- <pbh7gh7fkfis7zqqmmug5wtosq3xsx7z3ktsfg3jy6jthm6qva@a3wy7knv2vcr>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <pbh7gh7fkfis7zqqmmug5wtosq3xsx7z3ktsfg3jy6jthm6qva@a3wy7knv2vcr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ninS63_k0bFr28tw0dwIdU5DGWC9_-x_
+X-Proofpoint-ORIG-GUID: ninS63_k0bFr28tw0dwIdU5DGWC9_-x_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-28_15,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 adultscore=0 impostorscore=0 spamscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=651 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308280158
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 17:51, Serge Semin wrote:
-> On Mon, Aug 28, 2023 at 11:17:36PM +0800, Jisheng Zhang wrote:
->> On Mon, Aug 28, 2023 at 04:13:00PM +0300, Serge Semin wrote:
->>> On Sun, Aug 27, 2023 at 05:17:09PM +0800, Jisheng Zhang wrote:
->>>> Add documentation to describe T-HEAD dwmac.
->>>>
->>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->>>> ---
->>>>  .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
->>>>  .../devicetree/bindings/net/thead,dwmac.yaml  | 77 +++++++++++++++++++
->>>>  2 files changed, 78 insertions(+)
->>>>  create mode 100644 Documentation/devicetree/bindings/net/thead,dwmac.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>>> index b196c5de2061..73821f86a609 100644
->>>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>>> @@ -96,6 +96,7 @@ properties:
->>>>          - snps,dwxgmac
->>>>          - snps,dwxgmac-2.10
->>>>          - starfive,jh7110-dwmac
->>>> +        - thead,th1520-dwmac
->>>>  
->>>>    reg:
->>>>      minItems: 1
->>>> diff --git a/Documentation/devicetree/bindings/net/thead,dwmac.yaml b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
->>>> new file mode 100644
->>>> index 000000000000..bf8ec8ca2753
->>>> --- /dev/null
->>>
->>>> +++ b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
->>>
->>> see further regarding using dwmac in the names here.
->>>
->>>> @@ -0,0 +1,77 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/net/thead,dwmac.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>
->>>> +title: T-HEAD DWMAC Ethernet controller
->>>
->>> Additionally would be nice to have a brief controller "description:"
->>> having the next info: the SoCs the controllers can be found on, the DW
->>> (G)MAC IP-core version the ethernet controller is based on and some
->>> data about the synthesize parameters: SMA (MDIO-bus), Tx/Rx COE, DMA
->>> FIFOs size, perfect and hash MAC-filters size, L3L4 frame filters
->>> availability, VLAN hash filter, SA/VLAN-tag insertion, ARP offload
->>> engine, PHY interfaces (MII, RMII, RGMII, etc), EEE support, IEEE
->>> 1588(-2008) Timestamping support, PMT and Wake-up frame support, MAC
->>> Management counters (MMC). In addition to that for DW QoS
->>> ETH/XGMAC/XLGMAC the next info would be useful: number of MTL Queues
->>> and DMA channels, MTL queues capabilities (QoS-related), TSO
->>> availability, SPO availability.
->>>
+On Aug 28 2023 10:21, Krzysztof Kozlowski wrote:
+> On 26/08/2023 10:07, Guru Das Srinagesh wrote:
+> > This script runs get_maintainer.py on a given patch file (or multiple
+> > patch files) and adds its output to the patch file in place with the
+> > appropriate email headers "To: " or "Cc: " as the case may be. These new
+> > headers are added after the "From: " line in the patch.
+> > 
+> > Currently, for a single patch, maintainers and reviewers are added as
+> > "To: ", mailing lists and all other roles are added as "Cc: ".
+> > 
+> > For a series of patches, however, a set-union scheme is employed in
+> > order to solve the all-too-common problem of ending up sending only
+> > subsets of a patch series to some lists, which results in important
+> > pieces of context such as the cover letter (or other patches in the
+> > series) being dropped from those lists. This scheme is as follows:
+> > 
+> > - Create set-union of all maintainers and reviewers from all patches and
+> >   use this to do the following per patch:
+> >   - add only that specific patch's maintainers and reviewers as "To: "
+> >   - add the other maintainers and reviewers from the other patches as "Cc: "
+> > 
+> > - Create set-union of all mailing lists corresponding to all patches and
+> >   add this to all patches as "Cc: "
+> > 
+> > - Create set-union of all other roles corresponding to all patches and
+> >   add this to all patches as "Cc: "
+> > 
+> > Please note that patch files that don't have any "Maintainer"s or
+> > "Reviewers" explicitly listed in their `get_maintainer.pl` output will
 > 
->>> Note DMA FIFO sizes can be also constrained in the properties
->>> "rx-fifo-depth" and "tx-fifo-depth"; perfect and hash MAC-filter sizes -
->>> in "snps,perfect-filter-entries" and "snps,multicast-filter-bins".
-> 
-> BTW plus to this you may wish to add the "rx-internal-delay-ps" and
-> "tx-internal-delay-ps" properties constraints seeing they device
-> supports internal Tx/Rx delays.
-> 
->>
->> Hi Serge,
->>
-> 
->> Thank you for your code review. I have different views here: If we
->> only support the gmac controller in one specific SoC, these detailed
->> information is nice to have, but what about if the driver/dt-binding
->> supports the gmac controller in different SoCs? These detailed
->> information will be outdated.
-> 
-> First they won't. Second then you can either add more info to the
-> description for instance in a separate paragraph or create a dedicated
-> DT-bindings. Such information would be very much useful for the
-> generic STMMAC driver code maintenance.
-> 
->>
->> what's more, I think the purpose of dt-binding is different from
->> the one of documentation.
-> 
-> The purpose of the DT-bindings is a hardware "description". The info I
-> listed describes your hardware.
-> 
->>
->> So I prefer to put these GMAC IP related detailed information into
->> the SoC's dtsi commit msg rather than polluting the dt-binding.
->>>
->>>> +
->>>> +maintainers:
->>>> +  - Jisheng Zhang <jszhang@kernel.org>
->>>> +
->>>> +select:
->>>> +  properties:
->>>> +    compatible:
->>>> +      contains:
->>>> +        enum:
->>>
->>>> +          - thead,th1520-dwmac
->>>
->>> Referring to the DW IP-core in the compatible string isn't very
->>> much useful especially seeing you have a generic fallback compatible.
->>> Name like "thead,th1520-gmac" looks more informative indicating its
->>> speed capability.
->>
-> 
->> This is just to follow the common style as those dwmac-* does.
->> I'm not sure which is better, but personally, I'd like to keep current
->> common style.
-> 
-> It's not that common. Half the compatible strings use the notation
-> suggested by me and it has more sense then a dwmac suffix. It's ok to
-> use the suffix in the STMMAC driver-related things because the glue
-> code is supposed to work with the DW *MAC generic code. Using it in
-> the compatible string especially together with the generic fallback
-> compatible just useless.
+> So before you will ignoring the reviewers, right? One more reason to not
+> get it right...
 
-THEAD did not make dwmac here, but a gmac. dwmac does not exist in the
-context of Thead and Th1520, so the naming suggested by Serge makes sense.
+In v2, Reviewers were added as "Cc:" whereas here in v3 they are added as
+"To:". Not sure where you're getting "ignoring the reviewers" from.
 
-Best regards,
-Krzysztof
+> > not have any "To: " entries added to them; developers are expected to
+> > manually make edits to the added entries in such cases to convert some
+> > "Cc: " entries to "To: " as desired.
+> > 
+> > The script is quiet by default (only prints errors) and its verbosity
+> > can be adjusted via an optional parameter.
+> > 
+> > Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
+> > ---
+> >  MAINTAINERS               |   5 ++
+> >  scripts/add-maintainer.py | 164 ++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 169 insertions(+)
+> >  create mode 100755 scripts/add-maintainer.py
+> > 
+> 
+> I do not see the benefits of this script. For me - it's unnecessarily
+> more complicated instead of my simple bash function which makes
 
+Your function adds mailing lists also in "To:" which is not ideal, in my view.
+You've mentioned before that To or Cc doesn't matter [1] which I disagree
+with: it doesn't matter, why does Cc exist as a concept at all?
+
+[1] https://lore.kernel.org/lkml/af1eca37-9fd2-1e83-ab27-ebb51480904b@linaro.org/
+
+Thank you.
+
+Guru Das.
