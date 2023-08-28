@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3AA78AA87
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC6078AAA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjH1KXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
+        id S230518AbjH1KXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbjH1KWo (ORCPT
+        with ESMTP id S231235AbjH1KXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:22:44 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2539132;
-        Mon, 28 Aug 2023 03:22:37 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-565dc391be3so2714441a12.0;
-        Mon, 28 Aug 2023 03:22:37 -0700 (PDT)
+        Mon, 28 Aug 2023 06:23:43 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F49A7;
+        Mon, 28 Aug 2023 03:23:40 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9338e4695so45769351fa.2;
+        Mon, 28 Aug 2023 03:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693218157; x=1693822957;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yEaJWeBAVOoawr4c33mkvjoKOidJHOfAi0d6D3J7utQ=;
-        b=nVU2W7l+NmxVDoUJL2WyJAGvhjit71AAHto0Hp6vd4G3o3tDeOnth7/rtm5+CafRBa
-         FU3U4IbbtzjJjCAYNdlUnXH6Qj8Qep/bUf4KvB0lelGn7Mfoj68ULuvWwLzorZaYugdH
-         zo6JmPxza0/p/K9y1/utstUzy9tLotzQs7+IHqzYSsqSykziMqaf9bYzdXqg533TtDlC
-         zhUj7pc0ctVglVDy0VkYTk0Wwj3+F93yg8qP7HSKuF/uQhioRSMTd6PrqucIn8ItdWI4
-         tuiDwcLZx1zFttMJHGWhTcB3L9v+mmWkzdByUKdjDjU287NRKzWpPd2bOJCtao/ZANpT
-         lu5A==
+        d=gmail.com; s=20221208; t=1693218218; x=1693823018;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6OX5Z+xV4iFsNRL3h/ZSBtl2mNUhSgbKrGXyYKt6ueU=;
+        b=ayDOj/0mF11EdHLUUbz5HZq1CEFP2QzyDC8RnZ3/6PaTqTXTXA7n4eNJE07Kuw7x2J
+         OgJbd8DvxQd3YyTDZR47FMQRrKnrsO1QGK7Ifd3upL3aT62NAouNiZ6im/BHUTvEEz1p
+         Jf6Gmy/16o8dmZdqRIQlXJ2lGaGtyHsB1Qz2ykqThuyzeBtOmnPAnNrEuMG2XERtj67v
+         wI2Ne2ZySYiDAVX4I7WlNV3Cy9htHntZ28UYIPi5q2pVq5eSB7RT90R6xuB61ZtlXsKx
+         PZ3o5pQm0x63m+PBHtFtAequeZ2vMUKT3eeuFmgCFe/WOngjkF97YJlPFSlvIxAVE1Sn
+         br1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693218157; x=1693822957;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693218218; x=1693823018;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yEaJWeBAVOoawr4c33mkvjoKOidJHOfAi0d6D3J7utQ=;
-        b=Y4fokYsNw8yefM9v/04vYp/ykLCKnUl8IwJEXFVsEsuOhR7Egd73iDji9JIdbufG6S
-         l3f9qBzOWLkFcmtgCp1mOgfp85A2PxXC2Bq3qWvcBaa2WgVck37EbSTxV3u4VUi7xt8e
-         wYL1hucjbUQXAFOon16c9cy72lunDeFWKhMiWCDlOpQy0+fF8CVgoHE3iDh6zX3W9cCv
-         h44AMNALJxm5sA2/OxWRGmGpuG3ipt9eTsaT8wpjrOPjJoFSn2KOmguYlcJTs0xqfN3j
-         t8PK4IyP6TSHM7eXxeIpjulnxRooPTfPhUN8C73z+V4ynrvJXUlprZehSgUmTlCcaHGw
-         p2Zw==
-X-Gm-Message-State: AOJu0Yx7MqAH+7nJUwGSOOvY8PbrDfcEFdR11EeLyQMFbNws09FnFHWu
-        QVv/WzAfDf8MlYs+R8pxVaGSgwjP4acyMhb4FKY=
-X-Google-Smtp-Source: AGHT+IHunRJ8SKrwJgaP+51V2JJrecdxsMCTtZgn0eMB70U7pUC9syasL7KOaWROh+wvS8qj56tjawwSSP8Jbu9b7DA=
-X-Received: by 2002:a17:90a:2a48:b0:269:68e7:bbb9 with SMTP id
- d8-20020a17090a2a4800b0026968e7bbb9mr38051213pjg.23.1693218157096; Mon, 28
- Aug 2023 03:22:37 -0700 (PDT)
+        bh=6OX5Z+xV4iFsNRL3h/ZSBtl2mNUhSgbKrGXyYKt6ueU=;
+        b=AKHvjiq1IYy4O+7xN0vC/lNS3H5pVy0aLn/zjWMsIIXcI9+VhtEa1KjbMrlzUjOwYm
+         NCoaKMJg+LEWU8yfsRFaWlIniz3YRAmIqS12YX++viadVBFnYl1B/xoNn7pE4Ru93LLY
+         lW4UA3mpZ1939Ns3Xmv851OAiDINbv5N+EmWO+l7thzHrAnS4LVn6nrBl1R8ON0Bjobi
+         KtPlJ54Wx/GEkH6BCBf75oHIMFsL/S+2ihMU+29gvTlxZRtdkypFRZAX3MeTcGBkvbmB
+         wBhJuqA2W5iAF+3KCXy6Cbm4FcSBmeyKWQwGL16X8tuy34S+XPKL3D2WyAQYpZZaezym
+         a5ng==
+X-Gm-Message-State: AOJu0YybQkKk6W3//YVU/1vlk963MN0YfA5oYaBk1yT5Vd95Qbr/hyWK
+        MhTIe7GHunIOtvF2GTzOaft1E8eYjlQ=
+X-Google-Smtp-Source: AGHT+IFOf26xlqO9SKeldJ6//auUiKP0kI9OV+dzuXDqwO6970hLx61HHz5zNnHcMwDJKxFjrOe7IQ==
+X-Received: by 2002:a05:651c:cd:b0:2bc:f4ee:ca57 with SMTP id 13-20020a05651c00cd00b002bcf4eeca57mr6322219ljr.48.1693218217833;
+        Mon, 28 Aug 2023 03:23:37 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id 21-20020a05600c029500b003fe1a96845bsm13537050wmk.2.2023.08.28.03.23.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 03:23:37 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     yuzhe@nfschina.com, u.kleine-koenig@pengutronix.de,
+        herbert@gondor.apana.org.au, olivia@selenic.com, alex@shruggie.ro,
+        Andrei Coardos <aboutphysycs@gmail.com>
+Subject: [PATCH] char: hw_random: xgene-rng: removed unneeded call to platform_set_drvdata()
+Date:   Mon, 28 Aug 2023 13:23:29 +0300
+Message-Id: <20230828102329.20867-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230828071829.64366-1-anshulusr@gmail.com> <2023082827-craftily-citric-06fa@gregkh>
- <CAPwwkU7+zHo2jpt+ovJDE1ca=K8AKyowyA5Z9pOFAy6iifVEwA@mail.gmail.com> <2023082801-cost-radiance-95fa@gregkh>
-In-Reply-To: <2023082801-cost-radiance-95fa@gregkh>
-From:   Anshul <anshulusr@gmail.com>
-Date:   Mon, 28 Aug 2023 15:52:29 +0530
-Message-ID: <CAPwwkU77=FvjtEFM9gzoMRLdporY8F7y1zXNky1Rj4cL0UpXHQ@mail.gmail.com>
-Subject: Re: [PATCH] fixed formatting issues
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, linux-alpha@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,25 +70,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Why are you changing coding style issues in this portion of the kernel?
-> Do you have this hardware to test with?
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-I was exploring the source code and noticed a few discrepancies in the
-coding style and followed to run `scripts/checkpatch.pl`.
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/char/hw_random/xgene-rng.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Normally coding style cleanups like this are only allowed in the
-> drivers/staging/* portion of the kernel.  Unless you get approval from
-> the maintainer of the subsystem you are changing, I wouldn't work on
-> this as it's generally considered bad form.
+diff --git a/drivers/char/hw_random/xgene-rng.c b/drivers/char/hw_random/xgene-rng.c
+index 7c8f3cb7c6af..9d64b5931a27 100644
+--- a/drivers/char/hw_random/xgene-rng.c
++++ b/drivers/char/hw_random/xgene-rng.c
+@@ -321,7 +321,6 @@ static int xgene_rng_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	ctx->dev = &pdev->dev;
+-	platform_set_drvdata(pdev, ctx);
+ 
+ 	ctx->csr_base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(ctx->csr_base))
+-- 
+2.34.1
 
-I was not aware of that. I apologise in case my actions caused any
-undue inconveniences, that was never my intention.
-
-> Your name is only 1 word?
-Yes, my legal name doesn't have a last name. I could change my From:
-or Signed-off-by: lines to have "Anshul A" or add my informal last name
-if that aligns better with kernel standards.
-
-I appreciate your feedback and apologise for any problems caused,
-
-Anshul
