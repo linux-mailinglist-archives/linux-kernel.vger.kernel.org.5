@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 258EB78A51E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FB978A531
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbjH1FN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
+        id S229607AbjH1FZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjH1FN1 (ORCPT
+        with ESMTP id S229772AbjH1FYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:13:27 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C77010C;
-        Sun, 27 Aug 2023 22:13:24 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37S40uY2018002;
-        Mon, 28 Aug 2023 05:13:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3Ks564Pp4GAWVcgNeKShUhE+6EVhn9557IBqsOU/VpI=;
- b=ZPspUQK4/IsM49IyMeGR41LKRZzi7kg6BWuGqmLOKmi2aox5/SUs3ljahGOWWitAhD0E
- dVh28WKc4adzO64G6hqYYPe18OlLVeVm0Dl1yAxm8kXVekGj9oEnC2He3xoA1qJxzO+X
- uCqQrd5h9xDxW5jtpYZ5Zg6lJ+EH0Rg04Q8fPtCzOZuqDmBbmAmujM96To0tlQUM+MIR
- PFYBsMWfwISScpK6lVyP5zq3Mt7L8Dxm545NCw2NCm5QiaAY/jWAb7joIgOvp8b8MWKW
- Uf9GfgiHQ8RckPmYmEmjQsUJmdOnrsj/qXhC1FNR4DKU21j12sDywtMEvbNJWA3KL/eV hQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqajujpga-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 05:13:16 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37S5DFon020180
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 05:13:15 GMT
-Received: from [10.216.31.112] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 27 Aug
- 2023 22:13:09 -0700
-Message-ID: <0b707780-7252-4e78-861e-a854bf4199a4@quicinc.com>
-Date:   Mon, 28 Aug 2023 10:43:05 +0530
+        Mon, 28 Aug 2023 01:24:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7E4129;
+        Sun, 27 Aug 2023 22:24:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3033460AAF;
+        Mon, 28 Aug 2023 05:24:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8A537C433C7;
+        Mon, 28 Aug 2023 05:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693200289;
+        bh=0Xk4uK/2TRf9VsLF/92kL0q0rtsuDOsk2AN3vjKX7jA=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=abUTbwgSeH3Oe6ZIl78vZ9Knd56LOALemfma5QsXC9wDcEx0KVsmi7CkgQzh4rcIx
+         qoXEKu03RIld5TNF1owSlkqIF+piz2cFMG4VxUIxf4E+ImZ0ngKOxr+0Lp9kpysyp5
+         6izzAXCJ66p6vNJ1tsehheY5PaTQKeCTBGOg5RmalSZK80hZclPMIf+g70luNJJ0zN
+         kLmZlSKQlafURgBNCW2MkTEN7YYOTXqnRBfmbH81VpguKJ03LP4+mDfNd0enhWVxkf
+         wYXCWdzWY1WwTv5pmiasYTkI6Rr3MDQ9AMDxr9SDmHM7CoBc+MAaIGgt6+u8JCjsWb
+         uxqvLWQMiT2KQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 6BC1BC83F13;
+        Mon, 28 Aug 2023 05:24:49 +0000 (UTC)
+From:   Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
+Date:   Mon, 28 Aug 2023 13:16:30 +0800
+Subject: [PATCH v3] usb: typec: qcom: check regulator enable status before
+ disabling it
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/7] dt-bindings: crypto: qcom,prng: document SM8550
-Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230828-qcom-tcpc-v3-1-e95b7afa34d9@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAK4t7GQC/1WMyw7CIBBFf6VhLQYGaFpX/odxQQZqZ2EfUImm4
+ d+lTUzq8tzcc1YWfSAf2aVaWfCJIo1DAXWqGPZ2eHhOrjADAUo0AHzG8ckXnJA7LVujLdams6z
+ 8p+A7eu+t271wT3EZw2dPJ7mtv4o6VJLkkne2kVa0aIWpr/OLkAY8lwvbOgmOrj66UFzlXINKg
+ za1/ndzzl/z4Xkg4AAAAA==
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230824-topic-sm8550-rng-v2-0-dfcafbb16a3e@linaro.org>
- <20230824-topic-sm8550-rng-v2-5-dfcafbb16a3e@linaro.org>
-From:   Om Prakash Singh <quic_omprsing@quicinc.com>
-In-Reply-To: <20230824-topic-sm8550-rng-v2-5-dfcafbb16a3e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Ww5bTaZf9nD7crqVbWlYOoTfdOn5_Dmh
-X-Proofpoint-GUID: Ww5bTaZf9nD7crqVbWlYOoTfdOn5_Dmh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_02,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=759 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280047
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
+        subbaram@quicinc.com, Hui Liu <quic_huliu@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693200287; l=2740;
+ i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
+ bh=PhtbUNi497LxsIT+PR23WnfyXiZjybQwxlZzIfUUR5o=;
+ b=bCWEQzBXl080+WyLCKcjD4QwE7Jc4U3EfZtl4SMmaP4uobY/tBzbcihL2B/CSc8GrXaGvCs7L
+ oyP1VIASZIlCv9FXNhvkMmx5I99EYk1it1tDwbhIU6H6eFNX/h7KMBC
+X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
+ pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
+X-Endpoint-Received: by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
+X-Original-From: Hui Liu <quic_huliu@quicinc.com>
+Reply-To: <quic_huliu@quicinc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,11 +78,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Hui Liu <quic_huliu@quicinc.com>
 
+Check regulator enable status before disabling it to avoid
+unbalanced regulator disable warnings.
 
-On 8/24/2023 5:03 PM, Neil Armstrong wrote:
-> Document SM8550 compatible for the True Random Number Generator.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+---
+Changes in v3:
+- Take Bryan's proposal to remove enable/disable operation in pdphy
+enable and pdphy disable function, then enable regulator in pdphy start
+function and disable it in pdphy stop function.
+- Link to v2: https://lore.kernel.org/r/20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com
+
+Changes in v2:
+- Add Fixes tag
+- Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
+---
+ drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+index bb0b8479d80f..52c81378e36e 100644
+--- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
++++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+@@ -381,10 +381,6 @@ static int qcom_pmic_typec_pdphy_enable(struct pmic_typec_pdphy *pmic_typec_pdph
+ 	struct device *dev = pmic_typec_pdphy->dev;
+ 	int ret;
+ 
+-	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
+-	if (ret)
+-		return ret;
+-
+ 	/* PD 2.0, DR=TYPEC_DEVICE, PR=TYPEC_SINK */
+ 	ret = regmap_update_bits(pmic_typec_pdphy->regmap,
+ 				 pmic_typec_pdphy->base + USB_PDPHY_MSG_CONFIG_REG,
+@@ -422,8 +418,6 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
+ 	ret = regmap_write(pmic_typec_pdphy->regmap,
+ 			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
+ 
+-	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+-
+ 	return ret;
+ }
+ 
+@@ -447,6 +441,10 @@ int qcom_pmic_typec_pdphy_start(struct pmic_typec_pdphy *pmic_typec_pdphy,
+ 	int i;
+ 	int ret;
+ 
++	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
++	if (ret)
++		return ret;
++
+ 	pmic_typec_pdphy->tcpm_port = tcpm_port;
+ 
+ 	ret = pmic_typec_pdphy_reset(pmic_typec_pdphy);
+@@ -467,6 +465,8 @@ void qcom_pmic_typec_pdphy_stop(struct pmic_typec_pdphy *pmic_typec_pdphy)
+ 		disable_irq(pmic_typec_pdphy->irq_data[i].irq);
+ 
+ 	qcom_pmic_typec_pdphy_reset_on(pmic_typec_pdphy);
++
++	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+ }
+ 
+ struct pmic_typec_pdphy *qcom_pmic_typec_pdphy_alloc(struct device *dev)
+
+---
+base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
+change-id: 20230822-qcom-tcpc-d41954ac65fa
+
+Best regards,
+-- 
+Hui Liu <quic_huliu@quicinc.com>
+
