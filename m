@@ -2,136 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ADF78B54D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8692F78B554
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbjH1QYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 12:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
+        id S232348AbjH1QZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 12:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbjH1QXo (ORCPT
+        with ESMTP id S232392AbjH1QYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 12:23:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0180AD9;
-        Mon, 28 Aug 2023 09:23:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 93C90639B1;
-        Mon, 28 Aug 2023 16:23:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4153C433C7;
-        Mon, 28 Aug 2023 16:23:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693239821;
-        bh=K7533O2wMnAWID8cRz1Ud0yuXheJ3p6SvrbrA4sMl80=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=lvKl6WVZQwLS0054oeFCiCxJNxsyuh9RpWpTC8w0YpxrtwtXcb+UlOTbBz8GQ1JaI
-         WYPgW4iJuk1G470a+kVBz0ia1jsnWSBtyT497gl4GXJhkeuAAavXdQHXsqp7Ff/hVE
-         Wu9j8QIWtA/90ZiaWEz3lIiLkoeD737TgwBfsIIZt49bqPBOT6ztGiCVJrVHixGf76
-         mdLox/hMBorEW7NIP7Y47GKbl1TqvhNERPNlwi+9ygXpk0F+MN3KVTse10/maiYpOv
-         s1gm1+XADsU3llaVvN22x/NXUj6gLanm9DBqfmV5dZxgf3ReMlTx7DrTngncy3Ar5w
-         X8z9FJOYvaJgg==
-Date:   Mon, 28 Aug 2023 11:23:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        bhelgaas@google.com, koba.ko@canonical.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] PCI: Add helper to check if any of ancestor device
- support D3cold
-Message-ID: <20230828162338.GA753715@bhelgaas>
+        Mon, 28 Aug 2023 12:24:45 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D60FE3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 09:24:41 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bd0d19a304so18784681fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 09:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1693239879; x=1693844679;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OlldpTbanhBesa2HwgrYZTO2yCgVrupDnCjl8t+UIT0=;
+        b=fH3o2T8lRmzNqGEwHcJkF/eF6u8dFUHalpROE5gu+kpqL6koiK2lkRbB1Yv9Su3iWt
+         +BS6BT69PdKIkqrNExqwQ8927+OCo87CUjD/dOaBKHSkFTXpLDI2YF+5ujRo5Xz+3J3z
+         2EwNYeIGcP5qkjb63oxGwWwQzO27GQJnGO5tbkO94F1Zbi/nKLM0pJpCL84VKD4Vo4Pj
+         8e4msuNHzLYKvHj4YUD2eoojDwJN8nWX6V946jcSVbNNzHHRQ1oZMeJRGfcHjs+MwkRE
+         NTFTkW2zwLC+7LP2k2awqsWJr8WO2l4sdsgrXBt99cGSorsWlmlsXLjikPzSshcLJkTh
+         CBSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693239879; x=1693844679;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OlldpTbanhBesa2HwgrYZTO2yCgVrupDnCjl8t+UIT0=;
+        b=dI4+n2BmEZAZ2EBNXZUKSYfG+CeMkHFeFMQKM66gVK2TF2K7lmDiLC7qvFbh0KvPDr
+         kakWf+pZYiZs57YZuyws4PcyaNKTyMQsdQ31vBGIclPXRUBpaR10q0R/qsTVdiKq4fB7
+         B/lxdraZGIbZFK9Q3SyAUnhLC9oNnekWEs2SukuZtCCbH8i2JaUNfx+CbM5GsAjjeAea
+         AocKxDKhJXxozpcl0rBhXCPA2yEp8d48VNc4d9Qz3IHwccC7tYl7MAyVI4oFu4N9cdwK
+         UFMMVIr+tg5+edXCGyotxhBhxVjIWePinJTr6YvpOmGmELHfN00shWCxa+55x/SKG1om
+         5+9w==
+X-Gm-Message-State: AOJu0Yx2+bykiItSw6alWkioVsG//mEuGrADe1FNoi1JjO/5+sSYq2bL
+        ANnEY8YRd3WtHOJSgb0jvlN4nGbLub1aSMh5bOzAmQ==
+X-Google-Smtp-Source: AGHT+IGGDgol2nCV6HyRK80uVA5Lh6F2anWFcW9s8qh1HVDrHNl4x4LUfgUDyYqi39lcdoexD9CiBFHy6Uf6Yjf8Mdw=
+X-Received: by 2002:a05:651c:cf:b0:2bc:bdbd:1542 with SMTP id
+ 15-20020a05651c00cf00b002bcbdbd1542mr16880301ljr.11.1693239879310; Mon, 28
+ Aug 2023 09:24:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p6qOetGL8VrN8k42tkDksVRvNYAOirX0xbXoaUrJDPp+A@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230825231139.1145522-1-evan@rivosinc.com> <20230826-anguished-tutu-81d63b3081a7@spud>
+ <20230826-copper-suffocate-5f4f0e67f9a7@spud>
+In-Reply-To: <20230826-copper-suffocate-5f4f0e67f9a7@spud>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Mon, 28 Aug 2023 09:24:03 -0700
+Message-ID: <CALs-HsvwLpcUMPeKEs3ZW3tOwLGeGRQSe=grxE5L14Tj8b+XHw@mail.gmail.com>
+Subject: Re: [PATCH v5] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org,
+        Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 03:29:08PM +0800, Kai-Heng Feng wrote:
-> On Sat, Aug 26, 2023 at 9:11 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Fri, Aug 25, 2023 at 09:39:48AM +0300, Mika Westerberg wrote:
-> > > On Fri, Aug 25, 2023 at 01:43:08PM +0800, Kai-Heng Feng wrote:
-> > > > On Fri, Aug 25, 2023 at 1:29 PM Mika Westerberg
-> > > > <mika.westerberg@linux.intel.com> wrote:
-> > > > > On Thu, Aug 24, 2023 at 09:46:00PM +0800, Kai-Heng Feng wrote:
-> > > > > > On Thu, Aug 24, 2023 at 7:57 PM Mika Westerberg
-> > > > > > <mika.westerberg@linux.intel.com> wrote:
-> >
-> > > > I think what Bjorn suggested is to keep AER enabled for D3hot, and
-> > > > only disable it for D3cold and S3.
-> > > >
-> > > > > > Unless there are cases when device firmware behave differently to
-> > > > > > D3hot? Then maybe it's better to disable AER for both D3hot, D3cold
-> > > > > > and system S3.
-> > > > >
-> > > > > Yes, this makes sense.
-> > > >
-> > > > I agree that differentiate between D3hot and D3cold unnecessarily make
-> > > > things more complicated, but Bjorn suggested errors reported by AER
-> > > > under D3hot should still be recorded.
-> > > > Do you have more compelling data to persuade Bjorn that AER should be
-> > > > disabled for both D3 states?
+On Sat, Aug 26, 2023 at 2:56=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Sat, Aug 26, 2023 at 12:26:25AM +0100, Conor Dooley wrote:
+> > On Fri, Aug 25, 2023 at 04:11:38PM -0700, Evan Green wrote:
+> > > In /proc/cpuinfo, most of the information we show for each processor =
+is
+> > > specific to that hart: marchid, mvendorid, mimpid, processor, hart,
+> > > compatible, and the mmu size. But the ISA string gets filtered throug=
+h a
+> > > lowest common denominator mask, so that if one CPU is missing an ISA
+> > > extension, no CPUs will show it.
 > > >
-> > > Is there even an AER error that can happen when a device is in D3hot
-> > > (link is in L1) or D3cold (link is in L2/3)? I'm not an expert in AER
-> > > but AFAICT these errors are reported when the device is in active state
-> > > not when it is in low power state.
+> > > Now that we track the ISA extensions for each hart, let's report ISA
+> > > extension info accurately per-hart in /proc/cpuinfo. We cannot change
+> > > the "isa:" line, as usermode may be relying on that line to show only
+> > > the common set of extensions supported across all harts. Add a new "h=
+art
+> > > isa" line instead, which reports the true set of extensions for that
+> > > hart.
+> > >
+> > > Signed-off-by: Evan Green <evan@rivosinc.com>
+> > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 > >
-> > I don't think a device in D3cold can signal its own errors.  But the
-> > link transition to L2/L3 as a device goes to D3cold may cause the
-> > bridge above to log an error.  And of course a config access to a
-> > device in D3cold will probably result in an Unsupported Request being
-> > logged by the bridge above it.  I think these are the sorts of errors
-> > we do need to avoid or ignore somehow.
-> 
-> In addition to that, we can't really control what device behaves
-> during the D3hot (L2) transition.
-
-I don't think a link in L2 (main power off) can lead to a device in
-D3hot, can it?  I assume that a device in D3hot can be returned to D0
-by a config write to the PM CSR, and the link must be usable for that.
-
-> The kernel can't control what the firmware on the device may
-> respond.
-
-The kernel can't directly control the internal behavior of the device,
-but the behavior that's observable on the PCIe link should always
-conform to the spec.
-
-Do you see devices where a transition to D3hot may cause some kind of
-non-compliant behavior on the link?  If so, then I guess we have to
-consider whether to quirk them avoid D3hot completely or to work
-around it somehow.
-
-> > But Configuration and Message requests definitely happen in D3hot, and
-> > they can cause errors reported via AER.  The spec (r6.0, sec 2.2.8)
-> > recommends that Messages be handled the same in D0-D3hot.
+> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 > >
-> > PTM is an example of where we had errors being reported at suspend/
-> > resume because we had it configured incorrectly.  If we disabled AER
-> > in D3hot we might not learn about that kind of configuration problem.
-> > That's what makes me think there's some value in keeping AER enabled
-> > in D3hot.
-> 
-> In this particular case, the firmware of the device gets power cycled
-> and starts sending PTM because of that.
-> For this case, we want to know the error happens, but in the meantime
-> there's nothing much can be done.
+> > Can you drop this if you repost?
 
-So simply putting the device in D3hot restarts firmware on the device?
-And it starts sending PTM requests after the restart?  I *assume* that
-at least it only sends the PTM requests if the PTM Enable bit is set,
-right?  That shouldn't cause us trouble unless we configured something
-wrong.
+Will do.
 
-Bjorn
+> >
+> > > +"isa" vs "hart isa" lines in /proc/cpuinfo
+> > > +------------------------------------------
+> > > +
+> > > +The "isa" line in /proc/cpuinfo describes the lowest common denomina=
+tor of
+> > > +RISC-V ISA extensions recognized by the kernel and implemented on al=
+l harts. The
+> > > +"hart isa" line, in contrast, describes the set of extensions recogn=
+ized by the
+> > > +kernel on the particular hart being described, even if those extensi=
+ons may not
+> > > +be present on all harts in the system.
+> >
+> > > In both cases, the presence of a feature
+> > > +in these lines guarantees only that the hardware has the described c=
+apability.
+> > > +Additional kernel support or policy control changes may be required =
+before a
+> > > +feature is fully usable by userspace programs.
+> >
+> > I do not think that "in both cases" matches the expectations of
+> > userspace for the existing line. It's too late at night for me to think
+> > properly, but I think our existing implementation does work like you
+> > have documented for FD/V. I think I previously mentioned that it could
+> > misreport things for vector during the review of the vector series but
+> > forgot about it until now.
+>
+> I went and checked, and yes it does currently do that for vector. I
+> don't think that that is what userspace would expect, that Google
+> cpu_features project for example would draw incorrect conclusions.
+
+I'm lost, could you explain a little more? My goal was to say that
+there's no blanket guarantee that the feature is 100% ready to go for
+userspace just because it's seen here. For some extensions, it may in
+fact end up meaning just that (hence the "additional ... may be
+required" rather than "is required"). This is true for FD (maybe,
+depending on history?), or extensions whose minimal/zero kernel
+support was unconditionally added at the same time as its parsing for
+it. But it's not true solely by virtue of being in /proc/cpuinfo. In
+other words, I'm trying to establish the floor of what /proc/cpuinfo
+guarantees, without fully specifying the ceiling. Are you saying that
+we need to spell out the guarantees for each extension? Or are you
+saying the floor I've defined in general is incorrect or insufficient?
+I'm also open to direct suggestions of wording if you've got something
+in mind :)
+-Evan
