@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E808B78AB66
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067AA78ABC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbjH1KaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
+        id S231475AbjH1Keb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjH1K3x (ORCPT
+        with ESMTP id S231516AbjH1KeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:29:53 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CAAB9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:29:51 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a2185bd83cso392424466b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693218589; x=1693823389;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xgWbl8lPDl41Al6QpsrWevt2TQ1ACauu918bY4j1z+s=;
-        b=bb/1I8Sm+ca97kh3b6g55IZcyB3k/N69Wdcm6OZ5O2Yp8H5f9FhmL3lg+5jbnGhVbl
-         /aTvMBwbieOYKlVj7VqcD2DYvC/Sb2uwGOy52Nm81n7mWyAGe8wXxPHQY9cU7hRPbIgZ
-         IpSm/Fi+TSeUmBhFZyp6CFHKrjsAFb2MENhkXo9LmULlSXI5J7+G+/sCvPC5ghCRTq49
-         5w1GsbIl2CSHsNuFWTlUHtPXfRQMtfWXjbtOaG+rurF3wcLeDJkr8L8/hNiF7qn6jLGU
-         UVguUParRgO9JTc5Q9oAlvTZABJDhe+0Zu7M99q2cf4ckB/byeUUkDUQc4R8SQ8TUlaL
-         u/xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693218589; x=1693823389;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xgWbl8lPDl41Al6QpsrWevt2TQ1ACauu918bY4j1z+s=;
-        b=mEW1fc/aFBvsSZK8v+VzeVicox+mu2C2MQHhrKKx3xdsJ/X+N0NExDx8hOp8Tbw/8/
-         0LT/Y+4xstdr7iVpWVA45nznU8ZynzrI65XVFZJKYLUcnHPWqbuYcKvRidsvctbtkbsN
-         c7agGVjm50FkIJVZR0VvAFvQsHjwZlEvBzryeAyh6gebukfnnAcBejQIkOm7YBWzUS47
-         5dG3S/r0Xs9UiY0dUNPI086c5IHRAdOVC6He9BlxM60eWMIip1wGnNF/CQuOMl41a6tM
-         jmJeuFYy+u6vqg2JuVZOuasnZ1a/V3R/2bF4oyGOj1WoxgtoayMrzXXtZKtnkFDMHJPI
-         UlCA==
-X-Gm-Message-State: AOJu0YzC+Ny59L2HUfSzcRQV3GdLyCa0aEBj246WYqkpAfhZtyeXAp9r
-        6T2RhIto6MQxHmSObDOhiHfRNQ==
-X-Google-Smtp-Source: AGHT+IEvflAPEhQk9eVSwuVE3hLZKV3uv9/1Nn0BRVXbRA8n/i3Y6qZDfP5ehGeIoJ4+m69+C2I4Ug==
-X-Received: by 2002:a17:907:7897:b0:993:f15f:efb7 with SMTP id ku23-20020a170907789700b00993f15fefb7mr19814166ejc.8.1693218589623;
-        Mon, 28 Aug 2023 03:29:49 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.225])
-        by smtp.gmail.com with ESMTPSA id e5-20020a170906044500b0099b8234a9fesm4462264eja.1.2023.08.28.03.29.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 03:29:49 -0700 (PDT)
-Message-ID: <5cb45ff4-a279-f47e-8d2f-700856cdff0f@linaro.org>
-Date:   Mon, 28 Aug 2023 12:29:48 +0200
+        Mon, 28 Aug 2023 06:34:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FA9CFA;
+        Mon, 28 Aug 2023 03:33:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B44C263DB4;
+        Mon, 28 Aug 2023 10:33:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7914C433C7;
+        Mon, 28 Aug 2023 10:33:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693218820;
+        bh=tG5mfpmkIPqN8OZym996RruD3Ro6btaiwud1g/6/6xY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Crj7FBehCfST9kZRvUkQQE7rp2MoPZOaZ4eOwrUBNDD13LYwAOAGXuHuylBpRfKlc
+         /qSjoYVemGZvuYizN347tJmllNdNWsxRrdIlWNs33Ey6+b/OaGJjDDqJwSAFBivtIS
+         K1J4O52OoqCCV7WLC0Yv3lUJBhrbsN1j047nmGp+tEA4EqAmJ9OZDyAyqvbBfP9CS7
+         CLLIubcji5QLIwnnzyhmHtsOfIcCS+yn8Yj/XcO6INyXtIcFJkmPnO0dJtiiujE/An
+         JwRsZs2hQF/x8Mq6vDMuQha9iHkYleJP5ZATf897YEBHhbMDbf6Hday4azCKUrY6KW
+         6PnQ8SLbgX10A==
+Date:   Mon, 28 Aug 2023 11:33:58 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, lars@metafoo.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: iio: adc: Add TI TWL603X GPADC
+Message-ID: <20230828113358.3cf6f994@jic23-huawei>
+In-Reply-To: <84388311-c92c-812e-53bd-35daf8821a16@linaro.org>
+References: <20230820123229.530371-1-andreas@kemnade.info>
+        <84388311-c92c-812e-53bd-35daf8821a16@linaro.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] ARM: dts: qcom: sdx65: correct PCIe EP phy-names
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230827114519.48797-1-krzysztof.kozlowski@linaro.org>
- <1c2faca3-d10c-429e-961d-447ae076d319@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1c2faca3-d10c-429e-961d-447ae076d319@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 11:53, Konrad Dybcio wrote:
-> On 27.08.2023 13:45, Krzysztof Kozlowski wrote:
->> Qualcomm PCIe endpoint bindings expect phy-names to be "pciephy":
->>
->>   arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dtb: pcie-ep@1c00000: phy-names:0: 'pciephy' was expected
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
-> drivers/pci/controller/dwc/pcie-qcom-ep.c
-> 549:    pcie_ep->phy = devm_phy_optional_get(dev, "pciephy");
+On Sun, 20 Aug 2023 22:34:33 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+
+> On 20/08/2023 14:32, Andreas Kemnade wrote:
+> > Document TI TWL603X GPADC devicetree bindings.
+> > A driver is already there, the compatibles are used, but not documented.
+> > 
+> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> > ---  
 > 
-> welp looks like this never worked..
-
-And if only it could have been spotted with some automated tooling,
-before posting to LKML...
-
+> Please provide changelog after ---.
 > 
 > 
-> Fixes: 9c0bb38414a4 ("ARM: dts: qcom: sdx65: Add support for PCIe EP")
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> >  .../bindings/iio/adc/ti,twl6030-gpadc.yaml    | 45 +++++++++++++++++++
+> >  1 file changed, 45 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml b/Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml
+> > new file mode 100644
+> > index 000000000000..5b075237bcfd
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml
+> > @@ -0,0 +1,45 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/adc/ti,twl6030-gpadc.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: GPADC subsystem in the TWL6030 power module
+> > +
+> > +maintainers:
+> > +  - Andreas Kemnade <andreas@kemnade.info>
+> > +
+> > +description:
+> > +  The GPADC subsystem in the TWL603X consists of a 10-bit ADC
+> > +  combined with a 15-input analog multiplexer in the TWL6030 resp. a
+> > +  19-input analog muliplexer in the TWL6032.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - ti,twl6030-gpadc
+> > +      - ti,twl6032-gpadc
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  "#io-channel-cells":
+> > +    const: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - interrupts
+> > +  - "#io-channel-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    twl {  
+> 
+> Just skip the twl node. Anyway, the parent device binding should include
+> complete example.
+I tidied that up whilst applying.
+> 
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to poke at it.  I'll be rebasing once rc1 is out so until then I won't
+push this out as a branch linux-next will pick up.
 
+Thanks,
 
-Thanks
+Jonathan
 
-Best regards,
-Krzysztof
+> 
+> Best regards,
+> Krzysztof
+> 
 
