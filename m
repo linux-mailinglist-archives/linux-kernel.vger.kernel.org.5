@@ -2,117 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C307978A9FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F051478AA09
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbjH1KSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        id S230444AbjH1KSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbjH1KRh (ORCPT
+        with ESMTP id S231142AbjH1KSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:17:37 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB7519F
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:17:24 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68a56401b9aso2115910b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:17:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693217844; x=1693822644;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5eZsxRxv+CQTRUY7A/T7Jkd4dX0Ikc5XaKyAkP131uo=;
-        b=To/JKiCa2vTswPz+vcuEe9l1osMwbns2sF0xYnhfBBoe0lG5Z7w4ekpCaEmHlP/0Je
-         Iej4LW0sbaMP5RkUoW3mqytTouTf6mYvAAkMya4XQoqtZ7+LOH3Yv0OSIMt4lIdfJthY
-         EOBE1q69DG/phunf5iFI7y5aqs20Qc7M0YMsE/qEIdxaZxCZEa1V3YnXDHY6gsN2xqXl
-         yCorBOZ9MNrNWL71cv4UFotVAWaD7GcCdJ+387W6Uf4Br6fKgLKoGZH+wQm8utatzx+n
-         ZR/2s28mBVN6vJtLVnCtaXINLPwAxSZuwsyR9LbyrclQtH6eXb4W3oIPxrq+khYZ+Wxt
-         7YnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693217844; x=1693822644;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5eZsxRxv+CQTRUY7A/T7Jkd4dX0Ikc5XaKyAkP131uo=;
-        b=a7+AN9ZavRqIzpsTSukSeuVOplxyxO1+YZQxQz84qRg+jOGtQyO6sNILznXpYAtxCi
-         6YByXqqF9RKa7T8imUA+slfgExjj7woJBdZybkxXg6TFXpVyYr0BGnoYreYXk3UqJH/+
-         Vj5SWy5U+EnRDgrsQS+Xs8jzz4w2QPbyimhn4TaA4CzWVPdjuyfpmPUAErHkgY6bdbjA
-         3JEbcGVWJO8ACdC2+QIJME0O2RMFAx0XuAWJRMY2WOQwZfuxV/W/mWf5e345VdKrhxTU
-         j9WC/KNnFoPanwsu7r1V8j9+9g5TjjPbVnAkIQKaQWgaaE+Qy9mFNG1LjufsrsLTPTrt
-         J3Eg==
-X-Gm-Message-State: AOJu0YxufQ6Z9uXWikaG81vh/ArtyBlX4IPkLfoNAiaX2WoBoRmjEu6B
-        gk97Jtr8c++9ZRj0wJh/XC8Vt6Kus1pypjIfz4Q=
-X-Google-Smtp-Source: AGHT+IG5eYyKxQ7v4BeSYTP68ZLyOM0a+2UD6jhzG4o1aaQzmzh48JM6+NSHjC/PrFyhQzDxn0ocYQ==
-X-Received: by 2002:a05:6a20:2449:b0:13f:3d25:d83 with SMTP id t9-20020a056a20244900b0013f3d250d83mr24662771pzc.19.1693217844123;
-        Mon, 28 Aug 2023 03:17:24 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id t25-20020a63a619000000b0056da0ae25cdsm6984680pge.80.2023.08.28.03.17.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 03:17:23 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 15:47:21 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rafael@kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bbasu@nvidia.com
-Subject: Re: [Patch v2] cpufreq: tegra194: remove opp table in exit hook
-Message-ID: <20230828101721.zq5vlc53p5umi63c@vireshk-i7>
-References: <20230825111617.8069-1-sumitg@nvidia.com>
- <20230828061115.vsepgtexyv3hvffu@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828061115.vsepgtexyv3hvffu@vireshk-i7>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Mon, 28 Aug 2023 06:18:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF96410C
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:18:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38F3C637A9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:18:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06765C433C9;
+        Mon, 28 Aug 2023 10:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693217883;
+        bh=dVvlCsuqHs/FDM2YCp8Nbi6/Uaf43IJDOMx3x11Otys=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HWHyJfvTX4AN3/AcZOx+pxmdFvGag2ewwN4XjtjKnG//SRpHps6Jy1IitUB7XsBDg
+         LXIX0SuPxSkdJHH7N0ELPnb8Qr0X0hy5kdThMt08xKZ2N9eV9IFG1bAxDB0ebbTBRp
+         Wy51+J4e1NGv/NY3YeEhqSVSMw8qZ4/bgDLd6zbAiwXpSBzmqbjEZXJE4Nila9BIL7
+         nGW/H1Rh8YuW+ne7uzkMHMhNN402UdyloGk9e0C3ka5jTb1U4bjV3bB1/1o1Tarnyz
+         nNFgLCgvMozD0RnhBZBpKMcQ7yFy8Ak5Gt3tIbTw2ExZufA2fnjIPQ4kRP+K9F+9Ov
+         IQrOJXg6deTZw==
+Message-ID: <19ec033cd2489b6d03dc83c30de493e9.broonie@kernel.org>
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator updates for v6.6
+Date:   Mon, 28 Aug 2023 11:17:45 +0100
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        PP_MIME_FAKE_ASCII_TEXT,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-08-23, 11:41, Viresh Kumar wrote:
-> On 25-08-23, 16:46, Sumit Gupta wrote:
-> > Add exit hook and remove OPP table when the device gets unregistered.
-> > This will fix the error messages when the CPU FREQ driver module is
-> > removed and then re-inserted. It also fixes these messages while
-> > onlining the first CPU from a policy whose all CPU's were previously
-> > offlined.
-> > 
-> >  debugfs: File 'cpu5' in directory 'opp' already present!
-> >  debugfs: File 'cpu6' in directory 'opp' already present!
-> >  debugfs: File 'cpu7' in directory 'opp' already present!
-> > 
-> > Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
-> > Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> > ---
-> > 
-> > v1[1] -> v2:
-> > - updated commit description.
-> > 
-> > [1] https://lore.kernel.org/lkml/20230809153455.29056-1-sumitg@nvidia.com/
-> > 
-> >  drivers/cpufreq/tegra194-cpufreq.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> > 
-> > diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
-> > index c90b30469165..66a9c23544db 100644
-> > --- a/drivers/cpufreq/tegra194-cpufreq.c
-> > +++ b/drivers/cpufreq/tegra194-cpufreq.c
-> > @@ -454,6 +454,8 @@ static int tegra_cpufreq_init_cpufreq_table(struct cpufreq_policy *policy,
-> >  		if (ret < 0)
-> >  			return ret;
-> >  
-> > +		dev_pm_opp_put(opp);
-> > +
-> 
-> Missed this earlier, can you please do this in a separate patch please
-> ?
+The following changes since commit 2ccdd1b13c591d306f0401d98dedc4bdcd02b421:
 
-I have pushed rest of this commit and dropped this part. Send it
-separately. Thanks.
+  Linux 6.5-rc6 (2023-08-13 11:29:55 -0700)
 
--- 
-viresh
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v6.6
+
+for you to fetch changes up to b96c22476ff4bc3459933f87ba52cbb7910ffc6b:
+
+  regulator: userspace-consumer: Drop event support for this cycle (2023-08-24 23:58:34 +0100)
+
+----------------------------------------------------------------
+regulator: Updates for v6.6
+
+Other tha new device support and some minor fixes this has been a really
+quiet release, the only notable things are the new drivers.  There's a
+couple of MFDs among the new devices so the generic parts are pulled in:
+
+ - Support for Analog Devices MAX77831/57/59, Awinc AW37503, Qualcom
+   PMX75 and RFGEN, RealTek RT5733, RichTek RTQ2208 and Texas
+   Instruments TPS65086.
+
+----------------------------------------------------------------
+Alec Li (2):
+      regulator: aw37503: add regulator driver for Awinic AW37503
+      regulator: dt-bindings: Add Awinic AW37503
+
+Alina Yu (2):
+      regulator: dt-bindings: rtq2208: Add Richtek RTQ2208 SubPMIC
+      regulator: rtq2208: Add Richtek RTQ2208 SubPMIC driver
+
+Andre Werner (2):
+      mfd: tps65086: Read DEVICE ID register 1 from device
+      regulator: tps65086: Select dedicated regulator config for chip variant
+
+Arnd Bergmann (1):
+      regulator: max77857: mark more functions static
+
+Biju Das (6):
+      regulator: raa215300: Change the scope of the variables {clkin_name, xin_name}
+      regulator: raa215300: Fix resource leak in case of error
+      regulator: raa215300: Add const definition
+      regulator: raa215300: Change rate from 32000->32768
+      regulator: raa215300: Add missing blank space
+      regulator: raa215300: Update help description
+
+Chen Jiahao (7):
+      regulator: da9121-regulator: Remove redundant of_match_ptr() macros
+      regulator: lp87565: Remove redundant of_match_ptr() macros
+      regulator: hi6421: Remove redundant of_match_ptr() macros
+      regulator: mcp16502: Remove redundant of_match_ptr() macros
+      regulator: mpq7920: Remove redundant of_match_ptr() macro
+      regulator: pfuze100-regulator: Remove redundant of_match_ptr() macro
+      regulator: tps6286x-regulator: Remove redundant of_match_ptr() macros
+
+Chen-Yu Tsai (1):
+      regulator: Use bitfield values for range selectors
+
+ChiYuan Huang (2):
+      regulator: dt-bindings: rt5739: Add compatible for rt5733
+      regulator: rt5739: Add DID check and compatible for rt5733
+
+Christoph Niedermaier (1):
+      regulator: da9062: Make the use of IRQ optional
+
+Geert Uytterhoeven (1):
+      regulator: REGULATOR_QCOM_REFGEN should depend on ARCH_QCOM
+
+Konrad Dybcio (2):
+      dt-bindings: regulator: Describe Qualcomm REFGEN regulator
+      regulator: Introduce Qualcomm REFGEN regulator driver
+
+Krzysztof Kozlowski (10):
+      regulator: dt-bindings: mps,mpq7920: drop incorrect ref to regulator.yaml
+      regulator: dt-bindings: dlg,da9121: add buck2 constraints
+      regulator: dt-bindings: dlg,da9121: allow different names
+      regulator: dt-bindings: active-semi,act8846: correct supplies
+      regulator: dt-bindings: qcom,rpm: fix pattern for children
+      regulator: dt-bindings: add missing unevaluatedProperties for each regulator
+      regulator: dt-bindings: dlg,slg51000: Convert to DT schema
+      regulator: ltc3589: Fix Wvoid-pointer-to-enum-cast warning
+      regulator: max77857: Fix Wvoid-pointer-to-enum-cast warning
+      regulator: lp872x: Fix Wvoid-pointer-to-enum-cast warning
+
+Li Zetao (1):
+      regulator: qcom_rpm-regulator: Use devm_kmemdup to replace devm_kmalloc + memcpy
+
+Linus Walleij (10):
+      regulator: tps65910: Drop useless header
+      regulator: s2mpa01: Drop useless header
+      regulator: rpi-panel-attiny: Drop useless header
+      regulator: rc5t583: Drop useless header
+      regulator: mt6311: Drop useless header
+      regulator: mcp16502: Drop useless header
+      regulator: max20086: Drop useless header
+      regulator: lp8755: Drop useless header
+      regulator: bd71828: Drop useless header
+      regulator: bd71815: Drop useless header
+
+Mark Brown (11):
+      Qualcomm REFGEN regulator
+      Add compatible support for RT5733
+      Add regulators support for PMX75
+      regulator: Merge up fixes from mainline
+      regulator: Merge up fixes from Linus' tree
+      Add Richtek RTQ2208 SubPMIC support
+      regulator: Get Synquacer testing working
+      trivial fixes for raa215300 driver
+      regulator: Merge dependency for tps65086
+      regulator: aw37503: add regulator driver for Awinic
+      regulator: userspace-consumer: Drop event support for this cycle
+
+Naresh Solanki (2):
+      regulator: userspace-consumer: Add regulator event support
+      regulator: max5970: Rename driver and remove wildcard
+
+Neil Armstrong (1):
+      dt-bindings: regulator: qcom,rpmh-regulator: allow i, j, l, m & n as RPMh resource name suffix
+
+Okan Sahin (2):
+      regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator Support
+      regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator bindings
+
+Rob Herring (1):
+      regulator: Explicitly include correct DT includes
+
+Rohit Agarwal (3):
+      regulator: dt-bindings: qcom,rpmh: Update PMX65 entry
+      regulator: dt-bindings: qcom,rpmh: Add PMX75 compatible
+      regulator: qcom-rpmh: Add regulators support for PMX75
+
+Ruan Jinjie (1):
+      regulator: rpi-panel-attiny-regulator: Remove redundant of_match_ptr()
+
+Uwe Kleine-König (5):
+      regulator: raa215300: Switch back to use struct i2c_driver::probe
+      regulator: max77857: Switch back to use struct i2c_driver's .probe()
+      regulator: max8893: Drop "_new" from probe callback
+      regulator: rtq2208: Switch back to use struct i2c_driver's .probe()
+      regulator: aw37503: Switch back to use struct i2c_driver's .probe()
+
+Yang Li (1):
+      regulator: Remove duplicated include in mt6359-regulator.c
+
+Yang Yingliang (2):
+      regulator: max77857: change some variables to static
+      regulator: max77857: fix build error in max77857-regulator.c
+
+Yue Haibing (1):
+      regulator: db8500-prcmu: Remove unused declaration power_state_active_is_enabled()
+
+ .../bindings/regulator/active-semi,act8846.yaml    |  74 +--
+ .../bindings/regulator/adi,max77857.yaml           |  86 +++
+ .../bindings/regulator/awinic,aw37503.yaml         |  78 +++
+ .../devicetree/bindings/regulator/dlg,da9121.yaml  |  22 +-
+ .../bindings/regulator/dlg,slg51000.yaml           | 132 +++++
+ .../devicetree/bindings/regulator/mps,mp5416.yaml  |   2 +
+ .../devicetree/bindings/regulator/mps,mpq7920.yaml |   3 +-
+ .../devicetree/bindings/regulator/pfuze100.yaml    |   4 +
+ .../bindings/regulator/qcom,rpm-regulator.yaml     |   2 +-
+ .../bindings/regulator/qcom,rpmh-regulator.yaml    |  26 +-
+ .../regulator/qcom,sdm845-refgen-regulator.yaml    |  57 ++
+ .../bindings/regulator/qcom,smd-rpm-regulator.yaml |   1 +
+ .../regulator/richtek,rt4831-regulator.yaml        |   1 +
+ .../bindings/regulator/richtek,rt5739.yaml         |   1 +
+ .../regulator/richtek,rtmv20-regulator.yaml        |   1 +
+ .../bindings/regulator/richtek,rtq2208.yaml        | 197 +++++++
+ .../regulator/richtek,rtq6752-regulator.yaml       |   1 +
+ .../devicetree/bindings/regulator/slg51000.txt     |  88 ----
+ .../bindings/regulator/st,stm32mp1-pwr-reg.yaml    |   2 +-
+ .../devicetree/bindings/regulator/wlf,arizona.yaml |   2 +
+ MAINTAINERS                                        |   2 +-
+ drivers/mfd/tps65086.c                             |  17 +-
+ drivers/regulator/Kconfig                          |  53 +-
+ drivers/regulator/Makefile                         |   6 +-
+ drivers/regulator/act8945a-regulator.c             |   2 +-
+ drivers/regulator/atc260x-regulator.c              |   7 +-
+ drivers/regulator/aw37503-regulator.c              | 240 +++++++++
+ drivers/regulator/axp20x-regulator.c               |   1 -
+ drivers/regulator/bd71815-regulator.c              |   1 -
+ drivers/regulator/bd71828-regulator.c              |   1 -
+ drivers/regulator/bd718x7-regulator.c              |  22 +-
+ drivers/regulator/cpcap-regulator.c                |   2 +-
+ drivers/regulator/da9062-regulator.c               |  11 +-
+ drivers/regulator/da9121-regulator.c               |  18 +-
+ drivers/regulator/fan53555.c                       |   2 +-
+ drivers/regulator/fixed.c                          |   1 -
+ drivers/regulator/helpers.c                        |  15 +-
+ drivers/regulator/hi6421-regulator.c               |  20 +-
+ drivers/regulator/lp872x.c                         |   2 +-
+ drivers/regulator/lp8755.c                         |   1 -
+ drivers/regulator/lp87565-regulator.c              |   4 +-
+ drivers/regulator/ltc3589.c                        |   4 +-
+ drivers/regulator/max20086-regulator.c             |   1 -
+ .../{max597x-regulator.c => max5970-regulator.c}   |  28 +-
+ drivers/regulator/max77541-regulator.c             |   6 +-
+ drivers/regulator/max77650-regulator.c             |   2 +-
+ drivers/regulator/max77826-regulator.c             |   1 -
+ drivers/regulator/max77857-regulator.c             | 461 ++++++++++++++++
+ drivers/regulator/max8893.c                        |   4 +-
+ drivers/regulator/mcp16502.c                       |   7 +-
+ drivers/regulator/mp5416.c                         |   2 +-
+ drivers/regulator/mp886x.c                         |   2 +-
+ drivers/regulator/mpq7920.c                        |   3 +-
+ drivers/regulator/mt6311-regulator.c               |   1 -
+ drivers/regulator/mt6315-regulator.c               |   2 +-
+ drivers/regulator/mt6359-regulator.c               |   2 +-
+ drivers/regulator/mtk-dvfsrc-regulator.c           |   3 +-
+ drivers/regulator/pbias-regulator.c                |   1 -
+ drivers/regulator/pca9450-regulator.c              |   1 -
+ drivers/regulator/pfuze100-regulator.c             |   3 +-
+ drivers/regulator/pwm-regulator.c                  |   2 +-
+ drivers/regulator/qcom-refgen-regulator.c          | 154 ++++++
+ drivers/regulator/qcom-rpmh-regulator.c            |  39 +-
+ drivers/regulator/qcom_rpm-regulator.c             |   3 +-
+ drivers/regulator/qcom_smd-regulator.c             |   1 -
+ drivers/regulator/qcom_usb_vbus-regulator.c        |   1 -
+ drivers/regulator/raa215300.c                      |  38 +-
+ drivers/regulator/rc5t583-regulator.c              |   1 -
+ drivers/regulator/rk808-regulator.c                |   3 +-
+ drivers/regulator/rohm-regulator.c                 |   2 +-
+ drivers/regulator/rpi-panel-attiny-regulator.c     |   3 +-
+ drivers/regulator/rt5739.c                         |  36 +-
+ drivers/regulator/rt5759-regulator.c               |   2 +-
+ drivers/regulator/rtq2208-regulator.c              | 583 +++++++++++++++++++++
+ drivers/regulator/s2mpa01.c                        |   1 -
+ drivers/regulator/stm32-pwr.c                      |   3 +-
+ drivers/regulator/stm32-vrefbuf.c                  |   2 +-
+ drivers/regulator/sy8824x.c                        |   2 +-
+ drivers/regulator/sy8827n.c                        |   2 +-
+ drivers/regulator/tps6286x-regulator.c             |   8 +-
+ drivers/regulator/tps6287x-regulator.c             |   6 +-
+ drivers/regulator/tps65086-regulator.c             | 188 ++++++-
+ drivers/regulator/tps65218-regulator.c             |   2 +-
+ drivers/regulator/tps65219-regulator.c             |   2 +-
+ drivers/regulator/tps65910-regulator.c             |   1 -
+ drivers/regulator/tps6594-regulator.c              |   2 +-
+ drivers/regulator/twl-regulator.c                  |   1 -
+ drivers/regulator/twl6030-regulator.c              |   1 -
+ drivers/regulator/uniphier-regulator.c             |   2 +-
+ drivers/regulator/vctrl-regulator.c                |   2 +-
+ drivers/regulator/vexpress-regulator.c             |   3 +-
+ include/linux/mfd/tps65086.h                       |  23 +-
+ include/linux/regulator/db8500-prcmu.h             |   6 -
+ include/linux/regulator/driver.h                   |  11 +-
+ 94 files changed, 2531 insertions(+), 347 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/adi,max77857.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/dlg,slg51000.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/qcom,sdm845-refgen-regulator.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rtq2208.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/slg51000.txt
+ create mode 100644 drivers/regulator/aw37503-regulator.c
+ rename drivers/regulator/{max597x-regulator.c => max5970-regulator.c} (94%)
+ create mode 100644 drivers/regulator/max77857-regulator.c
+ create mode 100644 drivers/regulator/qcom-refgen-regulator.c
+ create mode 100644 drivers/regulator/rtq2208-regulator.c
