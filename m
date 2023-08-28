@@ -2,168 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE6578A498
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAA878A49F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbjH1CZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        id S229755AbjH1C0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjH1CZZ (ORCPT
+        with ESMTP id S229480AbjH1C0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:25:25 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB45D8;
-        Sun, 27 Aug 2023 19:25:23 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so5695835a12.1;
-        Sun, 27 Aug 2023 19:25:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693189521; x=1693794321;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3uCqSe5BtqveCUXWZraiTGYO03+jzgwg7ae/wj5X+p4=;
-        b=Rs3o3lwnQlpCEgSLIhsuXQgDmYUY4nedQrR0H5FZ8oTW0MZRjTIwXBAPZ+XJu3G+TE
-         5KjGSKsVuufTscOJKZYMJ0KS9kzz7Xyep4wKl3+TVKixZzHm9nNNmppNSYgB6pYYp8wo
-         2RELcBP24h5WR7o6jlsDO44dmgK9Rx1V/rHeb5kqpg0aMZd+1c1fYnPO/kg2TIDgRiRO
-         F6FsxT3p+yiDRZpYEihMKhJw4/CBMdGfU1djfnZwE5niVYTe2vjJramAzelc7971T3gV
-         Ybsa3YcfCZr8kK6KmUBRZmdwfO/lSvmWuPcvibJK6pARqe0eHe8I8aasMcaQku+BGBpB
-         lOuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693189521; x=1693794321;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3uCqSe5BtqveCUXWZraiTGYO03+jzgwg7ae/wj5X+p4=;
-        b=loty176zXbuvP1FUdD2B1stkbLL0mY3Dp6/W4Dax59XfsQIx9KI1fvl9Hd7v+U2zf3
-         P5Fk3eLauCjbOUumb7/uU20oDfsC/Rn0Rf9JljhIGe2W/OiM/omjVV56GHMV6xMmEWKL
-         SV2fNBvmNVUID61rZ+5ruB2P9x5KsYHtRrTSadHXVt6vbAQe8IWkknhgtVgLMtsr38EC
-         5dhc9UBJhfUxJT1qYMEKMcu33YSXJkaqjdPAA57DTpDY96eQe6Y/MYchMKv3pN+LqJHz
-         hdYEJ/dfymUli/75E/ZVZL+JPXNj+ijGCWClZh8Bk5+uVK6+Ukmjr8F6ws2ABrte6NCY
-         p99Q==
-X-Gm-Message-State: AOJu0Yz1xr+hAK7NfWqvF5uvLyHKF8bW4Kp6Mj5Qm694KGyr9FizFjTB
-        gg4tjUhVhK5s+Wt07EC2zMKTt8a74NLbJ1xce98=
-X-Google-Smtp-Source: AGHT+IFjV4c6iPT2oORQcm92nmX2L7ZxJD/Ip41JWUNWiITPNAyX6af0+kocn3phLX4sb40+kQJXCmdDRW8aRdq8dR4=
-X-Received: by 2002:a05:6402:d56:b0:525:4d74:be8c with SMTP id
- ec22-20020a0564020d5600b005254d74be8cmr21355835edb.14.1693189521348; Sun, 27
- Aug 2023 19:25:21 -0700 (PDT)
+        Sun, 27 Aug 2023 22:26:04 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B190D8
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 19:26:00 -0700 (PDT)
+Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RYvTT3J09zNnGr;
+        Mon, 28 Aug 2023 10:22:21 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 28 Aug 2023 10:25:57 +0800
+From:   Tong Tiangen <tongtiangen@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        <wangkefeng.wang@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Tong Tiangen <tongtiangen@huawei.com>
+Subject: [PATCH v3] mm: memory-failure: use rcu lock instead of tasklist_lock when collect_procs()
+Date:   Mon, 28 Aug 2023 10:25:27 +0800
+Message-ID: <20230828022527.241693-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230822082750.27633-1-yu.tu@amlogic.com> <70b3ba82-0920-4613-9480-919a3df6833c@linux.com>
-In-Reply-To: <70b3ba82-0920-4613-9480-919a3df6833c@linux.com>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Mon, 28 Aug 2023 10:24:45 +0800
-Message-ID: <CAJhJPsWASjw-QiTocaJZCF5HYHUnF7xVf-o7Ohj0Mgjq0OpsLA@mail.gmail.com>
-Subject: Re: [PATCH V10 0/4] Add S4 SoC PLLs and Peripheral clock
-To:     Lucas Tanure <tanure@linux.com>
-Cc:     Yu Tu <yu.tu@amlogic.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        kelvin.zhang@amlogic.com, qi.duan@amlogic.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 1:34=E2=80=AFAM Lucas Tanure <tanure@linux.com> wro=
-te:
->
-> On 22-08-2023 09:27, Yu Tu wrote:
-> > 1. Add S4 SoC PLLs and Peripheral clock controller dt-bindings.
-> > 2. Add PLLs and Peripheral clock controller driver for S4 SOC.
-> >
-> >
-> > Yu Tu (4):
-> >    dt-bindings: clock: document Amlogic S4 SoC PLL clock controller
-> >    dt-bindings: clock: document Amlogic S4 SoC peripherals clock
-> >      controller
-> >    clk: meson: S4: add support for Amlogic S4 SoC PLL clock driver
-> >    clk: meson: S4: add support for Amlogic S4 SoC peripheral clock
-> >      controller
-> >
-> > V9 -> V10:
-> > 1. Change the relevant S4 CLK patch based on Neil's recently modified
-> > patch.
-> > 2. Change patch 0003/0004 clocks comment, format and clock flags sugges=
-ted
-> > by Jerome.
-> >
-> > V8 -> V9: Add patch 0001/0002 dt-bindings tag. Suggested by Krzysztof.
-> > V7 -> V8:
-> > 1. Change patch 0001/0002 dt-bindings title description, remove "meson"=
-.
-> > Suggested by Dmitry, Neil.
-> > 2. Change patch 0003/0004 clocks comment, format and clock flags sugges=
-ted by
-> > Dmitry, Neil, Jerome.
-> >
-> > V6 -> V7: Change send patch series as well change format and clock flag=
-s
-> > suggested by Jerome. Change dt-bindings suggested by Krzysztof.
-> > V5 -> V6: Change send patch series, as well change format and clock fla=
-gs.
-> > V4 -> V5: change format and clock flags and adjust the patch series
-> > as suggested by Jerome.
-> > V3 -> V4: change format and clock flags.
-> > V2 -> V3: Use two clock controller.
-> > V1 -> V2: Change format as discussed in the email.
-> >
-> > Link:https://lore.kernel.org/linux-amlogic/20230517070215.28463-1-yu.tu=
-@amlogic.com/
-> >
-> >   .../clock/amlogic,s4-peripherals-clkc.yaml    |   96 +
-> >   .../bindings/clock/amlogic,s4-pll-clkc.yaml   |   49 +
-> >   drivers/clk/meson/Kconfig                     |   23 +
-> >   drivers/clk/meson/Makefile                    |    2 +
-> >   drivers/clk/meson/s4-peripherals.c            | 3787 ++++++++++++++++=
-+
-> >   drivers/clk/meson/s4-peripherals.h            |   57 +
-> >   drivers/clk/meson/s4-pll.c                    |  867 ++++
-> >   drivers/clk/meson/s4-pll.h                    |   38 +
-> >   .../clock/amlogic,s4-peripherals-clkc.h       |  236 +
-> >   .../dt-bindings/clock/amlogic,s4-pll-clkc.h   |   43 +
-> >   10 files changed, 5198 insertions(+)
-> >   create mode 100644 Documentation/devicetree/bindings/clock/amlogic,s4=
--peripherals-clkc.yaml
-> >   create mode 100644 Documentation/devicetree/bindings/clock/amlogic,s4=
--pll-clkc.yaml
-> >   create mode 100644 drivers/clk/meson/s4-peripherals.c
-> >   create mode 100644 drivers/clk/meson/s4-peripherals.h
-> >   create mode 100644 drivers/clk/meson/s4-pll.c
-> >   create mode 100644 drivers/clk/meson/s4-pll.h
-> >   create mode 100644 include/dt-bindings/clock/amlogic,s4-peripherals-c=
-lkc.h
-> >   create mode 100644 include/dt-bindings/clock/amlogic,s4-pll-clkc.h
-> >
-> >
-> > base-commit: bd0f6c57c2b324b6f92ccfe13a8005ff829287b8
-> How similar is T7 and S4 regarding the clocks?
-> Can S4 clock driver be used by T7 without modifications?
->
-Unfortunately not.
-But don't worry! The T7 clock driver is coming soon.
+We found a softlock issue in our test, analyzed the logs, and found that
+the relevant CPU call trace as follows:
 
-> Thanks
-> Lucas
+CPU0:
+  _do_fork
+    -> copy_process()
+      -> write_lock_irq(&tasklist_lock)  //Disable irq,waiting for
+      					 //tasklist_lock
 
+CPU1:
+  wp_page_copy()
+    ->pte_offset_map_lock()
+      -> spin_lock(&page->ptl);        //Hold page->ptl
+    -> ptep_clear_flush()
+      -> flush_tlb_others() ...
+        -> smp_call_function_many()
+          -> arch_send_call_function_ipi_mask()
+            -> csd_lock_wait()         //Waiting for other CPUs respond
+	                               //IPI
 
+CPU2:
+  collect_procs_anon()
+    -> read_lock(&tasklist_lock)       //Hold tasklist_lock
+      ->for_each_process(tsk)
+        -> page_mapped_in_vma()
+          -> page_vma_mapped_walk()
+	    -> map_pte()
+              ->spin_lock(&page->ptl)  //Waiting for page->ptl
 
---=20
-Best regards,
+We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
+unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
+softlockup is triggered.
 
-Keguang Zhang
+For collect_procs_anon(), what we're doing is task list iteration, during
+the iteration, with the help of call_rcu(), the task_struct object is freed
+only after one or more grace periods elapse. the logic as follows:
+
+release_task()
+  -> __exit_signal()
+    -> __unhash_process()
+      -> list_del_rcu()
+
+  -> put_task_struct_rcu_user()
+    -> call_rcu(&task->rcu, delayed_put_task_struct)
+
+delayed_put_task_struct()
+  -> put_task_struct()
+  -> if (refcount_sub_and_test())
+     	__put_task_struct()
+          -> free_task()
+
+Therefore, under the protection of the rcu lock, we can safely use
+get_task_struct() to ensure a safe reference to task_struct during the
+iteration.
+
+By removing the use of tasklist_lock in task list iteration, we can break
+the softlock chain above.
+
+The same logic can also be applied to:
+ - collect_procs_file()
+ - collect_procs_fsdax()
+ - collect_procs_ksm()
+
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+---
+Since v2:
+ - 1. According to the analysis of Naoya，Matthew and Kefeng，update
+      the commit message.
+
+Since v1:
+ - 1. According to Matthew's suggestion, only the comments of
+      find_early_kill_thread() are modified, no need to hold the rcu lock.
+
+Changes since RFC[1]:
+ - 1. According to Naoya's suggestion, modify the tasklist_lock in the
+      comment about locking order in mm/filemap.c.
+ - 2. According to Kefeng's suggestion, optimize the implementation of
+      find_early_kill_thread() without functional changes.
+ - 3. Modify the title description.
+
+[1] https://lore.kernel.org/lkml/20230815130154.1100779-1-tongtiangen@huawei.com/
+---
+ mm/filemap.c        |  3 ---
+ mm/ksm.c            |  4 ++--
+ mm/memory-failure.c | 16 ++++++++--------
+ 3 files changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 014b73eb96a1..dfade1ef1765 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -121,9 +121,6 @@
+  *    bdi.wb->list_lock		(zap_pte_range->set_page_dirty)
+  *    ->inode->i_lock		(zap_pte_range->set_page_dirty)
+  *    ->private_lock		(zap_pte_range->block_dirty_folio)
+- *
+- * ->i_mmap_rwsem
+- *   ->tasklist_lock            (memory_failure, collect_procs_ao)
+  */
+ 
+ static void page_cache_delete(struct address_space *mapping,
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 8d6aee05421d..981af9c72e7a 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -2925,7 +2925,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
+ 		struct anon_vma *av = rmap_item->anon_vma;
+ 
+ 		anon_vma_lock_read(av);
+-		read_lock(&tasklist_lock);
++		rcu_read_lock();
+ 		for_each_process(tsk) {
+ 			struct anon_vma_chain *vmac;
+ 			unsigned long addr;
+@@ -2944,7 +2944,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
+ 				}
+ 			}
+ 		}
+-		read_unlock(&tasklist_lock);
++		rcu_read_unlock();
+ 		anon_vma_unlock_read(av);
+ 	}
+ }
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 7b01fffe7a79..4d6e43c88489 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -547,8 +547,8 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
+  * on behalf of the thread group. Return task_struct of the (first found)
+  * dedicated thread if found, and return NULL otherwise.
+  *
+- * We already hold read_lock(&tasklist_lock) in the caller, so we don't
+- * have to call rcu_read_lock/unlock() in this function.
++ * We already hold rcu lock in the caller, so we don't have to call
++ * rcu_read_lock/unlock() in this function.
+  */
+ static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
+ {
+@@ -609,7 +609,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+ 		return;
+ 
+ 	pgoff = page_to_pgoff(page);
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 	for_each_process(tsk) {
+ 		struct anon_vma_chain *vmac;
+ 		struct task_struct *t = task_early_kill(tsk, force_early);
+@@ -626,7 +626,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+ 			add_to_kill_anon_file(t, page, vma, to_kill);
+ 		}
+ 	}
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	anon_vma_unlock_read(av);
+ }
+ 
+@@ -642,7 +642,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+ 	pgoff_t pgoff;
+ 
+ 	i_mmap_lock_read(mapping);
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 	pgoff = page_to_pgoff(page);
+ 	for_each_process(tsk) {
+ 		struct task_struct *t = task_early_kill(tsk, force_early);
+@@ -662,7 +662,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+ 				add_to_kill_anon_file(t, page, vma, to_kill);
+ 		}
+ 	}
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	i_mmap_unlock_read(mapping);
+ }
+ 
+@@ -685,7 +685,7 @@ static void collect_procs_fsdax(struct page *page,
+ 	struct task_struct *tsk;
+ 
+ 	i_mmap_lock_read(mapping);
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 	for_each_process(tsk) {
+ 		struct task_struct *t = task_early_kill(tsk, true);
+ 
+@@ -696,7 +696,7 @@ static void collect_procs_fsdax(struct page *page,
+ 				add_to_kill_fsdax(t, page, vma, to_kill, pgoff);
+ 		}
+ 	}
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	i_mmap_unlock_read(mapping);
+ }
+ #endif /* CONFIG_FS_DAX */
+-- 
+2.25.1
+
