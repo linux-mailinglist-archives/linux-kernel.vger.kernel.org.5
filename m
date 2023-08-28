@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C07B78B88C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4121578B88E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbjH1TkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 15:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S232700AbjH1TlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 15:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbjH1TkE (ORCPT
+        with ESMTP id S233289AbjH1Tky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 15:40:04 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62493BD;
-        Mon, 28 Aug 2023 12:40:02 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BD97C4E6;
-        Mon, 28 Aug 2023 21:38:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693251519;
-        bh=uyU5P7l+Uc9Xf7leo9hwYxaSLRa+AJYCSjIR5O3oH8o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lUEi2893N1qz5CCXqeAj7jRCEwftVYAgEVD9qPBWFNZu3S3C4FJvSQ9zxuZ0oaPFS
-         rDU5OiqDXuJaRUMSzOkScqyWY29q1+zGwpWcOoS0LJNo5Ci/IwUNb5BGeOMhIpLfw4
-         Fa8P4Gnmz/GUySfk4jxr1Z1ugsriayXXewcdBhao=
-Date:   Mon, 28 Aug 2023 22:40:10 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 07/15] media: qcom: camss: Capture VFE CSID dependency
- in a helper function
-Message-ID: <20230828194010.GF17083@pendragon.ideasonboard.com>
-References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
- <20230823104444.1954663-8-bryan.odonoghue@linaro.org>
- <20230828184716.GM14596@pendragon.ideasonboard.com>
- <9fb41649-b4fb-d652-3207-7c8ff8b32f24@linaro.org>
+        Mon, 28 Aug 2023 15:40:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E392C124
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:40:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 79749644A1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:40:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94338C433C7;
+        Mon, 28 Aug 2023 19:40:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693251650;
+        bh=yS/x4S3B0SAE5WxEAeTZKQjfCSYVYBosMEntmMa+VI8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jImMnye5gpm7ZO4ZaxCapaI/8gtOFPHtHJ3agla8hS7pT1PVMw3pEn0/vy1SRG/5Y
+         YWk9xZM0L3EITRbgp2k6ISva7Gik/vxeXKkuxkZcePBR3C2iKv7i0KtQehtFdIdrNp
+         NAGEnplyMNQ0PxGrYHFdKYv97Uk56mdYcYtHHqXW3IQ4EYo3kYQWoFHD/edHAx7vJK
+         xgfISi9apw9LQ/z+m8Hi55WPSDfQYkHFp4UHhlN4ORu4PStJ7TvmsuvuYZQTgWN+QE
+         6Wm0U/Yp0zScf2bIFldUuUDoMbXXaBsqt/sd269PcZey2emu4D75OJZScKAqBJFljY
+         Ghxp56ko0c/7Q==
+Date:   Mon, 28 Aug 2023 12:40:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexandra Diupina <adiupina@astralinux.ru>
+Cc:     Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] idt77252: remove check of idt77252_init_ubr() return
+ value
+Message-ID: <20230828124049.6bec893f@kernel.org>
+In-Reply-To: <20230828143646.8835-1-adiupina@astralinux.ru>
+References: <20230828143646.8835-1-adiupina@astralinux.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9fb41649-b4fb-d652-3207-7c8ff8b32f24@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 08:37:44PM +0100, Bryan O'Donoghue wrote:
-> On 28/08/2023 19:47, Laurent Pinchart wrote:
-> > Hi Bryan,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Wed, Aug 23, 2023 at 11:44:36AM +0100, Bryan O'Donoghue wrote:
-> >>  From sdm845 onwards we need to ensure the VFE is powered on prior to
-> >> switching on the CSID.
-> > 
-> > Based on the discussions with Konrad in the mail thread, I would record
-> > here the reason for this requirement.
-> > 
-> > What happens if you unconditionally power up the VFE prior to switching
-> > the CSID on ? Will this break something on platforms older than SDM845 ?
+On Mon, 28 Aug 2023 17:36:46 +0300 Alexandra Diupina wrote:
+> idt77252_init_ubr() always returns 0, so it is possible
+> to remove check of its return value
 > 
-> vfe->power_count will bump and you will be fine.
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 2dde18cd1d8f ("Linux 6.5")
 
-Then maybe that would be a simpler solution than having a
-device-specific power sequence ?
+How is this a fix and if it was how could the release tag possibly have
+caused the issue?
 
+I think this is pointless churn, unless the error handling is buggy
+in itself you should leave this code be.
 -- 
-Regards,
-
-Laurent Pinchart
+pw-bot: reject
