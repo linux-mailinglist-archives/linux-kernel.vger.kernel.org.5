@@ -2,72 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D23478AB43
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1609F78AB4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbjH1K3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
+        id S231366AbjH1K3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbjH1K3V (ORCPT
+        with ESMTP id S231420AbjH1K3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:29:21 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E81AB;
-        Mon, 28 Aug 2023 03:29:19 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d77f614243aso2904269276.0;
-        Mon, 28 Aug 2023 03:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693218558; x=1693823358;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=rfuWXr9RYqSTqpdcnXC8wIF8SIgW9XCso4FybJhi+1f8rlYX3lS9xSfuQ5GS6kGWv6
-         cUqbOF+ILTK56ca6scH5XkOUa6qAh0lGMnhAdT/HjK6VNShySApPGXxTSX1AXDr4b4zW
-         QcLxlz8dRwHlKQ0sboX4/Ux2SC9QNtcuIVudhSTewpVWe0MzdMgHElj+sL6L18gMCBN2
-         ntWHVhDEMYxjrBew11z6qQYrt18Vm9WRNlUEOetv6e6iskK3x83zw4gOarvmxpO1fYjQ
-         wxCZy2KOjvjVFgR6gQ4gjHpwdoEPQ1FKsbfZICoJfC5uSFnA1lEIGCxOnMyhcLiXNK+j
-         fumw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693218558; x=1693823358;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=AjSrF9zawkQzdKiP1xwm7Kb0crLCoB7G/zBYa8UI6I/i+W95dfNyHd4Z70XPBQvvVA
-         J2ZFF5R9NikdvkR4nkYWXhUlayxDrcXVDhPVkj4in8qhL+EGQIuMJDbh8MSk7Dbsc8Wt
-         BTQUGh/nRSnRVuFMep21KqnL1SxN5YZKQ6s2k3FIKF2ue7KuFNo3RfLOWHhC9Ag5xDSF
-         GudWsJrhOI135mY6huB+CZQYylahHOYdWuMmFns85YZVMMxWe+jY6BqsvZFtOEQrtxcH
-         XpZgwQctzh+PrGfiV34DiusIVxR9CCLKeMDT697jJP+zzXScKGxsYlXbYaj9DijUa9HQ
-         /iKA==
-X-Gm-Message-State: AOJu0YzUF7Oc2bYv58odQGNwDmX7O1G7UoJ4EZmFWuSZCTAnbk4yNEnH
-        pgZKJVLw6LLramTB6bNuLS3Su9VPBvcpjdWDvgg=
-X-Google-Smtp-Source: AGHT+IEYJiSsStK+vCSKjS5iWTldKDDxV5CSkV7Jdpf2lqnjpuhL85UjFgf9YZMcEWHIuk5Y09uEJxtmN5bdN30RQ3I=
-X-Received: by 2002:a25:68d2:0:b0:d77:f613:30ec with SMTP id
- d201-20020a2568d2000000b00d77f61330ecmr11735576ybc.54.1693218558409; Mon, 28
- Aug 2023 03:29:18 -0700 (PDT)
+        Mon, 28 Aug 2023 06:29:39 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1756E119;
+        Mon, 28 Aug 2023 03:29:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1693218570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qV2IjtvaZJAM+hwgZA2tc0IkrXchGtInOl4pNs604ig=;
+        b=rWrDRzE1RctQikFjbd8khMTlldjPateq9zfQ8AX1SjbrpGUfYVkqr2e5zHvlfz1ld+xefB
+        28YApl/vMAUCE/Yqv6n633YsnaO0e/2UJl1HonqEjdNf0DcyhfhUbHKEzu2dqlZ+PgCNyx
+        YAvLnwyTscoFdTfwxRRetDRL8Ztsj7g=
+Received: from [192.168.1.18] (91-171-21-26.subs.proxad.net [91.171.21.26])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 034c5512 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Mon, 28 Aug 2023 10:29:30 +0000 (UTC)
+Message-ID: <1bdcc4c9-fd48-c903-0d92-8aa24459c739@sionneau.net>
+Date:   Mon, 28 Aug 2023 12:29:29 +0200
 MIME-Version: 1.0
-Received: by 2002:a05:7000:5bca:b0:4fc:b2ea:2904 with HTTP; Mon, 28 Aug 2023
- 03:29:18 -0700 (PDT)
-From:   Itzel Campa <ariadnev95@gmail.com>
-Date:   Mon, 28 Aug 2023 03:29:18 -0700
-Message-ID: <CAOYsRdesXdDWttZv8N80HHu46MiCoq=KDrR6z0R-to4ojt+wiA@mail.gmail.com>
-Subject: 
-To:     francesco@dolcini.it, accessibility@support.whatsapp.com,
-        alexavillegas893@gmail.com, contacto@becasmexico.org,
-        francesco.dolcini@toradex.com, j-luthra@ti.com,
-        lifelinecontactus@mhaofnyc.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, ssantosh@kernel.org, support@whatsapp.com,
-        support@onlyfans.com, titohoto2@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,EMPTY_MESSAGE,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND] i2c: at91: Use dev_err_probe() instead of
+ dev_err()
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230825143234.38336-1-yann@sionneau.net>
+ <5c680292-bcfe-881a-1c23-299c05b377ee@microchip.com>
+Content-Language: en-US
+From:   Yann Sionneau <yann@sionneau.net>
+In-Reply-To: <5c680292-bcfe-881a-1c23-299c05b377ee@microchip.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Le 28/08/2023 à 10:03, Nicolas Ferre a écrit :
+> On 25/08/2023 at 16:32, Yann Sionneau wrote:
+>> Change
+>> if (IS_ERR(x)) { dev_err(...); return PTR_ERR(x); }
+>> into
+>> return dev_err_probe()
+>>
+>> Also, return the correct error instead of hardcoding -ENODEV
+>> This change has also the advantage of handling the -EPROBE_DEFER 
+>> situation.
+>
+> Is it found using a tool like Coccinelle or you just ran into it and 
+> figured out it could be good to change?
+
+I found it by reading the code, I took the time to read the probe 
+functions of a few i2c controller driver to try to find improvements.
+
+But I guess one could also find this sort of changes using tools.
+
+Regards,
+
+Yann
+
+>
+> Regards,
+>   Nicolas
+>
+>> Signed-off-by: Yann Sionneau <yann@sionneau.net>
+>> ---
+>>   drivers/i2c/busses/i2c-at91-core.c | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-at91-core.c 
+>> b/drivers/i2c/busses/i2c-at91-core.c
+>> index 05ad3bc3578a..b7bc17b0e5f0 100644
+>> --- a/drivers/i2c/busses/i2c-at91-core.c
+>> +++ b/drivers/i2c/busses/i2c-at91-core.c
+>> @@ -227,10 +227,9 @@ static int at91_twi_probe(struct platform_device 
+>> *pdev)
+>>          platform_set_drvdata(pdev, dev);
+>>
+>>          dev->clk = devm_clk_get(dev->dev, NULL);
+>> -       if (IS_ERR(dev->clk)) {
+>> -               dev_err(dev->dev, "no clock defined\n");
+>> -               return -ENODEV;
+>> -       }
+>> +       if (IS_ERR(dev->clk))
+>> +               return dev_err_probe(dev->dev, PTR_ERR(dev->clk), "no 
+>> clock defined\n");
+>> +
+>>          clk_prepare_enable(dev->clk);
+>>
+>>          snprintf(dev->adapter.name, sizeof(dev->adapter.name), "AT91");
+>> -- 
+>> 2.34.1
+>>
+>
