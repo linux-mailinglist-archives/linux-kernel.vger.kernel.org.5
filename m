@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C5078A472
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E26F78A475
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjH1CFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S229854AbjH1CFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjH1CFA (ORCPT
+        with ESMTP id S229750AbjH1CFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:05:00 -0400
+        Sun, 27 Aug 2023 22:05:01 -0400
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBFA123;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F85D8;
         Sun, 27 Aug 2023 19:04:58 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RYv5J2lw0z4f3nqr;
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RYv5J5tsMz4f3mLs;
         Mon, 28 Aug 2023 10:04:52 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S28;
-        Mon, 28 Aug 2023 10:04:55 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgAnBai7AOxk9qcCBw--.25880S29;
+        Mon, 28 Aug 2023 10:04:56 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
         song@kernel.org, xni@redhat.com
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v2 24/28] md: suspend array in md_start_sync() if array need reconfiguration
-Date:   Mon, 28 Aug 2023 10:00:17 +0800
-Message-Id: <20230828020021.2489641-25-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v2 25/28] md: cleanup mddev_create/destroy_serial_pool()
+Date:   Mon, 28 Aug 2023 10:00:18 +0800
+Message-Id: <20230828020021.2489641-26-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 References: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S28
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF13ZryrJw1rZFWxGrWrAFb_yoW8GF4kpa
-        1IyF9Ygr45Aa93Z3yUXa4kuFy5Jw109rWqyrW3uas8AF93trnrGF13u34UJrWDtayftFy3
-        Xws0qF1Uuw10krUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAnBai7AOxk9qcCBw--.25880S29
+X-Coremail-Antispam: 1UD129KBjvJXoW3GryUCw1UZrWUKFy8CFy8Zrb_yoWxtr1fpw
+        4aqa4rWr4UZ3y5Ww1UCayDG3WYvw1ktrs7try3u3yfXw43twn3KF1rWa45tr98Zas5Ar1U
+        X3WUur4kCr1fGFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -66,51 +66,194 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-So that io won't concurrent with array reconfiguration, and it's safe to
-suspend the array directly because normal io won't rely on
-md_start_sync().
+Now that except for stopping the array, all the callers already suspend
+the array, there is no need to suspend anymore, hence remove the second
+parameter.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/md/md-bitmap.c |  8 ++++----
+ drivers/md/md.c        | 33 ++++++++++-----------------------
+ drivers/md/md.h        |  7 +++----
+ 3 files changed, 17 insertions(+), 31 deletions(-)
 
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index b3d701c5c461..9672f75c3050 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -1861,7 +1861,7 @@ void md_bitmap_destroy(struct mddev *mddev)
+ 
+ 	md_bitmap_wait_behind_writes(mddev);
+ 	if (!mddev->serialize_policy)
+-		mddev_destroy_serial_pool(mddev, NULL, true);
++		mddev_destroy_serial_pool(mddev, NULL);
+ 
+ 	mutex_lock(&mddev->bitmap_info.mutex);
+ 	spin_lock(&mddev->lock);
+@@ -1977,7 +1977,7 @@ int md_bitmap_load(struct mddev *mddev)
+ 		goto out;
+ 
+ 	rdev_for_each(rdev, mddev)
+-		mddev_create_serial_pool(mddev, rdev, true);
++		mddev_create_serial_pool(mddev, rdev);
+ 
+ 	if (mddev_is_clustered(mddev))
+ 		md_cluster_ops->load_bitmaps(mddev, mddev->bitmap_info.nodes);
+@@ -2562,11 +2562,11 @@ backlog_store(struct mddev *mddev, const char *buf, size_t len)
+ 	if (!backlog && mddev->serial_info_pool) {
+ 		/* serial_info_pool is not needed if backlog is zero */
+ 		if (!mddev->serialize_policy)
+-			mddev_destroy_serial_pool(mddev, NULL, true);
++			mddev_destroy_serial_pool(mddev, NULL);
+ 	} else if (backlog && !mddev->serial_info_pool) {
+ 		/* serial_info_pool is needed since backlog is not zero */
+ 		rdev_for_each(rdev, mddev)
+-			mddev_create_serial_pool(mddev, rdev, true);
++			mddev_create_serial_pool(mddev, rdev);
+ 	}
+ 	if (old_mwb != backlog)
+ 		md_bitmap_update_sb(mddev->bitmap);
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 305694b67fd7..0bb4c59543aa 100644
+index 0bb4c59543aa..53133b37c9b9 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -9457,6 +9457,12 @@ static void md_start_sync(struct work_struct *ws)
+@@ -206,8 +206,7 @@ static int rdev_need_serial(struct md_rdev *rdev)
+  * 1. rdev is the first device which return true from rdev_enable_serial.
+  * 2. rdev is NULL, means we want to enable serialization for all rdevs.
+  */
+-void mddev_create_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+-			      bool is_suspend)
++void mddev_create_serial_pool(struct mddev *mddev, struct md_rdev *rdev)
  {
- 	struct mddev *mddev = container_of(ws, struct mddev, sync_work);
- 	int spares = 0;
-+	bool suspended = false;
-+
-+	if (md_spares_need_change(mddev)) {
-+		__mddev_suspend(mddev);
-+		suspended = true;
-+	}
+ 	int ret = 0;
  
- 	mddev_lock_nointr(mddev);
+@@ -215,15 +214,12 @@ void mddev_create_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+ 	    !test_bit(CollisionCheck, &rdev->flags))
+ 		return;
  
-@@ -9495,6 +9501,9 @@ static void md_start_sync(struct work_struct *ws)
+-	if (!is_suspend)
+-		mddev_suspend(mddev);
+-
+ 	if (!rdev)
+ 		ret = rdevs_init_serial(mddev);
+ 	else
+ 		ret = rdev_init_serial(rdev);
+ 	if (ret)
+-		goto abort;
++		return;
+ 
+ 	if (mddev->serial_info_pool == NULL) {
+ 		/*
+@@ -238,10 +234,6 @@ void mddev_create_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+ 			pr_err("can't alloc memory pool for serialization\n");
+ 		}
+ 	}
+-
+-abort:
+-	if (!is_suspend)
+-		mddev_resume(mddev);
+ }
+ 
+ /*
+@@ -250,8 +242,7 @@ void mddev_create_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+  * 2. when bitmap is destroyed while policy is not enabled.
+  * 3. for disable policy, the pool is destroyed only when no rdev needs it.
+  */
+-void mddev_destroy_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+-			       bool is_suspend)
++void mddev_destroy_serial_pool(struct mddev *mddev, struct md_rdev *rdev)
+ {
+ 	if (rdev && !test_bit(CollisionCheck, &rdev->flags))
+ 		return;
+@@ -260,8 +251,6 @@ void mddev_destroy_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+ 		struct md_rdev *temp;
+ 		int num = 0; /* used to track if other rdevs need the pool */
+ 
+-		if (!is_suspend)
+-			mddev_suspend(mddev);
+ 		rdev_for_each(temp, mddev) {
+ 			if (!rdev) {
+ 				if (!mddev->serialize_policy ||
+@@ -283,8 +272,6 @@ void mddev_destroy_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+ 			mempool_destroy(mddev->serial_info_pool);
+ 			mddev->serial_info_pool = NULL;
+ 		}
+-		if (!is_suspend)
+-			mddev_resume(mddev);
+ 	}
+ }
+ 
+@@ -2535,7 +2522,7 @@ static int bind_rdev_to_array(struct md_rdev *rdev, struct mddev *mddev)
+ 	pr_debug("md: bind<%s>\n", b);
+ 
+ 	if (mddev->raid_disks)
+-		mddev_create_serial_pool(mddev, rdev, true);
++		mddev_create_serial_pool(mddev, rdev);
+ 
+ 	if ((err = kobject_add(&rdev->kobj, &mddev->kobj, "dev-%s", b)))
+ 		goto fail;
+@@ -2588,7 +2575,7 @@ static void md_kick_rdev_from_array(struct md_rdev *rdev)
+ 	bd_unlink_disk_holder(rdev->bdev, rdev->mddev->gendisk);
+ 	list_del_rcu(&rdev->same_set);
+ 	pr_debug("md: unbind<%pg>\n", rdev->bdev);
+-	mddev_destroy_serial_pool(rdev->mddev, rdev, false);
++	mddev_destroy_serial_pool(rdev->mddev, rdev);
+ 	rdev->mddev = NULL;
+ 	sysfs_remove_link(&rdev->kobj, "block");
+ 	sysfs_put(rdev->sysfs_state);
+@@ -3055,11 +3042,11 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
+ 		}
+ 	} else if (cmd_match(buf, "writemostly")) {
+ 		set_bit(WriteMostly, &rdev->flags);
+-		mddev_create_serial_pool(rdev->mddev, rdev, true);
++		mddev_create_serial_pool(rdev->mddev, rdev);
+ 		need_update_sb = true;
+ 		err = 0;
+ 	} else if (cmd_match(buf, "-writemostly")) {
+-		mddev_destroy_serial_pool(rdev->mddev, rdev, true);
++		mddev_destroy_serial_pool(rdev->mddev, rdev);
+ 		clear_bit(WriteMostly, &rdev->flags);
+ 		need_update_sb = true;
+ 		err = 0;
+@@ -5563,9 +5550,9 @@ serialize_policy_store(struct mddev *mddev, const char *buf, size_t len)
  	}
  
- 	mddev_unlock(mddev);
-+	if (suspended)
-+		__mddev_resume(mddev);
-+
- 	md_wakeup_thread(mddev->sync_thread);
- 	sysfs_notify_dirent_safe(mddev->sysfs_action);
- 	md_new_event();
-@@ -9507,6 +9516,8 @@ static void md_start_sync(struct work_struct *ws)
- 	clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
- 	clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
- 	mddev_unlock(mddev);
-+	if (suspended)
-+		__mddev_resume(mddev);
+ 	if (value)
+-		mddev_create_serial_pool(mddev, NULL, true);
++		mddev_create_serial_pool(mddev, NULL);
+ 	else
+-		mddev_destroy_serial_pool(mddev, NULL, true);
++		mddev_destroy_serial_pool(mddev, NULL);
+ 	mddev->serialize_policy = value;
+ unlock:
+ 	mddev_unlock_and_resume(mddev);
+@@ -6331,7 +6318,7 @@ static void __md_stop_writes(struct mddev *mddev)
+ 	}
+ 	/* disable policy to guarantee rdevs free resources for serialization */
+ 	mddev->serialize_policy = 0;
+-	mddev_destroy_serial_pool(mddev, NULL, true);
++	mddev_destroy_serial_pool(mddev, NULL);
+ }
  
- 	wake_up(&resync_wait);
- 	if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
+ void md_stop_writes(struct mddev *mddev)
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index 07496179084a..73334034e880 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -817,10 +817,9 @@ extern void __mddev_resume(struct mddev *mddev);
+ 
+ extern void md_reload_sb(struct mddev *mddev, int raid_disk);
+ extern void md_update_sb(struct mddev *mddev, int force);
+-extern void mddev_create_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+-				     bool is_suspend);
+-extern void mddev_destroy_serial_pool(struct mddev *mddev, struct md_rdev *rdev,
+-				      bool is_suspend);
++extern void mddev_create_serial_pool(struct mddev *mddev, struct md_rdev *rdev);
++extern void mddev_destroy_serial_pool(struct mddev *mddev,
++				      struct md_rdev *rdev);
+ struct md_rdev *md_find_rdev_nr_rcu(struct mddev *mddev, int nr);
+ struct md_rdev *md_find_rdev_rcu(struct mddev *mddev, dev_t dev);
+ 
 -- 
 2.39.2
 
