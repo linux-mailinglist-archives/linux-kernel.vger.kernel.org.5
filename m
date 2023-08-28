@@ -2,131 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A0978B9A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC3078B9B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbjH1UjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
+        id S233465AbjH1Uot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233471AbjH1UjP (ORCPT
+        with ESMTP id S233479AbjH1Uol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:39:15 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FD1109
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:39:13 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59222a14ee1so54368587b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:39:12 -0700 (PDT)
+        Mon, 28 Aug 2023 16:44:41 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F3210D;
+        Mon, 28 Aug 2023 13:44:38 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fea0640d7aso34735195e9.0;
+        Mon, 28 Aug 2023 13:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693255152; x=1693859952;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XhrkWiQBnHmzMnkAE+NYbdoZdy6UiyASIH0GRgNQ/sU=;
-        b=urfxC/+oTHLuj+i6cn0/azuq+FFaWj+TnME6nhesd8cw0L5Hhx/TUyll1F+Er3mk1V
-         EPtJEawuJ7LmK9shNHvS9h/gGI6VsaHwg4Nca8og7fCRD7CQB4X3Kfa9FsaRnST6k8xO
-         0dr5yHSkjVGAHS3J7o6VojOEbV63NzFkgqMmpXOQ582xX256DdnHrjUmmPC4cmLFHEin
-         Z1O8sfXNGBnPb7WSs4WCuskoLd5HzDd2PmDt8VBcd9vco3CTPXvj+3hemrc7Ly+8daso
-         R24co0ytNidRJebijXU8YN6wM8GK/12rUxTgs3qJ/AEYZkHtELGzmn5jHkz2rJQRiQlW
-         odaQ==
+        d=gmail.com; s=20221208; t=1693255477; x=1693860277;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d2FyVA2TlJZnmeF54TfcG2/RAnF7PPTQDQJw9GqMjnA=;
+        b=SadDLLa9UbY1oVbjZzTDBurpQ52fU/61/LtXNWWptMCvrW9Cv4BIpdAAIBGMrkfpU/
+         7J88bitMQ2bqpeCd1HlTVV3GNsYeC6ardz2sZM6KWnt5yQ9T168PDV0GuIAjGk4Nd3j+
+         3OaTFsOdqa0yFFlwVjzKsWwcfqUI6P6ialhKomFik81PbGXbJPMlLvtW5OS2XwQDxIyQ
+         8T0AwVJp/j2zdWZ8D1dqnioRtMkkj7J/Ej+5aXrCmC2ANtg3q7Ztzsg+bFnDAzERxGjq
+         FEtyXV9BGV1qCmUerN1o2KOOd2vXWbC8WtzxjqejXfsoSGi7Tsx+iu+UtkxvVAqmJvK+
+         IkBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693255152; x=1693859952;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XhrkWiQBnHmzMnkAE+NYbdoZdy6UiyASIH0GRgNQ/sU=;
-        b=EXVa+nwR86UUiZ6j1QqSM0MrH2u+Fiwno76pFaw48DSdbhpKMj5UbGZgzemFtMS+zw
-         UeWgHHRmGS2ERgRGRb/gicEy1LdLe+gmiQlsCTdGaVgbYTdnPAPsa9UgcsDZUA+a8icw
-         JyfV1PKcgmC0OFu7RTiB4ytcawLd7k8h0z83qdrFoO95chJbykfp9AVLUdf/XxhQOtjF
-         ZRi1GM6q8QV0WsyZ+3JkLxEN04xThSL7NSCYrg49i/YsXnlGutmAnvQUfiAp4WKbWikG
-         lircy0+hxlnBadw6V2T+7yUMGbl2xti9QZOp6JADl92okOvx7DeoD49vTz795KjhCTY4
-         JFKw==
-X-Gm-Message-State: AOJu0YwzkQ3Oz9SKokT5f8FJjbny7YoLa/MnMcdJab17D3If7mSoWWH4
-        lyDyu39jnvp/qqV83dlAGpwIRVQkJsgqDPYgZE8=
-X-Google-Smtp-Source: AGHT+IGlwLCXXsjKROwMA/eBuqL6pO5hd66mEIQL7qVwZn+m6vX+Qy5OakE1dsfnaIt9WkB4KXLqeb7R2EWnAWB0U3E=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:b64:7817:9989:9eba])
- (user=ndesaulniers job=sendgmr) by 2002:a25:74c6:0:b0:d0c:c83b:94ed with SMTP
- id p189-20020a2574c6000000b00d0cc83b94edmr811734ybc.10.1693255152253; Mon, 28
- Aug 2023 13:39:12 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 13:39:06 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOkF7WQC/3WMwQ7CIBAFf6XZsxhAKtiT/2Eao7hQEi1kaYim4
- d/F3j3Oy5tZISMFzDB0KxCWkEOcG8hdB3a6zR5ZeDQGyeWBG2lYSvZK2K5ICzsqraR2XFkU0JR E6MJ7y13GxlPIS6TPVi/it/4JFcEE08r1/d0Ic+L67GP0T9zb+IKx1voFZACn56kAAAA=
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693255150; l=2020;
- i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=xcYx2Rp6x+lRWSqPslFnv6rJuAz/HxMw+0OdY1ALQZs=; b=v17oTu32hcx8X2o5oavi8I5UUOWMaIGdmbzoTP9nH19+mbccNNnrpEkGWrOiXO5zDJPWL5d/n
- rm1iEXciqeaAqQHb6RBdzIzkcNFhLuv32jqEmsXHABpaRsTnDZThqrj
-X-Mailer: b4 0.12.3
-Message-ID: <20230828-ppc_rerevert-v2-1-46b71a3656c6@google.com>
-Subject: [PATCH v2] reapply: powerpc/xmon: Relax frame size for clang
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693255477; x=1693860277;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=d2FyVA2TlJZnmeF54TfcG2/RAnF7PPTQDQJw9GqMjnA=;
+        b=ejGKXG0ohllzYimCR20yO3/kr7nKoDC2SO549gcQWD3fAvQnIGD/K1fXVGkeCkuVxg
+         T38WDLQegsP/j6h/0SskyT92l18lUeuKi8HgrXh/hJOZZVFH16LhfQdRqCrFZQvpbHUl
+         +fHNPr1WGX70XLyffXX9xyaWwRUPAvnczpESN3wDetJdqn6oI8O9XBBqdQEbAqt8W35i
+         H4r5icb43+hnxLUIfiLJESQCUOFl5/ZhofyE0jK9X8bAHuJxKgkl/w1Q3pcLaO66mB02
+         sJA6XhiQMxfGe1gLbvVDkKV68RK+hNbgYda3VFix1pgmp9Gm76KnKHBcxjikh/s5chXL
+         VKzg==
+X-Gm-Message-State: AOJu0YxebYc2BqU5gbLxevD3IcWhVBldlY1Xe6p9ngoNEX2r9MKIfCHb
+        l6sbY2yl4fUM/HfXeUcB5wprpT/7E4w=
+X-Google-Smtp-Source: AGHT+IHVSlI1U5x+qxvq4TQ3s4a4KfBNbuOuwX4TBSW8f3Npk+xJoWCph0VLzn23LmuRgXj5cqrozA==
+X-Received: by 2002:a1c:6a17:0:b0:401:b701:5424 with SMTP id f23-20020a1c6a17000000b00401b7015424mr6978403wmc.9.1693255477172;
+        Mon, 28 Aug 2023 13:44:37 -0700 (PDT)
+Received: from gmail.com (1F2EF3C0.nat.pool.telekom.hu. [31.46.243.192])
+        by smtp.gmail.com with ESMTPSA id k8-20020a7bc408000000b003fbb06af219sm11742064wmi.32.2023.08.28.13.44.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 13:44:36 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 28 Aug 2023 22:44:34 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] perf event changes for v6.6
+Message-ID: <ZO0HMo6QD+l/uvWz@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a manual revert of commit
-7f3c5d099b6f8452dc4dcfe4179ea48e6a13d0eb, but using
-ccflags-$(CONFIG_CC_IS_CLANG) which is shorter.
+Linus,
 
-Turns out that this is reproducible still under specific compiler
-versions (mea culpa: I did not test every supported version of clang),
-and even a few randconfigs bots found.
+Please pull the latest perf/core git tree from:
 
-We'll have to revisit this again in the future, for now back this out.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-core-2023-08-28
 
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Closes: https://github.com/ClangBuiltLinux/linux/issues/252#issuecomment-1690371256
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/llvm/202308260344.Vc4Giuk7-lkp@intel.com/
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes in v2:
-- Use ccflags-$(CONFIG_CC_IS_CLANG) as per Nathan.
-- Move that to be below the initial setting of ccflags-y as per Nathan.
-- Add Nathan's Suggested-by and Reviewed-by tags.
-- Update commit message slightly, including oneline.
-- Link to v1: https://lore.kernel.org/r/20230828-ppc_rerevert-v1-1-74f55b818907@google.com
----
- arch/powerpc/xmon/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+   # HEAD: 2c65477f14a359db9f1edee5dd8e683d3dae69e2 perf/x86/uncore: Remove unnecessary ?: operator around pcibios_err_to_errno() call
 
-diff --git a/arch/powerpc/xmon/Makefile b/arch/powerpc/xmon/Makefile
-index 7705aa74a24d..682c7c0a6f77 100644
---- a/arch/powerpc/xmon/Makefile
-+++ b/arch/powerpc/xmon/Makefile
-@@ -12,6 +12,10 @@ ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
- 
- ccflags-$(CONFIG_PPC64) := $(NO_MINIMAL_TOC)
- 
-+# Clang stores addresses on the stack causing the frame size to blow
-+# out. See https://github.com/ClangBuiltLinux/linux/issues/252
-+ccflags-$(CONFIG_CC_IS_CLANG) += -Wframe-larger-than=4096
-+
- obj-y			+= xmon.o nonstdio.o spr_access.o xmon_bpts.o
- 
- ifdef CONFIG_XMON_DISASSEMBLY
+Perf events changes for v6.6:
 
----
-base-commit: 2ee82481c392eec06a7ef28df61b7f0d8e45be2e
-change-id: 20230828-ppc_rerevert-647427f04ce1
+- AMD IBS improvements
+- Intel PMU driver updates
+- Extend core perf facilities & the ARM PMU driver to better handle ARM big.LITTLE events
+- Micro-optimize software events and the ring-buffer code
+- Misc cleanups & fixes
 
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
+ Thanks,
 
+	Ingo
+
+------------------>
+Ilpo Järvinen (1):
+      perf/x86/uncore: Remove unnecessary ?: operator around pcibios_err_to_errno() call
+
+James Clark (4):
+      arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability
+      perf/x86: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
+      arm_pmu: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
+      perf: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
+
+Kan Liang (1):
+      perf/x86/intel: Add Crestmont PMU
+
+Namhyung Kim (1):
+      perf/x86/ibs: Set mem_lvl_num, mem_remote and mem_hops for data_src
+
+Peter Zijlstra (3):
+      x86/cpu: Fix Gracemont uarch
+      x86/cpu: Fix Crestmont uarch
+      x86/cpu: Update Hybrids
+
+Ravi Bangoria (3):
+      perf/amd: Prevent grouping of IBS events
+      perf/mem: Introduce PERF_MEM_LVLNUM_UNC
+      perf/mem: Add PERF_MEM_LVLNUM_NA to PERF_MEM_NA
+
+Uros Bizjak (4):
+      perf/x86: Use local64_try_cmpxchg
+      perf/core: Use local64_try_cmpxchg in perf_swevent_set_period
+      locking/arch: Avoid variable shadowing in local_try_cmpxchg()
+      perf/ring_buffer: Use local_try_cmpxchg in __perf_output_begin
+
+YueHaibing (1):
+      perf: Remove unused extern declaration arch_perf_get_page_size()
+
+
+ arch/loongarch/include/asm/local.h                 |   4 +-
+ arch/mips/include/asm/local.h                      |   4 +-
+ arch/x86/events/amd/ibs.c                          | 190 +++++++++++----------
+ arch/x86/events/core.c                             |  11 +-
+ arch/x86/events/intel/core.c                       |  54 +++++-
+ arch/x86/events/intel/cstate.c                     |  12 +-
+ arch/x86/events/intel/ds.c                         |   9 +-
+ arch/x86/events/intel/uncore.c                     |   2 +-
+ arch/x86/events/intel/uncore_snbep.c               |   2 +-
+ arch/x86/events/msr.c                              |  10 +-
+ arch/x86/events/perf_event.h                       |   2 +
+ arch/x86/events/rapl.c                             |   2 +-
+ arch/x86/include/asm/intel-family.h                |  18 +-
+ arch/x86/include/asm/local.h                       |   4 +-
+ arch/x86/kernel/cpu/intel_epb.c                    |   2 +-
+ arch/x86/mm/init.c                                 |   2 +-
+ drivers/edac/i10nm_base.c                          |   2 +-
+ drivers/idle/intel_idle.c                          |  10 +-
+ drivers/perf/arm_pmu.c                             |  10 +-
+ drivers/platform/x86/intel/pmc/core.c              |   2 +-
+ .../x86/intel/speed_select_if/isst_if_common.c     |   2 +-
+ drivers/powercap/intel_rapl_common.c               |   2 +-
+ drivers/powercap/intel_rapl_msr.c                  |   2 +-
+ drivers/thermal/intel/intel_tcc_cooling.c          |   2 +-
+ include/linux/perf_event.h                         |  14 +-
+ include/uapi/linux/perf_event.h                    |   3 +-
+ kernel/events/core.c                               |  18 +-
+ kernel/events/ring_buffer.c                        |   5 +-
+ tools/power/x86/turbostat/turbostat.c              |   2 +-
+ 29 files changed, 230 insertions(+), 172 deletions(-)
