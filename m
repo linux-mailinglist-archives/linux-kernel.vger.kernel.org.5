@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 424D578AE18
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF0578AE27
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbjH1K4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
+        id S232374AbjH1K5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbjH1K4U (ORCPT
+        with ESMTP id S232357AbjH1K4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:56:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F81C19A;
-        Mon, 28 Aug 2023 03:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693220121; x=1724756121;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UxKUOhuwkcSCEpW7Xpnp4lHioctyE1x03cSt4igskt4=;
-  b=b0W5P6iFza4XakXzQXI+bRa5Pv0g+qLDgR7WUDi0YuZZm7TC482liD0P
-   80YBBd5jsAUXk+SrHchSxVzyWp8rolKJS731+CNXtKajdiNd2sV3QwJEK
-   0Nz47lXN4PqATSI6wlvG81MM225XZXX8+oEBbF8PnLsV3xndWsW5CbDxd
-   pXs4tYEhsCEQU7kYaLo2uNpCObZ1DhghFFjI6+L+ajmvXQ+rIeeAqMYaj
-   nzsZm/Ro6v1NdTcL66fXmRgpSgH7bHxCqZPmKqT+vP2/EOqQhrWQapJ9M
-   0dD9dZl2Ira1Joetusld17nk3rElki443eLMKoqVaTav4arCEN7rAJWuP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="355399043"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="355399043"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 03:51:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="803658371"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="803658371"
-Received: from nwiklans-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.22.120])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 03:51:24 -0700
-From:   "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc:     ilpo.jarvinen@linux.intel.com, reinette.chatre@intel.com,
-        "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>,
-        Wieczor-Retman@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] selftests/kvm: Replace attribute with macro
-Date:   Mon, 28 Aug 2023 12:49:10 +0200
-Message-ID: <82ed62dd7070203701b4ca326e62862404dd5f72.1693216959.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1693216959.git.maciej.wieczor-retman@intel.com>
-References: <cover.1693216959.git.maciej.wieczor-retman@intel.com>
+        Mon, 28 Aug 2023 06:56:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E3A2D53;
+        Mon, 28 Aug 2023 03:56:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B10E4643BA;
+        Mon, 28 Aug 2023 10:55:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E05C43395;
+        Mon, 28 Aug 2023 10:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693220139;
+        bh=Bb5ceWlaWfPfAbTCvodCpwqGEOWqs3DzAgQJiJfYYLI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qR1SoaeXARfJ5B+C7d1LrT8ZNFXqBqyjUjWCQB+bcrZ+F//B5r4j/u0xcjOjgNkYT
+         4i9JwXyCuIBJQvQlEKkhPYGpxgfKdjeBFD0ZpGrcNWbfqqaI3ulRi3VCjloeGnH3jF
+         BteU6FCE4IZropHtFlCbLyH0sG/W4J0IAo5Djh7Q=
+Date:   Mon, 28 Aug 2023 12:51:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andras Sebok <sebokandris2009@gmail.com>
+Cc:     linux-serial@vger.kernel.org, andriseseboke@gmail.com,
+        linux-kernel@vger.kernel.org, jirislaby@kernel.org
+Subject: Re: [PATCH 1/2] Simplify sysrq help
+Message-ID: <2023082831-undefined-hut-11fd@gregkh>
+References: <20230828102753.4811-2-sebokandris2009@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828102753.4811-2-sebokandris2009@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __printf() macro is used in many tools in the linux kernel to
-validate the format specifiers in functions that use printf. Some
-selftests use it without putting it in a macro definition and some tests
-import the kselftests.h header.
+On Mon, Aug 28, 2023 at 12:27:53PM +0200, Andras Sebok wrote:
+> This patch simplyfies sysrq help menu by moving each command to a 
+> separate line and by moving the key from brackets to after a semicolon.
+> 
+> before:
+> sysrq: HELP : loglevel(0-9) reboot(b) crash(c) terminate-all-tasks(e) memory-full-oom-kill(f) kill-all-tasks(i) thaw-filesystems(j) sak(k) show-backtrace-all-active-cpus(l) show-memory-usage(m) nice-all-RT-tasks(n) poweroff(o) show-registers(p) show-all-timers(q) unraw(r) sync(s) show-task-states(t) unmount(u) force-fb(v) show-blocked-tasks(w) dump-ftrace-buffer(z)
+> 
+> after:
+> sysrq: HELP :
+> loglevel : 0-9
+> reboot : b
+> crash : c
+> terminate-all-tasks : e
+> memory-full-oom-kill : f
+> kill-all-tasks : i
+> thaw-filesystems : j
+> sak : k
+> show-backtrace-all-active-cpus : l
+> show-memory-usage : m
+> nice-all-RT-tasks : n
+> poweroff : o
+> show-registers : p
+> show-all-timers : q
+> unraw : r
+> sync : s
+> show-task-states : t
+> unmount : u
+> force-fb : v
+> show-blocked-tasks : w
+> dump-ftrace-buffer : z
 
-Use __printf() attribute instead of the full attribute since the macro
-is inside kselftests.h and the header is already imported.
+So now the options all scroll off the screen?  Are you sure this is
+wise?  What problem are you trying to solve here, it just looks like you
+are changing one "help text format for another", and doesn't actually
+change much of anything.
 
-Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
----
- tools/testing/selftests/kvm/include/test_util.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Note the:
+	sysrq: HELP :
 
-diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-index a6e9f215ce70..710a8a78e8ce 100644
---- a/tools/testing/selftests/kvm/include/test_util.h
-+++ b/tools/testing/selftests/kvm/include/test_util.h
-@@ -33,7 +33,7 @@ static inline int _no_printf(const char *format, ...) { return 0; }
- #define pr_info(...) _no_printf(__VA_ARGS__)
- #endif
- 
--void print_skip(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
-+void __printf(1, 2) print_skip(const char *fmt, ...);
- #define __TEST_REQUIRE(f, fmt, ...)				\
- do {								\
- 	if (!(f))						\
--- 
-2.42.0
+line format being different from all the others makes this not even look
+correct?
 
+So I really do not see the point of this change here, why is it needed?
+
+thanks,
+
+greg k-h
