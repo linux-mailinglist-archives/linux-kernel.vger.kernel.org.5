@@ -2,115 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 844C778A673
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA9878A66F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjH1H1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51922 "EHLO
+        id S229702AbjH1H04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjH1H1K (ORCPT
+        with ESMTP id S229795AbjH1H0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:27:10 -0400
-Received: from out-247.mta0.migadu.com (out-247.mta0.migadu.com [91.218.175.247])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95F1118
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:27:06 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693207625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R1NgD96YxNwdzL2uCYD5ii12GD63NiBnFyl1V0bsWgU=;
-        b=kBohejIUfe4qavE/Pfj84fYIbI0aTk/Vuw6//C4RPOm1ULNWbER5c4aDJWuUFisvJolha2
-        B7lQgiUnF6nVy/lEyGFUlbaBqMA2QKX72N6toB1qFibrnnoEqZhsmyWvQb4UTSViTFtGQD
-        Ap6K2ze2daK+iw11rBwUt5qeJRNRbnY=
+        Mon, 28 Aug 2023 03:26:45 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050A5115
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:26:43 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52a4b62c2f5so3785137a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:26:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1693207601; x=1693812401;
+        h=in-reply-to:references:from:subject:to:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lD+bH3AMRurEOkbO1lVj8kynQTkw3OHuE6DLrk9W2+w=;
+        b=HanQgw/owHxOSJ9ZXO5SKNKPj9oygSSaieibswIOOpOlWGgaCgZ3+Rwn5NlkJc+Rm9
+         p7S43H3BVVv32KfTsR0zMHuiGn881L+Z4ECw6BeambSg/nDc+EtQdPJWEcEHbM5k/bwg
+         PrfCHnIQ9hkmENzV91xXUJYohiOEYUMxT5TWkF4KQbA58Ui3wYvL+AO3aPmW8hFTaHMJ
+         DWTkBwsELhTtLNKOAObKKX5zq2dV8iqYW6US9qLwectQ2jcN53eVkUReNA8222odpdLZ
+         DFEuTniyuO/XJ6W14gwVdIl2qvRNsX8wDHeHRxKCgLdBjTmTIy/qiLwNLoHFrzx+3aaP
+         WOeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693207601; x=1693812401;
+        h=in-reply-to:references:from:subject:to:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lD+bH3AMRurEOkbO1lVj8kynQTkw3OHuE6DLrk9W2+w=;
+        b=S4pLs8ZGusFqCzKK29Hat0O/vK+0PlYDhtqTAPwV1OkGenPDlDdPY0H9kVaw1FYMg0
+         ObPjLhbkaUPspZtqpl4cBPy/eWvOpiE+6eT+Anx/3Wp6C7n9AYcrytgBFM4ZASSLY8gF
+         WeuKxsydxziePwQOXcrRNXSLp4GnL1cTMqAvdqT2BcBjo7fV624a5WmLex44eDdHmMEc
+         Io8GilF1WwSmzehUYKpxMsveGtrxj1Z8zuAAXv9AwmdU6C26aDpWPJjIL70u3XrUKozf
+         kQGzsxpkgYJ4GDtUdYEueK9SO0IF2BCrbwAv4vebM+NqckqQAxDNy7+B1sn02Jr0ENAU
+         AlFg==
+X-Gm-Message-State: AOJu0YwxdZ9Di7DJYDHoYViZgCNv+Cz3cW7wn9l9HfFtvbJy/NhNMiED
+        4RBF/c3wihncbg1ylFMGoSjHHQ==
+X-Google-Smtp-Source: AGHT+IECQi/+bCK/FrctXnpXooL6ck48hvBin19hwEds/rInCzSAhpQkXhFZ1B01lhVS1rWBX7KFxA==
+X-Received: by 2002:aa7:d9d8:0:b0:525:734a:bf30 with SMTP id v24-20020aa7d9d8000000b00525734abf30mr21317244eds.36.1693207601453;
+        Mon, 28 Aug 2023 00:26:41 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id k3-20020aa7d8c3000000b005224d960e66sm4139697eds.96.2023.08.28.00.26.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 00:26:41 -0700 (PDT)
 Mime-Version: 1.0
-Subject: Re: [v3 3/4] memblock: introduce MEMBLOCK_RSRV_NOINIT_VMEMMAP flag
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230825111836.1715308-4-usama.arif@bytedance.com>
-Date:   Mon, 28 Aug 2023 15:26:17 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        fam.zheng@bytedance.com, liangma@liangbit.com,
-        punit.agrawal@bytedance.com
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <357EEE41-1898-4430-BCC7-73F591CE8749@linux.dev>
-References: <20230825111836.1715308-1-usama.arif@bytedance.com>
- <20230825111836.1715308-4-usama.arif@bytedance.com>
-To:     Usama Arif <usama.arif@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 28 Aug 2023 09:26:40 +0200
+Message-Id: <CV4001I45VX3.O7ZEXEDZTHAR@otso>
+To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+        "Andy Gross" <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm7225-fp4: Revert "arm64: dts:
+ qcom: sm7225-fairphone-fp4: Add AW8695 haptics"
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+X-Mailer: aerc 0.15.2
+References: <20230827122842.63741-1-krzysztof.kozlowski@linaro.org>
+ <20230827122842.63741-3-krzysztof.kozlowski@linaro.org>
+ <CV3ZCVK29BLY.D7Y8AEEOYLO3@otso>
+ <7859abb1-ae99-d33f-a8fc-c76304057df9@linaro.org>
+In-Reply-To: <7859abb1-ae99-d33f-a8fc-c76304057df9@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon Aug 28, 2023 at 9:00 AM CEST, Krzysztof Kozlowski wrote:
+> On 28/08/2023 08:56, Luca Weiss wrote:
+> > Hi Krzysztof,
+> >=20
+> > On Sun Aug 27, 2023 at 2:28 PM CEST, Krzysztof Kozlowski wrote:
+> >> This reverts commit 413821b7777d062b57f8dc66ab088ed390cbc3ec because i=
+t
+> >> was never reviewed, was buggy (report from kernel test robot:
+> >> https://lore.kernel.org/all/202204090333.QZXMI2tu-lkp@intel.com/) and
+> >=20
+> > (I wouldn't say this part is accurate, the robot just didn't use a tree
+> > with the i2c10 node already present, it was sent in an earlier patch
+> > IIRC, but whatever)
+> >=20
+> >> used undocumented, broken bindings.  Half of the properties in this
+> >> device are questioned, thus adding DTS node causes only errors and doe=
+s
+> >> not make the device usable without the bindings and driver part:
+> >>
+> >>   sm7225-fairphone-fp4.dtb: haptics@5a: failed to match any schema wit=
+h compatible: ['awinic,aw8695']
+> >>   sm7225-fairphone-fp4.dtb: haptics@5a: awinic,tset: b'\x12' is not of=
+ type 'object', 'array', 'boolean', 'null'
+> >>   sm7225-fairphone-fp4.dtb: haptics@5a: awinic,r-spare: b'h' is not of=
+ type 'object', 'array', 'boolean', 'null'
+> >>
+> >> Since bindings were abandoned (4 months since review), revert the comm=
+it
+> >> to avoid false sense of supporting something which is not supported.
+> >=20
+> > I've been avoiding touching this topic again since I'm really not sure
+> > how to resolve.
+>
+> Happens, but the DTS should not have been applied in such case.
 
+True, back when it was applied I told Bjorn but I also thought I'd get
+the driver in soon also. Obviously this hasn't happened. So fine with me
+to revert now, and I'll add it back once the new bindings are in.
 
-> On Aug 25, 2023, at 19:18, Usama Arif <usama.arif@bytedance.com> =
-wrote:
->=20
-> For reserved memory regions marked with this flag,
-> reserve_bootmem_region is not called during =
-memmap_init_reserved_pages.
-> This can be used to avoid struct page initialization for
-> regions which won't need them, for e.g. hugepages with
-> HVO enabled.
->=20
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+>
+> >=20
+> > There's a bunch of magic registers being written to in the downstream
+> > driver, I don't have any documentation for that so I'm not exactly sure
+> > what I can do to make nice bindings with proper properties.
+> >=20
+> > Would you recommend just hardcoding some of these properties in the
+> > driver, assuming they're constant for every AW8695, even though the
+> > downstream driver has these properties in devicetree? Because of that I
+> > assumed these properties could differ per implementation / usage of the
+> > AW8695 in different devices.
+>
+> Yes, keep them in the driver.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Okay.. I'll make sure to document this in the driver or commit message
+or somewhere so other people using the same AW8695 will know that this
+is hardcoded.
 
-One nit below.
+Regards
+Luca
 
-> ---
-> include/linux/memblock.h | 10 ++++++++++
-> mm/memblock.c            | 32 +++++++++++++++++++++++++++-----
-> 2 files changed, 37 insertions(+), 5 deletions(-)
->=20
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index f71ff9f0ec81..6d681d053880 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -40,6 +40,8 @@ extern unsigned long long max_possible_pfn;
->  * via a driver, and never indicated in the firmware-provided memory =
-map as
->  * system RAM. This corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED in =
-the
->  * kernel resource tree.
-> + * @MEMBLOCK_RSRV_NOINIT_VMEMMAP: memory region for which struct =
-pages are
-> + * not initialized (only for reserved regions).
-
-We have a more detailed explanation here.
-
->  */
-> enum memblock_flags {
-> 	MEMBLOCK_NONE =3D 0x0, /* No special request */
-> @@ -47,6 +49,8 @@ enum memblock_flags {
-> 	MEMBLOCK_MIRROR =3D 0x2, /* mirrored region */
-> 	MEMBLOCK_NOMAP =3D 0x4, /* don't add to kernel direct mapping */
-> 	MEMBLOCK_DRIVER_MANAGED =3D 0x8, /* always detected via a driver =
-*/
-> +	/* don't initialize struct pages associated with this reserver =
-memory block */
-
-Those comments right after the macros here seem like a brief =
-explanation.
-To keep the consistent with others, maybe "don't initialize struct =
-pages"
-is enough? At least, a detailed one is redundant and repetitive compared
-with the above one.
-
-> +	MEMBLOCK_RSRV_NOINIT_VMEMMAP =3D 0x10,
-> };
+>
+> Best regards,
+> Krzysztof
 
