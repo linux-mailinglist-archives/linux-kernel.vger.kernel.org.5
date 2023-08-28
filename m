@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C933F78B438
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A78778B3FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbjH1PRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
+        id S232021AbjH1PGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbjH1PRc (ORCPT
+        with ESMTP id S229553AbjH1PGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:17:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D27E8;
-        Mon, 28 Aug 2023 08:17:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 64FD363C33;
-        Mon, 28 Aug 2023 15:17:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 761EEC433C7;
-        Mon, 28 Aug 2023 15:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693235848;
-        bh=yfaHuxm/bNdSiHw+0iYEhh/JqUocRSKuoWqVRwNq8KY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n7/6MvnkBriK1EzeEBQCJH2Rsg56bX2QG22RCV4HXa1i+YqDdBv4oHfrzxY2zjzJx
-         E4NpKud9szn/+FB9ePxT0cl57OAstIXPW8AndUi6qmS6D7ckLqwNajbZyHHnW5kQdd
-         Cq129HBKAm7TSdQwCYB2ZC69jLlAEC9eI8gp29ypX0HLQ2YUaZPcBswqwmCUTfZSdg
-         UlQveJ37sA8V/S7Z0VCrAp9YLT8/VTRy8MlJU5dPn2QY7Zs+u8Pt9UgiZz8FArrMfL
-         16puTDTdrmYmD5+S5BmKINMDUsAdw0AEvFAu/yOsVJbgnEKuVsK4zuajyM0YmL6y+N
-         wSZ1HrQ/cxERA==
-Date:   Mon, 28 Aug 2023 23:05:35 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Jiexun Wang <wangjiexun@tinylab.org>
-Cc:     dfustini@baylibre.com, adrian.hunter@intel.com,
-        aou@eecs.berkeley.edu, conor+dt@kernel.org, conor@kernel.org,
-        devicetree@vger.kernel.org, guoren@kernel.org,
-        jkridner@beagleboard.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robertcnelson@beagleboard.org,
-        robh+dt@kernel.org, ulf.hansson@linaro.org, wefu@redhat.com
-Subject: Re: [PATCH RFC v2 0/4] RISC-V: Add basic eMMC support for BeagleV
- Ahead
-Message-ID: <ZOy3v+YgZgU1NrWx@xhacker>
-References: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
- <20230828044016.109515-1-wangjiexun@tinylab.org>
+        Mon, 28 Aug 2023 11:06:13 -0400
+Received: from luna.linkmauve.fr (82-65-109-163.subs.proxad.net [82.65.109.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF31AF0;
+        Mon, 28 Aug 2023 08:06:07 -0700 (PDT)
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+        id 00F208DA8B8; Mon, 28 Aug 2023 17:06:05 +0200 (CEST)
+Date:   Mon, 28 Aug 2023 17:06:05 +0200
+From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        azkali <a.ffcc7@gmail.com>, Adam Jiang <chaoj@nvidia.com>,
+        CTCaer <ctcaer@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] misc: bm92txx: Add driver for the ROHM BM92Txx
+Message-ID: <ZOy33RB8aj3455ZQ@desktop>
+References: <20230824153059.212244-1-linkmauve@linkmauve.fr>
+ <20230824153059.212244-3-linkmauve@linkmauve.fr>
+ <f79087c0-cc44-4fb6-fa2e-b43db5dfd6d4@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230828044016.109515-1-wangjiexun@tinylab.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <f79087c0-cc44-4fb6-fa2e-b43db5dfd6d4@linaro.org>
+Jabber-ID: linkmauve@linkmauve.fr
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_DUL,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:40:16PM +0800, Jiexun Wang wrote:
-> Hello,
-> I tested the patch on my LicheePi 4A board.
-> It can successfully boot with eMMC, but when I use the eMMC more frequently - for instance:
-> 
-> $ while true; do /bin/dd if=/dev/zero of=bigfile bs=1024000 count=1024; done &
-> 
-> I encounter the following error:
-> 
-> sbi_trap_error: hart1: illegal instruction handler failed (error -2)
+Hi,
 
-> sbi_trap_error: hart1: mcause=0x0000000000000002 mtval=0x0000000060e2de4f
-> sbi_trap_error: hart1: mepc=0x000000000001897c mstatus=0x0000000a00001820
-> sbi_trap_error: hart1: ra=0x00000000000170f8 sp=0x000000000004adc8
-> sbi_trap_error: hart1: gp=0xffffffff8136ea90 tp=0xffffffd900228000
-> sbi_trap_error: hart1: s0=0x0000000000000000 s1=0x000000000004ae08
-> sbi_trap_error: hart1: a0=0x000000003f9aa9bc a1=0x0000000000000004
-> sbi_trap_error: hart1: a2=0x0000000000000000 a3=0x0000000000000000
-> sbi_trap_error: hart1: a4=0x0000000000042248 a5=0x00000000000170e5
-> sbi_trap_error: hart1: a6=0x0000000000000000 a7=0x0000000054494d45
-> sbi_trap_error: hart1: s2=0x000000000004aee8 s3=0x0000000000000000
-> sbi_trap_error: hart1: s4=0x000000000004ae08 s5=0x0000000000000000
-> sbi_trap_error: hart1: s6=0xffffffff813aa240 s7=0x0000000000000080
-> sbi_trap_error: hart1: s8=0xffffffff80a1b5f0 s9=0x0000000000000000
-> sbi_trap_error: hart1: s10=0xffffffd9fef5d380 s11=0xffffffff81290a80
-> sbi_trap_error: hart1: t0=0x0000000a00000820 t1=0x0000000000000000
-> sbi_trap_error: hart1: t2=0xffffffff80c00318 t3=0x0000000000000001
-> sbi_trap_error: hart1: t4=0x0000000000000330 t5=0x0000000000000001
-> sbi_trap_error: hart1: t6=0x0000000000040000
+On Thu, Aug 24, 2023 at 06:28:07PM +0200, Krzysztof Kozlowski wrote:
+> On 24/08/2023 17:30, Emmanuel Gil Peyrot wrote:
+> > From: azkali <a.ffcc7@gmail.com>
+> > 
+> > This is used as the USB-C Power Delivery controller of the Nintendo
+> > Switch.
+> > 
+> > Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> > Signed-off-by: azkali <a.ffcc7@gmail.com>
+> > Signed-off-by: Adam Jiang <chaoj@nvidia.com>
+> > Signed-off-by: CTCaer <ctcaer@gmail.com>
 > 
-> My kernel version is v6.5-rc3.
-> My OpenSBI version is 1.3.
-> I tried to use other versions of OpenSBI, yet the problem persists. 
-> Is there a possibility of any underlying bug? Your insights into this would be greatly appreciated.
+> These do not look like real identities. In this and previous patchset
+> your author emails bounces, so I propose to drop all stale addresses and
+> all anonymous entries.
 
+I and the authors find that policy inacceptable, our work should be
+credited and our copyright should hold despite our choice of name.
 
-Can you plz try below opensbi?
-https://github.com/xhackerustc/thead-opensbi.git
+Given the amount of issues in this patchset I will drop it for now, we
+will come back with a better patchset for this particular device in a
+while.
 
+> 
+> Best regards,
+> Krzysztof
+> 
+
+Thanks for the review, I already tried to clean it up but it was clearly
+not as good as the expectations here.
+
+-- 
+Link Mauve
