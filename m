@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89CE78B7A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF33C78B79E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbjH1Sze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
+        id S233200AbjH1Szd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233222AbjH1SzN (ORCPT
+        with ESMTP id S233221AbjH1SzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:55:13 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB621A3;
-        Mon, 28 Aug 2023 11:55:07 -0700 (PDT)
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1bf092a16c9so27684255ad.0;
-        Mon, 28 Aug 2023 11:55:07 -0700 (PDT)
+        Mon, 28 Aug 2023 14:55:12 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4A3194;
+        Mon, 28 Aug 2023 11:55:04 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ff882397ecso5397715e87.3;
+        Mon, 28 Aug 2023 11:55:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693248903; x=1693853703;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ny3Ash71jKrYUJQy9eTK7yPDCixzkf5SBSxk2dp7juw=;
+        b=hfPdkTStQUiGhYD+gSY9L2W6bRdHh9rGQvkuxMH6hyrs/T6lk8pVgVKCKe859jpYYz
+         AN03QKnJf5XMARq0ttNlrbqokqmhWWVOtvERjCsxqij42Kf8N1VPqD/NKld/pzl04wYo
+         petumI1QbWSYFH3vuXb99xE46DPhwTiwzoThFbTF0AClOP0jKUwCrS8IeT70XGHhmMEA
+         BMhlpkOQe1Mm/+KotljRjqlSyfbQnHKWjPcl9HVZCJMX/2osAZy11i69LWE6PkxV1KUL
+         phiSpKGHh9wOJycbA8P46TYbHP8dvbUhdcwaufPdtx3aJXkV/mQOmR85BX2SfvEIFDTn
+         L20A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693248907; x=1693853707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693248903; x=1693853703;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=umflnyFqBYkm4MgelOGwx19oN9oBe5SP3i3J2ZxPkxQ=;
-        b=el7WQAhC3uTso+CrYyYTyFpA2mWvmY9Nk0SnMf78ycenwiR0N+lfoor46ifpG3gBaR
-         jXggXK1vp23FXKFJ7E8i/JPsg1ACsE/d2CvCK7SCLoCj0T8NaLF99emI6TgD73HlKSm6
-         r5Xw8wDPzWl5xetUzlBlxboJg7pwdNANx/V8DPpGBUWh8oKShsOxUeDb8QR2IPk/NF5m
-         SHwxO/DROG9XUUei8W1b+HbFU17cMbuAKwsWvPvB0+YOfXlM/xkue+Pvy78NLoCU8sNd
-         374pTFAS8oEbHtKJeXKSrxKr+HEmSyEm995/lunjv98Ic1N+xIb7iLpSUWhv0UuV+cc4
-         9JIg==
-X-Gm-Message-State: AOJu0YwMVM0dxwnS3NbViGBBvns4RDpZGnk3aU8EqosOie5cJQ/L/IFI
-        wWQ62vUY4Td3rmEnChqBY7Q=
-X-Google-Smtp-Source: AGHT+IG5OnTzChA0NWY4c4vTbc4cYX/NBVucFHt1B0vYzAE05QFD8WTqXl+BXzYAGg4hw/79RtJ9YA==
-X-Received: by 2002:a17:902:f94e:b0:1c0:e014:90c1 with SMTP id kx14-20020a170902f94e00b001c0e01490c1mr8249817plb.48.1693248906633;
-        Mon, 28 Aug 2023 11:55:06 -0700 (PDT)
-Received: from [192.168.165.167] ([216.9.110.6])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c14d00b001b8a3e2c241sm7745382plj.14.2023.08.28.11.55.05
+        bh=ny3Ash71jKrYUJQy9eTK7yPDCixzkf5SBSxk2dp7juw=;
+        b=BIYzH+jb4PSVfdsv2XLOGsccZ1hsW+1l4vNsgsEPKoAMqyvteXZJy7GNkdqYUhDCws
+         k8QXFYReCTxkewWkXvNERf1/0uGUzG6YxGBfP1pXaJTv8g6iQPkKdJWTPo9dYbBRuGYn
+         TADl7hYKL0Wo037D5ULx4UQtbwGEL3bPDKaj567zQZBlQj26P6T+X59R2cmZrQihGonK
+         KmsoqnbQWnxKHOdZYJKBR9m4TADilSiQmBlRmzw/BG6Ykrn1vJIXi0ARAa7CX5QTBEZ/
+         YXtVmrIb0ukMFP7xuEOtLWlMVz8kE0t8EdUMJZiveU3gCod04AIMDd8yU2ayQ5/TGWfF
+         wVHQ==
+X-Gm-Message-State: AOJu0Yzvr/sSwnGgaDLCz7Ih/ruf0VxF90VObM/rU6ix16HI1sYpOY5+
+        V88yHOeQWHAv+OzERtdRddTKsWLVU5qBHA==
+X-Google-Smtp-Source: AGHT+IFIoaXCbIP7CUJ2lsOmKaulSpx75NEZFOzm0PJ2NUQzcRHhdCzIOPgBs8qB6iLNHZva6D04EA==
+X-Received: by 2002:a19:385e:0:b0:4fe:7dcb:8ea5 with SMTP id d30-20020a19385e000000b004fe7dcb8ea5mr17129184lfj.25.1693248902943;
+        Mon, 28 Aug 2023 11:55:02 -0700 (PDT)
+Received: from [192.168.0.75] (85-160-49-194.reb.o2.cz. [85.160.49.194])
+        by smtp.gmail.com with ESMTPSA id q9-20020a170906940900b0099bccb03eadsm4935592ejx.205.2023.08.28.11.55.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 11:55:06 -0700 (PDT)
-Message-ID: <ed518b56-a579-49bb-b2bb-220214ef6e2e@acm.org>
-Date:   Mon, 28 Aug 2023 11:55:01 -0700
+        Mon, 28 Aug 2023 11:55:02 -0700 (PDT)
+Message-ID: <c2b1cd09-f35e-9281-81a2-75e4d624ae0f@gmail.com>
+Date:   Mon, 28 Aug 2023 20:55:01 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH blktests v3 3/3] nvme: introduce
- nvmet_target_{setup/cleanup} common code
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <fbyacmtpqfhfb763s7utwbt4kdbr3pli4rp7prj7jlklq2tit6@mkkjzy73r3a3>
- <7b5fc500-afeb-7edf-383c-0cdda77b3cf6@acm.org>
- <oss54jmgqzjcxecea4h7eeguh6lmhls4p74e7unbxmhz34asvk@a7n6vu6hauys>
- <zvu2ihivd6f4fbs7hpgowstq3li4wrdycqzso3c32qcco7zes4@s2l2solzzo6u>
- <saxcmve2nchhytphnknfqp2fxpwdk5v5xqfoq2g5gsdlecf3il@sypswqownxih>
- <b79c0c9d-3930-4dbf-a1cf-8ca9e00af614@acm.org>
- <xz7rnke52xu3anmnjliybqv4yk3w367noo6ipguarkec6u4i5g@7bqtovmc3gjb>
- <d6ec4e54-1ec9-648a-ce8c-1e08a439c3c6@acm.org>
- <ckuewnzuiejug6jbuxfw4viqwf4v43pq54mj4k4qbq7uz3zwpn@3iijcby24ujd>
- <8ffb6c2f-0836-4302-82b9-902e092e537c@acm.org>
- <txsyjpcxb3baog5fgqdnm5hh765nt5qcbcmllsto7uulyzr5kn@zirmqldhosbi>
-Content-Language: en-US
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <txsyjpcxb3baog5fgqdnm5hh765nt5qcbcmllsto7uulyzr5kn@zirmqldhosbi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] exfat: add ioctls for accessing attributes
+Content-Language: cs, en-US
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <30bfc906-1d73-01c9-71d0-aa441ac34b96@gmail.com>
+ <20230828161251.GA28160@frogsfrogsfrogs>
+From:   Jan Cincera <hcincera@gmail.com>
+In-Reply-To: <20230828161251.GA28160@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 10:02, Daniel Wagner wrote:
-> I am against adding code just to make ShellCheck happy.
-Hi Daniel,
+On Mon, Aug 28, 2023, Darrick J. Wong wrote:
+> On Sun, Aug 27, 2023 at 12:42:07PM +0200, Jan Cincera wrote:
+>> Add GET and SET attributes ioctls to enable attribute modification.
+>> We already do this in FAT and a few userspace utils made for it would
+>> benefit from this also working on exFAT, namely fatattr.
+>>
+>> Signed-off-by: Jan Cincera <hcincera@gmail.com>
+>> ---
+>> Changes in v2:
+>>   - Removed irrelevant comments.
+>>   - Now masking reserved fields.
+>>
+>>  fs/exfat/exfat_fs.h |  6 +++
+>>  fs/exfat/file.c     | 93 +++++++++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 99 insertions(+)
+>>
+>> diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+>> index 729ada9e26e8..ebe8c4b928f4 100644
+>> --- a/fs/exfat/exfat_fs.h
+>> +++ b/fs/exfat/exfat_fs.h
+>> @@ -149,6 +149,12 @@ enum {
+>>  #define DIR_CACHE_SIZE		\
+>>  	(DIV_ROUND_UP(EXFAT_DEN_TO_B(ES_MAX_ENTRY_NUM), SECTOR_SIZE) + 1)
+>>  
+>> +/*
+>> + * attribute ioctls, same as their FAT equivalents.
+>> + */
+>> +#define EXFAT_IOCTL_GET_ATTRIBUTES	_IOR('r', 0x10, __u32)
+>> +#define EXFAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
+> 
+> Can you reuse the definitions from include/uapi/linux/msdos_fs.h instead
+> of redefining them here?
+> 
+> Otherwise this looks like a mostly straight port of the fs/fat/
+> versions of these functions.
+> 
+> --D
+> 
 
-That's not what my concern is about. My concern is about keeping
-the blktests source code maintainable and easy to read. My opinion
-is that the ability of bash to pass arguments from caller to callee
-implicitly (a) hurts readability, (b) is error prone and (c) hurts
-maintainability. This is why I think that this feature should not
-be used and hence that disabling SC2119 would be really wrong.
+I don't think that's necessary right now, as exfat doesn't reuse attribute
+definitions either. With some refactoring of existing code we could reuse
+both, but I've been trying to keep this patch as simple as possible.
 
-Regarding (a), I think this long e-mail thread is more than enough
-evidence that it is not clear what the intention is of the
-_nvmet_target_setup calls without arguments - not pass any arguments
-or pass the argument list of the caller. Regarding (c): if any
-_nvmet_target_setup calls would be added in a function that accepts
-arguments, how is _nvmet_target_setup() expected to process arguments
-of which it doesn't know how to interpret these?
-
-Hence my proposal to change the _nvmet_target_setup calls with no
-arguments into "_nvmet_target_setup --" and also to ignore the double
-hyphen argument inside _nvmet_target_setup().
-
-Thanks,
-
-Bart.
+Jan Cincera
