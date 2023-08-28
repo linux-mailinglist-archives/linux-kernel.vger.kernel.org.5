@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4073B78A997
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C4A78A995
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbjH1KEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S230294AbjH1KEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjH1KEr (ORCPT
+        with ESMTP id S230285AbjH1KEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:04:47 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC20010C;
-        Mon, 28 Aug 2023 03:04:43 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99df431d4bfso394001366b.1;
-        Mon, 28 Aug 2023 03:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693217082; x=1693821882;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YF+tBcFB8oUAJLRFh8palpJJ8k8VFrTFaU4dRCnVkd0=;
-        b=fnSgMhcsY93sz5w5SAqlosS1e5CtS8cTgo1oaCubuRsmnFbL2ULRJsVZFShm1Bc1id
-         ZzLOLxnYu3IymoJAM080tklkdA92FqPjdzuWsU4mNKxuPAXiTwSDVMBxr+IUCC+ZxTna
-         J+1V44Ngj395eXqXZVIQSHnore95m/ZeMo//rzmT39gNPJjz2hc0y03q0i+6Jwnkt5Eq
-         QA2sT6oSUOqoFF3h9EzBmBp3h4OCb5hxFBB4ixNon8tMZCm532o5OrsDeXDwSg7HF1G6
-         JByfqm36Iv8WINtKvV1xRW/0Fy0ufK4EjWyjTqcGYres9Tf1BmPjbQwYa0A2FaFp/zXK
-         K+LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693217082; x=1693821882;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YF+tBcFB8oUAJLRFh8palpJJ8k8VFrTFaU4dRCnVkd0=;
-        b=I14IKduwiSJrPH2U+dmOFS00EB4ph+H1KeR2c5MBGVmim/0VUiLGsiP+WJRihAjNwA
-         aLZd+WGq3d0abUkKi+zLU7JHoDhl28gkLoojs/XouZBpWl5yj26j40aTOWOIrLXsv9K9
-         0jRSTj+Vz9lmL1IIiPep3Og9I3/txRiE4ekpjqjGSDW7bbCzvhYftAIca60v9cPJR+Sf
-         375h0i+AUceM8S5KExQn2bCkFE4oJAa/DCBVw71wbyc2NGnYpsL5s1v77pk4kmJvCjJf
-         5DjjiAjbJGarVeKuWA87Izy+ZCVaX7yLtaei/Q9DRpg0wB9vz++UO48O4gsc0/oB3Mgw
-         EIQA==
-X-Gm-Message-State: AOJu0YwKywI+YEzMAhPBRxoPDwvMiosd6x7eFNVDp6vkPllOcdH1Y17E
-        dZfMVpGZEUPGw8jCrdz0acPi9OJlj5T/bC5rr8L4yl4Qyuw=
-X-Google-Smtp-Source: AGHT+IEv81ay/Ms7SUmOAPSoLX1ePrJ048tBBg1eModdvSwOMPYQRIS9QPxDdrcRZCdVbH6+/pImd7xxDum7wTcXELY=
-X-Received: by 2002:a17:906:8a51:b0:9a1:fab3:ee34 with SMTP id
- gx17-20020a1709068a5100b009a1fab3ee34mr9418974ejc.0.1693217082095; Mon, 28
- Aug 2023 03:04:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230810141947.1236730-1-arnd@kernel.org> <20230810141947.1236730-10-arnd@kernel.org>
-In-Reply-To: <20230810141947.1236730-10-arnd@kernel.org>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Mon, 28 Aug 2023 11:04:05 +0100
-Message-ID: <CADVatmNRd11Xmm1ReY+1Ce-SgnHcMizAa4DpvsCsG7Z7NLdObg@mail.gmail.com>
-Subject: Re: [PATCH 09/17] parport: gsc: mark init function static
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        linux-parisc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 28 Aug 2023 06:04:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7AFF0;
+        Mon, 28 Aug 2023 03:04:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 148E3636A2;
+        Mon, 28 Aug 2023 10:04:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66B3DC433C8;
+        Mon, 28 Aug 2023 10:04:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693217060;
+        bh=3uglxRxHCVBlYj77LCP9PKXSeoC/1ACisKVvIg3m+uo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ISr307Emdzl9j6R8c39totXjYQBozd39lfsy2+FHTmMKSGulcTvR4rAmJTzp093vI
+         8f9oAJ48Ra4Kh6JPYesJYSi+kAxsJKDBI8bY/D1SLEeJ7hPk84uClEaiuO+ZXBziVp
+         Ske9FgwJaMOSfbTYttw2xXHC5Am8Np2RdlibRpD9Rv9mSoShobGzkDcJRt993NlItJ
+         ApiSEfjs5Sklk9NzSw5bdg6oiU4gy/Alj56ZHxq2dbZ48+nnK3A1riZN0SZCTG83d7
+         LZyhSpf5OZ5V3HzkZycO++l/e7WMk7NADvwI0Aq+Niz4+Zr0PvdtngmU0h75xr6tOz
+         lP1UiJm5mhVvQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qaZ6S-008gWD-Rd;
+        Mon, 28 Aug 2023 11:04:12 +0100
+Date:   Mon, 28 Aug 2023 11:04:12 +0100
+Message-ID: <865y4zfppf.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 1/2] irqchip/qcom-pdc: don't read version register if it is not available
+In-Reply-To: <CAA8EJppmn5hM5=zdkQoaGAYghw822vP8YoW0wQsNmAZY0v7dtA@mail.gmail.com>
+References: <20230825213552.1646321-1-dmitry.baryshkov@linaro.org>
+        <09d89b1c-8c78-7671-a385-99c6a8910fde@quicinc.com>
+        <CAA8EJppmn5hM5=zdkQoaGAYghw822vP8YoW0wQsNmAZY0v7dtA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dmitry.baryshkov@linaro.org, quic_mkshah@quicinc.com, agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, tglx@linutronix.de, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, neil.armstrong@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 at 15:22, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> This is only used locally, so mark it static to avoid a warning:
->
-> drivers/parport/parport_gsc.c:395:5: error: no previous prototype for 'parport_gsc_init' [-Werror=missing-prototypes]
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, 28 Aug 2023 10:46:10 +0100,
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> 
+> On Mon, 28 Aug 2023 at 12:36, Maulik Shah (mkshah)
+> <quic_mkshah@quicinc.com> wrote:
+> >
+> > Hi Dmitry,
+> >
+> > This patch may be useful if there was a case where some PDCs don't have
+> > version register populated/available,
+> > In all PDC versions, version register is always available but due to reg
+> > size not good enough in device tree for SM8150 it failed to read.
+> >
+> > reg size in device node must be expanded if its too small to access all
+> > registers and i think
+> > additional check in driver to check if size is good enough would not be
+> > of much use.
+> 
+> Unfortunately, it doesn't work this way. DT files are ABI. Even if we
+> change the DT, the kernel should continue working with the older
+> version.
+> Thus, we have to add such bandaid code, which will keep the kernel
+> from crashing if old DT was used.
 
-Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+You're missing the point: all existing PDC HW have version register.
+The fact that the DT is crap doesn't invalidate this simple fact. It
+is thus perfectly possible for the driver to *ignore* the crap and do
+the right thing by expanding the size of the mapping, rather than
+falling back to the non-versioned code.
 
+There is definitely precedents for this sort of behaviour, such as the
+ARM GICv2 probe code.
+
+	M.
 
 -- 
-Regards
-Sudip
+Without deviation from the norm, progress is not possible.
