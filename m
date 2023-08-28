@@ -2,189 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 168F378A6C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F2078A6C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbjH1Hsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49920 "EHLO
+        id S229810AbjH1Hsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjH1HsG (ORCPT
+        with ESMTP id S229734AbjH1HsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Aug 2023 03:48:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B19F3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:48:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E77C617C4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:48:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8FA7C433C9;
-        Mon, 28 Aug 2023 07:47:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693208882;
-        bh=CFNiuixnb3UYTeuKjM3Rt3BAiDuLmUsszcQ+qqgsBa4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nkkvo6kaqwdfZYBHZaowW7k4gkQpMKWajPDj6R8aWMQPxZuFKru2HpZflXqXJ5Hzh
-         P15Z6c8TFZ6KKMlWYbPPvjxbbqDIqXk/m5O16S01HOrCRiCxpv3J2KV+XrDA5CvfcP
-         iJJXnBepDYMe0yGnpwVbJDbafVKwfHybH61cJjUlBozUlkzTgwqrWcM88kMcZu3kOM
-         KpK4bsGCVK5DY2Vn39dUkZ8YAhn1WxZjjKjKcdjkQ0ZmoCndjQpq2MW1Qr+DbyOHmr
-         36fkCyXJ2KPjOpD3193v/wCZ5HcaJBmMDFXvdlGpBz1BmamrJTlpsrPzvzEeLfwQm9
-         gv9IXuZwUfZiQ==
-Date:   Mon, 28 Aug 2023 10:47:29 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        fam.zheng@bytedance.com, liangma@liangbit.com,
-        punit.agrawal@bytedance.com
-Subject: Re: [v3 3/4] memblock: introduce MEMBLOCK_RSRV_NOINIT_VMEMMAP flag
-Message-ID: <20230828074729.GC3223@kernel.org>
-References: <20230825111836.1715308-1-usama.arif@bytedance.com>
- <20230825111836.1715308-4-usama.arif@bytedance.com>
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A02114;
+        Mon, 28 Aug 2023 00:48:00 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 77DBC7FDC;
+        Mon, 28 Aug 2023 15:47:53 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 28 Aug
+ 2023 15:47:53 +0800
+Received: from [192.168.125.72] (113.72.145.245) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 28 Aug
+ 2023 15:47:52 +0800
+Message-ID: <8390fffb-c704-286f-44b9-4e0d24818343@starfivetech.com>
+Date:   Mon, 28 Aug 2023 15:47:51 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825111836.1715308-4-usama.arif@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [RFC v4 0/4] StarFive's Pulse Width Modulation driver support
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor@kernel.org>,
+        William Qiu <william.qiu@starfivetech.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20230825081328.204442-1-william.qiu@starfivetech.com>
+ <20230825-exclusion-doing-93532be4fa97@spud>
+ <a49737f0-0a09-b558-ea06-b3d47a6e4240@starfivetech.com>
+ <683df184-6688-f006-c4d8-fa7000b7b771@linaro.org>
+From:   Hal Feng <hal.feng@starfivetech.com>
+In-Reply-To: <683df184-6688-f006-c4d8-fa7000b7b771@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.145.245]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 12:18:35PM +0100, Usama Arif wrote:
-> For reserved memory regions marked with this flag,
-> reserve_bootmem_region is not called during memmap_init_reserved_pages.
-> This can be used to avoid struct page initialization for
-> regions which won't need them, for e.g. hugepages with
-> HVO enabled.
+On 8/28/2023 3:16 PM, Krzysztof Kozlowski wrote:
+> On 28/08/2023 09:12, Hal Feng wrote:
+>> On Fri, 25 Aug 2023 16:06:12 +0100, Conor Dooley wrote:
+>>> On Fri, Aug 25, 2023 at 04:13:24PM +0800, William Qiu wrote:
+>>>> Hi,
+>>>>
+>>>> This patchset adds initial rudimentary support for the StarFive
+>>>> Pulse Width Modulation controller driver. And this driver will
+>>>> be used in StarFive's VisionFive 2 board.The first patch add
+>>>> Documentations for the device and Patch 2 adds device probe for
+>>>> the module.
+>>>>
+>>>> Changes v3->v4:
+>>>> - Rebased to v6.5rc7.
+>>>> - Sorted the header files in alphabetic order.
+>>>> - Changed iowrite32() to writel().
+>>>> - Added a way to turn off.
+>>>> - Moified polarity inversion implementation.
+>>>> - Added 7100 support.
+>>>> - Added dts patches.
+>>>> - Used the various helpers in linux/math.h.
+>>>> - Corrected formatting problems.
+>>>> - Renamed dtbinding  to 'starfive,jh7100-pwm.yaml'.
+>>>> - Dropped the redundant code.
+>>>>
+>>>> Changes v2->v3:
+>>>> - Fixed some formatting issues.
+>>>>
+>>>> Changes v1->v2:
+>>>> - Renamed the dt-binding 'pwm-starfive.yaml' to 'starfive,jh7110-pwm.yaml'.
+>>>> - Dropped the compatible's Items.
+>>>> - Dropped the unuse defines.
+>>>> - Modified the code to follow the Linux coding style.
+>>>> - Changed return value to dev_err_probe.
+>>>> - Dropped the unnecessary local variable.
+>>>>
+>>>> The patch series is based on v6.5rc7.
+>>>
+>>> Out of curiosity, why is this series still an RFC?
+>> 
+>> There was no comments received in v4. So William resend it and
+>> request for comments.
 > 
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-> ---
->  include/linux/memblock.h | 10 ++++++++++
->  mm/memblock.c            | 32 +++++++++++++++++++++++++++-----
->  2 files changed, 37 insertions(+), 5 deletions(-)
+> The question was: why he requests for comments?
 > 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index f71ff9f0ec81..6d681d053880 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -40,6 +40,8 @@ extern unsigned long long max_possible_pfn;
->   * via a driver, and never indicated in the firmware-provided memory map as
->   * system RAM. This corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED in the
->   * kernel resource tree.
-> + * @MEMBLOCK_RSRV_NOINIT_VMEMMAP: memory region for which struct pages are
-> + * not initialized (only for reserved regions).
->   */
->  enum memblock_flags {
->  	MEMBLOCK_NONE		= 0x0,	/* No special request */
-> @@ -47,6 +49,8 @@ enum memblock_flags {
->  	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
->  	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
->  	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
-> +	/* don't initialize struct pages associated with this reserver memory block */
-> +	MEMBLOCK_RSRV_NOINIT_VMEMMAP	= 0x10,
+> RFC means *it should not be merged, it is not ready*.
 
-The flag means that struct page shouldn't be initialized, it may be used
-not only by vmemmap optimizations.
-Please drop _VMEMMAP.
+Oh, it was misunderstood by William and me.
+So this series is not a RFC.
 
-And I agree with Muchun's remarks about the comments.
-
-
-
->  };
->  
->  /**
-> @@ -125,6 +129,7 @@ int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
->  int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
->  int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
->  int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
-> +int memblock_reserved_mark_noinit_vmemmap(phys_addr_t base, phys_addr_t size);
-
-memblock does not care about vmemmap, please drop _vmemmap here and below as well.
-  
->  void memblock_free_all(void);
->  void memblock_free(void *ptr, size_t size);
-> @@ -259,6 +264,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
->  	return m->flags & MEMBLOCK_NOMAP;
->  }
->  
-> +static inline bool memblock_is_noinit_vmemmap(struct memblock_region *m)
-
-memblock_is_reserved_noinit please.
-
-> +{
-> +	return m->flags & MEMBLOCK_RSRV_NOINIT_VMEMMAP;
-> +}
-> +
->  static inline bool memblock_is_driver_managed(struct memblock_region *m)
->  {
->  	return m->flags & MEMBLOCK_DRIVER_MANAGED;
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 43cb4404d94c..a9782228c840 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -991,6 +991,23 @@ int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
->  	return memblock_setclr_flag(&memblock.memory, base, size, 0, MEMBLOCK_NOMAP);
->  }
->  
-> +/**
-> + * memblock_reserved_mark_noinit_vmemmap - Mark a reserved memory region with flag
-> + * MEMBLOCK_RSRV_NOINIT_VMEMMAP.
-
-this should be about what marking RSRV_NOINIT does, not what flag it uses
-
-> + * @base: the base phys addr of the region
-> + * @size: the size of the region
-> + *
-> + * struct pages will not be initialized for reserved memory regions marked with
-> + * %MEMBLOCK_RSRV_NOINIT_VMEMMAP.
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +int __init_memblock memblock_reserved_mark_noinit_vmemmap(phys_addr_t base, phys_addr_t size)
-> +{
-> +	return memblock_setclr_flag(&memblock.reserved, base, size, 1,
-> +				    MEMBLOCK_RSRV_NOINIT_VMEMMAP);
-> +}
-> +
->  static bool should_skip_region(struct memblock_type *type,
->  			       struct memblock_region *m,
->  			       int nid, int flags)
-> @@ -2107,13 +2124,18 @@ static void __init memmap_init_reserved_pages(void)
->  		memblock_set_node(start, end, &memblock.reserved, nid);
->  	}
->  
-> -	/* initialize struct pages for the reserved regions */
-> +	/*
-> +	 * initialize struct pages for reserved regions that don't have
-> +	 * the MEMBLOCK_RSRV_NOINIT_VMEMMAP flag set
-> +	 */
->  	for_each_reserved_mem_region(region) {
-> -		nid = memblock_get_region_node(region);
-> -		start = region->base;
-> -		end = start + region->size;
-> +		if (!memblock_is_noinit_vmemmap(region)) {
-> +			nid = memblock_get_region_node(region);
-> +			start = region->base;
-> +			end = start + region->size;
->  
-> -		reserve_bootmem_region(start, end, nid);
-> +			reserve_bootmem_region(start, end, nid);
-> +		}
->  	}
->  }
->  
-> -- 
-> 2.25.1
-> 
-
--- 
-Sincerely yours,
-Mike.
+Best regards,
+Hal
