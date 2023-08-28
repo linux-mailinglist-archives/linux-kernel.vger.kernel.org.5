@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CB278A48D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192BC78A491
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 04:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjH1CQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Aug 2023 22:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        id S229603AbjH1CRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Aug 2023 22:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjH1CPd (ORCPT
+        with ESMTP id S229974AbjH1CRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Aug 2023 22:15:33 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017A5198;
-        Sun, 27 Aug 2023 19:15:03 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6874a386ec7so245170b3a.1;
-        Sun, 27 Aug 2023 19:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693188903; x=1693793703;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ue+CxuSDtyTYvwjrZI51+SYlIrMgm3DrcfChgWaBaBo=;
-        b=nu5VR2Q+m1SzatCfC+hiOx+NVGpmEIkwaZr1G/mduu1Y5LvTzOcLCKxska7gXWnhLb
-         mltuXuK3HtTBiIvy0jvowUXvuZpQximHM/OwQniwyH665wS4zqUSpbaFaA2GBjeecPQ2
-         oJIRT2Ao3/Mow+d1AgW9QRImffrecJpH4dTPrdEDC67yFngsLtriWe37E4aIw6Jhhevw
-         jBAn3x0DsZjYleT5Rx+rO+duCAbQicDoA4oITqZAUBuvjoa/2DGb2DJLwxQmyr3iwevm
-         ZQl5NVWt2AzX9odPmBNw+z15Atk8uLtgGZxBADSxKzZdSuojpY99u5M+9Hg//zWZTfxg
-         3A8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693188903; x=1693793703;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ue+CxuSDtyTYvwjrZI51+SYlIrMgm3DrcfChgWaBaBo=;
-        b=U5OUhO7Gv2s4Wfe6L0fzGhHizp6vRWtKJ52OeO7SGdnt58sM0455J1mn6AlZJGMKB7
-         YzDMKFfk7z7Rx97ihWwQ6fnHAbif7iAd9QB2HrA8IihxuXchB2m8FCVSYi5daOy+8aBW
-         uSQh5oJhjEJyLYSUhYEcS7sKp9zMMa8T7sqNqXryVp+FXUHiMmI7KTlMzrSqJBmgTtQu
-         7zzTPe4sd+XODoxJdYWz0TgthUgRE18KvcUx+ANJsvvOimzWpHT+uMB8AD/tAPwfmA8a
-         0vPZbpDQUVsh+3LPQcdGjK+I8qD41knu6+QuWZOaEY1Bbk+7oggI39dhjuTAyAQ/qBki
-         xztg==
-X-Gm-Message-State: AOJu0YwC68eo9H9d2033FvtxlBSh4vmGQOUoxydHQhiF4HCVMMJMVvdN
-        E+O2HOAK3eP3BLDhV8JI4aw=
-X-Google-Smtp-Source: AGHT+IHN8Fl8NxVm4qZhrKUgyN/xyGKFzRASfTqOLe7L6wZHAG3dfs74EByha7PmEEiqFWQ/Y/1/3w==
-X-Received: by 2002:a05:6a00:2d88:b0:68b:68de:5848 with SMTP id fb8-20020a056a002d8800b0068b68de5848mr17170824pfb.3.1693188903353;
-        Sun, 27 Aug 2023 19:15:03 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id bm2-20020a056a00320200b00687196f369esm5520055pfb.62.2023.08.27.19.15.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 19:15:02 -0700 (PDT)
-Date:   Sun, 27 Aug 2023 19:15:00 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 7/7] net: stmmac: Make PTP reference clock
- references more clear
-Message-ID: <ZOwDJB5cFEPGEoPk@hoboy.vegasvil.org>
-References: <20230824-stmmac-subsecond-inc-cleanup-v1-0-e0b9f7c18b37@redhat.com>
- <20230824-stmmac-subsecond-inc-cleanup-v1-7-e0b9f7c18b37@redhat.com>
+        Sun, 27 Aug 2023 22:17:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2360C9E
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 19:17:33 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 178D82F4;
+        Sun, 27 Aug 2023 19:18:13 -0700 (PDT)
+Received: from [10.163.57.227] (unknown [10.163.57.227])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 852B93F740;
+        Sun, 27 Aug 2023 19:17:28 -0700 (PDT)
+Message-ID: <31db1d51-68f0-59cf-527c-5aebef1663c2@arm.com>
+Date:   Mon, 28 Aug 2023 07:47:31 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824-stmmac-subsecond-inc-cleanup-v1-7-e0b9f7c18b37@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V5 0/4] coresight: trbe: Enable ACPI based devices
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        kernel-team@android.com,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, yangyicong@huawei.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sami Mujawar <sami.mujawar@arm.com>,
+        Leo Yan <leo.yan@linaro.org>
+References: <20230817055405.249630-1-anshuman.khandual@arm.com>
+ <169237557557.1402587.14721093106016169238.b4-ty@kernel.org>
+ <f8f13510-ec6a-b18b-d9ff-9247b250bc03@arm.com>
+ <20230821112851.GC19469@willie-the-truck>
+ <311d0ecf-dddf-dcf5-9545-3f8a51634a9a@arm.com>
+Content-Language: en-US
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <311d0ecf-dddf-dcf5-9545-3f8a51634a9a@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,19 +57,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 01:32:58PM -0500, Andrew Halaney wrote:
 
-> @@ -34,14 +34,14 @@ static void config_sub_second_increment(void __iomem *ioaddr,
->  	 * increment to twice the number of nanoseconds of a clock cycle.
->  	 * The calculation of the default_addend value by the caller will set it
->  	 * to mid-range = 2^31 when the remainder of this division is zero,
-> -	 * which will make the accumulator overflow once every 2 ptp_clock
-> +	 * which will make the accumulator overflow once every 2 clk_ptp_rate
->  	 * cycles, adding twice the number of nanoseconds of a clock cycle :
-> -	 * 2 * NSEC_PER_SEC / ptp_clock.
-> +	 * 2 * NSEC_PER_SEC / clk_ptp_rate.
->  	 */
 
-This part of the driver is complete garbage.  But that isn't your fault.
+On 8/28/23 03:41, Suzuki K Poulose wrote:
+> On 21/08/2023 12:28, Will Deacon wrote:
+>> On Sat, Aug 19, 2023 at 08:36:28AM +0100, Suzuki K Poulose wrote:
+>>> On 18/08/2023 19:04, Will Deacon wrote:
+>>>> On Thu, 17 Aug 2023 11:24:01 +0530, Anshuman Khandual wrote:
+>>>>> This series enables detection of ACPI based TRBE devices via a stand alone
+>>>>> purpose built representative platform device. But as a pre-requisite this
+>>>>> changes coresight_platform_data structure assignment for the TRBE device.
+>>>>>
+>>>>> This series is based on v6.5-rc5 kernel, is also dependent on the following
+>>>>> EDK2 changes posted earlier by Sami.
+>>>>>
+>>>>> [...]
+>>>>
+>>>> Applied to will (for-next/perf), thanks!
+>>>>
+>>>> [1/4] arm_pmu: acpi: Refactor arm_spe_acpi_register_device()
+>>>>         https://git.kernel.org/will/c/81e5ee471609
+>>>> [2/4] arm_pmu: acpi: Add a representative platform device for TRBE
+>>>>         https://git.kernel.org/will/c/1aa3d0274a4a
+>>>> [3/4] coresight: trbe: Add a representative coresight_platform_data for TRBE
+>>>>         https://git.kernel.org/will/c/e926b8e9eb40
+>>>
+>>> This will conflict with what I have (already) sent to Greg for
+>>> coresight/next. Please let me know how you would like handle it
+>>
+>> Hmm, the rationale behind your change to make the pdata allocation
+>> per-device in ("coresight: trbe: Allocate platform data per device")
+>> confuses me: with Anshuman's change to allocate the pdata using
+>> devm_kzalloc(), there shouldn't be any connections for the coresight
+>> core to trip over, should there?
+> 
+> Anshuman's patch is working around the problem of "TRBE platform
+> device with ACPI doesn't have a valid companion device" - this is a problem for the acpi_get_coresight_platform_data(). The work
+> around is to move the "allocation" from coresight_get_platform_data()
+> to the driver (given we don't need anything else from the ACPI except
+> the IRQ). That doesn't change *how* it is allocated.
+> Also please note that, the TRBE driver creates a TRBE coresight_device per-CPU and the platform data is shared by all of these devices, which
+> the coresight core driver doesn't cope with. The other option is to
+> move the releasing of these platform-data to the individual drivers,
+> which is quite an invasive change. Or, make the core driver tolerate
+> a NULL platform data, which is also again invasive. So the merged fix
+> is correct and is still valid after this patch.
+> 
+>>
+>> It would've been nice to know about the conflict earlier, but since I
+>> think you're away this week and we're likely to hit the merge window
+>> next week, I'm going to drop the coresight patches for now.
+> 
+> Apologies, I was expecting to queue the changes via coresight tree,
+> given how it was affecting the tree and was awaiting your Ack. However
+> I didn't confirm it on the list, which is my mistake.
+> 
+> The other problem was reported and the fix eventually had to
+> conflict with Anshuman's series, which he was made aware of.
+> Given, your Ack was missing I hoping that Anshuman could respin
+> the series with your Ack on top of the fix and eventually queue
+> that via my tree.
 
-Richard
+As Will had picked up the series for arm64 tree, I had assumed that the
+conflict fix will be taken care of in the process. Hence did not resend
+the series, but it got suddenly dropped.
+
+I am wondering - would it be worth re-spinning the series now fixing the
+conflict, does it even have a chance for 6.6-rc1 ? Otherwise, will respin
+the series after the merge window is over.
