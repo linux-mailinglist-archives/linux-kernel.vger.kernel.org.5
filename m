@@ -2,182 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1200E78A647
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292CA78A64C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjH1HLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S229635AbjH1HLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjH1HLA (ORCPT
+        with ESMTP id S229634AbjH1HL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:11:00 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1751E0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:10:57 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bcfe28909so357303366b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693206656; x=1693811456;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zWhn4TLCrD9nnYOeDxCtGtHbvSHL8FcsnQppWoyo1ZQ=;
-        b=gz6VYD7cQSaCPEwUNZgwzM/ul0NvtDfRQCO3N4xGbmGYLoyXrp30hzbcCCSi1GbHv1
-         fo229owV2HnlbLRnnAdtpMlHtwF+Bnkc1J2rsT0ae/U7CR9jT7iCvkeIFKLM7w4BKFT3
-         WLWt0heF6JIgS1Tq96QJXN7NagjUdzAZr1my5Ao2JYFO/rgMTzB/DfPy2Y1iNVSo1JfC
-         Lb8+5ocFBN7aPl0/ZSBtQWgYttYD1jsg77tW0mgnvt7m28oBVezXqjEF+KuGYL4WFsOf
-         cLUup4wUViblHcreJJYwYY0SJfIL2dzCY51behwy3ny2qK9AHR43qeKMzRsJBgacDbJc
-         elRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693206656; x=1693811456;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zWhn4TLCrD9nnYOeDxCtGtHbvSHL8FcsnQppWoyo1ZQ=;
-        b=NIx8jZEgH4C+DP0wjs3YcrQ+tfxoK5TTWtvcmJD1noUS3PSryYbAMpkPwVi9itjKrd
-         UkvdaOYzjqPwMv6z9lT7Nyn4Te5kbOIildlZh8dnbn7T7zXz5u0vGiDhZWDrzfwRZM1S
-         SrRr1zcNBBKaPQvR9CxfFGfriPH6qNLiX1NPaLmKqMetGDYex6Yd7G0UsS3lRoOg4jo3
-         UKx0LEqpPArZztVr/YnHfnar9DdvkhJhua0i6Y8/NT5OJOVghirW3LI8ui47LZbndRaq
-         6TV3ISnJWl6A47WB7hoEB6ysEkmViDUqqn+UHouAAf0cDLEwZsc2tMUWtLqH6ZwkEmhq
-         qNAg==
-X-Gm-Message-State: AOJu0YzbEw/fzM8WNMIkbbkHv7lKqnlZqDjX1G1+6OLyu7hOXnGjvBER
-        8J3GHvIiezNGXW/LRlf8lEOqbQ==
-X-Google-Smtp-Source: AGHT+IEaCRRwj6SO7Oi8ML0+d8UnRRo5zK1JU0aNPKESlrbjf2ZzvRCrS2h+a1pGRnqMm/7ZRhUQGw==
-X-Received: by 2002:a17:906:7391:b0:9a1:c659:7c62 with SMTP id f17-20020a170906739100b009a1c6597c62mr11455127ejl.66.1693206656333;
-        Mon, 28 Aug 2023 00:10:56 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.225])
-        by smtp.gmail.com with ESMTPSA id h1-20020a1709062dc100b0098921e1b064sm4269753eji.181.2023.08.28.00.10.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 00:10:55 -0700 (PDT)
-Message-ID: <eccc6a7a-b30f-8c77-77cb-5deef47a1954@linaro.org>
-Date:   Mon, 28 Aug 2023 09:10:54 +0200
+        Mon, 28 Aug 2023 03:11:26 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3229D8;
+        Mon, 28 Aug 2023 00:11:21 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RZ1s33MzjzrSCZ;
+        Mon, 28 Aug 2023 15:09:43 +0800 (CST)
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 28 Aug 2023 15:11:19 +0800
+Subject: Re: [PATCH v3] mm: vmscan: try to reclaim swapcache pages if no swap
+ space
+To:     "Huang, Ying" <ying.huang@intel.com>
+References: <20230826034401.640861-1-liushixin2@huawei.com>
+ <87il9053zo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+CC:     Yosry Ahmed <yosryahmed@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <wangkefeng.wang@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <2992c888-b8c7-d93b-d132-ea90e2c516e3@huawei.com>
+Date:   Mon, 28 Aug 2023 15:11:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v6 1/2] dt-binding: pinctrl: Add NPCM8XX pinctrl and GPIO
- documentation
-Content-Language: en-US
-To:     Tomer Maimon <tmaimon77@gmail.com>, linus.walleij@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net
-Cc:     openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-References: <20230827203612.173562-1-tmaimon77@gmail.com>
- <20230827203612.173562-2-tmaimon77@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230827203612.173562-2-tmaimon77@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <87il9053zo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/2023 22:36, Tomer Maimon wrote:
-> Added device tree binding documentation for Nuvoton Arbel BMC NPCM8XX
-> pinmux and GPIO controller.
-> 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
 
 
-> +  '^pin':
-> +    $ref: pincfg-node.yaml#
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          A list of pins to configure in certain ways, such as enabling
-> +          debouncing
+On 2023/8/28 9:51, Huang, Ying wrote:
+> Liu Shixin <liushixin2@huawei.com> writes:
+>
+>> When spaces of swap devices are exhausted, only file pages can be reclaimed.
+>> But there are still some swapcache pages in anon lru list. This can lead
+>> to a premature out-of-memory.
+>>
+>> This problem can be fixed by checking number of swapcache pages in
+>> can_reclaim_anon_pages().
+>>
+>> Add a new bit swapcache_only in struct scan_control to skip isolating anon
+>> pages that are not in the swap cache when only swap cache can be reclaimed.
+> Better to describe how you test the patch and test results.
+OK, I will add the infomation.
+>
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> ---
+>>  include/linux/swap.h |  6 ++++++
+>>  mm/memcontrol.c      |  8 ++++++++
+>>  mm/vmscan.c          | 29 +++++++++++++++++++++++++++--
+>>  3 files changed, 41 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 456546443f1f..0318e918bfa4 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
+>>  }
+>>  
+>>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+>> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+>>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>>  #else
+>>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+>> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>  	return get_nr_swap_pages();
+>>  }
+>>  
+>> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +	return total_swapcache_pages();
+>> +}
+>> +
+>>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>  	return vm_swap_full();
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index e8ca4bdcb03c..c465829db92b 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>  	return nr_swap_pages;
+>>  }
+>>  
+>> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +	if (mem_cgroup_disabled())
+>> +		return total_swapcache_pages();
+>> +
+>> +	return memcg_page_state(memcg, NR_SWAPCACHE);
+>> +}
+>> +
+>>  bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>  	struct mem_cgroup *memcg;
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 7c33c5b653ef..5cb4adf6642b 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -137,6 +137,9 @@ struct scan_control {
+>>  	/* Always discard instead of demoting to lower tier memory */
+>>  	unsigned int no_demotion:1;
+>>  
+>> +	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
+>> +	unsigned int swapcache_only:1;
+>> +
+>>  	/* Allocation order */
+>>  	s8 order;
+>>  
+>> @@ -613,10 +616,20 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>>  		 */
+>>  		if (get_nr_swap_pages() > 0)
+>>  			return true;
+>> +		/* Is there any swapcache pages to reclaim? */
+>> +		if (total_swapcache_pages() > 0) {
+>> +			sc->swapcache_only = 1;
+>> +			return true;
+>> +		}
+>>  	} else {
+>>  		/* Is the memcg below its swap limit? */
+>>  		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>>  			return true;
+>> +		/* Is there any swapcache pages in memcg to reclaim? */
+>> +		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
+>> +			sc->swapcache_only = 1;
+>> +			return true;
+>> +		}
+>>  	}
+>>  
+>>  	/*
+>> @@ -2280,6 +2293,19 @@ static bool skip_cma(struct folio *folio, struct scan_control *sc)
+>>  }
+>>  #endif
+>>  
+>> +static bool skip_isolate(struct folio *folio, struct scan_control *sc,
+>> +			 enum lru_list lru)
+>> +{
+>> +	if (folio_zonenum(folio) > sc->reclaim_idx)
+>> +		return true;
+>> +	if (skip_cma(folio, sc))
+>> +		return true;
+>> +	if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
+>> +	    !folio_test_swapcache(folio)))
+> Just
+>
+> 	if (unlikely(sc->swapcache_only && !folio_test_swapcache(folio)))
+>
+> is enough.
+That would results the file pages to be skipped too, but what expected is to skip non-swapcache
+pages in anon lru list. So I think the condition !is_file_lru(lru) is required.
 
-What pin names are allowed?
-
-> +
-> +      bias-disable: true
-> +
-> +      bias-pull-up: true
-> +
-> +      bias-pull-down: true
-> +
-> +      input-enable: true
-> +
-> +      output-low: true
-> +
-> +      output-high: true
-> +
-> +      drive-push-pull: true
-> +
-> +      drive-open-drain: true
-> +
-> +      input-debounce:
-> +        description:
-> +          Debouncing periods in microseconds, one period per interrupt
-> +          bank found in the controller
-> +        $ref: /schemas/types.yaml#/definitions/uint32-array
-> +        minItems: 1
-> +        maxItems: 4
-> +
-> +      slew-rate:
-> +        description: |
-> +          0: Low rate
-> +          1: High rate
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [0, 1]
-> +
-> +      drive-strength:
-> +        enum: [ 0, 1, 2, 4, 8, 12 ]
-> +
-> +    additionalProperties: false
-> +
-> +allOf:
-> +  - $ref: pinctrl.yaml#
-> +
-> +required:
-> +  - compatible
-> +  - ranges
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - nuvoton,sysgcr
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      pinctrl: pinctrl@f0800260 {
-
-Nothing improved here. Test your DTS. This is being reported - I checked.
-
-> +        compatible = "nuvoton,npcm845-pinctrl";
-> +        ranges = <0x0 0x0 0xf0010000 0x8000>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        nuvoton,sysgcr = <&gcr>;
-> +
-> +        gpio0: gpio@0 {
-> +          gpio-controller;
-> +          #gpio-cells = <2>;
-> +          reg = <0x0 0xB0>;
-
-Keep lowercase hex.
-
-
-Best regards,
-Krzysztof
+Thanks,
+>
+>> +		return true;
+>> +	return false;
+>> +}
+>> +
+>>  /*
+>>   * Isolating page from the lruvec to fill in @dst list by nr_to_scan times.
+>>   *
+>> @@ -2326,8 +2352,7 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
+>>  		nr_pages = folio_nr_pages(folio);
+>>  		total_scan += nr_pages;
+>>  
+>> -		if (folio_zonenum(folio) > sc->reclaim_idx ||
+>> -				skip_cma(folio, sc)) {
+>> +		if (skip_isolate(folio, sc, lru)) {
+>>  			nr_skipped[folio_zonenum(folio)] += nr_pages;
+>>  			move_to = &folios_skipped;
+>>  			goto move;
+> --
+> Best Regards,
+> Huang, Ying
+> .
+>
 
