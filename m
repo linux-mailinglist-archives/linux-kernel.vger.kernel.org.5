@@ -2,74 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF6778AE6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB96878AE6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjH1LF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        id S232413AbjH1LE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbjH1LFC (ORCPT
+        with ESMTP id S232412AbjH1LEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:05:02 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068F6AB
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:04:59 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37SB4aIC113761;
-        Mon, 28 Aug 2023 06:04:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693220676;
-        bh=Wg5gLNloF2HPALm7TXuVipHiVIXcFi/HXierxrbJZJg=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=pV4kqEFk4DaIWp9X3lNVyJDl2XyqWC4hfAKgEUWp7jrrXakRaJKlhN4nugKEnYxwl
-         W/+hpEQWG8k3iVv6qMO3Yo0k2y+dRzhgwNRTm9k/8OBzXNKIy06utMi7ZObMRb1sRU
-         ocIP+ZpKMuOu/dGx/Wg2I2FM2Lee/SZDr99s7L7I=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37SB4aI9090914
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Aug 2023 06:04:36 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 28
- Aug 2023 06:04:36 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 28 Aug 2023 06:04:36 -0500
-Received: from [172.24.227.132] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37SB4U9T020731;
-        Mon, 28 Aug 2023 06:04:31 -0500
-Message-ID: <d2deac24-d5ab-e1c4-81c5-4874c2f5ea07@ti.com>
-Date:   Mon, 28 Aug 2023 16:34:30 +0530
+        Mon, 28 Aug 2023 07:04:38 -0400
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E66EAB
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:04:35 -0700 (PDT)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bde8160fbdso28463855ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:04:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693220675; x=1693825475;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GAE+2HYfYhVD8qu8qviilvat+opvTDEp0h5ZbXA1nw0=;
+        b=ZId39NNGM4M04BCnaWZBQ2c76ekKlL/D5/RhIrp7hmebVGT4du7+w1jXHEc+WSKnqE
+         o3PDf089DpCkg2SNfzU/mfCZFNhEC9f1Xvf74+Kxs0WFgb4ugvxMNIueUwFDpQJfVH9m
+         in6YfQRcD1ZLdQ+A7DWTpf9p1I49MIinv3qt1j4mFrx/ONagn3p6+ONsTTblIVD9qk4E
+         mhgk6F8xxVOcLEYX+xnQT44DnY+6+prf2SuxA2EJ97SBTrHrJbGdRcLlBccW2LWClGt8
+         YkXi4yRCCdtanBBrupNwwzSw+y+079+Xg/ym+L4SbkpWFMSHJV1BnkatLnTtKfTja7Uy
+         AE/A==
+X-Gm-Message-State: AOJu0YwfuuphqtDIWBIDkG7LNu5eHME/LgV789fWWO4sjEF0hLReMmgD
+        lT1b21XPlZj9VhlGgq7Tt8BQf0sbodtLVsPp0GifgdaV3x3w
+X-Google-Smtp-Source: AGHT+IFtCvS9uIpt8BB6QQL11faTq/pEr68bIeSxnFL9V6zDVg+aAGJnEno0RzC2BePxdA/cK8YI43XG3c2DuOuX+BftQknj85iq
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] drm: bridge: it66121: Fix invalid connector dereference
-To:     Jai Luthra <j-luthra@ti.com>, Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        "Andy.Hsieh" <Andy.Hsieh@mediatek.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devarsht@ti.com>,
-        <nm@ti.com>
-References: <20230825-it66121_edid-v1-1-3ab54923e472@ti.com>
-Content-Language: en-US
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20230825-it66121_edid-v1-1-3ab54923e472@ti.com>
+X-Received: by 2002:a17:902:da8b:b0:1b8:8fe2:6627 with SMTP id
+ j11-20020a170902da8b00b001b88fe26627mr9022025plx.8.1693220674964; Mon, 28 Aug
+ 2023 04:04:34 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 04:04:34 -0700
+In-Reply-To: <20230828103004.3804-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000db957b0603f9a837@google.com>
+Subject: Re: [syzbot] [ceph?] [fs?] KASAN: slab-use-after-free Read in ceph_compare_super
+From:   syzbot <syzbot+2b8cbfa6e34e51b6aa50@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,60 +55,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jai,
+Hello,
 
-Thanks for debugging the issue.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-On 25-Aug-23 16:32, Jai Luthra wrote:
-> Fix the NULL pointer dereference when no monitor is connected, and the
-> sound card is opened from userspace.
-> 
-> Instead return an error as EDID information cannot be provided to
-> the sound framework if there is no connector attached.
-> 
-> Fixes: e0fd83dbe924 ("drm: bridge: it66121: Add audio support")
-> Reported-by: Nishanth Menon <nm@ti.com>
-> Closes: https://lore.kernel.org/all/20230825105849.crhon42qndxqif4i@gondola/
-> Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> ---
->  drivers/gpu/drm/bridge/ite-it66121.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-> index 466641c77fe9..d6fa00dea464 100644
-> --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> @@ -1446,6 +1446,11 @@ static int it66121_audio_get_eld(struct device *dev, void *data,
->  {
->  	struct it66121_ctx *ctx = dev_get_drvdata(dev);
->  
-> +	if (!ctx->connector) {
-> +		dev_dbg(dev, "No connector present, cannot provide EDID data");
-> +		return -EINVAL;
-> +	}
-> +
+failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git on commit 28c736b0e92e: failed to run ["git" "fetch" "--force" "--tags" "fc608f7504e8b3e110eb6e7b798cef357818c5e1"]: exit status 1
+From https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next
+ + 28c736b0e92e...2ee82481c392 master        -> fc608f7504e8b3e110eb6e7b798cef357818c5e1/master  (forced update)
+ + 0b86d65557b6...63006762d709 pending-fixes -> fc608f7504e8b3e110eb6e7b798cef357818c5e1/pending-fixes  (forced update)
+   f7757129e3de..2dde18cd1d8f  stable        -> fc608f7504e8b3e110eb6e7b798cef357818c5e1/stable
+ * [new tag]                   next-20230828 -> next-20230828
+error: cannot lock ref 'refs/tags/v6.5': 'refs/tags/v6.5/vfs.fixes' exists; cannot create 'refs/tags/v6.5'
+ ! [new tag]                   v6.5          -> v6.5  (unable to update local ref)
+error: some local refs could not be updated; try running
+ 'git remote prune fc608f7504e8b3e110eb6e7b798cef357818c5e1' to remove any old, conflicting branches
 
-There are not many HDMI bridges that support codecs in the kernel, but
-upon a quick look, bridge/analogix/anx7625.c and
-bridge/synopsys/dw-hdmi* gracefully return a buffer of 0s when the
-connector is unavailable.
 
-I am not sure why that is done, but I also don't see the hdmi-codec
-driver handle the 0s situation properly. It is business as usual for the
-hdmi-codec.
 
-Did you come across some observation when you were testing?
+Tested on:
 
-Regards
-Aradhya
-
->  	mutex_lock(&ctx->lock);
->  
->  	memcpy(buf, ctx->connector->eld,
-> 
-> ---
-> base-commit: 6269320850097903b30be8f07a5c61d9f7592393
-> change-id: 20230825-it66121_edid-6ee98517808b
-> 
-> Best regards,
+commit:         [unknown 
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 28c736b0e92e
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20999f779fa96017
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b8cbfa6e34e51b6aa50
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=108a71dfa80000
 
