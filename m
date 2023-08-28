@@ -2,64 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4B878B3FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7B978B400
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 17:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjH1PH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 11:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        id S232209AbjH1PI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 11:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbjH1PHc (ORCPT
+        with ESMTP id S232140AbjH1PID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 11:07:32 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A100F0;
-        Mon, 28 Aug 2023 08:07:29 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.186.61])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id AAAC366003AF;
-        Mon, 28 Aug 2023 16:07:23 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693235248;
-        bh=sr9SjVvaxxnuxLehHItSO7my0Y1+sMDPHbIQTOSR8vA=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=BpI/MBIrLv8briDSnCEbNdRGggJWxzTSLJYgwYb97A2RHl87D6CDyXVsJzrid2PkY
-         rimEGAwMgCfAuCT3GOVNmwo7NtXOsWcKMkdmKi7PE6eN3seTc5hSPqUriL182O3vWT
-         EqEW+m4pqQhXKGSaG3h31PE7LmYM1XInHEpgNec+M+robCFkGm10PIBQkWeX125tJn
-         tkJhcf22RW3UNoPxg1mLM9JiVXx9+/hS2z7P/LSK3Oa7QoFmTfFLLmoduzJbwoaR0R
-         hgLeZFwA4KP8cw7dQbB022kXj9HwV76puRDlnzEd34BLXDcP497h4GxxpFJBK93U5O
-         YiY5J6VLrgU5g==
-Message-ID: <edeca3d3-bf4c-4c5d-8879-dca5173b6659@collabora.com>
-Date:   Mon, 28 Aug 2023 20:07:16 +0500
+        Mon, 28 Aug 2023 11:08:03 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC3DD9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:07:59 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4ff09632194so5344338e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 08:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693235278; x=1693840078;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ul6FRFi92oOWpvyHep3fuCukYB06hlwzeQNDsgsMvfM=;
+        b=pk7Z50dJ86+vrXjofZKiKu4d0wR/XrpDGcG2MqTqN5OnkFVuH+mzMHouULhJqiB7nr
+         u7nivJ+Posa70V+gHCdPOkjZYkvGGzrz9IStgCGvQyFuNTjN6FiodPYPkUvXG90Muf0j
+         f4C+DsDgU8Gio491RcFyKfhLcutrcegQyctYb2ouGhrHTh/EXktNSvIuZyiBeehTL3tV
+         fMfHdr0H9n1uEv8uQPlaXD5XjYotfTAjdFy5CCfRBtOLQwuUgAfIXjDjyWsu1+1ekxML
+         Hv2aNQG9v1U0ttWXio0Y/+ngD93AkI2YdPhwt/Xi8N3GHh0uvCB7qBL5xKNMKJa0X6gz
+         ATxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693235278; x=1693840078;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ul6FRFi92oOWpvyHep3fuCukYB06hlwzeQNDsgsMvfM=;
+        b=Q8zmocBQ/EVkw0hPDw3lsXq6UuRhw4TH8anHCBnvaW/uZMHEZYawHYLF/FHfGbe9wn
+         wKl+SQJisWL0fKvXG5/jI5ZVWh6W469dlitAgV1/bbq8xTyQLi4SMWLR9dn23Zlru+mA
+         6iszDXyg4wZ55ICNXy0K2oLkTRs8KPhxDP8eObF/Ez9UVRphMSWCZlSxXF5GAVA3a5nT
+         bEQI3D58+4SArOlcA+Z2caX+NX/IY2ewlMdh9EHWQO6uB1bQtWgF5UzNrLogm5UYzovB
+         SPxBqUv1+DRzyhWRM4HNtosRJ0K2uYwbX/uDx/2ZwMTTZbhWnuR+ne33nUdoUJVnu3J7
+         ReRQ==
+X-Gm-Message-State: AOJu0Yxd1FMygytlgG3BsONDv7r7dClR9a4FgNELd/xX8rqYsicOqXBl
+        /TdSTK2zQJ8TrgW7DBHm4mN9Yg==
+X-Google-Smtp-Source: AGHT+IGRAtQjdjvduPUEmTfSr9t63cYjX0pHzP1Q6xsU5KorgANjH1jv5lgyiduawYIsFPtrFZMdJQ==
+X-Received: by 2002:a05:6512:3125:b0:500:94aa:7390 with SMTP id p5-20020a056512312500b0050094aa7390mr10823552lfd.18.1693235278054;
+        Mon, 28 Aug 2023 08:07:58 -0700 (PDT)
+Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
+        by smtp.gmail.com with ESMTPSA id p18-20020ac246d2000000b004ff947bea2asm1623801lfo.54.2023.08.28.08.07.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 08:07:57 -0700 (PDT)
+Message-ID: <ab36d90a-147a-481f-9ab6-3a027563b8ea@linaro.org>
+Date:   Mon, 28 Aug 2023 17:07:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Subject: Re: [v5.15] WARNING in kvm_arch_vcpu_ioctl_run
-To:     syzbot <syzbot+412c9ae97b4338c5187e@syzkaller.appspotmail.com>,
-        syzkaller-lts-bugs@googlegroups.com,
-        syzbot <syzbot+b000b7d21f93fc69de32@syzkaller.appspotmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-References: <00000000000099cf1805faee14d7@google.com>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7180: Reorganize trogdor rt5682
+ audio codec dts
 Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <00000000000099cf1805faee14d7@google.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
+ <20230816112143.2.I29a5a330b6994afca81871f74bbacaf55b155937@changeid>
+ <610a1b08-ced2-4e07-8b69-b2dd2749293e@linaro.org>
+ <CAD=FV=VRj4oXFimYxkEOAj7c2ddkWhX1hpTfOFYuAW_svRuAqA@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <CAD=FV=VRj4oXFimYxkEOAj7c2ddkWhX1hpTfOFYuAW_svRuAqA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -69,79 +119,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/23 1:28 PM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
+On 28.08.2023 17:04, Doug Anderson wrote:
+> Hi,
 > 
-> HEAD commit: 8a7f2a5c5aa1 Linux 5.15.110
-This same warning has also been found on  6.1.21.
+> On Sat, Aug 26, 2023 at 2:36 AM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>
+>> On 16.08.2023 20:21, Douglas Anderson wrote:
+>>> It was asserted that the "/delete-property/ VBAT-supply;" that we
+>>> needed to do in the rt5682s dts fragment was ugly. Let's change up all
+>>> the trogdor device trees to make it explicit which version of "rt5682"
+>>> we have and avoid the need for the "delete-property".
+>>>
+>>> As a side effect, this nicely gets rid of the need for a delete-node
+>>> in coachz, which doesn't use "rt5682" at all.
+>>>
+>>> A few notes:
+>>> - This doesn't get rid of every "/delete-node/" in trogdor, just the
+>>>   one that was used for rt5682s.
+>>> - Though we no longer have any "/delete-node/", we do still override
+>>>   the "model" in the "sound" node in one case (in pompom) since that
+>>>   uses the "2mic" sound setup.
+>>>
+>>> This is validated to produce the same result (other than a few
+>>> properties being reordered) when taking the dtbs generated by the
+>>> kernel build and then doing:
+>>>
+>>>   for dtb in *trogdor*.dtb; do
+>>>     dtc -I dtb -O dts $dtb -o out/$dtb.dts;
+>>>   done
+>>>
+>>> Suggested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>>> ---
+>> [...]
+>>
+>>> +&mdss_dsi0_phy {
+>>> +     qcom,phy-rescode-offset-top = /bits/ 8 <31 31 31 31 (-32)>;
+>>> +     qcom,phy-rescode-offset-bot = /bits/ 8 <31 31 31 31 (-32)>;
+>>> +     qcom,phy-drive-ldo-level = <450>;
+>>> +};
+>>> +
+>>> +&panel {
+>>> +     compatible = "boe,tv110c9m-ll3";
+>>> +};
+>> This is odd
+> 
+> Can you clarify why it's odd? There are two possible panels used in
+> wormdignler, one with an INX display and one with a BOE display. This
+> one has the BOE display.
+> 
+> For the BOE display, there is one with the old Realtek audio codec
+> (rt5682i) and one with the new Realtek audio codec (rt5682s).
+> 
+> Previously, the BOE/rt5682s device tree could just include the
+> BOE/rt5682i device tree and override the audio. ...but Krzysztof
+> didn't like that. ...so now we have to duplicate the BOE bits in both
+> the BOE/rt5682s and BOE/rt5682i files. We could make a fragment for
+> just this bit, but that feels overboard for something that's in just
+> two files.
+I didn't catch that at all, thought it was an unrelated change that
+sneaked in..
 
-> git tree: linux-5.15.y
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15f12318280000
-> kernel config: https://syzkaller.appspot.com/x/.config?x=ba8d5c9d6c5289f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=412c9ae97b4338c5187e
-> compiler: Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=10e13c84280000
-> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=149d9470280000
-I've tried all the C and syz reproducers. I've also tried syz-crash which
-launched multiple instances of VMs and ran syz reproducer. But the issue
-didn't get reproduced.
+> 
+> As per my "after the cut" description, I'm not really convinced that
+> the end result here is easier to understand. Some bits are clearer and
+> some more complex. I simply wrote it up because it was requested.
+Yeah I'm not sure either. But then I'm not sure that there is any
+fantastic way to go about things with this many SKUs, all of them
+just tip the dt-number-vs-duplication ratio one way or the other :/
 
-I don't have kvm skills. Can someone have a look at the the warning
-(probably by static analysis)?
-
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/fc04f54c047f/disk-8a7f2a5c.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6b4ba4cb1191/vmlinux-8a7f2a5c.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/d927dc3f9670/bzImage-8a7f2a5c.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+412c9ae97b4338c5187e@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 3502 at arch/x86/kvm/x86.c:10310 kvm_arch_vcpu_ioctl_run+0x1d63/0x1f80
-> Modules linked in:
-> CPU: 1 PID: 3502 Comm: syz-executor306 Not tainted 5.15.110-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
-> RIP: 0010:kvm_arch_vcpu_ioctl_run+0x1d63/0x1f80 arch/x86/kvm/x86.c:10310
-> Code: df e8 71 ac b9 00 e9 e5 fa ff ff 89 d9 80 e1 07 38 c1 0f 8c 26 fb ff ff 48 89 df e8 57 ac b9 00 e9 19 fb ff ff e8 4d 52 70 00 <0f> 0b e9 e0 fb ff ff 89 d9 80 e1 07 38 c1 0f 8c 63 fb ff ff 48 89
-> RSP: 0018:ffffc90002bcfc60 EFLAGS: 00010293
-> RAX: ffffffff810f8c33 RBX: 0000000000000000 RCX: ffff888012bc1d00
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-> RBP: dffffc0000000000 R08: ffffffff8116a882 R09: fffffbfff1bc744e
-> R10: 0000000000000000 R11: dffffc0000000001 R12: ffff888012bc1d00
-> R13: ffff888077580000 R14: ffff8880775800f0 R15: ffff88801e2a9000
-> FS: 000055555696f300(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fafc4b53130 CR3: 000000007c8ce000 CR4: 00000000003526e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
-> <TASK>
-> kvm_vcpu_ioctl+0x7f0/0xcf0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3863
-> vfs_ioctl fs/ioctl.c:51 [inline]
-> __do_sys_ioctl fs/ioctl.c:874 [inline]
-> __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:860
-> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-> entry_SYSCALL_64_after_hwframe+0x61/0xcb
-> RIP: 0033:0x7fafc4ae1ed9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffd3bb98a48 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 000000000000cdf3 RCX: 00007fafc4ae1ed9
-> RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000005
-> RBP: 0000000000000000 R08: 00007ffd3bb98be8 R09: 00007ffd3bb98be8
-> R10: 00007ffd3bb98be8 R11: 0000000000000246 R12: 00007ffd3bb98a5c
-> R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
-> </TASK>
-> 
-> 
-> ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-
--- 
-BR,
-Muhammad Usama Anjum
+Konrad
