@@ -2,153 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9623278B20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2024A78B1ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbjH1NdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        id S231714AbjH1Nb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbjH1Nce (ORCPT
+        with ESMTP id S230507AbjH1NbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:32:34 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A48718D;
-        Mon, 28 Aug 2023 06:32:28 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SBRt21021856;
-        Mon, 28 Aug 2023 13:32:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=Y0ayW8WEjPSLgxGdaTnQfXuDQNueBAnSTw7btlG1/bE=;
- b=ElHzj91wkXrKEo22DrrC7HQgOyxB0R2mQyJiHO1mJ03bSSOcbbdiwjaNloQNLk/b7UzB
- InCqxtZQXmYQY8fT9FwPIOycty7FGq74wajE4Y9sOMmBrUYFMkqaAGL1veBqPjRyVsyA
- 4cZjHffVhltsP7Ek+3ng40/kR8rkt9IKdPrLDU31YVdo14OH27xoyqZg8hkfMiAl1tkz
- eMvcUl1VW0aNhO5NGeWkHSYb0DlgmcaaA6arMymu286lfktysJUlvmHkzLNPvKViuLNo
- Edqgflr2GRIxk+X9Fvoy5ENlgyo50UbQPYrcRmA3IyIKEfPId15nCga1xxE1OpvNdRL6 GQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqa5pumfd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:32:16 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SDWFI2014549
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:32:15 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 28 Aug 2023 06:32:09 -0700
-From:   Krishna Kurapati <quic_kriskura@quicinc.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>,
-        Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v11 13/13] arm64: dts: qcom: sa8540-ride: Enable first port of tertiary usb controller
-Date:   Mon, 28 Aug 2023 19:00:33 +0530
-Message-ID: <20230828133033.11988-14-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230828133033.11988-1-quic_kriskura@quicinc.com>
-References: <20230828133033.11988-1-quic_kriskura@quicinc.com>
+        Mon, 28 Aug 2023 09:31:20 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32007128
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 06:31:18 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c3c8adb27so395983666b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 06:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693229476; x=1693834276;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=J4F0xok8iSguLrceI1R+cP2UDwaDgtc8df9nO/kRk58=;
+        b=Xq8Ut29lcHD8oi1Nrg6IVUoSD6PllAmapPg+i55jSjGmbEIXHur5rANJGut9k6ay8M
+         MGN8cIsMJa3UEltfdTdU5LYnldRBRG8Hgy8aGS88W6VRD9LzTt4hO53OfRoVmdxWq12l
+         cKX5365XOMY/PT2KKYqAt34YKAfKQBXo5P+ZNy1+JZRfMCF/m6I9eKuwz4Gf/0AyqbLL
+         b7qhUmDqOBMrfpRMlVQPTSzH19nlQ0uNbrcxKA0+Zfh7OPuSQJMjJIV+IsfqNRRio8No
+         Hdvzld3O6s/ozWpPApOVg1jXGMHAujS6q91dPkXuhaOw6JrdFq9SUXsvWmxY8JRkN2qD
+         3elg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693229476; x=1693834276;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J4F0xok8iSguLrceI1R+cP2UDwaDgtc8df9nO/kRk58=;
+        b=FU2WEcIfLuBIEif4ck+6GiQJGV5sUS++QXX980Ubgbljoo8nvyewSEvdGkulh7S/hm
+         irZXqD+PnfWHCB+t0wZAn9nWkd+oP3fPDzaPXq/Pd0vqvpZjemRcDHirqNhAlILHs0hc
+         G+IEUk8uGZM0J+l64ZHlhnkSvxSTq9iri7+uONkHFPv5gn1knG1KGuCNxBRyJ6AtIkQ3
+         0gK1kVk/RA6yghdpvXPO/g4AEy3aE+kQz3454twSWSAfaQf0kTOga4gsdgirgsRWNqYN
+         8NoxHA3GfyY+jcqkrguHz/kN59n8eDOsCKLM2+ORUBR0HkIxkjHw5IE7k4zS+yfkEouI
+         Otxw==
+X-Gm-Message-State: AOJu0YyPS61rFaOZ45qansB/fC6Kbo2gLXLYXsVYhTx3sys/afUBiNAo
+        og/pumwas9MFJJwX4pHxpUg=
+X-Google-Smtp-Source: AGHT+IEevoaUFlo+XVGkG/Su7M0zsQH3rcxIRPrBFo25Ik3pI5AToux6RP2Jye1EIsHpMOJ6Ax1p/g==
+X-Received: by 2002:a17:906:3152:b0:9a1:d29c:6aaa with SMTP id e18-20020a170906315200b009a1d29c6aaamr11749253eje.39.1693229476398;
+        Mon, 28 Aug 2023 06:31:16 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id p23-20020a170906839700b0099d9b50d786sm4670029ejx.199.2023.08.28.06.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 06:31:15 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 15:31:15 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        guoren@kernel.org
+Subject: Re: [PATCH] riscv: provide riscv-specific is_trap_insn()
+Message-ID: <ZOyhozSq3S36eRSq@nam-dell>
+References: <20230827205641.46836-1-namcaov@gmail.com>
+ <874jkjl4e1.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: W-w6UTmZlc6NJHFTz_6hA9p7Ppo9IdpN
-X-Proofpoint-GUID: W-w6UTmZlc6NJHFTz_6hA9p7Ppo9IdpN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_10,2023-08-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- suspectscore=0 clxscore=1015 mlxlogscore=953 lowpriorityscore=0
- spamscore=0 adultscore=0 phishscore=0 impostorscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280118
+In-Reply-To: <874jkjl4e1.fsf@all.your.base.are.belong.to.us>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Halaney <ahalaney@redhat.com>
+On Mon, Aug 28, 2023 at 02:48:06PM +0200, Björn Töpel wrote:
+> Nam Cao <namcaov@gmail.com> writes:
+> 
+> > uprobes expects is_trap_insn() to return true for any trap instructions,
+> > not just the one used for installing uprobe. The current default
+> > implementation only returns true for 16-bit c.ebreak if C extension is
+> > enabled. This can confuse uprobes if a 32-bit ebreak generates a trap
+> > exception from userspace: uprobes asks is_trap_insn() who says there is no
+> > trap, so uprobes assume a probe was there before but has been removed, and
+> > return to the trap instruction. This cause an infinite loop of entering
+> > and exiting trap handler.
+> >
+> > Instead of using the default implementation, implement this function
+> > speficially for riscv which checks for both ebreak and c.ebreak.
+> 
+> I took this for a spin, and it indeed fixes this new hang! Nice!
 
-There is now support for the multiport USB controller this uses so
-enable it.
-
-The board only has a single port hooked up (despite it being wired up to
-the multiport IP on the SoC). There's also a USB 2.0 mux hooked up,
-which by default on boot is selected to mux properly. Grab the gpio
-controlling that and ensure it stays in the right position so USB 2.0
-continues to be routed from the external port to the SoC.
-
-Co-developed-by: Andrew Halaney <ahalaney@redhat.com>
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-[Krishna: Rebased on top of usb-next]
-Co-developed-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8540p-ride.dts | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-index 5a26974dcf8f..69f6b13e6197 100644
---- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-+++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-@@ -488,6 +488,19 @@ &usb_2_qmpphy0 {
- 	status = "okay";
- };
+Great! Thanks for testing it.
  
-+&usb_2 {
-+	pinctrl-0 = <&usb2_en_state>;
-+	pinctrl-names = "default";
-+
-+	status = "okay";
-+};
-+
-+&usb_2_dwc3 {
-+	dr_mode = "host";
-+	phy-names = "usb2-port0", "usb3-port0";
-+	phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>;
-+};
-+
- &xo_board_clk {
- 	clock-frequency = <38400000>;
- };
-@@ -640,4 +653,13 @@ wake-pins {
- 			bias-pull-up;
- 		};
- 	};
-+
-+	usb2_en_state: usb2-en-state {
-+		/* TS3USB221A USB2.0 mux select */
-+		pins = "gpio24";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+		output-low;
-+	};
- };
--- 
-2.40.0
+> However, when I tried setting an uprobe on the ebreak instruction
+> (offset 0x118) from your example [1], the probe does not show up in the
+> trace buffer.
+> 
+> Any ideas?
 
+From my understanding, both uprobes and kprobes refuse to install break points
+into existing trap instructions. Otherwise, we may conflict with something else
+that is also using trap instructions.
+
+Best regards,
+Nam
