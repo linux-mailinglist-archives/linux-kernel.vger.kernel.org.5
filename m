@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1AF78A654
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277AD78A656
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjH1HPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S229670AbjH1HP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjH1HPM (ORCPT
+        with ESMTP id S229542AbjH1HP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:15:12 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5A0115
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:15:08 -0700 (PDT)
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EBCF63F0E1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1693206906;
-        bh=2NmxD2QM1201soflytY9RDoLqAz+5ke4JpjzANAuhPo=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=GgQXQ0sS7bwoRB5m9VHaUKwiPpghDpBr2i8rsnsSic4rKzqwy9oRZMWpfVnfgKhVS
-         suVA6p8Fy7aeslaKsAZsNpTfqjtw4lNO29freiLqvHJcIZ+11Yz7XqWbvG4MZQcJQM
-         IxcgjkTzv0vHpXyYuhsCjT36LxKPqDZrbjD2+RR0xk+K+5/xd24AnSttb+upkK2AI6
-         zyTlevxMyrxG2JesRUoDzNzn1oQI8BPeBTsblrjuYth3sVjZ2Jq7S2j2zUja+vZ15n
-         mfrtY3ffhH5pTDm5VrDt+KzJOjGqqIP+T1HaB5+GM8XPj87v7Ug7OgYprNWTDtqHRH
-         Uw3ADmmxquocA==
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94a34d3e5ebso242137166b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:15:06 -0700 (PDT)
+        Mon, 28 Aug 2023 03:15:26 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C45510D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:15:21 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-98377c5d53eso360144566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693206919; x=1693811719;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HJAzGXxVLZwUhvU/AbwqXIQG//zHq0gh5RxbohWoMzQ=;
+        b=IAPS6RTDr+Uuos2iktTsV6YF4O0gf9AMecbKe0U1yvoJY+4RpFvnUKOeILUOzN9fZd
+         bJwoaK97ve5ZzSZVaBaosV3ZEswi2I9AVBNzAdGbc3p4cMqN2ZhK6MRvgNcLVtJ+hSzD
+         gE0vT4GkyZ/7FB6ZcoO8vnoE476dx1WQdvTuJHZ+Anz57RiGI1lPkcd0FSNGH2Hg5Qd+
+         FQhS/I9Oww6456S5v4C1Kme9W3UZOusUXKv2KHtboGIp0y9t7w5lysWwhnIvnopFWWds
+         WztDvXU+2dsWMOyjMom12SUquq71oEeatqwgRfmeOGtqnf1uUnIBdsrONQY58Aq5bDsb
+         VRDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693206906; x=1693811706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2NmxD2QM1201soflytY9RDoLqAz+5ke4JpjzANAuhPo=;
-        b=RcDHUPc9HgH/V6PVnNz2o/WBw9GQLCpPh+cp1jOYSch2b4av/vfaXGHESqVTJ/n4Y0
-         k3pSTECPGUjKrurKduXEDE9RjJ52HdCKfaK8OGscNDxPCvgVI49U1vQMKCwk1CgArnIU
-         kaxvbPme3tfdV5V+pd+iAtA1AgLz8kmrLVuTrJjeQtW2t08kKOamIMQpo2Ldqctaju3c
-         kHrDXZPw+wljwtKNTtutyGtX7Qjtl26STDhZaueOniJ0rg1ve3HH03GVw+oDgpC55HVg
-         gBonDh9XkBK5w8M1Y805wWFxJjbmw/0fJZFk0J383wLvv3mJLzqQVyQ+OzOF+FfylUhR
-         pr7Q==
-X-Gm-Message-State: AOJu0YxHEelY+m2l/yjssTI7rzZIy14aOUFiDIoeEb5V5JNblB/kPnx4
-        vOwlb1PFgFrQnYGgh5t5i5ykARAWLvPTaE/AdY+OVj5oM8jmBp7NnFYAd0a+5S99ABkoaQckp2i
-        SNQpt+ippwIqsAfz0e2p1YXgJS2cdgtO5qHAM+PPko5flUbiqoj1/R+9kHQGbxAMpkVUj
-X-Received: by 2002:a17:906:301a:b0:9a1:c448:3c35 with SMTP id 26-20020a170906301a00b009a1c4483c35mr11514994ejz.68.1693206906441;
-        Mon, 28 Aug 2023 00:15:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG5UB/5nwcqCps2bRXq+IOJkhYw8VYWTqg4mL8nCB8BhWIUUTD58f/g6p9wHNp1vZQH7yzFeTYUmMCExzaoCcc=
-X-Received: by 2002:a17:906:301a:b0:9a1:c448:3c35 with SMTP id
- 26-20020a170906301a00b009a1c4483c35mr11514988ejz.68.1693206906109; Mon, 28
- Aug 2023 00:15:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693206919; x=1693811719;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HJAzGXxVLZwUhvU/AbwqXIQG//zHq0gh5RxbohWoMzQ=;
+        b=Q/JKRKaQ3ztOh9c2FKGL3mK/AMHRgLNlxOSHWYsZLowOlcLX4U0+KsHjaaXY8X5OSb
+         oQi7+NwfywSFESNcWNMPH6+Gm9IKcKW0B4Bmq7WRFJ2L3eHZ8E6uC5P65hmvf799/qvf
+         EBI/sjKbiBborBdnevq0OPFwbEJ9q3eR2z8oQ59lI0/HI9Qszr4XyfFQmlQVlcvURaJH
+         HN+Dy8+Jv/flc0PFEjwco7wkeWJO9Qwr1rRmR6Ve+0lIx3YDaIW9LL3qOLaKeOWE6XOB
+         XdyMOWrn6e5Yww4dlH5rgeOouuK3HCPFAu+/ndxM6FCwr/n6wUHSathBIWzPKEW02QSF
+         BSqw==
+X-Gm-Message-State: AOJu0Yz/as/AGAP3WulazkVhc4GQ6zmvnoQPnAtFJsvS5IpJu8Dc1qGb
+        OtQ5ClvnVufooEZSMeVNLJeEcQ==
+X-Google-Smtp-Source: AGHT+IGKvH+GBgAKQHWDhZZV09OE+zv1MgYwJxJsoDg2/XCIHmz1dXnuC31AHBwhEWMoUKUR5gkSfQ==
+X-Received: by 2002:a17:906:5d:b0:9a5:846d:d823 with SMTP id 29-20020a170906005d00b009a5846dd823mr6109942ejg.45.1693206919659;
+        Mon, 28 Aug 2023 00:15:19 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id fx13-20020a170906b74d00b00982be08a9besm4376385ejb.172.2023.08.28.00.15.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 00:15:19 -0700 (PDT)
+Message-ID: <d6f796aa-c468-037c-3f53-d0c4306c8890@linaro.org>
+Date:   Mon, 28 Aug 2023 09:15:17 +0200
 MIME-Version: 1.0
-References: <20230828055310.21391-1-chengen.du@canonical.com>
-In-Reply-To: <20230828055310.21391-1-chengen.du@canonical.com>
-From:   Chengen Du <chengen.du@canonical.com>
-Date:   Mon, 28 Aug 2023 15:14:55 +0800
-Message-ID: <CAPza5qe0NBWiKZ1yLyfdPGOsmM=VGqWMs=oWJqVzLRcd8AFyJQ@mail.gmail.com>
-Subject: Re: [PATCH v3 RESEND] NFS: Add mount option 'fasc'
-To:     trond.myklebust@hammerspace.com
-Cc:     anna@kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/4] dt-bindings: net: Add Loongson-1 Ethernet
+ Controller
+Content-Language: en-US
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230824125012.1040288-1-keguang.zhang@gmail.com>
+ <20230824125012.1040288-3-keguang.zhang@gmail.com>
+ <dwe4oyunc2uitullflhryg7kmgeklj5wlx6ztrg5hahl64tkuz@koe4tijgj3bp>
+ <c32130ab-27dc-e991-10fd-db0fba25cc97@linaro.org>
+ <q7o7wqodz5epyjdj7vlryaseugr2fjhef2cgsh65trw3r2jorm@5z5a5tyuyq4d>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <q7o7wqodz5epyjdj7vlryaseugr2fjhef2cgsh65trw3r2jorm@5z5a5tyuyq4d>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,188 +93,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 27/08/2023 23:01, Serge Semin wrote:
+> Hi Krzysztof
+> 
+> On Sun, Aug 27, 2023 at 09:56:06AM +0200, Krzysztof Kozlowski wrote:
+>> On 26/08/2023 23:04, Serge Semin wrote:
+>>>> +  clock-names:
+>>>> +    items:
+>>>> +      - const: stmmaceth
+>>>
+>>>   clock-names:
+>>>     const: stmmaceth
+>>> ?
+>>
+> 
+>> The existing syntax is correct. This is a string array.
+> 
+> Could you please clarify whether it's a requirement (always specify
+> items: property for an array) or just an acceptable option (another
+> one is suggested in my comment)? I am asking because:
+> 1. In this case the "clock-names" array is supposed to have only one
+> item. Directly setting "const: stmmaceth" with no items: property
+> shall simplify it.
+> 2. There are single-entry "clock-names" property in the DT-bindings
+> defined as I suggested.
+> 3. There is a "compatible" property which is also a string array but
+> it can be defined as I suggested (omitting the items property).
+> 
+> so based on all of that using the "items:"-based constraint here seems
+> redundant. Am I wrong to think like that? If so in what aspect?
 
-The performance issue has been brought to our attention by users
-within the Ubuntu community.
-However, it seems to be confined to specific user scenarios.
-Canonical has taken proactive measures to tackle the problem by
-implementing a temporary solution [1], which has effectively resolved
-the issue at hand.
-Nonetheless, our earnest desire is for a definitive resolution of the
-performance concern at its source upstream.
-
-I've taken the initiative to send the patches addressing this matter.
-Regrettably, as of now, I've yet to receive any response.
-This situation leads me to consider the possibility of reservations or
-deliberations surrounding this issue.
-I am genuinely keen to gain insights and perspectives from the
-upstream community.
-
-I kindly ask for your valuable input on this matter.
-Your thoughts would significantly aid my progress and contribute to a
-collective consensus.
+Syntax is correct in both cases. However the single list compatible
+*cannot grow*, while single list clock might, when developer notices
+that the binding was incomplete. People add binding matching drivers,
+not the hardware, thus having incomplete list of clocks is happening all
+the time.
 
 Best regards,
-Chengen Du
+Krzysztof
 
-[1] https://bugs.launchpad.net/bugs/2022098
-
-On Mon, Aug 28, 2023 at 1:53=E2=80=AFPM Chengen Du <chengen.du@canonical.co=
-m> wrote:
->
-> In certain instances, users or applications switch to other privileged
-> users by executing commands like 'su' to carry out operations on NFS-
-> mounted folders. However, when this happens, the login time for the
-> privileged user is reset, and any NFS ACCESS operations must be resent,
-> which can result in a decrease in performance. In specific production
-> environments where the access cache can be trusted due to stable group
-> membership, there's no need to verify the cache stall situation.
-> To maintain the initial behavior and performance, a new mount option
-> called 'fasc' has been introduced. This option triggers the mechanism
-> of clearing the file access cache upon login.
->
-> Signed-off-by: Chengen Du <chengen.du@canonical.com>
-> ---
->  fs/nfs/dir.c              | 21 ++++++++++++---------
->  fs/nfs/fs_context.c       |  5 +++++
->  fs/nfs/super.c            |  1 +
->  include/linux/nfs_fs_sb.h |  1 +
->  4 files changed, 19 insertions(+), 9 deletions(-)
->
-> diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-> index 8f3112e71a6a..cefdb23d4cd7 100644
-> --- a/fs/nfs/dir.c
-> +++ b/fs/nfs/dir.c
-> @@ -2951,12 +2951,14 @@ static struct nfs_access_entry *nfs_access_search=
-_rbtree(struct inode *inode, co
->         return NULL;
->  }
->
-> -static u64 nfs_access_login_time(const struct task_struct *task,
-> -                                const struct cred *cred)
-> +static inline
-> +bool nfs_check_access_stale(const struct task_struct *task,
-> +                           const struct cred *cred,
-> +                           const struct nfs_access_entry *cache)
->  {
->         const struct task_struct *parent;
->         const struct cred *pcred;
-> -       u64 ret;
-> +       u64 login_time;
->
->         rcu_read_lock();
->         for (;;) {
-> @@ -2966,15 +2968,15 @@ static u64 nfs_access_login_time(const struct tas=
-k_struct *task,
->                         break;
->                 task =3D parent;
->         }
-> -       ret =3D task->start_time;
-> +       login_time =3D task->start_time;
->         rcu_read_unlock();
-> -       return ret;
-> +
-> +       return ((s64)(login_time - cache->timestamp) > 0);
->  }
->
->  static int nfs_access_get_cached_locked(struct inode *inode, const struc=
-t cred *cred, u32 *mask, bool may_block)
->  {
->         struct nfs_inode *nfsi =3D NFS_I(inode);
-> -       u64 login_time =3D nfs_access_login_time(current, cred);
->         struct nfs_access_entry *cache;
->         bool retry =3D true;
->         int err;
-> @@ -3003,7 +3005,8 @@ static int nfs_access_get_cached_locked(struct inod=
-e *inode, const struct cred *
->                 retry =3D false;
->         }
->         err =3D -ENOENT;
-> -       if ((s64)(login_time - cache->timestamp) > 0)
-> +       if ((NFS_SERVER(inode)->flags & NFS_MOUNT_FASC) &&
-> +           nfs_check_access_stale(current, cred, cache))
->                 goto out;
->         *mask =3D cache->mask;
->         list_move_tail(&cache->lru, &nfsi->access_cache_entry_lru);
-> @@ -3023,7 +3026,6 @@ static int nfs_access_get_cached_rcu(struct inode *=
-inode, const struct cred *cre
->          * but do it without locking.
->          */
->         struct nfs_inode *nfsi =3D NFS_I(inode);
-> -       u64 login_time =3D nfs_access_login_time(current, cred);
->         struct nfs_access_entry *cache;
->         int err =3D -ECHILD;
->         struct list_head *lh;
-> @@ -3038,7 +3040,8 @@ static int nfs_access_get_cached_rcu(struct inode *=
-inode, const struct cred *cre
->                 cache =3D NULL;
->         if (cache =3D=3D NULL)
->                 goto out;
-> -       if ((s64)(login_time - cache->timestamp) > 0)
-> +       if ((NFS_SERVER(inode)->flags & NFS_MOUNT_FASC) &&
-> +           nfs_check_access_stale(current, cred, cache))
->                 goto out;
->         if (nfs_check_cache_invalid(inode, NFS_INO_INVALID_ACCESS))
->                 goto out;
-> diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
-> index 853e8d609bb3..2fbc2d1bd775 100644
-> --- a/fs/nfs/fs_context.c
-> +++ b/fs/nfs/fs_context.c
-> @@ -92,6 +92,7 @@ enum nfs_param {
->         Opt_wsize,
->         Opt_write,
->         Opt_xprtsec,
-> +       Opt_fasc,
->  };
->
->  enum {
-> @@ -199,6 +200,7 @@ static const struct fs_parameter_spec nfs_fs_paramete=
-rs[] =3D {
->         fsparam_enum  ("write",         Opt_write, nfs_param_enums_write)=
-,
->         fsparam_u32   ("wsize",         Opt_wsize),
->         fsparam_string("xprtsec",       Opt_xprtsec),
-> +       fsparam_flag  ("fasc",          Opt_fasc),
->         {}
->  };
->
-> @@ -925,6 +927,9 @@ static int nfs_fs_context_parse_param(struct fs_conte=
-xt *fc,
->         case Opt_sloppy:
->                 ctx->sloppy =3D true;
->                 break;
-> +       case Opt_fasc:
-> +               ctx->flags |=3D NFS_MOUNT_FASC;
-> +               break;
->         }
->
->         return 0;
-> diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-> index 2284f749d892..7a0c5280e388 100644
-> --- a/fs/nfs/super.c
-> +++ b/fs/nfs/super.c
-> @@ -448,6 +448,7 @@ static void nfs_show_mount_options(struct seq_file *m=
-, struct nfs_server *nfss,
->                 { NFS_MOUNT_NORDIRPLUS, ",nordirplus", "" },
->                 { NFS_MOUNT_UNSHARED, ",nosharecache", "" },
->                 { NFS_MOUNT_NORESVPORT, ",noresvport", "" },
-> +               { NFS_MOUNT_FASC, ",fasc", "" },
->                 { 0, NULL, NULL }
->         };
->         const struct proc_nfs_info *nfs_infop;
-> diff --git a/include/linux/nfs_fs_sb.h b/include/linux/nfs_fs_sb.h
-> index 20eeba8b009d..6a88ba36f7a8 100644
-> --- a/include/linux/nfs_fs_sb.h
-> +++ b/include/linux/nfs_fs_sb.h
-> @@ -155,6 +155,7 @@ struct nfs_server {
->  #define NFS_MOUNT_WRITE_WAIT           0x02000000
->  #define NFS_MOUNT_TRUNK_DISCOVERY      0x04000000
->  #define NFS_MOUNT_SHUTDOWN                     0x08000000
-> +#define NFS_MOUNT_FASC                 0x10000000
->
->         unsigned int            fattr_valid;    /* Valid attributes */
->         unsigned int            caps;           /* server capabilities */
-> --
-> 2.39.2
->
