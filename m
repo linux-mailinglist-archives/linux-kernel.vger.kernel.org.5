@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A0078A822
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9124878A82C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbjH1IuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
+        id S229787AbjH1IvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjH1Itr (ORCPT
+        with ESMTP id S229523AbjH1Iuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:49:47 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D41CBF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:49:44 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-313e742a787so1803025f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:49:44 -0700 (PDT)
+        Mon, 28 Aug 2023 04:50:39 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A6E5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:50:36 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fea0640d7aso28031935e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:50:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693212582; x=1693817382;
+        d=linaro.org; s=google; t=1693212635; x=1693817435;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:cc:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yKPKRFt3ZyH53OPo/QehnO2mWQmnGuhYdCnoCPtQqT8=;
-        b=HWri3WcVTAbMdx2b7sBU50yDwWNYBUAZvSWEiC2Tamlx7k1/66NtShJkD7AjsFN76B
-         07SEy4y8scVccuL87i8RI1Uq8ImU9ZBPzg6TGGqF27H9jOV0qNs9T7vVPAf1QLobUm20
-         uLXj7KK/GVQKj7VvB2gZVe+jVn620nx5gg0YCsEpxn7JGSs0LYPNX8asixJuwfCUm0Uj
-         CDBrOC4u6IM1yLKZUD6gpBw5F0NiDwH5x3pkeFjtSFGGD5o59Fd4X9oVmjEuZKKwoDQz
-         V+DJVh9P3ePb2Qz7eORLumPgJLCVygB6CRLePQqECed5eg3wDXAjH179bU4k/0SXJDvy
-         wuUw==
+        bh=WGPoX5APlzIB9ylI10o7qd7oHlAS1PpIgI7APqFVRWM=;
+        b=R8nZQvaGr8ltLMH+5JimkWXJDodtmVdSfxM6UsvA7X53PFEX23tGdCQ8c2CtFYvRie
+         i/VLzausU9IZagdCO4tAlEaanvbx+cXmD9DRytsKqLPBu64DJGteHqdeeTQcTv6orFyF
+         Pd43XUSJbl8dQ4l7uKOt7VhG8Tz8FeuXQQhgNq/m6JpqtZadTRtFAb/LlblBGD0dhOdQ
+         rUOSRtEYX0/phCZ4MAypfdWy32up+hdUgyo9NoDJ3hzvBB8I2OJ8qJyycYF70SyVbILQ
+         E1sUXGQG0d+9CGvpXMo0E5J573QOVegntR+EGCIbN7ZwczsbFURfP43efjiiDV3+Ej4R
+         9DPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693212582; x=1693817382;
+        d=1e100.net; s=20221208; t=1693212635; x=1693817435;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:cc:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=yKPKRFt3ZyH53OPo/QehnO2mWQmnGuhYdCnoCPtQqT8=;
-        b=K/MEO/UvYYGR80dYMRw2D0LyZ0b1q2Se4+8zqRnES54SNZKDbSyCk1JcNgQdAAPl4M
-         uvnsVoY6NkOLbrt2Hfs+VBibF9Ej7GjZF4lA0HfRsKOMLLlZCzBRt78sjc9KbNYi+XjJ
-         iJ0mUkFxRyIfseE22Fc18f6EdggW1VeV2Uc7g9VauXUqX9i5IiSf9lJy8+XrYpt8MuKM
-         GhauKdGDD6YwyZyVcT4uUpWI29gf2Dxp2VXVCgX50gU8L2XFMffNXB7CXxqFY0nIJvrr
-         Yn1IPOE9PPyMqonB8ADvbDhmxVFMaute3ca8135Y4xPje8wOvXcHBE6LsGzIsrDd/H0p
-         Wljg==
-X-Gm-Message-State: AOJu0YyEvWwnLYNpjqzC7XNOtD+qS602Ff0YDICGqBu3ftE9KYMXnzlV
-        PkfEh7jnf92rZLjqRhTaBcyOXA==
-X-Google-Smtp-Source: AGHT+IF/I4tMWHM/TDa+Cw3UZa69daV4EtqQ7nL/k6vgM9WXygXYJlpHEuOTlNM10qFzqZNUJgiRJw==
-X-Received: by 2002:a5d:6188:0:b0:319:55f9:d50d with SMTP id j8-20020a5d6188000000b0031955f9d50dmr20013359wru.33.1693212582461;
-        Mon, 28 Aug 2023 01:49:42 -0700 (PDT)
+        bh=WGPoX5APlzIB9ylI10o7qd7oHlAS1PpIgI7APqFVRWM=;
+        b=BQnzNU7/mTfYMa4NKJO2X+Oze28Elrksl0NKpHnotE9By5PnMlrBMe1dYSBJzpLYmH
+         svE9X0bN3yCoo2EoFp5t2Hyxd4d1VHYvJ3A5pv+CHMRqvhhqOFFdtmjWrlgh+vPGQZq5
+         MZEbGohyZJEiCbGqPgnh6Xtwxxub91gYxhV54aZw8smqP5GahIQoMBalu+8LnN+vhfOD
+         /Tq4C1s5PqFKaC0nL75BobX++VokC4TM55DBS08TmBHDxVST5wLRGP5K6I5sUUVwi2RK
+         2dRqPk8c53oTuWrSyfoF7QTN2pBAGhPuZTlg8D0XV3+cFEuHoygq4mqazk7WQ4J2alm2
+         rvEA==
+X-Gm-Message-State: AOJu0YzxPNpApsVnwWZQOCFNjJYiumEep+UfDjJ6EoPe9HfOcSmCrzWl
+        W6c5hbCb16fT9WRS1hztPVESBQ==
+X-Google-Smtp-Source: AGHT+IEJwUe/1R7M1K8G0Ek/Vcp84qIH6fHSeKsCRwrJZEWTCru0Ra1VTzcLbEJWVaKkh08Zny6uHQ==
+X-Received: by 2002:a7b:ce91:0:b0:400:6b36:ee2a with SMTP id q17-20020a7bce91000000b004006b36ee2amr9951462wmj.26.1693212634766;
+        Mon, 28 Aug 2023 01:50:34 -0700 (PDT)
 Received: from ?IPV6:2a01:e0a:982:cbb0:5e59:c27b:747a:3f52? ([2a01:e0a:982:cbb0:5e59:c27b:747a:3f52])
-        by smtp.gmail.com with ESMTPSA id x16-20020a5d6510000000b003143c9beeaesm9877481wru.44.2023.08.28.01.49.41
+        by smtp.gmail.com with ESMTPSA id x16-20020a5d6510000000b003143c9beeaesm9877481wru.44.2023.08.28.01.50.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 01:49:41 -0700 (PDT)
-Message-ID: <0cb96702-b396-4223-870f-b798d32991ee@linaro.org>
-Date:   Mon, 28 Aug 2023 10:49:40 +0200
+        Mon, 28 Aug 2023 01:50:34 -0700 (PDT)
+Message-ID: <23bfd7bc-98ea-42c4-b2d4-6060df5e7080@linaro.org>
+Date:   Mon, 28 Aug 2023 10:50:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
+From:   Neil Armstrong <neil.armstrong@linaro.org>
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
- VTDR6130
+Subject: Re: [PATCH v2] Revert "tty: serial: meson: Add a earlycon for the T7
+ SoC"
 Content-Language: en-US, fr
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
- <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
- <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
- <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
- <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
- <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
- <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
- <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
- <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
- <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
+To:     tanure@linux.com, Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+References: <20230827082944.5100-1-tanure@linux.com>
+ <7bf9e716-0ff2-56d5-07ab-db027901454e@linaro.org>
+ <09735262-1bc0-40cf-b139-22cccf70bcab@linux.com>
+ <e73260c9-04f8-eb1e-bb5b-c3bd2219625e@linaro.org>
+ <8d2ba0d3-55eb-45cf-b88a-bafef35e96b9@linux.com>
+ <20230828082009.kehgwi4fxtj3bfze@CAB-WSD-L081021>
+ <e070f432-28bd-465f-ad66-53add8b61907@linaro.org>
+ <20230828084632.sp73jppcrfvc7nv3@CAB-WSD-L081021>
+ <CAJX_Q+3x0XtARZwf0_Dh-skAF9Qj3S3uUmLv2mFJO3ZWR2+3og@mail.gmail.com>
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
  GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
@@ -111,9 +102,9 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro Developer Services
-In-Reply-To: <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
+In-Reply-To: <CAJX_Q+3x0XtARZwf0_Dh-skAF9Qj3S3uUmLv2mFJO3ZWR2+3og@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -123,174 +114,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jessica,
-
-On 25/08/2023 20:37, Jessica Zhang wrote:
-> 
-> 
-> On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
->> Hi Maxime,
+On 28/08/2023 10:47, Lucas Tanure wrote:
+> On Mon, Aug 28, 2023 at 9:46 AM Dmitry Rokosov <ddrokosov@sberdevices.ru> wrote:
 >>
->> On 21/08/2023 10:17, Maxime Ripard wrote:
+>> On Mon, Aug 28, 2023 at 10:23:45AM +0200, Neil Armstrong wrote:
 >>> Hi,
 >>>
->>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org wrote:
->>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
->>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
->>>>>> Sending HS commands will always work on any controller, it's all
->>>>>> about LP commands. The Samsung panels you listed only send HS
->>>>>> commands so they can use prepare_prev_first and work on any
->>>>>> controllers.
->>>>>
->>>>> I think there is some misunderstanding there, supported by the
->>>>> description of the flag.
->>>>>
->>>>> If I remember correctly, some hosts (sunxi) can not send DCS
->>>>> commands after enabling video stream and switching to HS mode, see
->>>>> [1]. Thus, as you know, most of the drivers have all DSI panel setup
->>>>> commands in drm_panel_funcs::prepare() /
->>>>> drm_bridge_funcs::pre_enable() callbacks, not paying attention
->>>>> whether these commands are to be sent in LP or in HS mode.
->>>>>
->>>>> Previously DSI source drivers could power on the DSI link either in
->>>>> mode_set() or in pre_enable() callbacks, with mode_set() being the
->>>>> hack to make panel/bridge drivers to be able to send commands from
->>>>> their prepare() / pre_enable() callbacks.
->>>>>
->>>>> With the prev_first flags being introduced, we have established that
->>>>> DSI link should be enabled in DSI host's pre_enable() callback and
->>>>> switched to HS mode (be it command or video) in the enable()
->>>>> callback.
->>>>>
->>>>> So far so good.
->>>>
->>>> It seems coherent, I would like first to have a state of all DSI host
->>>> drivers and make this would actually work first before adding the
->>>> prev_first flag to all the required panels.
->>>
->>> This is definitely what we should do in an ideal world, but at least for
->>> sunxi there's no easy way for it at the moment. There's no documentation
->>> for it and the driver provided doesn't allow this to happen.
->>>
->>> Note that I'm not trying to discourage you or something here, I'm simply
->>> pointing out that this will be something that we will have to take into
->>> account. And it's possible that other drivers are in a similar
->>> situation.
->>>
->>>>> Unfortunately this change is not fully backwards-compatible. This
->>>>> requires that all DSI panels sending commands from prepare() should
->>>>> have the prepare_prev_first flag. In some sense, all such patches
->>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
->>>>> flag to drm_panel").
->>>>
->>>> This kind of migration should be done *before* any possible
->>>> regression, not the other way round.
->>>>
->>>> If all panels sending commands from prepare() should have the
->>>> prepare_prev_first flag, then it should be first, check for
->>>> regressions then continue.
->>>>
->>>> <snip>
->>>>
+>>> On 28/08/2023 10:20, Dmitry Rokosov wrote:
+>>>> On Sun, Aug 27, 2023 at 11:31:35AM +0100, Lucas Tanure wrote:
+>>>>> On 27-08-2023 11:23, Neil Armstrong wrote:
+>>>>>> Hi Lucas,
 >>>>>>
->>>>>> I understand, but this patch doesn't qualify as a fix for
->>>>>> 9e15123eca79 and is too late to be merged in drm-misc-next for
->>>>>> v6.6, and since 9e15123eca79 actually breaks some support it
->>>>>> should be reverted (+ deps) since we are late in the rc cycles.
+>>>>>> Le 27/08/2023 à 12:04, Lucas Tanure a écrit :
+>>>>>>> On 27-08-2023 10:48, Neil Armstrong wrote:
+>>>>>>>> Hi Lucas,
+>>>>>>>>
+>>>>>>>> Le 27/08/2023 à 10:29, Lucas Tanure a écrit :
+>>>>>>>>> This reverts commit 6a4197f9763325043abf7690a21124a9facbf52e.
+>>>>>>>>> New SoC will use ttyS0 instead of ttyAML, so T7 SoC doesn't
+>>>>>>>>> need a OF_EARLYCON_DECLARE.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Lucas Tanure <tanure@linux.com>
+>>>>>>>>> ---
+>>>>>>>>> Since V1:
+>>>>>>>>> - add Signed-off-by:
+>>>>>>>>>
+>>>>>>>>>     drivers/tty/serial/meson_uart.c | 2 --
+>>>>>>>>>     1 file changed, 2 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/drivers/tty/serial/meson_uart.c
+>>>>>>>>> b/drivers/tty/serial/meson_uart.c
+>>>>>>>>> index c4f61d82fb727..790d910dafa5d 100644
+>>>>>>>>> --- a/drivers/tty/serial/meson_uart.c
+>>>>>>>>> +++ b/drivers/tty/serial/meson_uart.c
+>>>>>>>>> @@ -648,8 +648,6 @@ meson_serial_early_console_setup(struct
+>>>>>>>>> earlycon_device *device, const char *opt
+>>>>>>>>>     OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
+>>>>>>>>>                 meson_serial_early_console_setup);
+>>>>>>>>> -OF_EARLYCON_DECLARE(meson, "amlogic,t7-uart",
+>>>>>>>>> -            meson_serial_early_console_setup);
+>>>>>>>>>     #define MESON_SERIAL_CONSOLE_PTR(_devname)
+>>>>>>>>> (&meson_serial_console_##_devname)
+>>>>>>>>>     #else
+>>>>>>>>
+>>>>>>>> How do you use earlycon with this removed ?
+>>>>>>>>
+>>>>>>>> Neil
+>>>>>>> This is my kernel cmdline:
+>>>>>>> console=ttyS0,921600 no_console_suspend earlycon=ttyS0,0xfe078000
+>>>>>>>
+>>>>>>> And I can see my log:
+>>>>>>> boot 64bit kernel
+>>>>>>> [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd092]
+>>>>>>> [    0.000000] Linux version 6.5.0-rc7-next-20230825+
+>>>>>>> (tanureal@ryzen) (aarch64-none-linux-gnu-gcc (GNU Toolchain for the
+>>>>>>> A-profile Architecture 10.3-2021.07 (arm-10.29)) 10.3.1 20210621,
+>>>>>>> GNU ld (GNU Toolchain fo3
+>>>>>>> [    0.000000] KASLR disabled due to lack of seed
+>>>>>>> [    0.000000] Machine model: Khadas vim4
+>>>>>>> [    0.000000] OF: reserved mem:
+>>>>>>> 0x0000000005000000..0x00000000052fffff (3072 KiB) nomap non-reusable
+>>>>>>> secmon@5000000
+>>>>>>> [    0.000000] OF: reserved mem:
+>>>>>>> 0x0000000005300000..0x00000000072fffff (32768 KiB) nomap
+>>>>>>> non-reusable secmon@5300000
+>>>>>>> ...
+>>>>>>> [    0.079368] io scheduler mq-deadline registered
+>>>>>>> [    0.079374] io scheduler kyber registered
+>>>>>>> [    0.079549] io scheduler bfq registered
+>>>>>>> [    0.083373] fe078000.serial: ttyS0 at MMIO 0xfe078000 (irq = 14,
+>>>>>>> base_baud = 1500000) is a meson_uart
+>>>>>>> [    0.083403] printk: console [ttyS0] enabled
+>>>>>>>
+>>>>>>> As the log is OK, and T7 for now is binding against S4 code we
+>>>>>>> should drop this patch and add a S4 one if needed.
+>>>>>>>
+>>>>>>> But just having this log is not enough for testing earlycon?
+>>>>>>> I am assuming that by just having the log since 0.0000 is a good
+>>>>>>> sign that earlycon is working.
+>>>>>>> Could you give further guidance?
+>>>>>>
+>>>>>> First the kernel argument is simply "earlycon" with no other options,
+>>>>>> the earlycon code will fetch the first uart using the DT
+>>>>>> /chosen/stdout-path property.
+>>>>>>
+>>>>>> Then you should see something like right after "Machine model":
+>>>>>> [    0.000000] earlycon: meson0 at MMIO 0x00000000ff803000 (options
+>>>>>> '115200n8')
+>>>>>>
+>>>>>> The boot log you share doesn't use earlycon, it waits until all
+>>>>>> depedency of the UART
+>>>>>> has been probed before probing the UART driver and prints the whole boot
+>>>>>> log.
+>>>>>>
+>>>>>> Earlycon is a mechanism to use the UART HW as configured by the
+>>>>>> bootloader in
+>>>>>> a minimal way very early in the boot in order to detect very early lockups.
+>>>>>>
+>>>>>> Keeping OF_EARLYCON_DECLARE for t7 would enable this.
+>>>>>>
+>>>>>> Neil
+>>>>>>
+>>>>>>>
+>>>>>>> Lucas Tanure
+>>>>>>>
+>>>>>>
+>>>>> But then we would need to add Earlycon for S4 too.
+>>>>> How can we add one Earlycon for all future SoCs, like S4 and T7?
 >>>>>
->>>>> If we go this way, we can never reapply these patches. There will be
->>>>> no guarantee that all panel drivers are completely converted. We
->>>>> already have a story without an observable end -
->>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
 >>>>
->>>> I don't understand this point, who would block re-applying the patches ?
->>>>
->>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
->>>> Linux version and went smoothly because we reverted regressing patches
->>>> and restarted when needed, I don't understand why we can't do this
->>>> here aswell.
->>>>
->>>>> I'd consider that the DSI driver is correct here and it is about the
->>>>> panel drivers that require fixes patches. If you care about the
->>>>> particular Fixes tag, I have provided one several lines above.
->>>>
->>>> Unfortunately it should be done in the other way round, prepare for
->>>> migration, then migrate,
->>>>
->>>> I mean if it's a required migration, then it should be done and I'll
->>>> support it from both bridge and panel PoV.
->>>>
->>>> So, first this patch has the wrong Fixes tag, and I would like a
->>>> better explanation on the commit message in any case. Then I would
->>>> like to have an ack from some drm-misc maintainers before applying it
->>>> because it fixes a patch that was sent via the msm tree thus per the
->>>> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
+>>>> Per my understanding, you just need to declare UART dts node with the
+>>>> following compatible string: "amlogic,meson-ao-uart". It will enabled
+>>>> earlycon. There is no neccessary to declare separate
+>>>> OF_EARLYCON_DECLARE(). It's working okay for A1 dts:
 >>>
->>> Sorry, it's not clear to me what you'd like our feedback on exactly?
+>>> This works on A1 because uart_AO_B is an Always-On UART, and using amlogic,meson-ao-uart
+>>> is corrent.
+>>> But for S4 & T7, Amlogic dropped the Always-On power domain, so there's no more AO uarts,
+>>> so using amlogic,meson-ao-uart on those is abusing the DT to enable a driver functionality.
+>>>
+>>> So the solution is to add those OF_EARLYCON_DECLARE and only use the correct
+>>> /chosen/stdout-path property.
 >>
->> So let me resume the situation:
+>> Oh, I didn't know about missing Always-On UART AO power domain. In this
+>> situation I'm fully agree with separate OF_EARLYCON_DECLARE(). Thank you
+>> for explanation!
 >>
->> - pre_enable_prev_first was introduced in [1]
->> - some panels made use of pre_enable_prev_first
->> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 kernels and before
->> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM8550 systems (and probably other Video mode panels on Qcom platforms)
->> - this fix was sent late, and is now too late to be merged via drm-misc-next
+>>>>
+>>>> meson-a1.dtsi uart declaration:
+>>>>      uart_AO_B: serial@2000 {
+>>>>              compatible = "amlogic,meson-a1-uart",
+>>>>                           "amlogic,meson-ao-uart";
+>>>>              reg = <0x0 0x2000 0x0 0x18>;
+>>>>              interrupts = <GIC_SPI 26 IRQ_TYPE_EDGE_RISING>;
+>>>>              clocks = <&xtal>, <&xtal>, <&xtal>;
+>>>>              clock-names = "xtal", "pclk", "baud";
+>>>>              status = "disabled";
+>>>>      };
+>>>>
+>>>> earlycon declaration from dts:
+>>>>      aliases {
+>>>>              serial0 = &uart_AO_B;
+>>>>      };
+>>>>
+>>>>      chosen {
+>>>>              stdout-path = "serial0:115200n8";
+>>>>      };
+>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> linux-amlogic mailing list
+>>>>> linux-amlogic@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+>>>>
+>>>
+>>
+>> --
+>> Thank you,
+>> Dmitry
+> So let's add:
 > 
-> Hi Neil and Maxime,
+> OF_EARLYCON_DECLARE(meson, "amlogic,meson-s4-uart",
+> meson_serial_early_console_setup);
 > 
-> I agree with Neil that 9e15123eca79 was the commit that introduced the issue (since it changed the MSM DSI host behavior).
-> 
-> However, I'm not too keen on simply reverting that patch because
-> 
-> 1) it's not wrong to have the dsi_power_on in pre_enable. Arguably, it actually makes more sense to power on DSI host in pre_enable than in modeset (since modeset is meant for setting the bridge mode), and
+> ok?
 
-I never objected that, it's the right path to go.
 
-> 
-> 2) I think it would be good practice to keep specific bridge chip checks out of the DSI host driver.
-
-We discussed about a plan with Maxime and Dmitry about that, and it would require adding
-a proper atomic panel API to handle a "negociation" with the host controller.
-
-> 
-> 
-> That being said, what do you think about setting the default value of prepare_prev_first to true (possibly in panel_bridge_attach)?
-
-As Dmitry pointed, all panels sending LP commands in pre_enable() should have prepare_prev_first to true.
-
-> 
-> It seems to me that most panel drivers send DCS commands during pre_enable, so maybe it would make more sense to power on DSI host before panel enable() by default. Any panel that needs DSI host to be powered on later could then explicitly set the flag to false in their respective drivers.
-
-A proper migration should be done, yes, but not as a fix on top of v6.5.
+Yes
 
 Neil
-
-> 
-> Thanks,
-> 
-> Jessica Zhang
-> 
-> 
->>
->> I do not consider it's the right way to fix regression caused by [2]
->> I consider [2] should be reverted, panels migrated to pre_enable_prev_first when needed, tested and the [2] applied again
->>
->> I have no objection about [2] and it should be done widely over the whole DSI controllers
->> and DSI Video panels.
->>
->> I also object about the Fixes tag of this patch, which is wrong, and Dmitry considers [1]
->> should be used but it's even more wrong since [2] really caused the regression.
->>
->> And if [2] was to correct one to use, it was pushed via the MSM tree so it couldn't be
->> applied via drm-misc-next-fixes, right ?
->>
->> [1] 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alter bridge init order")
->> [2] 9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI hosts at modeset")
->>
->> Thanks,
->> Neil
->>
->>>
->>> Maxime
->>
-
