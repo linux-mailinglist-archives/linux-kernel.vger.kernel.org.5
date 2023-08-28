@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729B778B332
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7C578B336
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 16:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjH1OcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 10:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
+        id S230323AbjH1OfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 10:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjH1OcJ (ORCPT
+        with ESMTP id S231126AbjH1OfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:32:09 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22C9CC;
-        Mon, 28 Aug 2023 07:31:58 -0700 (PDT)
-Received: from leknes.fjasle.eu ([46.142.49.250]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1N3bCH-1pbkpe3pHH-010car; Mon, 28 Aug 2023 16:31:30 +0200
-Received: from localhost.fjasle.eu (kirkenes.fjasle.eu [10.10.0.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by leknes.fjasle.eu (Postfix) with ESMTPS id 183793C183;
-        Mon, 28 Aug 2023 16:31:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1693233085; bh=Ydm2kf81Qq6R56WZXeYcVK7H9JA303Wow6gBMrBPSNc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TH5EDg/S7StiKSZc+6JRbzwXfPJp/SNef3o9rZjFMyHOAZkxplbtuLiC20fUUL52n
-         E6IjnFnzXJ5O+f5fro9yA9HUeX+Nn/1rwtPeZPdvaFLDBkcqU21d7rQrSxSXqbC9Mz
-         ntPhqQIGMQy27ocbWztdSAEGV80jLSoUulEHa0O8=
-Received: by localhost.fjasle.eu (Postfix, from userid 1000)
-        id 2DE575DE3; Mon, 28 Aug 2023 16:31:24 +0200 (CEST)
-Date:   Mon, 28 Aug 2023 16:31:24 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH 7/8] kbuild: support 'make modules_sign' with
- CONFIG_MODULE_SIG_ALL=n
-Message-ID: <ZOyvvDDiLSFJZG0G@bergen.fjasle.eu>
-References: <20230823115048.823011-1-masahiroy@kernel.org>
- <20230823115048.823011-7-masahiroy@kernel.org>
+        Mon, 28 Aug 2023 10:35:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5380C9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:34:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693233298; x=1724769298;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0GPJBVETKr0elJKyjYnsO6X1WEkBJ4D5Uo2VZCV0EuE=;
+  b=gZvGbaG0v341cfBohGNtg0Tf0f1SiDAqsfB+fmAij+Q7aJNvj3WyGmWF
+   BhN2N65DQm7Tw9XqPhdadEKe4JaSxuxuNr4KQ4IL8Z4jXGgrIAjvOEnIg
+   fAN+505ImKs2Lpt2QcQe2qDknddnf2eLY6la7CJfllv6TEv+EubSP+e6i
+   nH3C+qxZmOqjm1k5IwK4yHGEef5KNCUj0oYULCxCjcf7OCfkA9d9txo7H
+   EpsCf/fXxC5aiMXsE09/9eYLdWMAHgYEJfSxg16Ti02ToXChXXE01pz7/
+   Fg2SLvHaL1q43FeE1+Y/oPDoHuWQORkn14DVy0PUiQNSMmzMV8xrFiPNz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="461491140"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="461491140"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 07:34:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="773281598"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="773281598"
+Received: from avandeve-mobl1.amr.corp.intel.com (HELO [10.209.114.105]) ([10.209.114.105])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 07:34:32 -0700
+Message-ID: <abb65e60-4e8b-7036-4401-d21b273b6d67@linux.intel.com>
+Date:   Mon, 28 Aug 2023 07:34:32 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="J9Yc45GIQDHZ4LYD"
-Content-Disposition: inline
-In-Reply-To: <20230823115048.823011-7-masahiroy@kernel.org>
-X-Operating-System: Debian GNU/Linux trixie/sid
-Jabber-ID: nicolas@jabber.no
-X-Provags-ID: V03:K1:PN/JmjeLv1gMquQ6WBkR4gxEX51LAwz7PVOZ8K7QAiNlaRbjia8
- xAz0fYnBuscYQWoj/jK4Si8uiluFDnL1hpEw4QwXxSHevCe4WSsd++qrz9Fp/HtOtvQGNMf
- f1hhPj0Wojgflsp4aWN0rJzJOWUoAK+UEBykuSlP9mVNyXsNqRyxFF7J7FPJ0Ir0J5wM0Je
- suQ5MaGA6+rw51CykdEZA==
-UI-OutboundReport: notjunk:1;M01:P0:h8O/pTqSieI=;c47Nw4wXAFRZI+fPuyMPrza0Gmy
- 0vrxpb1eXvofzTGYaLiIYwnrqXkR9fa30pCXRCUdAbAt/i5KOGJ6zcCUaddK5S1hL6eubSYcZ
- kUcbXxDrJdt5rDPcmCuBWb4n03DrOHfYSmUThAo5lyU/wAehb3mkCHkq5iyd5/+91m1ay53aY
- OIB/98sr8oH3qnyO4KFwNGAq1OsTyfCPR3cueDahl3VzPK3P7ONuuJ3mHGaRYA/rbazeuFlBK
- bZRRBTGemW/ugJ9sILIVGwQYPyoLwr2+QMsJvIALYEwvCD9dJ594Fv6VJBQhq32D3pv2HsB9e
- HdvwpacrluoH5xT3LB4Z0enrbjwmrGF4KJCUQWAyeXnly9G5R9mzJZ4aCg41iI7ohPsC90eeh
- sCs9M9NtT272XA1oNIYl8yRLqzCSAIThkT67TXyx7z8EsoFe/rU9Hs/XUTHr2UYyjhmW70ND1
- LxxDHsqbNDOMyHNHRxVJFYzeObjCN+dWsAYj4d646Dv9ZFDTaCmj6vzXcq/CRfLWogZaFk98z
- lbOLVkHSADK6oHNBJSb0ntEGOamQ8e8p8PVk0Rcif53YEPT/BN5n3INb2BU4zy2sKKg26jbbA
- PZvuFL2WjsoBgPuj9Vl0nw3C70Dm8O2qDpfap65eywF03Lb5X1gIkma6FqslQjuQU8PAJu1kr
- XyiaXn8UE6tghABqR7+YYEULt8XwEwoQzhCVbwXEDOLcRsJLfZIF7ibT/dIjKH2GY7ypKdvaI
- 0cig5G8NzOa4IV6/Eb2GdjjU9RG3vknaTA6H3XJEknS2J8HeA7G222h1HGhhpUKdoozwWl0yZ
- 6QiIlIrkgvbhtMUaCZxB9qciZ6E6KqrqwB28Jcqo/x6on4hQpp2P9X+XUKaj7vCdJrq8NQEeE
- 7aG2xb7dhhRovDg==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [patch V4 24/41] x86/cpu: Provide cpu_init/parse_topology()
+Content-Language: en-US
+To:     K Prateek Nayak <kprateek.nayak@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Pu Wen <puwen@hygon.cn>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Gautham Shenoy <gautham.shenoy@amd.com>
+References: <20230814085006.593997112@linutronix.de>
+ <20230814085113.471353147@linutronix.de>
+ <934072fe-eca2-44df-94e7-9fed1dc8b502@amd.com> <87r0nn8ots.ffs@tglx>
+ <4a4d5a89-b024-ea49-8740-1f3aef412c15@amd.com>
+From:   Arjan van de Ven <arjan@linux.intel.com>
+In-Reply-To: <4a4d5a89-b024-ea49-8740-1f3aef412c15@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,103 +76,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/28/2023 7:28 AM, K Prateek Nayak wrote:
+>>     - Are these really different between AMD and Intel or is this some
+>>       naming convention issue which needs to be resolved?
+> 	They do have different characteristics since, on Sapphire
+> 	Rapids, the LLC is at a socket boundary despite having multiple
+> 	tiles. (Please correct me if I'm wrong, I'm going off of
+> 	llc_id shared in this report by Qiuxu Zhuo -
+> 	https://lore.kernel.org/all/20230809161219.83084-1-qiuxu.zhuo@intel.com/)
+> 
 
---J9Yc45GIQDHZ4LYD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sapphire reports itself as 1 tile though (since logically it is) as far as I know
 
-On Wed 23 Aug 2023 20:50:47 GMT, Masahiro Yamada wrote:
-> Commit d890f510c8e4 ("MODSIGN: Add modules_sign make target") introduced
-> 'make modules_sign' to manually sign modules.
->=20
-> Some time later, commit d9d8d7ed498e ("MODSIGN: Add option to not sign
-> modules during modules_install") introduced CONFIG_MODULE_SIG_ALL.
-> If it was disabled, mod_sign_cmd was set to no-op ('true' command).
-> It affected not only 'make modules_install' but also 'make modules_sign'.
-> With CONFIG_MODULE_SIG_ALL=3Dn, 'make modules_install' did not sign modul=
-es
-> and 'make modules_sign' could not sign modules either.
->=20
-> Kbuild has kept that behavior, and nobody has complained about it, but
-> I think it is weird.
->=20
-> CONFIG_MODULE_SIG_ALL=3Dn should turn off signing only for modules_instal=
-l.
-> If users want to sign modules manually, they should be allowed to use
-> 'make modules_sign'.
->=20
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-
-Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
-
->=20
->  scripts/Makefile.modinst | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->=20
-> diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
-> index dc7c54669082..33d424a3f265 100644
-> --- a/scripts/Makefile.modinst
-> +++ b/scripts/Makefile.modinst
-> @@ -106,7 +106,6 @@ endif
->  # Signing
->  # Don't stop modules_install even if we can't sign external modules.
->  #
-> -ifeq ($(CONFIG_MODULE_SIG_ALL),y)
->  ifeq ($(filter pkcs11:%, $(CONFIG_MODULE_SIG_KEY)),)
->  sig-key :=3D $(if $(wildcard $(CONFIG_MODULE_SIG_KEY)),,$(srctree)/)$(CO=
-NFIG_MODULE_SIG_KEY)
->  else
-> @@ -115,13 +114,15 @@ endif
->  quiet_cmd_sign =3D SIGN    $@
->        cmd_sign =3D scripts/sign-file $(CONFIG_MODULE_SIG_HASH) "$(sig-ke=
-y)" certs/signing_key.x509 $@ \
->                   $(if $(KBUILD_EXTMOD),|| true)
-> -else
-> +
-> +ifeq ($(modules_sign_only),)
-> +
-> +# During modules_install, modules are signed only when CONFIG_MODULE_SIG=
-_ALL=3Dy.
-> +ifndef CONFIG_MODULE_SIG_ALL
->  quiet_cmd_sign :=3D
->        cmd_sign :=3D :
->  endif
-> =20
-> -ifeq ($(modules_sign_only),)
-> -
->  $(dst)/%.ko: $(extmod_prefix)%.ko FORCE
->  	$(call cmd,install)
->  	$(call cmd,strip)
-> --=20
-> 2.39.2
-
---=20
-Nicolas Schier
-=20
-epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-=E2=86=B3 gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
-     -- frykten for herren er opphav til kunnskap --
-
---J9Yc45GIQDHZ4LYD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmTsr7sACgkQB1IKcBYm
-Emkj8hAA2HJkjOFbQMPevgiZ/EBZhHtWCk26FuAM0QTZPex/NYy/YfsRD9jtiRxd
-eiJ4kUu6g5v5bJxcwj9kxIyXr9IyTj+tfroNCK2XXFwx5neAOb0Xd/wW6BFthcNi
-x/I5cQCQrQHMvcXDBKJXTfPoZFT90mDB3Qm5VuSFJvRUTFq9o9lSoESIcnEVL24f
-AtYBxZ1XEGuS7YIOscvsIeMcFhn5WtKZHGJVr0IqrSl16Vl4z62nlbGTSNBSNunC
-xFtg+LxzOOw+nYX6aQwL1hcGaTJSM+8Smpl9vhTJA1Y8GtUtcQ6V/OC68Ln37TM5
-E2ReF21AG8aeBVh1Z6+9oOgyxOooPmC+tQy8/UeEzroEauyGFnRkIViWgAtXRypl
-2QcJq4xdSZE2mkU4P5CGiXJ79+UIp1ngpQBLhb4iHw+51zsk0RXtBjWBERH3LlIc
-0BSchArQj9+noiOKweL9o/PgJS9KEsBSKZarHmU0/AXloDBLpf2yL8kplMoWxaMV
-A/V/qu6nPNj/UEfkRiwEyYDlYfPchy34/w8kpPYRhLXThTLEdkgGXPXN6MeOQkfO
-kK90outqxzFXwmU8+BO7tJZSqVERMSHqe/6R8SDEVHEOmYeNOlJjKhlRXB8SovNl
-e/rE3F9I4nq/0RzcwjS+QwQzbt23Ll5MCHN/HMdSenEg+v9mmlk=
-=93K9
------END PGP SIGNATURE-----
-
---J9Yc45GIQDHZ4LYD--
