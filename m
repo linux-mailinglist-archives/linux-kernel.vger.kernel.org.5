@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2707C78B969
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BF778B970
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbjH1UPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
+        id S229841AbjH1UP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234044AbjH1UPH (ORCPT
+        with ESMTP id S234052AbjH1UPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Aug 2023 16:15:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AA4C6;
-        Mon, 28 Aug 2023 13:15:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEC8FC;
+        Mon, 28 Aug 2023 13:15:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E6D1965144;
-        Mon, 28 Aug 2023 20:15:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 54E2FC433D9;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 595BA65151;
+        Mon, 28 Aug 2023 20:15:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C2F9CC433C9;
         Mon, 28 Aug 2023 20:15:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693253703;
-        bh=HmDQEJV68K5BwwEjRc9JBMpaRF292kNd/ieNhAjMRFs=;
+        bh=gaQF1zCzLIu5/qDikrcTiwDrFOQGikM0cfHW4oUyRj8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=tMQCUImFeFcvx5aVFT0MpQ3dFJ9PdB3IJrUAJxmy2rxCvoME9gStvuG8go9qJLTQA
-         Y2xJ887MZnl/Q/PN9Oq2ROmKCAd68+GAZ2k26gvcaWURBiUP7FmJ9vPphjdxIujfwG
-         EWs1PEB7fieqvKuNB7pIZy6C3yJHjs/MxAd4/yG0lvT9LsYcbroZEXCp1LPKG2iRbG
-         uVyg36khG9JRWpU9NE/ojy/wqP1ryN3+nsvgYXD4ZlvcznC0KOVNvPavugO1ZJ1Y3Q
-         Rze2JxRlfrG0ksNX4w8qT8YvzyI2OdkXV+306z43zw9A8joFnPhb6ExrGtM1CI5tZ8
-         COJuWNhRP3ODQ==
+        b=E9rV/vmbxTCFIn0FkbEr5yA0tqoTiS+G/p5YJ9QDMeWS/jJjGZ/GMGSXhPTJ86/T2
+         3iis+0/Nl4Y2QuZT1Q4E9jQ+1vzdoDbxs03VWzOpjn0dCaCGGQVIyKXWBb+yqICcmB
+         jDlcQ8ES1o6ainuvFFE5AVdWmAX7JULfGKhFOgsdpE1jM3gwrag5Crg6LGADp3Q/mo
+         lH/5kh7xIleOBeHkdJiN9Sm23OS0MAj4aK5wBua3bEcIQlzAvESYArLCMPfS4/z18K
+         SYvi7oY5/bDqtxcGcf2Emut/B36kWjZm+lsZPP9j2lGQQC3vVCPFj+2NRsNU8JazQa
+         /UlAv8UIvAOmw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 43D96C3274C;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B2479C3274C;
         Mon, 28 Aug 2023 20:15:03 +0000 (UTC)
-Subject: Re: [GIT PULL] super updates
+Subject: Re: [GIT PULL] autofs fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230824-prall-intakt-95dbffdee4a0@brauner>
-References: <20230824-prall-intakt-95dbffdee4a0@brauner>
+In-Reply-To: <20230824-komfort-aufkam-7a2b789dd532@brauner>
+References: <20230824-komfort-aufkam-7a2b789dd532@brauner>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230824-prall-intakt-95dbffdee4a0@brauner>
-X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-vfs.super
-X-PR-Tracked-Commit-Id: cd4284cfd3e11c7a49e4808f76f53284d47d04dd
+X-PR-Tracked-Message-Id: <20230824-komfort-aufkam-7a2b789dd532@brauner>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-vfs.autofs
+X-PR-Tracked-Commit-Id: 17fce12e7c0a53f0bed26af231a2a98a34d34c60
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 511fb5bafed197ff76d9adf5448de67f1d0558ae
-Message-Id: <169325370327.5740.9523863094227967849.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 2e0afa7e78c45a889954a7923642f013d6329d3a
+Message-Id: <169325370372.5740.14920927990182675332.pr-tracker-bot@kernel.org>
 Date:   Mon, 28 Aug 2023 20:15:03 +0000
 To:     Christian Brauner <brauner@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -63,12 +63,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 24 Aug 2023 16:41:04 +0200:
+The pull request you sent on Thu, 24 Aug 2023 16:47:33 +0200:
 
-> git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-vfs.super
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-vfs.autofs
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/511fb5bafed197ff76d9adf5448de67f1d0558ae
+https://git.kernel.org/torvalds/c/2e0afa7e78c45a889954a7923642f013d6329d3a
 
 Thank you!
 
