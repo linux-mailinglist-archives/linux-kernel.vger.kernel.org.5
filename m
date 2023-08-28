@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B2478BB12
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 00:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0369678BB13
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 00:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbjH1Wjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 18:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
+        id S233998AbjH1Wje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 18:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234220AbjH1WjS (ORCPT
+        with ESMTP id S234071AbjH1WjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 18:39:18 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15726184
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:39:15 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c09673b006so18163615ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:39:15 -0700 (PDT)
+        Mon, 28 Aug 2023 18:39:14 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5D1189
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:39:11 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34bbc394fa0so2676685ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 15:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693262354; x=1693867154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HcWugy4FfAsRRLNZLuk5CmgbDUPnvpdUf0zbh9zIsCo=;
-        b=MP73UVnC8bBJVHy9EOZoaC7oTS4K4ufjuIJl8WvnOMcBi9atD5HtD66EJAJj7UrDqz
-         Z2V1PadfaFqPbDYzgdKaYtIBWoY2SFh7xMWKf2um0Ziab1SUTqqO3DynvtjftkicUkhZ
-         ANZClw9uwndzhHfTwfMWjTFV0HJI3S86QfaofrYGMa8uEtWPr30U1fZK5qH9l+Tn9R5E
-         EWXEZuE/9K16EMBPQfrQG4FLJdzC9JHyCEH5buHMk9Bp3mxEx8E4YGPnqQFu3XzzoOWd
-         l6eVePBAnfd2ATzxbVLTj1RtiPivm6T6jfWoRs5smJNPUVxbG7VKDyP1q+Y6BlFdrl1B
-         9jKw==
+        d=linuxfoundation.org; s=google; t=1693262351; x=1693867151;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=vBmVIkqWHQEa837GVRmryXEmyC96Ro8XfMG9WRXh9FQ=;
+        b=GdSEPouEjpzqLVTjSXKzN3n79A+2lZFWBJQZsSspboz1zKsENZpnlVnBmGLUd6m8X6
+         oUG28FouGokC0MOSrPd/QuYdBhCj3Gt8zDHh3js0mspw+yAIJ+q7pkFJU+refVDfI3H9
+         DBC57MEVOBfaKV/6mfX+HijIp8iuZKKctVHFI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693262354; x=1693867154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HcWugy4FfAsRRLNZLuk5CmgbDUPnvpdUf0zbh9zIsCo=;
-        b=kOvmXh/dgVKrmOJ01s/uw9Sf2+GfmzfosI6AkOBR7rBSbv6t66OH7MQ3JJKcfDvuu4
-         fPllc8FXkadh2s4Moc1gpOoO8+3zl0nn5cRKINOhiO+68QYsrdGE0uh3KqzsoKJ07qmO
-         KlHyOLcKB6Dw9sLGWV34xLcqvfOD/pLDa/cS8kkTs2GmkSJ+31f8OWcif1382oIFVspg
-         zVeKXti7aHhuiTcEWePSEgACdcYV1dx1gMntU70pK2paLkIk0+NBHFGgcbVtTW5KZa9X
-         7rxRum06jTRWV+VKItWDg/vZrJBgyn70GnWU85zrcKf6KQRPac7V20rhr3Wh1E91aSDb
-         a/cg==
-X-Gm-Message-State: AOJu0YxXRpc/YTxTRVlTC+QSYp5t2g60zMqI7LSJ4TuKyzjguD2F3Xet
-        0NSNM1a15wT9cuD1YJuVzj8wEl8Ae1h3xeIHi94=
-X-Google-Smtp-Source: AGHT+IGHXO796tTurZs6XtySiM72Rkx3bFG0r8wCpRe3WhLIBaVJBUr0b/cvwAyijyMcVeAMRboJUNzS1fRZjh41zk0=
-X-Received: by 2002:a17:90a:7021:b0:268:ac99:4bb4 with SMTP id
- f30-20020a17090a702100b00268ac994bb4mr20964263pjk.46.1693262354315; Mon, 28
- Aug 2023 15:39:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693262351; x=1693867151;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vBmVIkqWHQEa837GVRmryXEmyC96Ro8XfMG9WRXh9FQ=;
+        b=QA5ivCcG6sxJ52Iz3Mvh0Lua8Yt2ctoJkesTz2L9bo+VbOpTbQxjTFrRGPmUi0/P6u
+         By27JK6jjVRz2ouDZFelkbbtwHWPZqofe5pz2aPC0g0BvlG/ZfYGVzkaPqHhOai8rmHs
+         cCoBah32khWc9n3DgcPEOEdN3O4DyNRDFbK6GSx3tQaxyfyn5tNjfYZyzfxZF2+TkSwy
+         zEMMcVX30cUGZy0LpwbSTolXu7fKglR1luFIJbOYaibHtOMIGmJijNEf+KL1MjD0DrvB
+         pb+ZgOXJsV57zTnxcpJYdRCpSj0mwkLd+GNocko5QYoTpErWnTMrhbGe5J25Z6Yf3oFr
+         TaYQ==
+X-Gm-Message-State: AOJu0YzedbCVKVrNXvbwt1DdpJMfIvQSafbZ90KPL6zngAUcXMh91L4Y
+        5qocvUBdccOMfiRTP0xU/bEqiA==
+X-Google-Smtp-Source: AGHT+IHA9MxCJtNG6yfDLCJ6N950f4emH+svW+A2yETCyvgmVJhx+eLpUz04hZsvoSuf4aLUY7GNLw==
+X-Received: by 2002:a92:da88:0:b0:349:4e1f:e9a0 with SMTP id u8-20020a92da88000000b003494e1fe9a0mr27738984iln.2.1693262351216;
+        Mon, 28 Aug 2023 15:39:11 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id c1-20020a92cf41000000b0034ca3b29c5asm2709408ilr.57.2023.08.28.15.39.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 15:39:10 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------FwGEhnp4yGGfwEPLEBIGjuQn"
+Message-ID: <7f3f12a8-fb4e-fa6a-aeb6-5ebcdfddbee0@linuxfoundation.org>
+Date:   Mon, 28 Aug 2023 16:39:10 -0600
 MIME-Version: 1.0
-References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
- <20230818-samsung-dsim-v1-4-b39716db6b7a@pengutronix.de> <CAOMZO5AFEDMT1de2O2sUUuw8E0ZRCyD4QVVCKxAtfRaisU5gVw@mail.gmail.com>
-In-Reply-To: <CAOMZO5AFEDMT1de2O2sUUuw8E0ZRCyD4QVVCKxAtfRaisU5gVw@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 28 Aug 2023 17:39:03 -0500
-Message-ID: <CAHCN7xLuzWk53dTOM_ySVTGuqNZwCXDiZ236CXavyjSKZp-sRA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] drm/bridge: samsung-dsim: adjust porches by rounding up
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Michael Tretter <m.tretter@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>, kernel@pengutronix.de,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     shuah@kernel.org, skhan@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] cpupower update for Linux 6.6-rc2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 1:26=E2=80=AFPM Fabio Estevam <festevam@gmail.com> =
-wrote:
->
-> Hi Michael,
->
-> On Mon, Aug 28, 2023 at 12:59=E2=80=AFPM Michael Tretter
-> <m.tretter@pengutronix.de> wrote:
-> >
-> > The porches must be rounded up to make the samsung-dsim work.
+This is a multi-part message in MIME format.
+--------------FwGEhnp4yGGfwEPLEBIGjuQn
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-...at some resolutions and refresh rates.
+Hi Rafael,
 
->
-> The commit log could be improved here.
->
-> The way it is written gives the impression that samsung-dsim does not
-> work currently.
+Please pull the following cpupower update for Linux 6.6-rc2
 
-This is a big improvement in the number of resolutions and refresh rates.
+This cpupower update for Linux 6.6-rc2 consists of a single fix to
+add Georgian translation to Makefile LANGUAGES.
 
-Reviewed-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
-Tested-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
+diff is attached.
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+The following changes since commit 99481d2195bfd13a663904e6014887abf46b57c7:
+
+   cpupower: Fix cpuidle_set to accept only numeric values for idle-set operation. (2023-07-18 16:07:08 -0600)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux tags/linux-cpupower-6.6-rc2
+
+for you to fetch changes up to af75504c38960d5331b8c6c83ea9981e26d659e6:
+
+   cpupower: Add Georgian translation to Makefile LANGUAGES (2023-08-17 14:28:16 -0600)
+
+----------------------------------------------------------------
+linux-cpupower-6.6-rc2
+
+This cpupower update for Linux 6.6-rc2 consists of a single fix to
+add Georgian translation to Makefile LANGUAGES.
+
+----------------------------------------------------------------
+Shuah Khan (1):
+       cpupower: Add Georgian translation to Makefile LANGUAGES
+
+  tools/power/cpupower/Makefile | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+----------------------------------------------------------------
+--------------FwGEhnp4yGGfwEPLEBIGjuQn
+Content-Type: text/x-patch; charset=UTF-8; name="linux-cpupower-6.6-rc2.diff"
+Content-Disposition: attachment; filename="linux-cpupower-6.6-rc2.diff"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Bvd2VyL2NwdXBvd2VyL01ha2VmaWxlIGIvdG9vbHMvcG93
+ZXIvY3B1cG93ZXIvTWFrZWZpbGUKaW5kZXggZGM1MzE4MDVhNTcwLi5iNTM3NTNkZWUwMmYg
+MTAwNjQ0Ci0tLSBhL3Rvb2xzL3Bvd2VyL2NwdXBvd2VyL01ha2VmaWxlCisrKyBiL3Rvb2xz
+L3Bvd2VyL2NwdXBvd2VyL01ha2VmaWxlCkBAIC01Nyw3ICs1Nyw3IEBAIExJQl9NSU49CQkJ
+MQogCiBQQUNLQUdFID0JCQljcHVwb3dlcgogUEFDS0FHRV9CVUdSRVBPUlQgPQkJbGludXgt
+cG1Admdlci5rZXJuZWwub3JnCi1MQU5HVUFHRVMgPSAJCQlkZSBmciBpdCBjcyBwdAorTEFO
+R1VBR0VTID0gCQkJZGUgZnIgaXQgY3MgcHQga2EKIAogCiAjIERpcmVjdG9yeSBkZWZpbml0
+aW9ucy4gVGhlc2UgYXJlIGRlZmF1bHQgYW5kIG1vc3QgcHJvYmFibHkK
+
+--------------FwGEhnp4yGGfwEPLEBIGjuQn--
