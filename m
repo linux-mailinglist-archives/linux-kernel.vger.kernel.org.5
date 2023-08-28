@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C470B78AEF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0989078AEF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbjH1Le4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S231822AbjH1Lf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjH1Leh (ORCPT
+        with ESMTP id S229607AbjH1Lf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:34:37 -0400
-Received: from out-249.mta1.migadu.com (out-249.mta1.migadu.com [95.215.58.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E5CC3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:34:34 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693222472;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DRnBVmo3DqIJBhnJXFu4mrZmcPdTw6TB48chGflHSQo=;
-        b=lZgHbUggbNpgog0DzDuq0Vmuhz7R5AxpVrJP8rYTvsLg8lCIFIdQi4wN7DOeTEc1OY4epV
-        qP4pk79q0IIvO6iNIPfdAqocWZaH6c75wXhLnuMorprQ9g0qPi8+DACx7iSUaWOwy9MwgZ
-        7Xbi3T4A+wc9QP6s4Qk7jik+WzxtEc0=
-Mime-Version: 1.0
-Subject: Re: [v3 4/4] mm: hugetlb: Skip initialization of gigantic tail struct
- pages if freed by HVO
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230825111836.1715308-5-usama.arif@bytedance.com>
-Date:   Mon, 28 Aug 2023 19:33:46 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        fam.zheng@bytedance.com, liangma@liangbit.com,
-        punit.agrawal@bytedance.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <486CFF93-3BB1-44CD-B0A0-A47F560F2CAE@linux.dev>
-References: <20230825111836.1715308-1-usama.arif@bytedance.com>
- <20230825111836.1715308-5-usama.arif@bytedance.com>
-To:     Usama Arif <usama.arif@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Mon, 28 Aug 2023 07:35:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C78AB3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:35:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693222526; x=1724758526;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ayMi+uWGlM49FFzQulVYsUCBXRDs/IPEeYPCF7xTBD4=;
+  b=SQElDMC3PEKIdPq+8K0UV6K20arim6fEr5pJLpzUujTMHQrln4OEMqoZ
+   i92HuyYEGqlfgYCGD9oxDhCLZHFz4IgHsVLBO3NyyMBWfmOlz2JLuPcTO
+   hGTeKoOk3qZ/7PSrlCSZ6cjyc6LqdrYq9as/6i4KQppYYVIZxvEPtN8eK
+   GV+9KEGl5libNKh8vEQISPoN9nAA+Er85QzJo/5E7g29OuMCL9WEPaa/R
+   0HXxh2FrV29NWQROgHV80Abe6MUYuXGX2vFmCcDsoQrwuBDPFCTdQv3gg
+   wk0iHYt5EjN6H32bMzGVYDhEPchn4eS5yvRWTFaGh5Ti1otpl2pbYm+5x
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="441425902"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="441425902"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 04:35:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="773240495"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="773240495"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 28 Aug 2023 04:35:23 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qaaWg-00GP2z-0h;
+        Mon, 28 Aug 2023 14:35:22 +0300
+Date:   Mon, 28 Aug 2023 14:35:21 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     syzbot <syzbot+bdfb03b1ec8b342c12cb@syzkaller.appspotmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [kernel?] general protection fault in
+ nfc_register_device
+Message-ID: <ZOyGeUk89gwLAKPJ@smile.fi.intel.com>
+References: <0000000000001b6a0c0603f8ab85@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000001b6a0c0603f8ab85@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Aug 25, 2023, at 19:18, Usama Arif <usama.arif@bytedance.com> wrote:
+On Mon, Aug 28, 2023 at 02:53:37AM -0700, syzbot wrote:
+> Hello,
 > 
-> The new boot flow when it comes to initialization of gigantic pages
-> is as follows:
-> - At boot time, for a gigantic page during __alloc_bootmem_hugepage,
-> the region after the first struct page is marked as noinit.
-> - This results in only the first struct page to be
-> initialized in reserve_bootmem_region. As the tail struct pages are
-> not initialized at this point, there can be a significant saving
-> in boot time if HVO succeeds later on.
-> - Later on in the boot, HVO is attempted. If its successful, only the first
-> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct pages
-> after the head struct page are initialized. If it is not successful,
-> then all of the tail struct pages are initialized.
-> 
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> syzbot found the following issue on:
 
-This edition is simpler than before ever, thanks for your work.
+Thanks! Will work on it ASAP.
 
-There is premise that other subsystems do not access vmemmap pages
-before the initialization of vmemmap pages associated withe HugeTLB
-pages allocated from bootmem for your optimization. However, IIUC, the
-compacting path could access arbitrary struct page when memory fails
-to be allocated via buddy allocator. So we should make sure that
-those struct pages are not referenced in this routine. And I know
-if CONFIG_DEFERRED_STRUCT_PAGE_INIT is enabled, it will encounter
-the same issue, but I don't find any code to prevent this from
-happening. I need more time to confirm this, if someone already knows,
-please let me know, thanks. So I think HugeTLB should adopt the similar
-way to prevent this.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks.
 
