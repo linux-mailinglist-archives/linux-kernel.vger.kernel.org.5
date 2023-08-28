@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D57ED78AE07
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649B478ADFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbjH1Ky7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S232279AbjH1Ky4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbjH1Ky3 (ORCPT
+        with ESMTP id S231992AbjH1KyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:54:29 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8CE198
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:54:09 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-312-yYM7kxAkNtydxSJM6giphA-1; Mon, 28 Aug 2023 11:53:09 +0100
-X-MC-Unique: yYM7kxAkNtydxSJM6giphA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 28 Aug
- 2023 11:53:12 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 28 Aug 2023 11:53:12 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chanho Min <chanho.min@lge.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH] lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit
- kernels
-Thread-Topic: [PATCH] lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit
- kernels
-Thread-Index: AQHZ15Tpa0MOqrSpzEiPMMjR1E/Se6//izkQ
-Date:   Mon, 28 Aug 2023 10:53:12 +0000
-Message-ID: <cc5f4f5701674b96b0009b6b9b257cc8@AcuMS.aculab.com>
-References: <ZOkGCSNr0VN2VIJJ@p100>
- <CAHk-=wjZwSymfuGvf7TX3UQLU1OMN1FZMnEA-Hja0ruqyhMK4A@mail.gmail.com>
- <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 28 Aug 2023 06:54:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C7EF9;
+        Mon, 28 Aug 2023 03:54:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693220044; x=1724756044;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4pZBnIZicNCdeixiCbnx4jHKlVuLI1o9xP3TnOB5trk=;
+  b=jHuAb3szgQCsDF8m5BGU5TF64r5p5CBmGHCEJtrNplgdiOn8B6mYkCIw
+   WqqtC1nx1zaRVPyIeLYmFqeT8iTQaBoAphkgUOHDbid4T1AQaVfIA9IzL
+   kzOlvFD2vsfRB2T7Vi5darg6qNJAz9NXgt9hcwzeLecUBLTt2kmuqoMz5
+   fMBpaX0wbCxS9NfJ6pWpBE5vGOEFqJ+wXHp8EZf3ESJY7TAG268LMdkPx
+   9ntPxgsf0WB8CYsMziIkLCNevQajItepGQwZI+3tNrC5E2AnOJ3Rf+M82
+   oyVHH9hYz/E+M4UF4WZUxo1iboKFi6xHEdTKGXHcvAxzcf4wOI3dDAHsi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="406063704"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="406063704"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 03:53:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="881901151"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Aug 2023 03:53:39 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qaZsC-00F2mQ-30;
+        Mon, 28 Aug 2023 13:53:32 +0300
+Date:   Mon, 28 Aug 2023 13:53:32 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Mehdi Djait <mehdi.djait.k@gmail.com>,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v8 6/7] iio: accel: kionix-kx022a: Add a function to
+ retrieve number of bytes in buffer
+Message-ID: <ZOx8rAFBXMylgNzm@smile.fi.intel.com>
+References: <923d01408680f5ac88ca8ee565a990645578ee83.1692824815.git.mehdi.djait.k@gmail.com>
+ <ZOdFyKHBc6BcOgZw@smile.fi.intel.com>
+ <eb47d0c9-9144-c947-f91e-d487c6ec9c45@gmail.com>
+ <ZOdddZ0Zpk5CknH8@smile.fi.intel.com>
+ <CAFukWp2Z0OCrJdTy+wzVs9jdCm70YNR-66q06=xoyGhaHg=aog@mail.gmail.com>
+ <ZOdfeaW6AxE4eeqw@smile.fi.intel.com>
+ <CAFukWp0ubncNcMiw-s_h5GoP1_RsjTaw3XxayGMuaeJJJneBow@mail.gmail.com>
+ <ZOdrtNQijmhN9RAx@smile.fi.intel.com>
+ <20230827190732.5e2215d0@jic23-huawei>
+ <61247547-690c-fb8b-3a45-cd60754836a7@gmail.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61247547-690c-fb8b-3a45-cd60754836a7@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjUgQXVndXN0IDIwMjMgMjE6NDMNCi4uLi4N
-Cj4gQ2xhbmcgdHVybnMgdGhpczoNCj4gDQo+ICAgICAgICAgcmV0dXJuIF9fZmZzNjQodmFsKTsN
-Cj4gDQo+IGludG8gdGhpcyBob3Jyb3I6DQo+IA0KPiAgICAgICAgIHB1c2hxICAgJXJheA0KPiAg
-ICAgICAgIG1vdnEgICAgJXJkaSwgKCVyc3ApDQo+ICAgICAgICAgI0FQUA0KPiAgICAgICAgIHJl
-cA0KPiAgICAgICAgIGJzZnEgICAgKCVyc3ApLCAlcmF4DQo+ICAgICAgICAgI05PX0FQUA0KPiAg
-ICAgICAgIHBvcHEgICAgJXJjeA0KPiANCj4gd2hpY2ggaXMganVzdCBpbmNyZWRpYmx5IGJyb2tl
-biBvbiBzbyBtYW55IGxldmVscy4gSXQgKnNob3VsZCogYmUgYQ0KPiBzaW5nbGUgaW5zdHJ1Y3Rp
-b24sIGxpa2UgZ2NjIGRvZXM6DQo+IA0KPiAgICAgICAgIHJlcDsgYnNmICVyZGksJXJheCAgICAg
-ICMgdG1wODcsIHdvcmQNCj4gDQo+IGJ1dCBjbGFuZyBkZWNpZGVzIHRoYXQgaXQgcmVhbGx5IHdh
-bnRzIHRvIHB1dCB0aGUgYXJndW1lbnQgb24gdGhlDQo+IHN0YWNrLCBhbmQgYXBwYXJlbnRseSBh
-bHNvIHdhbnRzIHRvIGRvIHRoYXQgbm9uc2Vuc2ljYWwgc3RhY2sNCj4gYWxpZ25tZW50IHRoaW5n
-IHRvIG1ha2UgdGhpbmdzIGV2ZW4gd29yc2UuDQo+IA0KPiBXZSB1c2UgdGhpczoNCj4gDQo+ICAg
-c3RhdGljIF9fYWx3YXlzX2lubGluZSB1bnNpZ25lZCBsb25nIHZhcmlhYmxlX19mZnModW5zaWdu
-ZWQgbG9uZyB3b3JkKQ0KPiAgIHsNCj4gICAgICAgICBhc20oInJlcDsgYnNmICUxLCUwIg0KPiAg
-ICAgICAgICAgICAgICAgOiAiPXIiICh3b3JkKQ0KPiAgICAgICAgICAgICAgICAgOiAicm0iICh3
-b3JkKSk7DQo+ICAgICAgICAgcmV0dXJuIHdvcmQ7DQo+ICAgfQ0KPiANCj4gZm9yIHRoZSBkZWZp
-bml0aW9uLCBhbmQgaXQgbG9va3MgbGlrZSBjbGFuZyByb3lhbGx5IGp1c3Qgc2NyZXdzIHVwDQo+
-IGhlcmUuIFllcywgIm0iIGlzIF9hbGxvd2VkXyBpbiB0aGF0IGlucHV0IHNldCwgYnV0IGl0IGRh
-bW4gd2VsbA0KPiBzaG91bGRuJ3QgYmUgdXNlZCBmb3Igc29tZXRoaW5nIHRoYXQgaXMgYWxyZWFk
-eSBpbiBhIHJlZ2lzdGVyLCBzaW5jZQ0KPiAiciIgaXMgYWxzbyBhbGxvd2VkLCBhbmQgaXMgdGhl
-IGZpcnN0IGNob2ljZS4NCg0KV2h5IGRvbid0IHdlIGp1c3QgcmVtb3ZlIHRoZSAibSIgb3B0aW9u
-Pw0KDQpQcmV0dHkgbXVjaCB0aGUgb25seSB0aW1lIGl0IHdpbGwgYmUgd29yc2UgaXMgaXQgdGhl
-IHZhbHVlDQppcyBpbiBtZW1vcnkgYW5kIGxvYWRpbmcgaXQgaW50byBhIHJlZ2lzdGVyIGNhdXNl
-cyBhIHNwaWxsDQp0byBzdGFjay4NCg0KV2hpbGUgaXQgaXMgcG9zc2libGUgdG8gZ2VuZXJhdGUg
-Y29kZSB3aGVyZSB0aGF0IGhhcHBlbnMgaXQNCmlzIHByZXR0eSB1bmxpa2VseS4NCg0KCURhdmlk
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
+On Mon, Aug 28, 2023 at 09:24:25AM +0300, Matti Vaittinen wrote:
+> On 8/27/23 21:09, Jonathan Cameron wrote:
+
+...
+
+> I think that people who work on a driver like this should guess what this is
+> for.
+
+_This_ is the result of what people always forgot to think about, i.e. newcomers.
+What _if_ the newcomer starts with this code and already being puzzled enough on
+what the heck the function does. With all ambiguity we rise the threshold for the
+newcomers and make the kernel project not attractive to start with (besides the
+C language which is already considered as mastodon among youngsters).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
