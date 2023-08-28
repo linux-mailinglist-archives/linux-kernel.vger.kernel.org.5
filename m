@@ -2,66 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B28178A90D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E5A78A910
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjH1Ji5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        id S229819AbjH1Jkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjH1Jik (ORCPT
+        with ESMTP id S230202AbjH1JkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:38:40 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623A1114
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:38:36 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 16EBA660719F;
-        Mon, 28 Aug 2023 10:38:34 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693215514;
-        bh=xNMyWokm068wowm7PBLRXVEkKpUJiarJWqqqpBLI9vs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CoJYyz7XHczKOPC18Kap7wWKCoi8DSh+JbLJLzAdY30QkSF7CpzwFCS4peVuI6G4G
-         E7+34r2HSpN8c75/T5E+JerwJj7FDJVxVcsqOQDBLE9OAiPzykAnk2LDC3CBBdI9t1
-         19y/XuWEFFEzbK+ULKya4X6BWf5wz5eaaciNvw3tzcrZLf+QmD94Iulx+znm7wPm5x
-         jt1O4h9vZvYLEKvD4g3FRu8gr2Kux5K9z3LPPoN4hZBg3+CMZ7Ep3RB1MYbP51Kav5
-         bDOjgufY3XVQ8LnH23OhbnA1+obEbJUnNLloj3fWzKnM2riEXzO/QN156CuMMasyys
-         uLDu3YpVUgGqQ==
-Date:   Mon, 28 Aug 2023 11:38:31 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v15 12/23] drm/shmem-helper: Add and use pages_pin_count
-Message-ID: <20230828113831.0e31c5d0@collabora.com>
-In-Reply-To: <20230827175449.1766701-13-dmitry.osipenko@collabora.com>
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
-        <20230827175449.1766701-13-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 28 Aug 2023 05:40:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF51FF;
+        Mon, 28 Aug 2023 02:40:13 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 09:40:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693215611;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kjCX1gnoWv74QX7La4W2uptIUiRuAQXYPBr6ClP0S4w=;
+        b=G+kdvNeGh1cI+x9s8qv1mEdCuDIfodtScI5q8EbSyFKnCGMQ8YaXbt2lru5yspewqZwd3e
+        hwkSiVt69yGU6q3C9KgdPub8Cvd5zsaJgvmaNRL9plPRhxixuUvHHgscrAw7uuXifkWYht
+        497l0TZEyzEpdoQVIVhEJgT9eWwGXVn+MxK2iVd6To60UbbQfev4NHymOs5iYCMqIka3bw
+        1DxBj/+UX4z8fC4BjdFPiK3BNHZ+9APPb7g8Y22b9MMh80Eabq0pE1eC06j3QPckkD6a6/
+        QKZqdIcKzD6h8x+uuT1x2AkuJLKiCcR45JVi5vHfaBQusbEuqXUUJw2iuLiapA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693215611;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kjCX1gnoWv74QX7La4W2uptIUiRuAQXYPBr6ClP0S4w=;
+        b=KaYkwh4bBA1wamfRvehwF/NBq/QgTT3FEMZEr3XGkU3biTbvLh17hEoI5/Ym0A7Sc3TcHQ
+        7p4+kKPOeXSvsGAQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] Merge tag 'irqchip-6.6' of
+ git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20230828091543.4001857-1-maz@kernel.org>
+References: <20230828091543.4001857-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <169321561088.27769.2768788814854169199.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -72,97 +63,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Aug 2023 20:54:38 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+The following commit has been merged into the irq/core branch of tip:
 
-> Add separate pages_pin_count for tracking of whether drm-shmem pages are
-> moveable or not. With the addition of memory shrinker support to drm-shmem,
-> the pages_use_count will no longer determine whether pages are hard-pinned
-> in memory, but whether pages exit and are soft-pinned (and could be swapped
+Commit-ID:     02362c9a99b69aa956f015fa93025221b887684b
+Gitweb:        https://git.kernel.org/tip/02362c9a99b69aa956f015fa93025221b887684b
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Mon, 28 Aug 2023 11:33:03 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 28 Aug 2023 11:33:03 +02:00
 
-				^exist
+Merge tag 'irqchip-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
 
-> out). The pages_pin_count > 1 will hard-pin pages in memory.
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 22 +++++++++++++++++-----
->  include/drm/drm_gem_shmem_helper.h     | 10 ++++++++++
->  2 files changed, 27 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index d545d3d227d7..1a7e5c332fd8 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -234,14 +234,22 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
->  
->  	dma_resv_assert_held(shmem->base.resv);
->  
-> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
-> +		return 0;
-> +
->  	ret = drm_gem_shmem_get_pages_locked(shmem);
-> +	if (!ret)
-> +		kref_init(&shmem->pages_pin_count);
->  
->  	return ret;
->  }
->  
-> -static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
-> +static void drm_gem_shmem_kref_unpin_pages(struct kref *kref)
->  {
-> -	dma_resv_assert_held(shmem->base.resv);
-> +	struct drm_gem_shmem_object *shmem;
-> +
-> +	shmem = container_of(kref, struct drm_gem_shmem_object,
-> +			     pages_pin_count);
->  
->  	drm_gem_shmem_put_pages_locked(shmem);
->  }
-> @@ -263,6 +271,9 @@ int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem)
->  
->  	drm_WARN_ON(obj->dev, obj->import_attach);
->  
-> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
-> +		return 0;
-> +
->  	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
->  	if (ret)
->  		return ret;
-> @@ -286,9 +297,10 @@ void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem)
->  
->  	drm_WARN_ON(obj->dev, obj->import_attach);
->  
-> -	dma_resv_lock(shmem->base.resv, NULL);
-> -	drm_gem_shmem_unpin_locked(shmem);
-> -	dma_resv_unlock(shmem->base.resv);
-> +	if (kref_put_dma_resv(&shmem->pages_pin_count,
-> +			      drm_gem_shmem_kref_unpin_pages,
-> +			      obj->resv, NULL))
-> +		dma_resv_unlock(obj->resv);
->  }
->  EXPORT_SYMBOL_GPL(drm_gem_shmem_unpin);
->  
-> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-> index ec2d8b24e3cf..afb7cd671e2a 100644
-> --- a/include/drm/drm_gem_shmem_helper.h
-> +++ b/include/drm/drm_gem_shmem_helper.h
-> @@ -39,6 +39,16 @@ struct drm_gem_shmem_object {
->  	 */
->  	unsigned int pages_use_count;
->  
-> +	/**
-> +	 * @pages_pin_count:
-> +	 *
-> +	 * Reference count on the pinned pages table.
-> +	 * The pages allowed to be evicted and purged by memory
-> +	 * shrinker only when the count is zero, otherwise pages
-> +	 * are hard-pinned in memory.
-> +	 */
-> +	struct kref pages_pin_count;
-> +
->  	/**
->  	 * @madv: State for madvise
->  	 *
+Pull irqchip updates from Marc Zyngier:
 
+  - Fix for Loongsoon eiointc init error handling
+
+  - Fix a bunch of warning showing up when -Wmissing-prototypes is set
+
+  - A set of fixes for drivers checking for 0 as a potential return
+    value from platform_get_irq()
+
+  - Another set of patches converting existing code to the use of helpers
+    such as of_address_count() and devm_platform_get_and_ioremap_resource()
+
+  - A tree-wide cleanup of drivers including of_*.h without discrimination
+
+  - Added support for the Amlogic C3 SoCs
+
+Link: https://lore.kernel.org/lkml/20230828091543.4001857-1-maz@kernel.org
+---
