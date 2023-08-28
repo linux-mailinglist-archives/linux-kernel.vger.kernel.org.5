@@ -2,639 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1687778A89E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A87B78A89F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjH1JPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
+        id S229720AbjH1JQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjH1JOt (ORCPT
+        with ESMTP id S230039AbjH1JPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:14:49 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940C4103;
-        Mon, 28 Aug 2023 02:14:45 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so42888561fa.3;
-        Mon, 28 Aug 2023 02:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693214084; x=1693818884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EJ+i7WXkm0iUkHKFVtLv2iAeIl1cgeRkscjnccPmHr0=;
-        b=LbgO/9Ml3KwizdZHpX/20SfHpcoxZHYIJ+3U4emBerCkJcalzrkEzWwHLDAQu5l3pb
-         buxy3HmHNUZxp1P5K6kPbbR4PiUDSJ5bEmTnSFrlF0IeqvBd8CVI/uYD71TJbzKBmVnt
-         BrT04ZrlUO+Gtc/JMwzJc7NUeo2OMAo3bv9jAk5YqMtTIF3KcKAREw8a0BEufHXz7LK0
-         SsSzwagstwyYi80p2RetMzi5h+Tji1DWOS+R+zUINNRGRA3qyGjMFSq+BYW2/ZH85142
-         LQgf3gBg0bj3JoItZQLf8JPOGtKZORaaVe5bNbERDbmlpx6z1MksDJ1yPDY+MjYMn7Z6
-         MceQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693214084; x=1693818884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EJ+i7WXkm0iUkHKFVtLv2iAeIl1cgeRkscjnccPmHr0=;
-        b=YrD6I0NWiRD8XJ9bhkm5BHJhg3jrlSa/tqHY0L2xqLCga8Smqz0h4Ia4a1EJMY0gEt
-         MhKx0peRWDpfRnjSFgpkbx6jqMbn8rvHWN6/kwPXctQAgImVcBKJftHkeaNJEhuPxXty
-         vxMA2v4DhbP8+IYJkf0/MhyHfLKJKZ7iHAGwymH2C0AR42eWhmJvUIXO+xTG9CgGvNDB
-         3p0H+GeHxMjEyWyaYbFWt+NTCEgiyOBYofJaGWFnvbVLV29I5kHa16MhopifblOQiKLQ
-         o23ihneE/ypxiMzUEgcrYChyYKsS1+I1RQBs0hbUbUf28vD924hygsbBX9g2yJL6NyF+
-         6Lsw==
-X-Gm-Message-State: AOJu0YwgYCHjcMZ7uzJ/7nsSqasuOTpA/JiGLvr12ULvHIgug9M6TiDr
-        Kx0feNtgAt+1vBN9465tt7pTrs/EqZKfafCKgJY=
-X-Google-Smtp-Source: AGHT+IFUC7NLX4+lvjcH4eUDZ+LsjRM91uh70f63xxTwo1Wsnp5PZG2kh2jhIk8uk4hQBYrJg2P/zc3BbUFtKFUgTxI=
-X-Received: by 2002:a2e:7017:0:b0:2b8:4100:b565 with SMTP id
- l23-20020a2e7017000000b002b84100b565mr18216233ljc.15.1693214083302; Mon, 28
- Aug 2023 02:14:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230824133135.1176709-1-puranjay12@gmail.com>
- <20230824133135.1176709-4-puranjay12@gmail.com> <3e21f79c-71a8-663e-1a62-0d2d787b9692@huawei.com>
- <b4d5aaaf-7fe6-29fd-645a-62a4032820ae@huawei.com> <CANk7y0hZBsrvMjOQihRLAZkX7OqNeuK+eHojc+X=-peUtn-k7g@mail.gmail.com>
- <a8bce2e9-80e1-246c-9b87-19e2fdef25a8@huawei.com> <CANk7y0h=0oTvDf7fZqZtFmkNUrvt4L+npAMypR+eyyjRKrUYeA@mail.gmail.com>
- <f302c417-6d43-4603-bd64-efc8d4e665d0@huawei.com>
-In-Reply-To: <f302c417-6d43-4603-bd64-efc8d4e665d0@huawei.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Mon, 28 Aug 2023 11:14:32 +0200
-Message-ID: <CANk7y0jGbd+J4X+Aaf=UbDbs44BF4Ei9HPq_8x-gwLxOONPBNg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpf, riscv: use prog pack allocator in
- the BPF JIT
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     bjorn@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, conor.dooley@microchip.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, linux-riscv@lists.infradead.org,
-        bpf@vger.kernel.org, kpsingh@kernel.org,
+        Mon, 28 Aug 2023 05:15:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1283103
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:15:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6FD616136E
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 09:15:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C93CBC433C7;
+        Mon, 28 Aug 2023 09:15:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693214149;
+        bh=nS1Mcz8KKIrm9eyrKAODKV11Trvz24XeL+B52mUe620=;
+        h=From:To:Cc:Subject:Date:From;
+        b=szrXOR/vQd7OgJ39tsQtyzNmzSBO45dfKEMHKGeUHvbv2CAFNpU3ywlAoPJ4zTPGR
+         JaG6EZ8jbR862zwlv6Sj900Af4PUj3qCUR4T4OV5j/79Ek7QIOQ8u8lEFzcpV4+2Qr
+         ZQjLUk9oqbqLW/AEnzuaUXUa54ePBvlR/LK+5NjHPOWCHGVwnmsN+vyXkEiOWqXxV4
+         vWkNx0fe/+TH+O3H+MKvJBpXLb2bgoKIFjfDrjN+Yc8gH0ZcCpuUY9NltnQ/B5+e73
+         IyApAvnTUXZNUxSGB2svz/R5CTZiFYKYiXef+/9wVSyWKhFb5JqBfn2+1uien1nmHJ
+         /Z9kgWyLwnU0w==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qaYLb-008fpo-3F;
+        Mon, 28 Aug 2023 10:15:47 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Huqiang Qin <huqiang.qin@amlogic.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Ruan Jinjie <ruanjinjie@huawei.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Yangtao Li <frank.li@vivo.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [GIT PULL] irqchip updates for Linux v6.6
+Date:   Mon, 28 Aug 2023 10:15:43 +0100
+Message-Id: <20230828091543.4001857-1-maz@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, andrew@lunn.ch, arnd@arndb.de, maobibo@loongson.cn, conor.dooley@microchip.com, huqiang.qin@amlogic.com, martin.blumenstingl@googlemail.com, jcmvbkbc@gmail.com, philmd@linaro.org, robh@kernel.org, ruanjinjie@huawei.com, fancer.lancer@gmail.com, frank.li@vivo.com, yangyingliang@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pu,
+Hi Thomas,
 
-On Sat, Aug 26, 2023 at 3:36=E2=80=AFAM Pu Lehui <pulehui@huawei.com> wrote=
-:
->
->
->
-> On 2023/8/25 19:40, Puranjay Mohan wrote:
-> > Hi Pu,
-> >
-> > On Fri, Aug 25, 2023 at 1:12=E2=80=AFPM Pu Lehui <pulehui@huawei.com> w=
-rote:
-> >>
-> >>
-> >>
-> >> On 2023/8/25 16:42, Puranjay Mohan wrote:
-> >>> Hi Pu,
-> >>>
-> >>> On Fri, Aug 25, 2023 at 9:34=E2=80=AFAM Pu Lehui <pulehui@huawei.com>=
- wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 2023/8/25 15:09, Pu Lehui wrote:
-> >>>>> Hi Puranjay,
-> >>>>>
-> >>>>> Happy to see the RV64 pack allocator implementation.
-> >>>>
-> >>>> RV32 also
-> >>>>
-> >>>>>
-> >>>>> On 2023/8/24 21:31, Puranjay Mohan wrote:
-> >>>>>> Use bpf_jit_binary_pack_alloc() for memory management of JIT binar=
-ies in
-> >>>>>> RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW =
-and RX
-> >>>>>> buffers. The JIT writes the program into the RW buffer. When the J=
-IT is
-> >>>>>> done, the program is copied to the final RX buffer with
-> >>>>>> bpf_jit_binary_pack_finalize.
-> >>>>>>
-> >>>>>> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for =
-RISCV
-> >>>>>> JIT as these functions are required by bpf_jit_binary_pack allocat=
-or.
-> >>>>>>
-> >>>>>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> >>>>>> ---
-> >>>>>>     arch/riscv/net/bpf_jit.h        |   3 +
-> >>>>>>     arch/riscv/net/bpf_jit_comp64.c |  56 +++++++++++++---
-> >>>>>>     arch/riscv/net/bpf_jit_core.c   | 113 ++++++++++++++++++++++++=
-+++-----
-> >>>>>>     3 files changed, 146 insertions(+), 26 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-> >>>>>> index 2717f5490428..ad69319c8ea7 100644
-> >>>>>> --- a/arch/riscv/net/bpf_jit.h
-> >>>>>> +++ b/arch/riscv/net/bpf_jit.h
-> >>>>>> @@ -68,6 +68,7 @@ static inline bool is_creg(u8 reg)
-> >>>>>>     struct rv_jit_context {
-> >>>>>>         struct bpf_prog *prog;
-> >>>>>>         u16 *insns;        /* RV insns */
-> >>>>>> +    u16 *ro_insns;
-> >>>>
-> >>>> In fact, the definition of w/ or w/o ro_ still looks a bit confusing=
-.
-> >>>> Maybe it is better for us not to change the current framework, as th=
-e
-> >>>> current `image` is the final executed RX image, and the trampoline
-> >>>> treats `image` as the same. Maybe it would be better to add a new RW
-> >>>> image, such like `rw_iamge`, so that we do not break the existing
-> >>>> framework and do not have to add too many comments.
-> >>>
-> >>> I had thought about this and decided to create a new _ro image/header
-> >>> and not _rw image/header. Here is my reasoning:
-> >>> If we let the existing insns, header be considered the read_only
-> >>> version from where the
-> >>> program will run, and create new rw_insn and rw_header for doing the =
-jit process
-> >>> it would require a lot more changes to the framework.
-> >>> functions like build_body(), bpf_jit_build_prologue(), etc. work on
-> >>> ctx->insns and
-> >>
-> >> Hmm, the other parts should be fine, but the emit instruction is a
-> >> problem. All right, let's go ahead.
-> >>
-> >>> now all these references would have to be changed to ctx->rw_insns.
-> >>>
-> >>> Howsoever we implement this, there is no way to do it without changin=
-g
-> >>> the current framework.
-> >>> The crux of the problem is that we need to use the r/w area for
-> >>> writing and the r/x area for calculating
-> >>> offsets.
-> >>>
-> >>> If you think this can be done in a more efficient way then I would
-> >>> love to implement that, but all other
-> >>> solutions that I tried made the code very difficult to follow.
-> >>>
-> >>>>
-> >>>> And any other parts, it looks great.=F0=9F=98=84
-> >>>>
-> >>>>>>         int ninsns;
-> >>>>>>         int prologue_len;
-> >>>>>>         int epilogue_offset;
-> >>>>>> @@ -85,7 +86,9 @@ static inline int ninsns_rvoff(int ninsns)
-> >>>>>>     struct rv_jit_data {
-> >>>>>>         struct bpf_binary_header *header;
-> >>>>>> +    struct bpf_binary_header *ro_header;
-> >>>>>>         u8 *image;
-> >>>>>> +    u8 *ro_image;
-> >>>>>>         struct rv_jit_context ctx;
-> >>>>>>     };
-> >>>>>> diff --git a/arch/riscv/net/bpf_jit_comp64.c
-> >>>>>> b/arch/riscv/net/bpf_jit_comp64.c
-> >>>>>> index 0ca4f5c0097c..d77b16338ba2 100644
-> >>>>>> --- a/arch/riscv/net/bpf_jit_comp64.c
-> >>>>>> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> >>>>>> @@ -144,7 +144,11 @@ static bool in_auipc_jalr_range(s64 val)
-> >>>>>>     /* Emit fixed-length instructions for address */
-> >>>>>>     static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct
-> >>>>>> rv_jit_context *ctx)
-> >>>>>>     {
-> >>>>>> -    u64 ip =3D (u64)(ctx->insns + ctx->ninsns);
-> >>>>>> +    /*
-> >>>>>> +     * Use the ro_insns(RX) to calculate the offset as the BPF
-> >>>>>> program will
-> >>>>>> +     * finally run from this memory region.
-> >>>>>> +     */
-> >>>>>> +    u64 ip =3D (u64)(ctx->ro_insns + ctx->ninsns);
-> >>>>>>         s64 off =3D addr - ip;
-> >>>>>>         s64 upper =3D (off + (1 << 11)) >> 12;
-> >>>>>>         s64 lower =3D off & 0xfff;
-> >>>>>> @@ -465,7 +469,11 @@ static int emit_call(u64 addr, bool fixed_add=
-r,
-> >>>>>> struct rv_jit_context *ctx)
-> >>>>>>         u64 ip;
-> >>>>>>         if (addr && ctx->insns) {
-> >>>>>
-> >>>>> ctx->insns need to sync to ctx->ro_insns
-> >>>
-> >>> Can you elaborate this more. I am missing something here.
-> >>> The sync happens at the end by calling bpf_jit_binary_pack_finalize()=
-.
-> >>
-> >> if (addr && ctx->insns) {
-> >>          ip =3D (u64)(long)(ctx->ro_insns + ctx->ninsns);
-> >>          off =3D addr - ip;
-> >> }
-> >> emit ctx->insns + off
-> >>
-> >> Here we are assuming ctx->insns =3D=3D ctx->ro_insns, if they not, the
-> >> offset calculated by ctx->ro_insns will not meaningful for ctx->insns.
-> >
-> > We are not assuming that ctx->insns =3D=3D ctx->ro_insns at this point.
-> > We are just finding the offset: off =3D addr(let's say in kernel) -
-> > ip(address of the instruction);
-> >
-> >> I was curious why we need to use ro_insns to calculate offset? Is that
-> >> any problem if we do jit iteration with ctx->insns and the final copy
-> >> ctx->insns to ro_insns?
-> >
-> > All the offsets within the image can be calculated using ctx->insns and=
- it will
-> > work but if the emit_call() is for an address in the kernel code let's
-> > say, then the
-> > offset between this address(in kernel) and the R/W image would be diffe=
-rent from
-> > the offset between the address(in kernel) and the R/O image.
-> > We need the offset between the R/X Image and the kernel address. Becaus=
-e the
-> > CPU will execute the instructions from there.
->
-> Agree with that, thanks for explaination. Let's talk about my original
-> idea, shall we add check like this to reject ctx->ro_insns =3D=3D NULL?
->
-> if (addr && ctx->insns && ctx->ro_insns) {
-> ...
-> }
+Here's a tiny set of very minor irqchip updates for v6.6. Hardly
+anything has a functional impact, and it is mostly a set of cleanups.
+I guess that most people were on holiday, and I'm not going to
+complain about the lack of activity on that front.
 
-Will add in the next version.
+Please pull,
 
->
-> >
-> >>
-> >>>
-> >>>>>
-> >>>>>> -        ip =3D (u64)(long)(ctx->insns + ctx->ninsns);
-> >>>>>> +        /*
-> >>>>>> +         * Use the ro_insns(RX) to calculate the offset as the BP=
-F
-> >>>>>> +         * program will finally run from this memory region.
-> >>>>>> +         */
-> >>>>>> +        ip =3D (u64)(long)(ctx->ro_insns + ctx->ninsns);
-> >>>>>>             off =3D addr - ip;
-> >>>>>>         }
-> >>>>>> @@ -578,7 +586,8 @@ static int add_exception_handler(const struct
-> >>>>>> bpf_insn *insn,
-> >>>>>>     {
-> >>>>>>         struct exception_table_entry *ex;
-> >>>>>>         unsigned long pc;
-> >>>>>> -    off_t offset;
-> >>>>>> +    off_t ins_offset;
-> >>>>>> +    off_t fixup_offset;
-> >>>>>>         if (!ctx->insns || !ctx->prog->aux->extable ||
-> >>>>>> BPF_MODE(insn->code) !=3D BPF_PROBE_MEM)
-> >>>>>
-> >>>>> ctx->ro_insns need to be checked also.
-> >>>
-> >>> ctx->ro_insns is not initialised until we call bpf_jit_binary_pack_fi=
-nalize()?
-> >
-> > ctx->ro_insns and ctx->insns are both allocated together by
-> > bpf_jit_binary_pack_alloc().
-> > ctx->ro_insns is marked R/X and ctx->insns is marked R/W. We dump all
-> > instructions in
-> > ctx->insns and then copy them to ctx->ro_insns with
-> > bpf_jit_binary_pack_finalize().
-> >
-> > The catch is that instructions that work with offsets like JAL need
-> > the offsets from ctx->ro_insns.
-> > as explained above.
-> >
-> >>
-> >> if (!ctx->insns || !ctx->prog->aux->extable ||
-> >> ...
-> >> pc =3D (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
->
-> Also here, to add check like this to reject ctx->ro_insns =3D=3D NULL whi=
-ch
-> may cause null pointer dereference?
->
-> if (!ctx->insns || !ctx->ro_insns || !ctx->prog->aux->extable ||
+	M.
 
-Will add in next version.
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
->
-> >>
-> >> The uninitialized ctx->ro_insns may lead to illegal address access.
-> >> Although it will never happen, because we also assume that ctx->insns =
-=3D=3D
-> >> ctx->ro_insns.
-> >
-> > Here also we are not assuming ctx->insns =3D=3D ctx->ro_insns. The ctx-=
->ro_insns is
-> > allocated but not initialised yet. So all addresses in range
-> > ctx->ro_insns to ctx->ro_insns + size
-> > are valid addresses. Here we are using the addresses only to find the
-> > offset and not accessing those
-> > addresses.
-> >
-> >>
-> >>>
-> >>>>>
-> >>>>>>             return 0;
-> >>>>>> @@ -593,12 +602,17 @@ static int add_exception_handler(const struc=
-t
-> >>>>>> bpf_insn *insn,
-> >>>>>>             return -EINVAL;
-> >>>>>>         ex =3D &ctx->prog->aux->extable[ctx->nexentries];
-> >>>>>> -    pc =3D (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
-> >>>>>> +    pc =3D (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
-> >>>>>> -    offset =3D pc - (long)&ex->insn;
-> >>>>>> -    if (WARN_ON_ONCE(offset >=3D 0 || offset < INT_MIN))
-> >>>>>> +    /*
-> >>>>>> +     * This is the relative offset of the instruction that may fa=
-ult
-> >>>>>> from
-> >>>>>> +     * the exception table itself. This will be written to the ex=
-ception
-> >>>>>> +     * table and if this instruction faults, the destination regi=
-ster
-> >>>>>> will
-> >>>>>> +     * be set to '0' and the execution will jump to the next
-> >>>>>> instruction.
-> >>>>>> +     */
-> >>>>>> +    ins_offset =3D pc - (long)&ex->insn;
-> >>>>>> +    if (WARN_ON_ONCE(ins_offset >=3D 0 || ins_offset < INT_MIN))
-> >>>>>>             return -ERANGE;
-> >>>>>> -    ex->insn =3D offset;
-> >>>>>>         /*
-> >>>>>>          * Since the extable follows the program, the fixup offset=
- is
-> >>>>>> always
-> >>>>>> @@ -607,12 +621,25 @@ static int add_exception_handler(const struc=
-t
-> >>>>>> bpf_insn *insn,
-> >>>>>>          * bits. We don't need to worry about buildtime or runtime=
- sort
-> >>>>>>          * modifying the upper bits because the table is already s=
-orted,
-> >>>>>> and
-> >>>>>>          * isn't part of the main exception table.
-> >>>>>> +     *
-> >>>>>> +     * The fixup_offset is set to the next instruction from the
-> >>>>>> instruction
-> >>>>>> +     * that may fault. The execution will jump to this after hand=
-ling
-> >>>>>> the
-> >>>>>> +     * fault.
-> >>>>>>          */
-> >>>>>> -    offset =3D (long)&ex->fixup - (pc + insn_len * sizeof(u16));
-> >>>>>> -    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
-> >>>>>> +    fixup_offset =3D (long)&ex->fixup - (pc + insn_len * sizeof(u=
-16));
-> >>>>>> +    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
-> >>>>>>             return -ERANGE;
-> >>>>>> -    ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
-> >>>>>> +    /*
-> >>>>>> +     * The offsets above have been calculated using the RO buffer=
- but we
-> >>>>>> +     * need to use the R/W buffer for writes.
-> >>>>>> +     * switch ex to rw buffer for writing.
-> >>>>>> +     */
-> >>>>>> +    ex =3D (void *)ctx->insns + ((void *)ex - (void *)ctx->ro_ins=
-ns);
-> >>>>>> +
-> >>>>>> +    ex->insn =3D ins_offset;
-> >>>>>> +
-> >>>>>> +    ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset)=
- |
-> >>>>>>             FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
-> >>>>>>         ex->type =3D EX_TYPE_BPF;
-> >>>>>> @@ -1006,6 +1033,7 @@ int arch_prepare_bpf_trampoline(struct
-> >>>>>> bpf_tramp_image *im, void *image,
-> >>>>>>         ctx.ninsns =3D 0;
-> >>>>>>         ctx.insns =3D NULL;
-> >>>>>> +    ctx.ro_insns =3D NULL;
-> >>>>>>         ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_=
-addr,
-> >>>>>> flags, &ctx);
-> >>>>>>         if (ret < 0)
-> >>>>>>             return ret;
-> >>>>>> @@ -1014,7 +1042,15 @@ int arch_prepare_bpf_trampoline(struct
-> >>>>>> bpf_tramp_image *im, void *image,
-> >>>>>>             return -EFBIG;
-> >>>>>>         ctx.ninsns =3D 0;
-> >>>>>> +    /*
-> >>>>>> +     * The bpf_int_jit_compile() uses a RW buffer (ctx.insns) to
-> >>>>>> write the
-> >>>>>> +     * JITed instructions and later copies it to a RX region
-> >>>>>> (ctx.ro_insns).
-> >>>>>> +     * It also uses ctx.ro_insns to calculate offsets for jumps e=
-tc.
-> >>>>>> As the
-> >>>>>> +     * trampoline image uses the same memory area for writing and
-> >>>>>> execution,
-> >>>>>> +     * both ctx.insns and ctx.ro_insns can be set to image.
-> >>>>>> +     */
-> >>>>>>         ctx.insns =3D image;
-> >>>>>> +    ctx.ro_insns =3D image;
-> >>>>>>         ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_=
-addr,
-> >>>>>> flags, &ctx);
-> >>>>>>         if (ret < 0)
-> >>>>>>             return ret;
-> >>>>>> diff --git a/arch/riscv/net/bpf_jit_core.c
-> >>>>>> b/arch/riscv/net/bpf_jit_core.c
-> >>>>>> index 7a26a3e1c73c..4c8dffc09368 100644
-> >>>>>> --- a/arch/riscv/net/bpf_jit_core.c
-> >>>>>> +++ b/arch/riscv/net/bpf_jit_core.c
-> >>>>>> @@ -8,6 +8,8 @@
-> >>>>>>     #include <linux/bpf.h>
-> >>>>>>     #include <linux/filter.h>
-> >>>>>> +#include <linux/memory.h>
-> >>>>>> +#include <asm/patch.h>
-> >>>>>>     #include "bpf_jit.h"
-> >>>>>>     /* Number of iterations to try until offsets converge. */
-> >>>>>> @@ -117,16 +119,27 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >>>>>> bpf_prog *prog)
-> >>>>>>                     sizeof(struct exception_table_entry);
-> >>>>>>                 prog_size =3D sizeof(*ctx->insns) * ctx->ninsns;
-> >>>>>> -            jit_data->header =3D
-> >>>>>> -                bpf_jit_binary_alloc(prog_size + extable_size,
-> >>>>>> -                             &jit_data->image,
-> >>>>>> -                             sizeof(u32),
-> >>>>>> -                             bpf_fill_ill_insns);
-> >>>>>> -            if (!jit_data->header) {
-> >>>>>> +            jit_data->ro_header =3D
-> >>>>>> +                bpf_jit_binary_pack_alloc(prog_size +
-> >>>>>> +                              extable_size,
-> >>>>>> +                              &jit_data->ro_image,
-> >>>>>> +                              sizeof(u32),
-> >>>>>> +                              &jit_data->header,
-> >>>>>> +                              &jit_data->image,
-> >>>>>> +                              bpf_fill_ill_insns);
-> >>>>>> +            if (!jit_data->ro_header) {
-> >>>>>>                     prog =3D orig_prog;
-> >>>>>>                     goto out_offset;
-> >>>>>>                 }
-> >>>>>> +            /*
-> >>>>>> +             * Use the image(RW) for writing the JITed instructio=
-ns.
-> >>>>>> But also save
-> >>>>>> +             * the ro_image(RX) for calculating the offsets in th=
-e
-> >>>>>> image. The RW
-> >>>>>> +             * image will be later copied to the RX image from wh=
-ere
-> >>>>>> the program
-> >>>>>> +             * will run. The bpf_jit_binary_pack_finalize() will =
-do
-> >>>>>> this copy in the
-> >>>>>> +             * final step.
-> >>>>>> +             */
-> >>>>>> +            ctx->ro_insns =3D (u16 *)jit_data->ro_image;
-> >>>>>>                 ctx->insns =3D (u16 *)jit_data->image;
-> >>>>>>                 /*
-> >>>>>>                  * Now, when the image is allocated, the image can
-> >>>>>> @@ -138,14 +151,12 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >>>>>> bpf_prog *prog)
-> >>>>>>         if (i =3D=3D NR_JIT_ITERATIONS) {
-> >>>>>>             pr_err("bpf-jit: image did not converge in <%d passes!=
-\n", i);
-> >>>>>> -        if (jit_data->header)
-> >>>>>> -            bpf_jit_binary_free(jit_data->header);
-> >>>>>>             prog =3D orig_prog;
-> >>>>>> -        goto out_offset;
-> >>>>>> +        goto out_free_hdr;
-> >>>>>>         }
-> >>>>>>         if (extable_size)
-> >>>>>> -        prog->aux->extable =3D (void *)ctx->insns + prog_size;
-> >>>>>> +        prog->aux->extable =3D (void *)ctx->ro_insns + prog_size;
-> >>>>>>     skip_init_ctx:
-> >>>>>>         pass++;
-> >>>>>> @@ -154,23 +165,35 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >>>>>> bpf_prog *prog)
-> >>>>>>         bpf_jit_build_prologue(ctx);
-> >>>>>>         if (build_body(ctx, extra_pass, NULL)) {
-> >>>>>> -        bpf_jit_binary_free(jit_data->header);
-> >>>>>>             prog =3D orig_prog;
-> >>>>>> -        goto out_offset;
-> >>>>>> +        goto out_free_hdr;
-> >>>>>>         }
-> >>>>>>         bpf_jit_build_epilogue(ctx);
-> >>>>>>         if (bpf_jit_enable > 1)
-> >>>>>>             bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
-> >>>>>> -    prog->bpf_func =3D (void *)ctx->insns;
-> >>>>>> +    prog->bpf_func =3D (void *)ctx->ro_insns;
-> >>>>>>         prog->jited =3D 1;
-> >>>>>>         prog->jited_len =3D prog_size;
-> >>>>>> -    bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
-> >>>>>> -
-> >>>>>>         if (!prog->is_func || extra_pass) {
-> >>>>>> -        bpf_jit_binary_lock_ro(jit_data->header);
-> >>>>>> +        if (WARN_ON(bpf_jit_binary_pack_finalize(prog,
-> >>>>>> +                             jit_data->ro_header,
-> >>>>>> +                             jit_data->header))) {
-> >>>>>> +            /* ro_header has been freed */
-> >>>>>> +            jit_data->ro_header =3D NULL;
-> >>>>>> +            prog =3D orig_prog;
-> >>>>>> +            goto out_offset;
-> >>>>>> +        }
-> >>>>>> +        /*
-> >>>>>> +         * The instructions have now been copied to the ROX regio=
-n from
-> >>>>>> +         * where they will execute.
-> >>>>>> +         * Write any modified data cache blocks out to memory and
-> >>>>>> +         * invalidate the corresponding blocks in the instruction=
- cache.
-> >>>>>> +         */
-> >>>>>> +        bpf_flush_icache(jit_data->ro_header,
-> >>>>>> +                 ctx->ro_insns + ctx->ninsns);
-> >>>>>>             for (i =3D 0; i < prog->len; i++)
-> >>>>>>                 ctx->offset[i] =3D ninsns_rvoff(ctx->offset[i]);
-> >>>>>>             bpf_prog_fill_jited_linfo(prog, ctx->offset);
-> >>>>>> @@ -185,6 +208,15 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >>>>>> bpf_prog *prog)
-> >>>>>>             bpf_jit_prog_release_other(prog, prog =3D=3D orig_prog=
- ?
-> >>>>>>                            tmp : orig_prog);
-> >>>>>>         return prog;
-> >>>>>> +
-> >>>>>> +out_free_hdr:
-> >>>>>> +    if (jit_data->header) {
-> >>>>>> +        bpf_arch_text_copy(&jit_data->ro_header->size,
-> >>>>>> +                   &jit_data->header->size,
-> >>>>>> +                   sizeof(jit_data->header->size));
-> >>>>>> +        bpf_jit_binary_pack_free(jit_data->ro_header, jit_data->h=
-eader);
-> >>>>>> +    }
-> >>>>>> +    goto out_offset;
-> >>>>>>     }
-> >>>>>>     u64 bpf_jit_alloc_exec_limit(void)
-> >>>>>> @@ -204,3 +236,52 @@ void bpf_jit_free_exec(void *addr)
-> >>>>>>     {
-> >>>>>>         return vfree(addr);
-> >>>>>>     }
-> >>>>>> +
-> >>>>>> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-> >>>>>> +{
-> >>>>>> +    int ret;
-> >>>>>> +
-> >>>>>> +    mutex_lock(&text_mutex);
-> >>>>>> +    ret =3D patch_text_nosync(dst, src, len);
-> >>>>>> +    mutex_unlock(&text_mutex);
-> >>>>>> +
-> >>>>>> +    if (ret)
-> >>>>>> +        return ERR_PTR(-EINVAL);
-> >>>>>> +
-> >>>>>> +    return dst;
-> >>>>>> +}
-> >>>>>> +
-> >>>>>> +int bpf_arch_text_invalidate(void *dst, size_t len)
-> >>>>>> +{
-> >>>>>> +    int ret =3D 0;
-> >>>>>
-> >>>>> no need to initialize it
-> >>>>>
-> >>>>>> +
-> >>>>>> +    mutex_lock(&text_mutex);
-> >>>>>> +    ret =3D patch_text_set_nosync(dst, 0, len);
-> >>>>>> +    mutex_unlock(&text_mutex);
-> >>>>>> +
-> >>>>>> +    return ret;
-> >>>>>> +}
-> >>>>>> +
-> >>>>>> +void bpf_jit_free(struct bpf_prog *prog)
-> >>>>>> +{
-> >>>>>> +    if (prog->jited) {
-> >>>>>> +        struct rv_jit_data *jit_data =3D prog->aux->jit_data;
-> >>>>>> +        struct bpf_binary_header *hdr;
-> >>>>>> +
-> >>>>>> +        /*
-> >>>>>> +         * If we fail the final pass of JIT (from jit_subprogs),
-> >>>>>> +         * the program may not be finalized yet. Call finalize he=
-re
-> >>>>>> +         * before freeing it.
-> >>>>>> +         */
-> >>>>>> +        if (jit_data) {
-> >>>>>> +            bpf_jit_binary_pack_finalize(prog, jit_data->ro_heade=
-r,
-> >>>>>> +                             jit_data->header);
-> >>>>>> +            kfree(jit_data);
-> >>>>>> +        }
-> >>>>>> +        hdr =3D bpf_jit_binary_pack_hdr(prog);
-> >>>>>> +        bpf_jit_binary_pack_free(hdr, NULL);
-> >>>>>> +        WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
-> >>>>>> +    }
-> >>>>>> +
-> >>>>>> +    bpf_prog_unlock_free(prog);
-> >>>>>> +}
-> >>>>>
-> >>>>>
-> >>>
-> >>> Thanks,
-> >>> Puranjay
-> >
-> >
-> > Thanks,
-> > Puranjay
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-6.6
 
---=20
-Thanks and Regards
+for you to fetch changes up to 19b5a44bee16518104e8a159ab9a60788292fbd4:
 
-Yours Truly,
+  irqchip: Add support for Amlogic-C3 SoCs (2023-08-21 17:49:12 +0100)
 
-Puranjay Mohan
+----------------------------------------------------------------
+irqchip updates for v6.6
+
+- Fix for Loongsoon eiointc init error handling
+
+- Fix a bunch of warning showing up when -Wmissing-prototypes is set
+
+- A set of fixes for drivers checking for 0 as a potential return
+  value from platform_get_irq()
+
+- Another set of patches converting existing code to the use of helpers
+  such as of_address_count() and devm_platform_get_and_ioremap_resource()
+
+- A tree-wide cleanup of drivers including of_*.h without discrimination
+
+- Added support for the Amlogic C3 SoCs
+
+----------------------------------------------------------------
+Arnd Bergmann (3):
+      irqchip/xtensa-pic: Include header for xtensa_pic_init_legacy()
+      irqchip/mips-gic: Mark gic_irq_domain_free() static
+      irqchipr/i8259: Mark i8259_of_init() static
+
+Bibo Mao (1):
+      irqchip/loongson-eiointc: Fix return value checking of eiointc_index
+
+Huqiang Qin (2):
+      dt-bindings: interrupt-controller: Add support for Amlogic-C3 SoCs
+      irqchip: Add support for Amlogic-C3 SoCs
+
+Rob Herring (1):
+      irqchip: Explicitly include correct DT includes
+
+Ruan Jinjie (2):
+      irqchip/imx-mu-msi: Do not check for 0 return after calling platform_get_irq()
+      irqchip/irq-pruss-intc: Do not check for 0 return after calling platform_get_irq()
+
+Yang Yingliang (1):
+      irqchip/orion: Use of_address_count() helper
+
+Yangtao Li (2):
+      irqchip/ls-scfg-msi: Use devm_platform_get_and_ioremap_resource()
+      irqchip/irq-mvebu-sei: Use devm_platform_get_and_ioremap_resource()
+
+ .../bindings/interrupt-controller/amlogic,meson-gpio-intc.yaml      | 1 +
+ drivers/irqchip/irq-bcm6345-l1.c                                    | 1 -
+ drivers/irqchip/irq-bcm7038-l1.c                                    | 1 -
+ drivers/irqchip/irq-brcmstb-l2.c                                    | 1 -
+ drivers/irqchip/irq-gic-pm.c                                        | 2 +-
+ drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c                         | 2 --
+ drivers/irqchip/irq-i8259.c                                         | 2 +-
+ drivers/irqchip/irq-imx-intmux.c                                    | 3 ++-
+ drivers/irqchip/irq-imx-irqsteer.c                                  | 3 ++-
+ drivers/irqchip/irq-imx-mu-msi.c                                    | 4 ++--
+ drivers/irqchip/irq-keystone.c                                      | 2 +-
+ drivers/irqchip/irq-loongson-eiointc.c                              | 2 +-
+ drivers/irqchip/irq-loongson-htvec.c                                | 1 -
+ drivers/irqchip/irq-loongson-pch-pic.c                              | 2 +-
+ drivers/irqchip/irq-ls-scfg-msi.c                                   | 3 +--
+ drivers/irqchip/irq-madera.c                                        | 4 +---
+ drivers/irqchip/irq-meson-gpio.c                                    | 5 +++++
+ drivers/irqchip/irq-mips-gic.c                                      | 2 +-
+ drivers/irqchip/irq-mvebu-sei.c                                     | 3 +--
+ drivers/irqchip/irq-orion.c                                         | 3 +--
+ drivers/irqchip/irq-pruss-intc.c                                    | 6 +++---
+ drivers/irqchip/irq-qcom-mpm.c                                      | 2 +-
+ drivers/irqchip/irq-renesas-intc-irqpin.c                           | 1 -
+ drivers/irqchip/irq-st.c                                            | 2 +-
+ drivers/irqchip/irq-stm32-exti.c                                    | 3 ++-
+ drivers/irqchip/irq-sunxi-nmi.c                                     | 1 -
+ drivers/irqchip/irq-tb10x.c                                         | 1 -
+ drivers/irqchip/irq-ti-sci-inta.c                                   | 4 ++--
+ drivers/irqchip/irq-ti-sci-intr.c                                   | 4 ++--
+ drivers/irqchip/irq-uniphier-aidet.c                                | 1 -
+ drivers/irqchip/irq-xtensa-pic.c                                    | 1 +
+ drivers/irqchip/irqchip.c                                           | 2 +-
+ drivers/irqchip/qcom-pdc.c                                          | 1 -
+ 33 files changed, 35 insertions(+), 41 deletions(-)
