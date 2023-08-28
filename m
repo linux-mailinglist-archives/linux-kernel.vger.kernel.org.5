@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B9778A500
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A953578A502
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjH1Epw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 00:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
+        id S229592AbjH1Er7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 00:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjH1Epe (ORCPT
+        with ESMTP id S229518AbjH1Er5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 00:45:34 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A40124;
-        Sun, 27 Aug 2023 21:45:31 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41215efeb1aso13337001cf.1;
-        Sun, 27 Aug 2023 21:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693197931; x=1693802731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vY27Gke1oB96ajh5AD3dOqqG9jvodybPgSv+D4kaopw=;
-        b=kRxUFWrtKlzNUQ3R2NUuLYO3opYHP43mv/UX2YgsVEtyHCt6oGQsh86NBbNqAzhY2Y
-         8LHKGHDbnmjW5fx08ocNrnC5ngYcHSj374tWWNhkFW0AnJ3miIvZxZbHEwztulhuH8cm
-         vSfF97g7b1UgjXrfg6RgMmnBKf0SNQJfbbF5WjDo1swT1paXJMlDh0bLidjV7WKOzS4s
-         V3ArGXbxhariDPm2mMrjhyT+xmiUQNhLRc3OS6gxC+CgH8QlpE15B6TH9ao6D7oOWpzd
-         w122+8njOzTtwl0lqTgQvNDJZPMvQ61FfZHmA//poIjkTgoDCMAz1futr0bk5kEvDRLO
-         SGxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693197931; x=1693802731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vY27Gke1oB96ajh5AD3dOqqG9jvodybPgSv+D4kaopw=;
-        b=RuICzpOeYMK3SgrwugCRFk6a5w/z0vPZuT67xyONhpy5SOeCXWP2T3yaShWW3iVckr
-         xu0y1o3zrRnn1i6EpVDQsoh8nP8feAx0NpLFWaDMMQy1i2YGJdPEbsTViQnpOw37YZ4v
-         eYq1lw8vS4o22U9J1D+shKmqfm0Zr1E8jLkCZt13bz5q7U9hRX4IwzHkdFuNacm8prJX
-         0527MrWajQlKMPqCfSqf8HC/dgdZsEraQSwchpqAvgGR+3LxQ4LRx3rhsEkqD7x702bC
-         WeGxE6IhVzdTAbinhrSFufx1OpML0isrL9mTQB5IU1bWOoPxnfEoYa3Xdxipxqt9g3ak
-         nC0Q==
-X-Gm-Message-State: AOJu0YysVBvU37K8DM4BdRNd3WJ87Jh6gHcBoIvsO2Bbu7ddnXewszec
-        VtHcytwt51n95lgvFYQjzWTO8VVVnmvrHSIvuIg=
-X-Google-Smtp-Source: AGHT+IFG+p5mJS39TNQcREMuB5881GGPrKIzdXLGR9e5/ReNLQCLRF/KuOtHZBphA6Z8rcy/8V3/bK/Bt+jU+rCSUBs=
-X-Received: by 2002:ac8:5a4d:0:b0:410:aa02:264b with SMTP id
- o13-20020ac85a4d000000b00410aa02264bmr20127255qta.36.1693197930860; Sun, 27
- Aug 2023 21:45:30 -0700 (PDT)
+        Mon, 28 Aug 2023 00:47:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35F2125
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 21:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693198074; x=1724734074;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=AML3Z8z7qdGvxJYdKNtfiMw06abAIFsPRuYSYCZd6zI=;
+  b=D4Yp6Cx14o+h1s9YtOSQsN2gPdPrQ39b89rm7bjHXY4c66odTF4uoywV
+   EtaO+6ZcdlTAhAxlMktriUkP+KJYJXFXLt84bPZZqtDHj3YSsLQN7m8dk
+   U3J308JNREQ/TdlKETmNu+2M/dB/XmqPR3n1EJJexh9yJkoZtrg/vDw0U
+   BJRgTGSpzLTOt5PE6SzwrLCWP/3kuOGwl1sHbQ8/+MAEvV9KqpOHakh4k
+   F9c8U+cWiwwI0wGazES9V6AXcjMx1ytrAIJyabWpbWXU6nsiA+OXKyquI
+   7B+25wQ1KP8w9M+Go1h47tuZ8LMZ931bmz3fP24Rxqt/P6beKD6SczJS6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="377746048"
+X-IronPort-AV: E=Sophos;i="6.02,206,1688454000"; 
+   d="scan'208";a="377746048"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2023 21:47:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="984740233"
+X-IronPort-AV: E=Sophos;i="6.02,206,1688454000"; 
+   d="scan'208";a="984740233"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Aug 2023 21:47:52 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qaUAB-0007YV-1x;
+        Mon, 28 Aug 2023 04:47:45 +0000
+Date:   Mon, 28 Aug 2023 12:47:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Li zeming <zeming@nfschina.com>, tj@kernel.org,
+        jiangshanlai@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Li zeming <zeming@nfschina.com>
+Subject: Re: [PATCH] kernel/workqueue: =?utf-8?Q?Re?=
+ =?utf-8?B?bW92ZSB1bm5lY2Vzc2FyeSDigJgw4oCZ?= values from hash
+Message-ID: <202308281239.bDfhnlkw-lkp@intel.com>
+References: <20230829181755.3204-1-zeming@nfschina.com>
 MIME-Version: 1.0
-References: <20230803060938.1929759-1-zhangshida@kylinos.cn> <169123801881.1434487.17826581768728323102.b4-ty@mit.edu>
-In-Reply-To: <169123801881.1434487.17826581768728323102.b4-ty@mit.edu>
-From:   Stephen Zhang <starzhangzsd@gmail.com>
-Date:   Mon, 28 Aug 2023 12:44:54 +0800
-Message-ID: <CANubcdWP9CC0HZQrbyqBomiy2opkBP1gLhnj6n9-m4sKDOyeig@mail.gmail.com>
-Subject: Re: [PATCH v4] ext4: Fix rec_len verify error
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, yi.zhang@huawei.com, djwong@kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn, stable@kernel.org,
-        Andreas Dilger <adilger@dilger.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230829181755.3204-1-zeming@nfschina.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Theodore Ts'o <tytso@mit.edu> =E4=BA=8E2023=E5=B9=B48=E6=9C=885=E6=97=A5=E5=
-=91=A8=E5=85=AD 20:20=E5=86=99=E9=81=93=EF=BC=9A
->
->
-> On Thu, 03 Aug 2023 14:09:38 +0800, zhangshida wrote:
-> > With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> > a problem occurred when more than 13 million files were directly create=
-d
-> > under a directory:
-> >
-> > EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxx=
-x: dir seems corrupt?  Run e2fsck -D.
-> > EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm x=
-xxxx: dir seems corrupt?  Run e2fsck -D.
-> > EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm =
-xxxxx: Directory index failed checksum
-> >
-> > [...]
->
-> Applied, thanks!
->
-> [1/1] ext4: Fix rec_len verify error
->       (no commit info)
+Hi Li,
 
-Hi Ted,
+kernel test robot noticed the following build warnings:
 
-It appears that you might have missed this one in the recent git tree.
-The presence of "(no commit info)" may indicate some apply failures.
+[auto build test WARNING on tj-wq/for-next]
+[also build test WARNING on linus/master v6.5 next-20230825]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Best regards,
-Shida
->
-> Best regards,
-> --
-> Theodore Ts'o <tytso@mit.edu>
+url:    https://github.com/intel-lab-lkp/linux/commits/Li-zeming/kernel-workqueue-Remove-unnecessary-0-values-from-hash/20230828-095048
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-next
+patch link:    https://lore.kernel.org/r/20230829181755.3204-1-zeming%40nfschina.com
+patch subject: [PATCH] kernel/workqueue: Remove unnecessary ‘0’ values from hash
+config: powerpc-allnoconfig (https://download.01.org/0day-ci/archive/20230828/202308281239.bDfhnlkw-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230828/202308281239.bDfhnlkw-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308281239.bDfhnlkw-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/workqueue.c: In function 'wqattrs_hash':
+>> kernel/workqueue.c:3777:16: warning: 'hash' is used uninitialized [-Wuninitialized]
+    3777 |         hash = jhash_1word(attrs->nice, hash);
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/workqueue.c:3775:13: note: 'hash' was declared here
+    3775 |         u32 hash;
+         |             ^~~~
+
+
+vim +/hash +3777 kernel/workqueue.c
+
+5de7a03cac14765 Tejun Heo           2023-08-07  3771  
+6ba94429c8e7b87 Frederic Weisbecker 2015-04-02  3772  /* hash value of the content of @attr */
+6ba94429c8e7b87 Frederic Weisbecker 2015-04-02  3773  static u32 wqattrs_hash(const struct workqueue_attrs *attrs)
+226223ab3c4118d Tejun Heo           2013-03-12  3774  {
+dd46423224bbdfa Li zeming           2023-08-30  3775  	u32 hash;
+226223ab3c4118d Tejun Heo           2013-03-12  3776  
+6ba94429c8e7b87 Frederic Weisbecker 2015-04-02 @3777  	hash = jhash_1word(attrs->nice, hash);
+6ba94429c8e7b87 Frederic Weisbecker 2015-04-02  3778  	hash = jhash(cpumask_bits(attrs->cpumask),
+6ba94429c8e7b87 Frederic Weisbecker 2015-04-02  3779  		     BITS_TO_LONGS(nr_cpumask_bits) * sizeof(long), hash);
+9546b29e4a6ad6e Tejun Heo           2023-08-07  3780  	hash = jhash(cpumask_bits(attrs->__pod_cpumask),
+9546b29e4a6ad6e Tejun Heo           2023-08-07  3781  		     BITS_TO_LONGS(nr_cpumask_bits) * sizeof(long), hash);
+8639ecebc9b1796 Tejun Heo           2023-08-07  3782  	hash = jhash_1word(attrs->affn_strict, hash);
+6ba94429c8e7b87 Frederic Weisbecker 2015-04-02  3783  	return hash;
+d55262c4d164759 Tejun Heo           2013-04-01  3784  }
+226223ab3c4118d Tejun Heo           2013-03-12  3785  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
