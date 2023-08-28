@@ -2,124 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331D978B9E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E047778B9E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbjH1VBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 17:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        id S233427AbjH1VBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233075AbjH1VAl (ORCPT
+        with ESMTP id S233471AbjH1VB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 17:00:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103A712D;
-        Mon, 28 Aug 2023 14:00:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693256438; x=1724792438;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=D7H8iRQg3oYPla8ASkYh40XrCVvCBejBs3ZgYFWYd5Q=;
-  b=FQAngCInUwHLQ4kYIM+Fzl58jJckMDyiuo2l6jypZ2/gy/12QuPHAJZW
-   Z6u/0R3Cq8Mk5czAJH6qjWoJL5sYB0tlyXGj8ILnbPHeo9nU75P4PjaCO
-   cVS2eOPIJxL+Uqpr9TY/6Oj2BSnnfWXGPxKTgdmEya8nBvRAkEzOBNBIU
-   8NOUQHeYrpHVfuMfUVutAwzki1tthVSO6tkvnQj5/Y+Ac3ly/eR+FeeZx
-   X+d+jUXI5RWT1jNiDxaTjI/U7c3koI2aURrfV43rAJtwEMFckSk2M3na/
-   07O0C2yqd2PfP1gxB7Gq0rI+7wjzRhjISIQTeWvieP2wooWPA9Vz19XMv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="372615823"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="372615823"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 14:00:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="715266445"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="715266445"
-Received: from drpresto-mobl.amr.corp.intel.com (HELO [10.212.171.191]) ([10.212.171.191])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 14:00:36 -0700
-Message-ID: <2597a87b-1248-b8ce-ce60-94074bc67ea4@intel.com>
-Date:   Mon, 28 Aug 2023 14:00:35 -0700
+        Mon, 28 Aug 2023 17:01:28 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEEC195
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 14:01:24 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RZNJf6x6WzB9;
+        Mon, 28 Aug 2023 23:01:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1693256483; bh=BtWGvnZ6HanSm2dtgHHulHkjBoOdtX8R0lF4vWpGpXE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=naglXjRKQid+y7j4nXaxyR74dlj2SvmVV49ZW2LqS3SIHsHPNag4AQuJTozTuOJJO
+         Rjz3ooCddwEAuqTNnY2bzCQUiMly/3UvaSdnk5+0PlDniT79gjB3Y4P8vnCdsFGpBO
+         WD/FewKGhJrhqeLttSyFc4/IMl7eomHVJKDI3tJxqZ3lvwox5/6zC44L0KGI+j52Un
+         7mHJqEciyGP4T8JeXe8t8/2txnuDkjoIwaRKF2U8eej3LdFEIRdStmO9TJnwp2/sY8
+         DbsaDnNW7ZMyaX/U0eA85sYNqXaGLAafOU1fqAANn4+je+MBdnkmPePHxNeMfKOn9f
+         ArZCde2a7E9OA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Mon, 28 Aug 2023 23:01:21 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] regulator: core: simplify nested locking
+Message-ID: <ZO0LIY36mPO4pjJf@qmqm.qmqm.pl>
+References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
+ <7d678e7b55e88e630491086f59120253fabeb386.1692484240.git.mirq-linux@rere.qmqm.pl>
+ <CAD=FV=VHvi-2GPxXsDaiPKzgJHqBpX1a6+0CUwp1y8vfr8-Xtg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 09/19] KVM:x86: Make guest supervisor states as
- non-XSAVE managed
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Yang, Weijiang" <weijiang.yang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Chao Gao <chao.gao@intel.com>, john.allen@amd.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rick.p.edgecombe@intel.com, binbin.wu@linux.intel.com
-References: <20230803042732.88515-1-weijiang.yang@intel.com>
- <20230803042732.88515-10-weijiang.yang@intel.com>
- <ZMuMN/8Qa1sjJR/n@chao-email>
- <bfc0b3cb-c17a-0ad6-6378-0c4e38f23024@intel.com>
- <ZM1jV3UPL0AMpVDI@google.com>
- <806e26c2-8d21-9cc9-a0b7-7787dd231729@intel.com>
- <c871cc44-b6a0-06e3-493b-33ddf4fa6e05@intel.com>
- <8396a9f6-fbc4-1e62-b6a9-3df568fd15a2@redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <8396a9f6-fbc4-1e62-b6a9-3df568fd15a2@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAD=FV=VHvi-2GPxXsDaiPKzgJHqBpX1a6+0CUwp1y8vfr8-Xtg@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 08:15, Paolo Bonzini wrote:
-> On 8/10/23 16:29, Dave Hansen wrote:
->> What actual OSes need this support?
+On Mon, Aug 21, 2023 at 09:50:32AM -0700, Doug Anderson wrote:
+> Hi,
 > 
-> I think Xen could use it when running nested.  But KVM cannot expose
-> support for CET in CPUID, and at the same time fake support for
-> MSR_IA32_PL{0,1,2}_SSP (e.g. inject a #GP if it's ever written to a
-> nonzero value).
+> On Sat, Aug 19, 2023 at 3:46 PM Michał Mirosław <mirq-linux@rere.qmqm.pl> wrote:
+> >
+> > Simplify regulator locking by removing locking around locking.
+> > rdev->ref check when unlocking is moved inside the critical section.
+> >
+> > This patch depends on 12235da8c80a ("kernel/locking: Add context to
+> > ww_mutex_trylock()").
 > 
-> I suppose we could invent our own paravirtualized CPUID bit for
-> "supervisor IBT works but supervisor SHSTK doesn't".  Linux could check
-> that but I don't think it's a good idea.
-> 
-> So... do, or do not.  There is no try. :)
+> nit: when I run checkpatch, it always wants me to put the word
+> "commit" before the git hash when I refer to a commit. ;-)
 
-Ahh, that makes sense.  This is needed for implementing the
-*architecture*, not because some OS actually wants to _do_ it.
+> > Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> > ---
+> >  drivers/regulator/core.c | 19 +++++--------------
+> >  1 file changed, 5 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+> > index 921c7039baa3..87e54b776a0f 100644
+> > --- a/drivers/regulator/core.c
+> > +++ b/drivers/regulator/core.c
+> > @@ -34,7 +34,6 @@
+> >  #include "internal.h"
+> >
+> >  static DEFINE_WW_CLASS(regulator_ww_class);
+> > -static DEFINE_MUTEX(regulator_nesting_mutex);
+> >  static DEFINE_MUTEX(regulator_list_mutex);
+> >  static LIST_HEAD(regulator_map_list);
+> >  static LIST_HEAD(regulator_ena_gpio_list);
+> > @@ -143,23 +142,18 @@ static inline int regulator_lock_nested(struct regulator_dev *rdev,
+> >  {
+> >         int ret = 0;
+> 
+> nit: remove initialization of "ret" to 0 since changing "return ret"
+> to "return 0" below. Those changes belong in one of the previous
+> patch, too.
 
-...
->> In a perfect world, we'd just allocate space for CET_S in the KVM
->> fpstates.  The core kernel fpstates would have
->> XSTATE_BV[13]==XCOMP_BV[13]==0.  An XRSTOR of the core kernel fpstates
->> would just set CET_S to its init state.
-> 
-> Yep.  I don't think it's a lot of work to implement.  The basic idea as
-> you point out below is something like
-> 
-> #define XFEATURE_MASK_USER_DYNAMIC XFEATURE_MASK_XTILE_DATA
-> #define XFEATURE_MASK_USER_OPTIONAL \
->     (XFEATURE_MASK_DYNAMIC | XFEATURE_MASK_CET_KERNEL)
-> 
-> where XFEATURE_MASK_USER_DYNAMIC is used for xfd-related tasks
-> (including the ARCH_GET_XCOMP_SUPP arch_prctl) but everything else uses
-> XFEATURE_MASK_USER_OPTIONAL.
-> 
-> KVM would enable the feature by hand when allocating the guest fpstate.
-> Disabled features would be cleared from EDX:EAX when calling
-> XSAVE/XSAVEC/XSAVES.
+Will do.
 
-OK, so let's _try_ this perfect-world solution.  KVM fpstates get
-fpstate->xfeatures[13] set, but no normal task fpstates have that bit
-set.  Most of the infrastructure should be there to handle this without
-much fuss because it _should_ be looking at generic things like
-fpstate->size and fpstate->features.
+> > -       mutex_lock(&regulator_nesting_mutex);
+> > -
+> >         if (!ww_mutex_trylock(&rdev->mutex, ww_ctx) &&
+> > -           rdev->mutex_owner != current) {
+> > -               mutex_unlock(&regulator_nesting_mutex);
+> > +           READ_ONCE(rdev->mutex_owner) != current) {
+> >                 ret = ww_mutex_lock(&rdev->mutex, ww_ctx);
+> > +
+> >                 if (ret == -EDEADLK)
+> >                         return ret;
+> > -               mutex_lock(&regulator_nesting_mutex);
+> >         }
+> >
+> >         rdev->ref_cnt++;
+> >         rdev->mutex_owner = current;
+> >
+> > -       mutex_unlock(&regulator_nesting_mutex);
+> > -
+> > -       return ret;
+> > +       return 0;
+> >  }
+> >
+> >  /**
+> > @@ -186,16 +180,13 @@ static void regulator_lock(struct regulator_dev *rdev)
+> >   */
+> >  static void regulator_unlock(struct regulator_dev *rdev)
+> >  {
+> > -       mutex_lock(&regulator_nesting_mutex);
+> > +       if (WARN_ON_ONCE(rdev->ref_cnt <= 0))
+> > +               return;
+> >
+> >         if (--rdev->ref_cnt == 0) {
+> >                 rdev->mutex_owner = NULL;
+> >                 ww_mutex_unlock(&rdev->mutex);
+> >         }
+> > -
+> > -       WARN_ON_ONCE(rdev->ref_cnt < 0);
+> > -
+> > -       mutex_unlock(&regulator_nesting_mutex);
+> 
+> I guess the "fix" you talked about in the cover letter is moving the
+> WARN_ON up? That could be done in patch #1 and marked as a "Fix",
+> right?
 
-But who knows what trouble this will turn up.  It could get nasty and
-not worth it, but we should at least try it.
+The fix is patch #5. (And has a Fixes line to mark it. :-)
+
+Moving WARN_ON up is needed to keep it from touching ref_cnt outside of
+the locked code (the regulator_nesting_mutex was protecting it before).
+
+> I'm not 100% sure why we needed the "regulator_nesting_mutex" to begin
+> with. I'm also not 100% sure why we depend on commit 12235da8c80a
+> ("kernel/locking: Add context to ww_mutex_trylock()"). Could you add
+> something to the commit message to make this more obvious so I don't
+> need to work so hard to figure it out? ;-)
+
+Commit 12235da8c80a is needed as it enables ww_mutex_trylock() to
+correcly account the lock in ww_ctx if it was able to grab it.
+
+Best Regards
+Michał Mirosław
