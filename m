@@ -2,256 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A302878B68B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B030478B683
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbjH1Red (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
+        id S232834AbjH1Rdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbjH1ReH (ORCPT
+        with ESMTP id S231786AbjH1Rdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:34:07 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD5A129;
-        Mon, 28 Aug 2023 10:34:03 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SFqkAp014958;
-        Mon, 28 Aug 2023 17:33:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : to : cc; s=qcppdkim1;
- bh=SY4V2LfRkvPZ5cOmZFW4/tO8UYuxhGUSh1QM1JL3LPQ=;
- b=pFCNtBvFS+NeMVMWWLsmdHxbABGcBycgaGgDwh7R1VbkucETqZlKwfYK3n0RsduJeFK0
- R8XZTnhjcFAJbQ+oXRUKme3m3uqFtv44YW4BU+XxURvMKDBPZpLmx4+8U5vz5PiPtt6J
- 6lLEr1iXdgOphn1V9qmyqJPL88TZ/YZkoIhDxU0xXOMiK6bkUMfgz4sxCYly7tU6he4n
- 1Vg5zg6CypD9meWa+xU0xi6UEYvVJACOoVnkKZyqPr8amyPBfLXKBGeeKVx0qRcgSXqN
- tCsuYy5OETA0hQg5eImQkPDdb/TjJA1CwgPUV1x02qJPm7QNeB/DN8gSXvtQlxH3C+us iQ== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqapfm880-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 17:33:34 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SHXYMf014363
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 17:33:34 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 28 Aug 2023 10:33:31 -0700
-From:   Elliot Berman <quic_eberman@quicinc.com>
-Date:   Mon, 28 Aug 2023 10:33:04 -0700
-Subject: [PATCH] freezer,sched: Use saved_state to reduce some spurious
- wakeups
+        Mon, 28 Aug 2023 13:33:41 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F24811A;
+        Mon, 28 Aug 2023 10:33:38 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B59ED5AA;
+        Mon, 28 Aug 2023 19:32:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693243935;
+        bh=9KC2ZfmLlcUvbLRYR2c0zmIrk6zvtmnSQH8iwYQYe3c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UQfudyOPjZUI4gApGUQY6EwwjoO7O4A5m/eQRn0UhDjH0T2xdA1JF6VgyUKHL1c+v
+         ZT0ADCznUydDLyocsNIPx6OU8hvjvospMPuwG7uE3fErsqHm44BH1lJYhyMDoPSapr
+         rTb21IspeRQsXS733yk3dwm3k/JcPv5eWcShhmxY=
+Date:   Mon, 28 Aug 2023 20:33:45 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 02/15] media: qcom: camss: Start to move to module
+ compat matched resources
+Message-ID: <20230828173345.GG14596@pendragon.ideasonboard.com>
+References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
+ <20230823104444.1954663-3-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230828-avoid-spurious-freezer-wakeups-v1-1-8be8cf761472@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAE/a7GQC/x2NQQqDMBAAvyI5dyFRsLFfKT1sdFOXShJ2iS0V/
- 97Q48xh5jBKwqTm1h1GaGflnBq4S2fmFdOTgJfGprf9YL27Au6ZF9BShXNViEL0JYE3vqgWhSn
- 60U2jt2FA0yIBlSAIpnltmVS3rckiFPnzv94f5/kDk4wMBIUAAAA=
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>
-CC:     Thomas Gleixner <tglx@linutronix.de>, <kernel@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>,
-        Prakash Viswalingam <quic_prakashv@quicinc.com>,
-        Elliot Berman <quic_eberman@quicinc.com>
-X-Mailer: b4 0.13-dev
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 5YYWwWCdHj09Katurg19d5gF535fbu9L
-X-Proofpoint-GUID: 5YYWwWCdHj09Katurg19d5gF535fbu9L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-28_15,2023-08-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 clxscore=1011 impostorscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308280154
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230823104444.1954663-3-bryan.odonoghue@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit f5d39b020809 ("freezer,sched: Rewrite core freezer logic"),
-tasks that are in TASK_FREEZABLE state and end up getting frozen are
-always woken up. Prior to that commit, tasks could ask freezer to
-consider them "frozen enough" via freezer_do_not_conut(). As described
-in Peter's commit, the reason for this change is to prevent these tasks
-from being woken before SMP is back. The commit introduced a
-TASK_FREEZABLE state which allows freezer to immediately mark the task
-as TASK_FROZEN without waking up the task. On the thaw path, the task is
-woken up even if the task didn't need to wake up and goes back to its
-TASK_(UN)INTERRUPTIBLE state. Although these tasks are capable of
-handling of the wakeup, we can observe a power/perf impact from the
-extra wakeup.
+Hi Bryan,
 
-We observed on Android many tasks wait in the TASK_FREEZABLE state
-(particularly due to many of them being binder clients). We observed
-nearly 4x the number of tasks and a corresponding (almost) linear increase in
-latency and power consumption when thawing the system. The latency
-increased from ~15ms to ~50ms.
+Thank you for the patch.
 
-Save the state of TASK_FREEZABLE tasks and restore it after thawing the
-task without waking the task up. If the task received a wake up for the
-saved_state before thawing, then the task is still woken upon thawing.
+On Wed, Aug 23, 2023 at 11:44:31AM +0100, Bryan O'Donoghue wrote:
+> There is a lot of unnecessary if/elsing in this code that arguably
+> should never have made it upstream when adding a second let alone
+> subsequent SoC.
+> 
+> I'm guilty of not fixing the mess myself when adding in the sm8250.
+> Before adding in any new SoCs or resources lets take the time to cleanup
+> the resource passing.
+> 
+> First step is to pass the generic struct camss_resources as a parameter
+> per the compatible list.
+> 
+> Subsequent patches will address the other somewhat dispirate strutures
 
-Re-use saved_state from RT sleeping spinlocks because freezer doesn't
-consider TASK_RTLOCK_WAIT freezable.
+s/dispirate/disparate/ ?
 
-Reported-by: Prakash Viswalingam <quic_prakashv@quicinc.com>
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
----
-For testing purposes, I use these commands can help see how many tasks were
-woken during thawing:
+> which we are also doing if/else on and assigning statically.
+> 
+> Squashed down a commit to drop useless NULL assignment for ispif resources.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/media/platform/qcom/camss/camss.c | 92 ++++++++++++-----------
+>  drivers/media/platform/qcom/camss/camss.h |  8 ++
+>  2 files changed, 56 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> index de39dc987444f..82e679c8ca011 100644
+> --- a/drivers/media/platform/qcom/camss/camss.c
+> +++ b/drivers/media/platform/qcom/camss/camss.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/of_graph.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/pm_domain.h>
+> @@ -1120,47 +1121,13 @@ static int camss_of_parse_ports(struct camss *camss)
+>   */
+>  static int camss_init_subdevices(struct camss *camss)
+>  {
+> -	const struct resources *csiphy_res;
+> -	const struct resources *csid_res;
+> -	const struct resources *ispif_res;
+> -	const struct resources *vfe_res;
+> +	const struct camss_resources *res = camss->res;
+>  	unsigned int i;
+>  	int ret;
+>  
+> -	if (camss->version == CAMSS_8x16) {
+> -		csiphy_res = csiphy_res_8x16;
+> -		csid_res = csid_res_8x16;
+> -		ispif_res = &ispif_res_8x16;
+> -		vfe_res = vfe_res_8x16;
+> -	} else if (camss->version == CAMSS_8x96) {
+> -		csiphy_res = csiphy_res_8x96;
+> -		csid_res = csid_res_8x96;
+> -		ispif_res = &ispif_res_8x96;
+> -		vfe_res = vfe_res_8x96;
+> -	} else if (camss->version == CAMSS_660) {
+> -		csiphy_res = csiphy_res_660;
+> -		csid_res = csid_res_660;
+> -		ispif_res = &ispif_res_660;
+> -		vfe_res = vfe_res_660;
+> -	}  else if (camss->version == CAMSS_845) {
+> -		csiphy_res = csiphy_res_845;
+> -		csid_res = csid_res_845;
+> -		/* Titan VFEs don't have an ISPIF  */
+> -		ispif_res = NULL;
+> -		vfe_res = vfe_res_845;
+> -	} else if (camss->version == CAMSS_8250) {
+> -		csiphy_res = csiphy_res_8250;
+> -		csid_res = csid_res_8250;
+> -		/* Titan VFEs don't have an ISPIF  */
+> -		ispif_res = NULL;
+> -		vfe_res = vfe_res_8250;
+> -	} else {
+> -		return -EINVAL;
+> -	}
+> -
+>  	for (i = 0; i < camss->csiphy_num; i++) {
+>  		ret = msm_csiphy_subdev_init(camss, &camss->csiphy[i],
+> -					     &csiphy_res[i], i);
+> +					     &res->csiphy_res[i], i);
+>  		if (ret < 0) {
+>  			dev_err(camss->dev,
+>  				"Failed to init csiphy%d sub-device: %d\n",
+> @@ -1172,7 +1139,7 @@ static int camss_init_subdevices(struct camss *camss)
+>  	/* note: SM8250 requires VFE to be initialized before CSID */
+>  	for (i = 0; i < camss->vfe_num + camss->vfe_lite_num; i++) {
+>  		ret = msm_vfe_subdev_init(camss, &camss->vfe[i],
+> -					  &vfe_res[i], i);
+> +					  &res->vfe_res[i], i);
+>  		if (ret < 0) {
+>  			dev_err(camss->dev,
+>  				"Fail to init vfe%d sub-device: %d\n", i, ret);
+> @@ -1182,7 +1149,7 @@ static int camss_init_subdevices(struct camss *camss)
+>  
+>  	for (i = 0; i < camss->csid_num; i++) {
+>  		ret = msm_csid_subdev_init(camss, &camss->csid[i],
+> -					   &csid_res[i], i);
+> +					   &res->csid_res[i], i);
+>  		if (ret < 0) {
+>  			dev_err(camss->dev,
+>  				"Failed to init csid%d sub-device: %d\n",
+> @@ -1191,7 +1158,7 @@ static int camss_init_subdevices(struct camss *camss)
+>  		}
+>  	}
+>  
+> -	ret = msm_ispif_subdev_init(camss, ispif_res);
+> +	ret = msm_ispif_subdev_init(camss, res->ispif_res);
+>  	if (ret < 0) {
+>  		dev_err(camss->dev, "Failed to init ispif sub-device: %d\n",
+>  		ret);
+> @@ -1554,6 +1521,10 @@ static int camss_probe(struct platform_device *pdev)
+>  	if (!camss)
+>  		return -ENOMEM;
+>  
+> +	camss->res = of_device_get_match_data(dev);
+> +	if (!camss->res)
+> +		return -ENODEV;
 
-1. Setup:
-   mkdir /sys/kernel/tracing/instances/freezer
-   cd /sys/kernel/tracing/instances/freezer 
-   echo 0 > tracing_on ; echo > trace
-   echo power:suspend_resume > set_event
-   echo 'enable_event:sched:sched_wakeup if action == \"thaw_processes\" && start == 1' > events/power/suspend_resume/trigger
-   echo 'traceoff if action == \"thaw_processes\" && start == 0' > events/power/suspend_resume/trigger
-   echo 1 > tracing_on
+You could possibly drop the error check, as this can't happen.
 
-2. Let kernel go to suspend
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-3. After kernel's back up:
-   cat /sys/kernel/tracing/instances/freezer/trace | grep sched_wakeup | grep -o "pid=[0-9]*" | sort -u | wc -l
----
- include/linux/sched.h |  4 ++--
- kernel/freezer.c      | 15 +++++++++++++--
- kernel/sched/core.c   | 21 +++++++++++++--------
- 3 files changed, 28 insertions(+), 12 deletions(-)
+> +
+>  	atomic_set(&camss->ref_count, 0);
+>  	camss->dev = dev;
+>  	platform_set_drvdata(pdev, camss);
+> @@ -1735,12 +1706,45 @@ static void camss_remove(struct platform_device *pdev)
+>  		camss_delete(camss);
+>  }
+>  
+> +static const struct camss_resources msm8916_resources = {
+> +	.csiphy_res = csiphy_res_8x16,
+> +	.csid_res = csid_res_8x16,
+> +	.ispif_res = &ispif_res_8x16,
+> +	.vfe_res = vfe_res_8x16,
+> +};
+> +
+> +static const struct camss_resources msm8996_resources = {
+> +	.csiphy_res = csiphy_res_8x96,
+> +	.csid_res = csid_res_8x96,
+> +	.ispif_res = &ispif_res_8x96,
+> +	.vfe_res = vfe_res_8x96,
+> +};
+> +
+> +static const struct camss_resources sdm660_resources = {
+> +	.csiphy_res = csiphy_res_660,
+> +	.csid_res = csid_res_660,
+> +	.ispif_res = &ispif_res_660,
+> +	.vfe_res = vfe_res_660,
+> +};
+> +
+> +static const struct camss_resources sdm845_resources = {
+> +	.csiphy_res = csiphy_res_845,
+> +	.csid_res = csid_res_845,
+> +	.vfe_res = vfe_res_845,
+> +};
+> +
+> +static const struct camss_resources sm8250_resources = {
+> +	.csiphy_res = csiphy_res_8250,
+> +	.csid_res = csid_res_8250,
+> +	.vfe_res = vfe_res_8250,
+> +};
+> +
+>  static const struct of_device_id camss_dt_match[] = {
+> -	{ .compatible = "qcom,msm8916-camss" },
+> -	{ .compatible = "qcom,msm8996-camss" },
+> -	{ .compatible = "qcom,sdm660-camss" },
+> -	{ .compatible = "qcom,sdm845-camss" },
+> -	{ .compatible = "qcom,sm8250-camss" },
+> +	{ .compatible = "qcom,msm8916-camss", .data = &msm8916_resources },
+> +	{ .compatible = "qcom,msm8996-camss", .data = &msm8996_resources },
+> +	{ .compatible = "qcom,sdm660-camss", .data = &sdm660_resources },
+> +	{ .compatible = "qcom,sdm845-camss", .data = &sdm845_resources },
+> +	{ .compatible = "qcom,sm8250-camss", .data = &sm8250_resources },
+>  	{ }
+>  };
+>  
+> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+> index e95211cdb1fd6..f632ee49ad83e 100644
+> --- a/drivers/media/platform/qcom/camss/camss.h
+> +++ b/drivers/media/platform/qcom/camss/camss.h
+> @@ -79,6 +79,13 @@ enum icc_count {
+>  	ICC_SM8250_COUNT = 4,
+>  };
+>  
+> +struct camss_resources {
+> +	const struct resources *csiphy_res;
+> +	const struct resources *csid_res;
+> +	const struct resources *ispif_res;
+> +	const struct resources *vfe_res;
+> +};
+> +
+>  struct camss {
+>  	enum camss_version version;
+>  	struct v4l2_device v4l2_dev;
+> @@ -99,6 +106,7 @@ struct camss {
+>  	struct device_link **genpd_link;
+>  	struct icc_path *icc_path[ICC_SM8250_COUNT];
+>  	struct icc_bw_tbl icc_bw_tbl[ICC_SM8250_COUNT];
+> +	const struct camss_resources *res;
+>  };
+>  
+>  struct camss_camera_interface {
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index eed5d65b8d1f..e4ade5a18df2 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -746,8 +746,8 @@ struct task_struct {
- #endif
- 	unsigned int			__state;
- 
--#ifdef CONFIG_PREEMPT_RT
--	/* saved state for "spinlock sleepers" */
-+#if IS_ENABLED(CONFIG_PREEMPT_RT) || IS_ENABLED(CONFIG_FREEZER)
-+	/* saved state for "spinlock sleepers" and freezer */
- 	unsigned int			saved_state;
- #endif
- 
-diff --git a/kernel/freezer.c b/kernel/freezer.c
-index 4fad0e6fca64..6222cbfd97ab 100644
---- a/kernel/freezer.c
-+++ b/kernel/freezer.c
-@@ -71,7 +71,11 @@ bool __refrigerator(bool check_kthr_stop)
- 	for (;;) {
- 		bool freeze;
- 
-+		raw_spin_lock_irq(&current->pi_lock);
- 		set_current_state(TASK_FROZEN);
-+		/* unstale saved_state so that __thaw_task() will wake us up */
-+		current->saved_state = TASK_RUNNING;
-+		raw_spin_unlock_irq(&current->pi_lock);
- 
- 		spin_lock_irq(&freezer_lock);
- 		freeze = freezing(current) && !(check_kthr_stop && kthread_should_stop());
-@@ -129,6 +133,7 @@ static int __set_task_frozen(struct task_struct *p, void *arg)
- 		WARN_ON_ONCE(debug_locks && p->lockdep_depth);
- #endif
- 
-+	p->saved_state = p->__state;
- 	WRITE_ONCE(p->__state, TASK_FROZEN);
- 	return TASK_FROZEN;
- }
-@@ -174,10 +179,16 @@ bool freeze_task(struct task_struct *p)
-  * state in p->jobctl. If either of them got a wakeup that was missed because
-  * TASK_FROZEN, then their canonical state reflects that and the below will
-  * refuse to restore the special state and instead issue the wakeup.
-+ *
-+ * Otherwise, restore the saved_state before the task entered freezer. For
-+ * typical tasks in the __refrigerator(), saved_state == 0 so nothing happens
-+ * here. For tasks which were TASK_NORMAL | TASK_FREEZABLE, their initial state
-+ * is returned unless they got an expected wakeup. Then they will be woken up as
-+ * TASK_FROZEN back in __thaw_task().
-  */
- static int __set_task_special(struct task_struct *p, void *arg)
- {
--	unsigned int state = 0;
-+	unsigned int state = p->saved_state;
- 
- 	if (p->jobctl & JOBCTL_TRACED)
- 		state = TASK_TRACED;
-@@ -188,7 +199,7 @@ static int __set_task_special(struct task_struct *p, void *arg)
- 	if (state)
- 		WRITE_ONCE(p->__state, state);
- 
--	return state;
-+	return state & ~TASK_FROZEN;
- }
- 
- void __thaw_task(struct task_struct *p)
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a68d1276bab0..815d955764a5 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3992,13 +3992,17 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
-  * The caller holds p::pi_lock if p != current or has preemption
-  * disabled when p == current.
-  *
-- * The rules of PREEMPT_RT saved_state:
-+ * The rules of saved_state:
-  *
-  *   The related locking code always holds p::pi_lock when updating
-  *   p::saved_state, which means the code is fully serialized in both cases.
-  *
-- *   The lock wait and lock wakeups happen via TASK_RTLOCK_WAIT. No other
-- *   bits set. This allows to distinguish all wakeup scenarios.
-+ *   For PREEMPT_RT, the lock wait and lock wakeups happen via TASK_RTLOCK_WAIT.
-+ *   No other bits set. This allows to distinguish all wakeup scenarios.
-+ *
-+ *   For FREEZER, the wakeup happens via TASK_FROZEN. No other bits set. This
-+ *   allows us to prevent early wakeup of tasks before they can be run on
-+ *   asymmetric ISA architectures (eg ARMv9).
-  */
- static __always_inline
- bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
-@@ -4013,13 +4017,14 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
- 		return true;
- 	}
- 
--#ifdef CONFIG_PREEMPT_RT
-+#if IS_ENABLED(CONFIG_PREEMPT_RT) || IS_ENABLED(CONFIG_FREEZER)
- 	/*
- 	 * Saved state preserves the task state across blocking on
--	 * an RT lock.  If the state matches, set p::saved_state to
--	 * TASK_RUNNING, but do not wake the task because it waits
--	 * for a lock wakeup. Also indicate success because from
--	 * the regular waker's point of view this has succeeded.
-+	 * an RT lock or TASK_FREEZABLE tasks.  If the state matches,
-+	 * set p::saved_state to TASK_RUNNING, but do not wake the task
-+	 * because it waits for a lock wakeup or __thaw_task(). Also
-+	 * indicate success because from the regular waker's point of
-+	 * view this has succeeded.
- 	 *
- 	 * After acquiring the lock the task will restore p::__state
- 	 * from p::saved_state which ensures that the regular
-
----
-base-commit: 6995e2de6891c724bfeb2db33d7b87775f913ad1
-change-id: 20230817-avoid-spurious-freezer-wakeups-9f8619680b3a
-
-Best regards,
 -- 
-Elliot Berman <quic_eberman@quicinc.com>
+Regards,
 
+Laurent Pinchart
