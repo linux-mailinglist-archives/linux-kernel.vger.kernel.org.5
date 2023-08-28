@@ -2,160 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A966A78B949
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE5378B94D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbjH1UOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
+        id S233619AbjH1UOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233763AbjH1UNp (ORCPT
+        with ESMTP id S234044AbjH1UOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:13:45 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744411AD
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:13:41 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-64cca551ae2so22348746d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693253620; x=1693858420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iPlx3ixDZIyJnbVh1BXs5jAUX+MLuQTLGqaMbx/eBOE=;
-        b=I6BL5BJo8rpiMQo7XBz8CqFcWk0omwpKUrB5OqgGz8+kIPPaPJzF6nouz33xUZoaUP
-         Jz0N4fYzCRVFhsnSeLBxlWou72tQOyfL5RnUQJSxeIYQge3y6lzb/sJwoDJVw3exIw1t
-         vKBCFB06m7HN81GljhVq+tZyQvzevKDSt5vgfLXdYbq3ZGkG11VS5JJ+IfZHLyZ1YpyZ
-         pj2Y0xgGwTE6k64rbwOy0Ve5zrN/8IqRsyVXvHys5aWavfctD3dZVWM4WZQhOA9u0iKl
-         AFjF7pHA/oElKR6c0q3Sk7keEoj6T7II/HwmydSgWXvNf5cCeNjwGdss1AcoiKcpxfBT
-         xHEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693253620; x=1693858420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iPlx3ixDZIyJnbVh1BXs5jAUX+MLuQTLGqaMbx/eBOE=;
-        b=V3CcqUiBlZbD6DSXaUwr89OSu03X8GzUC/x10WBi2IrZLNmBo0zJwjAOdLr4ULMsFL
-         9/L8TkZYNOUA7zuik6+7W8E0pVkt1B4SfZr5OrEaKYN2RusqIELfo007WJy4hj9ycHtx
-         kia2SsECpXb6/QMf+3HqRfoSJ2j7upU37FgtnJOELWi99fRBAM799zUpASZsuelOhyKa
-         LpcZ0XMUDLcW+hk7e4KknfN+ere3fIB7PqSvazOGcC8Fub2zw/gDj9YtsUlAmpKLN3G+
-         b3+NTWKIlDpRWWBXzpwfx0DDWFi2LG4o1b/tC220Ir7XrIfPZOBJeIGgGFkMUOhuZ8w9
-         y4VA==
-X-Gm-Message-State: AOJu0Ywq400962DEvG4EZ55tkJRr9GmpWI+s6ZgYVTunfDGkyITYYAhy
-        zv+jVTg6jT74PZyDlVk0lM6R0YX5QHe3IQ45RVkGOg==
-X-Google-Smtp-Source: AGHT+IH+a4xXxSWRIXzFZiXI1vjuHKVktsasFxFyvyPHbSnDpJ806vs4iN2e/8Qo00cv0Qn5LOK6cRLB5Ri8cboGlyw=
-X-Received: by 2002:a0c:e413:0:b0:64b:997f:5a7e with SMTP id
- o19-20020a0ce413000000b0064b997f5a7emr30979975qvl.8.1693253620349; Mon, 28
- Aug 2023 13:13:40 -0700 (PDT)
+        Mon, 28 Aug 2023 16:14:45 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2066.outbound.protection.outlook.com [40.107.212.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081B6C5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:14:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MGZOQchQdf6s0fqMxRW06NAWlq5jzXk/ruJz9VC4iXrjeTJK1i3Ht01tYEDFAdVlzqdAqfbdPxYXNvIqWhDOAbnzis1X0pnDmmA8vZ6w98tkh2S4ibNGskHNmqAlQpWlT4oRblMMEheAisalXL6z9FnxyMk6Dilvz2NFs5u5dG4UKafCQgTq9KisIUEV5P+syCvUpDyg+5wj5ALCi0faIJmVPEIP6tZgkUBBxO0qv4CTy4gQZnY/wCfPrIAbl/QZB5lkSK8E5xWMfWy/dv0Miw7N+qnZYNIZ8LdifPaxXPAh1KmACT4zSAIsp3JG10LnIHgMxOiFhHqlNmFxiFYubg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=stTcgg78PNgCxfk7UEr1RdozqtSKuYByNhoW1LB2EBc=;
+ b=WIgYKZZIvrzRgT9u0IMXqvwuTvJPU0zVdW2XWFgftia+exvHZfQWN0cwSDIQIaRJl8TiGP2b8tAZGRBoOggMGprO+hByWxus3nP4cilgKlZpe4fHLe4+ezbY49Zma3rMjREgH+FC++c/zTJxJ5ZsiUN/sOlHCk2vuizwzHfpU3BPZty4PO4YTRq9D+VtbHuvqLvzI051/LFbnMWntJ0mbm7uHBQFnC4Lz+s9lM1IIQn9wmguHRJ1SZd2G9gWkZsD3M71mnDLAtqn5VZ7fvwnDI9hkev5i/zDWrMJrHbsyoP7RBf4YPSKcMZJQoRTCZRZrWVFLc+lPYIHPnnp2lW/nw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=stTcgg78PNgCxfk7UEr1RdozqtSKuYByNhoW1LB2EBc=;
+ b=AmkVzD0cWU9iTwYOgs2Hx8rmCjpym4VzhyU2yMQ3neEP+fnS9hfus3Uo7XAuDIPKPrm1RTvnyPnw3P3uonTXsjvrshJ14GIXiye+kO1lBs/AMEoYxv8Y0qiWQc/4tveZyQ1ONwer2qLXdyby5d7VG7dDy2+4gOxWjIzsVtdwn7Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
+ by DM4PR12MB5358.namprd12.prod.outlook.com (2603:10b6:5:39c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
+ 2023 20:14:37 +0000
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::f78e:33f4:56d2:1ef4]) by PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::f78e:33f4:56d2:1ef4%7]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
+ 20:14:37 +0000
+Message-ID: <b9452015-0284-3ede-973c-ced26ef18d2a@amd.com>
+Date:   Tue, 29 Aug 2023 01:44:22 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 0/7] GPU workload hints for better performance
+To:     Helen Mae Koike Fornazier <helen.koike@collabora.com>,
+        Arvind Yadav <Arvind.Yadav@amd.com>
+Cc:     Christian.Koenig@amd.com, alexander.deucher@amd.com,
+        shashank.sharma@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, Felix.Kuehling@amd.com,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <7d09-64ecc080-1-3ebc5780@85497443>
+Content-Language: en-US
+From:   "Yadav, Arvind" <arvyadav@amd.com>
+In-Reply-To: <7d09-64ecc080-1-3ebc5780@85497443>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0109.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:27::24) To PH7PR12MB6000.namprd12.prod.outlook.com
+ (2603:10b6:510:1dc::15)
 MIME-Version: 1.0
-References: <ZOkGCSNr0VN2VIJJ@p100> <CAHk-=wjZwSymfuGvf7TX3UQLU1OMN1FZMnEA-Hja0ruqyhMK4A@mail.gmail.com>
- <CAHk-=whVvD05T0yD5DQj803uETLD6qDq-Vx-SiLPcrL=eO77LQ@mail.gmail.com>
- <CAKwvOdnYauyrzz7-ceH-MP_KZ5ED8oYxjRx_Xei68=tUOSeKyA@mail.gmail.com>
- <CAGG=3QWcZPYqHMcjwuYDz1+OQhzS40hmhdOvSBZBQOkhs8YAQQ@mail.gmail.com>
- <CAGG=3QX8AaTedPy-joWm6yp+TFHBVXm59OcvxkdLGsSuDjem5g@mail.gmail.com>
- <CAHk-=wjQpXpnGAwvv-oBi+cQ0g+D9rTK5STkXSSV4a90FPR+EQ@mail.gmail.com>
- <CAKwvOdm_y6UOnxFrAiDxou2jc8CRUvyhfH9kAdc3PG0=bEvduw@mail.gmail.com>
- <CAHk-=wgJzMzPFTCzejWs1WM4=74z2VENyOzySnucrXG3i=ajrw@mail.gmail.com>
- <CAMuHMdXZ4fGjjXguftvrB69rt7dR6ngFA46YB8oGpk2_issJzA@mail.gmail.com> <CAHk-=wgefVmehW7oFrXLYYogqfoBQaku8Qm4o3+95Xwv=he+iQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgefVmehW7oFrXLYYogqfoBQaku8Qm4o3+95Xwv=he+iQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 28 Aug 2023 13:13:29 -0700
-Message-ID: <CAKwvOdmmMHRtLG5447KhLMTFD=1AjZeu1m3ZKdy=jHHkG16qUw@mail.gmail.com>
-Subject: Re: [PATCH] lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit kernels
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bill Wendling <morbo@google.com>, Helge Deller <deller@gmx.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chanho Min <chanho.min@lge.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|DM4PR12MB5358:EE_
+X-MS-Office365-Filtering-Correlation-Id: 52a34194-9e0e-4ff2-9f77-08dba80366d1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nBm53cQSZW++Xb+GPkCkmsKEtAvKfW56iYkUIKPDRDtrHxDSZmtpbJUJbUI2+tXyEFeZq//pz6kxW8R/CrLVRQU5uSE/k4uMaHDcmm1BGZpfAgBz1o6M1IOU0DfGagHubweRCZr+O4XvT8dokFj1n/ZkCUSouFpOwQkuD3rg6FiWuuwEpPUZ+3ARRGJXX/n/arl/gWDL2rDYgOJWi0zK7WwyQGSvFapAvcheRmsoLhcc4grn2r7DCAcDovpJfJNN8+5Lgf0D2iSexUUxdxr34i1xAHmJwUYmrl2IPMuZVV0NGIgKgz8JZpC//o4Bmp2ro2a1cNYQ/q6q+bb0w/hUMrG3oD+xwvepy1oV5qJM+w3O9lrYYMoSmyzj1dAcHi3MC7X63WfIBUloDnyuVyY9tv+Qd3Po5ceKvCmiSXSS0sz+cjaRRtwjc8DZgVXoQKXlF/MUVAid7PThWxVXTfDEOOzvsl2K6zBw4rouqB54zC5hCSRuRoKqHma5UWJ5mgzoQV6v+CK8VLIUgejFwja8Qmr4EZiTRdiffIwKqXnLReLMYjf+TfRadkB7QOcxhBa8StETvHSv0wHenDk0QfG5l72ZBrC2laZ3MOdtsCWpXH5ePeYb8GJK/7ShdS9i3O4t
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(396003)(136003)(1800799009)(186009)(451199024)(6512007)(6506007)(6486002)(6666004)(53546011)(966005)(478600001)(83380400001)(26005)(2906002)(6636002)(316002)(41300700001)(66556008)(66476007)(66946007)(110136005)(5660300002)(8936002)(8676002)(4326008)(2616005)(36756003)(38100700002)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WFRRekVZc09NcU9EWjNtOU4yYjR6RWdkdlRubUdCVVIyYjJVUWxCdDRCY0tW?=
+ =?utf-8?B?TENDVFdHZUlicEQwa3kwekRnRmczRG1sSEJrODRWY2ZvVUFkeG94QXJzSkZL?=
+ =?utf-8?B?SG90NDJFR2NwdVFNZnYwQUlnMjdZUFB3cGc5QXlKdFpxcFdidm41bHVmSklr?=
+ =?utf-8?B?TzdVZlRpbVZjc1VMZjdvTDNiWXE1UlI5YnZoLzdUSVZoNDdWdVhQYnhXSTdR?=
+ =?utf-8?B?RTV2MFhQVEVPd3pYTk54RWY1aU8xZkVjNnlJcGRGek5tbGtkTzFKOVQzaEF4?=
+ =?utf-8?B?dVZheStsL1pGbERMVFB5WWNMT0NOcFM5RytqaWt6ZGplL2tiRXlMOWpIcCt5?=
+ =?utf-8?B?SXBRcTZPNk5KRXIxVlUvbFVkT0R2TzB0Z1RPS0puUzhhVzlYWWg5R0xsVjdo?=
+ =?utf-8?B?QVEzbzJFSUY1eDQycXdlVE5MUEFlWExTZ2hLdkIrcXErU0VTZ3ZJcjl0bGgx?=
+ =?utf-8?B?b3gveHpQVnJFVlB4UE9BS2J2UHdUelhjQzBKbm13MDlhWDNJOHJOZkdvUERE?=
+ =?utf-8?B?SzEwbGlPdWN6UURZZXdRNFdvL1pxclR5QSszc2FMTDJEQWgxQkNBVmFlcEZX?=
+ =?utf-8?B?Q0Vkd1dJRHJoeGZUcCtEV0ZHYlVUVE1WQjdjeWoyY0ZMWXdXamRVckQ0K1hC?=
+ =?utf-8?B?aWdSMFozb2lJeStEdElIZ2RrNm51SVduNElVTGVXajhQMlB6aHpya0hZUS96?=
+ =?utf-8?B?RklRb2VvN2hxRlNJbDY2M2doMEZRZ1pqMkNSZWtYTVB0M2FlNVJQako1Nkda?=
+ =?utf-8?B?c3ZhZ2ZDUjFOY1pvZkdab0xFaHVETmR0VGZjZk9tU0dZNEpRTnIxSnJKbDhK?=
+ =?utf-8?B?M010KzArRGZ6UVpkTFZZalVYcmJwUDZpdndXb3dMTXZaeXFJUkR6Zld6L080?=
+ =?utf-8?B?TTJlWkVid1lvbFkwb3RDSzJGbWhoWEZyRmlDd0hLRGZkeTBCQndpb3g0TFRH?=
+ =?utf-8?B?Z0h0ZktnL2NocXdmbUR3a3JvRXdlazZnM1A4N1ZEWnlCWUJZdzY2bmlFSlMw?=
+ =?utf-8?B?VzE4Q3ZHV0FmTHBXSnIzbzh5YnduT25HN0tZYS81QVJRcUZHZ05XU0R6eENI?=
+ =?utf-8?B?U0VtQ0RZNmhidU9BQ0dhZHA3NU5Pc1RUSXVVZTdaRGNEdnF5S0RyU3lRL2I5?=
+ =?utf-8?B?YkRXbGVmcGg0SFFPY1FmeVhkM3dvQ0pWTkdnNFJCQkpyUUt3U2k5d2xEY0pZ?=
+ =?utf-8?B?S1lyeHdybWszaHVtdjc5eDVSVUd1UHg3UGJTZVlTeHhFdjJUcGtXNFFEY2Rk?=
+ =?utf-8?B?R0k0eHgxWkUrYUR0ekRTWFFVTlQ3eitpRjR0MnFhM1htYVdOak9ucVFKUVVz?=
+ =?utf-8?B?VndFVnhRUnRBY2NCQkZXMVZ3LzJJNjh4c0xqajViRGpWbUpxc2oxMUpKUWN4?=
+ =?utf-8?B?cFpZM1lsR2NOalpsM3l0WExrc0lpWUpWalMvZ3VVRjFGcXpNdUtrdFVLVHZX?=
+ =?utf-8?B?YXRaZ25kNzJPNmlvZ1cyS1VVUkovUFNrSFA4MjNOcnhTOEdzWGpucUl0bkhE?=
+ =?utf-8?B?N2RaaHFaS2RRS2wyZ1hWRmc1R3F0UkY4Y1dFOEdxMGNvazNIY2pIb09uaW1M?=
+ =?utf-8?B?MXl6RWRHWGdTTmZ6L2F6bmI4TWp1bG01alhCRGg3cEFFcXFsNm8rNHhWU3Bx?=
+ =?utf-8?B?bXdERlVSNUNuRCtTU2czdXZieXVGY1ZNajd0bzB6S0VtQmtaYkJnTlFaMGlS?=
+ =?utf-8?B?NDRPQnFFRUVWbXk1emhNcnpNK2I1ZXI2eGU2MlZETE1hUXpyeU5kVE9ldXBB?=
+ =?utf-8?B?MUg1LzFxa1ZiaWQrWUdja29QT2RRbG5FWU9UakdORlNEbXBCZk1mY3VDL1Vn?=
+ =?utf-8?B?Y1RpU0padFVGdlNsOW01WkFGVnVQUkNkYTBINitETXVyaUZXQVIzSWFJRk1M?=
+ =?utf-8?B?a2dnUGtEcVc0SjB0NXV2WWR6V1RzNzZCdDA4NzN4Z0pBbUNYbkQrV3hETmJo?=
+ =?utf-8?B?RmhWUnBmak1LekZUT2UybHpYOTBQMG8vd1NDRE0zZFFNZWRVODNjWUFseWRV?=
+ =?utf-8?B?V0p0M2dyRWFsLzhQOUZiNW9GeWtVc2ZFTHdJY1hGejdYS3FXVWxlU3N4cnJn?=
+ =?utf-8?B?U3JzUVJ0TUo5NU5JcVdxNVlIeWQxU21OYlV2RTdCT2d6OHFhZ0tsaVNBeXI0?=
+ =?utf-8?Q?DLeIMWfP3zg8LrZCxK9yiJjO7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52a34194-9e0e-4ff2-9f77-08dba80366d1
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 20:14:37.1355
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HwrAoXt0eWhFCycvGKBm6KL1NuK5tb33AEQCm69z24YhNhaiSrfjVBw2jMJibGt1BiccmqgcJ+rnYl088EYr+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5358
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 9:25=E2=80=AFAM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, 28 Aug 2023 at 00:33, Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
-> >
-> > Several architectures (incl. x86, but excl. amd64) do build the kernel =
-with
-> > -freestanding.
-> >
-> > IIRC, the issue was that without that, gcc was "optimizing" calls
-> > to standard functions (implemented as inline optimized assembler
-> > functions) by replacing them with calls to other standard functions
-> > (also implemented as inline optimized assembler functions).
->
-> So using -ffreestanding is definitely the right thing to do for a
-> kernel in theory. It's very much supposed to tell the compiler to not
 
--ffreestanding is probably a good suggestion for any embedded
-platform.  But given the size of the kernel, and similarities of
-symbols and their semantics expected by the compiler and provided by
-the kernel, I think -ffreestanding should not be set at this point for
-the Linux kernel.
+On 8/28/2023 9:13 PM, Helen Mae Koike Fornazier wrote:
+> On Monday, August 28, 2023 09:26 -03, Arvind Yadav <Arvind.Yadav@amd.com> wrote:
+>
+>> AMDGPU SOCs supports dynamic workload based power profiles, which can
+>> provide fine-tuned performance for a particular type of workload.
+>> This patch series adds an interface to set/reset these power profiles
+>> based on the submitted job. The driver can dynamically switch
+>> the power profiles based on submitted job. This can optimize the power
+>> performance when the particular workload is on.
+> Hi Arvind,
+>
+> Would you mind to test your patchset with drm-ci ? There is a amdgpu
+> test there and I would love to get your feedback of the ci.
+>
+> You basically just need to apply the ci patch which is available on
+> https://cgit.freedesktop.org/drm/drm/log/?h=topic/drm-ci
+>
+> There are instruction on the docs, but in short: to configure it, you push
+> your branch to gitlab.freedesktop.org, go to the settings and change the
+> CI/CD configuration file from .gitlab-ci.yml to drivers/gpu/drm/ci/gitlab-ci.yml,
+> and you can trigger a pipeline on your branch to get tests running.
+>
+> (by the time of this writing, gitlab.fdo is under maintenance but should
+> be up soonish).
 
-> assume a standard libc, and without that gcc will do various
-> transformations that make sense when you "know" what libc does, but
-> may not make sense in the limited library model of a kernel.
->
-> So without it, gcc will do things like converting a 'printf()' call
-> without any conversion characters to a much cheaper 'puts()' etc. Now,
-> we often avoid that issue entirely by having our own function names
-> (ie printk()), but we do tend to use the *really* core C library
-> names.
->
-> Anyway, it turns out that some of the things you miss out on with
-> -ffreestanding are kind of important. In particular, at least gcc will
-> stop some 'memcpy()' optimizations too, which ends up being pretty
-> horrendous.
->
-> So while -ffreestanding would be the right thing to do in theory, in
-> practice it's actually pretty horrible. It's a big hammer that affects
-> a lot of things, and while many of them make sense for a kernel, some
-> of them are really bad. Which is why x86-64 no longer uses it.
+Hi Helen,
 
-I agree.
+I tried the steps as mentioned by you but looks like something is 
+missing and build itself is failing.
 
->
-> I would actually suggest other architectures take a look if they care
-> at all about code generation. In particular, look at the x86-64
-> version of 'string.h' in
->
->   arch/x86/include/asm/string_64.h
->
-> and note the difference with the 32-bit one. The 32-bit one is the
-> "this is how we used to do it" that nobody cared enough to change. The
-> 64-bit one is much simpler and actually generates better code simply
-> because gcc recognizes memcpy() and friends, and will then inline it
-> when small etc.
->
-> The *downside* is that now you have to trust the compiler to do the
-> right thing. And that will depend on compiler version etc. There's a
-> reason why 32-bit x86 does everything by hand: when your compiler
-> history starts at gcc-1.40, things are simply *very* different from
-> when you now rely on gcc-5.1 and newer...
->
-> Put another way: gcc has changed, and what used to make sense probably
-> doesn't make sense any more.
+https://gitlab.freedesktop.org/ArvindYadav/drm-next/-/commits/smu_workload
 
-Yep, I think it's time to review the use of -ffreestanding in the linux ker=
-nel.
---=20
-Thanks,
-~Nick Desaulniers
+Regards,
+~Arvind
+
+> Thank you!
+> Helen
+>
+>> v2:
+>> - Splitting workload_profile_set and workload_profile_put
+>>    into two separate patches.
+>> - Addressed review comment.
+>> - Added new suspend function.
+>> - Added patch to switches the GPU workload mode for KFD.
+>>
+>> v3:
+>> - Addressed all review comment.
+>> - Changed the function name from *_set() to *_get().
+>> - Now clearing all the profile in work handler.
+>> - Added *_clear_all function to clear all the power profile.
+>>
+>>
+>> Arvind Yadav (7):
+>>    drm/amdgpu: Added init/fini functions for workload
+>>    drm/amdgpu: Add new function to set GPU power profile
+>>    drm/amdgpu: Add new function to put GPU power profile
+>>    drm/amdgpu: Add suspend function to clear the GPU power profile.
+>>    drm/amdgpu: Set/Reset GPU workload profile
+>>    drm/amdgpu: switch workload context to/from compute
+>>    Revert "drm/amd/amdgpu: switch on/off vcn power profile mode"
+>>
+>>   drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +-
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   3 +
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c    |   8 +-
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   6 +
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_job.c       |   5 +
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c       |  14 +-
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 226 ++++++++++++++++++
+>>   drivers/gpu/drm/amd/include/amdgpu_workload.h |  61 +++++
+>>   8 files changed, 309 insertions(+), 16 deletions(-)
+>>   create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+>>   create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
+>>
+>> -- 
+>> 2.34.1
+>>
