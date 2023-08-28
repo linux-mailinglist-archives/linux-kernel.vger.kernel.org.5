@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5D678B895
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2DD78B897
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbjH1Tlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 15:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
+        id S233450AbjH1Tlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 15:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233087AbjH1TlZ (ORCPT
+        with ESMTP id S233132AbjH1Tlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 15:41:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123D6BD;
-        Mon, 28 Aug 2023 12:41:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BA58646DC;
-        Mon, 28 Aug 2023 19:41:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71876C433C8;
-        Mon, 28 Aug 2023 19:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693251682;
-        bh=5fcdEJYr0tuaLwmg8LrJDpk5WjyT7tChNwaLtJl0EjA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oUGKFwThSSgaRGElIYnOuDUUMA5z60TZfL+K6nMPId0ngzpt1zVG8M54zAjS2boe7
-         6/aZbfm1q5E1Ln++O8oVSIcnLE/UQJuyQIAJH8cdKpFdtWze+Wvj0Eu3IeHYGMc1Fz
-         WNO9MMS+4YV6h2ectkU42s4rzr/h9/kzmwGPTQtN6Q9/UpGgufcm+fWtcSz1k31mc3
-         xWEAk6SeLpB6mkyV3RLgu/4WglWGwUVyDD9El+sA1vZHx8LpuyUDlBxtFZBTHBRBbc
-         nSe1h82YfUw+/KNnfsvnMJPTHD2qWxKP2KIeQ85cM7quvobqHliltSgrKlIa5HnX7D
-         O9gl4IrXh/Owg==
-Date:   Mon, 28 Aug 2023 20:41:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com, workflows@vger.kernel.org,
-        tools@linux.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
-Message-ID: <ZOz4XtX3DFRQpvQY@finisterre.sirena.org.uk>
-References: <cover.1693037031.git.quic_gurus@quicinc.com>
- <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
- <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
- <20230828175629.GC23466@quicinc.com>
- <78aa33f9-ead8-b128-2a7a-40530a1a3ed0@linaro.org>
+        Mon, 28 Aug 2023 15:41:36 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE65123
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:41:33 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fef34c33d6so34357235e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693251692; x=1693856492;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VVVU3xEelEp+/RsI5JfEyIwW02b+82orcIdT+6JDihk=;
+        b=PhIZ5bfCavvRSNfXrDZHhkG2X9Aoao/IijcU4P3RlcRAK8puuwllH0En7keHO2nAma
+         LgR5mIgJ/Dz771ARHbjHnVWEhpC7RrIX4BgFLBXygT4ilqUMLfe1BZ0A48yEyP8zXUx+
+         3qsXQTDClUVVPz78w3FqK0sa5njERp0CDdfph4ET+7a9/tF1zk00IFvVpi1O/2NC1Bm2
+         qFgNAmQJJtpf/rU684NyVTVYyrKPXIz/aJVpfBwZclYa/dOzDXHVAY2+jKh1RlM9rcyd
+         WgQkvhz9PCb68bNWAYtwn8Zr3RYkY7RpWlNP2AnpDvGiYHBFy2mMnki6V2e9T2pDcpNm
+         BC5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693251692; x=1693856492;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VVVU3xEelEp+/RsI5JfEyIwW02b+82orcIdT+6JDihk=;
+        b=Gj4XcN8lTWjE80eQRBNkqUyJv8RW5i2F44QUAlB0ojicxJ7xaV+c4luKppxO7qAtNi
+         0FjgoeTfjUb7HcsdLMY4pMm3XHjBV3x6NPY0tUC08GgNoOx6h/KaSBBsT3msP/7g7OQJ
+         NO1BilsRBc7LDJoF/5fWu/FuJnsPGt/o2l6qVeljO5us1miOQhJMI7xrtv3siQGmaecA
+         J+vEbLdi5UugYdThdtOrli8AEZ22UvNdN+dQ/0ntY1pkNe49Z9ZHdYnkFAz+WhVKaPsk
+         vVx2k9MTpgAlC2NsC1NSh7FVBNAj9T/wtZoKOhaiMVYuu53/dM5oXf/JQMp18gYVQEmI
+         +PPA==
+X-Gm-Message-State: AOJu0YxRHZ+xdh0y+yfxVo50AmRI0/KQEwcDQkaiE+KKtOlZ8BJj7McV
+        Hwg8DZ2mfkvYpNS8UdRLvA8y1w==
+X-Google-Smtp-Source: AGHT+IElK01TSrLEb2DvEcfcFpvHpE6ke2T6VhR4gTKJwH7eSku8DjCZsRumovR5fTbe5Gk9RRmvww==
+X-Received: by 2002:adf:e802:0:b0:317:e68d:f862 with SMTP id o2-20020adfe802000000b00317e68df862mr20872947wrm.37.1693251692242;
+        Mon, 28 Aug 2023 12:41:32 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id n8-20020a5d6608000000b0031c5b380291sm11364474wru.110.2023.08.28.12.41.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 12:41:31 -0700 (PDT)
+Message-ID: <ddc36a54-1ac9-b7e9-bad4-04a93ee493fd@linaro.org>
+Date:   Mon, 28 Aug 2023 20:41:30 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hRZyai99SdOpZcQJ"
-Content-Disposition: inline
-In-Reply-To: <78aa33f9-ead8-b128-2a7a-40530a1a3ed0@linaro.org>
-X-Cookie: Give him an evasive answer.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v3 07/15] media: qcom: camss: Capture VFE CSID dependency
+ in a helper function
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
+ <20230823104444.1954663-8-bryan.odonoghue@linaro.org>
+ <20230828184716.GM14596@pendragon.ideasonboard.com>
+ <9fb41649-b4fb-d652-3207-7c8ff8b32f24@linaro.org>
+ <20230828194010.GF17083@pendragon.ideasonboard.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230828194010.GF17083@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,39 +83,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 28/08/2023 20:40, Laurent Pinchart wrote:
+> On Mon, Aug 28, 2023 at 08:37:44PM +0100, Bryan O'Donoghue wrote:
+>> On 28/08/2023 19:47, Laurent Pinchart wrote:
+>>> Hi Bryan,
+>>>
+>>> Thank you for the patch.
+>>>
+>>> On Wed, Aug 23, 2023 at 11:44:36AM +0100, Bryan O'Donoghue wrote:
+>>>>   From sdm845 onwards we need to ensure the VFE is powered on prior to
+>>>> switching on the CSID.
+>>>
+>>> Based on the discussions with Konrad in the mail thread, I would record
+>>> here the reason for this requirement.
+>>>
+>>> What happens if you unconditionally power up the VFE prior to switching
+>>> the CSID on ? Will this break something on platforms older than SDM845 ?
+>>
+>> vfe->power_count will bump and you will be fine.
+> 
+> Then maybe that would be a simpler solution than having a
+> device-specific power sequence ?
+> 
 
---hRZyai99SdOpZcQJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A fair point.
 
-On Mon, Aug 28, 2023 at 07:59:54PM +0200, Krzysztof Kozlowski wrote:
-> On 28/08/2023 19:56, Guru Das Srinagesh wrote:
+Worth a try.
 
-> > Your function adds mailing lists also in "To:" which is not ideal, in my view.
-> > You've mentioned before that To or Cc doesn't matter [1] which I disagree
-> > with: it doesn't matter, why does Cc exist as a concept at all?
-
-> To/Cc does not matter when sending new patch, because maintainers know
-> they are maintainers of which parts. I know what I handle.
-
-That might be true for you (and also is for me) but I know there are
-people who pay attention to if they're in the To: for various reasons, I
-gather it's mostly about triaging their emails and is especially likely
-in cases where trees have overlaps in the code they cover.
-
---hRZyai99SdOpZcQJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTs+F0ACgkQJNaLcl1U
-h9CeTQf/e9/5RbNg+te42f6gn239bsr10S3eOcOyxTwWayhAg4zAexwks3p016ip
-ZnpfeGr64L9nun8+geqVq6KRC51zTmJPuFST7WbKFxSmYlpH8U8ZtQsC7DCWadLC
-5TfZCHGWyTKvAyrG8q02Z2Pv6kb9Pc19v/1SIfLc/LHBN7s3DIp575SmtCGvT2pe
-uaH3Gor59lyaohr6CPGAhywhJG99zsROT0HXAnPnzmGL2h4hfGOvh4cbrGjfy/Z9
-2Kst0IWghvAAT8AETR9ZNAhSIssP89fa/O7p6uo6TvXQN3YcMDg8iqaYdi03gu6w
-gqn0TzRZXrL/jOLMYvHKGg0uDIfCnQ==
-=8k7s
------END PGP SIGNATURE-----
-
---hRZyai99SdOpZcQJ--
+---
+bod
