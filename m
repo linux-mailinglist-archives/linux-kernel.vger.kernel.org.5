@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CB678ADB4
+	by mail.lfdr.de (Postfix) with ESMTP id 06C5478ADB2
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 12:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbjH1KuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 06:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44182 "EHLO
+        id S232180AbjH1KuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 06:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231972AbjH1Ktd (ORCPT
+        with ESMTP id S232066AbjH1Kte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:49:33 -0400
-Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A4D119
+        Mon, 28 Aug 2023 06:49:34 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB52D131
         for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:49:12 -0700 (PDT)
-Received: by mail-ej1-x64a.google.com with SMTP id a640c23a62f3a-94a355c9028so230133166b.3
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-594e8207103so27372917b3.2
         for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 03:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693219744; x=1693824544;
+        d=google.com; s=20221208; t=1693219747; x=1693824547;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pDP42zhivXOqcs6bhwO68yvQPwPyC5hRmGTeBYgZbjo=;
-        b=7V18r85iP6wYbDoB1Q2CxxH0UUwhkNHMc2j+CCaD4bNBnGp3Upadsvuh6Gin4Ft9b+
-         fxS1b8qCXpGTZKY5L7jD1GmZtORRAJvp7jnsgIGYKmSM0Gq88hmWzLdOGOMujD7umUjz
-         AZZEKUdn5EAMSJBlDg9fqIuSF34asIai6XpTpwKWnBbYNjswJD+5hsw/oIP9T+2V90mb
-         +D6p0YLVxp7QeIWUWIckbRYAEgjZCMPEtceRVo1reEYt6OfY/EqTJUkDRcdgaFTTq1o+
-         hnAGxlBJk+Or3zqDRxBqcE9PKSiv21q/uhAvZGh6S8hW3ayWBxyfWgZ9vZMV0ISyxkPn
-         jXIQ==
+        bh=AaqyLPzL5DfmrhwAzqi3/i2YCtejTjC09pg/QV+14WA=;
+        b=U4MaVzwkZosewmXyZ3UYIlthrKUrCJUozk7U43qdxMkort93XeYnkkKoRVl7isRISs
+         LEg67ep1ZhF52aC6Jj9g96aQ1zPkqyMA8j5ZjsTB/it64/5A3/1Z8r2mJL95yaDxx7e1
+         cv79JGhr+eXXgX24qbAtiKGAdI5c5g06Ny61nUirdbDy7mWOyxQZwrJJdMw+3a81MfoZ
+         SqMrrqZReqLdzF4q2nLWR+PQo5WD9dDfiPur5zgu91Lzns0GIB6GBkBZABNowPHZ/qVc
+         a1HuKvP0BNfd0/uEz/hiWOzljI2BXTEIEY+K/yMTPNdDmzE2W0e6Zc3xLFG1qglDxN20
+         aG3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693219744; x=1693824544;
+        d=1e100.net; s=20221208; t=1693219747; x=1693824547;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pDP42zhivXOqcs6bhwO68yvQPwPyC5hRmGTeBYgZbjo=;
-        b=T7BQly02OiVQ8XojkkBW2ruM3CWcKSiGA6v3uG1YFBunLCWDnZ6R/4GaXnL+lPM5ls
-         Q+tVDCrBw9y8C2P2B6jmudl6b6lh8KquFZmgkc8G0Jzz9+seFs15f/1GfBUJU5lGApZJ
-         0T/DoBww8rbNpwKv5XtNkE5fjK37FqSSMmKY3JUV2fCuTjui+THwbjkiufrP1jU3B8MB
-         SLppUNHfnMGdbRzp59jptnqbWsMQYng5+IenQwTFv5OSmA1xjH90eFQQu9mMAAnUIxR6
-         29qT+RYq6mBdDoO0+gK0l8BoleuneBEyemaltgosU8aR1Of1nBP/kKZXqOBUnN1WuMKF
-         0ruw==
-X-Gm-Message-State: AOJu0YwI5qSBRPqglgKqsARhe5FF4u9VP6z0Piw9W1G6qeEzKjbClXkg
-        tvyDqV+QK7My7DT2uAIW6BYU8k+m3/RnQ3g=
-X-Google-Smtp-Source: AGHT+IEdOjPh0Uew8IdWm/tyy/0oO+3TUd+SIs77H1knmFnd3hNZemCnPFGJq1OlHiFl5RLAX9VYSyKw8p7K1Ew=
+        bh=AaqyLPzL5DfmrhwAzqi3/i2YCtejTjC09pg/QV+14WA=;
+        b=Pgc86QbVaUhu8SOB/VPv80idTKV3d7VZTdFM8VMCN0g3eJ8I2qACZIVkmGGjRvdlYx
+         /pA1ADQd3oeEI+2h2znhwRMky43gEqlt4MMiC4f8mkB0MkO/G46zRJSEl9FO/Zhh2UY+
+         HXJglegGtVnVQB9d/kAlWb6mtIQt2ZRtbDhDDIYCX2ygbl8k6jdn9cAEMC0ZAdIUQ8Il
+         VTiNAJ96uAxAQaVa8jHaNaSd+mNfHMcL3TOOLqlfFuVWYAPPfC+n7yk4F+/XYoW0nKXK
+         hfXZWTQ4jc8gcTro4cWlZ72M3L2Mpcvru/liyzzqEgz+vem9MjFN2dIp9h+FVYTl36+o
+         eN6g==
+X-Gm-Message-State: AOJu0YwOxgXwkxtSmsPtipAYkEh2W7avj+sizYEzO31fD/HDDOBy8P7L
+        sdIgM/PNzX3hPIneLlN1edPn7UhE+JMgkEY=
+X-Google-Smtp-Source: AGHT+IGCZXrcEJml/uFdu2lKN+b3E5c2vxmWIO3DGJceLMsq469NqNCWUWJz9ys0whWTlSmJ/Ji6FpUUxRoqt7M=
 X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a17:907:3546:b0:9a1:c474:8e5f with SMTP
- id aa6-20020a170907354600b009a1c4748e5fmr352725ejc.8.1693219744499; Mon, 28
- Aug 2023 03:49:04 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 10:48:01 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a81:ac08:0:b0:583:9ace:cf41 with SMTP id
+ k8-20020a81ac08000000b005839acecf41mr759201ywh.0.1693219746901; Mon, 28 Aug
+ 2023 03:49:06 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 10:48:02 +0000
 In-Reply-To: <20230828104807.1581592-1-aliceryhl@google.com>
 Mime-Version: 1.0
 References: <20230828104807.1581592-1-aliceryhl@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230828104807.1581592-2-aliceryhl@google.com>
-Subject: [PATCH v4 1/7] rust: sync: add `Arc::{from_raw, into_raw}`
+Message-ID: <20230828104807.1581592-3-aliceryhl@google.com>
+Subject: [PATCH v4 2/7] rust: workqueue: add low-level workqueue bindings
 From:   Alice Ryhl <aliceryhl@google.com>
 To:     rust-for-linux@vger.kernel.org, Tejun Heo <tj@kernel.org>,
         Miguel Ojeda <ojeda@kernel.org>
@@ -64,9 +64,8 @@ Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
         Benno Lossin <benno.lossin@proton.me>,
         Alice Ryhl <aliceryhl@google.com>,
         linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
         Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>
+        Andreas Hindborg <nmi@metaspace.dk>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -78,115 +77,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wedson Almeida Filho <walmeida@microsoft.com>
+Define basic low-level bindings to a kernel workqueue. The API defined
+here can only be used unsafely. Later commits will provide safe
+wrappers.
 
-These methods can be used to turn an `Arc` into a raw pointer and back,
-in a way that preserves the metadata for fat pointers.
-
-This is done using the unstable ptr_metadata feature [1]. However, it
-could also be done using the unstable pointer_byte_offsets feature [2],
-which is likely to have a shorter path to stabilization than
-ptr_metadata.
-
-Link: https://github.com/rust-lang/rust/issues/81513 [1]
-Link: https://github.com/rust-lang/rust/issues/96283 [2]
-Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
-Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+Co-developed-by: Gary Guo <gary@garyguo.net>
+Signed-off-by: Gary Guo <gary@garyguo.net>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-Reviewed-by: Gary Guo <gary@garyguo.net>
 Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Reviewed-by: Andreas Hindborg (Samsung) <nmi@metaspace.dk>
 Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-Reviewed-by: Andreas Hindborg <a.hindborg@samsung.com>
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 ---
 v3 -> v4:
- * Update doc comment for `Arc::from_raw`.
- * Add Reviewed-by for Martin, Benno, and Andreas.
+ * Update safety comment for Send and Sync impls.
+ * Add Reviewed-by for Boqun.
 
- rust/kernel/lib.rs      |  1 +
- rust/kernel/sync/arc.rs | 46 +++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 45 insertions(+), 2 deletions(-)
+ rust/bindings/bindings_helper.h |   1 +
+ rust/kernel/lib.rs              |   1 +
+ rust/kernel/workqueue.rs        | 109 ++++++++++++++++++++++++++++++++
+ 3 files changed, 111 insertions(+)
+ create mode 100644 rust/kernel/workqueue.rs
 
+diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
+index 058954961bfc..ca8ac8d8decb 100644
+--- a/rust/bindings/bindings_helper.h
++++ b/rust/bindings/bindings_helper.h
+@@ -11,6 +11,7 @@
+ #include <linux/refcount.h>
+ #include <linux/wait.h>
+ #include <linux/sched.h>
++#include <linux/workqueue.h>
+ 
+ /* `bindgen` gets confused at certain things. */
+ const size_t BINDINGS_ARCH_SLAB_MINALIGN = ARCH_SLAB_MINALIGN;
 diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index d59041ff5ff2..abeef423d3a8 100644
+index abeef423d3a8..b56aaea3de7a 100644
 --- a/rust/kernel/lib.rs
 +++ b/rust/kernel/lib.rs
-@@ -16,6 +16,7 @@
- #![feature(coerce_unsized)]
- #![feature(dispatch_from_dyn)]
- #![feature(new_uninit)]
-+#![feature(ptr_metadata)]
- #![feature(receiver_trait)]
- #![feature(unsize)]
+@@ -44,6 +44,7 @@
+ pub mod sync;
+ pub mod task;
+ pub mod types;
++pub mod workqueue;
  
-diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
-index 172f563976a9..cae2ff44920b 100644
---- a/rust/kernel/sync/arc.rs
-+++ b/rust/kernel/sync/arc.rs
-@@ -24,13 +24,13 @@
- };
- use alloc::boxed::Box;
- use core::{
--    alloc::AllocError,
-+    alloc::{AllocError, Layout},
-     fmt,
-     marker::{PhantomData, Unsize},
-     mem::{ManuallyDrop, MaybeUninit},
-     ops::{Deref, DerefMut},
-     pin::Pin,
--    ptr::NonNull,
-+    ptr::{NonNull, Pointee},
- };
- use macros::pin_data;
- 
-@@ -212,6 +212,48 @@ unsafe fn from_inner(inner: NonNull<ArcInner<T>>) -> Self {
-         }
-     }
- 
-+    /// Convert the [`Arc`] into a raw pointer.
-+    ///
-+    /// The raw pointer has ownership of the refcount that this Arc object owned.
-+    pub fn into_raw(self) -> *const T {
-+        let ptr = self.ptr.as_ptr();
-+        core::mem::forget(self);
-+        // SAFETY: The pointer is valid.
-+        unsafe { core::ptr::addr_of!((*ptr).data) }
-+    }
+ #[doc(hidden)]
+ pub use bindings;
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+new file mode 100644
+index 000000000000..19e5c50127af
+--- /dev/null
++++ b/rust/kernel/workqueue.rs
+@@ -0,0 +1,109 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+    /// Recreates an [`Arc`] instance previously deconstructed via [`Arc::into_raw`].
++//! Work queues.
++//!
++//! C header: [`include/linux/workqueue.h`](../../../../include/linux/workqueue.h)
++
++use crate::{bindings, types::Opaque};
++
++/// A kernel work queue.
++///
++/// Wraps the kernel's C `struct workqueue_struct`.
++///
++/// It allows work items to be queued to run on thread pools managed by the kernel. Several are
++/// always available, for example, `system`, `system_highpri`, `system_long`, etc.
++#[repr(transparent)]
++pub struct Queue(Opaque<bindings::workqueue_struct>);
++
++// SAFETY: Accesses to workqueues used by [`Queue`] are thread-safe.
++unsafe impl Send for Queue {}
++// SAFETY: Accesses to workqueues used by [`Queue`] are thread-safe.
++unsafe impl Sync for Queue {}
++
++impl Queue {
++    /// Use the provided `struct workqueue_struct` with Rust.
 +    ///
 +    /// # Safety
 +    ///
-+    /// `ptr` must have been returned by a previous call to [`Arc::into_raw`]. Additionally, it
-+    /// must not be called more than once for each previous call to [`Arc::into_raw`].
-+    pub unsafe fn from_raw(ptr: *const T) -> Self {
-+        let refcount_layout = Layout::new::<bindings::refcount_t>();
-+        // SAFETY: The caller guarantees that the pointer is valid.
-+        let val_layout = Layout::for_value(unsafe { &*ptr });
-+        // SAFETY: We're computing the layout of a real struct that existed when compiling this
-+        // binary, so its layout is not so large that it can trigger arithmetic overflow.
-+        let val_offset = unsafe { refcount_layout.extend(val_layout).unwrap_unchecked().1 };
-+
-+        let metadata: <T as Pointee>::Metadata = core::ptr::metadata(ptr);
-+        // SAFETY: The metadata of `T` and `ArcInner<T>` is the same because `ArcInner` is a struct
-+        // with `T` as its last field.
-+        //
-+        // This is documented at:
-+        // <https://doc.rust-lang.org/std/ptr/trait.Pointee.html>.
-+        let metadata: <ArcInner<T> as Pointee>::Metadata =
-+            unsafe { core::mem::transmute_copy(&metadata) };
-+        // SAFETY: The pointer is in-bounds of an allocation both before and after offsetting the
-+        // pointer, since it originates from a previous call to `Arc::into_raw` and is still valid.
-+        let ptr = unsafe { (ptr as *mut u8).sub(val_offset) as *mut () };
-+        let ptr = core::ptr::from_raw_parts_mut(ptr, metadata);
-+
-+        // SAFETY: By the safety requirements we know that `ptr` came from `Arc::into_raw`, so the
-+        // reference count held then will be owned by the new `Arc` object.
-+        unsafe { Self::from_inner(NonNull::new_unchecked(ptr)) }
++    /// The caller must ensure that the provided raw pointer is not dangling, that it points at a
++    /// valid workqueue, and that it remains valid until the end of 'a.
++    pub unsafe fn from_raw<'a>(ptr: *const bindings::workqueue_struct) -> &'a Queue {
++        // SAFETY: The `Queue` type is `#[repr(transparent)]`, so the pointer cast is valid. The
++        // caller promises that the pointer is not dangling.
++        unsafe { &*(ptr as *const Queue) }
 +    }
 +
-     /// Returns an [`ArcBorrow`] from the given [`Arc`].
-     ///
-     /// This is useful when the argument of a function call is an [`ArcBorrow`] (e.g., in a method
++    /// Enqueues a work item.
++    ///
++    /// This may fail if the work item is already enqueued in a workqueue.
++    ///
++    /// The work item will be submitted using `WORK_CPU_UNBOUND`.
++    pub fn enqueue<W, const ID: u64>(&self, w: W) -> W::EnqueueOutput
++    where
++        W: RawWorkItem<ID> + Send + 'static,
++    {
++        let queue_ptr = self.0.get();
++
++        // SAFETY: We only return `false` if the `work_struct` is already in a workqueue. The other
++        // `__enqueue` requirements are not relevant since `W` is `Send` and static.
++        //
++        // The call to `bindings::queue_work_on` will dereference the provided raw pointer, which
++        // is ok because `__enqueue` guarantees that the pointer is valid for the duration of this
++        // closure.
++        //
++        // Furthermore, if the C workqueue code accesses the pointer after this call to
++        // `__enqueue`, then the work item was successfully enqueued, and `bindings::queue_work_on`
++        // will have returned true. In this case, `__enqueue` promises that the raw pointer will
++        // stay valid until we call the function pointer in the `work_struct`, so the access is ok.
++        unsafe {
++            w.__enqueue(move |work_ptr| {
++                bindings::queue_work_on(bindings::WORK_CPU_UNBOUND as _, queue_ptr, work_ptr)
++            })
++        }
++    }
++}
++
++/// A raw work item.
++///
++/// This is the low-level trait that is designed for being as general as possible.
++///
++/// The `ID` parameter to this trait exists so that a single type can provide multiple
++/// implementations of this trait. For example, if a struct has multiple `work_struct` fields, then
++/// you will implement this trait once for each field, using a different id for each field. The
++/// actual value of the id is not important as long as you use different ids for different fields
++/// of the same struct. (Fields of different structs need not use different ids.)
++///
++/// Note that the id is used only to select the right method to call during compilation. It wont be
++/// part of the final executable.
++///
++/// # Safety
++///
++/// Implementers must ensure that any pointers passed to a `queue_work_on` closure by `__enqueue`
++/// remain valid for the duration specified in the guarantees section of the documentation for
++/// `__enqueue`.
++pub unsafe trait RawWorkItem<const ID: u64> {
++    /// The return type of [`Queue::enqueue`].
++    type EnqueueOutput;
++
++    /// Enqueues this work item on a queue using the provided `queue_work_on` method.
++    ///
++    /// # Guarantees
++    ///
++    /// If this method calls the provided closure, then the raw pointer is guaranteed to point at a
++    /// valid `work_struct` for the duration of the call to the closure. If the closure returns
++    /// true, then it is further guaranteed that the pointer remains valid until someone calls the
++    /// function pointer stored in the `work_struct`.
++    ///
++    /// # Safety
++    ///
++    /// The provided closure may only return `false` if the `work_struct` is already in a workqueue.
++    ///
++    /// If the work item type is annotated with any lifetimes, then you must not call the function
++    /// pointer after any such lifetime expires. (Never calling the function pointer is okay.)
++    ///
++    /// If the work item type is not [`Send`], then the function pointer must be called on the same
++    /// thread as the call to `__enqueue`.
++    unsafe fn __enqueue<F>(self, queue_work_on: F) -> Self::EnqueueOutput
++    where
++        F: FnOnce(*mut bindings::work_struct) -> bool;
++}
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
