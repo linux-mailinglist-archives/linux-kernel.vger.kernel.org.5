@@ -2,164 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C98FC78B163
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405CD78B16B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjH1NLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
+        id S231345AbjH1NN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231469AbjH1NLP (ORCPT
+        with ESMTP id S231128AbjH1NNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:11:15 -0400
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2041.outbound.protection.outlook.com [40.107.12.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3569DCC;
-        Mon, 28 Aug 2023 06:11:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FT4sZzjRBvKGFXQA4kgyjAm+sJFkRMZDMK55Q2WubNandgsf+gx9gsfy1Sj2MLQpT6V2R2mUTVM0agOYZjox1hR2/c0wMc2vGgDZXWLT/SK3LPlJ6NHlsq14JRhtLkSBCZLc07Zj1+cFy/Rse9IYPHCaSGeVIKDFF88qbzj1kHUhicCtgIZBclxd+3AjsKwtMtLF6+R9bzmQTZvPNx0lDUS0/z7XdNhMgN99+HZ/Ruhmotnpngtgv4Hjr7ruGAWh6oM/85qm85EkTyfkxyEOA10Zhxtrr644lwE9/wCtqMWQckYx2X8P5dq15frpdVsnGaEcaNiEPiUwKln/ZLCg0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2VGxcsPpia5NjVBwPr+CCpayVMaOyie4qd0elD3Sl+M=;
- b=K8Xug6YUNcVmNao+9I0r2hzWkicDDRsTGe4ZukuU/pKet6/Efm9F1fg6Z6T4Kmf1RYEHQyFwIgXKF8iV12scRKJGjVjzlVZ403/dh0S4x8P4SfZMEiw77k9tsK+MzJRX2KS+TNLpboaXfdF1YajFZfvciR6ORXsY7HGTrX/aRN0EXElDAkKTDsMNw92dGyJFdWDKAN5ybkHpyVkGMRXyOOFtbs+5tghIgcHwWxXSo5+vOnI1mAT6NDj50uuCx1QzS8dzLU8uHmfHulYHgBeGsHxb4kwjLN+sSSe8HfeudOLVPMu20h6ZOHxoJS2q7v2OTAgl+C0UyGn/P6JOXjPcww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2VGxcsPpia5NjVBwPr+CCpayVMaOyie4qd0elD3Sl+M=;
- b=bB3dW8cfuOpnvL6b1ttIBOT9/zwyqryN7vUsiGtDFZVMJC3RUpk+golWRLQgF4nLdxGdopeWWRJKi8NW/BaQsC9xwYTq4V4dIXYHj2SUpJ5dbvPVtiRzGI4h5KmijKnQw64iDsTewGcIgZoli3PnBMnYH/tMgC15YFyzBl8lkwGwgD5msrakzfP8Px1l/D99vaeNNCPTF5xImMV3ZFu5+6g4LMIK+b6BwayCeDUT0ADdjqaxb8C8QNH5xj8G1uvD3TQqO92atryn4J9FXG46E+84GTn6u6zRBZoCPluzPzowwAPPKsXrbD7upiBD3KU+p6PKUKcJSbXmfVXVakQJrw==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB2285.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:15::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
- 2023 13:11:09 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
- 13:11:09 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Alexandra Diupina <adiupina@astralinux.ru>,
-        Zhao Qiang <qiang.zhao@nxp.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mon, 28 Aug 2023 09:13:17 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE62011C;
+        Mon, 28 Aug 2023 06:13:10 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so4900437e87.1;
+        Mon, 28 Aug 2023 06:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693228389; x=1693833189;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vPcs0sktiib0CVnQrsGDXOLxOsYaOoyJrgrvneL+iRI=;
+        b=EEnmV2sMju/dqKLAuQnHnueTheowYjzwfKRXRixXky7c7ImDccINdT0pTl+/2ge+j+
+         W1pQXboC6Ty5KaPQZKmUab5cR3/E3SPwFn9K5eeYl/qmeBKaQa0ZNEv0Ddn8XiMFJqQu
+         qD/Z4VBRm4rRaM4vVz88+OFysYVXVgVRKBzET7RGwE1kO4apkcxPBMqGD+JJw6ak5oyb
+         cbRNV3fTTE0nex1r7M5S7x16TkQYwiy8j7DXsPDziOQbK2rK4EsaWc8IHmA34JmackPg
+         2L1uMD91hM5K9qVgvueZ9hdPljPNiLj8bD9B18OaT2HrcTATN4QQajG50QkT5f9Qkpyl
+         2zCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693228389; x=1693833189;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vPcs0sktiib0CVnQrsGDXOLxOsYaOoyJrgrvneL+iRI=;
+        b=Mjod15cTPj1Qn7CYK650wj/1lKdh4L5AFMfFoirHxojvpFdWRf2aU4wZR5FIOxUik5
+         BPBTDpQk6kzD2XF6iqA4dG8ImHn4WRmfUmTIY8AzfAwOUe1h9BIQ7gCKy2Ub6WqoeqGH
+         QccvEvTiFSXseLREnERCge0sla7ho5ypdIvOcyFmgNB1hLNEooD8dSFHfOV7IrWjIUiF
+         P2UnDSFqLQgTeOjG7tkpUDTnIj3azlO6gtMUj3dErMjxhsV3PMBfnYy9JRxpulNsH5Gl
+         LD0N0nc0vSfd+az+7yGUCKttb58cmt7MYUTZ+oVoO1ANSrD5s14nPg6Ock2WCwXRCgk3
+         fr7g==
+X-Gm-Message-State: AOJu0YzGCYtev2oWLfmsXTmpI5mnivOoH00thKc3rwlqRRC2lKtGRV3P
+        MDdEewkCV8sUkbB8mNwB74s=
+X-Google-Smtp-Source: AGHT+IEm2nDKmysz9bZqzY/IjgJcyF6bL+NRMaFzEewPti0bqJYqOQn+cfpgmS2KGCGOxCmnPQWspQ==
+X-Received: by 2002:a2e:99c4:0:b0:2bc:e856:6208 with SMTP id l4-20020a2e99c4000000b002bce8566208mr8664753ljj.33.1693228388708;
+        Mon, 28 Aug 2023 06:13:08 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id n23-20020a2e86d7000000b002b9e5fe86dasm1727253ljj.81.2023.08.28.06.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 06:13:08 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 16:13:00 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
-Subject: Re: [PATCH v3] fsl_ucc_hdlc: process the result of hold_open()
-Thread-Topic: [PATCH v3] fsl_ucc_hdlc: process the result of hold_open()
-Thread-Index: AQHZ2akfvQKTS9zpY02py7itxLD6u6//ruaA
-Date:   Mon, 28 Aug 2023 13:11:09 +0000
-Message-ID: <50a3da63-37d3-1f44-657b-afeaf8c62741@csgroup.eu>
-References: <20230828121235.13953-1-adiupina@astralinux.ru>
-In-Reply-To: <20230828121235.13953-1-adiupina@astralinux.ru>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2285:EE_
-x-ms-office365-filtering-correlation-id: 3244e0aa-b7d1-4ca0-bb85-08dba7c83f23
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kdq01H5PcPzIGqt/i7QAACkHFn/Cg1k0kY4b7S2lysVtjnwRLVi5PioEqI+A0FmmsaAI/chiprGJ5Af8WB9iKHsUKCSvepxvfryQdV1tJoV03Ok9mUvx76lLvevI8NXAYYIkyDMD0kyLxBwRSquM+Erqq36Lo+eHSPeBDJ7isTvixSsekVJ5pJ+fyX2U5rDm6SBWHXJ9EASVDd/XiPOoWtPmhy1lARrADdNIposUByOhB/LO2IL3g7/oLUKNd2owcdm0UoZZtWRt9OCGWGBC63QajU3+uC1OWCnNH4w1WfWrrMKxac9b8634IbgT+ikDNadZHv+7ko4EZGp3xlDw2VmKNX70POSKsIrNzO9IwfW9EDmcWmIZl7hsY1jvLP0I1+p9P4Ck9jD+YGOV6AxjkIeeYCFJCSVrjd74LP6E0JA2bvujfM2SBOG7y31ZKn9lJCzljhr/Bm6881ofY0culUWVATCRdsftS5c4y2AAO3qkad4g2RYOHiEAWXwWxVEg5z3Z7mG66h1wiF4Xsj2qrL4fgtAmUb0Jwb++AQH7nFFOsajS6TkRzA+NjZy1q4NWvjqAfzJgsDblQKK/ieUUwumyyCsJkBqABPMjB66yZdYqw2JwEzYWfdvBjbNwZOeDhYD6nfiaHhGO+XqZIfB0MIZOYbfglw6m7AXwv3LHMAcLrHX28ApR6AiklufPCZIk
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(376002)(39850400004)(396003)(186009)(1800799009)(451199024)(8676002)(5660300002)(71200400001)(6486002)(478600001)(966005)(83380400001)(2616005)(26005)(316002)(6512007)(7416002)(64756008)(66446008)(54906003)(41300700001)(66946007)(44832011)(8936002)(91956017)(76116006)(110136005)(66556008)(2906002)(66476007)(4326008)(6506007)(86362001)(36756003)(31696002)(66574015)(122000001)(38100700002)(38070700005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TGwxR1lMSmMvZ1h3ZDU0MUsxbVg3dVpUb085MGZpWEU1TVFsdW5YSDdOZFl5?=
- =?utf-8?B?V2xEeGVNV3A2ZTZtSzNNNDZ6bnRQVTltakpleThDQUE1dnZuQmMybnNKbzhp?=
- =?utf-8?B?MXB5OGQ2U1lqZUUxcXk4V3U1QVA5VnpoNjZVVUxUUXFDR0djbnNjcEhBblhw?=
- =?utf-8?B?TkMwa21kVFZkeDZWZzh3c1RDZmdMOXc5Zk4vbTlwb2JlQnBqaHRQdVdtQzdF?=
- =?utf-8?B?U1BtdDhTMEwxRUtnb1hnZldybTB4ZHZyMkZ6djlNUmpIQXlNdFQxdlN2cHl1?=
- =?utf-8?B?QU9BdFJNRHNoNjZJNDhDQzlqY21kTlExcFg2Y2dVZ2puU0Y2MnUvR2owd2sy?=
- =?utf-8?B?TDMxa3ZYZlV6eUl0WHJWZkVKMzNtZmJDejVsU0FuaGUvZEdwUlpyUXBkOC9x?=
- =?utf-8?B?cmpxWFdqbGNFL0ZJWmVLU2NWeGU4RE83NEI0YXBwU2ZNUkx1RDQxVlRITUh2?=
- =?utf-8?B?bFBtOEVjcFk5dVpRR29TSFNWT2dBQXZ5cDNpd3JGbUJZYUl2L2tQbjlsNnNM?=
- =?utf-8?B?NHc5WUdWUmlNTyt2YXRRWTNaSXk4SGtUOXpiY3ZlSEZhOFZTWjJETVR6bVpv?=
- =?utf-8?B?RHUrYVEzenhVRk5PNlhpRkdUUERyM2NNOEtTL01wS3hQclNBcDNZdXlVZmt3?=
- =?utf-8?B?VXMrUEs3bjU5bE9IU3pTYS9ibG1JRUQrQkhuWnUrZjNIYmhtamdIcDQ5ZHlV?=
- =?utf-8?B?NVhmbkZsSTR2ZW5oTmZqK05abDcyL2JabDk5T1N1YW1KaElIZzhaQm0wUENV?=
- =?utf-8?B?OTJ1czl0Um5LZThaTVltM1Z5ZFZPaUwzSEQ2dW9UOVlTOWV6c0lKRUFIcnpu?=
- =?utf-8?B?Y1RwMERLaG0wTUEyR2J1TWhCWVMraUlzQlRXL3ZyeFIrMFpNL1VEbXNTUDRx?=
- =?utf-8?B?cXl5L2ZtbEtBdHl0QzZzZHhRVktIY0dBZTBMTktBak9DT3ZhYlFKcEFWWHNB?=
- =?utf-8?B?eEN3L0xZbm1pZGZLeThSWFJ5cUR1UStsMG83aHhRMlR4dkdYSUFORnR0Ky80?=
- =?utf-8?B?ZUtJVXhHenJpOFpPbW50YkJOa09hZW5hVWpqTloydmcxU1MzUlFrZjlneVVz?=
- =?utf-8?B?b2Z5NVRFQWxxWXBrU2hTVVppV2dJREY4TUFBMGFaTVlqcjNxVHFQNUFJWXlG?=
- =?utf-8?B?OGhIS1FFK0lUSkUrRXBQaWZhU01mMUVlVEJPM0ZScVFpZmpxeGRuSDJVRmtm?=
- =?utf-8?B?cWg3T0FQUUxXanlYVFRwK1RXM0JJRmt3RWxFUllZaDZidFl5RE4zTFkvNVA0?=
- =?utf-8?B?WVZPNm56QkxweUNJV3lJelpYWVd3NnVjNFFOdUtiRDAxWC9MNjh4eG5KSFRz?=
- =?utf-8?B?UWdTbnJlQlNSQzg5cVNBTTFpRmZwQUVlNVdVUFlJdU5mVUkydklhWlJ6R1Zn?=
- =?utf-8?B?cHRaVGIzSURQVHV2ZjhoNU1NQTl5d012UmNXQWtqVlFrN1BKVmgvYlpiNlhm?=
- =?utf-8?B?cWdacWMxUEJtb2EzNjFXSmhoblpuV3l5MkFHTjRubllYczFjVUdvdURjd013?=
- =?utf-8?B?b1hLanBLRDRtZVVObWFudnE0Tk1PNnBuWkJURlB6Q2g0MEUxZWpTQ2JxMkFz?=
- =?utf-8?B?R2FuMlRHMVhKQzlIV1RXQnd0Z2prNnJSVUxUTStvZnRXTmlYdnZ6MTVhaEti?=
- =?utf-8?B?NnBuMkpYVkowSUs0d3B5dDNvNzY0dnBDUWEwVUgzQm43ZWM0aGN1bGtoZno0?=
- =?utf-8?B?NjVqb3NHcGt1NHpscnVVNGIyTGJRYTY0QU5FYmJ0TENuaCtlY2VKZmFTUFlF?=
- =?utf-8?B?NUZRVHZrMWtkSXErNnNzcXZMaXhlTW1EUW1nUi9xRGpNaVVESDBxMGJRVkFz?=
- =?utf-8?B?TjI1NU1MallSRzMveTFnTExINUVWY1BMVlFWTE8vS1JlRFpmWmVUNXFGQXNU?=
- =?utf-8?B?R0lJdlFUSXYvNlVjenFQUHJjbXdIL2cwK0dqSG5WSFZXVHUwZU5LTndYMk9l?=
- =?utf-8?B?UW1GeE9rSDR3RGZpZHV6bjZjSWVQZk9sZzJZbGpnTSticXh2R2R6ZW5sejlG?=
- =?utf-8?B?L3RRWkErNXdlQVZUSFkrYlRZR3J1ZmQrRVJqcENrOGNGbGQxUStwbVNKRWlP?=
- =?utf-8?B?Nk5Ia2dHSWtqSmN6cXZKRlNpcTVVdmoyZjZlWHphWUNrUVZIeVpsdVZ6QUt4?=
- =?utf-8?B?R2FncGdGR2F3YnVvdGxTMVJDMUJ6ZkNCSWYxQVdxTVFiTkx3ekhjSFVURFpL?=
- =?utf-8?B?aFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <630EBED04E83644EA38F09068F04DE8A@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, Maxime@web.codeaurora.org,
+        Coquelin@web.codeaurora.org,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH net-next v2 2/3] dt-bindings: net: add T-HEAD dwmac
+ support
+Message-ID: <qc2nyqmuouig6qww2q7orlwzvcprjyruyeuyr5dqdpxysajjpv@6fzsgjgokry7>
+References: <20230827091710.1483-1-jszhang@kernel.org>
+ <20230827091710.1483-3-jszhang@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3244e0aa-b7d1-4ca0-bb85-08dba7c83f23
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2023 13:11:09.7130
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n7qbNLggCDCAT5EbiL2gdBLkOjNteJtPzDAYvQTn0dr7ve769S+oKe63R+Dh/lK+bZNddaTj41jjL8JKlFf5sYzCRPdH6gUIbtU7GbrpzFs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2285
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230827091710.1483-3-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDI4LzA4LzIwMjMgw6AgMTQ6MTIsIEFsZXhhbmRyYSBEaXVwaW5hIGEgw6ljcml0wqA6
-DQo+IFtWb3VzIG5lIHJlY2V2ZXogcGFzIHNvdXZlbnQgZGUgY291cnJpZXJzIGRlIGFkaXVwaW5h
-QGFzdHJhbGludXgucnUuIETDqWNvdXZyZXogcG91cnF1b2kgY2VjaSBlc3QgaW1wb3J0YW50IMOg
-IGh0dHBzOi8vYWthLm1zL0xlYXJuQWJvdXRTZW5kZXJJZGVudGlmaWNhdGlvbiBdDQo+IA0KPiBQ
-cm9jZXNzIHRoZSByZXN1bHQgb2YgaG9sZF9vcGVuKCkgYW5kIHJldHVybiBpdCBmcm9tDQo+IHVo
-ZGxjX29wZW4oKSBpbiBjYXNlIG9mIGFuIGVycm9yDQo+IEl0IGlzIG5lY2Vzc2FyeSB0byBwYXNz
-IHRoZSBlcnJvciBjb2RlIHVwIHRoZSBjb250cm9sIGZsb3csDQo+IHNpbWlsYXIgdG8gYSBwb3Nz
-aWJsZSBlcnJvciBpbiByZXF1ZXN0X2lycSgpDQo+IA0KPiBGb3VuZCBieSBMaW51eCBWZXJpZmlj
-YXRpb24gQ2VudGVyIChsaW51eHRlc3Rpbmcub3JnKSB3aXRoIFNWQUNFLg0KPiANCj4gRml4ZXM6
-IGMxOWI2ZDI0NmEzNSAoImRyaXZlcnMvbmV0OiBzdXBwb3J0IGhkbGMgZnVuY3Rpb24gZm9yIFFF
-LVVDQyIpDQo+IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRyYSBEaXVwaW5hIDxhZGl1cGluYUBhc3Ry
-YWxpbnV4LnJ1Pg0KDQpSZXZpZXdlZC1ieTogQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5s
-ZXJveUBjc2dyb3VwLmV1Pg0KDQo+IC0tLQ0KPiB2MzogRml4IHRoZSBjb21taXRzIHRyZWUNCj4g
-djI6IFJlbW92ZSB0aGUgJ3JjJyB2YXJpYWJsZSAoc3RvcmVzIHRoZSByZXR1cm4gdmFsdWUgb2Yg
-dGhlDQo+IGhkbGNfb3BlbigpKSBhcyBDaHJpc3RvcGhlIExlcm95IDxjaHJpc3RvcGhlLmxlcm95
-QGNzZ3JvdXAuZXU+IHN1Z2dlc3RlZA0KPiAgIGRyaXZlcnMvbmV0L3dhbi9mc2xfdWNjX2hkbGMu
-YyB8IDIgKy0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
-LSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93YW4vZnNsX3VjY19oZGxjLmMgYi9k
-cml2ZXJzL25ldC93YW4vZnNsX3VjY19oZGxjLmMNCj4gaW5kZXggNDdjMmFkN2EzZTQyLi40MTY0
-YWJlYTc3MjUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L3dhbi9mc2xfdWNjX2hkbGMuYw0K
-PiArKysgYi9kcml2ZXJzL25ldC93YW4vZnNsX3VjY19oZGxjLmMNCj4gQEAgLTczMSw3ICs3MzEs
-NyBAQCBzdGF0aWMgaW50IHVoZGxjX29wZW4oc3RydWN0IG5ldF9kZXZpY2UgKmRldikNCj4gICAg
-ICAgICAgICAgICAgICBuYXBpX2VuYWJsZSgmcHJpdi0+bmFwaSk7DQo+ICAgICAgICAgICAgICAg
-ICAgbmV0ZGV2X3Jlc2V0X3F1ZXVlKGRldik7DQo+ICAgICAgICAgICAgICAgICAgbmV0aWZfc3Rh
-cnRfcXVldWUoZGV2KTsNCj4gLSAgICAgICAgICAgICAgIGhkbGNfb3BlbihkZXYpOw0KPiArICAg
-ICAgICAgICAgICAgcmV0dXJuIGhkbGNfb3BlbihkZXYpOw0KPiAgICAgICAgICB9DQo+IA0KPiAg
-ICAgICAgICByZXR1cm4gMDsNCj4gLS0NCj4gMi4zMC4yDQo+IA0K
+On Sun, Aug 27, 2023 at 05:17:09PM +0800, Jisheng Zhang wrote:
+> Add documentation to describe T-HEAD dwmac.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
+>  .../devicetree/bindings/net/thead,dwmac.yaml  | 77 +++++++++++++++++++
+>  2 files changed, 78 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/thead,dwmac.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> index b196c5de2061..73821f86a609 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -96,6 +96,7 @@ properties:
+>          - snps,dwxgmac
+>          - snps,dwxgmac-2.10
+>          - starfive,jh7110-dwmac
+> +        - thead,th1520-dwmac
+>  
+>    reg:
+>      minItems: 1
+> diff --git a/Documentation/devicetree/bindings/net/thead,dwmac.yaml b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
+> new file mode 100644
+> index 000000000000..bf8ec8ca2753
+> --- /dev/null
+
+> +++ b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
+
+see further regarding using dwmac in the names here.
+
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/thead,dwmac.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+
+> +title: T-HEAD DWMAC Ethernet controller
+
+Additionally would be nice to have a brief controller "description:"
+having the next info: the SoCs the controllers can be found on, the DW
+(G)MAC IP-core version the ethernet controller is based on and some
+data about the synthesize parameters: SMA (MDIO-bus), Tx/Rx COE, DMA
+FIFOs size, perfect and hash MAC-filters size, L3L4 frame filters
+availability, VLAN hash filter, SA/VLAN-tag insertion, ARP offload
+engine, PHY interfaces (MII, RMII, RGMII, etc), EEE support, IEEE
+1588(-2008) Timestamping support, PMT and Wake-up frame support, MAC
+Management counters (MMC). In addition to that for DW QoS
+ETH/XGMAC/XLGMAC the next info would be useful: number of MTL Queues
+and DMA channels, MTL queues capabilities (QoS-related), TSO
+availability, SPO availability.
+
+Note DMA FIFO sizes can be also constrained in the properties
+"rx-fifo-depth" and "tx-fifo-depth"; perfect and hash MAC-filter sizes -
+in "snps,perfect-filter-entries" and "snps,multicast-filter-bins".
+
+> +
+> +maintainers:
+> +  - Jisheng Zhang <jszhang@kernel.org>
+> +
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+
+> +          - thead,th1520-dwmac
+
+Referring to the DW IP-core in the compatible string isn't very
+much useful especially seeing you have a generic fallback compatible.
+Name like "thead,th1520-gmac" looks more informative indicating its
+speed capability.
+
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+
+> +          - thead,th1520-dwmac
+
+ditto.
+
+-Serge(y)
+
+> +      - const: snps,dwmac-3.70a
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  thead,gmacapb:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      The phandle to the syscon node that control ethernet
+> +      interface and timing delay.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - interrupt-names
+> +  - phy-mode
+> +  - thead,gmacapb
+> +
+> +allOf:
+> +  - $ref: snps,dwmac.yaml#
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    gmac0: ethernet@e7070000 {
+> +        compatible = "thead,th1520-dwmac", "snps,dwmac-3.70a";
+> +        reg = <0xe7070000 0x2000>;
+> +        clocks = <&clk 1>, <&clk 2>;
+> +        clock-names = "stmmaceth", "pclk";
+> +        interrupts = <66>;
+> +        interrupt-names = "macirq";
+> +        phy-mode = "rgmii-id";
+> +        snps,fixed-burst;
+> +        snps,axi-config = <&stmmac_axi_setup>;
+> +        snps,pbl = <32>;
+> +        thead,gmacapb = <&gmacapb_syscon>;
+> +        phy-handle = <&phy0>;
+> +
+> +        mdio {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            compatible = "snps,dwmac-mdio";
+> +
+> +            phy0: ethernet-phy@0 {
+> +                reg = <0>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.40.1
+> 
+> 
