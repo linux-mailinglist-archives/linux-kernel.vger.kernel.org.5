@@ -2,97 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BB678A521
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B1778A52C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjH1FS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+        id S229558AbjH1FYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjH1FST (ORCPT
+        with ESMTP id S229615AbjH1FX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:18:19 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9BC10D
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:18:17 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68c0d886ea0so1772250b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:18:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693199897; x=1693804697;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nVrl0kwRfWIHx+sVHv84+qMtSVVK7pEdsXcZRB61X88=;
-        b=j42PvIU0LosJj1YuVMu4dQ+rTM19D0TWC2wtKaBRZahCKd/Ufrb5W8/qo+A+ctpynl
-         yJL74iBtB007bdz3buPdzwEMBgqkr5Sk98te2CpfOBcemXDSrXQD7DJG1d1xBLai25Xp
-         kIHOOasBM6mLPk5yQD2gNrxcdt/NjDhim5ElPBpo51ETMKYPXectayNFhWXOdjkMGBq4
-         EJQgFstw/N8b6OeoiNNiPyMADwJ76Yfugvy4TzGJmHC0tzXvpIqBY7ISKcMFV7umZGcO
-         1SppT2QfbbWtwFdrMz/NQATuiWeZjzsesC+yOwNanKcgHnI15y1wzT12uPYypWiBkXzA
-         jXyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693199897; x=1693804697;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nVrl0kwRfWIHx+sVHv84+qMtSVVK7pEdsXcZRB61X88=;
-        b=WrxotmIZe3sIsxWE43HzledRqbnTvpUdNZJuSE2CuZ1G0QtgDahy4Wjk07qCIAekrD
-         65qCgf5NOi50Qo2Pa7S4o1qn7erTC0tca6tFtIpvg9z6MPa0TIo0zW0YPFGC/eX6cw+2
-         T1bhYFQPqEfMrEudw/hIxfRIzHPmb6u3Rw8PAk+9Mftbq7+JyPIH5iXTktTMUQxyyM+5
-         AOfpVgbVw4pl1XK0s+pHrYQCTje832l6dCVPeSWWAjGA3XeR9gKrJS5GYsWRCfOeB9fx
-         yvOSg8Szms6yTIXloqNLVX6agDnHEEEHafkIN+6UVieWUBzMe93qVFhFw2LtsBrVYCPu
-         snUQ==
-X-Gm-Message-State: AOJu0YzRasR6SEylIbXubuAoMMwIUCe1YynTFq4lOEU4diSKHhR98Sz9
-        5ecb51nbrlDQ4LpZrZ1pnfs=
-X-Google-Smtp-Source: AGHT+IHJDLh6ZnUudool1Bu9OGIuqJGJVjytyiThv56LlPeCD/a1AenfCnfmYlrLuYKsz8tQpuJGrQ==
-X-Received: by 2002:a05:6a20:6d9d:b0:138:5a28:e8cc with SMTP id gl29-20020a056a206d9d00b001385a28e8ccmr21011737pzb.37.1693199896992;
-        Sun, 27 Aug 2023 22:18:16 -0700 (PDT)
-Received: from vm.. (cm218-252-211-84.hkcable.com.hk. [218.252.211.84])
-        by smtp.gmail.com with ESMTPSA id ji18-20020a170903325200b001b8a00d4f7asm6205581plb.9.2023.08.27.22.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 22:18:16 -0700 (PDT)
-From:   Yuanheng Zhang <yuanhengzhang1214@gmail.com>
-To:     mark@fasheh.com
-Cc:     jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Yuanheng Zhang <yuanhengzhang1214@gmail.com>
-Subject: [PATCH] ocfs2: correct range->len in ocfs2_trim_fs()
-Date:   Mon, 28 Aug 2023 13:17:41 +0800
-Message-Id: <20230828051741.204577-1-yuanhengzhang1214@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 28 Aug 2023 01:23:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E19113
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693200233; x=1724736233;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cO++omuLyms88qpNv3C6kcsd9qhEYo3oBToxdE5o3Ao=;
+  b=Fo8AfEDcf51ZakapQ2Tw7vuAsFW2kBs166LJrszdhcKK3PXB5p482o5r
+   20q4wt4QFk1ovTZDtSi6+51Ev4L2KHIeCn8kP4Gt2h2C4Ksx9UZYolFez
+   k/lAMufKt64NmmnrDl7dtzmEZ7iwU3fbA9B3ktBC17LiI43z+Mpu+VGoE
+   WmizXgvtr3cG2FqxCWi+Fo9CIPqDBWaVuAdvxf9I7nFELun1wF+YMaNDh
+   SbhAdMv/kHSEft7RAbDIbcwDokWhpYbwXlocENwVlWtX59qke518rMATw
+   N90WZLGZjGBtmKI9VAvq3kAEzSrVIBuNh2CnroLI80YwhfEj8S76PnId/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="377749247"
+X-IronPort-AV: E=Sophos;i="6.02,206,1688454000"; 
+   d="scan'208";a="377749247"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2023 22:23:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="828211162"
+X-IronPort-AV: E=Sophos;i="6.02,206,1688454000"; 
+   d="scan'208";a="828211162"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 Aug 2023 22:23:50 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qaUfc-0007ag-1q;
+        Mon, 28 Aug 2023 05:20:35 +0000
+Date:   Mon, 28 Aug 2023 13:19:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Oliver Crumrine <ozlinux@hotmail.com>, gregkh@linuxfoundation.org,
+        colin.i.king@gmail.com, sumitraartsy@gmail.com,
+        u.kleine-koenig@pengutronix.de, geert@linux-m68k.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Oliver Crumrine <ozlinux@hotmail.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3 6/6] staging: octeon: clean up the octeon ethernet
+ driver
+Message-ID: <202308281356.A52cXVbt-lkp@intel.com>
+References: <PH7PR11MB764329EC8CFB56ABFA7A8D77BCE1A@PH7PR11MB7643.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR11MB764329EC8CFB56ABFA7A8D77BCE1A@PH7PR11MB7643.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-global bitmap is a cluster allocator,so after we traverse
-the global bitmap and finished the fstrim,the trimmed range
-should be 'trimmed * clustersize'.otherwise,the trimmed range
-printed by 'fstrim -v' is not as expected.
+Hi Oliver,
 
-Signed-off-by: Yuanheng Zhang <yuanhengzhang1214@gmail.com>
----
- fs/ocfs2/alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
-index 51c93929a146..bced551240cf 100644
---- a/fs/ocfs2/alloc.c
-+++ b/fs/ocfs2/alloc.c
-@@ -7642,7 +7642,7 @@ int ocfs2_trim_mainbm(struct super_block *sb, struct fstrim_range *range)
- 		goto next_group;
- 	}
- out:
--	range->len = trimmed * sb->s_blocksize;
-+	range->len = trimmed * osb->s_clustersize;
- 	return ret;
- }
- 
+[auto build test ERROR on staging/staging-testing]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Oliver-Crumrine/staging-octeon-clean-up-the-octeon-ethernet-driver/20230828-080105
+base:   staging/staging-testing
+patch link:    https://lore.kernel.org/r/PH7PR11MB764329EC8CFB56ABFA7A8D77BCE1A%40PH7PR11MB7643.namprd11.prod.outlook.com
+patch subject: [PATCH v3 6/6] staging: octeon: clean up the octeon ethernet driver
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230828/202308281356.A52cXVbt-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230828/202308281356.A52cXVbt-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308281356.A52cXVbt-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/staging/octeon/ethernet.c: In function 'cvm_oct_common_get_stats':
+>> drivers/staging/octeon/ethernet.c:204:39: error: storage size of 'rx_status' isn't known
+     204 |         struct cvmx_pip_port_status_t rx_status;
+         |                                       ^~~~~~~~~
+   In file included from include/linux/string.h:254,
+                    from include/linux/bitmap.h:11,
+                    from include/linux/cpumask.h:12,
+                    from arch/x86/include/asm/paravirt.h:17,
+                    from arch/x86/include/asm/irqflags.h:60,
+                    from include/linux/irqflags.h:17,
+                    from include/linux/rcupdate.h:26,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from include/linux/ratelimit.h:6,
+                    from include/linux/dev_printk.h:16,
+                    from include/linux/device.h:15,
+                    from include/linux/platform_device.h:13,
+                    from drivers/staging/octeon/ethernet.c:8:
+   include/linux/fortify-string.h:515:65: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+     515 |         fortify_memset_chk(__fortify_size, p_size, p_size_field),       \
+         |                                                                 ^
+   include/linux/fortify-string.h:524:25: note: in expansion of macro '__fortify_memset_chk'
+     524 | #define memset(p, c, s) __fortify_memset_chk(p, c, s,                   \
+         |                         ^~~~~~~~~~~~~~~~~~~~
+   drivers/staging/octeon/ethernet.c:211:25: note: in expansion of macro 'memset'
+     211 |                         memset(&rx_status, 0, sizeof(rx_status));
+         |                         ^~~~~~
+   drivers/staging/octeon/ethernet.c:204:39: warning: unused variable 'rx_status' [-Wunused-variable]
+     204 |         struct cvmx_pip_port_status_t rx_status;
+         |                                       ^~~~~~~~~
+
+
+vim +204 drivers/staging/octeon/ethernet.c
+
+   195	
+   196	/**
+   197	 * cvm_oct_common_get_stats - get the low level ethernet statistics
+   198	 * @dev:    Device to get the statistics from
+   199	 *
+   200	 * Returns Pointer to the statistics
+   201	 */
+   202	static struct net_device_stats *cvm_oct_common_get_stats(struct net_device *dev)
+   203	{
+ > 204		struct cvmx_pip_port_status_t rx_status;
+   205		cvmx_pko_port_status_t tx_status;
+   206		struct octeon_ethernet *priv = netdev_priv(dev);
+   207	
+   208		if (priv->port < CVMX_PIP_NUM_INPUT_PORTS) {
+   209			if (octeon_is_simulation()) {
+   210				/* The simulator doesn't support statistics */
+   211				memset(&rx_status, 0, sizeof(rx_status));
+   212				memset(&tx_status, 0, sizeof(tx_status));
+   213			} else {
+   214				cvmx_pip_get_port_status(priv->port, 1, &rx_status);
+   215				cvmx_pko_get_port_status(priv->port, 1, &tx_status);
+   216			}
+   217	
+   218			dev->stats.rx_packets += rx_status.inb_packets;
+   219			dev->stats.tx_packets += tx_status.packets;
+   220			dev->stats.rx_bytes += rx_status.inb_octets;
+   221			dev->stats.tx_bytes += tx_status.octets;
+   222			dev->stats.multicast += rx_status.multicast_packets;
+   223			dev->stats.rx_crc_errors += rx_status.inb_errors;
+   224			dev->stats.rx_frame_errors += rx_status.fcs_align_err_packets;
+   225			dev->stats.rx_dropped += rx_status.dropped_packets;
+   226		}
+   227	
+   228		return &dev->stats;
+   229	}
+   230	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
