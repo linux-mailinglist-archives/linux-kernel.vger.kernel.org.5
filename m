@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D51678A4FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866B378A4FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjH1El3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 00:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        id S229547AbjH1EpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 00:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjH1ElM (ORCPT
+        with ESMTP id S229512AbjH1Eov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 00:41:12 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B17124;
-        Sun, 27 Aug 2023 21:41:07 -0700 (PDT)
-X-QQ-mid: bizesmtp78t1693197620tdj5elbh
-Received: from wangjiexun-virtual-machine.loca ( [120.225.34.249])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 28 Aug 2023 12:40:17 +0800 (CST)
-X-QQ-SSF: 01200000000000001000000A0000000
-X-QQ-FEAT: znfcQSa1hKYDxmkXgnl9lrc8jm7ncjAYCvItBCS+bXKY++nEN9itQfpOM0KLH
-        Oqr4Gg/mQj1qE4+umRvFwq6/LH8K3ysz5/vuSYTxFWjafMILTFvoP1vMsKqTSUJwY++Z9fI
-        V+nQTh5qrHw2E2qIqik81duYSAF6Y46S4o/S4lb+ubZ34C56RBuIW6f9yY3paBw37SBvM2d
-        MPas2/XycMRbK0qKwVULKjTSl0Xvl0x4qM6jvU04Vye23X9pBkqpy4LHTTSQwcA3ibY4b8d
-        JgcuIAbF1pwh80gFwTPzkwDwK3VH07fUtjFz4u0NQ/FiKx+tc6Di2ylR1K8u+GIaqh53atJ
-        LybILy8fHzRNHZgcbvCjB0yg9r2fxClx3ebmEh+
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1038203160215464499
-From:   Jiexun Wang <wangjiexun@tinylab.org>
-To:     dfustini@baylibre.com
-Cc:     adrian.hunter@intel.com, aou@eecs.berkeley.edu,
-        conor+dt@kernel.org, conor@kernel.org, devicetree@vger.kernel.org,
-        guoren@kernel.org, jkridner@beagleboard.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        robertcnelson@beagleboard.org, robh+dt@kernel.org,
-        ulf.hansson@linaro.org, wefu@redhat.com
-Subject: Re: [PATCH RFC v2 0/4] RISC-V: Add basic eMMC support for BeagleV Ahead
-Date:   Mon, 28 Aug 2023 12:40:16 +0800
-Message-Id: <20230828044016.109515-1-wangjiexun@tinylab.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
-References: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
+        Mon, 28 Aug 2023 00:44:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5DB124
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 21:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693197842;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fi86TLb/jHVvg9zjn7XHlWr0cwJimP6upmcGlNZVzgY=;
+        b=cvqiR1IhtOOX6w3JSRg1Av17hF0j+DzOGnFNW55Ac9gOUODqtIzu8PZ/BuzdXNAIOa+uYS
+        yhPLyQOXA6Uplv6QIV4/iLi6QLy3MHo4RiOnkWxAhG4VuL3onmgEKfGpiRFZFt2rDoyCLS
+        uv6kNd8qR75EfItZb42A8clKPnHEpxk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-516-6SOYEKjdNLyFOUTqEliaKw-1; Mon, 28 Aug 2023 00:44:00 -0400
+X-MC-Unique: 6SOYEKjdNLyFOUTqEliaKw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94a355c9028so206588966b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 21:44:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693197839; x=1693802639;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fi86TLb/jHVvg9zjn7XHlWr0cwJimP6upmcGlNZVzgY=;
+        b=MbUj4/DjZU4PO0YNHM8Pv5r+gNRoD6rW4Dyj/rF4338rS67T4p4l3v9+ODCQKR93Ya
+         LWQBjeqen+enswwbBr2lgR5uiBETwTPKj4fYSKv0ID2i3uWTlZL785Ryk+oCBC4sswEO
+         2l5rDKRmzH/m4fpC4+w071vljARAOKnD4p0qJJ3ML6THC/+R6uP7SlK+K6mG1DaAM/6B
+         b9gIa8FzsJdvX3bXHo0ARNsOiWWww91ak3KCWAd2fizcU+BPTOKrG/eoWK2I2nsNrrcQ
+         Flx41NcQQ5Zytp67kth1fiOpWBepWFNBli5Ljzh/E+YNRWXXl/J42/j+tQVvDdlADzr/
+         7p7g==
+X-Gm-Message-State: AOJu0YwhQJjYThlE6uZlpxPhoQFYfGIQdzVEuMlzOEbXNJ0aRPRX3xSB
+        mre7KMfBPTJZQ7t1nubJ4Oa1xY8qCE6U+BhANIQ/b8UXL2gM1XiDuKCP2CjEVwnHQj/2q1oEzdx
+        mDy4WW8pUnnccplqBBn5efJ711y7xyShNHWY=
+X-Received: by 2002:a17:906:2102:b0:99d:e8da:c20b with SMTP id 2-20020a170906210200b0099de8dac20bmr17292945ejt.24.1693197838865;
+        Sun, 27 Aug 2023 21:43:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGWMCQLqR83SRHv6bXmH/xQXTYbezZysqjUu1htVMzC8mLUN54SpnfBWNxtyVsQbnhcqrpwWg==
+X-Received: by 2002:a17:906:2102:b0:99d:e8da:c20b with SMTP id 2-20020a170906210200b0099de8dac20bmr17292931ejt.24.1693197838501;
+        Sun, 27 Aug 2023 21:43:58 -0700 (PDT)
+Received: from redhat.com ([2.52.30.217])
+        by smtp.gmail.com with ESMTPSA id y22-20020a17090614d600b0099cfd0b2437sm4206104ejc.99.2023.08.27.21.43.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 21:43:57 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 00:43:53 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Yuan Yao <yuanyaogoog@chromium.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Keiichi Watanabe <keiichiw@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Takaya Saeki <takayas@chromium.org>,
+        Junichi Uekawa <uekawa@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH] virtio_ring: fix avail_wrap_counter in
+ virtqueue_add_packed
+Message-ID: <20230828004323-mutt-send-email-mst@kernel.org>
+References: <20230808051110.3492693-1-yuanyaogoog@chromium.org>
+ <CACGkMEt53ziY_bmgJHVdJ6pkppTyVqKX3=Czygv+yhJR8_KiFA@mail.gmail.com>
+ <CAOJyEHaXqmHStJnHrT0H4QsTJBxjBxVe+33EuWm9H3wApPKtxQ@mail.gmail.com>
+ <CACGkMEuiVnLFRRDHaTH3Jnpr+znU9L33gLyRynbBabVqumN2ug@mail.gmail.com>
+ <CAOJyEHaR1Y3VsKNpLqxf-ewAEf8JJDChjmnFM_0mv=hOg+X-vA@mail.gmail.com>
+ <20230808051304-mutt-send-email-mst@kernel.org>
+ <CAOJyEHYgvw7za0ksKNPu9TF1+8MwVFbctMbukgbAoQnf9da+hA@mail.gmail.com>
+ <CAOJyEHZs=59nZ=XTYu-mZWTz18OT7f6TknCxWksYeQZbPy2oUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOJyEHZs=59nZ=XTYu-mZWTz18OT7f6TknCxWksYeQZbPy2oUQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,=0D
-I tested the patch on my LicheePi 4A board.=0D
-It can successfully boot with eMMC, but when I use the eMMC more frequently=
- - for instance:=0D
-=0D
-$ while true; do /bin/dd if=3D/dev/zero of=3Dbigfile bs=3D1024000 count=3D1=
-024; done &=0D
-=0D
-I encounter the following error:=0D
-=0D
-sbi_trap_error: hart1: illegal instruction handler failed (error -2)=0D
-sbi_trap_error: hart1: mcause=3D0x0000000000000002 mtval=3D0x0000000060e2de=
-4f=0D
-sbi_trap_error: hart1: mepc=3D0x000000000001897c mstatus=3D0x0000000a000018=
-20=0D
-sbi_trap_error: hart1: ra=3D0x00000000000170f8 sp=3D0x000000000004adc8=0D
-sbi_trap_error: hart1: gp=3D0xffffffff8136ea90 tp=3D0xffffffd900228000=0D
-sbi_trap_error: hart1: s0=3D0x0000000000000000 s1=3D0x000000000004ae08=0D
-sbi_trap_error: hart1: a0=3D0x000000003f9aa9bc a1=3D0x0000000000000004=0D
-sbi_trap_error: hart1: a2=3D0x0000000000000000 a3=3D0x0000000000000000=0D
-sbi_trap_error: hart1: a4=3D0x0000000000042248 a5=3D0x00000000000170e5=0D
-sbi_trap_error: hart1: a6=3D0x0000000000000000 a7=3D0x0000000054494d45=0D
-sbi_trap_error: hart1: s2=3D0x000000000004aee8 s3=3D0x0000000000000000=0D
-sbi_trap_error: hart1: s4=3D0x000000000004ae08 s5=3D0x0000000000000000=0D
-sbi_trap_error: hart1: s6=3D0xffffffff813aa240 s7=3D0x0000000000000080=0D
-sbi_trap_error: hart1: s8=3D0xffffffff80a1b5f0 s9=3D0x0000000000000000=0D
-sbi_trap_error: hart1: s10=3D0xffffffd9fef5d380 s11=3D0xffffffff81290a80=0D
-sbi_trap_error: hart1: t0=3D0x0000000a00000820 t1=3D0x0000000000000000=0D
-sbi_trap_error: hart1: t2=3D0xffffffff80c00318 t3=3D0x0000000000000001=0D
-sbi_trap_error: hart1: t4=3D0x0000000000000330 t5=3D0x0000000000000001=0D
-sbi_trap_error: hart1: t6=3D0x0000000000040000=0D
-=0D
-My kernel version is v6.5-rc3.=0D
-My OpenSBI version is 1.3.=0D
-I tried to use other versions of OpenSBI, yet the problem persists. =0D
-Is there a possibility of any underlying bug? Your insights into this would=
- be greatly appreciated.=0D
-=0D
-Thanks,=0D
-Jiexun Wang=0D
-=0D
+Nope - it will be in the next linux release.
+
+On Mon, Aug 28, 2023 at 12:33:46PM +0900, Yuan Yao wrote:
+> I'm writing to confirm the process for the patch, since I'm not sure if this
+> thread is done for this patch.
+> Do I need any further steps to take to make this patch be launched?
+> 
+> On Tue, Aug 8, 2023 at 7:00 PM Yuan Yao <yuanyaogoog@chromium.org> wrote:
+> 
+>     Sorry for the confusing mail, I didn't understand how it works.
+>     Thanks
+> 
+>     On Tue, Aug 8, 2023 at 6:13 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> 
+>         On Tue, Aug 08, 2023 at 05:37:29PM +0900, Yuan Yao wrote:
+>         > Thank you for reviewing, sent a patch with your ack.
+> 
+>         Don't do this pls. And don't top post please.
+> 
+> 
+
