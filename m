@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F2078A6C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F74878A6C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjH1Hsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        id S229822AbjH1Hsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbjH1HsG (ORCPT
+        with ESMTP id S229556AbjH1HsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:48:06 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A02114;
-        Mon, 28 Aug 2023 00:48:00 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 77DBC7FDC;
-        Mon, 28 Aug 2023 15:47:53 +0800 (CST)
-Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 28 Aug
- 2023 15:47:53 +0800
-Received: from [192.168.125.72] (113.72.145.245) by EXMBX072.cuchost.com
- (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 28 Aug
- 2023 15:47:52 +0800
-Message-ID: <8390fffb-c704-286f-44b9-4e0d24818343@starfivetech.com>
-Date:   Mon, 28 Aug 2023 15:47:51 +0800
+        Mon, 28 Aug 2023 03:48:18 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325FB114;
+        Mon, 28 Aug 2023 00:48:16 -0700 (PDT)
+Received: from ideasonboard.com (mob-5-91-19-240.net.vodafone.it [5.91.19.240])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D98D1E51;
+        Mon, 28 Aug 2023 09:46:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693208813;
+        bh=ePUh+9FFj0l+5PveCc6ydNu/nAlr4VfwDuWCBVWfhAM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XRlET+jAH6tyW5sxN6T/qsGqpTGSXoiYIm/TiQdnGCEfBSBCoQS3zL5VjJSJY9p16
+         0QJodWOb2SciAO0uYUy3EhJmPqOm49p1i+i3jrzpIGRIx4ih3D5CywAi+j/fd80n0J
+         Dc6jaTDdIeuExITtPupeeymV0EgxipaELnwVms4s=
+Date:   Mon, 28 Aug 2023 09:48:10 +0200
+From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: rdacm2: Remove an incorrect
+ fwnode_handle_put() call
+Message-ID: <zijwh5kcrfsg4q4pmxtkzia7tdpg4wnau53npe2y2xe4j7n7wy@zqwigtmyftu3>
+References: <d9230082aefcb7bab6363c51c08598eb5ab62cfc.1693037086.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [RFC v4 0/4] StarFive's Pulse Width Modulation driver support
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        William Qiu <william.qiu@starfivetech.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>,
-        "Emil Renner Berthing" <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20230825081328.204442-1-william.qiu@starfivetech.com>
- <20230825-exclusion-doing-93532be4fa97@spud>
- <a49737f0-0a09-b558-ea06-b3d47a6e4240@starfivetech.com>
- <683df184-6688-f006-c4d8-fa7000b7b771@linaro.org>
-From:   Hal Feng <hal.feng@starfivetech.com>
-In-Reply-To: <683df184-6688-f006-c4d8-fa7000b7b771@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.145.245]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX072.cuchost.com
- (172.16.6.82)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d9230082aefcb7bab6363c51c08598eb5ab62cfc.1693037086.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/2023 3:16 PM, Krzysztof Kozlowski wrote:
-> On 28/08/2023 09:12, Hal Feng wrote:
->> On Fri, 25 Aug 2023 16:06:12 +0100, Conor Dooley wrote:
->>> On Fri, Aug 25, 2023 at 04:13:24PM +0800, William Qiu wrote:
->>>> Hi,
->>>>
->>>> This patchset adds initial rudimentary support for the StarFive
->>>> Pulse Width Modulation controller driver. And this driver will
->>>> be used in StarFive's VisionFive 2 board.The first patch add
->>>> Documentations for the device and Patch 2 adds device probe for
->>>> the module.
->>>>
->>>> Changes v3->v4:
->>>> - Rebased to v6.5rc7.
->>>> - Sorted the header files in alphabetic order.
->>>> - Changed iowrite32() to writel().
->>>> - Added a way to turn off.
->>>> - Moified polarity inversion implementation.
->>>> - Added 7100 support.
->>>> - Added dts patches.
->>>> - Used the various helpers in linux/math.h.
->>>> - Corrected formatting problems.
->>>> - Renamed dtbinding  to 'starfive,jh7100-pwm.yaml'.
->>>> - Dropped the redundant code.
->>>>
->>>> Changes v2->v3:
->>>> - Fixed some formatting issues.
->>>>
->>>> Changes v1->v2:
->>>> - Renamed the dt-binding 'pwm-starfive.yaml' to 'starfive,jh7110-pwm.yaml'.
->>>> - Dropped the compatible's Items.
->>>> - Dropped the unuse defines.
->>>> - Modified the code to follow the Linux coding style.
->>>> - Changed return value to dev_err_probe.
->>>> - Dropped the unnecessary local variable.
->>>>
->>>> The patch series is based on v6.5rc7.
->>>
->>> Out of curiosity, why is this series still an RFC?
->> 
->> There was no comments received in v4. So William resend it and
->> request for comments.
-> 
-> The question was: why he requests for comments?
-> 
-> RFC means *it should not be merged, it is not ready*.
+Hi Christophe
 
-Oh, it was misunderstood by William and me.
-So this series is not a RFC.
+On Sat, Aug 26, 2023 at 10:05:06AM +0200, Christophe JAILLET wrote:
+> The commit in Fixes has removed an fwnode_handle_put() call in the error
+> handling path of the probe.
+>
+> Remove the same call from the remove function.
+>
+> Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Best regards,
-Hal
+Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+
+> ---
+> /!\   This patch is highly speculative. Review with care.   /!\
+>
+> If it is correct, it is likely that other similar issue lurk in commit
+> 1029939b3782. I've not looked in detail and my cocci script did not
+> trigger on them but drivers/media/i2c/max9286.c also looks like a
+> similar candidate.
+
+I think the call to  fwnode_handle_put(priv->sd.fwnode) in
+max9286_v4l2_unregister() can indeed be removed, yes!
+
+Thanks
+  j
+
+> ---
+>  drivers/media/i2c/rdacm21.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index a36a709243fd..3e22df36354f 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -608,7 +608,6 @@ static void rdacm21_remove(struct i2c_client *client)
+>  	v4l2_async_unregister_subdev(&dev->sd);
+>  	v4l2_ctrl_handler_free(&dev->ctrls);
+>  	i2c_unregister_device(dev->isp);
+> -	fwnode_handle_put(dev->sd.fwnode);
+>  }
+>
+>  static const struct of_device_id rdacm21_of_ids[] = {
+> --
+> 2.34.1
+>
