@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE9C78B6C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656FB78B6D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbjH1RyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
+        id S232507AbjH1R4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232507AbjH1Rxm (ORCPT
+        with ESMTP id S230146AbjH1Rzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:53:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC5106;
-        Mon, 28 Aug 2023 10:53:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8333063DC3;
-        Mon, 28 Aug 2023 17:53:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EF69C433C7;
-        Mon, 28 Aug 2023 17:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693245216;
-        bh=qQfdpUVt3/s857qPKRwlg14q3rMzCdg/2yMkh7F8/SE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X9IbE1ueG8HzQ2wOL4iiYq0twoaL7DCyTQEz5QKD+n6k3FKaQOiet2x+TXFr7Mt3C
-         xyRZbdmXQgmadBkJ1hCjIvIZGyF43SWY8RWlqyFcpND/Td3AdwLmu/+gi13XQV34RV
-         1+JrpJy4stCLMGGAEpmjtdj8HlgcmfcONLlpR9Zc3S9+TEWJxtZbJZE0cUlneVZo5Y
-         etU1XbH0U5CCEqmSdhgmlMDf/TZjCR5YlYhY4tj9+S07LyRIdOcK1KEwK6LrrsyLwu
-         33r0oncIXldpeejuVyuWk9m2mSHg/5GDVjSKG+MPtgWeLKVIqA2ggYeouiTuYpjCc3
-         96K76EQxCfwsQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BBC1D40722; Mon, 28 Aug 2023 14:53:32 -0300 (-03)
-Date:   Mon, 28 Aug 2023 14:53:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/18] perf s390 s390_cpumcfdg_dump: Don't scan all
- PMUs
-Message-ID: <ZOzfHEuJkXfajmWO@kernel.org>
-References: <20230824041330.266337-1-irogers@google.com>
- <20230824041330.266337-7-irogers@google.com>
- <ZOdiX4eJHFfFbQhi@kernel.org>
- <428afeb4-d5ca-8115-73fc-881119a1cd51@linux.ibm.com>
- <CAP-5=fVt1vxK0CJ=aYjZzs4mushbxAx8056uxVQZUfsLAKpVoQ@mail.gmail.com>
- <4f2438fc-2360-8833-3751-fe3bc8b11afb@linux.ibm.com>
- <ZOkVYoN17A8wwP3k@kernel.org>
- <CAP-5=fUqLXdu2=TPSASFBbZ+B1oTFbuFra38z5YwYHWpX-V=hw@mail.gmail.com>
- <ZOzdFPOLhNdd59PG@kernel.org>
+        Mon, 28 Aug 2023 13:55:52 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B169A106
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:55:48 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4c0so139587a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:55:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693245347; x=1693850147; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y0ZGm2c8M5uCZpx5NsLqloIP7RYTRm5RGMmegNXhmtc=;
+        b=QD/fvPS84hhSpZsACY5HQkaY/XohpljOn1oQw5z0pvXOd3H8hsIMvkW7YEXWb8Md9H
+         yqJ8NXPBYibBQtae7bCjf5xZRudWds2LMitSn6/PvVw4ikSwhDtwvbbptZ4rqV1LTUl9
+         S3i9FyYWusdGB2kZx/n0W8KklrcL8kwAvSkjIuzaiZdYqcKnGvlBr654Otpj9TnBZ1cU
+         BMOHD3+j8nE+qvc4ThVgFfuXQOvss+ppoy21Vgf6L4DPpX5PMA+zMP6t2DruQXqW0sR+
+         u4GHPKmlhM04DKy/ZOzoQrDSFD8EL7oLrZYfCSs2oXBCmYZ0YrKPO7nehUo4UZOGl+9k
+         f+QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693245347; x=1693850147;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y0ZGm2c8M5uCZpx5NsLqloIP7RYTRm5RGMmegNXhmtc=;
+        b=RsdHMRFnmFgexOMyb88sL+R5CKGDzX/I0k+k5OyEzM/+iuUikYFIahfMLEe4eWidNj
+         SyINynYisBHXvcAy5IZvHg+gqLBMptkldCNE+46LPYCDJcISys2DQQH92AtfRDythM3+
+         DrElCBjCBifjBove2IYaOCp794WGC2Qe5lyTWAB6ezxwjXReC+6A0EQIbnB3zL22Img5
+         N7EGGjWJvvGHxEeFZ1zHHcRL2TuRlaYlipI1dtsr3fnmCxEUD/PtfkP/yN8Hc6r/p3dc
+         iZg/oXNqBGyikhtW9pB680Emn6uqSvach5YTztrQ3ITFVllapudEJs488jEjGT7XvYil
+         iJag==
+X-Gm-Message-State: AOJu0YwdaIEcdAKnvQx3cWhqMkCylTauj8C2ft/+9nHMJGUZ5dpif8RN
+        kxQ6IQ9AixtmZJkDUskB5DfTfA==
+X-Google-Smtp-Source: AGHT+IH54gGY3YgXrsJV+7+2XCu+45eXNW/T27xOMIUiGWecCGA9P4KGwAtfdsWavYmLKVIZDXY5Bw==
+X-Received: by 2002:a05:6402:3514:b0:523:4e41:2a37 with SMTP id b20-20020a056402351400b005234e412a37mr420275edd.11.1693245347138;
+        Mon, 28 Aug 2023 10:55:47 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.225])
+        by smtp.gmail.com with ESMTPSA id v10-20020aa7d80a000000b005233deb30aesm4646569edq.10.2023.08.28.10.55.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 10:55:46 -0700 (PDT)
+Message-ID: <75829c0e-b6f8-536e-c84e-a660be3f39d0@linaro.org>
+Date:   Mon, 28 Aug 2023 19:55:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZOzdFPOLhNdd59PG@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next v2 2/3] dt-bindings: net: add T-HEAD dwmac
+ support
+Content-Language: en-US
+To:     Serge Semin <fancer.lancer@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, Maxime@web.codeaurora.org,
+        Coquelin@web.codeaurora.org,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org
+References: <20230827091710.1483-1-jszhang@kernel.org>
+ <20230827091710.1483-3-jszhang@kernel.org>
+ <qc2nyqmuouig6qww2q7orlwzvcprjyruyeuyr5dqdpxysajjpv@6fzsgjgokry7>
+ <ZOy6kLGZ1lR0I2sC@xhacker>
+ <pbh7gh7fkfis7zqqmmug5wtosq3xsx7z3ktsfg3jy6jthm6qva@a3wy7knv2vcr>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <pbh7gh7fkfis7zqqmmug5wtosq3xsx7z3ktsfg3jy6jthm6qva@a3wy7knv2vcr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,364 +96,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 28, 2023 at 02:44:53PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Aug 25, 2023 at 03:56:54PM -0700, Ian Rogers escreveu:
-> > On Fri, Aug 25, 2023 at 1:56 PM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > Em Fri, Aug 25, 2023 at 04:39:22PM +0200, Thomas Richter escreveu:
-> > > > On 8/25/23 15:14, Ian Rogers wrote:
-> > > > > On Fri, Aug 25, 2023 at 1:20 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
-> > >
-> > > > >> On 8/24/23 15:59, Arnaldo Carvalho de Melo wrote:
-> > > > >>> Em Wed, Aug 23, 2023 at 09:13:18PM -0700, Ian Rogers escreveu:
-> > > > >>>> Rather than scanning all PMUs for a counter name, scan the PMU
-> > > > >>>> associated with the evsel of the sample. This is done to remove a
-> > > > >>>> dependence on pmu-events.h.
-> > >
-> > > > >>> I'm applying this one, and CCing the S/390 developers so that they can
-> > > > >>> try this and maybe provide an Acked-by/Tested-by,
-> > >
-> > > > >> I have downloaded this patch set of 18 patches (using b4), but they do not
-> > > > >> apply on my git tree.
-> > >
-> > > > >> Which git branch do I have to use to test this. Thanks a lot.
-> > >
-> > > > > the changes are in the perf-tools-next tree:
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/
-> > >
-> > > > Unfurtunately this patch set fails again on s390.
-> > > > Here is the test output from the current 6.5.0rc7 kernel:
-> > > >
-> > > > # ./perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
-> > > >   6: Parse event definition strings                                  :
-> > > >   6.1: Test event parsing                                            : Ok
-> > > >   6.2: Parsing of all PMU events from sysfs                          : Ok
-> > > >   6.3: Parsing of given PMU events from sysfs                        : Ok
-> > > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
-> > > >   6.5: Parsing of aliased events                                     : Ok
-> > > >   6.6: Parsing of terms (event modifiers)                            : Ok
-> > > >  10: PMU events                                                      :
-> > > >  10.1: PMU event table sanity                                        : Ok
-> > > >  10.2: PMU event map aliases                                         : Ok
-> > > >  10.3: Parsing of PMU event table metrics                            : Ok
-> > > >  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-> > > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
-> > > >  95: perf all metricgroups test                                      : Ok
-> > > >  96: perf all metrics test                                           : Ok
-> > > > #
-> > > >
-> > > > This looks good.
-> > >
-> > > Reproduced:
-> > >
-> > > # grep -E vendor_id\|^processor -m2 /proc/cpuinfo
-> > > vendor_id       : IBM/S390
-> > > processor 0: version = 00,  identification = 1A33E8,  machine = 2964
-> > > #
-> > > # perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
-> > >   6: Parse event definition strings                                  :
-> > >   6.1: Test event parsing                                            : Ok
-> > >   6.2: Parsing of all PMU events from sysfs                          : Ok
-> > >   6.3: Parsing of given PMU events from sysfs                        : Ok
-> > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
-> > >   6.5: Parsing of aliased events                                     : Ok
-> > >   6.6: Parsing of terms (event modifiers)                            : Ok
-> > >  10: PMU events                                                      :
-> > >  10.1: PMU event table sanity                                        : Ok
-> > >  10.2: PMU event map aliases                                         : Ok
-> > >  10.3: Parsing of PMU event table metrics                            : Ok
-> > >  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-> > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
-> > >  95: perf all metricgroups test                                      : Ok
-> > >  96: perf all metrics test                                           : Ok
-> > > # perf -v
-> > > perf version 6.5.rc7.g6f0edbb833ec
-> > > #
-> > >
-> > > > However when I use the check-out from perf-tools-next, I get this output:
-> > > > # ./perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
-> > > >   6: Parse event definition strings                                  :
-> > > >   6.1: Test event parsing                                            : Ok
-> > > >   6.2: Parsing of all PMU events from sysfs                          : FAILED!
-> > > >   6.3: Parsing of given PMU events from sysfs                        : Ok
-> > > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
-> > > >   6.5: Parsing of aliased events                                     : FAILED!
-> > > >   6.6: Parsing of terms (event modifiers)                            : Ok
-> > > >  10: PMU events                                                      :
-> > > >  10.1: PMU event table sanity                                        : Ok
-> > > >  10.2: PMU event map aliases                                         : FAILED!
-> > > >  10.3: Parsing of PMU event table metrics                            : Ok
-> > > >  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
-> > > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
-> > > >  93: perf all metricgroups test                                      : FAILED!
-> > > >  94: perf all metrics test                                           : FAILED!
-> > > > #
-> > > >
-> > > > So some tests are failing again.
-> > > >
-> > > > I am out for the next two weeks, Sumanth Korikkar (on to list) might be able to help.
-> > > > Thanks a lot.
-> > >
-> > > [root@kernelqe3 linux]# git checkout perf-tools-next
-> > > git Switched to branch 'perf-tools-next'
-> > > Your branch is up to date with 'perf-tools-next/perf-tools-next'.
-> > > [root@kernelqe3 linux]# git log --oneline -5
-> > > eeb6b12992c4 (HEAD -> perf-tools-next, perf-tools-next/perf-tools-next) perf jevents: Don't append Unit to desc
-> > > f208b2c6f984 (perf-tools-next/tmp.perf-tools-next) perf scripts python gecko: Launch the profiler UI on the default browser with the appropriate URL
-> > > 43803cb16f99 perf scripts python: Add support for input args in gecko script
-> > > f85d120c46e7 perf jevents: Sort strings in the big C string to reduce faults
-> > > 8d4b6d37ea78 perf pmu: Lazily load sysfs aliases
-> > > [root@kernelqe3 linux]# make BUILD_BPF_SKEL=1 -C tools/perf O=/tmp/build/perf install-bin
-> > >
-> > > [root@kernelqe3 linux]# perf -v
-> > > perf version 6.5.rc5.geeb6b12992c4
-> > > [root@kernelqe3 linux]# git log --oneline -1
-> > > eeb6b12992c4 (HEAD -> perf-tools-next, perf-tools-next/perf-tools-next) perf jevents: Don't append Unit to desc
-> > > [root@kernelqe3 linux]# perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
-> > >   6: Parse event definition strings                                  :
-> > >   6.1: Test event parsing                                            : Ok
-> > >   6.2: Parsing of all PMU events from sysfs                          : FAILED!
-> > >   6.3: Parsing of given PMU events from sysfs                        : Ok
-> > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
-> > >   6.5: Parsing of aliased events                                     : FAILED!
-> > >   6.6: Parsing of terms (event modifiers)                            : Ok
-> > >  10: PMU events                                                      :
-> > >  10.1: PMU event table sanity                                        : Ok
-> > >  10.2: PMU event map aliases                                         : FAILED!
-> > >  10.3: Parsing of PMU event table metrics                            : Ok
-> > >  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
-> > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
-> > >  93: perf all metricgroups test                                      : FAILED!
-> > >  94: perf all metrics test                                           : FAILED!
-> > > [root@kernelqe3 linux]#
-> > >
-> > > Bisecting the first problem:
-> > >
-> > >  10.2: PMU event map aliases                                         : FAILED!
-> > >
-> > > make: Leaving directory '/root/git/linux/tools/perf'
-> > >   6: Parse event definition strings                                  :
-> > >   6.1: Test event parsing                                            : Ok
-> > >   6.2: Parsing of all PMU events from sysfs                          : Ok
-> > >   6.3: Parsing of given PMU events from sysfs                        : Ok
-> > >   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
-> > >   6.5: Parsing of aliased events                                     : Ok
-> > >   6.6: Parsing of terms (event modifiers)                            : Ok
-> > >  10: PMU events                                                      :
-> > >  10.1: PMU event table sanity                                        : Ok
-> > >  10.2: PMU event map aliases                                         : FAILED!
-> > >  10.3: Parsing of PMU event table metrics                            : Ok
-> > >  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-> > >  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
-> > >  93: perf all metricgroups test                                      : Ok
-> > >  94: perf all metrics test                                           : Ok
-> > > [root@kernelqe3 linux]# git bisect bad
-> > > 2e255b4f9f41f137d9e3dc4fae3603a9c2c3dd28 is the first bad commit
-> > > commit 2e255b4f9f41f137d9e3dc4fae3603a9c2c3dd28
-> > > Author: Ian Rogers <irogers@google.com>
-> > > Date:   Wed Aug 23 21:13:16 2023 -0700
-> > >
-> > >     perf jevents: Group events by PMU
-> > >
-> > >     Prior to this change a cpuid would map to a list of events where the PMU
-> > >     would be encoded alongside the event information. This change breaks
-> > >     apart each group of events so that there is a group per PMU. A new table
-> > >     is added with the PMU's name and the list of events, the original table
-> > >     now holding an array of these per PMU tables.
-> > >
-> > >     These changes are to make it easier to get per PMU information about
-> > >     events, rather than the current approach of scanning all events. The
-> > >     perf binary size with BPF skeletons on x86 is reduced by about 1%. The
-> > >     unidentified PMU is now always expanded to "cpu".
-> > >
-> > >     Signed-off-by: Ian Rogers <irogers@google.com>
-> > >     Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > >     Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > >     Cc: Gaosheng Cui <cuigaosheng1@huawei.com>
-> > >     Cc: Ingo Molnar <mingo@redhat.com>
-> > >     Cc: James Clark <james.clark@arm.com>
-> > >     Cc: Jing Zhang <renyu.zj@linux.alibaba.com>
-> > >     Cc: Jiri Olsa <jolsa@kernel.org>
-> > >     Cc: John Garry <john.g.garry@oracle.com>
-> > >     Cc: Kajol Jain <kjain@linux.ibm.com>
-> > >     Cc: Kan Liang <kan.liang@linux.intel.com>
-> > >     Cc: Mark Rutland <mark.rutland@arm.com>
-> > >     Cc: Namhyung Kim <namhyung@kernel.org>
-> > >     Cc: Peter Zijlstra <peterz@infradead.org>
-> > >     Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-> > >     Cc: Rob Herring <robh@kernel.org>
-> > >     Link: https://lore.kernel.org/r/20230824041330.266337-5-irogers@google.com
-> > >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > >
-> > >  tools/perf/pmu-events/jevents.py | 181 +++++++++++++++++++++++++++++----------
-> > >  tools/perf/tests/pmu-events.c    |  30 ++++---
-> > >  2 files changed, 154 insertions(+), 57 deletions(-)
-> > > [root@kernelqe3 linux]#
-> > >
-> > 
-> > This change defaulted events without a specified PMU to being for the
-> > PMU 'cpu', so that events in pmu-events.c were associated with a PMU
-> > and we could find per-PMU information easily. The test events have no
-> > PMU and so this has broken s390 where the the PMU should be "cpum_cf".
-> > It has probably also broken x86 hybrid and arm where their default PMU
-> > isn't cpu. I'll work on a fix, but the problem will be limited to the
-> > test.
+On 28/08/2023 17:51, Serge Semin wrote:
+> On Mon, Aug 28, 2023 at 11:17:36PM +0800, Jisheng Zhang wrote:
+>> On Mon, Aug 28, 2023 at 04:13:00PM +0300, Serge Semin wrote:
+>>> On Sun, Aug 27, 2023 at 05:17:09PM +0800, Jisheng Zhang wrote:
+>>>> Add documentation to describe T-HEAD dwmac.
+>>>>
+>>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>>>> ---
+>>>>  .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
+>>>>  .../devicetree/bindings/net/thead,dwmac.yaml  | 77 +++++++++++++++++++
+>>>>  2 files changed, 78 insertions(+)
+>>>>  create mode 100644 Documentation/devicetree/bindings/net/thead,dwmac.yaml
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>>> index b196c5de2061..73821f86a609 100644
+>>>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>>> @@ -96,6 +96,7 @@ properties:
+>>>>          - snps,dwxgmac
+>>>>          - snps,dwxgmac-2.10
+>>>>          - starfive,jh7110-dwmac
+>>>> +        - thead,th1520-dwmac
+>>>>  
+>>>>    reg:
+>>>>      minItems: 1
+>>>> diff --git a/Documentation/devicetree/bindings/net/thead,dwmac.yaml b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
+>>>> new file mode 100644
+>>>> index 000000000000..bf8ec8ca2753
+>>>> --- /dev/null
+>>>
+>>>> +++ b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
+>>>
+>>> see further regarding using dwmac in the names here.
+>>>
+>>>> @@ -0,0 +1,77 @@
+>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>> +%YAML 1.2
+>>>> +---
+>>>> +$id: http://devicetree.org/schemas/net/thead,dwmac.yaml#
+>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>> +
+>>>
+>>>> +title: T-HEAD DWMAC Ethernet controller
+>>>
+>>> Additionally would be nice to have a brief controller "description:"
+>>> having the next info: the SoCs the controllers can be found on, the DW
+>>> (G)MAC IP-core version the ethernet controller is based on and some
+>>> data about the synthesize parameters: SMA (MDIO-bus), Tx/Rx COE, DMA
+>>> FIFOs size, perfect and hash MAC-filters size, L3L4 frame filters
+>>> availability, VLAN hash filter, SA/VLAN-tag insertion, ARP offload
+>>> engine, PHY interfaces (MII, RMII, RGMII, etc), EEE support, IEEE
+>>> 1588(-2008) Timestamping support, PMT and Wake-up frame support, MAC
+>>> Management counters (MMC). In addition to that for DW QoS
+>>> ETH/XGMAC/XLGMAC the next info would be useful: number of MTL Queues
+>>> and DMA channels, MTL queues capabilities (QoS-related), TSO
+>>> availability, SPO availability.
+>>>
 > 
-> So, with your "default_core" branche we go to:
+>>> Note DMA FIFO sizes can be also constrained in the properties
+>>> "rx-fifo-depth" and "tx-fifo-depth"; perfect and hash MAC-filter sizes -
+>>> in "snps,perfect-filter-entries" and "snps,multicast-filter-bins".
 > 
-> [root@kernelqe3 linux]# perf test 10
->  10: PMU events                                                      :
->  10.1: PMU event table sanity                                        : Ok
->  10.2: PMU event map aliases                                         : Ok
->  10.3: Parsing of PMU event table metrics                            : Ok
->  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
->  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
-> [root@kernelqe3 linux]# perf --version
-> perf version 6.5.rc5.g3d63ae82aa12
-> [root@kernelqe3 linux]#
+> BTW plus to this you may wish to add the "rx-internal-delay-ps" and
+> "tx-internal-delay-ps" properties constraints seeing they device
+> supports internal Tx/Rx delays.
 > 
-> The other tests:
+>>
+>> Hi Serge,
+>>
 > 
-> [root@kernelqe3 linux]# perf --version
-> perf version 6.5.rc5.g3d63ae82aa12
-> [root@kernelqe3 linux]# perf test 6 10 'perf all metricgroups test' 'perf all metrics test'
->   6: Parse event definition strings                                  :
->   6.1: Test event parsing                                            : Ok
->   6.2: Parsing of all PMU events from sysfs                          : FAILED!
->   6.3: Parsing of given PMU events from sysfs                        : Ok
->   6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
->   6.5: Parsing of aliased events                                     : FAILED!
->   6.6: Parsing of terms (event modifiers)                            : Ok
->  10: PMU events                                                      :
->  10.1: PMU event table sanity                                        : Ok
->  10.2: PMU event map aliases                                         : Ok
->  10.3: Parsing of PMU event table metrics                            : Ok
->  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
->  10.5: Parsing of metric thresholds with fake PMUs                   : Ok
->  93: perf all metricgroups test                                      : FAILED!
->  94: perf all metrics test                                           : FAILED!
-> [root@kernelqe3 linux]#
+>> Thank you for your code review. I have different views here: If we
+>> only support the gmac controller in one specific SoC, these detailed
+>> information is nice to have, but what about if the driver/dt-binding
+>> supports the gmac controller in different SoCs? These detailed
+>> information will be outdated.
 > 
-> Trying to bisect it now.
+> First they won't. Second then you can either add more info to the
+> description for instance in a separate paragraph or create a dedicated
+> DT-bindings. Such information would be very much useful for the
+> generic STMMAC driver code maintenance.
+> 
+>>
+>> what's more, I think the purpose of dt-binding is different from
+>> the one of documentation.
+> 
+> The purpose of the DT-bindings is a hardware "description". The info I
+> listed describes your hardware.
+> 
+>>
+>> So I prefer to put these GMAC IP related detailed information into
+>> the SoC's dtsi commit msg rather than polluting the dt-binding.
+>>>
+>>>> +
+>>>> +maintainers:
+>>>> +  - Jisheng Zhang <jszhang@kernel.org>
+>>>> +
+>>>> +select:
+>>>> +  properties:
+>>>> +    compatible:
+>>>> +      contains:
+>>>> +        enum:
+>>>
+>>>> +          - thead,th1520-dwmac
+>>>
+>>> Referring to the DW IP-core in the compatible string isn't very
+>>> much useful especially seeing you have a generic fallback compatible.
+>>> Name like "thead,th1520-gmac" looks more informative indicating its
+>>> speed capability.
+>>
+> 
+>> This is just to follow the common style as those dwmac-* does.
+>> I'm not sure which is better, but personally, I'd like to keep current
+>> common style.
+> 
+> It's not that common. Half the compatible strings use the notation
+> suggested by me and it has more sense then a dwmac suffix. It's ok to
+> use the suffix in the STMMAC driver-related things because the glue
+> code is supposed to work with the DW *MAC generic code. Using it in
+> the compatible string especially together with the generic fallback
+> compatible just useless.
 
-make: Leaving directory '/root/git/linux/tools/perf'
-[root@kernelqe3 linux]# perf test 6
-  6: Parse event definition strings                                  :
-  6.1: Test event parsing                                            : Ok
-  6.2: Parsing of all PMU events from sysfs                          : FAILED!
-  6.3: Parsing of given PMU events from sysfs                        : Ok
-  6.4: Parsing of aliased events from sysfs                          : Skip (no aliases in sysfs)
-  6.5: Parsing of aliased events                                     : FAILED!
-  6.6: Parsing of terms (event modifiers)                            : Ok
-[root@kernelqe3 linux]# git bisect bad
-8d4b6d37ea7862d230ad2e1bd4c7d2ff5e9acd53 is the first bad commit
-commit 8d4b6d37ea7862d230ad2e1bd4c7d2ff5e9acd53
-Author: Ian Rogers <irogers@google.com>
-Date:   Wed Aug 23 21:13:28 2023 -0700
+THEAD did not make dwmac here, but a gmac. dwmac does not exist in the
+context of Thead and Th1520, so the naming suggested by Serge makes sense.
 
-    perf pmu: Lazily load sysfs aliases
+Best regards,
+Krzysztof
 
-    Don't load sysfs aliases for a PMU when the PMU is first created, defer
-    until an alias needs to be found. For the pmu-scan benchmark, average
-    core PMU scanning is reduced by 30.8%, and average PMU scanning by
-    12.6%.
-
-    Signed-off-by: Ian Rogers <irogers@google.com>
-    Cc: Adrian Hunter <adrian.hunter@intel.com>
-    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-    Cc: Gaosheng Cui <cuigaosheng1@huawei.com>
-    Cc: Ingo Molnar <mingo@redhat.com>
-    Cc: James Clark <james.clark@arm.com>
-    Cc: Jing Zhang <renyu.zj@linux.alibaba.com>
-    Cc: Jiri Olsa <jolsa@kernel.org>
-    Cc: John Garry <john.g.garry@oracle.com>
-    Cc: Kajol Jain <kjain@linux.ibm.com>
-    Cc: Kan Liang <kan.liang@linux.intel.com>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-    Cc: Rob Herring <robh@kernel.org>
-    Link: https://lore.kernel.org/r/20230824041330.266337-17-irogers@google.com
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
- tools/perf/tests/pmu-events.c |  2 ++
- tools/perf/util/pmu.c         | 81 ++++++++++++++++++++++---------------------
- tools/perf/util/pmu.h         |  2 ++
- 3 files changed, 46 insertions(+), 39 deletions(-)
-[root@kernelqe3 linux]#
-
-It is segfaulting:
-
-  6.2: Parsing of all PMU events from sysfs                          :
---- start ---
-test child forked, pid 1202947
-Using CPUID IBM,2964,400,N96,1.4,002f
-perf: Segmentation fault
-Obtained 16 stack frames.
-perf(dump_stack+0x36) [0x1156dbe]
-perf(sighandler_dump_stack+0x3a) [0x1156e8a]
-[0x3fffd4790b6]
-/lib64/libc.so.6(__strcasecmp+0x42) [0x3ffa889c51a]
-perf() [0x11792ac]
-perf(pmu_events_table__find_event+0x27c) [0x12432fc]
-perf() [0x11777cc]
-perf() [0x1179842]
-perf(perf_pmu__check_alias+0x4f0) [0x1179e98]
-perf(parse_events_add_pmu+0x72c) [0x1128e84]
-perf(parse_events_parse+0x4d4) [0x11754d4]
-perf(__parse_events+0xda) [0x112644a]
-perf() [0x10cecb2]
-perf() [0x10d3264]
-perf() [0x10cb250]
-perf(cmd_test+0x109e) [0x10cc756]
-test child interrupted
----- end ----
-Parse event definition strings subtest 2: FAILED!
-
-
-Starting program: /root/bin/perf test -F 6
-[Thread debugging using libthread_db enabled]
-Using host libthread_db library "/lib64/libthread_db.so.1".
-  6: Parse event definition strings                                  :
-  6.1: Test event parsing                                            : Ok
-  6.2: Parsing of all PMU events from sysfs                          :
-Program received signal SIGSEGV, Segmentation fault.
-0x000003fffcf1c51a in strcasecmp () from /lib64/libc.so.6
-#0  0x000003fffcf1c51a in strcasecmp () from /lib64/libc.so.6
-#1  0x000000000123e518 in assign_str (name=0x1487cc3 "l1i_ondrawer_mem_sourced_writes", field=0x141eeba "value", old_str=0x18c12e0, new_str=0x1487d1f "event=0xb1") at util/pmu.c:449
-#2  0x000000000123e82c in update_alias (pe=0x3ffffff8ac0, table=0x1555cb0 <pmu_events_map+160>, vdata=0x3ffffff8c40) at util/pmu.c:490
-#3  0x000000000137b9dc in pmu_events_table.find_event ()
-#4  0x000000000123ed4e in perf_pmu__new_alias (pmu=0x15ce490, name=0x23c2593 "L1I_ONDRAWER_MEM_SOURCED_WRITES", desc=0x0, val=0x0, val_fd=0x16058a0, pe=0x0) at util/pmu.c:569
-#5  0x000000000123f370 in pmu_aliases_parse (pmu=0x15ce490) at util/pmu.c:673
-#6  0x000000000123e3a2 in perf_pmu__find_alias (pmu=0x15ce490, name=0x238eb10 "L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV", load=true) at util/pmu.c:432
-#7  0x0000000001241bb2 in pmu_find_alias (pmu=0x15ce490, term=0x18409d0) at util/pmu.c:1439
-#8  0x0000000001241f82 in perf_pmu__check_alias (pmu=0x15ce490, head_terms=0x21b14d0, info=0x3ffffffa238, err=0x3ffffffc4c8) at util/pmu.c:1519
-#9  0x00000000011bbbd4 in parse_events_add_pmu (parse_state=0x3ffffffc2f0, list=0x21afec0, name=0x21c6430 "cpum_cf", head_config=0x21b14d0, auto_merge_stats=false, loc_=0x3ffffffb4d8) at util/parse-events.c:1351
-#10 0x000000000123aa4c in parse_events_parse (_parse_state=0x3ffffffc2f0, scanner=0x15b9310) at util/parse-events.y:299
-#11 0x00000000011bd190 in parse_events__scanner (str=0x3ffffffc68a "cpum_cf/event=L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV/u", input=0x0, parse_state=0x3ffffffc2f0) at util/parse-events.c:1738
-#12 0x00000000011bde00 in __parse_events (evlist=0x15b7030, str=0x3ffffffc68a "cpum_cf/event=L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV/u", pmu_filter=0x0, err=0x3ffffffc4c8, fake_pmu=0x0, warn_if_reordered=true) at util/parse-events.c:2010
-#13 0x0000000001121884 in parse_events (evlist=0x15b7030, str=0x3ffffffc68a "cpum_cf/event=L1D_OFFDRAWER_SCOL_L3_SOURCED_WRITES_IV/u", err=0x3ffffffc4c8) at /root/git/linux/tools/perf/util/parse-events.h:40
-#14 0x0000000001134084 in test_event (e=0x3ffffffc5e0) at tests/parse-events.c:2393
-#15 0x00000000011349ec in test__pmu_events (test=0x156b860 <suite.parse_events>, subtest=1) at tests/parse-events.c:2551
-#16 0x000000000111f884 in run_test (test=0x156b860 <suite.parse_events>, subtest=1) at tests/builtin-test.c:242
-#17 0x000000000111fa1a in test_and_print (t=0x156b860 <suite.parse_events>, subtest=1) at tests/builtin-test.c:271
-#18 0x00000000011203fa in __cmd_test (argc=1, argv=0x3ffffffe5d0, skiplist=0x0) at tests/builtin-test.c:442
-#19 0x0000000001120cca in cmd_test (argc=1, argv=0x3ffffffe5d0) at tests/builtin-test.c:564
-#20 0x00000000011713a4 in run_builtin (p=0x1561190 <commands+600>, argc=3, argv=0x3ffffffe5d0) at perf.c:322
-#21 0x0000000001171712 in handle_internal_command (argc=3, argv=0x3ffffffe5d0) at perf.c:375
-#22 0x0000000001171920 in run_argv (argcp=0x3ffffffe304, argv=0x3ffffffe2f8) at perf.c:419
-#23 0x0000000001171ce8 in main (argc=3, argv=0x3ffffffe5d0) at perf.c:535
-(gdb)
-
-(gdb) fr 1
-#1  0x000000000123e518 in assign_str (name=0x1487cc3 "l1i_ondrawer_mem_sourced_writes", field=0x141eeba "value", old_str=0x18c12e0, new_str=0x1487d1f "event=0xb1") at util/pmu.c:449
-449		if (!new_str || !strcasecmp(*old_str, new_str))
-(gdb) p new_str
-$1 = 0x1487d1f "event=0xb1"
-(gdb) p *old_str
-$2 = 0x1 <error: Cannot access memory at address 0x1>
-(gdb) p old_str
-$3 = (char **) 0x18c12e0
-(gdb)
