@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DA678B65C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A876D78B660
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjH1RYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        id S232790AbjH1RZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbjH1RYc (ORCPT
+        with ESMTP id S232805AbjH1RZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:24:32 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283A1E1;
-        Mon, 28 Aug 2023 10:24:30 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-26b5e737191so1588081a91.2;
-        Mon, 28 Aug 2023 10:24:30 -0700 (PDT)
+        Mon, 28 Aug 2023 13:25:01 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A0FFF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:24:58 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5956735bdc3so1118627b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:24:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693243469; x=1693848269;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DH5Pw+Nwtjtpn2RlWDLRV4PLv534RmiJ+ccVLunffaM=;
-        b=pNg4eGBNuZU4MjoKe5+HwtXKrM2X1biBf0V+NuWovRIv6ZESWJ52o8VHP4ry2WYXQm
-         51cOOFQ/Dcj2nlLA/xapoR38GfIo6MnlQqAq13QCLKIKtwNNNwHk87/7V46n7z/yexcS
-         WrcO+xy9sbXGnnaLfvf254Q8LDCbHecvWbR3aeyGgCJnkvy8j8oX/vERrDHHNuzgtxfA
-         gg/AGZIvsTMBHR6kIdzwc1jL9tHn6RMdxaDnIvfUzhHMSq/C+QLSqG8jMrilJzyF7MsT
-         Bk0mLGiE8fhQLqLvMyFWCVSiyky3CN4+YQXGC58jQFKWSpUbln6KGyNSydCy83qmVViY
-         4SWg==
+        d=google.com; s=20221208; t=1693243498; x=1693848298;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/oLxkqcj6idE2RAd7eB+LLnuv7c2HnjVXYsMqqnGgg8=;
+        b=Q3kdIiExrixB0kXpfSIkMi+WUhVxAjzZp1Gb0Pv92AW7RoauqfxFtrlVmmUAgDr92G
+         YT3v72v+p4ZdtUIfnVnnt4izhXVNFK2RaLOtbuijsYwyUD4zlE5ZbDmmOGaAteX6o2I0
+         rjeRnbkLNa7xN4WC/7Tk4ej57vemznhk7e5+sQX87NqNVIdfOnOonenrEBGV5LTpv70m
+         EOK8gmCgoWq+WNRgfDYABZPBFV68uSsbt77FNJ7F9JS4Xut8mVJOPGih8H/fPSEU0DjS
+         zU3AeR8ISUVZQ07y8530/l9a8o/ybm02tigJ6dk72/7WTDAqn5kOIPfrsnSyTGte3I4b
+         8nDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693243469; x=1693848269;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DH5Pw+Nwtjtpn2RlWDLRV4PLv534RmiJ+ccVLunffaM=;
-        b=T8BefpeWXzggHe89nO4u19+K7lFe+O/WJcMcLk1w/FLbtDDAYzmxlLH9H/8PPyS2Hn
-         Dy/jDAY7xyxb+58FZV+fA/8VdKoPcWl4kixXGZEXQXQGcm3AtDSgS8Vh5jkohRtv7HWQ
-         LzExuTiSFnRURbuYBeX6yq64HzvPRbOSZD89y0bNIecZ/tRV54dFsbS9/ug06VxHz0Fi
-         efO73MP99uNzsaNXHfCTyjY2LfGinJrcR8L0wDTOL7FYpVaPs8D4j7yEMfHCUqTBIogh
-         Mx/ebrc7oACLqNcA9mXm4kNuJz6RH+KoBdaq+4VEwA39MUlkS8o84USwJw3Q6pBVrGfW
-         PMcg==
-X-Gm-Message-State: AOJu0YzNtEAAa5M4yrgPEKgpxSvrZVIHwWlwIuM/JfsmN+bBvMnqxo3V
-        EiGojAGoSs5mE9hRCpl7evk=
-X-Google-Smtp-Source: AGHT+IGaAIVkKliPxSEirGIzxTAM3xU/hfjAL4uB3WLrRpgkso8PKdU5F/PUUFmn6v+c3BpaIplIlg==
-X-Received: by 2002:a17:90a:748b:b0:26f:a34c:90e3 with SMTP id p11-20020a17090a748b00b0026fa34c90e3mr14857713pjk.31.1693243469388;
-        Mon, 28 Aug 2023 10:24:29 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 7-20020a17090a1a4700b00263f446d432sm9864248pjl.43.2023.08.28.10.24.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 10:24:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 28 Aug 2023 10:24:27 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.10 00/84] 5.10.193-rc1 review
-Message-ID: <a47b63cc-174f-4de7-987b-16a6264ce42d@roeck-us.net>
-References: <20230828101149.146126827@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828101149.146126827@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693243498; x=1693848298;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/oLxkqcj6idE2RAd7eB+LLnuv7c2HnjVXYsMqqnGgg8=;
+        b=JjebLo0yaXWNieLXks8a+WN/jTrMAwyuHxyzI23/VACT2sNH6GW3wARK2wpwVRero2
+         TPul9o4mDjl/0eccLjwlYuR2T8WPSOVECe1l14MKCrwlnjxpy3ubF15uIZDNAVjgrobd
+         I/4f4ZiAF0SS/R7dMm27InuHknZl/zD0HKNuLhJCzos4ml5np/QZ2DRgC5QMafYZs27/
+         rJBgaKaWRWPUKbfVxlInekC5Qm6YhjLBRpLrvsHiu5I3DLOHXWQBNDY3CYlOjFfec73b
+         c4vItlUteThAzqVtfahCg16a9w439FHj7N3ozG7ylc4QehmHv0NwkERyI/Q9KqgQh2VD
+         D9Bw==
+X-Gm-Message-State: AOJu0YxiYMjuOzGOCwkOzkFiksqB2tM8oNKtQwP8Qicw91YTB3d8rs5E
+        7Lb/H8Ust++Ub9xmqWSJztG6BP/67HBDgeUsHkw=
+X-Google-Smtp-Source: AGHT+IGK2UAO+x9AivLfeQCbe/oWqNS//H5fFRBkRtH1NHfK+e8tED1exgd39eYPQHfAxiWZ7GpFXPzi/ILoF0aXDNM=
+X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:b64:7817:9989:9eba])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:d809:0:b0:d01:60ec:d0e with SMTP
+ id p9-20020a25d809000000b00d0160ec0d0emr864417ybg.9.1693243497711; Mon, 28
+ Aug 2023 10:24:57 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 10:24:56 -0700
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAGfY7GQC/x2MQQqAIBAAvyJ7TjBFkL4SEaJr7UVFKQLp7y0dh
+ 2FmQMdG2GERAxre1KlkhnkSEE6fD5QUmUErbZTTTsYS+p7ouaqMxhtrfUwuKeCgNmTxz9btfT+ CiCgEXAAAAA==
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693243496; l=1285;
+ i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
+ bh=zCJ5iDIwWerWby5h6qezWElTcBWFCjLXZm+/Emze4k4=; b=Be7HD5ZZzeKJKDc7FCdvIqAeEUnkF5wWw4dcsSwn+XM/KS7qdTk8/xSGsBu46LPiDpE8tF4YV
+ kYUBq67QmrBC/DHsEyUTt2eT9Z3C+LmJgo+FpAyYBzTdDk7AxcVeK1l
+X-Mailer: b4 0.12.3
+Message-ID: <20230828-docs_fixup-v1-1-cc78af124667@google.com>
+Subject: [PATCH] Documentation/llvm: fix typo in link
+From:   ndesaulniers@google.com
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>, llvm@lists.linux.dev,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:13:17PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.193 release.
-> There are 84 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-> 
+Fixes the following observed build failure from `make htmldocs`:
+  Documentation/kbuild/llvm.rst:127: ERROR: Unknown target name:
+  "reprocible_builds".
 
-v5.10.y also needs commit 4ea6fa2cb921 ("mhi: pci_generic: Fix implicit
-conversion warning") to avoid
+Fixes: bda09c0e14a4 ("Documentation/llvm: refresh docs")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/linux-next/20230828145737.6ff53bc9@canb.auug.org.au/
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ Documentation/kbuild/llvm.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-drivers/bus/mhi/host/pci_generic.c:276:25: warning: implicit conversion from 'unsigned long long' to 'dma_addr_t'
-	(aka 'unsigned int') changes value from 18446744073709551615 to 4294967295 [-Wconstant-conversion]
+diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+index 384622dd36b7..b1d97fafddcf 100644
+--- a/Documentation/kbuild/llvm.rst
++++ b/Documentation/kbuild/llvm.rst
+@@ -126,7 +126,7 @@ Ccache
+ 
+ ``ccache`` can be used with ``clang`` to improve subsequent builds, (though
+ KBUILD_BUILD_TIMESTAMP_ should be set to a deterministic value between builds
+-in order to avoid 100% cache misses, see Reprocible_builds_ for more info):
++in order to avoid 100% cache misses, see Reproducible_builds_ for more info):
+ 
+ 	KBUILD_BUILD_TIMESTAMP='' make LLVM=1 CC="ccache clang"
+ 
 
-which is seen since v5.10.192 when building images with clang.
+---
+base-commit: 2ee82481c392eec06a7ef28df61b7f0d8e45be2e
+change-id: 20230828-docs_fixup-d3a355adf8f0
 
-Thanks,
-Guenter
+Best regards,
+-- 
+Nick Desaulniers <ndesaulniers@google.com>
+
