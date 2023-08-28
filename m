@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A876D78B660
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC5378B662
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbjH1RZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        id S232816AbjH1RZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbjH1RZB (ORCPT
+        with ESMTP id S232825AbjH1RZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:25:01 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A0FFF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:24:58 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5956735bdc3so1118627b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 10:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693243498; x=1693848298;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/oLxkqcj6idE2RAd7eB+LLnuv7c2HnjVXYsMqqnGgg8=;
-        b=Q3kdIiExrixB0kXpfSIkMi+WUhVxAjzZp1Gb0Pv92AW7RoauqfxFtrlVmmUAgDr92G
-         YT3v72v+p4ZdtUIfnVnnt4izhXVNFK2RaLOtbuijsYwyUD4zlE5ZbDmmOGaAteX6o2I0
-         rjeRnbkLNa7xN4WC/7Tk4ej57vemznhk7e5+sQX87NqNVIdfOnOonenrEBGV5LTpv70m
-         EOK8gmCgoWq+WNRgfDYABZPBFV68uSsbt77FNJ7F9JS4Xut8mVJOPGih8H/fPSEU0DjS
-         zU3AeR8ISUVZQ07y8530/l9a8o/ybm02tigJ6dk72/7WTDAqn5kOIPfrsnSyTGte3I4b
-         8nDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693243498; x=1693848298;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/oLxkqcj6idE2RAd7eB+LLnuv7c2HnjVXYsMqqnGgg8=;
-        b=JjebLo0yaXWNieLXks8a+WN/jTrMAwyuHxyzI23/VACT2sNH6GW3wARK2wpwVRero2
-         TPul9o4mDjl/0eccLjwlYuR2T8WPSOVECe1l14MKCrwlnjxpy3ubF15uIZDNAVjgrobd
-         I/4f4ZiAF0SS/R7dMm27InuHknZl/zD0HKNuLhJCzos4ml5np/QZ2DRgC5QMafYZs27/
-         rJBgaKaWRWPUKbfVxlInekC5Qm6YhjLBRpLrvsHiu5I3DLOHXWQBNDY3CYlOjFfec73b
-         c4vItlUteThAzqVtfahCg16a9w439FHj7N3ozG7ylc4QehmHv0NwkERyI/Q9KqgQh2VD
-         D9Bw==
-X-Gm-Message-State: AOJu0YxiYMjuOzGOCwkOzkFiksqB2tM8oNKtQwP8Qicw91YTB3d8rs5E
-        7Lb/H8Ust++Ub9xmqWSJztG6BP/67HBDgeUsHkw=
-X-Google-Smtp-Source: AGHT+IGK2UAO+x9AivLfeQCbe/oWqNS//H5fFRBkRtH1NHfK+e8tED1exgd39eYPQHfAxiWZ7GpFXPzi/ILoF0aXDNM=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:b64:7817:9989:9eba])
- (user=ndesaulniers job=sendgmr) by 2002:a25:d809:0:b0:d01:60ec:d0e with SMTP
- id p9-20020a25d809000000b00d0160ec0d0emr864417ybg.9.1693243497711; Mon, 28
- Aug 2023 10:24:57 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 10:24:56 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGfY7GQC/x2MQQqAIBAAvyJ7TjBFkL4SEaJr7UVFKQLp7y0dh
- 2FmQMdG2GERAxre1KlkhnkSEE6fD5QUmUErbZTTTsYS+p7ouaqMxhtrfUwuKeCgNmTxz9btfT+ CiCgEXAAAAA==
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693243496; l=1285;
- i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=zCJ5iDIwWerWby5h6qezWElTcBWFCjLXZm+/Emze4k4=; b=Be7HD5ZZzeKJKDc7FCdvIqAeEUnkF5wWw4dcsSwn+XM/KS7qdTk8/xSGsBu46LPiDpE8tF4YV
- kYUBq67QmrBC/DHsEyUTt2eT9Z3C+LmJgo+FpAyYBzTdDk7AxcVeK1l
-X-Mailer: b4 0.12.3
-Message-ID: <20230828-docs_fixup-v1-1-cc78af124667@google.com>
-Subject: [PATCH] Documentation/llvm: fix typo in link
-From:   ndesaulniers@google.com
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 28 Aug 2023 13:25:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665DE189;
+        Mon, 28 Aug 2023 10:25:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04B7464CCB;
+        Mon, 28 Aug 2023 17:25:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90B60C433C8;
+        Mon, 28 Aug 2023 17:25:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693243521;
+        bh=cHslUYn6nGJzaG/ccmGM9JwQDO1Z4eOGY9fjyg0KRKs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BJKk3zucPY3kCl69xKUKL1neO6G21sCRrzuAFubHQ28CtjnYoauJdQ5Y93naE1ju1
+         MbQxIOjnHTkDTVFw+fqsdvlwMuT8VetGBmFLNu0dSnviU3Q8WTgAra/IizIjXm4Swo
+         cunpZv6R/Cf5UmStluGWYVk88f18DOmJATra7QH2u4zo/MW9X0RJzXqJQ7jft+wCXl
+         35G7zLfm1Zdj8rD0dfbaxBPRgq3WgGN78aACrMOsZabrDCXwaAlEwZY7eOkGqQqFFe
+         5BII8nA7ljt+QsegOGdcvBaZs2EiTuniRaWIVN860tOjkpMcWFqOeu5cFmBHfE1Cgm
+         fRP+WElo/mvRw==
+Date:   Mon, 28 Aug 2023 19:25:08 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Matthew Wilcox <willy@infradead.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Simon Glass <sjg@chromium.org>, Tom Rini <trini@konsulko.com>,
+        Neha Francis <n-francis@ti.com>
+Subject: Re: [PATCH 1/2] Documentation: sphinx: Add sphinx-prompt
+Message-ID: <20230828192508.0da12d72@sal.lan>
+In-Reply-To: <87wmxf19rs.fsf@meer.lwn.net>
+References: <20230824182107.3702766-1-nm@ti.com>
+        <20230824182107.3702766-2-nm@ti.com>
+        <87h6om4u6o.fsf@meer.lwn.net>
+        <20230828125912.hndmzfkof23zxpxl@tidings>
+        <87edjn2sj0.fsf@meer.lwn.net>
+        <ZOyqhL32tuiMlS23@casper.infradead.org>
+        <87wmxf19rs.fsf@meer.lwn.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following observed build failure from `make htmldocs`:
-  Documentation/kbuild/llvm.rst:127: ERROR: Unknown target name:
-  "reprocible_builds".
+Em Mon, 28 Aug 2023 09:12:07 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-Fixes: bda09c0e14a4 ("Documentation/llvm: refresh docs")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/linux-next/20230828145737.6ff53bc9@canb.auug.org.au/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- Documentation/kbuild/llvm.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Matthew Wilcox <willy@infradead.org> writes:
+> 
+> > On Mon, Aug 28, 2023 at 07:41:39AM -0600, Jonathan Corbet wrote:  
+> >> I appreciate attempts to improve our documentation, and hope that you
+> >> will continue to do so.  I am far from convinced, though, that this
+> >> change clears the bar for mainline inclusion.  
+> >
+> > I'd ask that you reconsider.  Looking at patch 2, I prefer what is
+> > written there.  I don't think it adds cognitive load when reading the
+> > plain docs.  I find the "copy and paste from html" argument not very
+> > convincing, but I do like "copy and paste from rst", which this enables.  
+> 
+> Do you really think that the benefit from that justifies adding a build
+> dependency and breaking everybody's docs build until they install it?  I
+> rather suspect I would hear back from people who feel otherwise if I did
+> that... 
 
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index 384622dd36b7..b1d97fafddcf 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -126,7 +126,7 @@ Ccache
- 
- ``ccache`` can be used with ``clang`` to improve subsequent builds, (though
- KBUILD_BUILD_TIMESTAMP_ should be set to a deterministic value between builds
--in order to avoid 100% cache misses, see Reprocible_builds_ for more info):
-+in order to avoid 100% cache misses, see Reproducible_builds_ for more info):
- 
- 	KBUILD_BUILD_TIMESTAMP='' make LLVM=1 CC="ccache clang"
- 
+I agree with Jon: it needs at least a patch for scripts/sphinx-pre-install.
+Adding dependencies there is not the easiest thing to do, as one needs to
+test the change against all supported distros to ensure that the new package
+name will be the same everywhere. Also, if I'm not mistaken, some developers
+don't want to use pip to install packages, wanting instead to have the
+distro-provided package.
 
----
-base-commit: 2ee82481c392eec06a7ef28df61b7f0d8e45be2e
-change-id: 20230828-docs_fixup-d3a355adf8f0
+Also, having an extra build dependency will surely break already-existing
+CI automation. Making the new dependency optional would be a way to go,
+but this will cause troubles at the html output after such change.
 
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
+> > I also have a certain fond memory of how the plan9 people set up 'rc'
+> > (their shell) so that ";" was both an empty statement, and the default
+> > prompt.  So you could copy-paste lines starting with the ; prompt and
+> > they'd work.  It's a small usabillity improvement, but it is there,
+> > and wow is it annoying when you don't have it any more.  
+> 
+> Ah, OK, so what we really need is a bash patch :)
 
+Probably the hardest part would be to do copy-and-paste on places
+where there are both shell prompt commands and their results. I'm
+pretty sure we have things like:
+
+	some example::
+
+		$ run_some_command
+		comand results line 1
+		comand results line 2
+		comand results line 3
+		...
+		comand results line n
+
+		$ run_another_command
+
+does sphinx-prompt handle things like that, placing just:
+
+	run_some_command
+	run_another_command
+
+at the paste buffer, ignoring any command result lines?
+
+IMO, the above described usease is where having a prompt will help
+to identify what should be copied/pasted and what are the command
+results. I mean, if someone wants to just place the commands to
+run, he could write, instead:
+
+	Run those shell commands to do something::
+
+		run_some_command
+		run_another_command
+
+
+Regards,
+Mauro
