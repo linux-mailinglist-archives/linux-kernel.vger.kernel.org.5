@@ -2,141 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC5378B662
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DFF78B669
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 19:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbjH1RZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 13:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
+        id S231585AbjH1R10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 13:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjH1RZZ (ORCPT
+        with ESMTP id S232861AbjH1R1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 13:25:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665DE189;
-        Mon, 28 Aug 2023 10:25:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04B7464CCB;
-        Mon, 28 Aug 2023 17:25:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90B60C433C8;
-        Mon, 28 Aug 2023 17:25:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693243521;
-        bh=cHslUYn6nGJzaG/ccmGM9JwQDO1Z4eOGY9fjyg0KRKs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BJKk3zucPY3kCl69xKUKL1neO6G21sCRrzuAFubHQ28CtjnYoauJdQ5Y93naE1ju1
-         MbQxIOjnHTkDTVFw+fqsdvlwMuT8VetGBmFLNu0dSnviU3Q8WTgAra/IizIjXm4Swo
-         cunpZv6R/Cf5UmStluGWYVk88f18DOmJATra7QH2u4zo/MW9X0RJzXqJQ7jft+wCXl
-         35G7zLfm1Zdj8rD0dfbaxBPRgq3WgGN78aACrMOsZabrDCXwaAlEwZY7eOkGqQqFFe
-         5BII8nA7ljt+QsegOGdcvBaZs2EiTuniRaWIVN860tOjkpMcWFqOeu5cFmBHfE1Cgm
-         fRP+WElo/mvRw==
-Date:   Mon, 28 Aug 2023 19:25:08 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Matthew Wilcox <willy@infradead.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Simon Glass <sjg@chromium.org>, Tom Rini <trini@konsulko.com>,
-        Neha Francis <n-francis@ti.com>
-Subject: Re: [PATCH 1/2] Documentation: sphinx: Add sphinx-prompt
-Message-ID: <20230828192508.0da12d72@sal.lan>
-In-Reply-To: <87wmxf19rs.fsf@meer.lwn.net>
-References: <20230824182107.3702766-1-nm@ti.com>
-        <20230824182107.3702766-2-nm@ti.com>
-        <87h6om4u6o.fsf@meer.lwn.net>
-        <20230828125912.hndmzfkof23zxpxl@tidings>
-        <87edjn2sj0.fsf@meer.lwn.net>
-        <ZOyqhL32tuiMlS23@casper.infradead.org>
-        <87wmxf19rs.fsf@meer.lwn.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 28 Aug 2023 13:27:01 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BA1103;
+        Mon, 28 Aug 2023 10:26:57 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1B8CA5AA;
+        Mon, 28 Aug 2023 19:25:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693243535;
+        bh=ssG+wmaauBYkmFohm0LN3Ai/dsIv1Lk5t8fuUcW/ueY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VghHy9QFYH/wYcJxOTD1E+JY/1v2eDBQZIJKqlyw0FtTwTUhmvrzqBd8abTgS8gGv
+         ZZtReM92yXAeRUe+HeiAxep9pLa3/XYgvgOrG6YuFpqjKdV774+VvwW6eXtjB+uS6K
+         nQqfXYL/0pn8jgLSWmcaDPKo1BmGwngTU/xHnX5A=
+Date:   Mon, 28 Aug 2023 20:27:05 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] media: qcom: camss: Fix csid-gen2 for test
+ pattern generator
+Message-ID: <20230828172705.GD14596@pendragon.ideasonboard.com>
+References: <20230822200626.1931129-1-bryan.odonoghue@linaro.org>
+ <20230822200626.1931129-10-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230822200626.1931129-10-bryan.odonoghue@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 28 Aug 2023 09:12:07 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
+Hi Bryan,
 
-> Matthew Wilcox <willy@infradead.org> writes:
+Thank you for the patch.
+
+On Tue, Aug 22, 2023 at 09:06:26PM +0100, Bryan O'Donoghue wrote:
+> From: Andrey Konovalov <andrey.konovalov@linaro.org>
 > 
-> > On Mon, Aug 28, 2023 at 07:41:39AM -0600, Jonathan Corbet wrote:  
-> >> I appreciate attempts to improve our documentation, and hope that you
-> >> will continue to do so.  I am far from convinced, though, that this
-> >> change clears the bar for mainline inclusion.  
-> >
-> > I'd ask that you reconsider.  Looking at patch 2, I prefer what is
-> > written there.  I don't think it adds cognitive load when reading the
-> > plain docs.  I find the "copy and paste from html" argument not very
-> > convincing, but I do like "copy and paste from rst", which this enables.  
+> In the current driver csid Test Pattern Generator (TPG) doesn't work.
+> This change:
+> - fixes writing frame width and height values into CSID_TPG_DT_n_CFG_0
+> - fixes the shift by one between test_pattern control value and the
+>   actual pattern.
+> - drops fixed VC of 0x0a which testing showed prohibited some test
+>   patterns in the CSID to produce output.
+> So that TPG starts working, but with the below limitations:
+> - only test_pattern=9 works as it should
+> - test_pattern=8 and test_pattern=7 produce black frame (all zeroes)
+> - the rest of test_pattern's don't work (yavta doesn't get the data)
+> - regardless of the CFA pattern set by 'media-ctl -V' the actual pixel
+>   order is always the same (RGGB for any RAW8 or RAW10P format in
+>   4608x2592 resolution).
 > 
-> Do you really think that the benefit from that justifies adding a build
-> dependency and breaking everybody's docs build until they install it?  I
-> rather suspect I would hear back from people who feel otherwise if I did
-> that... 
-
-I agree with Jon: it needs at least a patch for scripts/sphinx-pre-install.
-Adding dependencies there is not the easiest thing to do, as one needs to
-test the change against all supported distros to ensure that the new package
-name will be the same everywhere. Also, if I'm not mistaken, some developers
-don't want to use pip to install packages, wanting instead to have the
-distro-provided package.
-
-Also, having an extra build dependency will surely break already-existing
-CI automation. Making the new dependency optional would be a way to go,
-but this will cause troubles at the html output after such change.
-
-> > I also have a certain fond memory of how the plan9 people set up 'rc'
-> > (their shell) so that ";" was both an empty statement, and the default
-> > prompt.  So you could copy-paste lines starting with the ; prompt and
-> > they'd work.  It's a small usabillity improvement, but it is there,
-> > and wow is it annoying when you don't have it any more.  
+> Tested with:
 > 
-> Ah, OK, so what we really need is a bash patch :)
+> RAW10P format, VC0:
+>  media-ctl -V '"msm_csid0":0[fmt:SRGGB10/4608x2592 field:none]'
+>  media-ctl -V '"msm_vfe0_rdi0":0[fmt:SRGGB10/4608x2592 field:none]'
+>  media-ctl -l '"msm_csid0":1->"msm_vfe0_rdi0":0[1]'
+>  v4l2-ctl -d /dev/v4l-subdev6 -c test_pattern=9
+>  yavta -B capture-mplane --capture=3 -n 3 -f SRGGB10P -s 4608x2592 /dev/video0
+> 
+> RAW10P format, VC1:
+>  media-ctl -V '"msm_csid0":2[fmt:SRGGB10/4608x2592 field:none]'
+>  media-ctl -V '"msm_vfe0_rdi1":0[fmt:SRGGB10/4608x2592 field:none]'
+>  media-ctl -l '"msm_csid0":2->"msm_vfe0_rdi1":0[1]'
+>  v4l2-ctl -d /dev/v4l-subdev6 -c test_pattern=9
+>  yavta -B capture-mplane --capture=3 -n 3 -f SRGGB10P -s 4608x2592 /dev/video1
+> 
+> RAW8 format, VC0:
+>  media-ctl --reset
+>  media-ctl -V '"msm_csid0":0[fmt:SRGGB8/4608x2592 field:none]'
+>  media-ctl -V '"msm_vfe0_rdi0":0[fmt:SRGGB8/4608x2592 field:none]'
+>  media-ctl -l '"msm_csid0":1->"msm_vfe0_rdi0":0[1]'
+>  yavta -B capture-mplane --capture=3 -n 3 -f SRGGB8 -s 4608x2592 /dev/video0
+> 
+> Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-Probably the hardest part would be to do copy-and-paste on places
-where there are both shell prompt commands and their results. I'm
-pretty sure we have things like:
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-	some example::
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid-gen2.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+> index 140c584bfb8b1..6ba2b10326444 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+> @@ -355,9 +355,6 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
+>  		u8 dt_id = vc;
+>  
+>  		if (tg->enabled) {
+> -			/* Config Test Generator */
+> -			vc = 0xa;
+> -
+>  			/* configure one DT, infinite frames */
+>  			val = vc << TPG_VC_CFG0_VC_NUM;
+>  			val |= INTELEAVING_MODE_ONE_SHOT << TPG_VC_CFG0_LINE_INTERLEAVING_MODE;
+> @@ -370,14 +367,14 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
+>  
+>  			writel_relaxed(0x12345678, csid->base + CSID_TPG_LFSR_SEED);
+>  
+> -			val = input_format->height & 0x1fff << TPG_DT_n_CFG_0_FRAME_HEIGHT;
+> -			val |= input_format->width & 0x1fff << TPG_DT_n_CFG_0_FRAME_WIDTH;
+> +			val = (input_format->height & 0x1fff) << TPG_DT_n_CFG_0_FRAME_HEIGHT;
+> +			val |= (input_format->width & 0x1fff) << TPG_DT_n_CFG_0_FRAME_WIDTH;
+>  			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
+>  
+>  			val = format->data_type << TPG_DT_n_CFG_1_DATA_TYPE;
+>  			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_1(0));
+>  
+> -			val = tg->mode << TPG_DT_n_CFG_2_PAYLOAD_MODE;
+> +			val = (tg->mode - 1) << TPG_DT_n_CFG_2_PAYLOAD_MODE;
+>  			val |= 0xBE << TPG_DT_n_CFG_2_USER_SPECIFIED_PAYLOAD;
+>  			val |= format->decode_format << TPG_DT_n_CFG_2_ENCODE_FORMAT;
+>  			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_2(0));
 
-		$ run_some_command
-		comand results line 1
-		comand results line 2
-		comand results line 3
-		...
-		comand results line n
-
-		$ run_another_command
-
-does sphinx-prompt handle things like that, placing just:
-
-	run_some_command
-	run_another_command
-
-at the paste buffer, ignoring any command result lines?
-
-IMO, the above described usease is where having a prompt will help
-to identify what should be copied/pasted and what are the command
-results. I mean, if someone wants to just place the commands to
-run, he could write, instead:
-
-	Run those shell commands to do something::
-
-		run_some_command
-		run_another_command
-
-
+-- 
 Regards,
-Mauro
+
+Laurent Pinchart
