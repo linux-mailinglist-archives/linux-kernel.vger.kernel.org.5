@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E7F78B799
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89CE78B7A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbjH1SyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S233214AbjH1Sze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233199AbjH1SyC (ORCPT
+        with ESMTP id S233222AbjH1SzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:54:02 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F9195
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:54:00 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58fbc0e0c6dso52805447b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693248839; x=1693853639;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sc1uF7gYSefu5BRGSTzQndxC9k/7FyuIdQ087jpekoY=;
-        b=VFkAo9hf/RrtBJZzuZAvW4Qx8GDm3uxmV2QYAA2I8g7alFugXamKTScEO35AzaFnad
-         ffi7cGrV5TW3+vkFTqTW9oSAu54d1j4LtrxWy3KJTF9zrMxGbVHj7CsMq2cefVk5rFfS
-         sxNE2ch3/N/YVclVnzOr482IvlO1P7loQOqGaByhYkIiJmFUYST0ckovmHJl5jz+Iarz
-         mWXk8bSWmJd+ZhjytJeBn4PGOZT8Z0OabL73y8+6OSnKyFwOIP/5LFfqSTz+MXRUGNBT
-         duGENSiwlo/SrYzEcjZ3Id5dSh1k0umyuGhjSw0zk2tAmKDP5EZSxWo3qyBT5LBvxFXr
-         XOig==
+        Mon, 28 Aug 2023 14:55:13 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB621A3;
+        Mon, 28 Aug 2023 11:55:07 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1bf092a16c9so27684255ad.0;
+        Mon, 28 Aug 2023 11:55:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693248839; x=1693853639;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sc1uF7gYSefu5BRGSTzQndxC9k/7FyuIdQ087jpekoY=;
-        b=Fz5GavrySuWA/aPF3of5QfCbM6/74R5kcgAyrN5GD+i6zTrbs6+ZWQb2I29/LGSiUc
-         i5p5NN/Nyv3MwsFd8mUt4LYVQnJJI1ZMibjfxS6Qkww1eYPdNz2FsY42RYcSr1HGScXf
-         nCE0KcfsxNiRCXkQZEfVIQN4xqaAbeeXNneT15SmCXySOJzsjoOBg5Z2AVNyiq4l7QdJ
-         oUHtfmIJaraYmXtchA7t7vB0hn7q5Cqs77WsEpllG3cFWgfva2bJzCNnwLFKXGktd9sK
-         suct32KUjHow//sO3Z6+Cofs8ErSLgPRuxj0MJDkPRNa8z9RALyb2OeD4kX2/u6DgYeb
-         +n1g==
-X-Gm-Message-State: AOJu0YxjPElFSPaK06E6MAVVimoW1M9XaKHsGI0S6Mhj4U2MqlnxERFJ
-        EovGfs2WiKzEbLszr7D3QZxyV96+MYGW9nbSozk=
-X-Google-Smtp-Source: AGHT+IHIGJhr7wGTI0i0gH2lGeGCeQNJBVOzftarFxDTgmZ89qvKukPAw9+LhRJNC0a4S9ggs5VITwvLEoUEcw1Hj/0=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:b64:7817:9989:9eba])
- (user=ndesaulniers job=sendgmr) by 2002:a81:af03:0:b0:583:9913:f293 with SMTP
- id n3-20020a81af03000000b005839913f293mr836637ywh.1.1693248839355; Mon, 28
- Aug 2023 11:53:59 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 11:53:57 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAETt7GQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCyML3QoLs/i0nGLd5DSj5GQTyzQTgzRjJaDqgqLUtMwKsEnRsbW1AAP n8AxZAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693248837; l=2210;
- i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=igqcf0msY5QTRQo1MI53i8OCCw46cUhpJvhlSkjr9js=; b=O/AHHJMNw11K4Mjvdph2kcwznwcnbyuKDmEfeEsEdtbLNC7cl0Y4Ds5en/q/zRFEvScTkuUMh
- Q9ZPz2OSsiJBEF1CzZEWB/bx5LNAHREdAkOJJkpShgoLK26lBNDjlqt
-X-Mailer: b4 0.12.3
-Message-ID: <20230828-x86_fls-v1-1-e6a31b9f79c3@google.com>
-Subject: [PATCH] x86/asm/bitops: Use __builtin_clz{l|ll} to evaluate constant expressions
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Bill Wendling <morbo@google.com>,
-        Helge Deller <deller@gmx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chanho Min <chanho.min@lge.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-parisc@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693248907; x=1693853707;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=umflnyFqBYkm4MgelOGwx19oN9oBe5SP3i3J2ZxPkxQ=;
+        b=el7WQAhC3uTso+CrYyYTyFpA2mWvmY9Nk0SnMf78ycenwiR0N+lfoor46ifpG3gBaR
+         jXggXK1vp23FXKFJ7E8i/JPsg1ACsE/d2CvCK7SCLoCj0T8NaLF99emI6TgD73HlKSm6
+         r5Xw8wDPzWl5xetUzlBlxboJg7pwdNANx/V8DPpGBUWh8oKShsOxUeDb8QR2IPk/NF5m
+         SHwxO/DROG9XUUei8W1b+HbFU17cMbuAKwsWvPvB0+YOfXlM/xkue+Pvy78NLoCU8sNd
+         374pTFAS8oEbHtKJeXKSrxKr+HEmSyEm995/lunjv98Ic1N+xIb7iLpSUWhv0UuV+cc4
+         9JIg==
+X-Gm-Message-State: AOJu0YwMVM0dxwnS3NbViGBBvns4RDpZGnk3aU8EqosOie5cJQ/L/IFI
+        wWQ62vUY4Td3rmEnChqBY7Q=
+X-Google-Smtp-Source: AGHT+IG5OnTzChA0NWY4c4vTbc4cYX/NBVucFHt1B0vYzAE05QFD8WTqXl+BXzYAGg4hw/79RtJ9YA==
+X-Received: by 2002:a17:902:f94e:b0:1c0:e014:90c1 with SMTP id kx14-20020a170902f94e00b001c0e01490c1mr8249817plb.48.1693248906633;
+        Mon, 28 Aug 2023 11:55:06 -0700 (PDT)
+Received: from [192.168.165.167] ([216.9.110.6])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c14d00b001b8a3e2c241sm7745382plj.14.2023.08.28.11.55.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 11:55:06 -0700 (PDT)
+Message-ID: <ed518b56-a579-49bb-b2bb-220214ef6e2e@acm.org>
+Date:   Mon, 28 Aug 2023 11:55:01 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH blktests v3 3/3] nvme: introduce
+ nvmet_target_{setup/cleanup} common code
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <fbyacmtpqfhfb763s7utwbt4kdbr3pli4rp7prj7jlklq2tit6@mkkjzy73r3a3>
+ <7b5fc500-afeb-7edf-383c-0cdda77b3cf6@acm.org>
+ <oss54jmgqzjcxecea4h7eeguh6lmhls4p74e7unbxmhz34asvk@a7n6vu6hauys>
+ <zvu2ihivd6f4fbs7hpgowstq3li4wrdycqzso3c32qcco7zes4@s2l2solzzo6u>
+ <saxcmve2nchhytphnknfqp2fxpwdk5v5xqfoq2g5gsdlecf3il@sypswqownxih>
+ <b79c0c9d-3930-4dbf-a1cf-8ca9e00af614@acm.org>
+ <xz7rnke52xu3anmnjliybqv4yk3w367noo6ipguarkec6u4i5g@7bqtovmc3gjb>
+ <d6ec4e54-1ec9-648a-ce8c-1e08a439c3c6@acm.org>
+ <ckuewnzuiejug6jbuxfw4viqwf4v43pq54mj4k4qbq7uz3zwpn@3iijcby24ujd>
+ <8ffb6c2f-0836-4302-82b9-902e092e537c@acm.org>
+ <txsyjpcxb3baog5fgqdnm5hh765nt5qcbcmllsto7uulyzr5kn@zirmqldhosbi>
+Content-Language: en-US
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <txsyjpcxb3baog5fgqdnm5hh765nt5qcbcmllsto7uulyzr5kn@zirmqldhosbi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit fdb6649ab7c1 ("x86/asm/bitops: Use __builtin_ctzl() to
-evaluate constant expressions") and commit 2fcff790dcb4 ("powerpc: Use
-builtin functions for fls()/__fls()/fls64()").
+On 8/28/23 10:02, Daniel Wagner wrote:
+> I am against adding code just to make ShellCheck happy.
+Hi Daniel,
 
-From a recent discussion, I noticed that x86 is lacking an optimization
-that appears in arch/powerpc/include/asm/bitops.h related to constant
-folding.  If you add a BUILD_BUG_ON(__builtin_constant_p(param)) to
-these functions, you'll find that there were cases where the use of
-inline asm pessimized the compiler's ability to perform constant folding
-resulting in runtime calculation of a value that could have been
-computed at compile time.
+That's not what my concern is about. My concern is about keeping
+the blktests source code maintainable and easy to read. My opinion
+is that the ability of bash to pass arguments from caller to callee
+implicitly (a) hurts readability, (b) is error prone and (c) hurts
+maintainability. This is why I think that this feature should not
+be used and hence that disabling SC2119 would be really wrong.
 
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/llvm/CAKwvOdm_y6UOnxFrAiDxou2jc8CRUvyhfH9kAdc3PG0=bEvduw@mail.gmail.com/
----
- arch/x86/include/asm/bitops.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Regarding (a), I think this long e-mail thread is more than enough
+evidence that it is not clear what the intention is of the
+_nvmet_target_setup calls without arguments - not pass any arguments
+or pass the argument list of the caller. Regarding (c): if any
+_nvmet_target_setup calls would be added in a function that accepts
+arguments, how is _nvmet_target_setup() expected to process arguments
+of which it doesn't know how to interpret these?
 
-diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
-index 2edf68475fec..50e5ebf9d0a0 100644
---- a/arch/x86/include/asm/bitops.h
-+++ b/arch/x86/include/asm/bitops.h
-@@ -293,6 +293,9 @@ static __always_inline unsigned long variable_ffz(unsigned long word)
-  */
- static __always_inline unsigned long __fls(unsigned long word)
- {
-+	if (__builtin_constant_p(word))
-+		return BITS_PER_LONG - 1 - __builtin_clzl(word);
-+
- 	asm("bsr %1,%0"
- 	    : "=r" (word)
- 	    : "rm" (word));
-@@ -360,6 +363,9 @@ static __always_inline int fls(unsigned int x)
- {
- 	int r;
- 
-+	if (__builtin_constant_p(x))
-+		return x ? 32 - __builtin_clz(x) : 0;
-+
- #ifdef CONFIG_X86_64
- 	/*
- 	 * AMD64 says BSRL won't clobber the dest reg if x==0; Intel64 says the
-@@ -401,6 +407,9 @@ static __always_inline int fls(unsigned int x)
- static __always_inline int fls64(__u64 x)
- {
- 	int bitpos = -1;
-+
-+	if (__builtin_constant_p(x))
-+		return x ? 64 - __builtin_clzll(x) : 0;
- 	/*
- 	 * AMD64 says BSRQ won't clobber the dest reg if x==0; Intel64 says the
- 	 * dest reg is undefined if x==0, but their CPU architect says its
+Hence my proposal to change the _nvmet_target_setup calls with no
+arguments into "_nvmet_target_setup --" and also to ignore the double
+hyphen argument inside _nvmet_target_setup().
 
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230828-x86_fls-cf2cc49f40f3
+Thanks,
 
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+Bart.
