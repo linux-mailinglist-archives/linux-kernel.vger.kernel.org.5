@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E5A78B581
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DF278B582
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 18:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbjH1Qmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 12:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
+        id S232398AbjH1Qmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 12:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231744AbjH1QmI (ORCPT
+        with ESMTP id S232335AbjH1QmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 12:42:08 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761D412F
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 09:42:05 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-79dc53034a8so1067431241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 09:42:05 -0700 (PDT)
+        Mon, 28 Aug 2023 12:42:18 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB9AF9;
+        Mon, 28 Aug 2023 09:42:15 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3a81154c570so1979551b6e.1;
+        Mon, 28 Aug 2023 09:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693240924; x=1693845724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4gA6YgxNWy5uRYOQN4TtQSLMyAxYieksPe9778u218A=;
-        b=HEfl3OgG6aXAOtDXEpKNEy6DWPGtiNxkWBwICsIXxddFHyB9sK802V0hQv4eSqzoHK
-         /dRNqs+KEIgzLK48fafHPPtBA0W1QHaM/lCyLqxAF5d+gn0i+uHI/CcP9bK35JV/oIUE
-         H7/LXy3x5SKq9TXzLLczpEEND8HYc8kIU2TCrwideLfJeA1EtdxBuiRRBzX6gbJh09tt
-         A4Zoi3Y6rTck1YZQ2spOgOye9H6RjUuGV+FSgl/PTYBq/qV2pB5Vg6ut4B+ofVQN5+eX
-         WBsIrx8WP4gRYvF7jOJF8kQdpjZ7iLKsyoc5IpvcBR/TxkWhDmT2kioX/tHkrjbGrvPV
-         rLZg==
+        d=gmail.com; s=20221208; t=1693240935; x=1693845735;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=07+BqHH2fvjqSJVcNPgMWDKWkC2DZMaqXd0rPYXV11E=;
+        b=MzKTMIdKFjKyzdis9lZD2DJaudlaVtLPRBvUUxdtaNKYyaGkyoFdBr88+bo8oiuqDX
+         J1sHRygsdtUHdH4Xc554WDcOR4xRNJSJGyE/iLyINu9Rmw02s4cRG3y71mtWx1u0lBGN
+         TZmwgosaJQWK4zz4/j2DHgNA7NTzq43QAZF11SFyqpZifHKWauCDdd8xT9zOg/q47iQ1
+         qnlfBxkavy3jcWDo88V6UwNrOFZPWEZKohjBClAKSIDHMfcfV7olXDtVVDOF8h07nATT
+         3RW2PHgP+1TKJfkuKaA4kpnsCutp9Fj2i7shH0p3GsEiRzu/1XDwDc+smnfuB2gTYdqe
+         Ay4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693240924; x=1693845724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4gA6YgxNWy5uRYOQN4TtQSLMyAxYieksPe9778u218A=;
-        b=iH42qdRP8VzN0DS2nO/7Rux6m/NkUCETHTYUgeJDqiLBD94yjo0Wol7DJPfKNTt9lq
-         Gwa8Wp/ccIeBxroWE1MpvMulqL7MkuyABj7hyLjMomgqExLxs1L7tYGNcYOltM6lgfdN
-         qOXtXDGWZyfrAi0Co5PySTCLeBFt6xB/T90r5tnBH2Q1yKG6ko50FanyXBGSkWjSw48u
-         bofkcUDa8241hCRSZJlhQGlARvHuyZPoMEkEI7m1DLLQFLwWwlLDIplsMKNOgfL0Rby/
-         edrX3oHpEoRR/jXjNpyyVsxVWZJwjicjFJIZczfOcNmEpQCfV1H8mmrgQwWlGUmg8MC+
-         +DJQ==
-X-Gm-Message-State: AOJu0Yy8IBdJV50dKGrR1bwd1EA3JIP7jHnpDTK0T0CHpKeLT7fyvLe/
-        lMdTyxV8mfC3IG8Zjw7q74Tij0S3c7RiXR6RDIoBdd4m0bD1NA==
-X-Google-Smtp-Source: AGHT+IEwm5sl1qZx9okPaSBJa20L4UCW0eWE6xkuS90QsGmIawfrN8WS1W+0Ge4LQLrJFP5ZVmuNDylFvn0WkPYYNMQ=
-X-Received: by 2002:a67:f8d5:0:b0:44e:9a71:27a1 with SMTP id
- c21-20020a67f8d5000000b0044e9a7127a1mr7476559vsp.17.1693240924528; Mon, 28
- Aug 2023 09:42:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693240935; x=1693845735;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=07+BqHH2fvjqSJVcNPgMWDKWkC2DZMaqXd0rPYXV11E=;
+        b=EgE17wuX+yVdNJkgC0CuuAdupW/rN2VXh0q7YXK/NQWNCTUNKV6rO3a6SkJovjstpG
+         UwUShSvUG/upCRNLRUSN8b+9TXSXebrSjswaNHKsoO+i3aGDO+6sHxampQ698uDBf1H6
+         mo57wrJE3egk3e3DeC/FdqnypqxyLl6sx7SCdkMrmmbHfFpIVpMYhVkMr52jPp1k+0Ty
+         tOVwCPqnyPpVinWfn0Y3B1Gae1nRyc+BBT9+Q5g6Y8XjZG5aMps4wFHcCrsy8+qwmJh6
+         R5WbnrBBPFwceWRxJ7GEOtEwAnI3uyhxt/tYITpCbV0t+1M62BofVNqkCzH84+I5sjFa
+         UINA==
+X-Gm-Message-State: AOJu0YwmksRzCNNvqP68RlY9oBSdTgzOlbPdcQMnqpDQ/fGI2tZmPCxB
+        Xe7VbbTNAX2UXW0KXBMj524=
+X-Google-Smtp-Source: AGHT+IHeyhhWz7KeiPmmlRz0UTwkUc3V1SpCjjgwkl9iq5cJY9klp2pXz7fWqIjdSmUlVLaT0oWU/g==
+X-Received: by 2002:a05:6808:1892:b0:3a7:56a7:6a91 with SMTP id bi18-20020a056808189200b003a756a76a91mr11967872oib.23.1693240934952;
+        Mon, 28 Aug 2023 09:42:14 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z190-20020a6333c7000000b0055386b1415dsm7508224pgz.51.2023.08.28.09.42.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 09:42:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <5b30ff73-46cb-1d1e-3823-f175dbfbd91b@roeck-us.net>
+Date:   Mon, 28 Aug 2023 09:42:11 -0700
 MIME-Version: 1.0
-References: <CA+jjjYQWeqDY3EFQWmVzV2pXyhfRaHm6s-XWYSXfe1CxvkeuEQ@mail.gmail.com>
- <ZOy3+8qKfQxyrWez@duo.ucw.cz>
-In-Reply-To: <ZOy3+8qKfQxyrWez@duo.ucw.cz>
-From:   Joshua Hudson <joshudson@gmail.com>
-Date:   Mon, 28 Aug 2023 09:41:53 -0700
-Message-ID: <CA+jjjYSrvbU-5Pkvmxi+e6_4q4MMRWAQHUf-U37PO24oeO-3VA@mail.gmail.com>
-Subject: Re: System Call trashing registers
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5.10 00/84] 5.10.193-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <20230828101149.146126827@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230828101149.146126827@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 8:06=E2=80=AFAM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > 1) A lot of my old 32-bit programs don't work on x64 linux anymore
-> > because int 80h now trashes ecx and edx. This hasn't been a serious
-> > problem for me.
-> >
->
-> I guess you should cc x86 maintainers?
->
-> I guess this is a regression? When did it start?
->
-> BR,
->                                                                 Pavel
-> --
-> People of Russia, stop Putin before his war on Ukraine escalates.
+On 8/28/23 03:13, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.193 release.
+> There are 84 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+> 
 
-It started when the openat() syscall was added. It got fixed a few times.
-I suspect it stayed fixed on an actual x86 kernel but the x86_64 kernel
-still exhibits it being broken. But I don't run an x86 kernel anymore for
-the obvious reason.
+FWIW, commit 619672bf2d04 ("MIPS: Alchemy: fix dbdma2") should be reverted
+v5.10.y since it doesn't fix anything but breaks the build for affected boards
+completely.
 
-Source code can be found here. The project effectively died with
-floppy disks so last release in 2006 is about right.
+arch/mips/alchemy/common/dbdma.c: In function 'au1xxx_dbdma_put_source':
+arch/mips/alchemy/common/dbdma.c:632:14: error: 'dma_default_coherent' undeclared
 
-https://asm.sourceforge.net/asmutils.html
+There is no 'dma_default_coherent' in v5.10.y.
 
-But if I try the couple of tools that still have real value, they just
-segfault.
+Guenter
 
-Remaining useful tools: tr, httpd, chmod, mv, ln
