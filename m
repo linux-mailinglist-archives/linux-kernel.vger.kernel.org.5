@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9528278B1EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8332978B1E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbjH1Nby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
+        id S231657AbjH1Nbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbjH1Nbd (ORCPT
+        with ESMTP id S231405AbjH1Nbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:31:33 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61180B9;
-        Mon, 28 Aug 2023 06:31:30 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SCvCQK026485;
-        Mon, 28 Aug 2023 13:31:17 GMT
+        Mon, 28 Aug 2023 09:31:41 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D15128;
+        Mon, 28 Aug 2023 06:31:38 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37SC6EXw025979;
+        Mon, 28 Aug 2023 13:31:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=hsDLfXDFoifE+Xht/EkpdnDqlFdnxup28A/lfFHe4Y4=;
- b=S5kB7/VD/EnKuxWzGfNcn++wGL3a+aVqQBoeovu1Dcwe+aYMJtLEjB8LwIunTnyryK4A
- ppm3a4Kyze7RqeTXl927Ab6miZpqxtvZAqgUFCwCuEv9j3evVgZ/9Jdx2zCRTqGEUgfw
- bwLcqSLbGYznkxTJASMV05Q3T/AW7rHZu6ypsg3z7RewLvYtO9zMxk3EGcDk6PF+kJvo
- kc50hIKH8alecsidc1zMkNlnXwaAyz6bAbo6/YE+GAS5lwL634IxrAOUIJyLOcyWGu89
- cxZFOUrzlQGAGdpmqDUnfyKj0h3k14bep+UCgrhYYe+7/iRrbZ6T0mAps+0uY+ibAfm2 6g== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sqapfkn74-1
+ bh=ZFic9OXS26Ql5DKbmVhVn/wz0gWXVOoXTO/2BpLo+2k=;
+ b=SU8rmwUAXWVKUtZ9T25QGlhqsszZAwhJHOYZfVs1i1r2zz4DmX1rot1W7BKPB1t6zalj
+ LqQd9piNhgCngqftQ48P8wFMRyc92VJpLxv3Dl5bOaVNQ9TDZZRd9mrOri9AmKry918Q
+ 3/oXuu9PcjMe+clIrFq/xJ79OxTl6xnezmWhG31FHeCkCUHWoVPL+9z+sKsnytcvx5IM
+ E/YFxzkKi2xLb+r49o0DBY3CErzR0zUHjGvBFmtyamhRPSjGJuhFcnN1/AWnehmA6HmV
+ P/zpx0/yhnOtAgrFCuTtDx1n0GpwaUFpmYYwp6M3Bmi2VVp4kVnMckMNVHgp+rrEahIA AA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sq9sdkdhh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:31:17 +0000
+        Mon, 28 Aug 2023 13:31:24 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SDVGBC024334
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37SDVNpu030031
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Aug 2023 13:31:16 GMT
+        Mon, 28 Aug 2023 13:31:23 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 28 Aug 2023 06:31:10 -0700
+ 15.2.1118.36; Mon, 28 Aug 2023 06:31:16 -0700
 From:   Krishna Kurapati <quic_kriskura@quicinc.com>
 To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -58,9 +58,9 @@ CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
         <quic_shazhuss@quicinc.com>,
         Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v11 04/13] usb: dwc3: core: Access XHCI address space temporarily to read port info
-Date:   Mon, 28 Aug 2023 19:00:24 +0530
-Message-ID: <20230828133033.11988-5-quic_kriskura@quicinc.com>
+Subject: [PATCH v11 05/13] usb: dwc3: core: Skip setting event buffers for host only controllers
+Date:   Mon, 28 Aug 2023 19:00:25 +0530
+Message-ID: <20230828133033.11988-6-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230828133033.11988-1-quic_kriskura@quicinc.com>
 References: <20230828133033.11988-1-quic_kriskura@quicinc.com>
@@ -72,15 +72,15 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: NS8XU1YBSK_YF8ZxtrN9qrSMZjbyNbtN
-X-Proofpoint-GUID: NS8XU1YBSK_YF8ZxtrN9qrSMZjbyNbtN
+X-Proofpoint-GUID: AFOWsBeVdQWjp59UGX1cLwqsVFzLEm8T
+X-Proofpoint-ORIG-GUID: AFOWsBeVdQWjp59UGX1cLwqsVFzLEm8T
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-28_10,2023-08-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 impostorscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 adultscore=0 impostorscore=0 spamscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2308280118
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -91,155 +91,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently host-only capable DWC3 controllers support Multiport.
-Temporarily map XHCI address space for host-only controllers and parse
-XHCI Extended Capabilities registers to read number of usb2 ports and
-usb3 ports present on multiport controller. Each USB Port is at least HS
-capable.
+On some SoC's like SA8295P where the tertiary controller is host-only
+capable, GEVTADDRHI/LO, GEVTSIZ, GEVTCOUNT registers are not accessible.
+Trying to access them leads to a crash.
 
-The port info for usb2 and usb3 phy are identified as num_usb2_ports
-and num_usb3_ports. The intention is as follows:
+For DRD/Peripheral supported controllers, event buffer setup is done
+again in gadget_pullup. Skip setup or cleanup of event buffers if
+controller is host-only capable.
 
-Wherever we need to perform phy operations like:
-
-LOOP_OVER_NUMBER_OF_AVAILABLE_PORTS()
-{
-	phy_set_mode(dwc->usb2_generic_phy[i], PHY_MODE_USB_HOST);
-	phy_set_mode(dwc->usb3_generic_phy[i], PHY_MODE_USB_HOST);
-}
-
-If number of usb2 ports is 3, loop can go from index 0-2 for
-usb2_generic_phy. If number of usb3-ports is 2, we don't know for sure,
-if the first 2 ports are SS capable or some other ports like (2 and 3)
-are SS capable. So instead, num_usb2_ports is used to loop around all
-phy's (both hs and ss) for performing phy operations. If any
-usb3_generic_phy turns out to be NULL, phy operation just bails out.
-
-num_usb3_ports is used to modify GUSB3PIPECTL registers while setting up
-phy's as we need to know how many SS capable ports are there for this.
-
+Suggested-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 ---
- drivers/usb/dwc3/core.c | 61 +++++++++++++++++++++++++++++++++++++++++
- drivers/usb/dwc3/core.h |  5 ++++
- 2 files changed, 66 insertions(+)
+ drivers/usb/dwc3/core.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 9c6bf054f15d..85cebeb6d662 100644
+index 85cebeb6d662..6eacf0ff90b5 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -39,6 +39,7 @@
- #include "io.h"
- 
- #include "debug.h"
-+#include "../host/xhci-ext-caps.h"
- 
- #define DWC3_DEFAULT_AUTOSUSPEND_DELAY	5000 /* ms */
- 
-@@ -1751,6 +1752,51 @@ static int dwc3_get_clocks(struct dwc3 *dwc)
- 	return 0;
- }
- 
-+static int dwc3_read_port_info(struct dwc3 *dwc)
-+{
-+	void __iomem *base;
-+	u8 major_revision;
-+	u32 offset = 0;
-+	u32 val;
-+
-+	/*
-+	 * Remap xHCI address space to access XHCI ext cap regs,
-+	 * since it is needed to get port info.
-+	 */
-+	base = ioremap(dwc->xhci_resources[0].start,
-+				resource_size(&dwc->xhci_resources[0]));
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	do {
-+		offset = xhci_find_next_ext_cap(base, offset,
-+				XHCI_EXT_CAPS_PROTOCOL);
-+		if (!offset)
-+			break;
-+
-+		val = readl(base + offset);
-+		major_revision = XHCI_EXT_PORT_MAJOR(val);
-+
-+		val = readl(base + offset + 0x08);
-+		if (major_revision == 0x03) {
-+			dwc->num_usb3_ports += XHCI_EXT_PORT_COUNT(val);
-+		} else if (major_revision <= 0x02) {
-+			dwc->num_usb2_ports += XHCI_EXT_PORT_COUNT(val);
-+		} else {
-+			dev_err(dwc->dev,
-+				"Unrecognized port major revision %d\n",
-+							major_revision);
-+		}
-+	} while (1);
-+
-+	dev_dbg(dwc->dev, "hs-ports: %u ss-ports: %u\n",
-+			dwc->num_usb2_ports, dwc->num_usb3_ports);
-+
-+	iounmap(base);
-+
-+	return 0;
-+}
-+
- static int dwc3_probe(struct platform_device *pdev)
+@@ -486,6 +486,13 @@ static void dwc3_free_event_buffers(struct dwc3 *dwc)
+ static int dwc3_alloc_event_buffers(struct dwc3 *dwc, unsigned int length)
  {
- 	struct device		*dev = &pdev->dev;
-@@ -1758,6 +1804,7 @@ static int dwc3_probe(struct platform_device *pdev)
- 	void __iomem		*regs;
- 	struct dwc3		*dwc;
- 	int			ret;
-+	unsigned int		hw_mode;
- 
- 	dwc = devm_kzalloc(dev, sizeof(*dwc), GFP_KERNEL);
- 	if (!dwc)
-@@ -1838,6 +1885,20 @@ static int dwc3_probe(struct platform_device *pdev)
- 			goto err_disable_clks;
- 	}
- 
-+	/*
-+	 * Currently only DWC3 controllers that are host-only capable
-+	 * support Multiport.
-+	 */
+ 	struct dwc3_event_buffer *evt;
++	unsigned int hw_mode;
++
 +	hw_mode = DWC3_GHWPARAMS0_MODE(dwc->hwparams.hwparams0);
 +	if (hw_mode == DWC3_GHWPARAMS0_MODE_HOST) {
-+		ret = dwc3_read_port_info(dwc);
-+		if (ret)
-+			goto err_disable_clks;
-+	} else {
-+		dwc->num_usb2_ports = 1;
-+		dwc->num_usb3_ports = 1;
++		dwc->ev_buf = NULL;
++		return 0;
 +	}
+ 
+ 	evt = dwc3_alloc_one_event_buffer(dwc, length);
+ 	if (IS_ERR(evt)) {
+@@ -507,6 +514,9 @@ int dwc3_event_buffers_setup(struct dwc3 *dwc)
+ {
+ 	struct dwc3_event_buffer	*evt;
+ 
++	if (!dwc->ev_buf)
++		return 0;
 +
- 	spin_lock_init(&dwc->lock);
- 	mutex_init(&dwc->mutex);
+ 	evt = dwc->ev_buf;
+ 	evt->lpos = 0;
+ 	dwc3_writel(dwc->regs, DWC3_GEVNTADRLO(0),
+@@ -524,6 +534,9 @@ void dwc3_event_buffers_cleanup(struct dwc3 *dwc)
+ {
+ 	struct dwc3_event_buffer	*evt;
  
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index a69ac67d89fe..5b0f2aa115d2 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -1026,6 +1026,8 @@ struct dwc3_scratchpad_array {
-  * @usb3_phy: pointer to USB3 PHY
-  * @usb2_generic_phy: pointer to USB2 PHY
-  * @usb3_generic_phy: pointer to USB3 PHY
-+ * @num_usb2_ports: number of USB2 ports
-+ * @num_usb3_ports: number of USB3 ports
-  * @phys_ready: flag to indicate that PHYs are ready
-  * @ulpi: pointer to ulpi interface
-  * @ulpi_ready: flag to indicate that ULPI is initialized
-@@ -1165,6 +1167,9 @@ struct dwc3 {
- 	struct phy		*usb2_generic_phy;
- 	struct phy		*usb3_generic_phy;
- 
-+	u8			num_usb2_ports;
-+	u8			num_usb3_ports;
++	if (!dwc->ev_buf)
++		return;
 +
- 	bool			phys_ready;
+ 	evt = dwc->ev_buf;
  
- 	struct ulpi		*ulpi;
+ 	evt->lpos = 0;
 -- 
 2.40.0
 
