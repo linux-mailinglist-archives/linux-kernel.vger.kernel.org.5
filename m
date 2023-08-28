@@ -2,154 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E43478AE9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B00378AEA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjH1LRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
+        id S230096AbjH1LST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjH1LQ5 (ORCPT
+        with ESMTP id S232445AbjH1LSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:16:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F361B10E
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:16:52 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D4F5F6600873;
-        Mon, 28 Aug 2023 12:16:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693221411;
-        bh=BlJFXTWexWp6mvkGqWMB8M7CVKV2UlUeerfJzGgXkj0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Liu0JclTWTa5GwqIj76KMimjJxucjirjetPeMy/4zi/a7zAYY4bZ3rgno8MzwEZzP
-         U3CSKmxm5Cuh5UugQRoA9rE10Fl8VkICVV6Mh7BypkX1us9S2LaQKA9LPIfx5IkyPD
-         /mIL+3xjmSy4cFgwXl9ckAVZ4DUzWJOG0WLA1+/kexc5NoPto0b14XIARubx8ljK59
-         OKYdqNFjnDhYYFy95JblbGvPDYTS+sL5EAfoCZyDUd5nTxTTbTeUQ5HoyXdOTt4Yzf
-         c4Lj5EKxVLsHN5D8x0bx3uSxTFytFnMC3vvCvjqYkua/A3o6BkeK/l2c3OUc+0yqqY
-         kPtPA5MfPbOaw==
-Date:   Mon, 28 Aug 2023 13:16:47 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v15 01/23] drm/shmem-helper: Fix UAF in error path when
- freeing SGT of imported GEM
-Message-ID: <20230828131647.18888896@collabora.com>
-In-Reply-To: <20230827175449.1766701-2-dmitry.osipenko@collabora.com>
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
-        <20230827175449.1766701-2-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 28 Aug 2023 07:18:11 -0400
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA87BF;
+        Mon, 28 Aug 2023 04:18:04 -0700 (PDT)
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+        by mx0.infotecs.ru (Postfix) with ESMTP id 29F041046D88;
+        Mon, 28 Aug 2023 14:18:03 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 29F041046D88
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+        t=1693221483; bh=Gwx+6Ebxth0f3cunO2WHpVX9PHLFZKluP78M27Wfyco=;
+        h=From:To:CC:Subject:Date:From;
+        b=Qo7eFCfHrzoBNoM/Iv2CPquvjnn2MhDEH1rXbg6xwS1w4HPnkR7UHRdLlZgRjs7pG
+         yuWIQUp3fj18ksw9lUxDAamemeR+LR9Qf8zzvBw8rYIFOCje6yw1SY8b4Bpzpd5llz
+         3wXa8xVsaTH1UVV9L8JoqwCOlkFuRVmL5n+I0MSE=
+Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
+        by mx0.infotecs-nt (Postfix) with ESMTP id 269963155AB0;
+        Mon, 28 Aug 2023 14:18:03 +0300 (MSK)
+From:   Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+To:     "David S. Miller" <davem@davemloft.net>
+CC:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH net] ipv6: mcast: Remove redundant comparison in
+  igmp6_mcf_get_next()
+Thread-Topic: [PATCH net] ipv6: mcast: Remove redundant comparison in
+  igmp6_mcf_get_next()
+Thread-Index: AQHZ2aFPBjmirnyHxU2khrQS2Mr61w==
+Date:   Mon, 28 Aug 2023 11:18:02 +0000
+Message-ID: <20230828111604.583371-1-Ilia.Gavrilov@infotecs.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.17.0.10]
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2023/08/28 08:24:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/08/28 08:28:00 #21754631
+X-KLMS-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Aug 2023 20:54:27 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+The 'state->im' value will always be non-zero after
+the 'while' statement, so the check can be removed.
 
-> Freeing drm-shmem GEM right after creating it using
-> drm_gem_shmem_prime_import_sg_table() frees SGT of the imported dma-buf
-> and then dma-buf frees this SGT second time.
-> 
-> The v3d_prime_import_sg_table() is example of a error code path where
-> dma-buf's SGT is freed by drm-shmem and then it's freed second time by
-> dma_buf_unmap_attachment() in drm_gem_prime_import_dev().
-> 
-> Add drm-shmem GEM flag telling that this is imported SGT shall not be
-> treated as own SGT, fixing the use-after-free bug.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 2194a63a818d ("drm: Add library for shmem backed GEM objects")
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 3 ++-
->  include/drm/drm_gem_shmem_helper.h     | 7 +++++++
->  2 files changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index a783d2245599..78d9cf2355a5 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -141,7 +141,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
->  
->  	if (obj->import_attach) {
->  		drm_prime_gem_destroy(obj, shmem->sgt);
-> -	} else {
-> +	} else if (!shmem->imported_sgt) {
->  		dma_resv_lock(shmem->base.resv, NULL);
->  
->  		drm_WARN_ON(obj->dev, shmem->vmap_use_count);
-> @@ -758,6 +758,7 @@ drm_gem_shmem_prime_import_sg_table(struct drm_device *dev,
->  		return ERR_CAST(shmem);
->  
->  	shmem->sgt = sgt;
-> +	shmem->imported_sgt = true;
+Found by InfoTeCS on behalf of Linux Verification Center
+(linuxtesting.org) with SVACE.
 
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+---
+ net/ipv6/mcast.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-I feel like adding more fields that can be used to do the is_imported()
-check is going to be even more confusing. Can we instead have
-
-	/* drm_gem_shmem_prime_import_sg_table() can be called from a
-	 * driver specific ->import_sg_table() implementations that
-	 * have extra failable initialization steps. Assign
-	 * drm_gem_object::import_attach here (even though it's
-	 * assigned in drm_gem_prime_import_dev()), so we don't end up
-	 * with driver error paths calling drm_gem_shmem_free() with an
-	 * imported sg_table assigned to drm_gem_shmem_object::sgt and
-	 * drm_gem_object::import_attach left uninitialized.
-	 */
-	shmem->base.import_attach = attach;
-
-here?
-
->  
->  	drm_dbg_prime(dev, "size = %zu\n", size);
->  
-> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-> index bf0c31aa8fbe..ec70a98a8fe1 100644
-> --- a/include/drm/drm_gem_shmem_helper.h
-> +++ b/include/drm/drm_gem_shmem_helper.h
-> @@ -73,6 +73,13 @@ struct drm_gem_shmem_object {
->  	 */
->  	unsigned int vmap_use_count;
->  
-> +	/**
-> +	 * @imported_sgt:
-> +	 *
-> +	 * True if SG table belongs to imported dma-buf.
-> +	 */
-> +	bool imported_sgt : 1;
-> +
->  	/**
->  	 * @pages_mark_dirty_on_put:
->  	 *
-
+diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+index 714cdc9e2b8e..9696343d0aa9 100644
+--- a/net/ipv6/mcast.c
++++ b/net/ipv6/mcast.c
+@@ -3013,8 +3013,6 @@ static struct ip6_sf_list *igmp6_mcf_get_next(struct =
+seq_file *seq, struct ip6_s
+ 				continue;
+ 			state->im =3D rcu_dereference(state->idev->mc_list);
+ 		}
+-		if (!state->im)
+-			break;
+ 		psf =3D rcu_dereference(state->im->mca_sources);
+ 	}
+ out:
+--=20
+2.39.2
