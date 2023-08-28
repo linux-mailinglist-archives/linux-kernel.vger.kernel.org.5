@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 866B378A4FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B9778A500
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 06:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjH1EpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 00:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S229568AbjH1Epw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 00:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjH1Eov (ORCPT
+        with ESMTP id S229512AbjH1Epe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 00:44:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5DB124
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 21:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693197842;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fi86TLb/jHVvg9zjn7XHlWr0cwJimP6upmcGlNZVzgY=;
-        b=cvqiR1IhtOOX6w3JSRg1Av17hF0j+DzOGnFNW55Ac9gOUODqtIzu8PZ/BuzdXNAIOa+uYS
-        yhPLyQOXA6Uplv6QIV4/iLi6QLy3MHo4RiOnkWxAhG4VuL3onmgEKfGpiRFZFt2rDoyCLS
-        uv6kNd8qR75EfItZb42A8clKPnHEpxk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-516-6SOYEKjdNLyFOUTqEliaKw-1; Mon, 28 Aug 2023 00:44:00 -0400
-X-MC-Unique: 6SOYEKjdNLyFOUTqEliaKw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94a355c9028so206588966b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 21:44:00 -0700 (PDT)
+        Mon, 28 Aug 2023 00:45:34 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A40124;
+        Sun, 27 Aug 2023 21:45:31 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41215efeb1aso13337001cf.1;
+        Sun, 27 Aug 2023 21:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693197931; x=1693802731;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vY27Gke1oB96ajh5AD3dOqqG9jvodybPgSv+D4kaopw=;
+        b=kRxUFWrtKlzNUQ3R2NUuLYO3opYHP43mv/UX2YgsVEtyHCt6oGQsh86NBbNqAzhY2Y
+         8LHKGHDbnmjW5fx08ocNrnC5ngYcHSj374tWWNhkFW0AnJ3miIvZxZbHEwztulhuH8cm
+         vSfF97g7b1UgjXrfg6RgMmnBKf0SNQJfbbF5WjDo1swT1paXJMlDh0bLidjV7WKOzS4s
+         V3ArGXbxhariDPm2mMrjhyT+xmiUQNhLRc3OS6gxC+CgH8QlpE15B6TH9ao6D7oOWpzd
+         w122+8njOzTtwl0lqTgQvNDJZPMvQ61FfZHmA//poIjkTgoDCMAz1futr0bk5kEvDRLO
+         SGxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693197839; x=1693802639;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fi86TLb/jHVvg9zjn7XHlWr0cwJimP6upmcGlNZVzgY=;
-        b=MbUj4/DjZU4PO0YNHM8Pv5r+gNRoD6rW4Dyj/rF4338rS67T4p4l3v9+ODCQKR93Ya
-         LWQBjeqen+enswwbBr2lgR5uiBETwTPKj4fYSKv0ID2i3uWTlZL785Ryk+oCBC4sswEO
-         2l5rDKRmzH/m4fpC4+w071vljARAOKnD4p0qJJ3ML6THC/+R6uP7SlK+K6mG1DaAM/6B
-         b9gIa8FzsJdvX3bXHo0ARNsOiWWww91ak3KCWAd2fizcU+BPTOKrG/eoWK2I2nsNrrcQ
-         Flx41NcQQ5Zytp67kth1fiOpWBepWFNBli5Ljzh/E+YNRWXXl/J42/j+tQVvDdlADzr/
-         7p7g==
-X-Gm-Message-State: AOJu0YwhQJjYThlE6uZlpxPhoQFYfGIQdzVEuMlzOEbXNJ0aRPRX3xSB
-        mre7KMfBPTJZQ7t1nubJ4Oa1xY8qCE6U+BhANIQ/b8UXL2gM1XiDuKCP2CjEVwnHQj/2q1oEzdx
-        mDy4WW8pUnnccplqBBn5efJ711y7xyShNHWY=
-X-Received: by 2002:a17:906:2102:b0:99d:e8da:c20b with SMTP id 2-20020a170906210200b0099de8dac20bmr17292945ejt.24.1693197838865;
-        Sun, 27 Aug 2023 21:43:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGWMCQLqR83SRHv6bXmH/xQXTYbezZysqjUu1htVMzC8mLUN54SpnfBWNxtyVsQbnhcqrpwWg==
-X-Received: by 2002:a17:906:2102:b0:99d:e8da:c20b with SMTP id 2-20020a170906210200b0099de8dac20bmr17292931ejt.24.1693197838501;
-        Sun, 27 Aug 2023 21:43:58 -0700 (PDT)
-Received: from redhat.com ([2.52.30.217])
-        by smtp.gmail.com with ESMTPSA id y22-20020a17090614d600b0099cfd0b2437sm4206104ejc.99.2023.08.27.21.43.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 21:43:57 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 00:43:53 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yuan Yao <yuanyaogoog@chromium.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Keiichi Watanabe <keiichiw@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Takaya Saeki <takayas@chromium.org>,
-        Junichi Uekawa <uekawa@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH] virtio_ring: fix avail_wrap_counter in
- virtqueue_add_packed
-Message-ID: <20230828004323-mutt-send-email-mst@kernel.org>
-References: <20230808051110.3492693-1-yuanyaogoog@chromium.org>
- <CACGkMEt53ziY_bmgJHVdJ6pkppTyVqKX3=Czygv+yhJR8_KiFA@mail.gmail.com>
- <CAOJyEHaXqmHStJnHrT0H4QsTJBxjBxVe+33EuWm9H3wApPKtxQ@mail.gmail.com>
- <CACGkMEuiVnLFRRDHaTH3Jnpr+znU9L33gLyRynbBabVqumN2ug@mail.gmail.com>
- <CAOJyEHaR1Y3VsKNpLqxf-ewAEf8JJDChjmnFM_0mv=hOg+X-vA@mail.gmail.com>
- <20230808051304-mutt-send-email-mst@kernel.org>
- <CAOJyEHYgvw7za0ksKNPu9TF1+8MwVFbctMbukgbAoQnf9da+hA@mail.gmail.com>
- <CAOJyEHZs=59nZ=XTYu-mZWTz18OT7f6TknCxWksYeQZbPy2oUQ@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1693197931; x=1693802731;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vY27Gke1oB96ajh5AD3dOqqG9jvodybPgSv+D4kaopw=;
+        b=RuICzpOeYMK3SgrwugCRFk6a5w/z0vPZuT67xyONhpy5SOeCXWP2T3yaShWW3iVckr
+         xu0y1o3zrRnn1i6EpVDQsoh8nP8feAx0NpLFWaDMMQy1i2YGJdPEbsTViQnpOw37YZ4v
+         eYq1lw8vS4o22U9J1D+shKmqfm0Zr1E8jLkCZt13bz5q7U9hRX4IwzHkdFuNacm8prJX
+         0527MrWajQlKMPqCfSqf8HC/dgdZsEraQSwchpqAvgGR+3LxQ4LRx3rhsEkqD7x702bC
+         WeGxE6IhVzdTAbinhrSFufx1OpML0isrL9mTQB5IU1bWOoPxnfEoYa3Xdxipxqt9g3ak
+         nC0Q==
+X-Gm-Message-State: AOJu0YysVBvU37K8DM4BdRNd3WJ87Jh6gHcBoIvsO2Bbu7ddnXewszec
+        VtHcytwt51n95lgvFYQjzWTO8VVVnmvrHSIvuIg=
+X-Google-Smtp-Source: AGHT+IFG+p5mJS39TNQcREMuB5881GGPrKIzdXLGR9e5/ReNLQCLRF/KuOtHZBphA6Z8rcy/8V3/bK/Bt+jU+rCSUBs=
+X-Received: by 2002:ac8:5a4d:0:b0:410:aa02:264b with SMTP id
+ o13-20020ac85a4d000000b00410aa02264bmr20127255qta.36.1693197930860; Sun, 27
+ Aug 2023 21:45:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOJyEHZs=59nZ=XTYu-mZWTz18OT7f6TknCxWksYeQZbPy2oUQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230803060938.1929759-1-zhangshida@kylinos.cn> <169123801881.1434487.17826581768728323102.b4-ty@mit.edu>
+In-Reply-To: <169123801881.1434487.17826581768728323102.b4-ty@mit.edu>
+From:   Stephen Zhang <starzhangzsd@gmail.com>
+Date:   Mon, 28 Aug 2023 12:44:54 +0800
+Message-ID: <CANubcdWP9CC0HZQrbyqBomiy2opkBP1gLhnj6n9-m4sKDOyeig@mail.gmail.com>
+Subject: Re: [PATCH v4] ext4: Fix rec_len verify error
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, yi.zhang@huawei.com, djwong@kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn, stable@kernel.org,
+        Andreas Dilger <adilger@dilger.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nope - it will be in the next linux release.
+Theodore Ts'o <tytso@mit.edu> =E4=BA=8E2023=E5=B9=B48=E6=9C=885=E6=97=A5=E5=
+=91=A8=E5=85=AD 20:20=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+> On Thu, 03 Aug 2023 14:09:38 +0800, zhangshida wrote:
+> > With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+> > a problem occurred when more than 13 million files were directly create=
+d
+> > under a directory:
+> >
+> > EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxx=
+x: dir seems corrupt?  Run e2fsck -D.
+> > EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm x=
+xxxx: dir seems corrupt?  Run e2fsck -D.
+> > EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm =
+xxxxx: Directory index failed checksum
+> >
+> > [...]
+>
+> Applied, thanks!
+>
+> [1/1] ext4: Fix rec_len verify error
+>       (no commit info)
 
-On Mon, Aug 28, 2023 at 12:33:46PM +0900, Yuan Yao wrote:
-> I'm writing to confirm the process for the patch, since I'm not sure if this
-> thread is done for this patch.
-> Do I need any further steps to take to make this patch be launched?
-> 
-> On Tue, Aug 8, 2023 at 7:00 PM Yuan Yao <yuanyaogoog@chromium.org> wrote:
-> 
->     Sorry for the confusing mail, I didn't understand how it works.
->     Thanks
-> 
->     On Tue, Aug 8, 2023 at 6:13 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> 
->         On Tue, Aug 08, 2023 at 05:37:29PM +0900, Yuan Yao wrote:
->         > Thank you for reviewing, sent a patch with your ack.
-> 
->         Don't do this pls. And don't top post please.
-> 
-> 
+Hi Ted,
 
+It appears that you might have missed this one in the recent git tree.
+The presence of "(no commit info)" may indicate some apply failures.
+
+Best regards,
+Shida
+>
+> Best regards,
+> --
+> Theodore Ts'o <tytso@mit.edu>
