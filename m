@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0DE78B998
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A0978B9A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbjH1Ufb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        id S231794AbjH1UjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbjH1UfZ (ORCPT
+        with ESMTP id S233471AbjH1UjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:35:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C733109;
-        Mon, 28 Aug 2023 13:35:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 19FFC64381;
-        Mon, 28 Aug 2023 20:35:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D698BC433C8;
-        Mon, 28 Aug 2023 20:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693254921;
-        bh=/Gs5ZWC7H03fXDUJaYco03zxScAlXy7nbxTBCfiJ1Pc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oNxB5/ICw5qhqu5/YM3OvPxta4Z2Iw5YHr6HWunhv16KOSx+z8g+JjYs5QMcSs+p0
-         s8b1MXapyg6lzCAF0zi8tPQ/371rKALImWKsTSwFZU6RiS3Cr1wUj6pSw5hs82qMNm
-         yCf7xmby9W6qCIarc8nIm8EX9hw5S9nKye1fJIsallT6NovrOa6MuOPbYEDhwdHEvd
-         5NQt0a9NyHipLIbpJ4GVug8GbrpsFZ6L+Lw7pkN3GNsngIdu9F0xsEbszOrgCkH8C/
-         Rn69Kl+SdQunupHm5K3uE66+DpeczxHA3S4p63nTxSqFL/jocelX98LnsUHr/q17zD
-         ZbP+Xkr4qS49Q==
-Date:   Mon, 28 Aug 2023 14:36:20 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [GIT PULL] flexible-array transformations for 6.6-rc1
-Message-ID: <ZO0FRCAhO5vdQFPA@work>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Mon, 28 Aug 2023 16:39:15 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FD1109
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:39:13 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59222a14ee1so54368587b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693255152; x=1693859952;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XhrkWiQBnHmzMnkAE+NYbdoZdy6UiyASIH0GRgNQ/sU=;
+        b=urfxC/+oTHLuj+i6cn0/azuq+FFaWj+TnME6nhesd8cw0L5Hhx/TUyll1F+Er3mk1V
+         EPtJEawuJ7LmK9shNHvS9h/gGI6VsaHwg4Nca8og7fCRD7CQB4X3Kfa9FsaRnST6k8xO
+         0dr5yHSkjVGAHS3J7o6VojOEbV63NzFkgqMmpXOQ582xX256DdnHrjUmmPC4cmLFHEin
+         Z1O8sfXNGBnPb7WSs4WCuskoLd5HzDd2PmDt8VBcd9vco3CTPXvj+3hemrc7Ly+8daso
+         R24co0ytNidRJebijXU8YN6wM8GK/12rUxTgs3qJ/AEYZkHtELGzmn5jHkz2rJQRiQlW
+         odaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693255152; x=1693859952;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XhrkWiQBnHmzMnkAE+NYbdoZdy6UiyASIH0GRgNQ/sU=;
+        b=EXVa+nwR86UUiZ6j1QqSM0MrH2u+Fiwno76pFaw48DSdbhpKMj5UbGZgzemFtMS+zw
+         UeWgHHRmGS2ERgRGRb/gicEy1LdLe+gmiQlsCTdGaVgbYTdnPAPsa9UgcsDZUA+a8icw
+         JyfV1PKcgmC0OFu7RTiB4ytcawLd7k8h0z83qdrFoO95chJbykfp9AVLUdf/XxhQOtjF
+         ZRi1GM6q8QV0WsyZ+3JkLxEN04xThSL7NSCYrg49i/YsXnlGutmAnvQUfiAp4WKbWikG
+         lircy0+hxlnBadw6V2T+7yUMGbl2xti9QZOp6JADl92okOvx7DeoD49vTz795KjhCTY4
+         JFKw==
+X-Gm-Message-State: AOJu0YwzkQ3Oz9SKokT5f8FJjbny7YoLa/MnMcdJab17D3If7mSoWWH4
+        lyDyu39jnvp/qqV83dlAGpwIRVQkJsgqDPYgZE8=
+X-Google-Smtp-Source: AGHT+IGlwLCXXsjKROwMA/eBuqL6pO5hd66mEIQL7qVwZn+m6vX+Qy5OakE1dsfnaIt9WkB4KXLqeb7R2EWnAWB0U3E=
+X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:b64:7817:9989:9eba])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:74c6:0:b0:d0c:c83b:94ed with SMTP
+ id p189-20020a2574c6000000b00d0cc83b94edmr811734ybc.10.1693255152253; Mon, 28
+ Aug 2023 13:39:12 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 13:39:06 -0700
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAOkF7WQC/3WMwQ7CIBAFf6XZsxhAKtiT/2Eao7hQEi1kaYim4
+ d/F3j3Oy5tZISMFzDB0KxCWkEOcG8hdB3a6zR5ZeDQGyeWBG2lYSvZK2K5ICzsqraR2XFkU0JR E6MJ7y13GxlPIS6TPVi/it/4JFcEE08r1/d0Ic+L67GP0T9zb+IKx1voFZACn56kAAAA=
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693255150; l=2020;
+ i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
+ bh=xcYx2Rp6x+lRWSqPslFnv6rJuAz/HxMw+0OdY1ALQZs=; b=v17oTu32hcx8X2o5oavi8I5UUOWMaIGdmbzoTP9nH19+mbccNNnrpEkGWrOiXO5zDJPWL5d/n
+ rm1iEXciqeaAqQHb6RBdzIzkcNFhLuv32jqEmsXHABpaRsTnDZThqrj
+X-Mailer: b4 0.12.3
+Message-ID: <20230828-ppc_rerevert-v2-1-46b71a3656c6@google.com>
+Subject: [PATCH v2] reapply: powerpc/xmon: Relax frame size for clang
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+This is a manual revert of commit
+7f3c5d099b6f8452dc4dcfe4179ea48e6a13d0eb, but using
+ccflags-$(CONFIG_CC_IS_CLANG) which is shorter.
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+Turns out that this is reproducible still under specific compiler
+versions (mea culpa: I did not test every supported version of clang),
+and even a few randconfigs bots found.
 
-are available in the Git repository at:
+We'll have to revisit this again in the future, for now back this out.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/flex-array-transformations-6.6-rc1
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Closes: https://github.com/ClangBuiltLinux/linux/issues/252#issuecomment-1690371256
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/llvm/202308260344.Vc4Giuk7-lkp@intel.com/
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes in v2:
+- Use ccflags-$(CONFIG_CC_IS_CLANG) as per Nathan.
+- Move that to be below the initial setting of ccflags-y as per Nathan.
+- Add Nathan's Suggested-by and Reviewed-by tags.
+- Update commit message slightly, including oneline.
+- Link to v1: https://lore.kernel.org/r/20230828-ppc_rerevert-v1-1-74f55b818907@google.com
+---
+ arch/powerpc/xmon/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-for you to fetch changes up to 4d8cbf6dbcdaebe949461b0a933ae4c71cb53edc:
+diff --git a/arch/powerpc/xmon/Makefile b/arch/powerpc/xmon/Makefile
+index 7705aa74a24d..682c7c0a6f77 100644
+--- a/arch/powerpc/xmon/Makefile
++++ b/arch/powerpc/xmon/Makefile
+@@ -12,6 +12,10 @@ ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
+ 
+ ccflags-$(CONFIG_PPC64) := $(NO_MINIMAL_TOC)
+ 
++# Clang stores addresses on the stack causing the frame size to blow
++# out. See https://github.com/ClangBuiltLinux/linux/issues/252
++ccflags-$(CONFIG_CC_IS_CLANG) += -Wframe-larger-than=4096
++
+ obj-y			+= xmon.o nonstdio.o spr_access.o xmon_bpts.o
+ 
+ ifdef CONFIG_XMON_DISASSEMBLY
 
-  fs: omfs: Use flexible-array member in struct omfs_extent (2023-07-31 14:55:48 -0600)
+---
+base-commit: 2ee82481c392eec06a7ef28df61b7f0d8e45be2e
+change-id: 20230828-ppc_rerevert-647427f04ce1
 
-----------------------------------------------------------------
-flexible-array transformations for 6.6-rc1
+Best regards,
+-- 
+Nick Desaulniers <ndesaulniers@google.com>
 
-Hi Linus,
-
-Please, pull the following flexible-array transformations. These patches
-have been baking in linux-next for a while.
-
-Thanks
---
-Gustavo
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (3):
-      reiserfs: Replace one-element array with flexible-array member
-      sparc: openpromio: Address -Warray-bounds warning
-      fs: omfs: Use flexible-array member in struct omfs_extent
-
- arch/sparc/include/uapi/asm/openpromio.h |  5 ++---
- fs/omfs/file.c                           | 12 ++++++------
- fs/omfs/omfs_fs.h                        |  2 +-
- fs/reiserfs/fix_node.c                   |  5 +++--
- fs/reiserfs/reiserfs.h                   |  2 +-
- 5 files changed, 13 insertions(+), 13 deletions(-)
