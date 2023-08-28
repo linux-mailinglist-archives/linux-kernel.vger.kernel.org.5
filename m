@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368CC78B772
+	by mail.lfdr.de (Postfix) with ESMTP id 830D378B773
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbjH1SoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
+        id S233132AbjH1So0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbjH1SoE (ORCPT
+        with ESMTP id S233120AbjH1SoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:44:04 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612E4BF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:02 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bcae8c4072so2410184a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:02 -0700 (PDT)
+        Mon, 28 Aug 2023 14:44:06 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2C3B0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:03 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a7d7de894bso2664204b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693248241; x=1693853041;
+        d=gmail.com; s=20221208; t=1693248242; x=1693853042;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5rqkvZA+m4Co7mK4wIInGc1Yx/+x+E1K3USzQUDzsT0=;
-        b=Livc0PaChEpmZbX7QTsKnliy45x50RNaWbynGVLdkowAwOQXuqHGksuZE8h2JEuXoz
-         VBQCh89e95HwaCY1PGwLd5C9brm982As1qibqaQ9iBjkmP0wlBABfgLyAr8fcpE+Ka1t
-         P4nA5PfaZITh2Hk2st+NSCryf3Jq6S3Xz/5v6+sCggPMWV6nZ9+40++J9HSXJ7B+rHQ9
-         UL8tt0RtOltoSM5k4wPJ651DNHL3bBwP8ul5J8Po1vVSBdWSAIoz7Jh7A7hR6k+EQ8bZ
-         T5g0jZUgSKJW5rrt1e89dByliwTF0TsknbGaguWfO0baC2WuJRzSIdXPqjumj5lKRgX7
-         s6RA==
+        bh=6TB/j/ZWZca45fLEWddb9WmisfBlH+TD3Akz3eSDVAc=;
+        b=c5KDgZwo4D/k/8kWu/dUfuohPTeeEn+GWExeUTP+FhFsEmj/sXDfarBzv/z5PYfo+9
+         G57V3LO8rsOSe10NHJTi96c4vXM8zVdkVYyaE8eLHT19yZ2huNHIenEfM5TiPlQetfCG
+         ucYwxWWMyTGDtJFkw5H1QOUF1E/161b0h8OADTklEUIEJcuwfTGPmVWZB3SKrfG9K35o
+         IqPYlXhvohGNs2FOHZ3uPoZPFyS/rov1EtBAbBnUUXGdBGREYJvs9t45AQCK4IR1tb5n
+         7ZOX+w9Xhm1qNwiw58vPPpuWa1NbbSE/kfbr4qfZ/DD2B1epmUmAPlVsNwE5oARHV/4S
+         HMvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693248241; x=1693853041;
+        d=1e100.net; s=20221208; t=1693248242; x=1693853042;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5rqkvZA+m4Co7mK4wIInGc1Yx/+x+E1K3USzQUDzsT0=;
-        b=mDb6Qwhhg9bytY31DiBZgb15ux0LAaJnKqcTfSj3/2Zm8WGghl7T8TsHQOZwxjFizQ
-         oqO5ay6wlhYjo55+jM75kdqt649TJLiqxRLC3JWJQel6S9mluNWLvhTbJe557PYtiyx9
-         MQ+MU/nFXvyhoMA8fpZDzFbm6FORhQMMelJ+78ipy+9tS3qYC9ntYSrgDaqltreYgREK
-         yqboCPlFYcdFdYqGC9yaKOdZUxjEmNfHEx2Vl+JNra1FZpuBT8j+Dk8PXM5KC/gjVY7T
-         PaQ9PPLVB4LWOjvoD8YmKhXvM2XeV5kwrpIjP0VhHm9nbvqnjKNEuOhJdpHGjIL8y1JG
-         f8Sg==
-X-Gm-Message-State: AOJu0YwaYqt+O0f3BqTk10/011UA+eU9l7kv21iPWxKzM3aiK0qsMWPv
-        kn7Q3DXPfP+OImEm+xGkcIxqT88A3Lw=
-X-Google-Smtp-Source: AGHT+IEnxhLP+YPYgRbroOpWL+D5N3R7se11xwTu4MXZi2EgoCg3hUnwljJbUCKkbgine9QclHEofg==
-X-Received: by 2002:a05:6871:69e:b0:1bf:12ff:db2c with SMTP id l30-20020a056871069e00b001bf12ffdb2cmr10761239oao.22.1693248241229;
-        Mon, 28 Aug 2023 11:44:01 -0700 (PDT)
+        bh=6TB/j/ZWZca45fLEWddb9WmisfBlH+TD3Akz3eSDVAc=;
+        b=POMKEIANM1mpzBwh+3q72k0Kj3OzHqElHJbCEJ4jTFROB12aw/oUEvdDqJuUrJz24S
+         vrfOhGq3ZHCQ3HVkA5p+FT1CaDMZG32U16yhBM7kWkojlA9XLYy1K2PDMvbSuTD0mHZ/
+         r6CGxT7nfewqS5XYXlF55TSO2aZX0cATlDlwACZE3vwO/sjQZvBvQpE1w1aPjCeg22nZ
+         Z5ic7Voa/qFaYQHlysNkT2DfPLVxuX1Lwu2Wxk8aK4VnPhsbsiXoW8fK1rEhzxvNXR4g
+         cWdb9L70bDPKrEbNxAH/3DsUg/r9UA2xDSSTpzp/BXIiidSupt2kAoADmO4z8M0V2VB1
+         WnUQ==
+X-Gm-Message-State: AOJu0Yxh5qNfMEOnv5HrtxqnJYxGTuUetAOXWpzfLvaUhHQa7OUyFgAh
+        Pz0mlDPjhKyv6JzdmqHdII3NN3X0Nhk=
+X-Google-Smtp-Source: AGHT+IFWjZUZX9Q+MuK4PQbP3XZTwypZYKopJUOgpLV3UJyGCOYwnwVovIenTHTJWKfWQ4BnACz3oQ==
+X-Received: by 2002:a05:6808:2a7a:b0:3a1:eccc:26da with SMTP id fu26-20020a0568082a7a00b003a1eccc26damr10737881oib.25.1693248242660;
+        Mon, 28 Aug 2023 11:44:02 -0700 (PDT)
 Received: from localhost ([2600:6c5e:2a00:5805:e348:56d4:5da8:636d])
-        by smtp.gmail.com with ESMTPSA id g6-20020a056870340600b001cd316935c6sm2627296oah.54.2023.08.28.11.44.00
+        by smtp.gmail.com with ESMTPSA id k24-20020a544698000000b003a9a2362f66sm2178194oic.16.2023.08.28.11.44.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 11:44:00 -0700 (PDT)
+        Mon, 28 Aug 2023 11:44:02 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH 03/12] bitmap: add test for bitmap_remap()
-Date:   Mon, 28 Aug 2023 11:43:43 -0700
-Message-Id: <20230828184353.5145-4-yury.norov@gmail.com>
+Subject: [PATCH 04/12] bitmap: add test for bitmap_bitremap()
+Date:   Mon, 28 Aug 2023 11:43:44 -0700
+Message-Id: <20230828184353.5145-5-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828184353.5145-1-yury.norov@gmail.com>
 References: <20230828184353.5145-1-yury.norov@gmail.com>
@@ -73,113 +73,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Basic functional and performance tests for bitmap_remap(). 1000 bits
-length is chosen for performance test because it's of the same order
-as default value for MAX_NUMNODES in major distros like Ubuntu (1024).
+Similarly to bitmap_remap, test bitmap_bitremap().
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- lib/test_bitmap.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+ lib/test_bitmap.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
 diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index a5d823f7589d..e1c22d399f24 100644
+index e1c22d399f24..e9211f9a0e67 100644
 --- a/lib/test_bitmap.c
 +++ b/lib/test_bitmap.c
-@@ -378,6 +378,85 @@ static void __init test_weight(void)
+@@ -378,6 +378,19 @@ static void __init test_weight(void)
  	}
  }
  
-+static void __init test_remap(void)
++static __always_inline void __init __test_bitremap(unsigned long *dst, unsigned long *src,
++				unsigned long *old, unsigned long *new, unsigned long nbits)
 +{
-+	DECLARE_BITMAP(dst, 8);
++	unsigned long oldbit, newbit;
 +
-+	DECLARE_BITMAP(empty, 8) = { 0 };
-+	DECLARE_BITMAP(src, 8) = { 0b00101010 };
-+	DECLARE_BITMAP(old, 8) = { 0b00011100 };
-+	DECLARE_BITMAP(new, 8) = { 0b00111000 };
-+	DECLARE_BITMAP(exp0, 8) = { 0b00110010 };
-+	DECLARE_BITMAP(exp1, 8) = { 0b00011010 };
-+	DECLARE_BITMAP(exp2, 8) = { 0b10000010 };
++	bitmap_zero(dst, nbits);
 +
-+	DECLARE_BITMAP(perf_exp, 1000);
-+	DECLARE_BITMAP(perf_dst, 1000);
-+	DECLARE_BITMAP(perf_src, 1000);
-+	DECLARE_BITMAP(perf_old, 1000);
-+	DECLARE_BITMAP(perf_new, 1000);
-+
-+	unsigned int i;
-+	ktime_t time;
-+
-+	bitmap_remap(dst, src, old, new, 8);
-+	expect_eq_bitmap(exp0, dst, 8);
-+
-+	/*
-+	 * When old mapping is the same as new, source bits are copied to dst.
-+	 * Real code must use bitmap_copy() if it's known in advance.
-+	 */
-+	bitmap_remap(dst, src, old, old, 8);
-+	expect_eq_bitmap(src, dst, 8);
-+
-+	bitmap_remap(dst, src, new, new, 8);
-+	expect_eq_bitmap(src, dst, 8);
-+
-+	/*
-+	 * When either old or new mappings are empty, source bits are copied to
-+	 * dst. Real code must use bitmap_copy() if it's known in advance.
-+	 */
-+	bitmap_remap(dst, src, empty, new, 8);
-+	expect_eq_bitmap(src, dst, 8);
-+
-+	bitmap_remap(dst, src, old, empty, 8);
-+	expect_eq_bitmap(src, dst, 8);
-+
-+	bitmap_remap(dst, src, empty, empty, 8);
-+	expect_eq_bitmap(src, dst, 8);
-+
-+	/* Set extra bit in old map to test carry logic */
-+	set_bit(5, old);
-+	bitmap_remap(dst, src, old, new, 8);
-+	expect_eq_bitmap(exp1, dst, 8);
-+
-+	/* Map old bits to #7 */
-+	bitmap_zero(new, 8);
-+	set_bit(7, new);
-+	bitmap_remap(dst, src, old, new, 8);
-+	expect_eq_bitmap(exp2, dst, 8);
-+
-+	bitmap_fill(perf_src, 1000);
-+	bitmap_set(perf_old, 0, 500);
-+	bitmap_clear(perf_old, 500, 500);
-+
-+	for (i = 0; i < 1000; i += 20) {
-+		bitmap_set(perf_new, i, 10);
-+		bitmap_clear(perf_new, i + 10, 10);
++	for_each_set_bit(oldbit, src, nbits) {
++		newbit = bitmap_bitremap(oldbit, old, new, nbits);
++		__set_bit(newbit, dst);
 +	}
-+
-+	bitmap_copy(perf_exp, perf_new, 500);
-+	bitmap_set(perf_exp, 500, 500);
-+
-+	time = ktime_get();
-+	bitmap_remap(perf_dst, perf_src, perf_old, perf_new, 1000);
-+	time = ktime_get() - time;
-+
-+	expect_eq_bitmap(perf_exp, perf_dst, 1000);
-+	pr_err("bitmap_remap:  %llu ns\n", time);
-+
 +}
 +
- #define EXP2_IN_BITS	(sizeof(exp2) * 8)
+ static void __init test_remap(void)
+ {
+ 	DECLARE_BITMAP(dst, 8);
+@@ -402,6 +415,9 @@ static void __init test_remap(void)
+ 	bitmap_remap(dst, src, old, new, 8);
+ 	expect_eq_bitmap(exp0, dst, 8);
  
- static void __init test_replace(void)
-@@ -1278,6 +1357,7 @@ static void __init selftest(void)
- 	test_bitmap_region();
- 	test_replace();
- 	test_weight();
-+	test_remap();
- 	test_bitmap_arr32();
- 	test_bitmap_arr64();
- 	test_bitmap_parse();
++	__test_bitremap(dst, src, old, new, 8);
++	expect_eq_bitmap(exp0, dst, 8);
++
+ 	/*
+ 	 * When old mapping is the same as new, source bits are copied to dst.
+ 	 * Real code must use bitmap_copy() if it's known in advance.
+@@ -409,6 +425,9 @@ static void __init test_remap(void)
+ 	bitmap_remap(dst, src, old, old, 8);
+ 	expect_eq_bitmap(src, dst, 8);
+ 
++	__test_bitremap(dst, src, old, old, 8);
++	expect_eq_bitmap(src, dst, 8);
++
+ 	bitmap_remap(dst, src, new, new, 8);
+ 	expect_eq_bitmap(src, dst, 8);
+ 
+@@ -419,23 +438,38 @@ static void __init test_remap(void)
+ 	bitmap_remap(dst, src, empty, new, 8);
+ 	expect_eq_bitmap(src, dst, 8);
+ 
++	__test_bitremap(dst, src, empty, new, 8);
++	expect_eq_bitmap(src, dst, 8);
++
+ 	bitmap_remap(dst, src, old, empty, 8);
+ 	expect_eq_bitmap(src, dst, 8);
+ 
++	__test_bitremap(dst, src, old, empty, 8);
++	expect_eq_bitmap(src, dst, 8);
++
+ 	bitmap_remap(dst, src, empty, empty, 8);
+ 	expect_eq_bitmap(src, dst, 8);
+ 
++	__test_bitremap(dst, src, empty, empty, 8);
++	expect_eq_bitmap(src, dst, 8);
++
+ 	/* Set extra bit in old map to test carry logic */
+ 	set_bit(5, old);
+ 	bitmap_remap(dst, src, old, new, 8);
+ 	expect_eq_bitmap(exp1, dst, 8);
+ 
++	__test_bitremap(dst, src, old, new, 8);
++	expect_eq_bitmap(exp1, dst, 8);
++
+ 	/* Map old bits to #7 */
+ 	bitmap_zero(new, 8);
+ 	set_bit(7, new);
+ 	bitmap_remap(dst, src, old, new, 8);
+ 	expect_eq_bitmap(exp2, dst, 8);
+ 
++	__test_bitremap(dst, src, old, new, 8);
++	expect_eq_bitmap(exp2, dst, 8);
++
+ 	bitmap_fill(perf_src, 1000);
+ 	bitmap_set(perf_old, 0, 500);
+ 	bitmap_clear(perf_old, 500, 500);
 -- 
 2.39.2
 
