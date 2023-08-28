@@ -2,143 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C526578B6EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51ED278B6F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 20:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbjH1SBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 14:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
+        id S233002AbjH1SBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 14:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233001AbjH1SAr (ORCPT
+        with ESMTP id S233119AbjH1SBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 14:00:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0328010D;
-        Mon, 28 Aug 2023 11:00:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 965B963D91;
-        Mon, 28 Aug 2023 18:00:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5695FC433C7;
-        Mon, 28 Aug 2023 18:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693245644;
-        bh=anTSmw6MgyMNpmqC7sR5fOUZIGW4VnZ7ptwo6QfqrwM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=F2kqKyUReIXbWgeBCBB0IPwXKeN+gGSKd7SxvtUnsdlacikInN2+FxRKGxDdy0v+u
-         bwDxue+PcVHpJIVlXwOOjBierv35ag0lVbtPsWSOiXGBnQWN1fzUa3zqGE+U8jV9kZ
-         v6HhvUlEHvpdnMnePOUioD94jG30D5RXkcHdD2f+kt47KmrVBb9TKgZoSLwuc6NQDz
-         IFmmFG1ik+J2IawdrQr47pc4XN/FxbWfxgHod2iifEDS7q9C8RdLPl7rizqKwzeRN0
-         wNuKqIBszTVKsTe3gyUMwV1y2CMygohiF6940p7LJ4MImSC7QncIG9VDO4IlGXvoi7
-         m71sa1EOu+eBQ==
-Date:   Mon, 28 Aug 2023 19:01:01 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH v1 2/6] device property: Add
- fwnode_property_match_property_string()
-Message-ID: <20230828190101.50f70921@jic23-huawei>
-In-Reply-To: <ZNTlniWf8Ou9hHOT@smile.fi.intel.com>
-References: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
-        <20230808162800.61651-3-andriy.shevchenko@linux.intel.com>
-        <20230809185944.1ae78e34@jic23-huawei>
-        <ZNTlniWf8Ou9hHOT@smile.fi.intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 28 Aug 2023 14:01:41 -0400
+Received: from out203-205-251-27.mail.qq.com (out203-205-251-27.mail.qq.com [203.205.251.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F34E19F
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1693245691;
+        bh=3nVTOKxn2v+c71PUzivCsIb3z1modIsrex9BbYGMMl4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=uCZmPxy+VgSxOnQCgFR7lp+r4gIVf5/wkD/jPTCbiGN3Mzl56e4E35Xv9Wrclv1OV
+         PO5wQGGXF4PMQfkwMbXby9qcWOqsurOVruzM4cJXp0YhPwc7RaYUOHn6nBUyYw4fzB
+         YjuGv+XEWsWc9Nc03lZ59BmM8nuicFoxia6p5Vfw=
+Received: from localhost.localdomain ([122.14.229.192])
+        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+        id 59B64FA; Tue, 29 Aug 2023 02:01:25 +0800
+X-QQ-mid: xmsmtpt1693245685t2z0nsx4d
+Message-ID: <tencent_2E893742B5115B5260081E410A34A89E1208@qq.com>
+X-QQ-XMAILINFO: OXimaFo5SPf+AS8BFVa5JFDdiCIPCP6Hem7rxSpfyMGR6VE9/jmxPEJvgITgbC
+         c1PPzMO7Z86dXcLh/SiWvqxnEZFTW4Me7vEpiW3aYfvhlidbEF7XTV+rfnyZyK2vVDgJvB4cT1Qt
+         ZGmZlihtOgYomx7hhMMsFSuf+cVjxYZf0V9hSFVG4S1amigyVO1U93ANQBP1la8/UMApXxNEu42V
+         W7+Nx8n36125VcXMQw8FMoy5s8gut7pmL7HfAw2z8d9Q6HRo28dGQcE3Skw7cKRAXrWjIcj3gJy7
+         7C+YyN17h9HV4D+QyYo0vaFJuK/BE9sc0ulf6QWxJp+GL3zjOw8dWx5nUAgPaVvXlDNMJXGTVkXr
+         bM3YLMHYXTJt/Ip0BReWOefprfI44VRLthwrjAwbJqqo/ZPl9Y4GkitrQjSe7uoTJtoges59Pbhk
+         OA9sWNbg87ZKb+TfT7LHniuf8Ho9CA+KvcG+PQYYze3dZUY91As2GxTC24jIrOBW3cHz9n5JScCD
+         8pCmQ+wzvEhEBG+4FTgrwThCXvlEfC7FHko1tVglY+OiWGeuhN/VBoDUE13+ZN5x6gIC371vTc7u
+         Jps7kIqOQba8zL088HoGRf5eARHO0lVRqXjzJZ3wLgADGEeJSjJUtYyfY3Ng8xgQVMPxli61/NPU
+         6xdFn5TJR3rrbDV9Fkk+je42ic8R7nG2rs4yCEctk9g4I5wPmNeC570YUgPFZXfjxe62sYR4ivXW
+         mK29m3yIPDBpB7YGuhl65pzMQuZYh0CWhzGBxlyOquepwS0Vl6IN08EnbNqGEh5pcsw4kRm5XcJG
+         s+tYpdl/Y/kX4yoiWlqgPLehGTYZF6yB8/O/DZZSHl5R+3xI5wZhcgWAI3eYFdgOFuIKl0UW0SYt
+         ANbF+CTRYdguRksRCo3bMTxWlXKQbkiWYcEfZCUfHuCmcW+zMPSoP8kYVdWE3LJoK7E6fh0eKJeA
+         zMioiQkavKk9+ZgNo1Ic7QtPhf8IivET4pDTD7wn2Yfo/i72pNlC/qIj/ShJl+ZSBQqY0XEvPyBJ
+         hMnYOIKxbfxMvrIHTCYF1K0h+V0kpQ015XVdjT17uEuTdGAjfH
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From:   Zhang Shurong <zhang_shurong@foxmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     victor.liu@nxp.com, andrzej.hajda@intel.com,
+        neil.armstrong@linaro.org, rfoss@kernel.org, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: imx: fix potential NULL pointer dereference in
+ imx8qxp_ldb_parse_dt_companion()
+Date:   Tue, 29 Aug 2023 02:01:25 +0800
+X-OQ-MSGID: <8281992.T7Z3S40VBb@localhost.localdomain>
+In-Reply-To: <20230828172822.GE14596@pendragon.ideasonboard.com>
+References: <tencent_026E4B04ACDCE341411EF54862F8C6AB1605@qq.com>
+ <20230828172822.GE14596@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 16:26:54 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+=E5=9C=A8 2023=E5=B9=B48=E6=9C=8829=E6=97=A5=E6=98=9F=E6=9C=9F=E4=BA=8C CST=
+ =E4=B8=8A=E5=8D=881:28:22=EF=BC=8CLaurent Pinchart =E5=86=99=E9=81=93=EF=
+=BC=9A
+> Hi Zhang,
+>=20
+> Thank you for the patch.
+>=20
+> On Tue, Aug 29, 2023 at 12:55:01AM +0800, Zhang Shurong wrote:
+> > of_match_device() may fail and returns a NULL pointer.
+>=20
+> How can it return a NULL pointer here ?
+>=20
+> > Fix this by checking the return value of of_match_device().
+> >=20
+> > Fixes: 3818715f62b4 ("drm/bridge: imx: Add LDB support for i.MX8qxp")
+> > Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+> > ---
+> >=20
+> >  drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c
+> > b/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c index
+> > 7984da9c0a35..d272f35c8eac 100644
+> > --- a/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c
+> > +++ b/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c
+> > @@ -488,6 +488,8 @@ static int imx8qxp_ldb_parse_dt_companion(struct
+> > imx8qxp_ldb *imx8qxp_ldb)>=20
+> >  	 * string.
+> >  	 */
+> >  =09
+> >  	match =3D of_match_device(dev->driver->of_match_table, dev);
+> >=20
+> > +	if (!match)
+> > +		return -ENODEV;
+> >=20
+> >  	if (!of_device_is_compatible(companion, match->compatible)) {
+> >  =09
+> >  		DRM_DEV_ERROR(dev, "companion LDB is incompatible\n");
+> >  		ret =3D -ENXIO;
+I think we can make it happen by designing the platform device in a way tha=
+t=20
+its name aligns with that of the driver. In such a scenario, when the drive=
+r=20
+is probed, the of_match_device function will return null. You can verify th=
+is=20
+functionality by reviewing the following function:
 
-> On Wed, Aug 09, 2023 at 06:59:44PM +0100, Jonathan Cameron wrote:
-> > On Tue,  8 Aug 2023 19:27:56 +0300
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:  
-> 
-> ...
-> 
-> > > +int fwnode_property_match_property_string(const struct fwnode_handle *fwnode,
-> > > +	const char *propname, const char * const *array, size_t n)  
-> > 
-> > Hi Andy,
-> > 
-> > Whilst I'm not 100% sold on adding ever increasing complexity to what we
-> > match, this one feels like a common enough thing to be worth providing.  
-> 
-> Yep, that's why I considered it's good to add (and because of new comers).
-> 
-> > Looking at the usecases I wonder if it would be better to pass in
-> > an unsigned int *ret which is only updated on a match?  
-> 
-> So the question is here are we going to match (pun intended) the prototype to
-> the device_property_match*() family of functions or to device_property_read_*()
-> one. If the latter, this has to be renamed, but then it probably will contradict
-> the semantics as we are _matching_ against something and not just _reading_
-> something.
-> 
-> That said, do you agree that current implementation is (slightly) better from
-> these aspects? Anyway, look at the below.
-> 
-> > That way the common properties approach of not checking the return value
-> > if we have an optional property would apply.
-> > 
-> > e.g. patch 3  
-> 
-> Only?
-I didn't look further :)
+static int platform_match(struct device *dev, struct device_driver *drv)
 
-> 
-> > would end up with a block that looks like:
-> > 
-> > 	st->input_mode = ADMV1014_IQ_MODE;
-> > 	device_property_match_property_string(&spi->dev, "adi,input-mode",
-> > 					      input_mode_names,
-> > 					      ARRAY_SIZE(input_mode_names),
-> > 					      &st->input_mode);
-> > 
-> > Only neat and tidy if the thing being optionally read into is an unsigned int
-> > though (otherwise you still need a local variable)  
-> 
-> We also can have a hybrid variant, returning in both sides
-> 
->   int device_property_match_property_string(..., size_t *index)
->   {
-> 	  if (index)
-> 		  *index = ret;
-> 	  return ret;
->   }
-> 
-> (also note the correct return type as it has to match to @n).
-> 
-> Would it be still okay or too over engineered?
-> 
-Probably over engineered....
-
-Lets stick to what you have.  If various firmware folk are happy with
-the new function that's fine by me.  Rafael?
-
-Jonathan
 
 
