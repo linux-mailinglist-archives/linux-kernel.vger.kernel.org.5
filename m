@@ -2,146 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A94578B14B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B08A78B152
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjH1NDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
+        id S230410AbjH1NIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbjH1NDF (ORCPT
+        with ESMTP id S231755AbjH1NH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:03:05 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97155C9;
-        Mon, 28 Aug 2023 06:02:36 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68c576d35feso604040b3a.2;
-        Mon, 28 Aug 2023 06:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693227752; x=1693832552;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lgSWfpaRF1yioy+j4XYf+W7gMbc3i3wPgR9XqiIlfTs=;
-        b=WrbZOPnto024zYz9HAnYGUCl2h/IJctd+asAS+ML5dU15+Z+00YvjRskIDtg9V6Q67
-         ogywTEAmEQoxfQsNqbXxBWRFQXNuZ3Fy7C1XOl3c0R5x8Lpa7NlZTGTv3Ri6V67IGQ6t
-         Xu3eIM7+nnZOTohVSUDqQBQ7REzRUV+MyxeNGkUL2idQjtgCQlBcj1V/OYJexSHTIOrZ
-         BhS8hqscuqxpiu5hgaJPbjLVGyUKzECR3mN4+4FJPVpZYOkEbTsl2UVKoSv7gLFhbZr0
-         y5n0bhsNDkQ+j995TfxM2q2bKg3Ci/R5ib/VyE6gg6FrDJbWo8CfoBPbLgjWqTmLeMnj
-         8mdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693227752; x=1693832552;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lgSWfpaRF1yioy+j4XYf+W7gMbc3i3wPgR9XqiIlfTs=;
-        b=Fa7QdpWRDoKaxzusKxYUFwNe0QpfnbnThRcGkv0S0aDAv0jiXv3tRAcRuSq0ckTFwh
-         6/JROgXViCTz1sPHb6ClZq4g44clxn/bspwrMdU7r+HO/y3JVdK1xm8fvdcPHfKpOVPR
-         4/7dGGN/r55ik9R8eHzl1LHfdYqi1VsLMtkA7mNiUuaiRfQsGPJ5dGbGJKo6GXUVf+PX
-         kXidJHVp+HRHHCfosHXVkHxmvB3qsdiZLYM/qrZ3YnRJO/0U0wiloW1G9SVKppDESsfE
-         gwb+SCyF5pV90kTjrsbVvi/7fSszbU4ax1g1K1gxbVat12diJKbQexHF4fflgCtQiIz3
-         4glA==
-X-Gm-Message-State: AOJu0YyZtdjnNh8wKB8IwseQXkq2CpmMcYZfzvJVmboWbKwf88kbSlq+
-        iGF0AM4P2EULc60iDx4s3SpZpKOkGsPUPL57
-X-Google-Smtp-Source: AGHT+IHZpAgT28TJmdFViNy+mgLjEtTv1olUcbxMk/zOtplrtFIrVHOjvv7+EQDCzuBE57g5bKgvtw==
-X-Received: by 2002:a05:6a20:9148:b0:126:af02:444e with SMTP id x8-20020a056a20914800b00126af02444emr31573733pzc.8.1693227751566;
-        Mon, 28 Aug 2023 06:02:31 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id b25-20020aa78719000000b00687087d8bc3sm6814199pfo.141.2023.08.28.06.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 06:02:31 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH] MIPS: loongson32: Remove unused dma.h and nand.h
-Date:   Mon, 28 Aug 2023 21:02:23 +0800
-Message-Id: <20230828130223.89898-1-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
+        Mon, 28 Aug 2023 09:07:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615429D;
+        Mon, 28 Aug 2023 06:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693228074; x=1724764074;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=Ad8inIc7Z5PPPT8xyk9of+FqFudkHGl8b+VoHed6CiM=;
+  b=H9QqIUw2sFKx3Tw+NTX7iloG6lrBcbAmxFM+I50nedYlpvdHC0YDeKAs
+   E3MBEBE0Wfd4vrvnDBiV5e/rjbcgoJMc9KQgooU90eKJCdeuSJsxFWMxf
+   U7BYfV2skafWeIJcyAFm0YLqD9kmula8aCMdq1E6A55zsRiO1WMW3Bvjm
+   mCHG7C/4+WYCmEuxALS3UflJqIcDMByuIyO8EePHYbCfn/e0hUgGIAHAy
+   1GlM2nPbEWUfdCRnqcSHDsy9ld+COlE2vlTepwOTEOunpQFIcs4kjAF4Q
+   1WNyHzdbkbaQypfuFMpjS7BuaK8kKf5PWb4aaeFZUivywYAzs+/MNacO+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="375065434"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="375065434"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 06:07:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="852842118"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="852842118"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga002.fm.intel.com with ESMTP; 28 Aug 2023 06:07:37 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 28 Aug 2023 06:07:37 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 28 Aug 2023 06:07:37 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 28 Aug 2023 06:07:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=krmwoQ61hooMAdC1MQxSKj/JKoS2qyohuRsLgpw9wG4NeJk4wuJkzKIXmXtqNCLOcaZdyEHk8BZk3U5I5ILTXygaVkIUs6g92Vxa7A8AovEYnzjDM07NgJQFXYH+RCzX78do5psGlZ1QE34UtyeS3OGw9s09OZ1vdC1AdWeAjeDpFcKCJGG5UaSbltX2u58I3gu7Px86STJscAUvlynlGUSfESCZhoZcNbZitBAH4x2Jnup8Nn2yQzzlRE8axbjV3gPOp4pZjH4kQ3tEbxC3vBXpeX3dgsZ8D7DP2J2EFEgAvnj+8DhDOtEr5Jz5YCY0slhtpOdfC2tyXaFD7zJ49g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z6YD7oCvFmfiAK6/tCC+qMeYXO2/9bMiO6QRR5IZ7xU=;
+ b=iQNNoYRTqx0DzjnC0QrPTWnkLP7km4+iO9Ei6C1CQ6Xq4Dsst6QaD+1jEXa9hMoAlz859002YfEu2ioG3BGg9AV5bAtIwLCHjKPnk6MmA84EZkb+YZfW9iX2a9mCl+q3pJSFjYOSf7nxFda54fQiCWxxonYxS0GQeV9BSoxK+S+VfIHg1vomhM7bKW8nwfuZpG2EjQwQ0O+3Vg2LHDeM023uFauROpIr+1CoYNml4MLfc3JGC2k0Cm4VTed62CNTJOh55oel3Adu/jUwYVq39oneerkrpJJ3Mrn3qy+zFTKC09TV8ghwedGGr6eIC4NpE02PX5qjLbo8uuedupvQFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by LV3PR11MB8674.namprd11.prod.outlook.com (2603:10b6:408:217::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
+ 2023 13:07:34 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::8824:ea30:b0ab:f107]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::8824:ea30:b0ab:f107%4]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
+ 13:07:33 +0000
+Date:   Mon, 28 Aug 2023 15:07:23 +0200
+From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+CC:     Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 4/6] selftests/pidfd: Fix ksft print formats
+Message-ID: <bis4cb4nawx32ys4aqjytksw4oyhzhocfvarintru4ow2oqsjv@ph73qvhn77gg>
+References: <cover.1693216959.git.maciej.wieczor-retman@intel.com>
+ <ac9c6c136a9e249453f866f56eab175c27f48061.1693216959.git.maciej.wieczor-retman@intel.com>
+ <c920ad68-45a7-23dd-9d4c-fac99e1a53c0@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <c920ad68-45a7-23dd-9d4c-fac99e1a53c0@linux.intel.com>
+X-ClientProxiedBy: FR0P281CA0045.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:48::14) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|LV3PR11MB8674:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2cc08ae9-3ed5-4bd2-b59a-08dba7c7be3e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c2E90yPY/ataeJUO/ZayWSaoO9WZwwK6/l/6dJDuIgl/cshC2d2Uia/vLt5YtJfuQc9lYinXj/BNJ/0sEP3F/mwpFtaxka1mA1YphaFQOLeEVSewxBvthtkMDXG0790wmXBGHl/sHu2DevFvogU/ym7hFF83SecKs/Srn6zcai+R027ZGgwix5LVWazM1/lwK6UyfHDWCCjkHA+bYH7rbsa60gLNr3XDQtMOwqRYDd4FGwdAgdbYMniCVn2VawzNfc3RAw4fAnUYL8yl1AVpV4K36N1TnaMGPO+DvH8QhwLfyt/Sk/ruFXFGYM1LZK0q9iGhP8dDcR/Wv838NmGoSm2mAp2en5DVPU/92XxRBN09KO3tKgqALyGNNT1uXMxcnXdCSav5/JzW+5xfnhF2njNnPu1DmNdDr6amfEvaFLopN0RRd+fg3znMH/EgxN25yL+DNEND6IpisXiEK7XvCFbxP+mwXuKqM9dNgk9VeFbW0aoAmjVwUF3bHR87xtBvAJJw8tGRQMgMcomJ83ZeRRVGNAOjFcGw0H4Rvgs/xmss+KYb7GtktPOvJxPHixBE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(39860400002)(136003)(396003)(346002)(186009)(1800799009)(451199024)(6666004)(53546011)(6512007)(6506007)(6486002)(9686003)(2906002)(33716001)(5660300002)(86362001)(38100700002)(4326008)(82960400001)(8676002)(8936002)(66946007)(41300700001)(66556008)(54906003)(66476007)(316002)(6916009)(478600001)(83380400001)(66574015)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akNRNFVvV0dwREduUjkvcWhkMjZoOGJwUTducElNQWhMY3lYbU5WalJiMHJD?=
+ =?utf-8?B?NVV6eC9rU29nL1R4b3ErM3ZjOWRxekt4bis4akQ1WnM4dkxGZncxSDJPcU8r?=
+ =?utf-8?B?MHc1MHZuQ2xpVG5kekNrc3lydFJlTzhYZ1A1d01CLzZFWmJGdjNLaHhTaFJI?=
+ =?utf-8?B?eFlSaWtweEVxb2Y0T0RwWlUxZXJnR3c1MHBUbEx3eTRVNW05Z2pjRFd4bzhW?=
+ =?utf-8?B?d2dkQm4xMlJhd2ZHbmtBUER6RDBzVHNGS05XT0orMFhkbC9neXFudWdpeGh4?=
+ =?utf-8?B?b2V2V2ppL0FZYStLcUdkWUlIdTMvTTVKUG5HYnFVZkFCazlZTjAxVmM3eW5l?=
+ =?utf-8?B?SzQ0T000SFlYTVcyODlVbmxxbzVkaGxLbEV0K2I4a3lPZWNoQkE0T0RaSVN5?=
+ =?utf-8?B?ZnpUN3lhZnp4SkRXYSs4UWkzN3NYWWRnYXBTSHZVcUZmWkNQNzhTRURXQjNR?=
+ =?utf-8?B?VWNJbjZXU3RYREhKT3VOYi83NzhKQmlNWXhPcE5ucklJNk5oeGFFTXNCdzlx?=
+ =?utf-8?B?bEV4d25kVW5wNFV0RCtQbFZ2WW91bkphMVQ1dE5iL01FbEdEV1VaT2pNRkVw?=
+ =?utf-8?B?aXJ6a3lMUXVreWhMNVRuZ0V4aHdLbGtCUWIvbUtzWUMwdllJNjVFQ3ZpYnJ5?=
+ =?utf-8?B?ZmlNRkJFZVMxU0s2Z0dkNjB1Y1lNWVdMcDFxdDhRMEZLUHBMWnpGb2dpZHRx?=
+ =?utf-8?B?ZkNHdkFqSksvMiszUkdvcjhnK2pNUks5ZXBzVnp4b0dqdVJNdnhHVlRCblhH?=
+ =?utf-8?B?TW01TmdiNDRHenhGN0MveG1SUFZweFpmbndKN3RUdGNsaU1XcnlPQWZsVlJ4?=
+ =?utf-8?B?OE01QWcyS2xoeGJVUGtmMXltR1I0dUhacWFGZFArQmtRakg2Yyt0YzI3RmZn?=
+ =?utf-8?B?bWxLVUp5Nm5FM2NmUWZ5WHZXaExoSFhMdWtySTd4ZFVmVWxHK2VXckNWK2xN?=
+ =?utf-8?B?N2E0QmJDb01xMUVpZ3RuazJaNEJFUDVUaTcxT2Fja2VmeTEySlB2Z1pCK0ha?=
+ =?utf-8?B?K1k3VGdxeG0xOXdxeWZ0ODdLaFRDVmFxc0d3NXMwMkV1eDJ6T2Y0SDlIRHFj?=
+ =?utf-8?B?Rmh2RnhvSE50Vk5kWVA3eE9GZ1ZJUXF2ZGRKbC9xOHM1ditWb0F2OWhlTEtW?=
+ =?utf-8?B?YTB4QmZESW5QOFZLVTJWeHN1SkRVVU91ZXpNWGt5N1NvOG14M3hTQ3hiT0xp?=
+ =?utf-8?B?QzFuR21Nc0RGUGtIUU5xSFMzQ2dETktSdnRVVTBrc1dZZUpFQklBTzVLeFVl?=
+ =?utf-8?B?U0F6c3ZEcktYdDhHV01GTmlXanEyVjFQZEo4NFVNbVZuUTNLS3hCRjRWRWNU?=
+ =?utf-8?B?ak5LaDRWVytrQStBSGM2N2lteXl1bWdiV1ZFVEF1NERtNlBEODJrbTBPd3Y4?=
+ =?utf-8?B?b2dYcUlSeVQ3SERzZFp0a3FlS2h1bytKaGFzT0NZbkRvck9zY0U5MjBaRTg0?=
+ =?utf-8?B?ejJxMzdjc2VWdC9oQ1BhazVDN2c4blhEaVNQc1UzTWNLRmQwVWlRd2x0TmR4?=
+ =?utf-8?B?WTJjdVNsNUhaV1ZQNG9qZ2lnWTVNcTFMVDN5WGxYVFplQ0dSMzFwc3VFOStX?=
+ =?utf-8?B?QVBuQ0lqTzNNZWVrNnBvcFFWM1JuRGQvK3BDRXpnTTQ5d21rS0tNeVBUWmZi?=
+ =?utf-8?B?Y3ZuUDErL2xTdFJtdmpydkJmYXUzN1JhbWpXdXlKdEcwNkQ5WGR5N1d5MjBF?=
+ =?utf-8?B?bzJqa3NtY2czaDQ0WTZmY0tpQktjeHorUlZTL1VWL3QrRWt3Z21hY1BsTUdV?=
+ =?utf-8?B?ODArb2V5VDZKUExKRkgyZCtWMDZYUFFXVFRYZjcvdm53bjRNV2lUc2RMc05V?=
+ =?utf-8?B?UWF1cklsOVBvaWlwWStPZ1pSTFhUVm1hdkJtRnBNNk56M2ZuTER4R2JCcHRu?=
+ =?utf-8?B?V2ZwV3k3K3FPUVlSRHpzRDlJNzg5VWRWQjAwQ1d5aFpGTk1BY0ZoZjNrOG5o?=
+ =?utf-8?B?UnkwYzZDUGVlMDFQQ0VqR1Z5YWJyQlF2ZVB2d0dtVnF2cTVnUU5LWU5hSlVs?=
+ =?utf-8?B?WlFqcFlXMnQ3aFFRT1BGaTIwMExaWWFXMVhUdisyazNKRHYrbHRuZUFzcDlw?=
+ =?utf-8?B?anpLVGxyajNIZE5SdzM0SUlxakdDZ3puYTAyMDlXQXZ5T1NvVkZpdXN5RnRO?=
+ =?utf-8?B?eHlSYmJqblZiZkhERUNUMnlMNHIvMlpBWGtycWZ4VTBkTDlUTTZSQlBBTVlk?=
+ =?utf-8?Q?CHCIPyZdpdUCq5Nt/GM3bu0=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2cc08ae9-3ed5-4bd2-b59a-08dba7c7be3e
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 13:07:33.7312
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vFBrXiOK1SbtjaGfDuoHz8QyWRAr24H2MW1EqdkE9gjDMhDOLLsJCNCYRxwaqLGb1iv/DRfg1ZI9HJpCI0U2j8j4SlTM3IKZx1BhEaHMndA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8674
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 7b3415f581c7 ("MIPS: Loongson32: Remove
-unused platform devices"), no one is using dma.h and nand.h.
-Therefore, remove these unused header files.
+On 2023-08-28 at 14:01:18 +0300, Ilpo Järvinen wrote:
+>On Mon, 28 Aug 2023, Wieczor-Retman, Maciej wrote:
+>> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
+>> ---
+>>  tools/testing/selftests/pidfd/pidfd_fdinfo_test.c |  2 +-
+>>  tools/testing/selftests/pidfd/pidfd_test.c        | 12 ++++++------
+>>  2 files changed, 7 insertions(+), 7 deletions(-)
+>> 
+>> diff --git a/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c b/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
+>> index 4e86f927880c..01cc37bf611c 100644
+>> --- a/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
+>> +++ b/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
+>> @@ -62,7 +62,7 @@ static void error_report(struct error *err, const char *test_name)
+>>  		break;
+>>  
+>>  	case PIDFD_PASS:
+>> -		ksft_test_result_pass("%s test: Passed\n");
+>> +		ksft_test_result_pass("%s test: Passed\n", test_name);
+>
+>Missing test_name leads to crash so this looks a Fixes: class thing for
+>me but you didn't provide one.
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
----
- arch/mips/include/asm/mach-loongson32/dma.h  | 21 ----------------
- arch/mips/include/asm/mach-loongson32/nand.h | 26 --------------------
- 2 files changed, 47 deletions(-)
- delete mode 100644 arch/mips/include/asm/mach-loongson32/dma.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/nand.h
+Thanks, I'll add this tag.
 
-diff --git a/arch/mips/include/asm/mach-loongson32/dma.h b/arch/mips/include/asm/mach-loongson32/dma.h
-deleted file mode 100644
-index e917b3ccb2c2..000000000000
---- a/arch/mips/include/asm/mach-loongson32/dma.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright (c) 2015 Zhang, Keguang <keguang.zhang@gmail.com>
-- *
-- * Loongson 1 NAND platform support.
-- */
--
--#ifndef __ASM_MACH_LOONGSON32_DMA_H
--#define __ASM_MACH_LOONGSON32_DMA_H
--
--#define LS1X_DMA_CHANNEL0	0
--#define LS1X_DMA_CHANNEL1	1
--#define LS1X_DMA_CHANNEL2	2
--
--struct plat_ls1x_dma {
--	int nr_channels;
--};
--
--extern struct plat_ls1x_dma ls1b_dma_pdata;
--
--#endif /* __ASM_MACH_LOONGSON32_DMA_H */
-diff --git a/arch/mips/include/asm/mach-loongson32/nand.h b/arch/mips/include/asm/mach-loongson32/nand.h
-deleted file mode 100644
-index aaf5ed19d78d..000000000000
---- a/arch/mips/include/asm/mach-loongson32/nand.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright (c) 2015 Zhang, Keguang <keguang.zhang@gmail.com>
-- *
-- * Loongson 1 NAND platform support.
-- */
--
--#ifndef __ASM_MACH_LOONGSON32_NAND_H
--#define __ASM_MACH_LOONGSON32_NAND_H
--
--#include <linux/dmaengine.h>
--#include <linux/mtd/partitions.h>
--
--struct plat_ls1x_nand {
--	struct mtd_partition *parts;
--	unsigned int nr_parts;
--
--	int hold_cycle;
--	int wait_cycle;
--};
--
--extern struct plat_ls1x_nand ls1b_nand_pdata;
--
--bool ls1x_dma_filter_fn(struct dma_chan *chan, void *param);
--
--#endif /* __ASM_MACH_LOONGSON32_NAND_H */
+In my case it just gives a warning but compiles anyway:
 
-base-commit: be87eab1320e25c7d43cec7ee59bc607050abe85
+pidfd_fdinfo_test.c: In function ‘error_report’:
+pidfd_fdinfo_test.c:65:41: warning: format ‘%s’ expects a matching ‘char *’ argument [-Wformat=]
+   65 |                 ksft_test_result_pass("%s test: Passed\n");
+      |                                        ~^
+      |                                         |
+      |                                         char *
+
+Could I be missing some strict config?
+
 -- 
-2.39.2
-
+Kind regards
+Maciej Wieczór-Retman
