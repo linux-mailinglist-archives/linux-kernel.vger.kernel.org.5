@@ -2,343 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367F378A6F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C8C78A6F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbjH1H65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
+        id S229897AbjH1H67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjH1H62 (ORCPT
+        with ESMTP id S229878AbjH1H6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:58:28 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E04116
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:58:23 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1659240a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:58:23 -0700 (PDT)
+        Mon, 28 Aug 2023 03:58:53 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404F0118
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:58:50 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3ff5ddb4329so23512385e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20221208.gappssmtp.com; s=20221208; t=1693209503; x=1693814303;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=k/QhZG6ZDZ8kFya2emkAkHMTf8vyMHNtbVCiU5m1tXU=;
-        b=VRbPxyeENdl3s1Qey3hv6yOlZ+4CfxWyDhTKUoUUymqkuI5AP/WJxQYPM820UoSUL9
-         mASd9g8eED4jR5/UGsvPMM8Iq0mGYCyDj5+27xZ2APl3EDzsyBUjjIr1Z5cP1yPafCnH
-         VEIaYfvDmVMLmwGul5InZHe434etHpqOAgOIso2MFC422b6qVaJ5khu2gCC9fIEx5mEX
-         wrEZLQ0TsTAayd1qneRDw5nHqqlg8MzfhWBEmclhJRhkwfdvTRAULmC3atVB1e9ankYI
-         HlCP7jetH6AKg+/M+j0qDyDD3cYZ6RXcqRjk2PEt4HzN6R1d2iGYXpPtQVxoLdsblBE3
-         MzDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693209503; x=1693814303;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1693209528; x=1693814328;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=k/QhZG6ZDZ8kFya2emkAkHMTf8vyMHNtbVCiU5m1tXU=;
-        b=QTaDO/SNww+jU9kswH8ePDPj5nNgy9Pw7M+zzUFM+krkmbatFDUcr4BVHZMD7ky5qI
-         eScOiQDLTlOnc44oG1Tv4StZOt0E8RZOiWB8d1CYTRSlQwVtOipm30rAuXqyRD7P/E2k
-         dOJ9CwbYyV1hx4Ie9kBOwhLpEZ8ecSUVemtvoFrWxQj2g6LCJDNj5qL618ccz0qsrtuo
-         QeF14eI2cWvl/eujRv1rmaFwNi5fykZNq/rA/En67PAwsLtqp5NPECIrhhIo64eKoUOE
-         clbEuJmcwRcAcH80SWTi1+4p6xTnF7Xo6skfpVHIG2ouC3FCB+WeZASoJG5NP0Vsznpu
-         P9bA==
-X-Gm-Message-State: AOJu0YzZ8s2avfIFbqvPoPNOqKOyKnZRph4tyL0uYH0EC6lsvbjy4TIF
-        zJcVing38Vbu76oX78QUN3QZMA==
-X-Google-Smtp-Source: AGHT+IFajBr6AnYgt/7FmhK0WkzPHs+3hSx8KYTxkpY+YHQONQ8b8t1fBHX+N/4s0hTxlKIr6q/SNQ==
-X-Received: by 2002:a17:90a:df07:b0:268:ac3:b1f6 with SMTP id gp7-20020a17090adf0700b002680ac3b1f6mr21616297pjb.24.1693209503018;
-        Mon, 28 Aug 2023 00:58:23 -0700 (PDT)
-Received: from nixos.tailf4e9e.ts.net ([8.210.91.195])
-        by smtp.googlemail.com with ESMTPSA id ds1-20020a17090b08c100b00262e485156esm8269343pjb.57.2023.08.28.00.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 00:58:22 -0700 (PDT)
-From:   Xueshi Hu <xueshi.hu@smartx.com>
-To:     hch@infradead.org, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, dave.jiang@intel.com,
-        jayalk@intworks.biz, daniel@ffwll.ch, deller@gmx.de,
-        bcrl@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        jack@suse.com, tytso@mit.edu, adilger.kernel@dilger.ca,
-        miklos@szeredi.hu, mike.kravetz@oracle.com, muchun.song@linux.dev,
-        djwong@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
-        hughd@google.com
-Cc:     nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        Xueshi Hu <xueshi.hu@smartx.com>
-Subject: [PATCH v2] fs: clean up usage of noop_dirty_folio
-Date:   Mon, 28 Aug 2023 15:54:49 +0800
-Message-Id: <20230828075449.262510-1-xueshi.hu@smartx.com>
-X-Mailer: git-send-email 2.40.1
+        bh=gnJy2MC1m3VyQ+PZVnNt0Ji7E/eIh10thAxNUSP+Kok=;
+        b=Ce9wdNHkWUYQs3oR6OfQapbpRFf9rYd28Vbz22+0qPPrRzUaUU1n4i11vygGUNdWi/
+         7jbZs5JzNg3Fj4f4bmgibO2eACwVMy1K/yBuk2FPQ0apVAjET6H3GNv8oCEJ4XbvI1LA
+         cNVZFNmTbURcUz6h+dY+enAiY0s63+sMPMaom1AV97bLBJPLbHsXzUN14uhF0CFhMBq3
+         tXMmaxjaMrJs6DQjRMYUWM3pqlf3DFcnQirSB1zFFgJO7luIFHlOJbeO7Mzx1rQjDSA3
+         /uXYhl1ZxLhkWvPXPWzlJFgpyU1DcC5s9QGRDgpm5g7g2o07qp7xlerYOCYEd2Jk6FkQ
+         xiSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693209529; x=1693814329;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gnJy2MC1m3VyQ+PZVnNt0Ji7E/eIh10thAxNUSP+Kok=;
+        b=CMYUIG73p71VkRMMp6NYUYuXT1n/U7uvPa0uC3AYmpFn/dnrO+1Eyv2wcE414R9VRU
+         ODGyJN7koe8TtkjZala4dAIvIriSRosQAOLOh3M6We8N7BJ5+N2cLwRM0OjQBfywpk4o
+         hL+rwcFSYCka0od0C2aaikbUcac0hsW9aKleL/yhom8WwHykmp+gZiEgInj5L/yB8JDn
+         KZcgDbmiGVghHel6KBho8w+w48Tugr2KA7iWz8RGqrSXPUiMto3aXpK2kvyi0ekoRnWF
+         GXjwRBhHgkTJsmdt8SHZt6P91JzWDUA2E20P6lmQj9ukkL8wVrINn+tUA6jhZQOV+VGK
+         kAew==
+X-Gm-Message-State: AOJu0YzOthTyG0ytsvUA7Fzb4uSvY5XNhaBJnvZkbWx8ZYtw1ZX+1dob
+        +Fvi12vUfcTDjGZ41yf60AU4Og==
+X-Google-Smtp-Source: AGHT+IH2GQG5DFXYdaa5Ci+BuEU0p4RM7o5b3apJaGc9NS6UnYeANzW0JqXFZQVyLxMCa4ZToswdQQ==
+X-Received: by 2002:a1c:7c10:0:b0:401:c1e2:f74f with SMTP id x16-20020a1c7c10000000b00401c1e2f74fmr3995807wmc.15.1693209528649;
+        Mon, 28 Aug 2023 00:58:48 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:5e59:c27b:747a:3f52? ([2a01:e0a:982:cbb0:5e59:c27b:747a:3f52])
+        by smtp.gmail.com with ESMTPSA id a9-20020a05600c224900b003fef5402d2dsm13238123wmm.8.2023.08.28.00.58.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 00:58:47 -0700 (PDT)
+Message-ID: <b0eb409f-a437-4054-9072-a6ed093e88b7@linaro.org>
+Date:   Mon, 28 Aug 2023 09:58:48 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2] Revert "tty: serial: meson: Add a earlycon for the T7
+ SoC"
+Content-Language: en-US, fr
+To:     Lucas Tanure <tanure@linux.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+References: <20230827082944.5100-1-tanure@linux.com>
+ <7bf9e716-0ff2-56d5-07ab-db027901454e@linaro.org>
+ <09735262-1bc0-40cf-b139-22cccf70bcab@linux.com>
+ <e73260c9-04f8-eb1e-bb5b-c3bd2219625e@linaro.org>
+ <8d2ba0d3-55eb-45cf-b88a-bafef35e96b9@linux.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <8d2ba0d3-55eb-45cf-b88a-bafef35e96b9@linux.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In folio_mark_dirty(), it can automatically fallback to
-noop_dirty_folio() if a_ops->dirty_folio is not registered.
+On 27/08/2023 12:31, Lucas Tanure wrote:
+> On 27-08-2023 11:23, Neil Armstrong wrote:
+>> Hi Lucas,
+>>
+>> Le 27/08/2023 à 12:04, Lucas Tanure a écrit :
+>>> On 27-08-2023 10:48, Neil Armstrong wrote:
+>>>> Hi Lucas,
+>>>>
+>>>> Le 27/08/2023 à 10:29, Lucas Tanure a écrit :
+>>>>> This reverts commit 6a4197f9763325043abf7690a21124a9facbf52e.
+>>>>> New SoC will use ttyS0 instead of ttyAML, so T7 SoC doesn't need a OF_EARLYCON_DECLARE.
+>>>>>
+>>>>> Signed-off-by: Lucas Tanure <tanure@linux.com>
+>>>>> ---
+>>>>> Since V1:
+>>>>> - add Signed-off-by:
+>>>>>
+>>>>>   drivers/tty/serial/meson_uart.c | 2 --
+>>>>>   1 file changed, 2 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
+>>>>> index c4f61d82fb727..790d910dafa5d 100644
+>>>>> --- a/drivers/tty/serial/meson_uart.c
+>>>>> +++ b/drivers/tty/serial/meson_uart.c
+>>>>> @@ -648,8 +648,6 @@ meson_serial_early_console_setup(struct earlycon_device *device, const char *opt
+>>>>>   OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
+>>>>>               meson_serial_early_console_setup);
+>>>>> -OF_EARLYCON_DECLARE(meson, "amlogic,t7-uart",
+>>>>> -            meson_serial_early_console_setup);
+>>>>>   #define MESON_SERIAL_CONSOLE_PTR(_devname) (&meson_serial_console_##_devname)
+>>>>>   #else
+>>>>
+>>>> How do you use earlycon with this removed ?
+>>>>
+>>>> Neil
+>>> This is my kernel cmdline:
+>>> console=ttyS0,921600 no_console_suspend earlycon=ttyS0,0xfe078000
+>>>
+>>> And I can see my log:
+>>> boot 64bit kernel
+>>> [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd092]
+>>> [    0.000000] Linux version 6.5.0-rc7-next-20230825+ (tanureal@ryzen) (aarch64-none-linux-gnu-gcc (GNU Toolchain for the A-profile Architecture 10.3-2021.07 (arm-10.29)) 10.3.1 20210621, GNU ld (GNU Toolchain fo3
+>>> [    0.000000] KASLR disabled due to lack of seed
+>>> [    0.000000] Machine model: Khadas vim4
+>>> [    0.000000] OF: reserved mem: 0x0000000005000000..0x00000000052fffff (3072 KiB) nomap non-reusable secmon@5000000
+>>> [    0.000000] OF: reserved mem: 0x0000000005300000..0x00000000072fffff (32768 KiB) nomap non-reusable secmon@5300000
+>>> ...
+>>> [    0.079368] io scheduler mq-deadline registered
+>>> [    0.079374] io scheduler kyber registered
+>>> [    0.079549] io scheduler bfq registered
+>>> [    0.083373] fe078000.serial: ttyS0 at MMIO 0xfe078000 (irq = 14, base_baud = 1500000) is a meson_uart
+>>> [    0.083403] printk: console [ttyS0] enabled
+>>>
+>>> As the log is OK, and T7 for now is binding against S4 code we should drop this patch and add a S4 one if needed.
+>>>
+>>> But just having this log is not enough for testing earlycon?
+>>> I am assuming that by just having the log since 0.0000 is a good sign that earlycon is working.
+>>> Could you give further guidance?
+>>
+>> First the kernel argument is simply "earlycon" with no other options,
+>> the earlycon code will fetch the first uart using the DT /chosen/stdout-path property.
+>>
+>> Then you should see something like right after "Machine model":
+>> [    0.000000] earlycon: meson0 at MMIO 0x00000000ff803000 (options '115200n8')
+>>
+>> The boot log you share doesn't use earlycon, it waits until all depedency of the UART
+>> has been probed before probing the UART driver and prints the whole boot log.
+>>
+>> Earlycon is a mechanism to use the UART HW as configured by the bootloader in
+>> a minimal way very early in the boot in order to detect very early lockups.
+>>
+>> Keeping OF_EARLYCON_DECLARE for t7 would enable this.
+>>
+>> Neil
+>>
+>>>
+>>> Lucas Tanure
+>>>
+>>
+> But then we would need to add Earlycon for S4 too.
+> How can we add one Earlycon for all future SoCs, like S4 and T7?
+> 
 
-As anon_aops, dev_dax_aops and fb_deferred_io_aops becames empty, remove
-them too.
+As of today, S4 has an UART with amlogic,meson-ao-uart as fallback compatibl,
+but if there's no AO UART on S4, then this is wrong and yes a new OF_EARLYCON_DECLARE
+with amlogic,meson-s4-uart should be added.
 
-Signed-off-by: Xueshi Hu <xueshi.hu@smartx.com>
----
-Changes in v2:
-- make noop_dirty_folio() inline as suggested by Matthew
-- v1: https://lore.kernel.org/linux-mm/ZOxAfrz9etoVUfLQ@infradead.org/T/#m073d45909b1df03ff09f382557dc4e84d0607c49
-
- drivers/dax/device.c                |  5 -----
- drivers/video/fbdev/core/fb_defio.c |  5 -----
- fs/aio.c                            |  1 -
- fs/ext2/inode.c                     |  1 -
- fs/ext4/inode.c                     |  1 -
- fs/fuse/dax.c                       |  1 -
- fs/hugetlbfs/inode.c                |  1 -
- fs/libfs.c                          |  5 -----
- fs/xfs/xfs_aops.c                   |  1 -
- include/linux/pagemap.h             |  1 -
- mm/page-writeback.c                 | 18 +++++-------------
- mm/secretmem.c                      |  1 -
- mm/shmem.c                          |  1 -
- mm/swap_state.c                     |  1 -
- 14 files changed, 5 insertions(+), 38 deletions(-)
-
-diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-index 30665a3ff6ea..018aa9f88ec7 100644
---- a/drivers/dax/device.c
-+++ b/drivers/dax/device.c
-@@ -345,10 +345,6 @@ static unsigned long dax_get_unmapped_area(struct file *filp,
- 	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
- }
- 
--static const struct address_space_operations dev_dax_aops = {
--	.dirty_folio	= noop_dirty_folio,
--};
--
- static int dax_open(struct inode *inode, struct file *filp)
- {
- 	struct dax_device *dax_dev = inode_dax(inode);
-@@ -358,7 +354,6 @@ static int dax_open(struct inode *inode, struct file *filp)
- 	dev_dbg(&dev_dax->dev, "trace\n");
- 	inode->i_mapping = __dax_inode->i_mapping;
- 	inode->i_mapping->host = __dax_inode;
--	inode->i_mapping->a_ops = &dev_dax_aops;
- 	filp->f_mapping = inode->i_mapping;
- 	filp->f_wb_err = filemap_sample_wb_err(filp->f_mapping);
- 	filp->f_sb_err = file_sample_sb_err(filp);
-diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
-index 274f5d0fa247..08be3592281f 100644
---- a/drivers/video/fbdev/core/fb_defio.c
-+++ b/drivers/video/fbdev/core/fb_defio.c
-@@ -221,10 +221,6 @@ static const struct vm_operations_struct fb_deferred_io_vm_ops = {
- 	.page_mkwrite	= fb_deferred_io_mkwrite,
- };
- 
--static const struct address_space_operations fb_deferred_io_aops = {
--	.dirty_folio	= noop_dirty_folio,
--};
--
- int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
- {
- 	vma->vm_ops = &fb_deferred_io_vm_ops;
-@@ -307,7 +303,6 @@ void fb_deferred_io_open(struct fb_info *info,
- {
- 	struct fb_deferred_io *fbdefio = info->fbdefio;
- 
--	file->f_mapping->a_ops = &fb_deferred_io_aops;
- 	fbdefio->open_count++;
- }
- EXPORT_SYMBOL_GPL(fb_deferred_io_open);
-diff --git a/fs/aio.c b/fs/aio.c
-index 77e33619de40..4cf386f9cb1c 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -484,7 +484,6 @@ static int aio_migrate_folio(struct address_space *mapping, struct folio *dst,
- #endif
- 
- static const struct address_space_operations aio_ctx_aops = {
--	.dirty_folio	= noop_dirty_folio,
- 	.migrate_folio	= aio_migrate_folio,
- };
- 
-diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-index 75983215c7a1..ce191bdf1c78 100644
---- a/fs/ext2/inode.c
-+++ b/fs/ext2/inode.c
-@@ -971,7 +971,6 @@ const struct address_space_operations ext2_aops = {
- static const struct address_space_operations ext2_dax_aops = {
- 	.writepages		= ext2_dax_writepages,
- 	.direct_IO		= noop_direct_IO,
--	.dirty_folio		= noop_dirty_folio,
- };
- 
- /*
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 43775a6ca505..67c1710c01b0 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3561,7 +3561,6 @@ static const struct address_space_operations ext4_da_aops = {
- static const struct address_space_operations ext4_dax_aops = {
- 	.writepages		= ext4_dax_writepages,
- 	.direct_IO		= noop_direct_IO,
--	.dirty_folio		= noop_dirty_folio,
- 	.bmap			= ext4_bmap,
- 	.swap_activate		= ext4_iomap_swap_activate,
- };
-diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
-index 8e74f278a3f6..50ca767cbd5e 100644
---- a/fs/fuse/dax.c
-+++ b/fs/fuse/dax.c
-@@ -1326,7 +1326,6 @@ bool fuse_dax_inode_alloc(struct super_block *sb, struct fuse_inode *fi)
- static const struct address_space_operations fuse_dax_file_aops  = {
- 	.writepages	= fuse_dax_writepages,
- 	.direct_IO	= noop_direct_IO,
--	.dirty_folio	= noop_dirty_folio,
- };
- 
- static bool fuse_should_enable_dax(struct inode *inode, unsigned int flags)
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 7b17ccfa039d..5404286f0c13 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -1266,7 +1266,6 @@ static void hugetlbfs_destroy_inode(struct inode *inode)
- static const struct address_space_operations hugetlbfs_aops = {
- 	.write_begin	= hugetlbfs_write_begin,
- 	.write_end	= hugetlbfs_write_end,
--	.dirty_folio	= noop_dirty_folio,
- 	.migrate_folio  = hugetlbfs_migrate_folio,
- 	.error_remove_page	= hugetlbfs_error_remove_page,
- };
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 5b851315eeed..982f220a9ee3 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -627,7 +627,6 @@ const struct address_space_operations ram_aops = {
- 	.read_folio	= simple_read_folio,
- 	.write_begin	= simple_write_begin,
- 	.write_end	= simple_write_end,
--	.dirty_folio	= noop_dirty_folio,
- };
- EXPORT_SYMBOL(ram_aops);
- 
-@@ -1231,16 +1230,12 @@ EXPORT_SYMBOL(kfree_link);
- 
- struct inode *alloc_anon_inode(struct super_block *s)
- {
--	static const struct address_space_operations anon_aops = {
--		.dirty_folio	= noop_dirty_folio,
--	};
- 	struct inode *inode = new_inode_pseudo(s);
- 
- 	if (!inode)
- 		return ERR_PTR(-ENOMEM);
- 
- 	inode->i_ino = get_next_ino();
--	inode->i_mapping->a_ops = &anon_aops;
- 
- 	/*
- 	 * Mark the inode dirty from the very beginning,
-diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-index 451942fb38ec..300acea9ee63 100644
---- a/fs/xfs/xfs_aops.c
-+++ b/fs/xfs/xfs_aops.c
-@@ -590,6 +590,5 @@ const struct address_space_operations xfs_address_space_operations = {
- 
- const struct address_space_operations xfs_dax_aops = {
- 	.writepages		= xfs_dax_writepages,
--	.dirty_folio		= noop_dirty_folio,
- 	.swap_activate		= xfs_iomap_swapfile_activate,
- };
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 716953ee1ebd..9de3be51dee2 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -1074,7 +1074,6 @@ bool folio_clear_dirty_for_io(struct folio *folio);
- bool clear_page_dirty_for_io(struct page *page);
- void folio_invalidate(struct folio *folio, size_t offset, size_t length);
- int __set_page_dirty_nobuffers(struct page *page);
--bool noop_dirty_folio(struct address_space *mapping, struct folio *folio);
- 
- #ifdef CONFIG_MIGRATION
- int filemap_migrate_folio(struct address_space *mapping, struct folio *dst,
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index d3f42009bb70..d2d739109bfe 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2585,17 +2585,6 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
- 	return ret;
- }
- 
--/*
-- * For address_spaces which do not use buffers nor write back.
-- */
--bool noop_dirty_folio(struct address_space *mapping, struct folio *folio)
--{
--	if (!folio_test_dirty(folio))
--		return !folio_test_set_dirty(folio);
--	return false;
--}
--EXPORT_SYMBOL(noop_dirty_folio);
--
- /*
-  * Helper function for set_page_dirty family.
-  *
-@@ -2799,10 +2788,13 @@ bool folio_mark_dirty(struct folio *folio)
- 		 */
- 		if (folio_test_reclaim(folio))
- 			folio_clear_reclaim(folio);
--		return mapping->a_ops->dirty_folio(mapping, folio);
-+		if (mapping->a_ops->dirty_folio)
-+			return mapping->a_ops->dirty_folio(mapping, folio);
- 	}
- 
--	return noop_dirty_folio(mapping, folio);
-+	if (!folio_test_dirty(folio))
-+		return !folio_test_set_dirty(folio);
-+	return false;
- }
- EXPORT_SYMBOL(folio_mark_dirty);
- 
-diff --git a/mm/secretmem.c b/mm/secretmem.c
-index 86442a15d12f..3fe1c35f9c8d 100644
---- a/mm/secretmem.c
-+++ b/mm/secretmem.c
-@@ -157,7 +157,6 @@ static void secretmem_free_folio(struct folio *folio)
- }
- 
- const struct address_space_operations secretmem_aops = {
--	.dirty_folio	= noop_dirty_folio,
- 	.free_folio	= secretmem_free_folio,
- 	.migrate_folio	= secretmem_migrate_folio,
- };
-diff --git a/mm/shmem.c b/mm/shmem.c
-index d963c747dabc..9bdef68a088a 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4090,7 +4090,6 @@ static int shmem_error_remove_page(struct address_space *mapping,
- 
- const struct address_space_operations shmem_aops = {
- 	.writepage	= shmem_writepage,
--	.dirty_folio	= noop_dirty_folio,
- #ifdef CONFIG_TMPFS
- 	.write_begin	= shmem_write_begin,
- 	.write_end	= shmem_write_end,
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index f8ea7015bad4..3666439487db 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -30,7 +30,6 @@
-  */
- static const struct address_space_operations swap_aops = {
- 	.writepage	= swap_writepage,
--	.dirty_folio	= noop_dirty_folio,
- #ifdef CONFIG_MIGRATION
- 	.migrate_folio	= migrate_folio,
- #endif
--- 
-2.40.1
+Neil
 
