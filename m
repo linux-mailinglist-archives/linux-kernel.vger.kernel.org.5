@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7336578A92F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E3A78A933
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 11:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbjH1JrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 05:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        id S230132AbjH1JrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 05:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjH1Jqh (ORCPT
+        with ESMTP id S230222AbjH1Jqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 05:46:37 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13863CA
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:46:35 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bd0a5a5abbso15067981fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:46:34 -0700 (PDT)
+        Mon, 28 Aug 2023 05:46:53 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1872110
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:46:49 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso45258011fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 02:46:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693215993; x=1693820793;
+        d=linaro.org; s=google; t=1693216008; x=1693820808;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=L+pP5MACCBszMteQXtfvy74S7E0c8KbM8wLUdD1/g7I=;
-        b=H/GnO/9p0Lr1ztPrwXkQMWwNVPNlx1pysVFVZUOrsCgNatam1KDevZnfZoykuZeXvN
-         xGOf6o7PC6xB4CkGjSvHYhXeLFMC9W0ydoXzktZjRMx6Ao1uTEVI9zuz3K6k6Zaz1Tlo
-         +DQ3QKvsJ0jgXvgkIJCRDrliQmYaXWWW928+UtP2VmV2nfk+5eLGYFhmxS+fO7tm4SdI
-         RH7y/tPSLUJzmHH7J6MueGWc5wqmNcLSwmTGNl+ihOqat5QXHWSk9pAQbK735rPd/+us
-         IQpx5rmgqgpcpY5alDUuwlm2jDkUEVQV/dCDGgZv44BL83P4Fqg/iZUEDv/TFxWjLK46
-         1lMQ==
+        bh=T8rRZcymCfarQdzwxtvOO3M0Qw7zmDLEl4iw2PwzWqc=;
+        b=os0YTBFhFu7jqH6VF4lm+dWhm+AnStmPLrr5MEoEIPwdpOS5I0x0RZSX37siwBzQV5
+         UCXWRzloRHNjpcnUC4uJ9iAc9gs65MYe3Jh+DqYXJrTLTxPBUOvmfDGFg+7XliVZqXvY
+         dkmgKpqtQGPAnLXvNJtx7UoUwfq+hxI/u8rcnRm8Yq0CQ+2yF8XPUiOnzztrZgse7Q7v
+         zfxCGjD2om6Fp/t0m/iVWp+O4I9SELDuyXp1omGusTXeffQmTUcUAEc3QA0kBMPuazlE
+         OgZ35dCvAsTW55oEYbQ6U0jm0y7ahf8zfKvWhm4iP2l+HxOg5l969JMH8aVPp7Vhg120
+         Qbhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693215993; x=1693820793;
+        d=1e100.net; s=20221208; t=1693216008; x=1693820808;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L+pP5MACCBszMteQXtfvy74S7E0c8KbM8wLUdD1/g7I=;
-        b=SdnsodU88KkLLFq37nrjnebG2pY6uJ7RKSW8bIctWeLaPuXFSxi/vbcJmOb/VgNgPT
-         2PTHWIXKcgQFJ40tIMa4UYq5PO5zfjhH3N+xDF3c2OhUzB/JM/P3nyLwCF1BbWlY3EF1
-         FqwLYhWhDrmlc9O2RIho10T17SfjYDRvK5JXoafV8Znx1RTSWfHqvRRtHHlREntV8z4z
-         2lKfN75E1QebIH7Xzj7UuHCfEKHZEDdazjfzGzu6wmIpI4VoB0mVq1nEV3eCOYQ2XyOg
-         wcsKHw3sYXM/Jgs15gmg9Y2fHD3u9z7HjCBThyq9m9rf93I21MGrUxuLsU9pk0I1LVuz
-         ZbMQ==
-X-Gm-Message-State: AOJu0YxxvMmlJvSJUMKunOY+H9RNzlm39Kd2U5kH1ZzdWalCK/i0eARV
-        uBzzYMc+MUpGteIgWhfiSJBb/g==
-X-Google-Smtp-Source: AGHT+IHNV8hw1exikzzcesUHsd9/4oY8QaEjlWgz8MAwX2CmtTzYmgJrH61Kjog0EC1Jd3hZWDhRUw==
-X-Received: by 2002:a05:651c:113:b0:2b9:eb9d:cc51 with SMTP id a19-20020a05651c011300b002b9eb9dcc51mr19092672ljb.49.1693215993357;
-        Mon, 28 Aug 2023 02:46:33 -0700 (PDT)
+        bh=T8rRZcymCfarQdzwxtvOO3M0Qw7zmDLEl4iw2PwzWqc=;
+        b=EZAsGuiN3cHMPhHBwhVfpojsQtBia23GZ3PKY9e1VtB9ORFZv5NzFUqJu9ENqtaQ+W
+         7ETudw0eoDPoJzvS31ICfziCa/gqzd9zQteauJ8Aot7u2thQL+f0Ur/FC7CQhxs/vlV4
+         6GwmlvMrMWISvipzdRRg7txKuJ3/Is3KhYt30uuGLwpGlgnLp3gmTVysB31lcti5sMS9
+         5QG5IWXHVmKLgAi+Lz9GZZ/wk7obyN1krOpAFVVYpTZ9sVAJDq8ZpP3FQQIhgtR/9Rii
+         Ihdr2gSBk5ammZ80MEZiSbIj3tZ/Tv1ZN9v3jLEy2IdhNcSqSgJk8LkBrsJVnO0wCbGs
+         Swow==
+X-Gm-Message-State: AOJu0Yx8Zm+YS3G6HF3yEdbz9P80MpwgbKJ7IAOIfAtzgftsYLcXzWYu
+        a4ssc1PYTCTD8eHVY5dytz44gg==
+X-Google-Smtp-Source: AGHT+IGUuF8rP3XpdZaT1fAE0Tj5KyoLrlpMMbFPfUjAlJ1fixZ18IYaK9TGF8w1jOUz4RoS7N610Q==
+X-Received: by 2002:a2e:9cd3:0:b0:2b9:b693:c906 with SMTP id g19-20020a2e9cd3000000b002b9b693c906mr18656504ljj.27.1693216008107;
+        Mon, 28 Aug 2023 02:46:48 -0700 (PDT)
 Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id h10-20020a2e900a000000b002ba130e9a29sm1682693ljg.76.2023.08.28.02.46.32
+        by smtp.gmail.com with ESMTPSA id h10-20020a2e900a000000b002ba130e9a29sm1682693ljg.76.2023.08.28.02.46.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 02:46:33 -0700 (PDT)
-Message-ID: <514343c9-bf9d-4628-aef2-636f2db80c6a@linaro.org>
-Date:   Mon, 28 Aug 2023 11:46:32 +0200
+        Mon, 28 Aug 2023 02:46:47 -0700 (PDT)
+Message-ID: <4caa328d-83ad-418a-a094-a24fadb45225@linaro.org>
+Date:   Mon, 28 Aug 2023 11:46:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] ARM: dts: qcom: drop incorrect cell-index from SPMI
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc8180x: drop incorrect cell-index
+ from SPMI
 Content-Language: en-US
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Andy Gross <agross@kernel.org>,
@@ -65,6 +66,7 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20230827122842.63741-1-krzysztof.kozlowski@linaro.org>
+ <20230827122842.63741-2-krzysztof.kozlowski@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -101,11 +103,11 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230827122842.63741-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230827122842.63741-2-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,7 +119,7 @@ On 27.08.2023 14:28, Krzysztof Kozlowski wrote:
 > The SPMI controller (PMIC Arbiter) does not use nor allow 'cell-index'
 > property:
 > 
->   qcom-sdx55-mtp.dtb: spmi@c440000: Unevaluated properties are not allowed ('cell-index' was unexpected)
+>   sc8180x-primus.dtb: spmi@c440000: Unevaluated properties are not allowed ('cell-index' was unexpected)
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
