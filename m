@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3400C78B9A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A88F78B90A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbjH1Ujz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        id S233619AbjH1UDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 16:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233595AbjH1UAW (ORCPT
+        with ESMTP id S233729AbjH1UDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:00:22 -0400
-Received: from sonic310-30.consmr.mail.ne1.yahoo.com (sonic310-30.consmr.mail.ne1.yahoo.com [66.163.186.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B05E5B
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:59:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693252790; bh=HCIySn/1FKI3yeDY1naM2LdltXRa1H636L7BVhL2cJo=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=lFpS8wUzuFEEcL4kma80MY9s+sAkio8CMafwoamhGWdsttdrWMyoUveu8E0fe1g8g1N6J/o5wldSN6ih6Vem1LuHCKKuApCXoqGDhNXeGpfL8AM7oHc5XvfYRcwriSO5uwx/jcXllmIB05oSCLcgN9H0kK8mbgd9UL1ul+vj68z32dsv+XI4nl4vveMpkzn3Ln7qcmE27o7RhxDMkgS+02pbXOescPXZPa7VU4mB6h1BIUk9WeXSUurJMmaQghl02q7vA0w3QKYIj7QKlnB2R6VZZMD4ipZu/gafk+BNEYXqFGLzNUh7Rmt94UC5p/3rxd8l6hNiy2cReSrgOaUIZA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693252790; bh=urR5AKNWQCLxBi7dWZHsE31hyrPkomVwWr7cs4YnzZx=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=A97Mkz2daPNGa7S7tjiMhxy2q+1dHVRHARV8+Ak6QIgJCwGmVliVv8kaofnD1FPoITXg/Sjasb4Wr2qWAPG1NpkTQIioUv1Pouzbv/mYXRlM5G7wBynZDzvNtwy0iWs3MRjrbYK7wctnZdBngz0GcR5+ZYlrlzMni1OBuHToFkh0Zt3xPeigmzCFzJEbHC6RGZBTqjG5ce3282lJtPQkke118B1x7gw9N7RtuI2TRio7l6pVFyLNpLaMogEqS9LGCrJq6Ihy+8BWpeS0kOXI09FvansoMJWKTeSPM+GkS343AqfcLJgB/LS2EQm2ZlcaDPE5ki5DN1um96/bKGMmqw==
-X-YMail-OSG: YhkHmAkVM1m0jDlQHLtn2YlDHxfvE5rtb6XGf1AI10TnB_Zk0Bp6U45QYe9YZh9
- ck.LxiUwMQwGjX_rXpJANiruQuBujoCKekARsj0wIKBtkFQzFEx7vuWK614VJ28DqOVvuc9Yj2dn
- s2FCGyoW0hmXvhFLL9cLfVvl1Y.wD2OkILi_nh99QV9JlBvrft8Whn0N.1dZNfcbdJXx3_wByxPl
- CZxzCK2v0T1kPI9HIkhhMKcNhDhQGYhDmmWMwcflcEUzEN6m8xJRHQ_oVOgChdWwFs_7bqpIm2Rd
- nrpJ4D9RSZDginPbkWqWmPaIFQGgEtnAZq1G3O8s.k7jMcdwVKMWuQaFms36lFiWc9KcU7MC6H.B
- E5KAj5m7ennJDj56hlm5jxcjgGm_LzhGt4KuP0.ZboeYBNZ_d6pfSy7klhc1sG6p8eDUh2AH9umk
- tI25Cc2pU43Vl8Wh.ZQhEPuPxn61yKtBQo9e7YWbWbfSMTXI1huAxTMmnGodtNNjy6QMvF3Co65n
- DkWm0DF_5KM9IaeYZAwdSIDDcitIWk6SBDu08Li6noO5RLEv_rC8jcy6Gc7Btf8908RSq4p3Glxd
- ixUSf7BkZJHlEqp7h7bjosoQc807kMjWVeybVUZvCRATRKKE0V.ARq6bl5yvwjpmbjNvwENig_HR
- Pm31ww9NsSzhAVBseUcDAmVz9gBnukG5p4Yf6gkr4QBq4mPwsVO33C39FhqemoLGIXUq36MDvoZ2
- moQNPAQ3QlAQ6prYgmIx30msJ6gAqJOJq6QdyJA12TGD6GIegy3Vo.L99qrWUKcKPbJdiYnpia0h
- B1O3fyp0ZcVk.TNwUlLG4he83MhS9HQqj3wY35ve4Dzsys7YeI7vgXgue2NgbZSRhxDHrKHc8SJT
- _8hcD7aXN4XDNJdX67n_PS4CJqc1_iBMkN1e6nHOssy9oxUSHtc_8Kv_7ME4jr6_IFLfUJLy3_xh
- GsUFnSqyDtt16EEMuUxZk0DUV.6_zQOkCpE6arzY_uIAu6ydbE3jGgRz8_6okMrBRQdYWoUtDd40
- gSbLa333NMeBUIOzwbCXeYMhIFK0MrFGUn0hbJTZuX0LkWsQYjgzq2WwZI.3Fv2XbkHpwEIQx5ee
- JGYGQobUe1aHshTphKiEs1LkRfgUqHNr8B8biW35CRlEZBksLTbXBBcP7FISbwEUlfC6QdwljiU9
- JAueg7ckH91jd1dBHNvNhNFC5SKdqkFiw6if839nL9m.GnVwOoaWz1bUk2VcG4yesT8iW1T5LnSK
- vmdZiXbcD5qj66nrIVWmBywH4djN1n67zzx3J0bwDHknnuyuWhJfua63A3KunH9q.kScB0m5Gcaa
- QPDqyQ6vwgshy.tmVY1jvXsJGjE8a2xIli_F0i03rpqmN.4wKV7xWbw_WU3.R1BvJY9mRk1PHztn
- UdqgD9txn8IlmBR4ERTp1VtxCC4JtQ8uR4r8OJtZRa86Ic5WoqUrLK8ir6TMBIJYDlSmzCI1Wb4g
- FHfuYbaJ94a7Tt9F2LpFXdky5opgi.MRhuAFnswBAC_k5R0JC.4TPHNb4jWh_KUM8y9khQhTBv0X
- wSor6q4N_.BgchAxrHftLT55T7T9rWBLLRri8P6Q1VQ1aNLdcRyEOK7eyhIhUEv25_6iyGEBMfk1
- 2gTr0MTW4ILwyx01ANZIT3iW33FbXeMx5n__WtZkp_URZad9WuPCkrT6TTroO2Gj0Ks25dBffSFy
- PPxnJs.eRhmCEwCjmxaZlNCnKUugy6QHeu0no1vUfr5cfM6Lkog_is6UT7kmkyrE0th8e37vICdX
- 0QtHMo5ROS33qSSd46x1WR8Bx6uxd0TcHK7ulzaThnICu0yemvpkTdQKhnHk3SacPEu4Xv4WgcMR
- 9rmWR8yhppixFoipwNl.AzOk.UWP.NQkaGO8xzW9BQlDEMaKtytiMCbRp4S07ZsCodEfojPiHoM6
- 5F13wBSrrhris764RchbiTOMfP5Mbsx6tYCd1T5v3ZVVZL3lbHvda6gKT4s.x0MvP1q1pDARqsSp
- PmrixneIdDKfhEaDFqXTcMnnXctN5ImkklI5H0m9B3dYAKS684FZ7WgZ2JyqJdE4p3mtpNsaM4md
- VsHvOKF5vn206kUtTINTAvA35uIJvUvLDrWbM2wAvwlx07RGwC0_OZynXENRrAHrakFboRpOgP0C
- Nw3kAtedO634fopfM_OxSVK2mSsIap5RDssvRxL_QDgxR9b1kBfvzv_PeqvOB219Ur7tqJSkGNfu
- 0LaY9ObZqrjvjx_r5t_AlvAUkTqruPqxGXoBRVSeUCf2zxOxybAuxyl7_4CbtdjNPvmuwJDwAcuF
- 29fR39l.WZ_PitkZBtg--
+        Mon, 28 Aug 2023 16:03:22 -0400
+Received: from sonic313-15.consmr.mail.ne1.yahoo.com (sonic313-15.consmr.mail.ne1.yahoo.com [66.163.185.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD0E1A1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693252988; bh=aU7TbA4srC4O/mkH7MA73Us9gBHIFBXBeNrnqlHFtaA=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=l3+IRFMaghBexZF76IbrJQr76uSCg/KxTKeEYDa7OqVZcIScTm5bIPzXS/rm/6VWZDmRaahaPii7QaWsC6oXTa0M4YR2saO5HvojMcdy7CWMPYw0OZ3wtn5niXzy1REVM19RJUOCvUocN07DqelgBz/IKHbzq5kAm3e52cIho6due3SZgh/jo4UfpPzwNp5YI7mc7vQun5MDk7ZfZt5M2iOT//U7CFNrnN/jhC2DkuR4tykz8fL1a3YVXP3C80OAFvxzPz539njlh4ZOxTNuPy2I6uVVVbNBPKmlmHHm6dfW88hXvZrSsjrkaiHLxjR8E7BaCgKwpMLcY1qrBDRH7w==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693252988; bh=7pdxPlHpS27mhZoYwt1KeWP1wvKoXCR9ugMpV2p+XOm=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=RLUydUFXmaymybpKwkvvKhnc0wGZz/gJuGhl5S2m/iqGOWlOk12ToJqW3slJUb2nvgVFR8fKFiSPE+EnEsrMwnY/ucJ6I7K/g7gR8Q162qCThFOYBXXnHcaKiwcRAk7jia4hYRlNmoqHSnjw08brKERt198rgWosvRg2GlCHcVn7dR65eYgg+z2q1kvvGB0OU6JoxbNrDUIP7MOXC8YXRA0GVmgqaBGtCcxAJ8sT8Mqk13uRA+lHMqqr4oJA4ckrwi0fruS4vFxommLwHsKcgNZOeLwxDb4iAzpY+gBu6gQAx0k6IPm8+Icd5lg3bEHmyBFX8p6dslPnYn/EIGJSgQ==
+X-YMail-OSG: qU9bn3sVM1mWM4c1_pp3hxTgKFbXFVa3OYxEiiEGMo8gZBPriOthI79A5FZdqW9
+ Pyx84brBHMsg4fvAc5IRpd4lioLT_BopO3kegjSx7UXa5YQ6k.xAMHyYW7DOujFoVonkEgtxeCXX
+ vzmH_K1Rzek8f26ewggju2MqXwr9w6XRLMhVWer8HWPcMfCQ4it7wGrf.GhgNLEOMmQBX6hEqTRM
+ 9z5STrvWnt9vH5rAagno.08cS_RB5avOs2erpyPZlfpgz_8L2L5m9rP5l7aQGItkcAVP0V4CJNhu
+ zcyDhztHDUBBDrxvjl.M8kqHcavYFeo28IszdOdijBVX8CMQf_6UQ5M8U3hdOWIjG.KsEnMyHJSa
+ zDt_U.OPX4ctnvd278KWR15FzWTZhnMVqILPOn3pIbj3PQVPfYbO2zU71cZFpOtu32GIxu8tap0V
+ kbM5JJ0XFgwlLiFQZiYWzRaVgN4Z5y7P_YYVBOaHLVQYHK2rVxwfY2LRjtjt95O521VJRAerge6T
+ wseaeciWiQYRC_0kibt_RqKlp9RLbZrRIPIKot_gE3W8uRzRVgRoIyV81QVbtchuGGKtanSA.UyA
+ 2oxjQuCbC0r.GaZ6ElRfZ2uLBpu5QG2l2_PM3BcAbQJPA7skADimrlS34BbCe3ussFVda7WfNRDo
+ SIPFGSPlfzxtes6sJ.RPvRgP3I2utVdxQkuIQKw7XpsqJqJaaGH6HpYuNDZ.rTkVg35TDCBdWKLz
+ nPI4xGzjR1xSPm8YKL3DHd9rKHWwQlIa9MVyyO3r0k2IXW2gcBdruI2kn0X3Inc6txE0.wFx4gOh
+ BT1vQ63hVFgTj4IwyelpUypjQQS7qNk1cH6QVmynMOJFHnZ6KfEm4nnigb.QjnuIwSB9GTrroDN8
+ Y3qSQHyb9X3E0JX6QXRd5rxSR_sTvK_ecy2vbU_wlKi2KMZwlZlC202yO7V57FJzA0nvY3I5rSqa
+ wJhJjC56mEQ_dByybSI2P8LSokvfFiVJArZS6lhSnVZ4Q_.Vfl8uMcQppEkXcLv7jiZnKwF7wiZk
+ feik6X1_ZydMo7Yc.wNFOU6Bn00LU9PKb3P8EHVwX57D0H0ooIpZQYsEMukIWvxjpZclPm.oHuL9
+ PEPf0iDtdUrrXmeOTQ9Iyh1f0h.b9Fn9ytwRj_JPfYrWWHLZVftvsJp0WnCywBmaNdj1Z6rufGn_
+ 7EPSvpUenjU9YUosxBYzui1_WAp_mVsKzp8T6K4kj6gu1EeJtrBl2jmJWTKpHCQq_3gdaReG5bW7
+ VIaMdFA_JbNEcEmN_JNkcvcFGo1ecGg6ZMchLB3V62NSFHGcxI5mX.aKLq.7RUstwGLV7_9p5cOW
+ hOI9r2JVceT9MEhswlBP71Bf9Q2J1KY8A1gMNKeOlroEwv4W8AumibgQzUmBgcbbpOulMwSYmYza
+ LzoY9eaDfthUziHuQCJaY08iJQr4LJ3HKWD8elFv6bFs7_2EKrumKIvw6e28eF7Q6tz2mTN.UfOE
+ 9xViVGdV.v77oIZkYql0tZnZLX.d4SqWNtrw0A3tdJTluDsAOuubOTcrqC4AnORFq0ko93CZoBQ7
+ tQ5vASEM_M9xlOS1CHQVbXHgK3xY9lqtIhI04gbSdMpA5HDw.iz3BiBSaRAc29h4O12h.cRmcygR
+ qHS970cB70KUIXaIyZuJ9kPgx4YdFUjQIJfi.s4aV.P3unlq47Yue6xuur.GOaMAdxjKycQKVAi2
+ 0X6MEDTB4v477GNJusgTW_OcB2KntZCmVv_m3Fl4EKQ.8vIUjky3Cx89YVUaEGKhOApx.rBBopkK
+ LostXR65zhkpMzE8Pa60rNaG4Jeq3WiNgTXXKm0jWj.uA1jpfpgLbdVWSU_w_0xjd2JEezI3gcUZ
+ 6qqBCwLDWtjf5Jml7JC07HAwcv5T_0x9G_FF8UboghPwQekZcsy9J..GElsbm819JcJQ07azQVQG
+ 4USlU._lkBqf6L0Gp61sXeW4TtuVqgdEpEaudW1BKb6R_UfQVxaEkvz_6_qB1QY.p1hbijqqUQjz
+ AHum6HGWDaXQtWc9ZL0byD4lvv8VG8MXozp76zjNLc1mCsHF5l5CV5CLnoCDG6fhJleYvlDd7RbH
+ F8hnEfTlqK95DqDJ0HbVSnYPuxMcfEUx6X9JzFfZhpkN1oEFXcHReUn873fMHLiTTtcY.7qfr5oL
+ FTOCq5soZVeFF88gq3GG.Xb6UlbVi00.gyAPhkzZbAwlzzdFr.1086uR9QAzyaSly5oxmTZbUxZ_
+ N3wGXl1uNUx4eRXhIjOwirII7LPdDT2DRIYG_PR0qM.e1Vg--
 X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 468d03e6-880f-4db0-b2ac-c34562176d52
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Mon, 28 Aug 2023 19:59:50 +0000
-Received: by hermes--production-bf1-865889d799-x5klk (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 4fa193a662e8d287c56340453369fa5e;
-          Mon, 28 Aug 2023 19:59:47 +0000 (UTC)
+X-Sonic-ID: 1d27e4a5-13d1-4dd4-a0b5-ebcb7f6da7c4
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Mon, 28 Aug 2023 20:03:08 +0000
+Received: by hermes--production-gq1-6b7c87dcf5-6x8bf (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 29138cd0d16732a579d2f4720912c9a5;
+          Mon, 28 Aug 2023 20:03:04 +0000 (UTC)
 From:   Casey Schaufler <casey@schaufler-ca.com>
 To:     casey@schaufler-ca.com, paul@paul-moore.com,
         linux-security-module@vger.kernel.org
@@ -61,537 +60,236 @@ Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
         john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
         stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
         linux-api@vger.kernel.org, mic@digikod.net
-Subject: [PATCH v14 04/11] LSM: syscalls for current process attributes
-Date:   Mon, 28 Aug 2023 12:57:54 -0700
-Message-ID: <20230828195802.135055-5-casey@schaufler-ca.com>
+Subject: [PATCH v14 09/11] AppArmor: Add selfattr hooks
+Date:   Mon, 28 Aug 2023 12:57:59 -0700
+Message-ID: <20230828195802.135055-10-casey@schaufler-ca.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230828195802.135055-1-casey@schaufler-ca.com>
 References: <20230828195802.135055-1-casey@schaufler-ca.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a system call lsm_get_self_attr() to provide the security
-module maintained attributes of the current process.
-Create a system call lsm_set_self_attr() to set a security
-module maintained attribute of the current process.
-Historically these attributes have been exposed to user space via
-entries in procfs under /proc/self/attr.
-
-The attribute value is provided in a lsm_ctx structure. The structure
-identifies the size of the attribute, and the attribute value. The format
-of the attribute value is defined by the security module. A flags field
-is included for LSM specific information. It is currently unused and must
-be 0. The total size of the data, including the lsm_ctx structure and any
-padding, is maintained as well.
-
-struct lsm_ctx {
-        __u64 id;
-        __u64 flags;
-        __u64 len;
-        __u64 ctx_len;
-        __u8 ctx[];
-};
-
-Two new LSM hooks are used to interface with the LSMs.
-security_getselfattr() collects the lsm_ctx values from the
-LSMs that support the hook, accounting for space requirements.
-security_setselfattr() identifies which LSM the attribute is
-intended for and passes it along.
+Add hooks for setselfattr and getselfattr. These hooks are not very
+different from their setprocattr and getprocattr equivalents, and
+much of the code is shared.
 
 Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Serge Hallyn <serge@hallyn.com>
-Reviewed-by: John Johansen <john.johansen@canonical.com>
+Acked-by: John Johansen <john.johansen@canonical.com>
+Cc: John Johansen <john.johansen@canonical.com>
 ---
- Documentation/userspace-api/lsm.rst |  70 +++++++++++++
- include/linux/lsm_hook_defs.h       |   4 +
- include/linux/lsm_hooks.h           |   1 +
- include/linux/security.h            |  19 ++++
- include/linux/syscalls.h            |   5 +
- include/uapi/linux/lsm.h            |  36 +++++++
- kernel/sys_ni.c                     |   2 +
- security/Makefile                   |   1 +
- security/lsm_syscalls.c             |  57 +++++++++++
- security/security.c                 | 146 ++++++++++++++++++++++++++++
- 10 files changed, 341 insertions(+)
- create mode 100644 Documentation/userspace-api/lsm.rst
- create mode 100644 security/lsm_syscalls.c
+ security/apparmor/include/procattr.h |  2 +-
+ security/apparmor/lsm.c              | 91 ++++++++++++++++++++++++++--
+ security/apparmor/procattr.c         | 10 +--
+ 3 files changed, 92 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/userspace-api/lsm.rst b/Documentation/userspace-api/lsm.rst
-new file mode 100644
-index 000000000000..f8499f3e2826
---- /dev/null
-+++ b/Documentation/userspace-api/lsm.rst
-@@ -0,0 +1,70 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+.. Copyright (C) 2022 Casey Schaufler <casey@schaufler-ca.com>
-+.. Copyright (C) 2022 Intel Corporation
-+
-+=====================================
-+Linux Security Modules
-+=====================================
-+
-+:Author: Casey Schaufler
-+:Date: July 2023
-+
-+Linux security modules (LSM) provide a mechanism to implement
-+additional access controls to the Linux security policies.
-+
-+The various security modules may support any of these attributes:
-+
-+``LSM_ATTR_CURRENT`` is the current, active security context of the
-+process.
-+The proc filesystem provides this value in ``/proc/self/attr/current``.
-+This is supported by the SELinux, Smack and AppArmor security modules.
-+Smack also provides this value in ``/proc/self/attr/smack/current``.
-+AppArmor also provides this value in ``/proc/self/attr/apparmor/current``.
-+
-+``LSM_ATTR_EXEC`` is the security context of the process at the time the
-+current image was executed.
-+The proc filesystem provides this value in ``/proc/self/attr/exec``.
-+This is supported by the SELinux and AppArmor security modules.
-+AppArmor also provides this value in ``/proc/self/attr/apparmor/exec``.
-+
-+``LSM_ATTR_FSCREATE`` is the security context of the process used when
-+creating file system objects.
-+The proc filesystem provides this value in ``/proc/self/attr/fscreate``.
-+This is supported by the SELinux security module.
-+
-+``LSM_ATTR_KEYCREATE`` is the security context of the process used when
-+creating key objects.
-+The proc filesystem provides this value in ``/proc/self/attr/keycreate``.
-+This is supported by the SELinux security module.
-+
-+``LSM_ATTR_PREV`` is the security context of the process at the time the
-+current security context was set.
-+The proc filesystem provides this value in ``/proc/self/attr/prev``.
-+This is supported by the SELinux and AppArmor security modules.
-+AppArmor also provides this value in ``/proc/self/attr/apparmor/prev``.
-+
-+``LSM_ATTR_SOCKCREATE`` is the security context of the process used when
-+creating socket objects.
-+The proc filesystem provides this value in ``/proc/self/attr/sockcreate``.
-+This is supported by the SELinux security module.
-+
-+Kernel interface
-+================
-+
-+Set a security attribute of the current process
-+-----------------------------------------------
-+
-+.. kernel-doc:: security/lsm_syscalls.c
-+    :identifiers: sys_lsm_set_self_attr
-+
-+Get the specified security attributes of the current process
-+------------------------------------------------------------
-+
-+.. kernel-doc:: security/lsm_syscalls.c
-+    :identifiers: sys_lsm_get_self_attr
-+
-+Additional documentation
-+========================
-+
-+* Documentation/security/lsm.rst
-+* Documentation/security/lsm-development.rst
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 7308a1a7599b..6dffac59dfe3 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -261,6 +261,10 @@ LSM_HOOK(int, 0, sem_semop, struct kern_ipc_perm *perm, struct sembuf *sops,
- LSM_HOOK(int, 0, netlink_send, struct sock *sk, struct sk_buff *skb)
- LSM_HOOK(void, LSM_RET_VOID, d_instantiate, struct dentry *dentry,
- 	 struct inode *inode)
-+LSM_HOOK(int, -EOPNOTSUPP, getselfattr, unsigned int attr,
-+	 struct lsm_ctx __user *ctx, size_t *size, u32 flags)
-+LSM_HOOK(int, -EOPNOTSUPP, setselfattr, unsigned int attr,
-+	 struct lsm_ctx *ctx, size_t size, u32 flags)
- LSM_HOOK(int, -EINVAL, getprocattr, struct task_struct *p, const char *name,
- 	 char **value)
- LSM_HOOK(int, -EINVAL, setprocattr, const char *name, void *value, size_t size)
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 5f7d8caacc00..0662e5c2cd06 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -25,6 +25,7 @@
- #ifndef __LINUX_LSM_HOOKS_H
- #define __LINUX_LSM_HOOKS_H
+diff --git a/security/apparmor/include/procattr.h b/security/apparmor/include/procattr.h
+index 31689437e0e1..03dbfdb2f2c0 100644
+--- a/security/apparmor/include/procattr.h
++++ b/security/apparmor/include/procattr.h
+@@ -11,7 +11,7 @@
+ #ifndef __AA_PROCATTR_H
+ #define __AA_PROCATTR_H
  
-+#include <uapi/linux/lsm.h>
- #include <linux/security.h>
- #include <linux/init.h>
- #include <linux/rculist.h>
-diff --git a/include/linux/security.h b/include/linux/security.h
-index b5fd3f7f4cd3..0d882cb221f4 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -60,6 +60,7 @@ struct fs_parameter;
- enum fs_value_type;
- struct watch;
- struct watch_notification;
-+struct lsm_ctx;
+-int aa_getprocattr(struct aa_label *label, char **string);
++int aa_getprocattr(struct aa_label *label, char **string, bool newline);
+ int aa_setprocattr_changehat(char *args, size_t size, int flags);
  
- /* Default (no) options for the capable function */
- #define CAP_OPT_NONE 0x0
-@@ -470,6 +471,10 @@ int security_sem_semctl(struct kern_ipc_perm *sma, int cmd);
- int security_sem_semop(struct kern_ipc_perm *sma, struct sembuf *sops,
- 			unsigned nsops, int alter);
- void security_d_instantiate(struct dentry *dentry, struct inode *inode);
-+int security_getselfattr(unsigned int attr, struct lsm_ctx __user *ctx,
-+			 size_t __user *size, u32 flags);
-+int security_setselfattr(unsigned int attr, struct lsm_ctx __user *ctx,
-+			 size_t size, u32 flags);
- int security_getprocattr(struct task_struct *p, int lsmid, const char *name,
- 			 char **value);
- int security_setprocattr(int lsmid, const char *name, void *value, size_t size);
-@@ -1331,6 +1336,20 @@ static inline void security_d_instantiate(struct dentry *dentry,
- 					  struct inode *inode)
- { }
- 
-+static inline int security_getselfattr(unsigned int attr,
-+				       struct lsm_ctx __user *ctx,
-+				       size_t __user *size, u32 flags)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int security_setselfattr(unsigned int attr,
-+				       struct lsm_ctx __user *ctx,
-+				       size_t size, u32 flags)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline int security_getprocattr(struct task_struct *p, int lsmid,
- 				       const char *name, char **value)
- {
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 03e3d0121d5e..a3938850752a 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -71,6 +71,7 @@ struct clone_args;
- struct open_how;
- struct mount_attr;
- struct landlock_ruleset_attr;
-+struct lsm_ctx;
- enum landlock_rule_type;
- struct cachestat_range;
- struct cachestat;
-@@ -953,6 +954,10 @@ asmlinkage long sys_set_mempolicy_home_node(unsigned long start, unsigned long l
- asmlinkage long sys_cachestat(unsigned int fd,
- 		struct cachestat_range __user *cstat_range,
- 		struct cachestat __user *cstat, unsigned int flags);
-+asmlinkage long sys_lsm_get_self_attr(unsigned int attr, struct lsm_ctx *ctx,
-+		size_t *size, __u32 flags);
-+asmlinkage long sys_lsm_set_self_attr(unsigned int attr, struct lsm_ctx *ctx,
-+		size_t size, __u32 flags);
- 
- /*
-  * Architecture-specific system calls
-diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
-index f27c9a9cc376..eeda59a77c02 100644
---- a/include/uapi/linux/lsm.h
-+++ b/include/uapi/linux/lsm.h
-@@ -9,6 +9,36 @@
- #ifndef _UAPI_LINUX_LSM_H
- #define _UAPI_LINUX_LSM_H
- 
-+#include <linux/types.h>
-+#include <linux/unistd.h>
-+
-+/**
-+ * struct lsm_ctx - LSM context information
-+ * @id: the LSM id number, see LSM_ID_XXX
-+ * @flags: LSM specific flags
-+ * @len: length of the lsm_ctx struct, @ctx and any other data or padding
-+ * @ctx_len: the size of @ctx
-+ * @ctx: the LSM context value
-+ *
-+ * The @len field MUST be equal to the size of the lsm_ctx struct
-+ * plus any additional padding and/or data placed after @ctx.
-+ *
-+ * In all cases @ctx_len MUST be equal to the length of @ctx.
-+ * If @ctx is a string value it should be nul terminated with
-+ * @ctx_len equal to `strlen(@ctx) + 1`.  Binary values are
-+ * supported.
-+ *
-+ * The @flags and @ctx fields SHOULD only be interpreted by the
-+ * LSM specified by @id; they MUST be set to zero/0 when not used.
-+ */
-+struct lsm_ctx {
-+	__u64 id;
-+	__u64 flags;
-+	__u64 len;
-+	__u64 ctx_len;
-+	__u8 ctx[];
-+};
-+
- /*
-  * ID tokens to identify Linux Security Modules (LSMs)
-  *
-@@ -51,4 +81,10 @@
- #define LSM_ATTR_PREV		104
- #define LSM_ATTR_SOCKCREATE	105
- 
-+/*
-+ * LSM_FLAG_XXX definitions identify special handling instructions
-+ * for the API.
-+ */
-+#define LSM_FLAG_SINGLE	0x0001
-+
- #endif /* _UAPI_LINUX_LSM_H */
-diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-index 781de7cc6a4e..8b96cd01b485 100644
---- a/kernel/sys_ni.c
-+++ b/kernel/sys_ni.c
-@@ -170,6 +170,8 @@ COND_SYSCALL(landlock_add_rule);
- COND_SYSCALL(landlock_restrict_self);
- COND_SYSCALL(fadvise64_64);
- COND_SYSCALL_COMPAT(fadvise64_64);
-+COND_SYSCALL(lsm_get_self_attr);
-+COND_SYSCALL(lsm_set_self_attr);
- 
- /* CONFIG_MMU only */
- COND_SYSCALL(swapon);
-diff --git a/security/Makefile b/security/Makefile
-index 18121f8f85cd..59f238490665 100644
---- a/security/Makefile
-+++ b/security/Makefile
-@@ -7,6 +7,7 @@ obj-$(CONFIG_KEYS)			+= keys/
- 
- # always enable default capabilities
- obj-y					+= commoncap.o
-+obj-$(CONFIG_SECURITY) 			+= lsm_syscalls.o
- obj-$(CONFIG_MMU)			+= min_addr.o
- 
- # Object file lists
-diff --git a/security/lsm_syscalls.c b/security/lsm_syscalls.c
-new file mode 100644
-index 000000000000..226ae80d9683
---- /dev/null
-+++ b/security/lsm_syscalls.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * System calls implementing the Linux Security Module API.
-+ *
-+ *  Copyright (C) 2022 Casey Schaufler <casey@schaufler-ca.com>
-+ *  Copyright (C) 2022 Intel Corporation
-+ */
-+
-+#include <asm/current.h>
-+#include <linux/compiler_types.h>
-+#include <linux/err.h>
-+#include <linux/errno.h>
-+#include <linux/security.h>
-+#include <linux/stddef.h>
-+#include <linux/syscalls.h>
-+#include <linux/types.h>
-+#include <linux/lsm_hooks.h>
-+#include <uapi/linux/lsm.h>
-+
-+/**
-+ * sys_lsm_set_self_attr - Set current task's security module attribute
-+ * @attr: which attribute to set
-+ * @ctx: the LSM contexts
-+ * @size: size of @ctx
-+ * @flags: reserved for future use
-+ *
-+ * Sets the calling task's LSM context. On success this function
-+ * returns 0. If the attribute specified cannot be set a negative
-+ * value indicating the reason for the error is returned.
-+ */
-+SYSCALL_DEFINE4(lsm_set_self_attr, unsigned int, attr, struct lsm_ctx __user *,
-+		ctx, size_t, size, u32, flags)
-+{
-+	return security_setselfattr(attr, ctx, size, flags);
-+}
-+
-+/**
-+ * sys_lsm_get_self_attr - Return current task's security module attributes
-+ * @attr: which attribute to return
-+ * @ctx: the user-space destination for the information, or NULL
-+ * @size: pointer to the size of space available to receive the data
-+ * @flags: special handling options. LSM_FLAG_SINGLE indicates that only
-+ * attributes associated with the LSM identified in the passed @ctx be
-+ * reported.
-+ *
-+ * Returns the calling task's LSM contexts. On success this
-+ * function returns the number of @ctx array elements. This value
-+ * may be zero if there are no LSM contexts assigned. If @size is
-+ * insufficient to contain the return data -E2BIG is returned and
-+ * @size is set to the minimum required size. In all other cases
-+ * a negative value indicating the error is returned.
-+ */
-+SYSCALL_DEFINE4(lsm_get_self_attr, unsigned int, attr, struct lsm_ctx __user *,
-+		ctx, size_t __user *, size, u32, flags)
-+{
-+	return security_getselfattr(attr, ctx, size, flags);
-+}
-diff --git a/security/security.c b/security/security.c
-index 82253294069c..aa4ade1f71b9 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -3798,6 +3798,152 @@ void security_d_instantiate(struct dentry *dentry, struct inode *inode)
+ #endif /* __AA_PROCATTR_H */
+diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+index 6ff020ff3fcb..0f77ce0a59dd 100644
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@ -630,6 +630,55 @@ static int apparmor_sb_pivotroot(const struct path *old_path,
+ 	return error;
  }
- EXPORT_SYMBOL(security_d_instantiate);
  
-+/**
-+ * security_getselfattr - Read an LSM attribute of the current process.
-+ * @attr: which attribute to return
-+ * @uctx: the user-space destination for the information, or NULL
-+ * @size: pointer to the size of space available to receive the data
-+ * @flags: special handling options. LSM_FLAG_SINGLE indicates that only
-+ * attributes associated with the LSM identified in the passed @ctx be
-+ * reported.
-+ *
-+ * A NULL value for @uctx can be used to get both the number of attributes
-+ * and the size of the data.
-+ *
-+ * Returns the number of attributes found on success, negative value
-+ * on error. @size is reset to the total size of the data.
-+ * If @size is insufficient to contain the data -E2BIG is returned.
-+ */
-+int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
-+			 size_t __user *size, u32 flags)
++static int apparmor_getselfattr(unsigned int attr, struct lsm_ctx __user *lx,
++				size_t *size, u32 flags)
 +{
-+	struct security_hook_list *hp;
-+	struct lsm_ctx lctx = { .id = LSM_ID_UNDEF, };
-+	u8 __user *base = (u8 __user *)uctx;
-+	size_t total = 0;
-+	size_t entrysize;
-+	size_t left;
-+	bool toobig = false;
-+	bool single = false;
-+	int count = 0;
++	int error = -ENOENT;
++	struct aa_task_ctx *ctx = task_ctx(current);
++	struct aa_label *label = NULL;
++	size_t total_len = 0;
++	char *value;
++
++	switch (attr) {
++	case LSM_ATTR_CURRENT:
++		label = aa_get_newest_label(cred_label(current_cred()));
++		break;
++	case LSM_ATTR_PREV:
++		if (ctx->previous)
++			label = aa_get_newest_label(ctx->previous);
++		break;
++	case LSM_ATTR_EXEC:
++		if (ctx->onexec)
++			label = aa_get_newest_label(ctx->onexec);
++		break;
++	default:
++		error = -EOPNOTSUPP;
++		break;
++	}
++
++	if (label) {
++		error = aa_getprocattr(label, &value, false);
++		if (error > 0) {
++			total_len = ALIGN(struct_size(lx, ctx, error), 8);
++			if (total_len > *size)
++				error = -E2BIG;
++			else if (lx)
++				error = lsm_fill_user_ctx(lx, value, error,
++							  LSM_ID_APPARMOR, 0);
++			else
++				error = 1;
++		}
++		kfree(value);
++	}
++
++	aa_put_label(label);
++
++	*size = total_len;
++	if (error < 0)
++		return error;
++	return 1;
++}
++
+ static int apparmor_getprocattr(struct task_struct *task, const char *name,
+ 				char **value)
+ {
+@@ -649,7 +698,7 @@ static int apparmor_getprocattr(struct task_struct *task, const char *name,
+ 		error = -EINVAL;
+ 
+ 	if (label)
+-		error = aa_getprocattr(label, value);
++		error = aa_getprocattr(label, value, true);
+ 
+ 	aa_put_label(label);
+ 	put_cred(cred);
+@@ -657,8 +706,7 @@ static int apparmor_getprocattr(struct task_struct *task, const char *name,
+ 	return error;
+ }
+ 
+-static int apparmor_setprocattr(const char *name, void *value,
+-				size_t size)
++static int do_setattr(u64 attr, void *value, size_t size)
+ {
+ 	char *command, *largs = NULL, *args = value;
+ 	size_t arg_size;
+@@ -689,7 +737,7 @@ static int apparmor_setprocattr(const char *name, void *value,
+ 		goto out;
+ 
+ 	arg_size = size - (args - (largs ? largs : (char *) value));
+-	if (strcmp(name, "current") == 0) {
++	if (attr == LSM_ATTR_CURRENT) {
+ 		if (strcmp(command, "changehat") == 0) {
+ 			error = aa_setprocattr_changehat(args, arg_size,
+ 							 AA_CHANGE_NOFLAGS);
+@@ -704,7 +752,7 @@ static int apparmor_setprocattr(const char *name, void *value,
+ 			error = aa_change_profile(args, AA_CHANGE_STACK);
+ 		} else
+ 			goto fail;
+-	} else if (strcmp(name, "exec") == 0) {
++	} else if (attr == LSM_ATTR_EXEC) {
+ 		if (strcmp(command, "exec") == 0)
+ 			error = aa_change_profile(args, AA_CHANGE_ONEXEC);
+ 		else if (strcmp(command, "stack") == 0)
+@@ -724,13 +772,42 @@ static int apparmor_setprocattr(const char *name, void *value,
+ 
+ fail:
+ 	aad(&sa)->label = begin_current_label_crit_section();
+-	aad(&sa)->info = name;
++	if (attr == LSM_ATTR_CURRENT)
++		aad(&sa)->info = "current";
++	else if (attr == LSM_ATTR_EXEC)
++		aad(&sa)->info = "exec";
++	else
++		aad(&sa)->info = "invalid";
+ 	aad(&sa)->error = error = -EINVAL;
+ 	aa_audit_msg(AUDIT_APPARMOR_DENIED, &sa, NULL);
+ 	end_current_label_crit_section(aad(&sa)->label);
+ 	goto out;
+ }
+ 
++static int apparmor_setselfattr(unsigned int attr, struct lsm_ctx *ctx,
++				size_t size, u32 flags)
++{
 +	int rc;
 +
-+	if (attr == LSM_ATTR_UNDEF)
-+		return -EINVAL;
-+	if (size == NULL)
-+		return -EINVAL;
-+	if (get_user(left, size))
-+		return -EFAULT;
++	if (attr != LSM_ATTR_CURRENT && attr != LSM_ATTR_EXEC)
++		return -EOPNOTSUPP;
 +
-+	if (flags) {
-+		/*
-+		 * Only flag supported is LSM_FLAG_SINGLE
-+		 */
-+		if (flags & LSM_FLAG_SINGLE)
-+			return -EINVAL;
-+		if (uctx &&
-+		    copy_struct_from_user(&lctx, sizeof(lctx), uctx, left))
-+			return -EFAULT;
-+		/*
-+		 * If the LSM ID isn't specified it is an error.
-+		 */
-+		if (lctx.id == LSM_ID_UNDEF)
-+			return -EINVAL;
-+		single = true;
-+	}
-+
-+	/*
-+	 * In the usual case gather all the data from the LSMs.
-+	 * In the single case only get the data from the LSM specified.
-+	 */
-+	hlist_for_each_entry(hp, &security_hook_heads.getselfattr, list) {
-+		if (single) {
-+			if (count > 0)
-+				break;
-+			if (lctx.id != hp->lsmid->id)
-+				continue;
-+		}
-+		entrysize = left;
-+		if (base)
-+			uctx = (struct lsm_ctx __user *)(base + total);
-+		rc = hp->hook.getselfattr(attr, uctx, &entrysize, flags);
-+		if (rc == -EOPNOTSUPP) {
-+			rc = 0;
-+			continue;
-+		}
-+		if (rc == -E2BIG) {
-+			toobig = true;
-+			left = 0;
-+			total += entrysize;
-+			continue;
-+		}
-+		if (rc < 0)
-+			return rc;
-+
-+		left -= entrysize;
-+		total += entrysize;
-+		count += rc;
-+	}
-+	if (put_user(total, size))
-+		return -EFAULT;
-+	if (toobig)
-+		return -E2BIG;
-+	if (count == 0)
-+		return LSM_RET_DEFAULT(getselfattr);
-+	return count;
-+}
-+
-+/**
-+ * security_setselfattr - Set an LSM attribute on the current process.
-+ * @attr: which attribute to set
-+ * @uctx: the user-space source for the information
-+ * @size: the size of the data
-+ * @flags: reserved for future use, must be 0
-+ *
-+ * Set an LSM attribute for the current process. The LSM, attribute
-+ * and new value are included in @uctx.
-+ *
-+ * Returns 0 on success, -EINVAL if the input is inconsistent, -EFAULT
-+ * if the user buffer is inaccessible or an LSM specific failure.
-+ */
-+int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
-+			 size_t size, u32 flags)
-+{
-+	struct security_hook_list *hp;
-+	struct lsm_ctx *lctx;
-+	int rc = LSM_RET_DEFAULT(setselfattr);
-+
-+	if (flags)
-+		return -EINVAL;
-+	if (size < sizeof(*lctx) || size > PAGE_SIZE)
-+		return -EINVAL;
-+
-+	lctx = kmalloc(size, GFP_KERNEL);
-+	if (lctx == NULL)
-+		return -ENOMEM;
-+
-+	if (copy_from_user(lctx, uctx, size)) {
-+		rc = -EFAULT;
-+		goto free_out;
-+	}
-+
-+	if (size < lctx->len || size < lctx->ctx_len + sizeof(*lctx) ||
-+	    lctx->len < lctx->ctx_len + sizeof(*lctx)) {
-+		rc = -EINVAL;
-+		goto free_out;
-+	}
-+
-+	hlist_for_each_entry(hp, &security_hook_heads.setselfattr, list)
-+		if ((hp->lsmid->id) == lctx->id) {
-+			rc = hp->hook.setselfattr(attr, lctx, size, flags);
-+			break;
-+		}
-+
-+free_out:
-+	kfree(lctx);
++	rc = do_setattr(attr, ctx->ctx, ctx->ctx_len);
++	if (rc > 0)
++		return 0;
 +	return rc;
 +}
 +
++static int apparmor_setprocattr(const char *name, void *value,
++				size_t size)
++{
++	int attr = lsm_name_to_attr(name);
++
++	if (attr)
++		return do_setattr(attr, value, size);
++	return -EINVAL;
++}
++
  /**
-  * security_getprocattr() - Read an attribute for a task
-  * @p: the task
+  * apparmor_bprm_committing_creds - do task cleanup on committing new creds
+  * @bprm: binprm for the exec  (NOT NULL)
+@@ -1253,6 +1330,8 @@ static struct security_hook_list apparmor_hooks[] __ro_after_init = {
+ 	LSM_HOOK_INIT(file_lock, apparmor_file_lock),
+ 	LSM_HOOK_INIT(file_truncate, apparmor_file_truncate),
+ 
++	LSM_HOOK_INIT(getselfattr, apparmor_getselfattr),
++	LSM_HOOK_INIT(setselfattr, apparmor_setselfattr),
+ 	LSM_HOOK_INIT(getprocattr, apparmor_getprocattr),
+ 	LSM_HOOK_INIT(setprocattr, apparmor_setprocattr),
+ 
+diff --git a/security/apparmor/procattr.c b/security/apparmor/procattr.c
+index 197d41f9c32b..e3857e3d7c6c 100644
+--- a/security/apparmor/procattr.c
++++ b/security/apparmor/procattr.c
+@@ -20,6 +20,7 @@
+  * aa_getprocattr - Return the label information for @label
+  * @label: the label to print label info about  (NOT NULL)
+  * @string: Returns - string containing the label info (NOT NULL)
++ * @newline: indicates that a newline should be added
+  *
+  * Requires: label != NULL && string != NULL
+  *
+@@ -27,7 +28,7 @@
+  *
+  * Returns: size of string placed in @string else error code on failure
+  */
+-int aa_getprocattr(struct aa_label *label, char **string)
++int aa_getprocattr(struct aa_label *label, char **string, bool newline)
+ {
+ 	struct aa_ns *ns = labels_ns(label);
+ 	struct aa_ns *current_ns = aa_get_current_ns();
+@@ -57,11 +58,12 @@ int aa_getprocattr(struct aa_label *label, char **string)
+ 		return len;
+ 	}
+ 
+-	(*string)[len] = '\n';
+-	(*string)[len + 1] = 0;
++	if (newline)
++		(*string)[len++] = '\n';
++	(*string)[len] = 0;
+ 
+ 	aa_put_ns(current_ns);
+-	return len + 1;
++	return len;
+ }
+ 
+ /**
 -- 
 2.41.0
 
