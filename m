@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E9178B8A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF73F78B8A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbjH1TpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 15:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        id S233383AbjH1Tpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 15:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233493AbjH1TpF (ORCPT
+        with ESMTP id S233461AbjH1Tp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 15:45:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A03122;
-        Mon, 28 Aug 2023 12:45:03 -0700 (PDT)
+        Mon, 28 Aug 2023 15:45:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25FEBE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:45:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ACFAE646DC;
-        Mon, 28 Aug 2023 19:45:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59D26C433C7;
-        Mon, 28 Aug 2023 19:45:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 869DF650C0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:45:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A5FFC433C7;
+        Mon, 28 Aug 2023 19:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693251902;
-        bh=pIZ450UJMkVzx8UlKp54rw2QfZHBgu0tCxB/2xr8MYo=;
+        s=k20201202; t=1693251926;
+        bh=/TFoJ9iNTO+oLdrfv9gPgJ9S3rhJOk+mYgfZoPHhSFw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WY26HVRiphuvRN+tnmGDhk3V2iWC7qtXKgEFawaeznWhiUDUo0mUZpaczBtYkPDdT
-         sVEl7Wdoz7OcPF2j+eL5sCFprBwPgDEpu3QYlkHSqJr4MOjx4akhOGF+wODANOFu19
-         7iU6NvSVVvjjMH4kGfkqX8axpT68iWKz2+x2pgC87bi189r5ItiryZAmBt3lD2BXfp
-         Xmu16Ll7b04NSS1O6VGtdA1hg4xbhuPLCWSV3Ku0O2SpUy6T8aYLZV542SNTcnYkL2
-         OoqeUxCTszHVOZ/XVnxK5kh7OVg+NWVIn7STTB7jlgtyv274ArDDt7SEteSOw76Ym7
-         ZR6c4npF4OsTw==
-Date:   Mon, 28 Aug 2023 12:45:00 -0700
+        b=K5gd5DdoeibNNQzbxTcvO9+A4y1uf74jS8uQBsk7DmwzdJtbGND1qDi1u+7Ik/T0c
+         Mjf4sFq1IxGg8wGWa8x45ubR3NzRwfb8VPVYj4eqkfmUi56rAwITPDUPDXdRZTBhoE
+         vyEIEbhEm0i0GAd6IzvQkpgAivpv0ULzpPsT7ziW4zAQRo4e1CkGRjdB9L+Igvs4S5
+         nkJt5IW1Vb5HJf0qHL8l9teQlseQWJlPpiCHP+Y+KUiWWSkVnlqzu8MbZm+FKua/mn
+         tOs+4hVh8BytH2BnJSCK0wfcYZz6aasBvsXCSGgtq1YIIX8cISDLheIjqFv172PUKc
+         MLoJNXMf1ULZg==
+Date:   Mon, 28 Aug 2023 12:45:24 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     haozhe chang <haozhe.chang@mediatek.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-Subject: Re: [PATCH net-next v7 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
- preparations
-Message-ID: <20230828124500.446929fe@kernel.org>
-In-Reply-To: <20230827085436.941183-1-avkrasnov@salutedevices.com>
-References: <20230827085436.941183-1-avkrasnov@salutedevices.com>
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v1 1/1] wwan: core: Use the bitmap API to
+ allocate bitmaps
+Message-ID: <20230828124524.5ca4da50@kernel.org>
+In-Reply-To: <20230828131953.3721392-1-andriy.shevchenko@linux.intel.com>
+References: <20230828131953.3721392-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -65,10 +62,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Aug 2023 11:54:32 +0300 Arseniy Krasnov wrote:
-> this patchset is first of three parts of another big patchset for
-> MSG_ZEROCOPY flag support:
-> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
+On Mon, 28 Aug 2023 16:19:53 +0300 Andy Shevchenko wrote:
+> Use bitmap_zalloc() and bitmap_free() instead of hand-writing them.
+> It is less verbose and it improves the type checking and semantic.
+> 
+> While at it, add missing header inclusion (should be bitops.h,
+> but with the above change it becomes bitmap.h).
 
 ## Form letter - net-next-closed
 
