@@ -2,134 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31DF878B9D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 22:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6AB78B9D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 23:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbjH1U4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 16:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
+        id S232927AbjH1VAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 17:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232731AbjH1Uzu (ORCPT
+        with ESMTP id S231693AbjH1U7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:55:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CAA110
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 13:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693256104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=c4c200N53gZrjEvaNsh614tfBnADKQSF/1JCCxHNMoQ=;
-        b=A1jDpQqEZx/BY4xy9nJSwM9xiDn730jpeR9boJqek2n3Ik5TMxFuc7KnKGZ9RDhSYvnuhO
-        tHVC8VLjHLocebEfhqPy41dIammZgjyhGGm4PMtXzcLoaPdgdHKxOmZ2Ldx+rWhBazhxwt
-        BdaDm0mqZd2t6C4zE+t7e60IRkc1AM4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-361-W5c_rQVkOPmkKBsNiAZuDQ-1; Mon, 28 Aug 2023 16:54:59 -0400
-X-MC-Unique: W5c_rQVkOPmkKBsNiAZuDQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5C06D8D40A9;
-        Mon, 28 Aug 2023 20:54:59 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.17.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D01AC40C6F4C;
-        Mon, 28 Aug 2023 20:54:58 +0000 (UTC)
-From:   Audra Mitchell <aubaker@redhat.com>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        aubaker@redhat.com, nathanl@linux.ibm.com, keescook@chromium.org,
-        christophe.leroy@csgroup.eu, npiggin@gmail.com, mpe@ellerman.id.au
-Subject: [PATCH] Update creation of flash_block_cache to accout for potential panic
-Date:   Mon, 28 Aug 2023 16:54:53 -0400
-Message-Id: <20230828205453.307962-1-aubaker@redhat.com>
+        Mon, 28 Aug 2023 16:59:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1C410A;
+        Mon, 28 Aug 2023 13:59:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693256381; x=1724792381;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BCWbeC1KQ8EIRfaoVmncypyCdf+8LIKkFWOdZ26XBMA=;
+  b=Ozsol8e2RGp/QE44kY5nq2riBkZLQjB4P5GjcDXGvIrGcrpgi7yB+Cnn
+   e0rdiBOO1POtCP/Q5VoQ7seLfkoq+BWaFCICQU+8OeNgEfLqUEP8eIKXZ
+   NWuDvidNYVtUgkcgb1fvQqwb3xOZGKEwOsojqUPtltXPfaQFC46KmeTIe
+   nC21LxR3yutkDWmRBDtFXJeBXW39I9s9oBFso1ln1zg9QiTgWvPgNm9Ox
+   7QIdFNxVOGZ3Z/UPKaj+sV+xdDjvmO5d+X6MVAWnm+qIn3OyAV20+H/z0
+   0GRGsT++9EYD3JgNJIQBJ0JqcN3xXYFtIkkFjYpgiN01GZcBShroPufgT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="439154301"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="439154301"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 13:59:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="803845832"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="803845832"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 13:59:34 -0700
+Date:   Mon, 28 Aug 2023 13:59:32 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v4 1/7] x86/resctrl: Create separate domains for control
+ and monitoring
+Message-ID: <ZO0KtAefCStikXEm@agluck-desk3>
+References: <20230713163207.219710-1-tony.luck@intel.com>
+ <20230722190740.326190-1-tony.luck@intel.com>
+ <20230722190740.326190-2-tony.luck@intel.com>
+ <cc1a144f-6667-18fb-7fe7-cd15ebfedd08@intel.com>
+ <ZOjfPx8iwTULTqdg@agluck-desk3>
+ <da2c0e45-56d0-e04d-774d-4292d156e1d0@intel.com>
+ <ZOzroJqc22HFZOXq@agluck-desk3>
+ <5b5962d3-6a7b-cc60-4221-8267bfbc3bfd@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b5962d3-6a7b-cc60-4221-8267bfbc3bfd@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With PPC builds enabling CONFIG_HARDENED_USERCOPY, interacting with the RunTime
-Abstraction Services (RTAS) firmware by writing to
-/proc/powerpc/rtas/firmware_flash will end up triggering the mm/usercopy.c:101
-assertion:
+On Mon, Aug 28, 2023 at 12:56:27PM -0700, Reinette Chatre wrote:
+> Hi Tony,
+> 
+> On 8/28/2023 11:46 AM, Tony Luck wrote:
+> > On Mon, Aug 28, 2023 at 10:05:31AM -0700, Reinette Chatre wrote:
+> >> Hi Tony,
+> >>
+> >> On 8/25/2023 10:05 AM, Tony Luck wrote:
+> >>> On Fri, Aug 11, 2023 at 10:29:25AM -0700, Reinette Chatre wrote:
+> >>>> On 7/22/2023 12:07 PM, Tony Luck wrote:
+> >>
+> >>>>> Change all places where monitoring functions walk the list of
+> >>>>> domains to use the new "mondomains" list instead of the old
+> >>>>> "domains" list.
+> >>>>
+> >>>> I would not refer to it as "the old domains list" as it creates
+> >>>> impression that this is being replaced. The changelog makes
+> >>>> no mention that domains list will remain and be dedicated to
+> >>>> control domains. I think this is important to include in description
+> >>>> of this change.
+> >>>
+> >>> I've rewritten the entire commit message incorporating your suggestions.
+> >>> V6 will be posted soon (after I get some time on an SNC SPR to check
+> >>> that it all works!)
+> >>
+> >> I seem to have missed v5.
+> > 
+> > I simply can't count. You are correct that next version to be posted
+> > will be v5.
+> > 
+> >>>
+> >>>>
+> >>>>>
+> >>>>> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> >>>>> ---
+> >>>>>  include/linux/resctrl.h                   |  10 +-
+> >>>>>  arch/x86/kernel/cpu/resctrl/internal.h    |   2 +-
+> >>>>>  arch/x86/kernel/cpu/resctrl/core.c        | 195 +++++++++++++++-------
+> >>>>>  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |   2 +-
+> >>>>>  arch/x86/kernel/cpu/resctrl/monitor.c     |   2 +-
+> >>>>>  arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  30 ++--
+> >>>>>  6 files changed, 167 insertions(+), 74 deletions(-)
+> >>>>>
+> >>>>> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> >>>>> index 8334eeacfec5..1267d56f9e76 100644
+> >>>>> --- a/include/linux/resctrl.h
+> >>>>> +++ b/include/linux/resctrl.h
+> >>>>> @@ -151,9 +151,11 @@ struct resctrl_schema;
+> >>>>>   * @mon_capable:	Is monitor feature available on this machine
+> >>>>>   * @num_rmid:		Number of RMIDs available
+> >>>>>   * @cache_level:	Which cache level defines scope of this resource
+> >>>>> + * @mon_scope:		Scope of this resource if different from cache_level
+> >>>>
+> >>>> I think this addition should be deferred. As it is here it the "if different
+> >>>> from cache_level" also creates many questions (when will it be different?
+> >>>> how will it be determined that the scope is different in order to know that
+> >>>> mon_scope should be used?)
+> >>>
+> >>> I've gone in a different direction. V6 renames "cache_level" to
+> >>> "ctrl_scope". I think this makes intent clear from step #1.
+> >>>
+> >>
+> >> This change is not clear to me. Previously you changed this name
+> >> but kept using it in code specific to cache levels. It is not clear
+> >> to me how this time's rename would be different.
+> > 
+> > The current "cache_level" field in the structure is describing
+> > the scope of each instance using the cache level (2 or 3) as the
+> > method to describe which CPUs are considered part of a group. Currently
+> > the scope is the same for both control and monitor resources.
+> 
+> Right.
+> 
+> > 
+> > Would you like to see patches in this progrssion:
+> > 
+> > 1) Rename "cache_level" to "scope". With commit comment that future
+> > patches are going to base the scope on NUMA nodes in addtion to sharing
+> > caches at particular levels, and will split into separate control and
+> > monitor scope.
+> > 
+> > 2) Split the "scope" field from first patch into "ctrl_scope" and
+> > "mon_scope" (also with the addition of the new list for the mon_scope).
+> > 
+> > 3) Add "node" as a new option for scope in addtion to L3 and L2 cache.
+> > 
+> 
+> hmmm - my comment cannot be addressed through patch re-ordering.
+> If I understand correctly you plan to change the name of "cache_level"
+> to "ctrl_scope". My comment is that this obfuscates the code as long as
+> you use this variable to compare against data that can only represent cache
+> levels. This just repeats what I wrote in
+> https://lore.kernel.org/lkml/09847c37-66d7-c286-a313-308eaa338c64@intel.com/
 
-[   38.647148] rw /proc/powerpc/rtas/firmware_flash
-[   38.650254] usercopy: Kernel memory overwrite attempt detected to SLUB object 'rtas_flash_cache' (offset 0, size 34)!
-[   38.650264] ------------[ cut here ]------------
-[   38.650264] kernel BUG at mm/usercopy.c:101!
-[   38.650267] Oops: Exception in kernel mode, sig: 5 [#1]
-[   38.650283] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
-[   38.650287] Modules linked in: binfmt_misc loop rfkill bonding tls sunrpc pseries_rng drm fuse drm_panel_orientation_quirks xfs libcrc32c sd_mod t10_pi sg ibmveth ibmvscsi scsi_transport_srp vmx_crypto
-[   38.650306] CPU: 0 PID: 12898 Comm: echo Kdump: loaded Not tainted 5.14.0-299.el9.ppc64le #1
-[   38.650311] NIP:  c00000000056d870 LR: c00000000056d86c CTR: c000000000886090
-[   38.650314] REGS: c0000000ba6e78c0 TRAP: 0700   Not tainted  (5.14.0-299.el9.ppc64le)
-[   38.650318] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28002203  XER: 20040000
-[   38.650326] CFAR: c0000000001f76fc IRQMASK: 0
-[   38.650326] GPR00: c00000000056d86c c0000000ba6e7b60 c000000002b15a00 0000000000000069
-[   38.650326] GPR04: c000000fff447f90 c000000fff4ccd00 000000000000000f 0000000000000027
-[   38.650326] GPR08: 0000000000000000 c000000fff44adc0 0000000ffd2f0000 0000000000002000
-[   38.650326] GPR12: 6174722720746365 c000000002ea0000 0000000000000000 0000000000000000
-[   38.650326] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[   38.650326] GPR20: 0000000000000000 0000000000000000 0000000000000002 0000000000000001
-[   38.650326] GPR24: 0000000000000000 000000012eef55a0 c0000000025f39e0 c0000000b988d000
-[   38.650326] GPR28: c0000000b988d022 0000000000000022 0000000000000000 c00000000134d6e8
-[   38.650366] NIP [c00000000056d870] usercopy_abort+0xb0/0xc0
-[   38.650373] LR [c00000000056d86c] usercopy_abort+0xac/0xc0
-[   38.650377] Call Trace:
-[   38.650379] [c0000000ba6e7b60] [c00000000056d86c] usercopy_abort+0xac/0xc0 (unreliable)
-[   38.650384] [c0000000ba6e7be0] [c0000000005178f0] __check_heap_object+0xf0/0x120
-[   38.650389] [c0000000ba6e7c00] [c00000000056d5e0] check_heap_object+0x1f0/0x220
-[   38.650394] [c0000000ba6e7c40] [c00000000056d6a0] __check_object_size+0x90/0x1b0
-[   38.650399] [c0000000ba6e7c80] [c0000000000462fc] rtas_flash_write+0x11c/0x2b0
-[   38.650404] [c0000000ba6e7ce0] [c00000000064d2ec] proc_reg_write+0xfc/0x160
-[   38.650409] [c0000000ba6e7d10] [c000000000579e64] vfs_write+0xe4/0x390
-[   38.650413] [c0000000ba6e7d60] [c00000000057a414] ksys_write+0x84/0x140
-[   38.650417] [c0000000ba6e7db0] [c00000000002f314] system_call_exception+0x164/0x310
-[   38.650421] [c0000000ba6e7e10] [c00000000000bfe8] system_call_vectored_common+0xe8/0x278
-[   38.650426] --- interrupt: 3000 at 0x7fff87f3aa34
-[   38.650430] NIP:  00007fff87f3aa34 LR: 0000000000000000 CTR: 0000000000000000
-[   38.650433] REGS: c0000000ba6e7e80 TRAP: 3000   Not tainted  (5.14.0-299.el9.ppc64le)
-[   38.650436] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 42002408  XER: 00000000
-[   38.650446] IRQMASK: 0
+I'm proposing more than just re-ordering. The above sequence is a
+couple of extra patches in the series.
 
-This used to be caught with a warning in __check_heap_object to allow impacted
-drivers time to update to kmem_cache_create_usercopy, but commit 53944f171a89d
-("mm: remove HARDENED_USERCOPY_FALLBACK") removed that check. To resolve this
-issue, update the creation of the flash_block_cache to use
-kmem_cache_create_usercopy with a default size of RTAS_BLK_SIZE.
+Existing state of code:
 
-Signed-off-by: Audra Mitchell <aubaker@redhat.com>
----
- arch/powerpc/kernel/rtas_flash.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+	There is a single field named "cache_level" that describes how
+	CPUs are assigned to domains based on their sharing of a cache
+	at a particular level. Hard-coded values of "2" and "3" are used
+	to describe the level. This is just a scope description of which
+	CPUs are grouped together. But it is limited to just doing so
+	based on which caches are shared by those CPUs.
 
-diff --git a/arch/powerpc/kernel/rtas_flash.c b/arch/powerpc/kernel/rtas_flash.c
-index a99179d83538..0a156a600f31 100644
---- a/arch/powerpc/kernel/rtas_flash.c
-+++ b/arch/powerpc/kernel/rtas_flash.c
-@@ -710,9 +710,9 @@ static int __init rtas_flash_init(void)
- 	if (!rtas_validate_flash_data.buf)
- 		return -ENOMEM;
- 
--	flash_block_cache = kmem_cache_create("rtas_flash_cache",
-+	flash_block_cache = kmem_cache_create_usercopy("rtas_flash_cache",
- 					      RTAS_BLK_SIZE, RTAS_BLK_SIZE, 0,
--					      NULL);
-+					      0, RTAS_BLK_SIZE, NULL);
- 	if (!flash_block_cache) {
- 		printk(KERN_ERR "%s: failed to create block cache\n",
- 				__func__);
--- 
-2.40.1
+Step 1:
 
+	Change the name of the field s/cache_level/scope/. Provide an
+	enum with values RESCTRL_L3_CACHE, RESCTRL_L2_CACHE aand use
+	those througout code instead of 3, 2, and implictly passing
+	the resctrl scope to functions like get_cpu_cacheinfo_id()
+
+	Add get_domain_id_from_scope() function that takes the enum
+	values for scope and converts to "3", "2" to pass to
+	get_cpu_cacheinfo_id().
+
+	No functional change. Just broadening the meaning of the field
+	so that it can in future patches to describe scopes that
+	aren't a function of sharing a cache of a particular level.
+
+Step 2:
+
+	Break the single list of domains into two separate lists. One
+	for control domains, one for monitor domains. Change the name
+	of the "scope" field to "ctrl"scope", add a new field
+	"mon_scope".
+
+Step 3:
+
+	Add RESCTRL_NODE as a new option in the enum for how CPUs are
+	grouped into domains.
+> 
+> 
+> >> ...
+> >>
+> >>>>> @@ -502,61 +593,19 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
+> >>>>>   */
+> >>>>>  static void domain_add_cpu(int cpu, struct rdt_resource *r)
+> >>>>>  {
+> >>>>> -	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
+> >>>>> -	struct list_head *add_pos = NULL;
+> >>>>> -	struct rdt_hw_domain *hw_dom;
+> >>>>> -	struct rdt_domain *d;
+> >>>>> -	int err;
+> >>>>> -
+> >>>>> -	d = rdt_find_domain(r, id, &add_pos);
+> >>>>> -	if (IS_ERR(d)) {
+> >>>>> -		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
+> >>>>> -		return;
+> >>>>> -	}
+> >>>>> -
+> >>>>> -	if (d) {
+> >>>>> -		cpumask_set_cpu(cpu, &d->cpu_mask);
+> >>>>> -		if (r->cache.arch_has_per_cpu_cfg)
+> >>>>> -			rdt_domain_reconfigure_cdp(r);
+> >>>>> -		return;
+> >>>>> -	}
+> >>>>> -
+> >>>>> -	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
+> >>>>> -	if (!hw_dom)
+> >>>>> -		return;
+> >>>>> -
+> >>>>> -	d = &hw_dom->d_resctrl;
+> >>>>> -	d->id = id;
+> >>>>> -	cpumask_set_cpu(cpu, &d->cpu_mask);
+> >>>>> -
+> >>>>> -	rdt_domain_reconfigure_cdp(r);
+> >>>>> -
+> >>>>> -	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
+> >>>>> -		domain_free(hw_dom);
+> >>>>> -		return;
+> >>>>> -	}
+> >>>>> -
+> >>>>> -	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
+> >>>>> -		domain_free(hw_dom);
+> >>>>> -		return;
+> >>>>> -	}
+> >>>>> -
+> >>>>> -	list_add_tail(&d->list, add_pos);
+> >>>>> -
+> >>>>> -	err = resctrl_online_domain(r, d);
+> >>>>> -	if (err) {
+> >>>>> -		list_del(&d->list);
+> >>>>> -		domain_free(hw_dom);
+> >>>>> -	}
+> >>>>> +	if (r->alloc_capable)
+> >>>>> +		domain_add_cpu_ctrl(cpu, r);
+> >>>>> +	if (r->mon_capable)
+> >>>>> +		domain_add_cpu_mon(cpu, r);
+> >>>>>  }
+> >>>>
+> >>>> A resource could be both alloc and mon capable ... both
+> >>>> domain_add_cpu_ctrl() and domain_add_cpu_mon() can fail.
+> >>>> Should domain_add_cpu_mon() still be run for a CPU if
+> >>>> domain_add_cpu_ctrl() failed? 
+> >>>>
+> >>>> Looking ahead the CPU should probably also not be added
+> >>>> to the default groups mask if a failure occurred.
+> >>>
+> >>> Existing code doesn't do anything for the case where a CPU
+> >>> can't be added to a domain (probably the only real error case
+> >>> is failure to allocate memory for the domain structure).
+> >>
+> >> Is my statement about CPU being added to default group mask
+> >> incorrect? Seems like a potential issue related to domain's
+> >> CPU mask also.
+> >>
+> >> Please see my earlier question. Existing code does not proceed
+> >> with monitor initialization if control initialization fails and
+> >> undoes control initialization if monitor initialization fails. 
+> > 
+> > Existing code silently continues if a domain structure cannot
+> > be allocated to add a CPU to a domain:
+> > 
+> > 503 static void domain_add_cpu(int cpu, struct rdt_resource *r)
+> > 504 {
+> > 505         int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
+> > 506         struct list_head *add_pos = NULL;
+> > 507         struct rdt_hw_domain *hw_dom;
+> > 508         struct rdt_domain *d;
+> > 509         int err;
+> > 
+> > ...
+> > 
+> > 523
+> > 524         hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
+> > 525         if (!hw_dom)
+> > 526                 return;
+> > 527
+> > 
+> 
+> 
+> Right ... and if it returns silently as above it runs:
+> 
+> static int resctrl_online_cpu(unsigned int cpu)
+> {
+> 
+> 
+> 	for_each_capable_rdt_resource(r)
+> 		domain_add_cpu(cpu, r);
+> 	>>>>> cpumask_set_cpu(cpu, &rdtgroup_default.cpu_mask); <<<<<<<<
+> 
+> }
+> 
+> Also, note within domain_add_cpu():
+> 
+> static void domain_add_cpu(int cpu, struct rdt_resource *r)
+> {
+> 
+> 
+> 	...
+> 	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
+> 		domain_free(hw_dom);
+> 		return;
+> 	}
+> 
+> 	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
+> 		domain_free(hw_dom);
+> 		return;
+> 	}
+> 
+> 	...
+> }
+> 
+> The above is the other item that I've been trying to discuss
+> with you. Note that existing resctrl will not initialize monitoring if
+> control could not be initialized.
+> Compare with this submission:
+> 
+> 	if (r->alloc_capable)
+> 		domain_add_cpu_ctrl(cpu, r);
+> 	if (r->mon_capable)
+> 		domain_add_cpu_mon(cpu, r);
+> 
+> 
+> 
+> >>
+> >>> May be something to tackle in a future series if anyone
+> >>> thinks this is a serious problem and has suggestions on
+> >>> what to do. It seems like a catastrophic problem to not
+> >>> have some CPUs in some/all domains of some resources.
+> >>> Maybe this should disable mounting resctrl filesystem
+> >>> completely?
+> >>
+> >> It is not clear to me how this is catastrophic but I
+> >> do not think resctrl should claim support for a resource
+> >> on a CPU if it was not able to complete initialization
+> > 
+> > That's the status quo. See above code snippet.
+> 
+> Could you please elaborate what you mean with status quo?
+
+Status quo. System may be booting and add a bunch of CPUs to the
+first domain for a resource. When it finds a CPU from a different
+domain it calls domain_add_cpu(), but for some reason the allocation
+of a rdt_hw_domain fails here:
+
+524         hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
+525         if (!hw_dom)
+526                 return;
+
+domain_add_cpu() returns with no message to the console, no error code.
+System boots, but this CPU is missing from the domain (likely the whole
+domain is missing as the same allocation will most likely fail for the
+remainder of the CPUs in this domain). Only indication to user is when
+they read the schemata file and see something like this:
+
+$ cat /sys/fs/resctrl/schemata
+    MB:0= 100
+    L3:0=7fff;1=7fff
+
+(assuming that all domains were successfully allocated for L3, and the
+failure described above happened on the allocation for the second domain
+of the MB resource.)
+
+-Tony
