@@ -2,197 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E48978AEB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5462F78AEB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjH1LWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
+        id S231539AbjH1LWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjH1LV7 (ORCPT
+        with ESMTP id S231278AbjH1LWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 07:21:59 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCD9B6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:21:54 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230828112152euoutp02fa5b7723439285b77a9fb2e17bdaf6e6~-iC0a1vl20279402794euoutp02d
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 11:21:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230828112152euoutp02fa5b7723439285b77a9fb2e17bdaf6e6~-iC0a1vl20279402794euoutp02d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1693221712;
-        bh=VQPiQZ6BlJOv7UycB/t5qmClTXP5K+iValXtnswktQs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=bKTesSLcdSWCtAEzPYbMrEhtIxPldXOJH0WLtyGV/KWxOfa6ZVrzFmcvzkTOdT3GI
-         g8HTvhpfcEQ1hFqv+XFa8NEE+xlKMwLH1VBIDx5QYx76awPko89pL4d5zX6nUoTrdA
-         WGKmhK6SxKcVWuUZIZMft5UxlIlC/eB8BVO2Wz3Y=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230828112151eucas1p2211c1c044945d76975c5cee44f3be17b~-iC0Exmga2794827948eucas1p2N;
-        Mon, 28 Aug 2023 11:21:51 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id CC.B3.37758.F438CE46; Mon, 28
-        Aug 2023 12:21:51 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230828112151eucas1p2371f4cf778e6265e8ac5baf8ea91be4d~-iCzrf_N92792827928eucas1p2O;
-        Mon, 28 Aug 2023 11:21:51 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230828112151eusmtrp255b7d9d3f203c26a979f5e6e1dfaefa5~-iCzqwsBN0113301133eusmtrp2i;
-        Mon, 28 Aug 2023 11:21:51 +0000 (GMT)
-X-AuditID: cbfec7f5-7ffff7000002937e-d5-64ec834ff7df
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 26.7C.14344.F438CE46; Mon, 28
-        Aug 2023 12:21:51 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230828112151eusmtip22b02f52c7432cc1694d03f92cc5371d9~-iCzf-P-23182131821eusmtip2p;
-        Mon, 28 Aug 2023 11:21:51 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
-        Server (TLS) id 15.0.1497.2; Mon, 28 Aug 2023 12:21:50 +0100
-Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
-        ([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Mon, 28 Aug
-        2023 12:21:50 +0100
-From:   Andreas Hindborg <a.hindborg@samsung.com>
-To:     Alice Ryhl <aliceryhl@google.com>
-CC:     "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-        "Tejun Heo" <tj@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "Alex Gaynor" <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [PATCH v4 4/7] rust: workqueue: add helper for defining
- work_struct fields
-Thread-Topic: [PATCH v4 4/7] rust: workqueue: add helper for defining
-        work_struct fields
-Thread-Index: AQHZ2aHWyjhGrDdcWUuOhpl6ciq6/A==
-Date:   Mon, 28 Aug 2023 11:21:50 +0000
-Message-ID: <87y1hvtnsi.fsf@samsung.com>
-In-Reply-To: <20230828104807.1581592-5-aliceryhl@google.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [106.110.32.64]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 28 Aug 2023 07:22:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54407B6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 04:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693221739; x=1724757739;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=Il7SOEY+8AyykpIg+PLczyuvJZpR54zcd+NqFwBWJDk=;
+  b=Adk9puHlGD8KqZUoiYZ7x73AMJVNOuQF1JQr24o4LwpQ5guv9GdyfKly
+   L+/UJHYIdYkbxT+WhWD2PubgbViaha2wT6EBviDy8YUMHfJIuh6pvMiR5
+   s1fmUNiBTtfEbmPYzFPXryen5DV4C3RG2ZPLGh6XL5LGDdVyr98LN9nYX
+   K14lE37nw9veCEWx9oU00EUaC2KyQXCkCS4hfF1OWzt6bajaE8bhxY43k
+   5OitG2zchEZsxHGpjjOd4sawBHKtaRDxLQ6th9tdaSpR9lP1FkDbOUTvU
+   EXCOoErowXobPR7YKUHrW7TOZ/z3yRNVViboiPmP0gzgJHOIJ0wLRjhIV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="375045439"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="375045439"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 04:22:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="912018954"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="912018954"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga005.jf.intel.com with ESMTP; 28 Aug 2023 04:22:15 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 28 Aug 2023 04:22:15 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 28 Aug 2023 04:22:15 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 28 Aug 2023 04:22:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QAjT68kzFb22bRtQxbxq6a2sZC+0qZFMO5cgYIpcPmvPZPHKn5jlDhdDbmkfwO7UlhOqdwGiRi2uWkRJs5VeB0thhAsyiU2U3P3A4ac9KLbcDQ+OAjK8bq/mfLTQ78H4oIDXDS2JEREJhEz4Jn4YCpzKeWE0Q3MYXzpSgJJRUsQDhulYYD9vJf7TRAIM3ysjHtVUQCVKvUedTS0rtqh+eKjhq9dKwv01kzgzWVW02IYxamn8eLqh5PQHBIj/Ppq7jSbMUDMKV5jTgX/rhasOCA9oQTkOOiCtkLwWA5AO1eSJ6QOfIexBrhIkBDK6EaczThuCggO4LJcHl2OTjb5Y2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u30ITxRj9n+yDwug+JwSQ6Jmh0wCMy4Isqsa9DJ/VKE=;
+ b=JpWAJ0JzSS6AMAOpGqTK/CX93Vcnv5ObHQiY7MnQMzeoUdlcUP7mEckDhqCGByb75cKezCKur6XeSEqJbjfE3ot9XLb+OkrtyMxhJ4r6Q8MfxhBYcrT5r+PbjXlmz0CqjktIY/YQxW27UDUmBe2BEEKCk4LvzwbbRtwarkeDxtwQbVwyJRB9eStHOVdFXst3OcEXoMeBhw9rJ/VBbc2Zs4xfHkymeYMmrVQpwAqnqmmchqe5tuPwHXDYqx+EaAwufJDEio2QilSEQjY0EBaUVCVpcNUdCdx2kEB8pDx0VsS5tN9XyIjyuIhtcco2E+EQRKmp3NblwrSEgH/OWfuhuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3062.namprd11.prod.outlook.com (2603:10b6:a03:92::18)
+ by SA3PR11MB7414.namprd11.prod.outlook.com (2603:10b6:806:31c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
+ 2023 11:22:12 +0000
+Received: from BYAPR11MB3062.namprd11.prod.outlook.com
+ ([fe80::9a8d:9d34:4af2:f2e5]) by BYAPR11MB3062.namprd11.prod.outlook.com
+ ([fe80::9a8d:9d34:4af2:f2e5%7]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
+ 11:22:12 +0000
+Date:   Mon, 28 Aug 2023 19:22:01 +0800
+From:   Aaron Lu <aaron.lu@intel.com>
+To:     Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Deng Pan <pan.deng@intel.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        David Vernet <void@manifault.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/1] Reduce cost of accessing tg->load_avg
+Message-ID: <20230828112201.GB504382@ziqianlu-dell>
+References: <20230823060832.454842-1-aaron.lu@intel.com>
+ <20e21145-4fef-33b5-f41c-5bfd66a0281e@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20e21145-4fef-33b5-f41c-5bfd66a0281e@amd.com>
+X-ClientProxiedBy: SGXP274CA0021.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::33)
+ To BYAPR11MB3062.namprd11.prod.outlook.com (2603:10b6:a03:92::18)
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDKsWRmVeSWpSXmKPExsWy7djP87r+zW9SDI5d07H4O3s7u8WJ600s
-        Fh+uNbFa3Liwn9lizZZGJouLZ14zWkxdu5vJ4vKuOWwWK+cvZ7S4fOISo8X6Z4eZLX4tP8po
-        sWHZWkYHXo8lnb+YPHbOusvusWBTqcemVZ1sHi82z2T0+N6+h82jp20Tk8fnTXIBHFFcNimp
-        OZllqUX6dglcGb3LdzAVHBWpeHl7LnMD4zaBLkZODgkBE4nD16eydzFycQgJrGCUeLn+KwtI
-        QkjgC6PEqnk1EInPjBJLPjcxwnRM+bCHHaJoOaPE+TZ/uKJjv1dDJc4wSqyYqgyRWMkoMe1G
-        O1g3m4C+xLU115hBbBEBVYkztxrYQGxmgaUsEjcuyIDYwgKREo8e7GWFqImSmNl4iRHC1pP4
-        MbERzGYB6t049wDYMl4BDYmWWdfB4pwCNhJbGheDvcAoICvxaOUvdoj54hK3nsxngvhAUGLR
-        7D3MELaYxL9dD9kgbB2Js9efQH1pILF16T4WCFtR4lrPTUaIOXoSN6ZOgbpZW2LZwtfMEDcI
-        Spyc+YQF5GEJgTYuidf7pkENdZFoW98EtVhY4tXxLewQtozE/53zmSYwas9Cct8sJDtmIdkx
-        C8mOBYwsqxjFU0uLc9NTi43zUsv1ihNzi0vz0vWS83M3MQIT3Ol/x7/uYFzx6qPeIUYmDsZD
-        jBIczEoivJccX6UI8aYkVlalFuXHF5XmpBYfYpTmYFES59W2PZksJJCeWJKanZpakFoEk2Xi
-        4JRqYFL+vv7yBEcu1eKmw3e+LYi6Lx8a+V+v/1J2W6nI1EcvHkSsmSAf6f5DzkbAUnRBza3N
-        RY1rNa9stFom/Jlvmi6zQvSFha/2t4U18Jc15Jbf28BWmxomrv79VdKsj/GXJRKYf7t9dkjP
-        mHQ5aJ+O07Vpkv7rpqveWfD5wn5965oi97Y5KxYp7vIW/Vp1RHbHrVlnY+WfOy5zrWx4JG4q
-        GyB4eIqV+9rUPzwLFR6F1Qo3TW658ERANP7P1gqfxWcn/J97/oqJQcH2f7oPl5b9dgzduGAt
-        z5bdNjnlj15xrH3j/2vdAf3XXYL8755vejlp7uQp780V5zc16lmF9Ol7XVbun2lYJpm1Yfup
-        JWJCt4qVWIozEg21mIuKEwFqsNfV3wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJKsWRmVeSWpSXmKPExsVy+t/xe7r+zW9SDJ48F7X4O3s7u8WJ600s
-        Fh+uNbFa3Liwn9lizZZGJouLZ14zWkxdu5vJ4vKuOWwWK+cvZ7S4fOISo8X6Z4eZLX4tP8po
-        sWHZWkYHXo8lnb+YPHbOusvusWBTqcemVZ1sHi82z2T0+N6+h82jp20Tk8fnTXIBHFF6NkX5
-        pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6Gb3LdzAVHBWp
-        eHl7LnMD4zaBLkZODgkBE4kpH/awdzFycQgJLGWUWHNzKhNEQkZi45errBC2sMSfa11sILaQ
-        wEdGibZlARD2GUaJj6+ZIJpXMkp8unifGSTBJqAvcW3NNTBbREBV4sytBjaQImaBpSwSv17e
-        YwFJCAtESjx6sJcVoihKYsvMXSwQtp7Ej4mNjCA2C1DzxrkH2EFsXgENiZZZ1xkhNudK7J72
-        G+wiTgEbiS2Ni8F6GQVkJR6t/AVWzywgLnHryXyobwQkluw5zwxhi0q8fPwP6jMdibPXnzBC
-        2AYSW5fuY4GwFSWu9dxkhJijJ3Fj6hQ2CFtbYtnC18wQ9whKnJz5hGUCo/QsJOtmIWmZhaRl
-        FpKWBYwsqxhFUkuLc9Nzi430ihNzi0vz0vWS83M3MQLT1LZjP7fsYFz56qPeIUYmDsZDjBIc
-        zEoivJccX6UI8aYkVlalFuXHF5XmpBYfYjQFhtFEZinR5HxgoswriTc0MzA1NDGzNDC1NDNW
-        Euf1LOhIFBJITyxJzU5NLUgtgulj4uCUamBSX//gbenzF7xmJx5/jjt/Ob+r6M2tfdobsndx
-        W6hJ2LE+D8l6v/2ywbXNt6NP8E+36LsSLLM0bkmgUJ3AA8HafVNmyO5qMDMP+BTol1RatP/2
-        MuG3kedXhnfwbP5gtWZCljJPvn7qi6kBOuFOUjG3lN4//b4wde4yP+VtTzdf+6Tf4uq4Romx
-        Y12MlW5IdMbuZsk6Bf9rO24pOE4/dLC39ErJ1kVFTBNOhfm7pH2Sn3vq5peKWbdWTwiqPr1x
-        MkPYrYtiNXO+XZ8QsfrKovPHdvTFLT6gmX29gEOKZ7LEpFX5osXdWu9y3s9ZsX/yiqRtu3pW
-        8eyS+WTl63zW2/i+5YeMOG6By9od92573zqUoMRSnJFoqMVcVJwIAHH6aoDcAwAA
-X-CMS-MailID: 20230828112151eucas1p2371f4cf778e6265e8ac5baf8ea91be4d
-X-Msg-Generator: CA
-X-RootMTR: 20230828112151eucas1p2371f4cf778e6265e8ac5baf8ea91be4d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230828112151eucas1p2371f4cf778e6265e8ac5baf8ea91be4d
-References: <20230828104807.1581592-1-aliceryhl@google.com>
-        <20230828104807.1581592-5-aliceryhl@google.com>
-        <CGME20230828112151eucas1p2371f4cf778e6265e8ac5baf8ea91be4d@eucas1p2.samsung.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3062:EE_|SA3PR11MB7414:EE_
+X-MS-Office365-Filtering-Correlation-Id: 37777880-33db-4c96-983d-08dba7b9068f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Fj/eBUzIWsC7C3SDlZp6dJc38t9wX2U//g9nXzCdWpYx35t9DOTGFbe9SjARdIfqBaRm45Sd/ptHseJ6bv4jLAYhldG0ViaFsxnWfgrRJZVVSZ9SEW5OeWN4gQTzAw8oWtG6mYM12fqK39WZ3QI5Jhq4a5ERj4EWHwx9CPYlobfSwHB0iY+70M5b0ENqn9Roa//TVSM4QMBz+FKInOVHr0fJCoexLteGFNZLhhKaxK1h49huRNEimIZskZx4itaEMORt1C3VWZLy1WFkO6FDbVuJsyjRRO1QlHOECuA71zBXPhepj6uhFFS15jLK6Ac/ykySEGFgyy/n9wCHfMf2PLpQsTOdB0r6zCa+sJdO1BT/EBhIH3n5syIa2BuxHd1FT7I8/E0QlmW5HgF4hqlOuC8RJQYZFBuJDXZ92S9yiWUCC9TO+guG/DWxZKO7JiIz6Edt/DFCao/lLj1v7/jV3+0D9G92jrq9oygD5Nqo2NBB92rv5MXzUTPUOOQfagjxIO7btrtKitdte7AFw+hSXV2x6qAXbQ8sdpoNXuI2NIo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3062.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(366004)(396003)(39860400002)(376002)(186009)(1800799009)(451199024)(41300700001)(7416002)(33716001)(38100700002)(6666004)(86362001)(966005)(82960400001)(478600001)(83380400001)(26005)(9686003)(1076003)(6512007)(53546011)(6486002)(6506007)(5660300002)(66946007)(6916009)(54906003)(316002)(2906002)(66476007)(66556008)(33656002)(8676002)(4326008)(8936002)(44832011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XQ7/cuEaPkjKgBPIY8RssFDtsoGYOk/lfc7FOy+RzR3JUBO4RMOy6hxQnOLf?=
+ =?us-ascii?Q?mPL/6vRkNn72M6SeJyEnkC9Wxfus17uTMRhCbEE/hGC/UGEQUZ3a+nFjBUSS?=
+ =?us-ascii?Q?JvKQ7lOySaUuC6z4WgJRVcdfL5YXUsglKdpUN+k/BliffHLAqtA66mIWBIRO?=
+ =?us-ascii?Q?/QcnmzvWQJIGG7liotJbAAiywA2HZOgWMr9AGPvjyvKTB80zn87ScpQvbgoW?=
+ =?us-ascii?Q?AMqNdvv/bo5mXWqAWF4FyNeOZsPXpNaxNWYHeZEadQgh3gcHd2gaf2l7QimK?=
+ =?us-ascii?Q?oULfsFAIad/Ln22UbhBq4dZxv1pWkzm75njyx7OovN8LvwXehY4o/vwUYJr/?=
+ =?us-ascii?Q?oGyJtxYyta3o8fxWId4/ffCKA+G45IWYCRykC4nesa0pzE3fWYiPgwGgtYII?=
+ =?us-ascii?Q?kVLgVIL8ID2H04gIcVQF2gwSanYxS36XrBZ/K+jydier2HrKhJghYJIu6Jv4?=
+ =?us-ascii?Q?3A/zIwySg1k59gD/XMC0JBkHwLTQY3bzBbIqJc2WaGAYz3Sd6YxmXfXvKodL?=
+ =?us-ascii?Q?nRP5KwY8qWmWahZS96QJ4Y/2yEhB8/wnGS2u/in+9hxpHQ6NZ5JiHHZ/7oLb?=
+ =?us-ascii?Q?q5jBICso6/6BcrmMjBN2vaEJmmlrsSZy3yo2NoiKpY+9F7joBJpyvT4nUIZ8?=
+ =?us-ascii?Q?Q187I5Q/0clT6z5CTsw1dt52uNsMc61AVgQgKDFdP3kGwIDXkOHulCMtTD3H?=
+ =?us-ascii?Q?UM1BuYYMawH1ehMxc9BtMsRx6GnQWPwVq8GY1J3WexXjvegyMESfXwSBFI1n?=
+ =?us-ascii?Q?WtL3n0sNCXltk2oyRfip5w7Ti0lIgm8lYRx/dypLI5ayuYFG/pVZo88QNc9y?=
+ =?us-ascii?Q?ZxNxJCS39MtZSuzTf56Ew3bD3RQhQzFuJbb5Irs942VKn7zCj3ad/BkGsHBl?=
+ =?us-ascii?Q?zSVbtsAiNsc1tkLqnQ5IAtfwjEFmeNEc6umOW+yi8pUW65Epj1jH5x8W8jxu?=
+ =?us-ascii?Q?LPlGtAmVoeWsb0pBqXFax1fwJVB2KIVSwCgcBPkwNu4Xm/6wxA2kqEQmBx2J?=
+ =?us-ascii?Q?D2pcTKAgLh7hjYr2rVepp0aFnTZaogJvgxu/SecwwZiAVEfiA/Piz8BwBPK8?=
+ =?us-ascii?Q?9tputbwyFiTY53DLj3OxShX69HoObIrM0nV/xTi1GxTb54k+S/LeJZZnxtqR?=
+ =?us-ascii?Q?Hpul0vBzCJoCmJjGmVXaFCNteF+a0nHaw2a23S6FQuaWERbS/ISoxY8rGis4?=
+ =?us-ascii?Q?2BEQ/P8ngi7Dk+OlMcgbRMBNw2Bp+qqc4B9cO36xQwm6A7mqaMZYMdiaIZKo?=
+ =?us-ascii?Q?gFxuvThEKItinPu5th3eIj8xCYk+UxjBUt/lWqO6n5Q5XLv/RBcLizUbSEn4?=
+ =?us-ascii?Q?OyC8FYRrHumLJBOBnWXPR3ddkrjn6Veb6PHQu9ssqTLzhI8bvrydke2vsjQi?=
+ =?us-ascii?Q?Hiz2BL6ACz7nDeqY42kEdbh/d6PZLJSNVHF6RdZgwHEhFac/DAftT3E9j830?=
+ =?us-ascii?Q?XVt5vHghAaRJSuJvr/tVTD8N0imf50Hc/2W3JKw70encZ6q8NpQ2McMpvdEE?=
+ =?us-ascii?Q?P4coPxO4hTTA2/VJT9aMdEHMV3N3dvagHCAF7eQa8aXD/vwIWk7a/u4EpokT?=
+ =?us-ascii?Q?8kWPEZD8NwhgygULhfwB0NTTNFFJUqlks3rexUuw?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37777880-33db-4c96-983d-08dba7b9068f
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3062.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2023 11:22:12.5487
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EPnp4Iyr0WCYG8TyQBPXN6vo8wM7jPUBweBCVkLm3RK0KLKRyJOUwQx4TEj6hqJXRVpR1t1MHdJByl3WWLDN/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7414
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Swapnil,
 
-Alice Ryhl <aliceryhl@google.com> writes:
+On Fri, Aug 25, 2023 at 04:03:20PM +0530, Swapnil Sapkal wrote:
+> Hello Aaron,
+> 
+> On 8/23/2023 11:38 AM, Aaron Lu wrote:
+> > RFC v2 -> v1:
+> > - drop RFC;
+> > - move cfs_rq->last_update_tg_load_avg before cfs_rq->tg_load_avg_contrib;
+> > - add Vincent's reviewed-by tag.
+> > 
+> > RFC v2:
+> > Nitin Tekchandani noticed some scheduler functions have high cost
+> > according to perf/cycles while running postgres_sysbench workload.
+> > I perf/annotated the high cost functions: update_cfs_group() and
+> > update_load_avg() and found the costs were ~90% due to accessing to
+> > tg->load_avg. This series is an attempt to reduce the overhead of
+> > the two functions.
+> > Thanks to Vincent's suggestion from v1, this revision used a simpler way
+> > to solve the overhead problem by limiting updates to tg->load_avg to at
+> > most once per ms. Benchmark shows that it has good results and with the
+> > rate limit in place, other optimizations in v1 don't improve performance
+> > further so they are dropped from this revision.
+> > 
+> 
+> I have tested this series alongside Mathieu's changes. You can find the
+> report here: https://lore.kernel.org/all/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
+> 
+> Tested-by: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
 
-> The main challenge with defining `work_struct` fields is making sure
-> that the function pointer stored in the `work_struct` is appropriate for
-> the work item type it is embedded in. It needs to know the offset of the
-> `work_struct` field being used (even if there are several!) so that it
-> can do a `container_of`, and it needs to know the type of the work item
-> so that it can call into the right user-provided code. All of this needs
-> to happen in a way that provides a safe API to the user, so that users
-> of the workqueue cannot mix up the function pointers.
->
-> There are three important pieces that are relevant when doing this:
->
->  * The pointer type.
->  * The work item struct. This is what the pointer points at.
->  * The `work_struct` field. This is a field of the work item struct.
->
-> This patch introduces a separate trait for each piece. The pointer type
-> is given a `WorkItemPointer` trait, which pointer types need to
-> implement to be usable with the workqueue. This trait will be
-> implemented for `Arc` and `Box` in a later patch in this patchset.
-> Implementing this trait is unsafe because this is where the
-> `container_of` operation happens, but user-code will not need to
-> implement it themselves.
->
-> The work item struct should then implement the `WorkItem` trait. This
-> trait is where user-code specifies what they want to happen when a work
-> item is executed. It also specifies what the correct pointer type is.
->
-> Finally, to make the work item struct know the offset of its
-> `work_struct` field, we use a trait called `HasWork<T, ID>`. If a type
-> implements this trait, then the type declares that, at the given offset,
-> there is a field of type `Work<T, ID>`. The trait is marked unsafe
-> because the OFFSET constant must be correct, but we provide an
-> `impl_has_work!` macro that can safely implement `HasWork<T>` on a type.
-> The macro expands to something that only compiles if the specified field
-> really has the type `Work<T>`. It is used like this:
->
-> ```
-> struct MyWorkItem {
->     work_field: Work<MyWorkItem, 1>,
-> }
->
-> impl_has_work! {
->     impl HasWork<MyWorkItem, 1> for MyWorkItem { self.work_field }
-> }
-> ```
->
-> Note that since the `Work` type is annotated with an id, you can have
-> several `work_struct` fields by using a different id for each one.
->
-> Co-developed-by: Gary Guo <gary@garyguo.net>
-> Signed-off-by: Gary Guo <gary@garyguo.net>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
+Thanks a lot for running these workloads and share the results, will
+include your tag when sending the next version.
 
-Reviewed-by: Andreas Hindborg <a.hindborg@samsung.com>
+Regards,
+Aaron
+
+> > Aaron Lu (1):
+> >    sched/fair: ratelimit update to tg->load_avg
+> > 
+> >   kernel/sched/fair.c  | 13 ++++++++++++-
+> >   kernel/sched/sched.h |  1 +
+> >   2 files changed, 13 insertions(+), 1 deletion(-)
+> > 
+> --
+> Thanks and Regards,
+> Swapnil
