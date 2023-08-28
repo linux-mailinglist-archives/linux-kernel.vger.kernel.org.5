@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B42F378B246
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114AB78B24A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 15:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbjH1NwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 09:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        id S230384AbjH1Nxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 09:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjH1Nv6 (ORCPT
+        with ESMTP id S230396AbjH1NxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:51:58 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E446BC0;
-        Mon, 28 Aug 2023 06:51:55 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37SDplHJ020270;
-        Mon, 28 Aug 2023 08:51:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693230707;
-        bh=uDnHa2QtC/enCIWwOMpGqx8OA0NhDZ0Z+HiVNGPINDY=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=QOBxWdol/CnKSz5MEa7jYuoU+0VYP039d6t57djcD8ZN0U0O77MrmoHT5lNdqoOCZ
-         K4VpSRoQZx9iMEFXdbDJ3OGLirdRCVGenhdQjhB7vuSnKJIptpND4SlKGnCGRiXRkX
-         tdCIQb9RfjOxzqOt+ecmpOSnD4lkqooNRWkEyvmc=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37SDpl8G069899
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Aug 2023 08:51:47 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 28
- Aug 2023 08:51:47 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 28 Aug 2023 08:51:47 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37SDplO8089119;
-        Mon, 28 Aug 2023 08:51:47 -0500
-Date:   Mon, 28 Aug 2023 08:51:47 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <bpf@vger.kernel.org>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Simon Glass <sjg@chromium.org>, Tom Rini <trini@konsulko.com>,
-        Neha Francis <n-francis@ti.com>
-Subject: Re: [PATCH 1/2] Documentation: sphinx: Add sphinx-prompt
-Message-ID: <20230828135147.sm2zdwwc7j7rfikd@quantum>
-References: <20230824182107.3702766-1-nm@ti.com>
- <20230824182107.3702766-2-nm@ti.com>
- <87h6om4u6o.fsf@meer.lwn.net>
- <20230828125912.hndmzfkof23zxpxl@tidings>
- <87edjn2sj0.fsf@meer.lwn.net>
+        Mon, 28 Aug 2023 09:53:03 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABCEE3;
+        Mon, 28 Aug 2023 06:53:00 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68a6f6a66e1so2272021b3a.2;
+        Mon, 28 Aug 2023 06:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693230780; x=1693835580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6FmnTH4U9OSJhGxAibPkRaPpwtt5dIptHO+rY27erzo=;
+        b=Mjom9tYhcWSUwzV14X18el+3OX+n9997CG0Ii5zZODB2SvTtK/ybTzdMj7+7K47RA3
+         wSPtzFE9il4sbnIb/ecIBzvlne0dEg56jQG5k4ZUjCmA4vRsJ2yBrUiJM0c+4izjfG+u
+         DOdvJn1WY8SMK/s+f6onEID3W+OM59OEmdkM3N9WDjNJUfcX5MEuAsPDubDfw4KsHHWx
+         SnNecqcp4jOMYU+PVUP3jhMujRohsqvkJvA3Vg2+Swylxs9/IiOS1VQ8bIhfyRohGZmm
+         4S/BnfgdQ7EGJrPRUVgilPg4db048/eqxKmR4XVFqaUgL8blGgeSDorc0/em51YcIAH5
+         RQcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693230780; x=1693835580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6FmnTH4U9OSJhGxAibPkRaPpwtt5dIptHO+rY27erzo=;
+        b=IMXQVkO19HWEEVPHUX/jnzPwU3cJMGQrlpCvAawxQLo0OihF/SuTfZY8DYW3m91EWf
+         wZMlj1mtt2kDdcJrKXkzQORGJh6BpMeVBGTcx1XVKAnpJi5a0OObv1UIC3jeszaMXR2D
+         jDxy1OWZh6g8eeRN8v768ja89V6EULIPwkcvyjutOjFfs7D802piT7P3jsv6Uxzb5D2n
+         m37fioaBU1SP0PdELApRjRLsY4khLuI9Tp0UX4caBmvGKZ23iaIfAGxLDWczypLTQUF3
+         a3wC5NPMBMSQXfvl3fVF0FOvOUnELGU+acnZJyuMi8655gqXZkkbAKCrmVhutbIw+L4W
+         JLZQ==
+X-Gm-Message-State: AOJu0Yz4RQHlcfUqJKunrgDdMGatT6Nuy8eKlUhj1swzwgrcUy0qpYCx
+        61LpztJly82r8ryH3PSENwYAlv2EVhM=
+X-Google-Smtp-Source: AGHT+IGwe6fMpNwLXLqG9W9bii5SM9SpBYM153qClnV57jqRshve66AaWDXjUK10BPKKg0JBE957Cw==
+X-Received: by 2002:a05:6a00:b8e:b0:68a:530d:a39b with SMTP id g14-20020a056a000b8e00b0068a530da39bmr20706157pfj.8.1693230780198;
+        Mon, 28 Aug 2023 06:53:00 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id j12-20020aa7800c000000b00687dde8ae5dsm6650080pfi.154.2023.08.28.06.52.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 06:52:58 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id BF47A9ED5C53; Mon, 28 Aug 2023 20:52:54 +0700 (WIB)
+Date:   Mon, 28 Aug 2023 20:52:54 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     "Dr. David Alan Gilbert" <dave@treblig.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Theodore Ts'o <tytso@mit.edu>, hch@lst.de,
+        adilger.kernel@dilger.ca, song@kernel.org,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+Message-ID: <ZOymtgiZYGQ6QlxN@debian.me>
+References: <ZNqWfQPTScJDkmpX@gallifrey>
+ <20230815125146.GA1508930@mit.edu>
+ <ZNt11WbPn7LCXPvB@gallifrey>
+ <ZNu668KGiNcwCSVe@gallifrey>
+ <ZNwm7Mo9yv7uIkno@gallifrey>
+ <324fc71c-dead-4418-af81-6817e1f41c39@kernel.dk>
+ <ZNzg1/zhxYV2EkBX@gallifrey>
+ <ZNzl2Sq9UJ3FiTgV@gallifrey>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Iq+/xu6Yd8z1UumD"
 Content-Disposition: inline
-In-Reply-To: <87edjn2sj0.fsf@meer.lwn.net>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+In-Reply-To: <ZNzl2Sq9UJ3FiTgV@gallifrey>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,89 +84,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07:41-20230828, Jonathan Corbet wrote:
-> Nishanth Menon <nm@ti.com> writes:
-> 
-> > Hi Jon,
-> >
-> > On 16:46-20230825, Jonathan Corbet wrote:
-> 
-> >> So it would sure be nice for the changelog to say what this actually
-> >> does.
-> >
-> > All this does is to bring in a better rendered documentation when
-> > published in html format.
-> > https://youtu.be/ItjdVa59jjE shows how the "copy-paste" functionality is
-> > improved.
-> 
-> Youtube references aren't a great way to explain the value of a patch;
-> you'll find that maintainers will, in general, lack the time or
-> inclination to follow them up.  The patch should explain itself.
-> 
-> >> This appears to add a build dependency for the docs; we can't just add
-> >> that without updating the documentation, adjusting
-> >> scripts/sphinx-pre-install, and so on.
-> >
-> > I had checked scripts/shinx-pre-install and that picks up
-> > Documentation/sphinx/requirements.txt and installs the dependencies
-> > from there using pip. Am I missing something?
-> >
-> > Same thing with Documentation/doc-guide/sphinx.rst
-> >
-> > Am I missing something?
-> 
-> That works, I guess, but doesn't change the fact that you have added
-> another docs build dependency.  That will, among other things, break the
-> build for anybody who is set up to do it now until they install your new
-> package.  That's not something we want to do without good reason.
 
-True, and fair enough.
+--Iq+/xu6Yd8z1UumD
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> >> But, beyond that, this extension goes entirely counter to the idea that
-> >> the plain-text files are the primary form of documentation; it adds
-> >> clutter and makes those files less readable.  We can do that when the
-> >
-> > Are you sure this is going against the readable text documentation? If
-> > anything it reduces the clutter and allows the text doc to be
-> > copy-paste-able as well.
-> >
-> > https://lore.kernel.org/all/20230824182107.3702766-3-nm@ti.com/
-> >
-> > As you see from the diffstat:
-> >  1 file changed, 10 insertions(+), 10 deletions(-)
-> >
-> > Nothing extra added. What kind of clutter are you suggesting we added
-> > with the change?
-> >
-> > prompt:: bash $ is clearly readable that this is prompt documentation
-> > in fact, dropping the "$" in the example logs, one can easily copy paste
-> > the documentation from rst files as well.
-> 
-> .. prompt:: is clutter.  It also adds a bit of extra cognitive load to
-> reading that part of the documentation.
+On Wed, Aug 16, 2023 at 03:06:01PM +0000, Dr. David Alan Gilbert wrote:
+> > > Can you try and pull in:
+> > >=20
+> > > https://git.kernel.dk/cgit/linux/commit/?h=3Dblock-6.5&id=3D5ff3213a5=
+387e076af2b87f796f94b36965e8c3a
+> > >=20
+> > > and see if that helps?
+> >=20
+> > <testing....>
+>=20
+> Yes it seems to fix it - thanks!
+>=20
 
-It is no additional cognitive load from what is already there:
+#regzbot fix: 5ff3213a5387e076af2b87f796f94b36965e8c3a
 
--.. code-block:: bash
-+.. prompt:: bash $
+Yet, I don't see that fix commit on v6.5 release...
 
-> 
-> Quick copy-paste of multiple lines of privileged shell commands has
-> never really been a requirement for the kernel docs; why do we need that
-> so badly?
+--=20
+An old man doll... just what I always wanted! - Clara
 
-Just hated people who read online documentation from having to spend
-extra few seconds in copy pasting and then realizing oops "$" came along
-with it.
+--Iq+/xu6Yd8z1UumD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> I appreciate attempts to improve our documentation, and hope that you
-> will continue to do so.  I am far from convinced, though, that this
-> change clears the bar for mainline inclusion.
+-----BEGIN PGP SIGNATURE-----
 
-:) OK - I tried.. Thanks for explaining (though I disagree).
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZOymrgAKCRD2uYlJVVFO
+oxazAP9NpxTwVV8bQ0KBj16fxHi9bhqrOUF6EQpBC5d/SRa/4gD+LVhHGbh71kaq
+grxoLg4y8ejZXf4+uKYHP3w7avGIJAU=
+=yJub
+-----END PGP SIGNATURE-----
+
+--Iq+/xu6Yd8z1UumD--
