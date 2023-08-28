@@ -2,186 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4C978B7E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385A778B7F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 21:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbjH1TMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 15:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
+        id S233302AbjH1TO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 15:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233382AbjH1TME (ORCPT
+        with ESMTP id S230325AbjH1TO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 15:12:04 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02AFCD7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:11:38 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so464509766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:11:38 -0700 (PDT)
+        Mon, 28 Aug 2023 15:14:27 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DD0107
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:14:24 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-44d4c3fa5beso1629099137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 12:14:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693249897; x=1693854697;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bJpk0152nUK7MAn+YHkTbH/h73b7L0QzmLeU7H8QQVw=;
-        b=BMHlkVU7vOt8RhnhlNEUEQzhKuwUno5YJ5C8yTDb2SMAZ4ImaLh9xAQMSudCjWyjCU
-         nErdsiSar1QqN3KvJmtYDNs/19kXyCbx5kqTHC5RkkeBlxMrJ2IyF6IQ3qmswiKKgPPV
-         Mg9LpGGGeS6Eb87m4ewNlPtmQ6LLCjPzzn8hSdtD65Z2G40Lbz8OYzgIJUujZESPkxJ1
-         xwgxm0GoX5wBkKUhYh/fIz1gwNRK9NKHtwAFNMPvE2IqGxXycGUg+ysfJSiS6kOGEVon
-         KeF3Tad1LzUerju5/ZtCnGjKQ9VICYuE7+P16eL6+buPA827pUrPBAnxiQ9J1S4wAiLT
-         2AZg==
+        d=linaro.org; s=google; t=1693250063; x=1693854863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5i2oWpj9kBxGjCY/ZwiCBlJI8DBRhtSWorciWqT5HqU=;
+        b=uen6ji+OWx/bIrx2zFM/2no/qs04Ie3pi/Gp54ouJfwDMnwmwBt9LDp6Cl7buyiR1m
+         nfHCyNr3cZjBvNjoVaHwNVvOkSZuGANPer/LD7i++Q5V1ZVlveVKFsULnQRqQSZd3H7m
+         1vjM8PZdn2zE0qRVavDWGRDu3TR8GkuPZDC81MR8Kuv7Bnmti/W63qMckhFdrs7At5DB
+         tlcki41Vy+XqsqpcpmtOgu/Y6UQfd6grhDbAOLyX7Wb6qMy4Ax5DsT/jZOFB/W1I2v3k
+         Qza6fAaLt+qbeQg90KmZUVpQcf64D4usbe9AZQhumu+SuIIS2vEwWrE+vaV+S9fVedKA
+         0B6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693249897; x=1693854697;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bJpk0152nUK7MAn+YHkTbH/h73b7L0QzmLeU7H8QQVw=;
-        b=C1jmNEmm7EZZJAwBovVMdvryq8DS/xZyqn4DUmHz/RaSE/E3ZYldXDiCYRFa18O8GP
-         Ep0igF0wyIsQVL328IfjfQjs1Yu3RPfdkDm3Qz+BCCWGqqk5p6yaGut2iic0mbDZcOXS
-         WWu3oaeO60R1YYX6VOTOOWT4QXgsUCJE8imMNVrCnuWcfzy1QsE5lYn6bkDhoNGYnW6b
-         qvB+I2Xw3BJXZxYzbd7VLFQ59hBEVPH4Biu0MgrDDryUgvA4rjm5OsYP3Fjzrl/EE96F
-         146b/RPpZ8K9wZhrFF0ne4jm2cUcR96/3d7o7/NRf91iZWQ+Pw6mKu8jYd0st9zuJ8is
-         oNvA==
-X-Gm-Message-State: AOJu0YwISil0Xs9Kto79jmx2IFHGjKQGfpIJFNBYeRedw6VoWAyyuHO6
-        PrmY6b+zwAdT5clniebYrkd8vQ==
-X-Google-Smtp-Source: AGHT+IFAlLZZ7/DQKN9k+MBu0E+BaiPGpFYDLSfsZbH5elEegq7maUi4CQhGqVXz5H6zpB+iEWMoug==
-X-Received: by 2002:a17:907:770f:b0:9a5:7759:19c0 with SMTP id kw15-20020a170907770f00b009a5775919c0mr6873428ejc.64.1693249897414;
-        Mon, 28 Aug 2023 12:11:37 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.225])
-        by smtp.gmail.com with ESMTPSA id l21-20020a1709061c5500b009882e53a42csm4947462ejg.81.2023.08.28.12.11.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 12:11:36 -0700 (PDT)
-Message-ID: <465e61a0-895d-54b9-d1b9-424265c82855@linaro.org>
-Date:   Mon, 28 Aug 2023 21:11:35 +0200
+        d=1e100.net; s=20221208; t=1693250063; x=1693854863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5i2oWpj9kBxGjCY/ZwiCBlJI8DBRhtSWorciWqT5HqU=;
+        b=DYo63T7rJi6YmoP2d2TEu64fdoCcIGE5Lgjm7CrGfSLM5H0mFKvAymBC85VZC6Jvt9
+         tcLhG9RtwVlNBZQLdH4EvANf75gLx441oFuK1usMk+JPCu24XePtHe4aTjFSHs0+gq4S
+         4CPTNXNtObbdDo32DjyU4VOmPPR6f3kgy8GNQx9Xl6y9Je1+lroVnMHK24iun53D7Xk5
+         n/U4ZTq9TxZWKfgpEP25RuK2eP4n8KB5EmaGFEcMyvXVsvpq6K2M5mg9IiaLRQe8I9Di
+         9oXd2p4wUUplen01pohhYQF9WuzXd8LGJb40z4YcuCSKhEjAsUJ13EV+ThyZGWZUaKB8
+         54cQ==
+X-Gm-Message-State: AOJu0YwylXyJG4ExrSFkbMqgxJLe1G8DGXhVwTqcoKaY2MTrlWwo1TP1
+        BUtnfVGz+KEa/2oJF5GDnDcIkbfg5ln0PtxQL082lg==
+X-Google-Smtp-Source: AGHT+IEfXXHa3lCNPEsTc3Y8D1f67cPvT9LaD5aRJnvpzigo76x8yh2eeD+5vojZrghNgbGuX9r4l6sBrzpKHbTEr2g=
+X-Received: by 2002:a05:6102:284f:b0:44d:3bc0:f1bc with SMTP id
+ az15-20020a056102284f00b0044d3bc0f1bcmr23319060vsb.18.1693250063582; Mon, 28
+ Aug 2023 12:14:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
-To:     Shenwei Wang <shenwei.wang@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "imx@lists.linux.dev" <imx@lists.linux.dev>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
- <CAPDyKFqsn6kVjPFUdVyRxNDiOaHO9hq=9c+6eAK4N-v-LVWUPw@mail.gmail.com>
- <PAXPR04MB91858254554272C90822FED1891DA@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <CAPDyKFoV2Z=-WUiF3SgXqhF+K+r5QqsLgz8_hau0WKfZxTzYpg@mail.gmail.com>
- <PAXPR04MB9185F6AA20B0440B8FAB847789E3A@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <4e2c18e3-b1ed-6361-3998-5de060d2bcf0@linaro.org>
- <PAXPR04MB9185957B729588D3E7CA3A5089E0A@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <51fe3126-16ba-ade6-b106-e3683f96ad26@linaro.org>
- <PAXPR04MB9185DC79721E78E631F9889589E0A@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <154b36de-652b-3931-96e6-04e99253a09f@linaro.org>
- <PAXPR04MB91852AD4E5242306B57A910B89E0A@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <f3e89479-14ab-d1d0-ad87-6f457f313c39@linaro.org>
- <PAXPR04MB9185D87525AA88A8C3543EEA89E0A@PAXPR04MB9185.eurprd04.prod.outlook.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <PAXPR04MB9185D87525AA88A8C3543EEA89E0A@PAXPR04MB9185.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230828101157.383363777@linuxfoundation.org>
+In-Reply-To: <20230828101157.383363777@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Aug 2023 00:44:12 +0530
+Message-ID: <CA+G9fYvWMNgayO149P9Pk9JSDHOjzqmv8RSaxDy=19AkYvp7pw@mail.gmail.com>
+Subject: Re: [PATCH 6.4 000/129] 6.4.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 21:09, Shenwei Wang wrote:
-> 
-> 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Monday, August 28, 2023 1:53 PM
->> To: Shenwei Wang <shenwei.wang@nxp.com>; Ulf Hansson
->> <ulf.hansson@linaro.org>
->> Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
->> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
->> Liam Girdwood <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>;
->> imx@lists.linux.dev; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
->> dl-linux-imx <linux-imx@nxp.com>
->> Subject: [EXT] Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
->>>>>>>>> Are you suggesting to move the regulator-pd to the imx directory
->>>>>>>>> and add a company prefix to the compatible string?
->>>>>>>>
->>>>>>>> There is no such part of iMX processor as such
->>>>>>>> regulator-power-domain, so I don't recommend that approach. DTS
->>>>>>>> nodes represent hardware, not your SW layers.
->>>>>>>>
->>>>>>>
->>>>>>> That's not always the case, as we do sometimes need a virtual device.
->>>>>>> As an example, the "regulator-fixed" acts as a software
->>>>>>> abstraction layer to create virtual regulator devices by
->>>>>>> interfacing with the underlying
->>>>>> GPIO drivers.
->>>>>>
->>>>>> Not true. This is a real regulator device. Real hardware on the board.
->>>>>> You can even see and touch it.
->>>>>>
->>>>>
->>>>> The physical hardware component is the GPIO pin, which is what you
->>>>> can only
->>>> touch.
->>>>
->>>> No. The regulator is the chip.
->>>>
->>>
->>> In the definition of dts node below, where is the chip? The real hardware is just
->> a GPIO Pin.
->>>     reg1: regulator-1 {
->>>       compatible = "regulator-fixed";
->>>       regulator-name = "REG1";
->>>       regulator-min-microvolt = <3000000>;
->>>       regulator-max-microvolt = <3000000>;
->>>       gpio = <&lsio_gpio4 19 GPIO_ACTIVE_HIGH>;
->>>       enable-active-high;
->>>     };
->>
->> There is a chip. This is the chip. If you have there only GPIO pin, then your DTS is
->> just wrong. Drop it. If you learn from wrong DTS, then sure, power-domain-
->> regulator seems like great idea...
->>
-> 
-> When you talk about the chip, can you please be more specific?
-
-What to say more? The device node you quoted above is the regulator. You
-brought specific example and now claim this is not a regulator, but just
-GPIO. Please fix your DTS.
-
-> 
-> Regarding the dts node, how about the example in the fixed-regulator.yaml under the bindings directory.
-
-That's an example, how is it related to anything?
-
-> 
->     reg_1v8: regulator-1v8 {
->       compatible = "regulator-fixed";
->       regulator-name = "1v8";
->       regulator-min-microvolt = <1800000>;
->       regulator-max-microvolt = <1800000>;
->       gpio = <&gpio1 16 0>;
->       startup-delay-us = <70000>;
->       enable-active-high;
->       regulator-boot-on;
->       gpio-open-drain;
->       vin-supply = <&parent_reg>;
->     };
-> 
-> If you take a look at the fixed regulator driver (fixed.c), I don't think you'll find anything related to a hardware 
-> component (chip) other than the GPIO Pin.
-
-That's a driver. How is it related to this discussion? Bindings are not
-about drivers.
+On Mon, 28 Aug 2023 at 15:47, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.4.13 release.
+> There are 129 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.4.13-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
-Best regards,
-Krzysztof
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 6.4.13-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.4.y
+* git commit: 8c2717f278c54f64673603d8157130144141d4c7
+* git describe: v6.4.12-130-g8c2717f278c5
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.1=
+2-130-g8c2717f278c5
+
+## Test Regressions (compared to v6.4.12)
+
+## Metric Regressions (compared to v6.4.12)
+
+## Test Fixes (compared to v6.4.12)
+
+## Metric Fixes (compared to v6.4.12)
+
+## Test result summary
+total: 157320, pass: 136320, fail: 1847, skip: 18983, xfail: 170
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 141 total, 139 passed, 2 failed
+* arm64: 53 total, 50 passed, 3 failed
+* i386: 41 total, 39 passed, 2 failed
+* mips: 29 total, 27 passed, 2 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 34 passed, 2 failed
+* riscv: 26 total, 23 passed, 3 failed
+* s390: 16 total, 14 passed, 2 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 44 total, 40 passed, 4 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
