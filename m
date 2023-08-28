@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC6F78A863
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C6578A867
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbjH1I6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        id S229705AbjH1I7V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Aug 2023 04:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjH1I6X (ORCPT
+        with ESMTP id S229851AbjH1I6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:58:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD4AF3;
-        Mon, 28 Aug 2023 01:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693213100; x=1724749100;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=LD+hCR4+svTbTb5graAPaOfi6+hwkpB7DJZjCWCAi9s=;
-  b=aA4YUymZH1B+rnWYRCdBAeOxZl3/dcUDKGG1GFnc94t5UeQytZkP95rV
-   1QUSpbEfK6v9fXIw70JXrDMJGa5xSCt/JEtU6+3Y3378OUxN8GdyOdcVY
-   QZtJCZsI6bDnA22ab5f8ZIfVYNlRRnTL9mdqtPSYjyhz0nX+Fz1HNIMOk
-   Fh9VWheDmGP83Pz7DkfF6dRrI10lXqvfdIMHe3h+GPWj2Gix2SQnOUS+j
-   XBpEMtipY/1DUk+hpSVFwfWNIoTyqXGO7MjTpG1GWzVRlOraPF1RoUQrC
-   k3JL6GN0n+dSY21+ax1IOo7d5QXUPmj4ZAZgRZpA6LPRsyL4uN+rWefUi
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="461424401"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="461424401"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 01:58:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="741311029"
-X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
-   d="scan'208";a="741311029"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 01:58:18 -0700
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-        by kekkonen.fi.intel.com (Postfix) with ESMTP id 0230311F871;
-        Mon, 28 Aug 2023 11:58:15 +0300 (EEST)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
-        (envelope-from <sakari.ailus@linux.intel.com>)
-        id 1qaY3s-00GPmN-0I;
-        Mon, 28 Aug 2023 11:57:28 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-media@vger.kernel.org
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wentong Wu <wentong.wu@intel.com>
-Subject: [PATCH 1/1] media: ivsc: Depend on VIDEO_DEV
-Date:   Mon, 28 Aug 2023 11:57:18 +0300
-Message-Id: <20230828085718.3912335-1-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 28 Aug 2023 04:58:48 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00C3102;
+        Mon, 28 Aug 2023 01:58:45 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-57328758a72so828336eaf.1;
+        Mon, 28 Aug 2023 01:58:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693213125; x=1693817925;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g3FZcTZH37FUS4WWZ6lFpJNi4D7JTyraivRiz2TeBYU=;
+        b=U1ipCtiNFyWzWpBocewkjMS3ZFazqtgVu3IcByP4H9gWeqPXtCD1dHNWMJtSqXXDKT
+         IYrxc9FCyauNT0jyt8BV1n8o9GqgnU8hGJK5xEDPtDCiqZxGckk7k6DsCc9DAb6I397h
+         Jql5oVNR3PKKTGvfJ6pe/F8cv/OTDvR4L+EFVff4UURbyKdIVwZO8ZbVVIqZSxGL/BaX
+         Qzkw5uPJ+vRnOlHd+Ks0z80tKClDl6+rSF15D0NShrBvh+jV4FNf+xCzzem3/igx4b3u
+         vTefdAN6z/PEyjAHWYzBrZ+p/zXvRS1XCkceKA9GWd731uAr62AmIGUyb3BQT8pYkEDY
+         FeGg==
+X-Gm-Message-State: AOJu0YzDEeTfftdiYwYMdBbraGNh3xdLLox8z7BlX8y3j5ONvAlPKlrG
+        WDTuFjl0Jqrvrsrny0LQoHgGSw3jqG9gnQ9jJlo=
+X-Google-Smtp-Source: AGHT+IE8sxryy1AJOeaiDLv29IhQTJIUO6CF9gxlFEOQ8Jnp8t4887JIJavWAtb+nBh00Y3kU4BtKeDE0l7/d49Q8gI=
+X-Received: by 2002:a4a:d137:0:b0:571:1906:47f0 with SMTP id
+ n23-20020a4ad137000000b00571190647f0mr13319897oor.1.1693213125014; Mon, 28
+ Aug 2023 01:58:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230826095836.1138608-1-liaochang1@huawei.com>
+ <20230828072347.ly23mbptu3yw4zkv@vireshk-i7> <bcac1b3c-a2f7-7f18-4c2f-5cf27f4e89b5@huawei.com>
+ <20230828085248.sz6aljr5aln7j435@vireshk-i7>
+In-Reply-To: <20230828085248.sz6aljr5aln7j435@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 28 Aug 2023 10:58:30 +0200
+Message-ID: <CAJZ5v0iGikZ=JSA5Nyx5Dc4QunSC5BObNO5yzQh44UYjrtRKYg@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: Fix the race condition while updating the
+ transition_task of policy
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Liao, Chang" <liaochang1@huawei.com>, rafael@kernel.org,
+        srivatsa.bhat@linux.vnet.ibm.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONFIG_VIDEO_DEV is required by other selected symbols. Depend on it.
+On Mon, Aug 28, 2023 at 10:52 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 28-08-23, 16:29, Liao, Chang wrote:
+> > Task B does not necessarily go to sleep when it calls wait_event(), it depends on
+> > the condition to wait for evaluate false or not. So there is a small race window
+> > where Task A already set 'transition_ongoing' to false and Task B can cross wait_event()
+> > immediately.
+> >
+> > wait_event:
+> > do {
+> >       might_sleep();
+> >       if (condition) // !transition_ongoing
+> >               break;
+> >       __wait_event();
+> > };
+> >
+> > I hope I do not miss something important in the code above.
+>
+> > Yes, if the CPU uses weak memroy model, it is possible for the instructions to be reordered.
+> > therefore, it is a good idea to insert an smb() between these two lines if there is race here.
+>
+> Maybe it would be better to do this instead ?
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 6b52ebe5a890..f11b01b25e8d 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -455,8 +455,10 @@ void cpufreq_freq_transition_end(struct cpufreq_policy *policy,
+>                             policy->cur,
+>                             policy->cpuinfo.max_freq);
+>
+> +       spin_lock(&policy->transition_lock);
+>         policy->transition_ongoing = false;
+>         policy->transition_task = NULL;
+> +       spin_unlock(&policy->transition_lock);
+>
+>         wake_up(&policy->transition_wait);
+>  }
+>
+> --
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Fixes: 29006e196a56 ("media: pci: intel: ivsc: Add CSI submodule")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
- drivers/media/pci/intel/ivsc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I was about to suggest the same thing.
 
-diff --git a/drivers/media/pci/intel/ivsc/Kconfig b/drivers/media/pci/intel/ivsc/Kconfig
-index e9ecd0bd99bd..0acea4678fc0 100644
---- a/drivers/media/pci/intel/ivsc/Kconfig
-+++ b/drivers/media/pci/intel/ivsc/Kconfig
-@@ -3,7 +3,7 @@
- 
- config INTEL_VSC
- 	tristate "Intel Visual Sensing Controller"
--	depends on INTEL_MEI && ACPI
-+	depends on INTEL_MEI && ACPI && VIDEO_DEV
- 	select MEDIA_CONTROLLER
- 	select VIDEO_V4L2_SUBDEV_API
- 	select V4L2_ASYNC
--- 
-2.39.2
-
+wake_up() is a full memory barrier only if it actually wakes up a task
+and if it doesn't do that, without the locking the other task may see
+a state in which transition_ongoing is false already and
+transition_task is still NULL regardless of the relative ordering of
+the statements before the wake_up() call.
