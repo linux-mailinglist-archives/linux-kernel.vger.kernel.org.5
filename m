@@ -2,154 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B85F378A562
+	by mail.lfdr.de (Postfix) with ESMTP id 252B378A560
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 07:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjH1FxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 01:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        id S229567AbjH1FxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 01:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjH1Fwm (ORCPT
+        with ESMTP id S229470AbjH1Fwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 01:52:42 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1EE3EAA;
-        Sun, 27 Aug 2023 22:52:37 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37S5pn5rB024725, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37S5pn5rB024725
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Aug 2023 13:51:49 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 28 Aug 2023 13:52:14 +0800
-Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 28 Aug 2023 13:52:13 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
- 15.1.2375.32 via Frontend Transport; Mon, 28 Aug 2023 13:52:13 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 RESEND 2/2] dt-bindings: usb: dwc3: Add DWC_usb3 TX/RX threshold configurable
-Date:   Mon, 28 Aug 2023 13:52:06 +0800
-Message-ID: <20230828055212.5600-2-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230828055212.5600-1-stanley_chang@realtek.com>
-References: <20230828055212.5600-1-stanley_chang@realtek.com>
+        Mon, 28 Aug 2023 01:52:46 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE8EA9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Aug 2023 22:52:44 -0700 (PDT)
+Received: from nazgul.tnic (dynamic-046-114-154-102.46.114.pool.telefonica.de [46.114.154.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A70331EC00F4;
+        Mon, 28 Aug 2023 07:52:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1693201963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:references;
+        bh=j/Qx+36eU7KYfClJp570PFFK/VGOpisKllJLzShFeIM=;
+        b=IKljQRpAkfC8ZUF5NRTXc+UHJ/Wgd9Ghk5noCn2TNSsu5zyFiqr7v5e43AuvZsW5g5/3Tp
+        N55poMH84Tn9EW39JwkX0v2HFswbe9RVdFRxDFiESdN7uKY3pw3j2OLWFfQpvrLSSL/EI7
+        /K16YQ0yTeOpw9EA0bWpZjZbxKf6bBU=
+Date:   Mon, 28 Aug 2023 07:52:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] ras/core for v6.6-rc1
+Message-ID: <20230828055239.GCZOw2J+mTIHZIDkQ/@fat_crate.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXDAG01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In Synopsys's dwc3 data book:
-To avoid underrun and overrun during the burst, in a high-latency bus
-system (like USB), threshold and burst size control is provided through
-GTXTHRCFG and GRXTHRCFG registers.
-By default, USB TX and RX threshold are not enabled. To enable
-TX or RX threshold, both packet threshold count and max burst size
-properties must be set to a valid non-zero value.
+Hi Linus,
 
-In Realtek DHC SoC, DWC3 USB 3.0 uses AHB system bus. When dwc3 is
-connected with USB 2.5G Ethernet, there will be overrun problem.
-Therefore, setting TX/RX thresholds can avoid this issue.
+please pull some RAS updates for 6.6.
 
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
+Thx.
+
 ---
-v1 to v2 change:
-    Add the properties for TX/RX threshold setting
----
- .../devicetree/bindings/usb/snps,dwc3.yaml    | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index a696f23730d3..ee5af4b381b1 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -310,6 +310,62 @@ properties:
-     maximum: 62
-     deprecated: true
- 
-+  snps,rx-thr-num-pkt:
-+    description:
-+      USB RX packet threshold count. In host mode, this field specifies
-+      the space that must be available in the RX FIFO before the core can
-+      start the corresponding USB RX transaction (burst).
-+      In device mode, this field specifies the space that must be
-+      available in the RX FIFO before the core can send ERDY for a
-+      flow-controlled endpoint. It is only used for SuperSpeed.
-+      The valid values for this field are from 1 to 15. (DWC3 SuperSpeed
-+      USB 3.0 Controller Databook)
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    minimum: 1
-+    maximum: 15
-+
-+  snps,rx-max-burst:
-+    description:
-+      Max USB RX burst size. In host mode, this field specifies the
-+      Maximum Bulk IN burst the DWC_usb3 core can perform. When the system
-+      bus is slower than the USB, RX FIFO can overrun during a long burst.
-+      You can program a smaller value to this field to limit the RX burst
-+      size that the core can perform. It only applies to SS Bulk,
-+      Isochronous, and Interrupt IN endpoints in the host mode.
-+      In device mode, this field specifies the NUMP value that is sent in
-+      ERDY for an OUT endpoint.
-+      The valid values for this field are from 1 to 16. (DWC3 SuperSpeed
-+      USB 3.0 Controller Databook)
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    minimum: 1
-+    maximum: 16
-+
-+  snps,tx-thr-num-pkt:
-+    description:
-+      USB TX packet threshold count. This field specifies the number of
-+      packets that must be in the TXFIFO before the core can start
-+      transmission for the corresponding USB transaction (burst).
-+      This count is valid in both host and device modes. It is only used
-+      for SuperSpeed operation.
-+      Valid values are from 1 to 15. (DWC3 SuperSpeed USB 3.0 Controller
-+      Databook)
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    minimum: 1
-+    maximum: 15
-+
-+  snps,tx-max-burst:
-+    description:
-+      Max USB TX burst size. When the system bus is slower than the USB,
-+      TX FIFO can underrun during a long burst. Program a smaller value
-+      to this field to limit the TX burst size that the core can execute.
-+      In Host mode, it only applies to SS Bulk, Isochronous, and Interrupt
-+      OUT endpoints. This value is not used in device mode.
-+      Valid values are from 1 to 16. (DWC3 SuperSpeed USB 3.0 Controller
-+      Databook)
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    minimum: 1
-+    maximum: 16
-+
-   snps,rx-thr-num-pkt-prd:
-     description:
-       Periodic ESS RX packet threshold count (host mode only). Set this and
+The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
+
+  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/ras_core_for_v6.6_rc1
+
+for you to fetch changes up to 4240e2ebe67941ce2c4f5c866c3af4b5ac7a0c67:
+
+  x86/MCE: Always save CS register on AMD Zen IF Poison errors (2023-08-18 13:05:52 +0200)
+
+----------------------------------------------------------------
+- Add a quirk for AMD Zen machines where Instruction Fetch unit poison
+  consumption MCEs are not delivered synchronously but still within the
+  same context, which can lead to erroneously increased error severity
+  and unneeded kernel panics
+
+- Do not log errors caught by polling shared MCA banks as they
+  materialize as duplicated error records otherwise
+
+----------------------------------------------------------------
+Borislav Petkov (AMD) (1):
+      x86/mce: Prevent duplicate error records
+
+Yazen Ghannam (1):
+      x86/MCE: Always save CS register on AMD Zen IF Poison errors
+
+ arch/x86/kernel/cpu/mce/core.c     | 35 ++++++++++++++++++++++++++++++++++-
+ arch/x86/kernel/cpu/mce/intel.c    | 19 ++++++++++++++++++-
+ arch/x86/kernel/cpu/mce/internal.h |  6 +++++-
+ 3 files changed, 57 insertions(+), 3 deletions(-)
+
 -- 
-2.34.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
