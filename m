@@ -2,234 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB9A78A777
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA59878A776
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 10:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjH1ISY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 04:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
+        id S229635AbjH1ISV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 04:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjH1ISD (ORCPT
+        with ESMTP id S229833AbjH1IRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:18:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956251A6;
-        Mon, 28 Aug 2023 01:17:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 28 Aug 2023 04:17:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566B812F
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 01:17:33 -0700 (PDT)
+Received: from eldfell (unknown [194.136.85.206])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FE8D633BD;
-        Mon, 28 Aug 2023 08:17:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96CEDC433C7;
-        Mon, 28 Aug 2023 08:17:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693210654;
-        bh=qBWd+q0agMWBA8SxQUSyoQNGqIS2NvJEdeZcW4X58/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nJFZkjuLooSQvl/kgsH1ZkpLmIIss/WI+uoGjtqSrIOItxcM2Sht5rRE+hu5smAlP
-         Fyq9S4oyFjU4PokoNAr5OxWM3CeaS08mL7HXStL5D7PZ6ITylcbU/jVLgTZwYTyfqv
-         PGiWdHjAs4B1/xbXjYv8rleVmly596b3adDXZerFTBln+dFHz8SiXXIWz8LLgdzltu
-         mb/vkRJ3ryOeMk3X55cDbl2vmVIVDrqvR7OcwimAGD5O1G3/tBWFo4NKD/0XuS2Hti
-         EsLnFCWqjGoGbSlc3BpbQGZgvoyyYPPsvrU6nu1L20P1v5sC4fapSFIOOdl1DMc+Wo
-         pPhARmXvybT9Q==
-Date:   Mon, 28 Aug 2023 13:47:19 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Subject: Re: [PATCH V5 5/6] scsi: ufs: qcom: Refactor ufs_qcom_cfg_timers
- function.
-Message-ID: <20230828081719.GG5148@thinkpad>
-References: <20230823154413.23788-1-quic_nitirawa@quicinc.com>
- <20230823154413.23788-6-quic_nitirawa@quicinc.com>
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D8A4D6607186;
+        Mon, 28 Aug 2023 09:17:30 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693210651;
+        bh=YqYrAuwzzT/TiXwKqKHNdIIpO6SpQrE3yd13FQS/DQE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Od1IcWa9lnjarY8OMB2cqA0NK5lY9zVmXAHth5GZw3yUKa2ZdUcKAPpnj2JRTW4GK
+         C3GvynFgKmsz4DD1tU4ljzBAfzzEzd5nqbZhrPG0F3a0xj257bm50dYYTU3yXdeap7
+         1058D5VjVkwWH3p6uvaYSs3p65yE3AmZzMzZ3s1060l5vMPv5Ell92Ob5u+iL6T/iI
+         rwaMLP+Isw3KmhZ3d+1u0yKeZdYE0V2rlGjhfexs4bwEt3arlq89NC26gQsfubkTap
+         Acn5aSxrP2srk+kIJeKZx6PYipC2To0xlh6ODKymIeTeOHzGYfku07mXTWMG9WFX0u
+         819lQof5x8+ZA==
+Date:   Mon, 28 Aug 2023 11:17:26 +0300
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Melissa Wen <mwen@igalia.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 19/34] drm/amd/display: decouple steps for mapping
+ CRTC degamma to DC plane
+Message-ID: <20230828111726.0a39b73b.pekka.paalanen@collabora.com>
+In-Reply-To: <20230825142944.3jkibtz54f4utwuq@mail.igalia.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+        <20230810160314.48225-20-mwen@igalia.com>
+        <20230822151110.3107b745.pekka.paalanen@collabora.com>
+        <20230825142944.3jkibtz54f4utwuq@mail.igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230823154413.23788-6-quic_nitirawa@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/pLf1Uv8dW0QLbmh=jdWeWBa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:14:12PM +0530, Nitin Rawat wrote:
-> This change configures SYS1CLK_1US_REG for pre scale up condition. Also
-> move ufs_qcom_cfg_timers from clk scaling post change ops to clk scaling
-> pre change ops to align with the hardware specification.
-> 
+--Sig_/pLf1Uv8dW0QLbmh=jdWeWBa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Same comment as previous patch. This looks like a bug fix to me.
+On Fri, 25 Aug 2023 13:29:44 -0100
+Melissa Wen <mwen@igalia.com> wrote:
 
-Also, this patch should be splitted into 2. SYS1CLK_1US_REG and
-ufs_qcom_cfg_timers change.
+> On 08/22, Pekka Paalanen wrote:
+> > On Thu, 10 Aug 2023 15:02:59 -0100
+> > Melissa Wen <mwen@igalia.com> wrote:
+> >  =20
+> > > The next patch adds pre-blending degamma to AMD color mgmt pipeline, =
+but
+> > > pre-blending degamma caps (DPP) is currently in use to provide DRM CR=
+TC
+> > > atomic degamma or implict degamma on legacy gamma. Detach degamma usa=
+ge
+> > > regarging CRTC color properties to manage plane and CRTC color
+> > > correction combinations.
+> > >=20
+> > > Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+> > > Signed-off-by: Melissa Wen <mwen@igalia.com>
+> > > ---
+> > >  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 59 +++++++++++++----=
+--
+> > >  1 file changed, 41 insertions(+), 18 deletions(-)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c =
+b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> > > index 68e9f2c62f2e..74eb02655d96 100644
+> > > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> > > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> > > @@ -764,20 +764,9 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_c=
+rtc_state *crtc)
+> > >  	return 0;
+> > >  }
+> > > =20
+> > > -/**
+> > > - * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to D=
+C plane.
+> > > - * @crtc: amdgpu_dm crtc state
+> > > - * @dc_plane_state: target DC surface
+> > > - *
+> > > - * Update the underlying dc_stream_state's input transfer function (=
+ITF) in
+> > > - * preparation for hardware commit. The transfer function used depen=
+ds on
+> > > - * the preparation done on the stream for color management.
+> > > - *
+> > > - * Returns:
+> > > - * 0 on success. -ENOMEM if mem allocation fails.
+> > > - */
+> > > -int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+> > > -				      struct dc_plane_state *dc_plane_state)
+> > > +static int
+> > > +map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
+> > > +			     struct dc_plane_state *dc_plane_state)
+> > >  {
+> > >  	const struct drm_color_lut *degamma_lut;
+> > >  	enum dc_transfer_func_predefined tf =3D TRANSFER_FUNCTION_SRGB;
+> > > @@ -800,8 +789,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_c=
+rtc_state *crtc,
+> > >  						 &degamma_size);
+> > >  		ASSERT(degamma_size =3D=3D MAX_COLOR_LUT_ENTRIES);
+> > > =20
+> > > -		dc_plane_state->in_transfer_func->type =3D
+> > > -			TF_TYPE_DISTRIBUTED_POINTS;
+> > > +		dc_plane_state->in_transfer_func->type =3D TF_TYPE_DISTRIBUTED_POI=
+NTS;
+> > > =20
+> > >  		/*
+> > >  		 * This case isn't fully correct, but also fairly
+> > > @@ -837,7 +825,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_c=
+rtc_state *crtc,
+> > >  				   degamma_lut, degamma_size);
+> > >  		if (r)
+> > >  			return r;
+> > > -	} else if (crtc->cm_is_degamma_srgb) {
+> > > +	} else {
+> > >  		/*
+> > >  		 * For legacy gamma support we need the regamma input
+> > >  		 * in linear space. Assume that the input is sRGB.
+> > > @@ -847,8 +835,43 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_=
+crtc_state *crtc,
+> > > =20
+> > >  		if (tf !=3D TRANSFER_FUNCTION_SRGB &&
+> > >  		    !mod_color_calculate_degamma_params(NULL,
+> > > -			    dc_plane_state->in_transfer_func, NULL, false))
+> > > +							dc_plane_state->in_transfer_func,
+> > > +							NULL, false))
+> > >  			return -ENOMEM;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +/**
+> > > + * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to D=
+C plane.
+> > > + * @crtc: amdgpu_dm crtc state
+> > > + * @dc_plane_state: target DC surface
+> > > + *
+> > > + * Update the underlying dc_stream_state's input transfer function (=
+ITF) in
+> > > + * preparation for hardware commit. The transfer function used depen=
+ds on
+> > > + * the preparation done on the stream for color management.
+> > > + *
+> > > + * Returns:
+> > > + * 0 on success. -ENOMEM if mem allocation fails.
+> > > + */
+> > > +int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+> > > +				      struct dc_plane_state *dc_plane_state)
+> > > +{
+> > > +	bool has_crtc_cm_degamma;
+> > > +	int ret;
+> > > +
+> > > +	has_crtc_cm_degamma =3D (crtc->cm_has_degamma || crtc->cm_is_degamm=
+a_srgb);
+> > > +	if (has_crtc_cm_degamma){
+> > > +		/* AMD HW doesn't have post-blending degamma caps. When DRM
+> > > +		 * CRTC atomic degamma is set, we maps it to DPP degamma block
+> > > +		 * (pre-blending) or, on legacy gamma, we use DPP degamma to
+> > > +		 * linearize (implicit degamma) from sRGB/BT709 according to
+> > > +		 * the input space. =20
+> >=20
+> > Uhh, you can't just move degamma before blending if KMS userspace
+> > wants it after blending. That would be incorrect behaviour. If you
+> > can't implement it correctly, reject it.
+> >=20
+> > I hope that magical unexpected linearization is not done with atomic,
+> > either.
+> >=20
+> > Or maybe this is all a lost cause, and only the new color-op pipeline
+> > UAPI will actually work across drivers. =20
+>=20
+> I agree that crtc degamma is an optional property and should be not
+> exposed if not available.  I did something in this line for DCE that has
+> no degamma block[1].  Then, AMD DDX driver stopped to advertise atomic
+> API for DCE, that was not correct too[2].
 
-- Mani
+Did AMD go through all the trouble of making their Xorg DDX use KMS
+atomic, even after the kernel took it away from X due to modesetting
+DDX screwing it up? I'm surprised, what did that achieve?
 
-> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> ---
->  drivers/ufs/host/ufs-qcom.c | 61 +++++++++++++++++++++++++------------
->  1 file changed, 42 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 491c0173603e..82cf3ac4193a 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -533,7 +533,8 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
->   * Return: zero for success and non-zero in case of a failure.
->   */
->  static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
-> -			       u32 hs, u32 rate, bool update_link_startup_timer)
-> +				 u32 hs, u32 rate, bool link_startup,
-> +				 bool is_pre_scale_up)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->  	struct ufs_clk_info *clki;
-> @@ -564,11 +565,16 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->  	/*
->  	 * The Qunipro controller does not use following registers:
->  	 * SYS1CLK_1US_REG, TX_SYMBOL_CLK_1US_REG, CLK_NS_REG &
-> -	 * UFS_REG_PA_LINK_STARTUP_TIMER
-> -	 * But UTP controller uses SYS1CLK_1US_REG register for Interrupt
-> -	 * Aggregation logic.
-> -	*/
-> -	if (ufs_qcom_cap_qunipro(host) && !ufshcd_is_intr_aggr_allowed(hba))
-> +	 * UFS_REG_PA_LINK_STARTUP_TIMER.
-> +	 * However UTP controller uses SYS1CLK_1US_REG register for Interrupt
-> +	 * Aggregation logic and Auto hibern8 logic.
-> +	 * It is mandatory to write SYS1CLK_1US_REG register on UFS host
-> +	 * controller V4.0.0 onwards.
-> +	 */
-> +	if (ufs_qcom_cap_qunipro(host) &&
-> +	    !(ufshcd_is_intr_aggr_allowed(hba) ||
-> +	    ufshcd_is_auto_hibern8_supported(hba) ||
-> +	    host->hw_ver.major >= 4))
->  		return 0;
-> 
->  	if (gear == 0) {
-> @@ -577,8 +583,14 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->  	}
-> 
->  	list_for_each_entry(clki, &hba->clk_list_head, list) {
-> -		if (!strcmp(clki->name, "core_clk"))
-> -			core_clk_rate = clk_get_rate(clki->clk);
-> +		if (!strcmp(clki->name, "core_clk")) {
-> +			if (is_pre_scale_up)
-> +				core_clk_rate = clki->max_freq;
-> +			else
-> +				core_clk_rate = clk_get_rate(clki->clk);
-> +			break;
-> +		}
-> +
->  	}
-> 
->  	/* If frequency is smaller than 1MHz, set to 1MHz */
-> @@ -658,7 +670,7 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->  		mb();
->  	}
-> 
-> -	if (update_link_startup_timer && host->hw_ver.major != 0x5) {
-> +	if (link_startup && host->hw_ver.major != 0x5) {
->  		ufshcd_writel(hba, ((core_clk_rate / MSEC_PER_SEC) * 100),
->  			      REG_UFS_CFG0);
->  		/*
-> @@ -719,7 +731,7 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
->  	switch (status) {
->  	case PRE_CHANGE:
->  		if (ufs_qcom_cfg_timers(hba, UFS_PWM_G1, SLOWAUTO_MODE,
-> -					0, true)) {
-> +					0, true, false)) {
->  			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
->  				__func__);
->  			return -EINVAL;
-> @@ -968,7 +980,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->  	case POST_CHANGE:
->  		if (ufs_qcom_cfg_timers(hba, dev_req_params->gear_rx,
->  					dev_req_params->pwr_rx,
-> -					dev_req_params->hs_rate, false)) {
-> +					dev_req_params->hs_rate, false, false)) {
->  			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
->  				__func__);
->  			/*
-> @@ -1401,11 +1413,24 @@ static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
->  static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
-> +	int err;
-> 
->  	if (!ufs_qcom_cap_qunipro(host))
-> -		return 0;
-> +		goto out;
-> +
-> +	if (attr) {
-> +		err = ufs_qcom_cfg_timers(hba, attr->gear_rx,
-> +					    attr->pwr_rx, attr->hs_rate,
-> +					    false, true);
-> +		if (err)
-> +			dev_err(hba->dev, "%s ufs cfg timer failed\n",
-> +								__func__);
-> +	}
-> 
-> -	return ufs_qcom_cfg_core_clk_ctrl(hba);
-> +	err = ufs_qcom_cfg_core_clk_ctrl(hba);
-> +out:
-> +	return err;
->  }
-> 
->  static int ufs_qcom_clk_scale_up_post_change(struct ufs_hba *hba)
-> @@ -1441,6 +1466,7 @@ static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
->  static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
->  	struct list_head *head = &hba->clk_list_head;
->  	struct ufs_clk_info *clki;
->  	u32 curr_freq = 0;
-> @@ -1449,6 +1475,9 @@ static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
->  	if (!ufs_qcom_cap_qunipro(host))
->  		return 0;
-> 
-> +	if (attr)
-> +		ufs_qcom_cfg_timers(hba, attr->gear_rx, attr->pwr_rx,
-> +					 attr->hs_rate, false, false);
-> 
->  	list_for_each_entry(clki, head, list) {
->  		if (!IS_ERR_OR_NULL(clki->clk) &&
-> @@ -1480,7 +1509,6 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
->  		bool scale_up, enum ufs_notify_change_status status)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -	struct ufs_pa_layer_attr *dev_req_params = &host->dev_req_params;
->  	int err = 0;
-> 
->  	/* check the host controller state before sending hibern8 cmd */
-> @@ -1510,11 +1538,6 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
->  			return err;
->  		}
-> 
-> -		ufs_qcom_cfg_timers(hba,
-> -				    dev_req_params->gear_rx,
-> -				    dev_req_params->pwr_rx,
-> -				    dev_req_params->hs_rate,
-> -				    false);
->  		ufs_qcom_icc_update_bw(host);
->  		ufshcd_uic_hibern8_exit(hba);
->  	}
-> --
-> 2.17.1
-> 
+I saw that between 5.15 and 6.1 amdgpu stopped advertising CRTC DEGAMMA
+on my card, which seems like the right thing to do if there is no
+hardware for it.
 
--- 
-மணிவண்ணன் சதாசிவம்
+> But I see it as a lost cause that will only be fixed in a new generic
+> color API. I don't think we should change it using the current DRM CRTC
+> API with driver-specific props.
+>=20
+> [1] https://lore.kernel.org/amd-gfx/20221103184500.14450-1-mwen@igalia.co=
+m/
+> [2] https://gitlab.freedesktop.org/xorg/driver/xf86-video-amdgpu/-/issues=
+/67
+
+Oh well.
+
+Is the old CRTC GAMMA property still "safe" to use in that it is
+definitely always after blending?
+
+
+Thanks,
+pq
+
+> > > +		 */
+> > > +		ret =3D map_crtc_degamma_to_dc_plane(crtc, dc_plane_state);
+> > > +		if (ret)
+> > > +			return ret;
+> > >  	} else {
+> > >  		/* ...Otherwise we can just bypass the DGM block. */
+> > >  		dc_plane_state->in_transfer_func->type =3D TF_TYPE_BYPASS; =20
+> >  =20
+
+
+--Sig_/pLf1Uv8dW0QLbmh=jdWeWBa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTsWBYACgkQI1/ltBGq
+qqdGJRAAg+587i/qQ3Naex4GVhDCtSsCn/2pHDErO/ul/7YC6Rh7PK+WXymFnnJh
+IMz9UNg23/4pl7+/Rv+wAZjECInT5NoJtBRjpQgmW5+nxUNoS8IwpYj9xJp8vDk5
+r7oem+9fkzEy+cqeKlGPSLOj8cR3Cq00KSm+UzQju1iWwvK1/ZFEzavSfJroDTvW
+TfWLI9WssaTrNJSPGhllNs6oGneYIXBw9BaVnNO1oJqL0R/clNH2GH7Y9BDh8uQG
+8wP/kXrpbBIWkHQQpuYm1FhqCETk3mi556HgnRZRPA0OWHGil8fyUQiqrmTBys6G
+sEGuuC/TdjqxOvvigaMbVM4j1etNOIXOxFKKgrDZYJTfjSdvdpH5d7S7dAiRLhDY
+6QVTUHYv2Nwr21dff3BkMddhSUfJycZhw0No7QsYekvkItqMklUGLRqUcesnNAMU
+2U0WvQC2R2eXzYS6XsiU1cD8imH99Hn1oLEFtinisXwI9doss9KM12xLGtJ1N+cu
+ZHIpTvosisNlraD1rfNoJTCG3cKY/Qs6aCcM4LJFSnRnVVLrJbd/dpMTUN02H9SF
+LpanZRNzAT7gFeJ0RsQorvWo4KuosV16XRrQa5ASWH9YYiThu2tp9EXMrktUjbJK
+iLRW6rC0tg3WhkcO98kKIHqQFml2xuEKcg3RINMF4gJvcX/LWdE=
+=WhQ9
+-----END PGP SIGNATURE-----
+
+--Sig_/pLf1Uv8dW0QLbmh=jdWeWBa--
