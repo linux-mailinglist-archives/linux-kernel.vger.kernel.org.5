@@ -2,195 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BC878A6B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F2B78A6B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 09:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjH1Hk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 03:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
+        id S229633AbjH1HpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 03:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjH1Hkl (ORCPT
+        with ESMTP id S229810AbjH1HpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:40:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753E410A;
-        Mon, 28 Aug 2023 00:40:39 -0700 (PDT)
+        Mon, 28 Aug 2023 03:45:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E940F3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 00:45:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C33CB60920;
-        Mon, 28 Aug 2023 07:40:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50A7FC433C8;
-        Mon, 28 Aug 2023 07:40:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B61BE62685
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 07:45:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B796FC433C7;
+        Mon, 28 Aug 2023 07:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693208438;
-        bh=m5t4L505tKfUf43Vq98wV5jNYWhSCYc4BDownJimxHU=;
+        s=k20201202; t=1693208711;
+        bh=ATbg9WtubVOPFMmyyOW4OG2w8jjdwGDpnS0+wpl1I8E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HmmZd9HAwUpcSwCBfJjMFJr8Zdt225vXnoEh3vHN8jdelKdZj5LXIO8wEuhmU5s/x
-         lqrdKuY8q0FVC54bUXjv7K7fZclXQpG4JQ5avIa+tccheQZ18QfLJgkkQMghmmgSZ8
-         6wHSEUKEn0Or95SPPCmtfRximuv8FRGQaNmYVb5DhZnovysPuBOP/HLDyKaB4UaSGJ
-         trT29QptvtpFXnsTmvVnBlGM7UZAxuZj1QqlpNDhYcA+AKKHa8WJg2JxVuyOTmzHu1
-         svaeHQBRqNzb6twkUWucGNdifffSHryuQAmpayYF3c9LZLQLGeMSaprqiP8KAM+jpO
-         soPj+RlE6AU8w==
-Date:   Mon, 28 Aug 2023 13:10:23 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Subject: Re: [PATCH V5 2/6] scsi: ufs: qcom: Configure
- PA_VS_CORE_CLK_40NS_CYCLES for Unipro core clk
-Message-ID: <20230828074023.GC5148@thinkpad>
-References: <20230823154413.23788-1-quic_nitirawa@quicinc.com>
- <20230823154413.23788-3-quic_nitirawa@quicinc.com>
+        b=hNNgbRb1QBII60OOY7BUSJLlEKcL4AMVcXm93OwcAUz4vC74CI4Ywg8BPP51yP2+U
+         6p1uWiSiHmvfeg+6VI8Bc5WhAWoIOpQLP8QxyhMNdJkCWDtKKPWVisEQQaGNc2MNj4
+         zz9QFHcpAO3xFro/d93ZcNhjXgtAq/hBMxZ/9j0H6DgHgWUYwn5i8pKg4RvPXx3CjC
+         5prMVBzJDz+fmjnev6yMSmzbr/4gdTfYY1VkqfRlm2SyDZH5jbWkMBxaVj8M9E3G5a
+         XDuBqbs5CazfEQIO262XFqtPgEmeeGWp7o26dmKrZEtESq/XBLB5hDJfPaStcs5Xuz
+         ZZNGeXe8JoPDg==
+Date:   Mon, 28 Aug 2023 09:45:08 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
+Message-ID: <lhd6ai7d6swlxhisjhikytguor7pptrymo3bmfwej4k7zqrnv4@hp2gvhw7mh3m>
+References: <20230804210644.1862287-1-dianders@chromium.org>
+ <20230804140605.RFC.4.I930069a32baab6faf46d6b234f89613b5cec0f14@changeid>
+ <bphkopaq76imqzut7xrx7aprqybhx3veajdympqhig2wqlix6c@64ck23rc5cv7>
+ <CAD=FV=XiVkoCsjin4R74nkcd8vzOq9uPq+o5cRjd=YOoPXuQkg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230823154413.23788-3-quic_nitirawa@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=XiVkoCsjin4R74nkcd8vzOq9uPq+o5cRjd=YOoPXuQkg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:14:09PM +0530, Nitin Rawat wrote:
-> For Qualcomm UFS controller V4.0 and above PA_VS_CORE_CLK_40NS_CYCLES
-> attribute needs to be programmed with frequency of unipro core clk.
-> Hence Configure PA_VS_CORE_CLK_40NS_CYCLES attribute for Unipro core clk.
-> 
+On Fri, Aug 25, 2023 at 02:58:02PM -0700, Doug Anderson wrote:
+> Maxime,
+>=20
+> On Sun, Aug 6, 2023 at 11:41=E2=80=AFPM Maxime Ripard <mripard@kernel.org=
+> wrote:
+> >
+> > Hi Doug,
+> >
+> > Thanks for working on this :)
+> >
+> > On Fri, Aug 04, 2023 at 02:06:07PM -0700, Douglas Anderson wrote:
+> > > The goal of this file is to contain helper functions for panel drivers
+> > > to use. To start off with, let's add drm_panel_helper_shutdown() for
+> > > use by panels that want to make sure they're powered off at
+> > > shutdown/remove time if they happen to be powered on.
+> > >
+> > > The main goal of introducting this function is so that panel drivers
+> > > don't need to track the enabled/prepared state themselves.
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> >
+> > It shouldn't be necessary at all: drivers should call
+> > drm_atomic_helper_shutdown at removal time which will disable the
+> > connector (which in turn should unprepare/disable its panel).
+> >
+> > If either the driver is missing drm_atomic_helper_shutdown, or if the
+> > connector doesn't properly disable the panel, then I would consider that
+> > a bug.
+>=20
+> Hmmm. I'm a bit hesitant here. I guess I'm less worried about the
+> removal time and more worried about the shutdown time.
+>=20
+> For removal I'd be fine with just dropping the call and saying it's
+> the responsibility of the driver to call drm_atomic_helper_shutdown(),
+> as you suggest. I'd tend to believe that removal of DRM drivers is not
+> used anywhere in "production" code (or at least not common) and I
+> think it's super hard to get it right, to unregister and unbind all
+> the DRM components in the right order.
 
-Same comment applies as patch 1.
+It depends on the kind of devices. USB devices are very likely to be
+removed, platform devices very unlikely, and PCIe cards somewhere in the
+middle :)
 
-- Mani
+I'm not sure the likelyhood of the device getting removed has much to do
+with it though, and likely or not, it's definitely something we should
+address and fix if an issue is to be found.
 
-> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> ---
->  drivers/ufs/host/ufs-qcom.c | 45 ++++++++++++++++++++++++++++---------
->  drivers/ufs/host/ufs-qcom.h |  2 ++
->  2 files changed, 37 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 1108b0cd43b3..abc0e7f7d1b0 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -93,8 +93,9 @@ static const struct __ufs_qcom_bw_table {
->  static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
-> 
->  static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
-> -static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
-> -						       u32 clk_cycles);
-> +static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
-> +					u32 clk_cycles,
-> +					u32 clk_40ns_cycles);
-> 
->  static struct ufs_qcom_host *rcdev_to_ufs_host(struct reset_controller_dev *rcd)
->  {
-> @@ -690,8 +691,7 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
->  			 * set unipro core clock cycles to 150 & clear clock
->  			 * divider
->  			 */
-> -			err = ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba,
-> -									  150);
-> +			err = ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
-> 
->  		/*
->  		 * Some UFS devices (and may be host) have issues if LCC is
-> @@ -1296,12 +1296,13 @@ static void ufs_qcom_exit(struct ufs_hba *hba)
->  	phy_exit(host->generic_phy);
->  }
-> 
-> -static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
-> -						       u32 clk_1us_cycles)
-> +static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
-> +					u32 clk_1us_cycles,
-> +					u32 clk_40ns_cycles)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->  	u32 mask = DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK;
-> -	u32 core_clk_ctrl_reg;
-> +	u32 core_clk_ctrl_reg, reg;
->  	u32 offset = 0;
->  	int err;
-> 
-> @@ -1326,9 +1327,33 @@ static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
->  	/* Clear CORE_CLK_DIV_EN */
->  	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
-> 
-> -	return ufshcd_dme_set(hba,
-> +	err = ufshcd_dme_set(hba,
->  			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
->  			    core_clk_ctrl_reg);
-> +	/*
-> +	 * UFS host controller V4.0.0 onwards needs to program
-> +	 * PA_VS_CORE_CLK_40NS_CYCLES attribute per programmed
-> +	 * frequency of unipro core clk of UFS host controller.
-> +	 */
-> +	if (!err && (host->hw_ver.major >= 4)) {
-> +		if (clk_40ns_cycles > PA_VS_CORE_CLK_40NS_CYCLES_MASK)
-> +			return -EINVAL;
-> +
-> +		err = ufshcd_dme_get(hba,
-> +				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
-> +				     &reg);
-> +		if (err)
-> +			return err;
-> +
-> +		reg &= ~PA_VS_CORE_CLK_40NS_CYCLES_MASK;
-> +		reg |= clk_40ns_cycles;
-> +
-> +		err = ufshcd_dme_set(hba,
-> +				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
-> +				     reg);
-> +	}
-> +
-> +	return err;
->  }
-> 
->  static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
-> @@ -1345,7 +1370,7 @@ static int ufs_qcom_clk_scale_up_post_change(struct ufs_hba *hba)
->  		return 0;
-> 
->  	/* set unipro core clock cycles to 150 and clear clock divider */
-> -	return ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba, 150);
-> +	return ufs_qcom_set_core_clk_ctrl(hba, 150, 6);
->  }
-> 
->  static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
-> @@ -1381,7 +1406,7 @@ static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
->  		return 0;
-> 
->  	/* set unipro core clock cycles to 75 and clear clock divider */
-> -	return ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba, 75);
-> +	return ufs_qcom_set_core_clk_ctrl(hba, 75, 3);
->  }
-> 
->  static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
-> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-> index a829296e11bb..325f08aca260 100644
-> --- a/drivers/ufs/host/ufs-qcom.h
-> +++ b/drivers/ufs/host/ufs-qcom.h
-> @@ -133,6 +133,8 @@ enum {
->  #define MAX_CORE_CLK_1US_CYCLES_OFFSET_V4	0x10
->  #define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
->  #define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
-> +#define PA_VS_CORE_CLK_40NS_CYCLES	0x9007
-> +#define PA_VS_CORE_CLK_40NS_CYCLES_MASK	0x3F
-> 
->  static inline void
->  ufs_qcom_get_controller_revision(struct ufs_hba *hba,
-> --
-> 2.17.1
-> 
+> Presumably anyone trying to remove a DRM panel in a generic case
+> supporting lots of different hardware is used to it being a bit
+> broken...
 
--- 
-மணிவண்ணன் சதாசிவம்
+It's not. Most drivers might be broken, but it's totally something we
+support and should strive for.
+
+> Not that it's a super great situation to be in for remove() not to
+> work reliably, but that's how I think it is right now.
+>=20
+> For shutdown, however, I'm not really OK with just blindly removing
+> the code that tries to power off the panel.
+
+I disagree with that statement. It's not "blindly removing the code",
+that code is still there, in the disable hook.
+
+> Shutdown is called any time you reboot a device. That means that if a
+> DRM driver is _not_ calling drm_atomic_helper_shutdown() on the
+> panel's behalf at shutdown time then the panel won't be powered off
+> properly. This feels to me like something that might actually matter.
+
+It does matter. What I disagree on is that you suggest working around
+that brokenness in the core framework. What I'm saying is driver is
+broken, we should keep the core framework sane and fix it in the driver.
+
+It should be fairly easy with a coccinelle script to figure out which
+panels are affected, and to add that call in remove.
+
+> Panels tend to be one of those things that really care about their
+> power sequencing and can even get damaged (or not turn on properly
+> next time) if sequencing is not done properly, so just removing this
+> code and putting the blame on the DRM driver seems scary to me.
+
+Sure, it's bad. But there's no difference compared to the approach you
+suggest in that patch: you created a helper, yes, but every driver will
+still have to call that helper and if they don't, the panel will still
+be called and it's a bug. And we would have to convert everything to
+that new helper.
+
+It's fundamentally the same discussion than what you were opposed to
+above.
+
+> Sure enough, a quick survey of DRM drivers shows that many don't call
+> drm_atomic_helper_shutdown() at .shutdown time. A _very_ quick skim of
+> callers to drm_atomic_helper_shutdown():
+>=20
+> * omapdrm/omap_drv.c - calls at remove, not shutdown
+> * arm/hdlcd_drv.c - calls at unbind, not shutdown
+> * arm/malidp_drv.c - calls at unbind, not shutdown
+> * armada/armada_drv.c - calls at unbind, not shutdown
+>=20
+> ...huh, actually, there are probably too many to list that don't call
+> it at shutdown. There are some that do, but also quite a few that
+> don't. I'm not sure I really want to blindly add
+> drm_atomic_helper_shutdown() to all those DRM driver's shutdown
+> callbacks... That feels like asking for someone to flame me...
+
+No one will flame you, and if they do, we'll take care of it. And yes,
+those are bugs, so let's fix them instead of working around them?
+
+> ...but then, what's the way forward? I think normally the panel's
+> shutdown() callback would happen _before_ the DRM driver's shutdown()
+> callback,
+
+Is there such a guarantee?
+
+> so we can't easily write logic in the panel's shutdown like "if the
+> DRM panel didn't shut the panel down then print a warning and shut
+> down the panel". We'd have to somehow invent and register for a "late
+> shutdown" callback and have the panel use that to shut itself down if
+> the DRM driver didn't. That seems like a bad idea...
+>=20
+> Do you have any brilliant ideas here? I could keep the function as-is
+> but only have panels only call it at shutdown time if you want. I
+> could add to the comments and/or the commit message some summary of
+> the above and that the call is important for panels that absolutely
+> need to be powered off at shutdown time even if the DRM driver doesn't
+> do anything special at shutdown... Any other ideas?
+
+Brilliant ideas to do what exactly?
+
+I disagree that the solution to our problem is to disable the panel
+resources at shutdown time and we should only do it at disable time.
+Your helper does exactly that though, so I don't think the helper is a
+good idea.
+
+Maxime
