@@ -2,102 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACF178AE56
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8068778AE5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Aug 2023 13:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbjH1LAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 07:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        id S232399AbjH1LBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 07:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbjH1K7s (ORCPT
+        with ESMTP id S232458AbjH1LBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 06:59:48 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CAEFF;
-        Mon, 28 Aug 2023 03:59:46 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EA3046B5;
-        Mon, 28 Aug 2023 12:58:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693220304;
-        bh=wMJK57kbx7lOYBO0YvZkYHNeXslbI+8ZdYW1nRpQ8l0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EnpASNMOK9DEnOJS+/n3gqrAZIbKWSYqHtES+Vq0ypNrwsN7ddmKqnZZJySYIOOz0
-         C5mQTzTjVZKNNLJH1G8pnDGSikD1+yefUnKm7hsmWRZtWiVIWUmeGmaPSABnVHePda
-         LKBPDFue1yGUSGsl0vu2McPlpqAzdJidq1jgDMRQ=
-Date:   Mon, 28 Aug 2023 13:59:54 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: max9286: Fix some redundant of_node_put()
- calls
-Message-ID: <20230828105954.GG14596@pendragon.ideasonboard.com>
-References: <084fdd562690c08f1ee72bc08e63e8ee576dc86a.1693001599.git.christophe.jaillet@wanadoo.fr>
+        Mon, 28 Aug 2023 07:01:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F87A7;
+        Mon, 28 Aug 2023 04:01:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693220483; x=1724756483;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=6Sd5QShyFtlsZBfAcyEAspH6vjNE9Hs58VQFciHuCzI=;
+  b=J49sXw9p9f6elqW5sRJWRCIT5aZkN9C85+thI/p1PBiBR9QCiw8yfHbS
+   7DFdj3K9lmppddtXWueDdbMKojqeBHC4MiomXiztdft+9dtWv8w4kwxXn
+   HCgVBVIi3vPjZS+VCvsXT/wA//3fPbd2iI47uwFlrwTdfnfyb/i5ju/Yg
+   pBiWQjyWoebPt7sY2OXb/XFzihxaVOoWU2khcvdc838gOChC6n92CQPt0
+   5ieoUu6c56YtDhMmvJbUhTxgyaTfAdpX+L7F2cMK1MKndomrUS4wP4Ry/
+   zRp4YqOGYiFeu6wB45TE92tPFTVc5wO2lM9GDqBFs4rM28pgRBuDEylHX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="372479593"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="372479593"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 04:01:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10815"; a="731784870"
+X-IronPort-AV: E=Sophos;i="6.02,207,1688454000"; 
+   d="scan'208";a="731784870"
+Received: from gliakhov-mobl.ger.corp.intel.com ([10.251.214.48])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 04:01:20 -0700
+Date:   Mon, 28 Aug 2023 14:01:18 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+cc:     Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 4/6] selftests/pidfd: Fix ksft print formats
+In-Reply-To: <ac9c6c136a9e249453f866f56eab175c27f48061.1693216959.git.maciej.wieczor-retman@intel.com>
+Message-ID: <c920ad68-45a7-23dd-9d4c-fac99e1a53c0@linux.intel.com>
+References: <cover.1693216959.git.maciej.wieczor-retman@intel.com> <ac9c6c136a9e249453f866f56eab175c27f48061.1693216959.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <084fdd562690c08f1ee72bc08e63e8ee576dc86a.1693001599.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On Mon, 28 Aug 2023, Wieczor-Retman, Maciej wrote:
 
-Thank you for the patch.
-
-On Sat, Aug 26, 2023 at 12:13:40AM +0200, Christophe JAILLET wrote:
-> This is odd to have a of_node_put() just after a for_each_child_of_node()
-> or a for_each_endpoint_of_node() loop. It should already be called
-> during the last iteration.
+> Many calls to ksft print functions have format strings that don't match
+> with other passed arguments. One call expects a string but doesn't
+> provide any argument after the format string.
 > 
-> Remove these calls.
+> Fix format specifiers so they match the passed variables.
 > 
-> Fixes: 66d8c9d2422d ("media: i2c: Add MAX9286 driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-
+> Add a missing variable to ksft_test_result_pass() inside
+> pidfd_fdinfo_test() so it matches other cases in the switch statement.
+> 
+> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
 > ---
-> /!\  This patch is speculative, review with case  /!\
-> ---
->  drivers/media/i2c/max9286.c | 2 --
->  1 file changed, 2 deletions(-)
+>  tools/testing/selftests/pidfd/pidfd_fdinfo_test.c |  2 +-
+>  tools/testing/selftests/pidfd/pidfd_test.c        | 12 ++++++------
+>  2 files changed, 7 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 20e7c7cf5eeb..f27a69b1b727 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -1450,7 +1450,6 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+> diff --git a/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c b/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
+> index 4e86f927880c..01cc37bf611c 100644
+> --- a/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
+> +++ b/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
+> @@ -62,7 +62,7 @@ static void error_report(struct error *err, const char *test_name)
+>  		break;
 >  
->  		i2c_mux_mask |= BIT(id);
->  	}
-> -	of_node_put(node);
->  	of_node_put(i2c_mux);
+>  	case PIDFD_PASS:
+> -		ksft_test_result_pass("%s test: Passed\n");
+> +		ksft_test_result_pass("%s test: Passed\n", test_name);
+
+Missing test_name leads to crash so this looks a Fixes: class thing for
+me but you didn't provide one.
+
+>  		break;
 >  
->  	/* Parse the endpoints */
-> @@ -1514,7 +1513,6 @@ static int max9286_parse_dt(struct max9286_priv *priv)
->  		priv->source_mask |= BIT(ep.port);
->  		priv->nsources++;
->  	}
-> -	of_node_put(node);
+>  	default:
+> diff --git a/tools/testing/selftests/pidfd/pidfd_test.c b/tools/testing/selftests/pidfd/pidfd_test.c
+> index 00a07e7c571c..c081ae91313a 100644
+> --- a/tools/testing/selftests/pidfd/pidfd_test.c
+> +++ b/tools/testing/selftests/pidfd/pidfd_test.c
+> @@ -381,13 +381,13 @@ static int test_pidfd_send_signal_syscall_support(void)
 >  
->  	of_property_read_u32(dev->of_node, "maxim,bus-width", &priv->bus_width);
->  	switch (priv->bus_width) {
+>  static void *test_pidfd_poll_exec_thread(void *priv)
+>  {
+> -	ksft_print_msg("Child Thread: starting. pid %d tid %d ; and sleeping\n",
+> +	ksft_print_msg("Child Thread: starting. pid %d tid %ld ; and sleeping\n",
+>  			getpid(), syscall(SYS_gettid));
+>  	ksft_print_msg("Child Thread: doing exec of sleep\n");
+>  
+>  	execl("/bin/sleep", "sleep", str(CHILD_THREAD_MIN_WAIT), (char *)NULL);
+>  
+> -	ksft_print_msg("Child Thread: DONE. pid %d tid %d\n",
+> +	ksft_print_msg("Child Thread: DONE. pid %d tid %ld\n",
+>  			getpid(), syscall(SYS_gettid));
+>  	return NULL;
+>  }
+> @@ -427,7 +427,7 @@ static int child_poll_exec_test(void *args)
+>  {
+>  	pthread_t t1;
+>  
+> -	ksft_print_msg("Child (pidfd): starting. pid %d tid %d\n", getpid(),
+> +	ksft_print_msg("Child (pidfd): starting. pid %d tid %ld\n", getpid(),
+>  			syscall(SYS_gettid));
+>  	pthread_create(&t1, NULL, test_pidfd_poll_exec_thread, NULL);
+>  	/*
+> @@ -480,10 +480,10 @@ static void test_pidfd_poll_exec(int use_waitpid)
+>  
+>  static void *test_pidfd_poll_leader_exit_thread(void *priv)
+>  {
+> -	ksft_print_msg("Child Thread: starting. pid %d tid %d ; and sleeping\n",
+> +	ksft_print_msg("Child Thread: starting. pid %d tid %ld ; and sleeping\n",
+>  			getpid(), syscall(SYS_gettid));
+>  	sleep(CHILD_THREAD_MIN_WAIT);
+> -	ksft_print_msg("Child Thread: DONE. pid %d tid %d\n", getpid(), syscall(SYS_gettid));
+> +	ksft_print_msg("Child Thread: DONE. pid %d tid %ld\n", getpid(), syscall(SYS_gettid));
+>  	return NULL;
+>  }
+>  
+> @@ -492,7 +492,7 @@ static int child_poll_leader_exit_test(void *args)
+>  {
+>  	pthread_t t1, t2;
+>  
+> -	ksft_print_msg("Child: starting. pid %d tid %d\n", getpid(), syscall(SYS_gettid));
+> +	ksft_print_msg("Child: starting. pid %d tid %ld\n", getpid(), syscall(SYS_gettid));
+>  	pthread_create(&t1, NULL, test_pidfd_poll_leader_exit_thread, NULL);
+>  	pthread_create(&t2, NULL, test_pidfd_poll_leader_exit_thread, NULL);
+>  
+> 
 
 -- 
-Regards,
+ i.
 
-Laurent Pinchart
