@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4673778CC03
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAC578CC0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237890AbjH2SZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 14:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        id S238085AbjH2S2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 14:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237940AbjH2SZU (ORCPT
+        with ESMTP id S233400AbjH2S2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 14:25:20 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF122184;
-        Tue, 29 Aug 2023 11:25:15 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-991c786369cso611036966b.1;
-        Tue, 29 Aug 2023 11:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693333514; x=1693938314;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q9wJKsxPPAwU8P0xFe6s5m7FtWYcJnzstIMaUssxows=;
-        b=USmTA0Zpnd39zNwCscgDhVmJfdimtkHk5M60JfbR4NeG8idAyycBdRUJ1DnrSNSWy5
-         d/TcIOMuxuZ7Y8tSH/7W+LBOE6px3hkflXWSzYmbdy6sddLkq3FPZ88L2jZTOJ5rxPte
-         t4JU2zKKw+hb1Q40geCpT1x2Q/DeRIkSYOMng6Q3W5cwB5fVZ6yYCNPcOF7bfvQjjDZL
-         ilESCvGar1donrPd8nsWESwyiH1w96XibWBDHI2q5+UESwBags9bLKpXqWrdUFvyBroa
-         Z+IA4W0euR01ZMNWvo8jmF73KyD5GYbnfFSdpVOla+Kudlzq+fHkf4aYh2tuwWaeGE8Y
-         CQIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693333514; x=1693938314;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q9wJKsxPPAwU8P0xFe6s5m7FtWYcJnzstIMaUssxows=;
-        b=IrERHn4QV19XQvJCLnSeQc7Cuqt4COVLb9m9I95VYYoULrl5Tkl2v+sQvIjPPj7uXR
-         cUY+Urng17bwx3inwzCFyrsLTyY49loT7vZ1ZrM4DVL1HenOugJtMc4siT+7AeYmNNzL
-         ZavrGERjSCbSWpR+bRCzTOlGWkG1YNJKv6jixperMm28llDXF1KFG/N74JUYy123TNQ5
-         CLFuAHfiBYtJC1XnS3nYto5xHusMwqrDZe4FtZfbhA4cQrGfFbUHe2UrcgcF0EulVh9t
-         o7wKiAWkeVF179np/HW8fJnhCXwoT53I+s7teSiUhTObCZmj0SiD03woCm2cn/hH4NH5
-         itNg==
-X-Gm-Message-State: AOJu0YxcGK6wD1r4KkzttIWpiBDrp/7qpQ1Qa0C3/P4C79xCgM/aTqPK
-        ZQM/iyc1Sf7N63PDTYXPzMeHIIsh82Q=
-X-Google-Smtp-Source: AGHT+IG09DLRH/DAaKEwd338k1tCj81ilV1q2bHbiBzkYx6c3tqUpN3c8PbENbHA3Hr5CoeQqX0aMA==
-X-Received: by 2002:a17:906:2009:b0:99b:dd38:864d with SMTP id 9-20020a170906200900b0099bdd38864dmr21889620ejo.23.1693333513740;
-        Tue, 29 Aug 2023 11:25:13 -0700 (PDT)
-Received: from nam-dell ([131.155.246.6])
-        by smtp.gmail.com with ESMTPSA id v24-20020a17090606d800b0099364d9f0e2sm6243333ejb.98.2023.08.29.11.25.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 11:25:13 -0700 (PDT)
-From:   Nam Cao <namcaov@gmail.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     guoren@kernel.org, Nam Cao <namcaov@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] riscv: kprobes: allow writing to x0
-Date:   Tue, 29 Aug 2023 20:25:00 +0200
-Message-Id: <20230829182500.61875-1-namcaov@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 29 Aug 2023 14:28:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A2DB7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693333668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AcD4J76ihqQTKaowv7x00EfWkw4WAAUb9QrDpiQpFpI=;
+        b=FdM4sr0ARpMSb0jlFdtJwCI8cJdH2fU/ZehQJhQQ3FihhKx1yrznT+7CYC++0dUS8ujHXP
+        KTABh8bY8CBn9j6G/nvTgiz9uGB0ES8cEYG56B4cKWa7m8S8EJCsc7oueTuiVaXaex+bvf
+        ABwaCyVPXcHpkxneIPz2rBvCKq4R45o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-646-zHIZJxAdPruzFPHaxQEUSA-1; Tue, 29 Aug 2023 14:27:43 -0400
+X-MC-Unique: zHIZJxAdPruzFPHaxQEUSA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 489D4185A78F;
+        Tue, 29 Aug 2023 18:27:40 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.116])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B63B01678B;
+        Tue, 29 Aug 2023 18:27:39 +0000 (UTC)
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: [PATCH v2 0/3] vfio: use __aligned_u64 for ioctl structs
+Date:   Tue, 29 Aug 2023 14:27:17 -0400
+Message-ID: <20230829182720.331083-1-stefanha@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instructions can write to x0, so we should simulate these instructions
-normally.
+v2:
+- Rebased onto https://github.com/awilliam/linux-vfio.git next to get the
+  vfio_iommu_type1_info pad field [Kevin]
+- Fixed min(minsz, sizeof(dmabuf)) -> min(dmabuf.argsz, sizeof(dmabuf)) [Jason, Kevin]
+- Squashed Patch 3 (vfio_iommu_type1_info) into Patch 1 since it is trivial now
+  that the padding field is already there.
 
-Currently, the kernel hangs if an instruction who writes to x0 is
-simulated.
+Jason Gunthorpe <jgg@nvidia.com> pointed out that u64 VFIO ioctl struct fields
+have architecture-dependent alignment. iommufd already uses __aligned_u64 to
+avoid this problem.
 
-Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
-Cc: stable@vger.kernel.org
-Signed-off-by: Nam Cao <namcaov@gmail.com>
----
- arch/riscv/kernel/probes/simulate-insn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+See the __aligned_u64 typedef in <uapi/linux/types.h> for details on why it is
+a good idea for kernel<->user interfaces.
 
-diff --git a/arch/riscv/kernel/probes/simulate-insn.c b/arch/riscv/kernel/probes/simulate-insn.c
-index d3099d67816d..6c166029079c 100644
---- a/arch/riscv/kernel/probes/simulate-insn.c
-+++ b/arch/riscv/kernel/probes/simulate-insn.c
-@@ -24,7 +24,7 @@ static inline bool rv_insn_reg_set_val(struct pt_regs *regs, u32 index,
- 				       unsigned long val)
- {
- 	if (index == 0)
--		return false;
-+		return true;
- 	else if (index <= 31)
- 		*((unsigned long *)regs + index) = val;
- 	else
+This series modifies the VFIO ioctl structs to use __aligned_u64. Some of the
+changes preserve the existing memory layout on all architectures, so I put them
+together into the first patch. The remaining patches are for structs where
+explanation is necessary about why changing the memory layout does not break
+the uapi.
+
+Stefan Hajnoczi (3):
+  vfio: trivially use __aligned_u64 for ioctl structs
+  vfio: use __aligned_u64 in struct vfio_device_gfx_plane_info
+  vfio: use __aligned_u64 in struct vfio_device_ioeventfd
+
+ include/uapi/linux/vfio.h        | 26 ++++++++++++++------------
+ drivers/gpu/drm/i915/gvt/kvmgt.c |  4 +++-
+ samples/vfio-mdev/mbochs.c       |  6 ++++--
+ samples/vfio-mdev/mdpy.c         |  4 +++-
+ 4 files changed, 24 insertions(+), 16 deletions(-)
+
 -- 
-2.34.1
+2.41.0
 
