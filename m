@@ -2,76 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4A478CC98
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9B378CC9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239014AbjH2TAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
+        id S229663AbjH2TDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238983AbjH2TA1 (ORCPT
+        with ESMTP id S238897AbjH2TCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:00:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0858D19A
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:00:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DCC546311E
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 48EF3C433C9;
-        Tue, 29 Aug 2023 19:00:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693335624;
-        bh=V4juALzediEWIR1K/yW4XNf5fTxbmXpZ+AMUl8JLjyQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=UGK5qYOCxn59y+2ojCrYywGU2qLDnxTjE83Gjkeh5Ib+NwendnZqOAeZMORe4IaD/
-         6+wzcvr13HD28hqCS1PnlI/0h7ARL9p+5yceNlxFkYm4Bcx9zaHfHWrB98TjhmR3Vg
-         Ijpg4tlQsGD9P8u2OS6v/61wE37KVgQs2ssu6cC4iy+3pjKDwUgHW2vKhwRyeOMCCT
-         uSmVA4euSpds5pgl3XsbQu7ksl8OzmGvcdRrKqSc3Qr0BGUfye/cjuckGNiOvp+jtK
-         kYERoXWm8xSliX3jsw/vemni7awcO3SiK7nkPjuAofxhebVtoQHCTBrS6Lzz7otG6o
-         SsJXzT7CYe+wg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 327B3C595D2;
-        Tue, 29 Aug 2023 19:00:24 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for 6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230829125950.39432-1-pabeni@redhat.com>
-References: <20230829125950.39432-1-pabeni@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230829125950.39432-1-pabeni@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.6
-X-PR-Tracked-Commit-Id: c873512ef3a39cc1a605b7a5ff2ad0a33d619aa8
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bd6c11bc43c496cddfc6cf603b5d45365606dbd5
-Message-Id: <169333562420.15412.12056254346182009806.pr-tracker-bot@kernel.org>
-Date:   Tue, 29 Aug 2023 19:00:24 +0000
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 15:02:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5B6CC9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693335764; x=1724871764;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZssVyiuPrzV8HRbNj+dFM/GZZcr2HnyGAqBT1eeT8yU=;
+  b=eoaylrD/QTWNyRxN4VKWoaiNkAYlPRr8wvsSqkj/k8GpeuWne5cYxmn2
+   Z8DSwXV9PmV9sxjQKnATXZXJdfdc8dTwBlHmgiHj+DahcQcm63OFUGu2g
+   baSKyQf32Sfg5eF/PCpR7106JN+hdbAlmDFwG2Q5JKL5eYSiulrFOZxBw
+   WfWjCu8aIgQZrcTTFRbtLXMwbInULs2ha3WjU5EqXXkAfL9ABnqDdqy39
+   y5+UeLH6GVkOr0EFmKA3eoAODSj3eKdl4AdpwHfnKtdokruIjebOVTD87
+   qTV0ybTDY4fHZ6NWiRVTbh+HcsBQ2J3D9dH1S05XhMJK/py1JbbS959CB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="406452258"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="406452258"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 12:02:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="808809395"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="808809395"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 29 Aug 2023 12:02:41 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qb3z6-00090T-2L;
+        Tue, 29 Aug 2023 19:02:40 +0000
+Date:   Wed, 30 Aug 2023 03:02:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Parav Pandit <parav@mellanox.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Dragos Tatulea <dtatulea@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: Fix firmware error on creation of 1k VQs
+Message-ID: <202308300241.q7t7Ouf3-lkp@intel.com>
+References: <20230829174219.928343-1-dtatulea@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829174219.928343-1-dtatulea@nvidia.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 29 Aug 2023 14:59:50 +0200:
+Hi Dragos,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.6
+kernel test robot noticed the following build warnings:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bd6c11bc43c496cddfc6cf603b5d45365606dbd5
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.5 next-20230829]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thank you!
+url:    https://github.com/intel-lab-lkp/linux/commits/Dragos-Tatulea/vdpa-mlx5-Fix-firmware-error-on-creation-of-1k-VQs/20230830-014600
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230829174219.928343-1-dtatulea%40nvidia.com
+patch subject: [PATCH] vdpa/mlx5: Fix firmware error on creation of 1k VQs
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230830/202308300241.q7t7Ouf3-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308300241.q7t7Ouf3-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308300241.q7t7Ouf3-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/vdpa/mlx5/net/mlx5_vnet.c: In function 'read_umem_params':
+>> drivers/vdpa/mlx5/net/mlx5_vnet.c:658:1: warning: the frame size of 4128 bytes is larger than 2048 bytes [-Wframe-larger-than=]
+     658 | }
+         | ^
+
+
+vim +658 drivers/vdpa/mlx5/net/mlx5_vnet.c
+
+   627	
+   628	static int read_umem_params(struct mlx5_vdpa_net *ndev)
+   629	{
+   630		u32 out[MLX5_ST_SZ_DW(query_hca_cap_out)] = {};
+   631		u32 in[MLX5_ST_SZ_DW(query_hca_cap_in)] = {};
+   632		u16 opmod = (MLX5_CAP_VDPA_EMULATION << 1) | (HCA_CAP_OPMOD_GET_CUR & 0x01);
+   633		struct mlx5_core_dev *mdev = ndev->mvdev.mdev;
+   634		void *caps;
+   635		int err;
+   636	
+   637		MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
+   638		MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
+   639		err = mlx5_cmd_exec_inout(mdev, query_hca_cap, in, out);
+   640		if (err) {
+   641			mlx5_vdpa_warn(&ndev->mvdev,
+   642				"Failed reading vdpa umem capabilities with err %d\n", err);
+   643			return err;
+   644		}
+   645	
+   646		caps =  MLX5_ADDR_OF(query_hca_cap_out, out, capability);
+   647	
+   648		ndev->umem_1_buffer_param_a = MLX5_GET(virtio_emulation_cap, caps, umem_1_buffer_param_a);
+   649		ndev->umem_1_buffer_param_b = MLX5_GET(virtio_emulation_cap, caps, umem_1_buffer_param_b);
+   650	
+   651		ndev->umem_2_buffer_param_a = MLX5_GET(virtio_emulation_cap, caps, umem_2_buffer_param_a);
+   652		ndev->umem_2_buffer_param_b = MLX5_GET(virtio_emulation_cap, caps, umem_2_buffer_param_b);
+   653	
+   654		ndev->umem_3_buffer_param_a = MLX5_GET(virtio_emulation_cap, caps, umem_3_buffer_param_a);
+   655		ndev->umem_3_buffer_param_b = MLX5_GET(virtio_emulation_cap, caps, umem_3_buffer_param_b);
+   656	
+   657		return 0;
+ > 658	}
+   659	
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
