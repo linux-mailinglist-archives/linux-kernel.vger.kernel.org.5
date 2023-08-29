@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DCD78C776
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE7578C778
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbjH2OY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        id S233930AbjH2OZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236898AbjH2OYH (ORCPT
+        with ESMTP id S236807AbjH2OYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:24:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F445194
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693319027; x=1724855027;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=LdWC9VrCUfbLwzQ3gaekSjgeygH+tICcgRxPHbyu3zo=;
-  b=T9rD+6+Yd/r4VJNqqsFZHRcs2A02gShaIaE+BmHylQTFVkcdzJfnlYpK
-   DSv+htezOtPOSx68upGZPo/2Wkv0ycLLxg4vpwYnpvuxISKIdUVxTk5t1
-   fk0IdcLdCgC4hLDlYy0tu57V6xSkbtjmmUe9IbxK0AHvLB0beYCJ0n6+E
-   sQ04ryD+Y/cENAXzAcGWn8tiMNGuQYiTd3i1RFtgh07yF43eNrmMMjMgn
-   CXl+U1/ZGHgFAGh2ToaabzsAUJJcqqTaW3JVVgHcBlw2e3F5U4qgdV/sO
-   o+FcJ1OrccqelTqiKjzmRec5Bfs/6DhzkyV/h7Vr/hk++sO3Xs/cLwJFY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="374272483"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="374272483"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 07:23:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="808689026"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="808689026"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Aug 2023 07:23:09 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D694E195; Tue, 29 Aug 2023 17:23:08 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+        Tue, 29 Aug 2023 10:24:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAD5CD1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:24:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0D6E51F45B;
+        Tue, 29 Aug 2023 14:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693319040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4QZU8P2osCmSkpriKLNfy6JUT8TDfICEn6yIWArQYcE=;
+        b=KSwhIA7Pv5RJOf7m5yANWw5DOFd/bzEHaV1PBTJxb4D4mWPYjTPvdlb0iiWUz1iehcb+Cd
+        Ag8D3ZtkNFREBzD+fo45+vaTyj2/T9b0zC1fYjuNwKnjtYhNqt+NN431zUIHId7cu3VoeN
+        cquyBrNhHInma6AlyvVdHjrDwvlCJtI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693319040;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4QZU8P2osCmSkpriKLNfy6JUT8TDfICEn6yIWArQYcE=;
+        b=/9k6qvlduoXtcX7AUkAbeshokzOvDIAs8wTFixO+aNELXA4J0n5eAnGmXX6mWdXUOwtkbt
+        0DhyFmGOQbOHonAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CC6C6138E2;
+        Tue, 29 Aug 2023 14:23:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id iB8VK3//7WSbfAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 29 Aug 2023 14:23:59 +0000
+Date:   Tue, 29 Aug 2023 16:23:59 +0200
+Message-ID: <87h6oisz9c.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Stefan Binding <sbinding@opensource.cirrus.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/1] ALSA: control: Use list_for_each_entry_safe()
-Date:   Tue, 29 Aug 2023 17:23:07 +0300
-Message-Id: <20230829142307.3916823-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH v1] ALSA: hda: cs35l41: Support mute notifications for CS35L41 HDA
+In-Reply-To: <32a62c2f-5000-132c-255c-8ccd135ba60f@opensource.cirrus.com>
+References: <20230825120525.1337417-1-sbinding@opensource.cirrus.com>
+        <87edjr7218.wl-tiwai@suse.de>
+        <32a62c2f-5000-132c-255c-8ccd135ba60f@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of reiterating the list, use list_for_each_entry_safe()
-that allows to continue without starting over.
+On Tue, 29 Aug 2023 16:18:12 +0200,
+Stefan Binding wrote:
+> 
+> 
+> On 25/08/2023 13:13, Takashi Iwai wrote:
+> > On Fri, 25 Aug 2023 14:05:25 +0200,
+> > Stefan Binding wrote:
+> >> From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> >> 
+> >> Some laptops require a hardware based mute system, where when a hotkey
+> >> is pressed, it forces the amp to be muted.
+> >> 
+> >> For CS35L41, when the hotkey is pressed, an acpi notification is sent
+> >> to the CS35L41 Device Node. The driver needs to handle this notification
+> >> and call a _DSM function to retrieve the mute state.
+> >> 
+> >> Since the amp is only muted during playback, the driver will only mute
+> >> or unmute if playback is occurring, otherwise it will save the mute
+> >> state for when playback starts.
+> >> 
+> >> Only one handler can be registered for the acpi notification, but all
+> >> amps need to receive that notification, we can register a single handler
+> >> inside the Realtek HDA driver, so that it can then notify through the
+> >> component framework.
+> >> 
+> >> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> >> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> > We don't do normally in this way.  The ACPI hot key handling is done
+> > via user-space, and user-space daemon triggers the mute of the
+> > system.
+> > 
+> > Can't the ACPI notify the key event on those machines?
+> 
+> This feature is not the "normal" mute button on a keyboard, it is a
+> custom request
+> from a manufacturer which only mutes the audio on the speakers.
+> On previous generations, this was achieved using a GPIO controlled by
+> the BIOS/EC.
+> However, since CS35L41 does not have such GPIO, we must control it by
+> other means.
+> 
+> Our solution, which we have to share with the Windows driver, it to use ACPI
+> notifications to tell the driver to mute the amps when the shortcut is
+> pressed.
+> 
+> Does this seem like a valid exception to the typical approach?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
----
-v2: fixed a typo (Jaroslav), added tag (Jaroslav)
- sound/core/control_led.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+It's still the question whether we have to do this inevitably in the
+kernel in a way like that.  It sounds quite unusual.  Why this must be
+handled directly?  IOW, what's the difference from the "normal" mute
+button?
 
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index a78eb48927c7..43ea995c095a 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -297,16 +297,13 @@ static void snd_ctl_led_clean(struct snd_card *card)
- {
- 	unsigned int group;
- 	struct snd_ctl_led *led;
--	struct snd_ctl_led_ctl *lctl;
-+	struct snd_ctl_led_ctl *lctl, _lctl;
- 
- 	for (group = 0; group < MAX_LED; group++) {
- 		led = &snd_ctl_leds[group];
--repeat:
--		list_for_each_entry(lctl, &led->controls, list)
--			if (!card || lctl->card == card) {
-+		list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-+			if (!card || lctl->card == card)
- 				snd_ctl_led_ctl_destroy(lctl);
--				goto repeat;
--			}
- 	}
- }
- 
-@@ -314,7 +311,7 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
- {
- 	struct snd_card *card;
- 	struct snd_ctl_led *led;
--	struct snd_ctl_led_ctl *lctl;
-+	struct snd_ctl_led_ctl *lctl, _lctl;
- 	struct snd_kcontrol_volatile *vd;
- 	bool change = false;
- 
-@@ -329,14 +326,12 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
- 		return -ENXIO;
- 	}
- 	led = &snd_ctl_leds[group];
--repeat:
--	list_for_each_entry(lctl, &led->controls, list)
-+	list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
- 		if (lctl->card == card) {
- 			vd = &lctl->kctl->vd[lctl->index_offset];
- 			vd->access &= ~group_to_access(group);
- 			snd_ctl_led_ctl_destroy(lctl);
- 			change = true;
--			goto repeat;
- 		}
- 	mutex_unlock(&snd_ctl_led_mutex);
- 	if (change)
--- 
-2.40.0.1.gaa8946217a0b
+And, even if we take this approach, it leaves the device muted without
+exposing it to user-space.  Then user wouldn't know what happens.
 
+
+thanks,
+
+Takashi
