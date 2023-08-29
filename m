@@ -2,111 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B2878BF6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF9B78BF77
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbjH2HnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
+        id S233776AbjH2Hop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 03:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbjH2Hmd (ORCPT
+        with ESMTP id S233814AbjH2HoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:42:33 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96423139
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:42:30 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99cdb0fd093so527454266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693294949; x=1693899749;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fZidkGWNPi5BjyVLjLVMFpv4YzU60iSJ/Ecori1AkQ0=;
-        b=i5va1TsUR/sivxWYmTNw0ts25LKsB6R7S9P3dyzzTC+Fh7W68bccjTByx/vLozPCD7
-         It7sG2Ds7/CWT2/M7z8KA6r0Zx5v+Lqj0ks1AHc2YuE2LIFYmOyqdNSFemEYsWB6gd6v
-         dzAoiFpNymOG7WMSmamobMgoHU7JfXgdMmHXuDqKieR1cFTu6Fg4SonCIH6An8oTxsnQ
-         RqIL6KjiHnVgEEK3qiD/20g2v2VcSQkg25MLPb/ioLLr5TcP1rqanOpbrBeaRmA8PbAV
-         IQDFriKYp3OMel93CxJxtaaOwpESEjrNGmC0bs45BksGbVMWvgsiZEWgFeZHhTkn6X8R
-         eIHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693294949; x=1693899749;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fZidkGWNPi5BjyVLjLVMFpv4YzU60iSJ/Ecori1AkQ0=;
-        b=H+XlaxZIEnwiQwlkDfmOm6PdTXnNA3Xjzu7zrRYugh/jk9Ls1muO5fReIi3nxwex+W
-         tgoBsTOzML2P+hxIvts6sjW8rR+aZKGc3tyX7LXkNMmdL5DPv0DEgASdhgM5/8z5zkwF
-         RjyPD36IbYBgVjc71IgYmDPDUuot/CECkle45Fct77kODsSFViikv6ZB5c6JQ74Wr/98
-         LJY3DM8YXHu0NTMkG6JCDzIqy3fA98kbtuhlclteSWG3Rc13M6PaBQwnIbTr5oZwrJ/l
-         fU62mIL3EHMgY8WPlpHbYlG2wt9VbaxG01lwoWW+A7tSrdiEhTbMsETcWtFw4VlDlJ7I
-         630Q==
-X-Gm-Message-State: AOJu0YwN/d+8burIYZeXYj07lReHRlwd2c1NI/k1rO3PlUd2OJ+I7iEG
-        BwJoxljjLs9LyiXBj6Hf2BwuVg==
-X-Google-Smtp-Source: AGHT+IEWQr3QZ34jpK/5hL3ExGpvkPxLMtK2asR6mbFflpZ3LI8Ub6Apso9Cl+apOGcp3MwFMSZd6g==
-X-Received: by 2002:a17:906:2243:b0:9a1:8a39:c62d with SMTP id 3-20020a170906224300b009a18a39c62dmr20024316ejr.38.1693294948996;
-        Tue, 29 Aug 2023 00:42:28 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id s11-20020a170906354b00b00992bea2e9d2sm5615023eja.62.2023.08.29.00.42.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 00:42:28 -0700 (PDT)
-Message-ID: <e2b2f268-182a-5ba4-2541-f0a401eda1c8@linaro.org>
-Date:   Tue, 29 Aug 2023 09:42:27 +0200
+        Tue, 29 Aug 2023 03:44:19 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE81A132;
+        Tue, 29 Aug 2023 00:44:15 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T7eOAi005045;
+        Tue, 29 Aug 2023 07:43:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=XGvN6eeoHenoz3hwGgm4JUCstggrGxRpB0rSiz9bFGY=;
+ b=LD6t82qLye8nLpVTABw3/jRfHaJxdbokS2hdFvhWQ25Doim/1rilO85MbkBuhrtuRdhC
+ ZRWACaw+Z+R4UXXC+ifD84MJ+IO9OTODucVDhRdwjAhm4qbXHh5uQ6RcBhRz8PqWmyLZ
+ cgL2Cfv+yiLnRQqycXhe1rzhYHTuUCWRgtq8OKPbNQRStIjGNxP6fzVBIFoMbwrfUBb/
+ 2SDk7+kId7PRDAgZG55vBuFEx/cX/veETWhJDN3kL+qgmNX6pAJhEZr+ydY+mzG8ooYT
+ 2IqYC9pg8aMSLZyx4CWJFUhEZJL18TAwx0KVtXxFdlwISctooY+XOOqo+Alq/tU7H0Ee RQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sradyktqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 07:43:56 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37T7gfqK012782;
+        Tue, 29 Aug 2023 07:43:56 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sradyktqd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 07:43:56 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37T6fHU8020514;
+        Tue, 29 Aug 2023 07:43:55 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqv3y9vv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 07:43:55 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37T7hsVE60358934
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Aug 2023 07:43:54 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5DF2F5805A;
+        Tue, 29 Aug 2023 07:43:54 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B8C0358056;
+        Tue, 29 Aug 2023 07:43:47 +0000 (GMT)
+Received: from [9.171.49.19] (unknown [9.171.49.19])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Aug 2023 07:43:47 +0000 (GMT)
+Message-ID: <e640e5f2-381c-4f65-40b9-c2e3e94696f9@linux.ibm.com>
+Date:   Tue, 29 Aug 2023 13:13:46 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 11/28] dt-bindings: usb: dwc3: Add
- snps,num-hc-interrupters definition
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Fix invalid escape sequence warnings
 Content-Language: en-US
-To:     Wesley Cheng <quic_wcheng@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     srinivas.kandagatla@linaro.org, mathias.nyman@intel.com,
-        perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
-        Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com,
-        andersson@kernel.org, gregkh@linuxfoundation.org, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, quic_jackp@quicinc.com,
-        quic_plai@quicinc.com
-References: <20230308235751.495-1-quic_wcheng@quicinc.com>
- <20230308235751.495-12-quic_wcheng@quicinc.com>
- <20230311134008.GA20831-robh@kernel.org>
- <f7bd1ae7-fc38-0f29-546b-9ea4a323f42f@quicinc.com>
- <73655c17-5246-2c96-d415-6a30497966c3@linaro.org>
- <9d31db9c-4e58-767a-15c5-65f7c04bd989@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <9d31db9c-4e58-767a-15c5-65f7c04bd989@quicinc.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Cc:     srikar@linux.vnet.ibm.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+        netdev@vger.kernel.org, sachinp@linux.ibm.com, sdf@google.com,
+        song@kernel.org, yhs@fb.com
+References: <20230811084739.GY3902@linux.vnet.ibm.com>
+ <20230816122133.1231599-1-vishalc@linux.ibm.com>
+ <CAEf4BzZeCzEUM+=D7F5vNAe3fgmbGf0qo_DQ1nKSUJ-G78iFyw@mail.gmail.com>
+From:   Vishal Chourasia <vishalc@linux.ibm.com>
+In-Reply-To: <CAEf4BzZeCzEUM+=D7F5vNAe3fgmbGf0qo_DQ1nKSUJ-G78iFyw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ge6dIjHwnFNoUIIQk3oPV_Nl9QSbHr9E
+X-Proofpoint-ORIG-GUID: uv4MV2n35AHjVNEFA0_eFeWGwMVo4FWQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_04,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 clxscore=1011
+ suspectscore=0 malwarescore=0 mlxscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290064
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 09:19, Wesley Cheng wrote:
->>>
->>> This is a XHCI feature, but the DWC3 design is built in a way that DWC3
->>> host initializes the XHCI device and populates the properties associated
->>> to XHCI dev.
+On 8/23/23 05:00, Andrii Nakryiko wrote:
+> On Wed, Aug 16, 2023 at 5:22 AM Vishal Chourasia <vishalc@linux.ibm.com> wrote:
 >>
->> You speak about driver now, not bindings. If driver has limitations,
->> change it. Not really problem of bindings.
+>> The Python script `bpf_doc.py` uses regular expressions with
+>> backslashes in string literals, which results in SyntaxWarnings
+>> during its execution.
 >>
+>> This patch addresses these warnings by converting relevant string
+>> literals to raw strings, which interpret backslashes as literal
+>> characters. This ensures that the regular expressions are parsed
+>> correctly without causing any warnings.
+>>
+>> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+>> Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+>>
+>> ---
+>>  scripts/bpf_doc.py | 34 +++++++++++++++++-----------------
+>>  1 file changed, 17 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+>> index eaae2ce78381..dfd819c952b2 100755
+>> --- a/scripts/bpf_doc.py
+>> +++ b/scripts/bpf_doc.py
+>> @@ -59,9 +59,9 @@ class Helper(APIElement):
+>>          Break down helper function protocol into smaller chunks: return type,
+>>          name, distincts arguments.
+>>          """
+>> -        arg_re = re.compile('((\w+ )*?(\w+|...))( (\**)(\w+))?$')
+>> +        arg_re = re.compile(r'((\w+ )*?(\w+|...))( (\**)(\w+))?$')
+>>          res = {}
+>> -        proto_re = re.compile('(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\)$')
+>> +        proto_re = re.compile(r'(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\)$')
+>>
+>>          capture = proto_re.match(self.proto)
+>>          res['ret_type'] = capture.group(1)
+>> @@ -114,11 +114,11 @@ class HeaderParser(object):
+>>          return Helper(proto=proto, desc=desc, ret=ret)
+>>
+>>      def parse_symbol(self):
+>> -        p = re.compile(' \* ?(BPF\w+)$')
+>> +        p = re.compile(r' \* ?(BPF\w+)$')
+>>          capture = p.match(self.line)
+>>          if not capture:
+>>              raise NoSyscallCommandFound
+>> -        end_re = re.compile(' \* ?NOTES$')
+>> +        end_re = re.compile(r' \* ?NOTES$')
+>>          end = end_re.match(self.line)
+>>          if end:
+>>              raise NoSyscallCommandFound
+>> @@ -133,7 +133,7 @@ class HeaderParser(object):
+>>          #   - Same as above, with "const" and/or "struct" in front of type
+>>          #   - "..." (undefined number of arguments, for bpf_trace_printk())
+>>          # There is at least one term ("void"), and at most five arguments.
+>> -        p = re.compile(' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
+>> +        p = re.compile(r' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
+>>          capture = p.match(self.line)
+>>          if not capture:
+>>              raise NoHelperFound
+>> @@ -141,7 +141,7 @@ class HeaderParser(object):
+>>          return capture.group(1)
+>>
+>>      def parse_desc(self, proto):
+>> -        p = re.compile(' \* ?(?:\t| {5,8})Description$')
+>> +        p = re.compile(r' \* ?(?:\t| {5,8})Description$')
+>>          capture = p.match(self.line)
+>>          if not capture:
+>>              raise Exception("No description section found for " + proto)
+>> @@ -154,7 +154,7 @@ class HeaderParser(object):
+>>              if self.line == ' *\n':
+>>                  desc += '\n'
+>>              else:
+>> -                p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+>> +                p = re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+>>                  capture = p.match(self.line)
+>>                  if capture:
+>>                      desc_present = True
+>> @@ -167,7 +167,7 @@ class HeaderParser(object):
+>>          return desc
+>>
+>>      def parse_ret(self, proto):
+>> -        p = re.compile(' \* ?(?:\t| {5,8})Return$')
+>> +        p = re.compile(r' \* ?(?:\t| {5,8})Return$')
+>>          capture = p.match(self.line)
+>>          if not capture:
+>>              raise Exception("No return section found for " + proto)
+>> @@ -180,7 +180,7 @@ class HeaderParser(object):
+>>              if self.line == ' *\n':
+>>                  ret += '\n'
+>>              else:
+>> -                p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+>> +                p = re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+>>                  capture = p.match(self.line)
+>>                  if capture:
+>>                      ret_present = True
+>> @@ -219,12 +219,12 @@ class HeaderParser(object):
+>>          self.seek_to('enum bpf_cmd {',
+>>                       'Could not find start of bpf_cmd enum', 0)
+>>          # Searches for either one or more BPF\w+ enums
+>> -        bpf_p = re.compile('\s*(BPF\w+)+')
+>> +        bpf_p = re.compile(r'\s*(BPF\w+)+')
+>>          # Searches for an enum entry assigned to another entry,
+>>          # for e.g. BPF_PROG_RUN = BPF_PROG_TEST_RUN, which is
+>>          # not documented hence should be skipped in check to
+>>          # determine if the right number of syscalls are documented
+>> -        assign_p = re.compile('\s*(BPF\w+)\s*=\s*(BPF\w+)')
+>> +        assign_p = re.compile(r'\s*(BPF\w+)\s*=\s*(BPF\w+)')
+>>          bpf_cmd_str = ''
+>>          while True:
+>>              capture = assign_p.match(self.line)
+>> @@ -239,7 +239,7 @@ class HeaderParser(object):
+>>                  break
+>>              self.line = self.reader.readline()
+>>          # Find the number of occurences of BPF\w+
+>> -        self.enum_syscalls = re.findall('(BPF\w+)+', bpf_cmd_str)
+>> +        self.enum_syscalls = re.findall(r'(BPF\w+)+', bpf_cmd_str)
+>>
+>>      def parse_desc_helpers(self):
+>>          self.seek_to(helpersDocStart,
+>> @@ -263,7 +263,7 @@ class HeaderParser(object):
+>>          self.seek_to('#define ___BPF_FUNC_MAPPER(FN, ctx...)',
+>>                       'Could not find start of eBPF helper definition list')
+>>          # Searches for one FN(\w+) define or a backslash for newline
+>> -        p = re.compile('\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
+>> +        p = re.compile(r'\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
+>>          fn_defines_str = ''
+>>          i = 0
+>>          while True:
+>> @@ -278,7 +278,7 @@ class HeaderParser(object):
+>>                  break
+>>              self.line = self.reader.readline()
+>>          # Find the number of occurences of FN(\w+)
+>> -        self.define_unique_helpers = re.findall('FN\(\w+, \d+, ##ctx\)', fn_defines_str)
+>> +        self.define_unique_helpers = re.findall(r'FN\(\w+, \d+, ##ctx\)', fn_defines_str)
+>>
+>>      def validate_helpers(self):
+>>          last_helper = ''
+>> @@ -425,7 +425,7 @@ class PrinterRST(Printer):
+>>          try:
+>>              cmd = ['git', 'log', '-1', '--pretty=format:%cs', '--no-patch',
+>>                     '-L',
+>> -                   '/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimiter)]
+>> +                   r'/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimiter)]
 > 
-> Its the limitation of the HW.  Depending on how the SNPS DWC3 controller 
-> was implemented the vendor it can support less than the value mentioned 
-> in the Synopsys databook.
+> this one is not a regex, do we still need to change it?
+Indeed, it's essential to modify this aspect, especially since we're
+encountering warnings when compiling the kernel with Python 3.12.
 
-Then what is "XHCI dev"? A Linux device? Then a driver topic. What is
-"populates the properties" - what or whose properties? Of Linux device?
-Then a driver topic...
+The choice between using an 'r'-prefixed string or manually escaping
+each backslash is largely a matter of preference. It's worth noting that
+the 'r' prefix is not only commonly employed for regular expressions but
+also in contexts where backslashes should be treated as literal
+characters rather than escape sequences.
 
-Best regards,
-Krzysztof
+Should I send another patch escaping backslash for non regex string
+literals?
+>>              date = subprocess.run(cmd, cwd=linuxRoot,
+>>                                    capture_output=True, check=True)
+>>              return date.stdout.decode().rstrip()
+>> @@ -496,7 +496,7 @@ HELPERS
+>>                              date=lastUpdate))
+>>
+>>      def print_footer(self):
+>> -        footer = '''
+>> +        footer = r'''
+> 
+> same here, not a regex string
+> 
+>>  EXAMPLES
+>>  ========
+>>
+>> @@ -598,7 +598,7 @@ SEE ALSO
+>>              one_arg = '{}{}'.format(comma, a['type'])
+>>              if a['name']:
+>>                  if a['star']:
+>> -                    one_arg += ' {}**\ '.format(a['star'].replace('*', '\\*'))
+>> +                    one_arg += r' {}**\ '.format(a['star'].replace('*', '\\*'))
+> 
+> and this one as well?
+> 
+>>                  else:
+>>                      one_arg += '** '
+>>                  one_arg += '*{}*\\ **'.format(a['name'])
+>> --
+>> 2.41.0
+>>
 
