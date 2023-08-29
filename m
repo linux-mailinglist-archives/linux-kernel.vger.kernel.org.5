@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C737578C40A
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5FB78C409
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbjH2MQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 08:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60576 "EHLO
+        id S233302AbjH2MQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 08:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234848AbjH2MPc (ORCPT
+        with ESMTP id S235028AbjH2MPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 08:15:32 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1A9CD9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:15:03 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so5652591a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:15:03 -0700 (PDT)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F74CE6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:15:05 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf1935f6c2so28754515ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693311300; x=1693916100;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NuSqHXD31D4rgwV6avUd8bNaF7QG/6g57P8yYOHyObM=;
-        b=yzCG2sGObYfnmIReGnbAydo4kKKSBPJb3gGuQ7DgchEAHmfvZ1UCs5Ip/8wJiAcwkv
-         J7SZQWUjWzs09d8LsiGSeIhfiSGulbXF2+AsyR4LjGRwhZ0SlROX2UEzatjvxAR0gwcq
-         gyTtvJEURpPTIcBC8cx4YejzqqbAaHmun54IFNwVoKQV3lULtlPl0NyUId4rzHYWYros
-         5IFfjbgk5keSooHi6zhemQ+A0atZnBE7ZB4SD45wGSVxproEX68+HWEP734eUFFzweie
-         JGyaEpEZwAlDBBuKv1tldgh9dpBy4FiywuxeGHmfo/3SCy+QnoOmwyviezIX1lCocuTd
-         cDRA==
+        d=gmail.com; s=20221208; t=1693311305; x=1693916105; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q9VkhPBVgMZOy2Ax+rf67UyJ3baIYOSj8VG/VoffI8E=;
+        b=o5GM5ELlpaPZTknXMIMPp7u18fjy82iTTDC17m116bCIW7GJal6oLMPRx5fsxV5dOu
+         x7MB6rPLu/9ffFzuSxBosRvqbDo7CXOagdflOKJfOOcqXfhIFcSkyh0GdaHs+L0L0Kvm
+         5DYRAhPIJy2gCnrlfLTRfRKvDrYzOXNPLOG94vG5bAsTTqgeVmZbN6PZHnqFmYuOAkbq
+         PdBCgge8o1uIfD0MrWFbByXfR1RxjynzQnmgEOxPSVK7LTMR2WaDBKs/u++gbG/MKiea
+         3ZhUlVRL2UfqcT7sTVysmyGn2RFrzMTD8GeflsZa9wOVAvWn3xg60XIot1yM6P3dZC+5
+         NZdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693311300; x=1693916100;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NuSqHXD31D4rgwV6avUd8bNaF7QG/6g57P8yYOHyObM=;
-        b=JTgLbxG7Sm+EzWbc+ZTxr1+5EmSInFpoVnkLhMkZ5vqGIcFH0o+X5TIrMT+oFVyIQe
-         Rzzs1s9ABe1+VL7FxHZJqTTWFaj7oos/zccmBkRyA+twf8JB18q3L87N+OW9S9o5m3V+
-         EFc7F4N+nIcsAM8VrgMoJzU4tyZ2ubgRtTxMVVSAxX4EbBwzR1kp5P5tMipWMKyNffvz
-         3PyBATg+x0Vpb0b+AwI2yv09XFPjmzKSgkwB9H+Pwr65xHYrC6jFlErUPArbxR5DwPX7
-         +wCCe8tCKdMOY07QHIJIfrovWIrbjd7rsIoI30pXxyIrg3d1h57oveMNixcn8tyxLBuc
-         PLrQ==
-X-Gm-Message-State: AOJu0YyOpHfEeIZ2NteoTbjmUknnOwt7E6EG208DiXMQBgQa9P+HMkgG
-        z0C+IQZo+vZOh5NwbjVrf4434w==
-X-Google-Smtp-Source: AGHT+IFHGUVchPQl+mF3sfUS3twhA0v9fn2dsAElqV/Z6NlDSTjZS3t04ZJcxcPizZMoJHsXHGLXzg==
-X-Received: by 2002:a17:906:224c:b0:9a1:bd33:4389 with SMTP id 12-20020a170906224c00b009a1bd334389mr13676379ejr.74.1693311299737;
-        Tue, 29 Aug 2023 05:14:59 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id u22-20020a17090626d600b009a1fd22257fsm5891367ejc.207.2023.08.29.05.14.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 05:14:59 -0700 (PDT)
-Message-ID: <ecc6076b-2278-70e6-3863-3dcf89adfd0f@linaro.org>
-Date:   Tue, 29 Aug 2023 14:14:58 +0200
+        d=1e100.net; s=20221208; t=1693311305; x=1693916105;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q9VkhPBVgMZOy2Ax+rf67UyJ3baIYOSj8VG/VoffI8E=;
+        b=BS0djZn7xrQjLPqky4CeypbRq7Xs6+gU/m1M7gO78A7mpFTkxW09eVm/blyVFSXHyF
+         mCKcBZTIRRbXyRFEM9yP/5BrM+REZIdSTDxMYz1WOBnH+/Yvk0TIjRidnkhvMPu268eR
+         /6Ig+rjJJYSUawLP1p1vsNe1m6Ih8GsleSiipI9exLSdV/0UD+PBPB5PeuFD9dbiVX/E
+         8LvKKp0JBW85ibGTwvcrXSi68NtbLWy5+urq/Ot4sLwf05FpDIX3p/+ffqWf1b+mjxxk
+         59AZ+4rJaJ+3UbICDBEIbF4Vy4m6oC4NM12oesZKqSzdaL/FLuVA9ROPaQOxOeESZ06a
+         G1kw==
+X-Gm-Message-State: AOJu0YxD7NKtIKV79yGI+3Sz6SX3xl9ddwBuZ6GNpUf6ZaGOvOx9mbXy
+        ySa/hLM463lAQ1bIdRSm6UYIhEdzZ00=
+X-Google-Smtp-Source: AGHT+IEI3w5yoSQaEuzxGLi5JBdbn1FcwHogwtxRb11C5WK0Dzp8trZTEzG1gZcXRqr5W4AoEIsLEg==
+X-Received: by 2002:a17:902:f693:b0:1b8:8682:62fb with SMTP id l19-20020a170902f69300b001b8868262fbmr3965311plg.4.1693311305022;
+        Tue, 29 Aug 2023 05:15:05 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id w5-20020a639345000000b00563df2ba23bsm8964862pgm.50.2023.08.29.05.15.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 05:15:04 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 38CB69DE91DC; Tue, 29 Aug 2023 19:14:59 +0700 (WIB)
+Date:   Tue, 29 Aug 2023 19:14:59 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Aaron Lu <aaron.lu@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Borislav Petkov (AMD) <bp@alien8.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: kexec reboot failed due to commit 75d090fd167ac
+Message-ID: <ZO3hQ0rbr8QuUjVI@debian.me>
+References: <20230829114816.GA508985@ziqianlu-dell>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v10 0/4] PCI: qcom: ep: Add basic interconnect support
-Content-Language: en-US
-To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com
-References: <1689751218-24492-1-git-send-email-quic_krichai@quicinc.com>
- <20230728025648.GC4433@thinkpad>
- <b7f5d32f-6f1a-d584-4cdd-4c5faf08a72e@quicinc.com>
- <73700e92-2308-3fe0-51b1-c2373be2893e@linaro.org>
- <bed64143-8803-5027-d9ec-eafaaeb64e35@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <bed64143-8803-5027-d9ec-eafaaeb64e35@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="U/CzDxT/qgAVRNod"
+Content-Disposition: inline
+In-Reply-To: <20230829114816.GA508985@ziqianlu-dell>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 14:13, Krishna Chaitanya Chundru wrote:
-> 
-> On 8/29/2023 5:26 PM, Krzysztof Kozlowski wrote:
->> On 29/08/2023 13:41, Krishna Chaitanya Chundru wrote:
->>> On 7/28/2023 8:26 AM, Manivannan Sadhasivam wrote:
->>>> On Wed, Jul 19, 2023 at 12:50:14PM +0530, Krishna chaitanya chundru wrote:
->>>>> Add basic support for managing "pcie-mem" interconnect path by setting
->>>>> a low constraint before enabling clocks and updating it after the link
->>>>> is up based on link speed and width the device got enumerated.
->>>>>
->>>> Krzysztof, can this series be merged for 6.6? Bjorn A will pick the dts patches.
->>>>
->>>> - Mani
->>> A Gentle ping
->>>
->> Whom do you ping and why me? If you choose not to use
->> scripts/get_maintainers.pl, it's your right, but then you might get
->> maintainers wrong and no surprise patches got not accepted...
->>
->> Plus, it's merge window, so why pinging now?
->>
->> Best regards,
->> Krzysztof
-> 
-> Krzyszto,
-> 
-> The series is already reviewed and there are some patches which is 
-> reviewed by you also.
-> 
-> I am using the same command to send patches it looks like this script is 
-> fetching based upon the source file where there was change due to that 
-> only I was seeing the problem of all patches are not going to all the 
-> maintainers.
-> 
-> I was trying to install b4 and make sure to send all patches to all the 
-> maintainers next time on wards.
-> 
-> we pinged it now so that as this is already reviewed and no comments on 
-> this series so that this can picked up.
 
-It is the fifth same email from you. With just few differences. Please
-stop. Please fix your email client.
+--U/CzDxT/qgAVRNod
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+On Tue, Aug 29, 2023 at 07:48:16PM +0800, Aaron Lu wrote:
+> Hi Kirill,
+>=20
+> Ever since v6.5-rc1, I found that I can not use kexec to reboot an Intel
+> SPR test machine. With git bisect, the first bad commit is 75d090fd167ac
+> ("x86/tdx: Add unaccepted memory support").
+>=20
+> I have no idea why a tdx change would affect it, I'm not doing anything
+> related to tdx.
+>=20
+> Any ideas?
+>=20
+> The kernel config is attached, let me know if you need any other info.
 
+Can you provide system logs (e.g. journalctl output) when attempting to
+reboot?
+
+Anyway, thanks for the regression report. I'm adding it to regzbot:
+
+#regzbot ^introduced: 75d090fd167aca
+#regzbot title: unable to reboot with kexec due to TDX unaccepted memory su=
+pport
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--U/CzDxT/qgAVRNod
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZO3hQAAKCRD2uYlJVVFO
+owLYAQDWFvGC4cRy/LFARL3LkkawhtjEdwdaR2SPXy2yHSNYUAEAwxLDQPHM7aR0
+rAhvatO4U9i0xIIAvgv1aqyGb2BdjQY=
+=AcRo
+-----END PGP SIGNATURE-----
+
+--U/CzDxT/qgAVRNod--
