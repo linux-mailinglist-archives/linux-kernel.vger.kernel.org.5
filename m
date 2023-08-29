@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C2578C3BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4E478C3C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbjH2L6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 07:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
+        id S233243AbjH2L7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbjH2L6k (ORCPT
+        with ESMTP id S234211AbjH2L7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:58:40 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AA3199;
-        Tue, 29 Aug 2023 04:58:35 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RZm9z2XZpzrSQZ;
-        Tue, 29 Aug 2023 19:56:55 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
- 2023 19:58:33 +0800
-Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-References: <20230816100113.41034-1-linyunsheng@huawei.com>
- <20230816100113.41034-2-linyunsheng@huawei.com>
- <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
- <20230817091554.31bb3600@kernel.org>
- <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
- <20230817165744.73d61fb6@kernel.org>
- <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
- <20230818145145.4b357c89@kernel.org>
- <1b8e2681-ccd6-81e0-b696-8b6c26e31f26@huawei.com>
- <20230821113543.536b7375@kernel.org>
- <5bd4ba5d-c364-f3f6-bbeb-903d71102ea2@huawei.com>
- <20230822083821.58d5d26c@kernel.org>
- <79a49ccd-b0c0-0b99-4b4d-c4a416d7e327@huawei.com>
- <20230823072552.044d13b3@kernel.org>
- <CAKgT0UeSOBbXohq1rZ3YsB4abB_-5ktkLtYbDKTah8dvaojruA@mail.gmail.com>
- <5aae00a4-42c0-df8b-30cb-d47c91cf1095@huawei.com>
- <20230825170850.517fad7d@kernel.org>
- <CAKgT0UeHfQLCzNALUnYyJwtGpUnd=4JbMSy00srgdKZz=SFemw@mail.gmail.com>
- <20230828083810.4f86b9a3@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <2b570282-24f8-f23b-1ff7-ad836794baa9@huawei.com>
-Date:   Tue, 29 Aug 2023 19:58:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 29 Aug 2023 07:59:07 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B525F1B4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:59:03 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4018af103bcso26846635e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:59:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693310342; x=1693915142;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KLoD04MXzPDvd3uBWHGHq50+QEKQ9VSBhdzvUrQwqIk=;
+        b=bahIsMFSy+IQGQ0Yl0YrSZ57gOJ8bEMz6ZI8AoG4t4XfaG69kamMiT+jNABpqL7HTm
+         3rcuwHk/v8eOhL+/W7r0l5oIwDi3fk58yXDQ/FUFocq/TL56giUDR3iTQ3ECpxylHM9E
+         /wa6esqaafmNhJj4wBK7HROzgbINLz1TZG0l+GC24qKHoAs7CwgjoT51duaHa++auoxx
+         9/bQLsY4xJupC/KTiRA96am4306QzKm98OJ2lVpjjyE3rx05jlY48Bxp2QwVrBW67YmQ
+         4ydo10TLQSRsPXahBG18IJoHf1fLBcRthB1RNCAXE49kkxt14mKf1vBw0M24ZUf4ZcgF
+         sQNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693310342; x=1693915142;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KLoD04MXzPDvd3uBWHGHq50+QEKQ9VSBhdzvUrQwqIk=;
+        b=YtZ1tgoMxKBsROr2RAfj2U2817Ca7f24+Q52TuYad1IbaH3O8TTfek+2y2cQbn6fgA
+         LHakmMkY+1LkwlOvAxLinOB64Sk2M7xZW81t/jJ+/4UORQjbqT9ja9spi24GmQDvRcNn
+         nWLMyJSPSL6vw0941ZTFVpAi/uu3MuvPEStulsB/xerUcinsODD42zobh9FutoKiKLxl
+         AWirseBA/3kWVfEJ/3o+bQdXg4vIYItaPkdsatMMzO/1GquXvWyWYaZydLDLb9cOo/em
+         YZpilGdWnLLdpAafe/lWvR8xrN8YCIy+S+KO7tm+NreNR4RPLhsGcrSUowpHd7WkLZbt
+         4vBQ==
+X-Gm-Message-State: AOJu0YzQyDnv5Azs3wtXX0LYgGzSKejAqPA3bWND1cRQeC0j0ONWgg8S
+        KaIFgFk75Fq+ir/bUYa79LTqOw==
+X-Google-Smtp-Source: AGHT+IG3XTGvzlu63R7crie3+qbFU8gRZTMcntaik1BOhE9xjzNYGyVazt67HXt2bJyE142iGySd5Q==
+X-Received: by 2002:a05:600c:3798:b0:3fb:f0b2:20eb with SMTP id o24-20020a05600c379800b003fbf0b220ebmr1872340wmr.1.1693310342111;
+        Tue, 29 Aug 2023 04:59:02 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id p33-20020a05600c1da100b003fef5e76f2csm1585778wms.0.2023.08.29.04.59.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 04:59:01 -0700 (PDT)
+Message-ID: <6ecbd88a-150f-d40e-22bf-4fda921fc483@linaro.org>
+Date:   Tue, 29 Aug 2023 12:59:00 +0100
 MIME-Version: 1.0
-In-Reply-To: <20230828083810.4f86b9a3@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2 4/4] venus: hfi_parser: Add check to keep the number of
+ codecs within range
 Content-Language: en-US
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hans.verkuil@cisco.com, tfiga@chromium.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <1691634304-2158-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1691634304-2158-5-git-send-email-quic_vgarodia@quicinc.com>
+ <fec4a8c7-206f-7af8-4ea9-c919a677bf7e@linaro.org>
+ <2214c31b-eca2-012e-a100-21252a724e7c@quicinc.com>
+ <8b72ce47-c338-2061-f11a-c0a608686d8c@linaro.org>
+ <e880da07-ccd4-e427-ed34-20b284dc7838@quicinc.com>
+ <8f1a4ca0-dde8-fa5d-bca3-d317886609de@linaro.org>
+ <060f4dbe-63d6-1c60-14ca-553bf1536e5a@quicinc.com>
+ <c5f912a9-cc08-1645-ad04-c7a58c1e47ce@linaro.org>
+ <cd9da205-ccdb-dc71-16a4-83b22ca7fcae@quicinc.com>
+ <ea587bb1-8ff2-7a92-f948-fd932f6b2769@linaro.org>
+ <9391ae4e-afbd-ef52-12dc-7f8875216c85@quicinc.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <9391ae4e-afbd-ef52-12dc-7f8875216c85@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/28 23:38, Jakub Kicinski wrote:
-> On Mon, 28 Aug 2023 07:50:33 -0700 Alexander Duyck wrote:
->> Actually we could keep it pretty simple. We just have to create a
->> #define using DMA_BIT_MASK for the size of the page pool DMA. We could
->> name it something like PP_DMA_BIT_MASK. The drivers would just have to
->> use that to define their bit mask when they call
->> dma_set_mask_and_coherent. In that case the DMA API would switch to
->> bounce buffers automatically in cases where the page DMA address would
->> be out of bounds.
->>
->> The other tweak we could look at doing would be to just look at the
->> dma_get_required_mask and add a warning and/or fail to load page pool
->> on systems where the page pool would not be able to process that when
->> ANDed with the device dma mask.
-
-As the all arches have used CONFIG_PHYS_ADDR_T_64BIT:
-https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT
-
-arm: Large Physical Address Extension or LPAE, 40 bits of phys addr.
-arc: Physical Address Extension or PAE, 40 bits of phys addr.
-mips: eXtended Physical Addressing or PXA, 40 bits of phys addr.
-powerpc: does not seems to have a name for the feature, and have 36
-         bits of phys addr.
-riscv: large physical address, 34 bits of phys addr.
-x86: Physical Address Extension or PAE, 36 bits of phys addr.
-
-It do seem that we are worrying too much, So I am going to follow jakub's
-suggestion. If we make a wrong assumption, we print a warning for that.
-
->>
->> With those two changes the setup should be rock solid in terms of any
->> risks of the DMA address being out of bounds, and with minimal
->> performance impact as we would have verified all possibilities before
->> we even get into the hot path.
+On 29/08/2023 09:00, Vikash Garodia wrote:
+> Hi Bryan,
 > 
-> Sounds like a plan!
-> .
+> On 8/14/2023 7:45 PM, Bryan O'Donoghue wrote:
+>> On 14/08/2023 07:34, Vikash Garodia wrote:
+>>>> We have two loops that check for up to 32 indexes per loop. Why not have a
+>>>> capabilities index that can accommodate all 64 bits ?
+>>> Max codecs supported can be 32, which is also a very high number. At max the
+>>> hardware supports 5-6 codecs, including both decoder and encoder. 64 indices is
+>>> would not be needed.
+>>>
+>>
+>> But the bug you are fixing here is an overflow where we have received a full
+>> range 32 bit for each decode and encode.
+>>
+>> How is the right fix not to extend the storage to the maximum possible 2 x 32 ?
+>> Or indeed why not constrain the input data to 32/2 for each encode/decode path ?
+> At this point, we agree that there is very less or no possibility to have this
+> as a real usecase i.e having 64 (or more than 32) codecs supported in video
+> hardware. There seem to be no value add if we are extending the cap array from
+> 32 to 64, as anything beyond 32 itself indicates rogue firmware. The idea here
+> is to gracefully come out of such case when firmware is responding with such
+> data payload.
+> Again, lets think of constraining the data to 32/2. We have 2 32 bit masks for
+> decoder and encoder. Malfunctioning firmware could still send payload with all
+> bits enabled in those masks. Then the driver needs to add same check to avoid
+> the memcpy in such case.
 > 
+>> The bug here is that we can copy two arrays of size X into one array of size X.
+>>
+>> Please consider expanding the size of the storage array to accommodate the full
+>> size the protocol supports 2 x 32.
+> I see this as an alternate implementation to existing handling. 64 index would
+> never exist practically, so accommodating it only implies to store the data for
+> invalid response and gracefully close the session.
+
+What's the contractual definition of "this many bits per encoder and 
+decoder" between firmware and APSS in that case ?
+
+Where do we get the idea that 32/2 per encoder/decoder is valid but 32 
+per encoder decoder is invalid ?
+
+At this moment in time 16 encoder/decoder bits would be equally invalid.
+
+I suggest the right answer is to buffer the protocol data unit - PDU 
+maximum as an RX or constrain the maximum number of encoder/decoder bits 
+based on HFI version.
+
+ie.
+
+- Either constrain on the PDU or
+- Constrain on the known number of maximum bits per f/w version
+
+---
+bod
+
