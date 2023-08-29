@@ -2,86 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D34678CFC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC7978CFC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240377AbjH2W7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
+        id S240763AbjH2W7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240075AbjH2W6n (ORCPT
+        with ESMTP id S240656AbjH2W67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:58:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39662CC9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:58:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=r866mTX9mOfhvGB9ROtXhk9rJqVPkd1gFKMTDNSdM8s=; b=WDkROUj70tpZ/oy6+pT0EW6Dgk
-        0j6tBLRgzNZai+KOwjuL/IU/hNmJKxkTyxMtiDAquG6QGrLlEPIMcFa5B0lrR2lKmte0UODUsOBHx
-        KSVJBbR51slZdqVV4PRX9hi4WzlstnVLp0pfSjf56btM7cmZB6NkreOjjX8u1FbsbQbvuHH2eAXU/
-        GBAhIJkK51u7suDv7khh7QyVeP2l57mjgmuNF3sx8CqdpooOKKfiIog2Nyx9XSVprxhaRhGDEnH1n
-        Vdc1nzVAShp8J+m2jr6jojNpTAmbzkh1N9/F0JTBtpMyBdo+aLBkakVXzJC+kAlOaVq09CPHftao1
-        5AwGbtXg==;
-Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qb7fS-00CQ0P-2Q;
-        Tue, 29 Aug 2023 22:58:38 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Rob Herring <robh@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH] macintosh/ams: linux/platform_device.h is needed
-Date:   Tue, 29 Aug 2023 15:58:37 -0700
-Message-ID: <20230829225837.15520-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
+        Tue, 29 Aug 2023 18:58:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3102FD7;
+        Tue, 29 Aug 2023 15:58:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C2A37635CE;
+        Tue, 29 Aug 2023 22:58:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9FABC433C7;
+        Tue, 29 Aug 2023 22:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693349935;
+        bh=rn2r8LG5beXDEpNUXXmAsWk7K7Z6B0SkbbGrSUfCikA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=UJJSRKRH7LTjcnDdUPp7RtBE/dB7QJhjeEB1YQbMKrKaYzMACob4EBI4SsR0sy5Ye
+         mt7wmIqsOOWPvL2AjZ5YQtEhH9AU5fAVtL4UeL7OEXz9q6ZHDNk6+YIdzODX8+wqil
+         jlsqG5Nirzs8oHVVRgwIrBWk+tU4uj4vEMyBjQFrJmh/cCsnnPwHApt0qQlEh4VPoV
+         fx7tHB0NGyHo231wK83vtI9suH/0L3cn9cyGLY9db8p4Yc0AKTTsIBFPHCXTIrOvy6
+         YzP3/2IXTyd/Lvsgr1kAOQEzWJjTRoatnNjA657yXZ2FiJLFoy7sfB1K1HWwMGB4Ek
+         xBWdtuLvgMoog==
+Message-ID: <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
+Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Date:   Tue, 29 Aug 2023 18:58:47 -0400
+In-Reply-To: <20230829224454.GA461907@ZenIV>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+         <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+         <20230829224454.GA461907@ZenIV>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ams.h uses struct platform_device, so the header should be used
-to prevent build errors:
+On Tue, 2023-08-29 at 23:44 +0100, Al Viro wrote:
+> On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
+> > generic_fillattr just fills in the entire stat struct indiscriminately
+> > today, copying data from the inode. There is at least one attribute
+> > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
+> > and we're looking at adding more with the addition of multigrain
+> > timestamps.
+> >=20
+> > Add a request_mask argument to generic_fillattr and have most callers
+> > just pass in the value that is passed to getattr. Have other callers
+> > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
+> > STATX_CHANGE_COOKIE into generic_fillattr.
+>=20
+> Out of curiosity - how much PITA would it be to put request_mask into
+> kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
+> on smbd side) and don't bother with that kind of propagation boilerplate
+> - just have generic_fillattr() pick it there...
+>=20
+> Reduces the patchset size quite a bit...
 
-drivers/macintosh/ams/ams-input.c: In function 'ams_input_enable':
-drivers/macintosh/ams/ams-input.c:68:45: error: invalid use of undefined type 'struct platform_device'
-   68 |         input->dev.parent = &ams_info.of_dev->dev;
-drivers/macintosh/ams/ams-input.c: In function 'ams_input_init':
-drivers/macintosh/ams/ams-input.c:146:51: error: invalid use of undefined type 'struct platform_device'
-  146 |         return device_create_file(&ams_info.of_dev->dev, &dev_attr_joystick);
-drivers/macintosh/ams/ams-input.c: In function 'ams_input_exit':
-drivers/macintosh/ams/ams-input.c:151:44: error: invalid use of undefined type 'struct platform_device'
-  151 |         device_remove_file(&ams_info.of_dev->dev, &dev_attr_joystick);
-drivers/macintosh/ams/ams-input.c: In function 'ams_input_init':
-drivers/macintosh/ams/ams-input.c:147:1: error: control reaches end of non-void function [-Werror=return-type]
-  147 | }
+It could be done. To do that right, I think we'd want to drop
+request_mask from the ->getattr prototype as well and just have
+everything use the mask in the kstat.
 
-Fixes: 233d687d1b78 ("macintosh: Explicitly include correct DT includes")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>
----
- drivers/macintosh/ams/ams.h |    1 +
- 1 file changed, 1 insertion(+)
-
-diff -- a/drivers/macintosh/ams/ams.h b/drivers/macintosh/ams/ams.h
---- a/drivers/macintosh/ams/ams.h
-+++ b/drivers/macintosh/ams/ams.h
-@@ -6,6 +6,7 @@
- #include <linux/input.h>
- #include <linux/kthread.h>
- #include <linux/mutex.h>
-+#include <linux/platform_device.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
- 
+I don't think it'd reduce the size of the patchset in any meaningful
+way, but it might make for a more sensible API over the long haul.
+--=20
+Jeff Layton <jlayton@kernel.org>
