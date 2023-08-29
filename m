@@ -2,172 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E14678CB87
+	by mail.lfdr.de (Postfix) with ESMTP id 6750678CB88
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238128AbjH2RrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
+        id S238139AbjH2RrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238115AbjH2Rqh (ORCPT
+        with ESMTP id S238117AbjH2Rqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:46:37 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EF3103
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:46:34 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c3c8adb27so585394166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:46:34 -0700 (PDT)
+        Tue, 29 Aug 2023 13:46:46 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72FF103;
+        Tue, 29 Aug 2023 10:46:43 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bcb5df95c5so3501887a34.1;
+        Tue, 29 Aug 2023 10:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693331193; x=1693935993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9jgu1C3r/JfwEw+3xT0ddR4IdPDnwpgVqd15MZ+FjcQ=;
-        b=E3KbYOJ7+CK1EpEjV/Nt/3tXFSn1xoB6HshYRfxKp3nbMZNSbgLwiePpA+3j6XlLxT
-         D2FBKeixVsSdOkG73yvNueesghZUktf66Z8wlQqTR8tO0gU7e2NSLrdXgOyxYuPRJ+x1
-         FLWYB3CkUiubaSBcq0P1yel6BHIIhd+Wqmqa8=
+        d=gmail.com; s=20221208; t=1693331203; x=1693936003;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ocew/w2atcEmCSwlMkjdQJJuFYY4ZZA2+kzr8umyZr8=;
+        b=Uf+BZ9/FvKEWV5aK4pn0W+Gi4mKLfYKJ2pNzRZ0IsC3B4bTeq/IL9Miie6eRR1KzxG
+         DhRqrs2o6KDhSSRjCCGyMH5reXLfAG9kIFVHJbPa0Mf58xcsDzOrkH67m12dxIxLfh3W
+         SNBfFw+i/DyLKiBhIpgihfV9nH7oL3RuoGtP6i44ZGd6eDnZnI61RLrv3EHkLv40hR2l
+         EtxNNKChCKN8aHe0JXost5NSfSVpt7QRWIK1U+a4bHEKcdk+x/nYYB6XPx5bULdCMVCW
+         AOdO9ywoB+53b5XQZZsojXp0taEX+9JIoU9V8Z6WFHv3Yh7/zhdYV3l7MJWDqVAb0sbo
+         RMbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693331193; x=1693935993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9jgu1C3r/JfwEw+3xT0ddR4IdPDnwpgVqd15MZ+FjcQ=;
-        b=cadxuWkNOl2uL30Kjy8mJ3ydpOk7C13cmHdfaZUgNG2hKCvkRjTXaw2jxXW1PUhiDB
-         EMZAfNEU+5OTxXvbbDsaW0g5dOekkxNDc8TzkEcnR/VQSjB+6NxNXHAx31jgnF20vWhA
-         5yTWNx1QLJK+tApsJS99SFSSfD0Mq2VACP+IM3UFyVO2yZYzeop7ywoX8aP9nzfgkF9e
-         QKHnCF+u9DpiOo80+hcA09VonwIc+k5/OABeZ2hoHkivkwjsAPAqcTn5rh1DGw4v382s
-         YaVnmK94asB0i+C5a8a0k6v/WLbi+szEjzeRo+u89VX8NuF5I76h1On1F7g9EyRLtVXZ
-         qh4w==
-X-Gm-Message-State: AOJu0YxA6kDqFqpvAqNvuALxuJeEIM90Os4148GF1RTC5qr8vJlU8eyf
-        FppakxqvTwmcKJuPU+rYEyvEvF7BCrf9JdrLJeA=
-X-Google-Smtp-Source: AGHT+IG5jKv5TDvUG1PcXNNaTWKyyJVFxT/X4adfLtZJ/OnhnuZ6wfxKonDQr5h1LddQvG2yjBdCuw==
-X-Received: by 2002:a17:906:8a:b0:9a1:b43b:73a0 with SMTP id 10-20020a170906008a00b009a1b43b73a0mr16726038ejc.20.1693331192499;
-        Tue, 29 Aug 2023 10:46:32 -0700 (PDT)
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
-        by smtp.gmail.com with ESMTPSA id fx13-20020a170906b74d00b00982be08a9besm6300612ejb.172.2023.08.29.10.46.31
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1693331203; x=1693936003;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ocew/w2atcEmCSwlMkjdQJJuFYY4ZZA2+kzr8umyZr8=;
+        b=KFxUwduvR84fe6A+GF8tNpwuhYHaY+3BeXsouiwXt3jwvC872HWJ31Db6tCQjUDgTn
+         Gyt9pmfn5Yzj4lAB17fwZOp/b2+dnXFUjUZ2VvG+Ut+MMvCKkQgUsZ5CXElj2Mp17UXv
+         YKMNBX4qOnM7bn2Foh+rWVVk2E6XUBozZjh3sd8BZPN1DHB6pwuErgja09m5vAFP75Mc
+         6XoV6XyfoJTXqw0Gkv8Jd16ueLtB9CmQVS8KejyAegui6+HNuSlhtRiCNtaET5fASmD2
+         wgM98M4s0iZpT7s8PA7Y+kAGqfBlY47yHqlbhrgXUTkX3ys5PXcLOKEwqROb7Vwg/uGf
+         puaw==
+X-Gm-Message-State: AOJu0YwN4YshPe+tHDCZrMDsXXgKH6qZn9Ppt1S1gzlm+fPRmxHk0aNU
+        +rWgZ5pk2xNoE1FGu9VqU2E=
+X-Google-Smtp-Source: AGHT+IF1aiYM5WpO4pbflA43yDUEkRs6AxfZ3StLZiWwJeWALuJ43TCZAU9p2HKF19s1ubZ/shybBw==
+X-Received: by 2002:a05:6830:6a0f:b0:6bf:29d4:1886 with SMTP id cz15-20020a0568306a0f00b006bf29d41886mr1460142otb.34.1693331202963;
+        Tue, 29 Aug 2023 10:46:42 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id l4-20020a639844000000b005651c9351e1sm9274618pgo.64.2023.08.29.10.46.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 10:46:31 -0700 (PDT)
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-401da71b7faso6408455e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:46:31 -0700 (PDT)
-X-Received: by 2002:a05:600c:3798:b0:3fe:16c8:65fa with SMTP id
- o24-20020a05600c379800b003fe16c865famr45491wmr.4.1693331191063; Tue, 29 Aug
- 2023 10:46:31 -0700 (PDT)
+        Tue, 29 Aug 2023 10:46:42 -0700 (PDT)
+Message-ID: <ed443975-1fff-3ec5-d60c-a6f5bdc09772@gmail.com>
+Date:   Tue, 29 Aug 2023 10:46:22 -0700
 MIME-Version: 1.0
-References: <20230417221610.1507341-1-dnojiri@chromium.org> <20230508123228.pduxcrwylbq73iuj@mercury.elektranox.org>
-In-Reply-To: <20230508123228.pduxcrwylbq73iuj@mercury.elektranox.org>
-From:   Daisuke Nojiri <dnojiri@chromium.org>
-Date:   Tue, 29 Aug 2023 10:46:19 -0700
-X-Gmail-Original-Message-ID: <CAC0y+Ah1kLAGzftR8=afm3+uF5U5eH1_E89FwX0--NkZJNVYQg@mail.gmail.com>
-Message-ID: <CAC0y+Ah1kLAGzftR8=afm3+uF5U5eH1_E89FwX0--NkZJNVYQg@mail.gmail.com>
-Subject: Re: [PATCH] cros_pchg: Sync port status on resume
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Daisuke Nojiri <dnojiri@chromium.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 5.4 000/158] 5.4.255-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230828101157.322319621@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20230828101157.322319621@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian. Friendly ping. Any progress on this? Thanks,
+On 8/28/23 03:11, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.255 release.
+> There are 158 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.255-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-On Mon, May 8, 2023 at 9:37=E2=80=AFAM Sebastian Reichel
-<sebastian.reichel@collabora.com> wrote:
->
-> Hi,
->
-> On Mon, Apr 17, 2023 at 03:16:10PM -0700, Daisuke Nojiri wrote:
-> > When a stylus is removed (or attached) during suspend, the device detac=
-h
-> > (or attach) events can be lost. This patch makes the peripheral device
-> > charge driver retrieve the latest status from the EC on resume.
-> >
-> > BUG=3Db:276414488
-> > TEST=3DRedrix
-> >
-> > Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
-> > ---
->
-> Thanks, queued.
->
-> -- Sebastian
->
-> >  .../power/supply/cros_peripheral_charger.c    | 25 ++++++++++++++++---
-> >  1 file changed, 22 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/power/supply/cros_peripheral_charger.c b/drivers/p=
-ower/supply/cros_peripheral_charger.c
-> > index 1379afd9698d..a204f2355be4 100644
-> > --- a/drivers/power/supply/cros_peripheral_charger.c
-> > +++ b/drivers/power/supply/cros_peripheral_charger.c
-> > @@ -227,8 +227,7 @@ static int cros_pchg_get_prop(struct power_supply *=
-psy,
-> >       return 0;
-> >  }
-> >
-> > -static int cros_pchg_event(const struct charger_data *charger,
-> > -                        unsigned long host_event)
-> > +static int cros_pchg_event(const struct charger_data *charger)
-> >  {
-> >       int i;
-> >
-> > @@ -256,7 +255,7 @@ static int cros_ec_notify(struct notifier_block *nb=
-,
-> >       if (!(host_event & EC_MKBP_PCHG_DEVICE_EVENT))
-> >               return NOTIFY_DONE;
-> >
-> > -     return cros_pchg_event(charger, host_event);
-> > +     return cros_pchg_event(charger);
-> >  }
-> >
-> >  static int cros_pchg_probe(struct platform_device *pdev)
-> > @@ -281,6 +280,8 @@ static int cros_pchg_probe(struct platform_device *=
-pdev)
-> >       charger->ec_dev =3D ec_dev;
-> >       charger->ec_device =3D ec_device;
-> >
-> > +     platform_set_drvdata(pdev, charger);
-> > +
-> >       ret =3D cros_pchg_port_count(charger);
-> >       if (ret <=3D 0) {
-> >               /*
-> > @@ -349,9 +350,27 @@ static int cros_pchg_probe(struct platform_device =
-*pdev)
-> >       return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_PM_SLEEP
-> > +static int __maybe_unused cros_pchg_resume(struct device *dev)
-> > +{
-> > +     struct charger_data *charger =3D dev_get_drvdata(dev);
-> > +
-> > +     /*
-> > +      * Sync all ports on resume in case reports from EC are lost duri=
-ng
-> > +      * the last suspend.
-> > +      */
-> > +     cros_pchg_event(charger);
-> > +
-> > +     return 0;
-> > +}
-> > +#endif
-> > +
-> > +static SIMPLE_DEV_PM_OPS(cros_pchg_pm_ops, NULL, cros_pchg_resume);
-> > +
-> >  static struct platform_driver cros_pchg_driver =3D {
-> >       .driver =3D {
-> >               .name =3D DRV_NAME,
-> > +             .pm =3D &cros_pchg_pm_ops,
-> >       },
-> >       .probe =3D cros_pchg_probe
-> >  };
-> > --
-> > 2.39.2
-> >
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
+
