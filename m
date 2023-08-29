@@ -2,163 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C334078BFD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F0478C046
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbjH2IC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
+        id S234141AbjH2Ia2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233956AbjH2ICO (ORCPT
+        with ESMTP id S234087AbjH2IaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:02:14 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EC9124
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:02:08 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso395579866b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693296127; x=1693900927;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ffv5qw/6jxHEizOlIzxqYRFHwCAgzFtDLHEMCrXrHo=;
-        b=BbMLPYtBom3oXw6zYv3nACWBOPYGb6pGAlI/z0dXUofyBMSzlBFQx2AOiVZ0+33whA
-         6C3a9pEQb3as0eF0AmRL8UYKmQF3pewBAZayZ/fkMwBOEEq4qE4Y20ofk9pO1KJsf6k/
-         a/7z+Ah2zYwh3U0mnYMWyMbj+7lsVBdO100oQqxTvzi5GmJ9Mw1yLOFL5LxFMxg3854j
-         AlllGlwipBSrpsfoO4FvR28l8IDscpfRfLScEdNdi3QK0XCJT+N0opd9izN3G1GYz34T
-         3CcjZrzGmfp/oe+TPU/MswLbOqMc8dpCEpqiVpC0EdWm3HyLLoDYRb3PNkNnFvhsGTpo
-         GrQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693296127; x=1693900927;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ffv5qw/6jxHEizOlIzxqYRFHwCAgzFtDLHEMCrXrHo=;
-        b=cf/FQmRbM2mdOX5MVsDp8/O22mJzLnkY3HmcsqBC2ZIB3blE/Y/u21rxXxQc9nQB3D
-         Tmefpro9cle6B9wS63JBS7S7KQtYh0UjydlfOYM2VTPWRIhiNt9zNrTwdmyhno0Hw/PC
-         NYnrioEItnpKTmeVz2Cnkue2q/x87Gvr1pIKCm8a2SK2IdgmcNtBorSpjl4NIZr3SpSn
-         7jI22FzzwwcAIdLnobX35NXZh+lO4A2dlydKZa8DmxOyEbOBv3JJhxARoXsMMCLNYvI3
-         pPDvJZy6rfk865WOv8NU7D690hBj0Q5XtOFOA2kZ343xhUaG4GVpUtqzVM/uPtoKwxyq
-         balg==
-X-Gm-Message-State: AOJu0YwImHhLfs1mf0g3ZUqucXtoZh2yC1/K/nzBd4RvQr3jOoIhZgqE
-        4/h8ylQcW478xr37LwhkctqBZw==
-X-Google-Smtp-Source: AGHT+IFqEpbqllRr9CmppqIvv8zyZ4jAIDeUvqKWTsD0QK0EcQXaJCfzI0u6bX/7CG2STBh5BqFSKg==
-X-Received: by 2002:a17:906:d14d:b0:9a5:8eab:49da with SMTP id br13-20020a170906d14d00b009a58eab49damr6813967ejb.19.1693296126878;
-        Tue, 29 Aug 2023 01:02:06 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id u4-20020a170906108400b0099d798a6bb5sm5640390eju.67.2023.08.29.01.02.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 01:02:06 -0700 (PDT)
-Message-ID: <9b69a4a6-b011-f0e8-217f-5f91d9a00382@linaro.org>
-Date:   Tue, 29 Aug 2023 10:02:04 +0200
+        Tue, 29 Aug 2023 04:30:07 -0400
+X-Greylist: delayed 1854 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 01:30:04 PDT
+Received: from mail.profitpathwaygo.com (mail.profitpathwaygo.com [141.94.21.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F68A0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:30:04 -0700 (PDT)
+Received: by mail.profitpathwaygo.com (Postfix, from userid 1002)
+        id 977E4484A8; Tue, 29 Aug 2023 07:32:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=profitpathwaygo.com;
+        s=mail; t=1693294419;
+        bh=qp3Ofokho6Ql+WtI8ZPVilyHYhskXL7fod7u9CWs8W4=;
+        h=Date:From:To:Subject:From;
+        b=FMvVucL7QOpZZA0AVmxVQgWsJP+Nm6HraE51LmbvTDjQ/wkhpV0AIpTUZIH468LNA
+         +iRKEVja90yX/hzb9z9WrFnXYIkoqjrdjG/Ld7TgjYL0E13nBuufqC+Z2HxWPZdb/g
+         ksIQvONxp2pmaZwl0u6jXiOKkDEm/4sIptc1XN3lA8YY4vdh7we7LGcmfAdUDQZirI
+         ksEnliE0GKD0BcqBsDwNqxmz1/4TROwgxJaeCzq4c7g9FvdA6nB7Qx7i7vNPIP23MV
+         w4OnehPsqGNTdFWHWkyeMuXa/xgydn9Vto/PheVQzTFrGxhhIc+VhCIuV8DrF2n3sI
+         QbDtwzrI875aw==
+Received: by mail.profitpathwaygo.com for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:31:02 GMT
+Message-ID: <20230829064500-0.1.1f.e282.0.foklepgm28@profitpathwaygo.com>
+Date:   Tue, 29 Aug 2023 07:31:02 GMT
+From:   "Adam Charachuta" <adam.charachuta@profitpathwaygo.com>
+To:     <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania_?=
+X-Mailer: mail.profitpathwaygo.com
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 05/11] dt-bindings: document the Qualcomm TEE Shared
- Memory Bridge
-Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
- <20230828192507.117334-6-bartosz.golaszewski@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230828192507.117334-6-bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 21:25, Bartosz Golaszewski wrote:
-> Add Device Tree bindings for Qualcomm TEE Shared Memory Brige - a
-> mechanism that allows sharing memory buffers between trustzone and the
-> kernel.
+Dzie=C5=84 dobry,
 
-Subject prefix:
-dt-bindings: firmware:
+zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
+=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
+o dalszych rozm=C3=B3w.=20
+
+Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
+=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
+=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
+strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+
+Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
 
 
-
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  .../bindings/firmware/qcom,shm-bridge.yaml    | 36 +++++++++++++++++++
->  1 file changed, 36 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
-> new file mode 100644
-> index 000000000000..f660962b7b86
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/firmware/qcom,shm-bridge.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: QCOM Shared Memory Bridge
-> +
-> +description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +  Qualcomm TEE Shared Memory Bridge allows sharing limited areas of kernel's
-> +  virtual memory with the trustzone in order to avoid mapping the entire RAM.
-> +
-> +maintainers:
-> +  - Bjorn Andersson <andersson@kernel.org>
-> +  - Konrad Dybcio <konrad.dybcio@linaro.org>
-> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - qcom,shm-bridge-sa8775p
-> +          - qcom,shm-bridge-sm8150
-> +          - qcom,shm-bridge-sm8450
-> +      - const: qcom,shm-bridge
-> +
-
-Looks quite empty... Why this cannot be part of qcom,scm? IOW, why do
-you need new binding if you do not have any resources here and the block
-is essentially feature of qcom,scm firmware?
-
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    firmware {
-> +         compatible = "qcom,shm-bridge-sa8775p", "qcom,shm-bridge";
-
-Use 4 spaces for example indentation.
-
-> +    };
-
-Best regards,
-Krzysztof
-
+Pozdrawiam serdecznie
+Adam Charachuta
