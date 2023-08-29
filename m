@@ -2,179 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F306D78BCD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7213D78BCD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbjH2CbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
+        id S235390AbjH2CcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235435AbjH2Caq (ORCPT
+        with ESMTP id S235530AbjH2CcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:30:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5671E1AC
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:30:23 -0700 (PDT)
-Received: from [192.168.2.140] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 97B5B66071DC;
-        Tue, 29 Aug 2023 03:30:20 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693276222;
-        bh=TvkUBHJMrG6CO8fOzJNW2W4LBqEAv0nNIK9wm0HmjW0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EqEqk5kZVC37Y/oUIDGJFEkYg3GZSQtdHiLHqBiKSmQkJI7+sM3o5EcT2WdW7QNgj
-         MBxHJA6YVHI4amFS/7uCiwOAX0uXw8R58ur283EP/zr7Pwx12Y3gb1ezdPV+tdBshV
-         ujvCGYKmEZrCAL/UHXDJr7I6U+aidNMOU70qX1u+FxuabZet+tKgLlkZmlszFstJkX
-         vFrBpDO3CoJktEYXxvW/XE4CVPxtb8IXuzRAsgMffSyuO6vlJ4sAD6JjygZsjWFLhj
-         EF3AFLPOGxZo8gnC3SLKUkE5KnBEMXuSXrzQH6V99VnS6IlrNUqmr8f+E0X++x/cB/
-         oNjv+UlDg9eDw==
-Message-ID: <47b5219e-d425-1dfb-e676-9175d3ac4909@collabora.com>
-Date:   Tue, 29 Aug 2023 05:30:18 +0300
+        Mon, 28 Aug 2023 22:32:06 -0400
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5601A2;
+        Mon, 28 Aug 2023 19:32:00 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VqpTdBj_1693276315;
+Received: from 30.221.110.25(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0VqpTdBj_1693276315)
+          by smtp.aliyun-inc.com;
+          Tue, 29 Aug 2023 10:31:56 +0800
+Message-ID: <484c9f62-748c-6193-9c02-c41449b757b4@linux.alibaba.com>
+Date:   Tue, 29 Aug 2023 10:31:52 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v15 12/23] drm/shmem-helper: Add and use pages_pin_count
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH v2 net-next 4/6] net/smc: support max connections per
+ lgr negotiation
+To:     Wenjia Zhang <wenjia@linux.ibm.com>, jaka@linux.ibm.com,
+        kgraul@linux.ibm.com, tonylu@linux.alibaba.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     horms@kernel.org, alibuda@linux.alibaba.com,
+        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230807062720.20555-1-guangguan.wang@linux.alibaba.com>
+ <20230807062720.20555-5-guangguan.wang@linux.alibaba.com>
+ <a7ed9f2d-5c50-b37f-07d4-088ceef6aeac@linux.ibm.com>
+ <9f4292c4-4004-b73b-1079-41ce7b1a5750@linux.alibaba.com>
+ <2dbf25a0-05a6-d899-3351-598e952a927d@linux.ibm.com>
 Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
- <20230827175449.1766701-13-dmitry.osipenko@collabora.com>
- <20230828134654.7a2c6414@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20230828134654.7a2c6414@collabora.com>
+From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <2dbf25a0-05a6-d899-3351-598e952a927d@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-12.1 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 14:46, Boris Brezillon wrote:
-> On Sun, 27 Aug 2023 20:54:38 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+
+On 2023/8/28 20:54, Wenjia Zhang wrote:
 > 
->> Add separate pages_pin_count for tracking of whether drm-shmem pages are
->> moveable or not. With the addition of memory shrinker support to drm-shmem,
->> the pages_use_count will no longer determine whether pages are hard-pinned
->> in memory, but whether pages exit and are soft-pinned (and could be swapped
->> out). The pages_pin_count > 1 will hard-pin pages in memory.
->>
->> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
->> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->> ---
->>  drivers/gpu/drm/drm_gem_shmem_helper.c | 22 +++++++++++++++++-----
->>  include/drm/drm_gem_shmem_helper.h     | 10 ++++++++++
->>  2 files changed, 27 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> index d545d3d227d7..1a7e5c332fd8 100644
->> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
->> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> @@ -234,14 +234,22 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
->>  
->>  	dma_resv_assert_held(shmem->base.resv);
->>  
->> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
->> +		return 0;
->> +
->>  	ret = drm_gem_shmem_get_pages_locked(shmem);
->> +	if (!ret)
->> +		kref_init(&shmem->pages_pin_count);
->>  
->>  	return ret;
->>  }
->>  
->> -static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
->> +static void drm_gem_shmem_kref_unpin_pages(struct kref *kref)
->>  {
->> -	dma_resv_assert_held(shmem->base.resv);
->> +	struct drm_gem_shmem_object *shmem;
->> +
->> +	shmem = container_of(kref, struct drm_gem_shmem_object,
->> +			     pages_pin_count);
->>  
->>  	drm_gem_shmem_put_pages_locked(shmem);
->>  }
->> @@ -263,6 +271,9 @@ int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem)
->>  
->>  	drm_WARN_ON(obj->dev, obj->import_attach);
->>  
->> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
->> +		return 0;
->> +
->>  	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
->>  	if (ret)
->>  		return ret;
->> @@ -286,9 +297,10 @@ void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem)
->>  
->>  	drm_WARN_ON(obj->dev, obj->import_attach);
->>  
->> -	dma_resv_lock(shmem->base.resv, NULL);
->> -	drm_gem_shmem_unpin_locked(shmem);
->> -	dma_resv_unlock(shmem->base.resv);
->> +	if (kref_put_dma_resv(&shmem->pages_pin_count,
->> +			      drm_gem_shmem_kref_unpin_pages,
->> +			      obj->resv, NULL))
->> +		dma_resv_unlock(obj->resv);
->>  }
->>  EXPORT_SYMBOL_GPL(drm_gem_shmem_unpin);
->>  
->> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
->> index ec2d8b24e3cf..afb7cd671e2a 100644
->> --- a/include/drm/drm_gem_shmem_helper.h
->> +++ b/include/drm/drm_gem_shmem_helper.h
->> @@ -39,6 +39,16 @@ struct drm_gem_shmem_object {
->>  	 */
->>  	unsigned int pages_use_count;
->>  
->> +	/**
->> +	 * @pages_pin_count:
->> +	 *
->> +	 * Reference count on the pinned pages table.
->> +	 * The pages allowed to be evicted and purged by memory
->> +	 * shrinker only when the count is zero, otherwise pages
->> +	 * are hard-pinned in memory.
->> +	 */
->> +	struct kref pages_pin_count;
 > 
-> I know it's tempting to use kref for the pages use/pin count, but I'm
-> wondering if we wouldn't be better using a refcount_t, which provides
-> overflow/underflow protection while still letting us control how we
-> want to handle the locking for 0 <-> 1 transitions. By doing that, we
-> avoid introducing core locking changes that might be more
-> controversial/longer to get accepted. Besides, I suspect the resulting
-> code (the one using a refcount_t) won't be more verbose/complicated (no
-> release functions needed if you don't use kref_put(), which makes
-> things closer to what we have right now).
+> On 15.08.23 08:31, Guangguan Wang wrote:
+>>
+>>
+>> On 2023/8/10 00:04, Wenjia Zhang wrote:
+>>>
+>>>
+>>> On 07.08.23 08:27, Guangguan Wang wrote:
+>>>> Support max connections per lgr negotiation for SMCR v2.1,
+>>>> which is one of smc v2.1 features.
+>> ...
+>>>> @@ -472,6 +473,9 @@ int smc_llc_send_confirm_link(struct smc_link *link,
+>>>>        confllc->link_num = link->link_id;
+>>>>        memcpy(confllc->link_uid, link->link_uid, SMC_LGR_ID_SIZE);
+>>>>        confllc->max_links = SMC_LLC_ADD_LNK_MAX_LINKS;
+>>>> +    if (link->lgr->smc_version == SMC_V2 &&
+>>>> +        link->lgr->peer_smc_release >= SMC_RELEASE_1)
+>>>> +        confllc->max_conns = link->lgr->max_conns;
+>>>>        /* send llc message */
+>>>>        rc = smc_wr_tx_send(link, pend);
+>>>>    put_out:
+>>>
+>>> Did I miss the negotiation process somewhere for the following scenario?
+>>> (Example 4 in the document)
+>>> Client                 Server
+>>>      Proposal(max conns(16))
+>>>      ----------------------->
+>>>
+>>>      Accept(max conns(32))
+>>>      <-----------------------
+>>>
+>>>      Confirm(max conns(32))
+>>>      ----------------------->
+>>
+>> Did you mean the accepted max conns is different(not 32) from the Example 4 when the proposal max conns is 16?
+>>
+>> As described in (https://www.ibm.com/support/pages/node/7009315) page 41:
+>> ...
+>> 2. Max conns and max links values sent in the CLC Proposal are the client preferred values.
+>> 3. The v2.1 values sent in the Accept message are the final values. The client must accept the values or
+>> DECLINE the connection.
+>> 4. Max conns and links values sent in the CLC Accept are the final values (server dictates). The server can
+>> either honor the client’s preferred values or return different (negotiated but final) values.
+>> ...
+>>
+>> If I understand correctly, the server dictates the final value of max conns, but how the server dictates the final
+>> value of max conns is not defined in SMC v2.1. In this patch, the server use the minimum value of client preferred
+>> value and server preferred value as the final value of max conns. The max links is negotiated with the same logic.
+>>
+>> Client                 Server
+>>       Proposal(max conns(client preferred))
+>>       ----------------------->
+>>         Accept(max conns(accepted value)) accepted value=min(client preferred, server preferred)
+>>       <-----------------------
+>>         Confirm(max conns(accepted value))
+>>       ----------------------->
+>>
+>> I also will add this description into commit message for better understanding.
+>>
+>> Thanks,
+>> Guangguan Wang
+>>
+>>
+>>
+> 
+> Sorry for the late answer, I'm just back from vacation.
+> 
+> That's true that the protocol does not define how the server decides the final value(s). I'm wondering if there is some reason for you to use the minimum value instead of maximum (corresponding to the examples in the document). If the both prefered values (client's and server's) are in the range of the acceptable value, why not the maximum? Is there any consideration on that?
+> 
+> Best,
+> Wenjia
 
-Alright, let's try to use refcount_t since Christian also doesn't like kref
+Since the value of the default preferred max conns is already the maximum value of the range(16-255), I am wondering
+whether it makes any sense to use the maximum for decision, where the negotiated result of max conns is always 255.
+So does the max links. 
 
--- 
-Best regards,
-Dmitry
-
+Thanks,
+Guangguan
