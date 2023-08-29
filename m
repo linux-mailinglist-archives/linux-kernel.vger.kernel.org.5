@@ -2,169 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D517878C218
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C198C78C21B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235039AbjH2KNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
+        id S235056AbjH2KNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjH2KMv (ORCPT
+        with ESMTP id S234960AbjH2KNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:12:51 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8639B10E
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:12:47 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-986d8332f50so543773966b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:12:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693303966; x=1693908766;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8BHRqjRUHWh/q8q/oAtUtXBDpUw22yD75gwk1BrkR2g=;
-        b=sMKG1r4INABe5BOHSCnaNYoII26XmYsAeFpSU1YVJgAnAaGFWUbi8mItCbppuT+nFa
-         wDEmXOWCZzoHRi35wGyQmj1+nQC5fPVx5Lgk0FHZ+0D6k2Zso68fZEIrVcb1tYQK4cJ8
-         jCPjiuKvkJkB+V46/cflo0vfC1Nh9lgxVzMZoSd4/mG62vf7skzmaQ4/ScEMwVMPihQ7
-         eGjP8kpezTuY+d36uOzo4QcrsA8tUIRTk/6Ruy6nevErIE6PCRJLMMt5GyVU3wf9AA1B
-         ELZ7ARs9a27HI7kGD4vANGR65pI6TUWF0pjYqXJEHtWrG217hPtmXFAXtRtNuwAxHNSf
-         K0WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693303966; x=1693908766;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8BHRqjRUHWh/q8q/oAtUtXBDpUw22yD75gwk1BrkR2g=;
-        b=b7sVUGcQWxurTpzJOqa8TvcC4R8q2/os/J/fOwldn9Kw+HRiM0FuNhcimKENo1ec6x
-         kePbl+KaRuloIZUM1mYMk72KcFmb/aOaZvXON+1vsEMaorYwB8hE42qWfxYH1LZHEPDs
-         azs+WJKGmHUL9l4UpyS/zyieRzgw6pR1i4C7zQHdsGmIT/SLnV3szxze7HSYv8MxOeyp
-         728y7+cFMMV2oaRbH3/uXHzLTgLcTEATETqz7lMNJIqtS6GdjnPyajU9OyIVHIhDo+QQ
-         oZ+3c/MzKYeDm6NWDftTLMrDb2LzLxcbnlpDynGwmHUVffNyWIUMn+JyIA/IM1f11sxE
-         8phQ==
-X-Gm-Message-State: AOJu0Yz1pTDwroi+Pw1sDigRTKpkmKAjFFl/GGBEenJPBpLF8R4ZKXRZ
-        utVpKEbAal+MiPF8Xer0ct6TNQ==
-X-Google-Smtp-Source: AGHT+IEVZG0wjv1izZ+thJ+jA0Y3aGWG+XxKPR547yYfZOSc84pSU324P8PndHrm4MicZOwPv6k+9g==
-X-Received: by 2002:a17:907:78c4:b0:9a5:ceab:f499 with SMTP id kv4-20020a17090778c400b009a5ceabf499mr865367ejc.19.1693303966021;
-        Tue, 29 Aug 2023 03:12:46 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id f17-20020a17090624d100b0099cb0a7098dsm5864237ejb.19.2023.08.29.03.12.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 03:12:45 -0700 (PDT)
-Message-ID: <f457ee94-81d0-bd28-1432-ba2828dabb79@linaro.org>
-Date:   Tue, 29 Aug 2023 12:12:44 +0200
+        Tue, 29 Aug 2023 06:13:45 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E79F9;
+        Tue, 29 Aug 2023 03:13:43 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37TA3TE2030487;
+        Tue, 29 Aug 2023 05:13:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=q7oZvrbwkLp9AYr
+        QEMRkOA7qRZqp2CnvpKxS1A2TLXQ=; b=VEzF34tHFnW+5raBipsWQ/m45C92Eyh
+        FnwjGA3ZB6WiTYlMNBz7xabKqDJlUGkeDTx1Nx8WrL69c5Svkd/OPX6JbDknZxUy
+        BouAcE2nWz+QTCmEsP2QgW+CPHVzhUNrZjxQTlfv4jBhPBsaZNbckxO+6umRar5D
+        3vJnzva5boUtGH/kog6S9dNBBOLEaBkgVsGdijB0jKJZMUXPjF7uIaDbicN8BPvE
+        oNMWRN97d1Lj6ChxRWTEvgZQzyswbUkK/zLhP79tWhXQBl0XnGQ43aVa9/mh/ql/
+        fabmrFhHM+Wr7ajrPeHwFyPe+hcbpP8W1R9/Hwk+2FGJ053LqhOI2ww==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sqdtj2sff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 05:13:29 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 29 Aug
+ 2023 11:13:28 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Tue, 29 Aug 2023 11:13:27 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D9D7815B6;
+        Tue, 29 Aug 2023 10:13:27 +0000 (UTC)
+Date:   Tue, 29 Aug 2023 10:13:27 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <RicardoRivera-Matosricardo.rivera-matos@cirrus.com>
+Subject: Re: [PATCH 7/7] ASoC: cs35l45: Add AMP Enable Switch control
+Message-ID: <20230829101327.GU103419@ediswmail.ad.cirrus.com>
+References: <20230828170525.335671-1-vkarpovi@opensource.cirrus.com>
+ <20230828170525.335671-7-vkarpovi@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq support
-Content-Language: en-US
-To:     Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, jassisinghbrar@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     quic_varada@quicinc.com, quic_srichara@quicinc.com
-References: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
- <20230829095423.760641-4-quic_gokulsri@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230829095423.760641-4-quic_gokulsri@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230828170525.335671-7-vkarpovi@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: nulj9butcyKNvwHlsnBYZ02Vhlp4i9Q5
+X-Proofpoint-GUID: nulj9butcyKNvwHlsnBYZ02Vhlp4i9Q5
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 11:54, Gokul Sriram Palanisamy wrote:
-> Add the APCS, A53 PLL, cpu-opp-table nodes to set
-> the CPU frequency at optimal range.
+On Mon, Aug 28, 2023 at 12:05:25PM -0500, Vlad Karpovich wrote:
+> The "AMP Enable Switch" is useful in systems with multiple
+> amplifiers connected to the same audio bus
+> but not all of them are needed for all use cases.
 > 
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
 > ---
->  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 34 +++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> index 9f13d2dcdfd5..05843517312c 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> @@ -8,6 +8,7 @@
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
->  #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
-> +#include <dt-bindings/clock/qcom,apss-ipq.h>
 
-c is before r.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
->  
->  / {
->  	interrupt-parent = <&intc>;
-> @@ -36,6 +37,8 @@ CPU0: cpu@0 {
->  			reg = <0x0>;
->  			enable-method = "psci";
->  			next-level-cache = <&L2_0>;
-> +			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-> +			operating-points-v2 = <&cpu_opp_table>;
->  		};
->  
->  		CPU1: cpu@1 {
-> @@ -44,6 +47,8 @@ CPU1: cpu@1 {
->  			reg = <0x1>;
->  			enable-method = "psci";
->  			next-level-cache = <&L2_0>;
-> +			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-> +			operating-points-v2 = <&cpu_opp_table>;
->  		};
->  
->  		L2_0: l2-cache {
-> @@ -54,6 +59,17 @@ L2_0: l2-cache {
->  		};
->  	};
->  
-> +	cpu_opp_table: opp-table-cpu {
-> +		compatible = "operating-points-v2";
-> +		opp-shared;
-> +
-> +		opp-1008000000 {
-> +			opp-hz = /bits/ 64 <1008000000>;
-> +			opp-microvolt = <1100000>;
-> +			clock-latency-ns = <200000>;
-
-And the rest of OPPs?
-
-> +		};
-> +	};
-> +
->  	firmware {
->  		scm {
->  			compatible = "qcom,scm-ipq5018", "qcom,scm";
-> @@ -181,6 +197,24 @@ v2m1: v2m@1000 {
->  			};
->  		};
->  
-> +		a53pll: clock@b116000 {
-> +			compatible = "qcom,ipq5018-a53pll";
-> +			reg = <0x0b116000 0x40>;
-> +			#clock-cells = <0>;
-> +			clocks = <&xo_board_clk>;
-> +			clock-names = "xo";
-> +		};
-> +
-> +		apcs_glb: mailbox@b111000 {
-
-0xb111000 looks lower than 0x116000.
-
-> +			compatible = "qcom,ipq5018-apcs-apps-global",
-> +				     "qcom,ipq6018-apcs-apps-global";
-> +			reg = <0x0b111000 0x1000>;
-
-Best regards,
-Krzysztof
-
+Thanks,
+Charles
