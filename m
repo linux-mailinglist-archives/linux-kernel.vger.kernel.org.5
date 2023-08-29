@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7073978BC7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D0178BC7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbjH2Bv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 21:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
+        id S235004AbjH2Bxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 21:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233757AbjH2Bu7 (ORCPT
+        with ESMTP id S231881AbjH2BxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 21:50:59 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440A718B;
-        Mon, 28 Aug 2023 18:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1693273848;
-        bh=gz+SpYsJZoNJIbXhISglKVKiezAx/o2Szzs3ikQzhcU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZkNRRuvwTxCGbQ+aJ6OE0jSlwOpBgEbDoPqjHSBIPKhrFH5tkGbuq+Be6yd55/fen
-         Z2lmVcMT4Svjp0e/UXF/FFyYiMeTZFy7WXAOaxx62GpfhIdVLz0lLczgHFBHwJ+FPM
-         ox3YKFzP8YEap078MUGM0yRbaYjK32V58cTGdWpayxYsNpTQUDWFJF3ZNVe6/hQ2+H
-         JlnE5u1xobGs8ziNdAuaQXjsdgxmXPnGj4xEmS7sqEBeYdKN2cTdi/PAZamxflBPAy
-         NLBb/m8IOUguHJ2m2WxBiG39UHa5a/522VwrBst2cuzIfA9IUWTUY0nDf2UzQbpF89
-         FioRY2Sx4xYPw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RZVkb4mg8z4wbP;
-        Tue, 29 Aug 2023 11:50:47 +1000 (AEST)
-Date:   Tue, 29 Aug 2023 11:50:35 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robh@kernel.org>, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pranavi Somisetty <pranavi.somisetty@amd.com>
-Subject: linux-next: manual merge of the devicetree tree with the net-next
- tree
-Message-ID: <20230829115035.3ccb367a@canb.auug.org.au>
+        Mon, 28 Aug 2023 21:53:25 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8AD188
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 18:53:23 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6beff322a97so1912936a34.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 18:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693274003; x=1693878803;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aPqDB6HyxDpsGqhk8YL0aBdN9XVTidEKj/nzhsE+uQ0=;
+        b=EJd1g1FQM/Ry00Yo+7uGfJhpmU4a7d/6VYtbbdh2L12GboKKLAU/9UeIL7tp39oMTO
+         sTYU8z9lrcnk6jYkRjufRG5eDZ/1aZbskhbqdyDr/5/1ZHWmi3QQsV1exXGLRBu+zz1k
+         8Te/KLVYciKWafD6kwcyZtVok8ynh0Wvku/uYWK0nHB8EOf7hd3NiC8Xqe2PQlQCc7Ld
+         Gt3k7jB3swC9pNYkvMKMgIv0PohgXF2pHiLTAFOMr4ePh3igSKwzJluW6QhcJqTx+5HR
+         Gm706quI9Tii2zoN/Axnu1IjMJW81hOl4/bGmvLypKL+4v/k98Dk7/9xueETxXz1z1Dv
+         tlIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693274003; x=1693878803;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aPqDB6HyxDpsGqhk8YL0aBdN9XVTidEKj/nzhsE+uQ0=;
+        b=OpImHrntCvAViaWHYxHlDOilsSKJ9kIr4cyZ4pHov0l75xm0yMC/MrwitNG0v1qHvS
+         pDCH8Y/hTOpgDpOVTvHvwP/b5zLj1X/efTgHBMvpqO4lylgMGHI8Zvdbi2huN6rk9pZn
+         gOsSNTo0a4snbhOnbSQeaSDM5UTy73V7l0w/24Uc9ZwaoGj470rkmFpqfzWh+/XWcs3f
+         DVotum9DDL644Zz1gvJtNV2bXP+xuX5KMTrEZ8SGg2aXAM7wJkuMu4kO0P2gohPoCz2C
+         6YAoiVVLs1PQHsNwfPnyf6RMBL3WMD1qUqVq+2oBIzhufXDmYPFQgXBDNs0pr5IdyoUa
+         +oWQ==
+X-Gm-Message-State: AOJu0YxMaX2Q9HloxxkyoeiJMLnW1pfU4NH3048Wmb71TpJVxjxQdAsi
+        qh+uOaoBIWqZsxJQxAoMGJt44wBQsGQ=
+X-Google-Smtp-Source: AGHT+IH0HXmDcEVHKigtPVbrNQDUoooZViS/VGLOlaEPaPB/gkEmZt8hfXp/hYJFYqw5Jh1KDtiJng==
+X-Received: by 2002:a05:6870:d109:b0:1be:f0b4:b9bc with SMTP id e9-20020a056870d10900b001bef0b4b9bcmr13096144oac.39.1693274002725;
+        Mon, 28 Aug 2023 18:53:22 -0700 (PDT)
+Received: from localhost ([2600:6c5e:2a00:5805:c222:580f:7592:7110])
+        by smtp.gmail.com with ESMTPSA id z43-20020a056870c22b00b001cd04c355d8sm4636394oae.29.2023.08.28.18.53.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 18:53:22 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 18:53:21 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v3 7/8] bitmap: drop _reg_op() function
+Message-ID: <ZO1OiVVxsXALqlGS@yury-ThinkPad>
+References: <20230815233628.45016-1-yury.norov@gmail.com>
+ <20230815233628.45016-8-yury.norov@gmail.com>
+ <ZN3szFnWIBtFwg9K@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1jy1a8atENSjDEZREbKmQP0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZN3szFnWIBtFwg9K@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1jy1a8atENSjDEZREbKmQP0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Aug 17, 2023 at 12:47:56PM +0300, Andy Shevchenko wrote:
+> On Tue, Aug 15, 2023 at 04:36:27PM -0700, Yury Norov wrote:
+> > Now that all _reg_op() users are switched to alternative functions,
+> > _reg_op() machinery is not needed anymore.
+> 
+> ...
+> 
+> > - * Can set, verify and/or release a region of bits in a bitmap,
+> > - * depending on which combination of REG_OP_* flag bits is set.
+> > - *
+> > - * A region of a bitmap is a sequence of bits in the bitmap, of
+> > - * some size '1 << order' (a power of two), aligned to that same
+> > - * '1 << order' power of two.
+> 
+> Just wondering if we have some equivalent to the above doc in the
+> existing kernel doc of users of this.
 
-Hi all,
-
-Today's linux-next merge of the devicetree tree got a conflict in:
-
-  Documentation/devicetree/bindings/net/xilinx_gmii2rgmii.txt
-
-between commit:
-
-  c639a708a0b8 ("dt-bindings: net: xilinx_gmii2rgmii: Convert to json schem=
-a")
-
-from the net-next tree and commit:
-
-  47aab53331ef ("dt-bindings: Fix typos")
-
-from the devicetree tree.
-
-I fixed it up (the former included the change from the latter, so I just
-deleted this file) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1jy1a8atENSjDEZREbKmQP0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTtTusACgkQAVBC80lX
-0GwpiAf/f0NNtmPKnpEuhwAMJSlN1G6vSXuy5R1y7u9yGZDt6R9pw27y83y0xHkM
-GXxrddFz1ETqnWPPhK5y0XRGEdNhFTJKReoKfg79pNbBzoMtbYAQK6MlePYlpV4w
-/mqq9h0acWEAc825o20Br9cFOvK844a6xvGbERj8cMY6WtTilSoqvaP0aNbryLmx
-83NiQnJCtwhvVKxjHaYatVq8s+4mWwwXxclLXZStSAvQnnGD6WIcq3HHtxRqt8ys
-DKxGSg1Ohf/VTvxfumpXBHhualD2ZeixAxI/yEWe2TRZHiyapTwa/WeR0quxo9Jb
-79Je9YlKz3yMJTU/kPWSJ74qxzle3A==
-=mnzC
------END PGP SIGNATURE-----
-
---Sig_/1jy1a8atENSjDEZREbKmQP0--
+This comment is not fully correct because the code doesn't enforce
+alignment of the region. Let's drop this part just as well.
