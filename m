@@ -2,200 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1778878C06E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1119078C075
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbjH2Iil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51444 "EHLO
+        id S233974AbjH2IjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbjH2IiL (ORCPT
+        with ESMTP id S234418AbjH2Iiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:38:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BB0BC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:38:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AC9716204B
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:38:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEEE3C433C8;
-        Tue, 29 Aug 2023 08:38:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693298287;
-        bh=lrPVK9thEyqQovRleImFGsZ/M+QsnNDN/Ncyq0d6vA0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cW5HBbzsmEyW6hz14GMFZ+NXRHfUePMJ+9NuHPR833parCacNt01Vmrgnj6RpQ+V6
-         RW1GOLpX1pZXAhu9bS+zgWsaXvOB+d8BQNOA2U4BfldL3smh8rbffg56QvncZwmbyL
-         hJHtS/nz7quSPrdfpWDY8JVTmVUN/48l3bHMNMVopGRxOcb4PXefM7qBNY90Rlyepc
-         I5/y6qiiZwBJ55asW/PtPSTpdDiYeIBtsnQbK2LeUqvHX5Tp0lRX+ATZ9/ITOcYYSo
-         Afqn0fpHF7LIpT9R2Vf9E0ZLSE0LfFRGrSjgUJbMjjBkD+q7LzF2DInQ75vgUpwyPW
-         pxX9DYrR5qCAw==
-Date:   Tue, 29 Aug 2023 10:38:04 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
-Message-ID: <mumiep5q7x7qj7k64h3cyodxrgk737iy5rum5keguquwymf2gy@3qruwfrqjgy7>
-References: <20230804210644.1862287-1-dianders@chromium.org>
- <20230804140605.RFC.4.I930069a32baab6faf46d6b234f89613b5cec0f14@changeid>
- <bphkopaq76imqzut7xrx7aprqybhx3veajdympqhig2wqlix6c@64ck23rc5cv7>
- <CAD=FV=XiVkoCsjin4R74nkcd8vzOq9uPq+o5cRjd=YOoPXuQkg@mail.gmail.com>
- <lhd6ai7d6swlxhisjhikytguor7pptrymo3bmfwej4k7zqrnv4@hp2gvhw7mh3m>
- <CAD=FV=XUhzguFCC=aKzHFMV0bBnZzkHXP_tx+P=PNkVr=8SnTA@mail.gmail.com>
+        Tue, 29 Aug 2023 04:38:55 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD48FFC;
+        Tue, 29 Aug 2023 01:38:48 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qauFE-0007Gv-KK; Tue, 29 Aug 2023 10:38:40 +0200
+Message-ID: <fcf2f600-d1f0-de14-956b-4d4f3f0cb3fa@leemhuis.info>
+Date:   Tue, 29 Aug 2023 10:38:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=XUhzguFCC=aKzHFMV0bBnZzkHXP_tx+P=PNkVr=8SnTA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH v3] tpm: Enable hwrng only for Pluton on AMD CPUs
+Content-Language: en-US, de-DE
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     linux-integrity@vger.kernel.org,
+        Jerry Snitselaar <jsnitsel@redhat.com>, stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
+        Patrick Steinhardt <ps@pks.im>, Ronan Pigott <ronan@rjp.ie>,
+        Raymond Jay Golo <rjgolo@gmail.com>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        Dusty Mabe <dusty@dustymabe.com>
+References: <20230822231510.2263255-1-jarkko@kernel.org>
+ <705b9769-4132-450b-bd47-2423c419db2a@molgen.mpg.de>
+ <CV03X3OEI7RE.3NI1QJ6MBJSHA@suppilovahvero>
+ <1eeddbdc-c1f0-4499-b3d1-24c96f42a50b@amd.com>
+ <CV3J3TCMB74C.1WA96NQ9J593U@suppilovahvero>
+ <f6d75cac-2556-484e-8a2c-3531b24b1ca5@amd.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <f6d75cac-2556-484e-8a2c-3531b24b1ca5@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693298328;afbcb769;
+X-HE-SMSGID: 1qauFE-0007Gv-KK
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 09:06:29AM -0700, Doug Anderson wrote:
-> > > Shutdown is called any time you reboot a device. That means that if a
-> > > DRM driver is _not_ calling drm_atomic_helper_shutdown() on the
-> > > panel's behalf at shutdown time then the panel won't be powered off
-> > > properly. This feels to me like something that might actually matter.
-> >
-> > It does matter. What I disagree on is that you suggest working around
-> > that brokenness in the core framework. What I'm saying is driver is
-> > broken, we should keep the core framework sane and fix it in the driver.
-> >
-> > It should be fairly easy with a coccinelle script to figure out which
-> > panels are affected, and to add that call in remove.
->=20
-> I think I'm confused here. I've already figured out which panels are
-> affected in my patch series, right? It's the set of panels that today
-> try to power the panel off in their shutdown call, right? ...but I
-> think we can't add the call you're suggesting,
-> drm_atomic_helper_shutdown(), to the _panel_'s shutdown callback, can
-> we? We need to add it to the shutdown callback of the top-level DRM
-> driver, right?
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
 
-I have no idea what happens if we just unbind the panel device from its
-driver.
+On 28.08.23 02:35, Mario Limonciello wrote:
+> On 8/27/2023 13:12, Jarkko Sakkinen wrote:
+>> On Wed Aug 23, 2023 at 9:58 PM EEST, Mario Limonciello wrote:
+>>> On 8/23/2023 12:40, Jarkko Sakkinen wrote:
+>>>> On Wed Aug 23, 2023 at 11:23 AM EEST, Paul Menzel wrote:
+>>>>> Am 23.08.23 um 01:15 schrieb Jarkko Sakkinen:
+>>>>>> The vendor check introduced by commit 554b841d4703 ("tpm: Disable
+>>>>>> RNG for
+>>>>>> all AMD fTPMs") doesn't work properly on a number of Intel fTPMs. 
+>>>>>> On the
+>>>>>> reported systems the TPM doesn't reply at bootup and returns back the
+>>>>>> command code. This makes the TPM fail probe.
+>>>>>>
+>>>>>> Since only Microsoft Pluton is the only known combination of AMD
+>>>>>> CPU and
+>>>>>> fTPM from other vendor, disable hwrng otherwise. In order to make
+>>>>>> sysadmin
+>>>>>> aware of this, print also info message to the klog.
+>>>>>>
+>>>>>> Cc: stable@vger.kernel.org
+>>>>>> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
+>>>>>> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+>>>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
+>>>>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+>>>>>
+>>>>> Mario’s patch also had the three reporters below listed:
+>>>>>
+>>>>> Reported-by: Patrick Steinhardt <ps@pks.im>
+>>>>> Reported-by: Ronan Pigott <ronan@rjp.ie>
+>>>>> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+>>>>
+>>>> The problem here is that checkpatch throws three warnings:
+>>>>
+>>>> WARNING: Reported-by: should be immediately followed by Closes: with
+>>>> a URL to the report
 
-If we can't, then it's all fine. If we can, then we need figure out how
-to unregister the DRM device (or block the unbinding from happening).
+Note, those are warnings (and not an errors) on purpose and the text
+says "should" (and not "must"), so this is IMHO something in this case
+can be ignored, as Mario indicated in his reply.
 
-> > > Panels tend to be one of those things that really care about their
-> > > power sequencing and can even get damaged (or not turn on properly
-> > > next time) if sequencing is not done properly, so just removing this
-> > > code and putting the blame on the DRM driver seems scary to me.
-> >
-> > Sure, it's bad. But there's no difference compared to the approach you
-> > suggest in that patch: you created a helper, yes, but every driver will
-> > still have to call that helper and if they don't, the panel will still
-> > be called and it's a bug. And we would have to convert everything to
-> > that new helper.
-> >
-> > It's fundamentally the same discussion than what you were opposed to
-> > above.
->=20
-> I think the key difference here is that, if I understand correctly,
-> drm_atomic_helper_shutdown() needs to be added to the top-level DRM
-> driver, not to the panel itself. I guess I'm worried that I'll either
-> miss a case or that simply adding a call to
-> drm_atomic_helper_shutdown() in the top-level DRM driver will break
-> something. Well, I suppose I can try it and see what happens...
+But I write for a different reason: this seems to become a regression
+that is annoying quite a few people (in 6.5 and 6.4.y afaics), so it
+would be good to get the fix merged to mainline rather sooner than
+later. Are these warnings and the mentioning of affected machines in the
+patch descriptions the only remaining problems, or is there anything
+else that needs to be addressed?
 
-The more I think about this discussion, the more I think that the
-original intent of the prepared/enabled flags were precisely there to
-prevent a double-disable for drivers with drm_atomic_helper_shutdown(),
-while still shutting down the panel resources when the panel is used
-with a driver that doesn't call it.
+Ciao, Thorsten (just back from vacation and catching up)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-Honestly, I think the right thing to do here is to make every driver
-call shutdown, and then you don't need the reference counting anymore.
-
-I had a shot at a (possibly very suboptimal) coccinelle script to look
-for drivers that are KMS drivers but don't call
-drm_atomic_helper_shutdown() at shutdown.
-
-https://paste.ack.tf/bb42e6@raw
-
-The result is:
-
-$ make coccicheck COCCI=3D./test-drm-shutdown.cocci MODE=3Dreport
-
-=2E..
-
-=2E/drivers/gpu/drm/sti/sti_drv.c:262:30-49: ERROR: KMS driver sti_platform=
-_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/armada/armada_drv.c:245:30-56: ERROR: KMS driver armada=
-_drm_platform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:1637:25-39: ERROR: KMS driver vmw_p=
-ci_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/vboxvideo/vbox_drv.c:163:25-40: ERROR: KMS driver vbox_=
-pci_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/tiny/arcpgu.c:424:30-52: ERROR: KMS driver arcpgu_platf=
-orm_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/omapdrm/omap_drv.c:856:30-34: ERROR: KMS driver pdev is=
- missing shutdown implementation
-=2E/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c:361:30-57: ERROR: KMS driver =
-fsl_dcu_drm_platform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/tve200/tve200_drv.c:261:30-43: ERROR: KMS driver tve200=
-_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/stm/drv.c:235:30-53: ERROR: KMS driver stm_drm_platform=
-_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/qxl/qxl_drv.c:267:25-39: ERROR: KMS driver qxl_pci_driv=
-er is missing shutdown implementation
-=2E/drivers/gpu/drm/logicvc/logicvc_drm.c:494:30-57: ERROR: KMS driver logi=
-cvc_drm_platform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/sun4i/sun4i_drv.c:439:30-55: ERROR: KMS driver sun4i_dr=
-v_platform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c:827:30-60: ERROR: KMS driv=
-er atmel_hlcdc_dc_platform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/mcde/mcde_drv.c:471:30-41: ERROR: KMS driver mcde_drive=
-r is missing shutdown implementation
-=2E/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c:366:25-41: ERROR: KMS d=
-river hibmc_pci_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c:365:30-56: ERROR: KMS driver as=
-peed_gfx_platform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/ingenic/ingenic-drm-drv.c:1607:30-48: ERROR: KMS driver=
- ingenic_drm_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/arm/malidp_drv.c:982:30-52: ERROR: KMS driver malidp_pl=
-atform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/arm/hdlcd_drv.c:400:30-51: ERROR: KMS driver hdlcd_plat=
-form_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/kmb/kmb_drv.c:622:30-49: ERROR: KMS driver kmb_platform=
-_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/exynos/exynos_drm_drv.c:356:30-56: ERROR: KMS driver ex=
-ynos_drm_platform_driver is missing shutdown implementation
-=2E/drivers/gpu/drm/tiny/bochs.c:718:25-41: ERROR: KMS driver bochs_pci_dri=
-ver is missing shutdown implementation
-=2E/drivers/gpu/drm/tiny/cirrus.c:746:25-42: ERROR: KMS driver cirrus_pci_d=
-river is missing shutdown implementation
-=2E/drivers/gpu/drm/mediatek/mtk_drm_drv.c:954:30-53: ERROR: KMS driver mtk=
-_drm_platform_driver is missing shutdown implementation
-
-It's a significant number of drivers, but it's not the end of the world,
-really.
-
-Then, once the expectation is that all drivers are calling shutdown, we
-don't have to worry about the refcounting at all in the panels, or
-resources not being free'd anymore. And we have a single path to test
-(disable) instead of two including one that might be difficult to test
-properly.
-
-> I'll try to cook up a v2 and we'll see what people say. I might keep
-> the RFC tag for v2 just because I expect it to still be touching a lot
-> of stuff.
-
-Awesome, thanks
-
-Maxime
+#regzbot poke
