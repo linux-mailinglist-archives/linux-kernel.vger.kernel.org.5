@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5191478C5AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C393B78C60C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236288AbjH2NeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S236454AbjH2NfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236270AbjH2Ndm (ORCPT
+        with ESMTP id S230320AbjH2Ndo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:33:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A97F7;
-        Tue, 29 Aug 2023 06:33:40 -0700 (PDT)
+        Tue, 29 Aug 2023 09:33:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589B2F7;
+        Tue, 29 Aug 2023 06:33:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27A1461161;
-        Tue, 29 Aug 2023 13:33:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70A54C433C9;
-        Tue, 29 Aug 2023 13:33:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E23F96182F;
+        Tue, 29 Aug 2023 13:33:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DB3FC433CA;
+        Tue, 29 Aug 2023 13:33:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693316019;
-        bh=+lDlZIwh9YO+GWW5KUibHH5CjJc9m+CI/kUqVP0XdAM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fnjlvntQNAyKCxisJZLZPnat7PoUWpFzyetmOXJ3hO3KkbYqpGyCCyHBYWc/sAcle
-         0X0sb6gpz+px1+wAz0ooc4nqexAQ2/3Q88tDk9gEgKcwiojIu6oSk7Xo9rVWjTHumC
-         unH0/3Z6aH72A+GHajqiKSmcduvgg86/7inlSZ/b1lTdFjHEyuhYb/FP71hON5JA/E
-         Eqn+BkaOduQhKeeKYVpt17wTZVjWuxkokO3NFQVzJOIa/6EXFDeOxyMGHsa2AtfeRa
-         SiEila65LT36fUevnfPgw3YtKvjuSBrLFCf/b6sHqeR9jppBUrsZwtC6Kiz8G+W/ug
-         J4RRy7unv0lCQ==
+        s=k20201202; t=1693316021;
+        bh=QoFu0JXEcSPMBOQK+dczKVqRIZkh45D2FugjkFCko2o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mKfYJOvUI55wevGRk/a8os8r30mxcsrT+VHep54uVrQxxhXLRytCc18vX1W4YABls
+         kBP/gTgNoVT3uv8tvWoKptmpNap/goVw8k2ufNxexXzmqkljlW3k6JkRmllkcD5M09
+         2bAwk+7UT4p2L/uYk4bvWsQVoowpEq5JMswHMy8yPB+M5uLBBFYfRtwkx9BWGE1uqn
+         m2B9HinUCYiE+ehAiwYb8c0UzeoZjm4BOUI99cr0gVsEXY/AxWEWxmQejv2YAFbpJo
+         f6IsdIG9uUzy1inqmxF9Wzhbz0np1WNVTNkYO9AjYpOniDtPSnpOcMWZqLZy2gk4J7
+         YJ67T6mPBmM9w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Mastykin <dmastykin@astralinux.ru>,
-        Paul Moore <paul@paul-moore.com>,
+Cc:     David Christensen <drc@linux.vnet.ibm.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 1/7] netlabel: fix shift wrapping bug in netlbl_catmap_setlong()
-Date:   Tue, 29 Aug 2023 09:33:30 -0400
-Message-Id: <20230829133336.520573-1-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, aelior@marvell.com,
+        skalluru@marvell.com, manishc@marvell.com, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 2/7] bnx2x: fix page fault following EEH recovery
+Date:   Tue, 29 Aug 2023 09:33:31 -0400
+Message-Id: <20230829133336.520573-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230829133336.520573-1-sashal@kernel.org>
+References: <20230829133336.520573-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.192
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,36 +61,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Mastykin <dmastykin@astralinux.ru>
+From: David Christensen <drc@linux.vnet.ibm.com>
 
-[ Upstream commit b403643d154d15176b060b82f7fc605210033edd ]
+[ Upstream commit 7ebe4eda4265642859507d1b3ca330d8c196cfe5 ]
 
-There is a shift wrapping bug in this code on 32-bit architectures.
-NETLBL_CATMAP_MAPTYPE is u64, bitmap is unsigned long.
-Every second 32-bit word of catmap becomes corrupted.
+In the last step of the EEH recovery process, the EEH driver calls into
+bnx2x_io_resume() to re-initialize the NIC hardware via the function
+bnx2x_nic_load().  If an error occurs during bnx2x_nic_load(), OS and
+hardware resources are released and an error code is returned to the
+caller.  When called from bnx2x_io_resume(), the return code is ignored
+and the network interface is brought up unconditionally.  Later attempts
+to send a packet via this interface result in a page fault due to a null
+pointer reference.
 
-Signed-off-by: Dmitry Mastykin <dmastykin@astralinux.ru>
-Acked-by: Paul Moore <paul@paul-moore.com>
+This patch checks the return code of bnx2x_nic_load(), prints an error
+message if necessary, and does not enable the interface.
+
+Signed-off-by: David Christensen <drc@linux.vnet.ibm.com>
+Reviewed-by: Sridhar Samudrala <sridhar.samudrala@intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netlabel/netlabel_kapi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/net/netlabel/netlabel_kapi.c b/net/netlabel/netlabel_kapi.c
-index 91b35b7c80d82..96059c99b915e 100644
---- a/net/netlabel/netlabel_kapi.c
-+++ b/net/netlabel/netlabel_kapi.c
-@@ -857,7 +857,8 @@ int netlbl_catmap_setlong(struct netlbl_lsm_catmap **catmap,
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c
+index afb6d3ee1f564..c8cbf3ed128de 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c
+@@ -14372,11 +14372,16 @@ static void bnx2x_io_resume(struct pci_dev *pdev)
+ 	bp->fw_seq = SHMEM_RD(bp, func_mb[BP_FW_MB_IDX(bp)].drv_mb_header) &
+ 							DRV_MSG_SEQ_NUMBER_MASK;
  
- 	offset -= iter->startbit;
- 	idx = offset / NETLBL_CATMAP_MAPSIZE;
--	iter->bitmap[idx] |= bitmap << (offset % NETLBL_CATMAP_MAPSIZE);
-+	iter->bitmap[idx] |= (NETLBL_CATMAP_MAPTYPE)bitmap
-+			     << (offset % NETLBL_CATMAP_MAPSIZE);
+-	if (netif_running(dev))
+-		bnx2x_nic_load(bp, LOAD_NORMAL);
++	if (netif_running(dev)) {
++		if (bnx2x_nic_load(bp, LOAD_NORMAL)) {
++			netdev_err(bp->dev, "Error during driver initialization, try unloading/reloading the driver\n");
++			goto done;
++		}
++	}
  
- 	return 0;
+ 	netif_device_attach(dev);
+ 
++done:
+ 	rtnl_unlock();
  }
+ 
 -- 
 2.40.1
 
