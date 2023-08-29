@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD48778CE8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDC878CEB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbjH2VIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 17:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
+        id S231841AbjH2VQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240651AbjH2VHj (ORCPT
+        with ESMTP id S234387AbjH2VQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 17:07:39 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE95BD;
-        Tue, 29 Aug 2023 14:07:36 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TCsbQ3005281;
-        Tue, 29 Aug 2023 21:07:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=jt0oIgTyqjbTXFE8R+uBXHTwbnogDehsEUidVF5fLmc=;
- b=D6exVpbsp6DiENE2+cXYO0RMQQkv4BT7zgXBId/Eh8I5rwmpK9dM9yMirMmmy7fIB2iw
- +rGwND1cJqD2olUNCWCDNSy2JP7Cmse6YfeLwFlymYMXuJZ48ZytnEcuVOjVwkt8OZCq
- yhCO6oqFo1Gu/T45bjcHUdtYTGtzGPCSfY2IE2quhKXQ+Gf4LowDDWQgCbyOuY3Cm31w
- v900t7JzhjsFBCK6xwt2pyLeN/EwNc7G4Q9zRWou3NRfnyH9JfaElrf8E00ewgidQJbR
- g1ngVvChbqkrvzYrotikhTc6ZWE524HKcuw4MpZwIlPK2cdKUT8vcvZVhQwA/W0bMmqg +A== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss2xbaxu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 21:07:18 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37TL7HCR014496
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 21:07:17 GMT
-Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 29 Aug 2023 14:07:16 -0700
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-To:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <agross@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <quic_jackp@quicinc.com>,
-        <quic_plai@quicinc.com>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v5 32/32] sound: soc: soc-usb: Rediscover USB SND devices on USB port add
-Date:   Tue, 29 Aug 2023 14:06:57 -0700
-Message-ID: <20230829210657.9904-33-quic_wcheng@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230829210657.9904-1-quic_wcheng@quicinc.com>
-References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
+        Tue, 29 Aug 2023 17:16:18 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590EEE43
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:15:35 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-192-LVQDV-3JNaGDcSmcgaB3Sg-1; Tue, 29 Aug 2023 22:10:05 +0100
+X-MC-Unique: LVQDV-3JNaGDcSmcgaB3Sg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 29 Aug
+ 2023 22:10:06 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 29 Aug 2023 22:10:06 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Stefan Hajnoczi' <stefanha@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: RE: [PATCH v2 0/3] vfio: use __aligned_u64 for ioctl structs
+Thread-Topic: [PATCH v2 0/3] vfio: use __aligned_u64 for ioctl structs
+Thread-Index: AQHZ2qaF1qG+4kBOEE2IVTLh2JS7F7ABw8lg
+Date:   Tue, 29 Aug 2023 21:10:06 +0000
+Message-ID: <3e8b6e0503a84c93b6dd44c0d311abfe@AcuMS.aculab.com>
+References: <20230829182720.331083-1-stefanha@redhat.com>
+In-Reply-To: <20230829182720.331083-1-stefanha@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: TYlLdWiodNg4W_7UoDVVyWgKiPuZB0ev
-X-Proofpoint-GUID: TYlLdWiodNg4W_7UoDVVyWgKiPuZB0ev
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_15,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 bulkscore=0
- spamscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308290182
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case the USB backend device has not been initialized/probed, USB SND
-device connections can still occur.  When the USB backend is eventually
-made available, previous USB SND device connections are not communicated to
-the USB backend.  Call snd_usb_rediscover_devices() to generate the connect
-callbacks for all USB SND devices connected.  This will allow for the USB
-backend to be updated with the current set of devices available.
+RnJvbTogU3RlZmFuIEhham5vY3ppDQo+IFNlbnQ6IDI5IEF1Z3VzdCAyMDIzIDE5OjI3DQo+IA0K
+PiB2MjoNCj4gLSBSZWJhc2VkIG9udG8gaHR0cHM6Ly9naXRodWIuY29tL2F3aWxsaWFtL2xpbnV4
+LXZmaW8uZ2l0IG5leHQgdG8gZ2V0IHRoZQ0KPiAgIHZmaW9faW9tbXVfdHlwZTFfaW5mbyBwYWQg
+ZmllbGQgW0tldmluXQ0KPiAtIEZpeGVkIG1pbihtaW5zeiwgc2l6ZW9mKGRtYWJ1ZikpIC0+IG1p
+bihkbWFidWYuYXJnc3osIHNpemVvZihkbWFidWYpKSBbSmFzb24sIEtldmluXQ0KDQpZb3UgbWFu
+YWdlZCB0byB1c2UgbWluX3QoKSBpbnN0ZWFkIG9mIGZpeGluZyB0aGUgdHlwZXMgdG8gbWF0Y2gu
+DQoNCj4gLSBTcXVhc2hlZCBQYXRjaCAzICh2ZmlvX2lvbW11X3R5cGUxX2luZm8pIGludG8gUGF0
+Y2ggMSBzaW5jZSBpdCBpcyB0cml2aWFsIG5vdw0KPiAgIHRoYXQgdGhlIHBhZGRpbmcgZmllbGQg
+aXMgYWxyZWFkeSB0aGVyZS4NCj4gDQo+IEphc29uIEd1bnRob3JwZSA8amdnQG52aWRpYS5jb20+
+IHBvaW50ZWQgb3V0IHRoYXQgdTY0IFZGSU8gaW9jdGwgc3RydWN0IGZpZWxkcw0KPiBoYXZlIGFy
+Y2hpdGVjdHVyZS1kZXBlbmRlbnQgYWxpZ25tZW50LiBpb21tdWZkIGFscmVhZHkgdXNlcyBfX2Fs
+aWduZWRfdTY0IHRvDQo+IGF2b2lkIHRoaXMgcHJvYmxlbS4NCj4gDQo+IFNlZSB0aGUgX19hbGln
+bmVkX3U2NCB0eXBlZGVmIGluIDx1YXBpL2xpbnV4L3R5cGVzLmg+IGZvciBkZXRhaWxzIG9uIHdo
+eSBpdCBpcw0KPiBhIGdvb2QgaWRlYSBmb3Iga2VybmVsPC0+dXNlciBpbnRlcmZhY2VzLg0KPiAN
+Cj4gVGhpcyBzZXJpZXMgbW9kaWZpZXMgdGhlIFZGSU8gaW9jdGwgc3RydWN0cyB0byB1c2UgX19h
+bGlnbmVkX3U2NC4gU29tZSBvZiB0aGUNCj4gY2hhbmdlcyBwcmVzZXJ2ZSB0aGUgZXhpc3Rpbmcg
+bWVtb3J5IGxheW91dCBvbiBhbGwgYXJjaGl0ZWN0dXJlcywgc28gSSBwdXQgdGhlbQ0KPiB0b2dl
+dGhlciBpbnRvIHRoZSBmaXJzdCBwYXRjaC4gVGhlIHJlbWFpbmluZyBwYXRjaGVzIGFyZSBmb3Ig
+c3RydWN0cyB3aGVyZQ0KPiBleHBsYW5hdGlvbiBpcyBuZWNlc3NhcnkgYWJvdXQgd2h5IGNoYW5n
+aW5nIHRoZSBtZW1vcnkgbGF5b3V0IGRvZXMgbm90IGJyZWFrDQo+IHRoZSB1YXBpLg0KDQpCdXQg
+eW91IGFyZSBleHRlbmRpbmcgYSBmaWVsZCBpbiB0aGUgbWlkZGxlIG9mIHRoZSB1YXBpIHN0cnVj
+dHVyZS4NClRoaXMgY29tcGxldGVseSBicmVha3MgYW55IGFwcGxpY2F0aW9ucy4NCg0KWW91IGNv
+dWxkIGFkZCBjb2RlIHRvIGRldGVjdCB0aGUgbGVuZ3RoIG9mIHRoZSB1c2VyLXByb3ZpZGVkDQpz
+dHJ1Y3R1cmUgYW5kIHVzZSB0aGUgY29ycmVjdCBrZXJuZWwgc3RydWN0dXJlIHRoYXQgbWF0Y2hl
+cw0KdGhlIGxlbmd0aCBvZiB0aGUgdXNlci1wcm92aWRlZCBvbmUuDQpUaGF0IG5lZWRzIHRoZSBv
+cHBvc2l0ZSBvZiBfX2FsaWduZWRfdTY0IC0gYSA2NGJpdCBpbnRlZ2VyIHdpdGgNCjMyYml0IGFs
+aWdubWVudCBvbiB4NjQtNjQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFr
+ZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwg
+VUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-The chip array entries are all populated and removed while under the
-register_mutex, so going over potential race conditions:
-
-Thread#1:
-  q6usb_component_probe()
-    --> snd_soc_usb_add_port()
-      --> snd_usb_rediscover_devices()
-        --> mutex_lock(register_mutex)
-
-Thread#2
-  --> usb_audio_disconnect()
-    --> mutex_lock(register_mutex)
-
-So either thread#1 or thread#2 will complete first.  If
-
-Thread#1 completes before thread#2:
-  SOC USB will notify DPCM backend of the device connection.  Shortly
-  after, once thread#2 runs, we will get a disconnect event for the
-  connected device.
-
-Thread#2 completes before thread#1:
-  Then during snd_usb_rediscover_devices() it won't notify of any
-  connection for that particular chip index.
-
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
----
- sound/soc/soc-usb.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-index 619f9bfd6999..7df7f93cf5a2 100644
---- a/sound/soc/soc-usb.c
-+++ b/sound/soc/soc-usb.c
-@@ -115,6 +115,8 @@ struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev, void *priv,
- 	list_add_tail(&usb->list, &usb_ctx_list);
- 	mutex_unlock(&ctx_mutex);
- 
-+	snd_usb_rediscover_devices();
-+
- 	return usb;
- }
- EXPORT_SYMBOL_GPL(snd_soc_usb_add_port);
