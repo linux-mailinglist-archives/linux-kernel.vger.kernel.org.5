@@ -2,126 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B06578CEF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A9F78CEFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236354AbjH2Vue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 17:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S236569AbjH2VxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238557AbjH2Vu0 (ORCPT
+        with ESMTP id S236391AbjH2Vwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 17:50:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8CA107;
-        Tue, 29 Aug 2023 14:50:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 976216351E;
-        Tue, 29 Aug 2023 21:50:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEEF4C433C8;
-        Tue, 29 Aug 2023 21:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693345822;
-        bh=U/l32QlMVAaPte5bD4QT0elttRsFrPc4ZIwaQ1O0ouY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=bOUwFzvKtT45GrRxfuvHLwAW81f7eBzSXr9zZ6oaZcTfDGqYd9msBEzj0595LDRIE
-         36EDKxwgGRZjgYRD2aomvhojeEuoQA7qLFtavjRLMzce3wSS5+35vAtCu2rx27erN5
-         FHZ18oZuPweRMSCWGFJ7AUBbXJP0EKwbN+Z7tlexaQVV+BggiQkENQt3QA+5eCqj56
-         BRiH8spWV+dcUJScphSNeguYTDWG3vgDP6vhRA1JuU+9EMlyd1Y5HeFavpTRiCJ7UM
-         FCiPJd27lBIEWE/5OpqdVwTgdGafWlkfu1SgS0oUnTyVA8Armq9WBcL55Jb/C+4Vr9
-         xyTAeqlSRVVsg==
-Message-ID: <6991631008bab403e957534d6d05360c.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+        Tue, 29 Aug 2023 17:52:43 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1A319A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:52:41 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 42F8A320069B;
+        Tue, 29 Aug 2023 17:52:40 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 29 Aug 2023 17:52:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1693345959; x=1693432359; bh=ArD9BrBu++kODudxkUcIgGzHTgx9GdunitM
+        LaEOYFrE=; b=XQK4rNKi17TpFiAYWr3kcgdB7q2OjHhSGrqKucMXRZw3TBN+rVd
+        cDkY+g/EPC6VzwNbKSRWXKeKbANjsdkm9aQi9yyXMF9lC4z9MhtJLEzwDYHf9mUh
+        8Ynfw2WGqW0x/E6RfSKBWE9cIDJ15XECq/qQQDbq3F+0s9lok8tm40b+L+gDAdMi
+        mj7G8zyNx/q/z1h/G0VZb1Ftvq2jZqq4GWj+dL+lGnWUBwm8bHEyCHaFW5W0ypRR
+        3pNwFs+0qBmN4Vp0Sxx4P+ErvVpQKUMxQWlcy4ep5I0BmZgBOqQ+y4CGjEjJceyT
+        OMpd+dJcxXr0JrS2vkPRQGBrP7kJZ8f9bJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693345959; x=1693432359; bh=ArD9BrBu++kODudxkUcIgGzHTgx9GdunitM
+        LaEOYFrE=; b=0J/CqkVtJ1pLYGRnIflF+zXN5S2ufbbaxaQSb7/8kbzrrX/ElKM
+        uM1R6+T6f3EzLfs4UvQNCbLgoesPGbSji5Oax0uK3w3DLan3wuR20n191ZSwSo7l
+        MtDB32ClWecIwJM29HCjZ29s7unS1SOmjNjWt+b2snZArmNCN4nl1HyalEik6nMn
+        QYwDeq/Zlx2LmZThsotGDqqVdotnUs+JEZw6L6beoZfiL5iJdC/Wb+TA6jq9dkfR
+        qIHrkPBAT0bvh6miGfcIk3AiOXWH9HV86lPjqd5wmyKqrVObk0hIPJyHb+nbNfFG
+        TReLR8XTJnLf6svQcdHc2HKqZqna2QDIbLg==
+X-ME-Sender: <xms:p2juZAT0d3m5DhkoZYK_Qz04s4A1aUMtDoEVqQtA0mBmflzRpUsyLg>
+    <xme:p2juZNyZ9DC8djR7A1aTHEleD29gPgXWTup2Kgnl60W2RKi_gMfdnVUGLzEbRHDmg
+    gdpEvjWwYVY_FXepTI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefjedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpefgkeeuleegieeghfduudeltdekfeffjeeuleehleefudettddtgfevueef
+    feeigeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:p2juZN2CkTDgZMRckW4_bQAuDHy-Ijo3G0y-z21gmbjFJClgtYDSmw>
+    <xmx:p2juZECyJvgW0HySmDj9FGp0vYXXDS3nO6SLoCkmuYn_A2TLz3bI2Q>
+    <xmx:p2juZJgp43uIGrS38ntLGmPBRvDTIp9kBDpJ-9z9lf6REXxj2avNqQ>
+    <xmx:p2juZJbFSaTxwSKlu-wT-hKYfX_XbnDS4L_GZRaRgsiTGLdE93Y7ag>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3D060B60089; Tue, 29 Aug 2023 17:52:39 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-701-g9b2f44d3ee-fm-20230823.001-g9b2f44d3
+Mime-Version: 1.0
+Message-Id: <48c2b819-153a-495c-8f36-2d6bc1a74793@app.fastmail.com>
+In-Reply-To: <4f60d13e-f060-491a-88c7-6f25323a48f8@app.fastmail.com>
+References: <4f60d13e-f060-491a-88c7-6f25323a48f8@app.fastmail.com>
+Date:   Tue, 29 Aug 2023 17:52:18 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Linus Torvalds" <torvalds@linux-foundation.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        soc@kernel.org
+Subject: [GIT PULL 2/4] ARM: defconfig updates for 6.6
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230817225537.4053865-3-linux@roeck-us.net>
-References: <20230817225537.4053865-1-linux@roeck-us.net> <20230817225537.4053865-3-linux@roeck-us.net>
-Subject: Re: [PATCH v2 2/7] rtc: alarmtimer: Use maximum alarm time offset
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Date:   Tue, 29 Aug 2023 14:50:19 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Guenter Roeck (2023-08-17 15:55:32)
-> Some userspace applications use timerfd_create() to request wakeups after
-> a long period of time. For example, a backup application may request a
-> wakeup once per week. This is perfectly fine as long as the system does
-> not try to suspend. However, if the system tries to suspend and the
-> system's RTC does not support the required alarm timeout, the suspend
-> operation will fail with an error such as
->=20
-> rtc_cmos 00:01: Alarms can be up to one day in the future
-> PM: dpm_run_callback(): platform_pm_suspend+0x0/0x4a returns -22
-> alarmtimer alarmtimer.4.auto: platform_pm_suspend+0x0/0x4a returned -22 a=
-fter 117 usecs
-> PM: Device alarmtimer.4.auto failed to suspend: error -22
->=20
-> This results in a refusal to suspend the system, causing substantial
-> battery drain on affected systems.
->=20
-> To fix the problem, use the maximum alarm time offset as reported by rtc
-> drivers to set the maximum alarm time. While this will result in brief
-> spurious wakeups from suspend, it is still much better than not suspending
-> at all.
->=20
-> Cc: Brian Norris <briannorris@chromium.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: Rename range_max_offset -> alarm_offset_max
->=20
->  kernel/time/alarmtimer.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->=20
-> diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
-> index 8d9f13d847f0..895e3a6d6444 100644
-> --- a/kernel/time/alarmtimer.c
-> +++ b/kernel/time/alarmtimer.c
-> @@ -290,6 +290,19 @@ static int alarmtimer_suspend(struct device *dev)
->         rtc_timer_cancel(rtc, &rtctimer);
->         rtc_read_time(rtc, &tm);
->         now =3D rtc_tm_to_ktime(tm);
-> +
-> +       /*
-> +        * If the RTC alarm timer only supports a limited time offset, set
-> +        * the alarm time to the maximum supported value.
-> +        * The system will wake up earlier than necessary and is expected
-> +        * to go back to sleep if it has nothing to do.
+The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b5=
+74c:
 
-Does this assume that the kernel is configured for autosuspend
-(CONFIG_PM_AUTOSLEEP)? Maybe we should only do this when that config is
-enabled.
+  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
 
-If userspace is the one autosuspending, then I don't know what we do, or
-how the kernel knows it is OK. Maybe we need another alarmtimer clock id
-that will fail creation if the wakeup time is larger than what the rtc
-can be programmed for? Or maybe that new clock id can have this fixed
-behavior to wakeup early with the assumption that userspace will go back
-to sleep, and outdated userspace can use the original alarmtimer clock
-id if they don't care about suspend failing?
+are available in the Git repository at:
 
-I see another problem too. What do we do if an alarmtimer is created,
-the rtc device is unregistered, and then we enter suspend? It looks like
-alarmtimer_suspend() bails out early with no error, so suspend
-continues. That looks wrong. Presumably we should fail suspend entirely
-at that point because we'll never be able to wakeup to run the
-alarmtimer.
+  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-d=
+efconfig-6.6
+
+for you to fetch changes up to d2dff8d84df22b8f5e88d86d9f412ae0c01ad796:
+
+  Merge tag 'qcom-arm64-defconfig-for-6.6' of https://git.kernel.org/pub=
+/scm/linux/kernel/git/qcom/linux into soc/defconfig (2023-08-21 21:21:34=
+ -0400)
+
+----------------------------------------------------------------
+ARM: defconfig updates for 6.6
+
+Various additions to the defconfig files to enable more drivers
+for already supported platforms, usually as loadable modules.
+
+----------------------------------------------------------------
+Alexander Stein (1):
+      arm64: defconfig: Enable i.MX93 devices
+
+Andrew Davis (2):
+      ARM: multi_v7_defconfig: Enable TI Remoteproc and related configs
+      ARM: multi_v7_defconfig: Enable OMAP audio/display support
+
+Aradhya Bhatia (1):
+      arm64: defconfig: Enable ITE_IT66121 HDMI transmitter
+
+Arnd Bergmann (5):
+      Merge tag 'renesas-arm-defconfig-for-v6.6-tag1' of git://git.kerne=
+l.org/pub/scm/linux/kernel/git/geert/renesas-devel into soc/defconfig
+      Merge tag 'imx-defconfig-6.6' of git://git.kernel.org/pub/scm/linu=
+x/kernel/git/shawnguo/linux into soc/defconfig
+      Merge tag 'ti-k3-config-for-v6.6' of https://git.kernel.org/pub/sc=
+m/linux/kernel/git/ti/linux into soc/defconfig
+      Merge tag 'v6.6-rockchip-defconfig64-1' of git://git.kernel.org/pu=
+b/scm/linux/kernel/git/mmind/linux-rockchip into soc/defconfig
+      Merge tag 'qcom-arm64-defconfig-for-6.6' of https://git.kernel.org=
+/pub/scm/linux/kernel/git/qcom/linux into soc/defconfig
+
+Bartosz Golaszewski (1):
+      arm64: defconfig: enable the SerDes PHY for Qualcomm DWMAC
+
+Biju Das (2):
+      arm64: defconfig: Enable Renesas MTU3a PWM config
+      arm64: defconfig: Enable PMIC RAA215300 and RTC ISL 1208 configs
+
+Bjorn Andersson (1):
+      arm64: defconfig: Enable Qualcomm SC8280XP GPUCC
+
+Cristian Ciocaltea (1):
+      arm64: defconfig: Enable Rockchip OTP memory driver
+
+Dmitry Baryshkov (1):
+      arm64: defconfig: enable Qualcomm MSM8996 Global Clock Controller =
+as built-in
+
+Fabio Estevam (1):
+      arm64: defconfig: Enable CONFIG_DRM_IMX_LCDIF
+
+Fabrizio Castro (1):
+      arm64: defconfig: Enable Renesas RZ/V2M CSI driver
+
+Guido G=C3=BCnther (1):
+      arm64: defconfig: Enable Redpine 91X wlan driver
+
+Jagan Teki (2):
+      arm64: defconfig: Enable PHY_ROCKCHIP_NANENG_COMBO_PHY
+      arm64: defconfig: Enable GPIO_SYSCON
+
+MD Danish Anwar (1):
+      arm64: defconfig: Enable TI PRUSS
+
+Marcel Ziswiler (1):
+      arm64: defconfig: enable driver for bluetooth nxp uart
+
+Marek Szyprowski (1):
+      arm64: defconfig: Enable drivers for the Odroid-M1 board
+
+Mark Brown (1):
+      ARM: multi_v7_defconfig: Enable TLV320AIC3x
+
+Michael Walle (1):
+      arm64: defconfig: enable SL28VPD NVMEM layout
+
+Pascal Paillet (1):
+      ARM: multi_v7_defconfig: Add SCMI regulator support
+
+Peng Fan (1):
+      arm64: defconfig: select IMX_REMOTEPROC and RPMSG_VIRTIO
+
+Sricharan Ramabadhran (1):
+      arm64: defconfig: Enable IPQ5018 SoC base configs
+
+Udit Kumar (1):
+      arm64: defconfig: Enable various configs for TI K3 platforms
+
+ arch/arm/configs/multi_v7_defconfig | 13 ++++++++++
+ arch/arm64/configs/defconfig        | 49 ++++++++++++++++++++++++++++++=
++++++++
+ 2 files changed, 62 insertions(+)
