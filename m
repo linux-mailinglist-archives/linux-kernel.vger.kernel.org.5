@@ -2,159 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F6378C25E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1098F78C262
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbjH2Kiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
+        id S232355AbjH2KkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbjH2KiV (ORCPT
+        with ESMTP id S233971AbjH2KkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:38:21 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F8719F
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:38:18 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-44dbd5011beso1926359137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:38:18 -0700 (PDT)
+        Tue, 29 Aug 2023 06:40:03 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B12119F;
+        Tue, 29 Aug 2023 03:40:00 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31985ebed68so217023f8f.0;
+        Tue, 29 Aug 2023 03:40:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693305497; x=1693910297;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+S+OFM/SaIRDO4CZ1HS1+M3zY1M1wtDfmawa09i8kOs=;
-        b=k18WsEYTY3SR8erQgVThbNFJcwf6j8oip5Wo2DTgEhMok+WoxDTppiV+l9fB+Qjtpj
-         pKaRjzpqn2phfhYnEwLwTcGUwZk6w1lIytKg5ddmpvEH5d3EkDzXtiLyLb38TkhYcRHn
-         CILIMjU98/jqzJ/2XadrR6NCYfEI+xleJpQWoaQEWcLE+6nDsWv6Lm4k5htDoK60R6xk
-         9QB9V1rmeKNQEC3ofe+B+01SF7rER2vxsy59W5aTIDD/j77mkw/mV2tz/+eLzXmDBkqh
-         cUtAAHMKSShlmJQ33CR6wnfFU3uWjdDUgCui+pzf5S5A+fZ/8Cd6AdHqGA+ShNF7rdBA
-         bXlg==
+        d=gmail.com; s=20221208; t=1693305599; x=1693910399;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+bYWMvaPh3fE0F1tz3rOAc5dgkvFbufuilK1CGiiGPw=;
+        b=rDTOnlF4OvXj4y+XnOdHG4qOApjYq38PhfVmabLwN7rceb9pG73hshLI5VvSMKwe4+
+         dPiu5aVsT49OE7Es9+oNaIQRlYV4QTLlf5mkr/Q3NsNayPxebmeN8IaGIvAygxFKzRIX
+         itWv6TG7PbkjgOWbuFmTk1qQJIy0Kpy8zW1wLio8EgjsRiwzZg/Xy4XuApWHEKnGrAME
+         fScb9AXAs3YOHhEDaFr5A8lxk3Ms+/jaRcx+W54b73QszpOsuAfg4L9y9qSXSRF9MaHi
+         XRo1WATQyRJX+DSE3g165Au4Cu9aFWA9P8x1h9XD0G8k0HsKNk1YCl0MIy9GBJnvQO1t
+         jJFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693305497; x=1693910297;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+S+OFM/SaIRDO4CZ1HS1+M3zY1M1wtDfmawa09i8kOs=;
-        b=dLq6I3j268zWjfX+a3f0XwVob1cQuZeFUZ1gP54GIvkf4j++/3xXFKJcfZ8KGQ7Ave
-         BRJsVPQYFViwisCmnEnk3BNsQVtK4ZdEaDqchd7KL2iV4h4kjfi00ntbieLX64yehbOU
-         HA24wBiEjVx9KGUVr9AYdxxNMu9wlI2BhaIpwQZMGhRCrR0YYGPvhjijeI1e0WoMj6DU
-         aEZSX5jEPB0bL9H9baqTGyhjYfNNfUPRcSypMGIzybBDzUr+Yofk1W+Oa2iSLbuvfoiS
-         8vEB/otEIrWn9zci20Saot/dzyqXFyoOo+iR10TSb2rpw064WalNcedbYCjUM7oDbRaS
-         WyEA==
-X-Gm-Message-State: AOJu0Yxa4NA+jUjcZBgpDjRwyPtKBEu9oQEREsGLtOx0rQ9uKB7AdC49
-        T12L4LQ6rDDxNAXei0Q3ayN8PElVuKkM8vKRJ7Vy2A==
-X-Google-Smtp-Source: AGHT+IG4F5FrbB4LuavW+U011p9kyW0QyLMMxVW2gdfWcMm62cCwqrvaWq+v3KTsnGiFNLdYRP1OcPJsbCnuHRxqABU=
-X-Received: by 2002:a67:eb0b:0:b0:44d:4904:e080 with SMTP id
- a11-20020a67eb0b000000b0044d4904e080mr21530579vso.31.1693305497289; Tue, 29
- Aug 2023 03:38:17 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693305599; x=1693910399;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+bYWMvaPh3fE0F1tz3rOAc5dgkvFbufuilK1CGiiGPw=;
+        b=Z5Qa8R0K3rAaOHp8q0M3HM2LTZsQxr5px834WuUZgHF7tYka+KsV2koVwFSr9J+ba5
+         pavhnmcgmw898kDtuv6/J+Pi2OmNB9dln2ePC882xQqm9WZuJgDi+ZU6B2pt4a5cIka9
+         OVA0BXbE7qCLPci5xBa3I3V8HY2v/xyX98tqyBuNuf5bpG/2e9gLyYpPepNtICvo/4aZ
+         Wq64KsKr2/89/cWr+qNxfvUQuxzsqN6RCXJBT5ggH1pArT5AZ42nOfndI83zQLX346Aa
+         Q+76LSfmqgdKAS4IHMd9yllFQ1gTusbmSjzXq3qCV507zmpz0HTtzEzAE6Ew7O4DyEo5
+         UTXg==
+X-Gm-Message-State: AOJu0Yw1KrlozNY7c/4XgFiewA5oFKhrd8++wWWcIHlHB7LpJUxi74t+
+        QGFD/nJL2aT/6oeKJ/BGslo=
+X-Google-Smtp-Source: AGHT+IFpk0R3waJIYI34F7jBwPMjFYmeMa6jCXnkl71ORRsXEIP9z4vTK2rm/O2d9U48cfSh2p0Dxg==
+X-Received: by 2002:adf:f4ce:0:b0:317:f1d6:997c with SMTP id h14-20020adff4ce000000b00317f1d6997cmr21257134wrp.0.1693305598554;
+        Tue, 29 Aug 2023 03:39:58 -0700 (PDT)
+Received: from [10.0.0.4] ([78.240.207.57])
+        by smtp.gmail.com with ESMTPSA id n5-20020a5d4205000000b00317ddccb0d1sm13338083wrq.24.2023.08.29.03.39.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 03:39:57 -0700 (PDT)
+Message-ID: <cec84566-b10c-4e16-ab62-44ffd2018376@gmail.com>
+Date:   Tue, 29 Aug 2023 12:39:56 +0200
 MIME-Version: 1.0
-References: <20230824153233.1006420-1-dianders@chromium.org> <20230824083012.v11.2.I4baba13e220bdd24d11400c67f137c35f07f82c7@changeid>
-In-Reply-To: <20230824083012.v11.2.I4baba13e220bdd24d11400c67f137c35f07f82c7@changeid>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 29 Aug 2023 16:08:06 +0530
-Message-ID: <CAFA6WYM2xTxBaNf8fjg3n0HotTaHezsB_e+eNgXK3PsSfWKx4A@mail.gmail.com>
-Subject: Re: [PATCH v11 2/6] arm64: idle: Tag the arm64 idle functions as __cpuidle
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-perf-users@vger.kernel.org,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org, ito-yuichi@fujitsu.com,
-        Stephen Boyd <swboyd@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [fs?] INFO: rcu detected stall in sys_close (5)
+Content-Language: en-US
+To:     syzbot <syzbot+e46fbd5289363464bc13@syzkaller.appspotmail.com>,
+        brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, edumazet@google.com,
+        netdev@vger.kernel.org
+References: <00000000000017ad3f06040bf394@google.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+In-Reply-To: <00000000000017ad3f06040bf394@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 at 21:03, Douglas Anderson <dianders@chromium.org> wrote:
+
+On 8/29/23 10:53, syzbot wrote:
+> Hello,
 >
-> As per the (somewhat recent) comment before the definition of
-> `__cpuidle`, the tag is like `noinstr` but also marks a function so it
-> can be identified by cpu_in_idle(). Let's add these markings to arm64
-> cpuidle functions
+> syzbot found the following issue on:
 >
-> With this change we get useful backtraces like:
+> HEAD commit:    727dbda16b83 Merge tag 'hardening-v6.6-rc1' of git://git.k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=158c0cdba80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=45047a5b8c295201
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e46fbd5289363464bc13
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14780797a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c1fc9fa80000
 >
->   NMI backtrace for cpu N skipped: idling at cpu_do_idle+0x94/0x98
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/3b19428c542a/disk-727dbda1.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/45ed4d6b4633/vmlinux-727dbda1.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/4c3abf020089/bzImage-727dbda1.xz
 >
-> instead of useless backtraces when dumping all processors using
-> nmi_cpu_backtrace().
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+e46fbd5289363464bc13@syzkaller.appspotmail.com
 >
-> NOTE: this patch won't make cpu_in_idle() work perfectly for arm64,
-> but it doesn't hurt and does catch some cases. Specifically an example
-> that wasn't caught in my testing looked like this:
+> rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 0-.... } 2663 jiffies s: 873 root: 0x1/.
+> rcu: blocking rcu_node structures (internal RCU debug):
+> Sending NMI from CPU 1 to CPUs 0:
+> NMI backtrace for cpu 0
+> CPU: 0 PID: 5177 Comm: syz-executor273 Not tainted 6.5.0-syzkaller-00453-g727dbda16b83 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> RIP: 0010:check_kcov_mode kernel/kcov.c:173 [inline]
+> RIP: 0010:write_comp_data+0x21/0x90 kernel/kcov.c:236
+> Code: 2e 0f 1f 84 00 00 00 00 00 65 8b 05 01 b2 7d 7e 49 89 f1 89 c6 49 89 d2 81 e6 00 01 00 00 49 89 f8 65 48 8b 14 25 80 b9 03 00 <a9> 00 01 ff 00 74 0e 85 f6 74 59 8b 82 04 16 00 00 85 c0 74 4f 8b
+> RSP: 0018:ffffc90000007bb8 EFLAGS: 00000206
+> RAX: 0000000000000101 RBX: ffffc9000dc0d140 RCX: ffffffff885893b0
+> RDX: ffff88807c075940 RSI: 0000000000000100 RDI: 0000000000000001
+> RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000dc0d178
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> FS:  0000555555d54380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f6b442f6130 CR3: 000000006fe1c000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <NMI>
+>   </NMI>
+>   <IRQ>
+>   pie_calculate_probability+0x480/0x850 net/sched/sch_pie.c:415
+>   fq_pie_timer+0x1da/0x4f0 net/sched/sch_fq_pie.c:387
+>   call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
+>   expire_timers kernel/time/timer.c:1751 [inline]
+>   __run_timers+0x764/0xb10 kernel/time/timer.c:2022
+>   run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
+>   __do_softirq+0x218/0x965 kernel/softirq.c:553
+>   invoke_softirq kernel/softirq.c:427 [inline]
+>   __irq_exit_rcu kernel/softirq.c:632 [inline]
+>   irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+>   sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
+>   </IRQ>
+>   <TASK>
+>   asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+> RIP: 0010:__x64_sys_close+0x0/0xf0 fs/open.c:1557
+> Code: 1a 48 83 ec 80 5b 5d 41 5c c3 e8 eb bb f1 ff e9 73 ff ff ff e8 e1 bb f1 ff eb 8b e8 2a 06 4a 08 66 2e 0f 1f 84 00 00 00 00 00 <f3> 0f 1e fa 55 53 48 89 fb e8 c2 81 9d ff 48 8d 7b 70 48 b8 00 00
+> RSP: 0018:ffffc9000459ff38 EFLAGS: 00000206
+> RAX: 0000000000000003 RBX: ffffc9000459ff58 RCX: 1ffffffff1d56e59
+> RDX: ffffffffffffffff RSI: 0000000000000000 RDI: ffffc9000459ff58
+> RBP: ffffc9000459ff48 R08: 0000000000000001 R09: 0000000000000001
+> R10: ffffffff8eaba457 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f6b4427b290
+> Code: ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 80 3d f1 8d 07 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
+> RSP: 002b:00007ffd4ca6aa18 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> RAX: ffffffffffffffda RBX: 0000000000000006 RCX: 00007f6b4427b290
+> RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000005
+> RBP: 00000000000f4240 R08: 0000000055d55610 R09: 0000000055d55610
+> R10: 0000000000000000 R11: 0000000000000202 R12: 00000000000220c3
+> R13: 00007ffd4ca6aa24 R14: 00007ffd4ca6aa40 R15: 00007ffd4ca6aa30
+>   </TASK>
+> INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.831 msecs
 >
->  gic_cpu_sys_reg_init+0x1f8/0x314
->  gic_cpu_pm_notifier+0x40/0x78
->  raw_notifier_call_chain+0x5c/0x134
->  cpu_pm_notify+0x38/0x64
->  cpu_pm_exit+0x20/0x2c
->  psci_enter_idle_state+0x48/0x70
->  cpuidle_enter_state+0xb8/0x260
->  cpuidle_enter+0x44/0x5c
->  do_idle+0x188/0x30c
 >
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 >
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
 
-Acked-by: Sumit Garg <sumit.garg@linaro.org>
 
--Sumit
+#syz set subsystems: net
 
-> Changes in v11:
-> - Updated commit message as per Stephen.
+fq_pie_timer() should not attempt to loop over up to 65536 flows,
+this takes up to 5 ms on ASAN builds.
+
 >
-> Changes in v9:
-> - Added to commit message that this doesn't catch all cases.
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
 >
-> Changes in v8:
-> - "Tag the arm64 idle functions as __cpuidle" new for v8
->
->  arch/arm64/kernel/idle.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/kernel/idle.c b/arch/arm64/kernel/idle.c
-> index c1125753fe9b..05cfb347ec26 100644
-> --- a/arch/arm64/kernel/idle.c
-> +++ b/arch/arm64/kernel/idle.c
-> @@ -20,7 +20,7 @@
->   *     ensure that interrupts are not masked at the PMR (because the core will
->   *     not wake up if we block the wake up signal in the interrupt controller).
->   */
-> -void noinstr cpu_do_idle(void)
-> +void __cpuidle cpu_do_idle(void)
->  {
->         struct arm_cpuidle_irq_context context;
->
-> @@ -35,7 +35,7 @@ void noinstr cpu_do_idle(void)
->  /*
->   * This is our default idle handler.
->   */
-> -void noinstr arch_cpu_idle(void)
-> +void __cpuidle arch_cpu_idle(void)
->  {
->         /*
->          * This should do all the clock switching and wait for interrupt
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->
+> If you want to undo deduplication, reply with:
+> #syz undup
