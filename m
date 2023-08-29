@@ -2,84 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CEF78BC12
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C85478BC17
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbjH2AYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 20:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        id S234728AbjH2AYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 20:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234669AbjH2AXs (ORCPT
+        with ESMTP id S234676AbjH2AXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 20:23:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E766610B
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 17:23:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C35062CBC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:23:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D9BA5C433CC;
-        Tue, 29 Aug 2023 00:23:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693268625;
-        bh=MUXZHvdaVoEpmf9qIbbKliBXseIbh5Lr/5ncZK0eOGY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=AdDzsZ7HwF+TcATuuRS2RXkjFaQHI+P/6p+ylvRw4lhRx0K94ux3gMerz6NQnIb8t
-         1eMUAjUvVBl6LWSPM2DPe8/zDhmkJPm2wS1ZvAZm9/0Zbn0uvnlxLAK3NxHdAjeoGB
-         EMpL5hPf17f5g4oitH97ZWrU1x26UuwDSjdysqC2eztCvPYM4QP39W9KRBX7kvW55Z
-         9QUaTRvfGb+l4K6a34T4mXNeRFYkSNQSduUixgxR0aS8sNlN2Po8z9Uy5LGxygWg0W
-         kO4ScUlU8uEm6sJybaDCDFQJn9PCUXxSe/NGjGSw2S/app/g7qAxIbhTILwzX+bEc6
-         pEPv9Ff/2Vn3Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C6F57C3959E;
-        Tue, 29 Aug 2023 00:23:45 +0000 (UTC)
-Subject: Re: [GIT PULL] Scheduler changes for v6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZO0NgNfvvS9oVUVW@gmail.com>
-References: <ZO0NgNfvvS9oVUVW@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZO0NgNfvvS9oVUVW@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2023-08-28
-X-PR-Tracked-Commit-Id: 2f88c8e802c8b128a155976631f4eb2ce4f3c805
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3ca9a836ff53db8eb76d559764c07fb3b015886a
-Message-Id: <169326862581.9848.10816016350044866140.pr-tracker-bot@kernel.org>
-Date:   Tue, 29 Aug 2023 00:23:45 +0000
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 28 Aug 2023 20:23:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C5B132;
+        Mon, 28 Aug 2023 17:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693268630; x=1724804630;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=oDiV9x4vh0Gd/Qfn0fopyBUXiHGswpCDdJCQ9Qg5fD8=;
+  b=CMZ9bHLWf5XJQ2f+8xDyvTVVTHfoODxIbHBsayKiOEyUkgPj1xTlXQQR
+   Ai7KajXY+28T7jxFYzPrkwo10wiWl67GxcH8X3fg3PUeZa4rGex5QGKE+
+   fUnk9uhvd8NjUkDHWiJizQWo8+cXOiEZaYvhMWmFL7dIj/e0yEns4jA5g
+   XodOxqvfoyaaGol9pXUhLWKpM7IAGSF3NYGoxDxEbsTtJuC0MlX/Ff0lG
+   N5623vMmG8YuqcYMdiIJrGu+baO4nEDICvoEiEe8I3aJpIwO74IFIgijz
+   xYAWWwaTn2x0V+kiJn3g1C/nyXEULZ/5zzFLZJOixDLDyHC7bkTzy2HRV
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="354754230"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="354754230"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 17:23:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="731989696"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="731989696"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by orsmga007.jf.intel.com with ESMTP; 28 Aug 2023 17:23:47 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     daniel.lezcano@linaro.org, rafael@kernel.org, rui.zhang@intel.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v3 6/7] thermal/drivers/int340x: Support workload hint interrupts
+Date:   Mon, 28 Aug 2023 17:23:45 -0700
+Message-Id: <20230829002346.2104251-7-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230829002346.2104251-1-srinivas.pandruvada@linux.intel.com>
+References: <20230829002346.2104251-1-srinivas.pandruvada@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Aug 2023 23:11:28 +0200:
+On thermal device interrupt, if the interrupt is generated for passing
+workload hint, call the callback to pass notification to the user
+space.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2023-08-28
+First call proc_thermal_check_wt_intr() to check interrupt, if this
+callback returns true, wake IRQ thread. Call
+proc_thermal_wt_intr_callback() to notify user space.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3ca9a836ff53db8eb76d559764c07fb3b015886a
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+v3:
+As suggested by Rafael:
+- Undo the pkg_thermal_schedule_work() change to simlify
+ 
+v2:
+No change
 
-Thank you!
+ .../processor_thermal_device_pci.c            | 39 +++++++++++++++----
+ 1 file changed, 32 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+index eed59630fe59..7253277e476a 100644
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+@@ -122,20 +122,43 @@ static void pkg_thermal_schedule_work(struct delayed_work *work)
+ 	schedule_delayed_work(work, ms);
+ }
+ 
++static irqreturn_t proc_thermal_irq_thread_handler(int irq, void *devid)
++{
++	struct proc_thermal_pci *pci_info = devid;
++
++	proc_thermal_wt_intr_callback(pci_info->pdev, pci_info->proc_priv);
++
++	return IRQ_HANDLED;
++}
++
+ static irqreturn_t proc_thermal_irq_handler(int irq, void *devid)
+ {
+ 	struct proc_thermal_pci *pci_info = devid;
++	struct proc_thermal_device *proc_priv;
++	int ret = IRQ_HANDLED;
+ 	u32 status;
+ 
+-	proc_thermal_mmio_read(pci_info, PROC_THERMAL_MMIO_INT_STATUS_0, &status);
++	proc_priv = pci_info->proc_priv;
+ 
+-	/* Disable enable interrupt flag */
+-	proc_thermal_mmio_write(pci_info, PROC_THERMAL_MMIO_INT_ENABLE_0, 0);
+-	pci_write_config_byte(pci_info->pdev, 0xdc, 0x01);
++	if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_WT_HINT) {
++		if (proc_thermal_check_wt_intr(pci_info->proc_priv))
++			ret = IRQ_WAKE_THREAD;
++	}
+ 
+-	pkg_thermal_schedule_work(&pci_info->work);
++	/*
++	 * Since now there are two sources of interrupts: one from thermal threshold
++	 * and another from workload hint, add a check if there was really a threshold
++	 * interrupt before scheduling work function for thermal threshold.
++	 */
++	proc_thermal_mmio_read(pci_info, PROC_THERMAL_MMIO_INT_STATUS_0, &status);
++	if (status) {
++		/* Disable enable interrupt flag */
++		proc_thermal_mmio_write(pci_info, PROC_THERMAL_MMIO_INT_ENABLE_0, 0);
++		pci_write_config_byte(pci_info->pdev, 0xdc, 0x01);
++		pkg_thermal_schedule_work(&pci_info->work);
++	}
+ 
+-	return IRQ_HANDLED;
++	return ret;
+ }
+ 
+ static int sys_get_curr_temp(struct thermal_zone_device *tzd, int *temp)
+@@ -270,7 +293,7 @@ static int proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device_
+ 	}
+ 
+ 	ret = devm_request_threaded_irq(&pdev->dev, irq,
+-					proc_thermal_irq_handler, NULL,
++					proc_thermal_irq_handler, proc_thermal_irq_thread_handler,
+ 					irq_flag, KBUILD_MODNAME, pci_info);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Request IRQ %d failed\n", pdev->irq);
+@@ -384,6 +407,8 @@ static struct pci_driver proc_thermal_pci_driver = {
+ 
+ module_pci_driver(proc_thermal_pci_driver);
+ 
++MODULE_IMPORT_NS(INT340X_THERMAL);
++
+ MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>");
+ MODULE_DESCRIPTION("Processor Thermal Reporting Device Driver");
+ MODULE_LICENSE("GPL v2");
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.40.1
+
