@@ -2,169 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A56BC78C24B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A12478C257
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbjH2KXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
+        id S235121AbjH2Kfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235216AbjH2KXd (ORCPT
+        with ESMTP id S234822AbjH2KfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:23:33 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025BC18F
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:23:24 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RZk144J3Nz67lKb;
-        Tue, 29 Aug 2023 18:19:04 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
- 2023 11:23:22 +0100
-Date:   Tue, 29 Aug 2023 11:23:21 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-CC:     "Luck, Tony" <tony.luck@intel.com>,
-        Amit Singh Tomar <amitsinght@marvell.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        George Cherian <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "peternewman@google.com" <peternewman@google.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: resctrl2 - status
-Message-ID: <20230829112321.00002b55@Huawei.com>
-In-Reply-To: <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
-References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
-        <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
-        <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-        <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
-        <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-        <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 29 Aug 2023 06:35:25 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7A219A;
+        Tue, 29 Aug 2023 03:35:21 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31aeef88a55so3470403f8f.2;
+        Tue, 29 Aug 2023 03:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693305319; x=1693910119;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BUbeRqeh9uNIjLySiGI5zkMUywv5IH9VIu1bjik05/Y=;
+        b=KmW09QY5lB3y14ciY4LmuGK5Fa5z0SSRSvCPNNuY/4m1V9jiJgCcCIK3dLTSaRDxwl
+         mQgMW2sXdaneX12U+V9tFEXKhrMUxJW5YJ7HaAoJyoS65DJ2WRKpk0VcERDJ6lmf5eMW
+         qsBv4RHwQfJ+XYJ3kv4m1IM3/8OJ4l1JFsCLei02BbIY4ZxQ6xVJ8M9g99LqcsiQ5+ZM
+         7qXdcgBXZz7SMnCQI9TZg4THx1QL+EXVJIZvSPlWOsqPiSftAwAAF5RLXZ770WBtiqWo
+         521DK10adbeg1er42c28VJg/MvoGmGKshLu3IQqLSk176i4jKZt6vBEO/0K/Ei59p6OF
+         vrhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693305319; x=1693910119;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BUbeRqeh9uNIjLySiGI5zkMUywv5IH9VIu1bjik05/Y=;
+        b=G1fuFvSFXZXQZriPRrEdSXve16gQHnpm/VAbKsAZszcaBcvG4o1bYKy8At8onfFfWU
+         0ZqO+3aAyNrJrEJkKBdjyCHx7YpEIrtakb+FnH7qeQC6tvULSRg4TXN+nRkm5phG+PsN
+         MIidub5qXCYuGqImwccB4F0hPizYOG5AgSeCU0x5Altz1Sk/uDfjyh0ma4fAbXXgkcaX
+         UBZNUXqBeqMgMBcGcuJNBisb+NajRDdeWo28uanhIiGlihwD0AbWvnREgtx/LnsMB7XB
+         3rp0n/YlaWS7VRTbJ3NzpqBfzHL7LfGFc/kmtHOWBucK9l+a9jXgkHcsB9No63VZcmBE
+         LzAA==
+X-Gm-Message-State: AOJu0YwT4oOKb9WdqPg4cfHY38JblsugUwp6l3+yD5N33PUtJc1uxgxW
+        +aN67UDqlu07m2HRJGzKrh+oR/b31Jc=
+X-Google-Smtp-Source: AGHT+IFhi/cF5MH7ZYKdSkQgLJ415vkaILp3GEY8mGQq9JwMIOPTKqsR4ZhNYEo9VLt1WGVCu5bVsA==
+X-Received: by 2002:adf:f892:0:b0:317:6c19:6445 with SMTP id u18-20020adff892000000b003176c196445mr21725890wrp.39.1693305319344;
+        Tue, 29 Aug 2023 03:35:19 -0700 (PDT)
+Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
+        by smtp.gmail.com with ESMTPSA id a12-20020adfe5cc000000b0030ada01ca78sm13350849wrn.10.2023.08.29.03.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 03:35:18 -0700 (PDT)
+From:   Amir Goldstein <amir73il@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: [GIT PULL] overlayfs update for 6.6
+Date:   Tue, 29 Aug 2023 13:35:12 +0300
+Message-Id: <20230829103512.2245736-1-amir73il@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Aug 2023 13:20:22 -0700
-Reinette Chatre <reinette.chatre@intel.com> wrote:
+Hi Linus,
 
-> Hi Tony,
-> 
-> On 8/25/2023 12:44 PM, Luck, Tony wrote:
-> >>>> Alternatively, can user space just take a "load all resctrl modules
-> >>>> and see what sticks" (even modules of different architectures since
-> >>>> a user space may want to be generic) approach?  
-> >>>
-> >>> This mostly works. Except for the cases where different modules access
-> >>> the same underlying hardware, so can't be loaded together.
-> >>>
-> >>> Examples:
-> >>>
-> >>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CDP or not.
-> >>> But this is already true ... they have to decide whether to pass the "-o cdp" option
-> >>> to mount.
-> >>>
-> >>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control memory bandwidth
-> >>> with percentages, or with MB/sec values. Again the user already has to make this
-> >>> decision when choosing mount options.
-> >>>
-> >>>
-> >>> Maybe the "What resctrl options does this machine support?" question would be
-> >>> best answered with a small utility?  
-> >>
-> >> A user space utility or a kernel provided utility? If it is a user space utility
-> >> I think it would end up needing to duplicate what the kernel is required to do
-> >> to know if a particular feature is supported. It seems appropriate that this
-> >> could be a kernel utility that can share this existing information with user
-> >> space. resctrl already supports the interface for this via /sys/fs/resctrl/info.  
-> > 
-> > I was imagining a user space utility. Even though /proc/cpuinfo doesn't show
-> > all features, a utility has access to all the CPUID leaves that contain the
-> > details of each feature enumeration.  
-> 
-> For x86 that may work (in some scenarios, see later) for now but as I understand
-> Arm would need a different solution where I believe the information is obtained
-> via ACPI. I think it is unnecessary to require user space to have parsers for
-> CPUID and ACPI if that same information needs to be parsed by the kernel and
-> there already exists an interface with which the information is communicated
-> from kernel to user space. Also, just because information CPUID shows a feature
-> is supported by the hardware does not mean that the kernel has support for that
-> feature. This could be because of a feature mismatch between user space and
-> kernel, or even some features disabled for use via the, for example "rdt=!l3cat",
-> kernel parameter.
+This branch has been sitting in linux-next for several weeks and it
+has gone through all the usual overlayfs test routines.
 
-James probably also has views on this, but I wouldn't expect userspace to go anywhere
-near ACPI parsing. If the description of what MPAM features are supported (before
-resctrl is running) is necessary, then we should add it to the existing
-description of the various caches etc.  Maybe somewhere in
-/sys/bus/node/devices/nodeX/cpuY/cache/indexZ/
-for the caches and
-/sys/bus/node/devices/nodeX for the DRAM controllers.
+The branch has also been tested together with the changes in
+Christain's vfs tree, which have been merged to master yesterday.
 
-I'm sure we can find somewhere sensible for other things covered by MPAM.
-The MPAM table parsers and some early code to query features from the hardware should
-be able to figure out what is needed.
+The branch merges cleanly with master branch of the moment.
 
-Perhaps x86 systems could provide similar descriptions but originating from CPUID etc.
+Please refer to details about contained patch sets below.
 
-Jonathan
+Thanks,
+Amir.
 
-> 
-> >> fyi ... as with previous attempts to discuss this work I find it difficult
-> >> to discuss this work when you are selective about what you want to discuss/answer
-> >> and just wipe the rest. Through this I understand that I am not your target
-> >> audience.  
-> > 
-> > Not my intent. I value your input highly. I'm maybe too avid a follower of the
-> > "trim your replies" school of e-mail etiquette. I thought I'd covered the gist
-> > of your message.
-> > 
-> > I'll try to be more thorough in responding in the future.  
-> 
-> Two items from my previous email remain open:
-> 
-> First, why does making the code modular require everything to be loadable
-> modules?
-> I think that it is great that the code is modular. Ideally it will help to
-> support the other architectures. As you explain this modular design also
-> has the benefit that "modules" can be loaded and unloaded after resctrl mount.
-> Considering your example of MBA and MBA_MBps support ... if I understand
-> correctly with code being modular it enables changes from one to the other
-> after resctrl mount. User can start with MBA and then switch to MBA_MBps
-> without needing to unmount resctrl. What I do not understand is why does
-> the code being modular require everything to be modules? Why, for example,
-> could a user not interact with a resctrl file that enables the user to make
-> this switch from, for example, MBA to MBA_MBps? With this the existing
-> interfaces can remain to be respected, the existing mount parameters need
-> to remain anyway, while enabling future "more modular" usages.
-> 
-> Second, copied from my previous email, what is the plan to deal with current
-> users that just mount resctrl and expect to learn from it what features are
-> supported?
-> 
-> Reinette
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+----------------------------------------------------------------
 
+The following changes since commit 52a93d39b17dc7eb98b6aa3edb93943248e03b2f:
+
+  Linux 6.5-rc5 (2023-08-06 15:07:51 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.git overlayfs-next
+
+for you to fetch changes up to adcd459ff805ce5e11956cfa1e9aa85471b6ae8d:
+
+  ovl: validate superblock in OVL_FS() (2023-08-12 19:02:54 +0300)
+
+----------------------------------------------------------------
+
+Overlayfs update for 6.6
+
+Contains the following patch sets:
+
+Alexander Larsson added the verification feature needed by composefs
+- [1] Add support for fs-verity checking of lowerdata
+
+Amir Goldstein improved integration of overlayfs and fanotify
+- [2] Report overlayfs file ids with fanotify
+
+Andrea Righi fortified some overlayfs code
+- [3] overlayfs: debugging check for valid superblock
+
+[1] https://lore.kernel.org/r/cover.1687345663.git.alexl@redhat.com
+[2] https://lore.kernel.org/r/20230713120344.1422468-1-amir73il@gmail.com
+[3] https://lore.kernel.org/r/20230521082813.17025-1-andrea.righi@canonical.com
+
+----------------------------------------------------------------
+Alexander Larsson (4):
+      ovl: Add framework for verity support
+      ovl: Add versioned header for overlay.metacopy xattr
+      ovl: Validate verity xattr when resolving lowerdata
+      ovl: Handle verity during copy-up
+
+Amir Goldstein (4):
+      ovl: support encoding non-decodable file handles
+      ovl: add support for unique fsid per instance
+      ovl: store persistent uuid/fsid with uuid=on
+      ovl: auto generate uuid for new overlay filesystems
+
+Andrea Righi (3):
+      ovl: Kconfig: introduce CONFIG_OVERLAY_FS_DEBUG
+      ovl: make consistent use of OVL_FS()
+      ovl: validate superblock in OVL_FS()
+
+ Documentation/filesystems/fsverity.rst  |   2 +
+ Documentation/filesystems/overlayfs.rst |  72 ++++++++++
+ fs/overlayfs/Kconfig                    |   9 ++
+ fs/overlayfs/copy_up.c                  |  54 +++++++-
+ fs/overlayfs/export.c                   |  36 +++--
+ fs/overlayfs/file.c                     |   8 +-
+ fs/overlayfs/inode.c                    |   8 +-
+ fs/overlayfs/namei.c                    |  89 ++++++++++--
+ fs/overlayfs/overlayfs.h                |  66 ++++++++-
+ fs/overlayfs/ovl_entry.h                |   9 +-
+ fs/overlayfs/params.c                   |  96 +++++++++++--
+ fs/overlayfs/super.c                    |  40 ++++--
+ fs/overlayfs/util.c                     | 233 ++++++++++++++++++++++++++++++--
+ 13 files changed, 654 insertions(+), 68 deletions(-)
