@@ -2,84 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1923078C01C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D85778C023
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234015AbjH2ITI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
+        id S231668AbjH2IVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbjH2ISj (ORCPT
+        with ESMTP id S233964AbjH2IVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:18:39 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F70E9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:18:36 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52a49a42353so5717987a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693297114; x=1693901914;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HAL+QW1Uxu14SX9zM6XGspJb7wIOSyL2pK7dTNh/26U=;
-        b=roc5GwCTf4Wov4tDBI/QnszPHmiYCEvRyWplc/HaO3bkm2vMvbg65394r99uJPFPU3
-         XKQmcppXsNgIQxw2dFesLqHLvd5knr1bTHLd0YPAaNcJo0OA3jW4p2Ke7zENQePy+JV1
-         5tM/icOdhJdlF/hvNsj5PqQ2CtO34lv93epbMPIjLaTt4Bz8FDXR4WL9W6O9TG7D2C/T
-         HLRk/EkCJei99aAX06/oMdpBNrgMBOZDTgFOD6fJVyFSSVLWkEhEobOEEFDzjqD4R75g
-         VOCFYpMmH/91dLEiUte/H/sxPYdWCWD+2HAQ6iFdbZaF+qUAligW7qeFwzs9afZ9z8b8
-         PR6w==
+        Tue, 29 Aug 2023 04:21:06 -0400
+Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCC1EA
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:21:00 -0700 (PDT)
+Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-56fb25fdf06so2679934a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:21:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693297114; x=1693901914;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HAL+QW1Uxu14SX9zM6XGspJb7wIOSyL2pK7dTNh/26U=;
-        b=S7DXIfYKuXEuo63aSVKlAoJqzMsxgJDDtEhR6iNdNq5aZLZQ9ltWkNmSqFsyOo0Zkj
-         cUtZfLzc2LlEb2+TE9CaHNM8ETlUnHXzIaL+Z6MYH+BZDZ4VS1IBlsBUK26wH66UwxKu
-         I438KNlHDxtD4+d9aYFu6YQZnCHirYaYa4dGallc/vtGqzWyHJk3TAKn899XJ4U3TZrW
-         5nJeq0C27Boorj1F32+fQdZ4Bqd3JfTqlykogzqtwWJC/2qnXNv/jLyFB397GrieTE7o
-         hM72Zw/rvfWhXo5Wyu0i+z0j0P44xnR2pwQMhsZTN71NO5WSysJfxuDfkU35PEHARbfB
-         AMNQ==
-X-Gm-Message-State: AOJu0Yy028DC8NIEBdec4qdhZd4V/ik2kkvpauh19FMV5gUprF3go7Mp
-        qvhVc07qeAEORhx+ukhFiQX41g==
-X-Google-Smtp-Source: AGHT+IG2+d5PEh9rBmWoOPU9HPi/XpqQcvKK3PEkc3ZJaZR3D/RfTXVQfgYCM+c+SUI99a4J2q6IlA==
-X-Received: by 2002:aa7:d1cc:0:b0:52a:250e:a052 with SMTP id g12-20020aa7d1cc000000b0052a250ea052mr14348868edp.7.1693297114502;
-        Tue, 29 Aug 2023 01:18:34 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id r9-20020aa7da09000000b005236b47116asm5402296eds.70.2023.08.29.01.18.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 01:18:34 -0700 (PDT)
-Message-ID: <8b7bada9-3898-1b60-3dea-766a760412f7@linaro.org>
-Date:   Tue, 29 Aug 2023 10:18:32 +0200
+        d=1e100.net; s=20221208; t=1693297260; x=1693902060;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lh/pEQLMKgKobYvE5PMRD39Z7EHs1MTaXWjLouRz2yc=;
+        b=CaP5ISrvz+r9k87PEM0rIJh7hrfBPVMSmiZUXKaRDae1q3sbfHA8tlpad+g1AgA/ET
+         5JoI59HN9nXSPtpynRfTLPI7eKl4NCQgiV2PTpMA1cwgQCkqfswZjq0CtKRoO2qSjjmQ
+         miI1Imx4uE7RCHhZ97DuZ9JS8gtH8dIj7DrzFiZiHPnxVAgZwc3Z0x87zvO8OLTYikUA
+         dfj2VKFWX1vKG6c6q21y1Sz+h6DJOJBn6cSNf6A1oIrklyKr9KTKn+p0p/O4STz/BMlb
+         ToeafSsm3D2nd7YfTFw0ZQRwn/O5rCTexsRU8hcYIPpXkMfuwT2NRNV0AhPTSQtrxgME
+         aAoA==
+X-Gm-Message-State: AOJu0YxtjLkRdmqn5wyC8kpFiOu2NsJoyRNvuujhMzuTDqyMU3AdZhKB
+        utaJuVmHHcvRvKiqkJ/skmCYYxjD9WjbuM5dh5+VXkO3S/T/
+X-Google-Smtp-Source: AGHT+IED70DLyywoz/DasvF/rG73oZGQsC6t1BTPxNqoJ5LszXXhwpc4Q4xsrgOo8gmrxjoGdmVniOQA3qKuzMw9+GeBHXUpBsW3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 06/11] firmware: qcom-shm-bridge: new driver
-Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
- <20230828192507.117334-7-bartosz.golaszewski@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230828192507.117334-7-bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a63:3546:0:b0:55a:b9bb:7ca with SMTP id
+ c67-20020a633546000000b0055ab9bb07camr3919796pga.10.1693297260049; Tue, 29
+ Aug 2023 01:21:00 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 01:20:59 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af3ba506040b7d0c@google.com>
+Subject: [syzbot] [bpf?] [net?] KASAN: slab-use-after-free Read in xsk_diag_dump
+From:   syzbot <syzbot+822d1359297e2694f873@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bjorn@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,113 +59,257 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 21:25, Bartosz Golaszewski wrote:
-> This module is a platform driver that also exposes an interface for
-> kernel users to allocate blocks of memory shared with the trustzone.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/firmware/Kconfig                 |   8 +
->  drivers/firmware/Makefile                |   1 +
->  drivers/firmware/qcom-shm-bridge.c       | 452 +++++++++++++++++++++++
->  include/linux/firmware/qcom/shm-bridge.h |  32 ++
->  4 files changed, 493 insertions(+)
->  create mode 100644 drivers/firmware/qcom-shm-bridge.c
->  create mode 100644 include/linux/firmware/qcom/shm-bridge.h
-> 
+Hello,
 
-...
+syzbot found the following issue on:
 
-> +/**
-> + * qcom_shm_bridge_to_phys_addr - Translate address from virtual to physical.
-> + *
-> + * @vaddr: Virtual address to translate.
-> + *
-> + * Return:
-> + * Physical address corresponding to 'vaddr'.
-> + */
-> +phys_addr_t qcom_shm_bridge_to_phys_addr(void *vaddr)
-> +{
-> +	struct qcom_shm_bridge_chunk *chunk;
-> +	struct qcom_shm_bridge_pool *pool;
-> +
-> +	guard(spinlock_irqsave)(&qcom_shm_bridge_chunks_lock);
-> +
-> +	chunk = radix_tree_lookup(&qcom_shm_bridge_chunks,
-> +				  (unsigned long)vaddr);
-> +	if (!chunk)
-> +		return 0;
-> +
-> +	pool = chunk->parent;
-> +
-> +	guard(spinlock_irqsave)(&pool->lock);
+HEAD commit:    5c905279a1b7 Merge branch 'pds_core-error-handling-fixes'
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=16080070680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e4a882f77ed77bd
+dashboard link: https://syzkaller.appspot.com/bug?extid=822d1359297e2694f873
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec63a7a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109926eba80000
 
-Why both locks are spinlocks? The locks are used quite a lot.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/98add120b6e5/disk-5c905279.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c9e9009eadbd/vmlinux-5c905279.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b840142cc0c1/bzImage-5c905279.xz
 
-> +
-> +	return gen_pool_virt_to_phys(pool->genpool, (unsigned long)vaddr);
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_shm_bridge_to_phys_addr);
-> +
-> +static int qcom_shm_bridge_probe(struct platform_device *pdev)
-> +{
-> +	struct qcom_shm_bridge_pool *default_pool;
-> +	struct device *dev = &pdev->dev;
-> +	int ret;
-> +
-> +	/*
-> +	 * We need to wait for the SCM device to be created and bound to the
-> +	 * SCM driver.
-> +	 */
-> +	if (!qcom_scm_is_available())
-> +		return -EPROBE_DEFER;
+The issue was bisected to:
 
-I think we miss here (and in all other drivers) device links to qcm.
+commit 18b1ab7aa76bde181bdb1ab19a87fa9523c32f21
+Author: Magnus Karlsson <magnus.karlsson@intel.com>
+Date:   Mon Feb 28 09:45:52 2022 +0000
 
-> +
-> +	ret = qcom_scm_enable_shm_bridge();
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "Failed to enable the SHM bridge\n");
-> +
-> +	default_pool = qcom_shm_bridge_pool_new_for_dev(
-> +				dev, qcom_shm_bridge_default_pool_size);
-> +	if (IS_ERR(default_pool))
-> +		return dev_err_probe(dev, PTR_ERR(default_pool),
-> +				     "Failed to create the default SHM Bridge pool\n");
-> +
-> +	WRITE_ONCE(qcom_shm_bridge_default_pool, default_pool);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id qcom_shm_bridge_of_match[] = {
-> +	{ .compatible = "qcom,shm-bridge", },
-> +	{ }
-> +};
-> +
-> +static struct platform_driver qcom_shm_bridge_driver = {
-> +	.driver = {
-> +		.name = "qcom-shm-bridge",
-> +		.of_match_table = qcom_shm_bridge_of_match,
-> +		/*
-> +		 * Once enabled, the SHM Bridge feature cannot be disabled so
-> +		 * there's no reason to ever unbind the driver.
-> +		 */
-> +		.suppress_bind_attrs = true,
-> +	},
-> +	.probe = qcom_shm_bridge_probe,
-> +};
-> +
-> +static int __init qcom_shm_bridge_init(void)
-> +{
-> +	return platform_driver_register(&qcom_shm_bridge_driver);
-> +}
-> +subsys_initcall(qcom_shm_bridge_init);
+    xsk: Fix race at socket teardown
 
-Why this is part of subsystem? Should be rather device_initcall... or
-simply module (and a tristate).
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16c6229fa80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15c6229fa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c6229fa80000
 
-Best regards,
-Krzysztof
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+822d1359297e2694f873@syzkaller.appspotmail.com
+Fixes: 18b1ab7aa76b ("xsk: Fix race at socket teardown")
 
+==================================================================
+BUG: KASAN: slab-use-after-free in xsk_diag_put_info net/xdp/xsk_diag.c:21 [inline]
+BUG: KASAN: slab-use-after-free in xsk_diag_fill net/xdp/xsk_diag.c:114 [inline]
+BUG: KASAN: slab-use-after-free in xsk_diag_dump+0x1573/0x15c0 net/xdp/xsk_diag.c:163
+Read of size 4 at addr ffff8880789da0e0 by task syz-executor370/5025
+
+CPU: 1 PID: 5025 Comm: syz-executor370 Not tainted 6.5.0-rc7-syzkaller-00108-g5c905279a1b7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ xsk_diag_put_info net/xdp/xsk_diag.c:21 [inline]
+ xsk_diag_fill net/xdp/xsk_diag.c:114 [inline]
+ xsk_diag_dump+0x1573/0x15c0 net/xdp/xsk_diag.c:163
+ netlink_dump+0x588/0xca0 net/netlink/af_netlink.c:2269
+ __netlink_dump_start+0x6d0/0x9c0 net/netlink/af_netlink.c:2376
+ netlink_dump_start include/linux/netlink.h:330 [inline]
+ xsk_diag_handler_dump+0x1a6/0x240 net/xdp/xsk_diag.c:190
+ __sock_diag_cmd net/core/sock_diag.c:238 [inline]
+ sock_diag_rcv_msg+0x316/0x440 net/core/sock_diag.c:269
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
+ sock_diag_rcv+0x2a/0x40 net/core/sock_diag.c:280
+ netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+ netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
+ netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
+ sock_sendmsg_nosec net/socket.c:725 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:748
+ sock_write_iter+0x29b/0x3d0 net/socket.c:1129
+ call_write_iter include/linux/fs.h:1877 [inline]
+ do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
+ do_iter_write+0x17f/0x830 fs/read_write.c:860
+ vfs_writev+0x221/0x700 fs/read_write.c:933
+ do_writev+0x285/0x370 fs/read_write.c:976
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fd9ce8b9df9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc3b052168 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd9ce8b9df9
+RDX: 0000000000000001 RSI: 00000000200003c0 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000006 R09: 0000000000000006
+R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000000000
+R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+Allocated by task 5025:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:196 [inline]
+ __do_kmalloc_node mm/slab_common.c:985 [inline]
+ __kmalloc_node+0x60/0x100 mm/slab_common.c:992
+ kmalloc_node include/linux/slab.h:602 [inline]
+ kvmalloc_node+0x99/0x1a0 mm/util.c:604
+ kvmalloc include/linux/slab.h:720 [inline]
+ kvzalloc include/linux/slab.h:728 [inline]
+ alloc_netdev_mqs+0x9b/0x1240 net/core/dev.c:10594
+ rtnl_create_link+0xc9c/0xfd0 net/core/rtnetlink.c:3350
+ rtnl_newlink_create net/core/rtnetlink.c:3476 [inline]
+ __rtnl_newlink+0x108e/0x1940 net/core/rtnetlink.c:3706
+ rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3719
+ rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6445
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
+ netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+ netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
+ netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
+ sock_sendmsg_nosec net/socket.c:725 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:748
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5025:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:162 [inline]
+ slab_free_hook mm/slub.c:1792 [inline]
+ slab_free_freelist_hook+0x10b/0x1e0 mm/slub.c:1818
+ slab_free mm/slub.c:3801 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3814
+ kvfree+0x47/0x50 mm/util.c:650
+ device_release+0xa1/0x240 drivers/base/core.c:2484
+ kobject_cleanup lib/kobject.c:682 [inline]
+ kobject_release lib/kobject.c:713 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1f7/0x5b0 lib/kobject.c:730
+ netdev_run_todo+0x7dd/0x11d0 net/core/dev.c:10366
+ rtnl_unlock net/core/rtnetlink.c:151 [inline]
+ rtnetlink_rcv_msg+0x446/0xd30 net/core/rtnetlink.c:6446
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
+ netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+ netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
+ netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
+ sock_sendmsg_nosec net/socket.c:725 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:748
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff8880789da000
+ which belongs to the cache kmalloc-cg-4k of size 4096
+The buggy address is located 224 bytes inside of
+ freed 4096-byte region [ffff8880789da000, ffff8880789db000)
+
+The buggy address belongs to the physical page:
+page:ffffea0001e27600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x789d8
+head:ffffea0001e27600 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+anon flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000010200 ffff88801284f500 0000000000000000 0000000000000001
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4479, tgid 4479 (udevd), ts 29735533397, free_ts 28964079298
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1570
+ prep_new_page mm/page_alloc.c:1577 [inline]
+ get_page_from_freelist+0x10a9/0x31e0 mm/page_alloc.c:3221
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4477
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2292
+ alloc_slab_page mm/slub.c:1862 [inline]
+ allocate_slab+0x24e/0x380 mm/slub.c:2009
+ new_slab mm/slub.c:2062 [inline]
+ ___slab_alloc+0x8bc/0x1570 mm/slub.c:3215
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3314
+ __slab_alloc_node mm/slub.c:3367 [inline]
+ slab_alloc_node mm/slub.c:3460 [inline]
+ __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3509
+ __do_kmalloc_node mm/slab_common.c:984 [inline]
+ __kmalloc_node+0x4f/0x100 mm/slab_common.c:992
+ kmalloc_node include/linux/slab.h:602 [inline]
+ kvmalloc_node+0x99/0x1a0 mm/util.c:604
+ kvmalloc include/linux/slab.h:720 [inline]
+ seq_buf_alloc fs/seq_file.c:38 [inline]
+ seq_read_iter+0x80b/0x1280 fs/seq_file.c:210
+ kernfs_fop_read_iter+0x4c8/0x680 fs/kernfs/file.c:279
+ call_read_iter include/linux/fs.h:1871 [inline]
+ new_sync_read fs/read_write.c:389 [inline]
+ vfs_read+0x4e0/0x930 fs/read_write.c:470
+ ksys_read+0x12f/0x250 fs/read_write.c:613
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1161 [inline]
+ free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2348
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2443
+ qlink_free mm/kasan/quarantine.c:166 [inline]
+ qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:185
+ kasan_quarantine_reduce+0x18b/0x1d0 mm/kasan/quarantine.c:292
+ __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3470 [inline]
+ slab_alloc mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3485 [inline]
+ kmem_cache_alloc+0x172/0x3b0 mm/slub.c:3494
+ getname_flags.part.0+0x50/0x4d0 fs/namei.c:140
+ getname_flags include/linux/audit.h:319 [inline]
+ getname+0x90/0xe0 fs/namei.c:219
+ do_sys_openat2+0x100/0x1e0 fs/open.c:1401
+ do_sys_open fs/open.c:1422 [inline]
+ __do_sys_openat fs/open.c:1438 [inline]
+ __se_sys_openat fs/open.c:1433 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1433
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Memory state around the buggy address:
+ ffff8880789d9f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880789da000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880789da080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                       ^
+ ffff8880789da100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880789da180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
