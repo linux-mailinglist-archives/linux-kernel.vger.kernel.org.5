@@ -2,112 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BABF078CF83
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80B778CF88
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbjH2WYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
+        id S238435AbjH2WaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239444AbjH2WYX (ORCPT
+        with ESMTP id S236195AbjH2W3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:24:23 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A62C2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:24:21 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68bed286169so4229827b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1693347860; x=1693952660; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+YYrVRvFGP8cHlPGoJT9wVJUhY8GN/rwR0tzqEGpip4=;
-        b=HGN6wzE0Z+22ftS0x+nuWnCprmDpb/v0SZ86HyOgWputm+heKUXR2mnqzErStq72tE
-         c4zpJAZLjtl3kqpneEua/+I1WrnSnldvcrdEQdT7A5hy/DT7Q29PJg5ZsJoNRAT7q9t5
-         0pNXHfsoylRRBs84O2jg2jQ44b0YU6QiALeVPzBfC77m+1icx0TiWZM2135zoO1fYz30
-         Gm9oV5xtAaqTC6GGk81p9SW1a+4NDotdsld40wB+14KpNtaDa2zplFhdZqkhACTXNKdX
-         846zMFSDYPBeCRHYzXhz0Q3MFtvLKbd7Qz/i6wN3kFU3FU+6W9fVtld63qMKc3qTQ68j
-         7KuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693347860; x=1693952660;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+YYrVRvFGP8cHlPGoJT9wVJUhY8GN/rwR0tzqEGpip4=;
-        b=R0DalTRUB8tY9UiISHYe2E0+FEiAnGsasvUubUaHI40T33C6knw9XOBRYqxC+6yTON
-         xSdwhPC1WkOnxKwgeTaJ/QQ1tjftngivGcIoUKQozK480ebb5As7UcBtoCGhin5RvhEX
-         i3sna8rL54gERabVGbCT7M5rWv8ogGnQncy12lwP9CQdraYdobuOxCOUx5JxZjDdBd/t
-         e9KGP88TQT5ntmhj4Oc5DaHvQhSqLoqDSZQJRKJ6dPPisykgKNFox4Gby23wCd+U+Osl
-         2oDF8ZppuHcaANQIaXxPVnkZrbd3p+fjJKKhWb4+DoQtcRr2RyG4ztt4WUQ/tTPyV2mh
-         t8/w==
-X-Gm-Message-State: AOJu0Yy9TzjPjB0DGVK3wpn3WT77ZQEG9gf+akPvtQuQQhMohJysYW7Y
-        x690VRf+2VWH5PdLOtmgVBGE5A==
-X-Google-Smtp-Source: AGHT+IFPNsEXPkaJPGMeeiEFHipjnGseCng4DOTgYsmDDTAwZXJBdp93d1gYNXCJe3ucMHjD39GcnA==
-X-Received: by 2002:a05:6a20:9746:b0:148:656b:9a1f with SMTP id hs6-20020a056a20974600b00148656b9a1fmr654936pzc.20.1693347860454;
-        Tue, 29 Aug 2023 15:24:20 -0700 (PDT)
-Received: from medusa.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
-        by smtp.googlemail.com with ESMTPSA id v12-20020a170902b7cc00b001993a1fce7bsm9798784plz.196.2023.08.29.15.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 15:24:20 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 15:24:18 -0700
-From:   Mohamed Khalfella <mkhalfella@purestorage.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     willemjdebruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        David Howells <dhowells@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BPF [MISC]" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] skbuff: skb_segment, Update nfrags after calling zero
- copy functions
-Message-ID: <20230829222418.GB1473980@medusa>
-References: <20230828233210.36532-1-mkhalfella@purestorage.com>
- <64ed7188a2745_9cf208e1@penguin.notmuch>
- <20230829065010.GO4091703@medusa>
- <CANn89iLbNF_kGG9S3R9Y8gpoEM71Wesoi1mTA3-at4Furc+0Fg@mail.gmail.com>
- <20230829093105.GA611013@medusa>
- <CANn89iLzOFikw2A8HJJ0zvg1Znw+EnOH2Tm2ghrURkE7NXvQSg@mail.gmail.com>
+        Tue, 29 Aug 2023 18:29:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1231B7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:29:44 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693348182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tgk7QBXGhuh0CO4QS/5onyOS7s/KO0HAOy1RZqavFVQ=;
+        b=Yzd1EDm7LDP9ZEZf6eXnjx2gf2YER8DjvBftLvvWzUQRqTt8HoxbRVyAxJAw/5ghW7UQV0
+        9sQpLSq3gdrbjfm7/jDiZStPuCui0YekQzo/14neiJCiq+5x/nLBHyoJ/s0PYB/UlHgeyV
+        YArLCXcQpowFCAgJesW8Y73ZFv6fh/yTPo9TOepjLOYvrgSF9Du46SZVfuTfW03Ar2Pd7i
+        wL7iz21Q1yrcDtMw6/KEids9CZuMJp/Da4xY4HKlz8ozwJbFOrS3E4HONSsApTOsp+uenM
+        7eFCWSBNt/eNRIIsx1XVFniHZ5YAj0K5WUrQuwA4GXSNA9qjoOFR3UNOh67RZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693348182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tgk7QBXGhuh0CO4QS/5onyOS7s/KO0HAOy1RZqavFVQ=;
+        b=CsJ0JVlae7efRR6iCAfuXKOAnR5hD1pr9+PCpQKPrzMypZ5dwwVgOy/rq27pyDmkfgB5gb
+        H7GDnBRgRGO0kSBQ==
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
+In-Reply-To: <CAMRc=Md6NA6-rBWL1ti66X5Rt3C4Y2irfrSZnCo3wQSCqT6nPQ@mail.gmail.com>
+References: <20230814093621.23209-1-brgl@bgdev.pl>
+ <20230814093621.23209-3-brgl@bgdev.pl> <875y54ci86.ffs@tglx>
+ <CAMRc=Mfg52iqFKj0QMB55K5MCxhgPLbF-0WSRG0ktN3RbofMtQ@mail.gmail.com>
+ <873507cziz.ffs@tglx>
+ <CAMRc=MdYteOxy87jdSEvBxnN7tx_J1X2aSsRzKZ6WKL31-ipmA@mail.gmail.com>
+ <87sf87aw36.ffs@tglx>
+ <CAMRc=Mcvkjmy2F=92SWRdCKL0US_YSwsvpWjcfOH9CBGw3GB0g@mail.gmail.com>
+ <87il91c04a.ffs@tglx>
+ <CAMRc=MfB=sMEmK02Y6SaG1T4PFZW2OD+box7NNoDY3KM1AchLA@mail.gmail.com>
+ <87o7ir8hlh.ffs@tglx>
+ <CAMRc=Mf9f9MxfRY+=Et9+wO5fZr61SRthcGhoHZsJ6-x6k+BgQ@mail.gmail.com>
+ <873502971b.ffs@tglx>
+ <CAMRc=Meigus=WOGwM-fStkhtDeKyTd+9vZH19HoP+U1xpwYx9Q@mail.gmail.com>
+ <87msya6wmf.ffs@tglx>
+ <CAMRc=Md6NA6-rBWL1ti66X5Rt3C4Y2irfrSZnCo3wQSCqT6nPQ@mail.gmail.com>
+Date:   Wed, 30 Aug 2023 00:29:41 +0200
+Message-ID: <877cpd7a96.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iLzOFikw2A8HJJ0zvg1Znw+EnOH2Tm2ghrURkE7NXvQSg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-29 12:09:15 +0200, Eric Dumazet wrote:
-> Another way to test this path for certain (without tcpdump having to race)
-> is to add a temporary/debug patch like this one:
-> 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index a298992060e6efdecb87c7ffc8290eafe330583f..20cc42be5e81cdca567515f2a886af4ada0fbe0a
-> 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1749,7 +1749,8 @@ int skb_copy_ubufs(struct sk_buff *skb, gfp_t gfp_mask)
->         int i, order, psize, new_frags;
->         u32 d_off;
-> 
-> -       if (skb_shared(skb) || skb_unclone(skb, gfp_mask))
-> +       if (skb_shared(skb) ||
-> +           pskb_expand_head(skb, 0, 0, gfp_mask))
->                 return -EINVAL;
-> 
->         if (!num_frags)
-> 
-> Note that this might catch other bugs :/
+On Tue, Aug 29 2023 at 14:24, Bartosz Golaszewski wrote:
+> On Tue, Aug 29, 2023 at 11:11=E2=80=AFAM Thomas Gleixner <tglx@linutronix=
+.de> wrote:
+>> > On Mon, Aug 28, 2023 at 11:44=E2=80=AFPM Thomas Gleixner <tglx@linutro=
+nix.de> wrote:
+>> So when the USB device disconnects, then something needs to tell the
+>> i2c-xx-driver that the I2C interface is not longer available, right?
+>>
+>> IOW, the unbind operation needs the following notification and teardown
+>> order:
+>>
+>>    1) USB core notifies hid-cp2112
+>>
+>>    2) hid-cp2112 notifies i2c-xx-driver
+>>
+>>    3) i2c-xx-driver mops up and invokes free_irq()
+>>
+>>    4) hid-cp2112 removes the interrupt domain
+>>
+>> But it seems that you end up with a situation where the notification of
+>> the i2c-xx-driver is either not happening or the driver in question is
+>> simply failing to mop up and free the requested interrupt.
+>>
+>
+> Yes, there's no notification of any kind.
 
-I was not able to make it allocate a new frags by running tcpdump while
-reproing the problem. However, I was able to do it with your patch.
+I'm not buying that.
+
+  usb disconnect
+    ...
+      cp2112_remove()
+        i2c_del_adapter()
+          i2c_unregister_device(client)
+            ...
+            device_unregister()
+              device_del()
+                bus_notify()            // Mechanism #1
+                  i2c_device_remove()
+                    if (dev->remove)
+                       dev->remove()
+                ...
+                device_unbind_cleanup()
+                  devres_release_all()  // Mechanism #2
+
+        gpiochip_remove()
+
+There are very well notifications to the drivers about unplug of a
+device. Otherwise this would end up in a complete disaster and a lot
+more stale data and state than just a procfs file or a requested
+interrupt.
+
+So the mechanisms are there, no?
+
+If this is just about the problem that some device driver writers fail
+to implement them correctly, then yes it makes sense to have a last
+resort fallback which cleans them up and emits a big fat warning.
+
+Making this a programming model would be beyond wrong.
+
+> It's a common problem unfortunately across different subsystems. We
+> have hot-unpluggable consumers using resources that don't support it
+> (like interrupts in this example).
+
+All hotpluggable consumers have at least one mechanism to mop up the
+resources they allocated. There are a lot of resources in the kernel
+which do not clean themself up magically.
+
+So what's so special about interrupts? They are not any different from a
+pointer which is registered at some entity and the device driver writer
+forgets to unregister it, but the underlying resource is freed. That's
+even worse than the leaked interrupt and cannot be magically undone at
+all.
+
+Whatever you try, you can't turn driver programming into a task which
+can be accomplished w/o brains.
+
+> For interrupts it would mean that when the consumer calls
+> request_irq(), the number it gets is a weak reference to the irq_desc.
+
+Interrupt numbers are weak references by definition. request_irq() does
+not return an interrupt number, it returns success or fail. The
+interrupt number is handed to request_irq(), no?
+
+The entities which hand out the interrupt number are a complete
+different story. But that number is from their perspective a weak
+reference too.
+
+> For any management operation we lock irq_desc.
+
+That's required anyway, but irq_desc::lock is not a sufficient
+protection against a teardown race.
+
+> If the domain is destroyed, irq_descs get destroyed with it
+
+Interrupts consist of more than just an interrupt descriptor. If you
+care to look at the internals, then the descriptor is the last entity
+which goes away simply because all other related resources hang off the
+interrupt descriptor.
+
+So they obviously need to be mopped up first and trying to mop up
+requested interrupts at the point where the interrupt descriptor is
+freed is way too late.
+
+In fact they need to mopped up first, which is obvious from the setup
+ordering as everything underneath must be in place already before
+request_irq() can succeed. The only sensible ordering for teardown is
+obviously the reverse of setup, but that's not specific to interrupts at
+all.
+
+> (after all users leave the critical section).
+
+Which critical section? Interrupts have more than just the
+irq_desc::lock critical section which needs to be left.
+
+> Next call to any of the functions looks up the irq number and sees
+> it's gone. It fails or silently returns depending on the function
+> (e.g. irq_free() would have to ignore the missing lookup).
+
+That's what happens today already.
+
+The missing bit is the magic function which mops up when the driver
+writer blew it up. But that's far from a 'put a trivial free_irq() call
+somewhere'.
+
+First of all we have too many interrupt mechanisms ranging from the
+linux 0.1 model with static interrupt spaces to hierarchical interrupt
+domains.
+
+  - Almost everything which is interrupt domain based (hierarchical or
+    not) can probably be "addressed" by some definition of "addressed"
+    because there are only a few places in the core code which are
+    involved in releasing individual or domain wide resources.
+
+    But see below.
+
+  - The incarnations which do not use interrupt domains are way harder
+    because the teardown of the interrupt resources is not happening in
+    the core code. It's happening at the driver side and the core is
+    only involved to release the interrupt descriptor. But that's too
+    late.
+
+    The good news about those is that probably the vast majority of the
+    instances is built in, mostly legacy and not pluggable.
+
+So lets assume that anything which is not interrupt domain based is not
+relevant, which reduces the problem space significantly. But the
+remaining space is still non-trivial.
+
+  1) Life-time
+
+     Interrupt descriptors are RCU freed but that's mostly for external
+     usage like /proc/interrupts
+
+     Still most of the core code relies on the proper setup/teardown
+     order, so there would be quite some work to do vs. validating that
+     an interrupt descriptor is consistent at all hierarchy levels.
+
+     That's going to be interesting vs. interfaces which can be invoked
+     from pretty much any context (except NMI).
+
+     irq_desc::lock is not the panacea here because it obviously can
+     only be held for real short truly atomic sections. But quite some
+     of the setup/teardown at all levels requires sleepable context.
+
+  2) Concurrency
+
+     Protection against concurrent interrupt handler execution is
+     covered in free_irq() as it fully synchronizes.
+
+     That's the least of my worries.
+
+     Whatever the invalidation mechanism might be, pretty much every
+     usage site of irq_to_desc() and any usage site of interrupt
+     descriptors which are stored outside of the maple_tree for
+     performance reasons need to be audited.
+
+     The validation has to take into account whether that's an requested
+     descriptor or an unused one.
+=20=20
+So no, neither removing some procfs entry at the wrong point nor
+slapping some variant of free_irq() into random places is going to cut
+it.
+
+Your idea of tracking request_irq()/free_irq() at some subsystem level
+is not going to work either simply because it requires that such muck is
+sprinkled all over the place.
+
+I completely agree that the interrupt core code does not have enough
+places which emit a prominent warning when the rules are violated.
+
+So sure, in some way or the other a "fix" by some definition of "fix"
+could be implemented, but I'm really not convinced that's the right way
+to waste^Wspend our time with.
+
+Especially not because interrupt handling is a hot-path and any
+life-time/conncurrency validation mechanism will introduce overhead no
+matter what.
+
+Thanks,
+
+        tglx
