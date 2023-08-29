@@ -2,224 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D7778C781
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3487B78C77D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236699AbjH2O0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        id S236471AbjH2OZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236964AbjH2OZ5 (ORCPT
+        with ESMTP id S236928AbjH2OZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:25:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2871EB2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693319107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=72jjJIsr12NXRU7aDK4GbDjvA7ef38LcvCbu/brjroY=;
-        b=jM1uH5au6IDpdLsmKPLzAAFD3ShGhBl7TKjLxUEUV3H4NgWhQ1eYfg7KGYr97Aga53nDiG
-        WUE92JeKl6mK8vKbZXxtB86epVVHJMkB2lbsL1PbBy82XV9EclJwDYPzNhpfe8X23bUUc2
-        sjFK8knsaIf1QQ1Uq9MzPg0XzVVkWA4=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-464-uG5-ml5TPoG5VuxNLX2Piw-1; Tue, 29 Aug 2023 10:25:05 -0400
-X-MC-Unique: uG5-ml5TPoG5VuxNLX2Piw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9a1be1e2b63so68755266b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:25:05 -0700 (PDT)
+        Tue, 29 Aug 2023 10:25:18 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05238EC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:25:13 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-34cb4b85bacso3135615ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1693319112; x=1693923912;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UJUbKroilkzyrqQ/wNhMzuPxZ1aCqcwh3ID9A8N21Sw=;
+        b=h+kESRJR7EX2Lm3X7qOlFyuGak16wWPHO9UMMj4+e8vnSl7yh4yzTovZ3U2mWhRhG3
+         d4KLUKylxTSsH2yty2CO0Q49jwyxyqiv2wcufXMoLMGThrQwig4CvDIiMloAIXoyDACg
+         XhEBS0ErOzN24m/Xrg5lFlTEAT4nhG8qV0vOs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693319104; x=1693923904;
-        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
-         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=72jjJIsr12NXRU7aDK4GbDjvA7ef38LcvCbu/brjroY=;
-        b=ClJWhniOI4nVIk6p7h7loWpKqfCxc2TJi94jOfzLVmyu2pLLLgoTnryWxkP7jDaWmv
-         JQC3/AiWbVVz3wtVWDS0uIz8Kap0w2g+oyEkoab1zkrDr63RZ9sFdpBcZ0Z1Gu5yHLHx
-         qsGchXu0RbJPYk8iD4cyxVvlPEY4n6djIjrE2eTvhlicqt2wuJFUy4+VljYXii97laYe
-         xMYPMGJKJve29+V5mIW6qiImNJQQsL19MGtf5+twC6BENbO+L26xDfBAHMsDT9kOUiQP
-         ssBJyVb5RHq4fuuwZF/NVJiD6hRJ7g/UdlhCY9KZ367gqWxz5kysvm81MEKpAr2SJUEW
-         BoRw==
-X-Gm-Message-State: AOJu0YxCw5jGuzwZg65w+zJ2pu+F1rhYXfODEXJx1AKwyzqnS9kTllu8
-        CUkj0h5RSB/zZi5kbgMCgVw98RZCOIY7MyxPB/B1KiQKn4+bELBfzBTLqTAdSrkUi2SGMajiCSl
-        sZokYnuVjEaSv7dOIoiFA4REc
-X-Received: by 2002:a17:906:257:b0:9a1:eb67:c0d2 with SMTP id 23-20020a170906025700b009a1eb67c0d2mr12931440ejl.6.1693319104110;
-        Tue, 29 Aug 2023 07:25:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHKi2VXt+Ovw7zv8607SLKgZhnUivVO6erEvkOL/iqaS7Wn9pyraiegUPmPO3FzcCzxQroolQ==
-X-Received: by 2002:a17:906:257:b0:9a1:eb67:c0d2 with SMTP id 23-20020a170906025700b009a1eb67c0d2mr12931432ejl.6.1693319103814;
-        Tue, 29 Aug 2023 07:25:03 -0700 (PDT)
-Received: from ?IPv6:2001:9e8:32d7:ba00:5749:c26e:a109:dac4? ([2001:9e8:32d7:ba00:5749:c26e:a109:dac4])
-        by smtp.gmail.com with ESMTPSA id lv12-20020a170906bc8c00b009a19701e7b5sm6015949ejb.96.2023.08.29.07.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 07:25:03 -0700 (PDT)
-Message-ID: <c441390345db294517195653408ef1cecea08feb.camel@redhat.com>
-Subject: [RESEND PATCH v2] xarray: Document necessary flag in alloc functions
-From:   pstanner@redhat.com
-To:     willy@infradead.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Philipp Stanner <pstanner@redhat.com>
-Date:   Tue, 29 Aug 2023 16:25:02 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        d=1e100.net; s=20221208; t=1693319112; x=1693923912;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UJUbKroilkzyrqQ/wNhMzuPxZ1aCqcwh3ID9A8N21Sw=;
+        b=Gh20XTdoplJq28JYi1O5fGs98or+zTQklqizihtbWHeh1hHiXkvExB2PBJhpCouT3N
+         ULu7L1GXhfSSu4va6WkvZX5TdJc+ZSyqM/LAmF5qM8YLoG9HwOuUMEerOYzXdDVgkXxS
+         lvdm6Z6TPKPyTP0BRlYXQMBeomQynp0alp6YAlcJWCzTSDVakHnC7SyHtCUsYBap9HlU
+         oNLSStfFC9J3C1bTIukZ5u7+q4x4hJGwmhxB79tJ47hO1Dy2QT3A3yN9F++aP59dZrL6
+         mEpqKYadHhvPOQl/t4PYYP+kX0kk6o+CPnBE6qeCO1fhR41BNPhRNv18wokgmoPhT/GQ
+         HEdw==
+X-Gm-Message-State: AOJu0YwlS9u/UDJON2m+T3CXScwjZ6rtJje7BCszlGD/fLb5MB8PHuK2
+        LOm99b0+yXQNjNcZryEtFo4ohA==
+X-Google-Smtp-Source: AGHT+IGioKGtNYseqMY3QKnFM+wN6+jVP8+G9cx4AbkiotekfO41AUVYB6ybiKtuUIGn8RBVFuF+lQ==
+X-Received: by 2002:a6b:c982:0:b0:792:8a08:1bf9 with SMTP id z124-20020a6bc982000000b007928a081bf9mr11373255iof.0.1693319112367;
+        Tue, 29 Aug 2023 07:25:12 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id z6-20020a056638000600b0042acf389acesm3083550jao.71.2023.08.29.07.25.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 07:25:11 -0700 (PDT)
+Message-ID: <7a4aa9cd-29dd-e1bb-3100-833e4a2df100@linuxfoundation.org>
+Date:   Tue, 29 Aug 2023 08:25:11 -0600
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5.4 000/158] 5.4.255-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230828101157.322319621@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230828101157.322319621@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a new line to the docstrings of functions wrapping __xa_alloc() and
-__xa_alloc_cyclic(), informing about the necessity of flag XA_FLAGS_ALLOC
-being set previously.
+On 8/28/23 04:11, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.255 release.
+> There are 158 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.255-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-The documentation so far says that functions wrapping __xa_alloc() and
-__xa_alloc_cyclic() are supposed to return either -ENOMEM or -EBUSY in
-case of an error. If the xarray has been initialized without the flag
-XA_FLAGS_ALLOC, however, they fail with a different, undocumented error
-code.
+Compiled and booted on my test system. No dmesg regressions.
 
-As hinted at in Documentation/core-api/xarray.rst, wrappers around these
-functions should only be invoked when the flag has been set. The
-functions' documentation should reflect that as well.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
-Version 2 of the proposed documentation update. As Matthew requested, I
-added the sentence to all functions wrapping the above mentioned two
-core functions.
-Additionally, I added it to themselves, too, as these functions can also
-be called by the user directly.
-I also rephrased the commit message so that the implemented change is
-mentioned first.
----
-=C2=A0include/linux/xarray.h | 18 ++++++++++++++++++
-=C2=A0lib/xarray.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0 6 ++++++
-=C2=A02 files changed, 24 insertions(+)
-
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index 741703b45f61..cb571dfcf4b1 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -856,6 +856,9 @@ static inline int __must_check xa_insert_irq(struct xar=
-ray *xa,
-=C2=A0 * stores the index into the @id pointer, then stores the entry at
-=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
-d @id.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock.=C2=A0 =
-May sleep if
-=C2=A0 * the @gfp flags permit.
-=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
-@@ -886,6 +889,9 @@ static inline __must_check int xa_alloc(struct xarray *=
-xa, u32 *id,
-=C2=A0 * stores the index into the @id pointer, then stores the entry at
-=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
-d @id.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock while
-=C2=A0 * disabling softirqs.=C2=A0 May sleep if the @gfp flags permit.
-=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
-@@ -916,6 +922,9 @@ static inline int __must_check xa_alloc_bh(struct xarra=
-y *xa, u32 *id,
-=C2=A0 * stores the index into the @id pointer, then stores the entry at
-=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
-d @id.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Process context.=C2=A0 Takes and releases the xa_lock whi=
-le
-=C2=A0 * disabling interrupts.=C2=A0 May sleep if the @gfp flags permit.
-=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
-@@ -949,6 +958,9 @@ static inline int __must_check xa_alloc_irq(struct xarr=
-ay *xa, u32 *id,
-=C2=A0 * The search for an empty entry will start at @next and will wrap
-=C2=A0 * around if necessary.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock.=C2=A0 =
-May sleep if
-=C2=A0 * the @gfp flags permit.
-=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
- the
-@@ -983,6 +995,9 @@ static inline int xa_alloc_cyclic(struct xarray *xa, u3=
-2 *id, void *entry,
-=C2=A0 * The search for an empty entry will start at @next and will wrap
-=C2=A0 * around if necessary.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock while
-=C2=A0 * disabling softirqs.=C2=A0 May sleep if the @gfp flags permit.
-=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
- the
-@@ -1017,6 +1032,9 @@ static inline int xa_alloc_cyclic_bh(struct xarray *x=
-a, u32 *id, void *entry,
-=C2=A0 * The search for an empty entry will start at @next and will wrap
-=C2=A0 * around if necessary.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Process context.=C2=A0 Takes and releases the xa_lock whi=
-le
-=C2=A0 * disabling interrupts.=C2=A0 May sleep if the @gfp flags permit.
-=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
- the
-diff --git a/lib/xarray.c b/lib/xarray.c
-index 2071a3718f4e..73b3f8b33a56 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -1802,6 +1802,9 @@ EXPORT_SYMBOL(xa_get_order);
-=C2=A0 * stores the index into the @id pointer, then stores the entry at
-=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
-d @id.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Any context.=C2=A0 Expects xa_lock to be held on entry.=
-=C2=A0 May
-=C2=A0 * release and reacquire xa_lock if @gfp flags permit.
-=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
-@@ -1850,6 +1853,9 @@ EXPORT_SYMBOL(__xa_alloc);
-=C2=A0 * The search for an empty entry will start at @next and will wrap
-=C2=A0 * around if necessary.
-=C2=A0 *
-+ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
- set
-+ * in xa_init_flags().
-+ *
-=C2=A0 * Context: Any context.=C2=A0 Expects xa_lock to be held on entry.=
-=C2=A0 May
-=C2=A0 * release and reacquire xa_lock if @gfp flags permit.
-=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
- the
-
-
+thanks,
+-- Shuah
