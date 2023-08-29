@@ -2,70 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3D978BC64
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6B078BC67
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbjH2BjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 21:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        id S234968AbjH2BlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 21:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbjH2Bif (ORCPT
+        with ESMTP id S233019AbjH2Bkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 21:38:35 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4064184
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 18:38:32 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bcade59b24so2942158a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 18:38:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693273112; x=1693877912;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Gk1xvLyQk1UDx0pGc3vIn7255Nmy8esIc+EjehFuOA=;
-        b=szzU/RVw0Gdt+fIvNIpFY0UGLOx5BW87LTO7TlI2Zo9H1imnSUS9ReLLnRrzdBbVd3
-         YVdyPa3ZwolJ0WRiW7hZD1cqCYJ5dPBAq4nn+CZRFUveeIuiTBx/JTBDsE3pkapdhxvk
-         m/PnMwrKT3AXkSeHqWsKKN3apMtN4fdzH4OofRkjXMxnuYISJ3BqvGwyS1fUtZDxcHRm
-         SlUcHtGGV3zyuA0DvGgD8hkWyYS4BD2fv7utYASzvfu+0LmwVK0yjlipmRuVT8BSXUat
-         kXQuLRGKVma/xTbTxzrv7Ih06hkM+1HT6GAtOCFVPD9IY6I7QI6WPCg9NptZvuuaT7ZJ
-         rltw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693273112; x=1693877912;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Gk1xvLyQk1UDx0pGc3vIn7255Nmy8esIc+EjehFuOA=;
-        b=GzSq0gG73PJ1Zd2VBIQoxCaIfCwH0+XzKbzgbcVipzdKsL93aRTg91CT4guVYxfEiY
-         CuyOG2dEdxmajHXjRaVt71rJV0/lIlXiqOqVwmo83P6aLff4laUKZMJyg80JOHsJeDjr
-         0JWzx/0lQKzeJ/+pUm7XHiZ/kcht5njDrTV3BV9VNsSKM64fWekFPf8mKMOtN8bIJ+QT
-         G8QDaYDSQy1137i+YItxa4tpKuIe7nhmCfLsU1VYYyFukPrxuEHENr1UJ+8HSnk5cKb1
-         wPaxtyb6BGbgFSNxG+lVS+1CHyCOm8gq87nbe69Y8mpwMqbU/tg40ibsILmdAdaPxOhO
-         uVRg==
-X-Gm-Message-State: AOJu0YzbvaD9uxBc8rQuothOIdhTtaJJCK8xqxTICwuDBL1aZVOWTu4u
-        8q7pBOFJVqH+gRF6Zso70iq2MT9tAhA=
-X-Google-Smtp-Source: AGHT+IG7omVwtEX2aaTO/BYBFJp/Ge70tkpitRNVW6bS+5l0sJY1RJYYJ6yIlXrKqxkPSPZ0VPpfyA==
-X-Received: by 2002:a05:6830:11c5:b0:6bc:f999:a544 with SMTP id v5-20020a05683011c500b006bcf999a544mr15987414otq.15.1693273111885;
-        Mon, 28 Aug 2023 18:38:31 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id c2-20020a639602000000b0056c52d25771sm7838699pge.69.2023.08.28.18.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 18:38:31 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 18:36:18 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v3 3/8] bitmap: fix opencoded bitmap_allocate_region()
-Message-ID: <ZO1Lkhh3cjpYf1hm@yury-ThinkPad>
-References: <20230815233628.45016-1-yury.norov@gmail.com>
- <20230815233628.45016-4-yury.norov@gmail.com>
- <ZN3sMzYHxQyvrKMJ@smile.fi.intel.com>
+        Mon, 28 Aug 2023 21:40:49 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D29184;
+        Mon, 28 Aug 2023 18:40:45 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RZVT64CS0z1L9Dh;
+        Tue, 29 Aug 2023 09:39:06 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 29 Aug 2023 09:40:42 +0800
+Subject: Re: [PATCH v7 4/6] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Namhyung Kim <namhyung@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <irogers@google.com>,
+        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
+        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20230826032608.107261-1-yangjihong1@huawei.com>
+ <20230826032608.107261-5-yangjihong1@huawei.com>
+ <CAM9d7cibRU6ViyhxtEYG2UMSYUWbu__Oct-+J1PzvGwu_D=SPA@mail.gmail.com>
+ <bbef4fc2-cb4b-72a9-44ed-a68c71886dc6@huawei.com>
+ <0bf5f881-f264-bf2e-431e-444f51c97ee0@intel.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <c8be59c7-a751-e270-d530-060d43fa0261@huawei.com>
+Date:   Tue, 29 Aug 2023 09:40:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZN3sMzYHxQyvrKMJ@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <0bf5f881-f264-bf2e-431e-444f51c97ee0@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,36 +61,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:45:23PM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 15, 2023 at 04:36:23PM -0700, Yury Norov wrote:
-> > bitmap_find_region() opencodes bitmap_allocate_region(). Fix it.
-> 
-> ...
-> 
-> >  	for (pos = 0; (end = pos + BIT(order)) <= bits; pos = end) {
-> > -		if (!__reg_op(bitmap, pos, order, REG_OP_ISFREE))
-> > -			continue;
-> > -		__reg_op(bitmap, pos, order, REG_OP_ALLOC);
-> > -		return pos;
-> > +		if (!bitmap_allocate_region(bitmap, pos, order))
-> > +			return pos;
-> 
-> You can also leave more code untouched, by replacing only first conditional
-> with
-> 
-> 		if (bitmap_allocate_region(bitmap, pos, order))
-> 			continue;
-> 		return pos;
+Hello,
 
-This looks weird, and doesn't help preserving history because the
-following patch moves everything from c-file to the header. I'd prefer
-to keep this as is.
+On 2023/8/28 19:25, Adrian Hunter wrote:
+> On 28/08/23 06:03, Yang Jihong wrote:
+>> Hello,
+>>
+>> On 2023/8/26 22:59, Namhyung Kim wrote:
+>>> Hello,
+>>>
+>>> On Fri, Aug 25, 2023 at 8:29 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>>>
+>>>> User space tasks can migrate between CPUs, we need to track side-band
+>>>> events for all CPUs.
+>>>>
+>>>> The specific scenarios are as follows:
+>>>>
+>>>>            CPU0                                 CPU1
+>>>>     perf record -C 0 start
+>>>>                                 taskA starts to be created and executed
+>>>>                                   -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+>>>>                                      events only deliver to CPU1
+>>>>                                 ......
+>>>>                                   |
+>>>>                             migrate to CPU0
+>>>>                                   |
+>>>>     Running on CPU0    <----------/
+>>>>     ...
+>>>>
+>>>>     perf record -C 0 stop
+>>>>
+>>>> Now perf samples the PC of taskA. However, perf does not record the
+>>>> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
+>>>> Therefore, the comm and symbols of taskA cannot be parsed.
+>>>>
+>>>> The solution is to record sideband events for all CPUs when tracing
+>>>> selected CPUs. Because this modifies the default behavior, add related
+>>>> comments to the perf record man page.
+>>>>
+>>>> The sys_perf_event_open invoked is as follows:
+>>>>
+>>>>     # perf --debug verbose=3 record -e cpu-clock -C 1 true
+>>>>     <SNIP>
+>>>>     Opening: cpu-clock
+>>>>     ------------------------------------------------------------
+>>>>     perf_event_attr:
+>>>>       type                             1 (PERF_TYPE_SOFTWARE)
+>>>>       size                             136
+>>>>       config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+>>>>       { sample_period, sample_freq }   4000
+>>>>       sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+>>>>       read_format                      ID|LOST
+>>>>       disabled                         1
+>>>>       inherit                          1
+>>>>       freq                             1
+>>>>       sample_id_all                    1
+>>>>       exclude_guest                    1
+>>>>     ------------------------------------------------------------
+>>>>     sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+>>>>     Opening: dummy:u
+>>>>     ------------------------------------------------------------
+>>>>     perf_event_attr:
+>>>>       type                             1 (PERF_TYPE_SOFTWARE)
+>>>>       size                             136
+>>>>       config                           0x9 (PERF_COUNT_SW_DUMMY)
+>>>>       { sample_period, sample_freq }   1
+>>>>       sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+>>>>       read_format                      ID|LOST
+>>>>       inherit                          1
+>>>>       exclude_kernel                   1
+>>>>       exclude_hv                       1
+>>>>       mmap                             1
+>>>>       comm                             1
+>>>>       task                             1
+>>>>       sample_id_all                    1
+>>>>       exclude_guest                    1
+>>>>       mmap2                            1
+>>>>       comm_exec                        1
+>>>>       ksymbol                          1
+>>>>       bpf_event                        1
+>>>>     ------------------------------------------------------------
+>>>>     sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+>>>>     sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+>>>>     sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+>>>>     sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+>>>>     sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+>>>>     sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+>>>>     sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+>>>>     sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+>>>>     <SNIP>
+>>>>
+>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>>>> ---
+>>>>    tools/perf/Documentation/perf-record.txt |  3 ++
+>>>>    tools/perf/builtin-record.c              | 44 +++++++++++++++++++++++-
+>>>>    2 files changed, 46 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>>>> index d5217be012d7..1889f66addf2 100644
+>>>> --- a/tools/perf/Documentation/perf-record.txt
+>>>> +++ b/tools/perf/Documentation/perf-record.txt
+>>>> @@ -374,6 +374,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
+>>>>    In per-thread mode with inheritance mode on (default), samples are captured only when
+>>>>    the thread executes on the designated CPUs. Default is to monitor all CPUs.
+>>>>
+>>>> +User space tasks can migrate between CPUs, so when tracing selected CPUs,
+>>>> +a dummy event is created to track sideband for all CPUs.
+>>>> +
+>>>>    -B::
+>>>>    --no-buildid::
+>>>>    Do not save the build ids of binaries in the perf.data files. This skips
+>>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>>>> index 83bd1f117191..21c571018148 100644
+>>>> --- a/tools/perf/builtin-record.c
+>>>> +++ b/tools/perf/builtin-record.c
+>>>> @@ -906,10 +906,44 @@ static int record__config_off_cpu(struct record *rec)
+>>>>           return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts);
+>>>>    }
+>>>>
+>>>> +static bool record__tracking_system_wide(struct record *rec)
+>>>> +{
+>>>> +       struct record_opts *opts = &rec->opts;
+>>>> +       struct evlist *evlist = rec->evlist;
+>>>> +       struct evsel *evsel;
+>>>> +
+>>>> +       /*
+>>>> +        * If all (non-dummy) evsel have exclude_user,
+>>>> +        * system_wide is not needed.
+>>>
+>>> Maybe I missed some earlier discussion but why is it not
+>>> needed when exclude_user is set?  I think it still needs
+>>> FORK or COMM at least..
+>>>
+>>
+>> This is Adrian's suggestion earlier, I think it's probably because if exclude_user is set, MMAP information is not needed, that's my guess.
+>>
+>> However, as you said, even if exclude_user is set, at least FORK and COMM are required.
+>>
+>> Therefore, the conditions here need to be changed to:
+>> "system_wide is need as long as there is a non-dummy event."
+>>
+>> @Adrian, is this change okay?
+> 
+> If you wish.  I think we use FORK to get mappings, so not sure it
+> would be needed.  There is PID, TID so COMM is not essential.
+> There are FORK, COMM etc from the CPUs being traced of course.
+> 
+I think COMM is also necessary. If there is no COMM, the perf report 
+cannot display the comm of the process migrated from other core.
+The test result is as follows:
 
-> 
-> >  	}
-> >  	return -ENOMEM;
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
+   # perf report --stdio
+   # To display the perf.data header info, please use 
+--header/--header-only options.
+   #
+   #
+   # Total Lost Samples: 0
+   #
+   # Samples: 33  of event 'cpu-clock:khppp'
+   # Event count (approx.): 8250000
+   #
+   # Overhead  Command          Shared Object      Symbol
+   # ........  ...............  ................. 
+.......................................
+   #
+       15.15%  test3            [kernel.kallsyms]  [k] finish_task_switch
+        9.09%  kworker/1:0-eve  [kernel.kallsyms]  [k] _raw_spin_unlock_irq
+        3.03%  :934             [kernel.kallsyms]  [k] blk_done_softirq
+        3.03%  :934             [kernel.kallsyms]  [k] finish_task_switch
+   <SNIP>
+
+Thanks,
+Yang
