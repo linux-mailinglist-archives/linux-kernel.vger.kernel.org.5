@@ -2,123 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5FB78C409
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0557A78C412
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233302AbjH2MQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 08:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
+        id S234880AbjH2MRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 08:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbjH2MPc (ORCPT
+        with ESMTP id S235097AbjH2MRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:15:32 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F74CE6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:15:05 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf1935f6c2so28754515ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:15:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693311305; x=1693916105; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q9VkhPBVgMZOy2Ax+rf67UyJ3baIYOSj8VG/VoffI8E=;
-        b=o5GM5ELlpaPZTknXMIMPp7u18fjy82iTTDC17m116bCIW7GJal6oLMPRx5fsxV5dOu
-         x7MB6rPLu/9ffFzuSxBosRvqbDo7CXOagdflOKJfOOcqXfhIFcSkyh0GdaHs+L0L0Kvm
-         5DYRAhPIJy2gCnrlfLTRfRKvDrYzOXNPLOG94vG5bAsTTqgeVmZbN6PZHnqFmYuOAkbq
-         PdBCgge8o1uIfD0MrWFbByXfR1RxjynzQnmgEOxPSVK7LTMR2WaDBKs/u++gbG/MKiea
-         3ZhUlVRL2UfqcT7sTVysmyGn2RFrzMTD8GeflsZa9wOVAvWn3xg60XIot1yM6P3dZC+5
-         NZdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693311305; x=1693916105;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q9VkhPBVgMZOy2Ax+rf67UyJ3baIYOSj8VG/VoffI8E=;
-        b=BS0djZn7xrQjLPqky4CeypbRq7Xs6+gU/m1M7gO78A7mpFTkxW09eVm/blyVFSXHyF
-         mCKcBZTIRRbXyRFEM9yP/5BrM+REZIdSTDxMYz1WOBnH+/Yvk0TIjRidnkhvMPu268eR
-         /6Ig+rjJJYSUawLP1p1vsNe1m6Ih8GsleSiipI9exLSdV/0UD+PBPB5PeuFD9dbiVX/E
-         8LvKKp0JBW85ibGTwvcrXSi68NtbLWy5+urq/Ot4sLwf05FpDIX3p/+ffqWf1b+mjxxk
-         59AZ+4rJaJ+3UbICDBEIbF4Vy4m6oC4NM12oesZKqSzdaL/FLuVA9ROPaQOxOeESZ06a
-         G1kw==
-X-Gm-Message-State: AOJu0YxD7NKtIKV79yGI+3Sz6SX3xl9ddwBuZ6GNpUf6ZaGOvOx9mbXy
-        ySa/hLM463lAQ1bIdRSm6UYIhEdzZ00=
-X-Google-Smtp-Source: AGHT+IEI3w5yoSQaEuzxGLi5JBdbn1FcwHogwtxRb11C5WK0Dzp8trZTEzG1gZcXRqr5W4AoEIsLEg==
-X-Received: by 2002:a17:902:f693:b0:1b8:8682:62fb with SMTP id l19-20020a170902f69300b001b8868262fbmr3965311plg.4.1693311305022;
-        Tue, 29 Aug 2023 05:15:05 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id w5-20020a639345000000b00563df2ba23bsm8964862pgm.50.2023.08.29.05.15.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 05:15:04 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 38CB69DE91DC; Tue, 29 Aug 2023 19:14:59 +0700 (WIB)
-Date:   Tue, 29 Aug 2023 19:14:59 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Aaron Lu <aaron.lu@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Borislav Petkov (AMD) <bp@alien8.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: kexec reboot failed due to commit 75d090fd167ac
-Message-ID: <ZO3hQ0rbr8QuUjVI@debian.me>
-References: <20230829114816.GA508985@ziqianlu-dell>
+        Tue, 29 Aug 2023 08:17:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E582CA3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693311383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=V9QpIawjTNUXSAeauUX4fl4M+mXtQMbJ5Ulee2rW8ME=;
+        b=edMljgk47+2x/DxDZmSPCKRslpQ1T2EohGAi+P6lGPXwNVX8fQiqugf/Na9nKfoDseO8im
+        XLFQu/2M4/RIwuO9owJBpJxgi1EZwI+d5CBh8hvcEzH0LRZ3agL9kqsHLc1GL4U7UMMtmo
+        d9ijJx8eaNJTePYi+jNAwj6yiXaPMc4=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-397-Zmligm66Ovu2JRrnNR0kUQ-1; Tue, 29 Aug 2023 08:16:19 -0400
+X-MC-Unique: Zmligm66Ovu2JRrnNR0kUQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 50BE33C36A8E;
+        Tue, 29 Aug 2023 12:16:18 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 91C4B63F6C;
+        Tue, 29 Aug 2023 12:16:13 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
+        thunder.leizhen@huawei.com, dyoung@redhat.com, prudo@redhat.com,
+        samuel.holland@sifive.com, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        Baoquan He <bhe@redhat.com>
+Subject: [PATCH v2 0/8] kdump: use generic functions to simplify crashkernel reservation in arch
+Date:   Tue, 29 Aug 2023 20:16:02 +0800
+Message-ID: <20230829121610.138107-1-bhe@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="U/CzDxT/qgAVRNod"
-Content-Disposition: inline
-In-Reply-To: <20230829114816.GA508985@ziqianlu-dell>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the current arm64, crashkernel=,high support has been finished after
+several rounds of posting and careful reviewing. The code in arm64 which
+parses crashkernel kernel parameters firstly, then reserve memory can be
+a good example for other ARCH to refer to.
 
---U/CzDxT/qgAVRNod
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Whereas in x86_64, the code mixing crashkernel parameter parsing and
+memory reserving is twisted, and looks messy. Refactoring the code to
+make it more readable maintainable is necessary.
 
-On Tue, Aug 29, 2023 at 07:48:16PM +0800, Aaron Lu wrote:
-> Hi Kirill,
->=20
-> Ever since v6.5-rc1, I found that I can not use kexec to reboot an Intel
-> SPR test machine. With git bisect, the first bad commit is 75d090fd167ac
-> ("x86/tdx: Add unaccepted memory support").
->=20
-> I have no idea why a tdx change would affect it, I'm not doing anything
-> related to tdx.
->=20
-> Any ideas?
->=20
-> The kernel config is attached, let me know if you need any other info.
+Here, firstly abstract the crashkernel parameter parsing code into
+parse_crashkernel() to make it be able to parse crashkernel=,high|low.
+Then abstract the crashkernel memory reserving code into a generic
+function reserve_crashkernel_generic(). Finally, in ARCH which
+crashkernel=,high support is needed, a simple arch_reserve_crashkernel()
+can be added to call above two functions. This can remove the duplicated
+implmentation code in each ARCH, like arm64, x86_64.
 
-Can you provide system logs (e.g. journalctl output) when attempting to
-reboot?
+I only change the arm64 and x86_64 implementation to make use of the
+generic functions to simplify code. Risc-v can be done very easily refer
+to the steps in arm64 and x86_64.
 
-Anyway, thanks for the regression report. I'm adding it to regzbot:
+History:
+- RFC patchset:
+  https://lore.kernel.org/all/20230619055951.45620-1-bhe@redhat.com/T/#u
+  [RFC PATCH 0/4] kdump: add generic functions to simplify crashkernel crashkernel in architecture
+  Dave and Philipp commented the old parse_crashkernel_common() and
+  parse_crashkernel_generic() are quite confusing. In this formal post,
+  I made change to address the concern by unifying all crashkernel
+  parsing into parse_crashkernel().
 
-#regzbot ^introduced: 75d090fd167aca
-#regzbot title: unable to reboot with kexec due to TDX unaccepted memory su=
-pport
+v1->v2:
+- Change to add asm/crash_core.h into x86 and arm64 to contain those
+  arch specific macro definitions for generic reservaton. This fixes the
+  compiling error reported by LKP in v1.
+  https://lore.kernel.org/all/202308272150.p3kRkMoF-lkp@intel.com/T/#u
+- Fix a log typo in patch 8, thanks to Samuel.
 
-Thanks.
+Baoquan He (8):
+  crash_core.c: remove unnecessary parameter of function
+  crash_core: change the prototype of function parse_crashkernel()
+  crash_core: change parse_crashkernel() to support
+    crashkernel=,high|low parsing
+  crash_core: add generic function to do reservation
+  crash_core.h: include <asm/crash_core.h> if generic reservation is
+    needed
+  x86: kdump: use generic interface to simplify crashkernel reservation
+    code
+  arm64: kdump: use generic interface to simplify crashkernel
+    reservation
+  crash_core.c: remove unneeded functions
 
---=20
-An old man doll... just what I always wanted! - Clara
+ arch/arm/kernel/setup.c              |   3 +-
+ arch/arm64/Kconfig                   |   3 +
+ arch/arm64/include/asm/crash_core.h  |  10 ++
+ arch/arm64/mm/init.c                 | 140 ++--------------------
+ arch/ia64/kernel/setup.c             |   2 +-
+ arch/loongarch/kernel/setup.c        |   4 +-
+ arch/mips/kernel/setup.c             |   3 +-
+ arch/powerpc/kernel/fadump.c         |   2 +-
+ arch/powerpc/kexec/core.c            |   2 +-
+ arch/powerpc/mm/nohash/kaslr_booke.c |   2 +-
+ arch/riscv/mm/init.c                 |   2 +-
+ arch/s390/kernel/setup.c             |   4 +-
+ arch/sh/kernel/machine_kexec.c       |   2 +-
+ arch/x86/Kconfig                     |   3 +
+ arch/x86/include/asm/crash_core.h    |  34 ++++++
+ arch/x86/kernel/setup.c              | 143 +++-------------------
+ include/linux/crash_core.h           |  38 +++++-
+ kernel/crash_core.c                  | 170 +++++++++++++++++++++++----
+ 18 files changed, 269 insertions(+), 298 deletions(-)
+ create mode 100644 arch/arm64/include/asm/crash_core.h
+ create mode 100644 arch/x86/include/asm/crash_core.h
 
---U/CzDxT/qgAVRNod
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.41.0
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZO3hQAAKCRD2uYlJVVFO
-owLYAQDWFvGC4cRy/LFARL3LkkawhtjEdwdaR2SPXy2yHSNYUAEAwxLDQPHM7aR0
-rAhvatO4U9i0xIIAvgv1aqyGb2BdjQY=
-=AcRo
------END PGP SIGNATURE-----
-
---U/CzDxT/qgAVRNod--
