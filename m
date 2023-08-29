@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A856978CDB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C302178CDB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbjH2UlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
+        id S240387AbjH2Umu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240576AbjH2Ukr (ORCPT
+        with ESMTP id S234272AbjH2Umb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:40:47 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA291CE7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:40:30 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5924093a9b2so55844477b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1693341630; x=1693946430; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hlfedfVtinUbqmdYFBe/AzCba8CTUSoEdjLTs8STP20=;
-        b=ZZ6a1P+yZcDP7Qf+IzGsOHg/7YrtUAd/EbQBS4xGX9jBg/Ne/8xPgU9yPY0L+8ZPfa
-         plCUh9US41vKc6njuz6QPbuSrMu+lyU7Fh68m2RqHWSIoPbLHMbA1isXeHavCSUlYieY
-         SjpmZDPNJoRbwKkiekdyYIOuaU1TqNxfmgaeitxGdX2B/3mZxVMXaA4mPRC0TDiAubKW
-         2t2h83lh8KytBjkVbMmfRhVR1pbVV+7FKNbLsMdUnqa/fYK9+zM5iYls2fXadzN6AfQC
-         1XA30o2YUs6KFvdZhh6Ecai4uKuGdowufmeXiVzG8QhcmRHFJo3mE39vEOYu64j1xCzI
-         mx8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693341630; x=1693946430;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hlfedfVtinUbqmdYFBe/AzCba8CTUSoEdjLTs8STP20=;
-        b=RWBdyXec+8DtD0725nM4sWrCEKGaeUdXZ/jnsIwo9pdLxDMhClU82vQXGjVNpGRlwU
-         gLa/x28uxIrC+4/W7TOQ04LJFxEsq55bFLhFsLJQEz/YWglXuzDQQsg+3QJkyFfbnzjh
-         ns/YH3VSCKeIE1WfM15OEeo79FJGZMi3EH+945eAPTPLeIWAzcl8sdkvrvlAD7UB0f3x
-         Xr+HeDo6Ubp4SFMi7sRCfw7wNLYfPZYzZGKmNxpccD9Jz/0ISrbOomlTRgnYbxvdTajh
-         LtfDPAjFUKe1DR6nHcPO25/ydzzfb+KGw+HQOOWd0tLfC80g8aufZqbHX0WPQMKbLjtG
-         2lFA==
-X-Gm-Message-State: AOJu0YyLELzEtUZEmTDIjCZI0g8qKRZyhUjfAG813GXBwAHVCtkMkP9y
-        qgTQPG5gveF3bYP7Css/oz84+jgLpKqfIXj8e3qGPMOnsqKC/XRdIQ==
-X-Google-Smtp-Source: AGHT+IFXOpuwCFSd2fhY4qmIlbq10CMpPWUfjIWT4OURSYOScypZCmvsa5GLk1YS6iVQlmutjZ/IjVYiibQAmnsCwpU=
-X-Received: by 2002:a0d:e8c1:0:b0:593:30b4:5d39 with SMTP id
- r184-20020a0de8c1000000b0059330b45d39mr140782ywe.18.1693341630138; Tue, 29
- Aug 2023 13:40:30 -0700 (PDT)
+        Tue, 29 Aug 2023 16:42:31 -0400
+Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20401BC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:42:27 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id b5XZqcc2VQ296b5Xaq5xos; Tue, 29 Aug 2023 22:42:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693341744;
+        bh=NSFtOWiCqFXMHVz2Ts71ekjvauIWND+mQAvXMrYTxRo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=JiJGg1XhYATzHEw6lkCs+v8JzG7gkLoK6B2h9GWjgYXoHcLSsWYKWpyXNH9E3NO+X
+         OqG0pgqugAg+DP3GM/hGNuyeGdmd3td054G7PxovknxnSfxzmnx4KCCQ0tniL7ff0q
+         ke+h+AevJ3PVZ9ZICdFkdFptUaOb2KV7OilfTIx8G4wF+9dbIL04DTxN+OsO8d06Hd
+         N3Nz/p5StB2zqeLSCbCkEMMmdy7bCer5unzlFdQtw/0uRASZgiaPKiIkADTlDLlYHV
+         KcxoJpTOMErIlNVHi10adQssTia9qP8BEvUQN+Xqwc8OcNizUoU4ZZqDnNZ3+frfGP
+         UH6mWOgtv5UVA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 29 Aug 2023 22:42:24 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <6875e4e7-085e-fa0c-c0f7-404fb82a872c@wanadoo.fr>
+Date:   Tue, 29 Aug 2023 22:42:21 +0200
 MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 29 Aug 2023 16:40:19 -0400
-Message-ID: <CAHC9VhRBq5jsaDDs5bFy6HR88DQgbu7agjZOBvZfR17LY2GS8A@mail.gmail.com>
-Subject: [GIT PULL] Audit patches for v6.6
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     audit@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] media: i2c: rdacm2: Remove an incorrect
+ fwnode_handle_put() call
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-media@vger.kernel.org
+References: <d9230082aefcb7bab6363c51c08598eb5ab62cfc.1693037086.git.christophe.jaillet@wanadoo.fr>
+ <zijwh5kcrfsg4q4pmxtkzia7tdpg4wnau53npe2y2xe4j7n7wy@zqwigtmyftu3>
+ <20230828105723.GF14596@pendragon.ideasonboard.com>
+ <20230828111630.GH14596@pendragon.ideasonboard.com>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230828111630.GH14596@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Le 28/08/2023 à 13:16, Laurent Pinchart a écrit :
+> On Mon, Aug 28, 2023 at 01:57:24PM +0300, Laurent Pinchart wrote:
+>> On Mon, Aug 28, 2023 at 09:48:10AM +0200, Jacopo Mondi wrote:
+>>> Hi Christophe
+>>>
+>>> On Sat, Aug 26, 2023 at 10:05:06AM +0200, Christophe JAILLET wrote:
+>>>> The commit in Fixes has removed an fwnode_handle_put() call in the error
+>>>> handling path of the probe.
+>>>>
+>>>> Remove the same call from the remove function.
+>>>>
+>>>> Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
+>>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>>
+>>> Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+>>
+>> The subject line should read "rdacm21", not "rdacm2". with that fixed,
+>>
+>> Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+>>
+>>>> ---
+>>>> /!\   This patch is highly speculative. Review with care.   /!\
+>>>>
+>>>> If it is correct, it is likely that other similar issue lurk in commit
+>>>> 1029939b3782. I've not looked in detail and my cocci script did not
+>>>> trigger on them but drivers/media/i2c/max9286.c also looks like a
+>>>> similar candidate.
+>>>
+>>> I think the call to  fwnode_handle_put(priv->sd.fwnode) in
+>>> max9286_v4l2_unregister() can indeed be removed, yes!
+>>
+>> I agree.
+> 
+> drivers/media/platform/nxp/imx-mipi-csis.c also needs a fix.
+> 
+> Christophe, do you plan to send patches for those ? If not, I can handle
+> it.
 
-Six audit patches for the Linux v6.6 merge window, the highlights are
-listed below:
+I'll propose patches for both in the coming days.
 
-- Add an explicit cond_resched() call when generating PATH records
+CJ
 
-Certain tracefs/debugfs operations can generate a *lot* of audit PATH
-entries and if one has an aggressive system configuration (not the
-default) this can cause a soft lockup in the audit code as it works to
-process all of these new entries.  This is in sharp contrast to the
-common case where only one or two PATH entries are logged.  In order
-to fix this corner case without excessively impacting the common case
-we're adding a single cond_rescued() call between two of the most
-intensive loops in the __audit_inode_child() function.
 
-- Various minor cleanups
-
-We removed a conditional header file as the included header already
-had the necessary logic in place, fixed a dummy function's return
-value, and the usual collection of checkpatch.pl noise (whitespace,
-brace, and trailing statement tweaks).
-
-Please merge,
--Paul
-
---
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
-
- Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
- https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
-   tags/audit-pr-20230829
-
-for you to fetch changes up to b1a0f64cc65ea2ebfaae9e0ce623e993a7d24257:
-
- audit: move trailing statements to next line (2023-08-15 18:16:14 -0400)
-
-----------------------------------------------------------------
-audit/stable-6.6 PR 20230829
-
-----------------------------------------------------------------
-Atul Kumar Pant (3):
-     audit: add space before parenthesis and around '=', "==", and '<'
-     audit: cleanup function braces and assignment-in-if-condition
-     audit: move trailing statements to next line
-
-Gaosheng Cui (1):
-     audit: fix possible soft lockup in __audit_inode_child()
-
-Xiu Jianfeng (2):
-     audit: include security.h unconditionally
-     audit: correct audit_filter_inodes() definition
-
-kernel/acct.c        |  2 +-
-kernel/audit.c       |  5 ++---
-kernel/audit.h       |  2 +-
-kernel/auditfilter.c | 19 ++++++++++---------
-kernel/auditsc.c     | 10 +++++++---
-5 files changed, 21 insertions(+), 17 deletions(-)
-
--- 
-paul-moore.com
