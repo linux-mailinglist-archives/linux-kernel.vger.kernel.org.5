@@ -2,156 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D90078C6C7
+	by mail.lfdr.de (Postfix) with ESMTP id 7A43978C6C8
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236625AbjH2ODg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S236755AbjH2ODi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236833AbjH2OD2 (ORCPT
+        with ESMTP id S236772AbjH2ODQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:03:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1555CED
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:03:01 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 70DFE2F4;
-        Tue, 29 Aug 2023 07:03:08 -0700 (PDT)
-Received: from [10.1.27.141] (XHFQ2J9959.cambridge.arm.com [10.1.27.141])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 877453F64C;
-        Tue, 29 Aug 2023 07:02:26 -0700 (PDT)
-Message-ID: <29099099-7ef2-45cb-bab7-455f58de47d1@arm.com>
-Date:   Tue, 29 Aug 2023 15:02:22 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 4/4] mm/mmu_gather: Store and process pages in contig
- ranges
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230810103332.3062143-1-ryan.roberts@arm.com>
- <20230810103332.3062143-5-ryan.roberts@arm.com>
- <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
-Content-Language: en-GB
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 10:03:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824EFE4F
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:02:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B8DAD1F45B;
+        Tue, 29 Aug 2023 14:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693317758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HuJwsEjFs3aON1DYkqyWRhvakhtypYRrXkSad5cu0Ho=;
+        b=wnrKST8XzNQfau6PiaYP7/a/I4E4NoYHecflZlPdv45CL6o7T5FDEPOKbpS5wbqgldqurz
+        U3boTQgG7oMHSoWNnEkSS+08P7J9ne7bAqPzuOQ2oD2y4lxvX5IyGzBLM4BxC1haU4lZIm
+        HZs6NDNYlus5DFd1os8tVxGUd6lt1Lw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693317758;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HuJwsEjFs3aON1DYkqyWRhvakhtypYRrXkSad5cu0Ho=;
+        b=tgCqGLmRL8fGVlha75IM7tlVI8GvC3NKfH+dVv8PFUeLplIrPmbeQTFbUf+ommOKsVJBRx
+        oWbzxFx4mgEOO3Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 967AE138E2;
+        Tue, 29 Aug 2023 14:02:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kQPiI3767WTLcAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 29 Aug 2023 14:02:38 +0000
+Date:   Tue, 29 Aug 2023 16:02:38 +0200
+Message-ID: <87ttsit08x.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 1/1] ALSA: control: Use list_for_each_entry_safe()
+In-Reply-To: <20230829135252.3915124-1-andriy.shevchenko@linux.intel.com>
+References: <20230829135252.3915124-1-andriy.shevchenko@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2023 05:09, Matthew Wilcox wrote:
-> On Thu, Aug 10, 2023 at 11:33:32AM +0100, Ryan Roberts wrote:
->> +void folios_put_refs(struct folio_range *folios, int nr)
->> +{
->> +	int i;
->> +	LIST_HEAD(pages_to_free);
->> +	struct lruvec *lruvec = NULL;
->> +	unsigned long flags = 0;
->> +	unsigned int lock_batch;
->> +
->> +	for (i = 0; i < nr; i++) {
->> +		struct folio *folio = page_folio(folios[i].start);
->> +		int refs = folios[i].end - folios[i].start;
->> +
->> +		/*
->> +		 * Make sure the IRQ-safe lock-holding time does not get
->> +		 * excessive with a continuous string of pages from the
->> +		 * same lruvec. The lock is held only if lruvec != NULL.
->> +		 */
->> +		if (lruvec && ++lock_batch == SWAP_CLUSTER_MAX) {
->> +			unlock_page_lruvec_irqrestore(lruvec, flags);
->> +			lruvec = NULL;
->> +		}
->> +
->> +		if (is_huge_zero_page(&folio->page))
->> +			continue;
->> +
->> +		if (folio_is_zone_device(folio)) {
->> +			if (lruvec) {
->> +				unlock_page_lruvec_irqrestore(lruvec, flags);
->> +				lruvec = NULL;
->> +			}
->> +			if (put_devmap_managed_page(&folio->page))
->> +				continue;
->> +			if (folio_put_testzero(folio))
+On Tue, 29 Aug 2023 15:52:52 +0200,
+Andy Shevchenko wrote:
 > 
-> We're only putting one ref for the zone_device folios?  Surely
-> this should be ref_sub_and_test like below?
+> Instead of reiterating the list, use list_for_each_entry_safe()
+> that allows to continue without starting over.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Good point. This function is originally a copy/paste of release_pages(), and I
-obviously missed this. In fact, looking at it again today, I think I'll factor
-out the vast majority into a common helper, since I'm currently duplicating a
-whole bunch here.
+Through a quick glance, it should be OK, but I need to read and
+understand whether this change is perfectly safe or not -- unless
+Jaroslav gives his review and ack.
 
-In practice I think all devmap folios will be small today though? So while I
-agree I need to fix this, I think in practice it will currently do the right thing?
+> ---
+> 
+> Takashi, if you have anybody or want yourself to spend some time,
+> I believe you can simplify a lot the parser in this file with
+> the help of lib/cmdline.c APIs.
+
+Thanks for the hint.  Yeah, it looks feasible, but too late for 6.6,
+it's a nice TODO ;)
+
+
+Takashi
 
 > 
->> +				free_zone_device_page(&folio->page);
->> +			continue;
->> +		}
->> +
->> +		if (!folio_ref_sub_and_test(folio, refs))
->> +			continue;
->> +
->> +		if (folio_test_large(folio)) {
->> +			if (lruvec) {
->> +				unlock_page_lruvec_irqrestore(lruvec, flags);
->> +				lruvec = NULL;
->> +			}
->> +			__folio_put_large(folio);
->> +			continue;
->> +		}
->> +
->> +		if (folio_test_lru(folio)) {
->> +			struct lruvec *prev_lruvec = lruvec;
->> +
->> +			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
->> +									&flags);
->> +			if (prev_lruvec != lruvec)
->> +				lock_batch = 0;
->> +
->> +			lruvec_del_folio(lruvec, folio);
->> +			__folio_clear_lru_flags(folio);
->> +		}
->> +
->> +		/*
->> +		 * In rare cases, when truncation or holepunching raced with
->> +		 * munlock after VM_LOCKED was cleared, Mlocked may still be
->> +		 * found set here.  This does not indicate a problem, unless
->> +		 * "unevictable_pgs_cleared" appears worryingly large.
->> +		 */
->> +		if (unlikely(folio_test_mlocked(folio))) {
->> +			__folio_clear_mlocked(folio);
->> +			zone_stat_sub_folio(folio, NR_MLOCK);
->> +			count_vm_event(UNEVICTABLE_PGCLEARED);
->> +		}
+>  sound/core/control_led.c | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
 > 
-> You'll be glad to know I've factored out a nice little helper for that.
-
-OK, what's it called? This is just copied from release_pages() at the moment.
-Happy to use your helper in the refactored common helper.
-
+> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> index a78eb48927c7..afc9ffc388e3 100644
+> --- a/sound/core/control_led.c
+> +++ b/sound/core/control_led.c
+> @@ -297,16 +297,13 @@ static void snd_ctl_led_clean(struct snd_card *card)
+>  {
+>  	unsigned int group;
+>  	struct snd_ctl_led *led;
+> -	struct snd_ctl_led_ctl *lctl;
+> +	struct snd_ctl_led_ctl *lctl, _lctl;
+>  
+>  	for (group = 0; group < MAX_LED; group++) {
+>  		led = &snd_ctl_leds[group];
+> -repeat:
+> -		list_for_each_entry(lctl, &led->controls, list)
+> -			if (!card || lctl->card == card) {
+> +		list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+> +			if (!card || lctl->card == card)
+>  				snd_ctl_led_ctl_destroy(lctl);
+> -				goto repeat;
+> -			}
+>  	}
+>  }
+>  
+> @@ -314,7 +311,7 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
+>  {
+>  	struct snd_card *card;
+>  	struct snd_ctl_led *led;
+> -	struct snd_ctl_led_ctl *lctl;
+> +	struct snd_ctl_led_ctl *lctl, _lctl;
+>  	struct snd_kcontrol_volatile *vd;
+>  	bool change = false;
+>  
+> @@ -329,14 +326,12 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
+>  		return -ENXIO;
+>  	}
+>  	led = &snd_ctl_leds[group];
+> -repeat:
+> -	list_for_each_entry(lctl, &led->controls, list)
+> +	list_for_each_entry(lctl, _lctl, &led->controls, list)
+>  		if (lctl->card == card) {
+>  			vd = &lctl->kctl->vd[lctl->index_offset];
+>  			vd->access &= ~group_to_access(group);
+>  			snd_ctl_led_ctl_destroy(lctl);
+>  			change = true;
+> -			goto repeat;
+>  		}
+>  	mutex_unlock(&snd_ctl_led_mutex);
+>  	if (change)
+> -- 
+> 2.40.0.1.gaa8946217a0b
 > 
-
