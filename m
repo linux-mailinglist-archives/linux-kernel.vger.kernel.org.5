@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5B078CD4D
+	by mail.lfdr.de (Postfix) with ESMTP id D5D6A78CD4E
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239619AbjH2UE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
+        id S239840AbjH2UE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240476AbjH2UET (ORCPT
+        with ESMTP id S240480AbjH2UEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:04:19 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B0D1BC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:04:13 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99cce6f7de2so631076566b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693339452; x=1693944252; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=E7+fPH/MQHoNa3vChLqeUExHzKt7daOcGn55CTVmoBc=;
-        b=iEdN0GNF1nWhyy3IF16S7OnEtMlSoMwG+HXNoqZCldV67/QGjVHuby2oBM4lstXdby
-         V5zJ5ndCJOKJphewgeR5XslWA1aNivc0RntpwXM0VIiUrgWpLTCpMKU3D4oLS2jfIYGT
-         NZDkzQV9xFIH7XbgJeRVCuMF8JVn/PuRf0PzU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693339452; x=1693944252;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E7+fPH/MQHoNa3vChLqeUExHzKt7daOcGn55CTVmoBc=;
-        b=NEHaZG16Z5m+cbaho1DKfeAiRGzHry3a0RlQDRcoE3LgGtaUQfi0ZquCSQiGNW5iYR
-         yFCbozbApDJvbTnc0NX1YT9csX00pmjMC9hLzq703Owp6fOyAmlsCGb2BAkdDPhCX6WH
-         TuwjXuEKrqASbsc7fpdQPhqAsxHSsAwGjCGtZesw+J7zU6t72VJt7Cjucrx2Hp6R/wIz
-         1AWQHGNZNgDBUTm2t0f+Dx7UdoSJhlCkKH90gzOZre1fJ6BL+wfL78cANrGE7RLLdEAk
-         eWTgwKq1uxco7qvJbH/d1QXA2JiDxODmSgtUymNCJdtT/21lPyGP2Mt4YQUrBdGJaPOJ
-         eWPA==
-X-Gm-Message-State: AOJu0YzLL5cLWELcl9NhaRcyylwkJEYx1MY9oKAGWX193u/xp9rB5A20
-        q0gFPkMNq8wBgA29kiCn6pvqGehCwSSFhc9YPfxsOo27
-X-Google-Smtp-Source: AGHT+IFRBF1fzIkPFlVvvFmbzqawUai2yiHgl0U9Jc3FqInfpk01BTXjkAhwy7X1BOtKKr0TOgCCpw==
-X-Received: by 2002:a17:906:10d2:b0:9a1:ab86:5f22 with SMTP id v18-20020a17090610d200b009a1ab865f22mr31359ejv.56.1693339452065;
-        Tue, 29 Aug 2023 13:04:12 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id y16-20020a1709064b1000b00992e94bcfabsm6263301eju.167.2023.08.29.13.04.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 13:04:11 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52a250aa012so6316594a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:04:11 -0700 (PDT)
-X-Received: by 2002:a17:906:51d4:b0:9a3:faf:7aa8 with SMTP id
- v20-20020a17090651d400b009a30faf7aa8mr55430ejk.10.1693339451148; Tue, 29 Aug
- 2023 13:04:11 -0700 (PDT)
+        Tue, 29 Aug 2023 16:04:20 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2514AD2;
+        Tue, 29 Aug 2023 13:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=fPHDVcWNaWx0HeDVBWD703V2C8n2avpnAKsXnIrmI3w=; b=jOiy1WzR3DhWtU6Z8ahNFxjER7
+        /lz8kGgoeatTZ7DvubUXdUahynyIm9FpPoeK26VuvfeyjNoxJMeJbJ0z5JhLfSfdK5w4rrfrg8nEd
+        DLd8pXVR1wm7a91GBnPFCxtKBCola+MzJM/YNxFWB1x86Pnrp6nbfIDfmUzASOuAN9c2tTL4H8NF8
+        cAVSTpeXD++8xr1yqenUret/hLHJl/uxCfwLrRqHgutkgOvV2CBYxAvhtqHen8fO4s41JPNG7CqIj
+        hvXcrbGqZ1Fe/ZJuR/5fjJRRfztXGgmsr55fYtSEd2Z72QYUFyEzFyfnyfkz4lyR9OIH3qh5JDBem
+        vBSDBo6w==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qb4wV-000DCD-Cp; Tue, 29 Aug 2023 22:04:04 +0200
+Received: from [178.197.249.48] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qb4wV-000RXC-1g; Tue, 29 Aug 2023 22:04:03 +0200
+Subject: Re: [syzbot] [bpf?] KCSAN: data-race in bpf_percpu_array_update /
+ bpf_percpu_array_update (2)
+To:     Marco Elver <elver@google.com>, yonghong.song@linux.dev
+Cc:     syzbot <syzbot+97522333291430dd277f@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        "Paul E. McKenney" <paulmck@kernel.org>
+References: <000000000000d87a7f06040c970c@google.com>
+ <2e260b7c-2a89-2d0c-afb5-708c34230db2@linux.dev>
+ <CANpmjNOG4f-NnGX6rpA-X8JtRtTkUH8PiLvMj_WJsp+sbq6PNg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f09d1d92-3e32-46a6-d20d-41bf74268d0c@iogearbox.net>
+Date:   Tue, 29 Aug 2023 22:04:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20230828170732.2526618-1-mjguzik@gmail.com> <CAHk-=wj=YwAsPUHN7Drem=Gj9xT6vvxgZx77ZecZVxOYYXpC0w@mail.gmail.com>
- <CAGudoHHnCKwObL7Y_4hiX7FmREiX6cGfte5EuyGitbXwe_RhkQ@mail.gmail.com>
-In-Reply-To: <CAGudoHHnCKwObL7Y_4hiX7FmREiX6cGfte5EuyGitbXwe_RhkQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 29 Aug 2023 13:03:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgemNj9GBepSEJXS5N99rr9wLkL668UC9TsKH45NnJ7Mg@mail.gmail.com>
-Message-ID: <CAHk-=wgemNj9GBepSEJXS5N99rr9wLkL668UC9TsKH45NnJ7Mg@mail.gmail.com>
-Subject: Re: [PATCH] x86: bring back rep movsq for user access on CPUs without ERMS
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+In-Reply-To: <CANpmjNOG4f-NnGX6rpA-X8JtRtTkUH8PiLvMj_WJsp+sbq6PNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27015/Tue Aug 29 09:39:45 2023)
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,41 +71,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 12:45, Mateusz Guzik <mjguzik@gmail.com> wrote:
->
-> So I think I know how to fix it, but I'm going to sleep on it.
+On 8/29/23 8:53 PM, Marco Elver wrote:
+> On Tue, 29 Aug 2023 at 20:30, Yonghong Song <yonghong.song@linux.dev> wrote:
+>> On 8/29/23 5:39 AM, syzbot wrote:
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    727dbda16b83 Merge tag 'hardening-v6.6-rc1' of git://git.k..
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=136f39dfa80000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=dea9c2ce3f646a25
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=97522333291430dd277f
+>>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>>>
+>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>
+>>> Downloadable assets:
+>>> disk image: https://storage.googleapis.com/syzbot-assets/9923a023ab11/disk-727dbda1.raw.xz
+>>> vmlinux: https://storage.googleapis.com/syzbot-assets/650dbc695d77/vmlinux-727dbda1.xz
+>>> kernel image: https://storage.googleapis.com/syzbot-assets/361da71276bf/bzImage-727dbda1.xz
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>> Reported-by: syzbot+97522333291430dd277f@syzkaller.appspotmail.com
+>>>
+>>> ==================================================================
+>>> BUG: KCSAN: data-race in bpf_percpu_array_update / bpf_percpu_array_update
+>>>
+>>> write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
+>>>    bpf_long_memcpy include/linux/bpf.h:428 [inline]
+>>>    bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+>>>    copy_map_value_long include/linux/bpf.h:464 [inline]
+>>>    bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+>>>    bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+>>>    generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+>>>    bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+>>>    __sys_bpf+0x28a/0x780
+>>>    __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+>>>    __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+>>>    __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+>>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>>    do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>>>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>>>
+>>> write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
+>>>    bpf_long_memcpy include/linux/bpf.h:428 [inline]
+>>>    bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+>>>    copy_map_value_long include/linux/bpf.h:464 [inline]
+>>>    bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+>>>    bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+>>>    generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+>>>    bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+>>>    __sys_bpf+0x28a/0x780
+>>>    __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+>>>    __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+>>>    __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+>>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>>    do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>>>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>>>
+>>> value changed: 0x0000000000000000 -> 0xfffffff000002788
+>>>
+>>> Reported by Kernel Concurrency Sanitizer on:
+>>> CPU: 0 PID: 8268 Comm: syz-executor.4 Not tainted 6.5.0-syzkaller-00453-g727dbda16b83 #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+>>> ==================================================================
+>>
+>> This case is with two tasks doing bpf_map batch update together for the
+>> same map and key.
+>>     > write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
+>>     > write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
+>>
+>> So concurrency is introduced by user applications.
+>> In my opinion, this probably not an issue from kernel perspective.
+> 
+> Perhaps not, but I recall there being a discussion about making KCSAN
+> aware of memory accesses done by BPF programs (memcpy being a tiny
+> subset of those). Not sure if the above data race qualifies as
+> something we might want to still detect, i.e. a kernel dev testing
+> their kernel might be interested in such a report.
+> 
+> Regardless, in this case we should teach syzkaller to ignore KCSAN
+> data races that originate from bpf user operations whatever the
+> origin.
 
-I think you can just skip the %r8 games, and do that
+I presume KCSAN could be silenced here via READ_ONCE/WRITE_ONCE conversion?
 
-        leal (%rax,%rcx,8),%rcx
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f58895830ada..32c4a37045f2 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -424,8 +424,11 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
+  	long *ldst = dst;
 
-in the exception fixup code, since %rax will have the low bits of the
-byte count, and %rcx will have the remaining qword count.
+  	size /= sizeof(long);
+-	while (size--)
+-		*ldst++ = *lsrc++;
++	while (size--) {
++		WRITE_ONCE(*ldst, READ_ONCE(*lsrc));
++		ldst++;
++		lsrc++;
++	}
+  }
 
-We should also have some test-case for partial reads somewhere, but I
-have to admit that when I did the cleanup patches I just wrote some
-silly test myself (ie just doing a 'mmap()' and then reading/writing
-into the end of that mmap at different offsets.
-
-I didn't save that hacky thing, I'm afraid.
-
-I also tried to figure out if there is any CPU we should care about
-that doesn't like 'rep movsq', but I think you are right that there
-really isn't. The "good enough" rep things were introduced in the PPro
-if I recall correctly, and while you could disable them in the BIOS,
-by the time Intel did 64-bit in Northwood (?) it was pretty much
-standard.
-
-So yeah, no reason to have the unrolled loop at all, and I think your
-patch is fine conceptually, just needs fixing and testing for the
-partial success case.
-
-Oh, and you should also remove the clobbers of r8-r11 in the
-copy_user_generic() inline asm in <asm/uaccess_64.h> when you've fixed
-the exception handling. The only reason for those clobbers were for
-that unrolled register use.
-
-So only %rax ends up being a clobber for the rep_movs_alternative
-case, as far as I can tell.
-
-            Linus
+  /* copy everything but bpf_spin_lock, bpf_timer, and kptrs. There could be one of each. */
