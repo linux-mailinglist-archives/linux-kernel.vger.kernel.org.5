@@ -2,111 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC7978CFC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC5078CFC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240763AbjH2W7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        id S239836AbjH2XAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 19:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240656AbjH2W67 (ORCPT
+        with ESMTP id S241183AbjH2XAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:58:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3102FD7;
-        Tue, 29 Aug 2023 15:58:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2A37635CE;
-        Tue, 29 Aug 2023 22:58:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9FABC433C7;
-        Tue, 29 Aug 2023 22:58:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693349935;
-        bh=rn2r8LG5beXDEpNUXXmAsWk7K7Z6B0SkbbGrSUfCikA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=UJJSRKRH7LTjcnDdUPp7RtBE/dB7QJhjeEB1YQbMKrKaYzMACob4EBI4SsR0sy5Ye
-         mt7wmIqsOOWPvL2AjZ5YQtEhH9AU5fAVtL4UeL7OEXz9q6ZHDNk6+YIdzODX8+wqil
-         jlsqG5Nirzs8oHVVRgwIrBWk+tU4uj4vEMyBjQFrJmh/cCsnnPwHApt0qQlEh4VPoV
-         fx7tHB0NGyHo231wK83vtI9suH/0L3cn9cyGLY9db8p4Yc0AKTTsIBFPHCXTIrOvy6
-         YzP3/2IXTyd/Lvsgr1kAOQEzWJjTRoatnNjA657yXZ2FiJLFoy7sfB1K1HWwMGB4Ek
-         xBWdtuLvgMoog==
-Message-ID: <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
-Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Date:   Tue, 29 Aug 2023 18:58:47 -0400
-In-Reply-To: <20230829224454.GA461907@ZenIV>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
-         <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
-         <20230829224454.GA461907@ZenIV>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 29 Aug 2023 19:00:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A13CE7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 16:00:40 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693350038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=eRsq6z4bI01UDfoYoOiOk2ujqJLXFQ0iRDcqbzQ/r6U=;
+        b=E5SLHgU6ielUcv4yazDB9AQ/RU9Pbc2O+W9whGtE4bYLRu/UkANOVdlVggiF/nwwwG/ySU
+        1NU8q4VjMpk88w5Q5Bpf6yUS1RX5QNRNX4C0JbJqunVu8wlvyJNDSyVhcPekI2l90PMyE/
+        QznhC7ax2IdHBvbjo3m2D5jJw7GHRL0ifLDJ3bAaW5bntVe8HmMYqD62vXhAc1ZXZ2MGDc
+        ajE6oLJiGJ3pp327GcEIwKBc0m+ax2PwQTQtNbKLdPw7opeMR+Y73oo60mlCAgT8MSXjRd
+        VqK3OehXiD33XwwMJx21Is9qqTZhpsBm5u2VQIj2y8s99W89ZPc4Q7yiPCHDJg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693350038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=eRsq6z4bI01UDfoYoOiOk2ujqJLXFQ0iRDcqbzQ/r6U=;
+        b=+YvxJwTdYFUXJ/I1bWrhWT7G0W3on/kLPEHkwqM/4TdhJ7h6YaVZPB/+f3MQ+HVNsK+ncj
+        yYKmHegbA3G4oVBA==
+To:     Marc Zyngier <maz@kernel.org>, John Garry <john.garry@huawei.com>
+Cc:     Zhou Wang <wangzhou1@hisilicon.com>, linux-kernel@vger.kernel.org
+Subject: Re: PCI MSI issue with reinserting a driver
+In-Reply-To: <3d3d0155e66429968cb4f6b4feeae4b3@kernel.org>
+Date:   Wed, 30 Aug 2023 01:00:38 +0200
+Message-ID: <87350178tl.ffs@tglx>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,31 +50,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-29 at 23:44 +0100, Al Viro wrote:
-> On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
-> > generic_fillattr just fills in the entire stat struct indiscriminately
-> > today, copying data from the inode. There is at least one attribute
-> > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
-> > and we're looking at adding more with the addition of multigrain
-> > timestamps.
-> >=20
-> > Add a request_mask argument to generic_fillattr and have most callers
-> > just pass in the value that is passed to getattr. Have other callers
-> > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
-> > STATX_CHANGE_COOKIE into generic_fillattr.
->=20
-> Out of curiosity - how much PITA would it be to put request_mask into
-> kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
-> on smbd side) and don't bother with that kind of propagation boilerplate
-> - just have generic_fillattr() pick it there...
->=20
-> Reduces the patchset size quite a bit...
+On Wed, Feb 03 2021 at 17:23, Marc Zyngier wrote:
+> On 2021-02-02 15:46, John Garry wrote:
+>> On 02/02/2021 14:48, Marc Zyngier wrote:
+>>> We can't really do that. All the events must be contiguous,
+>>> and there is also a lot of assumptions in the ITS driver that
+>>> LPI allocations is also contiguous.
+>>> 
+>>> But there is also the fact that for Multi-MSI, we *must*
+>>> allocate 32 vectors. Any driver could assume that if we have
+>>> allocated 17 vectors, then there is another 15 available.
 
-It could be done. To do that right, I think we'd want to drop
-request_mask from the ->getattr prototype as well and just have
-everything use the mask in the kstat.
+In theory. In practice no driver can assume that simply because there is
+no corresponding interrupt descriptor. The PCI/MSI code allocates $N
+vectors, the MSI code allocates exactly $N interrupt descriptors, so
+there is no way that the driver can make up N = round_up_power_of_to($N)
+magically.
 
-I don't think it'd reduce the size of the patchset in any meaningful
-way, but it might make for a more sensible API over the long haul.
---=20
-Jeff Layton <jlayton@kernel.org>
+The only reason why this makes sense is when its_dev and the associated
+bitmap is shared between devices because that way you ensure that above
+the non-allocated interrupts there is a gap up to the next power of two
+to catch malfunctioning hardware/drivers.
+
+If its_dev is not shared, then this makes no difference as the gap is
+there naturaly.
+
+> I'm not overly keen on handling this in the ITS though, and I'd rather
+> we try and do it in the generic code. How about this (compile tested
+> only)?
+...
+> @@ -1399,8 +1399,19 @@ static void irq_domain_free_irqs_hierarchy(struct 
+> irq_domain *domain,
+>   		return;
+>
+>   	for (i = 0; i < nr_irqs; i++) {
+> -		if (irq_domain_get_irq_data(domain, irq_base + i))
+> -			domain->ops->free(domain, irq_base + i, 1);
+> +		int n ;
+> +
+> +		/* Find the largest possible span of IRQs to free in one go */
+> +		for (n = 0;
+> +		     ((i + n) < nr_irqs &&
+> +		      irq_domain_get_irq_data(domain, irq_base + i + n));
+> +		     n++);
+> +
+> +		if (!n)
+> +			continue;
+> +
+> +		domain->ops->free(domain, irq_base + i, n);
+> +		i += n;
+
+TBH. That makes my eyes bleed and it's just an ugly workaround, which
+works by chance for that ITS implementation detail. That's really not
+the place to do that.
+
+I've stared at this before when I was doing the initial PoC to convert
+GIC over to the per device MSI domain model and did not come up with a
+solution to implement support for dynamic PCI-MSI allocation.
+
+I know that you need a fix for the current code, but we really should
+move all this muck over to the per device model which makes this way
+simpler as you really have per device mechanisms.
+
+The underlying problem is the whole bulk allocation/free assumption in
+the ITS driver, which you need to address anyway when you ever want to
+support dynamic PCI/MSI-X and PCI/IMS.
+
+For that this really needs to be properly split up:
+
+   1) Initialization: Reserve a LPI bitmap region for a sufficiently
+      large number of MSI interrupts which handles the power of 2
+      requirement
+
+   2) Alloc: Allocate the individual interrupts within the bitmap
+      region
+
+   3) Free: Free the individual interrupts and just clear the
+      corresponding bit within the bitmap region
+
+   4) Teardown: Release the bitmap region
+
+But lets look at that later.
+
+For the problem at hand I rather see something like the below instead of
+this hideous 'try to find a range' hackery which is incomprehensible
+without a comment the size of a planet.
+
+That's not pretty either, but at least it makes it entirely clear that
+the underlying irqdomain requires this for whatever insane reason.
+
+Thanks,
+
+        tglx
+---
+ include/linux/irqdomain.h |    8 ++++++++
+ kernel/irq/irqdomain.c    |    9 +++++++--
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -208,6 +208,9 @@ enum {
+ 	/* Irq domain is a MSI device domain */
+ 	IRQ_DOMAIN_FLAG_MSI_DEVICE	= (1 << 9),
+ 
++	/* Irq domain requires bulk freeing of interrupts */
++	IRQ_DOMAIN_FREE_BULK		= (1 << 10),
++
+ 	/*
+ 	 * Flags starting from IRQ_DOMAIN_FLAG_NONCORE are reserved
+ 	 * for implementation specific purposes and ignored by the
+@@ -572,6 +575,11 @@ static inline bool irq_domain_is_msi_dev
+ 	return domain->flags & IRQ_DOMAIN_FLAG_MSI_DEVICE;
+ }
+ 
++static inline bool irq_domain_free_bulk(struct irq_domain *domain)
++{
++	return domain->flags & IRQ_DOMAIN_FREE_BULK;
++}
++
+ #else	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
+ static inline int irq_domain_alloc_irqs(struct irq_domain *domain,
+ 			unsigned int nr_irqs, int node, void *arg)
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -1442,14 +1442,19 @@ static void irq_domain_free_irqs_hierarc
+ 					   unsigned int irq_base,
+ 					   unsigned int nr_irqs)
+ {
+-	unsigned int i;
++	unsigned int i, tofree = 1;
+ 
+ 	if (!domain->ops->free)
+ 		return;
+ 
++	if (irq_domain_free_bulk(domain)) {
++		tofree = nr_irqs;
++		nr_irqs = 1;
++	}
++
+ 	for (i = 0; i < nr_irqs; i++) {
+ 		if (irq_domain_get_irq_data(domain, irq_base + i))
+-			domain->ops->free(domain, irq_base + i, 1);
++			domain->ops->free(domain, irq_base + i, tofree);
+ 	}
+ }
+ 
