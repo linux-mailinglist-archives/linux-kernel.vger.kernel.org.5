@@ -2,127 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A93B78BC89
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5698178BC8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235103AbjH2B5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 21:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        id S233502AbjH2B6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 21:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235118AbjH2B5K (ORCPT
+        with ESMTP id S235262AbjH2B6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 21:57:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2514194;
-        Mon, 28 Aug 2023 18:57:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 747B561ECD;
-        Tue, 29 Aug 2023 01:57:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83263C433C8;
-        Tue, 29 Aug 2023 01:57:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693274226;
-        bh=E669YVGPm0vgklLyyks/lIuzvxJ4HuktAdSZEfm/plU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y7PP7fcSsRnFimMBE8CHK7UjUPbjthNGI1Xu8Bu6B59q70IM5irnVIQ+UegYswTAM
-         LgHmCFp2NfXtc/mEhnJTc/6P2ybNjPLxIDoQlKrtDGDu7XBRZIV1bkWemgQvmn0nAX
-         ljuSCHTKzGaG/yqDaK9t6FwD2XBeriQllV1onBP6kJV4dQBH/dOAHbtuyAEAG9eFuZ
-         p3UpNm6DZiNUwi5ywNLtqvmr+MBoadUMqubzkrpLZ5raAkkPAiDifp+kzgy76F8OzG
-         cx0d/JNXI/p+keOuQa6LquwXv6iQ51BvNIG3tpWpUyOGTvgrDVApWGhsMBNKIF4jTr
-         GYOj5N03d6sxg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 5.15 00/89] 5.15.129-rc1 review
-Date:   Tue, 29 Aug 2023 01:57:04 +0000
-Message-Id: <20230829015704.50328-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230828101150.163430842@linuxfoundation.org>
-References: 
+        Mon, 28 Aug 2023 21:58:31 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18941A2;
+        Mon, 28 Aug 2023 18:58:25 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 8D3F47FFE;
+        Tue, 29 Aug 2023 09:58:22 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
+ 2023 09:58:22 +0800
+Received: from [192.168.125.72] (113.72.145.245) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
+ 2023 09:58:21 +0800
+Message-ID: <afac7b40-1bdc-c546-1ba1-2cfba74e6adc@starfivetech.com>
+Date:   Tue, 29 Aug 2023 09:58:21 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [-next v1] riscv: dts: starfive: visionfive 2: Enable usb0 and
+ fix tdm pins sort order
+Content-Language: en-US
+To:     Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <devicetree@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230828115239.16012-1-hal.feng@starfivetech.com>
+ <3a5e343c-a0cc-8d1b-eadc-82c3d038aaa1@linaro.org>
+ <20230828-hence-unguarded-2020c68246e8@wendy>
+From:   Hal Feng <hal.feng@starfivetech.com>
+In-Reply-To: <20230828-hence-unguarded-2020c68246e8@wendy>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.145.245]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Mon, 28 Aug 2023 12:13:01 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> This is the start of the stable review cycle for the 5.15.129 release.
-> There are 89 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, 28 Aug 2023 13:05:06 +0100, Conor Dooley wrote:
+> On Mon, Aug 28, 2023 at 01:54:53PM +0200, Krzysztof Kozlowski wrote:
+>> On 28/08/2023 13:52, Hal Feng wrote:
+>> > usb0 was disabled by mistake when merging, so enable it.
+>> > tdm_pins node should be sorted alphabetically.
+>> > 
+>> > Fixes: e7c304c0346d ("riscv: dts: starfive: jh7110: add the node and pins configuration for tdm")
+>> > Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+>> > ---
+>> >  .../jh7110-starfive-visionfive-2.dtsi         | 49 ++++++++++---------
+>> >  1 file changed, 25 insertions(+), 24 deletions(-)
+>> > 
+>> > diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+>> > index d79f94432b27..382dfb5e64e4 100644
+>> > --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+>> > +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+>> > @@ -440,30 +440,6 @@ GPOEN_ENABLE,
+>> >  		};
+>> >  	};
+>> >  
+>> > -	uart0_pins: uart0-0 {
+>> > -		tx-pins {
+>> > -			pinmux = <GPIOMUX(5, GPOUT_SYS_UART0_TX,
+>> > -					     GPOEN_ENABLE,
+>> > -					     GPI_NONE)>;
+>> > -			bias-disable;
+>> > -			drive-strength = <12>;
+>> > -			input-disable;
+>> > -			input-schmitt-disable;
+>> > -			slew-rate = <0>;
+>> > -		};
+>> > -
+>> > -		rx-pins {
+>> > -			pinmux = <GPIOMUX(6, GPOUT_LOW,
+>> > -					     GPOEN_DISABLE,
+>> > -					     GPI_SYS_UART0_RX)>;
+>> > -			bias-disable; /* external pull-up */
+>> > -			drive-strength = <2>;
+>> > -			input-enable;
+>> > -			input-schmitt-enable;
+>> > -			slew-rate = <0>;
+>> > -		};
+>> > -	};
+>> > -
+>> >  	tdm_pins: tdm-0 {
+>> >  		tx-pins {
+>> >  			pinmux = <GPIOMUX(44, GPOUT_SYS_TDM_TXD,
+>> > @@ -497,6 +473,30 @@ GPOEN_DISABLE,
+>> >  			input-enable;
+>> >  		};
+>> >  	};
+>> > +
+>> > +	uart0_pins: uart0-0 {
+>> > +		tx-pins {
+>> > +			pinmux = <GPIOMUX(5, GPOUT_SYS_UART0_TX,
+>> > +					     GPOEN_ENABLE,
+>> > +					     GPI_NONE)>;
+>> > +			bias-disable;
+>> > +			drive-strength = <12>;
+>> > +			input-disable;
+>> > +			input-schmitt-disable;
+>> > +			slew-rate = <0>;
+>> > +		};
+>> > +
+>> > +		rx-pins {
+>> > +			pinmux = <GPIOMUX(6, GPOUT_LOW,
+>> > +					     GPOEN_DISABLE,
+>> > +					     GPI_SYS_UART0_RX)>;
+>> > +			bias-disable; /* external pull-up */
+>> > +			drive-strength = <2>;
+>> > +			input-enable;
+>> > +			input-schmitt-enable;
+>> > +			slew-rate = <0>;
+>> > +		};
+>> 
+>> 
+>> What is fixed in this hunk? Order of nodes is just a style, not a bug
+>> needing backports.
 > 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.129-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+> Please split this in two parts, with one for my screwed up conflict
+> resolution & one for the node ordering.
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+OK, I will split this into two patches. Thanks.
 
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 9e5846c251f4 ("Linux 5.15.129-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-# selftests: damon-tests: build_i386_highpte.sh
-# .config:1341:warning: override: reassigning to symbol DAMON
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-# selftests: damon-tests: build_nomemcg.sh
-# .config:1342:warning: override: reassigning to symbol DAMON
-# .config:1352:warning: override: reassigning to symbol CGROUPS
-ok 15 selftests: damon-tests: build_nomemcg.sh
-# kselftest dir '/home/sjpark/damon-tests-cont/linux/tools/testing/selftests/damon-tests' is in dirty state.
-# the log is at '/home/sjpark/log'.
- [32m
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
-_remote_run_corr.sh SUCCESS
-
+Best regards,
+Hal
