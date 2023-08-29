@@ -2,118 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4F078C35F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A2178C380
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbjH2LgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 07:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
+        id S232022AbjH2LkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbjH2Lf4 (ORCPT
+        with ESMTP id S230102AbjH2LkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:35:56 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409CB109;
-        Tue, 29 Aug 2023 04:35:54 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31c615eb6feso3534227f8f.3;
-        Tue, 29 Aug 2023 04:35:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693308952; x=1693913752;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xWhAtL2TKAqZhNqTfWPeRd6vPLlQaIg+ZlfW16RbgSE=;
-        b=ZFXXSDF09zrHP4TQEdm1z/2f8J0GVa8l/tVn62bcGmv3gQzX8LR37g5UjPuwxAVoEu
-         oTOrMiCH/Lc/RuzNtxFNIxaxFI/QIoZl+MngjhtTgtB68D7EKRFMYxIy7c9gv5u6J1GA
-         gJz98LIbcQoDA3eu+2zmMuCZoi5RqlTFAhNgxPIVQkQoAvA04BfesckW1HlpKHDWXXjf
-         wQri5WErEfU/wKrjIzr38oizGUPW8wTdUub05pcfC/CV4UDmz7d1mXEwGI1Rq7EkSuxZ
-         BCA4MDuaDTzvohVb339hjbhVTUpT6opZDhk3v6OMZulymwgaP/w+nI9OE4v0B/PcP78P
-         qcFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693308952; x=1693913752;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xWhAtL2TKAqZhNqTfWPeRd6vPLlQaIg+ZlfW16RbgSE=;
-        b=JXghfDdJ7bUH8HpsVSxmNm4eJ/+fOGmnuB+YHBK9C1IyVttnNcsLnXBAAK0oFqyftB
-         5Mz5w+8sMFAcDKqsJWPaz1AmrRQ7p5bgEejwKKyI8xj8kXQWD1GQVzZUqFs4EkdjqXRP
-         iEKIPeXufCS8v6n9VtZhhpyVbdDljbze9B+gRVtTikZG0315gXsgnBkfz1vRaGG5Lu+i
-         LBCI0uM98FCKlcWePde3K2d4lk6e1D96mQsSfd8ZwUwk/uaxOQF9NxXoph4n7lG/WRNV
-         Kvi0s7ah+Kc0liqmNgXBimrTby7cbjkJWHmp5y0DgTQKAUG7v3c3jOmgKcv/p0T2jCR0
-         ko4w==
-X-Gm-Message-State: AOJu0YzsFxCHwOyv67dYuWD2Oi5oTnX4ZUOua2nYm1q8k1OOtEBkaV0r
-        9UVdWDZkovvKjgTJnWTUpec=
-X-Google-Smtp-Source: AGHT+IG1HNZ5VMTyMEpkNg73r5goCQlAVI6Pib8xIMrDC5m+I2nm2/1ePjQiKBmtjapVMFZeXlr/QQ==
-X-Received: by 2002:adf:fc51:0:b0:314:1443:7fbe with SMTP id e17-20020adffc51000000b0031414437fbemr20697268wrs.36.1693308952394;
-        Tue, 29 Aug 2023 04:35:52 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id z6-20020a5d4406000000b003143c6e09ccsm13507702wrq.16.2023.08.29.04.35.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 04:35:52 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 12:35:50 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.4 000/158] 5.4.255-rc1 review
-Message-ID: <ZO3YFi7KghBSABnH@debian>
-References: <20230828101157.322319621@linuxfoundation.org>
+        Tue, 29 Aug 2023 07:40:06 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2044.outbound.protection.outlook.com [40.107.94.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC39109
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:40:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VXmbo5hJR/sYMB7IpKkDKTeqmknUfjAOqLvgLYswjuFkpn3J2kgi5SO3JXZErOdJZ8G8cYkYU9YCfyQcLANLVwEuN3ifLh5egdA37O8eKVOgRk7FG1Uu0TXjab2iJIN7mzgaO2ax9kBuyUCEcEpBMRzHotRLQARYUeRzOrB+HQc2khm5U7udWulzVeBUhY5cOPicLL6L78DA5/ON1tgDj0P7W1RJSMAc9RaGuYWG/XAr2ItfYivYBpY6HV2ON1+9H5yeFgvHa5pT4C1FYxMlgjBdJmqet5hvcqKsqQstAbZobfYH2MyjFS5/vQ7piIHwYQmktv5AVDdyMB4Wt0RPaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VtvAH2qRxU+GUWmAlfX6gcgsbFJZVUhwDj07oUoXyXQ=;
+ b=moNuv/ODBfPbKLwzmhYewB1+0Obl5sv28eOg6DfltFkuk9LCWuJdY+ZiRxJS7cAwRgSIofhCCLH2w6YM/Y0TK8nH/kF8Hghan23foV2Zm+N7/LRlOWDDpPzn4yExsChxmOjLl3upcnRaqKt+vW01rym7b8NK3CjTwxabNTu8DMVVoWkceriyJh9M5B9H1h7Ef8hPDbP8Z5O/DLCj8XGb1GhhAPGbS8CP/QJmH2/ruJpe41D3nRcl5bOMa7XXkACJm4Z/oe3BvJtmRIQw2biO4s6uMmcTshIG4nyPFAf235Qo84ZyyLxuSwoM/E+wZ0FX9RViKEmMjYikPtC0AGOxhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VtvAH2qRxU+GUWmAlfX6gcgsbFJZVUhwDj07oUoXyXQ=;
+ b=eZSrb+v+V/mT0nd2X6MJmUE8Vu0sH43PMqGcbDnv8QfL/uCc7iAj8PRX/EC4F4Z5pM8Wu7qB/m/C+IxIk39cxfJLMyTVFZ794m8lfY3b6BP98t1JVlwzeUQsGIm0BahTGDiMxC8VgYW8b5XZ5ST6dFs2nXagOxiH70PjxqVTXdU=
+Received: from SJ0PR13CA0105.namprd13.prod.outlook.com (2603:10b6:a03:2c5::20)
+ by MW4PR12MB7117.namprd12.prod.outlook.com (2603:10b6:303:221::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.29; Tue, 29 Aug
+ 2023 11:40:01 +0000
+Received: from MWH0EPF000971E6.namprd02.prod.outlook.com
+ (2603:10b6:a03:2c5:cafe::7e) by SJ0PR13CA0105.outlook.office365.com
+ (2603:10b6:a03:2c5::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.18 via Frontend
+ Transport; Tue, 29 Aug 2023 11:40:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000971E6.mail.protection.outlook.com (10.167.243.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6745.17 via Frontend Transport; Tue, 29 Aug 2023 11:40:00 +0000
+Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 29 Aug
+ 2023 06:39:58 -0500
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        =?UTF-8?q?Joaqu=C3=ADn=20Ignacio=20Aramend=C3=ADa?= 
+        <samsagax@gmail.com>, Joshua Ashton <joshua@froggi.es>,
+        Nicholas Choi <Nicholas.Choi@amd.com>,
+        David Tadokoro <davidbtadokoro@usp.br>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] Revert "Revert "drm/amd/display: Implement zpos property""
+Date:   Tue, 29 Aug 2023 07:39:30 -0400
+Message-ID: <20230829113931.54391-1-hamza.mahfooz@amd.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828101157.322319621@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E6:EE_|MW4PR12MB7117:EE_
+X-MS-Office365-Filtering-Correlation-Id: 091a0b88-c81c-45cd-4f0a-08dba884ada1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DbcWd8HKnu8ZdcMNx4+iOezJJbfbF/XN7qIo2dZklGCSCFYuK/UM2R+BNaCGUlxI6L97t1eDs3ef3P7G0LKvpw4XKMoJKlUId3rHVrAglPJf4EwiK5AWewly+UUhTnrsxvWT3JcZehPzT8b86vfjHRbtmVcd2lnHqN1FsRmdO40kMtSwvadzORD74JgGzPyhDzH6+JPaCCS21tcBqni+6ehWZkjUZ3H2GyYxTC+rja0o5Cgksrod+r9MyHyp1FMoDKvV+nHjUwUkin7Db10ms7oIZ22t+CM7vWChepoWUM6PyJHRHgoDdROtFviCNCXWTwYb/GWAR+2kUYldzlOmSqtQ5OdBjtP2wY2h+cLq78sAGi5pscyEpI2ghSdCiJ5k75wjU2/eVUv2/UWPPGo3Nr2B/6bxRQLu+eEWBnWHRj6aIyIfU1UjuguHJBRH1r+Marx28eVmQnMwGaZ/USBrlbFmAkj6041Um2AiucNi7fpZ8YdwVZW7lpPCfcL2ydjj/4ZDHEW8Gb/k0sMTTzUyPAsBQ46zUlXIYXAifUBJzhvgrUbqotaqG7mDWbLP8I+wNWtLr+b+xd54LCDzM7xNBuHxgqCalSG2GSZ0cMUGmzsUO4rIYDlfJ4UWA0CbR1FCMUyoS96EhEXb96n3nmyrB3prPz7Rqt5r3xB61SnnzVqHZYaZBEqoP1Tcwg0e0zMoCJD8tZyYbYaRIcLYmFHubeJCjZUkhbwQWWd6n4TmOjb7o3pYuIRlOx1AIE+au2sd1nWuwI0mpvLthHCGkXO4SNL6KgLWKkMG3cDu0aRC1yg=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(396003)(39860400002)(82310400011)(186009)(1800799009)(451199024)(40470700004)(46966006)(36840700001)(6666004)(966005)(2616005)(478600001)(1076003)(26005)(336012)(426003)(16526019)(2906002)(316002)(6916009)(54906003)(8936002)(70206006)(70586007)(44832011)(5660300002)(41300700001)(4326008)(8676002)(40460700003)(36756003)(86362001)(40480700001)(47076005)(36860700001)(81166007)(82740400003)(356005)(16060500005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 11:40:00.3517
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 091a0b88-c81c-45cd-4f0a-08dba884ada1
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E6.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7117
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+This reverts commit 984612bd4649c91f12e9c7c7f9e914fdc8ba7d3f.
 
-On Mon, Aug 28, 2023 at 12:11:37PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.255 release.
-> There are 158 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
+The problematic IGT test case (i.e. kms_atomic@plane-immutable-zpos) has
+been fixed as of commit cb77add45011 ("tests/kms_atomic: remove zpos <
+N-planes assert") to the IGT repo. So, reintroduce the reverted code.
 
-Build test (gcc version 11.4.1 20230829):
-mips: 65 configs -> 3 failures
-arm: 106 configs -> no failure
-arm64: 2 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
+Link: https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/commit/cb77add45011b129e21f3cb2a4089a73dde56179
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Note:
-
-mips builds are failing with the error:
-
-arch/mips/alchemy/common/dbdma.c:33:10: fatal error: linux/dma-map-ops.h: No such file or directory
-   33 | #include <linux/dma-map-ops.h> /* for dma_default_coherent */
-      |          ^~~~~~~~~~~~~~~~~~~~~
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/4837
-
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+index 894bc7e4fdaa..df568a7cd005 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+@@ -1469,6 +1469,15 @@ int amdgpu_dm_plane_init(struct amdgpu_display_manager *dm,
+ 		drm_plane_create_blend_mode_property(plane, blend_caps);
+ 	}
+ 
++	if (plane->type == DRM_PLANE_TYPE_PRIMARY) {
++		drm_plane_create_zpos_immutable_property(plane, 0);
++	} else if (plane->type == DRM_PLANE_TYPE_OVERLAY) {
++		unsigned int zpos = 1 + drm_plane_index(plane);
++		drm_plane_create_zpos_property(plane, zpos, 1, 254);
++	} else if (plane->type == DRM_PLANE_TYPE_CURSOR) {
++		drm_plane_create_zpos_immutable_property(plane, 255);
++	}
++
+ 	if (plane->type == DRM_PLANE_TYPE_PRIMARY &&
+ 	    plane_cap &&
+ 	    (plane_cap->pixel_format_support.nv12 ||
 -- 
-Regards
-Sudip
+2.41.0
+
