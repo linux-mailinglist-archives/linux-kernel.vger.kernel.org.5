@@ -2,209 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 387F378CF67
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDBD78CF6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbjH2WQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
+        id S238277AbjH2WSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbjH2WQR (ORCPT
+        with ESMTP id S238714AbjH2WRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:16:17 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2077.outbound.protection.outlook.com [40.107.237.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823BD198
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:16:14 -0700 (PDT)
+        Tue, 29 Aug 2023 18:17:54 -0400
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2093.outbound.protection.outlook.com [40.107.103.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3291291;
+        Tue, 29 Aug 2023 15:17:51 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BUdOpspd91w2v8LyN8hYN3UWG87OffPX546QXKOWXOaIG93evlOEp0MR/E14ZuO8YDxgD8QQ0/fnSaUoeZgq06orbUNtKHNPTIeG+gx7w4XzLBgRXKm+pjeIC2tZZcrC4BiwS9ISDiOVBBe0Mc2voKJsWXOHCWsJKaNOaikE2kIHW3xzZ+/iiNRhZ9ga+Q/qvdVR/rbz2opVqqu2kMhjiffsZ6YWoGuVza8SKMkUkdnJiifPX9Hu4bmtSTKWFvAluk7FQxMX3V2uRHZt2TEHv2a03+lMyXgomU1n4sNngRhm58Om+onueArDwRbVbGwcl3xfO2SCSHKgF1tiayhsRA==
+ b=k6yjy5zoT6G2dlI+oBIWpkpb2c4UaQlcMpsoNzed/68aIRaLTkNLo9AxU3HhA1bBaT16XeDj1xST8nCFgAczrL2TgeVWHtyN2j7mPJ6e0kiC1f5SZjwSb1nfZEnmaXiOU4uAcRLK4G1Z6V0+0SNtCiivHTZyvb4T52sID9bQQzZg3RHQhQI+7co6eqjoYv9xPI10T5Dtc5qQ0qKjNjGmHXiGfcEE+QnZqb22PcSrAFttEYnr4SImKlr//oTCV3/m5mu4PHdBMEPRRkiWZ0mwSlNU1shqspHGJ1O0AZym7BB3LAjcXdnYKQM8gOqTAsKyQygiOOqFO802hVbIzKWYuA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=attlM3jLNW5mCPh3vHHDT/LcsooG5pWmbrU3bbQqnp0=;
- b=G1I8BoG9C61RgLlJaOSZzEP0WNzNA+2dHBy9KWySArPxplk8vU8rIazjW7TkBT+hcGt4jEJQNTp723Z1o05bWq+JQoFEmZTRDt5XGbanxlXfNWCGmq3bBCtp36EA3RBOotNqzz8p/kmVBvGS0BS6Ul3HYLF0XPavfUXU8EaPji1GjZJI2XeB65ka7R0H06J/zS3VnSJWJT17gV50oeSxffr3iIBnUzBBHggXQtVlsj4U6Jdyn8zU5pseADQYdGC48MXE8A+0LpAUh5wdYr12Knk49KL8OyuBeYCP7pK84q81NFfla0AbwxELMX9gzSctHedZtB7xiS7FfDJ95vaa1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=6byeznUK1LTIpDXkupoStw02AqZrfEhLoFn9sY+avMc=;
+ b=jJTRyoazSJtznDeOBFCDTGocGYFtrDguzaV43R249BO1GGupkXNAMe4UBjGK9WTb5+OgRIhVHUg6R/quvbxQCK69X3jPs47nsjJtb4kRg8unk6jUepNUmG59155j0vSDu/Q5i8b+2t7sZXgTqK3H87I99N3f1oXwxb4pYKMtj3v7UDZn/PZn3OoD4qSfNC7i4+z7U1FqfBtr7dV7vnl0ndkBXDCSTsFxW8AeB0jNhz2nHGAkvR99fBSwzfn3Yv/O1aNh56kujuPC83h5n6QuMB4Csaidsl9Op6gFdXi8x6vhi97WVmJQ43beEFdLfkRePk8ER5Y0zjJ0wm6EoBwyog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silicom-usa.com; dmarc=pass action=none
+ header.from=silicom-usa.com; dkim=pass header.d=silicom-usa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=SILICOMLTD.onmicrosoft.com; s=selector2-SILICOMLTD-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=attlM3jLNW5mCPh3vHHDT/LcsooG5pWmbrU3bbQqnp0=;
- b=fdXcsZNuCZGpCdp0Lupp9JT7sFXeSCH9d+ZjhhBYEwrTDzpvuk6dE7r8zyNcUQcBEcn/ra4t/ffowKPk2ZxdlTPNG0oIO/IBJ0McX2XGhoQ7hfZtZMZNbK33yf0sbbD+XSsdiM0abBRjzNsPqmocBxbApKl47haIDri3sU4YLQ3fIF81MmhP/AfmudOpCodonb2xIGyNFyGzzlAMCZWpe9aQ5NLdyoPiXzHZnR6Ba/Z33ptYby3z6dg27YDqDdt37hSQOfwRN4JJ4L62KGsi56VdZwUfdxNC2dxDwW56m+9dl3hj0bkPdS2+NEhVrlnl/wVUL7R82GxQBMbzQPoWzg==
-Received: from DM5PR08CA0029.namprd08.prod.outlook.com (2603:10b6:4:60::18) by
- DS0PR12MB8219.namprd12.prod.outlook.com (2603:10b6:8:de::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.34; Tue, 29 Aug 2023 22:16:09 +0000
-Received: from SA2PEPF00001506.namprd04.prod.outlook.com
- (2603:10b6:4:60:cafe::a7) by DM5PR08CA0029.outlook.office365.com
- (2603:10b6:4:60::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.36 via Frontend
- Transport; Tue, 29 Aug 2023 22:16:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF00001506.mail.protection.outlook.com (10.167.242.38) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.17 via Frontend Transport; Tue, 29 Aug 2023 22:16:09 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 29 Aug 2023
- 15:15:55 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 29 Aug
- 2023 15:15:54 -0700
-Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Tue, 29 Aug 2023 15:15:54 -0700
-Date:   Tue, 29 Aug 2023 15:15:52 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
-CC:     <jgg@nvidia.com>, <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <apopple@nvidia.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
-Subject: Re: [PATCH 1/3] iommu/io-pgtable-arm: Add nents_per_pgtable in
- struct io_pgtable_cfg
-Message-ID: <ZO5uGKzGsaliQ1fF@Asurada-Nvidia>
-References: <cover.1692693557.git.nicolinc@nvidia.com>
- <0fe68babdb3a07adf024ed471fead4e3eb7e703f.1692693557.git.nicolinc@nvidia.com>
- <f468b461-b203-5179-eb6d-9432b9911329@arm.com>
- <ZOTlcFs2NG6nJEPN@Asurada-Nvidia>
- <61f9b371-7c45-26b1-ec0f-600765280c89@arm.com>
- <ZO5R5i4n2WI2GnKQ@Asurada-Nvidia>
- <d234fa8d-d945-3f7f-1110-fe55bea88587@arm.com>
-MIME-Version: 1.0
+ bh=6byeznUK1LTIpDXkupoStw02AqZrfEhLoFn9sY+avMc=;
+ b=GvRg8X5RlbmeuK4jiYc1mGBz+dST3L9FnONJTAO65OcILcJINZhJyWj/y9vGkU0MGAL/9Rie8BW6pGnY/2nDg5ST2OKL0VKNM6ZEw3e7xByyimeC2Nd3+nzEQ0AtSxU2LB2g+RiRWc0fRkdl9PU9mUgoTzcbkZkbKGGKaCcHotc=
+Received: from PA4PR04MB9222.eurprd04.prod.outlook.com (2603:10a6:102:2a1::18)
+ by AS8PR04MB8293.eurprd04.prod.outlook.com (2603:10a6:20b:3fa::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Tue, 29 Aug
+ 2023 22:17:47 +0000
+Received: from PA4PR04MB9222.eurprd04.prod.outlook.com
+ ([fe80::d62d:f67e:ba75:b5dc]) by PA4PR04MB9222.eurprd04.prod.outlook.com
+ ([fe80::d62d:f67e:ba75:b5dc%4]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
+ 22:17:47 +0000
+From:   Huibin Shi <henrys@silicom-usa.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Henry Shi <henryshi2018@gmail.com>
+CC:     "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
+        Wen Wang <wenw@silicom-usa.com>
+Subject: RE: [PATCH v5] Add Silicom Platform Driver
+Thread-Topic: [PATCH v5] Add Silicom Platform Driver
+Thread-Index: AQHZ2fZtG8yRMH1LA0m5IzEWUGUgdrAAbygAgAFcRYA=
+Date:   Tue, 29 Aug 2023 22:17:47 +0000
+Message-ID: <PA4PR04MB92225C42CC763DCBA622C6579AE7A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+References: <20230828212622.32485-1-henryshi2018@gmail.com>
+ <15039461-6099-40a1-952f-fc31d65a0d3f@roeck-us.net>
+In-Reply-To: <15039461-6099-40a1-952f-fc31d65a0d3f@roeck-us.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=silicom-usa.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PA4PR04MB9222:EE_|AS8PR04MB8293:EE_
+x-ms-office365-filtering-correlation-id: 840fe917-245f-4bbb-1697-08dba8ddc68f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yScQFLTQK7CrFnlA+9hg8qarW3a04oLxiIcRj8PZVu0Tt97Bvx/JnShG6aIzl7Rd7TxsA3aLEZ4ZPUs1H83K7M7ABssad9Yb7FrdJFr6Gh8EuecKROnuQwP29oc2swZBol4dkGv1BifOMzUjl+2St3rzc6LRz8PUP4b8TdOPvNrZQjpurMgOgs9GlWZrttv2QprukjemdeRWS/Hpwa8oYvFtc+51VncfUibOkJBjHvECoPl7na6SVpMFNbB2Lpjiwm960Y+v25uRFCbY0WDoEFd6inrlydPdN6wODTqGHJsokQCzqaYiCRnvXngLOZEJh+ClSGPpRBVfIMUbz9MRe8lk6el3g6uBa0Ev0rKItgd0nM44VtnHrBOMsCEEtg3trNAsfgkL7m7kqIQbG4Tt1WQ5RVEsZMX6O0HKKTuXhwqDlr4WWjVZaM1UQYPp3buLVCIriTv6QBBb2wWte82629YJNsL+AQZsvjS5iqGCmw24hv5u6VfnamojfkMPJEI2tLf0GrKUxtsnsePd5iHUNTAA/n+OgJQarklpoT/+HStYYpbbK6Fg+NL9h91TQEPQd6N/fRv4lhm58LqFD8ycHQIOnb3KLqy2nXphVKYLC0QF6KmnoWtYvAirbqhDOTOB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9222.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(136003)(376002)(396003)(366004)(1800799009)(186009)(451199024)(8936002)(122000001)(66946007)(478600001)(110136005)(76116006)(53546011)(6506007)(64756008)(7696005)(71200400001)(45080400002)(66446008)(54906003)(66556008)(66476007)(38070700005)(38100700002)(316002)(41300700001)(9686003)(8676002)(5660300002)(52536014)(55016003)(2906002)(107886003)(86362001)(83380400001)(7416002)(33656002)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?RxMc5i2LM1r6eGnefC+xDJZ1PJlMr6dyO7ym/PQajePgqdhdnztcRDdiAEpj?=
+ =?us-ascii?Q?gsaBoAiUvsN6DhpHkqO+c6j3T48+AoWYWPnau9/LKSQevM3UBUF7kMvQ4/5j?=
+ =?us-ascii?Q?k2R1ze/iHu6nBXqT89+kXoIta7JBA/2DZQVD7ELJHicBlQ7dQNOoLvBeulVF?=
+ =?us-ascii?Q?WnPIgWdjGCBcytj6+3cnvlRsuYV2oPwA55kVN2EcOtYfyDjg+zUZd5P0mNMJ?=
+ =?us-ascii?Q?RI0huMHRa684TYdA0F2YG0vobYbWyrmwOEgp+t4WULg7S6BSaQA03E4dSoaA?=
+ =?us-ascii?Q?FK0Hdsx6ULc9ojRqqVYKdh0RHKkQ+DKhIIin+mMgvwL9D6PD/g2lDns1BzyS?=
+ =?us-ascii?Q?8nUhTv+mzQg3360PUzZiSc16WVKMLLqHXVkM2ZkezC1hc2lh+vHJL3Ns/sL8?=
+ =?us-ascii?Q?hxLyJmVUteZ8vXBkgSCO3mRDsSlePCcYNa0xZTatktSc5sWRrH27CA3e825w?=
+ =?us-ascii?Q?biSm8u+t0MEVaWD2qhU+mTK+/Am5RYScB/vUJL+h+ma4C7Pg2Asv5Ga+nPOy?=
+ =?us-ascii?Q?HtTxjZ4h5qT5+PvZ0WmCQC0ZqoBlF+EAGyX7yLo42BhMwPXk7ezSUh8IS7ti?=
+ =?us-ascii?Q?jKSHC6rM+IIApnxXK8kYzt3qNXnteCAKAZGXK48skVNPygqp7Z/F3Yhs2rRl?=
+ =?us-ascii?Q?RobWyKlBYgV/+hgrV+aauNseVLVtBKndvokoo8UqdbAlLcFm3GBdAMMa41QX?=
+ =?us-ascii?Q?WUPmBQTW/wmEunTCcwX8+ikO7/iA+RHuD8NvsV4GZ1e3HHT1/snohjqByQ5N?=
+ =?us-ascii?Q?N/9dV8FNylkBKN/7KIyqW9FiVBdes9ADkGPKN48srmBp3qls8TB5EkBSE9/S?=
+ =?us-ascii?Q?JexAPOY/cX3qJ/C4VMDjQoPLHW5beC/sXdW4LTTz3uCKGfu52g42WKGmfihk?=
+ =?us-ascii?Q?STkJHRNsnvo0dD+P3lhCSFlr9btra3/qaHqn0nYferw6pfXQaEvycLBK0pRd?=
+ =?us-ascii?Q?u0p/+P/WXR2FYXw84q00/Hv56iUzD0sGnTwmqVEgymqqjtdRG+QNo0TAiBHq?=
+ =?us-ascii?Q?p4RghVmc9Nk+OQHdOIBzk9HHVMfy8rsrlcu7kDVM62i71BJ3/esOF+8B4kh0?=
+ =?us-ascii?Q?uAH/M6aS3rUW62HYg/o//ZIizkRI8NiE27LKhVEIJMqT2WLMS+QRl+RiMV6x?=
+ =?us-ascii?Q?iEqSPVOsMdUoPtHIUKpHcw7TPdMTVIshxhLsQzSXxl71FrvdugOClH7Tam7m?=
+ =?us-ascii?Q?sz674GEwaxekgsjnT86iOuBcffMruuKgu4T8rgGwLI/0ViVTCCmCceZVhaTh?=
+ =?us-ascii?Q?YFMFrTLnlEICQ/19PTVPl8IgVUwaJOhQzLQ8ExudaASgrHYfBQk729iVCxhO?=
+ =?us-ascii?Q?g4rAuuNCnknUAP7meH7T4FP+OLlZqCNAzzWw2YRYGulEp/FToFqBwI3uJvH2?=
+ =?us-ascii?Q?1aSt7JIaemJIgW7Ogkbvtl8xnJc2Sr+Odj5hg4H/A3BON3T5f7bBlmgZSMY0?=
+ =?us-ascii?Q?Mk/Rgs70sLqGTQoJsye6df1tP3+Vn5f4hf0bmKLCv9xf8ueQV/Dh3ypJLHJk?=
+ =?us-ascii?Q?9YYXE6EPOS1+cb+lGjyb6QOWDfno/sPOWjjGigbkJfeLnf5+IAOxoUKur7Bd?=
+ =?us-ascii?Q?dCLDrmRzY2nMm2Jx70Rl4bHC5+Fpl/1ptP9iCet2HGOQvq8MsM9frET/I2pW?=
+ =?us-ascii?Q?emI01RLV1+aoFkyl7B1/dAmlMOJEvrWLiunHzSyAQKPV?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d234fa8d-d945-3f7f-1110-fe55bea88587@arm.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001506:EE_|DS0PR12MB8219:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8a105e1-cd93-4e9b-9862-08dba8dd8c21
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 36Q/nr5+R6QcITBDMjOeHr7NRN1/QYJWcfeVjVsbwi3h8NU7HxkK7/Yw83vtmoTF6doJK1h0LudwUkZocs5odxpsq6x+3XPwfDTA/sbuV/kv85uyMTfyXBX8h1KLSJ14Y114z0ZqF0iBCoGfug413ThGyXdJBBuksCFtg62nrAf8gl1WtlFyEnA8Xa664oDeZnwz59iYtLm/H2PO7FoBv7X++nP22zcoPSy7II2iyCD04aAja16b82IfAnt4RR5vZ8dO/LhQHhjbvSd76DHwH6BXTqZTVC/vktNrhCc1Bf49lOYgx6uVGriDfDPXYVUHBtC9oKLCi8QW8dG+IpkSL3YZRxjcfILV295bnFnvSN/wzwIM1VwJKfRz45y+ysWoyVSclAyziEmwII+yeIRTtsmBPwU8tAHHR/yhX3X1EPNtV3hpby2WzOt37ICDHShRXRF6rZuIpjsm93R/VROG4cCqf3Ct2cC+WP6P3gPIhSZqEqw7Sblp2NWmUlfCUAePg2xaCX2eGv68G+x5oBsTUR7REgCWkyQ2LoOTHcSSE5gQReZvKL0EipGMA2QBCvJI99WJblBpRa4y8BMq06EAsDz0UrkUi8HYvMRV0ovQGtf+uUGJjCzassurjLxrLKcP4wDaBJutpg2FvgatY6NwAQWBtUHVsZS4RYznpYT7zQW38KozrNVPDd2uP0gJiI6HBm+aNAr3kR5MpJmWIMHwqcAAIxr9eO/mzO93AQ8jG7jmVDmMXbQrIHnaWhIo2JS2
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(82310400011)(451199024)(1800799009)(186009)(46966006)(36840700001)(40470700004)(8936002)(8676002)(4326008)(54906003)(110136005)(316002)(70206006)(70586007)(5660300002)(2906002)(66899024)(336012)(40460700003)(41300700001)(36860700001)(26005)(9686003)(426003)(55016003)(40480700001)(82740400003)(7636003)(33716001)(478600001)(83380400001)(356005)(86362001)(47076005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 22:16:09.4057
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: silicom-usa.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9222.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 840fe917-245f-4bbb-1697-08dba8ddc68f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2023 22:17:47.5170
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8a105e1-cd93-4e9b-9862-08dba8dd8c21
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001506.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8219
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c9e326d8-ce47-4930-8612-cc99d3c87ad1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LT7qmm477lPb2lFF0qP0UoS4+yliTznHFwHtGEsFJfBFaODo1rZMk6nWfWKqE+j342VPhgfu+Dj+ep3pE8zQrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8293
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 10:25:10PM +0100, Robin Murphy wrote:
+Hi Guenter,
 
-> > > Bleh, apologies, I always confuse myself trying to remember the fiddly
-> > > design of io-pgtable data. However, I think this then ends up proving
-> > > the opposite point - the number of pages per table only happens to be a
-> > > fixed constant for certain formats like LPAE, but does not necessarily
-> > > generalise. For instance for a single v7s config it would be 1024 or 256
-> > > or 16 depending on what has actually been unmapped.
-> > > 
-> > > The mechanism as proposed implicitly assumes LPAE format, so I still
-> > > think we're better off making that assumption explicit. And at that
-> > > point arm-smmu-v3 can then freely admit it already knows the number is
-> > > simply 1/8th of the domain page size.
-> > 
-> > Hmm, I am not getting that "1/8th" part, would you mind elaborating?
-> 
-> If we know the format is LPAE, then we already know that nearly all
-> pagetable levels are one full page, and the PTEs are 64 bits long. No
-> magic data conduit required.
-
-Oh, I see!
-
-> > Also, what we need is actually an arbitrary number for max_tlbi_ops.
-> > And I think it could be irrelevant to the page size, i.e. either a
-> > 4K pgsize or a 64K pgsize could use the same max_tlbi_ops number,
-> > because what eventually impacts the latency is the number of loops
-> > of building/issuing commands.
-> 
-> Although there is perhaps a counter-argument for selective invalidation,
-> that if you're using 64K pages to improve TLB hit rates vs. 4K, then you
-> have more to lose from overinvalidation, so maybe a single threshold
-> isn't so appropriate for both.
-> 
-> Yes, ultimately it all comes down to picking an arbitrary number, but
-> the challenge is that we want to pick a *good* one, and ideally have
-> some reasoning behind it. As Will suggested, copying what the mm layer
-> does gives us an easy line of reasoning, even if it's just in the form
-> of passing the buck. And that's actually quite attractive, since
-> otherwise we'd then have to get into the question of what really is the
-> latency of building and issuing commands, since that clearly depends on
-> how fast the CPU is, and how fast the SMMU is, and how busy the SMMU is,
-> and how large the command queue is, and how many other CPUs are also
-> contending for the command queue... and very quickly it becomes hard to
-> believe that any simple constant can be good for all possible systems.
-
-Yea, I had trouble with deciding the number at the first place, so
-the previous solution ended up with an SYSFS node. I do agree that
-copying from the mm layer solution gives a strong justification of
-picking a arbitrary number. My concern here is about whether it'll
-be overly too often or not at triggering a full-as invalidation.
-
-Meanwhile, by re-looking at Will's commit log:
-    arm64: tlbi: Set MAX_TLBI_OPS to PTRS_PER_PTE
-
-    In order to reduce the possibility of soft lock-ups, we bound the
-    maximum number of TLBI operations performed by a single call to
-    flush_tlb_range() to an arbitrary constant of 1024.
-
-    Whilst this does the job of avoiding lock-ups, we can actually be a bit
-    smarter by defining this as PTRS_PER_PTE. Due to the structure of our
-    page tables, using PTRS_PER_PTE means that an outer loop calling
-    flush_tlb_range() for entire table entries will end up performing just a
-    single TLBI operation for each entry. As an example, mremap()ing a 1GB
-    range mapped using 4k pages now requires only 512 TLBI operations when
-    moving the page tables as opposed to 262144 operations (512*512) when
-    using the current threshold of 1024.
-
-I found that I am actually not quite getting the calculation at the
-end for the comparison between 512 and 262144.
-
-For a 4K pgsize setup, MAX_TLBI_OPS is set to 512, calculated from
-4096 / 8. Then, any VA range >= 2MB will trigger a flush_tlb_all().
-By setting the threshold to 1024, the 2MB size bumps up to 4MB, i.e.
-the condition becomes range >= 4MB.
-
-So, it seems to me that requesting a 1GB invalidation will trigger
-a flush_tlb_all() in either case of having a 2MB or a 4MB threshold?
-
-I can get that the 262144 is the number of pages in a 1GB size, so
-the number of per-page invalidations will be 262144 operations if
-there was no threshold to replace with a full-as invalidation. Yet,
-that wasn't the case since we had a 4MB threshold with an arbitrary
-1024 for MAX_TLBI_OPS?
-
-> > So, combining your narrative above that nents_per_pgtable isn't so
-> > general as we have in the tlbflush for MMU,
-> 
-> FWIW I meant it doesn't generalise well enough to be a common io-pgtable
-> interface; I have no issue with it forming the basis of an
-> SMMUv3-specific heuristic when it *is* a relevant concept to all the
-> pagetable formats SMMUv3 can possibly support.
-
-OK.
+Appreciate your feedback. Please see my comments below.
 
 Thanks
-Nicolin
+Henry
+
+-----Original Message-----
+From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
+Sent: Monday, August 28, 2023 8:41 PM
+To: Henry Shi <henryshi2018@gmail.com>
+Cc: hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de=
+; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redh=
+at.com; markgross@kernel.org; jdelvare@suse.com; linux-kernel@vger.kernel.o=
+rg; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org; hb_sh=
+i2003@yahoo.com; Huibin Shi <henrys@silicom-usa.com>; Wen Wang <wenw@silico=
+m-usa.com>
+Subject: Re: [PATCH v5] Add Silicom Platform Driver
+
+Caution: This is an external email. Please take care when clicking links or=
+ opening attachments.
+
+
+On Mon, Aug 28, 2023 at 05:26:22PM -0400, Henry Shi wrote:
+> The Silicom platform (silicom-platform) Linux driver for Swisscom=20
+> Business Box (Swisscom BB) as well as Cordoba family products is a=20
+> software solution designed to facilitate the efficient management and=20
+> control of devices through the integration of various Linux=20
+> frameworks. This platform driver provides seamless support for device=20
+> management via the Linux LED framework, GPIO framework, Hardware=20
+> Monitoring (HWMON), and device attributes. The Silicom platform=20
+> driver's compatibility with these Linux frameworks allows applications=20
+> to access and control Cordoba family devices using existing software=20
+> that is compatible with these frameworks. This compatibility=20
+> simplifies the development process, reduces dependencies on=20
+> proprietary solutions, and promotes interoperability with other=20
+> Linux-based systems and software.
+>
+> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+
+Again, my feedback is only for hwmon code.
+
+[ ... ]
+
+> +
+> +static int silicom_fan_control_read(struct device *dev,
+> +                                                                     enu=
+m hwmon_sensor_types type,
+> +                                                                     u32=
+ attr, int channel,
+> +                                                                    =20
+> +long *val)
+
+Excessively long continuation lines.
+That seeme to be the case for almost all continuation lines, except where i=
+t is too short. I'd suggest to run the patch through checkpatch --strict an=
+d fix what it reports.
+
+total: 0 errors, 9 warnings, 18 checks, 1077 lines checked
+
+is really a bit much.
+
+Henry: OK, I will fix those warnings.
+
+[ ... ]
+
+> +
+> +     hwmon_dev =3D devm_hwmon_device_register_with_info(&device->dev, na=
+me, NULL,
+> +                             &silicom_chip_info, NULL);
+
+Did you try to compile this with CONFIG_HWMON=3Dn or with CONFIG_HWMON=3Dm =
+and SILICOM_PLATFORM=3Dy ?
+
+Henry: Great question. I did not try that before. When I force "CONFIG_HWMO=
+N=3Dm and SILICOM_PLATFORM=3Dy" and compile kernel, the build failed with m=
+essage "silicom-platform.c:(.init.text+0x8ff5b): undefined reference to `de=
+vm_hwmon_device_register_with_info'". I tried following change in drivers/p=
+latform/x86/Kconfig:
+
+config SILICOM_PLATFORM
+	tristate "Silicom Edge Networking device support"
+	depends on DMI
+	select LEDS_CLASS_MULTICOLOR
+	select GPIOLIB
+	select HWMON  ----> added=20
+	help
+	  This option enables support for the LEDs/GPIO/etc downstream of the
+	  embedded controller on Silicom "Cordoba" hardware and derivatives.
+
+	  If you have a Silicom network appliance, say Y or M here.
+
+After this change, kernel build can be completed. And "CONFIG_HWMON" was ch=
+anged to "y" in .config file. Not sure whether there are any other better w=
+ays to resolve CONFIG dependence in when adding a new kernel driver.=20
+
+
+
+
+Guenter
