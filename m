@@ -2,62 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8BF78BFA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D2378BFB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbjH2Huk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S233084AbjH2HwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 03:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbjH2HuH (ORCPT
+        with ESMTP id S232940AbjH2Hvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:50:07 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E4419F
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:50:02 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1qatU2-0000LO-Fo; Tue, 29 Aug 2023 09:49:54 +0200
-Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1qatU0-0003hv-5P; Tue, 29 Aug 2023 09:49:52 +0200
-Date:   Tue, 29 Aug 2023 09:49:52 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Marco Felsch <m.felsch@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>, kernel@pengutronix.de,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 3/5] drm/bridge: samsung-dsim: update PLL reference clock
-Message-ID: <20230829074952.GF17387@pengutronix.de>
-References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
- <20230818-samsung-dsim-v1-3-b39716db6b7a@pengutronix.de>
- <20230828164148.tm23yudt76eqefzh@pengutronix.de>
- <CAHCN7xL8nMs3w82EWtxr1DGncejZtwDgVfR6KBxmkJdD7xAYQg@mail.gmail.com>
+        Tue, 29 Aug 2023 03:51:45 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA57184;
+        Tue, 29 Aug 2023 00:51:32 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T7E8XU022824;
+        Tue, 29 Aug 2023 07:51:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=n0qmg06RN1x9oidKdpsB9U+geqMev7HxNzt7gY8+6os=;
+ b=LM5qESvPAmYL1wfU0EiIAOa6tNJMpqgdxdt6A7r0LhBlV35i0/lDKRpExt3I+wkoU5uR
+ W52DTGpNDwDIQft5jhIhmcS+T9cSDPPPD2drdL1tUkkF6btg8fiNue+ae2GKRp83vNsT
+ T8t0Q39soTo+cuZ0r2UK3vj7FKwONxyHQ/3B15P9qb4chljwFmFceoRS+3nd5MRtLozh
+ R84vXaa/y8RDeMfdl34pUO9qt6RvgFn9JYQrecIuvxkYrY/mO2gJtwxHrLht4vfR7XcD
+ Igp6RdTWpdC+u/W7UB1DD6KGL7VT6er2qCupIFphjQHTrR09KvakssNrQ/KAze1Yh7WO Og== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss4wq0rvu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 07:51:16 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T7oqTf021732
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 07:50:52 GMT
+Received: from [10.110.46.69] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
+ 2023 00:50:51 -0700
+Message-ID: <c6a5b214-7812-25a4-c23c-8e57c0efe3fd@quicinc.com>
+Date:   Tue, 29 Aug 2023 00:50:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHCN7xL8nMs3w82EWtxr1DGncejZtwDgVfR6KBxmkJdD7xAYQg@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mtr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v3 11/28] dt-bindings: usb: dwc3: Add
+ snps,num-hc-interrupters definition
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>
+CC:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
+        <Thinh.Nguyen@synopsys.com>, <bgoswami@quicinc.com>,
+        <andersson@kernel.org>, <gregkh@linuxfoundation.org>,
+        <tiwai@suse.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <quic_jackp@quicinc.com>, <quic_plai@quicinc.com>
+References: <20230308235751.495-1-quic_wcheng@quicinc.com>
+ <20230308235751.495-12-quic_wcheng@quicinc.com>
+ <20230311134008.GA20831-robh@kernel.org>
+ <f7bd1ae7-fc38-0f29-546b-9ea4a323f42f@quicinc.com>
+ <73655c17-5246-2c96-d415-6a30497966c3@linaro.org>
+ <9d31db9c-4e58-767a-15c5-65f7c04bd989@quicinc.com>
+ <e2b2f268-182a-5ba4-2541-f0a401eda1c8@linaro.org>
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <e2b2f268-182a-5ba4-2541-f0a401eda1c8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZcPfopBsDJ1JQuOuXkevSo_AEwKMdkw2
+X-Proofpoint-ORIG-GUID: ZcPfopBsDJ1JQuOuXkevSo_AEwKMdkw2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_04,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0 adultscore=0
+ mlxlogscore=433 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290067
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,74 +94,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 13:17:44 -0500, Adam Ford wrote:
-> On Mon, Aug 28, 2023 at 11:42 AM Marco Felsch <m.felsch@pengutronix.de> wrote:
-> >
-> > On 23-08-28, Michael Tretter wrote:
-> > > The PLL requires a clock between 2 MHz and 30 MHz after the pre-divider.
-> > > The reference clock for the PLL may change due to changes to it's parent
-> > > clock. Thus, the frequency may be out of range or unsuited for
-> > > generating the high speed clock for MIPI DSI.
-> > >
-> > > Try to keep the pre-devider small, and set the reference clock close to
-> > > 30 MHz before recalculating the PLL configuration. Use a divider with a
-> > > power of two for the reference clock as this seems to work best in
-> > > my tests.
-> > >
-> > > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
-> > > ---
-> > >  drivers/gpu/drm/bridge/samsung-dsim.c | 15 +++++++++++++--
-> > >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-> > > index da90c2038042..4de6e4f116db 100644
-> > > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> > > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> > > @@ -611,10 +611,21 @@ static unsigned long samsung_dsim_set_pll(struct samsung_dsim *dsi,
-> > >       u16 m;
-> > >       u32 reg;
-> > >
-> > > -     if (dsi->pll_clk)
-> > > +     if (dsi->pll_clk) {
-> > > +             /*
-> > > +              * Ensure that the reference clock is generated with a power of
-> > > +              * two divider from its parent, but close to the PLLs upper
-> > > +              * limit of the valid range of 2 MHz to 30 MHz.
-> > > +              */
-> > > +             fin = clk_get_rate(clk_get_parent(dsi->pll_clk));
-> > > +             while (fin > 30 * MHZ)
-> > > +                     fin = fin / 2;
-> >
-> > Really just a cosmetic nit: fin /= 2;
-> >
-> > Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
-> >
-> > > +             clk_set_rate(dsi->pll_clk, fin);
-> > > +
-> > >               fin = clk_get_rate(dsi->pll_clk);
-> > > -     else
-> > > +     } else {
-> > >               fin = dsi->pll_clk_rate;
-> > > +     }
-> 
-> I don't have all the code style rules memorized.  Did you run it
-> through checkpatch?  I wonder if the braces here are appropriate for a
-> 1-line after the else.  If checkpatch is happy, I am fine with it.
 
-checkpatch is happy: The coding style states that if one of the branches needs
-braces because it has multiple statements, all branches should have braces.
 
-Michael
+On 8/29/2023 12:42 AM, Krzysztof Kozlowski wrote:
+> On 29/08/2023 09:19, Wesley Cheng wrote:
+>>>>
+>>>> This is a XHCI feature, but the DWC3 design is built in a way that DWC3
+>>>> host initializes the XHCI device and populates the properties associated
+>>>> to XHCI dev.
+>>>
+>>> You speak about driver now, not bindings. If driver has limitations,
+>>> change it. Not really problem of bindings.
+>>>
+>>
+>> Its the limitation of the HW.  Depending on how the SNPS DWC3 controller
+>> was implemented the vendor it can support less than the value mentioned
+>> in the Synopsys databook.
+> 
+> Then what is "XHCI dev"? A Linux device? Then a driver topic. What is
+> "populates the properties" - what or whose properties? Of Linux device?
+> Then a driver topic...
+> 
 
-> 
-> adam
-> > >       dev_dbg(dsi->dev, "PLL ref clock freq %lu\n", fin);
-> > >
-> > >       fout = samsung_dsim_pll_find_pms(dsi, fin, freq, &p, &m, &s);
-> > >
-> > > --
-> > > 2.39.2
-> > >
-> > >
-> > >
-> 
+I will reword it to using XHCI host controller versus using terms like 
+device and properties for the next rev.
+
+Thanks
+Wesley Cheng
