@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B0C78C54C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E5E78C561
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236045AbjH2N2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
+        id S232732AbjH2Nay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236132AbjH2N16 (ORCPT
+        with ESMTP id S232895AbjH2NaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:27:58 -0400
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAE91A2;
-        Tue, 29 Aug 2023 06:27:55 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d795e9a0816so3501297276.3;
-        Tue, 29 Aug 2023 06:27:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693315674; x=1693920474;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MQtjCSCni+7C5O5VnAvqJgCasBYKOxd9nBefXlVFPAk=;
-        b=Tbm6NIxcLzZTGt+aGT1NaTBlEjPZvPtO5KJT7+WMH2+alap8EEzN4LaImnxNrY20zX
-         +LRe6B7ojRguyFU3u+pNXr8DFnx/mzgjvZ9Nw8Zopb0uSE94NuID8yGjL5ZcL8rYspSa
-         Vhy8Z7M1pTBhgXDVaUn7jiWYCC5A+96mf8g9EyHmixlkbu9B5wGLruBwdHFcp+jOIwMZ
-         XB34gB8ChJGJpplFdHjARYoDcIiuPyjDEjSshcrGS9/nM9/NkstQbW7hIpXq4EOxyj5o
-         cLQKl/k4dRC708DvNCpIih/dYPv2tzLl4EPXKwack+1YtDFgecPjZpH+OfbUjXx9YEJQ
-         7T/A==
-X-Gm-Message-State: AOJu0Yy792KLbajH/yoegM3eJONRCh2nuwLvOgHqAvL/ErY7okr8tKZw
-        7O1Q7gpzHTjQUU5IdG7dArhdNpt61qZnMh5+q8o=
-X-Google-Smtp-Source: AGHT+IHtBH2bbRJiuiyR80YOw62jWW/Dlp1289hLPTjmSziAPSX4+jmdDFPRYyz+gz6lzvR9uEv6P3zIylolpBEMKJA=
-X-Received: by 2002:a25:4157:0:b0:d78:1311:aa1b with SMTP id
- o84-20020a254157000000b00d781311aa1bmr11731206yba.48.1693315674549; Tue, 29
- Aug 2023 06:27:54 -0700 (PDT)
+        Tue, 29 Aug 2023 09:30:25 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A919113;
+        Tue, 29 Aug 2023 06:30:22 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TCI3Pi005325;
+        Tue, 29 Aug 2023 13:30:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding : to : cc; s=qcppdkim1;
+ bh=zGo6iwCFhDzbB5gY/d6fWoZR/bLTLLlNy1q10Rr+8E4=;
+ b=MSG9tcdhaUNWSAL19IhfqPBSx33NlsIcOkIMaTO0hGRqWhXqsH4Dy+Osg4GfaR/v6w6t
+ 2t4/IbLNAyhIb4Yw9vZlDsnQcsOhFyvC+DDDlXQCrf2UV6Gm8XZtZPaZEIkLCd/uZ3sj
+ SFneSnz/LTUqwWePjhw3RBajL2m1b1979DLQqzHrjGsckCjpIUun4gs0DeC7f3vpdxeu
+ LWXF99tbSHxzHJBAiqNKiLfXnWb6E35BemjMzoGL7T4Mj9skNK/wWU8UCYSqWm+NRyk/
+ j+Li3FHf99raQoqvuOlR0lVf9nYbORjEN+qhhia7wWfu/d+MOelC3WXFa5OwuNJ6sl1u FA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss6j89ck2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 13:30:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37TDU5Aw031776
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 13:30:05 GMT
+Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 29 Aug 2023 06:30:03 -0700
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: [PATCH v2 0/2] wifi: Fix struct ieee80211_tim_ie::virtual_map
+Date:   Tue, 29 Aug 2023 06:29:35 -0700
+Message-ID: <20230829-ieee80211_tim_ie-v2-0-fdaf19fb1c0e@quicinc.com>
 MIME-Version: 1.0
-References: <20230829104033.955-1-jszhang@kernel.org> <ZO3UuY9jKz8VenGA@shell.armlinux.org.uk>
- <ZO3WsHH1GDWdcLAU@xhacker> <CANBLGcwoiiA=ZOVenMZXM4pHSYn0dyGpzjm76i1Fin+8+NiqLA@mail.gmail.com>
-In-Reply-To: <CANBLGcwoiiA=ZOVenMZXM4pHSYn0dyGpzjm76i1Fin+8+NiqLA@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Tue, 29 Aug 2023 15:27:43 +0200
-Message-ID: <CANBLGcwz8GeK_9DNC_UDq9YbpxRVYFKd59LEVeJOTeGU9wdXEQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 00/22] convert to devm_stmmac_probe_config_dt
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAL/y7WQC/32Nyw6CMBBFf4V0bU07RSiu/A9DSGkHmQUPWyQaw
+ r9biBsXujw3OecuLKAnDOycLMzjTIGGPgIcEmZb09+Qk4vMQIASGk6cEFELkLKaqKsIuVCFTJU
+ wjcoci9rosaHnnryWkVsK0+Bf+8Mst/VPbJZccNA2RyWVg8Jd7g+y1NujHbqt/lH1DzVzuUlrU
+ +cCmy+1XNf1DR3uTCntAAAA
+To:     <kernel@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        "Christian Lamparter" <chunkeey@googlemail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        "Helmut Schaa" <helmut.schaa@googlemail.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>
+CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: xsfCJMpgrS0AD5Yy20VmSrz8O2DdS5q_
+X-Proofpoint-GUID: xsfCJMpgrS0AD5Yy20VmSrz8O2DdS5q_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_10,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=691
+ lowpriorityscore=0 phishscore=0 malwarescore=0 spamscore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290116
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 15:22, Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> On Tue, 29 Aug 2023 at 13:41, Jisheng Zhang <jszhang@kernel.org> wrote:
-> >
-> > On Tue, Aug 29, 2023 at 12:21:29PM +0100, Russell King (Oracle) wrote:
-> > > On Tue, Aug 29, 2023 at 06:40:11PM +0800, Jisheng Zhang wrote:
-> > > > Russell pointed out there's a new devm_stmmac_probe_config_dt()
-> > > > helper now when reviewing my starfive gmac error handling patch[1].
-> > > > After greping the code, this nice helper was introduced by Bartosz in
-> > > > [2], I think it's time to convert all dwmac users to this helper and
-> > > > finally complete the TODO in [2] "but once all users of the old
-> > > > stmmac_pltfr_remove() are converted to the devres helper, it will be
-> > > > renamed back to stmmac_pltfr_remove() and the no_dt function removed."
-> > >
-> > > I think a useful final patch may be to make stmmac_probe_config_dt()
-> > > static so there aren't any new uses of stmmac_probe_config_dt().
-> >
-> > Good idea!
->
-> Once this is done are there any users of stmmac_pltfr_remove() left?
-> If not it would be great to remove that too and maybe even remove the
-> _no_dt from stmmac_pltfr_remove_no_dt().
+To align with [1] change struct ieee80211_tim_ie::virtual_map to be a
+flexible array and fix all size references to account for the change
+in struct size.
 
-Sorry about the noise. I should learn to read the full series before replying.
+As a precursor, add a size check in a place where one is currently
+missing.
 
-> > >
-> > > Also note that net-next is now closed, so please wait until after -rc1
-> > > for net-next to re-open, or post as RFC. Thanks.
-> >
-> > oops, I didn't notice this cycle of window is closed, I will wait for next
-> > development window.
-> >
-> > Thank you
-> > >
-> > > --
-> > > RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> > > FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+[1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+Changes in v2:
+- Cover Letter
+-     removed internal note
+- [PATCH 2/2] mac80211: Use flexible array in struct ieee80211_tim_ie
+-     Fixed typo: s/no/now/
+- Link to v1: https://lore.kernel.org/r/20230828-ieee80211_tim_ie-v1-0-6d7a4bab70ef@quicinc.com
+
+---
+Jeff Johnson (2):
+      wifi: cw1200: Avoid processing an invalid TIM IE
+      mac80211: Use flexible array in struct ieee80211_tim_ie
+
+ drivers/net/wireless/ath/ath9k/recv.c          | 2 +-
+ drivers/net/wireless/ath/carl9170/rx.c         | 2 +-
+ drivers/net/wireless/ralink/rt2x00/rt2x00dev.c | 2 +-
+ drivers/net/wireless/realtek/rtlwifi/ps.c      | 2 +-
+ drivers/net/wireless/st/cw1200/txrx.c          | 2 +-
+ include/linux/ieee80211.h                      | 4 ++--
+ net/mac80211/util.c                            | 2 +-
+ 7 files changed, 8 insertions(+), 8 deletions(-)
+---
+base-commit: 4dddbad8907bc2ecda6e3714de3ea0a27b90a7d3
+change-id: 20230825-ieee80211_tim_ie-0391430af36d
+
