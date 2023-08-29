@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEBF78C716
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F9C78C766
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236901AbjH2OPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        id S236853AbjH2OVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236884AbjH2OOc (ORCPT
+        with ESMTP id S236752AbjH2OVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:14:32 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D875AAB
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:14:27 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31c6cd238e0so3447414f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1693318466; x=1693923266;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WFPTtA3XCUKdAaFOU5c7e+UXQ9Y4a2WdpxP2XoiaKc0=;
-        b=KS46UfLFspv9moR5Rw3Mu5y8AS/xA6BNLJjOsgC2lVoSYMUny9p8ctXPvM8wSEwtyx
-         Rsfh3g4I9P4cKt7gvxzGA3n/Q6V7zxSe9SKF/HBCpYKyZo1aA+zez4lrmWFLuOFoIaAC
-         BY6dVNNlYfhNFa9Eh36xz2JzinT2/NpUF9mi5EGqLnSLGgHqQzquY9Djbe3WSFy1rQPg
-         QIe5BwRs3lJPHQxDuAATQSrVgrD4nhX15t3nD0y1OS+6pKd12qlUGWRobQe7KdtkZHV2
-         tnuDrXnR0bNNPCjgzYjJtGV0SNpju5Rz0H0So7lrUDUB29l838vJ179qf80ge4fKzCUk
-         s4NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693318466; x=1693923266;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WFPTtA3XCUKdAaFOU5c7e+UXQ9Y4a2WdpxP2XoiaKc0=;
-        b=JRk5sRuEzKjToyOA8vYrj7xxP/sb8ru6BtPbyvDK11DXnIZYhqxNCHDt4cGtt5z9JW
-         l7ghm64BbkzGuRytmOjIrfzfAWFV7aoL/AYaVK2mafqLjQXW6EJIXlXQpJT82BZQanuR
-         50ziWVGRtkztJlfNoM+ZpL45eWwIdKfcfNiDNXxQpKc68W0zNzCsEu8xqW2gRpab6T4V
-         jz2uYesW7ULmnHAwIwqdbyGFX/8ZQ21bbBVdz2jS3k9YMkX/hZOeq3q7y4zKp54UYq4e
-         6cqMR8Pw00un+FL8ak+fiin+OrNLhZTsI38RaPShuZ3L3s7jCINUZ4+mzDmMcR/iT6Jv
-         r9/g==
-X-Gm-Message-State: AOJu0YzUf31N8vNjigCswjyD3nczH+7nMWSt4hfRfAjBzZMS55TmtpLS
-        zWMhTVhH/bRz6FXNEQeAKN/Jag==
-X-Google-Smtp-Source: AGHT+IGwkat/DGsti9wkyTwrViZMau7x0f5QHaDgrMbuMoI+ffv9J1uLFhtLi9UQv9rgOqPYKCi5Kg==
-X-Received: by 2002:adf:de09:0:b0:313:e391:e492 with SMTP id b9-20020adfde09000000b00313e391e492mr2074430wrm.17.1693318466180;
-        Tue, 29 Aug 2023 07:14:26 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id y14-20020adfee0e000000b0031c56218984sm13824638wrn.104.2023.08.29.07.14.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 07:14:25 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     zev@bewilderbeest.net,
-        Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] regulator: userspace-consumer: Retrieve supplies from DT
-Date:   Tue, 29 Aug 2023 16:14:13 +0200
-Message-ID: <20230829141413.2605621-1-Naresh.Solanki@9elements.com>
+        Tue, 29 Aug 2023 10:21:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DBF1A3;
+        Tue, 29 Aug 2023 07:21:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BF1D821852;
+        Tue, 29 Aug 2023 14:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693318888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oHxOxL/1egaGXDwHf1bGqXTPMgGpjhtV5fYRp+DeRzQ=;
+        b=vG0N6gdK6Rr6aFpRFOs0d4GM+EMoR/nIkJZIvZxp0d9y/1ZrTZKNc66ovHOXjjcMolYuaJ
+        EtdWzzis3s6HvsckwFy2eUCFugPH5V14j3yiIucxj2Xq/ixZGX0CYimaKSt1IhIxubFkeI
+        Mof9NVLJEAhQ5SpPvC67Q/l6+lrGVoo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693318888;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oHxOxL/1egaGXDwHf1bGqXTPMgGpjhtV5fYRp+DeRzQ=;
+        b=PxfSSy24/ZVMovXysk6HY6nuve7RlW/8QwrrW64wVMEUwnd5Zp7Ap8Vjlnf1GuYRj0IytX
+        wb04wXyNpnu9eaCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F7F4138E2;
+        Tue, 29 Aug 2023 14:21:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HsL5Iej+7WREewAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 29 Aug 2023 14:21:28 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     deller@gmx.de, daniel@ffwll.ch, javierm@redhat.com,
+        sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 0/7] fbdev: Split off code for boot-up logo
+Date:   Tue, 29 Aug 2023 16:15:39 +0200
+Message-ID: <20230829142109.4521-1-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,83 +66,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of hardcoding a single supply, retrieve supplies from DT.
+The boot-up logo is a feature of the fbcon console; with only a few
+external callers. Move it from the core fbdev code into its own file.
 
-Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
----
- drivers/regulator/userspace-consumer.c | 43 ++++++++++++++++++++++++--
- 1 file changed, 40 insertions(+), 3 deletions(-)
+Patches 1 and 2 remove the logo setup from fbdev drivers. The logo
+requires a configured output, which is provided by the framebuffer
+console. Drivers should not implement their own logo.
 
-diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
-index a0b980022993..830681446807 100644
---- a/drivers/regulator/userspace-consumer.c
-+++ b/drivers/regulator/userspace-consumer.c
-@@ -153,11 +153,32 @@ static int regulator_userspace_notify(struct notifier_block *nb,
- 	return NOTIFY_OK;
- }
- 
-+#define SUPPLY_SUFFIX "-supply"
-+#define SUPPLY_SUFFIX_LEN 7
-+
-+static int get_num_supplies(struct platform_device *pdev)
-+{
-+	struct  property *prop;
-+	int num_supplies = 0;
-+
-+	for_each_property_of_node(pdev->dev.of_node, prop) {
-+		const char *prop_name = prop->name;
-+		int len = strlen(prop_name);
-+
-+		if (len > SUPPLY_SUFFIX_LEN && \
-+		    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
-+			num_supplies++;
-+		}
-+	}
-+	return num_supplies;
-+}
-+
- static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- {
- 	struct regulator_userspace_consumer_data tmpdata;
- 	struct regulator_userspace_consumer_data *pdata;
- 	struct userspace_consumer_data *drvdata;
-+	struct  property *prop;
- 	int i, ret;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
-@@ -169,11 +190,27 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- 		memset(pdata, 0, sizeof(*pdata));
- 
- 		pdata->no_autoswitch = true;
--		pdata->num_supplies = 1;
--		pdata->supplies = devm_kzalloc(&pdev->dev, sizeof(*pdata->supplies), GFP_KERNEL);
-+		pdata->num_supplies = get_num_supplies(pdev);
-+
-+		pdata->supplies = devm_kzalloc(&pdev->dev, pdata->num_supplies * \
-+					       sizeof(*pdata->supplies), GFP_KERNEL);
- 		if (!pdata->supplies)
- 			return -ENOMEM;
--		pdata->supplies[0].supply = "vout";
-+
-+		for_each_property_of_node(pdev->dev.of_node, prop) {
-+			const char *prop_name = prop->name;
-+			int len = strlen(prop_name);
-+
-+			if (len > 7 && \
-+			    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
-+				char *supply_name = devm_kzalloc(&pdev->dev,
-+								 len - SUPPLY_SUFFIX_LEN + 1,
-+								 GFP_KERNEL);
-+				strscpy(supply_name, prop_name, len - SUPPLY_SUFFIX_LEN);
-+				supply_name[len - SUPPLY_SUFFIX_LEN] = '\0';
-+				pdata->supplies[0].supply = supply_name;
-+			}
-+		}
- 	}
- 
- 	if (pdata->num_supplies < 1) {
+Patches 3 to 6 move the code for the boot-up logo into its own file
+and add a number of simple cleanups. It's now separate from the core
+fbdev code that maintains the display framebuffers.
 
-base-commit: 8950c4a350c188deb5f5b05df3244d4db82fe3d8
+Patch 7 then removes a number of unecessary include statements from
+fbmem.c.
+
+Thomas Zimmermann (7):
+  fbdev/au1200fb: Do not display boot-up logo
+  fbdev/mmp/mmpfb: Do not display boot-up logo
+  fbdev/core: Fix style of code for boot-up logo
+  fbdev/core: Move logo functions into separate source file
+  fbdev/core: Build fb_logo iff CONFIG_LOGO has been selected
+  fbdev/core: Remove empty internal helpers from fb_logo.c
+  fbdev/core: Clean up include statements in fbmem.c
+
+ drivers/video/fbdev/au1200fb.c         |   9 -
+ drivers/video/fbdev/core/Makefile      |   2 +
+ drivers/video/fbdev/core/fb_internal.h |  17 +
+ drivers/video/fbdev/core/fb_logo.c     | 509 +++++++++++++++++++++++
+ drivers/video/fbdev/core/fbcon.c       |   4 +
+ drivers/video/fbdev/core/fbmem.c       | 542 +------------------------
+ drivers/video/fbdev/mmp/fb/mmpfb.c     |   7 -
+ include/linux/fb.h                     |   5 -
+ 8 files changed, 533 insertions(+), 562 deletions(-)
+ create mode 100644 drivers/video/fbdev/core/fb_logo.c
+
 -- 
 2.41.0
 
