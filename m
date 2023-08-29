@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF50678C036
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F46C78C038
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234008AbjH2I0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234061AbjH2I0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Aug 2023 04:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234015AbjH2I0T (ORCPT
+        with ESMTP id S234179AbjH2I0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:26:19 -0400
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A499A109
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:26:16 -0700 (PDT)
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-76f036041b4so126742385a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:26:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693297576; x=1693902376;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lFTsc9V1hAeiO8mBrWjns7vrpRI2iBufLq7iQH/8sGw=;
-        b=U+7KnemEFsJnGKA3+B7NMVMEDgjZoB36r+/gZm5DhPonutWRSWhTHpF2SALS7kyHJd
-         QfOU9QeaqZ0l2HPHBLwEJPK/2KZ0UzRVr04RpVNQE1E4NBm7Fxnagow+B2M495XMUgwl
-         R+UeBMOHZ8OqEQdzUnLZexgJnmvkgIAnjWQD9OOfeDLUGWuQQfIu4teIZdaM59D4xha0
-         XGdfJZTRk6WNLnslhs9CbqOeOiXGCR8alPnW9RxQ4PuVj5XzuwUNhstg8ZVsToTaoANR
-         Bf8h5HD9iMHsICBDXSjmHpnZNI//zGX5a877BXjTiw3IeYDoDvTwtJYKFoPOEQ2650j5
-         3DKQ==
-X-Gm-Message-State: AOJu0YxONn8PBu0fJ453cfYrBboLO6XwnUTIVJpvrA530tlztlN6McC+
-        1xdByKSWJsjjwBGmxiWpdFM=
-X-Google-Smtp-Source: AGHT+IFC0aimOSQdqGimzWTBgDqs/DLpySsNBWUY/RryKPL4zNea/T2fXeqUM35hJHoL6xlN/D1UfQ==
-X-Received: by 2002:a05:620a:244b:b0:76f:6a9:18bc with SMTP id h11-20020a05620a244b00b0076f06a918bcmr2148897qkn.4.1693297575654;
-        Tue, 29 Aug 2023 01:26:15 -0700 (PDT)
-Received: from costa-tp.bos2.lab ([2a00:a040:199:8fff:fff6:56dc:6bcb:5787])
-        by smtp.gmail.com with ESMTPSA id w10-20020ae9e50a000000b00767cd764ecfsm2918924qkf.33.2023.08.29.01.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 01:26:14 -0700 (PDT)
-From:   Costa Shulyupin <costa.shul@redhat.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Costa Shulyupin <costa.shul@redhat.com>
-Subject: [PATCH] sched: add kernel-doc for set_cpus_allowed_ptr
-Date:   Tue, 29 Aug 2023 11:25:51 +0300
-Message-ID: <20230829082551.2661290-1-costa.shul@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 29 Aug 2023 04:26:38 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE89118D;
+        Tue, 29 Aug 2023 01:26:28 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 33B842B3;
+        Tue, 29 Aug 2023 10:25:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693297505;
+        bh=GkLtZxBKd6tNduywTWUucqaPaMBBxTSF9iM8hiFHiEk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xt5YEJ1beoWI8tslseMTxsEVNrfTEQuJLeZBgnNdi6LSCe7ZNX2SbVshSDZu22zdH
+         7p/rZUP63qv+/gOUhzARJYgom30VzDkeWRIGIUvbImmbFOmqAxTdnc34drDSRAndbw
+         tcfRkqKA5rOYTRKz/fhWJH7s6q2aJG1Au+pURIIQ=
+Date:   Tue, 29 Aug 2023 11:26:35 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        devicetree@vger.kernel.org,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: [Linux-stm32] [PATCH v1 3/5] media: stm32-dcmipp: STM32 DCMIPP
+ camera interface driver
+Message-ID: <20230829082635.GC4698@pendragon.ideasonboard.com>
+References: <20220910144010.34272-1-hugues.fruchet@foss.st.com>
+ <20220910144010.34272-4-hugues.fruchet@foss.st.com>
+ <ZNC5k3PynnEWL/ou@kekkonen.localdomain>
+ <20230824110934.GA18226@gnbcxd0016.gnb.st.com>
+ <ZOdMghQXfNgKZ6cN@kekkonen.localdomain>
+ <20230824130432.GB27092@pendragon.ideasonboard.com>
+ <20230824160506.GA21560@gnbcxd0016.gnb.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230824160506.GA21560@gnbcxd0016.gnb.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an exported symbol, so it should have kernel-doc.
-Add a note to very similar function do_set_cpus_allowed
-to avoid confusion and misuse.
----
- include/linux/sched.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+On Thu, Aug 24, 2023 at 06:05:06PM +0200, Alain Volmat wrote:
+> Hi Laurent,
+> 
+> On Thu, Aug 24, 2023 at 04:04:32PM +0300, Laurent Pinchart wrote:
+> > On Thu, Aug 24, 2023 at 12:26:42PM +0000, Sakari Ailus wrote:
+> > > On Thu, Aug 24, 2023 at 01:09:34PM +0200, Alain Volmat wrote:
+> > > > Hi Sakari,
+> > > > 
+> > > > thanks a lot for the review.  I've already taken care of the comments I got
+> > > > from Dan and will also add fixes for your comments as well before
+> > > > pushing the v2.  Before going into that I thought I'd better clarify the
+> > > > framerate part which seems the most tricky part.
+> > > > 
+> > > > On Mon, Aug 07, 2023 at 09:29:55AM +0000, Sakari Ailus wrote:
+> > > 
+> > > ...
+> > > 
+> > > > > > +static int dcmipp_byteproc_g_frame_interval(struct v4l2_subdev *sd,
+> > > > > > +					    struct v4l2_subdev_frame_interval *fi)
+> > > > > > +{
+> > > > > > +	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
+> > > > > > +
+> > > > > > +	if (IS_SINK(fi->pad))
+> > > > > > +		fi->interval = byteproc->sink_interval;
+> > > > > > +	else
+> > > > > > +		fi->interval = byteproc->src_interval;
+> > > > > > +
+> > > > > > +	return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static int dcmipp_byteproc_s_frame_interval(struct v4l2_subdev *sd,
+> > > > > > +					    struct v4l2_subdev_frame_interval *fi)
+> > > > > > +{
+> > > > > > +	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
+> > > > > > +
+> > > > > > +	mutex_lock(&byteproc->lock);
+> > > > > > +
+> > > > > > +	if (byteproc->streaming) {
+> > > > > > +		mutex_unlock(&byteproc->lock);
+> > > > > > +		return -EBUSY;
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	if (fi->interval.numerator == 0 || fi->interval.denominator == 0)
+> > > > > > +		fi->interval = byteproc->sink_interval;
+> > > > > > +
+> > > > > > +	if (IS_SINK(fi->pad)) {
+> > > > > > +		/*
+> > > > > > +		 * Setting sink frame interval resets frame skipping.
+> > > > > > +		 * Sink frame interval is propagated to src.
+> > > > > > +		 */
+> > > > > > +		byteproc->frate = 0;
+> > > > > > +		byteproc->sink_interval = fi->interval;
+> > > > > > +		byteproc->src_interval = byteproc->sink_interval;
+> > > > > 
+> > > > > Is this used for anything else than configure skipping?
+> > > > > 
+> > > > > I think I'd just have a control for it in that case.
+> > > > > 
+> > > > > I don't think exposing frame interval configuration is necessarily even
+> > > > > meaningful for a device that just processes data but does not produce it.
+> > > > 
+> > > > The DCMIPP is able to perform frame drop, 1/2, 1/4, 1/8 basically.
+> > > > As Dan pointed me out, indeed setting frame interval as we did on both
+> > > > sink and source pad isn't a defined behavior.  I first thought that
+> > > > using the frame interval was the proper way to do that but that is
+> > > > indeed only used on producers such as sensors ....
+> > > > Which ctrl would you propose in such case ?
+> > > 
+> > > We don't have one, AFAIK, and I think it may be unlikely this will be
+> > > needed elsewhere. So I'd use a private control.
+> > > 
+> > > I wonder what others think. Cc Laurent as well.
+> > 
+> > What are the use cases for this feature ?
+> 
+> This is basically to allow reducing the framerate of the
+> captured stream when this is not possible at the producer
+> (sensor) level and we need to lower down the stress on elements down the
+> pipeline.
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 177b3f3676ef..ee64d1877be0 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1858,7 +1858,17 @@ extern int task_can_attach(struct task_struct *p);
- extern int dl_bw_alloc(int cpu, u64 dl_bw);
- extern void dl_bw_free(int cpu, u64 dl_bw);
- #ifdef CONFIG_SMP
-+
-+/* do_set_cpus_allowed - consider using set_cpus_allowed_ptr instead */
- extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
-+
-+/**
-+ * set_cpus_allowed_ptr - set CPU affinity mask of a task
-+ * @p: the task
-+ * @new_mask: CPU affinity mask
-+ *
-+ * Return: zero if successful, or a negative error code
-+ */
- extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
- extern int dup_user_cpus_ptr(struct task_struct *dst, struct task_struct *src, int node);
- extern void release_user_cpus_ptr(struct task_struct *p);
+I wonder if the frame interval API is a good fit for this. The driver
+accepts frame rates of 1, 2, 4 and 8 fps and maps them to the
+corresponding decimation factor, these values are not the actual frame
+rate.
+
 -- 
-2.41.0
+Regards,
 
+Laurent Pinchart
