@@ -2,38 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D8F78BEF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4176F78BE90
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbjH2HJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59200 "EHLO
+        id S231787AbjH2Ghn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbjH2HJD (ORCPT
+        with ESMTP id S232785AbjH2Ghi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:09:03 -0400
-X-Greylist: delayed 2036 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 00:08:59 PDT
-Received: from torres.zugschlus.de (torres.zugschlus.de [IPv6:2a01:238:42bc:a101::2:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F561A2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:08:59 -0700 (PDT)
-Received: from mh by torres.zugschlus.de with local (Exim 4.96)
-        (envelope-from <mh+linux-kernel@zugschlus.de>)
-        id 1qasJZ-002NE5-1h
-        for linux-kernel@vger.kernel.org;
-        Tue, 29 Aug 2023 08:35:01 +0200
-Date:   Tue, 29 Aug 2023 08:35:01 +0200
-From:   Marc Haber <mh+linux-kernel@zugschlus.de>
-To:     linux-kernel@vger.kernel.org
-Subject: Linux 6.5 speed regression, boot VERY slow with anything systemd
- related
-Message-ID: <ZO2RlYCDl8kmNHnN@torres.zugschlus.de>
+        Tue, 29 Aug 2023 02:37:38 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A8A18D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:37:34 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so834854966b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693291053; x=1693895853;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y0puB13UyD4kzqL+3mBao37E2WRSNSR7Tz2UTX+4Scs=;
+        b=hKCLNOkq919dmCixZrrOlQha+50XTKpTzWAVB0LsRKkfGnxjgR3oGAn3ndI54GOY0x
+         bqpnViO+/txnORT2TmzOStwgg0HgaWaZKo/ui7uJ3AEG9IszGf5N2ojghAAu8f5RUmd1
+         1/urN7XJ29RpcsVpKkHbN5k6FYCl8+sXeVFWK0WQuc7hY272oQdCQK+obUfgXH+jecoj
+         J7JO2xFpLw2VFdzheHt/GUk5LMJna8Tt9eOGMaOakl8E+bs1oL+mVLY4qTnOYbrG8EQg
+         knYIV02PWDCM/eYslnRwgvr3daC+gPMaPO2Ngv4zwQBwkXC4ZawGSkS7jYY3oULwsG3S
+         UXqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693291053; x=1693895853;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y0puB13UyD4kzqL+3mBao37E2WRSNSR7Tz2UTX+4Scs=;
+        b=PixroWFgHXblIinNd/a03ObdpAmOwb+7pSXU6ff7Mxv4durMJezyo1YG0fk872xpjz
+         YjmlcBT3QgD6bUpDKC6yqJYofCkRM+cy9GB0xWaR81gfG/Sj6Vj24bbncEWalB/fJJAC
+         pBaGDbeij9FDEMqt2QaTLh84PKS+H0toTgKVcaemmjgr6DxXHR4BljW56Z1oz75tAuf+
+         ehzvDTBUjEiYExjGRRGjBpT65gqfmZJIFURJbVyDiGwrmzzjiux50Cmmvv88ulnvscGr
+         mD0haFaxB8VD1aOwAvSVLzAooAFvVJ/R0r33RFzvs8MRmqpSgeSGZpdnt5ln1NGtdVVb
+         HTlw==
+X-Gm-Message-State: AOJu0YxgYFi+1ncyAkRrGqnWc6YI2ec27atu6/BoUtd7KTy5V0CpLGnG
+        cHqEikqt6ZNrtS9IbaUYrL/LPg==
+X-Google-Smtp-Source: AGHT+IHoEva2euud2rfWH/kt7uWvlJ42vQDHi6QlyIIMty4DKAF1r3SzMGu2uUGqR2iWULkVr4t5+g==
+X-Received: by 2002:a17:906:2095:b0:99e:afd:f2ba with SMTP id 21-20020a170906209500b0099e0afdf2bamr1808532ejq.35.1693291053179;
+        Mon, 28 Aug 2023 23:37:33 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.196])
+        by smtp.gmail.com with ESMTPSA id u5-20020a17090626c500b009929d998abcsm5554594ejc.209.2023.08.28.23.37.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 23:37:32 -0700 (PDT)
+Message-ID: <44fa6910-c21b-977a-4d2a-72e149085de7@linaro.org>
+Date:   Tue, 29 Aug 2023 08:37:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/6] dt-bindings: crypto: qcom,prng: document that RNG
+ on SM8450 is a TRNG
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Om Prakash Singh <quic_omprsing@quicinc.com>
+References: <20230828-topic-sm8550-rng-v3-0-7a0678ca7988@linaro.org>
+ <20230828-topic-sm8550-rng-v3-2-7a0678ca7988@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230828-topic-sm8550-rng-v3-2-7a0678ca7988@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,112 +87,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 28/08/2023 10:04, Neil Armstrong wrote:
+> It has been reported at [1] the RNG HW on SM8450 is in fact a True Random
+> Number Generator and no more Pseudo, document this by adding
+> a new qcom,trng and the corresponding SoC specific sm8450 compatible.
+> 
+> [1] https://lore.kernel.org/all/20230818161720.3644424-1-quic_omprsing@quicinc.com/
+> 
+> Suggested-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  .../devicetree/bindings/crypto/qcom,prng.yaml      | 24 +++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> index bb42f4588b40..4245c9e424a3 100644
+> --- a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> @@ -11,9 +11,13 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - qcom,prng  # 8916 etc.
+> -      - qcom,prng-ee  # 8996 and later using EE
+> +    oneOf:
+> +      - enum:
+> +          - qcom,prng  # 8916 etc.
+> +          - qcom,prng-ee  # 8996 and later using EE
+> +      - items:
+> +          - const: qcom,sm8450-trng
 
-I am always quickly upgrading my fleet to new stable kernels. So I
-updated my 9 test machines yesterday and found that one of those test
-machines gets abysmally slow after the kernel has finshed the early boot
-sequence and control is handed over to systemd.
+Make it already an enum, so you won't have to change same lines twice.
 
-The boot eventually finishes, but it takes like 50 minutes instead of 30
-seconds to get the machine to attach to the network, start up sshd and
-to show a login prompt. The machine is a KVM/QEMU VM running on an APU
-host ("AMD GX-412TC SOC"). The host is still on 6.4.12, is NOT under
-memory or IO pressure, and on the host it looks like the VM is just
-taking about 10 % of a single core and happily chugging away.
 
-Others of my test machines are KVM VMs running on different, more
-powerful hosts, and those are booting 6.5 just fine, so I guess that the
-issue is somehow caused by the APU host. I have upgraded a second VM on
-the host in question to Linux 6.5 and that VM exhibits the same
-behavior.
+Best regards,
+Krzysztof
 
-This is the tail of the boot messages of the VM on the serial console,
-and I am attaching the entirety of the messages under the signature:
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 6 ports detected
-sr 0:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
-cdrom: Uniform CD-ROM driver Revision: 3.20
-virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
-usb 1-1: new high-speed USB device number 2 using ehci-pci
-virtio-pci 0000:00:08.0: virtio_pci: leaving for legacy driver
-usb 1-1: New USB device found, idVendor=0627, idProduct=0001, bcdDevice= 0.00
-usb 1-1: New USB device strings: Mfr=1, Product=3, SerialNumber=5
-usb 1-1: Product: QEMU USB Tablet
-usb 1-1: Manufacturer: QEMU
-virtio-pci 0000:00:09.0: virtio_pci: leaving for legacy driver
-usb 1-1: SerialNumber: 42
-input: QEMU QEMU USB Tablet as /devices/pci0000:00/0000:00:05.7/usb1/1-1/1-1:1.0/0003:0627:0001.0001/input/input4
-hid-generic 0003:0627:0001.0001: input,hidraw0: USB HID v0.01 Mouse [QEMU QEMU USB Tablet] on usb-0000:00:05.7-1/input0
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-virtio-pci 0000:00:0a.0: virtio_pci: leaving for legacy driver
-virtio_blk virtio2: 1/0/0 default/read/poll queues
-virtio_blk virtio2: [vda] 8388608 512-byte logical blocks (4.29 GB/4.00 GiB)
- vda: vda1 vda2
-virtio_blk virtio4: 1/0/0 default/read/poll queues
-virtio_net virtio0 ens3: renamed from eth0
-virtio_blk virtio4: [vdb] 1048576 512-byte logical blocks (537 MB/512 MiB)
-Begin: Loading essential drivers ... done.
-Begin: Running /scripts/init-premount ... done.
-Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
-Begin: Running /scripts/local-premount ... done.
-Begin: Will now check root file system ... fsck from util-linux 2.38.1
-[/sbin/fsck.ext4 (1) -- /dev/vda2] fsck.ext4 -a -C0 /dev/vda2
-ronde-root: clean, 41578/262144 files, 405761/1048315 blocks
-done.
-EXT4-fs (vda2): mounted filesystem 3af5627c-4ed5-4f35-b0b3-60be041708cb ro with ordered data mode. Quota mode: none.
-done.
-Begin: Running /scripts/local-bottom ... done.
-Begin: Running /scripts/init-bottom ... done.
-systemd[1]: Inserted module 'autofs4'
-random: crng init done
-systemd[1]: systemd 252.12-1~deb12u1 running in system mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified)
-systemd[1]: Detected virtualization kvm.
-systemd[1]: Detected architecture x86-64.
-
-Welcome to Debian GNU/Linux 12 (bookworm)!
-
-systemd[1]: Hostname set to <ronde>.
-systemd[1]: Queued start job for default target graphical.target.
-systemd[1]: Created slice system-getty.slice - Slice /system/getty.
-
-this is the point when things are slowing down horribly, the system is sitting for like 30 seconds for each line.
-
-[  OK  ] Created slice system-getty.slice - Slice /system/getty.systemd[1]: Created slice system-modprobe.slice - Slice /system/modprobe.
-
-[  OK  ] Created slice system-modpr…lice - Slice /system/modprobe.systemd[1]: Created slice system-radiator.slice - Slice /system/radiator.
-
-[  OK  ] Created slice system-radia…lice - Slice /system/radiator.systemd[1]: Created slice system-serial\x2dgetty.slice - Slice /system/serial-getty.
-
-[  OK  ] Created slice system-seria… - Slice /system/serial-getty.systemd[1]: Created slice user.slice - User and Session Slice.
-
-[  OK  ] Created slice user.slice - User and Session Slice.systemd[1]: Started systemd-ask-password-console.path - Dispatch Password Requests to Console Directory Watch.
-
-[  OK  ] Started systemd-ask-passwo…quests to Console Directory Watch.systemd[1]: Started systemd-ask-password-wall.path - Forward Password Requests to Wall Directory Watch.
-
-[  OK  ] Started systemd-ask-passwo… Requests to Wall Directory Watch.systemd[1]: Set up automount proc-sys-fs-binfmt_misc.automount - Arbitrary Executable File Formats File System Automount Point.
-
-[  OK  ] Set up automount proc-sys-…rmats File System Automount Point.systemd[1]: Reached target cryptsetup.target - Local Encrypted Volumes.
-
-This looks like systemd is waiting for something to time out, since the
-delay is about 30 seconds (as exactly as I can sit tight with a
-stopwatch). Going back to kernel 6.4.12 things are fixed immediately.
-
-The VMs in question are running debian bookworm with systemd 252.
-
-When the machine eventually allows a log in, systemctl --failed says
-"Failed to query system state: Message recipient disconnected from
-message bus without replying", but this fixes itself after another half
-an hour or so.
-
-What would you recommend doing to fix this?
-
-Greetings
-Marc
-
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Leimen, Germany    |  lose things."    Winona Ryder | Fon: *49 6224 1600402
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 6224 1600421
