@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D87E778CF55
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE24578CF53
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238459AbjH2WBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34868 "EHLO
+        id S238861AbjH2WBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238590AbjH2WBa (ORCPT
+        with ESMTP id S238637AbjH2WBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:01:30 -0400
+        Tue, 29 Aug 2023 18:01:31 -0400
 Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56583194
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:01:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A17019A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:01:28 -0700 (PDT)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.mutex.one (Postfix) with ESMTP id D79EF16C0055;
-        Wed, 30 Aug 2023 01:01:25 +0300 (EEST)
+        by mail.mutex.one (Postfix) with ESMTP id 2155016C0048;
+        Wed, 30 Aug 2023 01:01:27 +0300 (EEST)
 X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
 Received: from mail.mutex.one ([127.0.0.1])
         by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id P4aYD75tWZSX; Wed, 30 Aug 2023 01:01:24 +0300 (EEST)
+        with ESMTP id Nbl6XnZaHL6p; Wed, 30 Aug 2023 01:01:25 +0300 (EEST)
 From:   Marian Postevca <posteuca@mutex.one>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
-        t=1693346484; bh=LABLKY8cGdghJhYahx98998a8gcU3xlpMvrXzGnf6a8=;
+        t=1693346485; bh=SprIKnjxd+XbEfV+ec+7dXXthO9g9LD+yn4zC/aX/LY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RFvBbT2fFvhcNjvMZZJV6XHR214q10qz2f3nbDu7BhKVyhEeZjWUr15pfX7ZZUBXf
-         vzVSFPPYzR+0pBXXGw6+4ab35uuxPkxjasoSjGOvXOSlmi6kU1M7SnX2pHah+4pN/M
-         NEc+xm4nN6RruGgrm72R3ZwJCTy5ym3MvYetq+A8=
+        b=GkqSsDP1U4E46wv7YhtutIxrTZxLoza5ePPRHLpcvq6X4374KOvMMeGuYcHwvQnZl
+         NrCHGd+Xg3T8gFY69eNqQ1ZoUF171ZVjyZ5+x3IyrUV3eKLL1d+upjKWAGxXXBJDcb
+         4HNOfMEhGZ2ZXMJx8QqPyVluWZjYTTDA0A3NyqHM=
 To:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
         Mark Brown <broonie@kernel.org>,
         Jaroslav Kysela <perex@perex.cz>
 Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
         Marian Postevca <posteuca@mutex.one>
-Subject: [PATCH v3 2/5] ASoC: es8316: Replace NR_SUPPORTED_MCLK_LRCK_RATIOS with ARRAY_SIZE()
-Date:   Wed, 30 Aug 2023 01:01:13 +0300
-Message-ID: <20230829220116.1159-3-posteuca@mutex.one>
+Subject: [PATCH v3 3/5] ASoC: es8316: Enable support for MCLK div by 2
+Date:   Wed, 30 Aug 2023 01:01:14 +0300
+Message-ID: <20230829220116.1159-4-posteuca@mutex.one>
 In-Reply-To: <20230829220116.1159-1-posteuca@mutex.one>
 References: <20230829220116.1159-1-posteuca@mutex.one>
 MIME-Version: 1.0
@@ -50,62 +50,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need for a special define since we can use ARRAY_SIZE() directly,
-and won't need to worry to keep it in sync.
+To properly support a line of Huawei laptops with an AMD CPU
+and an ES8336 codec connected to the ACP3X module, we need
+to enable the codec option to divide the MCLK by 2.
+This is needed because for at least one SKU that has a 48Mhz
+MCLK the sound is distorted unless the MCLK div by 2 option
+is enabled.
+
+The option to divide the MCLK will first be tried. If no suitable
+clocking can be generated from this frequency, then the normal
+non-halved MCLK frequency will be tried.
 
 Signed-off-by: Marian Postevca <posteuca@mutex.one>
 ---
- sound/soc/codecs/es8316.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/codecs/es8316.c | 45 +++++++++++++++++++++++++++++----------
+ sound/soc/codecs/es8316.h |  3 +++
+ 2 files changed, 37 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 09fc0b25f600..a1c3e10c3cf1 100644
+index a1c3e10c3cf1..e53b2856d625 100644
 --- a/sound/soc/codecs/es8316.c
 +++ b/sound/soc/codecs/es8316.c
-@@ -27,7 +27,6 @@
-  * MCLK/LRCK ratios, but we also add ratio 400, which is commonly used on
-  * Intel Cherry Trail platforms (19.2MHz MCLK, 48kHz LRCK).
-  */
--#define NR_SUPPORTED_MCLK_LRCK_RATIOS ARRAY_SIZE(supported_mclk_lrck_ratios)
- static const unsigned int supported_mclk_lrck_ratios[] = {
- 	256, 384, 400, 500, 512, 768, 1024
- };
-@@ -40,7 +39,7 @@ struct es8316_priv {
- 	struct snd_soc_jack *jack;
- 	int irq;
- 	unsigned int sysclk;
--	unsigned int allowed_rates[NR_SUPPORTED_MCLK_LRCK_RATIOS];
-+	unsigned int allowed_rates[ARRAY_SIZE(supported_mclk_lrck_ratios)];
- 	struct snd_pcm_hw_constraint_list sysclk_constraints;
- 	bool jd_inverted;
- };
-@@ -382,7 +381,7 @@ static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	/* Limit supported sample rates to ones that can be autodetected
- 	 * by the codec running in slave mode.
- 	 */
--	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
-+	for (i = 0; i < ARRAY_SIZE(supported_mclk_lrck_ratios); i++) {
- 		const unsigned int ratio = supported_mclk_lrck_ratios[i];
- 
- 		if (freq % ratio == 0)
-@@ -472,7 +471,7 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -469,19 +469,42 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	u8 bclk_divider;
+ 	u16 lrck_divider;
  	int i;
++	unsigned int clk = es8316->sysclk / 2;
++	bool clk_valid = false;
++
++	/* We will start with halved sysclk and see if we can use it
++	 * for proper clocking. This is to minimise the risk of running
++	 * the CODEC with a too high frequency. We have an SKU where
++	 * the sysclk frequency is 48Mhz and this causes the sound to be
++	 * sped up. If we can run with a halved sysclk, we will use it,
++	 * if we can't use it, then full sysclk will be used.
++	 */
++	do {
++		/* Validate supported sample rates that are autodetected from MCLK */
++		for (i = 0; i < ARRAY_SIZE(supported_mclk_lrck_ratios); i++) {
++			const unsigned int ratio = supported_mclk_lrck_ratios[i];
++
++			if (clk % ratio != 0)
++				continue;
++			if (clk / ratio == params_rate(params))
++				break;
++		}
++		if (i == ARRAY_SIZE(supported_mclk_lrck_ratios)) {
++			if (clk == es8316->sysclk)
++				return -EINVAL;
++			clk = es8316->sysclk;
++		} else {
++			clk_valid = true;
++		}
++	} while (!clk_valid);
  
- 	/* Validate supported sample rates that are autodetected from MCLK */
--	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
-+	for (i = 0; i < ARRAY_SIZE(supported_mclk_lrck_ratios); i++) {
- 		const unsigned int ratio = supported_mclk_lrck_ratios[i];
- 
- 		if (es8316->sysclk % ratio != 0)
-@@ -480,7 +479,7 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
- 		if (es8316->sysclk / ratio == params_rate(params))
- 			break;
+-	/* Validate supported sample rates that are autodetected from MCLK */
+-	for (i = 0; i < ARRAY_SIZE(supported_mclk_lrck_ratios); i++) {
+-		const unsigned int ratio = supported_mclk_lrck_ratios[i];
+-
+-		if (es8316->sysclk % ratio != 0)
+-			continue;
+-		if (es8316->sysclk / ratio == params_rate(params))
+-			break;
++	if (clk != es8316->sysclk) {
++		snd_soc_component_update_bits(component, ES8316_CLKMGR_CLKSW,
++					      ES8316_CLKMGR_CLKSW_MCLK_DIV,
++					      ES8316_CLKMGR_CLKSW_MCLK_DIV);
  	}
--	if (i == NR_SUPPORTED_MCLK_LRCK_RATIOS)
-+	if (i == ARRAY_SIZE(supported_mclk_lrck_ratios))
- 		return -EINVAL;
- 	lrck_divider = es8316->sysclk / params_rate(params);
+-	if (i == ARRAY_SIZE(supported_mclk_lrck_ratios))
+-		return -EINVAL;
+-	lrck_divider = es8316->sysclk / params_rate(params);
++
++	lrck_divider = clk / params_rate(params);
  	bclk_divider = lrck_divider / 4;
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+diff --git a/sound/soc/codecs/es8316.h b/sound/soc/codecs/es8316.h
+index c335138e2837..0ff16f948690 100644
+--- a/sound/soc/codecs/es8316.h
++++ b/sound/soc/codecs/es8316.h
+@@ -129,4 +129,7 @@
+ #define ES8316_GPIO_FLAG_GM_NOT_SHORTED		0x02
+ #define ES8316_GPIO_FLAG_HP_NOT_INSERTED	0x04
+ 
++/* ES8316_CLKMGR_CLKSW */
++#define ES8316_CLKMGR_CLKSW_MCLK_DIV	0x80
++
+ #endif
 -- 
 2.41.0
 
