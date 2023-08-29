@@ -2,155 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D8E78BE68
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5808278BE7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbjH2G17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S231627AbjH2Gbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbjH2G1q (ORCPT
+        with ESMTP id S231444AbjH2GbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 02:27:46 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7DA19A
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1693290464; x=1724826464;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GGbqLGqMN9df8eATN/J3U86vb4CO2JuXfpoZHqXvJqY=;
-  b=o85SCAItdje2Q5TR8aE1ZpjfSloL9TClfSys/8TRfL+pCZUUhq5EpPps
-   PqnrXfbScWImitgNV97aLmL5et9KJ1XYDMY/Mt6qn8iAKj0s6iihDOTwG
-   arQaQEsaAmgESTJgoQzhXFCVxmz/FuYvTnWbtSr0WPIftZOWc1q+LfTun
-   CxDqjg+sCZaFWMkSAfOImR53g4ODCRXN/PqNPcIHzyaw8DAZDCdWUzOJr
-   A8xG95y8+4FFm85bDES2aHHk7pmu6UgNdxR9+nB5L0czUVxyCO87JvhsO
-   CWQYloBMbRUyHly6iXCS7RxjNFFfu+Di0RyWDel/s62FVWSUONQXAswFt
-   A==;
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="asc'?scan'208";a="232227171"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Aug 2023 23:27:44 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 28 Aug 2023 23:27:37 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 28 Aug 2023 23:27:35 -0700
-Date:   Tue, 29 Aug 2023 07:26:54 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Guo Ren <guoren@kernel.org>
-CC:     Nam Cao <namcaov@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <bjorn@kernel.org>
-Subject: Re: [PATCH] riscv: provide riscv-specific is_trap_insn()
-Message-ID: <20230829-unbridle-condense-2fc45a442bb6@wendy>
-References: <20230827205641.46836-1-namcaov@gmail.com>
- <CAJF2gTQysBBSbtFcx1uY_ztTnzN5jRWpG2OD4O3aJ0u9Ekwsag@mail.gmail.com>
+        Tue, 29 Aug 2023 02:31:19 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400DBC9;
+        Mon, 28 Aug 2023 23:31:15 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37T6U1Wa044681;
+        Tue, 29 Aug 2023 01:30:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693290601;
+        bh=ombBwh79GIaVaFyYb8P+v0AxNxu00fZcfUBBDPJIxG8=;
+        h=From:To:CC:Subject:Date;
+        b=Hx2GEW13Vhq5j7rrV3+7fuEfyWACjL7oUE6iG4VsF7j4c0mF9xlzOBAjXYSiYS3jH
+         Hxu7WmN6A3coisTBLya/3pLfPduPiGgiaEcJ/cNUVP4XoTII4jdpTCqWUg7av5401n
+         997tt333zjdgE788hz4DGICqkqSdiTl7Nvp7ubRE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37T6U0a4052106
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Aug 2023 01:30:01 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 29
+ Aug 2023 01:29:59 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 29 Aug 2023 01:29:59 -0500
+Received: from dhruva.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37T6TtqB055956;
+        Tue, 29 Aug 2023 01:29:56 -0500
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        Dhruva Gole <d-gole@ti.com>, Apurva Nandan <a-nandan@ti.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        William Qiu <william.qiu@starfivetech.com>,
+        Brad Larson <blarson@amd.com>,
+        Pratyush Yadav <ptyadav@amazon.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vibhore Vardhan <vibhore@ti.com>
+Subject: [PATCH V2] spi: spi-cadence-quadspi: add runtime pm support
+Date:   Tue, 29 Aug 2023 11:57:08 +0530
+Message-ID: <20230829062706.786637-1-d-gole@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Gejlf3F12x47mKDN"
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTQysBBSbtFcx1uY_ztTnzN5jRWpG2OD4O3aJ0u9Ekwsag@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Gejlf3F12x47mKDN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add runtime pm support to cadence-qspi driver, this allows the driver to
+suspend whenever it's is not actively being used thus reducing active
+power consumed by the system.
 
-On Tue, Aug 29, 2023 at 01:56:34PM +0800, Guo Ren wrote:
-> On Mon, Aug 28, 2023 at 4:56=E2=80=AFAM Nam Cao <namcaov@gmail.com> wrote:
-> >
-> > uprobes expects is_trap_insn() to return true for any trap instructions,
-> > not just the one used for installing uprobe. The current default
-> > implementation only returns true for 16-bit c.ebreak if C extension is
-> > enabled. This can confuse uprobes if a 32-bit ebreak generates a trap
-> > exception from userspace: uprobes asks is_trap_insn() who says there is=
- no
-> > trap, so uprobes assume a probe was there before but has been removed, =
-and
-> > return to the trap instruction. This cause an infinite loop of entering
-> > and exiting trap handler.
-> >
-> > Instead of using the default implementation, implement this function
-> > speficially for riscv which checks for both ebreak and c.ebreak.
-> >
-> > Fixes: 74784081aac8 ("riscv: Add uprobes supported")
-> > Signed-off-by: Nam Cao <namcaov@gmail.com>
-> > ---
-> >  arch/riscv/kernel/probes/uprobes.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/arch/riscv/kernel/probes/uprobes.c b/arch/riscv/kernel/pro=
-bes/uprobes.c
-> > index 194f166b2cc4..91f4ce101cd1 100644
-> > --- a/arch/riscv/kernel/probes/uprobes.c
-> > +++ b/arch/riscv/kernel/probes/uprobes.c
-> > @@ -3,6 +3,7 @@
-> >  #include <linux/highmem.h>
-> >  #include <linux/ptrace.h>
-> >  #include <linux/uprobes.h>
-> > +#include <asm/insn.h>
-> >
-> >  #include "decode-insn.h"
-> >
-> > @@ -17,6 +18,15 @@ bool is_swbp_insn(uprobe_opcode_t *insn)
-> >  #endif
-> >  }
->  >
-> > +bool is_trap_insn(uprobe_opcode_t *insn)
-> > +{
-> > +#ifdef CONFIG_RISCV_ISA_C
+Also, with the use of devm_pm_runtime_enable we no longer need the
+fallback probe_pm_failed that used to pm_runtime_disable
 
-> Can we remove the CONFIG_RISCV_ISA_C? As you said, "uprobes expects
-> is_trap_insn() to return true for any trap instructions". So userspace
-> wouldn't be limited by CONFIG_RISCV_ISA_C.
+Co-developed-by: Apurva Nandan <a-nandan@ti.com>
+Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+Signed-off-by: Dhruva Gole <d-gole@ti.com>
+---
 
-Isn't the RISCV_ISA_C required because there's a different encoding for
-EBREAK vs C_EBREAK? That said, this should be using IS_ENABLED() not
-#ifdef, since the definition for riscv_insn_is_c_ebreak() is provided
-unconditionally afaict.
+Previous patch was marked RFT, and can be found here [0].
+Tested [1] this patch on a TI SK-AM62 EVM having an OSPI NOR flash on board.
 
->=20
-> > +       if (riscv_insn_is_c_ebreak(*insn))
-> > +               return true;
-> > +#endif
-> > +       return riscv_insn_is_ebreak(*insn);
-> > +}
-> > +
-> >  unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
-> >  {
-> >         return instruction_pointer(regs);
-> > --
-> > 2.34.1
-> >
+Changelog:
+* Drop the DT patch as it had some comments that I am planning to
+address at a later point.
+* Add a ret val check for the pm_runtime_resume_and_get function call in
+the exec_mem_op in case it reports any failures.
 
---Gejlf3F12x47mKDN
-Content-Type: application/pgp-signature; name="signature.asc"
+[0] https://lore.kernel.org/all/20230818103750.516309-3-d-gole@ti.com/
+[1] https://gist.github.com/DhruvaG2000/7728ec09ae49c8c0d44d8e99de6795d5
 
------BEGIN PGP SIGNATURE-----
+Cc: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc: Ian Abbott <abbotti@mev.co.uk>
+Cc: William Qiu <william.qiu@starfivetech.com>
+Cc: Brad Larson <blarson@amd.com>
+Cc: Pratyush Yadav <ptyadav@amazon.de>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Vibhore Vardhan <vibhore@ti.com>
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZO2PrQAKCRB4tDGHoIJi
-0sQOAQDv1oVj7wyYwRi92joynjdOE3DDV2OuEjEbpfrv+eqJjAD+LnNdnWqsf6EW
-vXpfa5K8Smd+td9s9Q04/KE8pPsWaAk=
-=+9ci
------END PGP SIGNATURE-----
+ drivers/spi/spi-cadence-quadspi.c | 42 ++++++++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
---Gejlf3F12x47mKDN--
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index b50db71ac4cc..4828da4587c5 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -116,6 +116,9 @@ struct cqspi_driver_platdata {
+ #define CQSPI_TIMEOUT_MS			500
+ #define CQSPI_READ_TIMEOUT_MS			10
+ 
++/* Runtime_pm autosuspend delay */
++#define CQSPI_AUTOSUSPEND_TIMEOUT		2000
++
+ #define CQSPI_DUMMY_CLKS_PER_BYTE		8
+ #define CQSPI_DUMMY_BYTES_MAX			4
+ #define CQSPI_DUMMY_CLKS_MAX			31
+@@ -1407,8 +1410,20 @@ static int cqspi_mem_process(struct spi_mem *mem, const struct spi_mem_op *op)
+ static int cqspi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ {
+ 	int ret;
++	struct cqspi_st *cqspi = spi_master_get_devdata(mem->spi->master);
++	struct device *dev = &cqspi->pdev->dev;
++
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret) {
++		dev_err(&mem->spi->dev, "resume failed with %d\n", ret);
++		return ret;
++	}
+ 
+ 	ret = cqspi_mem_process(mem, op);
++
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
+ 	if (ret)
+ 		dev_err(&mem->spi->dev, "operation failed with %d\n", ret);
+ 
+@@ -1753,10 +1768,10 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	if (irq < 0)
+ 		return -ENXIO;
+ 
+-	pm_runtime_enable(dev);
+-	ret = pm_runtime_resume_and_get(dev);
+-	if (ret < 0)
+-		goto probe_pm_failed;
++	ret = pm_runtime_set_active(dev);
++	if (ret)
++		return ret;
++
+ 
+ 	ret = clk_prepare_enable(cqspi->clk);
+ 	if (ret) {
+@@ -1862,21 +1877,29 @@ static int cqspi_probe(struct platform_device *pdev)
+ 			goto probe_setup_failed;
+ 	}
+ 
++	ret = devm_pm_runtime_enable(dev);
++	if (ret)
++		return ret;
++
++	pm_runtime_set_autosuspend_delay(dev, CQSPI_AUTOSUSPEND_TIMEOUT);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_get_noresume(dev);
++
+ 	ret = spi_register_controller(host);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to register SPI ctlr %d\n", ret);
+ 		goto probe_setup_failed;
+ 	}
+ 
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
+ 	return 0;
+ probe_setup_failed:
+ 	cqspi_controller_enable(cqspi, 0);
+ probe_reset_failed:
+ 	clk_disable_unprepare(cqspi->clk);
+ probe_clk_failed:
+-	pm_runtime_put_sync(dev);
+-probe_pm_failed:
+-	pm_runtime_disable(dev);
+ 	return ret;
+ }
+ 
+@@ -1928,7 +1951,8 @@ static int cqspi_resume(struct device *dev)
+ 	return spi_controller_resume(host);
+ }
+ 
+-static DEFINE_SIMPLE_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend, cqspi_resume);
++static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend,
++				 cqspi_resume, NULL);
+ 
+ static const struct cqspi_driver_platdata cdns_qspi = {
+ 	.quirks = CQSPI_DISABLE_DAC_MODE,
+@@ -2012,7 +2036,7 @@ static struct platform_driver cqspi_platform_driver = {
+ 	.remove_new = cqspi_remove,
+ 	.driver = {
+ 		.name = CQSPI_NAME,
+-		.pm = &cqspi_dev_pm_ops,
++		.pm = pm_ptr(&cqspi_dev_pm_ops),
+ 		.of_match_table = cqspi_dt_ids,
+ 	},
+ };
+-- 
+2.34.1
+
