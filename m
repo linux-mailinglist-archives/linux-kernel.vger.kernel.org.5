@@ -2,82 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEAE78BC91
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8555578BC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235105AbjH2CFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
+        id S235139AbjH2CGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbjH2CE5 (ORCPT
+        with ESMTP id S235207AbjH2CGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:04:57 -0400
-Received: from mail-sh.amlogic.com (mail-sh.amlogic.com [58.32.228.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00ABC0;
-        Mon, 28 Aug 2023 19:04:10 -0700 (PDT)
-Received: from droid01-cd.amlogic.com (10.98.11.200) by mail-sh.amlogic.com
- (10.18.11.5) with Microsoft SMTP Server id 15.1.2507.13; Tue, 29 Aug 2023
- 10:04:07 +0800
-From:   Xianwei Zhao <xianwei.zhao@amlogic.com>
-To:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Neil Armstrong" <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Xianwei Zhao <xianwei.zhao@amlogic.com>
-Subject: [PATCH V3 0/6] Power: T7: add  power domain driver
-Date:   Tue, 29 Aug 2023 10:03:58 +0800
-Message-ID: <20230829020404.4058677-1-xianwei.zhao@amlogic.com>
-X-Mailer: git-send-email 2.37.1
+        Mon, 28 Aug 2023 22:06:07 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38901AC;
+        Mon, 28 Aug 2023 19:06:01 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 37T25auV053203;
+        Tue, 29 Aug 2023 10:05:36 +0800 (+08)
+        (envelope-from Wenchao.Chen@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RZW0j2L3wz2QZR4F;
+        Tue, 29 Aug 2023 10:03:01 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx05.spreadtrum.com
+ (10.29.1.56) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 29 Aug
+ 2023 10:05:34 +0800
+From:   Wenchao Chen <wenchao.chen@unisoc.com>
+To:     <ulf.hansson@linaro.org>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
+        <yuelin.tang@unisoc.com>, Wenchao Chen <wenchao.chen@unisoc.com>
+Subject: [PATCH V3 0/2] mmc: hsq: dynamically adjust hsq_depth to improve performance
+Date:   Tue, 29 Aug 2023 10:04:49 +0800
+Message-ID: <20230829020451.9828-1-wenchao.chen@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.98.11.200]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx05.spreadtrum.com (10.29.1.56)
+X-MAIL: SHSQR01.spreadtrum.com 37T25auV053203
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First patch is that remove C3 some power domain ALWAYS_ON property.
-Second patch is that add driver to support power parent node. 
-Third patch is that turn on power if initial power domain with
-"AWAY_ON" property state is off.
+Change in v3:
+- Use "mrq->data->blksz * mrq->data->blocks == 4096" for 4K.
+- Add explanation for "HSQ_PERFORMANCE_DEPTH".
 
-Other patchs adds power controller driver support for Amlogic T7 SoC.
+Change in v2:
+- Support for dynamic adjustment of hsq_depth.
 
-Changes Since v2:
- -Modify subject.
- -Define PWRC_NO_PARENT UINT_MAX
- -Remove modification that transform is_off into 1 or 0 using !!
+Test
+=====
+I tested 3 times for each case and output a average speed.
+Ran 'fio' to evaluate the performance:
+1.Fixed hsq_depth
+1) Sequential write:
+Speed: 168 164 165
+Average speed: 165.67MB/S
 
-Changes Since v1:
- -Fix license from "GPL-2.0-only OR .*" to "GPL-2.0-only OR MIT".
- -Modify T7_NIC flag  "ALWAYS_ON"
+2) Sequential read:
+Speed: 326 326 326
+Average speed: 326MB/S
 
-xianwei.zhao (6):
-  genpd: amlogic: modify some power domains property
-  genpd: amlogic: add driver to support power parent node
-  genpd: amlogic: init power domain state
-  dt-bindings: power: add Amlogic T7 power domains
-  genpd: amlogic: Add support for T7 power domains controller
-  arm64: dts: amlogic: t7: add power domain controller node
+3) Random write:
+Speed: 82.6 83 83
+Average speed: 82.87MB/S
 
- .../power/amlogic,meson-sec-pwrc.yaml         |   3 +-
- arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi   |   6 +
- drivers/genpd/amlogic/meson-secure-pwrc.c     | 127 ++++++++++++++++--
- include/dt-bindings/power/amlogic,t7-pwrc.h   |  63 +++++++++
- 4 files changed, 185 insertions(+), 14 deletions(-)
- create mode 100644 include/dt-bindings/power/amlogic,t7-pwrc.h
+4) Random read:
+Speed: 48.2 48.3 47.6
+Average speed: 48.03MB/S
 
+2.Dynamic hsq_depth
+1) Sequential write:
+Speed: 167 166 166
+Average speed: 166.33MB/S
 
-base-commit: 413f5c02929bb33042bbc4ee233166550a5fca70
+2) Sequential read:
+Speed: 327 326 326
+Average speed: 326.3MB/S
+
+3) Random write:
+Speed: 86.1 86.2 87.7
+Average speed: 86.67MB/S
+
+4) Random read:
+Speed: 48.1 48 48
+Average speed: 48.03MB/S
+
+Based on the above data, dynamic hsq_depth can improve the performance of random writes.
+Random write improved by 4.6%.
+
+In addition, we tested 8K and 16K.
+1.Fixed hsq_depth
+1) Random write(bs=8K):
+Speed: 116 114 115
+Average speed: 115MB/S
+
+2) Random read(bs=8K):
+Speed: 83 83 82.5
+Average speed: 82.8MB/S
+
+3) Random write(bs=16K):
+Speed: 141 142 141
+Average speed: 141.3MB/S
+
+4) Random read(bs=16K):
+Speed: 132 132 132
+Average speed: 132MB/S
+
+2.Dynamic hsq_depth(mrq->data->blksz * mrq->data->blocks == 8192 or 16384)
+1) Random write(bs=8K):
+Speed: 115 115 115
+Average speed: 115MB/S
+
+2) Random read(bs=8K):
+Speed: 82.7 82.9 82.8
+Average speed: 82.8MB/S
+
+3) Random write(bs=16K):
+Speed: 143 141 141
+Average speed: 141.6MB/S
+
+4) Random read(bs=16K):
+Speed: 132 132 132
+Average speed: 132MB/S
+
+Increasing hsq_depth cannot improve 8k and 16k random read/write performance.
+To reduce latency, we dynamically increase hsq_depth only for 4k random writes.
+
+Test cmd
+=========
+1)write: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=write -bs=512K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+2)read: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=read -bs=512K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+3)randwrite: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randwrite -bs=4K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+4)randread: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randread -bs=4K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64
+5)randwrite: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randwrite -bs=8K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+6)randread: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randread -bs=8K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64
+7)randwrite: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randwrite -bs=16K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+8)randread: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randread -bs=16K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64
+
+Wenchao Chen (2):
+  mmc: queue: replace immediate with hsq->depth
+  mmc: hsq: dynamic adjustment of hsq->depth
+
+ drivers/mmc/core/queue.c   |  6 +-----
+ drivers/mmc/host/mmc_hsq.c | 28 ++++++++++++++++++++++++++++
+ drivers/mmc/host/mmc_hsq.h | 11 +++++++++++
+ include/linux/mmc/host.h   |  1 +
+ 4 files changed, 41 insertions(+), 5 deletions(-)
+
 -- 
-2.37.1
+2.17.1
 
