@@ -2,87 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA47B78D06A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1686278D087
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241140AbjH2XXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 19:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        id S238954AbjH2X0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 19:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240035AbjH2XXN (ORCPT
+        with ESMTP id S241135AbjH2X0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 19:23:13 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CD4139;
-        Tue, 29 Aug 2023 16:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-        s=42; h=From:Cc:To:Date:Message-ID;
-        bh=zmAvbKbvHPTK+tSdU1LtS5cJIoj5hGJqWxhJnxvR1TE=; b=bkHEmD8N0NCg57Z34V1rkyw9uD
-        Y/t/T67CzbZr9uXqiw/E9VtVFHYX4zsPf13GEqti8H0fmXeoFONAQbWAXpgGAdlqV/W9D+pL2kGr2
-        3UvXSEKce7SNAXikHXnPzbztWnCEI1f/7izMx2q9hMstLCv02rGTRXSb96hFOco3L5JtqqJtR7mO9
-        T3jGZhdoyyYmZojv9jDfulvK+5o5xhPn3ZHF4zWQ2f/8jm151LT8h0bmPROr3X7g/ueoY8N1jVDnZ
-        lxH2E7EF5X9eIA6k9Oo8lyMNv2CEnJREoeAUKAqr1wbchmvo6PGp+lC0W51ESSpWVX6Q3L0jybyyW
-        NwVL762cWCQvzzqAbE2TWYAuJvmmfoDAfI42qSlpxmgmVJtOdAuv/CipILNnVwazazVqwBRTc/s5g
-        U3YZSJHm6Vk72bL7Fa8FySuHDjXGZkvoYuSC0SH1aNYNgnWrwqi1F/XB39oV2GuDmp3YuNDtSxF1F
-        Kut9+xXj9tg/zmsKLuh9klvI;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-        (Exim)
-        id 1qb837-00AfZm-0X;
-        Tue, 29 Aug 2023 23:23:05 +0000
-Message-ID: <62bd6748-fedf-85c4-7416-7e620fa6b4f2@samba.org>
-Date:   Tue, 29 Aug 2023 18:23:01 -0500
+        Tue, 29 Aug 2023 19:26:52 -0400
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8AD139
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 16:26:49 -0700 (PDT)
+Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
+        by cmsmtp with ESMTP
+        id b7MsqRtuMbK1Vb86iqVCMB; Tue, 29 Aug 2023 23:26:48 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id b86hquQpSwpJPb86hqueRv; Tue, 29 Aug 2023 23:26:47 +0000
+X-Authority-Analysis: v=2.4 cv=J525USrS c=1 sm=1 tr=0 ts=64ee7eb7
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UBOAt4it5aQqk4EXWMeXuCOaSWxoxO7ene9cFrzDPeo=; b=VTh020OaueNwEopQppbuLLspmb
+        +Vl9n1Qc3+zKdF680+HWcNnsLSRC89kQa+HRuJUx8QMZXbu/2OZSC346EEsF2nR8CTkUBpgQry4mF
+        kQSPeGHI5UKo+F8UN8Mu6ONmFrdr1/+kmKYGTnPFWAnPcU2KzKriQxxhVCwkW8Kdpbn3o737dOrxR
+        Tp9sC9IpD8DixEacx8JNgmqo6yy2oAiUqmyxHbrHR8ToNaneBkqg6FkjeNNQgwDP981N37AywRV1x
+        /+sOtPbMU3vPx6FlEEM+bGWD4KF4DAhy7upG2PMC5seNs/FOlnQYyqotPN6lcWYyESuPUUkDXwYvG
+        excmujsg==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:53546 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qb86f-000XiH-0X;
+        Tue, 29 Aug 2023 17:26:45 -0600
+Subject: Re: [PATCH 5.15 00/89] 5.15.129-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230828101150.163430842@linuxfoundation.org>
+In-Reply-To: <20230828101150.163430842@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <8f063190-6338-8cc2-a905-ffbee4f5ffb4@w6rz.net>
+Date:   Tue, 29 Aug 2023 16:26:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] smb: propagate error code of extract_sharename()
-Content-Language: en-US
-To:     Katya Orlova <e.orlova@ispras.ru>,
-        David Howells <dhowells@redhat.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
-        Steve French <smfrench@gmail.com>
-References: <20230815133831.3537-1-e.orlova@ispras.ru>
-From:   Steven French <sfrench@samba.org>
-In-Reply-To: <20230815133831.3537-1-e.orlova@ispras.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qb86f-000XiH-0X
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:53546
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfCjiKpTx04rGMsFAmcfbRYXJJZckXPd4+VZFPaLP7cv528nfZSVBd9/TS37A2NrUXYTMYkUmN/mT1mNMj4HHe5ATtWoQU4tlSoNG9XWnqrszgZZa5mcg
+ lq22oD2UtbRBmx1iQ1gILeWu9SdICJ/u9X5hV8E8FZvtCPRPRDOzHBM8FbdYBKor6pVgJFRVg7LqPqQaAReefXsvVw3t0lv4lLE=
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Merged into cifs-2.6.git for-next
+On 8/28/23 3:13 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.129 release.
+> There are 89 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.129-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 8/15/23 08:38, Katya Orlova wrote:
-> In addition to the EINVAL, there may be an ENOMEM.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Fixes: 70431bfd825d ("cifs: Support fscache indexing rewrite")
-> Signed-off-by: Katya Orlova <e.orlova@ispras.ru>
-> ---
->   fs/smb/client/fscache.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/smb/client/fscache.c b/fs/smb/client/fscache.c
-> index 8f6909d633da..34e20c4cd507 100644
-> --- a/fs/smb/client/fscache.c
-> +++ b/fs/smb/client/fscache.c
-> @@ -48,7 +48,7 @@ int cifs_fscache_get_super_cookie(struct cifs_tcon *tcon)
->   	sharename = extract_sharename(tcon->tree_name);
->   	if (IS_ERR(sharename)) {
->   		cifs_dbg(FYI, "%s: couldn't extract sharename\n", __func__);
-> -		return -EINVAL;
-> +		return PTR_ERR(sharename);
->   	}
->   
->   	slen = strlen(sharename);
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+
+Tested-by: Ron Economos <re@w6rz.net>
+
