@@ -2,78 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB3D78C1D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE26478C1CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235005AbjH2JzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32888 "EHLO
+        id S234972AbjH2JzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234711AbjH2JzD (ORCPT
+        with ESMTP id S231666AbjH2Jyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:55:03 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16551EA;
-        Tue, 29 Aug 2023 02:55:01 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T9HUI8029775;
-        Tue, 29 Aug 2023 09:54:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=zPbtcj0FpaA9PaKgCSPnfUKtUEcbBEbDOm2Avie5ssw=;
- b=StNhib5KQEO4w/ilL4c2EE9AgqEe3Il3/ToGX3Sm9vNICco7gCwCpkgMJeUvkj8lh46U
- f7scFnrvHwdG7acwc8LAo48OmLmaZb6mT9qcsYayE34epOHLsPKPKNd8/IuCwOsUCi3X
- 5cypVJGSFYXgM/T7E9wAHJKndUTRxxczPN2zBBVIEP73sc8ti97XEuH8pVBirYpifcfT
- EfuYkkTaz0DQhPB25nrGBpmZ+p1TPaMjbw4TFwSLqYApaua3oX5p7qLs7t0hWoZRM+oM
- A0CugxS0eH6hEL0ahEWt3PGZ3wE3blbQ8lvqrZA6KgVMYbZXlxehneJcwTynvB9J2Hzg oA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss4g6h556-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 09:54:56 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T9stMO017964
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 09:54:55 GMT
-Received: from hu-gokulsri-blr.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 29 Aug 2023 02:54:51 -0700
-From:   Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>,
-        <quic_gokulsri@quicinc.com>
-Subject: [PATCH 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq support
-Date:   Tue, 29 Aug 2023 15:24:23 +0530
-Message-ID: <20230829095423.760641-4-quic_gokulsri@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
-References: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
+        Tue, 29 Aug 2023 05:54:41 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738D9E9;
+        Tue, 29 Aug 2023 02:54:38 -0700 (PDT)
+Received: from dggpemm500016.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RZjNP5yT5zhZHV;
+        Tue, 29 Aug 2023 17:50:45 +0800 (CST)
+Received: from [10.67.108.26] (10.67.108.26) by dggpemm500016.china.huawei.com
+ (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
+ 2023 17:54:36 +0800
+Message-ID: <4b4063c2-dfd3-474b-6827-8dbd1257af2d@huawei.com>
+Date:   Tue, 29 Aug 2023 17:54:35 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: lFycexPWdyCXXcN3t7TACOzEuQLGS0dU
-X-Proofpoint-GUID: lFycexPWdyCXXcN3t7TACOzEuQLGS0dU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_06,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 malwarescore=0
- lowpriorityscore=0 phishscore=0 clxscore=1015 spamscore=0 bulkscore=0
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2308290085
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH -next v9 0/2] support allocating crashkernel above 4G
+ explicitly on riscv
+To:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <conor.dooley@microchip.com>, <guoren@kernel.org>,
+        <heiko@sntech.de>, <bjorn@rivosinc.com>, <alex@ghiti.fr>,
+        <akpm@linux-foundation.org>, <atishp@rivosinc.com>,
+        <bhe@redhat.com>, <thunder.leizhen@huawei.com>, <horms@kernel.org>
+References: <20230726175000.2536220-1-chenjiahao16@huawei.com>
+Content-Language: en-US
+From:   "chenjiahao (C)" <chenjiahao16@huawei.com>
+In-Reply-To: <20230726175000.2536220-1-chenjiahao16@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.108.26]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,89 +55,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the APCS, A53 PLL, cpu-opp-table nodes to set
-the CPU frequency at optimal range.
+Hi folks,
 
-Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
----
- arch/arm64/boot/dts/qcom/ipq5018.dtsi | 34 +++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+This is a friendly ping. Anyone has additional comments on this patch set?
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-index 9f13d2dcdfd5..05843517312c 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-@@ -8,6 +8,7 @@
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
- #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
-+#include <dt-bindings/clock/qcom,apss-ipq.h>
- 
- / {
- 	interrupt-parent = <&intc>;
-@@ -36,6 +37,8 @@ CPU0: cpu@0 {
- 			reg = <0x0>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
-+			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-+			operating-points-v2 = <&cpu_opp_table>;
- 		};
- 
- 		CPU1: cpu@1 {
-@@ -44,6 +47,8 @@ CPU1: cpu@1 {
- 			reg = <0x1>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
-+			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-+			operating-points-v2 = <&cpu_opp_table>;
- 		};
- 
- 		L2_0: l2-cache {
-@@ -54,6 +59,17 @@ L2_0: l2-cache {
- 		};
- 	};
- 
-+	cpu_opp_table: opp-table-cpu {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp-1008000000 {
-+			opp-hz = /bits/ 64 <1008000000>;
-+			opp-microvolt = <1100000>;
-+			clock-latency-ns = <200000>;
-+		};
-+	};
-+
- 	firmware {
- 		scm {
- 			compatible = "qcom,scm-ipq5018", "qcom,scm";
-@@ -181,6 +197,24 @@ v2m1: v2m@1000 {
- 			};
- 		};
- 
-+		a53pll: clock@b116000 {
-+			compatible = "qcom,ipq5018-a53pll";
-+			reg = <0x0b116000 0x40>;
-+			#clock-cells = <0>;
-+			clocks = <&xo_board_clk>;
-+			clock-names = "xo";
-+		};
-+
-+		apcs_glb: mailbox@b111000 {
-+			compatible = "qcom,ipq5018-apcs-apps-global",
-+				     "qcom,ipq6018-apcs-apps-global";
-+			reg = <0x0b111000 0x1000>;
-+			#clock-cells = <1>;
-+			clocks = <&a53pll>, <&xo_board_clk>;
-+			clock-names = "pll", "xo";
-+			#mbox-cells = <1>;
-+		};
-+
- 		timer@b120000 {
- 			compatible = "arm,armv7-timer-mem";
- 			reg = <0x0b120000 0x1000>;
--- 
-2.34.1
+Best regards,
+Jiahao
 
+On 2023/7/27 1:49, Chen Jiahao wrote:
+> On riscv, the current crash kernel allocation logic is trying to
+> allocate within 32bit addressible memory region by default, if
+> failed, try to allocate without 4G restriction.
+>
+> In need of saving DMA zone memory while allocating a relatively large
+> crash kernel region, allocating the reserved memory top down in
+> high memory, without overlapping the DMA zone, is a mature solution.
+> Hence this patchset introduces the parameter option crashkernel=X,[high,low].
+>
+> One can reserve the crash kernel from high memory above DMA zone range
+> by explicitly passing "crashkernel=X,high"; or reserve a memory range
+> below 4G with "crashkernel=X,low". Besides, there are few rules need
+> to take notice:
+> 1. "crashkernel=X,[high,low]" will be ignored if "crashkernel=size"
+>     is specified.
+> 2. "crashkernel=X,low" is valid only when "crashkernel=X,high" is passed
+>     and there is enough memory to be allocated under 4G.
+> 3. When allocating crashkernel above 4G and no "crashkernel=X,low" is
+>     specified, a 128M low memory will be allocated automatically for
+>     swiotlb bounce buffer.
+> See Documentation/admin-guide/kernel-parameters.txt for more information.
+>
+> To verify loading the crashkernel, adapted kexec-tools is attached below:
+> https://github.com/chenjh005/kexec-tools/tree/build-test-riscv-v2
+>
+> Following test cases have been performed as expected:
+> 1) crashkernel=256M                          //low=256M
+> 2) crashkernel=1G                            //low=1G
+> 3) crashkernel=4G                            //high=4G, low=128M(default)
+> 4) crashkernel=4G crashkernel=256M,high      //high=4G, low=128M(default), high is ignored
+> 5) crashkernel=4G crashkernel=256M,low       //high=4G, low=128M(default), low is ignored
+> 6) crashkernel=4G,high                       //high=4G, low=128M(default)
+> 7) crashkernel=256M,low                      //low=0M, invalid
+> 8) crashkernel=4G,high crashkernel=256M,low  //high=4G, low=256M
+> 9) crashkernel=4G,high crashkernel=4G,low    //high=0M, low=0M, invalid
+> 10) crashkernel=512M@0xd0000000              //low=512M
+> 11) crashkernel=1G,high crashkernel=0M,low   //high=1G, low=0M
+>
+> Changes since [v9]:
+> 1. As per Conor's comment, rebase to correct base on riscv/for-next
+>     branch. No code logic changed.
+>
+> Changes since [v8]:
+> 1. Rebase to newest mainline head, not modifying any code logic.
+>
+> Changes since [v7]:
+> 1. Minor refactor: move crash_low_size = DEFAULT_CRASH_KERNEL_LOW_SIZE
+>     into the !high branch when the first allocation fails. Not changing
+>     the result but further align with Arm64 logic, refer to Baoquan's
+>     comment.
+> 2. Add test case "crashkernel=1G,high crashkernel=0M,low", the result
+>     also matches our expectation.
+>
+> Changes since [v6]:
+> 1. Introduce the "high" flag to mark whether "crashkernel=X,high"
+>     is passed. Fix the retrying logic between "crashkernel=X,high"
+>     case and others when the first allocation attempt fails.
+>
+> Changes since [v5]:
+> 1. Update the crashkernel allocation logic when crashkernel=X,high
+>     is specified. In this case, region above 4G will directly get
+>     reserved as crashkernel, rather than trying lower 32bit allocation
+>     first.
+>
+> Changes since [v4]:
+> 1. Update some imprecise code comments for cmdline parsing.
+>
+> Changes since [v3]:
+> 1. Update to print warning and return explicitly on failure when
+>     crashkernel=size@offset is specified. Not changing the result
+>     in this case but making the logic more straightforward.
+> 2. Some minor cleanup.
+>
+> Changes since [v2]:
+> 1. Update the allocation logic to ensure the high crashkernel
+>     region is reserved strictly above dma32_phys_limit.
+> 2. Clean up some minor format problems.
+>
+> Chen Jiahao (2):
+>    riscv: kdump: Implement crashkernel=X,[high,low]
+>    docs: kdump: Update the crashkernel description for riscv
+>
+>   .../admin-guide/kernel-parameters.txt         | 15 +--
+>   arch/riscv/kernel/setup.c                     |  5 +
+>   arch/riscv/mm/init.c                          | 93 +++++++++++++++++--
+>   3 files changed, 99 insertions(+), 14 deletions(-)
+>
