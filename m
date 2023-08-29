@@ -2,246 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DA178C886
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA9578C88E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237232AbjH2PYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 11:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
+        id S237258AbjH2PZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 11:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237208AbjH2PYI (ORCPT
+        with ESMTP id S237310AbjH2PZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:24:08 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B270A1A2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:24:05 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so5907963a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693322644; x=1693927444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OzpeAN+lW4lnuBFNUjzlUToZyZ1j5VVEVY/cQHQ5ISc=;
-        b=gIE3+SeS9PGKpT7rHq/JaVxbPSQT8MNUMqvNMDjfmBJkWClm8pxZEEus8ath0clxxY
-         v0sG1eoTpATDr8wnSTJHdDt32hjCxxYssPG3uDxo8GXbb/lk7yWjOyD6W2BHwgkraplS
-         NMkTyX4NTdbJGWYq+AtvH18Sz2tJjsnU9z6Elc0l/08bcgwWVX7Jun62QgZ8m5iDEzIH
-         thlbFbsGE1j0hn9Pzcgcuee2TBw0rxH6Q+KtsTJObb0Y10jVsmC5bm5oLmoep+J6cBr0
-         DF1Gnz5j1cqnyHU74KNEL4mvlxCt8bxGU3QdninJauuDTzsZDGPXFRkVcGO5uy7TB5UW
-         qMLA==
+        Tue, 29 Aug 2023 11:25:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932481B4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:24:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693322657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FoaczId3AvxtRQ59qXDITQKv68yeRo4BI+wVycOHI1I=;
+        b=doXCxi4LYacCPjZ/LPE+CkEyvn7eEJ8S1FNjD+gnRjSCc97FCIYvI6LDhG7Ibz4qTzvm6A
+        J+Oo2VuMxlDBrxifD+P4k2iCXF2ShF+XktfBOAhl6dkqFCrSnXYc1PHdQ+/TQvuxGISikp
+        wWzi7YNml7Kb1qEgUylRiaCjYWSHuJY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-645-0M6cnihwNvSvV1A-BDFvqg-1; Tue, 29 Aug 2023 11:24:01 -0400
+X-MC-Unique: 0M6cnihwNvSvV1A-BDFvqg-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3172a94b274so3121079f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:24:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693322644; x=1693927444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OzpeAN+lW4lnuBFNUjzlUToZyZ1j5VVEVY/cQHQ5ISc=;
-        b=BxPf69+vl1ID/FJz5MoFoynj4WQMhYXEHXBEwX1SNRAQw7eouThVl/HdBdqU3ElDHY
-         +cDpJNPbEZy9OFx22bglo1Z5HbwaePoMzGSGDfHQDzmMY9NyyxFqHdLON6mCuYrgjB9J
-         nLIn6Hcacw7hm4xUfLpZfoRgSymPMvJfJBlRAo+2+6TC6hisa6NcECM547+jtysVKZIs
-         go2fv3pJFgK5oQ/qaxi/VTd4WFN+bXVzehFVjtB4+vdjvpkqB+H9JjapuIJore3PXDjt
-         VK7RZVlmhtNCSkuuSKtyg+W69Htw44r3Fc+oQ6Js4HlYEA0y8d5UUpkCyZbjkMgZ7uQo
-         VIQA==
-X-Gm-Message-State: AOJu0YxCufAH7sdO2ZYroU6/F5PSTt7qOmIAAtNR4EXOfKJO5TwYm/CO
-        +/kM9mskCP65AYfUHX/kG6wwc+TTKgC5Pee2/YUbAw==
-X-Google-Smtp-Source: AGHT+IHlkI4JIvy/6XvTpJv2HVLUD9upOsoJifduwUKMfb1tWWTyzCBvCKhb+hJ/xctCqEFJVBXvJs+xbX0gjgf9bRo=
-X-Received: by 2002:a17:906:9e:b0:9a2:143e:a071 with SMTP id
- 30-20020a170906009e00b009a2143ea071mr8695044ejc.17.1693322643587; Tue, 29 Aug
- 2023 08:24:03 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693322640; x=1693927440;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FoaczId3AvxtRQ59qXDITQKv68yeRo4BI+wVycOHI1I=;
+        b=SNcur9USNwoiHKugEh02a6kMQspLA6HZwdOEPLYeh+aqHOPv9GXscs9rxj8Dq9jW6i
+         GFPVWh+RWVvPiL6ABLrGPuvYV8KbFCTNz8NERS8CNoM/EFpi7Ur1XvbMnJ1TdGhLrE/G
+         J645aTyWkv8hmDRlQG2ukvSRBGmHZit6tSi45VuJzBhd3fMU1O3aKMfIGDyoqHNWmuB9
+         AdV0JqhuEsY+TijzgvyhwMwB6IpXC3ZcOcEU4yoACqJ/8ddbeD8sgB4TkCtOYqd36JSg
+         Qe9okp8MvKkHPOqFoKbmK3+2oLh3hoUQ3oEYDg80eAHXfPY9+C4lKJwtU7Z9OjRWSb+a
+         h20Q==
+X-Gm-Message-State: AOJu0YzH2R54TxcDR/1O/Ysw4bziCYZs0nYxVkiihXqmD2PbYtGDhiqi
+        Ci0EtMj8p1S4eJA5IDD0tab1Eou0eWE/I4McjM/y3j/kAUtioQpi32vuGwGloZHl2Y1Q8os919x
+        dt8nNimvnf/+9J0ria4JId9DP
+X-Received: by 2002:a5d:6382:0:b0:319:8bd0:d18c with SMTP id p2-20020a5d6382000000b003198bd0d18cmr20827084wru.52.1693322639817;
+        Tue, 29 Aug 2023 08:23:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHKM/5RUEdU2op+akf1dybSWYcX+o2Dy79eBZvWDH3TVPUJBRVekfDfrKKa2F8dNkARcvLkrQ==
+X-Received: by 2002:a5d:6382:0:b0:319:8bd0:d18c with SMTP id p2-20020a5d6382000000b003198bd0d18cmr20827053wru.52.1693322639416;
+        Tue, 29 Aug 2023 08:23:59 -0700 (PDT)
+Received: from toolbox ([2001:9e8:898c:cd00:3d7e:40e1:d773:8f52])
+        by smtp.gmail.com with ESMTPSA id y4-20020a5d6144000000b00316eb7770b8sm14208017wrt.5.2023.08.29.08.23.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 08:23:59 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 17:23:57 +0200
+From:   Sebastian Wick <sebastian.wick@redhat.com>
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
+        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
+        ville.syrjala@linux.intel.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        wayland-devel@lists.freedesktop.org
+Subject: Re: [PATCH RFC v6 02/10] drm: Introduce solid fill DRM plane property
+Message-ID: <20230829152250.GA258687@toolbox>
+References: <20230828-solid-fill-v6-0-a820efcce852@quicinc.com>
+ <20230828-solid-fill-v6-2-a820efcce852@quicinc.com>
 MIME-Version: 1.0
-References: <20230829024104.1505530-1-liushixin2@huawei.com>
-In-Reply-To: <20230829024104.1505530-1-liushixin2@huawei.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 29 Aug 2023 08:23:26 -0700
-Message-ID: <CAJD7tkZafahYbBs9=HNy4QtFZ4aGTcECvvCt3bQgXaNPUYTOUg@mail.gmail.com>
-Subject: Re: [PATCH v4] mm: vmscan: try to reclaim swapcache pages if no swap space
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Huang Ying <ying.huang@intel.com>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828-solid-fill-v6-2-a820efcce852@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 6:46=E2=80=AFPM Liu Shixin <liushixin2@huawei.com> =
-wrote:
->
-> When spaces of swap devices are exhausted, only file pages can be reclaim=
-ed.
-> But there are still some swapcache pages in anon lru list. This can lead
-> to a premature out-of-memory.
->
-> The problem is found with such step:
->
->  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
->  memory limit, then runs an program to allocates about 15MB memory.
->
-> The problem occurs occasionally, which may need about 100 times.
-
-The reproducer I used in v2 reproduces this very reliably and simply,
-could you link to it instead?
-
-https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=3DeDzMnT=3D9dZOT0dpMWcur=
-HLr6Do+GA@mail.gmail.com/
-
->
-> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
-> If the number is not zero, return true either. Moreover, add a new bit
-> swapcache_only in struct scan_control to skip isolating anon pages that
-> are not swapcache when only swapcache pages can be reclaimed to accelerat=
-e
-> reclaim efficiency.
->
-> Link: https://lore.kernel.org/linux-mm/14e15f31-f3d3-4169-8ed9-fb36e57cf5=
-78@huawei.com/
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> Tested-by: Yosry Ahmed <yosryahmed@google.com>
-
-Usually people add the difference from the previous version to make it
-easy to know what changed.
-
-I still prefer to add NR_SWAPCACHE to memcg1_stats. Anyway, the code
-looks good to me. With the updated reproducer link feel free to add:
-
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-
+On Mon, Aug 28, 2023 at 05:05:08PM -0700, Jessica Zhang wrote:
+> Document and add support for solid_fill property to drm_plane. In
+> addition, add support for setting and getting the values for solid_fill.
+> 
+> To enable solid fill planes, userspace must assign a property blob to
+> the "solid_fill" plane property containing the following information:
+> 
+> struct drm_mode_solid_fill {
+> 	u32 r, g, b;
+> };
+> 
+> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 > ---
->  include/linux/swap.h |  6 ++++++
->  mm/memcontrol.c      |  8 ++++++++
->  mm/vmscan.c          | 29 +++++++++++++++++++++++++++--
->  3 files changed, 41 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 456546443f1f..0318e918bfa4 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry=
-_t entry, unsigned int nr_p
+>  drivers/gpu/drm/drm_atomic_state_helper.c |  9 ++++++++
+>  drivers/gpu/drm/drm_atomic_uapi.c         | 26 ++++++++++++++++++++++
+>  drivers/gpu/drm/drm_blend.c               | 30 ++++++++++++++++++++++++++
+>  include/drm/drm_blend.h                   |  1 +
+>  include/drm/drm_plane.h                   | 36 +++++++++++++++++++++++++++++++
+>  include/uapi/drm/drm_mode.h               | 24 +++++++++++++++++++++
+>  6 files changed, 126 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
+> index 01638c51ce0a..86fb876efbe6 100644
+> --- a/drivers/gpu/drm/drm_atomic_state_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+> @@ -254,6 +254,11 @@ void __drm_atomic_helper_plane_state_reset(struct drm_plane_state *plane_state,
+>  	plane_state->pixel_blend_mode = DRM_MODE_BLEND_PREMULTI;
+>  	plane_state->pixel_source = DRM_PLANE_PIXEL_SOURCE_FB;
+>  
+> +	if (plane_state->solid_fill_blob) {
+> +		drm_property_blob_put(plane_state->solid_fill_blob);
+> +		plane_state->solid_fill_blob = NULL;
+> +	}
+> +
+>  	if (plane->color_encoding_property) {
+>  		if (!drm_object_property_get_default_value(&plane->base,
+>  							   plane->color_encoding_property,
+> @@ -336,6 +341,9 @@ void __drm_atomic_helper_plane_duplicate_state(struct drm_plane *plane,
+>  	if (state->fb)
+>  		drm_framebuffer_get(state->fb);
+>  
+> +	if (state->solid_fill_blob)
+> +		drm_property_blob_get(state->solid_fill_blob);
+> +
+>  	state->fence = NULL;
+>  	state->commit = NULL;
+>  	state->fb_damage_clips = NULL;
+> @@ -385,6 +393,7 @@ void __drm_atomic_helper_plane_destroy_state(struct drm_plane_state *state)
+>  		drm_crtc_commit_put(state->commit);
+>  
+>  	drm_property_blob_put(state->fb_damage_clips);
+> +	drm_property_blob_put(state->solid_fill_blob);
 >  }
->
->  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
->  extern bool mem_cgroup_swap_full(struct folio *folio);
->  #else
->  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t e=
-ntry)
-> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(stru=
-ct mem_cgroup *memcg)
->         return get_nr_swap_pages();
+>  EXPORT_SYMBOL(__drm_atomic_helper_plane_destroy_state);
+>  
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+> index 454f980e16c9..1cae596ab693 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -316,6 +316,20 @@ drm_atomic_set_crtc_for_connector(struct drm_connector_state *conn_state,
 >  }
->
-> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *=
-memcg)
+>  EXPORT_SYMBOL(drm_atomic_set_crtc_for_connector);
+>  
+> +static void drm_atomic_set_solid_fill_prop(struct drm_plane_state *state)
 > +{
-> +       return total_swapcache_pages();
+> +	struct drm_mode_solid_fill *user_info;
+> +
+> +	if (!state->solid_fill_blob)
+> +		return;
+> +
+> +	user_info = (struct drm_mode_solid_fill *)state->solid_fill_blob->data;
+> +
+> +	state->solid_fill.r = user_info->r;
+> +	state->solid_fill.g = user_info->g;
+> +	state->solid_fill.b = user_info->b;
 > +}
 > +
->  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>  static void set_out_fence_for_crtc(struct drm_atomic_state *state,
+>  				   struct drm_crtc *crtc, s32 __user *fence_ptr)
 >  {
->         return vm_swap_full();
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e8ca4bdcb03c..c465829db92b 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgrou=
-p *memcg)
->         return nr_swap_pages;
->  }
->
-> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-> +{
-> +       if (mem_cgroup_disabled())
-> +               return total_swapcache_pages();
+> @@ -546,6 +560,15 @@ static int drm_atomic_plane_set_property(struct drm_plane *plane,
+>  		state->src_h = val;
+>  	} else if (property == plane->pixel_source_property) {
+>  		state->pixel_source = val;
+> +	} else if (property == plane->solid_fill_property) {
+> +		ret = drm_atomic_replace_property_blob_from_id(dev,
+> +				&state->solid_fill_blob,
+> +				val, sizeof(struct drm_mode_solid_fill),
+> +				-1, &replaced);
+> +		if (ret)
+> +			return ret;
 > +
-> +       return memcg_page_state(memcg, NR_SWAPCACHE);
-> +}
-> +
->  bool mem_cgroup_swap_full(struct folio *folio)
->  {
->         struct mem_cgroup *memcg;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 1080209a568b..e73e2df8828d 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -137,6 +137,9 @@ struct scan_control {
->         /* Always discard instead of demoting to lower tier memory */
->         unsigned int no_demotion:1;
->
-> +       /* Swap space is exhausted, only reclaim swapcache for anon LRU *=
-/
-> +       unsigned int swapcache_only:1;
-> +
->         /* Allocation order */
->         s8 order;
->
-> @@ -613,10 +616,20 @@ static inline bool can_reclaim_anon_pages(struct me=
-m_cgroup *memcg,
->                  */
->                 if (get_nr_swap_pages() > 0)
->                         return true;
-> +               /* Is there any swapcache pages to reclaim? */
-> +               if (total_swapcache_pages() > 0) {
-> +                       sc->swapcache_only =3D 1;
-> +                       return true;
-> +               }
->         } else {
->                 /* Is the memcg below its swap limit? */
->                 if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
->                         return true;
-> +               /* Is there any swapcache pages in memcg to reclaim? */
-> +               if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
-> +                       sc->swapcache_only =3D 1;
-> +                       return true;
-> +               }
->         }
->
->         /*
-> @@ -2280,6 +2293,19 @@ static bool skip_cma(struct folio *folio, struct s=
-can_control *sc)
->  }
->  #endif
->
-> +static bool skip_isolate(struct folio *folio, struct scan_control *sc,
-> +                        enum lru_list lru)
-> +{
-> +       if (folio_zonenum(folio) > sc->reclaim_idx)
-> +               return true;
-> +       if (skip_cma(folio, sc))
-> +               return true;
-> +       if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
-> +           !folio_test_swapcache(folio)))
-> +               return true;
-> +       return false;
-> +}
-> +
->  /*
->   * Isolating page from the lruvec to fill in @dst list by nr_to_scan tim=
-es.
+> +		drm_atomic_set_solid_fill_prop(state);
+>  	} else if (property == plane->alpha_property) {
+>  		state->alpha = val;
+>  	} else if (property == plane->blend_mode_property) {
+> @@ -620,6 +643,9 @@ drm_atomic_plane_get_property(struct drm_plane *plane,
+>  		*val = state->src_h;
+>  	} else if (property == plane->pixel_source_property) {
+>  		*val = state->pixel_source;
+> +	} else if (property == plane->solid_fill_property) {
+> +		*val = state->solid_fill_blob ?
+> +			state->solid_fill_blob->base.id : 0;
+>  	} else if (property == plane->alpha_property) {
+>  		*val = state->alpha;
+>  	} else if (property == plane->blend_mode_property) {
+> diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
+> index c3c57bae06b7..273021cc21c8 100644
+> --- a/drivers/gpu/drm/drm_blend.c
+> +++ b/drivers/gpu/drm/drm_blend.c
+> @@ -200,6 +200,10 @@
+>   *	"FB":
+>   *		Framebuffer source set by the "FB_ID" property.
 >   *
-> @@ -2326,8 +2352,7 @@ static unsigned long isolate_lru_folios(unsigned lo=
-ng nr_to_scan,
->                 nr_pages =3D folio_nr_pages(folio);
->                 total_scan +=3D nr_pages;
->
-> -               if (folio_zonenum(folio) > sc->reclaim_idx ||
-> -                               skip_cma(folio, sc)) {
-> +               if (skip_isolate(folio, sc, lru)) {
->                         nr_skipped[folio_zonenum(folio)] +=3D nr_pages;
->                         move_to =3D &folios_skipped;
->                         goto move;
-> --
-> 2.25.1
->
+> + * solid_fill:
+> + *	solid_fill is set up with drm_plane_create_solid_fill_property(). It
+> + *	contains pixel data that drivers can use to fill a plane.
+> + *
+>   * Note that all the property extensions described here apply either to the
+>   * plane or the CRTC (e.g. for the background color, which currently is not
+>   * exposed and assumed to be black).
+> @@ -705,3 +709,29 @@ int drm_plane_create_pixel_source_property(struct drm_plane *plane,
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(drm_plane_create_pixel_source_property);
+> +
+> +/**
+> + * drm_plane_create_solid_fill_property - create a new solid_fill property
+> + * @plane: drm plane
+> + *
+> + * This creates a new property blob that holds pixel data for solid fill planes.
+> + * The property is exposed to userspace as a property blob called "solid_fill".
+> + *
+> + * For information on what the blob contains, see `drm_mode_solid_fill`.
+> + */
+> +int drm_plane_create_solid_fill_property(struct drm_plane *plane)
+> +{
+> +	struct drm_property *prop;
+> +
+> +	prop = drm_property_create(plane->dev,
+> +			DRM_MODE_PROP_ATOMIC | DRM_MODE_PROP_BLOB,
+> +			"solid_fill", 0);
+> +	if (!prop)
+> +		return -ENOMEM;
+> +
+> +	drm_object_attach_property(&plane->base, prop, 0);
+> +	plane->solid_fill_property = prop;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_plane_create_solid_fill_property);
+> diff --git a/include/drm/drm_blend.h b/include/drm/drm_blend.h
+> index 122bbfbaae33..e7158fbee389 100644
+> --- a/include/drm/drm_blend.h
+> +++ b/include/drm/drm_blend.h
+> @@ -60,4 +60,5 @@ int drm_plane_create_blend_mode_property(struct drm_plane *plane,
+>  					 unsigned int supported_modes);
+>  int drm_plane_create_pixel_source_property(struct drm_plane *plane,
+>  					   unsigned long extra_sources);
+> +int drm_plane_create_solid_fill_property(struct drm_plane *plane);
+>  #endif
+> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
+> index 89508b4dea4a..a38e18bfb43e 100644
+> --- a/include/drm/drm_plane.h
+> +++ b/include/drm/drm_plane.h
+> @@ -46,6 +46,18 @@ enum drm_plane_pixel_source {
+>  	DRM_PLANE_PIXEL_SOURCE_MAX
+>  };
+>  
+> +/**
+> + * struct solid_fill_property - RGB values for solid fill plane
+> + *
+> + * TODO: Add solid fill source and corresponding pixel source
+> + *       that supports RGBA color
+> + */
+> +struct drm_solid_fill {
+> +	uint32_t r;
+> +	uint32_t g;
+> +	uint32_t b;
+> +};
+> +
+>  /**
+>   * struct drm_plane_state - mutable plane state
+>   *
+> @@ -130,6 +142,23 @@ struct drm_plane_state {
+>  	 */
+>  	enum drm_plane_pixel_source pixel_source;
+>  
+> +	/**
+> +	 * @solid_fill_blob:
+> +	 *
+> +	 * Blob containing relevant information for a solid fill plane
+> +	 * including pixel format and data. See
+
+Pixel format is not part of the blob anymore.
+
+> +	 * drm_plane_create_solid_fill_property() for more details.
+> +	 */
+> +	struct drm_property_blob *solid_fill_blob;
+> +
+> +	/**
+> +	 * @solid_fill:
+> +	 *
+> +	 * Pixel data for solid fill planes. See
+> +	 * drm_plane_create_solid_fill_property() for more details.
+> +	 */
+> +	struct drm_solid_fill solid_fill;
+> +
+>  	/**
+>  	 * @alpha:
+>  	 * Opacity of the plane with 0 as completely transparent and 0xffff as
+> @@ -720,6 +749,13 @@ struct drm_plane {
+>  	 */
+>  	struct drm_property *pixel_source_property;
+>  
+> +	/**
+> +	 * @solid_fill_property:
+> +	 * Optional solid_fill property for this plane. See
+> +	 * drm_plane_create_solid_fill_property().
+> +	 */
+> +	struct drm_property *solid_fill_property;
+> +
+>  	/**
+>  	 * @alpha_property:
+>  	 * Optional alpha property for this plane. See
+> diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+> index 43691058d28f..1fd92886d66c 100644
+> --- a/include/uapi/drm/drm_mode.h
+> +++ b/include/uapi/drm/drm_mode.h
+> @@ -259,6 +259,30 @@ struct drm_mode_modeinfo {
+>  	char name[DRM_DISPLAY_MODE_LEN];
+>  };
+>  
+> +/**
+> + * struct drm_mode_solid_fill - User info for solid fill planes
+> + *
+> + * This is the userspace API solid fill information structure.
+> + *
+> + * Userspace can enable solid fill planes by assigning the plane "solid_fill"
+> + * property to a blob containing a single drm_mode_solid_fill struct populated with an RGB323232
+> + * color and setting the pixel source to "SOLID_FILL".
+> + *
+> + * For information on the plane property, see drm_plane_create_solid_fill_property()
+> + *
+> + * @r: Red color value of single pixel
+> + * @g: Green color value of single pixel
+> + * @b: Blue color value of single pixel
+> + * @pad: padding
+> + */
+> +struct drm_mode_solid_fill {
+> +	__u32 r;
+> +	__u32 g;
+> +	__u32 b;
+> +	__u32 pad;
+> +};
+> +
+> +
+>  struct drm_mode_card_res {
+>  	__u64 fb_id_ptr;
+>  	__u64 crtc_id_ptr;
+> 
+> -- 
+> 2.42.0
+> 
+
