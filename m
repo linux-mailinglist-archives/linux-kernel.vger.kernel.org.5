@@ -2,234 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC1178CD5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB4378CD5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239958AbjH2UK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
+        id S239011AbjH2UL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237052AbjH2UKf (ORCPT
+        with ESMTP id S239569AbjH2ULR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:10:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F09FDB;
-        Tue, 29 Aug 2023 13:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693339832; x=1724875832;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=fakHxPvma5v1OZEh7egi14ddfP1VSYy8uslLlEY7uQU=;
-  b=Pwlr0V8L9gCugpPx85b1O2DlujIIAlg8VhyOGRJqYJrk9Lcm6Etw+azd
-   VvrgS+a7pRPJUdpWxnF0uLTY9eB1m7WOXLNj2FnGQo3vlCBFnXYOlj1gh
-   WXzSP6FYNibAwO1/jkUs3pUbncZBUYqfentOUvw8BO/9OqVZ2hf03Ia1i
-   57aS3FOeaq4fBy0JrJqFCEixXS2utEe1UBn1VEze4UcwtTyd40QhFN4Ah
-   UZe6+LEV+z6dIoWGthewslEk7ud7XmA0Iw9aoN2F9IxYKJ6ykuqpu9uBO
-   AgBIOhbB+uj+ni06thioYFHyqcskqR7NxGXUUVa6f+BF2Lxt2bSmmF2V0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="461842979"
-X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="461842979"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 13:10:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="853421480"
-X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="853421480"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Aug 2023 13:10:30 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 29 Aug 2023 13:10:30 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 29 Aug 2023 13:10:29 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 29 Aug 2023 13:10:29 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 29 Aug 2023 13:10:29 -0700
+        Tue, 29 Aug 2023 16:11:17 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2076.outbound.protection.outlook.com [40.107.223.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F181DB;
+        Tue, 29 Aug 2023 13:11:14 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UR17145qrlY8hLVEz+UpxMCJQOsKrXuzRyOo+GVNlPTyyDMM2tolmtnN0kV2AAtV7nmTri+5lCyAQqKH/Jbr9oSpVAwXbM13JszhhGYfVy6vbRHJSEaY7pVZWX9HawwfGRVOMzj8z+bU3eD4mxQm+66Ajry765/bsbRmkNNRvf3auy4NXonHnGEhHl8DWdIJYwM6/82LM/LRyxOj6/IQBI4rNuCpWkzhP/k5AHwcBg2blgKWQQE5OQ+ki8ZlfQIGWy7W5ytvFgQvz79N841dBZvT0dEKDGm9+IIM3McpjoRpgjmnN8rUARrB90Yb5bQ+7qDMXbnzUEwnvfl1GESuVg==
+ b=FTaj6Em2oN39/YG7fZNLqba7me4KTwtzlLzBwVLkojFsLfT1oAFIqeZmM02uYXGI5gnc6nVvP7+7DDmnEHmE4hE4QVi2ok99VUEyTDC2ZUkH5oojMVLBEzxHD94GRW77L8NKs7PW2tLCM+Aso6Y9vuqgMuk6iVbkXwDT63KqfcrCujGmBjksBpsjpxInsSinIIrsSlVj+u2drKMrEbItIceGJjmHY4IPUHRLd1z1GOYWnJu7wqUJLQAzo98NmtHdM9j5zAs7EuqcDARYA5AV43IdJ+CwW5XeZAn3VakBd2aX+MnpEtMVBuu6+MRu07XzmFMpBFvpnn7EvdfDp8kn6g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6vwFKOlCl6G7nn5O3Y87b9mvtRkFqvMTI+4DgpEtPa8=;
- b=bR5WgxPTBJpuUXnjBuVPFHWJx7R1Zj2QUsLG9iIQRLZjGC45Jo5J93AyabC/WOem+C4i+pTAOJk/E/Opnk+vlMhe1lQOqWD2fkDt1W4YwC54KthJac+i6EJbayrJ6r2A3WMJru3ifM0VfoV8V7muhI+izMOBEwfv9oHzxWeMhbcDBbw+6BllOY4HufPHc5Cb+NmDZFoJ0c/VYB0X4/+DXBrfwG3fhtGHJGtbDcTO/FqMwm0IleLtuysD3N+R0OANtxggYdlgJ+GncLxKLzn+49APaO1HWL4WVmC2kjAQ/CsZ6PJGeYoWOQ7vvJAWXKDHnih3R8yFjjm1Stbb7mayBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DS0PR11MB8081.namprd11.prod.outlook.com (2603:10b6:8:15c::10) with
+ bh=jKALJpNrHb7YVMA4grUe5PopruitW91en2ugqoMSn+w=;
+ b=XkJyKzzd4Iv2eeBzottCtGIgAWAD1/JUTeQPwxtx9to0HBqxC69WogkEAEr0cda9CHDrxSevKOgBgUQnyzlRrk35gDMrnGzbRQg0iQCkp5vdaqYYYgBxERR9jOJvMIqTg4CZzEiVVhcGtyS+djjPb3a/j9euBLfXpElLEXgv6IfcOa8VHMgqTMTRlNq6nrZhB/42CKs5L81jOCj4EXWrayjYM264DK1Wn9lIyCPfFPbPN3NdTFtshUW3a2SnD5Ehhjyvvj5jYtzW2V+OrLviZZLeU5N74Fn2CwUDJXPjhAkUX2vqFeZpv5qDuuHf8Ha+3db63I5bZTRw7Tn58GQBMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jKALJpNrHb7YVMA4grUe5PopruitW91en2ugqoMSn+w=;
+ b=iwwAy+TO/WwDwGsZhm4M4/6SgW+EVhWjNpcKrpWmlq6p1lHrTJTtk1r1N2aN8CJU9UapkCMDwSUjB4CdDPxY8XKHO/7G+AyZM7eJIqdc34xSn4kNs8xo+1icAXTCTY6cmBktqVQbvYs6aehJulSU+NInycc+0A8sBTHzz05ZJes=
+Received: from DS7PR07CA0012.namprd07.prod.outlook.com (2603:10b6:5:3af::20)
+ by CH0PR12MB5091.namprd12.prod.outlook.com (2603:10b6:610:be::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Tue, 29 Aug
- 2023 20:10:27 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0%3]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
- 20:10:27 +0000
-Message-ID: <343d12e8-9934-9194-cadd-7d133567396c@intel.com>
-Date:   Tue, 29 Aug 2023 13:10:23 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v8 5/8] x86/resctrl: Unwind the errors inside
- rdt_enable_ctx()
-Content-Language: en-US
-To:     Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
-CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
-        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
-        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
-        <songmuchun@bytedance.com>, <peterz@infradead.org>,
-        <jpoimboe@kernel.org>, <pbonzini@redhat.com>,
-        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
-        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
-        <sandipan.das@amd.com>, <tony.luck@intel.com>,
-        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
-        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
-        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
-        <quic_jiles@quicinc.com>, <peternewman@google.com>
-References: <20230821233048.434531-1-babu.moger@amd.com>
- <20230821233048.434531-6-babu.moger@amd.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230821233048.434531-6-babu.moger@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P222CA0017.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::22) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.18; Tue, 29 Aug
+ 2023 20:11:10 +0000
+Received: from SA2PEPF000015C8.namprd03.prod.outlook.com
+ (2603:10b6:5:3af:cafe::cc) by DS7PR07CA0012.outlook.office365.com
+ (2603:10b6:5:3af::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.18 via Frontend
+ Transport; Tue, 29 Aug 2023 20:11:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF000015C8.mail.protection.outlook.com (10.167.241.198) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6745.17 via Frontend Transport; Tue, 29 Aug 2023 20:11:10 +0000
+Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 29 Aug
+ 2023 15:11:07 -0500
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>, <stable@vger.kernel.org>,
+        "Harry Wentland" <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        "Rodrigo Siqueira" <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <jun.lei@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        "Nicholas Kazlauskas" <nicholas.kazlauskas@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        Alvin Lee <Alvin.Lee2@amd.com>,
+        Sung Joon Kim <sungjoon.kim@amd.com>,
+        "Daniel Miess" <daniel.miess@amd.com>, Leo Chen <sancchen@amd.com>,
+        Gabe Teeger <gabe.teeger@amd.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] Revert "drm/amd/display: Remove v_startup workaround for dcn3+"
+Date:   Tue, 29 Aug 2023 16:10:41 -0400
+Message-ID: <20230829201042.322173-1-hamza.mahfooz@amd.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB8081:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0ec9c3e2-751c-4638-db19-08dba8cbfc7e
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C8:EE_|CH0PR12MB5091:EE_
+X-MS-Office365-Filtering-Correlation-Id: be97deb3-190e-4910-aac0-08dba8cc1641
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K80mNmkdkUPxxY4u5RYwRH9H3bb/6Ge54v9QigB6KL72+QJFa1VgtebOtaeoHh2f0Om/yMtVtHpJnWOhjpjCdKZalV2utw2OrOR5XVmFObreql5PdwjTL4E3EYWE3gsHslNZSuasaSpsBmZ29WHGpGcvWykghtY58yMmjXvzJet91ux7sm6RaAw8+0rQ8GptR2f10ptimLh4k6P4dnp2AnVbL+nGlqi8L0KRpm8b0r0/G5mdrW3UqYNxsbY82+MOfnlqFTG1COgfC2AJ6I/tKhFo3PmdGogfA6v6FUKMghIPJvehmBdCua5Rc8172X5gNrSE47TYuZyUjra9yzWg2aPqYETQNFFQILkSoWgsOC0KMjVMF/8xEz/Mro8ZLIC3lcNAaAYJzNacft5gauKJDkI1Uv8gltHog6+u1KewwUUhgoW9qtyWX3W8Pc5APOhldksYmn04Fc8q586d+KSRsAI+0RF3Lx0QMi6RJVqWhGUBxJM869iKr9nhLOnSNCrV9gfkM391CdUI/BiIEQA5FspCQXfxNLe/iGPoIRvyXTo3tICB19lNLJrFe0Rf7TcmqHcT8LEX9bkoYFGQlW0nYO3GGyBJkcMkUN5KLfGrF8yaviNUdTqZeKTMKg3YWDMoNHKJsUfx5zGQYSGXS6D0OQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(346002)(396003)(376002)(451199024)(1800799009)(186009)(26005)(6512007)(38100700002)(316002)(41300700001)(82960400001)(4326008)(7406005)(7416002)(2906002)(31696002)(2616005)(86362001)(36756003)(8676002)(44832011)(5660300002)(8936002)(6666004)(6506007)(6486002)(66476007)(66556008)(53546011)(478600001)(66946007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZXR0NkdOb1Q0ekpRN0doVVJZZHk2VzhCNGVUdGpDV2JYYlhFdUFlOExmbGly?=
- =?utf-8?B?a0t2UFIrbkx2MHlTOEpUbkpickI0VmdwYkwzc2tobTNYU1NoMEtZb2o3Y0h0?=
- =?utf-8?B?clZ4cEJ4WDRrZHBmYm9HYTBhMGcxR255ZmY2THVrbjhhbmhnekllL2RHMUFC?=
- =?utf-8?B?amNIWmVxTTIwaE1CN09ya09MTmlVL0lsV09EdGJ5UDBmVWUxRmVCZ1RqMUxl?=
- =?utf-8?B?YTJ3djM0eTBOdFBxNDVqNzFwSlVCT0J3M2JWMjJmR01GcnhManJseDAzZGMx?=
- =?utf-8?B?ZUZ4OTAweGpCWG5hZWlRNFFYbWxrNGxUTGJYeDRQL2ROSXBRR2tlTUR6MTZR?=
- =?utf-8?B?ajA3SjNzdC9WWDRMekF3MWZrWnZZZGg2eUw2Tm16aTdMN1VQSHlZRlJnUjla?=
- =?utf-8?B?bDNsbXI4cnBUeURlU0N6RnE4OUZwelFQeGQyR0s1Szk0aFVmc1l4Yk5SUXBi?=
- =?utf-8?B?SlFteHQvakZ1c1JTN1lMcmM0ak5iK3hEbVRqNjVGNFJ5TWRHTkdBdmVJWXVP?=
- =?utf-8?B?dHM1NkRMTVRYRFJXQStVU0FVK0VRQUw0OFJWTGNyWWt0NE5WNWhPN1d5Mkxw?=
- =?utf-8?B?d2hmdmZBWEJWc1pjNGpWWFlqK0pPTHEwaS9nTW14b1Z5V20rRTJvT3JWR0Qv?=
- =?utf-8?B?bVYxbjNLMVFHck5Nb0JzekhvQ1VkdVREc0t5N0hzUEVHSHdtYnZ3RytQVTBu?=
- =?utf-8?B?bnl3L2MwbVFiQTdNY2FYWmlyMk4wN2RLazhMT3RkNWlNd2lmQjRneE4wZjlk?=
- =?utf-8?B?bE5tWCtJZW9tSDV3QXJ2ZGhNZGtpQ3ViOW5pSmRWeFZCbSt3N1dZZmM3bVMr?=
- =?utf-8?B?eFM0Ty9Pc1lTaUg4aFFYWXpLTzFPTVdocklnTjlibWRSWkxXOGtLUjd4cUN6?=
- =?utf-8?B?MGMwMkhHeTN5TWowQnZSaFd0aUREejZOMnMxK3h0YUNBQmFtd21Yb3JtbDhV?=
- =?utf-8?B?MFREMFdsQnNiNjZveFNpbEtXZzF0eGdzMUlEVkJNcVNTak5MaU1KRWZJNk92?=
- =?utf-8?B?NUVSaHNrcTRXR0t1Mm1DZXFDSE1RNWQ0MlAyNTZTdWs5Zm94aWhIUWV6dFpG?=
- =?utf-8?B?M0V2dGVsWWlYMXJlOTBkekVnNGdUeUVUOE5YaGtaeFRpd2hDYnl6c21UUjdt?=
- =?utf-8?B?NEN5MmxhdFFYeDFwdUZDUXFCNkRkVnVQLzdwbk54NWZZU0swamtPV3BQWEpV?=
- =?utf-8?B?QmFtSjZjeEFJalI5akwzU1ZlRjZlYXBYdjdETlpWaEkyNTZVRFJ4S0MvRUs5?=
- =?utf-8?B?cDN6MUdMcEtnQXlTTzVnY0x6bkpZb3dqUmRLSzZJKzdjWFR3aWRjNEZ3RThO?=
- =?utf-8?B?aW1GRzQzQWNCeGNySWFGWWsxekZCVEdlWEl3STlkUktXR3o0dDE5RmhGRTB0?=
- =?utf-8?B?ckJNSThiVTNTUlU2MzhreENmdTg5OGRnVk92OVFhUWpnZkt5ZlVGT2pLeGdp?=
- =?utf-8?B?UlpmVXdBbHFSTG5ibTB3K2FYMlErblU4NllzV2NFejNnVDd2S3J4SGZFUTZN?=
- =?utf-8?B?M2ZTeXpONmZ5Wno2UXhhcmJwQmpTdWNjeG5EVVY5VVdOZUtGK1Z1WnVRN2FR?=
- =?utf-8?B?VzhlOG8rOUJBMng4TmQyV2hHbDMrdWpYcEVFMm1qRWYyZjRhbTVjZVN3aC96?=
- =?utf-8?B?NnFEZUQ0a2lERHVaOGtBUnpxSE9BMDNzaE9UZ1U4aWZ5V05rSU5KWnA3R0ZR?=
- =?utf-8?B?OWw3UTVSOTBIQ3AwMk9CNGZVQ2d4bTBTOVUxdUc0VzA1b3kxd3pwKy9DYmp0?=
- =?utf-8?B?Zm0vN3dGdmtZdWV1YzhSa2NReERkMitvd1FSdkNZU3BGdWRWRjU1d3FLSmFs?=
- =?utf-8?B?Y2VCeVNsbWkySjI3a253RXJnVUk4L1gwU0p4d04zeEcrY0RTeTZ0NGlWWTJk?=
- =?utf-8?B?dlN5cVNaS3ZUTTYyZDQrOFI3SzJ1N1pVNmw2ZUE3VmdkUTZidjFySGFScXBW?=
- =?utf-8?B?TUZhQk1DQXByTVpnajREaTVMWkNNdWhLNVYzbjFZNkFGTVhNTm54UVVZV1VJ?=
- =?utf-8?B?VHhMazMrOGVzUDIxbXIxdXpLUll0b0lYWXdsaTQxNFptU1NBbFQrdXRwVVJl?=
- =?utf-8?B?em1abnp1RFNMemVZazZFWitxQXdLWDR5Q1RRb2JkemlRbXRyK0JXWjQ4a1Jy?=
- =?utf-8?B?QzV6MFArbjF6dFVWWVd1WWJTWFRhUExvVHpmNng3NGhkREplU1pJbzZYMUhD?=
- =?utf-8?B?SHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ec9c3e2-751c-4638-db19-08dba8cbfc7e
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 20:10:27.3467
+X-Microsoft-Antispam-Message-Info: 3a7ZD5qgdb0GP26G/Q89MZ9naEfxITo48CZhcxnhKBGzq6udEEXqCE2fq5BdWFMzrf7B5r6IhxiOO8PcW1uotkhciHfgdS6ere+aNPOWzIWTAXStND9jfEyGP2R4OpYJYXd90a+CJ0isn4Q1rbIHkYSbLnKXaVUvl0+Ymb0lRy09uGAQGupj1dbbWHpI+33Nq6b+oNp2isHB6Nh0Ur7ncg3bF2Fi6UimWQMOFbqJSM7PxwhShtzBJf+XReJYkakPH1dVOgNGrnnZQh9fVaRckXBVJwyfvtQ8VmV3NDb9N2OF4fFJ6wWhy6sUby64bZqPfaY8vHL3rWpyZkgAKsixZpq83Zb+33QHehdsmWoshiWh498xey5xDh8myH1qYLBP9n0ji5df860/cS0ZYR28NFqsgjT6puYUeRNtsy7ynpoquS7ZGXxgdfgXSQRYJvYnh+jPQk9ko0RtuM4n2gnaLPd9UdcOoyLWPgShVLGqtZvF/HEne+5UX+vGytsxn7oUjJKbIUxOgEqKBusAjK3nzPtv+5K/m6VyRkRUCVnpM3drHJvLkbiEAi2xIIPNz3xUeNB60VEXYykS0MU9miTrYl4agJg5WHGsy82Z/yLKnaKTPJnxpkBw9fTkuXslsFbp/AM2M0ZJCovgk8jPUmDVRohgSyWX8ywhNfKb2FjTlCucNycMXaOvLlS/mTxFUmZ8iULbxnW3AySpPU2kFWTR9ScTvpLDnV2L6A8kh/R6PmlXnUyTpNRxIlsO/2gH4yUI+nRRnQ+ETr+31fJyX4a9GMNkWY2mUxm04MaP0tPBEzo=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(136003)(39860400002)(1800799009)(186009)(82310400011)(451199024)(46966006)(36840700001)(40470700004)(81166007)(356005)(82740400003)(8936002)(6666004)(70206006)(478600001)(70586007)(54906003)(966005)(6916009)(316002)(41300700001)(40460700003)(36756003)(26005)(16526019)(44832011)(8676002)(5660300002)(1076003)(2906002)(83380400001)(2616005)(47076005)(86362001)(36860700001)(40480700001)(426003)(336012)(4326008)(36900700001)(16060500005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 20:11:10.2629
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xPIS7ccweSDGVCMnF2kzfZ/HRXbn1siSHylr+p1oQYIDJt++4YfFcaVaSdRZQWgYwaGfgGQ52BM8K+KnZIL0ejLUtvzjlzg8qJxJLDPac8o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8081
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: be97deb3-190e-4910-aac0-08dba8cc1641
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C8.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5091
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Babu,
+This reverts commit 3a31e8b89b7240d9a17ace8a1ed050bdcb560f9e.
 
-On 8/21/2023 4:30 PM, Babu Moger wrote:
->  static int rdt_enable_ctx(struct rdt_fs_context *ctx)
->  {
->  	int ret = 0;
->  
-> -	if (ctx->enable_cdpl2)
-> +	if (ctx->enable_cdpl2) {
->  		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, true);
-> +		if (ret)
-> +			goto out_done;
-> +	}
->  
-> -	if (!ret && ctx->enable_cdpl3)
-> +	if (ctx->enable_cdpl3) {
->  		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, true);
-> +		if (ret)
-> +			goto out_cdpl2;
-> +	}
->  
-> -	if (!ret && ctx->enable_mba_mbps)
-> +	if (ctx->enable_mba_mbps) {
->  		ret = set_mba_sc(true);
-> +		if (ret)
-> +			goto out_cdpl3;
+We still need to call dcn20_adjust_freesync_v_startup() for older DCN3+
+ASICs otherwise it can cause DP to HDMI 2.1 PCONs to fail to light up.
+So, reintroduce the reverted code and limit it to ASICs older than
+DCN31.
 
-An error may be encountered here without CDP ever enabled or just
-enabled for L2 or L3. I think that the error unwinding should
-take care to not unwind an action that was not done. Considering
-the information available I think checking either ctx->enable_...
-or the checks used in rdt_disable_ctx() would be ok but for consistency
-the resctrl_arch_get_cdp_enabled() checks may be most appropriate.
+Cc: stable@vger.kernel.org
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2809
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+---
+ .../drm/amd/display/dc/dml/dcn20/dcn20_fpu.c  | 24 ++++---------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-> +	}
-> +
-> +	return 0;
->  
-> +out_cdpl3:
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
+index 0989a0152ae8..0841176e8d6c 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
+@@ -1099,6 +1099,10 @@ void dcn20_calculate_dlg_params(struct dc *dc,
+ 		context->res_ctx.pipe_ctx[i].plane_res.bw.dppclk_khz =
+ 						pipes[pipe_idx].clks_cfg.dppclk_mhz * 1000;
+ 		context->res_ctx.pipe_ctx[i].pipe_dlg_param = pipes[pipe_idx].pipe.dest;
++		if (dc->ctx->dce_version < DCN_VERSION_3_1 &&
++		    context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
++			dcn20_adjust_freesync_v_startup(&context->res_ctx.pipe_ctx[i].stream->timing,
++							&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
+ 
+ 		pipe_idx++;
+ 	}
+@@ -1927,7 +1931,6 @@ static bool dcn20_validate_bandwidth_internal(struct dc *dc, struct dc_state *co
+ 	int vlevel = 0;
+ 	int pipe_split_from[MAX_PIPES];
+ 	int pipe_cnt = 0;
+-	int i = 0;
+ 	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
+ 	DC_LOGGER_INIT(dc->ctx->logger);
+ 
+@@ -1951,15 +1954,6 @@ static bool dcn20_validate_bandwidth_internal(struct dc *dc, struct dc_state *co
+ 	dcn20_calculate_wm(dc, context, pipes, &pipe_cnt, pipe_split_from, vlevel, fast_validate);
+ 	dcn20_calculate_dlg_params(dc, context, pipes, pipe_cnt, vlevel);
+ 
+-	for (i = 0; i < dc->res_pool->pipe_count; i++) {
+-		if (!context->res_ctx.pipe_ctx[i].stream)
+-			continue;
+-		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
+-			dcn20_adjust_freesync_v_startup(
+-				&context->res_ctx.pipe_ctx[i].stream->timing,
+-				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
+-	}
+-
+ 	BW_VAL_TRACE_END_WATERMARKS();
+ 
+ 	goto validate_out;
+@@ -2232,7 +2226,6 @@ bool dcn21_validate_bandwidth_fp(struct dc *dc,
+ 	int vlevel = 0;
+ 	int pipe_split_from[MAX_PIPES];
+ 	int pipe_cnt = 0;
+-	int i = 0;
+ 	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
+ 	DC_LOGGER_INIT(dc->ctx->logger);
+ 
+@@ -2261,15 +2254,6 @@ bool dcn21_validate_bandwidth_fp(struct dc *dc,
+ 	dcn21_calculate_wm(dc, context, pipes, &pipe_cnt, pipe_split_from, vlevel, fast_validate);
+ 	dcn20_calculate_dlg_params(dc, context, pipes, pipe_cnt, vlevel);
+ 
+-	for (i = 0; i < dc->res_pool->pipe_count; i++) {
+-		if (!context->res_ctx.pipe_ctx[i].stream)
+-			continue;
+-		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
+-			dcn20_adjust_freesync_v_startup(
+-				&context->res_ctx.pipe_ctx[i].stream->timing,
+-				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
+-	}
+-
+ 	BW_VAL_TRACE_END_WATERMARKS();
+ 
+ 	goto validate_out;
+-- 
+2.41.0
 
-So here I think there should be a check. 
-	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3))
-
-> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
-> +out_cdpl2:
-
-... and here a check:
-	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2))
-
-> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
-> +out_done:
->  	return ret;
->  }
->  
-
-Reinette
