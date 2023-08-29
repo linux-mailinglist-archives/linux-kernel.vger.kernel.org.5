@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D81F78BE64
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D8E78BE68
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbjH2G0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S232646AbjH2G17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbjH2G0w (ORCPT
+        with ESMTP id S233642AbjH2G1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 02:26:52 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2446218F
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:26:49 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-48d0bc6a834so1100879e0c.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1693290408; x=1693895208;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hxh5aXZyDJVdQDQmq6WXKz3ahyaBB0XCxjT8xagUqKs=;
-        b=cevzkjgpF014J3qAoDByxwpexi2vC4Fh1LPplrTzbeyay9/3uiXWQEJu0cmBD67TPU
-         Ft6ztlJMr6+I69td+1Mt/0pNsEGtBay8coUs5dKG18F81mx7VbDb2ov1geonjJkSWM07
-         QNImeuMwH45OUQugtmj7n7otYvUpR1UG6SBvPtv5LmhloX3+4FcXNd0Z4B1ffLlB2LWC
-         80cUXnV4iLbPLvEc7DGdOOyQeHb2Io5S0STwziyrJqQY78IlBwD9x3ICz7NVr+TL5pir
-         WCQNb44dsTkb/LTmMBwl0BNBP5oGLi2xz8uNxz6Ejd45/ZBqA5GlMzOrz9uoYB1vWp+Y
-         gnAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693290408; x=1693895208;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hxh5aXZyDJVdQDQmq6WXKz3ahyaBB0XCxjT8xagUqKs=;
-        b=JCH2RxFQo3htuQyin/j50ZwE8FPa7AA8XRMobhVy7F4DusKdyLPgBZBek9v53Ci2SN
-         kkYknX/mEwX8zu2aUhfbyuQNptxrnmQD+zqu4cu9Z6TIdLSrm9SZa6T2mCVL8WJ/qfir
-         KVdbBd9DE4aabAuLf3WpIfnZEVk0TLZCwUlPX+8Ib6fYIOz8IGxTmVbcSCfjTW60nAI5
-         tTEwiwmVLEly94CS6TaqcJ9HVxKaOvOdW9647kQt32XOjnljSPlBHCFyip+dHZwzE19z
-         4JWZZ4ETE3yN0AHqJv5YmSa5haVgLxXrlALE7Lzbnl/6LuEOpGUdVRS4ywls+lzM0JZ8
-         rBVQ==
-X-Gm-Message-State: AOJu0Yzljqce9uUEXoT1J02YCA2OCOEHsHdir0YjjaEep9NtVbPFagPx
-        VtmfVrbqvUnnFuE5g8Wf8+FNpSbix5PEJZYd3qISo7apZNBmKm7Jn68=
-X-Google-Smtp-Source: AGHT+IFFwOEazxtUKsztWvVMws3hiEMVdSKzhtzMbh3RSXZOO339gVy/Bol44R3KJlswcslDT3Op6lXYmVW0JQESSPA=
-X-Received: by 2002:a1f:ed43:0:b0:48f:895f:45da with SMTP id
- l64-20020a1fed43000000b0048f895f45damr18746586vkh.14.1693290408228; Mon, 28
- Aug 2023 23:26:48 -0700 (PDT)
+        Tue, 29 Aug 2023 02:27:46 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7DA19A
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1693290464; x=1724826464;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GGbqLGqMN9df8eATN/J3U86vb4CO2JuXfpoZHqXvJqY=;
+  b=o85SCAItdje2Q5TR8aE1ZpjfSloL9TClfSys/8TRfL+pCZUUhq5EpPps
+   PqnrXfbScWImitgNV97aLmL5et9KJ1XYDMY/Mt6qn8iAKj0s6iihDOTwG
+   arQaQEsaAmgESTJgoQzhXFCVxmz/FuYvTnWbtSr0WPIftZOWc1q+LfTun
+   CxDqjg+sCZaFWMkSAfOImR53g4ODCRXN/PqNPcIHzyaw8DAZDCdWUzOJr
+   A8xG95y8+4FFm85bDES2aHHk7pmu6UgNdxR9+nB5L0czUVxyCO87JvhsO
+   CWQYloBMbRUyHly6iXCS7RxjNFFfu+Di0RyWDel/s62FVWSUONQXAswFt
+   A==;
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="asc'?scan'208";a="232227171"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Aug 2023 23:27:44 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 28 Aug 2023 23:27:37 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 28 Aug 2023 23:27:35 -0700
+Date:   Tue, 29 Aug 2023 07:26:54 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Guo Ren <guoren@kernel.org>
+CC:     Nam Cao <namcaov@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <bjorn@kernel.org>
+Subject: Re: [PATCH] riscv: provide riscv-specific is_trap_insn()
+Message-ID: <20230829-unbridle-condense-2fc45a442bb6@wendy>
+References: <20230827205641.46836-1-namcaov@gmail.com>
+ <CAJF2gTQysBBSbtFcx1uY_ztTnzN5jRWpG2OD4O3aJ0u9Ekwsag@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230814093621.23209-1-brgl@bgdev.pl> <20230814093621.23209-3-brgl@bgdev.pl>
- <875y54ci86.ffs@tglx> <CAMRc=Mfg52iqFKj0QMB55K5MCxhgPLbF-0WSRG0ktN3RbofMtQ@mail.gmail.com>
- <873507cziz.ffs@tglx> <CAMRc=MdYteOxy87jdSEvBxnN7tx_J1X2aSsRzKZ6WKL31-ipmA@mail.gmail.com>
- <87sf87aw36.ffs@tglx> <CAMRc=Mcvkjmy2F=92SWRdCKL0US_YSwsvpWjcfOH9CBGw3GB0g@mail.gmail.com>
- <87il91c04a.ffs@tglx> <CAMRc=MfB=sMEmK02Y6SaG1T4PFZW2OD+box7NNoDY3KM1AchLA@mail.gmail.com>
- <87o7ir8hlh.ffs@tglx> <CAMRc=Mf9f9MxfRY+=Et9+wO5fZr61SRthcGhoHZsJ6-x6k+BgQ@mail.gmail.com>
- <873502971b.ffs@tglx>
-In-Reply-To: <873502971b.ffs@tglx>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 29 Aug 2023 08:26:37 +0200
-Message-ID: <CAMRc=Meigus=WOGwM-fStkhtDeKyTd+9vZH19HoP+U1xpwYx9Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Gejlf3F12x47mKDN"
+Content-Disposition: inline
+In-Reply-To: <CAJF2gTQysBBSbtFcx1uY_ztTnzN5jRWpG2OD4O3aJ0u9Ekwsag@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 11:44=E2=80=AFPM Thomas Gleixner <tglx@linutronix.d=
-e> wrote:
->
-> On Mon, Aug 28 2023 at 21:03, Bartosz Golaszewski wrote:
-> > On Mon, Aug 28, 2023 at 2:41=E2=80=AFPM Thomas Gleixner <tglx@linutroni=
-x.de> wrote:
-> >> > I guess you're referring to irq_alloc_descs()? Anyway, here's a
-> >> > real-life example: we have the hid-cp2112 module which drives a
-> >> > GPIO-and-I2C-expander-on-a-USB-stick. I plug it in and have a driver
-> >> > that requests one of its GPIOs as interrupt. Now I unplug it. How ha=
-s
-> >> > taking the reference to the hid-cp2112 module protected me from
-> >> > freeing an irq domain with interrupts in use?
-> >>
-> >> request_irq() does not care which module request the interrupt. It
-> >> always takes a refcount on irq_desc::owner. That points to the module
-> >> which created the interrupt domain and/or allocated the descriptors.
-> >>
-> >> IOW, this needs a mechanism to store the module which creates the
-> >> interrupt domain somewhere in the domain itself and use it when
-> >> allocating interrupt descriptors. So in your case this would take a
-> >> refcount on the GPIO module.
-> >>
-> > This is still not complete. In the above example, the USB bus can
-> > still unbind the GPIO device that created the domain on hot-unplug,
-> > triggering its cleanup routines (.remove(), devres chain) and
-> > destroying the domain and keeping the reference to the hid-cp2112
-> > module will not help it. This is why I suggested tracking the irq
-> > requests and freeing them in said cleanup path.
->
-> Are you actually reading what I write?
->
-> >> So in your case this would take a refcount on the GPIO module.
->
-> That's the module which provides the interrupt domain and hid-whatever
-> is the one which requests the interrupt, no?
->
+--Gejlf3F12x47mKDN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Not at all! This is what I said: "we have the hid-cp2112 module which
-drives a GPIO-and-I2C-expander-on-a-USB-stick". Meaning: the
-hid-cp2112 module registers a USB driver for a GPIO expander on a
-stick. This GPIO chip is the interrupt controller here. It's the USB
-stick that provides interrupts for whatever else needs them (in real
-life: it can be an IIO device on the I2C bus which signals some events
-over the GPIOs). The user can get the interrupt number using the
-gpiod_to_irq() function. It can be unplugged at any moment and module
-references will not stop the USB bus from unbinding it.
+On Tue, Aug 29, 2023 at 01:56:34PM +0800, Guo Ren wrote:
+> On Mon, Aug 28, 2023 at 4:56=E2=80=AFAM Nam Cao <namcaov@gmail.com> wrote:
+> >
+> > uprobes expects is_trap_insn() to return true for any trap instructions,
+> > not just the one used for installing uprobe. The current default
+> > implementation only returns true for 16-bit c.ebreak if C extension is
+> > enabled. This can confuse uprobes if a 32-bit ebreak generates a trap
+> > exception from userspace: uprobes asks is_trap_insn() who says there is=
+ no
+> > trap, so uprobes assume a probe was there before but has been removed, =
+and
+> > return to the trap instruction. This cause an infinite loop of entering
+> > and exiting trap handler.
+> >
+> > Instead of using the default implementation, implement this function
+> > speficially for riscv which checks for both ebreak and c.ebreak.
+> >
+> > Fixes: 74784081aac8 ("riscv: Add uprobes supported")
+> > Signed-off-by: Nam Cao <namcaov@gmail.com>
+> > ---
+> >  arch/riscv/kernel/probes/uprobes.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/arch/riscv/kernel/probes/uprobes.c b/arch/riscv/kernel/pro=
+bes/uprobes.c
+> > index 194f166b2cc4..91f4ce101cd1 100644
+> > --- a/arch/riscv/kernel/probes/uprobes.c
+> > +++ b/arch/riscv/kernel/probes/uprobes.c
+> > @@ -3,6 +3,7 @@
+> >  #include <linux/highmem.h>
+> >  #include <linux/ptrace.h>
+> >  #include <linux/uprobes.h>
+> > +#include <asm/insn.h>
+> >
+> >  #include "decode-insn.h"
+> >
+> > @@ -17,6 +18,15 @@ bool is_swbp_insn(uprobe_opcode_t *insn)
+> >  #endif
+> >  }
+>  >
+> > +bool is_trap_insn(uprobe_opcode_t *insn)
+> > +{
+> > +#ifdef CONFIG_RISCV_ISA_C
 
-Bartosz
+> Can we remove the CONFIG_RISCV_ISA_C? As you said, "uprobes expects
+> is_trap_insn() to return true for any trap instructions". So userspace
+> wouldn't be limited by CONFIG_RISCV_ISA_C.
+
+Isn't the RISCV_ISA_C required because there's a different encoding for
+EBREAK vs C_EBREAK? That said, this should be using IS_ENABLED() not
+#ifdef, since the definition for riscv_insn_is_c_ebreak() is provided
+unconditionally afaict.
+
+>=20
+> > +       if (riscv_insn_is_c_ebreak(*insn))
+> > +               return true;
+> > +#endif
+> > +       return riscv_insn_is_ebreak(*insn);
+> > +}
+> > +
+> >  unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
+> >  {
+> >         return instruction_pointer(regs);
+> > --
+> > 2.34.1
+> >
+
+--Gejlf3F12x47mKDN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZO2PrQAKCRB4tDGHoIJi
+0sQOAQDv1oVj7wyYwRi92joynjdOE3DDV2OuEjEbpfrv+eqJjAD+LnNdnWqsf6EW
+vXpfa5K8Smd+td9s9Q04/KE8pPsWaAk=
+=+9ci
+-----END PGP SIGNATURE-----
+
+--Gejlf3F12x47mKDN--
