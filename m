@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8797278C323
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B671F78C314
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjH2LOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 07:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        id S233799AbjH2LGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjH2LOG (ORCPT
+        with ESMTP id S235319AbjH2LFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:14:06 -0400
-X-Greylist: delayed 582 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 04:14:03 PDT
-Received: from smtp-o-3.desy.de (smtp-o-3.desy.de [IPv6:2001:638:700:1038::1:9c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755DFBC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:14:03 -0700 (PDT)
-Received: from smtp-buf-3.desy.de (smtp-buf-3.desy.de [IPv6:2001:638:700:1038::1:a6])
-        by smtp-o-3.desy.de (Postfix) with ESMTP id A9D34608B7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:04:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-3.desy.de A9D34608B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=desy.de; s=default;
-        t=1693307059; bh=5N/A+0DvouwHnArmn8QDUh8FA/+WhLeTvx3IWkq7Fe0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MDTTWqEqcT/bAXaP/WqEV7z5zs1Hw9Z2WMrhSO27Oe/c/5cXXD0oeXTpYwKjbDeii
-         PkHVjAlMsy14C+4yvnW995uzY8BvgVY/0QFflZOUHuV7jYBStFu7hs/xjGZM1KkMPD
-         bRs6fl5v317YaJGvZhOrlnb0fhqYYFCoC0/i86Ic=
-Received: from smtp-m-3.desy.de (smtp-m-3.desy.de [131.169.56.131])
-        by smtp-buf-3.desy.de (Postfix) with ESMTP id 9BF00A00B3;
-        Tue, 29 Aug 2023 13:04:19 +0200 (CEST)
-Received: from c1722.mx.srv.dfn.de (c1722.mx.srv.dfn.de [IPv6:2001:638:d:c303:acdc:1979:2:e7])
-        by smtp-m-3.desy.de (Postfix) with ESMTP id 88E9E60041;
-        Tue, 29 Aug 2023 13:04:19 +0200 (CEST)
-Received: from smtp-intra-2.desy.de (smtp-intra-2.desy.de [IPv6:2001:638:700:1038::1:53])
-        by c1722.mx.srv.dfn.de (Postfix) with ESMTP id 9261CA0038;
-        Tue, 29 Aug 2023 13:04:18 +0200 (CEST)
-Received: from os-46-nfs-devel.novalocal (os-46-nfs-devel.desy.de [131.169.46.178])
-        by smtp-intra-2.desy.de (Postfix) with ESMTP id 1ABCD100045;
-        Tue, 29 Aug 2023 13:04:18 +0200 (CEST)
-From:   Tigran Mkrtchyan <tigran.mkrtchyan@desy.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     anna@kernel.org, trond.myklebust@hammerspace.com,
-        Tigran Mkrtchyan <tigran.mkrtchyan@desy.de>
-Subject: [PATCH] nfs41: flexfiles: drop dependency between flexfiles layout driver and NFSv3 modules
-Date:   Tue, 29 Aug 2023 11:04:11 +0000
-Message-Id: <20230829110411.8394-1-tigran.mkrtchyan@desy.de>
-X-Mailer: git-send-email 2.39.3
+        Tue, 29 Aug 2023 07:05:49 -0400
+Received: from mx13lb.world4you.com (mx13lb.world4you.com [81.19.149.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF424C3;
+        Tue, 29 Aug 2023 04:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sw-optimization.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AVKM9TQcJHZjLSeImIKY0Cx/V5t5iQPA+TrX7lfEi8w=; b=v1XJxS/sy4RB3zhamrj60YsFoF
+        SPKYrpYHzsOFA91V71dLb5Yi+mvtzfoMjSMqUAJgBgB6kVdzu97abbi+88veDmFLXL35o74OApSB5
+        BkVhk9UixRRimbA2CKQ1ff2KUVvJYOVLPH91hMvsrjgmm57e98r5Z0AMrbYKM38fi+Ek=;
+Received: from [195.192.57.194] (helo=[192.168.0.20])
+        by mx13lb.world4you.com with esmtpa (Exim 4.96)
+        (envelope-from <eas@sw-optimization.com>)
+        id 1qawXW-0004OW-1Z;
+        Tue, 29 Aug 2023 13:05:42 +0200
+Message-ID: <b3be5738-8c40-bb82-296f-aa401d1fc1df@sw-optimization.com>
+Date:   Tue, 29 Aug 2023 13:05:41 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] dmaengine: plx_dma: Fix potential deadlock on
+ &plxdev->ring_lock
+Content-Language: de-DE
+To:     Chengfeng Ye <dg573847474@gmail.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        christophe.jaillet@wanadoo.fr, vkoul@kernel.org,
+        logang@deltatee.com
+References: <20230729175952.4068-1-dg573847474@gmail.com>
+ <3545b782-756a-3d2a-d192-8b224a783c13@sw-optimization.com>
+ <CAAo+4rWW67VSpdwo_dstqAb-FiKeoK3YmaNgiX7vXBerqEWBkA@mail.gmail.com>
+From:   Eric Schwarz <eas@sw-optimization.com>
+In-Reply-To: <CAAo+4rWW67VSpdwo_dstqAb-FiKeoK3YmaNgiX7vXBerqEWBkA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The flexfiles layout driver depends on NFSv3 module as data servers
-might be configure to provide nfsv3 only.
+Hello Chengfeng,
 
-Disabling the nfsv3 protocol completely disables the flexfiles layout driver,
-however, the data server still might support v4.1 protocol. Thus the strond
-couling betwwen flexfiles and nfsv3 modules should be relaxed, as layout driver
-will return UNSUPPORTED if not matching protocol is found.
+Am 29.08.2023 um 05:10 schrieb Chengfeng Ye:
+> Hi Eric,
+> 
+> Thank you for your interest in it.
 
-Signed-off-by: Tigran Mkrtchyan <tigran.mkrtchyan@desy.de>
----
- fs/nfs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for getting back to me.
 
-diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
-index b6fc169be1b1..ba95246be09e 100644
---- a/fs/nfs/Kconfig
-+++ b/fs/nfs/Kconfig
-@@ -125,7 +125,7 @@ config PNFS_BLOCK
- 
- config PNFS_FLEXFILE_LAYOUT
- 	tristate
--	depends on NFS_V4_1 && NFS_V3
-+	depends on NFS_V4_1
- 	default NFS_V4
- 
- config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
--- 
-2.39.1
+> For a dynamic detection solution, then the answer is yes.
+> Lockdep, which should be enabled by CONFIG_DEBUG_SPINLOCK,
+> has the ability to detect such deadlocks. But the problem is that the detection
+> requires input and exact thread interleaving to trigger the bug, otherwise
+> the bugs would be buried and cannot be detected.
+> 
+> For static analysis, I think the answer is no. Smatch, like other
+> static deadlock detection algorithms in CBMC[1] and Infer[2], should be
+> designed to reason thread interaction but not interrupts, which requires
+> new algorithms that I am working on.
 
+Will you publish your work later on e.g. on github?
+Actually maybe it would even make sense to integrate your work into 
+scripts/checkpatch.pl of the Linux kernel (or the like).
+Basically if a patch to be committed fails locking it should not be 
+committed anyway.
+IMHO the quality standard one could expect from the code should always 
+be the same. So adding it to a mandatory check procedure (script which 
+must be executed before committing patches) and/or to "0-DAY CI Kernel 
+Test Service" [5] would definitely be worth a thought.
+
+> Besides, may I ask a question that I have sent some patches[3][4] weeks
+> ago, but have not yet got a reply. Would reviewers check the patches
+> later or should I ping them again?
+
+You never have a guarantee who will when review your patch on the 
+mailing list. It is kind of best effort based system mainly of volunteers.
+Just give people a bit of time since it is currently also holiday time.
+You may ping the maintainer of the subsystem when some time has passed 
+since he is responsible for the patches to be administered.
+BTW, I think you already pinged indirectly w/ your e-mail.
+
+> [1] http://www.cprover.org/deadlock-detection/
+> [2] https://github.com/facebook/infer
+> [3] https://lore.kernel.org/lkml/20230726062313.77121-1-dg573847474@gmail.com/
+> [4] https://lore.kernel.org/lkml/20230726051727.64088-1-dg573847474@gmail.com/
+
+[5] https://github.com/intel/lkp-tests/wiki
+
+Cheers
+Eric
