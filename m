@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015EB78CC50
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0A578CC52
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235952AbjH2Smp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 14:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S237734AbjH2Snu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Aug 2023 14:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbjH2SmS (ORCPT
+        with ESMTP id S230490AbjH2SnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 14:42:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C7719A
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:42:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C8656250C
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 18:42:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04F2EC433C7;
-        Tue, 29 Aug 2023 18:42:13 +0000 (UTC)
-Date:   Tue, 29 Aug 2023 14:42:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Wang You <wangyoua@uniontech.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vschneid@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] remove preempt in do_sched_yield
-Message-ID: <20230829144212.0eedc210@rorschach.local.home>
-In-Reply-To: <20230823100705.5363-1-wangyoua@uniontech.com>
-References: <20230823100705.5363-1-wangyoua@uniontech.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 29 Aug 2023 14:43:19 -0400
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA2419A;
+        Tue, 29 Aug 2023 11:43:16 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1c134602a55so1003417fac.1;
+        Tue, 29 Aug 2023 11:43:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693334596; x=1693939396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+hrAF9koGhO3AR5bD0rbczrXkKrad5wwFyJYLSucsi4=;
+        b=FnlZ+/cfWXOSkkgQ8/TuoBEANQRYv9K/QzQDkRH0BE9NlExfQJdeJor+lmmgO+HtP9
+         B7B091if/n2Y7LIfaqFVzXKVnLhQJy3oEABZvKyaT2ZYyGlrS8XWLIbq+pq0vkiaqokd
+         jU0Zv0j4NT1aTXh5lyXTu2NQH/9b97K91OmnxlCWFUuxBbRRODEbm4f1pbgCOyKcAK8t
+         eSrzs3zksd+qnPG5N98Qz7UcS9k4/mxW2xRtm1/4QiLWaC6PnlkEONEo028Wc7n1EDS7
+         PfXjNEASuPXsa4u79fjY+jbtD8lHSbu9rcF9QJES6sTs9f+KE3EKAfpF+c5PX71Hjx3y
+         miEw==
+X-Gm-Message-State: AOJu0Yw7jOcYLRgzUlB2q36qywbaR88G6XfVkIseeh5ol0cnLMtTfZjs
+        FIvftRwCryov46z3dob1HehGrFPc8CKOTWG/ir5+zOep
+X-Google-Smtp-Source: AGHT+IFKuc8cMaf60WS7evIZip+73Std+UxfHTWwykEUZKSoNsLwBTLFdcJZnMvlz3cUlmnDBmBBcGCO5KruqdcOGmE=
+X-Received: by 2002:a4a:ded9:0:b0:573:55af:777c with SMTP id
+ w25-20020a4aded9000000b0057355af777cmr10471583oou.0.1693334595754; Tue, 29
+ Aug 2023 11:43:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230826095743.1138495-1-liaochang1@huawei.com> <20230828070206.dc44mhe4qztg52kc@vireshk-i7>
+In-Reply-To: <20230828070206.dc44mhe4qztg52kc@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 29 Aug 2023 20:43:04 +0200
+Message-ID: <CAJZ5v0hSNC1f9vBHYF6SP73jxXhW3EM8WdC4ObZhHk1OSx_xQA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: pcc: Fix the potentinal scheduling delays in target_index()
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Liao Chang <liaochang1@huawei.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Aug 2023 18:07:05 +0800
-Wang You <wangyoua@uniontech.com> wrote:
+On Mon, Aug 28, 2023 at 9:02 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 26-08-23, 09:57, Liao Chang wrote:
+> > pcc_cpufreq_target():
+> >       cpufreq_freq_transition_begin();
+> >       spin_lock(&pcc_lock);
+> >       [critical section]
+> >       cpufreq_freq_transition_end();
+> >       spin_unlock(&pcc_lock);
+> >
+> > Above code has a performance issue, consider that Task0 executes
+> > 'cpufreq_freq_transition_end()' to wake Task1 and preempted imediatedly
+> > without releasing 'pcc_lock', then Task1 needs to wait for Task0 to
+> > release 'pcc_lock'. In the worst case, this locking order can result in
+> > Task1 wasting two scheduling rounds before it can enter the critical
+> > section.
+> >
+> > Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> > ---
+> >  drivers/cpufreq/pcc-cpufreq.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/cpufreq/pcc-cpufreq.c b/drivers/cpufreq/pcc-cpufreq.c
+> > index 73efbcf5513b..9d732a00e2a5 100644
+> > --- a/drivers/cpufreq/pcc-cpufreq.c
+> > +++ b/drivers/cpufreq/pcc-cpufreq.c
+> > @@ -232,8 +232,8 @@ static int pcc_cpufreq_target(struct cpufreq_policy *policy,
+> >       status = ioread16(&pcch_hdr->status);
+> >       iowrite16(0, &pcch_hdr->status);
+> >
+> > -     cpufreq_freq_transition_end(policy, &freqs, status != CMD_COMPLETE);
+> >       spin_unlock(&pcc_lock);
+> > +     cpufreq_freq_transition_end(policy, &freqs, status != CMD_COMPLETE);
+> >
+> >       if (status != CMD_COMPLETE) {
+> >               pr_debug("target: FAILED for cpu %d, with status: 0x%x\n",
+>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-> I see do_sched_yield's irq disable cover preempt disable. In this
-> function, I think preempt op may not work, or it may have some
-> special effect ? Thanks.
-
-Why would it not work?
-
-> 
-> Signed-off-by: Wang You <wangyoua@uniontech.com>
-> ---
->  kernel/sched/core.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index a68d1276bab0..b255e54c1d38 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8487,10 +8487,7 @@ static void do_sched_yield(void)
->  
->  	schedstat_inc(rq->yld_count);
->  	current->sched_class->yield_task(rq);
-> -
-> -	preempt_disable();
->  	rq_unlock_irq(rq, &rf);
-> -	sched_preempt_enable_no_resched();
-
-The point of this is if an interrupt triggers here and NEED_RESCHED is
-set, then it will call schedule and possibly schedule out the task.
-When it gets scheduled back in, the first thing it will do is to call
-schedule again. The above code you deleted removes the spurious
-schedule.
-
--- Steve
-
-
->  
->  	schedule();
->  }
-
+Applied as 6.6-rc material, thanks!
