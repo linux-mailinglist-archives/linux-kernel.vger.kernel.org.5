@@ -2,281 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CED78BC1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5008D78BC21
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbjH2AYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 20:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
+        id S234448AbjH2Aaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 20:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234677AbjH2AXx (ORCPT
+        with ESMTP id S234300AbjH2Aan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 20:23:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8161139;
-        Mon, 28 Aug 2023 17:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693268630; x=1724804630;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=V4zpm3Uykwhw3jplcihLVuPS5HH34Brb05XxjFHpbj8=;
-  b=QF1/WyTMeKq3rCmFdPcnXx8h2455Kr47MEYTuK+GdJ//DsLiLJpfpCeY
-   xLLE3sXUk51e4e0x+HCzlLyL3wOCZc9JKwUtd8X4qpUdvFE1TVA9QPLo0
-   8RypGNQEG8ZXzM5evKDdQTVvcJteIRa0uWAiWI1a3ucQYWYK++FAV/U7e
-   o6mbuV82AvnBvyrYtLCHjc0D6yq+pH+s5j61vofE+95I4PYZv1y7vQona
-   kZERtfPAM98F+O0k4bd5QGlRtsJAHeEuGJwbuCwpj0aVvNV5l/7yNgHCY
-   NFtP2rJYjw8A3Qkz/rOy68E3gpFykiT8jlkIwE85IelEE0bQjS1k3dIxV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="354754231"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="354754231"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 17:23:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="731989699"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="731989699"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by orsmga007.jf.intel.com with ESMTP; 28 Aug 2023 17:23:47 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     daniel.lezcano@linaro.org, rafael@kernel.org, rui.zhang@intel.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v3 7/7] selftests/thermel/intel: Add test to read workload hint
-Date:   Mon, 28 Aug 2023 17:23:46 -0700
-Message-Id: <20230829002346.2104251-8-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230829002346.2104251-1-srinivas.pandruvada@linux.intel.com>
-References: <20230829002346.2104251-1-srinivas.pandruvada@linux.intel.com>
+        Mon, 28 Aug 2023 20:30:43 -0400
+Received: from out-248.mta1.migadu.com (out-248.mta1.migadu.com [IPv6:2001:41d0:203:375::f8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02BD10B
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 17:30:40 -0700 (PDT)
+Message-ID: <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693269037; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9IAzTTcmlJQyO6mSLflkzt3IVsbQUOThQfzVBiQYjgE=;
+        b=DPm51MEZctaWaOJT9m6vaXzveCc8r6glQAgwpw6xebEcB1WEmJ9bY0NNlj6jtP3x0A1av0
+        OY9WOggNlkslYwD2PCp/KWnBVRhsN2Kr5xPSrsQXEDKIm4Vz5vK6NwXV51YmDuaDFr7zcK
+        7JFWShgPHfEPCgADkJJG0pQ6hBPEhcI=
+Date:   Mon, 28 Aug 2023 20:30:29 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
+ skip_if_dup_files check
+Content-Language: en-US
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230825161842.GA16750@redhat.com>
+ <20230825161947.GA16871@redhat.com> <20230825170406.GA16800@redhat.com>
+ <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
+ <20230827201909.GC28645@redhat.com>
+ <ac60ff18-22b0-0291-256c-0e0c3abb7b62@linux.dev>
+ <20230828105453.GB19186@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20230828105453.GB19186@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some SoCs have in built firmware support to classify current running
-workload and pass to OS for making power management decisions.
 
-This test program waits for notification of workload type change
-and prints. This program can be used to test this feature and also
-allows other user space programs to use as a reference.
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
-v3:
-No change
+On 8/28/23 3:54 AM, Oleg Nesterov wrote:
+> On 08/27, Yonghong Song wrote:
+>>
+>> On 8/27/23 1:19 PM, Oleg Nesterov wrote:
+>>>
+>>> But. if the group leader M exits then M->files == NULL. And in this case
+>>> task_seq_get_next() will need to "inspect" all the sub-threads even if they all
+>>> have the same ->files pointer.
+>>
+>> That is correct. I do not have practical experience on how much
+>> possibility this scenario may happen. I assume it should be very low.
+> 
+> Yes. I just tried to explain why the ->files check looks confusing to me.
+> Nevermind.
+> 
+> Could you review 6/6 as well?
 
-v2:
-Add a signal handler for interrupting poll and exit
-Also moved inside intel/workload_type_hint foler
-Update Makefile
+I think we can wait patch 6/6 after
+    https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+is merged.
 
- tools/testing/selftests/Makefile              |   1 +
- .../thermal/intel/workload_hint/Makefile      |  12 ++
- .../intel/workload_hint/workload_hint_test.c  | 157 ++++++++++++++++++
- 3 files changed, 170 insertions(+)
- create mode 100644 tools/testing/selftests/thermal/intel/workload_hint/Makefile
- create mode 100644 tools/testing/selftests/thermal/intel/workload_hint/workload_hint_test.c
+> 
+> Should I fold 1-5 into a single patch? I tried to document every change
+> and simplify the review, but I do not want to blow the git history.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 42806add0114..725ce59e4637 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -85,6 +85,7 @@ TARGETS += syscall_user_dispatch
- TARGETS += sysctl
- TARGETS += tc-testing
- TARGETS += tdx
-+TARGETS += thermal/intel/workload_hint
- TARGETS += timens
- ifneq (1, $(quicktest))
- TARGETS += timers
-diff --git a/tools/testing/selftests/thermal/intel/workload_hint/Makefile b/tools/testing/selftests/thermal/intel/workload_hint/Makefile
-new file mode 100644
-index 000000000000..37ff3286283b
---- /dev/null
-+++ b/tools/testing/selftests/thermal/intel/workload_hint/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+ifndef CROSS_COMPILE
-+uname_M := $(shell uname -m 2>/dev/null || echo not)
-+ARCH ?= $(shell echo $(uname_M) | sed -e s/i.86/x86/ -e s/x86_64/x86/)
-+
-+ifeq ($(ARCH),x86)
-+TEST_GEN_PROGS := workload_hint_test
-+
-+include ../../../lib.mk
-+
-+endif
-+endif
-diff --git a/tools/testing/selftests/thermal/intel/workload_hint/workload_hint_test.c b/tools/testing/selftests/thermal/intel/workload_hint/workload_hint_test.c
-new file mode 100644
-index 000000000000..217c3a641c53
---- /dev/null
-+++ b/tools/testing/selftests/thermal/intel/workload_hint/workload_hint_test.c
-@@ -0,0 +1,157 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <poll.h>
-+#include <signal.h>
-+
-+#define WORKLOAD_NOTIFICATION_DELAY_ATTRIBUTE "/sys/bus/pci/devices/0000:00:04.0/workload_hint/notification_delay_ms"
-+#define WORKLOAD_ENABLE_ATTRIBUTE "/sys/bus/pci/devices/0000:00:04.0/workload_hint/workload_hint_enable"
-+#define WORKLOAD_TYPE_INDEX_ATTRIBUTE  "/sys/bus/pci/devices/0000:00:04.0/workload_hint/workload_type_index"
-+
-+static const char * const workload_types[] = {
-+	"idle",
-+	"battery_life",
-+	"sustained",
-+	"bursty",
-+	NULL
-+};
-+
-+#define WORKLOAD_TYPE_MAX_INDEX	3
-+
-+void workload_hint_exit(int signum)
-+{
-+	int fd;
-+
-+	/* Disable feature via sysfs knob */
-+
-+	fd = open(WORKLOAD_ENABLE_ATTRIBUTE, O_RDWR);
-+	if (fd < 0) {
-+		perror("Unable to open workload type feature enable file\n");
-+		exit(1);
-+	}
-+
-+	if (write(fd, "0\n", 2) < 0) {
-+		perror("Can' disable workload hints\n");
-+		exit(1);
-+	}
-+
-+	printf("Disabled workload type prediction\n");
-+
-+	close(fd);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct pollfd ufd;
-+	char index_str[4];
-+	int fd, ret, index;
-+	char delay_str[64];
-+	int delay = 0;
-+
-+	printf("Usage: workload_hint_test [notification delay in milli seconds]\n");
-+
-+	if (argc > 1) {
-+		ret = sscanf(argv[1], "%d", &delay);
-+		if (ret < 0) {
-+			printf("Invalid delay\n");
-+			exit(1);
-+		}
-+
-+		printf("Setting notification delay to %d ms\n", delay);
-+		if (delay < 0)
-+			exit(1);
-+
-+		sprintf(delay_str, "%s\n", argv[1]);
-+
-+		sprintf(delay_str, "%s\n", argv[1]);
-+		fd = open(WORKLOAD_NOTIFICATION_DELAY_ATTRIBUTE, O_RDWR);
-+		if (fd < 0) {
-+			perror("Unable to open workload notification delay\n");
-+			exit(1);
-+		}
-+
-+		if (write(fd, delay_str, strlen(delay_str)) < 0) {
-+			perror("Can't set delay\n");
-+			exit(1);
-+		}
-+
-+		close(fd);
-+	}
-+
-+	if (signal(SIGINT, workload_hint_exit) == SIG_IGN)
-+		signal(SIGINT, SIG_IGN);
-+	if (signal(SIGHUP, workload_hint_exit) == SIG_IGN)
-+		signal(SIGHUP, SIG_IGN);
-+	if (signal(SIGTERM, workload_hint_exit) == SIG_IGN)
-+		signal(SIGTERM, SIG_IGN);
-+
-+	/* Enable feature via sysfs knob */
-+	fd = open(WORKLOAD_ENABLE_ATTRIBUTE, O_RDWR);
-+	if (fd < 0) {
-+		perror("Unable to open workload type feature enable file\n");
-+		exit(1);
-+	}
-+
-+	if (write(fd, "1\n", 2) < 0) {
-+		perror("Can' enable workload hints\n");
-+		exit(1);
-+	}
-+
-+	close(fd);
-+
-+	printf("Enabled workload type prediction\n");
-+
-+	while (1) {
-+		fd = open(WORKLOAD_TYPE_INDEX_ATTRIBUTE, O_RDONLY);
-+		if (fd < 0) {
-+			perror("Unable to open workload type file\n");
-+			exit(1);
-+		}
-+
-+		if ((lseek(fd, 0L, SEEK_SET)) < 0) {
-+			fprintf(stderr, "Failed to set pointer to beginning\n");
-+			exit(1);
-+		}
-+
-+		if (read(fd, index_str, sizeof(index_str)) < 0) {
-+			fprintf(stderr, "Failed to read from:%s\n",
-+			WORKLOAD_TYPE_INDEX_ATTRIBUTE);
-+			exit(1);
-+		}
-+
-+		ufd.fd = fd;
-+		ufd.events = POLLPRI;
-+
-+		ret = poll(&ufd, 1, -1);
-+		if (ret < 0) {
-+			perror("poll error");
-+			exit(1);
-+		} else if (ret == 0) {
-+			printf("Poll Timeout\n");
-+		} else {
-+			if ((lseek(fd, 0L, SEEK_SET)) < 0) {
-+				fprintf(stderr, "Failed to set pointer to beginning\n");
-+				exit(1);
-+			}
-+
-+			if (read(fd, index_str, sizeof(index_str)) < 0)
-+				exit(0);
-+
-+			ret = sscanf(index_str, "%d", &index);
-+			if (ret < 0)
-+				break;
-+			if (index > WORKLOAD_TYPE_MAX_INDEX)
-+				printf("Invalid workload type index\n");
-+			else
-+				printf("workload type:%s\n", workload_types[index]);
-+		}
-+
-+		close(fd);
-+	}
-+}
--- 
-2.40.1
+Currently, because patch 6, the whole patch set cannot be tested by
+bpf CI since it has a build failure:
+   https://github.com/kernel-patches/bpf/pull/5580
+I suggest you get patch 1-5 and resubmit with tag like
+   "bpf-next v2"
+   [Patch bpf-next v2 x/5] ...
+so CI can build with different architectures and compilers to
+ensure everything builds and runs fine.
 
+> 
+> Oleg.
+> 
