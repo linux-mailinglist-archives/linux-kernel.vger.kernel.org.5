@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426C278CD8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C98A78CD90
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240486AbjH2U2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
+        id S240502AbjH2U3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbjH2U2M (ORCPT
+        with ESMTP id S240560AbjH2U3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:28:12 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC56FC;
-        Tue, 29 Aug 2023 13:28:09 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d7830c5b20aso268363276.0;
-        Tue, 29 Aug 2023 13:28:09 -0700 (PDT)
+        Tue, 29 Aug 2023 16:29:34 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5851B7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:29:30 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so6310270a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:29:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693340889; x=1693945689; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZPW+cOvYjdKPx86Qz2gFq/jADvb6OQZRgDTzS7TqGTE=;
-        b=GRcM7Pgi7fDBwz6pP22iDKve7e14XPbj9rquPI22umZzjsWcsiTA+CW0eLlBTjonnb
-         VXMJ/0hbprZJBEmP4azLMPYN+1DhTjwx9tnZZSRCSVTklLkAVJ815AK6k5OewLCKgmC1
-         jynpcvadXdLkFRoUhYPMl9ewwoxjiFVmJKO4EYSOLXCEXt3EsJFpABdNY5w1FNh0TbWo
-         bIkhsZUKAX6nfh63fJn5gCBo83CmJaEtXdDscwLEaX6xC8V1zrWij8g5bpxD8zqLc+vz
-         golGeUWXw6dZ/95D3hksX1JfHkU4kM1X5Uj1BSXFGG69PfEEEBJIHqucZLct8eKmy401
-         /P1w==
+        d=linux-foundation.org; s=google; t=1693340969; x=1693945769; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=c4hYKlpw10RBDGcFQ+pNFTV1sFojiOV4eZlWuNv1UaE=;
+        b=SNcHHTWfALy73lTOFIgEsqev3uYhucJ3xORQAOWM4mrOBis467U3qoPWe3WGdFWjVr
+         9Xc79U6UoLfpsTQelG9TJiD1HDVUyVh0W7mb7QArdP3PZhwd7nrk01xC4RSjNQs8hSXV
+         fye7k2vN+Ahla7ILAr2G3jlyEtYpXXR6e1GCE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693340889; x=1693945689;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZPW+cOvYjdKPx86Qz2gFq/jADvb6OQZRgDTzS7TqGTE=;
-        b=FtA0n8hQpyFfNQ7YHgqVqPq6RLHfe+weSvVreZWnxEW6iewsH5QkJ2eUpPoWxNhRjJ
-         shzUix5FbwTPcTbbh8a4P8ogWrC7iRmt/2rCymGd+hf9UE/ph+gZNWTm/yBYzSCADH9k
-         p6DuWi4vPZg6OkV039Tkrh5g3qdych6pDsvmxeRDfy5LBvLyhju9BosXD85MxGe2GDN8
-         NOHVtCk/mCGZubrxGtwfMi9exo2S9twPfuwqx2Y4vQcMWhpMUngKo+pYHWIj4oWL4nc1
-         ZWRVCG8jKrp+GhYtW26BfXP7C43tWOE7vyIuHPdQ1dRYJz7F9dRhjeghHwyvgzEtfRy4
-         A5AQ==
-X-Gm-Message-State: AOJu0YxfJEgPhfUszFO1ZJWtq2AqhiPJ20TvkRN9v3GVtR2VDk41RpML
-        +HHb/ZOCHzZYpERYx8vCPLd3HE4CfOP/lrgI++U=
-X-Google-Smtp-Source: AGHT+IFN9KsI/KIYW36rLN6ro7UvPWLJe/AkYqpEHQtIP3KTxPCc24Pk5crT24CtYNL6vyVfaJdFxgjNXA+jrFJ0AIQ=
-X-Received: by 2002:a25:b003:0:b0:d72:652f:4054 with SMTP id
- q3-20020a25b003000000b00d72652f4054mr3781771ybf.16.1693340888850; Tue, 29 Aug
- 2023 13:28:08 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693340969; x=1693945769;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c4hYKlpw10RBDGcFQ+pNFTV1sFojiOV4eZlWuNv1UaE=;
+        b=WsFzdN5QYrzqL+7NjTepbzzmZzzKQfpLBIZ+GETtmsSKORol6R4RamXOeM1B2GHt/Y
+         o1/dPtHDQzyzQzRAuDGJAI/RkU1ssFEo7iTavXehQSVaSAS+xtW6BTgnIiGKTyWETjzM
+         lv/5Fzr+Li8nCSqg/Y/tcG7DxWO2XSzWSAms+CAh7RlffVvRXQs6ugQ2UcihGHP9BjIh
+         msNYwQg1iRahSYEOJpts4ziZbegPAI1715wQiZaIcfhizY2mznNjOlfpPIe8CfWrCTpz
+         xcjCE6+Ez/t2QRcAB7iHKQ/DoZ1SKKiMRsNdrjv91hyuu4cw5vRO0akMtSFKgIpe3Dbd
+         LBrw==
+X-Gm-Message-State: AOJu0YwpLpY2ccjC9oQOdsGn+g//VSD9hyAVGO6EzY4CvBAvk719y1SA
+        vYWCbfxZa5rj6+exB8TFI4ZC8SNBa1R8HPzgm31iTo1e
+X-Google-Smtp-Source: AGHT+IE5Spk+/et6Zu3ddCi5UeNsIUwhqn91w2Bl62Tc9QaX7rpFf5VUavirMDg+xzZIbJ/WrBhAqA==
+X-Received: by 2002:aa7:c6ce:0:b0:51e:362d:b172 with SMTP id b14-20020aa7c6ce000000b0051e362db172mr257861eds.32.1693340969334;
+        Tue, 29 Aug 2023 13:29:29 -0700 (PDT)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id f2-20020a056402150200b005233609e39dsm6048829edw.30.2023.08.29.13.29.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 13:29:28 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-997c4107d62so625688466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:29:28 -0700 (PDT)
+X-Received: by 2002:a17:906:5347:b0:99e:112e:7708 with SMTP id
+ j7-20020a170906534700b0099e112e7708mr62717ejo.76.1693340968340; Tue, 29 Aug
+ 2023 13:29:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230829071334.58083-1-n.zhandarovich@fintech.ru>
-In-Reply-To: <20230829071334.58083-1-n.zhandarovich@fintech.ru>
-From:   Xin Long <lucien.xin@gmail.com>
-Date:   Tue, 29 Aug 2023 16:27:48 -0400
-Message-ID: <CADvbK_eQaqSJmNDGwz5A9tAmb0y2rZwZXxdC52B4hjjWRGZtUA@mail.gmail.com>
-Subject: Re: [PATCH net] sctp: fix uninit-value in sctp_inq_pop()
-To:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-sctp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+70a42f45e76bede082be@syzkaller.appspotmail.com
+References: <20230829114301.10450-1-brgl@bgdev.pl>
+In-Reply-To: <20230829114301.10450-1-brgl@bgdev.pl>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 29 Aug 2023 13:29:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wigZt6kVkY0HU1j_LJ5H1KzwPiYnwwk6CbqXqT=sGenjg@mail.gmail.com>
+Message-ID: <CAHk-=wigZt6kVkY0HU1j_LJ5H1KzwPiYnwwk6CbqXqT=sGenjg@mail.gmail.com>
+Subject: Re: [GIT PULL] gpio: updates for v6.6
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,89 +77,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 3:14=E2=80=AFAM Nikita Zhandarovich
-<n.zhandarovich@fintech.ru> wrote:
+On Tue, 29 Aug 2023 at 04:43, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 >
-> Syzbot identified a case [1] of uninitialized memory usage in
-> sctp_inq_pop(), specifically in 'ch->length'.
->
-> Fix the issue by ensuring that 'ch->length' reflects the size of
-> 'sctp_chunkhdr *ch' before accessing it.
->
-> [1]
-> BUG: KMSAN: uninit-value in sctp_inq_pop+0x1597/0x1910 net/sctp/inqueue.c=
-:205
->  sctp_inq_pop+0x1597/0x1910 net/sctp/inqueue.c:205
->  sctp_assoc_bh_rcv+0x1a7/0xc50 net/sctp/associola.c:997
->  sctp_inq_push+0x23e/0x2b0 net/sctp/inqueue.c:80
->  sctp_backlog_rcv+0x394/0xd80 net/sctp/input.c:331
->  sk_backlog_rcv include/net/sock.h:1115 [inline]
->  __release_sock+0x207/0x570 net/core/sock.c:2911
->  release_sock+0x6b/0x1e0 net/core/sock.c:3478
->  sctp_wait_for_connect+0x486/0x810 net/sctp/socket.c:9325
->  sctp_sendmsg_to_asoc+0x1ea7/0x1ee0 net/sctp/socket.c:1884
->  ...
->
-> Uninit was stored to memory at:
->  sctp_inq_pop+0x151a/0x1910 net/sctp/inqueue.c:201
->  sctp_assoc_bh_rcv+0x1a7/0xc50 net/sctp/associola.c:997
->  sctp_inq_push+0x23e/0x2b0 net/sctp/inqueue.c:80
->  sctp_backlog_rcv+0x394/0xd80 net/sctp/input.c:331
->  sk_backlog_rcv include/net/sock.h:1115 [inline]
->  __release_sock+0x207/0x570 net/core/sock.c:2911
->  release_sock+0x6b/0x1e0 net/core/sock.c:3478
->  sctp_wait_for_connect+0x486/0x810 net/sctp/socket.c:9325
->  sctp_sendmsg_to_asoc+0x1ea7/0x1ee0 net/sctp/socket.c:1884
->  ...
->
-> Uninit was created at:
->  slab_post_alloc_hook+0x12d/0xb60 mm/slab.h:716
->  slab_alloc_node mm/slub.c:3451 [inline]
->  __kmem_cache_alloc_node+0x4ff/0x8b0 mm/slub.c:3490
->  __do_kmalloc_node mm/slab_common.c:965 [inline]
->  __kmalloc_node_track_caller+0x118/0x3c0 mm/slab_common.c:986
->  kmalloc_reserve+0x248/0x470 net/core/skbuff.c:585
->  __alloc_skb+0x318/0x740 net/core/skbuff.c:654
->  alloc_skb include/linux/skbuff.h:1288 [inline]
->  sctp_packet_pack net/sctp/output.c:472 [inline]
->  sctp_packet_transmit+0x1729/0x4150 net/sctp/output.c:621
->  sctp_outq_flush_transports net/sctp/outqueue.c:1173 [inline]
->  ...
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Reported-and-tested-by: syzbot+70a42f45e76bede082be@syzkaller.appspotmail=
-.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3D70a42f45e76bede082be
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-> ---
->  net/sctp/inqueue.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/net/sctp/inqueue.c b/net/sctp/inqueue.c
-> index 7182c5a450fb..98ce9524c87c 100644
-> --- a/net/sctp/inqueue.c
-> +++ b/net/sctp/inqueue.c
-> @@ -197,6 +197,7 @@ struct sctp_chunk *sctp_inq_pop(struct sctp_inq *queu=
-e)
->                 }
->         }
->
-> +       ch->length =3D htons(sizeof(*ch));
->         chunk->chunk_hdr =3D ch;
->         chunk->chunk_end =3D ((__u8 *)ch) + SCTP_PAD4(ntohs(ch->length));
->         skb_pull(chunk->skb, sizeof(*ch));
-> --
-> 2.25.1
->
-Hi, Nikita
+> Driver improvements:
+> - use autopointers and guards from cleanup.h in gpio-sim
 
-You can't just overwrite "ch->length", "ch" is the header of the received c=
-hunk.
-if it says ch->length is Uninit, it means either the chunk parsing in
-the receiver
-is overflow or the format of the chunk created in the sender is incorrect.
+So I've pulled this, but I'm not entirely convinced some of this was a cleanup.
 
-If you can reproduce it stably, I suggest you start from sctp_inq_pop() and
-print out the skb info and data in there, and see if it's a normal chunk.
+That gpio_sim_config_make_device_group() change is "interesting". Doing
 
-Thanks.
+        return &no_free_ptr(dev)->group;
+
+looks a bit crazy. My first reaction to it was 'that can't be right".
+It _is_ right, but I'm not convinced that getting rid of one kfree()
+call in the error path above it is worth that kind of semantic
+complexity.
+
+I guess we'll get more used to this - and it will look a bit less
+crazy in the process - but I did want to just note that I'm not
+entirely convinced we should encourage things like this.
+
+              Linus
