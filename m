@@ -2,139 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 222FD78C059
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5405178C060
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbjH2If7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        id S234190AbjH2Ihf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234179AbjH2Ifk (ORCPT
+        with ESMTP id S234229AbjH2IhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:35:40 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB14A4;
-        Tue, 29 Aug 2023 01:35:36 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 54EB5864CF;
-        Tue, 29 Aug 2023 10:35:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693298135;
-        bh=Y/3fhgFSBjE0l2cmk2fayHU5jH1mOcjDho9/p+0O1kc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=v1cxA6Y9eC2SeW8VEZ9U/flB7t3+FKM6r3suQp8XoQHtjCFCcsge1hPlfAZJFckAN
-         T/tnOYVtbj1wnxZNt4GloRtkIC80Q1ptU5NuKme8Qn49Edow+YWxM9vK8rQrLkZ1uX
-         bX9P5mkWfFTIfjHBlRYN64l2X/HrliTBbrCpK7VppIfWSz1Oc9/qY/2a0vc1TXsnnV
-         RhyP2HjEnpha4On+3LhQRoX9ZCLb7DoD6i1dCJjUYhX31b64eF7MWVWkwewuo/v8qW
-         ZMeFAvNkVlg2WmjZoOgIhwDKY31OdTEH7Y5OWJCfPv7NMvi28Xq5joRMbOuGHn0W26
-         mcXKQaMLVepNQ==
-Date:   Tue, 29 Aug 2023 10:35:33 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>, Tristram.Ha@microchip.com
-Cc:     f.fainelli@gmail.com, andrew@lunn.ch, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, Woojung.Huh@microchip.com,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477
- errata (DS80000754C)
-Message-ID: <20230829103533.7966f332@wsk>
-In-Reply-To: <20230826104910.voaw3ndvs52yoy2v@skbuf>
-References: <20230824154827.166274-1-lukma@denx.de>
-        <20230824154827.166274-2-lukma@denx.de>
-        <BYAPR11MB35583A648E4E44944A0172A0ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
-        <20230825103911.682b3d70@wsk>
-        <862e5225-2d8e-8b8f-fc6d-c9b48ac74bfc@gmail.com>
-        <BYAPR11MB3558A24A05D30BA93408851EECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
-        <20230826104910.voaw3ndvs52yoy2v@skbuf>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 29 Aug 2023 04:37:23 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B98A4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:37:20 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c136ee106so528800166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693298239; x=1693903039;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z9iMpNXmIevE0BgwMDd4WWAnKWJLVfTLbZLwahfl61w=;
+        b=bHALBVKUf3mzqjp5qBc54g26ErG0SAuQJGsGxNfmi9t4X8AcX1imw+RSpS5Z3Kh6h8
+         ZkfFCO6U50LasBNoPW2zybtvb7zbV9y4T5QgXyYGXfSXJF17AW4lL+vt1eosQK4/KEAI
+         zcK+Pcoc6yEtAQriLTCNQdPRF09WbFebyIw8+z1M4f3a/rpgdDZr6ofwLAaJukTjfx4X
+         TQ92HdRCuqDNpVmSeeAycj931QggLaB+ifyEYj969j89qnKHfIdkVFN7ssU+XWKVY3o9
+         Ey4JzgHaVZnyWMZSPgekXDJFuIqRjG4ygfOFH8DEbmfxXPGFrmOeEGF5CAZFzd9ZaFya
+         CVHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693298239; x=1693903039;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z9iMpNXmIevE0BgwMDd4WWAnKWJLVfTLbZLwahfl61w=;
+        b=HFnH01XWnobcL9px5cNXCKTeIGwWnXAuWO7NE7XE5ulPZGDxIkKKKnbezqOHjIF5hq
+         MpPhZ6os93nDBi6IhjB1yYPyRfn1Rp6SoIYjfleRVtHQV/ZfJ1wLLKHjnnS/zHOVg3Ri
+         YHZJR1Ax07S+FHWbgnYZSYpNko4EFOpcKAD6kLl1b8Cw37TvWIe3rJpgKgiPiglZdlJF
+         uLC6yCkPdfnwfGDeLIJgShKCvOGJwOuklwhcBogFGF8W1yrqL2CnG7Pw16xsA3Kg6Mdp
+         4qf2ZkH2jtnT/NDeSHzFGi2wrNXuiA1GR4EbBQ18rLAAbmJ+g33PH98pddb5GpgKBNqx
+         mz+A==
+X-Gm-Message-State: AOJu0YyrwhbtGxPnpY2lBlVHUKBGR1LCPfKGFn3eVLayUnSAsNy74/YD
+        YQow0wqj2Y4V521og2RO6Jw=
+X-Google-Smtp-Source: AGHT+IG2AEi8AUkfv4qjEMaIGKPkcicN1p+fKc05evfp7vAQ8dWGFeUa2PUha7EV15lGbyxAZQ5UAg==
+X-Received: by 2002:a17:906:7699:b0:9a2:1e03:1573 with SMTP id o25-20020a170906769900b009a21e031573mr11068276ejm.65.1693298238863;
+        Tue, 29 Aug 2023 01:37:18 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id lx16-20020a170906af1000b0098de7d28c34sm5706257ejb.193.2023.08.29.01.37.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 01:37:18 -0700 (PDT)
+From:   Nam Cao <namcaov@gmail.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     bjorn@kernel.org, guoren@kernel.org, conor.dooley@microchip.com,
+        Nam Cao <namcaov@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
+Subject: [PATCH v2] riscv: provide riscv-specific is_trap_insn()
+Date:   Tue, 29 Aug 2023 10:36:15 +0200
+Message-Id: <20230829083614.117748-1-namcaov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wy0d42mqFkkroqkdmLa_Us7";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wy0d42mqFkkroqkdmLa_Us7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+uprobes expects is_trap_insn() to return true for any trap instructions,
+not just the one used for installing uprobe. The current default
+implementation only returns true for 16-bit c.ebreak if C extension is
+enabled. This can confuse uprobes if a 32-bit ebreak generates a trap
+exception from userspace: uprobes asks is_trap_insn() who says there is no
+trap, so uprobes assume a probe was there before but has been removed, and
+return to the trap instruction. This causes an infinite loop of entering
+and exiting trap handler.
 
-Hi Vladimir,
+Instead of using the default implementation, implement this function
+speficially for riscv with checks for both ebreak and c.ebreak.
 
-> On Fri, Aug 25, 2023 at 06:48:41PM +0000, Tristram.Ha@microchip.com
-> wrote:
-> > > > IMHO adding functions to MMD modification would facilitate
-> > > > further development (for example LED setup). =20
-> > >=20
-> > > We already have some KSZ9477 specific initialization done in the
-> > > Micrel PHY driver under drivers/net/phy/micrel.c, can we converge
-> > > on the PHY driver which has a reasonable amount of infrastructure
-> > > for dealing with workarounds, indirect or direct MMD accesses
-> > > etc.? =20
-> >=20
-> > Actually the internal PHY used in the KSZ9897/KSZ9477/KSZ9893
-> > switches are special and only used inside those switches.  Putting
-> > all the switch related code in Micrel PHY driver does not really
-> > help.  When the switch is reset all those PHY registers need to be
-> > set again, but the PHY driver only executes those code during PHY
-> > initialization.  I do not know if there is a good way to tell the
-> > PHY to re-initialize again. =20
->=20
-> Suppose there was a method to tell the PHY driver to re-initialize
-> itself. What would be the key points in which the DSA switch driver
-> would need to trigger that method? Where is the switch reset at
-> runtime?
+Fixes: 74784081aac8 ("riscv: Add uprobes supported")
+Signed-off-by: Nam Cao <namcaov@gmail.com>
+Tested-by: Björn Töpel <bjorn@rivosinc.com>
+---
+v2: remove #ifdef CONFIG_RISCV_ISA_C (Guo Ren)
 
-Tristam has explained why adding the internal switch PHY errata to
-generic PHY code is not optimal.
+ arch/riscv/kernel/probes/uprobes.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-If adding MMD generic code is a problem - then I'm fine with just
-clearing proper bits with just two indirect writes in the
-drivers/net/dsa/microchip/ksz9477.c
+diff --git a/arch/riscv/kernel/probes/uprobes.c b/arch/riscv/kernel/probes/uprobes.c
+index 194f166b2cc4..4b3dc8beaf77 100644
+--- a/arch/riscv/kernel/probes/uprobes.c
++++ b/arch/riscv/kernel/probes/uprobes.c
+@@ -3,6 +3,7 @@
+ #include <linux/highmem.h>
+ #include <linux/ptrace.h>
+ #include <linux/uprobes.h>
++#include <asm/insn.h>
+ 
+ #include "decode-insn.h"
+ 
+@@ -17,6 +18,11 @@ bool is_swbp_insn(uprobe_opcode_t *insn)
+ #endif
+ }
+ 
++bool is_trap_insn(uprobe_opcode_t *insn)
++{
++	return riscv_insn_is_ebreak(*insn) || riscv_insn_is_c_ebreak(*insn);
++}
++
+ unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
+ {
+ 	return instruction_pointer(regs);
+-- 
+2.34.1
 
-I would also prefer to keep the separate ksz9477_errata() function, so
-we could add other errata code there.
-
-Just informative - without this patch the KSZ9477-EVB board's network
-is useless when the other peer has EEE enabled by default (like almost
-all non managed ETH switches).
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/wy0d42mqFkkroqkdmLa_Us7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTtrdUACgkQAR8vZIA0
-zr3zHQgAjPpreQVnthLyCK3OHJt7/Wv4eskZUdPniDs2WWDZWTcYeI3lHrwcRJO6
-t2nuttwgBsKf9PBdAuEgI5UBHCFfD3ViE2XggDMHUjSdMwkvpT6dVshp8NRDsIKA
-3R999zT3T1caWou+GEJ2kKQ1lWVUmybOJyHHqiZV0bT7ghF5JwDYg0PLmIdBiUfp
-kYALohsjYisn5mJ/VU9/zHvP9jzH/m+CJit7mD62RmKvQ79Vof9pxZrEfvMylS6r
-9xNdI8xFewbSwsKwzrc0BmVr78nLRmoAoBz6IeixInI8xl9Dtki7N6Jt8U0mh1ds
-7QuZdyuY98C8aakO53JhHgK9pcF96A==
-=Pi6u
------END PGP SIGNATURE-----
-
---Sig_/wy0d42mqFkkroqkdmLa_Us7--
