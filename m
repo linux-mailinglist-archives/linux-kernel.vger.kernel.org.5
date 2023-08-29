@@ -2,344 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CD678CB91
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3773C78CB93
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238149AbjH2Ruy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        id S238032AbjH2Rv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238161AbjH2Ruu (ORCPT
+        with ESMTP id S238117AbjH2Ru5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:50:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC6DE9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693331447; x=1724867447;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4QxiCQjQW/UnKH6n0uDRKOzqFIqrY2QFeJcA2859rhM=;
-  b=f35Ns6Onscf5x0hKaucIi9OElG8Hw7VInPvG6CkvTAvGsF9yUgP4NNW6
-   F6H2Sp3MEmBHo9ISpLmw1FcIMbfzEz1LXJbDTkVShXGpCVAeT3ZJJCIAL
-   +sNHEG3hou/7Bs+LTZuVex0JO4ZtY4AMKb1H1kGsowxsFruS08RiLbyCz
-   W5O2ZZPiOvcNQjPkizma0DvcF+6bxtmcJNbsLjuv6xrz4neS4v04oMXod
-   K6esvEiKhCTJ7loA8cgPBLL4e8cf+odAEiNUZgD6hBhCZE4YJGN5/O7Zw
-   8AQBfZ7Y2Lv7ZKeSabJ3IgDgyv4u5R2rj8d39C9OBzChInmdKXFPcU2ev
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="439392188"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="439392188"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 10:50:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="808786659"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="808786659"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Aug 2023 10:50:43 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qb2rT-0008yZ-0a;
-        Tue, 29 Aug 2023 17:50:43 +0000
-Date:   Wed, 30 Aug 2023 01:50:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 1/1] ALSA: control: Use list_for_each_entry_safe()
-Message-ID: <202308300128.l96uIvcS-lkp@intel.com>
-References: <20230829142307.3916823-1-andriy.shevchenko@linux.intel.com>
+        Tue, 29 Aug 2023 13:50:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90169FD
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:50:54 -0700 (PDT)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0191466071FD;
+        Tue, 29 Aug 2023 18:50:50 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693331453;
+        bh=8DcTnMbWDXxwqColZlQlOY7oUF8gVbQDDNW2xabsrNw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q3R+QoB9Kw2lSCg6+NXqE1Eq6rtXbsdm3PjqUjH3EavQBFElFDJIS+fnaM/I/NsoG
+         kwuL90cxyuNRlGaO1oVhWxUZ09hYXON51/eN1wnpaLhL6W0GDX4B0NFb3uGhDDYEyN
+         ikuK5dpSltaVRUKYrvJCK3ByjsTqJBNhCdJCFkk4itrZc4oHDJu+wi1bZ5fgLgMOMj
+         YbPj6OPVbjwdQDuXqyxIShCcoc20KP9uf961mrDPwlxJg2iGlP3nX3JbArffDR9mXL
+         TPhJ2IDmaRLuwQ84hTZGI2k03KvpzODTVgEuUEkalLauPr35eU6sMpN4MPosBw+3Fj
+         ppWx17RC2WQSQ==
+Date:   Tue, 29 Aug 2023 13:50:46 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Stu Hsieh <stu.hsieh@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] drm/mediatek: dpi/dsi: fix possible_crtcs calculation
+Message-ID: <fca464b9-9f32-4420-90fd-05e851871c25@notapiano>
+References: <20230829131941.3353439-1-mwalle@kernel.org>
+ <20230829131941.3353439-2-mwalle@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230829142307.3916823-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230829131941.3353439-2-mwalle@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Tue, Aug 29, 2023 at 03:19:41PM +0200, Michael Walle wrote:
+> mtk_drm_find_possible_crtc_by_comp() assumed that the main path will
+> always have the CRTC with id 0, the ext id 1 and the third id 2. This
+> is only true if the paths are all available. But paths are optional (see
+> also comment in mtk_drm_kms_init()), e.g. the main path might not be
+> enabled or available at all. Then the CRTC IDs will shift one up, e.g.
+> ext will be 1 and the third path will be 2.
+> 
+> To fix that, dynamically calculate the IDs by the precence of the paths.
+> 
+> Fixes: 5aa8e7647676 ("drm/mediatek: dpi/dsi: Change the getting possible_crtc way")
+> Suggested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 41 ++++++++++++++-------
+>  1 file changed, 27 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> index 771f4e173353..f3064bff64e8 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -526,21 +526,34 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+>  						struct device *dev)
+>  {
+>  	struct mtk_drm_private *private = drm->dev_private;
+> -	unsigned int ret = 0;
+> -
+> -	if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path, private->data->main_len,
+> -				     private->ddp_comp))
+> -		ret = BIT(0);
+> -	else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
+> -					  private->data->ext_len, private->ddp_comp))
+> -		ret = BIT(1);
+> -	else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
+> -					  private->data->third_len, private->ddp_comp))
+> -		ret = BIT(2);
+> -	else
+> -		DRM_INFO("Failed to find comp in ddp table\n");
+> +	int i = 0;
+> +
+> +	if (private->data->main_path) {
+> +		if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path,
+> +					     private->data->main_len,
+> +					     private->ddp_comp))
+> +			return BIT(i);
+> +		i++;
+> +	}
+> +
+> +	if (private->data->ext_path) {
+> +		if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
+> +					     private->data->ext_len,
+> +					     private->ddp_comp))
+> +			return BIT(i);
+> +		i++;
 
-kernel test robot noticed the following build errors:
+This won't work. On MT8195 there are two display IPs, vdosys0 and vdosys1,
+vdosys0 only has the main path while vdosys1 only has the external path. So you
+need to loop over each one in all_drm_private[j] to get the right crtc ID for
+MT8195.
 
-[auto build test ERROR on tiwai-sound/for-next]
-[also build test ERROR on tiwai-sound/for-linus linus/master v6.5 next-20230829]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/ALSA-control-Use-list_for_each_entry_safe/20230829-222521
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230829142307.3916823-1-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v2 1/1] ALSA: control: Use list_for_each_entry_safe()
-config: i386-buildonly-randconfig-001-20230829 (https://download.01.org/0day-ci/archive/20230830/202308300128.l96uIvcS-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308300128.l96uIvcS-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308300128.l96uIvcS-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> sound/core/control_led.c:304:3: error: assigning to 'struct snd_ctl_led_ctl' from incompatible type 'typeof (*(lctl)) *' (aka 'struct snd_ctl_led_ctl *'); dereference with *
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:777:5: note: expanded from macro 'list_for_each_entry_safe'
-                   n = list_next_entry(pos, member);                       \
-                     ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> sound/core/control_led.c:304:3: error: assigning to 'struct snd_ctl_led_ctl *' from incompatible type 'struct snd_ctl_led_ctl'; take the address with &
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^                              ~~~~~
-                                                  &
-   include/linux/list.h:779:11: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                    ^ ~
->> sound/core/control_led.c:304:3: error: member reference type 'struct snd_ctl_led_ctl' is not a pointer; did you mean to use '.'?
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:18: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:520:15: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
-   include/linux/container_of.h:19:26: note: expanded from macro 'container_of'
-           void *__mptr = (void *)(ptr);                                   \
-                                   ^~~
->> sound/core/control_led.c:304:3: error: member reference type 'struct snd_ctl_led_ctl' is not a pointer; did you mean to use '.'?
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:18: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:520:15: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:338:63: note: expanded from macro '__same_type'
-   #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-                                                                 ^
-   include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
-   #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-                                    ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
-   #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-                                                          ^~~~
->> sound/core/control_led.c:304:3: error: indirection requires pointer operand ('struct snd_ctl_led_ctl' invalid)
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:40: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-   include/linux/list.h:520:20: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:338:74: note: expanded from macro '__same_type'
-   #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-                                                                            ^
-   include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
-   #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-                                    ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
-   #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-                                                          ^~~~
->> sound/core/control_led.c:304:3: error: member reference type 'struct snd_ctl_led_ctl' is not a pointer; did you mean to use '.'?
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:18: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:520:15: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:338:63: note: expanded from macro '__same_type'
-   #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-                                                                 ^
-   include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
-   #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-                                    ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
-   #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-                                                          ^~~~
->> sound/core/control_led.c:304:3: error: indirection requires pointer operand ('struct snd_ctl_led_ctl' invalid)
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:40: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-   include/linux/list.h:520:20: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
-   include/linux/container_of.h:23:4: note: expanded from macro 'container_of'
-           ((type *)(__mptr - offsetof(type, member))); })
-             ^~~~
->> sound/core/control_led.c:304:3: error: indirection requires pointer operand ('struct snd_ctl_led_ctl' invalid)
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:40: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-   include/linux/list.h:520:20: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
-   include/linux/container_of.h:23:30: note: expanded from macro 'container_of'
-           ((type *)(__mptr - offsetof(type, member))); })
-                              ~~~~~~~~~^~~~~~~~~~~~~
-   include/linux/stddef.h:16:51: note: expanded from macro 'offsetof'
-   #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
-                                                      ^~~~
->> sound/core/control_led.c:304:3: error: assigning to 'struct snd_ctl_led_ctl' from incompatible type 'void'
-                   list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:18: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                           ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/core/control_led.c:329:2: error: assigning to 'struct snd_ctl_led_ctl' from incompatible type 'typeof (*(lctl)) *' (aka 'struct snd_ctl_led_ctl *'); dereference with *
-           list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:777:5: note: expanded from macro 'list_for_each_entry_safe'
-                   n = list_next_entry(pos, member);                       \
-                     ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/core/control_led.c:329:2: error: assigning to 'struct snd_ctl_led_ctl *' from incompatible type 'struct snd_ctl_led_ctl'; take the address with &
-           list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-           ^                              ~~~~~
-                                          &
-   include/linux/list.h:779:11: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                    ^ ~
-   sound/core/control_led.c:329:2: error: member reference type 'struct snd_ctl_led_ctl' is not a pointer; did you mean to use '.'?
-           list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:18: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:520:15: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
-   include/linux/container_of.h:19:26: note: expanded from macro 'container_of'
-           void *__mptr = (void *)(ptr);                                   \
-                                   ^~~
-   sound/core/control_led.c:329:2: error: member reference type 'struct snd_ctl_led_ctl' is not a pointer; did you mean to use '.'?
-           list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:18: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:520:15: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:338:63: note: expanded from macro '__same_type'
-   #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-                                                                 ^
-   include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
-   #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-                                    ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
-   #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-                                                          ^~~~
-   sound/core/control_led.c:329:2: error: indirection requires pointer operand ('struct snd_ctl_led_ctl' invalid)
-           list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:40: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-   include/linux/list.h:520:20: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:338:74: note: expanded from macro '__same_type'
-   #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-                                                                            ^
-   include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
-   #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-                                    ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
-   #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-                                                          ^~~~
-   sound/core/control_led.c:329:2: error: member reference type 'struct snd_ctl_led_ctl' is not a pointer; did you mean to use '.'?
-           list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:779:20: note: expanded from macro 'list_for_each_entry_safe'
-                pos = n, n = list_next_entry(n, member))
-                             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:564:18: note: expanded from macro 'list_next_entry'
-           list_entry((pos)->member.next, typeof(*(pos)), member)
-           ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:520:15: note: expanded from macro 'list_entry'
-           container_of(ptr, type, member)
-           ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:338:63: note: expanded from macro '__same_type'
-   #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-                                                                 ^
-   include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
-   #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-                                    ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
-   #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-                                                          ^~~~
-   sound/core/control_led.c:329:2: error: indirection requires pointer operand ('struct snd_ctl_led_ctl' invalid)
-
-
-vim +304 sound/core/control_led.c
-
-   295	
-   296	static void snd_ctl_led_clean(struct snd_card *card)
-   297	{
-   298		unsigned int group;
-   299		struct snd_ctl_led *led;
-   300		struct snd_ctl_led_ctl *lctl, _lctl;
-   301	
-   302		for (group = 0; group < MAX_LED; group++) {
-   303			led = &snd_ctl_leds[group];
- > 304			list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-   305				if (!card || lctl->card == card)
-   306					snd_ctl_led_ctl_destroy(lctl);
-   307		}
-   308	}
-   309	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Nícolas
