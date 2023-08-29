@@ -2,223 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F07B78C0E8
+	by mail.lfdr.de (Postfix) with ESMTP id ECD7E78C0E9
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbjH2JCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56062 "EHLO
+        id S234372AbjH2JCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234354AbjH2JBo (ORCPT
+        with ESMTP id S234378AbjH2JB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:01:44 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1BA107
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:01:41 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-44d4d997dcfso1663754137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693299700; x=1693904500;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=n+CqqB4EY3ISGsS51lvl5duWo7g4p4NV86kSm7kFdCw=;
-        b=CTQlSHoodUNoGIxrDYWdQGj8MxQrd+T9d6i7bsORQQbHmxA8AuwDYWti2UrW5koY4+
-         I7F2C1OLNXGpUq47R8gm6Wm93PLr+PZ3CEvPDyFwQkP1PwBrAfi+3K0mSKYBBHf1ZTot
-         86pmmbdxi5mWDFNo6rhmMu8EDWPo0KKpAN8caxuilOQq29RK9EkGIhx4mGXszgrRACOQ
-         IGVmqN+qGRKOhJXK9nGCTn0JN4PzfgXsQDd9W0/ZC+9KM/s59GlzsEb4AjfnHUymBIBI
-         H5aS+trRmY0seudVqvyBCRojNSjRFmKqyRhp4rb4+k+BXRazAY4pwgWY5YefKvUgYY9d
-         i77Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693299700; x=1693904500;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n+CqqB4EY3ISGsS51lvl5duWo7g4p4NV86kSm7kFdCw=;
-        b=B2RfsduV+1ocmeOltxljYvZujBOXhEbS8D1AIMma8wtm36b8K5oX4nyi1TBIT2ovbk
-         /rX1ZZ+YgLVYocoBxxt+C0UJFZibeYTW/7brmanb/BFPn/OwR8hsJZvx88hr0etQikWI
-         N6zS+9ZFJNXGXEdJTbjiAtqftMvneHp+PIRwBQx0LcXuOzk23esfPXmUc6YaoYnJyFmP
-         YWqwv9/7Cd6q6EEctjrqk2OOpA25yDoB+KjuT7ngiyr6weSwf+nVb+ODjM+HCVOzMVNv
-         XjdIshnuYg6WwLxiKH+lJILyA4rnGoHU3Qizu33ewMVDYT0Iig2Sy1BJ6KF76Z4ZfEjz
-         CFug==
-X-Gm-Message-State: AOJu0YyUBu/kKFHdHVZLNb2CFNc2u5AFHp+bcI68QJ/lWYhuc7P3mP6k
-        brysjANSyn3NZoSbmvpKXUblC0rcPGOBNmJ/NcnG7A==
-X-Google-Smtp-Source: AGHT+IEXREhN0QCHw4JhByYeog64RUzxQ1vaMpUYuUfifiJfTidhNz/iw1Ug/Bnk5aAZcTvF5yWugzL8QmphCZKjLeo=
-X-Received: by 2002:a05:6102:2365:b0:44e:af33:4607 with SMTP id
- o5-20020a056102236500b0044eaf334607mr7210377vsa.2.1693299700108; Tue, 29 Aug
- 2023 02:01:40 -0700 (PDT)
+        Tue, 29 Aug 2023 05:01:56 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0514107;
+        Tue, 29 Aug 2023 02:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1693299709;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=enNMWrefHR+UVXg2TD1VzcTqWSNIgCW2PLkCOpY+hDY=;
+        b=kJyFwwXxQtr788Yy06gQm27MSUBsbHvOOgHhPIeH3vxi4aUeBTlCTJSCLWF8PujTF9Z3C9
+        YMb9boAkONkv9/OeiIvDdyTTGfrKbjUQImAymMg69znNF1EMRWxHSrnlKxyA7YB0W8l0sc
+        uwXtL/hfJy6LEg5Xv0vnEiUAuN3Vy18=
+Received: from [192.168.1.18] (91-171-21-26.subs.proxad.net [91.171.21.26])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 80c32b59 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 29 Aug 2023 09:01:49 +0000 (UTC)
+Message-ID: <055a2e15-58e0-9644-3779-75ba1d2d14be@sionneau.net>
+Date:   Tue, 29 Aug 2023 11:01:48 +0200
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 29 Aug 2023 14:31:28 +0530
-Message-ID: <CA+G9fYvFG4AuXiUQMFBaB8G+a2+-xxbikYkT7Rnpwj5s5KoVaQ@mail.gmail.com>
-Subject: selftests: net: pmtu.sh: Unable to handle kernel paging request at
- virtual address
-To:     Netdev <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] i2c: designware: fix __i2c_dw_disable() in case master
+ is holding SCL low
+Content-Language: en-US
+To:     Yann Sionneau <ysionneau@kalrayinc.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Yann Sionneau <ysionneau@kalray.eu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Julian Vetter <jvetter@kalrayinc.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Borne <jborne@kalray.eu>
+References: <20230822090233.14885-1-ysionneau@kalray.eu>
+ <2f215e0f-c2ed-4300-8b75-1949f17cdf1c@linux.intel.com>
+ <89e54d6a-9105-bf6a-72bb-fd9e0fb7b2f8@kalrayinc.com>
+From:   Yann Sionneau <yann@sionneau.net>
+In-Reply-To: <89e54d6a-9105-bf6a-72bb-fd9e0fb7b2f8@kalrayinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The selftests: net: pmtu.sh running on Linux next got this kernel panic on
-qemu-arm64.
+Hi,
 
+Le 22/08/2023 à 12:28, Yann Sionneau a écrit :
+> Hi,
+>
+> On 8/22/23 12:14, Jarkko Nikula wrote:
+>> Hi
+>>
+>> On 8/22/23 12:02, Yann Sionneau wrote:
+>>> The DesignWare IP can be synthesized with the 
+>>> IC_EMPTYFIFO_HOLD_MASTER_EN
+>>> parameter.
+>>> In this case, when the TX FIFO gets empty and the last command 
+>>> didn't have
+>>> the STOP bit (IC_DATA_CMD[9]), the controller will hold SCL low until
+>>> a new command is pushed into the TX FIFO or the transfer is aborted.
+>>>
+>>> When the controller is holding SCL low, it cannot be disabled.
+>>> The transfer must first be aborted.
+>>> Also, the bus recovery won't work because SCL is held low by the 
+>>> master.
+>>>
+>>> Check if the master is holding SCL low in __i2c_dw_disable() before 
+>>> trying
+>>> to disable the controller. If SCL is held low, an abort is initiated.
+>>> When the abort is done, then proceed with disabling the controller.
+>>>
+>>> This whole situation can happen for instance during SMBus read data 
+>>> block
+>>> if the slave just responds with "byte count == 0".
+>>> This puts the driver in an unrecoverable state, because the 
+>>> controller is
+>>> holding SCL low and the current __i2c_dw_disable() procedure is not
+>>> working. In this situation only a SoC reset can fix the i2c bus.
+>>>
+>> Is this fixed already by the commit 69f035c480d7 ("i2c: designware: 
+>> Handle invalid SMBus block data response length value")?
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/commit/?h=i2c/for-next&id=69f035c480d76f12bf061148ccfd578e1099e5fc 
+>>
+>
+> Indeed the bug that I am having is fixed by 
+> 69f035c480d76f12bf061148ccfd578e1099e5fc
+>
+> Meaning that thanks to 69f035c receiving a SMBus byte count of 0 won't 
+> put the controller into a state where the completion will timeout and 
+> it will need to start a recovery that will fail and then a controller 
+> disabling that will also fail.
+>
+> But, still, the disabling procedure is wrong, it lacks the abort part 
+> (in case SCL is held low).
+>
+> What my patch does, is fixing the disabling procedure. So that - for 
+> example - even without 69f035c, the controller will timeout when 
+> receiving byte count of 0, triggering the "disabling" procedure which 
+> will work to recover the bus.
+>
+> My patch fixes the general disabling code, that could be triggered by 
+> the bug fixed by 69f035c but also by any other bug really.
+>
+> Speaking of 69f035c btw ... I am really wondering if it's the best 
+> fix, because it will lie to the kernel saying "we have byte count of 
+> 1, read another byte" to trigger a read with STOP bit set so that the 
+> transfer does finish and the controller does not timeout. But to do 
+> this it will do an extra spurious byte read.
+>
+> I propose another approach that will acknowledge that "we are in a bad 
+> condition" and directly abort the transfer without doing an extra 
+> read: https://marc.info/?l=linux-i2c&m=169175828013532&w=2
+>
+> I hope my answer to your question is clear enough... English is not my 
+> native language.
+>
+> Regards,
+>
+Is this any clearer?
 
-logs:
-====
-[    0.000000] Linux version 6.5.0 (tuxmake@tuxmake) (Debian clang
-version 18.0.0 (++20230822112105+841c4dc7e51e-1~exp1~20230822112223.851),
-Debian LLD 18.0.0) #1 SMP PREEMPT @1693176139
+Also, what do you think about my remarks on 69f035c?
 
-...
-# selftests: net: pmtu.sh
-# TEST: ipv4: PMTU exceptions                                         [ OK ]
-# TEST: ipv4: PMTU exceptions - nexthop objects                       [ OK ]
-# TEST: ipv6: PMTU exceptions                                         [ OK ]
-# TEST: ipv6: PMTU exceptions - nexthop objects                       [ OK ]
+Regards,
 
-...
+-- 
 
-# TEST: vti4: PMTU exceptions, routed (ESP-in-UDP)                    [FAIL]
-#   PMTU exception wasn't created after exceeding PMTU (IP payload length 1438)
-# ./pmtu.sh: 938: kill: No such process
-#
-# ./pmtu.sh: 938: kill: No such process
-#
-<47>[  366.411270] systemd-journald[84]: Sent WATCHDOG=1 notification.
-# TEST: vti4: default MTU assignment                                  [ OK ]
-# TEST: vti6: default MTU assignment                                  [ OK ]
-# TEST: vti4: MTU setting on link creation                            [ OK ]
-# TEST: vti6: MTU setting on link creation                            [ OK ]
-# TEST: vti6: MTU changes on link changes                             [ OK ]
-# TEST: ipv4: cleanup of cached exceptions                            [ OK ]
-# TEST: ipv4: cleanup of cached exceptions - nexthop objects          [ OK ]
-# TEST: ipv6: cleanup of cached exceptions                            [ OK ]
-# TEST: ipv6: cleanup of cached exceptions - nexthop objects          [ OK ]
-<1>[  398.987591] Unable to handle kernel paging request at virtual
-address ffff5dbb8189f000
-<1>[  398.988469] Mem abort info:
-<1>[  398.988712]   ESR = 0x0000000097b58004
-<1>[  398.989264]   EC = 0x25: DABT (current EL), IL = 32 bits
-<1>[  398.989893]   SET = 0, FnV = 0
-<1>[  398.990312]   EA = 0, S1PTW = 0
-<1>[  398.990768]   FSC = 0x04: level 0 translation fault
-<1>[  398.992330] Data abort info:
-<1>[  398.992591]   Access size = 4 byte(s)
-<1>[  398.992811]   SSE = 1, SRT = 21
-<1>[  398.993008]   SF = 1, AR = 0
-<1>[  398.993243]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-<1>[  398.993601]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-<1>[  398.994094] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000041d49000
-<1>[  398.994603] [ffff5dbb8189f000] pgd=0000000000000000, p4d=0000000000000000
-<0>[  398.995464] Internal error: Oops: 0000000097b58004 [#1] PREEMPT SMP
-<4>[  398.996177] Modules linked in: fou6 sit fou bridge stp llc vxlan
-ip6_udp_tunnel udp_tunnel act_csum libcrc32c act_pedit cls_flower
-sch_prio veth vrf macvtap macvlan tap crct10dif_ce sm3_ce sm3 sha3_ce
-sha512_ce sha512_arm64 fuse drm dm_mod ip_tables x_tables [last
-unloaded: test_blackhole_dev]
-<4>[  398.999384] CPU: 1 PID: 132 Comm: kworker/u4:3 Not tainted 6.5.0 #1
-<4>[  399.000045] Hardware name: linux,dummy-virt (DT)
-<4>[  399.001079] Workqueue: netns cleanup_net
-<4>[  399.002441] pstate: 824000c9 (Nzcv daIF +PAN -UAO +TCO -DIT
--SSBS BTYPE=--)
-<4>[  399.003881] pc : percpu_counter_add_batch+0x28/0xd0
-<4>[  399.004637] lr : dst_destroy+0x44/0x1e4
-<4>[  399.004904] sp : ffff80008000be70
-<4>[  399.005864] x29: ffff80008000be70 x28: ffffa2457df6ea40 x27:
-ffffa2457df24008
-<4>[  399.006586] x26: ffffa2457dffa000 x25: 000000000000000a x24:
-0000000000000002
-<4>[  399.007360] x23: 0000000000000000 x22: 000000000000000a x21:
-ffff0000c0e90ec0
-<4>[  399.008276] x20: 0000000000000000 x19: ffff0000c4f83440 x18:
-0000000000000000
-<4>[  399.009327] x17: ffff5dbb8189f000 x16: ffff800080008000 x15:
-0000000000000010
-<4>[  399.009653] x14: 0000000000000010 x13: 0000000000000004 x12:
-0000000000000701
-<4>[  399.010159] x11: 0000000000000001 x10: fffffc00030c7260 x9 :
-ffff5dbb8189f000
-<4>[  399.010742] x8 : 0000000000000000 x7 : 7f7f7f7f7f7f7f7f x6 :
-fefefefefefefeff
-<4>[  399.012056] x5 : 000000000010000e x4 : fffffc00030c7260 x3 :
-000000000010000e
-<4>[  399.013082] x2 : 0000000000000020 x1 : ffffffffffffffff x0 :
-ffff0000c4f83440
-<4>[  399.014716] Call trace:
-<4>[  399.015702]  percpu_counter_add_batch+0x28/0xd0
-<4>[  399.016399]  dst_destroy+0x44/0x1e4
-<4>[  399.016681]  dst_destroy_rcu+0x14/0x20
-<4>[  399.017009]  rcu_core+0x2d0/0x5e0
-<4>[  399.017311]  rcu_core_si+0x10/0x1c
-<4>[  399.017609]  __do_softirq+0xd4/0x23c
-<4>[  399.017991]  ____do_softirq+0x10/0x1c
-<4>[  399.018320]  call_on_irq_stack+0x24/0x4c
-<4>[  399.018723]  do_softirq_own_stack+0x1c/0x28
-<4>[  399.022639]  __irq_exit_rcu+0x6c/0xcc
-<4>[  399.023434]  irq_exit_rcu+0x10/0x1c
-<4>[  399.023962]  el1_interrupt+0x8c/0xc0
-<4>[  399.024810]  el1h_64_irq_handler+0x18/0x24
-<4>[  399.025324]  el1h_64_irq+0x64/0x68
-<4>[  399.025612]  _raw_spin_lock_bh+0x0/0x6c
-<4>[  399.026102]  cleanup_net+0x280/0x45c
-<4>[  399.026403]  process_one_work+0x1d4/0x310
-<4>[  399.027140]  worker_thread+0x248/0x470
-<4>[  399.027621]  kthread+0xfc/0x184
-<4>[  399.028068]  ret_from_fork+0x10/0x20
-<0>[  399.029333] Code: d50343df aa0003f3 f9401008 d53cd049 (b8a86935)
-<4>[  399.030578] ---[ end trace 0000000000000000 ]---
-<0>[  399.031422] Kernel panic - not syncing: Oops: Fatal exception in interrupt
-<2>[  399.032320] SMP: stopping secondary CPUs
-<0>[  399.033487] Kernel Offset: 0x2244fc200000 from 0xffff800080000000
-<0>[  399.033819] PHYS_OFFSET: 0x40000000
-<0>[  399.034096] CPU features: 0x00000000,68f167a1,ccc6773f
-<0>[  399.034779] Memory Limit: none
-<0>[  399.035768] ---[ end Kernel panic - not syncing: Oops: Fatal
-exception in interrupt ]---
+Yann
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.5/testrun/19373075/suite/log-parser-test/test/check-kernel-oops/log
- - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.5/testrun/19373075/suite/log-parser-test/tests/
- -   https://storage.tuxsuite.com/public/linaro/lkft/builds/2UaRggcJ0lNsDMIbbFaiyz3Qwsi/
-
-Steps to reproduce:
-===================
-#
-# To install tuxrun to your home directory at ~/.local/bin:
-# pip3 install -U --user tuxrun==0.48.0
-#
-# Or install a deb/rpm depending on the running distribution
-# See https://tuxmake.org/install-deb/ or
-# https://tuxmake.org/install-rpm/
-#
-# See https://tuxrun.org/ for complete documentation.
-#
-# Please follow the additional instructions if the tests are related to FVP:
-# https://tuxrun.org/run-fvp/
-#
-
-tuxrun --runtime podman --device qemu-arm64 --boot-args rw --kernel
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2UaRggcJ0lNsDMIbbFaiyz3Qwsi/Image.gz
---modules https://storage.tuxsuite.com/public/linaro/lkft/builds/2UaRggcJ0lNsDMIbbFaiyz3Qwsi/modules.tar.xz
---rootfs https://storage.tuxboot.com/debian/bookworm/arm64/rootfs.ext4.xz
---parameters SHARD_INDEX=1 --parameters SKIPFILE=skipfile-lkft.yaml
---parameters SHARD_NUMBER=5 --parameters
-KSELFTEST=https://storage.tuxsuite.com/public/linaro/lkft/builds/2UaRggcJ0lNsDMIbbFaiyz3Qwsi/kselftest.tar.xz
---image docker.io/linaro/tuxrun-dispatcher:v0.48.0 --tests
-kselftest-net --timeouts boot=30 kselftest-net=30
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
