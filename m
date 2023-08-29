@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BDC78C953
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FAF78C95B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237403AbjH2QF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S236263AbjH2QJo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Aug 2023 12:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbjH2QFv (ORCPT
+        with ESMTP id S229481AbjH2QJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:05:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1565312F;
-        Tue, 29 Aug 2023 09:05:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 97AA8640E7;
-        Tue, 29 Aug 2023 16:05:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 081B6C433CA;
-        Tue, 29 Aug 2023 16:05:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693325147;
-        bh=1LSVrYHTGhcj65LbxMw7ku/Xs3cApviH4txKbEqM25c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LPfLluIVM9evpUF7SOSi2JSoFHEuxyXEaSHXTKSuE9BEQciKgiK8HnOFRGCJtmCeC
-         eGbEL+Wy4+tU78yOZ1E/nbAtcsOgvAIi5uh+RAA3L0SedRkUZA7ZDLfBi8XHP30sjM
-         CORh1Eaergb5SEXIl9ntF9fxLagZiQj8KQiM2gNMPBgipo46J4gT0s8Tc1ajevFhii
-         Yx5PM47Gq47dGMx21KEQsHMAw7f5bb1VXj7X56FChG24A8A6jSJ+3f1SRpbFoVw6uS
-         NGkZAMjooU+yV1+KWxuLjKvukkbs+UGz6Tmls4rJNJmuB6na1l6J13MegK8hvXA3wu
-         9b0p6VpvhLqPA==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2bd0d135ca3so38258441fa.3;
-        Tue, 29 Aug 2023 09:05:46 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwFMyCkGlyQp4zGTuhTtPyQ3jjNX7XnqHmDdTng/qg9vLYiLb+E
-        1jeHNvS4aj3RZXubfNhrDy/dMx/jPz37Q3zMrQ==
-X-Google-Smtp-Source: AGHT+IERLJ82n4GivnTA9BfaU/9jckgs4trztHsxbFce0WwtP9O1SSR6MXQ4pJFSvItAE/+i7S3wz6XvVXei2FjLx4g=
-X-Received: by 2002:a2e:9345:0:b0:2b9:3684:165 with SMTP id
- m5-20020a2e9345000000b002b936840165mr19552331ljh.8.1693325145031; Tue, 29 Aug
- 2023 09:05:45 -0700 (PDT)
+        Tue, 29 Aug 2023 12:09:17 -0400
+Received: from torres.zugschlus.de (torres.zugschlus.de [IPv6:2a01:238:42bc:a101::2:100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B20A1A6;
+        Tue, 29 Aug 2023 09:09:14 -0700 (PDT)
+Received: from mh by torres.zugschlus.de with local (Exim 4.96)
+        (envelope-from <mh+linux-kernel@zugschlus.de>)
+        id 1qb1HC-002bdr-1L;
+        Tue, 29 Aug 2023 18:09:10 +0200
+Date:   Tue, 29 Aug 2023 18:09:10 +0200
+From:   Marc Haber <mh+linux-kernel@zugschlus.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, linux-kernel@vger.kernel.org,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tony Lindgren <tony@atomide.com>
+Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd
+ related
+Message-ID: <ZO4YJlhHYjM7MsK4@torres.zugschlus.de>
+References: <ZO2RlYCDl8kmNHnN@torres.zugschlus.de>
+ <ZO2piz5n1MiKR-3-@debian.me>
+ <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
+ <ZO4GeazfcA09SfKw@google.com>
+ <ZO4JCfnzRRL1RIZt@torres.zugschlus.de>
+ <ZO4RzCr/Ugwi70bZ@google.com>
 MIME-Version: 1.0
-References: <20230827133705.12991-1-ilpo.jarvinen@linux.intel.com> <20230827133705.12991-8-ilpo.jarvinen@linux.intel.com>
-In-Reply-To: <20230827133705.12991-8-ilpo.jarvinen@linux.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 29 Aug 2023 11:05:32 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLELe91os89A1bOG+RPQpdFz0u_SyHx19zhkU19sPH7jg@mail.gmail.com>
-Message-ID: <CAL_JsqLELe91os89A1bOG+RPQpdFz0u_SyHx19zhkU19sPH7jg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] PCI: xgene: Do PCI error check on own line
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        Toan Le <toan@os.amperecomputing.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <ZO4RzCr/Ugwi70bZ@google.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 8:37=E2=80=AFAM Ilpo J=C3=A4rvinen
-<ilpo.jarvinen@linux.intel.com> wrote:
->
-> Instead of a if condition with a line split, use the usual error
-> handling pattern with a separate variable to improve readability.
->
-> No functional changes intended.
->
-> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  drivers/pci/controller/pci-xgene.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/=
-pci-xgene.c
-> index 887b4941ff32..b7f338de160b 100644
-> --- a/drivers/pci/controller/pci-xgene.c
-> +++ b/drivers/pci/controller/pci-xgene.c
-> @@ -163,9 +163,10 @@ static int xgene_pcie_config_read32(struct pci_bus *=
-bus, unsigned int devfn,
->                                     int where, int size, u32 *val)
->  {
->         struct xgene_pcie *port =3D pcie_bus_to_port(bus);
-> +       int ret;
->
-> -       if (pci_generic_config_read32(bus, devfn, where & ~0x3, 4, val) !=
-=3D
-> -           PCIBIOS_SUCCESSFUL)
-> +       ret =3D pci_generic_config_read32(bus, devfn, where & ~0x3, 4, va=
-l);
-> +       if (ret !=3D PCIBIOS_SUCCESSFUL)
+On Tue, Aug 29, 2023 at 08:42:04AM -0700, Sean Christopherson wrote:
+> On Tue, Aug 29, 2023, Marc Haber wrote:
+> > On Tue, Aug 29, 2023 at 07:53:45AM -0700, Sean Christopherson wrote:
+> > > What is different between the bad host(s) and the good host(s)?  E.g. kernel, QEMU,
+> > 
+> > The bad host is an APU ("AMD GX-412TC SOC") with 4 GB of RAM, one of the
+> > good hosts is a "Xeon(R) CPU E3-1246 v3" with 32 GB of RAM.
+> 
+> I don't expect it to help, but can you try booting the bad host with
+> "spec_rstack_overflow=off"?
 
-Long term I think we want to replace these error codes with standard
-linux ones. As PCIBIOS_SUCCESSFUL is 0, I would change this to just:
+That is destined to go on the kernel command line of the host, not the
+VM, right? I am asking because that host runs a set of VMs that are not
+that easy to reboot without impact on other services, I'd rather not do
+experiments with that.
 
-if (pci_generic_config_read32(bus, devfn, where & ~0x3, 4, val))
-    return PCIBIOS_DEVICE_NOT_FOUND;
+The issue can be triggered and worked around by changing the VM only, I
+didn't touch the host other than some virsh incantations.
 
+> 
+> > system configuration is from the same ansible playbook, but of
+> > course there are differences.
+> 
+> Can you capture the QEMU command lines for the good and bad hosts?
+> KVM doesn't get directly involved in serial port emulation; if the
+> blamed commit in 6.5 is triggering unexpected behavior then QEMU is a
+> better starting point than KVM.
 
->                 return PCIBIOS_DEVICE_NOT_FOUND;
->
->         /*
-> --
-> 2.30.2
->
+the qmu command line of the test VM on the APU host is
+
+[14/4946]mh@prom:~ $ pstree -apl | grep [l]asso
+  |-qemu-system-x86,251092 -name guest=lasso,debug-threads=on -S -object secret,id=masterKey0,format=raw,file=/var/lib/libvirt/qemu/domain-20-lasso/master-key.aes -machine pc-i440fx-2.1,accel=kvm,usb=off,dump-guest-core=off -cpu Opteron_G3,monitor=off,x2apic=on,hypervisor=on -m 768 -realtime mlock=off -smp 1,sockets=1,cores=1,threads=1 -uuid 15338d79-b877-48da-b72f-f706bd05dadf -no-user-config -nodefaults -chardev socket,id=charmonitor,fd=30,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=utc,driftfix=slew -global kvm-pit.lost_tick_policy=delay -no-hpet -no-shutdown -global PIIX4_PM.disable_s3=1 -global PIIX4_PM.disable_s4=1 -boot strict=on -device ich9-usb-ehci1,id=usb,bus=pci.0,addr=0x5.0x7 -device ich9-usb-uhci1,masterbus=usb.0,firstport=0,bus=pci.0,multifunction=on,addr=0x5 -device ich9-usb-uhci2,masterbus=usb.0,firstport=2,bus=pci.0,addr=0x5.0x1 -device ich9-usb-uhci3,masterbus=usb.0,firstport=4,bus=pci.0,addr=0x5.0x2 -device virtio-serial-pci,id=virtio-serial0,bus=pci.0,addr=0x6 -drive file=/dev/prom/lasso,format=raw,if=none,id=drive-virtio-disk0,cache=none,aio=native -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x7,drive=drive-virtio-disk0,id=virtio-disk0,bootindex=1,write-cache=on -drive file=/dev/prom/lasso-swap0,format=raw,if=none,id=drive-virtio-disk1,cache=none,aio=native -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x9,drive=drive-virtio-disk1,id=virtio-disk1,write-cache=on -drive if=none,id=drive-ide0-0-0,readonly=on -device ide-cd,bus=ide.0,unit=0,drive=drive-ide0-0-0,id=ide0-0-0 -netdev tap,fd=33,id=hostnet0,vhost=on,vhostfd=34 -device virtio-net-pci,netdev=hostnet0,id=net0,mac=52:54:00:9e:9a:15,bus=pci.0,addr=0x3 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=serial0 -chardev spicevmc,id=charchannel0,name=vdagent -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=com.redhat.spice.0 -device usb-tablet,id=input0,bus=usb.0,port=1 -spice port=5902,addr=127.0.0.1,disable-ticketing,seamless-migration=on -device qxl-vga,id=video0,ram_size=67108864,vram_size=67108864,vram64_size_mb=0,vgamem_mb=16,max_outputs=1,bus=pci.0,addr=0x2 -device intel-hda,id=sound0,bus=pci.0,addr=0x4 -device hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0 -chardev spicevmc,id=charredir0,name=usbredir -device usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=2 -chardev spicevmc,id=charredir1,name=usbredir -device usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=3 -chardev spicevmc,id=charredir2,name=usbredir -device usb-redir,chardev=charredir2,id=redir2,bus=usb.0,port=4 -chardev spicevmc,id=charredir3,name=usbredir -device usb-redir,chardev=charredir3,id=redir3,bus=usb.0,port=5 -device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x8 -object rng-random,id=objrng0,filename=/dev/urandom -device virtio-rng-pci,rng=objrng0,id=rng0,bus=pci.0,addr=0xa -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny -msg timestamp=on
+[15/4947]mh@prom:~ $
+
+a refrence qemu command line of a test VM on the Xeon host is
+
+[1/4992]mh@gancho:~ $ pstree -apl | grep '[w]hip'
+  |-qemu-system-x86,1478 -enable-kvm -name guest=whip,debug-threads=on -S -object secret,id=masterKey0,format=raw,file=/var/lib/libvirt/qemu/domain-9-whip/master-key.aes -machine pc-i440fx-2.1,accel=kvm,usb=off,dump-guest-core=off -cpu Nehalem -m 512 -realtime mlock=off -smp 2,sockets=2,cores=1,threads=1 -uuid 3dd1f71d-3b84-44e2-808f-a5c67694f25c -no-user-config -nodefaults -chardev socket,id=charmonitor,fd=34,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=utc,driftfix=slew -global kvm-pit.lost_tick_policy=delay -no-hpet -no-shutdown -global PIIX4_PM.disable_s3=1 -global PIIX4_PM.disable_s4=1 -boot strict=on -device ich9-usb-ehci1,id=usb,bus=pci.0,addr=0x5.0x7 -device ich9-usb-uhci1,masterbus=usb.0,firstport=0,bus=pci.0,multifunction=on,addr=0x5 -device ich9-usb-uhci2,masterbus=usb.0,firstport=2,bus=pci.0,addr=0x5.0x1 -device ich9-usb-uhci3,masterbus=usb.0,firstport=4,bus=pci.0,addr=0x5.0x2 -device virtio-scsi-pci,id=scsi0,bus=pci.0,addr=0x7 -device virtio-serial-pci,id=virtio-serial0,bus=pci.0,addr=0x6 -drive file=/dev/gancho/whip,format=raw,if=none,id=drive-scsi0-0-0-0,cache=none,aio=native -device scsi-hd,bus=scsi0.0,channel=0,scsi-id=0,lun=0,drive=drive-scsi0-0-0-0,id=scsi0-0-0-0,bootindex=1,write-cache=on -netdev tap,fd=36,id=hostnet0,vhost=on,vhostfd=37 -device virtio-net-pci,netdev=hostnet0,id=net0,mac=52:54:00:5e:b4:42,bus=pci.0,addr=0x3 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=serial0 -chardev socket,id=charchannel0,fd=38,server,nowait -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=org.qemu.guest_agent.0 -chardev spicevmc,id=charchannel1,name=vdagent -device virtserialport,bus=virtio-serial0.0,nr=2,chardev=charchannel1,id=channel1,name=com.redhat.spice.0 -device usb-tablet,id=input0,bus=usb.0,port=1 -spice port=5908,addr=127.0.0.1,disable-ticketing,seamless-migration=on -device qxl-vga,id=video0,ram_size=67108864,vram_size=67108864,vram64_size_mb=0,vgamem_mb=16,max_outputs=1,bus=pci.0,addr=0x2 -device intel-hda,id=sound0,bus=pci.0,addr=0x4 -device hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0 -chardev spicevmc,id=charredir0,name=usbredir -device usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=2 -chardev spicevmc,id=charredir1,name=usbredir -device usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=3 -device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x8 -object rng-random,id=objrng0,filename=/dev/urandom -device virtio-rng-pci,rng=objrng0,id=rng0,bus=pci.0,addr=0x9 -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny -msg timestamp=on
+[2/4993]mh@gancho:~ $
+
+Both come from virt-manager, so if the XML helps more, I'll happy to
+post that as well.
+
+Greetings
+Marc
+
+-- 
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Leimen, Germany    |  lose things."    Winona Ryder | Fon: *49 6224 1600402
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 6224 1600421
