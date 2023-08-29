@@ -2,188 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C00AF78CF03
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907ED78CF05
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236410AbjH2V6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 17:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        id S238277AbjH2V6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238302AbjH2V57 (ORCPT
+        with ESMTP id S236990AbjH2V6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 17:57:59 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E3BFD;
-        Tue, 29 Aug 2023 14:57:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1693346276; x=1724882276;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=UDLuiDS9MveSpZkSMoJ+lQBt3LONLtYyAY0wCeaSfxI=;
-  b=G4dcceXacljblUXneB8nUJFPUPuRvpMifTa+gVPAtWXPsQbenBQFMT4z
-   rl6DNvRNSJrkFGCJuMfZj8vLktp++eTxZsMrPdTRC+82ncL3rmD+Ix6yv
-   kodYT1PVpjnyYQ15SiAcLtmXCkaOc4bUrzxg6XkcvyVJtQc4xPWtKF7in
-   r8r1VZbXTvayE9wi47U0s8zuNXQ/RUz4zdlHC7iX3ZuWCZx4ogVExfyiS
-   P/c/OAar6f5LUQDPDlPubFRqNBKuzSR5K3QqOhmzS9VsLZRcl53y//Xr0
-   5FxId7MDWiMdO+/4BZlmRhdVEcCbASwKAoDgkX9IYI6W07GiX0mtvjLU6
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="2002465"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Aug 2023 14:57:55 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 29 Aug 2023 14:57:55 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Tue, 29 Aug 2023 14:57:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LfindMz7QaWdajQnccq/4XQE8RE7emRGB0MqmBmm5J0jfW2P0fc7ZMjU6RrTdyNTg0dK5NxaWuPLKyX/c4JPJJ6gNp8uqr5JMKd1UgNVMhTKlEaBb9uUjVXDmfZcEkmpz1QeXR0dRg4quTndBWLvvZMfXAgxkF6D77JLJM++hnJcDkVnmVXNZDwTiTQ92lH5dUytVdhdKl8f0cXWZN6Cj3CeH/bfLWBmZjmwHB/qH5D2CyRK6fu5B6jYyhc9cc58AIgXic0oYAHqb0vynxwisYXJU/qQ/EhS8FwSO9+2e+MNDi0ap9bLKJHSK7BW4Km6eQB4sxGJvk3oXjnurbsIIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EKkD6yTKZCa8FDT49yfTaGI71emPPJTOVbdLJGKkDqc=;
- b=Vcx5RhfA/UDQpj28xQ7dyG2bOv6BpqjtmKBEbTV/Ovl2FxMJs0J19wiSjNT8o/p8XJXZhX3InHP3qtBFbN2bdlG/I6l2gjnPgwwPhM63X8wwniMgyYWBbJlCNeSFnSQMesNJWYd9p01LWGpFxejbjUlYFPjApKLEuKcXXWCxOe5xdg4i7RMhwOMnUjx+gYfT05+ANIZljZb+Zna6n6VjYn0u/Tzsdg4E4Yd7ZqaLjr1AehoVF29Hvx8UcaAx6Q+FHEvPGZpYWBJIJeaG79EmGjhrukzppPCwXyRrSwSvDd4Q11Tz2ceK8tn6HA5haVjEE1vlIqIv7smIvD+Uvmn3+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EKkD6yTKZCa8FDT49yfTaGI71emPPJTOVbdLJGKkDqc=;
- b=ca+hsYTHTUE3YeQiAypTke/ey3cCvtQVK49cNwXvnFUCkdonU27uuyl9x+1kXW0Gi1w2ayK5hdnhjTqXyT4+BUcFDS7R0aGoqe/g2s4FEL/SJCGB30P/gu/H4FvHpEFKfw807VgqKMT4a4OQZ4CpPVou4JPDq0LDWR1CBg2eSAU=
-Received: from BYAPR11MB3558.namprd11.prod.outlook.com (2603:10b6:a03:b3::11)
- by PH7PR11MB7098.namprd11.prod.outlook.com (2603:10b6:510:20d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Tue, 29 Aug
- 2023 21:57:51 +0000
-Received: from BYAPR11MB3558.namprd11.prod.outlook.com
- ([fe80::ceda:7787:e08b:7a19]) by BYAPR11MB3558.namprd11.prod.outlook.com
- ([fe80::ceda:7787:e08b:7a19%7]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
- 21:57:50 +0000
-From:   <Tristram.Ha@microchip.com>
-To:     <olteanv@gmail.com>
-CC:     <f.fainelli@gmail.com>, <andrew@lunn.ch>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>,
-        <Woojung.Huh@microchip.com>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <UNGLinuxDriver@microchip.com>, <lukma@denx.de>
-Subject: RE: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477 errata
- (DS80000754C)
-Thread-Topic: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477 errata
- (DS80000754C)
-Thread-Index: AQHZ1qKWLyunbFo9dUGlg3dtAL+k26/6NENwgAB9tYCAAHHrgIAANckAgAEO8gCABXFuAA==
-Date:   Tue, 29 Aug 2023 21:57:50 +0000
-Message-ID: <BYAPR11MB3558EFBB4DBC86AC3C338747ECE7A@BYAPR11MB3558.namprd11.prod.outlook.com>
-References: <20230824154827.166274-1-lukma@denx.de>
- <20230824154827.166274-2-lukma@denx.de>
- <BYAPR11MB35583A648E4E44944A0172A0ECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
- <20230825103911.682b3d70@wsk>
- <862e5225-2d8e-8b8f-fc6d-c9b48ac74bfc@gmail.com>
- <BYAPR11MB3558A24A05D30BA93408851EECE3A@BYAPR11MB3558.namprd11.prod.outlook.com>
- <20230826104910.voaw3ndvs52yoy2v@skbuf>
-In-Reply-To: <20230826104910.voaw3ndvs52yoy2v@skbuf>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BYAPR11MB3558:EE_|PH7PR11MB7098:EE_
-x-ms-office365-filtering-correlation-id: 9f28cfed-090c-4830-ebb3-08dba8dafcee
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: se/7kAFlfgdXN8ogM8esNZT9pQjGRd72j9ky/FE309OdmqKqDN8yX3hlJi66dYV5//xXAr9vjXvGoY1VUuUOYMSY7oem7B2gscq1thbxOnb/OJ+IBwQDlVYkAcG+51RrFC5ZDDJ3w6Hz4/ySlXYJj8pRMEeik2UNRrtpJLeFNvw+eLlv13cbwu5oLnSnlW3PuLrI7QZjktwdxEzABfh824Je8w0Mtuv2mS+d0L53nOkQ5DMn8XerVnaMvoq+O2dQzcpVf5wy+rmupQG2Vz0nQ8t9getNOdB4OTHHjO7WIk0AxduWeQ+L1ncOIJSv9XnJqxzu1gsE1TXc5g1jTmPMf6FAEcmfVWS30TG/psxmpgK7w/O0uNOixhe7k6/PJa0uCCrKXMjwYrJjGOT+OLwM8+NJM7sHS0Uk1dDtiYffBrVZIQ+NwFEQ+g750/yYMBBwc3iwOV9qSYwApRQM68fZVHlqWVeKFVVvX8+GL38IjTuFkb+FtsRPubzzCmeplhFbkZPdNVZc9Io8VFBh3k3syNVt6ekuH8ZOQpzC+fnExdB3NEd5ka6MBx8go8SDjYqegC4e26TZCaekagB03bYbIdCL9m/GGEF+/ll2b/BsyN06NZWIe5XBYTGlqpM+DkLj
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3558.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(396003)(366004)(39860400002)(1800799009)(186009)(451199024)(8936002)(122000001)(66946007)(478600001)(76116006)(6506007)(64756008)(7696005)(71200400001)(66446008)(54906003)(66556008)(66476007)(6916009)(38070700005)(38100700002)(316002)(66899024)(41300700001)(9686003)(26005)(8676002)(5660300002)(52536014)(55016003)(2906002)(86362001)(83380400001)(7416002)(33656002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6TqU2wmCpynnomuCLEl0eg2AXf4T6BMCTV8yBDH1oJ8o9Q+4IImyPvt1V4NO?=
- =?us-ascii?Q?8C2tL+56V9D229uecIvNlpj3Mqj9+JxzoneGuCZyx+cshMwPlwiQniNpmIHJ?=
- =?us-ascii?Q?VsxVF/vF4tohShd0brFBAC60KYrmE8lsQo5+wgcbIvae34DaZjjB3F2XYIfQ?=
- =?us-ascii?Q?Sm+8A5GEBpbzJLpf6yZZzu3CbCP3/1/GKJCKQ9bFn3X+C4Zvgh9TkjyzBSYp?=
- =?us-ascii?Q?Yu0qhL1XNm6pl/t7OsXgOKJnc+/UsoOqb398NcJyV2R6KXe7yx6te9hQkGxf?=
- =?us-ascii?Q?MtZTyhA78pK3aLEUL5eLRB0Zbh6SgMasM9SGq/aGzNdPLuEunHQwNNa4vN4w?=
- =?us-ascii?Q?1qDfRwQ66qevSVUojVIyMXOGs0Zetu0XlIXyt+FZPO2FUR8SYB1Uyet3/dme?=
- =?us-ascii?Q?Yl85JPphvaayeUgxCt/ic28FtIKbFJEW6MFKNdybqlUmNN7igd1C9r2PyTtx?=
- =?us-ascii?Q?Bx930JVUKgk3K87RQKm2Qz/UZe5I6LEznqqBLpo0knFPDcfnCMX1bfENVsHH?=
- =?us-ascii?Q?XOcx6r/ArttSub61pTh1RFx7W8KQeW67/V1WCdrqZi4amTz+XLGZUit9rTGr?=
- =?us-ascii?Q?QGuA/jvDGQYd8HbrGTVoeYrsv56a6TCNGl28VHUvr0od8QQgLc1Xn1+Nc182?=
- =?us-ascii?Q?B/K1IN4lJcsPvvwriONIyiqajz6JLPmmZ+N2jr3kRo8ldbbFDPzfQrNDC45Q?=
- =?us-ascii?Q?2cxyeTZLIzEry7bYd3jdtqCdiybBo+JRxCVJ1HipBz66HldoMKeSwN2QNy8l?=
- =?us-ascii?Q?mz4wNwCY9HP6idvI+if6zEjXjRWtjGNZ2n/YXcE7/PHmXZynRsOqznCp8Gme?=
- =?us-ascii?Q?gBZI3E0t9t0zHH/fgWYjXtO0JCmIO0X6eMZlSG1z1aysw3Sw7OXPn8r3jizv?=
- =?us-ascii?Q?Ti13+Q6c8aQK3aKUZCpNM6+Mm4Wr9QbtkSHkKyQYtBksRvW11rKoIJO8t2GM?=
- =?us-ascii?Q?Gyx1FyF13APmLah90DYTZb6i+YiiLQqFxPHGbjmatfowK+n1ajqJp3iS2fMk?=
- =?us-ascii?Q?JkN7eZk6se5j9KF3wtWXClBqkw9/MySThl4pur2jeKfBn3uStFo4gZrUPS8f?=
- =?us-ascii?Q?xjVUBpjqkePNKy2/tzrdplwpUGhpQAJkCgRag0wDmTy7ZpP/28+2H5dK/pYD?=
- =?us-ascii?Q?BjZlL6I2C5wimQnWrXjmTO0gHfUThXRbso4w9KKLCgkT6i5FoapnGxG8k2qI?=
- =?us-ascii?Q?w06GP9VnENFnAWIphdjGs/IzAxKiyCANHFhgPHCSj1d44N/jDSvo5uTXK80w?=
- =?us-ascii?Q?wjD331+lByh76ZGcteIv0khCHkdMWYURWa6LxmjxA6x6ZkdIgSFXMT2RW6a5?=
- =?us-ascii?Q?/976qNgAhzGcHlpbrFiEcjAwVGv1AU4AZmP4BmD+GQgEhXrGZjDCsYwaynoQ?=
- =?us-ascii?Q?1NeZq4r48+/iBrcy+DnSSK8Ff0rpaSwJYkv5ClALVLhHvPKxa2nhaP0msDF+?=
- =?us-ascii?Q?Z+9N6s3CBZY5u234akU7gfIZ5AL8JAo7CUxXnuvK495dySBtjOQJRMQ/xzpx?=
- =?us-ascii?Q?Ahc0ejqCzTvu7+CkTw4Z/ajVvmg2jUW1uLlW6KIYOBRbiOOoMAg6LGxTxnEH?=
- =?us-ascii?Q?+naJtURnxugAq8/krPRxvOBRjLwbDcAdfXzVdW8A?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 29 Aug 2023 17:58:03 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1920FD;
+        Tue, 29 Aug 2023 14:57:59 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 272FB5C0258;
+        Tue, 29 Aug 2023 17:57:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 29 Aug 2023 17:57:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1693346279; x=1693432679; bh=pyw5d94QAnr8PZVn2x1/vPBbr481BfBpiMv
+        3gEajRU4=; b=lvBOYEVHmIpwAhzXRE5EgVU+hRr/1GQcjFoeodfBnVH+RsdgLPC
+        1AwYzBbVpoALqwIlhtSO5XyYAir1Aj4nHApJ+NVW05dLwIiI/fnaHLsH24J/FHXm
+        KP47PsKBq0BbUD2ek/FlztESwqAI9XGHO8dQN9lDsrn65SDfyvqbhUa1TQfqc9Io
+        T0WYXbS11TLHHQKy0aAPGhYm75xw7Am3Jf2rGWVptj1OYGbHjg91gUHREyFmCvPZ
+        hq0dkausxIUoplf0lhcfe4UMSpuoXTEfj6cnKcRq768cjvtUNLoMnAfhNElCp8rq
+        C9RrGeAYj3dwtskVerki+OhFAPN4qgitpGw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693346279; x=1693432679; bh=pyw5d94QAnr8PZVn2x1/vPBbr481BfBpiMv
+        3gEajRU4=; b=OjScocuZgjucGeOKxaTrn9u3hmarTaZsSvElTn7LRWUYtNy35qw
+        HE4PgK9XgSNgPchg9zpifJHXZ2tWL16gCXF69lrSxwEUV0UbrhAsiYRDxAMtHkZy
+        qY8WMPzN9HsnbuT+PFn8dZKUWuDPu1u4YpAOt29anK44GUOj1n6rTcW/BnocRBVe
+        Y9T6QJVZUhwfN5Jz8lGtfeaV91Z2Ui3TuXqjqZOWHhuafgLdoTK0CxffcpYQnPoM
+        FJpWfnpNNZUFu1DufesbhxXjnwliPiPORYnBBrwJGfCcMSceJOJN6BH/dceSqERu
+        DJ48u+SItFivbfS0/zaC/4BPxfp/tzrP7Pw==
+X-ME-Sender: <xms:5mnuZGQK2oFCzj1iazlI3jshjkq_sG9va2-uVe2LRvQ5VZ8XX6XYvg>
+    <xme:5mnuZLxgUsPHLy7x_2ruLSmtdn-VBgkKi3NgW9tWWm1rBk_astItYR5_xszkIrAEk
+    1TNM62zVcsQErhx>
+X-ME-Received: <xmr:5mnuZD1wrFm--fukL1ZIoQuEWnvg69RjLcexcL_YM0ZZ1zZzb7nZ_5tB4iv4F-Q3VCzF-lq0rLXYka6szOyeAZO5GFjpSzmiNg8t5gLipgjPeGr7CjLy>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefjedgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpeeuvghr
+    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
+    hlrdhfmheqnecuggftrfgrthhtvghrnhepkeehveekleekkeejhfehgeeftdffuddujeej
+    ieehheduueelleeghfeukeefvedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilhdr
+    fhhm
+X-ME-Proxy: <xmx:5mnuZCAEYr5qKbtaeTYN5xOLjmij9BAIkNkhnFCxfJP1RhLdaXXTfw>
+    <xmx:5mnuZPhFNOlDk098yfTHTk9tCwG_bHAeWlkfcDPsyREw-2PMlynNQw>
+    <xmx:5mnuZOo2pVP_BOgAcHectHoc-HFqxaxrTVCvHhbjV_tzPF57dp0JEQ>
+    <xmx:52nuZMvP4ZBgbi4Tu_w_VaZOOvyknTVOUUbj-OsBaZrpVKoKaNV9LQ>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 29 Aug 2023 17:57:57 -0400 (EDT)
+Message-ID: <572dcce8-f70c-2d24-f844-a3e8abbd4bd8@fastmail.fm>
+Date:   Tue, 29 Aug 2023 23:57:55 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3558.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f28cfed-090c-4830-ebb3-08dba8dafcee
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2023 21:57:50.2706
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EVPESPGByfnlD7DrEzHH9d36dllfVc1sZNRdcVk05CMpJBnJ3jtgN2it3/gDvM3zMZdd0uVGE1rwwdiK85F9t2/UCfvGOk2DETWniMO6BaE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7098
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1] fs/fuse: Fix missing FOLL_PIN for direct-io
+Content-Language: en-US, de-DE
+To:     Lei Huang <lei.huang@linux.intel.com>, linux-kernel@vger.kernel.org
+Cc:     miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+References: <1693334193-7733-1-git-send-email-lei.huang@linux.intel.com>
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <1693334193-7733-1-git-send-email-lei.huang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Aug 25, 2023 at 06:48:41PM +0000, Tristram.Ha@microchip.com wrote=
-:
-> > > > IMHO adding functions to MMD modification would facilitate further
-> > > > development (for example LED setup).
-> > >
-> > > We already have some KSZ9477 specific initialization done in the Micr=
-el
-> > > PHY driver under drivers/net/phy/micrel.c, can we converge on the PHY
-> > > driver which has a reasonable amount of infrastructure for dealing wi=
-th
-> > > workarounds, indirect or direct MMD accesses etc.?
-> >
-> > Actually the internal PHY used in the KSZ9897/KSZ9477/KSZ9893 switches
-> > are special and only used inside those switches.  Putting all the switc=
-h
-> > related code in Micrel PHY driver does not really help.  When the switc=
-h
-> > is reset all those PHY registers need to be set again, but the PHY driv=
-er
-> > only executes those code during PHY initialization.  I do not know if
-> > there is a good way to tell the PHY to re-initialize again.
->=20
-> Suppose there was a method to tell the PHY driver to re-initialize itself=
-.
-> What would be the key points in which the DSA switch driver would need
-> to trigger that method? Where is the switch reset at runtime?
 
-Currently the DSA switch driver loads independently and is then
-controlled by the main DSA driver.  The switch is reset during
-initialization, and later the PHYs are initialized.  I was talking
-hypothetically that the switch may need to be reset to correct some
-hardware problems, but then there may be no good way to tell the PHYs to
-re-initialize.
 
+On 8/29/23 20:36, Lei Huang wrote:
+> Our user space filesystem relies on fuse to provide POSIX interface.
+> In our test, a known string is written into a file and the content
+> is read back later to verify correct data returned. We observed wrong
+> data returned in read buffer in rare cases although correct data are
+> stored in our filesystem.
+> 
+> Fuse kernel module calls iov_iter_get_pages2() to get the physical
+> pages of the user-space read buffer passed in read(). The pages are
+> not pinned to avoid page migration. When page migration occurs, the
+> consequence are two-folds.
+> 
+> 1) Applications do not receive correct data in read buffer.
+> 2) fuse kernel writes data into a wrong place.
+> 
+> Using iov_iter_extract_pages() to pin pages fixes the issue in our
+> test.
+
+Hmm, iov_iter_extract_pages does not exists for a long time and the code 
+in fuse_get_user_pages didn't change much. So if you are right, there 
+would be a long term data corruption for page migrations? And a back 
+port to old kernels would not be obvious?
+
+What confuses me further is that
+commit 85dd2c8ff368 does not mention migration or corruption, although 
+lists several other advantages for iov_iter_extract_pages. Other commits 
+using iov_iter_extract_pages point to fork - i.e. would your data 
+corruption be possibly related that?
+
+
+Thanks,
+Bernd
+
+
+> 
+> An auxiliary variable "struct page **pt_pages" is used in the patch
+> to prepare the 2nd parameter for iov_iter_extract_pages() since
+> iov_iter_get_pages2() uses a different type for the 2nd parameter.
+> 
+> Signed-off-by: Lei Huang <lei.huang@linux.intel.com>
+> ---
+>   fs/fuse/file.c | 13 ++++++++-----
+>   1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> index bc41152..715de3b 100644
+> --- a/fs/fuse/file.c
+> +++ b/fs/fuse/file.c
+> @@ -670,7 +670,7 @@ static void fuse_release_user_pages(struct fuse_args_pages *ap,
+>   	for (i = 0; i < ap->num_pages; i++) {
+>   		if (should_dirty)
+>   			set_page_dirty_lock(ap->pages[i]);
+> -		put_page(ap->pages[i]);
+> +		unpin_user_page(ap->pages[i]);
+>   	}
+>   }
+>   
+> @@ -1428,10 +1428,13 @@ static int fuse_get_user_pages(struct fuse_args_pages *ap, struct iov_iter *ii,
+>   	while (nbytes < *nbytesp && ap->num_pages < max_pages) {
+>   		unsigned npages;
+>   		size_t start;
+> -		ret = iov_iter_get_pages2(ii, &ap->pages[ap->num_pages],
+> -					*nbytesp - nbytes,
+> -					max_pages - ap->num_pages,
+> -					&start);
+> +		struct page **pt_pages;
+> +
+> +		pt_pages = &ap->pages[ap->num_pages];
+> +		ret = iov_iter_extract_pages(ii, &pt_pages,
+> +					     *nbytesp - nbytes,
+> +					     max_pages - ap->num_pages,
+> +					     0, &start);
+>   		if (ret < 0)
+>   			break;
+>   
