@@ -2,182 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFF378C628
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121C778C63F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236511AbjH2NgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        id S229482AbjH2NjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236538AbjH2NfF (ORCPT
+        with ESMTP id S236710AbjH2NiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:35:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C98F10F0;
-        Tue, 29 Aug 2023 06:34:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 29 Aug 2023 09:38:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AFF2722
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693316123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cO0xjhpEIbyDRGh2W69E0QliiyPI0y6q0VdT9HQwIsM=;
+        b=XUxW+568IdXvx5YX0a2PZrDNOc/U5uU1uo9AOXEhZJUeXjQCSL15C0ron0R7HuiCys+gNO
+        cfMHURZECtvexQc8twmcrqUSRJNilZPZzWwQI0lTqWGz4tYnO+Gc+lPMMYfMEVv4rLdKZj
+        s5GZ6gYI0ms3ui/s0a92oEHHlyQcFtw=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-517-0Ylzmtb9PWuDpI77SDLYrQ-1; Tue, 29 Aug 2023 09:35:19 -0400
+X-MC-Unique: 0Ylzmtb9PWuDpI77SDLYrQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2351165883;
-        Tue, 29 Aug 2023 13:34:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B315EC433C7;
-        Tue, 29 Aug 2023 13:34:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693316070;
-        bh=Ikq7HXuDLqv01f378rpNzSykJAHeQjycEAisBl23l5s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ACT+3yConGLTFoJ1OhqOkB8rfdacGridXfOArWymnQbWu0vcd059ThM8ztwVB1OwF
-         dIm43QFZQ0we755fye6EFZJud3EJAlxlKgKCo/0c8RlKSY48IPvF8po8ZFLtVwgfFJ
-         8316CIa1tls6SSW51ZLubEXR5G5+TPoj4+C9Wdqk/ZO1gKKQjHxT/QlALmqJyqgsu9
-         rPT7Kt39okpqnoZVpnX+lz0O79CcOFnpz+DWyffACjQrHXkvu1aLaw11FQpCG5rcmt
-         8uFJDk3TD9vA7uTNcNZwRrGOzdRDUHaM//MQcsUR15OK06CijSWOJW3cRD3hvv3fLI
-         zrRTNIsSThXuw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>, "Gong, Sishuai" <sishuai@purdue.edu>,
-        Sasha Levin <sashal@kernel.org>, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.14 5/5] ALSA: seq: oss: Fix racy open/close of MIDI devices
-Date:   Tue, 29 Aug 2023 09:34:18 -0400
-Message-Id: <20230829133419.520830-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230829133419.520830-1-sashal@kernel.org>
-References: <20230829133419.520830-1-sashal@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A31912815E21;
+        Tue, 29 Aug 2023 13:35:18 +0000 (UTC)
+Received: from [192.168.37.1] (unknown [10.22.48.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A3A2A40C2063;
+        Tue, 29 Aug 2023 13:35:17 +0000 (UTC)
+From:   Benjamin Coddington <bcodding@redhat.com>
+To:     Chengen Du <chengen.du@canonical.com>
+Cc:     trond.myklebust@hammerspace.com, anna@kernel.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RESEND] NFS: Add mount option 'fasc'
+Date:   Tue, 29 Aug 2023 09:35:16 -0400
+Message-ID: <73E82F73-1621-4553-8019-2946EA573415@redhat.com>
+In-Reply-To: <CAPza5qe0NBWiKZ1yLyfdPGOsmM=VGqWMs=oWJqVzLRcd8AFyJQ@mail.gmail.com>
+References: <20230828055310.21391-1-chengen.du@canonical.com>
+ <CAPza5qe0NBWiKZ1yLyfdPGOsmM=VGqWMs=oWJqVzLRcd8AFyJQ@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.323
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+On 28 Aug 2023, at 3:14, Chengen Du wrote:
 
-[ Upstream commit 297224fc0922e7385573a30c29ffdabb67f27b7d ]
+> Hi,
+>
+> The performance issue has been brought to our attention by users
+> within the Ubuntu community.
+> However, it seems to be confined to specific user scenarios.
+> Canonical has taken proactive measures to tackle the problem by
+> implementing a temporary solution [1], which has effectively resolved
+> the issue at hand.
+> Nonetheless, our earnest desire is for a definitive resolution of the
+> performance concern at its source upstream.
+>
+> I've taken the initiative to send the patches addressing this matter.
+> Regrettably, as of now, I've yet to receive any response.
+> This situation leads me to consider the possibility of reservations or
+> deliberations surrounding this issue.
+> I am genuinely keen to gain insights and perspectives from the
+> upstream community.
+>
+> I kindly ask for your valuable input on this matter.
+> Your thoughts would significantly aid my progress and contribute to a
+> collective consensus.
 
-Although snd_seq_oss_midi_open() and snd_seq_oss_midi_close() can be
-called concurrently from different code paths, we have no proper data
-protection against races.  Introduce open_mutex to each seq_oss_midi
-object for avoiding the races.
+Hi Chengen Du,
 
-Reported-by: "Gong, Sishuai" <sishuai@purdue.edu>
-Closes: https://lore.kernel.org/r/7DC9AF71-F481-4ABA-955F-76C535661E33@purdue.edu
-Link: https://lore.kernel.org/r/20230612125533.27461-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/core/seq/oss/seq_oss_midi.c | 35 +++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+This patch changes the default behavior for everyone.  Instead of that,
+perhaps the new option should change the behavior.  That would reduce the
+change surface for all NFS users.
 
-diff --git a/sound/core/seq/oss/seq_oss_midi.c b/sound/core/seq/oss/seq_oss_midi.c
-index cc8f06638edca..7226c03f15934 100644
---- a/sound/core/seq/oss/seq_oss_midi.c
-+++ b/sound/core/seq/oss/seq_oss_midi.c
-@@ -50,6 +50,7 @@ struct seq_oss_midi {
- 	struct snd_midi_event *coder;	/* MIDI event coder */
- 	struct seq_oss_devinfo *devinfo;	/* assigned OSSseq device */
- 	snd_use_lock_t use_lock;
-+	struct mutex open_mutex;
- };
- 
- 
-@@ -184,6 +185,7 @@ snd_seq_oss_midi_check_new_port(struct snd_seq_port_info *pinfo)
- 	mdev->flags = pinfo->capability;
- 	mdev->opened = 0;
- 	snd_use_lock_init(&mdev->use_lock);
-+	mutex_init(&mdev->open_mutex);
- 
- 	/* copy and truncate the name of synth device */
- 	strlcpy(mdev->name, pinfo->name, sizeof(mdev->name));
-@@ -332,14 +334,16 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
- 	int perm;
- 	struct seq_oss_midi *mdev;
- 	struct snd_seq_port_subscribe subs;
-+	int err;
- 
- 	if ((mdev = get_mididev(dp, dev)) == NULL)
- 		return -ENODEV;
- 
-+	mutex_lock(&mdev->open_mutex);
- 	/* already used? */
- 	if (mdev->opened && mdev->devinfo != dp) {
--		snd_use_lock_free(&mdev->use_lock);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto unlock;
- 	}
- 
- 	perm = 0;
-@@ -349,14 +353,14 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
- 		perm |= PERM_READ;
- 	perm &= mdev->flags;
- 	if (perm == 0) {
--		snd_use_lock_free(&mdev->use_lock);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto unlock;
- 	}
- 
- 	/* already opened? */
- 	if ((mdev->opened & perm) == perm) {
--		snd_use_lock_free(&mdev->use_lock);
--		return 0;
-+		err = 0;
-+		goto unlock;
- 	}
- 
- 	perm &= ~mdev->opened;
-@@ -381,13 +385,17 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
- 	}
- 
- 	if (! mdev->opened) {
--		snd_use_lock_free(&mdev->use_lock);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto unlock;
- 	}
- 
- 	mdev->devinfo = dp;
-+	err = 0;
-+
-+ unlock:
-+	mutex_unlock(&mdev->open_mutex);
- 	snd_use_lock_free(&mdev->use_lock);
--	return 0;
-+	return err;
- }
- 
- /*
-@@ -401,10 +409,9 @@ snd_seq_oss_midi_close(struct seq_oss_devinfo *dp, int dev)
- 
- 	if ((mdev = get_mididev(dp, dev)) == NULL)
- 		return -ENODEV;
--	if (! mdev->opened || mdev->devinfo != dp) {
--		snd_use_lock_free(&mdev->use_lock);
--		return 0;
--	}
-+	mutex_lock(&mdev->open_mutex);
-+	if (!mdev->opened || mdev->devinfo != dp)
-+		goto unlock;
- 
- 	memset(&subs, 0, sizeof(subs));
- 	if (mdev->opened & PERM_WRITE) {
-@@ -423,6 +430,8 @@ snd_seq_oss_midi_close(struct seq_oss_devinfo *dp, int dev)
- 	mdev->opened = 0;
- 	mdev->devinfo = NULL;
- 
-+ unlock:
-+	mutex_unlock(&mdev->open_mutex);
- 	snd_use_lock_free(&mdev->use_lock);
- 	return 0;
- }
--- 
-2.40.1
+The default behavior has already been hotly debated on this list and so I
+think changing the default would need to be accompanied by excellent
+reasons.
+
+Ben
 
