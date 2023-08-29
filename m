@@ -2,182 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C52CE78C703
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1089178C710
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236848AbjH2OMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        id S236880AbjH2OOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236906AbjH2OLy (ORCPT
+        with ESMTP id S236947AbjH2OOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:11:54 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5596F187
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:11:46 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4018af103bcso27943295e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:11:46 -0700 (PDT)
+        Tue, 29 Aug 2023 10:14:08 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B32BCC4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:13:59 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-44e84fbaab9so2012508137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:13:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693318305; x=1693923105;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=raspberrypi.com; s=google; t=1693318438; x=1693923238;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RJ8yJVk1WanTGK6noPSAuAu8J5j6k7b3gO5IRwPDORc=;
-        b=pDfSqxW/VMwLUzzQxKkJcrvOyXGTdi+m78jrAmELfOR+jSL0bgTFPe2YgNMeaGm350
-         WqLnoRfNyy2lFNrVO4duvKoqPamj5nY9lGvzw2VhoxrwDxyj7nkjxn43BmXimhKvw9NY
-         DwPWGVP7ItRZm6gATl1VZn6FI1X6ELDpEOqWG0TnhPeNPfxnOUX6sHhVBaDdH8trBDJi
-         hF0O3b8w5t0r9ezlMaWcqBM+qQ9jSMzQrJV5eASglFcEEVeR3SVc+HS9Jh89cAsCIHTw
-         tFvOYpPFIMwX50nbMcxQjp9qgV2+tdAd25nqTTPy2pS9KENK9Or7oO2a0fSmt6KedIbd
-         fBOA==
+        bh=39bXmTr9o4j46Blz1DGjW7i8kc3+09Rh5ttDbKYOLuM=;
+        b=Twz8DD8q5NiEFnUoOothYl9tZpQuExo2vhq45zvc/ZuLepSM4s2ZvtdMPL1pbFKTq1
+         5KLZ+KDFFMdIx+W20C0ff4Lsf1lVYjnz8LbbMJQv1YUM5PfoJ2JREhBm0Qk62G4/8wZ/
+         TTfEXrKOxXpeg4JzjsLV+AQC4e2cJCJ4jlYba4XsUQY5GzVTwPG3Z//muM6iAtxv3MM7
+         8Km2rHtK6RS0/FHylLzA6UN1caACWeFrf2Rg7MKkEOxzgBmtZFTphbRLIFRdvRbGtfnr
+         RjqAODnHgKaPIm0G5rkBaU665cnCpGuoG8CrF2YFWbrX/TITVo/uzq8QvcLQ8uQFTypZ
+         L+fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693318305; x=1693923105;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693318438; x=1693923238;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RJ8yJVk1WanTGK6noPSAuAu8J5j6k7b3gO5IRwPDORc=;
-        b=FOGlZc0BxRQRa33FlrnOCuS8aYpHZtPuVppRGz6Jy7siHvw/UpqrtGc0KctPKAOmqk
-         3frEkPWl5r0+v7aBzuRbcRYkJl+KBBRj1UipYJFSocj3ce7t7fwYaj25C73sfWX3R/kJ
-         sNK+qc7BtkW+n+YD9YMmBVaYeq7S7ICl5BTjNHUcjEb+u0ik958rXQf5m5Eyf4Fx+zj/
-         k4ar/V2yAulDIa8ojJNWgdV3v2brJoTC8ELoUhm1GdY3G5hQedaKL1qC7Y6XqOkW+9J0
-         s9MKIBSBLKBu7EE3hL0NkglEPPt47z9Cwng86uBC9r3QSjObJl/ZLcC123pDx7MboAsw
-         jLRA==
-X-Gm-Message-State: AOJu0YwBXKDHvE7/SC2GU6IpZWNQHmCO6Wf/mGIHnbxiB99G/zvwVOBU
-        y26M5tMHfk+bDACqu+At++Uahw==
-X-Google-Smtp-Source: AGHT+IFFCPGxLiaYC5WNJ7fqI+TG+TcdZx3IaR6+EMXKEo+SeqxY92aYFuyGltp0GJAZesLUqlFAyA==
-X-Received: by 2002:a05:600c:3b07:b0:401:b53e:6c55 with SMTP id m7-20020a05600c3b0700b00401b53e6c55mr2216906wms.0.1693318304674;
-        Tue, 29 Aug 2023 07:11:44 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:9c:201:3380:af04:1905:46a])
-        by smtp.gmail.com with ESMTPSA id 24-20020a05600c22d800b003fbe791a0e8sm14138042wmg.0.2023.08.29.07.11.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 07:11:43 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 16:11:38 +0200
-From:   Marco Elver <elver@google.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     syzbot <syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com>,
-        davem@davemloft.net, edumazet@google.com, ericvh@kernel.org,
-        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux_oss@crudebyte.com,
-        lucho@ionkov.net, netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
-Subject: Re: [syzbot] [net?] [v9fs?] KCSAN: data-race in p9_fd_create /
- p9_fd_create (2)
-Message-ID: <ZO38mqkS0TYUlpFp@elver.google.com>
-References: <000000000000d26ff606040c9719@google.com>
- <ZO3PFO_OpNfBW7bd@codewreck.org>
+        bh=39bXmTr9o4j46Blz1DGjW7i8kc3+09Rh5ttDbKYOLuM=;
+        b=JH9CozbCFebnteFvezRJEh6merstDHdLqFdLfu7LqMU/JQ39+YZ5XMxI/dBiDMbQqb
+         qnSG1xqNUQcwIrMq0XRBottvHudSsbdf3Kaim284wCh12+EQgpWcv74pOVmfMY7v+gLU
+         Xm/f9U+vZfcia/3nZaFn2dDtAkEHyxEtgbmke4ppbIMhGch1kEGD16FLCcOFnIj46pCc
+         pMOOapB2BviuvvjK8JIgotfBYqHby8jTe1IRiQ3TzUlkRGx+VD0FeuroD+JBZFuTlRnc
+         HoC6qBKe9h33SK/KVDMeVNTXDBI7OUswtP1r8f4YszeuEV1A325uotlVZXZnIAdZsfE+
+         obLw==
+X-Gm-Message-State: AOJu0Yyd9aiMZmWvMLwAtUv7rgbuXN/xGB2ZFbBoehyzxlnndNeQYE0j
+        7rnUzKh6fKFpcytP7ak+1E6H2IPkXXNY45j7f/bkCg==
+X-Google-Smtp-Source: AGHT+IG6pEXSN4/wB67twAtWXWyJhYwM2WMVCHmP8Qj9CM47h2hB8QNcdxKURRnQDfAXfpis4PQjHiiGhccGrsiqq6M=
+X-Received: by 2002:a67:e245:0:b0:44e:eb7:24e0 with SMTP id
+ w5-20020a67e245000000b0044e0eb724e0mr17087974vse.21.1693318438359; Tue, 29
+ Aug 2023 07:13:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZO3PFO_OpNfBW7bd@codewreck.org>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org> <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com> <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+ <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com> <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
+ <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org> <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
+ <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
+ <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org> <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
+ <0cb96702-b396-4223-870f-b798d32991ee@linaro.org>
+In-Reply-To: <0cb96702-b396-4223-870f-b798d32991ee@linaro.org>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 29 Aug 2023 15:13:42 +0100
+Message-ID: <CAPY8ntDf+sD-2mtLBxfrMKQiW5YYi6cfmCe2Sm8CYK9kO3W+nQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox VTDR6130
+To:     neil.armstrong@linaro.org
+Cc:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        dri-devel@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        quic_parellan@quicinc.com,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 07:57PM +0900, Dominique Martinet wrote:
-[...]
-> Yes well that doesn't seem too hard to hit, both threads are just
-> setting O_NONBLOCK to the same fd in parallel (0x800 is 04000,
-> O_NONBLOCK)
-> 
-> I'm not quite sure why that'd be a problem; and I'm also pretty sure
-> that wouldn't work anyway (9p has no muxing or anything that'd allow
-> sharing the same fd between multiple mounts)
-> 
-> Can this be flagged "don't care" ?
+Hi Neil
 
-If it's an intentional data race, it could be marked data_race() [1].
+On Mon, 28 Aug 2023 at 09:49, <neil.armstrong@linaro.org> wrote:
+>
+> Hi Jessica,
+>
+> On 25/08/2023 20:37, Jessica Zhang wrote:
+> >
+> >
+> > On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
+> >> Hi Maxime,
+> >>
+> >> On 21/08/2023 10:17, Maxime Ripard wrote:
+> >>> Hi,
+> >>>
+> >>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org w=
+rote:
+> >>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
+> >>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
+> >>>>>> Sending HS commands will always work on any controller, it's all
+> >>>>>> about LP commands. The Samsung panels you listed only send HS
+> >>>>>> commands so they can use prepare_prev_first and work on any
+> >>>>>> controllers.
+> >>>>>
+> >>>>> I think there is some misunderstanding there, supported by the
+> >>>>> description of the flag.
+> >>>>>
+> >>>>> If I remember correctly, some hosts (sunxi) can not send DCS
+> >>>>> commands after enabling video stream and switching to HS mode, see
+> >>>>> [1]. Thus, as you know, most of the drivers have all DSI panel setu=
+p
+> >>>>> commands in drm_panel_funcs::prepare() /
+> >>>>> drm_bridge_funcs::pre_enable() callbacks, not paying attention
+> >>>>> whether these commands are to be sent in LP or in HS mode.
+> >>>>>
+> >>>>> Previously DSI source drivers could power on the DSI link either in
+> >>>>> mode_set() or in pre_enable() callbacks, with mode_set() being the
+> >>>>> hack to make panel/bridge drivers to be able to send commands from
+> >>>>> their prepare() / pre_enable() callbacks.
+> >>>>>
+> >>>>> With the prev_first flags being introduced, we have established tha=
+t
+> >>>>> DSI link should be enabled in DSI host's pre_enable() callback and
+> >>>>> switched to HS mode (be it command or video) in the enable()
+> >>>>> callback.
+> >>>>>
+> >>>>> So far so good.
+> >>>>
+> >>>> It seems coherent, I would like first to have a state of all DSI hos=
+t
+> >>>> drivers and make this would actually work first before adding the
+> >>>> prev_first flag to all the required panels.
+> >>>
+> >>> This is definitely what we should do in an ideal world, but at least =
+for
+> >>> sunxi there's no easy way for it at the moment. There's no documentat=
+ion
+> >>> for it and the driver provided doesn't allow this to happen.
+> >>>
+> >>> Note that I'm not trying to discourage you or something here, I'm sim=
+ply
+> >>> pointing out that this will be something that we will have to take in=
+to
+> >>> account. And it's possible that other drivers are in a similar
+> >>> situation.
+> >>>
+> >>>>> Unfortunately this change is not fully backwards-compatible. This
+> >>>>> requires that all DSI panels sending commands from prepare() should
+> >>>>> have the prepare_prev_first flag. In some sense, all such patches
+> >>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
+> >>>>> flag to drm_panel").
+> >>>>
+> >>>> This kind of migration should be done *before* any possible
+> >>>> regression, not the other way round.
+> >>>>
+> >>>> If all panels sending commands from prepare() should have the
+> >>>> prepare_prev_first flag, then it should be first, check for
+> >>>> regressions then continue.
+> >>>>
+> >>>> <snip>
+> >>>>
+> >>>>>>
+> >>>>>> I understand, but this patch doesn't qualify as a fix for
+> >>>>>> 9e15123eca79 and is too late to be merged in drm-misc-next for
+> >>>>>> v6.6, and since 9e15123eca79 actually breaks some support it
+> >>>>>> should be reverted (+ deps) since we are late in the rc cycles.
+> >>>>>
+> >>>>> If we go this way, we can never reapply these patches. There will b=
+e
+> >>>>> no guarantee that all panel drivers are completely converted. We
+> >>>>> already have a story without an observable end -
+> >>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+> >>>>
+> >>>> I don't understand this point, who would block re-applying the patch=
+es ?
+> >>>>
+> >>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multip=
+le
+> >>>> Linux version and went smoothly because we reverted regressing patch=
+es
+> >>>> and restarted when needed, I don't understand why we can't do this
+> >>>> here aswell.
+> >>>>
+> >>>>> I'd consider that the DSI driver is correct here and it is about th=
+e
+> >>>>> panel drivers that require fixes patches. If you care about the
+> >>>>> particular Fixes tag, I have provided one several lines above.
+> >>>>
+> >>>> Unfortunately it should be done in the other way round, prepare for
+> >>>> migration, then migrate,
+> >>>>
+> >>>> I mean if it's a required migration, then it should be done and I'll
+> >>>> support it from both bridge and panel PoV.
+> >>>>
+> >>>> So, first this patch has the wrong Fixes tag, and I would like a
+> >>>> better explanation on the commit message in any case. Then I would
+> >>>> like to have an ack from some drm-misc maintainers before applying i=
+t
+> >>>> because it fixes a patch that was sent via the msm tree thus per the
+> >>>> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
+> >>>
+> >>> Sorry, it's not clear to me what you'd like our feedback on exactly?
+> >>
+> >> So let me resume the situation:
+> >>
+> >> - pre_enable_prev_first was introduced in [1]
+> >> - some panels made use of pre_enable_prev_first
+> >> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 ke=
+rnels and before
+> >> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM855=
+0 systems (and probably other Video mode panels on Qcom platforms)
+> >> - this fix was sent late, and is now too late to be merged via drm-mis=
+c-next
+> >
+> > Hi Neil and Maxime,
+> >
+> > I agree with Neil that 9e15123eca79 was the commit that introduced the =
+issue (since it changed the MSM DSI host behavior).
+> >
+> > However, I'm not too keen on simply reverting that patch because
+> >
+> > 1) it's not wrong to have the dsi_power_on in pre_enable. Arguably, it =
+actually makes more sense to power on DSI host in pre_enable than in modese=
+t (since modeset is meant for setting the bridge mode), and
+>
+> I never objected that, it's the right path to go.
+>
+> >
+> > 2) I think it would be good practice to keep specific bridge chip check=
+s out of the DSI host driver.
+>
+> We discussed about a plan with Maxime and Dmitry about that, and it would=
+ require adding
+> a proper atomic panel API to handle a "negociation" with the host control=
+ler.
+>
+> >
+> >
+> > That being said, what do you think about setting the default value of p=
+repare_prev_first to true (possibly in panel_bridge_attach)?
+>
+> As Dmitry pointed, all panels sending LP commands in pre_enable() should =
+have prepare_prev_first to true.
 
-However, staring at this code for a bit, I wonder why the f_flags are
-set on open, and not on initialization somewhere...
+Any panel wishing the clock and data lanes to be in a defined LP-11
+state before pre_enable() is called need to set prepare_prev_first to
+true. This is not a universal requirement of all DSI peripherals for
+which commands are sent from pre_enable - a number will happily power
+up at LP-00.
+It is true that no harm will occur on those devices that do support
+non-LP-11 power up if the host is in LP-11, so a blanket setting of
+the flag for any panel driver sending DSI commands in pre_enable
+should be safe.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
+It is documented [1] that transfer can be called at any time,
+regardless of the state of the host. The MSM driver isn't supporting
+that, hence issues.
+[2] further clarifies that it is expected to power up the host
+controller, send the message, and power down again.
 
-Anyway, a patch like the below would document that the data race is
-intended and we assume that there is no way (famous last words) the
-compiler or the CPU can mess it up (and KCSAN won't report it again).
+[1] https://github.com/torvalds/linux/blob/master/include/drm/drm_mipi_dsi.=
+h#L84-L87
+[2] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/drm_bridg=
+e.c#L185-L188
 
------- >8 ------
+> >
+> > It seems to me that most panel drivers send DCS commands during pre_ena=
+ble, so maybe it would make more sense to power on DSI host before panel en=
+able() by default. Any panel that needs DSI host to be powered on later cou=
+ld then explicitly set the flag to false in their respective drivers.
+>
+> A proper migration should be done, yes, but not as a fix on top of v6.5.
 
-From: Marco Elver <elver@google.com>
-Date: Tue, 29 Aug 2023 15:48:58 +0200
-Subject: [PATCH] 9p: Annotate data-racy writes to file::f_flags
+I looked at this when adding prepare_prev_first, but as the DSI
+control path is separate from the bridge chain there's no obvious way
+to automatically set a bridge flag from the mipi_dsi registration.
 
-syzbot reported:
+  Dave
 
- | BUG: KCSAN: data-race in p9_fd_create / p9_fd_create
- |
- | read-write to 0xffff888130fb3d48 of 4 bytes by task 15599 on cpu 0:
- |  p9_fd_open net/9p/trans_fd.c:842 [inline]
- |  p9_fd_create+0x210/0x250 net/9p/trans_fd.c:1092
- |  p9_client_create+0x595/0xa70 net/9p/client.c:1010
- |  v9fs_session_init+0xf9/0xd90 fs/9p/v9fs.c:410
- |  v9fs_mount+0x69/0x630 fs/9p/vfs_super.c:123
- |  legacy_get_tree+0x74/0xd0 fs/fs_context.c:611
- |  vfs_get_tree+0x51/0x190 fs/super.c:1519
- |  do_new_mount+0x203/0x660 fs/namespace.c:3335
- |  path_mount+0x496/0xb30 fs/namespace.c:3662
- |  do_mount fs/namespace.c:3675 [inline]
- |  __do_sys_mount fs/namespace.c:3884 [inline]
- |  [...]
- |
- | read-write to 0xffff888130fb3d48 of 4 bytes by task 15563 on cpu 1:
- |  p9_fd_open net/9p/trans_fd.c:842 [inline]
- |  p9_fd_create+0x210/0x250 net/9p/trans_fd.c:1092
- |  p9_client_create+0x595/0xa70 net/9p/client.c:1010
- |  v9fs_session_init+0xf9/0xd90 fs/9p/v9fs.c:410
- |  v9fs_mount+0x69/0x630 fs/9p/vfs_super.c:123
- |  legacy_get_tree+0x74/0xd0 fs/fs_context.c:611
- |  vfs_get_tree+0x51/0x190 fs/super.c:1519
- |  do_new_mount+0x203/0x660 fs/namespace.c:3335
- |  path_mount+0x496/0xb30 fs/namespace.c:3662
- |  do_mount fs/namespace.c:3675 [inline]
- |  __do_sys_mount fs/namespace.c:3884 [inline]
- |  [...]
- |
- | value changed: 0x00008002 -> 0x00008802
-
-Within p9_fd_open(), O_NONBLOCK is added to f_flags of the read and
-write files. This may happen concurrently if e.g. 2 tasks mount the same
-filesystem.
-
-Mark the plain read-modify-writes as intentional data-races, with the
-assumption that the result of executing the accesses concurrently will
-always result in the same result despite the accesses themselves not
-being atomic.
-
-Reported-by: syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
----
- net/9p/trans_fd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
-index 00b684616e8d..9b01e15a758b 100644
---- a/net/9p/trans_fd.c
-+++ b/net/9p/trans_fd.c
-@@ -833,13 +833,13 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
- 	if (!(ts->rd->f_mode & FMODE_READ))
- 		goto out_put_rd;
- 	/* prevent workers from hanging on IO when fd is a pipe */
--	ts->rd->f_flags |= O_NONBLOCK;
-+	data_race(ts->rd->f_flags |= O_NONBLOCK);
- 	ts->wr = fget(wfd);
- 	if (!ts->wr)
- 		goto out_put_rd;
- 	if (!(ts->wr->f_mode & FMODE_WRITE))
- 		goto out_put_wr;
--	ts->wr->f_flags |= O_NONBLOCK;
-+	data_race(ts->wr->f_flags |= O_NONBLOCK);
- 
- 	client->trans = ts;
- 	client->status = Connected;
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
+> Neil
+>
+> >
+> > Thanks,
+> >
+> > Jessica Zhang
+> >
+> >
+> >>
+> >> I do not consider it's the right way to fix regression caused by [2]
+> >> I consider [2] should be reverted, panels migrated to pre_enable_prev_=
+first when needed, tested and the [2] applied again
+> >>
+> >> I have no objection about [2] and it should be done widely over the wh=
+ole DSI controllers
+> >> and DSI Video panels.
+> >>
+> >> I also object about the Fixes tag of this patch, which is wrong, and D=
+mitry considers [1]
+> >> should be used but it's even more wrong since [2] really caused the re=
+gression.
+> >>
+> >> And if [2] was to correct one to use, it was pushed via the MSM tree s=
+o it couldn't be
+> >> applied via drm-misc-next-fixes, right ?
+> >>
+> >> [1] 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alte=
+r bridge init order")
+> >> [2] 9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI h=
+osts at modeset")
+> >>
+> >> Thanks,
+> >> Neil
+> >>
+> >>>
+> >>> Maxime
+> >>
+>
