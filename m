@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F1378C3BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C2578C3BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbjH2L6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 07:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
+        id S233103AbjH2L6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbjH2L5j (ORCPT
+        with ESMTP id S233054AbjH2L6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:57:39 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFB919F;
-        Tue, 29 Aug 2023 04:57:36 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TBu5iB027092;
-        Tue, 29 Aug 2023 11:57:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=XKNzpjIMizmE1yoCpdDi1AcUjsxJu19awOuBKIPruYc=;
- b=DPFf14kI5HZyyAxgkVibrdK40zXqZPa5r0bucfwQCtkgspNWeRP05mV2YLR2m5NDwN+J
- 8vR7KNysubtJHJ+1djjfjBM4NqYXbHA/4OIb4Op2/ECw95Y8obqbXknUdE/RGIA97GWU
- HPOw8wPKgqzO06UHlInriAsgAF5g7h2gBpmSMVRTNT9XOOSfiuU43wE0H92KMa1ucI3E
- ij+cFFO+QtDC2dfhE0TIxaAH0YKffdcjhyiQ7pctgcrncYbDf0FbAmFbbNwVkzR2owZx
- u2OSv6OvQq9siIuiyrYDzkVQua02LmxpdPh1ALDZU3+BuDC5vJ2JqPfSkMiUnJSCn7yh rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ssg84g0qg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 11:57:05 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37TBuZpx029169;
-        Tue, 29 Aug 2023 11:57:05 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ssg84g0q8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 11:57:05 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37TB1NSh014168;
-        Tue, 29 Aug 2023 11:57:04 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sqwxjtp3w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 11:57:04 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37TBv3HN066282
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Aug 2023 11:57:03 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 576FA58068;
-        Tue, 29 Aug 2023 11:57:03 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 416785805A;
-        Tue, 29 Aug 2023 11:57:03 +0000 (GMT)
-Received: from localhost (unknown [9.61.165.118])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 29 Aug 2023 11:57:03 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     Daniel =?utf-8?Q?D=C3=ADaz?= <daniel.diaz@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        mpe@ellerman.id.au
-Subject: Re: [PATCH 4.14 00/57] 4.14.324-rc1 review
-In-Reply-To: <868cd8e3-2e7e-7b98-0a6e-e5586cb6ab0d@linaro.org>
-References: <20230828101144.231099710@linuxfoundation.org>
- <868cd8e3-2e7e-7b98-0a6e-e5586cb6ab0d@linaro.org>
-Date:   Tue, 29 Aug 2023 06:57:03 -0500
-Message-ID: <87bkeqysc0.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+        Tue, 29 Aug 2023 07:58:40 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AA3199;
+        Tue, 29 Aug 2023 04:58:35 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RZm9z2XZpzrSQZ;
+        Tue, 29 Aug 2023 19:56:55 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
+ 2023 19:58:33 +0800
+Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+References: <20230816100113.41034-1-linyunsheng@huawei.com>
+ <20230816100113.41034-2-linyunsheng@huawei.com>
+ <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
+ <20230817091554.31bb3600@kernel.org>
+ <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
+ <20230817165744.73d61fb6@kernel.org>
+ <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
+ <20230818145145.4b357c89@kernel.org>
+ <1b8e2681-ccd6-81e0-b696-8b6c26e31f26@huawei.com>
+ <20230821113543.536b7375@kernel.org>
+ <5bd4ba5d-c364-f3f6-bbeb-903d71102ea2@huawei.com>
+ <20230822083821.58d5d26c@kernel.org>
+ <79a49ccd-b0c0-0b99-4b4d-c4a416d7e327@huawei.com>
+ <20230823072552.044d13b3@kernel.org>
+ <CAKgT0UeSOBbXohq1rZ3YsB4abB_-5ktkLtYbDKTah8dvaojruA@mail.gmail.com>
+ <5aae00a4-42c0-df8b-30cb-d47c91cf1095@huawei.com>
+ <20230825170850.517fad7d@kernel.org>
+ <CAKgT0UeHfQLCzNALUnYyJwtGpUnd=4JbMSy00srgdKZz=SFemw@mail.gmail.com>
+ <20230828083810.4f86b9a3@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <2b570282-24f8-f23b-1ff7-ad836794baa9@huawei.com>
+Date:   Tue, 29 Aug 2023 19:58:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: tNG9XWO3BqGFluEAbrfS9r4YfGSsVbxi
-X-Proofpoint-GUID: PIGYm00qPEIDUO_bj_Cg9gsarDUM-aIs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_08,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=719
- malwarescore=0 adultscore=0 clxscore=1011 priorityscore=1501 phishscore=0
- mlxscore=0 spamscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308290100
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230828083810.4f86b9a3@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel D=C3=ADaz <daniel.diaz@linaro.org> writes:
->
-> We see this build regression on PowerPC with GCC-8 and GCC-12:
-> -----8<-----
->    /builds/linux/arch/powerpc/kernel/rtas_flash.c: In function 'rtas_flas=
-h_init':
->    /builds/linux/arch/powerpc/kernel/rtas_flash.c:717:22: error: implicit=
- declaration of function 'kmem_cache_create_usercopy'; did you mean 'kmem_c=
-ache_create'? [-Werror=3Dimplicit-function-declaration]
->      flash_block_cache =3D kmem_cache_create_usercopy("rtas_flash_cache",
->                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
->                          kmem_cache_create
->    /builds/linux/arch/powerpc/kernel/rtas_flash.c:717:20: error: assignme=
-nt to 'struct kmem_cache *' from 'int' makes pointer from integer without a=
- cast [-Werror=3Dint-conversion]
->      flash_block_cache =3D kmem_cache_create_usercopy("rtas_flash_cache",
->                        ^
-> ----->8-----
->
-> That's on defconfig and cell_defconfig.
->
-> Bisection points to "powerpc/rtas_flash: allow user copy to flash
-> block cache objects" (5190538c66e5). Reverting that patch makes the
-> build pass again.
+On 2023/8/28 23:38, Jakub Kicinski wrote:
+> On Mon, 28 Aug 2023 07:50:33 -0700 Alexander Duyck wrote:
+>> Actually we could keep it pretty simple. We just have to create a
+>> #define using DMA_BIT_MASK for the size of the page pool DMA. We could
+>> name it something like PP_DMA_BIT_MASK. The drivers would just have to
+>> use that to define their bit mask when they call
+>> dma_set_mask_and_coherent. In that case the DMA API would switch to
+>> bounce buffers automatically in cases where the page DMA address would
+>> be out of bounds.
+>>
+>> The other tweak we could look at doing would be to just look at the
+>> dma_get_required_mask and add a warning and/or fail to load page pool
+>> on systems where the page pool would not be able to process that when
+>> ANDed with the device dma mask.
 
-That change should not be applied to 4.14.x. The problem it fixes is not
-present in that version.
+As the all arches have used CONFIG_PHYS_ADDR_T_64BIT:
+https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT
+
+arm: Large Physical Address Extension or LPAE, 40 bits of phys addr.
+arc: Physical Address Extension or PAE, 40 bits of phys addr.
+mips: eXtended Physical Addressing or PXA, 40 bits of phys addr.
+powerpc: does not seems to have a name for the feature, and have 36
+         bits of phys addr.
+riscv: large physical address, 34 bits of phys addr.
+x86: Physical Address Extension or PAE, 36 bits of phys addr.
+
+It do seem that we are worrying too much, So I am going to follow jakub's
+suggestion. If we make a wrong assumption, we print a warning for that.
+
+>>
+>> With those two changes the setup should be rock solid in terms of any
+>> risks of the DMA address being out of bounds, and with minimal
+>> performance impact as we would have verified all possibilities before
+>> we even get into the hot path.
+> 
+> Sounds like a plan!
+> .
+> 
