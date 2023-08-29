@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEA878C180
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5AF78C177
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbjH2J3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
+        id S232466AbjH2J3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235026AbjH2J3R (ORCPT
+        with ESMTP id S234762AbjH2J2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:29:17 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12399E1;
-        Tue, 29 Aug 2023 02:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1693301353; x=1724837353;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=LgXW93cNR0No3c3s9Vctvqlqw/7SVjO9Zt3lCI5tOIE=;
-  b=X7l3nz2i4qQ7O+u7PmQEhwgXM01Q+8y3zYgwVQdmac79goSXHbAPElPW
-   TO2MUNHsWyEh5hu+1qdB0B8AEW17BAoEV3ye0N4EBH5KK5G9GL/tpTxD1
-   Khrfa2OtHthUmw+V3BRPP2mB7dlQlwDOBYCuV4Xj1tnA/7opVWrjj2hId
-   MegGAoHYo8trudawG6ofQaZ4XpZFH6l3hMv6RcdzAIEb/Xh2YYGe+07tC
-   5FJf6ibbXLGPlinulNRpHMVssyseb/enJcCX18x2sgoyrkWAL+BauDkUT
-   kkbj0CiwK8s/ImEnuTZy7hq7PLrX7j730s8ez59E6UqQ5Vl2gv0e5YqPE
-   g==;
-X-IronPort-AV: E=Sophos;i="6.02,210,1688421600"; 
-   d="scan'208";a="32672408"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 29 Aug 2023 11:27:25 +0200
-Received: from [127.0.1.1] (herburgerg-w2.tq-net.de [10.122.52.145])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 1BB7628008A;
-        Tue, 29 Aug 2023 11:27:25 +0200 (CEST)
-From:   Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Date:   Tue, 29 Aug 2023 11:27:02 +0200
-Subject: [PATCH v2 6/6] MAINTAINERS: add tqml device trees to TQ-Systems
- entry
+        Tue, 29 Aug 2023 05:28:54 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C765EE43
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:28:32 -0700 (PDT)
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+        by cmsmtp with ESMTP
+        id atVhqDh8bez0Cav0oqoJn4; Tue, 29 Aug 2023 09:27:50 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id av14qutiWuKhRav14qOTES; Tue, 29 Aug 2023 09:28:06 +0000
+X-Authority-Analysis: v=2.4 cv=AsT9YcxP c=1 sm=1 tr=0 ts=64edba27
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=tm0K7vNpALIUKOn5jaC6GAf/ksk2wfE/Y3Cb5yCBJ2E=; b=PGbR2AVPYWBbH1cv0gw2TMZ5iF
+        adBusTHV3sU2+e8vhJphO59WS+gTwJ/8vtPlJzGHzLUHEFNCU1Jyg4Sb0korR/nD0T1y0+a2hVkXZ
+        eLecb3hRh/pYsJkbgt7AHrW1eyKvNN5GFWyxmUud31CrDtMKoZSPuNRC0WcaYabVTy8Kh0bKoFzEI
+        PhAwqrvRPDn8gexwJAkW3wFv6bYNLrHCr7g+RUAjwFBTXtORqbrVn4sqUz6tz/+5W8cFYc3wG3kgT
+        uF96uDHgJHtgysE5zCuTWtDC0l2LE5fjGY0joR19Kd/o07V+DVLJUknVW/nvzsMHFDpAC05sd2hiX
+        xHoY3uHQ==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:53488 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qav12-0043WH-17;
+        Tue, 29 Aug 2023 03:28:04 -0600
+Subject: Re: [PATCH 6.1 000/122] 6.1.50-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230828101156.480754469@linuxfoundation.org>
+In-Reply-To: <20230828101156.480754469@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <0c7bcb4d-73f5-c721-644d-6fa712f90770@w6rz.net>
+Date:   Tue, 29 Aug 2023 02:28:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230829-for-ml-tqmls10xxa-v2-test-v2-6-b1da63785b25@ew.tq-group.com>
-References: <20230829-for-ml-tqmls10xxa-v2-test-v2-0-b1da63785b25@ew.tq-group.com>
-In-Reply-To: <20230829-for-ml-tqmls10xxa-v2-test-v2-0-b1da63785b25@ew.tq-group.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@ew.tq-group.com,
-        gregor.herburger@ew.tq-group.com
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693301244; l=843;
- i=gregor.herburger@ew.tq-group.com; s=20230829; h=from:subject:message-id;
- bh=hyzk0VJaY5oa0kF7IJm92NXpVzkmk+SifWkq//cYZEQ=;
- b=8DpA1nuYZoXWADDDqSoe6csCBf/CvRKbnMuLl+tChdWJVOL2zlx/lEpe2WP2gf/silV8Cgu0F
- HbQsbVghevYCYBFawOjEi/7RjzIyHeWnoYaD9A13LIWftN4WsW+ZPFZ
-X-Developer-Key: i=gregor.herburger@ew.tq-group.com; a=ed25519;
- pk=+eRxwX7ikXwazcRjlOjj2/tbDmfVZdDLoW+xLZbQ4h4=
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qav12-0043WH-17
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:53488
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfH/j4b/6wxs8UolPJzsXu2MZLUPq+o2CEZopbE1ZS8hSEtH50P5rYBRaOFKciuLn8S8Dc5DGK2GW0WMPLTJPDF5Zbv7pk+TYf2I02NNVtPzk+jDNoal3
+ bXbaXzASXHXxyOAYVDkWdyIweVoGzGv6BWrS7qI0NMMq5ltiueV87WWDfTGrmSnHLary5HMTXdssj8Q/nJ3Gt9wJ/LN6M8XbpxM=
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,30 +95,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update file entries for TQ-Systems Layerscape modules.
+On 8/28/23 3:11 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.50 release.
+> There are 122 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.50-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 38ea23fa1b00..c1e9a5415d30 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21788,9 +21788,11 @@ W:	https://www.tq-group.com/en/products/tq-embedded/
- F:	arch/arm/boot/dts/imx*mba*.dts*
- F:	arch/arm/boot/dts/imx*tqma*.dts*
- F:	arch/arm/boot/dts/mba*.dtsi
-+F:	arch/arm64/boot/dts/freescale/fsl-*tqml*.dts*
- F:	arch/arm64/boot/dts/freescale/imx*mba*.dts*
- F:	arch/arm64/boot/dts/freescale/imx*tqma*.dts*
- F:	arch/arm64/boot/dts/freescale/mba*.dtsi
-+F:	arch/arm64/boot/dts/freescale/tqml*.dts*
- F:	drivers/gpio/gpio-tqmx86.c
- F:	drivers/mfd/tqmx86.c
- F:	drivers/watchdog/tqmx86_wdt.c
-
--- 
-2.34.1
+Tested-by: Ron Economos <re@w6rz.net>
 
