@@ -2,104 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CA978CCDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA71578CCE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbjH2TWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44716 "EHLO
+        id S234709AbjH2TZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236478AbjH2TVf (ORCPT
+        with ESMTP id S231992AbjH2TZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:21:35 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDFA11B
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:21:32 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TDqAjl015641;
-        Tue, 29 Aug 2023 19:21:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=H2+NxqiEc8rjZ8pjbgtU37aJCpGo6Y8dTyKxIsz68Uc=;
- b=QzREJtMxWlmqdyNBRfQTk70eFrJG0NMOaic0DAt960vQcgbAXRiDtv4gMQxBZvWYWYyd
- 5599cC3up2DoUVaGZXZcoux2whzJBtq2Ab18tPxBkgYbVQsSXFtswhq5U22dgZYgjXXW
- APUeKPW5du9q0BxuU3kfBISowVxG2CoASkdb69mNZGV18WaLWe61bki6eL0M6c4O52f5
- Aav68xNR++Luei5rKXMbjWsezufks6SJ6i/7BVdxw6HbOdbeX00j9US2ZTuMzANtaZub
- DEKTUuppixmwntYLwItQ3l4PJgmAPBTnc+iHbsTzIAjX1EI7TVH9yY1Rjth7x8d8MhoP AA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3srybqb8mf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 19:21:09 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37TJL8CP025418
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 19:21:08 GMT
-Received: from [10.71.110.104] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
- 2023 12:21:07 -0700
-Message-ID: <7c424643-79b6-7eb1-cf6f-21c5decc76ba@quicinc.com>
-Date:   Tue, 29 Aug 2023 12:21:07 -0700
-MIME-Version: 1.0
+        Tue, 29 Aug 2023 15:25:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A4EEA;
+        Tue, 29 Aug 2023 12:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693337119; x=1724873119;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=MN/BgKaH/yR9Iaa2sBLZZJUAI0KbG379Thfda3VIN4s=;
+  b=gfP03Kl7rIUaJ+YY1+4ys2rYxnckEIjmJh1nqOE+MMSPA1TPG05jZmZp
+   V8wRa4DnxopEcglOqldPwO17/3AzRS0CXcNVOOsa0UNkhoxBMjpeAMfbj
+   wn4cr2t8hHjuzJWgjLkEefkInGFp4OlGlNkwvod74n0eB5y5xgCPO3I64
+   pqrXfdfqDSUejOmEsS0AHzsrNhO7aVj8cJzmadaMvcQJ6qJ/5fBbbBjfU
+   8CtIAQdVa+JO7nMlVgzq6YUSHJdT5kHZYNl+rccIKjva2dqHZr5wIXVjl
+   BwktYHNxSynk/zIo8WND8EyvUG9E/XexJLiHoCO5O+4vc1wdRVswODGpS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="365663347"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="365663347"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 12:25:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="853412375"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="853412375"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga002.fm.intel.com with ESMTP; 29 Aug 2023 12:25:18 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 29 Aug 2023 12:25:17 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 29 Aug 2023 12:25:17 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 29 Aug 2023 12:25:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TQVj24IeZuXcpn6Ex3jXXUd4lHIii5UoPZDWZBT3hDlIGtO1+Re3fsRmDf+xtzRTBZUbE8UJaOkQC9fOaTMb1BKjcY2BQ1pzutAcGpQ6hHBRLhxmliNHcHlW3HbD06xzS0dvhwuMNn6vYXhSongfVdOD7Mg6d2DUjXHzEYWxS7baUb+z1kz/hk/Wap3YoIZz6ucYQZLI3ezGFiB2rHq11r5si90EOsaPg9HCYKBkY/zO0VNFHOUtGyx7Cdq7wzReC6dqUFHYEUnadd3vb+ICcEgsxEiTGgTyZjJauFo9BQISoup2GSHzc01Lyq/he/XRgZd27KDnPt5PgdmNqZbldQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PRGrm3Qh4osShWKw4anglvdxIsF+HNw62jDT1zm+1Qs=;
+ b=HAJ1JDliZKogIQJHMPg4dvAYrw12m+2f6807FYXji/Fr2Nmh7olBwI6etNi7DtGsjJzVu3OLhRG4KoZ/9fBFBd0O5ZWv3xUwTXBYriktDC9O1hOEsWptAzsSjYOjZRUzBFez+3r5dFqnU3nvWj3GGxTkzR3NZ9noA8Mc6B3ZC/2wV3azBa9975w3TLCQ/4wVRRaief/EU3SUqnbMN4skjWfMXe5spfVw+/zny5aRiG8A1Bv7hradU84wR49kdyp6Cm1/W36gaPMlCUy7vXR7I56R3hVcpqzUsLBFuhCl7eaxY4JYEIizNfN/kTJ8N1ZTX4DSDfLpA38bwO34bU5v8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by CH0PR11MB5491.namprd11.prod.outlook.com (2603:10b6:610:d6::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Tue, 29 Aug
+ 2023 19:25:06 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6a23:786d:65f7:ef0b]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6a23:786d:65f7:ef0b%6]) with mapi id 15.20.6699.035; Tue, 29 Aug 2023
+ 19:25:06 +0000
+Message-ID: <a61b7923-fc3f-c96d-ea84-0ae4fa176eac@intel.com>
+Date:   Tue, 29 Aug 2023 12:25:04 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
- VTDR6130
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] coccinelle: semantic patch to check for potential
+ struct_size calls
+To:     Kees Cook <keescook@chromium.org>
+CC:     Julia Lawall <Julia.Lawall@lip6.fr>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        <cocci@systeme.lip6.fr>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <20230227202428.3657443-1-jacob.e.keller@intel.com>
+ <202308261813.A26FA1A@keescook>
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        <quic_parellan@quicinc.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
- <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
- <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
- <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
- <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
- <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
- <0cb96702-b396-4223-870f-b798d32991ee@linaro.org>
- <7571be78-5560-13bf-d754-cabc8ad6140d@quicinc.com>
- <56c11316-57ce-45d5-927c-84f65a1c227e@linaro.org>
- <CAA8EJpqQkb1wumNJWkKV2o5+52FopHyPRvxBewLxGFXnTJFA9A@mail.gmail.com>
- <5512f228-680b-0259-cfc5-6dae6d4da392@quicinc.com>
- <CAA8EJpr8WPmsgiXb16OipvtouwztKYjVWLYK04Z0DvQ7frtJiw@mail.gmail.com>
- <e52d9a0a-f748-22fb-e68c-4b819d97d0cd@quicinc.com>
- <CAA8EJpohD05+JuHoGai9NoM-GH8JN9MGtf4CKtBJpPm5n25dwA@mail.gmail.com>
- <c522a944-4ae1-098b-0205-b0810325114c@quicinc.com>
- <CAA8EJpoEQAjRPnZD5uErSUO=3v-J3yHwZCEU2WcX8RXjV_ZcsQ@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpoEQAjRPnZD5uErSUO=3v-J3yHwZCEU2WcX8RXjV_ZcsQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <202308261813.A26FA1A@keescook>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: O3TRRZXU6kdTzefPRF-QSa7gqW0AqYDI
-X-Proofpoint-GUID: O3TRRZXU6kdTzefPRF-QSa7gqW0AqYDI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_13,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- clxscore=1015 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- mlxscore=0 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308290168
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: MW4PR04CA0330.namprd04.prod.outlook.com
+ (2603:10b6:303:82::35) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|CH0PR11MB5491:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48da7248-8697-406e-9b1d-08dba8c5a684
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IMHPdkt1C+pryjGY7RtgsuwGkc03vlIgruCSlUCL2/iG6VzddfPuCcZAfttm2roxHh5GGJS7yQu3BQv05IPQiZXsaGKgivixq4fqHyXzogxo3/pY6fhIa+7OScXG8i1Zx25VIWx18VT7EMk3za/HDphJAE9nNOOnCd1AdQhX/n4txPhxG0QG0HYjdoIsi+gvCLaVcwBI0xFa3yOBRzCef6QfaWqatN9nN6IxOgh8fLXPrlfiUr18sWCZ3qE2tm5yz8QBYy+9EW8OZvGMoLGWoCITbPc57z8VwdesmWHw/CiNTrPuFDQUZGaJg/5bBiEzvuqeEo7tSnN9L7Kg1JPksP7/SSg40vp+xvKj0FVzHjJOopeStfxa3VaHYwP/2hNlN1por51RNECFxPcj+Mecx/72LVC1PAcEYA0bDiBfZkI3dBoKWa7ehF6gs7skmaxnujZ9J1ha9Op6qPP4zww/Fg/iv5KpQDHOvCdAEy+NUBbIgV2VWxIaVRiYiL87IvI2nxsQZWNyLrDLbxbIu63gIAwsLnPzRiXCJdNRPVbQdJG8f/A6PWP9P5tZO3SzrTKA+wyqOk2vutZr3ab/OWJLqFMGDhhUEfKGXmRczCxnJBVEBs6TJJPo//mycuQFUTTnOqkOnfdSMN83ZY/+QRNHoazX17Fa1LWEcOau2bfDHdLA7LAQhlcEY0wYukhP0OIx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(366004)(39860400002)(1800799009)(186009)(451199024)(8936002)(66946007)(478600001)(53546011)(31686004)(966005)(6506007)(66556008)(54906003)(6486002)(66476007)(6916009)(38100700002)(316002)(82960400001)(41300700001)(6512007)(26005)(8676002)(36756003)(5660300002)(31696002)(2906002)(86362001)(2616005)(83380400001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VG1MU0ViQ2w2cjV1WjlEeFN1RVQyQXIzNlcrcTVQWnZDWWdOOWdrbFF2OWpC?=
+ =?utf-8?B?Z0FuZHVBOUxJQVNoa0I2VlRiN1dsRi9YMmlpS3dVNkxkRXcvdjAxWmN5T1FZ?=
+ =?utf-8?B?OEEvVkxIREtsN2hNYjhWbTJKVURvcU9UTmR1eFg5cmhmZVRSZzl0QTFDK0VT?=
+ =?utf-8?B?RVZEb3RkQjNCdTdpaWlSMStpRDRKZzdsOHRFcGpiMFBOYjJYZDRKWHpDV0w3?=
+ =?utf-8?B?RklzdG9paFpoZEZFeEN2eEluOGNyM3R5dVYyTytkYmNFVVhSbXdCbmZQZmdp?=
+ =?utf-8?B?OXBhT0EzcTI4RGVqWFJEWUJvRy9OcStxaXM3aXF1aTZ0WTBha2p6V2VLaFVK?=
+ =?utf-8?B?UW9ad25qb1Z5Y3dHdFBZVi9SNFVvOUM5WWk4YkdtSkRiK0hzaUJjMmhweGhV?=
+ =?utf-8?B?Y1A0ZG8rM2N3dmdiVnRpYUI2M1BrVkVQWVpzSlNIMHR4RDgrd3Jld2tmbHN4?=
+ =?utf-8?B?RG1FeXgxcnBDamRSUVBEbnRXVGpPWXRHK1k1RWZXUW1GTGJhWFJhRDlnQlZv?=
+ =?utf-8?B?K3UrdDdZcjhEN1J2TjNRZjdxd2RqV0dxdnRqNTNSR0ZkV1FFUnFMVTVLYStO?=
+ =?utf-8?B?QXNOV2UzSmtFdjd2VS9Pby9zdU1rN3V1aHNBWlNJcGdTMkZPZjFoV3M5aStu?=
+ =?utf-8?B?RU83MHdtUzZkVDU0YlJtRlROTEgwRzhxeUlKeHovVUxoS0xwanMrMWlER0xY?=
+ =?utf-8?B?VjEvYllSTE13Rkk3V3VZZ2dJWnlObFBiTldKT2VXVTBHU2VCZDIyZlV1QVgx?=
+ =?utf-8?B?RklqS20yU3V2WnE5VjVhR0NDZlBiWmhFMGFISFl5SFV4QXZNNHJVZEpaenhN?=
+ =?utf-8?B?Vm9CRkc5UXhiNFNZQUZTZ3lTenZQMUtXYjl1VzFwZjh6ZHB6V0prQkJPcElU?=
+ =?utf-8?B?NFR3T2tZOEZ1YUVOU2tQajF2ekV0OW9Vdlh3Rjg4MGFaRHo3N3BsUmJtdHpw?=
+ =?utf-8?B?TWZzRUhNcjQrSGxROWtQKzBTRGpSU1pIL2R3TkcxWm5VOVhPZVFnK0NDQTFI?=
+ =?utf-8?B?aWVHVGU2VzdteXdsVzRyOWtydFFyc2dXU1NZTURabDJ5c0JTZG9FNTZkNlpW?=
+ =?utf-8?B?ODRIWUNKdzNidGRhSGd4OUJEcDBLbzJ3UUtSY280dVBERVRrMkZ0WHNmTDBL?=
+ =?utf-8?B?S1ZRZ0hPd05Ua3U5Tk5uNnBLWGlsV0RHeGFkU2xVbnc0ajM1WCs0L1lIcjVh?=
+ =?utf-8?B?S29ScHY5YjZ6QndESzRxcmhheDM2R1JoN0NXK0ErWXBVdUxnUUhMR2JUL3U3?=
+ =?utf-8?B?V1RpVmswUXhTNjl3b1JBWGZ5bytXWUQ4TmtmTWR5cjJWRUR5QU1JOHk4QjlY?=
+ =?utf-8?B?SUlDUmd5cVZ6T1l0b0dYbHRraEVOZko0Nm41aVlLQkRxNStaTTQ2UHFrNXNq?=
+ =?utf-8?B?Zyt1N3lRbU0xdEc4Y0pNRFA4aFNkY0xEMW0vMnRvRlRKSjBPY3Y4ZVZhTjVJ?=
+ =?utf-8?B?UXptQjhEOU5nOHM4VU5oUWwxSHkvTjh5Z2dVbTBjbE9EajJjVXpBOStUeUsx?=
+ =?utf-8?B?V0pVTUtkOG5uNWxwV2ZSa1kzUGtBMlR5eG15ZFZBdlRhYTl5eU5FOUtvNjFV?=
+ =?utf-8?B?eUlieVVEeTY3WWN3UjFrU1k3REh2cDg4clBGNEJuUVNBM3dqNG5HNlI5bFR0?=
+ =?utf-8?B?dG1xanhjeWNYRmNCalZGSDg3dndnY0dobjA5Y25nTG4yOHpjVzBFQ3F3Q2JX?=
+ =?utf-8?B?a2g2K1prZ1BkSWpUbW9rdDNsQjhVWE02SVMvWDdjWlN1bnFORWVXQkJRV1VG?=
+ =?utf-8?B?S29BR1pxVi81VElMUXZNaCtNU2JYdndBMm13cmlDZi8zTSsxVnZkWS9pQWdW?=
+ =?utf-8?B?V3I5VmtqZjVJTW9iMExieExxOHEzblB2Y3V0ZzY3a1RPUjdoOHUrVnNuOTcx?=
+ =?utf-8?B?Y0tndzNvbndaSDU1WFZ0S1RCaFBXbXJvV2kvUkxacWE2dkhSczBCcmZNdG1G?=
+ =?utf-8?B?UUE1TTFwbWhFRFNVYzhyd0MvUktoc1hqbXRDK3BwV1RSd1B5dCtILytTQnI3?=
+ =?utf-8?B?ekdQNHlKUlErNXVGNk9OVGRTT0FsVXVtaDFIVE1pWlNpaXozd1QyR2pxQXM2?=
+ =?utf-8?B?MXhGcWNVSTVLU3lPUjhVZHdqRGt5a29FdUhsQ0UvS3hKWkhVZXBVdU5qMHA1?=
+ =?utf-8?B?RzloWFJGbmoyOXJiOTlzNHVmNFFpcXl4K3B4R2ZMR0U3NHZBWnRiTktaZUcv?=
+ =?utf-8?B?ZHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48da7248-8697-406e-9b1d-08dba8c5a684
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 19:25:06.0687
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N+7PVpA/H8ZTESLFm/PsatEXgHtoq4i7eVEvA4V4ocTM4UzuhFhDDbFChucy9oBsSTU8yyJG9mdqo3kuoyNvcSwf1P1GgyDqteaa/cJimMM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5491
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -108,310 +163,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 8/29/2023 12:15 PM, Dmitry Baryshkov wrote:
-> On Tue, 29 Aug 2023 at 22:09, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->>
->>
->> On 8/29/2023 11:51 AM, Dmitry Baryshkov wrote:
->>> On Tue, 29 Aug 2023 at 20:22, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>>>
->>>>
->>>>
->>>> On 8/29/2023 9:43 AM, Dmitry Baryshkov wrote:
->>>>> On Tue, 29 Aug 2023 at 19:37, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 8/29/2023 2:26 AM, Dmitry Baryshkov wrote:
->>>>>>> On Tue, 29 Aug 2023 at 12:22, <neil.armstrong@linaro.org> wrote:
->>>>>>>>
->>>>>>>> On 28/08/2023 19:07, Abhinav Kumar wrote:
->>>>>>>>> Hi Neil
->>>>>>>>>
->>>>>>>>> Sorry I didnt respond earlier on this thread.
->>>>>>>>>
->>>>>>>>> On 8/28/2023 1:49 AM, neil.armstrong@linaro.org wrote:
->>>>>>>>>> Hi Jessica,
->>>>>>>>>>
->>>>>>>>>> On 25/08/2023 20:37, Jessica Zhang wrote:
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
->>>>>>>>>>>> Hi Maxime,
->>>>>>>>>>>>
->>>>>>>>>>>> On 21/08/2023 10:17, Maxime Ripard wrote:
->>>>>>>>>>>>> Hi,
->>>>>>>>>>>>>
->>>>>>>>>>>>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org wrote:
->>>>>>>>>>>>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
->>>>>>>>>>>>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
->>>>>>>>>>>>>>>> Sending HS commands will always work on any controller, it's all
->>>>>>>>>>>>>>>> about LP commands. The Samsung panels you listed only send HS
->>>>>>>>>>>>>>>> commands so they can use prepare_prev_first and work on any
->>>>>>>>>>>>>>>> controllers.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> I think there is some misunderstanding there, supported by the
->>>>>>>>>>>>>>> description of the flag.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> If I remember correctly, some hosts (sunxi) can not send DCS
->>>>>>>>>>>>>>> commands after enabling video stream and switching to HS mode, see
->>>>>>>>>>>>>>> [1]. Thus, as you know, most of the drivers have all DSI panel setup
->>>>>>>>>>>>>>> commands in drm_panel_funcs::prepare() /
->>>>>>>>>>>>>>> drm_bridge_funcs::pre_enable() callbacks, not paying attention
->>>>>>>>>>>>>>> whether these commands are to be sent in LP or in HS mode.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Previously DSI source drivers could power on the DSI link either in
->>>>>>>>>>>>>>> mode_set() or in pre_enable() callbacks, with mode_set() being the
->>>>>>>>>>>>>>> hack to make panel/bridge drivers to be able to send commands from
->>>>>>>>>>>>>>> their prepare() / pre_enable() callbacks.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> With the prev_first flags being introduced, we have established that
->>>>>>>>>>>>>>> DSI link should be enabled in DSI host's pre_enable() callback and
->>>>>>>>>>>>>>> switched to HS mode (be it command or video) in the enable()
->>>>>>>>>>>>>>> callback.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> So far so good.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> It seems coherent, I would like first to have a state of all DSI host
->>>>>>>>>>>>>> drivers and make this would actually work first before adding the
->>>>>>>>>>>>>> prev_first flag to all the required panels.
->>>>>>>>>>>>>
->>>>>>>>>>>>> This is definitely what we should do in an ideal world, but at least for
->>>>>>>>>>>>> sunxi there's no easy way for it at the moment. There's no documentation
->>>>>>>>>>>>> for it and the driver provided doesn't allow this to happen.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Note that I'm not trying to discourage you or something here, I'm simply
->>>>>>>>>>>>> pointing out that this will be something that we will have to take into
->>>>>>>>>>>>> account. And it's possible that other drivers are in a similar
->>>>>>>>>>>>> situation.
->>>>>>>>>>>>>
->>>>>>>>>>>>>>> Unfortunately this change is not fully backwards-compatible. This
->>>>>>>>>>>>>>> requires that all DSI panels sending commands from prepare() should
->>>>>>>>>>>>>>> have the prepare_prev_first flag. In some sense, all such patches
->>>>>>>>>>>>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
->>>>>>>>>>>>>>> flag to drm_panel").
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> This kind of migration should be done *before* any possible
->>>>>>>>>>>>>> regression, not the other way round.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> If all panels sending commands from prepare() should have the
->>>>>>>>>>>>>> prepare_prev_first flag, then it should be first, check for
->>>>>>>>>>>>>> regressions then continue.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> <snip>
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> I understand, but this patch doesn't qualify as a fix for
->>>>>>>>>>>>>>>> 9e15123eca79 and is too late to be merged in drm-misc-next for
->>>>>>>>>>>>>>>> v6.6, and since 9e15123eca79 actually breaks some support it
->>>>>>>>>>>>>>>> should be reverted (+ deps) since we are late in the rc cycles.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> If we go this way, we can never reapply these patches. There will be
->>>>>>>>>>>>>>> no guarantee that all panel drivers are completely converted. We
->>>>>>>>>>>>>>> already have a story without an observable end -
->>>>>>>>>>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> I don't understand this point, who would block re-applying the patches ?
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
->>>>>>>>>>>>>> Linux version and went smoothly because we reverted regressing patches
->>>>>>>>>>>>>> and restarted when needed, I don't understand why we can't do this
->>>>>>>>>>>>>> here aswell.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>> I'd consider that the DSI driver is correct here and it is about the
->>>>>>>>>>>>>>> panel drivers that require fixes patches. If you care about the
->>>>>>>>>>>>>>> particular Fixes tag, I have provided one several lines above.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Unfortunately it should be done in the other way round, prepare for
->>>>>>>>>>>>>> migration, then migrate,
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> I mean if it's a required migration, then it should be done and I'll
->>>>>>>>>>>>>> support it from both bridge and panel PoV.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> So, first this patch has the wrong Fixes tag, and I would like a
->>>>>>>>>>>>>> better explanation on the commit message in any case. Then I would
->>>>>>>>>>>>>> like to have an ack from some drm-misc maintainers before applying it
->>>>>>>>>>>>>> because it fixes a patch that was sent via the msm tree thus per the
->>>>>>>>>>>>>> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Sorry, it's not clear to me what you'd like our feedback on exactly?
->>>>>>>>>>>>
->>>>>>>>>>>> So let me resume the situation:
->>>>>>>>>>>>
->>>>>>>>>>>> - pre_enable_prev_first was introduced in [1]
->>>>>>>>>>>> - some panels made use of pre_enable_prev_first
->>>>>>>>>>>> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 kernels and before
->>>>>>>>>>>> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM8550 systems (and probably other Video mode panels on Qcom platforms)
->>>>>>>>>>>> - this fix was sent late, and is now too late to be merged via drm-misc-next
->>>>>>>>>>>
->>>>>>>>>>> Hi Neil and Maxime,
->>>>>>>>>>>
->>>>>>>>>>> I agree with Neil that 9e15123eca79 was the commit that introduced the issue (since it changed the MSM DSI host behavior).
->>>>>>>>>>>
->>>>>>>>>>> However, I'm not too keen on simply reverting that patch because
->>>>>>>>>>>
->>>>>>>>>>> 1) it's not wrong to have the dsi_power_on in pre_enable. Arguably, it actually makes more sense to power on DSI host in pre_enable than in modeset (since modeset is meant for setting the bridge mode), and
->>>>>>>>>>
->>>>>>>>>> I never objected that, it's the right path to go.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Ack.
->>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> 2) I think it would be good practice to keep specific bridge chip checks out of the DSI host driver.
->>>>>>>>>>
->>>>>>>>>> We discussed about a plan with Maxime and Dmitry about that, and it would require adding
->>>>>>>>>> a proper atomic panel API to handle a "negociation" with the host controller.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> May I know what type of negotiation is needed here?
->>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> That being said, what do you think about setting the default value of prepare_prev_first to true (possibly in panel_bridge_attach)?
->>>>>>>>>>
->>>>>>>>>> As Dmitry pointed, all panels sending LP commands in pre_enable() should have prepare_prev_first to true.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> I wanted to respond to this earlier but didnt get a chance.
->>>>>>>>>
->>>>>>>>>      From the documentation of this flag, this has nothing to do whether panels are sending the LP commands (commands sent in LP mode) OR HS commands (commands sent in HS mode).
->>>>>>>>>
->>>>>>>>> This is more about sending the commands whether the lanes are in LP11 state before sending the ON commands.
->>>>>>>>>
->>>>>>>>> 195      * The previous controller should be prepared first, before the prepare
->>>>>>>>> 196      * for the panel is called. This is largely required for DSI panels
->>>>>>>>> 197      * where the DSI host controller should be initialised to LP-11 before
->>>>>>>>> 198      * the panel is powered up.
->>>>>>>>> 199      */
->>>>>>>>> 200     bool prepare_prev_first;
->>>>>>>>>
->>>>>>>>> These are conceptually different and thats what I explained Dmitry in our call.
->>>>>>>>>
->>>>>>>>> Sending ON commands in LP11 state is a requirement I have seen with many panels and its actually the right expectation as well to send the commands when the lanes are in a well-defined LP11 state.
->>>>>>>>>
->>>>>>>>>      From the panels which I have seen, the opposite is never true (OR i have never seen it this way).
->>>>>>>>>
->>>>>>>>> The parade chip was the only exception and that issue was never root-caused leading us to have bridge specific handling in MSM driver.
->>>>>>>>>
->>>>>>>>> In other words, it would be very unlikely that a panel should be broken or shouldn't work when the ON commands are sent when the lanes are in LP11 state.
->>>>>>>>>
->>>>>>>>> So I agree with Jessica, that we should set the default value of this flag to true in the framework so that only the bridges/panels which need this to be false do that explicitly. From the examples I pointed out including MTK, even those vendors are powering on their DSI in pre_enable() which means none of these panels will work there too.
->>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> It seems to me that most panel drivers send DCS commands during pre_enable, so maybe it would make more sense to power on DSI host before panel enable() by default. Any panel that needs DSI host to be powered on later could then explicitly set the flag to false in their respective drivers.
->>>>>>>>>>
->>>>>>>>>> A proper migration should be done, yes, but not as a fix on top of v6.5.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> I am fine to drop this fix in favor of making the prepare_prev_first as default true but we need an agreement first. From what I can see, parade chip will be the only one which will need this to be set to false and we can make that change.
->>>>>>>>>
->>>>>>>>> Let me know if this works as a migration plan.
->>>>>>>>
->>>>>>>> Yep agreed, let's do this
->>>>>>>>
->>>>>>>> The panel's prepare_prev_first should be reversed to something like not_prepare_prev_first to make it an exception.
->>>>>>>
->>>>>>> This will break all non-DSI panels, which might depend on the current
->>>>>>> bridge calling order.
->>>>>>>
->>>>>>> I started looking at the explicit DSI power up sequencing, but it will
->>>>>>> take a few more days to mature.
->>>>>>>
->>>>>>
->>>>>> May I know why this would break all non-DSI panels?
->>>>>
->>>>> Existing panel drivers might be depending on the init order. Do we
->>>>> know for sure that none of DPI panels will be broken if there is a
->>>>> video stream ongoing during the reset procedure?
->>>>> Or the panel-edp, which I'm pretty sure will require not_prepare_prev_first.
->>>>>
->>>>
->>>> Can you please explain why would video stream be ON in pre_enable()?
->>>>
->>>> Even though we call msm_dsi_host_enable() in the DSI's pre_enable(), the
->>>> timing engine is not enabled until the encoder's enable and the first
->>>> commit after that so video stream wont be sent till then.
->>>
->>> You are describing the MSM DSI case. I was pointing to the fact that
->>> parent's pre_enable if called too early might conflict with the next
->>> bridge driver in the _generic_ case. E.g. eDP or DPI. Even if is not a
->>> full-featured video stream, this state might confuse the panel. So we
->>> can not blindly switch the order of pre_enable callbacks for the
->>> bridge-panel pair.
->>>
->>
->> Even if the end connector was a eDP or DPI, the input to the bridge was
->> DSI so I think its unlikely that video stream was on before encoder's
->> enable but I cannot speak for all these interfaces/vendors.
->>
->> So, to accommodate both worlds, does this work?
->>
->> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
->> index 9316384b4474..2b38388d4e56 100644
->> --- a/drivers/gpu/drm/bridge/panel.c
->> +++ b/drivers/gpu/drm/bridge/panel.c
->> @@ -416,7 +416,10 @@ struct drm_bridge
->> *devm_drm_panel_bridge_add_typed(struct device *dev,
->>                   return bridge;
->>           }
->>
->> -       bridge->pre_enable_prev_first = panel->prepare_prev_first;
->> +       if (connector_type == DRM_MODE_CONNECTOR_DSI)
->> +               bridge->pre_enable_prev_first = true;
->> +       else
->> +               bridge->pre_enable_prev_first = panel->prepare_prev_first;
+On 8/26/2023 6:19 PM, Kees Cook wrote:
+> Hi!
 > 
-> looks like a hack.
+> I'm sorry I lost this email! I just found it while trying to clean up
+> my inbox.
+> 
+> On Mon, Feb 27, 2023 at 12:24:28PM -0800, Jacob Keller wrote:
+>> include/linux/overflow.h includes helper macros intended for calculating
+>> sizes of allocations. These macros prevent accidental overflow by
+>> saturating at SIZE_MAX.
+>>
+>> In general when calculating such sizes use of the macros is preferred. Add
+>> a semantic patch which can detect code patterns which can be replaced by
+>> struct_size.
+>>
+>> Note that I set the confidence to medium because this patch doesn't make an
+>> attempt to ensure that the relevant array is actually a flexible array. The
+>> struct_size macro does specifically require a flexible array. In many cases
+>> the detected code could be refactored to a flexible array, but this is not
+>> always possible (such as if there are multiple over-allocations).
+>>
+>> Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+>> Cc: Julia Lawall <Julia.Lawall@lip6.fr>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Cc: cocci@systeme.lip6.fr
+>> Cc: linux-kernel@vger.kernel.org
+>>
+>>  scripts/coccinelle/misc/struct_size.cocci | 74 +++++++++++++++++++++++
+>>  1 file changed, 74 insertions(+)
+>>  create mode 100644 scripts/coccinelle/misc/struct_size.cocci
+> 
+> Yes! I'd really like to get something like this into the Coccinelle
+> scripts.
+> 
+>> diff --git a/scripts/coccinelle/misc/struct_size.cocci b/scripts/coccinelle/misc/struct_size.cocci
+>> new file mode 100644
+>> index 000000000000..4ede9586e3c6
+>> --- /dev/null
+>> +++ b/scripts/coccinelle/misc/struct_size.cocci
+>> @@ -0,0 +1,74 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +///
+>> +/// Check for code that could use struct_size().
+>> +///
+>> +// Confidence: Medium
+>> +// Author: Jacob Keller <jacob.e.keller@intel.com>
+>> +// Copyright: (C) 2023 Intel Corporation
+>> +// Options: --no-includes --include-headers
+>> +
+>> +virtual patch
+>> +virtual context
+>> +virtual org
+>> +virtual report
+>> +
+>> +// the overflow Kunit tests have some code which intentionally does not use
+>> +// the macros, so we want to ignore this code when reporting potential
+>> +// issues.
+>> +@overflow_tests@
+>> +identifier f = overflow_size_helpers_test;
+>> +@@
+>> +
+>> +f
+>> +
+>> +//----------------------------------------------------------
+>> +//  For context mode
+>> +//----------------------------------------------------------
+>> +
+>> +@depends on !overflow_tests && context@
+>> +expression E1, E2;
+>> +identifier m;
+>> +@@
+>> +(
+>> +* (sizeof(*E1) + (E2 * sizeof(*E1->m)))
+>> +)
+>> +
+>> +//----------------------------------------------------------
+>> +//  For patch mode
+>> +//----------------------------------------------------------
+>> +
+>> +@depends on !overflow_tests && patch@
+>> +expression E1, E2;
+>> +identifier m;
+>> +@@
+>> +(
+>> +- (sizeof(*E1) + (E2 * sizeof(*E1->m)))
+>> ++ struct_size(E1, m, E2)
+>> +)
+> 
+> Two notes:
+> 
+> This can lead to false positives (like for struct mux_chip) which
+> doesn't use a flexible array member, which means struct_size() will
+> actually fail to build (it requires the 2nd arg to be an array).
 > 
 
-Nope its not, DSI spec has clear mentions about LP11 state to be used 
-during initialization.
+I actually sent a fix for mux chip to refactor it to struct_size too :)
 
-"After power-up, the host processor shall observe an initialization 
-period, TINIT, during which it shall drive a
-sustained TX-Stop state (LP-11) on all Lanes of the Link. See [MIPI04] 
-for descriptions of TINIT and the TX-Stop state.
+https://lore.kernel.org/all/20230223014221.1710307-1-jacob.e.keller@intel.com/
 
-Peripherals shall power up in the RX-Stop state and monitor the Link to 
-determine if the host processor has
-asserted a TX-Stop state for at least the TINIT period. The peripheral 
-shall ignore all Link states prior to
-detection of a TINIT event. The peripheral shall be ready to accept bus 
-transactions immediately following the end of the TINIT period."
-
-I am only extending this statement by mandating that the DSI PHY / 
-controller be powered up so that its able to drive the lanes to LP11 state.
-
-Now, pls explain why this is a hack
-
->>
->>           *ptr = bridge;
->>           devres_add(dev, ptr);
->>
->>>>
->>>> drm_atomic_bridge_chain_pre_enable() is called before the encoder's enable.
->>>>
->>>> drm_atomic_bridge_chain_enable() is the one which is called after the
->>>> encoder's enable().
->>>>
->>>>>>
->>>>>> Like I said, we dont know the full details of the parade issue but I do
->>>>>> not see any reason why powering on a bridge chip with the DSI lanes
->>>>>> being in proper LP11 state should cause an issue. Its a well defined and
->>>>>> documented state in DSI spec.
->>>>>>
->>>>>> On the contrary, trying to turn on a bridge chip before powering on a
->>>>>> controller could have more issues as we do not know what state the lanes
->>>>>> are in when the MIPI devices (panel or bridge) are powered up.
->>>>>>
->>>>>> This sets the expectation and handshake straight.
->>>>>
->>>>>
->>>
->>>
->>>
+> This can miss cases that have more than a single struct depth (which is
+> uncommon but happens). I don't know how to match only "substruct.member"
+> from "ptr->substruct.member". (I know how to match the whole thing[1],
+> though.)
 > 
+Yea I couldn't figure out how to get it to handle both cases here but I
+actually prefer reporting cases like mux_chip, since they can usually be
+refactored to use struct size properly.
+
+> That isn't reason not to take this patch, though. It's a good start!
 > 
+
+Right. Both cases like this are why I set the confidence to only medium,
+and mentioned it in the commit :D
+
+
+> Thanks for writing this up!
 > 
+> -Kees
+> 
+
+Thanks for reviewing. I also sent some struct_size cleanups that look to
+have stalled and could use some review or a re-send if necessary at this
+point.
+
+I think the full list can be found with this lore.kernel.org search:
+
+https://lore.kernel.org/all/?q=f%3Ajacob.e.keller+AND+%28+s%3Astruct_size+OR+s%3A%22flexible+array%22+%29
+
+
+
