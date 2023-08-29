@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A4678C839
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75AA78C83C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237206AbjH2PCt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Aug 2023 11:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S237176AbjH2PDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 11:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237196AbjH2PCm (ORCPT
+        with ESMTP id S236940AbjH2PCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:02:42 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91D4D7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:02:39 -0700 (PDT)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-573128cd77dso655121eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:02:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693321359; x=1693926159;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tg11HWGAMJyZ5xNwqiXTPMFRwTAyQHacInf9vI4DNow=;
-        b=T8xk0m9QhSzEiCF/BjDjmFe5jAPgJXsIgPeapm3A3WfVEbB8fBzwVJaB5AJvB9dh3k
-         7hdqNqaanO44hy6Wc7cZl0gF+z7tX7ouWOYwHtQasGYN2ZvthjSqZX2seaGhFkqMni2I
-         +ima3UXCLuq8bfpPW/0+DWdKSIUfyAeSds7aaPQFxbKc4+QfG5cI7D6TC0gGW2LokCwY
-         L3x9tT7zlE9XkC12As5keg2CWZRuiqrfhA/XKJm615MCDaqz/Jgc6GbL7ijvtgaLMFSa
-         zbBBI7uBZYyhBcM8wOrv9SHqO27NNnsPZTInhnTDXs8OwLQqUkh/C8QsRCVVEhynyyCd
-         k/8w==
-X-Gm-Message-State: AOJu0YzcxXWhYPv32z1+YFvWMJ2dqoVSwFykniIaejjBZUKOtC40qTbg
-        VOaiTIJ9fEFVoSr7UkWH0YBDuckrcTyWxVNzPK4=
-X-Google-Smtp-Source: AGHT+IF4+SHtfK77EnfVwgu40smU3Uoa6dA0aToOqCPXX/B1e7mHEzeVhB4l/DRr3Ia07AnK8a0FKcWL7wb4NFeeiaI=
-X-Received: by 2002:a4a:e741:0:b0:56e:94ed:c098 with SMTP id
- n1-20020a4ae741000000b0056e94edc098mr28837171oov.0.1693321358973; Tue, 29 Aug
- 2023 08:02:38 -0700 (PDT)
+        Tue, 29 Aug 2023 11:02:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F4DD7;
+        Tue, 29 Aug 2023 08:02:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B68D65B87;
+        Tue, 29 Aug 2023 15:02:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC46C433C9;
+        Tue, 29 Aug 2023 15:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693321362;
+        bh=FjbAiuQ9jLoLhSaBHx2hRI/GtYR5ZNg6bsV2CSQYSM0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LSedbXXHYmC9wp0LEE6oo7vlOVwtdG+CPNtB7YhoomC0P8qwa82lO4YjdJLLumUo1
+         hjvtcHEIEEWhENwEWh6ozLPQU9GqGdkUqSkvkPQH5daCkROfEu0b+LcAY3LuCjlJZX
+         lx1wzfcgIauLG829D+hBPP8vz0Txhp6JNUroIX4rgpdVqAGN/EC/o+C9p/FuLsDtzM
+         CpClLZBqTe1kNMi5gwCauhgkd0pJVzcSHYULfy74nilTUMtnOh+EhEzhTxciMLliv0
+         pzDQ78cijoaJugHOVe98ij8EEwNi6atWXadZgBF82Mc3QlJxNnGWZUycMhV1tz1cLN
+         FTTXaX7kfgk1Q==
+From:   guoren@kernel.org
+To:     torvalds@linux-foundation.org, guoren@kernel.org
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-csky@vger.kernel.org
+Subject: [GIT PULL] csky changes for v6.6
+Date:   Tue, 29 Aug 2023 11:02:36 -0400
+Message-Id: <20230829150236.2701631-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-References: <c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net>
- <CAJZ5v0jASjc_RYp-SN5KMGJXDv8xbMOqJscLF3wG8rdE2_KJGw@mail.gmail.com>
- <3fd2e62d-0aa9-1098-3eb3-ed45460a3580@intel.com> <CAJZ5v0hnNK4O_HyinvTp01YxXR7V4vzpMhf85yW9M2=52-O2Fg@mail.gmail.com>
- <60bea4fb-9044-76f1-fe2b-ddc35c526d5c@intel.com> <CAJZ5v0hkNFof_Wy0FmPAizuOT9WPEEPW+R27UCgERhS1ZKjOBw@mail.gmail.com>
- <6a50e2c7-a73b-ff02-3e36-e7477ea7dc4d@intel.com> <24860c20-0e08-46d6-8016-5cbbb97b4550@roeck-us.net>
-In-Reply-To: <24860c20-0e08-46d6-8016-5cbbb97b4550@roeck-us.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 29 Aug 2023 17:02:27 +0200
-Message-ID: <CAJZ5v0ihBuCbojjOCV-kW-Gjo_nCP6EvpALwKUoyX36wypyiog@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: processor: Move MWAIT quirk out of acpi_processor.c
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     "Wilczynski, Michal" <michal.wilczynski@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        andriy.shevchenko@intel.com, artem.bityutskiy@linux.intel.com,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, lenb@kernel.org, jgross@suse.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 4:53 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Tue, Aug 29, 2023 at 04:38:33PM +0200, Wilczynski, Michal wrote:
-> >
-> [ ... ]
-> > For the fix:
-> > Acked-by: Michal Wilczynski <michal.wilczynski@intel.com>
-> >
->
-> Or just drop it. From Ard Biesheuvel's e-mail sent to 0-day:
+Hi Linus,
 
-Yeah.
+Please pull the latest csky changes from: 
 
->     > Hello all,
->     >
->     > The Linux community is currently in the process of deprecating the
->     > Itanium IA-64 architecture, which no longer has a maintainer or any
->     > actual users.
->     >
->     > We aim to remove it entirely from the Linux tree before the end of the
->     > year, but one of the first steps is to stop build testing it - there
->     > is really no point any longer in spending any cycles on this, and it
->     > is definitely undesirable to inform developers by email if their
->     > changes result in any build issues on IA-64.
->     >
->     > So please remove IA64 from the set of architectures that are build
->     > tested by LKP.
->
-> This is from the 0-day commit log disabling ia64 build tests. I have now
-> disabled ia64 in my build tests as well.
->
-> Sorry for the noise.
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-No worries, thanks!
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+
+are available in the Git repository at:
+
+  https://github.com/c-sky/csky-linux.git tags/csky-for-linus-6.6
+
+for you to fetch changes up to c8171a86b27401aa1f492dd1f080f3102264f1ab:
+
+  csky: Fixup -Wmissing-prototypes warning (2023-08-10 23:06:32 -0400)
+
+----------------------------------------------------------------
+arch/csky patches for 6.6
+
+The pull request we've done:
+ - Fixup compile warning
+ - Fixup update_mmu_cache
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      csky: fix old style declaration in module.c
+
+Guo Ren (2):
+      csky: pgtable: Invalidate stale I-cache lines in update_mmu_cache
+      csky: Fixup -Wmissing-prototypes warning
+
+Linus Walleij (2):
+      csky: Cast argument to virt_to_pfn() to (void *)
+      csky: Make pfn accessors static inlines
+
+ arch/arc/include/asm/page.h           |  2 +-
+ arch/csky/abiv2/cacheflush.c          |  4 +---
+ arch/csky/include/asm/page.h          | 13 ++++++++++---
+ arch/csky/include/asm/ptrace.h        |  2 ++
+ arch/csky/include/asm/sections.h      |  2 ++
+ arch/csky/include/asm/traps.h         | 15 +++++++++++++++
+ arch/csky/kernel/module.c             |  2 +-
+ arch/csky/kernel/vdso/vgettimeofday.c | 11 +++++++++++
+ 8 files changed, 43 insertions(+), 8 deletions(-)
