@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 616EF78CED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D87D78CEE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240623AbjH2ViS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 17:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S239096AbjH2Vla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238477AbjH2ViI (ORCPT
+        with ESMTP id S239789AbjH2VlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 17:38:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DA2D7;
-        Tue, 29 Aug 2023 14:38:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 18FD860C59;
-        Tue, 29 Aug 2023 21:38:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D8DCC433CA;
-        Tue, 29 Aug 2023 21:38:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693345085;
-        bh=bZfz2phEmCJxQGXRumw4s2nqkXSdSl33NAnzl+eZ1ZM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uunGSJNm89QwVxNPQ6Nh11wphe9DhPiyeyiv2cR8dMNLwcXpkLNxtkC8QvEDuhwxZ
-         mj7XpDRKCmv6dGxSaA5X3N/oNWrOoX/WnaBGPHb9MSg5a8828ET/BsRp0xVn3AXjkD
-         cfAlPpUjJbsIbYpsKPQT2SB/V2LaX4Aj0m2499a73pBT4fNCx1eYNn//gzBSqM2lA8
-         nrpspBmqvywVC4yQYFHlRVI7nNnpMSRF5GZ9OQfYjbkfzqirxo03PX1ZBOJOCwWMsn
-         Ko8r6qggJOXfnivZ8BY9aIpIh/rNblv2Qtpet/Cjk1t5Od47D7JHO9ywEmFLEHX919
-         NOapeEiLrFf7Q==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so74655181fa.2;
-        Tue, 29 Aug 2023 14:38:05 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yxv4kznxm/NdcEg++ftoildJ2eQ9PjWM2n5YgDya4igL0IbLsKR
-        zpPA53v880hjVBRKBlXLvPtUMDVVvIg7oVr2qg==
-X-Google-Smtp-Source: AGHT+IHB0NW0jBHCyCbqErE9944KT8lOUEIQ7JDot6AAVoaFIgShclAt6U2wVpOQkDXO6T6Sc6veW9YeqGOgOMUtRdw=
-X-Received: by 2002:a2e:6e10:0:b0:2bc:fc2e:766f with SMTP id
- j16-20020a2e6e10000000b002bcfc2e766fmr323885ljc.37.1693345083531; Tue, 29 Aug
- 2023 14:38:03 -0700 (PDT)
+        Tue, 29 Aug 2023 17:41:21 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29537D7;
+        Tue, 29 Aug 2023 14:41:18 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-529fb04a234so6465949a12.3;
+        Tue, 29 Aug 2023 14:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693345276; x=1693950076; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vgbDSFaryU4ca1B55I/LLmVwTu+viTZKb05cg+910PM=;
+        b=AqH0BsF0hNVol900WOqi4rt6SS9FUq28g4n+6s8zqFkxslrdmYYzizP0Sn/dRXH7eL
+         B/yXdL5XtJl19Zln+OaZajEqXl/nH0ABck3aYyC/Bcs3fW58sc4f2L9dqZQUaxZQHEll
+         aTtJiPZ3ui1OHWH21mvKk2OXT3FO7Djt/6tUYCbPWvV8qSIldwMh02QVSvTqkO6eZcZD
+         ZGYM3P1Sv2YHFkB0fWvO+eT7adMnmZ6TzMnTze4gJjIhLOjxQPHrnxfbV929+abef3KS
+         trQM7e1Zh3xGTaK1DlJA15wbdB99HBeCEUpseqIsmEDufomJNfC/P44gJCcGME+Dzs7I
+         IENg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693345276; x=1693950076;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vgbDSFaryU4ca1B55I/LLmVwTu+viTZKb05cg+910PM=;
+        b=gOI/up5ev9u544nuLRj0vR+9VOmBsCo7p0gPRq5lWMGEclFYS8INtiDDf5KOwUzBRs
+         wJ0bLZT6L6iJM/dH13Q2VaUy0mgzdc+bo+xadTG4b4pNPMYkMdrPPpKB3gG9zKBdE+Ps
+         Z55x0vi6STzf9zJirlOwkusoGjtNcLZD20G9WJ2GM6gYKdOiAdPvU3cXyX2dl72K86/x
+         td97NAL53FgHDK/SunnBUEP9dCybc4zqlZgirEx1iA/+l0E6aKLrCl6fcswTjYGCI7b9
+         +77cn+ivpU53HZmJAR+2h9RLYo0aR22OSfj600kwGgzQOj/TRX3tRhFQU8hAL65+ggmD
+         icfQ==
+X-Gm-Message-State: AOJu0YypbvyaK3veqlnr8yAVI+A+YcMYYPxooguEcjbFMiVKounICtPr
+        vUw7tmeAcm4tT96O3iWopA==
+X-Google-Smtp-Source: AGHT+IFUtF4tAi87N77EKj8HYwHF1DKsELUTQbd3MjCDy66CG2SqZHgFuUrx/SQ9h14cPF8BM5rtdg==
+X-Received: by 2002:a50:fb95:0:b0:522:3849:48d8 with SMTP id e21-20020a50fb95000000b00522384948d8mr389164edq.9.1693345276579;
+        Tue, 29 Aug 2023 14:41:16 -0700 (PDT)
+Received: from U4.lan ([2001:9e8:b963:7410:84d2:f616:9527:dd98])
+        by smtp.gmail.com with ESMTPSA id f15-20020aa7d84f000000b0052228721f84sm6113428eds.77.2023.08.29.14.41.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 14:41:16 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 0/4] Enable SMP bring-up and cpu frequency-scaling for RK3128
+Date:   Tue, 29 Aug 2023 23:40:01 +0200
+Message-ID: <20230829214004.314932-2-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20230829191812.135759-1-sjg@chromium.org> <20230829191812.135759-4-sjg@chromium.org>
-In-Reply-To: <20230829191812.135759-4-sjg@chromium.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 29 Aug 2023 16:37:51 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLFX9PpMcJBv2yZXRpQyQ-h1DrGyApE0+AAYN2LCCj7Kg@mail.gmail.com>
-Message-ID: <CAL_JsqLFX9PpMcJBv2yZXRpQyQ-h1DrGyApE0+AAYN2LCCj7Kg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] memory: Add ECC property
-To:     Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org, Dhaval Sharma <dhaval@rivosinc.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Gua Guo <gua.guo@intel.com>, Tom Rini <trini@konsulko.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        ron minnich <rminnich@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Lean Sheng Tan <sheng.tan@9elements.com>,
-        Maximilian Brune <maximilian.brune@9elements.com>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        linux-acpi@vger.kernel.org, Guo Dong <guo.dong@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,65 +72,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 2:18=E2=80=AFPM Simon Glass <sjg@chromium.org> wrot=
-e:
->
-> Some memories provides ECC correction. For software which wants to check
-> memory, it is helpful to see which regions provide this feature.
->
-> Add this as a property of the /memory nodes, since it presumably follows
-> the hardware-level memory system.
->
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
->
-> (no changes since v3)
->
-> Changes in v3:
-> - Add new patch to update the /memory nodes
->
->  dtschema/schemas/memory.yaml | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/dtschema/schemas/memory.yaml b/dtschema/schemas/memory.yaml
-> index 1d74410..981af04 100644
-> --- a/dtschema/schemas/memory.yaml
-> +++ b/dtschema/schemas/memory.yaml
-> @@ -34,7 +34,14 @@ patternProperties:
->          description:
->            For the purpose of identification, each NUMA node is associate=
-d with
->            a unique token known as a node id.
-> -
-> +      attr:
+This series aims to enable bring-up of the non-boot cpu-cores by the
+Rockchip platsmp driver and enables cpu frequency-scaling by defining
+appropriate operating points.
+Please see commit messages of the individual patches for details.
 
-Kind of vague.
+These patches have been part of the pretty huge RK3128 bring-up/fix-up
+series [0] which I've splitted-up now, as suggested.
 
-> +        $ref: /schemas/types.yaml#/definitions/string-array
-> +        description: |
-> +          Attributes possessed by this memory region:
-> +
-> +            "single-bit-ecc" - supports single-bit ECC
-> +            "multi-bit-ecc" - supports multiple-bit ECC
+[0] https://lore.kernel.org/linux-rockchip/20230829171647.187787-1-knaerzche@gmail.com
 
-"supports" means corrects or reports? Most h/w supports both, but only
-reports multi-bit errors.
+Alex Bee (4):
+  ARM: dts: rockchip: Add SRAM node for RK3128
+  ARM: dts: rockchip: Add CPU resets for RK3128
+  ARM: dts: rockchip: Enable SMP bring-up for RK3128
+  ARM: dts: rockchip: Switch to operating-points-v2 for RK3128's CPU
 
-> +            "no-ecc" - non-ECC memory
+ arch/arm/boot/dts/rockchip/rk3128.dtsi | 61 ++++++++++++++++++++++++--
+ 1 file changed, 57 insertions(+), 4 deletions(-)
 
-Don't define values in free form text.
 
-This form is difficult to validate especially when non-ECC related
-attr's are added to the mix as we can't really define which
-combinations are valid. For example how do we prevent:
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+-- 
+2.42.0
 
-attr =3D "single-bit-ecc", "multi-bit-ecc";
-
-Or maybe that's valid? If so, how would we express that?
-
-Why do we need "no-ecc"? Is that the same as no "attr" property?
-
-I think it's better if we have 'ecc-type' or something? Or generally,
-a property per class/type of attribute.
-
-Rob
