@@ -2,157 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8673478C791
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF15778C7A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236697AbjH2Obn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
+        id S236926AbjH2Ody (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236863AbjH2ObZ (ORCPT
+        with ESMTP id S236871AbjH2Ods (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:31:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE6BE1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693319482; x=1724855482;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yw62dOklpzeSWoXfbi5MAtuQ2UE1D/akr1KXO4x2oJE=;
-  b=kAYWqSkk7MftAKoXwDNREVcHBDQvxrP+xibN+lVgM+cYX/Jbr8pmhw5q
-   P0e8jApE0zkoP5mjJfBQPS6FJ0ZtItMxVRsBfAUWv2doIVTo8Kfi0cLT/
-   BJYHUcWgpcniPRG5d9OZFxLe//STOS9jSIQ/YB/B9GnmVa5CTvKJ03Z45
-   blI/Pdmj2rSXRUimS2C9Y/dHMprKPnEwyz7AEE1nb8n61mmykaqxU4TKt
-   X6E0TZYNQuVsbNEMJNSidxTcbK9cRYs7cdhOGc0c2qPQIDOdcVojXCLmp
-   4FsNEYYBZ097aRny2EgVhg3vQ0extTACrMPNSx5eUhpoEscD8faN3pg1k
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="374274086"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="374274086"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 07:31:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="808691186"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="808691186"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Aug 2023 07:31:10 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qazk5-0008oB-2V;
-        Tue, 29 Aug 2023 14:30:58 +0000
-Date:   Tue, 29 Aug 2023 22:30:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 4/9] mm: vmalloc: Remove global vmap_area_root rb-tree
-Message-ID: <202308292228.RRrGUYyB-lkp@intel.com>
-References: <20230829081142.3619-5-urezki@gmail.com>
+        Tue, 29 Aug 2023 10:33:48 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ADC107;
+        Tue, 29 Aug 2023 07:33:45 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TCCVrx021790;
+        Tue, 29 Aug 2023 14:31:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=icXVFKOLIpqNS7VKsW0vC3cSZXZm/MVY8JnNCQq/tMM=;
+ b=gFE9cn+nZdXL4xSQFzL/04BLADDsC6iuDmaUAJGF7mmKbhPjUsCRlDX+hrFO8VwpROGV
+ xbMJE8tXKdjkfUJ9bAFnI4+dO+Ewaq1StXkB5OUGFwIBYjhgs6P4HJs9F2h8PZEcpXGy
+ Btnauzyv/h7eLUqat87wux4dqj6y/RJDN+k/ggZJ/NkakNE1E7hSkX93Z3oCi21u71aZ
+ ANZniy1lPfccwu79hMzO+8pz8L+teoRJNXa1UXWy40PbtaMAmgz34KM7dzlR2NbPj5F2
+ QGDZdQOC5MN5El//MTCCM+XKLaGE45ZjAZJnF0eNAjebbqDlFfIR84WUQ/GgJbFonaaQ /g== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9j4d65f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Aug 2023 14:31:41 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37TEVRmL032692;
+        Tue, 29 Aug 2023 14:31:40 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sr6dnp5ud-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Aug 2023 14:31:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ldiJyAwdHGAXEph4IJescSKPgj7jkH4BgdB/spv6GHPTXjudsE1pqQCXsdgiuz/lN1WkZG6DrxGE1Py2diE9+JWk6o8PP5Zv+IhQ4iBYjOpi/5plUiQ2tkQC4g4qnYh1kw/XKU1I6A7M5U8V61ixme7NE8r9OQzRmFQKzjXtqQAFPrnFFdvx0nZdluyvGdvjo1JJ8WVFEls8Knm5qYpYJfTHRa0o8RgoIEwzvoby2ULtZA0MsOBZXzI/h0CyK6NHD+W5NkrEeA2naGb+QYCkSqDzvyDDElPB3anV8quVR5v4p7G7ey+/DCvdRmDfAyzjWH8ONLsW9hkXS+aO8uiDlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=icXVFKOLIpqNS7VKsW0vC3cSZXZm/MVY8JnNCQq/tMM=;
+ b=neI5cQhRWhCmxt9Z9FBpg8XyUfeUD028rMfKb/2VPG5xHVbonFIlgIeWN6fjw7LIdi/zR2yKyiu2CqmXJC1v59lnT40ihSibI1vElZnadVaaI/DJJhhv75xWGsrUngcsP6GL/veC+EoS0WHd339SaXUz0Xwf+V7FZTc3Y/iYBrclKgQr3FV32hZfNyu80DFhrEj/j3N7/ASsINKNd76+IsADTXJNRXACnPpyWwvai/w4Z+TX68TKaheEcMJrs27H4ijX0dRRUp6T5jP4RsJJPHAE/41vLN1CC/NKf5Esfd29pVtlGimzjkqM34ZQItuthXoVyrbINLEmnlqlM43XcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=icXVFKOLIpqNS7VKsW0vC3cSZXZm/MVY8JnNCQq/tMM=;
+ b=drJxAYx1t7aVilxIiBy1FQeWiB1q0g6uk0p32rh5gQK9TpR4JONTR1LybxWMCzBGyLcRL4Sotqa51NNruzQepl+25FWsQpWdLkIg57GHzZadaHX6XwedtDI6BxlUF5UicAvua+xQsytYgLjMfokMZp7NVfbQQ9Gqpam3E6W2KEE=
+Received: from PH0PR10MB5894.namprd10.prod.outlook.com (2603:10b6:510:14b::22)
+ by SA1PR10MB6295.namprd10.prod.outlook.com (2603:10b6:806:252::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.18; Tue, 29 Aug
+ 2023 14:31:37 +0000
+Received: from PH0PR10MB5894.namprd10.prod.outlook.com
+ ([fe80::750b:c9bd:2896:cf60]) by PH0PR10MB5894.namprd10.prod.outlook.com
+ ([fe80::750b:c9bd:2896:cf60%6]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
+ 14:31:37 +0000
+Message-ID: <ad2e6b6a-57a3-2c22-8ec8-7ba12e09dbeb@oracle.com>
+Date:   Tue, 29 Aug 2023 17:31:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] Enable haltpoll for arm64
+Content-Language: ro
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-pm@vger.kernel.org
+References: <1691581193-8416-1-git-send-email-mihai.carabas@oracle.com>
+ <20230809134837.GM212435@hirez.programming.kicks-ass.net>
+From:   Mihai Carabas <mihai.carabas@oracle.com>
+In-Reply-To: <20230809134837.GM212435@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P123CA0017.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:150::22) To PH0PR10MB5894.namprd10.prod.outlook.com
+ (2603:10b6:510:14b::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829081142.3619-5-urezki@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5894:EE_|SA1PR10MB6295:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1077a855-8e5c-42ad-8517-08dba89ca6f1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uw9CV31wujpXsTx4t9vYVkMMwsYGQ9OvLFAE9qQqcKAElvVB2airAfBZ7C5ORrDwYMz3aqiYdKw71ZctB6QnKi5tIIJoax8MnJp4TB1NkVVFO6CG9J4/J68v8l0t/MBhY3eGq/ZcLEYY6uyeWHwkMXhJVf5+8bXrWmaovt/37taE3HRWdgPzroPGQm/N7XWUD0n9vT4UCNz5dwN0qOxO7LeSrpoICD9MPFP7Ec1faxKt1VJye4vwpKvxOYSpgOgisOrQidiKT68VDibsbh/7Y959DOOvJSXB7VrBnUKcdhH5SVPA7+PxG7ngww9UrMyn/mF7RVgvE54lHUsWlyEwEcbkwTYP6UohKr72SlmEk3dwUfeHrAZ8DfS0qkS1pwrdjLRKkdkPhDRyx574ijcvLJaVHlzK4AD2aI6Iua6ckVqKlewS/8HqPW9oFD2qIZHtZv2CrjM7hyKVQwjfDNWoLecKpf3hFq7P14AIKGxGajwbyA7u2rxMfisoSOtPDRXEW09QXWdG5PgQShpmSS79OyDz0plENGfh0V+ZOZ/RFfG906URIenO7KlO2k6sraFaSRinf0bOZFqfAF4eEsVRH0u3pyIrbwJmFqJ3SNMLkAPt+RY6/fDyImpdv4vAC/upk4UXfL+lBeIQ9vFAiB6+Og==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5894.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(1800799009)(186009)(451199024)(31686004)(7416002)(2906002)(54906003)(66476007)(66556008)(66946007)(44832011)(5660300002)(316002)(6916009)(41300700001)(36756003)(8936002)(4326008)(8676002)(6666004)(31696002)(6506007)(6486002)(6512007)(38100700002)(2616005)(86362001)(26005)(478600001)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RHkvK05EbHFiQ0RXUTUrSUNyN1c4cmtHemxKL09lQVdRSThsS1JrVERsYXdt?=
+ =?utf-8?B?L0JZM1Y4YW1qVjVGQ3NveFlEUTVOSERPM0puek1wNWxKV3NzRkxVTldycWZz?=
+ =?utf-8?B?eXZzaEw1a3c1WnQvb0tJa0RXYUs4S1lOQ2Q3SDFucmtPNVVvS2swblRhSVpQ?=
+ =?utf-8?B?VUpGcW5GcUVvZEVLcW9jd3J1cjdWY3U3SDJyQXVUeW1uQkJKdFo0bTcwT2NR?=
+ =?utf-8?B?NU9NUndDMjJ6K1lxZDFoNzZONkp2WDFKcllPekdkeTRhcDQyZkVKRm9aQ3Rr?=
+ =?utf-8?B?Q2Q4Ni9XTHFvdlFWRCtWekNISzBZc1psM2pkc1lMSWN6bjdPWURZRDljUzlW?=
+ =?utf-8?B?blFUYTZPVkpMZ3ZtQzJqOWxnU3JYWUZSbHBtRVp3YXRkZDJ5U3g1aWNtcDZn?=
+ =?utf-8?B?U2wxbWFqbzlkeXIvZ0J0OTVFeG45SU9JcFJDbHVnS3hrV0xEOUtZVWh0eFNi?=
+ =?utf-8?B?REVtd3hWNk9Sdm4wR3NsQU5mb05YVytBQUZLMzQrdVlsZlllNU4vRnVURDVI?=
+ =?utf-8?B?QnYrSlpaVGN1MFh0TExVaWpQdGNBMngvQ0p6bkNzS2E5R0p2cmMvdUdGdm9Y?=
+ =?utf-8?B?V2xKTkw3OGZMdm9BMzBQVXlmN2EwZUMxRVpXSHdvRm1JSm8rNFpnNW1Cdlpu?=
+ =?utf-8?B?ekJIMFQ1QUJUQU1GRllTcGZGOWhDNURReVh3T3MwVlkvQ3N1VDZzb01MVE9p?=
+ =?utf-8?B?NUtJSWx0blNjamhsYkRXKzlXWFlaSWxLVVQrZXN5MFJiTjlnRkI3Yjd3VlU2?=
+ =?utf-8?B?RVVvNGdXSzVqUFczSzBPMGMzTjc1Umh0anUwTURKRlJ1TVFlcCtHRlIrbVc3?=
+ =?utf-8?B?d3h5RFdMd2ZlMmw1ODNQaEZmWmxoTzFyQjF2Q3ExaGZ4ZXdCOXl5WU4yN25M?=
+ =?utf-8?B?bGNXWFRpUWYrV2VQT2MxWFFMZkptblFOZXV3ekFpalIwdFZ6MlZtVEFHeEtC?=
+ =?utf-8?B?T282bm90eFlodzUvWDlwaFRxa3Bac0xWbGFXc2tGbXVieG5wQk82QkZLK3V4?=
+ =?utf-8?B?N2NTQ1hwSGtmbk8yVlBGWXFUYUVYTDlGL3pHQW8xMzdVMGRpWVBHQStwMDVK?=
+ =?utf-8?B?aktaSFJ4cmZJejlUQXFwcDdFV3JLN09rdm5nR2pZQ3JYanVFeUVUd1BmVzNO?=
+ =?utf-8?B?Y0wzR2xpbXJ5aDk1V2hFT0N5NDdaQytUV1F6WWVBa2ZyZkRNMlY2L0greEhS?=
+ =?utf-8?B?NzE4Z2JKOHlWMktOOURSRGNkTVp3ZXpZSXRVY2N4RHo4ZmZhVkxseVhCVjdk?=
+ =?utf-8?B?TkpuMEE1QkxKZlFmNWJzTWlsZ0FYWUlxWXB6TUNobHgvLzFlb2JNTDJiWnNE?=
+ =?utf-8?B?cWJrS1AxVzEzSlREcEVnYnRWeHhTYklPalFQVWRzdE9rRzdIRWdUb1J4c1Jz?=
+ =?utf-8?B?eXdrU0w4YUZtb29JY1JlUEdUYmdpbWNScGVHMVNHblVIdWNZZ0NvWWt5VTIr?=
+ =?utf-8?B?Tk5IczJoWUxPZ3daeitTWnZQM3pEQ3NvMnNONGhrUk4xV0Z2ZUJPVUZnemNn?=
+ =?utf-8?B?cmV5dmkvZHpJOWRIMy9sUllGTGtSRXJoZ25TN0FMTGhTQkhvQWUvZDVXUEpK?=
+ =?utf-8?B?U1VJeFJQeVJrL25BVE1PVWZEcURBTkErKzd4OUtXbnFMTkVnYjluT2poS1Nw?=
+ =?utf-8?B?eWtCOWxOQXY0TDdPa0NycEZBMk4rVjBKOWpsSlhTTWx5QitNZ0g2VmZFQ1Fv?=
+ =?utf-8?B?Q2lLdGRHUkJ3dmljMGQ2VENzZEVKV0hEZ2g2Q2ZLVW5iaWF5dnNneDlXa1gr?=
+ =?utf-8?B?UGlWbjMwY25KbzAzWUFXd3VmL2thbjcxRk4wekRyZXh1NmtIa1k0L3h5aFI3?=
+ =?utf-8?B?MVZ3WWo4TC9TVmxhOStSM2QwdGRrMVVqaW1IeEdSMjJ5elNHZGRtMUN2a1gy?=
+ =?utf-8?B?VCtHdy9DdHo0eXExZXVObzZMcjRaSFkwUTdlR2djVHhVbUhxSUJ1aFlvRWp4?=
+ =?utf-8?B?OTZJK0VTK1dzVXRHZTdzai9oVFZoMW5YbWN0Z01KaklZdklXM1BaUXBpN0pt?=
+ =?utf-8?B?S0syQ25CSGg5TjV5Nld6NElvdHpuQ21HUzJad0N5akw2QTQ0MW1CVk04VjR5?=
+ =?utf-8?B?dkg2aFlrOE50am1wSzJ3MkF5cU9yeWxJaTdLTk9ZejFsMUdyMFA3ZFVMUTdz?=
+ =?utf-8?B?VjJVajYzWFp3bVJ6SHJPd2crYm8rVWVQK2tvMW0zL3gwaWVseFBZK3dPNGVa?=
+ =?utf-8?B?ZFE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?R1VwY3dGYUtCa2N1d21GWGdyRDRqNzNoZDN5emR1Y0trbElVN1V0Q2d2Z0JY?=
+ =?utf-8?B?azNqMDRpUzVwUHo3R3Q1RmVyMVpCSkQ5Q29pbWdsVmVTa3VudDVDcGplbzc5?=
+ =?utf-8?B?SVdSVXBMUStmbHQxMFkvQ1Jtd0t4MlUweUFwS0NjQklnL0t2d0xhb2pXc0VB?=
+ =?utf-8?B?dDVYRERLOUloODJKUUoyc0pZQ2tFdnN4Wm5XUGlGYWJxOGt5NnV3WnlLYjU4?=
+ =?utf-8?B?QTJLVXFCRDg2dW0wb1QzZUZGNHQvbG5uRDFUcVN1a0xsNHpXZ2NVdEJzNmdo?=
+ =?utf-8?B?bmhjVnVWK2lTZHRvd2JKU3ZIUU1VaUkzQ1FMekpWWkZMbXFETEFCMUdQeDdL?=
+ =?utf-8?B?M0l3OVV1WWlScjJDbWpGZW5ENWZNL2xrSFZ1VlQ1d1hJNjNtOHZZTTMvOG9v?=
+ =?utf-8?B?WEtwWDlJMUNYOUFzUnJmK2ZwSHo4d1hyNFJ1Tk9CWVVoUWdKanZhUDhhSFdL?=
+ =?utf-8?B?Q2F4S2RGL2gydHBNZ1JGRmE2MTN0TU1ENUxibHJnWW91cHFqU0c3dExNMnZ6?=
+ =?utf-8?B?MVJnaTlRREdIOHgwMzZGcEFPSG4rcEV0TmhnREE2cnJTUzBKU3E4Ykh3aHk0?=
+ =?utf-8?B?b2lTbTM2L2xJUDhYZWRYYy8vYS84Qjk4ZlZ3dzkyUko2TWlxT3NhVW9Mc2lw?=
+ =?utf-8?B?ZDA2ZktRTG9EalltT2tsQU5ZOEUvMzR5SStGSU1SK2gvRTQwMWN5elFpZ256?=
+ =?utf-8?B?UWc5QlRhdlNDYkJZaXVBMjZLa0VPT1hRT2hMVGY3QVRpTWJJZVlvWWJTM1FT?=
+ =?utf-8?B?YVBvZmEzcytSeUE0QzAzM2hxY3dkOEtWRzlwUXgyZmIzakRWY3N6ZVVKZXNI?=
+ =?utf-8?B?dk95QW4rSVgzUjc3WnIxWTc2ZnJnSU1DbXBRbllmRytGeUhaRFBFdXYzcnNW?=
+ =?utf-8?B?YnZPS3ppZU1aOVkvRENLWlZtNXZFQ1dvTzkwbGRwNEhvUXExSVpnOUZ3bHVZ?=
+ =?utf-8?B?WWpibGpKL3JUMjBwRCt2RlE3dVdtc3MrOGMveHh3ZU9pWTVkYUVYaWhJZEQx?=
+ =?utf-8?B?dHZ6SGxqZDQ4R2VjUnE5ZU52WGRwYU5VMngvVHVsNHNjUW0wUnI5b1cyMGxY?=
+ =?utf-8?B?aC9RVzhpOWo4M1B2b0JrczVjVmN4VVpHNmxUNHVmMEhjK3ZtRjh1Qi94V21U?=
+ =?utf-8?B?RzQrWDFLYUhETWhJc1ZkRCszMGF2VitKdmVjZUoreEVUU2hzYkVubElWM0pV?=
+ =?utf-8?B?dHNOMC9xM0pvbkptWDBabGpyMWFjQUJ1bWM4d2VvZnZtRXFxczJwTDBhZm1W?=
+ =?utf-8?B?TTNWbjVacWJOVXdudGhUZ0hJVkNwMWhqQXZiZHpEZmJpTGxJL1l3enhkM2lL?=
+ =?utf-8?B?azJWREZrY2hGRXlLM3lMRjNkeUNMNXlTd2dobGJRMlZ1b3oxZFVaMXhXSG0r?=
+ =?utf-8?B?bUlKSGw0Tk9TS3lCamIvSWNzWGwrbnNuZTRObGFZYnBTdytWWjluNEtBeHpC?=
+ =?utf-8?B?Y1JvRVBvNGozamovZDhUYWRGd2oySEFRTTZRN1VzSkhyWUdjWG9vakNBS084?=
+ =?utf-8?B?bmFWMks1V0owek1URTh6RkpQSk5UekxVcTFFOGtSSHZ6a3QraDU0YXZDazZ4?=
+ =?utf-8?B?YzlSMXplcVE1cktzcE1MbUt1TmJRRThWaENSRWhoNTRyM3d6MjEzSW53VGdU?=
+ =?utf-8?B?Q1l0OFhsU2IxWUtuYnZ5MWFCdzRWWGxRMXVHR3VCQW83cmNTS3o1SVYzSEZq?=
+ =?utf-8?B?NUxqbVc3VjMvV1ByZ1BncTh3UllWQXFNZkVSeTBrOXRyN1oyYWtFMmdZZ1pw?=
+ =?utf-8?B?bDFWakJ4Vzd3ZXJQdGVLdWlTSUpua2l2cTh0MUVWRWhOb2V3ZTNGY2tyd0Y3?=
+ =?utf-8?B?YWxwZmpsM0kzOVRPTGVMQlhJZ2g0elo3eWFxb3NmVURLbTl6U2dNSEpkZEt0?=
+ =?utf-8?Q?MqxQujE1su7L0?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1077a855-8e5c-42ad-8517-08dba89ca6f1
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5894.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 14:31:37.6319
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0v8p9fNz+fkhZWx57UJGfbL3e5dvsHg+4xpehS9A4Cwi5jD8Qne9399kqmjiNolOmo6It99bc62hE5/8m96xBt0I8yipcCTySWIGW7rTg2g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6295
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_12,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ adultscore=0 phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290125
+X-Proofpoint-GUID: zvcy3B792YLYrG3tGjxHNj4m4Y6aIoPi
+X-Proofpoint-ORIG-GUID: zvcy3B792YLYrG3tGjxHNj4m4Y6aIoPi
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uladzislau,
+> Using poll_state as is on arm64 seems sub-optimal, would not something
+> like the below make sense?
+>
+> ---
+> diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
+> index 9b6d90a72601..9ab40198b042 100644
+> --- a/drivers/cpuidle/poll_state.c
+> +++ b/drivers/cpuidle/poll_state.c
+> @@ -27,7 +27,11 @@ static int __cpuidle poll_idle(struct cpuidle_device *dev,
+>   		limit = cpuidle_poll_time(drv, dev);
+>   
+>   		while (!need_resched()) {
+> -			cpu_relax();
+> +
+> +			smp_cond_load_relaxed(current_thread_info()->flags,
+> +					      (VAL & TIF_NEED_RESCHED) ||
+> +					      (loop_count++ >= POLL_IDLE_RELAX_COUNT));
+> +
+>   			if (loop_count++ < POLL_IDLE_RELAX_COUNT)
+>   				continue;
+>   
 
-kernel test robot noticed the following build warnings:
+Thank you for the suggestion. I have tried it and also different 
+variations like [1] to respect the initial logic
+but I obtain poor performance compared to the initial one:
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+perf bench sched pipe
+# Running 'sched/pipe' benchmark:
+# Executed 1000000 pipe operations between two processes
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Uladzislau-Rezki-Sony/mm-vmalloc-Add-va_alloc-helper/20230829-161248
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230829081142.3619-5-urezki%40gmail.com
-patch subject: [PATCH v2 4/9] mm: vmalloc: Remove global vmap_area_root rb-tree
-config: csky-randconfig-r024-20230829 (https://download.01.org/0day-ci/archive/20230829/202308292228.RRrGUYyB-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230829/202308292228.RRrGUYyB-lkp@intel.com/reproduce)
+      Total time: 136.215 [sec]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308292228.RRrGUYyB-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   mm/vmalloc.c: In function 'vmap_init_free_space':
->> mm/vmalloc.c:4506:45: warning: ordered comparison of pointer with integer zero [-Wextra]
-    4506 |                 if (busy->addr - vmap_start > 0) {
-         |                                             ^
+      136.215229 usecs/op
+            7341 ops/sec
 
 
-vim +4506 mm/vmalloc.c
+[1]
 
-  4491	
-  4492	static void vmap_init_free_space(void)
-  4493	{
-  4494		unsigned long vmap_start = 1;
-  4495		const unsigned long vmap_end = ULONG_MAX;
-  4496		struct vmap_area *free;
-  4497		struct vm_struct *busy;
-  4498	
-  4499		/*
-  4500		 *     B     F     B     B     B     F
-  4501		 * -|-----|.....|-----|-----|-----|.....|-
-  4502		 *  |           The KVA space           |
-  4503		 *  |<--------------------------------->|
-  4504		 */
-  4505		for (busy = vmlist; busy; busy = busy->next) {
-> 4506			if (busy->addr - vmap_start > 0) {
-  4507				free = kmem_cache_zalloc(vmap_area_cachep, GFP_NOWAIT);
-  4508				if (!WARN_ON_ONCE(!free)) {
-  4509					free->va_start = vmap_start;
-  4510					free->va_end = (unsigned long) busy->addr;
-  4511	
-  4512					insert_vmap_area_augment(free, NULL,
-  4513						&free_vmap_area_root,
-  4514							&free_vmap_area_list);
-  4515				}
-  4516			}
-  4517	
-  4518			vmap_start = (unsigned long) busy->addr + busy->size;
-  4519		}
-  4520	
-  4521		if (vmap_end - vmap_start > 0) {
-  4522			free = kmem_cache_zalloc(vmap_area_cachep, GFP_NOWAIT);
-  4523			if (!WARN_ON_ONCE(!free)) {
-  4524				free->va_start = vmap_start;
-  4525				free->va_end = vmap_end;
-  4526	
-  4527				insert_vmap_area_augment(free, NULL,
-  4528					&free_vmap_area_root,
-  4529						&free_vmap_area_list);
-  4530			}
-  4531		}
-  4532	}
-  4533	
+--- a/drivers/cpuidle/poll_state.c
++++ b/drivers/cpuidle/poll_state.c
+@@ -26,12 +26,16 @@ static int __cpuidle poll_idle(struct cpuidle_device 
+*dev,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+                 limit = cpuidle_poll_time(drv, dev);
+
+-               while (!need_resched()) {
+-                       cpu_relax();
+-                       if (loop_count++ < POLL_IDLE_RELAX_COUNT)
+-                               continue;
+-
++               for (;;) {
+                         loop_count = 0;
++
++ smp_cond_load_relaxed(&current_thread_info()->flags,
++                                             (VAL & TIF_NEED_RESCHED) ||
++                                             (loop_count++ >= 
+POLL_IDLE_RELAX_COUNT));
++
++                       if (loop_count < POLL_IDLE_RELAX_COUNT)
++                               break;
++
+                         if (local_clock_noinstr() - time_start > limit) {
+                                 dev->poll_time_limit = true;
+                                 break;
+
