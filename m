@@ -2,138 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DE378BCD5
+	by mail.lfdr.de (Postfix) with ESMTP id F306D78BCD6
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234441AbjH2Cab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
+        id S235379AbjH2CbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235469AbjH2C36 (ORCPT
+        with ESMTP id S235435AbjH2Caq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:29:58 -0400
-Received: from out-247.mta0.migadu.com (out-247.mta0.migadu.com [91.218.175.247])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C10A1AB
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:29:46 -0700 (PDT)
-Message-ID: <51cf9db1-4487-4229-4d43-e91268e52125@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693276184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vqm46DklsiPUqsKNsKfG5jvEXJZjbfT+kn5o07p+jO8=;
-        b=ntSApUDajpkhf2XFpWimfICfDSvwa2v7ONZP3cQTInzr+Ov3cIJ10LQRgPxr0EM5L2iEbH
-        1+zsP+Uhv4GJ4Bt5HJBqEnszpK2uUA0zxa9c/YzQmHisOhXV+WULPtI4F61UP3XeTzLuch
-        IaJNr+W8puq3gE3foxkt3pnkBujsrDw=
-Date:   Tue, 29 Aug 2023 10:29:17 +0800
+        Mon, 28 Aug 2023 22:30:46 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5671E1AC
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:30:23 -0700 (PDT)
+Received: from [192.168.2.140] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 97B5B66071DC;
+        Tue, 29 Aug 2023 03:30:20 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693276222;
+        bh=TvkUBHJMrG6CO8fOzJNW2W4LBqEAv0nNIK9wm0HmjW0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EqEqk5kZVC37Y/oUIDGJFEkYg3GZSQtdHiLHqBiKSmQkJI7+sM3o5EcT2WdW7QNgj
+         MBxHJA6YVHI4amFS/7uCiwOAX0uXw8R58ur283EP/zr7Pwx12Y3gb1ezdPV+tdBshV
+         ujvCGYKmEZrCAL/UHXDJr7I6U+aidNMOU70qX1u+FxuabZet+tKgLlkZmlszFstJkX
+         vFrBpDO3CoJktEYXxvW/XE4CVPxtb8IXuzRAsgMffSyuO6vlJ4sAD6JjygZsjWFLhj
+         EF3AFLPOGxZo8gnC3SLKUkE5KnBEMXuSXrzQH6V99VnS6IlrNUqmr8f+E0X++x/cB/
+         oNjv+UlDg9eDw==
+Message-ID: <47b5219e-d425-1dfb-e676-9175d3ac4909@collabora.com>
+Date:   Tue, 29 Aug 2023 05:30:18 +0300
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v2 0/3] Move usages of struct __call_single_data to
- call_single_data_t
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v15 12/23] drm/shmem-helper: Add and use pages_pin_count
 Content-Language: en-US
-To:     =?UTF-8?Q?Leonardo_Br=c3=a1s?= <leobras@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Guo Ren <guoren@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230520052957.798486-1-leobras@redhat.com>
- <CAJ6HWG6dK_-5jjoGJadOXqE=9c0Np-85r9-ymtAt241XrdwW=w@mail.gmail.com>
- <b84ad9aa200457b1cbd5c55a7d860e685f068d7a.camel@redhat.com>
- <1cd98cb37dcf621520e52ac7a15513aab5749534.camel@redhat.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <1cd98cb37dcf621520e52ac7a15513aab5749534.camel@redhat.com>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        intel-gfx@lists.freedesktop.org
+References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
+ <20230827175449.1766701-13-dmitry.osipenko@collabora.com>
+ <20230828134654.7a2c6414@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230828134654.7a2c6414@collabora.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/29 08:55, Leonardo Brás wrote:
-> On Tue, 2023-07-04 at 04:22 -0300, Leonardo Brás wrote:
->> On Tue, 2023-06-13 at 00:51 -0300, Leonardo Bras Soares Passos wrote:
->>> Friendly ping
->>>
->>> On Sat, May 20, 2023 at 2:30 AM Leonardo Bras <leobras@redhat.com> wrote:
->>>>
->>>> Changes since RFCv1:
->>>> - request->csd moved to the middle of the struct, without size impact
->>>> - type change happens in a different patch (thanks Jens Axboe!)
->>>> - Improved the third patch to also update the .h file.
->>>>
->>>> Leonardo Bras (3):
->>>>   blk-mq: Move csd inside struct request so it's 32-byte aligned
->>>>   blk-mq: Change request->csd type to call_single_data_t
->>>>   smp: Change signatures to use call_single_data_t
->>>>
->>>>  include/linux/blk-mq.h | 10 +++++-----
->>>>  include/linux/smp.h    |  2 +-
->>>>  kernel/smp.c           |  4 ++--
->>>>  kernel/up.c            |  2 +-
->>>>  4 files changed, 9 insertions(+), 9 deletions(-)
->>>>
->>>> --
->>>> 2.40.1
->>>>
+On 8/28/23 14:46, Boris Brezillon wrote:
+> On Sun, 27 Aug 2023 20:54:38 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> Add separate pages_pin_count for tracking of whether drm-shmem pages are
+>> moveable or not. With the addition of memory shrinker support to drm-shmem,
+>> the pages_use_count will no longer determine whether pages are hard-pinned
+>> in memory, but whether pages exit and are soft-pinned (and could be swapped
+>> out). The pages_pin_count > 1 will hard-pin pages in memory.
 >>
->> Hello Jens,
+>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>> ---
+>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 22 +++++++++++++++++-----
+>>  include/drm/drm_gem_shmem_helper.h     | 10 ++++++++++
+>>  2 files changed, 27 insertions(+), 5 deletions(-)
 >>
->> I still want your feedback on this series :)
->>
->> I think I addressed every issue of RFCv1, but if you have any other feedback,
->> please let me know.
->>
->> Thanks!
->> Leo
+>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> index d545d3d227d7..1a7e5c332fd8 100644
+>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> @@ -234,14 +234,22 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
+>>  
+>>  	dma_resv_assert_held(shmem->base.resv);
+>>  
+>> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
+>> +		return 0;
+>> +
+>>  	ret = drm_gem_shmem_get_pages_locked(shmem);
+>> +	if (!ret)
+>> +		kref_init(&shmem->pages_pin_count);
+>>  
+>>  	return ret;
+>>  }
+>>  
+>> -static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
+>> +static void drm_gem_shmem_kref_unpin_pages(struct kref *kref)
+>>  {
+>> -	dma_resv_assert_held(shmem->base.resv);
+>> +	struct drm_gem_shmem_object *shmem;
+>> +
+>> +	shmem = container_of(kref, struct drm_gem_shmem_object,
+>> +			     pages_pin_count);
+>>  
+>>  	drm_gem_shmem_put_pages_locked(shmem);
+>>  }
+>> @@ -263,6 +271,9 @@ int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem)
+>>  
+>>  	drm_WARN_ON(obj->dev, obj->import_attach);
+>>  
+>> +	if (kref_get_unless_zero(&shmem->pages_pin_count))
+>> +		return 0;
+>> +
+>>  	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
+>>  	if (ret)
+>>  		return ret;
+>> @@ -286,9 +297,10 @@ void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem)
+>>  
+>>  	drm_WARN_ON(obj->dev, obj->import_attach);
+>>  
+>> -	dma_resv_lock(shmem->base.resv, NULL);
+>> -	drm_gem_shmem_unpin_locked(shmem);
+>> -	dma_resv_unlock(shmem->base.resv);
+>> +	if (kref_put_dma_resv(&shmem->pages_pin_count,
+>> +			      drm_gem_shmem_kref_unpin_pages,
+>> +			      obj->resv, NULL))
+>> +		dma_resv_unlock(obj->resv);
+>>  }
+>>  EXPORT_SYMBOL_GPL(drm_gem_shmem_unpin);
+>>  
+>> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
+>> index ec2d8b24e3cf..afb7cd671e2a 100644
+>> --- a/include/drm/drm_gem_shmem_helper.h
+>> +++ b/include/drm/drm_gem_shmem_helper.h
+>> @@ -39,6 +39,16 @@ struct drm_gem_shmem_object {
+>>  	 */
+>>  	unsigned int pages_use_count;
+>>  
+>> +	/**
+>> +	 * @pages_pin_count:
+>> +	 *
+>> +	 * Reference count on the pinned pages table.
+>> +	 * The pages allowed to be evicted and purged by memory
+>> +	 * shrinker only when the count is zero, otherwise pages
+>> +	 * are hard-pinned in memory.
+>> +	 */
+>> +	struct kref pages_pin_count;
 > 
-> Hello Jens Axboe,
-> 
-> Please provide feedback on this series!
-> 
-> Are you ok with those changes?
-> What's your opinion on them? 
-> 
-> Thanks!
-> Leo
-> 
+> I know it's tempting to use kref for the pages use/pin count, but I'm
+> wondering if we wouldn't be better using a refcount_t, which provides
+> overflow/underflow protection while still letting us control how we
+> want to handle the locking for 0 <-> 1 transitions. By doing that, we
+> avoid introducing core locking changes that might be more
+> controversial/longer to get accepted. Besides, I suspect the resulting
+> code (the one using a refcount_t) won't be more verbose/complicated (no
+> release functions needed if you don't use kref_put(), which makes
+> things closer to what we have right now).
 
-Hello,
+Alright, let's try to use refcount_t since Christian also doesn't like kref
 
-FYI, there is no csd in struct request anymore in block/for-next branch,
-which is deleted by this commit:
-
-commit 660e802c76c89e871c29cd3174c07c8d23e39c35
-Author: Chengming Zhou <zhouchengming@bytedance.com>
-Date:   Mon Jul 17 12:00:55 2023 +0800
-
-    blk-mq: use percpu csd to remote complete instead of per-rq csd
-
-    If request need to be completed remotely, we insert it into percpu llist,
-    and smp_call_function_single_async() if llist is empty previously.
-
-    We don't need to use per-rq csd, percpu csd is enough. And the size of
-    struct request is decreased by 24 bytes.
-
-    This way is cleaner, and looks correct, given block softirq is guaranteed
-    to be scheduled to consume the list if one new request is added to this
-    percpu list, either smp_call_function_single_async() returns -EBUSY or 0.
-
-    Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-    Reviewed-by: Ming Lei <ming.lei@redhat.com>
-    Reviewed-by: Christoph Hellwig <hch@lst.de>
-    Link: https://lore.kernel.org/r/20230717040058.3993930-2-chengming.zhou@linux.dev
-    Signed-off-by: Jens Axboe <axboe@kernel.dk>
+-- 
+Best regards,
+Dmitry
 
