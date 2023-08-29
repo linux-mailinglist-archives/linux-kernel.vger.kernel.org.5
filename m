@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66A078C5DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA0A78C5E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236192AbjH2Ndx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        id S236339AbjH2Nec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236242AbjH2Ndi (ORCPT
+        with ESMTP id S236240AbjH2Ndi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 09:33:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA02194;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF4B1B4;
         Tue, 29 Aug 2023 06:33:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 616C461ADB;
-        Tue, 29 Aug 2023 13:33:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF787C433C9;
-        Tue, 29 Aug 2023 13:33:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C9EA165517;
+        Tue, 29 Aug 2023 13:33:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03286C433C8;
+        Tue, 29 Aug 2023 13:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693315987;
-        bh=CRQOBcDKkYXV+TFZ5KF31xG95sqxncyXnME8XF38jKA=;
+        s=k20201202; t=1693315991;
+        bh=l837tTjFdvqc/6Pni+s89j8g50v5JWUWBs9SN572YDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SjBwa10IUQ4xX9yRDlw+b5dBZDdt5anTY0LR8g/jGLw6DZ17zTqMQRsggp9SNZ7mk
-         nA+XUnLykgEhXc+CNUgV2Gm6UUkXvH9xWB3bi0qYmYZ919M34lB0Dph6+7TVgzCWrZ
-         CSC3lagC62xo08C5bixJEPwzSpSJcJwc/VibIT2bjU+XmCNI1fGOeE6EFyx7QvbhLf
-         nuLklj2hb57hxMhD1bTxhWhtlLWR4rsa7FIGPMhwvjzNgGaERRlFth7M03GQo70mNn
-         H4PF/nNBzQIXOXM++TmS73jruSi2wL1oJxNtNhVv7FxZYyiXtDIBw8xMJiqdzq3jiq
-         JaUn608ZoqiUQ==
+        b=jyQiKjfbeWbnD83MaJU2MTtGyuPErG6RzYN0gFHPQAdVOyw+oQVrLn/I+O24tkZRi
+         sB++TMtoX5A06p7JXqPNTEGklpH42WmCx9L9ietlofOe1y9S/1k8ys9CUMMt9gRISn
+         cI7zdeQKIM+/FzDnxHqN+OnVRHrv1+ccdZLmJQtrbArXneDsLAB1mx8xVtfStzVfhP
+         4TWWBabJQ+GoQVo+wJvYrfpMdJ7sJxn89ePBp1fbKUtRUgCavGLbtkbBWAkDbpvwuk
+         eFUlbzHtyB/UWfKftnkKuptvZAgML8pqzHmMaG9wKBRIBtLueMQNOOhXqstRzX/Oef
+         mtbl6sL28B8Cg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Justin Tee <justintee8345@gmail.com>,
-        Justin Tee <justin.tee@broadcom.com>,
-        kernel test robot <lkp@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 12/15] scsi: lpfc: Fix incorrect big endian type assignment in bsg loopback path
-Date:   Tue, 29 Aug 2023 09:32:42 -0400
-Message-Id: <20230829133245.520176-12-sashal@kernel.org>
+Cc:     Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
+        akpm@linux-foundation.org, yuzhao@google.com, jgross@suse.com,
+        guoren@kernel.org, zhengqi.arch@bytedance.com,
+        loongarch@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 13/15] LoongArch: Let pmd_present() return true when splitting pmd
+Date:   Tue, 29 Aug 2023 09:32:43 -0400
+Message-Id: <20230829133245.520176-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230829133245.520176-1-sashal@kernel.org>
 References: <20230829133245.520176-1-sashal@kernel.org>
@@ -53,8 +52,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.49
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,59 +61,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Justin Tee <justintee8345@gmail.com>
+From: Hongchen Zhang <zhanghongchen@loongson.cn>
 
-[ Upstream commit 9cefd6e7e0a77b0fbca5c793f6fb6821b0962775 ]
+[ Upstream commit ddc1729b07cc84bb29f577698b8d2e74a4004a6e ]
 
-The kernel test robot reported sparse warnings regarding incorrect type
-assignment for __be16 variables in bsg loopback path.
+When we split a pmd into ptes, pmd_present() and pmd_trans_huge() should
+return true, otherwise it would be treated as a swap pmd.
 
-Change the flagged lines to use the be16_to_cpu() and cpu_to_be16() macros
-appropriately.
+This is the same as arm64 does in commit b65399f6111b ("arm64/mm: Change
+THP helpers to comply with generic MM semantics"), we also add a new bit
+named _PAGE_PRESENT_INVALID for LoongArch.
 
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Link: https://lore.kernel.org/r/20230614175944.3577-1-justintee8345@gmail.com
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202306110819.sDIKiGgg-lkp@intel.com/
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_bsg.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/loongarch/include/asm/pgtable-bits.h | 2 ++
+ arch/loongarch/include/asm/pgtable.h      | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_bsg.c b/drivers/scsi/lpfc/lpfc_bsg.c
-index 852b025e2fecf..b54fafb486e06 100644
---- a/drivers/scsi/lpfc/lpfc_bsg.c
-+++ b/drivers/scsi/lpfc/lpfc_bsg.c
-@@ -889,7 +889,7 @@ lpfc_bsg_ct_unsol_event(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
- 			struct lpfc_iocbq *piocbq)
+diff --git a/arch/loongarch/include/asm/pgtable-bits.h b/arch/loongarch/include/asm/pgtable-bits.h
+index 3d1e0a69975a5..5f2ebcea509cd 100644
+--- a/arch/loongarch/include/asm/pgtable-bits.h
++++ b/arch/loongarch/include/asm/pgtable-bits.h
+@@ -21,12 +21,14 @@
+ #define	_PAGE_HGLOBAL_SHIFT	12 /* HGlobal is a PMD bit */
+ #define	_PAGE_PFN_SHIFT		12
+ #define	_PAGE_PFN_END_SHIFT	48
++#define	_PAGE_PRESENT_INVALID_SHIFT 60
+ #define	_PAGE_NO_READ_SHIFT	61
+ #define	_PAGE_NO_EXEC_SHIFT	62
+ #define	_PAGE_RPLV_SHIFT	63
+ 
+ /* Used by software */
+ #define _PAGE_PRESENT		(_ULCAST_(1) << _PAGE_PRESENT_SHIFT)
++#define _PAGE_PRESENT_INVALID	(_ULCAST_(1) << _PAGE_PRESENT_INVALID_SHIFT)
+ #define _PAGE_WRITE		(_ULCAST_(1) << _PAGE_WRITE_SHIFT)
+ #define _PAGE_ACCESSED		(_ULCAST_(1) << _PAGE_ACCESSED_SHIFT)
+ #define _PAGE_MODIFIED		(_ULCAST_(1) << _PAGE_MODIFIED_SHIFT)
+diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+index 79d5bfd913e0f..e748fad82f13e 100644
+--- a/arch/loongarch/include/asm/pgtable.h
++++ b/arch/loongarch/include/asm/pgtable.h
+@@ -208,7 +208,7 @@ static inline int pmd_bad(pmd_t pmd)
+ static inline int pmd_present(pmd_t pmd)
  {
- 	uint32_t evt_req_id = 0;
--	uint32_t cmd;
-+	u16 cmd;
- 	struct lpfc_dmabuf *dmabuf = NULL;
- 	struct lpfc_bsg_event *evt;
- 	struct event_data *evt_dat = NULL;
-@@ -915,7 +915,7 @@ lpfc_bsg_ct_unsol_event(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 	if (unlikely(pmd_val(pmd) & _PAGE_HUGE))
+-		return !!(pmd_val(pmd) & (_PAGE_PRESENT | _PAGE_PROTNONE));
++		return !!(pmd_val(pmd) & (_PAGE_PRESENT | _PAGE_PROTNONE | _PAGE_PRESENT_INVALID));
  
- 	ct_req = (struct lpfc_sli_ct_request *)bdeBuf1->virt;
- 	evt_req_id = ct_req->FsType;
--	cmd = ct_req->CommandResponse.bits.CmdRsp;
-+	cmd = be16_to_cpu(ct_req->CommandResponse.bits.CmdRsp);
+ 	return pmd_val(pmd) != (unsigned long)invalid_pte_table;
+ }
+@@ -525,6 +525,7 @@ static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
  
- 	spin_lock_irqsave(&phba->ct_ev_lock, flags);
- 	list_for_each_entry(evt, &phba->ct_ev_waiters, node) {
-@@ -3186,8 +3186,8 @@ lpfc_bsg_diag_loopback_run(struct bsg_job *job)
- 			ctreq->RevisionId.bits.InId = 0;
- 			ctreq->FsType = SLI_CT_ELX_LOOPBACK;
- 			ctreq->FsSubType = 0;
--			ctreq->CommandResponse.bits.CmdRsp = ELX_LOOPBACK_DATA;
--			ctreq->CommandResponse.bits.Size   = size;
-+			ctreq->CommandResponse.bits.CmdRsp = cpu_to_be16(ELX_LOOPBACK_DATA);
-+			ctreq->CommandResponse.bits.Size   = cpu_to_be16(size);
- 			segment_offset = ELX_LOOPBACK_HEADER_SZ;
- 		} else
- 			segment_offset = 0;
+ static inline pmd_t pmd_mkinvalid(pmd_t pmd)
+ {
++	pmd_val(pmd) |= _PAGE_PRESENT_INVALID;
+ 	pmd_val(pmd) &= ~(_PAGE_PRESENT | _PAGE_VALID | _PAGE_DIRTY | _PAGE_PROTNONE);
+ 
+ 	return pmd;
 -- 
 2.40.1
 
