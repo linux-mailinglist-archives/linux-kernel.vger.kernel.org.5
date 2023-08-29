@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6BB78C870
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3F278C86E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237039AbjH2PSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 11:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        id S237033AbjH2PRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 11:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237153AbjH2PRt (ORCPT
+        with ESMTP id S237213AbjH2PR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:17:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D953194
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693322266; x=1724858266;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+bPeYj88gtPAEI6E/PIIKCqQBhsiIxznUBGyOV4wiTU=;
-  b=V9LEg7GEdHdfQQ74hvUz9oyeK2Gk1i8LwSOPEdHEvirQ2aRC4A//su7h
-   OQRv5uvMB2WW6ARNJsaYwXPK86bnYLX6gkjtvcqPcS+0TtVH7zQOilQsX
-   YTjOLPKKMjw52odf38xuNkhp2jA7Vosc771dOVQ2tbE5lre3p0jnT8Hgu
-   Z51MPlr7j5In/Y5/OgYuVI9NL7IYorAd8PIalyIGQibfwOOHukcLAocg8
-   isN0AWGZkqQ9/Ga0Y9aEfdnFsE4+cogirMyjQyciyHX1kEsO0eyPNRQIg
-   cOCs5TnhGpf39O71KdwV7pTmbLH4TrXyRbb0ei+cVLKwnE6IcjTmts98T
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="365603735"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="365603735"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 08:15:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="773716704"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="773716704"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP; 29 Aug 2023 08:15:35 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qb0RK-004uce-0v;
-        Tue, 29 Aug 2023 18:15:34 +0300
-Date:   Tue, 29 Aug 2023 18:15:34 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] regulator: pv880x0: Drop CONFIG_OF ifdeffery
-Message-ID: <ZO4LlmaNIaIdYbwh@smile.fi.intel.com>
-References: <20230828172417.113631-1-biju.das.jz@bp.renesas.com>
- <20230828172417.113631-3-biju.das.jz@bp.renesas.com>
+        Tue, 29 Aug 2023 11:17:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E9F194;
+        Tue, 29 Aug 2023 08:17:25 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AD4CE21863;
+        Tue, 29 Aug 2023 15:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1693322244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BOigw10DFMaZ6FlTz/kuzcWWW1zJctEYt2mbUACfshw=;
+        b=cf6cfut5qMHHLRMDbwkQ2gYlsH8BstjRGecp7d4wrj6kl1juJGA88uZVLY/nIkvn4joG6o
+        yc1WtUrbFGH37RngP2icfs7mhlOiLLHfvX3nXod/VcciRd/wn+9pFBlSTbq9Qw6JFxynhg
+        vLQnqh8YI4Amh1yo0orGgcpcoRZ6h+E=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9863913301;
+        Tue, 29 Aug 2023 15:17:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0DXgJAQM7mSfHAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 29 Aug 2023 15:17:24 +0000
+Date:   Tue, 29 Aug 2023 17:17:24 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+Message-ID: <ZO4MBNzsbhsi7adb@dhcp22.suse.cz>
+References: <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+ <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
+ <CAJD7tkYPyb+2zOKqctQw-vhuwYRg85e6v2Y44xWJofHZ+F+YQw@mail.gmail.com>
+ <ZOzBgfzlGdrPD4gk@dhcp22.suse.cz>
+ <CAJD7tkakMcaR_6NygEXCt6GF8TOuzYAUQe1im+vu2F3G4jtz=w@mail.gmail.com>
+ <CALvZod7uxDd3Lrd3VwTTC-SDvqhdj2Ly-dYVswO=TBM=XTnkcg@mail.gmail.com>
+ <CAJD7tkbnvMCNfQwY_dmVe2SWR5NeN+3RzFhsVyimM1ATaX0D5A@mail.gmail.com>
+ <599b167c-deaf-4b92-aa8b-5767b8608483@redhat.com>
+ <ZO2d7dT8gulMyb8g@dhcp22.suse.cz>
+ <5906501e-4dff-4c66-7ab3-e9193d312270@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230828172417.113631-3-biju.das.jz@bp.renesas.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <5906501e-4dff-4c66-7ab3-e9193d312270@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 06:24:17PM +0100, Biju Das wrote:
-> Get rid of ugly CONFIG_OF ifdeffery by adding mod_devicetable.h include.
+On Tue 29-08-23 11:05:28, Waiman Long wrote:
+> On 8/29/23 03:27, Michal Hocko wrote:
+> > On Mon 28-08-23 13:27:23, Waiman Long wrote:
+> > > On 8/28/23 13:07, Yosry Ahmed wrote:
+> > > > > Here I agree with you. Let's go with the approach which is easy to
+> > > > > undo for now. Though I prefer the new explicit interface for flushing,
+> > > > > that step would be very hard to undo. Let's reevaluate if the proposed
+> > > > > approach shows negative impact on production traffic and I think
+> > > > > Cloudflare folks can give us the results soon.
+> > > > Do you prefer we also switch to using a mutex (with preemption
+> > > > disabled) to avoid the scenario Michal described where flushers give
+> > > > up the lock and sleep resulting in an unbounded wait time in the worst
+> > > > case?
+> > > Locking with mutex with preemption disabled is an oxymoron.
+> > I believe Yosry wanted to disable preemption _after_ the lock is taken
+> > to reduce the time spent while it is held. The idea to use the mutex is
+> > to reduce spinning and more importantly to get rid of lock dropping
+> > part. It is not really clear (but unlikely) we can drop it while
+> > preserving the spinlock as the thing scales with O(#cgroups x #cpus)
+> > in the worst case.
+> 
+> As I have said later in my email, I am not against disabling preemption
+> selectively on some parts of the lock critical section where preemption is
+> undesirable. However, I am against disabling preemption for the whole
+> duration of the code where the mutex lock is held as it defeats the purpose
+> of using mutex in the first place.
 
-Commit message needs to be improved.
-Inclusion of that header doesn't allow to do what you have done.
-Dropping of_match_ptr() does. And you need to explain that leaving
-OF table for non-OF system is fine and doesn't waste too much memory
-anyway. Look for the existing changes like this in the kernel history
-(`git log --no-merges --grep ...` at your service).
-
+I certainly agree this is an antipattern.
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Michal Hocko
+SUSE Labs
