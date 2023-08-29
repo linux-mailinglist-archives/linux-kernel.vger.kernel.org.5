@@ -2,137 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF98E78BFC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB3578BFC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbjH2H7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39908 "EHLO
+        id S233816AbjH2IAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbjH2H7K (ORCPT
+        with ESMTP id S232958AbjH2IAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:59:10 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB8611B
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:59:07 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bbbda48904so61327511fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693295946; x=1693900746;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0jf6v0PlN8K4+VHfayvhTrk9SlvJxu66Wz5h1U5gN+U=;
-        b=cd8xfWfjkkhYba1/kYyetBH67HS0W0MECg2+Vy3Nljp/upBOU4HLjkNtg499yYWW4W
-         W3U3iy7pfrr/CJbJC1KkRNOYWiT8B+GyErH+6h6Jb19h6aky7n9XffOnxZAGg7wyt8AN
-         ntNQ+UKwoE6Y+LGtbeelgCH7J+5VIgMkXjyf1YdNq7VwbU95NC2cr3i60lZpEbetbN3u
-         xh91FnAAT1JkEP6jLY/cmlOiHHNfqadap16bp2eTwRM1T7v8hL7p//HqPMnsJZx3s8XZ
-         8n7wiNht4v9u3gUIZq3dwbMIlt/HihWr1Dedk96edBnYOC4KvgESHqgdGQwtNe581eMp
-         Dzsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693295946; x=1693900746;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0jf6v0PlN8K4+VHfayvhTrk9SlvJxu66Wz5h1U5gN+U=;
-        b=JAVGfEFT6aMbbHsdoHOQIaiDY2kdU+WagComheaspPLx3juRQgRi3CRaFKGg30PYop
-         4HtcGVVEyBB5tUiLH0YuOpz4T3oJ7jT9V4/p9Q2ylCVvKKA/Ysb4/rYfshEy4HeHaG4G
-         aTECGcqwir23sKcPN6Z4OS5X90VHB4tcQ1lsOH9JDa1+jnnW4oE9vCIuemRrCv8UN0Kf
-         Gze+oS8meyMdgH3FzD4anJC5jA+l0UFl02uUYAwFgjSSLtI9Y98NEBLHYwta7e5Q3eDH
-         r+KoKu3OaAFK54rXS4Gp4fhaGwvAQsYL6FbBim76BCPi0tRleKYJikHEdUrpjKWVIqox
-         otDw==
-X-Gm-Message-State: AOJu0Yxi1WoNNFfeJFwELHWfdpzKvHkmZnNEzgiqmnFE2HyWZL9FPlbi
-        WPBHDNv2d3gLvIlnxk3+yYOZrw==
-X-Google-Smtp-Source: AGHT+IGD3NBFm0dQrv9JfQP1cUMzD8RLzRvv182ZXM5rp4G+qw40YF7KSL9RbgB7Im6bml2LAPfX1Q==
-X-Received: by 2002:a2e:99ce:0:b0:2bc:b27f:4019 with SMTP id l14-20020a2e99ce000000b002bcb27f4019mr17828364ljj.6.1693295945950;
-        Tue, 29 Aug 2023 00:59:05 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id s18-20020a17090699d200b009920a690cd9sm5606794ejn.59.2023.08.29.00.59.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 00:59:05 -0700 (PDT)
-Message-ID: <cc35c729-df33-087b-2df4-95e8cc174ec6@linaro.org>
-Date:   Tue, 29 Aug 2023 09:59:04 +0200
+        Tue, 29 Aug 2023 04:00:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7BB124;
+        Tue, 29 Aug 2023 01:00:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BF1C61AC9;
+        Tue, 29 Aug 2023 08:00:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C1F5C433C8;
+        Tue, 29 Aug 2023 08:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693296009;
+        bh=/WBnF8Kf421MH6rWwaKwrpXlKths8TSnWWJHr2sN9V4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DQVGyOKh0PxISNwoZvmBzRfjHN4ij2OEqU2aLjtKRk9Gtb6mWaoDlUDtzh5UWnuTv
+         UbmUOscsHAlai+JRLXdm7RSK3JWvA/67er4qjTXsk1cpFca8bLun1MOmQJHwVQkG9r
+         W2/rsmbEpcdb2a139+QrHgBJ9z9ZJ4rWOt46d/7xrCpD9XZ4OK6sPJUkFZVMLW8+eJ
+         Ugb66pLBI0+QufW3ldU2e8ULRz3/kTcn4AninZkWRHRf2SaIAyMUXvO8JccZXd5yVW
+         n71M+ocGYXWEQiITwLOdb37csGsVRcXkrHOWmYOKdpUh9CgjWnfdVdIzOFIXvY1nSc
+         bj+LMHe04VbUg==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so60136041fa.1;
+        Tue, 29 Aug 2023 01:00:09 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwHbfOQv8WJX7Z1TBnNgrZKMdU/lvjM8gtiYX8NRiziVumtHFkb
+        Tg7OgfeJDXOGH5roPEG8fzUwrpa5nQATpVRuuws=
+X-Google-Smtp-Source: AGHT+IGOYevtbmNIKh0vL4EvtXWp1hfSt0dDOuCzvk+CP0CM5YX3lAyIFUu3lxEh7soUXD757YeDRMxV4Qqrc63PA3Y=
+X-Received: by 2002:ac2:5449:0:b0:500:b14a:cc63 with SMTP id
+ d9-20020ac25449000000b00500b14acc63mr6158776lfn.12.1693296007526; Tue, 29 Aug
+ 2023 01:00:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 03/11] firmware: qcom-scm: atomically assign and read the
- global __scm pointer
-Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
- <20230828192507.117334-4-bartosz.golaszewski@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230828192507.117334-4-bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230822162350.1.I96423a31e88428004c2f4a28ccad13828adf433e@changeid>
+In-Reply-To: <20230822162350.1.I96423a31e88428004c2f4a28ccad13828adf433e@changeid>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 29 Aug 2023 09:59:54 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFBEk9cjE1dhNkm09yregAaHcVofUXRB8GhaYT2Ft-Fyg@mail.gmail.com>
+Message-ID: <CAMj1kXFBEk9cjE1dhNkm09yregAaHcVofUXRB8GhaYT2Ft-Fyg@mail.gmail.com>
+Subject: Re: [PATCH] kernel: Add Mount Option For Efivarfs
+To:     Jiao Zhou <jiaozhou@google.com>
+Cc:     linux-fsdevel@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 21:24, Bartosz Golaszewski wrote:
-> Checking for the availability of SCM bridge can happen from any context.
-> It's only by chance that we haven't run into concurrency issues but with
-> the upcoming SHM Bridge driver that will be initiated at the same
-> initcall level, we need to assure the assignment and readback of the
-> __scm pointer is atomic.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Tue, 22 Aug 2023 at 18:24, Jiao Zhou <jiaozhou@google.com> wrote:
+>
+> Add uid and gid in efivarfs's mount option, so that
+> we can mount the file system with ownership. This approach
+> is used by a number of other filesystems that don't have
+> native support for ownership
+>
+> Signed-off-by: Jiao Zhou <jiaozhou@google.com>
 > ---
->  drivers/firmware/qcom_scm.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 980fcfa20b9f..422de70faff8 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -1331,7 +1331,7 @@ static int qcom_scm_find_dload_address(struct device *dev, u64 *addr)
->   */
->  bool qcom_scm_is_available(void)
+>
+>  fs/efivarfs/inode.c    |  4 ++++
+>  fs/efivarfs/internal.h |  9 +++++++
+>  fs/efivarfs/super.c    | 54 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 67 insertions(+)
+>
+> diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
+> index b973a2c03dde..86175e229b0f 100644
+> --- a/fs/efivarfs/inode.c
+> +++ b/fs/efivarfs/inode.c
+> @@ -20,9 +20,13 @@ struct inode *efivarfs_get_inode(struct super_block *sb,
+>                                 const struct inode *dir, int mode,
+>                                 dev_t dev, bool is_removable)
 >  {
-> -	return !!__scm;
-> +	return !!READ_ONCE(__scm);
+> +       struct efivarfs_fs_info *fsi = sb->s_fs_info;
+>         struct inode *inode = new_inode(sb);
+> +       struct efivarfs_mount_opts *opts = &fsi->mount_opts;
+>
+>         if (inode) {
+> +               inode->i_uid = opts->uid;
+> +               inode->i_gid = opts->gid;
+>                 inode->i_ino = get_next_ino();
+>                 inode->i_mode = mode;
+>                 inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
+> diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
+> index 8ebf3a6a8aa2..2c7b6b24df19 100644
+> --- a/fs/efivarfs/internal.h
+> +++ b/fs/efivarfs/internal.h
+> @@ -48,6 +48,15 @@ bool efivar_validate(efi_guid_t vendor, efi_char16_t *var_name, u8 *data,
+>  bool efivar_variable_is_removable(efi_guid_t vendor, const char *name,
+>                                   size_t len);
+>
+> +struct efivarfs_mount_opts {
+> +       kuid_t uid;
+> +       kgid_t gid;
+> +};
+> +
+> +struct efivarfs_fs_info {
+> +       struct efivarfs_mount_opts mount_opts;
+> +};
+> +
+>  extern const struct file_operations efivarfs_file_operations;
+>  extern const struct inode_operations efivarfs_dir_inode_operations;
+>  extern bool efivarfs_valid_name(const char *str, int len);
+> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> index e028fafa04f3..e3c81fac8208 100644
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/efi.h>
+>  #include <linux/fs.h>
+>  #include <linux/fs_context.h>
+> +#include <linux/fs_parser.h>
+>  #include <linux/module.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/ucs2_string.h>
+> @@ -60,10 +61,27 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+>
+>         return 0;
 >  }
->  EXPORT_SYMBOL(qcom_scm_is_available);
->  
-> @@ -1477,8 +1477,8 @@ static int qcom_scm_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> -	__scm = scm;
-> -	__scm->dev = &pdev->dev;
-> +	scm->dev = &pdev->dev;
-> +	WRITE_ONCE(__scm, scm);
+> +static int efivarfs_show_options(struct seq_file *m, struct dentry *root)
+> +{
+> +       struct super_block *sb = root->d_sb;
+> +       struct efivarfs_fs_info *sbi = sb->s_fs_info;
+> +       struct efivarfs_mount_opts *opts = &sbi->mount_opts;
+> +
+> +       /* Show partition info */
+> +       if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
+> +               seq_printf(m, ",uid=%u",
+> +                               from_kuid_munged(&init_user_ns, opts->uid));
+> +       if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
+> +               seq_printf(m, ",gid=%u",
+> +                               from_kgid_munged(&init_user_ns, opts->gid));
+> +       return 0;
+> +}
+> +
+>  static const struct super_operations efivarfs_ops = {
+>         .statfs = efivarfs_statfs,
+>         .drop_inode = generic_delete_inode,
+>         .evict_inode = efivarfs_evict_inode,
+> +       .show_options   = efivarfs_show_options,
+>  };
+>
+>  /*
+> @@ -225,6 +243,40 @@ static int efivarfs_destroy(struct efivar_entry *entry, void *data)
+>         return 0;
+>  }
+>
+> +enum {
+> +       Opt_uid, Opt_gid,
+> +};
+> +
+> +static const struct fs_parameter_spec efivarfs_parameters[] = {
+> +       fsparam_u32("uid",                      Opt_uid),
+> +       fsparam_u32("gid",                      Opt_gid),
+> +};
+> +
 
-Your re-ordering is not effective here, I think. I don't understand it's
-purpose exactly, but scm->dev assignment is not WRITE_ONCE(), thus it
-can be reordered:
+The kasan report seems to suggest that this array needs a trailing
+empty entry {}
 
-"compiler is also forbidden from reordering successive instances of
-READ_ONCE and WRITE_ONCE" <- so compiler is not forbidden to reorder
-other stuff.
 
-"Ensuring that the compiler does not fold, spindle, or otherwise
-mutilate accesses that either do not require ordering or that interact"
-<- which means you do not require ordering here.
-
-Best regards,
-Krzysztof
-
+> +static int efivarfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+> +{
+> +       struct efivarfs_fs_info *sbi = fc->s_fs_info;
+> +       struct efivarfs_mount_opts *opts = &sbi->mount_opts;
+> +       struct fs_parse_result result;
+> +       int opt;
+> +
+> +       opt = fs_parse(fc, efivarfs_parameters, param, &result);
+> +       if (opt < 0)
+> +               return opt;
+> +
+> +       switch (opt) {
+> +       case Opt_uid:
+> +               opts->uid = make_kuid(current_user_ns(), result.uint_32);
+> +               break;
+> +       case Opt_gid:
+> +               opts->gid = make_kgid(current_user_ns(), result.uint_32);
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
+>  {
+>         struct inode *inode = NULL;
+> @@ -271,6 +323,7 @@ static int efivarfs_get_tree(struct fs_context *fc)
+>
+>  static const struct fs_context_operations efivarfs_context_ops = {
+>         .get_tree       = efivarfs_get_tree,
+> +       .parse_param    = efivarfs_parse_param,
+>  };
+>
+>  static int efivarfs_init_fs_context(struct fs_context *fc)
+> @@ -295,6 +348,7 @@ static struct file_system_type efivarfs_type = {
+>         .name    = "efivarfs",
+>         .init_fs_context = efivarfs_init_fs_context,
+>         .kill_sb = efivarfs_kill_sb,
+> +       .parameters             = efivarfs_parameters,
+>  };
+>
+>  static __init int efivarfs_init(void)
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>
