@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5808278BE7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0EF78BE69
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbjH2Gbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
+        id S230386AbjH2G16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjH2GbT (ORCPT
+        with ESMTP id S233367AbjH2G1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 02:31:19 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400DBC9;
-        Mon, 28 Aug 2023 23:31:15 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37T6U1Wa044681;
-        Tue, 29 Aug 2023 01:30:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693290601;
-        bh=ombBwh79GIaVaFyYb8P+v0AxNxu00fZcfUBBDPJIxG8=;
-        h=From:To:CC:Subject:Date;
-        b=Hx2GEW13Vhq5j7rrV3+7fuEfyWACjL7oUE6iG4VsF7j4c0mF9xlzOBAjXYSiYS3jH
-         Hxu7WmN6A3coisTBLya/3pLfPduPiGgiaEcJ/cNUVP4XoTII4jdpTCqWUg7av5401n
-         997tt333zjdgE788hz4DGICqkqSdiTl7Nvp7ubRE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37T6U0a4052106
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Aug 2023 01:30:01 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 29
- Aug 2023 01:29:59 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 29 Aug 2023 01:29:59 -0500
-Received: from dhruva.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37T6TtqB055956;
-        Tue, 29 Aug 2023 01:29:56 -0500
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        Dhruva Gole <d-gole@ti.com>, Apurva Nandan <a-nandan@ti.com>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        William Qiu <william.qiu@starfivetech.com>,
-        Brad Larson <blarson@amd.com>,
-        Pratyush Yadav <ptyadav@amazon.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vibhore Vardhan <vibhore@ti.com>
-Subject: [PATCH V2] spi: spi-cadence-quadspi: add runtime pm support
-Date:   Tue, 29 Aug 2023 11:57:08 +0530
-Message-ID: <20230829062706.786637-1-d-gole@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 29 Aug 2023 02:27:40 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3672B198
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:27:37 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 656B62D8;
+        Tue, 29 Aug 2023 08:26:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693290372;
+        bh=rV1sMffANDs2Q8NDzHSDqg3CB3HCkmpBR86pv0p8M6M=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iAARYR8nZKGu8YZsrOjyCgdHRpvB1wURqJ8VXtjj23fTFf/Rt8m1KHauL8baEs63t
+         VNyrrHWBc3vKKZkQZ+h4DemnyC2m0Aio6JcLHRSLsPY2C2cFopYnjcVCjevLoz3Mrv
+         jFd3ngQsopr3/Ise4jh1Qt2Tm+irM6KBHfqXujLk=
+Message-ID: <6ecafdd1-e60a-afe6-ea2f-adab168d22fe@ideasonboard.com>
+Date:   Tue, 29 Aug 2023 09:27:29 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 00/12] drm/bridge: tc358768: Fixes and timings
+ improvements
+To:     Maxim Schwalm <maxim.schwalm@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+References: <20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com>
+Content-Language: en-US
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,143 +63,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add runtime pm support to cadence-qspi driver, this allows the driver to
-suspend whenever it's is not actively being used thus reducing active
-power consumed by the system.
+Hi Maxim,
 
-Also, with the use of devm_pm_runtime_enable we no longer need the
-fallback probe_pm_failed that used to pm_runtime_disable
+On 22/08/2023 19:19, Tomi Valkeinen wrote:
+> This series contains various fixes and cleanups for TC358768. The target
+> of this work is to get TC358768 working on Toradex's AM62 based board,
+> which has the following display pipeline:
+> 
+> AM62 DPI -> TC358768 -> LT8912B -> HDMI connector
+> 
+> The main thing the series does is to improve the DSI HSW, HFP and VSDly
+> calculations.
+> 
+>   Tomi
 
-Co-developed-by: Apurva Nandan <a-nandan@ti.com>
-Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-Signed-off-by: Dhruva Gole <d-gole@ti.com>
----
+Does this version work for you? Can I add your tested-by?
 
-Previous patch was marked RFT, and can be found here [0].
-Tested [1] this patch on a TI SK-AM62 EVM having an OSPI NOR flash on board.
+  Tomi
 
-Changelog:
-* Drop the DT patch as it had some comments that I am planning to
-address at a later point.
-* Add a ret val check for the pm_runtime_resume_and_get function call in
-the exec_mem_op in case it reports any failures.
-
-[0] https://lore.kernel.org/all/20230818103750.516309-3-d-gole@ti.com/
-[1] https://gist.github.com/DhruvaG2000/7728ec09ae49c8c0d44d8e99de6795d5
-
-Cc: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Cc: Ian Abbott <abbotti@mev.co.uk>
-Cc: William Qiu <william.qiu@starfivetech.com>
-Cc: Brad Larson <blarson@amd.com>
-Cc: Pratyush Yadav <ptyadav@amazon.de>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Vibhore Vardhan <vibhore@ti.com>
-
- drivers/spi/spi-cadence-quadspi.c | 42 ++++++++++++++++++++++++-------
- 1 file changed, 33 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index b50db71ac4cc..4828da4587c5 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -116,6 +116,9 @@ struct cqspi_driver_platdata {
- #define CQSPI_TIMEOUT_MS			500
- #define CQSPI_READ_TIMEOUT_MS			10
- 
-+/* Runtime_pm autosuspend delay */
-+#define CQSPI_AUTOSUSPEND_TIMEOUT		2000
-+
- #define CQSPI_DUMMY_CLKS_PER_BYTE		8
- #define CQSPI_DUMMY_BYTES_MAX			4
- #define CQSPI_DUMMY_CLKS_MAX			31
-@@ -1407,8 +1410,20 @@ static int cqspi_mem_process(struct spi_mem *mem, const struct spi_mem_op *op)
- static int cqspi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
- {
- 	int ret;
-+	struct cqspi_st *cqspi = spi_master_get_devdata(mem->spi->master);
-+	struct device *dev = &cqspi->pdev->dev;
-+
-+	ret = pm_runtime_resume_and_get(dev);
-+	if (ret) {
-+		dev_err(&mem->spi->dev, "resume failed with %d\n", ret);
-+		return ret;
-+	}
- 
- 	ret = cqspi_mem_process(mem, op);
-+
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
-+
- 	if (ret)
- 		dev_err(&mem->spi->dev, "operation failed with %d\n", ret);
- 
-@@ -1753,10 +1768,10 @@ static int cqspi_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return -ENXIO;
- 
--	pm_runtime_enable(dev);
--	ret = pm_runtime_resume_and_get(dev);
--	if (ret < 0)
--		goto probe_pm_failed;
-+	ret = pm_runtime_set_active(dev);
-+	if (ret)
-+		return ret;
-+
- 
- 	ret = clk_prepare_enable(cqspi->clk);
- 	if (ret) {
-@@ -1862,21 +1877,29 @@ static int cqspi_probe(struct platform_device *pdev)
- 			goto probe_setup_failed;
- 	}
- 
-+	ret = devm_pm_runtime_enable(dev);
-+	if (ret)
-+		return ret;
-+
-+	pm_runtime_set_autosuspend_delay(dev, CQSPI_AUTOSUSPEND_TIMEOUT);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_get_noresume(dev);
-+
- 	ret = spi_register_controller(host);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to register SPI ctlr %d\n", ret);
- 		goto probe_setup_failed;
- 	}
- 
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
-+
- 	return 0;
- probe_setup_failed:
- 	cqspi_controller_enable(cqspi, 0);
- probe_reset_failed:
- 	clk_disable_unprepare(cqspi->clk);
- probe_clk_failed:
--	pm_runtime_put_sync(dev);
--probe_pm_failed:
--	pm_runtime_disable(dev);
- 	return ret;
- }
- 
-@@ -1928,7 +1951,8 @@ static int cqspi_resume(struct device *dev)
- 	return spi_controller_resume(host);
- }
- 
--static DEFINE_SIMPLE_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend, cqspi_resume);
-+static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend,
-+				 cqspi_resume, NULL);
- 
- static const struct cqspi_driver_platdata cdns_qspi = {
- 	.quirks = CQSPI_DISABLE_DAC_MODE,
-@@ -2012,7 +2036,7 @@ static struct platform_driver cqspi_platform_driver = {
- 	.remove_new = cqspi_remove,
- 	.driver = {
- 		.name = CQSPI_NAME,
--		.pm = &cqspi_dev_pm_ops,
-+		.pm = pm_ptr(&cqspi_dev_pm_ops),
- 		.of_match_table = cqspi_dt_ids,
- 	},
- };
--- 
-2.34.1
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+> Changes in v3:
+> - Add Peter's reviewed-bys
+> - Move "Default to positive h/v syncs" earlier in the series to avoid
+>    regression in the middle of the series
+> - Link to v2: https://lore.kernel.org/r/20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com
+> 
+> Changes in v2:
+> - Add "drm/tegra: rgb: Parameterize V- and H-sync polarities" so that
+>    Tegra can configure the polarities correctly.
+> - Add "drm/bridge: tc358768: Default to positive h/v syncs" as we don't
+>    (necessarily) have the polarities set in the mode.
+> - Drop "drm/bridge: tc358768: Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>    support" as it's not needed for DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>    support.
+> - Link to v1: https://lore.kernel.org/r/20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com
+> 
+> ---
+> Thierry Reding (1):
+>        drm/tegra: rgb: Parameterize V- and H-sync polarities
+> 
+> Tomi Valkeinen (11):
+>        drm/bridge: tc358768: Fix use of uninitialized variable
+>        drm/bridge: tc358768: Default to positive h/v syncs
+>        drm/bridge: tc358768: Fix bit updates
+>        drm/bridge: tc358768: Cleanup PLL calculations
+>        drm/bridge: tc358768: Use struct videomode
+>        drm/bridge: tc358768: Print logical values, not raw register values
+>        drm/bridge: tc358768: Use dev for dbg prints, not priv->dev
+>        drm/bridge: tc358768: Rename dsibclk to hsbyteclk
+>        drm/bridge: tc358768: Clean up clock period code
+>        drm/bridge: tc358768: Fix tc358768_ns_to_cnt()
+>        drm/bridge: tc358768: Attempt to fix DSI horizontal timings
+> 
+>   drivers/gpu/drm/bridge/tc358768.c | 381 ++++++++++++++++++++++++++++----------
+>   drivers/gpu/drm/tegra/rgb.c       |  16 +-
+>   2 files changed, 295 insertions(+), 102 deletions(-)
+> ---
+> base-commit: 25205087df1ffe06ccea9302944ed1f77dc68c6f
+> change-id: 20230804-tc358768-1b6949ef2e3d
+> 
+> Best regards,
 
