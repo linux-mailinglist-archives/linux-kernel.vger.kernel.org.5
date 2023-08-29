@@ -2,165 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC6D78C9B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1952378C9A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237224AbjH2Qdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        id S237472AbjH2Q3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237474AbjH2Qdu (ORCPT
+        with ESMTP id S237520AbjH2Q23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:33:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447EC184;
-        Tue, 29 Aug 2023 09:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693326828; x=1724862828;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LbBndQ30pApFIdN1pPSoRCOwu6jKcidtzAZxrTxto+I=;
-  b=G0mPdmDJyd0ZFftYDC1qtsdyRxiN4gpfjuxiq7XvUYR83T7NilQOG4IC
-   mvbpVNehg+xBptDZpExL21wpo+9EDcVc3v4FjchcDyUHg8aaeVDivhmDa
-   lrbbMONM+156SM5sy+jMr95Q/+q8kOG2KguvLrkj9solvalS76YYMp1gZ
-   JKTKvlHjQNJGt1O/2zSYK1YOLlRl51//a4iVsIQ+n+G6ijDOIq4c5WeT8
-   Ab5jpK1v2aWqR1jmPxUCn3W+CYgqCOPvsWbN+qSDyzgbTS/SbVhJGK3pK
-   B2o/fWnV6biXXqTnOK5QbG2O3WEsUCwPFwxGYmSBuoYDaUYLZEBsko2zD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="461793834"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="461793834"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 09:28:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="741883388"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="741883388"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 29 Aug 2023 09:27:56 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qb1ZL-0008u3-28;
-        Tue, 29 Aug 2023 16:27:55 +0000
-Date:   Wed, 30 Aug 2023 00:27:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Meng Li <li.meng@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>, Meng Li <li.meng@amd.com>
-Subject: Re: [PATCH V4 4/7] cpufreq: Add a notification message that the
- highest perf has changed
-Message-ID: <202308300057.ASUJQpsV-lkp@intel.com>
-References: <20230829064340.1136448-5-li.meng@amd.com>
+        Tue, 29 Aug 2023 12:28:29 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EC61BF
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:28:18 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401da71b83cso5161035e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693326496; x=1693931296;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rpqa6ldHA7+s03xx4g9dxalk6uI6N/wZjkRdFsn+Mzw=;
+        b=KnmcT3f4tVKSrqfCvp4riPVv63u5NlCU3AyN1khUxhpySjV3IVDDE8W8eXge76a1Pm
+         6VXcNXVjPqGvzFLXTz4QGSyIEDIxaoFhfQnu4PI3ARFdL/0WRG0jhFZFmBJMLPQ2vSjr
+         LQCWdLnf6nwhPF+of9zRRtocUu0UFOxOvGuXEH7OBbyeySBhlt5UHHL2KtjVzJAO3a2d
+         yJF7/gCM+5/wsTGoLIJpXiLKLd3cWEKGizMSL/lHcTQNPp3IPRSb84ov3vojrJtscU7p
+         gIUKBC0l79dwzNOcRYsvkdkJ4/0Afkni/8BwNud1r1hZdVVotmJuz96XZya/IfZ/9m7F
+         Scfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693326496; x=1693931296;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rpqa6ldHA7+s03xx4g9dxalk6uI6N/wZjkRdFsn+Mzw=;
+        b=HupZiXyuQPgi2/Kb2XMnQzOANABy1hei5FP815HXSOiGkFmcpNfYiDjXmM1CCNdIC1
+         CqTUqQLObQ2xEf2X9vREeU8c8t2UovSOBv00s18aCjxiMNR6BV+GZ5TU4WqKfSU3OwPg
+         XuLL8BG41Yaz3SMPp0SCU1zAMWtnBSjRBEQFArR+93iEJw8Mq0Y7TtUJMcxOBVbeFZvg
+         BwTvo9FFdF7/Xvpm0qZcwh0Mme2Ko0EtqV8ndbZFbWLN2eg677bpJnUFLRuek2LyuEIA
+         Z5aLkDJElj8UNzt7+jVkZlW6YFh2Xh5mMTTLTRrZkFArMh5c4bJlO4nvcSuL5WmZv2Pl
+         ospw==
+X-Gm-Message-State: AOJu0YyS6t0NgbaiijsaDRB7nkNmTcHrWs3rmXedeY/wUMseJ5jxQoVm
+        fXn4pY2iatgBbNWFo45Ke0msPA==
+X-Google-Smtp-Source: AGHT+IEfJSUBL42nyBdyLW7ZL/n8wPUN1nrSlKl/LyAkDJ2R2cEWy2EjLFUTZblF2ciDwd/UsdyPjQ==
+X-Received: by 2002:a7b:cbcd:0:b0:3fe:25b3:951d with SMTP id n13-20020a7bcbcd000000b003fe25b3951dmr21965260wmi.5.1693326496479;
+        Tue, 29 Aug 2023 09:28:16 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id k8-20020a7bc408000000b003fe23b10fdfsm17577866wmi.36.2023.08.29.09.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 09:28:16 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 17:28:14 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] backlight: mp3309c: Add support for MPS MP3309C
+Message-ID: <20230829162814.GA56339@aspen.lan>
+References: <20230829101546.483189-1-f.suligoi@asem.it>
+ <20230829101546.483189-2-f.suligoi@asem.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230829064340.1136448-5-li.meng@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230829101546.483189-2-f.suligoi@asem.it>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Meng,
+On Tue, Aug 29, 2023 at 12:15:46PM +0200, Flavio Suligoi wrote:
+> The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
+> programmable switching frequency to optimize efficiency.
+> The brightness can be controlled either by I2C commands (called "analog"
+> mode) or by a PWM input signal (PWM mode).
+> This driver supports both modes.
+>
+> For DT configuration details, please refer to:
+> - Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+>
+> The datasheet is available at:
+> - https://www.monolithicpower.com/en/mp3309c.html
+>
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 
-kernel test robot noticed the following build errors:
+> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+> index 51387b1ef012..65d0ac9f611d 100644
+> --- a/drivers/video/backlight/Kconfig
+> +++ b/drivers/video/backlight/Kconfig
+> @@ -389,6 +389,19 @@ config BACKLIGHT_LM3639
+>  	help
+>  	  This supports TI LM3639 Backlight + 1.5A Flash LED Driver
+>
+> +config BACKLIGHT_MP3309C
+> +	tristate "Backlight Driver for MPS MP3309C"
+> +	depends on I2C
+> +	select REGMAP_I2C
+> +	select NEW_LEDS
+> +	select LEDS_CLASS
 
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on linus/master v6.5 next-20230829]
-[cannot apply to tip/x86/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This doesn't seem right.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Meng-Li/x86-Drop-CPU_SUP_INTEL-from-SCHED_MC_PRIO-for-the-expansion/20230829-144723
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20230829064340.1136448-5-li.meng%40amd.com
-patch subject: [PATCH V4 4/7] cpufreq: Add a notification message that the highest perf has changed
-config: i386-randconfig-r031-20230829 (https://download.01.org/0day-ci/archive/20230830/202308300057.ASUJQpsV-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308300057.ASUJQpsV-lkp@intel.com/reproduce)
+Shouldn't PWM and GPIOLIB be listed here? Why are NEW_LEDS and
+LEDS_CLASS needed?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308300057.ASUJQpsV-lkp@intel.com/
+> +	help
+> +	  This supports MPS MP3309C backlight WLED Driver in both PWM and
+> +	  analog/I2C dimming modes.
+> +
+> +	  To compile this driver as a module, choose M here: the module will
+> +	  be called mp3309c_bl.
+> +
+>  config BACKLIGHT_LP855X
+>  	tristate "Backlight driver for TI LP855X"
+>  	depends on I2C && PWM
 
-All errors (new ones prefixed by >>):
+> +static int mp3309c_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct mp3309c_chip *chip = bl_get_data(bl);
+> +	int brightness = backlight_get_brightness(bl);
+> +	struct pwm_state pwmstate;
+> +	unsigned int analog_val, bits_val;
+> +	int i, ret;
+> +
+> +	if (chip->pdata->dimming_mode == DIMMING_PWM) {
+> +		/*
+> +		 * PWM dimming mode
+> +		 */
+> +		pwm_init_state(chip->pwmd, &pwmstate);
+> +		pwm_set_relative_duty_cycle(&pwmstate, brightness,
+> +					    chip->pdata->max_brightness);
+> +		pwmstate.enabled = true;
+> +		ret = pwm_apply_state(chip->pwmd, &pwmstate);
+> +		if (ret)
+> +			return ret;
+> +	} else {
+> +		/*
+> +		 * Analog dimming mode by I2C commands
+> +		 *
+> +		 * The 5 bits of the dimming analog value D4..D0 is allocated
+> +		 * in the I2C register #0, in the following way:
+> +		 *
+> +		 *     +--+--+--+--+--+--+--+--+
+> +		 *     |EN|D0|D1|D2|D3|D4|XX|XX|
+> +		 *     +--+--+--+--+--+--+--+--+
+> +		 */
+> +		analog_val = DIV_ROUND_UP(ANALOG_MAX_VAL * brightness,
+> +					  chip->pdata->max_brightness);
+> +		bits_val = 0;
+> +		for (i = 0; i <= 5; i++)
+> +			bits_val += ((analog_val >> i) & 0x01) << (6 - i);
+> +		ret = regmap_update_bits(chip->regmap, REG_I2C_0,
+> +					 ANALOG_REG_MASK, bits_val);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (brightness > 0) {
+> +		switch (chip->pdata->status) {
+> +		case FIRST_POWER_ON:
+> +			/*
+> +			 * Only for the first time, wait for the optional
+> +			 * switch-on delay and then enable the device.
+> +			 * Otherwise enable the backlight immediately.
+> +			 */
+> +			schedule_delayed_work(&chip->enable_work,
+> +					      msecs_to_jiffies(chip->pdata->switch_on_delay_ms));
 
->> drivers/acpi/processor_driver.c:88:3: error: call to undeclared function 'cpufreq_update_highest_perf'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-                   cpufreq_update_highest_perf(pr->id);
-                   ^
-   1 error generated.
+Delaying this work makes no sense to me, especially when it is only
+going to happen at initial power on.
+
+If you are (ab)using this property to try and sequence the backlight
+power-on with display initialization then this is not the way to do it.
+Normally backlight drivers that support sequencing versus the panel
+work by having a backlight property set on the panel linking it to the
+backlight. When the panel is ready this power status of the backlight
+will be updated accordingly.
+
+All the backlight driver need do is make sure that is the initial
+power status is "powerdown" on systems when the link is present (e.g.
+leave the backlight off and wait to be told the display has settled).
 
 
-vim +/cpufreq_update_highest_perf +88 drivers/acpi/processor_driver.c
+> +			/*
+> +			 * Optional external device GPIO reset, with
+> +			 * delay pulse length
+> +			 */
+> +			if (chip->pdata->reset_pulse_enable)
+> +				schedule_delayed_work(&chip->reset_gpio_work,
+> +						      msecs_to_jiffies(chip->pdata->reset_on_delay_ms));
 
-    53	
-    54	static void acpi_processor_notify(acpi_handle handle, u32 event, void *data)
-    55	{
-    56		struct acpi_device *device = data;
-    57		struct acpi_processor *pr;
-    58		int saved;
-    59	
-    60		if (device->handle != handle)
-    61			return;
-    62	
-    63		pr = acpi_driver_data(device);
-    64		if (!pr)
-    65			return;
-    66	
-    67		switch (event) {
-    68		case ACPI_PROCESSOR_NOTIFY_PERFORMANCE:
-    69			saved = pr->performance_platform_limit;
-    70			acpi_processor_ppc_has_changed(pr, 1);
-    71			if (saved == pr->performance_platform_limit)
-    72				break;
-    73			acpi_bus_generate_netlink_event(device->pnp.device_class,
-    74							  dev_name(&device->dev), event,
-    75							  pr->performance_platform_limit);
-    76			break;
-    77		case ACPI_PROCESSOR_NOTIFY_POWER:
-    78			acpi_processor_power_state_has_changed(pr);
-    79			acpi_bus_generate_netlink_event(device->pnp.device_class,
-    80							  dev_name(&device->dev), event, 0);
-    81			break;
-    82		case ACPI_PROCESSOR_NOTIFY_THROTTLING:
-    83			acpi_processor_tstate_has_changed(pr);
-    84			acpi_bus_generate_netlink_event(device->pnp.device_class,
-    85							  dev_name(&device->dev), event, 0);
-    86			break;
-    87		case ACPI_PROCESSOR_NOTIFY_HIGEST_PERF_CHANGED:
-  > 88			cpufreq_update_highest_perf(pr->id);
-    89			acpi_bus_generate_netlink_event(device->pnp.device_class,
-    90							  dev_name(&device->dev), event, 0);
-    91			break;
-    92		default:
-    93			acpi_handle_debug(handle, "Unsupported event [0x%x]\n", event);
-    94			break;
-    95		}
-    96	
-    97		return;
-    98	}
-    99	
+Similarly I don't understand what this property is for. A backlight is
+directly perceivable by the user. There is nothing downstream of a
+light that needs to be reset!
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+What is this used for?
+
+
+Daniel.
