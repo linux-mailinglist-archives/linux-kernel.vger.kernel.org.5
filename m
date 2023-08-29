@@ -2,209 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3AB78C249
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B32B78C24A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjH2KWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
+        id S235099AbjH2KWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233738AbjH2KV7 (ORCPT
+        with ESMTP id S232253AbjH2KWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:21:59 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5595991
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:21:56 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 46A976607214;
-        Tue, 29 Aug 2023 11:21:54 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693304514;
-        bh=u1x49kHweYPykcuYczLGKJ2Oeh/X3Wy5fbR78UsfCrI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UE+2gsIwvxhxyEpK4QAHJh9xfmOXuRYgfBG66ndolGQ3ImcUeYJBnv98XNGVTaB0N
-         b5bZXVuggTvCeXEgEtXY1kDYxDDP/b6feNnZZeGGZJlvqBME1n2V5jXTeK7Z1GF70R
-         MM8KzioU9CbsccjV2TfBkBg5iafaJM96gd9flEt+Mq/NE1NZEbo8C9q1cBsvHY2rc8
-         d8aTJCEE2XkUvVsKU/Eq8xN6XfgKp5JhiTpWfE0JcOggK7J3oj4rslKMxA/ASi0dpA
-         1qjsIrwNsj+BS5+ADNlbxy4mB7bbrHx37ylHouru0v+t1L+U1rlq8bPfwb8CVREQ70
-         HZ0EZaeIPN7lQ==
-Date:   Tue, 29 Aug 2023 12:21:51 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v15 17/23] drm/shmem-helper: Add and use
- drm_gem_shmem_resv_assert_held() helper
-Message-ID: <20230829122151.3b0f102d@collabora.com>
-In-Reply-To: <20230829114413.7adc9709@collabora.com>
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
-        <20230827175449.1766701-18-dmitry.osipenko@collabora.com>
-        <20230828121239.78a180e6@collabora.com>
-        <01930e66-cba2-5d81-7f46-d46907bdd300@collabora.com>
-        <20230829092950.3a9c40c1@collabora.com>
-        <0ff9b35a-3a44-6221-3017-e9efab2d33f2@amd.com>
-        <20230829114413.7adc9709@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 29 Aug 2023 06:22:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCA391
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:22:13 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693304531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LUAdGxzScAMOm4Z4EfPTkjwHOUh0rmSHhAJnylK1+4=;
+        b=BOvba0YUm0UoHVHiNqUFERKPaHIyqQXbJEZOhhXCg3bLnP27EqMZHQpeeLJtt9Gm+m68Wr
+        KdKJ5EpuzqSdB4Zqp0qg/C5UY0vw20W0jU12p72gAu+xetZVWSAeVfAgrFXS46gqQvQ5K0
+        xtR38ksTBITtUmI2VqZPTOtNL/rSjz4DDms0VMJ5chhxvVEVfAhdT0zuGcCgHDY8u2la42
+        3PJYQsBqox2Xeno0LT5yi0SRfiE713ok+gV/ozEusPir6x6lTWwsZr8J2wj6vwbc4ycey2
+        UQHehh/+aomrm1Y35hAu4K2fY4JTKu6jzJAl5uYch3RcCrQ0P45imNprJArxng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693304531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LUAdGxzScAMOm4Z4EfPTkjwHOUh0rmSHhAJnylK1+4=;
+        b=LmS8hR90dqF1IcFx5E8k/ZaBQlyXML2jhAqpC+OiuIUzlML3Sj/NKa5J/Qf8u4tZwkQ0rV
+        TEQFdJ3rTyEJQuBQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: hostile takeover: Re: [PATCH printk v2 3/8] printk: nbcon: Add
+ acquire/release logic
+In-Reply-To: <ZNOKSFAGPxYFeeJT@alley>
+References: <20230728000233.50887-1-john.ogness@linutronix.de>
+ <20230728000233.50887-4-john.ogness@linutronix.de>
+ <ZNOKSFAGPxYFeeJT@alley>
+Date:   Tue, 29 Aug 2023 12:28:10 +0206
+Message-ID: <87o7iqrvvx.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 11:44:13 +0200
-Boris Brezillon <boris.brezillon@collabora.com> wrote:
+On 2023-08-09, Petr Mladek <pmladek@suse.com> wrote:
+>> Add per console acquire/release functionality. The console 'locked'
+>> state is a combination of multiple state fields:
+>> 
+>>   - Hostile takeover
+>> 
+>>       The new owner takes the console over without 'req_prio'
+>>       handshake.
+>> 
+>>       This is required when friendly handovers are not possible,
+>>       i.e. the higher priority context interrupted the owning
+>>       context on the same CPU or the owning context is not able
+>>       to make progress on a remote CPU.
+>
+> I always expected that there would be only one hostile takeover.
+> It would allow to take the lock a harsh way when the friendly
+> way fails.
 
-> On Tue, 29 Aug 2023 10:52:03 +0200
-> Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
->=20
-> > Am 29.08.23 um 09:29 schrieb Boris Brezillon: =20
-> > > On Tue, 29 Aug 2023 05:34:23 +0300
-> > > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> > >   =20
-> > >> On 8/28/23 13:12, Boris Brezillon wrote:   =20
-> > >>> On Sun, 27 Aug 2023 20:54:43 +0300
-> > >>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> > >>>       =20
-> > >>>> In a preparation of adding drm-shmem memory shrinker, move all res=
-ervation
-> > >>>> locking lockdep checks to use new drm_gem_shmem_resv_assert_held()=
- that
-> > >>>> will resolve spurious lockdep warning about wrong locking order vs
-> > >>>> fs_reclam code paths during freeing of shmem GEM, where lockdep is=
-n't
-> > >>>> aware that it's impossible to have locking contention with the fs_=
-reclam
-> > >>>> at this special time.
-> > >>>>
-> > >>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> > >>>> ---
-> > >>>>   drivers/gpu/drm/drm_gem_shmem_helper.c | 37 +++++++++++++++++---=
-------
-> > >>>>   1 file changed, 25 insertions(+), 12 deletions(-)
-> > >>>>
-> > >>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/=
-drm/drm_gem_shmem_helper.c
-> > >>>> index d96fee3d6166..ca5da976aafa 100644
-> > >>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > >>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > >>>> @@ -128,6 +128,23 @@ struct drm_gem_shmem_object *drm_gem_shmem_cr=
-eate(struct drm_device *dev, size_t
-> > >>>>   }
-> > >>>>   EXPORT_SYMBOL_GPL(drm_gem_shmem_create);
-> > >>>>  =20
-> > >>>> +static void drm_gem_shmem_resv_assert_held(struct drm_gem_shmem_o=
-bject *shmem)
-> > >>>> +{
-> > >>>> +	/*
-> > >>>> +	 * Destroying the object is a special case.. drm_gem_shmem_free()
-> > >>>> +	 * calls many things that WARN_ON if the obj lock is not held.  =
-But
-> > >>>> +	 * acquiring the obj lock in drm_gem_shmem_free() can cause a lo=
-cking
-> > >>>> +	 * order inversion between reservation_ww_class_mutex and fs_rec=
-laim.
-> > >>>> +	 *
-> > >>>> +	 * This deadlock is not actually possible, because no one should
-> > >>>> +	 * be already holding the lock when drm_gem_shmem_free() is call=
-ed.
-> > >>>> +	 * Unfortunately lockdep is not aware of this detail.  So when t=
-he
-> > >>>> +	 * refcount drops to zero, we pretend it is already locked.
-> > >>>> +	 */
-> > >>>> +	if (kref_read(&shmem->base.refcount))
-> > >>>> +		drm_gem_shmem_resv_assert_held(shmem);
-> > >>>> +}
-> > >>>> +
-> > >>>>   /**
-> > >>>>    * drm_gem_shmem_free - Free resources associated with a shmem G=
-EM object
-> > >>>>    * @shmem: shmem GEM object to free
-> > >>>> @@ -142,8 +159,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_o=
-bject *shmem)
-> > >>>>   	if (obj->import_attach) {
-> > >>>>   		drm_prime_gem_destroy(obj, shmem->sgt);
-> > >>>>   	} else if (!shmem->imported_sgt) {
-> > >>>> -		dma_resv_lock(shmem->base.resv, NULL);
-> > >>>> -
-> > >>>>   		drm_WARN_ON(obj->dev, kref_read(&shmem->vmap_use_count));
-> > >>>>  =20
-> > >>>>   		if (shmem->sgt) {
-> > >>>> @@ -156,8 +171,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_o=
-bject *shmem)
-> > >>>>   			drm_gem_shmem_put_pages_locked(shmem);   =20
-> > >>> AFAICT, drm_gem_shmem_put_pages_locked() is the only function that's
-> > >>> called in the free path and would complain about resv-lock not being
-> > >>> held. I think I'd feel more comfortable if we were adding a
-> > >>> drm_gem_shmem_free_pages() function that did everything
-> > >>> drm_gem_shmem_put_pages_locked() does except for the lock_held() ch=
-eck
-> > >>> and the refcount dec, and have it called here (and in
-> > >>> drm_gem_shmem_put_pages_locked()). This way we can keep using
-> > >>> dma_resv_assert_held() instead of having our own variant.   =20
-> > >> It's not only drm_gem_shmem_free_pages(), but any drm-shmem function
-> > >> that drivers may use in the GEM's freeing callback.
-> > >>
-> > >> For example, panfrost_gem_free_object() may unpin shmem BO and then =
-do
-> > >> drm_gem_shmem_free().   =20
-> > > Is this really a valid use case?   =20
-> >=20
-> > I haven't followed the whole discussion, but I think it isn't a valid=20
-> > use case.
-> >=20
-> > That page_use_count is none zero while the GEM object is about to be=20
-> > destroyed can only happen is someone managed to grab a reference to the=
-=20
-> > page without referencing the GEM object. =20
->=20
-> Actually, drm_gem_shmem_object is a bit special (weird?) in this regard.
-> drm_gem_shmem_get_pages_sgt_locked() creates the sgt and takes a
-> pages ref (pages_use_count++). The sgt itself is cached (next call to
-> drm_gem_shmem_get_pages_sgt_locked() will return the existing sgt) but
-> not refcounted, which means it will stay around until the GEM object is
-> destroyed or its pages are purged (GEM eviction). Because of that,
-> shmem->pages_use_count =3D=3D 1 in drm_gem_shmem_free_pages() is valid iff
-> shmem->sgt !=3D NULL. pages_use_count > 1 is invalid though, as should be
-> pages_pin_count after Dmitry's patches.
->=20
-> If we want to 'fix' that (not convinced this is a bug, more a design
-> choice), we need to refcount the sgt users and add
-> drm_gem_shmem_put_pages_sgt[_locked](), so drivers can reflect when
-> they're done using the sgt.
+You are referring to the hostile takeover when unsafe. A hostile
+takeover when safe is still considered a hostile takeover. (At least,
+until now that is how it was considered. More below...)
 
-Or we simply create the sgt in drm_gem_shmem_get_pages_locked(), and
-make drm_gem_shmem_get_pages_sgt() a dummy wrapper returning
-shmem->sgt, which will force callers to explicitly call
-drm_gem_shmem_{get,pin}_pages[_locked]() if they want a non-NULL sgt.
-By doing that, we avoid adding yet another level of refcounting and we
-keep drivers responsible for pages_{use,pin}_count balancing. The only
-downside would be the unconditional creation of the sg_table, but I
-suspect all current users of drm_gem_shmem_object want this sg_table
-anyway.
+>> All other policy decisions have to be made at the call sites:
+>> 
+>>   - What is marked as an unsafe section.
+>>   - Whether to spinwait if there is already an owner.
+>>   - Whether to attempt a hostile takeover when safe.
+>>   - Whether to attempt a hostile takeover when unsafe.
+>
+> But there seems to be actually two variants. How they are
+> supposed to be used, please?
+>
+> I would expect that a higher priority context would always
+> be able to takeover the lock when it is in a safe context.
+>
+> By other words, "hostile takeover when safe" would be
+> the standard behavior for context with a higher priority.
+
+The difference is that with "hostile takeover when safe" there is a
+foreign CPU that still thinks it has the lock, even though it does not.
+
+> By other words, the difference between normal takeover and
+> "hostile takeover when safe" is that the 1st one has to
+> wait until the current owner calls nbcon_enter_unsafe().
+> But the result is the same. The current owner might
+> prematurely end after calling nbcon_enter_unsafe().
+>
+> Maybe, this another relic from the initial more generic approach?
+
+I suppose so. But then why not try the "hostile takeover when safe"
+first and only use the handover request as a fallback? Like this:
+
+1. try direct
+2. try hostile takeover when safe
+3. try handover
+4. try hostile takeover when unsafe
+
+Then we should remove the "hostile" label for #2 and just call it:
+
+1. try direct
+2. try safe takeover
+3. try handover
+4. try hostile takeover
+
+(I guess this is how you imagined things should be.)
+
+>> +/**
+>> + * struct nbcon_context - Context for console acquire/release
+>> + * @console:		The associated console
+>> + * @spinwait_max_us:	Limit for spinwait acquire
+>> + * @prio:		Priority of the context
+>> + * @unsafe:		This context is in an unsafe section
+>
+> This seems to be an input value for try_acquire(). It is
+> controversial.
+>
+> I guess that it removes the need to call nbcon_enter_unsafe()
+> right after try_acquire_console().
+
+Yes. It removes the "safe window" between try_acquire_console() and
+nbcon_enter_unsafe() by allowing to acquire and mark unsafe
+atomically. For example, this would be useful for the port_lock()
+wrapper we discussed. But it is not strictly necessary. I can remove it.
+
+Below I answer your comments anyway.
+
+> Hmm, this semantic is problematic:
+>
+>   1. The result would be non-paired enter_unsafe()/exit_unsafe()
+>      calls.
+
+The paired calls are either:
+
+try_acquire(unsafe=1) -> release()
+
+or
+
+try_acquire(unsafe=0) + enter_unsafe() -> exit_unsafe() + release()
+
+>   2. I would personally expect that this is an output value
+>      set by try_acquire() so that the context might know
+>      how it got the lock.
+
+The state structure is used to communicate this information.
+
+>   3. Strictly speaking, as an input value, it would mean that
+>      try_acquire() is called when the console is in "unsafe" state.
+>      But the caller does not know in which state the console
+>      is until it acquires the lock.
+
+This is not about the current state. The calling _context_ wants to set
+a certain state. The caller wants to acquire the lock and atomically
+mark this as the beginning of an unsafe section. But as I wrote, this is
+not strictly necessary. Only an efficient convenience.
+
+> For me it is not easy to remember which permutation is used where ;-)
+> It would be easier if we remove the "hostile when safe" variant.
+> Then 3 variables might be enough. I suggest something like:
+>
+>   state.unsafe		 Console is busy and takeover is not safe.
+>
+>   state.unsafe_takeover  A hostile takeover in an unsafe state happened
+> 			 in the past. The console can't be safe until
+> 			 re-initialized.
+>
+>   ctxt.allow_unsafe_takeover Allow hostile takeover even if unsafe.
+> 			Can be used only with PANIC prio. Might cause
+> 			a system freeze when the console is used later.
+
+Since "safe takeovers" should be handled equivalent to "handovers" then
+I agree with your suggestion.
+
+John
