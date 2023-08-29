@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D5D78BD71
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 06:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8185478BD73
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 06:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbjH2EJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 00:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        id S235619AbjH2EL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 00:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235640AbjH2EJE (ORCPT
+        with ESMTP id S231393AbjH2EK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 00:09:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B38102
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 21:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693282139; x=1724818139;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JelNIEqHQVyEPPElaNX+PFjZlpmd2RjQ2b1G8zTUt6A=;
-  b=hDl83JlCoF0GVSX9HCbTVR0OMa4Tkebh3TgsXuhBcycY9Ap+sXVGtYzu
-   fcyXRtJilusgrka/EDV4B6oH2Xt3KHzX0JwK6RbvleRTiPN0Jcj09tCzB
-   hU+SCDtHOjcR8mtML7WUbzHLFTMhvCZYFg1W7G4jofKT91t8HaBubcaqE
-   WGJ/n/AuxZo/Da885d0BG0jvL1yDvn5pXnHFt+KJWmUt/LSoshcaqBK6Y
-   /UiIixWNdyq7Fo6DofzEY7LdGTZj7Dx+xTfBuC9/u4JJzS6Qar6uvxb3y
-   eF6WdBwacVfL3ASDk2GwJn4xL0tKu+AFQ5xVF13RkO6iFR+jD8T4uymI7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="379046310"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="379046310"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 21:08:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="808524340"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="808524340"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Aug 2023 21:08:56 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qaq2C-0008N5-0n;
-        Tue, 29 Aug 2023 04:08:56 +0000
-Date:   Tue, 29 Aug 2023 12:07:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Borislav Petkov (AMD)" <bp@alien8.de>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: arch/x86/kernel/cpu/amd.c:1289:6: warning: no previous prototype for
- function 'amd_check_microcode'
-Message-ID: <202308291220.DOn00Y1A-lkp@intel.com>
+        Tue, 29 Aug 2023 00:10:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7E9102;
+        Mon, 28 Aug 2023 21:10:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C465C60C0B;
+        Tue, 29 Aug 2023 04:10:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32D5BC433C9;
+        Tue, 29 Aug 2023 04:10:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693282253;
+        bh=e61YW9z8sSyOydpn/mt7ysbYiNTT8b66TH3zeN8UZh4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p984stq2u6i10BhDiL84RSW02XukBbdYjBt1uVcOWbv3XdI4yDdIgMnzKIX9kEOZY
+         M7FsXAxRTpgC7bY2HFEa7Rrv66D/P79FIiuOXWlVzcyFeloqa6rW7G/Q1X7e3DBbEY
+         dZHVRXtCyho8Q9p6EPHqMFaK8X/rncNLC+UN2xZPORbEWqN6neBuc7nPxDX2ZyMBfH
+         g9v4o960OpY6gR5OQe1gJ1hZiDVT6jcHxDdLNWmHhq7NFkgLpmSAWzub+GNHARUNrr
+         7kyfQ4EzN5O1AmiCk/0qDe0gO+Glo//8AhW4K5DTa0uJ8I3yILCu5Q/1LxQREyR9m2
+         mSYzXJu49f2Gg==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso502274266b.1;
+        Mon, 28 Aug 2023 21:10:53 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yym/ORkHTcbz20a59sf7ETGXt2GBJoDyVgmOT7T9PQMC/iCNRya
+        aq8RaQgfVMlE06SIZbnj409sH8knC45uRdBJZvk=
+X-Google-Smtp-Source: AGHT+IHTBqcN7JgEZEiZ4TVhXOQ4t2Usjo3CZ733GSFdr/OaQwtN/JiOsIalrYiZ9NBQJg1woMFxbv/8ZdR6civzsug=
+X-Received: by 2002:a17:907:60c6:b0:9a2:ecd:d95d with SMTP id
+ hv6-20020a17090760c600b009a20ecdd95dmr10056677ejc.68.1693282251436; Mon, 28
+ Aug 2023 21:10:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230828150220.31624576@canb.auug.org.au> <106e0bb2-1fa6-5914-67f6-269755779e61@infradead.org>
+In-Reply-To: <106e0bb2-1fa6-5914-67f6-269755779e61@infradead.org>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 29 Aug 2023 12:10:39 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7Qr1wVOqmha_beug+ub6kkg+q+PeHGE_vpeoYPOKYKyg@mail.gmail.com>
+Message-ID: <CAAhV-H7Qr1wVOqmha_beug+ub6kkg+q+PeHGE_vpeoYPOKYKyg@mail.gmail.com>
+Subject: Re: linux-next: Tree for Aug 28 (loongarch: kgdb)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:LOONGARCH" <loongarch@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1c59d383390f970b891b503b7f79b63a02db2ec5
-commit: 522b1d69219d8f083173819fde04f994aa051a98 x86/cpu/amd: Add a Zenbleed fix
-date:   6 weeks ago
-config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20230829/202308291220.DOn00Y1A-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230829/202308291220.DOn00Y1A-lkp@intel.com/reproduce)
+Hi, Randy,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308291220.DOn00Y1A-lkp@intel.com/
+On Tue, Aug 29, 2023 at 8:38=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+>
+>
+>
+> On 8/27/23 22:02, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Please do *not* include material destined for v6.7 in your linux-next
+> > included branches until *after* v6.6-rc1 has been released.  Also,
+> > do *not* rebase you linu-next included branches onto v6.5.
+> >
+> > Changes since 20230825:
+> >
+>
+> There are many build errors when CONFIG_PERF_EVENTS =3D> HAVE_HW_BREAKPOI=
+NT
+> are not set.
+> This is a reduced list of the build errors:
+>
+> ../arch/loongarch/kernel/kgdb.c: In function 'hw_break_reserve_slot':
+> ../arch/loongarch/kernel/kgdb.c:515:21: error: implicit declaration of fu=
+nction 'dbg_reserve_bp_slot'; did you mean 'reserve_bp_slot'? [-Werror=3Dim=
+plicit-function-declaration]
+>   515 |                 if (dbg_reserve_bp_slot(*pevent))
+>       |                     ^~~~~~~~~~~~~~~~~~~
+>       |                     reserve_bp_slot
+> ../arch/loongarch/kernel/kgdb.c:527:17: error: implicit declaration of fu=
+nction 'dbg_release_bp_slot'; did you mean 'release_bp_slot'? [-Werror=3Dim=
+plicit-function-declaration]
+>   527 |                 dbg_release_bp_slot(*pevent);
+>       |                 ^~~~~~~~~~~~~~~~~~~
+>       |                 release_bp_slot
+> ../arch/loongarch/kernel/kgdb.c: In function 'kgdb_disable_hw_break':
+> ../arch/loongarch/kernel/kgdb.c:640:23: error: 'struct perf_event' has no=
+ member named 'attr'
+>   640 |                 if (bp->attr.disabled =3D=3D 1)
+>       |                       ^~
+> ../arch/loongarch/kernel/kgdb.c: In function 'kgdb_arch_late':
+> ../arch/loongarch/kernel/kgdb.c:732:9: error: implicit declaration of fun=
+ction 'hw_breakpoint_init'; did you mean 'hw_breakpoint_slots'? [-Werror=3D=
+implicit-function-declaration]
+>   732 |         hw_breakpoint_init(&attr);
+>       |         ^~~~~~~~~~~~~~~~~~
+>       |         hw_breakpoint_slots
+> ../arch/loongarch/kernel/kgdb.c:752:38: error: 'struct perf_event' has no=
+ member named 'destroy'
+>   752 |                         if (pevent[0]->destroy) {
+>       |                                      ^~
+> cc1: some warnings being treated as errors
+Thank you very much for pointing out, I will fix it later.
 
-All warnings (new ones prefixed by >>):
-
->> fs/open.c:1167: warning: Function parameter or member 'real_path' not described in 'backing_file_open'
-   fs/open.c:1561: warning: expecting prototype for close_range(). Prototype was for sys_close_range() instead
---
->> fs/namespace.c:3046: warning: Function parameter or member 'mp' not described in 'can_move_mount_beneath'
---
->> arch/x86/kernel/cpu/amd.c:1289:6: warning: no previous prototype for function 'amd_check_microcode' [-Wmissing-prototypes]
-   void amd_check_microcode(void)
-        ^
-   arch/x86/kernel/cpu/amd.c:1289:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void amd_check_microcode(void)
-   ^
-   static 
-   1 warning generated.
---
->> arch/x86/kernel/cpu/mtrr/generic.c:434: warning: Function parameter or member 'var' not described in 'mtrr_overwrite_state'
->> arch/x86/kernel/cpu/mtrr/generic.c:434: warning: Function parameter or member 'num_var' not described in 'mtrr_overwrite_state'
->> arch/x86/kernel/cpu/mtrr/generic.c:434: warning: Function parameter or member 'def_type' not described in 'mtrr_overwrite_state'
-   arch/x86/kernel/cpu/mtrr/generic.c:504: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup'
-   arch/x86/kernel/cpu/mtrr/generic.c:504: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup'
-   arch/x86/kernel/cpu/mtrr/generic.c:504: warning: Function parameter or member 'uniform' not described in 'mtrr_type_lookup'
---
->> fs/exportfs/expfs.c:395: warning: Function parameter or member 'parent' not described in 'exportfs_encode_inode_fh'
-
-
-vim +/amd_check_microcode +1289 arch/x86/kernel/cpu/amd.c
-
-  1288	
-> 1289	void amd_check_microcode(void)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Huacai
+>
+>
+> --
+> ~Randy
+>
