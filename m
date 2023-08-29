@@ -2,49 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE6C78D0AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0353C78D0BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241179AbjH2Xj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 19:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47666 "EHLO
+        id S241208AbjH2Xox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 19:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241198AbjH2Xjj (ORCPT
+        with ESMTP id S241217AbjH2Xol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 19:39:39 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6C11AD;
-        Tue, 29 Aug 2023 16:39:32 -0700 (PDT)
-X-QQ-mid: bizesmtp77t1693352354trr4f354
-Received: from linux-lab-host.localdomain ( [116.30.128.193])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 30 Aug 2023 07:39:12 +0800 (CST)
-X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: znfcQSa1hKYLaqwov7t04VUjtxnwtZct0kx84QhKLVXJX3mGDVdnB0DlQjMFW
-        cenqdDiczUbcqFuxVq2xo99CfyFXuePwW98AbMwlHuGSlS4HdsmO+Ht1JON+roV1r4uEVdH
-        q/HjPYb1q4pIlRJ61CpCoI6jV7AffalHlf8g32J4s3+Rb/4B6UzbTG0WxClXwcKScBzUC9j
-        yG+fyNTUk8ilEepfgK2dfCu42hhiU7dZzd0A60FPmO3RLm1+e01WS1PwFqDmWKnCnSuDS2x
-        Qa+skqqd43yIbYHiZH41975Hca96dzM2PZHvfBFTcPbY791cueRw4Amh3RHchvJKyuT2eS7
-        jS9DnzqTZNQItIk3uwpkRL1M7G3Lg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 17496907355055251835
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     david.laight@aculab.com
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de, w@1wt.eu
-Subject: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with single -ENOSYS return
-Date:   Wed, 30 Aug 2023 07:39:12 +0800
-Message-Id: <20230829233912.63097-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <6819b8e273dc44e18f14be148549b828@AcuMS.aculab.com>
-References: <6819b8e273dc44e18f14be148549b828@AcuMS.aculab.com>
+        Tue, 29 Aug 2023 19:44:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DDE1B1;
+        Tue, 29 Aug 2023 16:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693352679; x=1724888679;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=W50SnzGPp61eZeJgGcuceM/gz96TAeNxN0R4JpIxMcg=;
+  b=StxLAPeduIskLhJGdms+cLocJykKR7sTV3rYNEaKVgjsLHLS2bhyF7aS
+   1nj4lJ1vQZhGNluOb/XhV61p6Y3fbDmLNdcXrj+yxtVxk+0pNCDBDlyyc
+   UskPdem0miUL2/rsjaqL1+clqVNMv2IPlgrSMsTdJIN+wGcqahTAWbKLU
+   0uj6I0+75pzFleFrEigkPIiYZZGBScR2wYWFcFov+AZV2evaHhTE05F+s
+   5Zs3rrOvyvtUiSTzyBXVAFwq6/i0A4oJYSBTllXVyCmmkn7cr9XHqYOht
+   lgA+1mQ/XbqjztSan0d6r4M0KCoekYdYwI42HESdfPS2UZQKOR4vBPiQT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="355015402"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="355015402"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 16:44:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="688691016"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="688691016"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 16:44:36 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v5 0/8] Add support for Sub-NUMA cluster (SNC) systems
+Date:   Tue, 29 Aug 2023 16:44:18 -0700
+Message-ID: <20230829234426.64421-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230722190740.326190-1-tony.luck@intel.com>
+References: <20230722190740.326190-1-tony.luck@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,71 +70,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, David
+The Sub-NUMA cluster feature on some Intel processors partitions
+the CPUs that share an L3 cache into two or more sets. This plays
+havoc with the Resource Director Technology (RDT) monitoring features.
+Prior to this patch Intel has advised that SNC and RDT are incompatible.
 
-> From: David Laight
-> > Sent: 27 August 2023 22:52
-> > 
-> > ...
-> > > Of course, we can also use the __stringify() trick to do so, but it is
-> > > expensive (bigger size, worse performance) to unstringify and get the number
-> > > again, the expensive atoi() 'works' for the numeric __NR_*, but not work for
-> > > (__NR_*_base + offset) like __NR_* definitions (used by ARM and MIPS), a simple
-> > > interpreter is required for such cases and it is more expensive than atoi().
-> > >
-> > >     /* not for ARM and MIPS */
-> > >
-> > >     static int atoi(const char *s);
-> > >     #define __get_nr(name)          __nr_atoi(__stringify(__NR_##name))
-> > >     #define __nr_atoi(str)          (str[0] == '_' ? -1L : ___nr_atoi(str))
-> > >     #define ___nr_atoi(str)         (str[0] == '(' ? -1L : atoi(str))
-> > >
-> > > Welcome more discussion or let's simply throw away this direction ;-)
-> > 
-> > While it will look horrid the it ought to be possible to
-> > get the compiler to evaluate the string.
-> ...
-> > So something that starts:
-> > #define dig(c) (c < '0' || c > '9' ? 999999 : c - '0')
-> > 	str[0] == '_' ? -1 :
-> > 	str[0] != '(' ? str[1] == ' ' ? dig(str[0]) :
-> > 		str[2] == '1' ? (dig(str[0]) * 10 + dig(str[1]) :
-> > Any unexpected character will expand the 99999 and generate
-> > an over-large result.
-> 
-> See https://godbolt.org/z/rear4c1hj
-> 
-> That will convert "1234" or "(1234 + 5678)" (or shorter numbers)
-> as a compile-time constant.
->
+Some of these CPU support an MSR that can partition the RMID
+counters in the same way. This allows for monitoring features
+to be used (with the caveat that memory accesses between different
+SNC NUMA nodes may still not be counted accuratlely.
 
-Thanks very much, it works perfectly.
+Note that this patch series improves resctrl reporting considerably
+on systems with SNC enabled, but there will still be some anomalies
+for processes accessing memory from other sub-NUMA nodes.
 
-I tuned it for more complicated cases, including ((0x900000+0x0f0000)+5) used
-by ARM+OABI (not used by nolibc), now, it should work for all of the
-architectures: https://godbolt.org/z/a7hxWj83E ;-)
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-To get fast building, we can provide different versions for different
-architectures. A simple test shows, only two versions (as you mentioned above,
-one is "1234" converting, another is "(1234 + 5678)" calculating) are enough
-for current nolibc supported architectures and the building of nolibc-test.c is
-not slow.
+Changes since v4:
 
-With the __stringify() based __is_nr_defined() macro and this new __nrtoi()
-macro based __get_nr() macro, there is no need to redefine the old NOLIBC__NR_*
-macros, as a result, all of the duplicated -ENOSYS return lines and even all of
-the #ifdef's from sys.h could be dropped and even no need to add them for new
-future syscalls, and also, the old syscall() macro can return -ENOSYS at the
-runtime instead of any compiling failures.
+Rebased to upstream v6.5
 
-For the sys_* definitions, to avoid forgetting passing the arguments, instead
-of using __VA_ARGS__, perhaps we should simply passing all of the arguments.
+Addressed problems reported by Reinette in follow-up messages to
+v4 posting:
+   https://lore.kernel.org/r/20230722190740.326190-1-tony.luck@intel.com
 
-Best Regards,
-Zhangjin
+Broke the patch series into a (hopefully) more logical progression.
 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+First two patches are infrastructure changes to allow resctrl
+domains to have scopes that are not defined by which CPUs share
+a particular cache instance, and to allow resources to have different
+scope for control an monitor features.
+
+Patch 3 cleans up some loose ends from the first two patches by
+adding a new variant of the rdt_domain structure with just monitoring
+fields, and removing the monitor fields from the original rdt_domain
+structure since it is now only used for control features.
+
+Patch 4 adds "node" as a scope option.
+
+Patch 5 adjusts all code paths that need to be aware of SNC mode.
+
+Patch 6 detects SNC mode, modifies the MSR that adjusts interpretation
+of physical RMID counters.
+
+Patch 7 updates documentation.
+
+Patch 8 does a partial update for the resctrl selftests.
+
+Tony Luck (8):
+  x86/resctrl: Prepare for new domain scope
+  x86/resctrl: Prepare for different scope for control/monitor
+    operations
+  x86/resctrl: Split the rdt_domain structure
+  x86/resctrl: Add node-scope to the options for feature scope
+  x86/resctrl: Introduce snc_nodes_per_l3_cache
+  x86/resctrl: Sub NUMA Cluster detection and enable
+  x86/resctrl: Update documentation with Sub-NUMA cluster changes
+  selftests/resctrl: Adjust effective L3 cache size when SNC enabled
+
+ Documentation/arch/x86/resctrl.rst          |  25 +-
+ include/linux/resctrl.h                     |  64 ++--
+ arch/x86/include/asm/msr-index.h            |   1 +
+ arch/x86/kernel/cpu/resctrl/internal.h      |  42 ++-
+ tools/testing/selftests/resctrl/resctrl.h   |   1 +
+ arch/x86/kernel/cpu/resctrl/core.c          | 321 ++++++++++++++++----
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c   |   6 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c       |  58 ++--
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c   |  15 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c      |  69 +++--
+ tools/testing/selftests/resctrl/resctrlfs.c |  57 ++++
+ 11 files changed, 508 insertions(+), 151 deletions(-)
+
+
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+-- 
+2.41.0
+
