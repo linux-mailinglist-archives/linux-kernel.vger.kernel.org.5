@@ -2,163 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AC978CD2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0756F78CD33
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237437AbjH2TxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35586 "EHLO
+        id S238770AbjH2TzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjH2Tw4 (ORCPT
+        with ESMTP id S238764AbjH2Tyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:52:56 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C51139
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:52:54 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0db66af1bso25778755ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:52:54 -0700 (PDT)
+        Tue, 29 Aug 2023 15:54:49 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AD41B3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:54:45 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52a069edca6so6652419a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693338773; x=1693943573; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bflQmhTCgSgZryUNaNla89LTj5Q7+WSGXPZw3K4WHC4=;
-        b=f2KuDs4BNBD+CzBaFg+vF9xDAWdLZnk6NVAsqfFHQZO8Ln/W3pG00QYzKgsTn1njwF
-         Jdzf2M4+gdYsUvByJ0KeVJ9HS5WKc6giiS/3C0OxIW24grNU80qreKS5fT1VIdjkSTKo
-         RzMce7qTvxVN9wIW2k5kQ7E1fNPr5Lxo6chccA/xPqHqYmdjD1EHOZCCKUXl4dfgfPYp
-         sB8b3VGuMY5C91o0QgNRbk151UWAE5La0cnULQcnZb2yRoo+QZCy4oVk0V2V4Br92/03
-         qgNv2jnyAaNtWYAcRZrwyO6vQ8IqPDYP760RYmIQgTgJahryG5CWrYzZKW9j8FeA6iW1
-         kG6A==
+        d=google.com; s=20221208; t=1693338883; x=1693943683; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qS8wm+PwrYrwUTMQlW3v50ZjmTvczTiXAPTMj19pd5g=;
+        b=0Uj4hiyD8KE3hrsyulPL5asvgMgaBKSy+BAWnDGCD8ytOd5fBvOdwATwF85XlL8dNs
+         fH/+4gkniOJqPmRr0CUBzdlypSfNmDRij6iLAcsUVRrlvsyml0jnC2XGfJtnoWmWjqK/
+         m50yWyf3+e+rmP+2U1U3Mg1JnzmfYHXZ9P5xfaJIucZy9cIVvSGzqOXBLLzY1bMJQDtX
+         StYPw5goE+OIOBrMh1nx0/r2YvCoonxJ+iN54ZlxfvY9hX7WMNQKqTCsenogvEgBRQgD
+         uhNPwC9phlN7ldkjG0MP3GfGYYQLIYz1Ecjk8v4K4xLPFhzW/WB5+byL0YOsz26EFXAt
+         1emA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693338773; x=1693943573;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bflQmhTCgSgZryUNaNla89LTj5Q7+WSGXPZw3K4WHC4=;
-        b=XxRNoKeg/ECZacabdJ7YSm8xf4g0ya1LjnOL2gSilHtBF+A+fxBbBmx29BU0XWiJDu
-         dOBI6ayDt4IGQBf935XzbaVYo4Uf/VGEhNkig1q70kD3fNKoduVkXicWVJm+Oli/63AH
-         eZUeZpsHxmNtiGKOKXC4FmsHrjcHB+gkEm9h1DGKmSrAc1nbXyugUwKuXWEh5GpnYg2B
-         ycClyXGoTvM6NZcCkT7VuVenb22rMl1xg2A1uDQmV6wc1iQmwGeVJ8zzR4Enm6AlMS4d
-         cqoMqwEaVj6yWB4YwnaAk7gEDk8tbHimAVMsyOyAZGsNkadBBnQ2nVkjqFJQGeQp0X/B
-         wXmw==
-X-Gm-Message-State: AOJu0YyqjNqqVhdmy1ExKJI6wRD/aLj3/v917lARzg5AaA0inyuCDZ8y
-        59SdMnjOnzbm1TgV0GKB2W2c0C3CRM0=
-X-Google-Smtp-Source: AGHT+IGu2o/2x5S++tveolLnqG0661PCR6JBp73Xz4JYnlK5USI3JJheKYe/Z5TZflpeDcGomBo0zA==
-X-Received: by 2002:a17:902:e54d:b0:1bf:1:a4a8 with SMTP id n13-20020a170902e54d00b001bf0001a4a8mr179364plf.25.1693338773483;
-        Tue, 29 Aug 2023 12:52:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:f05])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902c24c00b001befe0ac506sm9732006plg.175.2023.08.29.12.52.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 12:52:52 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 29 Aug 2023 09:52:51 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH v2 1/1] workqueue: fix data race with the pwq->stats[]
- increment
-Message-ID: <ZO5Mk4a_LylG2AdM@slm.duckdns.org>
-References: <20230826145102.5962-1-mirsad.todorovac@alu.unizg.hr>
+        d=1e100.net; s=20221208; t=1693338883; x=1693943683;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qS8wm+PwrYrwUTMQlW3v50ZjmTvczTiXAPTMj19pd5g=;
+        b=Jh6QdU6ym7cYhzj7QxHP+OyaeF/QJtdfSsEji9jrjZXvcbVYGkS6bIZTyhZgcLrgb7
+         CJXbhHb5me2/fTknrYRLLIGhA18HnJb7iJIiNkjQ6oa0ZZR76RnOe6CfT29TUDR7VuGt
+         dH0fQMP/VhAWN1QIkoYfBxg3h0N/mNxSDH9TN1895k2qDmN/U8h/JqO6kAOOWiHfigFz
+         3/s5zq9JZOVLdCRy7W8UeRU8mhCypS430ziD9LaaayAx6G2Y+ZjOXtGr9bhIffL/rjAR
+         EnL9VZxDB4anNj9dBEoL/6RChrS6BGIK4Q+uAysAEWgHda6E31HujyiwcDJnH1K2ILXi
+         nVSA==
+X-Gm-Message-State: AOJu0YzQakkqcmCFLBhE5gVwhnInbknsimDH9/I1q2q0rIhV5duYprJX
+        SoKHWZYuwZtmZqEKZSZ/mSUMUNiJIEWXqF5XnusP1g==
+X-Google-Smtp-Source: AGHT+IF/bP33r8nxFhzGbH4f/UdtvUsaJrgxsfN1xW8nQcu8YVg54w9L7NvNVW9v728gatKoPL+n/BstGTkCFkrHU34=
+X-Received: by 2002:a17:906:5393:b0:9a1:cbe4:d033 with SMTP id
+ g19-20020a170906539300b009a1cbe4d033mr20710ejo.53.1693338883252; Tue, 29 Aug
+ 2023 12:54:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230826145102.5962-1-mirsad.todorovac@alu.unizg.hr>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <ZOR6eyYfJYlxdMet@dhcp22.suse.cz> <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
+ <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
+ <ZOcDLD/1WaOwWis9@dhcp22.suse.cz> <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+ <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+ <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz> <ZO48h7c9qwQxEPPA@slm.duckdns.org>
+ <CAJD7tkaQ1hD9HHyYTK_vfCQ9PCVZag7qMBueKyB+sEn=swvNJA@mail.gmail.com> <ZO5IuULSCXMe9_pN@slm.duckdns.org>
+In-Reply-To: <ZO5IuULSCXMe9_pN@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 29 Aug 2023 12:54:06 -0700
+Message-ID: <CAJD7tkYtnhemCLBqFqOVurfWEaCjKtyEM745JYRxFS0r5cpZwQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 04:51:03PM +0200, Mirsad Goran Todorovac wrote:
-> KCSAN has discovered a data race in kernel/workqueue.c:2598:
-> 
-> [ 1863.554079] ==================================================================
-> [ 1863.554118] BUG: KCSAN: data-race in process_one_work / process_one_work
-> 
-> [ 1863.554142] write to 0xffff963d99d79998 of 8 bytes by task 5394 on cpu 27:
-> [ 1863.554154] process_one_work (kernel/workqueue.c:2598)
-> [ 1863.554166] worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2752)
-> [ 1863.554177] kthread (kernel/kthread.c:389)
-> [ 1863.554186] ret_from_fork (arch/x86/kernel/process.c:145)
-> [ 1863.554197] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
-> 
-> [ 1863.554213] read to 0xffff963d99d79998 of 8 bytes by task 5450 on cpu 12:
-> [ 1863.554224] process_one_work (kernel/workqueue.c:2598)
-> [ 1863.554235] worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2752)
-> [ 1863.554247] kthread (kernel/kthread.c:389)
-> [ 1863.554255] ret_from_fork (arch/x86/kernel/process.c:145)
-> [ 1863.554266] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
-> 
-> [ 1863.554280] value changed: 0x0000000000001766 -> 0x000000000000176a
-> 
-> [ 1863.554295] Reported by Kernel Concurrency Sanitizer on:
-> [ 1863.554303] CPU: 12 PID: 5450 Comm: kworker/u64:1 Tainted: G             L     6.5.0-rc6+ #44
-> [ 1863.554314] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-> [ 1863.554322] Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
-> [ 1863.554941] ==================================================================
-> 
->     lockdep_invariant_state(true);
-> →   pwq->stats[PWQ_STAT_STARTED]++;
->     trace_workqueue_execute_start(work);
->     worker->current_func(work);
-> 
-> Moving pwq->stats[PWQ_STAT_STARTED]++; before the line
-> 
->     raw_spin_unlock_irq(&pool->lock);
-> 
-> resolves the data race without performance penalty.
-> 
-> KCSAN detected at least one additional data race:
-> 
-> [  157.834751] ==================================================================
-> [  157.834770] BUG: KCSAN: data-race in process_one_work / process_one_work
-> 
-> [  157.834793] write to 0xffff9934453f77a0 of 8 bytes by task 468 on cpu 29:
-> [  157.834804] process_one_work (/home/marvin/linux/kernel/linux_torvalds/kernel/workqueue.c:2606) 
-> [  157.834815] worker_thread (/home/marvin/linux/kernel/linux_torvalds/./include/linux/list.h:292 /home/marvin/linux/kernel/linux_torvalds/kernel/workqueue.c:2752) 
-> [  157.834826] kthread (/home/marvin/linux/kernel/linux_torvalds/kernel/kthread.c:389) 
-> [  157.834834] ret_from_fork (/home/marvin/linux/kernel/linux_torvalds/arch/x86/kernel/process.c:145) 
-> [  157.834845] ret_from_fork_asm (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/entry_64.S:312) 
-> 
-> [  157.834859] read to 0xffff9934453f77a0 of 8 bytes by task 214 on cpu 7:
-> [  157.834868] process_one_work (/home/marvin/linux/kernel/linux_torvalds/kernel/workqueue.c:2606) 
-> [  157.834879] worker_thread (/home/marvin/linux/kernel/linux_torvalds/./include/linux/list.h:292 /home/marvin/linux/kernel/linux_torvalds/kernel/workqueue.c:2752) 
-> [  157.834890] kthread (/home/marvin/linux/kernel/linux_torvalds/kernel/kthread.c:389) 
-> [  157.834897] ret_from_fork (/home/marvin/linux/kernel/linux_torvalds/arch/x86/kernel/process.c:145) 
-> [  157.834907] ret_from_fork_asm (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/entry_64.S:312) 
-> 
-> [  157.834920] value changed: 0x000000000000052a -> 0x0000000000000532
-> 
-> [  157.834933] Reported by Kernel Concurrency Sanitizer on:
-> [  157.834941] CPU: 7 PID: 214 Comm: kworker/u64:2 Tainted: G             L     6.5.0-rc7-kcsan-00169-g81eaf55a60fc #4
-> [  157.834951] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-> [  157.834958] Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
-> [  157.835567] ==================================================================
-> 
-> in code:
-> 
->         trace_workqueue_execute_end(work, worker->current_func);
-> →       pwq->stats[PWQ_STAT_COMPLETED]++;
->         lock_map_release(&lockdep_map);
->         lock_map_release(&pwq->wq->lockdep_map);
-> 
-> which needs to be resolved separately.
-> 
-> Fixes: 725e8ec59c56c ("workqueue: Add pwq->stats[] and a monitoring script")
-> Cc: Tejun Heo <tj@kernel.org>
-> Suggested-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> Link: https://lore.kernel.org/lkml/20230818194448.29672-1-mirsad.todorovac@alu.unizg.hr/
-> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+On Tue, Aug 29, 2023 at 12:36=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, Aug 29, 2023 at 12:13:31PM -0700, Yosry Ahmed wrote:
+> ...
+> > > So, the assumptions in the original design were:
+> > >
+> > > * Writers are high freq but readers are lower freq and can block.
+> > >
+> > > * The global lock is mutex.
+> > >
+> > > * Back-to-back reads won't have too much to do because it only has to=
+ flush
+> > >   what's been accumulated since the last flush which took place just =
+before.
+> > >
+> > > It's likely that the userspace side is gonna be just fine if we resto=
+re the
+> > > global lock to be a mutex and let them be. Most of the problems are c=
+aused
+> > > by trying to allow flushing from non-sleepable and kernel contexts.
+> >
+> > So basically restore the flush without disabling preemption, and if a
+> > userspace reader gets preempted while holding the mutex it's probably
+> > okay because we won't have high concurrency among userspace readers?
+> >
+> > I think Shakeel was worried that this may cause a priority inversion
+> > where a low priority task is preempted while holding the mutex, and
+> > prevents high priority tasks from acquiring it to read the stats and
+> > take actions (e.g. userspace OOMs).
+>
+> We'll have to see but I'm not sure this is going to be a huge problem. Th=
+e
+> most common way that priority inversions are resolved is through work
+> conservation - ie. the system just runs out of other things to do, so
+> whatever is blocking the system gets to run and unblocks it. It only real=
+ly
+> becomes a problem when work conservation breaks down on CPU side which
+> happens if the one holding the resource is 1. blocked on IOs (usually
+> through memory allocation but can be anything) 2. throttled by cpu.max.
+>
+> #1 is not a factor here. #2 is but that is a factor for everything in the
+> kernel and should really be solved from cpu.max side. So, I think in
+> practice, this should be fine, or at least not worse than anything else.
 
-Applied to wq/for-6.6.
+If that's not a concern I can just append a patch that changes the
+spinlock to a mutex to this series. Shakeel, wdyt?
 
-Thanks.
+>
+> > > Would it
+> > > make sense to distinguish what can and can't wait and make the latter=
+ group
+> > > always use cached value? e.g. even in kernel, during oom kill, waitin=
+g
+> > > doesn't really matter and it can just wait to obtain the up-to-date n=
+umbers.
+> >
+> > The problem with waiting for in-kernel flushers is that high
+> > concurrency leads to terrible serialization. Running a stress test
+> > with 100s of reclaimers where everyone waits shows ~ 3x slowdowns.
+> >
+> > This patch series is indeed trying to formalize a distinction between
+> > waiters who can wait and those who can't on the memcg side:
+> >
+> > - Unified flushers always flush the entire tree and only flush if no
+> > one else is flushing (no waiting), otherwise they use cached data and
+> > hope the concurrent flushing helps. This is what we currently do for
+> > most memcg contexts. This patch series opts userspace reads out of it.
+> >
+> > - Non-unified flushers only flush the subtree they care about and they
+> > wait if there are other flushers. This is what we currently do for
+> > some zswap accounting code. This patch series opts userspace readers
+> > into this.
+> >
+> > The problem Michal is raising is that dropping the lock can lead to an
+> > unbounded number of waiters and longer worst case latency. Especially
+> > that this is directly influenced by userspace. Reintroducing the mutex
+> > and removing the lock dropping code fixes that problem, but then if
+> > the mutex holder gets preempted, we face another problem.
+> >
+> > Personally I think there is a good chance there won't be userspace
+> > latency problems due to the lock as usually there isn't high
+> > concurrency among userspace readers, and we can deal with that problem
+> > if/when it happens. So far no problem is happening for cpu.stat which
+> > has the same potential problem.
+>
+> Maybe leave the global lock as-is and gate the userland flushers with a
+> mutex so that there's only ever one contenting on the rstat lock from
+> userland side?
 
--- 
-tejun
+Waiman suggested this as well. We can do that for sure, although I
+think we should wait until we are sure it's needed.
+
+One question. If whoever is holding that mutex is either flushing with
+the spinlock held or spinning (i.e not sleepable or preemptable),
+wouldn't this be equivalent to just changing the spinlock with a mutex
+and disable preemption while holding it?
