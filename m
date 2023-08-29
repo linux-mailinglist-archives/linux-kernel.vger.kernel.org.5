@@ -2,143 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9B378CC9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB7778CC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjH2TDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        id S239373AbjH2TDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238897AbjH2TCu (ORCPT
+        with ESMTP id S239124AbjH2TCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:02:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5B6CC9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693335764; x=1724871764;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZssVyiuPrzV8HRbNj+dFM/GZZcr2HnyGAqBT1eeT8yU=;
-  b=eoaylrD/QTWNyRxN4VKWoaiNkAYlPRr8wvsSqkj/k8GpeuWne5cYxmn2
-   Z8DSwXV9PmV9sxjQKnATXZXJdfdc8dTwBlHmgiHj+DahcQcm63OFUGu2g
-   baSKyQf32Sfg5eF/PCpR7106JN+hdbAlmDFwG2Q5JKL5eYSiulrFOZxBw
-   WfWjCu8aIgQZrcTTFRbtLXMwbInULs2ha3WjU5EqXXkAfL9ABnqDdqy39
-   y5+UeLH6GVkOr0EFmKA3eoAODSj3eKdl4AdpwHfnKtdokruIjebOVTD87
-   qTV0ybTDY4fHZ6NWiRVTbh+HcsBQ2J3D9dH1S05XhMJK/py1JbbS959CB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="406452258"
-X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="406452258"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 12:02:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="808809395"
-X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="808809395"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Aug 2023 12:02:41 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qb3z6-00090T-2L;
-        Tue, 29 Aug 2023 19:02:40 +0000
-Date:   Wed, 30 Aug 2023 03:02:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dragos Tatulea <dtatulea@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Parav Pandit <parav@mellanox.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
+        Tue, 29 Aug 2023 15:02:55 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D468CC2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:02:50 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-401bdff4cb4so36357285e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693335769; x=1693940569; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4QepnuxL293gVcyDcigzBZ45rSffhEERtdEcF3Lml4M=;
+        b=n7QtNemntMulS9dS6Qjd1fS8SdkmsnjThaEFRYi/Y2Tuo8Dec1q3H5oHU0O85XS788
+         zNRMEU9JUWgSPscYLCGQtMi44MTtbFU1dnKui8VBa2pzTeKScvl0OTyvqXAEp31BC+SI
+         VxHrQu0Nm6XZjy2VMrugqcuOUjoHS0/iPTCOmEwW8p6nSLUs+Q/cBNEkXujCSDdsB6h+
+         0R9jCLMltpujAc1Pzw96oCvVswKlIeQA1nOBWnq/firFfSi5DF685ziTfjqkH0n9QFyL
+         aaJm0Mrfo0nTm8cfSsdeCx5xeLsuvqx9Lpt5JMXdLp9O6HHncEUsFzNGt5U18KNc5Lkn
+         xL9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693335769; x=1693940569;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4QepnuxL293gVcyDcigzBZ45rSffhEERtdEcF3Lml4M=;
+        b=Iacm8uKxYf99PH0aNCB99gDhNO1Rv2GPqHseZpzxbzrKde0uEn7+yMra7qi2j6DeAa
+         JkYFtbVFwd7TdGeP+YVVbElXOGVetSXJ3RVDyH5IZOrLZOztcmE+1rOLOy5WYXyiQFJz
+         Czd33hMj/gKa49rM9eOh4ztho/3Gfbmbh+pietbmpqjpCB6nQSQk4eNaogSN4Rmo6s/t
+         rVXtz2xO0RlqSGOpXr1eQzcZplz+1HhbmVlmNzHHupyentjMDiiHWbCDfEyIYGQaH9of
+         fJHOcsiYI6uo6eBxJcGgRD0yA1GLlIWK6MVDClWzV1HYEedvJ0fmR3/f9MkjZpojRgvJ
+         bRQw==
+X-Gm-Message-State: AOJu0YwRAamgs2uQjHBqHzQFtwwVNJGGGiGHQS+09r3mjruqwQbC7y3l
+        7qccOu70Pa85AriptftSiVs=
+X-Google-Smtp-Source: AGHT+IFs8vi/ChzQA4+I0wsM8s4ZoqGY3Ja2KPMp6Q8qxtJDpdZ/ElcDzmbLMiG7t8lENB80RHh9DQ==
+X-Received: by 2002:adf:f08d:0:b0:317:df4f:4b97 with SMTP id n13-20020adff08d000000b00317df4f4b97mr9892wro.7.1693335768395;
+        Tue, 29 Aug 2023 12:02:48 -0700 (PDT)
+Received: from gmail.com (1F2EF3C0.nat.pool.telekom.hu. [31.46.243.192])
+        by smtp.gmail.com with ESMTPSA id l11-20020adff48b000000b0031c3ee933b5sm14444906wro.108.2023.08.29.12.02.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 12:02:43 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 29 Aug 2023 21:02:41 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Costa Shulyupin <costa.shul@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: Fix firmware error on creation of 1k VQs
-Message-ID: <202308300241.q7t7Ouf3-lkp@intel.com>
-References: <20230829174219.928343-1-dtatulea@nvidia.com>
+Subject: Re: [PATCH] sched: add kernel-doc for set_cpus_allowed_ptr
+Message-ID: <ZO5A0WUcdjmMn7nQ@gmail.com>
+References: <20230829082551.2661290-1-costa.shul@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230829174219.928343-1-dtatulea@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230829082551.2661290-1-costa.shul@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dragos,
 
-kernel test robot noticed the following build warnings:
+* Costa Shulyupin <costa.shul@redhat.com> wrote:
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.5 next-20230829]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> This is an exported symbol, so it should have kernel-doc.
+> Add a note to very similar function do_set_cpus_allowed
+> to avoid confusion and misuse.
+> ---
+>  include/linux/sched.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Dragos-Tatulea/vdpa-mlx5-Fix-firmware-error-on-creation-of-1k-VQs/20230830-014600
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230829174219.928343-1-dtatulea%40nvidia.com
-patch subject: [PATCH] vdpa/mlx5: Fix firmware error on creation of 1k VQs
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230830/202308300241.q7t7Ouf3-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308300241.q7t7Ouf3-lkp@intel.com/reproduce)
+I've added your Signed-off-by tag:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308300241.q7t7Ouf3-lkp@intel.com/
+	Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 
-All warnings (new ones prefixed by >>):
+please let me know if that is in error.
 
-   drivers/vdpa/mlx5/net/mlx5_vnet.c: In function 'read_umem_params':
->> drivers/vdpa/mlx5/net/mlx5_vnet.c:658:1: warning: the frame size of 4128 bytes is larger than 2048 bytes [-Wframe-larger-than=]
-     658 | }
-         | ^
+Thanks,
 
-
-vim +658 drivers/vdpa/mlx5/net/mlx5_vnet.c
-
-   627	
-   628	static int read_umem_params(struct mlx5_vdpa_net *ndev)
-   629	{
-   630		u32 out[MLX5_ST_SZ_DW(query_hca_cap_out)] = {};
-   631		u32 in[MLX5_ST_SZ_DW(query_hca_cap_in)] = {};
-   632		u16 opmod = (MLX5_CAP_VDPA_EMULATION << 1) | (HCA_CAP_OPMOD_GET_CUR & 0x01);
-   633		struct mlx5_core_dev *mdev = ndev->mvdev.mdev;
-   634		void *caps;
-   635		int err;
-   636	
-   637		MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
-   638		MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
-   639		err = mlx5_cmd_exec_inout(mdev, query_hca_cap, in, out);
-   640		if (err) {
-   641			mlx5_vdpa_warn(&ndev->mvdev,
-   642				"Failed reading vdpa umem capabilities with err %d\n", err);
-   643			return err;
-   644		}
-   645	
-   646		caps =  MLX5_ADDR_OF(query_hca_cap_out, out, capability);
-   647	
-   648		ndev->umem_1_buffer_param_a = MLX5_GET(virtio_emulation_cap, caps, umem_1_buffer_param_a);
-   649		ndev->umem_1_buffer_param_b = MLX5_GET(virtio_emulation_cap, caps, umem_1_buffer_param_b);
-   650	
-   651		ndev->umem_2_buffer_param_a = MLX5_GET(virtio_emulation_cap, caps, umem_2_buffer_param_a);
-   652		ndev->umem_2_buffer_param_b = MLX5_GET(virtio_emulation_cap, caps, umem_2_buffer_param_b);
-   653	
-   654		ndev->umem_3_buffer_param_a = MLX5_GET(virtio_emulation_cap, caps, umem_3_buffer_param_a);
-   655		ndev->umem_3_buffer_param_b = MLX5_GET(virtio_emulation_cap, caps, umem_3_buffer_param_b);
-   656	
-   657		return 0;
- > 658	}
-   659	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	Ingo
