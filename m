@@ -2,113 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F4478C538
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA81F78C52C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbjH2NZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        id S236021AbjH2NZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236025AbjH2NZD (ORCPT
+        with ESMTP id S236058AbjH2NYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:25:03 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EB1E46;
-        Tue, 29 Aug 2023 06:24:43 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37TBsLlh019566;
-        Tue, 29 Aug 2023 15:24:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=2FeVaZzJAVK3B5aRvg1Tcb2TyPJVs4Oo/J3HQ7RPN0o=; b=1V
-        3ce8Fv3nR+uTc96ISu2QQhMVFN1G4umx+ClmQHaXkas8Pju09Ltu9YSrLlpsUxag
-        6jdaCSTBjUEbVbdrSSQ60H9bvuSsOoarCH2r9SglGduMac0V3mXb7ZZrzvLFrHxI
-        CtYqqiLCy+nXgaFDOZzLcWJatmF6MZG1lOW9dITLrnqoOxy/2bg8Lx9SxFiaBJdT
-        MbQ8+GdH/IKIvMtcu/+X3eyBcTB7WnTSXerrFFR0avKkwwFyYWXLifgY7jIZouyC
-        1+v9/oSQVoMqiMTyrnCgIRmsxcADBUMVieP3/4uvaNnJG/UDSEjDqc9yrlejuipg
-        AsIyO1ltke8/eIMZEp5w==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sq6tfma1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 15:24:18 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AB17D100057;
-        Tue, 29 Aug 2023 15:24:17 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A3DA7228A53;
-        Tue, 29 Aug 2023 15:24:17 +0200 (CEST)
-Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 29 Aug
- 2023 15:24:17 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        Tue, 29 Aug 2023 09:24:37 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EDCCE7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:24:23 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d743a5fe05aso4125631276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:24:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693315459; x=1693920259;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QQGcrjC3KtXL/WdFtDZEft3OUinDXOscuAhMHuzeiG0=;
+        b=MRRc3FrpPp6z8OWaDouOk4Mv0t8kEKCeV3hlFg4S1OX8fFXm2Gc2I/gSPjEXpWm+2d
+         woaAzzTC2Xz753IcYVfjcMXvwmMg9Duzim6HpodfR3F52c/LJLGlooCeCFoB0t7Fuqrr
+         e1Vv0pZK9jvgBRP0kVvQCzIunQ7UVmqvwsR0klCR2iyzjIGd8T8yg7AxJJ1dmk5JyJ0Z
+         I6C1HO+Uot+CbNsNFW/wFUjri74/K+Cfojf+aOPBC0Mfiv8L3QigzLC6CCQ/YQoZvV9W
+         vn95jm90vQ7GcZUKQ5Z1gO7pA7ZygzmSpWjCukGmfdUKv8DkiePPRVAEJ7JkL3zKcHB7
+         IT6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693315459; x=1693920259;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QQGcrjC3KtXL/WdFtDZEft3OUinDXOscuAhMHuzeiG0=;
+        b=VAPG7ld0KQtKY16aCIYgFWTU1lBY6DFa50oCGxxny97/RTp6N4I6/0uxRTySPZ4adQ
+         BQXGFkBuCfIWqTnfIDsMqO09H9ika34gKRCjxAEB0m6lgFi84MLy3x1Dy9XLy7iQmeTn
+         oUdqv+JZUm+piCXtdWztIFAl0dP442uT7Bhx0Em3zbN6N4rktnKAcZIZDZn/sxjZH/AL
+         LH+1XaWN3Wy+uoJNz5sMMvCYZTfYGycFMhlFZ2ZJrTDgBMd5PS5CVH+jUrnyXSqhMCIj
+         oisfOS0mnptz+cDxZDdL24XTPtj2t83N47i0X+xFn2AfltODUTpwi7fHED+swTLdcXWK
+         rVYA==
+X-Gm-Message-State: AOJu0Ywe8s9DgBEKWQupBec/qAyZEJotuKXKEuZhwbEAeHt7R0oD2n7x
+        PfD4reXrb7E3JZdy7VNxHngXX07f3CJ7VCNlTpxtIQ==
+X-Google-Smtp-Source: AGHT+IE8owYc6+9kqyx/gI4M2g1vQve6zIM5p0WJ9SO8njujPD7jZlPj2/YwIdTXyS/qP/5rwINWbpRO+JF/REs12PE=
+X-Received: by 2002:a5b:dc3:0:b0:d62:bc43:426e with SMTP id
+ t3-20020a5b0dc3000000b00d62bc43426emr27235931ybr.43.1693315458586; Tue, 29
+ Aug 2023 06:24:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+ <20230828192507.117334-7-bartosz.golaszewski@linaro.org> <8b7bada9-3898-1b60-3dea-766a760412f7@linaro.org>
+In-Reply-To: <8b7bada9-3898-1b60-3dea-766a760412f7@linaro.org>
+From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date:   Tue, 29 Aug 2023 15:24:07 +0200
+Message-ID: <CACMJSetObp0k312DmqhTCkw7jsf05OHX1yxbyYj+sVfbtwRcVQ@mail.gmail.com>
+Subject: Re: [PATCH 06/11] firmware: qcom-shm-bridge: new driver
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
-Date:   Tue, 29 Aug 2023 15:23:48 +0200
-Message-ID: <20230829132357.192535-5-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230829132357.192535-1-alain.volmat@foss.st.com>
-References: <20230829132357.192535-1-alain.volmat@foss.st.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_10,2023-08-29_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+On Tue, 29 Aug 2023 at 10:18, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 28/08/2023 21:25, Bartosz Golaszewski wrote:
+> > This module is a platform driver that also exposes an interface for
+> > kernel users to allocate blocks of memory shared with the trustzone.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  drivers/firmware/Kconfig                 |   8 +
+> >  drivers/firmware/Makefile                |   1 +
+> >  drivers/firmware/qcom-shm-bridge.c       | 452 +++++++++++++++++++++++
+> >  include/linux/firmware/qcom/shm-bridge.h |  32 ++
+> >  4 files changed, 493 insertions(+)
+> >  create mode 100644 drivers/firmware/qcom-shm-bridge.c
+> >  create mode 100644 include/linux/firmware/qcom/shm-bridge.h
+> >
+>
+> ...
+>
+> > +/**
+> > + * qcom_shm_bridge_to_phys_addr - Translate address from virtual to physical.
+> > + *
+> > + * @vaddr: Virtual address to translate.
+> > + *
+> > + * Return:
+> > + * Physical address corresponding to 'vaddr'.
+> > + */
+> > +phys_addr_t qcom_shm_bridge_to_phys_addr(void *vaddr)
+> > +{
+> > +     struct qcom_shm_bridge_chunk *chunk;
+> > +     struct qcom_shm_bridge_pool *pool;
+> > +
+> > +     guard(spinlock_irqsave)(&qcom_shm_bridge_chunks_lock);
+> > +
+> > +     chunk = radix_tree_lookup(&qcom_shm_bridge_chunks,
+> > +                               (unsigned long)vaddr);
+> > +     if (!chunk)
+> > +             return 0;
+> > +
+> > +     pool = chunk->parent;
+> > +
+> > +     guard(spinlock_irqsave)(&pool->lock);
+>
+> Why both locks are spinlocks? The locks are used quite a lot.
 
-Add dcmipp support to STM32MP135.
+I'm not sure what to answer. The first one protects the global chunk
+mapping stored in the radix tree. The second one protects a single
+memory pool from concurrent access. Both can be modified from any
+context, hence spinlocks.
 
-Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
- arch/arm/boot/dts/st/stm32mp135.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+>
+> > +
+> > +     return gen_pool_virt_to_phys(pool->genpool, (unsigned long)vaddr);
+> > +}
+> > +EXPORT_SYMBOL_GPL(qcom_shm_bridge_to_phys_addr);
+> > +
+> > +static int qcom_shm_bridge_probe(struct platform_device *pdev)
+> > +{
+> > +     struct qcom_shm_bridge_pool *default_pool;
+> > +     struct device *dev = &pdev->dev;
+> > +     int ret;
+> > +
+> > +     /*
+> > +      * We need to wait for the SCM device to be created and bound to the
+> > +      * SCM driver.
+> > +      */
+> > +     if (!qcom_scm_is_available())
+> > +             return -EPROBE_DEFER;
+>
+> I think we miss here (and in all other drivers) device links to qcm.
+>
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
-index abf2acd37b4e..fcf0592c01fd 100644
---- a/arch/arm/boot/dts/st/stm32mp135.dtsi
-+++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
-@@ -8,5 +8,14 @@
- 
- / {
- 	soc {
-+		dcmipp: dcmipp@5a000000 {
-+			compatible = "st,stm32mp13-dcmipp";
-+			reg = <0x5a000000 0x400>;
-+			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
-+			resets = <&rcc DCMIPP_R>;
-+			clocks = <&rcc DCMIPP_K>;
-+			clock-names = "kclk";
-+			status = "disabled";
-+		};
- 	};
- };
--- 
-2.25.1
+Well, SCM, once probed, cannot be unbound. What would device links
+guarantee above that?
 
+> > +
+> > +     ret = qcom_scm_enable_shm_bridge();
+> > +     if (ret)
+> > +             return dev_err_probe(dev, ret,
+> > +                                  "Failed to enable the SHM bridge\n");
+> > +
+> > +     default_pool = qcom_shm_bridge_pool_new_for_dev(
+> > +                             dev, qcom_shm_bridge_default_pool_size);
+> > +     if (IS_ERR(default_pool))
+> > +             return dev_err_probe(dev, PTR_ERR(default_pool),
+> > +                                  "Failed to create the default SHM Bridge pool\n");
+> > +
+> > +     WRITE_ONCE(qcom_shm_bridge_default_pool, default_pool);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct of_device_id qcom_shm_bridge_of_match[] = {
+> > +     { .compatible = "qcom,shm-bridge", },
+> > +     { }
+> > +};
+> > +
+> > +static struct platform_driver qcom_shm_bridge_driver = {
+> > +     .driver = {
+> > +             .name = "qcom-shm-bridge",
+> > +             .of_match_table = qcom_shm_bridge_of_match,
+> > +             /*
+> > +              * Once enabled, the SHM Bridge feature cannot be disabled so
+> > +              * there's no reason to ever unbind the driver.
+> > +              */
+> > +             .suppress_bind_attrs = true,
+> > +     },
+> > +     .probe = qcom_shm_bridge_probe,
+> > +};
+> > +
+> > +static int __init qcom_shm_bridge_init(void)
+> > +{
+> > +     return platform_driver_register(&qcom_shm_bridge_driver);
+> > +}
+> > +subsys_initcall(qcom_shm_bridge_init);
+>
+> Why this is part of subsystem? Should be rather device_initcall... or
+> simply module (and a tristate).
+>
+
+We want it to get up as soon as possible (right after SCM, because SCM
+is the first user).
+
+Bartosz
+
+> Best regards,
+> Krzysztof
+>
