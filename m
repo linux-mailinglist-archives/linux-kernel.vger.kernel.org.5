@@ -2,195 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B32B78C24A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56BC78C24B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbjH2KWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
+        id S235128AbjH2KXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbjH2KWR (ORCPT
+        with ESMTP id S235216AbjH2KXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:22:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCA391
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:22:13 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693304531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1LUAdGxzScAMOm4Z4EfPTkjwHOUh0rmSHhAJnylK1+4=;
-        b=BOvba0YUm0UoHVHiNqUFERKPaHIyqQXbJEZOhhXCg3bLnP27EqMZHQpeeLJtt9Gm+m68Wr
-        KdKJ5EpuzqSdB4Zqp0qg/C5UY0vw20W0jU12p72gAu+xetZVWSAeVfAgrFXS46gqQvQ5K0
-        xtR38ksTBITtUmI2VqZPTOtNL/rSjz4DDms0VMJ5chhxvVEVfAhdT0zuGcCgHDY8u2la42
-        3PJYQsBqox2Xeno0LT5yi0SRfiE713ok+gV/ozEusPir6x6lTWwsZr8J2wj6vwbc4ycey2
-        UQHehh/+aomrm1Y35hAu4K2fY4JTKu6jzJAl5uYch3RcCrQ0P45imNprJArxng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693304531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1LUAdGxzScAMOm4Z4EfPTkjwHOUh0rmSHhAJnylK1+4=;
-        b=LmS8hR90dqF1IcFx5E8k/ZaBQlyXML2jhAqpC+OiuIUzlML3Sj/NKa5J/Qf8u4tZwkQ0rV
-        TEQFdJ3rTyEJQuBQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: hostile takeover: Re: [PATCH printk v2 3/8] printk: nbcon: Add
- acquire/release logic
-In-Reply-To: <ZNOKSFAGPxYFeeJT@alley>
-References: <20230728000233.50887-1-john.ogness@linutronix.de>
- <20230728000233.50887-4-john.ogness@linutronix.de>
- <ZNOKSFAGPxYFeeJT@alley>
-Date:   Tue, 29 Aug 2023 12:28:10 +0206
-Message-ID: <87o7iqrvvx.fsf@jogness.linutronix.de>
+        Tue, 29 Aug 2023 06:23:33 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025BC18F
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:23:24 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RZk144J3Nz67lKb;
+        Tue, 29 Aug 2023 18:19:04 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
+ 2023 11:23:22 +0100
+Date:   Tue, 29 Aug 2023 11:23:21 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+CC:     "Luck, Tony" <tony.luck@intel.com>,
+        Amit Singh Tomar <amitsinght@marvell.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        George Cherian <gcherian@marvell.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "peternewman@google.com" <peternewman@google.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: resctrl2 - status
+Message-ID: <20230829112321.00002b55@Huawei.com>
+In-Reply-To: <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
+        <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
+        <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+        <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
+        <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+        <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-09, Petr Mladek <pmladek@suse.com> wrote:
->> Add per console acquire/release functionality. The console 'locked'
->> state is a combination of multiple state fields:
->> 
->>   - Hostile takeover
->> 
->>       The new owner takes the console over without 'req_prio'
->>       handshake.
->> 
->>       This is required when friendly handovers are not possible,
->>       i.e. the higher priority context interrupted the owning
->>       context on the same CPU or the owning context is not able
->>       to make progress on a remote CPU.
->
-> I always expected that there would be only one hostile takeover.
-> It would allow to take the lock a harsh way when the friendly
-> way fails.
+On Fri, 25 Aug 2023 13:20:22 -0700
+Reinette Chatre <reinette.chatre@intel.com> wrote:
 
-You are referring to the hostile takeover when unsafe. A hostile
-takeover when safe is still considered a hostile takeover. (At least,
-until now that is how it was considered. More below...)
+> Hi Tony,
+> 
+> On 8/25/2023 12:44 PM, Luck, Tony wrote:
+> >>>> Alternatively, can user space just take a "load all resctrl modules
+> >>>> and see what sticks" (even modules of different architectures since
+> >>>> a user space may want to be generic) approach?  
+> >>>
+> >>> This mostly works. Except for the cases where different modules access
+> >>> the same underlying hardware, so can't be loaded together.
+> >>>
+> >>> Examples:
+> >>>
+> >>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CDP or not.
+> >>> But this is already true ... they have to decide whether to pass the "-o cdp" option
+> >>> to mount.
+> >>>
+> >>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control memory bandwidth
+> >>> with percentages, or with MB/sec values. Again the user already has to make this
+> >>> decision when choosing mount options.
+> >>>
+> >>>
+> >>> Maybe the "What resctrl options does this machine support?" question would be
+> >>> best answered with a small utility?  
+> >>
+> >> A user space utility or a kernel provided utility? If it is a user space utility
+> >> I think it would end up needing to duplicate what the kernel is required to do
+> >> to know if a particular feature is supported. It seems appropriate that this
+> >> could be a kernel utility that can share this existing information with user
+> >> space. resctrl already supports the interface for this via /sys/fs/resctrl/info.  
+> > 
+> > I was imagining a user space utility. Even though /proc/cpuinfo doesn't show
+> > all features, a utility has access to all the CPUID leaves that contain the
+> > details of each feature enumeration.  
+> 
+> For x86 that may work (in some scenarios, see later) for now but as I understand
+> Arm would need a different solution where I believe the information is obtained
+> via ACPI. I think it is unnecessary to require user space to have parsers for
+> CPUID and ACPI if that same information needs to be parsed by the kernel and
+> there already exists an interface with which the information is communicated
+> from kernel to user space. Also, just because information CPUID shows a feature
+> is supported by the hardware does not mean that the kernel has support for that
+> feature. This could be because of a feature mismatch between user space and
+> kernel, or even some features disabled for use via the, for example "rdt=!l3cat",
+> kernel parameter.
 
->> All other policy decisions have to be made at the call sites:
->> 
->>   - What is marked as an unsafe section.
->>   - Whether to spinwait if there is already an owner.
->>   - Whether to attempt a hostile takeover when safe.
->>   - Whether to attempt a hostile takeover when unsafe.
->
-> But there seems to be actually two variants. How they are
-> supposed to be used, please?
->
-> I would expect that a higher priority context would always
-> be able to takeover the lock when it is in a safe context.
->
-> By other words, "hostile takeover when safe" would be
-> the standard behavior for context with a higher priority.
+James probably also has views on this, but I wouldn't expect userspace to go anywhere
+near ACPI parsing. If the description of what MPAM features are supported (before
+resctrl is running) is necessary, then we should add it to the existing
+description of the various caches etc.  Maybe somewhere in
+/sys/bus/node/devices/nodeX/cpuY/cache/indexZ/
+for the caches and
+/sys/bus/node/devices/nodeX for the DRAM controllers.
 
-The difference is that with "hostile takeover when safe" there is a
-foreign CPU that still thinks it has the lock, even though it does not.
+I'm sure we can find somewhere sensible for other things covered by MPAM.
+The MPAM table parsers and some early code to query features from the hardware should
+be able to figure out what is needed.
 
-> By other words, the difference between normal takeover and
-> "hostile takeover when safe" is that the 1st one has to
-> wait until the current owner calls nbcon_enter_unsafe().
-> But the result is the same. The current owner might
-> prematurely end after calling nbcon_enter_unsafe().
->
-> Maybe, this another relic from the initial more generic approach?
+Perhaps x86 systems could provide similar descriptions but originating from CPUID etc.
 
-I suppose so. But then why not try the "hostile takeover when safe"
-first and only use the handover request as a fallback? Like this:
+Jonathan
 
-1. try direct
-2. try hostile takeover when safe
-3. try handover
-4. try hostile takeover when unsafe
+> 
+> >> fyi ... as with previous attempts to discuss this work I find it difficult
+> >> to discuss this work when you are selective about what you want to discuss/answer
+> >> and just wipe the rest. Through this I understand that I am not your target
+> >> audience.  
+> > 
+> > Not my intent. I value your input highly. I'm maybe too avid a follower of the
+> > "trim your replies" school of e-mail etiquette. I thought I'd covered the gist
+> > of your message.
+> > 
+> > I'll try to be more thorough in responding in the future.  
+> 
+> Two items from my previous email remain open:
+> 
+> First, why does making the code modular require everything to be loadable
+> modules?
+> I think that it is great that the code is modular. Ideally it will help to
+> support the other architectures. As you explain this modular design also
+> has the benefit that "modules" can be loaded and unloaded after resctrl mount.
+> Considering your example of MBA and MBA_MBps support ... if I understand
+> correctly with code being modular it enables changes from one to the other
+> after resctrl mount. User can start with MBA and then switch to MBA_MBps
+> without needing to unmount resctrl. What I do not understand is why does
+> the code being modular require everything to be modules? Why, for example,
+> could a user not interact with a resctrl file that enables the user to make
+> this switch from, for example, MBA to MBA_MBps? With this the existing
+> interfaces can remain to be respected, the existing mount parameters need
+> to remain anyway, while enabling future "more modular" usages.
+> 
+> Second, copied from my previous email, what is the plan to deal with current
+> users that just mount resctrl and expect to learn from it what features are
+> supported?
+> 
+> Reinette
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
-Then we should remove the "hostile" label for #2 and just call it:
-
-1. try direct
-2. try safe takeover
-3. try handover
-4. try hostile takeover
-
-(I guess this is how you imagined things should be.)
-
->> +/**
->> + * struct nbcon_context - Context for console acquire/release
->> + * @console:		The associated console
->> + * @spinwait_max_us:	Limit for spinwait acquire
->> + * @prio:		Priority of the context
->> + * @unsafe:		This context is in an unsafe section
->
-> This seems to be an input value for try_acquire(). It is
-> controversial.
->
-> I guess that it removes the need to call nbcon_enter_unsafe()
-> right after try_acquire_console().
-
-Yes. It removes the "safe window" between try_acquire_console() and
-nbcon_enter_unsafe() by allowing to acquire and mark unsafe
-atomically. For example, this would be useful for the port_lock()
-wrapper we discussed. But it is not strictly necessary. I can remove it.
-
-Below I answer your comments anyway.
-
-> Hmm, this semantic is problematic:
->
->   1. The result would be non-paired enter_unsafe()/exit_unsafe()
->      calls.
-
-The paired calls are either:
-
-try_acquire(unsafe=1) -> release()
-
-or
-
-try_acquire(unsafe=0) + enter_unsafe() -> exit_unsafe() + release()
-
->   2. I would personally expect that this is an output value
->      set by try_acquire() so that the context might know
->      how it got the lock.
-
-The state structure is used to communicate this information.
-
->   3. Strictly speaking, as an input value, it would mean that
->      try_acquire() is called when the console is in "unsafe" state.
->      But the caller does not know in which state the console
->      is until it acquires the lock.
-
-This is not about the current state. The calling _context_ wants to set
-a certain state. The caller wants to acquire the lock and atomically
-mark this as the beginning of an unsafe section. But as I wrote, this is
-not strictly necessary. Only an efficient convenience.
-
-> For me it is not easy to remember which permutation is used where ;-)
-> It would be easier if we remove the "hostile when safe" variant.
-> Then 3 variables might be enough. I suggest something like:
->
->   state.unsafe		 Console is busy and takeover is not safe.
->
->   state.unsafe_takeover  A hostile takeover in an unsafe state happened
-> 			 in the past. The console can't be safe until
-> 			 re-initialized.
->
->   ctxt.allow_unsafe_takeover Allow hostile takeover even if unsafe.
-> 			Can be used only with PANIC prio. Might cause
-> 			a system freeze when the console is used later.
-
-Since "safe takeovers" should be handled equivalent to "handovers" then
-I agree with your suggestion.
-
-John
