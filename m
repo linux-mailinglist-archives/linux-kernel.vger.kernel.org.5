@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0A478C5F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C4978C5CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236281AbjH2Ne5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59632 "EHLO
+        id S236354AbjH2NeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236209AbjH2Ndd (ORCPT
+        with ESMTP id S236215AbjH2Ndf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:33:33 -0400
+        Tue, 29 Aug 2023 09:33:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8AACD3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2900CD4;
         Tue, 29 Aug 2023 06:33:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 36ED86575D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D0D336576A;
+        Tue, 29 Aug 2023 13:32:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B27BC43391;
         Tue, 29 Aug 2023 13:32:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E552DC433C9;
-        Tue, 29 Aug 2023 13:32:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693315958;
-        bh=VPzsTuzuRVs4PH5orOjSLTMnSeozDKlpRLSI7sv5Nmo=;
+        s=k20201202; t=1693315960;
+        bh=oH6hl56tUU6fyNan0MeAbQaEx2I7FS353c7o/JZ+zRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BKkUWTjt2PIJob3VBPcg9ewE6mDETO7xCLvsRqK5PmtW8mNJYZWFxxidDuxlWEnGP
-         LWfBL+wP3z0UPrN3FsCL6EWAegwNrpi1KsM+I8nKcVP/Gvz8bjA5w/HeYiue0v88+U
-         0gNRQ/RxiAcLtQ0SDcZS9h6+i5V+K2iZP9zH77G4dS27NuE6+WbdSZgmz8Zta5OgWx
-         vGnzcOlMvChYxtaMf2jk1EN/vzP2XRWI3J8wL+ZnlN+5RhDkeKDj7uo7lMarQVWPqb
-         qDGs7a+ocR8QV2+LeEfDpprGx6MA2hcYBnc+QukhJlTd+lFVweSqes2Rs0Tx3IrWd1
-         zUOj4ImoIITZQ==
+        b=S+AA4hswFLYssmlQhiCZS4RpXFHLfChKfl4zkNh967cO+V9nIrl5LML4CaHWHVBYK
+         JeDqEsYSHTqLTKJ+MuYwrNvosh3RhUYAT86SGIjZ8PtG+O1anKbxB488Umr/n5SJle
+         9rDQx5GmilNmGxzG5rtIpYpcMUkasVWBgVWU9HOigPXI734E/45sYIb9Rs+NpC2kJw
+         asAgN+s1bjLR3MQ3SlMkYQPrcss2ne6tDPVOGYCDLEdFmnLRFuwCQN/SCJWhuXKCMO
+         Zst2BioBhvDoQOv9LZSAp4qj8ryLRvm2nAmRFEplJoB/b4W+ih2Jy7gqRgvK9dhOSL
+         6WWogbGxo0SRA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhu Wang <wangzhu9@huawei.com>, Helge Deller <deller@gmx.de>,
-        Sasha Levin <sashal@kernel.org>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.4 14/17] fbdev: goldfishfb: Do not check 0 for platform_get_irq()
-Date:   Tue, 29 Aug 2023 09:32:01 -0400
-Message-Id: <20230829133211.519957-14-sashal@kernel.org>
+Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, michael.chan@broadcom.com,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 15/17] broadcom: b44: Use b44_writephy() return value
+Date:   Tue, 29 Aug 2023 09:32:02 -0400
+Message-Id: <20230829133211.519957-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230829133211.519957-1-sashal@kernel.org>
 References: <20230829133211.519957-1-sashal@kernel.org>
@@ -58,40 +61,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhu Wang <wangzhu9@huawei.com>
+From: Artem Chernyshev <artem.chernyshev@red-soft.ru>
 
-[ Upstream commit 0650d5098f8b6b232cd5ea0e15437fc38f7d63ba ]
+[ Upstream commit 9944d203fa63721b87eee84a89f7275dc3d25c05 ]
 
-Since platform_get_irq() never returned zero, so it need not to check
-whether it returned zero, and we use the return error code of
-platform_get_irq() to replace the current return error code.
+Return result of b44_writephy() instead of zero to
+deal with possible error.
 
-Please refer to the commit a85a6c86c25b ("driver core: platform: Clarify
-that IRQ 0 is invalid") to get that platform_get_irq() never returned
-zero.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/goldfishfb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/broadcom/b44.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/video/fbdev/goldfishfb.c b/drivers/video/fbdev/goldfishfb.c
-index 6fa2108fd912d..e41c9fef4a3b6 100644
---- a/drivers/video/fbdev/goldfishfb.c
-+++ b/drivers/video/fbdev/goldfishfb.c
-@@ -203,8 +203,8 @@ static int goldfish_fb_probe(struct platform_device *pdev)
- 	}
+diff --git a/drivers/net/ethernet/broadcom/b44.c b/drivers/net/ethernet/broadcom/b44.c
+index 392ec09a1d8a6..3e4fb3c3e8342 100644
+--- a/drivers/net/ethernet/broadcom/b44.c
++++ b/drivers/net/ethernet/broadcom/b44.c
+@@ -1793,11 +1793,9 @@ static int b44_nway_reset(struct net_device *dev)
+ 	b44_readphy(bp, MII_BMCR, &bmcr);
+ 	b44_readphy(bp, MII_BMCR, &bmcr);
+ 	r = -EINVAL;
+-	if (bmcr & BMCR_ANENABLE) {
+-		b44_writephy(bp, MII_BMCR,
+-			     bmcr | BMCR_ANRESTART);
+-		r = 0;
+-	}
++	if (bmcr & BMCR_ANENABLE)
++		r = b44_writephy(bp, MII_BMCR,
++				 bmcr | BMCR_ANRESTART);
+ 	spin_unlock_irq(&bp->lock);
  
- 	fb->irq = platform_get_irq(pdev, 0);
--	if (fb->irq <= 0) {
--		ret = -ENODEV;
-+	if (fb->irq < 0) {
-+		ret = fb->irq;
- 		goto err_no_irq;
- 	}
- 
+ 	return r;
 -- 
 2.40.1
 
