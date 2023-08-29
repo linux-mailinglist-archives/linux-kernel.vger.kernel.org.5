@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA2A78CC96
+	by mail.lfdr.de (Postfix) with ESMTP id 8916278CC97
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238693AbjH2TAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238753AbjH2TAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Aug 2023 15:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238741AbjH2TAG (ORCPT
+        with ESMTP id S238879AbjH2TAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:00:06 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABF6FC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:00:01 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fee5ddc23eso44517665e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693335599; x=1693940399; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MQv+UTRFhSMbpmPTehmGRoiqZutf1xuJxcjK90giC9U=;
-        b=pgTdcyDAn0AeDDMc4PckIzMULtg5iBBaxWOEH5nUz6RPYAIRtZZLP1hGoVf0lJcBfY
-         /t2WW/tndrmbyV3hmP7MhbSsKHyBb4FJWBapKlTV0IU3n+a17CiMUYv3mjXHGMDV1yfL
-         x5GQFQUVWArw5kLMtLYpPN0qsQFZeitONFussFJ6ILAFWe9yflTmAxlZoAdGXLrijv+s
-         e6VpMcBtL+dpeDPUBjBe8e8c5CA3XKIisVWWk9xBMoVT5vxIPrbYfg5buCu7AttITbL6
-         JPQ1iuyHcZGBIzqyJPi2A4n8Gx5uYK3LLwOC75G3CGmg0H4jzWqz0DVQJ7rowoTZjGwd
-         8NdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693335599; x=1693940399;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MQv+UTRFhSMbpmPTehmGRoiqZutf1xuJxcjK90giC9U=;
-        b=INU3YcdoUNHVJUF0RqihJtPa8c6UblLvJAnYILFwNHZWW7Ms5ilkFb07HKoqs+Mgz/
-         OcCyeR4LuaaFIqjcHW+jeewQQF7eqz2QTzS/2v+YfV2eBhnsmZTqxS5Re38PJrogFN8B
-         NdIwZl7uabwmNxzfv7HSM/WoruBi62ux19A7r6MRJ6NJS2OynykZ8HhWpg70bjYCbQQC
-         VhVHQW7PXR1pG3q54MkHdS89KtvBgrxa+4OhUdzZnMZv/djEfaLXas1B04H+niaa/art
-         KOCsWgCtzoP9nvgOpDeB0GGdJnFi1fOldHweBgaT9w5nOnEh/C9UpH1q9f6CJcyb8Qqt
-         6jDA==
-X-Gm-Message-State: AOJu0Yy2AiZC+9ULDZVbsOMo5hGj7V5e7whAcVyzT0BCdZokHLBL/YY7
-        LOXnZxF1K3uotHU4+75irgM=
-X-Google-Smtp-Source: AGHT+IEl1Y1WZSjpQoeZ02EP8mF4Ci+9vijI2tQ2jF6UR3othcVr1cSUb4OOmsaHTulZceiUMRVmUQ==
-X-Received: by 2002:a05:600c:b4e:b0:3fe:dcd0:2e10 with SMTP id k14-20020a05600c0b4e00b003fedcd02e10mr133543wmr.17.1693335599449;
-        Tue, 29 Aug 2023 11:59:59 -0700 (PDT)
-Received: from gmail.com (1F2EF3C0.nat.pool.telekom.hu. [31.46.243.192])
-        by smtp.gmail.com with ESMTPSA id f19-20020a1c6a13000000b003fefcbe7fa8sm14711171wmc.28.2023.08.29.11.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 11:59:58 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 29 Aug 2023 20:59:56 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, dapeng1.mi@linux.intel.com,
-        zhenyuw@linux.intel.com
-Subject: Re: [PATCH 0/6] Cleanup Intel PMU initialization code
-Message-ID: <ZO5ALPl/Li+Fr1SC@gmail.com>
-References: <20230829125806.3016082-1-kan.liang@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829125806.3016082-1-kan.liang@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 15:00:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF0BCDB;
+        Tue, 29 Aug 2023 12:00:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6126E64DAE;
+        Tue, 29 Aug 2023 19:00:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C8E43C433C8;
+        Tue, 29 Aug 2023 19:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693335604;
+        bh=aCgkYGY98g3EKBI0AJ7Uxw1j4MUR/DcCFtg+btnL2Xc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=IW8TZmS890jMqMNm5Q6/CJKBTazwbi60z3Cwwm3M5OTt2SRJiX2EUvhgIfLKHwUCC
+         /Xkm2RhJx1A6pYn88uE61DwKbkOnFdj+y23s5BWjBt37dFI99AhK9dJSVfEQBrAUek
+         eRmvGO+ttq9ymb4xZ1GZRcslzT0AgffS0CBMEV1aJ0tQwf2Nbt2biSjokTXJebQ2ZE
+         W/ZQhXlj7acfwC1zvDgw16Q0ps+gD6Hycg8qAQ4AklOuLXCueOAD0R9Pdslk7tQhDu
+         ETpglB8932/S9nbh9puxI0kpCXQC56xKdGzkTDdVKSaH962I18p5lCHOFAGLQAVb9F
+         yLer1mCl0Vrpg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B0EFEE26D49;
+        Tue, 29 Aug 2023 19:00:04 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto Update for 6.6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
+References: <YgMn+1qQPQId50hO@gondor.apana.org.au>
+ <YjE5yThYIzih2kM6@gondor.apana.org.au>
+ <YkUdKiJflWqxBmx5@gondor.apana.org.au>
+ <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
+ <Yui+kNeY+Qg4fKVl@gondor.apana.org.au>
+ <Yzv0wXi4Uu2WND37@gondor.apana.org.au>
+ <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
+ <Y/MDmL02XYfSz8XX@gondor.apana.org.au>
+ <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
+ <ZJ0RSuWLwzikFr9r@gondor.apana.org.au> <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.6-p1
+X-PR-Tracked-Commit-Id: 85b9bf9a514d991fcecb118d0a8a35e754ff9265
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 68cf01760bc0891074e813b9bb06d2696cac1c01
+Message-Id: <169333560469.15412.17633919990369937789.pr-tracker-bot@kernel.org>
+Date:   Tue, 29 Aug 2023 19:00:04 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Mon, 28 Aug 2023 17:22:20 +0800:
 
-* kan.liang@linux.intel.com <kan.liang@linux.intel.com> wrote:
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.6-p1
 
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> The patch set is to clean up the Intel PMU initialization code. There is
-> no functional change.
-> 
-> Kan Liang (6):
->   perf/x86/intel: Use the common uarch name for the shared functions
->   perf/x86/intel: Factor out the initialization code for SPR
->   perf/x86/intel: Factor out the initialization code for ADL e-core
->   perf/x86/intel: Apply the common initialization code for ADL
->   perf/x86/intel: Cleanup the hybrid CPU type
->   perf/x86/intel: Add common intel_pmu_init_hybrid
-> 
->  arch/x86/events/core.c       |   6 +-
->  arch/x86/events/intel/core.c | 397 ++++++++++++++++++-----------------
->  arch/x86/events/intel/ds.c   |   4 +-
->  arch/x86/events/perf_event.h |  37 ++--
->  4 files changed, 226 insertions(+), 218 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/68cf01760bc0891074e813b9bb06d2696cac1c01
 
-Applied, thanks.
+Thank you!
 
-	Ingo
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
