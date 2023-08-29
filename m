@@ -2,247 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BE278C446
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7F878C44B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbjH2Mak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 08:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        id S235423AbjH2McP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 08:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233660AbjH2Mag (ORCPT
+        with ESMTP id S235531AbjH2McL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:30:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEBEB9;
-        Tue, 29 Aug 2023 05:30:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C5F06562E;
-        Tue, 29 Aug 2023 12:30:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEA8FC433C8;
-        Tue, 29 Aug 2023 12:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693312232;
-        bh=kQz8n0/MK1lL1kYyZbVzmV8RmOo+hRfUy0GSC0bUaLQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Y4fdCOfAWo8eRPY7F6klj8SyB1mb49QMznl94AnQT1Og8Uq8R4s2VzwO4dlywgOtu
-         8pK6pPTa5z3cKd2nPwe/Q3UV3bhcIiAj3tjjecl1wtTTe+FsRJhHcWKzuPhexpToQK
-         DGfpwaQAAWTCZOPH1VyaM61LB3mj6pCh2tDfHj664gSC2ALWZWQ8KXSskIBH7WH+9y
-         NBowIkJJbZhl0n+Jw6Y1N6MgTHhb7Y6G43utREly4r0jfqm4JBohyxSlD3sIPuO4Z+
-         lRTRQLlY6K7xZWzkCL/q+J/GKsw15CARANOJJxzCT8Bcfot8frVJLgEguLeX1zz3mW
-         nMyBcWywpsvQA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qaxra-0092gH-C8;
-        Tue, 29 Aug 2023 13:30:30 +0100
-Date:   Tue, 29 Aug 2023 13:30:30 +0100
-Message-ID: <86zg2ado9l.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+        Tue, 29 Aug 2023 08:32:11 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749CEC3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:32:09 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-573675e6b43so1946674eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693312328; x=1693917128;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/eeGQZOZgf/VFrLfirDtZ7jaPLnwry16F2Zl406iUWw=;
+        b=f5nhnLL8+0mo0OICZLWGgBoBmkSgI0vCSvgafFWPOqelteEWNZGk6/ycmZ9V7bRE3S
+         dmQIl955d9ezZqXpqQ6oBftVVy5cxNyMUvCCgEKq00dJ4M/6SPLgnmjdpI20+NnSVHDb
+         y4r5SmEbvhh5m31AGz1Mc0436ar/lz1U6vXaCmLjdieG/tzTn2lQA0uEO5JfOI1EBpXD
+         nbtO3icGy0Piz+32pxN1ndiuk1eUb9M6YkPxz0TxCcV5RF21qBJ7zWFyUk5wC4buI0A/
+         C6b9zjO19Kj++rrzAajWB2pidDGJA2r2L8bq4xS6wbfVwbnYn3AWdMrfJ65Tx2LoPb4l
+         YIfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693312328; x=1693917128;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/eeGQZOZgf/VFrLfirDtZ7jaPLnwry16F2Zl406iUWw=;
+        b=CAQTeYY6Jl93UMXrTDaQdByXXs+rWSXcg73/y5idWiIpYtsrOEdzXJlTnjW8zFbCUK
+         E+aOY5P7ZSVcEc/dq8mQf8rAw9KMOzSHyghih13tp+Y7fEV8LI0UuDwmcyYWz3TCdESR
+         nMG526vq2C/bC2BABN2f9B8a7drJaPtXYSryncd3jdtU6ye2GTHut6jhjLld6UX0wDxz
+         6tHbkBA2ChixSVT0RVL0j6ve5gatwLN/K+Ej2x+Ul4U3u/YYfRWoGHY6z1bMtEctIwyq
+         w774HSLDYzkB0vhLqyGnjpgGGWZRGwruDGPS1BI1We+mCYQLnkLOKAQkYDMlq7wNiGeA
+         kVeg==
+X-Gm-Message-State: AOJu0YxcRBrgLMnomo7rFaeIARnGEQFyUUOavHZ5gbRYXx7nLvIEFVrj
+        Feystedazb1+S414SEDINggYog7ZUcgxwkUaMEzI7g==
+X-Google-Smtp-Source: AGHT+IEy5HlFBzwFRYUGxsn67gMYLLkQqUgpnkLX4wFSOFgSv18K1jKYMlNfiEOsrveXKrBKr09DzbKLVKHnwrLzYJw=
+X-Received: by 2002:a05:6358:921:b0:13c:dcbc:375c with SMTP id
+ r33-20020a056358092100b0013cdcbc375cmr11309549rwi.21.1693312328578; Tue, 29
+ Aug 2023 05:32:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+ <20230828192507.117334-4-bartosz.golaszewski@linaro.org> <cc35c729-df33-087b-2df4-95e8cc174ec6@linaro.org>
+In-Reply-To: <cc35c729-df33-087b-2df4-95e8cc174ec6@linaro.org>
+From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date:   Tue, 29 Aug 2023 14:31:57 +0200
+Message-ID: <CACMJSesDZw6i6jb05kY2iN=Qf3Ln5f6Yz5gdrkoFk86NnNv1Gg@mail.gmail.com>
+Subject: Re: [PATCH 03/11] firmware: qcom-scm: atomically assign and read the
+ global __scm pointer
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH v3 1/2] irqchip/qcom-pdc: Add support for v3.2 HW
-In-Reply-To: <20230829092119.1017194-2-dmitry.baryshkov@linaro.org>
-References: <20230829092119.1017194-1-dmitry.baryshkov@linaro.org>
-        <20230829092119.1017194-2-dmitry.baryshkov@linaro.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dmitry.baryshkov@linaro.org, agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, tglx@linutronix.de, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, neil.armstrong@linaro.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 10:21:18 +0100,
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
-> 
-> From: Neil Armstrong <neil.armstrong@linaro.org>
-> 
-> Starting from HW version 3.2 the IRQ_ENABLE bit has moved to the
-> IRQ_i_CFG register and requires a change of the driver to avoid
-> writing into an undefined register address.
-> 
-> Get the HW version from registers and set the IRQ_ENABLE bit to the
-> correct register depending on the HW version.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> [DB: fix crash on sm8150 DTs which listed short PDC region]
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/irqchip/qcom-pdc.c | 73 ++++++++++++++++++++++++++++++--------
->  1 file changed, 59 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-> index a32c0d28d038..f9f44b494b1d 100644
-> --- a/drivers/irqchip/qcom-pdc.c
-> +++ b/drivers/irqchip/qcom-pdc.c
-> @@ -22,9 +22,22 @@
->  
->  #define PDC_MAX_GPIO_IRQS	256
->  
-> +/* Valid only on HW version < 3.2 */
->  #define IRQ_ENABLE_BANK		0x10
->  #define IRQ_i_CFG		0x110
->  
-> +/* Valid only on HW version >= 3.2 */
-> +#define IRQ_i_CFG_IRQ_ENABLE	3
-> +
-> +#define IRQ_i_CFG_TYPE_MASK	GENMASK(2, 0)
-> +
-> +#define PDC_VERSION		0x1000
+On Tue, 29 Aug 2023 at 09:59, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 28/08/2023 21:24, Bartosz Golaszewski wrote:
+> > Checking for the availability of SCM bridge can happen from any context.
+> > It's only by chance that we haven't run into concurrency issues but with
+> > the upcoming SHM Bridge driver that will be initiated at the same
+> > initcall level, we need to assure the assignment and readback of the
+> > __scm pointer is atomic.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  drivers/firmware/qcom_scm.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> > index 980fcfa20b9f..422de70faff8 100644
+> > --- a/drivers/firmware/qcom_scm.c
+> > +++ b/drivers/firmware/qcom_scm.c
+> > @@ -1331,7 +1331,7 @@ static int qcom_scm_find_dload_address(struct device *dev, u64 *addr)
+> >   */
+> >  bool qcom_scm_is_available(void)
+> >  {
+> > -     return !!__scm;
+> > +     return !!READ_ONCE(__scm);
+> >  }
+> >  EXPORT_SYMBOL(qcom_scm_is_available);
+> >
+> > @@ -1477,8 +1477,8 @@ static int qcom_scm_probe(struct platform_device *pdev)
+> >       if (ret)
+> >               return ret;
+> >
+> > -     __scm = scm;
+> > -     __scm->dev = &pdev->dev;
+> > +     scm->dev = &pdev->dev;
+> > +     WRITE_ONCE(__scm, scm);
+>
+> Your re-ordering is not effective here, I think. I don't understand it's
+> purpose exactly, but scm->dev assignment is not WRITE_ONCE(), thus it
+> can be reordered:
+>
+> "compiler is also forbidden from reordering successive instances of
+> READ_ONCE and WRITE_ONCE" <- so compiler is not forbidden to reorder
+> other stuff.
+>
+> "Ensuring that the compiler does not fold, spindle, or otherwise
+> mutilate accesses that either do not require ordering or that interact"
+> <- which means you do not require ordering here.
+>
 
-That's an offset, right? Maybe spelling it as such would make this
-more readable...
+Hmm, I had the list_add() implementation in mind as well as examples
+from https://www.kernel.org/doc/Documentation/memory-barriers.txt and
+was under the impression that WRITE_ONCE() here is enough. I need to
+double check it.
 
-> +
-> +/* Notable PDC versions */
-> +enum {
-> +	PDC_VERSION_3_2	= 0x30200,
-
-... specially when reading this (why is it all of a sudden an enum?).
-
-> +};
-> +
->  struct pdc_pin_region {
->  	u32 pin_base;
->  	u32 parent_base;
-> @@ -37,6 +50,7 @@ static DEFINE_RAW_SPINLOCK(pdc_lock);
->  static void __iomem *pdc_base;
->  static struct pdc_pin_region *pdc_region;
->  static int pdc_region_cnt;
-> +static unsigned int pdc_version;
->  
->  static void pdc_reg_write(int reg, u32 i, u32 val)
->  {
-> @@ -53,15 +67,22 @@ static void pdc_enable_intr(struct irq_data *d, bool on)
->  	int pin_out = d->hwirq;
->  	unsigned long enable;
->  	unsigned long flags;
-> -	u32 index, mask;
-> -
-> -	index = pin_out / 32;
-> -	mask = pin_out % 32;
->  
->  	raw_spin_lock_irqsave(&pdc_lock, flags);
-> -	enable = pdc_reg_read(IRQ_ENABLE_BANK, index);
-> -	__assign_bit(mask, &enable, on);
-> -	pdc_reg_write(IRQ_ENABLE_BANK, index, enable);
-> +	if (pdc_version < PDC_VERSION_3_2) {
-> +		u32 index, mask;
-> +
-> +		index = pin_out / 32;
-> +		mask = pin_out % 32;
-> +
-> +		enable = pdc_reg_read(IRQ_ENABLE_BANK, index);
-> +		__assign_bit(mask, &enable, on);
-> +		pdc_reg_write(IRQ_ENABLE_BANK, index, enable);
-> +	} else {
-> +		enable = pdc_reg_read(IRQ_i_CFG, pin_out);
-> +		__assign_bit(IRQ_i_CFG_IRQ_ENABLE, &enable, on);
-> +		pdc_reg_write(IRQ_i_CFG, pin_out, enable);
-> +	}
->  	raw_spin_unlock_irqrestore(&pdc_lock, flags);
->  }
->  
-> @@ -142,6 +163,7 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
->  	}
->  
->  	old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
-> +	pdc_type |= (old_pdc_type & ~IRQ_i_CFG_TYPE_MASK);
->  	pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
->  
->  	ret = irq_chip_set_type_parent(d, type);
-> @@ -246,7 +268,7 @@ static const struct irq_domain_ops qcom_pdc_ops = {
->  static int pdc_setup_pin_mapping(struct device_node *np)
->  {
->  	int ret, n, i;
-> -	u32 irq_index, reg_index, val;
-> +	unsigned long val;
->  
->  	n = of_property_count_elems_of_size(np, "qcom,pdc-ranges", sizeof(u32));
->  	if (n <= 0 || n % 3)
-> @@ -277,28 +299,51 @@ static int pdc_setup_pin_mapping(struct device_node *np)
->  			return ret;
->  
->  		for (i = 0; i < pdc_region[n].cnt; i++) {
-> -			reg_index = (i + pdc_region[n].pin_base) >> 5;
-> -			irq_index = (i + pdc_region[n].pin_base) & 0x1f;
-> -			val = pdc_reg_read(IRQ_ENABLE_BANK, reg_index);
-> -			val &= ~BIT(irq_index);
-> -			pdc_reg_write(IRQ_ENABLE_BANK, reg_index, val);
-> +			if (pdc_version < PDC_VERSION_3_2) {
-> +				u32 irq_index, reg_index;
-> +
-> +				reg_index = (i + pdc_region[n].pin_base) >> 5;
-> +				irq_index = (i + pdc_region[n].pin_base) & 0x1f;
-> +				val = pdc_reg_read(IRQ_ENABLE_BANK, reg_index);
-> +				__assign_bit(irq_index, &val, 0);
-> +				pdc_reg_write(IRQ_ENABLE_BANK, reg_index, val);
-> +			} else {
-> +				u32 irq;
-> +
-> +				irq = i + pdc_region[n].pin_base;
-> +				val = pdc_reg_read(IRQ_i_CFG, irq);
-> +				__assign_bit(IRQ_i_CFG_IRQ_ENABLE, &val,  0);
-> +				pdc_reg_write(IRQ_i_CFG, irq, val);
-> +			}
-
-This is a bit backwards. The PDC version doesn't change within the
-loop. But more importantly, this is a rewrite of the pdc_enable_intr()
-helper, only taking raw indices instead of an irq_data pointer.
-
-Surely this can be written in a better way.
-
->  		}
->  	}
->  
->  	return 0;
->  }
->  
-> +#define QCOM_PDC_SIZE 0x30000
-> +
->  static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
->  {
->  	struct irq_domain *parent_domain, *pdc_domain;
-> +	struct resource res;
-> +	resource_size_t res_size;
-
-nit: swapping these two lines will make things vaguely more readable.
-
->  	int ret;
->  
-> -	pdc_base = of_iomap(node, 0);
-> +	/* compat with old sm8150 DT which had very small region for PDC */
-> +	if (of_address_to_resource(node, 0, &res))
-> +		return -EINVAL;
-> +
-> +	res_size = max_t(resource_size_t, resource_size(&res), QCOM_PDC_SIZE);
-
-This probably deserves a warning so that DTs that do not have the
-correct size get fixed.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Bart
