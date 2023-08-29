@@ -2,175 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 307F678C338
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC24478C33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjH2LUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 07:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S231656AbjH2LW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjH2LU3 (ORCPT
+        with ESMTP id S231975AbjH2LWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:20:29 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 49F53BD;
-        Tue, 29 Aug 2023 04:20:26 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37TBJniO6021402, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37TBJniO6021402
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Aug 2023 19:19:49 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 29 Aug 2023 19:20:13 +0800
-Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 29 Aug 2023 19:20:13 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
- 15.1.2375.32 via Frontend Transport; Tue, 29 Aug 2023 19:20:13 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     MyungJoo Ham <myungjoo.ham@samsung.com>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] dt-bindings: extcon: Add Realtek DHC RTD SoC Type-C
-Date:   Tue, 29 Aug 2023 19:20:05 +0800
-Message-ID: <20230829112011.20529-2-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230829112011.20529-1-stanley_chang@realtek.com>
-References: <20230829112011.20529-1-stanley_chang@realtek.com>
+        Tue, 29 Aug 2023 07:22:41 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2899FEC;
+        Tue, 29 Aug 2023 04:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PELaoVV7DrLQuw/lZUSO2dRCS1U1CaoichWPb1NElTg=; b=mpIHSsXqZ4rZGh/CuOhBIfWINX
+        4ECohFkyxlPwfm2JVgHB3l1f74zk0rtZvaBaLrkD0qEw5xRRz+LyjqEP82k2ACDwODPvJgOflO5Mn
+        08NaEDIHMdsZEVrhYVxJW2EZdgAKCUrt0lGfXHluZ77fTCTJKSCd5pcMwXzZV68sljBg6rD89SL6Z
+        2LF91nyxSuXzQCwR3nunWdownszEM6gjvXbHw46muymwLS+cuWA8oruoey7Qz3ZMPbiymHE82hdnl
+        hXsNKOrj+Im/OWSZOcSa9+NjYtJuGq4XLmONtTDhgU3QOTouo83KhJKbF7exisFdVQD9rddqGtVcq
+        6h3dHBzw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55738)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qawmw-0000OF-38;
+        Tue, 29 Aug 2023 12:21:39 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qawmn-0004bN-Q4; Tue, 29 Aug 2023 12:21:29 +0100
+Date:   Tue, 29 Aug 2023 12:21:29 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 00/22] convert to devm_stmmac_probe_config_dt
+Message-ID: <ZO3UuY9jKz8VenGA@shell.armlinux.org.uk>
+References: <20230829104033.955-1-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS02.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829104033.955-1-jszhang@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the device-tree bindings for Realtek SoCs Type-C.
-Realtek DHC (digital home center) RTD SoCs support a Type-C module.
+On Tue, Aug 29, 2023 at 06:40:11PM +0800, Jisheng Zhang wrote:
+> Russell pointed out there's a new devm_stmmac_probe_config_dt()
+> helper now when reviewing my starfive gmac error handling patch[1].
+> After greping the code, this nice helper was introduced by Bartosz in
+> [2], I think it's time to convert all dwmac users to this helper and
+> finally complete the TODO in [2] "but once all users of the old
+> stmmac_pltfr_remove() are converted to the devres helper, it will be
+> renamed back to stmmac_pltfr_remove() and the no_dt function removed."
 
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
----
-v1 to v2 change:
-  1. moved this binding from extcon to usb.
-  2. removed the property of pinctrl.
-  3. revised the properties of nvmem and gpio.
-  4. added connector node.
-  5. revised the example.
----
- .../bindings/usb/realtek,rtd-type-c.yaml      | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/usb/realtek,rtd-type-c.yaml
+I think a useful final patch may be to make stmmac_probe_config_dt()
+static so there aren't any new uses of stmmac_probe_config_dt().
 
-diff --git a/Documentation/devicetree/bindings/usb/realtek,rtd-type-c.yaml b/Documentation/devicetree/bindings/usb/realtek,rtd-type-c.yaml
-new file mode 100644
-index 000000000000..6142b0b5b534
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/realtek,rtd-type-c.yaml
-@@ -0,0 +1,82 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2023 Realtek Semiconductor Corporation
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/realtek,rtd-type-c.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Realtek DHC RTD SoCs USB Type-C Connector detection
-+
-+maintainers:
-+  - Stanley Chang <stanley_chang@realtek.com>
-+
-+description:
-+  Realtek digital home center (DHC) RTD series SoCs include a type c module.
-+  This module is able to detect the state of type c connector.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - realtek,rtd1295-type-c
-+      - realtek,rtd1312c-type-c
-+      - realtek,rtd1315e-type-c
-+      - realtek,rtd1319-type-c
-+      - realtek,rtd1319d-type-c
-+      - realtek,rtd1395-type-c
-+      - realtek,rtd1619-type-c
-+      - realtek,rtd1619b-type-c
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  nvmem-cell-names:
-+    items:
-+      - const: usb-cal
-+
-+  nvmem-cells:
-+    maxItems: 1
-+    description:
-+      The phandle to nvmem cell that contains the trimming data.
-+      The type c parameter trimming data specified via efuse.
-+      If unspecified, default value is used.
-+
-+  realtek,rd-ctrl-gpios:
-+    description: The gpio node to control external Rd on board.
-+    maxItems: 1
-+
-+  connector:
-+    $ref: /schemas/connector/usb-connector.yaml#
-+    description: Properties for usb c connector.
-+    type: object
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    type-c@7220 {
-+        compatible = "realtek,rtd1619b-type-c";
-+        reg = <0x7220 0x20>;
-+        interrupts = <0 60 IRQ_TYPE_LEVEL_HIGH>;
-+
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&usb_cc1_pins>, <&usb_cc2_pins>;
-+        nvmem-cells = <&otp_usb_cal>;
-+        nvmem-cell-names = "usb-cal";
-+
-+        connector {
-+            compatible = "usb-c-connector";
-+            label = "USB-C";
-+            data-role = "dual";
-+            power-role = "dual";
-+        };
-+    };
+Also note that net-next is now closed, so please wait until after -rc1
+for net-next to re-open, or post as RFC. Thanks.
+
 -- 
-2.34.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
