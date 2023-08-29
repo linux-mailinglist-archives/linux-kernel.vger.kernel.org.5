@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC0E78C58F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A9678C5E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbjH2Nds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
+        id S236437AbjH2Nei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236210AbjH2Ndd (ORCPT
+        with ESMTP id S236208AbjH2Ndc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:33:33 -0400
+        Tue, 29 Aug 2023 09:33:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D6ECCF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5D2CCE;
         Tue, 29 Aug 2023 06:33:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D00A6574C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E027C6574D;
+        Tue, 29 Aug 2023 13:32:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21693C433CD;
         Tue, 29 Aug 2023 13:32:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB00C433CB;
-        Tue, 29 Aug 2023 13:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693315954;
-        bh=24D+O0ROl68RuyCISL7V7d9L9V1jcNP9honW3jJuhUs=;
+        s=k20201202; t=1693315956;
+        bh=8BJat/PnflBGy2w/90xhTxQ3qWxwanl2fKWzgHIxuY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qgm5eoM4cTdmz4vncnGIMyHoqPInDfSPCKHJr5e/3bGWaAysFZj5Z9ErvuZqIIyt/
-         JKSwe3v1z+oFEfmC/KoakXVqivDtAXTlQXXNRYwOWkr9Yl5kCKXJ52+pVuEvSWqMCS
-         zvg5JJtPWv4E2uHo0c/o9wDMMSk4nehC6alsABAWe3pFBpFQouFYSvSpKP62KgjPjO
-         IshuOYxxkyHltHtSSSP0sB1tvwgJiWawUYwlo4zMJ904aAIA4cP57l6Uyo3Ouur0WP
-         H9RkgaUxN/8ziesGvwpu5Bgy6Ox6At3KhmqhaokOJclEe/9Pxx5rJuZfbL3zlKwZYH
-         AULC9OdoIdmgQ==
+        b=htrP20m58TDxn/rMgMu01M+GIejvxVRGkXR/OlwBXw5WYsRptnoUMlSQGRulTAHJE
+         MW7Y2cmddHebn2ExafjIsh//HZ4400+/gOpXJdmv6TLQ2XLYasqYCrlCCjRUGxJesm
+         MD+O6Y1jBfI3jvdZnsclCpNt7w9IPQpmfROar3Qs1/UIXiK7nNVNfRzpTRWBkzH/o7
+         wed5StNis6mSsNDaPX/7p0A2aRj/J68neKHqSdpenrSTKupRtrQb5bnAh1xq+YMWkP
+         1BYCsQKKnbBWrIgc0Mctk5dON5v6+qx+g/eJRBeSyDoIPYMRjuHVHv2vnrLi5FD48s
+         0BgnuE5uv+ONg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuming Fan <shumingf@realtek.com>,
-        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.4 12/17] ASoC: rt1308-sdw: fix random louder sound
-Date:   Tue, 29 Aug 2023 09:31:59 -0400
-Message-Id: <20230829133211.519957-12-sashal@kernel.org>
+Cc:     Carlos Song <carlos.song@nxp.com>,
+        Dong Aisheng <Aisheng.dong@nxp.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        aisheng.dong@nxp.com, shawnguo@kernel.org,
+        linux-i2c@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.4 13/17] i2c: imx-lpi2c: return -EINVAL when i2c peripheral clk doesn't work
+Date:   Tue, 29 Aug 2023 09:32:00 -0400
+Message-Id: <20230829133211.519957-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230829133211.519957-1-sashal@kernel.org>
 References: <20230829133211.519957-1-sashal@kernel.org>
@@ -59,67 +62,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Carlos Song <carlos.song@nxp.com>
 
-[ Upstream commit 37aba3190891d4de189bd5192ee95220e295f34d ]
+[ Upstream commit b610c4bbd153c2cde548db48559e170905d7c369 ]
 
-This patch uses a vendor register to check whether the system hibernated ever.
-The driver will only set the preset when the driver brings up or the system hibernated.
-It will avoid the unknown issue that makes the speaker output louder and can't control the volume.
+On MX8X platforms, the default clock rate is 0 if without explicit
+clock setting in dts nodes. I2c can't work when i2c peripheral clk
+rate is 0.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com
-Link: https://lore.kernel.org/r/20230811093822.37573-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org
+Add a i2c peripheral clk rate check before configuring the clock
+register. When i2c peripheral clk rate is 0 and directly return
+-EINVAL.
+
+Signed-off-by: Carlos Song <carlos.song@nxp.com>
+Acked-by: Dong Aisheng <Aisheng.dong@nxp.com>
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt1308-sdw.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index 1797af824f60b..e2699c0b117be 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -52,6 +52,7 @@ static bool rt1308_volatile_register(struct device *dev, unsigned int reg)
- 	case 0x300a:
- 	case 0xc000:
- 	case 0xc710:
-+	case 0xcf01:
- 	case 0xc860 ... 0xc863:
- 	case 0xc870 ... 0xc873:
- 		return true;
-@@ -213,7 +214,7 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
- {
- 	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
- 	int ret = 0;
--	unsigned int tmp;
-+	unsigned int tmp, hibernation_flag;
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index 4d24ceb57ee74..338171f76daf7 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -209,6 +209,9 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
+ 	lpi2c_imx_set_mode(lpi2c_imx);
  
- 	if (rt1308->hw_init)
- 		return 0;
-@@ -242,6 +243,10 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
- 
- 	pm_runtime_get_noresume(&slave->dev);
- 
-+	regmap_read(rt1308->regmap, 0xcf01, &hibernation_flag);
-+	if ((hibernation_flag != 0x00) && rt1308->first_hw_init)
-+		goto _preset_ready_;
+ 	clk_rate = clk_get_rate(lpi2c_imx->clks[0].clk);
++	if (!clk_rate)
++		return -EINVAL;
 +
- 	/* sw reset */
- 	regmap_write(rt1308->regmap, RT1308_SDW_RESET, 0);
- 
-@@ -282,6 +287,12 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
- 	regmap_write(rt1308->regmap, 0xc100, 0xd7);
- 	regmap_write(rt1308->regmap, 0xc101, 0xd7);
- 
-+	/* apply BQ params */
-+	rt1308_apply_bq_params(rt1308);
-+
-+	regmap_write(rt1308->regmap, 0xcf01, 0x01);
-+
-+_preset_ready_:
- 	if (rt1308->first_hw_init) {
- 		regcache_cache_bypass(rt1308->regmap, false);
- 		regcache_mark_dirty(rt1308->regmap);
+ 	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
+ 		filt = 0;
+ 	else
 -- 
 2.40.1
 
