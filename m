@@ -2,234 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413E678BE1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 07:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96BF78BE22
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbjH2F66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 01:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S232328AbjH2GAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbjH2F6h (ORCPT
+        with ESMTP id S233469AbjH2F7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 01:58:37 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AE7109;
-        Mon, 28 Aug 2023 22:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1693288708;
-        bh=18HxPnJLRqLXAf/HDq0Tgm0vwcboajO3NobGWwh33YI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kJmNcz7qtycLggFnW5Vzqp2a1uZ80U9zzkYbCTnuyqLhIi0tCNsolxLmBQqjjHcCl
-         u28te1FFPyA5nXYscGW3qe8H6r0tUMrgCg7cusnuWAkxe2c479x17ZDcyjQgEx7f7I
-         X7EItS0tGTKMojiRiJ0AzJFKHnQbIp1qK1Fr9oXAqqxsieq6L7a11kpqjJBWNj338z
-         vKS3KeUY881IRxc10fYiF0M/E/U/z6MXKkkPIa7DfC3icqJyVKd8kWdnUoAzcdps0k
-         PQbeJLpCXxjDpYvs5iwVFmCGJUeNc83JNtbC/o8ZMntNoI/uvZoVA4e8FFdaH4KF5k
-         e40FVdhWu3eWw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RZcDN5Kk3z4wd0;
-        Tue, 29 Aug 2023 15:58:28 +1000 (AEST)
-Date:   Tue, 29 Aug 2023 15:58:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: boot failure after merge of the bitmap tree
-Message-ID: <20230829155824.062e861f@canb.auug.org.au>
+        Tue, 29 Aug 2023 01:59:38 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54741A1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 22:59:34 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf1935f6c2so26616165ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 22:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693288774; x=1693893574; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uw7aXMxiE8vTFTPymrMp+MvNaW+lEP6ixS9BnwKSDuM=;
+        b=vT5lY24HH66FH/JjN17T6am4JNeOJDWVS4kpVRwOz3KOHDo5CWyoQfNy4PWUYzji/s
+         4iaRVwDhxuZ8cjS4Wq/9bP6QLYLSTGR0qp5yZRZpCLBVwswgsJUxOrCbd/hMswZQJruG
+         /lonPdI0Vj3xxWRd4jI7fjwgXymxM1PP8e3Ebt2rv2YbF9W/GT5hLcEY6B0vLnSPBf3c
+         3IxygHrGdord+J8WHoZkDYx2WWQH0Foj+c1SFkRmA/18r7gd9HCm1V1UAVK9b0aDFT9M
+         5+23Q2+oOlKwpBH4UMEdvuPCMGy5T/qDZlFGQ51zUAwb9goSF6uIHw1zEs2D32d+ugwK
+         tn9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693288774; x=1693893574;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uw7aXMxiE8vTFTPymrMp+MvNaW+lEP6ixS9BnwKSDuM=;
+        b=IkvQHowjNRclvzANz6N0IKHznJ0GyZCtqy1a6w3gDf7+e0SgIJ1PP1rbyPyqxDnE+D
+         Fc6ai4gT0g7eeU9hJxz/SAjT0yIOsdjOsKQUtW4IsR3TERPdwF6hyZXnYiJRfsJlmoup
+         XMji86qqTOMnFnoODjepL5VvUF5lb0/WclObeI3IH7jFP1crbjZ7UL751Fi/5Hlyrfbr
+         gM23g/Uoe17+CqYoQ3MWWbPAtWahysbjMmMco6TxPdeSWW4X7zWTyS2h1fDvyA/r0k86
+         8rv1zCovKzzcwvt5MTAz/L+rbrgAoWn9301NEriU1YVuT0FK+dRWQqmCSxNexVdSpr/f
+         cvFg==
+X-Gm-Message-State: AOJu0YzJJc6/29hI4gBSo/EpenKt5F08TIULLvzpZonACiSLpFG7BIEu
+        LXuEPfiPF6c+OpIWlXcC9cU/AA==
+X-Google-Smtp-Source: AGHT+IHZsexYBSOXCaMDIndYB6MxZkA9lTswJOf40JwCBZROwG+VB0VO+dmFeJSWvWhXpOTthlEp9A==
+X-Received: by 2002:a17:903:22cc:b0:1bb:fcb9:f85 with SMTP id y12-20020a17090322cc00b001bbfcb90f85mr2331114plg.32.1693288774027;
+        Mon, 28 Aug 2023 22:59:34 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id x19-20020a170902821300b001bdd68b3f4bsm8365105pln.295.2023.08.28.22.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 22:59:32 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 11:29:30 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sumit Gupta <sumitg@nvidia.com>
+Cc:     rafael@kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bbasu@nvidia.com
+Subject: Re: [Patch] cpufreq: tegra194: fix warning due to missing opp_put
+Message-ID: <20230829055930.csddryecm72ehz3o@vireshk-i7>
+References: <20230828120959.24680-1-sumitg@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vWxVTtOxvxUWsB2n0vFTcc_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828120959.24680-1-sumitg@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vWxVTtOxvxUWsB2n0vFTcc_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 28-08-23, 17:39, Sumit Gupta wrote:
+> Fix the warning due to missing dev_pm_opp_put() call and hence
+> wrong refcount value. This causes below warning message when
+> trying to remove the module.
+> 
+>  Call trace:
+>   dev_pm_opp_put_opp_table+0x154/0x15c
+>   dev_pm_opp_remove_table+0x34/0xa0
+>   _dev_pm_opp_cpumask_remove_table+0x7c/0xbc
+>   dev_pm_opp_of_cpumask_remove_table+0x10/0x18
+>   tegra194_cpufreq_exit+0x24/0x34 [tegra194_cpufreq]
+>   cpufreq_remove_dev+0xa8/0xf8
+>   subsys_interface_unregister+0x90/0xe8
+>   cpufreq_unregister_driver+0x54/0x9c
+>   tegra194_cpufreq_remove+0x18/0x2c [tegra194_cpufreq]
+>   platform_remove+0x24/0x74
+>   device_remove+0x48/0x78
+>   device_release_driver_internal+0xc8/0x160
+>   driver_detach+0x4c/0x90
+>   bus_remove_driver+0x68/0xb8
+>   driver_unregister+0x2c/0x58
+>   platform_driver_unregister+0x10/0x18
+>   tegra194_ccplex_driver_exit+0x14/0x1e0 [tegra194_cpufreq]
+>   __arm64_sys_delete_module+0x184/0x270
+> 
+> Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/cpufreq/tegra194-cpufreq.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
+> index 88ef5e57ccd0..f63f7a6c2034 100644
+> --- a/drivers/cpufreq/tegra194-cpufreq.c
+> +++ b/drivers/cpufreq/tegra194-cpufreq.c
+> @@ -454,6 +454,8 @@ static int tegra_cpufreq_init_cpufreq_table(struct cpufreq_policy *policy,
 
-Hi all,
+You need to put the OPP here, even if this fails.
 
-After merging the bitmap tree, today's linux-next boot test (powerpc
-pseries_le_defconfig) failed like this:
+>  		if (ret < 0)
+>  			return ret;
+>  
+> +		dev_pm_opp_put(opp);
+> +
+>  		freq_table[j].driver_data = pos->driver_data;
+>  		freq_table[j].frequency = pos->frequency;
+>  		j++;
+> -- 
+> 2.17.1
 
-Running code patching self-tests ...
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at arch/powerpc/sysdev/msi_bitmap.c:260 test_of_node=
-+0x234/0x280
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-13305-g081ae3a78176 #1
-Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf0000=
-04 of:SLOF,HEAD pSeries
-NIP:  c00000000201d6a4 LR: c00000000201d630 CTR: 0000000000000002
-REGS: c00000000478b730 TRAP: 0700   Not tainted  (6.5.0-13305-g081ae3a78176)
-MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 44000448  XER: 20000=
-000
-CFAR: c00000000201d674 IRQMASK: 0=20
-GPR00: c00000000201d630 c00000000478b9d0 c000000001588a00 0000000000000000=
-=20
-GPR04: c000000004ef6340 ff03f0f1fffeffff ffffffff0f000000 0000feff0f000000=
-=20
-GPR08: 0000000000000010 0000000000000001 0000000000000000 0000000000000000=
-=20
-GPR12: 0000000000000008 c000000002b00000 c000000000011188 0000000000000000=
-=20
-GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR24: 0000000000000000 c00000000200343c cccccccccccccccd c000000002090868=
-=20
-GPR28: 0000000000000000 c0000000020908a8 c00000000478b9f8 c00000000478bb50=
-=20
-NIP [c00000000201d6a4] test_of_node+0x234/0x280
-LR [c00000000201d630] test_of_node+0x1c0/0x280
-Call Trace:
-[c00000000478b9d0] [c00000000201d630] test_of_node+0x1c0/0x280 (unreliable)
-[c00000000478bbb0] [c00000000201d9c4] msi_bitmap_selftest+0x2d4/0x308
-[c00000000478bc50] [c000000000010bc0] do_one_initcall+0x80/0x300
-[c00000000478bd20] [c000000002004998] kernel_init_freeable+0x30c/0x3b4
-[c00000000478bdf0] [c0000000000111b0] kernel_init+0x30/0x1a0
-[c00000000478be50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0x1c
---- interrupt: 0 at 0x0
-NIP:  0000000000000000 LR: 0000000000000000 CTR: 0000000000000000
-REGS: c00000000478be80 TRAP: 0000   Not tainted  (6.5.0-13305-g081ae3a78176)
-MSR:  0000000000000000 <>  CR: 00000000  XER: 00000000
-CFAR: 0000000000000000 IRQMASK: 0=20
-GPR00: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR12: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR28: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-NIP [0000000000000000] 0x0
-LR [0000000000000000] 0x0
---- interrupt: 0
-Code: 40820018 7d273011 4102ffdc 4082000c 39200000 48000010 7d2903f4 7d4a51=
-10 7d295378 7d290034 5529d97e 69290001 <0b090000> 38610160 4a0a01dd e861016=
-8=20
----[ end trace 0000000000000000 ]---
-registered taskstats version 1
-	.
-	.
-	.
-printk: console [netcon0] enabled
-netconsole: network logging started
-BUG: Unable to handle kernel data access at 0xc02a49fa823a5e63
-Faulting instruction address: 0xc0000000004ff95c
-Oops: Kernel access of bad area, sig: 11 [#1]
-LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 NUMA pSeries
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-13305-g081=
-ae3a78176 #1
-Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf0000=
-04 of:SLOF,HEAD pSeries
-NIP:  c0000000004ff95c LR: c0000000004ff9e8 CTR: c0000000002cdc40
-REGS: c00000000478b9a0 TRAP: 0380   Tainted: G        W           (6.5.0-13=
-305-g081ae3a78176)
-MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24008288  XER: 00000=
-000
-CFAR: c0000000004ff7c8 IRQMASK: 0=20
-GPR00: c0000000004ff9e8 c00000000478bc40 c000000001588a00 0000000000000000=
-=20
-GPR04: 0000000000000cc0 0000000000001be2 0000000000000018 6749a6fe823a5e93=
-=20
-GPR08: 0000000000001be1 0000000000000010 000000007daa0000 0000000000002000=
-=20
-GPR12: c0000000002cdc40 c000000002b00000 c000000000011188 0000000000000000=
-=20
-GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR20: 0000000000000000 0000000000000000 c0000000041a1290 c0000000002d9080=
-=20
-GPR24: ffffffffffffffff c0000000029225a0 0000000000000018 0000000000000cc0=
-=20
-GPR28: c02a49fa823a5e53 0000000000000000 0000000000000cc0 c000000004010400=
-=20
-NIP [c0000000004ff95c] __kmem_cache_alloc_node+0x2bc/0x440
-LR [c0000000004ff9e8] __kmem_cache_alloc_node+0x348/0x440
-Call Trace:
-[c00000000478bc40] [c0000000004ff9d8] __kmem_cache_alloc_node+0x338/0x440 (=
-unreliable)
-[c00000000478bcc0] [c000000000455ce0] kmalloc_trace+0x50/0x150
-[c00000000478bd10] [c0000000002d9080] ftrace_free_mem+0x3a0/0x4e0
-[c00000000478bdf0] [c0000000000111d0] kernel_init+0x50/0x1a0
-[c00000000478be50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0x1c
---- interrupt: 0 at 0x0
-NIP:  0000000000000000 LR: 0000000000000000 CTR: 0000000000000000
-REGS: c00000000478be80 TRAP: 0000   Tainted: G        W           (6.5.0-13=
-305-g081ae3a78176)
-MSR:  0000000000000000 <>  CR: 00000000  XER: 00000000
-CFAR: 0000000000000000 IRQMASK: 0=20
-GPR00: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR12: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-GPR28: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
-=20
-NIP [0000000000000000] 0x0
-LR [0000000000000000] 0x0
---- interrupt: 0
-Code: 60420000 78a50020 7f83e378 38800000 4bbb9e8d 60000000 4bfffee4 600000=
-00 60420000 813f0028 e8ff00b8 38a80001 <7fdc482a> 7d3c4a14 79260022 552ac03=
-e=20
----[ end trace 0000000000000000 ]---
-pstore: backend (nvram) writing error (-1)
-
-note: swapper/0[1] exited with irqs disabled
-Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000000b
-
-Bisection pointed at commit
-
-  d770ef2c8299 ("bitmap: replace _reg_op(REG_OP_RELEASE) with bitmap_clear(=
-)")
-
-I have used the bitmap tree from next-20230828 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vWxVTtOxvxUWsB2n0vFTcc_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTtiQAACgkQAVBC80lX
-0Gz0kgf/b3Vw3BPAzBZbVOAEYh7Ka9kHy9q26O25/TIgkzaR4Ek+fScUFN+KmfJR
-QGF6/xDwPH+QnV/VrRgfb5l3D0wiUHJdUuK+nid06uWjUyvgXKqh6e0uppvGKgAg
-2+eNuZxcV+Ajy/AycbVXrmGLAeejkT8HoUyfYTRTwnlLH3YjlGfdDt9meemRbKgz
-j4BcMJ4vM0FNP/L44bLJ4fGJHeK9Q61N+wlKia51uE8ZJc/bO+T2vmcawmVBfLwN
-WmNsw1bk1DSpLlkPicTCtgyfbOu+BP/0XvgDJiQVQdGFDvz/1B3YiiAkep62S37y
-kCFvsBEoUmAU3hwPH7eU1GI8rcoUiA==
-=zcV6
------END PGP SIGNATURE-----
-
---Sig_/vWxVTtOxvxUWsB2n0vFTcc_--
+-- 
+viresh
