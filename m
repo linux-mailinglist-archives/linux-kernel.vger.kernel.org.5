@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1F978C662
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3B378C665
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbjH2Np1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
+        id S234994AbjH2Np3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236447AbjH2NpK (ORCPT
+        with ESMTP id S236586AbjH2NpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:45:10 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85587184;
-        Tue, 29 Aug 2023 06:44:44 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TBpWh2021538;
-        Tue, 29 Aug 2023 15:42:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=bQrDBJhz22wpFweWdN5Xj8vqxciJAWGqjrhNj1tNtrQ=; b=12
-        ehP/gUQjzfActRqLephKlJnWCk4/6NuQH/DHxglQfHv0UUx9SZhD6KI76wKpQVru
-        wdnpneo930fw5EMgusIjqR0ow4Oy0Nq0vb3sgHC089Oejk7N94zVVmHtHHTF2dNc
-        LeTegJ/lEbOld5XrxTjP0uP5NvpPOl3eaB+hji6IAX0YiDaUho4SV+lnHZgyDnzp
-        3832q0mvOTi+X5mrTLfbaoJ/DcC9Y/Li8JCBSC0koS/CrmfDmN9BUK8ZNrrbR8zx
-        t6nONIXUBEed+0d2bgh8LB++fDeRL40NKijRVhb722KEZz/2LZMhZWMCYuaWSJpn
-        KovtgL/v5+aqWpqU01oA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sq6h44p6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 15:42:09 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 174D6100057;
-        Tue, 29 Aug 2023 15:42:09 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1179B22AFFD;
-        Tue, 29 Aug 2023 15:42:09 +0200 (CEST)
-Received: from localhost (10.201.22.39) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 29 Aug
- 2023 15:42:08 +0200
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To:     <william.gray@linaro.org>, <lee@kernel.org>
-CC:     <alexandre.torgue@foss.st.com>, <fabrice.gasnier@foss.st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 5/8] counter: stm32-timer-cnt: rename quadrature signal
-Date:   Tue, 29 Aug 2023 15:40:26 +0200
-Message-ID: <20230829134029.2402868-6-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230829134029.2402868-1-fabrice.gasnier@foss.st.com>
-References: <20230829134029.2402868-1-fabrice.gasnier@foss.st.com>
+        Tue, 29 Aug 2023 09:45:22 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AFFCDB;
+        Tue, 29 Aug 2023 06:44:55 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qaz0f-00085O-NH; Tue, 29 Aug 2023 15:43:57 +0200
+Message-ID: <d8758169-9f98-e050-61e5-7109176bb5d2@leemhuis.info>
+Date:   Tue, 29 Aug 2023 15:43:57 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.22.39]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_10,2023-08-29_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Regression: ALS/ACS stops working on amd-sfh
+Content-Language: en-US, de-DE
+To:     Linux Regressions <regressions@lists.linux.dev>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Input Devices <linux-input@vger.kernel.org>
+References: <0ea231a1-e510-903d-22a0-998234426462@gmail.com>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <0ea231a1-e510-903d-22a0-998234426462@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693316695;d84c6dc9;
+X-HE-SMSGID: 1qaz0f-00085O-NH
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename "Channel 1 Quadrature B", as it corresponds to timer input ch2.
-I suspect it referred to the (unique) counter earlier, but the physical
-input really is CH2.
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
----
- drivers/counter/stm32-timer-cnt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 04.08.23 14:45, Bagas Sanjaya wrote:
+> Hi,
+> 
+> I notice a very concise regression report on Bugzilla [1]. That is,
+> quoting from it:
+> 
+>> Since commit a33e5e393171ae8384d3381db5cd159ba877cfcb ("HID: amd_sfh: Fix illuminance value"), the in_illuminance_raw is 0 all the time.
+>>
+>> Before that commit, the ACS/ALS has normal value.
+> 
+> See Bugzilla for the full thread.
+> 
+> Anyway, I'm adding this regression to be tracked by regzbot:
+> 
+> #regzbot introduced: a33e5e393171ae https://bugzilla.kernel.org/show_bug.cgi?id=217762
+> #regzbot title: Fixing in_illuminance_raw value hard-codes ACS/ALS to 0
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 6206d2dc3d47..eae851f6db2c 100644
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -283,7 +283,7 @@ static struct counter_signal stm32_signals[] = {
- 	},
- 	{
- 		.id = 1,
--		.name = "Channel 1 Quadrature B"
-+		.name = "Channel 2 Quadrature B"
- 	}
- };
- 
--- 
-2.25.1
+#regzbot inconclusive: developer closed ticket as RESOLVED
+UNREPRODUCIBLE (likely "firmware bug for your platform" and reporter
+didn't complain
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
