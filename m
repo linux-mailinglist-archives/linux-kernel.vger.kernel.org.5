@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AC378C747
+	by mail.lfdr.de (Postfix) with ESMTP id 5215C78C748
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236912AbjH2OUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
+        id S236682AbjH2OUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236682AbjH2OTx (ORCPT
+        with ESMTP id S236847AbjH2OUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:19:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116F5199
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=e4hMctN6emCgrqiKuxK7UKWS85HR+fi7fjHSuR7TJAk=; b=wGtTAk8uXg4+MUSjXCkamKt4+O
-        ytIr3Go3FRCrQRV2Bcs7qEZBhVZFDleCQWG+1fal6IxDqrNIt0ba+7uTclPUN+JjINfL4tcjQ6Zsa
-        DZ3r+hv7v0cmIFAdtbdSEMI2R0mYXbvScPCX9noQQwt9b0xKmrcbC9cASH2QzzZeuOR/B/6qH/rm1
-        RH01II3NoRdmwioVWAszh+NazastL1w4SczDpXbMTAbiyrMLkP5ggtXn+T5W/Fm86zbgj2hFIie+E
-        v1AiH79QxLeZUjd1IC1bxvRCcWmOYRaQDTmxexp7xFANkZW+mgYjkclwR73BELHEQwiqiPSyg+5ik
-        Sj/lurOA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qazZ3-0071DB-D2; Tue, 29 Aug 2023 14:19:29 +0000
-Date:   Tue, 29 Aug 2023 15:19:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] mm/mmu_gather: Store and process pages in contig
- ranges
-Message-ID: <ZO3+cQouje862QNu@casper.infradead.org>
-References: <20230810103332.3062143-1-ryan.roberts@arm.com>
- <20230810103332.3062143-5-ryan.roberts@arm.com>
- <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
- <29099099-7ef2-45cb-bab7-455f58de47d1@arm.com>
+        Tue, 29 Aug 2023 10:20:05 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC93CD4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:19:54 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d7830c5b20aso5691554276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:19:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693318794; x=1693923594; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u6C2BMeyRT9BVmnW3F8DPujOXWC4dh3QQ/H+JPTB0fs=;
+        b=NqiWGwqDdZooKYiFOaEU4pIVdwEJlvqpKW6i8CBSzmkt5eo0D9tU69ogQfXd/CHCxc
+         cE9h04VsPeV54NojBDAJZhsPTOLa+VRhvtg0M4qWkdGlOiO3NaTrkmScjat55V+mP40A
+         LvRKjedZ2Px2lbyUNpmmkyIQm3s4Nr5TCEmL8QMnwdkSpyVPSYiOSG5xaRTxMI/99uNo
+         72dXFXyvoxFhewN4mBdYBc853FSOS2zu1kfyti4PRGhvj1OdyBAvtGBVRRPkqiKXGuvs
+         LzfshVdodJKbWHw99EhknOL/QO2Z7810DrigmG3jN3CrLiKv7m6Awevq21bomgKLciMg
+         OXrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693318794; x=1693923594;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u6C2BMeyRT9BVmnW3F8DPujOXWC4dh3QQ/H+JPTB0fs=;
+        b=FNL09STienqR8oPZR9y2fLkU95Dp3bxaMdAVsvqbpQS5qYcidso1OG1sRQ/ch7TLwn
+         FRlcXmwaKFH5620wkibxL2qjUlvY9TrdyDUAWYHZ9tRdyxvquEMjmALb8p1YYwDa7tfD
+         IiB5q3kS9q/UB3Sw7RnQYinU5C4jiUgJGcBExn39qj/HOPhfiFDJQ6QpNXRljDMMOGcd
+         Yh/ATZlyMKrc9Fv/KleV1D8ZmWqbwUlJk7+kI+rLEvdDBLWjKrbIbuCLIYodEGZnCOA9
+         ZfahFcaKbCvy9ukOu4jA8c31Y7jXJN9RMN/y4KD8wQRjxOU/ceXh6xKIbU2yfcHzDLOu
+         LH2w==
+X-Gm-Message-State: AOJu0YzJZCV7HMQYsLxWMywps5Q4lb1JMVMHVvCPxt9MgmAPZIeeXvBv
+        0PA5hdRaQFKJ6P81lOENToeTDk/uCtP5lfO6L1f+Lw==
+X-Google-Smtp-Source: AGHT+IEgqrTR3rzPEkyWMAt43eU7aH3VbO5cV13+UrfArXFHtoQoQUe+dIwD7Q7am42u6ixQo1XAFSnYnxc1PpJrXK0=
+X-Received: by 2002:a25:d38c:0:b0:d7a:b6b9:73d8 with SMTP id
+ e134-20020a25d38c000000b00d7ab6b973d8mr3445294ybf.20.1693318793789; Tue, 29
+ Aug 2023 07:19:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29099099-7ef2-45cb-bab7-455f58de47d1@arm.com>
+References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com> <20230829135818.2219438-2-quic_ipkumar@quicinc.com>
+In-Reply-To: <20230829135818.2219438-2-quic_ipkumar@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 29 Aug 2023 17:19:43 +0300
+Message-ID: <CAA8EJpqA-poJ9=XKJa2s=yZUGbBbgOqgiDC-q9skJzBqLux84g@mail.gmail.com>
+Subject: Re: [PATCH 1/9] dt-bindings: phy: qcom,uniphy: Rename ipq4019 usb PHY
+ to UNIPHY
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>
+Cc:     robert.marko@sartura.hr, luka.perkov@sartura.hr, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
+        will@kernel.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        geert+renesas@glider.be, nfraprado@collabora.com, rafal@milecki.pl,
+        peng.fan@nxp.com, quic_wcheng@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_varada@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 03:02:22PM +0100, Ryan Roberts wrote:
-> >> +			if (put_devmap_managed_page(&folio->page))
-> >> +				continue;
-> >> +			if (folio_put_testzero(folio))
-> > 
-> > We're only putting one ref for the zone_device folios?  Surely
-> > this should be ref_sub_and_test like below?
-> 
-> Good point. This function is originally a copy/paste of release_pages(), and I
-> obviously missed this. In fact, looking at it again today, I think I'll factor
-> out the vast majority into a common helper, since I'm currently duplicating a
-> whole bunch here.
-> 
-> In practice I think all devmap folios will be small today though? So while I
-> agree I need to fix this, I think in practice it will currently do the right thing?
+On Tue, 29 Aug 2023 at 16:59, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>
+> UNIPHY / Combo PHY used on various qualcomm SoC's are very similar to
+> ipq4019 PHY. Hence renaming this dt-binding to uniphy dt-binding and
+> can be used for other qualcomm SoCs which are having similar UNIPHY.
+>
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+> ---
+>  .../phy/{qcom-usb-ipq4019-phy.yaml => qcom,uniphy.yaml}  | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>  rename Documentation/devicetree/bindings/phy/{qcom-usb-ipq4019-phy.yaml => qcom,uniphy.yaml} (78%)
+>
+> diff --git a/Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+> similarity index 78%
+> rename from Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+> rename to Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+> index 09c614952fea..cbe2cc820009 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+> @@ -1,13 +1,18 @@
+>  # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/phy/qcom-usb-ipq4019-phy.yaml#
+> +$id: http://devicetree.org/schemas/phy/qcom,uniphy.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>
+> -title: Qualcom IPQ40xx Dakota HS/SS USB PHY
+> +title: Qualcomm UNIPHY
 
-I think the devdax code uses 2MB folios.
+We know that UNIPHY was a common design / IP block used for APQ8064
+SATA and MSM8974 DSI and HDMI PHYs. Is this the same design, or was
+the name reused by the Qualcomm for some other PHYs?
+Several latest generations have USB QMP PHYs which are called 'uni-phy'.
 
-> > You'll be glad to know I've factored out a nice little helper for that.
-> 
-> OK, what's it called? This is just copied from release_pages() at the moment.
-> Happy to use your helper in the refactored common helper.
+>
+>  maintainers:
+>    - Robert Marko <robert.marko@sartura.hr>
+> +  - Praveenkumar I <quic_ipkumar@quicinc.com>
+> +
+> +description:
+> +  UNIPHY / COMBO PHY supports physical layer functionality for USB and PCIe on
+> +  Qualcomm chipsets.
+>
+>  properties:
+>    compatible:
+> --
+> 2.34.1
+>
 
-I'll send out those patches today.
+
+-- 
+With best wishes
+Dmitry
