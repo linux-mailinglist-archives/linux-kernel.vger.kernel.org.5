@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF19078C76C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F4B78C76E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbjH2OWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
+        id S236732AbjH2OW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236931AbjH2OWJ (ORCPT
+        with ESMTP id S236936AbjH2OWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:22:09 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:22:06 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34914064ea9so3139255ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1693318926; x=1693923726;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wf6GNFsSxcx1anzAYYKpXcKsJT0xS0B+yb4Pte21nG0=;
-        b=KdwwvdZogbw+TuR5vNbEJAhj35004+fY33HYtgviW2le936RoS7BLxHT2nfwHmC0bu
-         nkkWr8Dr5iLLrea0ScQ+BFGAF6xV1H5GaJWmh6cAzOr5NU8u3CI1AHnnlmr+cq/11SxS
-         R8xwhS8vGTparOL3sa72h3H4F0/JV/uftQ434=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693318926; x=1693923726;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wf6GNFsSxcx1anzAYYKpXcKsJT0xS0B+yb4Pte21nG0=;
-        b=i3OPTF0qBd9vu7bCSXulmGSwpEb+qe6fEKoy0bxoSeol3sTnX2awnmHl6ZJodLCWPR
-         qcarG0Re3UAA6UsZlQYnR5Yyugkf/OvjG8th4BVrCKlZ1il8VlST1oZJ5/KBkmQIJj5s
-         obT1tmohToUTtnZRSz22rxS125wla25uSUbTZ2G+jWfC2yFtyfqxbPBHlWeMIzN8KQTE
-         40HZYFffHtiUkLcLBi3SukE07VlyAjtDA+hv/tLK80BK/pD2Qc3u23TWW3JHiUq47iUd
-         tbZjAp+FV5ndAsxoXxlTUCuGvnTmh0Qkzn/VbI2PaeucKMowfSrNLupJmevLLAcqevIc
-         25Yw==
-X-Gm-Message-State: AOJu0Ywrhw581+fgB9YHoUyXn+UG+3qzRbdCU8cGoGlKzZEEHVC+QCRE
-        3m9JKxK2phgx9kQwo7CZKTJ/l5jrTmLE7E+C5BA=
-X-Google-Smtp-Source: AGHT+IEu1YVJL/d7gQqT5xXOlyC617XhMQ38RwAqUk/z/Kv5qvJ0qn/cmDqhUWI1CMt10A4ZirgvzA==
-X-Received: by 2002:a92:d6ce:0:b0:349:385e:287e with SMTP id z14-20020a92d6ce000000b00349385e287emr29439643ilp.1.1693318925936;
-        Tue, 29 Aug 2023 07:22:05 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id i6-20020a92c946000000b0034cac5ced38sm3141971ilq.13.2023.08.29.07.22.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 07:22:05 -0700 (PDT)
-Message-ID: <678a9296-c9b0-9270-7194-f233e9559fd8@linuxfoundation.org>
-Date:   Tue, 29 Aug 2023 08:22:04 -0600
+        Tue, 29 Aug 2023 10:22:18 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD553AB;
+        Tue, 29 Aug 2023 07:22:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 397AA240004;
+        Tue, 29 Aug 2023 14:22:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1693318933;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wnpy155cIYydMW3e208J8yS/ifVt33seKo++vJG/Yb8=;
+        b=WVHGlBqaQr3iM9bpFVzT7ECtuevQ4EM7/8GvfCAsDoRcc2YrnYJKiPQF+EGLXAvKG6yTqV
+        eEiKsSjtKHpjvbzTn49BzcufPBi49ob1W+Nn5QbesNR0tPp5GIu3dPoav75T/3sm9YGFAJ
+        P2cpooTotzTNVyZkqaL5JOYfzV4nQHp5pPM5q6Ar93vYeNBbeqJIDuIq6F3wCZOhIijktB
+        +H9eRhxTy9OoeAZvn266ZtojADLBm0KdjWLzKJcflre+LNPx98hOL5VPmM6xiplUYoUWe9
+        nOUQCm/jALS5JhpG01ysoBgBdLX14/YPfN/8ciHdRepkUrGmxMtQtxkco6x8+Q==
+Date:   Tue, 29 Aug 2023 16:22:10 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Minying Lin <mimi05633@gmail.com>
+Cc:     "avifishman70@gmail.com" <avifishman70@gmail.com>,
+        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
+        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
+        "venture@google.com" <venture@google.com>,
+        "yuenn@google.com" <yuenn@google.com>,
+        "benjaminfair@google.com" <benjaminfair@google.com>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "KWLIU@nuvoton.com" <KWLIU@nuvoton.com>,
+        "JJLIU0@nuvoton.com" <JJLIU0@nuvoton.com>,
+        "KFLIN@nuvoton.com" <KFLIN@nuvoton.com>,
+        "mylin1@nuvoton.com" <mylin1@nuvoton.com>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/1] rtc: nuvoton: Compatible with NCT3015Y-R and
+ NCT3018Y-R
+Message-ID: <2023082914221048e46085@mail.local>
+References: <20230816012540.18464-1-mimi05633@gmail.com>
+ <20230816012540.18464-2-mimi05633@gmail.com>
+ <2023082322124382cfd168@mail.local>
+ <CAL3ZnpxEuOQtpaqA7KLBr285JvTDJrcT+ZGYyjy7Bi-sVs5yVA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 5.10 00/84] 5.10.193-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230828101149.146126827@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230828101149.146126827@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3ZnpxEuOQtpaqA7KLBr285JvTDJrcT+ZGYyjy7Bi-sVs5yVA@mail.gmail.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 04:13, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.193 release.
-> There are 84 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.193-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On 29/08/2023 21:35:36+0800, Minying Lin wrote:
+> > Do you really have to check the part number every time you set the time?
+> > I don't expect it to change once read in probe.
+> >
+> [Mia] Due to the 3018Y's topology, we need to set the TWO bit first to
+> obtain the write time capability, but the 3015Y does not have this problem.
+> Therefore, we use part number & TWO bit to determine whether we need to set
+> the TWO bit first before set time.
 > 
 
-Compiled and booted on my test system. No dmesg regressions.
+Sure but why don't you store the info somewhere instead of reading it
+from the RTC every time?
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> >
+> > > +     if (part_num < 0) {
+> > > +             dev_dbg(&client->dev, "%s: Failed to read part info
+> > reg.\n", __func__);
+> > > +             return part_num;
+> > > +     }
+> > > +
+> >
+> > --
+> > Alexandre Belloni, co-owner and COO, Bootlin
+> > Embedded Linux and Kernel engineering
+> > https://bootlin.com
+> >
 
-thanks,
--- Shuah
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
