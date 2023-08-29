@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D5D78CBA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842E178CBA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238169AbjH2SBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 14:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        id S238178AbjH2SBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 14:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237745AbjH2SAn (ORCPT
+        with ESMTP id S238158AbjH2SAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 14:00:43 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408DF11B;
-        Tue, 29 Aug 2023 11:00:40 -0700 (PDT)
-Received: from [IPV6:2804:431:a881:db00:51cf:cbff:7cc4:3f6d] (unknown [IPv6:2804:431:a881:db00:51cf:cbff:7cc4:3f6d])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D0D1D66071FD;
-        Tue, 29 Aug 2023 19:00:37 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693332039;
-        bh=i73/jHaGWMu/rHjW04TeYQepCq+QBhdF1yKqAZFgAcU=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=VZZ/fE0uEra22irHH9fjGW7ATFx9yijAUBJo7Sngt8KbcC4OL/M0Xh1YwwgXZvnSM
-         ivABQuerNkyG3mnOyroepgYzmDDQaluEZ4eMWYpkX6GUgnPkrGAxsHDPcdwTW5u3jY
-         fva1DczVm+HUv0Et/9vMYdqbwhV0VC3nQ1vp/7SZ54X7qHx3vbj/Mj0P8uebn6L6lq
-         fd5tO+rG4EEaKMzekqXWgadmfG4Z79dS5cmKmYv8QWe7mbYAswVgTr1GqpMHD5o8f4
-         1vMGdN9wE6KewgDEaFhlx03moJHf5MInojeiZE5pIWdyP5CX65x1HM+q0svdRDtuoQ
-         x4HZo7SZmYNgA==
-Message-ID: <04d7610f-5057-3faa-1a11-716c29400e7e@collabora.com>
-Date:   Tue, 29 Aug 2023 15:00:32 -0300
+        Tue, 29 Aug 2023 14:00:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EA6185;
+        Tue, 29 Aug 2023 11:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693332049; x=1724868049;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Li1t9Xs9+ZlNzSrfJujiGlWo959VLxYmazSAAODNF44=;
+  b=XbkIDTIvUdSWyVHdaGoj+OtT0FkxVgXnjOBAXdV0+wbxlD+oNyWzWHjN
+   cFQSZEDHvWCpoP8ot+k2CGRtcv9xBHh2R9IkZ+NjcPNaFCEUsbDUq7TTB
+   6A3GCSvCsFRUZ4euxAs7UM7isRSDL7AXmkUR/SnYy+wW90cdLndyEeHhi
+   O8840nq8CVaTDqtevlMqH58bfG3L1SIkM3sVTFH7AHT+IolBrN/QQ1+yB
+   6bEkV6KpKANYmABl2dvdDdpRLYc7uXteQfPUaqxsPZ2lb2fHXyd71o3gI
+   kxjMoV1ZHCs2CW1k2sg/e0Cpn6O8OUkWVl4uUYB0wxpYejbQB4SoO7yKr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="461819601"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="461819601"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 11:00:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="853381425"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="853381425"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 29 Aug 2023 11:00:47 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qb31C-0008yp-1F;
+        Tue, 29 Aug 2023 18:00:46 +0000
+Date:   Wed, 30 Aug 2023 02:00:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        william.gray@linaro.org, lee@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, alexandre.torgue@foss.st.com,
+        fabrice.gasnier@foss.st.com, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/8] counter: stm32-timer-cnt: add support for events
+Message-ID: <202308300133.jtLeSGia-lkp@intel.com>
+References: <20230829134029.2402868-9-fabrice.gasnier@foss.st.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] drm: ci: docs: fix build warning - add missing escape
-Content-Language: en-US
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, airlied@gmail.com
-References: <20230824164230.48470-1-helen.koike@collabora.com>
- <ZO4xj/sHodsc8+X3@phenom.ffwll.local>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <ZO4xj/sHodsc8+X3@phenom.ffwll.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829134029.2402868-9-fabrice.gasnier@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Fabrice,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.5 next-20230829]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Fabrice-Gasnier/counter-chrdev-fix-getting-array-extensions/20230829-230111
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230829134029.2402868-9-fabrice.gasnier%40foss.st.com
+patch subject: [PATCH 8/8] counter: stm32-timer-cnt: add support for events
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230830/202308300133.jtLeSGia-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308300133.jtLeSGia-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308300133.jtLeSGia-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/counter/stm32-timer-cnt.c: In function 'stm32_count_watch_validate':
+>> drivers/counter/stm32-timer-cnt.c:524:20: warning: this statement may fall through [-Wimplicit-fallthrough=]
+     524 |                 if (watch->channel >= priv->nchannels) {
+         |                    ^
+   drivers/counter/stm32-timer-cnt.c:528:9: note: here
+     528 |         case COUNTER_EVENT_OVERFLOW_UNDERFLOW:
+         |         ^~~~
 
 
-On 29/08/2023 14:57, Daniel Vetter wrote:
-> On Thu, Aug 24, 2023 at 01:42:30PM -0300, Helen Koike wrote:
->> Fix the following warning:
->>
->> Documentation/gpu/automated_testing.rst:55: WARNING: Inline emphasis start-string without end-string.
->>
->> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
->> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> 
-> Applied this, sorry for the delay. I also rebased the tree onto latest
-> drm-next, in case there's any fixes for the current set of ci support that
-> need applying.
+vim +524 drivers/counter/stm32-timer-cnt.c
 
-np, thanks for picking it up.
+   516	
+   517	static int stm32_count_watch_validate(struct counter_device *counter,
+   518					      const struct counter_watch *watch)
+   519	{
+   520		struct stm32_timer_cnt *const priv = counter_priv(counter);
+   521	
+   522		switch (watch->event) {
+   523		case COUNTER_EVENT_CAPTURE:
+ > 524			if (watch->channel >= priv->nchannels) {
+   525				dev_err(counter->parent, "Invalid channel %d\n", watch->channel);
+   526				return -EINVAL;
+   527			}
+   528		case COUNTER_EVENT_OVERFLOW_UNDERFLOW:
+   529			return 0;
+   530		default:
+   531			return -EINVAL;
+   532		}
+   533	}
+   534	
 
-> 
-> The other series I've seen looks like it's adding more support, I guess
-> that can be skipped for the initial stuff?
-
-Yes, it enables more tests (which is good for getting more feedback from 
-people) but yeah, I guess it can be skipped for the initial thing.
-
-Regards,
-Helen
-
-> -Sima
-> 
->>
->> ---
->>
->> Patch for topic/drm-ci
->>
->> V2:
->> - Fix typo s/scape/escape
->>
->> ---
->>   Documentation/gpu/automated_testing.rst | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/Documentation/gpu/automated_testing.rst b/Documentation/gpu/automated_testing.rst
->> index 1b87b802ac7f..469b6fb65c30 100644
->> --- a/Documentation/gpu/automated_testing.rst
->> +++ b/Documentation/gpu/automated_testing.rst
->> @@ -52,7 +52,7 @@ IGT_VERSION
->>   drivers/gpu/drm/ci/testlist.txt
->>   -------------------------------
->>   
->> -IGT tests to be run on all drivers (unless mentioned in a driver's *-skips.txt
->> +IGT tests to be run on all drivers (unless mentioned in a driver's \*-skips.txt
->>   file, see below).
->>   
->>   drivers/gpu/drm/ci/${DRIVER_NAME}-${HW_REVISION}-fails.txt
->> -- 
->> 2.34.1
->>
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
