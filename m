@@ -2,970 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B87778BEE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260EA78BEE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbjH2HBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
+        id S231176AbjH2G5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjH2HAc (ORCPT
+        with ESMTP id S232442AbjH2G5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:00:32 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C27DF;
-        Tue, 29 Aug 2023 00:00:27 -0700 (PDT)
-Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RZdY40HxpzVjtX;
-        Tue, 29 Aug 2023 14:58:00 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 29 Aug 2023 15:00:24 +0800
-From:   Jijie Shao <shaojijie@huawei.com>
-To:     <mkubecek@suse.cz>
-CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 ethtool] hns3: add support dump registers for hns3 driver
-Date:   Tue, 29 Aug 2023 14:56:56 +0800
-Message-ID: <20230829065656.2725081-1-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 29 Aug 2023 02:57:20 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759981A2;
+        Mon, 28 Aug 2023 23:57:10 -0700 (PDT)
+X-UUID: 442b4040463911ee9cb5633481061a41-20230829
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=erVs1O9lkEQHHoqgCbDDewN1pj/ejuQeQbewRyebloQ=;
+        b=cM3zMaZXeVxSW/mbjaOndgNwTFFHj0XDCiMmhDh3yNAre+dDvRQs1SlIQ2yOKLy8aiaTH/MehHmqbnqvah31Djjj9n5pbFWnSa/EWEkMBBno63Y57mOZB68EHKOmfXuR3I5B768zm7LAjKPWPFQV5I8Iv+ofEpJ4FtpnDzCnkXQ=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:8b0a47cc-ed0d-47e9-b59c-ebb17898b095,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:21154e13-4929-4845-9571-38c601e9c3c9,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 442b4040463911ee9cb5633481061a41-20230829
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+        (envelope-from <chun-jen.tseng@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1047744555; Tue, 29 Aug 2023 14:57:06 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 29 Aug 2023 14:57:05 +0800
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 29 Aug 2023 14:57:05 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QlxIkWMg9slvdn0rAaD9lpoenkSlV2XqbuUdLMdYF6RE+7OHvoykCVo83r+nt1U66sJvEFxbjsZYlUveRrlaX+j4G5mWRj+xEWW+JYcE4jsL9cSB2wiZkPyfqa4/tCv3vVPJxj1m5BU5PsKbibR9Ld3QP63zi4z6kL63Dw719CDtP1rQgbjD+wuHl3NaRWaVkNvE4Vhzb1y6zWWOQZME429og+LxqUHxu4NOKwC5pkO5TtVaAuyPOgO3PttTxjIavREJ81aQFgsJ5PSYFYLWUSLttJihd4GG4hCHz5vLO3lAVQnnR+tV6/IDh245n6saFrXnRp8N5p0ZVFMULkTP7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=erVs1O9lkEQHHoqgCbDDewN1pj/ejuQeQbewRyebloQ=;
+ b=Gv8iNb8gBorBN7I7GJosOY0763QQiaDOXSluwaEsXs461oIl5VNyXlpX2f7tmadEiB6VRTCFtOR5j1Oy9JGCN/F+flz0+VrdOPpDYAcAuKUFT7r3TgJx651H/Pa1YfMcnlFq4ifcAzqVA4yIGauNru7rVdu6A8QKv+iMTgo8yLq7/l2wtXE0dCADT0voTVQT457+JDvcLMuZv8VMIkIOqnZ0ad45GitxYKCvp/JUrJFT1jYFlSHtLY6XdKFJS3357Gd4bFdsaUt0iGAUlsof7jv4hZAUbpqMRvvOD52z+6/ygq4xVu3XG16TceMb5VfTSI4X4Xm9BdNdM7qS3usZ5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=erVs1O9lkEQHHoqgCbDDewN1pj/ejuQeQbewRyebloQ=;
+ b=bTlJelCe6Ho8JTdXtako+9gZhVqCvXXfH8sNfbSU741tsIv05tCb3YQ6Ol7ck0NHqAmLOaLVX/syxUuBNcIn3NOdU2lTxgXY1uXOc/0ENiUDvj6Yl8j+dfBMzAo38va1PKyVQQ8muxmZ9SGCAJoPEeux4uZMFhsaBQWA4P9P9TY=
+Received: from PSAPR03MB5351.apcprd03.prod.outlook.com (2603:1096:301:40::11)
+ by SEZPR03MB7776.apcprd03.prod.outlook.com (2603:1096:101:12f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Tue, 29 Aug
+ 2023 06:57:01 +0000
+Received: from PSAPR03MB5351.apcprd03.prod.outlook.com
+ ([fe80::699f:9f30:a65b:547d]) by PSAPR03MB5351.apcprd03.prod.outlook.com
+ ([fe80::699f:9f30:a65b:547d%5]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
+ 06:57:01 +0000
+From:   =?utf-8?B?Q2h1bi1KZW4gVHNlbmcgKOabvuS/iuS7gSk=?= 
+        <Chun-Jen.Tseng@mediatek.com>
+To:     "viresh.kumar@linaro.org" <viresh.kumar@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "sumitg@nvidia.com" <sumitg@nvidia.com>,
+        "sanjayc@nvidia.com" <sanjayc@nvidia.com>,
+        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH] cpufreq: mediatek: change transition delay for MT8186
+Thread-Topic: [PATCH] cpufreq: mediatek: change transition delay for MT8186
+Thread-Index: AQHZ0Xi9TfPkbDiP9kmQ3+dUnwTXR6//UboAgAGXWAA=
+Date:   Tue, 29 Aug 2023 06:57:01 +0000
+Message-ID: <86f49ce84f32941185c961da8a5c671e7aed46b1.camel@mediatek.com>
+References: <20230818020616.4748-1-chun-jen.tseng@mediatek.com>
+         <20230828063904.r7huxclehlblkkjx@vireshk-i7>
+In-Reply-To: <20230828063904.r7huxclehlblkkjx@vireshk-i7>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PSAPR03MB5351:EE_|SEZPR03MB7776:EE_
+x-ms-office365-filtering-correlation-id: 0f0931b0-e060-4250-588e-08dba85d2547
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xfRxpONYxPWbHK1LYGpV0jTNlDjxBS8wQRUC5W6Y4YBzaUGVFJbW4RyA+MqGama2+OiP58nxSXHLDnACY1Ufo83hqNqpaB+wVz1rxRscEHuo/iSzD3tnaxO1saVwZeGFC/ee5KSiXvC6SL2CF0tJRglvaODj5Z40hEIKoXHktg/Pboc+2T9OVobi5Sd3rtx/JYVKbDWduJWKPoi1/27o2GzlDWe0q6gUlHOIDd97YBZHDVqroc9/ltPeJUMpIcGXDzFPtN1BWbUEIKCZi5IFx293VsKujP9ew3+KE5osNjW2QtRSxqYsTMfNRxUnMrG0AMcrhLXLy/dh/6o7OS3aBNMdvZZJBkdqa6jqkxkMF4cktiH24DpdP+Fvoy+PiitNymNtd5FNdHmYWt1GwwJQ5xKbA2oWu24k/4IGjDRWfAX64WI0k4hTjkQa+kVlT1LbJlI7sX7LiYisiZGSAVAy+dnzrY2lEb82tMmY5P7PxLYbuKd+UwUr9D/u1ZyLdMGF+ETxQtP9S+d55DVRRTrZ9bckLhcYN/G3hMMVbWY+omzSHoF4UwlhrYhPFanJNOkiEu1i00P+wxBiuYF9dKY2y04aaGyKvMYFEd/wKCpBsyeHlZdgMZMdcJn2De9wd9J2TXJOW0bKM5eGpIJCTOjGxKHa103Y06nNbATJBMrjFrotPox4F795FyUFqNcvzCNc
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR03MB5351.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(376002)(346002)(39860400002)(451199024)(1800799009)(186009)(8676002)(4326008)(5660300002)(8936002)(6486002)(53546011)(12101799020)(6506007)(6512007)(71200400001)(26005)(2616005)(83380400001)(122000001)(478600001)(38100700002)(38070700005)(6916009)(316002)(66556008)(66946007)(66476007)(66446008)(91956017)(76116006)(54906003)(64756008)(36756003)(86362001)(2906002)(85182001)(7416002)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YU9jVjlNZisyb2YvTmJhTUozd3dXd2ppZmQrRVF1ZkNDMDN3MHpoV082ZWNE?=
+ =?utf-8?B?RFRrL2F2TGdPWk1JOWw3czFvV2RtUkI4MWNON3VUSUREZ3RqY3hQZmN1SFU1?=
+ =?utf-8?B?WFVIMmo3eDZtejRTQm5CSUZqZ2hremdqZzQ4MEhPVUNHR2JYaWMvajM2TDV0?=
+ =?utf-8?B?LzhMTnZ2NVFFRFMvOHpESTJhTFFHNkFVSDYrc29EY1Zma2RQc1pzbys3WUky?=
+ =?utf-8?B?NWJ3ZkNNMGVLc1FrV3lPWkRoL2JaN25yTDM0djlXM05IdWdLZnBZMDl3YlJk?=
+ =?utf-8?B?SnJjVVB0aXVCUHorWWx4VHVqV1EwWjhXdUovMDUyVUhCYnhidEN2RlVGQjFR?=
+ =?utf-8?B?QnFXOEpXMDVmNTJUeFlhaXRsWEVoeWJKRE9hdDlkVFEwRi9qRkpKVURMU0lU?=
+ =?utf-8?B?ZFN4dlczYUp0cXFrZDBpeHZYcmtsdDFUVHFMeHUyczd0V1p1aVJqTVZsWnBL?=
+ =?utf-8?B?N0haWnZzTnlCWWZYMjZ3TmROOHpDc3NxZ2lmUUhRV1o1c3pNalJPY29QMXNa?=
+ =?utf-8?B?SHRaVll3WUFkbGFQZ1NWeXlqR2Q0KzB2NXoxajNxRGgzYkNodWRnWlI1aFVn?=
+ =?utf-8?B?Umpoei9iUW5uVjYyZUtkUEpicmc2cmNac2U3eWJ2cjFpZmZ5YU1LWit3T3dw?=
+ =?utf-8?B?Y2U1TFlFcjhZSGZOc3laRVFxQ0VrYWo4Z1d1aWViQk43UnJGZGdHeTVxcGlI?=
+ =?utf-8?B?QktRRE1uNTZjZzUxUHVzcEs3eVl2OHVuUGliYmtNL1F0azg3amFyOWxLU2Vo?=
+ =?utf-8?B?UmZ4VEtWT2RpUk1zNnJwK0wxLyt2RXJHakRrMFUxcHRaWURmY21DcU9GY0dI?=
+ =?utf-8?B?T3kzNWZtc0ltK2RKN0NjMlFMMTk4TTdNYWRLMnZqTXBPMTFISzlWdzAzVmUx?=
+ =?utf-8?B?d1ZFK085TDFBS2VrQi9XSU0xd0svbTJ5blV0UUl5cFJ5MkNyYTJTbTQrcXFh?=
+ =?utf-8?B?VmR2NzBpZ3VMV0xPVVVKMjd5TXhKOWZ0UGlEV1h1NnBHREQ5dVpnd3Y1aTNa?=
+ =?utf-8?B?TzZ1WTZQV0tmbzAxaWEwV2gzb1l4Z251N2FHUGpESXBubDlTSTl6MHRiMEd4?=
+ =?utf-8?B?Y1phQkVYdzZpeHpZU2tibWh1bFdjQVZoUUlaajl6TWpQNEMyaGcrTUlDY1Jq?=
+ =?utf-8?B?ckdLcm5ibzlFOXhtanZjU3pqMWF1RGRsanMwZVI0VG5JUnl6bWwvblB3R1Ar?=
+ =?utf-8?B?Nmo5SitWVStZSXlrMlN1OXpkWk9ycjR2VmZLVy9qSWJoUGJicTJualN2Vkww?=
+ =?utf-8?B?WitqbXZCSGFmbExleS8wVFcwdGkyWWh1TVhOQXBvWGxobVlwOE54R3ltWCsv?=
+ =?utf-8?B?aVRpcitLMk02aWxkUGkzWk1wVHQzL0VrWFVJdDUvTzUrZ1FVam82a052NEc0?=
+ =?utf-8?B?UXF0S24zWGJweTRNYUhpcXpOOFZibTh4RWNOai9zRENPUlh0ZFF5R2xzajdF?=
+ =?utf-8?B?SVVIWnR4RHpFN3plaUNvU1dCcWw3ZnZWVU5aRzg0aHRHUEc5OW0zWE0vbU0v?=
+ =?utf-8?B?WkZzNjRLMkNoSkdIelpyeTdSUWJBcTFwcSt2dHAveFNsUFdLZGM4Z1lhUi9y?=
+ =?utf-8?B?QnhXQkxYSUtwMUhMVkJSVUFiRlVCdFhmMkE1Si96Q212T1hQWFVUY0ZCdk1Y?=
+ =?utf-8?B?anlHYjJvS0Z2WFNvQmFCYkt2UWVreVJGZ2ZEVWVBaFp2QWlQSlF6bUZuRWsv?=
+ =?utf-8?B?SW55UWE0czg0WUs2SXBXOXJtTkNQYVJwTTdjZkNvdUdyVExKUkpzMUduK1hF?=
+ =?utf-8?B?M2dtQzlWNEh4VUl3T0NvelBtVU51VllvSHlmcGRPVHhZc2s2Qi95TEhSclhK?=
+ =?utf-8?B?M2V6anhXQVVNWjQ0REdpYWVCZVJ5M09aQjRYbEczTXdzUDJta3E4NGdaSGdQ?=
+ =?utf-8?B?ckNIcmN5ZDBaS2phWFBRWENWanFlWWlmbi9hVCtKOWhvTERjekFpcHN0Z0E4?=
+ =?utf-8?B?cWJCalBYV3hxOTYxRk0wSzBjQkJ0Mko0UGV5cDZ4d2tEYXdzSUNRamJhNkhL?=
+ =?utf-8?B?OVplVklRZkdqNHBlRFVjZW5JbnRSZUhNN1dkeWZTRERwdDIzMjBlRk1DTVJX?=
+ =?utf-8?B?QUpoZi96SUMrRmxIUVRxVDYzU1FTVkJwOGdvV1VNMU1PbWdZMzZ5SndyRWhE?=
+ =?utf-8?B?ZnlHTzhvTm95SDkyZUZkZ2VpZlJRdm1xRDRVV2Nsbit2T1BSRWk3aG5iUmcw?=
+ =?utf-8?B?MFE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <69C2AA27AA7ABD44BFF80DB5C4341C47@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600007.china.huawei.com (7.193.23.208)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR03MB5351.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f0931b0-e060-4250-588e-08dba85d2547
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2023 06:57:01.3655
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0uepUjDOoHt3kqWtT/3AZ93DzWuVawQv07Rb/nwW83QAJjMA/w6Y+Q+R3XWQf+NhNIn/8/WeQeFn80M260Qnl5oUgp27q9gxn5g+k26/ZBQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB7776
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support pretty printer for the registers of hns3 driver.
-This printer supports PF and VF, and is compatible with hns3
-drivers of earlier versions.
-
-Sample output:
-
-$ ethtool -d eth1
-[cmdq_regs]
-  comm_nic_csq_baseaddr_l : 0x48168000
-  comm_nic_csq_baseaddr_h : 0x00000000
-  comm_nic_csq_depth      : 0x00000080
-  comm_nic_csq_tail       : 0x00000050
-  comm_nic_csq_head       : 0x00000050
-  comm_nic_crq_baseaddr_l : 0x48170000
-  comm_nic_crq_baseaddr_h : 0x00000000
-  comm_nic_crq_depth      : 0x00000080
-  comm_nic_crq_tail       : 0x00000000
-  comm_nic_crq_head       : 0x00000000
-  comm_vector0_cmdq_src   : 0x00000000
-  comm_cmdq_intr_sts      : 0x00000000
-  comm_cmdq_intr_en       : 0x00000002
-  comm_cmdq_intr_gen      : 0x00000000
-[common_regs]
-  misc_vector_base    : 0x00000001
-  pf_other_int        : 0x00000040
-  misc_reset_sts      : 0x00000000
-  misc_vector_int_sts : 0x00000000
-  global_reset        : 0x00000000
-  fun_rst_ing         : 0x00000000
-  gro_en              : 0x00000001
-...
-
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
-changeLog:
-  v2: remove #pragma suggested by Michal
-  v1: https://lore.kernel.org/all/20230818085611.2483909-1-shaojijie@huawei.com/
----
- Makefile.am |   2 +-
- ethtool.c   |   1 +
- hns3.c      | 829 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- internal.h  |   3 +
- 4 files changed, 834 insertions(+), 1 deletion(-)
- create mode 100644 hns3.c
-
-diff --git a/Makefile.am b/Makefile.am
-index 3879138..ae3b667 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -19,7 +19,7 @@ ethtool_SOURCES += \
- 		  smsc911x.c at76c50x-usb.c sfc.c stmmac.c	\
- 		  sff-common.c sff-common.h sfpid.c sfpdiag.c	\
- 		  ixgbevf.c tse.c vmxnet3.c qsfp.c qsfp.h fjes.c lan78xx.c \
--		  igc.c cmis.c cmis.h bnxt.c cpsw.c lan743x.c
-+		  igc.c cmis.c cmis.h bnxt.c cpsw.c lan743x.c hns3.c
- endif
- 
- if ENABLE_BASH_COMPLETION
-diff --git a/ethtool.c b/ethtool.c
-index b7d173b..af51220 100644
---- a/ethtool.c
-+++ b/ethtool.c
-@@ -1161,6 +1161,7 @@ static const struct {
- 	{ "lan743x", lan743x_dump_regs },
- 	{ "fsl_enetc", fsl_enetc_dump_regs },
- 	{ "fsl_enetc_vf", fsl_enetc_dump_regs },
-+	{ "hns3", hns3_dump_regs },
- };
- #endif
- 
-diff --git a/hns3.c b/hns3.c
-new file mode 100644
-index 0000000..7199426
---- /dev/null
-+++ b/hns3.c
-@@ -0,0 +1,829 @@
-+/* Copyright (c) 2023 Huawei Corporation */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include "internal.h"
-+
-+/* distinguish drive register data of earlier versions */
-+#define HNS3_REG_MAGIC_NUMBER 0x686e733372656773 /* hns3regs */
-+#define HNS3_REG_RSV_NAME "reserved"
-+#define HNS3_REG_UNKNOW_NAME "unknown"
-+#define HNS3_REG_UNKNOW_VALUE_LEN 4
-+
-+struct hns3_reg_tlv {
-+	u16 tag;
-+	u16 len;
-+};
-+
-+struct hns3_reg_header {
-+	u64 magic_number;
-+	u8 is_vf;
-+	u8 rsv[7];
-+};
-+
-+struct hns3_reg_info {
-+	const char *name;
-+	u16 value_len;
-+};
-+
-+struct hns3_regs_group {
-+	const char *group_name;
-+	const struct hns3_reg_info *regs;
-+	u16 regs_count;
-+};
-+
-+enum hns3_reg_tag {
-+	HNS3_TAG_CMDQ = 0,
-+	HNS3_TAG_COMMON,
-+	HNS3_TAG_RING,
-+	HNS3_TAG_TQP_INTR,
-+	HNS3_TAG_QUERY_32_BIT,
-+	HNS3_TAG_QUERY_64_BIT,
-+	HNS3_TAG_DFX_BIOS_COMMON,
-+	HNS3_TAG_DFX_SSU_0,
-+	HNS3_TAG_DFX_SSU_1,
-+	HNS3_TAG_DFX_IGU_EGU,
-+	HNS3_TAG_DFX_RPU_0,
-+	HNS3_TAG_DFX_RPU_1,
-+	HNS3_TAG_DFX_NCSI,
-+	HNS3_TAG_DFX_RTC,
-+	HNS3_TAG_DFX_PPP,
-+	HNS3_TAG_DFX_RCB,
-+	HNS3_TAG_DFX_TQP,
-+	HNS3_TAG_DFX_SSU_2,
-+	HNS3_TAG_DFX_RPU_TNL,
-+	HNS3_TAG_MAX,
-+};
-+
-+const bool hns3_reg_is_repeat_tag_array[] = {
-+	[HNS3_TAG_RING] = true,
-+	[HNS3_TAG_TQP_INTR] = true,
-+	[HNS3_TAG_DFX_RPU_TNL] = true,
-+};
-+
-+const struct hns3_reg_info pf_cmdq_regs[] = {
-+	{"comm_nic_csq_baseaddr_l", 4},
-+	{"comm_nic_csq_baseaddr_h", 4},
-+	{"comm_nic_csq_depth", 4},
-+	{"comm_nic_csq_tail", 4},
-+	{"comm_nic_csq_head", 4},
-+	{"comm_nic_crq_baseaddr_l", 4},
-+	{"comm_nic_crq_baseaddr_h", 4},
-+	{"comm_nic_crq_depth", 4},
-+	{"comm_nic_crq_tail", 4},
-+	{"comm_nic_crq_head", 4},
-+	{"comm_vector0_cmdq_src", 4},
-+	{"comm_cmdq_intr_sts", 4},
-+	{"comm_cmdq_intr_en", 4},
-+	{"comm_cmdq_intr_gen", 4},
-+};
-+
-+const struct hns3_reg_info pf_common_regs[] = {
-+	{"misc_vector_base", 4},
-+	{"pf_other_int", 4},
-+	{"misc_reset_sts", 4},
-+	{"misc_vector_int_sts", 4},
-+	{"global_reset", 4},
-+	{"fun_rst_ing", 4},
-+	{"gro_en", 4},
-+};
-+
-+const struct hns3_reg_info pf_ring_regs[] = {
-+	{"ring_rx_addr_l", 4},
-+	{"ring_rx_addr_h", 4},
-+	{"ring_rx_bd_num", 4},
-+	{"ring_rx_bd_length", 4},
-+	{"ring_rx_merge_en", 4},
-+	{"ring_rx_tail", 4},
-+	{"ring_rx_head", 4},
-+	{"ring_rx_fbd_num", 4},
-+	{"ring_rx_offset", 4},
-+	{"ring_rx_fbd_offset", 4},
-+	{"ring_rx_stash", 4},
-+	{"ring_rx_bd_err", 4},
-+	{"ring_tx_addr_l", 4},
-+	{"ring_tx_addr_h", 4},
-+	{"ring_tx_bd_num", 4},
-+	{"ring_tx_priority", 4},
-+	{"ring_tx_tc", 4},
-+	{"ring_tx_merge_en", 4},
-+	{"ring_tx_tail", 4},
-+	{"ring_tx_head", 4},
-+	{"ring_tx_fbd_num", 4},
-+	{"ring_tx_offset", 4},
-+	{"ring_tx_ebd_num", 4},
-+	{"ring_tx_ebd_offset", 4},
-+	{"ring_tx_bd_err", 4},
-+	{"ring_en", 4},
-+};
-+
-+const struct hns3_reg_info pf_tqp_intr_regs[] = {
-+	{"tqp_intr_ctrl", 4},
-+	{"tqp_intr_gl0", 4},
-+	{"tqp_intr_gl1", 4},
-+	{"tqp_intr_gl2", 4},
-+	{"tqp_intr_rl", 4},
-+};
-+
-+const struct hns3_reg_info query_32_bit_regs[] = {
-+	{"ssu_common_err_int", 4},
-+	{"ssu_port_based_err_int", 4},
-+	{"ssu_fifo_overflow_int", 4},
-+	{"ssu_ets_tcg_int", 4},
-+	{"ssu_bp_status_0", 4},
-+	{"ssu_bp_status_1", 4},
-+	{"ssu_bp_status_2", 4},
-+	{"ssu_bp_status_3", 4},
-+	{"ssu_bp_status_4", 4},
-+	{"ssu_bp_status_5", 4},
-+	{"ssu_mac_tx_pfc_ind", 4},
-+	{"ssu_mac_rx_pfc_ind", 4},
-+	{"ssu_rx_oq_drop_pkt_cnt", 4},
-+	{"ssu_tx_oq_drop_pkt_cnt", 4},
-+};
-+
-+const struct hns3_reg_info query_64_bit_regs[] = {
-+	{"ppp_get_rx_pkt_cnt", 8},
-+	{"ppp_get_tx_pkt_cnt", 8},
-+	{"ppp_send_uc_prt2host_pkt_cnt", 8},
-+	{"ppp_send_uc_prt2prt_pkt_cnt", 8},
-+	{"ppp_send_uc_host2host_pkt_cnt", 8},
-+	{"ppp_send_uc_host2prt_pkt_cnt", 8},
-+	{"ppp_send_mc_from_prt_cnt", 8},
-+};
-+
-+const struct hns3_reg_info dfx_bios_common_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"bp_cpu_state", 4},
-+	{"dfx_msix_info_nic_0", 4},
-+	{"dfx_msix_info_nic_1", 4},
-+	{"dfx_msix_info_nic_2", 4},
-+	{"dfx_msix_info_nic_3", 4},
-+	{"dfx_msix_info_roc_0", 4},
-+	{"dfx_msix_info_roc_1", 4},
-+	{"dfx_msix_info_roc_2", 4},
-+	{"dfx_msix_info_roc_3", 4},
-+	{HNS3_REG_RSV_NAME, 8},
-+};
-+
-+const struct hns3_reg_info dfx_ssu_0_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"ssu_ets_port_status", 4},
-+	{"ssu_ets_tcg_status", 4},
-+	{HNS3_REG_RSV_NAME, 4},
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"ssu_bp_status_0", 4},
-+	{"ssu_bp_status_1", 4},
-+	{"ssu_bp_status_2", 4},
-+	{"ssu_bp_status_3", 4},
-+	{"ssu_bp_status_4", 4},
-+	{"ssu_bp_status_5", 4},
-+	{"ssu_mac_tx_pfc_ind", 4},
-+	{"mac_ssu_rx_pfc_ind", 4},
-+	{"btmp_ageing_st_b0", 4},
-+	{"btmp_ageing_st_b1", 4},
-+	{"btmp_ageing_st_b2", 4},
-+	{HNS3_REG_RSV_NAME, 8},
-+	{"full_drop_num", 4},
-+	{"part_drop_num", 4},
-+	{"ppp_key_drop_num", 4},
-+	{"ppp_rlt_drop_num", 4},
-+	{"lo_pri_unicast_rlt_drop_num", 4},
-+	{"hi_pri_multicast_rlt_drop_num", 4},
-+	{"lo_pri_multicast_rlt_drop_num", 4},
-+	{"ncsi_packet_curr_buffer_cnt", 4},
-+	{HNS3_REG_RSV_NAME, 12},
-+	{"ssu_mb_rd_rlt_drop_cnt", 4},
-+	{"ssu_ppp_mac_key_num", 8},
-+	{"ssu_ppp_host_key_num", 8},
-+	{"ppp_ssu_mac_rlt_num", 8},
-+	{"ppp_ssu_host_rlt_num", 8},
-+	{"ncsi_rx_packet_in_cnt", 8},
-+	{"ncsi_tx_packet_out_cnt", 8},
-+	{"ssu_key_drop_num", 4},
-+	{"mb_uncopy_num", 4},
-+	{"rx_oq_drop_pkt_cnt", 4},
-+	{"tx_oq_drop_pkt_cnt", 4},
-+	{"bank_unbalance_drop_cnt", 4},
-+	{"bank_unbalance_rx_drop_cnt", 4},
-+	{"nic_l2_err_drop_pkt_cnt", 4},
-+	{"roc_l2_err_drop_pkt_cnt", 4},
-+	{"nic_l2_err_drop_pkt_cnt_rx", 4},
-+	{"roc_l2_err_drop_pkt_cnt_rx", 4},
-+	{"rx_oq_glb_drop_pkt_cnt", 4},
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"lo_pri_unicast_cur_cnt", 4},
-+	{"hi_pri_multicast_cur_cnt", 4},
-+	{"lo_pri_multicast_cur_cnt", 4},
-+	{HNS3_REG_RSV_NAME, 12},
-+};
-+
-+const struct hns3_reg_info dfx_ssu_1_regs[] = {
-+	{"prt_id", 4},
-+	{"packet_tc_curr_buffer_cnt_0", 4},
-+	{"packet_tc_curr_buffer_cnt_1", 4},
-+	{"packet_tc_curr_buffer_cnt_2", 4},
-+	{"packet_tc_curr_buffer_cnt_3", 4},
-+	{"packet_tc_curr_buffer_cnt_4", 4},
-+	{"packet_tc_curr_buffer_cnt_5", 4},
-+	{"packet_tc_curr_buffer_cnt_6", 4},
-+	{"packet_tc_curr_buffer_cnt_7", 4},
-+	{"packet_curr_buffer_cnt", 4},
-+	{HNS3_REG_RSV_NAME, 8},
-+	{"rx_packet_in_cnt", 8},
-+	{"rx_packet_out_cnt", 8},
-+	{"tx_packet_in_cnt", 8},
-+	{"tx_packet_out_cnt", 8},
-+	{"roc_rx_packet_in_cnt", 8},
-+	{"roc_tx_packet_out_cnt", 8},
-+	{"rx_packet_tc_in_cnt_0", 8},
-+	{"rx_packet_tc_in_cnt_1", 8},
-+	{"rx_packet_tc_in_cnt_2", 8},
-+	{"rx_packet_tc_in_cnt_3", 8},
-+	{"rx_packet_tc_in_cnt_4", 8},
-+	{"rx_packet_tc_in_cnt_5", 8},
-+	{"rx_packet_tc_in_cnt_6", 8},
-+	{"rx_packet_tc_in_cnt_7", 8},
-+	{"rx_packet_tc_out_cnt_0", 8},
-+	{"rx_packet_tc_out_cnt_1", 8},
-+	{"rx_packet_tc_out_cnt_2", 8},
-+	{"rx_packet_tc_out_cnt_3", 8},
-+	{"rx_packet_tc_out_cnt_4", 8},
-+	{"rx_packet_tc_out_cnt_5", 8},
-+	{"rx_packet_tc_out_cnt_6", 8},
-+	{"rx_packet_tc_out_cnt_7", 8},
-+	{"tx_packet_tc_in_cnt_0", 8},
-+	{"tx_packet_tc_in_cnt_1", 8},
-+	{"tx_packet_tc_in_cnt_2", 8},
-+	{"tx_packet_tc_in_cnt_3", 8},
-+	{"tx_packet_tc_in_cnt_4", 8},
-+	{"tx_packet_tc_in_cnt_5", 8},
-+	{"tx_packet_tc_in_cnt_6", 8},
-+	{"tx_packet_tc_in_cnt_7", 8},
-+	{"tx_packet_tc_out_cnt_0", 8},
-+	{"tx_packet_tc_out_cnt_1", 8},
-+	{"tx_packet_tc_out_cnt_2", 8},
-+	{"tx_packet_tc_out_cnt_3", 8},
-+	{"tx_packet_tc_out_cnt_4", 8},
-+	{"tx_packet_tc_out_cnt_5", 8},
-+	{"tx_packet_tc_out_cnt_6", 8},
-+	{"tx_packet_tc_out_cnt_7", 8},
-+	{HNS3_REG_RSV_NAME, 8},
-+};
-+
-+const struct hns3_reg_info dfx_igu_egu_regs[] = {
-+	{"prt_id", 4},
-+	{"igu_rx_err_pkt", 4},
-+	{"igu_rx_no_sof_pkt", 4},
-+	{"egu_tx_1588_short_pkt", 4},
-+	{"egu_tx_1588_pkt", 4},
-+	{"egu_tx_err_pkt", 4},
-+	{"igu_rx_out_l2_pkt", 4},
-+	{"igu_rx_out_l3_pkt", 4},
-+	{"igu_rx_out_l4_pkt", 4},
-+	{"igu_rx_in_l2_pkt", 4},
-+	{"igu_rx_in_l3_pkt", 4},
-+	{"igu_rx_in_l4_pkt", 4},
-+	{"igu_rx_el3e_pkt", 4},
-+	{"igu_rx_el4e_pkt", 4},
-+	{"igu_rx_l3e_pkt", 4},
-+	{"igu_rx_l4e_pkt", 4},
-+	{"igu_rx_rocee_pkt", 4},
-+	{"igu_rx_out_udp0_pkt", 4},
-+	{"igu_rx_in_udp0_pkt", 4},
-+	{"mul_car_drop_pkt_cnt", 8},
-+	{"bro_car_drop_pkt_cnt", 8},
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"igu_rx_oversize_pkt", 8},
-+	{"igu_rx_undersize_pkt", 8},
-+	{"igu_rx_out_all_pkt", 8},
-+	{"igu_tx_out_all_pkt", 8},
-+	{"igu_rx_uni_pkt", 8},
-+	{"igu_rx_multi_pkt", 8},
-+	{"igu_rx_broad_pkt", 8},
-+	{"egu_tx_out_all_pkt", 8},
-+	{"egu_tx_uni_pkt", 8},
-+	{"egu_tx_multi_pkt", 8},
-+	{"egu_tx_broad_pkt", 8},
-+	{"igu_tx_key_num", 8},
-+	{"igu_rx_non_tun_pkt", 8},
-+	{"igu_rx_tun_pkt", 8},
-+	{HNS3_REG_RSV_NAME, 8},
-+};
-+
-+const struct hns3_reg_info dfx_rpu_0_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"fsm_dfx_st0", 4},
-+	{"fsm_dfx_st1", 4},
-+	{"rpu_rx_pkt_drop_cnt", 4},
-+	{"buf_wait_timeout", 4},
-+	{"buf_wait_timeout_qid", 4},
-+};
-+
-+const struct hns3_reg_info dfx_rpu_1_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"fifo_dfx_st0", 4},
-+	{"fifo_dfx_st1", 4},
-+	{"fifo_dfx_st2", 4},
-+	{"fifo_dfx_st3", 4},
-+	{"fifo_dfx_st4", 4},
-+	{"fifo_dfx_st5", 4},
-+	{HNS3_REG_RSV_NAME, 20},
-+};
-+
-+const struct hns3_reg_info dfx_ncsi_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"ncsi_egu_tx_fifo_sts", 4},
-+	{"ncsi_pause_status", 4},
-+	{"ncsi_rx_ctrl_dmac_err_cnt", 4},
-+	{"ncsi_rx_ctrl_smac_err_cnt", 4},
-+	{"ncsi_rx_ctrl_cks_err_cnt", 4},
-+	{"ncsi_rx_ctrl_pkt_cnt", 4},
-+	{"ncsi_rx_pt_dmac_err_cnt", 4},
-+	{"ncsi_rx_pt_smac_err_cnt", 4},
-+	{"ncsi_rx_pt_pkt_cnt", 4},
-+	{"ncsi_rx_fcs_err_cnt", 4},
-+	{"ncsi_tx_ctrl_dmac_err_cnt", 4},
-+	{"ncsi_tx_ctrl_smac_err_cnt", 4},
-+	{"ncsi_tx_ctrl_pkt_cnt", 4},
-+	{"ncsi_tx_pt_dmac_err_cnt", 4},
-+	{"ncsi_tx_pt_smac_err_cnt", 4},
-+	{"ncsi_tx_pt_pkt_cnt", 4},
-+	{"ncsi_tx_pt_pkt_trun_cnt", 4},
-+	{"ncsi_tx_pt_pkt_err_cnt", 4},
-+	{"ncsi_tx_ctrl_pkt_err_cnt", 4},
-+	{"ncsi_rx_ctrl_pkt_trun_cnt", 4},
-+	{"ncsi_rx_ctrl_pkt_cflit_cnt", 4},
-+	{HNS3_REG_RSV_NAME, 8},
-+	{"ncsi_mac_rx_octets_ok", 4},
-+	{"ncsi_mac_rx_octets_bad", 4},
-+	{"ncsi_mac_rx_uc_pkts", 4},
-+	{"ncsi_mac_rx_mc_pkts", 4},
-+	{"ncsi_mac_rx_bc_pkts", 4},
-+	{"ncsi_mac_rx_pkts_64octets", 4},
-+	{"ncsi_mac_rx_pkts_65to127octets", 4},
-+	{"ncsi_mac_rx_pkts_128to255octets", 4},
-+	{"ncsi_mac_rx_pkts_256to511octets", 4},
-+	{"ncsi_mac_rx_pkts_512to1023octets", 4},
-+	{"ncsi_mac_rx_pkts_1024to1518octets", 4},
-+	{"ncsi_mac_rx_pkts_1519tomaxoctets", 4},
-+	{"ncsi_mac_rx_fcs_errors", 4},
-+	{"ncsi_mac_rx_long_errors", 4},
-+	{"ncsi_mac_rx_jabber_errors", 4},
-+	{"ncsi_mac_rx_runt_err_cnt", 4},
-+	{"ncsi_mac_rx_short_err_cnt", 4},
-+	{"ncsi_mac_rx_filt_pkt_cnt", 4},
-+	{"ncsi_mac_rx_octets_total_filt", 4},
-+	{"ncsi_mac_tx_octets_ok", 4},
-+	{"ncsi_mac_tx_octets_bad", 4},
-+	{"ncsi_mac_tx_uc_pkts", 4},
-+	{"ncsi_mac_tx_mc_pkts", 4},
-+	{"ncsi_mac_tx_bc_pkts", 4},
-+	{"ncsi_mac_tx_pkts_64octets", 4},
-+	{"ncsi_mac_tx_pkts_65to127octets", 4},
-+	{"ncsi_mac_tx_pkts_128to255octets", 4},
-+	{"ncsi_mac_tx_pkts_256to511octets", 4},
-+	{"ncsi_mac_tx_pkts_512to1023octets", 4},
-+	{"ncsi_mac_tx_pkts_1024to1518octets", 4},
-+	{"ncsi_mac_tx_pkts_1519tomaxoctets", 4},
-+	{"ncsi_mac_tx_underrun", 4},
-+	{"ncsi_mac_tx_crc_error", 4},
-+	{"ncsi_mac_tx_pause_frames", 4},
-+	{"ncsi_mac_rx_pad_pkts", 4},
-+	{"ncsi_mac_rx_pause_frames", 4},
-+};
-+
-+const struct hns3_reg_info dfx_rtc_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"lge_igu_afifo_dfx_0", 4},
-+	{"lge_igu_afifo_dfx_1", 4},
-+	{"lge_igu_afifo_dfx_2", 4},
-+	{"lge_igu_afifo_dfx_3", 4},
-+	{"lge_igu_afifo_dfx_4", 4},
-+	{"lge_igu_afifo_dfx_5", 4},
-+	{"lge_igu_afifo_dfx_6", 4},
-+	{"lge_igu_afifo_dfx_7", 4},
-+	{"lge_egu_afifo_dfx_0", 4},
-+	{"lge_egu_afifo_dfx_1", 4},
-+	{"lge_egu_afifo_dfx_2", 4},
-+	{"lge_egu_afifo_dfx_3", 4},
-+	{"lge_egu_afifo_dfx_4", 4},
-+	{"lge_egu_afifo_dfx_5", 4},
-+	{"lge_egu_afifo_dfx_6", 4},
-+	{"lge_egu_afifo_dfx_7", 4},
-+	{"cge_igu_afifo_dfx_0", 4},
-+	{"cge_igu_afifo_dfx_1", 4},
-+	{"cge_egu_afifo_dfx_0", 4},
-+	{"cge_egu_afifo_dfx_1", 4},
-+	{HNS3_REG_RSV_NAME, 12},
-+};
-+
-+const struct hns3_reg_info dfx_ppp_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"drop_from_prt_pkt_cnt", 4},
-+	{"drop_from_host_pkt_cnt", 4},
-+	{"drop_tx_vlan_proc_cnt", 4},
-+	{"drop_mng_cnt", 4},
-+	{"drop_fd_cnt", 4},
-+	{"drop_no_dst_cnt", 4},
-+	{"drop_mc_mbid_full_cnt", 4},
-+	{"drop_sc_filtered", 4},
-+	{"ppp_mc_drop_pkt_cnt", 4},
-+	{"drop_pt_cnt", 4},
-+	{"drop_mac_anti_spoof_cnt", 4},
-+	{"drop_ig_vfv_cnt", 4},
-+	{"drop_ig_prtv_cnt", 4},
-+	{"drop_cnm_pfc_pause_cnt", 4},
-+	{"drop_torus_tc_cnt", 4},
-+	{"drop_torus_lpbk_cnt", 4},
-+	{"ppp_hfs_sts", 4},
-+	{"ppp_mc_rslt_sts", 4},
-+	{"ppp_p3u_sts", 4},
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"ppp_umv_sts_0", 4},
-+	{"ppp_umv_sts_1", 4},
-+	{"ppp_vfv_sts", 4},
-+	{"ppp_gro_key_cnt", 4},
-+	{"ppp_gro_info_cnt", 4},
-+	{"ppp_gro_drop_cnt", 4},
-+	{"ppp_gro_out_cnt", 4},
-+	{"ppp_gro_key_match_data_cnt", 4},
-+	{"ppp_gro_key_match_tcam_cnt", 4},
-+	{"ppp_gro_info_match_cnt", 4},
-+	{"ppp_gro_free_entry_cnt", 4},
-+	{"ppp_gro_inner_dfx_signal", 4},
-+	{HNS3_REG_RSV_NAME, 12},
-+	{"get_rx_pkt_cnt", 8},
-+	{"get_tx_pkt_cnt", 8},
-+	{"send_uc_prt2host_pkt_cnt", 8},
-+	{"send_uc_prt2prt_pkt_cnt", 8},
-+	{"send_uc_host2host_pkt_cnt", 8},
-+	{"send_uc_host2prt_pkt_cnt", 8},
-+	{"send_mc_from_prt_cnt", 8},
-+	{"send_mc_from_host_cnt", 8},
-+	{"ssu_mc_rd_cnt", 8},
-+	{"ssu_mc_drop_cnt", 8},
-+	{"ssu_mc_rd_pkt_cnt", 8},
-+	{"ppp_mc_2host_pkt_cnt", 8},
-+	{"ppp_mc_2prt_pkt_cnt", 8},
-+	{"ntsnos_pkt_cnt", 8},
-+	{"ntup_pkt_cnt", 8},
-+	{"ntlcl_pkt_cnt", 8},
-+	{"nttgt_pkt_cnt", 8},
-+	{"rtns_pkt_cnt", 8},
-+	{"rtlpbk_pkt_cnt", 8},
-+	{"nr_pkt_cnt", 8},
-+	{"rr_pkt_cnt", 8},
-+	{"mng_tbl_hit_cnt", 8},
-+	{"fd_tbl_hit_cnt", 8},
-+	{"fd_lkup_cnt", 8},
-+	{"bc_hit_cnt", 8},
-+	{"um_tbl_uc_hit_cnt", 8},
-+	{"um_tbl_mc_hit_cnt", 8},
-+	{"um_tbl_snq_hit_cnt", 8},
-+	{HNS3_REG_RSV_NAME, 8},
-+	{"fwd_bonding_hit_cnt", 8},
-+	{"promis_tbl_hit_cnt", 8},
-+	{"get_tunl_pkt_cnt", 8},
-+	{"get_bmc_pkt_cnt", 8},
-+	{"send_uc_prt2bmc_pkt_cnt", 8},
-+	{"send_uc_host2bmc_pkt_cnt", 8},
-+	{"send_uc_bmc2host_pkt_cnt", 8},
-+	{"send_uc_bmc2prt_pkt_cnt", 8},
-+	{"ppp_mc_2bmc_pkt_cnt", 8},
-+	{HNS3_REG_RSV_NAME, 24},
-+	{"rx_default_host_hit_cnt", 8},
-+	{"lan_pair_cnt", 8},
-+	{"um_tbl_mc_hit_pkt_cnt", 8},
-+	{"mta_tbl_hit_pkt_cnt", 8},
-+	{"promis_tbl_hit_pkt_cnt", 8},
-+	{HNS3_REG_RSV_NAME, 16},
-+};
-+
-+const struct hns3_reg_info dfx_rcb_regs[] = {
-+	{HNS3_REG_RSV_NAME, 4},
-+	{"fsm_dfx_st0", 4},
-+	{"fsm_dfx_st1", 4},
-+	{"fsm_dfx_st2", 4},
-+	{"fifo_dfx_st0", 4},
-+	{"fifo_dfx_st1", 4},
-+	{"fifo_dfx_st2", 4},
-+	{"fifo_dfx_st3", 4},
-+	{"fifo_dfx_st4", 4},
-+	{"fifo_dfx_st5", 4},
-+	{"fifo_dfx_st6", 4},
-+	{"fifo_dfx_st7", 4},
-+	{"fifo_dfx_st8", 4},
-+	{"fifo_dfx_st9", 4},
-+	{"fifo_dfx_st10", 4},
-+	{"fifo_dfx_st11", 4},
-+	{"q_credit_vld_0", 4},
-+	{"q_credit_vld_1", 4},
-+	{"q_credit_vld_2", 4},
-+	{"q_credit_vld_3", 4},
-+	{"q_credit_vld_4", 4},
-+	{"q_credit_vld_5", 4},
-+	{"q_credit_vld_6", 4},
-+	{"q_credit_vld_7", 4},
-+	{"q_credit_vld_8", 4},
-+	{"q_credit_vld_9", 4},
-+	{"q_credit_vld_10", 4},
-+	{"q_credit_vld_11", 4},
-+	{"q_credit_vld_12", 4},
-+	{"q_credit_vld_13", 4},
-+	{"q_credit_vld_14", 4},
-+	{"q_credit_vld_15", 4},
-+	{"q_credit_vld_16", 4},
-+	{"q_credit_vld_17", 4},
-+	{"q_credit_vld_18", 4},
-+	{"q_credit_vld_19", 4},
-+	{"q_credit_vld_20", 4},
-+	{"q_credit_vld_21", 4},
-+	{"q_credit_vld_22", 4},
-+	{"q_credit_vld_23", 4},
-+	{"q_credit_vld_24", 4},
-+	{"q_credit_vld_25", 4},
-+	{"q_credit_vld_26", 4},
-+	{"q_credit_vld_27", 4},
-+	{"q_credit_vld_28", 4},
-+	{"q_credit_vld_29", 4},
-+	{"q_credit_vld_30", 4},
-+	{"q_credit_vld_31", 4},
-+	{"gro_bd_serr_cnt", 4},
-+	{"gro_context_serr_cnt", 4},
-+	{"rx_stash_cfg_serr_cnt", 4},
-+	{"rcb_tx_mem_serr_cnt", 4},
-+	{"gro_bd_merr_cnt", 4},
-+	{"gro_context_merr_cnt", 4},
-+	{"rx_stash_cfg_merr_cnt", 4},
-+	{"rcb_tx_mem_merr_cnt", 4},
-+	{HNS3_REG_RSV_NAME, 16},
-+};
-+
-+const struct hns3_reg_info dfx_tqp_regs[] = {
-+	{"q_num", 4},
-+	{"rcb_cfg_rx_ring_tail", 4},
-+	{"rcb_cfg_rx_ring_head", 4},
-+	{"rcb_cfg_rx_ring_fbdnum", 4},
-+	{"rcb_cfg_rx_ring_offset", 4},
-+	{"rcb_cfg_rx_ring_fbdoffset", 4},
-+	{"rcb_cfg_rx_ring_pktnum_record", 4},
-+	{"rcb_cfg_tx_ring_tail", 4},
-+	{"rcb_cfg_tx_ring_head", 4},
-+	{"rcb_cfg_tx_ring_fbdnum", 4},
-+	{"rcb_cfg_tx_ring_offset", 4},
-+	{"rcb_cfg_tx_ring_ebdnum", 4},
-+};
-+
-+const struct hns3_reg_info dfx_ssu_2_regs[] = {
-+	{"oq_index", 4},
-+	{"queue_cnt", 4},
-+	{HNS3_REG_RSV_NAME, 16},
-+};
-+
-+const struct hns3_reg_info vf_cmdq_regs[] = {
-+	{"comm_nic_csq_baseaddr_l", 4},
-+	{"comm_nic_csq_baseaddr_h", 4},
-+	{"comm_nic_csq_depth", 4},
-+	{"comm_nic_csq_tail", 4},
-+	{"comm_nic_csq_head", 4},
-+	{"comm_nic_crq_baseaddr_l", 4},
-+	{"comm_nic_crq_baseaddr_h", 4},
-+	{"comm_nic_crq_depth", 4},
-+	{"comm_nic_crq_tail", 4},
-+	{"comm_nic_crq_head", 4},
-+	{"comm_vector0_cmdq_src", 4},
-+	{"comm_vector0_cmdq_state", 4},
-+	{"comm_cmdq_intr_en", 4},
-+	{"comm_cmdq_intr_gen", 4},
-+};
-+
-+const struct hns3_reg_info vf_common_regs[] = {
-+	{"misc_vector_base", 4},
-+	{"rst_ing", 4},
-+	{"gro_en", 4},
-+};
-+
-+const struct hns3_reg_info vf_ring_regs[] = {
-+	{"ring_rx_addr_l", 4},
-+	{"ring_rx_addr_h", 4},
-+	{"ring_rx_bd_num", 4},
-+	{"ring_rx_bd_length", 4},
-+	{"ring_rx_merge_en", 4},
-+	{"ring_rx_tail", 4},
-+	{"ring_rx_head", 4},
-+	{"ring_rx_fbd_num", 4},
-+	{"ring_rx_offset", 4},
-+	{"ring_rx_fbd_offset", 4},
-+	{"ring_rx_stash", 4},
-+	{"ring_rx_bd_err", 4},
-+	{"ring_tx_addr_l", 4},
-+	{"ring_tx_addr_h", 4},
-+	{"ring_tx_bd_num", 4},
-+	{"ring_tx_priority", 4},
-+	{"ring_tx_tc", 4},
-+	{"ring_tx_merge_en", 4},
-+	{"ring_tx_tail", 4},
-+	{"ring_tx_head", 4},
-+	{"ring_tx_fbd_num", 4},
-+	{"ring_tx_offset", 4},
-+	{"ring_tx_ebd_num", 4},
-+	{"ring_tx_ebd_offset", 4},
-+	{"ring_tx_bd_err", 4},
-+	{"ring_en", 4},
-+};
-+
-+const struct hns3_reg_info vf_tqp_intr_regs[] = {
-+	{"tqp_intr_ctrl", 4},
-+	{"tqp_intr_gl0", 4},
-+	{"tqp_intr_gl1", 4},
-+	{"tqp_intr_gl2", 4},
-+	{"tqp_intr_rl", 4},
-+};
-+
-+const struct hns3_regs_group pf_regs_groups[] = {
-+	[HNS3_TAG_CMDQ] = {"cmdq_regs", pf_cmdq_regs, ARRAY_SIZE(pf_cmdq_regs)},
-+	[HNS3_TAG_COMMON] = {"common_regs", pf_common_regs,
-+			     ARRAY_SIZE(pf_common_regs)},
-+	[HNS3_TAG_RING] = {"ring_regs", pf_ring_regs, ARRAY_SIZE(pf_ring_regs)},
-+	[HNS3_TAG_TQP_INTR] = {"tqp_intr_regs", pf_tqp_intr_regs,
-+			       ARRAY_SIZE(pf_tqp_intr_regs)},
-+	[HNS3_TAG_QUERY_32_BIT] = {"dfx_32_regs", query_32_bit_regs,
-+				   ARRAY_SIZE(query_32_bit_regs)},
-+	[HNS3_TAG_QUERY_64_BIT] = {"dfx_64_regs", query_64_bit_regs,
-+				   ARRAY_SIZE(query_64_bit_regs)},
-+	[HNS3_TAG_DFX_BIOS_COMMON] = {"dfx_bios_common_regs",
-+				      dfx_bios_common_regs,
-+				      ARRAY_SIZE(dfx_bios_common_regs)},
-+	[HNS3_TAG_DFX_SSU_0] = {"dfx_ssu_0_regs", dfx_ssu_0_regs,
-+				ARRAY_SIZE(dfx_ssu_0_regs)},
-+	[HNS3_TAG_DFX_SSU_1] = {"dfx_ssu_1_regs", dfx_ssu_1_regs,
-+				ARRAY_SIZE(dfx_ssu_1_regs)},
-+	[HNS3_TAG_DFX_IGU_EGU] = {"dfx_igu_egu_regs", dfx_igu_egu_regs,
-+				  ARRAY_SIZE(dfx_igu_egu_regs)},
-+	[HNS3_TAG_DFX_RPU_0] = {"dfx_rpu_0_regs", dfx_rpu_0_regs,
-+				ARRAY_SIZE(dfx_rpu_0_regs)},
-+	[HNS3_TAG_DFX_RPU_1] = {"dfx_rpu_1_regs", dfx_rpu_1_regs,
-+				ARRAY_SIZE(dfx_rpu_1_regs)},
-+	[HNS3_TAG_DFX_NCSI] = {"dfx_ncsi_regs", dfx_ncsi_regs,
-+			       ARRAY_SIZE(dfx_ncsi_regs)},
-+	[HNS3_TAG_DFX_RTC] = {"dfx_rtc_regs", dfx_rtc_regs,
-+			      ARRAY_SIZE(dfx_rtc_regs)},
-+	[HNS3_TAG_DFX_PPP] = {"dfx_ppp_regs", dfx_ppp_regs,
-+			      ARRAY_SIZE(dfx_ppp_regs)},
-+	[HNS3_TAG_DFX_RCB] = {"dfx_rcb_regs", dfx_rcb_regs,
-+			      ARRAY_SIZE(dfx_rcb_regs)},
-+	[HNS3_TAG_DFX_TQP] = {"dfx_tqp_regs", dfx_tqp_regs,
-+			      ARRAY_SIZE(dfx_tqp_regs)},
-+	[HNS3_TAG_DFX_SSU_2] = {"dfx_ssu_2_regs", dfx_ssu_2_regs,
-+				ARRAY_SIZE(dfx_ssu_2_regs)},
-+	[HNS3_TAG_DFX_RPU_TNL] = {"dfx_rpu_tnl", dfx_rpu_0_regs,
-+				  ARRAY_SIZE(dfx_rpu_0_regs)},
-+};
-+
-+const struct hns3_regs_group vf_regs_groups[] = {
-+	[HNS3_TAG_CMDQ] = {"cmdq_regs", vf_cmdq_regs, ARRAY_SIZE(vf_cmdq_regs)},
-+	[HNS3_TAG_COMMON] = {"common_regs", vf_common_regs,
-+			     ARRAY_SIZE(vf_common_regs)},
-+	[HNS3_TAG_RING] = {"ring_regs", vf_ring_regs, ARRAY_SIZE(vf_ring_regs)},
-+	[HNS3_TAG_TQP_INTR] = {"tqp_intr_regs", vf_tqp_intr_regs,
-+			       ARRAY_SIZE(vf_tqp_intr_regs)},
-+};
-+
-+static void hns3_dump_reg_hex(const char *regs_name, const u8 *regs_data,
-+			     u16 value_len, u32 name_max_len)
-+{
-+	if (strcmp(regs_name, HNS3_REG_RSV_NAME) == 0)
-+		return;
-+
-+	fprintf(stdout, "  %-*s : ", name_max_len, regs_name);
-+	if (value_len == 4) /* 4 bytes register */
-+		fprintf(stdout, "0x%08x\n", *(u32 *)regs_data);
-+	if (value_len == 8) /* 8 bytes register */
-+		fprintf(stdout, "0x%016llx\n", *(u64 *)regs_data);
-+}
-+
-+static u32 hns3_get_group_regs_name_max_len(const struct hns3_regs_group *group)
-+{
-+	const struct hns3_reg_info *reg;
-+	u32 max_len = 0;
-+	u16 i;
-+
-+	for (i = 0; i < group->regs_count; i++) {
-+		reg = &group->regs[i];
-+		max_len = strlen(reg->name) > max_len ?
-+			  strlen(reg->name) : max_len;
-+	}
-+
-+	return max_len;
-+}
-+
-+static const char *hns3_get_group_name(const struct hns3_regs_group *group,
-+				       u32 tag)
-+{
-+	static u32 pre_tag = HNS3_TAG_MAX;
-+	static char group_name[256];
-+	static u32 index;
-+
-+	if (!hns3_reg_is_repeat_tag_array[tag])
-+		return group->group_name;
-+
-+	if (tag != pre_tag)
-+		index = 0;
-+
-+	pre_tag = tag;
-+	sprintf(group_name, "%s_%u", group->group_name, index++);
-+	return group_name;
-+}
-+
-+static void hns3_dump_reg_group(const struct hns3_regs_group *group, u32 tag,
-+			       u32 expected_len, const u8 *regs_data)
-+{
-+	u32 name_max_len = hns3_get_group_regs_name_max_len(group);
-+	const struct hns3_reg_info *reg;
-+	u32 dump_offset = 0;
-+	u16 i;
-+
-+	fprintf(stdout, "[%s]\n", hns3_get_group_name(group, tag));
-+	for (i = 0; i < group->regs_count && dump_offset < expected_len; i++) {
-+		reg = &group->regs[i];
-+		hns3_dump_reg_hex(reg->name, regs_data + dump_offset,
-+				  reg->value_len, name_max_len);
-+		dump_offset += reg->value_len;
-+	}
-+
-+	/* the driver may add new register.
-+	 * In this case, the register name is unknown.
-+	 * The register can be parsed as unknown:value format.
-+	 */
-+	while (dump_offset < expected_len) {
-+		hns3_dump_reg_hex(HNS3_REG_UNKNOW_NAME, regs_data + dump_offset,
-+				  HNS3_REG_UNKNOW_VALUE_LEN, name_max_len);
-+		dump_offset += HNS3_REG_UNKNOW_VALUE_LEN;
-+	}
-+}
-+
-+static void hns3_dump_as_groups(const struct hns3_regs_group *groups,
-+				const u8 *regs_data, u32 regs_len)
-+{
-+	u32 tlv_size = sizeof(struct hns3_reg_tlv);
-+	const struct hns3_reg_tlv *tlv;
-+	u32 dump_offset = 0;
-+
-+	while (dump_offset < regs_len) {
-+		tlv = (const struct hns3_reg_tlv *)(regs_data + dump_offset);
-+		hns3_dump_reg_group(&groups[tlv->tag], tlv->tag,
-+				    tlv->len - tlv_size,
-+				    regs_data + dump_offset + tlv_size);
-+		dump_offset += tlv->len;
-+	}
-+}
-+
-+static bool hns3_dump_validate(const u8 *regs_data, u32 regs_len)
-+{
-+	u32 tlv_size = sizeof(struct hns3_reg_tlv);
-+	const struct hns3_reg_tlv *tlv;
-+	u32 dump_offset = 0;
-+
-+	while (dump_offset < regs_len) {
-+		tlv = (const struct hns3_reg_tlv *)(regs_data + dump_offset);
-+
-+		/* register value length is 4 bytes or 8 bytes */
-+		if ((tlv->len - tlv_size) % 4)
-+			return false;
-+
-+		if (tlv->tag >= HNS3_TAG_MAX)
-+			return false;
-+
-+		dump_offset += tlv->len;
-+	}
-+
-+	return dump_offset == regs_len;
-+}
-+
-+int hns3_dump_regs(struct ethtool_drvinfo *info __maybe_unused,
-+		   struct ethtool_regs *regs)
-+{
-+	const struct hns3_regs_group *groups = pf_regs_groups;
-+	u32 header_len = sizeof(struct hns3_reg_header);
-+	const struct hns3_reg_header *header;
-+
-+	/* must contain header and register data */
-+	if (regs->len <= header_len)
-+		return -ENODATA;
-+
-+	header = (struct hns3_reg_header *)regs->data;
-+	if (header->magic_number != HNS3_REG_MAGIC_NUMBER)
-+		return -EOPNOTSUPP;
-+
-+	if (!hns3_dump_validate(regs->data + header_len,
-+				regs->len - header_len))
-+		return -EINVAL;
-+
-+	if (header->is_vf)
-+		groups = vf_regs_groups;
-+
-+	hns3_dump_as_groups(groups, regs->data + header_len,
-+			    regs->len - header_len);
-+	return 0;
-+}
-diff --git a/internal.h b/internal.h
-index 4b6d687..4b994f5 100644
---- a/internal.h
-+++ b/internal.h
-@@ -360,6 +360,9 @@ int altera_tse_dump_regs(struct ethtool_drvinfo *info,
- /* VMware vmxnet3 ethernet controller */
- int vmxnet3_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
- 
-+/* hns3 ethernet controller */
-+int hns3_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
-+
- /* Rx flow classification */
- int rxclass_parse_ruleopts(struct cmd_context *ctx,
- 			   struct ethtool_rx_flow_spec *fsp, __u32 *rss_context);
--- 
-2.30.0
-
+T24gTW9uLCAyMDIzLTA4LTI4IGF0IDEyOjA5ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
+ICAJIA0KPiBFeHRlcm5hbCBlbWFpbCA6IFBsZWFzZSBkbyBub3QgY2xpY2sgbGlua3Mgb3Igb3Bl
+biBhdHRhY2htZW50cyB1bnRpbA0KPiB5b3UgaGF2ZSB2ZXJpZmllZCB0aGUgc2VuZGVyIG9yIHRo
+ZSBjb250ZW50Lg0KPiAgSGkgTWFyaywNCj4gDQo+IEkgYW0gbm90IGVudGlyZWx5IGNsZWFyIGJ5
+IGZldyB0aGluZ3MgaW4gdGhlIGNvbW1pdCBsb2cuDQo+IA0KPiBPbiAxOC0wOC0yMywgMTA6MDYs
+IE1hcmsgVHNlbmcgd3JvdGU6DQo+ID4gRm9yIE1UODE4NiwgaXQgaGFzIHBvbGljeTAgYW5kIHBv
+bGljeTYgYnkgZGlmZmVyZW50IGdvdmVybm9yDQo+IHRocmVhZCxzbw0KPiA+IGl0IG1heSBiZSBj
+YWxsIGNwdWZyZXEtPnNldF90YXJnZXRfaW5kZXgoKSBieSBkaWZmZXJlbnQgY29yZS4NCj4gDQo+
+IFdoeSBkb2VzIHRoaXMgbWF0dGVyID8NCg0KRm9yIE1UODE4NiBzZXQgZnJlcSBtdXN0IEJpZyBD
+UFUgLT4gTGl0dGxlIENQVSAtPiBDQ0kgbGlrZSB0aGlzIG9yZGVyDQphbmQgaXQgDQp0YWtlcyAx
+MCBtcy4NCg0KQnV0IGluIGNwdWZyZXEgJiBkZXZmcmVxIGZsb3cgLCB3aGVuIEJpZyBDUFUgb3Ig
+TGl0dGxlIENQVSBjaGFuZ2UgZnJlcQ0KLCBpdCB3aWxsIGNhbGwNCkNDSSBzZXR0aW5nIGJ5IGRp
+ZmZlcmVudCBwb2xpY3kuIEl0IHdpbGwgYmVjb21lIEJpZyBDUFUgLT4gQ0NJIHNldHRpbmcNCm9y
+IExpdHRsZSBDUFUgLT4NCkNDSSBzZXR0aW5nLiBIb3dldmVyeSwgSXQgd2lsbCBjYXVzZSBDQ0kg
+c2V0dGluZyB0byB3cm9uZyB2YWx1ZSB3aGVuDQpwZXIgMW1zIGNhbGwgZ292ZXJub3INCmFuZCBj
+aGFuZ2UgZnJlcS4NCg0KPiA+IEluIGdlbmVyYWwNCj4gPiBjYXNlLCBpdCBtdXN0IGNoZWNrIEJD
+UFUsIExDUFUgYW5kIENDSSB0b2dldGhlciB0aGVuIHRha2UgYWJvdXQNCj4gMTBtcy4NCj4gDQo+
+IEJDUFUgaXMgQmlnIENQVSA/IExDUFUgaXMgTGl0dGxlIENQVSA/DQoNClllcywgaXQgaXMuDQoN
+Cj4gU28gYXJlIHlvdSBzYXlpbmcgdGhhdCBjaGFuZ2luZyB0aGUgZnJlcXVlbmN5IHRha2VzIHJv
+dWdobHkgMTAgbXMgZm9yDQo+IE1UODE4NiA/DQo+IA0KPiA+IEF0ZmVyIDQ0Mjk1YWY1MDE5ZiB0
+aGlzIHBhdGNoLCBpdCBtYXkgY2FsbCBjcHVmcmVxX291dF9vZl9zeW5jKCkgYnkNCj4gPiBjcHVm
+cmVxX3ZlcmlmeV9jdXJyZW50X2ZyZXEoKSBiZWNhdXNlIGN1cnJlbnQgZnJlcXVlbmN5IGlzIGJp
+Z2dlcg0KPiA+IHRoYW4gY2xrX2dldF9yYXRlKCkgb3ZlciAxIE1oei4gQnkgdGhlIHNhbWUgdGlt
+ZSwgaXQgbWF5IGNhbGwNCj4gDQo+IHMvb3V2ZXIvb3Zlci8NCj4gcy8xTWgvMSBNSHovDQo+IA0K
+PiANCj4gPiBjcHVmcmVxLT5zZXRfdGFyZ2V0X2luZGV4KCkgYWdhaW4uDQo+IA0KPiBXaGVyZSB3
+YXMgaXQgY2FsbGVkIGZvciB0aGUgZmlyc3QgdGltZSA/DQoNCnRoaXMgcGF0Y2ggKDQ0Mjk1YWY1
+MDE5ZikgLCBmaXhlZCBjcHVmcmVxX291dF9vZl9zeW5jKCkgY29uZGl0aW9uIGZyb20NCjEwMDAg
+TWh6IHRvIDEgTWh6Lg0KU28sIHdoZW4gY3B1ZnJlcV92ZXJpZnlfY3VycmVudF9mcmVxKCkgY2Fs
+bCBjbGtfZ2V0X3JhdGUoKSBvdmVyIDEgTWh6LA0KaXQgbXVzdCB0byBkbyBmcmVxIHN5bmMNCmJ5
+IGNwdWZyZXFfb3V0X29mX3N5bmMoKS4gSW4gTVQ4MTg2LCBpdCBvZmZlbiBvdmVyIDEgTWh6IHdo
+ZW4gY2FsbA0KY2xrX2dldF9yYXRlKCksIHNvIEkgbW9kaWZ5DQp0cmFuc2l0aW9uIGRlbGF5IGZy
+b20gMSBtcyB0byAxMCBtcyBmb3IgbWFrZSBzdXJlIGZyZXEgc2V0dGluZyBkb25lLiANCg0KPiA+
+IFNvLCB0aGUgQ0NJIGZyZXEgbWF5IGJlIHRvbyBsb3dlciBmb3INCj4gPiBCQ1BVIGNhdXNlIEJD
+UFUga2VybmVsIHBhbmljLg0KPiANCj4gSSBhbSBub3Qgc3VyZSBob3cgYSBsb3cgZnJlcXVlbmN5
+IGNhdXNlcyBrZXJuZWwgcGFuaWMgaGVyZS4NCg0KSW4gTVQ4MTg2LCBpZiBDQ0kgZnJlcSBpcyBs
+b3dlciB0aGFuIEJpdCBDUFUgZnJlcSA3MCUsIGl0IHdpbGwgY2F1c2VzDQprZXJuZWwgcGFuaWMN
+Cm9uIEJpZyBDUFUuDQoNCj4gPiBTbywgaXQgc2hvdWxkIGNoYW5nZSB0aGUgZGVmYXVsdCB0cmFu
+c2l0aW9uIGRlbGF5IDFtcyB0byAxMG1zLiBJdA0KPiBjYW4NCj4gPiBwcm9taXNlIHRoZSBuZXh0
+IGZyZXEgc2V0dGluZyB0aGVuIGdvdmVybm9yIHRyaWdnZXIgbmV3IGZyZXENCj4gY2hhbmdlLg0K
+PiANCj4gVGhlcmUgYXJlIGZldyB0eXBvcyBhcyB3ZWxsIGhlcmUsIHBsZWFzZSBmaXggdGhlbS4N
+Cj4gDQo+ID4gRml4ZXM6IDQ0Mjk1YWY1MDE5ZiAoImNwdWZyZXE6IHVzZSBjb3JyZWN0IHVuaXQg
+d2hlbiB2ZXJpZnkgY3VyDQo+IGZyZXEiKQ0KPiANCj4gSSB0aGluayB5b3Ugc2hvdWxkIGRyb3Ag
+dGhpcy4gVGhlIGlzc3VlIGF0IGhhbmQgbWF5IGJlIHZpc2libGUgbm93DQo+IGFmdGVyIDQ0Mjk1
+YWY1MDE5ZiBpcyBhcHBsaWVkLCBidXQgaXQgY2VydGFpbmx5IGRpZG4ndCBjYXVzZSBpdC4NCj4g
+DQo+IC0tIA0KPiB2aXJlc2gNCj4gDQo=
