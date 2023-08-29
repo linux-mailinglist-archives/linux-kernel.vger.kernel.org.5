@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1614078C6EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3791E78C6F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236504AbjH2OI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
+        id S236819AbjH2OJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236897AbjH2OIu (ORCPT
+        with ESMTP id S236858AbjH2OJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:08:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2C3AB;
-        Tue, 29 Aug 2023 07:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693318128; x=1724854128;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QcRTdMPxHjuLWDOXyu4h/ormVbye2DsbkNaPbcklGUs=;
-  b=Q5srh7GOp39G4Mz4rtS1SZJt4o4tUc2NE4vXhnXDiKHYbGNw4TgcCNGP
-   sq6C/DsUrANRjv9AxT2pzC5kVA8RFXYroS5A6jfg/1WIxN+l/GegMb0tR
-   jgZuEbOvFiJHXNUF9pw9gdHgm+hpwnpa2JVyrqjqSZ1Ay7rAYOmA5N3eU
-   eUmkKGkoELhHjRehRr96AIYK/f9rwb0oG5PMulNIW80rG7psuZLSxNFIu
-   RVQ0Aw9BbUR0qJISO/xyT5cKxcHFB/h04C9t0Z5ixvDWcrrjfIE6dFrD9
-   2KH6aCZ51e2z6hQ/GAyATrmFXYSX/3Mexy4ZLQ2ey3AzCAac6yfdiOzuY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="378094343"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="378094343"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 07:08:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="741827436"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="741827436"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 29 Aug 2023 07:08:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qazOX-004tjD-1H;
-        Tue, 29 Aug 2023 17:08:37 +0300
-Date:   Tue, 29 Aug 2023 17:08:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, alx@kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: Re: [PATCH v2 1/2] crypto: qat - refactor included headers
-Message-ID: <ZO375Wg0+nTCgCIJ@smile.fi.intel.com>
-References: <20230818102322.142582-1-lucas.segarra.fernandez@intel.com>
- <20230818102322.142582-2-lucas.segarra.fernandez@intel.com>
- <ZOiEHCsjBCL04Z3x@gondor.apana.org.au>
- <ZOigoVJbjdOx9Wea@smile.fi.intel.com>
- <ZOx1SOBKbmdIvz+b@gondor.apana.org.au>
- <ZOx6+i5HEAY4F4X3@smile.fi.intel.com>
- <ZO3F8AgOS/NnVaeU@gondor.apana.org.au>
+        Tue, 29 Aug 2023 10:09:41 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3064114
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:09:38 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a76d882080so3306848b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693318178; x=1693922978;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9NXVMwpSZjzi1EW/drhoYIcfeMOkgEiQn8oAztJMHeQ=;
+        b=V0OGk5Vadr83Qa7RVuH/qYseQvGodk8qHCsO+ZMngUYwP89xFUMkMU4tvJIDIwkya6
+         YDNYgptbxamCvqBlgiYALIRrUMWU7MtR50Dsj0h1g09SXkcQQd/1TiHoewUwyj8DuPTD
+         s7GgROLycZawpcoWxbaogsaEhfHXjqojCQDOAU9BUF6andZUs/ickWBagz5kPtWUvPjo
+         0k6p/2CIWdcXohaQ1U6lpfKjh3LOMBOsP75RSSG6s2l7v1MPMPo5gvhiKEYbckh/4Xs4
+         3d9ulwZ9ZimqccxHpE1mcFkL0sFg1vp4o5nVW1tZPXvrQ2yeAnf5D+Nar/aWUZxb9TP5
+         BdNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693318178; x=1693922978;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9NXVMwpSZjzi1EW/drhoYIcfeMOkgEiQn8oAztJMHeQ=;
+        b=MDIkyB8E/vFgLypB/tnnBCAGjR9wD9YOYZeAetMpI/FYy+kw1IOzV5YCpwd1XVK0Hc
+         2xU4Jc6jZLxW2gJS5vhO5DEEn0i1eshnoEr0jSc5TcyhZJgd2oP2eIxd63XYZ6r8L9JY
+         U82uui2mFcRVxKKUBBh4PN10Etvynlr1CNuG25AtEwvYWsB2YtEBF1uY5lIRK+MkCB/p
+         BFP2zGGWaxZSX1C5u33Vko4Y/BqUhfluKY05pV8+E+x1Lu6amSessHp/SomwDDniZD2i
+         evEHyv+Mjp3EAa+X4Jv2XINBROVE4I8NSvIaH25FUa0xJ/6/Hgksz5QUi02zpzF7xLnh
+         qQgg==
+X-Gm-Message-State: AOJu0Yx9kF0WBuzA+QLjzGq4rz0Lasm5BHUe3iXXpi8SGoogKKh5e1l1
+        OJxjZMg41WNQAQPu6hihgvoe6MJfWEeDJ1GATMjcONjH
+X-Google-Smtp-Source: AGHT+IHW07rLwA6rZ5tH8YoyiIaIaYTgVDGlb89CQpVWFwR0auPKiPgl5x5XnismG3SxABECMPqSHYzqoGqL6wDlBfE=
+X-Received: by 2002:a05:6808:1a84:b0:3a4:38fa:2e08 with SMTP id
+ bm4-20020a0568081a8400b003a438fa2e08mr13873870oib.7.1693318177948; Tue, 29
+ Aug 2023 07:09:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZO3F8AgOS/NnVaeU@gondor.apana.org.au>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829113931.54391-1-hamza.mahfooz@amd.com>
+In-Reply-To: <20230829113931.54391-1-hamza.mahfooz@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 29 Aug 2023 10:09:26 -0400
+Message-ID: <CADnq5_MV+hVLRcMLrN4TE1xX1Q5dfMzi7+aWwZFcenF1uk+9iQ@mail.gmail.com>
+Subject: Re: [PATCH] Revert "Revert "drm/amd/display: Implement zpos property""
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Leo Li <sunpeng.li@amd.com>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Joaqu=C3=ADn_Ignacio_Aramend=C3=ADa?= 
+        <samsagax@gmail.com>, David Tadokoro <davidbtadokoro@usp.br>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Nicholas Choi <Nicholas.Choi@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Joshua Ashton <joshua@froggi.es>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 06:18:24PM +0800, Herbert Xu wrote:
-> On Mon, Aug 28, 2023 at 01:46:18PM +0300, Andy Shevchenko wrote:
-> >
-> > kernel.h is misleading here. It includes 98% of something which this file is
-> > not using or going to use. Can you tell _why_ we need that 98% bulk to be
-> > included here?
-> 
-> For most drivers in drivers/crypto they will need multiple header
-> files included by kernel.h.  I'd hate for people to start posting
-> patches replacing one inclusion of kernel.h with multiple inclusions.
-> 
-> They're bound to get it wrong and we'll be forever dealing with
-> random build failures because someone changes a random header
-> elsewhere which then exposes a missed inclusion.
+On Tue, Aug 29, 2023 at 7:40=E2=80=AFAM Hamza Mahfooz <hamza.mahfooz@amd.co=
+m> wrote:
+>
+> This reverts commit 984612bd4649c91f12e9c7c7f9e914fdc8ba7d3f.
+>
+> The problematic IGT test case (i.e. kms_atomic@plane-immutable-zpos) has
+> been fixed as of commit cb77add45011 ("tests/kms_atomic: remove zpos <
+> N-planes assert") to the IGT repo. So, reintroduce the reverted code.
+>
+> Link: https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/commit/cb77add45=
+011b129e21f3cb2a4089a73dde56179
+> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 
-Do I understand correctly that you want *ideally* to have THE kernel.h
-as a _single_ header and that's it?
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 
-While I understand your motivation as a maintainer, I hate the idea of current
-kernel.h to be included as a silver bullet to every file because people are not
-capable to understand this C language part of design. The usage of the proper
-headers show that developer _thought_ very well about what they are doing in
-the driver. Neglecting this affects the quality of the code in my opinion.
-That's why I strongly recommend to avoid kernel.h inclusion unless it's indeed
-the one that provides something that is used in the driver. Even though, the
-rest headers also need to be included (as it wasn't done by kernel.h at any
-circumstances).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/dr=
+ivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> index 894bc7e4fdaa..df568a7cd005 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> @@ -1469,6 +1469,15 @@ int amdgpu_dm_plane_init(struct amdgpu_display_man=
+ager *dm,
+>                 drm_plane_create_blend_mode_property(plane, blend_caps);
+>         }
+>
+> +       if (plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY) {
+> +               drm_plane_create_zpos_immutable_property(plane, 0);
+> +       } else if (plane->type =3D=3D DRM_PLANE_TYPE_OVERLAY) {
+> +               unsigned int zpos =3D 1 + drm_plane_index(plane);
+> +               drm_plane_create_zpos_property(plane, zpos, 1, 254);
+> +       } else if (plane->type =3D=3D DRM_PLANE_TYPE_CURSOR) {
+> +               drm_plane_create_zpos_immutable_property(plane, 255);
+> +       }
+> +
+>         if (plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY &&
+>             plane_cap &&
+>             (plane_cap->pixel_format_support.nv12 ||
+> --
+> 2.41.0
+>
