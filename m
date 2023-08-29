@@ -2,65 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8632878BD04
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E23578BD05
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbjH2Cs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
+        id S233338AbjH2Cs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232736AbjH2CsS (ORCPT
+        with ESMTP id S233742AbjH2Csk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:48:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94991139;
-        Mon, 28 Aug 2023 19:48:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 28D0F625B0;
-        Tue, 29 Aug 2023 02:48:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D913C433CB;
-        Tue, 29 Aug 2023 02:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693277295;
-        bh=kNuP4q9TRC1SaABSZZRRHLtlhB0mc1MoyTWoZBWmyQU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pCuCxmht4EhFGksNGGZLh3pHryQ0Be3ZScjHEFNgWQH64BB6riAmCUdmp7ZxD+riw
-         Qc+IRAe9hwBACTURLWeU37Ur97ytoCP7jqOJWmlCBoYgoLM1H6JjGRFpOIPhsI0w3U
-         Yek/cgfM/dADKdPr1un/hpntGxX2T6zE+Cf3NIy1x5SODXl8LLj3LXIwpDauoC8XQk
-         eOvZYmUZRF1hJ18A1bfS8N/K+aCUXdoMZJ6cYw0LilYQoxioDebvjX4TwzYvPG0H7b
-         KUO5GxK9Rw9tUHkZEkolBnfWM0SCR3rsW2ZQ20E5yQqTsS3v1+npM1RkMcSVwW5X0t
-         hk/BEBAemkTfA==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52bcb8b199aso943656a12.3;
-        Mon, 28 Aug 2023 19:48:15 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzUHIN3dfLtBaeJg0F0yDbM/4Fe9Kk2H7B31+K4Dvk8v99ij7d0
-        cmk+7BuMQcdYGmEMgIVhx30DDCcJb6IgOhvLK7c=
-X-Google-Smtp-Source: AGHT+IHSIGhz8Ibm6jzz+Z/s2SgXQDEmDO0di1zNl8UUcmmRvYPPwFxLEiIE1Nayz4XSe0SpJKddfY0Qrn9mueX7ulM=
-X-Received: by 2002:a17:907:724b:b0:9a4:511c:fbe4 with SMTP id
- ds11-20020a170907724b00b009a4511cfbe4mr9182331ejc.51.1693277293776; Mon, 28
- Aug 2023 19:48:13 -0700 (PDT)
+        Mon, 28 Aug 2023 22:48:40 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABF7B9;
+        Mon, 28 Aug 2023 19:48:36 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3110ab7110aso3278367f8f.3;
+        Mon, 28 Aug 2023 19:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693277315; x=1693882115;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5U/KM6uPr54/9201v9JYDgXTLbCj0HPAtJ+9zX5H1pE=;
+        b=M5C3mys2rhW4hfezIDkUlksFg2D+Nkm/MJ4d8ZQNSdmCIsnx2j0BN97ptgyFsHRiFb
+         dNIvqnWeE5ayM82LQBNrCqrhFkjAEBJYJd9Zmk9JShH1nrkY4A1sU95osMzbIZXIOzPa
+         g3VTQ1Ip7SPxA57Tyfh4QBM4fUJf/gIb3jTUBiPQJYJWAItIcSsFCJ1sLUGghH1zIprj
+         fLwFW/HUIWNClDndQFKSyylSh+b+hEuV7FjWyvoBiiiiY/2c7bDF1QSgTtNSS2q6VRuW
+         gCYH6nLpNq0oIZItqpIMe/mg/CVfpL4hLmPOfVneTi3aJjUHPlgRqh44A+/v1x3v2vJH
+         GAQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693277315; x=1693882115;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5U/KM6uPr54/9201v9JYDgXTLbCj0HPAtJ+9zX5H1pE=;
+        b=Ju3Lel5jubQfADhsgENfRKMqDJK/LV8qT4xNjywuq2uy6RPQwLTgoWI8rUjo95+ax3
+         cwLDkkjDwTydHGePmNos6i2FQsXa3C4M55fczJ3OxC6sBg+lNI/08JJkt7Kh+sj0B+Ci
+         yAKooEEWIUQQ13XmR0SCrEyZVtBEHuKrLqp9BowjVqQU0MB/hEViSEqWctmfkJt5NNN6
+         0P2PHbQKNiTlOY5Qm4l7THx/5TC+AeKkueMZZ3wBaTk8sFnimUaBkpHCnc/XqRZRBsDp
+         nKXaEMk8nFk/gSthxGJnX4lma/O2ofojOoPz86GiZAnorKugUBaCMzHkW2o46u72G7Sz
+         LaOQ==
+X-Gm-Message-State: AOJu0YwztTDA+7QzQyj4AtOIKLUeMKS1YzP7c3CjYvlKg698zOAkdzLZ
+        hZbzsNhp56/+yDXwGHyZxm1llvdVOtz7kR4g7l4=
+X-Google-Smtp-Source: AGHT+IEssPdEDJ5bk9HEtOGmoWQ40At4qkMzSz+f3wfL8+0wpLpiSq30hbQa2Ix5xXfYw0vOwhNTjuuSRNRFC4zglx4=
+X-Received: by 2002:adf:fc0b:0:b0:317:69d2:35be with SMTP id
+ i11-20020adffc0b000000b0031769d235bemr18772643wrr.30.1693277314960; Mon, 28
+ Aug 2023 19:48:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230828152540.1194317-1-chenhuacai@loongson.cn> <08503cb1-102e-9101-51a1-47b7cf7cb0be@xen0n.name>
-In-Reply-To: <08503cb1-102e-9101-51a1-47b7cf7cb0be@xen0n.name>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 29 Aug 2023 10:48:02 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7daCxvxSLfLq7+saOrrKjqA-NR-3krpf=bzbYzOM1p5A@mail.gmail.com>
-Message-ID: <CAAhV-H7daCxvxSLfLq7+saOrrKjqA-NR-3krpf=bzbYzOM1p5A@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Remove shm_align_mask and use SHMLBA instead
-To:     WANG Xuerui <kernel@xen0n.name>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>, loongarch@lists.linux.dev,
-        linux-arch@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren <guoren@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
-        Jiantao Shan <shanjiantao@loongson.cn>
+References: <391c4270-637a-2afb-210d-6b6dfef01efa@intel.com>
+ <20230828100313.3051403-1-benchuanggli@gmail.com> <CAG-rBig+koxDf3TuC-0p=tcBY_2WM1sPCvRDtjRmR7AnikrN-A@mail.gmail.com>
+In-Reply-To: <CAG-rBig+koxDf3TuC-0p=tcBY_2WM1sPCvRDtjRmR7AnikrN-A@mail.gmail.com>
+From:   Ben Chuang <benchuanggli@gmail.com>
+Date:   Tue, 29 Aug 2023 10:48:08 +0800
+Message-ID: <CACT4zj-BaX4tHji8B8gS5jiKkd-2BcwfzHM4fS-OUn0f8DSxcw@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix
+ SoCs can suspend
+To:     Sven van Ashbrook <svenva@chromium.org>, skardach@google.com
+Cc:     adrian.hunter@intel.com, SeanHY.chen@genesyslogic.com.tw,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw,
+        jason.lai@genesyslogic.com.tw, jasonlai.genesyslogic@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        reniuschengl@gmail.com, stable@vger.kernel.org,
+        ulf.hansson@linaro.org, victor.shih@genesyslogic.com.tw,
+        victorshihgli@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,97 +76,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Xuerui,
+Hi Sven and Stanis=C5=82aw,
 
-On Tue, Aug 29, 2023 at 1:05=E2=80=AFAM WANG Xuerui <kernel@xen0n.name> wro=
-te:
->
-> On 8/28/23 23:25, Huacai Chen wrote:
-> > Both shm_align_mask and SHMLBA want to avoid cache alias. But they are
-> > inconsistent: shm_align_mask is (PAGE_SIZE - 1) while SHMLBA is SZ_64K,
-> > but PAGE_SIZE is not always equal to SZ_64K.
-> >
-> > This may cause problems when shmat() twice. Fix this problem by removin=
-g
-> > shm_align_mask and using SHMLBA (SHMLBA - 1, strctly) instead.
-> "strictly SHMLBA - 1"?
-> >
-> > Reported-by: Jiantao Shan <shanjiantao@loongson.cn>
-> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > ---
-> >   arch/loongarch/mm/cache.c      |  1 -
-> >   arch/loongarch/mm/mmap.c       | 12 ++++--------
-> >   3 files changed, 8 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/arch/loongarch/mm/cache.c b/arch/loongarch/mm/cache.c
-> > index 72685a48eaf0..6be04d36ca07 100644
-> > --- a/arch/loongarch/mm/cache.c
-> > +++ b/arch/loongarch/mm/cache.c
-> > @@ -156,7 +156,6 @@ void cpu_cache_init(void)
-> >
-> >       current_cpu_data.cache_leaves_present =3D leaf;
-> >       current_cpu_data.options |=3D LOONGARCH_CPU_PREFETCH;
-> > -     shm_align_mask =3D PAGE_SIZE - 1;
-> >   }
-> >
-> >   static const pgprot_t protection_map[16] =3D {
-> > diff --git a/arch/loongarch/mm/mmap.c b/arch/loongarch/mm/mmap.c
-> > index fbe1a4856fc4..c99c8015651a 100644
-> > --- a/arch/loongarch/mm/mmap.c
-> > +++ b/arch/loongarch/mm/mmap.c
-> > @@ -8,12 +8,8 @@
-> >   #include <linux/mm.h>
-> >   #include <linux/mman.h>
-> >
-> > -unsigned long shm_align_mask =3D PAGE_SIZE - 1;        /* Sane caches =
-*/
-> > -EXPORT_SYMBOL(shm_align_mask);
->
-> By removing this altogether, a lot of code duplication is introduced it
-> seems. Better make this a private #define so use sites remain nicely
-> symbolic:
->
-> "#define SHM_ALIGN_MASK (SHMLBA - 1)"
-OK, thanks.
+Sorry for Stanis=C5=82aw, I have seen your reply, but I only reply to this
+Regarding the location of the source codes, if the maintainers don't
+comment. I'll follow them too. :)
 
-Huacai
+On Tue, Aug 29, 2023 at 6:51=E2=80=AFAM Sven van Ashbrook <svenva@chromium.=
+org> wrote:
 >
-> > -
-> > -#define COLOUR_ALIGN(addr, pgoff)                            \
-> > -     ((((addr) + shm_align_mask) & ~shm_align_mask) +        \
-> > -      (((pgoff) << PAGE_SHIFT) & shm_align_mask))
-> > +#define COLOUR_ALIGN(addr, pgoff)                    \
-> > +     ((((addr) + (SHMLBA - 1)) & ~(SHMLBA - 1)) + (((pgoff) << PAGE_SH=
-IFT) & (SHMLBA - 1)))
+> Hi Ben, thank you for reviewing this patch. See below.
+>
+> On Mon, Aug 28, 2023 at 6:03=E2=80=AFAM Ben Chuang <benchuanggli@gmail.co=
+m> wrote:
 > >
-> >   enum mmap_allocation_direction {UP, DOWN};
+> > There is a situation for your reference.
+> > If `allow_runtime_pm' is set to false and the system resumes from suspe=
+nd, GL9763E
+> > LPM negotiation will be always disabled on S0. GL9763E will stay L0 and=
+ never
+> > enter L1 because GL9763E LPM negotiation is disabled.
 > >
-> > @@ -40,7 +36,7 @@ static unsigned long arch_get_unmapped_area_common(st=
-ruct file *filp,
-> >                * cache aliasing constraints.
-> >                */
-> >               if ((flags & MAP_SHARED) &&
-> > -                 ((addr - (pgoff << PAGE_SHIFT)) & shm_align_mask))
-> > +                 ((addr - (pgoff << PAGE_SHIFT)) & (SHMLBA - 1)))
-> >                       return -EINVAL;
-> >               return addr;
-> >       }
-> > @@ -63,7 +59,7 @@ static unsigned long arch_get_unmapped_area_common(st=
-ruct file *filp,
-> >       }
+> > This patch enables allow_runtime_pm. The simple flow is
+> > gl9763e_suspend() -> LPM enabled -> gl9763e_resume() -> LPM disabled ->=
+ (a)
+> > (a) -+--> idle -->  gl9763e_runtime_suspend() -> LPM enabled
+> >      |
+> >      +--> no idle -> gl9763e_runtime_resume() -> LPM disabled
 > >
-> >       info.length =3D len;
-> > -     info.align_mask =3D do_color_align ? (PAGE_MASK & shm_align_mask)=
- : 0;
-> > +     info.align_mask =3D do_color_align ? (PAGE_MASK & (SHMLBA - 1)) :=
- 0;
-> >       info.align_offset =3D pgoff << PAGE_SHIFT;
+> > This patch disables allow_runtime_pm. The simple flow is
+> > gl9763e_suspend() -> LPM enabled -> gl9763e_resume() -> LPM disabled (n=
+o runtime_pm)
 > >
-> >       if (dir =3D=3D DOWN) {
+> > Although that may not be the case with the current configuration, it's =
+only a
+> > possibility.
+> >
 >
-> --
-> WANG "xen0n" Xuerui
+> Thanks so much for bringing this up. We have discussed internally and
+> as far as we know, the current patch will work correctly in all cases.
+> Could you verify our argument please?
 >
-> Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+> The following assumptions are key:
 >
+> 1. If CONFIG_PM is set, the runtime_pm framework is always present, i.e. =
+there
+> cannot exist a kernel which has PM but lacks runtime_pm.
+> 2. The pm_runtime framework always makes sure the device is runtime
+> active before
+> calling XXX_suspend, waking it up if need be. So when XXX_suspend gets ca=
+lled,
+> the device is always runtime active.
+> 3. if CONFIG_PM is set, runtime_pm can only be disabled via
+> echo on > /sys/devices/.../power/control, and then the runtime_pm framewo=
+rk
+> always keeps the device in runtime active. In such case LPM negotiation i=
+s
+> always disabled.
 >
+> Using these assumptions, we get:
+>
+> Runtime_pm allowed:
+> =E2=80=94------------------
+> gl9763e_runtime_resume() -> LPM disabled -> gl9763e_suspend() -> LPM enab=
+led
+> -> gl9763e_resume() -> LPM disabled -> (a)
+> (a) -+--> idle --> gl9763e_runtime_suspend() -> LPM enabled
+> |
+> +--> no idle -> nothing - already runtime active -> LPM disabled
+>
+> Runtime_pm not allowed:
+> =E2=80=94----------------------
+> gl9763e_runtime_resume() always called -> LPM always disabled
+> gl9763e_suspend() -> LPM enabled -> gl9763e_resume() -> LPM disabled
+>
+> In all above cases the LPM negotiation flag is correct.
+>
+
+My concern is that when runtime_pm is false, gl9763e is disabled LPM
+negotiation, gl9763e can't enter L1.x and s0ix may fail.
+It seems that runtime_pm will always exist and that's ok.
+
+> > >
+> > > sdhci doesn't know anything about the bus.  It is independent
+> > > of PCI, so I can't see how it would make any difference.
+> > > One of the people cc'ed might know more.  Jason Lai (cc'ed)
+> > > added it for runtime PM.
+> > >
+> >
+> > As far as I know, when disabling LPM negotiation, the GL9763E will stop=
+ entering
+> > L1. It doesn't other side effect. Does Jason.Lai and Victor.Shih have a=
+ny comments
+> > or suggestions?
+>
+> Sounds like everyone assumes that you can freely change LPM
+> negotiation on the PCIe
+> bus after the cqhci_suspend() and sdhci_suspend_host() calls, so we will =
+assume
+> that too.
+
+Ah, I suppose cqhci_suspend() may need to be done first safely, then
+gl9763e_set_low_power_negotiation(slot, true).
+
+Best regards,
+Ben Chuang
