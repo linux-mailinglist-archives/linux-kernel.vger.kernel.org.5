@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E6A78CC5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64DD78CC6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235952AbjH2SrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 14:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59632 "EHLO
+        id S237770AbjH2SsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 14:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236510AbjH2Sqf (ORCPT
+        with ESMTP id S238245AbjH2Srn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 14:46:35 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1EE193
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:46:32 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d776e1f181bso4561381276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:46:32 -0700 (PDT)
+        Tue, 29 Aug 2023 14:47:43 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA76EAD
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:47:39 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bee82fad0fso29494335ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:47:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693334791; x=1693939591;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6+ED0KXs67DGrmo6iXaWzPAJQDmbnXsYGdJFbasrMdI=;
-        b=ClWjzcAfjYvtZ8nl+s7yeWbc+hc5FJFSCfsmTr8wmd/zVGplocRb++tAmdLjdsc9zc
-         nfs6Ak/RS7XX2cggg/o75ialkDJwSUmqpoE0jlMeh3HrLPdu5cp3G0lkpB0XGMYE3XOC
-         s5Z3wGgOcqeZVH4rZ4Z18ix/VHAoHldddAp34xZc28soOqMULHblq4fl9sVDsgxIZLN1
-         UQWTMxiRjLNSy54jTnOGWiDCUivs75yf4KiJWzQlLbqvLyuPzW4fmCFix5ea17knoMq4
-         7Ov+viFXw9Qeb7kfTlBZ45jKJGGg1ngVZixWXIuhHigS6SN/T5lzODHIBbHBip0x5fcC
-         2OJQ==
+        d=chromium.org; s=google; t=1693334859; x=1693939659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dx+edCyWT7zKxIInG8qNdrcdM7Jww6Q6gVOtGT7ALUw=;
+        b=NXBOd2mkw+gBkwUStDBV8PaGrgZhqCKwaBrY9Usk61+UBBtfDS7Uj7teurMoc22HQb
+         3V5SHImgrwViJcGhvlCFMtXqOLx3dqfDPhULkiewQIPMxijOSEnXsKzFpiSIxv02jyRE
+         +Jf3CDHT970kefX0aposB1huf8Yi6tErzFupQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693334791; x=1693939591;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693334859; x=1693939659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6+ED0KXs67DGrmo6iXaWzPAJQDmbnXsYGdJFbasrMdI=;
-        b=P/RzgT9xiUWUSkzx1dbf4rvK5K8ZyIPoS91pQr1YasRaiq7xrhCRZVQ0H+QEhI/9QA
-         /SChZ2T2B5HDlt8y8ZjtslDxmLiesvgSQNtJMHMwmmjVvSuHSRnYOPBu5fgmLZDwMHc7
-         TeIlr0z8cSDiqAtzr0AyjXtQG9QdEMBiv5wXUaqa0VV1pjTXGk3tummH4RaZIDQiwVwn
-         mYqzUcbgDUDfT5bC48WLXfY/Kkzoi//1aXM2Zbcu5e+k9iog6gnEQPl5ahrXJr3fHCzV
-         9QvEQHF0mc17tpxaLJqjp/PUTAGUyJr4M2c29XLXTQx5hQr8ZmGoGA7MwHO+Dj09DkF0
-         SAKQ==
-X-Gm-Message-State: AOJu0Yzxb2iz43C6SCX/o/cRjxLExhzoEXxAoNPlF0u7MjKdkAVL/E99
-        1RrPi+yRGhwdeNbkqBwYcr/JrxynplJjUYWVYyibSQ==
-X-Google-Smtp-Source: AGHT+IF7Q+2ONedva5BlExE5dN6mOQYTGK+793vpj6L4wQkNIymKBXWY+28Y72O3M02h08fxfWekTJ3xhcGsPQoR0RA=
-X-Received: by 2002:a25:d10a:0:b0:d62:b91b:10e3 with SMTP id
- i10-20020a25d10a000000b00d62b91b10e3mr30257956ybg.48.1693334791365; Tue, 29
- Aug 2023 11:46:31 -0700 (PDT)
+        bh=dx+edCyWT7zKxIInG8qNdrcdM7Jww6Q6gVOtGT7ALUw=;
+        b=MfO80tkgS8ClKKwbQaJfe4SPsJOpmM3oRi7FxdusDzET824HO+sAuvTacvn+7RF5fY
+         hyZy/oyv9cMZfc/i1UZumATlGsxEZ1MQVBt0721IDU0Z+59miAgUwiS9irA1nOnKzTeq
+         Wlo9t0FRT6nS4+2ZVR0BAxzzYAencHTnc9QNm6LmDhOJtMfd+c7oh1ukUiOHOY8QKu0p
+         jj/Ppzr1tSR1rqI1Ssj7xUOGTBGPslXnqsM8APZfEGWfi2mHjyxu/tZnNsBC/BOxiNJf
+         hs1LlXKGWhzJVhalRSoSNmJiQV7X9RxEUQvUq2JWwnkwsOM4zhuxgTVR8NGA/Z8hbixU
+         02rw==
+X-Gm-Message-State: AOJu0Yw6LQ2kFhFkFhL6uO+tpmIbo8mOEKpRA9D9gbifT9ENP517lU/4
+        VFbNAchg3zaWQFbqluv13evYtg==
+X-Google-Smtp-Source: AGHT+IES+SJEkk4EUF9mvR0kkp/iKD9S9fLPoptNHth9XsbuVQ5O48L+bHDHC/h6NFzIK11AbzCyfA==
+X-Received: by 2002:a17:903:1205:b0:1c2:54c:8beb with SMTP id l5-20020a170903120500b001c2054c8bebmr1955615plh.31.1693334858992;
+        Tue, 29 Aug 2023 11:47:38 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:11a:201:d603:22a7:5e5e:d239])
+        by smtp.gmail.com with ESMTPSA id o15-20020a170902d4cf00b001b9e86e05b7sm9697953plg.0.2023.08.29.11.47.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 11:47:38 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>
+Subject: [PATCH 0/7] drm/msm/dp: Simplify DPCD related code with helpers
+Date:   Tue, 29 Aug 2023 11:47:25 -0700
+Message-ID: <20230829184735.2841739-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
 MIME-Version: 1.0
-References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com>
- <20230829135818.2219438-5-quic_ipkumar@quicinc.com> <169331975886.2142011.7345682428392154402.robh@kernel.org>
- <17e2413b-6d06-a113-e35b-30cc078a6e83@linaro.org>
-In-Reply-To: <17e2413b-6d06-a113-e35b-30cc078a6e83@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 29 Aug 2023 21:46:20 +0300
-Message-ID: <CAA8EJppNGs0UVhBJq_+RFt8pALEk0tEoKfUo1AxzbSu82A5_HA@mail.gmail.com>
-Subject: Re: [PATCH 4/9] dt-bindings: phy: qcom,uniphy: Add ipq5332 USB3 SS UNIPHY
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Praveenkumar I <quic_ipkumar@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kishon@kernel.org, robert.marko@sartura.hr, robh+dt@kernel.org,
-        geert+renesas@glider.be, peng.fan@nxp.com,
-        konrad.dybcio@linaro.org, devicetree@vger.kernel.org,
-        linux-phy@lists.infradead.org, will@kernel.org,
-        conor+dt@kernel.org, p.zabel@pengutronix.de,
-        quic_varada@quicinc.com, vkoul@kernel.org, nfraprado@collabora.com,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, quic_wcheng@quicinc.com,
-        rafal@milecki.pl, gregkh@linuxfoundation.org,
-        luka.perkov@sartura.hr, andersson@kernel.org, arnd@arndb.de,
-        linux-usb@vger.kernel.org, agross@kernel.org,
-        catalin.marinas@arm.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 20:09, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 29/08/2023 16:35, Rob Herring wrote:
-> >
-> > On Tue, 29 Aug 2023 19:28:13 +0530, Praveenkumar I wrote:
-> >> Add ipq5332 USB3 SS UNIPHY support.
-> >>
-> >> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
-> >> ---
-> >>  .../devicetree/bindings/phy/qcom,uniphy.yaml  | 117 +++++++++++++++++-
-> >>  1 file changed, 114 insertions(+), 3 deletions(-)
-> >>
-> >
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > In file included from Documentation/devicetree/bindings/phy/qcom,uniphy.example.dts:45:
-> > ./scripts/dtc/include-prefixes/dt-bindings/clock/qcom,ipq5332-gcc.h:19: warning: "GCC_BLSP1_AHB_CLK" redefined
-> >    19 | #define GCC_BLSP1_AHB_CLK                               10
-> >       |
->
-> So the only patch which actually needed dependency information did not
-> have it. All other patches have something, even defconfig (!). Confusing.
+This driver open-codes a few of the DPCD register reads when it can be
+simplified by using the helpers instead. This series reworks the MSM DP
+driver to use the DPCD helpers and removes some dead code along the way.
+There's the potential for even more code reduction around the test
+registers, but I haven't tried to do that yet.
 
-Much simpler. This patch adds a second example to the schema. Both
-examples include something-gcc.h. As both examples end up in the same
-example.dts file, second include conflicts with the first one.
+Stephen Boyd (7):
+  drm/msm/dp: Replace open-coded drm_dp_read_dpcd_caps()
+  drm/msm/dp: Use drm_dp_read_sink_count() helper
+  drm/msm/dp: Remove dead code related to downstream cap info
+  drm/msm/dp: Remove aux_cfg_update_done and related code
+  drm/msm/dp: Simplify with drm_dp_{max_link_rate,max_lane_count}()
+  drm/msm/dp: Inline dp_link_parse_sink_count()
+  drm/msm/dp: Remove dp_display_is_ds_bridge()
 
+Cc: Vinod Polimera <quic_vpolimer@quicinc.com>
+Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>
+
+ drivers/gpu/drm/msm/dp/dp_display.c |   9 +--
+ drivers/gpu/drm/msm/dp/dp_link.c    |  38 +---------
+ drivers/gpu/drm/msm/dp/dp_panel.c   | 105 +++++-----------------------
+ drivers/gpu/drm/msm/dp/dp_panel.h   |  10 +--
+ 4 files changed, 22 insertions(+), 140 deletions(-)
+
+
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
 -- 
-With best wishes
-Dmitry
+https://chromeos.dev
+
