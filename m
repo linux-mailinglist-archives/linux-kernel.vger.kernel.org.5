@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C293778C2A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170AF78C2A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjH2Kxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
+        id S235194AbjH2Kxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbjH2KxN (ORCPT
+        with ESMTP id S232221AbjH2KxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:53:13 -0400
+        Tue, 29 Aug 2023 06:53:19 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2F7AB
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:53:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B14AB
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:53:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F8426545B
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:53:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E253C433C9;
-        Tue, 29 Aug 2023 10:53:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 285896545F
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:53:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FE87C433C8;
+        Tue, 29 Aug 2023 10:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693306389;
-        bh=8DqJfXvXVRDqjgnN3KzU58KERFF7Sd7wLkdDZEnq1nM=;
+        s=k20201202; t=1693306395;
+        bh=oTujxMOHFGRuGKFiieFc6dhpH7GYKf8q7WqlAEbZzVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LvYuLlXSmmeQx/p8z2LlIFcUnd1Wz1BTu0KVbRnLzCOGSy+uQHFbTcnxL6y5CLgSs
-         eTvMrXGUuCsF/O6tYuz6BQwLnivxtNtHu3ki3LZOE7eVKU7lAzCeCHftBgOpL2gfID
-         ztgBHJxUuTh6N+erP5/cpySQMwKzQ/Ynhb0hKjPqqe/scUWzweTRg7I9SVhD+Z4Ls+
-         IHg7sljE+n5DZkPLztM10xyvPtO6YR2QOJt3BELwd8tE0JaFrKPePk+McRA16eJyrp
-         4Uo4N550cUnSc9aC1xQ/WlMdPGj7mMKwFAGWgeMz6h4MDd+H0DTHZ/ZNScT1I68Aiq
-         RgISSV7S3+wgg==
+        b=vE0bPn+zxx+fS69k7pLlgnd0gGTx1EHVu1ig+4LLIAtd9G0NCyZyB0VUhrpHI7hQo
+         2UIPjYH9ebw/aY1aK6dUsLrGJygbxWvkvizNNdiB37xUzmajtoKMt8ZF5FgkxmTRrz
+         yr0lp9FRfaudyab98qDg96TxOeRUvdnAAA2dWEPyMbv2WQgS4ZPCj3iy3HFEJbLjLG
+         ERCjdyX+b9TpK5hrROSqv75Eey72lqRiBTGhHxUUjjL+nOs+hUH03v9/K+A67uuPba
+         7UkM13iXHIb4YrN7m21iu6mqc+VwIVy+v4f9rQtEkbC5FzV1GyXeAEBQrjYrVTM00e
+         8wwQNwDDdtM/g==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -67,9 +67,9 @@ To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 06/22] net: stmmac: dwmac-ingenic: use devm_stmmac_probe_config_dt()
-Date:   Tue, 29 Aug 2023 18:40:17 +0800
-Message-Id: <20230829104033.955-7-jszhang@kernel.org>
+Subject: [PATCH net-next 07/22] net: stmmac: dwmac-intel-plat: use devm_stmmac_probe_config_dt()
+Date:   Tue, 29 Aug 2023 18:40:18 +0800
+Message-Id: <20230829104033.955-8-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230829104033.955-1-jszhang@kernel.org>
 References: <20230829104033.955-1-jszhang@kernel.org>
@@ -87,103 +87,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Simplify the driver's probe() function by using the devres
 variant of stmmac_probe_config_dt().
 
-The remove_new() callback now needs to be switched to
+The calling of stmmac_pltfr_remove() now needs to be switched to
 stmmac_pltfr_remove_no_dt().
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- .../ethernet/stmicro/stmmac/dwmac-ingenic.c   | 35 ++++++-------------
- 1 file changed, 10 insertions(+), 25 deletions(-)
+ .../stmicro/stmmac/dwmac-intel-plat.c         | 27 +++++++------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c
-index e22ef0d6bc73..ddfd7af63492 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c
-@@ -241,29 +241,25 @@ static int ingenic_mac_probe(struct platform_device *pdev)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
+index d352a14f9d48..d1aec2ca2b42 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
+@@ -85,17 +85,15 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
  	if (ret)
  		return ret;
  
 -	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
 +	plat_dat = devm_stmmac_probe_config_dt(pdev, stmmac_res.mac);
- 	if (IS_ERR(plat_dat))
+ 	if (IS_ERR(plat_dat)) {
+ 		dev_err(&pdev->dev, "dt configuration failed\n");
  		return PTR_ERR(plat_dat);
+ 	}
  
- 	mac = devm_kzalloc(&pdev->dev, sizeof(*mac), GFP_KERNEL);
--	if (!mac) {
+ 	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
+-	if (!dwmac) {
 -		ret = -ENOMEM;
 -		goto err_remove_config_dt;
 -	}
-+	if (!mac)
++	if (!dwmac)
 +		return -ENOMEM;
  
- 	data = of_device_get_match_data(&pdev->dev);
- 	if (!data) {
- 		dev_err(&pdev->dev, "No of match data provided\n");
--		ret = -EINVAL;
--		goto err_remove_config_dt;
-+		return -EINVAL;
- 	}
+ 	dwmac->dev = &pdev->dev;
+ 	dwmac->tx_clk = NULL;
+@@ -110,10 +108,8 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
+ 		/* Enable TX clock */
+ 		if (dwmac->data->tx_clk_en) {
+ 			dwmac->tx_clk = devm_clk_get(&pdev->dev, "tx_clk");
+-			if (IS_ERR(dwmac->tx_clk)) {
+-				ret = PTR_ERR(dwmac->tx_clk);
+-				goto err_remove_config_dt;
+-			}
++			if (IS_ERR(dwmac->tx_clk))
++				return PTR_ERR(dwmac->tx_clk);
  
- 	/* Get MAC PHY control register */
- 	mac->regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "mode-reg");
- 	if (IS_ERR(mac->regmap)) {
- 		dev_err(&pdev->dev, "%s: Failed to get syscon regmap\n", __func__);
--		ret = PTR_ERR(mac->regmap);
--		goto err_remove_config_dt;
-+		return PTR_ERR(mac->regmap);
- 	}
+ 			clk_prepare_enable(dwmac->tx_clk);
  
- 	if (!of_property_read_u32(pdev->dev.of_node, "tx-clk-delay-ps", &tx_delay_ps)) {
-@@ -272,8 +268,7 @@ static int ingenic_mac_probe(struct platform_device *pdev)
- 			mac->tx_delay = tx_delay_ps * 1000;
- 		} else {
- 			dev_err(&pdev->dev, "Invalid TX clock delay: %dps\n", tx_delay_ps);
--			ret = -EINVAL;
--			goto err_remove_config_dt;
-+			return -EINVAL;
+@@ -126,7 +122,7 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
+ 				if (ret) {
+ 					dev_err(&pdev->dev,
+ 						"Failed to set tx_clk\n");
+-					goto err_remove_config_dt;
++					return ret;
+ 				}
+ 			}
+ 		}
+@@ -140,7 +136,7 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
+ 			if (ret) {
+ 				dev_err(&pdev->dev,
+ 					"Failed to set clk_ptp_ref\n");
+-				goto err_remove_config_dt;
++				return ret;
+ 			}
  		}
  	}
- 
-@@ -283,8 +278,7 @@ static int ingenic_mac_probe(struct platform_device *pdev)
- 			mac->rx_delay = rx_delay_ps * 1000;
- 		} else {
- 			dev_err(&pdev->dev, "Invalid RX clock delay: %dps\n", rx_delay_ps);
--			ret = -EINVAL;
--			goto err_remove_config_dt;
-+			return -EINVAL;
- 		}
+@@ -158,22 +154,17 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
+ 	ret = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+ 	if (ret) {
+ 		clk_disable_unprepare(dwmac->tx_clk);
+-		goto err_remove_config_dt;
++		return ret;
  	}
  
-@@ -295,18 +289,9 @@ static int ingenic_mac_probe(struct platform_device *pdev)
- 
- 	ret = ingenic_mac_init(plat_dat);
- 	if (ret)
--		goto err_remove_config_dt;
--
--	ret = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
--	if (ret)
--		goto err_remove_config_dt;
--
--	return 0;
+ 	return 0;
 -
 -err_remove_config_dt:
 -	stmmac_remove_config_dt(pdev, plat_dat);
-+		return ret;
- 
+-
 -	return ret;
-+	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
  }
  
- #ifdef CONFIG_PM_SLEEP
-@@ -385,7 +370,7 @@ MODULE_DEVICE_TABLE(of, ingenic_mac_of_matches);
+ static void intel_eth_plat_remove(struct platform_device *pdev)
+ {
+ 	struct intel_dwmac *dwmac = get_stmmac_bsp_priv(&pdev->dev);
  
- static struct platform_driver ingenic_mac_driver = {
- 	.probe		= ingenic_mac_probe,
--	.remove_new	= stmmac_pltfr_remove,
-+	.remove_new	= stmmac_pltfr_remove_no_dt,
- 	.driver		= {
- 		.name	= "ingenic-mac",
- 		.pm		= pm_ptr(&ingenic_mac_pm_ops),
+-	stmmac_pltfr_remove(pdev);
++	stmmac_pltfr_remove_no_dt(pdev);
+ 	clk_disable_unprepare(dwmac->tx_clk);
+ }
+ 
 -- 
 2.40.1
 
