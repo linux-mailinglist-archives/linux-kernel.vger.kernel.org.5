@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E00C78BE2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F1178BE2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbjH2GBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
+        id S233367AbjH2GBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233247AbjH2GBg (ORCPT
+        with ESMTP id S232286AbjH2GBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 02:01:36 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75D410C;
-        Mon, 28 Aug 2023 23:01:33 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T4xFR7018456;
-        Tue, 29 Aug 2023 06:01:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=jO5xq/EeQ5EoB9F8EJCDml3opKZbrH3EKXAg6gdg3PE=;
- b=hnd37hOd8pB8+dHWVo3+84Nb1etp5h+qGZZL39BfHmjzDj61Zn5FoCCVY+fpm76xSqTg
- rKQnQ5ECj0mkw9kKvNmBwEj6dAY2+NBfiqRYdCdF9le+BJJBhl1Yl2cqIvmwbrjuT6uJ
- SfLU4EZ2avB3qgaCohL8oy8aXSuWfzK9ToS+UvXck2isAVYzEq+qr8QhDw3fmc+IrHuF
- c5zdrWomuPh8EWdZkwjTvF63AQfW4mlusrjy0mZ8Res0YAwrtUHYFsvYMaZuKN3K9KjE
- 5ManIElrZLUjwHb3ydrj7EzB0SywJdVyZlJiP/qY7asVuldBPFMESHifkglTtqrFi2Y3 2g== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3srybq99u9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 06:01:24 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T61Nv5013054
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 06:01:23 GMT
-Received: from [10.216.63.45] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 28 Aug
- 2023 23:01:18 -0700
-Message-ID: <1a94738a-c2ec-519f-e966-baba1bcd36cf@quicinc.com>
-Date:   Tue, 29 Aug 2023 11:31:15 +0530
+        Tue, 29 Aug 2023 02:01:35 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F86810E
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:01:32 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68a3f1d8be2so3168242b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693288892; x=1693893692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F83pIdbIfqyxlSVPoVkO61UOkBdPPX/hhdITQlFLZs8=;
+        b=bAQ78oRAZxxKygOoQmtftYeRQ/uJT72QE8yPzPbPlj24rb601ykQUwR/9HKE+EKQqY
+         d/1wp9MbuTHXh1Jr1/9Uf3IZR5Bo2NSjfvf7xXJQ0w5X9gvD/q/5rRsNgAoPZ8c2Jb8z
+         kR5v+K/HTItbRbY6oo9LEpX6OcAiQQ5UpS1X2dFqbKDQEff9xc3SeDHiynD8v4JlAgPO
+         1yMf63amwOb33ty6xvbbKzLL4Vu4KR58obCzuDazF6o3V0ZgZT9syQkn5R23w9yk0SI6
+         AbpPWN4+LT5w5csGzWknGypc7d5H1pVFhVLQgvzoVbrFVXCosMm64cH7fOMxECf6/J7W
+         Wkzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693288892; x=1693893692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F83pIdbIfqyxlSVPoVkO61UOkBdPPX/hhdITQlFLZs8=;
+        b=IAO1BRgwrKgylQmN4xVuWAWDVp1TuA3NAinzKR3BhqO7OiKcd7PpL3W16Eusr3Max/
+         EyVJGDGnHMhBVkmq1uslIuCwe7FXBSruoQq3bE96Tt+6fbkrK9b39dzl1+/jwYMZESn8
+         +5pfsgs7U+FyWHV3L/3/1Dypd7Rim8Gkjp2+sNKdqzkRvU6/JON48K1V4MCzxyNJW7a+
+         MfRJiKMmicTtFRYIEVrkPQ0osfOiqSiuCPiupXcj/ka6Rry0oaRiNiGnJZyIjbVNfdrR
+         8oZ5E2vDWtuXwk0cyyCI6HIXdlhJlotLobNftQfDlmmKSMbxyJr3D2YIfk8T98pHI0kD
+         Eg8A==
+X-Gm-Message-State: AOJu0YxFuRYMDzbpttQXwx2Bt8K9dsho1RECFNTIAbYjPGeGiPXdprIk
+        X025iw9r01NBnfJuPDXEt6xE5w==
+X-Google-Smtp-Source: AGHT+IFxjLdXPnUcO5T0rb6t84j5UnABMyWEr+XFgNfQDPDVdv1RMkyRUyDpVLfZeHjBqlxIxWGNHw==
+X-Received: by 2002:a05:6a20:8f09:b0:11d:8a8f:655d with SMTP id b9-20020a056a208f0900b0011d8a8f655dmr39206626pzk.4.1693288892062;
+        Mon, 28 Aug 2023 23:01:32 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id x12-20020a63b34c000000b00565a0e66c79sm7597409pgt.72.2023.08.28.23.01.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 23:01:31 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 11:31:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Liao, Chang" <liaochang1@huawei.com>
+Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: Fix inconsistency in error messages of
+ cpufreq_resume/suspend()
+Message-ID: <20230829060129.ux7lbf22t225necx@vireshk-i7>
+References: <20230826095201.1137288-1-liaochang1@huawei.com>
+ <20230828070000.ooymfbw3qhs5xl5y@vireshk-i7>
+ <b7be717c-41d8-bbbf-3e97-3799948ab757@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 2/7] thermal/drivers/qcom: Add new feat for soc without
- rpm
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <thara.gopinath@gmail.com>,
-        <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-References: <1693250307-8910-1-git-send-email-quic_srichara@quicinc.com>
- <1693250307-8910-3-git-send-email-quic_srichara@quicinc.com>
- <CAA8EJppX4SJo8GtvR5D251mnAT42YzH7ju2bE+qxSc7GtmKXCQ@mail.gmail.com>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <CAA8EJppX4SJo8GtvR5D251mnAT42YzH7ju2bE+qxSc7GtmKXCQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LR00zH1S5k48xapRJr0ExBnH9F0YeM75
-X-Proofpoint-GUID: LR00zH1S5k48xapRJr0ExBnH9F0YeM75
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_03,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- clxscore=1015 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- mlxscore=0 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308290051
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b7be717c-41d8-bbbf-3e97-3799948ab757@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
-On 8/29/2023 2:47 AM, Dmitry Baryshkov wrote:
-> On Mon, 28 Aug 2023 at 22:20, Sricharan Ramabadhran
-> <quic_srichara@quicinc.com> wrote:
->>
->> Some of the tsens IP like the one in IPQ5018 does not have a
->> RPM in the soc. Hence the early init to enable tsens would not
+On 28-08-23, 20:31, Liao, Chang wrote:
+> What about printing message like this below when cpufreq_start_governor() fails.
 > 
-> Tsens IP doesn't have RPM. Please rephrase this.
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 50bbc969ffe5..b78b509429a6 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -1943,16 +1943,16 @@ void cpufreq_resume(void)
 > 
+>                         if (ret)
+> -                               pr_err("%s: Failed to start governor for policy: %p\n",
+> -                                      __func__, policy);
+> +                               pr_err("%s: Failed to start governor for policy%u\n",
 
-  ok.
+s/policy/CPU%u's policy/ ?
 
->> be done. So add a flag for that in feat and skip enable checks.
->>
->> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> ---
->>   drivers/thermal/qcom/tsens.c | 2 +-
->>   drivers/thermal/qcom/tsens.h | 3 +++
->>   2 files changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
->> index 98c356acfe98..f39495b61952 100644
->> --- a/drivers/thermal/qcom/tsens.c
->> +++ b/drivers/thermal/qcom/tsens.c
->> @@ -974,7 +974,7 @@ int __init init_common(struct tsens_priv *priv)
->>          ret = regmap_field_read(priv->rf[TSENS_EN], &enabled);
->>          if (ret)
->>                  goto err_put_device;
->> -       if (!enabled) {
->> +       if (!enabled && !(priv->feat->no_early_init)) {
->>                  dev_err(dev, "%s: device not enabled\n", __func__);
->>                  ret = -ENODEV;
->>                  goto err_put_device;
->> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
->> index 2805de1c6827..fb73e3dd0de9 100644
->> --- a/drivers/thermal/qcom/tsens.h
->> +++ b/drivers/thermal/qcom/tsens.h
->> @@ -505,6 +505,8 @@ enum regfield_ids {
->>    * @srot_split: does the IP neatly splits the register space into SROT and TM,
->>    *              with SROT only being available to secure boot firmware?
->>    * @has_watchdog: does this IP support watchdog functionality?
->> + * @no_early_init: does this IP reside in a soc that does not have rpm to
->> + *                 do pre-init.
->>    * @max_sensors: maximum sensors supported by this version of the IP
->>    * @trip_min_temp: minimum trip temperature supported by this version of the IP
->>    * @trip_max_temp: maximum trip temperature supported by this version of the IP
->> @@ -516,6 +518,7 @@ struct tsens_features {
->>          unsigned int adc:1;
->>          unsigned int srot_split:1;
->>          unsigned int has_watchdog:1;
->> +       unsigned int no_early_init:1;
-> 
-> s/no_early_init/ignore_enable/
-> 
+> +                                      __func__, policy->cpu);
 
-  ok, will change.
+Sounds good.
 
-Regards,
-  Sricharan
+-- 
+viresh
