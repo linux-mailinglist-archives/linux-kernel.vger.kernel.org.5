@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E3678C845
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEEC78C844
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237039AbjH2PEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237047AbjH2PEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Aug 2023 11:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237172AbjH2PEr (ORCPT
+        with ESMTP id S237174AbjH2PEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:04:47 -0400
-Received: from torres.zugschlus.de (torres.zugschlus.de [IPv6:2a01:238:42bc:a101::2:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F15B199;
-        Tue, 29 Aug 2023 08:04:45 -0700 (PDT)
-Received: from mh by torres.zugschlus.de with local (Exim 4.96)
-        (envelope-from <mh+linux-kernel@zugschlus.de>)
-        id 1qb0Gn-002a5D-30;
-        Tue, 29 Aug 2023 17:04:41 +0200
-Date:   Tue, 29 Aug 2023 17:04:41 +0200
-From:   Marc Haber <mh+linux-kernel@zugschlus.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, linux-kernel@vger.kernel.org,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux KVM <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd
- related
-Message-ID: <ZO4JCfnzRRL1RIZt@torres.zugschlus.de>
-References: <ZO2RlYCDl8kmNHnN@torres.zugschlus.de>
- <ZO2piz5n1MiKR-3-@debian.me>
- <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
- <ZO4GeazfcA09SfKw@google.com>
+        Tue, 29 Aug 2023 11:04:49 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200BEC9;
+        Tue, 29 Aug 2023 08:04:47 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C41C46732D; Tue, 29 Aug 2023 17:04:42 +0200 (CEST)
+Date:   Tue, 29 Aug 2023 17:04:42 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>, Anle Pan <anle.pan@nxp.com>,
+        Christoph Hellwig <hch@lst.de>, m.szyprowski@samsung.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hui.fang@nxp.com
+Subject: Re: [PATCH] media: videobuf2-dma-sg: limit the sg segment size
+Message-ID: <20230829150442.GA3929@lst.de>
+References: <20230828075420.2009568-1-anle.pan@nxp.com> <CAAFQd5Cn3xQroyYtC+m+pk1jOE5i3H+FGr-y8zqhaf0Yo5p-1Q@mail.gmail.com> <deb735ce-7de1-e59a-9de4-1365b374b417@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZO4GeazfcA09SfKw@google.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
+In-Reply-To: <deb735ce-7de1-e59a-9de4-1365b374b417@arm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -47,23 +40,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 07:53:45AM -0700, Sean Christopherson wrote:
-> What is different between the bad host(s) and the good host(s)?  E.g. kernel, QEMU,
+On Tue, Aug 29, 2023 at 12:14:44PM +0100, Robin Murphy wrote:
+> dma_get_max_seg_size() represents a capability of the device itself, namely 
+> the largest contiguous range it can be programmed to access in a single DMA 
+> descriptor/register/whatever.
 
-The bad host is an APU ("AMD GX-412TC SOC") with 4 GB of RAM, one of the
-good hosts is a "Xeon(R) CPU E3-1246 v3" with 32 GB of RAM. Both are
-somewhat dated due to the darn iptables => nftables migration and still
-run Debian buster, kernels are identical (a 6.4.12 built in the same
-container than the 6.4.12 that works and the 6.5 that misbahaves on the
-test VM), system configuration is from the same ansible playbook, but of
-course there are differences. But my strongest bet is some weird CPU
-type issue becuase that's the most blatant difference.
+Yes.  In a way it's a bit odd that it ended up in a field in
+struct device, as the feature might actually be different for different
+DMA engines or features in a device.  If I was to redesign it from
+scratch I'd just pass it to dma_map_sg.
 
-Greetings
-Marc
+>> Generally looking at videobuf2-dma-sg, I feel like we would benefit
+>> from some kind of dma_alloc_table_from_pages() that simply takes the
+>> struct dev pointer and does everything necessary.
+>
+> Possibly; this code already looks lifted from drm_prime_pages_to_sg(), and 
+> if it's needed here then presumably vb2_dma_sg_get_userptr() also needs it, 
+> at the very least.
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Leimen, Germany    |  lose things."    Winona Ryder | Fon: *49 6224 1600402
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 6224 1600421
+Yes, there's tons of them.  But I'd feel really bad adding even more
+struct scatterlist based APIs given how bad of a data structure that is.
