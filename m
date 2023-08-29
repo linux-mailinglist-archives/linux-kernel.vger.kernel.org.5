@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D12B478CA4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4E478CA67
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237626AbjH2RLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
+        id S237667AbjH2RMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237650AbjH2RKy (ORCPT
+        with ESMTP id S237638AbjH2RLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:10:54 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA3BFD
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:10:50 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-500c63c9625so1072764e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693329049; x=1693933849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kUDDfMckAfjBAxdn8UbsV0PI1LaLGtDpMC0izbCsEyw=;
-        b=pbC+E701z8pgAN9J67YbQJLsxBdHLBVuAwWonWR5+gntMBHPmLJHBjfbBiNQVphcP8
-         cBwZkTZLuowp76ilvXiunTr2QEfNU2Y/kgamH0fblMtM4htx8QtaOJm2UTSYJbumxECf
-         TtipZgQX+Tp1ub30QDnmp33Jf/yIg9cuJ9Hq1tc17nN/TkJBtcY7mnKK9Tb83yC9hvgN
-         TvWBsyvgSjU54aVkyabIYO/HiUae25sHmytR4eDgGArQhWIt30MMh3PTM/MB3q53Zzoz
-         uyp0CLPUJlieiZpN/RSgt4gNmxiGPKdhKEywcGPGiOxEwoYbZyVvSkobOX6Qbf/CaZP/
-         X2Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329049; x=1693933849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kUDDfMckAfjBAxdn8UbsV0PI1LaLGtDpMC0izbCsEyw=;
-        b=i1ONmRtUf/TtefP9k23nt4BwXWoNKYRoR+3X0AmSBk2Ku02scjrWyiFxNM81yzRvu0
-         FuuYZxbkemYR3RRA4tVcjo6mtbX0Wtk5WxNaG3MAHMOXkrdMCsnaptdfIaGxyl+nb13l
-         RPUIMxRCvEGVZ62ZFjV/YEd5i103dfaFenra/WNZpMlXR0g7Dxxl3qlKVpP00NPgRiE9
-         T9PWh92Cx5+3BCOslzDiWclzzYhdAz8zlI+7OX7zxozBaeg7q4Us+0yAiiYzqWJtJnGI
-         ZqD+t4RHSYyW6pFoi00klEVv/RkTSo7gF9a0vG/ujlCODZxZaBx3l5aiEjnRe2GqAQmG
-         YwEA==
-X-Gm-Message-State: AOJu0YysBgxT4UDiT+tWXdqIdk6Uop9CaxZdMf3zwBDIMH3NTv+G4x59
-        jGYwlcn74OviAzUFzyjYb8Y/JQ==
-X-Google-Smtp-Source: AGHT+IHHQks1xGIxY16uCjwppAfUaLvnxxPfEhYUrLLX0rUNO4P/6kbFaMYJqOrLlPhWdG/DG/E4ew==
-X-Received: by 2002:a05:6512:224e:b0:4fd:c84f:30c9 with SMTP id i14-20020a056512224e00b004fdc84f30c9mr24645234lfu.47.1693329049106;
-        Tue, 29 Aug 2023 10:10:49 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170906144400b00992eabc0ad8sm6136008ejc.42.2023.08.29.10.10.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 10:10:48 -0700 (PDT)
-Message-ID: <ab0d99ca-54b9-2535-a783-967a3b2443bf@linaro.org>
-Date:   Tue, 29 Aug 2023 19:10:47 +0200
+        Tue, 29 Aug 2023 13:11:42 -0400
+X-Greylist: delayed 140373 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 10:11:37 PDT
+Received: from out-251.mta1.migadu.com (out-251.mta1.migadu.com [95.215.58.251])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03912113
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:11:36 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693329095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4p8eo+KqdaDj4APbJngGg5i5hNM+Az1Zd3d9hROUHxc=;
+        b=dnT146MfGXO/FX/5OU0nnhGox5bH9Q9iL3wR8QzreWKi8HM6ftxenQbNh0giCupLWbBvZ3
+        yrtJFrQqJMbwnzOPm1V30EMbaXRjHIUhQydgFATDwvyKhMPATQoGC3i906ED2ejiv5kKAp
+        3LsU6hfXBzBqwgYR0HkngXLEuukvWWo=
+From:   andrey.konovalov@linux.dev
+To:     Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH 00/15] stackdepot: allow evicting stack traces
+Date:   Tue, 29 Aug 2023 19:11:10 +0200
+Message-Id: <cover.1693328501.git.andreyknvl@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v5 1/2] dt-bindings: iio: adc: adding MCP3564 ADC
-Content-Language: en-US
-To:     marius.cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
-        robh+dt@kernel.org
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230829154133.40716-1-marius.cristea@microchip.com>
- <20230829154133.40716-2-marius.cristea@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230829154133.40716-2-marius.cristea@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 17:41, marius.cristea@microchip.com wrote:
-> From: Marius Cristea <marius.cristea@microchip.com>
-> 
-> This is the device tree schema for iio driver for
-> Microchip family of 153.6 ksps, Low-Noise 16/24-Bit
-> Delta-Sigma ADCs with an SPI interface (Microchip's
-> MCP3461, MCP3462, MCP3464, MCP3461R, MCP3462R,
-> MCP3464R, MCP3561, MCP3562, MCP3564, MCP3561R,
-> MCP3562R and MCP3564R analog to digital converters).
-> 
-> Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
-> ---
->  .../bindings/iio/adc/microchip,mcp3564.yaml   | 205 ++++++++++++++++++
+From: Andrey Konovalov <andreyknvl@google.com>
 
-What changed? Cover letter says nothing about binding, so this patch
-must say. Especially that you decided to ignore review.
+Currently, the stack depot grows indefinitely until it reaches its
+capacity. Once that happens, the stack depot stops saving new stack
+traces.
 
-Best regards,
-Krzysztof
+This creates a problem for using the stack depot for in-field testing
+and in production.
+
+For such uses, an ideal stack trace storage should:
+
+1. Allow saving fresh stack traces on systems with a large uptime while
+   limiting the amount of memory used to store the traces;
+2. Have a low performance impact.
+
+Implementing #1 in the stack depot is impossible with the current
+keep-forever approach. This series targets to address that. Issue #2 is
+left to be addressed in a future series.
+
+This series changes the stack depot implementation to allow evicting
+unneeded stack traces from the stack depot. The users of the stack depot
+can do that via a new stack_depot_evict API.
+
+Internal changes to the stack depot code include:
+
+1. Storing stack traces in 32-frame-sized slots (vs precisely-sized slots
+   in the current implementation);
+2. Keeping available slots in a freelist (vs keeping an offset to the next
+   free slot);
+3. Using a read/write lock for synchronization (vs a lock-free approach
+   combined with a spinlock).
+
+This series also integrates the eviction functionality in the tag-based
+KASAN modes. (I will investigate integrating it into the Generic mode as
+well in the following iterations of this series.)
+
+Despite wasting some space on rounding up the size of each stack record
+to 32 frames, with this change, the tag-based KASAN modes end up
+consuming ~5% less memory in stack depot during boot (with the default
+stack ring size of 32k entries). The reason for this is the eviction of
+irrelevant stack traces from the stack depot, which frees up space for
+other stack traces.
+
+For other tools that heavily rely on the stack depot, like Generic KASAN
+and KMSAN, this change leads to the stack depot capacity being reached
+sooner than before. However, as these tools are mainly used in fuzzing
+scenarios where the kernel is frequently rebooted, this outcome should
+be acceptable.
+
+There is no measurable boot time performace impact of these changes for
+KASAN on x86-64. I haven't done any tests for arm64 modes (the stack
+depot without performance optimizations is not suitable for intended use
+of those anyway), but I expect a similar result. Obtaining and copying
+stack trace frames when saving them into stack depot is what takes the
+most time.
+
+This series does not yet provide a way to configure the maximum size of
+the stack depot externally (e.g. via a command-line parameter). This will
+either be added in the following iterations of this series (if the used
+approach gets approval) or will be added together with the performance
+improvement changes.
+
+Andrey Konovalov (15):
+  stackdepot: check disabled flag when fetching
+  stackdepot: simplify __stack_depot_save
+  stackdepot: drop valid bit from handles
+  stackdepot: add depot_fetch_stack helper
+  stackdepot: use fixed-sized slots for stack records
+  stackdepot: fix and clean-up atomic annotations
+  stackdepot: rework helpers for depot_alloc_stack
+  stackdepot: rename next_pool_required to new_pool_required
+  stackdepot: store next pool pointer in new_pool
+  stackdepot: store free stack records in a freelist
+  stackdepot: use read/write lock
+  stackdepot: add refcount for records
+  stackdepot: add backwards links to hash table buckets
+  stackdepot: allow users to evict stack traces
+  kasan: use stack_depot_evict for tag-based modes
+
+ include/linux/stackdepot.h |  11 ++
+ lib/stackdepot.c           | 361 ++++++++++++++++++++++++-------------
+ mm/kasan/tags.c            |   7 +-
+ 3 files changed, 249 insertions(+), 130 deletions(-)
+
+-- 
+2.25.1
 
