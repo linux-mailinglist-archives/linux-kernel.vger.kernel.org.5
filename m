@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200E278BD1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 05:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC16F78BD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 05:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbjH2DC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 23:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        id S234406AbjH2DPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 23:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233583AbjH2DBu (ORCPT
+        with ESMTP id S234926AbjH2DOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 23:01:50 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0519E10C
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 20:01:47 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-57354433a7dso1631222eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 20:01:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693278106; x=1693882906;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D5rw8PU4MLe4UjShUw3LXe+vB86DdsSYaP+ghtZws/w=;
-        b=Om/imUt6v85D7tXVu75ho/1nRdM1AinjiyuB9uH8IUgSOtsB1BM7L6xiVqpH1Jjq+w
-         CIA8jrT4J54nkjgNhVoLR/QmlwrFb6Hy6yLAC/FLuM3LfQbKfkJqSgLD5moBlZvx2ASa
-         qTfJqssKTP1f0xFRrqqE4sgvT0t3MkGWLCu2kC5NZDtj9qlgZ1q/XWCvMNqdsIMh9WQY
-         YCJlzPaFd+hG4rOhFMBYcBw5Qym97e5QHYKibWIu8r+bg8rGcw59Q7ef+m59H6pDpx25
-         ybvN2TljBwPjxHZacLx2f04dApyBZMnOX6YU0vmd/QjYi2v56BFLaUkS+ao5ia0P8CH8
-         /zEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693278106; x=1693882906;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D5rw8PU4MLe4UjShUw3LXe+vB86DdsSYaP+ghtZws/w=;
-        b=J2eSQ8GXN8TyHK9zxy6jMD2T0McoEKah46J/yfSGWgOof9lCtuCagRUdmQvbMPyAlm
-         VZESgG6RP/zMOBgPUoNQChyc0wIDC9/wo+M5wZJA4X6vh3feRNupKtu9V6j0OEPGtesl
-         iauJchDAB1lp7uSsB9IHfWrZ5IcmCKY/1jO4/1PnYCL/ZzNXP20hPIfwSmEGwwz6CSJD
-         /qE4Uncj7bU1+uCyR9dAViVfuBeXqx8MUM5fhncnuR5A+6/nQPW9215BiS47/haBgZSH
-         zo7PlVgGzy3Yhnu3+knjUPUMtTe3sjn4P8Ph+kvKAa9ySRw9eFp/Ws6vaF8tjtObllvQ
-         pMfw==
-X-Gm-Message-State: AOJu0Yz10oVrppVlv8CpK7VvcGkihe5KxUHiFhR8NNzdiHd0idkcZ2Wz
-        wCuY0/h0gumCLIVg0xbRpJeEfg==
-X-Google-Smtp-Source: AGHT+IGUySozNNm6SNEiVWhhfJeY00gXvZg2x0BAmIH2AU8UpQrCsM3f0aY9YUY9gBPTJNSDf9g9cg==
-X-Received: by 2002:a4a:6c13:0:b0:571:1fad:ebd7 with SMTP id q19-20020a4a6c13000000b005711fadebd7mr11635350ooc.7.1693278106207;
-        Mon, 28 Aug 2023 20:01:46 -0700 (PDT)
-Received: from [192.168.17.16] ([138.84.45.150])
-        by smtp.gmail.com with ESMTPSA id b25-20020a9d6b99000000b006bee51de9f6sm4075630otq.18.2023.08.28.20.01.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 20:01:45 -0700 (PDT)
-Message-ID: <868cd8e3-2e7e-7b98-0a6e-e5586cb6ab0d@linaro.org>
-Date:   Mon, 28 Aug 2023 21:01:41 -0600
+        Mon, 28 Aug 2023 23:14:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1593811C;
+        Mon, 28 Aug 2023 20:14:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DCD0634E8;
+        Tue, 29 Aug 2023 03:14:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB09C433C8;
+        Tue, 29 Aug 2023 03:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693278888;
+        bh=tMDINR4dymJFi8jVVYoFyQvNhMm8xXut+ZK8QJjQOgM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bl5AVOEEem567xT8iQ+ba90x7MRBxMeZEH5X5f3fFbOqxTpUVbVsqaMx23n9NV1aV
+         yFqS1/WJsS8hCQDZBv0KQx9RRDVokuUKR05BxpVUDCPl3I3OXl9rA6T9qhg/o+E14K
+         PPsS1oW1j2wM0PQ8OLG7wx1DjjMzj02gSttmiiibDXEQ168Sma6oSwWiEscoSg0X1b
+         Ovy37Yb+MkW5LHyJMJL5ycDszdhlJ1FJbGWulHj2odUxF5wNS6ABQbq9rjIhdKdwdb
+         rrtembThLRJEZFcwv9bfQiySKd/7S8bn2DIg0Nb4/3E9q2ZshRvZQRIeS8fpWyXsiy
+         /CHtZR4FvqXwQ==
+Date:   Tue, 29 Aug 2023 11:02:57 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, Maxime@web.codeaurora.org,
+        Coquelin@web.codeaurora.org,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH net-next v2 2/3] dt-bindings: net: add T-HEAD dwmac
+ support
+Message-ID: <ZO1f4dwtI2ilRS2f@xhacker>
+References: <20230827091710.1483-1-jszhang@kernel.org>
+ <20230827091710.1483-3-jszhang@kernel.org>
+ <qc2nyqmuouig6qww2q7orlwzvcprjyruyeuyr5dqdpxysajjpv@6fzsgjgokry7>
+ <ZOy6kLGZ1lR0I2sC@xhacker>
+ <pbh7gh7fkfis7zqqmmug5wtosq3xsx7z3ktsfg3jy6jthm6qva@a3wy7knv2vcr>
+ <75829c0e-b6f8-536e-c84e-a660be3f39d0@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 4.14 00/57] 4.14.324-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        nathanl@linux.ibm.com, mpe@ellerman.id.au
-References: <20230828101144.231099710@linuxfoundation.org>
-Content-Language: en-US
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20230828101144.231099710@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <75829c0e-b6f8-536e-c84e-a660be3f39d0@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,63 +77,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 28/08/23 4:12 a. m., Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.324 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Aug 28, 2023 at 07:55:44PM +0200, Krzysztof Kozlowski wrote:
+> On 28/08/2023 17:51, Serge Semin wrote:
+> > On Mon, Aug 28, 2023 at 11:17:36PM +0800, Jisheng Zhang wrote:
+> >> On Mon, Aug 28, 2023 at 04:13:00PM +0300, Serge Semin wrote:
+> >>> On Sun, Aug 27, 2023 at 05:17:09PM +0800, Jisheng Zhang wrote:
+> >>>> Add documentation to describe T-HEAD dwmac.
+> >>>>
+> >>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> >>>> ---
+> >>>>  .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
+> >>>>  .../devicetree/bindings/net/thead,dwmac.yaml  | 77 +++++++++++++++++++
+> >>>>  2 files changed, 78 insertions(+)
+> >>>>  create mode 100644 Documentation/devicetree/bindings/net/thead,dwmac.yaml
+> >>>>
+> >>>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> >>>> index b196c5de2061..73821f86a609 100644
+> >>>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> >>>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> >>>> @@ -96,6 +96,7 @@ properties:
+> >>>>          - snps,dwxgmac
+> >>>>          - snps,dwxgmac-2.10
+> >>>>          - starfive,jh7110-dwmac
+> >>>> +        - thead,th1520-dwmac
+> >>>>  
+> >>>>    reg:
+> >>>>      minItems: 1
+> >>>> diff --git a/Documentation/devicetree/bindings/net/thead,dwmac.yaml b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
+> >>>> new file mode 100644
+> >>>> index 000000000000..bf8ec8ca2753
+> >>>> --- /dev/null
+> >>>
+> >>>> +++ b/Documentation/devicetree/bindings/net/thead,dwmac.yaml
+> >>>
+> >>> see further regarding using dwmac in the names here.
+> >>>
+> >>>> @@ -0,0 +1,77 @@
+> >>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>>> +%YAML 1.2
+> >>>> +---
+> >>>> +$id: http://devicetree.org/schemas/net/thead,dwmac.yaml#
+> >>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>>> +
+> >>>
+> >>>> +title: T-HEAD DWMAC Ethernet controller
+> >>>
+> >>> Additionally would be nice to have a brief controller "description:"
+> >>> having the next info: the SoCs the controllers can be found on, the DW
+> >>> (G)MAC IP-core version the ethernet controller is based on and some
+> >>> data about the synthesize parameters: SMA (MDIO-bus), Tx/Rx COE, DMA
+> >>> FIFOs size, perfect and hash MAC-filters size, L3L4 frame filters
+> >>> availability, VLAN hash filter, SA/VLAN-tag insertion, ARP offload
+> >>> engine, PHY interfaces (MII, RMII, RGMII, etc), EEE support, IEEE
+> >>> 1588(-2008) Timestamping support, PMT and Wake-up frame support, MAC
+> >>> Management counters (MMC). In addition to that for DW QoS
+> >>> ETH/XGMAC/XLGMAC the next info would be useful: number of MTL Queues
+> >>> and DMA channels, MTL queues capabilities (QoS-related), TSO
+> >>> availability, SPO availability.
+> >>>
+> > 
+> >>> Note DMA FIFO sizes can be also constrained in the properties
+> >>> "rx-fifo-depth" and "tx-fifo-depth"; perfect and hash MAC-filter sizes -
+> >>> in "snps,perfect-filter-entries" and "snps,multicast-filter-bins".
+> > 
+> > BTW plus to this you may wish to add the "rx-internal-delay-ps" and
+> > "tx-internal-delay-ps" properties constraints seeing they device
+> > supports internal Tx/Rx delays.
+> > 
+> >>
+> >> Hi Serge,
+> >>
+> > 
+> >> Thank you for your code review. I have different views here: If we
+> >> only support the gmac controller in one specific SoC, these detailed
+> >> information is nice to have, but what about if the driver/dt-binding
+> >> supports the gmac controller in different SoCs? These detailed
+> >> information will be outdated.
+> > 
+> > First they won't. Second then you can either add more info to the
+> > description for instance in a separate paragraph or create a dedicated
+> > DT-bindings. Such information would be very much useful for the
+> > generic STMMAC driver code maintenance.
+> > 
+> >>
+> >> what's more, I think the purpose of dt-binding is different from
+> >> the one of documentation.
+> > 
+> > The purpose of the DT-bindings is a hardware "description". The info I
+> > listed describes your hardware.
+> > 
+> >>
+> >> So I prefer to put these GMAC IP related detailed information into
+> >> the SoC's dtsi commit msg rather than polluting the dt-binding.
+> >>>
+> >>>> +
+> >>>> +maintainers:
+> >>>> +  - Jisheng Zhang <jszhang@kernel.org>
+> >>>> +
+> >>>> +select:
+> >>>> +  properties:
+> >>>> +    compatible:
+> >>>> +      contains:
+> >>>> +        enum:
+> >>>
+> >>>> +          - thead,th1520-dwmac
+> >>>
+> >>> Referring to the DW IP-core in the compatible string isn't very
+> >>> much useful especially seeing you have a generic fallback compatible.
+> >>> Name like "thead,th1520-gmac" looks more informative indicating its
+> >>> speed capability.
+> >>
+> > 
+> >> This is just to follow the common style as those dwmac-* does.
+> >> I'm not sure which is better, but personally, I'd like to keep current
+> >> common style.
+> > 
+> > It's not that common. Half the compatible strings use the notation
+> > suggested by me and it has more sense then a dwmac suffix. It's ok to
+> > use the suffix in the STMMAC driver-related things because the glue
+> > code is supposed to work with the DW *MAC generic code. Using it in
+> > the compatible string especially together with the generic fallback
+> > compatible just useless.
 > 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
+> THEAD did not make dwmac here, but a gmac. dwmac does not exist in the
+> context of Thead and Th1520, so the naming suggested by Serge makes sense.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.324-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->      Linux 4.14.324-rc1
-> 
-[...]
-> Nathan Lynch <nathanl@linux.ibm.com>
->      powerpc/rtas_flash: allow user copy to flash block cache objects
-[...]
 
-We see this build regression on PowerPC with GCC-8 and GCC-12:
------8<-----
-   /builds/linux/arch/powerpc/kernel/rtas_flash.c: In function 'rtas_flash_init':
-   /builds/linux/arch/powerpc/kernel/rtas_flash.c:717:22: error: implicit declaration of function 'kmem_cache_create_usercopy'; did you mean 'kmem_cache_create'? [-Werror=implicit-function-declaration]
-     flash_block_cache = kmem_cache_create_usercopy("rtas_flash_cache",
-                         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-                         kmem_cache_create
-   /builds/linux/arch/powerpc/kernel/rtas_flash.c:717:20: error: assignment to 'struct kmem_cache *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
-     flash_block_cache = kmem_cache_create_usercopy("rtas_flash_cache",
-                       ^
------>8-----
-
-That's on defconfig and cell_defconfig.
-
-Bisection points to "powerpc/rtas_flash: allow user copy to flash block cache objects" (5190538c66e5). Reverting that patch makes the build pass again.
-
-Tuxmake reproducer:
-
-   #pip3 install -U tuxmake
-   tuxmake --runtime podman --target-arch powerpc --toolchain gcc-8 --kconfig defconfig
-   git revert 5190538c66e5e8e7cdbf694afec8291f421e6bcf
-   tuxmake --runtime podman --target-arch powerpc --toolchain gcc-8 --kconfig defconfig
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
+I have no preference. But just want to confirm:
+the th1520 ethernet controller doesn't always function as GMAC, but
+can act as MII, so "thead,th1520-gmac" is still OK?
