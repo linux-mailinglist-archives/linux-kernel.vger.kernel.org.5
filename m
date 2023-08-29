@@ -2,48 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E06C78BEF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0748278BFCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbjH2HG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
+        id S233912AbjH2IBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233253AbjH2HGb (ORCPT
+        with ESMTP id S232958AbjH2IBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:06:31 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E13519B
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:06:28 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RZdhw71jgz1L9Lt;
-        Tue, 29 Aug 2023 15:04:48 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
- 2023 15:06:25 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>, Barry Song <baohua@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Jinjiang Tu <tujinjiang@huawei.com>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH] mm: vmscan: use per-zone watermark when determine file_is_tiny
-Date:   Tue, 29 Aug 2023 16:00:38 +0800
-Message-ID: <20230829080038.1532308-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 29 Aug 2023 04:01:25 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500C411B;
+        Tue, 29 Aug 2023 01:01:22 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T7E1mQ022809;
+        Tue, 29 Aug 2023 08:01:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=el8ddIIj/h5JdTa9/21J8cFJ29Iln5ST4fO3NIzqOu8=;
+ b=NfDv0uzN7mQ0jJhLYKt4s3LyP4KwwIZ+rrOhcgIHAcTz4wyyIdcsp/VHc0pBAkqDuLl9
+ k7uIFSilcrOKp3Np6OaLGVm8Gl/d7kAzQoTtkc+9ozpLLU5/VnU3AtHQPdl3M2azHufc
+ EfNGOYX1LmDjpqcm2T2pBb8WT5xUj1Amw49MBnOdrEg82yILT4SJszdPAheiFUwDQlkc
+ danf9iItpI5A8mxGGejT+sxLa7pw5cnHRjB6J8hbXhHO4bxeiv5kDNAc7gcxROTELtJv
+ LFc/cKGspfhPj06vU//vR8TQOt+hpUiNWTeXj5s0uuJqWT1ThrxuMACrz/DbYRuyRW+z 1w== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss4wq0sv3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 08:01:16 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T815m7032348
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 08:01:05 GMT
+Received: from [10.50.3.213] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
+ 2023 01:01:01 -0700
+Message-ID: <9391ae4e-afbd-ef52-12dc-7f8875216c85@quicinc.com>
+Date:   Tue, 29 Aug 2023 13:30:56 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/4] venus: hfi_parser: Add check to keep the number of
+ codecs within range
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mchehab@kernel.org>, <hans.verkuil@cisco.com>,
+        <tfiga@chromium.org>
+CC:     <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <1691634304-2158-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1691634304-2158-5-git-send-email-quic_vgarodia@quicinc.com>
+ <fec4a8c7-206f-7af8-4ea9-c919a677bf7e@linaro.org>
+ <2214c31b-eca2-012e-a100-21252a724e7c@quicinc.com>
+ <8b72ce47-c338-2061-f11a-c0a608686d8c@linaro.org>
+ <e880da07-ccd4-e427-ed34-20b284dc7838@quicinc.com>
+ <8f1a4ca0-dde8-fa5d-bca3-d317886609de@linaro.org>
+ <060f4dbe-63d6-1c60-14ca-553bf1536e5a@quicinc.com>
+ <c5f912a9-cc08-1645-ad04-c7a58c1e47ce@linaro.org>
+ <cd9da205-ccdb-dc71-16a4-83b22ca7fcae@quicinc.com>
+ <ea587bb1-8ff2-7a92-f948-fd932f6b2769@linaro.org>
+Content-Language: en-US
+From:   Vikash Garodia <quic_vgarodia@quicinc.com>
+In-Reply-To: <ea587bb1-8ff2-7a92-f948-fd932f6b2769@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Rr2zTLgUK7ezY1KVBOncEpkr24FEZ5F-
+X-Proofpoint-ORIG-GUID: Rr2zTLgUK7ezY1KVBOncEpkr24FEZ5F-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_05,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0 adultscore=0
+ mlxlogscore=553 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290068
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,78 +94,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When setting swapiness to 0, the anon pages should be reclaimed if and
-only if the value of file_is_tiny is true.
+Hi Bryan,
 
-__zone_watermark_ok uses per-zone watermark and lowmem_reserve to determine
-whether allocating page from the zone. In the mean time, file_is_tiny is
-calculated by per-node watermark. There are inconsistencies between the two
-scenarios.
+On 8/14/2023 7:45 PM, Bryan O'Donoghue wrote:
+> On 14/08/2023 07:34, Vikash Garodia wrote:
+>>> We have two loops that check for up to 32 indexes per loop. Why not have a
+>>> capabilities index that can accommodate all 64 bits ?
+>> Max codecs supported can be 32, which is also a very high number. At max the
+>> hardware supports 5-6 codecs, including both decoder and encoder. 64 indices is
+>> would not be needed.
+>>
+> 
+> But the bug you are fixing here is an overflow where we have received a full
+> range 32 bit for each decode and encode.
+> 
+> How is the right fix not to extend the storage to the maximum possible 2 x 32 ?
+> Or indeed why not constrain the input data to 32/2 for each encode/decode path ?
+At this point, we agree that there is very less or no possibility to have this
+as a real usecase i.e having 64 (or more than 32) codecs supported in video
+hardware. There seem to be no value add if we are extending the cap array from
+32 to 64, as anything beyond 32 itself indicates rogue firmware. The idea here
+is to gracefully come out of such case when firmware is responding with such
+data payload.
+Again, lets think of constraining the data to 32/2. We have 2 32 bit masks for
+decoder and encoder. Malfunctioning firmware could still send payload with all
+bits enabled in those masks. Then the driver needs to add same check to avoid
+the memcpy in such case.
 
-If total free pages on node is enough, then file_is_tiny can not be true,
-so the anon pages can not be reclaimed. If the free pages in each zone is
-less than watermark + lowmem_reserve, then the allocation will failed too.
-Due to lowmem_reserve, these two cases can occur at the same time:
+> The bug here is that we can copy two arrays of size X into one array of size X.
+> 
+> Please consider expanding the size of the storage array to accommodate the full
+> size the protocol supports 2 x 32.
+I see this as an alternate implementation to existing handling. 64 index would
+never exist practically, so accommodating it only implies to store the data for
+invalid response and gracefully close the session.
 
- zone_page_state(zone, NR_FREE_PAGES) < watermark + lowmem_reserve
- node_page_state(pgdat, NR_FREE_PAGES) > total_high_wmark
-
-When both are met, there will be many anon pages that can not be reclaimed
-because file_is_tiny is false, and in the same time, the allocation failed
-because per-zone watermark is not suitable.
-
-Split the condition (file + free <= high_wmark) to per-zone to fix it.
-
-Reported-and-tested-by: Jinjiang Tu <tujinjiang@huawei.com>
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- mm/vmscan.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index e73e2df8828d..f1dc0dbf1cdb 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3009,21 +3009,23 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
- 	 * anon pages.  Try to detect this based on file LRU size.
- 	 */
- 	if (!cgroup_reclaim(sc)) {
--		unsigned long total_high_wmark = 0;
- 		unsigned long free, anon;
- 		int z;
- 
--		free = sum_zone_node_page_state(pgdat->node_id, NR_FREE_PAGES);
--		file = node_page_state(pgdat, NR_ACTIVE_FILE) +
--			   node_page_state(pgdat, NR_INACTIVE_FILE);
--
- 		for (z = 0; z < MAX_NR_ZONES; z++) {
- 			struct zone *zone = &pgdat->node_zones[z];
- 
- 			if (!managed_zone(zone))
- 				continue;
- 
--			total_high_wmark += high_wmark_pages(zone);
-+			free = zone_page_state(zone, NR_FREE_PAGES);
-+			file = zone_page_state(zone, NR_ZONE_ACTIVE_FILE) +
-+				zone_page_state(zone, NR_ZONE_INACTIVE_FILE);
-+
-+			if (file + free <= high_wmark_pages(zone)) {
-+				sc->file_is_tiny = true;
-+				break;
-+			}
- 		}
- 
- 		/*
-@@ -3033,8 +3035,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
- 		 */
- 		anon = node_page_state(pgdat, NR_INACTIVE_ANON);
- 
--		sc->file_is_tiny =
--			file + free <= total_high_wmark &&
-+		sc->file_is_tiny = sc->file_is_tiny &&
- 			!(sc->may_deactivate & DEACTIVATE_ANON) &&
- 			anon >> sc->priority;
- 	}
--- 
-2.25.1
-
+Thanks,
+Vikash
