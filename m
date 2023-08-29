@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F2E78C811
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB7178C814
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbjH2OyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
+        id S237133AbjH2OyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237113AbjH2Oxm (ORCPT
+        with ESMTP id S237180AbjH2OyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:53:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505A5CD6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693320794; x=1724856794;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DgeK/xRyG2IFrQpmGZedAYLJ2Bq3DZ7mg+pJ/J38asY=;
-  b=hzpw/f8WUo5ot6WBHGWKVI6MUVAOQq5p7YrJr3zdGkLMI3F1RFf6aSLE
-   Z8uaxD/3v4xj1JNVqvm1wi/uUsRwCL1GsMGQtAWWAX229ZgsLGA/KQvfz
-   zRjBnY8wSh51o1V++kJx13qcO49Cgonte1tnp2pV8tNzpbvd3RIy/9tex
-   VXGjZxNopOKTET9I9Ri+D6+QW4H9QrX/2hcz+Y7ml9knkh+f/OMVD3Z3a
-   pPTXWIMFP8IOjJY0mxTNVfVkuQEeJk8AOp2ufZRJWrHcc2vEuQw1abqaF
-   /IKlkNFlLtlk6Q5C7H7lhfnY7MnmUFlCbcqwpuF/CNP+I+uTeZSi+8Yk/
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="439341587"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="439341587"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 07:53:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="768102031"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="768102031"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP; 29 Aug 2023 07:53:11 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qb05e-004uJY-1M;
-        Tue, 29 Aug 2023 17:53:10 +0300
-Date:   Tue, 29 Aug 2023 17:53:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: max77541: Simplify probe()
-Message-ID: <ZO4GViBrAvAG5EPT@smile.fi.intel.com>
-References: <20230828153805.78421-1-biju.das.jz@bp.renesas.com>
+        Tue, 29 Aug 2023 10:54:00 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBAE199
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:53:35 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68a3cae6d94so3876548b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:53:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693320803; x=1693925603;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9EA9BB4QNaOUVi29wtBC2+U4B+xg7qHBDtCTKmBdpKg=;
+        b=IsMKftYji921OMFGSZNsWjHzaJGbRhjnUGQ96zHIPOUk0Hx97smz5kFPxjM80H8t0z
+         NyflYuycfY9MbZysDTN1rkMrv1sDNGC8quPF9H5uupLC4V3rIQ+JLFbWkIojM3buc7Tn
+         2t/+iH/XrY1+gWVBnSd12629DGxjljWEGk1xLifSmraZ+oui5MClnWQPVp+qdwhfasV7
+         6BEqOcAY/wraaRviUg8u4nzcqxHKxG5k5okrgZIf27iILyaTeohJJsi6QPT/GpMYvQFu
+         gZ1Rfx5Elbi457IZmBnEiUf/k64vj92vvKKC+S/kqiuM1sU41XstYf4tr0hAwWA1tOTz
+         H04A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693320803; x=1693925603;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9EA9BB4QNaOUVi29wtBC2+U4B+xg7qHBDtCTKmBdpKg=;
+        b=cnpkg0nvdjKg/glVtFTmaumGm8La6vJTzf4ZtSvbT8+/EiJoE//oWCFZPmnZosRb2r
+         1+I+f1n+Y691TTDOjPqvhQWpNXnOI8mLdBlKGBuKLmsFG4Xu6uX+YyH8/G3HUKoPl22Q
+         m9wFKCFnFYq+CIOUlEi5HaTDJlOQbhTumRuDyTL0QxV7MVmPeJUSkhlYR9zWXuEndh0t
+         bRCHeNBkWTY7Cf75gP3LU1zTsp2XOodDfFJeUYvIgOAWnI0agP3FkIos6CndGaJie7i9
+         /GUKvrLqeXtXm2WOQoEM5l9bq/Umm9JpIQm0kwkj/iVi6NqIhWxdv1scnpjdHY5QnTOs
+         1VDw==
+X-Gm-Message-State: AOJu0Yyb0FyxcL1DYOEpcyPCBRdTaYB9vxQBnC6wn1+4aQUwdKNlLte0
+        GJXiH8/67ph91spCNGUbp9o=
+X-Google-Smtp-Source: AGHT+IG6ZDLvcuRS3mG1tSB6mplHq/KfN1zFgA/5DXm2br+XhwKFkekTInD/z9pEyhrgzoG9Xw6ttg==
+X-Received: by 2002:a05:6a20:5518:b0:13a:6413:9004 with SMTP id ko24-20020a056a20551800b0013a64139004mr24871187pzb.43.1693320802837;
+        Tue, 29 Aug 2023 07:53:22 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t21-20020aa79395000000b0068be3489b0dsm8886647pfe.172.2023.08.29.07.53.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 07:53:22 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Aug 2023 07:53:21 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        andriy.shevchenko@intel.com, artem.bityutskiy@linux.intel.com,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, lenb@kernel.org, jgross@suse.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] ACPI: processor: Move MWAIT quirk out of acpi_processor.c
+Message-ID: <24860c20-0e08-46d6-8016-5cbbb97b4550@roeck-us.net>
+References: <c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net>
+ <CAJZ5v0jASjc_RYp-SN5KMGJXDv8xbMOqJscLF3wG8rdE2_KJGw@mail.gmail.com>
+ <3fd2e62d-0aa9-1098-3eb3-ed45460a3580@intel.com>
+ <CAJZ5v0hnNK4O_HyinvTp01YxXR7V4vzpMhf85yW9M2=52-O2Fg@mail.gmail.com>
+ <60bea4fb-9044-76f1-fe2b-ddc35c526d5c@intel.com>
+ <CAJZ5v0hkNFof_Wy0FmPAizuOT9WPEEPW+R27UCgERhS1ZKjOBw@mail.gmail.com>
+ <6a50e2c7-a73b-ff02-3e36-e7477ea7dc4d@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230828153805.78421-1-biju.das.jz@bp.renesas.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6a50e2c7-a73b-ff02-3e36-e7477ea7dc4d@intel.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 04:38:05PM +0100, Biju Das wrote:
-> Simplify probe() by replacing device_get_match_data() and ID lookup for
-> retrieving match data by i2c_get_match_data().
+On Tue, Aug 29, 2023 at 04:38:33PM +0200, Wilczynski, Michal wrote:
+> 
+[ ... ]
+> For the fix:
+> Acked-by: Michal Wilczynski <michal.wilczynski@intel.com>
+> 
 
-...
+Or just drop it. From Ard Biesheuvel's e-mail sent to 0-day:
 
-> While at it, drop leading commas from OF table.
+    > Hello all,
+    >
+    > The Linux community is currently in the process of deprecating the
+    > Itanium IA-64 architecture, which no longer has a maintainer or any
+    > actual users.
+    >
+    > We aim to remove it entirely from the Linux tree before the end of the
+    > year, but one of the first steps is to stop build testing it - there
+    > is really no point any longer in spending any cycles on this, and it
+    > is definitely undesirable to inform developers by email if their
+    > changes result in any build issues on IA-64.
+    >
+    > So please remove IA64 from the set of architectures that are build
+    > tested by LKP.
 
-Sure?
+This is from the 0-day commit log disabling ia64 build tests. I have now
+disabled ia64 in my build tests as well.
 
-...
+Sorry for the noise.
 
->  static const struct of_device_id max77541_of_id[] = {
-> -	{
-> -		.compatible = "adi,max77540",
-> -		.data = (void *)MAX77540,
-> -	},
-> -	{
-> -		.compatible = "adi,max77541",
-> -		.data = (void *)MAX77541,
-> -	},
-> +	{ .compatible = "adi,max77540", .data = (void *)MAX77540 },
-> +	{ .compatible = "adi,max77541", .data = (void *)MAX77541 },
->  	{ }
->  };
-
-Seems to me an unneeded churn as nothing has been changed here
-(except commas and indentation). If any, it should be a separate
-change.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Guenter
