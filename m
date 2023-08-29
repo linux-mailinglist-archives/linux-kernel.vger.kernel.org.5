@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 347DA78C15F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2205678C170
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234851AbjH2JZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
+        id S233665AbjH2J2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbjH2JYc (ORCPT
+        with ESMTP id S234915AbjH2J2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:24:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FC412F;
-        Tue, 29 Aug 2023 02:24:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F1FF465293;
-        Tue, 29 Aug 2023 09:24:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0108DC433C8;
-        Tue, 29 Aug 2023 09:24:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693301067;
-        bh=kusXvvvdY8OjEpV+HMrNfp/7EGwgt1unwYM4Lul4vKU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gPQ9DdWzjNt5oSvZl1nQFaQSAtJr1zH1zoI0Lj/fEsd3/d0rdfh+ZZ2fD5K98eruE
-         O+ZPACzU9tblMQ8o9V88rs0lJo4yBA97ylSFoX82syWxQtiPDbRQO9n3QZoaK8DhxL
-         KGDsq0bh3xMy5LD6g/xIBSM3zEAmo7r+4nT45Io8akfYKFxHGM8Qt+QXkUPZsaB/rf
-         XxzW6NG8Mp9JhXAfR3vhCe/OJqRyFCaaAlxAPlch70nhbqkTmcrogUKwWw+xkHYMj/
-         gK/N6DQmEDXtHHMDaUCX/LZn/6JnWiu8rC93vp8ahuiMjqOFyEU1qhKbZhiX/Q4WQg
-         j7KBJO939+zKQ==
-Date:   Tue, 29 Aug 2023 11:24:24 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Z qiang <qiang.zhang1211@gmail.com>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in
- rcu_nocb_toggle()
-Message-ID: <ZO25SDat3cd6opQ7@lothringen>
-References: <ZOy6mfw5Yr7hsi3i@2a01cb09806c67d6fe4a366cc09da8f8.ipv6.abo.wanadoo.fr>
- <16F11103-75C4-4DCE-8272-D619ECAA96BD@joelfernandes.org>
+        Tue, 29 Aug 2023 05:28:35 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3FE7CE56;
+        Tue, 29 Aug 2023 02:28:10 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 37T9QJ8E013415;
+        Tue, 29 Aug 2023 11:26:19 +0200
+Date:   Tue, 29 Aug 2023 11:26:19 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Shuah Khan <shuah@kernel.org>, Zhangjin Wu <falcon@tinylab.org>,
+        Yuan Tan <tanyuan@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/2] tools/nolibc: add stdarg.h header
+Message-ID: <ZO25u3crGixkGKWe@1wt.eu>
+References: <20230827-nolibc-nostdinc-v1-0-995d1811f1f3@weissschuh.net>
+ <20230827-nolibc-nostdinc-v1-1-995d1811f1f3@weissschuh.net>
+ <ZO2QC/fw6LKdtLSb@1wt.eu>
+ <2b6c62f1-c1f1-4f2c-ba0c-981e066f4268@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <16F11103-75C4-4DCE-8272-D619ECAA96BD@joelfernandes.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2b6c62f1-c1f1-4f2c-ba0c-981e066f4268@t-8ch.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 05:51:09PM -0400, Joel Fernandes wrote:
-> I think the issue is the loop later in the function does
-> not try to toggle cpus that came online too late.
+On Tue, Aug 29, 2023 at 11:14:09AM +0200, Thomas Weißschuh wrote:
+> Hi Willy!
 > 
-> So it does not test offloading on all CPUs just because max got updated too
-> late.
-
-Right, and therefore for_each_possible_cpu() or for_each_present_cpu()
-should be fine to iterate since it's ok to try to toggle an offline CPU.
-
-> 
-> One fix could be to periodically check in the loop if a new cpu at maxcpu + 1
-> ever got onlined. If it did, update the maxcpu.
-
-Is it worth the complication though?
-
-Thanks.
-
-> 
-> Thanks.
-> 
-> 
+> On 2023-08-29 08:28:27+0200, Willy Tarreau wrote:
+> > On Sun, Aug 27, 2023 at 10:00:15AM +0200, Thomas Weißschuh wrote:
+> > > This allows nolic to work with `-nostdinc` avoiding any reliance on
+> > > system headers.
+> > > 
+> > > The implementation has been lifted from musl libc 1.2.4.
+> > > There is already an implementation of stdarg.h in include/linux/stdarg.h
+> > > but that is GPL licensed and therefore not suitable for nolibc.
 > > 
-> > Thanks.
+> > I'm a bit confused because for me, stdarg was normally provided by the
+> > compiler, but I could be mistaken. It's just that it reminds me not so
+> > old memories. Therefore maybe we just need to include or define
+> > "something" to use it.
+> 
+> It is indeed provided by the compiler.
+
+OK. But then, doesn't it mean that if we don't provide our stdarg.h,
+the compilers' will be used ? I'm asking because we're already using
+va_list and va_args, for example in vfprintf() in stdio.h, which
+precisely includes <stdarg.h> so it must indeed come from the compiler.
+
+> I could not find anybody doing this differently.
+> Using builtins seems to me to be the normal way to expose compiler
+> implementation specifics.
+
+OK but it's already what the compiler does itself in its own stdarg that
+is provided. That's why I don't understand what specific case we're trying
+to cover here, I feel like we're providing an alternate stdarg in case the
+compiler doesn't provide one except that I've not seen a compiler not
+provide it (even tcc comes with it), it's like stddef.
+
+Thanks,
+Willy
