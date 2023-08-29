@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEF278C4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D469078C4A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235826AbjH2M6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 08:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
+        id S235808AbjH2M6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 08:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235702AbjH2M6K (ORCPT
+        with ESMTP id S235704AbjH2M6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:58:10 -0400
+        Tue, 29 Aug 2023 08:58:11 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ACB9BF
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:58:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568741B1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693313887; x=1724849887;
+  t=1693313888; x=1724849888;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=THg7GnXcWD5Z0mLbTgh+8xaYdma4pHunCisGc6fKDGM=;
-  b=Do23nOYKjR3aQlvST9cSbkNDw7dbKOvqGsSo9gGiINACS17BKni4N8/D
-   2iQjFrGYhTDtVYvmmXbxFdSaBkVuwFPpTvqIgAGFjlNsPzkxPVDJ7Eadl
-   OUwE+WY5OcL9ueUfPG4jEjwWhDVQwpc9Yf0Oxe7q8SACBRMi1wSlkGE+9
-   r13/1CMlfk0rQVS8WWjHYEu17Uj41ygq2bL6ky12eRp99+L15KMUL9eO7
-   fKVMmIhAOAcGp3tqtcXbPgsjwSBdV9t04lC5RT8S4Vmxmt6QbhUivgKOD
-   DY5ZPVOhWfDGhpfnS35NNNYilGSvgnjY0UEpGSLS397vP46vqJC1v416i
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="406354924"
+  bh=B19Z5mDZjHZJzulH+0lq1kciqImUSK7h19ku8N3Ofx4=;
+  b=EeM7MqkiYEoSwE/PswYlkXO020QXtCOCzxE3poa2B4edhgIui3BvCmXt
+   IPGErFSJmEBT+sEVUeUn8mE8TSq/IU8J5K8PiM7dxf/sY0FqISy+fKw4o
+   qkqsH6RAUh0DBWjXK4wQ/tMPoZlV6ijKbb2JE1/f/CzM8oLRhz9E9OOWb
+   s5I03z/AI87Ybape8wI1RJaOnHNNP9oRxaLjTWDeChfnsjgp2juzMQZn4
+   HcrswdnJA/+cj9KLQtM55X9CCvVWxZYWsLcl3xtHy+yJJTlHFw4rpOJu4
+   2u2gvUdiE0TPfc0d1BOYNBIbTMmYW11p6GGojtTlp7FjmnhFJre+Dlrkv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="406354928"
 X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="406354924"
+   d="scan'208";a="406354928"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 05:58:07 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 05:58:08 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="853272040"
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="853272045"
 X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="853272040"
+   d="scan'208";a="853272045"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Aug 2023 05:58:06 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 29 Aug 2023 05:58:07 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com,
         linux-kernel@vger.kernel.org
 Cc:     dapeng1.mi@linux.intel.com, zhenyuw@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH 5/6] perf/x86/intel: Cleanup the hybrid CPU type
-Date:   Tue, 29 Aug 2023 05:58:05 -0700
-Message-Id: <20230829125806.3016082-6-kan.liang@linux.intel.com>
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 6/6] perf/x86/intel: Add common intel_pmu_init_hybrid
+Date:   Tue, 29 Aug 2023 05:58:06 -0700
+Message-Id: <20230829125806.3016082-7-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230829125806.3016082-1-kan.liang@linux.intel.com>
 References: <20230829125806.3016082-1-kan.liang@linux.intel.com>
@@ -65,307 +64,256 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-There is a fairly long list of grievances about the current code. The
-main beefs:
+The current hybrid initialization codes aren't well organized and are
+hard to read.
 
-   1. hybrid_big_small assumes that the *HARDWARE* (CPUID) provided
-      core types are a bitmap. They are not. If Intel happened to
-      make a core type of 0xff, hilarity would ensue.
-   2. adl_get_hybrid_cpu_type() utterly inscrutable.  There are
-      precisely zero comments and zero changelog about what it is
-      attempting to do.
+Factor out intel_pmu_init_hybrid() to do a common setup for each
+hybrid PMU. The PMU-specific capability will be updated later via either
+hard code (ADL) or CPUID hybrid enumeration (MTL).
 
-According to Kan, the adl_get_hybrid_cpu_type() is there because some
-Alder Lake (ADL) CPUs can do some silly things. Some ADL models are
-*supposed* to be hybrid CPUs with big and little cores, but there are
-some SKUs that only have big cores. CPUID(0x1a) on those CPUs does
-not say that the CPUs are big cores. It apparently just returns 0x0.
-It confuses perf because it expects to see either 0x40 (Core) or
-0x20 (Atom).
+Splitting the ADL and MTL initialization codes, since they have
+different uarches. The hard code PMU capabilities are not required for
+MTL either. They can be enumerated by the new leaf 0x23 and
+IA32_PERF_CAPABILITIES MSR.
 
-The perf workaround for this is to watch for a CPU core saying it is
-type 0x0. If that happens on an Alder Lake, it calls
-x86_pmu.get_hybrid_cpu_type() and just assumes that the core is a
-Core (0x40) CPU.
+The hybrid enumeration of the IA32_PERF_CAPABILITIES MSR is broken on
+MTL. Using the default value.
 
-To fix up the mess, separate out the CPU types and the 'pmu' types.
-This allows 'hybrid_pmu_type' bitmaps without worrying that some
-future CPU type will set multiple bits.
-
-Since the types are now separate, add a function to glue them back
-together again. Actual comment on the situation in the glue
-function (find_hybrid_pmu_for_cpu()).
-
-Also, give ->get_hybrid_cpu_type() a real return type and make it
-clear that it is overriding the *CPU* type, not the PMU type.
-
-Rename cpu_type to pmu_type in the struct x86_hybrid_pmu to reflect the
-change.
-
-Originally-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
 ---
- arch/x86/events/core.c       |  6 ++--
- arch/x86/events/intel/core.c | 69 ++++++++++++++++++++++++------------
- arch/x86/events/intel/ds.c   |  2 +-
- arch/x86/events/perf_event.h | 35 ++++++++++--------
- 4 files changed, 72 insertions(+), 40 deletions(-)
+ arch/x86/events/intel/core.c | 162 ++++++++++++++++++++++++-----------
+ 1 file changed, 111 insertions(+), 51 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 185f902e5f28..40ad1425ffa2 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1887,9 +1887,9 @@ ssize_t events_hybrid_sysfs_show(struct device *dev,
- 
- 	str = pmu_attr->event_str;
- 	for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
--		if (!(x86_pmu.hybrid_pmu[i].cpu_type & pmu_attr->pmu_type))
-+		if (!(x86_pmu.hybrid_pmu[i].pmu_type & pmu_attr->pmu_type))
- 			continue;
--		if (x86_pmu.hybrid_pmu[i].cpu_type & pmu->cpu_type) {
-+		if (x86_pmu.hybrid_pmu[i].pmu_type & pmu->pmu_type) {
- 			next_str = strchr(str, ';');
- 			if (next_str)
- 				return snprintf(page, next_str - str + 1, "%s", str);
-@@ -2169,7 +2169,7 @@ static int __init init_hw_perf_events(void)
- 			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_EXTENDED_HW_TYPE;
- 
- 			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
--						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
-+						(hybrid_pmu->pmu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
- 			if (err)
- 				break;
- 		}
 diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 3537b62a4f17..bfa0649c31f4 100644
+index bfa0649c31f4..89be504abca9 100644
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -3849,7 +3849,7 @@ static inline bool require_mem_loads_aux_event(struct perf_event *event)
- 		return false;
+@@ -4591,6 +4591,16 @@ static void intel_pmu_check_num_counters(int *num_counters,
+ 					 int *num_counters_fixed,
+ 					 u64 *intel_ctrl, u64 fixed_mask);
  
- 	if (is_hybrid())
--		return hybrid_pmu(event->pmu)->cpu_type == hybrid_big;
-+		return hybrid_pmu(event->pmu)->pmu_type == hybrid_big;
- 
- 	return true;
- }
-@@ -4334,9 +4334,9 @@ adl_get_event_constraints(struct cpu_hw_events *cpuc, int idx,
- {
- 	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
- 
--	if (pmu->cpu_type == hybrid_big)
-+	if (pmu->pmu_type == hybrid_big)
- 		return glc_get_event_constraints(cpuc, idx, event);
--	else if (pmu->cpu_type == hybrid_small)
-+	else if (pmu->pmu_type == hybrid_small)
- 		return tnt_get_event_constraints(cpuc, idx, event);
- 
- 	WARN_ON(1);
-@@ -4406,9 +4406,9 @@ mtl_get_event_constraints(struct cpu_hw_events *cpuc, int idx,
- {
- 	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
- 
--	if (pmu->cpu_type == hybrid_big)
-+	if (pmu->pmu_type == hybrid_big)
- 		return rwc_get_event_constraints(cpuc, idx, event);
--	if (pmu->cpu_type == hybrid_small)
-+	if (pmu->pmu_type == hybrid_small)
- 		return cmt_get_event_constraints(cpuc, idx, event);
- 
- 	WARN_ON(1);
-@@ -4419,18 +4419,18 @@ static int adl_hw_config(struct perf_event *event)
- {
- 	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
- 
--	if (pmu->cpu_type == hybrid_big)
-+	if (pmu->pmu_type == hybrid_big)
- 		return hsw_hw_config(event);
--	else if (pmu->cpu_type == hybrid_small)
-+	else if (pmu->pmu_type == hybrid_small)
- 		return intel_pmu_hw_config(event);
- 
- 	WARN_ON(1);
- 	return -EOPNOTSUPP;
- }
- 
--static u8 adl_get_hybrid_cpu_type(void)
-+static enum hybrid_cpu_type adl_get_hybrid_cpu_type(void)
- {
--	return hybrid_big;
-+	return HYBRID_INTEL_CORE;
- }
- 
- /*
-@@ -4606,22 +4606,47 @@ static void update_pmu_cap(struct x86_hybrid_pmu *pmu)
- 	}
- }
- 
--static bool init_hybrid_pmu(int cpu)
-+static struct x86_hybrid_pmu *find_hybrid_pmu_for_cpu(void)
- {
--	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
- 	u8 cpu_type = get_this_hybrid_cpu_type();
--	struct x86_hybrid_pmu *pmu = NULL;
- 	int i;
- 
--	if (!cpu_type && x86_pmu.get_hybrid_cpu_type)
--		cpu_type = x86_pmu.get_hybrid_cpu_type();
-+	/*
-+	 * This is running on a CPU model that is known to have hybrid
-+	 * configurations. But the CPU told us it is not hybrid, shame
-+	 * on it. There should be a fixup function provided for these
-+	 * troublesome cpus (->get_hybrid_cpu_type).
-+	 */
-+	if (cpu_type == HYBRID_INTEL_NONE) {
-+		if (x86_pmu.get_hybrid_cpu_type)
-+			cpu_type = x86_pmu.get_hybrid_cpu_type();
-+		else
-+			return NULL;
-+	}
- 
-+	/*
-+	 * This essentially just maps between the 'hybrid_cpu_type'
-+	 * and 'hybrid_pmu_type' enums:
-+	 */
- 	for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
--		if (x86_pmu.hybrid_pmu[i].cpu_type == cpu_type) {
--			pmu = &x86_pmu.hybrid_pmu[i];
--			break;
--		}
-+		enum hybrid_pmu_type pmu_type = x86_pmu.hybrid_pmu[i].pmu_type;
++static inline bool intel_pmu_broken_perf_cap(void)
++{
++	/* The Perf Metric (Bit 15) is always cleared */
++	if ((boot_cpu_data.x86_model == INTEL_FAM6_METEORLAKE) ||
++	    (boot_cpu_data.x86_model == INTEL_FAM6_METEORLAKE_L))
++		return true;
 +
-+		if (cpu_type == HYBRID_INTEL_CORE &&
-+		    pmu_type == hybrid_big)
-+			return &x86_pmu.hybrid_pmu[i];
-+		if (cpu_type == HYBRID_INTEL_ATOM &&
-+		    pmu_type == hybrid_small)
-+			return &x86_pmu.hybrid_pmu[i];
- 	}
-+
-+	return NULL;
++	return false;
 +}
 +
-+static bool init_hybrid_pmu(int cpu)
-+{
-+	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
-+	struct x86_hybrid_pmu *pmu = find_hybrid_pmu_for_cpu();
+ static void update_pmu_cap(struct x86_hybrid_pmu *pmu)
+ {
+ 	unsigned int sub_bitmaps = cpuid_eax(ARCH_PERFMON_EXT_LEAF);
+@@ -4603,7 +4613,27 @@ static void update_pmu_cap(struct x86_hybrid_pmu *pmu)
+ 		pmu->num_counters_fixed = fls(ebx);
+ 		intel_pmu_check_num_counters(&pmu->num_counters, &pmu->num_counters_fixed,
+ 					     &pmu->intel_ctrl, ebx);
++		pmu->max_pebs_events = min_t(unsigned, MAX_PEBS_EVENTS, pmu->num_counters);
++		pmu->unconstrained = (struct event_constraint)
++				     __EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
++							0, pmu->num_counters, 0, 0);
+ 	}
 +
- 	if (WARN_ON_ONCE(!pmu || (pmu->pmu.type == -1))) {
- 		cpuc->pmu = NULL;
- 		return false;
-@@ -5672,7 +5697,7 @@ static bool is_attr_for_this_pmu(struct kobject *kobj, struct attribute *attr)
- 	struct perf_pmu_events_hybrid_attr *pmu_attr =
- 		container_of(attr, struct perf_pmu_events_hybrid_attr, attr.attr);
- 
--	return pmu->cpu_type & pmu_attr->pmu_type;
-+	return pmu->pmu_type & pmu_attr->pmu_type;
++
++	if (!intel_pmu_broken_perf_cap()) {
++		/* Perf Metric (Bit 15) and PEBS via PT (Bit 16) are hybrid enumeration */
++		rdmsrl(MSR_IA32_PERF_CAPABILITIES, pmu->intel_cap.capabilities);
++	}
++
++	if (pmu->intel_cap.perf_metrics)
++		pmu->intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
++	else
++		pmu->intel_ctrl &= ~(1ULL << GLOBAL_CTRL_EN_PERF_METRICS);
++
++	if (pmu->intel_cap.pebs_output_pt_available)
++		pmu->pmu.capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
++	else
++		pmu->pmu.capabilities |= ~PERF_PMU_CAP_AUX_OUTPUT;
  }
  
- static umode_t hybrid_events_is_visible(struct kobject *kobj,
-@@ -5709,7 +5734,7 @@ static umode_t hybrid_format_is_visible(struct kobject *kobj,
- 		container_of(attr, struct perf_pmu_format_hybrid_attr, attr.attr);
- 	int cpu = hybrid_find_supported_cpu(pmu);
- 
--	return (cpu >= 0) && (pmu->cpu_type & pmu_attr->pmu_type) ? attr->mode : 0;
-+	return (cpu >= 0) && (pmu->pmu_type & pmu_attr->pmu_type) ? attr->mode : 0;
+ static struct x86_hybrid_pmu *find_hybrid_pmu_for_cpu(void)
+@@ -5908,10 +5938,52 @@ static void intel_pmu_check_hybrid_pmus(u64 fixed_mask)
+ 	}
  }
  
- static struct attribute_group hybrid_group_events_td  = {
-@@ -6600,7 +6625,7 @@ __init int intel_pmu_init(void)
+-static __always_inline bool is_mtl(u8 x86_model)
++static const struct { enum hybrid_pmu_type id; char *name; } intel_hybrid_pmu_type_map[] __initconst = {
++	{ hybrid_small, "cpu_atom" },
++	{ hybrid_big, "cpu_core" },
++};
++
++static __always_inline int intel_pmu_init_hybrid(enum hybrid_pmu_type pmus)
+ {
+-	return (x86_model == INTEL_FAM6_METEORLAKE) ||
+-	       (x86_model == INTEL_FAM6_METEORLAKE_L);
++	unsigned long pmus_mask = pmus;
++	struct x86_hybrid_pmu *pmu;
++	int idx = 0, bit;
++
++	x86_pmu.num_hybrid_pmus = hweight_long(pmus_mask);
++	x86_pmu.hybrid_pmu = kcalloc(x86_pmu.num_hybrid_pmus,
++				     sizeof(struct x86_hybrid_pmu),
++				     GFP_KERNEL);
++	if (!x86_pmu.hybrid_pmu)
++		return -ENOMEM;
++
++	static_branch_enable(&perf_is_hybrid);
++	x86_pmu.filter = intel_pmu_filter;
++
++	for_each_set_bit(bit, &pmus_mask, ARRAY_SIZE(intel_hybrid_pmu_type_map)) {
++		pmu = &x86_pmu.hybrid_pmu[idx++];
++		pmu->pmu_type = intel_hybrid_pmu_type_map[bit].id;
++		pmu->name = intel_hybrid_pmu_type_map[bit].name;
++
++		pmu->num_counters = x86_pmu.num_counters;
++		pmu->num_counters_fixed = x86_pmu.num_counters_fixed;
++		pmu->max_pebs_events = min_t(unsigned, MAX_PEBS_EVENTS, pmu->num_counters);
++		pmu->unconstrained = (struct event_constraint)
++				     __EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
++							0, pmu->num_counters, 0, 0);
++
++		pmu->intel_cap.capabilities = x86_pmu.intel_cap.capabilities;
++		if (pmu->pmu_type & hybrid_small) {
++			pmu->intel_cap.perf_metrics = 0;
++			pmu->intel_cap.pebs_output_pt_available = 1;
++			pmu->mid_ack = true;
++		} else if (pmu->pmu_type & hybrid_big) {
++			pmu->intel_cap.perf_metrics = 1;
++			pmu->intel_cap.pebs_output_pt_available = 0;
++			pmu->late_ack = true;
++		}
++	}
++
++	return 0;
+ }
+ 
+ static __always_inline void intel_pmu_init_glc(struct pmu *pmu)
+@@ -6595,23 +6667,14 @@ __init int intel_pmu_init(void)
+ 	case INTEL_FAM6_RAPTORLAKE:
+ 	case INTEL_FAM6_RAPTORLAKE_P:
+ 	case INTEL_FAM6_RAPTORLAKE_S:
+-	case INTEL_FAM6_METEORLAKE:
+-	case INTEL_FAM6_METEORLAKE_L:
+ 		/*
+ 		 * Alder Lake has 2 types of CPU, core and atom.
+ 		 *
+ 		 * Initialize the common PerfMon capabilities here.
+ 		 */
+-		x86_pmu.hybrid_pmu = kcalloc(X86_HYBRID_NUM_PMUS,
+-					     sizeof(struct x86_hybrid_pmu),
+-					     GFP_KERNEL);
+-		if (!x86_pmu.hybrid_pmu)
+-			return -ENOMEM;
+-		static_branch_enable(&perf_is_hybrid);
+-		x86_pmu.num_hybrid_pmus = X86_HYBRID_NUM_PMUS;
++		intel_pmu_init_hybrid(hybrid_big_small);
+ 
+ 		x86_pmu.pebs_latency_data = adl_latency_data_small;
+-		x86_pmu.filter = intel_pmu_filter;
+ 		x86_pmu.get_event_constraints = adl_get_event_constraints;
+ 		x86_pmu.hw_config = adl_hw_config;
+ 		x86_pmu.get_hybrid_cpu_type = adl_get_hybrid_cpu_type;
+@@ -6624,10 +6687,7 @@ __init int intel_pmu_init(void)
+ 
  		/* Initialize big core specific PerfMon capabilities.*/
  		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
- 		pmu->name = "cpu_core";
--		pmu->cpu_type = hybrid_big;
-+		pmu->pmu_type = hybrid_big;
+-		pmu->name = "cpu_core";
+-		pmu->pmu_type = hybrid_big;
  		intel_pmu_init_glc(&pmu->pmu);
- 		pmu->late_ack = true;
+-		pmu->late_ack = true;
  		if (cpu_feature_enabled(X86_FEATURE_HYBRID_CPU)) {
-@@ -6636,7 +6661,7 @@ __init int intel_pmu_init(void)
+ 			pmu->num_counters = x86_pmu.num_counters + 2;
+ 			pmu->num_counters_fixed = x86_pmu.num_counters_fixed + 1;
+@@ -6652,45 +6712,45 @@ __init int intel_pmu_init(void)
+ 		pmu->unconstrained = (struct event_constraint)
+ 					__EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
+ 							   0, pmu->num_counters, 0, 0);
+-		pmu->intel_cap.capabilities = x86_pmu.intel_cap.capabilities;
+-		pmu->intel_cap.perf_metrics = 1;
+-		pmu->intel_cap.pebs_output_pt_available = 0;
+-
+ 		pmu->extra_regs = intel_glc_extra_regs;
+ 
  		/* Initialize Atom core specific PerfMon capabilities.*/
  		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
- 		pmu->name = "cpu_atom";
--		pmu->cpu_type = hybrid_small;
-+		pmu->pmu_type = hybrid_small;
+-		pmu->name = "cpu_atom";
+-		pmu->pmu_type = hybrid_small;
  		intel_pmu_init_grt(&pmu->pmu);
- 		pmu->mid_ack = true;
- 		pmu->num_counters = x86_pmu.num_counters;
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 74642469ca7b..bf97ab904d40 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -261,7 +261,7 @@ static u64 __adl_latency_data_small(struct perf_event *event, u64 status,
- {
- 	u64 val;
- 
--	WARN_ON_ONCE(hybrid_pmu(event->pmu)->cpu_type == hybrid_big);
-+	WARN_ON_ONCE(hybrid_pmu(event->pmu)->pmu_type == hybrid_big);
- 
- 	dse &= PERF_PEBS_DATA_SOURCE_MASK;
- 	val = hybrid_var(event->pmu, pebs_data_source)[dse];
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 96a427fc55cf..53dd5d495ba6 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -652,10 +652,29 @@ enum {
- #define PERF_PEBS_DATA_SOURCE_MAX	0x10
- #define PERF_PEBS_DATA_SOURCE_MASK	(PERF_PEBS_DATA_SOURCE_MAX - 1)
- 
-+enum hybrid_cpu_type {
-+	HYBRID_INTEL_NONE,
-+	HYBRID_INTEL_ATOM	= 0x20,
-+	HYBRID_INTEL_CORE	= 0x40,
-+};
-+
-+enum hybrid_pmu_type {
-+	not_hybrid,
-+	hybrid_small		= BIT(0),
-+	hybrid_big		= BIT(1),
-+
-+	hybrid_big_small	= hybrid_big | hybrid_small, /* only used for matching */
-+};
-+
-+#define X86_HYBRID_PMU_ATOM_IDX		0
-+#define X86_HYBRID_PMU_CORE_IDX		1
-+
-+#define X86_HYBRID_NUM_PMUS		2
-+
- struct x86_hybrid_pmu {
- 	struct pmu			pmu;
- 	const char			*name;
--	u8				cpu_type;
-+	enum hybrid_pmu_type		pmu_type;
- 	cpumask_t			supported_cpus;
- 	union perf_capabilities		intel_cap;
- 	u64				intel_ctrl;
-@@ -721,18 +740,6 @@ extern struct static_key_false perf_is_hybrid;
- 	__Fp;						\
- })
- 
--enum hybrid_pmu_type {
--	hybrid_big		= 0x40,
--	hybrid_small		= 0x20,
+-		pmu->mid_ack = true;
+-		pmu->num_counters = x86_pmu.num_counters;
+-		pmu->num_counters_fixed = x86_pmu.num_counters_fixed;
+-		pmu->max_pebs_events = x86_pmu.max_pebs_events;
+-		pmu->unconstrained = (struct event_constraint)
+-					__EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
+-							   0, pmu->num_counters, 0, 0);
+-		pmu->intel_cap.capabilities = x86_pmu.intel_cap.capabilities;
+-		pmu->intel_cap.perf_metrics = 0;
+-		pmu->intel_cap.pebs_output_pt_available = 1;
 -
--	hybrid_big_small	= hybrid_big | hybrid_small,
--};
--
--#define X86_HYBRID_PMU_ATOM_IDX		0
--#define X86_HYBRID_PMU_CORE_IDX		1
--
--#define X86_HYBRID_NUM_PMUS		2
--
- /*
-  * struct x86_pmu - generic x86 pmu
-  */
-@@ -940,7 +947,7 @@ struct x86_pmu {
- 	 */
- 	int				num_hybrid_pmus;
- 	struct x86_hybrid_pmu		*hybrid_pmu;
--	u8 (*get_hybrid_cpu_type)	(void);
-+	enum hybrid_cpu_type (*get_hybrid_cpu_type)	(void);
- };
+-		if (is_mtl(boot_cpu_data.x86_model)) {
+-			x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX].extra_regs = intel_rwc_extra_regs;
+-			x86_pmu.pebs_latency_data = mtl_latency_data_small;
+-			extra_attr = boot_cpu_has(X86_FEATURE_RTM) ?
+-				mtl_hybrid_extra_attr_rtm : mtl_hybrid_extra_attr;
+-			mem_attr = mtl_hybrid_mem_attrs;
+-			intel_pmu_pebs_data_source_mtl();
+-			x86_pmu.get_event_constraints = mtl_get_event_constraints;
+-			pmu->extra_regs = intel_cmt_extra_regs;
+-			pr_cont("Meteorlake Hybrid events, ");
+-			name = "meteorlake_hybrid";
+-		} else {
+-			x86_pmu.flags |= PMU_FL_MEM_LOADS_AUX;
+-			intel_pmu_pebs_data_source_adl();
+-			pr_cont("Alderlake Hybrid events, ");
+-			name = "alderlake_hybrid";
+-		}
++
++		x86_pmu.flags |= PMU_FL_MEM_LOADS_AUX;
++		intel_pmu_pebs_data_source_adl();
++		pr_cont("Alderlake Hybrid events, ");
++		name = "alderlake_hybrid";
++		break;
++
++	case INTEL_FAM6_METEORLAKE:
++	case INTEL_FAM6_METEORLAKE_L:
++		intel_pmu_init_hybrid(hybrid_big_small);
++
++		x86_pmu.pebs_latency_data = mtl_latency_data_small;
++		x86_pmu.get_event_constraints = mtl_get_event_constraints;
++		x86_pmu.hw_config = adl_hw_config;
++
++		td_attr = adl_hybrid_events_attrs;
++		mem_attr = mtl_hybrid_mem_attrs;
++		tsx_attr = adl_hybrid_tsx_attrs;
++		extra_attr = boot_cpu_has(X86_FEATURE_RTM) ?
++			mtl_hybrid_extra_attr_rtm : mtl_hybrid_extra_attr;
++
++		/* Initialize big core specific PerfMon capabilities.*/
++		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
++		intel_pmu_init_glc(&pmu->pmu);
++		pmu->extra_regs = intel_rwc_extra_regs;
++
++		/* Initialize Atom core specific PerfMon capabilities.*/
++		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
++		intel_pmu_init_grt(&pmu->pmu);
++		pmu->extra_regs = intel_cmt_extra_regs;
++
++		intel_pmu_pebs_data_source_mtl();
++		pr_cont("Meteorlake Hybrid events, ");
++		name = "meteorlake_hybrid";
+ 		break;
  
- struct x86_perf_task_context_opt {
+ 	default:
+@@ -6802,7 +6862,7 @@ __init int intel_pmu_init(void)
+ 	if (!is_hybrid() && x86_pmu.intel_cap.perf_metrics)
+ 		x86_pmu.intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
+ 
+-	if (is_hybrid())
++	if (is_hybrid() && !boot_cpu_has(X86_FEATURE_ARCH_PERFMON_EXT))
+ 		intel_pmu_check_hybrid_pmus((u64)fixed_mask);
+ 
+ 	if (x86_pmu.intel_cap.pebs_timing_info)
 -- 
 2.35.1
 
