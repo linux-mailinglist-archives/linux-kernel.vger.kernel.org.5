@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B64978BCE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CE078BCE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbjH2ChF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
+        id S235429AbjH2Cju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbjH2Cgd (ORCPT
+        with ESMTP id S231515AbjH2CjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:36:33 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16ED139
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:36:30 -0700 (PDT)
-Received: from [192.168.2.140] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2E3B966071DC;
-        Tue, 29 Aug 2023 03:36:28 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693276589;
-        bh=fO2UTLZenz76bcv930LCK2ALVC/MUnGbZGTSyAhqLbs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EhAFW/Q/uNzOaehV2hG3RKB8wqITechgFU6vjtVMO9Cg2TJJXRGyACdowNlnhohLn
-         nB7nAvfbT2nGVGEfn2w6dUuMxbriKC7sOLCY4xwLnlo/9B4zyN+3vHVtE877JjsjeV
-         oyqrasJ87bX9u5Yh4gnosdTv6OucniZs8hpi5VawDhwgP7RHiqgLPzk7K4yGVyJyn8
-         vbd5tAKRfM6MlOjECpiPyIgFpvqVVmaKNX9o625sNcgMkMzqRQl/FAiBr9vOt+CtnI
-         8TXlYixt4KnjlCLz9X3IN+taidCPSppNg9JtCHxoCStnUtjrCKbVR/ocqobfPsFw57
-         2CRfC8Lo8Zqyw==
-Message-ID: <a0119c05-6222-cc3b-1328-16224898b8ee@collabora.com>
-Date:   Tue, 29 Aug 2023 05:36:25 +0300
+        Mon, 28 Aug 2023 22:39:17 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCDACA
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:39:15 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6bca3588edbso2657809a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693276754; x=1693881554;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zQaddOzDcrvd3bgaH++xIJwU6LMDlx9WVttxzuSP50E=;
+        b=QITltsVgAwGefkE1S0ZnHy7ggfAlrUIChuBnk4nTSktC7hLP0Ml+wTqYxG2fNZluZD
+         wjuKFSXGVEZuhwn0DX89xFVVldpkbTL4GOqJdtSLSK6ApIxqWdkNfKIgfZqZk9XkIaAI
+         6j3oP5BBCmo6H/kvTiPth6TCcgk1cmdqdH0vI71CCgpJwlnbJQqdI8R1n+jNK44OOZGu
+         QR+bWmSIYY0YB+fjjodDU5hOzhNcwBkY3uiDa1mRqNzISCpNA/kFUWnJZCUs3bPGLuMy
+         ePJPpIFFScMn56YINmC38PCwkvDm7qVNmB0fFH7ge24RjNlGw4X9JuWu+lEYCAdkl0LY
+         ZuGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693276754; x=1693881554;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zQaddOzDcrvd3bgaH++xIJwU6LMDlx9WVttxzuSP50E=;
+        b=Lb1MVbco7LHgSqEP5p0ixbMqmVMx/dmd6MZCAp4V7chaku4SrKyBwuVmQP2cHXSMTD
+         fXEnnWpkb371+dgI8hCPT+XVeJS5KDuFh5391ZAIeKYZNgWv/4Pg0Q/bh7V9vjX5EtTw
+         sek3qUIfIek1J8rOiKv9H0K2XMTXI4pmGBKrDRXKBgcKTIkop3QBydsO+vJe5x2FOoq0
+         c9XvVZwYSdbh/TLPk6qFbeNc7tAhuQzB+yPzjzEfcQP4xhQ2V1Y+6zAJvBGuu2IBQlYW
+         OZkgnL0XF1ePY2P45qGcRrSTvGCgcyrYclEqNaypuBxVTIlE9eRsIWmDkyo0MO4bKY7/
+         XD9Q==
+X-Gm-Message-State: AOJu0Yx2XhcvHc0pdOdQB8iDBJpMsXDy32IJpvxL/2SKdsl0uHvF64iN
+        79DTpI+tQRK/cbsj+hZL8Y58RG/PyyA=
+X-Google-Smtp-Source: AGHT+IFCUwPNy9SXqrYZTK9sNz60Y+drax8t37iR/Ssg0OxBqQzwoOvKmcIxaLOjX6sc3RMnIBGwrA==
+X-Received: by 2002:a05:6830:1188:b0:6b9:a9a8:7807 with SMTP id u8-20020a056830118800b006b9a9a87807mr14635077otq.23.1693276754045;
+        Mon, 28 Aug 2023 19:39:14 -0700 (PDT)
+Received: from localhost ([2600:6c5e:2a00:5805:c222:580f:7592:7110])
+        by smtp.gmail.com with ESMTPSA id d5-20020a056830044500b006b89dafb721sm1494447otc.78.2023.08.28.19.39.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 19:39:13 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v4 0/8] bitmap: cleanup bitmap_*_region() implementation
+Date:   Mon, 28 Aug 2023 19:39:03 -0700
+Message-Id: <20230829023911.64335-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v15 00/23] Add generic memory shrinker to VirtIO-GPU and
- Panfrost DRM drivers
-Content-Language: en-US
-To:     Helen Mae Koike Fornazier <helen.koike@collabora.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Emma Anholt <emma@anholt.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        dri-devel@lists.freedesktop.org,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>, kernel@collabora.com,
-        Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        intel-gfx@lists.freedesktop.org, Boqun Feng <boqun.feng@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Melissa Wen <mwen@igalia.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-References: <6d93-64ecbc00-3-3c8ca040@163557744>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <6d93-64ecbc00-3-3c8ca040@163557744>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 18:24, Helen Mae Koike Fornazier wrote:
-> On Monday, August 28, 2023 11:37 -03, "Helen Mae Koike Fornazier" <helen.koike@collabora.com> wrote:
-> 
->> On Sunday, August 27, 2023 14:54 -03, Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
->>
->>> This series:
->>>
->>>   1. Adds common drm-shmem memory shrinker
->>>   2. Enables shrinker for VirtIO-GPU driver
->>>   3. Switches Panfrost driver to the common shrinker
->>
->> Hi Dmitry, 
->>
->> Would you mind testing with drm-ci? We virt-io tests there and it would be
->> really great to get your feedback of it.
->>
->> https://cgit.freedesktop.org/drm/drm/log/?h=topic/drm-ci
-> 
-> sorry, I forgot that you also need this patchset:
->     https://lists.freedesktop.org/archives/dri-devel/2023-August/420063.html
-> to enable virtio_gpu test job.
-> 
-> Thanks again.
-> Helen
-> 
->>
->> You need to merge your changes with the above tree.
->> To configure it, you just need to have a tree on gitlab.freedesktop.org,
->> go to the settings and change the CI/CD configuration file from .gitlab-ci.yml
->> to drivers/gpu/drm/ci/gitlab-ci.yml, and you can start a pipeline
->> on your branch.
->>
->> at the time of this writting, gitlab.freedesktop.org is under maintenance,
->> but it should be back soon.
+bitmap_{allocate,find_free,release}_region() functions are implemented
+on top of _reg_op() machinery. It duplicates existing generic functionality
+with no benefits. In fact, generic alternatives may work even better
+because they optimized for small_const_nbits() case and overall very well
+optimized for performance and code generation.
 
-Thanks, Helen. I'll give it a try for the next version
+This series drops _reg_op() entirely.
+
+v2: https://lore.kernel.org/lkml/20230811005732.107718-2-yury.norov@gmail.com/T/
+v3: https://lore.kernel.org/lkml/20230815233628.45016-2-yury.norov@gmail.com/T/
+v4: address nits for v3.
+
+Yury Norov (8):
+  bitmap: align __reg_op() wrappers with modern coding style
+  bitmap: add test for bitmap_*_regoon() functions
+  bitmap: fix opencoded bitmap_allocate_region()
+  bitmap: replace _reg_op(REG_OP_ALLOC) with bitmap_set()
+  bitmap: replace _reg_op(REG_OP_RELEASE) with bitmap_clear()
+  bitmap: replace _reg_op(REG_OP_ISFREE) with find_next_bit()
+  bitmap: drop _reg_op() function
+  bitmap: move bitmap_*_region functions to bitmap.h
+
+ include/linux/bitmap.h |  63 ++++++++++++++++++-
+ lib/bitmap.c           | 140 -----------------------------------------
+ lib/test_bitmap.c      |  24 +++++++
+ 3 files changed, 84 insertions(+), 143 deletions(-)
 
 -- 
-Best regards,
-Dmitry
+2.39.2
 
