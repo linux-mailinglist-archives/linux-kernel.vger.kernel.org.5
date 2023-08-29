@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB87F78CDC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC5778CDD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238550AbjH2Uqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        id S239734AbjH2UtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240598AbjH2UqX (ORCPT
+        with ESMTP id S240551AbjH2UtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:46:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90FDCC2;
-        Tue, 29 Aug 2023 13:46:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 480BB6393C;
-        Tue, 29 Aug 2023 20:46:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC55C433C8;
-        Tue, 29 Aug 2023 20:46:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693341978;
-        bh=D/5R2gh0UNSBdokYwLYROA4OoUG4+BHEBICEdKyk2AM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fwWP1Wxr8Z625C8Ti+XBiDzYb5J1vibO/NUUMANGvbDaRMWpdyJ5U288G5h2DNhNw
-         zfTO5NBH/YI56Pvc1LDqpv2UDNHMRKVoDOGPMYek0Ge3biGqa5m5IsARtTojV0VTl4
-         bo4B3gfvBUi8gVl/srdsU4ZKv8TfzaqEZDbpRVcBgWwkgW5birFdtH0o8xoKm9ct+4
-         vyXvFjo2lCZsTK9k7nrn6CLEmnc+BbIORKqkzrPY975IBDUn9e0wFa8egVfQwrTmuI
-         QzJCM5JJBIRVZWwCeplwP3tVuGbs5A4hzQfOpsxVswYyV8404q3E5pSnG4zC2uXGli
-         sAn36Vl6X4e/g==
-From:   Ross Zwisler <zwisler@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ross Zwisler <zwisler@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-media@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Subject: [PATCH] visl: use canonical ftrace path
-Date:   Tue, 29 Aug 2023 14:46:01 -0600
-Message-ID: <20230829204600.3210276-2-zwisler@kernel.org>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+        Tue, 29 Aug 2023 16:49:11 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8331BCC2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:49:05 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-44d56d26c32so2056209137.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693342144; x=1693946944; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sRj6oIeLsLoWDRIPaLOolZYdlfU92WGUkzkgfX02aeY=;
+        b=y8ZPt5g4KQqBfd5AcCR3DwvzhwAatBh8oL/cRfn1qFK4ilQgR3+982bxgRSUxXO9rO
+         TK3bYFZWLZ4RhQC7UP3HEBEpj+qmsXd/ojIUBNgUicG2BK4aD6gDPlpMPgKsLgCZFi9q
+         B45kkk1M0HYstItmRVCN0ibkIBkarUyUtPAQriJNVlBKZxv6KwrI6yKMeTIIVEGqAuiL
+         cW7Au+r2X7bWkFxSjMDvlRKR2oKYQzXPs5Wkrw36+FUqhUbv2NQAscuf+1J7ZmBOYh4q
+         n51sYI2T//SCMihdR2+HqmTFvqJHvzzwkV+Tm1QYTH/hmrnbvvllGLKF7Q7WZidVAVf2
+         qDhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693342144; x=1693946944;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sRj6oIeLsLoWDRIPaLOolZYdlfU92WGUkzkgfX02aeY=;
+        b=LVQgzEiF7+qcfuFax/RIi0eY5knU7VjOfmDOKGgVRgSoSrQbvAjxc3OiljUmb9NJyj
+         9OScXrJSi3LLY5835RJ3Iqv4yoBBRUXz3BTrFtl0VmUxXqDjBQW927yydzCkk4wakeAR
+         BY6J5556ujC1GLlSKz5avskPrrBtFWtkynrJRFlaL5+rLVOrBCY1B/QfGejTzjV6CJU0
+         XoNILve41wBolMme+DEC8oBtffpFvO0tkebqlJJ3LYg8pbB3a1RzAO5/vSFhWB6subLR
+         j6maLlZ0ywOd1z3dIxR9eBnqtw5LHbidQ2qhNBiqgt3ziMNZ3T0RL4NZfLnkkO6DzANR
+         FpcQ==
+X-Gm-Message-State: AOJu0Yzg0W2tNjzTkEmRvexzCwLAZ2E+a9lLYOFzdK7I+8hi5XdoGTGy
+        CkS8Z9kBSsDhqwryWenhZe2y6QPInS4cmR8tbvio/g==
+X-Google-Smtp-Source: AGHT+IF7YRXkXJ355j1Ewd8JqLtawN5J8W6r3mYIaP1HoCS+5U7hrxkJJRqnSmslMlaAQn+nSwjUY90hjogjc08gTRY=
+X-Received: by 2002:a05:6102:52e:b0:44e:9614:39be with SMTP id
+ m14-20020a056102052e00b0044e961439bemr378634vsa.11.1693342144637; Tue, 29 Aug
+ 2023 13:49:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+ <CAA8EJpp_Uu62TDknZ-X0DQYinnwxxoriPpetfppCySxg_25YQg@mail.gmail.com> <CACMJSet-1tbTnMOab2GvMEc-b6Y3Xq5AZEE4mrfiUOZ=65z3MQ@mail.gmail.com>
+In-Reply-To: <CACMJSet-1tbTnMOab2GvMEc-b6Y3Xq5AZEE4mrfiUOZ=65z3MQ@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 29 Aug 2023 23:48:53 +0300
+Message-ID: <CAA8EJpoFusQbZqUoqA-UZRfretUWOgox_LKfup6viVxXDQiS5g@mail.gmail.com>
+Subject: Re: [PATCH 00/11] arm64: qcom: add and enable SHM Bridge support
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ross Zwisler <zwisler@google.com>
+On Tue, 29 Aug 2023 at 22:03, Bartosz Golaszewski
+<bartosz.golaszewski@linaro.org> wrote:
+>
+> On Mon, 28 Aug 2023 at 23:24, Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Mon, 28 Aug 2023 at 22:29, Bartosz Golaszewski
+> > <bartosz.golaszewski@linaro.org> wrote:
+> > >
+> > > SHM Bridge is a mechanism allowing to map limited areas of kernel's
+> > > virtual memory to physical addresses and share those with the
+> > > trustzone in order to not expose the entire RAM for SMC calls.
+> > >
+> > > This series adds support for Qualcomm SHM Bridge in form of a platform
+> > > driver and library functions available to users. It enables SHM Bridge
+> > > support for three platforms and contains a bunch of cleanups for
+> > > qcom-scm.
+> >
+> > Which users do you expect for this API?
+> >
+>
+> This series adds a single user: the SCM driver. We have another user
+> almost ready for upstream in the form of the scminvoke driver and I
+> learned today, I can already convert another user upstream right now
+> that I will try to get ready for v2.
+>
+> > Also, could you please describe your design a bit more? Why have you
+> > implemented the shm-bridge as a separate driver rather than a part of
+> > the SCM driver?
+> >
+>
+> It's self-contained enough to be put into a separate module and not
+> all platforms support it so in order to avoid unnecessary ifdeffery in
+> the scm driver, I made it separate.
 
-The canonical location for the tracefs filesystem is at /sys/kernel/tracing.
+Judging from other reviews, I'm not the only one who questioned this
+design. I still suppose that it might be better to move it into the
+SCM driver. You can put ifdef's to the header file defining the
+interface between SCM and SHM bridge part.
 
-But, from Documentation/trace/ftrace.rst:
-
-  Before 4.1, all ftrace tracing control files were within the debugfs
-  file system, which is typically located at /sys/kernel/debug/tracing.
-  For backward compatibility, when mounting the debugfs file system,
-  the tracefs file system will be automatically mounted at:
-
-  /sys/kernel/debug/tracing
-
-Update the visl decoder driver documentation to use this tracefs path.
-
-Signed-off-by: Ross Zwisler <zwisler@google.com>
----
- Documentation/admin-guide/media/visl.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/admin-guide/media/visl.rst b/Documentation/admin-guide/media/visl.rst
-index 7d2dc78341c9..4328c6c72d30 100644
---- a/Documentation/admin-guide/media/visl.rst
-+++ b/Documentation/admin-guide/media/visl.rst
-@@ -78,7 +78,7 @@ The trace events are defined on a per-codec basis, e.g.:
- 
- .. code-block:: bash
- 
--        $ ls /sys/kernel/debug/tracing/events/ | grep visl
-+        $ ls /sys/kernel/tracing/events/ | grep visl
-         visl_fwht_controls
-         visl_h264_controls
-         visl_hevc_controls
-@@ -90,13 +90,13 @@ For example, in order to dump HEVC SPS data:
- 
- .. code-block:: bash
- 
--        $ echo 1 >  /sys/kernel/debug/tracing/events/visl_hevc_controls/v4l2_ctrl_hevc_sps/enable
-+        $ echo 1 >  /sys/kernel/tracing/events/visl_hevc_controls/v4l2_ctrl_hevc_sps/enable
- 
- The SPS data will be dumped to the trace buffer, i.e.:
- 
- .. code-block:: bash
- 
--        $ cat /sys/kernel/debug/tracing/trace
-+        $ cat /sys/kernel/tracing/trace
-         video_parameter_set_id 0
-         seq_parameter_set_id 0
-         pic_width_in_luma_samples 1920
 -- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
+With best wishes
+Dmitry
