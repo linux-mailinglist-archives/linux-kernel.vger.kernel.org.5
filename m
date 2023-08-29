@@ -2,71 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419AB78C43A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A58E78C43D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235030AbjH2M0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 08:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        id S233660AbjH2M1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 08:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235513AbjH2M0j (ORCPT
+        with ESMTP id S235387AbjH2M0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:26:39 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AF1CDB;
-        Tue, 29 Aug 2023 05:26:17 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so40340945e9.0;
-        Tue, 29 Aug 2023 05:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693311976; x=1693916776;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f/vl6V+/9Rs5Obbv8m6Ii1Y8RyQvDJMieLJcGjD769I=;
-        b=eJE3iJH0cEFx0Ij0DL+xRcchTugw04PthN4i3mSBr+XTRr1KKDOGuOlRLKwivVc9tl
-         fA0U8xot8XVHU+fDkxIAHxIWGrMVdsgs9OSA41Px4w34lNKdNE4nNKcmMBjiUXn5xW/L
-         9YHBfJBwFyy0up9FcFVIxWYXUNY5l5whZHa9NwLUCBpwD87zQNFwizG4n46WlpvxzCQ6
-         YmGV4qd1D46A9xf8jtMgl+1LToiWvT6TauACCqKmGMSh3GowiKSLXLN69yM0eBkiw/sj
-         B2WTVVGRaM82J3IGyJSdwmqMZtMgg4brgbUtyVA9aXinRaTF8tlrc3/dPh1CRnN9d4Qm
-         KnMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693311976; x=1693916776;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f/vl6V+/9Rs5Obbv8m6Ii1Y8RyQvDJMieLJcGjD769I=;
-        b=dZT9y/3lLqBLYIfoK9cX+1QqvcN2Pe12aggSxOY25fVy9PgX1ltmUx115twt+W5ssY
-         Jy9I2zQLZMtv+FaPAvh+Hw9oAQXJSGx4FDPiPY/DsXkHwvSBNlqF0KsrRzszqtZ/ZU0T
-         HNDt/Oakvsi33XsYiwwnThJeHNQHCjK1RIsmZAG0YcEtHHrZclQbiVmIVihCQmegTo1m
-         FuOQ/ApWlEdzGJMECydErwf4HkmU1GBcCouSf1iuUKPawMcZPY8fo/llmBns0LcrsuBm
-         r5vf/3OuYRfo639W8arXrs6wiP/p5/Rd7KQoxefqswLRlMKOD+AIO2+Sm37IWY33sybl
-         pogQ==
-X-Gm-Message-State: AOJu0Ywf/iqYoW/S2Ho7xrMsirtIg2YMWMOZ/Jd7/oh/KIJfE29GtILW
-        /pyJQdmugYFz9VKEe3mK2Xu6SRRgE6A=
-X-Google-Smtp-Source: AGHT+IHz2BQglAeihsEWvAnkKI1HGNHU4OG399teUxWeazkybqCsNXASm823S4K/L+CNErKHWgUvxg==
-X-Received: by 2002:a1c:7302:0:b0:3fe:c7fe:206e with SMTP id d2-20020a1c7302000000b003fec7fe206emr21544055wmb.16.1693311976081;
-        Tue, 29 Aug 2023 05:26:16 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id n15-20020a1c720f000000b003fed630f560sm13776467wmc.36.2023.08.29.05.26.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 05:26:15 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 13:26:14 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.4 000/129] 6.4.13-rc1 review
-Message-ID: <ZO3j5h2AvQRph+HL@debian>
-References: <20230828101157.383363777@linuxfoundation.org>
+        Tue, 29 Aug 2023 08:26:51 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB28E4A;
+        Tue, 29 Aug 2023 05:26:34 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qaxnk-0000X0-Pd; Tue, 29 Aug 2023 14:26:32 +0200
+Message-ID: <2a73e06c-46a4-64a1-a646-76b095b8b978@leemhuis.info>
+Date:   Tue, 29 Aug 2023 14:26:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828101157.383363777@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH v2] pci: loongson: Workaround MIPS firmware MRRS settings
+Content-Language: en-US, de-DE
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, kw@linux.com, lpieralisi@kernel.org,
+        stable@vger.kernel.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20230725061008.1504292-1-jiaxun.yang@flygoat.com>
+ <e9c103dc-98ac-9a51-7291-f5da1467b2ff@flygoat.com>
+ <CAAhV-H7_OjTaU_wn6mUW0-JSrXS+=A2rXCiBc8cyce5ob49BLg@mail.gmail.com>
+ <861a809d-3df1-327e-e033-87506f6d89e5@flygoat.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <861a809d-3df1-327e-e033-87506f6d89e5@flygoat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693311994;0440d1bc;
+X-HE-SMSGID: 1qaxnk-0000X0-Pd
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,41 +51,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
+for once, to make this easily accessible to everyone.
 
-On Mon, Aug 28, 2023 at 12:11:19PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.13 release.
-> There are 129 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+What's the status here? From my point it looks like this regression that
+was ported six weeks ago is still not fixed -- and it seems nothing has
+happened since three weeks now. But maybe I'm just missing something,
+that's why I'm asking.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
+
+On 08.08.23 09:38, Jiaxun Yang wrote:
 > 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-
-Build test (gcc version 12.3.1 20230829):
-mips: 52 configs -> no failure
-arm: 71 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/4841
-[2]. https://openqa.qa.codethink.co.uk/tests/4864
-[3]. https://openqa.qa.codethink.co.uk/tests/4863
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
--- 
-Regards
-Sudip
+> 
+> 在 2023/8/6 22:30, Huacai Chen 写道:
+>> Hi, Jiaxun,
+>>
+>> On Sun, Aug 6, 2023 at 10:20 AM Jiaxun Yang <jiaxun.yang@flygoat.com>
+>> wrote:
+>>>
+>>>
+>>> 在 2023/7/25 14:10, Jiaxun Yang 写道:
+>>>> This is a partial revert of commit 8b3517f88ff2 ("PCI:
+>>>> loongson: Prevent LS7A MRRS increases") for MIPS based Loongson.
+>>>>
+>>>> There are many MIPS based Loongson systems in wild that
+>>>> shipped with firmware which does not set maximum MRRS properly.
+>>>>
+>>>> Limiting MRRS to 256 for all as MIPS Loongson comes with higher
+>>>> MRRS support is considered rare.
+>>>>
+>>>> Cc: stable@vger.kernel.org
+>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217680
+>>>> Fixes: 8b3517f88ff2 ("PCI: loongson: Prevent LS7A MRRS increases")
+>>>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>>> Ping?
+>>> I expect this patch to go through PCI fixes tree.
+>> Can we do it like this by modifying the existing loongson_mrrs_quirk()?
+> 
+> Hmm, I'm not sure this will work, since loongson_mrrs_quirk only run on
+> bridges
+> but the old quirk should run on every single device.
+> 
+> Thanks
+> Jiaxun
+> 
+>>
+>> static void loongson_mrrs_quirk(struct pci_dev *pdev)
+>> {
+>>          /*
+>>           * Some Loongson PCIe ports have h/w limitations of maximum read
+>>           * request size. They can't handle anything larger than this. So
+>>           * force this limit on any devices attached under these ports.
+>>           */
+>>          struct pci_host_bridge *bridge =
+>> pci_find_host_bridge(pdev->bus);
+>>
+>> #ifdef CONFIG_MIPS
+>>          set_pcie_ports_to_mrrs_256_to_emulate_the_firmware_behavior();
+>> #endif
+>>
+>>          bridge->no_inc_mrrs = 1;
+>> }
+>>
+>>> Thanks
+>>> - Jiaxun
+>>>
+>>>> ---
+>>>> v2: Rename quirk name to: loongson_old_mrrs_quirk
+>>>> ---
+>>>>    drivers/pci/controller/pci-loongson.c | 38
+>>>> +++++++++++++++++++++++++++
+>>>>    1 file changed, 38 insertions(+)
+>>>>
+>>>> diff --git a/drivers/pci/controller/pci-loongson.c
+>>>> b/drivers/pci/controller/pci-loongson.c
+>>>> index fe0f732f6e43..d0f68b102d10 100644
+>>>> --- a/drivers/pci/controller/pci-loongson.c
+>>>> +++ b/drivers/pci/controller/pci-loongson.c
+>>>> @@ -108,6 +108,44 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+>>>>    DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+>>>>                        DEV_LS7A_PCIE_PORT6, loongson_mrrs_quirk);
+>>>>
+>>>> +#ifdef CONFIG_MIPS
+>>>> +static void loongson_old_mrrs_quirk(struct pci_dev *pdev)
+>>>> +{
+>>>> +     struct pci_bus *bus = pdev->bus;
+>>>> +     struct pci_dev *bridge;
+>>>> +     static const struct pci_device_id bridge_devids[] = {
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS2K_PCIE_PORT0) },
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT0) },
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT1) },
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT2) },
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT3) },
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT4) },
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT5) },
+>>>> +             { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT6) },
+>>>> +             { 0, },
+>>>> +     };
+>>>> +
+>>>> +     /* look for the matching bridge */
+>>>> +     while (!pci_is_root_bus(bus)) {
+>>>> +             bridge = bus->self;
+>>>> +             bus = bus->parent;
+>>>> +             /*
+>>>> +              * There are still some wild MIPS Loongson firmware won't
+>>>> +              * set MRRS properly. Limiting MRRS to 256 as MIPS
+>>>> Loongson
+>>>> +              * comes with higher MRRS support is considered rare.
+>>>> +              */
+>>>> +             if (pci_match_id(bridge_devids, bridge)) {
+>>>> +                     if (pcie_get_readrq(pdev) > 256) {
+>>>> +                             pci_info(pdev, "limiting MRRS to 256\n");
+>>>> +                             pcie_set_readrq(pdev, 256);
+>>>> +                     }
+>>>> +                     break;
+>>>> +             }
+>>>> +     }
+>>>> +}
+>>>> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID,
+>>>> loongson_old_mrrs_quirk);
+>>>> +#endif
+>>>> +
+>>>>    static void loongson_pci_pin_quirk(struct pci_dev *pdev)
+>>>>    {
+>>>>        pdev->pin = 1 + (PCI_FUNC(pdev->devfn) & 3);
+> 
