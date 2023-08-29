@@ -2,123 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0022778C7D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D811078C7DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236915AbjH2OpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
+        id S236998AbjH2Opm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjH2Ooy (ORCPT
+        with ESMTP id S236983AbjH2OpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:44:54 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C84ACC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:44:52 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c1f7f7151fso10407015ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:44:52 -0700 (PDT)
+        Tue, 29 Aug 2023 10:45:17 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DBECC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:45:15 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-ccc462deca6so4229456276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:45:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693320291; x=1693925091;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W+rGTB+48zmHkW5Ip2UuHS5SfFJEUX2etU06P2q7Ut4=;
-        b=FKocU6+DFFVLNWdivRs0quPgzj9rMXVG5YAQP5esBA7BqEYrrkrQNwe3SFfsVg/P/8
-         Jgtfr6AvD+lj/5dQPVggIesstGPhPQzVcD6BGdd2FcoVIWzKrHa31QJ7KBMD83vgN0iF
-         V72kIf8gbJP/KmLN6NB/34DQEjECWgt2NOqmWBujPn+H4cQUSntdINKrcJ7yEd62hstD
-         Lrxd+JAnbd1uG4ibPADfK7nE6zrsHLmkDgyepqLjeTJZ/Em3WxYzgzpJ4cYCkU+u0ca4
-         uPt6uxgFDVzhio9HUbgXp10SDBuvBH4SJ2iCEQrUGGpT1tm/ysZamOiAk15zWpcqj6C5
-         8uaw==
+        d=linaro.org; s=google; t=1693320314; x=1693925114;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sYJFL/oP3SaDlhdD3A5BVkBBrDmASIKsskxYu/T8gOk=;
+        b=GY0rtHFHuTCGCTm11spgEUbsSzmNYPKJ1piASOWE3ElhgJN7T+MNyYtD9MdkmLRGHj
+         YykbxRufPy04Pie620zQY8M9JF9lGQVFlc4IquUKpxBHibg53HW6y+iBIfXaQC46uIvZ
+         ntgj4qOqt8V7eoSSYpNSsACFZprYH3cuMTJ62c1z2WwenCA0CCZfK+czw+PoiYk57xKk
+         PXB6DeOeDUor2bkWHnRyAEigbWq5I5CksfcVZk+dxjohBbLmeCUQFwTBstwU6FmbQUCj
+         gXyu5ZLuGcjiyu7BekuXsBmqPyp6V455ezYy+EZvQQC8JC/VvXByKYEAXheoEBtj3TBR
+         2NFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693320291; x=1693925091;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W+rGTB+48zmHkW5Ip2UuHS5SfFJEUX2etU06P2q7Ut4=;
-        b=WMw56zN35J2UEgyyQ23PSg3Lk6e1zo8oQ5S0BEkz/T+9/FK/+bLH+RiB0aAh//uF7p
-         aZfBUaB8Fb37furTnqq9EdTKCNttx7W+Wj49WwPc+i8FxCJryFK98NAAV9yil/5BYwIc
-         gSa9SNgrrOPXFCStDpEnaPMY+dG9g3+9odrYUyv4aJ7z6KwwmV50CInuFSIaTLYi3bsH
-         eI/VjZv3vC+WtUsvDONIBqWl9zQhnAN3HjwoBE3pErcUmX49pbUOvXuMx8685Q+HOmmd
-         Ris8enfWFkJ18698prIgzf5ndVFJxckL86BrCeGlzN9bx8LgpXurCnK0Lfyn28AyNXFq
-         jaTA==
-X-Gm-Message-State: AOJu0Yx+Yib3nI6x2caLmGRAexcAo6+g278plcVwUofHnRqaJVXkYC0V
-        FFYRymwElODhglmASebcHYs=
-X-Google-Smtp-Source: AGHT+IGGrKNAd0fTswqQnCDYNLsZiB1gx98rO3aov17wG8s3z8TAGy/BgqxlzmIZjs8lQ82cAfIBqw==
-X-Received: by 2002:a17:902:e887:b0:1bd:e9de:ccc3 with SMTP id w7-20020a170902e88700b001bde9deccc3mr27510971plg.50.1693320291576;
-        Tue, 29 Aug 2023 07:44:51 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id jf15-20020a170903268f00b001bb3beb2bc6sm9394894plb.65.2023.08.29.07.44.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 07:44:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <4bf71d86-d8a9-dce8-6a14-fc4b47325a7b@roeck-us.net>
-Date:   Tue, 29 Aug 2023 07:44:49 -0700
+        d=1e100.net; s=20221208; t=1693320314; x=1693925114;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sYJFL/oP3SaDlhdD3A5BVkBBrDmASIKsskxYu/T8gOk=;
+        b=APtoRH4kffEDnQtl8RsQ1ZYWwEaYUVIdWdqXmgWTeXs6P1Pb59k0+hxAgtAddbLNOE
+         trLJkT1XNgpf5ZEliG8qG1PYCuLd/a8Z2NKHUViEfL5Z9wwcWCUIU6fUaaiN0gIg90bU
+         ODuyiJFpE+JIBvldCiqO6g/RyzTC228eNdAknXWUz+aBv8f3vGZXmoTmJ7fIAuZhnIg1
+         u/idBn302H75C01LFDKkKyUkjuUfYCC1qu4gY0Nnr4+ldM0iaKvc4fWp2x97kBHq25p4
+         pOOH9rAFriM/iMT/UWic2hm4HTKBAVTyleq9olDCRqZvRhD9TQJFwR8+A+i2ZWXWogUN
+         aDoQ==
+X-Gm-Message-State: AOJu0YyXQQeuYm0eGgDkNzZvay7aswMhpIqg+hEulMeAId9YJgO6QWOb
+        PWnjQugrpCO9wBY3rP6cXvcSABSqVieOCLOnCz2OzA==
+X-Google-Smtp-Source: AGHT+IGs1a1lOiAH7BmcROycjWaFcW0bQVi0E8yagxKqODme69iYwdaPfRNKIXre8FrW8ccNKSINi3f6JinWFQR0BBE=
+X-Received: by 2002:a25:b0a3:0:b0:d39:fa2f:8b63 with SMTP id
+ f35-20020a25b0a3000000b00d39fa2f8b63mr30342451ybj.25.1693320314602; Tue, 29
+ Aug 2023 07:45:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Michal Wilczynski <michal.wilczynski@intel.com>,
-        artem.bityutskiy@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, lenb@kernel.org,
-        jgross@suse.com, linux-kernel@vger.kernel.org, x86@kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-References: <c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net>
- <CAJZ5v0jASjc_RYp-SN5KMGJXDv8xbMOqJscLF3wG8rdE2_KJGw@mail.gmail.com>
- <ZO36g3IOX7UU0X5l@smile.fi.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] ACPI: processor: Move MWAIT quirk out of acpi_processor.c
-In-Reply-To: <ZO36g3IOX7UU0X5l@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com> <20230829135818.2219438-9-quic_ipkumar@quicinc.com>
+In-Reply-To: <20230829135818.2219438-9-quic_ipkumar@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 29 Aug 2023 17:45:03 +0300
+Message-ID: <CAA8EJpqraO6UXBs=aPpWNuhEPjdcQ01FyV_Np1KtuJtEkJE0Hg@mail.gmail.com>
+Subject: Re: [PATCH 8/9] phy: qcom: uniphy: Add ipq5332 USB UNIPHY support
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>
+Cc:     robert.marko@sartura.hr, luka.perkov@sartura.hr, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
+        will@kernel.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        geert+renesas@glider.be, nfraprado@collabora.com, rafal@milecki.pl,
+        peng.fan@nxp.com, quic_wcheng@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_varada@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 07:02, Andy Shevchenko wrote:
-> On Tue, Aug 29, 2023 at 03:54:18PM +0200, Rafael J. Wysocki wrote:
->> On Tue, Aug 29, 2023 at 3:44 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>> On Mon, Jul 10, 2023 at 05:03:29PM +0300, Michal Wilczynski wrote:
->>>> Commit 2a2a64714d9c ("ACPI: Disable MWAIT via DMI on broken Compal board")
->>>> introduced a workaround for MWAIT for a specific x86 system.
->>>>
->>>> Move the code outside of acpi_processor.c to acpi/x86/ directory for
->>>> consistency and rename the functions associated with it, so their names
->>>> start with "acpi_proc_quirk_" to make the goal obvious.
->>>>
->>>> No intentional functional impact.
->>>
->>> Except for:
->>>
->>> ia64-linux-ld: drivers/acpi/acpi_processor.o: in function `acpi_early_processor_control_setup':
->>> acpi_processor.c:(.init.text+0x712): undefined reference to `acpi_proc_quirk_mwait_check'
->>> ia64-linux-ld: drivers/acpi/processor_pdc.o: in function `acpi_early_processor_set_pdc':
->>> processor_pdc.c:(.init.text+0x72): undefined reference to `acpi_proc_quirk_mwait_check'
->>>
->>> which breaks all ia64 builds.
->>>
->>> Time to retire that architecture yet ? No one but me seems to even
->>> build test it.
->>
->> Including 0-day it seems.  This had been in linux-next for several weeks.
-> 
-> IIRC someone explicitly asked to shut down 0-day on ia64. Maybe I'm mistaken?
-> I would suggest to ask internally Dave Hansen et al for this.
-> 
+On Tue, 29 Aug 2023 at 17:00, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>
+> This patch adds ipq5332 USB SS UNIPHY support.
 
-Actually, that is correct. Build testing it was removed from 0-day on request
-from Ard Biesheuvel in preparation of its removal from the Linux kernel.
+First, please read to Documentation/process/submitting-patches.rst,
+then rewrite the commit message.
 
-I'll stop build testing it as well.
+Next, I tend to say that this driver doesn't have a lot in common with
+the ipq4019 driver you have modified. Please consider adding new
+driver for ipq5332, then we can see whether it makes sense to fold
+ipq4019 to use new infrastructure.
 
-Thanks,
-Guenter
+>
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+> ---
+> This patch depends on the below series which adds support for USB2 in
+> IPQ5332
+> https://lore.kernel.org/all/cover.1692699472.git.quic_varada@quicinc.com/
+>
+>  drivers/phy/qualcomm/phy-qcom-uniphy.c | 37 ++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-uniphy.c b/drivers/phy/qualcomm/phy-qcom-uniphy.c
+> index eb71588f5417..91487e68bb6e 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-uniphy.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-uniphy.c
+> @@ -26,6 +26,10 @@
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+>
+> +#define PCIE_USB_COMBO_PHY_CFG_MISC1           0x214
+> +#define PCIE_USB_COMBO_PHY_CFG_RX_AFE_2                0x7C4
+> +#define PCIE_USB_COMBO_PHY_CFG_RX_DLF_DEMUX_2  0x7E8
+> +
+>  struct uniphy_init_tbl {
+>         unsigned int offset;
+>         unsigned int val;
+> @@ -37,6 +41,12 @@ struct uniphy_init_tbl {
+>                 .val = v,               \
+>         }
+>
+> +static const struct uniphy_init_tbl ipq5332_usb_ssphy_init_tbl[] = {
+> +       UNIPHY_INIT_CFG(PCIE_USB_COMBO_PHY_CFG_RX_AFE_2, 0x1076),
+> +       UNIPHY_INIT_CFG(PCIE_USB_COMBO_PHY_CFG_RX_DLF_DEMUX_2, 0x3142),
+> +       UNIPHY_INIT_CFG(PCIE_USB_COMBO_PHY_CFG_MISC1, 0x3),
+> +};
+> +
+>  struct uniphy_cfg {
+>         const struct uniphy_init_tbl *init_seq;
+>         int num_init_seq;
+> @@ -83,6 +93,32 @@ static const struct uniphy_cfg ipq4019_usb_hsphy_cfg = {
+>         .reset_udelay   = 10000,
+>  };
+>
+> +static const char * const ipq5332_usb_ssphy_clk_l[] = {
+> +       "phy_ahb", "phy_cfg_ahb", "pipe",
+> +};
+> +
+> +static const char * const ipq5332_usb_ssphy_reset_l[] = {
+> +       "por_rst",
+> +};
+> +
+> +static const char * const ipq5332_usb_ssphy_vreg_l[] = {
+> +       "vdda-phy",
+> +};
+> +
+> +static const struct uniphy_cfg ipq5332_usb_ssphy_cfg = {
+> +       .init_seq       = ipq5332_usb_ssphy_init_tbl,
+> +       .num_init_seq   = ARRAY_SIZE(ipq5332_usb_ssphy_init_tbl),
+> +       .clk_list       = ipq5332_usb_ssphy_clk_l,
+> +       .num_clks       = ARRAY_SIZE(ipq5332_usb_ssphy_clk_l),
+> +       .reset_list     = ipq5332_usb_ssphy_reset_l,
+> +       .num_resets     = ARRAY_SIZE(ipq5332_usb_ssphy_reset_l),
+> +       .vreg_list      = ipq5332_usb_ssphy_vreg_l,
+> +       .num_vregs      = ARRAY_SIZE(ipq5332_usb_ssphy_vreg_l),
+> +       .pipe_clk_rate  = 250000000,
+> +       .reset_udelay   = 1,
+> +       .autoload_udelay = 35,
+> +};
+> +
+>  static int phy_mux_sel(struct phy *phy)
+>  {
+>         struct qcom_uniphy *uniphy = phy_get_drvdata(phy);
+> @@ -396,6 +432,7 @@ static int qcom_uniphy_probe(struct platform_device *pdev)
+>  static const struct of_device_id qcom_uniphy_of_match[] = {
+>         { .compatible = "qcom,usb-hs-ipq4019-phy", .data = &ipq4019_usb_hsphy_cfg},
+>         { .compatible = "qcom,usb-ss-ipq4019-phy", .data = &ipq4019_usb_ssphy_cfg},
+> +       { .compatible = "qcom,ipq5332-usb-ssphy", .data = &ipq5332_usb_ssphy_cfg},
+>         { },
+>  };
+>  MODULE_DEVICE_TABLE(of, qcom_uniphy_of_match);
+> --
+> 2.34.1
 
+
+-- 
+With best wishes
+Dmitry
