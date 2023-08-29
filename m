@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD44D78C3CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4223578C3F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbjH2MId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 08:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
+        id S233819AbjH2MMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 08:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbjH2MIV (ORCPT
+        with ESMTP id S232411AbjH2MMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:08:21 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF65E98
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 05:08:18 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qaxVt-0005Gc-4Q; Tue, 29 Aug 2023 14:08:05 +0200
-Message-ID: <6a39c016-0f00-6cfa-834e-abe5acb79757@leemhuis.info>
-Date:   Tue, 29 Aug 2023 14:08:04 +0200
+        Tue, 29 Aug 2023 08:12:18 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7717CFA;
+        Tue, 29 Aug 2023 05:12:06 -0700 (PDT)
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 4EAB1803AB;
+        Tue, 29 Aug 2023 14:11:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1693311119;
+        bh=/S2MVrHJ96elw+baGLSrrlAWfYyFodKVEtqPjPiH3ZY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Rq2cqAzeiBwyqcK2W11At9U3uNiBSbeVbNuK7RSR/W8pAkwBJ1chfcMMtd77KdyY0
+         qaYzcOnuRGy+PZM8TZ7KhO6I8PK4leo8vYIeusINiNuJXSdSGda6bqVvMJqMcllueR
+         mBEgfQbx14CxbcT+OtGuv8gcdctPh6Bx9vR5qiIyxiePxXxgFRLNidtNsInIDVMnsj
+         lO3816CqF6iB49jYQK899fuoBiCYnPbduAt4krg53JQrhRYrscD1TzLPr7qLvt7LVu
+         7wXJ6SKexuVyQYyNpixU/Kg6rk/rdqLuTcSqS22UbzM6H4wPROx2/e3S9T0oH820q0
+         Qy6qDkguehGpg==
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH 0/4] net: dsa: hsr: Enable HSR HW offloading for KSZ9477
+Date:   Tue, 29 Aug 2023 14:11:28 +0200
+Message-Id: <20230829121132.414335-1-lukma@denx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: radeon.ko/i586: BUG: kernel NULL pointer
- dereference,address:00000004
-Content-Language: en-US, de-DE
-To:     kkabe@vega.pgw.jp
-Cc:     regressions@lists.linux.dev, bagasdotme@gmail.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <230722113014.M0204460@vega.pgw.jp>
- <230723205506.M0106064@vega.pgw.jp>
- <20230723103210.4b1b032e@rorschach.local.home>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <20230723103210.4b1b032e@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693310898;a442a083;
-X-HE-SMSGID: 1qaxVt-0005Gc-4Q
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
-for once, to make this easily accessible to everyone.
+This patch series provides support for HSR HW offloading in KSZ9477
+switch IC.
 
-I still have this issue on my list of tracked regressions.
+To test this feature:
+ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
+ifconfig lan1 up;ifconfig lan2 up
+ifconfig hsr0 192.168.0.1 up
 
-Was this fixed in between? Doesn't look like it from here, but I might
-be missing something.
+To remove HSR network device:
+ip link del hsr0
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Test HW:
+Two KSZ9477-EVB boards with HSR ports set to "Port1" and "Port2".
 
-#regzbot poke
+Lukasz Majewski (4):
+  net: dsa: Extend the dsa_switch structure to hold info about HSR ports
+  net: dsa: Extend ksz9477 TAG setup to support HSR frames duplication
+  net: dsa: hsr: Enable in KSZ9477 switch HW HSR offloading
+  net: dsa: hsr: Provide generic HSR ksz_hsr_{join|leave} functions
 
-On 23.07.23 16:32, Steven Rostedt wrote:
-> On Sun, 23 Jul 2023 20:55:06 +0900
-> <kkabe@vega.pgw.jp> wrote:
-> 
->> So I tried to trap NULL and return:
->>
->> ================ patch-drm_vblank_cancel_pending_works-printk-NULL-ret.patch
->> diff -up ./drivers/gpu/drm/drm_vblank_work.c.pk2 ./drivers/gpu/drm/drm_vblank_work.c
->> --- ./drivers/gpu/drm/drm_vblank_work.c.pk2	2023-06-06 20:50:40.000000000 +0900
->> +++ ./drivers/gpu/drm/drm_vblank_work.c	2023-07-23 14:29:56.383093673 +0900
->> @@ -71,6 +71,10 @@ void drm_vblank_cancel_pending_works(str
->>  {
->>  	struct drm_vblank_work *work, *next;
->>  
->> +	if (!vblank->dev) {
->> +		printk(KERN_WARNING "%s: vblank->dev == NULL? returning\n", __func__);
->> +		return;
->> +	}
->>  	assert_spin_locked(&vblank->dev->event_lock);
->>  
->>  	list_for_each_entry_safe(work, next, &vblank->pending_work, node) {
->> ================
->>
->> This time, the printk trap does not happen!! and radeon.ko works.
->> (NULL check for vblank->worker is still fireing though)
->>
->> Now this is puzzling.
->> Is this a timing issue?
-> 
-> It could very well be. And the ftrace patch could possibly not be the
-> cause at all. But the thread that is created to do the work is causing
-> the race window to be opened up, which is why you see it with the patch
-> and don't without it. It may not be the problem, it may just tickle the
-> timings enough to trigger the bug, and is causing you to go on a wild
-> goose chase in the wrong direction.
-> 
-> -- Steve
-> 
-> 
->> Is systemd-udevd doing something not favaorble to kernel?
->> Is drm vblank code running without enough initialization?
->>
->> Puzzling is, that purely useland activity
->> (logging in on tty1 before radeon.ko load)
->> is affecting kernel panic/no-panic.
-> 
-> 
-> 
+ drivers/net/dsa/microchip/ksz9477.c    | 96 ++++++++++++++++++++++++++
+ drivers/net/dsa/microchip/ksz9477.h    |  4 ++
+ drivers/net/dsa/microchip/ksz_common.c | 69 ++++++++++++++++++
+ include/net/dsa.h                      |  3 +
+ net/dsa/tag_ksz.c                      |  5 ++
+ 5 files changed, 177 insertions(+)
+
+-- 
+2.20.1
+
