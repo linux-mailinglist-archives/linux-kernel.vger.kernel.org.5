@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AB678BE98
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DB878BE9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbjH2GjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
+        id S232235AbjH2GkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232039AbjH2Giy (ORCPT
+        with ESMTP id S233576AbjH2GkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 02:38:54 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7DA185
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:38:51 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52683b68c2fso5331973a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693291129; x=1693895929;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uTFBVeroMlwiaB9gHfLPinmkZc9PWCk3ZLgrqKzf1pw=;
-        b=nYYqLRMEg7Cvj15A32kSNX9hEbEqCdeQQh9M4vtDd8nI4N6lc0TQZaYa2FJBg7sxWW
-         /ip5KLQPlSPhbzg3Uf9DHyOt1Rp9rILEE0pnhVxji9OE+wr33E04M0K6+wuMnmG34/S2
-         EgHLravxjXGuem8SCYBpMiUNMpF3cfRp9C/nv65gLcCvC3ftvdbTHVH4Zf45gKm+ef7S
-         4H+EA1OYVp1+CdT1X2a0RCb2MNHKlimhM+ZIVG3+3glmLong8ftqzIA7ErWoGX4MRmQ/
-         IqdA6VyHzYltyDNmkod3Hbr1dRdmfr3Tal5WwI7xgWVtwYBzH/le39KwETqA+bIKDjy/
-         BuPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693291129; x=1693895929;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uTFBVeroMlwiaB9gHfLPinmkZc9PWCk3ZLgrqKzf1pw=;
-        b=hYt1at4xh8IYEpcQ4T0iiq/Cev54QybRZUgfN6blNtUdxcI0C9SFMeWzgXRBNZ650c
-         yn6jyKuj7zScHERFT5Z4xayXjR7ms9cfnSGnS6msf5F6mG0S+4oeiGwcPvpAC81Yf+C7
-         CxzB2sIuswOYCbBOj7dsR4xJNaiywmUiGi6mBZkv50qJw2pjfOanUq6ex5K3LzJj5ct4
-         6Ntn1wVIwpqF3XjHearuY3gme+tmCv5mXymANEdiRm8bH6aqByITXOAWYrwWTgrJFR+s
-         D4c3oQHwT17HXi29juYwrrlMLnyzXR28BaXM2YS2L124TRG3gIK4SvZqODmNI64tExLu
-         6gxQ==
-X-Gm-Message-State: AOJu0YznwNpB9OEjc5JluN1zOJ9yWtvXk/F01eFVEBt+O9CmN3x+e+ek
-        UYi2GxscAIbzZBRYbDCUKPc+Zw==
-X-Google-Smtp-Source: AGHT+IFCjFH9WZZy4ewTzzinqqQNY1wtNO3veQypzJO2IyjqazARAD1wZudxhl3FNBa5+1z0saPEag==
-X-Received: by 2002:aa7:ca59:0:b0:51d:f5bd:5a88 with SMTP id j25-20020aa7ca59000000b0051df5bd5a88mr19933585edt.38.1693291129694;
-        Mon, 28 Aug 2023 23:38:49 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id u8-20020aa7d888000000b00527e7087d5dsm5281390edq.15.2023.08.28.23.38.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Aug 2023 23:38:49 -0700 (PDT)
-Message-ID: <c741c4be-50b4-0bd8-79eb-37895342f5af@linaro.org>
-Date:   Tue, 29 Aug 2023 08:38:48 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 4/6] dt-bindings: crypto: qcom,prng: document SM8550
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Om Prakash Singh <quic_omprsing@quicinc.com>
-References: <20230828-topic-sm8550-rng-v3-0-7a0678ca7988@linaro.org>
- <20230828-topic-sm8550-rng-v3-4-7a0678ca7988@linaro.org>
- <20230828213610.GA386486-robh@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230828213610.GA386486-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 02:40:08 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B7C185
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:40:04 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0E4652186E;
+        Tue, 29 Aug 2023 06:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693291203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zans4W2u/vshZZCUl2afaYb30cHtZkJc5TloAICBR3g=;
+        b=yAtNfJuORRrkT+te3CLcEsni/lKivy9prKtTdrTEt1vnD12fkJoJJD9ZroKa5lSXL0rDXr
+        MchoKwZTbrvG808lYdu7Naoj3XaRG6Wzn9v26Q/7rxfdLS2peBExUJSSjau4zMmBbi16hN
+        kWviQnITTd9vsiO6sp0wEwSo8lSOt8k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693291203;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zans4W2u/vshZZCUl2afaYb30cHtZkJc5TloAICBR3g=;
+        b=DWLaVlT0TZx7cVxIB6BToLIetSPaTZoGA1txJ2we5JDpoEA/OOwsejamAHVGczBGMUgC4/
+        QDkiM++ydlePX+Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C28C613301;
+        Tue, 29 Aug 2023 06:40:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OJxULsKS7WTcAgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 29 Aug 2023 06:40:02 +0000
+Date:   Tue, 29 Aug 2023 08:40:02 +0200
+Message-ID: <877cpewdvh.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v1] ASoC: dwc: Fix the warnnings about JH7110 ops
+In-Reply-To: <20230829033658.225713-1-xingyu.wu@starfivetech.com>
+References: <20230829033658.225713-1-xingyu.wu@starfivetech.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2023 23:36, Rob Herring wrote:
-> On Mon, Aug 28, 2023 at 10:04:39AM +0200, Neil Armstrong wrote:
->> Document SM8550 compatible for the True Random Number Generator.
->>
->> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+On Tue, 29 Aug 2023 05:36:58 +0200,
+Xingyu Wu wrote:
 > 
-> Where's Krzysztof's tag?
+> Add a check of CONFIG_OF before the JH7110 ops to fix the warnings
+> that the JH7110 ops are defined but not used when CONFIG_OF is disabled.
 > 
+> Fixes: 1a512d13837a ("Add I2S support for the StarFive JH7110 SoC")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202308250433.nhzrhYEo-lkp@intel.com/
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> ---
+> Hi Mark,
+> 
+> This patch fixes the issue about the warning of JH7110 ops when CONFIG_OF
+> is disabled. So add a check of CONFIG_OF before defining JH7110 ops.
+> 
+> Thanks,
+> Xingyu Wu
 
-The patch evolved and Neil mentioned in cover letter changelog that he
-did not collect Reviews because of that. Seems ok for me.
+The very same fix went already in my sound.git tree, commit
+8d2a0cdf5229.
 
-For the patch:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+thanks,
 
-Best regards,
-Krzysztof
-
+Takashi
