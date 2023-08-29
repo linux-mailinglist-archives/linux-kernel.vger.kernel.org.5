@@ -2,672 +2,639 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8883378C7BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE8978C7BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236957AbjH2Ohj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
+        id S236965AbjH2OiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237020AbjH2Oh2 (ORCPT
+        with ESMTP id S237000AbjH2Oh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:37:28 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2AE198;
-        Tue, 29 Aug 2023 07:37:18 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RZqf13DNMz67n0t;
-        Tue, 29 Aug 2023 22:32:57 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
- 2023 15:37:15 +0100
-Date:   Tue, 29 Aug 2023 15:37:14 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <ira.weiny@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Navneet Singh <navneet.singh@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 03/18] cxl/mem: Read Dynamic capacity
- configuration from the device
-Message-ID: <20230829153714.00000a4c@Huawei.com>
-In-Reply-To: <20230604-dcd-type2-upstream-v2-3-f740c47e7916@intel.com>
-References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
-        <20230604-dcd-type2-upstream-v2-3-f740c47e7916@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 29 Aug 2023 10:37:57 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4018C10E
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:37:52 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d77c5414433so4305899276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:37:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693319871; x=1693924671;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T9vmQoxA8/Zcm49Imi505Qfez3G7Z3/0c7Rg1QBQdqY=;
+        b=a5eGeueQgYvl1dksOCTre1MZWasPjmeun4ERdGmnk2GtaA1srWSlISQyMZZwCUezWD
+         4WUYeg8F4XsJ//wyCoZdKCEwn0nmO8u/2Asy7hmlckVA6PTgVndJcaFrvElLAA+Nt9la
+         8pYy2iGPsC4vclwr7EnAGGu+eSueoFYR3TEXvpPHY8+uDX5AKuGIdsBZ7Whao/IGDmI2
+         VIp3APGX4FdCNWpYt00dixe/s/+aMlVC/YwJD4osGOzSov4jc7cA8jzfhq388OeRqP2F
+         61x65aj4tCYdT9S+jTER1TpMdjGLmoyaEOmk7aj+thHpwIKmT5BDXrzcX03HPml6TKPD
+         E0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693319871; x=1693924671;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T9vmQoxA8/Zcm49Imi505Qfez3G7Z3/0c7Rg1QBQdqY=;
+        b=igNb6W2R5gOkXI5THUzi92ZZaycjoXW798cxIlIoETyuYficVftW85ViIB0Q/GeifT
+         OLdnPDkBxoeCUqEF+OMGJdLaHRXRQeNhpM+wvWRBArrHy6tiSAhSqzekU1blUo8QmAoM
+         bPhIVOYgb9uR5/btvQy3F0N8GFhRaoohPV8EWtinLCPWiBc3ccZhfHXQzDcr5uTVxdSA
+         J+Hjr/sUr9cX1pedVwg5awgKobP7QYMUzEpjJOX9p9LMikN2xInCAUTZkZGi179oQ9iI
+         CT7AcGfo2USPrR4fAc/8M8nVWwKReFhKAlhzhFezyTv6KMNY32DMSVl9CQ5/cZWPbOam
+         YJ8w==
+X-Gm-Message-State: AOJu0YzVdmcLHd4svqUlbSDvtuLooVEQvIm8jpJKDbjPSDeR3YaxrJbO
+        9CxqKf5nl4itXzHOYSJy/4IA+6PGZy6VKPkGVyIWmg==
+X-Google-Smtp-Source: AGHT+IEsVW42saINKTcpWa9aH5hGlT2j18y+ickEL90kdZpo0HwXw1IPlmHxK35ETC8vmrkzd5UkXul+1c5VJQeKrF4=
+X-Received: by 2002:a25:4dc3:0:b0:d63:1cbd:1e96 with SMTP id
+ a186-20020a254dc3000000b00d631cbd1e96mr25354607ybb.48.1693319871263; Tue, 29
+ Aug 2023 07:37:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com> <20230829135818.2219438-4-quic_ipkumar@quicinc.com>
+In-Reply-To: <20230829135818.2219438-4-quic_ipkumar@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 29 Aug 2023 17:37:40 +0300
+Message-ID: <CAA8EJpoYu_98GhofMcJ_Z6tfGZXxDLOyG8Xbo_ohC6R8+JdF4g@mail.gmail.com>
+Subject: Re: [PATCH 3/9] phy: qcom: uniphy: Update UNIPHY driver to be a
+ common driver
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>
+Cc:     robert.marko@sartura.hr, luka.perkov@sartura.hr, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
+        will@kernel.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        geert+renesas@glider.be, nfraprado@collabora.com, rafal@milecki.pl,
+        peng.fan@nxp.com, quic_wcheng@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_varada@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 22:20:54 -0700
-ira.weiny@intel.com wrote:
+On Tue, 29 Aug 2023 at 17:00, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>
+> This patch updates the UNIPHY driver to be a common driver to
+> accommodate all UNIPHY / Combo PHY. This driver can be used for
+> both USB and PCIe UNIPHY. Using phy-mul-sel from DTS MUX selection
+> for USB / PCIe can be acheived.
 
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Devices can optionally support Dynamic Capacity (DC).  These devices are
-> known as Dynamic Capacity Devices (DCD).
-> 
-> Implement the DC (opcode 48XXh) mailbox commands as specified in CXL 3.0
-> section 8.2.9.8.9.  Read the DC configuration and store the DC region
-> information in the device state.
-> 
-> Co-developed-by: Navneet Singh <navneet.singh@intel.com>
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-Hi.
+I'm not sure why you are talking about PCIe here. This patch adds only
+SS PHY support.
 
-A few minor things inline.  Otherwise, I wonder if it's worth separating
-the mode of the region from that of the endpoint decoder in a precusor patch.
-That's a large part of this one and not really related to the mbox command stuff.
+Also, I'd like to point out that we had this 'USB and PCIe and
+everything else' design in the QMP driver. We had to split the driver
+into individual pieces to make it manageable again.
 
-Jonathan
-
-
-...
-
-> +
-> +/* Returns the number of regions in dc_resp or -ERRNO */
-> +static int cxl_get_dc_id(struct cxl_memdev_state *mds, u8 start_region,
-> +			 struct cxl_mbox_dynamic_capacity *dc_resp,
-> +			 size_t dc_resp_size)
-> +{
-> +	struct cxl_mbox_get_dc_config get_dc = (struct cxl_mbox_get_dc_config) {
-> +		.region_count = CXL_MAX_DC_REGION,
-> +		.start_region_index = start_region,
-> +	};
-> +	struct cxl_mbox_cmd mbox_cmd = (struct cxl_mbox_cmd) {
-> +		.opcode = CXL_MBOX_OP_GET_DC_CONFIG,
-> +		.payload_in = &get_dc,
-> +		.size_in = sizeof(get_dc),
-> +		.size_out = dc_resp_size,
-> +		.payload_out = dc_resp,
-> +		.min_out = 1,
-> +	};
-> +	struct device *dev = mds->cxlds.dev;
-> +	int rc;
-> +
-> +	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +	if (rc < 0)
-> +		return rc;
-> +
-> +	rc = dc_resp->avail_region_count - start_region;
-> +
-> +	/*
-> +	 * The number of regions in the payload may have been truncated due to
-> +	 * payload_size limits; if so adjust the count in this query.
-
-Not adjusting the query.  "if so adjust the returned count to match."
-
-> +	 */
-> +	if (mbox_cmd.size_out < sizeof(*dc_resp))
-> +		rc = CXL_REGIONS_RETURNED(mbox_cmd.size_out);
-> +
-> +	dev_dbg(dev, "Read %d/%d DC regions\n", rc, dc_resp->avail_region_count);
-> +
-> +	return rc;
-> +}
-> +
-> +/**
-> + * cxl_dev_dynamic_capacity_identify() - Reads the dynamic capacity
-> + *					 information from the device.
-> + * @mds: The memory device state
-> + *
-> + * This will dispatch the get_dynamic_capacity command to the device
-> + * and on success populate structures to be exported to sysfs.
-
-I'd skip the 'exported to sysfs' as I'd guess this will have other uses
-(maybe) in the longer term.
-
-and on success populate state structures for later use.
-
-> + *
-> + * Return: 0 if identify was executed successfully, -ERRNO on error.
-> + */
-> +int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
-> +{
-> +	struct cxl_mbox_dynamic_capacity *dc_resp;
-> +	struct device *dev = mds->cxlds.dev;
-> +	size_t dc_resp_size = mds->payload_size;
-> +	u8 start_region;
-> +	int i, rc = 0;
-> +
-> +	for (i = 0; i < CXL_MAX_DC_REGION; i++)
-> +		snprintf(mds->dc_region[i].name, CXL_DC_REGION_STRLEN, "<nil>");
-> +
-> +	/* Check GET_DC_CONFIG is supported by device */
-> +	if (!test_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds)) {
-> +		dev_dbg(dev, "unsupported cmd: get_dynamic_capacity_config\n");
-> +		return 0;
-> +	}
-> +
-> +	dc_resp = kvmalloc(dc_resp_size, GFP_KERNEL);                         
-> +	if (!dc_resp)                                                                
-> +		return -ENOMEM;                                                 
-> +
-> +	start_region = 0;
-> +	do {
-> +		int j;
-> +
-> +		rc = cxl_get_dc_id(mds, start_region, dc_resp, dc_resp_size);
-
-I'd spell out identify.
-Initially I thought this was getting an index.
-
-
-> +		if (rc < 0)
-> +			goto free_resp;
-> +
-> +		mds->nr_dc_region += rc;
-> +
-> +		if (mds->nr_dc_region < 1 || mds->nr_dc_region > CXL_MAX_DC_REGION) {
-> +			dev_err(dev, "Invalid num of dynamic capacity regions %d\n",
-> +				mds->nr_dc_region);
-> +			rc = -EINVAL;
-> +			goto free_resp;
-> +		}
-> +
-> +		for (i = start_region, j = 0; i < mds->nr_dc_region; i++, j++) {
-> +			rc = cxl_dc_save_region_info(mds, i, &dc_resp->region[j]);
-> +			if (rc)
-> +				goto free_resp;
-> +		}
-> +
-> +		start_region = mds->nr_dc_region;
-> +
-> +	} while (mds->nr_dc_region < dc_resp->avail_region_count);
-> +
-> +	mds->dynamic_cap =
-> +		mds->dc_region[mds->nr_dc_region - 1].base +
-> +		mds->dc_region[mds->nr_dc_region - 1].decode_len -
-> +		mds->dc_region[0].base;
-> +	dev_dbg(dev, "Total dynamic capacity: %#llx\n", mds->dynamic_cap);
-> +
-> +free_resp:
-> +	kfree(dc_resp);
-
-Maybe a first use for __free in cxl?
-
-See include/linux/cleanup.h
-Would enable returns rather than goto and label.
-
-
-
-> +	if (rc)
-> +		dev_err(dev, "Failed to get DC info: %d\n", rc);
-
-I'd prefer to see more specific debug in the few paths that don't already
-print it above.
-
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(cxl_dev_dynamic_capacity_identify, CXL);
-> +
->  static int add_dpa_res(struct device *dev, struct resource *parent,
->  		       struct resource *res, resource_size_t start,
->  		       resource_size_t size, const char *type)
-> @@ -1208,8 +1369,12 @@ int cxl_mem_create_range_info(struct cxl_memdev_state *mds)
->  {
->  	struct cxl_dev_state *cxlds = &mds->cxlds;
->  	struct device *dev = cxlds->dev;
-> +	size_t untenanted_mem;
->  	int rc;
->  
-> +	untenanted_mem = mds->dc_region[0].base - mds->static_cap;
-> +	mds->total_bytes = mds->static_cap + untenanted_mem + mds->dynamic_cap;
-> +
->  	if (!cxlds->media_ready) {
->  		cxlds->dpa_res = DEFINE_RES_MEM(0, 0);
->  		cxlds->ram_res = DEFINE_RES_MEM(0, 0);
-> @@ -1217,8 +1382,16 @@ int cxl_mem_create_range_info(struct cxl_memdev_state *mds)
->  		return 0;
->  	}
->  
-> -	cxlds->dpa_res =
-> -		(struct resource)DEFINE_RES_MEM(0, mds->total_bytes);
-> +	cxlds->dpa_res = (struct resource)DEFINE_RES_MEM(0, mds->total_bytes);
-
-Beat back that auto-formater! Or just run it once and fix everything before
-doing anything new.
-
-> +
-> +	for (int i = 0; i < mds->nr_dc_region; i++) {
-> +		struct cxl_dc_region_info *dcr = &mds->dc_region[i];
-> +
-> +		rc = add_dpa_res(dev, &cxlds->dpa_res, &cxlds->dc_res[i],
-> +				 dcr->base, dcr->decode_len, dcr->name);
-> +		if (rc)
-> +			return rc;
-> +	}
->  
->  	if (mds->partition_align_bytes == 0) {
->  		rc = add_dpa_res(dev, &cxlds->dpa_res, &cxlds->ram_res, 0,
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 252bc8e1f103..75041903b72c 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -46,7 +46,7 @@ static ssize_t uuid_show(struct device *dev, struct device_attribute *attr,
->  	rc = down_read_interruptible(&cxl_region_rwsem);
->  	if (rc)
->  		return rc;
-> -	if (cxlr->mode != CXL_DECODER_PMEM)
-> +	if (cxlr->mode != CXL_REGION_PMEM)
->  		rc = sysfs_emit(buf, "\n");
->  	else
->  		rc = sysfs_emit(buf, "%pUb\n", &p->uuid);
-> @@ -359,7 +359,7 @@ static umode_t cxl_region_visible(struct kobject *kobj, struct attribute *a,
->  	 * Support tooling that expects to find a 'uuid' attribute for all
->  	 * regions regardless of mode.
->  	 */
-> -	if (a == &dev_attr_uuid.attr && cxlr->mode != CXL_DECODER_PMEM)
-> +	if (a == &dev_attr_uuid.attr && cxlr->mode != CXL_REGION_PMEM)
->  		return 0444;
->  	return a->mode;
->  }
-> @@ -537,7 +537,7 @@ static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct cxl_region *cxlr = to_cxl_region(dev);
->  
-> -	return sysfs_emit(buf, "%s\n", cxl_decoder_mode_name(cxlr->mode));
-> +	return sysfs_emit(buf, "%s\n", cxl_region_mode_name(cxlr->mode));
->  }
->  static DEVICE_ATTR_RO(mode);
->  
-> @@ -563,7 +563,7 @@ static int alloc_hpa(struct cxl_region *cxlr, resource_size_t size)
->  
->  	/* ways, granularity and uuid (if PMEM) need to be set before HPA */
->  	if (!p->interleave_ways || !p->interleave_granularity ||
-> -	    (cxlr->mode == CXL_DECODER_PMEM && uuid_is_null(&p->uuid)))
-> +	    (cxlr->mode == CXL_REGION_PMEM && uuid_is_null(&p->uuid)))
->  		return -ENXIO;
->  
->  	div_u64_rem(size, SZ_256M * p->interleave_ways, &remainder);
-> @@ -1765,6 +1765,17 @@ static int cxl_region_sort_targets(struct cxl_region *cxlr)
->  	return rc;
->  }
->  
-> +static bool cxl_modes_compatible(enum cxl_region_mode rmode,
-> +				 enum cxl_decoder_mode dmode)
-> +{
-> +	if (rmode == CXL_REGION_RAM && dmode == CXL_DECODER_RAM)
-> +		return true;
-> +	if (rmode == CXL_REGION_PMEM && dmode == CXL_DECODER_PMEM)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  static int cxl_region_attach(struct cxl_region *cxlr,
->  			     struct cxl_endpoint_decoder *cxled, int pos)
->  {
-> @@ -1778,9 +1789,11 @@ static int cxl_region_attach(struct cxl_region *cxlr,
->  	lockdep_assert_held_write(&cxl_region_rwsem);
->  	lockdep_assert_held_read(&cxl_dpa_rwsem);
->  
-> -	if (cxled->mode != cxlr->mode) {
-> -		dev_dbg(&cxlr->dev, "%s region mode: %d mismatch: %d\n",
-> -			dev_name(&cxled->cxld.dev), cxlr->mode, cxled->mode);
-> +	if (!cxl_modes_compatible(cxlr->mode, cxled->mode)) {
-> +		dev_dbg(&cxlr->dev, "%s region mode: %s mismatch decoder: %s\n",
-> +			dev_name(&cxled->cxld.dev),
-> +			cxl_region_mode_name(cxlr->mode),
-> +			cxl_decoder_mode_name(cxled->mode));
->  		return -EINVAL;
->  	}
->  
-> @@ -2234,7 +2247,7 @@ static struct cxl_region *cxl_region_alloc(struct cxl_root_decoder *cxlrd, int i
->   * devm_cxl_add_region - Adds a region to a decoder
->   * @cxlrd: root decoder
->   * @id: memregion id to create, or memregion_free() on failure
-> - * @mode: mode for the endpoint decoders of this region
-> + * @mode: mode of this region
->   * @type: select whether this is an expander or accelerator (type-2 or type-3)
+>
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-uniphy.c | 401 +++++++++++++++++++++----
+>  1 file changed, 335 insertions(+), 66 deletions(-)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-uniphy.c b/drivers/phy/qualcomm/phy-qcom-uniphy.c
+> index da6f290af722..eb71588f5417 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-uniphy.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-uniphy.c
+> @@ -5,141 +5,410 @@
+>   * Based on code from
+>   * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
 >   *
->   * This is the second step of region initialization. Regions exist within an
-> @@ -2245,7 +2258,7 @@ static struct cxl_region *cxl_region_alloc(struct cxl_root_decoder *cxlrd, int i
+> + * Modified the driver to be common for Qualcomm UNIPHYs
+> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+
+I'd not call this 'modified', but rather 'rewritten from scratch.
+
 >   */
->  static struct cxl_region *devm_cxl_add_region(struct cxl_root_decoder *cxlrd,
->  					      int id,
-> -					      enum cxl_decoder_mode mode,
-> +					      enum cxl_region_mode mode,
->  					      enum cxl_decoder_type type)
->  {
->  	struct cxl_port *port = to_cxl_port(cxlrd->cxlsd.cxld.dev.parent);
-> @@ -2254,11 +2267,12 @@ static struct cxl_region *devm_cxl_add_region(struct cxl_root_decoder *cxlrd,
->  	int rc;
->  
->  	switch (mode) {
-> -	case CXL_DECODER_RAM:
-> -	case CXL_DECODER_PMEM:
-> +	case CXL_REGION_RAM:
-> +	case CXL_REGION_PMEM:
->  		break;
->  	default:
-> -		dev_err(&cxlrd->cxlsd.cxld.dev, "unsupported mode %d\n", mode);
-
-Arguably should have been moved to the cxl_decoder_mode_name() in patch 1
-before being changed to cxl_region_mode_name() when the two are separated in this
-patch.  You could just add a note to patch 1 to say 'other instances will be
-covered by refactors shortly'. 
-
-> +		dev_err(&cxlrd->cxlsd.cxld.dev, "unsupported mode %s\n",
-> +			cxl_region_mode_name(mode));
->  		return ERR_PTR(-EINVAL);
->  	}
->  
-> @@ -2308,7 +2322,7 @@ static ssize_t create_ram_region_show(struct device *dev,
->  }
->  
->  static struct cxl_region *__create_region(struct cxl_root_decoder *cxlrd,
-> -					  int id, enum cxl_decoder_mode mode,
-> +					  int id, enum cxl_region_mode mode,
->  					  enum cxl_decoder_type type)
->  {
->  	int rc;
-> @@ -2337,7 +2351,7 @@ static ssize_t create_pmem_region_store(struct device *dev,
->  	if (rc != 1)
->  		return -EINVAL;
->  
-> -	cxlr = __create_region(cxlrd, id, CXL_DECODER_PMEM,
-> +	cxlr = __create_region(cxlrd, id, CXL_REGION_PMEM,
->  			       CXL_DECODER_HOSTONLYMEM);
->  	if (IS_ERR(cxlr))
->  		return PTR_ERR(cxlr);
-> @@ -2358,7 +2372,7 @@ static ssize_t create_ram_region_store(struct device *dev,
->  	if (rc != 1)
->  		return -EINVAL;
->  
-> -	cxlr = __create_region(cxlrd, id, CXL_DECODER_RAM,
-> +	cxlr = __create_region(cxlrd, id, CXL_REGION_RAM,
->  			       CXL_DECODER_HOSTONLYMEM);
->  	if (IS_ERR(cxlr))
->  		return PTR_ERR(cxlr);
-> @@ -2886,10 +2900,31 @@ static void construct_region_end(void)
->  	up_write(&cxl_region_rwsem);
->  }
->  
-> +static enum cxl_region_mode
-> +cxl_decoder_to_region_mode(enum cxl_decoder_mode mode)
-> +{
-> +	switch (mode) {
-> +	case CXL_DECODER_NONE:
-> +		return CXL_REGION_NONE;
-> +	case CXL_DECODER_RAM:
-> +		return CXL_REGION_RAM;
-> +	case CXL_DECODER_PMEM:
-> +		return CXL_REGION_PMEM;
-> +	case CXL_DECODER_DEAD:
-> +		return CXL_REGION_DEAD;
-> +	case CXL_DECODER_MIXED:
-> +	default:
-> +		return CXL_REGION_MIXED;
-> +	}
-> +
-> +	return CXL_REGION_MIXED;
-> +}
-> +
->  static struct cxl_region *
->  construct_region_begin(struct cxl_root_decoder *cxlrd,
->  		       struct cxl_endpoint_decoder *cxled)
->  {
-> +	enum cxl_region_mode mode = cxl_decoder_to_region_mode(cxled->mode);
->  	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
->  	struct cxl_region_params *p;
->  	struct cxl_region *cxlr;
-> @@ -2897,7 +2932,7 @@ construct_region_begin(struct cxl_root_decoder *cxlrd,
->  
->  	do {
->  		cxlr = __create_region(cxlrd, atomic_read(&cxlrd->region_id),
-> -				       cxled->mode, cxled->cxld.target_type);
-> +				       mode, cxled->cxld.target_type);
->  	} while (IS_ERR(cxlr) && PTR_ERR(cxlr) == -EBUSY);
->  
->  	if (IS_ERR(cxlr)) {
-> @@ -3200,9 +3235,9 @@ static int cxl_region_probe(struct device *dev)
->  		return rc;
->  
->  	switch (cxlr->mode) {
-> -	case CXL_DECODER_PMEM:
-> +	case CXL_REGION_PMEM:
->  		return devm_cxl_add_pmem_region(cxlr);
-> -	case CXL_DECODER_RAM:
-> +	case CXL_REGION_RAM:
->  		/*
->  		 * The region can not be manged by CXL if any portion of
->  		 * it is already online as 'System RAM'
-> @@ -3223,8 +3258,8 @@ static int cxl_region_probe(struct device *dev)
->  		/* HDM-H routes to device-dax */
->  		return devm_cxl_add_dax_region(cxlr);
->  	default:
-> -		dev_dbg(&cxlr->dev, "unsupported region mode: %d\n",
-> -			cxlr->mode);
-> +		dev_dbg(&cxlr->dev, "unsupported region mode: %s\n",
-> +			cxl_region_mode_name(cxlr->mode));
->  		return -ENXIO;
->  	}
->  }
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index cd4a9ffdacc7..ed282dcd5cf5 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -374,6 +374,28 @@ static inline const char *cxl_decoder_mode_name(enum cxl_decoder_mode mode)
->  	return "mixed";
->  }
->  
-> +enum cxl_region_mode {
-> +	CXL_REGION_NONE,
-> +	CXL_REGION_RAM,
-> +	CXL_REGION_PMEM,
-> +	CXL_REGION_MIXED,
-> +	CXL_REGION_DEAD,
+>
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+>  #include <linux/delay.h>
+>  #include <linux/err.h>
+>  #include <linux/io.h>
+>  #include <linux/kernel.h>
+> +#include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/of.h>
+>  #include <linux/phy/phy.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+>
+> -struct ipq4019_usb_phy {
+> +struct uniphy_init_tbl {
+> +       unsigned int offset;
+> +       unsigned int val;
 > +};
 
-It feels to me like you could have yanked the introduction and use of cxl_region_mode
-out as a trivial precursor patch with a note saying the separation will be needed
-shortly and why it will be needed.
+unused
 
 > +
-> +static inline const char *cxl_region_mode_name(enum cxl_region_mode mode)
-> +{
-> +	static const char * const names[] = {
-> +		[CXL_REGION_NONE] = "none",
-> +		[CXL_REGION_RAM] = "ram",
-> +		[CXL_REGION_PMEM] = "pmem",
-> +		[CXL_REGION_MIXED] = "mixed",
-> +	};
+> +#define UNIPHY_INIT_CFG(o, v)          \
+> +       {                               \
+> +               .offset = o,            \
+> +               .val = v,               \
+> +       }
+
+unused
+
 > +
-> +	if (mode >= CXL_REGION_NONE && mode <= CXL_REGION_MIXED)
-> +		return names[mode];
-> +	return "mixed";
-> +}
-> +
->  /*
->   * Track whether this decoder is reserved for region autodiscovery, or
->   * free for userspace provisioning.
-> @@ -502,7 +524,8 @@ struct cxl_region_params {
->   * struct cxl_region - CXL region
->   * @dev: This region's device
->   * @id: This region's id. Id is globally unique across all regions
-> - * @mode: Endpoint decoder allocation / access mode
-> + * @mode: Region mode which defines which endpoint decoder mode the region is
-> + *        compatible with
->   * @type: Endpoint decoder target type
->   * @cxl_nvb: nvdimm bridge for coordinating @cxlr_pmem setup / shutdown
->   * @cxlr_pmem: (for pmem regions) cached copy of the nvdimm bridge
-> @@ -512,7 +535,7 @@ struct cxl_region_params {
->  struct cxl_region {
->  	struct device dev;
->  	int id;
-> -	enum cxl_decoder_mode mode;
-> +	enum cxl_region_mode mode;
->  	enum cxl_decoder_type type;
->  	struct cxl_nvdimm_bridge *cxl_nvb;
->  	struct cxl_pmem_region *cxlr_pmem;
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 5f2e65204bf9..8c8f47b397ab 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -396,6 +396,7 @@ enum cxl_devtype {
->  	CXL_DEVTYPE_CLASSMEM,
->  };
->  
-> +#define CXL_MAX_DC_REGION 8
->  /**
->   * struct cxl_dev_state - The driver device state
->   *
-> @@ -412,6 +413,8 @@ enum cxl_devtype {
->   * @dpa_res: Overall DPA resource tree for the device
->   * @pmem_res: Active Persistent memory capacity configuration
->   * @ram_res: Active Volatile memory capacity configuration
-> + * @dc_res: Active Dynamic Capacity memory configuration for each possible
-> + *          region
->   * @component_reg_phys: register base of component registers
->   * @serial: PCIe Device Serial Number
->   * @type: Generic Memory Class device or Vendor Specific Memory device
-> @@ -426,11 +429,23 @@ struct cxl_dev_state {
->  	struct resource dpa_res;
->  	struct resource pmem_res;
->  	struct resource ram_res;
-> +	struct resource dc_res[CXL_MAX_DC_REGION];
->  	resource_size_t component_reg_phys;
->  	u64 serial;
->  	enum cxl_devtype type;
->  };
->  
-> +#define CXL_DC_REGION_STRLEN 7
-> +struct cxl_dc_region_info {
-> +	u64 base;
-> +	u64 decode_len;
-> +	u64 len;
-> +	u64 blk_size;
-> +	u32 dsmad_handle;
-> +	u8 flags;
-> +	u8 name[CXL_DC_REGION_STRLEN];
+> +struct uniphy_cfg {
+> +       const struct uniphy_init_tbl *init_seq;
+> +       int num_init_seq;
+> +       const char * const *clk_list;
+> +       int num_clks;
+> +       const char * const *reset_list;
+> +       int num_resets;
+> +       const char * const *vreg_list;
+> +       int num_vregs;
+> +       unsigned int pipe_clk_rate;
+> +       unsigned int reset_udelay;
+> +       unsigned int autoload_udelay;
 > +};
 > +
->  /**
->   * struct cxl_memdev_state - Generic Type-3 Memory Device Class driver data
->   *
-> @@ -449,6 +464,8 @@ struct cxl_dev_state {
->   * @enabled_cmds: Hardware commands found enabled in CEL.
->   * @exclusive_cmds: Commands that are kernel-internal only
->   * @total_bytes: sum of all possible capacities
-> + * @static_cap: Sum of RAM and PMEM capacities
-
-Sum of static RAM and PMEM capacities
-
-Dynamic cap may well be RAM or PMEM!
-
-> + * @dynamic_cap: Complete DPA range occupied by DC regions
->   * @volatile_only_bytes: hard volatile capacity
->   * @persistent_only_bytes: hard persistent capacity
->   * @partition_align_bytes: alignment size for partition-able capacity
-> @@ -456,6 +473,10 @@ struct cxl_dev_state {
->   * @active_persistent_bytes: sum of hard + soft persistent
->   * @next_volatile_bytes: volatile capacity change pending device reset
->   * @next_persistent_bytes: persistent capacity change pending device reset
-> + * @nr_dc_region: number of DC regions implemented in the memory device
-> + * @dc_region: array containing info about the DC regions
-> + * @dc_event_log_size: The number of events the device can store in the
-> + * Dynamic Capacity Event Log before it overflows
->   * @event: event log driver state
->   * @poison: poison driver state info
->   * @fw: firmware upload / activation state
-> @@ -473,7 +494,10 @@ struct cxl_memdev_state {
->  	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
->  	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
->  	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
+> +struct qcom_uniphy {
+>         struct device           *dev;
+> +       const struct uniphy_cfg *cfg;
+>         struct phy              *phy;
+>         void __iomem            *base;
+> -       struct reset_control    *por_rst;
+> -       struct reset_control    *srif_rst;
+> +       struct clk_bulk_data    *clks;
+> +       struct reset_control_bulk_data  *resets;
+> +       struct regulator_bulk_data *vregs;
+> +       struct clk_fixed_rate pipe_clk_fixed;
+> +};
 > +
->  	u64 total_bytes;
-> +	u64 static_cap;
-> +	u64 dynamic_cap;
->  	u64 volatile_only_bytes;
->  	u64 persistent_only_bytes;
->  	u64 partition_align_bytes;
-> @@ -481,6 +505,11 @@ struct cxl_memdev_state {
->  	u64 active_persistent_bytes;
->  	u64 next_volatile_bytes;
->  	u64 next_persistent_bytes;
+> +static const char * const ipq4019_ssphy_reset_l[] = {
+> +       "por_rst",
+> +};
 > +
-> +	u8 nr_dc_region;
-> +	struct cxl_dc_region_info dc_region[CXL_MAX_DC_REGION];
-> +	size_t dc_event_log_size;
+> +static const struct uniphy_cfg ipq4019_usb_ssphy_cfg = {
+> +       .reset_list     = ipq4019_ssphy_reset_l,
+> +       .num_resets     = ARRAY_SIZE(ipq4019_ssphy_reset_l),
+> +       .reset_udelay   = 10000,
 > +
->  	struct cxl_event_state event;
->  	struct cxl_poison_state poison;
->  	struct cxl_security_state security;
-> @@ -587,6 +616,7 @@ struct cxl_mbox_identify {
->  	__le16 inject_poison_limit;
->  	u8 poison_caps;
->  	u8 qos_telemetry_caps;
-> +	__le16 dc_event_log_size;
->  } __packed;
->  
->  /*
-> @@ -741,9 +771,31 @@ struct cxl_mbox_set_partition_info {
->  	__le64 volatile_capacity;
->  	u8 flags;
->  } __packed;
-> -
-
-?
-
->  #define  CXL_SET_PARTITION_IMMEDIATE_FLAG	BIT(0)
->  
-> +struct cxl_mbox_get_dc_config {
-> +	u8 region_count;
-> +	u8 start_region_index;
-> +} __packed;
+>  };
+>
+> -static int ipq4019_ss_phy_power_off(struct phy *_phy)
+> +static const char * const ipq4019_hsphy_reset_l[] = {
+> +       "por_rst", "srif_rst",
+> +};
++
+> +static const struct uniphy_cfg ipq4019_usb_hsphy_cfg = {
+> +       .reset_list     = ipq4019_hsphy_reset_l,
+> +       .num_resets     = ARRAY_SIZE(ipq4019_hsphy_reset_l),
+> +       .reset_udelay   = 10000,
+> +};
 > +
-> +/* See CXL 3.0 Table 125 get dynamic capacity config Output Payload */
-> +struct cxl_mbox_dynamic_capacity {
-
-Can we rename to make it more clear which payload this is?
-
-> +	u8 avail_region_count;
-> +	u8 rsvd[7];
-> +	struct cxl_dc_region_config {
-> +		__le64 region_base;
-> +		__le64 region_decode_length;
-> +		__le64 region_length;
-> +		__le64 region_block_size;
-> +		__le32 region_dsmad_handle;
-> +		u8 flags;
-> +		u8 rsvd[3];
-> +	} __packed region[];
-> +} __packed;
-> +#define CXL_DYNAMIC_CAPACITY_SANITIZE_ON_RELEASE_FLAG BIT(0)
-> +#define CXL_REGIONS_RETURNED(size_out) \
-> +	((size_out - 8) / sizeof(struct cxl_dc_region_config))
+> +static int phy_mux_sel(struct phy *phy)
+> +{
+> +       struct qcom_uniphy *uniphy = phy_get_drvdata(phy);
+> +       struct device *dev = uniphy->dev;
+> +       struct regmap *tcsr;
+> +       unsigned int args[2];
+> +       int ret;
 > +
->  /* Set Timestamp CXL 3.0 Spec 8.2.9.4.2 */
->  struct cxl_mbox_set_timestamp_in {
->  	__le64 timestamp;
-> @@ -867,6 +919,7 @@ enum {
->  int cxl_internal_send_cmd(struct cxl_memdev_state *mds,
->  			  struct cxl_mbox_cmd *cmd);
->  int cxl_dev_state_identify(struct cxl_memdev_state *mds);
-> +int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds);
->  int cxl_await_media_ready(struct cxl_dev_state *cxlds);
->  int cxl_enumerate_cmds(struct cxl_memdev_state *mds);
->  int cxl_mem_create_range_info(struct cxl_memdev_state *mds);
+> +       tcsr = syscon_regmap_lookup_by_phandle_args(dev->of_node, "qcom,phy-mux-sel",
+> +                                                   ARRAY_SIZE(args), args);
 
-ta
+No. mux data should come from match_data rather than polluting DT with it.
+
+> +       if (IS_ERR(tcsr)) {
+> +               ret = PTR_ERR(tcsr);
+> +               if (ret == -ENOENT)
+> +                       return 0;
+> +
+> +               dev_err(dev, "failed to lookup syscon for phy mux %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       /* PHY MUX registers only have this BIT0 */
+
+huh?
+
+> +       ret = regmap_write(tcsr, args[0], args[1]);
+> +       if (ret < 0) {
+> +               dev_err(dev, "PHY Mux selection failed: %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int uniphy_enable(struct phy *phy)
+>  {
+> -       struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
+> +       struct qcom_uniphy *uniphy = phy_get_drvdata(phy);
+> +       const struct uniphy_cfg *cfg = uniphy->cfg;
+> +       const struct uniphy_init_tbl *tbl;
+> +       void __iomem *base = uniphy->base;
+> +       int i, ret;
+>
+> -       reset_control_assert(phy->por_rst);
+> -       msleep(10);
+> +       ret = regulator_bulk_enable(cfg->num_vregs, uniphy->vregs);
+> +       if (ret) {
+> +               dev_err(uniphy->dev, "failed to enable regulators: %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       /* Assert all available resets */
+> +       for (i = 0; i < cfg->num_resets; i++) {
+> +               ret = reset_control_assert(uniphy->resets[i].rstc);
+> +               if (ret) {
+> +                       dev_err(uniphy->dev, "reset assert failed: %d\n", ret);
+> +                       goto err_assert_reset;
+> +               }
+> +               if (cfg->reset_udelay)
+> +                       usleep_range(cfg->reset_udelay, cfg->reset_udelay + 10);
+> +       }
+
+There is a whole reset_control_bulk_*() set of API. Please use it
+instead of hardcoding reset cycles.
+
+> +
+> +       /* Deassert all available resets */
+> +       for (i = 0; i < cfg->num_resets; i++) {
+> +               ret = reset_control_deassert(uniphy->resets[i].rstc);
+> +               if (ret) {
+> +                       dev_err(uniphy->dev, "reset deassert failed: %d\n", ret);
+> +                       goto err_assert_reset;
+> +               }
+> +               if (cfg->reset_udelay)
+> +                       usleep_range(cfg->reset_udelay, cfg->reset_udelay + 10);
+> +       }
+> +
+> +       ret = phy_mux_sel(phy);
+> +       if (ret < 0)
+> +               goto err_assert_reset;
+> +
+> +       ret = clk_bulk_prepare_enable(cfg->num_clks, uniphy->clks);
+> +       if (ret) {
+> +               dev_err(uniphy->dev, "failed to enable clocks: %d\n", ret);
+> +               goto err_assert_reset;
+> +       }
+> +
+> +       if (cfg->autoload_udelay)
+> +               usleep_range(cfg->autoload_udelay, cfg->autoload_udelay + 10);
+> +
+> +       if (cfg->num_init_seq) {
+> +               tbl = cfg->init_seq;
+> +               for (i = 0; i < cfg->num_init_seq; i++, tbl++)
+> +                       writel(tbl->val, base + tbl->offset);
+> +       }
+
+unused
+
+>
+>         return 0;
+> +
+> +err_assert_reset:
+> +       /* Assert all available resets */
+> +       for (i = 0; i < cfg->num_resets; i++) {
+> +               reset_control_assert(uniphy->resets[i].rstc);
+> +               if (cfg->reset_udelay)
+> +                       usleep_range(cfg->reset_udelay, cfg->reset_udelay + 10);
+> +       }
+> +
+> +       return ret;
+>  }
+>
+> -static int ipq4019_ss_phy_power_on(struct phy *_phy)
+> +static int uniphy_disable(struct phy *phy)
+>  {
+> -       struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
+> +       struct qcom_uniphy *uniphy = phy_get_drvdata(phy);
+> +       const struct uniphy_cfg *cfg = uniphy->cfg;
+> +       int i;
+>
+> -       ipq4019_ss_phy_power_off(_phy);
+> +       /* Assert all available resets */
+> +       for (i = 0; i < cfg->num_resets; i++) {
+> +               reset_control_assert(uniphy->resets[i].rstc);
+> +               if (cfg->reset_udelay)
+> +                       usleep_range(cfg->reset_udelay, cfg->reset_udelay + 10);
+> +       }
+>
+> -       reset_control_deassert(phy->por_rst);
+> +       clk_bulk_disable_unprepare(cfg->num_clks, uniphy->clks);
+> +
+> +       regulator_bulk_disable(cfg->num_vregs, uniphy->vregs);
+>
+>         return 0;
+>  }
+>
+> -static const struct phy_ops ipq4019_usb_ss_phy_ops = {
+> -       .power_on       = ipq4019_ss_phy_power_on,
+> -       .power_off      = ipq4019_ss_phy_power_off,
+> +static const struct phy_ops uniphy_phy_ops = {
+> +       .power_on       = uniphy_enable,
+> +       .power_off      = uniphy_disable,
+
+Using _enable / _disable for power_on() and power_off() isn't logical.
+
+> +       .owner          = THIS_MODULE,
+>  };
+>
+> -static int ipq4019_hs_phy_power_off(struct phy *_phy)
+> +static int qcom_uniphy_vreg_init(struct qcom_uniphy *uniphy)
+> +{
+> +       const struct uniphy_cfg *cfg = uniphy->cfg;
+> +       struct device *dev = uniphy->dev;
+> +       int i, ret;
+> +
+> +       uniphy->vregs = devm_kcalloc(dev, cfg->num_vregs,
+> +                                    sizeof(*uniphy->vregs), GFP_KERNEL);
+
+You know the maximum amount of regulators. Can you use an array
+instead of allocating data?
+
+> +       if (!uniphy->vregs)
+> +               return -ENOMEM;
+> +
+> +       for (i = 0; i < cfg->num_vregs; i++)
+> +               uniphy->vregs[i].supply = cfg->vreg_list[i];
+> +
+> +       ret = devm_regulator_bulk_get(dev, cfg->num_vregs, uniphy->vregs);
+> +
+
+Drop empty lines between ret assignment and check.
+
+> +       if (ret)
+> +               return dev_err_probe(dev, ret, "failed to get regulators\n");
+> +
+> +       return 0;
+> +}
+> +
+> +static int qcom_uniphy_reset_init(struct qcom_uniphy *uniphy)
+>  {
+> -       struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
+> +       const struct uniphy_cfg *cfg = uniphy->cfg;
+> +       struct device *dev = uniphy->dev;
+> +       int i, ret;
+> +
+> +       uniphy->resets = devm_kcalloc(dev, cfg->num_resets,
+> +                                     sizeof(*uniphy->resets), GFP_KERNEL);
+
+Same here, can you use an array?
+
+> +       if (!uniphy->resets)
+> +               return -ENOMEM;
+>
+> -       reset_control_assert(phy->por_rst);
+> -       msleep(10);
+> +       for (i = 0; i < cfg->num_resets; i++)
+> +               uniphy->resets[i].id = cfg->reset_list[i];
+
+Declare common resets list and use
+devm_reset_control_bulk_get_optional_exclusive().
+
+>
+> -       reset_control_assert(phy->srif_rst);
+> -       msleep(10);
+> +       ret = devm_reset_control_bulk_get_exclusive(dev, cfg->num_resets, uniphy->resets);
+> +       if (ret)
+> +               return dev_err_probe(dev, ret, "failed to get resets\n");
+>
+>         return 0;
+>  }
+>
+> -static int ipq4019_hs_phy_power_on(struct phy *_phy)
+> +static int qcom_uniphy_clk_init(struct qcom_uniphy *uniphy)
+
+I don't see clocks actually being used. Please do not introduce unused features.
+
+>  {
+> -       struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
+> +       const struct uniphy_cfg *cfg = uniphy->cfg;
+> +       struct device *dev = uniphy->dev;
+> +       int i, ret;
+>
+> -       ipq4019_hs_phy_power_off(_phy);
+>
+> -       reset_control_deassert(phy->srif_rst);
+> -       msleep(10);
+> +       uniphy->clks = devm_kcalloc(dev, cfg->num_clks,
+> +                                   sizeof(*uniphy->clks), GFP_KERNEL);
+> +       if (!uniphy->clks)
+> +               return -ENOMEM;
+> +
+> +       for (i = 0; i < cfg->num_clks; i++)
+> +               uniphy->clks[i].id = cfg->clk_list[i];
+>
+> -       reset_control_deassert(phy->por_rst);
+> +       ret = devm_clk_bulk_get(dev, cfg->num_clks, uniphy->clks);
+> +       if (ret)
+> +               return dev_err_probe(dev, ret, "failed to get clocks\n");
+>
+>         return 0;
+>  }
+>
+> -static const struct phy_ops ipq4019_usb_hs_phy_ops = {
+> -       .power_on       = ipq4019_hs_phy_power_on,
+> -       .power_off      = ipq4019_hs_phy_power_off,
+> -};
+> +static void phy_clk_release_provider(void *res)
+> +{
+> +       of_clk_del_provider(res);
+> +}
+>
+> -static const struct of_device_id ipq4019_usb_phy_of_match[] = {
+> -       { .compatible = "qcom,usb-hs-ipq4019-phy", .data = &ipq4019_usb_hs_phy_ops},
+> -       { .compatible = "qcom,usb-ss-ipq4019-phy", .data = &ipq4019_usb_ss_phy_ops},
+> -       { },
+> -};
+> -MODULE_DEVICE_TABLE(of, ipq4019_usb_phy_of_match);
+> +/*
+> + * Register a fixed rate pipe clock.
+> + *
+> + * The <s>_pipe_clksrc generated by PHY goes to the GCC that gate
+> + * controls it. The <s>_pipe_clk coming out of the GCC is requested
+> + * by the PHY driver for its operations.
+> + * We register the <s>_pipe_clksrc here. The gcc driver takes care
+> + * of assigning this <s>_pipe_clksrc as parent to <s>_pipe_clk.
+> + * Below picture shows this relationship.
+> + *
+> + *         +---------------+
+> + *         |   PHY block   |<<---------------------------------------+
+> + *         |               |                                         |
+> + *         |   +-------+   |                   +-----+               |
+> + *   I/P---^-->|  PLL  |---^--->pipe_clksrc--->| GCC |--->pipe_clk---+
+> + *    clk  |   +-------+   |                   +-----+
+> + *         +---------------+
+> + */
+> +static int phy_pipe_clk_register(struct qcom_uniphy *uniphy, struct device_node *np)
+> +{
+> +       struct clk_fixed_rate *fixed = &uniphy->pipe_clk_fixed;
+> +       const struct uniphy_cfg *cfg = uniphy->cfg;
+> +       struct device *dev = uniphy->dev;
+> +       struct clk_init_data init = { };
+> +       int ret;
+> +
+> +       ret = of_property_read_string(np, "clock-output-names", &init.name);
+> +       if (ret) {
+> +               dev_err(dev, "%pOFn: No clock-output-names\n", np);
+> +               return ret;
+> +       }
+> +
+> +       init.ops = &clk_fixed_rate_ops;
+> +
+> +       fixed->fixed_rate = cfg->pipe_clk_rate;
+> +       fixed->hw.init = &init;
+>
+> -static int ipq4019_usb_phy_probe(struct platform_device *pdev)
+> +       ret = devm_clk_hw_register(dev, &fixed->hw);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &fixed->hw);
+> +       if (ret)
+> +               return ret;
+
+When you c&p something, please take care to understand the code you are copying.
+Unlike QMP drivers you can (and should) use devm_of_clk_add_hw_provider() here.
+
+Not to mention that pipe clocks are not in this patch.
+
+> +
+> +       /*
+> +        * Roll a devm action because the clock provider is the child node, but
+> +        * the child node is not actually a device.
+> +        */
+> +       return devm_add_action_or_reset(dev, phy_clk_release_provider, np);
+> +}
+> +
+> +static int qcom_uniphy_probe(struct platform_device *pdev)
+>  {
+>         struct device *dev = &pdev->dev;
+>         struct phy_provider *phy_provider;
+> -       struct ipq4019_usb_phy *phy;
+> +       struct qcom_uniphy *uniphy;
+> +       struct device_node *np;
+> +       int ret;
+>
+> -       phy = devm_kzalloc(dev, sizeof(*phy), GFP_KERNEL);
+> -       if (!phy)
+> +       uniphy = devm_kzalloc(dev, sizeof(*uniphy), GFP_KERNEL);
+> +       if (!uniphy)
+>                 return -ENOMEM;
+>
+> -       phy->dev = &pdev->dev;
+> -       phy->base = devm_platform_ioremap_resource(pdev, 0);
+> -       if (IS_ERR(phy->base)) {
+> -               dev_err(dev, "failed to remap register memory\n");
+> -               return PTR_ERR(phy->base);
+> -       }
+> +       uniphy->dev = dev;
+>
+> -       phy->por_rst = devm_reset_control_get(phy->dev, "por_rst");
+> -       if (IS_ERR(phy->por_rst)) {
+> -               if (PTR_ERR(phy->por_rst) != -EPROBE_DEFER)
+> -                       dev_err(dev, "POR reset is missing\n");
+> -               return PTR_ERR(phy->por_rst);
+> +       uniphy->cfg = of_device_get_match_data(dev);
+> +       if (!uniphy->cfg)
+> +               return -EINVAL;
+> +
+> +       uniphy->base = devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(uniphy->base)) {
+> +               ret = PTR_ERR(uniphy->base);
+> +               dev_err_probe(dev, ret, "failed to remap register memory\n");
+> +               return ret;
+>         }
+>
+> -       phy->srif_rst = devm_reset_control_get_optional(phy->dev, "srif_rst");
+> -       if (IS_ERR(phy->srif_rst))
+> -               return PTR_ERR(phy->srif_rst);
+> +       ret = qcom_uniphy_clk_init(uniphy);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = qcom_uniphy_reset_init(uniphy);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = qcom_uniphy_vreg_init(uniphy);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       if (uniphy->cfg->pipe_clk_rate) {
+> +               np = of_node_get(dev->of_node);
+
+What for? Do you think that the driver can outlive struct device?
+
+> +               ret = phy_pipe_clk_register(uniphy, np);
+> +               if (ret) {
+> +                       dev_err_probe(dev, ret, "failed to register pipe clk\n");
+> +                       goto err;
+> +               }
+> +       }
+>
+> -       phy->phy = devm_phy_create(dev, NULL, of_device_get_match_data(dev));
+> -       if (IS_ERR(phy->phy)) {
+> -               dev_err(dev, "failed to create PHY\n");
+> -               return PTR_ERR(phy->phy);
+> +       uniphy->phy = devm_phy_create(dev, NULL, &uniphy_phy_ops);
+> +       if (IS_ERR(uniphy->phy)) {
+> +               ret = PTR_ERR(uniphy->phy);
+> +               dev_err_probe(dev, ret, "failed to create PHY\n");
+> +               goto err;
+>         }
+> -       phy_set_drvdata(phy->phy, phy);
+> +
+> +       phy_set_drvdata(uniphy->phy, uniphy);
+>
+>         phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+>
+> -       return PTR_ERR_OR_ZERO(phy_provider);
+> +       ret = PTR_ERR_OR_ZERO(phy_provider);
+> +
+> +err:
+> +       if (uniphy->cfg->pipe_clk_rate)
+> +               of_node_put(np);
+> +       return ret;
+>  }
+>
+> -static struct platform_driver ipq4019_usb_phy_driver = {
+> -       .probe  = ipq4019_usb_phy_probe,
+> +static const struct of_device_id qcom_uniphy_of_match[] = {
+> +       { .compatible = "qcom,usb-hs-ipq4019-phy", .data = &ipq4019_usb_hsphy_cfg},
+> +       { .compatible = "qcom,usb-ss-ipq4019-phy", .data = &ipq4019_usb_ssphy_cfg},
+> +       { },
+> +};
+> +MODULE_DEVICE_TABLE(of, qcom_uniphy_of_match);
+> +
+> +static struct platform_driver qcom_uniphy_driver = {
+> +       .probe  = qcom_uniphy_probe,
+>         .driver = {
+> -               .of_match_table = ipq4019_usb_phy_of_match,
+> -               .name  = "ipq4019-usb-phy",
+> +               .of_match_table = qcom_uniphy_of_match,
+> +               .name  = "qcom-uniphy",
+>         }
+>  };
+> -module_platform_driver(ipq4019_usb_phy_driver);
+> +module_platform_driver(qcom_uniphy_driver);
+>
+> -MODULE_DESCRIPTION("QCOM/IPQ4019 USB phy driver");
+> +MODULE_DESCRIPTION("QCOM uniphy driver");
+>  MODULE_AUTHOR("John Crispin <john@phrozen.org>");
+>  MODULE_LICENSE("GPL v2");
+
+General comment: please consider dropping this beast and starting from
+scratch, adding only really necessary bits to the existing ipq4019 USB
+PHY driver.
+
+-- 
+With best wishes
+Dmitry
