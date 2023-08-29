@@ -2,75 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D190078BC23
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7004A78BC2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbjH2Ab3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 20:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
+        id S234594AbjH2AjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 20:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234579AbjH2AbT (ORCPT
+        with ESMTP id S234579AbjH2Aip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 20:31:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F32109;
-        Mon, 28 Aug 2023 17:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693269076; x=1724805076;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+O0znDO+Pz3D60RFYXIkyVZSD4gqgtT9ZrBhiyflP+Q=;
-  b=JgRjYWvtSOrCO4igVo2KKt3kFc4WPEfWT7/9L9pxtnrENIcGKJ+WVp30
-   6Hk6o2izFJT8eNutQAdOLJh9SEvIWCSdrIUp9U1GuhdDmPYGvL3s6+1bw
-   e83pg1jxXMSPqw43+fNlYNF76cvAl7qOs91MhCA2SaAaV61NC2Ja6alon
-   By49cXOsme8i6dIiTN8Q4DBF05neReH+FLN1JYNR63IdwqMmV/dz77/LA
-   /ADt3ojcazcLHkddm/0KfIgLSG8w3+o7qzpWEzC/rRpXPdndGmCvLWbjO
-   C1YEE6dtski+sCP6hboOBa/3dPbHUVIu0iIxQBgaej+DHNuWG2eq+N5/b
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="379015205"
-X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
-   d="scan'208";a="379015205"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 17:31:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="882117833"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 17:31:20 -0700
-Date:   Mon, 28 Aug 2023 17:31:13 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v4 1/7] x86/resctrl: Create separate domains for control
- and monitoring
-Message-ID: <ZO08UYWgxAATl/oq@agluck-desk3>
-References: <20230722190740.326190-1-tony.luck@intel.com>
- <20230722190740.326190-2-tony.luck@intel.com>
- <cc1a144f-6667-18fb-7fe7-cd15ebfedd08@intel.com>
- <ZOjfPx8iwTULTqdg@agluck-desk3>
- <da2c0e45-56d0-e04d-774d-4292d156e1d0@intel.com>
- <ZOzroJqc22HFZOXq@agluck-desk3>
- <5b5962d3-6a7b-cc60-4221-8267bfbc3bfd@intel.com>
- <ZO0KtAefCStikXEm@agluck-desk3>
- <e3cbefc5-e686-5561-a71e-06417ab51d07@intel.com>
- <ZO0b2j5lOpxPu3iw@agluck-desk3>
+        Mon, 28 Aug 2023 20:38:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8649DF;
+        Mon, 28 Aug 2023 17:38:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Sj0Gg4fQfJtwbUM/GeAvcxHJ84MBXNva1qgYGBjvRHM=; b=23NiSP4xygxRlsGKU1oVo9OAUy
+        fSr1KaqztJobnTseUCo5mOY/xXyFw/rh70zFIvHgOcjn4nq46y9/9uys0ZmzzKkdbLmtLp9CCFSKO
+        oooDMZ8VzsDQUG7i2SEBb3UROu0Y6QH1x03Td61XIYLgXq3mhnZ9LP1y8678lAT+a+UMEm4rFTn9o
+        taUYbuNZy0m9jAO5uVVJNELKapYuBYPEmnhk3htDiv5LKkZpBNUOlN97wBfyLq8oOlcvfnetWwk8p
+        ln1fA41NajTpY4mZmgM4jg8boYcwq9FbRq8nsOkgnPFN6mrpJpgzVvCtp/K2dXL1Egpwa8cInUkyX
+        sECF6jSg==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qamkj-00AVaY-2G;
+        Tue, 29 Aug 2023 00:38:41 +0000
+Message-ID: <106e0bb2-1fa6-5914-67f6-269755779e61@infradead.org>
+Date:   Mon, 28 Aug 2023 17:38:41 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZO0b2j5lOpxPu3iw@agluck-desk3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: linux-next: Tree for Aug 28 (loongarch: kgdb)
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:LOONGARCH" <loongarch@lists.linux.dev>
+References: <20230828150220.31624576@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230828150220.31624576@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,50 +55,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trimming to the core of the discussion.
 
-> > >> 	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
-> > >> 		domain_free(hw_dom);
-> > >> 		return;
-> > >> 	}
-> > >>
-> > >> 	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
-> > >> 		domain_free(hw_dom);
-> > >> 		return;
-> > >> 	}
 
-In the current code the control and monitor functions share a domain
-structure. So enabling one without the other would lead to a whole
-slew of complications. Various other bits of code would need to change
-to make run-time checks that the control/monitor pieces of the shared
-domain structure had been completely set up. So the existing code takes
-the easy path out and says "if I can't have both, I'll take have
-neither".
+On 8/27/23 22:02, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Please do *not* include material destined for v6.7 in your linux-next
+> included branches until *after* v6.6-rc1 has been released.  Also,
+> do *not* rebase you linu-next included branches onto v6.5.
+> 
+> Changes since 20230825:
+> 
 
-> > >> The above is the other item that I've been trying to discuss
-> > >> with you. Note that existing resctrl will not initialize monitoring if
-> > >> control could not be initialized.
-> > >> Compare with this submission:
-> > >>
-> > >> 	if (r->alloc_capable)
-> > >> 		domain_add_cpu_ctrl(cpu, r);
-> > >> 	if (r->mon_capable)
-> > >> 		domain_add_cpu_mon(cpu, r);
+There are many build errors when CONFIG_PERF_EVENTS => HAVE_HW_BREAKPOINT
+are not set.
+This is a reduced list of the build errors:
 
-With the updates I'm making, there are separate domain structures for
-control and monitor.  They don't have to be tied together. It's possible
-for initialization to fail on one, but the other remain completely
-functional (without adding "is this completely setup" checks to
-other code).
+../arch/loongarch/kernel/kgdb.c: In function 'hw_break_reserve_slot':
+../arch/loongarch/kernel/kgdb.c:515:21: error: implicit declaration of function 'dbg_reserve_bp_slot'; did you mean 'reserve_bp_slot'? [-Werror=implicit-function-declaration]
+  515 |                 if (dbg_reserve_bp_slot(*pevent))
+      |                     ^~~~~~~~~~~~~~~~~~~
+      |                     reserve_bp_slot
+../arch/loongarch/kernel/kgdb.c:527:17: error: implicit declaration of function 'dbg_release_bp_slot'; did you mean 'release_bp_slot'? [-Werror=implicit-function-declaration]
+  527 |                 dbg_release_bp_slot(*pevent);
+      |                 ^~~~~~~~~~~~~~~~~~~
+      |                 release_bp_slot
+../arch/loongarch/kernel/kgdb.c: In function 'kgdb_disable_hw_break':
+../arch/loongarch/kernel/kgdb.c:640:23: error: 'struct perf_event' has no member named 'attr'
+  640 |                 if (bp->attr.disabled == 1)
+      |                       ^~
+../arch/loongarch/kernel/kgdb.c: In function 'kgdb_arch_late':
+../arch/loongarch/kernel/kgdb.c:732:9: error: implicit declaration of function 'hw_breakpoint_init'; did you mean 'hw_breakpoint_slots'? [-Werror=implicit-function-declaration]
+  732 |         hw_breakpoint_init(&attr);
+      |         ^~~~~~~~~~~~~~~~~~
+      |         hw_breakpoint_slots
+../arch/loongarch/kernel/kgdb.c:752:38: error: 'struct perf_event' has no member named 'destroy'
+  752 |                         if (pevent[0]->destroy) {
+      |                                      ^~
+cc1: some warnings being treated as errors
 
-The question is what should the code do? Should it allow a partial
-success (now that is possible)? Or should it maintain legacy behavior
-and block use of both control and monitor for domain if either fails
-to allocate necessary memory to operate?
 
-I'm generally in favor of legacy semantics. But it seems weird to make
-the code deliberately worse to preserve this particular behavior.
-Especially as it adds complexity to the code for a case that in practice
-is never going to happen.
-
--Tony
+-- 
+~Randy
