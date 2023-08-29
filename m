@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A26178C326
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BAF78C329
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjH2LO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 07:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56196 "EHLO
+        id S230159AbjH2LRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjH2LOy (ORCPT
+        with ESMTP id S229841AbjH2LQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:14:54 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C4365BD;
-        Tue, 29 Aug 2023 04:14:50 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 230A32F4;
-        Tue, 29 Aug 2023 04:15:29 -0700 (PDT)
-Received: from [10.57.3.159] (unknown [10.57.3.159])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A92603F738;
-        Tue, 29 Aug 2023 04:14:46 -0700 (PDT)
-Message-ID: <deb735ce-7de1-e59a-9de4-1365b374b417@arm.com>
-Date:   Tue, 29 Aug 2023 12:14:44 +0100
+        Tue, 29 Aug 2023 07:16:48 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29D93BC;
+        Tue, 29 Aug 2023 04:16:44 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37TBG7VZ0018637, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37TBG7VZ0018637
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Aug 2023 19:16:07 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Tue, 29 Aug 2023 19:15:50 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Tue, 29 Aug 2023 19:15:49 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Tue, 29 Aug 2023 19:15:49 +0800
+From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+To:     Chanwoo Choi <chanwoo@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+CC:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v1 1/2] extcon: add Realtek DHC RTD SoC Type-C driver
+Thread-Topic: [PATCH v1 1/2] extcon: add Realtek DHC RTD SoC Type-C driver
+Thread-Index: AQHZ1ONvA6JhKCipAECuqR11IG4J/a/5VrCAgAfQ43A=
+Date:   Tue, 29 Aug 2023 11:15:49 +0000
+Message-ID: <2df3dc449c894e50b126a1b6941eb4d7@realtek.com>
+References: <20230822102846.4683-1-stanley_chang@realtek.com>
+ <af247603-6a8d-7c05-4342-c6f615a7f508@kernel.org>
+In-Reply-To: <af247603-6a8d-7c05-4342-c6f615a7f508@kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] media: videobuf2-dma-sg: limit the sg segment size
-Content-Language: en-GB
-To:     Tomasz Figa <tfiga@chromium.org>, Anle Pan <anle.pan@nxp.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hui.fang@nxp.com
-References: <20230828075420.2009568-1-anle.pan@nxp.com>
- <CAAFQd5Cn3xQroyYtC+m+pk1jOE5i3H+FGr-y8zqhaf0Yo5p-1Q@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <CAAFQd5Cn3xQroyYtC+m+pk1jOE5i3H+FGr-y8zqhaf0Yo5p-1Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-29 11:03, Tomasz Figa wrote:
-> Hi Anle,
-> 
-> On Mon, Aug 28, 2023 at 8:57 AM Anle Pan <anle.pan@nxp.com> wrote:
->>
->> When allocating from pages, the size of the sg segment is unlimited and
->> the default is UINT_MAX. This will cause the DMA stream mapping failed
->> later with a "swiotlb buffer full" error.
-> 
-> Thanks for the patch. Good catch.
-> 
->> The default maximum mapping
->> size is 128 slots x 2K = 256K, determined by "IO_TLB_SEGSIZE".
->> To fix the issue, limit the sg segment size according to
->> "dma_max_mapping_size" to match the mapping limit.
->>
->> Signed-off-by: Anle Pan <anle.pan@nxp.com>
->> ---
->>   drivers/media/common/videobuf2/videobuf2-dma-sg.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
->> index fa69158a65b1..b608a7c5f240 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
->> @@ -105,6 +105,7 @@ static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, struct device *dev,
->>          struct sg_table *sgt;
->>          int ret;
->>          int num_pages;
->> +       size_t max_segment = 0;
->>
->>          if (WARN_ON(!dev) || WARN_ON(!size))
->>                  return ERR_PTR(-EINVAL);
->> @@ -134,8 +135,12 @@ static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, struct device *dev,
->>          if (ret)
->>                  goto fail_pages_alloc;
->>
->> -       ret = sg_alloc_table_from_pages(buf->dma_sgt, buf->pages,
->> -                       buf->num_pages, 0, size, GFP_KERNEL);
->> +       if (dev)
-
-dev can't be NULL, see the context above.
-
->> +               max_segment = dma_max_mapping_size(dev);
->> +       if (max_segment == 0)
->> +               max_segment = UINT_MAX;
->> +       ret = sg_alloc_table_from_pages_segment(buf->dma_sgt, buf->pages,
->> +               buf->num_pages, 0, size, max_segment, GFP_KERNEL);
-> 
-> One thing that I'm not sure about here is that we use
-> sg_alloc_table_from_pages_segment(), but we actually don't pass the
-> max segment size (as returned by dma_get_max_seg_size()) to it.
-> I'm also not exactly sure what's the difference between "max mapping
-> size" and "max seg size".
-> +Robin Murphy +Christoph Hellwig I think we could benefit from your
-> expertise here.
-
-dma_get_max_seg_size() represents a capability of the device itself, 
-namely the largest contiguous range it can be programmed to access in a 
-single DMA descriptor/register/whatever. Conversely, 
-dma_max_mapping_size() is a capablity of the DMA API implementation, and 
-represents the largest contiguous mapping it is guaranteed to be able to 
-handle (each segment in the case of dma_map_sg(), or the whole thing for 
-dma_map_page()). Most likely the thing you want here is 
-min_not_zero(max_seg_size, max_mapping_size).
-
-> Generally looking at videobuf2-dma-sg, I feel like we would benefit
-> from some kind of dma_alloc_table_from_pages() that simply takes the
-> struct dev pointer and does everything necessary.
-
-Possibly; this code already looks lifted from drm_prime_pages_to_sg(), 
-and if it's needed here then presumably vb2_dma_sg_get_userptr() also 
-needs it, at the very least.
-
-Thanks,
-Robin.
+SGkgQ2hhbndvbywNCg0KPiA+ICtzdGF0aWMgaW50IHJ0ZDEyOXhfc3dpdGNoX3R5cGVfY19wbHVn
+X2NvbmZpZyhzdHJ1Y3QgdHlwZV9jX2RhdGEgKnR5cGVfYywNCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IGRyX21vZGUsIGludCBjYykNCj4gPiArew0K
+PiA+ICsgICAgIHZvaWQgX19pb21lbSAqcmVnID0gdHlwZV9jLT5yZWdfYmFzZSArIFVTQl9UWVBF
+Q19DVFJMX0NDMV8wOw0KPiA+ICsgICAgIGludCB2YWxfY2M7DQo+ID4gKw0KPiA+ICsjZGVmaW5l
+IFRZUEVfQ19FTl9TV0lUQ0ggQklUKDI5KQ0KPiA+ICsjZGVmaW5lIFRZUEVfQ19UWFJYX1NFTCAo
+QklUKDI4KSB8IEJJVCgyNykpDQo+ID4gKyNkZWZpbmUgVFlQRV9DX1NXSVRDSF9NQVNLIChUWVBF
+X0NfRU5fU1dJVENIIHwgVFlQRV9DX1RYUlhfU0VMKQ0KPiA+ICsjZGVmaW5lIFRZUEVfQ19FTkFC
+TEVfQ0MxIFRZUEVfQ19FTl9TV0lUQ0gNCj4gPiArI2RlZmluZSBUWVBFX0NfRU5BQkxFX0NDMiAo
+VFlQRV9DX0VOX1NXSVRDSCB8IFRZUEVfQ19UWFJYX1NFTCkNCj4gPiArI2RlZmluZSBUWVBFX0Nf
+RElTQUJMRV9DQyB+VFlQRV9DX1NXSVRDSF9NQVNLDQo+ID4gKw0KPiA+ICsgICAgIHZhbF9jYyA9
+IHJlYWRsKHJlZyk7DQo+IA0KPiBJJ2QgbGlrZSB5b3UgdG8gdXNlIHJlZ21hcCBpbnRlcmZhY2Ug
+dG8gYWNjZXNzIHRoZSByZWdpc3Rlcg0KPiBieSB1c2luZyByZWdtYXBfcmVhZCwgcmVnbWFwX3dy
+aXRlLiBZb3UgY2FuIGNyZWF0ZSB0aGUgcmVnbWFwIGluc3RhbmNlDQo+IHZpYSBkZXZtX3JlZ21h
+cF9pbml0X21taW8oKSBvbiBwcm9iZSBpbnN0ZWFkIG9mIHVzaW5nICd0eXBlX2MtPnJlZ19iYXNl
+Jw0KPiBhdCB0aGUgbXVsdGlwZSBwb2ludC4NCj4gDQo+IEZvciBleGFtcGxlLA0KPiAgICAgICAg
+IHN0cnVjdCByZWdtYXBfY29uZmlnIHJ0a19yZWdtYXBfY29uZmlnID0gew0KPiAgICAgICAgICAg
+ICAgICAgLnJlZ19iaXRzID0gMzIsDQo+ICAgICAgICAgICAgICAgICAudmFsX2JpdHMgPSAzMiwN
+Cj4gICAgICAgICB9Ow0KPiANCj4gICAgICAgICB2b2lkIF9faW9tZW0gKmJhc2U7DQo+IA0KPiAg
+ICAgICAgIGJhc2UgPSBkZXZtX3BsYXRmb3JtX2dldF9hbmRfaW9yZW1hcF9yZXNvdXJjZShwZGV2
+LCAwLCAmcmVzKTsNCj4gICAgICAgICBpZiAoSVNfRVJSKGJhc2UpKQ0KPiAgICAgICAgICAgICAg
+ICAgcmV0dXJuIFBUUl9FUlIoYmFzZSk7DQo+IA0KPiAgICAgICAgIHJlZ21hcCA9IGRldm1fcmVn
+bWFwX2luaXRfbW1pbyhkZXYsIGJhc2UsDQo+ICZydGtfcmVnbWFwX2NvbmZpZyk7DQo+IA0KPiAg
+ICAgICAgIC0tLQ0KPiANCj4gICAgICAgICBBbmQgdGhlbiBqdXN0IGNhbGwgcmVnbWFwX3JlYWQg
+d2l0aG91dCBhbnkgY2FsY3VsYXRpb24gYmV0d2Vlbg0KPiAgICAgICAgIGJhc2UgYWRkcmVzcyBh
+bmQgc3BlY2lmaWMgcmVnaXN0ZXIuDQo+IA0KPiAgICAgICAgIHJlZ21hcF9yZWFkKHJlZ21hcCwg
+VVNCX1RZUEVDX0NUUkxfQ0MxXzApDQo+IA0KDQpJIHN0dWRpZWQgbW1pbydzIHJlZ21hcC4NCg0K
+SXQgb25seSBjaGFuZ2VkIG9uZSBlbmNvZGluZyBtZXRob2QuIEFuZCBzaW1wbGlmaWVzIHRoZSBj
+YWxjdWxhdGlvbiBiZXR3ZWVuIHRoZSBiYXNlIGFkZHJlc3MgYW5kIHRoZSBzcGVjaWZpYyByZWdp
+c3Rlci4NCklmIHRoZSByZWdpc3RlciBpcyAzMi1iaXQgYWxpZ25lZCwgb3RoZXIgb3BlcmF0aW9u
+cyBsb29rIHRoZSBzYW1lIGFzIHJlYWRsL3dyaXRlbC4NCkkgdGhpbmsgcmVnbWFwIGlzIG1vcmUg
+c2ltcGxpZmllZCBpZiB0aGUgcmVhZCByZWdpc3RlcnMgYXJlIG5vdCAzMi1iaXQgYWxpZ25lZCwg
+ZS5nLiBudm1lbSByZWFkL3dyaXRlLg0KDQpTbyBpdCB3b3VsZCBiZSBtb3JlIGludHVpdGl2ZSBm
+b3IgbWUgdG8ga2VlcCB3cml0ZWwvcmVhZGwgaGVyZQ0KDQo+IA0KPiA+ICsgICAgIHZhbF9jYyAm
+PSB+VFlQRV9DX1NXSVRDSF9NQVNLOw0KPiA+ICsNCj4gPiArICAgICBpZiAoY2MgPT0gRElTQUJM
+RV9DQykgew0KPiA+ICsgICAgICAgICAgICAgdmFsX2NjICY9IFRZUEVfQ19ESVNBQkxFX0NDOw0K
+PiA+ICsgICAgIH0gZWxzZSBpZiAoY2MgPT0gRU5BQkxFX0NDMSkgew0KPiA+ICsgICAgICAgICAg
+ICAgdmFsX2NjIHw9IFRZUEVfQ19FTkFCTEVfQ0MxOw0KPiA+ICsgICAgIH0gZWxzZSBpZiAoY2Mg
+PT0gRU5BQkxFX0NDMikgew0KPiA+ICsgICAgICAgICAgICAgdmFsX2NjIHw9IFRZUEVfQ19FTkFC
+TEVfQ0MyOw0KPiA+ICsgICAgIH0gZWxzZSB7DQo+ID4gKyAgICAgICAgICAgICBkZXZfZXJyKHR5
+cGVfYy0+ZGV2LCAiJXM6IEVycm9yIGNjIHNldHRpbmcgY2M9MHgleFxuIiwNCj4gX19mdW5jX18s
+IGNjKTsNCj4gPiArICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOw0KPiA+ICsgICAgIH0NCj4g
+PiArICAgICB3cml0ZWwodmFsX2NjLCByZWcpOw0KPiA+ICsNCg0KVGhhbmtzLA0KU3RhbmxleQ0K
