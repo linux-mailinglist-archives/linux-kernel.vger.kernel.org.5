@@ -2,162 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF80F78CCCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6005478CCD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbjH2TSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        id S239230AbjH2TSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239811AbjH2TSM (ORCPT
+        with ESMTP id S236305AbjH2TST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:18:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96951A8;
-        Tue, 29 Aug 2023 12:18:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BC7463857;
-        Tue, 29 Aug 2023 19:18:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC0D2C433C8;
-        Tue, 29 Aug 2023 19:18:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693336687;
-        bh=w3R5HwmaOTLQ6o9Upqa19a5YfiYuqgNDGW3hqQIlJUg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=mDm+0gNGtAf83UVWfpfsACkjGQL47mdAohm4MFyFTEBSfiSK3vLhvkmGXXzGXPzhv
-         5au7kmX++DSxlB/GZZNR1lgeabnXErkOYKK70u1XS29hL5kkHdY3bABV1PKSJN7r+y
-         LgNHEMcce29E9pVR2tKljjKtrsyL9OwAJvKP2QyaI3wIVUCRowBQ0sdGE6B8OcIE8O
-         E5sTZTgkvjS5jLJAevVAhpsXeV12B20w9Ai4w4WLewRJ0kR05kI3RNspo/OZHw35rS
-         gmT+R9xuy3dXv5evrVnqekDG9MSJlCcvFLl2+bG2svNoFj/uw44evyDQy1qqZAvIg8
-         hi2m7WZCeJQbg==
-Message-ID: <c70c08b4-be67-14da-be25-5473ffd0ca7d@kernel.org>
-Date:   Wed, 30 Aug 2023 04:18:02 +0900
+        Tue, 29 Aug 2023 15:18:19 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7AAB0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:18:16 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34df4799a62so250715ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693336696; x=1693941496; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gSArBmMsswRYjnTU8zyo9/Uft3vc1W7OWIExh4GBVPE=;
+        b=B7cfYHF/Z4FanikXPF7tRvvy9I54DYw4LxJrp7AQuCepRbqxe0amMiyKVdcl5LXVI5
+         03T06Z17VtAdtYt2r2noduRl6TxjF1PXmOFQ5aetPIYzzLLQ9pnl46nm4yfLbniBTCHk
+         3G00nZyiLfGhperHwNe8Sz4q/HEc5y90kn4T8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693336696; x=1693941496;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gSArBmMsswRYjnTU8zyo9/Uft3vc1W7OWIExh4GBVPE=;
+        b=DzfiljAOERZnDThYLg7126/yEF+pJrwE0DxBrDaAASL5wycVCFN2iClEYXYXQ1X18v
+         6Lvnr4h0xuKLe7nQVMrXzp8fdS8RU/2uDWnb+MzFHTwU+2l3sQmV64icwwEUzu3M/sy5
+         yjijrzse98t47+zsz7YLsxUb3OqgLZFlOq98KK8RkJwPuDSaSahDCJrfh9KslpS79I/v
+         d6V/NFADorY2bf/YNJ1pBzYjF3AXSAEU4AFRUXddHcpGuoVu2BQ/Cc0gLEbidSC1h+hi
+         fo1hFXa1Eh/qhJeX7c5xOs//v0q8iPfYDq6uhVBr96/doazO6f1DP96/bolSECNnpr2v
+         BTAQ==
+X-Gm-Message-State: AOJu0YyVq2LpbkR04LYTGyaPdBlHQIQ2jy02tyM/mT/3M08o9VFfcgaY
+        IRWoJ6YLYSjkmETgggY046XTxQ==
+X-Google-Smtp-Source: AGHT+IG9piH/z3sYhq1WiiMmi+BovOBIGET+WWTVzIQinivR6hkTahyvuUF3tCHVeiUGB1T13g23MQ==
+X-Received: by 2002:a05:6e02:dca:b0:348:7396:184b with SMTP id l10-20020a056e020dca00b003487396184bmr169828ilj.24.1693336696115;
+        Tue, 29 Aug 2023 12:18:16 -0700 (PDT)
+Received: from kea.bld.corp.google.com ([2620:15c:183:200:16d9:c947:1a18:4c10])
+        by smtp.gmail.com with ESMTPSA id fq8-20020a056638650800b004332f6537e2sm3359798jab.83.2023.08.29.12.18.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 12:18:15 -0700 (PDT)
+From:   Simon Glass <sjg@chromium.org>
+To:     devicetree@vger.kernel.org
+Cc:     Dhaval Sharma <dhaval@rivosinc.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Gua Guo <gua.guo@intel.com>, Tom Rini <trini@konsulko.com>,
+        Rob Herring <robh@kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        ron minnich <rminnich@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Lean Sheng Tan <sheng.tan@9elements.com>,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        linux-acpi@vger.kernel.org, Guo Dong <guo.dong@intel.com>,
+        Simon Glass <sjg@chromium.org>
+Subject: [PATCH v4 1/4] Add reserved-memory
+Date:   Tue, 29 Aug 2023 13:18:06 -0600
+Message-ID: <20230829191812.135759-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/2] extcon: add Realtek DHC RTD SoC Type-C driver
-To:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20230822102846.4683-1-stanley_chang@realtek.com>
- <af247603-6a8d-7c05-4342-c6f615a7f508@kernel.org>
- <2df3dc449c894e50b126a1b6941eb4d7@realtek.com>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-Content-Language: en-US
-In-Reply-To: <2df3dc449c894e50b126a1b6941eb4d7@realtek.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanley,
+Bring in this file from Linux v6.5
 
-On 23. 8. 29. 20:15, Stanley Chang[昌育德] wrote:
-> Hi Chanwoo,
-> 
->>> +static int rtd129x_switch_type_c_plug_config(struct type_c_data *type_c,
->>> +                                          int dr_mode, int cc)
->>> +{
->>> +     void __iomem *reg = type_c->reg_base + USB_TYPEC_CTRL_CC1_0;
->>> +     int val_cc;
->>> +
->>> +#define TYPE_C_EN_SWITCH BIT(29)
->>> +#define TYPE_C_TXRX_SEL (BIT(28) | BIT(27))
->>> +#define TYPE_C_SWITCH_MASK (TYPE_C_EN_SWITCH | TYPE_C_TXRX_SEL)
->>> +#define TYPE_C_ENABLE_CC1 TYPE_C_EN_SWITCH
->>> +#define TYPE_C_ENABLE_CC2 (TYPE_C_EN_SWITCH | TYPE_C_TXRX_SEL)
->>> +#define TYPE_C_DISABLE_CC ~TYPE_C_SWITCH_MASK
->>> +
->>> +     val_cc = readl(reg);
->>
->> I'd like you to use regmap interface to access the register
->> by using regmap_read, regmap_write. You can create the regmap instance
->> via devm_regmap_init_mmio() on probe instead of using 'type_c->reg_base'
->> at the multipe point.
->>
->> For example,
->>         struct regmap_config rtk_regmap_config = {
->>                 .reg_bits = 32,
->>                 .val_bits = 32,
->>         };
->>
->>         void __iomem *base;
->>
->>         base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
->>         if (IS_ERR(base))
->>                 return PTR_ERR(base);
->>
->>         regmap = devm_regmap_init_mmio(dev, base,
->> &rtk_regmap_config);
->>
->>         ---
->>
->>         And then just call regmap_read without any calculation between
->>         base address and specific register.
->>
->>         regmap_read(regmap, USB_TYPEC_CTRL_CC1_0)
->>
-> 
-> I studied mmio's regmap.
-> 
-> It only changed one encoding method. And simplifies the calculation between the base address and the specific register.
+Signed-off-by: Simon Glass <sjg@chromium.org>
+---
 
-The regmap provides the consistent interface to access register
-regardless of mmio/i2c/spi and so on. It is the advantage of regmap.
+Changes in v4:
+- New patch
 
-And regmap provides the like register dump via debugfs,
-is able to specify the kind of register like writable, readable, volatile type.
-It is possible to specify the more detailed register information in device driver
-in order to improve the readability. It allows you to express more detail of this device
-than just working.
+ .../reserved-memory/reserved-memory.yaml      | 181 ++++++++++++++++++
+ 1 file changed, 181 insertions(+)
+ create mode 100644 dtschema/schemas/reserved-memory/reserved-memory.yaml
 
-
-> If the register is 32-bit aligned, other operations look the same as readl/writel.
-> I think regmap is more simplified if the read registers are not 32-bit aligned, e.g. nvmem read/write.
-
-I'm sorry. I don't understand of what is accurate meaning.
-Could you please explain your opinion more detailed with example of this patch?
-
-> So it would be more intuitive for me to keep writel/readl here
-> 
->>
->>> +     val_cc &= ~TYPE_C_SWITCH_MASK;
->>> +
->>> +     if (cc == DISABLE_CC) {
->>> +             val_cc &= TYPE_C_DISABLE_CC;
->>> +     } else if (cc == ENABLE_CC1) {
->>> +             val_cc |= TYPE_C_ENABLE_CC1;
->>> +     } else if (cc == ENABLE_CC2) {
->>> +             val_cc |= TYPE_C_ENABLE_CC2;
->>> +     } else {
->>> +             dev_err(type_c->dev, "%s: Error cc setting cc=0x%x\n",
->> __func__, cc);
->>> +             return -EINVAL;
->>> +     }
->>> +     writel(val_cc, reg);
->>> +
-> 
-> Thanks,
-> Stanley
-
+diff --git a/dtschema/schemas/reserved-memory/reserved-memory.yaml b/dtschema/schemas/reserved-memory/reserved-memory.yaml
+new file mode 100644
+index 0000000..c680e39
+--- /dev/null
++++ b/dtschema/schemas/reserved-memory/reserved-memory.yaml
+@@ -0,0 +1,181 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/reserved-memory/reserved-memory.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: /reserved-memory Child Node Common
++
++maintainers:
++  - devicetree-spec@vger.kernel.org
++
++description: >
++  Reserved memory is specified as a node under the /reserved-memory node. The
++  operating system shall exclude reserved memory from normal usage one can
++  create child nodes describing particular reserved (excluded from normal use)
++  memory regions. Such memory regions are usually designed for the special
++  usage by various device drivers.
++
++  Each child of the reserved-memory node specifies one or more regions
++  of reserved memory. Each child node may either use a 'reg' property to
++  specify a specific range of reserved memory, or a 'size' property with
++  optional constraints to request a dynamically allocated block of
++  memory.
++
++  Following the generic-names recommended practice, node names should
++  reflect the purpose of the node (ie. "framebuffer" or "dma-pool").
++  Unit address (@<address>) should be appended to the name if the node
++  is a static allocation.
++
++properties:
++  reg: true
++
++  size:
++    oneOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++      - $ref: /schemas/types.yaml#/definitions/uint64
++    description: >
++      Length based on parent's \#size-cells. Size in bytes of memory to
++      reserve.
++
++  alignment:
++    oneOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++      - $ref: /schemas/types.yaml#/definitions/uint64
++    description: >
++      Length based on parent's \#size-cells. Address boundary for
++      alignment of allocation.
++
++  alloc-ranges:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: >
++      Address and Length pairs. Specifies regions of memory that are
++      acceptable to allocate from.
++
++  iommu-addresses:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: >
++      A list of phandle and specifier pairs that describe static IO virtual
++      address space mappings and carveouts associated with a given reserved
++      memory region. The phandle in the first cell refers to the device for
++      which the mapping or carveout is to be created.
++
++      The specifier consists of an address/size pair and denotes the IO
++      virtual address range of the region for the given device. The exact
++      format depends on the values of the "#address-cells" and "#size-cells"
++      properties of the device referenced via the phandle.
++
++      When used in combination with a "reg" property, an IOVA mapping is to
++      be established for this memory region. One example where this can be
++      useful is to create an identity mapping for physical memory that the
++      firmware has configured some hardware to access (such as a bootsplash
++      framebuffer).
++
++      If no "reg" property is specified, the "iommu-addresses" property
++      defines carveout regions in the IOVA space for the given device. This
++      can be useful if a certain memory region should not be mapped through
++      the IOMMU.
++
++  no-map:
++    type: boolean
++    description: >
++      Indicates the operating system must not create a virtual mapping
++      of the region as part of its standard mapping of system memory,
++      nor permit speculative access to it under any circumstances other
++      than under the control of the device driver using the region.
++
++  reusable:
++    type: boolean
++    description: >
++      The operating system can use the memory in this region with the
++      limitation that the device driver(s) owning the region need to be
++      able to reclaim it back. Typically that means that the operating
++      system can use that region to store volatile or cached data that
++      can be otherwise regenerated or migrated elsewhere.
++
++allOf:
++  - if:
++      required:
++        - no-map
++
++    then:
++      not:
++        required:
++          - reusable
++
++  - if:
++      required:
++        - reusable
++
++    then:
++      not:
++        required:
++          - no-map
++
++oneOf:
++  - oneOf:
++      - required:
++          - reg
++
++      - required:
++          - size
++
++  - oneOf:
++      # IOMMU reservations
++      - required:
++          - iommu-addresses
++
++      # IOMMU mappings
++      - required:
++          - reg
++          - iommu-addresses
++
++additionalProperties: true
++
++examples:
++  - |
++    / {
++      compatible = "foo";
++      model = "foo";
++
++      #address-cells = <2>;
++      #size-cells = <2>;
++
++      reserved-memory {
++        #address-cells = <2>;
++        #size-cells = <2>;
++        ranges;
++
++        adsp_resv: reservation-adsp {
++          /*
++           * Restrict IOVA mappings for ADSP buffers to the 512 MiB region
++           * from 0x40000000 - 0x5fffffff. Anything outside is reserved by
++           * the ADSP for I/O memory and private memory allocations.
++           */
++          iommu-addresses = <&adsp 0x0 0x00000000 0x00 0x40000000>,
++                            <&adsp 0x0 0x60000000 0xff 0xa0000000>;
++        };
++
++        fb: framebuffer@90000000 {
++          reg = <0x0 0x90000000 0x0 0x00800000>;
++          iommu-addresses = <&dc0 0x0 0x90000000 0x0 0x00800000>;
++        };
++      };
++
++      bus@0 {
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges = <0x0 0x0 0x0 0x40000000>;
++
++        adsp: adsp@2990000 {
++          reg = <0x2990000 0x2000>;
++          memory-region = <&adsp_resv>;
++        };
++
++        dc0: display@15200000 {
++          reg = <0x15200000 0x10000>;
++          memory-region = <&fb>;
++        };
++      };
++    };
++...
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
