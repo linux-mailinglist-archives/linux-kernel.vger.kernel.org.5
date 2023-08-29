@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE5678BF9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EC578BFA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233792AbjH2Htg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S233924AbjH2Hum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 03:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbjH2HtX (ORCPT
+        with ESMTP id S234062AbjH2Hue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:49:23 -0400
+        Tue, 29 Aug 2023 03:50:34 -0400
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995D4194;
-        Tue, 29 Aug 2023 00:49:19 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T74kMu013266;
-        Tue, 29 Aug 2023 07:49:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=ckVtaW3Av7rhPz61zCIjVcwCeNTazlrt+S3eW9iMvO8=;
- b=ALdS1y2FAlsYwkcJfa4Eew9RWLm0727iXBapjEs4EJV1ElsFwrXE74L+Bt+xJnyriKwd
- 7OMpsHcS/dv0W9FUHdYu0JWs1+IJxFNrqW5xl2jstCfaL2LeTcN7NNusjqGzoIammQ51
- xcjJhQle4RZnimVnPQMzHLWXrirtiX48Rcbkd4IYg/4AiNBDjLXw3VDmRXIHL+ia9ChW
- Rl0v3Ksz8PJhpkg8ztABEAVxlCWPzmMR4og65FirdJAXnZjyQYBzDHCSK4LkORe34qLe
- KY2xxj3EjG0SeAghsrz3WhdXHrwkUPFH7aIfAbtcneVjRcb2RGl3W79dkk+Cz3SGZTrN Zg== 
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907EACC9;
+        Tue, 29 Aug 2023 00:50:21 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T77Qfr018708;
+        Tue, 29 Aug 2023 07:50:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=1E4ZFXBXH4Xhk23ZPZWPL9rS2Wdj69Wfiw7RPc4ik94=;
+ b=avgE4B0eIzCTTMI2bgEFa6iFm1Pi7dRrlh8+CB1QjLghsCOrGKs/HtBY5sKXKNnDuO06
+ Lq7ykOrWFeQYo/sd/Bpt3rje7Wq0U6A8dEbs5mx7aabkuFPos5OhIqpm6XbJU/mB5Na3
+ IbH0pnRMjtrt1JwXeRJ+dxRtvgCO0O6wdzjwc9Z6wVVAgGrgMFPXNMEL8P/V71sNXX8q
+ EvT0oYtfizIP8iVaEXPnrG3dRdGk6/Tk+/VP9aCHQ8Rvcnis8YoP7d2FZLapARe8TDRw
+ hK5LCalHhCe/RQ+UVcdQpE6uYm/Lzgfbco3aN43yuh6K8MSb7HkVVTFETv98I3ETAW9K uQ== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr7eq55k0-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sra09mdvx-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 07:49:03 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37T7bHo2010923;
-        Tue, 29 Aug 2023 07:49:02 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr7eq55jf-1
+        Tue, 29 Aug 2023 07:50:00 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37T7ZURO015772;
+        Tue, 29 Aug 2023 07:49:59 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sra09mdvk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 07:49:02 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37T7BNlu014392;
-        Tue, 29 Aug 2023 07:49:01 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqvqn1q93-1
+        Tue, 29 Aug 2023 07:49:59 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37T6Iscq019181;
+        Tue, 29 Aug 2023 07:49:58 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sqxe1h5fk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 07:49:01 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37T7mvrn24314488
+        Tue, 29 Aug 2023 07:49:58 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37T7ntRG27918854
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Aug 2023 07:48:58 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA3A32004D;
-        Tue, 29 Aug 2023 07:48:57 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92E6520043;
-        Tue, 29 Aug 2023 07:48:57 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.148])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 29 Aug 2023 07:48:57 +0000 (GMT)
-Date:   Tue, 29 Aug 2023 09:48:54 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Stefan Haberland <sth@linux.ibm.com>,
-        Jan =?iso-8859-1?Q?H=F6ppner?= <hoeppner@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH 1/1] s390/dasd: fix string length handling
-Message-ID: <20230829074854.7031-A-hca@linux.ibm.com>
-References: <20230828153142.2843753-1-hca@linux.ibm.com>
- <20230828153142.2843753-2-hca@linux.ibm.com>
- <f0419f6428ad404386ebca813dc1ec03@AcuMS.aculab.com>
- <ZO0k1Par4i4FBCWF@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZO0k1Par4i4FBCWF@google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: y46bi7daQElJu--EkUjZczd_-Y4Td4G0
-X-Proofpoint-GUID: 7QC5Ip_ZajZ5JM4o_i4KsZT-el29xkT-
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 29 Aug 2023 07:49:55 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BEDF020040;
+        Tue, 29 Aug 2023 07:49:55 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0BF0F20043;
+        Tue, 29 Aug 2023 07:49:51 +0000 (GMT)
+Received: from li-05afa54c-330e-11b2-a85c-e3f3aa0db1e9.ibm.com.com (unknown [9.171.49.19])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Aug 2023 07:49:50 +0000 (GMT)
+From:   Vishal Chourasia <vishalc@linux.ibm.com>
+To:     vishalc@linux.ibm.com
+Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+        netdev@vger.kernel.org, quentin@isovalent.com,
+        sachinp@linux.ibm.com, sdf@google.com, song@kernel.org,
+        srikar@linux.vnet.ibm.com, yhs@fb.com
+Subject: [PATCH v2] Fix invalid escape sequence warnings
+Date:   Tue, 29 Aug 2023 13:19:31 +0530
+Message-Id: <20230829074931.2511204-1-vishalc@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <e640e5f2-381c-4f65-40b9-c2e3e94696f9@linux.ibm.com>
+References: <e640e5f2-381c-4f65-40b9-c2e3e94696f9@linux.ibm.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bBcAjev6eif9nKTRyHCO0b1kTSuXb0Pk
+X-Proofpoint-GUID: Ry0XuHnbMSr_Uy4ZEuZSHOQjwg-7tYw-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-29_04,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0 clxscore=1011
- spamscore=0 impostorscore=0 mlxlogscore=394 malwarescore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=999 impostorscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2308100000 definitions=main-2308290064
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
@@ -101,29 +97,208 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 03:51:00PM -0700, Nick Desaulniers wrote:
-> On Mon, Aug 28, 2023 at 05:18:37PM +0000, David Laight wrote:
-> > From: Heiko Carstens
-> > > Sent: 28 August 2023 16:32
-> > >  	if (strlen(uid.vduit) > 0)
-> > 
-> > Does the compiler know enough to optimise that brain-dead test?
-> > 
-> 
-> For the purposes of skipping diagnostics, no; clang performs semantic
-> analysis BEFORE optimization (which is handled by LLVM). As such, clang
-> will produce diagnostics on dead code.
-> 
-> Partly because LLVM isn't very ergonomic at emitting diagnostics from
-> the backend, partly because Clang code owner and developers don't want
-> clang to emit diagnostics dependent on optimization level.
-> 
-> I disagree with my compatriots, and you can read more thoughts here:
-> https://discourse.llvm.org/t/rfc-improving-clangs-middle-and-back-end-diagnostics/69261?u=nickdesaulniers
+The script bpf_doc.py generates multiple SyntaxWarnings related to invalid
+escape sequences when executed with Python 3.12. These warnings do not appear in
+Python 3.10 and 3.11 and do not affect the kernel build, which completes
+successfully.
 
-Maybe I misunderstand what you write above, however clang (latest+greatest)
-does indeed optimize the strlen() away and generates code which only tests
-if uid.vduit[0] is zero or not.
+This patch resolves these SyntaxWarnings by converting the relevant string
+literals to raw strings or by escaping backslashes. This ensures that
+backslashes are interpreted as literal characters, eliminating the warnings.
 
-Unlike gcc, which does not optimize this away and which uses the strlen()
-inline assembly provided via string.h...
+Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+---
+ scripts/bpf_doc.py | 56 +++++++++++++++++++++++-----------------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index eaae2ce78..61b7ddded 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -59,9 +59,9 @@ class Helper(APIElement):
+         Break down helper function protocol into smaller chunks: return type,
+         name, distincts arguments.
+         """
+-        arg_re = re.compile('((\w+ )*?(\w+|...))( (\**)(\w+))?$')
++        arg_re = re.compile(r'((\w+ )*?(\w+|...))( (\**)(\w+))?$')
+         res = {}
+-        proto_re = re.compile('(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\)$')
++        proto_re = re.compile(r'(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\)$')
+ 
+         capture = proto_re.match(self.proto)
+         res['ret_type'] = capture.group(1)
+@@ -114,11 +114,11 @@ class HeaderParser(object):
+         return Helper(proto=proto, desc=desc, ret=ret)
+ 
+     def parse_symbol(self):
+-        p = re.compile(' \* ?(BPF\w+)$')
++        p = re.compile(r' \* ?(BPF\w+)$')
+         capture = p.match(self.line)
+         if not capture:
+             raise NoSyscallCommandFound
+-        end_re = re.compile(' \* ?NOTES$')
++        end_re = re.compile(r' \* ?NOTES$')
+         end = end_re.match(self.line)
+         if end:
+             raise NoSyscallCommandFound
+@@ -133,7 +133,7 @@ class HeaderParser(object):
+         #   - Same as above, with "const" and/or "struct" in front of type
+         #   - "..." (undefined number of arguments, for bpf_trace_printk())
+         # There is at least one term ("void"), and at most five arguments.
+-        p = re.compile(' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
++        p = re.compile(r' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
+         capture = p.match(self.line)
+         if not capture:
+             raise NoHelperFound
+@@ -141,7 +141,7 @@ class HeaderParser(object):
+         return capture.group(1)
+ 
+     def parse_desc(self, proto):
+-        p = re.compile(' \* ?(?:\t| {5,8})Description$')
++        p = re.compile(r' \* ?(?:\t| {5,8})Description$')
+         capture = p.match(self.line)
+         if not capture:
+             raise Exception("No description section found for " + proto)
+@@ -154,7 +154,7 @@ class HeaderParser(object):
+             if self.line == ' *\n':
+                 desc += '\n'
+             else:
+-                p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
++                p = re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+                 capture = p.match(self.line)
+                 if capture:
+                     desc_present = True
+@@ -167,7 +167,7 @@ class HeaderParser(object):
+         return desc
+ 
+     def parse_ret(self, proto):
+-        p = re.compile(' \* ?(?:\t| {5,8})Return$')
++        p = re.compile(r' \* ?(?:\t| {5,8})Return$')
+         capture = p.match(self.line)
+         if not capture:
+             raise Exception("No return section found for " + proto)
+@@ -180,7 +180,7 @@ class HeaderParser(object):
+             if self.line == ' *\n':
+                 ret += '\n'
+             else:
+-                p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
++                p = re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+                 capture = p.match(self.line)
+                 if capture:
+                     ret_present = True
+@@ -219,12 +219,12 @@ class HeaderParser(object):
+         self.seek_to('enum bpf_cmd {',
+                      'Could not find start of bpf_cmd enum', 0)
+         # Searches for either one or more BPF\w+ enums
+-        bpf_p = re.compile('\s*(BPF\w+)+')
++        bpf_p = re.compile(r'\s*(BPF\w+)+')
+         # Searches for an enum entry assigned to another entry,
+         # for e.g. BPF_PROG_RUN = BPF_PROG_TEST_RUN, which is
+         # not documented hence should be skipped in check to
+         # determine if the right number of syscalls are documented
+-        assign_p = re.compile('\s*(BPF\w+)\s*=\s*(BPF\w+)')
++        assign_p = re.compile(r'\s*(BPF\w+)\s*=\s*(BPF\w+)')
+         bpf_cmd_str = ''
+         while True:
+             capture = assign_p.match(self.line)
+@@ -239,7 +239,7 @@ class HeaderParser(object):
+                 break
+             self.line = self.reader.readline()
+         # Find the number of occurences of BPF\w+
+-        self.enum_syscalls = re.findall('(BPF\w+)+', bpf_cmd_str)
++        self.enum_syscalls = re.findall(r'(BPF\w+)+', bpf_cmd_str)
+ 
+     def parse_desc_helpers(self):
+         self.seek_to(helpersDocStart,
+@@ -263,7 +263,7 @@ class HeaderParser(object):
+         self.seek_to('#define ___BPF_FUNC_MAPPER(FN, ctx...)',
+                      'Could not find start of eBPF helper definition list')
+         # Searches for one FN(\w+) define or a backslash for newline
+-        p = re.compile('\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
++        p = re.compile(r'\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
+         fn_defines_str = ''
+         i = 0
+         while True:
+@@ -278,7 +278,7 @@ class HeaderParser(object):
+                 break
+             self.line = self.reader.readline()
+         # Find the number of occurences of FN(\w+)
+-        self.define_unique_helpers = re.findall('FN\(\w+, \d+, ##ctx\)', fn_defines_str)
++        self.define_unique_helpers = re.findall(r'FN\(\w+, \d+, ##ctx\)', fn_defines_str)
+ 
+     def validate_helpers(self):
+         last_helper = ''
+@@ -425,7 +425,7 @@ class PrinterRST(Printer):
+         try:
+             cmd = ['git', 'log', '-1', '--pretty=format:%cs', '--no-patch',
+                    '-L',
+-                   '/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimiter)]
++                   '/{}/,/\\*\\//:include/uapi/linux/bpf.h'.format(delimiter)]
+             date = subprocess.run(cmd, cwd=linuxRoot,
+                                   capture_output=True, check=True)
+             return date.stdout.decode().rstrip()
+@@ -516,7 +516,7 @@ as "Dual BSD/GPL", may be used). Some helper functions are only accessible to
+ programs that are compatible with the GNU Privacy License (GPL).
+ 
+ In order to use such helpers, the eBPF program must be loaded with the correct
+-license string passed (via **attr**) to the **bpf**\ () system call, and this
++license string passed (via **attr**) to the **bpf**\\ () system call, and this
+ generally translates into the C source code of the program containing a line
+ similar to the following:
+ 
+@@ -550,7 +550,7 @@ may be interested in:
+ * The bpftool utility can be used to probe the availability of helper functions
+   on the system (as well as supported program and map types, and a number of
+   other parameters). To do so, run **bpftool feature probe** (see
+-  **bpftool-feature**\ (8) for details). Add the **unprivileged** keyword to
++  **bpftool-feature**\\ (8) for details). Add the **unprivileged** keyword to
+   list features available to unprivileged users.
+ 
+ Compatibility between helper functions and program types can generally be found
+@@ -562,23 +562,23 @@ other functions, themselves allowing access to additional helpers. The
+ requirement for GPL license is also in those **struct bpf_func_proto**.
+ 
+ Compatibility between helper functions and map types can be found in the
+-**check_map_func_compatibility**\ () function in file *kernel/bpf/verifier.c*.
++**check_map_func_compatibility**\\ () function in file *kernel/bpf/verifier.c*.
+ 
+ Helper functions that invalidate the checks on **data** and **data_end**
+ pointers for network processing are listed in function
+-**bpf_helper_changes_pkt_data**\ () in file *net/core/filter.c*.
++**bpf_helper_changes_pkt_data**\\ () in file *net/core/filter.c*.
+ 
+ SEE ALSO
+ ========
+ 
+-**bpf**\ (2),
+-**bpftool**\ (8),
+-**cgroups**\ (7),
+-**ip**\ (8),
+-**perf_event_open**\ (2),
+-**sendmsg**\ (2),
+-**socket**\ (7),
+-**tc-bpf**\ (8)'''
++**bpf**\\ (2),
++**bpftool**\\ (8),
++**cgroups**\\ (7),
++**ip**\\ (8),
++**perf_event_open**\\ (2),
++**sendmsg**\\ (2),
++**socket**\\ (7),
++**tc-bpf**\\ (8)'''
+         print(footer)
+ 
+     def print_proto(self, helper):
+@@ -598,7 +598,7 @@ SEE ALSO
+             one_arg = '{}{}'.format(comma, a['type'])
+             if a['name']:
+                 if a['star']:
+-                    one_arg += ' {}**\ '.format(a['star'].replace('*', '\\*'))
++                    one_arg += ' {}**\\ '.format(a['star'].replace('*', '\\*'))
+                 else:
+                     one_arg += '** '
+                 one_arg += '*{}*\\ **'.format(a['name'])
+-- 
+2.41.0
+
