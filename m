@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D34578BDB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 06:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FD778BDB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 07:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbjH2E40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 00:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
+        id S234064AbjH2FEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 01:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235647AbjH2E4Z (ORCPT
+        with ESMTP id S229445AbjH2FEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 00:56:25 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A41F1A3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 21:56:14 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-34cacab5e33so13929705ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 21:56:14 -0700 (PDT)
+        Tue, 29 Aug 2023 01:04:34 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15103194;
+        Mon, 28 Aug 2023 22:04:32 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bce552508fso60019441fa.1;
+        Mon, 28 Aug 2023 22:04:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693284974; x=1693889774;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693285470; x=1693890270;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=56RQyKIWsd8kpcaxGIljWlOIf/R2gwH1nmqcYMjfge8=;
-        b=jQKq+OLkMrlIpEcrq5CSyptHHLDPZMI4hUcG/7Jcxsb58he671zk0zvgSI52h/8E5P
-         VRKEZBR9rwMum+R5P/OUwz0W85iCVWShOcHPN2pV8wnOAA1Vvil5LeDwlXmwreca55tb
-         gqvyOSBdoCeFtLfDGV3j+ilKs4+sMz2EnIvK7gzft0txvPR3FVrJzi2fbrgBYTHyrmka
-         9w2gYJidZcaj0T3LoD3oLtSIEtGkU9bWD4FoT1/2s32byzLlW2XXYI5yR0smkpBrSPon
-         6at21CsQqoBg2wNVPJ1IXpFlYso/vh5GUPsbWJB1jeUC0Crk69p7jkivPELnx0d6IDz2
-         R8iw==
+        bh=yxcmj7xCzomnU3k6tUiu3yMWfFqSb6wL7/6uLA5izWE=;
+        b=jgkM3PsZPP3wztXEocbp+zXIzb0LypBxBeRDKQP740f+n4AWGE7pSMiKuL9077Ghzi
+         KPKAbmJhYdv4OgFamcusrYpIp+obr20y8Y7frYh2CEKFzBIo2Ga+2Q439SVxwXkd9fEs
+         nTCfdJ2NrbMU6aYKDpl1pY0qc9kGeSRLYbnroGoTAesjoe5ul8tKWcEms269cAvjODmx
+         wvGsq9kSTiIQTHemOG3gGvWLTdDf+caXFq9IHh/cJljQcSGJPevZjre6KMiR3DWOlt4h
+         x7yeQmOeRlyjFngHEOWgCGE0+cLm/MzwOAawZWauFqZ2u+pU04xdz5/o4bzUpiC9xIv2
+         zcZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693284974; x=1693889774;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693285470; x=1693890270;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=56RQyKIWsd8kpcaxGIljWlOIf/R2gwH1nmqcYMjfge8=;
-        b=KxJsP0eYTX2eiuqnDybTQp+Mh8+RmCg29/MSjzcQJNJq8DE4d0Ge5+lW7bVgjHj4hz
-         3yl9Q5lGi1jTr7m/iHCzKy5yKLZ8EC+4X6MiOKeLq3BmD93hc/q9XLrML+QoQTj6bARr
-         OTsj0hEt3MOeZZtj6yAI58U2379SVOMpM5gP7KSpv2YGyl/8EMOaaAV6W81rPD+ZdEAi
-         z4bUX5wJfbkO0zZoewkG9rEyZnOrbyzmBKITZS7JKE/rUAzmqojxvcbg81X9saLOiDu8
-         imSt5YylaDs1nFGqrRy+zDn/5zji6XMs58RgIaTnSYKAL4hVNe2oP+NVKv4eWwDdfowQ
-         Yc6A==
-X-Gm-Message-State: AOJu0YwDq7ia3I2c9mULv2BvRU18Q+DqOqlG5yHDoHgUqCZAYDHHyoN8
-        d9qfRYjEdpyeJQK6bc7Jl9A=
-X-Google-Smtp-Source: AGHT+IEHMR6LmyvlNvHDGgy5W+SLGvFUf0xRqottL/TYP7YVWzKH8m2bPsr9ZU1J0RlXulwI8aALaw==
-X-Received: by 2002:a05:6e02:e08:b0:345:fbdc:bb78 with SMTP id a8-20020a056e020e0800b00345fbdcbb78mr16896466ilk.29.1693284973893;
-        Mon, 28 Aug 2023 21:56:13 -0700 (PDT)
-Received: from sun-virtual-machine.localdomain ([103.149.144.245])
-        by smtp.gmail.com with ESMTPSA id c1-20020a92cf41000000b0034ca3b29c5asm2868605ilr.57.2023.08.28.21.56.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 21:56:13 -0700 (PDT)
-From:   SSunk <ssunkkan@gmail.com>
-To:     ssunkkan@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        michael@walle.cc, miquel.raynal@bootlin.com, pratyush@kernel.org,
-        richard@nod.at, tudor.ambarus@linaro.org, vigneshr@ti.com
-Subject: Re: [PATCH] Add support for more XMC series
-Date:   Tue, 29 Aug 2023 12:56:00 +0800
-Message-Id: <20230829045600.5254-1-ssunkkan@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <2F4A4D23-1C71-42B9-8B2C-06496F773BDA@gmail.com>
-References: <2F4A4D23-1C71-42B9-8B2C-06496F773BDA@gmail.com>
+        bh=yxcmj7xCzomnU3k6tUiu3yMWfFqSb6wL7/6uLA5izWE=;
+        b=Qutts268A1/zsT2ky4YN8h5jtruc/lVZ1nL0PQHcw56YOKp77EsaBUrrIpS9IPbZR7
+         1zE8DaoSyFtasr9rCXwnK+RpQLU23o8JndhY1Em97OIFyjILvSrYIAi6DjOKzGX8WcOD
+         SvnqvHN2EYOnXTr4eanhP+CNfMQSF5bRoM1a0+g5gpvsSxJitZftvkxjN4kg6/T/ND2f
+         cfBqE1KWWk971zA+TQTqsyllWaJWBvfHj35DD1ifTo6viYdG3zLDhJKRMBzJWgn5d2MV
+         h80EKs5v8Wxla48XheEzw6oFAfiHNyy7XqQRWX3oBZVwaXBIwYyePoKTbTwDtXebDUET
+         aatg==
+X-Gm-Message-State: AOJu0Yy+d6/zEBG5w/Zm+hxGCHshPcaFif7eVcBm6fjQH3+fimvm5rab
+        k93KXOPQeHy2cO85PllpOeR1dE/Zw9SZka9zpOc=
+X-Google-Smtp-Source: AGHT+IFNMRSxgCv4AVg1hsluIhhbouSX6xEcacWfCeMyEZSelkwA1zKmgfTWPMugMsR1q5rWCG7dbiInjiJtz+wZjys=
+X-Received: by 2002:a2e:9007:0:b0:2b9:e701:ac48 with SMTP id
+ h7-20020a2e9007000000b002b9e701ac48mr23022126ljg.32.1693285469812; Mon, 28
+ Aug 2023 22:04:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
+References: <cover.1690364259.git.haibo1.xu@intel.com> <ZMrVrXlvu/FJEayx@google.com>
+ <CAJve8onbxHjJoC-k-TtOm1BBtjm38moaW-Kk8siKsxt9nwZZZw@mail.gmail.com> <ZOyqRfdvxpdtSE1c@google.com>
+In-Reply-To: <ZOyqRfdvxpdtSE1c@google.com>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Tue, 29 Aug 2023 13:04:18 +0800
+Message-ID: <CAJve8o=rFrVKxpaLLaJ8_KKQxMvyOOgVJn8qk715ymH8dpQ3MA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,59 +84,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Hi Michael,
->Since this is the first time I've submitted code to the Linux community, please forgive me for some of the missteps that I've made.
->I uploaded the incorrect patch file.
->In a previous e-mail you said：
->XMC parts seem to have SFDP tables and they should work out of the box
->without any patches with the generic spi nor driver [1]. Therefore,
->you don't need any entry at all.
+On Mon, Aug 28, 2023 at 10:08=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
 >
->I think it is related to the PARSE_SFDP flag.
->The XMC flash part supports SFDP, so i don’t need to add NO_SFDP_FLAGS() macro.
-> drivers/mtd/spi-nor/xmc.c | 17 +++++++++++++----
-> 1 file changed, 13 insertions(+), 4 deletions(-)
+> On Sun, Aug 27, 2023, Haibo Xu wrote:
+> > On Thu, Aug 3, 2023 at 6:16=E2=80=AFAM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > >
+> > > On Thu, Jul 27, 2023, Haibo Xu wrote:
+> > > > The sstc_timer selftest is used to validate Sstc timer functionalit=
+y
+> > > > in a guest, which sets up periodic timer interrupts and check the
+> > > > basic interrupt status upon its receipt.
+> > > >
+> > > > This KVM selftest was ported from aarch64 arch_timer and tested
+> > > > with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+> > > >
+> > > > Haibo Xu (4):
+> > > >   tools: riscv: Add header file csr.h
+> > > >   KVM: riscv: selftests: Add exception handling support
+> > > >   KVM: riscv: selftests: Add guest helper to get vcpu id
+> > > >   KVM: riscv: selftests: Add sstc_timer test
+> > >
+> > > FYI, patch 4 will conflict with the in-flight guest printf changes[*]=
+, as will
+> > > reworking the existing arch_timer test.  My plan is to create an immu=
+table tag
+> > > later this week (waiting to make sure nothing explodes).  I highly re=
+commend basing
+> > > v2 on top of that.
+> > >
+> >
+> > Hi Sean,
+> >
+> > Could you help point me to the immutable tag for the guest printf chang=
+es?
 >
->diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
->index 051411e86339..e78bf11792d9 100644
->--- a/drivers/mtd/spi-nor/xmc.c
->+++ b/drivers/mtd/spi-nor/xmc.c
->@@ -11,11 +11,20 @@
-> static const struct flash_info xmc_nor_parts[] = {
-> 	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
-> 	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
->-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->-			      SPI_NOR_QUAD_READ) },
->+		PARSE_SFDP },
-> 	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
->-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->-			      SPI_NOR_QUAD_READ) },
->+		PARSE_SFDP },
->+	{ "XM25QH128C", INFO(0x204018, 0, 64 * 1024, 256)
->+		PARSE_SFDP },
->+	{ "XM25QH256C", INFO(0x204019, 0, 64 * 1024, 512)
->+		PARSE_SFDP },
->+	{ "XM25QU256C", INFO(0x204119, 0, 64 * 1024, 512)
->+		PARSE_SFDP },
->+	{ "XM25QH512C", INFO(0x204020, 0, 64 * 1024, 1024)
->+		PARSE_SFDP },
->+	{ "XM25QU512C", INFO(0x204120, 0, 64 * 1024, 1024)
->+		PARSE_SFDP },
->+
-> };
-> 
-> const struct spi_nor_manufacturer spi_nor_xmc = {
->> Correct. If the flash is working with PARSE_SFDP, it has SFDP and
->> all the information of the flash_info table is pulled from the SFDP
->> tables, except for the part name. Therefore, you don't need any entry
->> at all. The flash should just work out of the box. Are you using the
->> latest kernel?
->> 
->> -michael
---
-Hi Michael,
+> Sorry, I forgot to create the tag until last week, probably made it a bit=
+ hard to
+> find...
+>
+>   https://github.com/kvm-x86/linux.git tags/kvm-x86-selftests-immutable-6=
+.6
 
-According to you, does this piece of my code still need to be modified?
-
-Thanks,
-Ssunk
+Thanks!
