@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 894C078CA79
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2429078CA7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237765AbjH2RNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
+        id S236355AbjH2ROS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237798AbjH2RNL (ORCPT
+        with ESMTP id S237795AbjH2ROM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:13:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E630FC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693329147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wp6NVU/HH5u0YUMAAE2I/gwkb6z0iMtEnAqVfmJMByA=;
-        b=OohTuNecGuUJodpnd1tH0cqNfS7BAmAkhSMq3hx3I/KcXUfA2TsNOesUCNM8jkDVaB6jkR
-        uWmvjwOHXaNuKPWLk11Q1HOyKk/BzfoxBEDNBtqJgIq2n0ZJYZzNuTBLHb/6KCAr0pN3e9
-        tAdQvVNIa8ICzdM3QyTWQTii2iY92Io=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-avaTAYaGO-CwoH4Llzzfmw-1; Tue, 29 Aug 2023 13:12:25 -0400
-X-MC-Unique: avaTAYaGO-CwoH4Llzzfmw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3180237cef3so3023180f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:12:25 -0700 (PDT)
+        Tue, 29 Aug 2023 13:14:12 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7634DCDC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:13:42 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-977e0fbd742so598428566b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693329218; x=1693934018;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=m/strmF9ozBLaK9gIhpGDpKRH8crNC81h2H/fp7mNSI=;
+        b=H0JWVDk2/D+JfeNGlc/04n+v/cpaJGri9YHvWfZdyYrSpJ7PywS/wRQd9mb7jePhP5
+         lB49vgeSu3HC/Y809JflFxI8rSr5OCC4jDKpAidt75qLLoLZxzV0iQBJkXskWgGWzSul
+         iaaTTmlVR9D6HiOR//APNlMs/s+b9VUQCheQg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329144; x=1693933944;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wp6NVU/HH5u0YUMAAE2I/gwkb6z0iMtEnAqVfmJMByA=;
-        b=Bm3w/HL+sNoY0e50OX7YVzCGmCKDC1zVBGvk5wIHIBdSs7muB1n3zxudiBDvLxwlFi
-         AA8a5Sv78I0/tUjfs/iNfdGdmKeaOX85Osg5gex2LXcojsTr2zoie3EWLDDYEn5Nt7Tp
-         dg6rSBY3TyoEqwCCnBLWogDWFzRwYnDESBhiu4edJfwBrKe/Ctd8LLeXi9JCxyxv+PiI
-         UnIX/VlDEj2EbBebhLIcaVxyE8Ol8+VMgnW3E+nLx4Ptsgfs4R2gxTeWOTjn62C/57dl
-         7wGHTCABiw1fIDJXNyyrYRvONx3NSiVIrnLpPEmal6xNquCOjlFEZyHl1VcqcgANFF+F
-         ABRA==
-X-Gm-Message-State: AOJu0Yw+7nVrXXZZVPcgpAkHCo65/gmrbDeEIMJWxIgbP7qXLunLYxPp
-        TVkH15GzSQOySXwqo/Z/mNL4Rp/PhblQZASFLqDTbr+f3IubWF48SHofZWnnXvTOSG3VqZnlLSQ
-        DXju6A6ojx7uXGZpyiF7Nsat8
-X-Received: by 2002:a5d:6382:0:b0:319:7788:5027 with SMTP id p2-20020a5d6382000000b0031977885027mr22068086wru.59.1693329144235;
-        Tue, 29 Aug 2023 10:12:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGvKWn7oc8cn1caVkrWHBl2cCderLcj1+GCitzKIJIYbS0PNIo3Fkz9Uxk+P6u4M8FOKmY8fQ==
-X-Received: by 2002:a5d:6382:0:b0:319:7788:5027 with SMTP id p2-20020a5d6382000000b0031977885027mr22068071wru.59.1693329143928;
-        Tue, 29 Aug 2023 10:12:23 -0700 (PDT)
-Received: from [192.168.1.174] ([151.48.237.81])
-        by smtp.googlemail.com with ESMTPSA id q7-20020adff787000000b003188358e08esm14168194wrp.42.2023.08.29.10.12.23
+        d=1e100.net; s=20221208; t=1693329218; x=1693934018;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m/strmF9ozBLaK9gIhpGDpKRH8crNC81h2H/fp7mNSI=;
+        b=ExF+YwZBH4rXORdqqw6bkxelB4AxAHTsnMa/vUxdbTqdNIak067QIpLRDUdC+HQs6O
+         V7WCTfl5rK0ZR/MuUrvNU7uCFyMBsuOiwoRxDBnr2qGI5WOUGr6m9jg5vFvHAGVTZ5DN
+         dSHnYaAfdYRpbepQ6Vxnmed+E/+hse1fTRVXzF+vUpeppbKTy23eJtp8tQG/PfK5jope
+         tmaEs8fq0wSl0VblV+JuV3WcxXkrBSHho/pU0u0pb86E2b+NPeejIoHQc1p+InxUFFCM
+         cPPwWWoIMIXrbl7Tz0p5qtDQ2xDrZMZS0vwkjnrrvwwcFhB+9/1RYiK8+z5XPinyuWYc
+         0wlw==
+X-Gm-Message-State: AOJu0YyAUo5FnyoVeuF1uN6CgjVV0W3odOLohj44ADmOK0JLJY440Lzo
+        G8leGvpZmr1xr0nkFLOiuC3enDYHYEaeiclABDcAqIJx
+X-Google-Smtp-Source: AGHT+IFD15tRv0zc1PPZiLFYvhG+3kbv0wsp6iX8H5GyDrB6zUi8iA47cGgl+ip26Qp7PsAqXScs1Q==
+X-Received: by 2002:a17:906:7391:b0:9a1:c659:7c62 with SMTP id f17-20020a170906739100b009a1c6597c62mr14677169ejl.66.1693329218670;
+        Tue, 29 Aug 2023 10:13:38 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id n19-20020a170906379300b009a1082f423esm6089948ejc.88.2023.08.29.10.13.37
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 10:12:23 -0700 (PDT)
-Message-ID: <aff7354d-af68-c283-b607-029218af183b@redhat.com>
-Date:   Tue, 29 Aug 2023 19:12:22 +0200
+        Tue, 29 Aug 2023 10:13:37 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-98377c5d53eso601782066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:13:37 -0700 (PDT)
+X-Received: by 2002:a17:907:b11:b0:9a4:88af:b77 with SMTP id
+ h17-20020a1709070b1100b009a488af0b77mr9102528ejl.60.1693329216897; Tue, 29
+ Aug 2023 10:13:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] KVM: VMX: Refresh available regs and IDT vectoring info
- before NMI handling
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu.linux@gmail.com>
-References: <20230825014532.2846714-1-seanjc@google.com>
- <169327846893.3063999.9479426554624511592.b4-ty@google.com>
-Content-Language: en-US
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <169327846893.3063999.9479426554624511592.b4-ty@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <202308281119.10472FC7@keescook> <CAHk-=wi_WxZ2dEsQR0-wDtYAh4sxVEQkU7HK5JSboVv7v7NwcQ@mail.gmail.com>
+ <B085ADB4-4B8C-4998-BB33-DA67C45483E9@kernel.org> <CAHk-=wjRD_LnCbwSRM20Fg54xhrFBLwgO=X23bdconx3wKokxg@mail.gmail.com>
+ <202308282035.5AFD431B@keescook>
+In-Reply-To: <202308282035.5AFD431B@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 29 Aug 2023 10:13:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whbqsYC4nDc7HpWEYo7EnA603T35jSP4om6HMWpVZSc_w@mail.gmail.com>
+Message-ID: <CAHk-=whbqsYC4nDc7HpWEYo7EnA603T35jSP4om6HMWpVZSc_w@mail.gmail.com>
+Subject: Re: [GIT PULL] pstore updates for v6.6-rc1
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Enlin Mu <enlin.mu@unisoc.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yunlong Xing <yunlong.xing@unisoc.com>,
+        Yuxiao Zhang <yuxiaozhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 05:11, Sean Christopherson wrote:
-> Applied to kvm-x86 vmx, gonna try to squeeze this into the initial 6.6 pull
-> request as I got confirmation from another reporter that this fixed their
-> problem[*].  I'll make sure to make note of this patch in the pull request to
-> Paolo, worst case scenario I'll drop this one commit if Paolo spots something.
-> 
-> https://lore.kernel.org/all/SY4P282MB10841E53BAF421675FCE991D9DE0A@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM/
-> 
-> [1/1] KVM: VMX: Refresh available regs and IDT vectoring info before NMI handling
->        https://github.com/kvm-x86/linux/commit/50011c2a2457
+On Mon, 28 Aug 2023 at 20:44, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Aug 28, 2023 at 06:44:02PM -0700, Linus Torvalds wrote:
+> > The only thing that is new is the kernel pstore implementation. Why
+> > was this not a problem before? The warning existed back then too, but
+> > I never actually got it.
+>
+> Right -- if the compression method from before was different, it'll fail
+> now. (i.e. we removed everything but zlib.)
 
-I'm back, so feel free to add even the
+I don't think that was the case.
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Looking back in my logs, I see lines like this:
 
-Paolo
+  Aug 07 16:59:29 ryzen kernel: pstore: Using crash dump compression: deflate
 
+and while it appears F37 used to support other formats, it does have
+
+  CONFIG_PSTORE_DEFLATE_COMPRESS_DEFAULT=y
+
+so it should all be zlib-compatible from what I can tell.
+
+                  Linus
