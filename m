@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C620878BD4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 05:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B2778BD4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 05:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235596AbjH2DhU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Aug 2023 23:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S235603AbjH2DlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 23:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235597AbjH2DhH (ORCPT
+        with ESMTP id S235599AbjH2DlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 23:37:07 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59918110
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 20:37:02 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id AC0AC809C;
-        Tue, 29 Aug 2023 11:36:59 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
- 2023 11:36:59 +0800
-Received: from localhost.localdomain (113.72.145.245) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
- 2023 11:36:58 +0800
-From:   Xingyu Wu <xingyu.wu@starfivetech.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH v1] ASoC: dwc: Fix the warnnings about JH7110 ops
-Date:   Tue, 29 Aug 2023 11:36:58 +0800
-Message-ID: <20230829033658.225713-1-xingyu.wu@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 28 Aug 2023 23:41:05 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00135110
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 20:41:01 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VqpwQ-e_1693280457;
+Received: from 30.97.48.251(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VqpwQ-e_1693280457)
+          by smtp.aliyun-inc.com;
+          Tue, 29 Aug 2023 11:40:58 +0800
+Message-ID: <e318cb75-510e-6cec-d35d-f29d920468f7@linux.alibaba.com>
+Date:   Tue, 29 Aug 2023 11:40:55 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.145.245]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [syzbot] [erofs?] [fat?] WARNING in erofs_kill_sb
+To:     syzbot <syzbot+69c477e882e44ce41ad9@syzkaller.appspotmail.com>,
+        brauner@kernel.org, hch@lst.de, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000f43cab0601c3c902@google.com>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <000000000000f43cab0601c3c902@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-12.1 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a check of CONFIG_OF before the JH7110 ops to fix the warnings
-that the JH7110 ops are defined but not used when CONFIG_OF is disabled.
 
-Fixes: 1a512d13837a ("Add I2S support for the StarFive JH7110 SoC")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308250433.nhzrhYEo-lkp@intel.com/
-Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
----
-Hi Mark,
 
-This patch fixes the issue about the warning of JH7110 ops when CONFIG_OF
-is disabled. So add a check of CONFIG_OF before defining JH7110 ops.
+On 2023/7/31 15:57, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    d7b3af5a77e8 Add linux-next specific files for 20230728
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=13018b26a80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=62dd327c382e3fe
+> dashboard link: https://syzkaller.appspot.com/bug?extid=69c477e882e44ce41ad9
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b490c5a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=139a9c7ea80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/5efa5e68267f/disk-d7b3af5a.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/b1f5d3e10263/vmlinux-d7b3af5a.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/57cab469d186/bzImage-d7b3af5a.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/2cf2189f623b/mount_0.gz
 
-Thanks,
-Xingyu Wu
----
- sound/soc/dwc/dwc-i2s.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index 5ab1b3eb2d28..329015ef1d1e 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -729,6 +729,7 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 
- }
- 
-+#ifdef CONFIG_OF
- /* clocks initialization with master mode on JH7110 SoC */
- static int jh7110_i2s_crg_master_init(struct dw_i2s_dev *dev)
- {
-@@ -912,6 +913,7 @@ static int jh7110_i2stx0_clk_cfg(struct i2s_clk_config_data *config)
- 
- 	return clk_set_rate(dev->clk, bclk_rate);
- }
-+#endif
- 
- static int dw_i2s_probe(struct platform_device *pdev)
- {
--- 
-2.25.1
-
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
