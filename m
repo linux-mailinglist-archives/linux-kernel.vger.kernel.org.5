@@ -2,440 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4E578C318
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A665B78C33C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbjH2LIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 07:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S231532AbjH2LV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbjH2LIU (ORCPT
+        with ESMTP id S231879AbjH2LVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:08:20 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E007FC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:08:17 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c3c8adb27so526591866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20221208.gappssmtp.com; s=20221208; t=1693307296; x=1693912096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lrkTstjTEiNNJCQmVu1d/FovCHkCZm8dZOPspkYI3AQ=;
-        b=aGPdKZuY5NEJf+wG7N0dW1CJh5Gf/hgW5VTsJ7WTzCKsDAC4/aGS5ZxZ74acnjuN3b
-         P2wxkEvPv6U0jUxuBbv1WBGbhoGJGc0OaxgegbN4gz0DcMfefmllyA0FG1BztxcKTYC6
-         FxSwweAagOMweDERcV7pVJsNi9VEfTEOYSZJAK6uUiF/v/55Y0z8e/awq38FLF51zMfk
-         GcMG9OOSX4nxKn7NHOjrdkk+lLxMHqboYqu8jPT/to9vH7xBXiLpOUtBNBhN6B2qv5FE
-         Gi2EYBffcP54J7JLd9sVhrukdMpBegU64aN+rMLeXUWJbCNzLgSp5fmlLOaYALK5/FcM
-         CMSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693307296; x=1693912096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lrkTstjTEiNNJCQmVu1d/FovCHkCZm8dZOPspkYI3AQ=;
-        b=aSJX4/12EGD3EMP53mvzwV3PhHvtEgHBKnuF/vAm9vrwyEgzDIQ8V48tCKqRl1LQIm
-         AfQ8WmoJ/gr9QNzpU4ZzDe4KFB2FUssAXGedSdZESlMh3LHtb44N134HRTaO2ZMUz+Cr
-         bSSF7HJkbEkjz+gJP+b8g9NUzaJINqC+a4wbjVd4tLMjpas+lcJHg89oHC8H842fxnDf
-         +F/ezrKdzv808KVYnde3mVzXaEMpqbf8JjswxC+xlezgqtZyR6f5F/F4kTREa4YJmXTr
-         JQepZfhs7kk12OKcg1J6t4yFqPQz628uA5ndl/vCs7TDWKq7bWBgZz8a6s8EWCpSATMB
-         840Q==
-X-Gm-Message-State: AOJu0YzWYHj42NPifi5zYrg9GDX5VFqk/7JXQcYEnk5nfUSWICzE7jjf
-        +cVKlf377l8KZAMdu3h7qU0uHYOvNDxqYmiyCpiYXw==
-X-Google-Smtp-Source: AGHT+IG3A8cAB8JJ6IN+iWxSguNpowm0V0ics5K4fy5pDOF1Oup3H1x4LGxDiLXG0L4JABWAG2T/pMwv7Kd3RLs5qxs=
-X-Received: by 2002:a17:907:2cc8:b0:9a5:c9a4:ba1a with SMTP id
- hg8-20020a1709072cc800b009a5c9a4ba1amr1224893ejc.59.1693307295498; Tue, 29
- Aug 2023 04:08:15 -0700 (PDT)
+        Tue, 29 Aug 2023 07:21:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3771B5;
+        Tue, 29 Aug 2023 04:21:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 079F4641ED;
+        Tue, 29 Aug 2023 11:21:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F38EC433C8;
+        Tue, 29 Aug 2023 11:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693308088;
+        bh=QTVKl11mTqctnAFSquSoohAOA1GFh91gwHOo+og+hr4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JstpJtw7DGYzvksl+Civ1nFzOIcDWQTcePiyINetcPRyn2LF80/c0SvWQF3Fvvzgh
+         1LRvblQePlJ2s/04I5YPK9uZynYQVTI9Fa84UAkz46LuyMVzmPIiFxDN2yOW8KwEeL
+         BfWeBH6GdPCafGln4FuBZnQ3m0hVB+3mNKiea/4DHndexDmXY8J0GbLvKftkZ1VW6W
+         PYIIdowG9IyAm8sr5kO6yOVTCn92q4EOneAbyeE2Rg6ei+sZ0+zI9SNrdAqNbzdEML
+         3KAHxgTGFAWlVuigKrfk1LSYcVfnV1C85cwBNQapNvdNV3GtmwD3b0GdaEwQW8x6fp
+         HU4Es633uWqmg==
+Date:   Tue, 29 Aug 2023 19:09:36 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, Maxime@web.codeaurora.org,
+        Coquelin@web.codeaurora.org,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH net-next v2 3/3] net: stmmac: add glue layer for T-HEAD
+ TH1520 SoC
+Message-ID: <ZO3R8KXx4dHp/YjZ@xhacker>
+References: <20230827091710.1483-1-jszhang@kernel.org>
+ <20230827091710.1483-4-jszhang@kernel.org>
+ <maj7mkdtkhp3z7xzcwvopnup3lhm5h5wyxz3j2ljryjbwpwilx@xdizgwctqukn>
+ <ZOzAO5xhWdGcBXD1@xhacker>
+ <logkjnuiq2jgrphv4y7bqy523zsj6pskafwzpfdg6grvk5m7jk@hgucfu4e6azo>
+ <ZO1jWUa7xgZuHdRH@xhacker>
+ <4fhck6gnoenwuvlzxky433c4lj3enc7kwgko77stzrgllgm2lr@5cnhz57twx42>
 MIME-Version: 1.0
-References: <20230806024715.3061589-1-xiao.w.wang@intel.com>
-In-Reply-To: <20230806024715.3061589-1-xiao.w.wang@intel.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 29 Aug 2023 16:38:03 +0530
-Message-ID: <CAAhSdy2_djw2JX+8tmF2V190+x9KLvt7u8rCX-TaGCKQrUVOYQ@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
-To:     Xiao Wang <xiao.w.wang@intel.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, ardb@kernel.org, haicheng.li@intel.com,
-        linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4fhck6gnoenwuvlzxky433c4lj3enc7kwgko77stzrgllgm2lr@5cnhz57twx42>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 6, 2023 at 8:09=E2=80=AFAM Xiao Wang <xiao.w.wang@intel.com> wr=
-ote:
->
-> This patch leverages the alternative mechanism to dynamically optimize
-> bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
-> Zbb ext is not supported by the runtime CPU, legacy implementation is
-> used. If Zbb is supported, then the optimized variants will be selected
-> via alternative patching.
->
-> The legacy bitops support is taken from the generic C implementation as
-> fallback.
->
-> If the parameter is a build-time constant, we leverage compiler builtin t=
-o
-> calculate the result directly, this approach is inspired by x86 bitops
-> implementation.
->
-> EFI stub runs before the kernel, so alternative mechanism should not be
-> used there, this patch introduces a macro EFI_NO_ALTERNATIVE for this
-> purpose.
+On Tue, Aug 29, 2023 at 01:07:39PM +0300, Serge Semin wrote:
+> On Tue, Aug 29, 2023 at 11:17:45AM +0800, Jisheng Zhang wrote:
+> > On Mon, Aug 28, 2023 at 08:30:50PM +0300, Serge Semin wrote:
+> > > On Mon, Aug 28, 2023 at 11:41:47PM +0800, Jisheng Zhang wrote:
+> > > > On Mon, Aug 28, 2023 at 04:40:19PM +0300, Serge Semin wrote:
+> > > > > On Sun, Aug 27, 2023 at 05:17:10PM +0800, Jisheng Zhang wrote:
+> > > > > > Add dwmac glue driver to support the dwmac on the T-HEAD TH1520 SoC.
+> > > > > > 
+> > > > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > > > > ---
+> > > > > >  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
+> > > > > >  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+> > > > > >  .../net/ethernet/stmicro/stmmac/dwmac-thead.c | 302 ++++++++++++++++++
+> > > > > >  3 files changed, 314 insertions(+)
+> > > > > >  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+> > > > > > 
+> > > > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> > > > > > index 06c6871f8788..1bf71804c270 100644
+> > > > > > --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> > > > > > +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> > > > > > @@ -216,6 +216,17 @@ config DWMAC_SUN8I
+> > > > > >  	  stmmac device driver. This driver is used for H3/A83T/A64
+> > > > > >  	  EMAC ethernet controller.
+> > > > > >  
+> > > > > > +config DWMAC_THEAD
+> > > > > > +	tristate "T-HEAD dwmac support"
+> > > > > > +	depends on OF && (ARCH_THEAD || COMPILE_TEST)
+> > > > > > +	select MFD_SYSCON
+> > > > > > +	help
+> > > > > > +	  Support for ethernet controllers on T-HEAD RISC-V SoCs
+> > > > > > +
+> > > > > > +	  This selects the T-HEAD platform specific glue layer support for
+> > > > > > +	  the stmmac device driver. This driver is used for T-HEAD TH1520
+> > > > > > +	  ethernet controller.
+> > > > > > +
+> > > > > >  config DWMAC_IMX8
+> > > > > >  	tristate "NXP IMX8 DWMAC support"
+> > > > > >  	default ARCH_MXC
+> > > > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
+> > > > > > index 5b57aee19267..d73171ed6ad7 100644
+> > > > > > --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
+> > > > > > +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
+> > > > > > @@ -27,6 +27,7 @@ obj-$(CONFIG_DWMAC_STI)		+= dwmac-sti.o
+> > > > > >  obj-$(CONFIG_DWMAC_STM32)	+= dwmac-stm32.o
+> > > > > >  obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
+> > > > > >  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
+> > > > > > +obj-$(CONFIG_DWMAC_THEAD)	+= dwmac-thead.o
+> > > > > >  obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
+> > > > > >  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
+> > > > > >  obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
+> > > > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..85135ef05906
+> > > > > > --- /dev/null
+> > > > > > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+> > > > > > @@ -0,0 +1,302 @@
+> > > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > > > +/*
+> > > > > > + * T-HEAD DWMAC platform driver
+> > > > > > + *
+> > > > > > + * Copyright (C) 2021 Alibaba Group Holding Limited.
+> > > > > > + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> > > > > > + *
+> > > > > > + */
+> > > > > > +
+> > > > > > +#include <linux/bitfield.h>
+> > > > > > +#include <linux/mfd/syscon.h>
+> > > > > > +#include <linux/module.h>
+> > > > > > +#include <linux/of.h>
+> > > > > > +#include <linux/of_device.h>
+> > > > > > +#include <linux/of_net.h>
+> > > > > > +#include <linux/platform_device.h>
+> > > > > > +#include <linux/regmap.h>
+> > > > > > +
+> > > > > > +#include "stmmac_platform.h"
+> > > > > > +
+> > > > > > +#define GMAC_CLK_EN			0x00
+> > > > > > +#define  GMAC_TX_CLK_EN			BIT(1)
+> > > > > > +#define  GMAC_TX_CLK_N_EN		BIT(2)
+> > > > > > +#define  GMAC_TX_CLK_OUT_EN		BIT(3)
+> > > > > > +#define  GMAC_RX_CLK_EN			BIT(4)
+> > > > > > +#define  GMAC_RX_CLK_N_EN		BIT(5)
+> > > > > > +#define  GMAC_EPHY_REF_CLK_EN		BIT(6)
+> > > > > > +#define GMAC_RXCLK_DELAY_CTRL		0x04
+> > > > > > +#define  GMAC_RXCLK_BYPASS		BIT(15)
+> > > > > > +#define  GMAC_RXCLK_INVERT		BIT(14)
+> > > > > > +#define  GMAC_RXCLK_DELAY_MASK		GENMASK(4, 0)
+> > > > > > +#define  GMAC_RXCLK_DELAY_VAL(x)	FIELD_PREP(GMAC_RXCLK_DELAY_MASK, (x))
+> > > > > > +#define GMAC_TXCLK_DELAY_CTRL		0x08
+> > > > > > +#define  GMAC_TXCLK_BYPASS		BIT(15)
+> > > > > > +#define  GMAC_TXCLK_INVERT		BIT(14)
+> > > > > > +#define  GMAC_TXCLK_DELAY_MASK		GENMASK(4, 0)
+> > > > > > +#define  GMAC_TXCLK_DELAY_VAL(x)	FIELD_PREP(GMAC_RXCLK_DELAY_MASK, (x))
+> > > > > > +#define GMAC_PLLCLK_DIV			0x0c
+> > > > > > +#define  GMAC_PLLCLK_DIV_EN		BIT(31)
+> > > > > > +#define  GMAC_PLLCLK_DIV_MASK		GENMASK(7, 0)
+> > > > > > +#define  GMAC_PLLCLK_DIV_NUM(x)		FIELD_PREP(GMAC_PLLCLK_DIV_MASK, (x))
+> > > > > > +#define GMAC_GTXCLK_SEL			0x18
+> > > > > > +#define  GMAC_GTXCLK_SEL_PLL		BIT(0)
+> > > > > > +#define GMAC_INTF_CTRL			0x1c
+> > > > > > +#define  PHY_INTF_MASK			BIT(0)
+> > > > > > +#define  PHY_INTF_RGMII			FIELD_PREP(PHY_INTF_MASK, 1)
+> > > > > > +#define  PHY_INTF_MII_GMII		FIELD_PREP(PHY_INTF_MASK, 0)
+> > > > > > +#define GMAC_TXCLK_OEN			0x20
+> > > > > > +#define  TXCLK_DIR_MASK			BIT(0)
+> > > > > > +#define  TXCLK_DIR_OUTPUT		FIELD_PREP(TXCLK_DIR_MASK, 0)
+> > > > > > +#define  TXCLK_DIR_INPUT		FIELD_PREP(TXCLK_DIR_MASK, 1)
+> > > > > > +
+> > > > > > +#define GMAC_GMII_RGMII_RATE	125000000
+> > > > > > +#define GMAC_MII_RATE		25000000
+> > > > > > +
+> > > > > > +struct thead_dwmac {
+> > > > > > +	struct plat_stmmacenet_data *plat;
+> > > > > > +	struct regmap *apb_regmap;
+> > > > > > +	struct device *dev;
+> > > > > > +	u32 rx_delay;
+> > > > > > +	u32 tx_delay;
+> > > > > > +};
+> > > > > > +
+> > > > > > +static int thead_dwmac_set_phy_if(struct plat_stmmacenet_data *plat)
+> > > > > > +{
+> > > > > > +	struct thead_dwmac *dwmac = plat->bsp_priv;
+> > > > > > +	u32 phyif;
+> > > > > > +
+> > > > > > +	switch (plat->interface) {
+> > > > > > +	case PHY_INTERFACE_MODE_MII:
+> > > > > > +		phyif = PHY_INTF_MII_GMII;
+> > > > > > +		break;
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_ID:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_TXID:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> > > > > > +		phyif = PHY_INTF_RGMII;
+> > > > > > +		break;
+> > > > > > +	default:
+> > > > > > +		dev_err(dwmac->dev, "unsupported phy interface %d\n",
+> > > > > > +			plat->interface);
+> > > > > > +		return -EINVAL;
+> > > > > > +	};
+> > > > > > +
+> > > > > > +	regmap_write(dwmac->apb_regmap, GMAC_INTF_CTRL, phyif);
+> > > > > > +
+> > > > > > +	return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static int thead_dwmac_set_txclk_dir(struct plat_stmmacenet_data *plat)
+> > > > > > +{
+> > > > > > +	struct thead_dwmac *dwmac = plat->bsp_priv;
+> > > > > > +	u32 txclk_dir;
+> > > > > > +
+> > > > > > +	switch (plat->interface) {
+> > > > > > +	case PHY_INTERFACE_MODE_MII:
+> > > > > > +		txclk_dir = TXCLK_DIR_INPUT;
+> > > > > > +		break;
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_ID:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_TXID:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> > > > > > +		txclk_dir = TXCLK_DIR_OUTPUT;
+> > > > > > +		break;
+> > > > > > +	default:
+> > > > > > +		dev_err(dwmac->dev, "unsupported phy interface %d\n",
+> > > > > > +			plat->interface);
+> > > > > > +		return -EINVAL;
+> > > > > > +	};
+> > > > > > +
+> > > > > > +	regmap_write(dwmac->apb_regmap, GMAC_TXCLK_OEN, txclk_dir);
+> > > > > > +
+> > > > > > +	return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static void thead_dwmac_fix_speed(void *priv, unsigned int speed, unsigned int mode)
+> > > > > > +{
+> > > > > > +	struct thead_dwmac *dwmac = priv;
+> > > > > > +	struct plat_stmmacenet_data *plat = dwmac->plat;
+> > > > > > +	unsigned long rate;
+> > > > > > +	u32 div;
+> > > > > > +
+> > > > > > +	switch (plat->interface) {
+> > > > > > +	/* For MII, rxc/txc is provided by phy */
+> > > > > > +	case PHY_INTERFACE_MODE_MII:
+> > > > > > +		return;
+> > > > > > +
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_ID:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> > > > > > +	case PHY_INTERFACE_MODE_RGMII_TXID:
+> > > > > 
+> > > > > > +		rate = clk_get_rate(plat->stmmac_clk);
+> > > > > > +		if (!rate || rate % GMAC_GMII_RGMII_RATE != 0 ||
+> > > > > > +		    rate % GMAC_MII_RATE != 0) {
+> > > > > > +			dev_err(dwmac->dev, "invalid gmac rate %ld\n", rate);
+> > > > > > +			return;
+> > > > > > +		}
+> > > > > > +
+> > > > > > +		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV, GMAC_PLLCLK_DIV_EN, 0);
+> > > > > > +
+> > > > > > +		switch (speed) {
+> > > > > > +		case SPEED_1000:
+> > > > > > +			div = rate / GMAC_GMII_RGMII_RATE;
+> > > > > > +			break;
+> > > > > > +		case SPEED_100:
+> > > > > > +			div = rate / GMAC_MII_RATE;
+> > > > > > +			break;
+> > > > > > +		case SPEED_10:
+> > > > > > +			div = rate * 10 / GMAC_MII_RATE;
+> > > > > > +			break;
+> > > > > > +		default:
+> > > > > > +			dev_err(dwmac->dev, "invalid speed %u\n", speed);
+> > > > > > +			return;
+> > > > > > +		}
+> > > > > > +		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
+> > > > > > +				   GMAC_PLLCLK_DIV_MASK, GMAC_PLLCLK_DIV_NUM(div));
+> > > > > > +
+> > > > > > +		regmap_update_bits(dwmac->apb_regmap, GMAC_PLLCLK_DIV,
+> > > > > > +				   GMAC_PLLCLK_DIV_EN, GMAC_PLLCLK_DIV_EN);
+> > > > > 
+> > > > > This chunk looks like a hard-coded implementation of the
+> > > > > CLK_SET_RATE_GATE Tx-clocks rate setup which parental clock is the
+> > > > > "stmmaceth" clock. I suggest to move it to the respective driver, add
+> > > > > a "tx" clock to the bindings and use the common clock kernel API
+> > > > > methods here only.
+> > > > 
+> > > > I did consider your solution before writing the code, here are the
+> > > > reasons why I dropped it:
+> > > > 
+> > > 
+> > > > There's no any clk IP here, the HW just puts several
+> > > > gmac related control bits here, such as rx/tx delay, bypass, invert
+> > > > interface choice, clk direction. 
+> > > 
+> > > You omitted the essential part of your code which I pointed out.
+> > > 
+> > > > From this point of view, it looks more
+> > > > like a syscon rather than clk.
+> > > 
+> 
+> > > Toggling control bits is surely the syscon work. But gating a parental
+> > > clock, settings up the parental clock _divider_ and ungating the clock
+> > > back is the clock controller function. So it means your syscon is just
+> > > a normal multi-function device, which one of the function is the clock
+> > > controller.
+> > > 
+> > > It's not like your situation is unique. For instance in case of a SoC
+> > > I was working with recently Clock Control Unit (CCU) was actually a
+> > > multi-function device which had:
+> > > 1. PLLs and Dividers supplying the clocks to the SoC components.
+> > 
+> > Hi Serge,
+> > 
+> > This is the big difference between your case and TH1520 gmac.
+> 
+> AFAICS my PCIe-part of the syscon is a similar story as your GMAC
+> CSRs: enabled/disable several clock gates, setup a ref-clock divider,
+> multiple flags with reset function and multiple flags/fields for the
+> PCIe-controller tunings. All of that intermixed in a few registers. A
+> similar thing was for the SATA-controller.
+> 
+> > (PS: @Emil, I read your comments in another reply. IIUC, jh7110 puts a
+> > real clk IP for gmac tx clock purpose)
+> > 
+> 
+> > However, There's no real clk IP in the TH1520 gmac related syscon, yep, div
+> > and enable are some what clock related bits, but that's all, no more, no less.
+> 
+> These bits/fields are the clock-controller function of the syscon.
+> Based on that your syscon is a multi-functional device which support
+> the GMAC tunings and controls a reference clock gating/dividing.  The
+> outputs from the clock gate and divider gets to be supplied to the
+> TH1520 GMAC.
+> 
+> BTW Seeing you have only 0x20 bytes utilized in the glue driver I
+> guess those registers chunk is a part of a bigger CSR space. Is it?
 
-I am getting the following compile error with this patch:
+Nope, the 4KB reg space is dedicated to gmac control, and isn't
+a part of a big reg space, and only 0~0x20 of the address space is used.
 
-  GEN     Makefile
-  UPD     include/config/kernel.release
-  UPD     include/generated/utsrelease.h
-  CC      kernel/bounds.s
-In file included from /home/anup/Work/riscv-test/linux/include/linux/bitmap=
-.h:9,
-                 from
-/home/anup/Work/riscv-test/linux/arch/riscv/include/asm/cpufeature.h:9,
-                 from
-/home/anup/Work/riscv-test/linux/arch/riscv/include/asm/hwcap.h:90,
-                 from
-/home/anup/Work/riscv-test/linux/arch/riscv/include/asm/bitops.h:26,
-                 from
-/home/anup/Work/riscv-test/linux/include/linux/bitops.h:68,
-                 from /home/anup/Work/riscv-test/linux/include/linux/log2.h=
-:12,
-                 from /home/anup/Work/riscv-test/linux/kernel/bounds.c:13:
-/home/anup/Work/riscv-test/linux/include/linux/find.h: In function
-'find_next_bit':
-/home/anup/Work/riscv-test/linux/include/linux/find.h:64:30: error:
-implicit declaration of function '__ffs'
-[-Werror=3Dimplicit-function-declaration]
-   64 |                 return val ? __ffs(val) : size;
+> 
+> > So even in this case, another abstraction layer via. clk subsystem is still
+> > preferred? IOW, a seperate clk driver for the gmac?
+> 
+> That's what I was told in a situation when I was trying to use a
+> syscon to switch between the two parental clocks:
+> https://lore.kernel.org/linux-ide/20220517201332.GB1462130-robh@kernel.org/
+> 
+> In your case IMO it is more preferred at the very least because it
+> gives a more correct device description. Your bindings currently do
+> not define the Tx/Rx reference clocks meanwhile the TH1520 GMAC do
+> have them.
+> 
 
-Regards,
-Anup
-
-
->
-> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
-> ---
->  arch/riscv/include/asm/bitops.h       | 266 +++++++++++++++++++++++++-
->  drivers/firmware/efi/libstub/Makefile |   2 +-
->  2 files changed, 264 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/bitops.h b/arch/riscv/include/asm/bit=
-ops.h
-> index 3540b690944b..f727f6489cd5 100644
-> --- a/arch/riscv/include/asm/bitops.h
-> +++ b/arch/riscv/include/asm/bitops.h
-> @@ -15,13 +15,273 @@
->  #include <asm/barrier.h>
->  #include <asm/bitsperlong.h>
->
-> +#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(EFI_NO_ALTERNATIVE)
->  #include <asm-generic/bitops/__ffs.h>
-> -#include <asm-generic/bitops/ffz.h>
-> -#include <asm-generic/bitops/fls.h>
->  #include <asm-generic/bitops/__fls.h>
-> +#include <asm-generic/bitops/ffs.h>
-> +#include <asm-generic/bitops/fls.h>
-> +
-> +#else
-> +#include <asm/alternative-macros.h>
-> +#include <asm/hwcap.h>
-> +
-> +#if (BITS_PER_LONG =3D=3D 64)
-> +#define CTZW   "ctzw "
-> +#define CLZW   "clzw "
-> +#elif (BITS_PER_LONG =3D=3D 32)
-> +#define CTZW   "ctz "
-> +#define CLZW   "clz "
-> +#else
-> +#error "Unexpected BITS_PER_LONG"
-> +#endif
-> +
-> +static __always_inline unsigned long variable__ffs(unsigned long word)
-> +{
-> +       int num;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, =
-1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "ctz %0, %1\n"
-> +               ".option pop\n"
-> +               : "=3Dr" (word) : "r" (word) :);
-> +
-> +       return word;
-> +
-> +legacy:
-> +       num =3D 0;
-> +#if BITS_PER_LONG =3D=3D 64
-> +       if ((word & 0xffffffff) =3D=3D 0) {
-> +               num +=3D 32;
-> +               word >>=3D 32;
-> +       }
-> +#endif
-> +       if ((word & 0xffff) =3D=3D 0) {
-> +               num +=3D 16;
-> +               word >>=3D 16;
-> +       }
-> +       if ((word & 0xff) =3D=3D 0) {
-> +               num +=3D 8;
-> +               word >>=3D 8;
-> +       }
-> +       if ((word & 0xf) =3D=3D 0) {
-> +               num +=3D 4;
-> +               word >>=3D 4;
-> +       }
-> +       if ((word & 0x3) =3D=3D 0) {
-> +               num +=3D 2;
-> +               word >>=3D 2;
-> +       }
-> +       if ((word & 0x1) =3D=3D 0)
-> +               num +=3D 1;
-> +       return num;
-> +}
-> +
-> +/**
-> + * __ffs - find first set bit in a long word
-> + * @word: The word to search
-> + *
-> + * Undefined if no set bit exists, so code should check against 0 first.
-> + */
-> +#define __ffs(word)                            \
-> +       (__builtin_constant_p(word) ?           \
-> +        (unsigned long)__builtin_ctzl(word) :  \
-> +        variable__ffs(word))
-> +
-> +static __always_inline unsigned long variable__fls(unsigned long word)
-> +{
-> +       int num;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, =
-1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "clz %0, %1\n"
-> +               ".option pop\n"
-> +               : "=3Dr" (word) : "r" (word) :);
-> +
-> +       return BITS_PER_LONG - 1 - word;
-> +
-> +legacy:
-> +       num =3D BITS_PER_LONG - 1;
-> +#if BITS_PER_LONG =3D=3D 64
-> +       if (!(word & (~0ul << 32))) {
-> +               num -=3D 32;
-> +               word <<=3D 32;
-> +       }
-> +#endif
-> +       if (!(word & (~0ul << (BITS_PER_LONG-16)))) {
-> +               num -=3D 16;
-> +               word <<=3D 16;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-8)))) {
-> +               num -=3D 8;
-> +               word <<=3D 8;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-4)))) {
-> +               num -=3D 4;
-> +               word <<=3D 4;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-2)))) {
-> +               num -=3D 2;
-> +               word <<=3D 2;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-1))))
-> +               num -=3D 1;
-> +       return num;
-> +}
-> +
-> +/**
-> + * __fls - find last set bit in a long word
-> + * @word: the word to search
-> + *
-> + * Undefined if no set bit exists, so code should check against 0 first.
-> + */
-> +#define __fls(word)                                                    \
-> +       (__builtin_constant_p(word) ?                                   \
-> +        (unsigned long)(BITS_PER_LONG - 1 - __builtin_clzl(word)) :    \
-> +        variable__fls(word))
-> +
-> +static __always_inline int variable_ffs(int x)
-> +{
-> +       int r;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, =
-1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "bnez %1, 1f\n"
-> +               "li %0, 0\n"
-> +               "j 2f\n"
-> +               "1:\n"
-> +               CTZW "%0, %1\n"
-> +               "addi %0, %0, 1\n"
-> +               "2:\n"
-> +               ".option pop\n"
-> +               : "=3Dr" (r) : "r" (x) :);
-> +
-> +       return r;
-> +
-> +legacy:
-> +       r =3D 1;
-> +       if (!x)
-> +               return 0;
-> +       if (!(x & 0xffff)) {
-> +               x >>=3D 16;
-> +               r +=3D 16;
-> +       }
-> +       if (!(x & 0xff)) {
-> +               x >>=3D 8;
-> +               r +=3D 8;
-> +       }
-> +       if (!(x & 0xf)) {
-> +               x >>=3D 4;
-> +               r +=3D 4;
-> +       }
-> +       if (!(x & 3)) {
-> +               x >>=3D 2;
-> +               r +=3D 2;
-> +       }
-> +       if (!(x & 1)) {
-> +               x >>=3D 1;
-> +               r +=3D 1;
-> +       }
-> +       return r;
-> +}
-> +
-> +/**
-> + * ffs - find first set bit in a word
-> + * @x: the word to search
-> + *
-> + * This is defined the same way as the libc and compiler builtin ffs rou=
-tines.
-> + *
-> + * ffs(value) returns 0 if value is 0 or the position of the first set b=
-it if
-> + * value is nonzero. The first (least significant) bit is at position 1.
-> + */
-> +#define ffs(x) (__builtin_constant_p(x) ? __builtin_ffs(x) : variable_ff=
-s(x))
-> +
-> +static __always_inline int variable_fls(unsigned int x)
-> +{
-> +       int r;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, =
-1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "bnez %1, 1f\n"
-> +               "li %0, 0\n"
-> +               "j 2f\n"
-> +               "1:\n"
-> +               CLZW "%0, %1\n"
-> +               "neg %0, %0\n"
-> +               "addi %0, %0, 32\n"
-> +               "2:\n"
-> +               ".option pop\n"
-> +               : "=3Dr" (r) : "r" (x) :);
-> +
-> +       return r;
-> +
-> +legacy:
-> +       r =3D 32;
-> +       if (!x)
-> +               return 0;
-> +       if (!(x & 0xffff0000u)) {
-> +               x <<=3D 16;
-> +               r -=3D 16;
-> +       }
-> +       if (!(x & 0xff000000u)) {
-> +               x <<=3D 8;
-> +               r -=3D 8;
-> +       }
-> +       if (!(x & 0xf0000000u)) {
-> +               x <<=3D 4;
-> +               r -=3D 4;
-> +       }
-> +       if (!(x & 0xc0000000u)) {
-> +               x <<=3D 2;
-> +               r -=3D 2;
-> +       }
-> +       if (!(x & 0x80000000u)) {
-> +               x <<=3D 1;
-> +               r -=3D 1;
-> +       }
-> +       return r;
-> +}
-> +
-> +/**
-> + * fls - find last set bit in a word
-> + * @x: the word to search
-> + *
-> + * This is defined in a similar way as ffs, but returns the position of =
-the most
-> + * significant set bit.
-> + *
-> + * fls(value) returns 0 if value is 0 or the position of the last set bi=
-t if
-> + * value is nonzero. The last (most significant) bit is at position 32.
-> + */
-> +#define fls(x)                                                         \
-> +       (__builtin_constant_p(x) ?                                      \
-> +        (int)(((x) !=3D 0) ?                                            =
- \
-> +         (sizeof(unsigned int) * 8 - __builtin_clz(x)) : 0) :          \
-> +        variable_fls(x))
-> +
-> +#endif
-> +
-> +#include <asm-generic/bitops/ffz.h>
->  #include <asm-generic/bitops/fls64.h>
->  #include <asm-generic/bitops/sched.h>
-> -#include <asm-generic/bitops/ffs.h>
->
->  #include <asm-generic/bitops/hweight.h>
->
-> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi=
-/libstub/Makefile
-> index 16d64a34d1e1..b0f8c495c10f 100644
-> --- a/drivers/firmware/efi/libstub/Makefile
-> +++ b/drivers/firmware/efi/libstub/Makefile
-> @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)          +=3D -DEFI_HAVE_STRLEN -D=
-EFI_HAVE_STRNLEN \
->                                    -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
->                                    -DEFI_HAVE_STRCMP -fno-builtin -fpic \
->                                    $(call cc-option,-mno-single-pic-base)
-> -cflags-$(CONFIG_RISCV)         +=3D -fpic
-> +cflags-$(CONFIG_RISCV)         +=3D -fpic -DEFI_NO_ALTERNATIVE
->  cflags-$(CONFIG_LOONGARCH)     +=3D -fpie
->
->  cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)   +=3D -I$(srctree)/scripts/dtc/lib=
-fdt
-> --
-> 2.25.1
->
+Thank you, I will modify the code towards clk direction.
