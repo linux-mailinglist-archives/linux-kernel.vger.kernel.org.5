@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BE978C29C
+	by mail.lfdr.de (Postfix) with ESMTP id DC5B378C29E
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbjH2Kwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        id S232042AbjH2Kw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbjH2Kwd (ORCPT
+        with ESMTP id S231740AbjH2Kwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:52:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0C11A6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:52:30 -0700 (PDT)
+        Tue, 29 Aug 2023 06:52:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A19198
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:52:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B61D3653CF
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:52:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF61AC433C7;
-        Tue, 29 Aug 2023 10:52:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C97565436
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:52:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D1CC433CB;
+        Tue, 29 Aug 2023 10:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693306349;
-        bh=XgXvx9AusPDy9935nVeLpmXF27doYX4REOLpkMaY//Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SxwJb5LNdnNl1fReRuhH1I77UDnX+PsIlqKEDxhbVW4UJgkHOT8DwdhggArZaq838
-         o4MOdj+KArn3wBefSQIQnyugd0xZJ6ngCOMXbnwRTKmBRks1KoMjUHetzjncvqoM/p
-         Tsfi4sLvSALXVZi/414iGBUJbhxvS0SsG5RLt6R9ueebnspDrKCi8bITTdkO1DW04H
-         x09xbL6T97dzOj7SyEEYc8re2PNXfXohBSItr+kANY7DrU7v8+ipxKWuv0eQhfsyiw
-         Kl3Zi49NBn0rjfJh0WU1YrXbK8ospWOnzt3cQoIqDj8Os1X3lv7EMxBuO/XBvRqqCv
-         L5g0e01PImVDg==
+        s=k20201202; t=1693306355;
+        bh=OTXCsvCc3TTe8yvZj3iGweMMXsRHTGyqZXpD3RGqgpM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NkzhTqN98TTwRlZCKO/14ohdzWUG5Bkr8JjeEbgWi77hFCnKnOR0S3Dst3xxKuYR7
+         RSx8RBGo/jUzFzjMzYz10vSmA2vtzgE1V6HJ55acD+ACrWB1rYXt/ObTd1b2YDS5gh
+         NUl3sMVvPXXuMWTmOPIb3SF12GIUAMjD2kjYJ0sMc988YzZ2pG5VX7t1DGISy16zg9
+         tCxfOfCxPWrSw+jZzlszGFkLwo8TXNCpgkyVbfRK+oQ7izHZvhzURnO8o4wlX5Ardn
+         /0nWw46etXTSPR0EYllLXuB5xAs3vSO7ujslVWArhxj4atdu4b05aaMjKOL2vVHNaI
+         BkI/CxjPoaDBg==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -67,14 +67,16 @@ To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 00/22] convert to devm_stmmac_probe_config_dt
-Date:   Tue, 29 Aug 2023 18:40:11 +0800
-Message-Id: <20230829104033.955-1-jszhang@kernel.org>
+Subject: [PATCH net-next 01/22] net: stmmac: dwmac-anarion: use devm_stmmac_probe_config_dt()
+Date:   Tue, 29 Aug 2023 18:40:12 +0800
+Message-Id: <20230829104033.955-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230829104033.955-1-jszhang@kernel.org>
+References: <20230829104033.955-1-jszhang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,65 +84,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Russell pointed out there's a new devm_stmmac_probe_config_dt()
-helper now when reviewing my starfive gmac error handling patch[1].
-After greping the code, this nice helper was introduced by Bartosz in
-[2], I think it's time to convert all dwmac users to this helper and
-finally complete the TODO in [2] "but once all users of the old
-stmmac_pltfr_remove() are converted to the devres helper, it will be
-renamed back to stmmac_pltfr_remove() and the no_dt function removed."
+Simplify the driver's probe() function by using the devres
+variant of stmmac_probe_config_dt().
 
-Link: https://lore.kernel.org/netdev/ZOtWmedBsa6wQQ6+@shell.armlinux.org.uk/ [1]
-Link: https://lore.kernel.org/all/20230623100417.93592-1-brgl@bgdev.pl/  [2]
+The remove_new() callback now needs to be switched to
+stmmac_pltfr_remove_no_dt().
 
-Jisheng Zhang (22):
-  net: stmmac: dwmac-anarion: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-dwc-qos-eth: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-generic: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-generic: use devm_stmmac_pltfr_probe()
-  net: stmmac: dwmac-imx: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-ingenic: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-intel-plat: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-ipq806x: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-lpc18xx: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-mediatek: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-meson: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-meson8b: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-rk: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-socfpga: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-starfive: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-sti: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-stm32: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-sun8i: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-sunxi: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-tegra: use devm_stmmac_probe_config_dt()
-  net: stmmac: dwmac-visconti: use devm_stmmac_probe_config_dt()
-  net: stmmac: rename stmmac_pltfr_remove_no_dt to stmmac_pltfr_remove
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
- .../ethernet/stmicro/stmmac/dwmac-anarion.c   | 10 +---
- .../stmicro/stmmac/dwmac-dwc-qos-eth.c        | 15 ++----
- .../ethernet/stmicro/stmmac/dwmac-generic.c   | 15 +-----
- .../net/ethernet/stmicro/stmmac/dwmac-imx.c   | 13 ++---
- .../ethernet/stmicro/stmmac/dwmac-ingenic.c   | 33 ++++--------
- .../stmicro/stmmac/dwmac-intel-plat.c         | 25 +++------
- .../ethernet/stmicro/stmmac/dwmac-ipq806x.c   | 27 +++-------
- .../ethernet/stmicro/stmmac/dwmac-lpc18xx.c   | 19 ++-----
- .../ethernet/stmicro/stmmac/dwmac-mediatek.c  |  6 +--
- .../net/ethernet/stmicro/stmmac/dwmac-meson.c | 25 +++------
- .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 53 ++++++-------------
- .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 14 ++---
- .../ethernet/stmicro/stmmac/dwmac-socfpga.c   | 16 +++---
- .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 10 +---
- .../net/ethernet/stmicro/stmmac/dwmac-sti.c   | 14 ++---
- .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 17 +++---
- .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  6 +--
- .../net/ethernet/stmicro/stmmac/dwmac-sunxi.c | 23 +++-----
- .../net/ethernet/stmicro/stmmac/dwmac-tegra.c | 10 ++--
- .../ethernet/stmicro/stmmac/dwmac-visconti.c  | 12 ++---
- .../ethernet/stmicro/stmmac/stmmac_platform.c | 23 ++------
- .../ethernet/stmicro/stmmac/stmmac_platform.h |  1 -
- 22 files changed, 110 insertions(+), 277 deletions(-)
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c
+index 58a7f08e8d78..0df3a2ad0986 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c
+@@ -115,7 +115,7 @@ static int anarion_dwmac_probe(struct platform_device *pdev)
+ 	if (IS_ERR(gmac))
+ 		return PTR_ERR(gmac);
+ 
+-	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
++	plat_dat = devm_stmmac_probe_config_dt(pdev, stmmac_res.mac);
+ 	if (IS_ERR(plat_dat))
+ 		return PTR_ERR(plat_dat);
+ 
+@@ -124,13 +124,7 @@ static int anarion_dwmac_probe(struct platform_device *pdev)
+ 	anarion_gmac_init(pdev, gmac);
+ 	plat_dat->bsp_priv = gmac;
+ 
+-	ret = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+-	if (ret) {
+-		stmmac_remove_config_dt(pdev, plat_dat);
+-		return ret;
+-	}
+-
+-	return 0;
++	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+ }
+ 
+ static const struct of_device_id anarion_dwmac_match[] = {
+@@ -141,7 +135,7 @@ MODULE_DEVICE_TABLE(of, anarion_dwmac_match);
+ 
+ static struct platform_driver anarion_dwmac_driver = {
+ 	.probe  = anarion_dwmac_probe,
+-	.remove_new = stmmac_pltfr_remove,
++	.remove_new = stmmac_pltfr_remove_no_dt,
+ 	.driver = {
+ 		.name           = "anarion-dwmac",
+ 		.pm		= &stmmac_pltfr_pm_ops,
 -- 
 2.40.1
 
