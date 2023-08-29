@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5A178C813
+	by mail.lfdr.de (Postfix) with ESMTP id 1F10F78C812
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237115AbjH2OyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        id S237109AbjH2OyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237192AbjH2OyD (ORCPT
+        with ESMTP id S237196AbjH2OyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:54:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AA21B7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693320827; x=1724856827;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PJSIDiJhgB15vSoASO3krRbwLAL+6ge2jHlCYQ+x1+s=;
-  b=IKbw6AJDJmNaYfuEIbkVDem43Mir56F275LEJpyyC1qEZE1g7Z/xwNBd
-   TevGgkW1x1f6wxvOXczC3PaI3yO3vC91lp4xhZTQtHJFcvyy1lr31pl/B
-   evTm7oaXX7abT6V3ZbIcuw0av+zbAy6TSOTIUouA1Ri3hNUeQ+/T3idE7
-   zsNWCzngd2hcF5weiyNChAQlZuSuqcwOr/lqvRcDfATB6Kaqv+o9p+TDX
-   u5bIgEB8+Tq6kQyGru/epTPokPWFwVQZm9nD9HKNp38yJ+KPSRMqStB/Y
-   bf+KTHvkaQsG1w5RcGxreVyneb3Hs04nUz2jnkzublGLol01ay8FjvXTi
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="372798869"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="372798869"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 07:53:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="738739886"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="738739886"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 29 Aug 2023 07:53:42 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qb068-004uJy-1z;
-        Tue, 29 Aug 2023 17:53:40 +0300
-Date:   Tue, 29 Aug 2023 17:53:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Lee Jones <lee@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2] mfd: arizona-i2c: Simplify probe()
-Message-ID: <ZO4GdBbXfY54hgVb@smile.fi.intel.com>
-References: <20230828155617.87068-1-biju.das.jz@bp.renesas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828155617.87068-1-biju.das.jz@bp.renesas.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 10:54:04 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E382CCF
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:53:48 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7b957fd276so98809276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:53:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693320827; x=1693925627;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ky3d8D5ymMbIfBXVq+qxATqRkOwyZi9DsKmup3PNcMU=;
+        b=Ua0W/oI31W8kUh/mHh4BdS2E2RdrGmHy0OtqHOz3gXV1Lahp9Dxfake9juOgfTiG0j
+         2ylXmDJDrNLcCvXlhi0Ke44vP9K4tguMaJIzzR9FChgoEgrtVtxElPY/VOauMk7LQaKQ
+         smLj8bZ67HFSY23UOiZ1KPNqEfchppKoat9VY6sZu7zpGwxwzEBpwfHkIAwWfAOPLqQh
+         2osGf4wqHydez1ufUZx+diQuoyuGYIq2Cimkx9JlNLAsfA5XEBhoOfOha0cdyKbFmXDu
+         RWK8ALjcrH2QRu3Vm9+n3DqK8+ws1LNaRPr2y6qF6dZUaKckPD1Bb8kgQ21n40LSyu9q
+         A+NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693320827; x=1693925627;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ky3d8D5ymMbIfBXVq+qxATqRkOwyZi9DsKmup3PNcMU=;
+        b=UZXszsQgsfboM3H4wOHBmMtTT//z5CkcwbDTXIxujRJUegcnKkE7+GLuceiyItlCYe
+         zCRXdjOYpzupOjTzwsgynfM9459Fv/5xB/kE0bZXl5SYHqY4oa2aYY4NY16cFX5VNGll
+         Nt/3iByKV5K3Y9kFx1rFLP47g7KM1CIziJf5/sOSB1o0hHeVm50X4yj3a3kWEQhdbpzh
+         2oBSz5SgiJAr57OX/ebQRz+gh1mC2W0BsAzT8N6H1uYuLMppuU3uG9q+oI0zc/zVAZVN
+         Vjv1PJWfWlavEVhByc/HgEb8NdOPSZei90BFQvPbIlDF4USUzQ33E6oQ8FJSTu1625W3
+         0zyA==
+X-Gm-Message-State: AOJu0YwhmewnhKz8I+ZIGN7x9VWOVb4xjoldRuzUXDkTCbu6OkOdOqnX
+        0fKUF4PUeth+TsQ+Dx5GTc0Dz2J9GOA=
+X-Google-Smtp-Source: AGHT+IFUIM4+6E0xyUCXjdjIabWpHNkXAnpnYs2UsN4bcqdefeenkaN9AY+O7fjrvHm1zce80Y3CwZ5v41w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a5b:991:0:b0:d07:9d79:881c with SMTP id
+ c17-20020a5b0991000000b00d079d79881cmr979102ybq.11.1693320827774; Tue, 29 Aug
+ 2023 07:53:47 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 07:53:45 -0700
+In-Reply-To: <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
+Mime-Version: 1.0
+References: <ZO2RlYCDl8kmNHnN@torres.zugschlus.de> <ZO2piz5n1MiKR-3-@debian.me>
+ <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
+Message-ID: <ZO4GeazfcA09SfKw@google.com>
+Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd related
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Haber <mh+linux-kernel@zugschlus.de>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, linux-kernel@vger.kernel.org,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 04:56:17PM +0100, Biju Das wrote:
-> Simplify probe() by replacing device_get_match_data() and ID lookup for
-> retrieving match data by i2c_get_match_data().
+On Tue, Aug 29, 2023, Marc Haber wrote:
+> [Please keep me on Cc, I am only subscribed to linux-kernel]
+> 
+> Hi Bagas,
+> 
+> thanks for your quick answer.
+> 
+> On Tue, Aug 29, 2023 at 03:17:15PM +0700, Bagas Sanjaya wrote:
+> > In any case, bisecting kernel is highly appreciated in order to pin down
+> > the culprit.
+> 
+> Without having read the docs (that came too late, need to read up on
+> that again), my bisect came out at
+> 84a9582fd203063cd4d301204971ff2cd8327f1a being the first bad commit.
+> This is a rather big one, that does not easily back out of the 6.5
+> release. Sadly, just transplanting drivers/tty/serial from a 6.4.12 tree
+> doesn't even build. I'm adding Tony Lindgren, the author of the commit,
+> to the Cc list.
+> 
+> But, since the commit is related to serial port, I began fiddling around
+> with the serial port setting on the misbehaving VM and found out that
+> running the VM without the serial console that I am using (thus removing
+> "console=ttyS0,57600n8" from the kernel command line) makes the machine
+> boot up just fine with the 6.5 kernel that I built yesterday. It is not
+> even necessary to remove the virtual serial port.
+> 
+> The issue is still somehow connected to the host the machine is running
+> on, since my VMs all have a serial console and the test VMs running on
+> different hosts are running fine with 6.5.
 
-...
-
-> +	type = (unsigned long)i2c_get_match_data(i2c);
-
-uintptr_t ?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+What is different between the bad host(s) and the good host(s)?  E.g. kernel, QEMU,
+etc.
