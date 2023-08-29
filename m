@@ -2,192 +2,487 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE6278CD32
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FBE78CD35
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239011AbjH2TzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        id S239235AbjH2T4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238699AbjH2TzU (ORCPT
+        with ESMTP id S240478AbjH2Tzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:55:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD3D1A6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693338871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HuHCGMiLx4xW8S2a7hbvjTMXFww51Wxx2CkFqb719KE=;
-        b=VR8/7rZ1bJK3FMvg6AGU05RkFRSnRkf8gNL5bKSicw0FqosM409G3lcx+Dk54/6tX1NQJC
-        1x9Pe5+5bHu834J8zOFqA0RZWL/uP3ckJGK4QvXXN5lvhrPC47wvKbvyg32GUCGq++buIk
-        EMfch6+dFnpXIR3Ul5h1FBfP7EV4sEE=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-686-jL9QstelPPGyCkDvXJQ0MQ-1; Tue, 29 Aug 2023 15:54:28 -0400
-X-MC-Unique: jL9QstelPPGyCkDvXJQ0MQ-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-52a0f5f74d7so3805546a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:54:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693338867; x=1693943667;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HuHCGMiLx4xW8S2a7hbvjTMXFww51Wxx2CkFqb719KE=;
-        b=A9MOzfRD9KNdvdGNydZ2y/VjhJ16rz4hdROQL4hcCk93NNgc/7YrxALUX0Qn2Mx23u
-         ypF6+LUkr06s56x8Rpn1aG5WqI6KXipUB/iwJhMbo5RtQPrQwTyeY9xGjoYcDaEXqSpv
-         2b4tUD58xseqakSacBwm5dH5U1JXovUp4s184rvNMgeRVKXBUJ2kyFKS6YMktn9F8AbV
-         TdGP+Y+S+g2GtfDlSQXjQyh/O0TodSEU6+9GKNfR5HOZ0BNo1RfMLVNhoI76wMBzcG9s
-         /j2y5avhQFZA8ETZy59k//s7k3r0VTIpySEsrWHGXJ0ov94Q9DfeC7ElG0/ElUGvXY/b
-         UJoA==
-X-Gm-Message-State: AOJu0Ywhh7cwFNbkIml1RYJYgc+EeH19fNpSFEGNC7MNERoj5TlkKOot
-        NtguZIfBntyF1afx1Fb3J85+skUPkn/fFZYB4+h9RQej1TyV68rYnM702kxYS/c2/kzHDrvsiQ3
-        9eZo9+L4YfoTyhd3Rg03rfxIm
-X-Received: by 2002:a05:6402:1496:b0:522:3790:1303 with SMTP id e22-20020a056402149600b0052237901303mr192331edv.32.1693338867808;
-        Tue, 29 Aug 2023 12:54:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGcgynvwSzHT0DF2I6Ry5Urcaus6FNE7lpQUKVX2BsxrF8RbLtoXXMbTzoqySuJa/5OWU5INQ==
-X-Received: by 2002:a05:6402:1496:b0:522:3790:1303 with SMTP id e22-20020a056402149600b0052237901303mr192321edv.32.1693338867497;
-        Tue, 29 Aug 2023 12:54:27 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id i9-20020aa7c709000000b0052a198d8a4dsm5995023edq.52.2023.08.29.12.54.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 12:54:26 -0700 (PDT)
-Message-ID: <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
-Date:   Tue, 29 Aug 2023 21:54:25 +0200
+        Tue, 29 Aug 2023 15:55:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A531A6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:55:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693338949; x=1724874949;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HeRfm20caj3g2+vo1gWKMS5Yi2oGNRjltWflEWBPuRk=;
+  b=kyFpYN9PRQCUKBux9B+mEsv/5mC2fLmb5Dp4Q8tTCE2UFNDJ81mKFFPi
+   h0Ujw5p+7GqIOg9S8dM2SCDjrkYtbvkr3l2reBKu7xRM5bw62bdLUsNcF
+   ySczf85hw2LvMJG2iOpKb2cFZyNZ9AxBb3a647zP+nmvXpHg4psIktPLh
+   h1BCapuY3Ni5GftPnuY+hC5GX5BJTpO0LHhff2oVFkwVA525BKXqhmMPS
+   xibQQhFLBKH2sEe0OBRgWbIwT4P0Cs7j1xEob4ZxQZHonu+XrDDHh7aAG
+   SeluwbMpdQPfb4rrkjnEAuecAufi31zGWhE77YLn1fYoVYSNHLdT1iT92
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="372876978"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="372876978"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 12:55:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="912527634"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="912527634"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 29 Aug 2023 12:55:46 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qb4oT-00092l-2B;
+        Tue, 29 Aug 2023 19:55:45 +0000
+Date:   Wed, 30 Aug 2023 03:55:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 1/1] ALSA: control: Use list_for_each_entry_safe()
+Message-ID: <202308300312.Uq5j7oU2-lkp@intel.com>
+References: <20230829142307.3916823-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
-Content-Language: en-US, nl
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        linus.walleij@linaro.org
-Cc:     Shyam-sundar.S-k@amd.com, Basavaraj.Natikar@amd.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, lucapgl2001@gmail.com
-References: <20230829165627.156542-1-mario.limonciello@amd.com>
- <20230829165627.156542-4-mario.limonciello@amd.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230829165627.156542-4-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829142307.3916823-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
+Hi Andy,
 
-On 8/29/23 18:56, Mario Limonciello wrote:
-> Lenovo ideapad 5 doesn't use interrupts for GPIO 0, and so internally
-> debouncing with WinBlue debounce behavior means that the GPIO doesn't
-> clear until a separate GPIO is used (such as touchpad).
-> 
-> Prefer to use legacy debouncing to avoid problems.
-> 
-> Reported-by: Luca Pigliacampo <lucapgl2001@gmail.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217833
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+kernel test robot noticed the following build warnings:
 
-I'm not happy to see yet another DMI quirk solution here.
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on tiwai-sound/for-linus linus/master v6.5 next-20230829]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-and I guess you're not happy with this either...
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/ALSA-control-Use-list_for_each_entry_safe/20230829-222521
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230829142307.3916823-1-andriy.shevchenko%40linux.intel.com
+patch subject: [PATCH v2 1/1] ALSA: control: Use list_for_each_entry_safe()
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230830/202308300312.Uq5j7oU2-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308300312.Uq5j7oU2-lkp@intel.com/reproduce)
 
-Are we sure there is no other way? Did you check an acpidump
-for the laptop and specifically for its ACPI powerbutton handling?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308300312.Uq5j7oU2-lkp@intel.com/
 
-I would expect the ACPI powerbutton handler to somehow clear
-the bit, like how patch 1/3 clears it from the GPIO chip's
-own IRQ handler.
+All warnings (new ones prefixed by >>):
 
-I see that drivers/acpi/button.c does:
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:304:17: note: in expansion of macro 'list_for_each_entry_safe'
+     304 |                 list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:564:25: error: invalid type argument of '->' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                         ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
+      21 |                       __same_type(*(ptr), void),                        \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:304:17: note: in expansion of macro 'list_for_each_entry_safe'
+     304 |                 list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:338:27: error: expression in static assertion is not an integer
+     338 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:304:17: note: in expansion of macro 'list_for_each_entry_safe'
+     304 |                 list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:564:47: error: invalid type argument of unary '*' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                                               ^~~~~~
+   include/linux/container_of.h:23:11: note: in definition of macro 'container_of'
+      23 |         ((type *)(__mptr - offsetof(type, member))); })
+         |           ^~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:304:17: note: in expansion of macro 'list_for_each_entry_safe'
+     304 |                 list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from include/uapi/linux/posix_types.h:5,
+                    from include/uapi/linux/types.h:14,
+                    from include/linux/types.h:6,
+                    from include/uapi/linux/sysinfo.h:5,
+                    from include/uapi/linux/kernel.h:5,
+                    from include/linux/cache.h:5,
+                    from include/linux/slab.h:15:
+   include/linux/list.h:564:47: error: invalid type argument of unary '*' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                                               ^~~~~~
+   include/linux/stddef.h:16:52: note: in definition of macro 'offsetof'
+      16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
+         |                                                    ^~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:304:17: note: in expansion of macro 'list_for_each_entry_safe'
+     304 |                 list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+>> include/linux/list.h:779:21: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                     ^
+   sound/core/control_led.c:304:17: note: in expansion of macro 'list_for_each_entry_safe'
+     304 |                 list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   sound/core/control_led.c: In function 'snd_ctl_led_reset':
+   include/linux/container_of.h:18:41: error: incompatible types when assigning to type 'struct snd_ctl_led_ctl' from type 'struct snd_ctl_led_ctl *'
+      18 | #define container_of(ptr, type, member) ({                              \
+         |                                         ^
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:777:21: note: in expansion of macro 'list_next_entry'
+     777 |                 n = list_next_entry(pos, member);                       \
+         |                     ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:40: error: incompatible types when assigning to type 'struct snd_ctl_led_ctl *' from type 'struct snd_ctl_led_ctl'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |                                        ^~~~~
+   include/linux/list.h:779:20: note: in definition of macro 'list_for_each_entry_safe'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                    ^
+   include/linux/list.h:564:25: error: invalid type argument of '->' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                         ^~
+   include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
+      19 |         void *__mptr = (void *)(ptr);                                   \
+         |                                 ^~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:564:25: error: invalid type argument of '->' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                         ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:564:47: error: invalid type argument of unary '*' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                                               ^~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:564:25: error: invalid type argument of '->' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                         ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
+      21 |                       __same_type(*(ptr), void),                        \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:338:27: error: expression in static assertion is not an integer
+     338 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:564:47: error: invalid type argument of unary '*' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                                               ^~~~~~
+   include/linux/container_of.h:23:11: note: in definition of macro 'container_of'
+      23 |         ((type *)(__mptr - offsetof(type, member))); })
+         |           ^~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:564:47: error: invalid type argument of unary '*' (have 'struct snd_ctl_led_ctl')
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                                               ^~~~~~
+   include/linux/stddef.h:16:52: note: in definition of macro 'offsetof'
+      16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
+         |                                                    ^~~~
+   include/linux/list.h:520:9: note: in expansion of macro 'container_of'
+     520 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:564:9: note: in expansion of macro 'list_entry'
+     564 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:779:27: note: in expansion of macro 'list_next_entry'
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+>> include/linux/list.h:779:21: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+     779 |              pos = n, n = list_next_entry(n, member))
+         |                     ^
+   sound/core/control_led.c:329:9: note: in expansion of macro 'list_for_each_entry_safe'
+     329 |         list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
 
-static u32 acpi_button_event(void *data)
-{
-        acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
-        return ACPI_INTERRUPT_HANDLED;
-}
 
-So unless I'm misreading something here, there is some AML being
-executed on power-button events. So maybe there is something wrong
-with how Linux interprets that AML ?
+vim +779 include/linux/list.h
 
-Regards,
+4d70c74659d974 Andy Shevchenko          2022-11-30  672  
+e130816164e244 Andy Shevchenko          2020-10-15  673  /**
+e130816164e244 Andy Shevchenko          2020-10-15  674   * list_entry_is_head - test if the entry points to the head of the list
+e130816164e244 Andy Shevchenko          2020-10-15  675   * @pos:	the type * to cursor
+e130816164e244 Andy Shevchenko          2020-10-15  676   * @head:	the head for your list.
+e130816164e244 Andy Shevchenko          2020-10-15  677   * @member:	the name of the list_head within the struct.
+e130816164e244 Andy Shevchenko          2020-10-15  678   */
+e130816164e244 Andy Shevchenko          2020-10-15  679  #define list_entry_is_head(pos, head, member)				\
+e130816164e244 Andy Shevchenko          2020-10-15  680  	(&pos->member == (head))
+e130816164e244 Andy Shevchenko          2020-10-15  681  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  682  /**
+^1da177e4c3f41 Linus Torvalds           2005-04-16  683   * list_for_each_entry	-	iterate over list of given type
+8e3a67a99231f9 Randy Dunlap             2006-06-25  684   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  685   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  686   * @member:	the name of the list_head within the struct.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  687   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  688  #define list_for_each_entry(pos, head, member)				\
+93be3c2eb3371f Oleg Nesterov            2013-11-12  689  	for (pos = list_first_entry(head, typeof(*pos), member);	\
+e130816164e244 Andy Shevchenko          2020-10-15  690  	     !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  691  	     pos = list_next_entry(pos, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  692  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  693  /**
+^1da177e4c3f41 Linus Torvalds           2005-04-16  694   * list_for_each_entry_reverse - iterate backwards over list of given type.
+8e3a67a99231f9 Randy Dunlap             2006-06-25  695   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  696   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  697   * @member:	the name of the list_head within the struct.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  698   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  699  #define list_for_each_entry_reverse(pos, head, member)			\
+93be3c2eb3371f Oleg Nesterov            2013-11-12  700  	for (pos = list_last_entry(head, typeof(*pos), member);		\
+e130816164e244 Andy Shevchenko          2020-10-15  701  	     !list_entry_is_head(pos, head, member); 			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  702  	     pos = list_prev_entry(pos, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  703  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  704  /**
+72fd4a35a82433 Robert P. J. Day         2007-02-10  705   * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue()
+^1da177e4c3f41 Linus Torvalds           2005-04-16  706   * @pos:	the type * to use as a start point
+^1da177e4c3f41 Linus Torvalds           2005-04-16  707   * @head:	the head of the list
+3943f42c11896c Andrey Utkin             2014-11-14  708   * @member:	the name of the list_head within the struct.
+fe96e57d77481c Randy Dunlap             2006-06-25  709   *
+72fd4a35a82433 Robert P. J. Day         2007-02-10  710   * Prepares a pos entry for use as a start point in list_for_each_entry_continue().
+^1da177e4c3f41 Linus Torvalds           2005-04-16  711   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  712  #define list_prepare_entry(pos, head, member) \
+^1da177e4c3f41 Linus Torvalds           2005-04-16  713  	((pos) ? : list_entry(head, typeof(*pos), member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  714  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  715  /**
+fe96e57d77481c Randy Dunlap             2006-06-25  716   * list_for_each_entry_continue - continue iteration over list of given type
+8e3a67a99231f9 Randy Dunlap             2006-06-25  717   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  718   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  719   * @member:	the name of the list_head within the struct.
+fe96e57d77481c Randy Dunlap             2006-06-25  720   *
+fe96e57d77481c Randy Dunlap             2006-06-25  721   * Continue to iterate over list of given type, continuing after
+fe96e57d77481c Randy Dunlap             2006-06-25  722   * the current position.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  723   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  724  #define list_for_each_entry_continue(pos, head, member) 		\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  725  	for (pos = list_next_entry(pos, member);			\
+e130816164e244 Andy Shevchenko          2020-10-15  726  	     !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  727  	     pos = list_next_entry(pos, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  728  
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  729  /**
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  730   * list_for_each_entry_continue_reverse - iterate backwards from the given point
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  731   * @pos:	the type * to use as a loop cursor.
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  732   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  733   * @member:	the name of the list_head within the struct.
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  734   *
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  735   * Start to iterate over list of given type backwards, continuing after
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  736   * the current position.
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  737   */
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  738  #define list_for_each_entry_continue_reverse(pos, head, member)		\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  739  	for (pos = list_prev_entry(pos, member);			\
+e130816164e244 Andy Shevchenko          2020-10-15  740  	     !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  741  	     pos = list_prev_entry(pos, member))
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  742  
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  743  /**
+fe96e57d77481c Randy Dunlap             2006-06-25  744   * list_for_each_entry_from - iterate over list of given type from the current point
+8e3a67a99231f9 Randy Dunlap             2006-06-25  745   * @pos:	the type * to use as a loop cursor.
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  746   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  747   * @member:	the name of the list_head within the struct.
+fe96e57d77481c Randy Dunlap             2006-06-25  748   *
+fe96e57d77481c Randy Dunlap             2006-06-25  749   * Iterate over list of given type, continuing from current position.
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  750   */
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  751  #define list_for_each_entry_from(pos, head, member) 			\
+e130816164e244 Andy Shevchenko          2020-10-15  752  	for (; !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  753  	     pos = list_next_entry(pos, member))
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  754  
+b862815c3ee7b4 Jiri Pirko               2017-02-03  755  /**
+b862815c3ee7b4 Jiri Pirko               2017-02-03  756   * list_for_each_entry_from_reverse - iterate backwards over list of given type
+b862815c3ee7b4 Jiri Pirko               2017-02-03  757   *                                    from the current point
+b862815c3ee7b4 Jiri Pirko               2017-02-03  758   * @pos:	the type * to use as a loop cursor.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  759   * @head:	the head for your list.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  760   * @member:	the name of the list_head within the struct.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  761   *
+b862815c3ee7b4 Jiri Pirko               2017-02-03  762   * Iterate backwards over list of given type, continuing from current position.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  763   */
+b862815c3ee7b4 Jiri Pirko               2017-02-03  764  #define list_for_each_entry_from_reverse(pos, head, member)		\
+e130816164e244 Andy Shevchenko          2020-10-15  765  	for (; !list_entry_is_head(pos, head, member);			\
+b862815c3ee7b4 Jiri Pirko               2017-02-03  766  	     pos = list_prev_entry(pos, member))
+b862815c3ee7b4 Jiri Pirko               2017-02-03  767  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  768  /**
+^1da177e4c3f41 Linus Torvalds           2005-04-16  769   * list_for_each_entry_safe - iterate over list of given type safe against removal of list entry
+8e3a67a99231f9 Randy Dunlap             2006-06-25  770   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  771   * @n:		another type * to use as temporary storage
+^1da177e4c3f41 Linus Torvalds           2005-04-16  772   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  773   * @member:	the name of the list_head within the struct.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  774   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  775  #define list_for_each_entry_safe(pos, n, head, member)			\
+93be3c2eb3371f Oleg Nesterov            2013-11-12  776  	for (pos = list_first_entry(head, typeof(*pos), member),	\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  777  		n = list_next_entry(pos, member);			\
+e130816164e244 Andy Shevchenko          2020-10-15  778  	     !list_entry_is_head(pos, head, member); 			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12 @779  	     pos = n, n = list_next_entry(n, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  780  
 
-Hans
-
-
-
-
-> ---
->  drivers/pinctrl/pinctrl-amd.c | 34 ++++++++++++++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-> index a2468a988be3..2e1721a9249a 100644
-> --- a/drivers/pinctrl/pinctrl-amd.c
-> +++ b/drivers/pinctrl/pinctrl-amd.c
-> @@ -8,6 +8,7 @@
->   *
->   */
->  
-> +#include <linux/dmi.h>
->  #include <linux/err.h>
->  #include <linux/bug.h>
->  #include <linux/kernel.h>
-> @@ -41,6 +42,27 @@ module_param(powerbtn, int, 0444);
->  MODULE_PARM_DESC(powerbtn,
->  		 "Power button debouncing: 0=traditional, 1=windows, -1=auto");
->  
-> +struct pinctrl_amd_dmi_quirk {
-> +	int powerbtn;
-> +};
-> +
-> +static const struct dmi_system_id pinctrl_amd_dmi_quirks[] __initconst = {
-> +	{
-> +		/*
-> +		 * Lenovo Ideapad 5
-> +		 * Power button GPIO not cleared until touchpad movement
-> +		 * https://bugzilla.kernel.org/show_bug.cgi?id=217833
-> +		 */
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "82LM"),
-> +		},
-> +		.driver_data = &(struct pinctrl_amd_dmi_quirk) {
-> +			.powerbtn = 0,
-> +		},
-> +	}
-> +};
-> +
->  static int amd_gpio_get_direction(struct gpio_chip *gc, unsigned offset)
->  {
->  	unsigned long flags;
-> @@ -1084,8 +1106,16 @@ static void handle_powerbtn(struct amd_gpio *gpio_dev)
->  {
->  	u32 pin_reg;
->  
-> -	if (powerbtn == -1)
-> -		return;
-> +	if (powerbtn == -1) {
-> +		const struct pinctrl_amd_dmi_quirk *quirk = NULL;
-> +		const struct dmi_system_id *id;
-> +
-> +		id = dmi_first_match(pinctrl_amd_dmi_quirks);
-> +		if (!id)
-> +			return;
-> +		quirk = id->driver_data;
-> +		powerbtn = quirk->powerbtn;
-> +	}
->  
->  	pin_reg = readl(gpio_dev->base + WAKE_INT_MASTER_REG);
->  	switch (powerbtn) {
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
