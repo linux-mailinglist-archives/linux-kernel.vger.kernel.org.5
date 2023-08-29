@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C20C178C60F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E9878C625
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236592AbjH2Nfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S235358AbjH2NgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236475AbjH2Nep (ORCPT
+        with ESMTP id S236505AbjH2NfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:34:45 -0400
+        Tue, 29 Aug 2023 09:35:03 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B61EE6F;
-        Tue, 29 Aug 2023 06:34:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E7BCEC;
+        Tue, 29 Aug 2023 06:34:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A0BD656F5;
-        Tue, 29 Aug 2023 13:34:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6FB1C433C8;
-        Tue, 29 Aug 2023 13:34:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 47E6E657A4;
+        Tue, 29 Aug 2023 13:34:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F355C433C9;
+        Tue, 29 Aug 2023 13:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693316045;
-        bh=RIVOyXKze1ZfOjReUuhqYZ7kbhZwOVxFZJx+uElh5Zs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bDUrPzHTCFpA8Exww8fvoKPYGY+9zYmoTXyW18lRz//OtuNLgHWxcMKesPbJultuE
-         6K9iTyTJCKlia0IrWxtyz4PrTnHL90jEFvPKEelRPAMwwRGfWE+SKJhc0TjwgGls8F
-         1OI+HNQD9IjX418E4IK8EITc7AP0XvsV9ToCWwKHrwRpoN+9yyjaexyKwFb//U7Bzf
-         qdkzyzchd1M3sCAYwZwY3p6Mv9+L5hOjdeTLe30HUmJ3Z+kUZIpVNWN1Qp4sFWQxuX
-         NQ/1GbzajLrIzn3O/OsrrlKRcWPj3aWbCEXlFQjC9ONd+S+59ZODs8zXK/s3ybbtVd
-         gCwetRaj9H/tg==
+        s=k20201202; t=1693316049;
+        bh=YrwCpJZSWC1PZyYZHEuMGl4rPreiRh68+7VqcMTGVJs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h0FqsXdHZIDAV3NWIMQGcwMIEKN1rloIFFZntU2xg4YJ/mmUoWOFOZKefBctS8ryN
+         ZSsiUIuyIKCWEBOMHRQ46lQKvW4bgYMEW5zo2bXWeKhixogRNJy6P04mQxYgqK+u0J
+         AzBL1KJfJMNKMoQIOeXYFgsfxp5/NMO/8yB6m4Hp2p4iJyvYdor/fgW63YAHj1vau/
+         MvTVXl7oQkBA0GdIi0Nu7NxLbD2cbkFNaCMo2CFx+tS80SCM+gdKMnVuSxctblT8La
+         kYiozwLo/RZJJamKg1HnUHcKWKRIsrdBszzXq27Oo21R9NExxmvBO2x5EN8xNwsgFP
+         NgiNTXuuvhZpQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>, "Gong, Sishuai" <sishuai@purdue.edu>,
-        Sasha Levin <sashal@kernel.org>, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 6/6] ALSA: seq: oss: Fix racy open/close of MIDI devices
-Date:   Tue, 29 Aug 2023 09:33:52 -0400
-Message-Id: <20230829133352.520671-6-sashal@kernel.org>
+Cc:     Dmitry Mastykin <dmastykin@astralinux.ru>,
+        Paul Moore <paul@paul-moore.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/5] netlabel: fix shift wrapping bug in netlbl_catmap_setlong()
+Date:   Tue, 29 Aug 2023 09:34:02 -0400
+Message-Id: <20230829133406.520756-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230829133352.520671-1-sashal@kernel.org>
-References: <20230829133352.520671-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.254
+X-stable-base: Linux 4.19.292
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -58,124 +59,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Dmitry Mastykin <dmastykin@astralinux.ru>
 
-[ Upstream commit 297224fc0922e7385573a30c29ffdabb67f27b7d ]
+[ Upstream commit b403643d154d15176b060b82f7fc605210033edd ]
 
-Although snd_seq_oss_midi_open() and snd_seq_oss_midi_close() can be
-called concurrently from different code paths, we have no proper data
-protection against races.  Introduce open_mutex to each seq_oss_midi
-object for avoiding the races.
+There is a shift wrapping bug in this code on 32-bit architectures.
+NETLBL_CATMAP_MAPTYPE is u64, bitmap is unsigned long.
+Every second 32-bit word of catmap becomes corrupted.
 
-Reported-by: "Gong, Sishuai" <sishuai@purdue.edu>
-Closes: https://lore.kernel.org/r/7DC9AF71-F481-4ABA-955F-76C535661E33@purdue.edu
-Link: https://lore.kernel.org/r/20230612125533.27461-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Dmitry Mastykin <dmastykin@astralinux.ru>
+Acked-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/oss/seq_oss_midi.c | 35 +++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+ net/netlabel/netlabel_kapi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/core/seq/oss/seq_oss_midi.c b/sound/core/seq/oss/seq_oss_midi.c
-index f73ee0798aeab..be80ce72e0c72 100644
---- a/sound/core/seq/oss/seq_oss_midi.c
-+++ b/sound/core/seq/oss/seq_oss_midi.c
-@@ -37,6 +37,7 @@ struct seq_oss_midi {
- 	struct snd_midi_event *coder;	/* MIDI event coder */
- 	struct seq_oss_devinfo *devinfo;	/* assigned OSSseq device */
- 	snd_use_lock_t use_lock;
-+	struct mutex open_mutex;
- };
+diff --git a/net/netlabel/netlabel_kapi.c b/net/netlabel/netlabel_kapi.c
+index 15fe2120b3109..14c3d640f94b9 100644
+--- a/net/netlabel/netlabel_kapi.c
++++ b/net/netlabel/netlabel_kapi.c
+@@ -871,7 +871,8 @@ int netlbl_catmap_setlong(struct netlbl_lsm_catmap **catmap,
  
+ 	offset -= iter->startbit;
+ 	idx = offset / NETLBL_CATMAP_MAPSIZE;
+-	iter->bitmap[idx] |= bitmap << (offset % NETLBL_CATMAP_MAPSIZE);
++	iter->bitmap[idx] |= (NETLBL_CATMAP_MAPTYPE)bitmap
++			     << (offset % NETLBL_CATMAP_MAPSIZE);
  
-@@ -171,6 +172,7 @@ snd_seq_oss_midi_check_new_port(struct snd_seq_port_info *pinfo)
- 	mdev->flags = pinfo->capability;
- 	mdev->opened = 0;
- 	snd_use_lock_init(&mdev->use_lock);
-+	mutex_init(&mdev->open_mutex);
- 
- 	/* copy and truncate the name of synth device */
- 	strlcpy(mdev->name, pinfo->name, sizeof(mdev->name));
-@@ -319,14 +321,16 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
- 	int perm;
- 	struct seq_oss_midi *mdev;
- 	struct snd_seq_port_subscribe subs;
-+	int err;
- 
- 	if ((mdev = get_mididev(dp, dev)) == NULL)
- 		return -ENODEV;
- 
-+	mutex_lock(&mdev->open_mutex);
- 	/* already used? */
- 	if (mdev->opened && mdev->devinfo != dp) {
--		snd_use_lock_free(&mdev->use_lock);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto unlock;
- 	}
- 
- 	perm = 0;
-@@ -336,14 +340,14 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
- 		perm |= PERM_READ;
- 	perm &= mdev->flags;
- 	if (perm == 0) {
--		snd_use_lock_free(&mdev->use_lock);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto unlock;
- 	}
- 
- 	/* already opened? */
- 	if ((mdev->opened & perm) == perm) {
--		snd_use_lock_free(&mdev->use_lock);
--		return 0;
-+		err = 0;
-+		goto unlock;
- 	}
- 
- 	perm &= ~mdev->opened;
-@@ -368,13 +372,17 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
- 	}
- 
- 	if (! mdev->opened) {
--		snd_use_lock_free(&mdev->use_lock);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto unlock;
- 	}
- 
- 	mdev->devinfo = dp;
-+	err = 0;
-+
-+ unlock:
-+	mutex_unlock(&mdev->open_mutex);
- 	snd_use_lock_free(&mdev->use_lock);
--	return 0;
-+	return err;
- }
- 
- /*
-@@ -388,10 +396,9 @@ snd_seq_oss_midi_close(struct seq_oss_devinfo *dp, int dev)
- 
- 	if ((mdev = get_mididev(dp, dev)) == NULL)
- 		return -ENODEV;
--	if (! mdev->opened || mdev->devinfo != dp) {
--		snd_use_lock_free(&mdev->use_lock);
--		return 0;
--	}
-+	mutex_lock(&mdev->open_mutex);
-+	if (!mdev->opened || mdev->devinfo != dp)
-+		goto unlock;
- 
- 	memset(&subs, 0, sizeof(subs));
- 	if (mdev->opened & PERM_WRITE) {
-@@ -410,6 +417,8 @@ snd_seq_oss_midi_close(struct seq_oss_devinfo *dp, int dev)
- 	mdev->opened = 0;
- 	mdev->devinfo = NULL;
- 
-+ unlock:
-+	mutex_unlock(&mdev->open_mutex);
- 	snd_use_lock_free(&mdev->use_lock);
  	return 0;
  }
 -- 
