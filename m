@@ -2,84 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2661178C90F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713DD78C922
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237326AbjH2P7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 11:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        id S237280AbjH2QAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237359AbjH2P7a (ORCPT
+        with ESMTP id S237054AbjH2P7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:59:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D75BA12F
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:59:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0A8D2F4;
-        Tue, 29 Aug 2023 09:00:06 -0700 (PDT)
-Received: from [10.1.27.141] (XHFQ2J9959.cambridge.arm.com [10.1.27.141])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6F893F738;
-        Tue, 29 Aug 2023 08:59:24 -0700 (PDT)
-Message-ID: <f2c2f084-697a-47f0-9a04-faec495eb362@arm.com>
-Date:   Tue, 29 Aug 2023 16:59:17 +0100
+        Tue, 29 Aug 2023 11:59:38 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFEF12F;
+        Tue, 29 Aug 2023 08:59:34 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RZsSx1wZJz6J7Xw;
+        Tue, 29 Aug 2023 23:55:13 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
+ 2023 16:59:31 +0100
+Date:   Tue, 29 Aug 2023 16:59:30 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 10/18] cxl/mem: Handle DCD add and release
+ capacity events.
+Message-ID: <20230829165930.0000208c@Huawei.com>
+In-Reply-To: <20230604-dcd-type2-upstream-v2-10-f740c47e7916@intel.com>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+        <20230604-dcd-type2-upstream-v2-10-f740c47e7916@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 4/4] mm/mmu_gather: Store and process pages in contig
- ranges
-Content-Language: en-GB
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230810103332.3062143-1-ryan.roberts@arm.com>
- <20230810103332.3062143-5-ryan.roberts@arm.com>
- <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
- <29099099-7ef2-45cb-bab7-455f58de47d1@arm.com>
- <ZO3+cQouje862QNu@casper.infradead.org>
- <ZO3/tYWCahFJAHhu@casper.infradead.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZO3/tYWCahFJAHhu@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 15:24, Matthew Wilcox wrote:
-> On Tue, Aug 29, 2023 at 03:19:29PM +0100, Matthew Wilcox wrote:
->>>> You'll be glad to know I've factored out a nice little helper for that.
->>>
->>> OK, what's it called? This is just copied from release_pages() at the moment.
->>> Happy to use your helper in the refactored common helper.
->>
->> I'll send out those patches today.
-> 
-> No, wait, I sent them on Friday.
-> 
-> https://lore.kernel.org/linux-mm/20230825135918.4164671-9-willy@infradead.org/
-> 
-> is the important one from your point of view.  It's
-> __page_cache_release() which is a little different from the current
-> __page_cache_release()
+On Mon, 28 Aug 2023 22:21:01 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-Thanks! Given your series is marked RFC, I won't take the dependency for now;
-I'd rather keep my series independent for review. We can race to mm-unstable and
-I guess the loser gets to do the merge. ;-)
+> A Dynamic Capacity Device (DCD) utilizes events to signal the host about
+> the changes to the allocation of Dynamic Capacity (DC) extents. The
+> device communicates the state of DC extents through an extent list that
+> describes the starting DPA, length, and meta data of the blocks the host
+> can access.
+> 
+> Process the dynamic capacity add and release events.  The addition or
+> removal of extents can occur at any time.  Adding asynchronous memory is
+> straight forward.  Also remember the host is under no obligation to
+> respond to a release event until it is done with the memory.  Introduce
+> extent kref's to handle the delay of extent release.
+> 
+> In the case of a force removal, access to the memory will fail and may
+> cause a crash.  However, the extent tracking object is preserved for the
+> region to safely tear down as long as the memory is not accessed.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Minor stuff inline.
+
+
+> +static int cxl_prepare_ext_list(struct cxl_mbox_dc_response **res,
+> +				int *n, struct range *extent)
+> +{
+> +	struct cxl_mbox_dc_response *dc_res;
+> +	unsigned int size;
+> +
+> +	if (!extent)
+> +		size = struct_size(dc_res, extent_list, 0);
+
+This is confusing as if you did have *n > 0 I'd kind of expect
+this to just not extend the list rather than shortening it.
+Now I guess that never happens, but locally it looks odd.
+
+Maybe just handle that case in a separate function as it doesn't
+share much code with the case where there is an extent and I would
+assume we always know at the caller which one we want.
+
+
+> +	else
+> +		size = struct_size(dc_res, extent_list, *n + 1);
+
+Might be clearer with a local variable for the number of extents.
+
+extents_count = *n;
+
+if (extent)
+	extents_count++;
+
+size = struct_size(dc_res, extent_list, extents_count);
+
+Though I'm not sure that really helps.  Maybe this will just need
+to be a little confusing :)
+
+> +
+> +	dc_res = krealloc(*res, size, GFP_KERNEL);
+> +	if (!dc_res)
+> +		return -ENOMEM;
+> +
+> +	if (extent) {
+> +		dc_res->extent_list[*n].dpa_start = cpu_to_le64(extent->start);
+> +		memset(dc_res->extent_list[*n].reserved, 0, 8);
+> +		dc_res->extent_list[*n].length = cpu_to_le64(range_len(extent));
+> +		(*n)++;
+> +	}
+> +
+> +	*res = dc_res;
+> +	return 0;
+> +}
+
+> +
+> +/* Returns 0 if the event was handled successfully. */
+> +static int cxl_handle_dcd_event_records(struct cxl_memdev_state *mds,
+> +					struct cxl_event_record_raw *rec)
+> +{
+> +	struct dcd_event_dyn_cap *record = (struct dcd_event_dyn_cap *)rec;
+> +	uuid_t *id = &rec->hdr.id;
+> +	int rc;
+> +
+> +	if (!uuid_equal(id, &dc_event_uuid))
+> +		return -EINVAL;
+> +
+> +	switch (record->data.event_type) {
+> +	case DCD_ADD_CAPACITY:
+> +		rc = cxl_handle_dcd_add_event(mds, &record->data.extent);
+> +		break;
+
+I guess it might not be consistent with local style...
+		return cxl_handle_dcd_add_event()  etc
+
+> +	case DCD_RELEASE_CAPACITY:
+> +        case DCD_FORCED_CAPACITY_RELEASE:
+> +		rc = cxl_handle_dcd_release_event(mds, &record->data.extent);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return rc;
+> +}
+> +
+
+
