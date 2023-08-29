@@ -2,356 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070A478CECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DA078CED6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237026AbjH2VfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 17:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36112 "EHLO
+        id S240212AbjH2ViQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237061AbjH2Veu (ORCPT
+        with ESMTP id S235301AbjH2Vho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 17:34:50 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A94CA8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:34:46 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50087d47d4dso7856143e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:34:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693344884; x=1693949684; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oaVlv6tUCut3MZgi+d135VbILB2oKzrGgB4uFS+DAjE=;
-        b=bY9arcjpbzi3pc3jUtyOr1HSV6PGklHVlKSQZ/P1zVd5j0iTit1k9dEEK3rVwr4Pc5
-         +iycpwXns/XVIMfmC7BAK8eoRhtqa3tjQOeqob1ppqQfLO+t/uKyjtoRbmlk3rI/4upn
-         tP18wVuwjCgFJdJny0WxTV4y57NRRg1kGYQfYMBQx6w1r/q5fPtWqw1Wk3hsdvbKekcy
-         IcZfX4bxRXleTsVa0HhkJ3NVtMYiqSrWXtWe6r/FrASNtT1FMQa1uA7m/GMgupr72Ql8
-         CcYAkHlvnqektAWz4cBLNxj6fcIn/RYVzzrta/x9ekNbP3rPBISrxgh4wmAo4YMTsVZB
-         sTkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693344884; x=1693949684;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oaVlv6tUCut3MZgi+d135VbILB2oKzrGgB4uFS+DAjE=;
-        b=gvsIUvxW/9NUBclV/jA8ffRJ2qt/LaqsHoqR+IMXcvH6QGpmacQstwFvTwsPuEHQnL
-         e3paKvFIOuKyQXotWnov8IeSnp7qGLYnND0QSGJSU7ec07H624KTwybz4kmtPL/5p8wm
-         /c1bDpavWA40cP7YPeNW3YSXM35mlOtiEW8ZDNZoYimFlLJFpmYyWaZ0Kgq0YZH0yuc6
-         2g3cu6tzgTJ5OeRoXrF2h9wJmEV6vkuT0Nc7bXWAZs0byBNLFiaB4iJ15clQKz2AwRva
-         lDBWL5eQVUpX/fV4pFW+OWmBYsmBUyt2q+4VFqusP0n+/o8FVE4dbf7vv7cQBktiua+D
-         hoVw==
-X-Gm-Message-State: AOJu0Yz5zUeO1EHEOcSvx3yKj5ssXLRHwyPOrOeej1Y5EovwJDXyTJvd
-        F06g22Z0qFDck22jOOe5ps3bGw==
-X-Google-Smtp-Source: AGHT+IGMeoddZ4Uqxv7LTbdxlEDiXRAD3cvy/64PQTTsJ+iPQrMszaB0KX2XnU9SQ/scAJFsIbDsBA==
-X-Received: by 2002:a19:6914:0:b0:500:b890:fb38 with SMTP id e20-20020a196914000000b00500b890fb38mr97080lfc.24.1693344883430;
-        Tue, 29 Aug 2023 14:34:43 -0700 (PDT)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id c3-20020ac244a3000000b0050087b72169sm2078197lfm.24.2023.08.29.14.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 14:34:42 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-Date:   Tue, 29 Aug 2023 23:34:41 +0200
-Message-Id: <20230829213441.310655-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Tue, 29 Aug 2023 17:37:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05285B8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:37:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693345062; x=1724881062;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UkuSJ0aCL76HRt93f5IdKGK0TvI9BZtbZIqy9NilJek=;
+  b=R522G58IhwSTuUmUILBXSZkmOJmqR6IbyPxBvi2E28aTvdOwGNeZBIOt
+   Nfe0CXXIwRaPAmZFWaDYp4ibjlIbTbbtpqyjxflFs4m//fXqYAi9EHYqV
+   Qu6XIl+Epb4QDNVej3rIrxfU8X0c1oWFMYTAe05J90Zq119k4HFZj/j0p
+   rqkK+EUvqgaOfULGQBwMEANATSuOynMhhZ9/qz5e8Ns3stmMoIJ9QcrpG
+   8S/206d3AlrimJnMO+ZYcUp12lYiNi/D/0XwUQ9eh90jty/BFbaXOawCi
+   LJDSgY+6rJxE61/pFKWxQ96eEwTAgaGoNqJ7dkiJ69hgpdUQ3QfJBgD/3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="365688973"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="365688973"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 14:37:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="853459507"
+X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
+   d="scan'208";a="853459507"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 29 Aug 2023 14:37:38 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qb6Ox-00096D-16;
+        Tue, 29 Aug 2023 21:37:34 +0000
+Date:   Wed, 30 Aug 2023 05:37:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
+        catalin.marinas@arm.com, thunder.leizhen@huawei.com,
+        dyoung@redhat.com, prudo@redhat.com, samuel.holland@sifive.com,
+        kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        x86@kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH v2 6/8] x86: kdump: use generic interface to simplify
+ crashkernel reservation code
+Message-ID: <202308300522.oOG0V3U3-lkp@intel.com>
+References: <20230829121610.138107-7-bhe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829121610.138107-7-bhe@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Baoquan,
 
-Here's a pull-request that introduces the genpd provider subsystem.
+kernel test robot noticed the following build errors:
 
-Most of the changes have been shared via an immutable branch/tag, which has
-been pulled in by Arnd Bergmann into the soc tree. However, as I have also
-queued up a couple of additional changes on top, I am sending this pull request
-for you.
+[auto build test ERROR on arm64/for-next/core]
+[also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.5]
+[cannot apply to next-20230829]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The changes have been tested in linux-next via
-git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git next|fixes
+url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/crash_core-c-remove-unnecessary-parameter-of-function/20230829-201942
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+patch link:    https://lore.kernel.org/r/20230829121610.138107-7-bhe%40redhat.com
+patch subject: [PATCH v2 6/8] x86: kdump: use generic interface to simplify crashkernel reservation code
+config: i386-randconfig-r026-20230830 (https://download.01.org/0day-ci/archive/20230830/202308300522.oOG0V3U3-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308300522.oOG0V3U3-lkp@intel.com/reproduce)
 
-Beyond v6.6-rc1, I am planning to keep sending pull-requests with fixes and new
-material for new genpd provider subsystem to you. If you prefer another route,
-please let us know.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308300522.oOG0V3U3-lkp@intel.com/
 
-Kind regards
-Ulf Hansson
+All errors (new ones prefixed by >>):
+
+   ld: kernel/crash_core.o: in function `reserve_crashkernel_generic':
+>> kernel/crash_core.c:450: undefined reference to `crashk_low_res'
+>> ld: kernel/crash_core.c:451: undefined reference to `crashk_low_res'
+>> ld: kernel/crash_core.c:455: undefined reference to `crashk_res'
+   ld: kernel/crash_core.c:453: undefined reference to `crashk_res'
+   ld: kernel/crash_core.c:454: undefined reference to `crashk_res'
 
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+vim +450 kernel/crash_core.c
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+6bee83d29d2e09 Baoquan He 2023-08-29  375  
+6bee83d29d2e09 Baoquan He 2023-08-29  376  void __init reserve_crashkernel_generic(char *cmdline,
+6bee83d29d2e09 Baoquan He 2023-08-29  377  			     unsigned long long crash_size,
+6bee83d29d2e09 Baoquan He 2023-08-29  378  			     unsigned long long crash_base,
+6bee83d29d2e09 Baoquan He 2023-08-29  379  			     unsigned long long crash_low_size,
+6bee83d29d2e09 Baoquan He 2023-08-29  380  			     bool high)
+6bee83d29d2e09 Baoquan He 2023-08-29  381  {
+6bee83d29d2e09 Baoquan He 2023-08-29  382  	unsigned long long search_end = CRASH_ADDR_LOW_MAX, search_base = 0;
+6bee83d29d2e09 Baoquan He 2023-08-29  383  	bool fixed_base = false;
+6bee83d29d2e09 Baoquan He 2023-08-29  384  
+6bee83d29d2e09 Baoquan He 2023-08-29  385  	/* User specifies base address explicitly. */
+6bee83d29d2e09 Baoquan He 2023-08-29  386  	if (crash_base) {
+6bee83d29d2e09 Baoquan He 2023-08-29  387  		fixed_base = true;
+6bee83d29d2e09 Baoquan He 2023-08-29  388  		search_base = crash_base;
+6bee83d29d2e09 Baoquan He 2023-08-29  389  		search_end = crash_base + crash_size;
+6bee83d29d2e09 Baoquan He 2023-08-29  390  	}
+6bee83d29d2e09 Baoquan He 2023-08-29  391  
+6bee83d29d2e09 Baoquan He 2023-08-29  392  	if (high) {
+6bee83d29d2e09 Baoquan He 2023-08-29  393  		search_base = CRASH_ADDR_LOW_MAX;
+6bee83d29d2e09 Baoquan He 2023-08-29  394  		search_end = CRASH_ADDR_HIGH_MAX;
+6bee83d29d2e09 Baoquan He 2023-08-29  395  	}
+6bee83d29d2e09 Baoquan He 2023-08-29  396  
+6bee83d29d2e09 Baoquan He 2023-08-29  397  retry:
+6bee83d29d2e09 Baoquan He 2023-08-29  398  	crash_base = memblock_phys_alloc_range(crash_size, CRASH_ALIGN,
+6bee83d29d2e09 Baoquan He 2023-08-29  399  					       search_base, search_end);
+6bee83d29d2e09 Baoquan He 2023-08-29  400  	if (!crash_base) {
+6bee83d29d2e09 Baoquan He 2023-08-29  401  		/*
+6bee83d29d2e09 Baoquan He 2023-08-29  402  		 * For crashkernel=size[KMG]@offset[KMG], print out failure
+6bee83d29d2e09 Baoquan He 2023-08-29  403  		 * message if can't reserve the specified region.
+6bee83d29d2e09 Baoquan He 2023-08-29  404  		 */
+6bee83d29d2e09 Baoquan He 2023-08-29  405  		if (fixed_base) {
+6bee83d29d2e09 Baoquan He 2023-08-29  406  			pr_warn("crashkernel reservation failed - memory is in use.\n");
+6bee83d29d2e09 Baoquan He 2023-08-29  407  			return;
+6bee83d29d2e09 Baoquan He 2023-08-29  408  		}
+6bee83d29d2e09 Baoquan He 2023-08-29  409  
+6bee83d29d2e09 Baoquan He 2023-08-29  410  		/*
+6bee83d29d2e09 Baoquan He 2023-08-29  411  		 * For crashkernel=size[KMG], if the first attempt was for
+6bee83d29d2e09 Baoquan He 2023-08-29  412  		 * low memory, fall back to high memory, the minimum required
+6bee83d29d2e09 Baoquan He 2023-08-29  413  		 * low memory will be reserved later.
+6bee83d29d2e09 Baoquan He 2023-08-29  414  		 */
+6bee83d29d2e09 Baoquan He 2023-08-29  415  		if (!high && search_end == CRASH_ADDR_LOW_MAX) {
+6bee83d29d2e09 Baoquan He 2023-08-29  416  			search_end = CRASH_ADDR_HIGH_MAX;
+6bee83d29d2e09 Baoquan He 2023-08-29  417  			search_base = CRASH_ADDR_LOW_MAX;
+6bee83d29d2e09 Baoquan He 2023-08-29  418  			crash_low_size = DEFAULT_CRASH_KERNEL_LOW_SIZE;
+6bee83d29d2e09 Baoquan He 2023-08-29  419  			goto retry;
+6bee83d29d2e09 Baoquan He 2023-08-29  420  		}
+6bee83d29d2e09 Baoquan He 2023-08-29  421  
+6bee83d29d2e09 Baoquan He 2023-08-29  422  		/*
+6bee83d29d2e09 Baoquan He 2023-08-29  423  		 * For crashkernel=size[KMG],high, if the first attempt was
+6bee83d29d2e09 Baoquan He 2023-08-29  424  		 * for high memory, fall back to low memory.
+6bee83d29d2e09 Baoquan He 2023-08-29  425  		 */
+6bee83d29d2e09 Baoquan He 2023-08-29  426  		if (high && search_end == CRASH_ADDR_HIGH_MAX) {
+6bee83d29d2e09 Baoquan He 2023-08-29  427  			search_end = CRASH_ADDR_LOW_MAX;
+6bee83d29d2e09 Baoquan He 2023-08-29  428  			search_base = 0;
+6bee83d29d2e09 Baoquan He 2023-08-29  429  			goto retry;
+6bee83d29d2e09 Baoquan He 2023-08-29  430  		}
+6bee83d29d2e09 Baoquan He 2023-08-29  431  		pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+6bee83d29d2e09 Baoquan He 2023-08-29  432  			crash_size);
+6bee83d29d2e09 Baoquan He 2023-08-29  433  		return;
+6bee83d29d2e09 Baoquan He 2023-08-29  434  	}
+6bee83d29d2e09 Baoquan He 2023-08-29  435  
+6bee83d29d2e09 Baoquan He 2023-08-29  436  	if ((crash_base > CRASH_ADDR_LOW_MAX) &&
+6bee83d29d2e09 Baoquan He 2023-08-29  437  	     crash_low_size && reserve_crashkernel_low(crash_low_size)) {
+6bee83d29d2e09 Baoquan He 2023-08-29  438  		memblock_phys_free(crash_base, crash_size);
+6bee83d29d2e09 Baoquan He 2023-08-29  439  		return;
+6bee83d29d2e09 Baoquan He 2023-08-29  440  	}
+6bee83d29d2e09 Baoquan He 2023-08-29  441  
+6bee83d29d2e09 Baoquan He 2023-08-29  442  	pr_info("crashkernel reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
+6bee83d29d2e09 Baoquan He 2023-08-29  443  		crash_base, crash_base + crash_size, crash_size >> 20);
+6bee83d29d2e09 Baoquan He 2023-08-29  444  
+6bee83d29d2e09 Baoquan He 2023-08-29  445  	/*
+6bee83d29d2e09 Baoquan He 2023-08-29  446  	 * The crashkernel memory will be removed from the kernel linear
+6bee83d29d2e09 Baoquan He 2023-08-29  447  	 * map. Inform kmemleak so that it won't try to access it.
+6bee83d29d2e09 Baoquan He 2023-08-29  448  	 */
+6bee83d29d2e09 Baoquan He 2023-08-29  449  	kmemleak_ignore_phys(crash_base);
+6bee83d29d2e09 Baoquan He 2023-08-29 @450  	if (crashk_low_res.end)
+6bee83d29d2e09 Baoquan He 2023-08-29 @451  		kmemleak_ignore_phys(crashk_low_res.start);
+6bee83d29d2e09 Baoquan He 2023-08-29  452  
+6bee83d29d2e09 Baoquan He 2023-08-29  453  	crashk_res.start = crash_base;
+6bee83d29d2e09 Baoquan He 2023-08-29  454  	crashk_res.end = crash_base + crash_size - 1;
+6bee83d29d2e09 Baoquan He 2023-08-29 @455  	insert_resource(&iomem_resource, &crashk_res);
+6bee83d29d2e09 Baoquan He 2023-08-29  456  }
+6bee83d29d2e09 Baoquan He 2023-08-29  457  #endif
+6bee83d29d2e09 Baoquan He 2023-08-29  458  
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git tags/genpd-v6.6
-
-for you to fetch changes up to 5e536362f6ab97f709c07bfda962a7bb036c2563:
-
-  genpd: ti: Use for_each_node_with_property() simplify code logic (2023-08-25 12:04:57 +0200)
-
-----------------------------------------------------------------
-This pull-request adds a new subsystem for genpd providers in drivers/genpd
-and starts moving some of the corresponding code in there.
-
-We have currently ~60 users of the genpd provider interface, which are
-sprinkled across various subsystems. To release some burden from the soc
-maintainers (Arnd Bergmann, etc) in particular, but also to gain a better
-overall view of what goes on in the area, I will help out with maintenance.
-
-----------------------------------------------------------------
-Arnd Bergmann (2):
-      soc: starfive: remove stale Makefile entry
-      genpd: move owl-sps-helper.c from drivers/soc
-
-Lukas Bulwahn (1):
-      MAINTAINERS: adjust file entry in STARFIVE JH71XX PMU CONTROLLER DRIVER
-
-Peng Fan (7):
-      genpd: Makefile: build imx
-      genpd: imx: relocate scu-pd under genpd
-      genpd: imx: scu-pd: enlarge PD range
-      genpd: imx: scu-pd: add more PDs
-      genpd: imx: scu-pd: do not power off console if no_console_suspend
-      genpd: imx: scu-pd: Suppress bind attrs
-      genpd: imx: scu-pd: initialize is_off according to HW state
-
-Rob Herring (1):
-      genpd: Explicitly include correct DT includes
-
-Ulf Hansson (18):
-      genpd: Create a new subsystem directory to host genpd providers
-      soc: actions: Move power-domain driver to the genpd dir
-      soc: amlogic: Move power-domain drivers to the genpd dir
-      soc: apple: Move power-domain driver to the genpd dir
-      soc: bcm: Move power-domain drivers to the genpd dir
-      soc: imx: Move power-domain drivers to the genpd dir
-      soc: mediatek: Move power-domain drivers to the genpd dir
-      soc: qcom: Move power-domain drivers to the genpd dir
-      soc: renesas: Move power-domain drivers to the genpd dir
-      soc: rockchip: Mover power-domain driver to the genpd dir
-      soc: samsung: Move power-domain driver to the genpd dir
-      soc: starfive: Move the power-domain driver to the genpd dir
-      soc: sunxi: Move power-domain driver to the genpd dir
-      soc: tegra: Move powergate-bpmp driver to the genpd dir
-      soc: ti: Mover power-domain drivers to the genpd dir
-      soc: xilinx: Move power-domain driver to the genpd dir
-      ARM: ux500: Convert power-domain code into a regular platform driver
-      ARM: ux500: Move power-domain driver to the genpd dir
-
-Zhang Zekun (1):
-      genpd: ti: Use for_each_node_with_property() simplify code logic
-
- MAINTAINERS                                        |  22 +++-
- arch/arm/mach-ux500/Makefile                       |   1 -
- arch/arm/mach-ux500/cpu-db8500.c                   |   5 -
- arch/arm/mach-ux500/pm_domains.h                   |  17 ---
- drivers/Makefile                                   |   1 +
- drivers/firmware/imx/Makefile                      |   1 -
- drivers/genpd/Makefile                             |  17 +++
- drivers/genpd/actions/Makefile                     |   3 +
- drivers/{soc => genpd}/actions/owl-sps-helper.c    |   0
- drivers/{soc => genpd}/actions/owl-sps.c           |   0
- drivers/genpd/amlogic/Makefile                     |   4 +
- drivers/{soc => genpd}/amlogic/meson-ee-pwrc.c     |   0
- drivers/{soc => genpd}/amlogic/meson-gx-pwrc-vpu.c |   0
- drivers/{soc => genpd}/amlogic/meson-secure-pwrc.c |   0
- drivers/genpd/apple/Makefile                       |   2 +
- .../apple/pmgr-pwrstate.c}                         |   0
- drivers/genpd/bcm/Makefile                         |   5 +
- drivers/{soc/bcm/bcm63xx => genpd/bcm}/bcm-pmb.c   |   0
- drivers/{soc => genpd}/bcm/bcm2835-power.c         |   0
- .../{soc/bcm/bcm63xx => genpd/bcm}/bcm63xx-power.c |   0
- drivers/{soc => genpd}/bcm/raspberrypi-power.c     |   0
- drivers/genpd/imx/Makefile                         |   8 ++
- drivers/{soc => genpd}/imx/gpc.c                   |   0
- drivers/{soc => genpd}/imx/gpcv2.c                 |   0
- drivers/{soc => genpd}/imx/imx8m-blk-ctrl.c        |   0
- drivers/{soc => genpd}/imx/imx8mp-blk-ctrl.c       |   0
- drivers/{soc => genpd}/imx/imx93-blk-ctrl.c        |   0
- drivers/{soc => genpd}/imx/imx93-pd.c              |   0
- drivers/{firmware => genpd}/imx/scu-pd.c           | 138 +++++++++++++++++++--
- drivers/genpd/mediatek/Makefile                    |   3 +
- .../{soc => genpd}/mediatek/mt6795-pm-domains.h    |   0
- .../{soc => genpd}/mediatek/mt8167-pm-domains.h    |   0
- .../{soc => genpd}/mediatek/mt8173-pm-domains.h    |   0
- .../{soc => genpd}/mediatek/mt8183-pm-domains.h    |   0
- .../{soc => genpd}/mediatek/mt8186-pm-domains.h    |   0
- .../{soc => genpd}/mediatek/mt8188-pm-domains.h    |   0
- .../{soc => genpd}/mediatek/mt8192-pm-domains.h    |   0
- .../{soc => genpd}/mediatek/mt8195-pm-domains.h    |   0
- drivers/{soc => genpd}/mediatek/mtk-pm-domains.c   |   2 +-
- drivers/{soc => genpd}/mediatek/mtk-pm-domains.h   |   0
- drivers/{soc => genpd}/mediatek/mtk-scpsys.c       |   2 +-
- drivers/genpd/qcom/Makefile                        |   4 +
- drivers/{soc => genpd}/qcom/cpr.c                  |   0
- drivers/{soc => genpd}/qcom/rpmhpd.c               |   0
- drivers/{soc => genpd}/qcom/rpmpd.c                |   0
- drivers/genpd/renesas/Makefile                     |  30 +++++
- drivers/{soc => genpd}/renesas/r8a7742-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7743-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7745-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a77470-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a774a1-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a774b1-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a774c0-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a774e1-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a7779-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7790-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7791-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7792-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7794-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7795-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a7796-sysc.c      |   0
- drivers/{soc => genpd}/renesas/r8a77965-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a77970-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a77980-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a77990-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a77995-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a779a0-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a779f0-sysc.c     |   0
- drivers/{soc => genpd}/renesas/r8a779g0-sysc.c     |   0
- drivers/{soc => genpd}/renesas/rcar-gen4-sysc.c    |   0
- drivers/{soc => genpd}/renesas/rcar-gen4-sysc.h    |   0
- drivers/{soc => genpd}/renesas/rcar-sysc.c         |   0
- drivers/{soc => genpd}/renesas/rcar-sysc.h         |   0
- drivers/{soc => genpd}/renesas/rmobile-sysc.c      |   0
- drivers/genpd/rockchip/Makefile                    |   2 +
- .../pm_domains.c => genpd/rockchip/pm-domains.c}   |   0
- drivers/genpd/samsung/Makefile                     |   2 +
- .../samsung/exynos-pm-domains.c}                   |   0
- drivers/genpd/st/Makefile                          |   2 +
- .../genpd/st/ste-ux500-pm-domain.c                 |  25 +++-
- drivers/genpd/starfive/Makefile                    |   2 +
- .../jh71xx_pmu.c => genpd/starfive/jh71xx-pmu.c}   |   0
- drivers/genpd/sunxi/Makefile                       |   2 +
- drivers/{soc => genpd}/sunxi/sun20i-ppu.c          |   2 +-
- drivers/genpd/tegra/Makefile                       |   2 +
- drivers/{soc => genpd}/tegra/powergate-bpmp.c      |   0
- drivers/genpd/ti/Makefile                          |   3 +
- drivers/{soc => genpd}/ti/omap_prm.c               |   0
- drivers/{soc => genpd}/ti/ti_sci_pm_domains.c      |   8 +-
- drivers/genpd/xilinx/Makefile                      |   2 +
- .../xilinx/zynqmp-pm-domains.c}                    |   0
- drivers/soc/Makefile                               |   2 -
- drivers/soc/actions/Makefile                       |   4 -
- drivers/soc/amlogic/Makefile                       |   3 -
- drivers/soc/apple/Makefile                         |   2 -
- drivers/soc/bcm/Kconfig                            |  22 +++-
- drivers/soc/bcm/Makefile                           |   3 -
- drivers/soc/bcm/bcm63xx/Kconfig                    |  21 ----
- drivers/soc/bcm/bcm63xx/Makefile                   |   3 -
- drivers/soc/imx/Makefile                           |   7 +-
- drivers/soc/mediatek/Makefile                      |   2 -
- drivers/soc/qcom/Makefile                          |   3 -
- drivers/soc/renesas/Makefile                       |  27 ----
- drivers/soc/rockchip/Makefile                      |   1 -
- drivers/soc/samsung/Makefile                       |   1 -
- drivers/soc/starfive/Makefile                      |   3 -
- drivers/soc/sunxi/Makefile                         |   1 -
- drivers/soc/tegra/Makefile                         |   1 -
- drivers/soc/ti/Makefile                            |   2 -
- drivers/soc/xilinx/Makefile                        |   1 -
- 110 files changed, 288 insertions(+), 138 deletions(-)
- delete mode 100644 arch/arm/mach-ux500/pm_domains.h
- create mode 100644 drivers/genpd/Makefile
- create mode 100644 drivers/genpd/actions/Makefile
- rename drivers/{soc => genpd}/actions/owl-sps-helper.c (100%)
- rename drivers/{soc => genpd}/actions/owl-sps.c (100%)
- create mode 100644 drivers/genpd/amlogic/Makefile
- rename drivers/{soc => genpd}/amlogic/meson-ee-pwrc.c (100%)
- rename drivers/{soc => genpd}/amlogic/meson-gx-pwrc-vpu.c (100%)
- rename drivers/{soc => genpd}/amlogic/meson-secure-pwrc.c (100%)
- create mode 100644 drivers/genpd/apple/Makefile
- rename drivers/{soc/apple/apple-pmgr-pwrstate.c => genpd/apple/pmgr-pwrstate.c} (100%)
- create mode 100644 drivers/genpd/bcm/Makefile
- rename drivers/{soc/bcm/bcm63xx => genpd/bcm}/bcm-pmb.c (100%)
- rename drivers/{soc => genpd}/bcm/bcm2835-power.c (100%)
- rename drivers/{soc/bcm/bcm63xx => genpd/bcm}/bcm63xx-power.c (100%)
- rename drivers/{soc => genpd}/bcm/raspberrypi-power.c (100%)
- create mode 100644 drivers/genpd/imx/Makefile
- rename drivers/{soc => genpd}/imx/gpc.c (100%)
- rename drivers/{soc => genpd}/imx/gpcv2.c (100%)
- rename drivers/{soc => genpd}/imx/imx8m-blk-ctrl.c (100%)
- rename drivers/{soc => genpd}/imx/imx8mp-blk-ctrl.c (100%)
- rename drivers/{soc => genpd}/imx/imx93-blk-ctrl.c (100%)
- rename drivers/{soc => genpd}/imx/imx93-pd.c (100%)
- rename drivers/{firmware => genpd}/imx/scu-pd.c (75%)
- create mode 100644 drivers/genpd/mediatek/Makefile
- rename drivers/{soc => genpd}/mediatek/mt6795-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mt8167-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mt8173-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mt8183-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mt8186-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mt8188-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mt8192-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mt8195-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mtk-pm-domains.c (99%)
- rename drivers/{soc => genpd}/mediatek/mtk-pm-domains.h (100%)
- rename drivers/{soc => genpd}/mediatek/mtk-scpsys.c (99%)
- create mode 100644 drivers/genpd/qcom/Makefile
- rename drivers/{soc => genpd}/qcom/cpr.c (100%)
- rename drivers/{soc => genpd}/qcom/rpmhpd.c (100%)
- rename drivers/{soc => genpd}/qcom/rpmpd.c (100%)
- create mode 100644 drivers/genpd/renesas/Makefile
- rename drivers/{soc => genpd}/renesas/r8a7742-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7743-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7745-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a77470-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a774a1-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a774b1-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a774c0-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a774e1-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7779-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7790-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7791-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7792-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7794-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7795-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a7796-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a77965-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a77970-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a77980-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a77990-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a77995-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a779a0-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a779f0-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/r8a779g0-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/rcar-gen4-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/rcar-gen4-sysc.h (100%)
- rename drivers/{soc => genpd}/renesas/rcar-sysc.c (100%)
- rename drivers/{soc => genpd}/renesas/rcar-sysc.h (100%)
- rename drivers/{soc => genpd}/renesas/rmobile-sysc.c (100%)
- create mode 100644 drivers/genpd/rockchip/Makefile
- rename drivers/{soc/rockchip/pm_domains.c => genpd/rockchip/pm-domains.c} (100%)
- create mode 100644 drivers/genpd/samsung/Makefile
- rename drivers/{soc/samsung/pm_domains.c => genpd/samsung/exynos-pm-domains.c} (100%)
- create mode 100644 drivers/genpd/st/Makefile
- rename arch/arm/mach-ux500/pm_domains.c => drivers/genpd/st/ste-ux500-pm-domain.c (75%)
- create mode 100644 drivers/genpd/starfive/Makefile
- rename drivers/{soc/starfive/jh71xx_pmu.c => genpd/starfive/jh71xx-pmu.c} (100%)
- create mode 100644 drivers/genpd/sunxi/Makefile
- rename drivers/{soc => genpd}/sunxi/sun20i-ppu.c (99%)
- create mode 100644 drivers/genpd/tegra/Makefile
- rename drivers/{soc => genpd}/tegra/powergate-bpmp.c (100%)
- create mode 100644 drivers/genpd/ti/Makefile
- rename drivers/{soc => genpd}/ti/omap_prm.c (100%)
- rename drivers/{soc => genpd}/ti/ti_sci_pm_domains.c (97%)
- create mode 100644 drivers/genpd/xilinx/Makefile
- rename drivers/{soc/xilinx/zynqmp_pm_domains.c => genpd/xilinx/zynqmp-pm-domains.c} (100%)
- delete mode 100644 drivers/soc/actions/Makefile
- delete mode 100644 drivers/soc/bcm/bcm63xx/Kconfig
- delete mode 100644 drivers/soc/bcm/bcm63xx/Makefile
- delete mode 100644 drivers/soc/starfive/Makefile
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
