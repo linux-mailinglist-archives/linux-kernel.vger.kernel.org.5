@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9499278CA64
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAA978CA66
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237611AbjH2RMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        id S237661AbjH2RMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237637AbjH2RLm (ORCPT
+        with ESMTP id S237640AbjH2RLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 13:11:42 -0400
-Received: from out-242.mta1.migadu.com (out-242.mta1.migadu.com [95.215.58.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4876711B
+Received: from out-245.mta1.migadu.com (out-245.mta1.migadu.com [95.215.58.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31581B9
         for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:11:37 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693329095;
+        t=1693329096;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Gxqstvn+9KrGAurRzEA5+xZd4FpeRy2hmiRTg5iKOfw=;
-        b=DeG8gVsPVA6eHp6GYAtPbcN1W4Kc4hW54VJN2cPa1oAVV0Vtv+XvIoxvZ1he5+lPDyKPzU
-        jVtmhpgvmpCpTClSH2nhy/NQ4GtPpio2EnuYBWWAcI0xhaei4Zp0zBBpeO5Q7FjGGTEUej
-        XwtRIWiCy9Atd2ddYEKCng61HMvXEZ8=
+        bh=Opt9t2Sh3BPQLxjav3raWw4j3L9ASrpPJpFprr4WIwg=;
+        b=FMOUlvJxgMB5WpKRQ7t3KX2aGQnwsNKzQ2ccI31MOspuXDov1WZjg8f3zBxS9aiip16KLg
+        QsPLydt7gf0VxZWrz0MHedBxpNNjUHO1AeoE3D3p5RwVNU7SOLfTAhOveTf+35NDZNtujl
+        ResgGbrFAGlj6khMSxwabRc53OkvSPc=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -36,9 +36,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH 01/15] stackdepot: check disabled flag when fetching
-Date:   Tue, 29 Aug 2023 19:11:11 +0200
-Message-Id: <43b26d397d4f0d76246f95a74a8a38cfd7297bbc.1693328501.git.andreyknvl@google.com>
+Subject: [PATCH 02/15] stackdepot: simplify __stack_depot_save
+Date:   Tue, 29 Aug 2023 19:11:12 +0200
+Message-Id: <20dbc3376fccf2e7824482f56a75d6670bccd8ff.1693328501.git.andreyknvl@google.com>
 In-Reply-To: <cover.1693328501.git.andreyknvl@google.com>
 References: <cover.1693328501.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -55,27 +55,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Do not try fetching a stack trace from the stack depot if the
-stack_depot_disabled flag is enabled.
+The retval local variable in __stack_depot_save has the union type
+handle_parts, but the function never uses anything but the union's
+handle field.
+
+Define retval simply as depot_stack_handle_t to simplify the code.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/stackdepot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/stackdepot.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 2f5aa851834e..3a945c7206f3 100644
+index 3a945c7206f3..0772125efe8a 100644
 --- a/lib/stackdepot.c
 +++ b/lib/stackdepot.c
-@@ -477,7 +477,7 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- 	 */
- 	kmsan_unpoison_memory(entries, sizeof(*entries));
+@@ -360,7 +360,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+ 					gfp_t alloc_flags, bool can_alloc)
+ {
+ 	struct stack_record *found = NULL, **bucket;
+-	union handle_parts retval = { .handle = 0 };
++	depot_stack_handle_t handle = 0;
+ 	struct page *page = NULL;
+ 	void *prealloc = NULL;
+ 	unsigned long flags;
+@@ -377,7 +377,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+ 	nr_entries = filter_irq_stacks(entries, nr_entries);
  
--	if (!handle)
-+	if (!handle || stack_depot_disabled)
- 		return 0;
+ 	if (unlikely(nr_entries == 0) || stack_depot_disabled)
+-		goto fast_exit;
++		return 0;
  
- 	if (parts.pool_index > pool_index_cached) {
+ 	hash = hash_stack(entries, nr_entries);
+ 	bucket = &stack_table[hash & stack_hash_mask];
+@@ -443,9 +443,8 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+ 		free_pages((unsigned long)prealloc, DEPOT_POOL_ORDER);
+ 	}
+ 	if (found)
+-		retval.handle = found->handle.handle;
+-fast_exit:
+-	return retval.handle;
++		handle = found->handle.handle;
++	return handle;
+ }
+ EXPORT_SYMBOL_GPL(__stack_depot_save);
+ 
 -- 
 2.25.1
 
