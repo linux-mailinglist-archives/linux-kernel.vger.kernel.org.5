@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BEF78BC85
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF2B78BC8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbjH2B42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 21:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
+        id S235155AbjH2B6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 21:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235058AbjH2Bz7 (ORCPT
+        with ESMTP id S235131AbjH2B5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 21:55:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C4718F;
-        Mon, 28 Aug 2023 18:55:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 112456179A;
-        Tue, 29 Aug 2023 01:55:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 231D8C433C8;
-        Tue, 29 Aug 2023 01:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693274156;
-        bh=7b3Wbo+mFN7eZwp4mvhSNj0rUGXD9rMEvgQHllKkrRY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pgOunpoqPRaJXYZcBsVEiHtcb3b6unJ2XoxxGZJkoQ5bpN71QzZKdDQU8ED+DdVuc
-         Vtswr8oZizOAVNofm9lMCbT3ww3qEddO2UvT//82uD6zvKPUEDNfUAHoDTyCBVsjCb
-         fZbme5hd/9TAxgHIKLQYZPSytSaYxoDQIC0UGWDO56Cz29ruVgDpHzvJit6ddznFdH
-         tiJWjCkrHBD7HBYAPal5x1icAkOMbZlnxnYrDIE0P3qKOMTv8IFxGSk/sNnEVAPm4B
-         ZD4cGrEchLmtzFu0/edoGOvDo98681g7gDGlW6U7xoYAnAm6ShJrKwoN9jQtdXcajA
-         pkr8HhGjBP0rA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.1 000/122] 6.1.50-rc1 review
-Date:   Tue, 29 Aug 2023 01:55:53 +0000
-Message-Id: <20230829015553.50267-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230828101156.480754469@linuxfoundation.org>
-References: 
+        Mon, 28 Aug 2023 21:57:38 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8051418B;
+        Mon, 28 Aug 2023 18:57:35 -0700 (PDT)
+X-QQ-mid: bizesmtp71t1693274211tjl8wicz
+Received: from wangjiexun-virtual-machine.loca ( [120.225.34.249])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 29 Aug 2023 09:56:48 +0800 (CST)
+X-QQ-SSF: 01200000000000001000000A0000000
+X-QQ-FEAT: 7jw2iSiCazqI7U4uceorTTx0096PogHcGE52Ti7rBOKg4E61hjgGGFvoFvrik
+        CZc8rNK4FQdIHnYnZnqFywrsoV2A1294l+rtabAX+1vj+r6vgTjBroPtQlgxPFpcWgsUEml
+        MxX9XHnWeHAA+nrXmdfPvWjVAnKw236Ddi9w39LiVIdiEkX7xHe7w2n1FW3S8WpuAh9bLc0
+        LpKkLU4pJh//tp8PMwpN0rJfEE78br6ZsYerxcypWK7NQ5+HSNJjFgzwBx5bvaQMHwWfbfF
+        R36QqVbXNz2oJvpf9OuRdNEmQ4/RoBLgOITnagkA6u39a7hJ1E6enXuMJwd1EeaooOOmlRo
+        ql1Q4gxxcDeMOagSu3qAyNS7WjxkJSaKVpHsecNOl3KiwvReMI=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5466448991023989807
+From:   Jiexun Wang <wangjiexun@tinylab.org>
+To:     jszhang@kernel.org
+Cc:     adrian.hunter@intel.com, aou@eecs.berkeley.edu,
+        conor+dt@kernel.org, conor@kernel.org, devicetree@vger.kernel.org,
+        dfustini@baylibre.com, guoren@kernel.org, jkridner@beagleboard.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        robertcnelson@beagleboard.org, robh+dt@kernel.org,
+        ulf.hansson@linaro.org, wangjiexun@tinylab.org, wefu@redhat.com
+Subject: Re: [PATCH RFC v2 0/4] RISC-V: Add basic eMMC support for BeagleV Ahead
+Date:   Tue, 29 Aug 2023 09:56:47 +0800
+Message-Id: <20230829015647.115757-1-wangjiexun@tinylab.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZOy3v+YgZgU1NrWx@xhacker>
+References: <ZOy3v+YgZgU1NrWx@xhacker>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Date: Mon, 28 Aug 2023 23:05:35 +0800, Jisheng Zhang wrote:
+>On Mon, Aug 28, 2023 at 12:40:16PM +0800, Jiexun Wang wrote:
+>> Hello,
+>> I tested the patch on my LicheePi 4A board.
+>> It can successfully boot with eMMC, but when I use the eMMC more frequently - for instance:
+>> 
+>> $ while true; do /bin/dd if=/dev/zero of=bigfile bs=1024000 count=1024; done &
+>> 
+>> I encounter the following error:
+>> 
+>> sbi_trap_error: hart1: illegal instruction handler failed (error -2)
+>
+>> sbi_trap_error: hart1: mcause=0x0000000000000002 mtval=0x0000000060e2de4f
+>> sbi_trap_error: hart1: mepc=0x000000000001897c mstatus=0x0000000a00001820
+>> sbi_trap_error: hart1: ra=0x00000000000170f8 sp=0x000000000004adc8
+>> sbi_trap_error: hart1: gp=0xffffffff8136ea90 tp=0xffffffd900228000
+>> sbi_trap_error: hart1: s0=0x0000000000000000 s1=0x000000000004ae08
+>> sbi_trap_error: hart1: a0=0x000000003f9aa9bc a1=0x0000000000000004
+>> sbi_trap_error: hart1: a2=0x0000000000000000 a3=0x0000000000000000
+>> sbi_trap_error: hart1: a4=0x0000000000042248 a5=0x00000000000170e5
+>> sbi_trap_error: hart1: a6=0x0000000000000000 a7=0x0000000054494d45
+>> sbi_trap_error: hart1: s2=0x000000000004aee8 s3=0x0000000000000000
+>> sbi_trap_error: hart1: s4=0x000000000004ae08 s5=0x0000000000000000
+>> sbi_trap_error: hart1: s6=0xffffffff813aa240 s7=0x0000000000000080
+>> sbi_trap_error: hart1: s8=0xffffffff80a1b5f0 s9=0x0000000000000000
+>> sbi_trap_error: hart1: s10=0xffffffd9fef5d380 s11=0xffffffff81290a80
+>> sbi_trap_error: hart1: t0=0x0000000a00000820 t1=0x0000000000000000
+>> sbi_trap_error: hart1: t2=0xffffffff80c00318 t3=0x0000000000000001
+>> sbi_trap_error: hart1: t4=0x0000000000000330 t5=0x0000000000000001
+>> sbi_trap_error: hart1: t6=0x0000000000040000
+>> 
+>> My kernel version is v6.5-rc3.
+>> My OpenSBI version is 1.3.
+>> I tried to use other versions of OpenSBI, yet the problem persists. 
+>> Is there a possibility of any underlying bug? Your insights into this would be greatly appreciated.
+>
+>
+>Can you plz try below opensbi?
 
-On Mon, 28 Aug 2023 12:11:55 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+I tried the OpenSBI you provided and the issue didn't recur.
+I conducted stress test about 30 minutes and the system appears to be functioning very well.
+Thank you so much for helping me resolve this problem.
 
-> This is the start of the stable review cycle for the 6.1.50 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.50-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+Best regards,
+Jiexun Wang
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 1aa86af84d82 ("Linux 6.1.50-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-# .config:1408:warning: override: reassigning to symbol CGROUPS
-ok 15 selftests: damon-tests: build_nomemcg.sh
-# kselftest dir '/home/sjpark/damon-tests-cont/linux/tools/testing/selftests/damon-tests' is in dirty state.
-# the log is at '/home/sjpark/log'.
- [32m
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: sysfs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
-_remote_run_corr.sh SUCCESS
