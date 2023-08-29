@@ -2,67 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8916278CC97
+	by mail.lfdr.de (Postfix) with ESMTP id DF4A478CC98
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238753AbjH2TAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S239014AbjH2TAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238879AbjH2TAR (ORCPT
+        with ESMTP id S238983AbjH2TA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:00:17 -0400
+        Tue, 29 Aug 2023 15:00:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF0BCDB;
-        Tue, 29 Aug 2023 12:00:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0858D19A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:00:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6126E64DAE;
-        Tue, 29 Aug 2023 19:00:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C8E43C433C8;
-        Tue, 29 Aug 2023 19:00:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DCC546311E
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 48EF3C433C9;
+        Tue, 29 Aug 2023 19:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693335604;
-        bh=aCgkYGY98g3EKBI0AJ7Uxw1j4MUR/DcCFtg+btnL2Xc=;
+        s=k20201202; t=1693335624;
+        bh=V4juALzediEWIR1K/yW4XNf5fTxbmXpZ+AMUl8JLjyQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=IW8TZmS890jMqMNm5Q6/CJKBTazwbi60z3Cwwm3M5OTt2SRJiX2EUvhgIfLKHwUCC
-         /Xkm2RhJx1A6pYn88uE61DwKbkOnFdj+y23s5BWjBt37dFI99AhK9dJSVfEQBrAUek
-         eRmvGO+ttq9ymb4xZ1GZRcslzT0AgffS0CBMEV1aJ0tQwf2Nbt2biSjokTXJebQ2ZE
-         W/ZQhXlj7acfwC1zvDgw16Q0ps+gD6Hycg8qAQ4AklOuLXCueOAD0R9Pdslk7tQhDu
-         ETpglB8932/S9nbh9puxI0kpCXQC56xKdGzkTDdVKSaH962I18p5lCHOFAGLQAVb9F
-         yLer1mCl0Vrpg==
+        b=UGK5qYOCxn59y+2ojCrYywGU2qLDnxTjE83Gjkeh5Ib+NwendnZqOAeZMORe4IaD/
+         6+wzcvr13HD28hqCS1PnlI/0h7ARL9p+5yceNlxFkYm4Bcx9zaHfHWrB98TjhmR3Vg
+         Ijpg4tlQsGD9P8u2OS6v/61wE37KVgQs2ssu6cC4iy+3pjKDwUgHW2vKhwRyeOMCCT
+         uSmVA4euSpds5pgl3XsbQu7ksl8OzmGvcdRrKqSc3Qr0BGUfye/cjuckGNiOvp+jtK
+         kYERoXWm8xSliX3jsw/vemni7awcO3SiK7nkPjuAofxhebVtoQHCTBrS6Lzz7otG6o
+         SsJXzT7CYe+wg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B0EFEE26D49;
-        Tue, 29 Aug 2023 19:00:04 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Update for 6.6
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 327B3C595D2;
+        Tue, 29 Aug 2023 19:00:24 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 6.6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
-References: <YgMn+1qQPQId50hO@gondor.apana.org.au>
- <YjE5yThYIzih2kM6@gondor.apana.org.au>
- <YkUdKiJflWqxBmx5@gondor.apana.org.au>
- <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
- <Yui+kNeY+Qg4fKVl@gondor.apana.org.au>
- <Yzv0wXi4Uu2WND37@gondor.apana.org.au>
- <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
- <Y/MDmL02XYfSz8XX@gondor.apana.org.au>
- <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
- <ZJ0RSuWLwzikFr9r@gondor.apana.org.au> <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.6-p1
-X-PR-Tracked-Commit-Id: 85b9bf9a514d991fcecb118d0a8a35e754ff9265
+In-Reply-To: <20230829125950.39432-1-pabeni@redhat.com>
+References: <20230829125950.39432-1-pabeni@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230829125950.39432-1-pabeni@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.6
+X-PR-Tracked-Commit-Id: c873512ef3a39cc1a605b7a5ff2ad0a33d619aa8
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 68cf01760bc0891074e813b9bb06d2696cac1c01
-Message-Id: <169333560469.15412.17633919990369937789.pr-tracker-bot@kernel.org>
-Date:   Tue, 29 Aug 2023 19:00:04 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+X-PR-Merge-Commit-Id: bd6c11bc43c496cddfc6cf603b5d45365606dbd5
+Message-Id: <169333562420.15412.12056254346182009806.pr-tracker-bot@kernel.org>
+Date:   Tue, 29 Aug 2023 19:00:24 +0000
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,12 +63,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Aug 2023 17:22:20 +0800:
+The pull request you sent on Tue, 29 Aug 2023 14:59:50 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.6-p1
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/68cf01760bc0891074e813b9bb06d2696cac1c01
+https://git.kernel.org/torvalds/c/bd6c11bc43c496cddfc6cf603b5d45365606dbd5
 
 Thank you!
 
