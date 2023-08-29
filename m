@@ -2,50 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BB678CA7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1971E78CA69
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237728AbjH2ROx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S237678AbjH2RMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236139AbjH2ROb (ORCPT
+        with ESMTP id S237662AbjH2RLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:14:31 -0400
-Received: from out-243.mta1.migadu.com (out-243.mta1.migadu.com [IPv6:2001:41d0:203:375::f3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167D510CC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:13:57 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693329224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c+OqyPrsOPGHg5XrLPNZBNE7kZ+J8BEkGBD6zb/JuYQ=;
-        b=T1iG7qQWFqXknvW3oxV4ppqhlGJ2B4GzTHDs5oEMMGMfeCMjQjH9IJfBalbYfv0NVvUDzy
-        EwkpyMnG6Nxt+AMl/9tnMXZ4f/nw+qGm5hpPJdpaKfCfaWqaErDfKrIusJZnN6iT+BpvCJ
-        ObS/4jb3NCEUDuj8JPJ9Tc91Spi4dxo=
-From:   andrey.konovalov@linux.dev
-To:     Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH 14/15] stackdepot: allow users to evict stack traces
-Date:   Tue, 29 Aug 2023 19:11:24 +0200
-Message-Id: <99cd7ac4a312e86c768b933332364272b9e3fb40.1693328501.git.andreyknvl@google.com>
-In-Reply-To: <cover.1693328501.git.andreyknvl@google.com>
-References: <cover.1693328501.git.andreyknvl@google.com>
+        Tue, 29 Aug 2023 13:11:44 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7621FD;
+        Tue, 29 Aug 2023 10:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1693329085; x=1693933885; i=deller@gmx.de;
+ bh=Am0z4fpqq3gPWNH7evU/PjMIRGxd6gp6/fsCQ/0L66o=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=U4nedsHCoA/1LmSlRHSeHbWXHxCkCzF/0fMB5MMNEqbkl8Aq7pZFV3O13JP6z0lzBDPu78y
+ eaiF+0agzmwjfKKGZ5PQ7lw9wDnC0irnyigLmIJrWgCUpsFNp9VKQqqn85kPj6748BRfbrlP7
+ y1DVOVfAa5nmC5KXpZ5k5K0dXhnIp8+iG0W8okM3AcO/MP97drELEzqITWhyCYWKln8CKDyAf
+ MRy37VFMc5DN2lFRzgrWR6JhrMxlg9hsojGEZcI+otkmNiuXM3xz4tcvK9So9hiqz8Da/Nt76
+ PyDFQZV3AiR/Mq2W1bNlnYShwKCP5OJjn7C8i4FFBanF50GxKNQA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.153.221]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N5VDE-1pdHfz2KqY-016u5T; Tue, 29
+ Aug 2023 19:11:25 +0200
+Message-ID: <9d2bb495-0c1d-0d1b-96ea-4b1110d45b79@gmx.de>
+Date:   Tue, 29 Aug 2023 19:11:25 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: truncation in drivers/video/fbdev/neofb.c
+Content-Language: en-US
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-fbdev@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>
+References: <CAKwvOdn0xoVWjQ6ufM_rojtKb0f1i1hW-J_xYGfKDNFdHwaeHQ@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <CAKwvOdn0xoVWjQ6ufM_rojtKb0f1i1hW-J_xYGfKDNFdHwaeHQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nLhGJZGsPhbosIqFBHO4HTSsCDwh7B/34489wZUsEU4guozePTn
+ iVOOt2b9v3YsEHpW1OfD88PAgAHTEbgFfXELfw2Ebm4znjRHVRWmhvb30OA9LZfWVLqEctA
+ 4i7B1n7/aiRqpcY2BV1834zhck4UJb5ZmSKJauk4jQlc8J8DDWkDxocVBO3wZc5Y606xQYk
+ qFFgxBkyI0OWmLlJMksaA==
+UI-OutboundReport: notjunk:1;M01:P0:NdvL8Q8qicY=;IRYB6GgUXLgy8IgJ3ESMKXhKypa
+ khB8z5GixgdUdVJoaHINNn7L3sjLTdUwFpz4ml1HsEVwJK+tTpMgKw5YLNysd7U89fYcEqpyT
+ Oz/r4xGSsObPFwEDk09fN62yK+pc26pTymOdTbnmCbNuyLj2Xd2ENaNGsvQEORVYafgu+6JM9
+ fIElepZdS+WmmrPSxBX9jWqoj0dmVi585iCmWfGHC40jbgmqyBVGKHUv049SpZbBocTLwkXHK
+ DtKllaqG8GPfLfoOM2rOQ07w2/IhgUpouqADoGRMLa60RgG2KWAYvzfatosiH62nGgXrhMvio
+ BVnnIQhj0/dS3sWRpPYJPv0ez+FIJWnuydCzf6qpKn2IcYOEv4Tts+O3fLZSseSHQePrTJOT2
+ CTfZbZS4MO6ThePqBbj3fyjPouhRtDXLs7xnigrNgcK9U+PNo9MGKNdc3jnb5p09yuUkt1oOn
+ Htkz6eDrAqQ0hP5TZGb2Zf4E/BckybE4SQznt2FMV18OY5xja3mwlLx2k5ogCJTAy9+H+xXs1
+ EBoNbTAz9mReLc9f1XEwEgd2ISsZHysnNCV1lzgil21B07cfwiwyONK0LnrcZJ/udfd01vsfi
+ XxUFhCBgzFfXJh3lOlTpsq6I5R5XMzPkEuYr9LZVqAjJX36ie3iOhv2bhyrRZ3oKr0PAB3xZk
+ flPHwr/AwLrYv48h1iEDvvkiRWQLhhBQaxDFmWqvptavPQv1WjsjDQNqo0U/DQOAr7lfwjRvy
+ 7yXoQ7PdUcNVJiYSBYGEvXFw/KqEl5ejG2CZoGnVnaKT4bhrxeyHdre/hkTbWjwWzqIu/XEAj
+ L2GZawpRtuTA68msObmx5/dLj4RM4kEsBHMpXvZ/1j9/A8ej18clE6ujLJzMVBJauSrNeTSLr
+ VE3R0z/1QSdcNwQZ6Tbo4rOM3TLpMxKIAk5wkT7ogK6IZCVcpnhJojsJmaycO0yKHVaXOBEA7
+ 2mjR+w==
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,110 +76,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@google.com>
+On 8/29/23 18:45, Nick Desaulniers wrote:
+> Helge,
+> A recent change in clang made it better about spotting snprintf that
+> will result in truncation.  Nathan reported the following instances:
+>
+> drivers/video/fbdev/neofb.c:1959:3: warning: 'snprintf' will always be
+> truncated; specified size is 16, but format string expands to at least
+> 17 [-Wfortify-source]
+> drivers/video/fbdev/neofb.c:1963:3: warning: 'snprintf' will always be
+> truncated; specified size is 16, but format string expands to at least
+> 18 [-Wfortify-source]
+> drivers/video/fbdev/neofb.c:1967:3: warning: 'snprintf' will always be
+> truncated; specified size is 16, but format string expands to at least
+> 17 [-Wfortify-source]
+> drivers/video/fbdev/neofb.c:1971:3: warning: 'snprintf' will always be
+> truncated; specified size is 16, but format string expands to at least
+> 17 [-Wfortify-source]
+> drivers/video/fbdev/neofb.c:1978:3: warning: 'snprintf' will always be
+> truncated; specified size is 16, but format string expands to at least
+> 18 [-Wfortify-source]
+> drivers/video/fbdev/neofb.c:1985:3: warning: 'snprintf' will always be
+> truncated; specified size is 16, but format string expands to at least
+> 17 [-Wfortify-source]
+> drivers/video/fbdev/neofb.c:1992:3: warning: 'snprintf' will always be
+> truncated; specified size is 16, but format string expands to at least
+> 18 [-Wfortify-source]
+>
+> https://github.com/ClangBuiltLinux/linux/issues/1923
+>
+> Clang is right here.  `info->fix.id` is declared as `char id[16];` so
+> indeed string literals like "MagicGraph 256AV+" indeed lead to
+> truncation. But this is declared in include/uapi/linux/fb.h; I assume
+> those headers cant be changed? Can the strings be shortened then? Is
+> it perhaps time to delete this driver?
+>
+> I see AKPM mentioned alluded to this in
+> commit 0e90454 ("neofb: avoid overwriting fb_info fields")
+>
+> (Also, snprintf probably isn't necessary for string literals that
+> don't contain format strings)
 
-Add stack_depot_evict, a function that decrements a reference counter
-on a stack record and removes it from the stack depot once the counter
-reaches 0.
+It's just an ID field, so I don't think we need the full name of the card.
+So using strscpy() and shorten the name, e.g. "MagicGr. 256XL+"
+instead of "MagicGraph 256XL+" is probably the most simple solution?
 
-Internally, when removing a stack record, the function unlinks it from
-the hash table bucket and returns to the freelist.
+Anyone want to send a patch?
 
-With this change, the users of stack depot can call stack_depot_evict
-when keeping a stack trace in the stack depot is not needed anymore.
-This allows avoiding polluting the stack depot with irrelevant stack
-traces and thus have more space to store the relevant ones before the
-stack depot reaches its capacity.
-
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- include/linux/stackdepot.h | 11 ++++++++++
- lib/stackdepot.c           | 43 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 54 insertions(+)
-
-diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-index e58306783d8e..b14da6797714 100644
---- a/include/linux/stackdepot.h
-+++ b/include/linux/stackdepot.h
-@@ -121,6 +121,17 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
- unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- 			       unsigned long **entries);
- 
-+/**
-+ * stack_depot_evict - Drop a reference to a stack trace from stack depot
-+ *
-+ * @handle:	Stack depot handle returned from stack_depot_save()
-+ *
-+ * The stack trace gets fully removed from stack depot once all references
-+ * to it has been dropped (once the number of stack_depot_evict calls matches
-+ * the number of stack_depot_save calls for this stack trace).
-+ */
-+void stack_depot_evict(depot_stack_handle_t handle);
-+
- /**
-  * stack_depot_print - Print a stack trace from stack depot
-  *
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 641db97d8c7c..cf28720b842d 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -384,6 +384,13 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
- 	return stack;
- }
- 
-+/* Frees stack into the freelist. */
-+static void depot_free_stack(struct stack_record *stack)
-+{
-+	stack->next = next_stack;
-+	next_stack = stack;
-+}
-+
- /* Calculates the hash for a stack. */
- static inline u32 hash_stack(unsigned long *entries, unsigned int size)
- {
-@@ -555,6 +562,42 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- }
- EXPORT_SYMBOL_GPL(stack_depot_fetch);
- 
-+void stack_depot_evict(depot_stack_handle_t handle)
-+{
-+	struct stack_record *stack, **bucket;
-+	unsigned long flags;
-+
-+	if (!handle || stack_depot_disabled)
-+		return;
-+
-+	write_lock_irqsave(&pool_rwlock, flags);
-+
-+	stack = depot_fetch_stack(handle);
-+	if (WARN_ON(!stack))
-+		goto out;
-+
-+	if (refcount_dec_and_test(&stack->count)) {
-+		/* Drop stack from the hash table. */
-+		if (stack->next)
-+			stack->next->prev = stack->prev;
-+		if (stack->prev)
-+			stack->prev->next = stack->next;
-+		else {
-+			bucket = &stack_table[stack->hash & stack_hash_mask];
-+			*bucket = stack->next;
-+		}
-+		stack->next = NULL;
-+		stack->prev = NULL;
-+
-+		/* Free stack. */
-+		depot_free_stack(stack);
-+	}
-+
-+out:
-+	write_unlock_irqrestore(&pool_rwlock, flags);
-+}
-+EXPORT_SYMBOL_GPL(stack_depot_evict);
-+
- void stack_depot_print(depot_stack_handle_t stack)
- {
- 	unsigned long *entries;
--- 
-2.25.1
-
+Helge
