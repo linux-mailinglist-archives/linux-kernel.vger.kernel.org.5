@@ -2,98 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1659B78CD08
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EDA78CD0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239141AbjH2Tco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
+        id S238204AbjH2Tg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240500AbjH2Tcl (ORCPT
+        with ESMTP id S235250AbjH2Tgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:32:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEC31BE;
-        Tue, 29 Aug 2023 12:32:10 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 19:32:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693337526;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CrRWQQoDSArxZusG/tlvTvReg5VXP5p7aFpkbF5LA3k=;
-        b=iE3yJQVuqoJEop/mmGbFADRxfZCVOy8Ga3PHdyNGNrDq7fWWLIgZWiVn9eZ8swcfwwc4HO
-        8gwsUwxDMrbI6Cbu1UIfPuFZUEHOqmcojR2aUO7W8uCVZ2kc4eHcDbY7T56G2k5qrNjPnc
-        YJbFVsKmMD6rQKDUxYMP6tv3qhDg+k7v4eFm4VKK/eAvip1urryvu5LkHQQv1AZUucvtFe
-        zFOYutB+otMNMVAJou+4yyhaHeMo/TQwqIXyWcuUAPnUwy1ws+HMdfu56P3NAFl++S2N0a
-        u7rGLasFILE/5Pq+4o2S082KS4WUdc/u6QcOI6y9QN9yAUYdOjGRqcMmIh2LAw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693337526;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CrRWQQoDSArxZusG/tlvTvReg5VXP5p7aFpkbF5LA3k=;
-        b=yFLRoZkvnov7TbIUIXW+A+fv5+Vs4PmVsTm1E5Q77GTeThjXxXjRRWQdSEk9QHUqkrS5Bp
-        OqCltRzE4jrMkyCQ==
-From:   "tip-bot2 for Hao Jia" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: Make update_entity_lag() static
-Cc:     Hao Jia <jiahao.os@bytedance.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230829030325.69128-1-jiahao.os@bytedance.com>
-References: <20230829030325.69128-1-jiahao.os@bytedance.com>
+        Tue, 29 Aug 2023 15:36:31 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F6EEA;
+        Tue, 29 Aug 2023 12:36:28 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26fb8225268so2572404a91.1;
+        Tue, 29 Aug 2023 12:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693337788; x=1693942588; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zaMs62JQz4mOYmHMoUhCwPigQFveHohoGbGbhrjQBvI=;
+        b=M+pTNidCw96WLUdkHnDhJ87b5LciOr/LAbsCi3ewxYMgTp9hC8OZHTn7jP+rq+YAtQ
+         W7Qv2A3nqIMvMVifXMedn9J10NQD121MhoTjkPsD8jUrv9YVsLkOoiWo0X+V0PigkK0s
+         PoXMARlyp3VLcRNegQyV0hbz6CyTcovaSs1lbpqHqw11hlm1cNC5ZcVxkNjmqi2O2ZiV
+         Jtk8xkLw7M9PKZ8XW7Jqp8ta6ja0OXYgwJCL/Q9JY8+3bOfm3MYV0ezDRUWnS7jffrgB
+         RnkvVNlx0MTfAfrIL+fz3V2fP6wLonUZ9po9Nn2L+CZMSdXp4p5exj2yzEYi7ubll9UF
+         idIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693337788; x=1693942588;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zaMs62JQz4mOYmHMoUhCwPigQFveHohoGbGbhrjQBvI=;
+        b=EYFY0La6XUESNe6OtWxRbyLGsphrr7Z6GDJMs+GCbc+8AL8AE3mWOmCj+pv+CrMvcQ
+         BvBF+LuwjIjBnMYDBng0mxmGt29JPfU0HQFtQIJchq4bhYRXvPpYf890H3SM2y4+32V0
+         o9ko74ux7+kdr2tQ7bEl0DMGZiHo55yxNYTXqHDbGgDz+wdBBJwcQ6Ij1UWx8UR0OB7d
+         5fL7/oRqaloNlrA3eGIupzGAqwHZzR72cVYIDtqh5Eh/4o7jSnQqNvQMEcG4jTrdcQF3
+         +N0wHBwUfbsDvknonPJ8/yoJxOW7LHQmmd4kz8+Fc4ommAHwaJieJlZCZ1lD3Q2YIlR4
+         TyfQ==
+X-Gm-Message-State: AOJu0YxA/jB9pMGBePsmHnQ/HKfiwenQElLe/6uO2QnT4/IQoV9Z8QO5
+        4nVBPMYFJhNyi0XP2WcrfuA=
+X-Google-Smtp-Source: AGHT+IHrbBF6nDowgSO7qMCt5Mn9c9zYPOE9PfrAmloLN0Z3sq5tKWkVm7UWmv1s3lsL6GFTWeqoXQ==
+X-Received: by 2002:a17:90a:f992:b0:26f:a6e7:abda with SMTP id cq18-20020a17090af99200b0026fa6e7abdamr144838pjb.46.1693337788109;
+        Tue, 29 Aug 2023 12:36:28 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:f05])
+        by smtp.gmail.com with ESMTPSA id e3-20020a17090a728300b00268dac826d4sm9225792pjg.0.2023.08.29.12.36.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 12:36:27 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 29 Aug 2023 09:36:25 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+Message-ID: <ZO5IuULSCXMe9_pN@slm.duckdns.org>
+References: <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
+ <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
+ <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz>
+ <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
+ <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
+ <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+ <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+ <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
+ <ZO48h7c9qwQxEPPA@slm.duckdns.org>
+ <CAJD7tkaQ1hD9HHyYTK_vfCQ9PCVZag7qMBueKyB+sEn=swvNJA@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <169333752613.27769.784028076271904268.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkaQ1hD9HHyYTK_vfCQ9PCVZag7qMBueKyB+sEn=swvNJA@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Hello,
 
-Commit-ID:     c958ca2013e28e7573ad95c028198cb67c1352dd
-Gitweb:        https://git.kernel.org/tip/c958ca2013e28e7573ad95c028198cb67c1352dd
-Author:        Hao Jia <jiahao.os@bytedance.com>
-AuthorDate:    Tue, 29 Aug 2023 11:03:25 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 29 Aug 2023 21:05:28 +02:00
+On Tue, Aug 29, 2023 at 12:13:31PM -0700, Yosry Ahmed wrote:
+...
+> > So, the assumptions in the original design were:
+> >
+> > * Writers are high freq but readers are lower freq and can block.
+> >
+> > * The global lock is mutex.
+> >
+> > * Back-to-back reads won't have too much to do because it only has to flush
+> >   what's been accumulated since the last flush which took place just before.
+> >
+> > It's likely that the userspace side is gonna be just fine if we restore the
+> > global lock to be a mutex and let them be. Most of the problems are caused
+> > by trying to allow flushing from non-sleepable and kernel contexts.
+> 
+> So basically restore the flush without disabling preemption, and if a
+> userspace reader gets preempted while holding the mutex it's probably
+> okay because we won't have high concurrency among userspace readers?
+> 
+> I think Shakeel was worried that this may cause a priority inversion
+> where a low priority task is preempted while holding the mutex, and
+> prevents high priority tasks from acquiring it to read the stats and
+> take actions (e.g. userspace OOMs).
 
-sched/fair: Make update_entity_lag() static
+We'll have to see but I'm not sure this is going to be a huge problem. The
+most common way that priority inversions are resolved is through work
+conservation - ie. the system just runs out of other things to do, so
+whatever is blocking the system gets to run and unblocks it. It only really
+becomes a problem when work conservation breaks down on CPU side which
+happens if the one holding the resource is 1. blocked on IOs (usually
+through memory allocation but can be anything) 2. throttled by cpu.max.
 
-The function update_entity_lag() is only used inside the kernel/sched/fair.c file.
-Make it static.
+#1 is not a factor here. #2 is but that is a factor for everything in the
+kernel and should really be solved from cpu.max side. So, I think in
+practice, this should be fine, or at least not worse than anything else.
 
-Signed-off-by: Hao Jia <jiahao.os@bytedance.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230829030325.69128-1-jiahao.os@bytedance.com
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Would it
+> > make sense to distinguish what can and can't wait and make the latter group
+> > always use cached value? e.g. even in kernel, during oom kill, waiting
+> > doesn't really matter and it can just wait to obtain the up-to-date numbers.
+> 
+> The problem with waiting for in-kernel flushers is that high
+> concurrency leads to terrible serialization. Running a stress test
+> with 100s of reclaimers where everyone waits shows ~ 3x slowdowns.
+> 
+> This patch series is indeed trying to formalize a distinction between
+> waiters who can wait and those who can't on the memcg side:
+> 
+> - Unified flushers always flush the entire tree and only flush if no
+> one else is flushing (no waiting), otherwise they use cached data and
+> hope the concurrent flushing helps. This is what we currently do for
+> most memcg contexts. This patch series opts userspace reads out of it.
+> 
+> - Non-unified flushers only flush the subtree they care about and they
+> wait if there are other flushers. This is what we currently do for
+> some zswap accounting code. This patch series opts userspace readers
+> into this.
+> 
+> The problem Michal is raising is that dropping the lock can lead to an
+> unbounded number of waiters and longer worst case latency. Especially
+> that this is directly influenced by userspace. Reintroducing the mutex
+> and removing the lock dropping code fixes that problem, but then if
+> the mutex holder gets preempted, we face another problem.
+> 
+> Personally I think there is a good chance there won't be userspace
+> latency problems due to the lock as usually there isn't high
+> concurrency among userspace readers, and we can deal with that problem
+> if/when it happens. So far no problem is happening for cpu.stat which
+> has the same potential problem.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 911d006..8dbff6e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -699,7 +699,7 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
-  *
-  * XXX could add max_slice to the augmented data to track this.
-  */
--void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
-+static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
- 	s64 lag, limit;
- 
+Maybe leave the global lock as-is and gate the userland flushers with a
+mutex so that there's only ever one contenting on the rstat lock from
+userland side?
+
+Thanks.
+
+-- 
+tejun
