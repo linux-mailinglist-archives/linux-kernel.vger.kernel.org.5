@@ -2,368 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8A378BDEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 07:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FA778BDE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 07:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235859AbjH2FdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 01:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
+        id S235808AbjH2Fc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 01:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235853AbjH2Fce (ORCPT
+        with ESMTP id S235895AbjH2FcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 01:32:34 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27418CD4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 22:32:30 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf3a2f4528so31275595ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 22:32:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693287149; x=1693891949;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zIko/pfmfBNdSwNrKy92dB84U18r5zxwiaqrbuGf80A=;
-        b=GVzoIlZDIe2iucwo6PZtLUsc76tkdfPTXMqdXEZPNnsnEjiv1rCU71+zdwzk3UrMOH
-         CoViq2PWJ0DsvAznqaTSwOHLBTNXNI+2FA3z5qZxFb6mB8KON3NrXLe5yO73VXikTO/Q
-         ooa4l+FpkglPlFVTyAOn/yKLZlx5vqYuh16dw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693287149; x=1693891949;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zIko/pfmfBNdSwNrKy92dB84U18r5zxwiaqrbuGf80A=;
-        b=Rw0/8nod6YuUcPADDAC9cq5VoBGyKf5J8cxWkQDClVzDgiwW7hurucAKuX2RlM0JBU
-         evshZs6ND+eIU2Tl4bL70Yfbf4iqGy0raRnIefoXd8bZrS919Xl1L9bY0eoDb/Ff1WFo
-         xMxSSXespSH5EVOnbstUOJ9C1sycZ6eOxrrXNux7xVQOTweCMafn9NUDRVKqVOaNf2ij
-         p2C7uFXjKMEomLI8ypaNadX7MFzlLpGteZWw1bxY/FaKEFdH4pGxSCJ9MUSeONesKyBb
-         14tyJcm7xxcdJAXpxQn2ewSM6a5S38Ig3Zw4hVF/zg4XE1U3ulSCiBQlzHyGrjV17u5h
-         JBCQ==
-X-Gm-Message-State: AOJu0YxFlmDnyRixouI0IYHi+h4wjnvi340G5VjRTqt0ky1EaMBNc794
-        6uSiIb0YLw0cOx02tfdlfsZg0g==
-X-Google-Smtp-Source: AGHT+IFUGa/BlgXJWxGcCYlZuKaAAgQjLsE+7T4pgGLrUAimwq0dcbXE3GHn/Aa5xHAduf0EY1XLKA==
-X-Received: by 2002:a17:902:f681:b0:1bb:9c45:130f with SMTP id l1-20020a170902f68100b001bb9c45130fmr31290027plg.69.1693287149564;
-        Mon, 28 Aug 2023 22:32:29 -0700 (PDT)
-Received: from datalore.c.googlers.com.com (148.175.199.104.bc.googleusercontent.com. [104.199.175.148])
-        by smtp.gmail.com with ESMTPSA id g6-20020a170902c38600b001bdccf6b8c9sm8420874plg.127.2023.08.28.22.32.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 22:32:29 -0700 (PDT)
-From:   Brandon Pollack <brpol@chromium.org>
-To:     marius.vlad@collabora.com, mairacanal@riseup.net,
-        jshargo@chromium.org
-Cc:     corbet@lwn.net, dri-devel@lists.freedesktop.org,
-        hamohammed.sa@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, melissa.srw@gmail.com,
-        mripard@kernel.org, rodrigosiqueiramelo@gmail.com,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mduggan@chromium.org,
-        hirono@chromium.org, Brandon Pollack <brpol@chromium.org>
-Subject: [PATCH v6 7/7] drm/vkms Add hotplug support via configfs to VKMS.
-Date:   Tue, 29 Aug 2023 05:30:59 +0000
-Message-ID: <20230829053201.423261-8-brpol@chromium.org>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-In-Reply-To: <20230829053201.423261-1-brpol@chromium.org>
-References: <20230829053201.423261-1-brpol@chromium.org>
+        Tue, 29 Aug 2023 01:32:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2401A3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 22:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693287134; x=1724823134;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=wMMXozrau2R7WKvCKRz9bKh+AzcpumoqQSilIgVpgw8=;
+  b=jEOT5BghaENq2Hs59kRt6mwzH32dGjDaWEcgah76oJ4fzYnmf3tDGcDD
+   6O9u5zeZ9iVuO4UQL6WU0qgfMrGREbeWTKOgSLtZPV8Zn1LzfqTVN4xlk
+   jCgPsQdbdEvDBcsq3bLemZGVFWCaqZhJUyX91cdYk7DxY5gSGZMHF1lBK
+   Z32fN9BmhJUbVJWre0STajvDUDumzFVvtLalTkRV0Q/arrdQqPzpnN9ZT
+   CBwZT3cs0xYDjz1IeIfVF8c0iQSTcIaY2zaoGC6DfOf2LZfiFV4umd+hM
+   Rloe9mNAmvQBd8+V+/V1hVY8h4cj1Xt7NZaZPlosvIbQdlFdMkW3Xqltk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="461645113"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="461645113"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2023 22:31:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10816"; a="808547821"
+X-IronPort-AV: E=Sophos;i="6.02,208,1688454000"; 
+   d="scan'208";a="808547821"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga004.fm.intel.com with ESMTP; 28 Aug 2023 22:31:47 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 28 Aug 2023 22:31:47 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 28 Aug 2023 22:31:47 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.48) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 28 Aug 2023 22:31:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FNwpZ1x8m8GdjAa0m03+6Uk9HXZyhY8//UDsH/GMoBDRp27GTvHwIXyqI+NYYo6PTrwhU5Qhj99TUngr0/eSgZMt7p4X7pb/Jt+bmKTStSrJjmy79QxbQgFtJrVirgEjgML8IY5xjRYcyv/IlVYdwiCPGK14XGZpTOfUuRviCz6fl6Y4TxDp2fdzLmo4z4eYJTVaMQ9pPXKx4zP1FUZkkZf0HP5lKlAswk8fFJvtyP3/kuJ3FtDHPezLa5mYCqk7BPALphE0nq42DoyzExkSyThkJ3XibribcCyQqGv1IDzXBRU7hYlmaCkIIroejBcJ7HEmVaOVznLYIwW0EEu27Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tgRNROQZvJQJdgF8SRr6TDJBbXYTFrT7geGiA7wmkLs=;
+ b=So5Z9yisrnhlRjJMJo9V/dcDbWBRL8kKQAZDd3Y+aRxxYndOe9Yz+s1f2kVpXHct8aVEZZwflBY4NnUszucr5R6rSo576dxuUDzGIpX/e00c730fLQRiHn616nHbSmHWQRnYr/yVr5kkkfHo5XdRg/sIqkXkLN+9+sLTnj5vtmDF1qHAtRf1xSroKWGOJ3iSNPxGhiuPJNJ1lttijFKBv8U5Q6TGmzOMh8H650YzsBTKxLrrPACFzfVNGvJ0YuENgYZ72lSQdwZCKUhx7Xhrs08Y/THjMb6SVwAy5qMFKulQgnxIUpmMFqp/SJTF8fYXGI84FWN7He7MvhsXvwtr0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+ by MW4PR11MB6739.namprd11.prod.outlook.com (2603:10b6:303:20b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Tue, 29 Aug
+ 2023 05:31:43 +0000
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::d718:207a:ec74:2556]) by BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::d718:207a:ec74:2556%5]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
+ 05:31:43 +0000
+Date:   Tue, 29 Aug 2023 13:31:33 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     kernel test robot <lkp@intel.com>, <llvm@lists.linux.dev>,
+        <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+Subject: Re: arch/x86/kernel/cpu/amd.c:1289:6: warning: no previous prototype
+ for function 'amd_check_microcode'
+Message-ID: <ZO2CtepNj3jTAYCF@rli9-mobl>
+References: <202308291220.DOn00Y1A-lkp@intel.com>
+ <20230829044745.GAZO14cRtwAnfERdR9@fat_crate.local>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230829044745.GAZO14cRtwAnfERdR9@fat_crate.local>
+X-ClientProxiedBy: SG2PR04CA0162.apcprd04.prod.outlook.com (2603:1096:4::24)
+ To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|MW4PR11MB6739:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1675c24e-8e98-4663-36c0-08dba8513a48
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PizKS/g1MuWIUSdITzSYjT3UcB3sRlmiZSfaO5YJx3rBu7H9Pginq14MRhULrTV+ea4WSS+nn+AHhgplAUDrOecNv6XP+/G1XxQAJ/XSY16M2QVQOKRxjTAY3VDPGfJ9Oh1SXQP1bIj1pVMIOlu8YWzwfhksyA8sUq7XyDCCT5NFPBoEaoov9uUBB/7YgjMBTTH6cQjtg4L0X1cAqrpsLlBbPJqnAPXUB4HPM2t7Whel0hZx4RVknDe0tLlggPiLP8Sj4OO/+dLHGu6/ra4nkVcF4l4DNssTS7AHuo60SDMy2BJS9hgQN9EeebV8sgVHgNzUmaI83s5459qEWH0gHuW2AIFd9dRcq3sYq8wSz6mNSXWmxw2ThLR2r48pUhcsHotPivupXHF+ulzJ8nxcRQF1bUY33t41bi34FjkO0CDymxsbWhwlASV5+3D6oad66lFtDsVn0eTXiiISbomRUkSsiibanYqsmG7G4nn4c8xzGVZS6amm3wJrecBwE9azwkjtL9pA4ZWoPMgISpw+rTQHYPaDWzNz5X+jag5eUpo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(366004)(346002)(396003)(376002)(136003)(1800799009)(451199024)(186009)(9686003)(6512007)(38100700002)(316002)(6916009)(41300700001)(82960400001)(4326008)(2906002)(86362001)(33716001)(26005)(5660300002)(44832011)(8676002)(8936002)(6666004)(6506007)(966005)(6486002)(66556008)(66476007)(66946007)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?X4XOOjIKqb7usTckqluctGPCOGfNVpM8j2krnicO4VrwdomKY3zFXaH5F9K9?=
+ =?us-ascii?Q?REGIOgdVlRFWlTZCPJ4l5ujc3dSBGuoaTF6L+V2E3jN1z/5EdykxDbYogcPc?=
+ =?us-ascii?Q?emcrBe0VjX/FQvYo4TB3eFEMkZdfX8LVjWZ9VKWExO0KQVOGf8vDiMdoefww?=
+ =?us-ascii?Q?K0VPuOHDPzysdXHZENVZGxfX83ruGJg6Aaee2smIQFYco4zlvY27oQC8Ipzr?=
+ =?us-ascii?Q?351/2xWoTvVNrm/UdppbIuvEC7hWGLgzazN6nTFQ8VpSsySdZdkRdfYK3aKM?=
+ =?us-ascii?Q?9jrW4V+Yce3KJy4aZDqQb5iRO8LUvt5eqeF6YhZhC37B3S1EUfXxY2U+rW40?=
+ =?us-ascii?Q?ObN2YC/W9sFe1868lc9t/r60dZuBS+JrFlBtG4lwSHVWbAA+KfGma0cagZCK?=
+ =?us-ascii?Q?DCbT9C9FDSsQ/SXSuVi/Hlb+sD3dbAFGxfXtiIH7kFMZAoyqF4oozBKT/WA2?=
+ =?us-ascii?Q?Lej6pezq1oIf0M7HwqqmAxY9Bgt2TiX5uLQA3KFjN/AmoC7Uhc/9MRy+ia4e?=
+ =?us-ascii?Q?yUy2w7DECk49BPct/xu9kIxWt9c3aWnn8qG4SkZue7l8pUJqAZ3ApN2nu4lG?=
+ =?us-ascii?Q?xSq9j4oezrDP6YgWZ3Bdndz4yqfjsOVYDKn4ExbQmtcDn1D03OADvmH+UH5r?=
+ =?us-ascii?Q?sDepSL/0rWMwXvmIGTzgT5lP+74ydey/WOPONmPkZIbk0QE1aPAmJ+ZmYqZc?=
+ =?us-ascii?Q?HA1MzCqSXJk0LAQVkVbxRIfMpbDEbPrnqndXRN8p67tc4/acT21bxbbowox+?=
+ =?us-ascii?Q?1u1Dt9gUdRX8JSLUuavq6jdCAh2InpzPBNyFEIBHJNc3jIyFAvk/r1bSsGh9?=
+ =?us-ascii?Q?u8ldixtM8WzV/t1aNTS0BlqGnr0TyEDVT9bLrhE6dLjySW4U8jODwrdGgqV9?=
+ =?us-ascii?Q?PSF81HFlywUCIW8VPVoNQkq97+zmMltuBA5e0wqA9SWMQb+Kr6zt0jpVMGed?=
+ =?us-ascii?Q?l8kdoVGo/c/NiMd0weXfDh8k3XZBF46KhB+7cLr/QhhAJhfoDog4MI4pHKMJ?=
+ =?us-ascii?Q?pmgjX2Tg6Gy5btsDKd9fl4QW304jDL8Kgj+Smo9Gdop3+aVtQe4qZLFtOv/I?=
+ =?us-ascii?Q?J7wJ/hWVqcLndV/+veOCs9GU7xyrBtazkHAXoZCEjRB0YHnzOO8O1fhqXc0x?=
+ =?us-ascii?Q?zP08TCpbiZ/7VUyhKxJFG0cv8SyKlHwYPpOG5tDK+asFKR8vQaf7FS49hHzS?=
+ =?us-ascii?Q?jh09lAS0ZBtD+3WEVxCY08z3Y5Ft2EjtDANIJuNCq3/ldG21FC4hZeCoNj+Z?=
+ =?us-ascii?Q?im1VTdYXnW7fJKU6ZoStBWguARLGpFrblSE47RMr+4qxjSeaOJ7MFRJlaa+A?=
+ =?us-ascii?Q?V9ZABtPPlnkaZPeARpOmaRgQQNvGl7kNC0lcR35p9uQ8YnY91gLGDAB7jz8Q?=
+ =?us-ascii?Q?TT5ygRSLu/Yw2/GvBbkj54olDKMbeXa2Dy9uLpBwzrBzKRUk4yu41CQQtk96?=
+ =?us-ascii?Q?YpDBKy7hK0ul3R47kVNvn7qG4rUqa+wuG+VTgq64Yz6CGqhcUqblS7Rl3GgW?=
+ =?us-ascii?Q?aEsYNIXA/Qu116bA21+ZaHEvc1MDZCWgFNoupgGpRjLux1B2CdIT6AXbPw3A?=
+ =?us-ascii?Q?aDctl1ZdFGmDhS1+7d1NiW1glCsb617FzxNrd3qY?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1675c24e-8e98-4663-36c0-08dba8513a48
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 05:31:43.1306
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8NC+gLgc2wUFwB+kMSeJQVUibDtjzTrF3iA80MI2n4tqQdyzD3uQPxKj1vFJVXk3MdJJfafEL6KUKkZm/OsvOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6739
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds the ability to read or write a "1" or a "0" to the
-newly added "connected" attribute of a connector in the vkms entry in
-configfs.
+On Tue, Aug 29, 2023 at 06:47:45AM +0200, Borislav Petkov wrote:
+> On Tue, Aug 29, 2023 at 12:07:59PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   1c59d383390f970b891b503b7f79b63a02db2ec5
+> 
+> It doesn't trigger here:
 
-A write will trigger a call to drm_kms_helper_hotplug_event, causing a
-hotplug uevent.
+Sorry Boris for this invalid report to cost your time. We will fix the code
+issue asap to understand why this one is sent out when head is good.
 
-With this we can write virtualized multidisplay tests that involve
-hotplugging displays (eg recompositing windows when a monitor is turned
-off).
-
-Signed-off-by: Brandon Pollack <brpol@chromium.org>
----
- Documentation/gpu/vkms.rst           |  2 +-
- drivers/gpu/drm/vkms/vkms_configfs.c | 68 ++++++++++++++++++++++++++--
- drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++
- drivers/gpu/drm/vkms/vkms_output.c   | 47 ++++++++++++++++++-
- 4 files changed, 123 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-index c3875bf66dba..7f715097539c 100644
---- a/Documentation/gpu/vkms.rst
-+++ b/Documentation/gpu/vkms.rst
-@@ -145,7 +145,7 @@ We want to be able to manipulate vkms instances without having to reload the
- module. Such configuration can be added as extensions to vkms's ConfigFS
- support. Use-cases:
- 
--- Hotplug/hotremove connectors on the fly (to be able to test DP MST handling
-+- Hotremove connectors on the fly (to be able to test DP MST handling
-   of compositors).
- 
- - Change output configuration: Plug/unplug screens, change EDID, allow changing
-diff --git a/drivers/gpu/drm/vkms/vkms_configfs.c b/drivers/gpu/drm/vkms/vkms_configfs.c
-index bc35dcc47585..d231e28101ae 100644
---- a/drivers/gpu/drm/vkms/vkms_configfs.c
-+++ b/drivers/gpu/drm/vkms/vkms_configfs.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0+
- 
-+#include "drm/drm_probe_helper.h"
- #include <linux/configfs.h>
- #include <linux/mutex.h>
- #include <linux/platform_device.h>
-@@ -40,6 +41,7 @@
-  *   `-- vkms
-  *       `-- test
-  *           |-- connectors
-+ *                `-- connected
-  *           |-- crtcs
-  *           |-- encoders
-  *           |-- planes
-@@ -89,6 +91,14 @@
-  *
-  *   echo 1 > /config/vkms/test/enabled
-  *
-+ * By default no display is "connected" so to connect a connector you'll also
-+ * have to write 1 to a connectors "connected" attribute::
-+ *
-+ *   echo 1 > /config/vkms/test/connectors/connector/connected
-+ *
-+ * One can verify that this is worked using the `modetest` utility or the
-+ * equivalent for your platform.
-+ *
-  * When you're done with the virtual device, you can clean up the device like
-  * so::
-  *
-@@ -236,7 +246,58 @@ static void add_possible_encoders(struct config_group *parent,
- 
- /*  Connector item, e.g. /config/vkms/device/connectors/ID */
- 
-+static ssize_t connector_connected_show(struct config_item *item, char *buf)
-+{
-+	struct vkms_config_connector *connector =
-+		item_to_config_connector(item);
-+	struct vkms_configfs *configfs = connector_item_to_configfs(item);
-+	bool connected = false;
-+
-+	mutex_lock(&configfs->lock);
-+	connected = connector->connected;
-+	mutex_unlock(&configfs->lock);
-+
-+	return sprintf(buf, "%d\n", connected);
-+}
-+
-+static ssize_t connector_connected_store(struct config_item *item,
-+					 const char *buf, size_t len)
-+{
-+	struct vkms_config_connector *connector =
-+		item_to_config_connector(item);
-+	struct vkms_configfs *configfs = connector_item_to_configfs(item);
-+	int val, ret;
-+
-+	ret = kstrtouint(buf, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != 1 && val != 0)
-+		return -EINVAL;
-+
-+	mutex_lock(&configfs->lock);
-+	connector->connected = val;
-+	if (!connector->connector) {
-+		pr_info("VKMS Device %s is not yet enabled, connector will be enabled on start",
-+			configfs->device_group.cg_item.ci_name);
-+	}
-+	mutex_unlock(&configfs->lock);
-+
-+	if (connector->connector)
-+		drm_kms_helper_hotplug_event(connector->connector->dev);
-+
-+	return len;
-+}
-+
-+CONFIGFS_ATTR(connector_, connected);
-+
-+static struct configfs_attribute *connector_attrs[] = {
-+	&connector_attr_connected,
-+	NULL,
-+};
-+
- static struct config_item_type connector_type = {
-+	.ct_attrs = connector_attrs,
- 	.ct_owner = THIS_MODULE,
- };
- 
-@@ -264,7 +325,7 @@ static ssize_t plane_type_show(struct config_item *item, char *buf)
- 	plane_type = plane->type;
- 	mutex_unlock(&configfs->lock);
- 
--	return sprintf(buf, "%u", plane_type);
-+	return sprintf(buf, "%u\n", plane_type);
- }
- 
- static ssize_t plane_type_store(struct config_item *item, const char *buf,
-@@ -319,6 +380,7 @@ static struct config_group *connectors_group_make(struct config_group *group,
- 				    &connector_type);
- 	add_possible_encoders(&connector->config_group,
- 			      &connector->possible_encoders.group);
-+	connector->connected = false;
- 
- 	return &connector->config_group;
- }
-@@ -500,7 +562,7 @@ static ssize_t device_enabled_show(struct config_item *item, char *buf)
- 	is_enabled = configfs->vkms_device != NULL;
- 	mutex_unlock(&configfs->lock);
- 
--	return sprintf(buf, "%d", is_enabled);
-+	return sprintf(buf, "%d\n", is_enabled);
- }
- 
- static ssize_t device_enabled_store(struct config_item *item, const char *buf,
-@@ -557,7 +619,7 @@ static ssize_t device_id_show(struct config_item *item, char *buf)
- 
- 	mutex_unlock(&configfs->lock);
- 
--	return sprintf(buf, "%d", id);
-+	return sprintf(buf, "%d\n", id);
- }
- 
- CONFIGFS_ATTR_RO(device_, id);
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index 2b9545ada9c2..5336281f397e 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.h
-+++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -3,6 +3,7 @@
- #ifndef _VKMS_DRV_H_
- #define _VKMS_DRV_H_
- 
-+#include "drm/drm_connector.h"
- #include <linux/configfs.h>
- #include <linux/hrtimer.h>
- 
-@@ -147,7 +148,9 @@ struct vkms_config_links {
- 
- struct vkms_config_connector {
- 	struct config_group config_group;
-+	struct drm_connector *connector;
- 	struct vkms_config_links possible_encoders;
-+	bool connected;
- };
- 
- struct vkms_config_crtc {
-@@ -220,6 +223,10 @@ struct vkms_device {
- #define item_to_configfs(item) \
- 	container_of(to_config_group(item), struct vkms_configfs, device_group)
- 
-+#define connector_item_to_configfs(item)                                     \
-+	container_of(to_config_group(item->ci_parent), struct vkms_configfs, \
-+		     connectors_group)
-+
- #define item_to_config_connector(item)                                    \
- 	container_of(to_config_group(item), struct vkms_config_connector, \
- 		     config_group)
-@@ -279,4 +286,8 @@ int vkms_enable_writeback_connector(struct vkms_device *vkmsdev,
- int vkms_init_configfs(void);
- void vkms_unregister_configfs(void);
- 
-+/* Connector hotplugging */
-+enum drm_connector_status vkms_connector_detect(struct drm_connector *connector,
-+						bool force);
-+
- #endif /* _VKMS_DRV_H_ */
-diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
-index 0ee1f3f4a305..1a1cd0202c5f 100644
---- a/drivers/gpu/drm/vkms/vkms_output.c
-+++ b/drivers/gpu/drm/vkms/vkms_output.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0+
- 
-+#include <drm/drm_print.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_connector.h>
- #include <drm/drm_crtc.h>
-@@ -8,10 +9,12 @@
- #include <drm/drm_plane.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_simple_kms_helper.h>
-+#include <linux/printk.h>
- 
- #include "vkms_drv.h"
- 
- static const struct drm_connector_funcs vkms_connector_funcs = {
-+	.detect = vkms_connector_detect,
- 	.fill_modes = drm_helper_probe_single_connector_modes,
- 	.destroy = drm_connector_cleanup,
- 	.reset = drm_atomic_helper_connector_reset,
-@@ -19,6 +22,48 @@ static const struct drm_connector_funcs vkms_connector_funcs = {
- 	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
- };
- 
-+static const struct vkms_config_connector *
-+find_config_for_connector(struct drm_connector *connector)
-+{
-+	struct vkms_device *vkms = drm_device_to_vkms_device(connector->dev);
-+	struct vkms_configfs *configfs = vkms->configfs;
-+	struct config_item *item;
-+
-+	if (!configfs) {
-+		pr_info("Default connector has no configfs entry");
-+		return NULL;
-+	}
-+
-+	list_for_each_entry(item, &configfs->connectors_group.cg_children,
-+			    ci_entry) {
-+		struct vkms_config_connector *config_connector =
-+			item_to_config_connector(item);
-+		if (config_connector->connector == connector)
-+			return config_connector;
-+	}
-+
-+	pr_warn("Could not find config to match connector %s, but configfs was initialized",
-+		connector->name);
-+
-+	return NULL;
-+}
-+
-+enum drm_connector_status vkms_connector_detect(struct drm_connector *connector,
-+						bool force)
-+{
-+	enum drm_connector_status status = connector_status_connected;
-+	const struct vkms_config_connector *config_connector =
-+		find_config_for_connector(connector);
-+
-+	if (!config_connector)
-+		return connector_status_connected;
-+
-+	if (!config_connector->connected)
-+		status = connector_status_disconnected;
-+
-+	return status;
-+}
-+
- static const struct drm_encoder_funcs vkms_encoder_funcs = {
- 	.destroy = drm_encoder_cleanup,
- };
-@@ -280,12 +325,12 @@ int vkms_output_init(struct vkms_device *vkmsdev)
- 		struct vkms_config_connector *config_connector =
- 			item_to_config_connector(item);
- 		struct drm_connector *connector = vkms_connector_init(vkmsdev);
--
- 		if (IS_ERR(connector)) {
- 			DRM_ERROR("Failed to init connector from config: %s",
- 				  item->ci_name);
- 			return PTR_ERR(connector);
- 		}
-+		config_connector->connector = connector;
- 
- 		for (int j = 0; j < output->num_encoders; j++) {
- 			struct encoder_map *encoder = &encoder_map[j];
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
+> 
+> $ git describe
+> v6.5-1207-g1c59d383390f
+> 
+> $ make ARCH=i386 CC=clang-16 HOSTCC=clang-16 allnoconfig
+> 
+> $ make W=1 ARCH=i386 CC=clang-16 HOSTCC=clang-16 arch/x86/kernel/cpu/
+> 
+> ...
+>   CC      arch/x86/kernel/cpu/intel_pconfig.o
+>   CC      arch/x86/kernel/cpu/tsx.o
+>   CC      arch/x86/kernel/cpu/amd.o
+>   CC      arch/x86/kernel/cpu/hygon.o
+>   CC      arch/x86/kernel/cpu/centaur.o
+> ...
+> 
+> > commit: 522b1d69219d8f083173819fde04f994aa051a98 x86/cpu/amd: Add a Zenbleed fix
+> > date:   6 weeks ago
+> 
+> Likely an old report.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
