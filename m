@@ -2,58 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1136278C66B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991F378C66E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235578AbjH2Nrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        id S236159AbjH2NsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236692AbjH2Nrb (ORCPT
+        with ESMTP id S236651AbjH2Nrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:47:31 -0400
+        Tue, 29 Aug 2023 09:47:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A545E5A;
-        Tue, 29 Aug 2023 06:47:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F101BD;
+        Tue, 29 Aug 2023 06:47:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D38EA63E22;
-        Tue, 29 Aug 2023 13:46:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69BDCC433C7;
-        Tue, 29 Aug 2023 13:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693316783;
-        bh=mxUSGoaiwDu9p3NHVkQW2/eRUPS+fI4b+7+yluZCnZU=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E474360F05;
+        Tue, 29 Aug 2023 13:47:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D509DC433C8;
+        Tue, 29 Aug 2023 13:47:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693316851;
+        bh=0FFf82qc9Cph0ezBg05gQiq4/FYRS4yIF4NeErfGBX4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MTBNFf91Si/pjCRqCKIwNMeD7UY8htfyBKc+B+DV45VggRervqbx3MDnbkEcjeYyb
-         XLX4R2uvdznzl3fy/E4L/E+Xn/FDbd3I4bwAVVi6PKKdXij5MECU4Aa8SbCI9cqzi1
-         M+8vQ+pOR1M2W98JCUamxm28VRWo3iP6iWDWbrCu2nO/lE0Qxl8Ij1nr0b05TyozXf
-         gOZZfT07ge+JLQ0hYzUXtS9JQu1JTo/Y+2QrEtO0xSeloR8S8XpIFWhKahMEpqNQaQ
-         YK2KMYjsZC2/9sk34g6EEC3KIAVg2A3vg3XWD3IDS6GThkag+C+G1Hzy0395IKxN28
-         cve3TJVy1b0aA==
-Date:   Tue, 29 Aug 2023 14:46:16 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Zheng Wang <zyytlz.wz@163.com>
-Cc:     s.shtylyov@omp.ru, linyunsheng@huawei.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        richardcochran@gmail.com, p.zabel@pengutronix.de,
-        geert+renesas@glider.be, magnus.damm@gmail.com,
-        yoshihiro.shimoda.uh@renesas.com, biju.das.jz@bp.renesas.com,
-        wsa+renesas@sang-engineering.com, netdev@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hackerzheng666@gmail.com, 1395428693sheep@gmail.com,
-        alex000young@gmail.com
-Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
-Message-ID: <20230829134616.GA215597@google.com>
-References: <20230725030026.1664873-1-zyytlz.wz@163.com>
- <20230815100844.GA495519@google.com>
+        b=J6hm2quXspglRw1XKgfRB7dpTJzQdF9GrCQTjMLppzki5m79/R5tjukeHrVMoSMLs
+         13mSOayLIP8IYE9duc3J8LQ74zm+8ICNlpz2b0Rt5eJ575bOyWyU44taVQ/hnxLjNu
+         3d99Ijrb228BL5zuosX4WSRpXwlK8EHTY/oubItY=
+Date:   Tue, 29 Aug 2023 15:47:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Bharath SM <bharathsm@microsoft.com>,
+        Steve French <stfrench@microsoft.com>, pc@cjr.nz,
+        lsahlber@redhat.com, pc@manguebit.com, vl@samba.org,
+        ematsumiya@suse.de
+Subject: Re: [PATCH AUTOSEL 5.10 5/7] cifs: add a warning when the in-flight
+ count goes negative
+Message-ID: <2023082936-reborn-overjoyed-b3bc@gregkh>
+References: <20230829133336.520573-1-sashal@kernel.org>
+ <20230829133336.520573-5-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230815100844.GA495519@google.com>
+In-Reply-To: <20230829133336.520573-5-sashal@kernel.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,40 +57,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023, Lee Jones wrote:
-
-> On Tue, 25 Jul 2023, Zheng Wang wrote:
+On Tue, Aug 29, 2023 at 09:33:34AM -0400, Sasha Levin wrote:
+> From: Shyam Prasad N <sprasad@microsoft.com>
 > 
-> > In ravb_probe, priv->work was bound with ravb_tx_timeout_work.
-> > If timeout occurs, it will start the work. And if we call
-> > ravb_remove without finishing the work, there may be a
-> > use-after-free bug on ndev.
-> > 
-> > Fix it by finishing the job before cleanup in ravb_remove.
-> > 
-> > Note that this bug is found by static analysis, it might be
-> > false positive.
-> > 
-> > Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> > Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-> > Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> > ---
-> > v4:
-> > - add information about the bug was found suggested by Yunsheng Lin
-> > v3:
-> > - fix typo in commit message
-> > v2:
-> > - stop dev_watchdog so that handle no more timeout work suggested by Yunsheng Lin,
-> > add an empty line to make code clear suggested by Sergey Shtylyov
-> > ---
-> >  drivers/net/ethernet/renesas/ravb_main.c | 3 +++
-> >  1 file changed, 3 insertions(+)
+> [ Upstream commit e4645cc2f1e2d6f268bb8dcfac40997c52432aed ]
 > 
-> Trying my best not to sound like a broken record, but ...
+> We've seen the in-flight count go into negative with some
+> internal stress testing in Microsoft.
 > 
-> What's the latest with this fix?  Is a v5 en route?
+> Adding a WARN when this happens, in hope of understanding
+> why this happens when it happens.
+> 
+> Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+> Reviewed-by: Bharath SM <bharathsm@microsoft.com>
+> Signed-off-by: Steve French <stfrench@microsoft.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  fs/cifs/smb2ops.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+> index 015b7b37edee5..7ed6c2d4c549a 100644
+> --- a/fs/cifs/smb2ops.c
+> +++ b/fs/cifs/smb2ops.c
+> @@ -82,6 +82,7 @@ smb2_add_credits(struct TCP_Server_Info *server,
+>  		*val = 65000; /* Don't get near 64K credits, avoid srv bugs */
+>  		pr_warn_once("server overflowed SMB3 credits\n");
+>  	}
+> +	WARN_ON_ONCE(server->in_flight == 0);
+>  	server->in_flight--;
+>  	if (server->in_flight == 0 && (optype & CIFS_OP_MASK) != CIFS_NEG_OP)
+>  		rc = change_conf(server);
+> -- 
+> 2.40.1
+> 
 
-Any update please Zheng Wang?
+Please drop this from all queues, it's debugging code for the CIFS
+developers, and they can debug it in Linus's tree, not in the stable
+trees where something like this is going to cause systems to reboot.
 
--- 
-Lee Jones [李琼斯]
+thanks,
+
+greg k-h
