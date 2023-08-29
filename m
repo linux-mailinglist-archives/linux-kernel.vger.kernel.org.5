@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D5D78BE50
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42BB78BE59
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbjH2GSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        id S231446AbjH2GW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjH2GRh (ORCPT
+        with ESMTP id S229618AbjH2GWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 02:17:37 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D57E184;
-        Mon, 28 Aug 2023 23:17:33 -0700 (PDT)
-Received: from kwepemd100002.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RZcZB1PJjzNn9H;
-        Tue, 29 Aug 2023 14:13:54 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Tue, 29 Aug 2023 14:17:30 +0800
-Message-ID: <b3c61d8a-d52d-3136-fbf0-d1de9f1ba411@huawei.com>
-Date:   Tue, 29 Aug 2023 14:17:30 +0800
+        Tue, 29 Aug 2023 02:22:25 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A441718D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 23:22:21 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 37T6Lloe011605;
+        Tue, 29 Aug 2023 08:21:47 +0200
+Date:   Tue, 29 Aug 2023 08:21:47 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Zhangjin Wu <falcon@tinylab.org>,
+        Nicholas Rosenberg <inori@vnlx.org>,
+        Michael William Jonathan <moe@gnuweeb.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] tools/nolibc: i386: Fix a stack misalign bug on
+ _start
+Message-ID: <ZO2Oey26OZ5PNPTr@1wt.eu>
+References: <20230828070240.1691921-1-ammarfaizi2@gnuweeb.org>
+ <20230828070240.1691921-2-ammarfaizi2@gnuweeb.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] cpufreq: Fix the race condition while updating the
- transition_task of policy
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <srivatsa.bhat@linux.vnet.ibm.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230826095836.1138608-1-liaochang1@huawei.com>
- <20230828072347.ly23mbptu3yw4zkv@vireshk-i7>
- <bcac1b3c-a2f7-7f18-4c2f-5cf27f4e89b5@huawei.com>
- <20230828085248.sz6aljr5aln7j435@vireshk-i7>
- <CAJZ5v0iGikZ=JSA5Nyx5Dc4QunSC5BObNO5yzQh44UYjrtRKYg@mail.gmail.com>
-From:   "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <CAJZ5v0iGikZ=JSA5Nyx5Dc4QunSC5BObNO5yzQh44UYjrtRKYg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.108]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd100002.china.huawei.com (7.221.188.184)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828070240.1691921-2-ammarfaizi2@gnuweeb.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rafael
+Hi Ammar,
 
-在 2023/8/28 16:58, Rafael J. Wysocki 写道:
-> On Mon, Aug 28, 2023 at 10:52 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>
->> On 28-08-23, 16:29, Liao, Chang wrote:
->>> Task B does not necessarily go to sleep when it calls wait_event(), it depends on
->>> the condition to wait for evaluate false or not. So there is a small race window
->>> where Task A already set 'transition_ongoing' to false and Task B can cross wait_event()
->>> immediately.
->>>
->>> wait_event:
->>> do {
->>>       might_sleep();
->>>       if (condition) // !transition_ongoing
->>>               break;
->>>       __wait_event();
->>> };
->>>
->>> I hope I do not miss something important in the code above.
->>
->>> Yes, if the CPU uses weak memroy model, it is possible for the instructions to be reordered.
->>> therefore, it is a good idea to insert an smb() between these two lines if there is race here.
->>
->> Maybe it would be better to do this instead ?
->>
->> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
->> index 6b52ebe5a890..f11b01b25e8d 100644
->> --- a/drivers/cpufreq/cpufreq.c
->> +++ b/drivers/cpufreq/cpufreq.c
->> @@ -455,8 +455,10 @@ void cpufreq_freq_transition_end(struct cpufreq_policy *policy,
->>                             policy->cur,
->>                             policy->cpuinfo.max_freq);
->>
->> +       spin_lock(&policy->transition_lock);
->>         policy->transition_ongoing = false;
->>         policy->transition_task = NULL;
->> +       spin_unlock(&policy->transition_lock);
->>
->>         wake_up(&policy->transition_wait);
->>  }
->>
->> --
+On Mon, Aug 28, 2023 at 02:02:40PM +0700, Ammar Faizi wrote:
+> The ABI mandates that the %esp register must be a multiple of 16 when
+> executing a 'call' instruction.
 > 
-> I was about to suggest the same thing.
+> Commit 2ab446336b17 ("tools/nolibc: i386: shrink _start with _start_c")
+> simplified the _start function, but it didn't take care of the %esp
+> alignment, causing SIGSEGV on SSE and AVX programs that use aligned move
+> instruction (e.g., movdqa, movaps, and vmovdqa).
 > 
-> wake_up() is a full memory barrier only if it actually wakes up a task
-> and if it doesn't do that, without the locking the other task may see
-> a state in which transition_ongoing is false already and
-> transition_task is still NULL regardless of the relative ordering of
-> the statements before the wake_up() call.
+> The 'and $-16, %esp' aligns the %esp at a multiple of 16. Then 'push
+> %eax' will subtract the %esp by 4; thus, it breaks the 16-byte
+> alignment. Make sure the %esp is correctly aligned after the push by
+> subtracting 12 before the push.
 
-I agree, unless the transition_ongoing and transition_task fields are updated
-atomically, there is always a window where inconsistency can occur in the policy
-structure.
+Indeed, good catch! However if we want to do it cleany (i.e not punch a
+16 to 28 byes hole in the stack), we should do this instead:
 
--- 
-BR
-Liao, Chang
+		add  $12, %esp   /* the stack must be aligned to 16 ... */
+		and  $-16, %esp  /* ... bytes after eax is pushed and ... */
+		sub  $12, %esp   /* ... before the call. */
+
+This will only add 0 to 12 bytes depending on the existing alignment.
+
+What do you think ?
+
+thanks,
+Willy
