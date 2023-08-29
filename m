@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 624B778CF54
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D7978CF57
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238920AbjH2WBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
+        id S239024AbjH2WBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238638AbjH2WBd (ORCPT
+        with ESMTP id S238642AbjH2WBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:01:33 -0400
+        Tue, 29 Aug 2023 18:01:38 -0400
 Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA601122
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:01:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6ACB122
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:01:34 -0700 (PDT)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.mutex.one (Postfix) with ESMTP id 63A5E16C0056;
-        Wed, 30 Aug 2023 01:01:29 +0300 (EEST)
+        by mail.mutex.one (Postfix) with ESMTP id 4B55C16C004E;
+        Wed, 30 Aug 2023 01:01:33 +0300 (EEST)
 X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
 Received: from mail.mutex.one ([127.0.0.1])
         by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PNOUSkh30e1l; Wed, 30 Aug 2023 01:01:28 +0300 (EEST)
+        with ESMTP id S86dJDbEpIYk; Wed, 30 Aug 2023 01:01:31 +0300 (EEST)
 From:   Marian Postevca <posteuca@mutex.one>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
-        t=1693346488; bh=WdCCn6IEol8aJUkjka8g/S8DjEGq58vP7C1WeChmXKY=;
+        t=1693346491; bh=dhd50cuuZAKIgsDyDJ4jwYsroSlmQFHaDITFtdNCK4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mzO8dV0XTEbnYzYfhq0XLYBpaqgk5a2qja47ZIWOAhsNeQDC8ng5FF1Q8iLYtvKa2
-         BO7fMHODtmUjmez8Q0GkalWIHab7rU9+VaPhO5uubggf50U9SnshZ7umzs9iCb6+Ji
-         xOSEd2nH69sdZTbHkqXTCD9Qr5D14p355GEO3MGY=
+        b=SwnHPudj2XYU1CVVd9jsAVQAcVebu0/NHIszFJgdgXeho2w6A9HslhiBnB1bmP1gz
+         P1X4LFBuoyJxXvkpxhDInl28bRdf28Q4CQgWB/CZDxLPM/wJG1DBa98nRLIppn37n4
+         aXAs23j+NWQwZgvGBMipe9auGjq5ADY/VaDcgV6Q=
 To:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
         Mark Brown <broonie@kernel.org>,
         Jaroslav Kysela <perex@perex.cz>
 Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
         Marian Postevca <posteuca@mutex.one>
-Subject: [PATCH v3 4/5] ASoC: amd: acp: Add support for splitting the codec specific code from the ACP driver
-Date:   Wed, 30 Aug 2023 01:01:15 +0300
-Message-ID: <20230829220116.1159-5-posteuca@mutex.one>
+Subject: [PATCH v3 5/5] ASoC: amd: acp: Add machine driver that enables sound for systems with a ES8336 codec
+Date:   Wed, 30 Aug 2023 01:01:16 +0300
+Message-ID: <20230829220116.1159-6-posteuca@mutex.one>
 In-Reply-To: <20230829220116.1159-1-posteuca@mutex.one>
 References: <20230829220116.1159-1-posteuca@mutex.one>
 MIME-Version: 1.0
@@ -50,233 +50,698 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds support for splitting more complicated machine
-drivers, that need special handling, from the generic ACP code.
-
-By adding support for callbacks to configure and handle codec
-specific implementation details, we can split them in separate
-files that don't clutter the ACP code.
+This commit enables sound for a line of Huawei laptops that use
+the ES8336 codec which is connected to the ACP3X module.
 
 Signed-off-by: Marian Postevca <posteuca@mutex.one>
 ---
- sound/soc/amd/acp/acp-legacy-mach.c | 82 +++++++++++++++++++++++++----
- sound/soc/amd/acp/acp-mach.h        | 66 +++++++++++++++++++++++
- 2 files changed, 137 insertions(+), 11 deletions(-)
+ sound/soc/amd/acp-config.c                    |  70 +++
+ sound/soc/amd/acp/Makefile                    |   2 +-
+ sound/soc/amd/acp/acp-legacy-mach.c           |  22 +-
+ sound/soc/amd/acp/acp-mach-common.c           |   8 +
+ sound/soc/amd/acp/acp-mach.h                  |   1 +
+ sound/soc/amd/acp/acp-renoir.c                |   4 +
+ sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c | 443 ++++++++++++++++++
+ sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h |  12 +
+ 8 files changed, 560 insertions(+), 2 deletions(-)
+ create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
+ create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
 
+diff --git a/sound/soc/amd/acp-config.c b/sound/soc/amd/acp-config.c
+index f27c27580009..a58d646d28f6 100644
+--- a/sound/soc/amd/acp-config.c
++++ b/sound/soc/amd/acp-config.c
+@@ -61,6 +61,76 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		},
+ 	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXXW"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "BOM-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1020"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1040"),
++				},
++			},
++			{}
++		},
++	},
+ };
+ 
+ int snd_amd_acp_find_config(struct pci_dev *pci)
+diff --git a/sound/soc/amd/acp/Makefile b/sound/soc/amd/acp/Makefile
+index 4e65fdbc8dca..dc70691bc293 100644
+--- a/sound/soc/amd/acp/Makefile
++++ b/sound/soc/amd/acp/Makefile
+@@ -17,7 +17,7 @@ snd-acp-rembrandt-objs  := acp-rembrandt.o
+ 
+ #machine specific driver
+ snd-acp-mach-objs     := acp-mach-common.o
+-snd-acp-legacy-mach-objs     := acp-legacy-mach.o
++snd-acp-legacy-mach-objs     := acp-legacy-mach.o acp3x-es83xx/acp3x-es83xx.o
+ snd-acp-sof-mach-objs     := acp-sof-mach.o
+ 
+ obj-$(CONFIG_SND_SOC_AMD_ACP_PCM) += snd-acp-pcm.o
 diff --git a/sound/soc/amd/acp/acp-legacy-mach.c b/sound/soc/amd/acp/acp-legacy-mach.c
-index 6d57d17ddfd7..ba39b4dcdd6d 100644
+index ba39b4dcdd6d..1ab3edffe0ce 100644
 --- a/sound/soc/amd/acp/acp-legacy-mach.c
 +++ b/sound/soc/amd/acp/acp-legacy-mach.c
-@@ -75,6 +75,33 @@ static struct acp_card_drvdata rt5682s_rt1019_rmb_data = {
+@@ -20,6 +20,7 @@
+ #include <linux/module.h>
+ 
+ #include "acp-mach.h"
++#include "acp3x-es83xx/acp3x-es83xx.h"
+ 
+ static struct acp_card_drvdata rt5682_rt1019_data = {
+ 	.hs_cpu_id = I2S_SP,
+@@ -51,6 +52,14 @@ static struct acp_card_drvdata rt5682s_rt1019_data = {
  	.tdm_mode = false,
  };
  
-+static bool acp_asoc_init_ops(struct acp_card_drvdata *priv)
-+{
-+	return false;
-+}
-+
-+static int acp_asoc_suspend_pre(struct snd_soc_card *card)
-+{
-+	int ret;
-+
-+	ret = acp_ops_suspend_pre(card);
-+	if (ret == 1)
-+		return 0;
-+	else
-+		return ret;
-+}
-+
-+static int acp_asoc_resume_post(struct snd_soc_card *card)
-+{
-+	int ret;
-+
-+	ret = acp_ops_resume_post(card);
-+	if (ret == 1)
-+		return 0;
-+	else
-+		return ret;
-+}
-+
- static int acp_asoc_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = NULL;
-@@ -83,35 +110,68 @@ static int acp_asoc_probe(struct platform_device *pdev)
- 	struct acp_card_drvdata *acp_card_drvdata;
- 	int ret;
- 
--	if (!pdev->id_entry)
--		return -EINVAL;
-+	if (!pdev->id_entry) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
--	if (!card)
--		return -ENOMEM;
-+	if (!card) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 
-+	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
-+	acp_card_drvdata = card->drvdata;
-+	acp_card_drvdata->acpi_mach = (struct snd_soc_acpi_mach *)pdev->dev.platform_data;
- 	card->dev = dev;
- 	card->owner = THIS_MODULE;
- 	card->name = pdev->id_entry->name;
--	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
--	/* Widgets and controls added per-codec in acp-mach-common.c */
- 
--	acp_card_drvdata = card->drvdata;
-+	acp_asoc_init_ops(card->drvdata);
-+
-+	/* If widgets and controls are not set in specific callback,
-+	 * they will be added per-codec in acp-mach-common.c
-+	 */
-+	ret = acp_ops_configure_widgets(card);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev,
-+			"Cannot configure widgets for card (%s): %d\n",
-+			card->name, ret);
-+		goto out;
-+	}
-+	card->suspend_pre = acp_asoc_suspend_pre;
-+	card->resume_post = acp_asoc_resume_post;
-+
-+	ret = acp_ops_probe(card);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev,
-+			"Cannot probe card (%s): %d\n",
-+			card->name, ret);
-+		goto out;
-+	}
-+
- 	dmi_id = dmi_first_match(acp_quirk_table);
- 	if (dmi_id && dmi_id->driver_data)
- 		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
- 
--	acp_legacy_dai_links_create(card);
-+	ret = acp_legacy_dai_links_create(card);
-+	if (ret) {
-+		dev_err(&pdev->dev,
-+			"Cannot create dai links for card (%s): %d\n",
-+			card->name, ret);
-+		goto out;
-+	}
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
- 		dev_err(&pdev->dev,
- 				"devm_snd_soc_register_card(%s) failed: %d\n",
- 				card->name, ret);
--		return ret;
-+		goto out;
- 	}
--
--	return 0;
-+out:
-+	return ret;
- }
- 
- static const struct platform_device_id board_ids[] = {
-diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
-index 2b3ec6594023..8cc33926e66b 100644
---- a/sound/soc/amd/acp/acp-mach.h
-+++ b/sound/soc/amd/acp/acp-mach.h
-@@ -20,6 +20,10 @@
- 
- #define TDM_CHANNELS	8
- 
-+#define ACP_OPS(priv, cb)	((priv)->ops.cb)
-+
-+#define acp_get_drvdata(card) ((struct acp_card_drvdata *)(card)->drvdata)
-+
- enum be_id {
- 	HEADSET_BE_ID = 0,
- 	AMP_BE_ID,
-@@ -50,6 +54,14 @@ enum platform_end_point {
- 	REMBRANDT,
- };
- 
-+struct acp_mach_ops {
-+	int (*probe)(struct snd_soc_card *card);
-+	int (*configure_link)(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
-+	int (*configure_widgets)(struct snd_soc_card *card);
-+	int (*suspend_pre)(struct snd_soc_card *card);
-+	int (*resume_post)(struct snd_soc_card *card);
++static struct acp_card_drvdata es83xx_rn_data = {
++	.hs_cpu_id = I2S_SP,
++	.dmic_cpu_id = DMIC,
++	.hs_codec_id = ES83XX,
++	.dmic_codec_id = DMIC,
++	.platform = RENOIR,
 +};
 +
- struct acp_card_drvdata {
- 	unsigned int hs_cpu_id;
- 	unsigned int amp_cpu_id;
-@@ -61,6 +73,9 @@ struct acp_card_drvdata {
- 	unsigned int platform;
- 	struct clk *wclk;
- 	struct clk *bclk;
-+	struct acp_mach_ops ops;
-+	struct snd_soc_acpi_mach *acpi_mach;
-+	void *mach_priv;
- 	bool soc_mclk;
- 	bool tdm_mode;
- };
-@@ -69,4 +84,55 @@ int acp_sofdsp_dai_links_create(struct snd_soc_card *card);
- int acp_legacy_dai_links_create(struct snd_soc_card *card);
- extern const struct dmi_system_id acp_quirk_table[];
+ static struct acp_card_drvdata max_nau8825_data = {
+ 	.hs_cpu_id = I2S_HS,
+ 	.amp_cpu_id = I2S_HS,
+@@ -77,7 +86,13 @@ static struct acp_card_drvdata rt5682s_rt1019_rmb_data = {
  
-+static inline int acp_ops_probe(struct snd_soc_card *card)
-+{
-+	int ret = 1;
-+	struct acp_card_drvdata *priv = acp_get_drvdata(card);
+ static bool acp_asoc_init_ops(struct acp_card_drvdata *priv)
+ {
+-	return false;
++	bool has_ops = false;
 +
-+	if (ACP_OPS(priv, probe))
-+		ret = ACP_OPS(priv, probe)(card);
++	if (priv->hs_codec_id == ES83XX) {
++		has_ops = true;
++		acp3x_es83xx_init_ops(&priv->ops);
++	}
++	return has_ops;
+ }
+ 
+ static int acp_asoc_suspend_pre(struct snd_soc_card *card)
+@@ -187,6 +202,10 @@ static const struct platform_device_id board_ids[] = {
+ 		.name = "acp3xalc5682s1019",
+ 		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_data,
+ 	},
++	{
++		.name = "acp3x-es83xx",
++		.driver_data = (kernel_ulong_t)&es83xx_rn_data,
++	},
+ 	{
+ 		.name = "rmb-nau8825-max",
+ 		.driver_data = (kernel_ulong_t)&max_nau8825_data,
+@@ -213,6 +232,7 @@ MODULE_DESCRIPTION("ACP chrome audio support");
+ MODULE_ALIAS("platform:acp3xalc56821019");
+ MODULE_ALIAS("platform:acp3xalc5682sm98360");
+ MODULE_ALIAS("platform:acp3xalc5682s1019");
++MODULE_ALIAS("platform:acp3x-es83xx");
+ MODULE_ALIAS("platform:rmb-nau8825-max");
+ MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
+index a06af82b8056..8f968c12e54a 100644
+--- a/sound/soc/amd/acp/acp-mach-common.c
++++ b/sound/soc/amd/acp/acp-mach-common.c
+@@ -1513,6 +1513,7 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
+ 	struct device *dev = card->dev;
+ 	struct acp_card_drvdata *drv_data = card->drvdata;
+ 	int i = 0, num_links = 0;
++	int rc;
+ 
+ 	if (drv_data->hs_cpu_id)
+ 		num_links++;
+@@ -1551,6 +1552,13 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
+ 			links[i].init = acp_card_rt5682s_init;
+ 			links[i].ops = &acp_card_rt5682s_ops;
+ 		}
++		if (drv_data->hs_codec_id == ES83XX) {
++			rc = acp_ops_configure_link(card, &links[i]);
++			if (rc != 0) {
++				dev_err(dev, "Failed to configure link for ES83XX: %d\n", rc);
++				return rc;
++			}
++		}
+ 		i++;
+ 	}
+ 
+diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
+index 8cc33926e66b..b0a3f6bd172f 100644
+--- a/sound/soc/amd/acp/acp-mach.h
++++ b/sound/soc/amd/acp/acp-mach.h
+@@ -47,6 +47,7 @@ enum codec_endpoints {
+ 	NAU8825,
+ 	NAU8821,
+ 	MAX98388,
++	ES83XX,
+ };
+ 
+ enum platform_end_point {
+diff --git a/sound/soc/amd/acp/acp-renoir.c b/sound/soc/amd/acp/acp-renoir.c
+index 54235cad9cc9..b15cbdf7fa9b 100644
+--- a/sound/soc/amd/acp/acp-renoir.c
++++ b/sound/soc/amd/acp/acp-renoir.c
+@@ -69,6 +69,10 @@ static struct snd_soc_acpi_mach snd_soc_acpi_amd_acp_machines[] = {
+ 		.id = "AMDI1019",
+ 		.drv_name = "renoir-acp",
+ 	},
++	{
++		.id = "ESSX8336",
++		.drv_name = "acp3x-es83xx",
++	},
+ 	{},
+ };
+ 
+diff --git a/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
+new file mode 100644
+index 000000000000..47ce2f6c74bb
+--- /dev/null
++++ b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
+@@ -0,0 +1,443 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Machine driver for AMD ACP Audio engine using ES8336 codec.
++//
++// Copyright 2023 Marian Postevca <posteuca@mutex.one>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc-dapm.h>
++#include <sound/jack.h>
++#include <sound/soc-acpi.h>
++#include <linux/clk.h>
++#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/input.h>
++#include <linux/io.h>
++#include <linux/acpi.h>
++#include <linux/dmi.h>
++#include "../acp-mach.h"
++
++#define get_mach_priv(card) ((struct acp3x_es83xx_private *)((acp_get_drvdata(card))->mach_priv))
++
++#define DUAL_CHANNEL	2
++
++#define ES83XX_ENABLE_DMIC	BIT(4)
++#define ES83XX_48_MHZ_MCLK	BIT(5)
++
++struct acp3x_es83xx_private {
++	bool speaker_on;
++	bool headphone_on;
++	unsigned long quirk;
++	struct snd_soc_component *codec;
++	struct device *codec_dev;
++	struct gpio_desc *gpio_speakers, *gpio_headphone;
++	struct acpi_gpio_params enable_spk_gpio, enable_hp_gpio;
++	struct acpi_gpio_mapping gpio_mapping[3];
++	struct snd_soc_dapm_route mic_map[2];
++};
++
++static const unsigned int channels[] = {
++	DUAL_CHANNEL,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++#define ES83xx_12288_KHZ_MCLK_FREQ   (48000 * 256)
++#define ES83xx_48_MHZ_MCLK_FREQ      (48000 * 1000)
++
++static int acp3x_es83xx_headphone_power_event(struct snd_soc_dapm_widget *w,
++					    struct snd_kcontrol *kcontrol, int event);
++static int acp3x_es83xx_speaker_power_event(struct snd_soc_dapm_widget *w,
++					    struct snd_kcontrol *kcontrol, int event);
++
++static int acp3x_es83xx_codec_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
++	struct acp3x_es83xx_private *priv;
++	unsigned int freq;
++	int ret;
++
++	runtime = substream->runtime;
++	rtd = asoc_substream_to_rtd(substream);
++	codec_dai = asoc_rtd_to_codec(rtd, 0);
++	priv = get_mach_priv(rtd->card);
++
++	if (priv->quirk & ES83XX_48_MHZ_MCLK) {
++		dev_dbg(priv->codec_dev, "using a 48Mhz MCLK\n");
++		freq = ES83xx_48_MHZ_MCLK_FREQ;
++	} else {
++		dev_dbg(priv->codec_dev, "using a 12.288Mhz MCLK\n");
++		freq = ES83xx_12288_KHZ_MCLK_FREQ;
++	}
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec sysclk: %d\n", ret);
++		return ret;
++	}
++
++	runtime->hw.channels_max = DUAL_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				   &constraints_channels);
++
++	return 0;
++}
++
++static struct snd_soc_jack es83xx_jack;
++
++static struct snd_soc_jack_pin es83xx_jack_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
++};
++
++static const struct snd_soc_dapm_widget acp3x_es83xx_widgets[] = {
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Internal Mic", NULL),
++
++	SND_SOC_DAPM_SUPPLY("Headphone Power", SND_SOC_NOPM, 0, 0,
++			    acp3x_es83xx_headphone_power_event,
++			    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SUPPLY("Speaker Power", SND_SOC_NOPM, 0, 0,
++			    acp3x_es83xx_speaker_power_event,
++			    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++};
++
++static const struct snd_soc_dapm_route acp3x_es83xx_audio_map[] = {
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++	{"Headphone", NULL, "Headphone Power"},
++
++	/*
++	 * There is no separate speaker output instead the speakers are muxed to
++	 * the HP outputs. The mux is controlled Speaker and/or headphone switch.
++	 */
++	{"Speaker", NULL, "HPOL"},
++	{"Speaker", NULL, "HPOR"},
++	{"Speaker", NULL, "Speaker Power"},
++};
++
++
++static const struct snd_kcontrol_new acp3x_es83xx_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Speaker"),
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Internal Mic"),
++};
++
++static int acp3x_es83xx_configure_widgets(struct snd_soc_card *card)
++{
++	card->dapm_widgets = acp3x_es83xx_widgets;
++	card->num_dapm_widgets = ARRAY_SIZE(acp3x_es83xx_widgets);
++	card->controls = acp3x_es83xx_controls;
++	card->num_controls = ARRAY_SIZE(acp3x_es83xx_controls);
++	card->dapm_routes = acp3x_es83xx_audio_map;
++	card->num_dapm_routes = ARRAY_SIZE(acp3x_es83xx_audio_map);
++
++	return 0;
++}
++
++static int acp3x_es83xx_headphone_power_event(struct snd_soc_dapm_widget *w,
++					      struct snd_kcontrol *kcontrol, int event)
++{
++	struct acp3x_es83xx_private *priv = get_mach_priv(w->dapm->card);
++
++	dev_dbg(priv->codec_dev, "headphone power event = %d\n", event);
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		priv->headphone_on = true;
++	else
++		priv->headphone_on = false;
++
++	gpiod_set_value_cansleep(priv->gpio_speakers, priv->speaker_on);
++	gpiod_set_value_cansleep(priv->gpio_headphone, priv->headphone_on);
++
++	return 0;
++}
++
++static int acp3x_es83xx_speaker_power_event(struct snd_soc_dapm_widget *w,
++					    struct snd_kcontrol *kcontrol, int event)
++{
++	struct acp3x_es83xx_private *priv = get_mach_priv(w->dapm->card);
++
++	dev_dbg(priv->codec_dev, "speaker power event: %d\n", event);
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		priv->speaker_on = true;
++	else
++		priv->speaker_on = false;
++
++	gpiod_set_value_cansleep(priv->gpio_speakers, priv->speaker_on);
++	gpiod_set_value_cansleep(priv->gpio_headphone, priv->headphone_on);
++
++	return 0;
++}
++
++static int acp3x_es83xx_suspend_pre(struct snd_soc_card *card)
++{
++	struct acp3x_es83xx_private *priv = get_mach_priv(card);
++
++	/* We need to disable the jack in the machine driver suspend
++	 * callback so that the CODEC suspend callback actually gets
++	 * called. Without doing it, the CODEC suspend/resume
++	 * callbacks do not get called if headphones are plugged in.
++	 * This is because plugging in headphones keeps some supplies
++	 * active, this in turn means that the lowest bias level
++	 * that the CODEC can go to is SND_SOC_BIAS_STANDBY.
++	 * If components do not set idle_bias_on to true then
++	 * their suspend/resume callbacks do not get called.
++	 */
++	dev_dbg(priv->codec_dev, "card suspend\n");
++	snd_soc_component_set_jack(priv->codec, NULL, NULL);
++	return 0;
++}
++
++static int acp3x_es83xx_resume_post(struct snd_soc_card *card)
++{
++	struct acp3x_es83xx_private *priv = get_mach_priv(card);
++
++	/* We disabled jack detection in suspend callback,
++	 * enable it back.
++	 */
++	dev_dbg(priv->codec_dev, "card resume\n");
++	snd_soc_component_set_jack(priv->codec, &es83xx_jack, NULL);
++	return 0;
++}
++
++static int acp3x_es83xx_configure_gpios(struct acp3x_es83xx_private *priv)
++{
++	int ret = 0;
++
++	priv->enable_spk_gpio.crs_entry_index = 0;
++	priv->enable_hp_gpio.crs_entry_index = 1;
++
++	priv->enable_spk_gpio.active_low = false;
++	priv->enable_hp_gpio.active_low = false;
++
++	priv->gpio_mapping[0].name = "speakers-enable-gpios";
++	priv->gpio_mapping[0].data = &priv->enable_spk_gpio;
++	priv->gpio_mapping[0].size = 1;
++	priv->gpio_mapping[0].quirks = ACPI_GPIO_QUIRK_ONLY_GPIOIO;
++
++	priv->gpio_mapping[1].name = "headphone-enable-gpios";
++	priv->gpio_mapping[1].data = &priv->enable_hp_gpio;
++	priv->gpio_mapping[1].size = 1;
++	priv->gpio_mapping[1].quirks = ACPI_GPIO_QUIRK_ONLY_GPIOIO;
++
++	dev_info(priv->codec_dev, "speaker gpio %d active %s, headphone gpio %d active %s\n",
++		 priv->enable_spk_gpio.crs_entry_index,
++		 priv->enable_spk_gpio.active_low ? "low" : "high",
++		 priv->enable_hp_gpio.crs_entry_index,
++		 priv->enable_hp_gpio.active_low ? "low" : "high");
 +	return ret;
 +}
 +
-+static inline int acp_ops_configure_link(struct snd_soc_card *card,
-+					 struct snd_soc_dai_link *dai_link)
++static int acp3x_es83xx_configure_mics(struct acp3x_es83xx_private *priv)
 +{
-+	int ret = 1;
-+	struct acp_card_drvdata *priv = acp_get_drvdata(card);
++	int num_routes = 0;
++	int i;
 +
-+	if (ACP_OPS(priv, configure_link))
-+		ret = ACP_OPS(priv, configure_link)(card, dai_link);
++	if (!(priv->quirk & ES83XX_ENABLE_DMIC)) {
++		priv->mic_map[num_routes].sink = "MIC1";
++		priv->mic_map[num_routes].source = "Internal Mic";
++		num_routes++;
++	}
++
++	priv->mic_map[num_routes].sink = "MIC2";
++	priv->mic_map[num_routes].source = "Headset Mic";
++	num_routes++;
++
++	for (i = 0; i < num_routes; i++)
++		dev_info(priv->codec_dev, "%s is %s\n",
++			 priv->mic_map[i].source, priv->mic_map[i].sink);
++
++	return num_routes;
++}
++
++static int acp3x_es83xx_init(struct snd_soc_pcm_runtime *runtime)
++{
++	struct snd_soc_component *codec = asoc_rtd_to_codec(runtime, 0)->component;
++	struct snd_soc_card *card = runtime->card;
++	struct acp3x_es83xx_private *priv = get_mach_priv(card);
++	int ret = 0;
++	int num_routes;
++
++	ret = snd_soc_card_jack_new_pins(card, "Headset",
++					 SND_JACK_HEADSET | SND_JACK_BTN_0,
++					 &es83xx_jack, es83xx_jack_pins,
++					 ARRAY_SIZE(es83xx_jack_pins));
++	if (ret) {
++		dev_err(card->dev, "jack creation failed %d\n", ret);
++		return ret;
++	}
++
++	snd_jack_set_key(es83xx_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++
++	snd_soc_component_set_jack(codec, &es83xx_jack, NULL);
++
++	priv->codec = codec;
++	acp3x_es83xx_configure_gpios(priv);
++
++	ret = devm_acpi_dev_add_driver_gpios(priv->codec_dev, priv->gpio_mapping);
++	if (ret)
++		dev_warn(priv->codec_dev, "failed to add speaker gpio\n");
++
++	priv->gpio_speakers = gpiod_get_optional(priv->codec_dev, "speakers-enable",
++				priv->enable_spk_gpio.active_low ? GPIOD_OUT_LOW : GPIOD_OUT_HIGH);
++	if (IS_ERR(priv->gpio_speakers)) {
++		dev_err(priv->codec_dev, "could not get speakers-enable GPIO\n");
++		return PTR_ERR(priv->gpio_speakers);
++	}
++
++	priv->gpio_headphone = gpiod_get_optional(priv->codec_dev, "headphone-enable",
++				priv->enable_hp_gpio.active_low ? GPIOD_OUT_LOW : GPIOD_OUT_HIGH);
++	if (IS_ERR(priv->gpio_headphone)) {
++		dev_err(priv->codec_dev, "could not get headphone-enable GPIO\n");
++		return PTR_ERR(priv->gpio_headphone);
++	}
++
++	num_routes = acp3x_es83xx_configure_mics(priv);
++	if (num_routes > 0) {
++		ret = snd_soc_dapm_add_routes(&card->dapm, priv->mic_map, num_routes);
++		if (ret != 0)
++			device_remove_software_node(priv->codec_dev);
++	}
++
 +	return ret;
 +}
 +
-+static inline int acp_ops_configure_widgets(struct snd_soc_card *card)
-+{
-+	int ret = 1;
-+	struct acp_card_drvdata *priv = acp_get_drvdata(card);
++static const struct snd_soc_ops acp3x_es83xx_ops = {
++	.startup = acp3x_es83xx_codec_startup,
++};
 +
-+	if (ACP_OPS(priv, configure_widgets))
-+		ret = ACP_OPS(priv, configure_widgets)(card);
++
++SND_SOC_DAILINK_DEF(codec,
++		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ESSX8336:00", "ES8316 HiFi")));
++
++static const struct dmi_system_id acp3x_es83xx_dmi_table[] = {
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXXW"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "BOM-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC|ES83XX_48_MHZ_MCLK),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1020"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1040"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{}
++};
++
++static int acp3x_es83xx_configure_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
++{
++	link->codecs = codec;
++	link->num_codecs = ARRAY_SIZE(codec);
++	link->init = acp3x_es83xx_init;
++	link->ops = &acp3x_es83xx_ops;
++	link->dai_fmt = SND_SOC_DAIFMT_I2S
++		| SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBP_CFP;
++
++	return 0;
++}
++
++static int acp3x_es83xx_probe(struct snd_soc_card *card)
++{
++	int ret = 0;
++	struct device *dev = card->dev;
++	const struct dmi_system_id *dmi_id;
++
++	dmi_id = dmi_first_match(acp3x_es83xx_dmi_table);
++	if (dmi_id && dmi_id->driver_data) {
++		struct acp3x_es83xx_private *priv;
++		struct acp_card_drvdata *acp_drvdata;
++		struct acpi_device *adev;
++		struct device *codec_dev;
++
++		acp_drvdata = (struct acp_card_drvdata *)card->drvdata;
++
++		dev_info(dev, "matched DMI table with this system, trying to register sound card\n");
++
++		adev = acpi_dev_get_first_match_dev(acp_drvdata->acpi_mach->id, NULL, -1);
++		if (!adev) {
++			dev_err(dev, "Error cannot find '%s' dev\n", acp_drvdata->acpi_mach->id);
++			return -ENXIO;
++		}
++
++		codec_dev = acpi_get_first_physical_node(adev);
++		acpi_dev_put(adev);
++		if (!codec_dev) {
++			dev_warn(dev, "Error cannot find codec device, will defer probe\n");
++			return -EPROBE_DEFER;
++		}
++
++		priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++		if (!priv) {
++			put_device(codec_dev);
++			return -ENOMEM;
++		}
++
++		priv->codec_dev = codec_dev;
++		priv->quirk = (unsigned long)dmi_id->driver_data;
++		acp_drvdata->mach_priv = priv;
++		dev_info(dev, "successfully probed the sound card\n");
++	} else {
++		ret = -ENODEV;
++		dev_warn(dev, "this system has a ES83xx codec defined in ACPI, but the driver doesn't have this system registered in DMI table\n");
++	}
 +	return ret;
 +}
 +
-+static inline int acp_ops_suspend_pre(struct snd_soc_card *card)
++
++void acp3x_es83xx_init_ops(struct acp_mach_ops *ops)
 +{
-+	int ret = 1;
-+	struct acp_card_drvdata *priv = acp_get_drvdata(card);
-+
-+	if (ACP_OPS(priv, suspend_pre))
-+		ret = ACP_OPS(priv, suspend_pre)(card);
-+	return ret;
++	ops->probe = acp3x_es83xx_probe;
++	ops->configure_widgets = acp3x_es83xx_configure_widgets;
++	ops->configure_link = acp3x_es83xx_configure_link;
++	ops->suspend_pre = acp3x_es83xx_suspend_pre;
++	ops->resume_post = acp3x_es83xx_resume_post;
 +}
+diff --git a/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
+new file mode 100644
+index 000000000000..03551ffdd9da
+--- /dev/null
++++ b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright 2023 Marian Postevca <posteuca@mutex.one>
++ */
 +
-+static inline int acp_ops_resume_post(struct snd_soc_card *card)
-+{
-+	int ret = 1;
-+	struct acp_card_drvdata *priv = acp_get_drvdata(card);
++#ifndef __ACP3X_ES83XX_H
++#define __ACP3X_ES83XX_H
 +
-+	if (ACP_OPS(priv, resume_post))
-+		ret = ACP_OPS(priv, resume_post)(card);
-+	return ret;
-+}
++void acp3x_es83xx_init_ops(struct acp_mach_ops *ops);
 +
- #endif
++#endif
++
 -- 
 2.41.0
 
