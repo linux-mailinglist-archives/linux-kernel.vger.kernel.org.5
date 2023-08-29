@@ -2,126 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B257D78C67B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0820F78C67C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236282AbjH2Nx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
+        id S236442AbjH2Nx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236164AbjH2Nw7 (ORCPT
+        with ESMTP id S236435AbjH2NxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:52:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFABD7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693317177; x=1724853177;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=uEpMob8MSDwWPb9K6z1p9AUsGzPr2SlnFbqr1ruzBBg=;
-  b=Ak72eaGDmijmx9TtvFhnZUhtFs2q/SQOjA2YlfwZ2gZMePG74TmY3NZm
-   wH/jXl9qTcoEcvUcc4ThpB8zTXAgcAKldv/KfHY1RzGNA7dzWWiLyCNS/
-   PvDePOGUYBzMJXcQ62ndjmftOm7/wr4pQY5Y3YzqWefv0trI5XFn4BLDI
-   27knGa30jDLtimA1zyB8cGmXsf5pCH5IjZ8qgTY6ZPr+9Jv++zpI5iVkl
-   MYRV4lotUeN4SS1t9N717vxgHx0+kT4FNFjeiOmWFWfBdH85WqDcSG3bS
-   BR1kgQtxqNKB4CIFnZtoEChgsej88GA/DCLyhkVtQcPOfl0k4V4yOJceo
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="379141115"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="379141115"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 06:52:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="985357063"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="985357063"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 29 Aug 2023 06:52:55 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D871933B; Tue, 29 Aug 2023 16:52:53 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] ALSA: control: Use list_for_each_entry_safe()
-Date:   Tue, 29 Aug 2023 16:52:52 +0300
-Message-Id: <20230829135252.3915124-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Tue, 29 Aug 2023 09:53:06 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBABD7;
+        Tue, 29 Aug 2023 06:52:58 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RZpkh0hh3z67M1f;
+        Tue, 29 Aug 2023 21:51:56 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
+ 2023 14:52:55 +0100
+Date:   Tue, 29 Aug 2023 14:52:54 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Terry Bowman <terry.bowman@amd.com>
+CC:     <alison.schofield@intel.com>, <vishal.l.verma@intel.com>,
+        <ira.weiny@intel.com>, <bwidawsk@kernel.org>,
+        <dan.j.williams@intel.com>, <dave.jiang@intel.com>,
+        <linux-cxl@vger.kernel.org>, <rrichter@amd.com>,
+        <linux-kernel@vger.kernel.org>, <bhelgaas@google.com>
+Subject: Re: [PATCH v9 02/15] cxl/regs: Prepare for multiple users of
+ register mappings
+Message-ID: <20230829145254.00003259@Huawei.com>
+In-Reply-To: <20230825233211.3029825-3-terry.bowman@amd.com>
+References: <20230825233211.3029825-1-terry.bowman@amd.com>
+        <20230825233211.3029825-3-terry.bowman@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of reiterating the list, use list_for_each_entry_safe()
-that allows to continue without starting over.
+On Fri, 25 Aug 2023 18:31:58 -0500
+Terry Bowman <terry.bowman@amd.com> wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
+> From: Robert Richter <rrichter@amd.com>
+> 
+> The function devm_cxl_iomap_block() is used to map register mappings
+> of CXL component or device registers. A @dev is used to unmap the IO
+> regions during device removal.
+> 
+> Now, there are multiple devices using the register mappings. E.g. the
+> RAS cap of the Component Registers is used by cxl_pci, the HDM cap
+> used in cxl_mem. This could cause IO blocks not being freed and a
+> subsequent reinitialization to fail if the same device is used for
+> both.
+> 
+> To prevent that, expand cxl_map_component_regs() to pass a @dev to be
+> used with devm to IO unmap. This allows to pass the device that
+> actually is creating and using the IO region.
+> 
+> For symmetry also change the function i/f of cxl_map_device_regs().
+> 
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+> Signed-off-by: Terry Bowman <terry.bowman@amd.com>
 
-Takashi, if you have anybody or want yourself to spend some time,
-I believe you can simplify a lot the parser in this file with
-the help of lib/cmdline.c APIs.
+I'm not sure we should leave map->dev around after this change
+as it's not obvious where it is valid to use and where it isn't.
 
- sound/core/control_led.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+Perhaps we just need to pass the device into the few calls
+that use it other than the ones you have here.
 
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index a78eb48927c7..afc9ffc388e3 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -297,16 +297,13 @@ static void snd_ctl_led_clean(struct snd_card *card)
- {
- 	unsigned int group;
- 	struct snd_ctl_led *led;
--	struct snd_ctl_led_ctl *lctl;
-+	struct snd_ctl_led_ctl *lctl, _lctl;
- 
- 	for (group = 0; group < MAX_LED; group++) {
- 		led = &snd_ctl_leds[group];
--repeat:
--		list_for_each_entry(lctl, &led->controls, list)
--			if (!card || lctl->card == card) {
-+		list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-+			if (!card || lctl->card == card)
- 				snd_ctl_led_ctl_destroy(lctl);
--				goto repeat;
--			}
- 	}
- }
- 
-@@ -314,7 +311,7 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
- {
- 	struct snd_card *card;
- 	struct snd_ctl_led *led;
--	struct snd_ctl_led_ctl *lctl;
-+	struct snd_ctl_led_ctl *lctl, _lctl;
- 	struct snd_kcontrol_volatile *vd;
- 	bool change = false;
- 
-@@ -329,14 +326,12 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
- 		return -ENXIO;
- 	}
- 	led = &snd_ctl_leds[group];
--repeat:
--	list_for_each_entry(lctl, &led->controls, list)
-+	list_for_each_entry(lctl, _lctl, &led->controls, list)
- 		if (lctl->card == card) {
- 			vd = &lctl->kctl->vd[lctl->index_offset];
- 			vd->access &= ~group_to_access(group);
- 			snd_ctl_led_ctl_destroy(lctl);
- 			change = true;
--			goto repeat;
- 		}
- 	mutex_unlock(&snd_ctl_led_mutex);
- 	if (change)
--- 
-2.40.0.1.gaa8946217a0b
+This patch itself looks fine to me.
+
+Jonathan
+
+> ---
+>  drivers/cxl/core/hdm.c  | 3 ++-
+>  drivers/cxl/core/regs.c | 4 ++--
+>  drivers/cxl/cxl.h       | 2 ++
+>  drivers/cxl/pci.c       | 4 ++--
+>  4 files changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 4449b34a80cc..17c8ba8c75e0 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -98,7 +98,8 @@ static int map_hdm_decoder_regs(struct cxl_port *port, void __iomem *crb,
+>  		return -ENODEV;
+>  	}
+>  
+> -	return cxl_map_component_regs(&map, regs, BIT(CXL_CM_CAP_CAP_ID_HDM));
+> +	return cxl_map_component_regs(&map, &port->dev, regs,
+> +				      BIT(CXL_CM_CAP_CAP_ID_HDM));
+>  }
+>  
+>  static bool should_emulate_decoders(struct cxl_endpoint_dvsec_info *info)
+> diff --git a/drivers/cxl/core/regs.c b/drivers/cxl/core/regs.c
+> index 6281127b3e9d..dfc3e272e7d8 100644
+> --- a/drivers/cxl/core/regs.c
+> +++ b/drivers/cxl/core/regs.c
+> @@ -201,10 +201,10 @@ void __iomem *devm_cxl_iomap_block(struct device *dev, resource_size_t addr,
+>  }
+>  
+>  int cxl_map_component_regs(const struct cxl_register_map *map,
+> +			   struct device *dev,
+>  			   struct cxl_component_regs *regs,
+>  			   unsigned long map_mask)
+>  {
+> -	struct device *dev = map->dev;
+>  	struct mapinfo {
+>  		const struct cxl_reg_map *rmap;
+>  		void __iomem **addr;
+> @@ -235,9 +235,9 @@ int cxl_map_component_regs(const struct cxl_register_map *map,
+>  EXPORT_SYMBOL_NS_GPL(cxl_map_component_regs, CXL);
+>  
+>  int cxl_map_device_regs(const struct cxl_register_map *map,
+> +			struct device *dev,
+>  			struct cxl_device_regs *regs)
+>  {
+> -	struct device *dev = map->dev;
+>  	resource_size_t phys_addr = map->resource;
+>  	struct mapinfo {
+>  		const struct cxl_reg_map *rmap;
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 76d92561af29..ec8ba9ebcf64 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -274,9 +274,11 @@ void cxl_probe_component_regs(struct device *dev, void __iomem *base,
+>  void cxl_probe_device_regs(struct device *dev, void __iomem *base,
+>  			   struct cxl_device_reg_map *map);
+>  int cxl_map_component_regs(const struct cxl_register_map *map,
+> +			   struct device *dev,
+>  			   struct cxl_component_regs *regs,
+>  			   unsigned long map_mask);
+>  int cxl_map_device_regs(const struct cxl_register_map *map,
+> +			struct device *dev,
+>  			struct cxl_device_regs *regs);
+>  int cxl_map_pmu_regs(struct pci_dev *pdev, struct cxl_pmu_regs *regs,
+>  		     struct cxl_register_map *map);
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 48f88d96029d..88ddcff8a0b2 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -827,7 +827,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (rc)
+>  		return rc;
+>  
+> -	rc = cxl_map_device_regs(&map, &cxlds->regs.device_regs);
+> +	rc = cxl_map_device_regs(&map, cxlds->dev, &cxlds->regs.device_regs);
+>  	if (rc)
+>  		return rc;
+>  
+> @@ -844,7 +844,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  
+>  	cxlds->component_reg_phys = map.resource;
+>  
+> -	rc = cxl_map_component_regs(&map, &cxlds->regs.component,
+> +	rc = cxl_map_component_regs(&map, cxlds->dev, &cxlds->regs.component,
+>  				    BIT(CXL_CM_CAP_CAP_ID_RAS));
+>  	if (rc)
+>  		dev_dbg(&pdev->dev, "Failed to map RAS capability.\n");
 
