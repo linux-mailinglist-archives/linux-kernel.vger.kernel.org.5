@@ -2,91 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ED978BD0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924A278BD14
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbjH2CwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S234891AbjH2Cy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbjH2CwE (ORCPT
+        with ESMTP id S233355AbjH2Cyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:52:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005B5139;
-        Mon, 28 Aug 2023 19:52:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 93CC562AFA;
-        Tue, 29 Aug 2023 02:52:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFFEDC433D9;
-        Tue, 29 Aug 2023 02:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693277521;
-        bh=2000Dx0x8NNTq7L+dJqIL03ECHKc97oVrelzhqq6/Pw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QZ5ffKhPD1X96SZPyeV4VN9gIYpwU5fZDAizE2VHatDN/MFfEDNsIut0RysqlB3L6
-         Y4yyfrJWfxsHrgXlFID71IotFy+HQJKBq7/0JFKJYAb0NbJJRVeXAPJiBXqox2M+Gs
-         ykLmQx9yQGV504o220EqgYA/av407zE3LwgfMlp0KqdMslAuJfEhTBvyeZyGvebegJ
-         Z1z9YUr63hLI6MUkRqfOQdpsukzELJWZ8/RS7IKY/F6rx94/SHyEFqcfZuJG/4MEPD
-         O9Y8BmfuquQFOzraBVTHNztp6X5/urrO5m0ykVtYdPsQPdrJDRuF+rE1UVywnambeX
-         W6H+HazCg6Iog==
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5711f6dff8cso2356179eaf.3;
-        Mon, 28 Aug 2023 19:52:00 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwZHUR1xtKLx/cWVGdsx/7r/O2YD5j4gKsMbarGI82o4+MS+/DR
-        s2a1zlLC7rkAccQS0dGrKU82zxFKphGLjtuqM0w=
-X-Google-Smtp-Source: AGHT+IHh9n2KRQMtYFZZOKN9WQyZD4/Tr4GBxeaC+6K3pNzt9Sh/NcnxYsBVMXQR/MYKkSdKycJPP2Sl6nskxhoY/vQ=
-X-Received: by 2002:a4a:6211:0:b0:56e:a1d3:747e with SMTP id
- x17-20020a4a6211000000b0056ea1d3747emr12840728ooc.6.1693277520114; Mon, 28
- Aug 2023 19:52:00 -0700 (PDT)
+        Mon, 28 Aug 2023 22:54:54 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B3FB9;
+        Mon, 28 Aug 2023 19:54:50 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T2NYix025517;
+        Tue, 29 Aug 2023 02:53:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cKhR/hXI9TfQVMxJKBEpbKXuPkzD/6c5MCP4RSxTLCw=;
+ b=aJjaitgE+MNEcv6pStestGm3ovNl2PCHIDgAS0ezUu1PJhWjiVAJkaWbVdyPPMxXqeuv
+ J8TGIrU+0GAuxQX7eIIapM8gHoJ/i/+3Lg86ilvRhCdks0OYIgvIXDu+m1F9qvPig1n9
+ qmaPZSttzxHapTHsQhqj+8ez1Mh6AU41gyUZuYSjEw/M6ix2alFl2clZcq2fzw9TRV8m
+ T3VdqIsiJZXsGkuNzRqG8q7Wyez0X9VKsY1Jq2v4Bt+32v5og2RtpbTDAMPn6awuDbIF
+ bXfmOhB1JZWgA6QKAkE/ndq/tn0aSh7gBLV6EKEnJxvPb+roMqUGXj3Ar6OaLs3F+VbY DQ== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss7mer1wr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 02:53:30 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T2rTft030498
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 02:53:29 GMT
+Received: from [10.110.29.109] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 28 Aug
+ 2023 19:53:26 -0700
+Message-ID: <253965df-6d80-bbfd-ab01-f9e69b274bf3@quicinc.com>
+Date:   Mon, 28 Aug 2023 19:53:26 -0700
 MIME-Version: 1.0
-References: <20230828-docs_fixup-v1-1-cc78af124667@google.com>
-In-Reply-To: <20230828-docs_fixup-v1-1-cc78af124667@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 29 Aug 2023 11:51:23 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT08zhGgrDWdjKv17S30KPJ++JsBmaCwudTkMAdJR_M=Q@mail.gmail.com>
-Message-ID: <CAK7LNAT08zhGgrDWdjKv17S30KPJ++JsBmaCwudTkMAdJR_M=Q@mail.gmail.com>
-Subject: Re: [PATCH] Documentation/llvm: fix typo in link
-To:     ndesaulniers@google.com
-Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+Content-Language: en-US
+To:     Ackerley Tng <ackerleytng@google.com>,
+        Sean Christopherson <seanjc@google.com>
+CC:     <pbonzini@redhat.com>, <maz@kernel.org>, <oliver.upton@linux.dev>,
+        <chenhuacai@kernel.org>, <mpe@ellerman.id.au>,
+        <anup@brainfault.org>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+        <willy@infradead.org>, <akpm@linux-foundation.org>,
+        <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>,
+        <kvm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.linux.dev>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <kvm-riscv@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <chao.p.peng@linux.intel.com>,
+        <tabba@google.com>, <jarkko@kernel.org>,
+        <yu.c.zhang@linux.intel.com>, <vannapurve@google.com>,
+        <mail@maciej.szmigiero.name>, <vbabka@suse.cz>, <david@redhat.com>,
+        <qperret@google.com>, <michael.roth@amd.com>,
+        <wei.w.wang@intel.com>, <liam.merwick@oracle.com>,
+        <isaku.yamahata@gmail.com>, <kirill.shutemov@linux.intel.com>
+References: <diqzttsiu67n.fsf@ackerleytng-ctop.c.googlers.com>
+From:   Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <diqzttsiu67n.fsf@ackerleytng-ctop.c.googlers.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: j_S7WCFYaAduXo62GgrPKoDWB6xd2scP
+X-Proofpoint-GUID: j_S7WCFYaAduXo62GgrPKoDWB6xd2scP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-28_20,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 priorityscore=1501 clxscore=1011 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308290024
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 8:20=E2=80=AFAM <ndesaulniers@google.com> wrote:
->
-> Fixes the following observed build failure from `make htmldocs`:
->   Documentation/kbuild/llvm.rst:127: ERROR: Unknown target name:
->   "reprocible_builds".
->
-> Fixes: bda09c0e14a4 ("Documentation/llvm: refresh docs")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Closes: https://lore.kernel.org/linux-next/20230828145737.6ff53bc9@canb.a=
-uug.org.au/
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-
-I will squash this into your original commit.
-
-Thanks.
 
 
+On 8/28/2023 3:56 PM, Ackerley Tng wrote:
+ > 1. Since the physical memory's representation is the inode and should be
+ >     coupled to the virtual machine (as a concept, not struct kvm), should
+ >     the binding/coupling be with the file, or the inode?
+ >
 
---=20
-Best Regards
-Masahiro Yamada
+I've been working on Gunyah's implementation in parallel (not yet posted 
+anywhere). Thus far, I've coupled the virtual machine struct to the 
+struct file so that I can increment the file refcount when mapping the 
+gmem to the virtual machine.
+
+ > 2. Should struct kvm still be bound to the file/inode at gmem file
+ >     creation time, since
+ >
+ >     + struct kvm isn't a good representation of a "virtual machine"
+ >     + we currently don't have anything that really represents a "virtual
+ >       machine" without hardware support
+ >
+ >
+ > I'd also like to bring up another userspace use case that Google has:
+ > re-use of gmem files for rebooting guests when the KVM instance is
+ > destroyed and rebuilt.
+ >
+ > When rebooting a VM there are some steps relating to gmem that are
+ > performance-sensitive:
+ >
+ > a.      Zeroing pages from the old VM when we close a gmem file/inode
+ > b. Deallocating pages from the old VM when we close a gmem file/inode
+ > c.   Allocating pages for the new VM from the new gmem file/inode
+ > d.      Zeroing pages on page allocation
+ >
+ > We want to reuse the gmem file to save re-allocating pages (b. and c.),
+ > and one of the two page zeroing allocations (a. or d.).
+ >
+ > Binding the gmem file to a struct kvm on creation time means the gmem
+ > file can't be reused with another VM on reboot. Also, host userspace is
+ > forced to close the gmem file to allow the old VM to be freed.
+ >
+ > For other places where files pin KVM, like the stats fd pinning vCPUs, I
+ > guess that matters less since there isn't much of a penalty to close and
+ > re-open the stats fd.
+
+I had a 3rd question that's related to how to wire the gmem up to a 
+virtual machine:
+
+I learned of a usecase to implement copy-on-write for gmem. The premise 
+would be to have a "golden copy" of the memory that multiple virtual 
+machines can map in as RO. If a virtual machine tries to write to those 
+pages, they get copied to a virtual machine-specific page that isn't 
+shared with other VMs. How do we track those pages?
+
+Thanks,
+Elliot
