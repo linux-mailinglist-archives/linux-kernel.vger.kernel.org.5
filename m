@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2965A78C869
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38CB78C85E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbjH2PPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 11:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
+        id S232803AbjH2PM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 11:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237196AbjH2PPg (ORCPT
+        with ESMTP id S230128AbjH2PMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:15:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF6DB5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693322132; x=1724858132;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oIC4RwFeSOKo07zWbQaQErpFWbvvLbrtdeOJ2hsfByY=;
-  b=LV57ekd+iFR5ClM8TKxA3BRmOfzaTQ3d9/ArhCmHsf7YZNd8YuBN6cRD
-   zX/SiNhX3qZg+4L8o+BpIpfCt2fvkNwpnn2XoyZDRDZxQJMbrn77iJ/9s
-   UaRvLJ0exN4yyJh+rusRWAcjV2w3bzYod7GQPiImci5WUj+jaOPj8M3eR
-   fRsAyS+9Sz71ATTcULorY0vN0RHhN9DQj61G33UIVicg7iB7cPOBOcH14
-   y8x9tXaoqSjCO0imkfHxbwwyOD/4VR4aN8PxYNF2sGpKyZoVciqohtfyW
-   RelsDJO3dwz8aW6hKUg2C70lJW/sMmG5PxA56FlPjYB4xrexTcZ2gNtkJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="378113388"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="378113388"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 08:12:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="732239206"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="732239206"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 29 Aug 2023 08:12:08 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qb0Nz-004uZx-1Q;
-        Tue, 29 Aug 2023 18:12:07 +0300
-Date:   Tue, 29 Aug 2023 18:12:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] regulator: pv880x0: Simplify probe()
-Message-ID: <ZO4KxysqxRGxTk2r@smile.fi.intel.com>
-References: <20230828172417.113631-1-biju.das.jz@bp.renesas.com>
- <20230828172417.113631-2-biju.das.jz@bp.renesas.com>
- <ZO4KqF+gnJDlWvRB@smile.fi.intel.com>
+        Tue, 29 Aug 2023 11:12:23 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA741BF
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:12:19 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7405D6732D; Tue, 29 Aug 2023 17:12:16 +0200 (CEST)
+Date:   Tue, 29 Aug 2023 17:12:16 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Chunhui He <hchunhui@mail.ustc.edu.cn>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dma/pool: trivial: add semicolon after label
+ attributes
+Message-ID: <20230829151216.GA4211@lst.de>
+References: <20230826085317.69713-1-hchunhui@mail.ustc.edu.cn> <6f936d6e-9f27-ba72-68de-0ed27c0dbbe1@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZO4KqF+gnJDlWvRB@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6f936d6e-9f27-ba72-68de-0ed27c0dbbe1@arm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 06:11:36PM +0300, Andy Shevchenko wrote:
-> On Mon, Aug 28, 2023 at 06:24:16PM +0100, Biju Das wrote:
+On Tue, Aug 29, 2023 at 03:22:22PM +0100, Robin Murphy wrote:
+> AFAICS, what that clearly says is that *C++* label attributes can be 
+> ambiguous. This is not C++ code. Even in C11, declarations still cannot be 
+> labelled, so it should still be the case that, per the same GCC 
+> documentation, "the ambiguity does not arise". And even if the language did 
+> allow it, an inline declaration at that point at the end of a function 
+> would be downright weird and against the kernel coding style anyway.
+>
+> So, I don't really see what's "better" about cluttering up C code with 
+> unnecessary C++isms; it's just weird noise to me. The only thing I think it 
+> *does* achieve is introduce the chance that the static checker brigade 
+> eventually identifies a redundant semicolon and we get more patches to 
+> remove it again.
 
-...
+Agreed.  Even more importantly that attribute looks rather questionable
+to start with as it can be dropped by just moving the #endif a little:
 
-> > +#ifdef CONFIG_OF
-> 
-> Do you still need this? (Perhaps in a separate patch to remove?)
-
-Ah, it's a second in the series!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index 1acec2e228273f..da03c4a57cebe3 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -135,8 +135,8 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
+ remove_mapping:
+ #ifdef CONFIG_DMA_DIRECT_REMAP
+ 	dma_common_free_remap(addr, pool_size);
++free_page:
+ #endif
+-free_page: __maybe_unused
+ 	__free_pages(page, order);
+ out:
+ 	return ret;
