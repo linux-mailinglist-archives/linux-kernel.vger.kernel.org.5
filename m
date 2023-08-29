@@ -2,156 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA25878CD4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5B078CD4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238922AbjH2UDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        id S239619AbjH2UE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240051AbjH2UDM (ORCPT
+        with ESMTP id S240476AbjH2UET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:03:12 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E8AD2;
-        Tue, 29 Aug 2023 13:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1693339376; x=1693944176; i=j.neuschaefer@gmx.net;
- bh=lg5pj3dzVGowh2JUIgjyLPKyTlGmgpDjIfuCipKzTZQ=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=jKSmlhGSRTFuxaaf7iWjl4/nwLhA3eWC56MWa1gEIJXcRJZDSJjGV/4/IAxDIOX1tjVgMEE
- VzXdPq6dgXJlxUOp/JU63Wp4Kf7rUiqohJo/jnUPKSRqL4KM41JTKiQdHJgUHRO5pRnzK5PcN
- 0696HpNKi11ChDExvX3TNmUNbQC1j51MB09OzFAFo5XRAV46PU1PPD5bOxT1Tztht6qPyKEF8
- 5sqlKlhoXSMEAhXgeCPzzjrx5sdxCEpNGfOqb2H7c4htucJGNCCa1qV5hYxSaWYKlP0Cj225U
- wPUtFWBSMvrJkDVVhzQxjLjSgKnsVwOIaRi2DOOPLV9qB/4BQuqg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([87.154.222.166]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTABZ-1q73Zn1wR5-00UcHm; Tue, 29
- Aug 2023 22:02:56 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-fbdev@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Helge Deller <deller@gmx.de>, Rob Clark <robdclark@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jingoo Han <jg1.han@samsung.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fbdev: Update fbdev source file paths
-Date:   Tue, 29 Aug 2023 22:02:52 +0200
-Message-Id: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.40.1
+        Tue, 29 Aug 2023 16:04:19 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B0D1BC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:04:13 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99cce6f7de2so631076566b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:04:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693339452; x=1693944252; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=E7+fPH/MQHoNa3vChLqeUExHzKt7daOcGn55CTVmoBc=;
+        b=iEdN0GNF1nWhyy3IF16S7OnEtMlSoMwG+HXNoqZCldV67/QGjVHuby2oBM4lstXdby
+         V5zJ5ndCJOKJphewgeR5XslWA1aNivc0RntpwXM0VIiUrgWpLTCpMKU3D4oLS2jfIYGT
+         NZDkzQV9xFIH7XbgJeRVCuMF8JVn/PuRf0PzU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693339452; x=1693944252;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E7+fPH/MQHoNa3vChLqeUExHzKt7daOcGn55CTVmoBc=;
+        b=NEHaZG16Z5m+cbaho1DKfeAiRGzHry3a0RlQDRcoE3LgGtaUQfi0ZquCSQiGNW5iYR
+         yFCbozbApDJvbTnc0NX1YT9csX00pmjMC9hLzq703Owp6fOyAmlsCGb2BAkdDPhCX6WH
+         TuwjXuEKrqASbsc7fpdQPhqAsxHSsAwGjCGtZesw+J7zU6t72VJt7Cjucrx2Hp6R/wIz
+         1AWQHGNZNgDBUTm2t0f+Dx7UdoSJhlCkKH90gzOZre1fJ6BL+wfL78cANrGE7RLLdEAk
+         eWTgwKq1uxco7qvJbH/d1QXA2JiDxODmSgtUymNCJdtT/21lPyGP2Mt4YQUrBdGJaPOJ
+         eWPA==
+X-Gm-Message-State: AOJu0YzLL5cLWELcl9NhaRcyylwkJEYx1MY9oKAGWX193u/xp9rB5A20
+        q0gFPkMNq8wBgA29kiCn6pvqGehCwSSFhc9YPfxsOo27
+X-Google-Smtp-Source: AGHT+IFRBF1fzIkPFlVvvFmbzqawUai2yiHgl0U9Jc3FqInfpk01BTXjkAhwy7X1BOtKKr0TOgCCpw==
+X-Received: by 2002:a17:906:10d2:b0:9a1:ab86:5f22 with SMTP id v18-20020a17090610d200b009a1ab865f22mr31359ejv.56.1693339452065;
+        Tue, 29 Aug 2023 13:04:12 -0700 (PDT)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id y16-20020a1709064b1000b00992e94bcfabsm6263301eju.167.2023.08.29.13.04.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 13:04:11 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52a250aa012so6316594a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:04:11 -0700 (PDT)
+X-Received: by 2002:a17:906:51d4:b0:9a3:faf:7aa8 with SMTP id
+ v20-20020a17090651d400b009a30faf7aa8mr55430ejk.10.1693339451148; Tue, 29 Aug
+ 2023 13:04:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7m61yDqPekLpjBk3hCmP1bMSwW5yQXxD++BEvCEIejsTl24Svld
- oKkPxWjZMc8ISL01SueDCdACV22gdFh8Ogfg/dKhfCn755CMyxej7aWuJ3zNqPJPv8Pzch7
- YSaGGPhNdFZavhIsKts1JIbExLR9AWW3DgGPCmw4dlEVzB4JpyjMqIHv6i+w74luzqlw7pQ
- xzmnIlL83dLElVzdgCywQ==
-UI-OutboundReport: notjunk:1;M01:P0:OVMas4vSyPQ=;pcm1/W4MU4//d7kEG7Euf68Nn/k
- VEl5PIZu5dHRLAJgxbnwXvFLX6QfhFxPpB4GwiDejZ9ZFt+wfdlTkWtgsStm0LJKB+9mTRF55
- tty/qRQlr+04+ZdXu0wZK49UWq0XOjPaMv3PcxDfkg4i9kV9CFIClRhleeX+Veq59HnsLkoL7
- WDn4MBNFSe7VDBoll+FnQJuiqk2KvqOSY4KC7At1BtOmYd+sWW/X/pQ3p7RLZlFw2nJDJhcTK
- Ok71ESJ2tD4tJW15LeB+o1COw/LsJhIb8aI9TkMMarC4fSNoa8kraw+gijKS/EMhjMF6EoEyL
- VEuKMq9W/7ftOWF5miej18DNsg+kPp130hTVJskbOKlSEvswPyfy8IOoJB8v3Jw3g1Xr7a6G7
- v3gV5fA2eK9c1WhM5nhPm/R1AZIHk73/G2ust76rt9D7woJv7wMnStVsIQrBkdaBLj3UEa4oR
- CInue8OGWosuLvldfW7w+vBH5wG1GjAgG2SFFpb6nHW/oJ3kh+xvKamT+GuU01rONDvtdkD4Z
- HiMw+3wdCKoJNOZXt8EBCC9KbylMVSU00xTTpxLurgvK4nI4T4INqdrVeZcXGGOuY36HLx+zz
- G8SbSDZAv6TxdMa1WhDdeCbrpXcYcZ3zwEXC1gtp1ZD5TZIjjoOX2EsMpkvl5F7Pirlmj0DEb
- R5a5mHUV0agu396ibLg5byIIZGmZPjiLU06xH6prx4ocrZhFGU9VLaNNTSVoSzcif9uSnnWwE
- AriAhJlFXT95cx1i0dMjKPzsEqRMr+ULZVpnEq1cXBbRC1K3UuOwrpdl08TkqiIMf2VL1VSLs
- RxeuPV5Ld4OeFJRENU7NxOLnkEKZwD9Tkw7hdJ6P1YysXFoCBymIoX/pA2Jx6XxBpK6gyxfso
- Gyf2TzibNxyjJHOtUWbfJ+XxC1kZZZ0BEyZI70LOL5NlVYCbHWPaYFrjtUDuYMTTMJulmdCj9
- bTb1yw==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230828170732.2526618-1-mjguzik@gmail.com> <CAHk-=wj=YwAsPUHN7Drem=Gj9xT6vvxgZx77ZecZVxOYYXpC0w@mail.gmail.com>
+ <CAGudoHHnCKwObL7Y_4hiX7FmREiX6cGfte5EuyGitbXwe_RhkQ@mail.gmail.com>
+In-Reply-To: <CAGudoHHnCKwObL7Y_4hiX7FmREiX6cGfte5EuyGitbXwe_RhkQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 29 Aug 2023 13:03:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgemNj9GBepSEJXS5N99rr9wLkL668UC9TsKH45NnJ7Mg@mail.gmail.com>
+Message-ID: <CAHk-=wgemNj9GBepSEJXS5N99rr9wLkL668UC9TsKH45NnJ7Mg@mail.gmail.com>
+Subject: Re: [PATCH] x86: bring back rep movsq for user access on CPUs without ERMS
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The files fbmem.c, fb_defio.c, fbsysfs.c, fbmon.c, modedb.c, and
-fbcmap.c were moved to drivers/video/fbdev, and subsequently to
-drivers/video/fbdev/core, in the commits listed below.
+On Tue, 29 Aug 2023 at 12:45, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>
+> So I think I know how to fix it, but I'm going to sleep on it.
 
-Reported by kalekale in #kernel (Libera IRC).
+I think you can just skip the %r8 games, and do that
 
-Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
-Fixes: 19757fc8432a ("fbdev: move fbdev core files to separate directory")
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- include/linux/fb.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+        leal (%rax,%rcx,8),%rcx
 
-diff --git a/include/linux/fb.h b/include/linux/fb.h
-index ce7d588edc3e6..3cda5b9f2469b 100644
-=2D-- a/include/linux/fb.h
-+++ b/include/linux/fb.h
-@@ -592,7 +592,7 @@ extern ssize_t fb_sys_write(struct fb_info *info, cons=
-t char __user *buf,
- 	__FB_DEFAULT_SYS_OPS_DRAW, \
- 	__FB_DEFAULT_SYS_OPS_MMAP
+in the exception fixup code, since %rax will have the low bits of the
+byte count, and %rcx will have the remaining qword count.
 
--/* drivers/video/fbmem.c */
-+/* drivers/video/fbdev/core/fbmem.c */
- extern int register_framebuffer(struct fb_info *fb_info);
- extern void unregister_framebuffer(struct fb_info *fb_info);
- extern int fb_prepare_logo(struct fb_info *fb_info, int rotate);
-@@ -636,7 +636,7 @@ static inline void __fb_pad_aligned_buffer(u8 *dst, u3=
-2 d_pitch,
- 	}
- }
+We should also have some test-case for partial reads somewhere, but I
+have to admit that when I did the cleanup patches I just wrote some
+silly test myself (ie just doing a 'mmap()' and then reading/writing
+into the end of that mmap at different offsets.
 
--/* drivers/video/fb_defio.c */
-+/* drivers/video/fbdev/core/fb_defio.c */
- int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)=
-;
- extern int  fb_deferred_io_init(struct fb_info *info);
- extern void fb_deferred_io_open(struct fb_info *info,
-@@ -735,14 +735,14 @@ static inline bool fb_be_math(struct fb_info *info)
- #endif /* CONFIG_FB_FOREIGN_ENDIAN */
- }
+I didn't save that hacky thing, I'm afraid.
 
--/* drivers/video/fbsysfs.c */
-+/* drivers/video/fbdev/core/fbsysfs.c */
- extern struct fb_info *framebuffer_alloc(size_t size, struct device *dev)=
-;
- extern void framebuffer_release(struct fb_info *info);
- extern int fb_init_device(struct fb_info *fb_info);
- extern void fb_cleanup_device(struct fb_info *head);
- extern void fb_bl_default_curve(struct fb_info *fb_info, u8 off, u8 min, =
-u8 max);
+I also tried to figure out if there is any CPU we should care about
+that doesn't like 'rep movsq', but I think you are right that there
+really isn't. The "good enough" rep things were introduced in the PPro
+if I recall correctly, and while you could disable them in the BIOS,
+by the time Intel did 64-bit in Northwood (?) it was pretty much
+standard.
 
--/* drivers/video/fbmon.c */
-+/* drivers/video/fbdev/core/fbmon.c */
- #define FB_MAXTIMINGS		0
- #define FB_VSYNCTIMINGS		1
- #define FB_HSYNCTIMINGS		2
-@@ -776,7 +776,7 @@ extern int of_get_fb_videomode(struct device_node *np,
- extern int fb_videomode_from_videomode(const struct videomode *vm,
- 				       struct fb_videomode *fbmode);
+So yeah, no reason to have the unrolled loop at all, and I think your
+patch is fine conceptually, just needs fixing and testing for the
+partial success case.
 
--/* drivers/video/modedb.c */
-+/* drivers/video/fbdev/core/modedb.c */
- #define VESA_MODEDB_SIZE 43
- #define DMT_SIZE 0x50
+Oh, and you should also remove the clobbers of r8-r11 in the
+copy_user_generic() inline asm in <asm/uaccess_64.h> when you've fixed
+the exception handling. The only reason for those clobbers were for
+that unrolled register use.
 
-@@ -802,7 +802,7 @@ extern void fb_videomode_to_modelist(const struct fb_v=
-ideomode *modedb, int num,
- extern const struct fb_videomode *fb_find_best_display(const struct fb_mo=
-nspecs *specs,
- 						       struct list_head *head);
+So only %rax ends up being a clobber for the rep_movs_alternative
+case, as far as I can tell.
 
--/* drivers/video/fbcmap.c */
-+/* drivers/video/fbdev/core/fbcmap.c */
- extern int fb_alloc_cmap(struct fb_cmap *cmap, int len, int transp);
- extern int fb_alloc_cmap_gfp(struct fb_cmap *cmap, int len, int transp, g=
-fp_t flags);
- extern void fb_dealloc_cmap(struct fb_cmap *cmap);
-=2D-
-2.40.1
-
+            Linus
