@@ -2,389 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF73F78BD17
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3885278BD1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 05:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbjH2Cy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S232739AbjH2C72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbjH2Cy5 (ORCPT
+        with ESMTP id S232601AbjH2C7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:54:57 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9216FBD;
-        Mon, 28 Aug 2023 19:54:52 -0700 (PDT)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RZX4p6p9PzLpCY;
-        Tue, 29 Aug 2023 10:51:38 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 29 Aug 2023 10:54:49 +0800
-Message-ID: <62e3c593-3958-f7d9-ec16-238cc52f09af@huawei.com>
-Date:   Tue, 29 Aug 2023 10:54:48 +0800
+        Mon, 28 Aug 2023 22:59:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760D519F;
+        Mon, 28 Aug 2023 19:58:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0046762AA6;
+        Tue, 29 Aug 2023 02:58:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A2DCC433C7;
+        Tue, 29 Aug 2023 02:58:53 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jiantao Shan <shanjiantao@loongson.cn>
+Subject: [PATCH V2] LoongArch: Remove shm_align_mask and use SHMLBA instead
+Date:   Tue, 29 Aug 2023 10:58:41 +0800
+Message-Id: <20230829025841.1435746-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf-next v3 3/3] bpf, riscv: use prog pack allocator in
- the BPF JIT
-Content-Language: en-US
-To:     Puranjay Mohan <puranjay12@gmail.com>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-        <conor.dooley@microchip.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <bjorn@kernel.org>, <bpf@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20230828165958.1714079-1-puranjay12@gmail.com>
- <20230828165958.1714079-4-puranjay12@gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20230828165958.1714079-4-puranjay12@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Both shm_align_mask and SHMLBA want to avoid cache alias. But they are
+inconsistent: shm_align_mask is (PAGE_SIZE - 1) while SHMLBA is SZ_64K,
+but PAGE_SIZE is not always equal to SZ_64K.
 
+This may cause problems when shmat() twice. Fix this problem by removing
+shm_align_mask and using SHMLBA (strictly SHMLBA - 1) instead.
 
-On 2023/8/29 0:59, Puranjay Mohan wrote:
-> Use bpf_jit_binary_pack_alloc() for memory management of JIT binaries in
-> RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
-> buffers. The JIT writes the program into the RW buffer. When the JIT is
-> done, the program is copied to the final RX buffer with
-> bpf_jit_binary_pack_finalize.
-> 
-> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for RISCV
-> JIT as these functions are required by bpf_jit_binary_pack allocator.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> Reviewed-by: Song Liu <song@kernel.org>
-> ---
->   arch/riscv/net/bpf_jit.h        |   3 +
->   arch/riscv/net/bpf_jit_comp64.c |  60 ++++++++++++++----
->   arch/riscv/net/bpf_jit_core.c   | 106 +++++++++++++++++++++++++++-----
->   3 files changed, 141 insertions(+), 28 deletions(-)
-> 
-> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-> index d21c6c92a683..a5ce1ab76ece 100644
-> --- a/arch/riscv/net/bpf_jit.h
-> +++ b/arch/riscv/net/bpf_jit.h
-> @@ -68,6 +68,7 @@ static inline bool is_creg(u8 reg)
->   struct rv_jit_context {
->   	struct bpf_prog *prog;
->   	u16 *insns;		/* RV insns */
-> +	u16 *ro_insns;
->   	int ninsns;
->   	int prologue_len;
->   	int epilogue_offset;
-> @@ -85,7 +86,9 @@ static inline int ninsns_rvoff(int ninsns)
->   
->   struct rv_jit_data {
->   	struct bpf_binary_header *header;
-> +	struct bpf_binary_header *ro_header;
->   	u8 *image;
-> +	u8 *ro_image;
->   	struct rv_jit_context ctx;
->   };
->   
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index 8423f4ddf8f5..ecd3ae6f4116 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -144,7 +144,11 @@ static bool in_auipc_jalr_range(s64 val)
->   /* Emit fixed-length instructions for address */
->   static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct rv_jit_context *ctx)
->   {
-> -	u64 ip = (u64)(ctx->insns + ctx->ninsns);
-> +	/*
-> +	 * Use the ro_insns(RX) to calculate the offset as the BPF program will
-> +	 * finally run from this memory region.
-> +	 */
-> +	u64 ip = (u64)(ctx->ro_insns + ctx->ninsns);
->   	s64 off = addr - ip;
->   	s64 upper = (off + (1 << 11)) >> 12;
->   	s64 lower = off & 0xfff;
-> @@ -464,8 +468,12 @@ static int emit_call(u64 addr, bool fixed_addr, struct rv_jit_context *ctx)
->   	s64 off = 0;
->   	u64 ip;
->   
-> -	if (addr && ctx->insns) {
-> -		ip = (u64)(long)(ctx->insns + ctx->ninsns);
-> +	if (addr && ctx->insns && ctx->ro_insns) {
-> +		/*
-> +		 * Use the ro_insns(RX) to calculate the offset as the BPF
-> +		 * program will finally run from this memory region.
-> +		 */
-> +		ip = (u64)(long)(ctx->ro_insns + ctx->ninsns);
->   		off = addr - ip;
->   	}
->   
-> @@ -578,9 +586,10 @@ static int add_exception_handler(const struct bpf_insn *insn,
->   {
->   	struct exception_table_entry *ex;
->   	unsigned long pc;
-> -	off_t offset;
-> +	off_t ins_offset;
-> +	off_t fixup_offset;
->   
-> -	if (!ctx->insns || !ctx->prog->aux->extable ||
-> +	if (!ctx->insns || !ctx->ro_insns || !ctx->prog->aux->extable ||
->   	    (BPF_MODE(insn->code) != BPF_PROBE_MEM && BPF_MODE(insn->code) != BPF_PROBE_MEMSX))
->   		return 0;
->   
-> @@ -594,12 +603,17 @@ static int add_exception_handler(const struct bpf_insn *insn,
->   		return -EINVAL;
->   
->   	ex = &ctx->prog->aux->extable[ctx->nexentries];
-> -	pc = (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
-> +	pc = (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
->   
-> -	offset = pc - (long)&ex->insn;
-> -	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-> +	/*
-> +	 * This is the relative offset of the instruction that may fault from
-> +	 * the exception table itself. This will be written to the exception
-> +	 * table and if this instruction faults, the destination register will
-> +	 * be set to '0' and the execution will jump to the next instruction.
-> +	 */
-> +	ins_offset = pc - (long)&ex->insn;
-> +	if (WARN_ON_ONCE(ins_offset >= 0 || ins_offset < INT_MIN))
->   		return -ERANGE;
-> -	ex->insn = offset;
->   
->   	/*
->   	 * Since the extable follows the program, the fixup offset is always
-> @@ -608,12 +622,25 @@ static int add_exception_handler(const struct bpf_insn *insn,
->   	 * bits. We don't need to worry about buildtime or runtime sort
->   	 * modifying the upper bits because the table is already sorted, and
->   	 * isn't part of the main exception table.
-> +	 *
-> +	 * The fixup_offset is set to the next instruction from the instruction
-> +	 * that may fault. The execution will jump to this after handling the
-> +	 * fault.
->   	 */
-> -	offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
-> -	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
-> +	fixup_offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
-> +	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
->   		return -ERANGE;
->   
-> -	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
-> +	/*
-> +	 * The offsets above have been calculated using the RO buffer but we
-> +	 * need to use the R/W buffer for writes.
-> +	 * switch ex to rw buffer for writing.
-> +	 */
-> +	ex = (void *)ctx->insns + ((void *)ex - (void *)ctx->ro_insns);
-> +
-> +	ex->insn = ins_offset;
-> +
-> +	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
->   		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
->   	ex->type = EX_TYPE_BPF;
->   
-> @@ -1007,6 +1034,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
->   
->   	ctx.ninsns = 0;
->   	ctx.insns = NULL;
-> +	ctx.ro_insns = NULL;
->   	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
->   	if (ret < 0)
->   		return ret;
-> @@ -1015,7 +1043,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
->   		return -EFBIG;
->   
->   	ctx.ninsns = 0;
-> +	/*
-> +	 * The bpf_int_jit_compile() uses a RW buffer (ctx.insns) to write the
-> +	 * JITed instructions and later copies it to a RX region (ctx.ro_insns).
-> +	 * It also uses ctx.ro_insns to calculate offsets for jumps etc. As the
-> +	 * trampoline image uses the same memory area for writing and execution,
-> +	 * both ctx.insns and ctx.ro_insns can be set to image.
-> +	 */
->   	ctx.insns = image;
-> +	ctx.ro_insns = image;
->   	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
->   	if (ret < 0)
->   		return ret;
-> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-> index 7a26a3e1c73c..7b70ccb7fec3 100644
-> --- a/arch/riscv/net/bpf_jit_core.c
-> +++ b/arch/riscv/net/bpf_jit_core.c
-> @@ -8,6 +8,8 @@
->   
->   #include <linux/bpf.h>
->   #include <linux/filter.h>
-> +#include <linux/memory.h>
-> +#include <asm/patch.h>
->   #include "bpf_jit.h"
->   
->   /* Number of iterations to try until offsets converge. */
-> @@ -117,16 +119,24 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   				sizeof(struct exception_table_entry);
->   			prog_size = sizeof(*ctx->insns) * ctx->ninsns;
->   
-> -			jit_data->header =
-> -				bpf_jit_binary_alloc(prog_size + extable_size,
-> -						     &jit_data->image,
-> -						     sizeof(u32),
-> -						     bpf_fill_ill_insns);
-> -			if (!jit_data->header) {
-> +			jit_data->ro_header =
-> +				bpf_jit_binary_pack_alloc(prog_size + extable_size,
-> +							  &jit_data->ro_image, sizeof(u32),
-> +							  &jit_data->header, &jit_data->image,
-> +							  bpf_fill_ill_insns);
-> +			if (!jit_data->ro_header) {
->   				prog = orig_prog;
->   				goto out_offset;
->   			}
->   
-> +			/*
-> +			 * Use the image(RW) for writing the JITed instructions. But also save
-> +			 * the ro_image(RX) for calculating the offsets in the image. The RW
-> +			 * image will be later copied to the RX image from where the program
-> +			 * will run. The bpf_jit_binary_pack_finalize() will do this copy in the
-> +			 * final step.
-> +			 */
-> +			ctx->ro_insns = (u16 *)jit_data->ro_image;
->   			ctx->insns = (u16 *)jit_data->image;
->   			/*
->   			 * Now, when the image is allocated, the image can
-> @@ -138,14 +148,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   
->   	if (i == NR_JIT_ITERATIONS) {
->   		pr_err("bpf-jit: image did not converge in <%d passes!\n", i);
-> -		if (jit_data->header)
-> -			bpf_jit_binary_free(jit_data->header);
->   		prog = orig_prog;
-> -		goto out_offset;
-> +		goto out_free_hdr;
->   	}
->   
->   	if (extable_size)
-> -		prog->aux->extable = (void *)ctx->insns + prog_size;
-> +		prog->aux->extable = (void *)ctx->ro_insns + prog_size;
->   
->   skip_init_ctx:
->   	pass++;
-> @@ -154,23 +162,33 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   
->   	bpf_jit_build_prologue(ctx);
->   	if (build_body(ctx, extra_pass, NULL)) {
-> -		bpf_jit_binary_free(jit_data->header);
->   		prog = orig_prog;
-> -		goto out_offset;
-> +		goto out_free_hdr;
->   	}
->   	bpf_jit_build_epilogue(ctx);
->   
->   	if (bpf_jit_enable > 1)
->   		bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
->   
-> -	prog->bpf_func = (void *)ctx->insns;
-> +	prog->bpf_func = (void *)ctx->ro_insns;
->   	prog->jited = 1;
->   	prog->jited_len = prog_size;
->   
-> -	bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
-> -
->   	if (!prog->is_func || extra_pass) {
-> -		bpf_jit_binary_lock_ro(jit_data->header);
-> +		if (WARN_ON(bpf_jit_binary_pack_finalize(prog, jit_data->ro_header,
-> +							 jit_data->header))) {
-> +			/* ro_header has been freed */
-> +			jit_data->ro_header = NULL;
-> +			prog = orig_prog;
-> +			goto out_offset;
-> +		}
-> +		/*
-> +		 * The instructions have now been copied to the ROX region from
-> +		 * where they will execute.
-> +		 * Write any modified data cache blocks out to memory and
-> +		 * invalidate the corresponding blocks in the instruction cache.
-> +		 */
-> +		bpf_flush_icache(jit_data->ro_header, ctx->ro_insns + ctx->ninsns);
->   		for (i = 0; i < prog->len; i++)
->   			ctx->offset[i] = ninsns_rvoff(ctx->offset[i]);
->   		bpf_prog_fill_jited_linfo(prog, ctx->offset);
-> @@ -185,6 +203,14 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   		bpf_jit_prog_release_other(prog, prog == orig_prog ?
->   					   tmp : orig_prog);
->   	return prog;
-> +
-> +out_free_hdr:
-> +	if (jit_data->header) {
-> +		bpf_arch_text_copy(&jit_data->ro_header->size, &jit_data->header->size,
-> +				   sizeof(jit_data->header->size));
-> +		bpf_jit_binary_pack_free(jit_data->ro_header, jit_data->header);
-> +	}
-> +	goto out_offset;
->   }
->   
->   u64 bpf_jit_alloc_exec_limit(void)
-> @@ -204,3 +230,51 @@ void bpf_jit_free_exec(void *addr)
->   {
->   	return vfree(addr);
->   }
-> +
-> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&text_mutex);
-> +	ret = patch_text_nosync(dst, src, len);
-> +	mutex_unlock(&text_mutex);
-> +
-> +	if (ret)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	return dst;
-> +}
-> +
-> +int bpf_arch_text_invalidate(void *dst, size_t len)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&text_mutex);
-> +	ret = patch_text_set_nosync(dst, 0, len);
-> +	mutex_unlock(&text_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +void bpf_jit_free(struct bpf_prog *prog)
-> +{
-> +	if (prog->jited) {
-> +		struct rv_jit_data *jit_data = prog->aux->jit_data;
-> +		struct bpf_binary_header *hdr;
-> +
-> +		/*
-> +		 * If we fail the final pass of JIT (from jit_subprogs),
-> +		 * the program may not be finalized yet. Call finalize here
-> +		 * before freeing it.
-> +		 */
-> +		if (jit_data) {
-> +			bpf_jit_binary_pack_finalize(prog, jit_data->ro_header, jit_data->header);
-> +			kfree(jit_data);
-> +		}
-> +		hdr = bpf_jit_binary_pack_hdr(prog);
-> +		bpf_jit_binary_pack_free(hdr, NULL);
-> +		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
-> +	}
-> +
-> +	bpf_prog_unlock_free(prog);
-> +}
+Reported-by: Jiantao Shan <shanjiantao@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+V2: Define SHM_ALIGN_MASK.
 
-Reviewed-by: Pu Lehui <pulehui@huawei.com>
+ arch/loongarch/mm/cache.c |  1 -
+ arch/loongarch/mm/mmap.c  | 13 ++++++-------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/arch/loongarch/mm/cache.c b/arch/loongarch/mm/cache.c
+index 72685a48eaf0..6be04d36ca07 100644
+--- a/arch/loongarch/mm/cache.c
++++ b/arch/loongarch/mm/cache.c
+@@ -156,7 +156,6 @@ void cpu_cache_init(void)
+ 
+ 	current_cpu_data.cache_leaves_present = leaf;
+ 	current_cpu_data.options |= LOONGARCH_CPU_PREFETCH;
+-	shm_align_mask = PAGE_SIZE - 1;
+ }
+ 
+ static const pgprot_t protection_map[16] = {
+diff --git a/arch/loongarch/mm/mmap.c b/arch/loongarch/mm/mmap.c
+index fbe1a4856fc4..a9630a81b38a 100644
+--- a/arch/loongarch/mm/mmap.c
++++ b/arch/loongarch/mm/mmap.c
+@@ -8,12 +8,11 @@
+ #include <linux/mm.h>
+ #include <linux/mman.h>
+ 
+-unsigned long shm_align_mask = PAGE_SIZE - 1;	/* Sane caches */
+-EXPORT_SYMBOL(shm_align_mask);
++#define SHM_ALIGN_MASK	(SHMLBA - 1)
+ 
+-#define COLOUR_ALIGN(addr, pgoff)				\
+-	((((addr) + shm_align_mask) & ~shm_align_mask) +	\
+-	 (((pgoff) << PAGE_SHIFT) & shm_align_mask))
++#define COLOUR_ALIGN(addr, pgoff)			\
++	((((addr) + SHM_ALIGN_MASK) & ~SHM_ALIGN_MASK)	\
++	 + (((pgoff) << PAGE_SHIFT) & SHM_ALIGN_MASK))
+ 
+ enum mmap_allocation_direction {UP, DOWN};
+ 
+@@ -40,7 +39,7 @@ static unsigned long arch_get_unmapped_area_common(struct file *filp,
+ 		 * cache aliasing constraints.
+ 		 */
+ 		if ((flags & MAP_SHARED) &&
+-		    ((addr - (pgoff << PAGE_SHIFT)) & shm_align_mask))
++		    ((addr - (pgoff << PAGE_SHIFT)) & SHM_ALIGN_MASK))
+ 			return -EINVAL;
+ 		return addr;
+ 	}
+@@ -63,7 +62,7 @@ static unsigned long arch_get_unmapped_area_common(struct file *filp,
+ 	}
+ 
+ 	info.length = len;
+-	info.align_mask = do_color_align ? (PAGE_MASK & shm_align_mask) : 0;
++	info.align_mask = do_color_align ? (PAGE_MASK & SHM_ALIGN_MASK) : 0;
+ 	info.align_offset = pgoff << PAGE_SHIFT;
+ 
+ 	if (dir == DOWN) {
+-- 
+2.39.3
+
