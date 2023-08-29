@@ -2,475 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 396A678CCC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C3F78CCDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234589AbjH2TQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
+        id S236485AbjH2TS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239429AbjH2TQ2 (ORCPT
+        with ESMTP id S239981AbjH2TSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 15:16:28 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF72CE7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:15:57 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d743a5fe05aso4488246276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:15:57 -0700 (PDT)
+        Tue, 29 Aug 2023 15:18:38 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7CBFD
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:18:34 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52683b68c2fso6296675a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 12:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693336555; x=1693941355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BfJDxd6xiv8SsO6QR9Mfg+H9iWZWtXyb03BdqvUJPXw=;
-        b=EwPgznxYLogwyyvpRUOfaumsEp+tjAEsOKk5kfYJ1+hbUDBtMuPBfWZCXMNeZ3G2/2
-         lONa2vgOhDmOuNVNR9nGPpEEvDfDfXHcxYbw6HdqZWgCc0pGKFn7NapUmcX8TWZ0RCvo
-         1QEWkKnuqgAVeeFUMGoXqelrwahPDy7sa8cFqfCrrweG7veTo+dUe0mKB1tjYxGE/Nks
-         wsrpFymQEKHUSL1dB743la8Xno5BmRAoNOSkFGWDY2GiT0S3TMxx4tAxcq+KpAQ22kKM
-         PPRy4I25rSf099spRMEk+AMklrAUOXZ362A7yhZf6tMZ0MuG69bLm0nPJt5ii7teIB48
-         rRgw==
+        d=chromium.org; s=google; t=1693336712; x=1693941512; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XY6m0jrM1EIVxXZKsdM96lBHZBbK4+oaifCRdomyQwM=;
+        b=ggeAGzDtrtR1fsr0tJrYLFSyK078f2U9HNB0qWWgeRcAKJl3JNzDbNFLA2h0J9LRJ7
+         uRstepuCugK11GShKZBnbQ7clCyATthZ/kuUmWiaWBeSAxeuG/yo2aSgLAryBhoKnsA+
+         zUWP8bomW03iCb9JppmgDgPWUPKaf7sSBfa1w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693336555; x=1693941355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BfJDxd6xiv8SsO6QR9Mfg+H9iWZWtXyb03BdqvUJPXw=;
-        b=Yebzbe9/Hmu2Leq50GSC8UJQTKZbjJlWRrrCtCRPpgAWSzMPAqI1XUVjV1EuqPgkqR
-         HerS7ZREnelfRaXLjgRN+q19VOhhl86Ttlo/8CFpEvtpUM9TJ/UHtHAAD1z350xcCCAU
-         UgMnnZDs1TKt4DnRRyItJIzX969CvdUpPSLMtDad1R7ceFzlG77vaMImaj87s2o22GE8
-         IAID57Zb9suOfyZVn0XnIy8gd1JQBIVHi2KVa4pzwBxcZMGRFhXXXXiCMsbc6+nUCrEY
-         wFNPKnokJ8COX9o/aLRnLa6IUZtey7r+x8O4vhG3BGjIZmLCcT+p9kD7MB3C7nJ9EAHA
-         O1Qw==
-X-Gm-Message-State: AOJu0YxvdSjhTthDAPjldd/JPagRlhIdeJGb4QmHgN2/IW17QQ0zUzYJ
-        HXkS44+55hwsLG5brSRRCiSa9OTc8LKKtkdxidY17g==
-X-Google-Smtp-Source: AGHT+IGM9boKhJwkuJdxOFhOk+DAD51L/UJNB0UGPSzWJ8F8YwzgzPA4USM42tbLjNaDPww+leYnHBpBrZ4WEv2zCdA=
-X-Received: by 2002:a25:b8b:0:b0:c73:e6b5:c452 with SMTP id
- 133-20020a250b8b000000b00c73e6b5c452mr59733ybl.2.1693336555551; Tue, 29 Aug
- 2023 12:15:55 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693336712; x=1693941512;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XY6m0jrM1EIVxXZKsdM96lBHZBbK4+oaifCRdomyQwM=;
+        b=JOB0+qejB9UrdU/SVQZwUuWYPtrei+tOXfDWyvYr8BhLKP0g/AqMN2pcImt4KgsCae
+         6Zh78LwetqGdSv3T0/B9nZ9qGey5gIIwI2J1bLcZ8CiBIVCpZQNxhjG/8LWVMSobur0n
+         ymuM+OxZzTIO+uqasOJtMUOsmcFSeZJ3B90VBZGo5GEwFqYTb/vVQ5AhK7wT1S0NrLh4
+         FpzFlGrYF6xH3oG17SIR/ZtA/KqvcJIho+lEz1FgBSW6lgWOr4B1uwzMN69+zW26Uxb+
+         05BRV+b56HBkIsNi65s96pIDa1IgTVR95T2HoFqH5RWqNrEGfCPgeSEeYlLK6x7vbJWs
+         jOPA==
+X-Gm-Message-State: AOJu0Yxiwps5AB11qjvP+FoZ9/Twb3aoRvu48QJksq/lGbqUoSzmE/gM
+        qOOvEfdB+ipND2558e8Mx5PLWghxEi2uVxmnsIA31g==
+X-Google-Smtp-Source: AGHT+IFI+6hIzTjgJuzAa1zO1wGKWDxOAL24PqezgVa4g1DgJpvIb/BqU2ngDxgfIuxCB7U7LzNQnl5VC1qyua0ZTCk=
+X-Received: by 2002:aa7:d898:0:b0:522:b929:9f01 with SMTP id
+ u24-20020aa7d898000000b00522b9299f01mr195406edq.9.1693336712271; Tue, 29 Aug
+ 2023 12:18:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org> <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org> <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
- <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org> <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
- <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org> <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
- <0cb96702-b396-4223-870f-b798d32991ee@linaro.org> <7571be78-5560-13bf-d754-cabc8ad6140d@quicinc.com>
- <56c11316-57ce-45d5-927c-84f65a1c227e@linaro.org> <CAA8EJpqQkb1wumNJWkKV2o5+52FopHyPRvxBewLxGFXnTJFA9A@mail.gmail.com>
- <5512f228-680b-0259-cfc5-6dae6d4da392@quicinc.com> <CAA8EJpr8WPmsgiXb16OipvtouwztKYjVWLYK04Z0DvQ7frtJiw@mail.gmail.com>
- <e52d9a0a-f748-22fb-e68c-4b819d97d0cd@quicinc.com> <CAA8EJpohD05+JuHoGai9NoM-GH8JN9MGtf4CKtBJpPm5n25dwA@mail.gmail.com>
- <c522a944-4ae1-098b-0205-b0810325114c@quicinc.com>
-In-Reply-To: <c522a944-4ae1-098b-0205-b0810325114c@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 29 Aug 2023 22:15:44 +0300
-Message-ID: <CAA8EJpoEQAjRPnZD5uErSUO=3v-J3yHwZCEU2WcX8RXjV_ZcsQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox VTDR6130
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     neil.armstrong@linaro.org,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
+References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
+ <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
+ <CAPnjgZ1S8G=7eCBF9PcDk4H5sk3AcxSSWXO575jK8SjA9dR8qw@mail.gmail.com> <CAMj1kXH83_TB4S0PL3jswxjCP+907YpgS7FRuVTO3G62s7nn5w@mail.gmail.com>
+In-Reply-To: <CAMj1kXH83_TB4S0PL3jswxjCP+907YpgS7FRuVTO3G62s7nn5w@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Tue, 29 Aug 2023 13:17:48 -0600
+Message-ID: <CAPnjgZ2kkUt1eOWX8K+EsbjcQZPefNvj5DSaFb9QrvRg0t2h7w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 22:09, Abhinav Kumar <quic_abhinavk@quicinc.com> wro=
-te:
+Hi Ard,
+
+On Thu, 24 Aug 2023 at 03:10, Ard Biesheuvel <ardb@kernel.org> wrote:
 >
->
->
-> On 8/29/2023 11:51 AM, Dmitry Baryshkov wrote:
-> > On Tue, 29 Aug 2023 at 20:22, Abhinav Kumar <quic_abhinavk@quicinc.com>=
- wrote:
-> >>
-> >>
-> >>
-> >> On 8/29/2023 9:43 AM, Dmitry Baryshkov wrote:
-> >>> On Tue, 29 Aug 2023 at 19:37, Abhinav Kumar <quic_abhinavk@quicinc.co=
-m> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 8/29/2023 2:26 AM, Dmitry Baryshkov wrote:
-> >>>>> On Tue, 29 Aug 2023 at 12:22, <neil.armstrong@linaro.org> wrote:
-> >>>>>>
-> >>>>>> On 28/08/2023 19:07, Abhinav Kumar wrote:
-> >>>>>>> Hi Neil
-> >>>>>>>
-> >>>>>>> Sorry I didnt respond earlier on this thread.
-> >>>>>>>
-> >>>>>>> On 8/28/2023 1:49 AM, neil.armstrong@linaro.org wrote:
-> >>>>>>>> Hi Jessica,
-> >>>>>>>>
-> >>>>>>>> On 25/08/2023 20:37, Jessica Zhang wrote:
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
-> >>>>>>>>>> Hi Maxime,
-> >>>>>>>>>>
-> >>>>>>>>>> On 21/08/2023 10:17, Maxime Ripard wrote:
-> >>>>>>>>>>> Hi,
-> >>>>>>>>>>>
-> >>>>>>>>>>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@lina=
-ro.org wrote:
-> >>>>>>>>>>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
-> >>>>>>>>>>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
-> >>>>>>>>>>>>>> Sending HS commands will always work on any controller, it=
-'s all
-> >>>>>>>>>>>>>> about LP commands. The Samsung panels you listed only send=
- HS
-> >>>>>>>>>>>>>> commands so they can use prepare_prev_first and work on an=
-y
-> >>>>>>>>>>>>>> controllers.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> I think there is some misunderstanding there, supported by =
-the
-> >>>>>>>>>>>>> description of the flag.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> If I remember correctly, some hosts (sunxi) can not send DC=
-S
-> >>>>>>>>>>>>> commands after enabling video stream and switching to HS mo=
-de, see
-> >>>>>>>>>>>>> [1]. Thus, as you know, most of the drivers have all DSI pa=
-nel setup
-> >>>>>>>>>>>>> commands in drm_panel_funcs::prepare() /
-> >>>>>>>>>>>>> drm_bridge_funcs::pre_enable() callbacks, not paying attent=
-ion
-> >>>>>>>>>>>>> whether these commands are to be sent in LP or in HS mode.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Previously DSI source drivers could power on the DSI link e=
-ither in
-> >>>>>>>>>>>>> mode_set() or in pre_enable() callbacks, with mode_set() be=
-ing the
-> >>>>>>>>>>>>> hack to make panel/bridge drivers to be able to send comman=
-ds from
-> >>>>>>>>>>>>> their prepare() / pre_enable() callbacks.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> With the prev_first flags being introduced, we have establi=
-shed that
-> >>>>>>>>>>>>> DSI link should be enabled in DSI host's pre_enable() callb=
-ack and
-> >>>>>>>>>>>>> switched to HS mode (be it command or video) in the enable(=
-)
-> >>>>>>>>>>>>> callback.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> So far so good.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> It seems coherent, I would like first to have a state of all=
- DSI host
-> >>>>>>>>>>>> drivers and make this would actually work first before addin=
-g the
-> >>>>>>>>>>>> prev_first flag to all the required panels.
-> >>>>>>>>>>>
-> >>>>>>>>>>> This is definitely what we should do in an ideal world, but a=
-t least for
-> >>>>>>>>>>> sunxi there's no easy way for it at the moment. There's no do=
-cumentation
-> >>>>>>>>>>> for it and the driver provided doesn't allow this to happen.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Note that I'm not trying to discourage you or something here,=
- I'm simply
-> >>>>>>>>>>> pointing out that this will be something that we will have to=
- take into
-> >>>>>>>>>>> account. And it's possible that other drivers are in a simila=
-r
-> >>>>>>>>>>> situation.
-> >>>>>>>>>>>
-> >>>>>>>>>>>>> Unfortunately this change is not fully backwards-compatible=
-. This
-> >>>>>>>>>>>>> requires that all DSI panels sending commands from prepare(=
-) should
-> >>>>>>>>>>>>> have the prepare_prev_first flag. In some sense, all such p=
-atches
-> >>>>>>>>>>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_pre=
-v_first
-> >>>>>>>>>>>>> flag to drm_panel").
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> This kind of migration should be done *before* any possible
-> >>>>>>>>>>>> regression, not the other way round.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> If all panels sending commands from prepare() should have th=
-e
-> >>>>>>>>>>>> prepare_prev_first flag, then it should be first, check for
-> >>>>>>>>>>>> regressions then continue.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> <snip>
-> >>>>>>>>>>>>
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> I understand, but this patch doesn't qualify as a fix for
-> >>>>>>>>>>>>>> 9e15123eca79 and is too late to be merged in drm-misc-next=
- for
-> >>>>>>>>>>>>>> v6.6, and since 9e15123eca79 actually breaks some support =
-it
-> >>>>>>>>>>>>>> should be reverted (+ deps) since we are late in the rc cy=
-cles.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> If we go this way, we can never reapply these patches. Ther=
-e will be
-> >>>>>>>>>>>>> no guarantee that all panel drivers are completely converte=
-d. We
-> >>>>>>>>>>>>> already have a story without an observable end -
-> >>>>>>>>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> I don't understand this point, who would block re-applying t=
-he patches ?
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done ove=
-r multiple
-> >>>>>>>>>>>> Linux version and went smoothly because we reverted regressi=
-ng patches
-> >>>>>>>>>>>> and restarted when needed, I don't understand why we can't d=
-o this
-> >>>>>>>>>>>> here aswell.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>>> I'd consider that the DSI driver is correct here and it is =
-about the
-> >>>>>>>>>>>>> panel drivers that require fixes patches. If you care about=
- the
-> >>>>>>>>>>>>> particular Fixes tag, I have provided one several lines abo=
-ve.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Unfortunately it should be done in the other way round, prep=
-are for
-> >>>>>>>>>>>> migration, then migrate,
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> I mean if it's a required migration, then it should be done =
-and I'll
-> >>>>>>>>>>>> support it from both bridge and panel PoV.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> So, first this patch has the wrong Fixes tag, and I would li=
-ke a
-> >>>>>>>>>>>> better explanation on the commit message in any case. Then I=
- would
-> >>>>>>>>>>>> like to have an ack from some drm-misc maintainers before ap=
-plying it
-> >>>>>>>>>>>> because it fixes a patch that was sent via the msm tree thus=
- per the
-> >>>>>>>>>>>> drm-misc rules I cannot apply it via the drm-misc-next-fixes=
- tree.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Sorry, it's not clear to me what you'd like our feedback on e=
-xactly?
-> >>>>>>>>>>
-> >>>>>>>>>> So let me resume the situation:
-> >>>>>>>>>>
-> >>>>>>>>>> - pre_enable_prev_first was introduced in [1]
-> >>>>>>>>>> - some panels made use of pre_enable_prev_first
-> >>>>>>>>>> - Visionox VTDR6130 was enabled on SM8550 systems and works on=
- v6.5 kernels and before
-> >>>>>>>>>> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 =
-on SM8550 systems (and probably other Video mode panels on Qcom platforms)
-> >>>>>>>>>> - this fix was sent late, and is now too late to be merged via=
- drm-misc-next
-> >>>>>>>>>
-> >>>>>>>>> Hi Neil and Maxime,
-> >>>>>>>>>
-> >>>>>>>>> I agree with Neil that 9e15123eca79 was the commit that introdu=
-ced the issue (since it changed the MSM DSI host behavior).
-> >>>>>>>>>
-> >>>>>>>>> However, I'm not too keen on simply reverting that patch becaus=
-e
-> >>>>>>>>>
-> >>>>>>>>> 1) it's not wrong to have the dsi_power_on in pre_enable. Argua=
-bly, it actually makes more sense to power on DSI host in pre_enable than i=
-n modeset (since modeset is meant for setting the bridge mode), and
-> >>>>>>>>
-> >>>>>>>> I never objected that, it's the right path to go.
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> Ack.
-> >>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> 2) I think it would be good practice to keep specific bridge ch=
-ip checks out of the DSI host driver.
-> >>>>>>>>
-> >>>>>>>> We discussed about a plan with Maxime and Dmitry about that, and=
- it would require adding
-> >>>>>>>> a proper atomic panel API to handle a "negociation" with the hos=
-t controller.
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> May I know what type of negotiation is needed here?
-> >>>>>>>
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> That being said, what do you think about setting the default va=
-lue of prepare_prev_first to true (possibly in panel_bridge_attach)?
-> >>>>>>>>
-> >>>>>>>> As Dmitry pointed, all panels sending LP commands in pre_enable(=
-) should have prepare_prev_first to true.
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> I wanted to respond to this earlier but didnt get a chance.
-> >>>>>>>
-> >>>>>>>     From the documentation of this flag, this has nothing to do w=
-hether panels are sending the LP commands (commands sent in LP mode) OR HS =
-commands (commands sent in HS mode).
-> >>>>>>>
-> >>>>>>> This is more about sending the commands whether the lanes are in =
-LP11 state before sending the ON commands.
-> >>>>>>>
-> >>>>>>> 195      * The previous controller should be prepared first, befo=
-re the prepare
-> >>>>>>> 196      * for the panel is called. This is largely required for =
-DSI panels
-> >>>>>>> 197      * where the DSI host controller should be initialised to=
- LP-11 before
-> >>>>>>> 198      * the panel is powered up.
-> >>>>>>> 199      */
-> >>>>>>> 200     bool prepare_prev_first;
-> >>>>>>>
-> >>>>>>> These are conceptually different and thats what I explained Dmitr=
-y in our call.
-> >>>>>>>
-> >>>>>>> Sending ON commands in LP11 state is a requirement I have seen wi=
-th many panels and its actually the right expectation as well to send the c=
-ommands when the lanes are in a well-defined LP11 state.
-> >>>>>>>
-> >>>>>>>     From the panels which I have seen, the opposite is never true=
- (OR i have never seen it this way).
-> >>>>>>>
-> >>>>>>> The parade chip was the only exception and that issue was never r=
-oot-caused leading us to have bridge specific handling in MSM driver.
-> >>>>>>>
-> >>>>>>> In other words, it would be very unlikely that a panel should be =
-broken or shouldn't work when the ON commands are sent when the lanes are i=
-n LP11 state.
-> >>>>>>>
-> >>>>>>> So I agree with Jessica, that we should set the default value of =
-this flag to true in the framework so that only the bridges/panels which ne=
-ed this to be false do that explicitly. From the examples I pointed out inc=
-luding MTK, even those vendors are powering on their DSI in pre_enable() wh=
-ich means none of these panels will work there too.
-> >>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> It seems to me that most panel drivers send DCS commands during=
- pre_enable, so maybe it would make more sense to power on DSI host before =
-panel enable() by default. Any panel that needs DSI host to be powered on l=
-ater could then explicitly set the flag to false in their respective driver=
-s.
-> >>>>>>>>
-> >>>>>>>> A proper migration should be done, yes, but not as a fix on top =
-of v6.5.
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> I am fine to drop this fix in favor of making the prepare_prev_fi=
-rst as default true but we need an agreement first. From what I can see, pa=
-rade chip will be the only one which will need this to be set to false and =
-we can make that change.
-> >>>>>>>
-> >>>>>>> Let me know if this works as a migration plan.
-> >>>>>>
-> >>>>>> Yep agreed, let's do this
-> >>>>>>
-> >>>>>> The panel's prepare_prev_first should be reversed to something lik=
-e not_prepare_prev_first to make it an exception.
-> >>>>>
-> >>>>> This will break all non-DSI panels, which might depend on the curre=
-nt
-> >>>>> bridge calling order.
-> >>>>>
-> >>>>> I started looking at the explicit DSI power up sequencing, but it w=
-ill
-> >>>>> take a few more days to mature.
-> >>>>>
-> >>>>
-> >>>> May I know why this would break all non-DSI panels?
-> >>>
-> >>> Existing panel drivers might be depending on the init order. Do we
-> >>> know for sure that none of DPI panels will be broken if there is a
-> >>> video stream ongoing during the reset procedure?
-> >>> Or the panel-edp, which I'm pretty sure will require not_prepare_prev=
-_first.
-> >>>
-> >>
-> >> Can you please explain why would video stream be ON in pre_enable()?
-> >>
-> >> Even though we call msm_dsi_host_enable() in the DSI's pre_enable(), t=
-he
-> >> timing engine is not enabled until the encoder's enable and the first
-> >> commit after that so video stream wont be sent till then.
+> On Wed, 23 Aug 2023 at 22:04, Simon Glass <sjg@chromium.org> wrote:
 > >
-> > You are describing the MSM DSI case. I was pointing to the fact that
-> > parent's pre_enable if called too early might conflict with the next
-> > bridge driver in the _generic_ case. E.g. eDP or DPI. Even if is not a
-> > full-featured video stream, this state might confuse the panel. So we
-> > can not blindly switch the order of pre_enable callbacks for the
-> > bridge-panel pair.
+> > Hi,
+> >
+> > On Wed, 23 Aug 2023 at 08:24, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Wed, 23 Aug 2023 at 10:59, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Tue, Aug 22, 2023 at 02:34:42PM -0600, Simon Glass wrote:
+> > > > > The Devicetree specification skips over handling of a logical view of
+> > > > > the memory map, pointing users to the UEFI specification.
+> > > > >
+> > > > > It is common to split firmware into 'Platform Init', which does the
+> > > > > initial hardware setup and a "Payload" which selects the OS to be booted.
+> > > > > Thus an handover interface is required between these two pieces.
+> > > > >
+> > > > > Where UEFI boot-time services are not available, but UEFI firmware is
+> > > > > present on either side of this interface, information about memory usage
+> > > > > and attributes must be presented to the "Payload" in some form.
+> > >
+> > > Not quite.
+> > >
+> > > This seems to be intended for consumption by Linux booting in ACPI
+> > > mode, but not via UEFI, right?
+> >
+> > Actually, this is for consumption by firmware. The goal is to allow
+> > edk2 to boot into U-Boot and vice versa, i.e. provide some
+> > interoperability between firmware projects. I will use the "Platform
+> > Init" and "Payload" terminology here too.
 > >
 >
-> Even if the end connector was a eDP or DPI, the input to the bridge was
-> DSI so I think its unlikely that video stream was on before encoder's
-> enable but I cannot speak for all these interfaces/vendors.
+> OK. It was the cc to linux-acpi@ and the authors of the
+> ACPI/SMBIOS-without-UEFI patches that threw me off here.
 >
-> So, to accommodate both worlds, does this work?
+> If we are talking about an internal interface for firmware components,
+> I'd be inclined to treat this as an implementation detail, as long as
+> the OS is not expected to consume these DT nodes.
 >
-> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/pane=
-l.c
-> index 9316384b4474..2b38388d4e56 100644
-> --- a/drivers/gpu/drm/bridge/panel.c
-> +++ b/drivers/gpu/drm/bridge/panel.c
-> @@ -416,7 +416,10 @@ struct drm_bridge
-> *devm_drm_panel_bridge_add_typed(struct device *dev,
->                  return bridge;
->          }
+> However, I struggle to see the point of framing this information as a
+> 'UEFI memory map'. Neither EDK2 nor u-boot consume this information
+> natively, and there is already prior art in both projects to consume
+> nodes following the existing bindings for device_type=memory and the
+> /reserved-memory node. UEFI runtime memory is generally useless
+> without UEFI runtime services, and UEFI boot services memory is just
+> free memory.
 >
-> -       bridge->pre_enable_prev_first =3D panel->prepare_prev_first;
-> +       if (connector_type =3D=3D DRM_MODE_CONNECTOR_DSI)
-> +               bridge->pre_enable_prev_first =3D true;
-> +       else
-> +               bridge->pre_enable_prev_first =3D panel->prepare_prev_fir=
-st;
+> There is also an overlap with the handover between secure and
+> non-secure firmware on arm64, which is also DT based, and communicates
+> available memory as well as RAM regions that are reserved for firmware
+> use.
+>
+> In summary, I don't see why a non-UEFI payload would care about UEFI
+> semantics for pre-existing memory reservations, or vice versa. Note
+> that EDK2 will manage its own memory map, and expose it via UEFI boot
+> services and not via DT.
 
-looks like a hack.
+Bear in mind that one or both sides of this interface may be UEFI.
+There is no boot-services link between the two parts that I have
+outlined.
 
 >
->          *ptr =3D bridge;
->          devres_add(dev, ptr);
->
-> >>
-> >> drm_atomic_bridge_chain_pre_enable() is called before the encoder's en=
-able.
-> >>
-> >> drm_atomic_bridge_chain_enable() is the one which is called after the
-> >> encoder's enable().
-> >>
-> >>>>
-> >>>> Like I said, we dont know the full details of the parade issue but I=
- do
-> >>>> not see any reason why powering on a bridge chip with the DSI lanes
-> >>>> being in proper LP11 state should cause an issue. Its a well defined=
- and
-> >>>> documented state in DSI spec.
-> >>>>
-> >>>> On the contrary, trying to turn on a bridge chip before powering on =
-a
-> >>>> controller could have more issues as we do not know what state the l=
-anes
-> >>>> are in when the MIPI devices (panel or bridge) are powered up.
-> >>>>
-> >>>> This sets the expectation and handshake straight.
-> >>>
-> >>>
+> ...
 > >
+> > There is no intent to implement the UEFI spec, here. It is simply that
+> > some payloads (EDK2) are used to having this information.
 > >
+> > Imagine splitting EDK2 into two parts, one of which does platform init
+> > and the other which (the payload) boots the OS. The payload wants
+> > information from Platform Init and it needs to be in a devicetree,
+> > since that is what we have chosen for this interface. So to some
+> > extent this is unrelated to whether you have EFI boot services. We
+> > just need to be able to pass the information across the interface.
+> > Note that the user can (without recompilation, etc.) replace the
+> > second part with U-Boot (for example) and it must still work.
 > >
+>
+> OK, so device tree makes sense for this. This is how I implemented the
+> EDK2 port that targets QEMU/mach-virt - it consumes the DT to discover
+> the UART, RTC,, memory, PCI host bridge, etc.
+>
+> But I don't see a use case for a UEFI memory map here.
+>
+>
+> > >
+> > > >
+> > > > Today Linux does that by passing:
+> > > >
+> > > >   /chosen/linux,uefi-mmap-start
+> > > >   /chosen/linux,uefi-mmap-size
+> > > >   /chosen/linux,uefi-mmap-desc-size
+> > > >   /chosen/linux,uefi-mmap-desc-ver
+> > > >
+> > > > ... or /chosen/xen,* variants of those.
+> > > >
+> > > > Can't we document / genericise that?
+> >
+> > That seems to me to be the fields from the EFI memory-map call, but
+> > where is the actual content? I looked in the kernel but it seems to be
+> > an internal interface (between the stub and the kernel)?
+> >
+> > > >
+> > >
+> > > Given the ACPI angle, promoting this to external ABI would introduce a
+> > > DT dependency to ACPI boot. So we'll at least have to be very clear
+> > > about which takes precedence, or maybe disregard everything except the
+> > > /chosen node when doing ACPI boot?
+> > >
+> > > This also argues for not creating an ordinary binding for this (i.e.,
+> > > describing it as part of the platform topology), but putting it under
+> > > /chosen as a Linux-only boot tweak.
+> > >
+> > > > Pointing to that rather than re-encoding it in DT means that it stays in-sync
+> > > > with the EFI spec and we won't back ourselves into a corner where we cannot
+> > > > encode something due to a structural difference. I don't think it's a good idea
+> > > > to try to re-encode it, or we're just setting ourselves up for futher pain.
+> > > >
+> > >
+> > > What I would prefer is to formalize pseudo-EFI boot and define the
+> > > bare required minimum (system table + memory map + config tables) in
+> > > an arch-agnostic manner. That way, the only thing that needs to be
+> > > passed via DT/boot_params/etc is the (pseudo-)EFI system table
+> > > address, and everything else (SMBIOS, ACPI as well as the EFI memory
+> > > map and even the initrd) can be passed via config tables as usual, all
+> > > of which is already supported in (mostly) generic kernel code.
+> > >
+>
+> <snip some lines>
+>
+> >
+> > Here I believe you are talking about booting the kernel in EFI mode,
+> > but that is not the intent of this patch. This is all about things
+> > happening in firmware. Now, if the payload (second) part of the
+> > firmware decides it wants to offer EFI boot services and boot the
+> > kernel via the EFI stub, then it may very well pack this information
+> > (with a few changes) into a system table and make it available to the
+> > kernel stub. But by then this FDT binding is irrelevant, since it has
+> > served its purpose (which, to reiterate, is to facilitate information
+> > passage from platform init to 'payload').
+> >
+>
+> Indeed. As long as this binding is never consumed by the OS, I don't
+> have any objections to it - I just fail to see the point.
 
+OK thanks.
 
+The point is that Platform Init and the payload need to agree about
+where certain things are in memory. It is true that this is coming
+from an EFI context, but that is just an example. Platform Init
+doesn't necessarily know whether its payload is EFI, but may set this
+up for use by the payload, just in case.
 
---=20
-With best wishes
-Dmitry
+Regards,
+SImon
