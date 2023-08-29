@@ -2,50 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB4A78C071
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFD278C063
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbjH2Iiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
+        id S234197AbjH2IiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbjH2IiO (ORCPT
+        with ESMTP id S234223AbjH2Ihn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:38:14 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84720FF
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:38:09 -0700 (PDT)
-X-QQ-mid: bizesmtp71t1693298254t31b16n2
-Received: from linux-lab-host.localdomain ( [116.30.128.193])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 29 Aug 2023 16:37:33 +0800 (CST)
-X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: CR3LFp2JE4ky7+uTGvZzZpYYBVmQR83udOiXazEP9GOTcJyPyjz/9uewK3Leg
-        LtilKXp6eUbLM1mNtJa7/Md6m4VOa91+Dr+O61h10eoBCfiqpwx5Z9l5durFnD+KjWg7MNj
-        DLJPimsWNG4sihvdPYBtR4osBiis+6BJ5xM4uXFOTolZ8VwLqgcPgUZwyNDWGFE1kdCPxc4
-        VsZh7dbq6+PeuSJWOm+EUSiQM0dVNCw7NrTpStFR28N/oMxa0By2SibU8fWSDrDkKqptuf8
-        eT9NfkU+4L3Emrb5OCqLoScY0vMJSBXsF0d2ByVlgRTsKsMKWhrgs00kGIFwnTWLwo5DmG4
-        NPvM//T3ytExpXQn2swWcqSiYQGo8b745VPql0HuDW8mmoMwTSFF4HfY6k6EQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 18399361335853712054
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     ammarfaizi2@gnuweeb.org
-Cc:     falcon@tinylab.org, gwml@vger.gnuweeb.org, inori@vnlx.org,
-        linux-kernel@vger.kernel.org, linux@weissschuh.net,
-        moe@gnuweeb.org, w@1wt.eu
-Subject: [PATCH v2 1/1] tools/nolibc: i386: Fix a stack misalign bug on _start
-Date:   Tue, 29 Aug 2023 16:37:32 +0800
-Message-Id: <20230829083732.5981-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230828070240.1691921-2-ammarfaizi2@gnuweeb.org>
-References: <20230828070240.1691921-2-ammarfaizi2@gnuweeb.org>
+        Tue, 29 Aug 2023 04:37:43 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A5BBC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:37:41 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401ceda85cdso12528265e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:37:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693298260; x=1693903060;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cut4aK4TgUvLV15+68ROwMjaB5Yg1rV735PWdbICfq4=;
+        b=Ss9XmdjSHGSWXbfGN6XXZ2auywX8w3BBj2MEhO2DxnDgT3PrK3BomrQcupH4UDday0
+         aszKP2wH3U4Ibps3u8c7Y53k/ivqNu7dqJv+HLhUn3CPzRtkHas9fxgceIvmSy2wvVA6
+         uuIZeCFJkbKrgaphzxt7ChA82IVUMRgLj6lDj7CFV6Gfyrk7WubveK6ilrtLMBieVNUi
+         YsVidBkbyX1ZB4fzMFWHxONFLPuLNpNKCz7SshCOb0MyLdgXjz+OOAik2E+kmHpXyKBp
+         w2lMDeN+4UOZgwNgyknVpX9kwhusnFvMdMLEQy8wmgeD6aDyOrobFpxMHL5dnjFpOAD8
+         JM9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693298260; x=1693903060;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cut4aK4TgUvLV15+68ROwMjaB5Yg1rV735PWdbICfq4=;
+        b=ZXztzT+dFFXGYJcwwNVsLmWbQDp4/KEkUyI8hO6+e3bBFkFJq1MRwh+70H13T3EvMj
+         8Pt4xDLVWYhvCTZ60usNWlv/zXv522jt+V4OuJuB9jqwBHLFFRpE61W7Y09tYnU8lZFK
+         rhFUhSwnM3X12ApSdnGvS4Iu6nY5GB9rGeCpzWVtuFuO6f8C+dFAB93R+/5V3S32Rg6Q
+         8mlUnHzcp0fsj3DGZFMxbgtNJ3G0qaBl2iUKzHgUKiFAlB/jX9xLJiQ/W7gTgYyc7BX2
+         51DO0tqHwzJgfnFlXCEprmP84cDXQsDleFDNg8sk2q2UrrVkU51deJz78MEV4zhsgB2h
+         wgnA==
+X-Gm-Message-State: AOJu0Yx0HFLgu/yFUBCEVzzFuSNebh3rjLY2EqzOUkcXzVW9mew76sOv
+        fRaPWldOKaJnSqcWfYRt0A4=
+X-Google-Smtp-Source: AGHT+IE9Wt12V3aa7ICOVESN9tE4eauLif2gw6JJmTNt6LZ0qFECjLJxMsVWL/MtMyLc+WFrh/aDvw==
+X-Received: by 2002:a05:600c:b42:b0:3fe:1871:1826 with SMTP id k2-20020a05600c0b4200b003fe18711826mr21209154wmr.27.1693298259387;
+        Tue, 29 Aug 2023 01:37:39 -0700 (PDT)
+Received: from [10.254.108.106] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id 21-20020a05600c231500b003fc0505be19sm13180441wmo.37.2023.08.29.01.37.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 01:37:38 -0700 (PDT)
+Message-ID: <0ced6c19-68fd-42cb-3709-5bb551cf8d1f@gmail.com>
+Date:   Tue, 29 Aug 2023 10:37:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 5/7] drm/amdgpu: Set/Reset GPU workload profile
+To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
+        alexander.deucher@amd.com, shashank.sharma@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Felix.Kuehling@amd.com, amd-gfx@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230828122614.3815122-1-Arvind.Yadav@amd.com>
+ <20230828122614.3815122-6-Arvind.Yadav@amd.com>
+Content-Language: en-US
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <20230828122614.3815122-6-Arvind.Yadav@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,61 +78,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ammar
-
-> The ABI mandates that the %esp register must be a multiple of 16 when
-> executing a 'call' instruction.
-> 
-> Commit 2ab446336b17 ("tools/nolibc: i386: shrink _start with _start_c")
-> simplified the _start function, but it didn't take care of the %esp
-> alignment, causing SIGSEGV on SSE and AVX programs that use aligned move
-> instruction (e.g., movdqa, movaps, and vmovdqa).
+Am 28.08.23 um 14:26 schrieb Arvind Yadav:
+> This patch is to switch the GPU workload profile based
+> on the submitted job. The workload profile is reset to
+> default when the job is done.
 >
+> v3:
+> - Addressed the review comment about changing the function
+>    name from *_set() to *_get().
 
-As Thomas suggested and you replied, since there is no public report
-link, what about uses the link which has test code at the end of above
-paragraph.
+That looks like a really bad idea in general. This are the high level 
+functions, but what you want to use are the low level functions for each 
+ring.
 
-    ...
-    instruction (e.g., movdqa, movaps, and vmovdqa) [1].
+Take a look at amdgpu_ring_begin_use()/_end_use() instead.
 
-> The 'and $-16, %esp' aligns the %esp at a multiple of 16. Then 'push
-> %eax' will subtract the %esp by 4; thus, it breaks the 16-byte
-> alignment. Make sure the %esp is correctly aligned after the push by
-> subtracting 12 before the push.
-> 
+Christian.
 
-And at the end of commit message:
-
-    [1]: https://lore.kernel.org/lkml/ZOoindMFj1UKqo+s@biznet-home.integral.gnuweeb.org/
-
-This test code may be important for future change verification.
-
-Thanks,
-Zhangjin
-
-> Cc: Zhangjin Wu <falcon@tinylab.org>
-> Fixes: 2ab446336b17aad362c6decee29b4efd83a01979 ("tools/nolibc: i386: shrink _start with _start_c")
-> Reported-by: Nicholas Rosenberg <inori@vnlx.org>
-> Acked-by: Thomas Weißschuh <linux@weissschuh.net>
-> Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Reviewed-by: Shashank Sharma <shashank.sharma@amd.com>
+> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
 > ---
->  tools/include/nolibc/arch-i386.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/include/nolibc/arch-i386.h b/tools/include/nolibc/arch-i386.h
-> index 64415b9fac77f996..8079974424fa18b0 100644
-> --- a/tools/include/nolibc/arch-i386.h
-> +++ b/tools/include/nolibc/arch-i386.h
-> @@ -167,7 +167,8 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
->  	__asm__ volatile (
->  		"xor  %ebp, %ebp\n"       /* zero the stack frame                                */
->  		"mov  %esp, %eax\n"       /* save stack pointer to %eax, as arg1 of _start_c     */
-> -		"and  $-16, %esp\n"       /* last pushed argument must be 16-byte aligned        */
-> +		"and  $-16, %esp\n"       /* align stack to 16 bytes                             */
-> +		"sub  $(16 - 4), %esp\n"  /* push %eax breaks 16-byte alignment, so sub 12 bytes */
->  		"push %eax\n"             /* push arg1 on stack to support plain stack modes too */
->  		"call _start_c\n"         /* transfer to c runtime                               */
->  		"hlt\n"                   /* ensure it does not return                           */
-> -- 
-> Ammar Faizi
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_job.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+> index c3d9d75143f4..c5032762d497 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+> @@ -176,6 +176,9 @@ void amdgpu_job_free_resources(struct amdgpu_job *job)
+>   static void amdgpu_job_free_cb(struct drm_sched_job *s_job)
+>   {
+>   	struct amdgpu_job *job = to_amdgpu_job(s_job);
+> +	struct amdgpu_ring *ring = to_amdgpu_ring(s_job->sched);
+> +
+> +	amdgpu_workload_profile_put(ring->adev, ring->funcs->type);
+>   
+>   	drm_sched_job_cleanup(s_job);
+>   
+> @@ -295,6 +298,8 @@ static struct dma_fence *amdgpu_job_run(struct drm_sched_job *sched_job)
+>   			DRM_ERROR("Error scheduling IBs (%d)\n", r);
+>   	}
+>   
+> +	amdgpu_workload_profile_get(adev, ring->funcs->type);
+> +
+>   	job->job_run_counter++;
+>   	amdgpu_job_free_resources(job);
+>   
+
