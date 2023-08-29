@@ -2,151 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A33578BCDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8BF78BCE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbjH2Cey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
+        id S235392AbjH2Cgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbjH2Cec (ORCPT
+        with ESMTP id S233143AbjH2CgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:34:32 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DB613D
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:34:28 -0700 (PDT)
-Received: from [192.168.2.140] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        Mon, 28 Aug 2023 22:36:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C670A139;
+        Mon, 28 Aug 2023 19:36:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CBA5D66071DC;
-        Tue, 29 Aug 2023 03:34:25 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693276467;
-        bh=zCen/op7wjIViqDfv+0NVKrUFjfQTD9AYmbvMVtk7Kw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=W1tbxb/5VsSOn3rRGQU03/q8ShP/ocfyo846hcjEpv+yPGEcRkyz4bAw9Rq1AsIC2
-         i2AZ4LVCCrkKv0jndNrxNLJB2i8Y4P+afaIybxKqYR1YQM0B+oPZAtR3rdvRnWot+4
-         zu1AywW6h7UeEBhKnHVX6D+l6DB77pJs/BPy/yd61CeOlns7YZWm6H8lxj6EfAm9Hj
-         fSVJpZXVDAFf9pcc76h5n/fFLIJhR+f7aNsor+uEA0HjNb8CbxAk25S0G1xQEVvDD6
-         E/ymlXw5rDXqpAzHh1kWcq0CAuFB/KxxkBHsQk23XN8DYxhAtDpgC87GuffSGljg+h
-         Wp3YHLWy0rpfw==
-Message-ID: <01930e66-cba2-5d81-7f46-d46907bdd300@collabora.com>
-Date:   Tue, 29 Aug 2023 05:34:23 +0300
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5ADB260CEC;
+        Tue, 29 Aug 2023 02:36:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2D5DC433C8;
+        Tue, 29 Aug 2023 02:36:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693276578;
+        bh=GR786N1WG+6u7KDhtMNYzwV4w0yqeHQX13Xo8ZwlNKM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VTYmWKaKevaNznKPQb9Vg7GxV+IYK9Q/oOWrANVXZ8QqcKjfp5UVpPO9rTa/fvTI0
+         jA7TlguM070y8otXRlyzzCXMZaxYq1VF2X8krusAMXIQXiTJyEpyLisAwb1eW/OpYs
+         eevNj4V7nkF8zbQsbovIUotdETdxsJypRuTNNcpnVlTJE3n3qVpKt5be3GTZ5GTEWF
+         LVBjTiYfs/hzqoFQ6EuSIDtLxBe2N9z0lRl7tt/TFxworkx4DKU9+8ve9o+iWXt4Ob
+         GhubYAPtXO/SXU3SLcdOpCCG6+5o7CUw9ozmx+he7cV/XTv0MuQXwyMrIcjXROGxoI
+         xPDd8/4/PQw3g==
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-571194584e2so2480763eaf.3;
+        Mon, 28 Aug 2023 19:36:18 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzNRMaz7pRJ05uzMogC9aWFQrkxzGzzEa9iRan8C0m6PwLR/ce3
+        KtOy3sz5avqkGNS9fC1p92/okkyZ89CU91q75LY=
+X-Google-Smtp-Source: AGHT+IHFjR4ul+Tuk0znXoAjKIj9khNjYdgRNj3UF0yVzWH/x+XiTMfPP0bSIc8TlR7+ojMzA6QjyUL1FIMVk3hZlwM=
+X-Received: by 2002:a4a:ea3b:0:b0:56d:e6:21bf with SMTP id y27-20020a4aea3b000000b0056d00e621bfmr13266092ood.0.1693276577944;
+ Mon, 28 Aug 2023 19:36:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v15 17/23] drm/shmem-helper: Add and use
- drm_gem_shmem_resv_assert_held() helper
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
- <20230827175449.1766701-18-dmitry.osipenko@collabora.com>
- <20230828121239.78a180e6@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20230828121239.78a180e6@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230823115048.823011-1-masahiroy@kernel.org> <20230823115048.823011-6-masahiroy@kernel.org>
+ <ZOyuY5XCfYEV8fW6@bergen.fjasle.eu>
+In-Reply-To: <ZOyuY5XCfYEV8fW6@bergen.fjasle.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 29 Aug 2023 11:35:41 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ=5x+zOApY95Oqen0tyfVthb7QYjeskgQmUqGBDtSoiw@mail.gmail.com>
+Message-ID: <CAK7LNAQ=5x+zOApY95Oqen0tyfVthb7QYjeskgQmUqGBDtSoiw@mail.gmail.com>
+Subject: Re: [PATCH 6/8] kbuild: move more module installation code to scripts/Makefile.modinst
+To:     Nicolas Schier <nicolas@fjasle.eu>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 13:12, Boris Brezillon wrote:
-> On Sun, 27 Aug 2023 20:54:43 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
->> In a preparation of adding drm-shmem memory shrinker, move all reservation
->> locking lockdep checks to use new drm_gem_shmem_resv_assert_held() that
->> will resolve spurious lockdep warning about wrong locking order vs
->> fs_reclam code paths during freeing of shmem GEM, where lockdep isn't
->> aware that it's impossible to have locking contention with the fs_reclam
->> at this special time.
->>
->> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->> ---
->>  drivers/gpu/drm/drm_gem_shmem_helper.c | 37 +++++++++++++++++---------
->>  1 file changed, 25 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> index d96fee3d6166..ca5da976aafa 100644
->> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
->> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> @@ -128,6 +128,23 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
->>  }
->>  EXPORT_SYMBOL_GPL(drm_gem_shmem_create);
->>  
->> +static void drm_gem_shmem_resv_assert_held(struct drm_gem_shmem_object *shmem)
->> +{
->> +	/*
->> +	 * Destroying the object is a special case.. drm_gem_shmem_free()
->> +	 * calls many things that WARN_ON if the obj lock is not held.  But
->> +	 * acquiring the obj lock in drm_gem_shmem_free() can cause a locking
->> +	 * order inversion between reservation_ww_class_mutex and fs_reclaim.
->> +	 *
->> +	 * This deadlock is not actually possible, because no one should
->> +	 * be already holding the lock when drm_gem_shmem_free() is called.
->> +	 * Unfortunately lockdep is not aware of this detail.  So when the
->> +	 * refcount drops to zero, we pretend it is already locked.
->> +	 */
->> +	if (kref_read(&shmem->base.refcount))
->> +		drm_gem_shmem_resv_assert_held(shmem);
->> +}
->> +
->>  /**
->>   * drm_gem_shmem_free - Free resources associated with a shmem GEM object
->>   * @shmem: shmem GEM object to free
->> @@ -142,8 +159,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
->>  	if (obj->import_attach) {
->>  		drm_prime_gem_destroy(obj, shmem->sgt);
->>  	} else if (!shmem->imported_sgt) {
->> -		dma_resv_lock(shmem->base.resv, NULL);
->> -
->>  		drm_WARN_ON(obj->dev, kref_read(&shmem->vmap_use_count));
->>  
->>  		if (shmem->sgt) {
->> @@ -156,8 +171,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
->>  			drm_gem_shmem_put_pages_locked(shmem);
-> 
-> AFAICT, drm_gem_shmem_put_pages_locked() is the only function that's
-> called in the free path and would complain about resv-lock not being
-> held. I think I'd feel more comfortable if we were adding a
-> drm_gem_shmem_free_pages() function that did everything
-> drm_gem_shmem_put_pages_locked() does except for the lock_held() check
-> and the refcount dec, and have it called here (and in
-> drm_gem_shmem_put_pages_locked()). This way we can keep using
-> dma_resv_assert_held() instead of having our own variant.
+On Tue, Aug 29, 2023 at 11:15=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu>=
+ wrote:
+>
+> On Wed 23 Aug 2023 20:50:46 GMT, Masahiro Yamada wrote:
+> > Move more relevant code to scripts/Makefile.modinst.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  Makefile                 | 34 +++++++--------------------------
+> >  scripts/Makefile.modinst | 41 +++++++++++++++++++++++++++++++++++++---
+> >  2 files changed, 45 insertions(+), 30 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 7d9cab3d2186..82d22debf6c9 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1477,24 +1477,6 @@ endif
+> >
+> >  endif # CONFIG_MODULES
+> >
+> > -modinst_pre :=3D
+> > -ifneq ($(filter modules_install,$(MAKECMDGOALS)),)
+> > -modinst_pre :=3D __modinst_pre
+> > -endif
+> > -
+> > -modules_install: $(modinst_pre)
+> > -PHONY +=3D __modinst_pre
+> > -__modinst_pre:
+> > -     @rm -rf $(MODLIB)/kernel
+> > -     @rm -f $(MODLIB)/build
+> > -     @mkdir -p $(MODLIB)
+> > -ifdef CONFIG_MODULES
+> > -     @ln -s $(CURDIR) $(MODLIB)/build
+> > -     @sed 's:^\(.*\)\.o$$:kernel/\1.ko:' modules.order > $(MODLIB)/mod=
+ules.order
+> > -endif
+> > -     @cp -f modules.builtin $(MODLIB)/
+> > -     @cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+> > -
+> >  ###
+> >  # Cleaning is done on three levels.
+> >  # make clean     Delete most generated files
+> > @@ -1836,12 +1818,15 @@ help:
+> >       @echo  '  clean           - remove generated files in module dire=
+ctory only'
+> >       @echo  ''
+> >
+> > +ifndef CONFIG_MODULES
+> > +modules modules_install: __external_modules_error
+> >  __external_modules_error:
+> >       @echo >&2 '***'
+> >       @echo >&2 '*** The present kernel disabled CONFIG_MODULES.'
+> >       @echo >&2 '*** You cannot build or install external modules.'
+> >       @echo >&2 '***'
+> >       @false
+> > +endif
+> >
+> >  endif # KBUILD_EXTMOD
+> >
+> > @@ -1850,6 +1835,9 @@ endif # KBUILD_EXTMOD
+> >
+> >  PHONY +=3D modules modules_install modules_prepare
+> >
+> > +modules_install:
+> > +     $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
+>
+> I was a bit surprised to see 'modules_install' being allowed
+> unconditionally for in-tree usage (thus, even if CONFIG_MODULES=3Dn), but
+> then realised that this is the same behaviour as we had before.  Out of
+> curiosity:  _why_ do we need to install
+> $(MODLIB)/modules.builtin{,.modinfo} also for configs w/
+> CONFIG_MODULES=3Dn?
 
-It's not only drm_gem_shmem_free_pages(), but any drm-shmem function
-that drivers may use in the GEM's freeing callback.
 
-For example, panfrost_gem_free_object() may unpin shmem BO and then do
-drm_gem_shmem_free().
+I see your tags in commit
+8ae071fc216a25f4f797f33c56857f4dd6b4408e    :)
 
--- 
-Best regards,
-Dmitry
 
+Some drivers need to load firmware.
+
+To make such drivers working in initrd,
+mkinitramfs needs to copy necessary firmware files
+into the initrd.
+So, the tool needs to know which drivers are enabled.
+
+That is my understanding why modules.builtin(.modinfo)
+is needed even with CONFIG_MODULES=3Dn.
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
