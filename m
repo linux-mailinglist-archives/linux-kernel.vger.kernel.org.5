@@ -2,208 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FAF78D0C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124AD78D0BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241248AbjH2Xo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 19:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
+        id S241198AbjH2Xow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 19:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241222AbjH2Xop (ORCPT
+        with ESMTP id S241208AbjH2Xoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 19:44:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0CB1B1;
-        Tue, 29 Aug 2023 16:44:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693352682; x=1724888682;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=E2VN7C6YvAgSWRKL0T6DnmwaxuervSEnb92Npb1t5PA=;
-  b=IJsk+CTfEH++PVxPLsCB6kVX0y8E0heUDtSodip5laQtO/Rl2KuKpIrS
-   qodwnWfx3BxaowM5imgD2QVlEQSOD9GLLbMyWPTVyCuvIpBIekypUMe9S
-   Cuoi17n5yem9nsI6tThR0RiTNdLKPs0yuwcitQKritoWdTWq+362GJmgH
-   YDeF9+7TqGYd9NvKo5YUv7gSx7LH0FvBo0PhAnIY9aEXsS1wbAJH4AvKG
-   b06IZWGdgNdFAGEWWjjYy4Tz3kRlZZfQ0as4eBSYG0UrvOTqEuu2YAS3Z
-   dq2DRdPk8CaV67oKpEsE8hMnNBJVT8qzTjb/FYtzPfyy4Q4lHcdvFxGcG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="355015472"
-X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="355015472"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 16:44:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="688691036"
-X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="688691036"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 16:44:41 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v5 6/8] x86/resctrl: Sub NUMA Cluster detection and enable
+        Tue, 29 Aug 2023 19:44:32 -0400
+Received: from sonic309-27.consmr.mail.ne1.yahoo.com (sonic309-27.consmr.mail.ne1.yahoo.com [66.163.184.153])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C40E1B3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 16:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693352669; bh=5mNqkLH2I1e3/+A3oA7daHm/fRDQKA8KiaFggXGQ1cs=; h=Date:To:Cc:From:Subject:References:From:Subject:Reply-To; b=ZmOGXCzZYH2mVb83HJE+q9lYO/jyjjUH18eXaxtiB7FMg9qJlOJ5ZMb2ZxCatFMryVJ5lf7xSImn3lK2JZs0rmL8HsK2EEUbZfph/zCRKKu1gcdIjZIHANveEsMo/mfEoa1Jcx6rDJgMzXOFNGELf/HQJMGkWsG+y4gQmj1Vs6WFP2t9iG7MzKqprAqqUpGLsOlXDAQJrB6i2sQ0FLzw78Jf9Rdu6IcGgFg4wQxWw6UYNwy5/9vgl5Oq0apvvVXfUggVAcQOAr/aIAjlJ3n+gKD3eVhhJy8HgQ9PqImVC35aoMvlBIik1naq/4mEueBsIZrmuQpgq4M2g2NfF4KboA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693352669; bh=DxcOxINJsqm4IbEBu5zLfi3FctwJn/Wt7g+52ouScIi=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=ORNOdTCqI+JPJ3h3KHaAyfWGqw3zxPY+oIki85sKVRggM1pejQvSHN3ZMN8rn41zSF5Lt8JA56SoLupNRPk8cggZTk8Uv8FhcUZGWd7t9Z9ysN1c4JRh1uVuEZItrSr/ba8ADic0ICxq9P3Dou25Y931/sAc2hes6Q+ZeuitxbIVFXJQoyqVZhz+qF4nL0oEAyHj3RRoRTIyFF3nhtH5cOUrTjLOQ9Z/yKIrVwlD4AcIfviD7NkX/tZvP89NeU41dnkNpYHAanm1ZIa67mjEchrb16BM45lko7HkAkJOsLoB/CzFdmmvp+7Uer1ezPZYW4eqzT1euJ2w8rJDrR6yvA==
+X-YMail-OSG: wHVyQBMVM1nOY__v3howP__5zTWrZvZwTuBh8svCvsD1nSpG7uGumOfSgLDRwMb
+ FQ0yca1ch4A2LVP.5uhJTw.jyuMZ46F4cdCSClypDSOI4zEwRk3DEULwMaOEbzKqceYE4I3h9RK0
+ H15KAB_2MpP_wGa9KFK3c8IrZ.rx7FI5ZCvyzDzC98sKspdicTml11WduXhcUL2P80XNLGh.AxUZ
+ e0A_Vexd7uaPmyYqWzHV5cM0t52fVAV1eOFjer_PDiMWhoTxOebRbPEeEpU9O6FELXcCtt5K2Ehw
+ pTf6dGR5L1o0lVW1VG2vvZ1vzDQxHVV0KGYtdxMRlIpdRptthwqqQjsVwIesO4Z16MvpW9MMbHG7
+ 0P5XLaFKY3NPnwiNvtAGoAySelSzFk0KoMbPd.TIQ30CNCjhTzhhE44m9GcQjcDNS0XnlLuJT2dl
+ m9fCpdocbWfJTKYYlf_QhytwENdqMq57VsjUnhduzoksl3SU7oFnO2YmvuoEBckG0Eu2QQEaFxnY
+ tiN48r9rDh5Q_gHBuQbKcasMYyIW8UU4XMqxQyzp3WKA.0RlB2m0cJKYhH4JhQVXoVfLQNHLtR5m
+ jJXRwWwzxfk6jfUZmDCyJFXTgk.aZtRZqVas9BmlHCwHclCoixO37bSQQ5UKIaDyE6MRVcV8SZcz
+ WmtnKnCs325FxTS2PmWDMVI374UJsVHqGZ4qT7TNos_.st8lAhr1rDXg_AdAHFHLP.uaPnH2Vowo
+ pxNMZ43bVaNdmBidCxnUDKzCik5MHKN2rbrWXmPyscDfGJotyY3g5loxzkIeukd4NgFpbqOE0W8G
+ 8HYdfRuDobkpemsbA0QNDMQ6oRUEhGSWtVbESbXwvFh16aSFgDJlAEqY4775dggAJdOlVNxSRPiQ
+ q._mdQ7CJT8Yd3LxAo5MymD3QOpoKNtqXCd9kvinLW2fkeqZOnbi7nFWXUC48PtXQpqC97bLjZvS
+ xe5v2j2pn2s0Muok4tb4m75o11ZvScWE_P2uwmjN4li2ZvlgS..h3InM5sTY2q3xfmmNuFq2vzYc
+ k5ccarKhlosMsiIB4g8RFTbx35DCgIcVyutNEJuniGZYdmXX3lFq.CO9NHrjvTn_rXw6Rjy78ntw
+ Td8vhvjK.tB6TTUn.o0TYuX3U_nYPlmOiyMBKm8QWmGv8DJiHtJ3Nc41D8qAYT1TZzJR7Sh74__C
+ UIfmP9_yeIzKeIFF5yuv2YP6nriPiI2Yccsx4EVB3DzBMRRLkiF4vEImqbmWHDYEokP6.H.b4ghf
+ FBoado9mUkHh3HihIpgmnKkeeOvHm_29iYN9SZb1suhD1SHljL_plgJORsRy22cf.AUJg51BMVLC
+ kXPvKgYFURIYeNMI6Iv3X56eTm9blgMcanBuP.FHONQlewM1keY62NPg4HIO06hTTWfuUpqPjr5k
+ 2hSq1Ao8D7VZ9txPN2OgJjzIdlpJsUfcfAfIzP8WrmoOAU0C5zOJIArCj9n4iM13dUxK7hGXSHbU
+ eKO7j5IH1xmFQAGDVL0TIYKyiU6A_YHTEU8LJKDTFeNah0FWZiwIQQFXeLcS1y_jFtbKwHkIfM9Q
+ 70UDCj4BrYwM7f._fKP3nJOXxTuqwc9DL40993apYps2JNr2x.1F0L13a67DXuIg1ATJDsxeheVo
+ 7qNPBvWeVFAD0_xfoFndMpivlw3.kVrVWUqaFhOYFu96_A2KvmP02CpYGjCyqc3X3uL1AmtGCjd4
+ g8f3FwLiHWv9dpIPBb.mJXwjNNJNrAoxYgacIn0yz9oIq1hhyIiHZ8sfteD_uEGsq6yNWqnu9bx0
+ w62Bn1P5ce4J8loKkyTLHx8HmrxQCmUUNUTRP805jgvxO26qQVZYSPzZXvmcpt14NY0ZOP6GJYih
+ wg9zC8BJ3IS4y4QwZmxiMpzsHS7.pUK_BK9kjfFIl8x_ALqbfJZA0NtsMEYKdJtyuhPInF4a7j4H
+ JYiqH8GT9JDnU.LDLZ1OzY_xdDpcpPgUV7UwpUrlR2UujL3iNuCBTl4Nr4BS0x4yNStePg8uPPW4
+ 9j4MOJZYBJsPCaH9_pHeEEhXxQzTsOSAP6kgx7EEIhZhfNumxrBhuyCV_SrmB7vQr75U4TnZnZlp
+ FBGSvR1i_MXyiTM8W01oo29aDUz0IQ5kMkTHs28DokGUrYz55PhjALDh9Q3Ubj3WrWnHrHqD02v4
+ TWREqsni.muRdX3hReeSENcuzoz5XAa7odwRGyo7bxZORnFtgHo7SyUNvLvSxzEi0bwoIrbdXxAt
+ jscUqMmXyyfon8cpRB77H
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: a43a68c4-3eae-45af-9240-5c472a17f219
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Tue, 29 Aug 2023 23:44:29 +0000
+Received: by hermes--production-gq1-6b7c87dcf5-x8vcl (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID adbacdb6cc9c54678be3f7cc98d17ac2;
+          Tue, 29 Aug 2023 23:44:27 +0000 (UTC)
+Message-ID: <d8c21494-583f-8da2-a2cb-cd5410a13900@schaufler-ca.com>
 Date:   Tue, 29 Aug 2023 16:44:24 -0700
-Message-ID: <20230829234426.64421-7-tony.luck@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230829234426.64421-1-tony.luck@intel.com>
-References: <20230722190740.326190-1-tony.luck@intel.com>
- <20230829234426.64421-1-tony.luck@intel.com>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LSM List <linux-security-module@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Subject: [GIT PULL] Smack patches for 6.6
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <d8c21494-583f-8da2-a2cb-cd5410a13900.ref@schaufler-ca.com>
+X-Mailer: WebService/1.1.21763 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There isn't a simple h/w bit that indicates whether a CPU is
-running in Sub NUMA Cluster mode. Infer the state by comparing
-the ratio of NUMA nodes to L3 cache instances.
+Hello Linus,
 
-When SNC mode is detected, reconfigure the RMID counters by updating
-the MSR_RMID_SNC_CONFIG MSR on each socket as CPUs are seen.
+Here is the Smack pull request for v6.6.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/include/asm/msr-index.h   |  1 +
- arch/x86/kernel/cpu/resctrl/core.c | 68 ++++++++++++++++++++++++++++++
- 2 files changed, 69 insertions(+)
+There are two patches. One is a simple spelling fix. The other is a
+bounds check for a very likely underflow. These updates have been in
+the next branch and pass all tests. Thank you.
 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 1d111350197f..393d1b047617 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -1100,6 +1100,7 @@
- #define MSR_IA32_QM_CTR			0xc8e
- #define MSR_IA32_PQR_ASSOC		0xc8f
- #define MSR_IA32_L3_CBM_BASE		0xc90
-+#define MSR_RMID_SNC_CONFIG		0xca0
- #define MSR_IA32_L2_CBM_BASE		0xd10
- #define MSR_IA32_MBA_THRTL_BASE		0xd50
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index ed4f55b3e5e4..9f0ac9721fab 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -16,11 +16,14 @@
- 
- #define pr_fmt(fmt)	"resctrl: " fmt
- 
-+#include <linux/cpu.h>
- #include <linux/slab.h>
- #include <linux/err.h>
- #include <linux/cacheinfo.h>
- #include <linux/cpuhotplug.h>
-+#include <linux/mod_devicetable.h>
- 
-+#include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/resctrl.h>
- #include "internal.h"
-@@ -724,11 +727,34 @@ static void clear_closid_rmid(int cpu)
- 	wrmsr(MSR_IA32_PQR_ASSOC, 0, 0);
- }
- 
-+/*
-+ * The power-on reset value of MSR_RMID_SNC_CONFIG is 0x1
-+ * which indicates that RMIDs are configured in legacy mode.
-+ * Clearing bit 0 reconfigures the RMID counters for use
-+ * in Sub NUMA Cluster mode.
-+ */
-+static void snc_remap_rmids(int cpu)
-+{
-+	u64 val;
-+
-+	/* Only need to enable once per package */
-+	if (cpumask_first(topology_core_cpumask(cpu)) != cpu)
-+		return;
-+
-+	rdmsrl(MSR_RMID_SNC_CONFIG, val);
-+	val &= ~BIT_ULL(0);
-+	wrmsrl(MSR_RMID_SNC_CONFIG, val);
-+}
-+
- static int resctrl_online_cpu(unsigned int cpu)
- {
- 	struct rdt_resource *r;
- 
- 	mutex_lock(&rdtgroup_mutex);
-+
-+	if (snc_nodes_per_l3_cache > 1)
-+		snc_remap_rmids(cpu);
-+
- 	for_each_capable_rdt_resource(r)
- 		domain_add_cpu(cpu, r);
- 	/* The cpu is set in default rdtgroup after online. */
-@@ -983,11 +1009,53 @@ static __init bool get_rdt_resources(void)
- 	return (rdt_mon_capable || rdt_alloc_capable);
- }
- 
-+/* CPU models that support MSR_RMID_SNC_CONFIG */
-+static const struct x86_cpu_id snc_cpu_ids[] __initconst = {
-+	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X, 0),
-+	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, 0),
-+	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X, 0),
-+	{}
-+};
-+
-+static __init int get_snc_config(void)
-+{
-+	unsigned long *node_caches;
-+	int mem_only_nodes = 0;
-+	int cpu, node, ret;
-+
-+	if (!x86_match_cpu(snc_cpu_ids))
-+		return 1;
-+
-+	node_caches = kcalloc(BITS_TO_LONGS(nr_node_ids), sizeof(*node_caches), GFP_KERNEL);
-+	if (!node_caches)
-+		return 1;
-+
-+	cpus_read_lock();
-+	for_each_node(node) {
-+		cpu = cpumask_first(cpumask_of_node(node));
-+		if (cpu < nr_cpu_ids)
-+			set_bit(get_cpu_cacheinfo_id(cpu, 3), node_caches);
-+		else
-+			mem_only_nodes++;
-+	}
-+	cpus_read_unlock();
-+
-+	ret = (nr_node_ids - mem_only_nodes) / bitmap_weight(node_caches, nr_node_ids);
-+	kfree(node_caches);
-+
-+	if (ret > 1)
-+		rdt_resources_all[RDT_RESOURCE_L3].r_resctrl.mon_scope = RESCTRL_NODE;
-+
-+	return ret;
-+}
-+
- static __init void rdt_init_res_defs_intel(void)
- {
- 	struct rdt_hw_resource *hw_res;
- 	struct rdt_resource *r;
- 
-+	snc_nodes_per_l3_cache = get_snc_config();
-+
- 	for_each_rdt_resource(r) {
- 		hw_res = resctrl_to_arch_res(r);
- 
--- 
-2.41.0
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+
+are available in the Git repository at:
+
+  https://github.com/cschaufler/smack-next tags/Smack-for-6.6
+
+for you to fetch changes up to 3ad49d37cf5759c3b8b68d02e3563f633d9c1aee:
+
+  smackfs: Prevent underflow in smk_set_cipso() (2023-08-07 14:09:23 -0700)
+
+----------------------------------------------------------------
+Smack updates for v6.6. Two minor fixes.
+
+----------------------------------------------------------------
+Dan Carpenter (1):
+      smackfs: Prevent underflow in smk_set_cipso()
+
+Tóth János (1):
+      security: smack: smackfs: fix typo (lables->labels)
+
+ security/smack/smackfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
