@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 067C578C214
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347B778C219
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235058AbjH2KMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
+        id S235051AbjH2KNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235036AbjH2KMC (ORCPT
+        with ESMTP id S234156AbjH2KMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:12:02 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BDAB4;
-        Tue, 29 Aug 2023 03:11:58 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37T4t9Wp016954;
-        Tue, 29 Aug 2023 05:11:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=ZB+rO7oEFCTt6bN
-        spgD9C+R77UBOPjLJV/xm4f1uBzY=; b=UmvbAADl/3AOUxspneZ89ldZLlzcQYF
-        3UQIuQ7pPmMpeQs5Fz7lG0k/3ot97VmRHFqCXsnDOq93q2zgFkd0v6GxmIcjf1lW
-        9nHnYIFzpeoXq0gwzXemtQam3mKSCf+qJxdXsLOSTTiSg4hPHVgZiXD8zSAzd53E
-        g5aTzFphr1fUxyup107GEwy4lHFoswwbxZJAsDKshjdevcRhOjLKv8tEhQnCxSqm
-        hWfhNb2I4TaV5FakZiRnZUyPQtCIp3gQFwqpv3SbfoJLJLYMGffp7m+9RczigsIk
-        deg//fZL4mLht2vHy/iadOGJyWynu1mi3R6S0UyLXSrGdKlcMRuAklA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sqesybbu3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 05:11:41 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 29 Aug
- 2023 11:11:39 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Tue, 29 Aug 2023 11:11:39 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4CD4415B6;
-        Tue, 29 Aug 2023 10:11:39 +0000 (UTC)
-Date:   Tue, 29 Aug 2023 10:11:39 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>
-CC:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <RicardoRivera-Matosricardo.rivera-matos@cirrus.com>
-Subject: Re: [PATCH 6/7] ASoC: cs35l45: Connect DSP to the monitoring signals
-Message-ID: <20230829101139.GT103419@ediswmail.ad.cirrus.com>
-References: <20230828170525.335671-1-vkarpovi@opensource.cirrus.com>
- <20230828170525.335671-6-vkarpovi@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230828170525.335671-6-vkarpovi@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: BnjPTirhO28GDG1pVHs9sNqQ8F8j-5rX
-X-Proofpoint-GUID: BnjPTirhO28GDG1pVHs9sNqQ8F8j-5rX
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 06:12:54 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1F8B4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:12:48 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-412178dde5bso17821731cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693303967; x=1693908767;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f3U7w7Dxv0aMNSqkqHyETmyZKkPYclhc4evSzr8ifFs=;
+        b=jdlvcZWEok692A9iQ9+qmfAm3k7qCYat9eF1bXFp3fEQ+4j25X4UOa7oJP6BGevYIM
+         it0nLAmGWroG/4wZUyOlR7ogL5WkoFEk4vuZNL4b3ngHPYHOK5U/Vfzb5adgNhGT2NHy
+         5DVMaVD2QTIBsx0biBk05aVWebB9F9JrXsaMU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693303967; x=1693908767;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f3U7w7Dxv0aMNSqkqHyETmyZKkPYclhc4evSzr8ifFs=;
+        b=I0p8+RgyJWA1s/5bPWewS7ETdsVGx1vyzNopgFZ1ftMx9HkdxNdYnddQ4gVxO0BW0K
+         j5G4O7kf/ekl+KGd2qMw3go/op51ECNeN1NXLX2ZUEUSzaiXTRo2DYEuuTMenkd9RAYw
+         mK8oc6ifrHZhdyHJHEzIeiUoa3Ag+dVD8qUXUHMIYNmlqlUBgIG2ETHCkcaEL2wELOpX
+         dkXG+ibXywSIlKQejxxgssfZi5txGwiE/xLng8Yva220hW4StKiXJSEO3We4FaO4PWoo
+         YZD/EYWrDp4uTZaUUXjAc1/qWOhNHuB5AOxz2ZNYC5P2GqBlROlPpQFcwrj7qfjD6FnK
+         +NQw==
+X-Gm-Message-State: AOJu0YwGKW9vxWpil2TuhUWCv0+XrAvfIsmn27NkiuhvzPfVKKvc6w5L
+        pg7SK+TDYrdTGZyqOUtUA3J19g==
+X-Google-Smtp-Source: AGHT+IEVqgTNW06+UI1f1xfAQUCG/TUuimalKVqTc0ftOoXMoENg9h8R5usdIgj3KVXW0k9a4L1CRA==
+X-Received: by 2002:a05:622a:1013:b0:403:f42a:95bc with SMTP id d19-20020a05622a101300b00403f42a95bcmr32558121qte.28.1693303967586;
+        Tue, 29 Aug 2023 03:12:47 -0700 (PDT)
+Received: from smtpclient.apple ([45.88.220.64])
+        by smtp.gmail.com with ESMTPSA id kc5-20020a05622a44c500b00411f7da6e1bsm2888781qtb.60.2023.08.29.03.12.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 03:12:46 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
+Date:   Tue, 29 Aug 2023 06:12:35 -0400
+Message-Id: <D98FE55B-C379-4C24-B4DD-4E02A1E2AB79@joelfernandes.org>
+References: <ZO25SDat3cd6opQ7@lothringen>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+In-Reply-To: <ZO25SDat3cd6opQ7@lothringen>
+To:     Frederic Weisbecker <frederic@kernel.org>
+X-Mailer: iPhone Mail (20B101)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:05:24PM -0500, Vlad Karpovich wrote:
-> Link VMON, IMON, TEMPMON, VDD_BSTMON and VDD_BATTMON
-> to DSP1. The CSPL firmware uses them for the speaker calibration
-> and monitoring.
-> 
-> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thanks,
-Charles
+> On Aug 29, 2023, at 5:24 AM, Frederic Weisbecker <frederic@kernel.org> wro=
+te:
+>=20
+> =EF=BB=BFOn Mon, Aug 28, 2023 at 05:51:09PM -0400, Joel Fernandes wrote:
+>> I think the issue is the loop later in the function does
+>> not try to toggle cpus that came online too late.
+>>=20
+>> So it does not test offloading on all CPUs just because max got updated t=
+oo
+>> late.
+>=20
+> Right, and therefore for_each_possible_cpu() or for_each_present_cpu()
+> should be fine to iterate since it's ok to try to toggle an offline CPU.
+
+Ah I see what you mean, sounds good.
+
+>=20
+>>=20
+>> One fix could be to periodically check in the loop if a new cpu at maxcpu=
+ + 1
+>> ever got onlined. If it did, update the maxcpu.
+>=20
+> Is it worth the complication though?
+
+Probably not and so your suggestion sounds fine.
+
+Thanks!
+
+ - Joel
+
+
+>=20
+> Thanks.
+>=20
+>>=20
+>> Thanks.
+>>=20
+>>=20
+>>>=20
+>>> Thanks.
