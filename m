@@ -2,111 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E82E978CC17
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521D978CC1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238098AbjH2S3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 14:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
+        id S238106AbjH2Sa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 14:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238100AbjH2S3X (ORCPT
+        with ESMTP id S238499AbjH2SaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 14:29:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0630F19A
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693333668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+        Tue, 29 Aug 2023 14:30:18 -0400
+Received: from out-253.mta0.migadu.com (out-253.mta0.migadu.com [91.218.175.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16225CD8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:30:06 -0700 (PDT)
+Message-ID: <2e260b7c-2a89-2d0c-afb5-708c34230db2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693333802; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rhi2uFlmUXZCsw01PH/d6XQV/U4JpYNvRVMtZqbnhiQ=;
-        b=cP3cOt4SJtXf4khSgp3ehlEESaOz/2fDVI5cxGhH4palpIXWYOQOx5lfpyCQO4p+41wt5C
-        35morEcAunhhL5cUL/2Egwtkur/AL26ehyoKtmhwPyCa0sZT1/dUWNqHAfMapreOwZ5IiQ
-        uVzBhec4EEeZflPmzpuyyd9CqyBayfE=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-347-awnYdX2IOkqEnHT6zEosng-1; Tue, 29 Aug 2023 14:27:44 -0400
-X-MC-Unique: awnYdX2IOkqEnHT6zEosng-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0037E2808B29;
-        Tue, 29 Aug 2023 18:27:44 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.116])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 794641678B;
-        Tue, 29 Aug 2023 18:27:43 +0000 (UTC)
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v2 3/3] vfio: use __aligned_u64 in struct vfio_device_ioeventfd
-Date:   Tue, 29 Aug 2023 14:27:20 -0400
-Message-ID: <20230829182720.331083-4-stefanha@redhat.com>
-In-Reply-To: <20230829182720.331083-1-stefanha@redhat.com>
-References: <20230829182720.331083-1-stefanha@redhat.com>
+        bh=z9qhS9JnvDdEoGnT4EeYHMwTRSvFUoem4eApRVql4dg=;
+        b=KvMhiKrMJ6fsV4goHvB6nER+PmVpg5unIoRCmrDH4ZmWWXrBjkIpdDB65S4iFAYEtizr4Z
+        RA17fWrCt12qth1jWM2Kh66m/RxGUmAfndvPWH4dCAIyo27MqFcJ5hZP5+RvHDeoDlcBQF
+        K00WKUc1/1seLt1xEoDhDPpRM6IE7e0=
+Date:   Tue, 29 Aug 2023 14:29:56 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] KCSAN: data-race in bpf_percpu_array_update /
+ bpf_percpu_array_update (2)
+To:     syzbot <syzbot+97522333291430dd277f@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <000000000000d87a7f06040c970c@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <000000000000d87a7f06040c970c@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory layout of struct vfio_device_ioeventfd is
-architecture-dependent due to a u64 field and a struct size that is not
-a multiple of 8 bytes:
-- On x86_64 the struct size is padded to a multiple of 8 bytes.
-- On x32 the struct size is only a multiple of 4 bytes, not 8.
-- Other architectures may vary.
 
-Use __aligned_u64 to make memory layout consistent. This reduces the
-chance that 32-bit userspace on a 64-bit kernel breakage.
 
-This patch increases the struct size on x32 but this is safe because of
-the struct's argsz field. The kernel may grow the struct as long as it
-still supports smaller argsz values from userspace (e.g. applications
-compiled against older kernel headers).
+On 8/29/23 5:39 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    727dbda16b83 Merge tag 'hardening-v6.6-rc1' of git://git.k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=136f39dfa80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dea9c2ce3f646a25
+> dashboard link: https://syzkaller.appspot.com/bug?extid=97522333291430dd277f
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/9923a023ab11/disk-727dbda1.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/650dbc695d77/vmlinux-727dbda1.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/361da71276bf/bzImage-727dbda1.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+97522333291430dd277f@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KCSAN: data-race in bpf_percpu_array_update / bpf_percpu_array_update
+> 
+> write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
+>   bpf_long_memcpy include/linux/bpf.h:428 [inline]
+>   bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+>   copy_map_value_long include/linux/bpf.h:464 [inline]
+>   bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+>   bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+>   generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+>   bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+>   __sys_bpf+0x28a/0x780
+>   __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+>   __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
+>   bpf_long_memcpy include/linux/bpf.h:428 [inline]
+>   bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+>   copy_map_value_long include/linux/bpf.h:464 [inline]
+>   bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+>   bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+>   generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+>   bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+>   __sys_bpf+0x28a/0x780
+>   __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+>   __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> value changed: 0x0000000000000000 -> 0xfffffff000002788
+> 
+> Reported by Kernel Concurrency Sanitizer on:
+> CPU: 0 PID: 8268 Comm: syz-executor.4 Not tainted 6.5.0-syzkaller-00453-g727dbda16b83 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> ==================================================================
 
-The code that uses struct vfio_device_ioeventfd already works correctly
-when the struct size grows, so only the struct definition needs to be
-changed.
+This case is with two tasks doing bpf_map batch update together for the
+same map and key.
+   > write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
+   > write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
----
- include/uapi/linux/vfio.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+So concurrency is introduced by user applications.
+In my opinion, this probably not an issue from kernel perspective.
 
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index 777374dd7725..032e41b56506 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -864,9 +864,10 @@ struct vfio_device_ioeventfd {
- #define VFIO_DEVICE_IOEVENTFD_32	(1 << 2) /* 4-byte write */
- #define VFIO_DEVICE_IOEVENTFD_64	(1 << 3) /* 8-byte write */
- #define VFIO_DEVICE_IOEVENTFD_SIZE_MASK	(0xf)
--	__u64	offset;			/* device fd offset of write */
--	__u64	data;			/* data to be written */
-+	__aligned_u64	offset;		/* device fd offset of write */
-+	__aligned_u64	data;		/* data to be written */
- 	__s32	fd;			/* -1 for de-assignment */
-+	__u32	reserved;
- };
- 
- #define VFIO_DEVICE_IOEVENTFD		_IO(VFIO_TYPE, VFIO_BASE + 16)
--- 
-2.41.0
-
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
