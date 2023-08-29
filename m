@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2231478C504
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3154278C50B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbjH2NTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
+        id S235953AbjH2NUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235941AbjH2NSu (ORCPT
+        with ESMTP id S235949AbjH2NUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:18:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F321F7;
-        Tue, 29 Aug 2023 06:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693315128; x=1724851128;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7J2QJDwfsMXgCfWqfJMKUpM0mvVbSNEniUpWtVl4Uzw=;
-  b=azbDd4i1GJgBZYSFbc/Uxi832wh/m3V4j8Tkua2gQXc5+oncWB2aF7fc
-   tpz6c2paVNxMlDh8Hhlq1t5kZqj971pbYLA6eHL1P2IMuKwG5wwqI8r2Y
-   OOZ0LrhB2GQp+Tc45ZzJD6fKEPtqmUTNr9AuOmpLnm8bTffttyRX50By0
-   dOfaHbqdtu8fA6LXoTsal4m+EzW5B62UIQj0TvZDsJx5NYLpcM/96ANR1
-   m5tJCf1/64MG03SKq5IWRm0iiFetYP5R+nIwQE8hrPrq6Vnb1Jg0VJQix
-   DIRiuxJt/7mY+kupvTmRD5crONnnQ5D6fokNyMEuymvG+T2DX1n8QRcnK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="372776934"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="372776934"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 06:18:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="808662221"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="808662221"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Aug 2023 06:18:44 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qaycE-004t5p-2s;
-        Tue, 29 Aug 2023 16:18:42 +0300
-Date:   Tue, 29 Aug 2023 16:18:42 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Philipp Jungkamp <p.jungkamp@gmx.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v1 2/3] iio: imu: st_lsm6dsx: Use aligned data type for
- timestamp
-Message-ID: <ZO3wMlze3HRkkoMY@smile.fi.intel.com>
-References: <20230815154027.12468-1-andriy.shevchenko@linux.intel.com>
- <20230815154027.12468-2-andriy.shevchenko@linux.intel.com>
- <20230828170341.3a9641f0@jic23-huawei>
+        Tue, 29 Aug 2023 09:20:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911E1184
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:20:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 26A7365266
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:20:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B4F3C433C8;
+        Tue, 29 Aug 2023 13:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693315220;
+        bh=fokDp0Y3EnAwlAaygTWGT0A7Dg/k0huj36SykKsEO6Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pC8tYIYstToTiPlNCSA6rH4DvNMTO8TuwNqOFxP0EK8hrjighEkXO7ppL56nIsaMU
+         v2gR7SvJLwOMeEwvmIQc/qSBRpSNoAkt7DCnNzMrFGIKwbqwWbr07vBkBpztoJcQT8
+         WwzHHgYxVZppoh2f2VrfdChGUhOrGq3K2EaAxbJvLYUQ+AL0NfU1BDvaGqy1xBwbjG
+         kyXmCWU5FY6aTpDr6RBDvO+WZHCkPKG/boO9nyXUUAolXIATWsPbhIMnNxVGSo17kI
+         AW/EeIssueZgLVJ4o3WRNrKIdYByJrr5eOufNlpnNqFi+RBKwYJjL4E3tWK5Vfr+i/
+         kKLGDNrlMCFTw==
+From:   Michael Walle <mwalle@kernel.org>
+To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Stu Hsieh <stu.hsieh@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Walle <mwalle@kernel.org>
+Subject: [PATCH 1/2] drm/mediathek: fix kernel oops if no crtc is found
+Date:   Tue, 29 Aug 2023 15:19:40 +0200
+Message-Id: <20230829131941.3353439-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828170341.3a9641f0@jic23-huawei>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 05:03:41PM +0100, Jonathan Cameron wrote:
-> On Tue, 15 Aug 2023 18:40:26 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+drm_crtc_from_index(0) might return NULL if there are not CRTCs
+registered at all which will lead to a kernel oops in
+mtk_drm_crtc_dma_dev_get(). Add the missing return value check.
 
-...
+Fixes: 0d9eee9118b7 ("drm/mediatek: Add drm ovl_adaptor sub driver for MT8195")
+Signed-off-by: Michael Walle <mwalle@kernel.org>
+---
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> >  	struct {
-> >  		__le16 channels[3];
-> > -		s64 ts __aligned(8);
-> > +		__aligned_s64 ts;
-> 
-> aligned_s64 as it's internal to the kernel?
-
-Either works, but strictly speaking you are right, better no underscored
-variant.
-
-> >  	} scan[ST_LSM6DSX_ID_MAX];
-
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index 93552d76b6e7..2c582498817e 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -420,6 +420,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+ 	struct mtk_drm_private *private = drm->dev_private;
+ 	struct mtk_drm_private *priv_n;
+ 	struct device *dma_dev = NULL;
++	struct drm_crtc *crtc;
+ 	int ret, i, j;
+ 
+ 	if (drm_firmware_drivers_only())
+@@ -494,7 +495,9 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+ 	}
+ 
+ 	/* Use OVL device for all DMA memory allocations */
+-	dma_dev = mtk_drm_crtc_dma_dev_get(drm_crtc_from_index(drm, 0));
++	crtc = drm_crtc_from_index(drm, 0);
++	if (crtc)
++		dma_dev = mtk_drm_crtc_dma_dev_get(crtc);
+ 	if (!dma_dev) {
+ 		ret = -ENODEV;
+ 		dev_err(drm->dev, "Need at least one OVL device\n");
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
