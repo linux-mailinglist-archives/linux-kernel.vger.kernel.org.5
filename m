@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D372678CEBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304EB78CEBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238668AbjH2VZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 17:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        id S237061AbjH2V02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239464AbjH2VZV (ORCPT
+        with ESMTP id S237763AbjH2VZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 17:25:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED27DBD
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:25:17 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC8072F4;
-        Tue, 29 Aug 2023 14:25:56 -0700 (PDT)
-Received: from [10.57.2.162] (unknown [10.57.2.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FF393F740;
-        Tue, 29 Aug 2023 14:25:16 -0700 (PDT)
-Message-ID: <d234fa8d-d945-3f7f-1110-fe55bea88587@arm.com>
-Date:   Tue, 29 Aug 2023 22:25:10 +0100
+        Tue, 29 Aug 2023 17:25:57 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D39CC3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:25:51 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rb0pN0XMCzBl;
+        Tue, 29 Aug 2023 23:25:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1693344348; bh=Pi2uS5KFaei8H0xQOpU8+w85sUT4zFUBUHxLRJ6SmIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R9YCwhmB+LoEh7JIG503O5dVM1sNeFPNXGHxNL3VypftUh3paJPQikpo1l4t+Xx2d
+         DAzSflAYEOBIcfz1drdfy4qRGIFBbajdnwZ2Tcqu4BmxKmyxTfuo1+mbXsWnNxRw5e
+         vxNEwkijxBHTZAAu/ctTXkdkH6bYktDlVsv5FUJF/mQ2LT9kABvzWlG7rwEyIgEmji
+         raSttexVPp6OOcdGoYBqSN/CKI0vuKFBrGhbnTMFy8gXtXVhkp9kWz2jnnirNZv8YR
+         OfMJAFCpf1cDmg0bQ7TMO/UGz59kdjcS4qnjfkfOJoHi0nm7APXo1m2i3+IgU72t9t
+         Hk+Vla7uB37LQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Tue, 29 Aug 2023 23:25:46 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [PATCH 6/6] regulator: core: simplify lock_two()
+Message-ID: <ZO5iWlczXmX7wNn9@qmqm.qmqm.pl>
+References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
+ <682e260d8cb75c34f79ff7fcc3c4bb8586140cc4.1692484240.git.mirq-linux@rere.qmqm.pl>
+ <CAD=FV=XbfBf9y1sdt9T=81cTCRcRUbVqo3oKrHvBQZC+hHQpCQ@mail.gmail.com>
+ <ZO0DDkNUZ4FwYTrz@qmqm.qmqm.pl>
+ <CAE-0n51gcN+3Ng7+bz21eS_6JomnVDzZMuWyzZVB25paj29j4g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/3] iommu/io-pgtable-arm: Add nents_per_pgtable in struct
- io_pgtable_cfg
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     will@kernel.org, jgg@nvidia.com, joro@8bytes.org,
-        jean-philippe@linaro.org, apopple@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev
-References: <cover.1692693557.git.nicolinc@nvidia.com>
- <0fe68babdb3a07adf024ed471fead4e3eb7e703f.1692693557.git.nicolinc@nvidia.com>
- <f468b461-b203-5179-eb6d-9432b9911329@arm.com>
- <ZOTlcFs2NG6nJEPN@Asurada-Nvidia>
- <61f9b371-7c45-26b1-ec0f-600765280c89@arm.com>
- <ZO5R5i4n2WI2GnKQ@Asurada-Nvidia>
-Content-Language: en-GB
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZO5R5i4n2WI2GnKQ@Asurada-Nvidia>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAE-0n51gcN+3Ng7+bz21eS_6JomnVDzZMuWyzZVB25paj29j4g@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-29 21:15, Nicolin Chen wrote:
-> On Tue, Aug 29, 2023 at 04:37:00PM +0100, Robin Murphy wrote:
+On Tue, Aug 29, 2023 at 03:52:19PM -0500, Stephen Boyd wrote:
+> Quoting Micha³ Miros³aw (2023-08-28 13:26:54)
+> > Indeed they are quite similar. I did remove a bit more code than that,
+> > though: in this case there is no early success return before the loop.
+> >
+> > Instead of saying:
+> >
+> > lock A
+> > lock B
+> > if ok return
+> > if that failed, loop:
+> >   unlock A
+> >   lock B harder
+> >   lock A
+> >   if ok return
+> >   swap A <-> B
+> >   lock B
+> >
+> > Now it's:
+> >
+> > lock A
+> > loop forever:
+> >   lock B
+> >   if ok, return
+> >   unlock A
+> >   swap them
+> >   lock A harder
+> >
+> > With the same condition 'A held' at the start of an iteration.
+> >
 > 
->> On 2023-08-22 17:42, Nicolin Chen wrote:
->>> On Tue, Aug 22, 2023 at 10:19:21AM +0100, Robin Murphy wrote:
->>>
->>>>>     out_free_data:
->>>>> @@ -1071,6 +1073,7 @@ arm_mali_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
->>>>>                                           ARM_MALI_LPAE_TTBR_ADRMODE_TABLE;
->>>>>         if (cfg->coherent_walk)
->>>>>                 cfg->arm_mali_lpae_cfg.transtab |= ARM_MALI_LPAE_TTBR_SHARE_OUTER;
->>>>> +     cfg->nents_per_pgtable = 1 << data->bits_per_level;
->>>>
->>>> The result of this highly complex and expensive calculation is clearly
->>>> redundant with the existing bits_per_level field, so why do we need to
->>>> waste space storing when the driver could simply use bits_per_level?
->>>
->>> bits_per_level is in the private struct arm_lpae_io_pgtable, while
->>> drivers can only access struct io_pgtable_cfg. Are you suggesting
->>> to move bits_per_level out of the private struct arm_lpae_io_pgtable
->>> to the public struct io_pgtable_cfg?
->>>
->>> Or am I missing another bits_per_level?
->>
->> Bleh, apologies, I always confuse myself trying to remember the fiddly
->> design of io-pgtable data. However, I think this then ends up proving
->> the opposite point - the number of pages per table only happens to be a
->> fixed constant for certain formats like LPAE, but does not necessarily
->> generalise. For instance for a single v7s config it would be 1024 or 256
->> or 16 depending on what has actually been unmapped.
->>
->> The mechanism as proposed implicitly assumes LPAE format, so I still
->> think we're better off making that assumption explicit. And at that
->> point arm-smmu-v3 can then freely admit it already knows the number is
->> simply 1/8th of the domain page size.
+> Removing duplicate code is great! I'm primarily concerned with
+> readability. The terms 'A' and 'B' doesn't make it easy for me. Can you
+> maintain the 'held' and 'contended' names for the variables?
 > 
-> Hmm, I am not getting that "1/8th" part, would you mind elaborating?
+> That would be
+> 
+> 1.  lock 'held'
+> 2.  loop forever:
+> 3.    lock 'contended'
+> 4.    if ok, return
+> 5.    unlock 'held'
+> 6.    swap them
+> 7.    lock 'held' harder
 
-If we know the format is LPAE, then we already know that nearly all 
-pagetable levels are one full page, and the PTEs are 64 bits long. No 
-magic data conduit required.
+Doesn't this make it more confusing? The lock is 'held' only in lines
+2-5 and looses this trait (but not the name) on the other lines.
+'contended' is more problematic: the contended lock is called 'held'
+before locking it at line 7.
 
-> Also, what we need is actually an arbitrary number for max_tlbi_ops.
-> And I think it could be irrelevant to the page size, i.e. either a
-> 4K pgsize or a 64K pgsize could use the same max_tlbi_ops number,
-> because what eventually impacts the latency is the number of loops
-> of building/issuing commands.
+The algorithm is basically: Take the locks in sequence. If that failed,
+swap the order and try again.
 
-Although there is perhaps a counter-argument for selective invalidation, 
-that if you're using 64K pages to improve TLB hit rates vs. 4K, then you 
-have more to lose from overinvalidation, so maybe a single threshold 
-isn't so appropriate for both.
+Would a comment like the sentence above help with readability?
 
-Yes, ultimately it all comes down to picking an arbitrary number, but 
-the challenge is that we want to pick a *good* one, and ideally have 
-some reasoning behind it. As Will suggested, copying what the mm layer 
-does gives us an easy line of reasoning, even if it's just in the form 
-of passing the buck. And that's actually quite attractive, since 
-otherwise we'd then have to get into the question of what really is the 
-latency of building and issuing commands, since that clearly depends on 
-how fast the CPU is, and how fast the SMMU is, and how busy the SMMU is, 
-and how large the command queue is, and how many other CPUs are also 
-contending for the command queue... and very quickly it becomes hard to 
-believe that any simple constant can be good for all possible systems.
+Or we could wrap the final lines of the iteration in a
+'regulator_lock_contended()' to make it self-documenting?
 
-> So, combining your narrative above that nents_per_pgtable isn't so
-> general as we have in the tlbflush for MMU,
-
-FWIW I meant it doesn't generalise well enough to be a common io-pgtable 
-interface; I have no issue with it forming the basis of an 
-SMMUv3-specific heuristic when it *is* a relevant concept to all the 
-pagetable formats SMMUv3 can possibly support.
-
-Thanks,
-Robin.
+Best Regards
+Micha³ Miros³aw
