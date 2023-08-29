@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A4D78C008
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A749D78C00A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbjH2IMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
+        id S234130AbjH2IMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234046AbjH2ILz (ORCPT
+        with ESMTP id S234047AbjH2ILz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 04:11:55 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B40CBF
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4609E
         for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:11:52 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bbad32bc79so60894141fa.0
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5009969be25so6453511e87.3
         for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:11:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693296710; x=1693901510;
+        d=gmail.com; s=20221208; t=1693296711; x=1693901511;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MQ79dcWK5DB43dAqCTqh1rVk+BckiUBvnWUU5cp8hRQ=;
-        b=cJ578Rd8+pWkOxRraeWNzQ5Bjr4Xs8q21UHKNjn+pX9Pg9G1/d9RORSdyDavIEvqBu
-         nZqw56Z/5bnZI+y6Pn8izwNVYNvZcPwy3SBuXJ0bmP150S3WqUUP2lvho86gZrTawaVa
-         HN7hgQO88ZBN0j9YGepuZcSNMNKPJwd71vjjuyYtZgzfhFuO+xQAKqY/x0VT3pyjkI7i
-         s33hleKJsNJYWtMKjIls/pp0qevocX7mEFRTjGXttgA1o21oQIAaRkMgOxo/Driz4GKG
-         btE1nDRRXR/pCI90OWPdmQrGAGRn61cqJakmfIk3Jii9kpF3lXw5NDcqS79oKHhKU9MQ
-         qvTQ==
+        bh=WDP4tqNUhlNIFZZBcXRgHZdwRMYy1Esdu/NCW7wWlsU=;
+        b=T6NvuHclCxEppT8nFMh71q62sGE+tZlEA3hwVNUz/ZA8HpvLfE+jVsPEvlDkp2T6JA
+         BvVtxAhcubFWHDu5ZanFy0HlsbfyU3/qbdz4bPI28m2qBXIlGa0rCttCqxWc/uXOIkl6
+         6UE+UaAshUPaG0V/dJkZFtmhVNTtGPOu4CJjaX56Km4/Cqox9EMJRpbuy2p45aKZ3PEV
+         ZfkG9G9bTOinVcpj5NxphQLFLuXXYYF71Lw3fOpDNkJDEWv7QBySNmUcO8Z9PAuRFoM/
+         JueZT8bnCq4JbJcus2pTRqEENYrYmcJdD3FqrPZwA6rzNqirwxtGgAkf/SOxs02IMk+2
+         BN3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693296710; x=1693901510;
+        d=1e100.net; s=20221208; t=1693296711; x=1693901511;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MQ79dcWK5DB43dAqCTqh1rVk+BckiUBvnWUU5cp8hRQ=;
-        b=B+lXiEiQFQU3weU1gnzrq9YvzsHSCd8HPL54g+P1HszCMx+zKF756Tcic4gXVv+c4i
-         wxi2khm0RuZkP9M5jFpw3ve/TPreL7ZoyZY6DtEIPXNnil+GtzehXleeUfl2azq+ZhzV
-         9t/UfuK7+k1C6qQmxWraHRfwAFKAPgEAi66KOvyW+2ySGaxDSE1DYC+zpGlcxe1FUGBQ
-         kL8h8nya5X39u4xjdQURScEIFgUMZScfqbtTOmyvVERoB1k/443cLBQg5gs/E7p7t2yU
-         NE0qSDjH30Ky6TfkGKFuEXB4q0cPXAraETJ0furos2Rr3vorfGZxoGGkUZs8AcZ6BgUf
-         Ns1Q==
-X-Gm-Message-State: AOJu0YynOhxPr0a7eaiWZQQYhr+zyBsIk2OHXxI1i5A5yTCoPRrwvWiw
-        2r9vueR5kx7DghZkMPu/vA4=
-X-Google-Smtp-Source: AGHT+IGSANIaQ9YHIJaAEyDEmOUUzLYSIRZPqXEseP+0YpzgIn6wX5G+06cGZdVVQpKzh93qND74Rg==
-X-Received: by 2002:a05:6512:329c:b0:500:9de4:5968 with SMTP id p28-20020a056512329c00b005009de45968mr11140507lfe.59.1693296710194;
-        Tue, 29 Aug 2023 01:11:50 -0700 (PDT)
+        bh=WDP4tqNUhlNIFZZBcXRgHZdwRMYy1Esdu/NCW7wWlsU=;
+        b=EGtcJEez1vphIilfyFXQgwexAXIatIulqe8PDKzuE36LWgm0vy1ND01cTsUt7oVFrZ
+         UX5yzqU3kphgtUvDjhTWuDOWnzJgxFZKKT/UBnKle2/LgGSnNJeT1SbRDEF5uPs+9PtF
+         1GUvx5kmEFSLlZsZ8JAPyJlyHedRqYmCaGaAG9MNbshW7xTT+Mp1CtzTcbklYwbelm+Q
+         Zx775IxvOI/Prrb0tVZjttQVFHsufTBX8963QCC6S7GaQJ+iLmYSsNOWSpmtZBAakQwb
+         jXuWl4hxuEdCyOyldS2jauI3Wt+M1K9O13yqegIT+NvBndoPUxOGF26nLC3wQWw1Gu7/
+         opYg==
+X-Gm-Message-State: AOJu0YwjhuOIWTRfmmuIajMuTcCJaopYEZkmbiKJC4T2kG3Iy/HorynW
+        9mKyl+CjJ4IQklRafzQ4bOM=
+X-Google-Smtp-Source: AGHT+IHUJH0ptBLC+Y1DnxMxgzbKnbR/6Fjs1YJ0+fTGbIM1B2rz7XjXZu/5VMJRPZ0+lDrr4JRlNg==
+X-Received: by 2002:a19:ca12:0:b0:500:8fcd:c3b4 with SMTP id a18-20020a19ca12000000b005008fcdc3b4mr12372967lfg.69.1693296711166;
+        Tue, 29 Aug 2023 01:11:51 -0700 (PDT)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id f25-20020a19ae19000000b004fbad341442sm1868026lfc.97.2023.08.29.01.11.49
+        by smtp.gmail.com with ESMTPSA id f25-20020a19ae19000000b004fbad341442sm1868026lfc.97.2023.08.29.01.11.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 01:11:49 -0700 (PDT)
+        Tue, 29 Aug 2023 01:11:50 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
@@ -62,9 +62,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v2 8/9] mm: vmalloc: Support multiple nodes in vmallocinfo
-Date:   Tue, 29 Aug 2023 10:11:41 +0200
-Message-Id: <20230829081142.3619-9-urezki@gmail.com>
+Subject: [PATCH v2 9/9] mm: vmalloc: Set nr_nodes/node_size based on CPU-cores
+Date:   Tue, 29 Aug 2023 10:11:42 +0200
+Message-Id: <20230829081142.3619-10-urezki@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230829081142.3619-1-urezki@gmail.com>
 References: <20230829081142.3619-1-urezki@gmail.com>
@@ -80,182 +80,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocated areas are spread among nodes, it implies that
-the scanning has to be performed individually of each node
-in order to dump all existing VAs.
+The density ratio is set to 2, i.e. two users per one node.
+For example if there are 6 cores in a system the "nr_nodes"
+is 3.
+
+The "node_size" also depends on number of physical cores.
+A high-threshold limit is hard-coded and set to SZ_4M.
+
+For 32-bit, single/dual core systems an access to a global
+vmap heap is not balanced. Such small systems do not suffer
+from lock contentions due to limitation of CPU-cores.
+
+Test on AMD Ryzen Threadripper 3970X 32-Core Processor:
+sudo ./test_vmalloc.sh run_test_mask=127 nr_threads=64
+
+<default perf>
+ 94.17%     0.90%  [kernel]    [k] _raw_spin_lock
+ 93.27%    93.05%  [kernel]    [k] native_queued_spin_lock_slowpath
+ 74.69%     0.25%  [kernel]    [k] __vmalloc_node_range
+ 72.64%     0.01%  [kernel]    [k] __get_vm_area_node
+ 72.04%     0.89%  [kernel]    [k] alloc_vmap_area
+ 42.17%     0.00%  [kernel]    [k] vmalloc
+ 32.53%     0.00%  [kernel]    [k] __vmalloc_node
+ 24.91%     0.25%  [kernel]    [k] vfree
+ 24.32%     0.01%  [kernel]    [k] remove_vm_area
+ 22.63%     0.21%  [kernel]    [k] find_unlink_vmap_area
+ 15.51%     0.00%  [unknown]   [k] 0xffffffffc09a74ac
+ 14.35%     0.00%  [kernel]    [k] ret_from_fork_asm
+ 14.35%     0.00%  [kernel]    [k] ret_from_fork
+ 14.35%     0.00%  [kernel]    [k] kthread
+<default perf>
+   vs
+<patch-series perf>
+ 74.32%     2.42%  [kernel]    [k] __vmalloc_node_range
+ 69.58%     0.01%  [kernel]    [k] vmalloc
+ 54.21%     1.17%  [kernel]    [k] __alloc_pages_bulk
+ 48.13%    47.91%  [kernel]    [k] clear_page_orig
+ 43.60%     0.01%  [unknown]   [k] 0xffffffffc082f16f
+ 32.06%     0.00%  [kernel]    [k] ret_from_fork_asm
+ 32.06%     0.00%  [kernel]    [k] ret_from_fork
+ 32.06%     0.00%  [kernel]    [k] kthread
+ 31.30%     0.00%  [unknown]   [k] 0xffffffffc082f889
+ 22.98%     4.16%  [kernel]    [k] vfree
+ 14.36%     0.28%  [kernel]    [k] __get_vm_area_node
+ 13.43%     3.35%  [kernel]    [k] alloc_vmap_area
+ 10.86%     0.04%  [kernel]    [k] remove_vm_area
+  8.89%     2.75%  [kernel]    [k] _raw_spin_lock
+  7.19%     0.00%  [unknown]   [k] 0xffffffffc082fba3
+  6.65%     1.37%  [kernel]    [k] free_unref_page
+  6.13%     6.11%  [kernel]    [k] native_queued_spin_lock_slowpath
+<patch-series perf>
+
+confirms that a native_queued_spin_lock_slowpath bottle-neck
+can be considered as negligible for the patch-series version.
+
+The throughput is ~15x higher:
+
+urezki@pc638:~$ time sudo ./test_vmalloc.sh run_test_mask=127 nr_threads=64
+Run the test with following parameters: run_test_mask=127 nr_threads=64
+Done.
+Check the kernel ring buffer to see the summary.
+
+real    24m3.305s
+user    0m0.361s
+sys     0m0.013s
+urezki@pc638:~$
+
+urezki@pc638:~$ time sudo ./test_vmalloc.sh run_test_mask=127 nr_threads=64
+Run the test with following parameters: run_test_mask=127 nr_threads=64
+Done.
+Check the kernel ring buffer to see the summary.
+
+real    1m28.382s
+user    0m0.014s
+sys     0m0.026s
+urezki@pc638:~$
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- mm/vmalloc.c | 120 ++++++++++++++++++++-------------------------------
- 1 file changed, 47 insertions(+), 73 deletions(-)
+ mm/vmalloc.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 968144c16237..9cce012aecdb 100644
+index 9cce012aecdb..08990f630c21 100644
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -4636,30 +4636,6 @@ bool vmalloc_dump_obj(void *object)
- #endif
+@@ -796,6 +796,9 @@ struct vmap_node {
+ 	atomic_t fill_in_progress;
+ };
  
- #ifdef CONFIG_PROC_FS
--static void *s_start(struct seq_file *m, loff_t *pos)
--{
--	struct vmap_node *vn = addr_to_node(0);
--
--	mutex_lock(&vmap_purge_lock);
--	spin_lock(&vn->busy.lock);
--
--	return seq_list_start(&vn->busy.head, *pos);
--}
--
--static void *s_next(struct seq_file *m, void *p, loff_t *pos)
--{
--	struct vmap_node *vn = addr_to_node(0);
--	return seq_list_next(p, &vn->busy.head, pos);
--}
--
--static void s_stop(struct seq_file *m, void *p)
--{
--	struct vmap_node *vn = addr_to_node(0);
--
--	spin_unlock(&vn->busy.lock);
--	mutex_unlock(&vmap_purge_lock);
--}
--
- static void show_numa_info(struct seq_file *m, struct vm_struct *v)
- {
- 	if (IS_ENABLED(CONFIG_NUMA)) {
-@@ -4703,84 +4679,82 @@ static void show_purge_info(struct seq_file *m)
++#define MAX_NODES U8_MAX
++#define MAX_NODE_SIZE SZ_4M
++
+ static struct vmap_node *nodes, snode;
+ static __read_mostly unsigned int nr_nodes = 1;
+ static __read_mostly unsigned int node_size = 1;
+@@ -4803,11 +4806,24 @@ static void vmap_init_free_space(void)
  	}
  }
  
--static int s_show(struct seq_file *m, void *p)
-+static int vmalloc_info_show(struct seq_file *m, void *p)
++static unsigned int calculate_nr_nodes(void)
++{
++	unsigned int nr_cpus;
++
++	nr_cpus = num_present_cpus();
++	if (nr_cpus <= 1)
++		nr_cpus = num_possible_cpus();
++
++	/* Density factor. Two users per a node. */
++	return clamp_t(unsigned int, nr_cpus >> 1, 1, MAX_NODES);
++}
++
+ static void vmap_init_nodes(void)
  {
  	struct vmap_node *vn;
- 	struct vmap_area *va;
- 	struct vm_struct *v;
-+	int i;
+ 	int i;
  
--	vn = addr_to_node(0);
--	va = list_entry(p, struct vmap_area, list);
-+	for (i = 0; i < nr_nodes; i++) {
-+		vn = &nodes[i];
++	nr_nodes = calculate_nr_nodes();
+ 	nodes = &snode;
  
--	if (!va->vm) {
--		if (va->flags & VMAP_RAM)
--			seq_printf(m, "0x%pK-0x%pK %7ld vm_map_ram\n",
--				(void *)va->va_start, (void *)va->va_end,
--				va->va_end - va->va_start);
-+		spin_lock(&vn->busy.lock);
-+		list_for_each_entry(va, &vn->busy.head, list) {
-+			if (!va->vm) {
-+				if (va->flags & VMAP_RAM)
-+					seq_printf(m, "0x%pK-0x%pK %7ld vm_map_ram\n",
-+						(void *)va->va_start, (void *)va->va_end,
-+						va->va_end - va->va_start);
- 
--		goto final;
--	}
-+				continue;
-+			}
- 
--	v = va->vm;
-+			v = va->vm;
- 
--	seq_printf(m, "0x%pK-0x%pK %7ld",
--		v->addr, v->addr + v->size, v->size);
-+			seq_printf(m, "0x%pK-0x%pK %7ld",
-+				v->addr, v->addr + v->size, v->size);
- 
--	if (v->caller)
--		seq_printf(m, " %pS", v->caller);
-+			if (v->caller)
-+				seq_printf(m, " %pS", v->caller);
- 
--	if (v->nr_pages)
--		seq_printf(m, " pages=%d", v->nr_pages);
-+			if (v->nr_pages)
-+				seq_printf(m, " pages=%d", v->nr_pages);
- 
--	if (v->phys_addr)
--		seq_printf(m, " phys=%pa", &v->phys_addr);
-+			if (v->phys_addr)
-+				seq_printf(m, " phys=%pa", &v->phys_addr);
- 
--	if (v->flags & VM_IOREMAP)
--		seq_puts(m, " ioremap");
-+			if (v->flags & VM_IOREMAP)
-+				seq_puts(m, " ioremap");
- 
--	if (v->flags & VM_ALLOC)
--		seq_puts(m, " vmalloc");
-+			if (v->flags & VM_ALLOC)
-+				seq_puts(m, " vmalloc");
- 
--	if (v->flags & VM_MAP)
--		seq_puts(m, " vmap");
-+			if (v->flags & VM_MAP)
-+				seq_puts(m, " vmap");
- 
--	if (v->flags & VM_USERMAP)
--		seq_puts(m, " user");
-+			if (v->flags & VM_USERMAP)
-+				seq_puts(m, " user");
- 
--	if (v->flags & VM_DMA_COHERENT)
--		seq_puts(m, " dma-coherent");
-+			if (v->flags & VM_DMA_COHERENT)
-+				seq_puts(m, " dma-coherent");
- 
--	if (is_vmalloc_addr(v->pages))
--		seq_puts(m, " vpages");
-+			if (is_vmalloc_addr(v->pages))
-+				seq_puts(m, " vpages");
- 
--	show_numa_info(m, v);
--	seq_putc(m, '\n');
-+			show_numa_info(m, v);
-+			seq_putc(m, '\n');
-+		}
-+		spin_unlock(&vn->busy.lock);
-+	}
- 
- 	/*
- 	 * As a final step, dump "unpurged" areas.
- 	 */
--final:
--	if (list_is_last(&va->list, &vn->busy.head))
--		show_purge_info(m);
--
-+	show_purge_info(m);
- 	return 0;
+ 	if (nr_nodes > 1) {
+@@ -4830,6 +4846,16 @@ static void vmap_init_nodes(void)
+ 		INIT_LIST_HEAD(&vn->free.head);
+ 		spin_lock_init(&vn->free.lock);
+ 	}
++
++	/*
++	 * Scale a node size to number of CPUs. Each power of two
++	 * value doubles a node size. A high-threshold limit is set
++	 * to 4M.
++	 */
++#if BITS_PER_LONG == 64
++	if (nr_nodes > 1)
++		node_size = min(SZ_64K << fls(num_possible_cpus()), SZ_4M);
++#endif
  }
  
--static const struct seq_operations vmalloc_op = {
--	.start = s_start,
--	.next = s_next,
--	.stop = s_stop,
--	.show = s_show,
--};
--
- static int __init proc_vmalloc_init(void)
- {
-+	void *priv_data = NULL;
-+
- 	if (IS_ENABLED(CONFIG_NUMA))
--		proc_create_seq_private("vmallocinfo", 0400, NULL,
--				&vmalloc_op,
--				nr_node_ids * sizeof(unsigned int), NULL);
--	else
--		proc_create_seq("vmallocinfo", 0400, NULL, &vmalloc_op);
-+		priv_data = kmalloc(nr_node_ids * sizeof(unsigned int), GFP_KERNEL);
-+
-+	proc_create_single_data("vmallocinfo",
-+		0400, NULL, vmalloc_info_show, priv_data);
-+
- 	return 0;
- }
- module_init(proc_vmalloc_init);
+ void __init vmalloc_init(void)
 -- 
 2.30.2
 
