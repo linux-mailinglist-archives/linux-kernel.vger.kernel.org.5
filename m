@@ -2,162 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8BF78BCE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B64978BCE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235392AbjH2Cgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S235398AbjH2ChF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 22:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbjH2CgW (ORCPT
+        with ESMTP id S233143AbjH2Cgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:36:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C670A139;
-        Mon, 28 Aug 2023 19:36:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 28 Aug 2023 22:36:33 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16ED139
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 19:36:30 -0700 (PDT)
+Received: from [192.168.2.140] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5ADB260CEC;
-        Tue, 29 Aug 2023 02:36:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2D5DC433C8;
-        Tue, 29 Aug 2023 02:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693276578;
-        bh=GR786N1WG+6u7KDhtMNYzwV4w0yqeHQX13Xo8ZwlNKM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VTYmWKaKevaNznKPQb9Vg7GxV+IYK9Q/oOWrANVXZ8QqcKjfp5UVpPO9rTa/fvTI0
-         jA7TlguM070y8otXRlyzzCXMZaxYq1VF2X8krusAMXIQXiTJyEpyLisAwb1eW/OpYs
-         eevNj4V7nkF8zbQsbovIUotdETdxsJypRuTNNcpnVlTJE3n3qVpKt5be3GTZ5GTEWF
-         LVBjTiYfs/hzqoFQ6EuSIDtLxBe2N9z0lRl7tt/TFxworkx4DKU9+8ve9o+iWXt4Ob
-         GhubYAPtXO/SXU3SLcdOpCCG6+5o7CUw9ozmx+he7cV/XTv0MuQXwyMrIcjXROGxoI
-         xPDd8/4/PQw3g==
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-571194584e2so2480763eaf.3;
-        Mon, 28 Aug 2023 19:36:18 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzNRMaz7pRJ05uzMogC9aWFQrkxzGzzEa9iRan8C0m6PwLR/ce3
-        KtOy3sz5avqkGNS9fC1p92/okkyZ89CU91q75LY=
-X-Google-Smtp-Source: AGHT+IHFjR4ul+Tuk0znXoAjKIj9khNjYdgRNj3UF0yVzWH/x+XiTMfPP0bSIc8TlR7+ojMzA6QjyUL1FIMVk3hZlwM=
-X-Received: by 2002:a4a:ea3b:0:b0:56d:e6:21bf with SMTP id y27-20020a4aea3b000000b0056d00e621bfmr13266092ood.0.1693276577944;
- Mon, 28 Aug 2023 19:36:17 -0700 (PDT)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2E3B966071DC;
+        Tue, 29 Aug 2023 03:36:28 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693276589;
+        bh=fO2UTLZenz76bcv930LCK2ALVC/MUnGbZGTSyAhqLbs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EhAFW/Q/uNzOaehV2hG3RKB8wqITechgFU6vjtVMO9Cg2TJJXRGyACdowNlnhohLn
+         nB7nAvfbT2nGVGEfn2w6dUuMxbriKC7sOLCY4xwLnlo/9B4zyN+3vHVtE877JjsjeV
+         oyqrasJ87bX9u5Yh4gnosdTv6OucniZs8hpi5VawDhwgP7RHiqgLPzk7K4yGVyJyn8
+         vbd5tAKRfM6MlOjECpiPyIgFpvqVVmaKNX9o625sNcgMkMzqRQl/FAiBr9vOt+CtnI
+         8TXlYixt4KnjlCLz9X3IN+taidCPSppNg9JtCHxoCStnUtjrCKbVR/ocqobfPsFw57
+         2CRfC8Lo8Zqyw==
+Message-ID: <a0119c05-6222-cc3b-1328-16224898b8ee@collabora.com>
+Date:   Tue, 29 Aug 2023 05:36:25 +0300
 MIME-Version: 1.0
-References: <20230823115048.823011-1-masahiroy@kernel.org> <20230823115048.823011-6-masahiroy@kernel.org>
- <ZOyuY5XCfYEV8fW6@bergen.fjasle.eu>
-In-Reply-To: <ZOyuY5XCfYEV8fW6@bergen.fjasle.eu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 29 Aug 2023 11:35:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ=5x+zOApY95Oqen0tyfVthb7QYjeskgQmUqGBDtSoiw@mail.gmail.com>
-Message-ID: <CAK7LNAQ=5x+zOApY95Oqen0tyfVthb7QYjeskgQmUqGBDtSoiw@mail.gmail.com>
-Subject: Re: [PATCH 6/8] kbuild: move more module installation code to scripts/Makefile.modinst
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v15 00/23] Add generic memory shrinker to VirtIO-GPU and
+ Panfrost DRM drivers
+Content-Language: en-US
+To:     Helen Mae Koike Fornazier <helen.koike@collabora.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Emma Anholt <emma@anholt.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        dri-devel@lists.freedesktop.org,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Gerd Hoffmann <kraxel@redhat.com>, kernel@collabora.com,
+        Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        intel-gfx@lists.freedesktop.org, Boqun Feng <boqun.feng@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Melissa Wen <mwen@igalia.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+References: <6d93-64ecbc00-3-3c8ca040@163557744>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <6d93-64ecbc00-3-3c8ca040@163557744>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 11:15=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu>=
- wrote:
->
-> On Wed 23 Aug 2023 20:50:46 GMT, Masahiro Yamada wrote:
-> > Move more relevant code to scripts/Makefile.modinst.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  Makefile                 | 34 +++++++--------------------------
-> >  scripts/Makefile.modinst | 41 +++++++++++++++++++++++++++++++++++++---
-> >  2 files changed, 45 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 7d9cab3d2186..82d22debf6c9 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1477,24 +1477,6 @@ endif
-> >
-> >  endif # CONFIG_MODULES
-> >
-> > -modinst_pre :=3D
-> > -ifneq ($(filter modules_install,$(MAKECMDGOALS)),)
-> > -modinst_pre :=3D __modinst_pre
-> > -endif
-> > -
-> > -modules_install: $(modinst_pre)
-> > -PHONY +=3D __modinst_pre
-> > -__modinst_pre:
-> > -     @rm -rf $(MODLIB)/kernel
-> > -     @rm -f $(MODLIB)/build
-> > -     @mkdir -p $(MODLIB)
-> > -ifdef CONFIG_MODULES
-> > -     @ln -s $(CURDIR) $(MODLIB)/build
-> > -     @sed 's:^\(.*\)\.o$$:kernel/\1.ko:' modules.order > $(MODLIB)/mod=
-ules.order
-> > -endif
-> > -     @cp -f modules.builtin $(MODLIB)/
-> > -     @cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
-> > -
-> >  ###
-> >  # Cleaning is done on three levels.
-> >  # make clean     Delete most generated files
-> > @@ -1836,12 +1818,15 @@ help:
-> >       @echo  '  clean           - remove generated files in module dire=
-ctory only'
-> >       @echo  ''
-> >
-> > +ifndef CONFIG_MODULES
-> > +modules modules_install: __external_modules_error
-> >  __external_modules_error:
-> >       @echo >&2 '***'
-> >       @echo >&2 '*** The present kernel disabled CONFIG_MODULES.'
-> >       @echo >&2 '*** You cannot build or install external modules.'
-> >       @echo >&2 '***'
-> >       @false
-> > +endif
-> >
-> >  endif # KBUILD_EXTMOD
-> >
-> > @@ -1850,6 +1835,9 @@ endif # KBUILD_EXTMOD
-> >
-> >  PHONY +=3D modules modules_install modules_prepare
-> >
-> > +modules_install:
-> > +     $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
->
-> I was a bit surprised to see 'modules_install' being allowed
-> unconditionally for in-tree usage (thus, even if CONFIG_MODULES=3Dn), but
-> then realised that this is the same behaviour as we had before.  Out of
-> curiosity:  _why_ do we need to install
-> $(MODLIB)/modules.builtin{,.modinfo} also for configs w/
-> CONFIG_MODULES=3Dn?
+On 8/28/23 18:24, Helen Mae Koike Fornazier wrote:
+> On Monday, August 28, 2023 11:37 -03, "Helen Mae Koike Fornazier" <helen.koike@collabora.com> wrote:
+> 
+>> On Sunday, August 27, 2023 14:54 -03, Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>
+>>> This series:
+>>>
+>>>   1. Adds common drm-shmem memory shrinker
+>>>   2. Enables shrinker for VirtIO-GPU driver
+>>>   3. Switches Panfrost driver to the common shrinker
+>>
+>> Hi Dmitry, 
+>>
+>> Would you mind testing with drm-ci? We virt-io tests there and it would be
+>> really great to get your feedback of it.
+>>
+>> https://cgit.freedesktop.org/drm/drm/log/?h=topic/drm-ci
+> 
+> sorry, I forgot that you also need this patchset:
+>     https://lists.freedesktop.org/archives/dri-devel/2023-August/420063.html
+> to enable virtio_gpu test job.
+> 
+> Thanks again.
+> Helen
+> 
+>>
+>> You need to merge your changes with the above tree.
+>> To configure it, you just need to have a tree on gitlab.freedesktop.org,
+>> go to the settings and change the CI/CD configuration file from .gitlab-ci.yml
+>> to drivers/gpu/drm/ci/gitlab-ci.yml, and you can start a pipeline
+>> on your branch.
+>>
+>> at the time of this writting, gitlab.freedesktop.org is under maintenance,
+>> but it should be back soon.
 
+Thanks, Helen. I'll give it a try for the next version
 
-I see your tags in commit
-8ae071fc216a25f4f797f33c56857f4dd6b4408e    :)
+-- 
+Best regards,
+Dmitry
 
-
-Some drivers need to load firmware.
-
-To make such drivers working in initrd,
-mkinitramfs needs to copy necessary firmware files
-into the initrd.
-So, the tool needs to know which drivers are enabled.
-
-That is my understanding why modules.builtin(.modinfo)
-is needed even with CONFIG_MODULES=3Dn.
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
