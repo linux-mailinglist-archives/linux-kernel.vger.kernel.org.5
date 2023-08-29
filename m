@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54D678C684
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A5778C683
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236510AbjH2NzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S236473AbjH2NzF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Aug 2023 09:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234782AbjH2Nyb (ORCPT
+        with ESMTP id S236435AbjH2Nyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:54:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 333CEB5
+        Tue, 29 Aug 2023 09:54:32 -0400
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4B9BD
         for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:54:29 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B6F02F4;
-        Tue, 29 Aug 2023 06:55:08 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.57.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2323D3F64C;
-        Tue, 29 Aug 2023 06:54:23 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V6 2/2] coresight: trbe: Enable ACPI based TRBE devices
-Date:   Tue, 29 Aug 2023 19:24:05 +0530
-Message-Id: <20230829135405.1159449-3-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230829135405.1159449-1-anshuman.khandual@arm.com>
-References: <20230829135405.1159449-1-anshuman.khandual@arm.com>
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-573128cd77dso645023eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:54:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693317269; x=1693922069;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7Hqp5g8vcCPM7sTxDxg2xv+zoph4aaW7wr9kh3juDcU=;
+        b=Rzl9k1jaxEMlZTylv1RAtmCWHJXu/2wPvkeCq6wO4GBy3Ylufg7bOvxqMS+JetLTfa
+         aoPQOnTskDtL6B8vNpYvk5n8WvShFzrUMDuucdv49z5j0fT7dN80BTB8mERSiSDuv9rT
+         gu3aTd28uuTbf4wUnUmqVYCk2ZS8Co99ZUsF3g0KTSr6F1vXnEN2a3n6+Xm7dA+X0NuB
+         qpC5ooa+NomwyMA7wb4qw83b0QFmkDXfQbkqf4lDQG0EEDekweZKgLbY2x/B8huh+MQa
+         vVgol0RR0ltMuodEwHLtAcGg/Ky09ixiYZfE27klkquSx6EXnWKyDufcLLbnzPkyGwiA
+         LNYQ==
+X-Gm-Message-State: AOJu0YypZN2Spv20/pDSZPHG4kit2xQ6ln6c5F2zeNevdKdhhlCGnDQT
+        javefjr6NsdNv7qmPA7unzlldQR3k8upbDocVtaOeqba
+X-Google-Smtp-Source: AGHT+IHZ34rKCf0cjfGK4NnMByhXn99fQMCRnhBDnrDBsSCKWhcUSkm71B96oaHZKTTRXBaK2GnNAeH3aVP/lyc4Q8s=
+X-Received: by 2002:a4a:da10:0:b0:56e:6532:467a with SMTP id
+ e16-20020a4ada10000000b0056e6532467amr26577258oou.1.1693317269222; Tue, 29
+ Aug 2023 06:54:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net>
+In-Reply-To: <c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 29 Aug 2023 15:54:18 +0200
+Message-ID: <CAJZ5v0jASjc_RYp-SN5KMGJXDv8xbMOqJscLF3wG8rdE2_KJGw@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: processor: Move MWAIT quirk out of acpi_processor.c
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Michal Wilczynski <michal.wilczynski@intel.com>
+Cc:     rafael@kernel.org, andriy.shevchenko@intel.com,
+        artem.bityutskiy@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, lenb@kernel.org,
+        jgross@suse.com, linux-kernel@vger.kernel.org, x86@kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This detects and enables ACPI based TRBE devices via the dummy platform
-device created earlier for this purpose.
+On Tue, Aug 29, 2023 at 3:44 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Mon, Jul 10, 2023 at 05:03:29PM +0300, Michal Wilczynski wrote:
+> > Commit 2a2a64714d9c ("ACPI: Disable MWAIT via DMI on broken Compal board")
+> > introduced a workaround for MWAIT for a specific x86 system.
+> >
+> > Move the code outside of acpi_processor.c to acpi/x86/ directory for
+> > consistency and rename the functions associated with it, so their names
+> > start with "acpi_proc_quirk_" to make the goal obvious.
+> >
+> > No intentional functional impact.
+> >
+>
+> Except for:
+>
+> ia64-linux-ld: drivers/acpi/acpi_processor.o: in function `acpi_early_processor_control_setup':
+> acpi_processor.c:(.init.text+0x712): undefined reference to `acpi_proc_quirk_mwait_check'
+> ia64-linux-ld: drivers/acpi/processor_pdc.o: in function `acpi_early_processor_set_pdc':
+> processor_pdc.c:(.init.text+0x72): undefined reference to `acpi_proc_quirk_mwait_check'
+>
+> which breaks all ia64 builds.
+>
+> Time to retire that architecture yet ? No one but me seems to even
+> build test it.
 
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- drivers/hwtracing/coresight/coresight-trbe.c | 9 +++++++++
- drivers/hwtracing/coresight/coresight-trbe.h | 2 ++
- 2 files changed, 11 insertions(+)
+Including 0-day it seems.  This had been in linux-next for several weeks.
 
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 97b9e72965e6..a3954be7b1f3 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -1546,7 +1546,16 @@ static const struct of_device_id arm_trbe_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, arm_trbe_of_match);
- 
-+#ifdef CONFIG_ACPI
-+static const struct platform_device_id arm_trbe_acpi_match[] = {
-+	{ ARMV8_TRBE_PDEV_NAME, 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
-+#endif
-+
- static struct platform_driver arm_trbe_driver = {
-+	.id_table = ACPI_PTR(arm_trbe_acpi_match),
- 	.driver	= {
- 		.name = DRVNAME,
- 		.of_match_table = of_match_ptr(arm_trbe_of_match),
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
-index e915e749be55..45202c48acce 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.h
-+++ b/drivers/hwtracing/coresight/coresight-trbe.h
-@@ -7,11 +7,13 @@
-  *
-  * Author: Anshuman Khandual <anshuman.khandual@arm.com>
-  */
-+#include <linux/acpi.h>
- #include <linux/coresight.h>
- #include <linux/device.h>
- #include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/of.h>
-+#include <linux/perf/arm_pmu.h>
- #include <linux/platform_device.h>
- #include <linux/smp.h>
- 
--- 
-2.25.1
-
+Michal, can you have a look at this please?
