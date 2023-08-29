@@ -2,53 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8A978BD3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 05:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA3178BD40
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 05:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbjH2D2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 23:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
+        id S235304AbjH2D2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 23:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbjH2D16 (ORCPT
+        with ESMTP id S235279AbjH2D21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 23:27:58 -0400
-Received: from mail-pg1-f205.google.com (mail-pg1-f205.google.com [209.85.215.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A890110
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 20:27:53 -0700 (PDT)
-Received: by mail-pg1-f205.google.com with SMTP id 41be03b00d2f7-56c49207ce2so2640711a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 20:27:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693279672; x=1693884472;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yDPKTIwDlYvm7zzsU2/yOXQF9Xuxc0XNFTO/v4Pa4UQ=;
-        b=b2bRopXGN/179VszMdEgPWF+vWXQxCAJAiHxK+pQRFgfaxovNMtPnbXjFrjRg78iJi
-         nluyJJwHs75SoXIkdCy02NhqD4+CihcLqOJfT5z+Jpujy0stXyMICwP+krOVwqlF0LMZ
-         OdLkrUeSjVe55CrhRV3DjarroVu5/OaKkPHDpl4TYwCRl0f7Ulv8mIwT+YGRrPnuFo3k
-         BmpNqq9EqgvlKlQ+pmdTrQMkIOggu7rimfvcUD805dDGgCJOFUky6gErKHQ4Mr5qdtPP
-         hlskYfGMxsDaD4Xe7M9oaNLC7xpBKdAuguLMSMb2FpTvH7XY9qFyIoDKbHgiooZxcKfn
-         O1vw==
-X-Gm-Message-State: AOJu0YxQh2ZxN/rm/OeUE9k+vHEm5ATAMCpbRFkEOpfHSd5GdoRlT3kV
-        wl5iyqW2QXsdKloKM26Bghz/LyaebuVo7oEpUhks0fxlxFhS
-X-Google-Smtp-Source: AGHT+IGC/m3WZEZ4OM2rzqnGDS95J76gOa62+/mXiGZXFnedYUGD+7bFYEkt2PBg3CRxoh9WCL9aDIsSo6PbcSyZBgtgLJ8usXGi
+        Mon, 28 Aug 2023 23:28:27 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D0B110
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 20:28:24 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VqphPb9_1693279700;
+Received: from 30.221.133.4(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VqphPb9_1693279700)
+          by smtp.aliyun-inc.com;
+          Tue, 29 Aug 2023 11:28:21 +0800
+Message-ID: <06404460-81ef-7b9d-8daf-08492261cb86@linux.alibaba.com>
+Date:   Tue, 29 Aug 2023 11:28:24 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:1d2:b0:1bd:e2ba:83d9 with SMTP id
- e18-20020a17090301d200b001bde2ba83d9mr9993560plh.7.1693279672666; Mon, 28 Aug
- 2023 20:27:52 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 20:27:52 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006512230604076562@google.com>
-Subject: [syzbot] [btrfs?] KASAN: use-after-free Read in btrfs_test_super
-From:   syzbot <syzbot+65bb53688b6052f09c28@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        terrelln@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 6/7] mm/compaction: improve comment of
+ is_via_compact_memory
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
+References: <20230826153617.4019189-1-shikemeng@huaweicloud.com>
+ <20230826153617.4019189-7-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230826153617.4019189-7-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-12.1 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,160 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    626932085009 Add linux-next specific files for 20230825
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b1c0c0680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
-dashboard link: https://syzkaller.appspot.com/bug?extid=65bb53688b6052f09c28
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126ab89fa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10c9371fa80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/29599ed4793a/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+65bb53688b6052f09c28@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 32768
-BTRFS: device fsid d552757d-9c39-40e3-95f0-16d819589928 devid 1 transid 8 /dev/loop0 scanned by syz-executor324 (6049)
-==================================================================
-BUG: KASAN: use-after-free in btrfs_test_super+0x9b/0xa0 fs/btrfs/super.c:1348
-Read of size 8 at addr ffff88807812d110 by task syz-executor324/6049
-
-CPU: 0 PID: 6049 Comm: syz-executor324 Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- btrfs_test_super+0x9b/0xa0 fs/btrfs/super.c:1348
- sget+0x3de/0x610 fs/super.c:861
- btrfs_mount_root+0x692/0xdd0 fs/btrfs/super.c:1508
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- fc_mount fs/namespace.c:1112 [inline]
- vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
- vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
- btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1585
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4920f7088a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 3e 06 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4920f29088 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f4920f7088a
-RDX: 00000000200055c0 RSI: 0000000020005600 RDI: 00007f4920f290a0
-RBP: 00007f4920f290a0 R08: 00007f4920f290e0 R09: 00000000000055a2
-R10: 0000000000000000 R11: 0000000000000282 R12: 00007f4920f290e0
-R13: 0000000000000000 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-
-The buggy address belongs to the physical page:
-page:ffffea0001e04b40 refcount:0 mapcount:0 mapping:0000000000000000 index:0x400000000 pfn:0x7812d
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000400000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x152dc0(GFP_USER|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_ZERO), pid 6045, tgid 6043 (syz-executor324), ts 596852111149, free_ts 598062789716
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1530
- prep_new_page mm/page_alloc.c:1537 [inline]
- get_page_from_freelist+0xf17/0x2e50 mm/page_alloc.c:3200
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4456
- __alloc_pages_node include/linux/gfp.h:237 [inline]
- alloc_pages_node include/linux/gfp.h:260 [inline]
- __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1164
- __do_kmalloc_node mm/slab_common.c:1011 [inline]
- __kmalloc_node.cold+0x5/0xdd mm/slab_common.c:1030
- kmalloc_node include/linux/slab.h:619 [inline]
- kvmalloc_node+0x6f/0x1a0 mm/util.c:607
- kvmalloc include/linux/slab.h:737 [inline]
- kvzalloc include/linux/slab.h:745 [inline]
- btrfs_mount_root+0x130/0xdd0 fs/btrfs/super.c:1466
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- fc_mount fs/namespace.c:1112 [inline]
- vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
- vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
- btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1585
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1130 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2342
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2435
- kvfree+0x47/0x50 mm/util.c:653
- deactivate_locked_super+0xa0/0x2d0 fs/super.c:454
- deactivate_super+0xde/0x100 fs/super.c:504
- cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
- task_work_run+0x14d/0x240 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88807812d000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88807812d080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff88807812d100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                         ^
- ffff88807812d180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88807812d200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 8/26/2023 11:36 PM, Kemeng Shi wrote:
+> We do proactive compaction with order == -1 via
+> 1. /proc/sys/vm/compact_memory
+> 2. /sys/devices/system/node/nodex/compact
+> 3. /proc/sys/vm/compaction_proactiveness
+> Add missed situation in which order == -1.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>   mm/compaction.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 89a1b627bc89..00b7bba6c72e 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2061,8 +2061,10 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
+>   }
+>   
+>   /*
+> - * order == -1 is expected when compacting via
+> - * /proc/sys/vm/compact_memory
+> + * order == -1 is expected when compacting proactively via
+> + * 1. /proc/sys/vm/compact_memory
+> + * 2. /sys/devices/system/node/nodex/compact
+> + * 3. /proc/sys/vm/compaction_proactiveness
+>    */
+>   static inline bool is_via_compact_memory(int order)
+>   {
