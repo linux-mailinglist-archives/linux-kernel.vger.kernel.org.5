@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD7E78C0E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0901A78C0EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbjH2JCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
+        id S234377AbjH2JDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234378AbjH2JB4 (ORCPT
+        with ESMTP id S231727AbjH2JCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:01:56 -0400
-Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0514107;
-        Tue, 29 Aug 2023 02:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
-        s=selectormx4; t=1693299709;
+        Tue, 29 Aug 2023 05:02:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC1EB5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:01:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693299716;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=enNMWrefHR+UVXg2TD1VzcTqWSNIgCW2PLkCOpY+hDY=;
-        b=kJyFwwXxQtr788Yy06gQm27MSUBsbHvOOgHhPIeH3vxi4aUeBTlCTJSCLWF8PujTF9Z3C9
-        YMb9boAkONkv9/OeiIvDdyTTGfrKbjUQImAymMg69znNF1EMRWxHSrnlKxyA7YB0W8l0sc
-        uwXtL/hfJy6LEg5Xv0vnEiUAuN3Vy18=
-Received: from [192.168.1.18] (91-171-21-26.subs.proxad.net [91.171.21.26])
-        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 80c32b59 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 29 Aug 2023 09:01:49 +0000 (UTC)
-Message-ID: <055a2e15-58e0-9644-3779-75ba1d2d14be@sionneau.net>
-Date:   Tue, 29 Aug 2023 11:01:48 +0200
+        bh=CgdzgbOX3BwA1qsFQOYjucBlp+9396nKB8ZCFY6QyUM=;
+        b=M7IG6tI4KWAPaTWTRR/MAsjBp7lL7+2W5+/xWTXpyDMDfSI60hsIQnzV7Bu+m6U/7VZ4ki
+        uuyxyzOd8+zSY2n8XpOngPMT94swhR5UM9P9vbuBTNxdfZbeI9IauItjrIcxlZUEL3ng/p
+        Z1cngPYtxBRk93v46f2PoYXQ8Rx4O9I=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-322-ZZIxSzqpMm2MZnRYrsizkw-1; Tue, 29 Aug 2023 05:01:55 -0400
+X-MC-Unique: ZZIxSzqpMm2MZnRYrsizkw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fef27968adso28317425e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:01:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693299714; x=1693904514;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CgdzgbOX3BwA1qsFQOYjucBlp+9396nKB8ZCFY6QyUM=;
+        b=gzJ+2525wGPALLJCnOLNuCJN4k5U7rwhNAYkYHUvALelEDWAQ4MvyR9mr0IFXv6rs4
+         Y+ejUHAWczArY/AhnSYa3LFrXWCWNUIlBSK2zda8zgvtNmYAZTXCLu+K9BusIqsyK5Nt
+         4j/yxl4YRxGKs3Fi/wauCyr4Rfzrye+2RZ9LbRLEmVfX5M/CklNG+OdjnkTLybS2h/TS
+         5ehnrYaYwU+IvxFgb7ZtosJtJEO1z4ayNgCAAYioFKGkjFDwzUrc78tXIZ3oqAZXS0/T
+         xcr9jfBYG+J1PSpSkBxHdrLcwnJokjbESzDWmwe7IZbCzZ4w1tWIdOAuPtOUcT8dKmmO
+         WQKQ==
+X-Gm-Message-State: AOJu0YxetTGftFP3vahkAarZyLiH+ESHSalJxew5/ghFkpCQOv9EPjjH
+        kexDtlz80bLp4B3OV96bBMB7VyuvKMmoAYlS4VUkW/gq7w3kTpsKynAis//OD1zxcH7rrUHSmuv
+        I9a1kMGUrSs9x2HiNklfalVLd
+X-Received: by 2002:a05:6000:1001:b0:313:eee0:89a4 with SMTP id a1-20020a056000100100b00313eee089a4mr19955842wrx.12.1693299714227;
+        Tue, 29 Aug 2023 02:01:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE7519sgRuQahIjqmDIMpfo+pIFgWCd1xrVbXj5n+yxQWh+8JQX1GBtrdrGKcwK47RXFui/Cw==
+X-Received: by 2002:a05:6000:1001:b0:313:eee0:89a4 with SMTP id a1-20020a056000100100b00313eee089a4mr19955828wrx.12.1693299713945;
+        Tue, 29 Aug 2023 02:01:53 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id z6-20020a5d4406000000b003143c6e09ccsm13098590wrq.16.2023.08.29.02.01.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 02:01:53 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 4/8] drm/ssd130x: Add support for DRM_FORMAT_R1
+In-Reply-To: <d5f342b5382653c1f1fb72dbedb783f9ea42416e.1692888745.git.geert@linux-m68k.org>
+References: <cover.1692888745.git.geert@linux-m68k.org>
+ <d5f342b5382653c1f1fb72dbedb783f9ea42416e.1692888745.git.geert@linux-m68k.org>
+Date:   Tue, 29 Aug 2023 11:01:52 +0200
+Message-ID: <87ttsite67.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] i2c: designware: fix __i2c_dw_disable() in case master
- is holding SCL low
-Content-Language: en-US
-To:     Yann Sionneau <ysionneau@kalrayinc.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Yann Sionneau <ysionneau@kalray.eu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Julian Vetter <jvetter@kalrayinc.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Borne <jborne@kalray.eu>
-References: <20230822090233.14885-1-ysionneau@kalray.eu>
- <2f215e0f-c2ed-4300-8b75-1949f17cdf1c@linux.intel.com>
- <89e54d6a-9105-bf6a-72bb-fd9e0fb7b2f8@kalrayinc.com>
-From:   Yann Sionneau <yann@sionneau.net>
-In-Reply-To: <89e54d6a-9105-bf6a-72bb-fd9e0fb7b2f8@kalrayinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Le 22/08/2023 à 12:28, Yann Sionneau a écrit :
-> Hi,
+> The native display format is monochrome light-on-dark (R1).
+> Hence add support for R1, so monochrome applications not only look
+> better, but also avoid the overhead of back-and-forth conversions
+> between R1 and XR24.
 >
-> On 8/22/23 12:14, Jarkko Nikula wrote:
->> Hi
->>
->> On 8/22/23 12:02, Yann Sionneau wrote:
->>> The DesignWare IP can be synthesized with the 
->>> IC_EMPTYFIFO_HOLD_MASTER_EN
->>> parameter.
->>> In this case, when the TX FIFO gets empty and the last command 
->>> didn't have
->>> the STOP bit (IC_DATA_CMD[9]), the controller will hold SCL low until
->>> a new command is pushed into the TX FIFO or the transfer is aborted.
->>>
->>> When the controller is holding SCL low, it cannot be disabled.
->>> The transfer must first be aborted.
->>> Also, the bus recovery won't work because SCL is held low by the 
->>> master.
->>>
->>> Check if the master is holding SCL low in __i2c_dw_disable() before 
->>> trying
->>> to disable the controller. If SCL is held low, an abort is initiated.
->>> When the abort is done, then proceed with disabling the controller.
->>>
->>> This whole situation can happen for instance during SMBus read data 
->>> block
->>> if the slave just responds with "byte count == 0".
->>> This puts the driver in an unrecoverable state, because the 
->>> controller is
->>> holding SCL low and the current __i2c_dw_disable() procedure is not
->>> working. In this situation only a SoC reset can fix the i2c bus.
->>>
->> Is this fixed already by the commit 69f035c480d7 ("i2c: designware: 
->> Handle invalid SMBus block data response length value")?
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/commit/?h=i2c/for-next&id=69f035c480d76f12bf061148ccfd578e1099e5fc 
->>
+> Do not allocate the intermediate conversion buffer when it is not
+> needed, and reorder the two buffer allocations to streamline operation.
 >
-> Indeed the bug that I am having is fixed by 
-> 69f035c480d76f12bf061148ccfd578e1099e5fc
->
-> Meaning that thanks to 69f035c receiving a SMBus byte count of 0 won't 
-> put the controller into a state where the completion will timeout and 
-> it will need to start a recovery that will fail and then a controller 
-> disabling that will also fail.
->
-> But, still, the disabling procedure is wrong, it lacks the abort part 
-> (in case SCL is held low).
->
-> What my patch does, is fixing the disabling procedure. So that - for 
-> example - even without 69f035c, the controller will timeout when 
-> receiving byte count of 0, triggering the "disabling" procedure which 
-> will work to recover the bus.
->
-> My patch fixes the general disabling code, that could be triggered by 
-> the bug fixed by 69f035c but also by any other bug really.
->
-> Speaking of 69f035c btw ... I am really wondering if it's the best 
-> fix, because it will lie to the kernel saying "we have byte count of 
-> 1, read another byte" to trigger a read with STOP bit set so that the 
-> transfer does finish and the controller does not timeout. But to do 
-> this it will do an extra spurious byte read.
->
-> I propose another approach that will acknowledge that "we are in a bad 
-> condition" and directly abort the transfer without doing an extra 
-> read: https://marc.info/?l=linux-i2c&m=169175828013532&w=2
->
-> I hope my answer to your question is clear enough... English is not my 
-> native language.
->
-> Regards,
->
-Is this any clearer?
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> v2:
+>   - Rework on top op commit 8c3926367ac9df6c ("drm/ssd130x: Use
+>     shadow-buffer helpers when managing plane's state") in drm/drm-next.
+>     Hence I did not add Javier's tags given on v1.
+>   - Do not allocate intermediate buffer when not needed.
+> ---
 
-Also, what do you think about my remarks on 69f035c?
-
-Regards,
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
 -- 
+Best regards,
 
-Yann
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
