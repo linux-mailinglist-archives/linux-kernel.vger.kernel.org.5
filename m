@@ -2,203 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146EA78CED3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE79178CED8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbjH2Vhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 17:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        id S240934AbjH2Vis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234390AbjH2Vhf (ORCPT
+        with ESMTP id S240054AbjH2ViO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 17:37:35 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1FE139;
-        Tue, 29 Aug 2023 14:37:31 -0700 (PDT)
+        Tue, 29 Aug 2023 17:38:14 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DF0122
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 14:38:10 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TIiemb031375;
+        Tue, 29 Aug 2023 21:37:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=FIBN6YhPsvUwRzPH0L9SXh5tL8FY8pkar6teks6b5sk=;
+ b=jIhRhp7kqKCa61Q+qvvomc3+cKf8QuLqZihpEIATmZhu9y1bpgSAGemIx22PoKwH648t
+ mZIaWssvoIO6bnXVPGDxZ6vBz+cFQsOU4NmwtFrV8alFrMc8l9EJXxh8zKYOCwDghm9x
+ 7Admbpcxp8oMJyZryCEVNsmCHXEHyTnR+5BZUM3G7VLtOL84kOicMU6nl1awabx0qB/D
+ GNgMjz9ahekrDdN4nvNWcj9Pi2DFO0ltPARJTVOzgD9Uxxr/X8E92gkqfnlw/1zOMNeo
+ 4ijpTPJF67HuPZKs0JGhlDdtpA5fjq6xkYNkeGHUU6pX8p0N06siZpBrb9ml6+6Jl14d nQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9gcp149-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Aug 2023 21:37:43 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37TKWW9K014286;
+        Tue, 29 Aug 2023 21:37:42 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2171.outbound.protection.outlook.com [104.47.55.171])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sr6hnps93-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Aug 2023 21:37:41 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aZAf1i82qCGEi41VkZ5iLEY/gq+AMMg06aUPtN0umaGerATyOhOQrfZc+AS0PO9lHICXE3h98dc/MxySnHs/4NYhRy1BUBp73Fa3FBMYoqzoIP1/DO/O9IGP6UdZ1UQe41/b5eifir9302mUKn2ZWLTWPWPLpsRnsTw4D9FkEpNkc3U6fqDxuY1d5BdRCJ9PF52d6ftX+l+JFMOzaANfe869M22Hx+i/+8EmXQqn4eVtZYeP/YP0VfKDqlGfHuNkMdU92VVMKj+KAntptmQVNR3DPu0XfZ02XpiPkltvwBZ2voLnbXUfShN5gWmQ38ufSVX37vp4oXMErKXwcoo3FQ==
+ b=cNsXUfAXj0/Vd0Etjhyymk530NdTFHd7+OR/NT3IvRVX3YgXh0XphF351bYes3RnN4Hy+FVXGmd0EEhLZfvRs+5Li9ZL1X+c9AvkxRlRk6x8inqPJsXZgrj8DujG9azrdmTiamXTUVY/Q7cck++Ra7fxUKym3Hf/5igYZ1sxlM/CYjchJ6iQCu2Z0IBpYYuF1EGRH0PLlyMKKMMCqBvQDOtN/8ZZEulHzq7Jur1v3dXuRnCE7wcQlMm26Hrv3HI1S+RpzFK2hX//MgA45CWisaIYC7e4UrO/M5AN0MXhzqf736ZzA/ZF0nWoeLgZ5bX42RJxLCoHcu/Ry6IxEQL/4Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RQMRk/FYH/TIwhi/Kah0Idus+GW3ncSLlNQR6jizEg0=;
- b=k/fzX/W8DmUOrrLdvdBYx1g6nWPwHEopt+ubrM3bxhiYeUKWNLM0GkSKy8RpJFbTynCDzJbyK5OS90YUu7ijy48s5vb2YqZsw0Y2zF7j57sknfKQCwjjVc9X+klHixg3zJ41pbLQl4NUwgs1ZGmEEWgKxWzowklTnRL/gFAWUKFqxmasZnc6GcAbt5EpOU9Y53AG0MQ5quvQ6W3gjJOQJ6VOthHay/hM4lWvvuYkVbV/AJk6jTp+VnGfgRtx22MkK4K5AemUJXfEDy4Y67k7w7UuNCnt5P+GHZHzW13pu5SeYtHrd+k9CCryVQjrwPFH227iHqPE1iRtpiVTDIx5tg==
+ bh=FIBN6YhPsvUwRzPH0L9SXh5tL8FY8pkar6teks6b5sk=;
+ b=Wpcj+koXyNXyx0a6OzUdv+xosxuyG6p4dcdPnMmVunoQyn5OZrpuX9zbfTIur+BTaLKo7yLBVkre6rEUoILjbuUUlzzFQqDxMo/FNz5/ZsfeNK/nVu0GH9DQwlGWndaif4/xlvwRtcIk/l10hVNCLRMyuqB1aeBKlFU/hMxFBn7i18X0NpdPll6Y70VaYNyYeeAsAJbBVNg9hSwnbNciOxSTYgtG1dn0l0s/DjAK1kttv7YK92R8pQa3GioOKpq9BV1GsFa973RzVD2P3QVIU0AkzWW8J+YUXEA1ertCzk06KtWjrPRwtoONukgrZ8ZvnC4+JK6SpmdlZUS57v32MQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RQMRk/FYH/TIwhi/Kah0Idus+GW3ncSLlNQR6jizEg0=;
- b=0VKJLlHXjXxPTHsnm58w1wGNyheWnhEv8O3zrShzRhlbLDqjP+1pPZXhLw3+uFf8dJK3ZVCHxgIeawuLsAZMBGwzQY4OgA5El1rbj0BkVLhrP6OYj3nioOlhk1PJPRWSBjzEJPcR07yOuUNEQFQReGmDHhmfkvuFCA5M6R3xenY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by CH0PR12MB5121.namprd12.prod.outlook.com (2603:10b6:610:bc::7) with
+ bh=FIBN6YhPsvUwRzPH0L9SXh5tL8FY8pkar6teks6b5sk=;
+ b=qf+NAwkioOmWl0B7cUJPH7DiqBDD3m+SeE6Pk5YZ688gyf9lR80xxLMXMK+9S2Mtj62k4r0eRfY6prWHXsyfRpk1E1jZEGKt+zkUiONCu7E8t7dA4+9bWmd3mf6svF9gpGY9BPZAruxZawC3pa2eNyInlTEnyk5BOOeqVNOgz2w=
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by MW6PR10MB7640.namprd10.prod.outlook.com (2603:10b6:303:245::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Tue, 29 Aug
- 2023 21:37:29 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
- 21:37:28 +0000
-Message-ID: <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com>
-Date:   Tue, 29 Aug 2023 16:37:25 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
-To:     Hans de Goede <hdegoede@redhat.com>, linus.walleij@linaro.org
-Cc:     Shyam-sundar.S-k@amd.com, Basavaraj.Natikar@amd.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, lucapgl2001@gmail.com
-References: <20230829165627.156542-1-mario.limonciello@amd.com>
- <20230829165627.156542-4-mario.limonciello@amd.com>
- <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
-Content-Language: en-US
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN7PR06CA0058.namprd06.prod.outlook.com
- (2603:10b6:408:34::35) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.27; Tue, 29 Aug
+ 2023 21:37:39 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::92ea:33e7:fb66:c937]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::92ea:33e7:fb66:c937%7]) with mapi id 15.20.6699.035; Tue, 29 Aug 2023
+ 21:37:39 +0000
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Usama Arif <usama.arif@bytedance.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        James Houghton <jthoughton@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH] hugetlb: set hugetlb page flag before optimizing vmemmap
+Date:   Tue, 29 Aug 2023 14:37:34 -0700
+Message-ID: <20230829213734.69673-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.41.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0141.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::26) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CH0PR12MB5121:EE_
-X-MS-Office365-Filtering-Correlation-Id: 08ffb483-a7ca-48cb-a830-08dba8d824be
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|MW6PR10MB7640:EE_
+X-MS-Office365-Filtering-Correlation-Id: f70240da-6e31-4ceb-68de-08dba8d82af8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jhmzzOgZHUAB8ee9G8mYYIOnST0rQ+wApyDJMd405I8pRfYiecGv1aYcrbvs6E2cgOA+9iMZU36vVRdPRxUb1BjwFN6wy3c2hLhMslDsbaiCnVYH35jfW/H92ZNEycygvavHZGUCJGvuji8kOR+sySdwoJgy5qXuUqgvCkObxmSm34RbAJM4zt9A+Ni52cAujIxsoyxa9xH+NYM9IHjNBWyXRM4j4c6YDGXKoMTKWyCJpX2xM3OPWA23OVaxRJCXb9JSBa0rZmbyMGv9oBMP1ytEqQKJLdj7DGTNwCoyi2G0wWrnuKCk/xBDfm8STPOnn+Q5TujDUFEWOM/dAVlHrXXOuX4yBn5auFC6FSu+lxgSuUVx0D4+n8LsGvXk2htlaWFzKiHu7YBAGML4vvcaXZr6pQMqzx0jSuUykCh1GFgGHzR5Zq4N91G3eWVmiNT6ZXyZmfn2kBBiAjgMVLBxnRcaQX3lSHYX3/0JijPbBD7zNbmEYLUxEAj71r+7bJbXjaQkJXiFGlQsqJcnuCahzp2caoIdK4aekIr032xBGJvrQThvcX5DoqGS7XL2+hMwT8Iw6jYhCqftx/+h/1u8DQpC5v2YVRo90XxE5UHDj5KLY7s94kUgPeRdsIvh9Q0ali+Pj/P6Yrc50/tXxJS5OJpApM2cktHrLAOGaegL9yo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(39860400002)(366004)(1800799009)(186009)(451199024)(8936002)(6666004)(53546011)(478600001)(31686004)(6506007)(66556008)(66946007)(66476007)(6486002)(966005)(316002)(38100700002)(41300700001)(6512007)(26005)(44832011)(8676002)(5660300002)(36756003)(31696002)(2906002)(83380400001)(2616005)(86362001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: e2c60XIzweOSz/O7KweT1ZTcNWCMLDESghDCeexWo7+SJSRkDBYSUmGr3cnPGe+6oYx2q242DKZlM+oN/ovZa8Odu9PyskvGd7Y5XIacTeR35EOHzfC7OTCfxuXpij2r8ZyzgMNp/87ONuROusUO+wjgsbVMB2ce5BP0cY947nAyM6n05RclO5XMwhrDPgodKGTGk49FoZZDZfNVVjsTrf4+qgm1v0SKt1NdmdBR0z6DwlPH0m5BUiuO+Mpir7GMj/rjyFBHuSzPwk4ysFwZCwvFR0UxZh9tpsAsOZwKYJ5FR0zGK9yK4tuYRQ9fDKVp93nbTwQ2jqsTwVCPhPLEhufRfMN/sRgMdbgAgkxm9VNX+4ucg0Qmu6I9Gu43eGvFBB1xD5Pk7PtRefZ85MgpBxoe/08r58Ojud8Sn0CzsoVyeho+fUmVrfypPwVjD9pKBJnr0AnbesIUKk+5CieiQIj7QmoQKYM86ZIowKKfphex1DRd+KbqsQoLHGp2haraWP/u+zZ0WS7E18qy39D6vkiG7e47Y6JeJiKeQg5wG45NgLSRewh6jVOYpW/hk3My
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(136003)(396003)(366004)(1800799009)(186009)(451199024)(6666004)(6512007)(6486002)(6506007)(83380400001)(26005)(2906002)(1076003)(478600001)(107886003)(316002)(41300700001)(54906003)(4326008)(66556008)(66476007)(66946007)(5660300002)(8936002)(44832011)(8676002)(36756003)(86362001)(2616005)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cUJBbFdTZjgzZnZQRGVhaEJteEt3a292QndaT2FjVFl5dlY4eE91UFIwOE14?=
- =?utf-8?B?T3NtekViYkF2UGFWZm1WakJ5NU5jeWNzcjJjbURCdXZ3RDhlOENYSXZGV0tH?=
- =?utf-8?B?L0NaWGM3NXM5MTRwWHBheVhOTEUxNWFiZmZHVi8wTkhWM3ZXSmUvd3dKZkda?=
- =?utf-8?B?RnVmeG1xZ0pjS1ZFdW1EekQ3M09aQ0hBQW8xY1hwRE42SWNpRjZiREdXWFZP?=
- =?utf-8?B?Y1AyeTRlZGdaUndVZFNoUkZxV3VNR2lOSk9lWURmUW14QW9ZSmlwSS9veVpY?=
- =?utf-8?B?Rk82eDU1OHZPR0oxanF3SG5vNC9FdW5jaDdRbEdTQTlIWE0xUEp0bFRzQU1X?=
- =?utf-8?B?MHlSNXJCQWQ0Zm1MUW1SK0U5V1ZPd1MzV0psaWpWVFNSdGlKcDdiOFdkcE94?=
- =?utf-8?B?YTRCT011SXcvRCs0U2d3NWNzRUJ3RGtheTZtREJza054ZG5MdndmL1FwZ0Vk?=
- =?utf-8?B?eTE4K09jMVg3LzFwUHdiZWJ0UGllREhRK1piMkNSMTRMTEV0TEZaUnQ1OWM2?=
- =?utf-8?B?aENiUllSSGtkTkNFTUVpcjFwR2ZFczZaL1ZQdHAzRnNMSFdaaHdMbTVRN1dt?=
- =?utf-8?B?Y2NKWDNvd0pUZTJUcENhRmpxV2hPTHlhTlJIcVlIamgzdlJ1dDVIMVducCtQ?=
- =?utf-8?B?U3ZqY0RycVZZUlh0MGJvUjhXMXBMR21Sd3dwUXZkWm9LUXhtWFNiR09BS1hV?=
- =?utf-8?B?eXdCWHQwWUdWQkFVblRaVkY4WTJHcWs4WWFqQlc4a2JuaHR2S2NNaHQyOTR0?=
- =?utf-8?B?ait1K3pMWFU3cXNGSk92NTA3eGZNbks0VXpZU3JzU3F0OGdqSzlqeTBOMm9T?=
- =?utf-8?B?Y3BXMWlsTWN3NHRqdW9tbkMwbWE0U3pRL2NqclJRWU9Mb3F3NkdHUEREaWJ6?=
- =?utf-8?B?N2tnN0hCMW9CTjlvblFydjloOWt0Z2FlemxMQStPY2YzRlkyUDhLMnZvQmxa?=
- =?utf-8?B?SWlsNWlkRHllaGcvM2JYdHdxQlZoYWlQbm1pQ2V2MW5TdlBPYVg1Tk84b3hT?=
- =?utf-8?B?MmZmSXZjb3VQZHZEbXRReXVhYXpxeHRBaTdBVEc5SCtobFFVeVYxZkNVQjlY?=
- =?utf-8?B?am5ieFV0dE16NG1YWmtncVRTV0NqTDFOOWZZVkZEK0lSRFlaQUhkNlZvS2V4?=
- =?utf-8?B?MnBUZUx2YUx3aVJvNFJyNlJjTGdBM0ljMWpyblB4WFBtZkpZNEwxeXFvbFBG?=
- =?utf-8?B?MkFZWEhzV05mUUhSRXdsc3hYc2hSbVF3MG1uOU9BVzYxeFVTYXFTeXJOS0Jy?=
- =?utf-8?B?bTdmVEkzT3VPS1VraTNXUnFVUlR6UmFQY3kra0JRcXBoSFpwQlZlb3laOXhP?=
- =?utf-8?B?TlRwSngrNFpBRzhYNFNPR25aWnJGZmZubU5GbUt1MEZrNVRZZW9Ja2tGWE5r?=
- =?utf-8?B?em5EeFphcWJSMU1wQTVsUjA5Q3AxVnlCcFJEUlNmMzRJY0tKVHp2VzNyOFFn?=
- =?utf-8?B?Y2ZpVXo3bUxjT0ROZEJCQ3pZWkRWTjgraHFxb3Nob3U3NUwxc1dvakF2UzEr?=
- =?utf-8?B?ajhHYTlNTVI2S0hhL2I2OTdDWkROeEZKVlNlSU9wa0hITTBBT2E1ck4yK0VN?=
- =?utf-8?B?NFlxWFkrK1BPZlR0WUlzbUFNbEprVU55THlTR1Myd044RFo3dEFTZHRNUHJH?=
- =?utf-8?B?aWNHTHUyYVZmaEtlb0N1RGRQcjlqNnlSSndHM0dQT01NVWg5M2NXVCtFZUow?=
- =?utf-8?B?dWdTZzM1emVNdGw5V0krOHM1ek5TeHFrVGZlZ2pzT2REMlZuNjNCSXdKNVRl?=
- =?utf-8?B?Ti9IZTE1a3JVTC9NM3hhdEJ5eWU5ZWp6VlluVXd1aUNWdDRENG1wRFlKNkg4?=
- =?utf-8?B?dzRFb00ybUwzelljU1JySXVwaW4rNXdrQ0VxNm1PYnRTVkVvOXdMWDdlQmhF?=
- =?utf-8?B?R2ZzbGlpSFJyNS81S2VZNWh0aVQ3WER5S1Z0VzBoZmpQZndDWXBKZGpaTTJE?=
- =?utf-8?B?aUVUNkNYcXN0bmQxclRaUm9zbmVBUTNsbFEzT3VuZjNJQjZ0M2h4WE9laUMx?=
- =?utf-8?B?eUxENjBYazREL0FkMTRDNmIxS0lOaHc0YVlURjg1WjdVRWJvUldqK0ZEMlJn?=
- =?utf-8?B?Y1pidjV1NjRXaTBabUFsTTlIMjF1UU5kNmUwUWViMnZpNU5DK2pzUktZODlS?=
- =?utf-8?Q?WPylSpBm+7XKgCCcJvlgjjYO6?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08ffb483-a7ca-48cb-a830-08dba8d824be
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ssFO1zVbx5s/Mi++bSzlV2o/WXIrhPJXh0PPXjetclNukdB12IR6NIIcP/4o?=
+ =?us-ascii?Q?d15InPU2k1Y4fM0BNulCaxEixJCV2QygxHmMhlo/XD9udQIG7++oWMw5VwbA?=
+ =?us-ascii?Q?4WsgJ0aEZVVkWKpNRVYUrqhCVbHnYWcsWTIlJdC3k5NJf9JEq7KsbMZDaANO?=
+ =?us-ascii?Q?92Z5JqNf+589coMc/xInvcW516hjhYh9PLZE67SQGJGHBZtsgKhywZuUMCd0?=
+ =?us-ascii?Q?n+fV0oP01r1LUcWF+v+ERlxGcwn5jAhHNEVQneYRdZMZIHSUH8r/5lCmc8Om?=
+ =?us-ascii?Q?YISBvgEltcfHH37IOuWDTenOKEty9kGvm/ue9x2x4IGEYhkhEyyXKf3bHvTL?=
+ =?us-ascii?Q?a4UTEsuSHXUHI4eLJgNEM9hOtDRfAn8D383MwbdqAasTzk+GTajZQg5QoJ7P?=
+ =?us-ascii?Q?rEwLseTmLrqaONA5PQQhxwgW7yxfcJ5MZi7pOqiWUCZQVFx/FbyyGWubYmbN?=
+ =?us-ascii?Q?HbHCIGaVgHJrhbhwSrkwDglbVroCyeGVGOSL7K2JR9fbiOTegT7ZxjAzhHQk?=
+ =?us-ascii?Q?5lvQ+MW+A3z+BAZT6nSBFJv1LiFILQbngggFPgcgj/2TBeGoGrRrbHg8PeEz?=
+ =?us-ascii?Q?8FXxFP/Yw8mBqNZWScJ/0eT0nM7KqpIeha23zi/3NvCseEXrmT+FOhJTHqyS?=
+ =?us-ascii?Q?8gxP47uZSHKOHXnV+VA/1JQSbJnl3kwRabFNOVzGVlJxJn2vUibDZrXCrtZU?=
+ =?us-ascii?Q?JsQBhv7YU0OnqtpawJnA2DORp5o3lcIdORLTQNwpWlLl6jVeDM68d1X5FLJe?=
+ =?us-ascii?Q?irAAQ4FYoONEEdOIEtCnnumPp4kKJU3/qvaexYWANH3zFwn+ZuSa4AjxuSY6?=
+ =?us-ascii?Q?eL2W4zqrCAyFdN4lpJf1omtvJIP2ImJZVOVJUhkhwRAq4nWxWHyGSw/7DQMw?=
+ =?us-ascii?Q?jUEBZf54Dr9uZ7+YWyknADBwtAqVRPdrs03/JKmLTYrKEcxibizV81Ugyhvr?=
+ =?us-ascii?Q?NH268WSFubihrDBCqFz8RgNru7AWt5xhMPb36O14ZYrCLf1KuzvJZ1X7f5hs?=
+ =?us-ascii?Q?krtnOenfoNliTaaoVieZ8cyeOFDQ07l/GFCssSyJFWq6GCF5IKNk93gpDBzQ?=
+ =?us-ascii?Q?H7zq3HZOQQ3RPjNl46OgAEcXSG6yjaHIvk8ReNrItWvu8+C4RlhsrtJ0wO/V?=
+ =?us-ascii?Q?SRzyA2x9p74FWzkxjxCcNhZPIz5Dnm+sitVTgooD9EUD6IdNpzhpgmli12hi?=
+ =?us-ascii?Q?0p0spkcNwW81ydP/FCXRqvH9ad6kussPBy8TlWLkawsNPW9maU5djrSKAVpL?=
+ =?us-ascii?Q?SXP9ZOth7jwcQVBosJJwp8TlSIU6lJ7q5VACUw1pznY+X7AzsHkRyJtlp/hE?=
+ =?us-ascii?Q?N/r66dkvOHBlLnw/6dC7Ld7rrC4xt3qLf1s4w1N7ZkVc14+LI9B0Z4Lgijx1?=
+ =?us-ascii?Q?+gETJBOgqHK0gw5P86GwSs56ApYnL6gBgF7a4+egEMTJuh4F7et7QAEvTvj5?=
+ =?us-ascii?Q?XRwZyepcBJ9u4AXJAyS/7OTcVfZQBeXfatkld8mgK+xvMEZRlvgfQNqxntr2?=
+ =?us-ascii?Q?JMHR3SEIGjzOjFoUrpwie+nTaxTwFwTBPC+ATr4WcvMvC6+4Oc2snBGxFzM4?=
+ =?us-ascii?Q?YXSFm49YZif/5AsNj0NbhFRzM7ZzZEqGl0ls1Rki?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?nf/xLUhqHLlQ8cU5BB0LPGRomntctJTTMBqgV4rQIaXOx1Fed+7qcei8sdrQ?=
+ =?us-ascii?Q?QvguF4/iJcTAsp/PWfNuS0WzsFFXWN3j2I7+PJymx+zpXz1grvUn6nSDe94E?=
+ =?us-ascii?Q?PDH8LHeBKmSDLoxM0bY5cnrFCM7Z7p8zDHUmYTxBJNrxQ+b+aFXzIsy4RglK?=
+ =?us-ascii?Q?4/RQsIzyeiZmm8rDrvsLA5HJ7wqjsDOJHKHW01gmgfiWj7iZ0tGwx4txEW8j?=
+ =?us-ascii?Q?kPqB+hYzyysbA0SM73YKDY0kV41ZD4xuv+u6XT5wrdTd9vm7w3NCYFZGJZfl?=
+ =?us-ascii?Q?v73x5U3+c3ICynA6sHoWr5DozN5CCNmSq0Pdb1cO1bOrh5uWpTikx67IHpgd?=
+ =?us-ascii?Q?/4hy/wxv2EIqHVuvdoABZ3YVDlb4/iUigIhQr9ahO9bAAEoVUiSVZBCMweAR?=
+ =?us-ascii?Q?2JGvrKih7SOAA1Fwud8YwQpTroiaw99faYYA+o8ywnU/rqDAe1rGsdRHmsOj?=
+ =?us-ascii?Q?qXFoKUzDy+nvxsufbFGY1U0uiRYSuOGXFnV1FCVdR7nVAc4sZ1nNOzRQMHIx?=
+ =?us-ascii?Q?im+UHWyAA4hfkZ5xchqQv2fB10NUGRAZsCk8+MAvOWFVT171fZgD4Hla1+Ft?=
+ =?us-ascii?Q?U97yd/vdjo3WXmPT3B/31IsFgfADlqZDXF/Kj1mu9pC8iV5/bxn1v/ZLr4AM?=
+ =?us-ascii?Q?5Y/3qd8uqK3jm1FmEuTn49JZTDGbTdNdZ1AjD70PjmVISmyoMyxKdyhSSZSR?=
+ =?us-ascii?Q?YSj3XG/dsFEhpYq2tDq7fYPKuMsmDYlpSyVzy3BiF4qqS26C3g8WcsAdVH9q?=
+ =?us-ascii?Q?LCpXkZkZi3dxT0GBDMlEfwYDnDch7GfDQScWceCzgUZ+8I9LP/mk92g/a9E3?=
+ =?us-ascii?Q?lXK0VISq10o9zY80DZw7bixO9avZoSfBytKP7q1ZEn7AsH5j1fcjA8luG4rb?=
+ =?us-ascii?Q?WsggqWDRrmyd+D2Qgmg3kzjzturuDrbkBH/bAahb+aYgcpaRwVvL+uasubmL?=
+ =?us-ascii?Q?BEedRISlER+WV/Y9jkl5tB57BkCSCwRROtaFcDWzu3g=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f70240da-6e31-4ceb-68de-08dba8d82af8
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 21:37:28.7883
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 21:37:39.2575
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u4hGr9BViYrkYzq41foUsXKcUggJIgvJykdQbz2/NGoLP6ThkA436wMQsv7iGfCWuNnu5m4rocTZXuejTNuIKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5121
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: oNEoO16+TnVyKZvbsEfylSgEGCqiAbCHbCRuXXhDKFdtW1pDgFqL+f9CUEcH0PKTYXCKtTR0h8DVa+BsEKX7PA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR10MB7640
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_15,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308290186
+X-Proofpoint-ORIG-GUID: Po97OXFQ295PCcXRWY215wcGsbgK0sRP
+X-Proofpoint-GUID: Po97OXFQ295PCcXRWY215wcGsbgK0sRP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/2023 14:54, Hans de Goede wrote:
-> Hi Mario,
-> 
-> On 8/29/23 18:56, Mario Limonciello wrote:
->> Lenovo ideapad 5 doesn't use interrupts for GPIO 0, and so internally
->> debouncing with WinBlue debounce behavior means that the GPIO doesn't
->> clear until a separate GPIO is used (such as touchpad).
->>
->> Prefer to use legacy debouncing to avoid problems.
->>
->> Reported-by: Luca Pigliacampo <lucapgl2001@gmail.com>
->> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217833
->> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> 
-> I'm not happy to see yet another DMI quirk solution here.
-> 
-> and I guess you're not happy with this either...
+Currently, vmemmap optimization of hugetlb pages is performed before the
+hugetlb flag (previously hugetlb destructor) is set identifying it as a
+hugetlb folio.  This means there is a window of time where an ordinary
+folio does not have all associated vmemmap present.  The core mm only
+expects vmemmap to be potentially optimized for hugetlb  and device dax.
+This can cause problems in code such as memory error handling that may
+want to write to tail struct pages.
 
-Yeah I was really hoping the first patch was enough for the issue.
+There is only one call to perform hugetlb vmemmap optimization today.
+To fix this issue, simply set the hugetlb flag before that call.
 
-If we can't come up with anything else we can potentially drop patches 2 
-and 3. Even patch 1 alone will "significantly" improve the situation.
+There was a similar issue in the free hugetlb path that was previously
+addressed.  The two routines that optimize or restore hugetlb vmemmap
+should only be passed hugetlb folios/pages.  To catch any callers not
+following this rule, add VM_WARN_ON calls to the routines.  In the
+hugetlb free code paths, some calls could be made to restore vmemmap
+after clearing the hugetlb flag.  This was 'safe' as in these cases
+vmemmap was already present and the call was a NOOP.  However, for
+consistency these calls where eliminated so that we can add the
+VM_WARN_ON checks.
 
-The other option I considered is to hardcode WinBlue debounce behavior 
-"off" in Linux.
+Fixes: f41f2ed43ca5 ("mm: hugetlb: free the vmemmap pages associated with each HugeTLB page")
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ mm/hugetlb.c         | 31 ++++++++++++++++++++++---------
+ mm/hugetlb_vmemmap.c |  3 +++
+ 2 files changed, 25 insertions(+), 9 deletions(-)
 
-I don't think this is a good idea though though because we will likely 
-trade bugs because the debounce values in the AML for systems using _AEI 
-aren't actually used in Windows and might not have good values.
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ba6d39b71cb1..c32ca241df4b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1720,7 +1720,12 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
+ 	if (folio_test_hugetlb_raw_hwp_unreliable(folio))
+ 		return;
+ 
+-	if (hugetlb_vmemmap_restore(h, &folio->page)) {
++	/*
++	 * If folio is not vmemmap optimized (!clear_dtor), then the folio
++	 * is no longer identified as a hugetlb page.  hugetlb_vmemmap_restore
++	 * can only be passed hugetlb pages and will BUG otherwise.
++	 */
++	if (clear_dtor && hugetlb_vmemmap_restore(h, &folio->page)) {
+ 		spin_lock_irq(&hugetlb_lock);
+ 		/*
+ 		 * If we cannot allocate vmemmap pages, just refuse to free the
+@@ -1930,9 +1935,9 @@ static void __prep_account_new_huge_page(struct hstate *h, int nid)
+ 
+ static void __prep_new_hugetlb_folio(struct hstate *h, struct folio *folio)
+ {
++	folio_set_hugetlb(folio);
+ 	hugetlb_vmemmap_optimize(h, &folio->page);
+ 	INIT_LIST_HEAD(&folio->lru);
+-	folio_set_hugetlb(folio);
+ 	hugetlb_set_folio_subpool(folio, NULL);
+ 	set_hugetlb_cgroup(folio, NULL);
+ 	set_hugetlb_cgroup_rsvd(folio, NULL);
+@@ -3580,13 +3585,21 @@ static int demote_free_hugetlb_folio(struct hstate *h, struct folio *folio)
+ 	remove_hugetlb_folio_for_demote(h, folio, false);
+ 	spin_unlock_irq(&hugetlb_lock);
+ 
+-	rc = hugetlb_vmemmap_restore(h, &folio->page);
+-	if (rc) {
+-		/* Allocation of vmemmmap failed, we can not demote folio */
+-		spin_lock_irq(&hugetlb_lock);
+-		folio_ref_unfreeze(folio, 1);
+-		add_hugetlb_folio(h, folio, false);
+-		return rc;
++	/*
++	 * If vmemmap already existed for folio, the remove routine above would
++	 * have cleared the hugetlb folio flag.  Hence the folio is technically
++	 * no longer a hugetlb folio.  hugetlb_vmemmap_restore can only be
++	 * passed hugetlb folios and will BUG otherwise.
++	 */
++	if (folio_test_hugetlb(folio)) {
++		rc = hugetlb_vmemmap_restore(h, &folio->page);
++		if (rc) {
++			/* Allocation of vmemmmap failed, we can not demote folio */
++			spin_lock_irq(&hugetlb_lock);
++			folio_ref_unfreeze(folio, 1);
++			add_hugetlb_folio(h, folio, false);
++			return rc;
++		}
+ 	}
+ 
+ 	/*
+diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+index 4b9734777f69..aeb7dd889eee 100644
+--- a/mm/hugetlb_vmemmap.c
++++ b/mm/hugetlb_vmemmap.c
+@@ -13,6 +13,7 @@
+ #include <linux/pgtable.h>
+ #include <linux/moduleparam.h>
+ #include <linux/bootmem_info.h>
++#include <linux/mmdebug.h>
+ #include <asm/pgalloc.h>
+ #include <asm/tlbflush.h>
+ #include "hugetlb_vmemmap.h"
+@@ -456,6 +457,7 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
+ 	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
+ 	unsigned long vmemmap_reuse;
+ 
++	VM_WARN_ON_ONCE(!PageHuge(head));
+ 	if (!HPageVmemmapOptimized(head))
+ 		return 0;
+ 
+@@ -550,6 +552,7 @@ void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+ 	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
+ 	unsigned long vmemmap_reuse;
+ 
++	VM_WARN_ON_ONCE(!PageHuge(head));
+ 	if (!vmemmap_should_optimize(h, head))
+ 		return;
+ 
+-- 
+2.41.0
 
-> 
-> Are we sure there is no other way? Did you check an acpidump
-> for the laptop and specifically for its ACPI powerbutton handling?
-
-I'm not sure there is another way or not, but yes there is an acpidump 
-attached to the bug in case you or anyone else has some ideas.
-
-> 
-> I would expect the ACPI powerbutton handler to somehow clear
-> the bit, like how patch 1/3 clears it from the GPIO chip's
-> own IRQ handler.
-> 
-> I see that drivers/acpi/button.c does:
-> 
-> static u32 acpi_button_event(void *data)
-> {
->          acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
->          return ACPI_INTERRUPT_HANDLED;
-> }
-> 
-> So unless I'm misreading something here, there is some AML being
-> executed on power-button events. So maybe there is something wrong
-> with how Linux interprets that AML ?
-> 
-The relevant ACPI spec section is here:
-
-https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/04_ACPI_Hardware_Specification/ACPI_Hardware_Specification.html#control-method-power-button
-
-I did look at the acpidump.  GPE 08 notifies \_SB.PWRB (a PNP0C0C 
-device) with 0x2.  According to the spec this is specifically for 
-letting the system know the power button is waking up the system from G1.
-
-I don't see any notifications with data 0x80 in the AML.  So I'm 
-wondering if the AML designer made an assumption that pressing the power 
-button caused the system to suspend or turn off.  That's the Windows 
-behavior, isn't it?
-
-The spec even says:
-
-"While the system is in the working state, a power button press is a 
-user request to transition the system into either the sleeping (G1) or 
-soft-off state (G2)."
-
-I think it would be a really good data point whether this happens with 
-Windows if possible too.  Then we can know if we're looking at a Linux 
-bug or a platform bug.
