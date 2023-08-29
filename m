@@ -2,82 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DED9978C77C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D7778C781
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236676AbjH2OZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
+        id S236699AbjH2O0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236947AbjH2OZX (ORCPT
+        with ESMTP id S236964AbjH2OZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:25:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031C2B8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CVKHTAOju4/Kpfxf3rY34wfjvySGLxW/e01pPFR8Jb0=; b=ni8iwXg3R/pSgOwiM/4UWsVy/+
-        JU7IDy4YZ4CCuTp7Xdjn67Wn54IkOF4kkb8N+jhQwpljIpbECPz8/gofMM3Asc53AvkxwQIqhR2/F
-        FTjmMfASMTB6XW8Tw0oaOHdPAFZ/dwkE9ROEJo6LvbIOQ3zbCmiiF/dw9dJCmtH2r33/yYXDRQpsO
-        wdnTlP95VBtRAfjIQvhP35ajSdxBrUIhT7kRSTMshf25sGJuZJV3bO5Pop0mQOETeCYfHOBepebLo
-        KJkP+K/lqpLv38PngbOhInZ/Juk5VJ8bWbqLFGhv33Bcyn+t1UCM/TZtsMEHYN5SSpvgAsBO8YW/+
-        C2qBCGuQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qazeH-0073hu-Un; Tue, 29 Aug 2023 14:24:53 +0000
-Date:   Tue, 29 Aug 2023 15:24:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] mm/mmu_gather: Store and process pages in contig
- ranges
-Message-ID: <ZO3/tYWCahFJAHhu@casper.infradead.org>
-References: <20230810103332.3062143-1-ryan.roberts@arm.com>
- <20230810103332.3062143-5-ryan.roberts@arm.com>
- <ZOgpb1Qo5B0r+mhJ@casper.infradead.org>
- <29099099-7ef2-45cb-bab7-455f58de47d1@arm.com>
- <ZO3+cQouje862QNu@casper.infradead.org>
+        Tue, 29 Aug 2023 10:25:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2871EB2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693319107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=72jjJIsr12NXRU7aDK4GbDjvA7ef38LcvCbu/brjroY=;
+        b=jM1uH5au6IDpdLsmKPLzAAFD3ShGhBl7TKjLxUEUV3H4NgWhQ1eYfg7KGYr97Aga53nDiG
+        WUE92JeKl6mK8vKbZXxtB86epVVHJMkB2lbsL1PbBy82XV9EclJwDYPzNhpfe8X23bUUc2
+        sjFK8knsaIf1QQ1Uq9MzPg0XzVVkWA4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-464-uG5-ml5TPoG5VuxNLX2Piw-1; Tue, 29 Aug 2023 10:25:05 -0400
+X-MC-Unique: uG5-ml5TPoG5VuxNLX2Piw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9a1be1e2b63so68755266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:25:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693319104; x=1693923904;
+        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=72jjJIsr12NXRU7aDK4GbDjvA7ef38LcvCbu/brjroY=;
+        b=ClJWhniOI4nVIk6p7h7loWpKqfCxc2TJi94jOfzLVmyu2pLLLgoTnryWxkP7jDaWmv
+         JQC3/AiWbVVz3wtVWDS0uIz8Kap0w2g+oyEkoab1zkrDr63RZ9sFdpBcZ0Z1Gu5yHLHx
+         qsGchXu0RbJPYk8iD4cyxVvlPEY4n6djIjrE2eTvhlicqt2wuJFUy4+VljYXii97laYe
+         xMYPMGJKJve29+V5mIW6qiImNJQQsL19MGtf5+twC6BENbO+L26xDfBAHMsDT9kOUiQP
+         ssBJyVb5RHq4fuuwZF/NVJiD6hRJ7g/UdlhCY9KZ367gqWxz5kysvm81MEKpAr2SJUEW
+         BoRw==
+X-Gm-Message-State: AOJu0YxCw5jGuzwZg65w+zJ2pu+F1rhYXfODEXJx1AKwyzqnS9kTllu8
+        CUkj0h5RSB/zZi5kbgMCgVw98RZCOIY7MyxPB/B1KiQKn4+bELBfzBTLqTAdSrkUi2SGMajiCSl
+        sZokYnuVjEaSv7dOIoiFA4REc
+X-Received: by 2002:a17:906:257:b0:9a1:eb67:c0d2 with SMTP id 23-20020a170906025700b009a1eb67c0d2mr12931440ejl.6.1693319104110;
+        Tue, 29 Aug 2023 07:25:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHKi2VXt+Ovw7zv8607SLKgZhnUivVO6erEvkOL/iqaS7Wn9pyraiegUPmPO3FzcCzxQroolQ==
+X-Received: by 2002:a17:906:257:b0:9a1:eb67:c0d2 with SMTP id 23-20020a170906025700b009a1eb67c0d2mr12931432ejl.6.1693319103814;
+        Tue, 29 Aug 2023 07:25:03 -0700 (PDT)
+Received: from ?IPv6:2001:9e8:32d7:ba00:5749:c26e:a109:dac4? ([2001:9e8:32d7:ba00:5749:c26e:a109:dac4])
+        by smtp.gmail.com with ESMTPSA id lv12-20020a170906bc8c00b009a19701e7b5sm6015949ejb.96.2023.08.29.07.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 07:25:03 -0700 (PDT)
+Message-ID: <c441390345db294517195653408ef1cecea08feb.camel@redhat.com>
+Subject: [RESEND PATCH v2] xarray: Document necessary flag in alloc functions
+From:   pstanner@redhat.com
+To:     willy@infradead.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Philipp Stanner <pstanner@redhat.com>
+Date:   Tue, 29 Aug 2023 16:25:02 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZO3+cQouje862QNu@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 03:19:29PM +0100, Matthew Wilcox wrote:
-> > > You'll be glad to know I've factored out a nice little helper for that.
-> > 
-> > OK, what's it called? This is just copied from release_pages() at the moment.
-> > Happy to use your helper in the refactored common helper.
-> 
-> I'll send out those patches today.
+Adds a new line to the docstrings of functions wrapping __xa_alloc() and
+__xa_alloc_cyclic(), informing about the necessity of flag XA_FLAGS_ALLOC
+being set previously.
 
-No, wait, I sent them on Friday.
+The documentation so far says that functions wrapping __xa_alloc() and
+__xa_alloc_cyclic() are supposed to return either -ENOMEM or -EBUSY in
+case of an error. If the xarray has been initialized without the flag
+XA_FLAGS_ALLOC, however, they fail with a different, undocumented error
+code.
 
-https://lore.kernel.org/linux-mm/20230825135918.4164671-9-willy@infradead.org/
+As hinted at in Documentation/core-api/xarray.rst, wrappers around these
+functions should only be invoked when the flag has been set. The
+functions' documentation should reflect that as well.
 
-is the important one from your point of view.  It's
-__page_cache_release() which is a little different from the current
-__page_cache_release()
+Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+---
+Version 2 of the proposed documentation update. As Matthew requested, I
+added the sentence to all functions wrapping the above mentioned two
+core functions.
+Additionally, I added it to themselves, too, as these functions can also
+be called by the user directly.
+I also rephrased the commit message so that the implemented change is
+mentioned first.
+---
+=C2=A0include/linux/xarray.h | 18 ++++++++++++++++++
+=C2=A0lib/xarray.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0 6 ++++++
+=C2=A02 files changed, 24 insertions(+)
+
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index 741703b45f61..cb571dfcf4b1 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -856,6 +856,9 @@ static inline int __must_check xa_insert_irq(struct xar=
+ray *xa,
+=C2=A0 * stores the index into the @id pointer, then stores the entry at
+=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
+d @id.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock.=C2=A0 =
+May sleep if
+=C2=A0 * the @gfp flags permit.
+=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -886,6 +889,9 @@ static inline __must_check int xa_alloc(struct xarray *=
+xa, u32 *id,
+=C2=A0 * stores the index into the @id pointer, then stores the entry at
+=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
+d @id.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock while
+=C2=A0 * disabling softirqs.=C2=A0 May sleep if the @gfp flags permit.
+=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -916,6 +922,9 @@ static inline int __must_check xa_alloc_bh(struct xarra=
+y *xa, u32 *id,
+=C2=A0 * stores the index into the @id pointer, then stores the entry at
+=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
+d @id.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Process context.=C2=A0 Takes and releases the xa_lock whi=
+le
+=C2=A0 * disabling interrupts.=C2=A0 May sleep if the @gfp flags permit.
+=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -949,6 +958,9 @@ static inline int __must_check xa_alloc_irq(struct xarr=
+ay *xa, u32 *id,
+=C2=A0 * The search for an empty entry will start at @next and will wrap
+=C2=A0 * around if necessary.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock.=C2=A0 =
+May sleep if
+=C2=A0 * the @gfp flags permit.
+=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
+ the
+@@ -983,6 +995,9 @@ static inline int xa_alloc_cyclic(struct xarray *xa, u3=
+2 *id, void *entry,
+=C2=A0 * The search for an empty entry will start at @next and will wrap
+=C2=A0 * around if necessary.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock while
+=C2=A0 * disabling softirqs.=C2=A0 May sleep if the @gfp flags permit.
+=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
+ the
+@@ -1017,6 +1032,9 @@ static inline int xa_alloc_cyclic_bh(struct xarray *x=
+a, u32 *id, void *entry,
+=C2=A0 * The search for an empty entry will start at @next and will wrap
+=C2=A0 * around if necessary.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Process context.=C2=A0 Takes and releases the xa_lock whi=
+le
+=C2=A0 * disabling interrupts.=C2=A0 May sleep if the @gfp flags permit.
+=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
+ the
+diff --git a/lib/xarray.c b/lib/xarray.c
+index 2071a3718f4e..73b3f8b33a56 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -1802,6 +1802,9 @@ EXPORT_SYMBOL(xa_get_order);
+=C2=A0 * stores the index into the @id pointer, then stores the entry at
+=C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitialise=
+d @id.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Any context.=C2=A0 Expects xa_lock to be held on entry.=
+=C2=A0 May
+=C2=A0 * release and reacquire xa_lock if @gfp flags permit.
+=C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -1850,6 +1853,9 @@ EXPORT_SYMBOL(__xa_alloc);
+=C2=A0 * The search for an empty entry will start at @next and will wrap
+=C2=A0 * around if necessary.
+=C2=A0 *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC=
+ set
++ * in xa_init_flags().
++ *
+=C2=A0 * Context: Any context.=C2=A0 Expects xa_lock to be held on entry.=
+=C2=A0 May
+=C2=A0 * release and reacquire xa_lock if @gfp flags permit.
+=C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 1 if=
+ the
+
+
