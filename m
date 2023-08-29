@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D244A78CD84
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEB578CD85
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240490AbjH2UVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S240512AbjH2UVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240534AbjH2UVV (ORCPT
+        with ESMTP id S240596AbjH2UVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:21:21 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD6DCF9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:21:13 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcc4347d2dso72476121fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693340471; x=1693945271; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TOlYcqn8beQHjGoc0Rc5zdI+Fp8S0JCnlA3frimuCzk=;
-        b=nyA6kP+bHHClyA0VkxrhbCG/koc4svjXIbKSdfDmP78sWe3Ayia11iC026uAdafagz
-         8ciYB3b+09qlidGWMzXKopliiQwcRAp+xJ4qWmDolr4c46z2IKMPdivb4GtLBXLtFCZv
-         Uy+Ji531qs3ohqkb8KreIiL66sROhCex/56AxE8K3Fb7MDMa4hmWlK4lJTaSF2Ma6TAs
-         0rj11UPJqPlyOsO29bMF6q+ZNzafjpHv4ZEprOuHPx9twewVv/O19eKzKP8faKvhOJ/5
-         9PBCKtrwhPExRIqMZoDDq+PgKfyDktXCfdO18uKbnlf0ip0xrvnZj0n2BlS4CBcNWDcM
-         YSaA==
+        Tue, 29 Aug 2023 16:21:34 -0400
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C08E53;
+        Tue, 29 Aug 2023 13:21:18 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1bc0d39b52cso29744185ad.2;
+        Tue, 29 Aug 2023 13:21:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693340471; x=1693945271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TOlYcqn8beQHjGoc0Rc5zdI+Fp8S0JCnlA3frimuCzk=;
-        b=KfLGXeQTZRDW4OZCnEdTn+TcuELUQ70LlyYc2fhbCpzYGjoBGj4Kolc++nfrgE9/4o
-         VadmNtgmSbRmYqwVIoCndOo4rAAfANjmha3W8fkmMvBShdR3uU83PfCGSFkaV39WbS1u
-         IU6oQBSPh7vdu86rnC1qeR+aG21s7xgnhv1odGXYVLFVT/yp+mXtJL9IIdNfECrMGYgy
-         UM07pojBfqo6zRg3l8BgYhHcUEQarNR09Zoy8eFgYP8YY3Pqxcq2gAaj50TKRJqMigms
-         8ehxrhnbeR1VSsJbOtdQ6C3WnoK0HMYVjquES6COzR4NTKWbuJzIdPax66xKu9+ye7GA
-         X3xg==
-X-Gm-Message-State: AOJu0Yzcl35bnolv2V5CxcK1i31lTN22RtejVQwT/LsAtB9IOVVxIwdC
-        V2u+gX4yos3Rw+X0C/ALKrS3geuu6x/CjCRLKXyWUA==
-X-Google-Smtp-Source: AGHT+IH2KIgoRggLZTMZmzajJlmhBlCx1wDfnHukX1Z8/CBs4EOept/nxD6OEIylcZqOv7fs6UbIYycFpg0THTHewZU=
-X-Received: by 2002:a2e:9290:0:b0:2bd:10ee:7d22 with SMTP id
- d16-20020a2e9290000000b002bd10ee7d22mr213747ljh.51.1693340471248; Tue, 29 Aug
- 2023 13:21:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693340478; x=1693945278;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c81JXAzq4l8CXFEMkDocGz6SNd5sCagmd6kIcbpsZa0=;
+        b=d0JNLbkyUS4n8JVEdncH6VQY+rGvNKALqqzLP71dHo8fRGeHSOP3suoNVW6rNsGi2n
+         NVU+7tDFBCDxeN/zFOHxSW9V/AuYwiOodGEAi71okYUahXtfQWk/176DtYc+xHWFO70s
+         64sWT3pacX+hXmDhy+8mMdoHXyBM+uTXIXC44Bo2BWp/0jKHAfyjGiRU1nSwkpSizcDJ
+         tUU5gQgzeqdD7B1GwzhuLKNd3vza9a0NU1X/PUyg8KEeuSj8OBq4GB6tSHMTpTOyp3Ln
+         HDOSh5v3RA4vco5pbgmysy6NTmCsEk2a2K1Rq+lT0YvbQ/rbyTjhYFAebV2JEDnvtu17
+         JRzA==
+X-Gm-Message-State: AOJu0YzHaZy6TSOP0xzDKGZZQMkw5WGM1A1PZO6VUumB7zbrsWWwvUJx
+        plppfOSxFSRc7JOs9Dn8j1icH02k49U=
+X-Google-Smtp-Source: AGHT+IHSQEIiOROqY3DtMc9L1nin0cVsDes8mQ1K4srVt4ZVwlZtiXrmbkil9WS49Q2v4umFg9qeQw==
+X-Received: by 2002:a17:902:e887:b0:1bb:b226:52a0 with SMTP id w7-20020a170902e88700b001bbb22652a0mr183342plg.44.1693340477806;
+        Tue, 29 Aug 2023 13:21:17 -0700 (PDT)
+Received: from sultan-box.localdomain ([142.147.89.200])
+        by smtp.gmail.com with ESMTPSA id ji18-20020a170903325200b001b9d8688956sm9799334plb.144.2023.08.29.13.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 13:21:17 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 13:21:13 -0700
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     "Greenman, Gregory" <gregory.greenman@intel.com>
+Cc:     "kvalo@kernel.org" <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Korenblit, Miriam Rachel" <miriam.rachel.korenblit@intel.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] wifi: iwlwifi: mvm: fix power save for MLD
+Message-ID: <ZO5TOS3HxyqN-bNu@sultan-box.localdomain>
+References: <20230822040745.260086-1-sultan@kerneltoast.com>
+ <5a5d6502180858f811861384acc49f9174ca8652.camel@intel.com>
 MIME-Version: 1.0
-References: <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
- <ZOcDLD/1WaOwWis9@dhcp22.suse.cz> <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
- <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
- <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz> <ZO48h7c9qwQxEPPA@slm.duckdns.org>
- <CAJD7tkaQ1hD9HHyYTK_vfCQ9PCVZag7qMBueKyB+sEn=swvNJA@mail.gmail.com>
- <ZO5IuULSCXMe9_pN@slm.duckdns.org> <CAJD7tkYtnhemCLBqFqOVurfWEaCjKtyEM745JYRxFS0r5cpZwQ@mail.gmail.com>
- <ZO5RROsZ1VESCsMG@slm.duckdns.org>
-In-Reply-To: <ZO5RROsZ1VESCsMG@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 29 Aug 2023 13:20:34 -0700
-Message-ID: <CAJD7tkZn_7ppFB1B1V8tBEw12LXCnEOue2Beq6e19PkUAVHUSQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a5d6502180858f811861384acc49f9174ca8652.camel@intel.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 1:12=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, Aug 29, 2023 at 12:54:06PM -0700, Yosry Ahmed wrote:
-> ...
-> > > Maybe leave the global lock as-is and gate the userland flushers with=
- a
-> > > mutex so that there's only ever one contenting on the rstat lock from
-> > > userland side?
-> >
-> > Waiman suggested this as well. We can do that for sure, although I
-> > think we should wait until we are sure it's needed.
-> >
-> > One question. If whoever is holding that mutex is either flushing with
-> > the spinlock held or spinning (i.e not sleepable or preemptable),
-> > wouldn't this be equivalent to just changing the spinlock with a mutex
-> > and disable preemption while holding it?
->
-> Well, it creates layering so that userspace can't flood the inner lock wh=
-ich
-> can cause contention issues for kernel side users. Not sleeping while
-> actively flushing is an side-effect too but the code at least doesn't loo=
-k
-> as anti-patterny as disabling preemption right after grabbing a mutex.
+On Tue, Aug 29, 2023 at 04:25:45PM +0000, Greenman, Gregory wrote:
+> Hi,
+> 
+> On Mon, 2023-08-21 at 21:07 -0700, Sultan Alsawaf wrote:
+> > From: Sultan Alsawaf <sultan@kerneltoast.com>
+> > 
+> > The conversion from bss_info_changed() to vif_cfg/link_info_changed()
+> > removed a call to iwl_mvm_bss_info_changed_station_common() from what
+> > became the vif_cfg_changed() path. As a result, BSS_CHANGED_PS and other
+> > power save changes sent via ieee80211_vif_cfg_change_notify() are ignored
+> > for MLD, which breaks power save entirely. This has a noticeable impact on
+> > power consumption, causing idle package power to hover at 10 W on my
+> > i9-13980HX laptop with an AX210 while connected to WiFi.
+> > 
+> > Add the missing iwl_mvm_bss_info_changed_station_common() call to the
+> > vif_cfg_changed() path to fix power save for MLD. This brings idle package
+> > power down to 1 W on my laptop, a 9 W improvement.
+> > 
+> > Fixes: 22c588343529 ("wifi: iwlwifi: mvm: replace bss_info_changed() with vif_cfg/link_info_changed()")
+> > Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> > ---
+> >  drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c
+> > index 8b6c641772ee..6abc05976870 100644
+> > --- a/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c
+> > +++ b/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c
+> > @@ -731,6 +731,8 @@ static void iwl_mvm_mld_vif_cfg_changed_station(struct iwl_mvm *mvm,
+> >  
+> >         mvmvif->associated = vif->cfg.assoc;
+> >  
+> > +       iwl_mvm_bss_info_changed_station_common(mvm, vif, &vif->bss_conf,
+> > +                                               changes);
+> >         if (!(changes & BSS_CHANGED_ASSOC))
+> >                 return;
+> >  
+> 
+> I agree that it looks like the call to iwl_mvm_bss_info_changed_station_common() is missing here, but
+> I think if is is added here then the call to iwl_mvm_power_update_mac() at the end of this function
+> is not needed anymore?
 
-I see. At most one kernel side flusher will be spinning for the lock
-at any given point anyway, but I guess having that one kernel side
-flusher competing against one user side flusher is better competing
-with N flushers.
+That call to iwl_mvm_power_update_mac() only exists in the backport driver [1]
+at the moment, hence why power save is currently broken in the upstream driver.
 
-I will add a mutex on the userspace read side then and spin a v3.
-Hopefully this addresses Michal's concern as well. The lock dropping
-logic will still exist for the inner lock, but when one userspace
-reader drops the inner lock other readers won't be able to pick it up.
+I wasn't aware that the backport driver had that change until after I sent this,
+FWIW. :)
 
->
-> I don't have a strong preference. As long as we stay away from introducin=
-g a
-> new user interface construct and can address the noticed scalability issu=
-es,
-> it should be fine. Note that there are other ways to address priority
-> inversions and contentions too - e.g. we can always bounce flushing to a
-> [kthread_]kworker and rate limit (or rather latency limit) how often
-> different classes of users can trigger flushing. I don't think we have to=
- go
-> there yet but if the simpler meaures don't work out, there are still many
-> ways to solve the problem within the kernel.
+I agree that the iwl_mvm_power_update_mac() call in the backport driver would be
+redundant with this patch.
 
-I whole-heartedly agree with the preference to fix the problem within
-the kernel with minimal/none user space involvement.
+How would you like to go about this? Shall I send a v2 reformatted for the
+backport driver, with an updated commit message since power save isn't broken in
+the backport driver?
 
-Thanks!
+Or could this be staged upstream with [1] subsequently getting dropped from the
+backport driver?
+
+Thanks,
+Sultan
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/backport-iwlwifi.git/commit/?id=c3201e3d7d88bdfa0f0a94e4141c626c35724655
