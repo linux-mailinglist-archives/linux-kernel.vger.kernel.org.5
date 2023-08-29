@@ -2,123 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4483378C676
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B257D78C67B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236222AbjH2Nur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49648 "EHLO
+        id S236282AbjH2Nx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236535AbjH2NuZ (ORCPT
+        with ESMTP id S236164AbjH2Nw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:50:25 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA162BD
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:50:21 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50078eba7afso7060151e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693317020; x=1693921820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/EXJHebw1V4bZ1/ki3Vw73QN6j29Qahgy3RzS/itoss=;
-        b=QNN4vjMpQRJamoWPaQeIDRuDmabhTmsOwrgycZHuQwtsju3MdzmvqbecxFixHauRbX
-         Hpiv4uz3L8UwwOgLj2opM8WqwcmYVjdna1TCtcvKFjcpxSGOQZfubIw2GojbEU4UeVee
-         bSLfIg6+/6faChHrPZ6tKOqZfs8ie/Ox0MFPlQ9GLhWT/h59iOfNBzGUK6sp6npHQceM
-         Pwrh+ktAAv3ugMXHlE0cPDcOFW9hBCBi0senUfY2hH853+U/rs0J2cQeEUwU9PbdAwFA
-         KJ/n8pkZx6GhTYHOzvhHsBTKpPeIQmzGFSvIrrQC34I/uhL21HT0vNExJ/egSxzSw/18
-         yGOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693317020; x=1693921820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/EXJHebw1V4bZ1/ki3Vw73QN6j29Qahgy3RzS/itoss=;
-        b=HsfxcdX5lbaBPlokE8/oKB3YxtxC28RrGI+mQDIbys6CrdnetcI3w7uI1znYloXPc6
-         yepttC1aWEf0xtuIfKcyEhe/n1tj1c71mOObX3GpX/cgyArD8dQpYuSgJb+zJhnulq+c
-         vJ2+uokmy2NqQ2imNZToAUI8Hjdmor7rIoN6AkxYkFH+2+sYDoL3wqM2bESENv/AnRag
-         m2C0wcJBQRngKa/9oPUPriog2Ob8jHS3SKl/DN0NBCd2fJn2JIJdSZTHxP1g3Vs1ppZL
-         MrDOGABpN0WQJOiJPJ2LEYzi8Kgy+wsOJlgkjthnGRgeifFvoXaL7nBzsYXA66ebv84p
-         LMmg==
-X-Gm-Message-State: AOJu0YwG7X4jp1AHNI2V4h/3yH8wuVUYtYmHEkjiGUXAUV0z+emlSgL7
-        lADbUgDym1y1/LhoFwBEWFVmKjoeeiPbNoGbs0jjAU9M
-X-Google-Smtp-Source: AGHT+IHl3ql42DrMlSRqSPaDG2DrXMaqylxXAv+/RB9sCOGgn7GSTpZ+UINLDxqXdRcB2auAOReIOqKXFc/pI7TKW3I=
-X-Received: by 2002:a05:6512:3241:b0:4fd:f889:b9d2 with SMTP id
- c1-20020a056512324100b004fdf889b9d2mr18279727lfr.38.1693317019712; Tue, 29
- Aug 2023 06:50:19 -0700 (PDT)
+        Tue, 29 Aug 2023 09:52:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFABD7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693317177; x=1724853177;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uEpMob8MSDwWPb9K6z1p9AUsGzPr2SlnFbqr1ruzBBg=;
+  b=Ak72eaGDmijmx9TtvFhnZUhtFs2q/SQOjA2YlfwZ2gZMePG74TmY3NZm
+   wH/jXl9qTcoEcvUcc4ThpB8zTXAgcAKldv/KfHY1RzGNA7dzWWiLyCNS/
+   PvDePOGUYBzMJXcQ62ndjmftOm7/wr4pQY5Y3YzqWefv0trI5XFn4BLDI
+   27knGa30jDLtimA1zyB8cGmXsf5pCH5IjZ8qgTY6ZPr+9Jv++zpI5iVkl
+   MYRV4lotUeN4SS1t9N717vxgHx0+kT4FNFjeiOmWFWfBdH85WqDcSG3bS
+   BR1kgQtxqNKB4CIFnZtoEChgsej88GA/DCLyhkVtQcPOfl0k4V4yOJceo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="379141115"
+X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
+   d="scan'208";a="379141115"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 06:52:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="985357063"
+X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
+   d="scan'208";a="985357063"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Aug 2023 06:52:55 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D871933B; Tue, 29 Aug 2023 16:52:53 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] ALSA: control: Use list_for_each_entry_safe()
+Date:   Tue, 29 Aug 2023 16:52:52 +0300
+Message-Id: <20230829135252.3915124-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-References: <20230828184353.5145-1-yury.norov@gmail.com> <5247e354-cb7f-4df7-37a5-95cebed43d4c@rasmusvillemoes.dk>
- <ZO304SCFoP2wmnNA@smile.fi.intel.com>
-In-Reply-To: <ZO304SCFoP2wmnNA@smile.fi.intel.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Tue, 29 Aug 2023 06:50:08 -0700
-Message-ID: <CAAH8bW-jO=BEY3j5JVJcuVsCeUzWsgNqfg-b7EHt-w00vjP+gQ@mail.gmail.com>
-Subject: Re: [PATCH 00/12] bitmap: rework bitmap_{bit,}remap()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 6:39=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Aug 29, 2023 at 09:33:29AM +0200, Rasmus Villemoes wrote:
-> > On 28/08/2023 20.43, Yury Norov wrote:
-> > > This series adds a test, const-time optimizaton and fixes O(N^2)
-> > > complexity problem for the functions. It's based on discussion in
-> > > bitmap: optimize bitmap_remap() series [1], but there's much more wor=
-k
-> > > here, so I decided to give it a separete run, and don't name it as v2=
-.
-> > >
-> > > bitmap_remap() API has just one user in generic code, and few more in
-> > > drivers, so this may look like an overkill. But the work gives ~10x
-> > > better performance for a 1000-bit bitmaps, which is typical for nodem=
-asks
-> > > in major distros like Ubuntu.
-> >
-> > Can you find just _one_ project on Debian Code Search or elsewhere that
-> > actually uses mbind(2), that could possibly ever trigger the use of tha=
-t
-> > bitmap_remap stuff? Also, the bitmap may be order 10, but that's just
-> > because the kitchen sink distros are silly, real machines have nowhere
-> > near that number of nodes, so even if mbind is used, the bitmaps
-> > involved will never actually have anything beyond index ~64.
-> >
-> > I think this is all total overkill for non-existing problems, and when
-> > it takes me 20 seconds to find the first bug, I really don't think it's
-> > worth the churn. I'm not giving a thorough review on the rest of the
-> > series, nor commenting on followups.
->
-> I posted one patch to replace these APIs with something else, more partic=
-ular
-> for GPIO case(s). Have you chance to look at that? With that taking in, I=
-'m
-> fully agree on the above statement (as we lose the user of this complicat=
-ed
-> thingy which is a niche of the NUMA as you mentioned already).
+Instead of reiterating the list, use list_for_each_entry_safe()
+that allows to continue without starting over.
 
-I saw the code in a comment in some thread but not as a separate patch, and
-AFAIK you said it's a work-in-progress.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
 
-Sorry if I missed your submission. Can you please send the patch or point m=
-e to
-the previous submission?
+Takashi, if you have anybody or want yourself to spend some time,
+I believe you can simplify a lot the parser in this file with
+the help of lib/cmdline.c APIs.
 
-Also, if after your change bitmap_remap would become a NUMA-specific, shoul=
-d
-protect it with NUMA guards?
+ sound/core/control_led.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-Thanks,
-Yury
+diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+index a78eb48927c7..afc9ffc388e3 100644
+--- a/sound/core/control_led.c
++++ b/sound/core/control_led.c
+@@ -297,16 +297,13 @@ static void snd_ctl_led_clean(struct snd_card *card)
+ {
+ 	unsigned int group;
+ 	struct snd_ctl_led *led;
+-	struct snd_ctl_led_ctl *lctl;
++	struct snd_ctl_led_ctl *lctl, _lctl;
+ 
+ 	for (group = 0; group < MAX_LED; group++) {
+ 		led = &snd_ctl_leds[group];
+-repeat:
+-		list_for_each_entry(lctl, &led->controls, list)
+-			if (!card || lctl->card == card) {
++		list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
++			if (!card || lctl->card == card)
+ 				snd_ctl_led_ctl_destroy(lctl);
+-				goto repeat;
+-			}
+ 	}
+ }
+ 
+@@ -314,7 +311,7 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
+ {
+ 	struct snd_card *card;
+ 	struct snd_ctl_led *led;
+-	struct snd_ctl_led_ctl *lctl;
++	struct snd_ctl_led_ctl *lctl, _lctl;
+ 	struct snd_kcontrol_volatile *vd;
+ 	bool change = false;
+ 
+@@ -329,14 +326,12 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
+ 		return -ENXIO;
+ 	}
+ 	led = &snd_ctl_leds[group];
+-repeat:
+-	list_for_each_entry(lctl, &led->controls, list)
++	list_for_each_entry(lctl, _lctl, &led->controls, list)
+ 		if (lctl->card == card) {
+ 			vd = &lctl->kctl->vd[lctl->index_offset];
+ 			vd->access &= ~group_to_access(group);
+ 			snd_ctl_led_ctl_destroy(lctl);
+ 			change = true;
+-			goto repeat;
+ 		}
+ 	mutex_unlock(&snd_ctl_led_mutex);
+ 	if (change)
+-- 
+2.40.0.1.gaa8946217a0b
+
