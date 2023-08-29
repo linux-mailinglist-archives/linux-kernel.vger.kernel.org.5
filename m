@@ -2,52 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8232278C9CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E43778C9CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbjH2Ql6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
+        id S237522AbjH2QnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236025AbjH2Qlh (ORCPT
+        with ESMTP id S237568AbjH2Qm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:41:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AB4185;
-        Tue, 29 Aug 2023 09:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kDD6H57sq+SrWz/GCV0uZMPVhTELhKclCp7y6s7deVQ=; b=Da/2oEcINCS7ujsIMHtHgpSKhs
-        BhJrG3uR6q6OkTEM4K8J3lYq3LD9qtUJUYlFIcOsS3UnhHIr0bWnOoDyFuthq+kECIRrnyt3uGVm2
-        vY4mLta0XeZLohVYE+JDcWTqIjyTpVTUL+6yBFZcQVKyapYs1Q82wZvYx2b04TeARF7DOzZMZB0qX
-        /rBM8usNcjfdHB7zQ55kMGtj7/XagRX/6ToFxCQjhhHeCRI73eCEflJW14AKV/zvsGMmz78kXzO0F
-        lc7k5npZCbtB54DXKF3FpjxJSClEZT5smRXmfWB3Ug3NCzWOwVvN85+5C7aAp0Gz1ri9JjM4XsQbb
-        APr6PZ6Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qb1mW-00Bru3-1W;
-        Tue, 29 Aug 2023 16:41:32 +0000
-Date:   Tue, 29 Aug 2023 09:41:32 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Nick Terrell <terrelln@fb.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module/decompress: use vmalloc() for zstd decompression
- workspace
-Message-ID: <ZO4fvAKJfKs8USZO@bombadil.infradead.org>
-References: <20230829120508.317611-1-andrea.righi@canonical.com>
+        Tue, 29 Aug 2023 12:42:57 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A8A19A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:42:53 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c79b:b256:edee:805c])
+        by laurent.telenet-ops.be with bizsmtp
+        id fUio2A00927hkyq01UioRU; Tue, 29 Aug 2023 18:42:50 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qb1nk-002041-8E;
+        Tue, 29 Aug 2023 18:42:48 +0200
+Date:   Tue, 29 Aug 2023 18:42:48 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+In-Reply-To: <20230819004356.1454718-2-Liam.Howlett@oracle.com>
+Message-ID: <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
+References: <20230819004356.1454718-1-Liam.Howlett@oracle.com> <20230819004356.1454718-2-Liam.Howlett@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829120508.317611-1-andrea.righi@canonical.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,70 +46,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 02:05:08PM +0200, Andrea Righi wrote:
-> Using kmalloc() to allocate the decompression workspace for zstd may
-> trigger the following warning when large modules are loaded (i.e., xfs):
-> 
-> [    2.961884] WARNING: CPU: 1 PID: 254 at mm/page_alloc.c:4453 __alloc_pages+0x2c3/0x350
-> ...
-> [    2.989033] Call Trace:
-> [    2.989841]  <TASK>
-> [    2.990614]  ? show_regs+0x6d/0x80
-> [    2.991573]  ? __warn+0x89/0x160
-> [    2.992485]  ? __alloc_pages+0x2c3/0x350
-> [    2.993520]  ? report_bug+0x17e/0x1b0
-> [    2.994506]  ? handle_bug+0x51/0xa0
-> [    2.995474]  ? exc_invalid_op+0x18/0x80
-> [    2.996469]  ? asm_exc_invalid_op+0x1b/0x20
-> [    2.997530]  ? module_zstd_decompress+0xdc/0x2a0
-> [    2.998665]  ? __alloc_pages+0x2c3/0x350
-> [    2.999695]  ? module_zstd_decompress+0xdc/0x2a0
-> [    3.000821]  __kmalloc_large_node+0x7a/0x150
-> [    3.001920]  __kmalloc+0xdb/0x170
-> [    3.002824]  module_zstd_decompress+0xdc/0x2a0
-> [    3.003857]  module_decompress+0x37/0xc0
-> [    3.004688]  init_module_from_file+0xd0/0x100
-> [    3.005668]  idempotent_init_module+0x11c/0x2b0
-> [    3.006632]  __x64_sys_finit_module+0x64/0xd0
-> [    3.007568]  do_syscall_64+0x59/0x90
-> [    3.008373]  ? ksys_read+0x73/0x100
-> [    3.009395]  ? exit_to_user_mode_prepare+0x30/0xb0
-> [    3.010531]  ? syscall_exit_to_user_mode+0x37/0x60
-> [    3.011662]  ? do_syscall_64+0x68/0x90
-> [    3.012511]  ? do_syscall_64+0x68/0x90
-> [    3.013364]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> 
-> However, continuous physical memory does not seem to be required in
-> module_zstd_decompress(), so use vmalloc() instead, to prevent the
-> warning and avoid potential failures at loading compressed modules.
-> 
-> Fixes: 169a58ad824d ("module/decompress: Support zstd in-kernel decompression")
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> ---
->  kernel/module/decompress.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/module/decompress.c b/kernel/module/decompress.c
-> index 8a5d6d63b06c..87440f714c0c 100644
-> --- a/kernel/module/decompress.c
-> +++ b/kernel/module/decompress.c
-> @@ -241,7 +241,7 @@ static ssize_t module_zstd_decompress(struct load_info *info,
->  	}
->  
->  	wksp_size = zstd_dstream_workspace_bound(header.windowSize);
-> -	wksp = kmalloc(wksp_size, GFP_KERNEL);
-> +	wksp = vmalloc(wksp_size);
->  	if (!wksp) {
->  		retval = -ENOMEM;
->  		goto out;
-> @@ -284,7 +284,7 @@ static ssize_t module_zstd_decompress(struct load_info *info,
->  	retval = new_size;
->  
->   out:
-> -	kfree(wksp);
-> +	vfree(wksp);
->  	return retval;
+ 	Hi Liam,
 
-Thanks! Applied and queued up.
+On Fri, 18 Aug 2023, Liam R. Howlett wrote:
+> The current implementation of append may cause duplicate data and/or
+> incorrect ranges to be returned to a reader during an update.  Although
+> this has not been reported or seen, disable the append write operation
+> while the tree is in rcu mode out of an abundance of caution.
+>
+> During the analysis of the mas_next_slot() the following was
+> artificially created by separating the writer and reader code:
+>
+> Writer:                                 reader:
+> mas_wr_append
+>    set end pivot
+>    updates end metata
+>    Detects write to last slot
+>    last slot write is to start of slot
+>    store current contents in slot
+>    overwrite old end pivot
+>                                        mas_next_slot():
+>                                                read end metadata
+>                                                read old end pivot
+>                                                return with incorrect range
+>    store new value
+>
+> Alternatively:
+>
+> Writer:                                 reader:
+> mas_wr_append
+>    set end pivot
+>    updates end metata
+>    Detects write to last slot
+>    last lost write to end of slot
+>    store value
+>                                        mas_next_slot():
+>                                                read end metadata
+>                                                read old end pivot
+>                                                read new end pivot
+>                                                return with incorrect range
+>    set old end pivot
+>
+> There may be other accesses that are not safe since we are now updating
+> both metadata and pointers, so disabling append if there could be rcu
+> readers is the safest action.
+>
+> Fixes: 54a611b60590 ("Maple Tree: add new data structure")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 
-  Luis
+Thanks for your patch, which is now commit cfeb6ae8bcb96ccf
+("maple_tree: disable mas_wr_append() when other readers are
+possible") in v6.5, and is being backported to stable.
+
+On Renesas RZ/A1 and RZ/A2 (single-core Cortex-A9), this causes the
+following warning:
+
+      clocksource: timer@e803b000: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 28958491609 ns
+      sched_clock: 32 bits at 66MHz, resolution 15ns, wraps every 32537631224ns
+      /soc/timer@e803b000: used for clocksource
+      /soc/timer@e803c000: used for clock events
+     +------------[ cut here ]------------
+     +WARNING: CPU: 0 PID: 0 at init/main.c:992 start_kernel+0x2f0/0x480
+     +Interrupts were enabled early
+     +CPU: 0 PID: 0 Comm: swapper Not tainted 6.5.0-rza2mevb-10197-g99b80d6b92b5 #237
+     +Hardware name: Generic R7S9210 (Flattened Device Tree)
+     + unwind_backtrace from show_stack+0x10/0x14
+     + show_stack from dump_stack_lvl+0x24/0x3c
+     + dump_stack_lvl from __warn+0x74/0xb8
+     + __warn from warn_slowpath_fmt+0x78/0xb0
+     + warn_slowpath_fmt from start_kernel+0x2f0/0x480
+     + start_kernel from 0x0
+     +---[ end trace 0000000000000000 ]---
+      Console: colour dummy device 80x30
+      printk: console [tty0] enabled
+      Calibrating delay loop (skipped) preset value.. 1056.00 BogoMIPS (lpj=5280000)
+
+Reverting this commit fixes the issue.
+
+RCU-related configs:
+
+     $ grep RCU .config
+     # RCU Subsystem
+     CONFIG_TINY_RCU=y
+     # CONFIG_RCU_EXPERT is not set
+     CONFIG_TINY_SRCU=y
+     # end of RCU Subsystem
+     # RCU Debugging
+     # CONFIG_RCU_SCALE_TEST is not set
+     # CONFIG_RCU_TORTURE_TEST is not set
+     # CONFIG_RCU_REF_SCALE_TEST is not set
+     # CONFIG_RCU_TRACE is not set
+     # CONFIG_RCU_EQS_DEBUG is not set
+     # end of RCU Debugging
+
+CONFIG_MAPLE_RCU_DISABLED is not defined (and should BTW be renamed,
+as CONFIG_* is reserved for kernel configuration options).
+
+I do not see this issue on any other platform
+(arm/arm64/risc-v/mips/sh/m68k), several of them use the same
+RCU configuration.
+
+Do you have a clue?
+Thanks!
+
+> --- a/lib/maple_tree.c
+> +++ b/lib/maple_tree.c
+> @@ -4107,6 +4107,10 @@ static inline unsigned char mas_wr_new_end(struct ma_wr_state *wr_mas)
+>  * mas_wr_append: Attempt to append
+>  * @wr_mas: the maple write state
+>  *
+> + * This is currently unsafe in rcu mode since the end of the node may be cached
+> + * by readers while the node contents may be updated which could result in
+> + * inaccurate information.
+> + *
+>  * Return: True if appended, false otherwise
+>  */
+> static inline bool mas_wr_append(struct ma_wr_state *wr_mas,
+> @@ -4116,6 +4120,9 @@ static inline bool mas_wr_append(struct ma_wr_state *wr_mas,
+> 	struct ma_state *mas = wr_mas->mas;
+> 	unsigned char node_pivots = mt_pivots[wr_mas->type];
+>
+> +	if (mt_in_rcu(mas->tree))
+> +		return false;
+> +
+> 	if (mas->offset != wr_mas->node_end)
+> 		return false;
+>
+> -- 
+> 2.39.2
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
