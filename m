@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D060878CBB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C860678CBB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238269AbjH2SHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 14:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S237560AbjH2SEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 14:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238636AbjH2SHV (ORCPT
+        with ESMTP id S238269AbjH2SET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 14:07:21 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7313F1BC;
-        Tue, 29 Aug 2023 11:07:16 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TI6qAs017141;
-        Tue, 29 Aug 2023 18:06:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=9N3469yYamWUG/G53scrJuF70e6otIYfurcvQpyjq3Y=;
- b=Is3Y6RdjevQ8TnHSMz801S1IAUF8SVQoUkSBg/s1Vu3VwDonnLHUds5EL+66dt5SEyJI
- MpgPfJf3uCSwADRyUsewNKyfV74fuV62DS3zmgBtDOUSD+bOhM0i5lBKN3YuL9WHXqya
- AGhYmcYdL+rHw2dwgDyeIeRMS7PgymGZ0sOfOHkg1Ntkot28zNEoO2KApKP1WU5VyyrE
- 0WHPv5GCPO+dHjWE3K4aYZWAVWaJwpKFsqtho+QsIZjUAlqdbHHmRImjadBpubrTvBXL
- WSbpg9r8onr7JmfOvfWgX+y5NHfQPwIXYlSPgWFPrlpS3rBLKsVUGHQXovpmTIwEVDRk Bg== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ssnadrfkx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 18:06:56 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37TGIpVx019193;
-        Tue, 29 Aug 2023 18:02:39 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sqxe1mvxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 18:02:39 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37TI2bGP62587190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Aug 2023 18:02:38 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDC8A58059;
-        Tue, 29 Aug 2023 18:02:37 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADB8258057;
-        Tue, 29 Aug 2023 18:02:37 +0000 (GMT)
-Received: from gfwa600.aus.stglabs.ibm.com (unknown [9.3.84.101])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 29 Aug 2023 18:02:37 +0000 (GMT)
-Received: by gfwa600.aus.stglabs.ibm.com (Postfix, from userid 181152)
-        id 2C95874000A; Tue, 29 Aug 2023 13:02:36 -0500 (CDT)
-From:   Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-To:     eajames@linux.ibm.com, jic23@kernel.org, lars@metafoo.de,
-        joel@jms.id.au, andrew@aj.id.au
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-Subject: [PATCH v1 1/1] iio: pressure: dps310: Adjust Timeout Settings
-Date:   Tue, 29 Aug 2023 13:02:22 -0500
-Message-Id: <20230829180222.3431926-2-lakshmiy@us.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230829180222.3431926-1-lakshmiy@us.ibm.com>
-References: <20230829180222.3431926-1-lakshmiy@us.ibm.com>
+        Tue, 29 Aug 2023 14:04:19 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E74194
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:04:16 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bccda76fb1so71990671fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693332255; x=1693937055; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DVOPb4HIzmrMIe5EILAu9JN7T0Dc5vqs0skLV2r/rbw=;
+        b=XmzQDvVmuEqnfU3Juva/MaMhdq0i3Kfv8fZaAmMWJA7rM79hEhyEpxvLfT/HaJ4rI1
+         +V7uTZVwPqTtfYQQ27Jqc9siDHKsrQ3XcQtC+KogCKXDOw7hg5nW2UUHWg7z6My+KkbF
+         3uXjBUqMer0Oq9dC175JfKuqcfgYDE+P/uov8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693332255; x=1693937055;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DVOPb4HIzmrMIe5EILAu9JN7T0Dc5vqs0skLV2r/rbw=;
+        b=GL9rOfkEHslik9aM6dydYVippZheLtbX7cRnVHb8dZKTZ19VT9sApoO6NxhHbDHmbj
+         1dpeEu+EXmdjHYif7Lzueno5+bIQVuPJ90dF6bm7zRMiY+jkye78CXwXxODThyxsgIPL
+         3K3bxa+AP8N+EaUcNHHMZ5GHmi2Aj4KQcy3ql2tkvKUQnkBA+zpgKAOYEh1Ks4/oyIXm
+         b+XBHpePqhSZng40t4WG22nAJhmrGqGWlPrLue7wX465MysFfATj5y6BFmqj9T0jhIku
+         OhlST9iuf+P86sWrsIRCH4wBD08r9+ixGxpa0krTaZa3v1BB9LCtRiFPJGsuMhms5Krf
+         FaAA==
+X-Gm-Message-State: AOJu0Yw4514+L11XnVdNjXrBdG3Ev8cZB5tbOaV3eFdneMSWgkN45Rr0
+        iZxNsdPtfj91XiOdRW+k9ZXtWmzxLrNXrm9C46Q+22j3
+X-Google-Smtp-Source: AGHT+IFqKb7ewkwSrD1CrzJ9R3R1ab/du31biSUl+d7RPZQt73BeUJePgfPvzKWp9M8Dl/x+9toa2g==
+X-Received: by 2002:a2e:854a:0:b0:2bc:eaec:e23f with SMTP id u10-20020a2e854a000000b002bceaece23fmr52295ljj.43.1693332254750;
+        Tue, 29 Aug 2023 11:04:14 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id z10-20020a2e9b8a000000b002bcda31af0fsm2227884lji.74.2023.08.29.11.04.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 11:04:14 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2bccda76fb1so71990341fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 11:04:13 -0700 (PDT)
+X-Received: by 2002:a2e:874c:0:b0:2b9:aa4d:3719 with SMTP id
+ q12-20020a2e874c000000b002b9aa4d3719mr66996ljj.12.1693332253492; Tue, 29 Aug
+ 2023 11:04:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ZXuwQpf-cySnSnYnB1yURUJNFunTJ_4q
-X-Proofpoint-ORIG-GUID: ZXuwQpf-cySnSnYnB1yURUJNFunTJ_4q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_13,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0 clxscore=1011
- mlxlogscore=999 spamscore=0 priorityscore=1501 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308290157
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <202308281119.10472FC7@keescook> <CAHk-=wi_WxZ2dEsQR0-wDtYAh4sxVEQkU7HK5JSboVv7v7NwcQ@mail.gmail.com>
+ <B085ADB4-4B8C-4998-BB33-DA67C45483E9@kernel.org> <CAHk-=wjRD_LnCbwSRM20Fg54xhrFBLwgO=X23bdconx3wKokxg@mail.gmail.com>
+ <202308282035.5AFD431B@keescook> <CAHk-=whbqsYC4nDc7HpWEYo7EnA603T35jSP4om6HMWpVZSc_w@mail.gmail.com>
+ <CAMj1kXGJCBj2JQFkUgd26H-abagcpO+7z_--6HV42VeaqCsEnQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXGJCBj2JQFkUgd26H-abagcpO+7z_--6HV42VeaqCsEnQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 29 Aug 2023 11:03:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgaY2+_KyqVpRS+MrO6Y7bXQp69odTu7JT3XSpdUsgS=g@mail.gmail.com>
+Message-ID: <CAHk-=wgaY2+_KyqVpRS+MrO6Y7bXQp69odTu7JT3XSpdUsgS=g@mail.gmail.com>
+Subject: Re: [GIT PULL] pstore updates for v6.6-rc1
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Kees Cook <kees@kernel.org>,
+        linux-kernel@vger.kernel.org, Enlin Mu <enlin.mu@unisoc.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yunlong Xing <yunlong.xing@unisoc.com>,
+        Yuxiao Zhang <yuxiaozhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DPS310 sensor chip has been encountering intermittent errors while
-reading the sensor device across various system designs. This issue causes
-the chip to become "stuck," preventing the indication of "ready" status
-for pressure and temperature measurements in the MEAS_CFG register.
+On Tue, 29 Aug 2023 at 10:29, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> This is an oversight on my part. The diff below plugs this into the pstore code
 
-To address this issue, this commit fixes the timeout settings to improve
-sensor stability:
-- After sending a reset command to the chip, the timeout has been extended
-  from 2.5 ms to 15 ms, aligning with the DPS310 specification.
-- The read timeout value of the MEAS_CFG register has been adjusted from
-  20ms to 30ms to match the specification.
+Hmm. My reaction is that you should also add the comment about the
+"Work around a bug in zlib" issue, because this code makes no sense
+otherwise.
 
-Signed-off-by: Lakshmi Yadlapati <lakshmiy@us.ibm.com>
----
- drivers/iio/pressure/dps310.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Of course, potentially even better would be to actually move this fix
+into our copy of zlib. Does the bug / misfeature still exist in
+upstream zlib?
 
-diff --git a/drivers/iio/pressure/dps310.c b/drivers/iio/pressure/dps310.c
-index b10dbf5cf494..1ff091b2f764 100644
---- a/drivers/iio/pressure/dps310.c
-+++ b/drivers/iio/pressure/dps310.c
-@@ -57,8 +57,8 @@
- #define  DPS310_RESET_MAGIC	0x09
- #define DPS310_COEF_BASE	0x10
- 
--/* Make sure sleep time is <= 20ms for usleep_range */
--#define DPS310_POLL_SLEEP_US(t)		min(20000, (t) / 8)
-+/* Make sure sleep time is <= 30ms for usleep_range */
-+#define DPS310_POLL_SLEEP_US(t)		min(30000, (t) / 8)
- /* Silently handle error in rate value here */
- #define DPS310_POLL_TIMEOUT_US(rc)	((rc) <= 0 ? 1000000 : 1000000 / (rc))
- 
-@@ -402,8 +402,8 @@ static int dps310_reset_wait(struct dps310_data *data)
- 	if (rc)
- 		return rc;
- 
--	/* Wait for device chip access: 2.5ms in specification */
--	usleep_range(2500, 12000);
-+	/* Wait for device chip access: 15ms in specification */
-+	usleep_range(15000, 55000);
- 	return 0;
- }
- 
--- 
-2.39.2
+Also, grepping around a bit, I note that btrfs, for example, just does
+that Z_SYNC_FLUSH, and then checks for Z_OK. None of this Z_STREAM_END
+stuff.
 
+Similarly, going off to the debian code search, I find other code that
+just accepts either Z_OK or Z_STREAM_END.
+
+So what's so magical about how pstore uses zlib? This is just very odd.
+
+             Linus
