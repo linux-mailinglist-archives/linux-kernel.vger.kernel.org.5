@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A957878CD13
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95D878CD15
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237915AbjH2Thc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
+        id S238857AbjH2Thd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240427AbjH2ThB (ORCPT
+        with ESMTP id S239622AbjH2ThB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 15:37:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E62EA;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28368CC;
         Tue, 29 Aug 2023 12:36:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E58DB6428B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B1713614F5;
         Tue, 29 Aug 2023 19:36:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5AC61C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 250D0C433C8;
         Tue, 29 Aug 2023 19:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693337817;
-        bh=2gZsaEJcRJ8YIvUqBQhewnllutIfPh0QFjgpikpTwtg=;
+        bh=qcPDnnfdRHFJiTP0ZoCj2675Ni1hPuJtafJ/9/9imFM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hh3BeIzkaGB9xQgXk8BeTwmggoXRvwwtzHpeJ1W9MRcj7HL65b04XlxHelDVZqzMK
-         O5OIT53oHOI081AtQGu23UvSzhhJTL25t8M1+O9RDdQdHTFMMAwVEPDzg+EfDOAycH
-         /IuT2DAM563AqpfUtyMpAG0MMNuQuAAAAtlzXwXl6TZuxjajVKCUTdvNUSv9g08wir
-         8iWcFDf1p+GHNtO5t1G8F1bOETjdy3RMSFStMTSyN0ootGnij6Zhs31PjNZ3VBqmXs
-         f/0wti8HB17N9sWhX5OT1hnHF9S1qrB+h8oqrzFVgNxge1IBpnFtYoRHIsLapRt6+1
-         NdzjfWS7UUO0Q==
+        b=Kl5ks7oUchOdIl5RLqQua7o7MddLKP9iPaMET0/3AvlMWuNAip68LxoNr+Cj2leno
+         3D5+rIqfbNs/SfKAfuMwXo0PUyOARgvRsvCMwsqIKTzBDG3pXXX+tRuwluMco0Mrp8
+         Q4/6thWvyzWVFUMN41IBeTkKBC5Q3Qy8nmGMyqOENbfVIZxQ9LUv+TQV+BCfGeu4RC
+         3IGIEDXOcMu+BmfWP5Ze5I3oq/b3E07DHFj9xhyGY11E9yBzFh6BZjP86bov7lCtiL
+         KTGgr67BErLMg3VHLXmCOEITNlEb7dlBt/kRl9REcxk564513rECvMxB8lTTBZR1k3
+         CWFzTW6ISdwfA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 471CEC3959E;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0C148C595D2;
         Tue, 29 Aug 2023 19:36:57 +0000 (UTC)
-Subject: Re: [GIT PULL] parisc architecture fixes for v6.6-rc1
+Subject: Re: [GIT PULL for v6.6] super fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZO3tZ204Tro+83MC@p100>
-References: <ZO3tZ204Tro+83MC@p100>
+In-Reply-To: <20230829-kasten-bedeuten-b49c0dc7dbe0@brauner>
+References: <20230829-kasten-bedeuten-b49c0dc7dbe0@brauner>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZO3tZ204Tro+83MC@p100>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.6-rc1
-X-PR-Tracked-Commit-Id: 77e0ddf097d6d4ceaf898e088b133b99e0a97fa0
+X-PR-Tracked-Message-Id: <20230829-kasten-bedeuten-b49c0dc7dbe0@brauner>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-vfs.super.fixes
+X-PR-Tracked-Commit-Id: dc3216b1416056b04712e53431f6e9aefdc83177
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 48d25d382643a9d8867f8eb13af231268ab10db5
-Message-Id: <169333781728.25364.18401234113669701134.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 468e28d4ac72869ed6c7cd7c7632008597949bd3
+Message-Id: <169333781703.25364.9167863861019683699.pr-tracker-bot@kernel.org>
 Date:   Tue, 29 Aug 2023 19:36:57 +0000
-To:     Helge Deller <deller@gmx.de>
+To:     Christian Brauner <brauner@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 29 Aug 2023 15:06:47 +0200:
+The pull request you sent on Tue, 29 Aug 2023 12:51:21 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.6-rc1
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-vfs.super.fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/48d25d382643a9d8867f8eb13af231268ab10db5
+https://git.kernel.org/torvalds/c/468e28d4ac72869ed6c7cd7c7632008597949bd3
 
 Thank you!
 
