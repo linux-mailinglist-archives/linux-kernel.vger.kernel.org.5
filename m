@@ -2,232 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F2078BBFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E751B78BC00
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 02:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbjH2AHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 20:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        id S233029AbjH2AI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 20:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234329AbjH2AGd (ORCPT
+        with ESMTP id S234630AbjH2AIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 20:06:33 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02C7EE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 17:06:29 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d77b9d574f8so3400291276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 17:06:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693267589; x=1693872389;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NyT3vK31IPrSFR9t47ow0q9aTbU6VUd3gAc2WbXeYIQ=;
-        b=K49qP+RM+YGZHGLGfDOZcQrv7y2Rk03KlmSBNaPaApU27Z4ONen0XHzXfbnQAdgL7O
-         41VoyK9oeL86CRyFBvsxyp0i6pkNSAqdKLXD+1r5pCFLiCcoZLQ80MCtrxAh8Pkuy6fC
-         0/9d9lYaD33NSvbcYCBzEL4pkoAwpuVM7zAhrRHiWzy0kV7r3UEfMCD8wXrhmjlMbTRq
-         kMzy972lhQo53GP+k8zs+uXsFSECdnSI2f5EiOUQixq/4L/ORVEXAyzJ0ud9ylCaTboq
-         dBVop0sMf9pQETQKP+BH07zEmH7l4p38O6DVEK0YycVazFAegp9EoaY7vYtbDYnHyBPr
-         7HpQ==
+        Mon, 28 Aug 2023 20:08:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C951A1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 17:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693267658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EfIIOjpw/JPxG16IRtlqlUGwpaBYGM5WNBJjPm24CLw=;
+        b=apuTYZpabNdK6stJz9kEtbZ9xhDTgRAJh/JFHrcNZq9LDDrUIgz/8xM98mMGWotjN0R51X
+        082WBfHZiNe8Pji9oAPOSQ3udSJcGKGL4k/kUXahISTUMzwKsX/hWvIizdLy1c6zwbPArI
+        B+P9fWUjXuZsFwA85fGTMggYLjd0nXE=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-318-YNqGIFpDNdiCWMUn7kVKVg-1; Mon, 28 Aug 2023 20:07:35 -0400
+X-MC-Unique: YNqGIFpDNdiCWMUn7kVKVg-1
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3a741f478f8so4679995b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 17:07:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693267589; x=1693872389;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NyT3vK31IPrSFR9t47ow0q9aTbU6VUd3gAc2WbXeYIQ=;
-        b=QAKHeBH9EnsjbfZc8AhLlPVQJYOHGYZKx9yd6RMKR5yNyJf+0rOl6FA1Yu7esC7wub
-         h31YxsgC/0MVU/Rzaerj2Sq/ZP+bJLJt6N44uDU5wqXeCgi8qdBTvGkF5066mK7UYLOg
-         jqrbKDM8H7SwJ9zFSGU2ZP0kocxoU4Mqn+U/l3we1hzb94Gtyij8bCrM6mH8UczhVnBW
-         uwEo/uUsTndusEElB6qdvKcq3EIUSDevBEFl3WfzMoaVT6jjvr1JwxU4ll1giLztEWdT
-         plye1eD/HELkr/TQrs3MvDSxUp094hz5f7blQwQZWfIlBPMFAM5vyrrvHh2ExMm+Z/Dw
-         QrBA==
-X-Gm-Message-State: AOJu0Yz9CeeYGUMwOKYYSI6xTte4f+nX04eMWaeM2tbBHviZ6tENX0Q5
-        sv3Qybk9Sfv8MJWW1In0Nx7hJBCaewiwclEAlsL1lg==
-X-Google-Smtp-Source: AGHT+IEcaEy+asw8tMhYSo1Hv+7c+zGN66bTgKLzbphf2kb1mwQwkyFdO4JLRv0N94tRpZZoBCAjfW5Te4vzdnTQVtw=
-X-Received: by 2002:a25:23cc:0:b0:d7b:2299:555a with SMTP id
- j195-20020a2523cc000000b00d7b2299555amr3714684ybj.17.1693267589082; Mon, 28
- Aug 2023 17:06:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
- <20230728-solid-fill-v5-2-053dbefa909c@quicinc.com> <CAA8EJpq=pbDoYc9wqKKrX+RahXp8zWTPFqVqA=S-0TkWXXJUjQ@mail.gmail.com>
- <26b4bb91-8786-c7cf-a821-eb2b881a42ab@quicinc.com> <656526F6-C123-4A5A-9E62-6ED092474113@linaro.org>
- <1dfcd37e-11a6-fa77-6440-f0e6bd06998d@quicinc.com> <ae98c379-2ddb-6b4e-0de3-2b1c68a99ee7@quicinc.com>
-In-Reply-To: <ae98c379-2ddb-6b4e-0de3-2b1c68a99ee7@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 29 Aug 2023 03:06:17 +0300
-Message-ID: <CAA8EJpq8nPDHPsi+qEUTePCVFYR5xbn1_4Odoqmf5-rJioYmQA@mail.gmail.com>
-Subject: Re: [PATCH RFC v5 02/10] drm: Introduce solid fill DRM plane property
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
-        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
-        sebastian.wick@redhat.com, ville.syrjala@linux.intel.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        wayland-devel@lists.freedesktop.org
+        d=1e100.net; s=20221208; t=1693267654; x=1693872454;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EfIIOjpw/JPxG16IRtlqlUGwpaBYGM5WNBJjPm24CLw=;
+        b=cSIw8O6jSH59om+DoD+VMbL/yNGNdOwBL8uUweh7FBiWkyle2xjMvKloRUGEb+4yLm
+         +csmmG5OdZpkzQNqKLfXTBBmHezSdLnaRFXN254PUpZ7gQ7P4B9m+MF1a/SJ+CxEXX31
+         0ZLsg8YXAX+zx86yMNvnxtU2a9Ln4xUeSniJY0dg9XHFnu8UC8sJUBOEsZpNOAr8Kc3y
+         y5j6gqRAr32IEozUG1A8DRKh0tVV4w83VfOFMYbFaIy+QthN9ttLbHrJArLCxdkoSWDH
+         qrQWi9dFGoI5y9UobX31pX+92EoU24BqFjAM+K6J9LQn1PvZss+Q8yw0AkAjunPR1Mli
+         WalQ==
+X-Gm-Message-State: AOJu0YyoYyWsW+BkKT9K8DsyNpVV9OtJMhDkE2ixZznNTnTEbvPYCf8n
+        lrA2Hcct+LyyLnKRHudES4t1TbZFHG48qTqLsWOhaPH5uIBefcTvw0w0V5ogELfC7caHPx2tnuV
+        h9+HgFduda+sTBJfv3TiDif2C4hofHPOS
+X-Received: by 2002:a05:6808:1393:b0:3a7:4ac4:d4fc with SMTP id c19-20020a056808139300b003a74ac4d4fcmr14387151oiw.33.1693267654318;
+        Mon, 28 Aug 2023 17:07:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFYsefOaHBY9jkmas3f1adjpVCO+ZP2NesdWBg8EU5kcBCRAtIMhPRb543B1wG6ZeLwrgxAqw==
+X-Received: by 2002:a05:6808:1393:b0:3a7:4ac4:d4fc with SMTP id c19-20020a056808139300b003a74ac4d4fcmr14387145oiw.33.1693267654133;
+        Mon, 28 Aug 2023 17:07:34 -0700 (PDT)
+Received: from ?IPv6:2804:1b3:a802:98e3:3c98:3d83:9703:4411? ([2804:1b3:a802:98e3:3c98:3d83:9703:4411])
+        by smtp.gmail.com with ESMTPSA id e17-20020a056808149100b003a88f5ebfeesm3923557oiw.42.2023.08.28.17.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 17:07:33 -0700 (PDT)
+Message-ID: <82ea7cb508ee4cee6d2fde1158692d0cee97eb42.camel@redhat.com>
+Subject: Re: [RFC PATCH 2/4] swap: apply new local_schedule_work_on()
+ interface
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Date:   Mon, 28 Aug 2023 21:07:30 -0300
+In-Reply-To: <ZNKZ8Vc/LE9lVAjN@tpad>
+References: <20230729083737.38699-2-leobras@redhat.com>
+         <20230729083737.38699-4-leobras@redhat.com> <ZNKZ8Vc/LE9lVAjN@tpad>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 02:45, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
->
->
->
-> On 8/8/2023 3:57 PM, Jessica Zhang wrote:
-> >
-> >
-> > On 8/7/2023 6:07 PM, Dmitry Baryshkov wrote:
-> >>
-> >>
-> >> On 8 August 2023 00:41:07 GMT+03:00, Jessica Zhang
-> >> <quic_jesszhan@quicinc.com> wrote:
-> >>>
-> >>>
-> >>> On 8/4/2023 6:27 AM, Dmitry Baryshkov wrote:
-> >>>> On Fri, 28 Jul 2023 at 20:03, Jessica Zhang
-> >>>> <quic_jesszhan@quicinc.com> wrote:
-> >>>>>
-> >>>>> Document and add support for solid_fill property to drm_plane. In
-> >>>>> addition, add support for setting and getting the values for
-> >>>>> solid_fill.
-> >>>>>
-> >>>>> To enable solid fill planes, userspace must assign a property blob to
-> >>>>> the "solid_fill" plane property containing the following information:
-> >>>>>
-> >>>>> struct drm_mode_solid_fill {
-> >>>>>           u32 version;
-> >>>>>           u32 r, g, b;
-> >>>>> };
-> >>>>>
-> >>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> >>>>> ---
-> >>>>>    drivers/gpu/drm/drm_atomic_state_helper.c |  9 +++++
-> >>>>>    drivers/gpu/drm/drm_atomic_uapi.c         | 55
-> >>>>> +++++++++++++++++++++++++++++++
-> >>>>>    drivers/gpu/drm/drm_blend.c               | 30 +++++++++++++++++
-> >>>>>    include/drm/drm_blend.h                   |  1 +
-> >>>>>    include/drm/drm_plane.h                   | 35 ++++++++++++++++++++
-> >>>>>    include/uapi/drm/drm_mode.h               | 24 ++++++++++++++
-> >>>>>    6 files changed, 154 insertions(+)
-> >>>>>
-> >>>>
-> >>>> [skipped most of the patch]
-> >>>>
-> >>>>> diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
-> >>>>> index 43691058d28f..53c8efa5ad7f 100644
-> >>>>> --- a/include/uapi/drm/drm_mode.h
-> >>>>> +++ b/include/uapi/drm/drm_mode.h
-> >>>>> @@ -259,6 +259,30 @@ struct drm_mode_modeinfo {
-> >>>>>           char name[DRM_DISPLAY_MODE_LEN];
-> >>>>>    };
-> >>>>>
-> >>>>> +/**
-> >>>>> + * struct drm_mode_solid_fill - User info for solid fill planes
-> >>>>> + *
-> >>>>> + * This is the userspace API solid fill information structure.
-> >>>>> + *
-> >>>>> + * Userspace can enable solid fill planes by assigning the plane
-> >>>>> "solid_fill"
-> >>>>> + * property to a blob containing a single drm_mode_solid_fill
-> >>>>> struct populated with an RGB323232
-> >>>>> + * color and setting the pixel source to "SOLID_FILL".
-> >>>>> + *
-> >>>>> + * For information on the plane property, see
-> >>>>> drm_plane_create_solid_fill_property()
-> >>>>> + *
-> >>>>> + * @version: Version of the blob. Currently, there is only support
-> >>>>> for version == 1
-> >>>>> + * @r: Red color value of single pixel
-> >>>>> + * @g: Green color value of single pixel
-> >>>>> + * @b: Blue color value of single pixel
-> >>>>> + */
-> >>>>> +struct drm_mode_solid_fill {
-> >>>>> +       __u32 version;
-> >>>>> +       __u32 r;
-> >>>>> +       __u32 g;
-> >>>>> +       __u32 b;
-> >>>>
-> >>>> Another thought about the drm_mode_solid_fill uABI. I still think we
-> >>>> should add alpha here. The reason is the following:
-> >>>>
-> >>>> It is true that we have  drm_plane_state::alpha and the plane's
-> >>>> "alpha" property. However it is documented as "the plane-wide opacity
-> >>>> [...] It can be combined with pixel alpha. The pixel values in the
-> >>>> framebuffers are expected to not be pre-multiplied by the global alpha
-> >>>> associated to the plane.".
-> >>>>
-> >>>> I can imagine a use case, when a user might want to enable plane-wide
-> >>>> opacity, set "pixel blend mode" to "Coverage" and then switch between
-> >>>> partially opaque framebuffer and partially opaque solid-fill without
-> >>>> touching the plane's alpha value.
-> >>>
-> >>> Hi Dmitry,
-> >>>
-> >>> I don't really agree that adding a solid fill alpha would be a good
-> >>> idea. Since the intent behind solid fill is to have a single color
-> >>> for the entire plane, I think it makes more sense to have solid fill
-> >>> rely on the global plane alpha.
-> >>>
-> >>> As stated in earlier discussions, I think having both a
-> >>> solid_fill.alpha and a plane_state.alpha would be redundant and serve
-> >>> to confuse the user as to which one to set.
-> >>
-> >> That depends on the blending mode: in Coverage mode one has
-> >> independent plane and contents alpha values. And I consider alpha
-> >> value to be a part of the colour in the rgba/bgra modes.
-> >
-> > Acked -- taking Sebastian's concern into consideration, I think I'll
-> > have "PIXEL_SOURCE_SOLID_FILL_RGB" and add a separate
-> > "PIXEL_SOURCE_SOLID_FILL_RGBA".
->
-> Hi Dmitry,
->
-> Since it looks like there's still some ongoing discussion with Pekka
-> about whether to support an RGBA solid fill source, I'll just leave a
-> note to add an RGBA source in the future.
+On Tue, 2023-08-08 at 16:39 -0300, Marcelo Tosatti wrote:
+> On Sat, Jul 29, 2023 at 05:37:33AM -0300, Leonardo Bras wrote:
+> > Make use of the new local_*lock_n*() and local_schedule_work_on() inter=
+face
+> > to improve performance & latency on PREEMTP_RT kernels.
+> >=20
+> > For functions that may be scheduled in a different cpu, replace
+> > local_*lock*() by local_lock_n*(), and replace schedule_work_on() by
+> > local_schedule_work_on(). The same happens for flush_work() and
+> > local_flush_work().
+> >=20
+> > This should bring no relevant performance impact on non-RT kernels:
+> > For functions that may be scheduled in a different cpu, the local_*lock=
+'s
+> > this_cpu_ptr() becomes a per_cpu_ptr(smp_processor_id()).
+> >=20
+> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > ---
+> >  mm/swap.c | 18 +++++++++---------
+> >  1 file changed, 9 insertions(+), 9 deletions(-)
+>=20
+> Leo,
+>=20
+> I think the interruptions should rather be removed for both
+> CONFIG_PREEMPT_RT AND !CONFIG_PREEMPT_RT.
+>=20
+> The impact of grabbing locks must be properly analyzed and not
+> "rejected blindly".
 
-Sure! Let's get the basic framework landed. After that we can extend
-it with RGBA, if that seems sensible.
+Yes, I agree with the idea, but we have been noticing a lot of rejection fo=
+r
+these ideas lately, as the maintainers perceive this as a big change.
 
->
-> Thanks,
->
-> Jessica Zhang
->
-> >
-> > Thanks,
-> >
-> > Jessica Zhang
-> >
-> >>
-> >>
-> >>>
-> >>> Thanks,
-> >>>
-> >>> Jessica Zhang
-> >>>
-> >>>>
-> >>>> --
-> >>>> With best wishes
-> >>>> Dmitry
-> >>
-> >> --
-> >> With best wishes
-> >> Dmitry
+My idea here is to provide a general way to improve the PREEMPT_RT scenario=
+s CPU
+Isolation, even though there is resistance in !PREEMPT_RT case.
 
+As I commented, spinlocks are already held by PREEMPT_RT's local_locks hotp=
+aths,
+and yet are using schedule_work_on() to have remote work done. This patch t=
+ries
+to solve this by using spin_lock(remote_cpu_lock) instead and save a lot of
+cycles while decreasing IPI at the remote cpu.
 
+It looks a simple solution, improving isolation and performance on PREEMPT_=
+RT
+with no visible drawbacks. I agree the interface is not ideal, and for that=
+ I
+really need you guys help.
 
--- 
-With best wishes
-Dmitry
+I understand that having this change merged, we will have more precedence t=
+o
+discuss performance for the !PREEMPT_RT case.
+
+What do you think on that?
+
+Thanks!
+Leo
+
+>=20
+> Example:
+>=20
+> commit 01b44456a7aa7c3b24fa9db7d1714b208b8ef3d8
+> Author: Mel Gorman <mgorman@techsingularity.net>
+> Date:   Fri Jun 24 13:54:23 2022 +0100
+>=20
+>     mm/page_alloc: replace local_lock with normal spinlock
+>    =20
+>     struct per_cpu_pages is no longer strictly local as PCP lists can be
+>     drained remotely using a lock for protection.  While the use of local=
+_lock
+>     works, it goes against the intent of local_lock which is for "pure CP=
+U
+>     local concurrency control mechanisms and not suited for inter-CPU
+>     concurrency control" (Documentation/locking/locktypes.rst)
+>    =20
+>     local_lock protects against migration between when the percpu pointer=
+ is
+>     accessed and the pcp->lock acquired.  The lock acquisition is a preem=
+ption
+>     point so in the worst case, a task could migrate to another NUMA node=
+ and
+>     accidentally allocate remote memory.  The main requirement is to pin =
+the
+>     task to a CPU that is suitable for PREEMPT_RT and !PREEMPT_RT.
+>=20
+
