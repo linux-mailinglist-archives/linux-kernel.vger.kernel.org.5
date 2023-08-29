@@ -2,48 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C4978C5CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0DF78C5ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236354AbjH2NeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        id S232172AbjH2Nes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236215AbjH2Ndf (ORCPT
+        with ESMTP id S236221AbjH2Ndf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 09:33:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2900CD4;
-        Tue, 29 Aug 2023 06:33:08 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8964719F;
+        Tue, 29 Aug 2023 06:33:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D0D336576A;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0908065763;
+        Tue, 29 Aug 2023 13:32:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5C39C433C8;
         Tue, 29 Aug 2023 13:32:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B27BC43391;
-        Tue, 29 Aug 2023 13:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693315960;
-        bh=oH6hl56tUU6fyNan0MeAbQaEx2I7FS353c7o/JZ+zRQ=;
+        s=k20201202; t=1693315961;
+        bh=BUv0dUR3yzGvu4wJm1+oQsHMjru5un0H9rT5BRsHxwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S+AA4hswFLYssmlQhiCZS4RpXFHLfChKfl4zkNh967cO+V9nIrl5LML4CaHWHVBYK
-         JeDqEsYSHTqLTKJ+MuYwrNvosh3RhUYAT86SGIjZ8PtG+O1anKbxB488Umr/n5SJle
-         9rDQx5GmilNmGxzG5rtIpYpcMUkasVWBgVWU9HOigPXI734E/45sYIb9Rs+NpC2kJw
-         asAgN+s1bjLR3MQ3SlMkYQPrcss2ne6tDPVOGYCDLEdFmnLRFuwCQN/SCJWhuXKCMO
-         Zst2BioBhvDoQOv9LZSAp4qj8ryLRvm2nAmRFEplJoB/b4W+ih2Jy7gqRgvK9dhOSL
-         6WWogbGxo0SRA==
+        b=SURM7Ql5Zqxtk8leYdDQFmnwzsmKG5B6JKl+/dEM4qHsJ7S5lJ5z7bkpjBdWDWyv8
+         kox/X8N07zmJEeXfl88eOIVjAbMhu5FVsCTtNc+LbNG5yu5Qn9ySeJ52ni9XG4EoFc
+         1VlJQJlSntWjlwckvX0WpgmmWpwHIMqE3rPil/S0vPyHp7R90IZe8nEdryod94iAa1
+         a3Ln8qca9cOi250KYyr+Kmwzi8BIhvPYzMAuq4l+YUz8WIIUVmIGsIQ6tWTn8W5OTV
+         7ffRv8qKwySlyphvcvMo9Fy7BySxOYyZEAh/sR2DnSRejoSCa9t+OYCbSMkh+IMjvF
+         q+XtfaBl2WL5A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, michael.chan@broadcom.com,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 15/17] broadcom: b44: Use b44_writephy() return value
-Date:   Tue, 29 Aug 2023 09:32:02 -0400
-Message-Id: <20230829133211.519957-15-sashal@kernel.org>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, brgl@bgdev.pl,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 16/17] gpiolib: fix reference leaks when removing GPIO chips still in use
+Date:   Tue, 29 Aug 2023 09:32:03 -0400
+Message-Id: <20230829133211.519957-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230829133211.519957-1-sashal@kernel.org>
 References: <20230829133211.519957-1-sashal@kernel.org>
@@ -52,8 +50,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.12
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,42 +59,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-[ Upstream commit 9944d203fa63721b87eee84a89f7275dc3d25c05 ]
+[ Upstream commit 3386fb86ecdef0d39ee3306aea8ec290e61b934f ]
 
-Return result of b44_writephy() instead of zero to
-deal with possible error.
+After we remove a GPIO chip that still has some requested descriptors,
+gpiod_free_commit() will fail and we will never put the references to the
+GPIO device and the owning module in gpiod_free().
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Rework this function to:
+- not warn on desc == NULL as this is a use-case on which most free
+  functions silently return
+- put the references to desc->gdev and desc->gdev->owner unconditionally
+  so that the release callback actually gets called when the remaining
+  references are dropped by external GPIO users
 
-Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/b44.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/gpio/gpiolib.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/b44.c b/drivers/net/ethernet/broadcom/b44.c
-index 392ec09a1d8a6..3e4fb3c3e8342 100644
---- a/drivers/net/ethernet/broadcom/b44.c
-+++ b/drivers/net/ethernet/broadcom/b44.c
-@@ -1793,11 +1793,9 @@ static int b44_nway_reset(struct net_device *dev)
- 	b44_readphy(bp, MII_BMCR, &bmcr);
- 	b44_readphy(bp, MII_BMCR, &bmcr);
- 	r = -EINVAL;
--	if (bmcr & BMCR_ANENABLE) {
--		b44_writephy(bp, MII_BMCR,
--			     bmcr | BMCR_ANRESTART);
--		r = 0;
--	}
-+	if (bmcr & BMCR_ANENABLE)
-+		r = b44_writephy(bp, MII_BMCR,
-+				 bmcr | BMCR_ANRESTART);
- 	spin_unlock_irq(&bp->lock);
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 5be8ad61523eb..6e7701f80929f 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2175,12 +2175,18 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
  
- 	return r;
+ void gpiod_free(struct gpio_desc *desc)
+ {
+-	if (desc && desc->gdev && gpiod_free_commit(desc)) {
+-		module_put(desc->gdev->owner);
+-		gpio_device_put(desc->gdev);
+-	} else {
++	/*
++	 * We must not use VALIDATE_DESC_VOID() as the underlying gdev->chip
++	 * may already be NULL but we still want to put the references.
++	 */
++	if (!desc)
++		return;
++
++	if (!gpiod_free_commit(desc))
+ 		WARN_ON(extra_checks);
+-	}
++
++	module_put(desc->gdev->owner);
++	gpio_device_put(desc->gdev);
+ }
+ 
+ /**
 -- 
 2.40.1
 
