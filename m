@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0483E78C6FD
+	by mail.lfdr.de (Postfix) with ESMTP id 50B9178C6FE
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236833AbjH2OLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37042 "EHLO
+        id S236841AbjH2OLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236901AbjH2OLA (ORCPT
+        with ESMTP id S236906AbjH2OLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:11:00 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821F1D7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:10:56 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf092a16c9so34325155ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:10:56 -0700 (PDT)
+        Tue, 29 Aug 2023 10:11:01 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B49EC0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:10:58 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26d50a832a9so2425296a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:10:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1693318256; x=1693923056;
+        d=linaro.org; s=google; t=1693318258; x=1693923058;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AGedbPt6gMi8Qg7Af4Eb+I75VsPSmA4WvkXy1kRzYfA=;
-        b=GS1ZH6yRX5huw10hvbCF0hJ3EOXWlQdiMQWHHTbTi4F7sFiW4oxHiqH14jYfa8cJXF
-         EO5/pgqg0kDs3wWCfhBPT+LI4h9QGlb0nKemmTCTp1s5A7i457vU+zJITCk3rsA14YlC
-         1CQHg52mAQ6ysvHIp5t+Ryt7oU8ZB/0pA8vRXOAbnThJbH/Fd9xFbSzRum/2jojXDRUk
-         aRyTCzGztXiP/1Z0W5PABIOCnqOVqZ338SBJg1VISsA9bjaGMNAvYOrfux1eR3bTLBcr
-         b2qrNRU4xG/niTkukOWLy/RhOhwtblDZwtcElWFKS8KyvcW+MvGbmD2BOB75qgOnj/Ak
-         PnAw==
+        bh=tBqWv4e1Gjj7of3GyyxrGemSm1v+8ObJePi42aV+azg=;
+        b=m6eOqWmnVnQajAfDUZ+2Byl13xc7/xv3T2/5bcmpcAu2qTkDjNxp589NCmMRsSfYoD
+         HYPNtpgydI1hu3HO3Jj642hFm70LVEAvKaI+BcDoSEYtroclgC13qRQMjRO8OoLpQngy
+         x2H51GIAS6G7F8EydCyRewyodEnjT3gj3gLoE7hgKzGrPFurMk3u67Pth8k675S536e0
+         ft/Z5+Tlr4/ywSUWt4vYh4MrpMlT7R+pvlpLedsmOxMBbEi1uSPsCJYba1gzWxUk9Taz
+         qMQNdA8aQ4llHI0vhqvwpnrWMH2UWHfxagJitV7YXJm+M/jC2NwiYGF3DAB++D7vTNUe
+         QyLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693318256; x=1693923056;
+        d=1e100.net; s=20221208; t=1693318258; x=1693923058;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AGedbPt6gMi8Qg7Af4Eb+I75VsPSmA4WvkXy1kRzYfA=;
-        b=OjkPqNaSkbJiwwTYlYLD7qbIdP5aBea6R7RC0nHngXOM+fwhKbFKmFOXhbwW3N2DB6
-         u3QW3XYIwUK1fb4+caMN6jfd+aulC1R8GvpU4FXgeBQFGtQwJ5Hen3NSCmWLlhPnLZ43
-         aQUuFhUSKouyjzp7JnChGgj1oPQL4vd2S9YObm2jJNiHBYC1U3EIyKnA78xgFI2HTDN1
-         lO646eHy6luSKKyryYT1AY+R58z2gqsnbdt2LpUXbcSxJSsE/oTsmtDaI0gPBk5zi9jU
-         xWpjc62S5VjgaFFdu5l841G7XPIk8xECvpPnSmtFNAoowVqEQ639y8BqeYcFYiu6DE+h
-         j21Q==
-X-Gm-Message-State: AOJu0Yx8GpL+wfGnkkTXIffTikOGFTs8osina1VYEgAk+myCHrr1l3EY
-        /ML7ht3sE706wt522EFV9c5SS+5hZ6zxKCwZ8A0SsA==
-X-Google-Smtp-Source: AGHT+IGkxbeGNEXamVzyA7IwynY7dVSuIdUtv5cMODd8wtPii8f1wI7mZH9ORNDww1a9/MW9bFxSi7ka1kxNBF7HrK8=
-X-Received: by 2002:a17:90b:1956:b0:268:dad:2fdc with SMTP id
- nk22-20020a17090b195600b002680dad2fdcmr26926812pjb.21.1693318255914; Tue, 29
- Aug 2023 07:10:55 -0700 (PDT)
+        bh=tBqWv4e1Gjj7of3GyyxrGemSm1v+8ObJePi42aV+azg=;
+        b=LswdB/R5YSup9hmAQOv6too1lil17R5c3m9r0ETbefCmtMLHPSTS4DTFsRnqsJegs9
+         cRUbPoPwhRBgNknObySy9I7F9xKx9NWqYxpvPa49ChHp4bIK/05oGHQ8Vgw8JGvNGxk6
+         M/u8EQS/sd5DFQlSuzmyIoFEgKmhW2cNFhm0mbePWGpGhLyxJ0Q4SygrTLcTZnV/RNRM
+         9OrnE3gUleBkHhOFF1K5Z55OqPDHgHeS7r7qK8N/xO30PxaYxd+YJNLo8RoOyrDVhqcx
+         j1EWVBrzDJc8HBkUACrymFxw7JgGI/zPI5De6kpvatH3wh6UOPPKy7FVak9F5dCzp8aK
+         KYkw==
+X-Gm-Message-State: AOJu0YxLEK759cQ14k7o+/XTgQYzYDDFs+r3pKHIJPFv4DhyicZsym3r
+        lLNr1y+rO859AqR9N1GJSnHVM9V5GL3PA+5uKGtCjA==
+X-Google-Smtp-Source: AGHT+IHH+s4YTNdALwYPKftq6Hz16++6ElXEtcVm0UiGcfvFxLhlHXT+ZZi/SCUqVsjUyEE2uT2Uims1sUqMpYr1ZKI=
+X-Received: by 2002:a17:90b:124f:b0:26c:f6d2:2694 with SMTP id
+ gx15-20020a17090b124f00b0026cf6d22694mr21798362pjb.12.1693318257776; Tue, 29
+ Aug 2023 07:10:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230808-stand-cheddar-b76b0b7509a0@spud> <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
- <20230808-esquire-epidemic-f9bd74ffde25@spud> <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
- <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org> <CABqG17hgU44H9KbALy_336Sb+YOiEOzbnAihiox1OEuVnNiayQ@mail.gmail.com>
- <5cde8986-1b12-a85e-b2fe-e1aa1087b429@linaro.org> <CABqG17gL7XL0nKZ0QEYkF672AvfJQXapExw3p1iGm88U9idq=w@mail.gmail.com>
- <05ec3dc2-3ed5-4b04-8062-c10777e0a181@roeck-us.net> <CABqG17hKcCwH7=AQq0-JtdeY0tmf=s_nWCoE3F-vh=ZPUBjObg@mail.gmail.com>
- <c6ab0452-f976-469c-be85-9b065db46361@roeck-us.net> <CABqG17iv4SPgfF4LRy5sMzGSU4EPGJ0YPOu3_1XzV-NTcGn+qA@mail.gmail.com>
-In-Reply-To: <CABqG17iv4SPgfF4LRy5sMzGSU4EPGJ0YPOu3_1XzV-NTcGn+qA@mail.gmail.com>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Tue, 29 Aug 2023 19:40:45 +0530
-Message-ID: <CABqG17iKVEZ6+f8UctpK1A6VeRL9u+yYyfV7we=QsQ8vEi4+cA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230820203429.568884-1-qyousef@layalina.io>
+In-Reply-To: <20230820203429.568884-1-qyousef@layalina.io>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 29 Aug 2023 16:10:46 +0200
+Message-ID: <CAKfTPtCq+-U34WSUHjs3CkqQM769_Q+FN-5Y+uK=AzdB0YNiLQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Check a task has a fitting cpu when updating misfit
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -79,152 +68,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Sun, 20 Aug 2023 at 22:34, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> From: Qais Yousef <qais.yousef@arm.com>
+>
+> If a misfit task is affined to a subset of the possible cpus, we need to
+> verify that one of these cpus can fit it. Otherwise the load balancer
+> code will continuously trigger needlessly leading the balance_interval
+> to increase in return and eventually end up with a situation where real
+> imbalances take a long time to address because of this impossible
+> imbalance situation.
+>
+> This can happen in Android world where it's common for background tasks
+> to be restricted to little cores.
+>
+> Similarly if we can't fit the biggest core, triggering misfit is
+> pointless as it is the best we can ever get on this system.
+>
+> To speed the search up, don't call task_fits_cpu() which will repeatedly
+> call uclamp_eff_value() for the same task. Call util_fits_cpu() instead.
+> And only do so when we see a cpu with higher capacity level than
+> passed cpu_of(rq).
+>
+> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> ---
+>  kernel/sched/fair.c | 50 ++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 43 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 0b7445cd5af9..f08c5f3bf895 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4853,17 +4853,50 @@ static inline int task_fits_cpu(struct task_struct *p, int cpu)
+>
+>  static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+>  {
+> +       unsigned long uclamp_min, uclamp_max;
+> +       unsigned long util, cap_level;
+> +       bool has_fitting_cpu = false;
+> +       int cpu = cpu_of(rq);
+> +
+>         if (!sched_asym_cpucap_active())
+>                 return;
+>
+> -       if (!p || p->nr_cpus_allowed == 1) {
+> -               rq->misfit_task_load = 0;
+> -               return;
+> -       }
+> +       if (!p || p->nr_cpus_allowed == 1)
+> +               goto out;
+>
+> -       if (task_fits_cpu(p, cpu_of(rq))) {
+> -               rq->misfit_task_load = 0;
+> -               return;
+> +       uclamp_min = uclamp_eff_value(p, UCLAMP_MIN);
+> +       uclamp_max = uclamp_eff_value(p, UCLAMP_MAX);
+> +       util = task_util_est(p);
+> +
+> +       if (util_fits_cpu(util, uclamp_min, uclamp_max, cpu) > 0)
+> +               goto out;
+> +
+> +       cap_level = capacity_orig_of(cpu);
+> +
+> +       /* If we can't fit the biggest CPU, that's the best we can ever get. */
+> +       if (cap_level == SCHED_CAPACITY_SCALE)
+> +               goto out;
+> +
+> +       /*
+> +        * If the task affinity is not set to default, make sure it is not
+> +        * restricted to a subset where no CPU can ever fit it. Triggering
+> +        * misfit in this case is pointless as it has no where better to move
+> +        * to. And it can lead to balance_interval to grow too high as we'll
+> +        * continuously fail to move it anywhere.
+> +        */
+> +       if (!cpumask_equal(p->cpus_ptr, cpu_possible_mask)) {
+> +               for_each_cpu(cpu, p->cpus_ptr) {
+
+I haven't looked at the problem in detail and at other possibilities
+so far but for_each_cpu doesn't scale and update_misfit_status() being
+called in pick_next_task_fair() so you must find another way to detect
+this
 
 
-On Tue, 22 Aug 2023 at 23:08, Naresh Solanki
-<naresh.solanki@9elements.com> wrote:
+> +                       if (cap_level < capacity_orig_of(cpu)) {
+> +                               cap_level = capacity_orig_of(cpu);
+> +                               if (util_fits_cpu(util, uclamp_min, uclamp_max, cpu) > 0) {
+> +                                       has_fitting_cpu = true;
+> +                                       break;
+> +                               }
+> +                       }
+> +               }
+> +
+> +               if (!has_fitting_cpu)
+> +                       goto out;
+>         }
 >
-> Hi.
+>         /*
+> @@ -4871,6 +4904,9 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+>          * task_h_load() returns 0.
+>          */
+>         rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
+> +       return;
+> +out:
+> +       rq->misfit_task_load = 0;
+>  }
 >
-> On Tue, 22 Aug 2023 at 22:20, Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > On Tue, Aug 22, 2023 at 09:41:48PM +0530, Naresh Solanki wrote:
-> > > Hi,
-> > >
-> > > On Tue, 22 Aug 2023 at 18:47, Guenter Roeck <linux@roeck-us.net> wrote:
-> > > >
-> > > > On Tue, Aug 22, 2023 at 02:32:31PM +0530, Naresh Solanki wrote:
-> > > > > Hi
-> > > > >
-> > > > > On Fri, 18 Aug 2023 at 14:53, Krzysztof Kozlowski
-> > > > > <krzysztof.kozlowski@linaro.org> wrote:
-> > > > > >
-> > > > > > On 16/08/2023 10:51, Naresh Solanki wrote:
-> > > > > > > Hi Krzysztof,
-> > > > > > >
-> > > > > > > On Tue, 15 Aug 2023 at 01:02, Krzysztof Kozlowski
-> > > > > > > <krzysztof.kozlowski@linaro.org> wrote:
-> > > > > > >>
-> > > > > > >> On 11/08/2023 18:00, Naresh Solanki wrote:
-> > > > > > >>> Hi,
-> > > > > > >>>
-> > > > > > >>> On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
-> > > > > > >>>>
-> > > > > > >>>> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
-> > > > > > >>>>> On 8/8/23 04:46, Conor Dooley wrote:
-> > > > > > >>>>>> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
-> > > > > > >>>>>>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> The TDA38640 chip has different output control mechanisms depending on
-> > > > > > >>>>>>> its mode of operation. When the chip is in SVID mode, only
-> > > > > > >>>>>>> hardware-based output control is supported via ENABLE pin. However, when
-> > > > > > >>>>>>> it operates in PMBus mode, software control works perfectly.
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> To enable software control as a workaround in SVID mode, add the DT
-> > > > > > >>>>>>> property 'infineon,en-svid-control'. This property will enable the
-> > > > > > >>>>>>> workaround, which utilizes ENABLE pin polarity flipping for output when
-> > > > > > >>>>>>> the chip is in SVID mode.
-> > > > > > >>>>>>
-> > > > > > >>>>>> Why do you need a custom property for this? How come it is not possible
-> > > > > > >>>>>> to determine what bus you are on?
-> > > > > > >>>>>>
-> > > > > > >>>>>
-> > > > > > >>>>> That is not the point. Yes, it can be detected if the control method is
-> > > > > > >>>>> PMBus or SVID. However, in SVID mode, SVID is supposed to control the
-> > > > > > >>>>> output, not PMBUs. This is bypassed by controlling the polarity of the
-> > > > > > >>>>> (physical) output enable signal. We do _not_ want this enabled automatically
-> > > > > > >>>>> in SVID mode. Its side effects on random boards using this chip are unknown.
-> > > > > > >>>>> Thus, this needs a property which specifically enables this functionality
-> > > > > > >>>>> for users who _really_ need to use it and (hopefully) know what they are
-> > > > > > >>>>> doing.
-> > > > > > >>>>
-> > > > > > >>>> Hmm, reading this it makes a lot more sense why this is a property - I
-> > > > > > >>>> guess I just struggled to understand the commit message here,
-> > > > > > >>>> particularly what the benefit of using the workaround is. I'm still
-> > > > > > >>>> having difficulty parsing the commit & property text though - its
-> > > > > > >>>> unclear to me when you would need to use it - so I will stay out
-> > > > > > >>>> of the way & let Rob or Krzysztof handle things.
-> > > > > > >>>
-> > > > > > >>> To provide context, my system employs a unique power sequence
-> > > > > > >>> strategy utilizing a BMC (Baseboard Management Controller),
-> > > > > > >>> rendering the reliance on the ENABLE pin unnecessary.
-> > > > > > >>> In this configuration, the ENABLE pin is grounded in the hardware.
-> > > > > > >>> While most regulators facilitate PMBus Operation for output control,
-> > > > > > >>> the TDA38640 chip, when in SVID mode, is constrained by the
-> > > > > > >>> ENABLE pin to align with Intel specifications.
-> > > > > > >>> My communication with Infineon confirmed that the recommended
-> > > > > > >>> approach is to invert the Enable Pin for my use case.
-> > > > > > >>>
-> > > > > > >>> Since this is not typically the use case for most setup & hence DT property
-> > > > > > >>> is must for enabling the special case.
-> > > > > > >>>
-> > > > > > >>> For further insight into my setup's power sequence strategy, you can
-> > > > > > >>> refer to the following link: https://github.com/9elements/pwrseqd
-> > > > > > >>>
-> > > > > > >>
-> > > > > > >> This justifies to me the property, but still you described desired
-> > > > > > >> driver behavior, not the hardware characteristic. Don't describe what
-> > > > > > >> you want to control, but describe the entire system.
-> > > > > > > I guess by entire system you mean how the regulators(including
-> > > > > > > TDA38640) connected & operated in our setup ?
-> > > > > >
-> > > > > > I mean, property name and description should say what is the
-> > > > > > characteristic of the hardware/firmware/entire system.
-> > > > > Based on your feedback, will update to below:
-> > > > > infineon,fixed-level-en-pin:
-> > > > >     description: |
-> > > > >       Indicate the ENABLE pin is set at fixed level or left
-> > > > >       unconnected(has internal pull-up).
-> > > > >     type: boolean
-> > > >
-> > > > Messy, because while it reflects physical connectivity, it doesn't reflect
-> > > > its use in the system at all. The pin may be at fixed level or left
-> > > > unconnected, but the system vendor doesn't want to give users the
-> > > > means to control output power (which would be the normal situation).
-> > > Maybe this would be better ?
-> > > infineon,svid-mode-fixed-en-pin
-> > >   description: |
-> > >     Indicate the ENABLE pin is set at fixed level or left
-> > >     unconnected(has internal pull-up) which chip in
-> > >     SVID mode.
-> >
-> > which chip ? Do you mean "with the chip" ?
-> Yep. sorry for the typo.
-> >
-> > I don't think that makes a difference. It still doesn't describe
-> > your use case (which is something like "the chip is in SVID mode,
-> > its enable pin is set to fixed level, and we need to manipulate its
-> > interpretation by the chip so we can control the enable status from
-> > software). I have no idea how to express that in a way that would be
-> > acceptable as devicetree property.
-> In typical use case when chip is in SVID mode ,the ENABLE pin
-> isn't fixed i.e., either connected power good or FPGA pin.
-> If this property is explicitly specified then its clear in the hardware that
-> 1. chip is in SVID mode,
-> 2. ENABLE pin is fixed.
-> 3. Intent to use the workaround.
+>  #else /* CONFIG_SMP */
+> --
+> 2.34.1
 >
-> @Krzysztof , Is this acceptable ? Can you please recommend a way
-> forward please.
-
-I guess the below change in property should be fine. Will push V4 based on it.
-infineon,svid-mode-fixed-en-pin
-  description: |
-    Indicate the ENABLE pin is set at fixed level or left
-    unconnected(has internal pull-up) with the chip in
-    SVID mode.
-
-Regards,
-Naresh
->
-> Regards,
-> Naresh
-> >
-> > It doesn't seem to me that we are making much progress here.
-> > I know it isn't supposed to be done, and I don't really like it,
-> > but could you use a module parameter in your system ? I'd be
-> > open to accept that to make progress.
-> >
-> > Thanks,
-> > Guenter
