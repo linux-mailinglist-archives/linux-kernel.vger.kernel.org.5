@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD6378CA77
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4084778CA78
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237757AbjH2RNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237750AbjH2RNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Aug 2023 13:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237723AbjH2RM4 (ORCPT
+        with ESMTP id S237736AbjH2RM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:12:56 -0400
-Received: from out-243.mta1.migadu.com (out-243.mta1.migadu.com [IPv6:2001:41d0:203:375::f3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD261CDF
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:12:42 -0700 (PDT)
+        Tue, 29 Aug 2023 13:12:57 -0400
+Received: from out-248.mta1.migadu.com (out-248.mta1.migadu.com [IPv6:2001:41d0:203:375::f8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3A3CE7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:12:43 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
         t=1693329161;
@@ -22,10 +22,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MjxW8cEdQiVOI1Uv8f/KLmoitLM15XxpvrzjQCh/NXc=;
-        b=tY6t+d+vBtGNax4kT5p4Y7yBgtMWSnu/QUCRoJmsSpGYGi+JfvAHktxIuYT65MqPmBkvxp
-        8RKOWRZXFpn759z55PlIk/UrGpleF+qwN8UTuRs6xh3eea3xHUbqZVYdzJbVmPrc/bwhgG
-        rJ4DhJcJpXlAotO4gn30Fc2AmkPTb4c=
+        bh=78m2o0At4EqoxYvPO8GgUXqZmV/z9BTR2roI196o/ig=;
+        b=aVdkqRkgoIFSKNeh42TLnbqZmPMoSkLTIn6T1JEhVD3Qqk6MuAku7bMKEsC8wSyrSX5enC
+        FPGjSthHCdAdFwFBUcruYbc6A6xXWGBHMtC2szN93Qqo9L4dPl6NYeHve9SBanQLnxvT1U
+        U8zvI/sIeAjU3YhEOjSFZSV+LFNUxSw=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -36,9 +36,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH 09/15] stackdepot: store next pool pointer in new_pool
-Date:   Tue, 29 Aug 2023 19:11:19 +0200
-Message-Id: <f612aaa765d653e0f2c64fdb39adb1190b10a762.1693328501.git.andreyknvl@google.com>
+Subject: [PATCH 10/15] stackdepot: store free stack records in a freelist
+Date:   Tue, 29 Aug 2023 19:11:20 +0200
+Message-Id: <0853a38f849f75a428a76fe9bcd093c0502d26f4.1693328501.git.andreyknvl@google.com>
 In-Reply-To: <cover.1693328501.git.andreyknvl@google.com>
 References: <cover.1693328501.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -55,49 +55,242 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Instead of using the last pointer in stack_pools for storing the pointer
-to a new pool (which does not yet store any stack records), use a new
-new_pool variable.
+Instead of using the global pool_offset variable to find a free slot
+when storing a new stack record, mainlain a freelist of free slots
+within the allocated stack pools.
 
-This a purely code readability change: it seems more logical to store
-the pointer to a pool with a special meaning in a dedicated variable.
+A global next_stack variable is used as the head of the freelist, and
+the next field in the stack_record struct is reused as freelist link
+(when the record is not in the freelist, this field is used as a link
+in the hash table).
+
+This is preparatory patch for implementing the eviction of stack records
+from the stack depot.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/stackdepot.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ lib/stackdepot.c | 130 +++++++++++++++++++++++++++++------------------
+ 1 file changed, 81 insertions(+), 49 deletions(-)
 
 diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 11934ea3b1c2..5982ea79939d 100644
+index 5982ea79939d..9011f4adcf20 100644
 --- a/lib/stackdepot.c
 +++ b/lib/stackdepot.c
-@@ -86,6 +86,8 @@ static unsigned int stack_hash_mask;
+@@ -55,8 +55,8 @@ union handle_parts {
+ };
  
- /* Array of memory regions that store stack traces. */
+ struct stack_record {
+-	struct stack_record *next;	/* Link in the hash table */
+-	u32 hash;			/* Hash in the hash table */
++	struct stack_record *next;	/* Link in hash table or freelist */
++	u32 hash;			/* Hash in hash table */
+ 	u32 size;			/* Number of stored frames */
+ 	union handle_parts handle;
+ 	unsigned long entries[DEPOT_STACK_MAX_FRAMES];	/* Frames */
+@@ -88,10 +88,10 @@ static unsigned int stack_hash_mask;
  static void *stack_pools[DEPOT_MAX_POOLS];
-+/* Newly allocated pool that is not yet added to stack_pools. */
-+static void *new_pool;
- /* Currently used pool in stack_pools. */
- static int pool_index;
- /* Offset to the unused space in the currently used pool. */
-@@ -236,7 +238,7 @@ static void depot_keep_new_pool(void **prealloc)
+ /* Newly allocated pool that is not yet added to stack_pools. */
+ static void *new_pool;
+-/* Currently used pool in stack_pools. */
+-static int pool_index;
+-/* Offset to the unused space in the currently used pool. */
+-static size_t pool_offset;
++/* Number of pools in stack_pools. */
++static int pools_num;
++/* Next stack in the freelist of stack records within stack_pools. */
++static struct stack_record *next_stack;
+ /* Lock that protects the variables above. */
+ static DEFINE_RAW_SPINLOCK(pool_lock);
+ /*
+@@ -221,6 +221,41 @@ int stack_depot_init(void)
+ }
+ EXPORT_SYMBOL_GPL(stack_depot_init);
+ 
++/* Initializes a stack depol pool. */
++static void depot_init_pool(void *pool)
++{
++	const int records_in_pool = DEPOT_POOL_SIZE / DEPOT_STACK_RECORD_SIZE;
++	int i, offset;
++
++	/* Initialize handles and link stack records to each other. */
++	for (i = 0, offset = 0; offset < DEPOT_POOL_SIZE;
++	     i++, offset += DEPOT_STACK_RECORD_SIZE) {
++		struct stack_record *stack = pool + offset;
++
++		stack->handle.pool_index = pools_num;
++		stack->handle.offset = offset >> DEPOT_STACK_ALIGN;
++		stack->handle.extra = 0;
++
++		if (i < records_in_pool - 1)
++			stack->next = (void *)stack + DEPOT_STACK_RECORD_SIZE;
++		else
++			stack->next = NULL;
++	}
++
++	/* Link stack records into the freelist. */
++	WARN_ON(next_stack);
++	next_stack = pool;
++
++	/* Save reference to the pool to be used by depot_fetch_stack. */
++	stack_pools[pools_num] = pool;
++
++	/*
++	 * WRITE_ONCE pairs with potential concurrent read in
++	 * depot_fetch_stack.
++	 */
++	WRITE_ONCE(pools_num, pools_num + 1);
++}
++
+ /* Keeps the preallocated memory to be used for a new stack depot pool. */
+ static void depot_keep_new_pool(void **prealloc)
+ {
+@@ -237,7 +272,7 @@ static void depot_keep_new_pool(void **prealloc)
+ 	 * Use the preallocated memory for the new pool
  	 * as long as we do not exceed the maximum number of pools.
  	 */
- 	if (pool_index + 1 < DEPOT_MAX_POOLS) {
--		stack_pools[pool_index + 1] = *prealloc;
-+		new_pool = *prealloc;
+-	if (pool_index + 1 < DEPOT_MAX_POOLS) {
++	if (pools_num < DEPOT_MAX_POOLS) {
+ 		new_pool = *prealloc;
  		*prealloc = NULL;
  	}
+@@ -252,45 +287,42 @@ static void depot_keep_new_pool(void **prealloc)
+ }
  
-@@ -266,6 +268,8 @@ static bool depot_update_pools(size_t required_size, void **prealloc)
- 		 * stack_depot_fetch.
- 		 */
- 		WRITE_ONCE(pool_index, pool_index + 1);
-+		stack_pools[pool_index] = new_pool;
-+		new_pool = NULL;
- 		pool_offset = 0;
+ /* Updates refences to the current and the next stack depot pools. */
+-static bool depot_update_pools(size_t required_size, void **prealloc)
++static bool depot_update_pools(void **prealloc)
+ {
+-	/* Check if there is not enough space in the current pool. */
+-	if (unlikely(pool_offset + required_size > DEPOT_POOL_SIZE)) {
+-		/* Bail out if we reached the pool limit. */
+-		if (unlikely(pool_index + 1 >= DEPOT_MAX_POOLS)) {
+-			WARN_ONCE(1, "Stack depot reached limit capacity");
+-			return false;
+-		}
++	/* Check if we still have objects in the freelist. */
++	if (next_stack)
++		goto out_keep_prealloc;
  
- 		/*
+-		/*
+-		 * Move on to the new pool.
+-		 * WRITE_ONCE pairs with potential concurrent read in
+-		 * stack_depot_fetch.
+-		 */
+-		WRITE_ONCE(pool_index, pool_index + 1);
+-		stack_pools[pool_index] = new_pool;
++	/* Check if we have a new pool saved and use it. */
++	if (new_pool) {
++		depot_init_pool(new_pool);
+ 		new_pool = NULL;
+-		pool_offset = 0;
+ 
+-		/*
+-		 * If the maximum number of pools is not reached, take note
+-		 * that yet another new pool needs to be allocated.
+-		 * smp_store_release pairs with smp_load_acquire in
+-		 * stack_depot_save.
+-		 */
+-		if (pool_index + 1 < DEPOT_MAX_POOLS)
++		/* Take note that we might need a new new_pool. */
++		if (pools_num < DEPOT_MAX_POOLS)
+ 			smp_store_release(&new_pool_required, 1);
++
++		/* Try keeping the preallocated memory for new_pool. */
++		goto out_keep_prealloc;
++	}
++
++	/* Bail out if we reached the pool limit. */
++	if (unlikely(pools_num >= DEPOT_MAX_POOLS)) {
++		WARN_ONCE(1, "Stack depot reached limit capacity");
++		return false;
+ 	}
+ 
+-	/* Check if the current pool is not yet allocated. */
+-	if (*prealloc && stack_pools[pool_index] == NULL) {
+-		/* Use the preallocated memory for the current pool. */
+-		stack_pools[pool_index] = *prealloc;
++	/* Check if we have preallocated memory and use it. */
++	if (*prealloc) {
++		depot_init_pool(*prealloc);
+ 		*prealloc = NULL;
+ 		return true;
+ 	}
+ 
+-	/* Otherwise, try using the preallocated memory for a new pool. */
++	return false;
++
++out_keep_prealloc:
++	/* Keep the preallocated memory for a new pool if required. */
+ 	if (*prealloc)
+ 		depot_keep_new_pool(prealloc);
+ 	return true;
+@@ -301,35 +333,35 @@ static struct stack_record *
+ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ {
+ 	struct stack_record *stack;
+-	size_t required_size = DEPOT_STACK_RECORD_SIZE;
+ 
+ 	/* Update current and new pools if required and possible. */
+-	if (!depot_update_pools(required_size, prealloc))
++	if (!depot_update_pools(prealloc))
+ 		return NULL;
+ 
+-	/* Check if we have a pool to save the stack trace. */
+-	if (stack_pools[pool_index] == NULL)
++	/* Check if we have a stack record to save the stack trace. */
++	stack = next_stack;
++	if (!stack)
+ 		return NULL;
+ 
++	/* Advance the freelist. */
++	next_stack = stack->next;
++
+ 	/* Limit number of saved frames to DEPOT_STACK_MAX_FRAMES. */
+ 	if (size > DEPOT_STACK_MAX_FRAMES)
+ 		size = DEPOT_STACK_MAX_FRAMES;
+ 
+ 	/* Save the stack trace. */
+-	stack = stack_pools[pool_index] + pool_offset;
++	stack->next = NULL;
+ 	stack->hash = hash;
+ 	stack->size = size;
+-	stack->handle.pool_index = pool_index;
+-	stack->handle.offset = pool_offset >> DEPOT_STACK_ALIGN;
+-	stack->handle.extra = 0;
++	/* stack->handle is already filled in by depot_init_pool. */
+ 	memcpy(stack->entries, entries, flex_array_size(stack, entries, size));
+-	pool_offset += required_size;
+ 
+ 	/*
+ 	 * Let KMSAN know the stored stack record is initialized. This shall
+ 	 * prevent false positive reports if instrumented code accesses it.
+ 	 */
+-	kmsan_unpoison_memory(stack, required_size);
++	kmsan_unpoison_memory(stack, DEPOT_STACK_RECORD_SIZE);
+ 
+ 	return stack;
+ }
+@@ -339,16 +371,16 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
+ 	union handle_parts parts = { .handle = handle };
+ 	/*
+ 	 * READ_ONCE pairs with potential concurrent write in
+-	 * depot_update_pools.
++	 * depot_init_pool.
+ 	 */
+-	int pool_index_cached = READ_ONCE(pool_index);
++	int pools_num_cached = READ_ONCE(pools_num);
+ 	void *pool;
+ 	size_t offset = parts.offset << DEPOT_STACK_ALIGN;
+ 	struct stack_record *stack;
+ 
+-	if (parts.pool_index > pool_index_cached) {
++	if (parts.pool_index > pools_num_cached) {
+ 		WARN(1, "pool index %d out of bounds (%d) for stack id %08x\n",
+-			parts.pool_index, pool_index_cached, handle);
++			parts.pool_index, pools_num_cached, handle);
+ 		return NULL;
+ 	}
+ 
 -- 
 2.25.1
 
