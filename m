@@ -2,124 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC20D78C3FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCF678C400
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 14:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbjH2MNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 08:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S235000AbjH2MNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 08:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjH2MMu (ORCPT
+        with ESMTP id S234839AbjH2MNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:12:50 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 84D461AA;
-        Tue, 29 Aug 2023 05:12:44 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8Axueq64O1kg8EcAA--.48847S3;
-        Tue, 29 Aug 2023 20:12:42 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx5sy44O1kn3NmAA--.31049S3;
-        Tue, 29 Aug 2023 20:12:41 +0800 (CST)
-Subject: Re: [PATCH v4 1/2] gpio: dt-bindings: add more loongson gpio chip
- support
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
-References: <20230823033427.23072-1-zhuyinbo@loongson.cn>
- <20230823033427.23072-2-zhuyinbo@loongson.cn>
- <20230823-certainty-grimace-a8365c0cfb02@spud>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <a6eb9a3d-83b2-c344-13bb-29a25937117f@loongson.cn>
-Date:   Tue, 29 Aug 2023 20:12:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 29 Aug 2023 08:13:10 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 696AF1BF;
+        Tue, 29 Aug 2023 05:13:03 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 37TCCjUv015120;
+        Tue, 29 Aug 2023 14:12:45 +0200
+Date:   Tue, 29 Aug 2023 14:12:45 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Shuah Khan <shuah@kernel.org>, Zhangjin Wu <falcon@tinylab.org>,
+        Yuan Tan <tanyuan@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/2] tools/nolibc: add stdarg.h header
+Message-ID: <ZO3gvcoe8wZM+f5A@1wt.eu>
+References: <20230827-nolibc-nostdinc-v1-0-995d1811f1f3@weissschuh.net>
+ <20230827-nolibc-nostdinc-v1-1-995d1811f1f3@weissschuh.net>
+ <ZO2QC/fw6LKdtLSb@1wt.eu>
+ <2b6c62f1-c1f1-4f2c-ba0c-981e066f4268@t-8ch.de>
+ <ZO25u3crGixkGKWe@1wt.eu>
+ <b2c2ca69-b9bb-40b1-a05a-6d2f66e01034@t-8ch.de>
 MIME-Version: 1.0
-In-Reply-To: <20230823-certainty-grimace-a8365c0cfb02@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx5sy44O1kn3NmAA--.31049S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <b2c2ca69-b9bb-40b1-a05a-6d2f66e01034@t-8ch.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 29, 2023 at 12:16:23PM +0200, Thomas Wei�schuh wrote:
+> > OK. But then, doesn't it mean that if we don't provide our stdarg.h,
+> > the compilers' will be used ? I'm asking because we're already using
+> > va_list and va_args, for example in vfprintf() in stdio.h, which
+> > precisely includes <stdarg.h> so it must indeed come from the compiler.
+> 
+> It will be used *iff* -nostdinc is *not* passed.
+> 
+> I think we need to clarify the definition of the word "provided".
+> For me it means that the compiler ships an implementation of this header
+> file in the compiler-specific include directory.
+> 
+> If -nostdinc is passed this include directory is not actually usable.
 
+OK I understand better now. I thought it was always usable.
 
-在 2023/8/23 下午11:08, Conor Dooley 写道:
-> On Wed, Aug 23, 2023 at 11:34:26AM +0800, Yinbo Zhu wrote:
->> This patch was to add loongson 2k0500, 2k2000 and 3a5000 gpio chip
->> dt-bindings support in yaml file.
->>
->> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
->> ---
->>   .../bindings/gpio/loongson,ls-gpio.yaml       | 23 +++++++++++++++----
->>   1 file changed, 19 insertions(+), 4 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
->> index fb86e8ce6349..97472f1529a0 100644
->> --- a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
->> +++ b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
->> @@ -11,9 +11,24 @@ maintainers:
->>   
->>   properties:
->>     compatible:
->> -    enum:
->> -      - loongson,ls2k-gpio
->> -      - loongson,ls7a-gpio
->> +    oneOf:
->> +      - enum:
->> +          - loongson,ls2k-gpio
->> +          - loongson,ls2k0500-gpio0
->> +          - loongson,ls2k0500-gpio1
->> +          - loongson,ls2k2000-gpio0
->> +          - loongson,ls2k2000-gpio1
->> +          - loongson,ls2k2000-gpio2
->> +          - loongson,ls3a5000-gpio
->> +          - loongson,ls7a-gpio
-> 
->> +      - items:
->> +          - enum:
->> +              - loongson,ls2k1000-gpio
->> +          - const: loongson,ls2k-gpio
->> +      - items:
->> +          - enum:
->> +              - loongson,ls7a1000-gpio
->> +          - const: loongson,ls7a-gpio
-> 
-> Are there going to be more controllers that are compatible with
-> "ls7a-gpio"? If not, you can simplify both of these to have 2 const:
-> entries, like:
-> 
->        - items:
->            - const: loongson,ls2k1000-gpio
->            - const: loongson,ls2k-gpio
-> 
->        - items:
->            - const: loongson,ls7a1000-gpio
->            - const: loongson,ls7a-gpio
-> 
-> Either way,
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> If a user wants to avoid the implicit usage of any system-provided
+> headers they need to pass -nostdinc, as far as I know there is no flag
+> to keep only the compiler-specific include directories.
 
+So that means we may also have to implement our own stddef.h to move
+size_t there, and limits.h and move *MAX there as well if we want to
+support this. I'm not necessarily against this, it's just that we need
+to be consistent.
 
-okay, I got it.
+Also something is puzzling me. If a normal program builds with -nostdinc,
+it means it does *not* want the libc's (nor the compiler's) headers to be
+included, probably because it comes with its own. In this case why would
+we impose ours ? For example, let's consider this tiny code snippet:
+
+  $ cat arg.c
+  #include <stdarg.h>
+  va_list blah;
+
+  $ gcc -c arg.c 
+  $ gcc -nostdinc -c arg.c
+  arg.c:1:20: error: no include path in which to search for stdarg.h
+      1 | #include <stdarg.h>
+        |                    ^
+  arg.c:2:1: error: unknown type name 'va_list'
+      2 | va_list blah;
+        | ^~~~~~~
+  arg.c:1:1: note: 'va_list' is defined in header '<stdarg.h>'; did you forget to '#include <stdarg.h>'?
+    +++ |+#include <stdarg.h>
+      1 | #include <stdarg.h>
+ 
+You see, that's why I'm finding it confusing that we define headers that
+are supposed *not* to be defined with -nostdinc.
+
+I think we need to carefully check what is supposed to be defined and
+what not when -nostdinc is used normally so that we defined what programs
+expect and not what they expect us *not* to define. Recently we've been
+empirically fixing nolibc-test build failures but it's just a test program
+that comes with its own biases. Maybe trying to build some portable libs
+that use very little from a libc (e.g. xxhash, liblzo etc) could give us
+some hints about certain basic assumptions that we do not fulfill.
+
+> One usecase is in nolibc-test itself, where Zhangjin ran into weird
+> and inconsistent behavior of system includes being pulled in.
+> By using -nostdinc we avoid this.
+
+I see but a normal libc ought not to build with -nostdinc. I mean, we
+can define whatever we want once we know why we're doing it, but I think
+that as long as we find it confusing between those how are modifying this
+code, it will be very difficult to explain correctly to users. We're
+definitely missing some design rules I think. Maybe -nostdinc should be
+needed only when using -include nolibc.h for example, I don't know, but
+I still find that we're papering over a wider problem.
+
+> I can also see this being useful for normal users.
+
+I agree, that's also my concern actually.
+
+> > > I could not find anybody doing this differently.
+> > > Using builtins seems to me to be the normal way to expose compiler
+> > > implementation specifics.
+> > 
+> > OK but it's already what the compiler does itself in its own stdarg that
+> > is provided. That's why I don't understand what specific case we're trying
+> > to cover here, I feel like we're providing an alternate stdarg in case the
+> > compiler doesn't provide one except that I've not seen a compiler not
+> > provide it (even tcc comes with it), it's like stddef.
+> 
+> It's all about supporting -nostdinc.
+
+But unless I'm mistaken (and my example above seems to support this),
+a normal libc doesn't build with -nostdinc. That's the point I'd like
+us to clarify.
+
+> FYI stdint.h is also provided by nolibc, gcc and glibc.
+
+True but that one didn't surprise me because it came with C99 and was
+usually shipped by the libc when compilers targetting previous versions
+were used, so I didn't see this as a replacement for the compiler's
+definition actually.
+
+I don't know what dictates what goes in the compiler and what in the
+libc.  I'm fine with having to redefine everything that's missing if
+that's needed, but as indicated above, stddef.h and limits.h are
+missing despite being quite common.
+
+We have an interesting comment at the top of nolibc.h which says:
+
+ * The available standard (but limited) include files are:
+ *   ctype.h, errno.h, signal.h, stdio.h, stdlib.h, string.h, time.h
+ *
+ * In addition, the following ones are expected to be provided by the compiler:
+ *   float.h, stdarg.h, stddef.h
+ *
+ * The following ones which are part to the C standard are not provided:
+ *   assert.h, locale.h, math.h, setjmp.h, limits.h
+
+I think I draw the line based on what my compilers have always provided.
+That's definitely something we can redefine (and update the comment),
+I'm just seeking consistency, and I think you can understand :-/
 
 Thanks,
-Yinbo
-> 
-
+Willy
