@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EB878BF41
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282B878BF44
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbjH2HbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
+        id S233542AbjH2Hdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 03:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233690AbjH2HbC (ORCPT
+        with ESMTP id S233686AbjH2Hdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:31:02 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AF7106
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:30:59 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d77f869dccfso3609791276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:30:59 -0700 (PDT)
+        Tue, 29 Aug 2023 03:33:35 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26D812F
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:33:32 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a21b6d105cso516404766b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:33:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693294258; x=1693899058;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2LDEMsoxt2eQtT/CMg03ADwG0EGLZZRxXdmL9JMrBck=;
-        b=WrDfLtONfJBPCqlmcV2CqzRmKMJ8WB68nly0MOLt1dFgABf6iU8GW0velZXCxhy+vD
-         g1Mi4d9S9Tk4X7Ebcnr6Z9cLQgi0stC4N8I4TFcKSLIZ/suru64/A4a56fKZ0reD/pi+
-         rBp00DS2us3WDAMZYRepukqgf8gKfu+GtlrLjSlGr8nL8AnjR/NbTv++cOfjY4GU2YU7
-         9sYJ7wVk29b4jtBAGE/5xM6PX5CS1hR2JNd2ej2SbOPZQxSODOU4qJSOqZfFCz1T+G5F
-         tdqNYCmil9t/rAHczJkcJIwrsDNiZASAmJlFJgxxsr1MWlPq+u6YAtPeW4DRhaxYFtil
-         Wybw==
+        d=rasmusvillemoes.dk; s=google; t=1693294411; x=1693899211;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fRNXlte5u35BqwmNOEJYIpVVcE85OErkNgFAmfi6iHs=;
+        b=a0Dqe5VTFzdf8sBljN1f3Kxv6VuyWIhXR1qfDryKuDvfd09vjDlV0BLW6OtVwbZ1tH
+         0Vnvzd9f07ha27tTwc1WqhbphSpzGRNKJwKNElV53q8gp6AJLJCCewnZPcbpmkNY07t5
+         Vf+n6VRPwZKNsdZFnGg89dQcJWjtUtpE5mTe4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693294258; x=1693899058;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2LDEMsoxt2eQtT/CMg03ADwG0EGLZZRxXdmL9JMrBck=;
-        b=Kdlx0ILoA9aaO+NLkn96FhdfC1r7llnRJqP9OSTvdxVD3UEoe2BCF6q4X6HsxLwD2a
-         P73c77rtkQ9nRvxNjBNEElmsv1lYV1BtpcG9U2RCItHfAlrm24Po47WmjdgvG0+GH45r
-         quZoDEk1Q6wdPTvuYp9W3RZAwRCza+/fe4Ri5ENv2B8bVrGYQiUIKGuKxMmBcCAdJLuG
-         SH09fTds/1elRTiXvoocwLrQ1VwS+79Dnvesai1WjiJWy8jbuE0wLPECAjbW7P5dPEAZ
-         WDiDquQXzNCpWn1FkRi3LbE0c2B3EN4pM7Oys9cOLcolCMcISHmBm2Rf2AmWiaRpV8r8
-         vgQA==
-X-Gm-Message-State: AOJu0YwUT/zpvVctmyBxbXrK/AHhf49yVOcHclsclC1DXSk1s9nj64iE
-        nUPYohDTsgs3hTimBtLOkYTg0a8t4NLbm6RC85Jjng==
-X-Google-Smtp-Source: AGHT+IGmly7wtB94mKNs/2Mha5HqU8Mc36TOfWs0PmjuoYFyy8bJrYuD1ueKH2gt2+gGDbaJA5tL9ngeaVYztbYyH84=
-X-Received: by 2002:a25:b291:0:b0:cfd:1bb9:e356 with SMTP id
- k17-20020a25b291000000b00cfd1bb9e356mr27295723ybj.32.1693294258432; Tue, 29
- Aug 2023 00:30:58 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693294411; x=1693899211;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fRNXlte5u35BqwmNOEJYIpVVcE85OErkNgFAmfi6iHs=;
+        b=NQyCLo6g3XHPwvR7gk+Lu5JvPvEvJGQOxOGmoyXINZQBrtIKkRi185WhwiMjh74MLA
+         RPd/r2RuBEPU1DEvgAPyzaagHb3SOl7oTmd1BgqWfZaQ6UgpdRInTRGSb6NgMPdDGDgf
+         IUr/PGZ81vWt63z86ENmFNbxAAKHuq2D1/ChM3o3Scphjh+QQXvH4vHDISfHSf9yw9dO
+         3PyUtQlwsxjR9oCwAudEspO9D1Fy0yqCrT55LILLyjnlsOWjyp2EY1IVXyOOvh2xJmxj
+         oBDJBCuxalICjz/+W+0oKPS2UgK4xjRBtABR1kNcRhVd0cKnpN3Xtx96dIs5e1382FbU
+         9qCw==
+X-Gm-Message-State: AOJu0YyJbIeN7y8WMAy3WA6Im4En5jXC9xg+E6uYGvxztEMqXpagbmK8
+        wY1xFHnRWIFjSgVnq3JAwBAlfg==
+X-Google-Smtp-Source: AGHT+IHCG6ZTBG1UGpX8XAcwOJu7aCTGdJn0htp76AbienIJAd/U9QB4iXDYxU9CQ7/o1kdAHiQUvg==
+X-Received: by 2002:a17:907:2c6a:b0:9a2:739:3aa1 with SMTP id ib10-20020a1709072c6a00b009a207393aa1mr10924387ejc.61.1693294410951;
+        Tue, 29 Aug 2023 00:33:30 -0700 (PDT)
+Received: from [172.16.11.116] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id ha19-20020a170906a89300b00992b7ff3993sm5606976ejb.126.2023.08.29.00.33.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 00:33:30 -0700 (PDT)
+Message-ID: <5247e354-cb7f-4df7-37a5-95cebed43d4c@rasmusvillemoes.dk>
+Date:   Tue, 29 Aug 2023 09:33:29 +0200
 MIME-Version: 1.0
-References: <20230811-iio-spacex-lsm6ds0-v1-0-e953a440170d@linaro.org>
- <20230811-iio-spacex-lsm6ds0-v1-1-e953a440170d@linaro.org>
- <ZNYIaagdt7HuRet5@lore-rh-laptop> <CACRpkdYHMyfvAGxgvtB8jgTsOp36Lm4gXzVYcBfXdY7RQK36cQ@mail.gmail.com>
- <ZNdOOuXy7vON/Shb@lore-rh-laptop> <CACRpkdYUnpb4oo+4pBxhQqbnquDP_+w3ecGoFX18TTC9BSZFwg@mail.gmail.com>
- <20230828174332.101ecbcf@jic23-huawei>
-In-Reply-To: <20230828174332.101ecbcf@jic23-huawei>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Aug 2023 09:30:46 +0200
-Message-ID: <CACRpkdb8MbRMZcfY_WgkWzmQ3E-v2nSw8gifZXPZvsUgzC5P+w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iio: lsm6dsx: Support temperature channel
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mario Tesi <mario.tesi@st.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 00/12] bitmap: rework bitmap_{bit,}remap()
+Content-Language: en-US, da
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20230828184353.5145-1-yury.norov@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+In-Reply-To: <20230828184353.5145-1-yury.norov@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 6:43=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
- wrote:
+On 28/08/2023 20.43, Yury Norov wrote:
+> This series adds a test, const-time optimizaton and fixes O(N^2)
+> complexity problem for the functions. It's based on discussion in
+> bitmap: optimize bitmap_remap() series [1], but there's much more work
+> here, so I decided to give it a separete run, and don't name it as v2.
+> 
+> bitmap_remap() API has just one user in generic code, and few more in
+> drivers, so this may look like an overkill. But the work gives ~10x
+> better performance for a 1000-bit bitmaps, which is typical for nodemasks
+> in major distros like Ubuntu.
 
-> FWIW this seems crazy.  Ah well, Lorenzo is the expert on these beasts.
+Can you find just _one_ project on Debian Code Search or elsewhere that
+actually uses mbind(2), that could possibly ever trigger the use of that
+bitmap_remap stuff? Also, the bitmap may be order 10, but that's just
+because the kitchen sink distros are silly, real machines have nowhere
+near that number of nodes, so even if mbind is used, the bitmaps
+involved will never actually have anything beyond index ~64.
 
-There is some crazy duct-tape code in st_lsm6dsx_set_odr() already...
-If you request the external channels, the accelerometer is turned on
-to provide a "tick".
+I think this is all total overkill for non-existing problems, and when
+it takes me 20 seconds to find the first bug, I really don't think it's
+worth the churn. I'm not giving a thorough review on the rest of the
+series, nor commenting on followups.
 
-I made a patch but was icky about it since I cannot test it, I'll try to
-find some people from the sources to put on CC and send it out
-as an RFC.
+Rasmus
 
-Yours,
-Linus Walleij
