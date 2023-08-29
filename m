@@ -2,129 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FD778BDB3
+	by mail.lfdr.de (Postfix) with ESMTP id C138D78BDB4
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 07:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbjH2FEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 01:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
+        id S234942AbjH2FIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 01:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjH2FEe (ORCPT
+        with ESMTP id S229445AbjH2FHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 01:04:34 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15103194;
-        Mon, 28 Aug 2023 22:04:32 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bce552508fso60019441fa.1;
-        Mon, 28 Aug 2023 22:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693285470; x=1693890270;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yxcmj7xCzomnU3k6tUiu3yMWfFqSb6wL7/6uLA5izWE=;
-        b=jgkM3PsZPP3wztXEocbp+zXIzb0LypBxBeRDKQP740f+n4AWGE7pSMiKuL9077Ghzi
-         KPKAbmJhYdv4OgFamcusrYpIp+obr20y8Y7frYh2CEKFzBIo2Ga+2Q439SVxwXkd9fEs
-         nTCfdJ2NrbMU6aYKDpl1pY0qc9kGeSRLYbnroGoTAesjoe5ul8tKWcEms269cAvjODmx
-         wvGsq9kSTiIQTHemOG3gGvWLTdDf+caXFq9IHh/cJljQcSGJPevZjre6KMiR3DWOlt4h
-         x7yeQmOeRlyjFngHEOWgCGE0+cLm/MzwOAawZWauFqZ2u+pU04xdz5/o4bzUpiC9xIv2
-         zcZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693285470; x=1693890270;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yxcmj7xCzomnU3k6tUiu3yMWfFqSb6wL7/6uLA5izWE=;
-        b=Qutts268A1/zsT2ky4YN8h5jtruc/lVZ1nL0PQHcw56YOKp77EsaBUrrIpS9IPbZR7
-         1zE8DaoSyFtasr9rCXwnK+RpQLU23o8JndhY1Em97OIFyjILvSrYIAi6DjOKzGX8WcOD
-         SvnqvHN2EYOnXTr4eanhP+CNfMQSF5bRoM1a0+g5gpvsSxJitZftvkxjN4kg6/T/ND2f
-         cfBqE1KWWk971zA+TQTqsyllWaJWBvfHj35DD1ifTo6viYdG3zLDhJKRMBzJWgn5d2MV
-         h80EKs5v8Wxla48XheEzw6oFAfiHNyy7XqQRWX3oBZVwaXBIwYyePoKTbTwDtXebDUET
-         aatg==
-X-Gm-Message-State: AOJu0Yy+d6/zEBG5w/Zm+hxGCHshPcaFif7eVcBm6fjQH3+fimvm5rab
-        k93KXOPQeHy2cO85PllpOeR1dE/Zw9SZka9zpOc=
-X-Google-Smtp-Source: AGHT+IFNMRSxgCv4AVg1hsluIhhbouSX6xEcacWfCeMyEZSelkwA1zKmgfTWPMugMsR1q5rWCG7dbiInjiJtz+wZjys=
-X-Received: by 2002:a2e:9007:0:b0:2b9:e701:ac48 with SMTP id
- h7-20020a2e9007000000b002b9e701ac48mr23022126ljg.32.1693285469812; Mon, 28
- Aug 2023 22:04:29 -0700 (PDT)
+        Tue, 29 Aug 2023 01:07:30 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04E6194;
+        Mon, 28 Aug 2023 22:07:27 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T56Xtt027948;
+        Tue, 29 Aug 2023 05:07:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/m5FrDuQYlMc/xyO8GAUUAjp+FGYZ8YrdeCkWwpkXxU=;
+ b=hkCFTzfjgJJxf+ixhl9Y+a13L0rZ2+U9DuqcsEkQgKhrX17S6iPIiLU/vDdioaXABcqV
+ qnxBmkkW1tGtXkTHSozva8364BQrkrntiejCyiXMewKaay/C++MCgdNnbGBsn6DfLKMx
+ z5ajxkUVKcHZRpl/JfxRY/7+DoYlgCL/oMc8QPbtsMJMbBa6UFoSGfPW2wMzx39z/iiL
+ /o4sXwqgvpUYUPtRGARGNA+FPrdex436FLoHWov4iigfrJHTZm5V6w+R/qW00Hl42hIm
+ nivBFmlEJmNeb+t9DinRyRaNJWT9pu9pnmavWNN2P0UcuJSwyPK0EehTJHzuMmGIJJvU mA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr8s70p90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 05:07:00 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37T56YbO027967;
+        Tue, 29 Aug 2023 05:06:59 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sr8s70p8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 05:06:59 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37T462kX020543;
+        Tue, 29 Aug 2023 05:06:58 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqv3y9066-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 05:06:58 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37T56u1X19464916
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Aug 2023 05:06:56 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F58F20043;
+        Tue, 29 Aug 2023 05:06:56 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F32B920040;
+        Tue, 29 Aug 2023 05:06:51 +0000 (GMT)
+Received: from [9.43.109.109] (unknown [9.43.109.109])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Aug 2023 05:06:51 +0000 (GMT)
+Message-ID: <0eed406a-c336-c948-18cb-d46e9992af06@linux.ibm.com>
+Date:   Tue, 29 Aug 2023 10:36:50 +0530
 MIME-Version: 1.0
-References: <cover.1690364259.git.haibo1.xu@intel.com> <ZMrVrXlvu/FJEayx@google.com>
- <CAJve8onbxHjJoC-k-TtOm1BBtjm38moaW-Kk8siKsxt9nwZZZw@mail.gmail.com> <ZOyqRfdvxpdtSE1c@google.com>
-In-Reply-To: <ZOyqRfdvxpdtSE1c@google.com>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Tue, 29 Aug 2023 13:04:18 +0800
-Message-ID: <CAJve8o=rFrVKxpaLLaJ8_KKQxMvyOOgVJn8qk715ymH8dpQ3MA@mail.gmail.com>
-Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        Vishal Annapurve <vannapurve@google.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 0/2] perf list: Remove duplicate PMUs
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230825135237.921058-1-irogers@google.com>
+Content-Language: en-US
+From:   kajoljain <kjain@linux.ibm.com>
+In-Reply-To: <20230825135237.921058-1-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TRIPq8e-pMebachRblXPaAzDo55CXf7J
+X-Proofpoint-ORIG-GUID: JjByNKl2VLND9b2z_nLXirh5Zsd16_VM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_02,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
+ phishscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290043
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 10:08=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
->
-> On Sun, Aug 27, 2023, Haibo Xu wrote:
-> > On Thu, Aug 3, 2023 at 6:16=E2=80=AFAM Sean Christopherson <seanjc@goog=
-le.com> wrote:
-> > >
-> > > On Thu, Jul 27, 2023, Haibo Xu wrote:
-> > > > The sstc_timer selftest is used to validate Sstc timer functionalit=
-y
-> > > > in a guest, which sets up periodic timer interrupts and check the
-> > > > basic interrupt status upon its receipt.
-> > > >
-> > > > This KVM selftest was ported from aarch64 arch_timer and tested
-> > > > with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
-> > > >
-> > > > Haibo Xu (4):
-> > > >   tools: riscv: Add header file csr.h
-> > > >   KVM: riscv: selftests: Add exception handling support
-> > > >   KVM: riscv: selftests: Add guest helper to get vcpu id
-> > > >   KVM: riscv: selftests: Add sstc_timer test
-> > >
-> > > FYI, patch 4 will conflict with the in-flight guest printf changes[*]=
-, as will
-> > > reworking the existing arch_timer test.  My plan is to create an immu=
-table tag
-> > > later this week (waiting to make sure nothing explodes).  I highly re=
-commend basing
-> > > v2 on top of that.
-> > >
-> >
-> > Hi Sean,
-> >
-> > Could you help point me to the immutable tag for the guest printf chang=
-es?
->
-> Sorry, I forgot to create the tag until last week, probably made it a bit=
- hard to
-> find...
->
->   https://github.com/kvm-x86/linux.git tags/kvm-x86-selftests-immutable-6=
-.6
+Hi,
+ Patchset looks good to me.
 
-Thanks!
+Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
+
+Thanks,
+Kajol Jain
+
+On 8/25/23 19:22, Ian Rogers wrote:
+> When there are multiple PMUs, differing by ordered suffixes, by
+> default only display one. This avoids repeated listing of events, in
+> particular when there are 10s of uncore PMUs. If "-v" is passed to
+> "perf list" then still list all PMUs.
+> 
+> Listing fewer PMU/event combinations helps speed the all PMU event
+> tests.
+> 
+> Before:
+> ```
+> $ perf list
+> ...
+>   uncore_imc_free_running_0/data_read/               [Kernel PMU event]
+>   uncore_imc_free_running_0/data_total/              [Kernel PMU event]
+>   uncore_imc_free_running_0/data_write/              [Kernel PMU event]
+>   uncore_imc_free_running_1/data_read/               [Kernel PMU event]
+>   uncore_imc_free_running_1/data_total/              [Kernel PMU event]
+>   uncore_imc_free_running_1/data_write/              [Kernel PMU event]
+> ```
+> 
+> After:
+> ```
+> $ perf list
+> ...
+>   uncore_imc_free_running/data_read/                 [Kernel PMU event]
+>   uncore_imc_free_running/data_total/                [Kernel PMU event]
+>   uncore_imc_free_running/data_write/                [Kernel PMU event]
+> ...
+> $ perf list -v
+> ...
+>   uncore_imc_free_running_0/data_read/               [Kernel PMU event]
+>   uncore_imc_free_running_0/data_total/              [Kernel PMU event]
+>   uncore_imc_free_running_0/data_write/              [Kernel PMU event]
+>   uncore_imc_free_running_1/data_read/               [Kernel PMU event]
+>   uncore_imc_free_running_1/data_total/              [Kernel PMU event]
+>   uncore_imc_free_running_1/data_write/              [Kernel PMU event]
+> ...
+> ```
+> 
+> The PMUs are sorted by name then suffix as a part of this change.
+> 
+> v5: Improved the 2nd patch's commit message and removed an unused
+>     variable as suggested by Kan Liang <kan.liang@linux.intel.com>.
+> v4: Rebase on top of lazy PMU changes. Ignore numeric ordering due to
+>     gaps, suggested by Kan Liang <kan.liang@linux.intel.com>. Fold
+>     patches 2 & 3 as suggested by John Garry <john.g.garry@oracle.com>
+>     (done by accident as part of rebasing).
+> v3: Add detail to patch 1 sorting commit message about the suffix and
+>     why sorting is necessary.
+> v2: List all PMUs when "-v" is passed as suggested by John Garry
+>     <john.g.garry@oracle.com>.
+> 
+> Ian Rogers (2):
+>   perf pmus: Sort pmus by name then suffix
+>   perf pmus: Skip duplicate PMUs and don't print list suffix by default
+> 
+>  tools/perf/builtin-list.c         |  8 +++
+>  tools/perf/util/pmu.c             | 17 ++++--
+>  tools/perf/util/pmu.h             |  3 +-
+>  tools/perf/util/pmus.c            | 99 ++++++++++++++++++++++++++++++-
+>  tools/perf/util/pmus.h            |  2 +
+>  tools/perf/util/print-events.h    |  1 +
+>  tools/perf/util/s390-sample-raw.c |  3 +-
+>  7 files changed, 123 insertions(+), 10 deletions(-)
+> 
