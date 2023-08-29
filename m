@@ -2,131 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABED378C1BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC2478C1BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbjH2Jsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        id S234589AbjH2Jv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234675AbjH2Jsf (ORCPT
+        with ESMTP id S234499AbjH2JvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:48:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813D3E9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:48:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2000C614BC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:48:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87ECFC433CA
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693302512;
-        bh=Ie5xcTYnrckxg5XqByJnbSDX/dunTFFUtMXUS58dsIE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YNT4xgy7zjQeED/xAJkzhazs0cVi0PZzFcHbcPyB3fNMMk/1T7eruJjHxw4onQC3l
-         7IOAaLRZ4tfKzwKPhexWoMsAR5QBxSXFu+nNcwdsH3hXvrvS681e7Y2fbV2H4VuuT8
-         fJQw4TmIGhM63/lnUyIx8+Rq3K3ftr+lF2EnXHEOWh351NGUhIMCatpu0h02jfgLVo
-         2IO2BlcU/qCdblDjMAuZ/h54bjVGRr6js2GXRRu2VPc8lr0JVDUtYkFnSKvgI1tfvv
-         GJqAB+GbdRakKJqu7l3DjEX5j9VzoCVR3L8E+4Ry95coZHjBekwS6Ot7zoTVRPhJbJ
-         uPPlvQ9Ah8LxA==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-52a3aa99bcdso5870509a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:48:32 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxwZkbuqN5Zkbr3TJ/q7/x3vbRCLIGyRauvlutH13/FK1zl/H30
-        rsGAxE7kUq38XjPRV21MFaOY7kj7Y071kx+s1Pg=
-X-Google-Smtp-Source: AGHT+IGlVJEQGrdz0NMMhRYrrwdVqAz+hx4g2Fcuryt6QGy9sIKlI9nXA9wCpnaKjF5re6+FCHvT26gKZTR/GNPWOsw=
-X-Received: by 2002:a05:6402:b29:b0:523:4a4e:3b57 with SMTP id
- bo9-20020a0564020b2900b005234a4e3b57mr21591777edb.13.1693302510808; Tue, 29
- Aug 2023 02:48:30 -0700 (PDT)
+        Tue, 29 Aug 2023 05:51:11 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B8FE9;
+        Tue, 29 Aug 2023 02:51:08 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T9gmk7016436;
+        Tue, 29 Aug 2023 09:50:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nw22Af082mMcx1PWlB9NvRWV9MArnOcJJ7TIt+gTcdY=;
+ b=IspwvJJnu/p2JjKqFkNgVKPaGo91hlI+PJhJhPE0PKYjIEtUgmrCkPoN74IYoY0dKcES
+ lLv9o5Eg+2Gf9t91+G5ZPTI7hvmYJCZByXK32Lkf65CU9XMAz+WH6oxDAQUmWtYhY/RA
+ 0bdTOVSaK3MBeqFtAVhLBM67Aroi+Ez4LFPokgBtDOnNoLtXzOncwGEEspB82pZHp439
+ vh+zwoZ/fnLp4FsHwfA7Nyg/Yo2cR4tMDxJ90wUyAHqOPelGxYR4gQqggkEVu6TQWiBd
+ U9yCTlnwCHDnTBaocHilYVGkHm54HoNg3S6CAAfTcbJcP00pPSShHu8vkt6QLVbIlFeu qg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss3fr1brr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 09:50:55 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T9osL7011391
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 09:50:54 GMT
+Received: from [10.218.34.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
+ 2023 02:50:50 -0700
+Message-ID: <a85f6541-ab15-b0bf-4903-215bcc138b27@quicinc.com>
+Date:   Tue, 29 Aug 2023 15:20:46 +0530
 MIME-Version: 1.0
-References: <20230829083614.117748-1-namcaov@gmail.com>
-In-Reply-To: <20230829083614.117748-1-namcaov@gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 29 Aug 2023 17:48:19 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTdEY-H7QrVyY31Z5nCG0yqo4Zo9W1dBbGEzRqZdec55Q@mail.gmail.com>
-Message-ID: <CAJF2gTTdEY-H7QrVyY31Z5nCG0yqo4Zo9W1dBbGEzRqZdec55Q@mail.gmail.com>
-Subject: Re: [PATCH v2] riscv: provide riscv-specific is_trap_insn()
-To:     Nam Cao <namcaov@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn@kernel.org, conor.dooley@microchip.com,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 1/2] irqchip/qcom-pdc: Add support for v3.2 HW
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+References: <20230829092119.1017194-1-dmitry.baryshkov@linaro.org>
+ <20230829092119.1017194-2-dmitry.baryshkov@linaro.org>
+Content-Language: en-US
+From:   "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
+In-Reply-To: <20230829092119.1017194-2-dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SkU9aFu80SDt8vxuu2ubTjPLJ0JjMuzS
+X-Proofpoint-ORIG-GUID: SkU9aFu80SDt8vxuu2ubTjPLJ0JjMuzS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_06,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ adultscore=0 spamscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290085
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx for the fix.
+Hi,
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
-
-On Tue, Aug 29, 2023 at 4:37=E2=80=AFPM Nam Cao <namcaov@gmail.com> wrote:
+On 8/29/2023 2:51 PM, Dmitry Baryshkov wrote:
+> From: Neil Armstrong <neil.armstrong@linaro.org>
 >
-> uprobes expects is_trap_insn() to return true for any trap instructions,
-> not just the one used for installing uprobe. The current default
-> implementation only returns true for 16-bit c.ebreak if C extension is
-> enabled. This can confuse uprobes if a 32-bit ebreak generates a trap
-> exception from userspace: uprobes asks is_trap_insn() who says there is n=
-o
-> trap, so uprobes assume a probe was there before but has been removed, an=
-d
-> return to the trap instruction. This causes an infinite loop of entering
-> and exiting trap handler.
+> Starting from HW version 3.2 the IRQ_ENABLE bit has moved to the
+> IRQ_i_CFG register and requires a change of the driver to avoid
+> writing into an undefined register address.
 >
-> Instead of using the default implementation, implement this function
-> speficially for riscv with checks for both ebreak and c.ebreak.
+> Get the HW version from registers and set the IRQ_ENABLE bit to the
+> correct register depending on the HW version.
 >
-> Fixes: 74784081aac8 ("riscv: Add uprobes supported")
-> Signed-off-by: Nam Cao <namcaov@gmail.com>
-> Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> [DB: fix crash on sm8150 DTs which listed short PDC region]
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
-> v2: remove #ifdef CONFIG_RISCV_ISA_C (Guo Ren)
->
->  arch/riscv/kernel/probes/uprobes.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/arch/riscv/kernel/probes/uprobes.c b/arch/riscv/kernel/probe=
-s/uprobes.c
-> index 194f166b2cc4..4b3dc8beaf77 100644
-> --- a/arch/riscv/kernel/probes/uprobes.c
-> +++ b/arch/riscv/kernel/probes/uprobes.c
-> @@ -3,6 +3,7 @@
->  #include <linux/highmem.h>
->  #include <linux/ptrace.h>
->  #include <linux/uprobes.h>
-> +#include <asm/insn.h>
->
->  #include "decode-insn.h"
->
-> @@ -17,6 +18,11 @@ bool is_swbp_insn(uprobe_opcode_t *insn)
->  #endif
->  }
->
-> +bool is_trap_insn(uprobe_opcode_t *insn)
-> +{
-> +       return riscv_insn_is_ebreak(*insn) || riscv_insn_is_c_ebreak(*ins=
-n);
-> +}
-> +
->  unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
->  {
->         return instruction_pointer(regs);
-> --
-> 2.34.1
->
+>   drivers/irqchip/qcom-pdc.c | 73 ++++++++++++++++++++++++++++++--------
+>   1 file changed, 59 insertions(+), 14 deletions(-)
 
+Reviewed-by: Maulik Shah <quic_mkshah@quicinc.com>
 
---=20
-Best Regards
- Guo Ren
+Thanks,
+Maulik
+
