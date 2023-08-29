@@ -2,147 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A8378CD6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319E178CD71
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239958AbjH2US0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        id S240476AbjH2US6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbjH2USC (ORCPT
+        with ESMTP id S240362AbjH2USj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:18:02 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB32FE9;
-        Tue, 29 Aug 2023 13:17:59 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TKH4iA004471;
-        Tue, 29 Aug 2023 20:17:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=bmDTpNd8sZn5R6klGMzI09si+fkfHNgAcl5K6WouPNI=;
- b=B73z0HoyGYZyiSEzNe/Lz2g7NIrfC8WAGDyGHOR340jxbPHRwL3uqoH1gtPB3lMI1LEB
- G6MA1lABES5/AGrmvdXOf3Z7FFI7cLPrfc/3/VM8ahuwMsGLDypdfB/jzMSmf8YmtQXB
- FosE+vn0zr8+06BPkajKOqIuk0r3NF+7ky3qBg0ZSF+31USEp3NLam6zyAsylkYoVSb1
- m2QLzIZaL6zMbyFLB+ZuhCRxvmAV5SJkz24mEcTPe3OzTcuyb4KHRLiZ9KtuFJ9b5aSa
- HF7+5jeAQdScTB/V1xM5nt+Vui3cvuI3kzf0MUJZfSaDHsNTTk6d7/2BDiJDxzHF2GJl 0A== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ssq9w8bqk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 20:17:58 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37TJDs0R014392;
-        Tue, 29 Aug 2023 20:17:57 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqvqn696r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 20:17:57 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37TKHuBo66650432
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Aug 2023 20:17:56 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8A2435803F;
-        Tue, 29 Aug 2023 20:17:56 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D33358056;
-        Tue, 29 Aug 2023 20:17:56 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.191.86])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 29 Aug 2023 20:17:56 +0000 (GMT)
-Message-ID: <154c360fb6a21849e89ec003cf2be9ef96599393.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity: susbystem updates for v6.6 (take 2)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 29 Aug 2023 16:17:55 -0400
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vHkczqKrcYuaMkxO4aL7v8DgBKi5EmH5
-X-Proofpoint-ORIG-GUID: vHkczqKrcYuaMkxO4aL7v8DgBKi5EmH5
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 29 Aug 2023 16:18:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B366E9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:18:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0926164432
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 20:18:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD401C433C8;
+        Tue, 29 Aug 2023 20:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693340315;
+        bh=0FffNEBmJnVThNLbGRqsvKM/Q0PTUpKzomHTk97O9C0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zErBNAM4wczXbncJZYl4hd8YMJfqyl9W8bA4NeKoN+9RrZrDJEijkAsEGvYDEUmT7
+         V9Rk1eWlAcIx6yJ3ts4/bn7YSo0k646hNnMoJ8okpmqjAR5DVEQhB1SkZ9wu33xkvS
+         mGeCb3ah04bGqZAiA8LK9FrAC4CxIYtIG0cPrEUM=
+Date:   Tue, 29 Aug 2023 22:18:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
+Message-ID: <2023082908-bulb-scrubbed-32af@gregkh>
+References: <87sf87aw36.ffs@tglx>
+ <CAMRc=Mcvkjmy2F=92SWRdCKL0US_YSwsvpWjcfOH9CBGw3GB0g@mail.gmail.com>
+ <87il91c04a.ffs@tglx>
+ <CAMRc=MfB=sMEmK02Y6SaG1T4PFZW2OD+box7NNoDY3KM1AchLA@mail.gmail.com>
+ <87o7ir8hlh.ffs@tglx>
+ <CAMRc=Mf9f9MxfRY+=Et9+wO5fZr61SRthcGhoHZsJ6-x6k+BgQ@mail.gmail.com>
+ <873502971b.ffs@tglx>
+ <CAMRc=Meigus=WOGwM-fStkhtDeKyTd+9vZH19HoP+U1xpwYx9Q@mail.gmail.com>
+ <87msya6wmf.ffs@tglx>
+ <CAMRc=Md6NA6-rBWL1ti66X5Rt3C4Y2irfrSZnCo3wQSCqT6nPQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_13,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=988 mlxscore=0 clxscore=1015 impostorscore=0 phishscore=0
- spamscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308290174
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Md6NA6-rBWL1ti66X5Rt3C4Y2irfrSZnCo3wQSCqT6nPQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Aug 29, 2023 at 02:24:21PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Aug 29, 2023 at 11:11 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > On Tue, Aug 29 2023 at 08:26, Bartosz Golaszewski wrote:
+> > > On Mon, Aug 28, 2023 at 11:44 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > >> That's the module which provides the interrupt domain and hid-whatever
+> > >> is the one which requests the interrupt, no?
+> > >>
+> > > Not at all! This is what I said: "we have the hid-cp2112 module which
+> > > drives a GPIO-and-I2C-expander-on-a-USB-stick". Meaning: the
+> > > hid-cp2112 module registers a USB driver for a GPIO expander on a
+> > > stick. This GPIO chip is the interrupt controller here. It's the USB
+> > > stick that provides interrupts for whatever else needs them (in real
+> > > life: it can be an IIO device on the I2C bus which signals some events
+> > > over the GPIOs). The user can get the interrupt number using the
+> > > gpiod_to_irq() function. It can be unplugged at any moment and module
+> > > references will not stop the USB bus from unbinding it.
+> >
+> > Sorry for my confusion, but this all is confusing at best.
+> >
+> > So what you are saying is that the GPIO driver, which creates the
+> > interrupt domain is unbound and that unbind destroys the interrupt
+> > domain, right? IOW, the wonderful world of plug and pray.
+> >
+> > Let's look at the full picture again.
+> >
+> >    USB -> USB-device
+> >           |----------- GPIO
+> >           |------------I2C  ---------- I2C-device
+> >                  (hid-cp2112 driver)   (i2c-xx-driver)
+> >
+> > i2x-xx-driver is the one which requests the interrupt from
+> > hid-cp2112-GPIO, right?
+> >
+> 
+> Yes! Sorry if I was not being clear about it.
+> 
+> > So when the USB device disconnects, then something needs to tell the
+> > i2c-xx-driver that the I2C interface is not longer available, right?
+> >
+> > IOW, the unbind operation needs the following notification and teardown
+> > order:
+> >
+> >    1) USB core notifies hid-cp2112
+> >
+> >    2) hid-cp2112 notifies i2c-xx-driver
+> >
+> >    3) i2c-xx-driver mops up and invokes free_irq()
+> >
+> >    4) hid-cp2112 removes the interrupt domain
+> >
+> > But it seems that you end up with a situation where the notification of
+> > the i2c-xx-driver is either not happening or the driver in question is
+> > simply failing to mop up and free the requested interrupt.
+> >
+> 
+> Yes, there's no notification of any kind.
 
-Two IMA changes, a code cleanup, and a kernel-doc update.
+Why not fix that?
 
-- With commit 099f26f22f58 ("integrity: machine keyring CA
-configuration") certificates may be loaded onto the IMA keyring,
-directly or indirectly signed by keys on either the "builtin" or the
-"machine" keyrings. With the ability for the system/machine owner to
-sign the IMA policy itself without needing to recompile the kernel,
-update the IMA architecture specific policy rules to require the IMA
-policy itself be signed.
+> It's a common problem unfortunately across different subsystems. We
+> have hot-unpluggable consumers using resources that don't support it
+> (like interrupts in this example).
 
-[As commit 099f26f22f58 was upstreamed in linux-6.4, updating the IMA
-architecture specific policy now to require signed IMA policies may
-break userspace expectations.]
+Then the driver for the controller of that hot-pluggable irq controller
+should be fixed.
 
-- IMA only checked the file data hash was not on the system blacklist
-keyring for files with an appended signature (e.g. kernel modules,
-Power kernel image). Check all file data hashes regardless of how it
-was signed.
+> > As a consequence you want to work around it by mopping up the requested
+> > interrupts somewhere else.
+> >
+> 
+> The approach I'm proposing - and that we implement in GPIO - is
+> treating the "handle" to the resource as what's often called in
+> programming - a weak reference. The resource itself is released not by
+> the consumer, but the provider. The consumer in turn can get the weak
+> reference from the provider and has to have some way of converting it
+> to a strong one for the duration of any of the API calls. It can be
+> implemented internally with a mutex, spinlock, an RCU read section or
+> otherwise (in GPIO we're using rw_semaphores but I'm working on
+> migrating to SRCU in order to protect the functions called from
+> interrupt context too which is missing ATM). If for any reason the
+> provider vanishes, then the next API call will fail. If it vanishes
+> during a call, then we'll wait for the call to exit before freeing the
+> resources, even if the underlying HW is already gone (the call in
+> progress may fail, that's alright).
+> 
+> For interrupts it would mean that when the consumer calls
+> request_irq(), the number it gets is a weak reference to the irq_desc.
+> For any management operation we lock irq_desc. If the domain is
+> destroyed, irq_descs get destroyed with it (after all users leave the
+> critical section). Next call to any of the functions looks up the irq
+> number and sees it's gone. It fails or silently returns depending on
+> the function (e.g. irq_free() would have to ignore the missing
+> lookup).
+> 
+> But I'm just floating ideas here.
 
-thanks,
+That's a nice idea, but a lot of work implementing this.  Good luck!
 
-Mimi
+Fixing the driver might be simpler :)
 
-
-The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
-
-  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v6.6
-
-for you to fetch changes up to 55e2b69649be38f1788b38755070875b96111d2f:
-
-  kexec_lock: Replace kexec_mutex() by kexec_lock() in two comments (2023-08-07 09:55:42 -0400)
-
-----------------------------------------------------------------
-integrity-v6.6
-
-----------------------------------------------------------------
-Coiby Xu (1):
-      ima: require signed IMA policy when UEFI secure boot is enabled
-
-Eric Snowberg (1):
-      integrity: Always reference the blacklist keyring with appraisal
-
-Nayna Jain (1):
-      ima: Remove deprecated IMA_TRUSTED_KEYRING Kconfig
-
-Wenyu Liu (1):
-      kexec_lock: Replace kexec_mutex() by kexec_lock() in two comments
-
- Documentation/ABI/testing/ima_policy  |  6 +++---
- arch/powerpc/kernel/ima_arch.c        |  8 ++++----
- kernel/kexec_file.c                   |  2 +-
- security/integrity/ima/Kconfig        | 12 ------------
- security/integrity/ima/ima_appraise.c | 12 +++++++-----
- security/integrity/ima/ima_efi.c      |  3 +++
- security/integrity/ima/ima_kexec.c    |  2 +-
- security/integrity/ima/ima_policy.c   | 17 +++++------------
- 8 files changed, 24 insertions(+), 38 deletions(-)hh
-
+greg k-h
