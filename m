@@ -2,124 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96BF78BE22
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5061F78BE27
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbjH2GAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S233059AbjH2GAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233469AbjH2F7i (ORCPT
+        with ESMTP id S233204AbjH2GAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 01:59:38 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54741A1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 22:59:34 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf1935f6c2so26616165ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 22:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693288774; x=1693893574; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uw7aXMxiE8vTFTPymrMp+MvNaW+lEP6ixS9BnwKSDuM=;
-        b=vT5lY24HH66FH/JjN17T6am4JNeOJDWVS4kpVRwOz3KOHDo5CWyoQfNy4PWUYzji/s
-         4iaRVwDhxuZ8cjS4Wq/9bP6QLYLSTGR0qp5yZRZpCLBVwswgsJUxOrCbd/hMswZQJruG
-         /lonPdI0Vj3xxWRd4jI7fjwgXymxM1PP8e3Ebt2rv2YbF9W/GT5hLcEY6B0vLnSPBf3c
-         3IxygHrGdord+J8WHoZkDYx2WWQH0Foj+c1SFkRmA/18r7gd9HCm1V1UAVK9b0aDFT9M
-         5+23Q2+oOlKwpBH4UMEdvuPCMGy5T/qDZlFGQ51zUAwb9goSF6uIHw1zEs2D32d+ugwK
-         tn9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693288774; x=1693893574;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uw7aXMxiE8vTFTPymrMp+MvNaW+lEP6ixS9BnwKSDuM=;
-        b=IkvQHowjNRclvzANz6N0IKHznJ0GyZCtqy1a6w3gDf7+e0SgIJ1PP1rbyPyqxDnE+D
-         Fc6ai4gT0g7eeU9hJxz/SAjT0yIOsdjOsKQUtW4IsR3TERPdwF6hyZXnYiJRfsJlmoup
-         XMji86qqTOMnFnoODjepL5VvUF5lb0/WclObeI3IH7jFP1crbjZ7UL751Fi/5Hlyrfbr
-         gM23g/Uoe17+CqYoQ3MWWbPAtWahysbjMmMco6TxPdeSWW4X7zWTyS2h1fDvyA/r0k86
-         8rv1zCovKzzcwvt5MTAz/L+rbrgAoWn9301NEriU1YVuT0FK+dRWQqmCSxNexVdSpr/f
-         cvFg==
-X-Gm-Message-State: AOJu0YzJJc6/29hI4gBSo/EpenKt5F08TIULLvzpZonACiSLpFG7BIEu
-        LXuEPfiPF6c+OpIWlXcC9cU/AA==
-X-Google-Smtp-Source: AGHT+IHZsexYBSOXCaMDIndYB6MxZkA9lTswJOf40JwCBZROwG+VB0VO+dmFeJSWvWhXpOTthlEp9A==
-X-Received: by 2002:a17:903:22cc:b0:1bb:fcb9:f85 with SMTP id y12-20020a17090322cc00b001bbfcb90f85mr2331114plg.32.1693288774027;
-        Mon, 28 Aug 2023 22:59:34 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id x19-20020a170902821300b001bdd68b3f4bsm8365105pln.295.2023.08.28.22.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 22:59:32 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 11:29:30 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rafael@kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bbasu@nvidia.com
-Subject: Re: [Patch] cpufreq: tegra194: fix warning due to missing opp_put
-Message-ID: <20230829055930.csddryecm72ehz3o@vireshk-i7>
-References: <20230828120959.24680-1-sumitg@nvidia.com>
+        Tue, 29 Aug 2023 02:00:18 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09C8109;
+        Mon, 28 Aug 2023 23:00:15 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T3r4pY015322;
+        Tue, 29 Aug 2023 06:00:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=NjoQx7of7gZvUoNJcfHCAxqixOcJ5euA5VWBRBwebP0=;
+ b=MrDcMwPHQb8VfRd7HTXg1tfqE9ivTb2M7q1X6/RDhTTmIC5KtPfFPoU5b6G23FX5NlpE
+ VQZEo1anJscK2TlGEMu98LiSMdiRmqlG+BB2tL16wI/X/HNp1SInZ0Hfb92GV8TUc0Ac
+ llK9t+Vf5330WDeutiHvvUsgpcvU/U9AnJPf/KDOrysByjVg2+wk4965ns1rrSdOqz3W
+ 4EZpmCSPPR/tVUCTMl/xDJoQwgly2laZsPalAmE6Yi9d1xPBHFk2vShRyj+mNGw/oSYn
+ Xh/slr3dYssSMU/ouf/wqlgroZuT6IJml7+tsXCjziBErJ2t4alMBG1eS2IsWPlAN/j5 9A== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sruhnsr0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 06:00:10 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T609hr023075
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 06:00:09 GMT
+Received: from [10.216.63.45] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 28 Aug
+ 2023 23:00:04 -0700
+Message-ID: <7abd0b40-a364-b7f2-3057-2b522e5674e1@quicinc.com>
+Date:   Tue, 29 Aug 2023 11:29:59 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828120959.24680-1-sumitg@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH 1/7] dt-bindings: thermal: qcom-tsens: Add ipq5018
+ compatible
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <thara.gopinath@gmail.com>,
+        <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+References: <1693250307-8910-1-git-send-email-quic_srichara@quicinc.com>
+ <1693250307-8910-2-git-send-email-quic_srichara@quicinc.com>
+ <97501b4f-614c-b3a3-c17f-5699b21e101f@linaro.org>
+From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
+In-Reply-To: <97501b4f-614c-b3a3-c17f-5699b21e101f@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 9ZmKMdnUoDcl93d9CrUZiH2lCAhNmuMW
+X-Proofpoint-ORIG-GUID: 9ZmKMdnUoDcl93d9CrUZiH2lCAhNmuMW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_03,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 phishscore=0
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290050
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-08-23, 17:39, Sumit Gupta wrote:
-> Fix the warning due to missing dev_pm_opp_put() call and hence
-> wrong refcount value. This causes below warning message when
-> trying to remove the module.
-> 
->  Call trace:
->   dev_pm_opp_put_opp_table+0x154/0x15c
->   dev_pm_opp_remove_table+0x34/0xa0
->   _dev_pm_opp_cpumask_remove_table+0x7c/0xbc
->   dev_pm_opp_of_cpumask_remove_table+0x10/0x18
->   tegra194_cpufreq_exit+0x24/0x34 [tegra194_cpufreq]
->   cpufreq_remove_dev+0xa8/0xf8
->   subsys_interface_unregister+0x90/0xe8
->   cpufreq_unregister_driver+0x54/0x9c
->   tegra194_cpufreq_remove+0x18/0x2c [tegra194_cpufreq]
->   platform_remove+0x24/0x74
->   device_remove+0x48/0x78
->   device_release_driver_internal+0xc8/0x160
->   driver_detach+0x4c/0x90
->   bus_remove_driver+0x68/0xb8
->   driver_unregister+0x2c/0x58
->   platform_driver_unregister+0x10/0x18
->   tegra194_ccplex_driver_exit+0x14/0x1e0 [tegra194_cpufreq]
->   __arm64_sys_delete_module+0x184/0x270
-> 
-> Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->  drivers/cpufreq/tegra194-cpufreq.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
-> index 88ef5e57ccd0..f63f7a6c2034 100644
-> --- a/drivers/cpufreq/tegra194-cpufreq.c
-> +++ b/drivers/cpufreq/tegra194-cpufreq.c
-> @@ -454,6 +454,8 @@ static int tegra_cpufreq_init_cpufreq_table(struct cpufreq_policy *policy,
+Hi Krzysztof,
 
-You need to put the OPP here, even if this fails.
+On 8/29/2023 12:51 AM, Krzysztof Kozlowski wrote:
+> On 28/08/2023 21:18, Sricharan Ramabadhran wrote:
+>> IPQ5018 has tsens v1.0 block with 4 sensors and 1 interrupt.
+>>
+>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>> ---
+>>   .../bindings/thermal/qcom-tsens.yaml          | 19 +++++++++++++++++++
+>>   1 file changed, 19 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>> index 27e9e16e6455..2309bb6dce1b 100644
+>> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>> @@ -42,6 +42,7 @@ properties:
+>>                 - qcom,msm8956-tsens
+>>                 - qcom,msm8976-tsens
+>>                 - qcom,qcs404-tsens
+>> +              - qcom,ipq5018-tsens
+> 
+> This does not look like placed in alphanumeric order.
+> 
 
->  		if (ret < 0)
->  			return ret;
->  
-> +		dev_pm_opp_put(opp);
-> +
->  		freq_table[j].driver_data = pos->driver_data;
->  		freq_table[j].frequency = pos->frequency;
->  		j++;
-> -- 
-> 2.17.1
+  ok, will sort.
 
--- 
-viresh
+>>             - const: qcom,tsens-v1
+>>   
+>>         - description: v2 of TSENS
+>> @@ -409,4 +410,22 @@ examples:
+>>              #qcom,sensors = <16>;
+>>              #thermal-sensor-cells = <1>;
+>>       };
+>> +
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    // Example 5 (for any IPQ5018 based SoC-s):
+> 
+> No need for new example for a difference in compatible. Drop it.
+
+  ok, will drop it.
+
+Regards,
+  Sricharan
