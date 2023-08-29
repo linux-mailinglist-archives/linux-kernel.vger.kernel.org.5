@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E4B78C1C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73F178C1D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234941AbjH2Jv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S234997AbjH2JzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbjH2Jvz (ORCPT
+        with ESMTP id S234411AbjH2Jyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:51:55 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C50E9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:51:51 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c1d03e124so544095266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:51:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693302710; x=1693907510;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mpZOvmtn/uBflk6UybG+LvnSX9jdUkyMKQebc/rvrZU=;
-        b=k8Jpl+T/nVE735bxJtvutdmgAHlJzhxATj53E0fbQBJzzqiwTEJT/5XdSfpU15UDBd
-         NwTzq0gRFx7x83pnPe1NaEglOkzxXuZSzOI9E/G33syssQok6GKFaghyaWHWAAC4tkTs
-         o/r9q8MnybrwrIpTox/ign049K0ThTIJwOgLSuMDFryT5DulQ48DEO6YA7zbsRJfoba+
-         0E9aOqG7fSp8auH9xK1M97yl6NJb4EB60YleWTQ0UJY2PRVCT6cqZAQHTeQK7M0ZG0zJ
-         kkOJ70ZTBd3q+umTLG3LG1RSa8MOBNwasd2/i/tJrH6e6v9P4YsAbtC+Z1mEflaVMgQB
-         dz3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693302710; x=1693907510;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mpZOvmtn/uBflk6UybG+LvnSX9jdUkyMKQebc/rvrZU=;
-        b=mBiADS4ZW13d6IwHXVOi658ZOIfxFDlgrob3ysDBDw9uiB7+loONGD9Bf4BGpSVNQE
-         yEpxqFz3d/12W3odXMImEVCd0/kN3D0zVgrBQhef9fCS48eSPsaUwuvw9rfF4IugQceL
-         dbgyL3NJyBTaRCAh4XiFoIx9FFtdJjVENles50KHpw1u4eXhfPVP+VKzLlzDU9H4GowE
-         vRsL5l2/4uq2H6vXjhGvtRLP9iH3HAVdcbR/E446cN39VfU/8oK9Hi8AUCzheigIkbT/
-         7UYrr0+7cSP09VEE1hwpHB4oDPKMDuMAlGkfcOwBvyuASmJ3w7bPvfWc1k7zP+YlGqSN
-         ieFg==
-X-Gm-Message-State: AOJu0YyohwMbZrDrRZ0AJcmLyHzhpR3I3UJmojFBNNAQjdtWDJY66jfZ
-        Bzzw1zVI1FNJ0Yus//eIY0QZlQ==
-X-Google-Smtp-Source: AGHT+IFUiV8p/ANbFTNC9RIN/3r4iqb4l6G/ZsoMzvfM4AkWJBdPw90kH5yF7d7rR4Roq+3CcYVclg==
-X-Received: by 2002:a17:906:530c:b0:9a5:8155:6de with SMTP id h12-20020a170906530c00b009a5815506demr7288568ejo.45.1693302709860;
-        Tue, 29 Aug 2023 02:51:49 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id d16-20020a1709061f5000b009931a3adf64sm5857775ejk.17.2023.08.29.02.51.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 02:51:49 -0700 (PDT)
-Message-ID: <0cb5fbd9-083f-8db7-e850-fcda9817bd23@linaro.org>
-Date:   Tue, 29 Aug 2023 11:51:47 +0200
+        Tue, 29 Aug 2023 05:54:50 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE00AE9;
+        Tue, 29 Aug 2023 02:54:47 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T95ixH005593;
+        Tue, 29 Aug 2023 09:54:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=lAz09KpZY/lx+wtK8foSJmZPubo+ZJCG4JHpeYIQ8Gs=;
+ b=jXsaiOaKB4MtiC8eKE7GdF5qwzl4Sn0mY6PL6yz4xgh9T2x4PD6JQ/OYxwfObPiIFseX
+ nS2Gg390dYPlj/+eptybrgVAvlCXW6JGaSRQvQlzo2SFK3WK0E5v485ubQTI/km/FrHF
+ G7Uj7s5WeMM3p+hRd81XmTDdu5YPX7UMc4WNmHAXqB1c1NBJMVZWYZM1E9p8VaMgTAex
+ Q3z7w8ytKEpYZn/6EwMNJmIHXHpYreaWqQLuwTt9FbU4C3e0SUShgc5QVqK2sYEa3SEC
+ a0XNl0tHs0+jnkflK3sTMlLLg2cALQFuUuvp3WosxbaXQ18kWoqkMAKZTWWqMjelSNPn lg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sruhntb35-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 09:54:43 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37T9sgoI017788
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 09:54:42 GMT
+Received: from hu-gokulsri-blr.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 29 Aug 2023 02:54:37 -0700
+From:   Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>,
+        <quic_gokulsri@quicinc.com>
+Subject: [PATCH 0/3] Add APSS clock driver support for IPQ5018
+Date:   Tue, 29 Aug 2023 15:24:20 +0530
+Message-ID: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 03/11] thermal: exynos: switch from workqueue-driven
- interrupt handling to threaded interrupts
-Content-Language: en-US
-To:     Mateusz Majewski <m.majewski2@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-References: <20230829091853.626011-1-m.majewski2@samsung.com>
- <CGME20230829092410eucas1p243a88662e8e64f0c406685931d9a80a3@eucas1p2.samsung.com>
- <20230829091853.626011-4-m.majewski2@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230829091853.626011-4-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: z4khfkdYFy8NughIapQVf56rW2_-4GfE
+X-Proofpoint-ORIG-GUID: z4khfkdYFy8NughIapQVf56rW2_-4GfE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_06,2023-08-28_04,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 mlxlogscore=939 suspectscore=0 clxscore=1011 phishscore=0
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290085
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 11:18, Mateusz Majewski wrote:
-> The workqueue boilerplate is mostly one-to-one what the threaded
-> interrupts do.
-> 
-> Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
+This series adds support for the APSS clock to bump the CPU frequency
+above 800MHz. APSS PLL found in the IPQ5018 is of type Stromer. 
 
+- The first patch in the series adds the required a53pll compatible.
 
->  	data->clk = devm_clk_get(&pdev->dev, "tmu_apbif");
->  	if (IS_ERR(data->clk)) {
->  		dev_err(&pdev->dev, "Failed to get clock\n");
-> @@ -1094,8 +1080,10 @@ static int exynos_tmu_probe(struct platform_device *pdev)
->  		goto err_sclk;
->  	}
->  
-> -	ret = devm_request_irq(&pdev->dev, data->irq, exynos_tmu_irq,
-> -		IRQF_TRIGGER_RISING | IRQF_SHARED, dev_name(&pdev->dev), data);
-> +	ret = devm_request_threaded_irq(
-> +		&pdev->dev, data->irq, NULL, exynos_tmu_threaded_irq,
+- The second patch adds Stormer PLL offsets, its configuration values and
+regmap and modify probe to reuse clk_stromer_pll_configure() for Stormer
+which was added for Stormer Plus.
 
-This does not look properly aligned.
+- The third patch adds dts nodes to enable the pll along with the cpu
+operating frequency table.
 
-Best regards,
-Krzysztof
+Gokul Sriram Palanisamy (3):
+  dt-bindings: clock: qcom,a53pll: add IPQ5018 compatible
+  clk: qcom: apss-ipq-pll: add support for IPQ5018
+  arm64: dts: qcom: ipq5018: enable the CPUFreq support
+
+ .../bindings/clock/qcom,a53pll.yaml           |  1 +
+ arch/arm64/boot/dts/qcom/ipq5018.dtsi         | 34 ++++++++++++
+ drivers/clk/qcom/apss-ipq-pll.c               | 52 ++++++++++++++++++-
+ 3 files changed, 86 insertions(+), 1 deletion(-)
+
+-- 
+2.34.1
 
