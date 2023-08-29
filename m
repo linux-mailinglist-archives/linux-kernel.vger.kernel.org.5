@@ -2,176 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD83178BF61
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B2878BF6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 09:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbjH2Hmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 03:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S233728AbjH2HnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 03:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbjH2HmL (ORCPT
+        with ESMTP id S233734AbjH2Hmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 03:42:11 -0400
-Received: from out-245.mta1.migadu.com (out-245.mta1.migadu.com [IPv6:2001:41d0:203:375::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF8F1A1;
-        Tue, 29 Aug 2023 00:42:04 -0700 (PDT)
-Message-ID: <ca10040f-b7fa-7c43-1c89-6706d13b2747@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693294923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kzCYK+m1dXoYq1GdX9wRq/xLcjMjzBwHZbogX1zaiXI=;
-        b=wx9qXfUOb6FlguPiqwy6R82+yQxWta9+fR66YAQ2/1ZdnqJnQPp1kHU4jR8nRlngim3iOe
-        HThmnzNEUSaEuQwHiVi+WxF88JyUG2K+H0WcvTm70cW04LSIUXyP6AZ74VPb7aBxP9rojs
-        L1LrBvpa76A1LVLwfY5LHU6MjnCVZUs=
-Date:   Tue, 29 Aug 2023 15:41:43 +0800
+        Tue, 29 Aug 2023 03:42:33 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96423139
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:42:30 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99cdb0fd093so527454266b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 00:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693294949; x=1693899749;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fZidkGWNPi5BjyVLjLVMFpv4YzU60iSJ/Ecori1AkQ0=;
+        b=i5va1TsUR/sivxWYmTNw0ts25LKsB6R7S9P3dyzzTC+Fh7W68bccjTByx/vLozPCD7
+         It7sG2Ds7/CWT2/M7z8KA6r0Zx5v+Lqj0ks1AHc2YuE2LIFYmOyqdNSFemEYsWB6gd6v
+         dzAoiFpNymOG7WMSmamobMgoHU7JfXgdMmHXuDqKieR1cFTu6Fg4SonCIH6An8oTxsnQ
+         RqIL6KjiHnVgEEK3qiD/20g2v2VcSQkg25MLPb/ioLLr5TcP1rqanOpbrBeaRmA8PbAV
+         IQDFriKYp3OMel93CxJxtaaOwpESEjrNGmC0bs45BksGbVMWvgsiZEWgFeZHhTkn6X8R
+         eIHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693294949; x=1693899749;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fZidkGWNPi5BjyVLjLVMFpv4YzU60iSJ/Ecori1AkQ0=;
+        b=H+XlaxZIEnwiQwlkDfmOm6PdTXnNA3Xjzu7zrRYugh/jk9Ls1muO5fReIi3nxwex+W
+         tgoBsTOzML2P+hxIvts6sjW8rR+aZKGc3tyX7LXkNMmdL5DPv0DEgASdhgM5/8z5zkwF
+         RjyPD36IbYBgVjc71IgYmDPDUuot/CECkle45Fct77kODsSFViikv6ZB5c6JQ74Wr/98
+         LJY3DM8YXHu0NTMkG6JCDzIqy3fA98kbtuhlclteSWG3Rc13M6PaBQwnIbTr5oZwrJ/l
+         fU62mIL3EHMgY8WPlpHbYlG2wt9VbaxG01lwoWW+A7tSrdiEhTbMsETcWtFw4VlDlJ7I
+         630Q==
+X-Gm-Message-State: AOJu0YwN/d+8burIYZeXYj07lReHRlwd2c1NI/k1rO3PlUd2OJ+I7iEG
+        BwJoxljjLs9LyiXBj6Hf2BwuVg==
+X-Google-Smtp-Source: AGHT+IEWQr3QZ34jpK/5hL3ExGpvkPxLMtK2asR6mbFflpZ3LI8Ub6Apso9Cl+apOGcp3MwFMSZd6g==
+X-Received: by 2002:a17:906:2243:b0:9a1:8a39:c62d with SMTP id 3-20020a170906224300b009a18a39c62dmr20024316ejr.38.1693294948996;
+        Tue, 29 Aug 2023 00:42:28 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.196])
+        by smtp.gmail.com with ESMTPSA id s11-20020a170906354b00b00992bea2e9d2sm5615023eja.62.2023.08.29.00.42.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 00:42:28 -0700 (PDT)
+Message-ID: <e2b2f268-182a-5ba4-2541-f0a401eda1c8@linaro.org>
+Date:   Tue, 29 Aug 2023 09:42:27 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH 02/11] xfs: add NOWAIT semantics for readdir
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 11/28] dt-bindings: usb: dwc3: Add
+ snps,num-hc-interrupters definition
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-3-hao.xu@linux.dev>
- <ZOu1xYS6LRmPgEiV@casper.infradead.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Hao Xu <hao.xu@linux.dev>
-In-Reply-To: <ZOu1xYS6LRmPgEiV@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Wesley Cheng <quic_wcheng@quicinc.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     srinivas.kandagatla@linaro.org, mathias.nyman@intel.com,
+        perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com,
+        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
+        Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com,
+        andersson@kernel.org, gregkh@linuxfoundation.org, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, quic_jackp@quicinc.com,
+        quic_plai@quicinc.com
+References: <20230308235751.495-1-quic_wcheng@quicinc.com>
+ <20230308235751.495-12-quic_wcheng@quicinc.com>
+ <20230311134008.GA20831-robh@kernel.org>
+ <f7bd1ae7-fc38-0f29-546b-9ea4a323f42f@quicinc.com>
+ <73655c17-5246-2c96-d415-6a30497966c3@linaro.org>
+ <9d31db9c-4e58-767a-15c5-65f7c04bd989@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <9d31db9c-4e58-767a-15c5-65f7c04bd989@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 04:44, Matthew Wilcox wrote:
-> On Sun, Aug 27, 2023 at 09:28:26PM +0800, Hao Xu wrote:
->> +++ b/fs/xfs/libxfs/xfs_da_btree.c
->> @@ -2643,16 +2643,32 @@ xfs_da_read_buf(
->>   	struct xfs_buf_map	map, *mapp = &map;
->>   	int			nmap = 1;
->>   	int			error;
->> +	int			buf_flags = 0;
->>   
->>   	*bpp = NULL;
->>   	error = xfs_dabuf_map(dp, bno, flags, whichfork, &mapp, &nmap);
->>   	if (error || !nmap)
->>   		goto out_free;
->>   
->> +	/*
->> +	 * NOWAIT semantics mean we don't wait on the buffer lock nor do we
->> +	 * issue IO for this buffer if it is not already in memory. Caller will
->> +	 * retry. This will return -EAGAIN if the buffer is in memory and cannot
->> +	 * be locked, and no buffer and no error if it isn't in memory.  We
->> +	 * translate both of those into a return state of -EAGAIN and *bpp =
->> +	 * NULL.
->> +	 */
+On 29/08/2023 09:19, Wesley Cheng wrote:
+>>>
+>>> This is a XHCI feature, but the DWC3 design is built in a way that DWC3
+>>> host initializes the XHCI device and populates the properties associated
+>>> to XHCI dev.
+>>
+>> You speak about driver now, not bindings. If driver has limitations,
+>> change it. Not really problem of bindings.
+>>
 > 
-> I would not include this comment.
+> Its the limitation of the HW.  Depending on how the SNPS DWC3 controller 
+> was implemented the vendor it can support less than the value mentioned 
+> in the Synopsys databook.
 
-No strong comment here, since this patch is mostly from Dave, it's
-better if Dave can ack this.
+Then what is "XHCI dev"? A Linux device? Then a driver topic. What is
+"populates the properties" - what or whose properties? Of Linux device?
+Then a driver topic...
 
-> 
->> +	if (flags & XFS_DABUF_NOWAIT)
->> +		buf_flags |= XBF_TRYLOCK | XBF_INCORE;
->>   	error = xfs_trans_read_buf_map(mp, tp, mp->m_ddev_targp, mapp, nmap, 0,
->>   			&bp, ops);
-> 
-> what tsting did you do with this?  Because you don't actually _use_
-> buf_flags anywhere in this patch (presumably they should be the
-> sixth argument to xfs_trans_read_buf_map() instead of 0).  So I can only
-> conclude that either you didn't test, or your testing was inadequate.
-> 
-
-
-The tests I've done are listed in the cover-letter, this one is missed, 
-the tricky place is it's hard to get this kind of mistake since it runs
-well without nowait logic...I'll fix it in next version.
-
->>   	if (error)
->>   		goto out_free;
->> +	if (!bp) {
->> +		ASSERT(flags & XFS_DABUF_NOWAIT);
-> 
-> I don't think this ASSERT is appropriate.
-> 
->> @@ -391,10 +401,17 @@ xfs_dir2_leaf_getdents(
->>   				bp = NULL;
->>   			}
->>   
->> -			if (*lock_mode == 0)
->> -				*lock_mode = xfs_ilock_data_map_shared(dp);
->> +			if (*lock_mode == 0) {
->> +				*lock_mode =
->> +					xfs_ilock_data_map_shared_generic(dp,
->> +					ctx->flags & DIR_CONTEXT_F_NOWAIT);
->> +				if (!*lock_mode) {
->> +					error = -EAGAIN;
->> +					break;
->> +				}
->> +			}
-> 
-> 'generic' doesn't seem like a great suffix to mean 'takes nowait flag'.
-> And this is far too far indented.
-> 
-> 			xfs_dir2_lock(dp, ctx, lock_mode);
-> 
-> with:
-> 
-> STATIC void xfs_dir2_lock(struct xfs_inode *dp, struct dir_context *ctx,
-> 		unsigned int lock_mode)
-> {
-> 	if (*lock_mode)
-> 		return;
-> 	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
-> 		return xfs_ilock_data_map_shared_nowait(dp);
-> 	return xfs_ilock_data_map_shared(dp);
-> }
-> 
-> ... which I think you can use elsewhere in this patch (reformat it to
-> XFS coding style, of course).  And then you don't need
-> xfs_ilock_data_map_shared_generic().
-> 
-
-How about rename xfs_ilock_data_map_shared() to 
-xfs_ilock_data_map_block() and rename 
-xfs_ilock_data_map_shared_generic() to xfs_ilock_data_map_shared()?
-
-STATIC void xfs_ilock_data_map_shared(struct xfs_inode *dp, struct 
-dir_context *ctx, unsigned int lock_mode)
-{
-  	if (*lock_mode)
-  		return;
-  	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
-  		return xfs_ilock_data_map_shared_nowait(dp);
-  	return xfs_ilock_data_map_shared_block(dp);
-}
-
+Best regards,
+Krzysztof
 
