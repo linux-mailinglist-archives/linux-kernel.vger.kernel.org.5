@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEB578CD85
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA0E78CD87
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240512AbjH2UVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S238697AbjH2UXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240596AbjH2UVe (ORCPT
+        with ESMTP id S240525AbjH2UX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:21:34 -0400
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C08E53;
-        Tue, 29 Aug 2023 13:21:18 -0700 (PDT)
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1bc0d39b52cso29744185ad.2;
-        Tue, 29 Aug 2023 13:21:18 -0700 (PDT)
+        Tue, 29 Aug 2023 16:23:26 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA851BB;
+        Tue, 29 Aug 2023 13:23:24 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bf5c314a57so29920415ad.1;
+        Tue, 29 Aug 2023 13:23:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693340603; x=1693945403; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9JouhxBa4CgjE8m+MiUTn5+R6KTenHsJATYLj7J/g98=;
+        b=p7cqeDeEpXJzKclLZTUBGvcvILKHLgD3bnXHNPYnUgRXiIuvrHA4sAgz657108upRM
+         onZC4F84ndotxqIhR5m+V3hda49wJXxlbrizMt/LJn5j1vMqyB14MG1sz23KArxolU/j
+         2MzJmXBC8iKMfrymzZjT/vkQ2iURuRIBpDk1C6xL27MLynv2M5yNO6LgpVoCUzdw8oEe
+         VH6XvmqNWgCqWPCjmyAV2GfNHS9bfTeG8iz5VaXnb4/vk+pduxn0Ns/t0z0mgmmsmdGu
+         uh18PizVAclnS176HzqJsKfPTGi/tPiNY6Y69EHuiF7edwyEKO9NVSFomyE+lA2b43vB
+         CSqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693340478; x=1693945278;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1693340603; x=1693945403;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c81JXAzq4l8CXFEMkDocGz6SNd5sCagmd6kIcbpsZa0=;
-        b=d0JNLbkyUS4n8JVEdncH6VQY+rGvNKALqqzLP71dHo8fRGeHSOP3suoNVW6rNsGi2n
-         NVU+7tDFBCDxeN/zFOHxSW9V/AuYwiOodGEAi71okYUahXtfQWk/176DtYc+xHWFO70s
-         64sWT3pacX+hXmDhy+8mMdoHXyBM+uTXIXC44Bo2BWp/0jKHAfyjGiRU1nSwkpSizcDJ
-         tUU5gQgzeqdD7B1GwzhuLKNd3vza9a0NU1X/PUyg8KEeuSj8OBq4GB6tSHMTpTOyp3Ln
-         HDOSh5v3RA4vco5pbgmysy6NTmCsEk2a2K1Rq+lT0YvbQ/rbyTjhYFAebV2JEDnvtu17
-         JRzA==
-X-Gm-Message-State: AOJu0YzHaZy6TSOP0xzDKGZZQMkw5WGM1A1PZO6VUumB7zbrsWWwvUJx
-        plppfOSxFSRc7JOs9Dn8j1icH02k49U=
-X-Google-Smtp-Source: AGHT+IHSQEIiOROqY3DtMc9L1nin0cVsDes8mQ1K4srVt4ZVwlZtiXrmbkil9WS49Q2v4umFg9qeQw==
-X-Received: by 2002:a17:902:e887:b0:1bb:b226:52a0 with SMTP id w7-20020a170902e88700b001bbb22652a0mr183342plg.44.1693340477806;
-        Tue, 29 Aug 2023 13:21:17 -0700 (PDT)
-Received: from sultan-box.localdomain ([142.147.89.200])
-        by smtp.gmail.com with ESMTPSA id ji18-20020a170903325200b001b9d8688956sm9799334plb.144.2023.08.29.13.21.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 13:21:17 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 13:21:13 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     "Greenman, Gregory" <gregory.greenman@intel.com>
-Cc:     "kvalo@kernel.org" <kvalo@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "Korenblit, Miriam Rachel" <miriam.rachel.korenblit@intel.com>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] wifi: iwlwifi: mvm: fix power save for MLD
-Message-ID: <ZO5TOS3HxyqN-bNu@sultan-box.localdomain>
-References: <20230822040745.260086-1-sultan@kerneltoast.com>
- <5a5d6502180858f811861384acc49f9174ca8652.camel@intel.com>
+        bh=9JouhxBa4CgjE8m+MiUTn5+R6KTenHsJATYLj7J/g98=;
+        b=cmU8hWMlDp394IYUBbTkXkdOxgSEV95ZYKE7FWFbUsrr7l3cximtNSF2DORE5XMPuj
+         RIWR1auQ6H1lzhMAczwxLxiaD8A70zxY9OTfKxjmXWdUVkJrpEo86er9phachPVoAKA6
+         GGqJvqkfwS0Ve39+azPq+ttWOhu0DjytaKQyGI1hprPlcAhzW8jGq6rJY4tcTZucVBBa
+         ZCzuCHbm6WDWKuDr3uF3OrQtfrZhhBcw9zN1lZRvEoXA46WWJnGaDtQcBwpzF0l0sJoR
+         wmatelaQRxOek+HLgJuPRlPhWTNsbivFXUmjhTEHv3ISkuieJONlCVj3cWJlQe1xJaHv
+         p7Wg==
+X-Gm-Message-State: AOJu0Yyt3rkY9rd5X885Au5cWxYYhywabrCqHIn4eaL74LYH3CRdNugb
+        /1XDjTD9EsfS9WE903n3rOA=
+X-Google-Smtp-Source: AGHT+IH/ZV7YXX4NiEwT0xnxwNSN6YFUbRam+I4C1qDFpuGDwrSQrE7rRyGcyXBU50rSToFzJRlY8Q==
+X-Received: by 2002:a17:902:6507:b0:1b8:c1f:fd2c with SMTP id b7-20020a170902650700b001b80c1ffd2cmr195154plk.33.1693340603373;
+        Tue, 29 Aug 2023 13:23:23 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id v11-20020a170902d68b00b001bdc2d10753sm9707929ply.215.2023.08.29.13.23.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 13:23:22 -0700 (PDT)
+Message-ID: <3d3f693c-c6b2-9bfe-6293-2ef623d7e7dd@gmail.com>
+Date:   Tue, 29 Aug 2023 13:23:03 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5a5d6502180858f811861384acc49f9174ca8652.camel@intel.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 6.4 000/129] 6.4.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230828101157.383363777@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20230828101157.383363777@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 04:25:45PM +0000, Greenman, Gregory wrote:
-> Hi,
+On 8/28/23 03:11, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.13 release.
+> There are 129 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On Mon, 2023-08-21 at 21:07 -0700, Sultan Alsawaf wrote:
-> > From: Sultan Alsawaf <sultan@kerneltoast.com>
-> > 
-> > The conversion from bss_info_changed() to vif_cfg/link_info_changed()
-> > removed a call to iwl_mvm_bss_info_changed_station_common() from what
-> > became the vif_cfg_changed() path. As a result, BSS_CHANGED_PS and other
-> > power save changes sent via ieee80211_vif_cfg_change_notify() are ignored
-> > for MLD, which breaks power save entirely. This has a noticeable impact on
-> > power consumption, causing idle package power to hover at 10 W on my
-> > i9-13980HX laptop with an AX210 while connected to WiFi.
-> > 
-> > Add the missing iwl_mvm_bss_info_changed_station_common() call to the
-> > vif_cfg_changed() path to fix power save for MLD. This brings idle package
-> > power down to 1 W on my laptop, a 9 W improvement.
-> > 
-> > Fixes: 22c588343529 ("wifi: iwlwifi: mvm: replace bss_info_changed() with vif_cfg/link_info_changed()")
-> > Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
-> > ---
-> >  drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c
-> > index 8b6c641772ee..6abc05976870 100644
-> > --- a/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c
-> > +++ b/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac80211.c
-> > @@ -731,6 +731,8 @@ static void iwl_mvm_mld_vif_cfg_changed_station(struct iwl_mvm *mvm,
-> >  
-> >         mvmvif->associated = vif->cfg.assoc;
-> >  
-> > +       iwl_mvm_bss_info_changed_station_common(mvm, vif, &vif->bss_conf,
-> > +                                               changes);
-> >         if (!(changes & BSS_CHANGED_ASSOC))
-> >                 return;
-> >  
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
 > 
-> I agree that it looks like the call to iwl_mvm_bss_info_changed_station_common() is missing here, but
-> I think if is is added here then the call to iwl_mvm_power_update_mac() at the end of this function
-> is not needed anymore?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-That call to iwl_mvm_power_update_mac() only exists in the backport driver [1]
-at the moment, hence why power save is currently broken in the upstream driver.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-I wasn't aware that the backport driver had that change until after I sent this,
-FWIW. :)
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-I agree that the iwl_mvm_power_update_mac() call in the backport driver would be
-redundant with this patch.
-
-How would you like to go about this? Shall I send a v2 reformatted for the
-backport driver, with an updated commit message since power save isn't broken in
-the backport driver?
-
-Or could this be staged upstream with [1] subsequently getting dropped from the
-backport driver?
-
-Thanks,
-Sultan
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/backport-iwlwifi.git/commit/?id=c3201e3d7d88bdfa0f0a94e4141c626c35724655
