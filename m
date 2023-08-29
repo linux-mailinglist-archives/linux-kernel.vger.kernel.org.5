@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E11478BEDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B7678BEDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 08:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbjH2G4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 02:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        id S232295AbjH2G4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 02:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbjH2Gzr (ORCPT
+        with ESMTP id S232229AbjH2Gzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 02:55:47 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2E919A;
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E836C0;
         Mon, 28 Aug 2023 23:55:45 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a3e943762so3483699b3a.1;
-        Mon, 28 Aug 2023 23:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693292145; x=1693896945;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W02y8XrQjvud6v+7f98ge7q339v9OrPI2ILVKTk592Y=;
-        b=IHkqfVJfJLlaQoxskXqSr/rqoqlDNql8XjHY9A1oVae1zGvS/Uf/AzjJLDlJ++Q8aI
-         wsbXPeBmrRdUK6WomZZlVZ0Z2AFi9vysNpWKn2E0j1EGQg07K8pVr4xY2a37qoXNfa3Y
-         HhsQOz+/z5LOxjvbPsIQBDn9dyYvYP15Jrvp1Rv1RHQRY5oaMcsHtelxuKRvm5hFf0kA
-         vtFdxZGvHZQfnpKvuVkCiujMjVCRmd47EF0eu1JRNyiUrzXgTlhwKHzvUygbiF50hzUB
-         ncpAFNR/7T4EI9kLCTepPgEsT+ywCVJJN+QwLntL78xu0y9a6G8UCs6iXs3cTNCFOlQw
-         /2Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693292145; x=1693896945;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W02y8XrQjvud6v+7f98ge7q339v9OrPI2ILVKTk592Y=;
-        b=T0au69/krTc/BvwerBHfqfUwaRyqJXyx7ya1NVeSx4Cx7IUkGhyz/k/DD3LhYB43Do
-         pDg/DDxjOVs57a+gpBrbCZXHkFQUkomuvFwZQXU9+QM83ZD44hpw57xZvHzwQMnZGIeZ
-         JitrcvBnVpJxzKPxt+PEJB0oSrrg34PqPDou95NzZc3SY8f60DN7CY55pFjYTDcYpugG
-         sQ2LjCV3ge/nG/A1FdAe/6oxOUdnv0flT5PILEIcNK15cTUTUdIHYCRpZ4+dAPSrHljY
-         ekfWrkV9aS0DCipjW1Z+GvyBJ47OiG5FFjLlk592/nkCTzKHAIniYFe+mnwt68RusC38
-         c9AA==
-X-Gm-Message-State: AOJu0YxjA0ol9nP54BlB0ySx03B7mG4Txa4C/T9p0i8MXOfrJaiOh7Tj
-        YUCy2t+U99/JDWd8kw691wE=
-X-Google-Smtp-Source: AGHT+IHhVFS2lN873oXS3uZc7sQfu2xRTJ57A+h82Za47fLq1tvzxyYGfydXjEiKYXG8xBlYOThbWQ==
-X-Received: by 2002:a05:6a20:7d9d:b0:14d:446f:7212 with SMTP id v29-20020a056a207d9d00b0014d446f7212mr8344211pzj.46.1693292144930;
-        Mon, 28 Aug 2023 23:55:44 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id j10-20020a170902690a00b001bdc66478c1sm8573405plk.309.2023.08.28.23.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 23:55:44 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 6014DA34B070; Tue, 29 Aug 2023 13:55:40 +0700 (WIB)
-Date:   Tue, 29 Aug 2023 13:55:40 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/122] 6.1.50-rc1 review
-Message-ID: <ZO2WbJVZarbwh3Z6@debian.me>
-References: <20230828101156.480754469@linuxfoundation.org>
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+        by mx0.infotecs.ru (Postfix) with ESMTP id 51988118470C;
+        Tue, 29 Aug 2023 09:55:43 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 51988118470C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+        t=1693292143; bh=3GHip7pyh6lVE2PBTfA91VbIjKp7JJeCoSn6Api8aHQ=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=Xd4PNjR9pn/3i/OLno1FYVU0+afG+/tcmsksX+0oIJHV8YVJlO2a1VGnK/P/ephUC
+         Ozt9zDXPXSxzPMarwqCHBxfsh2LhqvlgBjO0j/H+Xz2+PJKxmCtd5QQLt7o4MP/K0Y
+         mBqntMR+qJr7oyAbLRdqQh37ZVJ82AKWP8ZdQirs=
+Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
+        by mx0.infotecs-nt (Postfix) with ESMTP id 4FEE23156D42;
+        Tue, 29 Aug 2023 09:55:43 +0300 (MSK)
+From:   Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+To:     David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: Re: [PATCH net] ipv6: mcast: Remove redundant comparison in
+ igmp6_mcf_get_next()
+Thread-Topic: [PATCH net] ipv6: mcast: Remove redundant comparison in
+ igmp6_mcf_get_next()
+Thread-Index: AQHZ2kXU4vAKsCm3YECOhAX7UD97hA==
+Date:   Tue, 29 Aug 2023 06:55:42 +0000
+Message-ID: <1b0dc662-7d77-81a6-73cc-4f3f9c6cc915@infotecs.ru>
+References: <20230828111604.583371-1-Ilia.Gavrilov@infotecs.ru>
+ <cdc2183a-c79a-b4bd-2726-bd3a2d6d5440@kernel.org>
+In-Reply-To: <cdc2183a-c79a-b4bd-2726-bd3a2d6d5440@kernel.org>
+Accept-Language: ru-RU, en-US
+Content-Language: ru-RU
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.17.0.10]
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DFC196D5C9EBDC4089E1A1F1BB5C9665@infotecs.ru>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="e0XUHzXKRuzzbCUq"
-Content-Disposition: inline
-In-Reply-To: <20230828101156.480754469@linuxfoundation.org>
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2023/08/29 05:18:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/08/29 04:09:00 #21767055
+X-KLMS-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---e0XUHzXKRuzzbCUq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 28, 2023 at 12:11:55PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.50 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
-
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---e0XUHzXKRuzzbCUq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZO2WZQAKCRD2uYlJVVFO
-o9VuAQDy/APECAEj6LrID38hG+oYJy5QaBej7ftvualVeX4uPwD9HgWc/HpsnoMI
-pBYbxODVZsaN9DU+RSFVGPHhjP8eeAY=
-=KOyC
------END PGP SIGNATURE-----
-
---e0XUHzXKRuzzbCUq--
+T24gOC8yOS8yMyAwNTo0NCwgRGF2aWQgQWhlcm4gd3JvdGU6DQo+IE9uIDgvMjgvMjMgNToxOCBB
+TSwgR2F2cmlsb3YgSWxpYSB3cm90ZToNCj4+IFRoZSAnc3RhdGUtPmltJyB2YWx1ZSB3aWxsIGFs
+d2F5cyBiZSBub24temVybyBhZnRlcg0KPj4gdGhlICd3aGlsZScgc3RhdGVtZW50LCBzbyB0aGUg
+Y2hlY2sgY2FuIGJlIHJlbW92ZWQuDQo+Pg0KPj4gRm91bmQgYnkgSW5mb1RlQ1Mgb24gYmVoYWxm
+IG9mIExpbnV4IFZlcmlmaWNhdGlvbiBDZW50ZXINCj4+IChsaW51eHRlc3Rpbmcub3JnKSB3aXRo
+IFNWQUNFLg0KPj4NCj4+IEZpeGVzOiAxZGExNzdlNGMzZjQgKCJMaW51eC0yLjYuMTItcmMyIikN
+Cj4+IFNpZ25lZC1vZmYtYnk6IEdhdnJpbG92IElsaWEgPElsaWEuR2F2cmlsb3ZAaW5mb3RlY3Mu
+cnU+DQo+PiAtLS0NCj4+ICAgbmV0L2lwdjYvbWNhc3QuYyB8IDIgLS0NCj4+ICAgMSBmaWxlIGNo
+YW5nZWQsIDIgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL25ldC9pcHY2L21jYXN0
+LmMgYi9uZXQvaXB2Ni9tY2FzdC5jDQo+PiBpbmRleCA3MTRjZGM5ZTJiOGUuLjk2OTYzNDNkMGFh
+OSAxMDA2NDQNCj4+IC0tLSBhL25ldC9pcHY2L21jYXN0LmMNCj4+ICsrKyBiL25ldC9pcHY2L21j
+YXN0LmMNCj4+IEBAIC0zMDEzLDggKzMwMTMsNiBAQCBzdGF0aWMgc3RydWN0IGlwNl9zZl9saXN0
+ICppZ21wNl9tY2ZfZ2V0X25leHQoc3RydWN0IHNlcV9maWxlICpzZXEsIHN0cnVjdCBpcDZfcw0K
+Pj4gICAJCQkJY29udGludWU7DQo+PiAgIAkJCXN0YXRlLT5pbSA9IHJjdV9kZXJlZmVyZW5jZShz
+dGF0ZS0+aWRldi0+bWNfbGlzdCk7DQo+PiAgIAkJfQ0KPj4gLQkJaWYgKCFzdGF0ZS0+aW0pDQo+
+PiAtCQkJYnJlYWs7DQo+PiAgIAkJcHNmID0gcmN1X2RlcmVmZXJlbmNlKHN0YXRlLT5pbS0+bWNh
+X3NvdXJjZXMpOw0KPj4gICAJfQ0KPj4gICBvdXQ6DQo+IA0KPiBhZ3JlZSB0aGUgY2hlY2sgaXMg
+bm90IG5lZWRlZCwgYnV0IEkgYWxzbyBiZWxpZXZlIGl0IGRvZXMgbm90IG5lZWQgdG8gYmUNCj4g
+YmFja3BvcnRlZC4gU2luY2UgbmV0LW5leHQgaXMgY2xvc2VkLCByZXN1Ym1pdCBhZnRlciA5LzEx
+Lg0KPiANCj4gLS0NCj4gcHctYm90OiBkZWZlcg0KDQpJJ2xsIHJlc2VuZCBpdCBhZnRlciA5LzEx
+Lg0KVGhhbmsgeW91IGZvciB0aGUgcmV2aWV3IQ0K
