@@ -2,105 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8FD78C792
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B15D78C7B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236898AbjH2Obp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S236935AbjH2OgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236867AbjH2Obe (ORCPT
+        with ESMTP id S234589AbjH2Ofd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:31:34 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7556CEC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:31:30 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34bbc394fa0so3494215ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:31:30 -0700 (PDT)
+        Tue, 29 Aug 2023 10:35:33 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A977798
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:35:29 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-564af0ac494so2192592a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:35:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1693319489; x=1693924289;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2Wv1qx1QuMk9lQBurvufJPtkuCt8LqeR1hukSIeupGQ=;
-        b=ASLN4rNXK+TbXbhxgCc0jywxJ6k3fCVXyB/c2YGU+Wviy+PveGSKFK94/MAYQHpVWk
-         x5YULkf9ru2Lok44CYdHr9UOcFDqfugiPZQ5vJtkChlSyMn3vKNZtCDhG+YDAS584u3h
-         JcilNlI1kMp1KNc5DDbJ0jwgiA6mcSHlD5VOM=
+        d=linaro.org; s=google; t=1693319729; x=1693924529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=C8A+TZcdpH/rDhEh19aLmzCkwCiivExgomPzw9XBkLE=;
+        b=nGRBNwYbFByFviDSecfw0kZfkA38xibyaMxS1JR+QYceglp1t+0ecdlQBAPWKjEbOK
+         YTsdq66ZRsNhFR4krlUcrpUexmbINn55ds/dysWUP41kCpSmqSpIxz3dEoXDQuF10zqR
+         4sjsQuwUK+WQ1/ZXFnTkX8W5za+vCyuTLaikmGAI9pGGL92a7crJxn3Rl/4x7EeHipas
+         myv92H8XYenJXU0aaxqIRbamn89qi8Nuepqd+y6l0h/KXSNtflQC1fD8xOIz0n4hkPSl
+         srRDoMe1oky9y8rzS9hhvIYLBxFK0CK3c5g+wnmp3HT5ecEpHJsPqgz4DpY7ZMUqYv/0
+         cAyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693319489; x=1693924289;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Wv1qx1QuMk9lQBurvufJPtkuCt8LqeR1hukSIeupGQ=;
-        b=e22jw0zpHsZqWPnIuVBLO09I+QYtnqP3yZPOicqY8E+TYSp0RCWL+IiuFwSTo6tP3o
-         K79D/lpTV+pvWUPTsJa/jcqbg9lnWK+5Zh39uQv0DIo3as0q8Qr6ieaoW4Fge4K3GSL7
-         5o/qEKHugRZhNc0+xE3wwsKtf2TBlyoMt3Z5a541u5hW1GAvuH7R+Mz6sL6EuY5YmL7d
-         +TN2sqPfWovhnQ5cRRt0qv7LjvSg9BKC+GRNwa6TE0huigAAfbwHRaIkQGFmNfY95MwB
-         kimJ064gv5myU9dt/WU5epu8tWQdyvBd0DHwpUiTuBbxMv4A4ceOL49CKVogur28ptUx
-         r8uA==
-X-Gm-Message-State: AOJu0YyUSZI8RirDAsUgRDw9XxXllRTHO10Y+W/pubNHyVg8T83Fc37O
-        bFZGtGrKUSHsTfL47KMtKtBU3CezCt7D2B6vVn0=
-X-Google-Smtp-Source: AGHT+IGHEHRGN+SqlSx9SNUOkFSh/Dg8cYNqtY/QuM59ulqH706FbLV81tOCJyH4RuaAanofng3v9w==
-X-Received: by 2002:a92:da88:0:b0:349:4e1f:e9a0 with SMTP id u8-20020a92da88000000b003494e1fe9a0mr29377757iln.2.1693319489497;
-        Tue, 29 Aug 2023 07:31:29 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id gm10-20020a0566382b8a00b0042b70c5d242sm3056685jab.116.2023.08.29.07.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 07:31:28 -0700 (PDT)
-Message-ID: <1acdd9ad-2ccf-b576-9ca3-59fcae203c5e@linuxfoundation.org>
-Date:   Tue, 29 Aug 2023 08:31:27 -0600
+        d=1e100.net; s=20221208; t=1693319729; x=1693924529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C8A+TZcdpH/rDhEh19aLmzCkwCiivExgomPzw9XBkLE=;
+        b=CnqAnu5PSLAPfVfdVtHOz06U+YLDY45K3n9En9N6z64Sx68xTOI8ucxVupiV/MVuqo
+         WXfnKHHKbbZZ/nVKbQOrCqw+XK9FWjJIe1k9almIkIACJyT9PO0vosVfrntyO3fXKySe
+         xLdp97UfDm4alEPtSl4r6yCWiGSNF5ikNzRgR5W5Nm6828ZL3hMndBq8jtGVzfLsZl88
+         FYVQEGuKLIAVhjZvASO+lkVqacv968gLiFhij1ctKX2BhjyvrY3ZEpv+I2ztUfa6Sty2
+         8Z3ZOwHE1biGjcsdrgUHqGt8kVU44Td/JcQAiYNoXQwO3yU4hUJFTmj46AynbggkhskH
+         59PQ==
+X-Gm-Message-State: AOJu0YwATSQIptJBCnCvxtIFjuZNoWjFII8XNqVwkTEpR/mDq+Przn3k
+        tri5qkFASfTr0PcI0Lrf7VlstUi1qeSiDiLP6k0WCw==
+X-Google-Smtp-Source: AGHT+IGql+8pGXmEXmxQKl+OTJ978JcG2Q+mwmJl0VS48/fUJTTkld59V7EeiLdAgAYG5l0RiRo4oyJqepQb4msqrv4=
+X-Received: by 2002:a17:90b:e84:b0:269:1abd:3ba6 with SMTP id
+ fv4-20020a17090b0e8400b002691abd3ba6mr23446008pjb.28.1693319728803; Tue, 29
+ Aug 2023 07:35:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4.19 000/129] 4.19.293-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230828101153.030066927@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230828101153.030066927@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230820210640.585311-1-qyousef@layalina.io> <20230820210640.585311-3-qyousef@layalina.io>
+In-Reply-To: <20230820210640.585311-3-qyousef@layalina.io>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 29 Aug 2023 16:35:17 +0200
+Message-ID: <CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com>
+Subject: Re: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping
+ uclamp constraints
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 04:11, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.293 release.
-> There are 129 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.293-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Sun, 20 Aug 2023 at 23:08, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> DVFS headroom is applied after we calculate the effective_cpu_util()
+> which is where we honour uclamp constraints. It makes more sense to
+> apply the headroom there once and let all users naturally get the right
+> thing without having to sprinkle the call around in various places.
 
-Compiled and booted on my test system. No dmesg regressions.
+You have to take care of not mixing scheduler and cpufreq constraint and policy.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+uclamp is a scheduler feature to highlight that the utilization
+requirement of a task can't go above a level.
 
-thanks,
--- Shuah
+dvfs head room is a cpufreq decision to anticipate either hw
+limitation and responsiveness problem or performance hints.
+
+they come from different sources and rational and this patch mixed
+them which i'm not sure is a correct thing to do
+
+>
+> Before this fix running
+>
+>         uclampset -M 800 cat /dev/zero > /dev/null
+>
+> Will cause the test system to run at max freq of 2.8GHz. After the fix
+> it runs at 2.2GHz instead which is the correct value that matches the
+> capacity of 800.
+
+So a task with an utilization of 800 will run at higher freq than a
+task clamped to 800 by uclamp ? Why should they run at different freq
+for the same utilization ?
+
+>
+> Note that similar problem exist for uclamp_min. If util was 50, and
+> uclamp_min is 100. Since we apply_dvfs_headroom() after apply uclamp
+> constraints, we'll end up with util of 125 instead of 100. IOW, we get
+> boosted twice, first time by uclamp_min, and second time by dvfs
+> headroom.
+>
+> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> ---
+>  include/linux/energy_model.h     |  1 -
+>  kernel/sched/core.c              | 11 ++++++++---
+>  kernel/sched/cpufreq_schedutil.c |  5 ++---
+>  3 files changed, 10 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index 6ebde4e69e98..adec808b371a 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -243,7 +243,6 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>         scale_cpu = arch_scale_cpu_capacity(cpu);
+>         ps = &pd->table[pd->nr_perf_states - 1];
+>
+> -       max_util = apply_dvfs_headroom(max_util);
+>         max_util = min(max_util, allowed_cpu_cap);
+>         freq = map_util_freq(max_util, ps->frequency, scale_cpu);
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index efe3848978a0..441d433c83cd 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7439,8 +7439,10 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+>          * frequency will be gracefully reduced with the utilization decay.
+>          */
+>         util = util_cfs + cpu_util_rt(rq);
+> -       if (type == FREQUENCY_UTIL)
+> +       if (type == FREQUENCY_UTIL) {
+> +               util = apply_dvfs_headroom(util);
+
+This is not the same as before because utilization has not being
+scaled by irq steal time yet
+
+>                 util = uclamp_rq_util_with(rq, util, p);
+> +       }
+>
+>         dl_util = cpu_util_dl(rq);
+>
+> @@ -7471,9 +7473,12 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+>          *              max - irq
+>          *   U' = irq + --------- * U
+>          *                 max
+> +        *
+> +        * We only need to apply dvfs headroom to irq part since the util part
+> +        * already had it applied.
+>          */
+>         util = scale_irq_capacity(util, irq, max);
+> -       util += irq;
+> +       util += type ==  FREQUENCY_UTIL ? apply_dvfs_headroom(irq) : irq;
+>
+>         /*
+>          * Bandwidth required by DEADLINE must always be granted while, for
+> @@ -7486,7 +7491,7 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+>          * an interface. So, we only do the latter for now.
+>          */
+>         if (type == FREQUENCY_UTIL)
+> -               util += cpu_bw_dl(rq);
+> +               util += apply_dvfs_headroom(cpu_bw_dl(rq));
+
+If we follow your reasoning with uclamp on the dl bandwidth, should we
+not skip this as well ?
+
+>
+>         return min(max, util);
+>  }
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 916c4d3d6192..0c7565ac31fb 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -143,7 +143,6 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+>         unsigned int freq = arch_scale_freq_invariant() ?
+>                                 policy->cpuinfo.max_freq : policy->cur;
+>
+> -       util = apply_dvfs_headroom(util);
+>         freq = map_util_freq(util, freq, max);
+>
+>         if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> @@ -406,8 +405,8 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
+>             sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
+>                 sg_cpu->util = prev_util;
+>
+> -       cpufreq_driver_adjust_perf(sg_cpu->cpu, apply_dvfs_headroom(sg_cpu->bw_dl),
+> -                                  apply_dvfs_headroom(sg_cpu->util), max_cap);
+> +       cpufreq_driver_adjust_perf(sg_cpu->cpu, sg_cpu->bw_dl,
+> +                                  sg_cpu->util, max_cap);
+>
+>         sg_cpu->sg_policy->last_freq_update_time = time;
+>  }
+> --
+> 2.34.1
+>
