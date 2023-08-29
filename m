@@ -2,104 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E6578C194
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3AE78C196
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbjH2JeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
+        id S232732AbjH2JfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjH2Jdo (ORCPT
+        with ESMTP id S234975AbjH2JfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:33:44 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F937CC5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:33:38 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401b3ea0656so37591345e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693301617; x=1693906417;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:reply-to:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LmXmTeZOGSI3b5lA5oPEysnY4x8I3eOzPsGVTbbhx+k=;
-        b=ew/e3E1nAbXC6pxsHVO/PfkUXwe88ot+GAtFeOUlwFHFBDYDQdeqebXeObxxxVuiJh
-         NuvJSiLDwbieixJkaWEKjahxwIbscBkmp3QojYMwlKPQOA0xyzCh3eoyZ5a6bst09NQS
-         YFt2EwVr4WtYcrINE1XkzijK11x/JDRs5J0o7prfmhJZ9ZPw19DwzAGZ9fsllr3049jc
-         gFG86GYBASdNyfrlbXomTZjc1uXsMxYstTvTtlu6Ux+LKax/ZVcIOfBE1+gjowm8LwYa
-         mGnJ3MvQu/JrYqqJXDECQH609bviaO28wrZ5SeezRSrbWlH690OifUTQMMTSeCF6KyR0
-         DfBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693301617; x=1693906417;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:reply-to:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LmXmTeZOGSI3b5lA5oPEysnY4x8I3eOzPsGVTbbhx+k=;
-        b=E7aGtvr5yNYolM2Px1lNYUfMOgTJuVum37jxEMyPyxLIBWUeMvXjyTPKaWo5U7vy9m
-         K0RcrpoR1/J3czPktk/yFmBVG6yw7Cu3f8uz2jQ2yzw7LIYiCuXic2ypQOoLDdm11aAz
-         K/d54kXlkGWzgYkYg1cAPejiVXAAmSsKP9Gw2Ts+Hv1HtpH6/tEK2nt9kIkcNx5hKTtz
-         7ZtMEW3v6i2hDmlxaW6QZ48DAnRVJPo3fTF4RDt0g5vNiNJGYucDl6BKy1bidPufgqcw
-         ITLX1YjPfXJoEhOaU8CHcIdZTNboqMpH5c+1VMzqFH8LWCYfZk8vtwYWPb3H07v6Wj0s
-         xoLg==
-X-Gm-Message-State: AOJu0YxsJVNeR2ABa8s4zovU/LO/w408XHDo14N6QFW1gImTz0xtYslK
-        4LoLu5Bb/7fPpSEbSCRyZZdOmPS5odux5Pji3hTnxGtr
-X-Google-Smtp-Source: AGHT+IEjklv9yGkm+ZkRAY9Czgg5ihM5Zol4gXQcQJLXuPh1jWTr21hSInQPihNYZxA7H2l0CP+AXg==
-X-Received: by 2002:a7b:cd98:0:b0:401:6800:703c with SMTP id y24-20020a7bcd98000000b004016800703cmr10787045wmj.21.1693301616898;
-        Tue, 29 Aug 2023 02:33:36 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:c8fd:3f8e:51f:e4f9? ([2a01:e0a:982:cbb0:c8fd:3f8e:51f:e4f9])
-        by smtp.gmail.com with ESMTPSA id b7-20020a05600c11c700b003fbb25da65bsm13394169wmi.30.2023.08.29.02.33.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 02:33:36 -0700 (PDT)
-Message-ID: <88747080-238d-4498-8ad2-370091e1f681@linaro.org>
-Date:   Tue, 29 Aug 2023 11:33:35 +0200
+        Tue, 29 Aug 2023 05:35:07 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24B3A1;
+        Tue, 29 Aug 2023 02:35:02 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RZj0L3Vh3zrSPF;
+        Tue, 29 Aug 2023 17:33:22 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 29 Aug 2023 17:34:59 +0800
+Subject: Re: [PATCH v7 0/6] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+To:     Ravi Bangoria <ravi.bangoria@amd.com>, <acme@kernel.org>,
+        <irogers@google.com>, <jolsa@kernel.org>, <namhyung@kernel.org>,
+        <adrian.hunter@intel.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <kan.liang@linux.intel.com>,
+        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
+        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+References: <20230826032608.107261-1-yangjihong1@huawei.com>
+ <bcfabb85-4dc1-e642-4a82-f3b8cc009b0b@amd.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <93abb0e0-1691-a887-f7b2-7591f83a8618@huawei.com>
+Date:   Tue, 29 Aug 2023 17:34:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sm8150: extend the size of the
- PDC resource
-Content-Language: en-US, fr
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230829092119.1017194-1-dmitry.baryshkov@linaro.org>
- <20230829092119.1017194-3-dmitry.baryshkov@linaro.org>
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20230829092119.1017194-3-dmitry.baryshkov@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <bcfabb85-4dc1-e642-4a82-f3b8cc009b0b@amd.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,29 +57,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 11:21, Dmitry Baryshkov wrote:
-> Follow the example of other platforms and extend the PDC resource region
-> to 0x30000, so that the PDC driver can read the PDC_VERSION register.
-> 
-> Fixes: 397ad94668c1 ("arm64: dts: qcom: sm8150: Add pdc interrupt controller node")
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->   arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> index 380712aee977..38c5d6dbd0d7 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> @@ -3923,7 +3923,7 @@ dispcc: clock-controller@af00000 {
->   
->   		pdc: interrupt-controller@b220000 {
->   			compatible = "qcom,sm8150-pdc", "qcom,pdc";
-> -			reg = <0 0x0b220000 0 0x400>;
-> +			reg = <0 0x0b220000 0 0x30000>;
->   			qcom,pdc-ranges = <0 480 94>, <94 609 31>,
->   					  <125 63 1>;
->   			#interrupt-cells = <2>;
+Hello,
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+On 2023/8/29 13:37, Ravi Bangoria wrote:
+> On 26-Aug-23 8:56 AM, Yang Jihong wrote:
+>> User space tasks can migrate between CPUs, track sideband events for all
+>> CPUs.
+> 
+> I've tested this series with simple test program and it mostly works fine.
+> 
+> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> 
+Thanks for the test.
+
+> Since we are recording sideband data on all cpus, perf will endup recording
+> lots of unnecessary data, esp. on large systems. E.g. on a 128 cpu system:
+> 
+> Without patch:
+>    $ sudo ./perf record -C 10 -o perf.data.without -- sleep 10
+>    $ du -d1 -ha ./perf.data.without
+>    3.0M    ./perf.data.without
+> 
+>    $ sudo ./perf report --stats -i perf.data.without
+>    Aggregated stats:
+>               TOTAL events:      47011
+>                MMAP events:         51  ( 0.1%)
+>                COMM events:       1549  ( 3.3%)
+>                EXIT events:        105  ( 0.2%)
+>                FORK events:       1544  ( 3.3%)
+>              SAMPLE events:      38226  (81.3%)
+>               MMAP2 events:       5485  (11.7%)
+>               ...
+>    cycles:P stats:
+>              SAMPLE events:      38226
+> 
+> With patch:
+>    $ sudo ./perf record -C 10 -o perf.data.with -- sleep 10
+>    $ du -d1 -ha ./perf.data.with
+>    15M     ./perf.data.with
+> 
+>    $ sudo ./perf report --stats -i perf.data.with
+>    Aggregated stats:
+>               TOTAL events:     160164
+>                MMAP events:         51  ( 0.0%)
+>                COMM events:      12879  ( 8.0%)
+>                EXIT events:      11192  ( 7.0%)
+>                FORK events:      12669  ( 7.9%)
+>              SAMPLE events:      38464  (24.0%)
+>               MMAP2 events:      84844  (53.0%)
+>               ...
+>    cycles:P stats:
+>              SAMPLE events:      38464
+> 
+> Number of actual samples are same ~38K. However, the perf.data file is 5x
+> bigger because of additional sideband data.
+
+Yes, if record system wide sideband data, the amount of sideband events 
+will increase proportionally, which is expected.
+
+> 
+> I'm pretty sure we don't need most of those additional data. So, thinking
+> loud, should we post-process perf.data file and filter out unnecessary data?
+> 
+
+I wonder if we can add a new function in perf inject.
+By reading perf.data and comparing tid of SAMPLE events and sideband 
+events, we can filter out the sideband data of unmatched tasks.
+
+That's just my idea, or there's another better solution.
+
+Thanks,
+Yang
