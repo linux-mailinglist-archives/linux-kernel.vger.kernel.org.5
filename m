@@ -2,86 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F31878C181
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B19778C1C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbjH2J3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
+        id S234954AbjH2Jwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 05:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234987AbjH2J3P (ORCPT
+        with ESMTP id S235050AbjH2JwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:29:15 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C74CCD
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:29:06 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a2a4a5472dso885390166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693301344; x=1693906144; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Xmxh5octwGqeO5RGQIVnznkuvhvJoPZ2ZBKJzYLzMwQ=;
-        b=Ow4UpjWpu48P7TCcU81IiJy5FVlfi1uJ0H0dJfOD231rq/mWyx9Yp/2yuM1MqT3aqX
-         ySKV7pHLwWR/0vMnV7ALxE+bD6v5RkzGBr6EmsA0sAwjug5/NWsSjAifUPxRUaSelnpL
-         DwD/xyespKULdivBqVojLMi8s9fW34IoPNDvDBpTLNimmVTrAO1yGmS+S5WBb+5b7tte
-         sqAqgLpQVBZ20hU2dRAiakDXc38I7THgy8Q1j+CdeFsobh7DjWsnmox39csDYmOjTR/j
-         zayc5Kua53AG2Fss2wB9HkP/Zse4kA5Uy3CLlUaZC0lx98XkMWGWq+lxYN340B9nVfHM
-         leKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693301344; x=1693906144;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xmxh5octwGqeO5RGQIVnznkuvhvJoPZ2ZBKJzYLzMwQ=;
-        b=FRkq4JNlqeHMBlhcPGxulsEtWXyOXvZhpaGaCq126JScGnGxVYJh+qTKGEQfyuKCLx
-         +YzHdDsenW53kR2Vv5Y4OEyW4CnHqvt+1jg/Ast8oTD62+j5BrlS4q27Fwm86T+sAXDb
-         /pWw+HnB8SxuZLNcLqMPsIlAlJEuOIAug0eUm3Jw9zADxhpu5uLXozeEAjKBUHwdb881
-         itqq09WrlVMscNhDGIktvb8LLjYd1yEhDHf+veMRfn2hrYWiLJnhS5Mt6G/jzuPmHo/d
-         crn6fs/YyhQpvlnqlX0YeCVQz4lkL/GVZ9XECqfYXLs+ESluqszAmVUBQARAKVxvmZ27
-         m/4g==
-X-Gm-Message-State: AOJu0YzM/KicHZryf01wFp26FK96sfcfpXCSGAEg9uSQWBsZ45HvDMgD
-        +e8WnimyaslwbQ1tHEE404T0Rg==
-X-Google-Smtp-Source: AGHT+IHU9KGZGnusU1XYnVHMUzw0uSM+XCIW4t/d5NRt/s1Ewwm94+tSs0D06k+JkxAOvHIM8pTZLQ==
-X-Received: by 2002:a17:907:60cf:b0:9a5:aa43:1c7c with SMTP id hv15-20020a17090760cf00b009a5aa431c7cmr2921621ejc.26.1693301344594;
-        Tue, 29 Aug 2023 02:29:04 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id vw7-20020a170907058700b0099b921de301sm5742798ejb.159.2023.08.29.02.29.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 02:29:04 -0700 (PDT)
-Message-ID: <14e903fd-c1ee-9e75-4477-0d621329fb46@linaro.org>
-Date:   Tue, 29 Aug 2023 11:29:02 +0200
+        Tue, 29 Aug 2023 05:52:22 -0400
+X-Greylist: delayed 1257 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 02:52:17 PDT
+Received: from mail03.siengine.com (mail03.siengine.com [43.240.192.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84524EA
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:52:17 -0700 (PDT)
+Received: from mail03.siengine.com (localhost [127.0.0.2] (may be forged))
+        by mail03.siengine.com with ESMTP id 37T9VKtA006171
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:31:20 +0800 (+08)
+        (envelope-from lucas.liu@siengine.com)
+Received: from dsgsiengine01 ([10.8.1.61])
+        by mail03.siengine.com with ESMTPS id 37T9UBnI006104
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 29 Aug 2023 17:30:11 +0800 (+08)
+        (envelope-from lucas.liu@siengine.com)
+Received: from SEEXMB04-2019.siengine.com (SEEXMB04-2019.siengine.com [10.8.1.34])
+        by dsgsiengine01 (SkyGuard) with ESMTPS id 4RZhwf3MPkz7ZMc9;
+        Tue, 29 Aug 2023 17:30:10 +0800 (CST)
+Received: from SEEXMB03-2019.siengine.com (10.8.1.33) by
+ SEEXMB04-2019.siengine.com (10.8.1.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1258.25; Tue, 29 Aug 2023 17:30:09 +0800
+Received: from localhost.localdomain (10.12.6.21) by
+ SEEXMB03-2019.siengine.com (10.8.1.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.2.1258.25
+ via Frontend Transport; Tue, 29 Aug 2023 17:30:09 +0800
+From:   "baozhu.liu" <lucas.liu@siengine.com>
+To:     <liviu.dudau@arm.com>, <airlied@gmail.com>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        "baozhu.liu" <lucas.liu@siengine.com>
+Subject: [PATCH] drm/komeda: add NV12 format to support writeback layer type
+Date:   Tue, 29 Aug 2023 17:30:03 +0800
+Message-ID: <20230829093004.22860-1-lucas.liu@siengine.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 02/11] thermal: exynos: drop id field
-Content-Language: en-US
-To:     Mateusz Majewski <m.majewski2@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-References: <20230829091853.626011-1-m.majewski2@samsung.com>
- <CGME20230829092408eucas1p24901bbd192db03b69d774f2c5936f5b3@eucas1p2.samsung.com>
- <20230829091853.626011-3-m.majewski2@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230829091853.626011-3-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-DKIM-Results: [10.8.1.61]; dkim=none;
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: mail03.siengine.com 37T9VKtA006171
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,17 +60,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 11:18, Mateusz Majewski wrote:
-> This field is not used in code, and seems to not have any meaning; in my
-> tests, the value was always 0.
-> 
-> Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
-> ---
+When testing the d71 writeback layer function,
+the output format is set to NV12, and the following error message is displayed:
 
-Please drop also remaining alias from DTS.
+[drm:komeda_fb_is_layer_supported] Layer TYPE: 4 doesn't support fb FMT: NV12 little-endian (0x3231564e) with modifier: 0x0..
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Check the d71 data manual, writeback layer output formats includes NV12 format.
 
-Best regards,
-Krzysztof
+Signed-off-by: baozhu.liu <lucas.liu@siengine.com>
+---
+ drivers/gpu/drm/arm/display/komeda/d71/d71_dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/arm/display/komeda/d71/d71_dev.c b/drivers/gpu/drm/arm/display/komeda/d71/d71_dev.c
+index 6c56f5662bc7..80973975bfdb 100644
+--- a/drivers/gpu/drm/arm/display/komeda/d71/d71_dev.c
++++ b/drivers/gpu/drm/arm/display/komeda/d71/d71_dev.c
+@@ -521,7 +521,7 @@ static struct komeda_format_caps d71_format_caps_table[] = {
+ 	{__HW_ID(5, 1),	DRM_FORMAT_YUYV,	RICH,		Rot_ALL_H_V,	LYT_NM, AFB_TH}, /* afbc */
+ 	{__HW_ID(5, 2),	DRM_FORMAT_YUYV,	RICH,		Flip_H_V,		0, 0},
+ 	{__HW_ID(5, 3),	DRM_FORMAT_UYVY,	RICH,		Flip_H_V,		0, 0},
+-	{__HW_ID(5, 6),	DRM_FORMAT_NV12,	RICH,		Flip_H_V,		0, 0},
++	{__HW_ID(5, 6),	DRM_FORMAT_NV12,	RICH_WB,	Flip_H_V,		0, 0},
+ 	{__HW_ID(5, 6),	DRM_FORMAT_YUV420_8BIT,	RICH,		Rot_ALL_H_V,	LYT_NM, AFB_TH}, /* afbc */
+ 	{__HW_ID(5, 7),	DRM_FORMAT_YUV420,	RICH,		Flip_H_V,		0, 0},
+ 	/* YUV 10bit*/
+-- 
+2.17.1
 
