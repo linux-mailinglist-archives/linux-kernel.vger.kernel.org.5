@@ -2,189 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6F278C6DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063D478C6E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbjH2OGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        id S236775AbjH2OHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236865AbjH2OGk (ORCPT
+        with ESMTP id S236798AbjH2OH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:06:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666D118F;
-        Tue, 29 Aug 2023 07:06:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 037EB1F45B;
-        Tue, 29 Aug 2023 14:06:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693317995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bRHPiHCMm5kQciIqN85NnbPa+/D3qdXc+l72vu74acc=;
-        b=Icu3cYn7A3Kh+pBbrf1rF9LltMScuNV/n0baffUrrjtxAYQ+ncJ4dOsKx6w6MYDBJFnROM
-        NOZOnUkNeXEfIv6Uzbn6FhcQoZLsSFce/t+hcdRNEgz2BAmWW7Zzy+NHG0xwjbRgQNPOat
-        8Pc2awNUB1gXfd7t5bzLKWoU8zhUeVg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693317995;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bRHPiHCMm5kQciIqN85NnbPa+/D3qdXc+l72vu74acc=;
-        b=ddNrhpwtKRvVRK5RzwIkRRwEEzp36nl+O26eBAnst4HGo76Ah9V9YRErUFvt6TJHJs4oiz
-        xApRR/StlVseWQAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B875138E2;
-        Tue, 29 Aug 2023 14:06:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id G+1JGWr77WQMcwAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 29 Aug 2023 14:06:34 +0000
-Date:   Tue, 29 Aug 2023 16:06:33 +0200
-Message-ID: <87sf82t02e.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <quic_jackp@quicinc.com>, <oneukum@suse.com>,
-        <albertccwang@google.com>, <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v4 31/32] sound: usb: card: Allow for rediscovery of connected USB SND devices
-In-Reply-To: <2c0e76ab-1e3a-70d6-24dc-32b2e66c2a3a@quicinc.com>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
-        <20230725023416.11205-32-quic_wcheng@quicinc.com>
-        <671a524d-b4c8-78d8-33de-40170a23d189@linux.intel.com>
-        <87wmyotk74.wl-tiwai@suse.de>
-        <2c0e76ab-1e3a-70d6-24dc-32b2e66c2a3a@quicinc.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 10:07:27 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC6DD7;
+        Tue, 29 Aug 2023 07:07:18 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TCfBhj000902;
+        Tue, 29 Aug 2023 14:06:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ux9fxYpJr1hfeG9Nqx7vzyVY9soFUE7yRD8+Xy/HLIA=;
+ b=H73zGt6sGoC/hb60E9vFNh0WIKahymwbexQJ58bA2uunJfLNuYvjGET2W8beJUdJpDBF
+ XMMhvkiV0Lz3y/eKv6HWXTEVl+KwGz5CYLQt8PYh0D3KMZC1w+z2ccdH6G8M7y8EN0Bu
+ 2ootTxRacDFrUQPdMbFJ6ar4LW6wseQdJ7W9qREw2db6JTygtTPJGfgTOxV9DOTUasAd
+ tKqDO5FyYSZwLjrfTPAldfC/s48yT08q+HxBU7HeA1+hNwTfbmsMxALQOmfXcxXb68Vq
+ goZMR2YoWTs6JviXkXrrZPa/iguqIjcyyyRJs0pC3Ax4r9O1AmUpXYkT1XmCA1TR0hdo XA== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss2xb9xdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 14:06:55 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37TE6sIs026854
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 14:06:54 GMT
+Received: from [10.50.3.213] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
+ 2023 07:06:50 -0700
+Message-ID: <21e7b893-2b84-f809-9775-f0c9c86c96a2@quicinc.com>
+Date:   Tue, 29 Aug 2023 19:36:47 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/4] venus: hfi_parser: Add check to keep the number of
+ codecs within range
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mchehab@kernel.org>, <hans.verkuil@cisco.com>,
+        <tfiga@chromium.org>
+CC:     <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <1691634304-2158-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1691634304-2158-5-git-send-email-quic_vgarodia@quicinc.com>
+ <fec4a8c7-206f-7af8-4ea9-c919a677bf7e@linaro.org>
+ <2214c31b-eca2-012e-a100-21252a724e7c@quicinc.com>
+ <8b72ce47-c338-2061-f11a-c0a608686d8c@linaro.org>
+ <e880da07-ccd4-e427-ed34-20b284dc7838@quicinc.com>
+ <8f1a4ca0-dde8-fa5d-bca3-d317886609de@linaro.org>
+ <060f4dbe-63d6-1c60-14ca-553bf1536e5a@quicinc.com>
+ <c5f912a9-cc08-1645-ad04-c7a58c1e47ce@linaro.org>
+ <cd9da205-ccdb-dc71-16a4-83b22ca7fcae@quicinc.com>
+ <ea587bb1-8ff2-7a92-f948-fd932f6b2769@linaro.org>
+ <9391ae4e-afbd-ef52-12dc-7f8875216c85@quicinc.com>
+ <6ecbd88a-150f-d40e-22bf-4fda921fc483@linaro.org>
+From:   Vikash Garodia <quic_vgarodia@quicinc.com>
+In-Reply-To: <6ecbd88a-150f-d40e-22bf-4fda921fc483@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: H60HqpHgS_9o0tz8Oo3wvWWRzjjcMcO6
+X-Proofpoint-GUID: H60HqpHgS_9o0tz8Oo3wvWWRzjjcMcO6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_11,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ mlxscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=606 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308290122
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 23:25:14 +0200,
-Wesley Cheng wrote:
-> 
-> Hi Takashi,
-> 
-> On 7/25/2023 2:27 AM, Takashi Iwai wrote:
-> > On Tue, 25 Jul 2023 11:15:11 +0200,
-> > Pierre-Louis Bossart wrote:
-> >> 
-> >> 
-> >> 
-> >> On 7/25/23 04:34, Wesley Cheng wrote:
-> >>> In case of notifying SND platform drivers of connection events, some of
-> >>> these use cases, such as offloading, require an ASoC USB backend device to
-> >>> be initialized before the events can be handled.  If the USB backend device
-> >>> has not yet been probed, this leads to missing initial USB audio device
-> >>> connection events.
-> >>> 
-> >>> Expose an API that traverses the usb_chip array for connected devices, and
-> >>> to call the respective connection callback registered to the SND platform
-> >>> driver.
-> >>> 
-> >>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> >>> ---
-> >>>   sound/usb/card.c | 19 +++++++++++++++++++
-> >>>   sound/usb/card.h |  2 ++
-> >>>   2 files changed, 21 insertions(+)
-> >>> 
-> >>> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> >>> index 365f6d978608..27a89aaa0bf3 100644
-> >>> --- a/sound/usb/card.c
-> >>> +++ b/sound/usb/card.c
-> >>> @@ -170,6 +170,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
-> >>>   }
-> >>>   EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
-> >>>   +/*
-> >>> + * in case the platform driver was not ready at the time of USB SND
-> >>> + * device connect, expose an API to discover all connected USB devices
-> >>> + * so it can populate any dependent resources/structures.
-> >>> + */
-> >>> +void snd_usb_rediscover_devices(void)
-> >>> +{
-> >>> +	int i;
-> >>> +
-> >>> +	mutex_lock(&register_mutex);
-> >>> +	for (i = 0; i < SNDRV_CARDS; i++) {
-> >>> +		if (usb_chip[i])
-> >>> +			if (platform_ops && platform_ops->connect_cb)
-> >>> +				platform_ops->connect_cb(usb_chip[i]);
-> >> 
-> >> what happens if the USB device is removed while the platform device adds
-> >> a port?
-> > 
-> > That should be protected by the register_mutex.  But there can be
-> > other races (see below :)
-> > 
-> >> This sounds super-racy to me. It's the same set of problems we're having
-> >> between audio and display/DRM, I would be surprised if this function
-> >> dealt with all corner cases of insertion/removal, bind/unbind.
-> > 
-> > Yes, we need to be more careful about binding.
-> > 
-> > For example, in the current patch set, I see no way to prevent
-> > unloading snd-usb-audio-qmi module, and it allows user to cut off the
-> > stuff during operation, which may break things while the kernel is
-> > running the code of the unloaded module.  You need to have a proper
-> > module refcount management for avoiding such a scenario.  Most of
-> > drivers don't need it because ALSA core part already takes care of
-> > it.  But in this case, it requires a manual adjustment.
-> > 
-> 
-> Sorry for the delayed response...this was routed to another folder,
-> and missed it.
-> 
-> I see, that is a valid situation, so I think the best way to address
-> it is to do something like the following:
-> 
-> static void __exit qc_usb_audio_offload_exit(void)
-> {
-> ...
-> 	snd_usb_unregister_platform_ops();
-> 	for (idx = 0; idx < SNDRV_CARDS; idx++)
-> 		qc_usb_audio_offload_disconnect(uadev[idx].chip);
-> 
-> We'll first unregister the platform ops, so that we get no further
-> connect/disconnect CBs, and then we'll forcefully ensure that all
-> devices are removed/cleaned.  Part of the USB offload disconnect
-> sequence will also forcefully stop the offload path on the external
-> DSP by issuing a disconnect indication QMI message.
-> 
-> Then we can safely clean up the rest of the resources.  We do have
-> refcounting in place for several of the other structures, but I think
-> in the module exit case, we need to ensure the offload path is stopped
-> fully.
 
-Yes, the proper disconnection procedure is mandatory.
-In addition, you can have a module refcount increment upon the card
-binding, too.  This may prevent the unexpected exit (although it's
-often still possible to unbind via sysfs).
+On 8/29/2023 5:29 PM, Bryan O'Donoghue wrote:
+> On 29/08/2023 09:00, Vikash Garodia wrote:
+>> Hi Bryan,
+>>
+>> On 8/14/2023 7:45 PM, Bryan O'Donoghue wrote:
+>>> On 14/08/2023 07:34, Vikash Garodia wrote:
+>>>>> We have two loops that check for up to 32 indexes per loop. Why not have a
+>>>>> capabilities index that can accommodate all 64 bits ?
+>>>> Max codecs supported can be 32, which is also a very high number. At max the
+>>>> hardware supports 5-6 codecs, including both decoder and encoder. 64 indices is
+>>>> would not be needed.
+>>>>
+>>>
+>>> But the bug you are fixing here is an overflow where we have received a full
+>>> range 32 bit for each decode and encode.
+>>>
+>>> How is the right fix not to extend the storage to the maximum possible 2 x 32 ?
+>>> Or indeed why not constrain the input data to 32/2 for each encode/decode path ?
+>> At this point, we agree that there is very less or no possibility to have this
+>> as a real usecase i.e having 64 (or more than 32) codecs supported in video
+>> hardware. There seem to be no value add if we are extending the cap array from
+>> 32 to 64, as anything beyond 32 itself indicates rogue firmware. The idea here
+>> is to gracefully come out of such case when firmware is responding with such
+>> data payload.
+>> Again, lets think of constraining the data to 32/2. We have 2 32 bit masks for
+>> decoder and encoder. Malfunctioning firmware could still send payload with all
+>> bits enabled in those masks. Then the driver needs to add same check to avoid
+>> the memcpy in such case.
+>>
+>>> The bug here is that we can copy two arrays of size X into one array of size X.
+>>>
+>>> Please consider expanding the size of the storage array to accommodate the full
+>>> size the protocol supports 2 x 32.
+>> I see this as an alternate implementation to existing handling. 64 index would
+>> never exist practically, so accommodating it only implies to store the data for
+>> invalid response and gracefully close the session.
+> 
+> What's the contractual definition of "this many bits per encoder and decoder"
+> between firmware and APSS in that case ?
+> 
+> Where do we get the idea that 32/2 per encoder/decoder is valid but 32 per
+> encoder decoder is invalid ?
+> 
+> At this moment in time 16 encoder/decoder bits would be equally invalid.
+> 
+> I suggest the right answer is to buffer the protocol data unit - PDU maximum as
+> an RX or constrain the maximum number of encoder/decoder bits based on HFI version.
+> 
+> ie.
+> 
+> - Either constrain on the PDU or
+> - Constrain on the known number of maximum bits per f/w version
 
+Let me simply ask this - What benefit we will be getting with above approaches
+over the existing handling ?
 
-thanks,
-
-Takashi
+Thanks,
+Vikash
+> ---
+> bod
+> 
