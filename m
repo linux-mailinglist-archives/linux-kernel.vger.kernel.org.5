@@ -2,231 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BC878CB4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEDF78CB5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237890AbjH2Rcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S237967AbjH2Rev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237911AbjH2RcP (ORCPT
+        with ESMTP id S237999AbjH2Ree (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:32:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783ADCDA;
-        Tue, 29 Aug 2023 10:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693330314; x=1724866314;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=+NH7FEg8n8ze5DOUyfwiXVdSMIWcXubV5YJ/rDmxKcA=;
-  b=PSsMj2Z96WqFgc/qDws54eFfoVS3m6w+NTSQ2GveXyEkeKh1aa3j1Uds
-   HUoTiOK19qYFY5Wq1fkfZClVE4zESyuW8bY6XndePw0h0BaiNFF95xxGo
-   jFcVEK9CaAxHL9ryOvRn6+x4XL1ogiFx3iaE9S6hcQTBEE0/n3GaKjx65
-   LC/VRqsqIgWjfkm+aqDNQYDhE4SEETgqzka3qaKdyQP4g09J2DydTZOGL
-   SDTuVbSXK+x87M3+260aId0fUnxYByC6ZJq2oqDcQLVojY28B+Xb0iFL8
-   k/yMkJ8LkaPEf3cBDZPRVHWrBQ7A6MfJYbFQ5k4ATFEp7os5E4oUaLha7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="378152166"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="378152166"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 10:31:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="768146898"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="768146898"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga008.jf.intel.com with ESMTP; 29 Aug 2023 10:31:02 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 29 Aug 2023 10:31:02 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 29 Aug 2023 10:31:01 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 29 Aug 2023 10:31:01 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 29 Aug 2023 10:31:01 -0700
+        Tue, 29 Aug 2023 13:34:34 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2071.outbound.protection.outlook.com [40.107.92.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551A7A3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:34:30 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=neaGuY1uCc2UIBbsNI9zBNWEZHEgmyUBKsWrWEUPFvaj1pJ0iQlRPPZGVLoS8kn6OAF0KS2ZLevL5Lm4vjz73vhuLKF+C6STVQawA3r5lQ2wlaFg5kuEtp7kqgNtUxnStuKzfLvan5AgZtmOClNHe18Q/L9WxLWjifijN0Exo/F5NH2huo1b1mTEv4TJhM4/3QJ7ZO/2ZuZrpsX6My95lblZPE2Qd8oAzkvPICqsyAu+kRswSoSONV2Dj+DO4palybgfpdRA0JMHXH4nlIVRe/RRevz0cc81aOPFlPcvtLor0GzdDax+O2WSPGoBJhUU1rWlWaWUNfjTRpmDQRpV4g==
+ b=I/v5o1sXNkObdUk7wl14As2fBlf855ruSOa3h76QeYIPxaU654QH1nCa6DpGRq/9XBpTou3HmQK0AbqzgXrhPjwAjX+kRDx0gALbYMCN/4/MHlclYXiE72nvy83tWqJDZosov9VCaMNv7Ki3h9FPv4IZXFUgRYpA5sLeueXCIgpbfRm5tvpm5xEoa8NjMiduOhcwo1Z5pHsr3SWZhL3++vbJZXEHZmg7kz7GAoSEn7fsFIWbY/fe2O5SSjBRVLjimLSd4/pp8Bmii2cewEu7X02SRPJtkW2m6A8NbR0YfNIQ2YZ6oqR3Wb0s6twNboDs8yuwiEalv6BV49vPTeSXVw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PtQj7kcrhM9IiaojvtUZF+ksluQOznooIvZdYuWEvNA=;
- b=PVx4YSgnXZLEwpGkXvxRvWa0Bf+n4uc1xRA2O7w2lbFCKyEi9d1MgoPpWhux0zdM54hb29FRglBCwOFZ5FhV2U6KnflmnXwubR89lE7jvle0WmFnhF/jLn13zIMisK1BsgBltdrqzjR4ZJFaTuV5z6ZkntMfSJ2h/IXb0woXHHsjmo0C/4jGzWEH6nm9nDJe6uTZLbvgStznZkbibJnwrJmoPabzGA4GZpWP190gAQMGxPgh7PyQYsG1HbaZvJnNRXRAFIALDtalvKTYq4Zo3Dbiy61+V6S5AoO31vDVRnHB8hIYq7qwZpHN3o4o7cmU2Robc325ZeZ5pATDH1x9sg==
+ bh=hANVOBfR9UcDcBRj1//8l9wD1c28ovnJtRNXuiUHWZM=;
+ b=cEFasjikUwypPhVX83ZQ5TpFXs9iJm64pyBZYLwxwH9yiKTQhyu5ah4DgcH75ZN/t+jceXZy/7XFLFVnB9NPXrYRQLyVrfwrHxV08XDw+x0Rz3gHJzzzNVh0RFM6jE1S4xANEuYkNQGrPNQiOLRGannOFBF2gZ91xkXQug40bsrGqCwznLQbEMi3CmDIPfsiBgxsiJ6xOWfuzdfPEAxqFoKu5xxi9XO6iVcV7KV/PW4SvzdEtpTOb23NwvXA+EXgPllsSFCUhXcw220Id783CgFtXD3gve+LyVqBeyu9W29+b01H75EaZNzCdae45i/Vuf+ct7zFmMyZOCdiw/X8Lg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hANVOBfR9UcDcBRj1//8l9wD1c28ovnJtRNXuiUHWZM=;
+ b=AKbRcdHptLLBaBU3Qa3DenbGR9ySY3UmFRVQGMQv2xXAqjrG50XWXtEtUzuBkYFtqwkCH0o40ekvPZQAAS3L9V78as3MISlgYu47sWDFbiN4WwKZUj8vd8u9r+BeRHTNe3KksWTNMCotHfFOuqehafeVfUioSSP9RJsuAIs5BDo=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by CO1PR11MB5171.namprd11.prod.outlook.com (2603:10b6:303:94::15) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ0PR12MB6760.namprd12.prod.outlook.com (2603:10b6:a03:44c::18)
+ by CH0PR12MB5027.namprd12.prod.outlook.com (2603:10b6:610:e2::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Tue, 29 Aug
- 2023 17:30:59 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::cc12:ab15:1d0:af79]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::cc12:ab15:1d0:af79%5]) with mapi id 15.20.6699.035; Tue, 29 Aug 2023
- 17:30:59 +0000
-Date:   Tue, 29 Aug 2023 10:30:55 -0700
-From:   Lucas De Marchi <lucas.demarchi@intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-CC:     Andrea Righi <andrea.righi@canonical.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        <linux-modules@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] module/decompress: use vmalloc() for zstd decompression
- workspace
-Message-ID: <4ut44zckyknjwdzvxzefiysfjorl3nzqvs2j3scsrlgmgngjgs@hjrkcqoavq5h>
-X-Patchwork-Hint: comment
-References: <20230829120508.317611-1-andrea.righi@canonical.com>
- <ZO4fvAKJfKs8USZO@bombadil.infradead.org>
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <ZO4fvAKJfKs8USZO@bombadil.infradead.org>
-X-ClientProxiedBy: MW4P220CA0008.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:303:115::13) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+ 2023 17:34:28 +0000
+Received: from SJ0PR12MB6760.namprd12.prod.outlook.com
+ ([fe80::ae93:e5c5:41f7:bf08]) by SJ0PR12MB6760.namprd12.prod.outlook.com
+ ([fe80::ae93:e5c5:41f7:bf08%7]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
+ 17:34:27 +0000
+Message-ID: <bcbfe6d5-da87-fa2b-c05a-8bea6e0004fb@amd.com>
+Date:   Tue, 29 Aug 2023 13:34:22 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 1/4] drm: Use XArray instead of IDR for minors
+Content-Language: en-US
+To:     =?UTF-8?Q?Micha=c5=82_Winiarski?= <michal.winiarski@intel.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Simon Ser <contact@emersion.fr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        James Zhu <James.Zhu@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+References: <20230724211428.3831636-1-michal.winiarski@intel.com>
+ <20230724211428.3831636-2-michal.winiarski@intel.com>
+ <10bb9689-9226-d47c-4cf1-7bf9d599456c@amd.com>
+ <6qcxpntlr36itieyoyebsncwdv4vadr5ac7imgl4rdemoyedvp@a3m7l32pkcnf>
+From:   James Zhu <jamesz@amd.com>
+Organization: AMD RTG
+In-Reply-To: <6qcxpntlr36itieyoyebsncwdv4vadr5ac7imgl4rdemoyedvp@a3m7l32pkcnf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQXP288CA0030.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c00:41::36) To SJ0PR12MB6760.namprd12.prod.outlook.com
+ (2603:10b6:a03:44c::18)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|CO1PR11MB5171:EE_
-X-MS-Office365-Filtering-Correlation-Id: 655db974-4af3-4a3d-c76f-08dba8b5b522
+X-MS-TrafficTypeDiagnostic: SJ0PR12MB6760:EE_|CH0PR12MB5027:EE_
+X-MS-Office365-Filtering-Correlation-Id: 283873d2-696b-4c05-a345-08dba8b6316d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qv3TygFc7rxSmkhop9v1w0DQdQZWZQq/btmGSgrv/84EHNiBRe4WV0++4aoUkMz4sCEXMeM2Eh6ELduOhMEx5z63G2rc9G5av+Rjl715TGbaHW7z1BjkPqVZPob1RFqBVLgXEvqyvAcTyAHUi163GJ5K/BiDElbj5dAAN/+GcmqJEcse0e3N1ZsfMRsKvNtTm0FeJ2imhDAvrygVHTOmNfZC2iieATGFqf1vmZE1lfQZeQvgqWu+baUqQXkfBV2ScL+J1P8QF7vAGsHuI4AMGzbKnDKlCYu4DM5pHb490pyIf9YL/S6PtGpvoc/r6PqpSepR9PRGDxF6B8Dod0I/8cdqoR7Ee99d3Tx0Ll7/TG7GRawLloAZ164JRHGHs8dCs429IhN8gPoKKwxcMAUraIG6CSElT4fWeGoiQbcvvLmGiEeMpgKUn3pGs1Wss8GICig8rC9F+dry1PwsdmT0pkx5Pw7mrL0yxoXYy+wyAFyHRuFVIWTNOHqo6ZU4urKRn0h1egDmhvzLAS4rLH8c8cQ/phClhOPZa3MZYda1ho6UKG2GMJMahszDgIUh2TIz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(366004)(376002)(346002)(39860400002)(186009)(1800799009)(451199024)(6486002)(6512007)(6666004)(9686003)(6506007)(86362001)(38100700002)(82960400001)(2906002)(83380400001)(26005)(478600001)(41300700001)(66556008)(66476007)(8936002)(66946007)(4326008)(8676002)(5660300002)(54906003)(33716001)(316002)(6916009);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: wBgH/8Nyu8XmjgnNldn7O4CoYDLoZXLDf/7+7cHNyoNt8kzzHJJnSlhYNaMdIo4RVxAnBjyU/B5n9pnGHiROHCyyAWvmkqgW5TcCxn9e6w+EDGrY+j+RljZ6rNs5+tH40PLd/8xs81jxqcDMB9oj3UPjvexFPsf40BQgAh04jqJiBu/cW8cOPlEPJ4RvLmUDjcJvL0QP5We1Q8pD++AeIeqv1Zr3mF5xPgFZjucxuGEmucBCIlX++qOutShNrySpWtKy6+/rdpjnDIMHyIGRDVJz4pO5iMsRl5iAURHN/0JfIFJ7eSVpG1B9N+mIQP0PiuQia++TqMnGVqBuQ5yc/fADtYggfEpn19b0xKIDvfSFGXW41bOKtNkrbBHhvVIepU4WBi2OfYTB9eOcv7r2gXXSnm+/ask6c/2faFmWuybxTjOWCCR7DUWYOnUaqIkR8+bRZ8nQGUFZOiaT8FEk+Bf79CVK0O4MA4gz5jdpMhsvS2RMlENCaVvkzW3TWDp4tfL7O+kDcgZFKy3Q4jQDAhMLxBw9DOOfOBFJUV4hCjLqhQ1TBHkoxLCFSI8sLhKUqx1jn50SNEZ2kgJ3YCTXOLlWDPjt3jiGpHyQN+2Laav+uUzT0zqLevbiSl+/zYvdFpN7psgW1KMsA5dK8Y1VHA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR12MB6760.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(376002)(396003)(39860400002)(1800799009)(186009)(451199024)(8936002)(6666004)(66946007)(53546011)(31686004)(478600001)(6506007)(66556008)(66476007)(54906003)(6486002)(36916002)(966005)(6916009)(316002)(38100700002)(41300700001)(6512007)(36756003)(26005)(8676002)(5660300002)(83380400001)(31696002)(2906002)(2616005)(7416002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eH7Ungrq3pp1vGqerBcY1+1l1dgNXpCEJjE8z1AbUwsbYTK0P6DpIEGOOTTW?=
- =?us-ascii?Q?s3ou6z2YGwCTXwPPeGCUyHkB+mtRcqg4sGpW9MDilz3VMwPO1S5JM0uuQoq+?=
- =?us-ascii?Q?2M5rVbG04TedSEKbfy90GbmPEyLqPFv0pHxBmLyiOCa98KEUdqWJ2bJYw2lk?=
- =?us-ascii?Q?N8B89i88XluMK1CNpib4Tr6Kn2eRspTNP1850BhivUJQjOX16/tS5+hvBUn+?=
- =?us-ascii?Q?/MpnVVNVspdXW7d6Ngc1Rf/Frs1dwXi1+enrsKvY1Pbryi2uYl1M2JVrZsTq?=
- =?us-ascii?Q?mvYitgz12lRKRVHIFMY/xRQlSPM/I60kBYG2r7vLjt1HabqnOHS4g9zj23gX?=
- =?us-ascii?Q?i5fxTh6nUuYah7CDdVefqZOmViGU/6EKnhJpyXyObg8silZU/QPtcg9JBjs5?=
- =?us-ascii?Q?zM/hL2azCDm8nq0Mn2JATk2OBmkAx6Qq3bc3EaWaUnWa2vjNmqvh933UJST8?=
- =?us-ascii?Q?tlCe9Km9MYr7kd4o30DNcixd1YiSSEhpj4+xfYJ6+grpDywwJXFk+DzWSY3w?=
- =?us-ascii?Q?z8hOfUuLG/szOgMTkv5Uaa7Z29FMb4RESMCpfoQ20O7Us3zBypj+Vmx+8aFc?=
- =?us-ascii?Q?Tj6hBy1gLBgLPVJIhPOgZsC7oafKg7mDivzW+rV6byP9IEHwUm3lh65B8M26?=
- =?us-ascii?Q?zwnpAOdaRs/LklsTe53c7ns290YjVPzhV3vFABNGrSugrl667MNMNgQU96gO?=
- =?us-ascii?Q?J+7T/sFUZuMu8YrH6nHNeDzrMXtfd1IRkxCPNVHFwQksgWz+rmwRRmxzJk95?=
- =?us-ascii?Q?FyeZoeU5Vr67q0iIMSJRUU7IQMYB/2A3IU5gy3YHVD/gKRPhjbrGKQp9xL2A?=
- =?us-ascii?Q?fGt7f2jhRYUFFdXd6zv7s0lkSIcm8MplYTVwQQnqpou1ka5C2FARojUW4B6v?=
- =?us-ascii?Q?lvv+V3YDGp7lTZxu78QhmKVFvdkB1aRPpV/BanBdSXvDYmX4SMZvVhxLe666?=
- =?us-ascii?Q?m4qDBXa36mG2SBGi5kJtKSh0xbywkF1Zfe2KYIX2coKdYw+JkfDcLoNkFtdn?=
- =?us-ascii?Q?WMraZYHdoTcPQ5HDeYWrodp3yHUcl7avEu4+a1WX9JVsA+fuy+RKyg4iI6bG?=
- =?us-ascii?Q?SlpEmPVoXlHMssClRCVYwZmQik0VO9o7MtB8X3pXq1nFQyU775e+CDsneS8A?=
- =?us-ascii?Q?yQ3JhjReDprXUOmIZEYggiGfPdD1jqC8qKcUlNWsapVN6eXphzsbDkfGbM/0?=
- =?us-ascii?Q?Nh+36a62+ppAd5+qVm/AR4tmjYPzaWl90K5+vaq6xDJA5bNgBDZKk5OtxZMi?=
- =?us-ascii?Q?N8tX/fIEC9kwQCvXzlHSP420C7YpvVKGB3ftivVO7nRnj8SDMsyqcVOKmojV?=
- =?us-ascii?Q?I+1zS8c2i+B2uvGQoGOY042IBs2Mv8eVJIptFRZG1GDv0KoWJCP39HhFk99y?=
- =?us-ascii?Q?bmmCTd8HSfER3C0BUtddmwi2sYcZ+s6nRcyEFgTkDkeSZ/SPhNXWstWnaOp2?=
- =?us-ascii?Q?aaynQwoAzcIbicmUO9Frj35DuLV3oG0KOdAY0DXMz8NIWilRNCeLsJsq+6HB?=
- =?us-ascii?Q?bDmG3Y5eEy3AOpu9AZhPu59sg9ydId0Oq1WtTTwU/USimi5+cRmMi1/k/z2I?=
- =?us-ascii?Q?tCiwwzdgNVTXWXu+ooWEoAIM9h1nKi+ZU6x4vBvhkzBpgXrMqK9LKexzR9XI?=
- =?us-ascii?Q?AQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 655db974-4af3-4a3d-c76f-08dba8b5b522
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NzBIUzV0Um40c3BjQ1Z6bk8wRXI4VTAyZWNyYmJqODNaR3Qva2d0U1VoaWVR?=
+ =?utf-8?B?eXVVZUV2YkVHKzRwYlpSa3p0SDJIVEJMVzUrdkFVL0NLMVFPcHRqaDNjQ0t3?=
+ =?utf-8?B?UmxkQXNlQlZ6aktsSFdQNU5pZGNORHdETUh3N08ySkgvVCtGYm01dmZXYWtK?=
+ =?utf-8?B?VHMzdWF0KzZYcWNsOXhtRkJXbnBzZWthanNUMy9PS2NnZ1RqT2hhbVFPZHBI?=
+ =?utf-8?B?NUI3WmFwYzBPNThkMFM4T2l5Q2FtRklkVDBLeHg2bEpkWGhzNXZrVWhZdk56?=
+ =?utf-8?B?eHBlU1BKSXdDaTVraVpHc0lOREJ5TURaaVhVKzJGY2plMVY3UzJFM2R6ZzJK?=
+ =?utf-8?B?THBwQzdpcFE5dERtZWhCcUxPYktEQlkyVHNmc2FTWFF5ck9rRTFjajVGZ1pQ?=
+ =?utf-8?B?ZjQ5eUkyaEVwTE1XSmhKYkVLVW54VVpWSEl4Sld3K2FSeURrL2xuWEpKNXBU?=
+ =?utf-8?B?WFZzbE9JSE83QVQ4cWVBVDcxM1drQWhlN0RlRG5Ib053T2J1UHFsTGx2NDJR?=
+ =?utf-8?B?QzVUWFZzWkVSdGMvbEZtemRYdE1aSTVrZmVLN0dTLzdJYVNVMlVOankyUnFq?=
+ =?utf-8?B?S0h2elQrNVY2SEhuMTQ0LzRGbVhySDM3c3FYcm1DUDBVMS9yeUNybVVkMWpu?=
+ =?utf-8?B?MFU2SEQ2bVpDZkVNQVdPZklXTnBmUUIxSzc5ZmhObExITnlPUFZqMkNaak1w?=
+ =?utf-8?B?NWFXM25uUkJFTEFPcGNxNzh5U0JQcmxpMkJ1VzhNYmRpRU5nUU5SeDErN1FE?=
+ =?utf-8?B?NUw0clJYS2Rqb2JGMWxnYUt0U1lmUXM1aVN5Yy80VTVmY0M2SmM4ODA2a0tX?=
+ =?utf-8?B?V3YzNFkrcUpZZWJsL0MycGRDelhaVGMyRGgvUFp0bUxUZ0lyc0x3Y2M2MytB?=
+ =?utf-8?B?QThsVDVCMC8wZGV1ZWEyWHJ2MXBGVzEyWTdpWHBtdmk3SDRjUzNhVXlsTWxl?=
+ =?utf-8?B?Y1EvZlpsb085VGFNT0dZcXpFRnVialRHNlF1Z3p3cnZTc21Qbit3US9OaDRp?=
+ =?utf-8?B?TjlWc1pzUkNVOHhmWmJRUEp6OGhSZFNyUkJZQWdpVHJ2WE1iWTMreEJrb202?=
+ =?utf-8?B?L20zV0dERmwzcFRlSmUxRkpNN2hnU1RwS1ZJYUhxTVJnVjZZVko3M284azFX?=
+ =?utf-8?B?MTFyeERSVEpTZkx4djE5ckQ5cEN2SXlhMFh3QkZoL1VWcURxWVZueXpIWW16?=
+ =?utf-8?B?RDZFanRYWEFnOGFGY0dOaE9ydkhSbUdNWjdOSmYvWXl4UjFlTmJ1cDlvdmhF?=
+ =?utf-8?B?ZWNIaklSVWVNOTNjeU44cjJ4MmNIc1pQU1c2Zlk2bll2YkJUb0o2RWVhSEQy?=
+ =?utf-8?B?QlYzanR1d2N4WFIrWUxhUmgxM3JwWnh2V1kwazB2bEZJSHgyWFBFVG1BRU44?=
+ =?utf-8?B?R3B6OTlSenNmaXgzQnhuckUwanVXV1BoWWtvVVFJTEEyQWpielVadUtSaXFR?=
+ =?utf-8?B?Y0RiOWRRRDRIbG9Wa2JlOHZVTG1La1dWZXNFckEweWYvS2owTUhlWXdNSUVp?=
+ =?utf-8?B?eU8xZ3dsT005clZpcnBhRkk5VmRwVHhaYmRINGJwTm1GNDhYRlU2cndobjU0?=
+ =?utf-8?B?Z1lSWjE1ZWc4Nm1XbGxQQWREYmxrMXhHTWl5dTI0aitQUUJ6aTlTbXdid0pu?=
+ =?utf-8?B?UGorL3Y0MUMxSGVzV3pVZlBadytUZ2ZhQmVDeWtra3pkdVZkdzcrZ2J4bUpp?=
+ =?utf-8?B?U3JqZGlxZVorTDdhSXhRSkV6OWg3bllXdUNVYzg3Zi9oc2lDQ3FFM1grQ1Ri?=
+ =?utf-8?B?V2RpOEd1TWZIVTNDWXQ0dnVvc1EwMEJHVWJRT1dXZmlHeXdRNFJ5S283ZEpz?=
+ =?utf-8?B?Z3BFY24rbW5PZVRMZVFPUlBMVU9lQWVsWWRuQitkZ2ZkU3RvYm1uYUJnUE9N?=
+ =?utf-8?B?VW5WWUg2N0g2UXFQT3pIS3VLSFZKQ2cwQktBL2Y1YVFmdEdTWGF0cnFvKzAy?=
+ =?utf-8?B?ZTYzcEtmTjV0MjNUeGF3U1krR1ZhWHVQaDZzS2h2Q2R0ZGYwUnFKcW1rSk9P?=
+ =?utf-8?B?OFh4eitwamFud3FINC96MlJIK0ZhKzE0UUJocXBKSXRPYVJublNYMjZsNUlQ?=
+ =?utf-8?B?cmtYcFZjYlBmSklUSFVDOHdTMGNIVVlRS0paRk83MVpiWU02VFE3UjZNK1dZ?=
+ =?utf-8?Q?27ejgv0iuDuoYeYKlw9TfS+Qr?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 283873d2-696b-4c05-a345-08dba8b6316d
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR12MB6760.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 17:30:59.2907
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 17:34:27.1738
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1176nd5gmEUxfQtFWa5xftI7FJ1LzFqkyEccjPCShoVWj10Fo6bQiQHeJkKeQjBNXonmjX+B1Vudw/gO7jmI7mOHYGkyCer1WHCSiSauKuU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5171
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: oxfNgJc7GcmLeHFwwQ1QbwQw9fTxchJuqkyoHTmCRgPwa50RwvZ5DFrycYT1pTDy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5027
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 09:41:32AM -0700, Luis Chamberlain wrote:
->On Tue, Aug 29, 2023 at 02:05:08PM +0200, Andrea Righi wrote:
->> Using kmalloc() to allocate the decompression workspace for zstd may
->> trigger the following warning when large modules are loaded (i.e., xfs):
->>
->> [    2.961884] WARNING: CPU: 1 PID: 254 at mm/page_alloc.c:4453 __alloc_pages+0x2c3/0x350
->> ...
->> [    2.989033] Call Trace:
->> [    2.989841]  <TASK>
->> [    2.990614]  ? show_regs+0x6d/0x80
->> [    2.991573]  ? __warn+0x89/0x160
->> [    2.992485]  ? __alloc_pages+0x2c3/0x350
->> [    2.993520]  ? report_bug+0x17e/0x1b0
->> [    2.994506]  ? handle_bug+0x51/0xa0
->> [    2.995474]  ? exc_invalid_op+0x18/0x80
->> [    2.996469]  ? asm_exc_invalid_op+0x1b/0x20
->> [    2.997530]  ? module_zstd_decompress+0xdc/0x2a0
->> [    2.998665]  ? __alloc_pages+0x2c3/0x350
->> [    2.999695]  ? module_zstd_decompress+0xdc/0x2a0
->> [    3.000821]  __kmalloc_large_node+0x7a/0x150
->> [    3.001920]  __kmalloc+0xdb/0x170
->> [    3.002824]  module_zstd_decompress+0xdc/0x2a0
->> [    3.003857]  module_decompress+0x37/0xc0
->> [    3.004688]  init_module_from_file+0xd0/0x100
->> [    3.005668]  idempotent_init_module+0x11c/0x2b0
->> [    3.006632]  __x64_sys_finit_module+0x64/0xd0
->> [    3.007568]  do_syscall_64+0x59/0x90
->> [    3.008373]  ? ksys_read+0x73/0x100
->> [    3.009395]  ? exit_to_user_mode_prepare+0x30/0xb0
->> [    3.010531]  ? syscall_exit_to_user_mode+0x37/0x60
->> [    3.011662]  ? do_syscall_64+0x68/0x90
->> [    3.012511]  ? do_syscall_64+0x68/0x90
->> [    3.013364]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
->>
->> However, continuous physical memory does not seem to be required in
->> module_zstd_decompress(), so use vmalloc() instead, to prevent the
->> warning and avoid potential failures at loading compressed modules.
->>
->> Fixes: 169a58ad824d ("module/decompress: Support zstd in-kernel decompression")
->> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
->> ---
->>  kernel/module/decompress.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/module/decompress.c b/kernel/module/decompress.c
->> index 8a5d6d63b06c..87440f714c0c 100644
->> --- a/kernel/module/decompress.c
->> +++ b/kernel/module/decompress.c
->> @@ -241,7 +241,7 @@ static ssize_t module_zstd_decompress(struct load_info *info,
->>  	}
->>
->>  	wksp_size = zstd_dstream_workspace_bound(header.windowSize);
->> -	wksp = kmalloc(wksp_size, GFP_KERNEL);
->> +	wksp = vmalloc(wksp_size);
->>  	if (!wksp) {
->>  		retval = -ENOMEM;
->>  		goto out;
->> @@ -284,7 +284,7 @@ static ssize_t module_zstd_decompress(struct load_info *info,
->>  	retval = new_size;
->>
->>   out:
->> -	kfree(wksp);
->> +	vfree(wksp);
->>  	return retval;
+
+On 2023-08-28 17:08, Michał Winiarski wrote:
+> On Fri, Aug 25, 2023 at 12:59:26PM -0400, James Zhu wrote:
+>> On 2023-07-24 17:14, Michał Winiarski wrote:
+>>> IDR is deprecated, and since XArray manages its own state with internal
+>>> locking, it simplifies the locking on DRM side.
+>>> Additionally, don't use the IRQ-safe variant, since operating on drm
+>>> minor is not done in IRQ context.
+>>>
+>>> Signed-off-by: Michał Winiarski<michal.winiarski@intel.com>
+>>> Suggested-by: Matthew Wilcox<willy@infradead.org>
+>>> ---
+>>>    drivers/gpu/drm/drm_drv.c | 63 ++++++++++++++++-----------------------
+>>>    1 file changed, 25 insertions(+), 38 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+>>> index 3eda026ffac6..3faecb01186f 100644
+>>> --- a/drivers/gpu/drm/drm_drv.c
+>>> +++ b/drivers/gpu/drm/drm_drv.c
+>>> @@ -34,6 +34,7 @@
+>>>    #include <linux/pseudo_fs.h>
+>>>    #include <linux/slab.h>
+>>>    #include <linux/srcu.h>
+>>> +#include <linux/xarray.h>
+>>>    #include <drm/drm_accel.h>
+>>>    #include <drm/drm_cache.h>
+>>> @@ -54,8 +55,7 @@ MODULE_AUTHOR("Gareth Hughes, Leif Delgass, José Fonseca, Jon Smirl");
+>>>    MODULE_DESCRIPTION("DRM shared core routines");
+>>>    MODULE_LICENSE("GPL and additional rights");
+>>> -static DEFINE_SPINLOCK(drm_minor_lock);
+>>> -static struct idr drm_minors_idr;
+>>> +static DEFINE_XARRAY_ALLOC(drm_minors_xa);
+>>>    /*
+>>>     * If the drm core fails to init for whatever reason,
+>>> @@ -101,26 +101,23 @@ static struct drm_minor **drm_minor_get_slot(struct drm_device *dev,
+>>>    static void drm_minor_alloc_release(struct drm_device *dev, void *data)
+>>>    {
+>>>    	struct drm_minor *minor = data;
+>>> -	unsigned long flags;
+>>>    	WARN_ON(dev != minor->dev);
+>>>    	put_device(minor->kdev);
+>>> -	if (minor->type == DRM_MINOR_ACCEL) {
+>>> +	if (minor->type == DRM_MINOR_ACCEL)
+>>>    		accel_minor_remove(minor->index);
+>>> -	} else {
+>>> -		spin_lock_irqsave(&drm_minor_lock, flags);
+>>> -		idr_remove(&drm_minors_idr, minor->index);
+>>> -		spin_unlock_irqrestore(&drm_minor_lock, flags);
+>>> -	}
+>>> +	else
+>>> +		xa_erase(&drm_minors_xa, minor->index);
+>>>    }
+>>> +#define DRM_MINOR_LIMIT(t) ({ typeof(t) _t = (t); XA_LIMIT(64 * _t, 64 * _t + 63); })
+>>> +
+>>>    static int drm_minor_alloc(struct drm_device *dev, enum drm_minor_type type)
+>>>    {
+>>>    	struct drm_minor *minor;
+>>> -	unsigned long flags;
+>>> -	int r;
+>>> +	int index, r;
+>>>    	minor = drmm_kzalloc(dev, sizeof(*minor), GFP_KERNEL);
+>>>    	if (!minor)
+>>> @@ -129,24 +126,17 @@ static int drm_minor_alloc(struct drm_device *dev, enum drm_minor_type type)
+>>>    	minor->type = type;
+>>>    	minor->dev = dev;
+>>> -	idr_preload(GFP_KERNEL);
+>>>    	if (type == DRM_MINOR_ACCEL) {
+>>>    		r = accel_minor_alloc();
+>>> +		index = r;
+>>>    	} else {
+>>> -		spin_lock_irqsave(&drm_minor_lock, flags);
+>>> -		r = idr_alloc(&drm_minors_idr,
+>>> -			NULL,
+>>> -			64 * type,
+>>> -			64 * (type + 1),
+>>> -			GFP_NOWAIT);
+>>> -		spin_unlock_irqrestore(&drm_minor_lock, flags);
+>>> +		r = xa_alloc(&drm_minors_xa, &index, NULL, DRM_MINOR_LIMIT(type), GFP_KERNEL);
+>>>    	}
+>>> -	idr_preload_end();
+>>>    	if (r < 0)
+>>>    		return r;
+>>> -	minor->index = r;
+>>> +	minor->index = index;
+>>>    	r = drmm_add_action_or_reset(dev, drm_minor_alloc_release, minor);
+>>>    	if (r)
+>>> @@ -163,7 +153,7 @@ static int drm_minor_alloc(struct drm_device *dev, enum drm_minor_type type)
+>>>    static int drm_minor_register(struct drm_device *dev, enum drm_minor_type type)
+>>>    {
+>>>    	struct drm_minor *minor;
+>>> -	unsigned long flags;
+>>> +	void *entry;
+>>>    	int ret;
+>>>    	DRM_DEBUG("\n");
+>>> @@ -190,9 +180,12 @@ static int drm_minor_register(struct drm_device *dev, enum drm_minor_type type)
+>>>    	if (minor->type == DRM_MINOR_ACCEL) {
+>>>    		accel_minor_replace(minor, minor->index);
+>>>    	} else {
+>>> -		spin_lock_irqsave(&drm_minor_lock, flags);
+>>> -		idr_replace(&drm_minors_idr, minor, minor->index);
+>>> -		spin_unlock_irqrestore(&drm_minor_lock, flags);
+>>> +		entry = xa_store(&drm_minors_xa, minor->index, minor, GFP_KERNEL);
+>>> +		if (xa_is_err(entry)) {
+>>> +			ret = xa_err(entry);
+>>> +			goto err_debugfs;
+>>> +		}
+>>> +		WARN_ON(entry);
+>> [JZ] would WARN_ON(entry != minor)be better?
+> We expect NULL here.
+> The same one that was previously stored here ⌄⌄⌄
+> r = xa_alloc(&drm_minors_xa, &minor->index, NULL, DRM_EXTENDED_MINOR_LIMIT, GFP_KERNEL);
+> in drm_minor_alloc.
+[JZ] My mistake.
 >
->Thanks! Applied and queued up.
-
-I can see at least the gz decompress would need the same kind of change.
-Shouldn't we tackle them all at once?
-
-Lucas De Marchi
-
+>>>    	}
+>>>    	DRM_DEBUG("new minor registered %d\n", minor->index);
+>>> @@ -206,20 +199,16 @@ static int drm_minor_register(struct drm_device *dev, enum drm_minor_type type)
+>>>    static void drm_minor_unregister(struct drm_device *dev, enum drm_minor_type type)
+>>>    {
+>>>    	struct drm_minor *minor;
+>>> -	unsigned long flags;
+>>>    	minor = *drm_minor_get_slot(dev, type);
+>>>    	if (!minor || !device_is_registered(minor->kdev))
+>>>    		return;
+>>>    	/* replace @minor with NULL so lookups will fail from now on */
+>>> -	if (minor->type == DRM_MINOR_ACCEL) {
+>>> +	if (minor->type == DRM_MINOR_ACCEL)
+>>>    		accel_minor_replace(NULL, minor->index);
+>>> -	} else {
+>>> -		spin_lock_irqsave(&drm_minor_lock, flags);
+>>> -		idr_replace(&drm_minors_idr, NULL, minor->index);
+>>> -		spin_unlock_irqrestore(&drm_minor_lock, flags);
+>>> -	}
+>>> +	else
+>>> +		xa_store(&drm_minors_xa, minor->index, NULL, GFP_KERNEL);
+>>>    	device_del(minor->kdev);
+>>>    	dev_set_drvdata(minor->kdev, NULL); /* safety belt */
+>>> @@ -238,13 +227,12 @@ static void drm_minor_unregister(struct drm_device *dev, enum drm_minor_type typ
+>>>    struct drm_minor *drm_minor_acquire(unsigned int minor_id)
+>>>    {
+>>>    	struct drm_minor *minor;
+>>> -	unsigned long flags;
+>>> -	spin_lock_irqsave(&drm_minor_lock, flags);
+>>> -	minor = idr_find(&drm_minors_idr, minor_id);
+>>> +	xa_lock(&drm_minors_xa);
+>>> +	minor = xa_load(&drm_minors_xa, minor_id);
+>>>    	if (minor)
+>>>    		drm_dev_get(minor->dev);
+>> [JZ] why minor->dev need ca_lock here?
+> We're relying on the ordering for acquire/release (previously
+> guaranteed by the drm_minor_lock, now by internal XArray locking).
+> xa_load doesn't take xa_lock internally:
+> https://docs.kernel.org/core-api/xarray.html#locking
+[JZ] I means that drm_dev_get(minor->dev); can move out of xa_lock.
+>>> -	spin_unlock_irqrestore(&drm_minor_lock, flags);
+>>> +	xa_unlock(&drm_minors_xa);
+>>>    	if (!minor) {
+>>>    		return ERR_PTR(-ENODEV);
+>>> @@ -1067,7 +1055,7 @@ static void drm_core_exit(void)
+>>>    	unregister_chrdev(DRM_MAJOR, "drm");
+>>>    	debugfs_remove(drm_debugfs_root);
+>>>    	drm_sysfs_destroy();
+>>> -	idr_destroy(&drm_minors_idr);
+>> [JZ] Should we call xa_destroy instead here?
+> We could, if we expect the xarray to potentially not be empty.
+>  From what I understand - all minors should be released at this point.
+[JZ] In practice,  adding destroy here will be better.
 >
->  Luis
+> Thanks,
+> -Michał
+>
+>>> +	WARN_ON(!xa_empty(&drm_minors_xa));
+>>>    	drm_connector_ida_destroy();
+>>>    }
+>>> @@ -1076,7 +1064,6 @@ static int __init drm_core_init(void)
+>>>    	int ret;
+>>>    	drm_connector_ida_init();
+>>> -	idr_init(&drm_minors_idr);
+>>>    	drm_memcpy_init_early();
+>>>    	ret = drm_sysfs_init();
