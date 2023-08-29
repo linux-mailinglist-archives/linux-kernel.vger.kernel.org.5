@@ -2,51 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA0378C95F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AD278C968
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237016AbjH2QLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
+        id S237415AbjH2QNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237405AbjH2QLR (ORCPT
+        with ESMTP id S237414AbjH2QNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:11:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0031B9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:11:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A00D64093
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 16:11:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 442B3C433C7;
-        Tue, 29 Aug 2023 16:11:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693325473;
-        bh=WESd26CM8l6Fl1FSwuMzzOGxHgpcYQhk+VTqf15cOd4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rPs7SxUDnWz2fJCB9+Eu1rnfX+LFGYo4ur6T6GiLFiPhUpDvZB5oeWzzQ3OyEifLz
-         dlNxPaDmRnZciqx55OQgChfjkbMsLeGkJIAMVdlMTLeGHapEp8GaqPJxWRXr+ructn
-         cLEufQc7eIiA310k6+coxHTt27sPXP8kIIEyYq5bdZJdrttcF5VgsfjVfN2jOy3+XP
-         zoXaox2tHxhl5LrE90xY3/gRFOBtIHhTVOnjfHhHFIi1O02zXAbEcSh5ZDHHsDKCEE
-         SO6KkCLYHaB5xNyk/FW37A7pA+kUxt8PomlEGynhz5dMv8qm1TICEuvE0QF/Lbrqin
-         KClhy9lEaV3dw==
-Date:   Tue, 29 Aug 2023 18:11:00 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Xueshi Hu <xueshi.hu@smartx.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tick/nohz: remove unused
- tick_nohz_idle_stop_tick_protected()
-Message-ID: <ZO4YlOWJS8sb62cS@lothringen>
-References: <20230813131153.807850-1-xueshi.hu@smartx.com>
+        Tue, 29 Aug 2023 12:13:14 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BB71A6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:13:11 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe4cdb72b9so44910575e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693325590; x=1693930390;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QOloLP8KeMUkL/Jq5xZLVezEea9mj4ydYOnhYPBWQ2Q=;
+        b=eRrtd07xYLSpEgY3PiawWjGxmTgWpX51lDmI8IlmqjE9SdS7xCFh/HiBvZLUsEPXTb
+         Cn2lDzcNHNJTKaJNGiKybabya989eJqEmmGMsYW+D2p/2/Icz5j6lJcigtQaYis9L4rd
+         n7V+FLaYEHiwza2VKnSHlS/KVVT+VN7e77cgrGHOtdCyvNOkcRRXKx9hK55cLtA4BonY
+         80WLqnQDIlRGsD3yOcu7Z3VvXyeU//rZUrns4dBTvHqJJQvTb+8qoS7CkJJX7g43jEQI
+         u5FFjrE8TgrMPLUczQvS75G4LjcxXoFxBWrGsQW548tpPZqvyeO7wdTCuWIYetl8YaDz
+         IS1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693325590; x=1693930390;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QOloLP8KeMUkL/Jq5xZLVezEea9mj4ydYOnhYPBWQ2Q=;
+        b=ANPrnxyvqYsM0ON9zvZ2pkfhbLHT3FfktXxnOO6QGzpj/mcO/yFuVS9WpbvVLXRwRW
+         va3R2clrXuvx3J9gs4VDn8GwOIdtwghgRENJZmyT66zjwi9WuhbrBdilFDqfSzfn+874
+         CFRNhHdHNczYLmkDwwYs9VJtaU+c1u4/mRfSVfoOKrBvYM6M5fdikUrg5v1XhaDCpbo4
+         GJYHzrM0nixuRZh0STQXkHxc/FjQUXMHnTtamCgAE0/pn7m11kZKi4XcL4pNn2nhFHxf
+         X0vw8aFFEc6K9Y5XJBUfRjvoUwA4F207qdG2hL8jjFamWqU0kALhUUNLq72Xx9XDxpaY
+         XL7w==
+X-Gm-Message-State: AOJu0YzVtzrNAFXWdCjF7iT1WL2fbY6mLwH40wfpLfhJ2tIDQZz/rXQL
+        URQP6qgMiG2QtYqbUE3MYF758Q==
+X-Google-Smtp-Source: AGHT+IHcdnfkStpEnXlknvj6hsYOpgEpIA7JoM/jexaCgsmNY+SWJ7vHF5ibgDOHseDi1um3J1mX5w==
+X-Received: by 2002:a05:600c:234a:b0:401:d258:ad3d with SMTP id 10-20020a05600c234a00b00401d258ad3dmr2677945wmq.2.1693325590097;
+        Tue, 29 Aug 2023 09:13:10 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id f22-20020a5d58f6000000b0031981c500aasm14124155wrd.25.2023.08.29.09.13.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 09:13:09 -0700 (PDT)
+Message-ID: <ebb87316-189b-3c54-d53e-3732e60cec75@linaro.org>
+Date:   Tue, 29 Aug 2023 17:13:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813131153.807850-1-xueshi.hu@smartx.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2 5/9] media: qcom: camss: Fix VFE-480
+ vfe_disable_output()
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20230822200626.1931129-1-bryan.odonoghue@linaro.org>
+ <20230822200626.1931129-6-bryan.odonoghue@linaro.org>
+ <20230828171725.GZ14596@pendragon.ideasonboard.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230828171725.GZ14596@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,46 +81,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 09:11:53PM +0800, Xueshi Hu wrote:
-> All the caller has been removed since commit 336f560a8917 ("x86/xen: don't
-> let xen_pv_play_dead() return")
+On 28/08/2023 18:17, Laurent Pinchart wrote:
+>> vfe-480 is copied from vfe-17x and has the same racy idle timeout bug as in
+>> 17x.
+>>
+>> Fix the vfe_disable_output() logic to no longer be racy and to conform
+>> to the 17x way of quiescing and then resetting the VFE.
+> How about dropping the duplicate function and share a single
+> implementation for the two files ?
 > 
-> Signed-off-by: Xueshi Hu <xueshi.hu@smartx.com>
 
-Applied to my pending queue, thanks!
+Hmm, so I looked at this.
 
-> ---
->  include/linux/tick.h | 10 ----------
->  1 file changed, 10 deletions(-)
-> 
-> diff --git a/include/linux/tick.h b/include/linux/tick.h
-> index 9459fef5b857..716d17f31c45 100644
-> --- a/include/linux/tick.h
-> +++ b/include/linux/tick.h
-> @@ -140,14 +140,6 @@ extern unsigned long tick_nohz_get_idle_calls(void);
->  extern unsigned long tick_nohz_get_idle_calls_cpu(int cpu);
->  extern u64 get_cpu_idle_time_us(int cpu, u64 *last_update_time);
->  extern u64 get_cpu_iowait_time_us(int cpu, u64 *last_update_time);
-> -
-> -static inline void tick_nohz_idle_stop_tick_protected(void)
-> -{
-> -	local_irq_disable();
-> -	tick_nohz_idle_stop_tick();
-> -	local_irq_enable();
-> -}
-> -
->  #else /* !CONFIG_NO_HZ_COMMON */
->  #define tick_nohz_enabled (0)
->  static inline int tick_nohz_tick_stopped(void) { return 0; }
-> @@ -170,8 +162,6 @@ static inline ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
->  }
->  static inline u64 get_cpu_idle_time_us(int cpu, u64 *unused) { return -1; }
->  static inline u64 get_cpu_iowait_time_us(int cpu, u64 *unused) { return -1; }
-> -
-> -static inline void tick_nohz_idle_stop_tick_protected(void) { }
->  #endif /* !CONFIG_NO_HZ_COMMON */
->  
->  #ifdef CONFIG_NO_HZ_FULL
-> -- 
-> 2.40.1
-> 
+In principle I like it. Right now vfe-170 only deals with a single 
+write-master = 0, whereas vfe-480 deals with multiple write-masters.
+
+Collapsing down into one place is the right thing to do however, it 
+feels like a larger update to vfe-170 that merits its own series along 
+the lines of "Support multiple write-masters for vfe-17x" or better 
+still "Support virtual channels for vfe-17x" which is what is implied by 
+this.
+
+Yet another thing to add to the TODO list here.
+
+---
+bod
