@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1686278D087
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563A278D09E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238954AbjH2X0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 19:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S240698AbjH2X3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 19:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241135AbjH2X0w (ORCPT
+        with ESMTP id S239198AbjH2X2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 19:26:52 -0400
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8AD139
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 16:26:49 -0700 (PDT)
-Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
-        by cmsmtp with ESMTP
-        id b7MsqRtuMbK1Vb86iqVCMB; Tue, 29 Aug 2023 23:26:48 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTPS
-        id b86hquQpSwpJPb86hqueRv; Tue, 29 Aug 2023 23:26:47 +0000
-X-Authority-Analysis: v=2.4 cv=J525USrS c=1 sm=1 tr=0 ts=64ee7eb7
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UBOAt4it5aQqk4EXWMeXuCOaSWxoxO7ene9cFrzDPeo=; b=VTh020OaueNwEopQppbuLLspmb
-        +Vl9n1Qc3+zKdF680+HWcNnsLSRC89kQa+HRuJUx8QMZXbu/2OZSC346EEsF2nR8CTkUBpgQry4mF
-        kQSPeGHI5UKo+F8UN8Mu6ONmFrdr1/+kmKYGTnPFWAnPcU2KzKriQxxhVCwkW8Kdpbn3o737dOrxR
-        Tp9sC9IpD8DixEacx8JNgmqo6yy2oAiUqmyxHbrHR8ToNaneBkqg6FkjeNNQgwDP981N37AywRV1x
-        /+sOtPbMU3vPx6FlEEM+bGWD4KF4DAhy7upG2PMC5seNs/FOlnQYyqotPN6lcWYyESuPUUkDXwYvG
-        excmujsg==;
-Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:53546 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <re@w6rz.net>)
-        id 1qb86f-000XiH-0X;
-        Tue, 29 Aug 2023 17:26:45 -0600
-Subject: Re: [PATCH 5.15 00/89] 5.15.129-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230828101150.163430842@linuxfoundation.org>
-In-Reply-To: <20230828101150.163430842@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <8f063190-6338-8cc2-a905-ffbee4f5ffb4@w6rz.net>
-Date:   Tue, 29 Aug 2023 16:26:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 29 Aug 2023 19:28:34 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEEA11B;
+        Tue, 29 Aug 2023 16:28:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1693351706;
+        bh=MxfD5rB/5DGRsx1UFZiv+c2vCsiVC6XlMi4cYQc+DJY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BaCv5kNx3dK43bYNeOzj6Uef42zVtb1lJodrEvVcs0sGdKSGUpXPrh+PLu94Mzea8
+         b1ak4Xru3g3jS2nCZm/lm3bCBj4KDwX8iiySRUVsnbULEtDuXtjqHumUiuF7X3j+tU
+         b39oAdffrJ9AlEA95TTw0C/Kt+6C9P246jdhqC5jPgwvZHNxfvTUnDUjrhfIUcfXkn
+         EitkyhpU3LkeMQOWrI7BfmpnEHxbWWrRSLXH9HlC8VIid0w2N8DjzX1I1p/lhTuUcq
+         IhKWsY/FIgLyt45/n5zyKn3fOd1GsEKQW94QR05zb6sHagxVKb8ratyQnCeYQvTR1f
+         7nbRrey4/yfDQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rb3Ws3NT9z4wd0;
+        Wed, 30 Aug 2023 09:28:25 +1000 (AEST)
+Date:   Wed, 30 Aug 2023 09:28:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the net-next tree with the powerpc
+ tree
+Message-ID: <20230830092814.71cb6911@canb.auug.org.au>
+In-Reply-To: <20230818111707.2714e8cb@canb.auug.org.au>
+References: <20230818111707.2714e8cb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 73.162.232.9
-X-Source-L: No
-X-Exim-ID: 1qb86f-000XiH-0X
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:53546
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org:  HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfCjiKpTx04rGMsFAmcfbRYXJJZckXPd4+VZFPaLP7cv528nfZSVBd9/TS37A2NrUXYTMYkUmN/mT1mNMj4HHe5ATtWoQU4tlSoNG9XWnqrszgZZa5mcg
- lq22oD2UtbRBmx1iQ1gILeWu9SdICJ/u9X5hV8E8FZvtCPRPRDOzHBM8FbdYBKor6pVgJFRVg7LqPqQaAReefXsvVw3t0lv4lLE=
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/kzYIKj8Isww0Z0lB3pjBXEU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 3:13 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.129 release.
-> There are 89 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.129-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+--Sig_/kzYIKj8Isww0Z0lB3pjBXEU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+Hi all,
 
-Tested-by: Ron Economos <re@w6rz.net>
+On Fri, 18 Aug 2023 11:17:07 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the net-next tree got a conflict in:
+>=20
+>   drivers/net/ethernet/freescale/fs_enet/fs_enet.h
+>=20
+> between commit:
+>=20
+>   60bc069c433f ("powerpc/include: Remove unneeded #include <asm/fs_pd.h>")
+>=20
+> from the powerpc tree and commit:
+>=20
+>   7a76918371fe ("net: fs_enet: Move struct fs_platform_info into fs_enet.=
+h")
+>=20
+> from the net-next tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc drivers/net/ethernet/freescale/fs_enet/fs_enet.h
+> index aad96cb2ab4e,d371072fff60..000000000000
+> --- a/drivers/net/ethernet/freescale/fs_enet/fs_enet.h
+> +++ b/drivers/net/ethernet/freescale/fs_enet/fs_enet.h
+> @@@ -9,8 -10,8 +10,6 @@@
+>   #include <linux/phy.h>
+>   #include <linux/dma-mapping.h>
+>  =20
+> - #include <linux/fs_enet_pd.h>
+>  -#include <asm/fs_pd.h>
+> --
+>   #ifdef CONFIG_CPM1
+>   #include <asm/cpm1.h>
+>   #endif
 
+This is now a conflict between the powerpc tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/kzYIKj8Isww0Z0lB3pjBXEU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTufw8ACgkQAVBC80lX
+0GwGLgf/YrbEQb46AZGblOXOfqDRqvOClfY16YPJ421dwyYDswib581afeFKKuT4
+vTnIg78VaetO8fLJXBP1E9mzu9LRPLmxMfYwDrlK5fk6IHP9X5euTN8VenbZsmYi
+giGEaVKOd23q/CfZ0NRi+JhWRffPezZabAIYmo23UKw+QNaKMCsdziARRKmvT8DN
+jkqfvR8GQz7nMJjzhMZj24xiTWs478zGRhOTXUXMWxDdcNKdbg4GzZlcD8ikV8az
+GAU59J9HXcHeGPYpW4zLS2TWEFw1xF7xphIRlYJd63qRKQeiI4zyHQn+5V2wfgLm
+OptDIA4IDHhVixYrjyCleSXLrlm8UQ==
+=LI+k
+-----END PGP SIGNATURE-----
+
+--Sig_/kzYIKj8Isww0Z0lB3pjBXEU--
