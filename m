@@ -2,48 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B52878C5FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC0E78C58F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236528AbjH2NfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
+        id S236143AbjH2Nds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236201AbjH2Nda (ORCPT
+        with ESMTP id S236210AbjH2Ndd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:33:30 -0400
+        Tue, 29 Aug 2023 09:33:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA212CC1;
-        Tue, 29 Aug 2023 06:33:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D6ECCF;
+        Tue, 29 Aug 2023 06:33:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8550365722;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D00A6574C;
+        Tue, 29 Aug 2023 13:32:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB00C433CB;
         Tue, 29 Aug 2023 13:32:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D13F5C433CA;
-        Tue, 29 Aug 2023 13:32:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693315953;
-        bh=VBzknaTaZotCbwVOa0C18oLzg8oXNQxSdFkUl27vCP8=;
+        s=k20201202; t=1693315954;
+        bh=24D+O0ROl68RuyCISL7V7d9L9V1jcNP9honW3jJuhUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KVm7mzw8ZI7x6GLLNE36w5rUTLSUci4O8UFMYQ1vnxxZ9za4Zr9cBhNMWxtqx7PHx
-         jmM3r8k+XxAcFkgDXwku4C1JTAr508medQ0ooSH5svtBSPkFPdSUN5AZ11Q4SdMg6v
-         SMGQJdZ4gJU4AsGB35jf588jakyeJUwKBGlVWV6s3FT6ZvgKpYi3/lKBsM5xvGomqg
-         uFC+HyP9Izv27H5zhM0vFh+dPAZD7fS1GBhKswGvyx2woCZTanSbFrBo3U1YXxuRlD
-         to5EiVhhHG6F6dh3CgW8ibd1XqgL7hpXn2WLqmtEs6RTbYuj1+DHtcj//19cE15XLQ
-         WEvwitQBvV0yQ==
+        b=Qgm5eoM4cTdmz4vncnGIMyHoqPInDfSPCKHJr5e/3bGWaAysFZj5Z9ErvuZqIIyt/
+         JKSwe3v1z+oFEfmC/KoakXVqivDtAXTlQXXNRYwOWkr9Yl5kCKXJ52+pVuEvSWqMCS
+         zvg5JJtPWv4E2uHo0c/o9wDMMSk4nehC6alsABAWe3pFBpFQouFYSvSpKP62KgjPjO
+         IshuOYxxkyHltHtSSSP0sB1tvwgJiWawUYwlo4zMJ904aAIA4cP57l6Uyo3Ouur0WP
+         H9RkgaUxN/8ziesGvwpu5Bgy6Ox6At3KhmqhaokOJclEe/9Pxx5rJuZfbL3zlKwZYH
+         AULC9OdoIdmgQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lin Yujun <linyujun809@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 11/17] ARM: dts: integrator: fix PCI bus dtc warnings
-Date:   Tue, 29 Aug 2023 09:31:58 -0400
-Message-Id: <20230829133211.519957-11-sashal@kernel.org>
+Cc:     Shuming Fan <shumingf@realtek.com>,
+        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.4 12/17] ASoC: rt1308-sdw: fix random louder sound
+Date:   Tue, 29 Aug 2023 09:31:59 -0400
+Message-Id: <20230829133211.519957-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230829133211.519957-1-sashal@kernel.org>
 References: <20230829133211.519957-1-sashal@kernel.org>
@@ -61,39 +59,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Yujun <linyujun809@huawei.com>
+From: Shuming Fan <shumingf@realtek.com>
 
-[ Upstream commit 42ff49a1967af71772b264009659ce181f7d2d2a ]
+[ Upstream commit 37aba3190891d4de189bd5192ee95220e295f34d ]
 
-An warning is reported when allmodconfig is used to compile the kernel of the ARM architecture:
+This patch uses a vendor register to check whether the system hibernated ever.
+The driver will only set the preset when the driver brings up or the system hibernated.
+It will avoid the unknown issue that makes the speaker output louder and can't control the volume.
 
-arch/arm/boot/dts/arm/integratorap.dts:161.22-206.4: Warning (pci_bridge): /pciv3@62000000: node name is not "pci" or "pcie"
-
-Change the node name to pci to clear the build warning.
-
-Signed-off-by: Lin Yujun <linyujun809@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20230811-versatile-dts-v6-6-v1-1-d8cb9d1947ed@linaro.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Shuming Fan <shumingf@realtek.com
+Link: https://lore.kernel.org/r/20230811093822.37573-1-shumingf@realtek.com
+Signed-off-by: Mark Brown <broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/integratorap.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt1308-sdw.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/integratorap.dts b/arch/arm/boot/dts/integratorap.dts
-index 5b52d75bc6bed..d9927d3181dce 100644
---- a/arch/arm/boot/dts/integratorap.dts
-+++ b/arch/arm/boot/dts/integratorap.dts
-@@ -158,7 +158,7 @@ pic: pic@14000000 {
- 		valid-mask = <0x003fffff>;
- 	};
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index 1797af824f60b..e2699c0b117be 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -52,6 +52,7 @@ static bool rt1308_volatile_register(struct device *dev, unsigned int reg)
+ 	case 0x300a:
+ 	case 0xc000:
+ 	case 0xc710:
++	case 0xcf01:
+ 	case 0xc860 ... 0xc863:
+ 	case 0xc870 ... 0xc873:
+ 		return true;
+@@ -213,7 +214,7 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
+ {
+ 	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
+ 	int ret = 0;
+-	unsigned int tmp;
++	unsigned int tmp, hibernation_flag;
  
--	pci: pciv3@62000000 {
-+	pci: pci@62000000 {
- 		compatible = "arm,integrator-ap-pci", "v3,v360epc-pci";
- 		device_type = "pci";
- 		#interrupt-cells = <1>;
+ 	if (rt1308->hw_init)
+ 		return 0;
+@@ -242,6 +243,10 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
+ 
+ 	pm_runtime_get_noresume(&slave->dev);
+ 
++	regmap_read(rt1308->regmap, 0xcf01, &hibernation_flag);
++	if ((hibernation_flag != 0x00) && rt1308->first_hw_init)
++		goto _preset_ready_;
++
+ 	/* sw reset */
+ 	regmap_write(rt1308->regmap, RT1308_SDW_RESET, 0);
+ 
+@@ -282,6 +287,12 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
+ 	regmap_write(rt1308->regmap, 0xc100, 0xd7);
+ 	regmap_write(rt1308->regmap, 0xc101, 0xd7);
+ 
++	/* apply BQ params */
++	rt1308_apply_bq_params(rt1308);
++
++	regmap_write(rt1308->regmap, 0xcf01, 0x01);
++
++_preset_ready_:
+ 	if (rt1308->first_hw_init) {
+ 		regcache_cache_bypass(rt1308->regmap, false);
+ 		regcache_mark_dirty(rt1308->regmap);
 -- 
 2.40.1
 
