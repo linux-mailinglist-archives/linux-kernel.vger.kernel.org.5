@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA6678BC9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DF378BC96
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 04:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbjH2CG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 22:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
+        id S233423AbjH2CFx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Aug 2023 22:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235252AbjH2CGK (ORCPT
+        with ESMTP id S232741AbjH2CFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 22:06:10 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AA619F;
-        Mon, 28 Aug 2023 19:06:01 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 37T25baR053279;
-        Tue, 29 Aug 2023 10:05:37 +0800 (+08)
-        (envelope-from Wenchao.Chen@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RZW0k4sBPz2QZR4F;
-        Tue, 29 Aug 2023 10:03:02 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx05.spreadtrum.com
- (10.29.1.56) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 29 Aug
- 2023 10:05:36 +0800
-From:   Wenchao Chen <wenchao.chen@unisoc.com>
-To:     <ulf.hansson@linaro.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
-        <yuelin.tang@unisoc.com>, Wenchao Chen <wenchao.chen@unisoc.com>
-Subject: [PATCH V3 2/2] mmc: hsq: dynamic adjustment of hsq->depth
-Date:   Tue, 29 Aug 2023 10:04:51 +0800
-Message-ID: <20230829020451.9828-3-wenchao.chen@unisoc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230829020451.9828-1-wenchao.chen@unisoc.com>
-References: <20230829020451.9828-1-wenchao.chen@unisoc.com>
+        Mon, 28 Aug 2023 22:05:21 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CABBC0;
+        Mon, 28 Aug 2023 19:05:18 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id AA3618022;
+        Tue, 29 Aug 2023 10:05:13 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
+ 2023 10:05:13 +0800
+Received: from ubuntu.localdomain (113.72.145.245) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
+ 2023 10:05:12 +0800
+From:   Hal Feng <hal.feng@starfivetech.com>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+CC:     Hal Feng <hal.feng@starfivetech.com>, <devicetree@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [-next v2 1/2] riscv: dts: starfive: visionfive 2: Enable usb0
+Date:   Tue, 29 Aug 2023 10:05:10 +0800
+Message-ID: <20230829020511.26844-1-hal.feng@starfivetech.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx05.spreadtrum.com (10.29.1.56)
-X-MAIL: SHSQR01.spreadtrum.com 37T25baR053279
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [113.72.145.245]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increasing hsq_depth improves random write performance.
+usb0 was disabled by mistake when merging, so enable it.
 
-Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+Fixes: e7c304c0346d ("riscv: dts: starfive: jh7110: add the node and pins configuration for tdm")
+Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
 ---
- drivers/mmc/host/mmc_hsq.c | 27 +++++++++++++++++++++++++++
- drivers/mmc/host/mmc_hsq.h |  5 +++++
- 2 files changed, 32 insertions(+)
+ arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mmc/host/mmc_hsq.c b/drivers/mmc/host/mmc_hsq.c
-index 8556cacb21a1..0984c39108ba 100644
---- a/drivers/mmc/host/mmc_hsq.c
-+++ b/drivers/mmc/host/mmc_hsq.c
-@@ -21,6 +21,31 @@ static void mmc_hsq_retry_handler(struct work_struct *work)
- 	mmc->ops->request(mmc, hsq->mrq);
- }
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+index d79f94432b27..85f40df93f25 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+@@ -513,6 +513,7 @@ &uart0 {
  
-+static void mmc_hsq_modify_threshold(struct mmc_hsq *hsq)
-+{
-+	struct mmc_host *mmc = hsq->mmc;
-+	struct mmc_request *mrq;
-+	struct hsq_slot *slot;
-+	int need_change = 0;
-+	int tag;
-+
-+	for (tag = 0; tag < HSQ_NUM_SLOTS; tag++) {
-+		slot = &hsq->slot[tag];
-+		mrq = slot->mrq;
-+		if (mrq && mrq->data &&
-+			(mrq->data->blksz * mrq->data->blocks == 4096) &&
-+			(mrq->data->flags & MMC_DATA_WRITE))
-+			need_change++;
-+		else
-+			break;
-+	}
-+
-+	if (need_change > 1)
-+		mmc->hsq_depth = HSQ_PERFORMANCE_DEPTH;
-+	else
-+		mmc->hsq_depth = HSQ_NORMAL_DEPTH;
-+}
-+
- static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
- {
- 	struct mmc_host *mmc = hsq->mmc;
-@@ -42,6 +67,8 @@ static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
- 		return;
- 	}
+ &usb0 {
+ 	dr_mode = "peripheral";
++	status = "okay";
+ };
  
-+	mmc_hsq_modify_threshold(hsq);
-+
- 	slot = &hsq->slot[hsq->next_tag];
- 	hsq->mrq = slot->mrq;
- 	hsq->qcnt--;
-diff --git a/drivers/mmc/host/mmc_hsq.h b/drivers/mmc/host/mmc_hsq.h
-index aa5c4543b55f..dd352a6ac32a 100644
---- a/drivers/mmc/host/mmc_hsq.h
-+++ b/drivers/mmc/host/mmc_hsq.h
-@@ -10,6 +10,11 @@
-  * flight to avoid a long latency.
-  */
- #define HSQ_NORMAL_DEPTH	2
-+/*
-+ * For 4k random writes, we allow hsq_depth to increase to 5
-+ * for better performance.
-+ */
-+#define HSQ_PERFORMANCE_DEPTH	5
- 
- struct hsq_slot {
- 	struct mmc_request *mrq;
+ &U74_1 {
 -- 
-2.17.1
+2.38.1
 
