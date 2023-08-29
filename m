@@ -2,129 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E753D78C883
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DA178C886
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237092AbjH2PXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 11:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
+        id S237232AbjH2PYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 11:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234477AbjH2PXI (ORCPT
+        with ESMTP id S237208AbjH2PYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:23:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E206132
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:23:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=c6EWG1bxVjUa++TxxlSM+W3U1eow2wnEJPzH8b4Pkrg=; b=CHD7lODq/UwhF2VObgV7HmMGmr
-        uJFeBJUe+zvVN75a9g+YsFxGL05C5LVCcIObbFLPiDb/cMLXTHeJLK4fEZYC9csbJLekEEGsduHBc
-        1dXWEg0TqF54wox4P4Sz0GNV6Ghej7/UEUKVTA3sWvNKQVkg6IeBAbRPdbYYagX0Uh6JR+wSSCch3
-        jzDdUNKKezF0QsbsjHm7wno5eqb0h5J6oOL7vhImunPVw6XsvmfGMUd0BcF1bdpTsFj+afiQcfouQ
-        FRZy1DPKJNp4wVrRv/vFQs2eUFXhyBMwWWqox4TGf0iHEFDUc6nHUDnw7KS4Gs1yEXku+co8L0z38
-        kW8Xd/6w==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qb0YZ-00BmKJ-17;
-        Tue, 29 Aug 2023 15:23:03 +0000
-Date:   Tue, 29 Aug 2023 17:22:57 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>
-Subject: [GIT PULL] dma-mapping updates for Linux 6.6
-Message-ID: <ZO4NUZ+k4Q4zPu6X@infradead.org>
+        Tue, 29 Aug 2023 11:24:08 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B270A1A2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:24:05 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so5907963a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693322644; x=1693927444;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OzpeAN+lW4lnuBFNUjzlUToZyZ1j5VVEVY/cQHQ5ISc=;
+        b=gIE3+SeS9PGKpT7rHq/JaVxbPSQT8MNUMqvNMDjfmBJkWClm8pxZEEus8ath0clxxY
+         v0sG1eoTpATDr8wnSTJHdDt32hjCxxYssPG3uDxo8GXbb/lk7yWjOyD6W2BHwgkraplS
+         NMkTyX4NTdbJGWYq+AtvH18Sz2tJjsnU9z6Elc0l/08bcgwWVX7Jun62QgZ8m5iDEzIH
+         thlbFbsGE1j0hn9Pzcgcuee2TBw0rxH6Q+KtsTJObb0Y10jVsmC5bm5oLmoep+J6cBr0
+         DF1Gnz5j1cqnyHU74KNEL4mvlxCt8bxGU3QdninJauuDTzsZDGPXFRkVcGO5uy7TB5UW
+         qMLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693322644; x=1693927444;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OzpeAN+lW4lnuBFNUjzlUToZyZ1j5VVEVY/cQHQ5ISc=;
+        b=BxPf69+vl1ID/FJz5MoFoynj4WQMhYXEHXBEwX1SNRAQw7eouThVl/HdBdqU3ElDHY
+         +cDpJNPbEZy9OFx22bglo1Z5HbwaePoMzGSGDfHQDzmMY9NyyxFqHdLON6mCuYrgjB9J
+         nLIn6Hcacw7hm4xUfLpZfoRgSymPMvJfJBlRAo+2+6TC6hisa6NcECM547+jtysVKZIs
+         go2fv3pJFgK5oQ/qaxi/VTd4WFN+bXVzehFVjtB4+vdjvpkqB+H9JjapuIJore3PXDjt
+         VK7RZVlmhtNCSkuuSKtyg+W69Htw44r3Fc+oQ6Js4HlYEA0y8d5UUpkCyZbjkMgZ7uQo
+         VIQA==
+X-Gm-Message-State: AOJu0YxCufAH7sdO2ZYroU6/F5PSTt7qOmIAAtNR4EXOfKJO5TwYm/CO
+        +/kM9mskCP65AYfUHX/kG6wwc+TTKgC5Pee2/YUbAw==
+X-Google-Smtp-Source: AGHT+IHlkI4JIvy/6XvTpJv2HVLUD9upOsoJifduwUKMfb1tWWTyzCBvCKhb+hJ/xctCqEFJVBXvJs+xbX0gjgf9bRo=
+X-Received: by 2002:a17:906:9e:b0:9a2:143e:a071 with SMTP id
+ 30-20020a170906009e00b009a2143ea071mr8695044ejc.17.1693322643587; Tue, 29 Aug
+ 2023 08:24:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829024104.1505530-1-liushixin2@huawei.com>
+In-Reply-To: <20230829024104.1505530-1-liushixin2@huawei.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 29 Aug 2023 08:23:26 -0700
+Message-ID: <CAJD7tkZafahYbBs9=HNy4QtFZ4aGTcECvvCt3bQgXaNPUYTOUg@mail.gmail.com>
+Subject: Re: [PATCH v4] mm: vmscan: try to reclaim swapcache pages if no swap space
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Huang Ying <ying.huang@intel.com>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
+On Mon, Aug 28, 2023 at 6:46=E2=80=AFPM Liu Shixin <liushixin2@huawei.com> =
+wrote:
+>
+> When spaces of swap devices are exhausted, only file pages can be reclaim=
+ed.
+> But there are still some swapcache pages in anon lru list. This can lead
+> to a premature out-of-memory.
+>
+> The problem is found with such step:
+>
+>  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
+>  memory limit, then runs an program to allocates about 15MB memory.
+>
+> The problem occurs occasionally, which may need about 100 times.
 
-  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
+The reproducer I used in v2 reproduces this very reliably and simply,
+could you link to it instead?
 
-are available in the Git repository at:
+https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=3DeDzMnT=3D9dZOT0dpMWcur=
+HLr6Do+GA@mail.gmail.com/
 
-  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-6.6-2023-08-29
+>
+> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
+> If the number is not zero, return true either. Moreover, add a new bit
+> swapcache_only in struct scan_control to skip isolating anon pages that
+> are not swapcache when only swapcache pages can be reclaimed to accelerat=
+e
+> reclaim efficiency.
+>
+> Link: https://lore.kernel.org/linux-mm/14e15f31-f3d3-4169-8ed9-fb36e57cf5=
+78@huawei.com/
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> Tested-by: Yosry Ahmed <yosryahmed@google.com>
 
-for you to fetch changes up to d069ed288ac74c24e2b1c294aa9445c80ed6c518:
+Usually people add the difference from the previous version to make it
+easy to know what changed.
 
-  swiotlb: optimize get_max_slots() (2023-08-08 10:29:21 -0700)
+I still prefer to add NR_SWAPCACHE to memcg1_stats. Anyway, the code
+looks good to me. With the updated reproducer link feel free to add:
 
-----------------------------------------------------------------
-dma-maping updates for Linux 6.6
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
- - allow dynamic sizing of the swiotlb buffer, to cater for secure
-   virtualization workloads that require all I/O to be bounce buffered
-   (Petr Tesarik)
- - move a declaration to a header (Arnd Bergmann)
- - check for memory region overlap in dma-contiguous (Binglei Wang)
- - remove the somewhat dangerous runtime swiotlb-xen enablement and
-   unexport is_swiotlb_active (Christoph Hellwig, Juergen Gross)
- - per-node CMA improvements (Yajun Deng)
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      dma-mapping: move arch_dma_set_mask() declaration to header
-
-Binglei Wang (1):
-      dma-contiguous: check for memory region overlap
-
-Christoph Hellwig (2):
-      x86: always initialize xen-swiotlb when xen-pcifront is enabling
-      swiotlb: unexport is_swiotlb_active
-
-Juergen Gross (1):
-      xen/pci: add flag for PCI passthrough being possible
-
-Petr Tesarik (11):
-      swiotlb: bail out of swiotlb_init_late() if swiotlb is already allocated
-      swiotlb: make io_tlb_default_mem local to swiotlb.c
-      swiotlb: add documentation and rename swiotlb_do_find_slots()
-      swiotlb: separate memory pool data from other allocator data
-      swiotlb: add a flag whether SWIOTLB is allowed to grow
-      swiotlb: if swiotlb is full, fall back to a transient memory pool
-      swiotlb: determine potential physical address limit
-      swiotlb: allocate a new memory pool when existing pools are full
-      swiotlb: search the software IO TLB only if the device makes use of it
-      swiotlb: move slot allocation explanation comment where it belongs
-      swiotlb: optimize get_max_slots()
-
-Yajun Deng (2):
-      dma-contiguous: support per-numa CMA for all architectures
-      dma-contiguous: support numa CMA for specified node
-
- Documentation/admin-guide/kernel-parameters.txt |  13 +-
- arch/arm/xen/mm.c                               |  10 +-
- arch/arm64/mm/init.c                            |   2 -
- arch/mips/pci/pci-octeon.c                      |   2 +-
- arch/powerpc/kernel/dma-mask.c                  |   1 +
- arch/x86/include/asm/xen/swiotlb-xen.h          |   6 -
- arch/x86/kernel/pci-dma.c                       |  29 +-
- arch/x86/xen/setup.c                            |   6 +
- drivers/base/core.c                             |   4 +-
- drivers/pci/xen-pcifront.c                      |   6 -
- drivers/xen/swiotlb-xen.c                       |   2 +-
- include/linux/device.h                          |  10 +-
- include/linux/dma-map-ops.h                     |  12 +-
- include/linux/dma-mapping.h                     |   2 +
- include/linux/swiotlb.h                         | 131 ++++-
- include/xen/xen.h                               |   6 +
- kernel/dma/Kconfig                              |  26 +-
- kernel/dma/contiguous.c                         | 108 +++-
- kernel/dma/direct.c                             |   2 +-
- kernel/dma/mapping.c                            |   6 -
- kernel/dma/swiotlb.c                            | 698 +++++++++++++++++++++---
- mm/cma.c                                        |  10 +-
- mm/slab_common.c                                |   5 +-
- 23 files changed, 910 insertions(+), 187 deletions(-)
+> ---
+>  include/linux/swap.h |  6 ++++++
+>  mm/memcontrol.c      |  8 ++++++++
+>  mm/vmscan.c          | 29 +++++++++++++++++++++++++++--
+>  3 files changed, 41 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 456546443f1f..0318e918bfa4 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry=
+_t entry, unsigned int nr_p
+>  }
+>
+>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>  #else
+>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t e=
+ntry)
+> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(stru=
+ct mem_cgroup *memcg)
+>         return get_nr_swap_pages();
+>  }
+>
+> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *=
+memcg)
+> +{
+> +       return total_swapcache_pages();
+> +}
+> +
+>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>  {
+>         return vm_swap_full();
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e8ca4bdcb03c..c465829db92b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgrou=
+p *memcg)
+>         return nr_swap_pages;
+>  }
+>
+> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+> +{
+> +       if (mem_cgroup_disabled())
+> +               return total_swapcache_pages();
+> +
+> +       return memcg_page_state(memcg, NR_SWAPCACHE);
+> +}
+> +
+>  bool mem_cgroup_swap_full(struct folio *folio)
+>  {
+>         struct mem_cgroup *memcg;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 1080209a568b..e73e2df8828d 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -137,6 +137,9 @@ struct scan_control {
+>         /* Always discard instead of demoting to lower tier memory */
+>         unsigned int no_demotion:1;
+>
+> +       /* Swap space is exhausted, only reclaim swapcache for anon LRU *=
+/
+> +       unsigned int swapcache_only:1;
+> +
+>         /* Allocation order */
+>         s8 order;
+>
+> @@ -613,10 +616,20 @@ static inline bool can_reclaim_anon_pages(struct me=
+m_cgroup *memcg,
+>                  */
+>                 if (get_nr_swap_pages() > 0)
+>                         return true;
+> +               /* Is there any swapcache pages to reclaim? */
+> +               if (total_swapcache_pages() > 0) {
+> +                       sc->swapcache_only =3D 1;
+> +                       return true;
+> +               }
+>         } else {
+>                 /* Is the memcg below its swap limit? */
+>                 if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>                         return true;
+> +               /* Is there any swapcache pages in memcg to reclaim? */
+> +               if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
+> +                       sc->swapcache_only =3D 1;
+> +                       return true;
+> +               }
+>         }
+>
+>         /*
+> @@ -2280,6 +2293,19 @@ static bool skip_cma(struct folio *folio, struct s=
+can_control *sc)
+>  }
+>  #endif
+>
+> +static bool skip_isolate(struct folio *folio, struct scan_control *sc,
+> +                        enum lru_list lru)
+> +{
+> +       if (folio_zonenum(folio) > sc->reclaim_idx)
+> +               return true;
+> +       if (skip_cma(folio, sc))
+> +               return true;
+> +       if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
+> +           !folio_test_swapcache(folio)))
+> +               return true;
+> +       return false;
+> +}
+> +
+>  /*
+>   * Isolating page from the lruvec to fill in @dst list by nr_to_scan tim=
+es.
+>   *
+> @@ -2326,8 +2352,7 @@ static unsigned long isolate_lru_folios(unsigned lo=
+ng nr_to_scan,
+>                 nr_pages =3D folio_nr_pages(folio);
+>                 total_scan +=3D nr_pages;
+>
+> -               if (folio_zonenum(folio) > sc->reclaim_idx ||
+> -                               skip_cma(folio, sc)) {
+> +               if (skip_isolate(folio, sc, lru)) {
+>                         nr_skipped[folio_zonenum(folio)] +=3D nr_pages;
+>                         move_to =3D &folios_skipped;
+>                         goto move;
+> --
+> 2.25.1
+>
