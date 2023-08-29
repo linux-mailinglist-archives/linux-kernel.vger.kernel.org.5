@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E8778C650
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD9278C68A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236533AbjH2NnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
+        id S236554AbjH2N6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236739AbjH2Nmv (ORCPT
+        with ESMTP id S236627AbjH2N6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:42:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F40AE5B
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693316543; x=1724852543;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5JjrPIoCQIvaXLE5zJ2itJpmzGQj92dNt3ToYHiGyLk=;
-  b=lb3ua4zAdnZf7V5kNGBwuAYIiZmT5YCFT7x/KRhcOsSQSRCYE4AnLjnF
-   r6+9FuJ/5RxXDkm+jMiQ2n2+AFqpOu9HceeIlRzfhouPwHEDJ8YX/fa/Z
-   jlSckG/CDPR4PCEt86DzxfkzlDXEMJWsHRsWEBqIEI6UXgyZi88hOMzbw
-   S/++vZ0fa3VGBe2Z7tubAGpf87Vi18bAn4QAktKQN/kdE/q+oVx/6vnOt
-   qP0TJlW9WdWtBXcbE+n0xAbjOmlr8oIsUvAHneFcyGDt+69fM30X600SW
-   P7jocxw3LkWHuA6b2Om5GKWrIuqSU/vSFdDt9VSUe9lkMZimn4yibfOFS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="379138362"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="379138362"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 06:38:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="985354870"
-X-IronPort-AV: E=Sophos;i="6.02,210,1688454000"; 
-   d="scan'208";a="985354870"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 29 Aug 2023 06:38:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qayvZ-004tN8-2C;
-        Tue, 29 Aug 2023 16:38:41 +0300
-Date:   Tue, 29 Aug 2023 16:38:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/12] bitmap: rework bitmap_{bit,}remap()
-Message-ID: <ZO304SCFoP2wmnNA@smile.fi.intel.com>
-References: <20230828184353.5145-1-yury.norov@gmail.com>
- <5247e354-cb7f-4df7-37a5-95cebed43d4c@rasmusvillemoes.dk>
+        Tue, 29 Aug 2023 09:58:32 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4864E0;
+        Tue, 29 Aug 2023 06:58:29 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RZpL74jLhz6K6Fx;
+        Tue, 29 Aug 2023 21:34:07 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
+ 2023 14:38:52 +0100
+Date:   Tue, 29 Aug 2023 14:38:51 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Terry Bowman <terry.bowman@amd.com>
+CC:     <alison.schofield@intel.com>, <vishal.l.verma@intel.com>,
+        <ira.weiny@intel.com>, <bwidawsk@kernel.org>,
+        <dan.j.williams@intel.com>, <dave.jiang@intel.com>,
+        <linux-cxl@vger.kernel.org>, <rrichter@amd.com>,
+        <linux-kernel@vger.kernel.org>, <bhelgaas@google.com>
+Subject: Re: [PATCH v9 01/15] cxl/port: Pre-initialize component register
+ mappings
+Message-ID: <20230829143851.00006467@Huawei.com>
+In-Reply-To: <20230825233211.3029825-2-terry.bowman@amd.com>
+References: <20230825233211.3029825-1-terry.bowman@amd.com>
+        <20230825233211.3029825-2-terry.bowman@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5247e354-cb7f-4df7-37a5-95cebed43d4c@rasmusvillemoes.dk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 09:33:29AM +0200, Rasmus Villemoes wrote:
-> On 28/08/2023 20.43, Yury Norov wrote:
-> > This series adds a test, const-time optimizaton and fixes O(N^2)
-> > complexity problem for the functions. It's based on discussion in
-> > bitmap: optimize bitmap_remap() series [1], but there's much more work
-> > here, so I decided to give it a separete run, and don't name it as v2.
-> > 
-> > bitmap_remap() API has just one user in generic code, and few more in
-> > drivers, so this may look like an overkill. But the work gives ~10x
-> > better performance for a 1000-bit bitmaps, which is typical for nodemasks
-> > in major distros like Ubuntu.
+On Fri, 25 Aug 2023 18:31:57 -0500
+Terry Bowman <terry.bowman@amd.com> wrote:
+
+> From: Robert Richter <rrichter@amd.com>
+
+Hi Robert, Terry,
+
 > 
-> Can you find just _one_ project on Debian Code Search or elsewhere that
-> actually uses mbind(2), that could possibly ever trigger the use of that
-> bitmap_remap stuff? Also, the bitmap may be order 10, but that's just
-> because the kitchen sink distros are silly, real machines have nowhere
-> near that number of nodes, so even if mbind is used, the bitmaps
-> involved will never actually have anything beyond index ~64.
+> The component registers of a component may not exist or are not
+> needed.
+
+How do we now it's not needed in this function?
+Perhaps "may not exist." is the bit that matters in this sentence.
+
+> The setup may fail for that reason. In some cases the
+> initialization should continue anyway. Thus, always initialize struct
+> cxl_register_map with valid values. In case of errors, zero it, set a
+> value for @dev and make @resource a the valid value using
+
+make @resource CXL_RESOURCE_NONE.
+
+(not "a the")
+
+> CXL_RESOURCE_NONE.
+
+It might be worth making it clear that this will (I think) only matter
+for future usecases and isn't a fix for how this function is used today.
+
 > 
-> I think this is all total overkill for non-existing problems, and when
-> it takes me 20 seconds to find the first bug, I really don't think it's
-> worth the churn. I'm not giving a thorough review on the rest of the
-> series, nor commenting on followups.
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+> Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+Otherwise seems sensible to me with one comment below.
 
-I posted one patch to replace these APIs with something else, more particular
-for GPIO case(s). Have you chance to look at that? With that taking in, I'm
-fully agree on the above statement (as we lose the user of this complicated
-thingy which is a niche of the NUMA as you mentioned already).
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+> ---
+>  drivers/cxl/core/port.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+> index 724be8448eb4..2d22e7a5629b 100644
+> --- a/drivers/cxl/core/port.c
+> +++ b/drivers/cxl/core/port.c
+> @@ -693,16 +693,17 @@ static struct cxl_port *cxl_port_alloc(struct device *uport_dev,
+>  static int cxl_setup_comp_regs(struct device *dev, struct cxl_register_map *map,
+>  			       resource_size_t component_reg_phys)
+>  {
+> -	if (component_reg_phys == CXL_RESOURCE_NONE)
+> -		return 0;
+> -
+>  	*map = (struct cxl_register_map) {
+>  		.dev = dev,
+> -		.reg_type = CXL_REGLOC_RBI_COMPONENT,
 
+Could set this explicitly to CXL_REGLOC_RBI_EMPTY
+which is what happens anyway, but it isn't obvious that
+0 maps to something that indicates this doesn't exist.
+
+>  		.resource = component_reg_phys,
+> -		.max_size = CXL_COMPONENT_REG_BLOCK_SIZE,
+>  	};
+>  
+> +	if (component_reg_phys == CXL_RESOURCE_NONE)
+> +		return 0;
+> +
+> +	map->reg_type = CXL_REGLOC_RBI_COMPONENT;
+> +	map->max_size = CXL_COMPONENT_REG_BLOCK_SIZE;
+> +
+>  	return cxl_setup_regs(map);
+>  }
+>  
 
