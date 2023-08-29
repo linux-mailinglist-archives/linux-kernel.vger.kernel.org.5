@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8185478BD73
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 06:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BC578BD74
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 06:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235619AbjH2EL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 00:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
+        id S234559AbjH2EMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 00:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbjH2EK4 (ORCPT
+        with ESMTP id S231393AbjH2EMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 00:10:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7E9102;
-        Mon, 28 Aug 2023 21:10:54 -0700 (PDT)
+        Tue, 29 Aug 2023 00:12:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FA2BD
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 21:11:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C465C60C0B;
-        Tue, 29 Aug 2023 04:10:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32D5BC433C9;
-        Tue, 29 Aug 2023 04:10:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2492660277
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:11:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D511C433C9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 04:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693282253;
-        bh=e61YW9z8sSyOydpn/mt7ysbYiNTT8b66TH3zeN8UZh4=;
+        s=k20201202; t=1693282316;
+        bh=UE0fiU8lFv4dJudFnVMoBNTPI7KqE1uy1T28k5iHb4A=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p984stq2u6i10BhDiL84RSW02XukBbdYjBt1uVcOWbv3XdI4yDdIgMnzKIX9kEOZY
-         M7FsXAxRTpgC7bY2HFEa7Rrv66D/P79FIiuOXWlVzcyFeloqa6rW7G/Q1X7e3DBbEY
-         dZHVRXtCyho8Q9p6EPHqMFaK8X/rncNLC+UN2xZPORbEWqN6neBuc7nPxDX2ZyMBfH
-         g9v4o960OpY6gR5OQe1gJ1hZiDVT6jcHxDdLNWmHhq7NFkgLpmSAWzub+GNHARUNrr
-         7kyfQ4EzN5O1AmiCk/0qDe0gO+Glo//8AhW4K5DTa0uJ8I3yILCu5Q/1LxQREyR9m2
-         mSYzXJu49f2Gg==
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso502274266b.1;
-        Mon, 28 Aug 2023 21:10:53 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yym/ORkHTcbz20a59sf7ETGXt2GBJoDyVgmOT7T9PQMC/iCNRya
-        aq8RaQgfVMlE06SIZbnj409sH8knC45uRdBJZvk=
-X-Google-Smtp-Source: AGHT+IHTBqcN7JgEZEiZ4TVhXOQ4t2Usjo3CZ733GSFdr/OaQwtN/JiOsIalrYiZ9NBQJg1woMFxbv/8ZdR6civzsug=
-X-Received: by 2002:a17:907:60c6:b0:9a2:ecd:d95d with SMTP id
- hv6-20020a17090760c600b009a20ecdd95dmr10056677ejc.68.1693282251436; Mon, 28
- Aug 2023 21:10:51 -0700 (PDT)
+        b=n0nsJEXFXvVbV4XCAcoylKgp8EdAvbi45Sf3MMemgHXm+PSrUUR99TobOIB/U11N3
+         4tJqsX16l+oFGq0hGbp47Gn+kh6soR4JvFxfkrIvHIf8gUyFKUygo0guJDIhm8pbXy
+         ELC0SwQz2g2Ig6XfpM7E/HOsnnhEkdXSbiRuRjN1T0GvY22k5K7lPFYIU5mCOGTB01
+         9IE1qAVkqzUmKCA1Y8f3InZFWE5kf5DeqVwlPvo6DrQ+8FEDVuc0w2sPFch4R7Sx+9
+         X0OeSmW3Bg92E92xEFzrNufBChBo+Wtl8FdPIH6Vnzm75S08xXl2TgadQEvnMMD6GJ
+         7KNkY71mKJbcA==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so817369466b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 21:11:56 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy70vZH5HC0X8ix7U9SXfKfpY1k3eGXTzasib8fe1T5y3SfViC1
+        OvUsBvlUcS1l9wbVGhvH7SdNxgmM4da4BajE0T8=
+X-Google-Smtp-Source: AGHT+IGBvfYoh1PFxGP/kniMUDcEPyq8i2LMVb8Vo8d8EdIgKhtuZOFQRYCX4xLp/Spw4FEe4q61imfQx/Sk4P4bTAk=
+X-Received: by 2002:a17:907:868d:b0:9a5:7d34:e68a with SMTP id
+ qa13-20020a170907868d00b009a57d34e68amr1497886ejc.28.1693282314885; Mon, 28
+ Aug 2023 21:11:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230828150220.31624576@canb.auug.org.au> <106e0bb2-1fa6-5914-67f6-269755779e61@infradead.org>
-In-Reply-To: <106e0bb2-1fa6-5914-67f6-269755779e61@infradead.org>
+References: <20230829002323.28303-1-rdunlap@infradead.org>
+In-Reply-To: <20230829002323.28303-1-rdunlap@infradead.org>
 From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 29 Aug 2023 12:10:39 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7Qr1wVOqmha_beug+ub6kkg+q+PeHGE_vpeoYPOKYKyg@mail.gmail.com>
-Message-ID: <CAAhV-H7Qr1wVOqmha_beug+ub6kkg+q+PeHGE_vpeoYPOKYKyg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Aug 28 (loongarch: kgdb)
+Date:   Tue, 29 Aug 2023 12:11:42 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4ORNqMYh0maxkyZFjEn5HgC7vZHUZD8GicOn7pkN8C4g@mail.gmail.com>
+Message-ID: <CAAhV-H4ORNqMYh0maxkyZFjEn5HgC7vZHUZD8GicOn7pkN8C4g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Loongarch: KGDB: fix build when CPU_HAS_LBT not set
 To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:LOONGARCH" <loongarch@lists.linux.dev>
+Cc:     linux-kernel@vger.kernel.org, Qing Zhang <zhangqing@loongson.cn>,
+        Hui Li <lihui@loongson.cn>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -68,61 +67,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi, Randy,
 
-On Tue, Aug 29, 2023 at 8:38=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
+On Tue, Aug 29, 2023 at 8:23=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
 > wrote:
 >
+> Fix build errors when CONFIG_CPU_HAS_LBT is not set:
 >
->
-> On 8/27/23 22:02, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Please do *not* include material destined for v6.7 in your linux-next
-> > included branches until *after* v6.6-rc1 has been released.  Also,
-> > do *not* rebase you linu-next included branches onto v6.5.
-> >
-> > Changes since 20230825:
-> >
->
-> There are many build errors when CONFIG_PERF_EVENTS =3D> HAVE_HW_BREAKPOI=
-NT
-> are not set.
-> This is a reduced list of the build errors:
->
-> ../arch/loongarch/kernel/kgdb.c: In function 'hw_break_reserve_slot':
-> ../arch/loongarch/kernel/kgdb.c:515:21: error: implicit declaration of fu=
-nction 'dbg_reserve_bp_slot'; did you mean 'reserve_bp_slot'? [-Werror=3Dim=
-plicit-function-declaration]
->   515 |                 if (dbg_reserve_bp_slot(*pevent))
->       |                     ^~~~~~~~~~~~~~~~~~~
->       |                     reserve_bp_slot
-> ../arch/loongarch/kernel/kgdb.c:527:17: error: implicit declaration of fu=
-nction 'dbg_release_bp_slot'; did you mean 'release_bp_slot'? [-Werror=3Dim=
-plicit-function-declaration]
->   527 |                 dbg_release_bp_slot(*pevent);
->       |                 ^~~~~~~~~~~~~~~~~~~
->       |                 release_bp_slot
-> ../arch/loongarch/kernel/kgdb.c: In function 'kgdb_disable_hw_break':
-> ../arch/loongarch/kernel/kgdb.c:640:23: error: 'struct perf_event' has no=
- member named 'attr'
->   640 |                 if (bp->attr.disabled =3D=3D 1)
->       |                       ^~
-> ../arch/loongarch/kernel/kgdb.c: In function 'kgdb_arch_late':
-> ../arch/loongarch/kernel/kgdb.c:732:9: error: implicit declaration of fun=
-ction 'hw_breakpoint_init'; did you mean 'hw_breakpoint_slots'? [-Werror=3D=
-implicit-function-declaration]
->   732 |         hw_breakpoint_init(&attr);
->       |         ^~~~~~~~~~~~~~~~~~
->       |         hw_breakpoint_slots
-> ../arch/loongarch/kernel/kgdb.c:752:38: error: 'struct perf_event' has no=
- member named 'destroy'
->   752 |                         if (pevent[0]->destroy) {
->       |                                      ^~
-> cc1: some warnings being treated as errors
-Thank you very much for pointing out, I will fix it later.
+> loongarch64-linux-ld: arch/loongarch/kernel/kgdb.o: in function `dbg_get_=
+reg':
+> arch/loongarch/kernel/kgdb.c:154:(.text+0xc7c): undefined reference to `_=
+save_lbt'
+> loongarch64-linux-ld: arch/loongarch/kernel/kgdb.o: in function `dbg_set_=
+reg':
+> arch/loongarch/kernel/kgdb.c:229:(.text+0x13a4): undefined reference to `=
+_restore_lbt'
+Thank you for your patch, this has been fixed in today's linux-next.
 
 Huacai
 >
+> Fixes: 8968eb010689 ("LoongArch: Add basic KGDB & KDB support")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Qing Zhang <zhangqing@loongson.cn>
+> Cc: Hui Li <lihui@loongson.cn>
+> Cc: Binbin Zhou <zhoubinbin@loongson.cn>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: WANG Xuerui <kernel@xen0n.name>
+> Cc: loongarch@lists.linux.dev
+> ---
+>  arch/loongarch/kernel/kgdb.c |    6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 >
-> --
-> ~Randy
+> diff -- a/arch/loongarch/kernel/kgdb.c b/arch/loongarch/kernel/kgdb.c
+> --- a/arch/loongarch/kernel/kgdb.c
+> +++ b/arch/loongarch/kernel/kgdb.c
+> @@ -150,7 +150,8 @@ char *dbg_get_reg(int regno, void *mem,
+>         }
 >
+>         /* Handle LBT registers */
+> -       if ((regs->csr_euen & CSR_EUEN_LBTEN)) {
+> +       if (IS_ENABLED(CONFIG_CPU_HAS_LBT) &&
+> +           (regs->csr_euen & CSR_EUEN_LBTEN)) {
+>                 _save_lbt(&current->thread.lbt);
+>
+>                 switch (regno) {
+> @@ -211,7 +212,8 @@ int dbg_set_reg(int regno, void *mem, st
+>         }
+>
+>         /* Handle LBT registers */
+> -       if ((regs->csr_euen & CSR_EUEN_LBTEN)) {
+> +       if (IS_ENABLED(CONFIG_CPU_HAS_LBT) &&
+> +           (regs->csr_euen & CSR_EUEN_LBTEN)) {
+>                 switch (regno) {
+>                 case DBG_FTOP:                          /* Process the ft=
+op */
+>                         memcpy((char *)&current->thread.fpu.ftop, mem, re=
+g_size);
