@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E893578C580
+	by mail.lfdr.de (Postfix) with ESMTP id 43BD078C57E
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236125AbjH2NdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        id S236111AbjH2NdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236126AbjH2Nc4 (ORCPT
+        with ESMTP id S236163AbjH2NdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:32:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0C7E54;
-        Tue, 29 Aug 2023 06:32:18 -0700 (PDT)
+        Tue, 29 Aug 2023 09:33:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9483ECF0;
+        Tue, 29 Aug 2023 06:32:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9242C62AFA;
-        Tue, 29 Aug 2023 13:32:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD68FC433C8;
-        Tue, 29 Aug 2023 13:32:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D576664E3A;
+        Tue, 29 Aug 2023 13:32:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44884C433C7;
+        Tue, 29 Aug 2023 13:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693315937;
-        bh=5EJtGznm6EmzkvKITENtmk3wEsYiWic9o9TlwgvqscE=;
+        s=k20201202; t=1693315939;
+        bh=KZOlRoi7Pu7cR6rDBtdlt1XCE2m3yTU2pFgyh5epf/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Iw/930L+kMOZzGgl6V9XhRMn2cd3mX+3/INtIRku/9+8YfUHK0npeaPeXKyrtFcKx
-         XLlxn6dkiLEV30WFJSQ/Ckw/BypikTUeGiromB0xXPrTUXmwuln3VLogDNw+P7q7Vq
-         dLdlnk6CJQKkAsszR84KCGYV1yGEGffCbYK/Irr3GA4ZjT7GvqKhJeAOU/j/rxW9WB
-         3XOhACeJBvGSey58iH+xkenGErw6zORkU+ivdQiKAoFnjvujGq/YuLGWJLaqp2t/Gx
-         oBeMTIVUJzNYgiu5DxnLYA7X0zE42fiKfTxkUdZhY+hwb8g5aCSmpFDSK8jGTQ7qBE
-         rU7sGEQXBY1qg==
+        b=Cjfxp5k5OmA1GXLaESPMZO5Mz4Vfl3Ggt7/Y2z8oQWy6tMDLe066Jk7f10iGjq+IA
+         asGx17LhsEEZ0K53uVZUgdjEGG4Xl1vNvLimDZDF7/quDxFUDNibLm+9+ZlTQ8zWgs
+         1dYrcPheO7xCkyUpEzOODUnA0daQeiytqcOmYs0OLpMdVKZcFh21qSYac3dZMKaICT
+         aEliaH1k8ujsbm9I1+ZD1u5fSblaip+jGWKpGe7cxDSJh0XAqcOuKygbGUDxUSM9xJ
+         Ni5cigQIV6EOr6Uk5lSrtcvTd4C9SZEWmqgzyGd661z7mIz3zi9DwFBiN6NuxKyjzK
+         u3fiC9YfN38fg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Christopher Obbard <chris.obbard@collabora.com>,
         Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 02/17] arm64: dts: rockchip: correct wifi interrupt flag in Rock Pi 4B
-Date:   Tue, 29 Aug 2023 09:31:49 -0400
-Message-Id: <20230829133211.519957-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 03/17] arm64: dts: rockchip: correct wifi interrupt flag in Box Demo
+Date:   Tue, 29 Aug 2023 09:31:50 -0400
+Message-Id: <20230829133211.519957-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230829133211.519957-1-sashal@kernel.org>
 References: <20230829133211.519957-1-sashal@kernel.org>
@@ -53,8 +52,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.12
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,7 +63,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit cfa12c32b96fd5b12f77d880d6a1ddd2a502756e ]
+[ Upstream commit 2d6f7e3938a7aba154c8e8afaddc8b7f1e0a1b56 ]
 
 GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
 These are simple defines so they could be used in DTS but they will not
@@ -75,27 +74,26 @@ logical behavior behind the name "ACTIVE_xxx", this is:
   ACTIVE_HIGH  => IRQ_TYPE_LEVEL_HIGH
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Tested-by: Christopher Obbard <chris.obbard@collabora.com>
-Link: https://lore.kernel.org/r/20230707063335.13317-2-krzysztof.kozlowski@linaro.org
+Link: https://lore.kernel.org/r/20230707063335.13317-3-krzysztof.kozlowski@linaro.org
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3566-box-demo.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts
-index cec3b7b1b9474..8a17c1eaae15e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts
-@@ -31,7 +31,7 @@ brcmf: wifi@1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3566-box-demo.dts b/arch/arm64/boot/dts/rockchip/rk3566-box-demo.dts
+index 410cd3e5e7bca..538db870993d4 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3566-box-demo.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3566-box-demo.dts
+@@ -416,7 +416,7 @@ brcmf: wifi@1 {
  		compatible = "brcm,bcm4329-fmac";
  		reg = <1>;
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-parent = <&gpio2>;
+-		interrupts = <RK_PB2 GPIO_ACTIVE_HIGH>;
++		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_HIGH>;
  		interrupt-names = "host-wake";
  		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_host_wake_l>;
+ 		pinctrl-0 = <&wifi_host_wake_h>;
 -- 
 2.40.1
 
