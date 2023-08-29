@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0353C78D0BF
+	by mail.lfdr.de (Postfix) with ESMTP id E841F78D0C2
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 01:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241208AbjH2Xox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 19:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        id S241230AbjH2Xoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 19:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241217AbjH2Xol (ORCPT
+        with ESMTP id S241218AbjH2Xom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 19:44:41 -0400
+        Tue, 29 Aug 2023 19:44:42 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DDE1B1;
-        Tue, 29 Aug 2023 16:44:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158351B3;
+        Tue, 29 Aug 2023 16:44:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693352679; x=1724888679;
+  t=1693352680; x=1724888680;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=W50SnzGPp61eZeJgGcuceM/gz96TAeNxN0R4JpIxMcg=;
-  b=StxLAPeduIskLhJGdms+cLocJykKR7sTV3rYNEaKVgjsLHLS2bhyF7aS
-   1nj4lJ1vQZhGNluOb/XhV61p6Y3fbDmLNdcXrj+yxtVxk+0pNCDBDlyyc
-   UskPdem0miUL2/rsjaqL1+clqVNMv2IPlgrSMsTdJIN+wGcqahTAWbKLU
-   0uj6I0+75pzFleFrEigkPIiYZZGBScR2wYWFcFov+AZV2evaHhTE05F+s
-   5Zs3rrOvyvtUiSTzyBXVAFwq6/i0A4oJYSBTllXVyCmmkn7cr9XHqYOht
-   lgA+1mQ/XbqjztSan0d6r4M0KCoekYdYwI42HESdfPS2UZQKOR4vBPiQT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="355015402"
+  bh=WgHlgC60ihdg3OH9uRN9oBta8S6ahuDhNdnK2yhBSmQ=;
+  b=fjo90wRPFL3DWVHHYjvu4qaKsKHrtsWYnXW7C/XbO3682usBLSg6oHqB
+   UtZF0nWwNVnOkdkjnUUqJbj5ZOTgbzyZIEAViM9iu7BhTcchju+lOHR3H
+   70iRsXgH58JI3Qf5uTOqLb40h9V4jN+4l9VUzBPMedCRRC++GeIJhrbmE
+   HH5tk2dBFXbxkYxX80Z8n+4SP9DY8ywkvQWkxay3O7MWIMOzX9U5M1ldy
+   qWGOHenwp4D71O8mDC9PFcebP7PTwjmKc4uaebHW6lxBZwewr+i1CDqGI
+   Mrogy1pazzS8ZEplIjDXpk2LWWlUt1K8sUQqft7FFqBiUEt9qV7S+OuZg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="355015418"
 X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="355015402"
+   d="scan'208";a="355015418"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 16:44:37 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="688691016"
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="688691020"
 X-IronPort-AV: E=Sophos;i="6.02,211,1688454000"; 
-   d="scan'208";a="688691016"
+   d="scan'208";a="688691020"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
   by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2023 16:44:36 -0700
 From:   Tony Luck <tony.luck@intel.com>
@@ -52,12 +52,13 @@ Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
         patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v5 0/8] Add support for Sub-NUMA cluster (SNC) systems
-Date:   Tue, 29 Aug 2023 16:44:18 -0700
-Message-ID: <20230829234426.64421-1-tony.luck@intel.com>
+Subject: [PATCH v5 1/8] x86/resctrl: Prepare for new domain scope
+Date:   Tue, 29 Aug 2023 16:44:19 -0700
+Message-ID: <20230829234426.64421-2-tony.luck@intel.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230722190740.326190-1-tony.luck@intel.com>
+In-Reply-To: <20230829234426.64421-1-tony.luck@intel.com>
 References: <20230722190740.326190-1-tony.luck@intel.com>
+ <20230829234426.64421-1-tony.luck@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -70,79 +71,204 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Sub-NUMA cluster feature on some Intel processors partitions
-the CPUs that share an L3 cache into two or more sets. This plays
-havoc with the Resource Director Technology (RDT) monitoring features.
-Prior to this patch Intel has advised that SNC and RDT are incompatible.
+Legacy resctrl features operated on subsets of CPUs in the system with
+the defining attribute of each subset being an instance of a particular
+level of cache. E.g. all CPUs sharing an L3 cache would be part of the
+same domain.
 
-Some of these CPU support an MSR that can partition the RMID
-counters in the same way. This allows for monitoring features
-to be used (with the caveat that memory accesses between different
-SNC NUMA nodes may still not be counted accuratlely.
+In preparation for features that are scoped at the NUMA node level
+change the code from explicit references to "cache_level" to a more
+generic scope. At this point the only options for this scope are groups
+of CPUs that share an L2 cache or L3 cache.
 
-Note that this patch series improves resctrl reporting considerably
-on systems with SNC enabled, but there will still be some anomalies
-for processes accessing memory from other sub-NUMA nodes.
+No functional change.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ include/linux/resctrl.h                   |  9 ++++++--
+ arch/x86/kernel/cpu/resctrl/core.c        | 27 ++++++++++++++++++-----
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 15 ++++++++++++-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 15 ++++++++++++-
+ 4 files changed, 56 insertions(+), 10 deletions(-)
 
-Changes since v4:
-
-Rebased to upstream v6.5
-
-Addressed problems reported by Reinette in follow-up messages to
-v4 posting:
-   https://lore.kernel.org/r/20230722190740.326190-1-tony.luck@intel.com
-
-Broke the patch series into a (hopefully) more logical progression.
-
-First two patches are infrastructure changes to allow resctrl
-domains to have scopes that are not defined by which CPUs share
-a particular cache instance, and to allow resources to have different
-scope for control an monitor features.
-
-Patch 3 cleans up some loose ends from the first two patches by
-adding a new variant of the rdt_domain structure with just monitoring
-fields, and removing the monitor fields from the original rdt_domain
-structure since it is now only used for control features.
-
-Patch 4 adds "node" as a scope option.
-
-Patch 5 adjusts all code paths that need to be aware of SNC mode.
-
-Patch 6 detects SNC mode, modifies the MSR that adjusts interpretation
-of physical RMID counters.
-
-Patch 7 updates documentation.
-
-Patch 8 does a partial update for the resctrl selftests.
-
-Tony Luck (8):
-  x86/resctrl: Prepare for new domain scope
-  x86/resctrl: Prepare for different scope for control/monitor
-    operations
-  x86/resctrl: Split the rdt_domain structure
-  x86/resctrl: Add node-scope to the options for feature scope
-  x86/resctrl: Introduce snc_nodes_per_l3_cache
-  x86/resctrl: Sub NUMA Cluster detection and enable
-  x86/resctrl: Update documentation with Sub-NUMA cluster changes
-  selftests/resctrl: Adjust effective L3 cache size when SNC enabled
-
- Documentation/arch/x86/resctrl.rst          |  25 +-
- include/linux/resctrl.h                     |  64 ++--
- arch/x86/include/asm/msr-index.h            |   1 +
- arch/x86/kernel/cpu/resctrl/internal.h      |  42 ++-
- tools/testing/selftests/resctrl/resctrl.h   |   1 +
- arch/x86/kernel/cpu/resctrl/core.c          | 321 ++++++++++++++++----
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c   |   6 +-
- arch/x86/kernel/cpu/resctrl/monitor.c       |  58 ++--
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c   |  15 +-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c      |  69 +++--
- tools/testing/selftests/resctrl/resctrlfs.c |  57 ++++
- 11 files changed, 508 insertions(+), 151 deletions(-)
-
-
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 8334eeacfec5..2db1244ae642 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -144,13 +144,18 @@ struct resctrl_membw {
+ struct rdt_parse_data;
+ struct resctrl_schema;
+ 
++enum resctrl_scope {
++	RESCTRL_L3_CACHE,
++	RESCTRL_L2_CACHE,
++};
++
+ /**
+  * struct rdt_resource - attributes of a resctrl resource
+  * @rid:		The index of the resource
+  * @alloc_capable:	Is allocation available on this machine
+  * @mon_capable:	Is monitor feature available on this machine
+  * @num_rmid:		Number of RMIDs available
+- * @cache_level:	Which cache level defines scope of this resource
++ * @scope:		Scope of this resource
+  * @cache:		Cache allocation related data
+  * @membw:		If the component has bandwidth controls, their properties.
+  * @domains:		All domains for this resource
+@@ -168,7 +173,7 @@ struct rdt_resource {
+ 	bool			alloc_capable;
+ 	bool			mon_capable;
+ 	int			num_rmid;
+-	int			cache_level;
++	enum resctrl_scope	scope;
+ 	struct resctrl_cache	cache;
+ 	struct resctrl_membw	membw;
+ 	struct list_head	domains;
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 030d3b409768..0d3bae523ecb 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -65,7 +65,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 		.r_resctrl = {
+ 			.rid			= RDT_RESOURCE_L3,
+ 			.name			= "L3",
+-			.cache_level		= 3,
++			.scope			= RESCTRL_L3_CACHE,
+ 			.domains		= domain_init(RDT_RESOURCE_L3),
+ 			.parse_ctrlval		= parse_cbm,
+ 			.format_str		= "%d=%0*x",
+@@ -79,7 +79,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 		.r_resctrl = {
+ 			.rid			= RDT_RESOURCE_L2,
+ 			.name			= "L2",
+-			.cache_level		= 2,
++			.scope			= RESCTRL_L2_CACHE,
+ 			.domains		= domain_init(RDT_RESOURCE_L2),
+ 			.parse_ctrlval		= parse_cbm,
+ 			.format_str		= "%d=%0*x",
+@@ -93,7 +93,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 		.r_resctrl = {
+ 			.rid			= RDT_RESOURCE_MBA,
+ 			.name			= "MB",
+-			.cache_level		= 3,
++			.scope			= RESCTRL_L3_CACHE,
+ 			.domains		= domain_init(RDT_RESOURCE_MBA),
+ 			.parse_ctrlval		= parse_bw,
+ 			.format_str		= "%d=%*u",
+@@ -105,7 +105,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 		.r_resctrl = {
+ 			.rid			= RDT_RESOURCE_SMBA,
+ 			.name			= "SMBA",
+-			.cache_level		= 3,
++			.scope			= RESCTRL_L3_CACHE,
+ 			.domains		= domain_init(RDT_RESOURCE_SMBA),
+ 			.parse_ctrlval		= parse_bw,
+ 			.format_str		= "%d=%*u",
+@@ -487,6 +487,21 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
+ 	return 0;
+ }
+ 
++static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
++{
++	switch (scope) {
++	case RESCTRL_L3_CACHE:
++		return get_cpu_cacheinfo_id(cpu, 3);
++	case RESCTRL_L2_CACHE:
++		return get_cpu_cacheinfo_id(cpu, 2);
++	default:
++		WARN_ON_ONCE(1);
++		break;
++	}
++
++	return -1;
++}
++
+ /*
+  * domain_add_cpu - Add a cpu to a resource's domain list.
+  *
+@@ -502,7 +517,7 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
+  */
+ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+ {
+-	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
++	int id = get_domain_id_from_scope(cpu, r->scope);
+ 	struct list_head *add_pos = NULL;
+ 	struct rdt_hw_domain *hw_dom;
+ 	struct rdt_domain *d;
+@@ -552,7 +567,7 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+ 
+ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
+ {
+-	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
++	int id = get_domain_id_from_scope(cpu, r->scope);
+ 	struct rdt_hw_domain *hw_dom;
+ 	struct rdt_domain *d;
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 458cb7419502..e79324676f57 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -279,6 +279,7 @@ static void pseudo_lock_region_clear(struct pseudo_lock_region *plr)
+ static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
+ {
+ 	struct cpu_cacheinfo *ci;
++	int cache_level;
+ 	int ret;
+ 	int i;
+ 
+@@ -296,8 +297,20 @@ static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
+ 
+ 	plr->size = rdtgroup_cbm_to_size(plr->s->res, plr->d, plr->cbm);
+ 
++	switch (plr->s->res->scope) {
++	case RESCTRL_L3_CACHE:
++		cache_level = 3;
++		break;
++	case RESCTRL_L2_CACHE:
++		cache_level = 2;
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		return -ENODEV;
++	}
++
+ 	for (i = 0; i < ci->num_leaves; i++) {
+-		if (ci->info_list[i].level == plr->s->res->cache_level) {
++		if (ci->info_list[i].level == cache_level) {
+ 			plr->line_size = ci->info_list[i].coherency_line_size;
+ 			return 0;
+ 		}
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 725344048f85..f510414bf6ce 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -1343,12 +1343,25 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
+ {
+ 	struct cpu_cacheinfo *ci;
+ 	unsigned int size = 0;
++	int cache_level;
+ 	int num_b, i;
+ 
++	switch (r->scope) {
++	case RESCTRL_L3_CACHE:
++		cache_level = 3;
++		break;
++	case RESCTRL_L2_CACHE:
++		cache_level = 2;
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		return size;
++	}
++
+ 	num_b = bitmap_weight(&cbm, r->cache.cbm_len);
+ 	ci = get_cpu_cacheinfo(cpumask_any(&d->cpu_mask));
+ 	for (i = 0; i < ci->num_leaves; i++) {
+-		if (ci->info_list[i].level == r->cache_level) {
++		if (ci->info_list[i].level == cache_level) {
+ 			size = ci->info_list[i].size / r->cache.cbm_len * num_b;
+ 			break;
+ 		}
 -- 
 2.41.0
 
