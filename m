@@ -2,165 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A44678C994
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDF778C999
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237446AbjH2QXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S237519AbjH2QXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236699AbjH2QWw (ORCPT
+        with ESMTP id S237457AbjH2QXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:22:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280661A6;
-        Tue, 29 Aug 2023 09:22:50 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.186.40])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 139646607236;
-        Tue, 29 Aug 2023 17:22:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693326168;
-        bh=Xq5jz8HdbMocWJzAMFiYi0flLRLw9RkQ3+TdhDp1Xw8=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=HElLb0ShqTSds9x9QyH3BVnv+nr4AQ4MOkSwM6NSfBWfdjpzHFOfKzkJ8uP/Bolqp
-         ARo7CWT0BYhlVSN3usf9qHWiWDmMj2DceMvMJp8MmJwe3CDXiK1nP8QMIWdD0Y6NMf
-         Gz+umklaNPL4c3TRkb//MlKr0iVKHM4CLocNndnWceAF3uUnc1NxMabmN2nU14LOyR
-         QCD/cCfFQbHfEX9NJyNx9e4Kq3V6zpWdnZpKJYrihnF+7UYrIQ+2tPq3mLd4/WHbNA
-         bEtbqM72dzMi7j5XgEUDE0CJlc9QRSGJiYS4kPIB3JZmKbQWvxTK/i7+MgWvyPROfd
-         Vu63Kk42IIUDQ==
-Message-ID: <ef489936-9413-4a01-a3f0-eebadfb64ff9@collabora.com>
-Date:   Tue, 29 Aug 2023 21:22:39 +0500
+        Tue, 29 Aug 2023 12:23:13 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922AED2;
+        Tue, 29 Aug 2023 09:23:10 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37TB7M6Z016651;
+        Tue, 29 Aug 2023 11:22:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=ptBbO/ikbUCOzPa
+        qVepOxQ9ReSRotYR0A66tqyou2FU=; b=I+L5I4qBF50L9rYiRIaQlhWB4sV3RnQ
+        OGVpQwlf2Xo0digGObeI2dtMsDZQlKuuYeFjmholLLT/vDN1GOwElY7Bzp12+RuU
+        luWeMHYFh2i0VAca2nNK6nrJBwRnu+U/lUTjOGQuNY75kUBNMlUFfOxfaMpTu8cW
+        gdGSyaxRmHjPaj86fsoMAo94ERa9drjuBnqQfnTGnN/FCxCaYdLMG4Lz3gSaX5P0
+        sjxgZ09gT61sk1+pMBbkRgIaul55VXjyqt+prHO6UZKxD67CCLeYiE+bC1pOJelC
+        d6QWuSffHuwrW2Q2MwrCL9AUBJ+S8y+uKrzGsd5zUs71CWljNEq22SA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sqdtj360r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 11:22:45 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 29 Aug
+ 2023 17:22:43 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Tue, 29 Aug 2023 17:22:43 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 93CA615B6;
+        Tue, 29 Aug 2023 16:22:43 +0000 (UTC)
+Date:   Tue, 29 Aug 2023 16:22:43 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     <broonie@kernel.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linus.walleij@linaro.org>, <vkoul@kernel.org>,
+        <lgirdwood@gmail.com>, <yung-chuan.liao@linux.intel.com>,
+        <sanyog.r.kale@intel.com>, <pierre-louis.bossart@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 3/6] mfd: cs42l43: Add support for cs42l43 core driver
+Message-ID: <20230829162243.GV103419@ediswmail.ad.cirrus.com>
+References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
+ <20230804104602.395892-4-ckeepax@opensource.cirrus.com>
+ <b122a788-acee-4747-be6d-a7456ee110dc@roeck-us.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        syzbot <syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        jacob.e.keller@intel.com, jiri@nvidia.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        fishgylk@gmail.com, bagasdotme@gmail.com
-Subject: Re: [syzbot] [net?] WARNING in inet_sock_destruct (4)
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-References: <00000000000010353a05fecceea0@google.com>
- <6144228a-799f-4de3-8483-b7add903df0c@collabora.com>
- <CANn89iJiBp9t69Y3htwGGb=pTWhjFQPxKPD1E6uSFks5NrgctA@mail.gmail.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CANn89iJiBp9t69Y3htwGGb=pTWhjFQPxKPD1E6uSFks5NrgctA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <b122a788-acee-4747-be6d-a7456ee110dc@roeck-us.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: mADtkyurD_gKlPgW1ZYY9RFipjVdnnX5
+X-Proofpoint-GUID: mADtkyurD_gKlPgW1ZYY9RFipjVdnnX5
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
-
-On 8/29/23 8:19 PM, Eric Dumazet wrote:
-> On Tue, Aug 29, 2023 at 2:44 PM Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->>
->> On 6/23/23 7:36 PM, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit: 45a3e24f65e9 Linux 6.4-rc7
->>> git tree: upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=160cc82f280000
->>> kernel config: https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=de6565462ab540f50e47
->>> compiler: gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=160aacb7280000
->>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=17c115d3280000
->>>
->>> Downloadable assets:
->>> disk image: https://storage.googleapis.com/syzbot-assets/c09bcd4ec365/disk-45a3e24f.raw.xz
->>> vmlinux: https://storage.googleapis.com/syzbot-assets/03549b639718/vmlinux-45a3e24f.xz
->>> kernel image: https://storage.googleapis.com/syzbot-assets/91f203e5f63e/bzImage-45a3e24f.xz
->>>
->>> The issue was bisected to:
->>>
->>> commit 565b4824c39fa335cba2028a09d7beb7112f3c9a
->>> Author: Jiri Pirko <jiri@nvidia.com>
->>> Date: Mon Feb 6 09:41:51 2023 +0000
->>>
->>> devlink: change port event netdev notifier from per-net to global
->>>
->>> bisection log: https://syzkaller.appspot.com/x/bisect.txt?x=110a1a5b280000
->>> final oops: https://syzkaller.appspot.com/x/report.txt?x=130a1a5b280000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=150a1a5b280000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com
->>> Fixes: 565b4824c39f ("devlink: change port event netdev notifier from per-net to global")
->>>
->>> ------------[ cut here ]------------
->>> WARNING: CPU: 0 PID: 5025 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x6df/0x8a0 net/ipv4/af_inet.c:154
->> This same warning has been spotted and reported:
->> https://bugzilla.kernel.org/show_bug.cgi?id=217555
->>
->> Syzbot has found the same warning on 4.14, 5.15, 6.1, 6.5-rc and latest
->> mainline (1c59d383390f9) kernels. The provided reproducers (such as
->> https://syzkaller.appspot.com/text?tag=ReproC&x=15a10e8aa80000) are
->> reproducing the same warnings on multicore (at least 2 CPUs) qemu instance.
+On Tue, Aug 29, 2023 at 07:06:28AM -0700, Guenter Roeck wrote:
+> On Fri, Aug 04, 2023 at 11:45:59AM +0100, Charles Keepax wrote:
+> > The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+> > (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+> > for portable applications. It provides a high dynamic range, stereo
+> > DAC for headphone output, two integrated Class D amplifiers for
+> > loudspeakers, and two ADCs for wired headset microphone input or
+> > stereo line input. PDM inputs are provided for digital microphones.
+> > 
+> > The MFD component registers and initialises the device and provides
+> > PM/system power management.
+> > 
+> Unfortunately, on systems without pm support:
 > 
-> Can you test the following fix ?
-Just tested the fix on 1c59d383390f9, it didn't fix the warning.
-
-Please let me know if you need help in testing more.
-
-> Thanks.
+> Building s390:allmodconfig ... failed
+> --------------
+> Error log:
+> drivers/mfd/cs42l43.c:1138:12: error: 'cs42l43_runtime_resume' defined but not used [-Werror=unused-function]
+>  1138 | static int cs42l43_runtime_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~
+> drivers/mfd/cs42l43.c:1124:12: error: 'cs42l43_runtime_suspend' defined but not used [-Werror=unused-function]
+>  1124 | static int cs42l43_runtime_suspend(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~
+> drivers/mfd/cs42l43.c:1106:12: error: 'cs42l43_resume' defined but not used [-Werror=unused-function]
+>  1106 | static int cs42l43_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~
+> drivers/mfd/cs42l43.c:1076:12: error: 'cs42l43_suspend' defined but not used [-Werror=unused-function]
+>  1076 | static int cs42l43_suspend(struct device *dev)
 > 
-> diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
-> index 25816e790527dbd6ff55ffb94762b5974e8144aa..1085357b30c9a0d4bf7a578cebf3eeddec953632
-> 100644
-> --- a/net/dccp/ipv6.c
-> +++ b/net/dccp/ipv6.c
-> @@ -377,8 +377,13 @@ static int dccp_v6_conn_request(struct sock *sk,
-> struct sk_buff *skb)
->         if (ipv6_opt_accepted(sk, skb, IP6CB(skb)) ||
->             np->rxopt.bits.rxinfo || np->rxopt.bits.rxoinfo ||
->             np->rxopt.bits.rxhlim || np->rxopt.bits.rxohlim) {
-> +               /* Only initialize ireq->pktops once.
-> +                * We must take a refcount on skb because ireq->pktops
-> +                * could be consumed immediately.
-> +                */
->                 refcount_inc(&skb->users);
-> -               ireq->pktopts = skb;
-> +               if (cmpxchg(&ireq->pktopts, NULL, skb))
-> +                       refcount_dec(&skb->users);
->         }
->         ireq->ir_iif = READ_ONCE(sk->sk_bound_dev_if);
-> 
-> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-> index 6e86721e1cdbb8d47b754a2675f6ab1643c7342c..d45aa267473c4ab817cfda06966a536718b50a53
-> 100644
-> --- a/net/ipv6/tcp_ipv6.c
-> +++ b/net/ipv6/tcp_ipv6.c
-> @@ -798,8 +798,13 @@ static void tcp_v6_init_req(struct request_sock *req,
->              np->rxopt.bits.rxinfo ||
->              np->rxopt.bits.rxoinfo || np->rxopt.bits.rxhlim ||
->              np->rxopt.bits.rxohlim || np->repflow)) {
-> +               /* Only initialize ireq->pktops once.
-> +                * We must take a refcount on skb because ireq->pktops
-> +                * could be consumed immediately.
-> +                */
->                 refcount_inc(&skb->users);
-> -               ireq->pktopts = skb;
-> +               if (cmpxchg(&ireq->pktopts, NULL, skb))
-> +                       refcount_dec(&skb->users);
->         }
->  }
 
--- 
-BR,
-Muhammad Usama Anjum
+Apologies for this one, a fix is already awaiting review here:
+
+https://lore.kernel.org/lkml/20230822114914.340359-1-ckeepax@opensource.cirrus.com/
+
+Thanks,
+Charles
