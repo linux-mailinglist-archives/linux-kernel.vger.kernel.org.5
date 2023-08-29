@@ -2,191 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D8778C013
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9219F78C01A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbjH2IPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
+        id S232566AbjH2IR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbjH2IPU (ORCPT
+        with ESMTP id S232533AbjH2IRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:15:20 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8371B6;
-        Tue, 29 Aug 2023 01:14:38 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5009969be25so6456303e87.3;
-        Tue, 29 Aug 2023 01:14:38 -0700 (PDT)
+        Tue, 29 Aug 2023 04:17:24 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB7599;
+        Tue, 29 Aug 2023 01:17:21 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c0ecb9a075so13559315ad.2;
+        Tue, 29 Aug 2023 01:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693296867; x=1693901667;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpCt/3rI6BwltGm6OrrHxjmtGTGMQx5mSNvkMRK1Jws=;
-        b=YRQlOcCRcFxAqYZAwQxhMqpBs0MSqAHQdVO4iPz2daPciNJKDVkPuS62HK15kZCZ+h
-         ytMMNW0a+CGr2GIUFWW3KWVXWhdo5dHe99iVnoohjqTGHKnJcUTn/QE80iKX0CDAw00X
-         aZGT0zVpbxgzRSArWz0MHWpTFXBiu4e74gsoVkgXcn9BVh4q38RrmBXvUH/BtkTcgtYw
-         dqOm3iwtmjjVnj2UASckxpKxkneNrxH4mpIvfeM2/gtLPH8rkGkYTELxsRyk+Ta9VmNd
-         SfZ4ag4yv0vpEIKvV53/rCKge6WCsXfEbXLPHb15pgv9QPDb/3+yrV7HpEmofNcFyboH
-         EMsQ==
+        d=gmail.com; s=20221208; t=1693297040; x=1693901840;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hUPX1B9IT02IPgbp3gQKJ4s0jW2icwPDD7Z8YFg3AYg=;
+        b=VEs10iU+dxmJreW+YWCicNzrps5btu9NpGHGBX4htUNXCvYc0J5DUzpYnnjseG8Pnk
+         vxqdUoSrGhkulCCSl6tvbf7q0H6zIh6peVP7vaQxhd4hxb1hWE5Snf3NEh3FfXQ7V/xk
+         5Y2J4RyA1udcB96l4MbYDLvakgjmfvFK0EQ6okz/MxY3m3KNoy9jnP4vwj2pHeFPAKKi
+         V28dx0RdXSPEjZiSbzPwiqkyW4sJUro3iupyUczFmCyT1P+sie5GQY3XnRvR8zmo3cUo
+         gBFxjYqDSAAQjOjFtHSTIaOnu00A43ydArgXpXBpbDQ+rm3VZVMspuCCvU8MoYvuIDId
+         /o6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693296867; x=1693901667;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpCt/3rI6BwltGm6OrrHxjmtGTGMQx5mSNvkMRK1Jws=;
-        b=e02csuOX0SfkYWMAamC+qPsmLFNtdsmalY7fWrrrJlypbOGXzinKDCQRDe04dvVe8v
-         Gme4eHIQh53N7++PxqhBkpoiXUYQV5TuV+7R/rXqxMN6GgDhl5HPvVODKzCTtLPB9sEj
-         ZhKgAN9tq5vCvDWuSaIgTRu17QS5CyW53w0szEHtrBjlnKp/WqGA9laEeTlVh5Y4dcMW
-         QYZ8jhNfzGrUiYITKriVyQdgl2epk7sC0y/+OMSa6tUox0H5+sJWQy0IARr/IbF5fCKd
-         iAYEKj8uare0uuTZrx+5lsfG7+srcOIgTTdywvVAUk2jcYz74rNXn1389rr+TPMwZcWs
-         Trrg==
-X-Gm-Message-State: AOJu0YzBhDyhkKbQuNjKjX0H5RyLXob2jt+wVJnEmoFbEV6cgcI5OkP5
-        sa5qp6/M3OCZzUd+I0Ext4s=
-X-Google-Smtp-Source: AGHT+IF6eneRxFLz00elzVlsaViyXlp9Lf/PuaIKg7elUxgACLx6idoz53N5/PfqryD/gK9F++hr7w==
-X-Received: by 2002:a05:6512:1594:b0:500:9b26:9760 with SMTP id bp20-20020a056512159400b005009b269760mr13354264lfb.13.1693296866888;
-        Tue, 29 Aug 2023 01:14:26 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id q17-20020ac25151000000b004fcdf8b8ab4sm1878629lfd.23.2023.08.29.01.14.26
+        d=1e100.net; s=20221208; t=1693297040; x=1693901840;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hUPX1B9IT02IPgbp3gQKJ4s0jW2icwPDD7Z8YFg3AYg=;
+        b=XLUsHbXzwJgdLxt8OOiEvuxFEr8GdI4WwqErBJNDCT8+jv6ptM17R3RV7fvHGw28V/
+         bXc22wIIHCa1D7aiwb3Qo8pq9uFTW1NhhUn7eOYtTpGuI64HF3TBYD69NCRCAnydTMfw
+         8naiWj/5Kgz8Cs3n5qwT/MHM8sbeS5JselSMMuKi8qSiI/4q7P5V1ouh8XC2nZcxwGFd
+         Df2nY7HkUBp3k9e2QxS9mP5ZaSd21ZocVxgokaVQyOBVVJ+d3tphPolTE9548tqjE3Vu
+         SkbXGODKBPnUm+5LaBIi9lUoLcgvNz8pegSeCyfj57rNMZUd4N+y3Rjpy2OBdTzOoJ4t
+         thMw==
+X-Gm-Message-State: AOJu0YyfDTI5oufsEx9ikmr4wuUfDUcaza36DNma4sFOSbzO+YQPybjV
+        97XRmJWUe8ateroK9/xwJjU=
+X-Google-Smtp-Source: AGHT+IHTTSkRDx+coFntMCNAwjhV6OY8O9YyvxAWQCJ9NDokBj2FIlMzEZIWh4DP67jzArmg0BSzLQ==
+X-Received: by 2002:a17:90b:1996:b0:26d:262e:70be with SMTP id mv22-20020a17090b199600b0026d262e70bemr20221239pjb.22.1693297040531;
+        Tue, 29 Aug 2023 01:17:20 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id 22-20020a17090a1a1600b0026f7554821csm9029144pjk.27.2023.08.29.01.17.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 01:14:26 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 11:14:24 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        <quic_abhinavk@quicinc.com>, <contact@emersion.fr>,
-        <laurent.pinchart@ideasonboard.com>, <sebastian.wick@redhat.com>,
-        <ville.syrjala@linux.intel.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <freedreno@lists.freedesktop.org>,
-        <wayland-devel@lists.freedesktop.org>
-Subject: Re: [PATCH RFC v6 05/10] drm/atomic: Add solid fill data to plane
- state dump
-Message-ID: <20230829111424.3f187b88@eldfell>
-In-Reply-To: <20230828-solid-fill-v6-5-a820efcce852@quicinc.com>
-References: <20230828-solid-fill-v6-0-a820efcce852@quicinc.com>
-        <20230828-solid-fill-v6-5-a820efcce852@quicinc.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Tue, 29 Aug 2023 01:17:19 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 4806882EFB8F; Tue, 29 Aug 2023 15:17:16 +0700 (WIB)
+Date:   Tue, 29 Aug 2023 15:17:15 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Marc Haber <mh+linux-kernel@zugschlus.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd
+ related
+Message-ID: <ZO2piz5n1MiKR-3-@debian.me>
+References: <ZO2RlYCDl8kmNHnN@torres.zugschlus.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/p3ZFNBA7.FbYl_glCOK8o6h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="spOfNqo0AyqeAqCG"
+Content-Disposition: inline
+In-Reply-To: <ZO2RlYCDl8kmNHnN@torres.zugschlus.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/p3ZFNBA7.FbYl_glCOK8o6h
-Content-Type: text/plain; charset=US-ASCII
+
+--spOfNqo0AyqeAqCG
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 28 Aug 2023 17:05:11 -0700
-Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
+[also Cc: regressions and KVM mailing lists]
 
-> Add solid_fill property data to the atomic plane state dump.
+On Tue, Aug 29, 2023 at 08:35:01AM +0200, Marc Haber wrote:
+> Hi,
 >=20
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->  drivers/gpu/drm/drm_atomic.c | 4 ++++
->  drivers/gpu/drm/drm_plane.c  | 8 ++++++++
->  include/drm/drm_plane.h      | 3 +++
->  3 files changed, 15 insertions(+)
+> I am always quickly upgrading my fleet to new stable kernels. So I
+> updated my 9 test machines yesterday and found that one of those test
+> machines gets abysmally slow after the kernel has finshed the early boot
+> sequence and control is handed over to systemd.
 >=20
-> diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
-> index bcecb64ccfad..3cb599b3304a 100644
-> --- a/drivers/gpu/drm/drm_atomic.c
-> +++ b/drivers/gpu/drm/drm_atomic.c
-> @@ -717,6 +717,10 @@ static void drm_atomic_plane_print_state(struct drm_=
-printer *p,
->  	drm_printf(p, "\tfb=3D%u\n", state->fb ? state->fb->base.id : 0);
->  	if (state->fb)
->  		drm_framebuffer_print_info(p, 2, state->fb);
-> +	drm_printf(p, "\tsolid_fill=3D%u\n",
-> +			state->solid_fill_blob ? state->solid_fill_blob->base.id : 0);
-> +	if (state->solid_fill_blob)
-> +		drm_plane_solid_fill_print_info(p, 2, state);
->  	drm_printf(p, "\tcrtc-pos=3D" DRM_RECT_FMT "\n", DRM_RECT_ARG(&dest));
->  	drm_printf(p, "\tsrc-pos=3D" DRM_RECT_FP_FMT "\n", DRM_RECT_FP_ARG(&src=
-));
->  	drm_printf(p, "\trotation=3D%x\n", state->rotation);
-> diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
-> index 559d101162ba..6244b622a21a 100644
-> --- a/drivers/gpu/drm/drm_plane.c
-> +++ b/drivers/gpu/drm/drm_plane.c
-> @@ -1495,6 +1495,14 @@ __drm_plane_get_damage_clips(const struct drm_plan=
-e_state *state)
->  					state->fb_damage_clips->data : NULL);
->  }
-> =20
-> +void drm_plane_solid_fill_print_info(struct drm_printer *p, unsigned int=
- indent,
-> +				     const struct drm_plane_state *state)
-> +{
-> +	drm_printf_indent(p, indent, "r=3D0x%x\n", state->solid_fill.r);
-> +	drm_printf_indent(p, indent, "g=3D0x%x\n", state->solid_fill.g);
-> +	drm_printf_indent(p, indent, "b=3D0x%x\n", state->solid_fill.b);
-
-I'd recommend %08x format, so that leading zeroes are explicit. That
-makes it easier to see the difference between e.g. 0xffffffff and
-0x0fffffff.
-
-
-Thanks,
-pq
-
-> +}
-> +
->  /**
->   * drm_plane_get_damage_clips - Returns damage clips.
->   * @state: Plane state.
-> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
-> index 49995c4be2ab..a58f84b6bd5e 100644
-> --- a/include/drm/drm_plane.h
-> +++ b/include/drm/drm_plane.h
-> @@ -1001,6 +1001,9 @@ drm_plane_get_damage_clips_count(const struct drm_p=
-lane_state *state);
->  struct drm_mode_rect *
->  drm_plane_get_damage_clips(const struct drm_plane_state *state);
-> =20
-> +void drm_plane_solid_fill_print_info(struct drm_printer *p, unsigned int=
- indent,
-> +				     const struct drm_plane_state *state);
-> +
->  int drm_plane_create_scaling_filter_property(struct drm_plane *plane,
->  					     unsigned int supported_filters);
-> =20
+> The boot eventually finishes, but it takes like 50 minutes instead of 30
+> seconds to get the machine to attach to the network, start up sshd and
+> to show a login prompt. The machine is a KVM/QEMU VM running on an APU
+> host ("AMD GX-412TC SOC"). The host is still on 6.4.12, is NOT under
+> memory or IO pressure, and on the host it looks like the VM is just
+> taking about 10 % of a single core and happily chugging away.
 >=20
+> Others of my test machines are KVM VMs running on different, more
+> powerful hosts, and those are booting 6.5 just fine, so I guess that the
+> issue is somehow caused by the APU host. I have upgraded a second VM on
+> the host in question to Linux 6.5 and that VM exhibits the same
+> behavior.
+>=20
+> This is the tail of the boot messages of the VM on the serial console,
+> and I am attaching the entirety of the messages under the signature:
+> hub 1-0:1.0: USB hub found
+> hub 1-0:1.0: 6 ports detected
+> sr 0:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
+> cdrom: Uniform CD-ROM driver Revision: 3.20
+> virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+> usb 1-1: new high-speed USB device number 2 using ehci-pci
+> virtio-pci 0000:00:08.0: virtio_pci: leaving for legacy driver
+> usb 1-1: New USB device found, idVendor=3D0627, idProduct=3D0001, bcdDevi=
+ce=3D 0.00
+> usb 1-1: New USB device strings: Mfr=3D1, Product=3D3, SerialNumber=3D5
+> usb 1-1: Product: QEMU USB Tablet
+> usb 1-1: Manufacturer: QEMU
+> virtio-pci 0000:00:09.0: virtio_pci: leaving for legacy driver
+> usb 1-1: SerialNumber: 42
+> input: QEMU QEMU USB Tablet as /devices/pci0000:00/0000:00:05.7/usb1/1-1/=
+1-1:1.0/0003:0627:0001.0001/input/input4
+> hid-generic 0003:0627:0001.0001: input,hidraw0: USB HID v0.01 Mouse [QEMU=
+ QEMU USB Tablet] on usb-0000:00:05.7-1/input0
+> usbcore: registered new interface driver usbhid
+> usbhid: USB HID core driver
+> virtio-pci 0000:00:0a.0: virtio_pci: leaving for legacy driver
+> virtio_blk virtio2: 1/0/0 default/read/poll queues
+> virtio_blk virtio2: [vda] 8388608 512-byte logical blocks (4.29 GB/4.00 G=
+iB)
+>  vda: vda1 vda2
+> virtio_blk virtio4: 1/0/0 default/read/poll queues
+> virtio_net virtio0 ens3: renamed from eth0
+> virtio_blk virtio4: [vdb] 1048576 512-byte logical blocks (537 MB/512 MiB)
+> Begin: Loading essential drivers ... done.
+> Begin: Running /scripts/init-premount ... done.
+> Begin: Mounting root file system ... Begin: Running /scripts/local-top ..=
+=2E done.
+> Begin: Running /scripts/local-premount ... done.
+> Begin: Will now check root file system ... fsck from util-linux 2.38.1
+> [/sbin/fsck.ext4 (1) -- /dev/vda2] fsck.ext4 -a -C0 /dev/vda2
+> ronde-root: clean, 41578/262144 files, 405761/1048315 blocks
+> done.
+> EXT4-fs (vda2): mounted filesystem 3af5627c-4ed5-4f35-b0b3-60be041708cb r=
+o with ordered data mode. Quota mode: none.
+> done.
+> Begin: Running /scripts/local-bottom ... done.
+> Begin: Running /scripts/init-bottom ... done.
+> systemd[1]: Inserted module 'autofs4'
+> random: crng init done
+> systemd[1]: systemd 252.12-1~deb12u1 running in system mode (+PAM +AUDIT =
++SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKI=
+D +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +P=
+CRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FR=
+AMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=3Dunified)
+> systemd[1]: Detected virtualization kvm.
+> systemd[1]: Detected architecture x86-64.
+>=20
+> Welcome to Debian GNU/Linux 12 (bookworm)!
+>=20
+> systemd[1]: Hostname set to <ronde>.
+> systemd[1]: Queued start job for default target graphical.target.
+> systemd[1]: Created slice system-getty.slice - Slice /system/getty.
+>=20
+> this is the point when things are slowing down horribly, the system is si=
+tting for like 30 seconds for each line.
+>=20
+> [  OK  ] Created slice system-getty.slice - Slice /system/getty.systemd[1=
+]: Created slice system-modprobe.slice - Slice /system/modprobe.
+>=20
+> [  OK  ] Created slice system-modpr=E2=80=A6lice - Slice /system/modprobe=
+=2Esystemd[1]: Created slice system-radiator.slice - Slice /system/radiator.
+>=20
+> [  OK  ] Created slice system-radia=E2=80=A6lice - Slice /system/radiator=
+=2Esystemd[1]: Created slice system-serial\x2dgetty.slice - Slice /system/s=
+erial-getty.
+>=20
+> [  OK  ] Created slice system-seria=E2=80=A6 - Slice /system/serial-getty=
+=2Esystemd[1]: Created slice user.slice - User and Session Slice.
+>=20
+> [  OK  ] Created slice user.slice - User and Session Slice.systemd[1]: St=
+arted systemd-ask-password-console.path - Dispatch Password Requests to Con=
+sole Directory Watch.
+>=20
+> [  OK  ] Started systemd-ask-passwo=E2=80=A6quests to Console Directory W=
+atch.systemd[1]: Started systemd-ask-password-wall.path - Forward Password =
+Requests to Wall Directory Watch.
+>=20
+> [  OK  ] Started systemd-ask-passwo=E2=80=A6 Requests to Wall Directory W=
+atch.systemd[1]: Set up automount proc-sys-fs-binfmt_misc.automount - Arbit=
+rary Executable File Formats File System Automount Point.
+>=20
+> [  OK  ] Set up automount proc-sys-=E2=80=A6rmats File System Automount P=
+oint.systemd[1]: Reached target cryptsetup.target - Local Encrypted Volumes.
+>=20
+> This looks like systemd is waiting for something to time out, since the
+> delay is about 30 seconds (as exactly as I can sit tight with a
+> stopwatch). Going back to kernel 6.4.12 things are fixed immediately.
+>=20
+> The VMs in question are running debian bookworm with systemd 252.
+>=20
+> When the machine eventually allows a log in, systemctl --failed says
+> "Failed to query system state: Message recipient disconnected from
+> message bus without replying", but this fixes itself after another half
+> an hour or so.
+>=20
+> What would you recommend doing to fix this?
 
+Can you attach full journalctl log so that we can see which services
+timed out?
 
---Sig_/p3ZFNBA7.FbYl_glCOK8o6h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+In any case, bisecting kernel is highly appreciated in order to pin down
+the culprit. See Documentation/admin-guide/bug-bisect.html for how to do th=
+at.
+Regardless, I'm adding this regression to be tracked by regzbot:
+
+#regzbot ^introduced: v6.4..v6.5
+#regzbot title: systemd services timeout causing almost an hour of boot time
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--spOfNqo0AyqeAqCG
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTtqOAACgkQI1/ltBGq
-qqfEIw//VTbz8t1OwEo0CcfNcMpnOHydv9qTAEla3tDyevZTdRJVT/sMDlyAoEJM
-Xl8y+9mZOiIl2GNHr1eg+FIKyAC/dnjFHK7wVNb2Qg4iw2pKuwFhEmbPgSf+Oyo4
-ira8tQYseDoXoAERgbDSTZ13a5QXFk0kplnWtzDILTrLRRu5n78gamzlQb2LWjij
-FW8LcFzxH8SrRUKZHZuVq0FUBRMq7XQyANJepM4wQ1YlmbEvRJRZUFIN5l/lE4kU
-Rja6otQUZg+zRrWVvOeAFxPp+nkdN9JxBf52SFz44taFrVu/FmWl1FzhnYCju7wj
-ZdhiB3OnsuQ3LifJd1tJCG/AndoYnkQoz0jXBvGlmXDpLraoCboHs6/k/QPgiX6Q
-XQ0rcunlTrdtyKDPGzOt41TEVyRxV1WHUZCCWIWmRcJI6WvCUL0r/lR09Y4WwhSU
-0S1+hxc1wdJj4l/Ay8HzFAu159/EipGnOQe6OdsKeaEkOTc5s1XLhkDC3W4bMN6O
-zVXSEAhzGCjEdQdg24yabhVXwqyNzqqWuxcrLAe2P0QbBTnzHLH/H7LIFgi6y9yY
-rXenXRL18kxyYLmBw8Vrx1w5EZhp05/fE4OklK2czh3I0PK/A8nV4j7GzcgwlPeQ
-MT6a2xZ1/m7vAWvBitN7D5pcw4D/i3hqLZscm8I+39lbahyIwIg=
-=9B8a
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZO2phgAKCRD2uYlJVVFO
+o373AQD7CV+j/jIrktMHHKOm7BsvLaIM4YLYAJA0beYhwmqkCAEA+Utpm4rP/Kh/
+Jxd1vkUoKzosLAY9bu29Obpf+zTEfwI=
+=sQ+T
 -----END PGP SIGNATURE-----
 
---Sig_/p3ZFNBA7.FbYl_glCOK8o6h--
+--spOfNqo0AyqeAqCG--
