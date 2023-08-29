@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A2578CCF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A8D78CCF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 21:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238312AbjH2TbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 15:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
+        id S234589AbjH2TbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 15:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240220AbjH2Tax (ORCPT
+        with ESMTP id S240222AbjH2Tax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 15:30:53 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C1711B;
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7031BD;
         Tue, 29 Aug 2023 12:30:31 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-500b6456c7eso4473187e87.2;
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a1de3417acso35693366b.0;
         Tue, 29 Aug 2023 12:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693337430; x=1693942230;
+        d=gmail.com; s=20221208; t=1693337430; x=1693942230; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eglkfRZu56bK3qZVs6wBq4nX9Ykg+M4S/tca+p9SQ30=;
-        b=jruP9OV0Cp6ujyJehHhmSgckXYPv5kzIE/ofTujIZnvpA34/6dBmoxH1rbYtdMXFih
-         kFpwPpfSFd9lXwbYzZTREjUW8uUS17xTiLWsgtlAiEIV2fj8UJ1ftWYc22ucfable8R/
-         +fs39uyDtpOB0s9Gy9uLrL3MD+NfcnHcPKqB32H0L4Ax2/JpGmwznU96hZMth0CEDdDv
-         4/csJoQbC+Vtt6evliCCQILLJAFConRiGU8t6N+uAM4yU2qQIj9DAnRP51VuMaAH/FmP
-         OWq59Lar9SXHwEuebsNn4XBl4srthjzzheotqT6dLAcvLWt0e1RmkFBSuAF1a2f178HN
-         htQg==
+        bh=bfzC+/2ZWaml8G5FoMVqEV7cfUPth65LiMOYJOwJeN0=;
+        b=HGcoUSksrIM1gAk+bZXWkIiBq4C1lZNNwIVqBfVHpOga1xFwHcOdu8WBroWwTsQlOj
+         GqAFnHX2xPhae+1YdNbmPdH8ATn8RyRkSgbJsdrQx30SCEOZpalyT3ryBhiWrkJcJf9z
+         mplkFokpfo+Cw0cjCTxAR0TtcQ6FzetFQkQU178rrP5/EwKd3+ykdst9M8yAK6C5yDQW
+         3H+I3H+7lFPXPeV+bhSd6FfQIc5sr+kioxcA10H8g8GiyJPeOWogaMsSwfbMe1wSkV2H
+         /QZ9GkwWWJMpsiimXIt1junJj/iHssZ4giyQmK5jQrV2szjEnHRbQh/la6dccMcK9fXu
+         WrmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1693337430; x=1693942230;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eglkfRZu56bK3qZVs6wBq4nX9Ykg+M4S/tca+p9SQ30=;
-        b=W/4Q2vY1/3fgvUftfq7WwesuSSULxmFjDDqEoA043dhZ7E2gCtQqJwEjfUzgAsYrCv
-         gdgZh0rQwzwoLpt01vmwNyLzbx3kDr/5y/lBHTQDMgXIQITbu4KVEbb3ajTpwLdVtB6G
-         NZoIF8UDY//gykvtMiS2pp8NMJDD6TpZpj/oYRBI68RpSY78mtkmki56ORHkMC+k74J5
-         O3v0m72wvtVGKUgfXm69x35p7qft7367Ful9SodPKkQjXEVvc4WuYq9zKgvK9EG/kpa7
-         UASpSC+UciS4UKz9p2Xeyg8vAy13PP0MhXL3bTn8P0Ro86lXqgb5XaSJCqBge7Hugg23
-         hM1g==
-X-Gm-Message-State: AOJu0Ywt/WID0ijD7GhhZwXIReW4pj5y8GYVfsL/rm/pImqxl6SVbp3x
-        pSr/JRnFBvpSTU68Q3UO1A==
-X-Google-Smtp-Source: AGHT+IGKu0J2D48F+mooqlGIw6OnQ/YOnu4pF/VvL1n566pIMWV+tJNpWaqbTUwmm6Fet/DMD5rnUA==
-X-Received: by 2002:a05:6512:ea4:b0:4ff:7602:5879 with SMTP id bi36-20020a0565120ea400b004ff76025879mr26903079lfb.55.1693337429715;
-        Tue, 29 Aug 2023 12:30:29 -0700 (PDT)
+        bh=bfzC+/2ZWaml8G5FoMVqEV7cfUPth65LiMOYJOwJeN0=;
+        b=Z1pndM/3L0dFmv1NngoGHt7L3DIui/hAatiMmfciP2jnwWRDCrPaITBmdMVapxN2cw
+         5bPIyjHDruw5o5JYPWzN8lI0JQYB2xXgDpJ0Dt+Lqgog6YifbjO2AQMr/Uip0i67VWie
+         EYodFXAXGIBh2Miny0C2ojHyV9FBJpuDCGHqUiIqGLx4eaSOngkXR808LJHI8KTxBmik
+         3Q+xLvXPJvN9rr7mnoEfIASq4Jm08kHEYAIurii/rTzvYVs6TPRbRrNWbr968hKoXSVe
+         ztu3Bu1sOhLWa3RihymWeBAMk+OQtyntRNMfxsO8TySMhbVb5KJndi7LC1b4u+4QBMC8
+         f5Xg==
+X-Gm-Message-State: AOJu0YzoYaqk80O92+sn3CjWN6ogXcyckUVn7jLjaci/oSatxYH8pHQ7
+        1+RTVuxlrlCm05d+4mjOsQ==
+X-Google-Smtp-Source: AGHT+IGNh4/VCGDQCZHTWgx0EhZ1PtJBqs8JN8DF92lQhMLKLCha86n99pCn/Xj5QM+kGftFnuVypw==
+X-Received: by 2002:a17:907:60cf:b0:9a5:aa43:1c7c with SMTP id hv15-20020a17090760cf00b009a5aa431c7cmr5036312ejc.26.1693337430408;
+        Tue, 29 Aug 2023 12:30:30 -0700 (PDT)
 Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
         by smtp.gmail.com with ESMTPSA id o8-20020aa7d3c8000000b0052544bca116sm5940902edr.13.2023.08.29.12.30.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 12:30:29 -0700 (PDT)
+        Tue, 29 Aug 2023 12:30:30 -0700 (PDT)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Heiko Stuebner <heiko@sntech.de>, Stephen Boyd <sboyd@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>
@@ -58,9 +58,9 @@ Cc:     Elaine Zhang <zhangqing@rock-chips.com>, linux-clk@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         Finley Xiao <finley.xiao@rock-chips.com>,
         Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 1/3] clk: rockchip: rk3128: Fix aclk_peri_src parent
-Date:   Tue, 29 Aug 2023 21:29:56 +0200
-Message-ID: <20230829192958.250248-2-knaerzche@gmail.com>
+Subject: [PATCH v2 2/3] clk: rockchip: rk3128: Fix hclk_otg gate
+Date:   Tue, 29 Aug 2023 21:29:57 +0200
+Message-ID: <20230829192958.250248-3-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230829192958.250248-1-knaerzche@gmail.com>
 References: <20230829192958.250248-1-knaerzche@gmail.com>
@@ -78,66 +78,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Finley Xiao <finley.xiao@rock-chips.com>
 
-gpll_div3_peri gates, but a single clk_peri_src gate.
-The peri mux directly connects to the plls respectively the pll divider
-clocks.
-Fix this by creating a single gated composite.
-
-Also rename all occurrences of aclk_peri_src to clk_peri_src, since it
-is the parent for both peri aclks and hclks and that name also matches the
-one used in the TRM.
+HCLK_OTG gate is located in CRU_CLKGATE5_CON, not in CRU_CLKGATE3_CON.
+CRU_CLKGATE3_CON bit 13 is already (correctly) defined for ACLK_GPU.
 
 Fixes: f6022e88faca ("clk: rockchip: add clock controller for rk3128")
 Signed-off-by: Finley Xiao <finley.xiao@rock-chips.com>
-[renamed aclk_peri_src -> clk_peri_src and added commit message]
+[added commit message]
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- drivers/clk/rockchip/clk-rk3128.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+ drivers/clk/rockchip/clk-rk3128.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/clk/rockchip/clk-rk3128.c b/drivers/clk/rockchip/clk-rk3128.c
-index aa53797dbfc1..fcacfe758829 100644
+index fcacfe758829..17bacf6dd6e7 100644
 --- a/drivers/clk/rockchip/clk-rk3128.c
 +++ b/drivers/clk/rockchip/clk-rk3128.c
-@@ -138,7 +138,7 @@ PNAME(mux_pll_src_5plls_p)	= { "cpll", "gpll", "gpll_div2", "gpll_div3", "usb480
- PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "gpll_div2", "usb480m" };
- PNAME(mux_pll_src_3plls_p)	= { "cpll", "gpll", "gpll_div2" };
- 
--PNAME(mux_aclk_peri_src_p)	= { "gpll_peri", "cpll_peri", "gpll_div2_peri", "gpll_div3_peri" };
-+PNAME(mux_clk_peri_src_p)	= { "gpll", "cpll", "gpll_div2", "gpll_div3" };
- PNAME(mux_mmc_src_p)		= { "cpll", "gpll", "gpll_div2", "xin24m" };
- PNAME(mux_clk_cif_out_src_p)		= { "clk_cif_src", "xin24m" };
- PNAME(mux_sclk_vop_src_p)	= { "cpll", "gpll", "gpll_div2", "gpll_div3" };
-@@ -275,23 +275,17 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
- 			RK2928_CLKGATE_CON(0), 11, GFLAGS),
- 
- 	/* PD_PERI */
--	GATE(0, "gpll_peri", "gpll", CLK_IGNORE_UNUSED,
-+	COMPOSITE(0, "clk_peri_src", mux_clk_peri_src_p, 0,
-+			RK2928_CLKSEL_CON(10), 14, 2, MFLAGS, 0, 5, DFLAGS,
- 			RK2928_CLKGATE_CON(2), 0, GFLAGS),
--	GATE(0, "cpll_peri", "cpll", CLK_IGNORE_UNUSED,
--			RK2928_CLKGATE_CON(2), 0, GFLAGS),
--	GATE(0, "gpll_div2_peri", "gpll_div2", CLK_IGNORE_UNUSED,
--			RK2928_CLKGATE_CON(2), 0, GFLAGS),
--	GATE(0, "gpll_div3_peri", "gpll_div3", CLK_IGNORE_UNUSED,
--			RK2928_CLKGATE_CON(2), 0, GFLAGS),
--	COMPOSITE_NOGATE(0, "aclk_peri_src", mux_aclk_peri_src_p, 0,
--			RK2928_CLKSEL_CON(10), 14, 2, MFLAGS, 0, 5, DFLAGS),
--	COMPOSITE_NOMUX(PCLK_PERI, "pclk_peri", "aclk_peri_src", 0,
-+
-+	COMPOSITE_NOMUX(PCLK_PERI, "pclk_peri", "clk_peri_src", 0,
- 			RK2928_CLKSEL_CON(10), 12, 2, DFLAGS | CLK_DIVIDER_POWER_OF_TWO,
- 			RK2928_CLKGATE_CON(2), 3, GFLAGS),
--	COMPOSITE_NOMUX(HCLK_PERI, "hclk_peri", "aclk_peri_src", 0,
-+	COMPOSITE_NOMUX(HCLK_PERI, "hclk_peri", "clk_peri_src", 0,
- 			RK2928_CLKSEL_CON(10), 8, 2, DFLAGS | CLK_DIVIDER_POWER_OF_TWO,
- 			RK2928_CLKGATE_CON(2), 2, GFLAGS),
--	GATE(ACLK_PERI, "aclk_peri", "aclk_peri_src", 0,
-+	GATE(ACLK_PERI, "aclk_peri", "clk_peri_src", 0,
- 			RK2928_CLKGATE_CON(2), 1, GFLAGS),
- 
- 	GATE(SCLK_TIMER0, "sclk_timer0", "xin24m", 0,
+@@ -484,7 +484,7 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
+ 	GATE(HCLK_I2S_2CH, "hclk_i2s_2ch", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
+ 	GATE(0, "hclk_usb_peri", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 13, GFLAGS),
+ 	GATE(HCLK_HOST2, "hclk_host2", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 3, GFLAGS),
+-	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 13, GFLAGS),
++	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(5), 13, GFLAGS),
+ 	GATE(0, "hclk_peri_ahb", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 14, GFLAGS),
+ 	GATE(HCLK_SPDIF, "hclk_spdif", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 9, GFLAGS),
+ 	GATE(HCLK_TSP, "hclk_tsp", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 12, GFLAGS),
 -- 
 2.42.0
 
