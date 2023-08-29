@@ -2,64 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1784178C847
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB7E78C84B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237057AbjH2PF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 11:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57650 "EHLO
+        id S237071AbjH2PGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 11:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237051AbjH2PFa (ORCPT
+        with ESMTP id S237211AbjH2PG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:05:30 -0400
-Received: from outbound-smtp39.blacknight.com (outbound-smtp39.blacknight.com [46.22.139.222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20C6D7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:05:27 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp39.blacknight.com (Postfix) with ESMTPS id 96FBB1B24
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 16:05:26 +0100 (IST)
-Received: (qmail 20754 invoked from network); 29 Aug 2023 15:05:26 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Aug 2023 15:05:26 -0000
-Date:   Tue, 29 Aug 2023 16:05:23 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        david@redhat.com, willy@infradead.org
-Subject: Re: [PATCH v2 5/7] mm/compaction: remove repeat
- compact_blockskip_flush check in reset_isolation_suitable
-Message-ID: <20230829150523.ktn6ktdtl7n22akp@techsingularity.net>
-References: <20230826153617.4019189-1-shikemeng@huaweicloud.com>
- <20230826153617.4019189-6-shikemeng@huaweicloud.com>
+        Tue, 29 Aug 2023 11:06:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A4ECC3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693321536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZA14b/tmA/wTpAgcSwxLG1sI93f6oKp/7oBZg84XpyU=;
+        b=D2K2pimWIA0AygJL2WDtTNI8l07yV6J1KHWe+xzF1RBUzyYLB0ZdgsonCMRPGQIXetGmTp
+        y4leVrmAaDPnC6tlieWQsdym8W0aFLzqKTaX6etZPfDbDluKU9QFHenF7S9tTLzhb5fY+l
+        25yePtoyErn+Jj8LKSfnrvFQ8lewm/U=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-92-3ooSx6BrNa-TgUQ_eCcCgw-1; Tue, 29 Aug 2023 11:05:30 -0400
+X-MC-Unique: 3ooSx6BrNa-TgUQ_eCcCgw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 536141C0CCB6;
+        Tue, 29 Aug 2023 15:05:29 +0000 (UTC)
+Received: from [10.22.16.214] (unknown [10.22.16.214])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94F54140E950;
+        Tue, 29 Aug 2023 15:05:28 +0000 (UTC)
+Message-ID: <5906501e-4dff-4c66-7ab3-e9193d312270@redhat.com>
+Date:   Tue, 29 Aug 2023 11:05:28 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20230826153617.4019189-6-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
+ <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+ <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+ <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
+ <CAJD7tkYPyb+2zOKqctQw-vhuwYRg85e6v2Y44xWJofHZ+F+YQw@mail.gmail.com>
+ <ZOzBgfzlGdrPD4gk@dhcp22.suse.cz>
+ <CAJD7tkakMcaR_6NygEXCt6GF8TOuzYAUQe1im+vu2F3G4jtz=w@mail.gmail.com>
+ <CALvZod7uxDd3Lrd3VwTTC-SDvqhdj2Ly-dYVswO=TBM=XTnkcg@mail.gmail.com>
+ <CAJD7tkbnvMCNfQwY_dmVe2SWR5NeN+3RzFhsVyimM1ATaX0D5A@mail.gmail.com>
+ <599b167c-deaf-4b92-aa8b-5767b8608483@redhat.com>
+ <ZO2d7dT8gulMyb8g@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZO2d7dT8gulMyb8g@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 11:36:15PM +0800, Kemeng Shi wrote:
-> We have compact_blockskip_flush check in __reset_isolation_suitable, just
-> remove repeat check before __reset_isolation_suitable in
-> compact_blockskip_flush.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+On 8/29/23 03:27, Michal Hocko wrote:
+> On Mon 28-08-23 13:27:23, Waiman Long wrote:
+>> On 8/28/23 13:07, Yosry Ahmed wrote:
+>>>> Here I agree with you. Let's go with the approach which is easy to
+>>>> undo for now. Though I prefer the new explicit interface for flushing,
+>>>> that step would be very hard to undo. Let's reevaluate if the proposed
+>>>> approach shows negative impact on production traffic and I think
+>>>> Cloudflare folks can give us the results soon.
+>>> Do you prefer we also switch to using a mutex (with preemption
+>>> disabled) to avoid the scenario Michal described where flushers give
+>>> up the lock and sleep resulting in an unbounded wait time in the worst
+>>> case?
+>> Locking with mutex with preemption disabled is an oxymoron.
+> I believe Yosry wanted to disable preemption _after_ the lock is taken
+> to reduce the time spent while it is held. The idea to use the mutex is
+> to reduce spinning and more importantly to get rid of lock dropping
+> part. It is not really clear (but unlikely) we can drop it while
+> preserving the spinlock as the thing scales with O(#cgroups x #cpus)
+> in the worst case.
 
-The comment should move to __reset_isolation_suitable but otherwise
+As I have said later in my email, I am not against disabling preemption 
+selectively on some parts of the lock critical section where preemption 
+is undesirable. However, I am against disabling preemption for the whole 
+duration of the code where the mutex lock is held as it defeats the 
+purpose of using mutex in the first place.
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Cheers,
+Longman
 
-As a complete aside, the reset_isolation_suitable and
-__reset_isolation_suitable were badly named because locking is not
-involved but it's meaningless churn to fix it.
-
--- 
-Mel Gorman
-SUSE Labs
