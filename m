@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B5F78C4BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D08578C4C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbjH2NCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
+        id S235846AbjH2ND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbjH2NCm (ORCPT
+        with ESMTP id S235899AbjH2NDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:02:42 -0400
-X-Greylist: delayed 103 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 06:02:39 PDT
-Received: from torres.zugschlus.de (torres.zugschlus.de [IPv6:2a01:238:42bc:a101::2:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A808EBF;
-        Tue, 29 Aug 2023 06:02:39 -0700 (PDT)
-Received: from mh by torres.zugschlus.de with local (Exim 4.96)
-        (envelope-from <mh+linux-kernel@zugschlus.de>)
-        id 1qayKx-002WmK-1M;
-        Tue, 29 Aug 2023 15:00:51 +0200
-Date:   Tue, 29 Aug 2023 15:00:51 +0200
-From:   Marc Haber <mh+linux-kernel@zugschlus.de>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux KVM <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd
- related
-Message-ID: <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
-References: <ZO2RlYCDl8kmNHnN@torres.zugschlus.de>
- <ZO2piz5n1MiKR-3-@debian.me>
+        Tue, 29 Aug 2023 09:03:45 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B4FCED;
+        Tue, 29 Aug 2023 06:03:31 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 93D3A6732D; Tue, 29 Aug 2023 15:03:27 +0200 (CEST)
+Date:   Tue, 29 Aug 2023 15:03:27 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] block: open code __generic_file_write_iter for
+ blkdev writes
+Message-ID: <20230829130327.GA26482@lst.de>
+References: <20230801172201.1923299-1-hch@lst.de> <20230801172201.1923299-4-hch@lst.de> <20230829020614.GB325446@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZO2piz5n1MiKR-3-@debian.me>
-User-Agent: Mutt/2.2.9 (2022-11-12)
+In-Reply-To: <20230829020614.GB325446@ZenIV>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -48,40 +46,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Please keep me on Cc, I am only subscribed to linux-kernel]
+On Tue, Aug 29, 2023 at 03:06:14AM +0100, Al Viro wrote:
+> On Tue, Aug 01, 2023 at 07:21:58PM +0200, Christoph Hellwig wrote:
+> > @@ -569,7 +594,23 @@ static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
+> >  		iov_iter_truncate(from, size);
+> >  	}
+> >  
+> > -	ret = __generic_file_write_iter(iocb, from);
+> > +	ret = file_remove_privs(file);
+> > +	if (ret)
+> > +		return ret;
+> 
+> That chunk is a bit of a WTF generator...  Thankfully,
+> 
+> static int __file_remove_privs(struct file *file, unsigned int flags)
+> {
+>         struct dentry *dentry = file_dentry(file);
+> 	struct inode *inode = file_inode(file);
+> 	int error = 0;
+> 	int kill;
+> 
+> 	if (IS_NOSEC(inode) || !S_ISREG(inode->i_mode))
+> 		return 0;
+> 
+> means that it's really a no-op.  But I'd still suggest
+> removing it, just to reduce the amount of head-scratching
+> for people who'll be reading that code later...
 
-Hi Bagas,
-
-thanks for your quick answer.
-
-On Tue, Aug 29, 2023 at 03:17:15PM +0700, Bagas Sanjaya wrote:
-> In any case, bisecting kernel is highly appreciated in order to pin down
-> the culprit.
-
-Without having read the docs (that came too late, need to read up on
-that again), my bisect came out at
-84a9582fd203063cd4d301204971ff2cd8327f1a being the first bad commit.
-This is a rather big one, that does not easily back out of the 6.5
-release. Sadly, just transplanting drivers/tty/serial from a 6.4.12 tree
-doesn't even build. I'm adding Tony Lindgren, the author of the commit,
-to the Cc list.
-
-But, since the commit is related to serial port, I began fiddling around
-with the serial port setting on the misbehaving VM and found out that
-running the VM without the serial console that I am using (thus removing
-"console=ttyS0,57600n8" from the kernel command line) makes the machine
-boot up just fine with the 6.5 kernel that I built yesterday. It is not
-even necessary to remove the virtual serial port.
-
-The issue is still somehow connected to the host the machine is running
-on, since my VMs all have a serial console and the test VMs running on
-different hosts are running fine with 6.5.
-
-Greetings
-Marc
-
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Leimen, Germany    |  lose things."    Winona Ryder | Fon: *49 6224 1600402
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 6224 1600421
+I'll send an incremental patch to remove it once the changes hit
+Linus' tree.
