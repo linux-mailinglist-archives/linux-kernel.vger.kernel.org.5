@@ -2,83 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C87C78CB0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D15D78CB12
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237898AbjH2RT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40188 "EHLO
+        id S230306AbjH2RVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237711AbjH2RSf (ORCPT
+        with ESMTP id S238246AbjH2RUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:18:35 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135F1CF3;
-        Tue, 29 Aug 2023 10:18:14 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-977e0fbd742so599069966b.2;
-        Tue, 29 Aug 2023 10:18:13 -0700 (PDT)
+        Tue, 29 Aug 2023 13:20:39 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7522129
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:20:13 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T9seZQ010727;
+        Tue, 29 Aug 2023 10:18:56 -0700
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3sqgwkj1py-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Aug 2023 10:18:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AjyB9WSCVd1DRw8iRTjE3Q4W8uEUq1qsUlL5QdLapCIeXHDxVjH8ViOdlDBZlBWzM+2a3aq6I7SzflFQFZGzqMLkAFPSyacgQe49dN4Y1sMAxqEIvMg88vmPoSPym4gbffYnBfB9TdeOIogf2lKs/2xd73kxwijhQ1lfNCWAGBne5NGdckP3P3xVP8drNIxSJU5qiBGpoJe2ulXqlrIlnfZ+4N/4Jw0zG8yixAXGHWfGy7PxY8TIJgC/XaCVF5LGtRX3gEMmRbbzsmzV+uPXIdaQUug+zWOsoegasfASMA3+5SI3hjdhh0pabBJ29DJ8givIQXACr2CYfwYZSupcBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OV4JpHWO7mnsYcJWVZ4KAqThP4aCyQG64NpRGU7vSlE=;
+ b=P/qrUPfh4NQnrVX8r2uxCrE0b7duCFXETmdQet/0qGoOPd1yvAdsGf+LKDQuNIzhzfjVtZZ4467xfRN0AfmSOMucmeRILkglquq3ifUb9VJ2EwmmcQ9issSYXxa3VCWEuBqSfyW6Zt8jiANN1Eivde4HXrqhSMpB1aqnPewCmnNeDpwj42Wb2rrEmLtpIC3bbljd8NsQFSEtXZCQ2F8BzOybEysHSnjiZW1EA6OcT2FwbTNI0nmSO12aWbz7OXN//hHbgxGrXE0kckAzy/bgGf72Hzo1DTvzMWYhCFvd1ybnrunA1xqUjwPYMkLMvcxtSXGGrgsuq6I72m9bV8sNWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693329476; x=1693934276;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9dgLUHwMy8Op6Q955RlBIJYZNEpbxIwHtFF9Axp5TBc=;
-        b=rVocglGgRvpy+hgqv358C8NtQBIl+vNJ9cAF/wVlRixvPboXyjdw4vtXaI1sOyXcek
-         Jsyq/4NNhXpliV2UmTHOR95bZzPPaOdsrz6beMnEaO7NC9pmJygJfdEgXIblbEUDYoVQ
-         w1Aow4ihAO0S263Z3BxXFi+Za75AfB9GWduekvLTlLfAn0JCEnBRf2oTZ/tFPSFC4BPJ
-         o21DKAiEh0uKjHHd/H2tX2hu2QACHNMsooBUvbIJ9N9kS2ZPR6gnm2VGSrcbT/OCeRwy
-         cByHzv+q/ysAd8dyiNLiQppVdsrjyT4XsRpp7eia1Nb7Tq1mTfAKidgwcooLEulq4Z9Z
-         YBVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329476; x=1693934276;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9dgLUHwMy8Op6Q955RlBIJYZNEpbxIwHtFF9Axp5TBc=;
-        b=AwkfyfGV8+ZgFatkjy51V3PNUvzFy5dfocEdBM/SU0FxIGLg4koXQstKpPQYYuhDcS
-         Z42EnAGwfktH7q48cjexXrYzZFCyIDZcg97J1irLYnF+0LdaP11tV1WmguDFob7GrqPV
-         mUh8L0KpHxQeIZcikq+RkGmEs0yD+izCRNG9bZluhg8GpxJoHvhwuTjXROQSKtxsw8hv
-         kKtoWdJG+LCUeHiJn/s7AVBLixy/BXtJ8dBrkHIfbMpkKlTxzuHKAD5CKnY4/lbLMRcb
-         Ubpf433/7+DCnn6vfovPADIQkHHjtAdGtDmHwQSZam5thirNucw4uWNsfbmmfMz4zU7Y
-         PLgw==
-X-Gm-Message-State: AOJu0YxK4VIM44VV1yXrXUTBu9veWnoB3y/jbJRxn52s75+AGv/JyStY
-        oyee17al3R+J6Bh4gqRxxg==
-X-Google-Smtp-Source: AGHT+IEAHEpea0my2awNoKKTjwFIoo2aOA5dRzNaAYj8ArUp4igUchYtsYpX/tLmQOBb/TDR6xtBKA==
-X-Received: by 2002:a17:906:5a45:b0:9a1:cdf1:ba6 with SMTP id my5-20020a1709065a4500b009a1cdf10ba6mr14633357ejc.12.1693329475384;
-        Tue, 29 Aug 2023 10:17:55 -0700 (PDT)
-Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
-        by smtp.gmail.com with ESMTPSA id a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 10:17:55 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Cc:     Elaine Zhang <zhangqing@rock-chips.com>,
-        Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        linux-clk@vger.kernel.org, linux-phy@lists.infradead.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 31/31] ARM: dts: Add Geniatech XPI-3128 RK3128 board
-Date:   Tue, 29 Aug 2023 19:16:47 +0200
-Message-ID: <20230829171647.187787-32-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
-References: <20230829171647.187787-1-knaerzche@gmail.com>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OV4JpHWO7mnsYcJWVZ4KAqThP4aCyQG64NpRGU7vSlE=;
+ b=A1sQMJJq7///dtNQw+S002QmG90JhoSM+zKF1qnXgXICVyApz15DJyMKvUVN1Ur0KKLWZ3xjiE+MOfYLPXujyX3VRqvnhBNw4/Qy9ywhHaR/crcZKK6z+AP7hdsOMU7Zr3ENq4wBSHY8wwxUlMOKmgyPuaq9scsX59k7/GhgYdg=
+Received: from MW4PR18MB5084.namprd18.prod.outlook.com (2603:10b6:303:1a7::8)
+ by PH7PR18MB5283.namprd18.prod.outlook.com (2603:10b6:510:243::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.36; Tue, 29 Aug
+ 2023 17:18:53 +0000
+Received: from MW4PR18MB5084.namprd18.prod.outlook.com
+ ([fe80::3e51:51f3:34c:c6e8]) by MW4PR18MB5084.namprd18.prod.outlook.com
+ ([fe80::3e51:51f3:34c:c6e8%5]) with mapi id 15.20.6699.035; Tue, 29 Aug 2023
+ 17:18:53 +0000
+From:   Amit Singh Tomar <amitsinght@marvell.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Reinette Chatre <reinette.chatre@intel.com>
+CC:     "Luck, Tony" <tony.luck@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        George Cherian <gcherian@marvell.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "peternewman@google.com" <peternewman@google.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [EXT] Re: resctrl2 - status
+Thread-Topic: [EXT] Re: resctrl2 - status
+Thread-Index: AQHZ14yt5T5uw+Je00O2uJV7ignXmK/7dAwAgAWihYCAAHEOYA==
+Date:   Tue, 29 Aug 2023 17:18:53 +0000
+Message-ID: <MW4PR18MB50847485155B226B07DABEAAC6E7A@MW4PR18MB5084.namprd18.prod.outlook.com>
+References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
+        <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
+        <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+        <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
+        <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+        <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+ <20230829112321.00002b55@Huawei.com>
+In-Reply-To: <20230829112321.00002b55@Huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcYW1pdHNpbmdo?=
+ =?us-ascii?Q?dFxhcHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4?=
+ =?us-ascii?Q?NGJhMjllMzViXG1zZ3NcbXNnLTFkNGY4MDUwLTQ2OTAtMTFlZS1iNzI4LTFj?=
+ =?us-ascii?Q?YzEwYzQ3MmM3Y1xhbWUtdGVzdFwxZDRmODA1MS00NjkwLTExZWUtYjcyOC0x?=
+ =?us-ascii?Q?Y2MxMGM0NzJjN2Nib2R5LnR4dCIgc3o9IjY0NDYiIHQ9IjEzMzM3ODAzMTI4?=
+ =?us-ascii?Q?ODI5NjE5OSIgaD0iT2JPMnl3cHZrRWNidjhiYVFhMDNRbVEzV0hJPSIgaWQ9?=
+ =?us-ascii?Q?IiIgYmw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFBTjRQ?=
+ =?us-ascii?Q?QUFBSG84ZmZuTnJaQWRkZktGeGNuWVlNMTE4b1hGeWRoZ3daQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUhBQUFBQnVEd0FBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUVBQVFFQkFBQUE5UmVuTHdDQUFRQUFBQUFBQUFBQUFKNEFBQUJoQUdR?=
+ =?us-ascii?Q?QVpBQnlBR1VBY3dCekFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHTUFkUUJ6QUhRQWJ3QnRBRjhB?=
+ =?us-ascii?Q?Y0FCbEFISUFjd0J2QUc0QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBZ0FBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFD?=
+ =?us-ascii?Q?QUFBQUFBQ2VBQUFBWXdCMUFITUFkQUJ2QUcwQVh3QndBR2dBYndCdUFHVUFi?=
+ =?us-ascii?Q?Z0IxQUcwQVlnQmxBSElBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmpB?=
+ =?us-ascii?Q?SFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhBWkFCaEFITUFhQUJmQUhZQU1B?=
+ =?us-ascii?Q?QXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FB?=
+ =?us-ascii?Q?QUdNQWRRQnpBSFFBYndCdEFGOEFjd0J6QUc0QVh3QnJBR1VBZVFCM0FHOEFj?=
+ =?us-ascii?Q?Z0JrQUhNQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFZd0IxQUhNQWRBQnZB?=
+ =?us-ascii?Q?RzBBWHdCekFITUFiZ0JmQUc0QWJ3QmtBR1VBYkFCcEFHMEFhUUIwQUdVQWNn?=
+ =?us-ascii?Q?QmZBSFlBTUFBeUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFB?=
+ =?us-ascii?Q?QUFBQUFJQUFBQUFBSjRBQUFCakFIVUFjd0IwQUc4QWJRQmZBSE1BY3dCdUFG?=
+ =?us-ascii?Q?OEFjd0J3QUdFQVl3QmxBRjhBZGdBd0FESUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5n?=
+ =?us-ascii?Q?QUFBR1FBYkFCd0FGOEFjd0JyQUhrQWNBQmxBRjhBWXdCb0FHRUFkQUJmQUcw?=
+ =?us-ascii?Q?QVpRQnpBSE1BWVFCbkFHVUFYd0IyQURBQU1nQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVpBQnNBSEFBWHdC?=
+ =?us-ascii?Q?ekFHd0FZUUJqQUdzQVh3QmpBR2dBWVFCMEFGOEFiUUJsQUhNQWN3QmhBR2NB?=
+ =?us-ascii?Q?WlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJrQUd3QWNB?=
+ =?us-ascii?Q?QmZBSFFBWlFCaEFHMEFjd0JmQUc4QWJnQmxBR1FBY2dCcEFIWUFaUUJmQUdZ?=
+ =?us-ascii?Q?QWFRQnNBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHVUFiUUJoQUdrQWJBQmZBR0VBWkFC?=
+ =?us-ascii?Q?a0FISUFaUUJ6QUhNQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFEUUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
+ =?us-ascii?Q?QUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QVh3QndBSElBYndCcUFHVUFZd0Iw?=
+ =?us-ascii?Q?QUY4QWJnQmhBRzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFh?=
+ =?us-ascii?Q?UUJoQUd3QVh3QmhBR3dBYndCdUFHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VB?=
+ =?us-ascii?Q?Y2dCMkFHVUFiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1QUdFQWJRQmxB?=
+ =?us-ascii?Q?SE1BWHdCeUFHVUFjd0IwQUhJQWFRQmpBSFFBWlFCa0FGOEFZUUJzQUc4QWJn?=
+ =?us-ascii?Q?QmxBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcwQVlRQnlBSFlBWlFCc0FGOEFj?=
+ =?us-ascii?Q?QUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBSElBWlFCekFI?=
+ =?us-ascii?Q?UUFjZ0JwQUdNQWRBQmxBR1FBWHdCb0FHVUFlQUJqQUc4QVpBQmxBSE1BQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNB?=
+ =?us-ascii?Q?QUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFHRUFjZ0J0QUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-rorf: true
+x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFDQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFB?=
+ =?us-ascii?Q?QUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBWndCdkFHOEFa?=
+ =?us-ascii?Q?d0JzQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
+ =?us-ascii?Q?RzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QVl3?=
+ =?us-ascii?Q?QnZBR1FBWlFCekFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQWJRQmhBSElBZGdCbEFH?=
+ =?us-ascii?Q?d0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0JqQUc4QVpBQmxBSE1BWHdC?=
+ =?us-ascii?Q?a0FHa0FZd0IwQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4?=
+ =?us-ascii?Q?QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBR01BYndCdUFHWUFhUUJr?=
+ =?us-ascii?Q?QUdVQWJnQjBBR2tBWVFCc0FGOEFiUUJoQUhJQWRnQmxBR3dBYkFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdB?=
+ =?us-ascii?Q?QUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhB?=
+ =?us-ascii?Q?YmdCaEFHMEFaUUJ6QUY4QVl3QnZBRzRBWmdCcEFHUUFaUUJ1QUhRQWFRQmhB?=
+ =?us-ascii?Q?R3dBWHdCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBYndCeUFGOEFZUUJ5QUcwQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
+ =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhR?=
+ =?us-ascii?Q?QVh3QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFHNEFkQUJw?=
+ =?us-ascii?Q?QUdFQWJBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdCbkFHOEFi?=
+ =?us-ascii?Q?d0JuQUd3QVpRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dC?=
+ =?us-ascii?Q?MkFHVUFiQUJzQUY4QWNBQnlBRzhBYWdCbEFHTUFkQUJmQUc0QVlRQnRBR1VB?=
+ =?us-ascii?Q?Y3dCZkFISUFaUUJ6QUhRQWNnQnBBR01BZEFCbEFHUUFYd0J0QUdFQWNnQjJB?=
+ =?us-ascii?Q?R1VBYkFCc0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J3?=
+ =?us-ascii?Q?QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0JoQUcwQVpRQnpBRjhBY2dCbEFITUFk?=
+ =?us-ascii?Q?QUJ5QUdrQVl3QjBBR1VBWkFCZkFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCdkFI?=
+ =?us-ascii?Q?SUFYd0JoQUhJQWJRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIUUFaUUJ5QUcwQWFRQnVB?=
+ =?us-ascii?Q?SFVBY3dBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFj?=
+ =?us-ascii?Q?Z0IyQUdVQWJBQnNBRjhBZHdCdkFISUFaQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQSIvPjwvbWV0YT4=3D?=
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR18MB5084:EE_|PH7PR18MB5283:EE_
+x-ms-office365-filtering-correlation-id: 52c5c25d-d182-4684-ed95-08dba8b40511
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Kq8red3yTyrZP2LMsY2hAFXl28Kfe+Fb+gFWV9tmnMdz35nMU/zYZVDAOSOz+CNzkmi7FIiWZ2oyLNZjnJSpvThqR5zv+akm4Bk/wJrHbmr9SJxd9JuUN4+3czdcuMQbmXqfqBjq/TH3gUOlfZYIm8RJUsYVgGL90wIBW3y2T+4qCAQnwTJzV2vGQ3/7KOwlg4k5DDI/G5UpZQU0GEj9bePUi65gFVdpqvGHbKemnRpWO1gJiA5P9VB3LBRYDD7jSxEBOMcFgp+rtI+A1iujMpmyXSoT1bi6bmLIX+4N267zFkS8nUsJzIm07118/S+eUXpRjCq0oXlm8toTfpLutl3XejXK3Z9JFvivTXlq/seMCdFypeFaYFDVl2neuJuoXiPB0IzLsL7e7RUYhnp7SvjRTh4UVebWv5t7H8JMBDR65ncRy9/ogurJjMHl+4qmU0xkw7w/CY9ZO1Lp+XcqDOLrDgRwK91jGzptz50O357YxBBxeSFuSarnZyFZHIurc8hSxCozWlyerjfeIAYUFdMkJ3jUvQkztEhE5Mm+cSwrU0mocyymDMF6Zxd89bM7ZOQR2A4FtRaBDDpmS9lyJWSCcVbAjSGz8FeTzQi8AjI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR18MB5084.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(366004)(39860400002)(1800799009)(186009)(451199024)(8936002)(122000001)(478600001)(110136005)(53546011)(76116006)(7696005)(6506007)(71200400001)(66556008)(66476007)(64756008)(66446008)(54906003)(66946007)(966005)(38070700005)(316002)(38100700002)(41300700001)(66899024)(9686003)(26005)(5660300002)(8676002)(83380400001)(2906002)(52536014)(86362001)(55016003)(7416002)(33656002)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Kf39nzaaYKt78gYX5A2yd+AHMB7RhHCVIEhjW9yMZGmrgEu8VQWeEq5zw7Fh?=
+ =?us-ascii?Q?zmaL39jq5VERGgkk5TM/PjQ/mrN+ayu/eFBysfBsrXb3ZUxn9Hs2gA5Yc/hL?=
+ =?us-ascii?Q?q9kqa4/C4x+xfhcFgavM2SNZeuoTLFAhSqsi0G35Di86KMzwDWvgQwfn/sVq?=
+ =?us-ascii?Q?olR0zWHGRN9+qiMa8AA6/kQO1sVTYIgl9wRKNaJehZgEk7w5rQP60nBnVTuY?=
+ =?us-ascii?Q?Plbqo7SivJNXbFm7LveeTK0oFVQD8TPqQnorCJeTWi1bI7FdmMawK2v8k6Fb?=
+ =?us-ascii?Q?9WWcW4tHJ76uw6TMjHh/1yd6GE/gsdrB8RPgJ/s57t/QCP/v665tG1C/8hPE?=
+ =?us-ascii?Q?oYKsH/i9CWl5DG+auNH9UYr/Y1t9GzCKqYYgW4+Z8Vmt0XGmL490gdpUWkbJ?=
+ =?us-ascii?Q?SSSQ1pAVQ3tW2+byA0pY+S+udV1WsO8bj/EK47IWYRAu6robP0KS7eSzPEO1?=
+ =?us-ascii?Q?/LYbH/pk4A16M3open3THn6852C+wHQ/TRsf9CpJY528tdDq5Z9ogrc6QOxm?=
+ =?us-ascii?Q?fscCqao7A2Som/q+l9JsamAmVwX9PvoT68AdRTW2MxATSXyJ+FfQMbgOfGPt?=
+ =?us-ascii?Q?66K6imuC4EVH1XE+ZExBx4onFw/5+OZai2BnCoH6Firbi67EDDf20OJGpzby?=
+ =?us-ascii?Q?c3JrZpqXYNhKAcJXCdjGx/I2UlBKuSbQMVUrfXguMwJ/1qAmI+WixYFH2V/H?=
+ =?us-ascii?Q?DV1aZ44yX+HPwa3SfpKBeSFeMgT8hW3XGhP0OzGEVelqY8ygOvINtr6zPOLP?=
+ =?us-ascii?Q?iUS7g102WonK/IhkAxeVj/UDUOAHIPBIvyaHP+Ky9eYSndk+wzgMuxEKOqbT?=
+ =?us-ascii?Q?dUGinR/ZD+8bxYJEOFNETVhxlFU0yj2+wbCUkRj9QppafNWYwliTA5zIoWIn?=
+ =?us-ascii?Q?GtmlV6hvJXVcxVT4141b3N7yYmYTQzSF9a+hvPwRk/z75CcVCM1p7ygd4eiL?=
+ =?us-ascii?Q?6KBZ/IG5/04tarnspKHQwihf+l7RSav2d6OP8JlFOritF63jXWbr2VYD5g9A?=
+ =?us-ascii?Q?slTxgkuaqWKSYiYZNpCQzeIpJi0IGT4nAZAPB/Oo4i5EO+gXKf/0SvVOqoId?=
+ =?us-ascii?Q?AXPQjyUxdkVH5PZ0ZzhhD3ANZU9m4gGy1X2y2sYRxMg0wMURw/CjPAucONL8?=
+ =?us-ascii?Q?sZVsMccixS37MypxiXJHS/cNXiVm+rbMoay2AkW6i6bxaDFqHQyFDQCZ0E9/?=
+ =?us-ascii?Q?qTNUeGrIsZxIkfiiapqmaqaRl39BMEwbpDEYFMtnelF0KZvxbo9guKVv5mSi?=
+ =?us-ascii?Q?8fytdsteHQoFT3mGPAghGtsa7fT0Nv5oodwePIsiUalwB0PWYu2mH8ir7aQ+?=
+ =?us-ascii?Q?KVZpEmzOjm/Qm1RvMtanVqwULAeJpSa+XIfiQ3aFHFtqAIkPe6PkxiY2c8H4?=
+ =?us-ascii?Q?T3LC47610gyKOUUH006IDNcc/pBTCrWf+MMh+dQELvs8pCq+SFihCMLLQS6O?=
+ =?us-ascii?Q?+sHPO5ESDaddPtwJ9FzuUcZWE/SAfR7A3ANWfKAHZpHpyJIaYKIR6fcae6Qe?=
+ =?us-ascii?Q?oro8yQW19KPi/QNEegQ3VshB2X+QOKJ3EBdLYFLVfYxpthOnJnhaxQCS7PuG?=
+ =?us-ascii?Q?SEDhY6Mn9HM8UDyrTRmthfPlBujQNasq7Dd7cBXP?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR18MB5084.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52c5c25d-d182-4684-ed95-08dba8b40511
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2023 17:18:53.5356
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tgF8px92a44vYuZ3uC5nZZfBcEE8E2xlWKQAvh1PuX7S6NaE9wC/wEQENC3XUCdvAgb6VHo3sf2VLDSyaW8e2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR18MB5283
+X-Proofpoint-GUID: YvmQ42V90VIKTPR6WEXU_8byoc00uS0w
+X-Proofpoint-ORIG-GUID: YvmQ42V90VIKTPR6WEXU_8byoc00uS0w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_13,2023-08-29_01,2023-05-22_02
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,480 +270,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XPI-3128 is RK3128 based SBC form Geniatec in RPi form factor
 
-Specs:
-- Rockchip RK3128
-- 1 GB DDR3 DRAM
-- 8/16 GB eMMC
-- TF card slot
-- 100 MBit ethernet / RJ45
-- optional Marvell 88W8897 (USB version)
-- 3 x USB host (onboard GL852G hub connected to SoC ehci host)
-- 1 x USB otg
-- 1 x Type-C (solely for powering the board)
-- HDMI 1.4 out
-- 1 ADC button
-- IR receiver
-- Artasie AM1805 RTC
-- 40 pin header
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- arch/arm/boot/dts/rockchip/Makefile           |   1 +
- .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 431 ++++++++++++++++++
- 2 files changed, 432 insertions(+)
- create mode 100644 arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+-----Original Message-----
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>=20
+Sent: Tuesday, August 29, 2023 3:53 PM
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Luck, Tony <tony.luck@intel.com>; Amit Singh Tomar <amitsinght@marvell.=
+com>; Yu, Fenghua <fenghua.yu@intel.com>; james.morse@arm.com; George Cheri=
+an <gcherian@marvell.com>; robh@kernel.org; peternewman@google.com; Drew Fu=
+stini <dfustini@baylibre.com>; linux-kernel@vger.kernel.org; linux-arm-kern=
+el@lists.infradead.org
+Subject: [EXT] Re: resctrl2 - status
 
-diff --git a/arch/arm/boot/dts/rockchip/Makefile b/arch/arm/boot/dts/rockchip/Makefile
-index 0f46e18fe275..58868cf0510b 100644
---- a/arch/arm/boot/dts/rockchip/Makefile
-+++ b/arch/arm/boot/dts/rockchip/Makefile
-@@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += \
- 	rk3066a-mk808.dtb \
- 	rk3066a-rayeager.dtb \
- 	rk3128-evb.dtb \
-+	rk3128-xpi-3128.dtb \
- 	rk3188-bqedison2qc.dtb \
- 	rk3188-px3-evb.dtb \
- 	rk3188-radxarock.dtb \
-diff --git a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-new file mode 100644
-index 000000000000..842b5f20d98a
---- /dev/null
-+++ b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-@@ -0,0 +1,431 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+#include "rk3128.dtsi"
-+
-+/ {
-+	model = "Geniatech XPI-3128";
-+	compatible = "geniatech,xpi-3128", "rockchip,rk3128";
-+
-+	aliases {
-+		ethernet0 = &gmac;
-+		gpio0 = &gpio0;
-+		gpio1 = &gpio1;
-+		gpio2 = &gpio2;
-+		gpio3 = &gpio3;
-+		mmc0 = &emmc;
-+		mmc1 = &sdmmc;
-+		serial0 = &uart1;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	adc-keys {
-+		compatible = "adc-keys";
-+		io-channels = <&saradc 1>;
-+		io-channel-names = "buttons";
-+		keyup-threshold-microvolt = <3300000>;
-+
-+		button-recovery {
-+			label = "Recovery";
-+			linux,code = <KEY_VENDOR>;
-+			press-threshold-microvolt = <0>;
-+		};
-+	};
-+
-+	dc_5v: dc-5v-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "DC_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	/*
-+	 * This is a vbus-supply, which also supplies the GL852G usb hub,
-+	 * thus has to be always-on
-+	 */
-+	host_pwr_5v: host-pwr-5v-regulator {
-+		compatible = "regulator-fixed";
-+		gpio = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
-+		startup-delay-us = <1500>;
-+		regulator-name = "HOST_PWR_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&dc_5v>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&host_drv>;
-+		enable-active-high;
-+		regulator-always-on;
-+	};
-+
-+	ir-receiver {
-+		compatible = "gpio-ir-receiver";
-+		gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ir_int>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-power {
-+			gpios = <&gpio0 RK_PD2 GPIO_ACTIVE_HIGH>;
-+			function = LED_FUNCTION_POWER;
-+			color = <LED_COLOR_ID_BLUE>;
-+			default-state = "on";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&power_led>;
-+		};
-+
-+		led-spd {
-+			gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
-+			function = LED_FUNCTION_LAN;
-+			color = <LED_COLOR_ID_GREEN>;
-+			/*
-+			 * currently not allowed to be set as per
-+			 * https://www.kernel.org/doc/Documentation/devicetree/bindings/leds/common.yaml
-+			 * and has to set in userspace
-+			 *
-+			 * linux,default-trigger = "netdev";
-+			 */
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&spd_led>;
-+		};
-+	};
-+
-+	mcu3v3: mcu3v3-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "MCU3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_io>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_ddr: vcc-ddr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_DDR";
-+		regulator-min-microvolt = <1500000>;
-+		regulator-max-microvolt = <1500000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_io: vcc-io-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_IO";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_lan: vcc-lan-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_LAN";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_io>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_sd: vcc-sd-regulator {
-+		compatible = "regulator-fixed";
-+		gpio = <&gpio1 RK_PB6 GPIO_ACTIVE_LOW>;
-+		startup-delay-us = <500>;
-+		regulator-name = "VCC_SD";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_io>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sdmmc_pwren>;
-+	};
-+
-+	vcc_sys: vcc-sys-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_SYS";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&dc_5v>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc33_hdmi: vcc33-hdmi-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC33_HDMI";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcca_33>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcca_33: vcca-33-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCCA_33";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vdd_11: vdd-11-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD_11";
-+		regulator-min-microvolt = <1100000>;
-+		regulator-max-microvolt = <1100000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vdd11_hdmi: vdd11-hdmi-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD11_HDMI";
-+		regulator-min-microvolt = <1100000>;
-+		regulator-max-microvolt = <1100000>;
-+		vin-supply = <&vdd_11>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vdd_arm: vdd-arm-regulator {
-+		compatible = "pwm-regulator";
-+		regulator-name = "VDD_ARM";
-+		pwms = <&pwm1 0 25000 1>;
-+		pwm-supply = <&vcc_sys>;
-+		regulator-min-microvolt = <900000>;
-+		regulator-max-microvolt = <1400000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	/*
-+	 * As per schematics vdd_log is minimum 900 mV, maximum 1400 mV.
-+	 * Since there are HW blocks in PD_LOGIC which are all driven by
-+	 * this supply, which either do not have a driver at all or the
-+	 * driver does not have regulator support, but are required for
-+	 * the board to run we have to make sure here, that the voltage
-+	 * never drops below 1050 mV.
-+	 */
-+	vdd_log: vdd-log-regulator {
-+		compatible = "pwm-regulator";
-+		regulator-name = "VDD_LOG";
-+		pwms = <&pwm2 0 25000 1>;
-+		pwm-dutycycle-range = <30 100>;
-+		pwm-supply = <&vcc_sys>;
-+		regulator-min-microvolt = <1050000>;
-+		regulator-max-microvolt = <1400000>;
-+		regulator-ramp-delay = <4000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	memory@60000000 {
-+		device_type = "memory";
-+		reg = <0x60000000 0x40000000>;
-+	};
-+
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&vdd_arm>;
-+};
-+
-+&emmc {
-+	bus-width = <8>;
-+	vmmc-supply = <&vcc_io>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emmc_clk &emmc_cmd &emmc_bus8>;
-+	cap-mmc-highspeed;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&gmac {
-+	clock_in_out = "output";
-+	phy-supply = <&vcc_lan>;
-+	phy-mode = "rmii";
-+	phy-handle = <&phy0>;
-+	assigned-clocks = <&cru SCLK_MAC_SRC>;
-+	assigned-clock-rates= <50000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&rmii_pins>;
-+	status = "okay";
-+};
-+
-+/*
-+ * Add labels for each pin which is exposed at the 40-pin header
-+ */
-+&gpio0 {
-+	gpio-line-names = /* GPIO0 A0-A7 */
-+			  "", "", "HEADER_5", "HEADER_3",
-+			  "", "", "", "",
-+			  /* GPIO0 B0-B7 */
-+			  "HEADER_22", "HEADER_23", "", "HEADER_19",
-+			  "HEADER_26", "HEADER_21", "HEADER_24", "",
-+			  /* GPIO0 C0-C7 */
-+			  "", "HEADER_18", "", "",
-+			  "", "", "", "",
-+			  /* GPIO0 D0-D7 */
-+			  "HEADER_36", "", "", "",
-+			  "", "", "HEADER_13", "";
-+};
-+
-+&gpio1 {
-+	gpio-line-names = /* GPIO1 A0-A7 */
-+			  "HEADER_7", "HEADER_35", "HEADER_33", "HEADER_37",
-+			  "HEADER_40", "HEADER_38", "", "",
-+			  /* GPIO1 B0-B7 */
-+			  "HEADER_11", "", "", "HEADER_29",
-+			  "HEADER_31", "", "", "",
-+			  /* GPIO1 C0-C7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO1 D0-D7 */
-+			  "", "", "", "",
-+			  "", "", "", "";
-+};
-+
-+&gpio2 {
-+	gpio-line-names = /* GPIO2 A0-A7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO2 B0-B7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO2 C0-C7 */
-+			  "", "", "", "",
-+			  "HEADER_27", "", "", "",
-+			  /* GPIO2 D0-D7 */
-+			  "", "", "HEADER_8", "HEADER_10",
-+			  "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names = /* GPIO3 A0-A7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO3 B0-B7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO3 C0-C7 */
-+			  "", "HEADER_32", "", "",
-+			  "", "", "", "HEADER_12",
-+			  /* GPIO3 D0-D7 */
-+			  "", "", "", "HEADER_15",
-+			  "", "", "", "";
-+};
-+
-+&gpu {
-+	mali-supply = <&vdd_log>;
-+	status = "okay";
-+};
-+
-+&mdio {
-+	phy0: ethernet-phy@1 {
-+		/* DP83848C interrupt is not connected */
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <1>;
-+		max-speed = <100>;
-+		reset-assert-us = <15000>;
-+		reset-deassert-us = <80000>;
-+		reset-gpios = <&gpio2 RK_PD0 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&dp83848c_rst>;
-+	};
-+};
-+
-+&pinctrl {
-+	dp83848c {
-+		dp83848c_rst: dp83848c-rst {
-+			rockchip,pins = <2 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	ir-receiver {
-+		ir_int: ir-int {
-+			rockchip,pins = <3 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	leds {
-+		power_led: power-led {
-+			rockchip,pins = <0 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		spd_led: spd-led {
-+			rockchip,pins = <3 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	usb2 {
-+		host_drv: host-drv {
-+			rockchip,pins = <3 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+};
-+
-+&pwm1 {
-+	status = "okay";
-+};
-+
-+&pwm2 {
-+	status = "okay";
-+};
-+
-+&saradc {
-+	vref-supply = <&vcc_io>;
-+	status = "okay";
-+};
-+
-+&sdmmc {
-+	bus-width = <4>;
-+	vmmc-supply = <&vcc_sd>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdmmc_bus4 &sdmmc_clk &sdmmc_cmd &sdmmc_det>;
-+	cap-sd-highspeed;
-+	no-mmc;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&usb_host_ehci {
-+	status = "okay";
-+};
-+
-+&usb_otg {
-+	vusb_a-supply = <&vcc_io>;
-+	vusb_d-supply = <&vdd_11>;
-+	status = "okay";
-+};
-+
-+&usb2phy {
-+	status = "okay";
-+};
-+
-+&usb2phy_host {
-+	status = "okay";
-+};
-+
-+&usb2phy_otg {
-+	status = "okay";
-+};
--- 
-2.42.0
+External Email
+
+----------------------------------------------------------------------
+On Fri, 25 Aug 2023 13:20:22 -0700
+Reinette Chatre <reinette.chatre@intel.com> wrote:
+
+> Hi Tony,
+>=20
+> On 8/25/2023 12:44 PM, Luck, Tony wrote:
+> >>>> Alternatively, can user space just take a "load all resctrl=20
+> >>>> modules and see what sticks" (even modules of different=20
+> >>>> architectures since a user space may want to be generic) approach?
+> >>>
+> >>> This mostly works. Except for the cases where different modules=20
+> >>> access the same underlying hardware, so can't be loaded together.
+> >>>
+> >>> Examples:
+> >>>
+> >>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CD=
+P or not.
+> >>> But this is already true ... they have to decide whether to pass=20
+> >>> the "-o cdp" option to mount.
+> >>>
+> >>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control=20
+> >>> memory bandwidth with percentages, or with MB/sec values. Again=20
+> >>> the user already has to make this decision when choosing mount option=
+s.
+> >>>
+> >>>
+> >>> Maybe the "What resctrl options does this machine support?"=20
+> >>> question would be best answered with a small utility?
+> >>
+> >> A user space utility or a kernel provided utility? If it is a user=20
+> >> space utility I think it would end up needing to duplicate what the=20
+> >> kernel is required to do to know if a particular feature is=20
+> >> supported. It seems appropriate that this could be a kernel utility=20
+> >> that can share this existing information with user space. resctrl alre=
+ady supports the interface for this via /sys/fs/resctrl/info.
+> >=20
+> > I was imagining a user space utility. Even though /proc/cpuinfo=20
+> > doesn't show all features, a utility has access to all the CPUID=20
+> > leaves that contain the details of each feature enumeration.
+>=20
+> For x86 that may work (in some scenarios, see later) for now but as I=20
+> understand Arm would need a different solution where I believe the=20
+> information is obtained via ACPI. I think it is unnecessary to require=20
+> user space to have parsers for CPUID and ACPI if that same information=20
+> needs to be parsed by the kernel and there already exists an interface=20
+> with which the information is communicated from kernel to user space.=20
+> Also, just because information CPUID shows a feature is supported by=20
+> the hardware does not mean that the kernel has support for that=20
+> feature. This could be because of a feature mismatch between user=20
+> space and kernel, or even some features disabled for use via the, for exa=
+mple "rdt=3D!l3cat", kernel parameter.
+
+James probably also has views on this, but I wouldn't expect userspace to g=
+o anywhere near ACPI parsing. If the description of what MPAM features are =
+supported (before resctrl is running) is necessary, then we should add it t=
+o the existing description of the various caches etc.  Maybe somewhere in /=
+sys/bus/node/devices/nodeX/cpuY/cache/indexZ/
+for the caches
+and
+/sys/bus/node/devices/nodeX for the DRAM controllers.
+[>>] Or may be all the MPAM features list is unified at one place, somethin=
+g like this ?
+https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=
+=3Dmpam/snapshot/v6.5-rc1&id=3Dc32874cd1d68241c481a9d0c32c8c65d019c247e
+
+I'm sure we can find somewhere sensible for other things covered by MPAM.
+The MPAM table parsers and some early code to query features from the hardw=
+are should be able to figure out what is needed.
+
+Perhaps x86 systems could provide similar descriptions but originating from=
+ CPUID etc.
+
+Jonathan
+
+>=20
+> >> fyi ... as with previous attempts to discuss this work I find it=20
+> >> difficult to discuss this work when you are selective about what=20
+> >> you want to discuss/answer and just wipe the rest. Through this I=20
+> >> understand that I am not your target audience.
+> >=20
+> > Not my intent. I value your input highly. I'm maybe too avid a=20
+> > follower of the "trim your replies" school of e-mail etiquette. I=20
+> > thought I'd covered the gist of your message.
+> >=20
+> > I'll try to be more thorough in responding in the future. =20
+>=20
+> Two items from my previous email remain open:
+>=20
+> First, why does making the code modular require everything to be=20
+> loadable modules?
+> I think that it is great that the code is modular. Ideally it will=20
+> help to support the other architectures. As you explain this modular=20
+> design also has the benefit that "modules" can be loaded and unloaded aft=
+er resctrl mount.
+> Considering your example of MBA and MBA_MBps support ... if I=20
+> understand correctly with code being modular it enables changes from=20
+> one to the other after resctrl mount. User can start with MBA and then=20
+> switch to MBA_MBps without needing to unmount resctrl. What I do not=20
+> understand is why does the code being modular require everything to be=20
+> modules? Why, for example, could a user not interact with a resctrl=20
+> file that enables the user to make this switch from, for example, MBA=20
+> to MBA_MBps? With this the existing interfaces can remain to be=20
+> respected, the existing mount parameters need to remain anyway, while ena=
+bling future "more modular" usages.
+>=20
+> Second, copied from my previous email, what is the plan to deal with=20
+> current users that just mount resctrl and expect to learn from it what=20
+> features are supported?
+>=20
+> Reinette
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__lists.infradead.or
+> g_mailman_listinfo_linux-2Darm-2Dkernel&d=3DDwICAg&c=3DnKjWec2b6R0mOyPaz7=
+x
+> tfQ&r=3DV_GK7jRuCHDErm6txmgDK1-MbUihtnSQ3gPgB-A-JKU&m=3Dri5Ay9ia3NmwAS6P9=
+4yjZ7rPIR1dIqrIAIjpslfwcd5ulIIs5BNEG9jmTlq6H6o8&s=3DKZMxmC8InOxAyxgrDig96R2=
+aKf2hc1C_hk_1413pjCI&e=3D
+>=20
 
