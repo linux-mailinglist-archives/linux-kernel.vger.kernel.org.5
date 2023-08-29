@@ -2,84 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3560178C6D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A81C78C6CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236766AbjH2OFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S236757AbjH2OEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236777AbjH2OEp (ORCPT
+        with ESMTP id S236861AbjH2OEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:04:45 -0400
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8348BCD9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:04:32 -0700 (PDT)
+        Tue, 29 Aug 2023 10:04:31 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D456DCDA
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:04:22 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b89b0c73d7so6925705ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:04:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1693317873;
-  x=1724853873;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=WD26gmABzoJ++0sx9qo1Iw0ukCA0Y7iDO6UmetUh1E4=;
-  b=UDOtgofB4Q5s1I7Bnay1bGvJdWoZdJFv03Ve21vp/ChQ9bifOLOWXUAU
-   gQ3cpfvxLN+022oARn3ddi5CezubxJxuWC2iAcrMjkdxRdQX0hqHi/TMW
-   wG2LM2vclAlJQDk1lcXAkoqjc6ZU6oKfVDoOIu8ivzX4jaa5jhT+rxg3c
-   JXscsntuo5EjRwhE9Nzx+Hl0BFyYx286Wt/oqYcGfzcLoyDlIaLk0gdA0
-   HqI/0joFuj3HVnVdcchyxBeIycF4xBg7p0MkVFxeI7trr3uWyx6t/Qswl
-   aaENdumWWLBPGFMqFzo4EYC3Mnawg+fFGk7RUjpQLXeR0E+A6fnBJH6io
-   g==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-Date:   Tue, 29 Aug 2023 16:04:12 +0200
-Subject: [PATCH] regulator: tps6287x: Fix n_voltages
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1693317862; x=1693922662;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jaZqe+CNDkocdPgUpmu0V3P4V84hYUqk/fkvgnUAY8k=;
+        b=H7VS95BIXtxUih5MXEY7VhT8xHIBK1IYJzzPgiPAbLv35EhA9zaUqVuRk2EUJGpY83
+         3seOb64BRdA8eCaE7kga8hiboG6PnojYqxVuRhqhYKEYOzHVeruFsUq0InnHwgm8RIYJ
+         NcR0M2fgO2i+gxmCFDUtjEjy2GiSFwi62Hl2rY/AqPQMlN1nUzLTg5RQXryJjaqNmluP
+         HIcEEi1bk5LMAlooCcw0TZJ8ucYbQCWoqNk9zhKNoxQGAZ3+QfdHxO/7kTggIYXlkUqJ
+         AHpWzgqopO1fykSIAj+SN00eITLR7SCmX2CwDlALN/NqTvUInKsCFt6xQNKqK0QIrNDv
+         jonw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693317862; x=1693922662;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jaZqe+CNDkocdPgUpmu0V3P4V84hYUqk/fkvgnUAY8k=;
+        b=e8Xfwm7iTteHhgJ9x2DCNJ88d2q+kGBJeeGu31GNm+Ab7iGPawfTLA9LOoGJcmXHaJ
+         8yftmfxqaaknUr8+vqw5S5H9Dj+G0KCyICxXDExE7tS82886Ifv+WTzsAZLoTcJ56Hak
+         i+JBPYFinCIg3PUmeDiIueACNba5hbJmO6NID5SUEaByJf26E9UOFhpmXc40w+1peQRq
+         WD/NLu6yZzEyjuqRCnS/HstzoGK7E1UFmnZImrZrTNk2N9K2iEw5l68nFRZVtM1d1dqI
+         ZjWntBaak1IW/MZDT1tmkOToFMd7RgQMPXD7VVV2Z1ssyB9dA+xuFuFt3EqUGZHRtJo/
+         iNyA==
+X-Gm-Message-State: AOJu0Yz0Rmxe6XD9ZlT4x5Ggd+at1/7K2a/K7QhCkeEN8gxPUoh/oz4Z
+        kdmbNQkLvmVlNfdQPouJgCByUg==
+X-Google-Smtp-Source: AGHT+IEqVPxhWf9+Qbj52o42d0RX8KvJN+idDJ+2awlN/P1fnaxYlS0amaOBT3XDjRDgrh4B45lMiA==
+X-Received: by 2002:a17:902:f68f:b0:1b8:aded:524c with SMTP id l15-20020a170902f68f00b001b8aded524cmr32026496plg.1.1693317862003;
+        Tue, 29 Aug 2023 07:04:22 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id z1-20020a170903018100b001bdb167f6ebsm9422989plg.94.2023.08.29.07.04.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 07:04:21 -0700 (PDT)
+Message-ID: <870ea887-ecb0-4058-855b-6c82ab01c7fc@kernel.dk>
+Date:   Tue, 29 Aug 2023 08:04:19 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] io_uring: Don't set affinity on a dying sqpoll thread
+Content-Language: en-US
+To:     Gabriel Krisman Bertazi <krisman@suse.de>,
+        syzbot <syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com>
+Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000753fbd0603f8c10b@google.com> <87v8cybuo6.fsf@suse.de>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <87v8cybuo6.fsf@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID: <20230829-tps-voltages-v1-1-7ba4f958a194@axis.com>
-X-B4-Tracking: v=1; b=H4sIANv67WQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCyNL3ZKCYt2y/JySxPTUYt00Q0tLy0RLAzPzZBMloJaCotS0zAqwcdG
- xtbUAYQJQql4AAAA=
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     Axel Lin <axel.lin@ingics.com>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 256 possible voltage settings for each range, not 256 possible
-voltage settings in total.
+On 8/28/23 5:42 PM, Gabriel Krisman Bertazi wrote:
+> syzbot <syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com> writes:
+> 
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    626932085009 Add linux-next specific files for 20230825
+>> git tree:       linux-next
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=12a97797a80000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=c74fea926a78b8a91042
+>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> Downloadable assets:
+>> disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
+>> vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
+>> kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+c74fea926a78b8a91042@syzkaller.appspotmail.com
+>>
+>> general protection fault, probably for non-canonical address 0xdffffc000000011d: 0000 [#1] PREEMPT SMP KASAN
+>> KASAN: null-ptr-deref in range [0x00000000000008e8-0x00000000000008ef]
+>> CPU: 1 PID: 27342 Comm: syz-executor.5 Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+>> RIP: 0010:io_sqpoll_wq_cpu_affinity+0x8c/0xe0 io_uring/sqpoll.c:433
+> 
+> Jens,
+> 
+> I'm not sure I got the whole story on this one, but it seems fairly
+> trivial to reproduce and I can't see another way it could be
+> triggered. What do you think?
 
-Fixes: 15a1cd245d5b ("regulator: tps6287x: Fix missing .n_voltages setting")
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/regulator/tps6287x-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yep looks like the right fix, we should check the thread after parking.
+I'll get this added to the queue, thanks.
 
-diff --git a/drivers/regulator/tps6287x-regulator.c b/drivers/regulator/tps6287x-regulator.c
-index b1c0963586ac..e45579a4498c 100644
---- a/drivers/regulator/tps6287x-regulator.c
-+++ b/drivers/regulator/tps6287x-regulator.c
-@@ -119,7 +119,7 @@ static struct regulator_desc tps6287x_reg = {
- 	.ramp_mask = TPS6287X_CTRL1_VRAMP,
- 	.ramp_delay_table = tps6287x_ramp_table,
- 	.n_ramp_values = ARRAY_SIZE(tps6287x_ramp_table),
--	.n_voltages = 256,
-+	.n_voltages = 256 * ARRAY_SIZE(tps6287x_voltage_ranges),
- 	.linear_ranges = tps6287x_voltage_ranges,
- 	.n_linear_ranges = ARRAY_SIZE(tps6287x_voltage_ranges),
- 	.linear_range_selectors = tps6287x_voltage_range_sel,
-
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230829-tps-voltages-f1999a9067c4
-
-Best regards,
 -- 
-Vincent Whitchurch <vincent.whitchurch@axis.com>
+Jens Axboe
 
