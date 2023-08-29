@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC6878C9C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC8D78C9C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237488AbjH2QiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        id S237497AbjH2QjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237484AbjH2Qhr (ORCPT
+        with ESMTP id S237553AbjH2QjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:37:47 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED572129
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:37:43 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso39642925e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:37:43 -0700 (PDT)
+        Tue, 29 Aug 2023 12:39:12 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D8719A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:39:07 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c1c66876aso594933966b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:39:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1693327062; x=1693931862;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=A5NFsJWiFLxuFwl1EtWT4+lMNFFFs9m756sXu41LDDc=;
-        b=la4/8wPcMgNVCUJ1o/pxJDjq95ELpHln+3N6PIBdnXMRiLzK+iYsWDQaIxNSQmbBG7
-         jH8T+Hwk2+UCjACgbZ0K5jqHnR9dgYnpns4ZtqewZ6+sn7h78wvSR8Ujr2Ukg1i0Lydi
-         WcM7zASit5IboH2hn9cHso9ie0lLUPpvMymTiYcxIbTyRLildi2IcUcrgwFiVdahekU/
-         NXjmsJ2YALyJ+kHxMp8L6FpkDkEEK1wODOf6d/KybBEkFhJnpiRh9PkBCyDNM3xV/kbV
-         oRZMb2dYAWP7vzAGu4fPAR3fPihfzWfHoylfwW/SeLGDaDFf/Kb1j/U8IIuEABO4+bwb
-         YwTQ==
+        d=linaro.org; s=google; t=1693327146; x=1693931946;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mT6oXCgbaIv6xrqOFaIzIhxDtL6iZZ50u0IzIYTJFvk=;
+        b=UbpJ7e7KL9EA1LdgNzK++gknXGMcs5LEHN2Tg0CeDsF+V9PItbRrgw/2Ku4q8TwrAp
+         /RQ1y2sSi1awYmyzllT307gT/U58cJraYSsxN95ED0sro3l7z88tmalAh+KdYXAjWsP8
+         /xjnDZBG9isx7G5Le0dfa7+U6ZfZT02AXuqG/bfoLSM/GgmIlaYPjxQWsWdX+Y/Zyft7
+         tVhVwMBuU1nMKzoUbdrj76MOohFRzOQusMnMlUPlkquLmeGFjDnyxQApNkg67s57PDYm
+         HmbuAeEBTugqvKOdz+7hNePKJMaG9evwGwAJOn7GuGmIjPpUBce61xVuTYAo+TMy+KIp
+         DBOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693327062; x=1693931862;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A5NFsJWiFLxuFwl1EtWT4+lMNFFFs9m756sXu41LDDc=;
-        b=MPYBjI7KDuAFGxIAk3n2PFtDnGRkSSUEcydsBfCRVsHLTinLkLliTIc9C6Hnrw1Qvn
-         hzZcqWbjfjeFhNKljs7igUcbiuZXbbMhWPgc8MrjGA+gVE2qbTHniqDiyS9+FzG5M/St
-         dggc5f7SFU4U80HG3a+Ww9hPW5k2t/I5zxWRHGHZsrytvICd9lI2cbnlnZU+MeLfpB6o
-         zjvG2h5HblrNATuLcGXm+RusXHEQ7z8RahVjdTQLS4jeuLzxYaiHqY7twp1V8F5kCD8m
-         5bMnZNPqLzhrIiYPMDMnV4Q89Fnb1z+9r2EETMTxvqvFGSrXCBXyhAV3XxYANkGVz5g7
-         9DHw==
-X-Gm-Message-State: AOJu0YyUnXe+jd6Y3ox4kOv0+mO9vQRxQVvWMT49pEAHhHZubVfB1wdc
-        GKtvvg3jdUC7D7bIY/jc8AXi5w==
-X-Google-Smtp-Source: AGHT+IEAYaMnD3Vdtzozuhq2AHDXpWlJzF4wgiZrhLV0vLTlTtr05Z49Uzvc2y8r4muGhZRIieHp/w==
-X-Received: by 2002:a05:600c:3653:b0:401:b0f2:88b4 with SMTP id y19-20020a05600c365300b00401b0f288b4mr10942322wmq.26.1693327062257;
-        Tue, 29 Aug 2023 09:37:42 -0700 (PDT)
-Received: from airbuntu ([104.132.45.98])
-        by smtp.gmail.com with ESMTPSA id k8-20020a7bc408000000b003fe23b10fdfsm17599960wmi.36.2023.08.29.09.37.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 09:37:41 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 17:37:40 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping
- uclamp constraints
-Message-ID: <20230829163740.uadhv2jfjuumqk3w@airbuntu>
-References: <20230820210640.585311-1-qyousef@layalina.io>
- <20230820210640.585311-3-qyousef@layalina.io>
- <CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1693327146; x=1693931946;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mT6oXCgbaIv6xrqOFaIzIhxDtL6iZZ50u0IzIYTJFvk=;
+        b=LKgtrkabBOmJn6FItYZBsEQ6rKH6lKOGleRgIQqafYUsgnyzNQ7uAjPrLlmOcfgQMD
+         KDNwe5sAtVRUmG27NbEcDugn2S4JHvUQcAKW2qFF6d1QONsTVnEWTgyz589oi+jrMlky
+         FWr9GoOpfeE70hG8F9QaSEMkZZ7/4D8l9uEi3/r6Qfj8WPF34AwymbkLgCTCQrp4djtW
+         No2i8h1J16Tgf/PLRZXLL7jZvJUyxbmt4iZ8m8h8K/jRVunSFeHeM6aYILu7Ks6DS1mZ
+         IPCAbIsxeDGGStuJ+9yo+MnYo4OsUQs8EsLh56U2+4zrntBE3IP2FgJ8QWhjfc0yxjGf
+         Xu1Q==
+X-Gm-Message-State: AOJu0YywfZ8AYDoaT6XOld0Y/abNlQoDCH5+SYIDswLj937VSD65ZJKA
+        oT8b5s/zAeKaDbvAPA/qI8GPDA==
+X-Google-Smtp-Source: AGHT+IESQ+U8zTLIIt37ys6oP/s6v/+8nspiHQlBTB0sN17RPl6ikUPDnr2RZG5aF5IG0fNLxxKcTw==
+X-Received: by 2002:a17:906:8a55:b0:9a2:1853:a0be with SMTP id gx21-20020a1709068a5500b009a21853a0bemr10616171ejc.72.1693327146367;
+        Tue, 29 Aug 2023 09:39:06 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.196])
+        by smtp.gmail.com with ESMTPSA id jj26-20020a170907985a00b00988e953a586sm6147826ejc.61.2023.08.29.09.39.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 09:39:05 -0700 (PDT)
+Message-ID: <4982cfd7-4930-f205-09e8-fc5028183dba@linaro.org>
+Date:   Tue, 29 Aug 2023 18:39:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 1/2] dt-bindings: backlight: Add MPS MP3309C
+Content-Language: en-US
+To:     Flavio Suligoi <f.suligoi@asem.it>, Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230829101546.483189-1-f.suligoi@asem.it>
+ <6dfae492-5533-df97-5c72-373d5e89444f@linaro.org>
+ <DU2PR01MB8034C85013ECF222D12BAAA4F9E7A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <DU2PR01MB8034C85013ECF222D12BAAA4F9E7A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,196 +86,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/29/23 16:35, Vincent Guittot wrote:
-> On Sun, 20 Aug 2023 at 23:08, Qais Yousef <qyousef@layalina.io> wrote:
-> >
-> > DVFS headroom is applied after we calculate the effective_cpu_util()
-> > which is where we honour uclamp constraints. It makes more sense to
-> > apply the headroom there once and let all users naturally get the right
-> > thing without having to sprinkle the call around in various places.
+On 29/08/2023 16:18, Flavio Suligoi wrote:
+> Hi Krzysztof,
 > 
-> You have to take care of not mixing scheduler and cpufreq constraint and policy.
+> Thanks for your quick replay and corrections!
+> Just some questions about some of your remarks:
 > 
-> uclamp is a scheduler feature to highlight that the utilization
-> requirement of a task can't go above a level.
-
-uclamp is a performance hint, which utilization is how we represent it
-internally. A task with uclamp of 800 is not the same as util being actually
-800. In our previous discussions around util_fits_cpu() we had similar
-discussion on how the two can't be treated the same.
-
-Same with uclamp_min; if it is set to 1024 but there is a task with util say
-100, this task shouldn't cause overutilized as its actual utilization actually
-fits, but it just asked to run at a higher performance point. The actual
-utilization has to be in the over utilized range. Unless uclamp_max forces it
-to fit of course.
-
-So uclamp_max sets a cap to the performance that the task is allowed to reach.
-And this translates into frequency selection and cpu selection (in case of HMP)
-by design.
-
-I don't think we're mixing matters here. But the headroom should be applied to
-actual utilization, not uclamp. If the rq is capped to a specific performance
-level, we should honour this.
-
-We do the same with iowait boost where it is capped by uclamp_max. A task
-capped by uclamp_max shouldn't be the trigger of running at a frequency higher
-than this point. Otherwise we'd need to expose all these internal details to
-the user, which I think we all agree isn't something to consider at all.
-
+>>> @@ -0,0 +1,202 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) %YAML 1.2
+>>> +---
+>>
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  mps,dimming-mode:
+>>> +    description: The dimming mode (PWM or analog by I2C commands).
+>>> +    $ref: '/schemas/types.yaml#/definitions/string'
+>>
+>> Drop quotes, you should see warnings for this.
+>>
+>> It does not look like you tested the bindings, at least after quick look. Please
+>> run `make dt_binding_check` (see
+>> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+>> Maybe you need to update your dtschema and yamllint.
+>>
+>>> +    enum:
+>>> +      - pwm
+>>> +      - analog-i2c
+>>
+>> Why do you think this is a property of a board? Is PWM signal optional?
+>> If so, its presence would define it. Otherwise it seems you want to control the
+>> driver.
+>>
 > 
-> dvfs head room is a cpufreq decision to anticipate either hw
-> limitation and responsiveness problem or performance hints.
+> The MP3309C device always need a I2C bus to rd/wr its internal registers.
+> But the brightness can be controlled in one of the following ways (mutually exclusive,
+> but mandatory):
+> - a PWM input signal
+>     or
+> - a I2C command
+> So, the driver needs a property to select the dimming mode used; this property is mandatory.
+
+No, it's not a proof. Don't mix properties and hardware signals.
+
+> This is the reason of the existence of the ' mps,dimming-mode' property.
+> PWM signal is not optional, it is required if and only if the 'pwm' dimming mode is used.
+
+So the pwms determine the mode. That's it, no need for this property.
+
+
+> If the 'analog-i2c' dimming mode is used, instead, the PWM signal must not be used.
+> So the property 'mps,dimming-mode' controls how the MP3309C is used.
+> I can add more details about this in the description section.
+
+No, drop the property or explain more, e.g. is I2C mode of control used
+while having PWMs signals connected?
+
+> ...
+>  
+>>> +
+>>> +  mps,overvoltage-protection-13v:
+>>> +    description: overvoltage protection set to 13.5V.
+>>> +    type: boolean
+>>> +  mps,overvoltage-protection-24v:
+>>> +    description: overvoltage protection set to 24V.
+>>> +    type: boolean
+>>> +  mps,overvoltage-protection-35v:
+>>> +    description: overvoltage protection set to 35.5V.
+>>> +    type: boolean
+>>
+>> Nope for these three. Use -microvolt suffix for one property.
 > 
-> they come from different sources and rational and this patch mixed
-> them which i'm not sure is a correct thing to do
-
-I don't think I'm mixing them up to be honest.
-
-The governor is driven by effective_cpu_util() to tell it what is the
-effective_cpu_util() when making frequency selection. This function takes into
-account all the factors that could impact frequency selection including all type
-of rq pressures (except thermal). I think it is appropriate to take headroom
-into account there and make sure we honour uclamp_max hint to cap the
-performance appropriately based on the effective uclamp_max value of the rq.
-
-For example if actually util was 640, then after the headroom it'd be 800. And
-if uclamp_max is 800, then this task will still get the 1.25 headroom. We are
-not changing this behavior.
-
-But if the task goes beyond that, then it'll stop at 800 because this what the
-request is all about. A headroom beyond this point is not required because the
-task (or rq to be more precise) is capped to this performance point and
-regardless how busy the cpu gets in terms of real utilization or headroom, it
-shouldn't go beyond this point. ie: if a task is a 1024 but uclamp_max of is
-800 then it'll only get a performance equivalent to OPP@800 would give.
-
-If we don't do that uclamp_max range effectively is from 0-819 (based on
-current headroom setting of 1.25). Which is not what we want or what we're
-telling userspace. Userspace sees the whole system performance levels
-abstracted from 0 - 1024. As it should. The only effect they would observe and
-there's no way around it is that OPPs are discrete points. So in reality our
-0-1024 is a staircase where a range of util values will map to the same OPP and
-then we'll get a jump. So the user can end up requesting for example 700 and
-720 and not notice any difference because they both map to the same OPP.
-I don't think we can fix that - but maybe I should add it to the uclamp doc as
-a caveat when setting uclamp.
-
+> Ok
 > 
-> >
-> > Before this fix running
-> >
-> >         uclampset -M 800 cat /dev/zero > /dev/null
-> >
-> > Will cause the test system to run at max freq of 2.8GHz. After the fix
-> > it runs at 2.2GHz instead which is the correct value that matches the
-> > capacity of 800.
+>>
+>>> +
+>>> +  mps,reset-gpios:
+>>> +    description: optional GPIO to reset an external device (LCD panel, FPGA,
+>>> +      etc.) when the backlight is switched on.
+>>> +    maxItems: 1
+>>
+>> No, you should not add here GPIOs for other devices.
 > 
-> So a task with an utilization of 800 will run at higher freq than a
-> task clamped to 800 by uclamp ? Why should they run at different freq
-> for the same utilization ?
+> Do you mean that I have to remove this property or that I have to move it somewhere else?
+> I added this feature because sometimes, in embedded boards, you need a pulse signal to
 
-Because uclamp sets an upper limit on the performance level the task should be
-able to achieve. Imagine a task is 1024 and capped to 800, it should not run at
-max frequency, right? What's the point of the uclamp_max hint if the headroom
-will cause it to run at max anyway? We lost the meaning of the hint. And if
-this headroom changes in the future, people will start observing different
-behavior for existing uclamp_max settings on the same system because of this
-this rightfully hidden and unaccounted for factor.
+How you described it, this is not the property of this device.
 
-> 
-> >
-> > Note that similar problem exist for uclamp_min. If util was 50, and
-> > uclamp_min is 100. Since we apply_dvfs_headroom() after apply uclamp
-> > constraints, we'll end up with util of 125 instead of 100. IOW, we get
-> > boosted twice, first time by uclamp_min, and second time by dvfs
-> > headroom.
-> >
-> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> > ---
-> >  include/linux/energy_model.h     |  1 -
-> >  kernel/sched/core.c              | 11 ++++++++---
-> >  kernel/sched/cpufreq_schedutil.c |  5 ++---
-> >  3 files changed, 10 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> > index 6ebde4e69e98..adec808b371a 100644
-> > --- a/include/linux/energy_model.h
-> > +++ b/include/linux/energy_model.h
-> > @@ -243,7 +243,6 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
-> >         scale_cpu = arch_scale_cpu_capacity(cpu);
-> >         ps = &pd->table[pd->nr_perf_states - 1];
-> >
-> > -       max_util = apply_dvfs_headroom(max_util);
-> >         max_util = min(max_util, allowed_cpu_cap);
-> >         freq = map_util_freq(max_util, ps->frequency, scale_cpu);
-> >
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index efe3848978a0..441d433c83cd 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -7439,8 +7439,10 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-> >          * frequency will be gracefully reduced with the utilization decay.
-> >          */
-> >         util = util_cfs + cpu_util_rt(rq);
-> > -       if (type == FREQUENCY_UTIL)
-> > +       if (type == FREQUENCY_UTIL) {
-> > +               util = apply_dvfs_headroom(util);
-> 
-> This is not the same as before because utilization has not being
-> scaled by irq steal time yet
+> use after the backlight probing, for example to reset another device in sync with the backlight
+> probe.
 
-We do the scaling below, no?
+There is no term as "probe" in hardware, so you describe drivers.
 
-AFAICS, we had:
+> Do you think I have to remove this feature from the driver?
 
-	(util_cfs + util_rt + irq + ((max-irq)*(util_cfs + util_rt)/max)+ dl_bw) * scale
-
-Using U = (util_cfs + util_rt) * scale
-
-we can write this after the multiplication
-
-	U + irq * scale + ((max-irq)*U/max) + dl_bw * scale
+You cannot request GPIO after removing it from the bindings, obviously,
+but whether your backlight should reset something else? Don't care,
+don't know. I talk about bindings.
 
 > 
-> >                 util = uclamp_rq_util_with(rq, util, p);
-> > +       }
-> >
-> >         dl_util = cpu_util_dl(rq);
-> >
-> > @@ -7471,9 +7473,12 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-> >          *              max - irq
-> >          *   U' = irq + --------- * U
-> >          *                 max
-> > +        *
-> > +        * We only need to apply dvfs headroom to irq part since the util part
-> > +        * already had it applied.
-> >          */
-> >         util = scale_irq_capacity(util, irq, max);
-> > -       util += irq;
-> > +       util += type ==  FREQUENCY_UTIL ? apply_dvfs_headroom(irq) : irq;
-> >
-> >         /*
-> >          * Bandwidth required by DEADLINE must always be granted while, for
-> > @@ -7486,7 +7491,7 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-> >          * an interface. So, we only do the latter for now.
-> >          */
-> >         if (type == FREQUENCY_UTIL)
-> > -               util += cpu_bw_dl(rq);
-> > +               util += apply_dvfs_headroom(cpu_bw_dl(rq));
+> ...
 > 
-> If we follow your reasoning with uclamp on the dl bandwidth, should we
-> not skip this as well ?
+>>> +allOf:
+>>> +  - $ref: common.yaml#
+>>> +  - if:
+>>> +      properties:
+>>> +        mps,dimming-mode:
+>>> +          contains:
+>>> +            enum:
+>>> +              - pwm
+>>> +    then:
+>>> +      required:
+>>> +        - pwms
+>>
+>> So this proves the point - mps,dimming-mode looks redundant and not
+>> hardware related.
+> 
+> See my previous comment.
 
-I do remove this in patch 4. Can fold that one into this one if you like.
-I opted to keep the current behavior in this patch and remove these later in
-patch 4.
+No, it still proves the point till you explain why pwms cannot be used
+to determine this. Read my messages.
 
-I do think that both RT and DL shouldn't need DVFS headroom in general as they
-both 'disable' it by default.
+Best regards,
+Krzysztof
 
-
-Thanks!
-
---
-Qais Yousef
