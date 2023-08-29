@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5352478C2B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D59778C2BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbjH2KzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        id S235258AbjH2Kzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbjH2Kyh (ORCPT
+        with ESMTP id S235337AbjH2KzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:54:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE381B4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:54:16 -0700 (PDT)
+        Tue, 29 Aug 2023 06:55:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7311E40
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 03:54:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2CA265480
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:54:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 186B9C433C9;
-        Tue, 29 Aug 2023 10:53:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 69C46654A2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:54:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B9FC433CB;
+        Tue, 29 Aug 2023 10:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693306443;
-        bh=t/qZfTePzBF9rz4rKqEEIEiN88+VpqM8jDM5ugou+X8=;
+        s=k20201202; t=1693306449;
+        bh=55LOh8Jj1l92AMhvY++Ej5I2LE8fPAWDd+oTYSYLd1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MjQ407ej0DuppX7l3wWIoYPh59u+KPsZthsdM//5UrYvPZSkQAqSu74CuVjUGEQTI
-         B0Rv/J1DzPIfgrEfbvDlGxhqYOdSBNWNlTjUT9vhKJgqE4XJSRq2Smjbx4vc5HLeq9
-         pAdCwXsV3t5YDM6euVBmOQvj3G6Ngkx13CcHEDS2fnv9s898/0X6JpMtUScJ0kagqG
-         EZImYNMThTlgCRHmAkxTI0zRZCU/xiO8e2490i++m724p2O2t4AuancmDFn1UvnToG
-         qslIwQGICXTkA4H1MGZMk0BL95Oq2hGzPCE7rqRLGe95z/bxKTW2MML6YriuKXvSab
-         99wnIhemypwnA==
+        b=BCoG3BdllVlhL465cTgrGCXeB1eh6gBb4bx4nyLW3doaI69uN1mDB63MVEOZfnDVw
+         Acddc/LoC3BCLG9B/hQRYa1JiAVWBGUH3F2Wfk52DRFZwWJePzZ9TQwP1pag1oMznZ
+         pZWhyivSlSE5x99KbWCeg9lvXnvnN0WVbjiAlwTlyyX1hvO+7vFFDSc+1oXBS/VSxZ
+         0bztUrpaiJJ9EQnKxHzOhe7L+SOJp8MgFHPUHKiy7vP64vfPfnOFh7I1hQ5qNrp31Q
+         Yx5dPxIor8s7n/u78Bd641UpuOCqOD0vhW62qxC/vEOkcpxUtaZJb17Dm1PzMP3EaQ
+         wnwmw3FmNxywQ==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -67,16 +67,16 @@ To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 14/22] net: stmmac: dwmac-socfpga: use devm_stmmac_probe_config_dt()
-Date:   Tue, 29 Aug 2023 18:40:25 +0800
-Message-Id: <20230829104033.955-15-jszhang@kernel.org>
+Subject: [PATCH net-next 15/22] net: stmmac: dwmac-starfive: use devm_stmmac_probe_config_dt()
+Date:   Tue, 29 Aug 2023 18:40:26 +0800
+Message-Id: <20230829104033.955-16-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230829104033.955-1-jszhang@kernel.org>
 References: <20230829104033.955-1-jszhang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,80 +87,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Simplify the driver's probe() function by using the devres
 variant of stmmac_probe_config_dt().
 
-The calling of stmmac_pltfr_remove() now needs to be switched to
+The remove_new() callback now needs to be switched to
 stmmac_pltfr_remove_no_dt().
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- .../ethernet/stmicro/stmmac/dwmac-socfpga.c    | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-index 7db176e8691f..6d5e45fb54c9 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-@@ -400,21 +400,19 @@ static int socfpga_dwmac_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
+index 892612564694..76f3a36f32c7 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
+@@ -105,7 +105,7 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
+ 		return dev_err_probe(&pdev->dev, err,
+ 				     "failed to get resources\n");
  
 -	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
 +	plat_dat = devm_stmmac_probe_config_dt(pdev, stmmac_res.mac);
  	if (IS_ERR(plat_dat))
- 		return PTR_ERR(plat_dat);
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(plat_dat),
+ 				     "dt configuration failed\n");
+@@ -141,13 +141,7 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
+ 	if (err)
+ 		return err;
  
- 	dwmac = devm_kzalloc(dev, sizeof(*dwmac), GFP_KERNEL);
--	if (!dwmac) {
--		ret = -ENOMEM;
--		goto err_remove_config_dt;
+-	err = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+-	if (err) {
+-		stmmac_remove_config_dt(pdev, plat_dat);
+-		return err;
 -	}
-+	if (!dwmac)
-+		return -ENOMEM;
- 
- 	dwmac->stmmac_ocp_rst = devm_reset_control_get_optional(dev, "stmmaceth-ocp");
- 	if (IS_ERR(dwmac->stmmac_ocp_rst)) {
- 		ret = PTR_ERR(dwmac->stmmac_ocp_rst);
- 		dev_err(dev, "error getting reset control of ocp %d\n", ret);
--		goto err_remove_config_dt;
-+		return ret;
- 	}
- 
- 	reset_control_deassert(dwmac->stmmac_ocp_rst);
-@@ -422,7 +420,7 @@ static int socfpga_dwmac_probe(struct platform_device *pdev)
- 	ret = socfpga_dwmac_parse_data(dwmac, dev);
- 	if (ret) {
- 		dev_err(dev, "Unable to parse OF data\n");
--		goto err_remove_config_dt;
-+		return ret;
- 	}
- 
- 	dwmac->ops = ops;
-@@ -431,7 +429,7 @@ static int socfpga_dwmac_probe(struct platform_device *pdev)
- 
- 	ret = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- 	if (ret)
--		goto err_remove_config_dt;
-+		return ret;
- 
- 	ndev = platform_get_drvdata(pdev);
- 	stpriv = netdev_priv(ndev);
-@@ -492,8 +490,6 @@ static int socfpga_dwmac_probe(struct platform_device *pdev)
- 
- err_dvr_remove:
- 	stmmac_dvr_remove(&pdev->dev);
--err_remove_config_dt:
--	stmmac_remove_config_dt(pdev, plat_dat);
- 
- 	return ret;
+-
+-	return 0;
++	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
  }
-@@ -504,7 +500,7 @@ static void socfpga_dwmac_remove(struct platform_device *pdev)
- 	struct stmmac_priv *priv = netdev_priv(ndev);
- 	struct phylink_pcs *pcs = priv->hw->lynx_pcs;
  
--	stmmac_pltfr_remove(pdev);
-+	stmmac_pltfr_remove_no_dt(pdev);
+ static const struct of_device_id starfive_dwmac_match[] = {
+@@ -158,7 +152,7 @@ MODULE_DEVICE_TABLE(of, starfive_dwmac_match);
  
- 	lynx_pcs_destroy(pcs);
- }
+ static struct platform_driver starfive_dwmac_driver = {
+ 	.probe  = starfive_dwmac_probe,
+-	.remove_new = stmmac_pltfr_remove,
++	.remove_new = stmmac_pltfr_remove_no_dt,
+ 	.driver = {
+ 		.name = "starfive-dwmac",
+ 		.pm = &stmmac_pltfr_pm_ops,
 -- 
 2.40.1
 
