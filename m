@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDC678C9F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57D778C9FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236935AbjH2QxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        id S237560AbjH2QyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237589AbjH2Qwz (ORCPT
+        with ESMTP id S237561AbjH2Qx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:52:55 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589131B7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:52:53 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c1f7f7151fso11543765ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:52:53 -0700 (PDT)
+        Tue, 29 Aug 2023 12:53:58 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DA51BC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:53:55 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52a069edca6so6426384a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 09:53:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693327973; x=1693932773;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1qQzy70Oe0bgxhcuXv4Qw9ZpdVk+SYDfFf1MSTVPxDk=;
-        b=oB4niErMzCvAp+298iHDJV0d4kklPtej65wWAtbzel45dp7FsV5ZCBPQ53aCmcviR6
-         blHZo9UdOMdrtc/EOfqqxV0DRBDrFwSyHYd23sKXvDdsQbcXLvYlfIzOIucpJSfiu8eM
-         3/HOcDubqKZM/o4oaG4KFWX9p1ahqHrmWRXnVM6QYOZYMPWiKrtW7cQwU4xa2dkKjxA4
-         m5+chF2a4q1m2/l7lbCzMSh4yMuLxSs/4YaO1rXUkbzlV1qUTZCWbOZQ9eCi3Jc+tCfn
-         QerAivKLgs2C2oanuBV//E1VX36W+RB/ojn+QJn9D5Ego7bVj5vNQ1WHh4j5FPS57/5Q
-         0rqw==
+        d=linaro.org; s=google; t=1693328034; x=1693932834;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ACmQAc0Os4N98Z3d3R/oIFedpQZZYFrbAteEg6HsG0U=;
+        b=I/a0kp/X+qSLU+PdEBr24kCAVtAqmcmI7BCas6WtO3JCDrAbuQynu6E54l+oTgHKmK
+         c9eA+7wqka6EVKEbwNbG4+Eqrp6RkjNGXq9irM4PWeJLwjx2Dmmu7j5EJj9/FiGvCX+E
+         eJ8UJdQZX7URDGf0zr+99AJigTImTySx0pabeADIk6hAtTjCqlEejLjIJjwl9LnhW+MK
+         6vvbpsTmdKZKkypszJJQ3eLuoGNchTYAOIek7jVanMZN8GCYPKbq7WAsYyadiilTApNg
+         QifliMykN14crqmecnBJeWWOA8mvMzoN7EbyarrOlFh2tM6SUoF1oVtk6FgUd+p7Prv8
+         YC+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693327973; x=1693932773;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1qQzy70Oe0bgxhcuXv4Qw9ZpdVk+SYDfFf1MSTVPxDk=;
-        b=VR1lIv1wbpVdby/TCTo5/HBVbl1pPnmSohDt3mVRISA6+cf8eaTGMzqRNZnVgVzMNK
-         5pHWLYrhty2Wn/djcGR1Go499fbCI5ZFhUkNltUx4uEvgu23zLWclZ/CMZ4akHXHKJ4z
-         PTG+n553qB6anSveJvJhozubamX53Yo+2FJhMtBUbhV+cFHxW4LvUZWK6mqoJFkJrWaG
-         CV4Jjsl/N4Q0eDFGy05l4/zHWMYlvtLaYUYFDyAZkJlspPLeVox54nCFeKWUhyylxjiY
-         +HNYavvOKFmnGxUopr/5OO6hlBC1iGaAbNrsYk3As4U/ABXE2OqTW24VnUsaxc93E6ro
-         66Ug==
-X-Gm-Message-State: AOJu0Yx6w7y02LgHJRZbeuKOVYG/2pkJWRWb5xKukJI0PArvTJ8fP9y4
-        slWs14xDPxsCv2LNpQjzi73fe+X3+w3hwn8L
-X-Google-Smtp-Source: AGHT+IEpvMY/b0UIWmQtleMKRid8O5Pm9nwIOdAZ0pHOdoWFJLs2P7BGHY1pmCRM6vcRxWCW3jhj0g==
-X-Received: by 2002:a17:902:7408:b0:1bf:73ec:b980 with SMTP id g8-20020a170902740800b001bf73ecb980mr19713324pll.66.1693327972489;
-        Tue, 29 Aug 2023 09:52:52 -0700 (PDT)
-Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.179])
-        by smtp.gmail.com with ESMTPSA id ji18-20020a170903325200b001b9da8b4eb7sm9582735plb.35.2023.08.29.09.52.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 09:52:51 -0700 (PDT)
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-To:     shaggy@kernel.org, liushixin2@huawei.com
-Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
-        linux-kernel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com
-Subject: [PATCH] jfs: fix array-index-out-of-bounds in dbFindLeaf
-Date:   Tue, 29 Aug 2023 22:22:44 +0530
-Message-Id: <20230829165244.460154-1-ghandatmanas@gmail.com>
-X-Mailer: git-send-email 2.37.2
+        d=1e100.net; s=20221208; t=1693328034; x=1693932834;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ACmQAc0Os4N98Z3d3R/oIFedpQZZYFrbAteEg6HsG0U=;
+        b=ThznipEc+wEs6Tih6ygQsc5Ii74Kg+CpUOz7d5NqHqo3sNxMxugqhB+W/oF95RUpzM
+         xj6Qa+4fCUucs7DgY/aNEZ1T38O+S9esL4f6pf7UCn16Vf1h450z7Iue4wzWHl1031Pj
+         PfQSKnSpaGAOdkUnZYQMjxj710drg9jnnQI6taPd2EhPTlv5RfZh2Rsu4ZiqTAoN7/s7
+         C6HMMmnAzFSsSl+gV97sVyjv+/fRP0yPftCWhdy+cjDgLuE+gveeh1/Bx9yfYg6XQ4Vt
+         nPp7ylpeaQo04auJfW0arlxNTwNzNl+mZm39uWk+GkOFaUh+aY5mYiD8hK/J3aoxIKsZ
+         PnKA==
+X-Gm-Message-State: AOJu0YzV4W++ofHEAB/etmLIq1mZOUPYWcHCc2A3CgSsU35go/XDJdNz
+        vn4Wom+iEvflcBYZRHGlk+Lauw==
+X-Google-Smtp-Source: AGHT+IFj6qY9ZGIZ7zhLjscs5t/l6tiV+o0WMRw/Smkie7Au+T0++diSeuW+C9be47Z4c2Gxfc/m6g==
+X-Received: by 2002:aa7:d9cb:0:b0:51e:309:2e11 with SMTP id v11-20020aa7d9cb000000b0051e03092e11mr23265767eds.36.1693328033755;
+        Tue, 29 Aug 2023 09:53:53 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.196])
+        by smtp.gmail.com with ESMTPSA id bf8-20020a0564021a4800b00529fb5fd3b9sm5830878edb.80.2023.08.29.09.53.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 09:53:53 -0700 (PDT)
+Message-ID: <ae477c6d-b5a5-929f-0a36-3c0d2484add5@linaro.org>
+Date:   Tue, 29 Aug 2023 18:53:51 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/9] dt-bindings: phy: qcom,uniphy: Rename ipq4019 usb PHY
+ to UNIPHY
+Content-Language: en-US
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>, robert.marko@sartura.hr,
+        luka.perkov@sartura.hr, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, vkoul@kernel.org, kishon@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, gregkh@linuxfoundation.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        arnd@arndb.de, geert+renesas@glider.be, nfraprado@collabora.com,
+        rafal@milecki.pl, peng.fan@nxp.com, quic_wcheng@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     quic_varada@quicinc.com
+References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com>
+ <20230829135818.2219438-2-quic_ipkumar@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230829135818.2219438-2-quic_ipkumar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,42 +86,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently while searching for dmtree_t for sufficient free blocks there
-is an array out of bounds while getting element in tp->dm_stree. Added
-the required bound check.
+On 29/08/2023 15:58, Praveenkumar I wrote:
+> UNIPHY / Combo PHY used on various qualcomm SoC's are very similar to
+> ipq4019 PHY. Hence renaming this dt-binding to uniphy dt-binding and
+> can be used for other qualcomm SoCs which are having similar UNIPHY.
 
-Ps: After I added the check I am getting the following log
+That's not the reason to rename it. Keep the old name.
 
-[   22.661748][ T4425] ERROR: (device loop0): dbAllocAny: unable to allocate blocks
-[   22.661748][ T4425]
-[   22.665536][ T4425] ERROR: (device loop0): remounting filesystem as read-only
-[   22.667856][ T4425] jfs_mkdir: dtInsert returned -EIO
-[   22.669750][ T4425] ERROR: (device loop0): txAbort:
-
-I was wondering if these checks are significant of not?
-
-Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
-Reported-by: syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=aea1ad91e854d0a83e04
----
- fs/jfs/jfs_dmap.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index a14a0f18a4c4..5af17b2287be 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -2948,6 +2948,10 @@ static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx)
- 			/* sufficient free space found.  move to the next
- 			 * level (or quit if this is the last level).
- 			 */
-+
-+			if (x + n > TREESIZE)
-+				return -ENOSPC;
-+
- 			if (l2nb <= tp->dmt_stree[x + n])
- 				break;
- 		}
--- 
-2.37.2
+Best regards,
+Krzysztof
 
