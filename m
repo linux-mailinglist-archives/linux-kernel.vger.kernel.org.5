@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA04C78CFB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A17278CFB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239978AbjH2W5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        id S240042AbjH2W6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241067AbjH2W52 (ORCPT
+        with ESMTP id S241169AbjH2W5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:57:28 -0400
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68533139
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:57:26 -0700 (PDT)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26f2dfb1fdbso5788716a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:57:26 -0700 (PDT)
+        Tue, 29 Aug 2023 18:57:37 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7703CC0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:57:34 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4ff882397ecso7660968e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:57:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693349853; x=1693954653; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
+         :from:references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SkhXetCzPMun8u4gfVs+ffh2I93t6SvS6t2zvrt8kso=;
+        b=aQpPiu/gK8GYuexeznqgEwlitES8OTxUBeHk7ixHeNbciUQLU37yXzGcH04QWBmV0H
+         jaFgylz2ftuAytmt4f3CJwqJwfq4BwUzbb2/e43UV1PYs2o+XD8kukrc6dN4lRXIY+vh
+         7188zJZjqWIXQ4TnnPFK4Y+lQlf4Y2Puv1cMs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693349846; x=1693954646;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cAx6PSOlRe1SoOmdVLTfSTqRq8XYYm/GJtA05ydLXZQ=;
-        b=bmQcpiiBmrdsRrFcsiPgHKAC4CHWLSW+oTKZZM/FSQtD3rgw8knnrCVbe4gGG6ip4j
-         50bTXwUyt6TP/ZrSZumTELUK7Q+9sHwjp2Fkp0H/P/gc9IRWBSWn0JdJSJmtEgu/Sm0K
-         /IL0cVD/4kuJ2os/X9jv+bXKe5YN5ZvVQ8gngCoL5gIQVsvkf4oguDnvP+S1iLayhoX5
-         BSPWiQhjdhWH2MJX2kIpyU5vgPNhkKV8cQDkGsCn5XaOsSQWicd0SWUo8CZIeYXyY82q
-         +iQlvr1sSYQNhIWzafjDU5mMeohrGSacAnYvTVt0DUfNnJivBBva1VdVhYlUMfGPvS8c
-         1iwg==
-X-Gm-Message-State: AOJu0Yx0dCEBP6VIYggEULoS003kaHVCn+jFAmruIdGg0Gd/Dyxj4TM8
-        8kGbQNQfE6qo9nSq4DACFLtrp8xwwWWbotc2FV5rDX1FI+he
-X-Google-Smtp-Source: AGHT+IEzdCowiZmXUDDhkbYINfZE/r+09JEfRrBJG3TV1PZiXW7dTgVeIl0Jj6WsJu8Hs/EFNhtwmwBtC0shQ2WpNjmc8DS1vxGs
+        d=1e100.net; s=20221208; t=1693349853; x=1693954653;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
+         :from:references:in-reply-to:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=SkhXetCzPMun8u4gfVs+ffh2I93t6SvS6t2zvrt8kso=;
+        b=ImhV6T1JkgdhNRulPtOrFTt16FeOH0C7FJZ71VNlRIXUj3OEqnyIleLVdYb+hBK+GG
+         brympbuo7yc76a1nj1FC3FyoU++2jBhz2ODqhq6+z778IyZerJN8LYbbgdwQrwCbKy2h
+         hZ4RJe5EGfZ/Mtzw5MhLILih+abvfL+g3Rw8ogpweR9zenRNWRTvFh8qcb+3kcY3HOy5
+         RgMC7TLaxMqEmyisYN/XlvflN1Laid8n/uyR9blKCExfI/tH9dVJxP1kbaNImGThVSU2
+         2cbu3EfRXqq2aFsEBczj8I2+Hm+/PF6z+gE2hahuaHQnZE98gOxeeYA/l3b/HHkNOO8O
+         blrw==
+X-Gm-Message-State: AOJu0YxvIhwtG6eKK8wRTQq/z2dZ5D/mN7QOeGKhT/raof7wIeqYeKB0
+        J9kj+PXd/2mJHTBbscLeIrha0cxNnd+wAu1SFpjPdg==
+X-Google-Smtp-Source: AGHT+IHSNDYPWmFDFVRtVvMTIMyQr8m28f47j03gdwFH5kxeFcIcBmZCBlVyK9F/C7T52bS00yuH9GruzF4bQv8vfMU=
+X-Received: by 2002:a19:2d5a:0:b0:4f8:6dfd:faa0 with SMTP id
+ t26-20020a192d5a000000b004f86dfdfaa0mr224163lft.2.1693349852333; Tue, 29 Aug
+ 2023 15:57:32 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 29 Aug 2023 17:57:31 -0500
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:c908:b0:268:5c5d:25cf with SMTP id
- v8-20020a17090ac90800b002685c5d25cfmr153388pjt.4.1693349845961; Tue, 29 Aug
- 2023 15:57:25 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 15:57:25 -0700
-In-Reply-To: <00000000000017ad3f06040bf394@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000c97a4060417bcaf@google.com>
-Subject: Re: [syzbot] [net] INFO: rcu detected stall in sys_close (5)
-From:   syzbot <syzbot+e46fbd5289363464bc13@syzkaller.appspotmail.com>
-To:     brauner@kernel.org, davem@davemloft.net, edumazet@google.com,
-        eric.dumazet@gmail.com, gautamramk@gmail.com, hdanton@sina.com,
-        jhs@mojatatu.com, jiri@resnulli.us, kuba@kernel.org,
-        lesliemonis@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mohitbhasi1998@gmail.com,
-        netdev@vger.kernel.org, pabeni@redhat.com, sdp.sachin@gmail.com,
-        syzkaller-bugs@googlegroups.com, tahiliani@nitk.edu.in,
-        viro@zeniv.linux.org.uk, vsaicharan1998@gmail.com,
-        xiyou.wangcong@gmail.com
+In-Reply-To: <ZO5iWlczXmX7wNn9@qmqm.qmqm.pl>
+References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl> <682e260d8cb75c34f79ff7fcc3c4bb8586140cc4.1692484240.git.mirq-linux@rere.qmqm.pl>
+ <CAD=FV=XbfBf9y1sdt9T=81cTCRcRUbVqo3oKrHvBQZC+hHQpCQ@mail.gmail.com>
+ <ZO0DDkNUZ4FwYTrz@qmqm.qmqm.pl> <CAE-0n51gcN+3Ng7+bz21eS_6JomnVDzZMuWyzZVB25paj29j4g@mail.gmail.com>
+ <ZO5iWlczXmX7wNn9@qmqm.qmqm.pl>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Tue, 29 Aug 2023 17:57:31 -0500
+Message-ID: <CAE-0n531mK2Lvt7saXySPZLbGsA1giB3at0WDadErYOhcUv6ew@mail.gmail.com>
+Subject: Re: [PATCH 6/6] regulator: core: simplify lock_two()
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,25 +74,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Quoting Micha=C5=82 Miros=C5=82aw (2023-08-29 14:25:46)
+> On Tue, Aug 29, 2023 at 03:52:19PM -0500, Stephen Boyd wrote:
+> > Quoting Micha=C5=82 Miros=C5=82aw (2023-08-28 13:26:54)
+> > > Indeed they are quite similar. I did remove a bit more code than that=
+,
+> > > though: in this case there is no early success return before the loop=
+.
+> > >
+> > > Instead of saying:
+> > >
+> > > lock A
+> > > lock B
+> > > if ok return
+> > > if that failed, loop:
+> > >   unlock A
+> > >   lock B harder
+> > >   lock A
+> > >   if ok return
+> > >   swap A <-> B
+> > >   lock B
+> > >
+> > > Now it's:
+> > >
+> > > lock A
+> > > loop forever:
+> > >   lock B
+> > >   if ok, return
+> > >   unlock A
+> > >   swap them
+> > >   lock A harder
+> > >
+> > > With the same condition 'A held' at the start of an iteration.
+> > >
+> >
+> > Removing duplicate code is great! I'm primarily concerned with
+> > readability. The terms 'A' and 'B' doesn't make it easy for me. Can you
+> > maintain the 'held' and 'contended' names for the variables?
+> >
+> > That would be
+> >
+> > 1.  lock 'held'
+> > 2.  loop forever:
+> > 3.    lock 'contended'
+> > 4.    if ok, return
+> > 5.    unlock 'held'
+> > 6.    swap them
+> > 7.    lock 'held' harder
+>
+> Doesn't this make it more confusing? The lock is 'held' only in lines
+> 2-5 and looses this trait (but not the name) on the other lines.
+> 'contended' is more problematic: the contended lock is called 'held'
+> before locking it at line 7.
+>
+> The algorithm is basically: Take the locks in sequence. If that failed,
+> swap the order and try again.
+>
+> Would a comment like the sentence above help with readability?
+>
+> Or we could wrap the final lines of the iteration in a
+> 'regulator_lock_contended()' to make it self-documenting?
+>
 
-commit ec97ecf1ebe485a17cd8395a5f35e6b80b57665a
-Author: Mohit P. Tahiliani <tahiliani@nitk.edu.in>
-Date:   Wed Jan 22 18:22:33 2020 +0000
+Squash this in?
 
-    net: sched: add Flow Queue PIE packet scheduler
+---8<---
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 9736507b62ff..39205cf00fb7 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -201,6 +201,7 @@ static int regulator_lock_two(struct regulator_dev *rde=
+v1,
+ 			      struct regulator_dev *rdev2,
+ 			      struct ww_acquire_ctx *ww_ctx)
+ {
++	struct regulator_dev *held, *contended;
+ 	int ret;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=101bb718680000
-start commit:   727dbda16b83 Merge tag 'hardening-v6.6-rc1' of git://git.k..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=121bb718680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=141bb718680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=45047a5b8c295201
-dashboard link: https://syzkaller.appspot.com/bug?extid=e46fbd5289363464bc13
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14780797a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c1fc9fa80000
+ 	ww_acquire_init(ww_ctx, &regulator_ww_class);
+@@ -208,22 +209,24 @@ static int regulator_lock_two(struct regulator_dev *r=
+dev1,
+ 	ret =3D regulator_lock_nested(rdev1, ww_ctx);
+ 	if (WARN_ON(ret))
+ 		goto exit;
++	held =3D rdev1;
++	contended =3D rdev2;
 
-Reported-by: syzbot+e46fbd5289363464bc13@syzkaller.appspotmail.com
-Fixes: ec97ecf1ebe4 ("net: sched: add Flow Queue PIE packet scheduler")
+ 	while (true) {
+-		ret =3D regulator_lock_nested(rdev2, ww_ctx);
++		ret =3D regulator_lock_nested(contended, ww_ctx);
+ 		if (!ret)
+-			return 0;
++			break;
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-		regulator_unlock(rdev1);
++		regulator_unlock(held);
+
+ 		if (WARN_ON(ret !=3D -EDEADLOCK))
+ 			break;
+
+-		swap(rdev1, rdev2);
++		ww_mutex_lock_slow(&contended->mutex, ww_ctx);
++		contended->ref_cnt++;
++		contended->mutex_owner =3D current;
+
+-		ww_mutex_lock_slow(&rdev1->mutex, ww_ctx);
+-		rdev1->ref_cnt++;
+-		rdev1->mutex_owner =3D current;
++		swap(held, contended);
+ 	}
+
+ exit:
