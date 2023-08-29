@@ -2,361 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7C578CDBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5A278CDC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239976AbjH2Unx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
+        id S240531AbjH2Up2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234272AbjH2UnU (ORCPT
+        with ESMTP id S240188AbjH2UpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:43:20 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65921BE
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:43:16 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TJVQ2v030011;
-        Tue, 29 Aug 2023 20:43:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=MaQsiNdOvymXFR2WoY1SLKICVk6JLya1RdGbuftlJgM=;
- b=CopjFO3Bhhzt20Kp/xkyRgUwXe0nyAMbTtkJS7wMkRQU+Cp28u4OHvdwXhboXhjVbEQs
- 6orShZHHjEDRm5qefl8k5hIutMibbYMf2T2E5oZwcqs9iSFANeOI5cZb5hR3S1N4EC4W
- SzoQU+K6qtoFglzJyleXV8TneKDsdtM6w/dAUprvz+prAg/ZPmQSHNpEuVbZMPk2mt4A
- aSv3sakT+P1teLzk42cmzkaogcp3/3EsIBp9a+EHz7U92/5KIkp0eD57ngxtMh4O9068
- tuASwloHRCdIh/mH+kTEAc4phMHZ3ugUKFETS9BGkP1E5pKNscScfm6cW7uDSJjWzZ2O MQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssmcv8gb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 20:43:06 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37TKh5hi018689
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Aug 2023 20:43:05 GMT
-Received: from [10.71.110.104] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
- 2023 13:43:04 -0700
-Message-ID: <5ab2464e-a986-0f10-48c9-a32f653806e2@quicinc.com>
-Date:   Tue, 29 Aug 2023 13:43:03 -0700
+        Tue, 29 Aug 2023 16:45:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FD21BB;
+        Tue, 29 Aug 2023 13:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=qqpCUFR3P/c8X+gNxuXmGaV/FqFgRToVQytMVMpzzZU=; b=Dve5+6o8hMnkJ5nWqXTD/1k5Ig
+        c+eL+0Tiv6N9rCEFJgeCjKJ4omPyPHn9fnqB3Jf8MqMaOyZqL+1UBHqlsS5YXH7+VQoXGOrthij6U
+        wXE8kb0bhwdeKsa8zyMuKPbVXAZmTXwfMMt3f1XiBd7bIzJsMtP+il1X36DMva9FrwpSsxX2Bbm+7
+        EuvcibeFMzWbVd3TNrqT4ZRzkQJ0Q9NQiatktpBmVWsXjDxGZFkVQEKbevr1IsN647m6SvvMo+viz
+        Yvy04a63uv+YPdHNtPwsUdAKlVbW2MWxd4cief6pa6kf+sxylyo5091Al/BfKdZkegt5uFBdYqewR
+        nJDOB6Og==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qb5a3-00CF5F-1u;
+        Tue, 29 Aug 2023 20:44:55 +0000
+Date:   Tue, 29 Aug 2023 13:44:55 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Joel Granados <joel.granados@gmail.com>,
+        linux-fsdevel@vger.kernel.org, rds-devel@oss.oracle.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>, willy@infradead.org,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        Simon Horman <horms@verge.net.au>,
+        Tony Lu <tonylu@linux.alibaba.com>, linux-wpan@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        mptcp@lists.linux.dev, Heiko Carstens <hca@linux.ibm.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Will Deacon <will@kernel.org>, Julian Anastasov <ja@ssi.bg>,
+        netfilter-devel@vger.kernel.org, Joerg Reuter <jreuter@yaina.de>,
+        linux-kernel@vger.kernel.org,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-sctp@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-hams@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        coreteam@netfilter.org, Ralf Baechle <ralf@linux-mips.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        keescook@chromium.org, Roopa Prabhu <roopa@nvidia.com>,
+        David Ahern <dsahern@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>, josh@joshtriplett.org,
+        Alexander Aring <alex.aring@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        netdev@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-s390@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Eric Dumazet <edumazet@google.com>, lvs-devel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        bridge@lists.linux-foundation.org,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Mat Martineau <martineau@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Granados <j.granados@samsung.com>, mcgrof@kernel.org
+Subject: [GIT PULL] sysctl changes for v6.6-rc1
+Message-ID: <ZO5Yx5JFogGi/cBo@bombadil.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
- VTDR6130
-Content-Language: en-US
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        <neil.armstrong@linaro.org>
-CC:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        <dri-devel@lists.freedesktop.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        <quic_parellan@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
- <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
- <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
- <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
- <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
- <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
- <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
- <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
- <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
- <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
- <0cb96702-b396-4223-870f-b798d32991ee@linaro.org>
- <CAPY8ntDf+sD-2mtLBxfrMKQiW5YYi6cfmCe2Sm8CYK9kO3W+nQ@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAPY8ntDf+sD-2mtLBxfrMKQiW5YYi6cfmCe2Sm8CYK9kO3W+nQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: JZ5vsnNlk9310rjgkj97-HTuENeXGNmK
-X-Proofpoint-GUID: JZ5vsnNlk9310rjgkj97-HTuENeXGNmK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_14,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 clxscore=1011
- mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308290180
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-Nice to e-meet you.
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-On 8/29/2023 7:13 AM, Dave Stevenson wrote:
-> Hi Neil
-> 
-> On Mon, 28 Aug 2023 at 09:49, <neil.armstrong@linaro.org> wrote:
->>
->> Hi Jessica,
->>
->> On 25/08/2023 20:37, Jessica Zhang wrote:
->>>
->>>
->>> On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
->>>> Hi Maxime,
->>>>
->>>> On 21/08/2023 10:17, Maxime Ripard wrote:
->>>>> Hi,
->>>>>
->>>>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org wrote:
->>>>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
->>>>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
->>>>>>>> Sending HS commands will always work on any controller, it's all
->>>>>>>> about LP commands. The Samsung panels you listed only send HS
->>>>>>>> commands so they can use prepare_prev_first and work on any
->>>>>>>> controllers.
->>>>>>>
->>>>>>> I think there is some misunderstanding there, supported by the
->>>>>>> description of the flag.
->>>>>>>
->>>>>>> If I remember correctly, some hosts (sunxi) can not send DCS
->>>>>>> commands after enabling video stream and switching to HS mode, see
->>>>>>> [1]. Thus, as you know, most of the drivers have all DSI panel setup
->>>>>>> commands in drm_panel_funcs::prepare() /
->>>>>>> drm_bridge_funcs::pre_enable() callbacks, not paying attention
->>>>>>> whether these commands are to be sent in LP or in HS mode.
->>>>>>>
->>>>>>> Previously DSI source drivers could power on the DSI link either in
->>>>>>> mode_set() or in pre_enable() callbacks, with mode_set() being the
->>>>>>> hack to make panel/bridge drivers to be able to send commands from
->>>>>>> their prepare() / pre_enable() callbacks.
->>>>>>>
->>>>>>> With the prev_first flags being introduced, we have established that
->>>>>>> DSI link should be enabled in DSI host's pre_enable() callback and
->>>>>>> switched to HS mode (be it command or video) in the enable()
->>>>>>> callback.
->>>>>>>
->>>>>>> So far so good.
->>>>>>
->>>>>> It seems coherent, I would like first to have a state of all DSI host
->>>>>> drivers and make this would actually work first before adding the
->>>>>> prev_first flag to all the required panels.
->>>>>
->>>>> This is definitely what we should do in an ideal world, but at least for
->>>>> sunxi there's no easy way for it at the moment. There's no documentation
->>>>> for it and the driver provided doesn't allow this to happen.
->>>>>
->>>>> Note that I'm not trying to discourage you or something here, I'm simply
->>>>> pointing out that this will be something that we will have to take into
->>>>> account. And it's possible that other drivers are in a similar
->>>>> situation.
->>>>>
->>>>>>> Unfortunately this change is not fully backwards-compatible. This
->>>>>>> requires that all DSI panels sending commands from prepare() should
->>>>>>> have the prepare_prev_first flag. In some sense, all such patches
->>>>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
->>>>>>> flag to drm_panel").
->>>>>>
->>>>>> This kind of migration should be done *before* any possible
->>>>>> regression, not the other way round.
->>>>>>
->>>>>> If all panels sending commands from prepare() should have the
->>>>>> prepare_prev_first flag, then it should be first, check for
->>>>>> regressions then continue.
->>>>>>
->>>>>> <snip>
->>>>>>
->>>>>>>>
->>>>>>>> I understand, but this patch doesn't qualify as a fix for
->>>>>>>> 9e15123eca79 and is too late to be merged in drm-misc-next for
->>>>>>>> v6.6, and since 9e15123eca79 actually breaks some support it
->>>>>>>> should be reverted (+ deps) since we are late in the rc cycles.
->>>>>>>
->>>>>>> If we go this way, we can never reapply these patches. There will be
->>>>>>> no guarantee that all panel drivers are completely converted. We
->>>>>>> already have a story without an observable end -
->>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
->>>>>>
->>>>>> I don't understand this point, who would block re-applying the patches ?
->>>>>>
->>>>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
->>>>>> Linux version and went smoothly because we reverted regressing patches
->>>>>> and restarted when needed, I don't understand why we can't do this
->>>>>> here aswell.
->>>>>>
->>>>>>> I'd consider that the DSI driver is correct here and it is about the
->>>>>>> panel drivers that require fixes patches. If you care about the
->>>>>>> particular Fixes tag, I have provided one several lines above.
->>>>>>
->>>>>> Unfortunately it should be done in the other way round, prepare for
->>>>>> migration, then migrate,
->>>>>>
->>>>>> I mean if it's a required migration, then it should be done and I'll
->>>>>> support it from both bridge and panel PoV.
->>>>>>
->>>>>> So, first this patch has the wrong Fixes tag, and I would like a
->>>>>> better explanation on the commit message in any case. Then I would
->>>>>> like to have an ack from some drm-misc maintainers before applying it
->>>>>> because it fixes a patch that was sent via the msm tree thus per the
->>>>>> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
->>>>>
->>>>> Sorry, it's not clear to me what you'd like our feedback on exactly?
->>>>
->>>> So let me resume the situation:
->>>>
->>>> - pre_enable_prev_first was introduced in [1]
->>>> - some panels made use of pre_enable_prev_first
->>>> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 kernels and before
->>>> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM8550 systems (and probably other Video mode panels on Qcom platforms)
->>>> - this fix was sent late, and is now too late to be merged via drm-misc-next
->>>
->>> Hi Neil and Maxime,
->>>
->>> I agree with Neil that 9e15123eca79 was the commit that introduced the issue (since it changed the MSM DSI host behavior).
->>>
->>> However, I'm not too keen on simply reverting that patch because
->>>
->>> 1) it's not wrong to have the dsi_power_on in pre_enable. Arguably, it actually makes more sense to power on DSI host in pre_enable than in modeset (since modeset is meant for setting the bridge mode), and
->>
->> I never objected that, it's the right path to go.
->>
->>>
->>> 2) I think it would be good practice to keep specific bridge chip checks out of the DSI host driver.
->>
->> We discussed about a plan with Maxime and Dmitry about that, and it would require adding
->> a proper atomic panel API to handle a "negociation" with the host controller.
->>
->>>
->>>
->>> That being said, what do you think about setting the default value of prepare_prev_first to true (possibly in panel_bridge_attach)?
->>
->> As Dmitry pointed, all panels sending LP commands in pre_enable() should have prepare_prev_first to true.
-> 
-> Any panel wishing the clock and data lanes to be in a defined LP-11
-> state before pre_enable() is called need to set prepare_prev_first to
-> true. This is not a universal requirement of all DSI peripherals for
-> which commands are sent from pre_enable - a number will happily power
-> up at LP-00.
-> It is true that no harm will occur on those devices that do support
-> non-LP-11 power up if the host is in LP-11, so a blanket setting of
-> the flag for any panel driver sending DSI commands in pre_enable
-> should be safe.
-> 
-> It is documented [1] that transfer can be called at any time,
-> regardless of the state of the host. The MSM driver isn't supporting
-> that, hence issues.
-> [2] further clarifies that it is expected to power up the host
-> controller, send the message, and power down again.
-> 
-> [1] https://github.com/torvalds/linux/blob/master/include/drm/drm_mipi_dsi.h#L84-L87
-> [2] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/drm_bridge.c#L185-L188
-> 
+are available in the Git repository at:
 
-This is very good information. Its not that MSM driver isn't supporting 
-that, there seems to be a check to fail the transfer if the host is not 
-powered on:
+  git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ tags/sysctl-6.6-rc1
 
-https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gpu/drm/msm/dsi/dsi_host.c#L1629
+for you to fetch changes up to 53f3811dfd5e39507ee3aaea1be09aabce8f9c98:
 
-That was the error we were hitting.
+  sysctl: Use ctl_table_size as stopping criteria for list macro (2023-08-15 15:26:18 -0700)
 
-This condition has been there since ages. I will need to investigate 
-what happens if we relax this condition. Will check it up.
+----------------------------------------------------------------
+sysctl-6.6-rc1
 
-That being said, the documentation seems a bit non-specific. Yes, it 
-tells us that transfer can be called even before pre_enable but its not 
-just about this API right.
+Long ago we set out to remove the kitchen sink on kernel/sysctl.c arrays and
+placings sysctls to their own sybsystem or file to help avoid merge conflicts.
+Matthew Wilcox pointed out though that if we're going to do that we might as
+well also *save* space while at it and try to remove the extra last sysctl
+entry added at the end of each array, a sentintel, instead of bloating the
+kernel by adding a new sentinel with each array moved.
 
-When we are powering on the peripheral, it usually has a sequence to follow.
+Doing that was not so trivial, and has required slowing down the moves of
+kernel/sysctl.c arrays and measuring the impact on size by each new move.
 
-So something like goto LP11 ---> send the ON commands ---> start video 
-stream etc
+The complex part of the effort to help reduce the size of each sysctl is being
+done by the patient work of el señor Don Joel Granados. A lot of this is truly
+painful code refactoring and testing and then trying to measure the savings of
+each move and removing the sentinels. Although Joel already has code which does
+most of this work, experience with sysctl moves in the past shows is we need to
+be careful due to the slew of odd build failures that are possible due to the
+amount of random Kconfig options sysctls use.
 
-The documentation is talking about a "generic" call to .transfer and 
-that it should handle it but the ON sequence of a peripheral clearly 
-follows a sequence which needs the host to be powered on first and we 
-cannot immediately turn it OFF as the documentation says as that will 
-put the lanes in LP00 or even undefined state and confuse the peripheral.
+To that end Joel's work is split by first addressing the major housekeeping
+needed to remove the sentinels, which is part of this merge request. The rest
+of the work to actually remove the sentinels will be done later in future
+kernel releases.
 
-Now the discussion is revolving more around how to handle the 
-pre_enable_prev_first in the DSI ON cases.
+At first I was only going to send his first 7 patches of his patch series,
+posted 1 month ago, but in retrospect due to the testing the changes have
+received in linux-next and the minor changes they make this goes with the
+entire set of patches Joel had planned: just sysctl house keeping. There are
+networking changes but these are part of the house keeping too.
 
->>>
->>> It seems to me that most panel drivers send DCS commands during pre_enable, so maybe it would make more sense to power on DSI host before panel enable() by default. Any panel that needs DSI host to be powered on later could then explicitly set the flag to false in their respective drivers.
->>
->> A proper migration should be done, yes, but not as a fix on top of v6.5.
-> 
-> I looked at this when adding prepare_prev_first, but as the DSI
-> control path is separate from the bridge chain there's no obvious way
-> to automatically set a bridge flag from the mipi_dsi registration.
-> 
+The preliminary math is showing this will all help reduce the overall build
+time size of the kernel and run time memory consumed by the kernel by about
+~64 bytes per array where we are able to remove each sentinel in the future.
+That also means there is no more bloating the kernel with the extra ~64 bytes
+per array moved as no new sentinels are created.
 
-Since there is documentation in the DSI spec about the peripheral 
-expecting LP11 state and we agree its no harm, would something like 
-below be incorrect?
+Most of this has been in linux-next for about a month, the last 7 patches took
+a minor refresh 2 week ago based on feedback.
 
-diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
-index 9316384b4474..2b38388d4e56 100644
---- a/drivers/gpu/drm/bridge/panel.c
-+++ b/drivers/gpu/drm/bridge/panel.c
-@@ -416,7 +416,10 @@ struct drm_bridge 
-*devm_drm_panel_bridge_add_typed(struct device *dev,
-                 return bridge;
-         }
+----------------------------------------------------------------
+Joel Granados (14):
+      sysctl: Prefer ctl_table_header in proc_sysctl
+      sysctl: Use ctl_table_header in list_for_each_table_entry
+      sysctl: Add ctl_table_size to ctl_table_header
+      sysctl: Add size argument to init_header
+      sysctl: Add a size arg to __register_sysctl_table
+      sysctl: Add size to register_sysctl
+      sysctl: Add size arg to __register_sysctl_init
+      sysctl: Add size to register_net_sysctl function
+      ax.25: Update to register_net_sysctl_sz
+      netfilter: Update to register_net_sysctl_sz
+      networking: Update to register_net_sysctl_sz
+      vrf: Update to register_net_sysctl_sz
+      sysctl: SIZE_MAX->ARRAY_SIZE in register_net_sysctl
+      sysctl: Use ctl_table_size as stopping criteria for list macro
 
--       bridge->pre_enable_prev_first = panel->prepare_prev_first;
-+       if (connector_type == DRM_MODE_CONNECTOR_DSI)
-+               bridge->pre_enable_prev_first = true;
-+       else
-+               bridge->pre_enable_prev_first = panel->prepare_prev_first;
-
-         *ptr = bridge;
-         devres_add(dev, ptr);
-
-
-
->    Dave
-> 
->> Neil
->>
->>>
->>> Thanks,
->>>
->>> Jessica Zhang
->>>
->>>
->>>>
->>>> I do not consider it's the right way to fix regression caused by [2]
->>>> I consider [2] should be reverted, panels migrated to pre_enable_prev_first when needed, tested and the [2] applied again
->>>>
->>>> I have no objection about [2] and it should be done widely over the whole DSI controllers
->>>> and DSI Video panels.
->>>>
->>>> I also object about the Fixes tag of this patch, which is wrong, and Dmitry considers [1]
->>>> should be used but it's even more wrong since [2] really caused the regression.
->>>>
->>>> And if [2] was to correct one to use, it was pushed via the MSM tree so it couldn't be
->>>> applied via drm-misc-next-fixes, right ?
->>>>
->>>> [1] 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alter bridge init order")
->>>> [2] 9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI hosts at modeset")
->>>>
->>>> Thanks,
->>>> Neil
->>>>
->>>>>
->>>>> Maxime
->>>>
->>
+ arch/arm64/kernel/armv8_deprecated.c    |  2 +-
+ arch/s390/appldata/appldata_base.c      |  2 +-
+ drivers/net/vrf.c                       |  3 +-
+ fs/proc/proc_sysctl.c                   | 90 +++++++++++++++++----------------
+ include/linux/sysctl.h                  | 31 +++++++++---
+ include/net/ipv6.h                      |  2 +
+ include/net/net_namespace.h             | 10 ++--
+ ipc/ipc_sysctl.c                        |  4 +-
+ ipc/mq_sysctl.c                         |  4 +-
+ kernel/ucount.c                         |  5 +-
+ net/ax25/sysctl_net_ax25.c              |  3 +-
+ net/bridge/br_netfilter_hooks.c         |  3 +-
+ net/core/neighbour.c                    |  8 ++-
+ net/core/sysctl_net_core.c              |  3 +-
+ net/ieee802154/6lowpan/reassembly.c     |  8 ++-
+ net/ipv4/devinet.c                      |  3 +-
+ net/ipv4/ip_fragment.c                  |  3 +-
+ net/ipv4/route.c                        |  8 ++-
+ net/ipv4/sysctl_net_ipv4.c              |  3 +-
+ net/ipv4/xfrm4_policy.c                 |  3 +-
+ net/ipv6/addrconf.c                     |  3 +-
+ net/ipv6/icmp.c                         |  5 ++
+ net/ipv6/netfilter/nf_conntrack_reasm.c |  3 +-
+ net/ipv6/reassembly.c                   |  3 +-
+ net/ipv6/route.c                        |  9 ++++
+ net/ipv6/sysctl_net_ipv6.c              | 16 ++++--
+ net/ipv6/xfrm6_policy.c                 |  3 +-
+ net/mpls/af_mpls.c                      |  6 ++-
+ net/mptcp/ctrl.c                        |  3 +-
+ net/netfilter/ipvs/ip_vs_ctl.c          |  8 ++-
+ net/netfilter/ipvs/ip_vs_lblc.c         | 10 ++--
+ net/netfilter/ipvs/ip_vs_lblcr.c        | 10 ++--
+ net/netfilter/nf_conntrack_standalone.c |  4 +-
+ net/netfilter/nf_log.c                  |  7 +--
+ net/rds/tcp.c                           |  3 +-
+ net/sctp/sysctl.c                       |  4 +-
+ net/smc/smc_sysctl.c                    |  3 +-
+ net/sysctl_net.c                        | 26 +++++++---
+ net/unix/sysctl_net_unix.c              |  3 +-
+ net/xfrm/xfrm_sysctl.c                  |  8 ++-
+ 40 files changed, 222 insertions(+), 113 deletions(-)
