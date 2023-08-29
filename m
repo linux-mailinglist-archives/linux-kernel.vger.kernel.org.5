@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C771178C993
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A44678C994
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 18:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237439AbjH2QXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 12:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
+        id S237446AbjH2QXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 12:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbjH2QWj (ORCPT
+        with ESMTP id S236699AbjH2QWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 12:22:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10F8A6;
-        Tue, 29 Aug 2023 09:22:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 29 Aug 2023 12:22:52 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280661A6;
+        Tue, 29 Aug 2023 09:22:50 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [39.34.186.40])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B0F062788;
-        Tue, 29 Aug 2023 16:22:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FBB8C433C8;
-        Tue, 29 Aug 2023 16:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693326155;
-        bh=7bXUJT2kfyzw7wkUfS8lZ78Kd1ZXxCKkRkhvrc8fDl4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EoinLj3oznsPcWf/YylB/LBHyZqdAoZ4eE9Whhs473rhkonSq6wITSiEd3KzWEtsz
-         rzKR14aZk8FUR+QjplaXqxwNEDNNCldABMMjq4IlS6Yhh/pcMlmdMS9lE+f7dhltw7
-         9b+s7IGxT5FK8nt9MNY1feYGaQlE/SNRujNSvQW5wyheGO7OJU+0WgJJNQ/8AxDwAQ
-         CtXGWSiVO3bX2opi6t0VHEmzD76ewDF6ZdqHHsuWLQo0znfWvFipG7xPJ1myR1MVWy
-         qxZON2t4o8cTagDm7ybXJW0zZwocJuA73fxOAP3k4u+1uXYEj4SswnirsfmkafbYy0
-         OdxBA6RNHo8uQ==
-Received: (nullmailer pid 2288009 invoked by uid 1000);
-        Tue, 29 Aug 2023 16:22:33 -0000
-Date:   Tue, 29 Aug 2023 11:22:33 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Om Prakash Singh <quic_omprsing@quicinc.com>
-Subject: Re: [PATCH v3 4/6] dt-bindings: crypto: qcom,prng: document SM8550
-Message-ID: <20230829162233.GA2283052-robh@kernel.org>
-References: <20230828-topic-sm8550-rng-v3-0-7a0678ca7988@linaro.org>
- <20230828-topic-sm8550-rng-v3-4-7a0678ca7988@linaro.org>
- <20230828213610.GA386486-robh@kernel.org>
- <c741c4be-50b4-0bd8-79eb-37895342f5af@linaro.org>
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 139646607236;
+        Tue, 29 Aug 2023 17:22:43 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693326168;
+        bh=Xq5jz8HdbMocWJzAMFiYi0flLRLw9RkQ3+TdhDp1Xw8=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=HElLb0ShqTSds9x9QyH3BVnv+nr4AQ4MOkSwM6NSfBWfdjpzHFOfKzkJ8uP/Bolqp
+         ARo7CWT0BYhlVSN3usf9qHWiWDmMj2DceMvMJp8MmJwe3CDXiK1nP8QMIWdD0Y6NMf
+         Gz+umklaNPL4c3TRkb//MlKr0iVKHM4CLocNndnWceAF3uUnc1NxMabmN2nU14LOyR
+         QCD/cCfFQbHfEX9NJyNx9e4Kq3V6zpWdnZpKJYrihnF+7UYrIQ+2tPq3mLd4/WHbNA
+         bEtbqM72dzMi7j5XgEUDE0CJlc9QRSGJiYS4kPIB3JZmKbQWvxTK/i7+MgWvyPROfd
+         Vu63Kk42IIUDQ==
+Message-ID: <ef489936-9413-4a01-a3f0-eebadfb64ff9@collabora.com>
+Date:   Tue, 29 Aug 2023 21:22:39 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c741c4be-50b4-0bd8-79eb-37895342f5af@linaro.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        syzbot <syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        jacob.e.keller@intel.com, jiri@nvidia.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        fishgylk@gmail.com, bagasdotme@gmail.com
+Subject: Re: [syzbot] [net?] WARNING in inet_sock_destruct (4)
+Content-Language: en-US
+To:     Eric Dumazet <edumazet@google.com>
+References: <00000000000010353a05fecceea0@google.com>
+ <6144228a-799f-4de3-8483-b7add903df0c@collabora.com>
+ <CANn89iJiBp9t69Y3htwGGb=pTWhjFQPxKPD1E6uSFks5NrgctA@mail.gmail.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CANn89iJiBp9t69Y3htwGGb=pTWhjFQPxKPD1E6uSFks5NrgctA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,21 +62,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 08:38:48AM +0200, Krzysztof Kozlowski wrote:
-> On 28/08/2023 23:36, Rob Herring wrote:
-> > On Mon, Aug 28, 2023 at 10:04:39AM +0200, Neil Armstrong wrote:
-> >> Document SM8550 compatible for the True Random Number Generator.
-> >>
-> >> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> >> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> > 
-> > Where's Krzysztof's tag?
-> > 
+Hi Eric,
+
+On 8/29/23 8:19 PM, Eric Dumazet wrote:
+> On Tue, Aug 29, 2023 at 2:44 PM Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+>>
+>> On 6/23/23 7:36 PM, syzbot wrote:
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit: 45a3e24f65e9 Linux 6.4-rc7
+>>> git tree: upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=160cc82f280000
+>>> kernel config: https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=de6565462ab540f50e47
+>>> compiler: gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=160aacb7280000
+>>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=17c115d3280000
+>>>
+>>> Downloadable assets:
+>>> disk image: https://storage.googleapis.com/syzbot-assets/c09bcd4ec365/disk-45a3e24f.raw.xz
+>>> vmlinux: https://storage.googleapis.com/syzbot-assets/03549b639718/vmlinux-45a3e24f.xz
+>>> kernel image: https://storage.googleapis.com/syzbot-assets/91f203e5f63e/bzImage-45a3e24f.xz
+>>>
+>>> The issue was bisected to:
+>>>
+>>> commit 565b4824c39fa335cba2028a09d7beb7112f3c9a
+>>> Author: Jiri Pirko <jiri@nvidia.com>
+>>> Date: Mon Feb 6 09:41:51 2023 +0000
+>>>
+>>> devlink: change port event netdev notifier from per-net to global
+>>>
+>>> bisection log: https://syzkaller.appspot.com/x/bisect.txt?x=110a1a5b280000
+>>> final oops: https://syzkaller.appspot.com/x/report.txt?x=130a1a5b280000
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=150a1a5b280000
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>> Reported-by: syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com
+>>> Fixes: 565b4824c39f ("devlink: change port event netdev notifier from per-net to global")
+>>>
+>>> ------------[ cut here ]------------
+>>> WARNING: CPU: 0 PID: 5025 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x6df/0x8a0 net/ipv4/af_inet.c:154
+>> This same warning has been spotted and reported:
+>> https://bugzilla.kernel.org/show_bug.cgi?id=217555
+>>
+>> Syzbot has found the same warning on 4.14, 5.15, 6.1, 6.5-rc and latest
+>> mainline (1c59d383390f9) kernels. The provided reproducers (such as
+>> https://syzkaller.appspot.com/text?tag=ReproC&x=15a10e8aa80000) are
+>> reproducing the same warnings on multicore (at least 2 CPUs) qemu instance.
 > 
-> The patch evolved and Neil mentioned in cover letter changelog that he
-> did not collect Reviews because of that. Seems ok for me.
+> Can you test the following fix ?
+Just tested the fix on 1c59d383390f9, it didn't fix the warning.
 
-I did go look there and just saw 'Added review tags'. Not too helpful.  
-That's why changelogs for a patch belong in the patch.
+Please let me know if you need help in testing more.
 
-Rob
+> Thanks.
+> 
+> diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
+> index 25816e790527dbd6ff55ffb94762b5974e8144aa..1085357b30c9a0d4bf7a578cebf3eeddec953632
+> 100644
+> --- a/net/dccp/ipv6.c
+> +++ b/net/dccp/ipv6.c
+> @@ -377,8 +377,13 @@ static int dccp_v6_conn_request(struct sock *sk,
+> struct sk_buff *skb)
+>         if (ipv6_opt_accepted(sk, skb, IP6CB(skb)) ||
+>             np->rxopt.bits.rxinfo || np->rxopt.bits.rxoinfo ||
+>             np->rxopt.bits.rxhlim || np->rxopt.bits.rxohlim) {
+> +               /* Only initialize ireq->pktops once.
+> +                * We must take a refcount on skb because ireq->pktops
+> +                * could be consumed immediately.
+> +                */
+>                 refcount_inc(&skb->users);
+> -               ireq->pktopts = skb;
+> +               if (cmpxchg(&ireq->pktopts, NULL, skb))
+> +                       refcount_dec(&skb->users);
+>         }
+>         ireq->ir_iif = READ_ONCE(sk->sk_bound_dev_if);
+> 
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index 6e86721e1cdbb8d47b754a2675f6ab1643c7342c..d45aa267473c4ab817cfda06966a536718b50a53
+> 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -798,8 +798,13 @@ static void tcp_v6_init_req(struct request_sock *req,
+>              np->rxopt.bits.rxinfo ||
+>              np->rxopt.bits.rxoinfo || np->rxopt.bits.rxhlim ||
+>              np->rxopt.bits.rxohlim || np->repflow)) {
+> +               /* Only initialize ireq->pktops once.
+> +                * We must take a refcount on skb because ireq->pktops
+> +                * could be consumed immediately.
+> +                */
+>                 refcount_inc(&skb->users);
+> -               ireq->pktopts = skb;
+> +               if (cmpxchg(&ireq->pktopts, NULL, skb))
+> +                       refcount_dec(&skb->users);
+>         }
+>  }
+
+-- 
+BR,
+Muhammad Usama Anjum
