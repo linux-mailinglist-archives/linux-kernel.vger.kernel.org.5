@@ -2,193 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EF978C0D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D1F78C0D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbjH2IxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
+        id S234300AbjH2IyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234272AbjH2Iww (ORCPT
+        with ESMTP id S234354AbjH2Ixy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:52:52 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AE7B3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:52:49 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso34721865e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693299168; x=1693903968;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fNhXpl+qbWZP0Q/ZEwXC9Lk1VYQguD8bp7eaIBk3ZWM=;
-        b=dDJMKxGIA6s+Y487kJARRUpof0SSlz/vdN7ed+ET/Jx6zp/2/UTfc1LonRYICRjQX3
-         SMDN+DdrFwIGebl192zLBo8+5V8kzo4q/SohxA3H82karB8MRaIQIrUkQCKL/9lZGy6O
-         Frr95BA/2R2EALQxag2h1fXfc56hT/QhkEqiualEQY361agAFByqm/leHF+gDIbj6ihR
-         WFjyPnb/urYUutL/PJ4AfxzJQ1jQdHo3WKgB1E0h7TzBUyhZlGcQnAYMJ5oQLnFPxhbQ
-         mOxKJzbxV7P3SlxrtwgOFOe/tVCIgzjjV9GEiWRD3rXm6lqghAPL80OkGP4fM5hHacAP
-         HuZA==
+        Tue, 29 Aug 2023 04:53:54 -0400
+Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7FA184
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:53:50 -0700 (PDT)
+Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-26f3fce5b45so4851788a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:53:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693299168; x=1693903968;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fNhXpl+qbWZP0Q/ZEwXC9Lk1VYQguD8bp7eaIBk3ZWM=;
-        b=i/dF3qhBJGNwYlrK1pk0aZTc8NwPKMKg0ZYn9bm8A7iWeJudjEJ7hq/JM+nsLfbEhj
-         +da0KgWtX7mo+jTo0xmqkAee1E+sEfdZZeH531NSDZGh9EonnvSoEqTjmMohm0w9SHDC
-         Qjl5Ex3mds1+erINw260fkjGvyjtuKymjZxJOodg0DjLivet37yMaMMRFBHU7saseobK
-         5ZPNw7FZGbNkoguowQYBBndw7nTbTlS52A9LwvG6DU3qqMYkQgBw5khyrF77pERiw9A5
-         SC42/W/bIJjhuFpwhYRMOZ5vdybbgbShcPhlv8Xs+R/vFAtLM0JxoGhq49DwVl/ODLSQ
-         Dwhw==
-X-Gm-Message-State: AOJu0YyX+qmmq63D9aahEyUwNGT1nIra+VvBQAqbgOKIryKbq1oZhAUU
-        LvvY3jtXJi0uY3/f0cNi5d4eWw==
-X-Google-Smtp-Source: AGHT+IF8d+MI1gy+ust6Fw4OQMB7Sy46mkGSP+ZU3ErjIMBdGVrq9/9jbuUh1jY8Ww7o8v9H+nW8XA==
-X-Received: by 2002:a1c:7508:0:b0:3fe:dc99:56ea with SMTP id o8-20020a1c7508000000b003fedc9956eamr21241041wmc.19.1693299167575;
-        Tue, 29 Aug 2023 01:52:47 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:c8fd:3f8e:51f:e4f9? ([2a01:e0a:982:cbb0:c8fd:3f8e:51f:e4f9])
-        by smtp.gmail.com with ESMTPSA id c12-20020a05600c0acc00b003fee6f027c7sm16312441wmr.19.2023.08.29.01.52.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 01:52:47 -0700 (PDT)
-Message-ID: <4fa3380a-6751-475f-9ac8-4fda78508766@linaro.org>
-Date:   Tue, 29 Aug 2023 10:52:45 +0200
+        d=1e100.net; s=20221208; t=1693299230; x=1693904030;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BhSeRXJePYYhEsJ9/kfejl+Uu0PrN4lHkUjvDw/XFFU=;
+        b=IqjXjjV5IWqKJFpSnd+8EJSHkADw6PmFsS3/aNScOhhpZv3j+TduG9EnNiQAKPGH0S
+         XNLXp0G/8ZXGQE7etWwRu7NvTW0vGo6mE9CboCck4tax2oz5aWjJF5YlVucP44QObMGB
+         IFmS5HJglue/Dhut68PDuPWEzMXjYOoxCyNVX4qom/G1Lz7SntXuCPt0lLFM57aPGoPP
+         5mPfNUXZhhUzwbS8x/WcJacq40BUSxvpXSvZMx3nnJZArMA2fTxLvGXeicVINkcvOSnD
+         YEV54Mo0oB96+Ip6IPVhyVHFW1zlgp5R1vwE5NVEPmRFNAWHPjx75I62VHD5Y2TBA2WM
+         kYiQ==
+X-Gm-Message-State: AOJu0YxwGn/HDYLjhsOOWs3JXPO6BkA1QIIo29/B3cKFQh+PVRktICAV
+        YcNNf7y7M/zY+A+pWVCGi7pii2f1JWGxYsOOkNiYOSTBMrbr
+X-Google-Smtp-Source: AGHT+IEpIpdn0MhRVZhuhUcK7IfpwHLFFgAQTv6xAYnprL1z1FG1Ig5Dr0EVqxk4xvVpwJr6U3Zpw6AFBeEURRUhi/eWMkzWJJyl
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/4] clk: qcom: rpmh: Add RPMH clocks support for SM4450
-To:     Ajit Pandey <quic_ajipan@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230824173410.550126-1-quic_ajipan@quicinc.com>
- <20230824173410.550126-3-quic_ajipan@quicinc.com>
- <71d1d748-133a-470b-986c-ece79f743aa4@linaro.org>
- <8d53a098-bf0d-1b40-45c0-264a42d6e72d@quicinc.com>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <8d53a098-bf0d-1b40-45c0-264a42d6e72d@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:c7c9:b0:26d:2079:1376 with SMTP id
+ gf9-20020a17090ac7c900b0026d20791376mr6484622pjb.1.1693299229828; Tue, 29 Aug
+ 2023 01:53:49 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 01:53:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017ad3f06040bf394@google.com>
+Subject: [syzbot] [fs?] INFO: rcu detected stall in sys_close (5)
+From:   syzbot <syzbot+e46fbd5289363464bc13@syzkaller.appspotmail.com>
+To:     brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 07:51, Ajit Pandey wrote:
-> 
-> 
-> On 8/25/2023 7:31 PM, Neil Armstrong wrote:
->> Hi,
->>
->> On 24/08/2023 19:34, Ajit Pandey wrote:
->>> Add support for RPMH clocks for SM4450 platform.
->>>
->>> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
->>> ---
->>>   drivers/clk/qcom/clk-rpmh.c | 21 +++++++++++++++++++++
->>>   1 file changed, 21 insertions(+)
->>>
->>> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
->>> index 4c5b552b47b6..5d853fd43294 100644
->>> --- a/drivers/clk/qcom/clk-rpmh.c
->>> +++ b/drivers/clk/qcom/clk-rpmh.c
->>> @@ -350,6 +350,7 @@ DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _a2, "lnbclka3", 2);
->>>   DEFINE_CLK_RPMH_VRM(ln_bb_clk1, _a4, "lnbclka1", 4);
->>>   DEFINE_CLK_RPMH_VRM(ln_bb_clk2, _a4, "lnbclka2", 4);
->>> +DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _a4, "lnbclka3", 4);
->>>   DEFINE_CLK_RPMH_VRM(ln_bb_clk2, _g4, "lnbclkg2", 4);
->>>   DEFINE_CLK_RPMH_VRM(ln_bb_clk3, _g4, "lnbclkg3", 4);
->>> @@ -717,6 +718,25 @@ static const struct clk_rpmh_desc clk_rpmh_sdx75 = {
->>>       .num_clks = ARRAY_SIZE(sdx75_rpmh_clocks),
->>>   };
->>> +static struct clk_hw *sm4450_rpmh_clocks[] = {
->>> +    [RPMH_CXO_CLK]        = &clk_rpmh_bi_tcxo_div4.hw,
->>> +    [RPMH_CXO_CLK_A]    = &clk_rpmh_bi_tcxo_div4_ao.hw,
->>
->> Are you sure about div4 here ?
->>
->> Kailua uses div2 because the CXO input gets used divided by 2
->> by PHYs and divided by 4 for GCC/DISPCC/...
->>
->> This is why we introduced a div2 clock in DT used to feed GCC/DISPCC/...
->>
->> Neil
-> 
-> Yes div4 is the correct divider only for sm4450 as CXO input get directly divided by 4 only. This is someting similiar to sm8450 and there is no in between div2 divider like Kailua.
+Hello,
 
-Ack, thx for checking !
+syzbot found the following issue on:
 
-Neil
+HEAD commit:    727dbda16b83 Merge tag 'hardening-v6.6-rc1' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=158c0cdba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=45047a5b8c295201
+dashboard link: https://syzkaller.appspot.com/bug?extid=e46fbd5289363464bc13
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14780797a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c1fc9fa80000
 
-> 
->>
->>> +    [RPMH_LN_BB_CLK2]    = &clk_rpmh_ln_bb_clk2_a4.hw,
->>> +    [RPMH_LN_BB_CLK2_A]    = &clk_rpmh_ln_bb_clk2_a4_ao.hw,
->>> +    [RPMH_LN_BB_CLK3]       = &clk_rpmh_ln_bb_clk3_a4.hw,
->>> +    [RPMH_LN_BB_CLK3_A]     = &clk_rpmh_ln_bb_clk3_a4_ao.hw,
->>> +    [RPMH_RF_CLK1]        = &clk_rpmh_rf_clk1_a.hw,
->>> +    [RPMH_RF_CLK1_A]    = &clk_rpmh_rf_clk1_a_ao.hw,
->>> +    [RPMH_RF_CLK5]        = &clk_rpmh_rf_clk5_a.hw,
->>> +    [RPMH_RF_CLK5_A]    = &clk_rpmh_rf_clk5_a_ao.hw,
->>> +    [RPMH_IPA_CLK]        = &clk_rpmh_ipa.hw,
->>> +};
->>> +
->>> +static const struct clk_rpmh_desc clk_rpmh_sm4450 = {
->>> +    .clks = sm4450_rpmh_clocks,
->>> +    .num_clks = ARRAY_SIZE(sm4450_rpmh_clocks),
->>> +};
->>> +
->>>   static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
->>>                        void *data)
->>>   {
->>> @@ -810,6 +830,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
->>>       { .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
->>>       { .compatible = "qcom,sdx65-rpmh-clk",  .data = &clk_rpmh_sdx65},
->>>       { .compatible = "qcom,sdx75-rpmh-clk",  .data = &clk_rpmh_sdx75},
->>> +    { .compatible = "qcom,sm4450-rpmh-clk", .data = &clk_rpmh_sm4450},
->>>       { .compatible = "qcom,sm6350-rpmh-clk", .data = &clk_rpmh_sm6350},
->>>       { .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
->>>       { .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
->>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3b19428c542a/disk-727dbda1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/45ed4d6b4633/vmlinux-727dbda1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4c3abf020089/bzImage-727dbda1.xz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e46fbd5289363464bc13@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 0-.... } 2663 jiffies s: 873 root: 0x1/.
+rcu: blocking rcu_node structures (internal RCU debug):
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 5177 Comm: syz-executor273 Not tainted 6.5.0-syzkaller-00453-g727dbda16b83 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:check_kcov_mode kernel/kcov.c:173 [inline]
+RIP: 0010:write_comp_data+0x21/0x90 kernel/kcov.c:236
+Code: 2e 0f 1f 84 00 00 00 00 00 65 8b 05 01 b2 7d 7e 49 89 f1 89 c6 49 89 d2 81 e6 00 01 00 00 49 89 f8 65 48 8b 14 25 80 b9 03 00 <a9> 00 01 ff 00 74 0e 85 f6 74 59 8b 82 04 16 00 00 85 c0 74 4f 8b
+RSP: 0018:ffffc90000007bb8 EFLAGS: 00000206
+RAX: 0000000000000101 RBX: ffffc9000dc0d140 RCX: ffffffff885893b0
+RDX: ffff88807c075940 RSI: 0000000000000100 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000dc0d178
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000555555d54380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6b442f6130 CR3: 000000006fe1c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <IRQ>
+ pie_calculate_probability+0x480/0x850 net/sched/sch_pie.c:415
+ fq_pie_timer+0x1da/0x4f0 net/sched/sch_fq_pie.c:387
+ call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
+ expire_timers kernel/time/timer.c:1751 [inline]
+ __run_timers+0x764/0xb10 kernel/time/timer.c:2022
+ run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
+ __do_softirq+0x218/0x965 kernel/softirq.c:553
+ invoke_softirq kernel/softirq.c:427 [inline]
+ __irq_exit_rcu kernel/softirq.c:632 [inline]
+ irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+RIP: 0010:__x64_sys_close+0x0/0xf0 fs/open.c:1557
+Code: 1a 48 83 ec 80 5b 5d 41 5c c3 e8 eb bb f1 ff e9 73 ff ff ff e8 e1 bb f1 ff eb 8b e8 2a 06 4a 08 66 2e 0f 1f 84 00 00 00 00 00 <f3> 0f 1e fa 55 53 48 89 fb e8 c2 81 9d ff 48 8d 7b 70 48 b8 00 00
+RSP: 0018:ffffc9000459ff38 EFLAGS: 00000206
+RAX: 0000000000000003 RBX: ffffc9000459ff58 RCX: 1ffffffff1d56e59
+RDX: ffffffffffffffff RSI: 0000000000000000 RDI: ffffc9000459ff58
+RBP: ffffc9000459ff48 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8eaba457 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f6b4427b290
+Code: ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 80 3d f1 8d 07 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
+RSP: 002b:00007ffd4ca6aa18 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000006 RCX: 00007f6b4427b290
+RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000005
+RBP: 00000000000f4240 R08: 0000000055d55610 R09: 0000000055d55610
+R10: 0000000000000000 R11: 0000000000000202 R12: 00000000000220c3
+R13: 00007ffd4ca6aa24 R14: 00007ffd4ca6aa40 R15: 00007ffd4ca6aa30
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.831 msecs
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
