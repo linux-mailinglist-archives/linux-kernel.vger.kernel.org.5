@@ -2,263 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E96E178C4F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F3E78C4F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235886AbjH2NOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        id S235906AbjH2NPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235908AbjH2NOY (ORCPT
+        with ESMTP id S235982AbjH2NPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:14:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DD3BE;
-        Tue, 29 Aug 2023 06:14:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 91EBB63682;
-        Tue, 29 Aug 2023 13:14:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDAD2C433C7;
-        Tue, 29 Aug 2023 13:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693314860;
-        bh=8JuxMsJ3U5i7GuhCyC/QrZ1hPppSeHOK4ObwLj5mz6U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lentXxNxN5mmx8xZXG4cqwYpiTX3+qDYYnae4LjeLx+BBa8wA5N76Luk9yp6kd9rP
-         ruI6+iJ/vi0HLejPHe2OYGjJHVBhCFhXU0cfiOTG9wfHeDdL6qN4iARQZ+JNyeHNEr
-         kY4LrDw5nNWBInCX0FXCqXabAJ3oAola09T2p1xBNiX4JHBpj5ZlT63hgCA0ux+uwB
-         pGy8Y+8ID8SUfvWliIrGsSWTx8MB+Y4nznK5pRhZf4ISMTCtmzza/hpOe+s5N9ZE2X
-         3JFGBdUCYmoQek/Mjz192YwJ8av5909vhOpma6HVPzkGy/ZbILlC1NsHKExg91RYly
-         +JmBLQ6vcWWJA==
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3a8506f5b73so3090116b6e.0;
-        Tue, 29 Aug 2023 06:14:19 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwpL1uavq0/LmYl+v9ab18B6dOp4weTyxLa9MMqP4t9puQd991t
-        +ijg+FMhu2CaOEESF0xyIR8IdCzBfbtea+O7qho=
-X-Google-Smtp-Source: AGHT+IEHY+TUkRwN9caizuIvWFd/8ucahftpstde9afS5W4HOCHDxNhbIuQHyoQfTwnRvwdAmcDwVo72D/R/sV73t+Y=
-X-Received: by 2002:a05:6808:218c:b0:3a1:d656:21c with SMTP id
- be12-20020a056808218c00b003a1d656021cmr17611136oib.21.1693314859223; Tue, 29
- Aug 2023 06:14:19 -0700 (PDT)
+        Tue, 29 Aug 2023 09:15:50 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF45090;
+        Tue, 29 Aug 2023 06:15:47 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 845D33200960;
+        Tue, 29 Aug 2023 09:15:46 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 29 Aug 2023 09:15:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1693314946; x=
+        1693401346; bh=7eE8kIWPw+PT41ZWWcbQ49teQsvDbEroy4Q2kUgeN18=; b=I
+        Z0xBNJEDmRbsEkQ9dv8XIeJltm8/mdy8QoY9/iEx9VzlhJfkPd+AFqUaJWOz7Zgx
+        BSQG9ounuyZO6ol+nHU2GZXmtagwBUDM9RarmkuESDKUV8A8Z4RWTT1VY2pSWnix
+        F4Lu9qRCL6w52xJ/lJWnnbFoHaJmeu/+fV+8IMDLNlkTRXvzDw0d6ZspPR+Kpu83
+        ALHoyf3EjgSWvxlMVH0Ro2AB9asksDEiNkgHM4+jHYXBHwdO/4aNasRqP/lll4l7
+        TsRD5shR0H14xGvs1iVi6nBe4lVC3kl9iWCPfMotl9eXS6MvROa4dzdCtwrwXvc1
+        BYPR3W9d0dp4boU+LBhVQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1693314946; x=
+        1693401346; bh=7eE8kIWPw+PT41ZWWcbQ49teQsvDbEroy4Q2kUgeN18=; b=J
+        5z0iZs/dh94MrYFPI8B8y88qtZ8RmLGq6YtlDpvBN7MDCLdFySJgj3GKO0KVwcVX
+        b+RQxLH0cRR1+OUJG7flrI3gH5Hh1Od2bTIuHE8D2enQ//unwnX7uxL4xvvmre/L
+        CmyZ6pJKoRrMZqeoGfXNKVrWjaKgKVAsNpKRESjsgGqWRynOCAO9zWq5T9KkElv5
+        Ieiod5CAhk237gp+3i+DmX3fEZOLH5Rv1BA/GSEi6gVUP11wkVx1WCsgoZO0Kmaj
+        +Jxlmlsd1zPn6LNHY+L5mQyLvRVT7XiLAltf7Eoewn2OXubG3McCqh99w2uOxm/H
+        XG6Jw9joq6OnT1gdU9p/w==
+X-ME-Sender: <xms:ge_tZJ5fZYs18ZqhnMtIgXprOnYG9pvqKJbGizJO9FIIA9jncCNlzg>
+    <xme:ge_tZG7Gr9_m4GT1doAiroA2bdICyo_MOKGkrUvWuP3mvq1XOghTO9S7Fy0QYeUgr
+    3pi590R0YP14qRQrdU>
+X-ME-Received: <xmr:ge_tZAep5nIR59bc3IW6pkUihx7gxDdZuv2AMC1ppk5B4-krCqCNUnISuA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefiedgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgoteeftdduqddtudculdduhedmnecujfgurhephf
+    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrrhhkucfrvggrrhhs
+    ohhnuceomhhpvggrrhhsohhnqdhlvghnohhvohesshhquhgvsggsrdgtrgeqnecuggftrf
+    grthhtvghrnhepfedtvdejfeelffevhffgjeejheduteetieeguefgkefhhfegjeduueet
+    hefgvdffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epmhhpvggrrhhsohhnqdhlvghnohhvohesshhquhgvsggsrdgtrg
+X-ME-Proxy: <xmx:ge_tZCKuaVHHw6l8VQ69q1Nnz9ZwJVsUYYzjgVhFMjgQ4Dt5JATxrA>
+    <xmx:ge_tZNJ0Ddz8Fv33dob6Xa4pv_zRL5O9KwqYQOfgSALaaxUKjnkZWQ>
+    <xmx:ge_tZLwFLhdy3jTNn4_mS3tNUt706eqrWhftXuv04VrMMJys-JuboQ>
+    <xmx:gu_tZN3mUhAv_SGYa0NxNqJFWnRJcKBaYIf4XTA2lDnfZyWLlXY6yg>
+Feedback-ID: ibe194615:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 29 Aug 2023 09:15:45 -0400 (EDT)
+From:   Mark Pearson <mpearson-lenovo@squebb.ca>
+To:     mpearson-lenovo@squebb.ca
+Cc:     hdegoede@redhat.com, markgross@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: think-lmi: Add bulk save feature
+Date:   Tue, 29 Aug 2023 09:15:08 -0400
+Message-ID: <20230829131523.17369-1-mpearson-lenovo@squebb.ca>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <mpearson-lenovo@squebb.ca>
+References: <mpearson-lenovo@squebb.ca>
 MIME-Version: 1.0
-References: <20230826071359.2060501-1-senozhatsky@chromium.org>
-In-Reply-To: <20230826071359.2060501-1-senozhatsky@chromium.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 29 Aug 2023 22:13:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAROnZpZiOC4eS5kTcv4Q2YDrE9KYBD-dVcfXwBPQWvbmg@mail.gmail.com>
-Message-ID: <CAK7LNAROnZpZiOC4eS5kTcv4Q2YDrE9KYBD-dVcfXwBPQWvbmg@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: add warn-unknown-symbols sanity check
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 6:00=E2=80=AFPM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> Introduce KCONFIG_WARN_UNKNOWN_SYMBOLS environment variable,
-> which makes Kconfig warn about unknown .config symbols.
->
-> This is especially useful for continuous kernel uprevs when
-> some symbols can be either removed or renamed between kernel
-> releases (which can go unnoticed otherwise).
->
-> By default KCONFIG_WARN_UNKNOWN_SYMBOLS generates warnings,
-> which are non-terminal. There is an additional environment
-> variable KCONFIG_WERROR that overrides this behaviour and
-> turns warnings into errors.
->
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  Documentation/kbuild/kconfig.rst | 11 +++++++++++
->  scripts/kconfig/confdata.c       | 23 +++++++++++++++++++++++
->  2 files changed, 34 insertions(+)
->
-> diff --git a/Documentation/kbuild/kconfig.rst b/Documentation/kbuild/kcon=
-fig.rst
-> index 6530ecd99da3..4de1f5435b7b 100644
-> --- a/Documentation/kbuild/kconfig.rst
-> +++ b/Documentation/kbuild/kconfig.rst
-> @@ -56,6 +56,17 @@ KCONFIG_OVERWRITECONFIG
->  If you set KCONFIG_OVERWRITECONFIG in the environment, Kconfig will not
->  break symlinks when .config is a symlink to somewhere else.
->
-> +KCONFIG_WARN_UNKNOWN_SYMBOLS
-> +----------------------------
-> +This environment variable makes Kconfig warn about all unrecognized
-> +symbols in the .config file.
+On Lenovo platforms there is a limitation in the number of times an
+attribute can be saved. This is an architectural limitation and it limits
+the number of attributes that can be modified to 48.
+A solution for this is instead of the attribute being saved after every
+modification allow a user to bulk set the attributes and then trigger a
+final save. This allows unlimited attributes.
 
+This patch introduces a save_settings attribute that can be configured to
+either single or bulk mode by the user.
+Single mode is the default but customers who want to avoid the 48
+attribute limit can enable bulk mode.
 
-This warns not only for the .config but also defconfig files.
+Displaying the save_settings attribute will display the enabled mode.
 
-Could you reword it?
+When in bulk mode writing 'save' to the save_settings attribute will
+trigger a save. Once this has been done a reboot is required before more
+attributes can be modified.
 
-For example,
+Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
+---
+ .../testing/sysfs-class-firmware-attributes   |  30 ++++
+ drivers/platform/x86/think-lmi.c              | 134 ++++++++++++++++--
+ drivers/platform/x86/think-lmi.h              |  14 ++
+ 3 files changed, 163 insertions(+), 15 deletions(-)
 
- "symbols in the config input".
-
-
-> +
-> +KCONFIG_WERROR
-> +--------------
-> +If set, Kconfig will treat `KCONFIG_WARN_UNKNOWN_SYMBOLS` warnings as
-> +errors.
-
-My hope is to turn other warnings in the config file into errors.
-
-See below.
-
-
-> +
-> +
->  `CONFIG_`
->  ---------
->  If you set `CONFIG_` in the environment, Kconfig will prefix all symbols
-> diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-> index 992575f1e976..c24f637827fe 100644
-> --- a/scripts/kconfig/confdata.c
-> +++ b/scripts/kconfig/confdata.c
-> @@ -349,7 +349,12 @@ int conf_read_simple(const char *name, int def)
->         char *p, *p2;
->         struct symbol *sym;
->         int i, def_flags;
-> +       bool found_unknown =3D false;
-> +       const char *warn_unknown;
-> +       const char *werror;
->
-> +       warn_unknown =3D getenv("KCONFIG_WARN_UNKNOWN_SYMBOLS");
-> +       werror =3D getenv("KCONFIG_WERROR");
->         if (name) {
->                 in =3D zconf_fopen(name);
->         } else {
-> @@ -437,6 +442,13 @@ int conf_read_simple(const char *name, int def)
->                         if (def =3D=3D S_DEF_USER) {
->                                 sym =3D sym_find(line + 2 + strlen(CONFIG=
-_));
->                                 if (!sym) {
-> +                                       if (warn_unknown) {
-> +                                               conf_warning("unknown sym=
-bol: %s",
-> +                                                            line + 2 + s=
-trlen(CONFIG_));
-> +                                               found_unknown =3D true;
-> +                                               continue;
-
-Please drop this 'continue' because it would skip
-conf_set_changed(true).
-
-warn_unknown should keep the same code flow
-except showing the warning message.
-
-
-
-
-> +                                       }
-> +
->                                         conf_set_changed(true);
->                                         continue;
->                                 }
-> @@ -471,6 +483,13 @@ int conf_read_simple(const char *name, int def)
->
->                         sym =3D sym_find(line + strlen(CONFIG_));
->                         if (!sym) {
-> +                               if (warn_unknown && def !=3D S_DEF_AUTO) =
-{
-> +                                       conf_warning("unknown symbol: %s"=
-,
-> +                                                    line + strlen(CONFIG=
-_));
-> +                                       found_unknown =3D true;
-> +                                       continue;
-
-Same here.
-When KCONFIG_WARN_UNKNOWN_SYMBOLS is set,
-conf_set_changed(true) will be skipped.
-
-
-
-You can do like this:
-
-
-@@ -471,7 +483,7 @@ int conf_read_simple(const char *name, int def)
-
-                        sym =3D sym_find(line + strlen(CONFIG_));
-                        if (!sym) {
--                               if (def =3D=3D S_DEF_AUTO)
-+                               if (def =3D=3D S_DEF_AUTO) {
-                                        /*
-                                         * Reading from include/config/auto=
-.conf
-                                         * If CONFIG_FOO previously existed=
- in
-@@ -479,8 +491,13 @@ int conf_read_simple(const char *name, int def)
-                                         * include/config/FOO must be touch=
-ed.
-                                         */
-                                        conf_touch_dep(line + strlen(CONFIG=
-_));
--                               else
-+                               } else {
-+                                       if (warn_unknown && def !=3D S_DEF_=
-AUTO)
-+                                               conf_warning("unknown
-symbol: %s",
-+                                                            line +
-strlen(CONFIG_));
+diff --git a/Documentation/ABI/testing/sysfs-class-firmware-attributes b/Documentation/ABI/testing/sysfs-class-firmware-attributes
+index f205d39409a3..c2f1a044475e 100644
+--- a/Documentation/ABI/testing/sysfs-class-firmware-attributes
++++ b/Documentation/ABI/testing/sysfs-class-firmware-attributes
+@@ -383,6 +383,36 @@ Description:
+ 		Note that any changes to this attribute requires a reboot
+ 		for changes to take effect.
+ 
++What:		/sys/class/firmware-attributes/*/attributes/save_settings
++Date:		August 2023
++KernelVersion:	6.5
++Contact:	Mark Pearson <mpearson-lenovo@squebb.ca>
++Description:
++		On Lenovo platforms there is a limitation in the number of times an attribute can be
++		saved. This is an architectural limitation and it limits the number of attributes
++		that can be modified to 48.
++		A solution for this is instead of the attribute being saved after every modification,
++		to allow a user to bulk set the attributes, and then trigger a final save. This allows
++		unlimited attributes.
 +
-                                        conf_set_changed(true);
-+                               }
-                                continue;
-                        }
++		Read the attribute to check what save mode is enabled (single or bulk).
++		E.g:
++		# cat /sys/class/firmware-attributes/thinklmi/attributes/save_settings
++		single
++
++		Write the attribute with 'bulk' to enable bulk save mode.
++		Write the attribute with 'single' to enable saving, after every attribute set.
++		The default setting is single mode.
++		E.g:
++		# echo bulk > /sys/class/firmware-attributes/thinklmi/attributes/save_settings
++
++		When in bulk mode write 'save' to trigger a save of all currently modified attributes.
++		Note, once a save has been triggered, in bulk mode, attributes can no longer be set and
++		will return a permissions error. This is to prevent users hitting the 48+ save limitation
++		(which requires entering the BIOS to clear the error condition)
++		E.g:
++		# echo save > /sys/class/firmware-attributes/thinklmi/attributes/save_settings
++
+ What:		/sys/class/firmware-attributes/*/attributes/debug_cmd
+ Date:		July 2021
+ KernelVersion:	5.14
+diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+index 52d1ce8dfe44..87e8f06ee7c8 100644
+--- a/drivers/platform/x86/think-lmi.c
++++ b/drivers/platform/x86/think-lmi.c
+@@ -985,6 +985,13 @@ static ssize_t current_value_store(struct kobject *kobj,
+ 	if (!tlmi_priv.can_set_bios_settings)
+ 		return -EOPNOTSUPP;
+ 
++	/*
++	 * If we are using bulk saves a reboot should be done once save has
++	 * been called
++	 */
++	if (tlmi_priv.save_mode == TLMI_SAVE_BULK && tlmi_priv.reboot_required)
++		return -EPERM;
++
+ 	new_setting = kstrdup(buf, GFP_KERNEL);
+ 	if (!new_setting)
+ 		return -ENOMEM;
+@@ -1011,10 +1018,11 @@ static ssize_t current_value_store(struct kobject *kobj,
+ 		ret = tlmi_simple_call(LENOVO_SET_BIOS_SETTING_CERT_GUID, set_str);
+ 		if (ret)
+ 			goto out;
+-		ret = tlmi_simple_call(LENOVO_SAVE_BIOS_SETTING_CERT_GUID,
+-				tlmi_priv.pwd_admin->save_signature);
+-		if (ret)
+-			goto out;
++		if (tlmi_priv.save_mode == TLMI_SAVE_BULK)
++			tlmi_priv.save_required = true;
++		else
++			ret = tlmi_simple_call(LENOVO_SAVE_BIOS_SETTING_CERT_GUID,
++					       tlmi_priv.pwd_admin->save_signature);
+ 	} else if (tlmi_priv.opcode_support) {
+ 		/*
+ 		 * If opcode support is present use that interface.
+@@ -1033,14 +1041,17 @@ static ssize_t current_value_store(struct kobject *kobj,
+ 		if (ret)
+ 			goto out;
+ 
+-		if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+-			ret = tlmi_opcode_setting("WmiOpcodePasswordAdmin",
+-						  tlmi_priv.pwd_admin->password);
+-			if (ret)
+-				goto out;
++		if (tlmi_priv.save_mode == TLMI_SAVE_BULK) {
++			tlmi_priv.save_required = true;
++		} else {
++			if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
++				ret = tlmi_opcode_setting("WmiOpcodePasswordAdmin",
++							  tlmi_priv.pwd_admin->password);
++				if (ret)
++					goto out;
++			}
++			ret = tlmi_save_bios_settings("");
+ 		}
+-
+-		ret = tlmi_save_bios_settings("");
+ 	} else { /* old non-opcode based authentication method (deprecated) */
+ 		if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+ 			auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
+@@ -1068,10 +1079,14 @@ static ssize_t current_value_store(struct kobject *kobj,
+ 		if (ret)
+ 			goto out;
+ 
+-		if (auth_str)
+-			ret = tlmi_save_bios_settings(auth_str);
+-		else
+-			ret = tlmi_save_bios_settings("");
++		if (tlmi_priv.save_mode == TLMI_SAVE_BULK) {
++			tlmi_priv.save_required = true;
++		} else {
++			if (auth_str)
++				ret = tlmi_save_bios_settings(auth_str);
++			else
++				ret = tlmi_save_bios_settings("");
++		}
+ 	}
+ 	if (!ret && !tlmi_priv.pending_changes) {
+ 		tlmi_priv.pending_changes = true;
+@@ -1152,6 +1167,89 @@ static ssize_t pending_reboot_show(struct kobject *kobj, struct kobj_attribute *
+ 
+ static struct kobj_attribute pending_reboot = __ATTR_RO(pending_reboot);
+ 
++static ssize_t save_settings_show(struct kobject *kobj, struct kobj_attribute *attr,
++				  char *buf)
++{
++	return sprintf(buf, "%s\n", tlmi_priv.save_mode == TLMI_SAVE_SINGLE ? "single" : "bulk");
++}
++
++static ssize_t save_settings_store(struct kobject *kobj, struct kobj_attribute *attr,
++				   const char *buf, size_t count)
++{
++	char *auth_str = NULL;
++	int ret;
++
++	/* Check if user is trying to change the save mode */
++	if (!strncmp(buf, "bulk", 4) || !strncmp(buf, "single", 6)) {
++		tlmi_priv.save_mode = strncmp(buf, "bulk", 4) ? TLMI_SAVE_SINGLE : TLMI_SAVE_BULK;
++		return count;
++	}
++	if (strncmp(buf, "save", 4))
++		return -EINVAL;
++
++	/* Otherwise assume the user is triggering a save - if supported*/
++	if (!tlmi_priv.can_set_bios_settings ||
++	    tlmi_priv.save_mode == TLMI_SAVE_SINGLE)
++		return -EOPNOTSUPP;
++
++	/* Check there is actually something to save */
++	if (!tlmi_priv.save_required)
++		return -ENOENT;
++
++	/* Use lock in case multiple WMI operations needed */
++	mutex_lock(&tlmi_mutex);
++
++	/* Check if certificate authentication is enabled and active */
++	if (tlmi_priv.certificate_support && tlmi_priv.pwd_admin->cert_installed) {
++		if (!tlmi_priv.pwd_admin->signature || !tlmi_priv.pwd_admin->save_signature) {
++			ret = -EINVAL;
++			goto out;
++		}
++		ret = tlmi_simple_call(LENOVO_SAVE_BIOS_SETTING_CERT_GUID,
++				       tlmi_priv.pwd_admin->save_signature);
++		if (ret)
++			goto out;
++	} else if (tlmi_priv.opcode_support) {
++		if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
++			ret = tlmi_opcode_setting("WmiOpcodePasswordAdmin",
++						  tlmi_priv.pwd_admin->password);
++			if (ret)
++				goto out;
++		}
++		ret = tlmi_save_bios_settings("");
++	} else { /* old non-opcode based authentication method (deprecated) */
++		if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
++			auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
++					     tlmi_priv.pwd_admin->password,
++					     encoding_options[tlmi_priv.pwd_admin->encoding],
++					     tlmi_priv.pwd_admin->kbdlang);
++			if (!auth_str) {
++				ret = -ENOMEM;
++				goto out;
++			}
++		}
++
++		if (auth_str)
++			ret = tlmi_save_bios_settings(auth_str);
++		else
++			ret = tlmi_save_bios_settings("");
++	}
++	tlmi_priv.save_required = false;
++	tlmi_priv.reboot_required = true;
++
++	if (!ret && !tlmi_priv.pending_changes) {
++		tlmi_priv.pending_changes = true;
++		/* let userland know it may need to check reboot pending again */
++		kobject_uevent(&tlmi_priv.class_dev->kobj, KOBJ_CHANGE);
++	}
++out:
++	mutex_unlock(&tlmi_mutex);
++	kfree(auth_str);
++	return ret ?: count;
++}
++
++static struct kobj_attribute save_settings = __ATTR_RW(save_settings);
++
+ /* ---- Debug interface--------------------------------------------------------- */
+ static ssize_t debug_cmd_store(struct kobject *kobj, struct kobj_attribute *attr,
+ 				const char *buf, size_t count)
+@@ -1221,6 +1319,8 @@ static void tlmi_release_attr(void)
+ 		}
+ 	}
+ 	sysfs_remove_file(&tlmi_priv.attribute_kset->kobj, &pending_reboot.attr);
++	sysfs_remove_file(&tlmi_priv.attribute_kset->kobj, &save_settings.attr);
++
+ 	if (tlmi_priv.can_debug_cmd && debug_support)
+ 		sysfs_remove_file(&tlmi_priv.attribute_kset->kobj, &debug_cmd.attr);
+ 
+@@ -1302,6 +1402,10 @@ static int tlmi_sysfs_init(void)
+ 	if (ret)
+ 		goto fail_create_attr;
+ 
++	ret = sysfs_create_file(&tlmi_priv.attribute_kset->kobj, &save_settings.attr);
++	if (ret)
++		goto fail_create_attr;
++
+ 	if (tlmi_priv.can_debug_cmd && debug_support) {
+ 		ret = sysfs_create_file(&tlmi_priv.attribute_kset->kobj, &debug_cmd.attr);
+ 		if (ret)
+diff --git a/drivers/platform/x86/think-lmi.h b/drivers/platform/x86/think-lmi.h
+index 4daba6151cd6..0c6304f323ed 100644
+--- a/drivers/platform/x86/think-lmi.h
++++ b/drivers/platform/x86/think-lmi.h
+@@ -27,6 +27,17 @@ enum level_option {
+ 	TLMI_LEVEL_MASTER,
+ };
+ 
++/* There are a limit on the number of WMI operations you can do if you use
++ * the default implementation of saving on every set. This is due to a
++ * limitation in EFI variable space used.
++ * Have a 'bulk save' mode where you can manually trigger the save, and can
++ * therefore set unlimited variables - for users that need it.
++ */
++enum save_mode {
++	TLMI_SAVE_SINGLE,
++	TLMI_SAVE_BULK,
++};
++
+ /* password configuration details */
+ struct tlmi_pwdcfg_core {
+ 	uint32_t password_mode;
+@@ -86,6 +97,9 @@ struct think_lmi {
+ 	bool can_debug_cmd;
+ 	bool opcode_support;
+ 	bool certificate_support;
++	enum save_mode save_mode;
++	bool save_required;
++	bool reboot_required;
+ 
+ 	struct tlmi_attr_setting *setting[TLMI_SETTINGS_COUNT];
+ 	struct device *class_dev;
+-- 
+2.41.0
 
-
-
-
-
-> +                               }
-> +
->                                 if (def =3D=3D S_DEF_AUTO)
->                                         /*
->                                          * Reading from include/config/au=
-to.conf
-> @@ -519,6 +538,10 @@ int conf_read_simple(const char *name, int def)
->         }
->         free(line);
->         fclose(in);
-> +
-> +       if (found_unknown && werror)
-> +               exit(1);
-
-
-I like to reuse 'conf_warnings' as you did in the previous version.
-
-      if (conf_warnings && werror)
-                exit(1)
-
-
-
-Then, you do not need to add 'found_unknown'.
-
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
