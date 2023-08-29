@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04ABA78CD95
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E6378CD9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 22:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238322AbjH2Uh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
+        id S239134AbjH2Uic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 16:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233841AbjH2UhV (ORCPT
+        with ESMTP id S238922AbjH2UiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:37:21 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F7F1BC
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:37:17 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4013454fa93so42682355e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:37:17 -0700 (PDT)
+        Tue, 29 Aug 2023 16:38:16 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CF41BC;
+        Tue, 29 Aug 2023 13:38:12 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-986d8332f50so629312066b.0;
+        Tue, 29 Aug 2023 13:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693341436; x=1693946236; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=b9S6gsTe8EE/vB/KQ1UXEcpZWjCRPVhy5v1HBZYSJ3k=;
-        b=KsarDJKco2sL8dsCPQM7JILqkYAaIdBB15GBnZScNdaNZN5g8TxmO7v/hKBDy8JFAC
-         GE9m73ts0QPMYL2w7nEm4vpXHKL5kxrML6H7XHyO4BexshPWkCwDgIEMQQpdi2GtRKlP
-         fWJ9TcjCryQak/8xrq10xV9OvvuVjdRH9jcFOGAoyoZOqqp/FUx6nqQUxzCvvzTwwKDk
-         w3is2462dnCm82HkYkl5fVz+bxKlnegxbzZ+khEJG69LnnrrKnIhUm6AcwFnLY1Gilas
-         ffzJuJDuWqGAUKNEwiK5AAxKDwNpSEa6GfTLky/SgGIiq8QQjECaMdYpB2dsY1YV31Pe
-         ILhw==
+        d=gmail.com; s=20221208; t=1693341490; x=1693946290; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oVkOEcU4wbyK+9rXUwhm3LMU7ZPhuze+DSTWENcgNPo=;
+        b=eXiLIeHHCa1e2s+JnIV9LAZxuGz1PPiNKxLyBDwK8kjxR6R3TPvraVB96lexb+fHWK
+         /9jMLt/gBENmEXxlxK6VBL5QS2C9kHbH/qdvLRRcvdat7KaOFIRFOxJa/6BQzEEz1A9j
+         3d2z3jD8agdRT+wIYx0q4MTw8zo6+74DZw09yXp89wgmKTLnbEWneYofJRwr3C3o44go
+         RgMHXvy3zzVlKvpIpOx9Bc2ERjcq7nSLrT6NkVi3DQGS0ozIMlvCt6063ZT6r9gskwQ5
+         bBLiQbTH/OGKFgZPNVwPA5mEiQAFOx4IFLd6J4MnDkks03TPYsPcyGO7MedzuhaGHm4r
+         T13g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693341436; x=1693946236;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693341490; x=1693946290;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=b9S6gsTe8EE/vB/KQ1UXEcpZWjCRPVhy5v1HBZYSJ3k=;
-        b=lSwCvODprLysdhdkiS7ipu7FsMAd8sXwKB8tIxJPU2coM/6oWctLUCUoFpJo9ttZWs
-         P4Fh4B6A/ZPs66oW8tBgXAy4CvTKKmTZtP3+F84j6Koorp+dGoecsRHLbrwj7eYtT+Wa
-         74OXXMzqq+aS5VImE8yVeiVQ2JPG3S6Cu7B6jMgln/r6NTN7Gl9+bwqg01y6RnTq82a+
-         gA2bjXEjhMwV02H4DfJDHxYrxOVsiGWMfrV/c5Ky2mR5/Ca9Lg4s61kShgay4KcI2p9Q
-         lLFvpdtpcXd4C/WASEGatcPEkGtoczo6UZJiMOBLKHonK9jVYjDHazrwhALXXizEfHAX
-         558A==
-X-Gm-Message-State: AOJu0Yw+ecMsTD4eN2UOsYssLCINSOwkpcEFq5rskDyO8hTONHy2LLzP
-        2IDa2v3WDd/wzNJQ8uEatljHOiDGS+DAcFtJLOtmew==
-X-Google-Smtp-Source: AGHT+IGjSCEG9tjNO8+PfpKB89mTn01sGYwsK8E2fhpWaKbGveLM04NNNt+vyVN9QcwARa5GJSvMOTPl2XQLvZkWi+k=
-X-Received: by 2002:a05:600c:2256:b0:400:6bee:f4fe with SMTP id
- a22-20020a05600c225600b004006beef4femr292329wmm.21.1693341435698; Tue, 29 Aug
- 2023 13:37:15 -0700 (PDT)
+        bh=oVkOEcU4wbyK+9rXUwhm3LMU7ZPhuze+DSTWENcgNPo=;
+        b=h38f1CYGToRN/vpX4ZzIWo9H2ot+1gc1boZt+jheEMVWJJojAbFOjoDGZYqkgE5lLB
+         5sUKLy7i0q9RLKv/misDQMAmo7737fGt+zjKk76Sq5AGG1AJ2V3GgsWDD9dx+uKn0X+I
+         dYbJhMvVw9ufDii4ZMetA4SojhVTc1fX8MobrZaxVsnfUQMRiGl8K0A6/+n/d/xTvlR1
+         AyPX720UZsu38Flk/OWqcj7/zbNVEf0icvUbJZmdJUhCiORnOCxVoev0OtRshmy8T+HV
+         76JW7y3Ryon0kpCdlto0yFrK1wI/jQeaAD5guOMhUpZd8T23zrHxSDU+cNruZTsY/EcP
+         X0uQ==
+X-Gm-Message-State: AOJu0YyAAnHqhMrHpIvljvmqKJvNUFZG1jqoryPcMA24CxZguol9iHm+
+        o2neqTMDeBsOlkHXGrbsyI2EcTqwrg==
+X-Google-Smtp-Source: AGHT+IFO8hRNcI4fJYBv18ZFabbI1YyvvyoSX9D8CPWeMLUDsb9S8/5U6mBuEQTCuTC1nQOeKO72hw==
+X-Received: by 2002:a17:906:31c6:b0:9a1:f81f:d0d5 with SMTP id f6-20020a17090631c600b009a1f81fd0d5mr90992ejf.54.1693341490456;
+        Tue, 29 Aug 2023 13:38:10 -0700 (PDT)
+Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
+        by smtp.gmail.com with ESMTPSA id f18-20020a170906825200b0099364d9f0e9sm6301908ejx.102.2023.08.29.13.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 13:38:10 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 0/6] Device tree fixes for RK3128
+Date:   Tue, 29 Aug 2023 22:37:19 +0200
+Message-ID: <20230829203721.281455-4-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <000000000000d87a7f06040c970c@google.com> <2e260b7c-2a89-2d0c-afb5-708c34230db2@linux.dev>
- <CANpmjNOG4f-NnGX6rpA-X8JtRtTkUH8PiLvMj_WJsp+sbq6PNg@mail.gmail.com> <f09d1d92-3e32-46a6-d20d-41bf74268d0c@iogearbox.net>
-In-Reply-To: <f09d1d92-3e32-46a6-d20d-41bf74268d0c@iogearbox.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 29 Aug 2023 22:36:38 +0200
-Message-ID: <CANpmjNMiNw8Cwe0Rk2jWD7Ju-e-jAXgdnuwvvsPR1QYq=4HcwQ@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] KCSAN: data-race in bpf_percpu_array_update /
- bpf_percpu_array_update (2)
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     yonghong.song@linux.dev,
-        syzbot <syzbot+97522333291430dd277f@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,111 +73,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 22:04, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/29/23 8:53 PM, Marco Elver wrote:
-> > On Tue, 29 Aug 2023 at 20:30, Yonghong Song <yonghong.song@linux.dev> wrote:
-> >> On 8/29/23 5:39 AM, syzbot wrote:
-> >>> Hello,
-> >>>
-> >>> syzbot found the following issue on:
-> >>>
-> >>> HEAD commit:    727dbda16b83 Merge tag 'hardening-v6.6-rc1' of git://git.k..
-> >>> git tree:       upstream
-> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=136f39dfa80000
-> >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=dea9c2ce3f646a25
-> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=97522333291430dd277f
-> >>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> >>>
-> >>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>
-> >>> Downloadable assets:
-> >>> disk image: https://storage.googleapis.com/syzbot-assets/9923a023ab11/disk-727dbda1.raw.xz
-> >>> vmlinux: https://storage.googleapis.com/syzbot-assets/650dbc695d77/vmlinux-727dbda1.xz
-> >>> kernel image: https://storage.googleapis.com/syzbot-assets/361da71276bf/bzImage-727dbda1.xz
-> >>>
-> >>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >>> Reported-by: syzbot+97522333291430dd277f@syzkaller.appspotmail.com
-> >>>
-> >>> ==================================================================
-> >>> BUG: KCSAN: data-race in bpf_percpu_array_update / bpf_percpu_array_update
-> >>>
-> >>> write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
-> >>>    bpf_long_memcpy include/linux/bpf.h:428 [inline]
-> >>>    bpf_obj_memcpy include/linux/bpf.h:441 [inline]
-> >>>    copy_map_value_long include/linux/bpf.h:464 [inline]
-> >>>    bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
-> >>>    bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
-> >>>    generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
-> >>>    bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
-> >>>    __sys_bpf+0x28a/0x780
-> >>>    __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
-> >>>    __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
-> >>>    __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
-> >>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >>>    do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-> >>>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >>>
-> >>> write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
-> >>>    bpf_long_memcpy include/linux/bpf.h:428 [inline]
-> >>>    bpf_obj_memcpy include/linux/bpf.h:441 [inline]
-> >>>    copy_map_value_long include/linux/bpf.h:464 [inline]
-> >>>    bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
-> >>>    bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
-> >>>    generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
-> >>>    bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
-> >>>    __sys_bpf+0x28a/0x780
-> >>>    __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
-> >>>    __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
-> >>>    __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
-> >>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >>>    do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-> >>>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >>>
-> >>> value changed: 0x0000000000000000 -> 0xfffffff000002788
-> >>>
-> >>> Reported by Kernel Concurrency Sanitizer on:
-> >>> CPU: 0 PID: 8268 Comm: syz-executor.4 Not tainted 6.5.0-syzkaller-00453-g727dbda16b83 #0
-> >>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-> >>> ==================================================================
-> >>
-> >> This case is with two tasks doing bpf_map batch update together for the
-> >> same map and key.
-> >>     > write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
-> >>     > write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
-> >>
-> >> So concurrency is introduced by user applications.
-> >> In my opinion, this probably not an issue from kernel perspective.
-> >
-> > Perhaps not, but I recall there being a discussion about making KCSAN
-> > aware of memory accesses done by BPF programs (memcpy being a tiny
-> > subset of those). Not sure if the above data race qualifies as
-> > something we might want to still detect, i.e. a kernel dev testing
-> > their kernel might be interested in such a report.
-> >
-> > Regardless, in this case we should teach syzkaller to ignore KCSAN
-> > data races that originate from bpf user operations whatever the
-> > origin.
->
-> I presume KCSAN could be silenced here via READ_ONCE/WRITE_ONCE conversion?
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f58895830ada..32c4a37045f2 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -424,8 +424,11 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
->         long *ldst = dst;
->
->         size /= sizeof(long);
-> -       while (size--)
-> -               *ldst++ = *lsrc++;
-> +       while (size--) {
-> +               WRITE_ONCE(*ldst, READ_ONCE(*lsrc));
-> +               ldst++;
-> +               lsrc++;
-> +       }
+This series contains several device tree fixes which currently prevent
+the hardware from actually working.
+Please see commit messages of the individual patches for details.
 
-In this case, maybe data_race(*ldst++ = *lsrc++) would be more
-appropriate and efficient. Unlikely that READ_ONCE()/WRITE_ONCE() here
-helps make this any safer, i.e. the memcpy is still not atomic and if
-it's a bug on the user's side, it'll corrupt data either way.
+These patches have been part of the pretty huge RK3128 fix-up series [0]
+which I've splitted up now, as suggested.
+
+[0] https://lore.kernel.org/linux-rockchip/20230829171647.187787-1-knaerzche@gmail.com
+
+Alex Bee (5):
+  ARM: dts: rockchip: Fix i2c0 register address for RK3128
+  ARM: dts: rockchip: Add missing arm timer interrupt for RK3128
+  ARM: dts: rockchip: Add missing quirk for RK3128's dma engine
+  ARM: dts: rockchip: Fix timer clocks for RK3128
+  ARM: dts: rockchip: Disable non-required timers for RK3128
+
+ arch/arm/boot/dts/rockchip/rk3128.dtsi | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+-- 
+2.42.0
+
