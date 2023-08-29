@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 692FF78C617
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AAB78C634
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236273AbjH2Nfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        id S236394AbjH2NhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236279AbjH2Ne5 (ORCPT
+        with ESMTP id S236611AbjH2Nfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:34:57 -0400
+        Tue, 29 Aug 2023 09:35:38 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EFBCD3;
-        Tue, 29 Aug 2023 06:34:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412B0E69;
+        Tue, 29 Aug 2023 06:34:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 139B3657B3;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D5F22657FE;
+        Tue, 29 Aug 2023 13:34:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34ECC433CD;
         Tue, 29 Aug 2023 13:34:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24BC1C4339A;
-        Tue, 29 Aug 2023 13:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693316053;
-        bh=HC0YW4pjTa8Wf0Ln9pyi5PcI4UwgFrx0mp5RSj49dyQ=;
+        s=k20201202; t=1693316056;
+        bh=0NnaToupnL9OxeXQr3/eTStwJdSrOG6q9zF3uj+MOlc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lEdPesiQf/hNE5WwlGWtHToW0y6QPhZwv37kHO7nz6sTDn3NUv65NXCmghK2zKZXW
-         ldxYEO99C+JNb8B0o0JXGz99YIq+eMAA+U8iylsmd1ainGkVWCEbDtI2cc89gcs4I0
-         dGpn2YXyWqLCpm5rQ9BpuO4+pRs3k2sd/MOwrkH+gH/tzWdruxTuLgvOVhsSpHEQEn
-         JsFm43JyVL+ZdMwx/8nFjAY1B9qEZ5+OrqnKVKnhojzUKromUCukGigZAV/c7I/c6o
-         E6PUFo5sgh4gsZaj6EMSUM00yLYleVDrGk64850O9040ujpM3Jsh41YoljOq8QK9LS
-         a7cYn+0jgReiA==
+        b=o9XQ4qVtw9751KJiFuepsvsi8qzaCmtkMHc+/7PHuf2VJMXPp+63/sj02lH1I24ka
+         stgeVvYgrYKzz+4t2GGSpBneapngF5Yn07Jsn8DV3YEoFaUOEjpDeYFf/s4W5+ACSq
+         fw73PxDYK4zTrCjuuj1hYBaa8au8MQcAcnixvYCbv8c1n0fOS73ryyqEarBrJk6qUA
+         uor/8cYoPZDESa3+lxnoOLzFjDKn0FhTK05hr7zmVvINHbsopt9xKNCviCD1NZDaBh
+         U6+6mSuevrgrPFIj7ocCxIP5tQx7qowiZOkjuKtABG+CZhNM8H9UKmu0sng4P6fYex
+         7mpqsfTRPJoqw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, vyasevich@gmail.com,
-        nhorman@tuxdriver.com, marcelo.leitner@gmail.com,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 3/5] sctp: handle invalid error codes without calling BUG()
-Date:   Tue, 29 Aug 2023 09:34:04 -0400
-Message-Id: <20230829133406.520756-3-sashal@kernel.org>
+Cc:     Shyam Prasad N <sprasad@microsoft.com>,
+        Bharath SM <bharathsm@microsoft.com>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>, pc@cjr.nz,
+        gregkh@linuxfoundation.org, lsahlber@redhat.com, pc@manguebit.com,
+        vl@samba.org, abelova@astralinux.ru
+Subject: [PATCH AUTOSEL 4.19 4/5] cifs: add a warning when the in-flight count goes negative
+Date:   Tue, 29 Aug 2023 09:34:05 -0400
+Message-Id: <20230829133406.520756-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230829133406.520756-1-sashal@kernel.org>
 References: <20230829133406.520756-1-sashal@kernel.org>
@@ -61,43 +61,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: Shyam Prasad N <sprasad@microsoft.com>
 
-[ Upstream commit a0067dfcd9418fd3b0632bc59210d120d038a9c6 ]
+[ Upstream commit e4645cc2f1e2d6f268bb8dcfac40997c52432aed ]
 
-The sctp_sf_eat_auth() function is supposed to return enum sctp_disposition
-values but if the call to sctp_ulpevent_make_authkey() fails, it returns
--ENOMEM.
+We've seen the in-flight count go into negative with some
+internal stress testing in Microsoft.
 
-This results in calling BUG() inside the sctp_side_effects() function.
-Calling BUG() is an over reaction and not helpful.  Call WARN_ON_ONCE()
-instead.
+Adding a WARN when this happens, in hope of understanding
+why this happens when it happens.
 
-This code predates git.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+Reviewed-by: Bharath SM <bharathsm@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/sm_sideeffect.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/cifs/smb2ops.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/sctp/sm_sideeffect.c b/net/sctp/sm_sideeffect.c
-index 82d96441e64d6..c4a2d647e6cc7 100644
---- a/net/sctp/sm_sideeffect.c
-+++ b/net/sctp/sm_sideeffect.c
-@@ -1255,7 +1255,10 @@ static int sctp_side_effects(enum sctp_event event_type,
- 	default:
- 		pr_err("impossible disposition %d in state %d, event_type %d, event_id %d\n",
- 		       status, state, event_type, subtype.chunk);
--		BUG();
-+		error = status;
-+		if (error >= 0)
-+			error = -EINVAL;
-+		WARN_ON_ONCE(1);
- 		break;
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index c07dcb2af2eb8..01ab4496cb897 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -79,6 +79,7 @@ smb2_add_credits(struct TCP_Server_Info *server, const unsigned int add,
+ 		*val = 65000; /* Don't get near 64K credits, avoid srv bugs */
+ 		printk_once(KERN_WARNING "server overflowed SMB3 credits\n");
  	}
- 
++	WARN_ON_ONCE(server->in_flight == 0);
+ 	server->in_flight--;
+ 	if (server->in_flight == 0 && (optype & CIFS_OP_MASK) != CIFS_NEG_OP)
+ 		rc = change_conf(server);
 -- 
 2.40.1
 
