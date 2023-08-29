@@ -2,198 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2957278CF94
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF63378CFA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239476AbjH2Wk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
+        id S239797AbjH2WrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239462AbjH2Wkj (ORCPT
+        with ESMTP id S239944AbjH2WrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:40:39 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 736AA99
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:40:36 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31BC52F4;
-        Tue, 29 Aug 2023 15:41:15 -0700 (PDT)
-Received: from [10.57.2.162] (unknown [10.57.2.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A70D3F64C;
-        Tue, 29 Aug 2023 15:40:34 -0700 (PDT)
-Message-ID: <dc99bc7b-b6bc-1b82-3d8e-8e385596070b@arm.com>
-Date:   Tue, 29 Aug 2023 23:40:29 +0100
+        Tue, 29 Aug 2023 18:47:05 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872BFCDC;
+        Tue, 29 Aug 2023 15:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XGuBrJRA9Fd4AduQK/hSseIFrv8V5F+R7owbTsvIznw=; b=q1V5fHa/AXkRLdmnc9TtDTItxb
+        sjv5FpbdJarUSWDm8h5uqmHXkHTGtBOUlKVK5U/4PExCLqpYcowYZaV/PvP/kk1bfsDWLvRZIDMi6
+        J4YRKXkMJOy3sqhHWZHu4Fl1bfB/qtOHn3XYeh3dGmGOC0qbSQkD2Y+wYSoEusMnNBuy4+VyYQnkY
+        Lc4KlaQORaxPNCRh9pBUGO98Ft5v23nvU0WQJiozkEiistd3znn+J2fx0QgNh+u6E23YopsyfOSpr
+        Rmce2YRpGqgEixjkKJHtsYkWfKbeh3RTX6XJKjEhssGOmTvrkXGjl1f8Qxu8W6gub1Ziw1YBVxlnq
+        0FDl8ZIQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qb7SA-001wYO-34;
+        Tue, 29 Aug 2023 22:44:55 +0000
+Date:   Tue, 29 Aug 2023 23:44:54 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
+Message-ID: <20230829224454.GA461907@ZenIV>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+ <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 3/3] iommu/arm-smmu-v3: Add a max_tlbi_ops for
- __arm_smmu_tlb_inv_range()
-Content-Language: en-GB
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     will@kernel.org, jgg@nvidia.com, joro@8bytes.org,
-        jean-philippe@linaro.org, apopple@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev
-References: <cover.1692693557.git.nicolinc@nvidia.com>
- <3ba332e141102d31b756326cdc4078cac1f5ab1c.1692693557.git.nicolinc@nvidia.com>
- <3f630d3d-c59a-f454-14db-2bf9b8e76877@arm.com>
- <ZOTjGIJU8Kfl1Q4f@Asurada-Nvidia> <ZOU+6hsKy4R099B3@Asurada-Nvidia>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZOU+6hsKy4R099B3@Asurada-Nvidia>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-23 00:04, Nicolin Chen wrote:
-> Hi Robin,
+On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
+> generic_fillattr just fills in the entire stat struct indiscriminately
+> today, copying data from the inode. There is at least one attribute
+> (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
+> and we're looking at adding more with the addition of multigrain
+> timestamps.
 > 
-> On Tue, Aug 22, 2023 at 09:32:26AM -0700, Nicolin Chen wrote:
->> On Tue, Aug 22, 2023 at 10:30:35AM +0100, Robin Murphy wrote:
->>
->>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> index d6c647e1eb01..3f0db30932bd 100644
->>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> @@ -1897,7 +1897,14 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
->>>>        if (!size)
->>>>                return;
->>>>
->>>> -     if (smmu->features & ARM_SMMU_FEAT_RANGE_INV) {
->>>> +     if (!(smmu->features & ARM_SMMU_FEAT_RANGE_INV)) {
->>>> +             /*
->>>> +              * When the size reaches a threshold, replace per-granule TLBI
->>>> +              * commands with one single per-asid or per-vmid TLBI command.
->>>> +              */
->>>> +             if (size >= granule * smmu_domain->max_tlbi_ops)
->>>> +                     return arm_smmu_tlb_inv_domain(smmu_domain);
->>>
->>> This looks like it's at the wrong level - we should have figured this
->>> out before we got as far as low-level command-building. I'd have thought
->>> it would be a case of short-circuiting directly from
->>> arm_smmu_tlb_inv_range_domain() to arm_smmu_tlb_inv_context().
->>
->> OK, I could do that. We would have copies of this same routine
->> though. Also, the shortcut applies to !ARM_SMMU_FEAT_RANGE_INV
->> cases only, so this function feels convenient to me.
-> 
-> I was trying to say that we would need the same piece in both
-> arm_smmu_tlb_inv_range_domain() and arm_smmu_tlb_inv_range_asid(),
-> though the latter one only needs to call arm_smmu_tlb_inv_asid().
+> Add a request_mask argument to generic_fillattr and have most callers
+> just pass in the value that is passed to getattr. Have other callers
+> (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
+> STATX_CHANGE_COOKIE into generic_fillattr.
 
-Its not like arm_smmu_tlb_inv_range_asid() doesn't already massively 
-overlap with arm_smmu_tlb_inv_range_domain() anyway, so a little further 
-duplication hardly seems like it would hurt. Checking 
-ARM_SMMU_FEAT_RANGE_INV should be cheap (otherwise we'd really want to 
-split __arm_smmu_tlb_inv_range() into separate RIL vs. non-RIL versions 
-to avoid having it in the loop), and it makes the intent clear. What I 
-just really don't like is a flow where we construct a specific command, 
-then call the low-level function to issue it, only that function then 
-actually jumps back out into another high-level function which 
-constructs a *different* command. This code is already a maze of twisty 
-little passages...
+Out of curiosity - how much PITA would it be to put request_mask into
+kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
+on smbd side) and don't bother with that kind of propagation boilerplate
+- just have generic_fillattr() pick it there...
 
-> Also, arm_smmu_tlb_inv_context() does a full range ATC invalidation
-> instead of a given range like what arm_smmu_tlb_inv_range_domain()
-> currently does. So, it might be a bit overkill.
-> 
-> Combining all your comments, we'd have something like this:
-
-TBH I'd be inclined to refactor a bit harder, maybe break out some 
-VMID-based helpers for orthogonality, and aim for a flow like:
-
-	if (over threshold)
-		tlb_inv_domain()
-	else if (stage 1)
-		tlb_inv_range_asid()
-	else
-		tlb_inv_range_vmid()
-	atc_inv_range()
-
-or possibly if you prefer:
-
-	if (stage 1) {
-		if (over threshold)
-			tlb_inv_asid()
-		else
-			tlb_inv_range_asid()
-	} else {
-		if (over threshold)
-			tlb_inv_vmid()
-		else
-			tlb_inv_range_vmid()
-	}
-	atc_inv_range()
-
-where the latter maybe trades more verbosity for less duplication 
-overall - I'd probably have to try both to see which looks nicer in the 
-end. And obviously if there's any chance of inventing a clear and 
-consistent naming scheme in the process, that would be lovely.
-
-Thanks,
-Robin.
-
-> -------------------------------------------------------------------
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 7614739ea2c1..2967a6634c7c 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -1937,12 +1937,22 @@ static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
->   					  size_t granule, bool leaf,
->   					  struct arm_smmu_domain *smmu_domain)
->   {
-> +	struct io_pgtable_cfg *cfg =
-> +		&io_pgtable_ops_to_pgtable(smmu_domain->pgtbl_ops)->cfg;
->   	struct arm_smmu_cmdq_ent cmd = {
->   		.tlbi = {
->   			.leaf	= leaf,
->   		},
->   	};
->   
-> +	/*
-> +	 * If the given size is too large that would end up with too many TLBI
-> +	 * commands in CMDQ, short circuit directly to a full invalidation
-> +	 */
-> +	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_RANGE_INV) &&
-> +	    size >= granule * (1UL << cfg->bits_per_level))
-> +		return arm_smmu_tlb_inv_context(smmu_domain);
-> +
->   	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->   		cmd.opcode	= smmu_domain->smmu->features & ARM_SMMU_FEAT_E2H ?
->   				  CMDQ_OP_TLBI_EL2_VA : CMDQ_OP_TLBI_NH_VA;
-> @@ -1964,6 +1974,8 @@ void arm_smmu_tlb_inv_range_asid(unsigned long iova, size_t size, int asid,
->   				 size_t granule, bool leaf,
->   				 struct arm_smmu_domain *smmu_domain)
->   {
-> +	struct io_pgtable_cfg *cfg =
-> +		&io_pgtable_ops_to_pgtable(smmu_domain->pgtbl_ops)->cfg;
->   	struct arm_smmu_cmdq_ent cmd = {
->   		.opcode	= smmu_domain->smmu->features & ARM_SMMU_FEAT_E2H ?
->   			  CMDQ_OP_TLBI_EL2_VA : CMDQ_OP_TLBI_NH_VA,
-> @@ -1973,6 +1985,14 @@ void arm_smmu_tlb_inv_range_asid(unsigned long iova, size_t size, int asid,
->   		},
->   	};
->   
-> +	/*
-> +	 * If the given size is too large that would end up with too many TLBI
-> +	 * commands in CMDQ, short circuit directly to a full invalidation
-> +	 */
-> +	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_RANGE_INV) &&
-> +	    size >= granule * (1UL << cfg->bits_per_level))
-> +		return arm_smmu_tlb_inv_asid(smmu_domain->smmu, asid);
-> +
->   	__arm_smmu_tlb_inv_range(&cmd, iova, size, granule, smmu_domain);
->   }
->   
-> -------------------------------------------------------------------
-> 
-> You're sure that you prefer this, right?
-> 
-> Thanks
-> Nicolin
+Reduces the patchset size quite a bit...
