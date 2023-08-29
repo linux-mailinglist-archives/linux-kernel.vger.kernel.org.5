@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DDB78C0C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3479178C0CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 10:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbjH2Isx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 04:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53718 "EHLO
+        id S232094AbjH2Ivf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 04:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbjH2Ish (ORCPT
+        with ESMTP id S230224AbjH2IvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 04:48:37 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15516B5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:48:35 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-991c786369cso529906266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:48:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1693298913; x=1693903713;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7YJc8FCGCtf+QA21PW9zw+dSzN4oao0rbur83lcAqpY=;
-        b=Nkoj5q9dpgihnYQDPjsqU6J6Uuu9c8pYZBsdwMP2jSuzFN/URHy4uhx/gAYTdEX32i
-         msyWquKqH7TyXlBzqaQkLwp0sL177Ys+TKCv/110EI5nE4tzMlccH3ibQajkI5ptQu73
-         s80ARD1kkvuMVOgxOFHdtFvvcr4jJ9gruwZSuQNNTf5uZ68tYeLzcSMryNVQkhz1PXqL
-         2htVRTZcB4z+6aRYe7Mn/Szlr91Os1jMRgjZn1gspUnOeD6bCKCDZxYRIc9IeDOTfKjz
-         ppH7c/aNgMT1ltsDXRUPxDSAf8X09phm4Lkd91008AqflC31IAKtoow49OwDLLtvgTik
-         v1bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693298913; x=1693903713;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7YJc8FCGCtf+QA21PW9zw+dSzN4oao0rbur83lcAqpY=;
-        b=E6lOe2WrGtw5Ve0GGFnwGfip+o2ba5pt/6pBvMZA5EGmTDsAagsqBtijmksPPq63jf
-         ZfmPmC1U+3VEGvuAIuMj/62kj3kmR+xd191fGLhy+YJB4wa8sB+x/rLTFpGSjmb9zhra
-         pP0qFIzdCVtFYjzOQbRnbuQLFm891meg7aHAa9N07RvQabb7c0yPqVY5J4iw86TDg6xa
-         8lZLALVpoIcZQSFvOXQcn6/3j1c6uc0XR3CBrK6x9IaZrY5tZ0QGzvgeEnEN7oXw69iF
-         MotRwC/3wWnaLB/zYX2JnIQiAQpCKg8+k2iEa1TcTxSgZErAvYGqiRni8QZjDMGwZbCc
-         qtYQ==
-X-Gm-Message-State: AOJu0Ywadba+8du+LQreV4l/T+0NkwkhPN87ekrN5AgvdlxTpYKS5N5q
-        /Uc0ybwNJ4BerUAoIxjeduu+9Q==
-X-Google-Smtp-Source: AGHT+IGANV0ko3RQERka+ZkTfDKbn4edddXZrJXmeK3uAtPTDgyJGdXhlgqVkQjEV7B8tUjt22YIPg==
-X-Received: by 2002:a17:907:2bf7:b0:9a1:ad87:1354 with SMTP id gv55-20020a1709072bf700b009a1ad871354mr17131329ejc.34.1693298913427;
-        Tue, 29 Aug 2023 01:48:33 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id lw13-20020a170906bccd00b00992f2befcbcsm5675917ejb.180.2023.08.29.01.48.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 01:48:33 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 10:48:32 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4] RISC-V: Show accurate per-hart isa in /proc/cpuinfo
-Message-ID: <20230829-e445d0bdff78969cc33a6263@orel>
-References: <20230711201831.2695097-1-evan@rivosinc.com>
+        Tue, 29 Aug 2023 04:51:23 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31859AD
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 01:51:20 -0700 (PDT)
+Received: from eldfell (unknown [194.136.85.206])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9FBBB66071F1;
+        Tue, 29 Aug 2023 09:51:17 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693299078;
+        bh=pyvbKnlVXnJ6dRBWnI/+Gi2JxQb5bks6sIJ+pba2X0k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iN6J0+tpaF3eqObD7PGMugdHxZNffOecf4xxfkqQ/Un2R+PStu9ZL7eAd7a+ei15Y
+         Z3bqgeTNZM1hkFm1dpdX7D2I4p0kyNaDisc94t4Lagpq7Ky4riNd91nCNIsj8LV4ET
+         7ZCDdDI4MLQbSMNF9KuN47XG0kciZq4sscXP4cW6FaCBEzbMCRvk5lsFat52uPUZvo
+         UiLrtLWbphYV0/TjhuPaczUGEE7RSGYOgDWeiEONG45FlOVGIKH2lHdcV3rXiiH3ws
+         HAbHSpbSxfKVXsM44ceeGt23zgUa5ZHGuK7/fnpxEfPGojn2aDAGQdbzdh0vgrouB3
+         Xw/pLdG7vk2eQ==
+Date:   Tue, 29 Aug 2023 11:51:13 +0300
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Melissa Wen <mwen@igalia.com>
+Cc:     Joshua Ashton <joshua@froggi.es>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "Xinhui.Pan@amd.com" <Xinhui.Pan@amd.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        "sungjoon.kim@amd.com" <sungjoon.kim@amd.com>,
+        Alex Hung <alex.hung@amd.com>, Simon Ser <contact@emersion.fr>,
+        "kernel-dev@igalia.com" <kernel-dev@igalia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 19/34] drm/amd/display: decouple steps for mapping
+ CRTC degamma to DC plane
+Message-ID: <20230829115113.7bba24b3.pekka.paalanen@collabora.com>
+In-Reply-To: <20230828135604.ixuwnyo6d3xqgtjp@mail.igalia.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+        <20230810160314.48225-20-mwen@igalia.com>
+        <20230822151110.3107b745.pekka.paalanen@collabora.com>
+        <CAEZNXZCfvc909iFZQMdNEz=P_T=rYEYKq1Tdrt+8RNQpBSNt_g@mail.gmail.com>
+        <20230828132355.21a8fd89.pekka.paalanen@collabora.com>
+        <20230828135604.ixuwnyo6d3xqgtjp@mail.igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711201831.2695097-1-evan@rivosinc.com>
+Content-Type: multipart/signed; boundary="Sig_/SF6xh5rAi.ZUOgSK_NWtFI.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -80,58 +77,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Evan,
+--Sig_/SF6xh5rAi.ZUOgSK_NWtFI.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Here's my stab at new wording.
+On Mon, 28 Aug 2023 12:56:04 -0100
+Melissa Wen <mwen@igalia.com> wrote:
 
-On Tue, Jul 11, 2023 at 01:18:30PM -0700, Evan Green wrote:
-...
-> diff --git a/Documentation/riscv/uabi.rst b/Documentation/riscv/uabi.rst
-> index 8960fac42c40..afdda580e5a2 100644
-> --- a/Documentation/riscv/uabi.rst
-> +++ b/Documentation/riscv/uabi.rst
-> @@ -42,6 +42,16 @@ An example string following the order is::
->  
->     rv64imadc_zifoo_zigoo_zafoo_sbar_scar_zxmbaz_xqux_xrux
->  
-> +"isa" vs "hart isa" lines in /proc/cpuinfo
-> +------------------------------------------
-> +
-> +The "isa" line in /proc/cpuinfo describes the lowest common denominator of
-> +RISC-V ISA extensions understood by the kernel and implemented on all harts. The
-> +"hart isa" line, in contrast, describes the set of extensions understood by the
-> +kernel on the particular hart being described, even if those extensions may not
-> +be present on all harts in the system. The "hart isa" line is consistent with
-> +what's returned by __riscv_hwprobe() when querying for that specific CPU.
-> +
+> On 08/28, Pekka Paalanen wrote:
+> > On Mon, 28 Aug 2023 09:45:44 +0100
+> > Joshua Ashton <joshua@froggi.es> wrote:
+> >  =20
+> > > Degamma has always been on the plane on AMD. CRTC DEGAMMA_LUT has act=
+ually
+> > > just been applying it to every plane pre-blend. =20
+> >=20
+> > I've never seen that documented anywhere.
+> >=20
+> > It has seemed obvious, that since we have KMS objects for planes and
+> > CRTCs, stuff on the CRTC does not do plane stuff before blending. That
+> > also has not been documented in the past, but it seemed the most
+> > logical choice.
+> >=20
+> > Even today
+> > https://dri.freedesktop.org/docs/drm/gpu/drm-kms.html#color-management-=
+properties
+> > make no mention of whether they apply before or after blending. =20
+>=20
+> It's mentioned in the next section:
+> https://dri.freedesktop.org/docs/drm/gpu/amdgpu/display/display-manager.h=
+tml#dc-color-capabilities-between-dcn-generations
+> In hindsight, maybe it isn't the best place...
 
-The "isa" and "hart isa" lines in /proc/cpuinfo list RISC-V ISA extensions
-which the kernel can identify (the kernel recognizes the extension's name)
-and have not been filtered out due to effectively not being present.  An
-extension is effectively not present when it is unusable, either due to
-defects (which the kernel is aware of), due to missing information which
-is necessary to complete the extension's description, or due to being
-explicitly "hidden", such as when a kernel command line parameter
-instructs the kernel to pretend the extension is not present.  Note, an
-extension's presence in a list does not imply the kernel is using the
-extension, nor does it imply that userspace or guest kernels may use the
-extension (__riscv_hwprobe() should be queried for userspace usability.
-The hypervisor should be queried, using hypervisor-specific APIs, to
-check guest kernel usability.)
+That is driver-specific documentation. As a userspace dev, I'd never
+look at driver-specific documentation, because I'm interested in the
+KMS UAPI which is supposed to be generic, and therefore documented with
+the DRM "core".
 
-The "isa" line describes the lowest common denominator of extensions,
-which are the extensions implemented on all harts.  In contrast, the
-extensions listed in the "hart isa" line need not be implemented by
-any other hart than the hart corresponding to the line.
+Maybe kernel reviewers also never look at driver-specific docs to find
+attempts at redefining common KMS properties?
 
----
+(I still don't know which definition is prevalent.)
 
-I've specifically dropped the 'The "hart isa" line is consistent with
-what's returned by __riscv_hwprobe()...' part because I suspect hwprobe
-could at least lag what gets put in "hart isa", since the kernel may be
-taught about an extension for a different purpose first, neglecting
-hwprobe. And, there may be cases that hwprobe never enumerates an
-extension which the kernel does.
+> >  =20
+> > > Degamma makes no sense after blending anyway. =20
+> >=20
+> > If the goal is to allow blending in optical or other space, you are
+> > correct. However, APIs do not need to make sense to exist, like most of
+> > the options of "Colorspace" connector property.
+> >=20
+> > I have always thought the CRTC DEGAMMA only exists to allow the CRTC
+> > CTM to work in linear or other space.
+> >=20
+> > I have at times been puzzled by what the DEGAMMA and CTM are actually
+> > good for.
+> >  =20
+> > > The entire point is for it to happen before blending to blend in line=
+ar
+> > > space. Otherwise DEGAMMA_LUT and REGAMMA_LUT are the exact same thing=
+... =20
+> >=20
+> > The CRTC CTM is between CRTC DEGAMMA and CRTC GAMMA, meaning they are
+> > not interchangeable.
+> >=20
+> > I have literally believed that DRM KMS UAPI simply does not support
+> > blending in optical space, unless your framebuffers are in optical
+> > which no-one does, until the color management properties are added to
+> > KMS planes. This never even seemed weird, because non-linear blending
+> > is so common.
+> >=20
+> > So I have been misunderstanding the CRTC DEGAMMA property forever. Am I
+> > the only one? Do all drivers agree today at what point does CRTC
+> > DEGAMMA apply, before blending on all planes or after blending?
+> >  =20
+>=20
+> I'd like to know current userspace cases on Linux of this CRTC DEGAMMA
+> LUT.
+
+I don't know of any, but that doesn't mean anything.
+
+> > Does anyone know of any doc about that? =20
+>=20
+> From what I retrieved about the introduction of CRTC color props[1], it
+> seems the main concern at that point was getting a linear space for
+> CTM[2] and CRTC degamma property seems to have followed intel
+> requirements, but didn't find anything about the blending space.
+
+Right. I've always thought CRTC props apply after blending.
+
+> AFAIU, we have just interpreted that all CRTC color properties for DRM
+> interface are after blending[3]. Can this be seen in another way?
+
+Joshua did, and he has a logical point.
+
+I guess if we really want to know, someone would need review all
+drivers exposing these props, and even check if they changed in the
+past.
+
+FWIW, the usefulness of (RE)GAMMA (not DEGAMMA) LUT is limited by the
+fact that attempting to represent 1/2.2 power function as a uniformly
+distributed LUT is infeasible due to the approximation errors near zero.
+
 
 Thanks,
-drew
+pq
+
+> [1] https://patchwork.freedesktop.org/series/2720/
+> [2] https://codereview.chromium.org/1182063002
+> [3] https://dri.freedesktop.org/docs/drm/_images/dcn3_cm_drm_current.svg
+>=20
+> >=20
+> > If drivers do not agree on the behaviour of a KMS property, then that
+> > property is useless for generic userspace.
+> >=20
+> >=20
+> > Thanks,
+> > pq
+> >=20
+> >  =20
+> > > On Tuesday, 22 August 2023, Pekka Paalanen <pekka.paalanen@collabora.=
+com>
+> > > wrote: =20
+> > > > On Thu, 10 Aug 2023 15:02:59 -0100
+> > > > Melissa Wen <mwen@igalia.com> wrote:
+> > > >   =20
+> > > >> The next patch adds pre-blending degamma to AMD color mgmt pipelin=
+e, but
+> > > >> pre-blending degamma caps (DPP) is currently in use to provide DRM=
+ CRTC
+> > > >> atomic degamma or implict degamma on legacy gamma. Detach degamma =
+usage
+> > > >> regarging CRTC color properties to manage plane and CRTC color
+> > > >> correction combinations.
+> > > >>
+> > > >> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+> > > >> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> > > >> ---
+> > > >>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 59 +++++++++++++-=
+-----
+> > > >>  1 file changed, 41 insertions(+), 18 deletions(-)
+> > > >>
+> > > >> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color=
+.c   =20
+> > > b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c =20
+> > > >> index 68e9f2c62f2e..74eb02655d96 100644
+> > > >> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> > > >> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> > > >> @@ -764,20 +764,9 @@ int amdgpu_dm_update_crtc_color_mgmt(struct  =
+ =20
+> > > dm_crtc_state *crtc) =20
+> > > >>       return 0;
+> > > >>  }
+> > > >>
+> > > >> -/**
+> > > >> - * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management t=
+o DC   =20
+> > > plane. =20
+> > > >> - * @crtc: amdgpu_dm crtc state
+> > > >> - * @dc_plane_state: target DC surface
+> > > >> - *
+> > > >> - * Update the underlying dc_stream_state's input transfer functio=
+n   =20
+> > > (ITF) in =20
+> > > >> - * preparation for hardware commit. The transfer function used de=
+pends   =20
+> > > on =20
+> > > >> - * the preparation done on the stream for color management.
+> > > >> - *
+> > > >> - * Returns:
+> > > >> - * 0 on success. -ENOMEM if mem allocation fails.
+> > > >> - */
+> > > >> -int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+> > > >> -                                   struct dc_plane_state   =20
+> > > *dc_plane_state) =20
+> > > >> +static int
+> > > >> +map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
+> > > >> +                          struct dc_plane_state *dc_plane_state)
+> > > >>  {
+> > > >>       const struct drm_color_lut *degamma_lut;
+> > > >>       enum dc_transfer_func_predefined tf =3D TRANSFER_FUNCTION_SR=
+GB;
+> > > >> @@ -800,8 +789,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct  =
+ =20
+> > > dm_crtc_state *crtc, =20
+> > > >>                                                &degamma_size);
+> > > >>               ASSERT(degamma_size =3D=3D MAX_COLOR_LUT_ENTRIES);
+> > > >>
+> > > >> -             dc_plane_state->in_transfer_func->type =3D
+> > > >> -                     TF_TYPE_DISTRIBUTED_POINTS;
+> > > >> +             dc_plane_state->in_transfer_func->type =3D   =20
+> > > TF_TYPE_DISTRIBUTED_POINTS; =20
+> > > >>
+> > > >>               /*
+> > > >>                * This case isn't fully correct, but also fairly
+> > > >> @@ -837,7 +825,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct  =
+ =20
+> > > dm_crtc_state *crtc, =20
+> > > >>                                  degamma_lut, degamma_size);
+> > > >>               if (r)
+> > > >>                       return r;
+> > > >> -     } else if (crtc->cm_is_degamma_srgb) {
+> > > >> +     } else {
+> > > >>               /*
+> > > >>                * For legacy gamma support we need the regamma input
+> > > >>                * in linear space. Assume that the input is sRGB.
+> > > >> @@ -847,8 +835,43 @@ int amdgpu_dm_update_plane_color_mgmt(struct =
+  =20
+> > > dm_crtc_state *crtc, =20
+> > > >>
+> > > >>               if (tf !=3D TRANSFER_FUNCTION_SRGB &&
+> > > >>                   !mod_color_calculate_degamma_params(NULL,
+> > > >> -                         dc_plane_state->in_transfer_func, NULL, =
+false))
+> > > >> +   =20
+> > >  dc_plane_state->in_transfer_func, =20
+> > > >> +                                                     NULL, false))
+> > > >>                       return -ENOMEM;
+> > > >> +     }
+> > > >> +
+> > > >> +     return 0;
+> > > >> +}
+> > > >> +
+> > > >> +/**
+> > > >> + * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management t=
+o DC   =20
+> > > plane. =20
+> > > >> + * @crtc: amdgpu_dm crtc state
+> > > >> + * @dc_plane_state: target DC surface
+> > > >> + *
+> > > >> + * Update the underlying dc_stream_state's input transfer functio=
+n   =20
+> > > (ITF) in =20
+> > > >> + * preparation for hardware commit. The transfer function used de=
+pends   =20
+> > > on =20
+> > > >> + * the preparation done on the stream for color management.
+> > > >> + *
+> > > >> + * Returns:
+> > > >> + * 0 on success. -ENOMEM if mem allocation fails.
+> > > >> + */
+> > > >> +int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+> > > >> +                                   struct dc_plane_state   =20
+> > > *dc_plane_state) =20
+> > > >> +{
+> > > >> +     bool has_crtc_cm_degamma;
+> > > >> +     int ret;
+> > > >> +
+> > > >> +     has_crtc_cm_degamma =3D (crtc->cm_has_degamma ||   =20
+> > > crtc->cm_is_degamma_srgb); =20
+> > > >> +     if (has_crtc_cm_degamma){
+> > > >> +             /* AMD HW doesn't have post-blending degamma caps. W=
+hen DRM
+> > > >> +              * CRTC atomic degamma is set, we maps it to DPP deg=
+amma   =20
+> > > block =20
+> > > >> +              * (pre-blending) or, on legacy gamma, we use DPP de=
+gamma   =20
+> > > to =20
+> > > >> +              * linearize (implicit degamma) from sRGB/BT709 acco=
+rding   =20
+> > > to =20
+> > > >> +              * the input space.   =20
+> > > >
+> > > > Uhh, you can't just move degamma before blending if KMS userspace
+> > > > wants it after blending. That would be incorrect behaviour. If you
+> > > > can't implement it correctly, reject it.
+> > > >
+> > > > I hope that magical unexpected linearization is not done with atomi=
+c,
+> > > > either.
+> > > >
+> > > > Or maybe this is all a lost cause, and only the new color-op pipeli=
+ne
+> > > > UAPI will actually work across drivers.
+> > > >
+> > > >
+> > > > Thanks,
+> > > > pq
+> > > >   =20
+> > > >> +              */
+> > > >> +             ret =3D map_crtc_degamma_to_dc_plane(crtc, dc_plane_=
+state);
+> > > >> +             if (ret)
+> > > >> +                     return ret;
+> > > >>       } else {
+> > > >>               /* ...Otherwise we can just bypass the DGM block. */
+> > > >>               dc_plane_state->in_transfer_func->type =3D TF_TYPE_B=
+YPASS;   =20
+> > > >
+> > > >   =20
+> >  =20
+
+
+--Sig_/SF6xh5rAi.ZUOgSK_NWtFI.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTtsYEACgkQI1/ltBGq
+qqcc9g//aw0NW2pJxHaQFNAl47RN2H/hUzNxKxc2xL4bE/hVdlzTLhAgCxkErfml
+QhiypCAfJVcBhldGJ1Ik90hkUJB0DB/hQBDOoyeLKHcsXRUDbfa6ZhJ2MgIsuNyK
+ShLIstgYYVipayaBW/yMhjPoeryNboXqQ4L0jdomfFeW5tegdLYkU8+y4MSRd83o
+jtyK9j160kqZKyOtDrHlb06+bWbOYiYcGfygCBR98MCC85sbjcHWdM2My3o3WgXe
+6gFsFZO2dps5PSRM4+aFeT6pKJJ6hYLoeAsfb7THprYJjBgubhkglJrnDF2sT4aU
+5j5hbS2BBad9UnCR0ZZ0sAJi2mj45rAt+KKOiNxw6I1IHb5sDOT6ynIMp3FcYZJa
+8VofFOk1BYYGrFrsbcvspQbEkUqRIfwl+M36r1HdR5RFiO5jC6/Oi5tGYTwKmAGG
+vkSOjh79D0BeZ5WocQscp5K8bOPg1X7cs9K3t5nsYDk+WCpkVGwKPbCQ0+rhcxgi
+h6Q/AmIDVMSKg1g/SD9w2DhgXxERd5OR6uTY7Dn6eE3qGfRmpXqq8XEaGj6uuyUk
+o/kTPnZ3TdZnAn3zwE5U66q6+pmOIPv8Xalr3ovywYTIy8ggwpJImBc1mH9BDljL
+qgFwkXmJtB7uRqGdEjg6ttNXGZQw2SKiZzQBQejW8+R95gdobEk=
+=DvOB
+-----END PGP SIGNATURE-----
+
+--Sig_/SF6xh5rAi.ZUOgSK_NWtFI.--
