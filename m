@@ -2,51 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B6078C29B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCDB78C2A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 12:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbjH2Kww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 06:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
+        id S235009AbjH2Kx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 06:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234546AbjH2KwQ (ORCPT
+        with ESMTP id S233523AbjH2Kx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:52:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8721AD;
-        Tue, 29 Aug 2023 03:52:13 -0700 (PDT)
+        Tue, 29 Aug 2023 06:53:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34311AD;
+        Tue, 29 Aug 2023 03:53:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C0CD653CD;
-        Tue, 29 Aug 2023 10:52:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADDD5C433C7;
-        Tue, 29 Aug 2023 10:52:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 36C076549D;
+        Tue, 29 Aug 2023 10:53:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F02AC433CA;
+        Tue, 29 Aug 2023 10:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693306332;
-        bh=cWN6OqUxg3sI6B0IZM2l2D5QNkrb2wO7o9Fbj/YABEo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=noT7nhS44s9LQXeWSK+H29ss6ZEVd4P6bSufVYei1Ma8NyNgwm+Ukw7PyRh+ehpnQ
-         9p7cgpYH9AOqhCXlRv2VkI827LRi4/o8lYOTf08ZTVZqSJBdveGHNm3m5wyFx4j5t6
-         WpblD3QENfG523118rB7zU+CsfOs7dufKYDIhEwn0iZ0YRcXmHt9GKB8YMKJNprM2p
-         u7EKIzr3d0QFDxAo9glV/XBb0y3MxY8Dh7m0WOC5A2ZEZpWcjSm9zwwpPYh5XK6uBt
-         7AnCT1cb2OzqoHzeeEcHLK8nk7ODkcKK/vmZk0X72Gz8yz3odkovXrR3B30HW/+kKv
-         NFaej/Rf8vEOw==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL for v6.6] super fixes
-Date:   Tue, 29 Aug 2023 12:51:21 +0200
-Message-Id: <20230829-kasten-bedeuten-b49c0dc7dbe0@brauner>
-X-Mailer: git-send-email 2.34.1
+        s=k20201202; t=1693306403;
+        bh=Shsj+vPzu/D2j5Y+GxlorxF1u84+Dwugwd6FWmNj63U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m9hoWJSJY1mz3pLb8V9jQNig/TJu9aFLXi2oC1NqPy/HLp6cWNJTwIhOcfyKL/zpz
+         D1TEo+zfG38H99g+0Wdh4U2l6b/Smp/G4m7IAKuPs76+LFguQX72m7eoDm9v8mkgvk
+         OxZW/pPJJ4AqdtW68+gnOyWx4Rbi5TTpqbxP8AtVsQstkaRZmffSDBUCu3POif59fr
+         1ggsAxZIxRYdsQZI7lieQESxFqUkmx9eDIfISPsDNAr+8QyOzH6nUN9Z4nCgcT4Dw+
+         1Sy4htezlnhqrNLGV5PPrWIyvGP23o7xOTrk1P/H7PT69HzQIoqnajvgksezWxwm0k
+         V3wT3trXTGLpA==
+Date:   Tue, 29 Aug 2023 12:53:20 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        paulmck@kernel.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 3/5] tree/nocb: Adjust RCU_NOCB_WAKE_* macros from
+ weaker to stronger
+Message-ID: <ZO3OIBYSYx/jBv7s@lothringen>
+References: <20230729142738.222208-1-joel@joelfernandes.org>
+ <20230729142738.222208-4-joel@joelfernandes.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2079; i=brauner@kernel.org; h=from:subject:message-id; bh=cWN6OqUxg3sI6B0IZM2l2D5QNkrb2wO7o9Fbj/YABEo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaS8PdvFt1iR89yl74+V/0wrnfEkZf36mA3t9bZbropo+JYE aghXdZSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExE6wQjQ0PV91JFw6zCE1dXZj6YdK cv+OrDCKbdFZfqtYXuPzp5+wEjw9YF36uYEg/V8ezzf9Om16mX2KQjsOnS3lnJ69VMdXK6OQA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230729142738.222208-4-joel@joelfernandes.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,61 +62,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Linus,
+On Sat, Jul 29, 2023 at 02:27:33PM +0000, Joel Fernandes (Google) wrote:
+> This is needed to make the next patch work correctly as we rely on the
+> strength of the wakeup when comparing deferred-wakeup types across
+> different CPUs.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index 192536916f9a..0f40a9c2b78d 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -288,8 +288,8 @@ struct rcu_data {
+>  
+>  /* Values for nocb_defer_wakeup field in struct rcu_data. */
+>  #define RCU_NOCB_WAKE_NOT	0
+> -#define RCU_NOCB_WAKE_BYPASS	1
+> -#define RCU_NOCB_WAKE_LAZY	2
+> +#define RCU_NOCB_WAKE_LAZY	1
+> +#define RCU_NOCB_WAKE_BYPASS	2
+>  #define RCU_NOCB_WAKE		3
+>  #define RCU_NOCB_WAKE_FORCE	4
 
-/* Summary */
-This contains two follow-up fixes for the super work this cycle:
+Good change but make sure to audit all the occurences of
+RCU_NOCB_WAKE_LAZY and RCU_NOCB_WAKE_BYPASS. For example this breaks
+do_nocb_deferred_wakeup_timer() that will now ignore RCU_NOCB_WAKE_LAZY
+timers.
 
-* Move a misplaced lockep assertion before we potentially free the
-  object containing the lock.
-
-* Ensure that filesystems which match superblocks in sget{_fc}() based
-  on sb->s_fs_info are guaranteed to see a valid sb->s_fs_info as long
-  as a superblock still appears on the filesystem type's superblock
-  list.
-
-  What we want as a proper solution for next cycle is to split
-  sb->free_sb() out of sb->kill_sb() so that we can simply call
-  kill_super_notify() after sb->kill_sb() but before sb->free_sb().
-  Currently, this is lumped together in sb->kill_sb().
-
-/* Testing */
-clang: Ubuntu clang version 15.0.7
-gcc: (Ubuntu 12.2.0-3ubuntu1) 12.2.0
-
-All patches are based on v6.6-vfs.super and have been sitting in
-linux-next. No build failures or warnings were observed. All old and new
-tests in selftests, and LTP pass without regressions.
-
-/* Conflicts */
-At the time of creating this PR no merge conflicts were reported from
-linux-next and no merge conflicts showed up doing a test-merge with
-current mainline.
-
-The following changes since commit cd4284cfd3e11c7a49e4808f76f53284d47d04dd:
-
-  Merge tag 'vfs-6.6-merge-3' of ssh://gitolite.kernel.org/pub/scm/fs/xfs/xfs-linux (2023-08-23 13:09:22 +0200)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-vfs.super.fixes
-
-for you to fetch changes up to dc3216b1416056b04712e53431f6e9aefdc83177:
-
-  super: ensure valid info (2023-08-29 10:13:04 +0200)
-
-Please consider pulling these changes from the signed v6.6-vfs.super.fixes tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-v6.6-vfs.super.fixes
-
-----------------------------------------------------------------
-Christian Brauner (2):
-      super: move lockdep assert
-      super: ensure valid info
-
- fs/super.c | 51 +++++++++++++++++++++++++++++++--------------------
- 1 file changed, 31 insertions(+), 20 deletions(-)
+Thanks.
