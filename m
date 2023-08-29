@@ -2,296 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE7B78C4E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA6378C4E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 15:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235880AbjH2NHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 09:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
+        id S232208AbjH2NJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 09:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235886AbjH2NHP (ORCPT
+        with ESMTP id S232374AbjH2NJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:07:15 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BCF1B3;
-        Tue, 29 Aug 2023 06:07:12 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.186.40])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 880AD66071E6;
-        Tue, 29 Aug 2023 14:07:08 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693314431;
-        bh=8Wtv+QhvUdjdJ/jko6FnYAEzfHl3uvKugwa3XSczp28=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=coh/Jt0W5VONNL5NSB23AsiFbKjjE7QK6ZgSqA83uPXBNAqwD9QmULSJEBOC1QueW
-         VtX6xbsglu6XukHGfZ9LV9Fgi7nAlRecbMTzIomh7X6YYx2XmLaQ9yWvMsgzlihB+y
-         tMR0hdjVfQt9eidTo/LnT3yHO+i/4/NQrxPctDdVh9PAyEgLWcw97Vk3Ev1cU00cVi
-         GWZNp6lwx1tVy5iZU+WaEiNjZwie8ciGtCwdyAlGM08yVrz/P4a+pG3PEUZM/mNH9v
-         RiKJGI67Xj8Lt/T5Djh1u/V5Dzpz4z7lCb+CX3G7C6jfBNbgVdsmONplcCxMclZn3O
-         PCVy1wnnYW9KA==
-Message-ID: <c3a5d08e-9c7c-4888-916a-ba4bd22a3319@collabora.com>
-Date:   Tue, 29 Aug 2023 18:07:04 +0500
+        Tue, 29 Aug 2023 09:09:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5744AA8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 06:08:56 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693314534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ofy911BTcj4/8yXuWPOvSKBlycNkyG2QcCvwhSrVb/U=;
+        b=kkcym89FpipUoaY5cguC31W+ClVgwzEOBnEel58xmog657e+QVk3MQkfuUpFJPgFYcQzXw
+        N6bFhQnN/rPi+nNrS5eXsr19rP0VxL8A5zi5oixRy0aw7FDMR3cLASxuoLe4APZXtFkKeg
+        Su/lVrsimWfpwI7RIiB9+kJRTLS85QVcSlDnP0yzLc7fYheXmMKjuQbxbiYJ0gLpnb2o9g
+        33sp/xAETCdSQnVjr8Kx+Y2Sz1jxltKHBWdBKJFRnbQTvIirYuBy5qRuIViIudooMjOVHm
+        EkwsvmFs+YT5FFMz6tAudTyLDAwzR5JjAGgUz4IB6VWJ/BSqIHQ9dzqNBCo0AQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693314534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ofy911BTcj4/8yXuWPOvSKBlycNkyG2QcCvwhSrVb/U=;
+        b=hXdj64BbiB/ICNIZ0vWhKwt4XiWZy1uM4rrgl6jKCZATdn2hRAsfH2DO5FMdugkt9oy7Lf
+        GDzeP1V7u91uFwBw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v2 7/8] printk: nbcon: Add emit function and
+ callback function for atomic printing
+In-Reply-To: <ZNY5gPNyyw9RTo4X@alley>
+References: <20230728000233.50887-1-john.ogness@linutronix.de>
+ <20230728000233.50887-8-john.ogness@linutronix.de>
+ <ZNY5gPNyyw9RTo4X@alley>
+Date:   Tue, 29 Aug 2023 15:14:53 +0206
+Message-ID: <87cyz6ro62.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux BPF <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: Fwd: inet6_sock_destruct->inet_sock_destruct trigger Call Trace
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <8bfaee54-3117-65d3-d723-6408edf93961@gmail.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <8bfaee54-3117-65d3-d723-6408edf93961@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/23 5:43 PM, Bagas Sanjaya wrote:
-> Hi,
->=20
-> I notice a regression report on Bugzilla [1]. Quoting from it:
->=20
->> When the IPv6 address or NIC configuration changes, the following kern=
-el warnings may be triggered:
->>
->> Thu Jun 15 09:02:31 2023 daemon.info : 09[KNL] interface utun deleted
->> Thu Jun 15 09:02:31 2023 daemon.info : 13[KNL] interface utun deleted
->> Thu Jun 15 09:02:32 2023 daemon.notice procd: /etc/rc.d/S99zerotier: d=
-isabled in config
->> Thu Jun 15 09:02:33 2023 daemon.info procd: - init complete -
->> Thu Jun 15 09:02:45 2023 daemon.info : 09[KNL] interface utun deleted
->> Thu Jun 15 09:02:45 2023 daemon.info : 15[KNL] interface utun deleted
->> Thu Jun 15 09:02:48 2023 user.notice firewall: Reloading firewall due =
-to ifup of lan6 (br-switch)
->> Thu Jun 15 09:02:51 2023 daemon.err uhttpd[2929]: cat: can't open '/tm=
-p/cpu.usage': No such file or directory
->> Thu Jun 15 09:03:03 2023 user.notice firewall: Reloading firewall due =
-to ifup of wg (wg)
->> Thu Jun 15 09:03:03 2023 daemon.info : 13[KNL] interface tunh activate=
-d
->> Thu Jun 15 09:03:03 2023 daemon.info : 16[KNL] fe80::5efe:c0a8:7df9 ap=
-peared on tunh
->> Thu Jun 15 09:03:03 2023 daemon.info : 08[KNL] 10.10.13.1 appeared on =
-tunh
->> Thu Jun 15 09:03:03 2023 daemon.info : 13[KNL] interface utun deleted
->> Thu Jun 15 09:03:03 2023 daemon.info : 05[KNL] interface utun deleted
->> Thu Jun 15 09:03:04 2023 auth.err passwd: password for root changed by=
- root
->> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 7: extra_command: not found
->> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 8: extra_command: not found
->> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 9: extra_command: not found
->> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 10: extra_command: not found
->> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 11: extra_command: not found
->> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 7: extra_command: not found
->> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 8: extra_command: not found
->> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 9: extra_command: not found
->> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 10: extra_command: not found
->> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/task=
-s: line 11: extra_command: not found
->> Thu Jun 15 09:03:35 2023 daemon.err uhttpd[2929]: Error: The backup GP=
-T table is corrupt, but the primary appears OK, so that will be used.
->> Thu Jun 15 09:03:35 2023 daemon.err uhttpd[2929]: Warning: Not all of =
-the space available to /dev/sda appears to be used, you can fix the GPT t=
-o use all of the space (an extra 6111 blocks) or continue with the curren=
-t setting?
->> Thu Jun 15 09:03:59 2023 daemon.info acpid: starting up with netlink a=
-nd the input layer
->> Thu Jun 15 09:03:59 2023 daemon.info acpid: 1 rule loaded
->> Thu Jun 15 09:03:59 2023 daemon.info acpid: waiting for events: event =
-logging is off
->> Thu Jun 15 09:11:16 2023 daemon.err uhttpd[2929]: getopt: unrecognized=
- option: no-validate
->> Thu Jun 15 10:06:07 2023 daemon.err uhttpd[2929]: getopt: unrecognized=
- option: no-validate
->> Thu Jun 15 10:09:27 2023 daemon.info : 09[KNL] interface utun deleted
->> Thu Jun 15 10:09:27 2023 daemon.info : 13[KNL] interface utun deleted
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.437330] ------------=
-[ cut here ]------------
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.439948] WARNING: CPU=
-: 1 PID: 19 at inet_sock_destruct+0x190/0x1c0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.440967] Modules link=
-ed in: pppoe ppp_async l2tp_ppp i915 wireguard video sch_fq_pie pppox ppp=
-_mppe ppp_generic mt7921u mt7921s mt7921e mt7921_common mt7915e mt76x2u m=
-t76x2e mt76x2_common mt76x02_usb mt76x02_lib mt76_usb mt76_sdio mt76_conn=
-ac_lib mt76 mac80211 libchacha20poly1305 ipt_REJECT curve25519_x86_64 cha=
-cha_x86_64 cfg80211 ax88179_178a zstd xt_time xt_tcpudp xt_tcpmss xt_stri=
-ng xt_statistic xt_state xt_socket xt_recent xt_quota xt_policy xt_pkttyp=
-e xt_owner xt_nat xt_multiport xt_mark xt_mac xt_limit xt_length xt_ipran=
-ge xt_hl xt_helper xt_hashlimit xt_esp xt_ecn xt_dscp xt_conntrack xt_con=
-nmark xt_connlimit xt_connbytes xt_comment xt_cgroup xt_bpf xt_addrtype x=
-t_TPROXY xt_TCPMSS xt_REDIRECT xt_MASQUERADE xt_LOG xt_IPMARK xt_HL xt_FL=
-OWOFFLOAD xt_DSCP xt_CT xt_CLASSIFY wmi via_velocity usbnet ums_usbat ums=
-_sddr55 ums_sddr09 ums_karma ums_jumpshot ums_isd200 ums_freecom ums_data=
-fab ums_cypress ums_alauda tulip ts_fsm ts_bm tcp_bbr slhc sch_pie sch_ca=
-ke rtl8150 r8168 r8152 r8125
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.441064]  poly1305_x8=
-6_64 pcnet32 nf_tproxy_ipv6 nf_tproxy_ipv4 nf_socket_ipv6 nf_socket_ipv4 =
-nf_reject_ipv4 nf_nat_tftp nf_nat_snmp_basic nf_nat_sip nf_nat_pptp nf_na=
-t_irc nf_nat_h323 nf_nat_ftp nf_nat_amanda nf_log_syslog nf_flow_table nf=
-_conntrack_tftp nf_conntrack_snmp nf_conntrack_sip nf_conntrack_pptp nf_c=
-onntrack_netlink nf_conntrack_irc nf_conntrack_h323 nf_conntrack_ftp nf_c=
-onntrack_broadcast ts_kmp nf_conntrack_amanda nf_conncount mlx5_core mlx4=
-_en mlx4_core mdev macvlan lzo_rle lzo libcurve25519_generic libchacha kv=
-m_intel kvm ipvlan iptable_raw iptable_nat iptable_mangle iptable_filter =
-ipt_ah ipt_ECN ip_tables iommu_v2 igc iavf i40e forcedeth e1000e drm_disp=
-lay_helper drm_buddy crc_ccitt compat_xtables compat cls_flower br_netfil=
-ter bnx2x bnx2 alx act_vlan 8139too 8139cp ntfs3 cls_bpf act_bpf sch_tbf =
-sch_ingress sch_htb sch_hfsc em_u32 cls_u32 cls_route cls_matchall cls_fw=
- cls_flow cls_basic act_skbedit act_mirred act_gact configs sg evdev i2c_=
-dev cryptodev xt_set
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.453861]  ip_set_list=
-_set ip_set_hash_netportnet ip_set_hash_netport ip_set_hash_netnet ip_set=
-_hash_netiface ip_set_hash_net ip_set_hash_mac ip_set_hash_ipportnet ip_s=
-et_hash_ipportip ip_set_hash_ipport ip_set_hash_ipmark ip_set_hash_ipmac =
-ip_set_hash_ip ip_set_bitmap_port ip_set_bitmap_ipmac ip_set_bitmap_ip ip=
-_set st ip6table_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip=
-6t_NPT ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf=
-_reject_ipv6 nfsv4 nfsd nfs bonding ip_gre gre ixgbe igbvf e1000 amd_xgbe=
- mdio_devres dummy sit mdio l2tp_netlink l2tp_core udp_tunnel ip6_udp_tun=
-nel ipcomp6 xfrm6_tunnel esp6 ah6 xfrm4_tunnel ipcomp esp4 ah4 ipip tunne=
-l6 tunnel4 ip_tunnel udp_diag tcp_diag raw_diag inet_diag rpcsec_gss_krb5=
- auth_rpcgss veth tun nbd xfrm_user xfrm_ipcomp af_key xfrm_algo virtiofs=
- fuse lockd sunrpc grace hfs cifs oid_registry cifs_md4 cifs_arc4 asn1_de=
-coder dns_resolver md_mod nls_utf8 nls_cp950 nls_cp936 ena shortcut_fe_ip=
-v6 shortcut_fe crypto_user
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.462923]  algif_skcip=
-her algif_rng algif_hash algif_aead af_alg sha512_ssse3 sha512_generic sh=
-a1_ssse3 sha1_generic seqiv jitterentropy_rng drbg md5 hmac echainiv des_=
-generic libdes deflate cts cmac authencesn authenc arc4 crypto_acompress =
-nls_iso8859_1 nls_cp437 uas sdhci_pltfm xhci_plat_hcd fsl_mph_dr_of ehci_=
-platform ehci_fsl igb vfat fat exfat btrfs zstd_decompress zstd_compress =
-zstd_common xxhash xor raid6_pq lzo_decompress lzo_compress dm_mirror dm_=
-region_hash dm_log dm_crypt dm_mod dax button_hotplug mii libphy tpm cbc =
-sha256_ssse3 sha256_generic libsha256 encrypted_keys trusted
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.472554] CPU: 1 PID: =
-19 Comm: ksoftirqd/1 Not tainted 6.1.34 #0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.473025] Hardware nam=
-e: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.1-0-g3208b098f51a-p=
-rebuilt.qemu.org 04/01/2014
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.473731] RIP: 0010:in=
-et_sock_destruct+0x190/0x1c0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.474204] Code: bc 24 =
-40 01 00 00 e8 af 0d f0 ff 49 8b bc 24 88 00 00 00 e8 a2 0d f0 ff 5b 41 5=
-c 5d c3 4c 89 e7 e8 e5 7e ed ff e9 70 ff ff ff <0f> 0b eb c3 0f 0b 41 8b =
-84 24 54 01 00 00 85 c0 74 9d 0f 0b 41 8b
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.475522] RSP: 0018:ff=
-ffc900000afda8 EFLAGS: 00010206
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.475947] RAX: 0000000=
-000000e00 RBX: ffff888015c9b040 RCX: 0000000000000007
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.476450] RDX: 0000000=
-000000000 RSI: 0000000000000e00 RDI: ffff888015c9b040
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.476966] RBP: ffffc90=
-0000afdb8 R08: ffff88800aba5900 R09: 000000008020001a
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.477588] R10: 0000000=
-040000000 R11: 0000000000000000 R12: ffff888015c9af80
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.478326] R13: ffff888=
-002931540 R14: ffffc900000afe28 R15: ffff88807dd253f8
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.478872] FS:  0000000=
-000000000(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.479434] CS:  0010 DS=
-: 0000 ES: 0000 CR0: 0000000080050033
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.479886] CR2: 00007f1=
-1fc4cd0a0 CR3: 0000000021cbe004 CR4: 0000000000370ee0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.480533] Call Trace:
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.480851]  <TASK>
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.481169]  ? show_regs=
-=2Epart.0+0x1e/0x20
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.481631]  ? show_regs=
-=2Ecold+0x8/0xd
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.482248]  ? __warn+0x=
-6e/0xc0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.483300]  ? inet_sock=
-_destruct+0x190/0x1c0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.484240]  ? report_bu=
-g+0xed/0x140
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.484937]  ? handle_bu=
-g+0x46/0x80
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.485448]  ? exc_inval=
-id_op+0x19/0x70
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.485963]  ? asm_exc_i=
-nvalid_op+0x1b/0x20
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.486360]  ? inet_sock=
-_destruct+0x190/0x1c0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.486888]  inet6_sock_=
-destruct+0x16/0x20
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.487289]  __sk_destru=
-ct+0x23/0x180
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.487638]  rcu_core+0x=
-28f/0x690
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.487964]  rcu_core_si=
-+0x9/0x10
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.488285]  __do_softir=
-q+0xbd/0x1e8
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.488973]  run_ksoftir=
-qd+0x24/0x40
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.489370]  smpboot_thr=
-ead_fn+0xdb/0x1d0
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.489826]  kthread+0xd=
-e/0x110
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.490572]  ? sort_rang=
-e+0x20/0x20
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.491356]  ? kthread_c=
-omplete_and_exit+0x20/0x20
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.491839]  ret_from_fo=
-rk+0x1f/0x30
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.492195]  </TASK>
->> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.492448] ---[ end tra=
-ce 0000000000000000 ]---
->=20
-> Later, the reporter revealed his setup:
->=20
->> This is an openwrt gateway device on x86_64 platform. I'm not sure the=
- exact version number that came up, it seems like 6.1.27 was not encounte=
-red before. I have encountered it since kernel 6.1.32, but it is also fro=
-m this version that I have relatively large IPv6 udp traffic, conntrack -=
-L|grep -c udp shows that the number is between 600 - 2000.
->=20
-> See Bugzilla for the full thread and attached log.
->=20
-> Anyway, I'm adding it to regzbot:
->=20
-> #regzbot introduced: v6.1.27..v6.1.32 https://bugzilla.kernel.org/show_=
-bug.cgi?id=3D217555
-> #regzbot title: kernel warning (oops) at inet_sock_destruct
-The same warning has been seen on 4.14, 5.15, 6.1 and latest mainline. Th=
-is
-WARN_ON is present from 2008.
+On 2023-08-11, Petr Mladek <pmladek@suse.com> wrote:
+>> +static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt)
+>> +{
+>> +	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
+>> +	struct console *con = ctxt->console;
+>> +	bool is_extended = console_srcu_read_flags(con) & CON_EXTENDED;
+>> +	struct printk_message pmsg = {
+>> +		.pbufs = ctxt->pbufs,
+>> +	};
+>> +	unsigned long con_dropped;
+>> +	struct nbcon_state cur;
+>> +	unsigned long dropped;
+>> +	bool done;
+>> +
+>> +	ctxt->backlog = printk_get_next_message(&pmsg, ctxt->seq, is_extended, true);
+>> +	if (!ctxt->backlog)
+>> +		return true;
+>> +
+>> +	/*
+>> +	 * @con->dropped is not protected in case of hostile takeovers. In
+>> +	 * that situation the update can be racy so annotate it accordingly.
+>> +	 */
+>> +	con_dropped = data_race(READ_ONCE(con->dropped));
+>> +
+>> +	dropped = con_dropped + pmsg.dropped;
+>> +	if (dropped && !is_extended)
+>> +		console_prepend_dropped(&pmsg, dropped);
+>> +
+>> +	/* Safety point. Do not touch state in case of takeover. */
+>> +	nbcon_state_read(con, &cur);
+>> +	if (!nbcon_context_can_proceed(ctxt, &cur))
+>> +		return false;
+>> +
+>> +	/* For skipped records just update seq/dropped in @con. */
+>> +	if (pmsg.outbuf_len == 0)
+>> +		goto update_con;
+>> +
+>> +	/* Set the write context before calling write callback. */
+>> +	wctxt->hostile_unsafe = cur.hostile_unsafe;
+>
+> Is there any reason why wctxt need to know about cur.hostile_usafe?
+> Will it use another console->*write*() callback or so?
+> Or will it do another decision based on this value?
 
-#regzbot monitor:
-https://lore.kernel.org/all/6144228a-799f-4de3-8483-b7add903df0c@collabor=
-a.com
+wctxt exists so that the driver understands its context. If
+wctxt->hostile_unsafe is set, the driver knows that an unsafe hostile
+takeover took place. This can certainly help the driver to make
+decisions about what it wants to do.
 
->=20
-> Thanks.
->=20
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217555
+> My concern is that this value could change anytime. If we
+> copy this value then it might get out-of_date easily.
 
---=20
-BR,
-Muhammad Usama Anjum
+If this value changes, it means the owner changed. So the driver will
+abort due to can_proceed() failing anyway.
+
+> When thinking more about it. The value should be the same as long
+> as this context owns the console. If we really need to have
+> the value in struct nbcon_wctxt then we should set it when
+> the structure is initialized under the lock.
+
+This code _is_ initializing wctxt.
+
+> Honestly, it looks weird to set it in nbcon_emit_next_record().
+> It looks like a random place to me. And it means the value is
+> invalid before nbcon_emit_next_record() was called.
+> Do we guarantee that it won't be used in other code paths?
+
+The wctxt structure only exists to serve the write callback. IMHO
+initializing it just before calling the callbacks is the correct
+placement.
+
+> It might make sense to do initialization of these values
+> with some actions. wxtxt might be initialized:
+>
+>    + when defined according to the context where
+>      it is defined.
+
+This is not appropriate because the same wctxt is recycled for multiple
+consoles. (The associated @console is initialized during acquire.)
+
+>    + when ctxt is acquired if the values might change
+>      according to the current state of the system.
+
+wctxt->len would still need to be set in nbcon_emit_next_record(). So we
+would have multiple locations that are initializing different parts of
+wctxt. I would prefer to have all the initialization in one place.
+
+>    + before each con->*write*() when the values
+>      might change even when the context is still
+>      acquired.
+
+This is how it is in v2. If the state values change, the driver bails
+out due to can_proceed() failing.
+
+>> +	else
+>> +		wctxt->outbuf = NULL;
+>
+> It looks weird to call con->write_atomic() when outbuf() is NULL.
+> It actually could never happen because of the above used:
+
+Right. I will remove that for v3.
+
+>> +update_con:
+>> +	if (dropped != con_dropped) {
+>> +		/* Counterpart to the READ_ONCE() above. */
+>> +		WRITE_ONCE(con->dropped, dropped);
+>> +	}
+>
+> I would personally call nbcon_seq_try_update(ctxt) before
+> updating con->dropped.
+>
+> If we are not able to udpate con->dropped then the current owner
+> will see the same lost messages. Or it is a REPLY_ALL in which
+> case the number is misleading anyway.
+>
+> That said, both ways are racy. And it is not worth too big
+> complexity.
+
+I also debated this for a short time. Keep in mind that we are talking
+about the following situation:
+
+A context successfully pushed out a dropped message and the printk record.
+
+The race is when the console has a hostile takeover and the new owner
+starts printing before or during @dropped and @seq being updated.
+
+As v2 is written, you will see either:
+
+- the dropped message and printk record a second time
+- only the printk record a second time
+
+With your suggestion, you will see either:
+
+- the dropped message and printk record a second time
+- only the dropped message a second time
+
+IMHO it is better to see the printk record a second time because it
+makes it clear that there was a repeat. By seeing only the dropped
+message a second time, a user might think that the number of records was
+really dropped twice. Also, it is strange to see the dropped message
+twice but not the printk record, since the dropped message preceeds the
+printk record.
+
+> I can't imagine a valid situation where nbcon_seq_try_update(ctxt)
+> fails and we could continue. If this happened then it would be
+> suspicious.
+>
+> I would do:
+>
+> 	if (!nbcon_seq_try_update(ctxt) {
+> 		/*
+> 		 * Anyone else manipulated the sequnce number.
+> 		 * It should not happen without loosing access
+> 		 * to the console.
+> 		 */
+> 		if (!nbcon_can_proceed(wctxt)
+> 			return false;
+> 		WARN_ON_ONCE(1);
+> 	}
+
+OK.
+
+John
