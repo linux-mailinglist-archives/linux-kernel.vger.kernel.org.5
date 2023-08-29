@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F11F78CA15
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DDC78CA1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 19:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237497AbjH2RCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 13:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
+        id S237595AbjH2RDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 13:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237477AbjH2RCB (ORCPT
+        with ESMTP id S237637AbjH2RC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 13:02:01 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791B01B6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:01:57 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcde83ce9fso70489921fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:01:57 -0700 (PDT)
+        Tue, 29 Aug 2023 13:02:59 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CC71AA
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:02:55 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c136ee106so604318766b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 10:02:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693328516; x=1693933316;
+        d=linaro.org; s=google; t=1693328574; x=1693933374;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EP6AGfbRBMW+VeI8tnFFQxhk1O1a76tNPwisayTqo1U=;
-        b=JPdfP7WY0mVRf4wgdZrnnoiZ2r9XDILaUrfFqqaQDbIQviaoaHweTETBqV1DE4tGnI
-         kQ+3qRXSmwi9OGISeaXpK2Txq5/iMRJ4j4NBSQDx0NCDIXns0vX5XH5xCjdI/nWRMEu/
-         FAKa+KzLMtuaXmqYOIH93xllPpQGQoYXPXfpCOi44ZxCKoE4q7yKobal3hB0NO3c45nq
-         1vn1z44wYovDD/Q429PCHnyEtAXr1HZRN+LxI6v3j83tom5/FPrHekfgq3ZuU56lsEq/
-         akfVE/Dy6RfX2VYb2fSS6owbyPcJuTaddy9sEhBbGJcCaiZUg8m0tkry5J4dYs+ebMss
-         ndVA==
+        bh=bldnbmVybBud45ZJz7mQ560SdzkuWgXUw7+WaPmzy2M=;
+        b=GNyD1v/mEPcl/zk66goLL/Q+M2OgwzdgDqvu9qw30W3tfUdMS9j3eQhqmYwBIjbnJ8
+         OfAS2nldcpoQCk0rovTP1wfjB53b3uOBf7VX1BsQvC0BXWEtpPfUrehgaQ7er02r6n4I
+         pGsoa0C75NuMY6fMSEuIcapZKE8HkHtajUJkFPdqm7Yrp+PeQgscNcIewTKkeGhD55y0
+         9i8dDPsxC11FQIVTIVeYPu1nOZ6tNev7HhWSyFh/VRHHk1dDGUdyX009svPeqqnh17uz
+         E9TjcgYV4VqQD6Rr/GJkPH4UDFRsa6OMi5/f5JxEKhnajclWlMwwAsMRRFSXfMozrUB3
+         R/sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693328516; x=1693933316;
+        d=1e100.net; s=20221208; t=1693328574; x=1693933374;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EP6AGfbRBMW+VeI8tnFFQxhk1O1a76tNPwisayTqo1U=;
-        b=D/IZmrF5O4bp6XLcns/nbWvxWGrkdvJCDf+mCBNQBG0nFetNR+xcKa9llcc5gMux4/
-         Mw/pso73z/iXC2gNfNO3XIOkajDaNxKprIyo2Iguv3g2cRHVz+YHVlVIIjCQk5OiExfe
-         Hqhl+xr61uzqfKVjRUt2/x2tqF4iEuZ5Z9WD9mgUYLwcrwQpYaLz42rxt0ZhfV5E7Ttu
-         9lgc3OwOK2S7FRFqTl7uKIE1+w87LiQEK90OGgIRWc/4dVsnhBUSJjJ+eMs0ERle/A2g
-         LhtiQyZwGdDE2811ExXocBOKxMfiLZ44ZsU0YF0m11uBWA7INsUkMTFW3dwmY/PFy1Vx
-         E/gA==
-X-Gm-Message-State: AOJu0Yw4zWXBwOJJooZlWDqPdV/4bWBn+cTE4/DRp89ejYZ4uUaRjhaP
-        3DfiIt81Myw3LSCyQUmvy9ISAg==
-X-Google-Smtp-Source: AGHT+IE3OrEJ+Qav8G7KcctqPXDx4EUgvUQ16vQX8PEqzmqTqEIR64SN4aeY1QpOd4zUME9kvYBnCQ==
-X-Received: by 2002:a2e:9118:0:b0:2bc:da4a:4649 with SMTP id m24-20020a2e9118000000b002bcda4a4649mr16649067ljg.22.1693328515638;
-        Tue, 29 Aug 2023 10:01:55 -0700 (PDT)
+        bh=bldnbmVybBud45ZJz7mQ560SdzkuWgXUw7+WaPmzy2M=;
+        b=RoGLTQbXAaf3F0Lm6L/D8DGrSj9XgPOSkG9dy6iVYCYUZVtYFDIKDSLZ+/HXxIXVTi
+         fl3iAPYuhEsxAMXAECaO1BRTfmHKi+QArqzVl90JbIeg8kYpNz/djhZGwZIkHLf4hGUk
+         RWrEZdSVbx1YTt4aYAoJnFSoqfT7yoK636zuAaImv/eEZL/CpBhxhDUqMzbPaamCfN3H
+         HR7RMDFMnCjX8hjj7vlfdKSvk4GW1M8pcXLJYZMp4fV47XvvLyrAsTY6WvdDNkKuO4gv
+         /Ir40yEAqMz3f3QGh4tUjOC5R2KJ+fqBazR4msVVro8y1EVS9FfEteftoAbPL+qqZepq
+         hvwg==
+X-Gm-Message-State: AOJu0YxMQWgLEQETVJDT6wWR9LR/JMf0nEAasEFFv63HmhG3Ftp9drxj
+        LmwbRpxHE3QElwu7qqlCNna7Ag==
+X-Google-Smtp-Source: AGHT+IGdvUShBa7B23B4k7U+l3LbZfQpW/c+8tVN/ml3RRu8aWbxm+RtW0v787C778RKVi+bfpmhzQ==
+X-Received: by 2002:a17:906:cc10:b0:9a3:b0c9:8203 with SMTP id ml16-20020a170906cc1000b009a3b0c98203mr10207132ejb.35.1693328573945;
+        Tue, 29 Aug 2023 10:02:53 -0700 (PDT)
 Received: from [192.168.0.22] ([77.252.47.196])
-        by smtp.gmail.com with ESMTPSA id t18-20020a1709063e5200b0099275c59bc9sm6211811eji.33.2023.08.29.10.01.53
+        by smtp.gmail.com with ESMTPSA id s11-20020a170906354b00b00999bb1e01dfsm6130049eja.52.2023.08.29.10.02.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 10:01:54 -0700 (PDT)
-Message-ID: <5ec0730e-cc3e-2cd9-4ee2-ff00847fcd95@linaro.org>
-Date:   Tue, 29 Aug 2023 19:01:52 +0200
+        Tue, 29 Aug 2023 10:02:53 -0700 (PDT)
+Message-ID: <1384c4a4-2abc-4534-9dba-5c0da9605b05@linaro.org>
+Date:   Tue, 29 Aug 2023 19:02:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 5/9] dt-bindings: usb: dwc3: Update IPQ5332 compatible
+Subject: Re: [PATCH 6/9] arm64: dts: qcom: ipq5332: Add USB3 related nodes
 Content-Language: en-US
 To:     Praveenkumar I <quic_ipkumar@quicinc.com>, robert.marko@sartura.hr,
         luka.perkov@sartura.hr, agross@kernel.org, andersson@kernel.org,
@@ -70,9 +70,9 @@ To:     Praveenkumar I <quic_ipkumar@quicinc.com>, robert.marko@sartura.hr,
         linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     quic_varada@quicinc.com
 References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com>
- <20230829135818.2219438-6-quic_ipkumar@quicinc.com>
+ <20230829135818.2219438-7-quic_ipkumar@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230829135818.2219438-6-quic_ipkumar@quicinc.com>
+In-Reply-To: <20230829135818.2219438-7-quic_ipkumar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,26 +86,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 29/08/2023 15:58, Praveenkumar I wrote:
-> IPQ5332 USB supports both USB2 and USB3. Updated the USB clocks
-> for the same.
-
-Subject: everything is an update. You are not updating compatible, but
-adding clocks. Describe your changes properly.
-
+> Add SS UNIPHY and update controller node for USB3.
 > 
 > Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
-
-I think I repeat this third time to Qualcomm this week. Split unrelated
-patches touching other subsystems to separate patchsets. Please share it
-with your colleagues, so there won't be a need to repeat it fourth time.
-
 > ---
->  .../devicetree/bindings/usb/qcom,dwc3.yaml    | 20 ++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
-> '
+> This patch depends on the below series which adds support for USB2 in
+> IPQ5332
+> https://lore.kernel.org/all/cover.1692699472.git.quic_varada@quicinc.com/
+> 
+>  arch/arm64/boot/dts/qcom/ipq5332.dtsi | 39 ++++++++++++++++++++++-----
+>  1 file changed, 32 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+> index e6baf694488c..7fbe6c9f4784 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+> @@ -158,6 +158,27 @@ usbphy0: phy@7b000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		ssuniphy0: ssuniphy@4b0000 {
+
+From where did you get such pattern of node naming? Downstream, right?
+Please, do not work on downstream but upstream.
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
