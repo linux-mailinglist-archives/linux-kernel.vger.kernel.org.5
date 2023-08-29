@@ -2,138 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED4C78C834
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2728A78C838
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 17:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237165AbjH2PBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 11:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
+        id S237198AbjH2PCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 11:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbjH2PAj (ORCPT
+        with ESMTP id S236719AbjH2PCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 11:00:39 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2095.outbound.protection.outlook.com [40.107.114.95])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA8A184
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:00:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F019AOtlL6dLNV/AUPy2tjesaIv53bvYqY6YrMM6KnSL7F8wpFp4bUSU7vG1u6xrnwxpX+z99tjVM6/LUdYzBg5ad3cwF2bnBzlFRB62nzkVrzj0Ut1rbpClYNaMVO23wlppzAOF2bBm7mENyfodra1MXunY+4d9l9xwJKgRMeY6PD1uyvMOO24Aqwq2xsWAAhxAXcGIa4qJL7N04Vruapww0jjDj9erVYW6CmtjRwiK9JJoQVGGj4qAxKbNFJfLuMabhqC4QbTNHXkFVWM5AbFrCUiexFOfQDbDVJSjCwt/lIj2bJRmPiXdA0Gu1DaEYrtrUahQ1rQ+RB/bMauU1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aC3I7S8j8cLKbaSrf9a6uL75WGPtX11xcbwbcbPK5Es=;
- b=MKTxqNw64zNEStK2YHxYMRtg5rDzBGbtNB8yLzNVicu/tPz4RjfG2sK5AkIeO/u9R+NQ5qSbnsclM98IzRj8dGaaWl1YVtD7cdiA0vBenU+oWgl9fWGC7+5qezmMi9jMcBmo7tSuTIGcEtWR8ntaSVvircNLYYfvzReZ/0Wg2jkRZMSfPieut6OZNccmtKFW+Q9xXJANRnPviHxsML1EgWR0snfcMOP/hI75nrfpOOT2LPWipSTJJOBSxGBaWB6DmTKEbIfWC2Xdjn7hn5CbsCxKTSThBlWrgVmtYBOlV1UGxWZIoW1HsP6QM96mmwiuNCnp9Ra9cxZ3Q1qifxtiuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aC3I7S8j8cLKbaSrf9a6uL75WGPtX11xcbwbcbPK5Es=;
- b=mLKdo/F52Od8HOH/begROir66G31Il4XwkIsrls3AnbqmwoECdvTvWrBy3Svsot53bQjJ9cVEMlvyBSSUrHqhE0BripRo98yu+PzBHRgW6KyEw+mGEzKjqXqyHmDRPZp7OrBiNIoirktJT1uDr0AkFWaFjx9G5cFRdok0630K3o=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYCPR01MB8520.jpnprd01.prod.outlook.com (2603:1096:400:13b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Tue, 29 Aug
- 2023 15:00:34 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6745.015; Tue, 29 Aug 2023
- 15:00:34 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <x1077012@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 2/2] ASoC: tlv320aic32x4-i2c: Simplify probe()
-Thread-Topic: [PATCH v2 2/2] ASoC: tlv320aic32x4-i2c: Simplify probe()
-Thread-Index: AQHZ2eNQZPF0GhfjqUe5ZwzG+CwswrABXvsAgAAAN/A=
-Date:   Tue, 29 Aug 2023 15:00:34 +0000
-Message-ID: <OS0PR01MB5922EE87436B6F74F5AB311586E7A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230828191014.138310-1-biju.das.jz@bp.renesas.com>
- <20230828191014.138310-3-biju.das.jz@bp.renesas.com>
- <ZO4HxMErjEPvHuM2@smile.fi.intel.com>
-In-Reply-To: <ZO4HxMErjEPvHuM2@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYCPR01MB8520:EE_
-x-ms-office365-filtering-correlation-id: 1026f647-7ada-4111-f9dc-08dba8a0b270
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tPsz8biM8A5KvoSPXyeST8qit1C3d95QdPNDMoONT4HxAC45LcrEBDQsDiZ1sE70OFbuIUdClHqTN1QG5BRe9JAn2FQp78Ou/3c/VvCxrQ/UZIq0a8lJT73F+2hP4X3/FUcIJtT2FzZHKI1j+rGKSvxtnxF4HjQisqqO5OLcByNBog00T1twOQGHByikmmD61PpNcB7L386hMr2qKmjJwPcNnne1zGFp9xirjhCKsaypPB6yPeiAmbYIm4jJHyl3uwzMBQCJTMLxg/LpiwyPyfv+djsGk3bH2/leKkRlA9aox/BVB2O1uHjARJG0riijLpg7/cHM3qtOW6xfyf9ct2nTbcs7v/2ZW+rxJP3nXfT6wBr6QOhzTR+rVj9yCuK0jYJ8nQHsCCIFpBWXFK0Fx5MNSaZWJAAH84sr9Tru82gk+Vpg/+7uMts6NDY8MldNjzWbvaOM6biXCB6InRqzKYD+z96C6pRrivPohNlv65iJZQeVBmMPZwBG5KMnNOD18JKCz190hu9qhhuYTJ/7P3ikVrGdP5c82H+1Y9Huc7FDvVvu8g2PjeY3/1nEEMhjuXxWM9Ol6RQ2jPUJcGbFrbd+GAMEJm9bO/mHu9hUJmIxVaSR+CKCiSe2EpuqmYOY
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39860400002)(346002)(136003)(396003)(186009)(451199024)(1800799009)(6506007)(9686003)(7696005)(71200400001)(478600001)(4744005)(76116006)(2906002)(7416002)(316002)(54906003)(66446008)(6916009)(64756008)(66946007)(66476007)(66556008)(52536014)(41300700001)(5660300002)(8936002)(8676002)(4326008)(122000001)(33656002)(55016003)(38070700005)(38100700002)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CvUvTcCT0WDZqhVrmwu4mlAsmGwXznJW9gZmjqkx4i/5iilbYIjvTf+66h9w?=
- =?us-ascii?Q?Udwpz3G55GUJlx8MFkuEiDdR1KUC1rxyMBMVskKKlMavhasGrKuS27PfCb5q?=
- =?us-ascii?Q?LBP2Z+c6ELpJ+lanDGnr84j9fqiRhQ5IxsiJYW59iCnKkJyUh7cK+bySY4C+?=
- =?us-ascii?Q?+XWNOCqPo6xt3NiWTgvOkkXuUICGrFZecZwrrXs3F0e/UEynK+eqPhcOXa0z?=
- =?us-ascii?Q?t9Lm7c1msLyBQ6Ogb4E8Qck6Lk3LDzFhQ+LER18kzjsdj+N9i+a9xJu2YU9L?=
- =?us-ascii?Q?1tzR3FGfw0710fvuw+UPCTPqbQ0eS+6ATi7pXkumW78uJDfRR62UEMsthdm2?=
- =?us-ascii?Q?xNez1Y+uCWWVnFEs4ikha+doooVU8tj6W30FwaMQypn3AIgrRSdH9j44GOO2?=
- =?us-ascii?Q?aWSkmHvWqemkL4zitXMTQ14+og9L14/yjJyc9Z2KjUNOlSpqdmUfu40cH61n?=
- =?us-ascii?Q?4X1ziyTcLTO2yHk75rwcapgV+g/lcFYwL8HzWoYH82QCOYqRKLtLunAx7A49?=
- =?us-ascii?Q?DO3MUbuL+MInGg0NgEAsEdpbLzD1qXlBCxPzRPoelbvqj3aeC3bCEaDRtde5?=
- =?us-ascii?Q?sU9YiaMJ28DZc8YMZwKcybEkFcCwd9L1tXG6z3M+HGItljIQSpiRd03/b73y?=
- =?us-ascii?Q?pNDjfLiV37QcC2/uYVsiWD34zS9EAOoFyFXGxXZglvL5UPtj4dd/WGxs2rc8?=
- =?us-ascii?Q?LgcyWNKVxDG2TNRfANqegbbPEc9jW6dB/HXYBzedv2e7gEheJMBB2GDnvGyq?=
- =?us-ascii?Q?Lz1Qp+evfH6+vcN7XC/ZQaEnWiqugWNOct7GxTcLGmanBuiELStxYkJliKCy?=
- =?us-ascii?Q?u+feDqICR6NfF7hRcDhB5lvOZIcVx00YqfDMarZTVdcc49x/Y+Qz7RIQdt8P?=
- =?us-ascii?Q?+kJGJ8I+8ncExLOyc0w8O0RcmC3ZjtQ6bm3XWvWGdMRv4CSmJKhcPmDG5PsR?=
- =?us-ascii?Q?no7Gne5/JP/EQ/5jD2eaYc2Dc4WY13AdtrLCZSHiF45GGeAnbLH2lBRhyXCS?=
- =?us-ascii?Q?hSN2AeplyTGMWKQrHSC1FPhZnRcRWKGDhLHkP9FhlXAxtOBAhc8QSv0PR+1G?=
- =?us-ascii?Q?Xa6Oi/lGaqrfTJxN+FITzPDxojC25zhMEgx7aj6BRTUOTajIxd/ue5ZNR8Xr?=
- =?us-ascii?Q?e/dYjaEVRLyFVsw58VMXzfMb57vnflmwxxb94DdNhh13Yg8lnQ7v48gNmonQ?=
- =?us-ascii?Q?VL41+oFTHBYeSDO4DVYOAowtEnrclIsDSy5W2tZSKP35jTNjKcmIBJxuZwKK?=
- =?us-ascii?Q?rpjUNWpwHgXs7pNHbGmGmAeKUxhnvtv+52ROAVq9Zwnu5/UskvzrCqS265Ha?=
- =?us-ascii?Q?vP3YZtsvWGFtFTUgpAOr6ACRuQSTc6qttvHwBCuR9RTsE2+DwQqF8mMfii7j?=
- =?us-ascii?Q?T+uGXmALmQPb7/cNw3LgKmyTLN9IidRgLgCOL3p/ucyejALR26ZOtuRlymEk?=
- =?us-ascii?Q?3rURtqr3BTK7gqlUbC3tnopYZay7jq8gzSjh7GKavhpYBcfPWZzSoyPxL+md?=
- =?us-ascii?Q?ONoGbmjoHzSxh8saSV16IVU790FEEU0VqCbWO0LsNCAemT/mmqzdMJYmO5zG?=
- =?us-ascii?Q?R7kScl5OUGbDj9W5nGk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 29 Aug 2023 11:02:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585791BC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693321287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6h9pTCs0QqfZaahhz4vtRzmjxLiM0cNxR6bc6DX4y54=;
+        b=GQOo9BoQYkd3MaQen8qr9TubC7oAhCdv00epOPM44qdYDGGln0SsYjpVWh7HVOBwwfqWBA
+        TqSJPB4FdfQkeEMpAKr76hsMc2Wq3AAlRZExAZLBC9wczLdAvBNwu2xVxuPtF7cvH2LhYd
+        TSp2PexowwKoDstybNkzqmb2EauQmCk=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-626-cfhuSeRjMfCJrSOCb6Fdhg-1; Tue, 29 Aug 2023 11:01:24 -0400
+X-MC-Unique: cfhuSeRjMfCJrSOCb6Fdhg-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-76da52a42bcso563800285a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 08:01:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693321284; x=1693926084;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6h9pTCs0QqfZaahhz4vtRzmjxLiM0cNxR6bc6DX4y54=;
+        b=C2Qe95FRt/cTlt51mCdFYzOklN7hOV5IdGaK+UL+IZux0kNEFlMLu927QjW7r9Mq0q
+         OEKizHGRXrZ/oXRiSAQwqnL1HkNxeEeesVo198p4amR/lCngfzuVwbqpK2f82WAVTkZp
+         cux0jOlkvatPCfXcZ9MiVYzC2bcPuM0tQCjZXrYBSXbSOSJXV3ovwKiY7MkRVJJk8F5Y
+         uhkpHC5FESYl1wYE5wGB7mlrVkW7RxVy14K/vCxafsDg8NId0wFllWnrc0A6MY85Zd9a
+         qMGHhn9+iQRue8gQAUvGz0z3rtkW8OqxW1qubuon+TbzVceZ87HFkFWglGxNb48wdj5F
+         wldg==
+X-Gm-Message-State: AOJu0Yz9HytlxeMz1jW+lYdoNtiBHhRXIR1tv8aWQrI5OAiWJo9nponW
+        6VnyXCET7p2wL63vp5a4jxZ3wxSXEMWrJnxi4Eo3uVNaR9lLeRdXwzHgcfSegDbFjZBf4a7LRQv
+        07r7ZX4edAoBGEKi6cw4Pm95B
+X-Received: by 2002:a05:620a:40c5:b0:765:a89b:ce04 with SMTP id g5-20020a05620a40c500b00765a89bce04mr36037761qko.59.1693321283641;
+        Tue, 29 Aug 2023 08:01:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH0jqm5RvEJS18dC9OLaTz6lha6Ba+n8aGLpLZK8QizD0gPmS2lHt0o0jo32ccmdIMtiV6xSg==
+X-Received: by 2002:a05:620a:40c5:b0:765:a89b:ce04 with SMTP id g5-20020a05620a40c500b00765a89bce04mr36037732qko.59.1693321283363;
+        Tue, 29 Aug 2023 08:01:23 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::49])
+        by smtp.gmail.com with ESMTPSA id ow30-20020a05620a821e00b0076c701c3e71sm3133005qkn.121.2023.08.29.08.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 08:01:22 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 10:01:20 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 6/7] net: stmmac: Fix comment about default
+ addend calculation
+Message-ID: <matyki35liqllsiokgn4xrfxabk4wzelif56vtlkvauhkpssor@ohy5a25yk6ja>
+References: <20230824-stmmac-subsecond-inc-cleanup-v1-0-e0b9f7c18b37@redhat.com>
+ <20230824-stmmac-subsecond-inc-cleanup-v1-6-e0b9f7c18b37@redhat.com>
+ <krvdz4filnpzhdy7tjkaisa2uzeh2sjzc2krno2rns24ldka37@abay33wdcck4>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1026f647-7ada-4111-f9dc-08dba8a0b270
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2023 15:00:34.4564
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qGpE0ZEoO0Bb14rdcinkMpLinGC4iUYFFeEaALXm4moUYiki9ih0tf4WFuQS639lm5F3l42VzrAv9cCtn1Zxs8CFpapu4etP2eRL2gjmdwI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB8520
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <krvdz4filnpzhdy7tjkaisa2uzeh2sjzc2krno2rns24ldka37@abay33wdcck4>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy Shevchenko,
+On Sun, Aug 27, 2023 at 03:02:07AM +0300, Serge Semin wrote:
+> Hi Andrew
+> 
+> On Thu, Aug 24, 2023 at 01:32:57PM -0500, Andrew Halaney wrote:
+> > The comment neglects that freq_div_ratio is the ratio between
+> > the subsecond increment frequency and the clk_ptp_rate frequency.
+> > 
+> > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> > ---
+> >  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > index dfead0df6163..64185753865f 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > @@ -853,10 +853,12 @@ int stmmac_init_tstamp_counter(struct stmmac_priv *priv, u32 systime_flags)
+> >  	/* Store sub second increment for later use */
+> >  	priv->sub_second_inc = sub_second_inc;
+> >  
+> 
+> > -	/* calculate default addend value:
+> > -	 * formula is :
+> > -	 * addend = (2^32)/freq_div_ratio;
+> > -	 * where, freq_div_ratio = 1e9ns/sub_second_inc
+> > +	/* Calculate default addend so the accumulator overflows (2^32) in
+> > +	 * sub_second_inc (ns). The addend is added to the accumulator
+> > +	 * every clk_ptp cycle.
+> > +	 *
+> > +	 * addend = (2^32) / freq_div_ratio
+> > +	 * where, freq_div_ratio = (1e9ns / sub_second_inc) / clk_ptp_rate
+> >  	 */
+> >  	temp = div_u64(NSEC_PER_SEC, sub_second_inc);
+> >  	temp = temp << 32;
+> 
+> I am not well familiar with the way PTP works but at my naked eyes the
+> calculation implemented here looks a bit different than what is
+> described in the comment.
+> 
+> Basically config_sub_second_increment(clk_ptp_rate, sub_second_inc)
+> returns clk_ptp_rate period in nanoseconds or twice that period, or have it
+> scaled up on 0.465. So we have one of the next formulae:
+> X1 = NSEC_PER_SEC / clk_ptp_rate
+> X2 = 2 * NSEC_PER_SEC / clk_ptp_rate
+> X3 = X1 / 0.465
+> X4 = X2 / 0.465
 
-> Subject: Re: [PATCH v2 2/2] ASoC: tlv320aic32x4-i2c: Simplify probe()
->=20
-> On Mon, Aug 28, 2023 at 08:10:14PM +0100, Biju Das wrote:
-> > Simplify probe() by replacing of_match_node() and i2c_match_id() with
-> > i2c_get_match_data().
->=20
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> assuming that you finish this by converting SPI part as well.
+X5 = PTP_SSIR_SSINC_MAX (0xFF) is a case as well to consider
+> 
+> Then stmmac_init_tstamp_counter() handles the retrieved period in the
+> next manner:
+> temp = div_u64(NSEC_PER_SEC, sub_second_inc);     // Convert back to frequency
+> temp = temp << 32;                                // multiply by 2^32
+> addend = div_u64(temp, priv->plat->clk_ptp_rate); // Divide by clk_ptp_rate
+> 
+> The code above is equivalent:
+> 
+> addend = ((NSEC_PER_SEC / X) * 2^32 ) / clk_ptp_rate = 
+>          (2^32 * NSEC_PER_SEC / X) / clk_ptp_rate = 
+>          2^32 / (clk_ptp_rate / (NSEC_PER_SEC / X))
+> 
+> AFAICS this doesn't match to what is in the comment (X = sub_second_inc).
+> freq_div_ratio gets to be inverted. Does it?
 
-Sure.
+You're right, my comment needs to be inverted to match all of the above
+(which is a great recap, thank you!).
 
-Cheers,
-Biju
+> 
+> Substituting X to the formulae above we'll have just four possible results:
+> addend1 = 2^32
+> addend2 = 2^32 / 2
+> addend3 = 0.465 * 2^32
+> addend4 = 0.465 * 2^32 / 2
+
+addend5 = 2^32 / (clk_ptp_rate / (NSEC_PER_SEC / 0xFF))
+
+I think that would be the PTP_SSIR_SSINC_MAX case (X5) I inserted above
+
+> 
+> So basically clk_ptp_rate is irrelevant (neglecting all the
+> integer divisions rounding). Is that what implied by the implemented
+> algo?
+> 
+> Am I missing something? (it's quite possible since it's long past
+> midnight already.)
+
+I believe you've captured everything, minus the one conditional I added.
+
+I think because of that conditional we can't just nicely code up some
+contants here independent of sub_second_inc. Now I can blame the morning
+and not enough coffee, do you see anything wrong with that thought
+process? I'm all ears for suggestions for cleaning this up, especially
+since others like Richard have indicated that it could use some love,
+but right now I'm hung up thinking the best I can do is fix the bad
+comment in this patch.
+
+Thanks for the review!
+- Andrew
+
