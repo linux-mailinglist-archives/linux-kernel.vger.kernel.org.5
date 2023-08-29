@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DF678CBA1
+	by mail.lfdr.de (Postfix) with ESMTP id 88D5D78CBA2
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 20:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238163AbjH2SBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 14:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        id S238169AbjH2SBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 14:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235241AbjH2SAg (ORCPT
+        with ESMTP id S237745AbjH2SAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 14:00:36 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FF011B;
-        Tue, 29 Aug 2023 11:00:33 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a3ced3ec6so3736937b3a.1;
-        Tue, 29 Aug 2023 11:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693332033; x=1693936833; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HHaSrUHWKq22c6/csllPkR1MWun8gSPfHwy/CrQ/MWw=;
-        b=jHYNc+qHX5PWxDPOr5+lj3PXKa9+qui0nfFpsjUawM3IckVlfMi6PS+QmqRejFEI0t
-         5G+0/zGSfHom4i5KUhOXlogicf8NzIyfkYdHgMjH6Gnhl5zkv3bQ5UdzzkBI/U/rz1Bb
-         79ggH5675CQTVLc+qxkz7Gj31QBUiYeclqQI0Jzm/3S1MSK9AsLQ8PZfFbmRSJfPDUlb
-         a7rwAg52Y2smCx6kTLOlxGEU+Mb0dmSiZidtXvmQYHtCy9r3njelYD8ZgLlv1cIGjmvN
-         jYnTjuK/lENcW6mtgJIjcSqGfvJSSy9DqpJxJKBD4dFxyBMI1mdTVhorxcredoYlTq2y
-         SL7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693332033; x=1693936833;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HHaSrUHWKq22c6/csllPkR1MWun8gSPfHwy/CrQ/MWw=;
-        b=Hj6R9Pk+6e7ol1kc2toMfb0ghrajnsncax75KsF2tYxW9jipAEZAyjcqADwn9HyBxY
-         jKx1J3wWIgWg8kfAf0dgUJMeVNXDW7UbRng8SxdrxAYql7RCO7jC6eVfppzpOFDUvI/O
-         5vLh/2BoVYfmFDC3NFZpiOifAm9ae5PlSQqWDd/I0P5ekUmL+lkkhaPZPrnzGYiNsQFv
-         qr45+H8eERkjhyoAoa5wmtX8wX6Us3vAv7mnPe6i+wOBKvMHg/PIDo5MoiAIf1/ygRUZ
-         0to3Njl6T5tPtELG2tGVgrlHQI14iTQQYTMK0fJY7EoToon67I6OM8dZY4wc85ahdzl5
-         YRgA==
-X-Gm-Message-State: AOJu0YzNB6Uur7Vxvs1MSeYjFZT2UpFmJjAGXWfyRa4MfcvXmDuEuEJa
-        rwh5CSX33UWJ5chMlkwlAn8=
-X-Google-Smtp-Source: AGHT+IET8lPq9rFGe1yJQbX1R9V7hGIScp5mNLrdAlzxu0lN3q+6e6vQtRLyrk6QhK7LWOOwuyBrww==
-X-Received: by 2002:a05:6a20:7f86:b0:134:8d7f:f4d9 with SMTP id d6-20020a056a207f8600b001348d7ff4d9mr50257pzj.52.1693332033202;
-        Tue, 29 Aug 2023 11:00:33 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:100e:2f74:981c:2bef:d96d:9de7])
-        by smtp.gmail.com with ESMTPSA id c5-20020a62e805000000b00689f10adef9sm8782870pfi.67.2023.08.29.11.00.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 11:00:32 -0700 (PDT)
-From:   coolrrsh@gmail.com
-To:     fenghua.yu@intel.com, dave.jiang@intel.com, vkoul@kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Rajeshwar R Shinde <coolrrsh@gmail.com>
-Subject: [PATCH v2] dmaengine: idxd: Remove redundant memset() for eventlog allocation
-Date:   Tue, 29 Aug 2023 23:30:27 +0530
-Message-Id: <20230829180027.6357-1-coolrrsh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 29 Aug 2023 14:00:43 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408DF11B;
+        Tue, 29 Aug 2023 11:00:40 -0700 (PDT)
+Received: from [IPV6:2804:431:a881:db00:51cf:cbff:7cc4:3f6d] (unknown [IPv6:2804:431:a881:db00:51cf:cbff:7cc4:3f6d])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D0D1D66071FD;
+        Tue, 29 Aug 2023 19:00:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693332039;
+        bh=i73/jHaGWMu/rHjW04TeYQepCq+QBhdF1yKqAZFgAcU=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=VZZ/fE0uEra22irHH9fjGW7ATFx9yijAUBJo7Sngt8KbcC4OL/M0Xh1YwwgXZvnSM
+         ivABQuerNkyG3mnOyroepgYzmDDQaluEZ4eMWYpkX6GUgnPkrGAxsHDPcdwTW5u3jY
+         fva1DczVm+HUv0Et/9vMYdqbwhV0VC3nQ1vp/7SZ54X7qHx3vbj/Mj0P8uebn6L6lq
+         fd5tO+rG4EEaKMzekqXWgadmfG4Z79dS5cmKmYv8QWe7mbYAswVgTr1GqpMHD5o8f4
+         1vMGdN9wE6KewgDEaFhlx03moJHf5MInojeiZE5pIWdyP5CX65x1HM+q0svdRDtuoQ
+         x4HZo7SZmYNgA==
+Message-ID: <04d7610f-5057-3faa-1a11-716c29400e7e@collabora.com>
+Date:   Tue, 29 Aug 2023 15:00:32 -0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] drm: ci: docs: fix build warning - add missing escape
+Content-Language: en-US
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, airlied@gmail.com
+References: <20230824164230.48470-1-helen.koike@collabora.com>
+ <ZO4xj/sHodsc8+X3@phenom.ffwll.local>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <ZO4xj/sHodsc8+X3@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,37 +57,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
-dma_alloc_coherent function already zeroes the array 'addr'.
-So, memset function call is not needed.
 
-This fixes warning such as:
-drivers/dma/idxd/device.c:783:8-26:
-WARNING: dma_alloc_coherent used in addr already zeroes out memory,
-so memset is not needed.
+On 29/08/2023 14:57, Daniel Vetter wrote:
+> On Thu, Aug 24, 2023 at 01:42:30PM -0300, Helen Koike wrote:
+>> Fix the following warning:
+>>
+>> Documentation/gpu/automated_testing.rst:55: WARNING: Inline emphasis start-string without end-string.
+>>
+>> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> 
+> Applied this, sorry for the delay. I also rebased the tree onto latest
+> drm-next, in case there's any fixes for the current set of ci support that
+> need applying.
 
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
----
-v1->v2
-Renamed the subject line
----
- drivers/dma/idxd/device.c | 2 --
- 1 file changed, 2 deletions(-)
+np, thanks for picking it up.
 
-diff --git a/drivers/dma/idxd/device.c b/drivers/dma/idxd/device.c
-index 5abbcc61c528..7c74bc60f582 100644
---- a/drivers/dma/idxd/device.c
-+++ b/drivers/dma/idxd/device.c
-@@ -786,8 +786,6 @@ static int idxd_device_evl_setup(struct idxd_device *idxd)
- 		goto err_alloc;
- 	}
- 
--	memset(addr, 0, size);
--
- 	spin_lock(&evl->lock);
- 	evl->log = addr;
- 	evl->dma = dma_addr;
--- 
-2.25.1
+> 
+> The other series I've seen looks like it's adding more support, I guess
+> that can be skipped for the initial stuff?
 
+Yes, it enables more tests (which is good for getting more feedback from 
+people) but yeah, I guess it can be skipped for the initial thing.
+
+Regards,
+Helen
+
+> -Sima
+> 
+>>
+>> ---
+>>
+>> Patch for topic/drm-ci
+>>
+>> V2:
+>> - Fix typo s/scape/escape
+>>
+>> ---
+>>   Documentation/gpu/automated_testing.rst | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/gpu/automated_testing.rst b/Documentation/gpu/automated_testing.rst
+>> index 1b87b802ac7f..469b6fb65c30 100644
+>> --- a/Documentation/gpu/automated_testing.rst
+>> +++ b/Documentation/gpu/automated_testing.rst
+>> @@ -52,7 +52,7 @@ IGT_VERSION
+>>   drivers/gpu/drm/ci/testlist.txt
+>>   -------------------------------
+>>   
+>> -IGT tests to be run on all drivers (unless mentioned in a driver's *-skips.txt
+>> +IGT tests to be run on all drivers (unless mentioned in a driver's \*-skips.txt
+>>   file, see below).
+>>   
+>>   drivers/gpu/drm/ci/${DRIVER_NAME}-${HW_REVISION}-fails.txt
+>> -- 
+>> 2.34.1
+>>
+> 
