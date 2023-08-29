@@ -2,161 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE2C78BC84
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FF978BC82
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 03:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbjH2Bzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Aug 2023 21:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
+        id S235032AbjH2Byt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Aug 2023 21:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235100AbjH2Bzc (ORCPT
+        with ESMTP id S235206AbjH2Byb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Aug 2023 21:55:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633A0184
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Aug 2023 18:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693274076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=YeQOl0ZS3saHbXQy2AG80w7b5li3nGbIMrsS1CssN30=;
-        b=Y8Mmx6Sji2P3cOwXXdMOkJuXfbKqT88qo28z4UFHV9UR/hRTFASZxDfEJgnEBbmYNxebVi
-        6laz+zKcoIqDZLf7pakQE1ASOk9JAtBrrEbhsbAZFlGHEKcxgJbew3sNSVMKHzA/s292NE
-        9Vs4sB6BEi8xV0Jk4sW+5nVE8QhO2DE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-376-7kD-3s0KMKmslGvURDC0qg-1; Mon, 28 Aug 2023 21:54:34 -0400
-X-MC-Unique: 7kD-3s0KMKmslGvURDC0qg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 28 Aug 2023 21:54:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09D9188;
+        Mon, 28 Aug 2023 18:54:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6FBFA101A528;
-        Tue, 29 Aug 2023 01:54:34 +0000 (UTC)
-Received: from gshan.redhat.com (unknown [10.64.136.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5126740C2063;
-        Tue, 29 Aug 2023 01:54:31 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, david@redhat.com,
-        jasowang@redhat.com, mst@redhat.com, xuanzhuo@linux.alibaba.com,
-        shan.gavin@gmail.com
-Subject: [PATCH] virtio_balloon: Fix endless deflation and inflation on arm64
-Date:   Tue, 29 Aug 2023 11:54:21 +1000
-Message-ID: <20230829015421.920511-1-gshan@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 32A7663709;
+        Tue, 29 Aug 2023 01:54:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4469FC433C8;
+        Tue, 29 Aug 2023 01:54:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693274067;
+        bh=pPmTDiK4MLHcRRW0Gn3reBk9e6g2ANdvYrkajhi3BUM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DvH1RRnIEYEoWOgAgYnjxk42+4AeHPBoIszQqlDaiyyQ9Z9nUIjFqURvwHveQ0GQF
+         Vjs8iM4Z2Ou/GlGB1a+ynXQyqqQ4oN3CXpwu37TloaLiRp4o+GQ9LWaCzXLjCgeyce
+         DZ8TdXJJgpk02WKltUJpOtPF/vxE9e2kJwpK0tiGA4P/8SjeBKVz3eFnOa9o1OwheG
+         yqCZLDWFa56fD1yBDxgbKtyTmCpfHQkgb0uARQM3mNG5AVJETRdVCUVRsOLoJ+uVGE
+         si0m9Gk/PdMhxhJvNWxBtiilvxS4uo/SwPBPnlB/vDCCa1xTUJGtlWnAIqjBgflPDC
+         E+yL9B8KPs62Q==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.4 000/129] 6.4.13-rc1 review
+Date:   Tue, 29 Aug 2023 01:54:24 +0000
+Message-Id: <20230829015424.50202-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230828101157.383363777@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The deflation request to the target, which isn't unaligned to the
-guest page size causes endless deflation and inflation actions. For
-example, we receive the flooding QMP events for the changes on memory
-balloon's size after a deflation request to the unaligned target is
-sent for the ARM64 guest, where we have 64KB base page size.
 
-  /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
-  -accel kvm -machine virt,gic-version=host -cpu host          \
-  -smp maxcpus=8,cpus=8,sockets=2,clusters=2,cores=2,threads=1 \
-  -m 1024M,slots=16,maxmem=64G                                 \
-  -object memory-backend-ram,id=mem0,size=512M                 \
-  -object memory-backend-ram,id=mem1,size=512M                 \
-  -numa node,nodeid=0,memdev=mem0,cpus=0-3                     \
-  -numa node,nodeid=1,memdev=mem1,cpus=4-7                     \
-    :                                                          \
-  -device virtio-balloon-pci,id=balloon0,bus=pcie.10
+Hello Greg,
 
-  { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
-  {"return": {}}
-  {"timestamp": {"seconds": 1693272173, "microseconds": 88667},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272174, "microseconds": 89704},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272175, "microseconds": 90819},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272176, "microseconds": 91961},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272177, "microseconds": 93040},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-  {"timestamp": {"seconds": 1693272178, "microseconds": 94117},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-  {"timestamp": {"seconds": 1693272179, "microseconds": 95337},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272180, "microseconds": 96615},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-  {"timestamp": {"seconds": 1693272181, "microseconds": 97626},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272182, "microseconds": 98693},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-  {"timestamp": {"seconds": 1693272183, "microseconds": 99698},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272184, "microseconds": 100727},  \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272185, "microseconds": 90430},   \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  {"timestamp": {"seconds": 1693272186, "microseconds": 102999},  \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-     :
-  <The similar QMP events repeat>
+On Mon, 28 Aug 2023 12:11:19 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Fix it by having the target aligned to the guest page size, 64KB
-in this specific case. With this applied, no flooding QMP event
-is observed and the memory balloon's size can be stablizied to
-0x3ffe0000 soon after the deflation request is sent.
+> This is the start of the stable review cycle for the 6.4.13 release.
+> There are 129 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
 
-  { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
-  {"return": {}}
-  {"timestamp": {"seconds": 1693273328, "microseconds": 793075},  \
-   "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-  { "execute" : "query-balloon" }
-  {"return": {"actual": 1073610752}}
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 8c2717f278c5 ("Linux 6.4.13-rc1")
+
+Thanks,
+SJ
+
+[...]
+
 ---
- drivers/virtio/virtio_balloon.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-index 5b15936a5214..625caac35264 100644
---- a/drivers/virtio/virtio_balloon.c
-+++ b/drivers/virtio/virtio_balloon.c
-@@ -386,6 +386,17 @@ static void stats_handle_request(struct virtio_balloon *vb)
- 	virtqueue_kick(vq);
- }
- 
-+static inline s64 align_pages_up(s64 diff)
-+{
-+	if (diff == 0)
-+		return diff;
-+
-+	if (diff > 0)
-+		return ALIGN(diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-+
-+	return -ALIGN(-diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-+}
-+
- static inline s64 towards_target(struct virtio_balloon *vb)
- {
- 	s64 target;
-@@ -396,7 +407,7 @@ static inline s64 towards_target(struct virtio_balloon *vb)
- 			&num_pages);
- 
- 	target = num_pages;
--	return target - vb->num_pages;
-+	return align_pages_up(target - vb->num_pages);
- }
- 
- /* Gives back @num_to_return blocks of free pages to mm. */
--- 
-2.41.0
-
+ [32m
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_m68k.sh
+ok 12 selftests: damon-tests: build_arm64.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
+_remote_run_corr.sh SUCCESS
