@@ -2,122 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0216678C6FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52CE78C703
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 16:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236511AbjH2OLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 10:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S236848AbjH2OMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 10:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236893AbjH2OKz (ORCPT
+        with ESMTP id S236906AbjH2OLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:10:55 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5EB109
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:10:52 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bdbf10333bso34807015ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:10:52 -0700 (PDT)
+        Tue, 29 Aug 2023 10:11:54 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5596F187
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:11:46 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4018af103bcso27943295e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 07:11:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693318252; x=1693923052;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=W4Pt6z040NHZkdf3YNY29xfoSfcEHKzDfCIB88OLqCc=;
-        b=NPn1TD0wCNTp9FNKVOlO7UFRj7ajrtKBdMenkfup4ZPBrvFoEekFMf+Vx4hUDCV5IE
-         wcgc0tbmjv5BbNOeNSjFl5T5UcX25g5w4AwmWZD72KLgSx/8tGioGbJQWxLjl7m7hOCZ
-         1z8rGu7pXSzkvTTSLStOd9zuF+MD+8Okk/rBNRSf9Qagyv16mbOp54/tWVthMQZo+eUS
-         iO3YJfB9fstwhadPQIKcueOjzKxxMJnDgSvNIJ7mQBNLu2kwcsX5fO7X6rwkzrSbfnsL
-         NLwyLtMBBDrYMfaDbDBBeGN8FTYMdyRtbEK4Yg2dvciMhHvQl8sjNuwEpMwGLcOP5A12
-         MO+g==
+        d=google.com; s=20221208; t=1693318305; x=1693923105;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RJ8yJVk1WanTGK6noPSAuAu8J5j6k7b3gO5IRwPDORc=;
+        b=pDfSqxW/VMwLUzzQxKkJcrvOyXGTdi+m78jrAmELfOR+jSL0bgTFPe2YgNMeaGm350
+         WqLnoRfNyy2lFNrVO4duvKoqPamj5nY9lGvzw2VhoxrwDxyj7nkjxn43BmXimhKvw9NY
+         DwPWGVP7ItRZm6gATl1VZn6FI1X6ELDpEOqWG0TnhPeNPfxnOUX6sHhVBaDdH8trBDJi
+         hF0O3b8w5t0r9ezlMaWcqBM+qQ9jSMzQrJV5eASglFcEEVeR3SVc+HS9Jh89cAsCIHTw
+         tFvOYpPFIMwX50nbMcxQjp9qgV2+tdAd25nqTTPy2pS9KENK9Or7oO2a0fSmt6KedIbd
+         fBOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693318252; x=1693923052;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W4Pt6z040NHZkdf3YNY29xfoSfcEHKzDfCIB88OLqCc=;
-        b=b/daejnHMvOfZCR/awoVbeJ6JSdjXv0RIBe4g1mQDS54j2pDEeFS9c/olAEXA/MRV5
-         wYqI9biWx9B3f4KdZ+emnYzr0YZswxN0LNIqkNVwaoqdnYldG5ko44wJe1IauItVcFLz
-         gBVY+dIRlJdcUkShR5Ui7g2c7EX5yv4mRqOp91klZMwrvSdUiCuh/LwCl7JakL5gof/w
-         4FEIk4vOV8moRV5kdbpg2N4KeCpA11JBLOIqXG0qybhKqYEEBQwrxZRITyRz8PQU6GgJ
-         EVvsfkFrNDQsNwBXsBJMD+0hHiji4IjDUbCXQwulDh7AvvjVXIK3GoLdeugSctoz9A2R
-         FJJw==
-X-Gm-Message-State: AOJu0YyWT2I8/oOQReS9tYmXyqxTpXTdsTqm+pXycejZXiN2J3I2hrnG
-        1/ZXWgJyivJ332FYlmyMh/s=
-X-Google-Smtp-Source: AGHT+IEk+N26wVkMmMNhjNYMpY3hqw47SM4PfOIPcDcCJx0vg0xZkLDvtBYbHtqsF14aUwyzq5bX0w==
-X-Received: by 2002:a17:903:32ce:b0:1bb:9b29:20d9 with SMTP id i14-20020a17090332ce00b001bb9b2920d9mr37832996plr.20.1693318252408;
-        Tue, 29 Aug 2023 07:10:52 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f7-20020a170902860700b001bbc8d65de0sm9413274plo.67.2023.08.29.07.10.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 07:10:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d6343959-82dc-feea-1d3a-b31682e2c0a3@roeck-us.net>
-Date:   Tue, 29 Aug 2023 07:10:50 -0700
+        d=1e100.net; s=20221208; t=1693318305; x=1693923105;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RJ8yJVk1WanTGK6noPSAuAu8J5j6k7b3gO5IRwPDORc=;
+        b=FOGlZc0BxRQRa33FlrnOCuS8aYpHZtPuVppRGz6Jy7siHvw/UpqrtGc0KctPKAOmqk
+         3frEkPWl5r0+v7aBzuRbcRYkJl+KBBRj1UipYJFSocj3ce7t7fwYaj25C73sfWX3R/kJ
+         sNK+qc7BtkW+n+YD9YMmBVaYeq7S7ICl5BTjNHUcjEb+u0ik958rXQf5m5Eyf4Fx+zj/
+         k4ar/V2yAulDIa8ojJNWgdV3v2brJoTC8ELoUhm1GdY3G5hQedaKL1qC7Y6XqOkW+9J0
+         s9MKIBSBLKBu7EE3hL0NkglEPPt47z9Cwng86uBC9r3QSjObJl/ZLcC123pDx7MboAsw
+         jLRA==
+X-Gm-Message-State: AOJu0YwBXKDHvE7/SC2GU6IpZWNQHmCO6Wf/mGIHnbxiB99G/zvwVOBU
+        y26M5tMHfk+bDACqu+At++Uahw==
+X-Google-Smtp-Source: AGHT+IFFCPGxLiaYC5WNJ7fqI+TG+TcdZx3IaR6+EMXKEo+SeqxY92aYFuyGltp0GJAZesLUqlFAyA==
+X-Received: by 2002:a05:600c:3b07:b0:401:b53e:6c55 with SMTP id m7-20020a05600c3b0700b00401b53e6c55mr2216906wms.0.1693318304674;
+        Tue, 29 Aug 2023 07:11:44 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:9c:201:3380:af04:1905:46a])
+        by smtp.gmail.com with ESMTPSA id 24-20020a05600c22d800b003fbe791a0e8sm14138042wmg.0.2023.08.29.07.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 07:11:43 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 16:11:38 +0200
+From:   Marco Elver <elver@google.com>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     syzbot <syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com>,
+        davem@davemloft.net, edumazet@google.com, ericvh@kernel.org,
+        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux_oss@crudebyte.com,
+        lucho@ionkov.net, netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
+Subject: Re: [syzbot] [net?] [v9fs?] KCSAN: data-race in p9_fd_create /
+ p9_fd_create (2)
+Message-ID: <ZO38mqkS0TYUlpFp@elver.google.com>
+References: <000000000000d26ff606040c9719@google.com>
+ <ZO3PFO_OpNfBW7bd@codewreck.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ACPI: processor: Move MWAIT quirk out of acpi_processor.c
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>
-Cc:     andriy.shevchenko@intel.com, artem.bityutskiy@linux.intel.com,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, lenb@kernel.org, jgross@suse.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-References: <c7a05a44-c0be-46c2-a21d-b242524d482b@roeck-us.net>
- <CAJZ5v0jASjc_RYp-SN5KMGJXDv8xbMOqJscLF3wG8rdE2_KJGw@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <CAJZ5v0jASjc_RYp-SN5KMGJXDv8xbMOqJscLF3wG8rdE2_KJGw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZO3PFO_OpNfBW7bd@codewreck.org>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 06:54, Rafael J. Wysocki wrote:
-> On Tue, Aug 29, 2023 at 3:44 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> On Mon, Jul 10, 2023 at 05:03:29PM +0300, Michal Wilczynski wrote:
->>> Commit 2a2a64714d9c ("ACPI: Disable MWAIT via DMI on broken Compal board")
->>> introduced a workaround for MWAIT for a specific x86 system.
->>>
->>> Move the code outside of acpi_processor.c to acpi/x86/ directory for
->>> consistency and rename the functions associated with it, so their names
->>> start with "acpi_proc_quirk_" to make the goal obvious.
->>>
->>> No intentional functional impact.
->>>
->>
->> Except for:
->>
->> ia64-linux-ld: drivers/acpi/acpi_processor.o: in function `acpi_early_processor_control_setup':
->> acpi_processor.c:(.init.text+0x712): undefined reference to `acpi_proc_quirk_mwait_check'
->> ia64-linux-ld: drivers/acpi/processor_pdc.o: in function `acpi_early_processor_set_pdc':
->> processor_pdc.c:(.init.text+0x72): undefined reference to `acpi_proc_quirk_mwait_check'
->>
->> which breaks all ia64 builds.
->>
->> Time to retire that architecture yet ? No one but me seems to even
->> build test it.
+On Tue, Aug 29, 2023 at 07:57PM +0900, Dominique Martinet wrote:
+[...]
+> Yes well that doesn't seem too hard to hit, both threads are just
+> setting O_NONBLOCK to the same fd in parallel (0x800 is 04000,
+> O_NONBLOCK)
 > 
-> Including 0-day it seems.  This had been in linux-next for several weeks.
+> I'm not quite sure why that'd be a problem; and I'm also pretty sure
+> that wouldn't work anyway (9p has no muxing or anything that'd allow
+> sharing the same fd between multiple mounts)
 > 
+> Can this be flagged "don't care" ?
 
-Not sure if 0-day is running on linux-next nowadays. There are other
-build failures in there which don't seem to be reported either.
+If it's an intentional data race, it could be marked data_race() [1].
 
-Unfortunately, looking into build failures (and crashes) in linux-next
-would be a full-time job. I see those failures, but I just don't have the
-time to analyze and report them all.
+However, staring at this code for a bit, I wonder why the f_flags are
+set on open, and not on initialization somewhere...
 
-Guenter
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
+
+Anyway, a patch like the below would document that the data race is
+intended and we assume that there is no way (famous last words) the
+compiler or the CPU can mess it up (and KCSAN won't report it again).
+
+------ >8 ------
+
+From: Marco Elver <elver@google.com>
+Date: Tue, 29 Aug 2023 15:48:58 +0200
+Subject: [PATCH] 9p: Annotate data-racy writes to file::f_flags
+
+syzbot reported:
+
+ | BUG: KCSAN: data-race in p9_fd_create / p9_fd_create
+ |
+ | read-write to 0xffff888130fb3d48 of 4 bytes by task 15599 on cpu 0:
+ |  p9_fd_open net/9p/trans_fd.c:842 [inline]
+ |  p9_fd_create+0x210/0x250 net/9p/trans_fd.c:1092
+ |  p9_client_create+0x595/0xa70 net/9p/client.c:1010
+ |  v9fs_session_init+0xf9/0xd90 fs/9p/v9fs.c:410
+ |  v9fs_mount+0x69/0x630 fs/9p/vfs_super.c:123
+ |  legacy_get_tree+0x74/0xd0 fs/fs_context.c:611
+ |  vfs_get_tree+0x51/0x190 fs/super.c:1519
+ |  do_new_mount+0x203/0x660 fs/namespace.c:3335
+ |  path_mount+0x496/0xb30 fs/namespace.c:3662
+ |  do_mount fs/namespace.c:3675 [inline]
+ |  __do_sys_mount fs/namespace.c:3884 [inline]
+ |  [...]
+ |
+ | read-write to 0xffff888130fb3d48 of 4 bytes by task 15563 on cpu 1:
+ |  p9_fd_open net/9p/trans_fd.c:842 [inline]
+ |  p9_fd_create+0x210/0x250 net/9p/trans_fd.c:1092
+ |  p9_client_create+0x595/0xa70 net/9p/client.c:1010
+ |  v9fs_session_init+0xf9/0xd90 fs/9p/v9fs.c:410
+ |  v9fs_mount+0x69/0x630 fs/9p/vfs_super.c:123
+ |  legacy_get_tree+0x74/0xd0 fs/fs_context.c:611
+ |  vfs_get_tree+0x51/0x190 fs/super.c:1519
+ |  do_new_mount+0x203/0x660 fs/namespace.c:3335
+ |  path_mount+0x496/0xb30 fs/namespace.c:3662
+ |  do_mount fs/namespace.c:3675 [inline]
+ |  __do_sys_mount fs/namespace.c:3884 [inline]
+ |  [...]
+ |
+ | value changed: 0x00008002 -> 0x00008802
+
+Within p9_fd_open(), O_NONBLOCK is added to f_flags of the read and
+write files. This may happen concurrently if e.g. 2 tasks mount the same
+filesystem.
+
+Mark the plain read-modify-writes as intentional data-races, with the
+assumption that the result of executing the accesses concurrently will
+always result in the same result despite the accesses themselves not
+being atomic.
+
+Reported-by: syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ net/9p/trans_fd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+index 00b684616e8d..9b01e15a758b 100644
+--- a/net/9p/trans_fd.c
++++ b/net/9p/trans_fd.c
+@@ -833,13 +833,13 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
+ 	if (!(ts->rd->f_mode & FMODE_READ))
+ 		goto out_put_rd;
+ 	/* prevent workers from hanging on IO when fd is a pipe */
+-	ts->rd->f_flags |= O_NONBLOCK;
++	data_race(ts->rd->f_flags |= O_NONBLOCK);
+ 	ts->wr = fget(wfd);
+ 	if (!ts->wr)
+ 		goto out_put_rd;
+ 	if (!(ts->wr->f_mode & FMODE_WRITE))
+ 		goto out_put_wr;
+-	ts->wr->f_flags |= O_NONBLOCK;
++	data_race(ts->wr->f_flags |= O_NONBLOCK);
+ 
+ 	client->trans = ts;
+ 	client->status = Connected;
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
