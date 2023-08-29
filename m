@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDB978CDF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057FB78CDF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 23:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240593AbjH2U7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 16:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
+        id S238808AbjH2VCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 17:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240578AbjH2U72 (ORCPT
+        with ESMTP id S239403AbjH2VCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 16:59:28 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9996CC3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:59:24 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-500c7796d8eso1076335e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 13:59:24 -0700 (PDT)
+        Tue, 29 Aug 2023 17:02:04 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC401BB;
+        Tue, 29 Aug 2023 14:02:02 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c09673b006so25654135ad.1;
+        Tue, 29 Aug 2023 14:02:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693342763; x=1693947563; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yDiDlbXY5yzxtV/UMHY8DDSwA1Y2sSArumeXUmrmXZw=;
-        b=c8o1+BNYPTNZVhHl+goLHv+xrTxunRhO89wvU+igpZ81AGcFG3DJGezxlWnPyHGiKM
-         HgSWKwppdMvxYlWHkm2CAdcFth0WbKyI2XXvwAY/NLpENu7QZqrinM8+0c9MQpYCo1Cu
-         nGd+0q6Mt4fRmLMSOTS3Zumav2H4ouNbvnySxxdJJHvnxZdI2q+6TMLVKULCyfU1gbdn
-         Rg/nsyAlwDSaBJkqPR+Ut8ZilX/fmxGP+Anh8ZS4+gvleuya/fbBl+DT3qvU0IGHHszn
-         vXOdd8Juxxta+oCZqQer74Ii4pX4TCFIVsrc5nhcu3VBpsLO6tyNgFh7jyybyVSLp9Tb
-         TbfA==
+        d=gmail.com; s=20221208; t=1693342922; x=1693947722; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RMyy3L586kb8cKfelvrLkGkpSHTkexvGQpQjE1LwdFo=;
+        b=CyS5CPua06THdQxkbEFgECOylZrddrh+R/xL1V4Hgbp3Hp98GdIh394fmg3cEBkD4G
+         31IuNUsJfa0D1IstYXy7U4jYmK5+fO0hXlKm6aWD/Tcu2lap9D55BoANYlnFxseYEGxS
+         /caoQL8ZEsjObmP5rt/dgXpyl8bgoxPS8r3NpD6F7AEYq4DhYf03g/5zp98nmVY1kmvO
+         CdcTRviQiLJAKOsbOXWzqhVsErGjFQFXVH8E5LaGeuI+TyDsO0OgXAjSnL+S04g67LnL
+         2L4ufEIg+/53OGazOhUdQZNmPdXSL/2GsHeYoO4NFOw+jZF04peiGH0zNlmwEieLC34J
+         W9nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693342763; x=1693947563;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yDiDlbXY5yzxtV/UMHY8DDSwA1Y2sSArumeXUmrmXZw=;
-        b=E2Da2WNSqLPfsAU9ZhwsQrRLiTkFZs+gKsPW23sRMmIwNx4L8DAHCSciwDE51D3Mkh
-         eOOfxDqQVwoT1uolJCaz3pHmacTAc4FQXOXltgu6G5ulGIBZMbGedH59SM1SvElHiMMd
-         c67tFewKe8LjLKsXrLFrGRyv8Q139TiAe3HUFpoi4WSl469JYQ7y1Yc0+2C2noxWVlom
-         YzK5+RcAbovgbdqfvkIZ9a6FBgIOXxOWAGQWjbfjB532u0cbgfDaVX0bvbjIP/WOARZw
-         zY5eQVwACRNf++pQc2uoJVznYiJizhCAPE863EEceAsh4aJmhLnVdfN9aWVwPS144JTI
-         IdUw==
-X-Gm-Message-State: AOJu0YwzFBCRx8TyceSjpOTh/Xj/imgGF5LTnq8a79nz4K6lR044QD8v
-        8TUMMh+LKZI6jXucqwbHitDJZg==
-X-Google-Smtp-Source: AGHT+IFBt6mCKFv8FjhhTBDDAyZfTvDLM3LO49D3cQx1lhHL5aFnzKrfjknbW6j9TLPvdXrQfK39tw==
-X-Received: by 2002:a19:5e1a:0:b0:4fa:21d4:b3ca with SMTP id s26-20020a195e1a000000b004fa21d4b3camr56225lfb.2.1693342763210;
-        Tue, 29 Aug 2023 13:59:23 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id q30-20020ac2515e000000b004fbad09317csm2074025lfd.189.2023.08.29.13.59.22
+        d=1e100.net; s=20221208; t=1693342922; x=1693947722;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RMyy3L586kb8cKfelvrLkGkpSHTkexvGQpQjE1LwdFo=;
+        b=DTj2+UMMnWJv0Buniuw2xC7hl56A/5tsGA5ATcdx/JLj3oCslltTQYfHNceHtDmsh6
+         QjuCqUCgfoA1IywLxx5Y0jr2pByU0zzeonEZivk5hnt8hOdVcQ3rMTWAHs6cuIJS/T2J
+         3gO3RijtkhgsMjRX669vlgLIpTOwBr6YJhHoq0fOcPojWY1/SgUeEwL1m9SKmmWuA/MJ
+         1BvP4NZUurOHhU85oPSnEnR4GdAjzfFMwi1HjWwZUJ5yrc8GUMvQ5SqiHVeFZktT+VFR
+         MCL+uVL7SqGgbmxsNGt2MPRlGqcsYtnESrfEGJO61Etwbkj0/ZBqJtufwFdC7MynW3Rg
+         sDQw==
+X-Gm-Message-State: AOJu0YzmW5BBdN5iN+I2KXBnsN7l37tfj/VQRH402mS+JlRCl1wcrPEC
+        OUDw6bMkrS7Pg+3o4+wCuto=
+X-Google-Smtp-Source: AGHT+IGAgnDe30iZda737JpeCWLLIfCE0Xgd3FyeVLQqqjM+mbrYjt/hp5on64LCBTGZqmA1uSSheA==
+X-Received: by 2002:a17:902:db08:b0:1bd:e64c:5c70 with SMTP id m8-20020a170902db0800b001bde64c5c70mr285730plx.7.1693342921671;
+        Tue, 29 Aug 2023 14:02:01 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id d12-20020a170902cecc00b001bdd7579b5dsm9787431plg.240.2023.08.29.14.02.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 13:59:22 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Tue, 29 Aug 2023 22:59:05 +0200
-Subject: [PATCH 2/2] phy: qcom-qmp-combo: initialize PCS_USB registers
+        Tue, 29 Aug 2023 14:02:01 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 29 Aug 2023 11:01:59 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Firo Yang <firo.yang@suse.com>
+Subject: Re: [PATCH 1/2] cgroup: Print v1 cgroup.procs and tasks without
+ pidlists
+Message-ID: <ZO5cx9UhqBzP2QX-@slm.duckdns.org>
+References: <20230823174804.23632-1-mkoutny@suse.com>
+ <20230823174804.23632-2-mkoutny@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230829-topic-8550_usbphy-v1-2-599ddbfa094a@linaro.org>
-References: <20230829-topic-8550_usbphy-v1-0-599ddbfa094a@linaro.org>
-In-Reply-To: <20230829-topic-8550_usbphy-v1-0-599ddbfa094a@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Adrien Thierry <athierry@redhat.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693342759; l=1235;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=adVmBzdoCGTsemFqAoQk/FkwFdzWdPC36JGX5NvhpUo=;
- b=aDox5HcEB7BiDj/xATHHbGSkGblXnbMQljwSM6u6KT9zqxT2CPkjQKRfdRFMeyrXHUXoEa/jb
- cTlHVJoE3TxA9rPwoIfEsLI77n93TCXC9YiFRSKD/Ji8qAq6PuntL5b
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230823174804.23632-2-mkoutny@suse.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, PCS_USB registers that have their initialization data in a
-pcs_usb_tbl table are never initialized. Fix that.
+Hello, Michal.
 
-Fixes: fc64623637da ("phy: qcom-qmp-combo,usb: add support for separate PCS_USB region")
-Reported-by: Adrien Thierry <athierry@redhat.com>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On Wed, Aug 23, 2023 at 07:48:03PM +0200, Michal Koutný wrote:
+> pidlists are structure that allows printing cgroup member tasks in
+> sorted order and with proper pidns (in)visibility.
+> 
+> The promise of sorted output was removed in the commit 7823da36ce8e
+> ("cgroups: update documentation of cgroups tasks and procs files") (more
+> than 13 years ago at the time of writing this).
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-index 843099d314bf..1922b05403ac 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-@@ -2555,6 +2555,7 @@ static int qmp_combo_usb_power_on(struct phy *phy)
- 	void __iomem *tx2 = qmp->tx2;
- 	void __iomem *rx2 = qmp->rx2;
- 	void __iomem *pcs = qmp->pcs;
-+	void __iomem *pcs_usb = qmp->pcs_usb;
- 	void __iomem *status;
- 	unsigned int val;
- 	int ret;
-@@ -2576,6 +2577,9 @@ static int qmp_combo_usb_power_on(struct phy *phy)
- 
- 	qmp_combo_configure(pcs, cfg->pcs_tbl, cfg->pcs_tbl_num);
- 
-+	if (pcs_usb)
-+		qmp_combo_configure(pcs_usb, cfg->pcs_usb_tbl, cfg->pcs_usb_tbl_num);
-+
- 	if (cfg->has_pwrdn_delay)
- 		usleep_range(10, 20);
- 
+While this is true, I'm not sure it'd be a good idea to change the behavior
+after all these years. Whoever is still using cgroup1 likely doens't mean to
+update their code at all and it's difficult to rule out odd-ball users that
+might have been depending on the ordered output knowingly or unknowingly.
+
+> On systems that still use v1 hierarchies (e.g. systemd in non-unified
+> mode), pidlists are problematic because:
+> a) their cache unnecessarily busies workqueues (cgroup_pidlist_destroy_wq)
+> b) PID recycling [1] may lead to logging noise:
+> > seq_file: buggy .next function kernfs_seq_next did not update position index
+
+While I like the code reduction, I wonder whether the right course of action
+is just fixing the warning here.
+
+Thanks.
 
 -- 
-2.42.0
-
+tejun
