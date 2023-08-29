@@ -2,51 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D14978C358
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFC478C35D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 13:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbjH2LeX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Aug 2023 07:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
+        id S232011AbjH2LgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 07:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbjH2LeN (ORCPT
+        with ESMTP id S232020AbjH2Lfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:34:13 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4101A109;
-        Tue, 29 Aug 2023 04:34:10 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RZlZj4jhTz6J7Df;
-        Tue, 29 Aug 2023 19:29:49 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 29 Aug
- 2023 12:34:07 +0100
-Date:   Tue, 29 Aug 2023 12:34:06 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <Marius.Cristea@microchip.com>
-CC:     <jic23@kernel.org>, <devicetree@vger.kernel.org>,
-        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
-        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] iio: adc: adding support for MCP3564 ADC
-Message-ID: <20230829123406.0000403f@Huawei.com>
-In-Reply-To: <ae3562ee30e6d8aecae2a447cffc4ad6e8e44578.camel@microchip.com>
-References: <20230818165750.55406-1-marius.cristea@microchip.com>
-        <20230818165750.55406-3-marius.cristea@microchip.com>
-        <20230828151631.6a60282b@jic23-huawei>
-        <ae3562ee30e6d8aecae2a447cffc4ad6e8e44578.camel@microchip.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 29 Aug 2023 07:35:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1176E109;
+        Tue, 29 Aug 2023 04:35:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 965DD60EAE;
+        Tue, 29 Aug 2023 11:35:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DED71C433C8;
+        Tue, 29 Aug 2023 11:35:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693308942;
+        bh=SEm+29cbjH0OCwAWFWoSuP1sSdbIL6i8Z3mrtpUFzk0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fxwwGSDQUQw4Q5QfZRDz+zr+x7HkaZksrDhPqVSYDf0eogzHxC0TIV37jg/+XENZf
+         THvUDi8u6zWZAC9/j3G0VwQFVdCEnbZS0FN5CgNdfy11tujT0rGrYhaRoFLS11Yemw
+         UuozUawY2Vma1IZqh6bze75GyzGZ6FOxD378v1V3A1OHNon5VxKMp1dIEs8oVKwuOd
+         AK+ybmDLK8S28oeQSxQ0xH+/ohqHqxlpF7yIWBinJfjS1TuQ+Z9A7/oaQrQEQwXl9A
+         vbcTCtugkxl4bjmlaIbewKYaih+Tc2A6EgjWHx6KrUvEReBb4FuZfguwK2WKc12jcX
+         P4E1qMsfttemw==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] kbuild: single-quote the format string of printf
+Date:   Tue, 29 Aug 2023 20:35:31 +0900
+Message-Id: <20230829113531.4004730-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,43 +59,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 07:29:57 +0000
-<Marius.Cristea@microchip.com> wrote:
+Use single-quotes to avoid escape sequences (\\n).
 
-> Hi Jonathan,
-> 
->    Thank you for the review.
-> 
-> 
-> > 
-> >   
-> > > +
-> > > +/*
-> > > + * Current Source/Sink Selection Bits for Sensor Bias (source on
-> > > VIN+/sink on VIN-)
-> > > + */
-> > > +static const int mcp3564_burnout_avail[][2] = {
-> > > +     [MCP3564_CONFIG0_CS_SEL_0_0_uA] = {0, 0},
-> > > +     [MCP3564_CONFIG0_CS_SEL_0_9_uA] = {0, 900},
-> > > +     [MCP3564_CONFIG0_CS_SEL_3_7_uA] = {0, 3700},
-> > > +     [MCP3564_CONFIG0_CS_SEL_15_uA] = {0, 15000}
-	[MCP3564_CONFIG0_CS_SEL_15_uA] = { 0, 15000 }
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-etc
+ Makefile              | 8 ++++----
+ arch/powerpc/Makefile | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-> > > +};  
-> > 
-> > Trivial, but I'd like brackets after the { and before the } as makes
-> > things a tiny bit
-> > more readable to my eye.
-> > 
-> >   
-> 
-> I'm not sure that I understood what/how to change here. Can you,
-> please, give me an example?
-> 
-> 
-> 
-> Thanks,
-> Marius
+diff --git a/Makefile b/Makefile
+index 87a9eef3fb4b..d09600f7a036 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1643,12 +1643,12 @@ help:
+ 	@echo  ''
+ 	@$(if $(boards), \
+ 		$(foreach b, $(boards), \
+-		printf "  %-27s - Build for %s\\n" $(b) $(subst _defconfig,,$(b));) \
++		printf '  %-27s - Build for %s\n' $(b) $(subst _defconfig,,$(b));) \
+ 		echo '')
+ 	@$(if $(board-dirs), \
+ 		$(foreach b, $(board-dirs), \
+-		printf "  %-16s - Show %s-specific targets\\n" help-$(b) $(b);) \
+-		printf "  %-16s - Show all of the above\\n" help-boards; \
++		printf '  %-16s - Show %s-specific targets\n' help-$(b) $(b);) \
++		printf '  %-16s - Show all of the above\n' help-boards; \
+ 		echo '')
+ 
+ 	@echo  '  make V=n   [targets] 1: verbose build'
+@@ -1684,7 +1684,7 @@ $(help-board-dirs): help-%:
+ 	@echo  'Architecture specific targets ($(SRCARCH) $*):'
+ 	@$(if $(boards-per-dir), \
+ 		$(foreach b, $(boards-per-dir), \
+-		printf "  %-24s - Build for %s\\n" $*/$(b) $(subst _defconfig,,$(b));) \
++		printf '  %-24s - Build for %s\n' $*/$(b) $(subst _defconfig,,$(b));) \
+ 		echo '')
+ 
+ 
+diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+index dac7ca153886..f49ac05eae20 100644
+--- a/arch/powerpc/Makefile
++++ b/arch/powerpc/Makefile
+@@ -353,7 +353,7 @@ define archhelp
+   echo '  (minus the .dts extension).'
+   echo
+   $(foreach cfg,$(generated_configs),
+-    printf "  %-27s - Build for %s\\n" $(cfg) $(subst _defconfig,,$(cfg));)
++    printf '  %-27s - Build for %s\n' $(cfg) $(subst _defconfig,,$(cfg));)
+ endef
+ 
+ PHONY += install
+-- 
+2.39.2
 
