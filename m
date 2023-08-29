@@ -2,147 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8734678C1A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C4478C1AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Aug 2023 11:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbjH2JkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 05:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
+        id S232981AbjH2Jlj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Aug 2023 05:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjH2Jj5 (ORCPT
+        with ESMTP id S235001AbjH2Jlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:39:57 -0400
-Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF824E1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:39:53 -0700 (PDT)
-Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-68bee35afe0so4475440b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 02:39:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693301993; x=1693906793;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hkrIRuB/KPiotjwKowWNb1HI/98DR9xAPXUPa4EZXHE=;
-        b=EFbeUpf0Rn7thckDahqSGaK16ddKSQbqXE0kxNuTYA8t1IZW0Hsc+o3Vdq+6g4sLBo
-         meJDFtN+k/9ZMws1qkwC2PWgPgEKb6OBnkxjxEJUF/jFlHyVwhvAExQoogAyQsTb6gNK
-         Ep0G/b9ulm+zryUNDm032rJWgtbIIvZG4x3+m92rclk+KkQe/0ohJCqF0sZKAvb6GycD
-         tJlmHS1QlqKum4zkGABABIFp6aQBa2c+LqCS/ntJMU+lkyF08ijpgNEvOVm7oGs5+SWz
-         l0mcVHrqJPhIiZ+/FFHyoWwoBavV8MVbHm3A49Rub5ae1w1IgQfd72+uz4yebox6oVxA
-         mIjA==
-X-Gm-Message-State: AOJu0YzyESahFKcBddJK6jBLGpUEf6AK1NuzV6rLkR6KpkUADCqzNJ3k
-        C5AYZKqPHaCTuO8PcU0OpTRnnXxzpH8j/xAoxWLnRJUovA8R
-X-Google-Smtp-Source: AGHT+IEdy+SdGk+xeL79w68etB+bpMNJdFi/Zg+lDXeT5igRdxr5vPtbLZDZoPGe/9Fh97TleRSOarPSGNJSggDQ6tT9LAX0TQa0
+        Tue, 29 Aug 2023 05:41:31 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBA2E1;
+        Tue, 29 Aug 2023 02:41:25 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 0CC2124E250;
+        Tue, 29 Aug 2023 17:41:23 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
+ 2023 17:41:23 +0800
+Received: from [192.168.120.76] (171.223.208.138) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 29 Aug
+ 2023 17:41:21 +0800
+Message-ID: <503bbb09-2886-9dbb-808a-65422bab712c@starfivetech.com>
+Date:   Tue, 29 Aug 2023 17:41:21 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:1491:b0:68b:dfef:de87 with SMTP id
- v17-20020a056a00149100b0068bdfefde87mr5135810pfu.4.1693301993531; Tue, 29 Aug
- 2023 02:39:53 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 02:39:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d26ff606040c9719@google.com>
-Subject: [syzbot] [net?] [v9fs?] KCSAN: data-race in p9_fd_create /
- p9_fd_create (2)
-From:   syzbot <syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com>
-To:     asmadeus@codewreck.org, davem@davemloft.net, edumazet@google.com,
-        ericvh@kernel.org, kuba@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux_oss@crudebyte.com,
-        lucho@ionkov.net, netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC v4 4/4] riscv: dts: starfive: jh7100: Add PWM node and pins
+ configuration
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>
+References: <20230825081328.204442-1-william.qiu@starfivetech.com>
+ <20230825081328.204442-5-william.qiu@starfivetech.com>
+ <CAJM55Z-Ab1DAQyQC9TRFFBidus6wCRns9RQjx-iyYyNK1e-e6A@mail.gmail.com>
+Content-Language: en-US
+From:   William Qiu <william.qiu@starfivetech.com>
+In-Reply-To: <CAJM55Z-Ab1DAQyQC9TRFFBidus6wCRns9RQjx-iyYyNK1e-e6A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    53663f4103ff Merge tag 'nfs-for-6.5-2' of git://git.linux-..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=103fc55fa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f12c32a009b80107
-dashboard link: https://syzkaller.appspot.com/bug?extid=e441aeeb422763cc5511
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f32101f0e8a2/disk-53663f41.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2e577e9d7daf/vmlinux-53663f41.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/af8ae7d4d06e/bzImage-53663f41.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in p9_fd_create / p9_fd_create
-
-read-write to 0xffff888130fb3d48 of 4 bytes by task 15599 on cpu 0:
- p9_fd_open net/9p/trans_fd.c:842 [inline]
- p9_fd_create+0x210/0x250 net/9p/trans_fd.c:1092
- p9_client_create+0x595/0xa70 net/9p/client.c:1010
- v9fs_session_init+0xf9/0xd90 fs/9p/v9fs.c:410
- v9fs_mount+0x69/0x630 fs/9p/vfs_super.c:123
- legacy_get_tree+0x74/0xd0 fs/fs_context.c:611
- vfs_get_tree+0x51/0x190 fs/super.c:1519
- do_new_mount+0x203/0x660 fs/namespace.c:3335
- path_mount+0x496/0xb30 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x27f/0x2d0 fs/namespace.c:3861
- __x64_sys_mount+0x67/0x80 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-read-write to 0xffff888130fb3d48 of 4 bytes by task 15563 on cpu 1:
- p9_fd_open net/9p/trans_fd.c:842 [inline]
- p9_fd_create+0x210/0x250 net/9p/trans_fd.c:1092
- p9_client_create+0x595/0xa70 net/9p/client.c:1010
- v9fs_session_init+0xf9/0xd90 fs/9p/v9fs.c:410
- v9fs_mount+0x69/0x630 fs/9p/vfs_super.c:123
- legacy_get_tree+0x74/0xd0 fs/fs_context.c:611
- vfs_get_tree+0x51/0x190 fs/super.c:1519
- do_new_mount+0x203/0x660 fs/namespace.c:3335
- path_mount+0x496/0xb30 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x27f/0x2d0 fs/namespace.c:3861
- __x64_sys_mount+0x67/0x80 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-value changed: 0x00008002 -> 0x00008802
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 15563 Comm: syz-executor.3 Not tainted 6.5.0-rc7-syzkaller-00013-g53663f4103ff #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-==================================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 2023/8/29 17:38, Emil Renner Berthing wrote:
+> On Fri, 25 Aug 2023 at 10:16, William Qiu <william.qiu@starfivetech.com> wrote:
+>> Add StarFive JH7100 PWM controller node and add PWM pins configuration
+>> on VisionFive 2 board.
+> 
+> Hi William,
+> 
+> This is the VisionFive V1 board right?
+> 
+> /Emil
+> 
+Hi Emil,
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Yes， it's VisionFive V1, I wrote it wrong.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+B.R.
+William
+>> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+>> ---
+>>  .../boot/dts/starfive/jh7100-common.dtsi      | 24 +++++++++++++++++++
+>>  arch/riscv/boot/dts/starfive/jh7100.dtsi      |  9 +++++++
+>>  2 files changed, 33 insertions(+)
+>>
+>> diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
+>> index b93ce351a90f..746867b882b0 100644
+>> --- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
+>> +++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
+>> @@ -84,6 +84,24 @@ GPO_I2C2_PAD_SDA_OEN,
+>>                 };
+>>         };
+>>
+>> +       pwm_pins: pwm-0 {
+>> +               pwm-pins {
+>> +                       pinmux = <GPIOMUX(7,
+>> +                                 GPO_PWM_PAD_OUT_BIT0,
+>> +                                 GPO_PWM_PAD_OE_N_BIT0,
+>> +                                 GPI_NONE)>,
+>> +                                <GPIOMUX(5,
+>> +                                 GPO_PWM_PAD_OUT_BIT1,
+>> +                                 GPO_PWM_PAD_OE_N_BIT1,
+>> +                                 GPI_NONE)>;
+>> +                       bias-disable;
+>> +                       drive-strength = <35>;
+>> +                       input-disable;
+>> +                       input-schmitt-disable;
+>> +                       slew-rate = <0>;
+>> +               };
+>> +       };
+>> +
+>>         uart3_pins: uart3-0 {
+>>                 rx-pins {
+>>                         pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
+>> @@ -154,6 +172,12 @@ &osc_aud {
+>>         clock-frequency = <27000000>;
+>>  };
+>>
+>> +&ptc {
+>> +       pinctrl-names = "default";
+>> +       pinctrl-0 = <&pwm_pins>;
+>> +       status = "okay";
+>> +};
+>> +
+>>  &uart3 {
+>>         pinctrl-names = "default";
+>>         pinctrl-0 = <&uart3_pins>;
+>> diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+>> index 4218621ea3b9..7f5bb19e636e 100644
+>> --- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
+>> +++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+>> @@ -248,5 +248,14 @@ watchdog@12480000 {
+>>                         resets = <&rstgen JH7100_RSTN_WDTIMER_APB>,
+>>                                  <&rstgen JH7100_RSTN_WDT>;
+>>                 };
+>> +
+>> +               ptc: pwm@12490000 {
+>> +                       compatible = "starfive,jh7100-pwm";
+>> +                       reg = <0x0 0x12490000 0x0 0x10000>;
+>> +                       clocks = <&clkgen JH7100_CLK_PWM_APB>;
+>> +                       resets = <&rstgen JH7100_RSTN_PWM_APB>;
+>> +                       #pwm-cells = <3>;
+>> +                       status = "disabled";
+>> +               };
+>>         };
+>>  };
+>> --
+>> 2.34.1
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
