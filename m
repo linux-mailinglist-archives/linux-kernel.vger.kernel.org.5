@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B857078CFB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D34678CFC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 00:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240192AbjH2W6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 18:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S240377AbjH2W7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 18:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240075AbjH2W5u (ORCPT
+        with ESMTP id S240075AbjH2W6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 18:57:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C2FE0;
-        Tue, 29 Aug 2023 15:57:47 -0700 (PDT)
+        Tue, 29 Aug 2023 18:58:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39662CC9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 15:58:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KjVdVIFxJK1S0mlXVGX3XsEwRZAqqxvdeRlQviOkAiA=; b=qBliHH+2inoQylsLO5NF3FqY6Q
-        NzmMybkdbfp5DkEOQ8pQViO23fosf8A/diCmRWy7HaHaWTZ+FM5JME5VmbpbEFi6dicYwF6lpjFeU
-        SB6/ANBgraaj3wj54Df2triXfoThYizvQtc3ACCouUi8ukvqgb+R0Usg0bbkrDju+4emKFi1JPuUv
-        saIy5V7buVQIGeJpxjlxj9fBPMbzV3vpyb+xHUOvvBu/tUYfwhyzJvMubnXLmyxneJ+WXeHwJVfeb
-        vAjFGyGzKQL+xfxVsSQpITFpki3EeDpHAnOX2QVYI8Otd0QaeanQpku8ifFXoDZz4IvwSR1UiujjZ
-        d90IkoXQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qb7eN-009FBY-V9; Tue, 29 Aug 2023 22:57:32 +0000
-Date:   Tue, 29 Aug 2023 23:57:31 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Guo Ren <guoren@kernel.org>, linux-mm@kvack.org,
-        mm-commits@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] MM updates for 6.6-rc1
-Message-ID: <ZO532zzLXSKvpvb0@casper.infradead.org>
-References: <20230828184251.bfbc164280503903eacf498c@linux-foundation.org>
- <CAHk-=wjtBk23T4bsA4wxyogvDAP0mWmPPvy=qaMWsySM=WOC9A@mail.gmail.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=r866mTX9mOfhvGB9ROtXhk9rJqVPkd1gFKMTDNSdM8s=; b=WDkROUj70tpZ/oy6+pT0EW6Dgk
+        0j6tBLRgzNZai+KOwjuL/IU/hNmJKxkTyxMtiDAquG6QGrLlEPIMcFa5B0lrR2lKmte0UODUsOBHx
+        KSVJBbR51slZdqVV4PRX9hi4WzlstnVLp0pfSjf56btM7cmZB6NkreOjjX8u1FbsbQbvuHH2eAXU/
+        GBAhIJkK51u7suDv7khh7QyVeP2l57mjgmuNF3sx8CqdpooOKKfiIog2Nyx9XSVprxhaRhGDEnH1n
+        Vdc1nzVAShp8J+m2jr6jojNpTAmbzkh1N9/F0JTBtpMyBdo+aLBkakVXzJC+kAlOaVq09CPHftao1
+        5AwGbtXg==;
+Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qb7fS-00CQ0P-2Q;
+        Tue, 29 Aug 2023 22:58:38 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Rob Herring <robh@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH] macintosh/ams: linux/platform_device.h is needed
+Date:   Tue, 29 Aug 2023 15:58:37 -0700
+Message-ID: <20230829225837.15520-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjtBk23T4bsA4wxyogvDAP0mWmPPvy=qaMWsySM=WOC9A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -51,28 +49,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 02:31:38PM -0700, Linus Torvalds wrote:
-> On Mon, 28 Aug 2023 at 18:43, Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > csky tree, arch/csky/abiv2/cacheflush.c:
-> > https://lkml.kernel.org/r/20230815104604.54f65293@canb.auug.org.au
-> 
-> At least this resolution in linux-next was wrong. It would just keep
-> on doing a cache invalidate on the same one-page address range over
-> and over again.
-> 
-> I think I did it right, but obviously can't test (and am too lazy to
-> build-test too).
-> 
-> Of course, it won't actually matter unless you have large folio on
-> csky, which is probably hard to impossible to trigger in practice, but
-> I thought I'd mention it if for no other reason than Guo Ren to be
-> aware and at least test-build and maybe think about it.
+ams.h uses struct platform_device, so the header should be used
+to prevent build errors:
 
-As far as I can tell, csky doesn't enable support for HUGETLBFS nor for
-TRANSPARENT_HUGEPAGE and large folios are currently disabled unless you
-have TRANSPARENT_HUGEPAGE, simply because they rely on infrastructure
-that's only built for TRANSPARENT_HUGEPAGE.  We should probably fix that
-at some point; allocating in larger chunks is beneficial even if you don't
-have PMD sized TLB entries.  But the motivation to do that work has been
-lacking; there are plenty of more important projects in the queue.
+drivers/macintosh/ams/ams-input.c: In function 'ams_input_enable':
+drivers/macintosh/ams/ams-input.c:68:45: error: invalid use of undefined type 'struct platform_device'
+   68 |         input->dev.parent = &ams_info.of_dev->dev;
+drivers/macintosh/ams/ams-input.c: In function 'ams_input_init':
+drivers/macintosh/ams/ams-input.c:146:51: error: invalid use of undefined type 'struct platform_device'
+  146 |         return device_create_file(&ams_info.of_dev->dev, &dev_attr_joystick);
+drivers/macintosh/ams/ams-input.c: In function 'ams_input_exit':
+drivers/macintosh/ams/ams-input.c:151:44: error: invalid use of undefined type 'struct platform_device'
+  151 |         device_remove_file(&ams_info.of_dev->dev, &dev_attr_joystick);
+drivers/macintosh/ams/ams-input.c: In function 'ams_input_init':
+drivers/macintosh/ams/ams-input.c:147:1: error: control reaches end of non-void function [-Werror=return-type]
+  147 | }
+
+Fixes: 233d687d1b78 ("macintosh: Explicitly include correct DT includes")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+---
+ drivers/macintosh/ams/ams.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff -- a/drivers/macintosh/ams/ams.h b/drivers/macintosh/ams/ams.h
+--- a/drivers/macintosh/ams/ams.h
++++ b/drivers/macintosh/ams/ams.h
+@@ -6,6 +6,7 @@
+ #include <linux/input.h>
+ #include <linux/kthread.h>
+ #include <linux/mutex.h>
++#include <linux/platform_device.h>
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+ 
