@@ -2,294 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D3678DD20
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B9178D8DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243355AbjH3Sr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S235909AbjH3Sb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242339AbjH3IKM (ORCPT
+        with ESMTP id S242349AbjH3ILQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:10:12 -0400
-Received: from out-249.mta1.migadu.com (out-249.mta1.migadu.com [IPv6:2001:41d0:203:375::f9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDAC1A2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:10:08 -0700 (PDT)
-Message-ID: <e769f96e-cd03-0530-da7a-35d9de03edfc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693383006;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y+5QkFGg0huI9b9EYOFBCflwtwkc9K7TEokIrLKiyY4=;
-        b=hL/MZ6hLxpYhpY5Bj38PzLe1an3NAq11M/MkN8rUUCWKI879ku8+Uk31Pi0ITAacBgfTOp
-        WyHXhhL+pp6xvZF/qBKsYLcejTliKXiEA1CQRyxJUrjB5jWAzrjzwpQd8ZXac3hDskn/qM
-        mdRCc4m5Ri5mninoMMR8kiq6gNFyO4U=
-Date:   Wed, 30 Aug 2023 16:09:58 +0800
+        Wed, 30 Aug 2023 04:11:16 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDE41A2;
+        Wed, 30 Aug 2023 01:11:13 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-792918c5f33so127214639f.3;
+        Wed, 30 Aug 2023 01:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693383073; x=1693987873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eYDzreiruH6qbDLXg2iLXCvSh9G4cLtJs9x6gJkSy4U=;
+        b=VRc3L/YJmlEqi9nW+I4BpFQV2geuHX+gL4RmSF1Kpn5C2lL1mM/eEZ+2Q5rp63om0i
+         tfwHJ+BW52bA2/hqzMh1h+3BX7tDIB6yEEzDkVrk5CIip3PesyNRFMjLATpMxeD5DIgV
+         HhSjv1NHEsvuqukPoeIWnCEsmmFwx8HHv+ZKuuDCgembecfxXd2a1bpOq84/IFtpfbMt
+         ae4so5eQo4oP62KoeQu4SL5KGP+pGhedeM7Lji4bepydO0ATJp2wtdcxclPN3sOND6Bi
+         dhuCDkKBDM8MTLjZR5nS4Ejja7WtvIsRovlBlTe3ZNaUWJ109Cs1EN6t4VCbky+m6mxH
+         9Isg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693383073; x=1693987873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eYDzreiruH6qbDLXg2iLXCvSh9G4cLtJs9x6gJkSy4U=;
+        b=fdp8SgkKLtvsYmXLPoro6bKgkHq0IJnIv+/kA6oajjP+fHNcFa6OWNWlcDg15MZw6m
+         wci6GpSeoGqW+sBARcLj9zSrorl2SefLkT6sTG4XdhzKgHjb24jDMzcTB/wbf9bbMKf6
+         cHwc6ypfXBy0vpVlqUp0GUTejMSUXmkrDMVX1O3ibCdqa4oP+TucI/rJyY/jr5QJb8ii
+         YfYLdrAmUogsEH6oOLifdFGzb++YYHDWyQLd0L1WNShOX/e9mXBB6u28c/35WDmrzdcL
+         rp79aJzpwj187SKAuQ7Qk8r7YH34VPqIaAYmchfpn/yQ/4kmA7aLqTd3XS28mVeQj8Jc
+         kAfg==
+X-Gm-Message-State: AOJu0YxBJS/XJak0lBCnaeZ7PPNCAHxJOX5e8G0LT73rVBTVGT/G9Cr+
+        B3DXVUV1ELU3ItXarzaQeObP0koP8i4=
+X-Google-Smtp-Source: AGHT+IFLukJjgPDCF+6dPVVFCsQtUYJRqy8yK01NHrroGa5RFO41C2WL5CPpF/m8ShUQRg8pSqKOLw==
+X-Received: by 2002:a6b:7a03:0:b0:787:34d:f1ea with SMTP id h3-20020a6b7a03000000b00787034df1eamr1946784iom.8.1693383072910;
+        Wed, 30 Aug 2023 01:11:12 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h12-20020a6b7a0c000000b007836c7e8dccsm3762285iom.17.2023.08.30.01.11.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 01:11:12 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 30 Aug 2023 01:11:10 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     guoren@kernel.org
+Cc:     arnd@arndb.de, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] csky: Fixup -Wmissing-prototypes warning
+Message-ID: <cd3924fb-8639-4fa5-8aae-bc2b20a63dec@roeck-us.net>
+References: <20230811030750.1335526-1-guoren@kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 10/12] hugetlb: batch PMD split for bulk vmemmap dedup
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230825190436.55045-1-mike.kravetz@oracle.com>
- <20230825190436.55045-11-mike.kravetz@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230825190436.55045-11-mike.kravetz@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811030750.1335526-1-guoren@kernel.org>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 11:07:50PM -0400, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> Cleanup the warnings:
+> 
+> arch/csky/kernel/ptrace.c:320:16: error: no previous prototype for 'syscall_trace_enter' [-Werror=missing-prototypes]
+> arch/csky/kernel/ptrace.c:336:17: error: no previous prototype for 'syscall_trace_exit' [-Werror=missing-prototypes]
+> arch/csky/kernel/setup.c:116:34: error: no previous prototype for 'csky_start' [-Werror=missing-prototypes]
+> arch/csky/kernel/signal.c:255:17: error: no previous prototype for 'do_notify_resume' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:150:15: error: no previous prototype for 'do_trap_unknown' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:152:15: error: no previous prototype for 'do_trap_zdiv' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:154:15: error: no previous prototype for 'do_trap_buserr' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:157:17: error: no previous prototype for 'do_trap_misaligned' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:168:17: error: no previous prototype for 'do_trap_bkpt' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:187:17: error: no previous prototype for 'do_trap_illinsn' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:210:17: error: no previous prototype for 'do_trap_fpe' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:220:17: error: no previous prototype for 'do_trap_priv' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:230:17: error: no previous prototype for 'trap_c' [-Werror=missing-prototypes]
+> arch/csky/kernel/traps.c:57:13: error: no previous prototype for 'trap_init' [-Werror=missing-prototypes]
+> arch/csky/kernel/vdso/vgettimeofday.c:12:5: error: no previous prototype for '__vdso_clock_gettime64' [-Werror=missing-prototypes]
+> arch/csky/kernel/vdso/vgettimeofday.c:18:5: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
+> arch/csky/kernel/vdso/vgettimeofday.c:24:5: error: no previous prototype for '__vdso_clock_getres' [-Werror=missing-prototypes]
+> arch/csky/kernel/vdso/vgettimeofday.c:6:5: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
+> arch/csky/mm/fault.c:187:17: error: no previous prototype for 'do_page_fault' [-Werror=missing-prototypes]
+> 
+> Link: https://lore.kernel.org/lkml/20230810141947.1236730-17-arnd@kernel.org/
+> Reported-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
 
+I get the following build errors in linux-next. Bisect points to this patch.
 
-On 2023/8/26 03:04, Mike Kravetz wrote:
-> From: Joao Martins <joao.m.martins@oracle.com>
->
-> In an effort to minimize amount of TLB flushes, batch all PMD splits
-> belonging to a range of pages in order to perform only 1 (global) TLB
-> flush. This brings down from 14.2secs into 7.9secs a 1T hugetlb
-> allocation.
->
-> Rebased by Mike Kravetz
->
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->   mm/hugetlb_vmemmap.c | 94 ++++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 90 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 500a118915ff..904a64fe5669 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -26,6 +26,7 @@
->    * @reuse_addr:		the virtual address of the @reuse_page page.
->    * @vmemmap_pages:	the list head of the vmemmap pages that can be freed
->    *			or is mapped from.
-> + * @flags		used to modify behavior in bulk operations
->    */
->   struct vmemmap_remap_walk {
->   	void			(*remap_pte)(pte_t *pte, unsigned long addr,
-> @@ -34,9 +35,11 @@ struct vmemmap_remap_walk {
->   	struct page		*reuse_page;
->   	unsigned long		reuse_addr;
->   	struct list_head	*vmemmap_pages;
-> +#define VMEMMAP_REMAP_ONLY_SPLIT	BIT(0)
-> +	unsigned long		flags;
->   };
->   
-> -static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start)
-> +static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start, bool bulk)
->   {
->   	pmd_t __pmd;
->   	int i;
-> @@ -79,7 +82,8 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start)
->   		/* Make pte visible before pmd. See comment in pmd_install(). */
->   		smp_wmb();
->   		pmd_populate_kernel(&init_mm, pmd, pgtable);
-> -		flush_tlb_kernel_range(start, start + PMD_SIZE);
-> +		if (!bulk)
-> +			flush_tlb_kernel_range(start, start + PMD_SIZE);
+Building csky:defconfig ... failed
+--------------
+Error log:
+In file included from arch/csky/include/asm/ptrace.h:7,
+                 from arch/csky/include/asm/elf.h:6,
+                 from include/linux/elf.h:6,
+                 from kernel/extable.c:6:
+arch/csky/include/asm/traps.h:43:11: error: expected ';' before 'void'
+   43 | asmlinkage void do_trap_unknown(struct pt_regs *regs);
+      |           ^~~~~
 
-A little weird to me. @bulk is used to indicate whether the TLB
-should be flushed, however, the flag name is VMEMMAP_REMAP_ONLY_SPLIT,
-it seems to tell me @bulk (calculated from walk->flags & 
-VMEMMAP_REMAP_ONLY_SPLIT)
-is a indicator to only split the huge pmd entry. For me, I think
-it is better to introduce another flag like VMEMMAP_SPLIT_WITHOUT_FLUSH
-to indicate whether TLB should be flushed.
+[ and many more similar errors ]
 
->   	} else {
->   		pte_free_kernel(&init_mm, pgtable);
->   	}
-> @@ -119,18 +123,28 @@ static int vmemmap_pmd_range(pud_t *pud, unsigned long addr,
->   			     unsigned long end,
->   			     struct vmemmap_remap_walk *walk)
->   {
-> +	bool bulk;
->   	pmd_t *pmd;
->   	unsigned long next;
->   
-> +	bulk = walk->flags & VMEMMAP_REMAP_ONLY_SPLIT;
->   	pmd = pmd_offset(pud, addr);
->   	do {
->   		int ret;
->   
-> -		ret = split_vmemmap_huge_pmd(pmd, addr & PMD_MASK);
-> +		ret = split_vmemmap_huge_pmd(pmd, addr & PMD_MASK, bulk);
->   		if (ret)
->   			return ret;
->   
->   		next = pmd_addr_end(addr, end);
-> +
-> +		/*
-> +		 * We are only splitting, not remapping the hugetlb vmemmap
-> +		 * pages.
-> +		 */
-> +		if (bulk)
-> +			continue;
+Guenter
 
-Actually, we don not need a flag to detect this situation, you could
-use "!@walk->remap_pte" to determine whether we should go into the
-next level traversal of the page table. ->remap_pte is used to traverse
-the pte entry, so it make senses to continue to the next pmd entry if
-it is NULL.
-
-> +
->   		vmemmap_pte_range(pmd, addr, next, walk);
->   	} while (pmd++, addr = next, addr != end);
->   
-> @@ -197,7 +211,8 @@ static int vmemmap_remap_range(unsigned long start, unsigned long end,
->   			return ret;
->   	} while (pgd++, addr = next, addr != end);
->   
-> -	flush_tlb_kernel_range(start, end);
-> +	if (!(walk->flags & VMEMMAP_REMAP_ONLY_SPLIT))
-> +		flush_tlb_kernel_range(start, end);
-
-This could be:
-
-     if (walk->remap_pte)
-         flush_tlb_kernel_range(start, end);
-
->   
->   	return 0;
->   }
-> @@ -296,6 +311,48 @@ static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
->   	set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
->   }
->   
-> +/**
-> + * vmemmap_remap_split - split the vmemmap virtual address range [@start, @end)
-> + *                      backing PMDs of the directmap into PTEs
-> + * @start:     start address of the vmemmap virtual address range that we want
-> + *             to remap.
-> + * @end:       end address of the vmemmap virtual address range that we want to
-> + *             remap.
-> + * @reuse:     reuse address.
-> + *
-> + * Return: %0 on success, negative error code otherwise.
-> + */
-> +static int vmemmap_remap_split(unsigned long start, unsigned long end,
-> +				unsigned long reuse)
-> +{
-> +	int ret;
-> +	LIST_HEAD(vmemmap_pages);
-
-Unused variable?
-
-> +	struct vmemmap_remap_walk walk = {
-> +		.flags = VMEMMAP_REMAP_ONLY_SPLIT,
-> +	};
-> +
-> +	/*
-> +	 * In order to make remapping routine most efficient for the huge pages,
-> +	 * the routine of vmemmap page table walking has the following rules
-> +	 * (see more details from the vmemmap_pte_range()):
-> +	 *
-> +	 * - The range [@start, @end) and the range [@reuse, @reuse + PAGE_SIZE)
-> +	 *   should be continuous.
-> +	 * - The @reuse address is part of the range [@reuse, @end) that we are
-> +	 *   walking which is passed to vmemmap_remap_range().
-> +	 * - The @reuse address is the first in the complete range.
-> +	 *
-> +	 * So we need to make sure that @start and @reuse meet the above rules.
-> +	 */
-
-The comments are duplicated, something like:
-
-     /* See the comment in the vmemmap_remap_free(). */
-
-is enough.
-
-> +	BUG_ON(start - reuse != PAGE_SIZE);
-> +
-> +	mmap_read_lock(&init_mm);
-> +	ret = vmemmap_remap_range(reuse, end, &walk);
-> +	mmap_read_unlock(&init_mm);
-> +
-> +	return ret;
-> +}
-> +
->   /**
->    * vmemmap_remap_free - remap the vmemmap virtual address range [@start, @end)
->    *			to the page which @reuse is mapped to, then free vmemmap
-> @@ -320,6 +377,7 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
->   		.remap_pte	= vmemmap_remap_pte,
->   		.reuse_addr	= reuse,
->   		.vmemmap_pages	= &vmemmap_pages,
-> +		.flags		= 0,
->   	};
->   	int nid = page_to_nid((struct page *)start);
->   	gfp_t gfp_mask = GFP_KERNEL | __GFP_THISNODE | __GFP_NORETRY |
-> @@ -606,11 +664,39 @@ void hugetlb_vmemmap_optimize_bulk(const struct hstate *h, struct page *head,
->   	__hugetlb_vmemmap_optimize(h, head, bulk_pages);
->   }
->   
-> +void hugetlb_vmemmap_split(const struct hstate *h, struct page *head)
-> +{
-> +	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
-> +	unsigned long vmemmap_reuse;
-> +
-> +	if (!vmemmap_should_optimize(h, head))
-> +		return;
-> +
-> +	static_branch_inc(&hugetlb_optimize_vmemmap_key);
-
-Why? hugetlb_optimize_vmemmap_key is used as a switch to let
-page_fixed_fake_head works properly for the vmemmap-optimized
-HugeTLB pages, however, this function only splits the huge pmd
-entry without optimizing the vmemmap pages. So it is wrong to
-increase the static_key.
-
-Thanks.
-
-> +
-> +	vmemmap_end     = vmemmap_start + hugetlb_vmemmap_size(h);
-> +	vmemmap_reuse   = vmemmap_start;
-> +	vmemmap_start   += HUGETLB_VMEMMAP_RESERVE_SIZE;
-> +
-> +	/*
-> +	 * Remap the vmemmap virtual address range [@vmemmap_start, @vmemmap_end)
-> +	 * to the page which @vmemmap_reuse is mapped to, then free the pages
-> +	 * which the range [@vmemmap_start, @vmemmap_end] is mapped to.
-> +	 */
-> +	if (vmemmap_remap_split(vmemmap_start, vmemmap_end, vmemmap_reuse))
-> +		static_branch_dec(&hugetlb_optimize_vmemmap_key);
-> +}
-> +
->   void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list)
->   {
->   	struct folio *folio;
->   	LIST_HEAD(vmemmap_pages);
->   
-> +	list_for_each_entry(folio, folio_list, lru)
-> +		hugetlb_vmemmap_split(h, &folio->page);
-> +
-> +	flush_tlb_kernel_range(0, TLB_FLUSH_ALL);
-> +
->   	list_for_each_entry(folio, folio_list, lru)
->   		hugetlb_vmemmap_optimize_bulk(h, &folio->page, &vmemmap_pages);
->   
-
+---
+# bad: [56585460cc2ec44fc5d66924f0a116f57080f0dc] Add linux-next specific files for 20230830
+# good: [2dde18cd1d8fac735875f2e4987f11817cc0bc2c] Linux 6.5
+git bisect start 'HEAD' 'v6.5'
+# bad: [17582b16f00f2ca3f84f1c9dadef1529895ddd9a] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git
+git bisect bad 17582b16f00f2ca3f84f1c9dadef1529895ddd9a
+# good: [bd6c11bc43c496cddfc6cf603b5d45365606dbd5] Merge tag 'net-next-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
+git bisect good bd6c11bc43c496cddfc6cf603b5d45365606dbd5
+# bad: [b22935905f9c5830bfd1c66ad3638ffdf6f80da7] Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
+git bisect bad b22935905f9c5830bfd1c66ad3638ffdf6f80da7
+# good: [692f5510159c79bfa312a4e27a15e266232bfb4c] Merge tag 'asoc-v6.6' of https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into for-linus
+git bisect good 692f5510159c79bfa312a4e27a15e266232bfb4c
+# good: [b91742d84d29c39b643992b95560cfb7337eab18] mm/shmem.c: use helper macro K()
+git bisect good b91742d84d29c39b643992b95560cfb7337eab18
+# good: [19134bc23500a01bfdb77a804fc8e4bf8808d0cc] mm: fix kernel-doc warning from tlb_flush_rmaps()
+git bisect good 19134bc23500a01bfdb77a804fc8e4bf8808d0cc
+# bad: [858e6c6fd1960650c6a44b8158e1ac26ee63e26d] Merge branch 'for-curr' of git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git
+git bisect bad 858e6c6fd1960650c6a44b8158e1ac26ee63e26d
+# bad: [9d6b14cd1e993d2ff98df0cef6d935ce6fd4dbec] Merge tag 'flex-array-transformations-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux
+git bisect bad 9d6b14cd1e993d2ff98df0cef6d935ce6fd4dbec
+# good: [3b425dd2aeb8c876805a4cc29d84a6c455b43530] parisc: led: Move register_led_regions() to late_initcall()
+git bisect good 3b425dd2aeb8c876805a4cc29d84a6c455b43530
+# good: [48d25d382643a9d8867f8eb13af231268ab10db5] Merge tag 'parisc-for-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux
+git bisect good 48d25d382643a9d8867f8eb13af231268ab10db5
+# bad: [c8171a86b27401aa1f492dd1f080f3102264f1ab] csky: Fixup -Wmissing-prototypes warning
+git bisect bad c8171a86b27401aa1f492dd1f080f3102264f1ab
+# good: [1362d15ffb59db65b2df354b548b7915686cb05c] csky: pgtable: Invalidate stale I-cache lines in update_mmu_cache
+git bisect good 1362d15ffb59db65b2df354b548b7915686cb05c
+# good: [c1884e1e116409dafce84df38134aa2d7cdb719d] csky: Make pfn accessors static inlines
+git bisect good c1884e1e116409dafce84df38134aa2d7cdb719d
+# first bad commit: [c8171a86b27401aa1f492dd1f080f3102264f1ab] csky: Fixup -Wmissing-prototypes warning
