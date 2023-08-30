@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBA678DF4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621CB78DF76
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239767AbjH3TX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
+        id S243066AbjH3TUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242593AbjH3JKZ (ORCPT
+        with ESMTP id S242670AbjH3JOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:10:25 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7DDCCB
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:10:20 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qbHDD-009BMg-6V; Wed, 30 Aug 2023 17:10:08 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 30 Aug 2023 17:10:08 +0800
-Date:   Wed, 30 Aug 2023 17:10:08 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ardb@kernel.org, keescook@chromium.org, kees@kernel.org,
-        linux-kernel@vger.kernel.org, enlin.mu@unisoc.com,
-        ebiggers@google.com, gpiccoli@igalia.com, willy@infradead.org,
-        yunlong.xing@unisoc.com, yuxiaozhang@google.com
-Subject: Re: [GIT PULL] pstore updates for v6.6-rc1
-Message-ID: <ZO8HcBirOZnX9iRs@gondor.apana.org.au>
+        Wed, 30 Aug 2023 05:14:38 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0212FD2;
+        Wed, 30 Aug 2023 02:14:36 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 303B92F4;
+        Wed, 30 Aug 2023 02:15:15 -0700 (PDT)
+Received: from bogus (unknown [10.57.36.157])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 689003F64C;
+        Wed, 30 Aug 2023 02:14:34 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 10:13:37 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Pawandeep Oza <poza@qti.qualcomm.com>
+Cc:     "Pawandeep Oza (QUIC)" <quic_poza@quicinc.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Subject: Re: ACPI binding with SCMI
+Message-ID: <20230830091337.4rsik2tza6hqa22r@bogus>
+References: <20230807154834.888328-1-quic_poza@quicinc.com>
+ <20230818091931.iqh6bxiifk4wyc32@bogus>
+ <CH0PR02MB80732F4C4134B3EF2D80B4EDF6E3A@CH0PR02MB8073.namprd02.prod.outlook.com>
+ <20230829091912.xefuenspdbazvqlh@bogus>
+ <CH0PR02MB807367CCAD0D5938C4679E18F6E7A@CH0PR02MB8073.namprd02.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgaY2+_KyqVpRS+MrO6Y7bXQp69odTu7JT3XSpdUsgS=g@mail.gmail.com>
-X-Newsgroups: apana.lists.os.linux.kernel
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+In-Reply-To: <CH0PR02MB807367CCAD0D5938C4679E18F6E7A@CH0PR02MB8073.namprd02.prod.outlook.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
->
-> Of course, potentially even better would be to actually move this fix
-> into our copy of zlib. Does the bug / misfeature still exist in
-> upstream zlib?
-> 
-> Also, grepping around a bit, I note that btrfs, for example, just does
-> that Z_SYNC_FLUSH, and then checks for Z_OK. None of this Z_STREAM_END
-> stuff.
-> 
-> Similarly, going off to the debian code search, I find other code that
-> just accepts either Z_OK or Z_STREAM_END.
-> 
-> So what's so magical about how pstore uses zlib? This is just very odd.
+On Tue, Aug 29, 2023 at 03:10:34PM +0000, Pawandeep Oza wrote:
+> I am looking for scmi binding to ACPI. Basically, SCMI based perf control.
+> We have ACPI based system, so I am looking for where I can describe (some
+> way to describe doorbell and share memory in ACPI), and then scmi perf can
+> bind to it via some sort of transport (perhaps fastchannels ? )
 
-The Crypto API DEFLATE algorithm was added for IPComp (RFC 2394).
-So there is a specific format required and to achieve that through
-zlib, you must use raw mode.
+OK, the Section 5.2 ACPI-based Transport in the SCMI spec can be more clearer
+IMO. It does state:
+" SCMI FastChannels can be represented as ACPI System Memory and used
+  in the Continuous Performance Control (CPC) object when using ACPI 
+  Collaborative Processor Performance Control (CPPC)."
 
-Later on someone added "zlib-deflate" to the Crypto API which does
-emit the zlib header/trailer.  It appears to be completely unused
-and it was only added because certain hardware happened be able to
-emit the same header/trailer.  We should remove zlib-defalte
-and all the driver implementations of it from the Crypto API.
+It doesn't cover the fact that CPPC is compatible only with SCMI fastchannels
+without doorbells. Just a plain MMIO register to set the perf.
 
-Normally, zlib will emit a header and a checksum trailer.  That's
-why its implementation assumes that there will be at least one (or
-in fact two) byte(s) after the end of the compressed data.  I haven't
-checked the latest upstream but I would presume that it would still
-make the same assumption as raw mode (or DEFLATE) is an undocumented
-feature of zlib.
+The normal PCC mailbox works fine if the CPPC Desired Perf Register is
+a PCC address space based GAS. However the command is not 1:1 compatible
+with SCMI perf. This is one of the reason why the protocols 0x0-0xF was
+reserved in SCMI to be compatible with the ACPI CPPC way of using PCC
+for perf.
 
-Coming back to pstore, for better or worse the original implementation
-of pstore chose the Crypto API deflate algorithm so it produces
-output that is equivalent to that of RFC 2394.  Therefore it relies
-on zlib raw mode and it must supply an extra byte at the end of
-the compressed data to ensure that decompression works properly.
+Hope this helps and I didn't make it more complicated for you.
 
-The other in-kernel users of zlib appears to use it with a header and
-trailer so they are unaffected by this.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+--
+Regards,
+Sudeep
