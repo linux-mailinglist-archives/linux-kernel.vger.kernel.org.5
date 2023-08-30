@@ -2,196 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CED78DE31
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D842B78D97A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbjH3S7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        id S235613AbjH3SdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343647AbjH3QbW (ORCPT
+        with ESMTP id S1343649AbjH3Qct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:31:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B448D107
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693413031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aFrAeIckcxwdM3BGhgwY2df5vNbcEm/5Om84XOIOQVA=;
-        b=iK7Zgf5Mz4uWuBMecbkL36Ivz1lK1rOmSV01hCiqRJdyMBNuMgAoUMhwX1pIuozEVbAnD7
-        zREkdzexEukpCGzBzQDIwKh/i+8IY9H8CcnrLQyKdFzw6SJ3+noOLoY7cbU2zr8yj1JEBX
-        /7M5EetXlQw2+2kMmiudWkQyUqApExo=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-qqolbJ30Mw6xBe-koD_wGw-1; Wed, 30 Aug 2023 12:30:29 -0400
-X-MC-Unique: qqolbJ30Mw6xBe-koD_wGw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31c5c55fd70so474471f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:30:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693413028; x=1694017828;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aFrAeIckcxwdM3BGhgwY2df5vNbcEm/5Om84XOIOQVA=;
-        b=LapNM8o7GbO55IEIZH9RBBdbiJ5mzW4gvuESBPhWqyHlKjp8PMyl0/FGQRE9W8gKqN
-         KslUk/jDKVVD7RT4gXlPMO36pZNbcmifS4wK7jatd12cNwqD0vDo1v4Q3afUgx8lWXZc
-         i0Mj86k0hhmJjlsJ+jkw4vgqU+lKQxbgHgSfQ+X2envZe09ck8JD8wftFtgTvI3vh9ed
-         X4bhs+2sp7q0KVtpKmb0shIiswyl/od4UIw3LSQsAMzq04vZdyE0aSSQkEalLXif1wmN
-         mkMKPxeXiYHEsMANMpMsqmpVVNmB7VBKh8m4Dr5RDdrAWW4+ELmJ140dnUJeCTf31C2R
-         ap1Q==
-X-Gm-Message-State: AOJu0YwrOfoFSfMS6wluSJGXv4W3fcHftOGyhYejgvL7BD44rq3eq7F9
-        FAK2Os1igMaUUi9nzIp33YypOsigB+imq9JloMYYV3ievFmBqu+DoDtMCq/Tnzah4Ut4zIn37hz
-        UR58gzd6yoeQDNz382fnzOXP0
-X-Received: by 2002:a5d:4a8d:0:b0:30e:56b3:60fe with SMTP id o13-20020a5d4a8d000000b0030e56b360femr131950wrq.4.1693413028098;
-        Wed, 30 Aug 2023 09:30:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHXOzXnjzkCatETTts+G6EKS/KJiIlbcSxMP9jMzfgkBY6L4zKkYcXK5LkfkYMzCGwc/dBzyQ==
-X-Received: by 2002:a5d:4a8d:0:b0:30e:56b3:60fe with SMTP id o13-20020a5d4a8d000000b0030e56b360femr131931wrq.4.1693413027716;
-        Wed, 30 Aug 2023 09:30:27 -0700 (PDT)
-Received: from [10.59.19.200] (pd956a06e.dip0.t-ipconnect.de. [217.86.160.110])
-        by smtp.gmail.com with ESMTPSA id w12-20020a5d4b4c000000b0031416362e23sm17169032wrs.3.2023.08.30.09.30.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 09:30:27 -0700 (PDT)
-Message-ID: <d2bf8d72-8d41-e26f-2dc7-d45973fe2164@redhat.com>
-Date:   Wed, 30 Aug 2023 18:30:25 +0200
+        Wed, 30 Aug 2023 12:32:49 -0400
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2087.outbound.protection.outlook.com [40.107.249.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41027107
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:32:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JvMAC2d2FsaZimZF40dd+fKKbUzA1QS9AyxzoONO4GlwSxv0rFEPY6Q0y6j8Ha+TYiuKInvEZlV/0C7gb1ZFvQgvYJrTl0IA2JpG7cP+YutG6WYbqDuCnztl6PTtontKFTarT7H/VFumowf7fklKRlfSif4hdet3cm2T9+z+B1k+asd0dlTe8yMmjcRM+snG15qMNrmiiE8DbI6PTITblqEK9Q/WAAzv+0HI/Fk2rRQQjv2X8Jh/3Fdw2eAlEU47z0Mjs3iwXKTmB176YyBKsJOqSyL3S/s9O5Y3svRw/ILkS1we7bs8ImNRkw1cciVCaddF6E3m/huusOMnN0IDKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=scKul4w+PbfiYuggqEQ1HIw842wLaYQRLTohFHtlYpU=;
+ b=cVg8jk5tuqlwrvnDAUqnqf+u+lSFnI9Omn10h/I/q9qyCQzNIx2Ttpb/eixoAfJjaVUG1y7KR5VSksN1quzAMXkANraQYDb3RcasbDeJd+MgZ40cvEumUUM9PuxmMJgZC7eHQUXN5kd8lPCHBBxkAWgbGnevGnpmvdXYSMnvQjp+6v5YnJw9DxuVqY5tnndQseM7xkqoWYmnGzK6bLdVOrz9D+15o1HX1W2rwtt06uEeu2NFRCKJshdmkhob5tRJBb64mjH4bbe4z/Z9eRdfkaWKJFLUWf7BTbjRZAAW3esQqGpwqY/sTpMdjQ7QT9AbtqeKKvNRhrk/DJdIwpNAjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=scKul4w+PbfiYuggqEQ1HIw842wLaYQRLTohFHtlYpU=;
+ b=T88zqgUbJHIgqHarJfRI8xvbNrBF14FpXH4zu9yk6I6lkXWxaTs+ost8VUo3QNGkIhkn/B1ymRdog+56ElwfpKfxNcC3BDAJa2q6a4fDc2VS3yJMuBcJTEUHMJD3+n6MHMs92ZlOei8iRllU2HTXLPMSk6x+T1F3hMYjKL/tfAU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by DU0PR04MB9671.eurprd04.prod.outlook.com (2603:10a6:10:317::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Wed, 30 Aug
+ 2023 16:32:44 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::a680:2943:82d1:6aa8]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::a680:2943:82d1:6aa8%3]) with mapi id 15.20.6699.035; Wed, 30 Aug 2023
+ 16:32:43 +0000
+Date:   Wed, 30 Aug 2023 12:32:28 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        imx@lists.linux.dev, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] i3c: master: fixes i3c bus driver probe failure
+ if no i3c device attached
+Message-ID: <ZO9vHAZT7M8hNueW@lizhi-Precision-Tower-5810>
+References: <20230830141727.3794152-1-Frank.Li@nxp.com>
+ <20230830175355.4bc2b8d2@xps-13>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230830175355.4bc2b8d2@xps-13>
+X-ClientProxiedBy: BYAPR08CA0029.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::42) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] virtio_balloon: Fix endless deflation and inflation on
- arm64
-Content-Language: en-US
-To:     Gavin Shan <gshan@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, jasowang@redhat.com, mst@redhat.com,
-        xuanzhuo@linux.alibaba.com, shan.gavin@gmail.com
-References: <20230829015421.920511-1-gshan@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230829015421.920511-1-gshan@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DU0PR04MB9671:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a754049-c26d-4080-28a8-08dba976bc66
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZghTQ6Jhk9TZLeGVrDHNlOycymzy0JzxWWA7PAq/DrqOECpgnx9+AzjbLKGD2uWhtBBaaeyz4pWV8fZBTNBuHq6x6GtT1oZ+/x/Ljpz0n15NKXdswMz0bxA5C0NRQ73M4bG3HeRu/Myb99kkzSbuprePSuK4Hhk0j42D/zbqlvdX8RrzuPc8Q9Re5cBAcYLU05cYptFLlgI3H2RSNYSBtRnFp8J3E8i/dkP4cqisZ3BhwdOR/QoSiGGDdukc2gBhNtkUt2CFlwCufL5TdYghVhQls8nfrYj3NuCQe2T0941MNxA+rw8vW0PZlnKg4Wbp06eLh6hoB9S2r6v0t6niA2z68h7uzIrbaCzKsQmdZss96dofSVFMedFz0jOIshrKireUp4tv2R1OYnenVwOSa1jWUqmsyDz+z+cKxMEKkJ6WqYJptVY1jNqmtLLl8gX+1T4dq4w9/mGae6Wq/+X7tU+hvsugqXPfD3VNnhUMY6hgsskxlQ7emBh9lHoTXRfmuUDbllQVLJt8ZdRib+3eFG6y+zUuY7reIgOqRif3xldvzkqzoK37fIYR+Dc8caSiFiFSmrFruu+2kbJZstknG8YfQV2qrBQDRHuo4ZAzqK1vwYdLzMzub81IQ+Vqa9PLp4C1jqDyJ6tKHHlkMVQU3A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(396003)(39860400002)(346002)(136003)(186009)(1800799009)(451199024)(66556008)(66476007)(6916009)(2906002)(66946007)(316002)(41300700001)(9686003)(6512007)(52116002)(66574015)(6666004)(6506007)(5660300002)(6486002)(26005)(83380400001)(86362001)(38100700002)(38350700002)(8676002)(4326008)(33716001)(8936002)(478600001)(42413004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?u/9w4BDhHMIOdqyi0crTUUzHiQj8fOBEsgLimcfU0n7PDbfPpg2A8Vy43/?=
+ =?iso-8859-1?Q?2fns/38rjkr4fwZmOwAGlTR8zcD3ozrTB1dVFa43EjLQ67ED6MZjmsqGEj?=
+ =?iso-8859-1?Q?rMoHjtAJluZ5T+c0LJGfWIsQziLt0HnYzwYir3vpeQhgZ7Ky7NO48RBfAk?=
+ =?iso-8859-1?Q?pqm5eXKblurI+Y/ZfEL2lUB/ooM9+3dqYTzTKBDqEY1/X90Oup9SQ9mbb5?=
+ =?iso-8859-1?Q?3uvSyIogSxu443LoM+zOmbAGe9sg0JhgD+q0g6pF/tDtbXoCoGPvJLFOaf?=
+ =?iso-8859-1?Q?zd/Sp/thG003+HGUOXET+Wnbk+5IrTyiO/4eGyELLJ70GvBJJxSm7M78xI?=
+ =?iso-8859-1?Q?nWAY1sMU6WMkmW9f/qEOqrVeX0QJcqj7pKM/Ll+YGJaFkKNVk4m8jb8aCq?=
+ =?iso-8859-1?Q?op05EcUK3eNnwd/qHUgUgpQPCt8t/iDjGzlAWtOqbOOC6osyrecCLa2f5N?=
+ =?iso-8859-1?Q?R57w34lNYRhyiZ0TPbj7jJ+pgllswzqW3khW8d6RFeHWbQUFvWp9mpGjea?=
+ =?iso-8859-1?Q?SuzKfMEpfndjhBEqcdxEoED/5aEnNbIdsXIl1U2h1LbCNJcoHbwwP3dJxr?=
+ =?iso-8859-1?Q?UbRUIMkGngj7EMxalK0iIJVcVCJrmx1841g0oV88RYq315tUjLyZmOzaXN?=
+ =?iso-8859-1?Q?Gmq/96lJTMgtANHEIZ9dufUfXD3z418BeV0xwJMYD24IFX6HCBIiEzm1CY?=
+ =?iso-8859-1?Q?iGvYzVzZNVRg8p7Mmu7TPovTGPtFaV16vqYVLzUHOqg0U4rL3rjKvCG8G1?=
+ =?iso-8859-1?Q?nMaIi0qazG6Gkb+WWP1s1Ij8Of5d1PdXa/3u2nVcZ7rg2AGUsPkRDIMu53?=
+ =?iso-8859-1?Q?GX4R/q8UPRoKnI+79IbMmvhg+ZIQmCJHFN5KvdMF0f+tEsGZqF/Pz1d+YW?=
+ =?iso-8859-1?Q?KlQtdaV6a4icFu9mSUsiBt0cMzb9hA3aII3AW9loGy4LMC4s9uZp/1fvAi?=
+ =?iso-8859-1?Q?CfHjhwdDxYPBExJPvPQgzdHv+5jeXMrlWfqEjCbXN5GjN6o6zsvPvBVkyG?=
+ =?iso-8859-1?Q?V3mIiFjA80N04XTr3TgIRvNWahZyTVQhM0CHbVzx1WY+irLo+JOSAeyLTJ?=
+ =?iso-8859-1?Q?bAH6S64Gu7fzd2+33tRkNbb8PhjfpNe5n22Hg2ccenBjjE/LmZIusDlOVZ?=
+ =?iso-8859-1?Q?18lQkvNkcL3G6TTB04vcRJgQzYO8f3VbzmVVa2pNQjbkeo8G1uo9+/HrOQ?=
+ =?iso-8859-1?Q?eWhhicIsysTfug+Xl21PT/S50CPuH5/p+FHblOBga/zGwEzdLac0xARamI?=
+ =?iso-8859-1?Q?VR+fSyiWhD2eSXev9bSoAeIguyDoEBU1yvXy26XGlj4PB7VHOrE8+uTP3q?=
+ =?iso-8859-1?Q?Wi5K2IfVDGhT9dLTE6R8sezUEvoA4XUIO7uh772xOpcVVleO8qvpijLR3V?=
+ =?iso-8859-1?Q?dfl/GCPQqBhBa8COM+9nbW/YhmV+Y4ZFDnf03GdW0Zg59UAA6TLpCbpIG9?=
+ =?iso-8859-1?Q?/O4juaRV/0Jbn1Obdl5WS8jOeuFij+by0xc+JF8mAKj1DbxBgxhFuz9jxT?=
+ =?iso-8859-1?Q?Yiu0mPHeeNBzz9obEaBWxXezXDXAEOzJb3XvxKF0sbJtCp6eObM7Z1FfEG?=
+ =?iso-8859-1?Q?DpXAYiQf7QIuIACXPB0J3RYVwvSFrYjxMTUthDVxTTNllf8Jf90Sm+/AAQ?=
+ =?iso-8859-1?Q?+CldChnuVzSgej2LOXVXMw5uPJGOl5cmt4?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a754049-c26d-4080-28a8-08dba976bc66
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 16:32:43.7270
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7qUKVXHId6NXh76RCeQa5SgBPKiITa1MB4LD3fa3GWju+L41jlYNmZ2+x9qte2xCtcVXsuQrsARR5PiO0xn8iA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9671
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.08.23 03:54, Gavin Shan wrote:
-> The deflation request to the target, which isn't unaligned to the
-> guest page size causes endless deflation and inflation actions. For
-> example, we receive the flooding QMP events for the changes on memory
-> balloon's size after a deflation request to the unaligned target is
-> sent for the ARM64 guest, where we have 64KB base page size.
+On Wed, Aug 30, 2023 at 05:53:55PM +0200, Miquel Raynal wrote:
+> Hi Frank,
 > 
->    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
->    -accel kvm -machine virt,gic-version=host -cpu host          \
->    -smp maxcpus=8,cpus=8,sockets=2,clusters=2,cores=2,threads=1 \
->    -m 1024M,slots=16,maxmem=64G                                 \
->    -object memory-backend-ram,id=mem0,size=512M                 \
->    -object memory-backend-ram,id=mem1,size=512M                 \
->    -numa node,nodeid=0,memdev=mem0,cpus=0-3                     \
->    -numa node,nodeid=1,memdev=mem1,cpus=4-7                     \
->      :                                                          \
->    -device virtio-balloon-pci,id=balloon0,bus=pcie.10
+> Frank.Li@nxp.com wrote on Wed, 30 Aug 2023 10:17:26 -0400:
 > 
->    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
->    {"return": {}}
->    {"timestamp": {"seconds": 1693272173, "microseconds": 88667},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272174, "microseconds": 89704},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272175, "microseconds": 90819},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272176, "microseconds": 91961},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272177, "microseconds": 93040},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272178, "microseconds": 94117},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272179, "microseconds": 95337},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272180, "microseconds": 96615},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272181, "microseconds": 97626},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272182, "microseconds": 98693},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272183, "microseconds": 99698},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272184, "microseconds": 100727},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272185, "microseconds": 90430},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272186, "microseconds": 102999},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->       :
->    <The similar QMP events repeat>
+> > In i3c_master_bus_init()
+> > {	...
+> > 	ret = i3c_master_rstdaa_locked(master, I3C_BROADCAST_ADDR);
+> > 	if (ret && ret != I3C_ERROR_M2)
+> > 			  ^^^ // it is enum i3c_error_code
+> > 	...
+> > }
+> > 
+> > In dw-i3c-master.c implementation:
+> > dw_i3c_ccc_set()
+> > {	...
+> > 	ret = xfer->ret;
+> > 	if (xfer->cmds[0].error == RESPONSE_ERROR_IBA_NACK)
+> > 		ccc->err = I3C_ERROR_M2;
+> > 
+> > 	dw_i3c_master_free_xfer(xfer);
+> > 
+> > 	return ret;
+> > }
+> > 
+> > Return enum i3c_error_code when error happen in i3c_master_rstdaa_locked().
 > 
-> Fix it by having the target aligned to the guest page size, 64KB
-> in this specific case. With this applied, no flooding QMP event
-> is observed and the memory balloon's size can be stablizied to
-> 0x3ffe0000 soon after the deflation request is sent.
+> I am sorry but the commit log needs to be worked on.
 > 
->    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
->    {"return": {}}
->    {"timestamp": {"seconds": 1693273328, "microseconds": 793075},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    { "execute" : "query-balloon" }
->    {"return": {"actual": 1073610752}}
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: 3a379bbcea0a ("i3c: Add core I3C infrastructure")
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> > 
+> > Notes:
+> >     Change from v1 to v2:
+> >     - cc stable
+> > 
+> >  drivers/i3c/master.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+> > index 08aeb69a78003..00a82f3ab9ac0 100644
+> > --- a/drivers/i3c/master.c
+> > +++ b/drivers/i3c/master.c
+> > @@ -783,6 +783,9 @@ static int i3c_master_rstdaa_locked(struct i3c_master_controller *master,
+> >  	ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
+> >  	i3c_ccc_cmd_dest_cleanup(&dest);
+> >  
+> > +	if (ret)
+> > +		ret = cmd.err;
 > 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->   drivers/virtio/virtio_balloon.c | 13 ++++++++++++-
->   1 file changed, 12 insertions(+), 1 deletion(-)
+> Shouldn't this happen in i3c_master_send_ccc_cmd_locked()?
+
+Sorry, This patch is not necesary at all.
+i3c_master_send_ccc_cmd_locked() already handled it.
+Only need second patch. You can discard this patch.
+
+Do you need me send 2nd patch only? Or you can just pick 2nd one?
+
 > 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 5b15936a5214..625caac35264 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -386,6 +386,17 @@ static void stats_handle_request(struct virtio_balloon *vb)
->   	virtqueue_kick(vq);
->   }
->   
-> +static inline s64 align_pages_up(s64 diff)
-> +{
-> +	if (diff == 0)
-> +		return diff;
-> +
-> +	if (diff > 0)
-> +		return ALIGN(diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-> +
-> +	return -ALIGN(-diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-> +}
-> +
->   static inline s64 towards_target(struct virtio_balloon *vb)
->   {
->   	s64 target;
-> @@ -396,7 +407,7 @@ static inline s64 towards_target(struct virtio_balloon *vb)
->   			&num_pages);
->   
->   	target = num_pages;
-> -	return target - vb->num_pages;
-
-We know that vb->num_pages is always multiples of 
-VIRTIO_BALLOON_PAGES_PER_PAGE.
-
-Why not simply align target down?
-
-target = ALIGN(num_pages, VIRTIO_BALLOON_PAGES_PER_PAGE);
-return target - vb->num_pages;
-
-
--- 
-Cheers,
-
-David / dhildenb
-
+> > +
+> >  	return ret;
+> >  }
+> >  
+> 
+> 
+> Thanks,
+> Miquèl
