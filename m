@@ -2,249 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D48C778E0B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ADC78E0A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239611AbjH3Ubu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
+        id S238841AbjH3U2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240093AbjH3Ubg (ORCPT
+        with ESMTP id S239611AbjH3U2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:31:36 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::601])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BE66843B
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:26:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1oBQMX9D4P4OQLNWArkxkABzUGU9lGWH9BT6OP2blrklGF2mzibGSt3eGlSdwOYgfVcpqyD4iZvH7mh+Wkq/jGwBLP8Evyqr5Mc/55IM3VgIFAdcSHoIWKPG87zFRXt+wyQQRUt2XUZftdAR/hy+v11ifDWashS0gwJLQR7C3QTmG61lZ7tDZ+PGsAdc7ne5yAQHv8SCMIcp6+YIS6+W7HtCUKyeuNTtUYz3QZ5jDpOB7v0irAGKZz+0KIn1za7+1kJbxKE7xuWn1nQaIBn6/EeILudobSCmYb42fbussk28NtF9pJDl5L2+9/1fPH2t4KQy+aF+Ul8XaOXSlmaAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tAeB5+TF3uJUcM3AXkmu1kv8BPCTaoyvf0U1I9zLKjI=;
- b=nnglZP6C7e0ze7ixIPaXAE8RuXKJagTXryKf9NhO02cED5kXbudqr+B6BgyzYjFdJMdkp3QvcFBCNY34PudfbaWBzwGv7kgzp/MWhFbUl0A6k/e6K7NwjkdOZa13qyVDnJJrsuy3LdiUlWg+p9nfyjHC77FFXDWfrTezOW+BLvbYHGVHfKQkK4MgE8n2dcNkb3l5d6Uf8nxRSi05pAEwAQ4L2agAZxzZDlx9S8RRVRUa1FMAKonL+SggzKtFwQFOcU7f9TJsc7lpoxClELqbbTeLWDQ0MX7KiTrasw0iGdLxVMDFDxW+WtjoRs8s1DcBEPhg7vy8vwtmWG00UJ6oRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tAeB5+TF3uJUcM3AXkmu1kv8BPCTaoyvf0U1I9zLKjI=;
- b=HAru3TSXfu09aoYWl5RVlFfff3F1y+dFXyEtsOutM8A7hPmy+QDhWNlg4ELOKFV9v2MA35TCAzXd2YQZ+4D3Tzu0E45BDm+10uHHmUB6t2Xax3+faE1oNlvTyLMICaMG4TPU3jK9d0UMz88jzS5Z58605nfg23/6Pl48Vj2JwOE=
-Received: from BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6)
- by SA1PR12MB8096.namprd12.prod.outlook.com (2603:10b6:806:326::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Wed, 30 Aug
- 2023 19:11:42 +0000
-Received: from BL1PR12MB5144.namprd12.prod.outlook.com
- ([fe80::6208:cab6:bc19:7aa3]) by BL1PR12MB5144.namprd12.prod.outlook.com
- ([fe80::6208:cab6:bc19:7aa3%2]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
- 19:11:42 +0000
-From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
-To:     Samuel Holland <samuel.holland@sifive.com>,
-        "Quan, Evan" <Evan.Quan@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>
-CC:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] drm/amd/pm: Replace 1-element arrays with flexible array
- members
-Thread-Topic: [PATCH] drm/amd/pm: Replace 1-element arrays with flexible array
- members
-Thread-Index: AQHZ23PtUYtQmFWS5Umj6pvTNoeSTrADM9Cg
-Date:   Wed, 30 Aug 2023 19:11:42 +0000
-Message-ID: <BL1PR12MB5144AB90E81B7AF182B77464F7E6A@BL1PR12MB5144.namprd12.prod.outlook.com>
-References: <20230830185805.1126402-1-samuel.holland@sifive.com>
-In-Reply-To: <20230830185805.1126402-1-samuel.holland@sifive.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=5924ff8d-6062-498b-8dc7-b05434827231;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP
- 2.0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2023-08-30T19:08:35Z;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR12MB5144:EE_|SA1PR12MB8096:EE_
-x-ms-office365-filtering-correlation-id: 4cf96712-4ee3-43d4-ad59-08dba98cf244
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fppaa/leLyoGhBE/8+7095eBlaK7/57r1nAQ8KtdJWL2e50uAw2anC0DBuFAOzDsA/S64gMEml3oUjgMLFDd3y31rNIH6zy7tXnJZkCfplWpgYDUXl7EwKhWAcKeYRzQJ6mTFY6a4oHHfuQJF7XBVQGC+xtiHasdxVCpVYcWsyB/RBhZNUCCdmAY/5+O1TrTvG4mqG4jMNoy1s5r3/q4BHflZHcLDiU9irYhPwOgpADWwVPhfVWH/OL97OvdvVKEUm35Z4jJxRC89LTQKMpriI+5OOE+OiNOFAu9xSjXeTZtuzvGB9JXLOuO4Qyom1l9vjD5lfJR8qEVSinpRjFZnkHSjij1nT7vI3d7av3LB5IdmHzLnAFILu7Td62Z69j20VHeHu278EgTw/9nq7B85zGb3bDkBPJGgBfguiiZRV60ZTiupM9bCNjTuoQOd3A2nDzkV4Sgs1gz2c8dvy92q35dK5p+G0ySfxX1wmxZhXFbt7yQFCCfBwRu1Bn+FDN3mPZuOG+4EspDRlAbw/TV2mGFcm89rQzClkVdEOlbwJKvnLPm7zZBzVAWp1kqS2WbS7wJ6UdD6sNJciU0DKKnpKkWO4VdDUMhJ4VilyZhZQcA4FP4LBa43oUNk0TEe5wD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5144.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(396003)(366004)(451199024)(1800799009)(186009)(9686003)(316002)(38070700005)(38100700002)(66899024)(41300700001)(5660300002)(4326008)(33656002)(2906002)(83380400001)(52536014)(26005)(8676002)(86362001)(55016003)(8936002)(66556008)(6506007)(71200400001)(7696005)(64756008)(66446008)(66476007)(54906003)(76116006)(122000001)(478600001)(53546011)(110136005)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SG1lVm9GaTdVUUt6bVp5dDNLSklPOWhETWJmSGRJKzNrM29tUXVFRGp0eCtX?=
- =?utf-8?B?aURJR3dueDRVRUVxMWtqR0JRVTJWRXVEOVQzb1U3SVJGT092SzNUVThaYnpU?=
- =?utf-8?B?UFdlaXZLdzJJNFNPaWFJRnYxL2NOS1lYaDdJQWxEektHVjRwMm5ndDZEY1hj?=
- =?utf-8?B?V3BkRVNZSjJLZGw1a0dscDhxdHZRTUg1N25SYUhsVkorWlMyR20wYTJ3ell3?=
- =?utf-8?B?QkdhYkFEZ1dYNHdOTmhUUnB4SXN0cS9qN3BLUzFFZHdkM1pPVFU0TTM0UmFT?=
- =?utf-8?B?SmpzbFRKOFNlZ3ZlN0VjTUQ2RGtGTU9hNlJFbW5mN092RUN3ZDdidEdYVVBU?=
- =?utf-8?B?cnN1VUJJZktqOGY5VlhDRENBN1JZTTcrVzQwZXZIMUlFN25pL3VlTHM4cDZ1?=
- =?utf-8?B?d25yb3c2cXZkM21TOEh3SDNCaExKQTY5U1dGM2VXVXd2eVRSeGJMNWNvWG1E?=
- =?utf-8?B?clpRbjlVOXlhcW1tYm9YaSs4aE1sOHl4aUl2WnVzVW01UWxHVXkzdUVXV0tv?=
- =?utf-8?B?eEJPVnNTdnhrcEdIWU84dXJrcGJPMFh0Vk12MmVnZUxVUXAvbjRWZDQvdi84?=
- =?utf-8?B?N1Z0YU5DTEh2TitoWC9Zb0hxTGtxTUFLczBvVzRLQzRZVWhHZTFHeFRLanFW?=
- =?utf-8?B?ampqUDdvSU5LV3pGWHFOVkU0VmpSUXF6MXRVSGY0QXZOU3V1YWM0Vk1BQkhJ?=
- =?utf-8?B?WW8xM3JnSVVVbTVnKzZXTzNwbkFTY1YwRXp1WWRFYXQ1aFhLY21JcStDbDlW?=
- =?utf-8?B?MHB2TGRqRU1SaGNSdXJoemNjQ0JtQlhuZU1sdjN5TWFsai9QVGFacTVveFVl?=
- =?utf-8?B?WUZKZ2cyZStXYk5zU0tOQmd5OXN0UDJkU3A5MDVTbnVnNENtd2JPYUUyVDVW?=
- =?utf-8?B?cXdJQ3huYUdBbjdpYW5EcUhveTJzRFlPdDZKN3RrZDcyc2hNNDdZeVRySlY4?=
- =?utf-8?B?V2tCUU5NNkRRSDUzRCtKYTV5aUdycVd3Zk1RMmYwd3JDaWdGZkE2ZDUxbVJY?=
- =?utf-8?B?T2pRV2hMdDBwWFpwK1hoVUF4MytvbTF6UmY2US9IeStJZU5qU00zZ0puejFR?=
- =?utf-8?B?eGVOd0J5c1NNaEIxWTlNc3o5NlVkSzcrRkJuYlRXRXYrUnlPS2xFMEVqUFZN?=
- =?utf-8?B?OVphc1c3Y1l4cnUyVjJHM3RpdGxlK3Z2cEViUVJmQWMxN0V3UFVPd2tQVkZF?=
- =?utf-8?B?ZmRYNmRrQzZCRTJnN3hGNzJaM1lHSCtNTkhDeFE0MjZlczBSRlNuT1ZLZ0hq?=
- =?utf-8?B?VWE5aEpqYjVYMTRKWCtyem1Mck41QW9pTjNmWFlXZDRWenhSaTdRY1A2NjNn?=
- =?utf-8?B?ODFCOUdVQmZXUnEveHhPM2V0QzkwQlB4eHJ5MWgyMCtvMUxSQVlHM3hUVXBq?=
- =?utf-8?B?KzZYZy9GOVZ5NG12aEZ0bW1SUjZQZHhuaG1PTnpXRDIrMkpOaWpnS0lwLzRM?=
- =?utf-8?B?dlVRNWhMVGRyS1R3ZkZMbW9wcXlqVlZaNUVuTWkzUHQvdFVtK0J2QlJlbFJJ?=
- =?utf-8?B?Sk9PNmVkNXRkbVczc2xyaVlndzBnc0h2Nm5zajZranljb1NFTks0dGlEWGN1?=
- =?utf-8?B?U1BaRmdHQzgwSGhBdlR5Tzg5bENnMEpET1huY3MvejFiSjB1VDVOQW5lV2sr?=
- =?utf-8?B?OS9qOXBMQXpTSWxFVk50UDl1NHJiMHJNcXJ5aFQyY2JpVHNpUEpMcjJ2WFJo?=
- =?utf-8?B?cHlWQnBBenFrbjMwVVEyMUMxZCtxVU1NWElyRzc4c0NMKzQzdXMyN1cvNDY3?=
- =?utf-8?B?aU1rdlliT0tlWXEyeUlqcmhxSzk5aEVCV2pJS2lrQllvTzNKMjlmTFBIQ1Zu?=
- =?utf-8?B?b3JORDRGWkNQMkNaMDdaV0xjQzFnM1RMMmNqRkFFbW1ONGk0cTdYb29kZWhN?=
- =?utf-8?B?andYQnBYYmx2N3pZZHRkNGJ0c2tJQVZoeklYUnhKMjRqb2xWTjJrVmlhUG9S?=
- =?utf-8?B?RVl4cFhPRUxwaEEyN1VRUHdCYmhneFRRbm1sa1VjZldlcVJVeUhlS245V0Nj?=
- =?utf-8?B?NjZTK212VHFSdW9YL09oVStnenBaWTBSNTAxZ1N4UUFwWHhnN0FtV2VwL2Nq?=
- =?utf-8?B?VU5GbFdYcUhhb0ZrQ29zZ0JvUzVtdGZSM3ZScy83clZjSUxKMmxKNGZDV1Z0?=
- =?utf-8?Q?3xLU=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 30 Aug 2023 16:28:25 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005203C3E
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:16:12 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-26fc5a218daso60909a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1693422896; x=1694027696; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HGvmAnYANPHouVA+BdJfC0MXGgtwfV2UgiyZIn2PRsI=;
+        b=gAP45YDSH4meXjfY6beNK9/rOWh+OfPuHr7VWqMK0fW9YBLdFuNb934zGrq3Qzg8Je
+         MpUzEKgprkHUtmSfxcP2ceWao0AWWCipAbj5dKXBOFvbE8dxuY2fzLCPKflVHcd7YzTL
+         r7MDiqLy+85drfLZenZH1wCpJVJzvY6HSXR/oEXSiKTIXwQyCgiGzgbrkUoWfFio6bJl
+         RawTksh6u8zAc++I/J4RwbARS9b0aRR7+YlTCLVWEDeG0yBpE4Okhr1L6ETZqCk9yJA0
+         fkiG76o9fgiZdp6ilvdZJBZ62AR2jGPcKsVP62TvY0oZDNc9eWCE2GDQNDuBIW1FwpZm
+         zCGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693422896; x=1694027696;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HGvmAnYANPHouVA+BdJfC0MXGgtwfV2UgiyZIn2PRsI=;
+        b=ZD7aqE/e3RikMbjd4c8HnpoMRbesu1ODfmSxRCbSCj62d+xindH4n+ZXtLJYF+c8VV
+         J0vhYXmVQ6088709s8ZBMcacxck76llb7dJM0Ds8fiIv0NHEnkpV4tTnP5W2l2zknbba
+         CxWpQvp8FGmV4mrwNezQJjDIuFd15QZueVdfLd2BjwlY/u4QlDWz1jhe4L3LvEn5P/DY
+         D42IUzptqqrQ+xwiwriS0FWWYqe6Gbt+jiQNvIqhEpsn5xuTR5SdYeBF9xSiQKyS9O9B
+         AkRz57ZXZb4h3H9MG4m8yjq7Kkhji0THtKmHD4GkKPzjwPE2gnPAkXvxHFq99NI71TOK
+         4ohg==
+X-Gm-Message-State: AOJu0YzdzKVjnJ7wFCPcJuIhE4JwKGhnfw4FRVUqvSo+04jSf46tWNGv
+        ruRixWNuWPP4vARNAxDkOJvQFvGrPRYEIzAii2u4y/60Gox7Qfl6GUl5mQ==
+X-Google-Smtp-Source: AGHT+IFAARw8v1UFiFy5BY+Jwg3667PEy/UO72QjYBKljjXc7Hi5OYjANU6LOXgIEcoktmjI6GsRSRfpcd8/MvLOM3g=
+X-Received: by 2002:a17:90b:e07:b0:263:f62b:3601 with SMTP id
+ ge7-20020a17090b0e0700b00263f62b3601mr2848202pjb.10.1693422895963; Wed, 30
+ Aug 2023 12:14:55 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5144.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4cf96712-4ee3-43d4-ad59-08dba98cf244
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 19:11:42.8063
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EVSLQ7sb2hWscx+/mCDelYDtF6gzD0oUGZH52fqVFp14bulsV1EeEDcc4ggYF8dLhw81E90Zgmj7h2cxuN95xw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8096
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230830111319.3882281-1-Naresh.Solanki@9elements.com> <0bfbbbb3-6144-fc9a-c8ab-423a8865591b@roeck-us.net>
+In-Reply-To: <0bfbbbb3-6144-fc9a-c8ab-423a8865591b@roeck-us.net>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Thu, 31 Aug 2023 00:44:45 +0530
+Message-ID: <CABqG17ig1VRJYqbrOvPKAYS8iUFwY9J3tYcgYGtnnXw+vrnoRA@mail.gmail.com>
+Subject: Re: [PATCH] regulator (max5970): Add hwmon support
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, zev@bewilderbeest.net,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W1B1YmxpY10NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTYW11ZWwg
-SG9sbGFuZCA8c2FtdWVsLmhvbGxhbmRAc2lmaXZlLmNvbT4NCj4gU2VudDogV2VkbmVzZGF5LCBB
-dWd1c3QgMzAsIDIwMjMgMjo1OCBQTQ0KPiBUbzogUXVhbiwgRXZhbiA8RXZhbi5RdWFuQGFtZC5j
-b20+OyBEZXVjaGVyLCBBbGV4YW5kZXINCj4gPEFsZXhhbmRlci5EZXVjaGVyQGFtZC5jb20+OyBL
-b2VuaWcsIENocmlzdGlhbg0KPiA8Q2hyaXN0aWFuLktvZW5pZ0BhbWQuY29tPg0KPiBDYzogU2Ft
-dWVsIEhvbGxhbmQgPHNhbXVlbC5ob2xsYW5kQHNpZml2ZS5jb20+OyBEYW5pZWwgVmV0dGVyDQo+
-IDxkYW5pZWxAZmZ3bGwuY2g+OyBEYXZpZCBBaXJsaWUgPGFpcmxpZWRAZ21haWwuY29tPjsgUGFu
-LCBYaW5odWkNCj4gPFhpbmh1aS5QYW5AYW1kLmNvbT47IGFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnOyBkcmktDQo+IGRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBbUEFUQ0hdIGRybS9hbWQvcG06IFJlcGxhY2Ug
-MS1lbGVtZW50IGFycmF5cyB3aXRoIGZsZXhpYmxlIGFycmF5DQo+IG1lbWJlcnMNCj4NCj4gU2lu
-Y2UgY29tbWl0IGRmOGZjNGU5MzRjMSAoImtidWlsZDogRW5hYmxlIC1mc3RyaWN0LWZsZXgtYXJy
-YXlzPTMiKSwNCj4gVUJTQU5fQk9VTkRTIG5vIGxvbmdlciBwcmV0ZW5kcyAxLWVsZW1lbnQgYXJy
-YXlzIGFyZSB1bmJvdW5kZWQuIFRoZQ0KPiBib3VuZHMgY2hlY2sgaXMgdHJpcHBlZCBpbiBzbXU3
-X2dldF9wcF90YWJsZV9lbnRyeV9jYWxsYmFja19mdW5jX3YxKCksDQo+IHdoaWxlIHJlYWRpbmcg
-ZnJvbSBtY2xrX2RlcF90YWJsZS4NCj4NCj4gRm9yIGNvbnNpc3RlbmN5LCBmaXggYWxsIGFmZmVj
-dGVkIHN0cnVjdCBkZWZpbml0aW9ucyBpbiB0aGlzIGZpbGUuDQo+DQo+IFNpZ25lZC1vZmYtYnk6
-IFNhbXVlbCBIb2xsYW5kIDxzYW11ZWwuaG9sbGFuZEBzaWZpdmUuY29tPg0KDQorIEd1c3Rhdm8N
-Cg0KUGxlYXNlIG1ha2Ugc3VyZSBhbnkgY29kZSB0aGF0IHVzZXMgdGhlc2Ugc3RydWN0dXJlcyBw
-cm9wZXJseSBkZWFscyB3aXRoIHRoZSBjaGFuZ2UgaW4gc3RydWN0dXJlIHNpemUuDQoNCkFsZXgN
-Cg0KPiAtLS0NCj4NCj4gIC4uLi9kcm0vYW1kL3BtL3Bvd2VycGxheS9od21nci9wcHRhYmxlX3Yx
-XzAuaCB8IDIwICsrKysrKysrKy0tLS0tLS0tDQo+IC0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTAg
-aW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L2dwdS9kcm0vYW1kL3BtL3Bvd2VycGxheS9od21nci9wcHRhYmxlX3YxXzAuaA0KPiBiL2RyaXZl
-cnMvZ3B1L2RybS9hbWQvcG0vcG93ZXJwbGF5L2h3bWdyL3BwdGFibGVfdjFfMC5oDQo+IGluZGV4
-IGIwYWM0ZDEyMWFkYy4uZmI1ZTkzNWVmNzg2IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vYW1kL3BtL3Bvd2VycGxheS9od21nci9wcHRhYmxlX3YxXzAuaA0KPiArKysgYi9kcml2ZXJz
-L2dwdS9kcm0vYW1kL3BtL3Bvd2VycGxheS9od21nci9wcHRhYmxlX3YxXzAuaA0KPiBAQCAtMTY0
-LDcgKzE2NCw3IEBAIHR5cGVkZWYgc3RydWN0IF9BVE9NX1RvbmdhX1N0YXRlIHsgIHR5cGVkZWYg
-c3RydWN0DQo+IF9BVE9NX1RvbmdhX1N0YXRlX0FycmF5IHsNCj4gICAgICAgVUNIQVIgdWNSZXZJ
-ZDsNCj4gICAgICAgVUNIQVIgdWNOdW1FbnRyaWVzOyAgICAgICAgICAgICAvKiBOdW1iZXIgb2Yg
-ZW50cmllcy4gKi8NCj4gLSAgICAgQVRPTV9Ub25nYV9TdGF0ZSBlbnRyaWVzWzFdOyAgICAvKiBE
-eW5hbWljYWxseSBhbGxvY2F0ZSBlbnRyaWVzLiAqLw0KPiArICAgICBBVE9NX1RvbmdhX1N0YXRl
-IGVudHJpZXNbXTsgICAgIC8qIER5bmFtaWNhbGx5IGFsbG9jYXRlIGVudHJpZXMuICovDQo+ICB9
-IEFUT01fVG9uZ2FfU3RhdGVfQXJyYXk7DQo+DQo+ICB0eXBlZGVmIHN0cnVjdCBfQVRPTV9Ub25n
-YV9NQ0xLX0RlcGVuZGVuY3lfUmVjb3JkIHsgQEAgLTE3OSw3DQo+ICsxNzksNyBAQCB0eXBlZGVm
-IHN0cnVjdCBfQVRPTV9Ub25nYV9NQ0xLX0RlcGVuZGVuY3lfUmVjb3JkIHsNCj4gdHlwZWRlZiBz
-dHJ1Y3QgX0FUT01fVG9uZ2FfTUNMS19EZXBlbmRlbmN5X1RhYmxlIHsNCj4gICAgICAgVUNIQVIg
-dWNSZXZJZDsNCj4gICAgICAgVUNIQVIgdWNOdW1FbnRyaWVzOw0KPiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAvKiBOdW1iZXIgb2YgZW50cmllcy4gKi8NCj4gLSAgICAgQVRPTV9Ub25n
-YV9NQ0xLX0RlcGVuZGVuY3lfUmVjb3JkIGVudHJpZXNbMV07DQo+ICAgICAgICAgICAgICAgLyog
-RHluYW1pY2FsbHkgYWxsb2NhdGUgZW50cmllcy4gKi8NCj4gKyAgICAgQVRPTV9Ub25nYV9NQ0xL
-X0RlcGVuZGVuY3lfUmVjb3JkIGVudHJpZXNbXTsNCj4gICAgICAgICAgICAgICAvKiBEeW5hbWlj
-YWxseSBhbGxvY2F0ZSBlbnRyaWVzLiAqLw0KPiAgfSBBVE9NX1RvbmdhX01DTEtfRGVwZW5kZW5j
-eV9UYWJsZTsNCj4NCj4gIHR5cGVkZWYgc3RydWN0IF9BVE9NX1RvbmdhX1NDTEtfRGVwZW5kZW5j
-eV9SZWNvcmQgeyBAQCAtMTk0LDcNCj4gKzE5NCw3IEBAIHR5cGVkZWYgc3RydWN0IF9BVE9NX1Rv
-bmdhX1NDTEtfRGVwZW5kZW5jeV9SZWNvcmQgew0KPiB0eXBlZGVmIHN0cnVjdCBfQVRPTV9Ub25n
-YV9TQ0xLX0RlcGVuZGVuY3lfVGFibGUgew0KPiAgICAgICBVQ0hBUiB1Y1JldklkOw0KPiAgICAg
-ICBVQ0hBUiB1Y051bUVudHJpZXM7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8q
-IE51bWJlciBvZiBlbnRyaWVzLiAqLw0KPiAtICAgICBBVE9NX1RvbmdhX1NDTEtfRGVwZW5kZW5j
-eV9SZWNvcmQgZW50cmllc1sxXTsNCj4gICAgICAgICAgICAgICAgLyogRHluYW1pY2FsbHkgYWxs
-b2NhdGUgZW50cmllcy4gKi8NCj4gKyAgICAgQVRPTV9Ub25nYV9TQ0xLX0RlcGVuZGVuY3lfUmVj
-b3JkIGVudHJpZXNbXTsNCj4gICAgICAgICAgICAgICAgLyogRHluYW1pY2FsbHkgYWxsb2NhdGUg
-ZW50cmllcy4gKi8NCj4gIH0gQVRPTV9Ub25nYV9TQ0xLX0RlcGVuZGVuY3lfVGFibGU7DQo+DQo+
-ICB0eXBlZGVmIHN0cnVjdCBfQVRPTV9Qb2xhcmlzX1NDTEtfRGVwZW5kZW5jeV9SZWNvcmQgeyBA
-QCAtMjEwLDcNCj4gKzIxMCw3IEBAIHR5cGVkZWYgc3RydWN0IF9BVE9NX1BvbGFyaXNfU0NMS19E
-ZXBlbmRlbmN5X1JlY29yZCB7DQo+IHR5cGVkZWYgc3RydWN0IF9BVE9NX1BvbGFyaXNfU0NMS19E
-ZXBlbmRlbmN5X1RhYmxlIHsNCj4gICAgICAgVUNIQVIgdWNSZXZJZDsNCj4gICAgICAgVUNIQVIg
-dWNOdW1FbnRyaWVzOw0KPiAgICAgICAvKiBOdW1iZXIgb2YgZW50cmllcy4gKi8NCj4gLSAgICAg
-QVRPTV9Qb2xhcmlzX1NDTEtfRGVwZW5kZW5jeV9SZWNvcmQgZW50cmllc1sxXTsNCj4gICAgICAg
-ICAgICAgICAgLyogRHluYW1pY2FsbHkgYWxsb2NhdGUgZW50cmllcy4gKi8NCj4gKyAgICAgQVRP
-TV9Qb2xhcmlzX1NDTEtfRGVwZW5kZW5jeV9SZWNvcmQgZW50cmllc1tdOw0KPiAgICAgICAgICAg
-ICAgICAvKiBEeW5hbWljYWxseSBhbGxvY2F0ZSBlbnRyaWVzLiAqLw0KPiAgfSBBVE9NX1BvbGFy
-aXNfU0NMS19EZXBlbmRlbmN5X1RhYmxlOw0KPg0KPiAgdHlwZWRlZiBzdHJ1Y3QgX0FUT01fVG9u
-Z2FfUENJRV9SZWNvcmQgeyBAQCAtMjIyLDcgKzIyMiw3IEBAIHR5cGVkZWYNCj4gc3RydWN0IF9B
-VE9NX1RvbmdhX1BDSUVfUmVjb3JkIHsgIHR5cGVkZWYgc3RydWN0DQo+IF9BVE9NX1RvbmdhX1BD
-SUVfVGFibGUgew0KPiAgICAgICBVQ0hBUiB1Y1JldklkOw0KPiAgICAgICBVQ0hBUiB1Y051bUVu
-dHJpZXM7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qIE51bWJlciBvZiBlbnRy
-aWVzLiAqLw0KPiAtICAgICBBVE9NX1RvbmdhX1BDSUVfUmVjb3JkIGVudHJpZXNbMV07DQo+ICAg
-ICAgICAgICAgICAgICAgICAgICAvKiBEeW5hbWljYWxseSBhbGxvY2F0ZSBlbnRyaWVzLiAqLw0K
-PiArICAgICBBVE9NX1RvbmdhX1BDSUVfUmVjb3JkIGVudHJpZXNbXTsNCj4gICAgICAgICAgICAg
-ICAgICAgICAgIC8qIER5bmFtaWNhbGx5IGFsbG9jYXRlIGVudHJpZXMuICovDQo+ICB9IEFUT01f
-VG9uZ2FfUENJRV9UYWJsZTsNCj4NCj4gIHR5cGVkZWYgc3RydWN0IF9BVE9NX1BvbGFyaXMxMF9Q
-Q0lFX1JlY29yZCB7IEBAIC0yMzUsNyArMjM1LDcgQEANCj4gdHlwZWRlZiBzdHJ1Y3QgX0FUT01f
-UG9sYXJpczEwX1BDSUVfUmVjb3JkIHsgIHR5cGVkZWYgc3RydWN0DQo+IF9BVE9NX1BvbGFyaXMx
-MF9QQ0lFX1RhYmxlIHsNCj4gICAgICAgVUNIQVIgdWNSZXZJZDsNCj4gICAgICAgVUNIQVIgdWNO
-dW1FbnRyaWVzOyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogTnVt
-YmVyIG9mIGVudHJpZXMuICovDQo+IC0gICAgIEFUT01fUG9sYXJpczEwX1BDSUVfUmVjb3JkIGVu
-dHJpZXNbMV07ICAgICAgICAgICAgICAgICAgICAgIC8qIER5bmFtaWNhbGx5DQo+IGFsbG9jYXRl
-IGVudHJpZXMuICovDQo+ICsgICAgIEFUT01fUG9sYXJpczEwX1BDSUVfUmVjb3JkIGVudHJpZXNb
-XTsgICAgICAgICAgICAgICAgICAgICAgIC8qIER5bmFtaWNhbGx5DQo+IGFsbG9jYXRlIGVudHJp
-ZXMuICovDQo+ICB9IEFUT01fUG9sYXJpczEwX1BDSUVfVGFibGU7DQo+DQo+DQo+IEBAIC0yNTIs
-NyArMjUyLDcgQEAgdHlwZWRlZiBzdHJ1Y3QNCj4gX0FUT01fVG9uZ2FfTU1fRGVwZW5kZW5jeV9S
-ZWNvcmQgeyAgdHlwZWRlZiBzdHJ1Y3QNCj4gX0FUT01fVG9uZ2FfTU1fRGVwZW5kZW5jeV9UYWJs
-ZSB7DQo+ICAgICAgIFVDSEFSIHVjUmV2SWQ7DQo+ICAgICAgIFVDSEFSIHVjTnVtRW50cmllczsN
-Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogTnVtYmVyIG9mIGVudHJpZXMuICov
-DQo+IC0gICAgIEFUT01fVG9uZ2FfTU1fRGVwZW5kZW5jeV9SZWNvcmQgZW50cmllc1sxXTsNCj4g
-ICAgICAgICAgLyogRHluYW1pY2FsbHkgYWxsb2NhdGUgZW50cmllcy4gKi8NCj4gKyAgICAgQVRP
-TV9Ub25nYV9NTV9EZXBlbmRlbmN5X1JlY29yZCBlbnRyaWVzW107DQo+ICAgICAgICAgIC8qIER5
-bmFtaWNhbGx5IGFsbG9jYXRlIGVudHJpZXMuICovDQo+ICB9IEFUT01fVG9uZ2FfTU1fRGVwZW5k
-ZW5jeV9UYWJsZTsNCj4NCj4gIHR5cGVkZWYgc3RydWN0IF9BVE9NX1RvbmdhX1ZvbHRhZ2VfTG9v
-a3VwX1JlY29yZCB7IEBAIC0yNjUsNyArMjY1LDcNCj4gQEAgdHlwZWRlZiBzdHJ1Y3QgX0FUT01f
-VG9uZ2FfVm9sdGFnZV9Mb29rdXBfUmVjb3JkIHsgIHR5cGVkZWYgc3RydWN0DQo+IF9BVE9NX1Rv
-bmdhX1ZvbHRhZ2VfTG9va3VwX1RhYmxlIHsNCj4gICAgICAgVUNIQVIgdWNSZXZJZDsNCj4gICAg
-ICAgVUNIQVIgdWNOdW1FbnRyaWVzOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAv
-KiBOdW1iZXIgb2YgZW50cmllcy4gKi8NCj4gLSAgICAgQVRPTV9Ub25nYV9Wb2x0YWdlX0xvb2t1
-cF9SZWNvcmQgZW50cmllc1sxXTsNCj4gICAgICAgICAgICAgICAvKiBEeW5hbWljYWxseSBhbGxv
-Y2F0ZSBlbnRyaWVzLiAqLw0KPiArICAgICBBVE9NX1RvbmdhX1ZvbHRhZ2VfTG9va3VwX1JlY29y
-ZCBlbnRyaWVzW107DQo+ICAgICAgICAgICAgICAgLyogRHluYW1pY2FsbHkgYWxsb2NhdGUgZW50
-cmllcy4gKi8NCj4gIH0gQVRPTV9Ub25nYV9Wb2x0YWdlX0xvb2t1cF9UYWJsZTsNCj4NCj4gIHR5
-cGVkZWYgc3RydWN0IF9BVE9NX1RvbmdhX0Zhbl9UYWJsZSB7DQo+IEBAIC0zNjcsNyArMzY3LDcg
-QEAgdHlwZWRlZiBzdHJ1Y3QgX0FUT01fVG9uZ2FfVkNFX1N0YXRlX1JlY29yZCB7DQo+IHR5cGVk
-ZWYgc3RydWN0IF9BVE9NX1RvbmdhX1ZDRV9TdGF0ZV9UYWJsZSB7DQo+ICAgICAgIFVDSEFSIHVj
-UmV2SWQ7DQo+ICAgICAgIFVDSEFSIHVjTnVtRW50cmllczsNCj4gLSAgICAgQVRPTV9Ub25nYV9W
-Q0VfU3RhdGVfUmVjb3JkIGVudHJpZXNbMV07DQo+ICsgICAgIEFUT01fVG9uZ2FfVkNFX1N0YXRl
-X1JlY29yZCBlbnRyaWVzW107DQo+ICB9IEFUT01fVG9uZ2FfVkNFX1N0YXRlX1RhYmxlOw0KPg0K
-PiAgdHlwZWRlZiBzdHJ1Y3QgX0FUT01fVG9uZ2FfUG93ZXJUdW5lX1RhYmxlIHsgQEAgLTQ4Miw3
-ICs0ODIsNyBAQA0KPiB0eXBlZGVmIHN0cnVjdCBfQVRPTV9Ub25nYV9IYXJkX0xpbWl0X1JlY29y
-ZCB7ICB0eXBlZGVmIHN0cnVjdA0KPiBfQVRPTV9Ub25nYV9IYXJkX0xpbWl0X1RhYmxlIHsNCj4g
-ICAgICAgVUNIQVIgdWNSZXZJZDsNCj4gICAgICAgVUNIQVIgdWNOdW1FbnRyaWVzOw0KPiAtICAg
-ICBBVE9NX1RvbmdhX0hhcmRfTGltaXRfUmVjb3JkIGVudHJpZXNbMV07DQo+ICsgICAgIEFUT01f
-VG9uZ2FfSGFyZF9MaW1pdF9SZWNvcmQgZW50cmllc1tdOw0KPiAgfSBBVE9NX1RvbmdhX0hhcmRf
-TGltaXRfVGFibGU7DQo+DQo+ICB0eXBlZGVmIHN0cnVjdCBfQVRPTV9Ub25nYV9HUElPX1RhYmxl
-IHsNCj4gLS0NCj4gMi40MS4wDQoNCg==
+Hi
+
+
+On Wed, 30 Aug 2023 at 21:26, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 8/30/23 04:13, Naresh Solanki wrote:
+> > Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
+> > and current monitoring. This feature is seamlessly integrated through
+> > the hwmon subsystem.
+> >
+> > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> > ---
+> >   drivers/regulator/max5970-regulator.c | 119 ++++++++++++++++++++++++++
+> >   1 file changed, 119 insertions(+)
+> >
+> > diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
+> > index b56a174cde3d..3a6f7c293526 100644
+> > --- a/drivers/regulator/max5970-regulator.c
+> > +++ b/drivers/regulator/max5970-regulator.c
+> > @@ -10,6 +10,7 @@
+> >   #include <linux/bitops.h>
+> >   #include <linux/device.h>
+> >   #include <linux/err.h>
+> > +#include <linux/hwmon.h>
+> >   #include <linux/module.h>
+> >   #include <linux/io.h>
+> >   #include <linux/of.h>
+> > @@ -32,6 +33,116 @@ enum max597x_regulator_id {
+> >       MAX597X_SW1,
+> >   };
+> >
+> > +static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
+> > +{
+> > +     u8 reg_data[2];
+> > +     int ret;
+> > +
+> > +     ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> > +     *val = (reg_data[0] << 2) | (reg_data[1] & 3);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
+> > +                     u32 attr, int channel, long *val)
+> > +{
+> > +     struct max5970_data *ddata = dev_get_drvdata(dev);
+> > +     struct regmap *regmap = dev_get_regmap(dev->parent, NULL);
+> > +     int ret;
+> > +
+> > +     switch (type) {
+> > +     case hwmon_curr:
+> > +             switch (attr) {
+> > +             case hwmon_curr_input:
+> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
+> > +                     /*
+> > +                      * Calculate current from ADC value, IRNG range & shunt resistor value.
+> > +                      * ddata->irng holds the voltage corresponding to the maximum value the
+> > +                      * 10-bit ADC can measure.
+> > +                      * To obtain the output, multiply the ADC value by the IRNG range (in
+> > +                      * millivolts) and then divide it by the maximum value of the 10-bit ADC.
+> > +                      */
+> > +                     *val = (*val * ddata->irng[channel]) >> 10;
+> > +                     /* Convert the voltage meansurement across shunt resistor to current */
+> > +                     *val = (*val * 1000) / ddata->shunt_micro_ohms[channel];
+> > +                     return ret;
+> > +             default:
+> > +                     return -EOPNOTSUPP;
+> > +             }
+> > +
+> > +     case hwmon_in:
+> > +             switch (attr) {
+> > +             case hwmon_in_input:
+> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
+> > +                     /*
+> > +                      * Calculate voltage from ADC value and MON range.
+> > +                      * ddata->mon_rng holds the voltage corresponding to the maximum value the
+> > +                      * 10-bit ADC can measure.
+> > +                      * To obtain the output, multiply the ADC value by the MON range (in
+> > +                      * microvolts) and then divide it by the maximum value of the 10-bit ADC.
+> > +                      */
+> > +                     *val = mul_u64_u32_shr(*val, ddata->mon_rng[channel], 10);
+>
+> Why do you use mul_u64_u32_shr() here but a direct shift above ?
+There is possibility of overflow due to large value of ddata->mon_rng
+>
+> > +                     /* uV to mV */
+> > +                     *val = *val / 1000;
+> > +                     return ret;
+> > +             default:
+> > +                     return -EOPNOTSUPP;
+> > +             }
+> > +     default:
+> > +             return -EOPNOTSUPP;
+> > +     }
+> > +}
+> > +
+> > +static umode_t max5970_is_visible(const void *data,
+> > +                               enum hwmon_sensor_types type,
+> > +                               u32 attr, int channel)
+> > +{
+> > +     struct max5970_data *ddata = (struct max5970_data *)data;
+> > +
+> > +     if (channel >= ddata->num_switches)
+> > +             return 0;
+> > +
+> > +     switch (type) {
+> > +     case hwmon_in:
+> > +             switch (attr) {
+> > +             case hwmon_in_input:
+> > +                     return 0444;
+>
+>                 default:
+>                         break;
+Ack
+>
+> > +             }
+> > +             break;
+> > +     case hwmon_curr:
+> > +             switch (attr) {
+> > +             case hwmon_curr_input:
+> > +                     /* Current measurement requires knowledge of the shunt resistor value. */
+> > +                     if (ddata->shunt_micro_ohms[channel])
+> > +                             return 0444;
+>                 default:
+>                         break;
+Ack
+>
+> > +             }
+> > +             break;
+> > +     default:
+> > +             break;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct hwmon_ops max5970_hwmon_ops = {
+> > +     .is_visible = max5970_is_visible,
+> > +     .read = max5970_read,
+> > +};
+> > +
+> > +static const struct hwmon_channel_info *max5970_info[] = {
+> > +     HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
+> > +     HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
+>
+> Your call, but the chip does support limit and status registers, so you
+> could add reporting those as well since you are at it, possibly even including
+> notifications.
+Will consider separate set of patch for this.
+>
+> > +     NULL
+> > +};
+> > +
+> > +static const struct hwmon_chip_info max5970_chip_info = {
+> > +     .ops = &max5970_hwmon_ops,
+> > +     .info = max5970_info,
+> > +};
+> > +
+> >   static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
+> >   {
+> >       int ret, reg;
+> > @@ -432,6 +543,7 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >       struct regulator_config config = { };
+> >       struct regulator_dev *rdev;
+> >       struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
+> > +     struct device *hwmon_dev;
+> >       int num_switches;
+> >       int ret, i;
+> >
+> > @@ -485,6 +597,13 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >               max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
+> >       }
+> >
+> > +     hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970_hwmon", max597x,
+> > +                                                      &max5970_chip_info, NULL);
+>
+> This makes the driver dependent on hwmon, so you either need a strict
+>         depends on HWMON
+> in Kconfig, or
+>         depends on HWMON || HWMON=n
+> and add #if IS_ENABLED(CONFIG_HWMON) as appropriate into the code.
+Sure, will update accordingly. Thanks
+>
+>
+> > +     if (IS_ERR(hwmon_dev)) {
+> > +             return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev), \
+> > +                                  "Unable to register hwmon device\n");
+> > +     }
+> > +
+> >       if (i2c->irq) {
+> >               ret =
+> >                   max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
+> >
+> > base-commit: 35d0d2350d774fecf596cfb2fb050559fe5e1850
+>
