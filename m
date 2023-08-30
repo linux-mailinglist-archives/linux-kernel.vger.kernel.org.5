@@ -2,225 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE3778DBAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD99478D8D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236415AbjH3Sbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
+        id S235675AbjH3SbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243845AbjH3LwG (ORCPT
+        with ESMTP id S243859AbjH3L63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:52:06 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775D0CCB;
-        Wed, 30 Aug 2023 04:52:00 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id B1832863CF;
-        Wed, 30 Aug 2023 13:51:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693396318;
-        bh=ZfkA8l3AfpsaQkpYEzpGtnwaPR6OeMuECHjD17xnjtk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RLAtI32C/+Ryd01DYVy0mRJUEKob6m6w/K8qdIyl4It3ptK7dpOChP3ApQrKRKx9n
-         oEH6wkHT1dhjJAvZ2niCf3LiHWla8snEgtTn2A+fZqsNN6uH+SOZn/tWw9jWkwKtTJ
-         4DBxXqeBTxjdIt2CbNSXvTTWM7O78MldrmvbbkJ+dvyIIzVK4pGUDou+qvliMENmHY
-         9ZlegYhqsn0Y8FeuYCwI4vMlGfHVUpmkESjsNyI0e3HwF31Yy7eDRg2Iax+jObzocj
-         CWlUG3pX66e5lf7ZvbhNKLCCBbhKGQu3RbN3/Aq02IxwSfGmoL5GZumrUI6fyA/TDP
-         qE7PX4BHHyPPQ==
-Date:   Wed, 30 Aug 2023 13:51:51 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
-        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>, Tristram.Ha@microchip.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: phy: Provide Module 4 KSZ9477 errata
- (DS80000754C)
-Message-ID: <20230830135151.683303db@wsk>
-In-Reply-To: <20230830105941.GH31399@pengutronix.de>
-References: <20230830092119.458330-1-lukma@denx.de>
-        <20230830092119.458330-2-lukma@denx.de>
-        <20230830101813.GG31399@pengutronix.de>
-        <20230830125224.1012459f@wsk>
-        <20230830105941.GH31399@pengutronix.de>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 30 Aug 2023 07:58:29 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8131B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 04:58:26 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso8036121e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 04:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1693396705; x=1694001505; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CkHk2loL9NCqNiqGYQo3IA9z812u1ZOg7XOjk7HU8JU=;
+        b=JJQqQbbICnk/RWUXTMPBWSQDIVKDLT4hbfpAHWxb8oVwVIYZsBkYbToOeVccWAB7sq
+         EWWkDZ148GYVDxBeiwKfcli1oNMK39lJazCwJywpjj1oynfsAuqHJqH9VLkO9G1gBElQ
+         1oSVWtVPWwFqjqNtG6s1Q4rbCDSoDuF1kuT98L1epITZk+PV6cGfzxqN0mrK4OWi+rvt
+         wiseHic+glhiheSTE3ayPZYb3v4gE1sZHr0JBQR8C3UbpGNIV8qXumRFKf4DHHhMB6at
+         aquLbVLXPNXaq0wvtWFBU8o4sqEpFh2JpsQaGYPZckd64UabZ8WVMXrXNMFUgv2o4b+E
+         d8Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693396705; x=1694001505;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CkHk2loL9NCqNiqGYQo3IA9z812u1ZOg7XOjk7HU8JU=;
+        b=SKr6HdLX1Zy48sDcjM0TfUWEi0HEiGDiWtj743cl0oV1W+4bit/C0KiG6rhtrMGSWs
+         0+K6hZPFgV3igyymzrZr5PIPNlN31K2KyLAqsY2NaG0h4HxBwDTupCOFC5v2hgHBpJmm
+         i47G4Stg9EY6UaXcZgG6wG4QBk3oU8PX0NszkBwCWA91sKpyp9yrSkAvaw8a1EVdVBjw
+         0C/RahOiWGcA9/5S6ctILIikK0AuCTAoAiWcAuJLo1JBPIkJvqmSTbR/JRomBbZecxx1
+         YCHVK2IpyWk/SJDZ2p6xWNXPPrfnldke796vdpyeS4aLRFDagLUOCdSSMDu6G4FJfAqJ
+         CSkA==
+X-Gm-Message-State: AOJu0YyeeDP+uRRNcWSjnuY9PNP90fhVeHCDbiYVdmSFUlsntZ689WjH
+        ZmWX700A1yAFMerbCWf1LWYIZg==
+X-Google-Smtp-Source: AGHT+IFLaUbs5W43ZQ5OArheWLh5UIXhU8Ue0fD5xs9o+zwVEcgOHyPA0VLUxWvozqztFYinc1Lx1g==
+X-Received: by 2002:a05:6512:2829:b0:4fd:b1f6:b6ca with SMTP id cf41-20020a056512282900b004fdb1f6b6camr1408368lfb.25.1693396704396;
+        Wed, 30 Aug 2023 04:58:24 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id u8-20020aa7d888000000b00527e7087d5dsm6681571edq.15.2023.08.30.04.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 04:58:24 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] i2c: muxes: Enable features on MAX7357
+Date:   Wed, 30 Aug 2023 13:57:43 +0200
+Message-ID: <20230830115744.4102929-2-Naresh.Solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230830115744.4102929-1-Naresh.Solanki@9elements.com>
+References: <20230830115744.4102929-1-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tJ.TSE4IFMq=Jd_C=j17xAQ";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tJ.TSE4IFMq=Jd_C=j17xAQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Hi Oleksij,
+Detect that max7357 is being used and run custom init sequence.
 
-> On Wed, Aug 30, 2023 at 12:52:24PM +0200, Lukasz Majewski wrote:
-> > Hi Oleksij,
-> >  =20
-> > > On Wed, Aug 30, 2023 at 11:21:19AM +0200, Lukasz Majewski wrote: =20
-> > > > The KSZ9477 errata points out (in 'Module 4') the link up/down
-> > > > problem when EEE (Energy Efficient Ethernet) is enabled in the
-> > > > device to which the KSZ9477 tries to auto negotiate.
-> > > >=20
-> > > > The suggested workaround is to clear advertisement of EEE for
-> > > > PHYs in this chip driver.
-> > > >=20
-> > > > Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> > > > ---
-> > > >  drivers/net/phy/micrel.c | 31 ++++++++++++++++++++++++++++++-
-> > > >  1 file changed, 30 insertions(+), 1 deletion(-)
-> > > >=20
-> > > > diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> > > > index 87b090ad2874..469dcd8a5711 100644
-> > > > --- a/drivers/net/phy/micrel.c
-> > > > +++ b/drivers/net/phy/micrel.c
-> > > > @@ -1418,6 +1418,35 @@ static int ksz9131_get_features(struct
-> > > > phy_device *phydev) return 0;
-> > > >  }
-> > > > =20
-> > > > +static int ksz9477_get_features(struct phy_device *phydev)
-> > > > +{
-> > > > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(zero) =3D { 0, };
-> > > > +	int ret;
-> > > > +
-> > > > +	ret =3D genphy_read_abilities(phydev);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	/* KSZ9477 Errata DS80000754C
-> > > > +	 *
-> > > > +	 * Module 4: Energy Efficient Ethernet (EEE) feature
-> > > > select must be
-> > > > +	 * manually disabled
-> > > > +	 *   The EEE feature is enabled by default, but it is
-> > > > not fully
-> > > > +	 *   operational. It must be manually disabled through
-> > > > register
-> > > > +	 *   controls. If not disabled, the PHY ports can
-> > > > auto-negotiate
-> > > > +	 *   to enable EEE, and this feature can cause link
-> > > > drops when linked
-> > > > +	 *   to another device supporting EEE.
-> > > > +	 *
-> > > > +	 *   Although, the KSZ9477 MMD register
-> > > > +	 *   (MMD_DEVICE_ID_EEE_ADV.MMD_EEE_ADV) advertise that
-> > > > EEE is
-> > > > +	 *   operational one needs to manualy clear them to
-> > > > follow the chip
-> > > > +	 *   errata.
-> > > > +	 */
-> > > > +	linkmode_and(phydev->supported_eee, phydev->supported,
-> > > > zero); +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > >  #define KSZ8873MLL_GLOBAL_CONTROL_4	0x06
-> > > >  #define KSZ8873MLL_GLOBAL_CONTROL_4_DUPLEX	BIT(6)
-> > > >  #define KSZ8873MLL_GLOBAL_CONTROL_4_SPEED	BIT(4)
-> > > > @@ -4871,7 +4900,7 @@ static struct phy_driver ksphy_driver[] =3D
-> > > > { .handle_interrupt =3D kszphy_handle_interrupt,
-> > > >  	.suspend	=3D genphy_suspend,
-> > > >  	.resume		=3D genphy_resume,
-> > > > -	.get_features	=3D ksz9131_get_features,
-> > > > +	.get_features	=3D ksz9477_get_features,   =20
-> > >=20
-> > > Sorry, i didn't described all details how to implement it.
-> > >=20
-> > > This code will break EEE support for the KSZ8563R switch.
-> > >  =20
-> >=20
-> > And then another switch (KSZ8563R) pops up.... with regression.... =20
->=20
-> Initially ksz9477_get_features() was introduced to fix KSZ8563R.
->=20
-> > In the micrel.c the ksz9477_get_features was only present in:
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/micrel.c=
-#L4832
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/micrel.c=
-#L4874
-> > so I only changed it there.
-> >=20
-> > Apparently the KSZ8563R re-uses the KSZ9477 code. =20
->=20
-> Most (all?) switch variant support by the ksz9477 DSA driver share
-> the same PHYid, so it is not possible to identify it by the micrel.c
-> PHY driver. As far as a know, the only commonly accepted way to
-> notify about some quirks between this both drivers is not user
-> dev_flags.
->=20
+By default MAX7357 disconnects all channels on a bus lock-up and
+signals	this condition to the bus master using an interrupt.
 
-We would need another idea on fixing this problem as there is following
-order of function calls:
+Disable the interrupt as it's not useful within the kernel and
+it might conflict with the reset functionality that shares the same
+pin.
 
--> ksz9477_setup
--> ksz9477_get_features  (here we are supposed to use the MICREL_NO_EEE
-flag)
--> ksz_get_phy_flags  (here we are supposed to set the MICREL_NO_EEE
-flag)
+Use the introduced 'maxim,bus-lockup-fix' property to enable
+faulty channel isolation and flush-out sequence generation.
 
-The ksz9477_get_features is called early.=20
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+---
+ drivers/i2c/muxes/i2c-mux-pca954x.c | 56 ++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
+index 2219062104fb..0c1ff1438e7c 100644
+--- a/drivers/i2c/muxes/i2c-mux-pca954x.c
++++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
+@@ -57,6 +57,21 @@
+ 
+ #define PCA954X_IRQ_OFFSET 4
+ 
++/*
++ * MAX7357 exposes 7 registers on POR which allow to configure additional
++ * features. The configuration register holds the following settings:
++ */
++#define MAX7357_CONF_INT_ENABLE			BIT(0)
++#define MAX7357_CONF_FLUSH_OUT			BIT(1)
++#define MAX7357_CONF_RELEASE_INT		BIT(2)
++#define MAX7357_CONF_LOCK_UP_CLEAR		BIT(3)
++#define MAX7357_CONF_DISCON_SINGLE_CHAN		BIT(4)
++#define MAX7357_CONF_BUS_LOCKUP_DETECT_DIS	BIT(5)
++#define MAX7357_CONF_ENABLE_BASIC_MODE		BIT(6)
++#define MAX7357_CONF_PRECONNECT_TEST		BIT(7)
++
++#define MAX7357_POR_DEFAULT_CONF		BIT(0)
++
+ enum pca_type {
+ 	max_7356,
+ 	max_7357,
+@@ -477,6 +492,41 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
+ 	return ret;
+ }
+ 
++static int max7357_init(struct i2c_client *client, struct pca954x *data)
++{
++	struct i2c_adapter *adap = client->adapter;
++	u8 conf = MAX7357_POR_DEFAULT_CONF;
++	int ret;
++
++	if (!i2c_check_functionality(adap, I2C_FUNC_SMBUS_WRITE_BYTE_DATA))
++		return pca954x_init(client, data);
++
++	if (data->idle_state >= 0)
++		data->last_chan = pca954x_regval(data, data->idle_state);
++	else
++		data->last_chan = 0; /* Disconnect multiplexer */
++
++	/*
++	 * The interrupt signals downstream channels that are stuck, but
++	 * there's nothing to do and it prevents using the shared pin as reset.
++	 */
++	conf &= MAX7357_CONF_INT_ENABLE;
++
++	/*
++	 * On bus lock-up isolate the failing channel and try to clear the
++	 * fault by sending the flush-out sequence.
++	 */
++	if (device_property_read_bool(&client->dev, "maxim,bus-lockup-fix"))
++		conf |= MAX7357_CONF_DISCON_SINGLE_CHAN |
++			MAX7357_CONF_FLUSH_OUT;
++
++	ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
++	if (ret < 0)
++		data->last_chan = 0;
++
++	return ret;
++}
++
+ /*
+  * I2C init/probing/exit functions
+  */
+@@ -560,7 +610,11 @@ static int pca954x_probe(struct i2c_client *client)
+ 	 * initializes the mux to a channel
+ 	 * or disconnected state.
+ 	 */
+-	ret = pca954x_init(client, data);
++	if ((dev->of_node && of_device_is_compatible(dev->of_node, "maxim,max7357")) ||
++	    id->driver_data == max_7357)
++		ret = max7357_init(client, data);
++	else
++		ret = pca954x_init(client, data);
+ 	if (ret < 0) {
+ 		dev_warn(dev, "probe failed\n");
+ 		ret = -ENODEV;
+-- 
+2.41.0
 
-
-It looks like the most optimal solution would be the one proposed by
-Tristam:
-https://www.spinics.net/lists/netdev/msg932044.html
-
-It would clear the 7.60 per-port register with two ksz_write16
-functions.
-
-That exactly follows the recommendation for KSZ9477 Errata Module4.
-
-> Regards,
-> Oleskij
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/tJ.TSE4IFMq=Jd_C=j17xAQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTvLVcACgkQAR8vZIA0
-zr23BAgAucOpuRW6eOUhNVv+yygM5Oc1EDctA4R/phRBS86LRqtnvhGCQsPcFaT3
-HXKym9s0mUJ0pWxQSF8x9/p8cd7qZFCoAw50Y/1oPfqAo3vlqkmMJXYOscGOXbpK
-cdM9G+j/49ynAAU2NrVKW96clr3swHLbZsNiaE8apW9V15aNHYEtHt6nvXDFOOKt
-pV98/smax72bZ7XC27Sfrn+NM0gRRMFEs1eTMyGjOUKJDbnlki+mGSBM2155icxG
-dmvMQQyB2mYeM9OXsTV/jpgiQvXq9Xhu6ohvqNNo84XFbAreldPHWykd+nU1lWIc
-rwfeEUPaK5oGk4E9TwoHC4CMEsHhnA==
-=uhka
------END PGP SIGNATURE-----
-
---Sig_/tJ.TSE4IFMq=Jd_C=j17xAQ--
