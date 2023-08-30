@@ -2,106 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B80C578DB97
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C449878DDD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239157AbjH3SkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S245693AbjH3SyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344182AbjH3SQ1 (ORCPT
+        with ESMTP id S1344184AbjH3SRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 14:16:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A01132;
-        Wed, 30 Aug 2023 11:16:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F6B961CFD;
-        Wed, 30 Aug 2023 18:16:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3576C433C7;
-        Wed, 30 Aug 2023 18:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693419383;
-        bh=TSAy/SHd+SvDS4iwv3tI4XLODuqMPzD59N5gfWt58t0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a+LTBiviG7Rn6pavN4JHbQs9/Wq/L66v8FN2xMUNqWSC73yFnpZE10w8TD4ovU5q4
-         WUKOLAr0M3FDYs6DybUW72XCZXjHYCpLE/cBYKFREJFnbqdWsbqhNEAkYSLBGlBI2j
-         ggfzDhh2aeUOrAzXrvfqkeRZet+PWYgzAWvtFJIc5bfFfOrQj9YXcAiSvQr5DfTVNm
-         ZXVDLaFmmygQjp5TAZb6Sxyx44j8oUUlmimpj7ImU719wjbHvrLyBeTFKnipiKDX2i
-         E+YnJHrOV6xJj2fqbQad1QvCoi5/UM8g9An/NZK27Zlcw6IKYjIHnxF9hHuTgXE74Z
-         BVZNx4i52xVbg==
-Received: (nullmailer pid 463580 invoked by uid 1000);
-        Wed, 30 Aug 2023 18:16:21 -0000
-Date:   Wed, 30 Aug 2023 13:16:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Tanmay Shah <tanmay.shah@amd.com>
-Cc:     Ben Levinsky <ben.levinsky@amd.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal Simek <michal.simek@amd.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-        Bjorn Andersson <andersson@kernel.org>
-Subject: Re: [PATCH v4 1/3] dt-bindings: remoteproc: add Tightly Coupled
- Memory (TCM) bindings
-Message-ID: <169341938045.463502.9445399366399743283.robh@kernel.org>
-References: <20230829181900.2561194-1-tanmay.shah@amd.com>
- <20230829181900.2561194-2-tanmay.shah@amd.com>
+        Wed, 30 Aug 2023 14:17:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2C8A132;
+        Wed, 30 Aug 2023 11:17:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C26722F4;
+        Wed, 30 Aug 2023 11:18:07 -0700 (PDT)
+Received: from [10.57.4.99] (unknown [10.57.4.99])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D1A3C3F64C;
+        Wed, 30 Aug 2023 11:17:26 -0700 (PDT)
+Message-ID: <101f3b88-7151-af5c-3bd4-feb13763228b@arm.com>
+Date:   Wed, 30 Aug 2023 19:17:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829181900.2561194-2-tanmay.shah@amd.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 5/5] ARM: dts: rockchip: Disable non-required timers
+ for RK3128
+Content-Language: en-GB
+To:     Alex Bee <knaerzche@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230829203721.281455-4-knaerzche@gmail.com>
+ <20230829203721.281455-14-knaerzche@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230829203721.281455-14-knaerzche@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-08-29 21:37, Alex Bee wrote:
+> The Rockchip timer linux driver can handle a maximum of 2 timers and will
+> get confused if more of them exist.
 
-On Tue, 29 Aug 2023 11:18:58 -0700, Tanmay Shah wrote:
-> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Wouldn't it be better to fix that? It looks trivial to do, and frankly 
+it's a behaviour that doesn't make sense anyway. Of course a system can 
+have more hardware available than Linux wants to use; that's not an 
+error, it's just Linux's choice to not use it! See commit a98399cbc1e0 
+("clocksource/drivers/sp804: Avoid error on multiple instances") for 
+example.
+
+DTs shouldn't be treated like Linux board files, so curating them around 
+Linux-specific driver behaviour is inappropriate; FreeBSD or U-Boot or 
+whatever are perfectly entitled to make use of 5 timers at once if they can.
+
+Thanks,
+Robin.
+
+> RK3128 only needs timer0, timer1 and timer5. The latter is the source
+> for the arm-timer and it's clock is prevented from being disabled in the
+> clock driver so it can get disabled in the device tree, too.
 > 
-> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
-> UltraScale+ platform. It will help in defining TCM in device-tree
-> and make it's access platform agnostic and data-driven.
-> 
-> Tightly-coupled memories(TCMs) are low-latency memory that provides
-> predictable instruction execution and predictable data load/store
-> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
-> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
-> 
-> The TCM resources(reg, reg-names and power-domain) are documented for
-> each TCM in the R5 node. The reg and reg-names are made as required
-> properties as we don't want to hardcode TCM addresses for future
-> platforms and for zu+ legacy implementation will ensure that the
-> old dts w/o reg/reg-names works and stable ABI is maintained.
-> 
-> It also extends the examples for TCM split and lockstep modes.
-> 
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> Fixes: a0201bff6259 ("ARM: dts: rockchip: add rk3128 soc dtsi")
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
 > ---
+>   arch/arm/boot/dts/rockchip/rk3128.dtsi | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> Changes in v4:
->   - Use address-cells and size-cells value 2
->   - Modify ranges property as per new value of address-cells
->     and size-cells
->   - Modify child node "reg" property accordingly
->   - Remove previous ack for further review
-> 
-> 
->  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 131 +++++++++++++++---
->  1 file changed, 113 insertions(+), 18 deletions(-)
-> 
-
-Acked-by: Rob Herring <robh@kernel.org>
-
+> diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> index 88a4b0d6d928..f3f0788195d2 100644
+> --- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> +++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> @@ -252,6 +252,7 @@ timer2: timer@20044040 {
+>   		interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
+>   		clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER2>;
+>   		clock-names = "pclk", "timer";
+> +		status = "disabled";
+>   	};
+>   
+>   	timer3: timer@20044060 {
+> @@ -260,6 +261,7 @@ timer3: timer@20044060 {
+>   		interrupts = <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
+>   		clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER3>;
+>   		clock-names = "pclk", "timer";
+> +		status = "disabled";
+>   	};
+>   
+>   	timer4: timer@20044080 {
+> @@ -268,6 +270,7 @@ timer4: timer@20044080 {
+>   		interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
+>   		clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER4>;
+>   		clock-names = "pclk", "timer";
+> +		status = "disabled";
+>   	};
+>   
+>   	timer5: timer@200440a0 {
+> @@ -276,6 +279,7 @@ timer5: timer@200440a0 {
+>   		interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+>   		clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER5>;
+>   		clock-names = "pclk", "timer";
+> +		status = "disabled";
+>   	};
+>   
+>   	watchdog: watchdog@2004c000 {
