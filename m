@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B3D78D84B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B62A78DE02
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbjH3SaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        id S1343661AbjH3S4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243047AbjH3KJN (ORCPT
+        with ESMTP id S243046AbjH3KJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Aug 2023 06:09:13 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5C61B3;
-        Wed, 30 Aug 2023 03:09:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71F71B0;
+        Wed, 30 Aug 2023 03:09:09 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qbI7x-009Bvo-IM; Wed, 30 Aug 2023 18:08:46 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 30 Aug 2023 18:08:47 +0800
+        id 1qbI7z-009Bvz-Kh; Wed, 30 Aug 2023 18:08:48 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 30 Aug 2023 18:08:49 +0800
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Wed, 30 Aug 2023 18:08:47 +0800
-Subject: [PATCH 2/4] crypto: qat - Remove zlib-deflate
+Date:   Wed, 30 Aug 2023 18:08:49 +0800
+Subject: [PATCH 3/4] crypto: deflate - Remove zlib-deflate
 References: <ZO8ULhlJSrJ0Mcsx@gondor.apana.org.au>
 To:     Linus Torvalds <torvalds@linux-foundation.org>, ardb@kernel.org,
         kees@kernel.org, linux-kernel@vger.kernel.org, enlin.mu@unisoc.com,
@@ -32,7 +32,7 @@ To:     Linus Torvalds <torvalds@linux-foundation.org>, ardb@kernel.org,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Yang Shen <shenyang39@huawei.com>,
         Zhou Wang <wangzhou1@hisilicon.com>
-Message-Id: <E1qbI7x-009Bvo-IM@formenos.hmeau.com>
+Message-Id: <E1qbI7z-009Bvz-Kh@formenos.hmeau.com>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
         SPF_PASS,TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
@@ -49,167 +49,165 @@ unused in the kernel.
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- drivers/crypto/intel/qat/qat_common/qat_comp_algs.c |  129 --------------------
- 1 file changed, 1 insertion(+), 128 deletions(-)
+ crypto/deflate.c |   61 +++++++++++++++----------------------------------------
+ 1 file changed, 17 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-index b533984906ec..bf8c0ee62917 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-+++ b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-@@ -109,69 +109,6 @@ static void qat_comp_resubmit(struct work_struct *work)
- 	acomp_request_complete(areq, ret);
- }
+diff --git a/crypto/deflate.c b/crypto/deflate.c
+index b2a46f6dc961..6e31e0db0e86 100644
+--- a/crypto/deflate.c
++++ b/crypto/deflate.c
+@@ -39,24 +39,20 @@ struct deflate_ctx {
+ 	struct z_stream_s decomp_stream;
+ };
  
--static int parse_zlib_header(u16 zlib_h)
--{
--	int ret = -EINVAL;
--	__be16 header;
--	u8 *header_p;
--	u8 cmf, flg;
--
--	header = cpu_to_be16(zlib_h);
--	header_p = (u8 *)&header;
--
--	flg = header_p[0];
--	cmf = header_p[1];
--
--	if (cmf >> QAT_RFC_1950_CM_OFFSET > QAT_RFC_1950_CM_DEFLATE_CINFO_32K)
--		return ret;
--
--	if ((cmf & QAT_RFC_1950_CM_MASK) != QAT_RFC_1950_CM_DEFLATE)
--		return ret;
--
--	if (flg & QAT_RFC_1950_DICT_MASK)
--		return ret;
--
--	return 0;
--}
--
--static int qat_comp_rfc1950_callback(struct qat_compression_req *qat_req,
--				     void *resp)
--{
--	struct acomp_req *areq = qat_req->acompress_req;
--	enum direction dir = qat_req->dir;
--	__be32 qat_produced_adler;
--
--	qat_produced_adler = cpu_to_be32(qat_comp_get_produced_adler32(resp));
--
--	if (dir == COMPRESSION) {
--		__be16 zlib_header;
--
--		zlib_header = cpu_to_be16(QAT_RFC_1950_COMP_HDR);
--		scatterwalk_map_and_copy(&zlib_header, areq->dst, 0, QAT_RFC_1950_HDR_SIZE, 1);
--		areq->dlen += QAT_RFC_1950_HDR_SIZE;
--
--		scatterwalk_map_and_copy(&qat_produced_adler, areq->dst, areq->dlen,
--					 QAT_RFC_1950_FOOTER_SIZE, 1);
--		areq->dlen += QAT_RFC_1950_FOOTER_SIZE;
--	} else {
--		__be32 decomp_adler;
--		int footer_offset;
--		int consumed;
--
--		consumed = qat_comp_get_consumed_ctr(resp);
--		footer_offset = consumed + QAT_RFC_1950_HDR_SIZE;
--		if (footer_offset + QAT_RFC_1950_FOOTER_SIZE > areq->slen)
--			return -EBADMSG;
--
--		scatterwalk_map_and_copy(&decomp_adler, areq->src, footer_offset,
--					 QAT_RFC_1950_FOOTER_SIZE, 0);
--
--		if (qat_produced_adler != decomp_adler)
--			return -EBADMSG;
--	}
--	return 0;
--}
--
- static void qat_comp_generic_callback(struct qat_compression_req *qat_req,
- 				      void *resp)
+-static int deflate_comp_init(struct deflate_ctx *ctx, int format)
++static int deflate_comp_init(struct deflate_ctx *ctx)
  {
-@@ -293,18 +230,6 @@ static void qat_comp_alg_exit_tfm(struct crypto_acomp *acomp_tfm)
- 	memset(ctx, 0, sizeof(*ctx));
+ 	int ret = 0;
+ 	struct z_stream_s *stream = &ctx->comp_stream;
+ 
+ 	stream->workspace = vzalloc(zlib_deflate_workspacesize(
+-				    MAX_WBITS, MAX_MEM_LEVEL));
++				    -DEFLATE_DEF_WINBITS, MAX_MEM_LEVEL));
+ 	if (!stream->workspace) {
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+-	if (format)
+-		ret = zlib_deflateInit(stream, 3);
+-	else
+-		ret = zlib_deflateInit2(stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
+-					-DEFLATE_DEF_WINBITS,
+-					DEFLATE_DEF_MEMLEVEL,
+-					Z_DEFAULT_STRATEGY);
++	ret = zlib_deflateInit2(stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
++				-DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL,
++				Z_DEFAULT_STRATEGY);
+ 	if (ret != Z_OK) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -68,7 +64,7 @@ static int deflate_comp_init(struct deflate_ctx *ctx, int format)
+ 	goto out;
  }
  
--static int qat_comp_alg_rfc1950_init_tfm(struct crypto_acomp *acomp_tfm)
--{
--	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp_tfm);
--	struct qat_compression_ctx *ctx = crypto_tfm_ctx(tfm);
--	int ret;
--
--	ret = qat_comp_alg_init_tfm(acomp_tfm);
--	ctx->qat_comp_callback = &qat_comp_rfc1950_callback;
--
--	return ret;
--}
--
- static int qat_comp_alg_compress_decompress(struct acomp_req *areq, enum direction dir,
- 					    unsigned int shdr, unsigned int sftr,
- 					    unsigned int dhdr, unsigned int dftr)
-@@ -400,43 +325,6 @@ static int qat_comp_alg_decompress(struct acomp_req *req)
- 	return qat_comp_alg_compress_decompress(req, DECOMPRESSION, 0, 0, 0, 0);
+-static int deflate_decomp_init(struct deflate_ctx *ctx, int format)
++static int deflate_decomp_init(struct deflate_ctx *ctx)
+ {
+ 	int ret = 0;
+ 	struct z_stream_s *stream = &ctx->decomp_stream;
+@@ -78,10 +74,7 @@ static int deflate_decomp_init(struct deflate_ctx *ctx, int format)
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+-	if (format)
+-		ret = zlib_inflateInit(stream);
+-	else
+-		ret = zlib_inflateInit2(stream, -DEFLATE_DEF_WINBITS);
++	ret = zlib_inflateInit2(stream, -DEFLATE_DEF_WINBITS);
+ 	if (ret != Z_OK) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -105,21 +98,21 @@ static void deflate_decomp_exit(struct deflate_ctx *ctx)
+ 	vfree(ctx->decomp_stream.workspace);
  }
  
--static int qat_comp_alg_rfc1950_compress(struct acomp_req *req)
+-static int __deflate_init(void *ctx, int format)
++static int __deflate_init(void *ctx)
+ {
+ 	int ret;
+ 
+-	ret = deflate_comp_init(ctx, format);
++	ret = deflate_comp_init(ctx);
+ 	if (ret)
+ 		goto out;
+-	ret = deflate_decomp_init(ctx, format);
++	ret = deflate_decomp_init(ctx);
+ 	if (ret)
+ 		deflate_comp_exit(ctx);
+ out:
+ 	return ret;
+ }
+ 
+-static void *gen_deflate_alloc_ctx(struct crypto_scomp *tfm, int format)
++static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
+ {
+ 	struct deflate_ctx *ctx;
+ 	int ret;
+@@ -128,7 +121,7 @@ static void *gen_deflate_alloc_ctx(struct crypto_scomp *tfm, int format)
+ 	if (!ctx)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ret = __deflate_init(ctx, format);
++	ret = __deflate_init(ctx);
+ 	if (ret) {
+ 		kfree(ctx);
+ 		return ERR_PTR(ret);
+@@ -137,21 +130,11 @@ static void *gen_deflate_alloc_ctx(struct crypto_scomp *tfm, int format)
+ 	return ctx;
+ }
+ 
+-static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
 -{
--	if (!req->dst && req->dlen != 0)
--		return -EINVAL;
--
--	if (req->dst && req->dlen <= QAT_RFC_1950_HDR_SIZE + QAT_RFC_1950_FOOTER_SIZE)
--		return -EINVAL;
--
--	return qat_comp_alg_compress_decompress(req, COMPRESSION, 0, 0,
--						QAT_RFC_1950_HDR_SIZE,
--						QAT_RFC_1950_FOOTER_SIZE);
+-	return gen_deflate_alloc_ctx(tfm, 0);
 -}
 -
--static int qat_comp_alg_rfc1950_decompress(struct acomp_req *req)
+-static void *zlib_deflate_alloc_ctx(struct crypto_scomp *tfm)
 -{
--	struct crypto_acomp *acomp_tfm = crypto_acomp_reqtfm(req);
--	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp_tfm);
--	struct qat_compression_ctx *ctx = crypto_tfm_ctx(tfm);
--	struct adf_accel_dev *accel_dev = ctx->inst->accel_dev;
--	u16 zlib_header;
--	int ret;
--
--	if (req->slen <= QAT_RFC_1950_HDR_SIZE + QAT_RFC_1950_FOOTER_SIZE)
--		return -EBADMSG;
--
--	scatterwalk_map_and_copy(&zlib_header, req->src, 0, QAT_RFC_1950_HDR_SIZE, 0);
--
--	ret = parse_zlib_header(zlib_header);
--	if (ret) {
--		dev_dbg(&GET_DEV(accel_dev), "Error parsing zlib header\n");
--		return ret;
--	}
--
--	return qat_comp_alg_compress_decompress(req, DECOMPRESSION, QAT_RFC_1950_HDR_SIZE,
--						QAT_RFC_1950_FOOTER_SIZE, 0, 0);
+-	return gen_deflate_alloc_ctx(tfm, 1);
 -}
 -
- static struct acomp_alg qat_acomp[] = { {
- 	.base = {
- 		.cra_name = "deflate",
-@@ -452,22 +340,7 @@ static struct acomp_alg qat_acomp[] = { {
- 	.decompress = qat_comp_alg_decompress,
- 	.dst_free = sgl_free,
- 	.reqsize = sizeof(struct qat_compression_req),
+ static int deflate_init(struct crypto_tfm *tfm)
+ {
+ 	struct deflate_ctx *ctx = crypto_tfm_ctx(tfm);
+ 
+-	return __deflate_init(ctx, 0);
++	return __deflate_init(ctx);
+ }
+ 
+ static void __deflate_exit(void *ctx)
+@@ -286,7 +269,7 @@ static struct crypto_alg alg = {
+ 	.coa_decompress  	= deflate_decompress } }
+ };
+ 
+-static struct scomp_alg scomp[] = { {
++static struct scomp_alg scomp = {
+ 	.alloc_ctx		= deflate_alloc_ctx,
+ 	.free_ctx		= deflate_free_ctx,
+ 	.compress		= deflate_scompress,
+@@ -296,17 +279,7 @@ static struct scomp_alg scomp[] = { {
+ 		.cra_driver_name = "deflate-scomp",
+ 		.cra_module	 = THIS_MODULE,
+ 	}
 -}, {
--	.base = {
--		.cra_name = "zlib-deflate",
--		.cra_driver_name = "qat_zlib_deflate",
--		.cra_priority = 4001,
--		.cra_flags = CRYPTO_ALG_ASYNC,
--		.cra_ctxsize = sizeof(struct qat_compression_ctx),
--		.cra_module = THIS_MODULE,
--	},
--	.init = qat_comp_alg_rfc1950_init_tfm,
--	.exit = qat_comp_alg_exit_tfm,
--	.compress = qat_comp_alg_rfc1950_compress,
--	.decompress = qat_comp_alg_rfc1950_decompress,
--	.dst_free = sgl_free,
--	.reqsize = sizeof(struct qat_compression_req),
+-	.alloc_ctx		= zlib_deflate_alloc_ctx,
+-	.free_ctx		= deflate_free_ctx,
+-	.compress		= deflate_scompress,
+-	.decompress		= deflate_sdecompress,
+-	.base			= {
+-		.cra_name	= "zlib-deflate",
+-		.cra_driver_name = "zlib-deflate-scomp",
+-		.cra_module	 = THIS_MODULE,
+-	}
 -} };
-+}};
++};
  
- int qat_comp_algs_register(void)
+ static int __init deflate_mod_init(void)
  {
+@@ -316,7 +289,7 @@ static int __init deflate_mod_init(void)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = crypto_register_scomps(scomp, ARRAY_SIZE(scomp));
++	ret = crypto_register_scomp(&scomp);
+ 	if (ret) {
+ 		crypto_unregister_alg(&alg);
+ 		return ret;
+@@ -328,7 +301,7 @@ static int __init deflate_mod_init(void)
+ static void __exit deflate_mod_fini(void)
+ {
+ 	crypto_unregister_alg(&alg);
+-	crypto_unregister_scomps(scomp, ARRAY_SIZE(scomp));
++	crypto_unregister_scomp(&scomp);
+ }
+ 
+ subsys_initcall(deflate_mod_init);
