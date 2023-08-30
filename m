@@ -2,236 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D44BE78DC55
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCFB78DE7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242737AbjH3Sol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        id S234607AbjH3TDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245614AbjH3PmQ (ORCPT
+        with ESMTP id S245619AbjH3Pn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:42:16 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6E423132
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:42:12 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D9D82F4;
-        Wed, 30 Aug 2023 08:42:51 -0700 (PDT)
-Received: from [10.57.64.173] (unknown [10.57.64.173])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73BAB3F64C;
-        Wed, 30 Aug 2023 08:42:09 -0700 (PDT)
-Message-ID: <1696b47d-fcaa-4d60-b9b2-3f2178127dcb@arm.com>
-Date:   Wed, 30 Aug 2023 16:42:07 +0100
+        Wed, 30 Aug 2023 11:43:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADE4122;
+        Wed, 30 Aug 2023 08:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693410234; x=1724946234;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=heG6TlhsxuUjfx7gYZvYhLCS3oKg3mbtnQcWAEY5Zbo=;
+  b=KbfrA0PWXM2Ou6hk114GvVwoArZNXMRRna1lxKO1bfB/zRBtyYmegTcM
+   v2ADR3u3DIcQRQ5EfxmtkGDrhoRTl1V7iHkVHNp1Mi21bFuvCRUubESfR
+   oxKcwd2xKjpWMyYvQ8Y0XOPaA7pR5T1pUlm4TZaHimeqN/KH/eExQDtMp
+   n8zB1lwes4LSuJACffuaEjQIbtHLT1pz2+5ePvLC2Hpkaef3rr/L9hiPs
+   K8ifLpHvC5oQ6PUG465xauufzTUClPcrQ0oNFc4cImhETd8blokKtYV0W
+   7ho2b1lq8grMzq0ksJLO9wdSdyCVK/ML8u9JerVl36wPWC07RQmhec3YS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="355992167"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="355992167"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 08:43:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="1069879269"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="1069879269"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga005.fm.intel.com with ESMTP; 30 Aug 2023 08:43:08 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 30 Aug 2023 08:43:08 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 30 Aug 2023 08:43:08 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 30 Aug 2023 08:43:08 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.42) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 30 Aug 2023 08:43:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WSiqWFwSaDMX4s4T4D9cuXRF/YC6gJyQF2hM/24KgA5A2tY5Qzvqoiq2CWC41blSa/LFUL9gbx/3Hq7zD+gY2d7oKCo9mZWBTgkovsn4DBaBePwgzaEhAGnuVN8/E18HYnJi4T+ZRHdckyi3WH+TDufelfUKJhcQIonoPurFH58/kC569ninZ84NSgGDwB2bajamLoqMFR9QXWP1NLO2Qoe+9rA0oFmYal16JhxLh12sVTuymuYJHZWQ7+A7Izpg9xqdkAmfK4qo+GDboPVuroSqVhX77ABbd0IEjsQ3GXL5XsSPTP4f46dBNn75/WSA4ZSxoO73XXFT0gOx4YIA/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N2q3IKaBscChS8uwdNnheguv9emU2lrstRt0BigRi7Y=;
+ b=JWKhYtelOvQTyxBvOOq+coXT/f0VXW0iq7lOYaqNibv6IkIfTMokUeCXq877jaJ4VefOAdSVkcJeqbbhYrThmeKfXuwCguSt4EC3g7Puj6uHn/wF20hrUpllksL68eGIir5iGwLmsTyu3c7I9thrZ0Ge7hcMw4XjsCvp6isSRfVlvYj2uytud5Yqzwtimdm67/N7wwibAqQD7frw3v3FFUZaj/VMn8UQIlBzWaDT6hqMYA6z4AJepJ0SyU8vdglUdpqsYn8Mab8vEXBPL4vK0W1x/Hos83zp0SO6jcISUDBoJdmO7/T2YNvOKmn8uhAi0ndqZQ/SMMT/gaEEyBaMIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by SA1PR11MB7040.namprd11.prod.outlook.com (2603:10b6:806:2b7::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Wed, 30 Aug
+ 2023 15:43:05 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::b163:747e:e3c2:7087]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::b163:747e:e3c2:7087%3]) with mapi id 15.20.6699.034; Wed, 30 Aug 2023
+ 15:43:05 +0000
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+CC:     "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        "Babu Moger" <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: RE: [PATCH v5 8/8] selftests/resctrl: Adjust effective L3 cache size
+ when SNC enabled
+Thread-Topic: [PATCH v5 8/8] selftests/resctrl: Adjust effective L3 cache size
+ when SNC enabled
+Thread-Index: AQHZ2tLQzZViQZuDwEGXIVxBB0yNB7AC0IKAgAAi0cA=
+Date:   Wed, 30 Aug 2023 15:43:05 +0000
+Message-ID: <SJ1PR11MB60838CA98A341F59260BDE18FCE6A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <20230722190740.326190-1-tony.luck@intel.com>
+ <20230829234426.64421-1-tony.luck@intel.com>
+ <20230829234426.64421-9-tony.luck@intel.com>
+ <frfa3olxop3xjnouvvv7y2s36varmto5qwhmkitvslmiawzwkd@zh2jhob4o5qe>
+In-Reply-To: <frfa3olxop3xjnouvvv7y2s36varmto5qwhmkitvslmiawzwkd@zh2jhob4o5qe>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|SA1PR11MB7040:EE_
+x-ms-office365-filtering-correlation-id: 49571ea7-db88-4d92-55c6-08dba96fcd79
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vsEOka4E6Ae64zBRrHztSZDlZvbeaFL8NOgw3O9j/NrjEVAa3aSMZgsQCdx1gXsXBBNimywCVCn1DZDATzcue58ItNabWhC36/xSm/NRYVgqD60omxnP2QASwpTWQ6yxHOsTTN9bh1TqQYNimFfpD8y2DQD4BkeLKBdBvjjIZuFlqlH94ZM2RbrppCVibVySseCv10BQ6r/STeXLSxUgo65WSR8HcNzIWCNhVMrwXTOrVzSgf3lW3DF4BrgiyL0TDIqsoUMl4PIKt9cSo64KudMcMnYHPAZt6GricfWJdw3TgKnl3bqjnvF1SIUQZXUeHa0eFKYTC500w1Y/QDsnKOgKrOOz8UYCaCtIk6KQyWmVqW1uXRY8DZBTabXgYBuubYk00ZFMGJ+GgYZOYXKG9fFYYm4L6MFIL62o2kbo0kIVTV4uK4YaUh/fhTyX9Jxs5pFA/UqVACfROtPAyIPCj/vfrSjTxlBruZwo2v1ysoARoE1IW07BAU05WHXy1GweIV2nbGyqCEf4nVFR6au/uICqHXzn6d4l5YolnU5W+xXmWwvRGxAbGHXuvM+ijOYmYHz7CKa+OcI+tUUa1zXzPOzQ/Es7pGUmVLClGcF6iEBlfwMH90j5QupK8wlK/Af0
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39860400002)(346002)(136003)(1800799009)(186009)(451199024)(8676002)(8936002)(4326008)(6862004)(86362001)(7416002)(5660300002)(52536014)(2906002)(55016003)(33656002)(478600001)(38100700002)(38070700005)(122000001)(26005)(71200400001)(83380400001)(9686003)(7696005)(6506007)(316002)(6636002)(66556008)(54906003)(64756008)(66476007)(66446008)(82960400001)(66946007)(76116006)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MngVP85y5VILgBv9TL5L3zsTL2twB/sNpVPp5mHwSxiIYR0V1Sz4CCuKyE4A?=
+ =?us-ascii?Q?JfsB+jOPi/DDZbZXOsTTvlSMIto5APTJZMExfRVnB4ktDXpUTg/zVc9jspsm?=
+ =?us-ascii?Q?tnnggR/aTEKiDXZ2W0EZv59z6Kl1HRgEo4V7jdlNMBAbKXSZh4Qw2pys8Jcf?=
+ =?us-ascii?Q?ekMDQ385mOib1sCdq6aa2ukElTimVs3AiYQor+Yy/LHp5IdyChR29NVPAsvI?=
+ =?us-ascii?Q?BZG3ZLsAdgf7Ekh+JAvVyeQY9beQtybyQh/OHXL7aIasmGtoNMyEDwy9Tbgl?=
+ =?us-ascii?Q?iuAsQB8xpuG9UGevaUdwy0SegEgyp8A0JqFEEIHO/eUmmt7VTN20kzhtYOwY?=
+ =?us-ascii?Q?6Z82SbY1j3swh5ZKOSVMPGj0l0UMoUy2aKJ/ygYWIW3e3G5EYRtBXGCnjmvJ?=
+ =?us-ascii?Q?RaC4WtopG5CtQ35lmLnT+TbjSaxGSziqrClGke0fvkrAnCEuvAqoc7W01Kas?=
+ =?us-ascii?Q?kkS1asXjb6JWlAVUF4h75Q6jmkbA7B/YXw9t2d2FjPjSOH88zqkCu2dwCKA6?=
+ =?us-ascii?Q?YrdRZbN3SIaRzF3isXVQt6YLtD3BvEHcLgVFRkt3/DM/MtGXXCQnTbf31ZXR?=
+ =?us-ascii?Q?kuxQwaX9qKmCF08Nwbn4qTtDzY8pPyy4pfI+sy1JVmjmaQ8Zq+kSzhUSXA8Q?=
+ =?us-ascii?Q?1Oyndubz/Ufcx2zoUS+GEeDMFwIXGWzj+BPCUnlCSbwgmHto+euucm4J7sGb?=
+ =?us-ascii?Q?BGT4AQ4YEDlNEnbmvG+crTBKCNL4XXNA/COWPN1/QcGBfbaJ+9VWAcfpej/Q?=
+ =?us-ascii?Q?prtIJHBsm0ujPuXAheqMIiGUiz/j7TaSGpCpygQkULJ6+xtLb4HVvCD2/bKZ?=
+ =?us-ascii?Q?ISjKaHfd9xxNCIfvAlXb9GD34EP/8bfZAhMiU0fyAfxk9Czr+r0nuXt7Gfmv?=
+ =?us-ascii?Q?EOYIVBo8s6eocr7oEMr5jc+cnDGBeh1862PORxRBDcfaFGR8l2wlEN7mNXB3?=
+ =?us-ascii?Q?ic5bcuok7JeOWeU4hny58CMvtLTOak1h3pRRlxHm93JMLaVwMxw3S+0EgX0g?=
+ =?us-ascii?Q?BSCSoEBKUA6DLZc9smwgPV+Kwlf+/VLRjY03UoaqrErMQQCrXBoVwzKPqrez?=
+ =?us-ascii?Q?1NtZpSWOHoFoTBps/d20zP8npDOgh9nu71TDFnWEoVB8BSk+AlP5CbZXBnRy?=
+ =?us-ascii?Q?XAAHY5TTKIPlb+RPe0Snye9i613YT+72XleuJsa3srp+dOHpOXhY4N2hqmVj?=
+ =?us-ascii?Q?Ig0mrWRMobuKhLfvRY4fJJulho8vxYGMscGXbN8B+7DqFsbhKxg6bVVcZ4U4?=
+ =?us-ascii?Q?MOyclvXVOcSIxVa7ne8IWgNJG2cDB0WMn2DeyGDC1cy7L+4xBzQXApy7wnDl?=
+ =?us-ascii?Q?7uq9DJ7d/VI0OiF/rix+di2kJhnUd6PIv7fGftO8hyawUAw8hcYveqh4H7vJ?=
+ =?us-ascii?Q?zBQiZ/QDChmqTbPjNNJ6UGZX56RSUgJEVEQKdLKn9WrIQhq3gJKaLWa/zNDY?=
+ =?us-ascii?Q?PjZKngdrYc0i3b/GIeqbnv3fn9HAZw8JPOMQWBb7LTEqrpqKEbuwb68sbzEA?=
+ =?us-ascii?Q?UEdfRxeh0zTnHNHEyhH0JsragbosTF7DBYJsvtE+x9Qvf5g64hXXgzbuQvXD?=
+ =?us-ascii?Q?em57AOKrSKspnDXCpzE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] mm: Implement folio_remove_rmap_range()
-Content-Language: en-GB
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230830095011.1228673-1-ryan.roberts@arm.com>
- <20230830095011.1228673-2-ryan.roberts@arm.com>
- <ZO9XgttGXnx5dxFZ@casper.infradead.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZO9XgttGXnx5dxFZ@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49571ea7-db88-4d92-55c6-08dba96fcd79
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 15:43:05.6435
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rwsCJ/wQ/2Jd2zISjw8EFZmdvEMnbpA0V7rsd15fFi0okb+vZutX2/xzZP44aN9xDCC5iJlahObd+vKsAx1pgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7040
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 15:51, Matthew Wilcox wrote:
-> On Wed, Aug 30, 2023 at 10:50:07AM +0100, Ryan Roberts wrote:
->> Like page_remove_rmap() but batch-removes the rmap for a range of pages
->> belonging to a folio. This can provide a small speedup due to less
->> manipuation of the various counters. But more crucially, if removing the
->> rmap for all pages of a folio in a batch, there is no need to
->> (spuriously) add it to the deferred split list, which saves significant
->> cost when there is contention for the split queue lock.
->>
->> All contained pages are accounted using the order-0 folio (or base page)
->> scheme.
->>
->> page_remove_rmap() is refactored so that it forwards to
->> folio_remove_rmap_range() for !compound cases, and both functions now
->> share a common epilogue function. The intention here is to avoid
->> duplication of code.
-> 
-> What would you think to doing it like this instead?  This probably doesn't
-> even compile and it's definitely not sanity checked; just trying to get
-> across an idea of the shape of this code.  I think this is more like
-> what DavidH was asking for (but he's on holiday this week so won't be
-> able to confirm).
+> >+static int count_sys_bitmap_bits(char *name)
+> >+{
+> >+    FILE *fp =3D fopen(name, "r");
+> >+    int count =3D 0, c;
+> >+
+> >+    if (!fp)
+> >+            return 0;
+> >+
+> >+    while ((c =3D fgetc(fp)) !=3D EOF) {
+> >+            if (!isxdigit(c))
+> >+                    continue;
+> >+            switch (c) {
+> >+            case 'f':
+> >+                    count++;
+> >+            case '7': case 'b': case 'd': case 'e':
+> >+                    count++;
+> >+            case '3': case '5': case '6': case '9': case 'a': case 'c':
+> >+                    count++;
+> >+            case '1': case '2': case '4': case '8':
+> >+                    count++;
+> >+            }
+> >+    }
+> >+    fclose(fp);
+> >+
+> >+    return count;
+> >+}
+> >+
+>
+> The resctrl selftest has a function for counting bits, could it be used
+> here instead of the switch statement like this for example?
+>
+> count =3D count_bits(c);
+>
+> Or is there some reason this wouldn't be a good fit here?
 
-I think it was actually Yu Zhou who was arguing for something more like this?
+Thanks for looking at my patch.
 
-I don't love it, because as I've expressed previously, I don't think an API that
-operates on a "range" of pages has any business manipulating a PMD mapping,
-because it can't be subdivided. So my preference is for what I've already got.
+That count_bits() function is doing so with input from an "unsigned long"
+argument.  My function is parsing the string result from a sysfs file which
+might look like this:
 
-But certainly your proposal to use nr=-1 to mean compound is the nicest way I've
-seen since you no longer make nr redundant in this case.
+$ cat shared_cpu_map
+0000,00000fff,ffffff00,0000000f,ffffffff
 
-Given you and Yu both have a lot more experience with this code than me, I'll
-follow your advice and do it this way for the next rev.
+To use count_bits() I'd have to use something like strtol() on each of the
+comma separated fields first to convert from ascii strings to binary
+values to feed into count_bits().
 
-Thanks,
-Ryan
+-Tony
 
-
-> 
-> 
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index a3825ce81102..d442d1e5425d 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -202,6 +202,8 @@ void folio_add_file_rmap_range(struct folio *, struct page *, unsigned int nr,
->  		struct vm_area_struct *, bool compound);
->  void page_remove_rmap(struct page *, struct vm_area_struct *,
->  		bool compound);
-> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
-> +		int nr, struct vm_area_struct *vma);
->  
->  void hugepage_add_anon_rmap(struct page *, struct vm_area_struct *,
->  		unsigned long address, rmap_t flags);
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index ec7f8e6c9e48..2592be47452e 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1380,24 +1380,26 @@ void page_add_file_rmap(struct page *page, struct vm_area_struct *vma,
->  }
->  
->  /**
-> - * page_remove_rmap - take down pte mapping from a page
-> - * @page:	page to remove mapping from
-> - * @vma:	the vm area from which the mapping is removed
-> - * @compound:	uncharge the page as compound or small page
-> + * folio_remove_rmap_range - Take down PTE mappings from a range of pages.
-> + * @folio:	Folio containing all pages in range.
-> + * @page:	First page in range to unmap.
-> + * @nr:		Number of pages to unmap.  -1 to unmap a PMD.
-> + * @vma:	The VM area containing the range.
->   *
-> - * The caller needs to hold the pte lock.
-> + * All pages in the range must belong to the same VMA & folio.
-> + *
-> + * Context: Caller holds the pte lock.
->   */
-> -void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
-> -		bool compound)
-> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
-> +			int pages, struct vm_area_struct *vma)
->  {
-> -	struct folio *folio = page_folio(page);
->  	atomic_t *mapped = &folio->_nr_pages_mapped;
-> +	int nr_unmapped = 0;
-> +	int nr_mapped = 0;
->  	int nr = 0, nr_pmdmapped = 0;
->  	bool last;
->  	enum node_stat_item idx;
->  
-> -	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
-> -
->  	/* Hugetlb pages are not counted in NR_*MAPPED */
->  	if (unlikely(folio_test_hugetlb(folio))) {
->  		/* hugetlb pages are always mapped with pmds */
-> @@ -1405,14 +1407,25 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
->  		return;
->  	}
->  
-> -	/* Is page being unmapped by PTE? Is this its last map to be removed? */
-> -	if (likely(!compound)) {
-> -		last = atomic_add_negative(-1, &page->_mapcount);
-> -		nr = last;
-> -		if (last && folio_test_large(folio)) {
-> -			nr = atomic_dec_return_relaxed(mapped);
-> -			nr = (nr < COMPOUND_MAPPED);
-> +	/* Are we taking down a PMD mapping? */
-> +	if (likely(pages > 0)) {
-> +		VM_WARN_ON_ONCE(page < folio_page(folio, 0) ||
-> +				page + pages > folio_page(folio,
-> +						folio_nr_pages(folio)));
-> +		while (pages) {
-> +			/* Is this the page's last map to be removed? */
-> +			last = atomic_add_negative(-1, &page->_mapcount);
-> +			if (last)
-> +				nr_unmapped++;
-> +			pages--;
-> +			page++;
->  		}
-> +
-> +		/* Pages still mapped if folio mapped entirely */
-> +		nr_mapped = atomic_sub_return_relaxed(nr_unmapped, mapped);
-> +		if (nr_mapped >= COMPOUND_MAPPED)
-> +			nr_unmapped = 0;
-> +
->  	} else if (folio_test_pmd_mappable(folio)) {
->  		/* That test is redundant: it's for safety or to optimize out */
->  
-> @@ -1441,18 +1454,19 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
->  			idx = NR_FILE_PMDMAPPED;
->  		__lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
->  	}
-> +
->  	if (nr) {
->  		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
->  		__lruvec_stat_mod_folio(folio, idx, -nr);
->  
->  		/*
-> -		 * Queue anon THP for deferred split if at least one
-> -		 * page of the folio is unmapped and at least one page
-> -		 * is still mapped.
-> +		 * Queue large anon folio for deferred split if at least one
-> +		 * page of the folio is unmapped and at least one page is still
-> +		 * mapped.
->  		 */
-> -		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
-> -			if (!compound || nr < nr_pmdmapped)
-> -				deferred_split_folio(folio);
-> +		if (folio_test_large(folio) && folio_test_anon(folio) &&
-> +		    nr_mapped)
-> +			deferred_split_folio(folio);
->  	}
->  
->  	/*
-> @@ -1466,6 +1480,20 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
->  	munlock_vma_folio(folio, vma, compound);
->  }
->  
-> +/**
-> + * page_remove_rmap - take down pte mapping from a page
-> + * @page:	page to remove mapping from
-> + * @vma:	the vm area from which the mapping is removed
-> + * @compound:	uncharge the page as compound or small page
-> + *
-> + * The caller needs to hold the pte lock.
-> + */
-> +void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
-> +		bool compound)
-> +{
-> +	folio_remove_rmap_range(page_folio(page), page, compound ? -1 : 1, vma);
-> +}
-> +
->  /*
->   * @arg: enum ttu_flags will be passed to this argument
->   */
 
