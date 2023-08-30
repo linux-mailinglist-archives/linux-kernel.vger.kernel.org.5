@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B5678DF56
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D0C78DFCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242567AbjH3Tbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47464 "EHLO
+        id S1344073AbjH3T00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343819AbjH3RIh (ORCPT
+        with ESMTP id S1343912AbjH3RMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:08:37 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE7AD19A
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:08:33 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,214,1688396400"; 
-   d="scan'208";a="178203450"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 31 Aug 2023 02:08:33 +0900
-Received: from localhost.localdomain (unknown [10.226.92.150])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1462D4005B33;
-        Thu, 31 Aug 2023 02:08:27 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Zhu Wang <wangzhu9@huawei.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Helen Koike <helen.koike@collabora.com>
-Subject: [PATCH v5 1/3] drm/bridge/analogix/anx78xx: Drop ID table
-Date:   Wed, 30 Aug 2023 18:08:17 +0100
-Message-Id: <20230830170819.309269-2-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230830170819.309269-1-biju.das.jz@bp.renesas.com>
-References: <20230830170819.309269-1-biju.das.jz@bp.renesas.com>
+        Wed, 30 Aug 2023 13:12:44 -0400
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8787FF;
+        Wed, 30 Aug 2023 10:12:39 -0700 (PDT)
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 30 Aug
+ 2023 20:12:36 +0300
+Received: from [192.168.211.130] (10.0.253.138) by Ex16-01.fintech.ru
+ (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 30 Aug
+ 2023 20:12:36 +0300
+Message-ID: <7836783b-458d-4d2a-2de5-4a0118b0941c@fintech.ru>
+Date:   Wed, 30 Aug 2023 10:12:35 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net] sctp: fix uninit-value in sctp_inq_pop()
+Content-Language: en-US
+To:     Xin Long <lucien.xin@gmail.com>
+CC:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <linux-sctp@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <syzbot+70a42f45e76bede082be@syzkaller.appspotmail.com>
+References: <20230829071334.58083-1-n.zhandarovich@fintech.ru>
+ <CADvbK_eQaqSJmNDGwz5A9tAmb0y2rZwZXxdC52B4hjjWRGZtUA@mail.gmail.com>
+From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+In-Reply-To: <CADvbK_eQaqSJmNDGwz5A9tAmb0y2rZwZXxdC52B4hjjWRGZtUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.0.253.138]
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has an ID table, but it uses the wrong API for retrieving match
-data and that will lead to a crash, if it is instantiated by user space or
-using ID. From this, there is no user for the ID table and let's drop it
-from the driver as it saves some memory.
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Helen Koike <helen.koike@collabora.com>
----
-v4->v5:
- * Added Rb tag from Andy and Helen.
-v3->v4:
- * Added Rb tag from Laurent and Douglas Anderson.
-v2->v3:
- * Updated commit header.
-v1->v2:
- * Dropped ID table support.
----
- drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 7 -------
- 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-index 800555aef97f..6169db73d2fe 100644
---- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-+++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-@@ -1367,12 +1367,6 @@ static void anx78xx_i2c_remove(struct i2c_client *client)
- 	kfree(anx78xx->edid);
- }
- 
--static const struct i2c_device_id anx78xx_id[] = {
--	{ "anx7814", 0 },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(i2c, anx78xx_id);
--
- static const struct of_device_id anx78xx_match_table[] = {
- 	{ .compatible = "analogix,anx7808", .data = anx7808_i2c_addresses },
- 	{ .compatible = "analogix,anx7812", .data = anx781x_i2c_addresses },
-@@ -1389,7 +1383,6 @@ static struct i2c_driver anx78xx_driver = {
- 		  },
- 	.probe = anx78xx_i2c_probe,
- 	.remove = anx78xx_i2c_remove,
--	.id_table = anx78xx_id,
- };
- module_i2c_driver(anx78xx_driver);
- 
--- 
-2.25.1
+On 8/29/23 13:27, Xin Long wrote:
+> On Tue, Aug 29, 2023 at 3:14 AM Nikita Zhandarovich
+> <n.zhandarovich@fintech.ru> wrote:
+>>
+>> Syzbot identified a case [1] of uninitialized memory usage in
+>> sctp_inq_pop(), specifically in 'ch->length'.
+>>
+>> Fix the issue by ensuring that 'ch->length' reflects the size of
+>> 'sctp_chunkhdr *ch' before accessing it.
+>>
+>> [1]
+>> BUG: KMSAN: uninit-value in sctp_inq_pop+0x1597/0x1910 net/sctp/inqueue.c:205
+>>  sctp_inq_pop+0x1597/0x1910 net/sctp/inqueue.c:205
+>>  sctp_assoc_bh_rcv+0x1a7/0xc50 net/sctp/associola.c:997
+>>  sctp_inq_push+0x23e/0x2b0 net/sctp/inqueue.c:80
+>>  sctp_backlog_rcv+0x394/0xd80 net/sctp/input.c:331
+>>  sk_backlog_rcv include/net/sock.h:1115 [inline]
+>>  __release_sock+0x207/0x570 net/core/sock.c:2911
+>>  release_sock+0x6b/0x1e0 net/core/sock.c:3478
+>>  sctp_wait_for_connect+0x486/0x810 net/sctp/socket.c:9325
+>>  sctp_sendmsg_to_asoc+0x1ea7/0x1ee0 net/sctp/socket.c:1884
+>>  ...
+>>
+>> Uninit was stored to memory at:
+>>  sctp_inq_pop+0x151a/0x1910 net/sctp/inqueue.c:201
+>>  sctp_assoc_bh_rcv+0x1a7/0xc50 net/sctp/associola.c:997
+>>  sctp_inq_push+0x23e/0x2b0 net/sctp/inqueue.c:80
+>>  sctp_backlog_rcv+0x394/0xd80 net/sctp/input.c:331
+>>  sk_backlog_rcv include/net/sock.h:1115 [inline]
+>>  __release_sock+0x207/0x570 net/core/sock.c:2911
+>>  release_sock+0x6b/0x1e0 net/core/sock.c:3478
+>>  sctp_wait_for_connect+0x486/0x810 net/sctp/socket.c:9325
+>>  sctp_sendmsg_to_asoc+0x1ea7/0x1ee0 net/sctp/socket.c:1884
+>>  ...
+>>
+>> Uninit was created at:
+>>  slab_post_alloc_hook+0x12d/0xb60 mm/slab.h:716
+>>  slab_alloc_node mm/slub.c:3451 [inline]
+>>  __kmem_cache_alloc_node+0x4ff/0x8b0 mm/slub.c:3490
+>>  __do_kmalloc_node mm/slab_common.c:965 [inline]
+>>  __kmalloc_node_track_caller+0x118/0x3c0 mm/slab_common.c:986
+>>  kmalloc_reserve+0x248/0x470 net/core/skbuff.c:585
+>>  __alloc_skb+0x318/0x740 net/core/skbuff.c:654
+>>  alloc_skb include/linux/skbuff.h:1288 [inline]
+>>  sctp_packet_pack net/sctp/output.c:472 [inline]
+>>  sctp_packet_transmit+0x1729/0x4150 net/sctp/output.c:621
+>>  sctp_outq_flush_transports net/sctp/outqueue.c:1173 [inline]
+>>  ...
+>>
+>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>> Reported-and-tested-by: syzbot+70a42f45e76bede082be@syzkaller.appspotmail.com
+>> Closes: https://syzkaller.appspot.com/bug?extid=70a42f45e76bede082be
+>> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+>> ---
+>>  net/sctp/inqueue.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/net/sctp/inqueue.c b/net/sctp/inqueue.c
+>> index 7182c5a450fb..98ce9524c87c 100644
+>> --- a/net/sctp/inqueue.c
+>> +++ b/net/sctp/inqueue.c
+>> @@ -197,6 +197,7 @@ struct sctp_chunk *sctp_inq_pop(struct sctp_inq *queue)
+>>                 }
+>>         }
+>>
+>> +       ch->length = htons(sizeof(*ch));
+>>         chunk->chunk_hdr = ch;
+>>         chunk->chunk_end = ((__u8 *)ch) + SCTP_PAD4(ntohs(ch->length));
+>>         skb_pull(chunk->skb, sizeof(*ch));
+>> --
+>> 2.25.1
+>>
+> Hi, Nikita
+> 
+> You can't just overwrite "ch->length", "ch" is the header of the received chunk.
+> if it says ch->length is Uninit, it means either the chunk parsing in
+> the receiver
+> is overflow or the format of the chunk created in the sender is incorrect.
+> 
+> If you can reproduce it stably, I suggest you start from sctp_inq_pop() and
+> print out the skb info and data in there, and see if it's a normal chunk.
+> 
+> Thanks.
 
+Thank you for your feedback, I'll follow your advice and try to narrow
+the problem down.
+
+With regards,
+Nikita
