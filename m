@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C2278E056
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A29578DF26
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244619AbjH3T3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
+        id S1343828AbjH3T0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244113AbjH3Mey (ORCPT
+        with ESMTP id S244191AbjH3Mnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:34:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AA4E8;
-        Wed, 30 Aug 2023 05:34:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 30 Aug 2023 08:43:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89022C2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693399371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=K19JqMqw3T4h5GNNeXhzPHPOdBTLzGKTl2fYtxS/84s=;
+        b=DvEPznq1TiXfI/wzJMj/q9hjkY4gHZ74omnaxm4m96N6mhIaTmzvu5w2L/lszmnWO1pC7h
+        gQsEE0hJX2HBFSl9RBNJVw37CEQsnBbL8QcOHWEa0AxZPm33a80pXk4ZPY0espVDVCMsJE
+        HoFWq000HuvVyFwrxyuG7WzA5vCX4t0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-650-yKltu9uJPCqyO5sX2f5CVw-1; Wed, 30 Aug 2023 08:42:48 -0400
+X-MC-Unique: yKltu9uJPCqyO5sX2f5CVw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FE8461981;
-        Wed, 30 Aug 2023 12:34:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43356C433C7;
-        Wed, 30 Aug 2023 12:34:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693398890;
-        bh=8d8qwnFWVQY1RLSMwJC/I3j8wq+i0JvgFrwUBuG2jE8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U7JY2OrFRfxYcCvGyk4JNgby3X0AZm8FT4Wn6ElOkfb3hpqRp1cLV/aM3hh7o1y9o
-         dsmKPr+6uks3ABosnRdZXuO6JS1MY64/tvTkwlGfxCQNCs4Olgc0LjyMyoUfSJqDdW
-         3g96B4aYOE2vBFO5OeL824h2qqJb1l1WgEBZVofE=
-Date:   Wed, 30 Aug 2023 14:34:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Tony Lindgren <tony@atomide.com>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH 4.19 000/129] 4.19.293-rc1 review
-Message-ID: <2023083040-marital-mustiness-2891@gregkh>
-References: <20230828101153.030066927@linuxfoundation.org>
- <CA+G9fYuQXq7-jkL59MMKfRbqqB509T3nQdtcW+4wVW_QRovx5g@mail.gmail.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E79E0185A7AF;
+        Wed, 30 Aug 2023 12:42:47 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.45.224.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2404A2026D38;
+        Wed, 30 Aug 2023 12:42:44 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/4] KVM: x86: tracepoint updates
+Date:   Wed, 30 Aug 2023 15:42:39 +0300
+Message-Id: <20230830124243.671152-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYuQXq7-jkL59MMKfRbqqB509T3nQdtcW+4wVW_QRovx5g@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 06:15:30PM +0530, Naresh Kamboju wrote:
-> On Mon, 28 Aug 2023 at 15:54, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 4.19.293 release.
-> > There are 129 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.293-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro’s test farm.
-> Regressions on arm.
-> 
-> stable-rc linux-4.19.y arm gcc-12 builds fails with
-> following warnings / errors.
-> 
-> Build errors:
-> --------------
-> drivers/bus/ti-sysc.c: In function 'sysc_reset':
-> drivers/bus/ti-sysc.c:982:15: error: implicit declaration of function
-> 'sysc_read_sysconfig' [-Werror=implicit-function-declaration]
->   982 |         val = sysc_read_sysconfig(ddata);
->       |               ^~~~~~~~~~~~~~~~~~~
-> cc1: some warnings being treated as errors
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> 
->  > Tony Lindgren <tony@atomide.com>
->  >   bus: ti-sysc: Flush posted write on enable before reset
-> 
-> bus: ti-sysc: Flush posted write on enable before reset
-> commit 34539b442b3bc7d5bf10164750302b60b91f18a7 upstream.
-> 
-> The above commit is causing this build warnings / errors.
+This patch series is intended to add some selected information=0D
+to the kvm tracepoints to make it easier to gather insights about=0D
+running nested guests.=0D
+=0D
+This patch series was developed together with a new x86 performance analysi=
+s tool=0D
+that I developed recently (https://gitlab.com/maximlevitsky/kvmon)=0D
+which aims to be a better kvm_stat, and allows you at glance=0D
+to see what is happening in a VM, including nesting.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (4):=0D
+  KVM: x86: refactor req_immediate_exit logic=0D
+  KVM: x86: add more information to the kvm_entry tracepoint=0D
+  KVM: x86: add more information to kvm_exit tracepoint=0D
+  KVM: x86: add new nested vmexit tracepoints=0D
+=0D
+ arch/x86/include/asm/kvm-x86-ops.h |   2 +-=0D
+ arch/x86/include/asm/kvm_host.h    |  11 ++-=0D
+ arch/x86/kvm/svm/nested.c          |  22 ++++++=0D
+ arch/x86/kvm/svm/svm.c             |  22 +++++-=0D
+ arch/x86/kvm/trace.h               | 115 +++++++++++++++++++++++++++--=0D
+ arch/x86/kvm/vmx/nested.c          |  21 ++++++=0D
+ arch/x86/kvm/vmx/vmx.c             |  31 +++++---=0D
+ arch/x86/kvm/vmx/vmx.h             |   2 -=0D
+ arch/x86/kvm/x86.c                 |  34 ++++-----=0D
+ 9 files changed, 212 insertions(+), 48 deletions(-)=0D
+=0D
+-- =0D
+2.26.3=0D
+=0D
 
-Now dropped, thanks.
-
-greg k-h
