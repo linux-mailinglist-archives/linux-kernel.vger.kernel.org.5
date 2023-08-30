@@ -2,246 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D897478E28F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFA278E290
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343662AbjH3WtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        id S245416AbjH3WtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343603AbjH3WtE (ORCPT
+        with ESMTP id S1343622AbjH3WtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:49:04 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A83CFF;
-        Wed, 30 Aug 2023 15:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=J9+c6lHcxjXQTF5hwF7rOA41PnMBLRCg0uifQFKOozw=; b=p67pKYTcd9ysaiO1NOxyqmdqwT
-        6sfOPBCdPTHJ4l50G+v/B+lCZD9TN8qp3AUA1u7AXr9xqUyAWcUZVK+T/GkiVApyT8JD0JALfe23z
-        PuVSBB/B5FH+WQi/OeleSSkB/J7SlRcs/lUMl5zMP1aTInjUCPqiiiAxgLBHKleV41wKNNJTr3HPd
-        meQqjx555TPI992mdYHY9OtVOEKrnQw0+SWGUHeEYQVa8q+LNiEXtB/Dq8HIZetwjW8mKONExBh6n
-        uczMCLpRzyZpSmrg+UxccWGNOfdbMn/+ck2WMfUS7OxiM5sRtlj5Pq+NDvjWkqG7uorAoCkp15ccG
-        hbsSkKjw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qbTyz-0000Ow-MJ; Thu, 31 Aug 2023 00:48:18 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qbTyz-000QfR-D9; Thu, 31 Aug 2023 00:48:17 +0200
-Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
- in BPF JIT
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     bjorn@kernel.org, puranjay12@gmail.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        Conor Dooley <conor.dooley@microchip.com>, ast@kernel.org,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <mhng-ac1c6e6a-8f27-4539-83bb-6c10ff4d264e@palmer-ri-x1c9>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9e31c290-f1f0-ecfd-c68b-51f8d706db2c@iogearbox.net>
-Date:   Thu, 31 Aug 2023 00:48:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 30 Aug 2023 18:49:03 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F196C0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:48:41 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68a56ed12c0so37037b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:48:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1693435721; x=1694040521; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j3xtTxoMOABdcHWXxTdGDV9HsjsoD+11JWeXwPDKwKY=;
+        b=0pPc+e2VauNS0dvqS+b0wI64Ntew/DeffMnZB28UQq8Z+PDNUsLgf0ljOzLv12pqbg
+         SgDLiQ1XQzbtEY+56Ru2BIWet2EOADLE9lKvh9qidHu/AdYO4ge6k/iaiv2mJNQufCeQ
+         rL/pcDFWkkq9pmclrS+VgtLRJ4QvkyOYczPcEJvfTfdkBFgM7J+DEnvQEVOn0k6xvnxM
+         FiGHol8fZP7VaYxFYnWu/5Xc34hzW9q2upObWsPStRlP7ghiJxzorSZT5uqimGhyOeI4
+         nfuXTIHtk684XygvGC4A6X0/Mr6Vd52wv+WA7OqBaUULBvpHGklXQQEho1n1Zy1a6Zc1
+         UVQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693435721; x=1694040521;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j3xtTxoMOABdcHWXxTdGDV9HsjsoD+11JWeXwPDKwKY=;
+        b=j8oz4MOQ6cvlk7j6EQVcjTBo7IuadgxyITKGFKLob/1P2yJOJbZPq7dvd21gzxHWHb
+         qtUGsRgOG1wFZA43H8RXtkJi7Hsq8Ig3w1Efh8QJnLyR087oE023euHib6fqOTXVd86u
+         QkH93q5KW8Y01JJI36nngNUm2NlEIuFVCuewCUrKxFyjdqYv89eAVc4aiPRureyRI3Y5
+         Pn+WQ24RdGmgR5jhb2ILbv+X+g8uP/waIMzIrIIMguwSGJDVv5cvEIl34WS3kySU3tV2
+         Id7V1s/jJLnN8kFaHBGowZynHChgesFh5XEp6uG3axWyoSQaFhSNpncvOHal6Is4XNEM
+         4k7Q==
+X-Gm-Message-State: AOJu0Yzjh8AfSWJBksxMukNImpSl9ijNoQfnSqFKOTbq6mtVUxLT9ols
+        vWbCYIlItODOiqaihJlZNoly3g==
+X-Google-Smtp-Source: AGHT+IFsFswNL2+plG5TTtoW2H0V34BAB8gzDpGjUsmxwjhoHTVxIbo5m2CWu5ykMPFNsEh9eJ2W1w==
+X-Received: by 2002:a05:6a00:d71:b0:68c:7089:cb8 with SMTP id n49-20020a056a000d7100b0068c70890cb8mr3738898pfv.2.1693435720767;
+        Wed, 30 Aug 2023 15:48:40 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id c11-20020aa78c0b000000b0068a538cc7adsm88094pfd.52.2023.08.30.15.48.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 15:48:40 -0700 (PDT)
+Message-ID: <1a4d9f90-1bb0-4092-9be8-9cf2c70ef79d@kernel.dk>
+Date:   Wed, 30 Aug 2023 16:48:38 -0600
 MIME-Version: 1.0
-In-Reply-To: <mhng-ac1c6e6a-8f27-4539-83bb-6c10ff4d264e@palmer-ri-x1c9>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 0/3] Move usages of struct __call_single_data to
+ call_single_data_t
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27016/Wed Aug 30 09:37:04 2023)
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     =?UTF-8?Q?Leonardo_Br=C3=A1s?= <leobras@redhat.com>,
+        Chengming Zhou <chengming.zhou@linux.dev>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Guo Ren <guoren@kernel.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230520052957.798486-1-leobras@redhat.com>
+ <CAJ6HWG6dK_-5jjoGJadOXqE=9c0Np-85r9-ymtAt241XrdwW=w@mail.gmail.com>
+ <b84ad9aa200457b1cbd5c55a7d860e685f068d7a.camel@redhat.com>
+ <1cd98cb37dcf621520e52ac7a15513aab5749534.camel@redhat.com>
+ <51cf9db1-4487-4229-4d43-e91268e52125@linux.dev>
+ <16efceed0b215ee34cc46ca7bba4a86bcf2d8ad7.camel@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <16efceed0b215ee34cc46ca7bba4a86bcf2d8ad7.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/23 3:54 PM, Palmer Dabbelt wrote:
-> On Wed, 30 Aug 2023 01:18:46 PDT (-0700), daniel@iogearbox.net wrote:
->> On 8/29/23 12:06 PM, Björn Töpel wrote:
->>> Puranjay Mohan <puranjay12@gmail.com> writes:
+On 8/30/23 4:29 PM, Leonardo Br?s wrote:
+> On Tue, 2023-08-29 at 10:29 +0800, Chengming Zhou wrote:
+>> On 2023/8/29 08:55, Leonardo Br?s wrote:
+>>> On Tue, 2023-07-04 at 04:22 -0300, Leonardo Br?s wrote:
+>>>> On Tue, 2023-06-13 at 00:51 -0300, Leonardo Bras Soares Passos wrote:
+>>>>> Friendly ping
+>>>>>
+>>>>> On Sat, May 20, 2023 at 2:30?AM Leonardo Bras <leobras@redhat.com> wrote:
+>>>>>>
+>>>>>> Changes since RFCv1:
+>>>>>> - request->csd moved to the middle of the struct, without size impact
+>>>>>> - type change happens in a different patch (thanks Jens Axboe!)
+>>>>>> - Improved the third patch to also update the .h file.
+>>>>>>
+>>>>>> Leonardo Bras (3):
+>>>>>>   blk-mq: Move csd inside struct request so it's 32-byte aligned
+>>>>>>   blk-mq: Change request->csd type to call_single_data_t
+>>>>>>   smp: Change signatures to use call_single_data_t
+>>>>>>
+>>>>>>  include/linux/blk-mq.h | 10 +++++-----
+>>>>>>  include/linux/smp.h    |  2 +-
+>>>>>>  kernel/smp.c           |  4 ++--
+>>>>>>  kernel/up.c            |  2 +-
+>>>>>>  4 files changed, 9 insertions(+), 9 deletions(-)
+>>>>>>
+>>>>>> --
+>>>>>> 2.40.1
+>>>>>>
+>>>>
+>>>> Hello Jens,
+>>>>
+>>>> I still want your feedback on this series :)
+>>>>
+>>>> I think I addressed every issue of RFCv1, but if you have any other feedback,
+>>>> please let me know.
+>>>>
+>>>> Thanks!
+>>>> Leo
 >>>
->>>> Changes in v2 -> v3:
->>>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
->>>> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
->>>> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
->>>>     [Patch 1 and 2]
->>>> 4. Add reviewed-by in patches.
->>>> 5. Adding results of selftest here:
->>>>     Using the command: ./test_progs on qemu
->>>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>>
->>>> Changes in v1 -> v2:
->>>> 1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
->>>>     The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
->>>>     call flush_icache_range() for every word making it really slow. This was found by running
->>>>     the test_tag selftest which would take forever to complete.
->>>>
->>>> Here is some data to prove the V2 fixes the problem:
->>>>
->>>> Without this series:
->>>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
->>>> test_tag: OK (40945 tests)
->>>>
->>>> real    7m47.562s
->>>> user    0m24.145s
->>>> sys     6m37.064s
->>>>
->>>> With this series applied:
->>>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
->>>> test_tag: OK (40945 tests)
->>>>
->>>> real    7m29.472s
->>>> user    0m25.865s
->>>> sys     6m18.401s
->>>>
->>>> BPF programs currently consume a page each on RISCV. For systems with many BPF
->>>> programs, this adds significant pressure to instruction TLB. High iTLB pressure
->>>> usually causes slow down for the whole system.
->>>>
->>>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
->>>> It packs multiple BPF programs into a single huge page. It is currently only
->>>> enabled for the x86_64 BPF JIT.
->>>>
->>>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
->>>>
->>>> This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
->>>> This series needs a patch[3] from the ARM64 series to work.
->>>>
->>>> ======================================================
->>>> Performance Analysis of prog pack allocator on RISCV64
->>>> ======================================================
->>>>
->>>> Test setup:
->>>> ===========
->>>>
->>>> Host machine: Debian GNU/Linux 11 (bullseye)
->>>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->>>> u-boot-qemu Version: 2023.07+dfsg-1
->>>> opensbi Version: 1.3-1
->>>>
->>>> To test the performance of the BPF prog pack allocator on RV, a stresser
->>>> tool[4] linked below was built. This tool loads 8 BPF programs on the system and
->>>> triggers 5 of them in an infinite loop by doing system calls.
->>>>
->>>> The runner script starts 20 instances of the above which loads 8*20=160 BPF
->>>> programs on the system, 5*20=100 of which are being constantly triggered.
->>>> The script is passed a command which would be run in the above environment.
->>>>
->>>> The script was run with following perf command:
->>>> ./run.sh "perf stat -a \
->>>>          -e iTLB-load-misses \
->>>>          -e dTLB-load-misses  \
->>>>          -e dTLB-store-misses \
->>>>          -e instructions \
->>>>          --timeout 60000"
->>>>
->>>> The output of the above command is discussed below before and after enabling the
->>>> BPF prog pack allocator.
->>>>
->>>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
->>>> was created using Bjorn's riscv-cross-builder[5] docker container linked below.
->>>>
->>>> Results
->>>> =======
->>>>
->>>> Before enabling prog pack allocator:
->>>> ------------------------------------
->>>>
->>>> Performance counter stats for 'system wide':
->>>>
->>>>             4939048      iTLB-load-misses
->>>>             5468689      dTLB-load-misses
->>>>              465234      dTLB-store-misses
->>>>       1441082097998      instructions
->>>>
->>>>        60.045791200 seconds time elapsed
->>>>
->>>> After enabling prog pack allocator:
->>>> -----------------------------------
->>>>
->>>> Performance counter stats for 'system wide':
->>>>
->>>>             3430035      iTLB-load-misses
->>>>             5008745      dTLB-load-misses
->>>>              409944      dTLB-store-misses
->>>>       1441535637988      instructions
->>>>
->>>>        60.046296600 seconds time elapsed
->>>>
->>>> Improvements in metrics
->>>> =======================
->>>>
->>>> It was expected that the iTLB-load-misses would decrease as now a single huge
->>>> page is used to keep all the BPF programs compared to a single page for each
->>>> program earlier.
->>>>
->>>> --------------------------------------------
->>>> The improvement in iTLB-load-misses: -30.5 %
->>>> --------------------------------------------
->>>>
->>>> I repeated this expriment more than 100 times in different setups and the
->>>> improvement was always greater than 30%.
->>>>
->>>> This patch series is boot tested on the Starfive VisionFive 2 board[6].
->>>> The performance analysis was not done on the board because it doesn't
->>>> expose iTLB-load-misses, etc. The stresser program was run on the board to test
->>>> the loading and unloading of BPF programs
->>>>
->>>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
->>>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
->>>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
->>>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
->>>> [5] https://github.com/bjoto/riscv-cross-builder
->>>> [6] https://www.starfivetech.com/en/site/boards
->>>>
->>>> Puranjay Mohan (3):
->>>>    riscv: extend patch_text_nosync() for multiple pages
->>>>    riscv: implement a memset like function for text
->>>>    bpf, riscv: use prog pack allocator in the BPF JIT
+>>> Hello Jens Axboe,
 >>>
->>> Thank you! For the series:
+>>> Please provide feedback on this series!
 >>>
->>> Acked-by: Björn Töpel <bjorn@kernel.org>
->>> Tested-by: Björn Töpel <bjorn@rivosinc.com>
+>>> Are you ok with those changes?
+>>> What's your opinion on them? 
 >>>
->>> @Alexei @Daniel This series depends on a core BPF patch from the Arm
->>>                  series [3].
+>>> Thanks!
+>>> Leo
 >>>
->>> @Palmer LMK if you have any concerns taking the RISC-V text patching
->>>          stuff via the BPF tree.
 >>
->> Palmer, did the riscv PR already go to Linus?
+>> Hello,
+>>
+>> FYI, there is no csd in struct request anymore in block/for-next branch,
+>> which is deleted by this commit:
+>>
+>> commit 660e802c76c89e871c29cd3174c07c8d23e39c35
+>> Author: Chengming Zhou <zhouchengming@bytedance.com>
+>> Date:   Mon Jul 17 12:00:55 2023 +0800
+>>
+>>     blk-mq: use percpu csd to remote complete instead of per-rq csd
+>>
+>>     If request need to be completed remotely, we insert it into percpu llist,
+>>     and smp_call_function_single_async() if llist is empty previously.
+>>
+>>     We don't need to use per-rq csd, percpu csd is enough. And the size of
+>>     struct request is decreased by 24 bytes.
+>>
+>>     This way is cleaner, and looks correct, given block softirq is guaranteed
+>>     to be scheduled to consume the list if one new request is added to this
+>>     percpu list, either smp_call_function_single_async() returns -EBUSY or 0.
+>>
+>>     Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>>     Reviewed-by: Ming Lei <ming.lei@redhat.com>
+>>     Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>     Link: https://lore.kernel.org/r/20230717040058.3993930-2-chengming.zhou@linux.dev
+>>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>
 > 
-> Not yet, I usually send on Friday mornings -- and I also generally send two, as there's some stragglers/fixes for the second week.  I'm fine taking it (Bjorn just poked me), can someone provide a base commit? Bjorn says it depends on something in Linus' tree, so I'll just pick it up as a straggler for next week.
+> 
+> Oh, thanks for the heads-up!
+> I will send reviewed version of patch 3.
+> 
+> I suppose it can go on top of block/for-next, since the above patch is there.
+> Does that work for you Jens Axboe?
 
-Okay, sgtm.
+Just send it against Linus's tree, it's all upstream now.
 
-> Also, do you mind sending an Ack?
+-- 
+Jens Axboe
 
-Björn / Puranjay, just to clarify since the arm64 series did not land, you are referring
-to this one as a dependency [0], right? Meaning, you'd route [0] + this series via riscv
-PR to Linus then during this merge win.
-
-If yes, could one of you send the complete 4-patch series with the prior Acks from [0] + this
-series collected to both bpf+riscv list (with the small request to extend the commit desc
-in [0] a bit to better document implications of the change itself for other JITs)? After a
-final look and if BPF CI goes through we can then ack as well and unblock the routing.
-
-Thanks,
-Daniel
-
-   [0] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
