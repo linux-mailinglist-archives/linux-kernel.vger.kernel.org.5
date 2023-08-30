@@ -2,132 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E690678D932
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0600878DD46
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbjH3ScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
+        id S243528AbjH3Ssp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245717AbjH3P6j (ORCPT
+        with ESMTP id S245721AbjH3QBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:58:39 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F02419A
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:58:35 -0700 (PDT)
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6C6563F177
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:58:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1693411113;
-        bh=kNl44J2ZpGtCg94K9UACjS58K5Vqnr8rgjyDZbU7cks=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=AdC/2E0roNN+6OR32B4t1a77YI+T7dEdLwaY/YtJjHsNbRCbwutgfydNyWwx9cMw7
-         C3cgn9uh/JWB4VV13s9VPu7lRgviWTAWjQO0KA/9J8XajPZThsun28T0UJ3QhSBAoI
-         LYr1M4tau/mqI6EEvnBdHqhwKfHujnW8H+T7Sa93AKfBQdvKdiwo1sc/+Z9niINfVQ
-         SA5d7WIaruF3U87h86NM9NsJ8O9fSnkbbA75BhguS6EluLju72GdT4AZiy5FV3KBDz
-         +fCTPjjT1/jQtvS1umb9+ClJGuQ5upKH7LWuOVvJK85uhim6VF4HnJjlfgBJkILCKU
-         qZ93ba0tMWtuw==
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-50daa85e940so4568133a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:58:33 -0700 (PDT)
+        Wed, 30 Aug 2023 12:01:18 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B0E193;
+        Wed, 30 Aug 2023 09:01:15 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-79268f36c49so199448139f.2;
+        Wed, 30 Aug 2023 09:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693411275; x=1694016075; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=a0lynSDcK/MXZGjR4De6oBFmLDHnkmxoSqFwHMUU6wM=;
+        b=XLyfPCMjsQqi3dP7vxUMv0g9IhBPQ1zecdWuiDb0WIVMyrmxVKzH+V3X/O+LqP4XAs
+         VuoBeqfcaOy+KcT0XfkYF1YizIAy0KxHCJ4aF0dlUzyw/dd5SRFtHgW15HVrBeC1G6Kw
+         wasxqAMKQZ+b1Usrai4UM9XHuiUrnBYW4I1Hj0YyO5+uMiSXszdSzW29AjmTIwX+sn3I
+         tj07xHmHsx5cyr9QzP1+IpFfXvk1D6IrFjjLlOYu7rbsd+oGrlOVGSpcDtPnusc6SwTv
+         o9ZxxaLIjS6/LsRZIWiKp3vBVsZxbeHjq9/A8TLsc+ZCV4ZHwNaNUV7E3f63Z5fjvfWP
+         zN8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693411113; x=1694015913;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693411275; x=1694016075;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kNl44J2ZpGtCg94K9UACjS58K5Vqnr8rgjyDZbU7cks=;
-        b=kQPLkh37gdWr/2ODYVizVsvYWOJa2t8uKh0ILBE+v7p1RGejJxhkLIVMRU+Xm+1hUQ
-         ESaarivs7Mts18vL93wO1oQNpqAjmy+L2zK1rkqDZEstcPWj1W5vb1iTXoMyjWpyrjGX
-         qLwBihboadftCW5TfdBVps9l4Tf0L7wY186YfNxKvXs9fxRLQek6El0W1wl/m4Za6l+k
-         79ejkUWAuawZvPKLb5sIILG6LBKKpH4Y/ZZggeVUY50WJ3WaVFKrGKAj+wAxxZMMYQqc
-         h/V2h/9khD6qpH2NO5nT/Ht+rqrid4kQE3YDEH4T5Gy/GwGLY6DIuxL8s2L14WSIvJ3n
-         Cdxg==
-X-Gm-Message-State: AOJu0Yymiwgg+EsKenItJsmwyzUKDcpqwLiS9nHPvkUYTM/pvPTANeaW
-        Gsx2ywO9Z7Qiw41GHoidOT8bUWgx3Ac9nWUzYjhI9OHg1akzkBaUEGKFeaLi5Fi95XH59ky/ib4
-        6wE5/YJZhdAKTQAcOZvA1ku8twrtBBcsyd2NaT+pWpQ==
-X-Received: by 2002:aa7:db54:0:b0:523:b225:701a with SMTP id n20-20020aa7db54000000b00523b225701amr2358936edt.11.1693411113072;
-        Wed, 30 Aug 2023 08:58:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEsdD7OzcrsdeyrB/2Brhvlhgug8gC90+0ErPZscEzGSa0PRuYEokx7nmqzcPnfwSlgGRmjuA==
-X-Received: by 2002:aa7:db54:0:b0:523:b225:701a with SMTP id n20-20020aa7db54000000b00523b225701amr2358915edt.11.1693411112729;
-        Wed, 30 Aug 2023 08:58:32 -0700 (PDT)
-Received: from localhost.localdomain (host-95-252-65-153.retail.telecomitalia.it. [95.252.65.153])
-        by smtp.gmail.com with ESMTPSA id c21-20020aa7d615000000b005256aaa6e7asm6906970edr.78.2023.08.30.08.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 08:58:32 -0700 (PDT)
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Lucas De Marchi <lucas.demarchi@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] module/decompress: use vmalloc() for gzip decompression workspace
-Date:   Wed, 30 Aug 2023 17:58:20 +0200
-Message-Id: <20230830155820.138178-1-andrea.righi@canonical.com>
-X-Mailer: git-send-email 2.40.1
+        bh=a0lynSDcK/MXZGjR4De6oBFmLDHnkmxoSqFwHMUU6wM=;
+        b=ghtfxh2FATrN3zDmot5nKasdcs+NWRqWkj4r8Yk0UkqcYMwlHt7sz7/g+sitfttULy
+         c0E/Vl+DJFmA5SGmJgu8K6T4DYhNp3gZyNfPBiePe/sW1pJYKW1woSIgJ6wL5SNcGtot
+         oYa4AM3Gq7/f3gvSPDynQ5arXxKCf56cCn5Y1RE2z9Kv7j67nRbEacN/nhptKVwURH4Z
+         tYWPPQRdH1ZU/2rOB0kFKhInQu7H6DBX9pv5+CW8U2oDdWKAMcu+RCS71dKg7dCgaTeA
+         3Voesjk0D7D3dSPwjyLfRbG2D99avueFHwrFCeFR39Rs+9D2WAURSVzoI2bhYsdpQk2u
+         rN8A==
+X-Gm-Message-State: AOJu0Yy6188mAe++YxSwauNbOSbPbPrHI1Ar+9t3HWvqJP7p6RwgFloP
+        Ua8fC2zSgFhKhkBWWGEqtKE=
+X-Google-Smtp-Source: AGHT+IFzA/jm06wu9XBZD9WV48KxFNNwIokByQmj7lSAa+tgEyR2kaWks0wCGP/f5dB32IdG6oNW0A==
+X-Received: by 2002:a6b:e801:0:b0:783:572c:9caa with SMTP id f1-20020a6be801000000b00783572c9caamr3291689ioh.0.1693411274776;
+        Wed, 30 Aug 2023 09:01:14 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n3-20020a6b5903000000b0077e40979b41sm4012584iob.45.2023.08.30.09.01.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 09:01:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <64374066-4086-3e92-8650-ab1563350f0c@roeck-us.net>
+Date:   Wed, 30 Aug 2023 09:01:12 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5.10 00/84] 5.10.193-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <20230828101149.146126827@linuxfoundation.org>
+ <5b30ff73-46cb-1d1e-3823-f175dbfbd91b@roeck-us.net>
+ <2023083014-barley-upscale-518e@gregkh>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <2023083014-barley-upscale-518e@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a similar approach as commit a419beac4a07 ("module/decompress: use
-vmalloc() for zstd decompression workspace") and replace kmalloc() with
-vmalloc() also for the gzip module decompression workspace.
+On 8/30/23 03:52, Greg Kroah-Hartman wrote:
+> On Mon, Aug 28, 2023 at 09:42:11AM -0700, Guenter Roeck wrote:
+>> On 8/28/23 03:13, Greg Kroah-Hartman wrote:
+>>> This is the start of the stable review cycle for the 5.10.193 release.
+>>> There are 84 patches in this series, all will be posted as a response
+>>> to this one.  If anyone has any issues with these being applied, please
+>>> let me know.
+>>>
+>>> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
+>>> Anything received after that time might be too late.
+>>>
+>>
+>> FWIW, commit 619672bf2d04 ("MIPS: Alchemy: fix dbdma2") should be reverted
+>> v5.10.y since it doesn't fix anything but breaks the build for affected boards
+>> completely.
+>>
+>> arch/mips/alchemy/common/dbdma.c: In function 'au1xxx_dbdma_put_source':
+>> arch/mips/alchemy/common/dbdma.c:632:14: error: 'dma_default_coherent' undeclared
+>>
+>> There is no 'dma_default_coherent' in v5.10.y.
+> 
+> But that was added in 5.10.185, from back in June.  What changed to
+> suddenly cause this to fail now?
+> 
 
-In this case the workspace is represented by struct inflate_workspace
-that can be fairly large for kmalloc() and it can potentially lead to
-allocation errors on certain systems:
+Nothing. I started to build this configuration and tracked down the
+problem after the build failure was reported by others. Sorry, I didn't
+initially realize that this is an old problem.
 
-$ pahole inflate_workspace
-struct inflate_workspace {
-	struct inflate_state       inflate_state;        /*     0  9544 */
-	/* --- cacheline 149 boundary (9536 bytes) was 8 bytes ago --- */
-	unsigned char              working_window[32768]; /*  9544 32768 */
-
-	/* size: 42312, cachelines: 662, members: 2 */
-	/* last cacheline: 8 bytes */
-};
-
-Considering that there is no need to use continuous physical memory,
-simply switch to vmalloc() to provide a more reliable in-kernel module
-decompression.
-
-Fixes: b1ae6dc41eaa ("module: add in-kernel support for decompressing")
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
- kernel/module/decompress.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/module/decompress.c b/kernel/module/decompress.c
-index 87440f714c0c..4156d59be440 100644
---- a/kernel/module/decompress.c
-+++ b/kernel/module/decompress.c
-@@ -100,7 +100,7 @@ static ssize_t module_gzip_decompress(struct load_info *info,
- 	s.next_in = buf + gzip_hdr_len;
- 	s.avail_in = size - gzip_hdr_len;
- 
--	s.workspace = kmalloc(zlib_inflate_workspacesize(), GFP_KERNEL);
-+	s.workspace = vmalloc(zlib_inflate_workspacesize());
- 	if (!s.workspace)
- 		return -ENOMEM;
- 
-@@ -138,7 +138,7 @@ static ssize_t module_gzip_decompress(struct load_info *info,
- out_inflate_end:
- 	zlib_inflateEnd(&s);
- out:
--	kfree(s.workspace);
-+	vfree(s.workspace);
- 	return retval;
- }
- #elif defined(CONFIG_MODULE_COMPRESS_XZ)
--- 
-2.40.1
+Guenter
 
