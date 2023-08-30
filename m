@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D63478DFCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EACD78E05B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241131AbjH3TTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
+        id S239780AbjH3TJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243246AbjH3KaE (ORCPT
+        with ESMTP id S243247AbjH3KaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:30:04 -0400
+        Wed, 30 Aug 2023 06:30:08 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BB8C0;
-        Wed, 30 Aug 2023 03:30:00 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 10:29:58 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563C0C0;
+        Wed, 30 Aug 2023 03:30:06 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 10:30:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693391399;
+        s=2020; t=1693391405;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qiHeCeWMqDfMSLrY6Ovkw5z04+RV1jb4Pn6ptsA182g=;
-        b=C7zeWOUFsIxIOmrcGuA8IfFFwpcUzR2rVivjQI4/pT4xX9yEq6w5+H5ODHp/6EQujgdV80
-        CodiI1EZdivpvPRUGqjLf4/pgJ5Av9Ta6tgGMM30VdTaWu1v2kXd+FVaX/VzQ3IjepvLMc
-        TdoZKaRA5MuMu9qB3RaPonvBcs2NaGtmvv6KJE3GNLPGBGwejWarKv7mDm/7/qb7kG6fvv
-        MzNqqau1d6NUZBqCfKkjPOy980SVmgRWw9ay8yrnxvyC8cGjM3QUoxrFpKtF7gfEkQiYkk
-        TGQDsBCl8XknJYvq/WVOWTnlNaBU+UG4Ic49nkqDCTy6Lk4Ngs+csvLD5AmJXw==
+        bh=8FfXPoY2Jgiw11kfJNWJwljQPcGeP9oorxEVHW8vr9Y=;
+        b=nEgEkbIQjrpr6sd+xQT6QWAe39ojUMUk8ir8+nHj5NMIk18eGLIfrn+yCYtXMqznijvrKw
+        D5KQh2hk3EAwLEhtb+WkdTOAIVb/vW+YNIRo6MDh7ilgXMx1bpQ1Z0OSpOQqFHLP/LZwid
+        0kF0MMHdut8vuTcmxodMKYyf3QTGDh3o4jIxpqAcEMz3DiJhIiX96zBhl3dXa2qDt7z855
+        Ca0m58i2UkyBkxB9TSc2lmTur2DtyzXcbWUe7qh8AGN+M8LQn8WXE9gJ7NFN5WLkWRRAqD
+        mE7Vz8TXu29yzZ+uPukM2XpnAQqGYKFzEl9rcZJEFyi+i738+UrOen1gcQrmog==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693391399;
+        s=2020e; t=1693391405;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qiHeCeWMqDfMSLrY6Ovkw5z04+RV1jb4Pn6ptsA182g=;
-        b=CvDNKDlmsb+IHEd3R72G0w2INwWC9axP1vaDZvpoeUlOA0ojqtGDxJ975TiP8Zsi1Y+5y0
-        vqo+XOIrEc9aYnCA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=8FfXPoY2Jgiw11kfJNWJwljQPcGeP9oorxEVHW8vr9Y=;
+        b=COB7gHE3yp7oU8oOOIXb9ak18SqRO8YX4mrEUMl+XMBPXGNnTBCrzitPmDYYMPcvWRbGKm
+        LElA97UxwBmFHuDA==
+From:   "tip-bot2 for Paul Gortmaker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: smp/urgent] cpu/hotplug: Prevent self deadlock on CPU hot-unplug
-Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+Subject: [tip: timers/urgent] tick/rcu: Fix false positive "softirq work is
+ pending" messages
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Yu Liao <liaoyu15@huawei.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        stable@vger.kernel.org, x86@kernel.org,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Wen Yang <wenyang.linux@foxmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com>
-References: <8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com>
+In-Reply-To: <20230818200757.1808398-1-paul.gortmaker@windriver.com>
+References: <20230818200757.1808398-1-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Message-ID: <169339139819.27769.17621875462076784482.tip-bot2@tip-bot2>
+Message-ID: <169339140347.27769.9753097427140824629.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,99 +68,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the smp/urgent branch of tip:
+The following commit has been merged into the timers/urgent branch of tip:
 
-Commit-ID:     2b8272ff4a70b866106ae13c36be7ecbef5d5da2
-Gitweb:        https://git.kernel.org/tip/2b8272ff4a70b866106ae13c36be7ecbef5d5da2
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 23 Aug 2023 10:47:02 +02:00
+Commit-ID:     96c1fa04f089a7e977a44e4e8fdc92e81be20bef
+Gitweb:        https://git.kernel.org/tip/96c1fa04f089a7e977a44e4e8fdc92e81be20bef
+Author:        Paul Gortmaker <paul.gortmaker@windriver.com>
+AuthorDate:    Fri, 18 Aug 2023 16:07:57 -04:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 30 Aug 2023 12:24:22 +02:00
+CommitterDate: Wed, 30 Aug 2023 12:20:28 +02:00
 
-cpu/hotplug: Prevent self deadlock on CPU hot-unplug
+tick/rcu: Fix false positive "softirq work is pending" messages
 
-Xiongfeng reported and debugged a self deadlock of the task which initiates
-and controls a CPU hot-unplug operation vs. the CFS bandwidth timer.
+In commit 0345691b24c0 ("tick/rcu: Stop allowing RCU_SOFTIRQ in idle") the
+new function report_idle_softirq() was created by breaking code out of the
+existing can_stop_idle_tick() for kernels v5.18 and newer.
 
-    CPU1      			                 	 CPU2
+In doing so, the code essentially went from a one conditional:
 
-T1 sets cfs_quota
-   starts hrtimer cfs_bandwidth 'period_timer'
-T1 is migrated to CPU2				
-						T1 initiates offlining of CPU1
-Hotplug operation starts
-  ...
-'period_timer' expires and is re-enqueued on CPU1
-  ...
-take_cpu_down()
-  CPU1 shuts down and does not handle timers
-  anymore. They have to be migrated in the
-  post dead hotplug steps by the control task.
+	if (a && b && c)
+		warn();
 
-						T1 runs the post dead offline operation
-					      	T1 is scheduled out
-						T1 waits for 'period_timer' to expire
+to a three conditional:
 
-T1 waits there forever if it is scheduled out before it can execute the hrtimer
-offline callback hrtimers_dead_cpu().
+	if (!a)
+		return;
+	if (!b)
+		return;
+	if (!c)
+		return;
+	warn();
 
-Cure this by delegating the hotplug control operation to a worker thread on
-an online CPU. This takes the initiating user space task, which might be
-affected by the bandwidth timer, completely out of the picture.
+But that conversion got the condition for the RT specific
+local_bh_blocked() wrong. The original condition was:
 
-Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+   	!local_bh_blocked()
+
+but the conversion failed to negate it so it ended up as:
+
+        if (!local_bh_blocked())
+		return false;
+
+This issue lay dormant until another fixup for the same commit was added
+in commit a7e282c77785 ("tick/rcu: Fix bogus ratelimit condition").
+This commit realized the ratelimit was essentially set to zero instead
+of ten, and hence *no* softirq pending messages would ever be issued.
+
+Once this commit was backported via linux-stable, both the v6.1 and v6.4
+preempt-rt kernels started printing out 10 instances of this at boot:
+
+  NOHZ tick-stop error: local softirq work is pending, handler #80!!!
+
+Remove the negation and return when local_bh_blocked() evaluates to true to
+bring the correct behaviour back.
+
+Fixes: 0345691b24c0 ("tick/rcu: Stop allowing RCU_SOFTIRQ in idle")
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Yu Liao <liaoyu15@huawei.com>
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/lkml/8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com
-Link: https://lore.kernel.org/r/87h6oqdq0i.ffs@tglx
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Reviewed-by: Wen Yang <wenyang.linux@foxmail.com>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Link: https://lore.kernel.org/r/20230818200757.1808398-1-paul.gortmaker@windriver.com
+
 
 ---
- kernel/cpu.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ kernel/time/tick-sched.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index f6811c8..6de7c6b 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1487,8 +1487,22 @@ out:
- 	return ret;
- }
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 4df14db..87015e9 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1045,7 +1045,7 @@ static bool report_idle_softirq(void)
+ 		return false;
  
-+struct cpu_down_work {
-+	unsigned int		cpu;
-+	enum cpuhp_state	target;
-+};
-+
-+static long __cpu_down_maps_locked(void *arg)
-+{
-+	struct cpu_down_work *work = arg;
-+
-+	return _cpu_down(work->cpu, 0, work->target);
-+}
-+
- static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
- {
-+	struct cpu_down_work work = { .cpu = cpu, .target = target, };
-+
- 	/*
- 	 * If the platform does not support hotplug, report it explicitly to
- 	 * differentiate it from a transient offlining failure.
-@@ -1497,7 +1511,15 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
- 		return -EOPNOTSUPP;
- 	if (cpu_hotplug_disabled)
- 		return -EBUSY;
--	return _cpu_down(cpu, 0, target);
-+
-+	/*
-+	 * Ensure that the control task does not run on the to be offlined
-+	 * CPU to prevent a deadlock against cfs_b->period_timer.
-+	 */
-+	cpu = cpumask_any_but(cpu_online_mask, cpu);
-+	if (cpu >= nr_cpu_ids)
-+		return -EBUSY;
-+	return work_on_cpu(cpu, __cpu_down_maps_locked, &work);
- }
+ 	/* On RT, softirqs handling may be waiting on some lock */
+-	if (!local_bh_blocked())
++	if (local_bh_blocked())
+ 		return false;
  
- static int cpu_down(unsigned int cpu, enum cpuhp_state target)
+ 	pr_warn("NOHZ tick-stop error: local softirq work is pending, handler #%02x!!!\n",
