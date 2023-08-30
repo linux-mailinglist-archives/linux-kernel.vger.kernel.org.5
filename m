@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF24C78DD7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F5A78D86D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244564AbjH3SvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        id S234367AbjH3Sa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245445AbjH3PQ0 (ORCPT
+        with ESMTP id S245446AbjH3PQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:16:26 -0400
+        Wed, 30 Aug 2023 11:16:27 -0400
 Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E2D1B0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:16:23 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31ae6bf91a9so4773921f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:16:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6CBE8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:16:24 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31aeef88a55so4743072f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:16:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693408581; x=1694013381; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693408583; x=1694013383; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7rrt4a699i+AvDDfDTXr/DAFWWKZxU5rCQSifRowm6A=;
-        b=MiU9PuHoC41K2mRXN8hvvomlXuhate2gxkFIWa0rjmbfbBoBRc5+Xk4hiKDLz6x5TE
-         DQwO/doqKKQ0/4u6OIsAUzVwqVV74lVtT7LIAjz5TvCRldXxgxhJhDpaCfiOLMxhQKMe
-         Z5mabpGxO2bJVEoQNV0TPV5KpzIlVSN7ZuZgYNbIDjoIWnJhXAhA/HRApCANLDbZuFI+
-         vgBQrUUR50TS50dsu8lkZqdEuGvMsHQIKKJ6zKOklXarf0GAcDB7TjNhUrsrVrgDRbif
-         exocSLMMJFFXmz7NuhwKXuGmT+GUGoxrulDovXu4kAclehze1UeBOLME7+NYuOxKZWYI
-         61lw==
+        bh=es/vonYfeF+sd1Szgsb0SjC7b9oKTkZXBC/TQTIYAoo=;
+        b=aWC3BBOtO9DXxECLQm/TDS+hBhMYVcc+hfqpCt1jSttwsOvRTTC1FCfVhlyQzzNSNb
+         e7IhPUc6J2bO0AGgPK0sJK4ZN2K0rcG0bVjNDCrfySI1MEgH8RoKkc2s1MSbdEASz0Pp
+         oRPPU/6U1HuSsJIZDarn4lSgpqJKPUjCxTTr9pzXIcp1V+Wo4UhPXit9tMWsputF3e9l
+         RIZ5vi+Pb4qbx+j1/OGaWRERmvO27OGXv6yOhBKom9+SiWJaEwP61E1qGtiIqED4xpMp
+         XbOq9lWNa00qh3lkG9TEnOY9Z6tKHkAYm1Fw3eG4DMwZ0oGmm0wvAig8e4+UmFFpjdcS
+         wyWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693408581; x=1694013381;
+        d=1e100.net; s=20221208; t=1693408583; x=1694013383;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7rrt4a699i+AvDDfDTXr/DAFWWKZxU5rCQSifRowm6A=;
-        b=Sq9Bh8rbXeggatCuImjyDObRHiB7zCmC7vYluR8kyayDYXmZe+OCH9Ojib14fjVty+
-         mnAQXbK1ODrIVItZg//xG6Hw9nOOm/r6vQee4yPd2limJTpzWdhBncNLmwnBrJMK/WcL
-         MDDS3O2kj/z3kBN9SSEjKe0GNWNen9IgJ8torlBH55tZP+q9VqcIqp+xAdUz/EdnGc6B
-         68+E30tL7yEAiaH8m7pebGVTktHLFlJsZ53E0Qk4VrZRTIeoaqTicwg9WmLFKuDmmmox
-         1UYK3MgRZlNHR9mKQRWB1ATCPXAwPIQMy/4SPF2aHm1droirmxBpNBotofAHJHGFsNMv
-         b2Tw==
-X-Gm-Message-State: AOJu0YxYOSPb5DdlaJZ7kQqcqSSnH1TbislvBs8jYAYzgoXx6/rvvEk2
-        CSSsICfp7qoW88nvHq5b4z4cCg==
-X-Google-Smtp-Source: AGHT+IFnjoXKkeWNfEEbs7aWoUiJxuX3OYd4ptVg9EBd8GX7/EKqFsAH/EkyMd9uRUbyj4VqXmVdQA==
-X-Received: by 2002:adf:e54f:0:b0:31c:6591:d40d with SMTP id z15-20020adfe54f000000b0031c6591d40dmr1959708wrm.29.1693408581696;
-        Wed, 30 Aug 2023 08:16:21 -0700 (PDT)
+        bh=es/vonYfeF+sd1Szgsb0SjC7b9oKTkZXBC/TQTIYAoo=;
+        b=MyIszhNdUQJQnG9sIcdI7MCl3ETXi+QzTpFWPDRBkgJH3lL5SBz5B1FTKDr22YrgLC
+         ModV161V6u0nwA1dHxjaHQUn+GlG12cy+Z6kYk8bRG5qEHisLHv6j9qNX5ofvUf+l/nl
+         84L7g9IlswI4MM5/rTZy9DKDydrcT/gG+ui6Gc9Zc/9TO7CVTEB/2trel3yeS7Y0ph8N
+         8tKHOB8PA9DgBl1wUG/FeBLpcQBCF1/dTvSlcMrlyxXMPalgXAUxg+tnzxo44twVlmr3
+         F6hKyH9OeQnaPvtu6jBhdzztno1Zbeg18qm8fEkRt/c80znwnCX6q2zCP2THn03B718H
+         gSSw==
+X-Gm-Message-State: AOJu0YyBDfbpO7JYc0/qzGn+0kNT1hHEGOlyKwQOndpGdMmjB2h77ftj
+        2cG95lD4/kpcRBirBwmwdLNcuA==
+X-Google-Smtp-Source: AGHT+IHnzBFpP57I3HYscKc4/uLzZKuFR3p1p5K/Ta5ch8Xb2aizid51aL8i0vyevOkvxwnq8qHHDg==
+X-Received: by 2002:a5d:4b4d:0:b0:314:2fdd:28ef with SMTP id w13-20020a5d4b4d000000b003142fdd28efmr1924505wrs.18.1693408582845;
+        Wed, 30 Aug 2023 08:16:22 -0700 (PDT)
 Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id b16-20020a5d4d90000000b0030fd03e3d25sm16989961wru.75.2023.08.30.08.16.20
+        by smtp.gmail.com with ESMTPSA id b16-20020a5d4d90000000b0030fd03e3d25sm16989961wru.75.2023.08.30.08.16.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 08:16:21 -0700 (PDT)
+        Wed, 30 Aug 2023 08:16:22 -0700 (PDT)
 From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -58,9 +58,9 @@ To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         andrey.konovalov@linaro.org
 Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH v3 03/10] media: qcom: camss: Fix genpd cleanup
-Date:   Wed, 30 Aug 2023 16:16:08 +0100
-Message-ID: <20230830151615.3012325-4-bryan.odonoghue@linaro.org>
+Subject: [PATCH v3 04/10] media: qcom: camss: Fix vfe_get() error jump
+Date:   Wed, 30 Aug 2023 16:16:09 +0100
+Message-ID: <20230830151615.3012325-5-bryan.odonoghue@linaro.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230830151615.3012325-1-bryan.odonoghue@linaro.org>
 References: <20230830151615.3012325-1-bryan.odonoghue@linaro.org>
@@ -68,113 +68,103 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now we never release the power-domains properly on the error path.
-Add a routine to be reused for this purpose and appropriate jumps in
-probe() to run that routine where necessary.
+Right now it is possible to do a vfe_get() with the internal reference
+count at 1. If vfe_check_clock_rates() returns non-zero then we will
+leave the reference count as-is and
 
-Fixes: 2f6f8af67203 ("media: camss: Refactor VFE power domain toggling")
+run:
+- pm_runtime_put_sync()
+- vfe->ops->pm_domain_off()
+
+skip:
+- camss_disable_clocks()
+
+Subsequent vfe_put() calls will when the ref-count is non-zero
+unconditionally run:
+
+- pm_runtime_put_sync()
+- vfe->ops->pm_domain_off()
+- camss_disable_clocks()
+
+vfe_get() should not attempt to roll-back on error when the ref-count is
+non-zero as the upper layers will still do their own vfe_put() operations.
+
+vfe_put() will drop the reference count and do the necessary power
+domain release, the cleanup jumps in vfe_get() should only be run when
+the ref-count is zero.
+
+[   50.095796] CPU: 7 PID: 3075 Comm: cam Not tainted 6.3.2+ #80
+[   50.095798] Hardware name: LENOVO 21BXCTO1WW/21BXCTO1WW, BIOS N3HET82W (1.54 ) 05/26/2023
+[   50.095799] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   50.095802] pc : refcount_warn_saturate+0xf4/0x148
+[   50.095804] lr : refcount_warn_saturate+0xf4/0x148
+[   50.095805] sp : ffff80000c7cb8b0
+[   50.095806] x29: ffff80000c7cb8b0 x28: ffff16ecc0e3fc10 x27: 0000000000000000
+[   50.095810] x26: 0000000000000000 x25: 0000000000020802 x24: 0000000000000000
+[   50.095813] x23: ffff16ecc7360640 x22: 00000000ffffffff x21: 0000000000000005
+[   50.095815] x20: ffff16ed175f4400 x19: ffffb4d9852942a8 x18: ffffffffffffffff
+[   50.095818] x17: ffffb4d9852d4a48 x16: ffffb4d983da5db8 x15: ffff80000c7cb320
+[   50.095821] x14: 0000000000000001 x13: 2e656572662d7265 x12: 7466612d65737520
+[   50.095823] x11: 00000000ffffefff x10: ffffb4d9850cebf0 x9 : ffffb4d9835cf954
+[   50.095826] x8 : 0000000000017fe8 x7 : c0000000ffffefff x6 : 0000000000057fa8
+[   50.095829] x5 : ffff16f813fe3d08 x4 : 0000000000000000 x3 : ffff621e8f4d2000
+[   50.095832] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff16ed32119040
+[   50.095835] Call trace:
+[   50.095836]  refcount_warn_saturate+0xf4/0x148
+[   50.095838]  device_link_put_kref+0x84/0xc8
+[   50.095843]  device_link_del+0x38/0x58
+[   50.095846]  vfe_pm_domain_off+0x3c/0x50 [qcom_camss]
+[   50.095860]  vfe_put+0x114/0x140 [qcom_camss]
+[   50.095869]  csid_set_power+0x2c8/0x408 [qcom_camss]
+[   50.095878]  pipeline_pm_power_one+0x164/0x170 [videodev]
+[   50.095896]  pipeline_pm_power+0xc4/0x110 [videodev]
+[   50.095909]  v4l2_pipeline_pm_use+0x5c/0xa0 [videodev]
+[   50.095923]  v4l2_pipeline_pm_get+0x1c/0x30 [videodev]
+[   50.095937]  video_open+0x7c/0x100 [qcom_camss]
+[   50.095945]  v4l2_open+0x84/0x130 [videodev]
+[   50.095960]  chrdev_open+0xc8/0x250
+[   50.095964]  do_dentry_open+0x1bc/0x498
+[   50.095966]  vfs_open+0x34/0x40
+[   50.095968]  path_openat+0xb44/0xf20
+[   50.095971]  do_filp_open+0xa4/0x160
+[   50.095974]  do_sys_openat2+0xc8/0x188
+[   50.095975]  __arm64_sys_openat+0x6c/0xb8
+[   50.095977]  invoke_syscall+0x50/0x128
+[   50.095982]  el0_svc_common.constprop.0+0x4c/0x100
+[   50.095985]  do_el0_svc+0x40/0xa8
+[   50.095988]  el0_svc+0x2c/0x88
+[   50.095991]  el0t_64_sync_handler+0xf4/0x120
+[   50.095994]  el0t_64_sync+0x190/0x198
+[   50.095996] ---[ end trace 0000000000000000 ]---
+
+Fixes: 779096916dae ("media: camss: vfe: Fix runtime PM imbalance on error")
 Cc: stable@vger.kernel.org
 Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- drivers/media/platform/qcom/camss/camss.c | 35 ++++++++++++++---------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+ drivers/media/platform/qcom/camss/camss-vfe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index a925b2bfd8989..c6df862c79e39 100644
---- a/drivers/media/platform/qcom/camss/camss.c
-+++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -1538,6 +1538,20 @@ static int camss_icc_get(struct camss *camss)
- 	return 0;
- }
- 
-+static void camss_genpd_cleanup(struct camss *camss)
-+{
-+	int i;
-+
-+	if (camss->genpd_num == 1)
-+		return;
-+
-+	if (camss->genpd_num > camss->vfe_num)
-+		device_link_del(camss->genpd_link[camss->genpd_num - 1]);
-+
-+	for (i = 0; i < camss->genpd_num; i++)
-+		dev_pm_domain_detach(camss->genpd[i], true);
-+}
-+
- /*
-  * camss_probe - Probe CAMSS platform device
-  * @pdev: Pointer to CAMSS platform device
-@@ -1627,11 +1641,11 @@ static int camss_probe(struct platform_device *pdev)
- 
- 	ret = camss_init_subdevices(camss);
- 	if (ret < 0)
--		return ret;
-+		goto err_genpd_cleanup;
- 
- 	ret = dma_set_mask_and_coherent(dev, 0xffffffff);
- 	if (ret)
--		return ret;
-+		goto err_genpd_cleanup;
- 
- 	camss->media_dev.dev = camss->dev;
- 	strscpy(camss->media_dev.model, "Qualcomm Camera Subsystem",
-@@ -1643,7 +1657,7 @@ static int camss_probe(struct platform_device *pdev)
- 	ret = v4l2_device_register(camss->dev, &camss->v4l2_dev);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to register V4L2 device: %d\n", ret);
--		return ret;
-+		goto err_genpd_cleanup;
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+index dabfd613b2f94..938f373bcd1fd 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -611,7 +611,7 @@ int vfe_get(struct vfe_device *vfe)
+ 	} else {
+ 		ret = vfe_check_clock_rates(vfe);
+ 		if (ret < 0)
+-			goto error_pm_runtime_get;
++			goto error_pm_domain;
  	}
+ 	vfe->power_count++;
  
- 	v4l2_async_nf_init(&camss->notifier, &camss->v4l2_dev);
-@@ -1693,28 +1707,19 @@ static int camss_probe(struct platform_device *pdev)
- err_v4l2_device_unregister:
- 	v4l2_device_unregister(&camss->v4l2_dev);
- 	v4l2_async_nf_cleanup(&camss->notifier);
-+err_genpd_cleanup:
-+	camss_genpd_cleanup(camss);
- 
- 	return ret;
- }
- 
- void camss_delete(struct camss *camss)
- {
--	int i;
--
- 	v4l2_device_unregister(&camss->v4l2_dev);
- 	media_device_unregister(&camss->media_dev);
- 	media_device_cleanup(&camss->media_dev);
- 
- 	pm_runtime_disable(camss->dev);
--
--	if (camss->genpd_num == 1)
--		return;
--
--	if (camss->genpd_num > camss->vfe_num)
--		device_link_del(camss->genpd_link[camss->genpd_num - 1]);
--
--	for (i = 0; i < camss->genpd_num; i++)
--		dev_pm_domain_detach(camss->genpd[i], true);
- }
- 
- /*
-@@ -1733,6 +1738,8 @@ static void camss_remove(struct platform_device *pdev)
- 
- 	if (atomic_read(&camss->ref_count) == 0)
- 		camss_delete(camss);
-+
-+	camss_genpd_cleanup(camss);
- }
- 
- static const struct of_device_id camss_dt_match[] = {
 -- 
 2.41.0
 
