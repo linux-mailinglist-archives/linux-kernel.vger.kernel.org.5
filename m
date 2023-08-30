@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFB878D1C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB7C78D1C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241595AbjH3BhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 21:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
+        id S241601AbjH3Bhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 21:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241581AbjH3BhF (ORCPT
+        with ESMTP id S241608AbjH3BhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 21:37:05 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E7DCC5;
-        Tue, 29 Aug 2023 18:37:00 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-76c64da0e46so173831639f.0;
-        Tue, 29 Aug 2023 18:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693359420; x=1693964220; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YcVzJ1hbhq9Ov/W8Ofp/tN+KBi3VQ+ExZZ65FircAyo=;
-        b=G9571n01fbFDw1loYE6OJdVeeX0G7mqKNuwX+KdUfb447I3RxTdJURh5QEWRqTJ92q
-         tf8NejmUmgnKgyGC9nlp9VCfgSm9s8wDq11KrUC8PGnT76JhtZEsbF+hg2Yn++TvNtjK
-         pXXVu7jEYrSnph6IPqaqn2S36diKIat5kJm98pBMFdKJ+5nz/lzsCGYEKftTnET++rN8
-         44XY4cjN8pzQZeY0agWxvQUqvs1K/HxD4oVbdzEagTeY1JpiUVAPcWdyOrC0F1sn3ESx
-         8dLzwGTxoTbfryaIfAd6creENWYnOSZErWS3zZkcDnwzoMukkW+wcXrDxGJbkqtRhPSP
-         zGHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693359420; x=1693964220;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YcVzJ1hbhq9Ov/W8Ofp/tN+KBi3VQ+ExZZ65FircAyo=;
-        b=AAw66sVdTPm0wcFKPpFW5v0EYA8RDyVS7PiJBrgNU5Vxpgx4whrG0V7fxo3F82j7RT
-         GqyvqfzxMZScDAH/yjDyQmThpc6Xaky/a1ZiUjksAPaibIaFIUXAAEWCCkJxtfPYfIXA
-         at31M6swYGPI94hGGv/TMufKAtMfav46M/RMluHEhE3WFp0wY8xPbUBOWw80kx2DHMeB
-         KOvLC0Li/3GQyfQRLZaVaoPsQzK2rn3cEq76+dVXgladIJaShxQHWGjjw/KW4IPNH7wt
-         odOera0qCvx+iB+QWuOjhkiYNQuQI2rwZ3GZ45bRP4op8qJ/WBflJ/oR/Tee5MO0dzpD
-         lOMw==
-X-Gm-Message-State: AOJu0YzgI9Pk0fVbVb7dvlmlw8gS92JxFS8Yzgld/B/bhCmuuQU151HU
-        SZMyEMnjoHdebv8WrlqiZpY=
-X-Google-Smtp-Source: AGHT+IFnKU9/P7PLg9OvuUJYiT+ycpH/CeV4Mv42jUxWMGaUeno1rEjvBEcEwsnP1QGLNTKQLXm95A==
-X-Received: by 2002:a6b:d213:0:b0:792:70c2:9db1 with SMTP id q19-20020a6bd213000000b0079270c29db1mr889185iob.1.1693359419893;
-        Tue, 29 Aug 2023 18:36:59 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z21-20020a6b0a15000000b0079187c8524asm3556839ioi.3.2023.08.29.18.36.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 18:36:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 29 Aug 2023 18:36:57 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Huibin Shi <henrys@silicom-usa.com>
-Cc:     Henry Shi <henryshi2018@gmail.com>,
-        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>
-Subject: Re: [PATCH v5] Add Silicom Platform Driver
-Message-ID: <b47b79c7-1ddc-4336-8bbc-f524872198ca@roeck-us.net>
-References: <20230828212622.32485-1-henryshi2018@gmail.com>
- <15039461-6099-40a1-952f-fc31d65a0d3f@roeck-us.net>
- <PA4PR04MB92225C42CC763DCBA622C6579AE7A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+        Tue, 29 Aug 2023 21:37:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A2FCD6;
+        Tue, 29 Aug 2023 18:37:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D745460CEC;
+        Wed, 30 Aug 2023 01:37:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 485D4C433C7;
+        Wed, 30 Aug 2023 01:37:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693359440;
+        bh=dPf4kldHLwVQWKVmZVGZxcUp8BjRiStmfkC4GhSqQOo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kD2kdSw92+xzFguoEUs/NfjRaQv9uCx0X1ruiPMjbHf1i924ECnvo6SlQyeuBDiMM
+         3IUO5jQ4VraWCBcLlU5QUZVzxQKWNTCVrA4ifEzVoLADNntPMZEk+6VInCZls3gqzO
+         nTzuT14B1VBhFmC+8WEZV0HWeQPZ8x8JVyiqcM3opP4BJC7dwqTwYBNyE0u9DznVRO
+         1A01N0Ixa7i0Hi28Ig8aaAbRUXrBfNl5Tu0QB8l3mIbXbIN5aFnZHvjVvqDO7EzGAq
+         kLTPrYrlhe6ZhBRJre5iCVhb80eDAAknCCpDWNJpZu4Xf+tBu2TFREc9nxMV/4vQ9g
+         kCNy5IeZJttNQ==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52bca2e8563so2471508a12.2;
+        Tue, 29 Aug 2023 18:37:20 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyp998l/ZvXnQ+/tNKGdi5yxoPn9VYvX9xD+ShEQRFxYdTxYgOI
+        SbbZUDyagB/BaGpoYXEysZdUX3pOMiVdpdAwRwM=
+X-Google-Smtp-Source: AGHT+IFxM/pc+mlJmDqVNMXxYu6T33APpKzC6JZXNd2v6LFSpNeeV1Tzov2tS3Gr5aayD63mcZuwkyYwBi0GNRphdAo=
+X-Received: by 2002:a05:6402:1287:b0:528:90d7:a1f with SMTP id
+ w7-20020a056402128700b0052890d70a1fmr695346edv.10.1693359438604; Tue, 29 Aug
+ 2023 18:37:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PA4PR04MB92225C42CC763DCBA622C6579AE7A@PA4PR04MB9222.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20230829182500.61875-1-namcaov@gmail.com>
+In-Reply-To: <20230829182500.61875-1-namcaov@gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 30 Aug 2023 09:37:05 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTR2vZLFo=cfg+KD_LY8z=_D4sLROGgx4GiwTYKXt=8k4w@mail.gmail.com>
+Message-ID: <CAJF2gTR2vZLFo=cfg+KD_LY8z=_D4sLROGgx4GiwTYKXt=8k4w@mail.gmail.com>
+Subject: Re: [PATCH] riscv: kprobes: allow writing to x0
+To:     Nam Cao <namcaov@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,80 +67,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 10:17:47PM +0000, Huibin Shi wrote:
-> Hi Guenter,
-> 
-> Appreciate your feedback. Please see my comments below.
-> 
-> Thanks
-> Henry
-> 
-> -----Original Message-----
-> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
-> Sent: Monday, August 28, 2023 8:41 PM
-> To: Henry Shi <henryshi2018@gmail.com>
-> Cc: hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org; hb_shi2003@yahoo.com; Huibin Shi <henrys@silicom-usa.com>; Wen Wang <wenw@silicom-usa.com>
-> Subject: Re: [PATCH v5] Add Silicom Platform Driver
-> 
-> Caution: This is an external email. Please take care when clicking links or opening attachments.
-> 
-> 
-> On Mon, Aug 28, 2023 at 05:26:22PM -0400, Henry Shi wrote:
-> > The Silicom platform (silicom-platform) Linux driver for Swisscom 
-> > Business Box (Swisscom BB) as well as Cordoba family products is a 
-> > software solution designed to facilitate the efficient management and 
-> > control of devices through the integration of various Linux 
-> > frameworks. This platform driver provides seamless support for device 
-> > management via the Linux LED framework, GPIO framework, Hardware 
-> > Monitoring (HWMON), and device attributes. The Silicom platform 
-> > driver's compatibility with these Linux frameworks allows applications 
-> > to access and control Cordoba family devices using existing software 
-> > that is compatible with these frameworks. This compatibility 
-> > simplifies the development process, reduces dependencies on 
-> > proprietary solutions, and promotes interoperability with other 
-> > Linux-based systems and software.
-> >
-> > Signed-off-by: Henry Shi <henryshi2018@gmail.com>
-> 
-> Again, my feedback is only for hwmon code.
-> 
-> [ ... ]
-> 
-> > +
-> > +static int silicom_fan_control_read(struct device *dev,
-> > +                                                                     enum hwmon_sensor_types type,
-> > +                                                                     u32 attr, int channel,
-> > +                                                                     
-> > +long *val)
-> 
-> Excessively long continuation lines.
-> That seeme to be the case for almost all continuation lines, except where it is too short. I'd suggest to run the patch through checkpatch --strict and fix what it reports.
-> 
-> total: 0 errors, 9 warnings, 18 checks, 1077 lines checked
-> 
-> is really a bit much.
-> 
-> Henry: OK, I will fix those warnings.
-> 
-> [ ... ]
-> 
-> > +
-> > +     hwmon_dev = devm_hwmon_device_register_with_info(&device->dev, name, NULL,
-> > +                             &silicom_chip_info, NULL);
-> 
-> Did you try to compile this with CONFIG_HWMON=n or with CONFIG_HWMON=m and SILICOM_PLATFORM=y ?
-> 
-> Henry: Great question. I did not try that before. When I force "CONFIG_HWMON=m and SILICOM_PLATFORM=y" and compile kernel, the build failed with message "silicom-platform.c:(.init.text+0x8ff5b): undefined reference to `devm_hwmon_device_register_with_info'". I tried following change in drivers/platform/x86/Kconfig:
-> 
-> config SILICOM_PLATFORM
-> 	tristate "Silicom Edge Networking device support"
-> 	depends on DMI
-> 	select LEDS_CLASS_MULTICOLOR
-> 	select GPIOLIB
-> 	select HWMON  ----> added 
+On Wed, Aug 30, 2023 at 2:25=E2=80=AFAM Nam Cao <namcaov@gmail.com> wrote:
+>
+> Instructions can write to x0, so we should simulate these instructions
+> normally.
+>
+> Currently, the kernel hangs if an instruction who writes to x0 is
+> simulated.
+>
+> Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Nam Cao <namcaov@gmail.com>
+> ---
+>  arch/riscv/kernel/probes/simulate-insn.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/probes/simulate-insn.c b/arch/riscv/kernel=
+/probes/simulate-insn.c
+> index d3099d67816d..6c166029079c 100644
+> --- a/arch/riscv/kernel/probes/simulate-insn.c
+> +++ b/arch/riscv/kernel/probes/simulate-insn.c
+> @@ -24,7 +24,7 @@ static inline bool rv_insn_reg_set_val(struct pt_regs *=
+regs, u32 index,
+>                                        unsigned long val)
+>  {
+>         if (index =3D=3D 0)
+> -               return false;
+> +               return true;
+Acked-by: Guo Ren <guoren@kernel.org>
 
-No, that is wrong. It needs to be "depends on HWMON",
-or the hwmon code needs to be conditional and the dependency
-must be something like "depends on HWMON || HWMON=n".
+>         else if (index <=3D 31)
+>                 *((unsigned long *)regs + index) =3D val;
+>         else
+> --
+> 2.34.1
+>
 
-Guenter
+
+--=20
+Best Regards
+ Guo Ren
