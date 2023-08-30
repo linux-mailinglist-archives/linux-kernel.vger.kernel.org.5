@@ -2,266 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5ADC78E0A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B15478E188
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238841AbjH3U2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S242029AbjH3Vkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239611AbjH3U2Z (ORCPT
+        with ESMTP id S242012AbjH3Vkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:28:25 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005203C3E
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:16:12 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-26fc5a218daso60909a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:16:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1693422896; x=1694027696; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HGvmAnYANPHouVA+BdJfC0MXGgtwfV2UgiyZIn2PRsI=;
-        b=gAP45YDSH4meXjfY6beNK9/rOWh+OfPuHr7VWqMK0fW9YBLdFuNb934zGrq3Qzg8Je
-         MpUzEKgprkHUtmSfxcP2ceWao0AWWCipAbj5dKXBOFvbE8dxuY2fzLCPKflVHcd7YzTL
-         r7MDiqLy+85drfLZenZH1wCpJVJzvY6HSXR/oEXSiKTIXwQyCgiGzgbrkUoWfFio6bJl
-         RawTksh6u8zAc++I/J4RwbARS9b0aRR7+YlTCLVWEDeG0yBpE4Okhr1L6ETZqCk9yJA0
-         fkiG76o9fgiZdp6ilvdZJBZ62AR2jGPcKsVP62TvY0oZDNc9eWCE2GDQNDuBIW1FwpZm
-         zCGg==
+        Wed, 30 Aug 2023 17:40:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7015D194
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693431480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iBV0HnyI31Hv2AWMsxadgPSfaYJpOZDq2RNuu2t2Z+8=;
+        b=Sii7o0qcuwUGQJSz+ZnYZl0x3txDnt5Oqr7pMzZ5BVaXmxyEsk93PAzwjWxIS+rwMyd0J4
+        a/H+EFgPtWiSYxhGljWO0CzApJJHtyD7dmTFq0yPSg4Iv8RkfCyr72fIpma54/nD6L03/y
+        XnPa2z1QHRo4rV1tSJKt8hrVwIercPA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-126-1yG1VppTPqmInWynvsc84Q-1; Wed, 30 Aug 2023 15:15:31 -0400
+X-MC-Unique: 1yG1VppTPqmInWynvsc84Q-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a1c4506e1eso98158266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:15:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693422896; x=1694027696;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HGvmAnYANPHouVA+BdJfC0MXGgtwfV2UgiyZIn2PRsI=;
-        b=ZD7aqE/e3RikMbjd4c8HnpoMRbesu1ODfmSxRCbSCj62d+xindH4n+ZXtLJYF+c8VV
-         J0vhYXmVQ6088709s8ZBMcacxck76llb7dJM0Ds8fiIv0NHEnkpV4tTnP5W2l2zknbba
-         CxWpQvp8FGmV4mrwNezQJjDIuFd15QZueVdfLd2BjwlY/u4QlDWz1jhe4L3LvEn5P/DY
-         D42IUzptqqrQ+xwiwriS0FWWYqe6Gbt+jiQNvIqhEpsn5xuTR5SdYeBF9xSiQKyS9O9B
-         AkRz57ZXZb4h3H9MG4m8yjq7Kkhji0THtKmHD4GkKPzjwPE2gnPAkXvxHFq99NI71TOK
-         4ohg==
-X-Gm-Message-State: AOJu0YzdzKVjnJ7wFCPcJuIhE4JwKGhnfw4FRVUqvSo+04jSf46tWNGv
-        ruRixWNuWPP4vARNAxDkOJvQFvGrPRYEIzAii2u4y/60Gox7Qfl6GUl5mQ==
-X-Google-Smtp-Source: AGHT+IFAARw8v1UFiFy5BY+Jwg3667PEy/UO72QjYBKljjXc7Hi5OYjANU6LOXgIEcoktmjI6GsRSRfpcd8/MvLOM3g=
-X-Received: by 2002:a17:90b:e07:b0:263:f62b:3601 with SMTP id
- ge7-20020a17090b0e0700b00263f62b3601mr2848202pjb.10.1693422895963; Wed, 30
- Aug 2023 12:14:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230830111319.3882281-1-Naresh.Solanki@9elements.com> <0bfbbbb3-6144-fc9a-c8ab-423a8865591b@roeck-us.net>
-In-Reply-To: <0bfbbbb3-6144-fc9a-c8ab-423a8865591b@roeck-us.net>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Thu, 31 Aug 2023 00:44:45 +0530
-Message-ID: <CABqG17ig1VRJYqbrOvPKAYS8iUFwY9J3tYcgYGtnnXw+vrnoRA@mail.gmail.com>
-Subject: Re: [PATCH] regulator (max5970): Add hwmon support
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>, zev@bewilderbeest.net,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+        d=1e100.net; s=20221208; t=1693422930; x=1694027730;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iBV0HnyI31Hv2AWMsxadgPSfaYJpOZDq2RNuu2t2Z+8=;
+        b=VYDmf4Km95ovU4P3r8qTI7t99c8ievBvN79liFWQ20VX2Hi9Y0h/6l3veKzp1JriNz
+         4lnabUBNYXrdpvnobEo9/jEerFl8A9w03QmC2Mhine7d76umcuRM6ysSgMByyNsv1CO8
+         CjSOri4VL7tjRpU/jfOt+novcYPhbrUDJiwFNpWDoiwzoAtzCOvE3bECcMuiu6gKbHTl
+         ZY+u32bB5mMt75Vn/RBTZbjiKmjua09bgT6RUU2RmyTQPcEZbntYSgccffeojd/HXRLT
+         JtRx7EFZinp7/0qxsaJZ9Er/3yr2kXK14fw1WwNWvUt90EmfLmgaPe2cRbyclaYC76f7
+         njiA==
+X-Gm-Message-State: AOJu0YzfM/I4Zp4jeeA3c0dEqy2bjsB/B9NDZoREIBqYORiebw91A5Ch
+        T2os4eJzN0uRLGplOahG2lr3e88rYihGAWTYnDspeWMhcDXl5iKz/2TlS1tmLPIskDFl1uEXXdV
+        qtNRBrrqr5siE/3RY8WaJRYkU
+X-Received: by 2002:a05:6402:51c8:b0:523:37cf:6f37 with SMTP id r8-20020a05640251c800b0052337cf6f37mr2290527edd.4.1693422930284;
+        Wed, 30 Aug 2023 12:15:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHjUvAuvkykbuXvqA8bQi1z8q8Gj4+iVBJgsW7l3Dh0c5JlqxFhMaKRno+cvmE8+cDwXXn9mg==
+X-Received: by 2002:a05:6402:51c8:b0:523:37cf:6f37 with SMTP id r8-20020a05640251c800b0052337cf6f37mr2290516edd.4.1693422929985;
+        Wed, 30 Aug 2023 12:15:29 -0700 (PDT)
+Received: from ?IPv6:2001:9e8:32e4:1500:aa40:e745:b6c9:7081? ([2001:9e8:32e4:1500:aa40:e745:b6c9:7081])
+        by smtp.gmail.com with ESMTPSA id i9-20020aa7c709000000b0052a198d8a4dsm7116533edq.52.2023.08.30.12.15.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 12:15:29 -0700 (PDT)
+Message-ID: <a4ba0493965ad32fcf95cd6e2439096668a9ed46.camel@redhat.com>
+Subject: Re: [PATCH 1/5] string.h: add array-wrappers for (v)memdup_user()
+From:   pstanner@redhat.com
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Siddh Raman Pant <code@siddh.me>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
+        David Airlie <airlied@redhat.com>
+Date:   Wed, 30 Aug 2023 21:15:28 +0200
+In-Reply-To: <CAHp75VdS=kSWnz8FzHcdrZPaeZKsQNbzjE9mNN7BDvZA_nQpaA@mail.gmail.com>
+References: <cover.1693386602.git.pstanner@redhat.com>
+         <46f667e154393a930a97d2218d8e90286d93a062.1693386602.git.pstanner@redhat.com>
+         <CAHp75VfkzV-=XuEZwipYzfHNu4EXuwzbu6vfEKh1Uueseo2=wA@mail.gmail.com>
+         <721a70c347d82931d12e5b75b19d132f82ee5ed2.camel@redhat.com>
+         <CAHp75VdS=kSWnz8FzHcdrZPaeZKsQNbzjE9mNN7BDvZA_nQpaA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, 2023-08-30 at 17:29 +0300, Andy Shevchenko wrote:
+> On Wed, Aug 30, 2023 at 5:19=E2=80=AFPM <pstanner@redhat.com> wrote:
+> > On Wed, 2023-08-30 at 17:11 +0300, Andy Shevchenko wrote:
+> > > On Wed, Aug 30, 2023 at 4:46=E2=80=AFPM Philipp Stanner
+> > > <pstanner@redhat.com>
+> > > wrote:
+>=20
+> > > > --- a/include/linux/string.h
+> > > > +++ b/include/linux/string.h
+> > >=20
+> > > I'm wondering if this has no side-effects as string.h/string.c
+> > > IIRC
+> > > is
+> > > used also for early stages where some of the APIs are not
+> > > available.
+> > >=20
+> > > > @@ -6,6 +6,8 @@
+> > > > =C2=A0#include <linux/types.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+/* for size_t */
+> > > > =C2=A0#include <linux/stddef.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* fo=
+r NULL */
+> > > > =C2=A0#include <linux/errno.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+/* for E2BIG */
+> > > > +#include <linux/overflow.h>=C2=A0=C2=A0=C2=A0 /* for check_mul_ove=
+rflow() */
+> > > > +#include <linux/err.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 /* for ERR_PTR() */
+> > >=20
+> > > Can we preserve order (to some extent)?
+> >=20
+> > Sure. I just put it there so the comments build a congruent block.
+> > Which order would you prefer?
+>=20
+> Alphabetical.
+>=20
+> compiler.h
+> err.h
+> overflow.h
+> ...the rest that is a bit unordered...
+>=20
+> > > > =C2=A0#include <linux/stdarg.h>
+> > > > =C2=A0#include <uapi/linux/string.h>
+>=20
+> ...
+
+I mean I could include my own in a sorted manner =E2=80=93 but the existing
+ones are not sorted:
+
+/* SPDX-License-Identifier: GPL-2.0 */
+#ifndef _LINUX_STRING_H_
+#define _LINUX_STRING_H_
+
+#include <linux/compiler.h>	/* for inline */
+#include <linux/types.h>	/* for size_t */
+#include <linux/stddef.h>	/* for NULL */
+#include <linux/errno.h>	/* for E2BIG */
+#include <linux/stdarg.h>
+#include <uapi/linux/string.h>
+
+extern char *strndup_user(const char __user *, long);
+
+We could sort them all, but I'd prefer to do that in a separate patch
+so that this commit does not make the impression of doing anything else
+than including the two new headers
+
+Such a separate patch could also unify the docstring style, see below
+
+>=20
+> > > > +/**
+> > > > + * memdup_array_user - duplicate array from user space
+> > >=20
+> > > > + *
+> > >=20
+> > > Do we need this blank line?
+> >=20
+> > I more or less directly copied the docstring format from the
+> > original
+> > functions (v)memdup_user() in mm/util.c
+> > I guess this is common style?
+>=20
+> I think it's not. But you may grep kernel source tree and tell which
+> one occurs more often with or without this (unneeded) blank line.
 
 
-On Wed, 30 Aug 2023 at 21:26, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 8/30/23 04:13, Naresh Solanki wrote:
-> > Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
-> > and current monitoring. This feature is seamlessly integrated through
-> > the hwmon subsystem.
-> >
-> > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> > ---
-> >   drivers/regulator/max5970-regulator.c | 119 ++++++++++++++++++++++++++
-> >   1 file changed, 119 insertions(+)
-> >
-> > diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
-> > index b56a174cde3d..3a6f7c293526 100644
-> > --- a/drivers/regulator/max5970-regulator.c
-> > +++ b/drivers/regulator/max5970-regulator.c
-> > @@ -10,6 +10,7 @@
-> >   #include <linux/bitops.h>
-> >   #include <linux/device.h>
-> >   #include <linux/err.h>
-> > +#include <linux/hwmon.h>
-> >   #include <linux/module.h>
-> >   #include <linux/io.h>
-> >   #include <linux/of.h>
-> > @@ -32,6 +33,116 @@ enum max597x_regulator_id {
-> >       MAX597X_SW1,
-> >   };
-> >
-> > +static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
-> > +{
-> > +     u8 reg_data[2];
-> > +     int ret;
-> > +
-> > +     ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     *val = (reg_data[0] << 2) | (reg_data[1] & 3);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
-> > +                     u32 attr, int channel, long *val)
-> > +{
-> > +     struct max5970_data *ddata = dev_get_drvdata(dev);
-> > +     struct regmap *regmap = dev_get_regmap(dev->parent, NULL);
-> > +     int ret;
-> > +
-> > +     switch (type) {
-> > +     case hwmon_curr:
-> > +             switch (attr) {
-> > +             case hwmon_curr_input:
-> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
-> > +                     /*
-> > +                      * Calculate current from ADC value, IRNG range & shunt resistor value.
-> > +                      * ddata->irng holds the voltage corresponding to the maximum value the
-> > +                      * 10-bit ADC can measure.
-> > +                      * To obtain the output, multiply the ADC value by the IRNG range (in
-> > +                      * millivolts) and then divide it by the maximum value of the 10-bit ADC.
-> > +                      */
-> > +                     *val = (*val * ddata->irng[channel]) >> 10;
-> > +                     /* Convert the voltage meansurement across shunt resistor to current */
-> > +                     *val = (*val * 1000) / ddata->shunt_micro_ohms[channel];
-> > +                     return ret;
-> > +             default:
-> > +                     return -EOPNOTSUPP;
-> > +             }
-> > +
-> > +     case hwmon_in:
-> > +             switch (attr) {
-> > +             case hwmon_in_input:
-> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
-> > +                     /*
-> > +                      * Calculate voltage from ADC value and MON range.
-> > +                      * ddata->mon_rng holds the voltage corresponding to the maximum value the
-> > +                      * 10-bit ADC can measure.
-> > +                      * To obtain the output, multiply the ADC value by the MON range (in
-> > +                      * microvolts) and then divide it by the maximum value of the 10-bit ADC.
-> > +                      */
-> > +                     *val = mul_u64_u32_shr(*val, ddata->mon_rng[channel], 10);
->
-> Why do you use mul_u64_u32_shr() here but a direct shift above ?
-There is possibility of overflow due to large value of ddata->mon_rng
->
-> > +                     /* uV to mV */
-> > +                     *val = *val / 1000;
-> > +                     return ret;
-> > +             default:
-> > +                     return -EOPNOTSUPP;
-> > +             }
-> > +     default:
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +}
-> > +
-> > +static umode_t max5970_is_visible(const void *data,
-> > +                               enum hwmon_sensor_types type,
-> > +                               u32 attr, int channel)
-> > +{
-> > +     struct max5970_data *ddata = (struct max5970_data *)data;
-> > +
-> > +     if (channel >= ddata->num_switches)
-> > +             return 0;
-> > +
-> > +     switch (type) {
-> > +     case hwmon_in:
-> > +             switch (attr) {
-> > +             case hwmon_in_input:
-> > +                     return 0444;
->
->                 default:
->                         break;
-Ack
->
-> > +             }
-> > +             break;
-> > +     case hwmon_curr:
-> > +             switch (attr) {
-> > +             case hwmon_curr_input:
-> > +                     /* Current measurement requires knowledge of the shunt resistor value. */
-> > +                     if (ddata->shunt_micro_ohms[channel])
-> > +                             return 0444;
->                 default:
->                         break;
-Ack
->
-> > +             }
-> > +             break;
-> > +     default:
-> > +             break;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct hwmon_ops max5970_hwmon_ops = {
-> > +     .is_visible = max5970_is_visible,
-> > +     .read = max5970_read,
-> > +};
-> > +
-> > +static const struct hwmon_channel_info *max5970_info[] = {
-> > +     HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
-> > +     HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
->
-> Your call, but the chip does support limit and status registers, so you
-> could add reporting those as well since you are at it, possibly even including
-> notifications.
-Will consider separate set of patch for this.
->
-> > +     NULL
-> > +};
-> > +
-> > +static const struct hwmon_chip_info max5970_chip_info = {
-> > +     .ops = &max5970_hwmon_ops,
-> > +     .info = max5970_info,
-> > +};
-> > +
-> >   static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
-> >   {
-> >       int ret, reg;
-> > @@ -432,6 +543,7 @@ static int max597x_regulator_probe(struct platform_device *pdev)
-> >       struct regulator_config config = { };
-> >       struct regulator_dev *rdev;
-> >       struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
-> > +     struct device *hwmon_dev;
-> >       int num_switches;
-> >       int ret, i;
-> >
-> > @@ -485,6 +597,13 @@ static int max597x_regulator_probe(struct platform_device *pdev)
-> >               max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
-> >       }
-> >
-> > +     hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970_hwmon", max597x,
-> > +                                                      &max5970_chip_info, NULL);
->
-> This makes the driver dependent on hwmon, so you either need a strict
->         depends on HWMON
-> in Kconfig, or
->         depends on HWMON || HWMON=n
-> and add #if IS_ENABLED(CONFIG_HWMON) as appropriate into the code.
-Sure, will update accordingly. Thanks
->
->
-> > +     if (IS_ERR(hwmon_dev)) {
-> > +             return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev), \
-> > +                                  "Unable to register hwmon device\n");
-> > +     }
-> > +
-> >       if (i2c->irq) {
-> >               ret =
-> >                   max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
-> >
-> > base-commit: 35d0d2350d774fecf596cfb2fb050559fe5e1850
->
+It seems to be very much mixed. string.h itself is mixed.
+When you look at the bottom of string.h, you'll find functions such as
+kbasename() that have the extra line.
+
+That's not really a super decisive point for me, though. We can remove
+the line I guess
+
+
+P.
+
+
+>=20
+> > > > + * @src: source address in user space
+> > > > + * @n: number of array members to copy
+> > > > + * @size: size of one array member
+> > > > + *
+> > > > + * Return: an ERR_PTR() on failure.=C2=A0 Result is physically
+> > > > + * contiguous, to be freed by kfree().
+> > > > + */
+>=20
+> ...
+>=20
+> > > > +/**
+> > > > + * vmemdup_array_user - duplicate array from user space
+> > >=20
+> > > > + *
+> > >=20
+> > > Redundant?
+> >=20
+> > No, there are two functions:
+> > =C2=A0* memdup_array_user()
+> > =C2=A0* vmemdup_array_user()
+> >=20
+> > On the deeper layers they utilize kmalloc() or kvmalloc(),
+> > respectively.
+>=20
+> I guess you misunderstood my comment. I was talking about kernel doc
+> (as in the previous function).
+>=20
+> > > > + * @src: source address in user space
+> > > > + * @n: number of array members to copy
+> > > > + * @size: size of one array member
+> > > > + *
+> > > > + * Return: an ERR_PTR() on failure.=C2=A0 Result may be not
+> > > > + * physically contiguous.=C2=A0 Use kvfree() to free.
+> > > > + */
+>=20
+>=20
+
