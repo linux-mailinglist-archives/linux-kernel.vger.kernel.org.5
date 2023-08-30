@@ -2,74 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D4078E1B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC678E1B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243554AbjH3V4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
+        id S230110AbjH3V71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243541AbjH3V4n (ORCPT
+        with ESMTP id S229483AbjH3V70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:56:43 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A91895;
-        Wed, 30 Aug 2023 14:56:19 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34bae82b2ffso821355ab.1;
-        Wed, 30 Aug 2023 14:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693432517; x=1694037317; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EZEwMbaCVyaLIfxuj5Unnl9VhZcfo9P9ZpGHH411u8s=;
-        b=TlqVbt9ijicRB1BZRO2riCcy3mdQaumVww2MX0SH9/1ZfrL4yh1FgNJxOZeYCjZ/Lb
-         hUmP0LkRAUV+WkTBcNrwDN+KuFQzhKjP1m696vvCqr/WJVIZKT6FMmlhlGYr5UhitcBM
-         q6L8+GePVKKhAjpFFamPK4fmFTbxlP0TTwLmaaBaftoE/mZrc/BEkwJUu4iIhyezZ1vZ
-         Fvw5UjfZ27ClzujyqP2oFakSXyMciIxBsgd2F/KhhNTYkGytPCMddmGqaBZpJPpp608w
-         hxw0qwaJZBuA9yQk/eg08a6CVI25WgyyTwdOzFQjaTibf+T7dfW6SLKa8KwfTlKaq/Ld
-         ehSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693432517; x=1694037317;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EZEwMbaCVyaLIfxuj5Unnl9VhZcfo9P9ZpGHH411u8s=;
-        b=HF+pR88CQqEs95e9UlGhQ3ay09WzOwgw+IknmLHBGanjJDmaKtacFU9sdIM3UVXo3j
-         fZRWWA0WgVjuq8SlTLDshg1s/72H9+u/U1YUrea19NRPMf8Sd5IiKIXcwcv2WvXcnXDQ
-         9ZZY/sv1HugwuQEPMpg/CGcL0OsgQEYGXTRMlWIbdx4zS/69/YNXC4w8jeCyzrjIng1N
-         Q7EAYDGcj3E9Cwm0RMhOU1SPNQwoCU9uaXeVbOYh/zz/OU7+MUdCUG7cu1U+yHMCiA8Y
-         jRPWsxyb6xRxg+0SNxR5QHkMT+bEVzMAe1phjNxobkR7vk6a/BPLCCwc1AwhLGA0Uo+/
-         xDLw==
-X-Gm-Message-State: AOJu0YwIj8JDL/fOpgcjGsVeAUnlJqNMVn4u71RlMSqnhc+liA1TUiJJ
-        /pA3ADTlqfoQb8PBGru4PU4=
-X-Google-Smtp-Source: AGHT+IEuh4ZymI9ePYmxpZ+Ps4CAcxYRzl8D4tGfNtuA8+ZCoskmH6nx/RuzghiJJQSuWfb+mrfE+w==
-X-Received: by 2002:a05:6e02:df2:b0:34d:f32c:1d8f with SMTP id m18-20020a056e020df200b0034df32c1d8fmr3693713ilj.17.1693432516637;
-        Wed, 30 Aug 2023 14:55:16 -0700 (PDT)
-Received: from azeems-kspp.c.googlers.com.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id v8-20020a92c6c8000000b0034ab6f53e23sm50527ilm.28.2023.08.30.14.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 14:55:16 -0700 (PDT)
-From:   Azeem Shaikh <azeemshaikh38@gmail.com>
-To:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc:     linux-hardening@vger.kernel.org,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH 2/2] ocfs2: Replace strlcpy with strscpy
-Date:   Wed, 30 Aug 2023 21:54:26 +0000
-Message-ID: <20230830215426.4181755-3-azeemshaikh38@gmail.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-In-Reply-To: <20230830215426.4181755-1-azeemshaikh38@gmail.com>
-References: <20230830215426.4181755-1-azeemshaikh38@gmail.com>
+        Wed, 30 Aug 2023 17:59:26 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42ECCF7;
+        Wed, 30 Aug 2023 14:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1693432666;
+        bh=brDmPgNNgvT/WZn90dt3uv4Xf3ucseU6T7DcS8sefvQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CN4XOY3M7h5WFbVo+h/FqcUtj56c+kIpzp47ESFyifT4UMeV1AH4hrcMWEBOxy3S2
+         bfVCgMlNsIpGbj6Y/WeMGoW25M4exeaJmzQpkd5/D5Q04/+XYtGEGzBgnlpimh0QAu
+         qGCDfr3ZwRX6yjb3lkkFvt1ySFGfMjRMAnmy7Ixqx2ltkUVFBpc90b3ieiKRNksN35
+         URlE85wwIgFFNUJbnMWGVxaTDsHsZn8CDeN2WT5M0eYGv5WX+kBF3nOUNKUdqb/fbE
+         3fzYYMLv6oi4aQomSuh9J9Njrgj7C+Wtit8oo+cHKB9v5uFiKT4x3ObUt86RV6ByKM
+         vdXYBBe9/vCPQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RbdSl6Kx2z4wbP;
+        Thu, 31 Aug 2023 07:57:43 +1000 (AEST)
+Date:   Thu, 31 Aug 2023 07:57:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the risc-v tree
+Message-ID: <20230831075730.0dd941dd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Type: multipart/signed; boundary="Sig_/hGLyYFpB7CgDYtxzWc95Emy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,40 +50,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
+--Sig_/hGLyYFpB7CgDYtxzWc95Emy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Direct replacement is assumed to be safe here since
-it's ok for `kernel_param_ops.get()` to return -errno [3].
-This changes the behavior such that instead of silently ignoring the
-case when sizeof(@buffer) < DLMFS_CAPABILITIES, we now return error.
+Hi all,
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
-[3] https://elixir.bootlin.com/linux/v6.5/source/include/linux/moduleparam.h#L52
+Commits
 
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
----
- fs/ocfs2/dlmfs/dlmfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  dbe46b094026 ("RISC-V: Add ptrace support for vectors")
+  ed1a8872ff83 ("soc: renesas: Kconfig: Select the required configs for RZ/=
+Five SoC")
+  f508b0175578 ("cache: Add L2 cache management for Andes AX45MP RISC-V cor=
+e")
+  555dd72bc06e ("dt-bindings: cache: andestech,ax45mp-cache: Add DT binding=
+ docu  dbe46b094026 ("RISC-V: Add ptrace support for vectors")
+  ed1a8872ff83 ("soc: renesas: Kconfig: Select the required configs for RZ/=
+Five
+SoC")
+  f508b0175578 ("cache: Add L2 cache management for Andes AX45MP RISC-V cor=
+e")
+  555dd72bc06e ("dt-bindings: cache: andestech,ax45mp-cache: Add DT binding=
+ docu
+mentation for L2 cache controller")
+  30bc090f40f8 ("riscv: mm: dma-noncoherent: nonstandard cache operations s=
+upport")
+  f2863f30d1b0 ("riscv: errata: Add Andes alternative ports")
+  93e0e2419b65 ("riscv: asm: vendorid_list: Add Andes Technology to the ven=
+dors list")
+  eb76e5111881 ("riscv: dma-mapping: switch over to generic implementation")
+  14be7c16d420 ("riscv: dma-mapping: skip invalidation before bidirectional=
+ DMA")
+  fbfc740ced8f ("riscv: dma-mapping: only invalidate after DMA, not flush")
+  b6e3f6e009a1 ("RISC-V: alternative: Remove feature_probe_func")
+  b98673c5b037 ("RISC-V: Probe for unaligned access speed")
+  26ba042414a3 ("perf: tests: Adapt mmap-basic.c for riscv")
+  60bd50116484 ("tools: lib: perf: Implement riscv mmap support")
+  57972127b20e ("Documentation: admin-guide: Add riscv sysctl_perf_user_acc=
+ess")
+  cc4c07c89aad ("drivers: perf: Implement perf event mmap support in the SB=
+I backend")
+  50be34282905 ("drivers: perf: Implement perf event mmap support in the le=
+gacy backend")
 
-diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
-index 33e529de93b2..b001eccdd2f3 100644
---- a/fs/ocfs2/dlmfs/dlmfs.c
-+++ b/fs/ocfs2/dlmfs/dlmfs.c
-@@ -80,7 +80,7 @@ static int param_set_dlmfs_capabilities(const char *val,
- static int param_get_dlmfs_capabilities(char *buffer,
- 					const struct kernel_param *kp)
- {
--	return strlcpy(buffer, DLMFS_CAPABILITIES,
-+	return strscpy(buffer, DLMFS_CAPABILITIES,
- 		       strlen(DLMFS_CAPABILITIES) + 1);
- }
- static const struct kernel_param_ops dlmfs_capabilities_ops = {
---
-2.42.0.283.g2d96d420d3-goog
+are missing a Signed-off-by from their committers.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hGLyYFpB7CgDYtxzWc95Emy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTvu0oACgkQAVBC80lX
+0GyCHwf/W5NotX5wB2/Fq3lY+jtZxyUsVQqRidE4C7iOJccgZ1NLom56Z52hX0W4
+W5klcFIZdsKXZAZIMrpn0LUBRbKvxAK6Si6LvCjBpLs0CtvKqhQuD0arN0AYNcOT
+0DAjBuYjBkdtb8nYep0Wtmt9oE5h2FWaclXxvbUH/TkLWW9cBWE8SWiP9+ejAaPO
+0zt++R9v930T6rW1jYGttaZEUkoKJwZ/Nzj1o/+jtvd6VfjW/KsfSrwVkT9v68VB
+SGCVU1VzXgIt1s/1RsQVvLuzTqXl6tr3phR3m60aw1PBTtr10OzdMJMUIIBCtDbI
+G2nooA/AVWipxTp9s8RFYUmCN2ghGw==
+=R5Bk
+-----END PGP SIGNATURE-----
+
+--Sig_/hGLyYFpB7CgDYtxzWc95Emy--
