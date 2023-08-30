@@ -2,273 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C2278DE67
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B54778DD1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241293AbjH3TCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        id S243344AbjH3Sry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242371AbjH3ISJ (ORCPT
+        with ESMTP id S242378AbjH3IUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:18:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6797B113
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693383439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bar+WKz4EarAB8Ac37g0Uj2o6cVBqwkH3VXs7Pt3Pzg=;
-        b=Plj8lfGz4todUuIYSXmHED5defJWju0R2td25hejyMTf5UBs/PlMRcOZUyijkYCZxuHycy
-        dT1/+JaZ9qQgELykBLCHvM0RY5up3QymE8z2m1GakYtIH++glTNmYdg2+oo/JANWgH5yXM
-        WJZAA2mZAti0Ci6fITwXww4Y4KaXMqE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-3-rVinnf97PHWjJuUsnsD5aQ-1; Wed, 30 Aug 2023 04:17:17 -0400
-X-MC-Unique: rVinnf97PHWjJuUsnsD5aQ-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-52a3e9c53e7so4197848a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:17:17 -0700 (PDT)
+        Wed, 30 Aug 2023 04:20:11 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64847113
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:20:05 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so695906766b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:20:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693383604; x=1693988404; darn=vger.kernel.org;
+        h=message-id:from:to:cc:subject:date:content-transfer-encoding
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=z6VGj+d59SoWScxEJA9LEHL+NP9IQEEXMEE3Jz1KTmE=;
+        b=VrpS5ohabe5nywdFm+Cc+CUeqfy0iOhoM+tNYh5srlxOfusP9o4waQ+e/GeQtqAUAU
+         cZzV/xGYFI0UuHelWi8s8gw2Dg4JRlTe1fXDKx7kMUFSuVuHQ6H8ahhIDEu5+2B95PUt
+         PTIZ48rmAWSQecZSJ2y59c1j97eTbqDRp/3Lg3Oy2T5+6TGBTBJ6yknpN8CJ+Dlzs5Aw
+         hBHqxuCqdIQ4sfolFm9J4A3TsXYH4YWTev93FXKWsPrsXDxEyIqu/TGtr371On/xlAHV
+         fKXn7j59UxSc5pKTVPeQvmvzm6fnJl00NopWb/7N4MW+H+PCTrH8f78McfQEa662ugth
+         cqNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693383435; x=1693988235;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bar+WKz4EarAB8Ac37g0Uj2o6cVBqwkH3VXs7Pt3Pzg=;
-        b=lmC7m9laIFQ/1AEykyz2i9MZvdZy0uQ5hr0FLdaz8zeh97guuOtjTuQ1TavwLMzWk/
-         Y5aZpveTY8S87538/IPTzpuz9kr4mVa34+OmgFU33KFBthl+sa8gY0S8okBLYpHUDWhD
-         Pa4DfYxXT9kkBHmZdOd7+4opLpcfCFwqIr9VzQUmlDT4EnPoBMLowsO/n4SOJfPqz8M1
-         kBawXmBiUHgfsjOZgZqO1K/yqdaImhR31pvBlsqwH/qTxKCReFAAv7V2d9uVcCplvpgO
-         75KRyzyqZaesezfLxPZftdOj+R2TF0tpc9OXnFrpC/zFm2q+nYmvhxVVOCTdv+vstdLY
-         KbIg==
-X-Gm-Message-State: AOJu0Ywn9Pbo4kwAt64TxWFMVzzcXOGmKc/1VxBumMHsIfZRDNX1bGMG
-        ZngD1ZvXf1y4xokZXC7tMBN1X9GGE93qNJ0Tk2rZ75bBCIWUVCj390Pppm4sDXq3gEaNFalc1Sq
-        bE15+8EGT9aXAb03C7bKA5iDg4Rc2ipZ2J4vSWF+N
-X-Received: by 2002:aa7:d309:0:b0:522:27ea:58b with SMTP id p9-20020aa7d309000000b0052227ea058bmr1235980edq.39.1693383435625;
-        Wed, 30 Aug 2023 01:17:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE6/LInntBhml1RhECdv+jKaWODZOhnz8jouuiowLxhc/PAy4Lz8MdbiTpXX0KtN5lbcxZ4VViU+Moq9sFeXZw=
-X-Received: by 2002:aa7:d309:0:b0:522:27ea:58b with SMTP id
- p9-20020aa7d309000000b0052227ea058bmr1235966edq.39.1693383435291; Wed, 30 Aug
- 2023 01:17:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230829015421.920511-1-gshan@redhat.com> <55cb12bf-12e4-8da6-629c-5518f8abe85e@redhat.com>
-In-Reply-To: <55cb12bf-12e4-8da6-629c-5518f8abe85e@redhat.com>
-From:   Zhenyu Zhang <zhenyzha@redhat.com>
-Date:   Wed, 30 Aug 2023 16:16:39 +0800
-Message-ID: <CAJFLiBK+PyvJrENd-=9gPDfVJ-MPL9RpkzyM_+wFrwxU=7qagA@mail.gmail.com>
-Subject: Re: [PATCH] virtio_balloon: Fix endless deflation and inflation on arm64
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        xuanzhuo@linux.alibaba.com, mst@redhat.com,
-        linux-kernel@vger.kernel.org, shan.gavin@gmail.com,
-        David Hildenbrand <david@redhat.com>, jasowang@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20221208; t=1693383604; x=1693988404;
+        h=message-id:from:to:cc:subject:date:content-transfer-encoding
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z6VGj+d59SoWScxEJA9LEHL+NP9IQEEXMEE3Jz1KTmE=;
+        b=bLarfarz4/KQUPpO1YWZNVi+eT/ss6zhyAISH53x6uK5lusUgdF5XRTWgy0suhEYyK
+         oB5V5TQyETLd35Bnxc7kIDjO4W3nQGV5a5E+oN3F89hyOUtSxA16t3WdyXfQOCfR4fYM
+         TbP9nRzRPxZnwLRulaJ2+JkSUNRe83oyJYFkYWHrmmVr2vkn3sY6RrbOCFU1g51cUTDG
+         3Hx3kFGbqvm9gbHH0/Uo6Nwt9TCgYI40uw08ofNHF8A3aGB3y3z5GxGyUZA6h77MuATx
+         Cg8CMzZMEyUa90kcLdhSugoyMuOxxlEaVrTBGMa8r+BKuhbygBXa5W+mhfUMWsmTT4JL
+         ECqw==
+X-Gm-Message-State: AOJu0YyY17tqK4+MPxZ7h7Sh+sgdzFIcHn1Pkd6O3Ad66lkmsN4Ca09e
+        0qR3jetE6pkxdb/o6BKD5kqypg==
+X-Google-Smtp-Source: AGHT+IHFxvO3jlwRiHmVZZYo1no1C+kGX8loBNW1O4lukkTrd+G3TjMJ3gOMP7FiQZfSy3FIDZQVAQ==
+X-Received: by 2002:a17:907:272a:b0:9a2:23cd:f05a with SMTP id d10-20020a170907272a00b009a223cdf05amr1099799ejl.76.1693383603775;
+        Wed, 30 Aug 2023 01:20:03 -0700 (PDT)
+Received: from localhost (i5C7438EA.versanet.de. [92.116.56.234])
+        by smtp.gmail.com with ESMTPSA id h25-20020a1709063b5900b0099cc3c7ace2sm7050010ejf.140.2023.08.30.01.20.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 01:20:03 -0700 (PDT)
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 30 Aug 2023 10:20:02 +0200
+Subject: [BUG] virtio-fs: Corruption when running binaries from
+ virtiofsd-backed fs
+Cc:     "Vivek Goyal" <vgoyal@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        "Miklos Szeredi" <miklos@szeredi.hu>,
+        =?utf-8?q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Manos Pitsidianakis" <manos.pitsidianakis@linaro.org>,
+        "Viresh Kumar" <viresh.kumar@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+To:     <virtualization@lists.linux-foundation.org>,
+        <linux-fsdevel@vger.kernel.org>, <virtio-fs@redhat.com>
+From:   "Erik Schilling" <erik.schilling@linaro.org>
+Message-Id: <CV5Q388ZKSI3.2N5DT3BRV3RIM@fedora>
+X-Mailer: aerc 0.15.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,WEIRD_PORT autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[PATCH] virtio_balloon: Fix endless deflation and inflation on arm64
+Hi all!
 
-The patches work well on my arm Ampere host.
-The test results are as expected.
+Some days ago I posted to #virtiofs:matrix.org, describing that I am
+observing what looks like a corruption when executing programs from a
+virtiofs-based filesystem.
 
-Testing
-=3D=3D=3D=3D=3D=3D=3D
-(1) boot 64KB base page size guest, deflation balloon.
-/home/zhenyzha/sandbox/qemu.main/build/qemu-system-aarch64 \
--device '{"id": "pcie-root-port-0", "driver": "pcie-root-port",
-"multifunction": true, "bus": "pcie.0", "addr": "0x1", "chassis": 1}'
-\
--device '{"id": "pcie-pci-bridge-0", "driver": "pcie-pci-bridge",
-"addr": "0x0", "bus": "pcie-root-port-0"}'  \
--nodefaults \
--device '{"id": "pcie-root-port-1", "port": 1, "driver":
-"pcie-root-port", "addr": "0x1.0x1", "bus": "pcie.0", "chassis": 2}' \
--device '{"driver": "virtio-gpu-pci", "bus": "pcie-root-port-1",
-"addr": "0x0"}' \
--m 8192 \
--object '{"size": 4294967296, "id": "mem-machine_mem0", "qom-type":
-"memory-backend-ram"}'  \
--object '{"size": 4294967296, "id": "mem-machine_mem1", "qom-type":
-"memory-backend-ram"}'  \
--numa node,nodeid=3D0,memdev=3Dmem-machine_mem0,cpus=3D0-3 \
--numa node,nodeid=3D1,memdev=3Dmem-machine_mem1,cpus=3D4-7 \
--smp 8,maxcpus=3D8,cores=3D2,threads=3D1,clusters=3D2,sockets=3D2  \
--cpu 'host' \
--enable-kvm \
-    :       \
--device '{"id": "pcie-root-port-5", "port": 5, "driver":
-"pcie-root-port", "addr": "0x1.0x5", "bus": "pcie.0", "chassis": 6}' \
--device '{"driver": "virtio-balloon-pci", "id": "balloon0",
-"free-page-reporting": true, "bus": "pcie-root-port-5", "addr":
-"0x0"}' \
+Over the last few days I spent more time drilling into the problem.
+This is an attempt at summarizing my findings in order to see what other
+people think about this.
 
-{ "execute" : "balloon", "arguments": { "value" : 7515705344 }}
-{"return": {}}
-{"timestamp": {"seconds": 1693284182, "microseconds": 597003},
-"event": "BALLOON_CHANGE", "data": {"actual": 8588886016}}
-{"timestamp": {"seconds": 1693284183, "microseconds": 598037},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
-{"timestamp": {"seconds": 1693284184, "microseconds": 599116},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515734016}}
-{"timestamp": {"seconds": 1693284185, "microseconds": 600167},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
-{"timestamp": {"seconds": 1693284186, "microseconds": 601226},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515734016}}
-{"timestamp": {"seconds": 1693284187, "microseconds": 602287},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
-{"timestamp": {"seconds": 1693284188, "microseconds": 603386},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
-{"timestamp": {"seconds": 1693284189, "microseconds": 604401},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
-{"timestamp": {"seconds": 1693284190, "microseconds": 605467},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515734016}}
-    :
- <The similar QMP events repeat>
+When running binaries mounted from virtiofs they may either: fail with a
+segfault, fail with badaddr, get stuck or - sometimes - succeed.
 
-git am this patch
-{ "execute" : "balloon", "arguments": { "value" : 7515705344 }}
-{"return": {}}
-{"timestamp": {"seconds": 1693301553, "microseconds": 809765},
-"event": "BALLOON_CHANGE", "data": {"actual": 8588886016}}
-{"timestamp": {"seconds": 1693301553, "microseconds": 986697},
-"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
+Environment:
+  Host: Fedora 38 running 6.4.11-200.fc38.x86_64
+  Guest: Yocto-based image: 6.4.9-yocto-standard, aarch64
+  virtiofsd: latest main + some debug prints [1]
+  QEMU: built from recent git [2]
 
-{ "execute" : "query-balloon" }
-{"return": {"actual": 7515668480}}
+virtiofsd invocation:
+  RUST_LOG=3D"debug" ./virtiofsd --seccomp=3Dnone --sandbox=3Dnone \
+    --socket-path "fs.sock0" --shared-dir $PWD/share-dir/ --cache=3Dnever
+
+QEMU invocation:
+  ~/projects/qemu/build/qemu-system-aarch64 -kernel Image -machine virt \
+    -cpu cortex-a57 \
+    -serial mon:stdio \
+    -device virtio-net-pci,netdev=3Dnet0 \
+    -netdev user,id=3Dnet0,hostfwd=3Dtcp::2223-:22 \
+    -display none -m 2048 -smp 4 \
+    -object memory-backend-memfd,id=3Dmem,size=3D2048M,share=3Don \
+    -numa node,memdev=3Dmem \
+    -hda trs-overlay-guest.qcow2 \
+    -chardev socket,id=3Dchar0,path=3D"fs.sock0" \
+    -device vhost-user-fs-pci,queue-size=3D1024,chardev=3Dchar0,tag=3D/dev/=
+root \
+    -append 'root=3D/dev/vda2 ro log_buf_len=3D8M'
+
+I figured that launching virtiofsd with --cache=3Dalways masks the
+problem. Therefore, I set --cache=3Dnever, but I think I observed no
+difference compared to the default setting (auto).
+
+Adding logging to virtiofsd and kernel _feeled_ like it made the problem
+harder to reproduce - leaving me with the impression that some race is
+happening on somewhere.
+
+Trying to rule out that virtiofsd is returning corrupted data, I added
+some logging and hashsum calculation hacks to it [1]. The hashes check
+out across multiple accesses and the order and kind of queued messages
+is exactly the same in both the error case and crash case. fio was also
+unable to find any errors with a naive job description [3].
+
+Next, I tried to capture info on the guest side. This became a bit
+tricky since the crashes became pretty rare once I followed a fixed
+pattern of starting log capture, running perf and trying to reproduce
+the problem. Ultimately, I had the most consistent results with
+immediately running a program twice:
+
+  /mnt/ld-linux-aarch64.so.1 /mnt/ls.coreutils /; \
+    /mnt/ld-linux-aarch64.so.1 /mnt/ls.coreutils /
+
+  (/mnt being the virtiofs mount)
+
+For collecting logs, I made a hack to the guest kernel in order to dump
+the page content after receiving the virtiofs responses [4]. Reproducing
+the problem with this, leaves me with logs that seem to suggest that
+virtiofsd is returning identical content, but the guest kernel seems to
+receive differing pages:
+
+good-kernel [5]:
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x312 nodeid 0=
+x1 in.len 56 out.len 104
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 1 unique 0x314 nodeid 0=
+x1 in.len 53 out.len 128
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x316 nodeid 0=
+x29 in.len 56 out.len 104
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 14 unique 0x318 nodeid =
+0x29 in.len 48 out.len 16
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 15 unique 0x31a nodeid =
+0x29 in.len 80 out.len 832
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs: page: 000000006996d520
+  kernel: virtio_fs: to: 00000000de590c14
+  kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..=
+..............
+  kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..=
+..............
+  kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..=
+..............
+  kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..=
+..............
+  [...]
+
+bad-kernel [6]:
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x162 nodeid 0=
+x1 in.len 56 out.len 104
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 1 unique 0x164 nodeid 0=
+x1 in.len 53 out.len 128
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x166 nodeid 0=
+x16 in.len 56 out.len 104
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 14 unique 0x168 nodeid =
+0x16 in.len 48 out.len 16
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs_wake_pending_and_unlock: opcode 15 unique 0x16a nodeid =
+0x16 in.len 80 out.len 832
+  kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
+  kernel: virtio_fs: page: 000000006ce9a559
+  kernel: virtio_fs: to: 000000007ae8b946
+  kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..=
+..............
+  kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..=
+..............
+  kernel: virtio_fs rsp:80 40 de c8 ff ff 00 00 cc 2b 62 ae ff ff 00 00  .@=
+.......+b.....
+  kernel: virtio_fs rsp:02 4e de c8 ff ff 00 00 00 00 00 00 00 00 00 00  .N=
+..............
+  [...]
+
+When looking at the corresponding output from virtiofsd, it claims to
+have returned identical data:
+
+good-virtiofsd [7]:
+  [DEBUG virtiofsd::server] Received request: opcode=3DRead (15), inode=3D4=
+1, unique=3D794, pid=3D481
+  [src/server.rs:618] r.read_obj().map_err(Error::DecodeMessage)? =3D ReadI=
+n {
+      fh: 31,
+      offset: 0,
+      size: 832,
+      read_flags: 2,
+      lock_owner: 6838554705639967244,
+      flags: 131072,
+      padding: 0,
+  }
+  [src/file_traits.rs:161] hash =3D 2308490450751364994
+  [DEBUG virtiofsd::server] Replying OK, header: OutHeader { len: 848, erro=
+r: 0, unique: 794 }
+
+bad-virtiofsd [8]:
+  [DEBUG virtiofsd::server] Received request: opcode=3DRead (15), inode=3D2=
+2, unique=3D362, pid=3D406
+  [src/server.rs:618] r.read_obj().map_err(Error::DecodeMessage)? =3D ReadI=
+n {
+      fh: 12,
+      offset: 0,
+      size: 832,
+      read_flags: 2,
+      lock_owner: 6181120926258395554,
+      flags: 131072,
+      padding: 0,
+  }
+  [src/file_traits.rs:161] hash =3D 2308490450751364994
+  [DEBUG virtiofsd::server] Replying OK, header: OutHeader { len: 848, erro=
+r: 0, unique: 362 }
+
+The "corruption" only seems to happen in this one page, all other pages
+are identical between runs (except that the bad run terminates earlier).
+
+What do the experts think here? To me it feels a bit like some kind of
+corruption is going on. Or am I misinterpreting things here?
+
+Which further analysis steps would you suggest?
 
 
-(2) Run kvm-unit-tests:
-      6 cases skip, 32 cases pass.
+Further notes:
 
-(3) Run selftests TARGETS=3Dkvm:
-      23 cases all pass
+After collecting the above results, I realized that running the guest
+with -smp 1 makes the problems a lot worse. So maybe that is a better
+choice when trying to reproduce it.
 
-Tested-by: Zhenyu Zhang <zhenzha@redhat.com>
+Repo with my scripts is available at:
+https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-config=
+/
 
-On Wed, Aug 30, 2023 at 12:24=E2=80=AFPM Gavin Shan <gshan@redhat.com> wrot=
-e:
->
-> On 8/29/23 11:54, Gavin Shan wrote:
-> > The deflation request to the target, which isn't unaligned to the
-> > guest page size causes endless deflation and inflation actions. For
-> > example, we receive the flooding QMP events for the changes on memory
-> > balloon's size after a deflation request to the unaligned target is
-> > sent for the ARM64 guest, where we have 64KB base page size.
-> >
-> >    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
-> >    -accel kvm -machine virt,gic-version=3Dhost -cpu host          \
-> >    -smp maxcpus=3D8,cpus=3D8,sockets=3D2,clusters=3D2,cores=3D2,threads=
-=3D1 \
-> >    -m 1024M,slots=3D16,maxmem=3D64G                                 \
-> >    -object memory-backend-ram,id=3Dmem0,size=3D512M                 \
-> >    -object memory-backend-ram,id=3Dmem1,size=3D512M                 \
-> >    -numa node,nodeid=3D0,memdev=3Dmem0,cpus=3D0-3                     \
-> >    -numa node,nodeid=3D1,memdev=3Dmem1,cpus=3D4-7                     \
-> >      :                                                          \
-> >    -device virtio-balloon-pci,id=3Dballoon0,bus=3Dpcie.10
-> >
-> >    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
-> >    {"return": {}}
-> >    {"timestamp": {"seconds": 1693272173, "microseconds": 88667},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272174, "microseconds": 89704},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272175, "microseconds": 90819},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272176, "microseconds": 91961},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272177, "microseconds": 93040},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-> >    {"timestamp": {"seconds": 1693272178, "microseconds": 94117},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-> >    {"timestamp": {"seconds": 1693272179, "microseconds": 95337},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272180, "microseconds": 96615},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-> >    {"timestamp": {"seconds": 1693272181, "microseconds": 97626},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272182, "microseconds": 98693},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-> >    {"timestamp": {"seconds": 1693272183, "microseconds": 99698},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272184, "microseconds": 100727},  \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272185, "microseconds": 90430},   \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    {"timestamp": {"seconds": 1693272186, "microseconds": 102999},  \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
-> >       :
-> >    <The similar QMP events repeat>
-> >
-> > Fix it by having the target aligned to the guest page size, 64KB
-> > in this specific case. With this applied, no flooding QMP event
-> > is observed and the memory balloon's size can be stablizied to
-> > 0x3ffe0000 soon after the deflation request is sent.
-> >
-> >    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
-> >    {"return": {}}
-> >    {"timestamp": {"seconds": 1693273328, "microseconds": 793075},  \
-> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
-> >    { "execute" : "query-balloon" }
-> >    {"return": {"actual": 1073610752}}
-> >
-> > Signed-off-by: Gavin Shan <gshan@redhat.com>
-> > ---
-> >   drivers/virtio/virtio_balloon.c | 13 ++++++++++++-
-> >   1 file changed, 12 insertions(+), 1 deletion(-)
-> >
->
-> It was supposed to copy David, Jason and Zhenyu. I don't know how they ha=
-ve been
-> missed. My script may run into problems temporarily. Amending for it.
->
-> Thanks,
-> Gavin
->
-> > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_ba=
-lloon.c
-> > index 5b15936a5214..625caac35264 100644
-> > --- a/drivers/virtio/virtio_balloon.c
-> > +++ b/drivers/virtio/virtio_balloon.c
-> > @@ -386,6 +386,17 @@ static void stats_handle_request(struct virtio_bal=
-loon *vb)
-> >       virtqueue_kick(vq);
-> >   }
-> >
-> > +static inline s64 align_pages_up(s64 diff)
-> > +{
-> > +     if (diff =3D=3D 0)
-> > +             return diff;
-> > +
-> > +     if (diff > 0)
-> > +             return ALIGN(diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-> > +
-> > +     return -ALIGN(-diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-> > +}
-> > +
-> >   static inline s64 towards_target(struct virtio_balloon *vb)
-> >   {
-> >       s64 target;
-> > @@ -396,7 +407,7 @@ static inline s64 towards_target(struct virtio_ball=
-oon *vb)
-> >                       &num_pages);
-> >
-> >       target =3D num_pages;
-> > -     return target - vb->num_pages;
-> > +     return align_pages_up(target - vb->num_pages);
-> >   }
-> >
-> >   /* Gives back @num_to_return blocks of free pages to mm. */
->
+The scripts are just quick and dirty implementations and are not
+particulary portable.
+
+- Erik
+
+[1] https://gitlab.com/ablu/virtiofsd/-/commit/18fd0c1849e15bc55fbdd6e1f169=
+801b2b03da1f
+[2] https://gitlab.com/qemu-project/qemu/-/commit/50e7a40af372ee5931c99ef73=
+90f5d3d6fbf6ec4
+[3] https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-co=
+nfig/-/blob/397a6310dea35973025e3d61f46090bf0c092762/share-dir/write-and-ve=
+rify-mmap.fio
+[4] https://github.com/Ablu/linux/commit/3880b9f8affb01aeabb0a04fe76ad7701d=
+c0bb95
+[5] Line 12923: https://git.codelinaro.org/erik_schilling/jira-orko-65-boot=
+strap-k3s-config/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/good-=
+drop-bad-1.txt
+[6] Line 12923: https://git.codelinaro.org/erik_schilling/jira-orko-65-boot=
+strap-k3s-config/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/good-=
+bad-1.txt
+[7] https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-co=
+nfig/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/virtiofsd.txt#L25=
+38-2549
+[8] https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-co=
+nfig/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/virtiofsd.txt#L10=
+52-1063
 
