@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B4A78DF84
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5655A78DEC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242065AbjH3TLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
+        id S243398AbjH3TZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245741AbjH3QI0 (ORCPT
+        with ESMTP id S1343617AbjH3QRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:08:26 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0469D193;
-        Wed, 30 Aug 2023 09:08:24 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-792623074edso24675039f.1;
-        Wed, 30 Aug 2023 09:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693411703; x=1694016503; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+o8LtjT+8MaibSIlGxDw3+5yjc0VlIt1qjVe3m2s/Vg=;
-        b=EjNBilr/ksuaH4ePBygOPrG6B4Cp0F/zUKt96Bj4pu86O0uPTr9aZ8bAOmc3lE+Jxc
-         +Iw6O1NIJDIRkED7BpaiRnbYzXs6M2sXucAQBK2apH65EoaLw2477xOpBfelIoslHeG5
-         CVHAgyRlFAiWzBe+QOpArOqdW9ge6dhDC5ypR6Gxbb8xe2CKP+ldkhsm2RVi+HA4fVnZ
-         QVIc4K7FYJcPMTUsHbkzUYNgXLJ7BO1xQdDvJtuqL2/HKkNP5L36EU8JMBw3MgUJpiMi
-         Cwz3Roh6wgtoyVXZUIHl0WQ2NUPW2/qIzoCW186DxQIiykefvfTyT1XbQV5BJYJhJxbp
-         ae1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693411703; x=1694016503;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+o8LtjT+8MaibSIlGxDw3+5yjc0VlIt1qjVe3m2s/Vg=;
-        b=FMEIbXmEosf0+suJ12Xn6h6FGLWzdZfl3RrkiY977C+gCPDwXipDaE7HU5RiyQBvRs
-         huWrVlA+QhhkbPdQlSmROhbdHWsNkR05Yj8GoYkYXrfUxc0Zio0O0kxXH6CzpR8Qx3TU
-         GOQV39OU+djJy2uR7RjOWlt0Yeo8wfgj2ekEPygLfwgXDQ4B8IJhxMdVdJK5s6XYQceI
-         w8yixEXiZkUZ+g3ivYQcSQJ9ZVOtSp0aopmZ/bDy0A8tsDRPhEx8MTFB/QyW2H6xMt72
-         nvin255hi+/FMFODmKQa+SH5jhznPZTiTILJiewzA9SzhKWK+LbNI2gEG9oPrcBtoRS3
-         6mLw==
-X-Gm-Message-State: AOJu0Yw4esZwlvUOLC/qnjC9XLoZIfkkUeg+kYPJRtFVwC203mUIkd+6
-        IBPyoRy578XMy8Xb+CfEtHAnJ9fF8V4Qjg==
-X-Google-Smtp-Source: AGHT+IHZE4wbHqPln6/a5HmYi+TSnxjscUyR7Ut/uvGI5UYvEp/KrpvlbbEUxb5wS4I7N/2So43JLw==
-X-Received: by 2002:a92:dc47:0:b0:348:7f18:68be with SMTP id x7-20020a92dc47000000b003487f1868bemr80212ilq.4.1693411703313;
-        Wed, 30 Aug 2023 09:08:23 -0700 (PDT)
-Received: from azeems-kspp.c.googlers.com.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id bp7-20020a056e02348700b0034ce78e2450sm3121290ilb.39.2023.08.30.09.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 09:08:22 -0700 (PDT)
-From:   Azeem Shaikh <azeemshaikh38@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH] init/version.c: Replace strlcpy with strscpy
-Date:   Wed, 30 Aug 2023 16:08:06 +0000
-Message-ID: <20230830160806.3821893-1-azeemshaikh38@gmail.com>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+        Wed, 30 Aug 2023 12:17:02 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211E11A6;
+        Wed, 30 Aug 2023 09:16:57 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 8eb6230b9429bc7e; Wed, 30 Aug 2023 18:16:56 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 1A54266316E;
+        Wed, 30 Aug 2023 18:16:56 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: [PATCH v1 0/4] thermal: Eliminate thermal_zone_device_register()
+Date:   Wed, 30 Aug 2023 18:10:31 +0200
+Message-ID: <1870450.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghl
+ rdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopegrmhhithhksehkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
+Hi Everyone,
 
-Direct replacement is safe here since return value of -errno
-is used to check for truncation instead of sizeof(dest).
+After recently merged changes in the ACPI thermal and Intel DTS IOSF thermal
+drivers, the only callers of thermal_zone_device_register() are the ones
+using it for registering thermal zones without any trip points.  They all
+pass zeros as 4 (out of 8) function arguments, so retaining the full
+thermal_zone_device_register() just for this purpose seems a bit excessive.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
+For this reason, the series adds a thermal_zone_device_register()
+replacement tailored to this specific use case and called
+thermal_tripless_zone_device_register() [2/4] and makes all of the
+existing callers of the former use the replacement [3/4].  This allows
+thermal_zone_device_register() to be dropped [4/4].
 
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
----
- init/version.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The first patch is just a clean up making function headers in thermal.h
+a bit more consistent.
 
-diff --git a/init/version.c b/init/version.c
-index f117921811b4..94c96f6fbfe6 100644
---- a/init/version.c
-+++ b/init/version.c
-@@ -21,10 +21,10 @@ static int __init early_hostname(char *arg)
- {
- 	size_t bufsize = sizeof(init_uts_ns.name.nodename);
- 	size_t maxlen  = bufsize - 1;
--	size_t arglen;
-+	ssize_t arglen;
+This series it not intended to make any functional impact, but if the
+changes are fine with everyone, I would like to introduce them during the
+ongoing merge window to prevent the obsolete interface from lingering.
 
--	arglen = strlcpy(init_uts_ns.name.nodename, arg, bufsize);
--	if (arglen > maxlen) {
-+	arglen = strscpy(init_uts_ns.name.nodename, arg, bufsize);
-+	if (arglen < 0) {
- 		pr_warn("hostname parameter exceeds %zd characters and will be truncated",
- 			maxlen);
- 	}
---
-2.41.0.255.g8b1d071c50-goog
+The series applies to the linux-next branch in linux-pm.git.
+
+Thanks!
+
 
 
