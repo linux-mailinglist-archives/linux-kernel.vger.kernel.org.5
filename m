@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C18778DD87
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A501778DE4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244877AbjH3Sve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
+        id S239842AbjH3TA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242862AbjH3Jxn (ORCPT
+        with ESMTP id S242863AbjH3Jxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:53:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F276D1B0;
-        Wed, 30 Aug 2023 02:53:40 -0700 (PDT)
+        Wed, 30 Aug 2023 05:53:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9571B0;
+        Wed, 30 Aug 2023 02:53:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 801C260F0C;
-        Wed, 30 Aug 2023 09:53:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B009C433C8;
-        Wed, 30 Aug 2023 09:53:35 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 029656130E;
+        Wed, 30 Aug 2023 09:53:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E347BC433C7;
+        Wed, 30 Aug 2023 09:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693389219;
-        bh=nknoL9w3Y4YI7sgEzXEgy31hHjSBtW5t6+EKdvixVT4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PGeSqtlADXPNsSRMnED5y2bc51bStrsRKgRLsG0vFmeuS7ZjsjtBx9snAHe0G8Vr2
-         puIswmGZMwYKKpvbAUG4hgCkBPfAo5LnG+Zqi6zCKquDATicIUaBHr5eqdyzNoLlT+
-         eDLqK7F5l64Ce6vhg3+b1Cyvv77qi6SuOOpM4UfSj8i00ym6zp0iNwdRQNPeW8AsCh
-         s7jTGiZrttnG7dc7MMCLuv2nzzC2OWwW1dpk2JWvAsdtCdcLabRj31KBbnR0Ga2XvP
-         vjAjcw2evRgbmv/HS/X8EAdywyIIJ9VzMleY3re1+0iiynu1XGC3tw9hN+y2/tEsbr
-         Pj2cy6RWLJA5g==
-Date:   Wed, 30 Aug 2023 11:53:32 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
-        chuck.lever@oracle.com, jlayton@kernel.org,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stefanb@linux.ibm.com, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH 15/28] security: Introduce inode_post_removexattr hook
-Message-ID: <20230830-kultfigur-verrohen-a689c59911d6@brauner>
-References: <20230303181842.1087717-1-roberto.sassu@huaweicloud.com>
- <20230303181842.1087717-16-roberto.sassu@huaweicloud.com>
- <f5a61c0f09c1b8d8aaeb99ad7ba4aab15818c5ed.camel@linux.ibm.com>
- <9d482f25475a9d9bc0c93a8cbaf8bd4bb67d2cd6.camel@huaweicloud.com>
+        s=k20201202; t=1693389225;
+        bh=w+1a6zEPU4pcIGBrXOrm5TZPI0iO1MQnan2XAxPaS3w=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=JMQQ83SQXGwS1eP8V+91F0G/ErnzPmsPJtRN1ewG/o1NKiv/foNFWs1p3kl8eg0bK
+         bEvzDr6PMJS/lzPJtHhjJMlrQTeJaBaQmzz78NM8La1bCzevfCfuo9/PZTc9DSo5kf
+         mBxQDHr8Eo/blyauhxB8O1/RZyd0hemypcuuhNaxp3RiQdEF5iqtn8g34dN5W4zmTs
+         BsvOmgbCNK9lIPpcpe4l0QJhARZoJ+Q7kSpyJL5/g2Ptu6lljgJlQujhTR10QQpEQJ
+         AmQEkVFR2OCf+aef5wSKk8hsfLycF6idIPUz0wpney2H4dwZaw3z4beqr121Fp10TU
+         ig+RC0unInN1A==
+Date:   Wed, 30 Aug 2023 11:53:42 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Helen Koike <helen.koike@collabora.com>,
+        dri-devel@lists.freedesktop.org, guilherme.gallo@collabora.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        daniels@collabora.com, emma@anholt.net, robclark@freedesktop.org,
+        gustavo.padovan@collabora.com, robdclark@google.com,
+        anholt@google.com, maarten.lankhorst@linux.intel.com,
+        tzimmermann@suse.de, airlied@gmail.com, corbet@lwn.net,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        neil.armstrong@linaro.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        heiko@sntech.de, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
+Message-ID: <zorvxwffshrsqx5cy76pe3gn52qrqav7qusz5acav2un2ydvwr@fwjd56qg2xve>
+References: <20230811171953.176431-1-helen.koike@collabora.com>
+ <ZOTFfhtzzWkrQ23Y@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ahpuv6hd6ml66bjn"
 Content-Disposition: inline
-In-Reply-To: <9d482f25475a9d9bc0c93a8cbaf8bd4bb67d2cd6.camel@huaweicloud.com>
+In-Reply-To: <ZOTFfhtzzWkrQ23Y@phenom.ffwll.local>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -66,58 +69,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 11:31:35AM +0200, Roberto Sassu wrote:
-> On Wed, 2023-03-08 at 10:43 -0500, Mimi Zohar wrote:
-> > Hi Roberto,
-> > 
-> > On Fri, 2023-03-03 at 19:18 +0100, Roberto Sassu wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > 
-> > > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> > > the inode_post_removexattr hook.
-> > > 
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  fs/xattr.c                    |  1 +
-> > >  include/linux/lsm_hook_defs.h |  2 ++
-> > >  include/linux/security.h      |  5 +++++
-> > >  security/security.c           | 14 ++++++++++++++
-> > >  4 files changed, 22 insertions(+)
-> > > 
-> > > diff --git a/fs/xattr.c b/fs/xattr.c
-> > > index 14a7eb3c8fa..10c959d9fc6 100644
-> > > --- a/fs/xattr.c
-> > > +++ b/fs/xattr.c
-> > > @@ -534,6 +534,7 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
-> > >  
-> > >  	if (!error) {
-> > >  		fsnotify_xattr(dentry);
-> > > +		security_inode_post_removexattr(dentry, name);
-> > >  		evm_inode_post_removexattr(dentry, name);
-> > >  	}
-> > 
-> > Nothing wrong with this, but other places in this function test "if
-> > (error) goto ...".   Perhaps it is time to clean this up.
-> > 
-> > >  
-> > > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> > > index eedefbcdde3..2ae5224d967 100644
-> > > --- a/include/linux/lsm_hook_defs.h
-> > > +++ b/include/linux/lsm_hook_defs.h
-> > > @@ -147,6 +147,8 @@ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
-> > >  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
-> > >  LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
-> > >  	 struct dentry *dentry, const char *name)
-> > > +LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
-> > > +	 const char *name)
-> > 
-> > @Christian should the security_inode_removexattr() and
-> > security_inode_post_removexattr() arguments be the same?
-> 
-> Probably this got lost.
-> 
-> Christian, should security_inode_post_removexattr() have the idmap
-> parameter as well?
 
-Only if you call anything from any implementers of the hook that needs
-access to the idmap.
+--ahpuv6hd6ml66bjn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Aug 22, 2023 at 04:26:06PM +0200, Daniel Vetter wrote:
+> On Fri, Aug 11, 2023 at 02:19:53PM -0300, Helen Koike wrote:
+> > From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> >=20
+> > Developers can easily execute several tests on different devices
+> > by just pushing their branch to their fork in a repository hosted
+> > on gitlab.freedesktop.org which has an infrastructure to run jobs
+> > in several runners and farms with different devices.
+> >=20
+> > There are also other automated tools that uprev dependencies,
+> > monitor the infra, and so on that are already used by the Mesa
+> > project, and we can reuse them too.
+> >=20
+> > Also, store expectations about what the DRM drivers are supposed
+> > to pass in the IGT test suite. By storing the test expectations
+> > along with the code, we can make sure both stay in sync with each
+> > other so we can know when a code change breaks those expectations.
+> >=20
+> > Also, include a configuration file that points to the out-of-tree
+> > CI scripts.
+> >=20
+> > This will allow all contributors to drm to reuse the infrastructure
+> > already in gitlab.freedesktop.org to test the driver on several
+> > generations of the hardware.
+> >=20
+> > Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> > Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> > Acked-by: Daniel Stone <daniels@collabora.com>
+> > Acked-by: Rob Clark <robdclark@gmail.com>
+> > Tested-by: Rob Clark <robdclark@gmail.com>
+>=20
+> Ok I pushed this into a topic/drm-ci branch in drm.git and asked sfr to
+> include that branch in linux-next.
+>=20
+> But also I'd like to see a lot more acks here, we should be able to at
+> least pile up a bunch of (driver) maintainers from drm-misc in support of
+> this. Also maybe media, at least I've heard noises that they're maybe
+> interested too? Plus anyone else, the more the better.
+
+I'm not really convinced by that approach at all, and most of the issues
+I see are shown by the follow-up series here:
+
+https://lore.kernel.org/dri-devel/20230825122435.316272-1-vignesh.raman@col=
+labora.com/
+
+  * We hardcode a CI farm setup into the kernel
+
+  * We cannot trust that the code being run is actually the one being
+    pushed into gitlab
+
+  * IMO, and I know we disagree here, any IGT test we enable for a given
+    platform should work, period. Allowing failures and flaky tests just
+    sweeps whatever issue is there under the rug. If the test is at
+    fault, we should fix the test, if the driver / kernel is at fault,
+    then I certainly want to know about it.
+
+  * This then leads to patches like this one:
+    https://lore.kernel.org/dri-devel/20230825122435.316272-6-vignesh.raman=
+@collabora.com/
+
+    Which (and it's definitely not the author's fault) are just plain
+    unreadable, reproducable or auditable by anyone not heavily involved
+    in the CI farm operations and the platforms being tested.
+
+That being said, I don't have anything better to suggest than what I
+already did, and it looks like I'm alone in thinking that those are
+problems, so feel free to add my ack if you want to.
+
+Maxime
+
+--ahpuv6hd6ml66bjn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZO8RpgAKCRDj7w1vZxhR
+xUrIAP9QRFVLlssVVu4MLlSOKUv+Pxp3R2Dpzn9Wuq/tBNYLjwD9Hb2bhr9MDmXJ
+KAfdcUBPisWAmKWsl9QlqxaqFbtvvQM=
+=RdhW
+-----END PGP SIGNATURE-----
+
+--ahpuv6hd6ml66bjn--
