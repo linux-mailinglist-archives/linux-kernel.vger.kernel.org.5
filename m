@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3753D78E0F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCF378E0CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240153AbjH3Uu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        id S238193AbjH3UiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240088AbjH3UuV (ORCPT
+        with ESMTP id S240116AbjH3UiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:50:21 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DD9E43
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:49:44 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31dcd553fecso3083149f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:49:44 -0700 (PDT)
+        Wed, 30 Aug 2023 16:38:01 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70A559F7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:37:30 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-76d80d35762so7091485a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:37:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693428514; x=1694033314; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sqhS2buf3q5lKZs0QgnHq/NuMUrTYmV//7wpqK/hL6c=;
-        b=hS1R4wP72/RLyBKM99L21RXPOQk/5UggNp52KxpHaml8oksFXBAM2Gi9kmlpgLFJMN
-         /jAsNShtRWQ0UcMuwpOxuesP42SLKGowrLWBfpbEvu0NfeGm6jFoFGFpdsTHJ20oO2rS
-         U70BPIMtRPRaoUUjECwEE0lXjiUi/a/xMa+r3IuNwFftaZF7yzOc89y7LF4w5FGcrp6F
-         AlssdNNtw47rc79lOY8zBEGFE+wSw4+vL44KqoR6Cioy6AeE3CI6ZjFykctyxQ2Hbqcf
-         V+bx9plmBpSwnazpAr8tsK/tyWu/iGZxefhzidrf1t8qPpH2QTyAt0x4qJH6XzF7qX9j
-         KwsA==
+        d=ziepe.ca; s=google; t=1693427783; x=1694032583; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z9olKQHKl7i+BW/Fox3jX2swhAkTGXKGKjmjdi6zQOQ=;
+        b=iEbvh5rmlXtRk2WfXULEeyKAIyu1q5dBvl+L//yKJt1lVNRcanTm0Dw0h2H2UZbTu7
+         tCe1C3LFAOo6cudhqmkmmYFZ1GaLxs0yM3v+dXQtzLGEHfjMpEudDg4SpiEmMBLrcb0E
+         aoaD3msUu86WKs4SyVUeV5TPPnWCP1BYE2KMXNpjDI7+Xmzrwg0YpQekRKFnyg7CYg8l
+         Oy+Uj44Zyzo7y61l3+yqPHwoP51paOboY8UECqwmq+/iqae2+B53i88QOAhIHVVVlCPJ
+         Mi/uSe0JSrWg481BBXNKaExZoRmAcVB0OmZAB3mENEFeLzfhxzzucOOnRgjqzY6IIKGm
+         yYuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693428514; x=1694033314;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sqhS2buf3q5lKZs0QgnHq/NuMUrTYmV//7wpqK/hL6c=;
-        b=Th6/4LIipEqDhaPbGH3vEI4OqQ7dcL0rUF1zxOsXCbOJU9SbcDvkxt+4n3gZNLpf9T
-         SrpaRX3SK4FVYUH0/dqF+HzPL6Yn11HBRyKk3/zClGF4IfVWb5I//vaYMFV2fhD9Tvmh
-         ezHfBCIyCnSiev7lcg+og28pnag7CuoR5z42JoJxbaaeqaO52Kzcuwjzx15eZVZ33+TV
-         hJGLmXlDN0uuG3w03DFwahbyGXVW0O0ycF7me3g37E2o6OL1ONV7SCJi0blMZQwOrqCi
-         770idWBvwf895MDuk9pemSbPl+C5jrd4IzN8eASAuP0eSdAJZ3Ony/mkrOViNEgWGxlq
-         jSng==
-X-Gm-Message-State: AOJu0YwxuKvhIAq1fYZ0u0QqL81D0PFDC0mmSQv4Y9/bJw1V6cRw3vFQ
-        Fcg8twuEtcNhxkOihnrpLvPtkxoJ3FNSMdf4xdmdNA==
-X-Google-Smtp-Source: AGHT+IFYtYpox7ihArAxMld7ZB3Yd1sKfUj50x1GV1gb0SRJFFM1XHVFrLZ2pomZaP6+3hhHlGaWiQ==
-X-Received: by 2002:a2e:9990:0:b0:2bc:dab2:c7dc with SMTP id w16-20020a2e9990000000b002bcdab2c7dcmr2411638lji.47.1693427732218;
-        Wed, 30 Aug 2023 13:35:32 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id w8-20020a2e9988000000b002b9f4841913sm2742873lji.1.2023.08.30.13.35.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 13:35:31 -0700 (PDT)
-Message-ID: <6bcb460b-6deb-4918-9058-67536e0af0ad@linaro.org>
-Date:   Wed, 30 Aug 2023 22:35:29 +0200
+        d=1e100.net; s=20221208; t=1693427783; x=1694032583;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z9olKQHKl7i+BW/Fox3jX2swhAkTGXKGKjmjdi6zQOQ=;
+        b=gUQyUuF9OyXiYs1m0e0og1AED//FmiVNX1UNgTb2vbp7EnmVY3gwlAQj5TdKzkZBnN
+         dH7VQvscZLXAE4jUPE9UgxZFzcXUjP9ViHFDk0PZ6FzFU+58bMXJmoaYwBbv0gSlyXuA
+         1qxEmhlunBfVn61fXCKWuworQGWDg+htNQIztEt+BzgMtfb7jm0iYsEZR4s9oDRItXvw
+         K2RwXg2w91MXMzK53Y4mAmL+lq2Uk0Hqp2z3bzy+OhfqTpxtlj5bzGfJBGz+8AX4U/7q
+         3O0M2wtcWJhxfY3p1xiLeTmnaw4P9MrtJ5ti0rEHux3AC3gPmrc0y3WOG97UGoKsWSbA
+         /XsA==
+X-Gm-Message-State: AOJu0Yx5psCFwBHtgGy52rjsmFfWSHqNWZPy2PZx/Jdjbz7hePTDRVdg
+        2ymDi4/Myj9+JYcA2cUIoHUQKg==
+X-Google-Smtp-Source: AGHT+IGF4MU0rD+iQwT0aCopRevdjBpeHCOTE0yYV5wWvsuXnz48NfHVfNaBhCyzBhEFTczQi1j9zA==
+X-Received: by 2002:a05:620a:3727:b0:768:1572:e9af with SMTP id de39-20020a05620a372700b007681572e9afmr1073374qkb.8.1693427783197;
+        Wed, 30 Aug 2023 13:36:23 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id pj37-20020a05620a1da500b0076da620166bsm3998312qkn.103.2023.08.30.13.36.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 13:36:22 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qbRvI-000DB0-Qb;
+        Wed, 30 Aug 2023 17:36:20 -0300
+Date:   Wed, 30 Aug 2023 17:36:20 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Vasant Hegde <vasant.hegde@amd.com>
+Cc:     Tina Zhang <tina.zhang@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Michael Shavit <mshavit@google.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] iommu: Support mm PASID 1:n with sva domains
+Message-ID: <ZO+oRPOf9jyNG2+B@ziepe.ca>
+References: <20230827084401.819852-1-tina.zhang@intel.com>
+ <20230827084401.819852-5-tina.zhang@intel.com>
+ <aa834f12-ce45-fe15-430b-2a9c3446a5ba@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] arm64: dts: qcom: sm8550: Fix up CPU idle states
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
- <20230830-topic-8550_dmac2-v1-3-49bb25239fb1@linaro.org>
- <CAA8EJpp7bxq4=i1CMPYvz99ZuKLz+th6zSFhhRhFMjDwGB5Z8Q@mail.gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <CAA8EJpp7bxq4=i1CMPYvz99ZuKLz+th6zSFhhRhFMjDwGB5Z8Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa834f12-ce45-fe15-430b-2a9c3446a5ba@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -120,59 +79,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.2023 22:13, Dmitry Baryshkov wrote:
-> On Wed, 30 Aug 2023 at 22:04, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> The idle residency times are largely too low according to the vendor
->> kernel (maybe they came from an earlier release or something), especially
->> for the prime X2 core. Fix them.
->>
->> Fixes: ffc50b2d3828 ("arm64: dts: qcom: Add base SM8550 dtsi")
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sm8550.dtsi | 32 +++++++++++++++++++++-----------
->>  1 file changed, 21 insertions(+), 11 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
->> index d115960bdeec..c21ba6afa752 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
->> @@ -283,9 +283,9 @@ LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
->>                                 compatible = "arm,idle-state";
->>                                 idle-state-name = "silver-rail-power-collapse";
->>                                 arm,psci-suspend-param = <0x40000004>;
->> -                               entry-latency-us = <800>;
->> +                               entry-latency-us = <550>;
->>                                 exit-latency-us = <750>;
->> -                               min-residency-us = <4090>;
->> +                               min-residency-us = <6700>;
->>                                 local-timer-stop;
->>                         };
->>
->> @@ -294,8 +294,18 @@ BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
->>                                 idle-state-name = "gold-rail-power-collapse";
->>                                 arm,psci-suspend-param = <0x40000004>;
->>                                 entry-latency-us = <600>;
->> -                               exit-latency-us = <1550>;
->> -                               min-residency-us = <4791>;
->> +                               exit-latency-us = <1300>;
->> +                               min-residency-us = <8136>;
->> +                               local-timer-stop;
->> +                       };
->> +
->> +                       PRIME_CPU_SLEEP_0: cpu-sleep-2-0 {
->> +                               compatible = "arm,idle-state";
->> +                               idle-state-name = "gold-plus-rail-power-collapse";
->> +                               arm,psci-suspend-param = <0x40000004>;
->> +                               entry-latency-us = <500>;
->> +                               exit-latency-us = <1350>;
->> +                               min-residency-us = <7480>;
->>                                 local-timer-stop;
-> 
-> This isn't only fixing the time properties, but also adds the whole
-> new sleep state!
-It does add a "new" sleep state with the exact same parameters,
-the only thing being that it's exclusive to the prime core and
-the only thing that differs is the residencies.
+On Mon, Aug 28, 2023 at 02:02:52PM +0530, Vasant Hegde wrote:
 
-Konrad
+> I am not sure whether I understood the flow completely. Just wondering why you
+> are not freeing pasid in iommu_sva_unbind_device().
+> I mean once iommu_mm->sva_domains becomes free shouldn't we free the
+> iommu_mm->pasid?
+
+No, for Intel use cases that PASID permanently becomes part of the
+ENQCMD MSR and cannot be revoked once it has been set
+ 
+> Also in this function (mm_pasid_drop()), should we check/free sva domains?
+
+No, the driver must support a SVA domain with an empty mm_struct, eg
+by hooking release.
+
+Jason
