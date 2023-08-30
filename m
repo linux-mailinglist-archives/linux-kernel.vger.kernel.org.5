@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6107678DFD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5C878DF8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbjH3TQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60538 "EHLO
+        id S238226AbjH3TRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242374AbjH3ITJ (ORCPT
+        with ESMTP id S242384AbjH3IU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:19:09 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A24113;
-        Wed, 30 Aug 2023 01:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=O9EyrupNC1cPG8dIbNiwNdmsPYVLCMLAowMe5c2S8cU=; b=CRXxNnhwzQlwIdbqc3u4df2wuB
-        fgp0EGZKhU570pmWt/gkHiFZV3+fL9iiwFpwbXHvjHjljnxnd7QZguGdT+7ORoin5mMuUIGwRkrvl
-        A2RGAPa7FBMYipur0eDh2YGItgzMaceInwr4fJRhFHtjfOk1n+sL/SDPeCtZ62HYIqJWWeC4qThxr
-        dEuGBjq2AURKcWN5gdXuXxFN1oSUU/2nZb3ePiuWDsl/qfS/kk83NlBpUKSNn0Of72u1+u+JnAhSv
-        51J1j2lYBu+lF906AXu5i3df7uKavJQYIBbDo1dqLSaC0VIrtYak8B5lS+x4jOb/EuBdZBMIATayk
-        4xZtJqNw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qbGPW-0007dN-VQ; Wed, 30 Aug 2023 10:18:47 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qbGPW-000WJW-Mv; Wed, 30 Aug 2023 10:18:46 +0200
-Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
- in BPF JIT
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230828165958.1714079-1-puranjay12@gmail.com>
- <87edjmb1t8.fsf@all.your.base.are.belong.to.us>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9ab91c63-0712-d2d8-9b2b-6f2098287baa@iogearbox.net>
-Date:   Wed, 30 Aug 2023 10:18:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 30 Aug 2023 04:20:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEA7113;
+        Wed, 30 Aug 2023 01:20:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693383654; x=1724919654;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=qCGMFtQfgwR1F9QTDNMJxmJP2VuKJ61eRyS0eGjsPSY=;
+  b=Jt0rTajMwlMmJH8d4HWDdR/d1zwoT2NqXmJqgpj8sCsAGvkdcgc+TGVM
+   5HEcRnPd9JtwPlAzNzOTXQch24dAWLl75Swh3eumjqqpkYKGaV0zvLWLp
+   KjRtYWKz2ttVlChh8mA05Ip44aC78ze8Rn895sha6jQZkPM31Ect3WfNG
+   CtD3vUdULV55jQ6dO9YTLgR75hJ8x+gMtXmCaLxTqwcEqtNDH/2Ztk98D
+   3zPwyRzIt9ghDelUhTho6syKSaVS0rNY0emfh8UVbrexC+YO1u0C9Olq7
+   AHVeyWtx+dM6718jljVRDVk2+ewLM2DbjRUE7vvYG2fw8bbCBVDTfVmkj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="374488114"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="374488114"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 01:20:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="853643153"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="853643153"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 01:20:40 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 4CA1111FAB1;
+        Wed, 30 Aug 2023 11:20:37 +0300 (EEST)
+Date:   Wed, 30 Aug 2023 08:20:37 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Philippe CORNU <philippe.cornu@foss.st.com>
+Subject: Re: [PATCH v1 3/5] media: stm32-dcmipp: STM32 DCMIPP camera
+ interface driver
+Message-ID: <ZO771VvxPREnoyOY@kekkonen.localdomain>
+References: <20220910144010.34272-1-hugues.fruchet@foss.st.com>
+ <20220910144010.34272-4-hugues.fruchet@foss.st.com>
+ <ZNC5k3PynnEWL/ou@kekkonen.localdomain>
+ <20230825110903.GA30381@gnbcxd0016.gnb.st.com>
 MIME-Version: 1.0
-In-Reply-To: <87edjmb1t8.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27015/Tue Aug 29 09:39:45 2023)
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230825110903.GA30381@gnbcxd0016.gnb.st.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,168 +74,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 12:06 PM, Björn Töpel wrote:
-> Puranjay Mohan <puranjay12@gmail.com> writes:
-> 
->> Changes in v2 -> v3:
->> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
->> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
->> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
->>     [Patch 1 and 2]
->> 4. Add reviewed-by in patches.
->> 5. Adding results of selftest here:
->>     Using the command: ./test_progs on qemu
->>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>
->> Changes in v1 -> v2:
->> 1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
->>     The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
->>     call flush_icache_range() for every word making it really slow. This was found by running
->>     the test_tag selftest which would take forever to complete.
->>
->> Here is some data to prove the V2 fixes the problem:
->>
->> Without this series:
->> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
->> test_tag: OK (40945 tests)
->>
->> real    7m47.562s
->> user    0m24.145s
->> sys     6m37.064s
->>
->> With this series applied:
->> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
->> test_tag: OK (40945 tests)
->>
->> real    7m29.472s
->> user    0m25.865s
->> sys     6m18.401s
->>
->> BPF programs currently consume a page each on RISCV. For systems with many BPF
->> programs, this adds significant pressure to instruction TLB. High iTLB pressure
->> usually causes slow down for the whole system.
->>
->> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
->> It packs multiple BPF programs into a single huge page. It is currently only
->> enabled for the x86_64 BPF JIT.
->>
->> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
->>
->> This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
->> This series needs a patch[3] from the ARM64 series to work.
->>
->> ======================================================
->> Performance Analysis of prog pack allocator on RISCV64
->> ======================================================
->>
->> Test setup:
->> ===========
->>
->> Host machine: Debian GNU/Linux 11 (bullseye)
->> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->> u-boot-qemu Version: 2023.07+dfsg-1
->> opensbi Version: 1.3-1
->>
->> To test the performance of the BPF prog pack allocator on RV, a stresser
->> tool[4] linked below was built. This tool loads 8 BPF programs on the system and
->> triggers 5 of them in an infinite loop by doing system calls.
->>
->> The runner script starts 20 instances of the above which loads 8*20=160 BPF
->> programs on the system, 5*20=100 of which are being constantly triggered.
->> The script is passed a command which would be run in the above environment.
->>
->> The script was run with following perf command:
->> ./run.sh "perf stat -a \
->>          -e iTLB-load-misses \
->>          -e dTLB-load-misses  \
->>          -e dTLB-store-misses \
->>          -e instructions \
->>          --timeout 60000"
->>
->> The output of the above command is discussed below before and after enabling the
->> BPF prog pack allocator.
->>
->> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
->> was created using Bjorn's riscv-cross-builder[5] docker container linked below.
->>
->> Results
->> =======
->>
->> Before enabling prog pack allocator:
->> ------------------------------------
->>
->> Performance counter stats for 'system wide':
->>
->>             4939048      iTLB-load-misses
->>             5468689      dTLB-load-misses
->>              465234      dTLB-store-misses
->>       1441082097998      instructions
->>
->>        60.045791200 seconds time elapsed
->>
->> After enabling prog pack allocator:
->> -----------------------------------
->>
->> Performance counter stats for 'system wide':
->>
->>             3430035      iTLB-load-misses
->>             5008745      dTLB-load-misses
->>              409944      dTLB-store-misses
->>       1441535637988      instructions
->>
->>        60.046296600 seconds time elapsed
->>
->> Improvements in metrics
->> =======================
->>
->> It was expected that the iTLB-load-misses would decrease as now a single huge
->> page is used to keep all the BPF programs compared to a single page for each
->> program earlier.
->>
->> --------------------------------------------
->> The improvement in iTLB-load-misses: -30.5 %
->> --------------------------------------------
->>
->> I repeated this expriment more than 100 times in different setups and the
->> improvement was always greater than 30%.
->>
->> This patch series is boot tested on the Starfive VisionFive 2 board[6].
->> The performance analysis was not done on the board because it doesn't
->> expose iTLB-load-misses, etc. The stresser program was run on the board to test
->> the loading and unloading of BPF programs
->>
->> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
->> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
->> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
->> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
->> [5] https://github.com/bjoto/riscv-cross-builder
->> [6] https://www.starfivetech.com/en/site/boards
->>
->> Puranjay Mohan (3):
->>    riscv: extend patch_text_nosync() for multiple pages
->>    riscv: implement a memset like function for text
->>    bpf, riscv: use prog pack allocator in the BPF JIT
-> 
-> Thank you! For the series:
-> 
-> Acked-by: Björn Töpel <bjorn@kernel.org>
-> Tested-by: Björn Töpel <bjorn@rivosinc.com>
-> 
-> @Alexei @Daniel This series depends on a core BPF patch from the Arm
->                  series [3].
-> 
-> @Palmer LMK if you have any concerns taking the RISC-V text patching
->          stuff via the BPF tree.
+Hi Alain,
 
-Palmer, did the riscv PR already go to Linus?
+On Fri, Aug 25, 2023 at 01:09:03PM +0200, Alain Volmat wrote:
+...
+> > > +static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+> > > +				    int state)
+> > > +{
+> > > +	struct media_entity *entity = &vcap->vdev.entity;
+> > > +	struct v4l2_subdev *subdev;
+> > > +	struct media_pad *pad;
+> > > +	int ret;
+> > > +
+> > > +	/* Start/stop all entities within pipeline */
+> > > +	while (1) {
+> > > +		pad = &entity->pads[0];
+> > > +		if (!(pad->flags & MEDIA_PAD_FL_SINK))
+> > > +			break;
+> > > +
+> > > +		pad = media_pad_remote_pad_first(pad);
+> > > +		if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
+> > > +			break;
+> > > +
+> > > +		entity = pad->entity;
+> > > +		subdev = media_entity_to_v4l2_subdev(entity);
+> > > +
+> > > +		ret = v4l2_subdev_call(subdev, video, s_stream, state);
+> > 
+> > Does this driver handle multiple sub-devices in the same pipeline?
+> > 
+> > If not, then you don't need a loop here.
+> 
+> The idea was to enable one after the other each subdevs part of the
+> pipeline (aka: sensor -> bridge -> parallel -> byteproc -> bytecap)
+> however following a discussion with Laurent in Prague I changed that
+> so that each subdev call each other in cascade, quite like I already did
+> the following patch for the dcmi driver:
 
-If not yet, perhaps you could ship this series along with your PR to Linus
-during this merge window given the big net PR (incl. bpf) was already merged
-yesterday. So from our side only fixes ship to Linus.
+Ack!
 
-Otherwise we could take it into bpf-next for the next dev cycle if there are
-no objections, let us know.
+> 
+> commit 525011d84a3f547d0643c10bbfc01d32e26a9963
+> Author: Alain Volmat <alain.volmat@foss.st.com>
+> Date:   Fri Jul 21 14:03:15 2023 +0200
+> 
+>     media: stm32: dcmi: only call s_stream on the source subdev
+> 
+>     Avoid calling s_stream on each subdev until reaching the sensor and
+>     instead call s_stream on the source subdev only (which will in turn
+>     do whatever needed to start the stream).
+> 
+>     Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+>     Reviewed-by: Hugues FRUCHET <hugues.fruchet@foss.st.com>
+>     Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-Thanks,
-Daniel
+...
+
+> > > +#define STOP_TIMEOUT_US 1000
+> > > +#define POLL_INTERVAL_US  50
+> > > +static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
+> > > +{
+> > > +	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
+> > > +	int ret = 0;
+> > > +
+> > > +	mutex_lock(&byteproc->lock);
+> > > +	if (enable) {
+> > > +		dcmipp_byteproc_configure_framerate(byteproc);
+> > > +
+> > > +		ret = dcmipp_byteproc_configure_scale_crop(byteproc);
+> > > +		if (ret)
+> > > +			goto err;
+> > 
+> > This does nothing.
+> 
+> Not sure to understand your point here.  The s_stream callback of this
+> subdev is used to configure the registers (here the ones controlling
+> decimation and cropping) of the byteproc subdev.
+
+I was referring to the last two lines --- you're jumping to essentially the
+same location here.
+
+> 
+> > 
+> > > +	}
+> > > +
+> > > +err:
+> > > +	mutex_unlock(&byteproc->lock);
+> > > +
+> > > +	return ret;
+> > > +}
+
+...
+
+> > > diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+> > > new file mode 100644
+> > > index 000000000000..aa7ae9a5b1a8
+> > > --- /dev/null
+> > > +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+> > > @@ -0,0 +1,682 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Driver for STM32 Digital Camera Memory Interface Pixel Processor
+> > > + *
+> > > + * Copyright (C) STMicroelectronics SA 2022
+> > > + * Authors: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > > + *          Alain Volmat <alain.volmat@foss.st.com>
+> > > + *          for STMicroelectronics.
+> > > + */
+> > > +
+> > > +#include <linux/clk.h>
+> > > +#include <linux/component.h>
+> > > +#include <linux/delay.h>
+> > > +#include <linux/init.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/of_device.h>
+> > > +#include <linux/of_graph.h>
+> > 
+> > #include <linux/property.h> instead of these three.
+> 
+> Added linux/property.h however kept of_graph.h which is still necessary.
+> 
+
+You should switch to fwnode graph API as you're already using fwnodes in
+the driver --- due to V4L2 fwnode.
+
+...
+
+> > > +static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+> > > +				     struct v4l2_subdev *subdev,
+> > > +				     struct v4l2_async_subdev *asd)
+> > > +{
+> > > +	struct dcmipp_device *dcmipp = notifier_to_dcmipp(notifier);
+> > > +	unsigned int ret;
+> > > +	int src_pad;
+> > > +	struct dcmipp_ent_device *sink;
+> > > +	struct device_node *np = dcmipp->dev->of_node;
+> > > +	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
+> > 
+> > Please set bus_type explicitly (DPHY)?
+> 
+> My understanding is that I cannot set the bus_type here to have the
+> framework check for me since we support both V4L2_MBUS_PARALLEL and
+> V4L2_MBUS_BT656.
+
+Ah, I missed this was using a parallel bus.
+
+As you have a default in bindings, then you'll need to parse this assuming
+that bus-type first. I.e. set the bus type to the default and if parsing
+fails, try the other one.
+
+-- 
+Kind regards,
+
+Sakari Ailus
