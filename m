@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B77678DE58
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D6778D9F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240439AbjH3TBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        id S234096AbjH3Sen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343954AbjH3Rfh (ORCPT
+        with ESMTP id S1343955AbjH3Rfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Aug 2023 13:35:37 -0400
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9551D1A3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:35:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546A0193
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:35:35 -0700 (PDT)
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RbWfF1KmZzgk;
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RbWfF3GB8zjJ;
         Wed, 30 Aug 2023 19:35:33 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1693416933; bh=FBO3C/ZT0gXV582lOwqaqYNAxfqDw70mVXC++i5rfZQ=;
+        t=1693416933; bh=dWJXSE23EEsNF2ABidxY7QtS4t5FWf+OeZGytVGqGR8=;
         h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=V0rJTCM40625GgmDxlSvUOLWaZOLLW+/FF4+z4VjKTlAulr35h8dJbrJr5VbfoQn2
-         SLoU4Qsmqt8wWw/svk6m6PpYOepC8Eesrt9aHTJRPWJ7FM9YyyaQbLyF3vknwuGEyG
-         8/ex66OV96WAAsHj2PYDAE+NlFUXnc5LVNjFMtjh0TF5tPHtiVcnGBRQbL7utEB1rF
-         Ly1Hv3S5evsQJWGbkTDjDwjHZJT+TPnxW5ceLDrFdJU5PcXjJRAAsaCJyYh9UjiCR9
-         MxUF5FQEMTmZVLIbS6sXAt2PDa2x5Jw1T8+sABN0kFdLvwm0lFSP+uqgDZmq3SVcCJ
-         6EojIry0utvsg==
+        b=l9cjpoKiexV48zwpCG2Zkfb3Ds0UQvudFGggvDKy4nEvJnJMQBvenJi1vwuBxS96N
+         D5461n2lcq8l1JOa/IgGertHluRUaVh+mGso9Ievi3EtvlmMhDZUjeChOY0GVM4Dmr
+         dWqAsta0V4sMW0uMJ1nnCnS7Puj9T1yUlXDVGeLdFuAp0sz8nOb2xakrra6toLK6hz
+         POEtdbL8/Yxby/kDtDdSGg2anisNlvqDEKuoUu6sfg1ci5VEo/LSssrsMF/1SprnhS
+         AJbxVGrvqK81qANtOK9bP/CvEE6XwUJ7ydC2IYslNIl1cZyG6BCXn0LtzJW5JDAk0P
+         pHeuKbujphmfA==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Wed, 30 Aug 2023 19:35:32 +0200
-Message-Id: <85bcd0af56521209f40e76e0cac626c4f02b7df5.1693416477.git.mirq-linux@rere.qmqm.pl>
+Date:   Wed, 30 Aug 2023 19:35:33 +0200
+Message-Id: <3240d792149f32fb4164ad7042091daf9f59f9a3.1693416477.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1693416477.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1693416477.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 5/7] regulator/core: regulator_lock_contended: wrap
- ww_mutex lock sequence restart
+Subject: [PATCH v2 6/7] regulator/core: regulator_lock_two: propagate error up
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -52,77 +51,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrap locking a regulator after a failed ww_mutex locking sequence with a
-new function.  This is to deduplicate occurrences of the pattern and make
-it self-documenting.
+Fix up error paths from regulator_lock_two(): although it should not
+fail, returning with half-locked state after issuing a WARN() asks
+for even more trouble.
 
+Fixes: cba6cfdc7c3f ("regulator: core: Avoid lockdep reports when resolving supplies")
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+v2:
+  - updated kerneldoc
+  - call ww_acquire_done() on all exits
 ---
  drivers/regulator/core.c | 28 +++++++++++++++++++---------
  1 file changed, 19 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index e89c12d27a9d..7201927c5d5b 100644
+index 7201927c5d5b..3f9621621da9 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -154,6 +154,22 @@ static inline int regulator_lock_nested(struct regulator_dev *rdev,
- 	return 0;
- }
+@@ -209,11 +209,12 @@ static void regulator_unlock(struct regulator_dev *rdev)
+  * @rdev2:		second regulator
+  * @ww_ctx:		w/w mutex acquire context
+  *
+- * Locks both rdevs using the regulator_ww_class.
++ * Locks both rdevs using the regulator_ww_class. Returns error if an
++ * unexpected error has been detected during a locking sequence.
+  */
+-static void regulator_lock_two(struct regulator_dev *rdev1,
+-			       struct regulator_dev *rdev2,
+-			       struct ww_acquire_ctx *ww_ctx)
++static int regulator_lock_two(struct regulator_dev *rdev1,
++			      struct regulator_dev *rdev2,
++			      struct ww_acquire_ctx *ww_ctx)
+ {
+ 	struct regulator_dev *held, *contended;
+ 	int ret;
+@@ -222,10 +223,13 @@ static void regulator_lock_two(struct regulator_dev *rdev1,
  
-+/**
-+ * regulator_lock_contended - retry locking a regulator
-+ * @rdev:		regulator source
-+ * @ww_ctx:		w/w mutex acquire context
-+ *
-+ * Locks a regulator after a failed locking sequence (aborted
-+ * with -EDEADLK).
-+ */
-+static inline void regulator_lock_contended(struct regulator_dev *rdev,
-+					    struct ww_acquire_ctx *ww_ctx)
-+{
-+	ww_mutex_lock_slow(&rdev->mutex, ww_ctx);
-+	rdev->ref_cnt++;
-+	rdev->mutex_owner = current;
-+}
-+
- /**
-  * regulator_lock - lock a single regulator
-  * @rdev:		regulator source
-@@ -218,9 +234,7 @@ static void regulator_lock_two(struct regulator_dev *rdev1,
- 	while (true) {
- 		regulator_unlock(held);
+ 	/* Try to just grab both of them */
+ 	ret = regulator_lock_nested(rdev1, ww_ctx);
+-	WARN_ON(ret);
++	if (WARN_ON(ret))
++		goto exit;
+ 	ret = regulator_lock_nested(rdev2, ww_ctx);
+-	if (ret != -EDEADLOCK) {
+-		WARN_ON(ret);
++	if (!ret)
++		goto exit;
++	if (WARN_ON(ret != -EDEADLOCK)) {
++		regulator_unlock(rdev1);
+ 		goto exit;
+ 	}
  
--		ww_mutex_lock_slow(&contended->mutex, ww_ctx);
--		contended->ref_cnt++;
--		contended->mutex_owner = current;
-+		regulator_lock_contended(contended, ww_ctx);
- 		swap(held, contended);
+@@ -239,13 +243,15 @@ static void regulator_lock_two(struct regulator_dev *rdev1,
  		ret = regulator_lock_nested(contended, ww_ctx);
  
-@@ -376,10 +390,8 @@ static void regulator_lock_dependent(struct regulator_dev *rdev,
- 
- 	do {
- 		if (new_contended_rdev) {
--			ww_mutex_lock_slow(&new_contended_rdev->mutex, ww_ctx);
-+			regulator_lock_contended(new_contended_rdev, ww_ctx);
- 			old_contended_rdev = new_contended_rdev;
--			old_contended_rdev->ref_cnt++;
--			old_contended_rdev->mutex_owner = current;
+ 		if (ret != -EDEADLOCK) {
+-			WARN_ON(ret);
++			if (WARN_ON(ret))
++				regulator_unlock(held);
+ 			break;
  		}
+ 	}
  
- 		err = regulator_lock_recursive(rdev,
-@@ -6085,10 +6097,8 @@ static void regulator_summary_lock(struct ww_acquire_ctx *ww_ctx)
+ exit:
+ 	ww_acquire_done(ww_ctx);
++	return ret;
+ }
  
- 	do {
- 		if (new_contended_rdev) {
--			ww_mutex_lock_slow(&new_contended_rdev->mutex, ww_ctx);
-+			regulator_lock_contended(new_contended_rdev, ww_ctx);
- 			old_contended_rdev = new_contended_rdev;
--			old_contended_rdev->ref_cnt++;
--			old_contended_rdev->mutex_owner = current;
- 		}
+ /**
+@@ -2113,7 +2119,11 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 	 * between rdev->supply null check and setting rdev->supply in
+ 	 * set_supply() from concurrent tasks.
+ 	 */
+-	regulator_lock_two(rdev, r, &ww_ctx);
++	ret = regulator_lock_two(rdev, r, &ww_ctx);
++	if (ret < 0) {
++		put_device(&r->dev);
++		return ret;
++	}
  
- 		err = regulator_summary_lock_all(ww_ctx,
+ 	/* Supply just resolved by a concurrent task? */
+ 	if (rdev->supply) {
 -- 
 2.39.2
 
