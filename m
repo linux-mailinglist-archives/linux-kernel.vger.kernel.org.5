@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDF378DB4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D110B78DE24
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238669AbjH3Siw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47358 "EHLO
+        id S232768AbjH3S63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244099AbjH3Mcx (ORCPT
+        with ESMTP id S244102AbjH3MdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:32:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9626AE8;
-        Wed, 30 Aug 2023 05:32:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B1A360FDF;
-        Wed, 30 Aug 2023 12:32:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C991C433C7;
-        Wed, 30 Aug 2023 12:32:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693398769;
-        bh=Gme2F4CM/b8pnooL5v5ewDM1ffflJ+thkiYRkALsA/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wsm8ax3IiR5ntFvzMrk4E2L7rHY6+e64HTINNSLyBvuwj6kHsvNIHwfFt8zchjo0T
-         UO8H9W7yOETOr/fV2zTKc4M63JF05rWxyEbaiGs72yseN1QsVQKa8pj4zoHMqLkVhP
-         oHJvXuoWF9DjtXxGcbds+u1A2ES3zPnEdpO11L68=
-Date:   Wed, 30 Aug 2023 14:32:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, nathanl@linux.ibm.com, mpe@ellerman.id.au
-Subject: Re: [PATCH 4.14 00/57] 4.14.324-rc1 review
-Message-ID: <2023083038-antennae-expand-4afc@gregkh>
-References: <20230828101144.231099710@linuxfoundation.org>
- <868cd8e3-2e7e-7b98-0a6e-e5586cb6ab0d@linaro.org>
+        Wed, 30 Aug 2023 08:33:13 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5567CC5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:33:10 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so84009061fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693398789; x=1694003589; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=oAFVjZYKZNRPwsay3rIoLdzOEL0KLN9k47XMSZxKLB8=;
+        b=Fk41yDB8NbKWSvM/2IPbAm82r+RcSFuLkUxAbooic2ots2mZ7HYqJh8XWhBFTDDltF
+         qln6x9PHBn9XrYpf9cfXvGndOOj8h92SdvJ6ZIkrYczSBV1YMpB+f3ayP6kQ9AoGHX+g
+         FubI5Snqm/40lh6YfMiJ70zZkKgxGXrl4+VjEkHPdE4W0TR+I6a99ibiC02yzBqK46Fd
+         F8doSoiTNOtNDjLwA/0JnIlkSW+zdrqXj7Rd2mYO1BWj42I12KELaqSyABsFVxUjADp+
+         xGuT/BTbL+ABBgfGRjAWedmnIoW2Ajewjluzb6DWce1vsUUpdI9kLXqEkTM7GrOrTyXC
+         hBlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693398789; x=1694003589;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oAFVjZYKZNRPwsay3rIoLdzOEL0KLN9k47XMSZxKLB8=;
+        b=K1IU93w6FP/VpV1vZvP26/jua0A2QQa8KMg0YdbMbPtAdwh6SxwR54/vU/xB20oBMa
+         Y/viJpCzpnu9Kj4aRfvkMpDp6aqxCq3p5qSSZLyLAwfqYEdfsifBex7WefyJ31qhRxPR
+         cpFy9FGDtLF+LQRUuKpH1oRMgLnOx/FbRT4kxk4ZuCcNTZRBHSZnVc/PZvbGh7Zaps+k
+         I7kAjong+h9i5I9f6XRRdGB0pyg2tdypdzQNMXIu6sQf7fpxFC7F+b0fo7hLXnWi1Qcj
+         uhbTGEZQ0qtoY+/4qeOKFFRLo7Yg2PWTw1393JFhG3T37rYg7Vd7Ngt32s062k3RWn1Z
+         sV6A==
+X-Gm-Message-State: AOJu0YzrpjBLDOv+2LMKD2M+LLp1+4IyBmhtNyQ6r3uGljyDEsc5WfOE
+        zOTLM6UFxLtwBhKcRmpNIvX53Q==
+X-Google-Smtp-Source: AGHT+IFB55m00NU6ptvOtwfZRKP4sKIyzJ8HQbx/wwgnu4WlbSbWPmVlUbC7tXKDNTT0fOZpMN29BQ==
+X-Received: by 2002:a19:4f15:0:b0:4ff:7f7f:22e7 with SMTP id d21-20020a194f15000000b004ff7f7f22e7mr1476266lfb.17.1693398789255;
+        Wed, 30 Aug 2023 05:33:09 -0700 (PDT)
+Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
+        by smtp.gmail.com with ESMTPSA id v20-20020ac25614000000b004fbc82dd1a5sm2366788lfd.13.2023.08.30.05.33.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 05:33:08 -0700 (PDT)
+Message-ID: <50c2777f-de2e-4f57-9a94-ae25c8ee759a@linaro.org>
+Date:   Wed, 30 Aug 2023 14:33:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <868cd8e3-2e7e-7b98-0a6e-e5586cb6ab0d@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 4/6] soc: qcom: Add LLCC support for multi channel DDR
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+To:     Komal Bajaj <quic_kbajaj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        srinivas.kandagatla@linaro.org, bryan.odonoghue@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230830105654.28057-1-quic_kbajaj@quicinc.com>
+ <20230830105654.28057-5-quic_kbajaj@quicinc.com>
+ <cec9318c-9a70-4392-89b7-048d30b7b790@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <cec9318c-9a70-4392-89b7-048d30b7b790@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 09:01:41PM -0600, Daniel Díaz wrote:
-> Hello!
-> 
-> On 28/08/23 4:12 a. m., Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.14.324 release.
-> > There are 57 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.324-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > -------------
-> > Pseudo-Shortlog of commits:
-> > 
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >      Linux 4.14.324-rc1
-> > 
-> [...]
-> > Nathan Lynch <nathanl@linux.ibm.com>
-> >      powerpc/rtas_flash: allow user copy to flash block cache objects
+On 30.08.2023 14:32, Konrad Dybcio wrote:
+> On 30.08.2023 12:56, Komal Bajaj wrote:
+>> Add LLCC support for multi channel DDR configuration
+>> based on a feature register.
+>>
+>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+>> ---
 > [...]
 > 
-> We see this build regression on PowerPC with GCC-8 and GCC-12:
-> -----8<-----
->   /builds/linux/arch/powerpc/kernel/rtas_flash.c: In function 'rtas_flash_init':
->   /builds/linux/arch/powerpc/kernel/rtas_flash.c:717:22: error: implicit declaration of function 'kmem_cache_create_usercopy'; did you mean 'kmem_cache_create'? [-Werror=implicit-function-declaration]
->     flash_block_cache = kmem_cache_create_usercopy("rtas_flash_cache",
->                         ^~~~~~~~~~~~~~~~~~~~~~~~~~
->                         kmem_cache_create
->   /builds/linux/arch/powerpc/kernel/rtas_flash.c:717:20: error: assignment to 'struct kmem_cache *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
->     flash_block_cache = kmem_cache_create_usercopy("rtas_flash_cache",
->                       ^
-> ----->8-----
-> 
-> That's on defconfig and cell_defconfig.
-> 
-> Bisection points to "powerpc/rtas_flash: allow user copy to flash block cache objects" (5190538c66e5). Reverting that patch makes the build pass again.
+> global pointer to a error code to avoid referencing it */
+>> @@ -1031,6 +1050,7 @@ static int qcom_llcc_probe(struct platform_device *pdev)
+>>  	const struct qcom_llcc_config *cfg;
+>>  	const struct llcc_slice_config *llcc_cfg;
+>>  	u32 sz;
+>> +	u8 cfg_index;
+>>  	u32 version;
+>>  	struct regmap *regmap;
+>>
+>> @@ -1052,7 +1072,10 @@ static int qcom_llcc_probe(struct platform_device *pdev)
+>>  		ret = -EINVAL;
+>>  		goto err;
+>>  	}
+>> -	cfg = &cfgs->llcc_config[0];
+> This is unnecessary, get_cfg_index returns 0 when no nvmem cell is
+> present.
+Sorry this is a minus and not a plus
 
-Now dropped, thanks.
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-greg k-h
+Konrad
