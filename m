@@ -2,119 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D1B78DDA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2B878DAC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245194AbjH3SwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
+        id S237917AbjH3ShI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243723AbjH3Lfx (ORCPT
+        with ESMTP id S243732AbjH3Lhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:35:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E02132;
-        Wed, 30 Aug 2023 04:35:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693395350; x=1724931350;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=h3ZazSER22rib2B9TYZzPIsIlIRyHDfzHJ5qdZQmJFY=;
-  b=jvcdbe2CrJhKIHfOiQIwPBxJsnLKt9D2hugknRyumlv4mzF0tdW5tiyq
-   C8cqm4diCGsCNTTgaCMMBM27vQTFxPg23jpNoJ24YEJ+i6WU9Ws9oaw29
-   xQgp29uRPaau4Irh3inYPJG8d230779wlyQLcmCBbqIhdMC+Oa95SvFVW
-   Jss2hFQ5EtjoP7Uan7QOSHBtBSKV+6wstnZm0wJnYYmQSCWWiG9tvcmia
-   jPjGpZqn+8xHHj7ddK+VXxh2KlDNBt2LiBpvS6ibc3rUX5iXUqxuSEfTi
-   UMSIiRw9mkzCc4vJJbM4spfZiPmuAqWP3uAtXdQqOG/SYtzeN9ztR6GbI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="441981272"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="441981272"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 04:35:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="732585103"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="732585103"
-Received: from jkrzyszt-mobl2.ger.corp.intel.com ([10.213.15.207])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 04:35:47 -0700
-From:   Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] kunit: Fix test log size limit too low for some tests
-Date:   Wed, 30 Aug 2023 13:35:45 +0200
-Message-ID: <4506938.LvFx2qVVIh@jkrzyszt-mobl2.ger.corp.intel.com>
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173,
- 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
-In-Reply-To: <CABVgOSmZ56p8BBFHNXqigNrH95O_YjMZxfpbhWcZJFrSMS3CDA@mail.gmail.com>
-References: <20230830075419.26484-2-janusz.krzysztofik@linux.intel.com>
- <CABVgOSmZ56p8BBFHNXqigNrH95O_YjMZxfpbhWcZJFrSMS3CDA@mail.gmail.com>
+        Wed, 30 Aug 2023 07:37:43 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0E2D2;
+        Wed, 30 Aug 2023 04:37:41 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37UBbVXX068241;
+        Wed, 30 Aug 2023 06:37:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693395451;
+        bh=AyNAgQCLIMrc74RIuimykU88eCLuawiFiAk5AvdbM+M=;
+        h=From:To:CC:Subject:Date;
+        b=RkMzR+4YEgpPOvIDzJ8Y4/Aq769iDs3VPRG7o27PYHov3Mvwgsry/59jXsSWVmUi3
+         OsR3m/cdY1kTzfUR0/3vrscL28aezhiPLg54OOJxqMskXLFTnxnFk991iXtP0r2R+g
+         RShTglLCbx1ewah2CoY8zSuFQbi1QbRpAo5kuCzg=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37UBbVAw041765
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Aug 2023 06:37:31 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 30
+ Aug 2023 06:37:31 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 30 Aug 2023 06:37:30 -0500
+Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37UBbV3i051449;
+        Wed, 30 Aug 2023 06:37:31 -0500
+Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.35])
+        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37UBbUB5010808;
+        Wed, 30 Aug 2023 06:37:30 -0500
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Simon Horman <horms@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
+Subject: [RFC PATCH net-next 0/2] Add support for ICSSG on AM64x EVM
+Date:   Wed, 30 Aug 2023 17:07:22 +0530
+Message-ID: <20230830113724.1228624-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 30 August 2023 11:23:43 CEST David Gow wrote:
-> On Wed, 30 Aug 2023 at 15:55, Janusz Krzysztofik
-> <janusz.krzysztofik@linux.intel.com> wrote:
-> >
-> > Now we have memory space available to a kunit test case log exposed via
-> > debugfs limited to 2048 bytes, while some parametrized test cases, e.g.,
-> > drm_framebuffer.drm_test_framebuffer_create, need more.  For this reason,
-> > debugfs results from affected test cases get truncated silently, and
-> > external tools that rely on parsing of debugfs results can fail.
-> >
-> > Increase kunit test case log size limit to 4096 bytes.
-> >
-> > Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-> > ---
-> 
-> There's a patch series we're hoping to take for 6.7 which allows the
-> log to grow to fit whatever's written into it, which should make this
-> patch obsolete:
-> https://lore.kernel.org/linux-kselftest/20230828104111.2394344-1-rf@opensource.cirrus.com/T/
-> 
-> Would that work for you?
+This series adds support for ICSSG driver on AM64x EVM.
 
-Yeah, that's going to work perfectly for us, thank you.
+First patch of the series adds compatible for AM64x EVM in icssg-prueth
+dt binding. Second patch adds support for AM64x compatible in the ICSSG 
+driver.
 
-Janusz
+This series depends on [1] which is posted as RFC.
 
-> 
-> -- David
-> 
-> >  include/kunit/test.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > index d33114097d0d0..d20eb1884edfa 100644
-> > --- a/include/kunit/test.h
-> > +++ b/include/kunit/test.h
-> > @@ -34,7 +34,7 @@ DECLARE_STATIC_KEY_FALSE(kunit_running);
-> >  struct kunit;
-> >
-> >  /* Size of log associated with test. */
-> > -#define KUNIT_LOG_SIZE 2048
-> > +#define KUNIT_LOG_SIZE 4096
-> >
-> >  /* Maximum size of parameter description string. */
-> >  #define KUNIT_PARAM_DESC_SIZE 128
-> > --
-> > 2.41.0
-> >
-> 
+[1] https://lore.kernel.org/all/20230830110847.1219515-1-danishanwar@ti.com/
 
+Thanks and Regards,
+Md Danish Anwar
 
+MD Danish Anwar (2):
+  dt-bindings: net: Add compatible for AM64x in ICSSG
+  net: ti: icssg-prueth: Add AM64x icssg support
 
+ Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 1 +
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c               | 5 +++++
+ 2 files changed, 6 insertions(+)
+
+-- 
+2.34.1
 
