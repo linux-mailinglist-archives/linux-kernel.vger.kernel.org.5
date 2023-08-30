@@ -2,148 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B1378DD4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1430778D99A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243567AbjH3Ssu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
+        id S233844AbjH3Sde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243388AbjH3Kwh (ORCPT
+        with ESMTP id S243385AbjH3KwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:52:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26D1A1BE;
-        Wed, 30 Aug 2023 03:52:34 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12BDB2F4;
-        Wed, 30 Aug 2023 03:53:12 -0700 (PDT)
-Received: from bogus (unknown [10.57.36.157])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AF933F64C;
-        Wed, 30 Aug 2023 03:52:31 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 11:51:34 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Oza Pawandeep <quic_poza@quicinc.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, rafael@kernel.org,
-        lenb@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
- timer
-Message-ID: <20230830105134.dskqqq55npsclibq@bogus>
-References: <20230829201101.3330337-1-quic_poza@quicinc.com>
+        Wed, 30 Aug 2023 06:52:17 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3891BE;
+        Wed, 30 Aug 2023 03:52:14 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E49476600BB0;
+        Wed, 30 Aug 2023 11:52:12 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693392733;
+        bh=dbS1lvMO+EWcHbCFdrfmh2QjQKfiQs4eFDLWNBEANo0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m72MEeUmHGk1P97OhTJQWD8XI/JHoqzurbw8ObmlSSh44ygfFNWXaxoKhK6IIqMls
+         rBJrZkWt0NbanPNU6yuK9eoNvg/nDlz8CEk/LdlPMw402Eh6/IJFUmJz0vnAWCr//c
+         amO03Q0ediIepVt/21ALqLLoK/0alL+k3dRAmwtZ3JZOjZKyz/Fto1grZbYbpj0Zg+
+         ysMq+eGDVydV+CzURNvTpPgxYt8vMBLj1NZt6ZI3Dy0dJi+DsptmYnv+1GmHSUEIg2
+         6WD+SYnPOBeq0vGk3TZhEWbN/9BUJiRlJKHkepfBYeivwpd9nX+JgE9b5bwVHHwJ+V
+         7g6AszpfYUtlA==
+Date:   Wed, 30 Aug 2023 12:52:10 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v2 5/6] drm/panfrost: Implement generic DRM object RSS
+ reporting function
+Message-ID: <20230830125210.3d1172db@collabora.com>
+In-Reply-To: <20230824013604.466224-6-adrian.larumbe@collabora.com>
+References: <20230824013604.466224-1-adrian.larumbe@collabora.com>
+        <20230824013604.466224-6-adrian.larumbe@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230829201101.3330337-1-quic_poza@quicinc.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 01:11:01PM -0700, Oza Pawandeep wrote:
-> Arm® Functional Fixed Hardware Specification defines LPI states,
-> which provide an architectural context loss flags field that can
-> be used to describe the context that might be lost when an LPI
-> state is entered.
-> 
-> - Core context Lost
->         - General purpose registers.
->         - Floating point and SIMD registers.
->         - System registers, include the System register based
->         - generic timer for the core.
->         - Debug register in the core power domain.
->         - PMU registers in the core power domain.
->         - Trace register in the core power domain.
-> - Trace context loss
-> - GICR
-> - GICD
-> 
-> Qualcomm's custom CPUs preserves the architectural state,
-> including keeping the power domain for local timers active.
-> when core is power gated, the local timers are sufficient to
-> wake the core up without needing broadcast timer.
-> 
-> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-> broadcast timer if core context lost is defined in ACPI LPI.
-> 
-> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
-> 
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index bd68e1b7f29f..0d455b02971e 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -9,6 +9,7 @@
->  #ifndef _ASM_ACPI_H
->  #define _ASM_ACPI_H
->  
-> +#include <linux/cpuidle.h>
->  #include <linux/efi.h>
->  #include <linux/memblock.h>
->  #include <linux/psci.h>
-> @@ -42,6 +43,26 @@
->  #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
->  	spe_interrupt) + sizeof(u16))
->  
-> +/*
-> + * Arm® Functional Fixed Hardware Specification Version 1.2.
-> + * Table 2: Arm Architecture context loss flags
-> + */
-> +#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
-> +
-> +#ifndef arch_update_idle_state_flags
-> +static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
-> +							unsigned int *sflags)
-> +{
-> +	if (arch_flags & CPUIDLE_CORE_CTXT)
-> +		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
-> +}
-> +#define arch_update_idle_state_flags _arch_update_idle_state_flags
-> +#endif
-> +
-> +#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
-> +#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
-> +#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
-> +
->  /* Basic configuration for ACPI */
->  #ifdef	CONFIG_ACPI
->  pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index 9718d07cc2a2..420baec3465c 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -1221,8 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
->  		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
->  		state->exit_latency = lpi->wake_latency;
->  		state->target_residency = lpi->min_residency;
-> -		if (lpi->arch_flags)
-> -			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-> +		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
->  		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
->  			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
->  		state->enter = acpi_idle_lpi_enter;
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index d584f94409e1..d49488fdbc49 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -1471,6 +1471,10 @@ static inline int lpit_read_residency_count_address(u64 *address)
+On Thu, 24 Aug 2023 02:34:48 +0100
+Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
+
+> BO's RSS is updated every time new pages are allocated and mapped for the
+> object, either in its entirety at creation time for non-heap buffers, or
+> else on demand for heap buffers at GPU page fault's IRQ handler.
+>=20
+> Same calculations had to be done for imported PRIME objects, since backing
+> storage for it might have already been allocated by the exporting driver.
+>=20
+> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_gem.c | 22 ++++++++++++++++++++++
+>  drivers/gpu/drm/panfrost/panfrost_gem.h |  5 +++++
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c | 16 +++++++++++-----
+>  3 files changed, 38 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_gem.c
+> index aea16b0e4dda..c6bd1f16a6d4 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> @@ -206,6 +206,17 @@ static enum drm_gem_object_status panfrost_gem_statu=
+s(struct drm_gem_object *obj
+> =20
+>  	return res;
 >  }
->  #endif
->  
-> +#ifndef arch_update_idle_state_flags
-> +#define arch_update_idle_state_flags	do {} while (0);
+> +
+> +size_t panfrost_gem_rss(struct drm_gem_object *obj)
+> +{
+> +	struct panfrost_gem_object *bo =3D to_panfrost_bo(obj);
+> +
+> +	if (!bo->base.pages)
+> +		return 0;
+> +
+> +	return bo->rss_size;
+> +}
+> +
+>  static const struct drm_gem_object_funcs panfrost_gem_funcs =3D {
+>  	.free =3D panfrost_gem_free_object,
+>  	.open =3D panfrost_gem_open,
+> @@ -218,6 +229,7 @@ static const struct drm_gem_object_funcs panfrost_gem=
+_funcs =3D {
+>  	.vunmap =3D drm_gem_shmem_object_vunmap,
+>  	.mmap =3D drm_gem_shmem_object_mmap,
+>  	.status =3D panfrost_gem_status,
+> +	.rss =3D panfrost_gem_rss,
+>  	.vm_ops =3D &drm_gem_shmem_vm_ops,
+>  };
+> =20
+> @@ -274,13 +286,23 @@ panfrost_gem_prime_import_sg_table(struct drm_devic=
+e *dev,
+>  {
+>  	struct drm_gem_object *obj;
+>  	struct panfrost_gem_object *bo;
+> +	struct scatterlist *sgl;
+> +	unsigned int count;
+> +	size_t total =3D 0;
+> =20
+>  	obj =3D drm_gem_shmem_prime_import_sg_table(dev, attach, sgt);
+>  	if (IS_ERR(obj))
+>  		return ERR_CAST(obj);
+> =20
+> +	for_each_sgtable_dma_sg(sgt, sgl, count) {
+> +		size_t len =3D sg_dma_len(sgl);
+> +
+> +		total +=3D len;
+> +	}
 
-I think I suggested it in v2 as without that you will get the warnings the
-kernel build bot has posted now.
+Why not simply have bo->rss_size =3D obj->size here? Not sure I see a
+reason to not trust dma_buf?
 
-#define arch_update_idle_state_flags(af, sf)	do {} while (0)
+> +
+>  	bo =3D to_panfrost_bo(obj);
+>  	bo->noexec =3D true;
+> +	bo->rss_size =3D total;
+> =20
+>  	return obj;
+>  }
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/pa=
+nfrost/panfrost_gem.h
+> index e06f7ceb8f73..e2a7c46403c7 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
+> @@ -36,6 +36,11 @@ struct panfrost_gem_object {
+>  	 */
+>  	atomic_t gpu_usecount;
+> =20
+> +	/*
+> +	 * Object chunk size currently mapped onto physical memory
+> +	 */
+> +	size_t rss_size;
+> +
+>  	bool noexec		:1;
+>  	bool is_heap		:1;
+>  	bool is_purgable	:1;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_mmu.c
+> index c0123d09f699..e03a5a9da06f 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> @@ -285,17 +285,19 @@ static void panfrost_mmu_flush_range(struct panfros=
+t_device *pfdev,
+>  	pm_runtime_put_autosuspend(pfdev->dev);
+>  }
+> =20
+> -static int mmu_map_sg(struct panfrost_device *pfdev, struct panfrost_mmu=
+ *mmu,
+> +static size_t mmu_map_sg(struct panfrost_device *pfdev, struct panfrost_=
+mmu *mmu,
+>  		      u64 iova, int prot, struct sg_table *sgt)
+>  {
+>  	unsigned int count;
+>  	struct scatterlist *sgl;
+>  	struct io_pgtable_ops *ops =3D mmu->pgtbl_ops;
+>  	u64 start_iova =3D iova;
+> +	size_t total =3D 0;
+> =20
+>  	for_each_sgtable_dma_sg(sgt, sgl, count) {
+>  		unsigned long paddr =3D sg_dma_address(sgl);
+>  		size_t len =3D sg_dma_len(sgl);
+> +		total +=3D len;
+> =20
+>  		dev_dbg(pfdev->dev, "map: as=3D%d, iova=3D%llx, paddr=3D%lx, len=3D%zx=
+", mmu->as, iova, paddr, len);
+> =20
+> @@ -315,7 +317,7 @@ static int mmu_map_sg(struct panfrost_device *pfdev, =
+struct panfrost_mmu *mmu,
+> =20
+>  	panfrost_mmu_flush_range(pfdev, mmu, start_iova, iova - start_iova);
+> =20
+> -	return 0;
+> +	return total;
+>  }
+> =20
+>  int panfrost_mmu_map(struct panfrost_gem_mapping *mapping)
+> @@ -326,6 +328,7 @@ int panfrost_mmu_map(struct panfrost_gem_mapping *map=
+ping)
+>  	struct panfrost_device *pfdev =3D to_panfrost_device(obj->dev);
+>  	struct sg_table *sgt;
+>  	int prot =3D IOMMU_READ | IOMMU_WRITE;
+> +	size_t mapped_size;
+> =20
+>  	if (WARN_ON(mapping->active))
+>  		return 0;
+> @@ -337,9 +340,10 @@ int panfrost_mmu_map(struct panfrost_gem_mapping *ma=
+pping)
+>  	if (WARN_ON(IS_ERR(sgt)))
+>  		return PTR_ERR(sgt);
+> =20
+> -	mmu_map_sg(pfdev, mapping->mmu, mapping->mmnode.start << PAGE_SHIFT,
+> +	mapped_size =3D mmu_map_sg(pfdev, mapping->mmu, mapping->mmnode.start <=
+< PAGE_SHIFT,
+>  		   prot, sgt);
+>  	mapping->active =3D true;
+> +	bo->rss_size +=3D mapped_size;
 
-Add the parameters and drop the leading ';'.
+Actually, the GEM might be resident even before panfrost_mmu_map() is
+called: as soon as drm_gem_shmem_get_pages[_locked]() is called, it's
+resident (might get evicted after that point though). That means any
+mmap coming from userspace will make the buffer resident too. I know
+we're automatically mapping GEMs to the GPU VM in panfrost_gem_open(),
+so it makes no difference, but I think I'd prefer if we keep ->rss_size
+for heap BOs only (we probably want to rename it heap_rss_size) and
+then have
 
--- 
-Regards,
-Sudeep
+
+	if (bo->is_heap)
+		return bo->heap_rss_size;
+	else if (bo->base.pages)
+		return bo->base.base.size;
+	else
+		return 0;
+
+in panfrost_gem_rss().
+
+> =20
+>  	return 0;
+>  }
+> @@ -447,6 +451,7 @@ static int panfrost_mmu_map_fault_addr(struct panfros=
+t_device *pfdev, int as,
+>  	pgoff_t page_offset;
+>  	struct sg_table *sgt;
+>  	struct page **pages;
+> +	size_t mapped_size;
+> =20
+>  	bomapping =3D addr_to_mapping(pfdev, as, addr);
+>  	if (!bomapping)
+> @@ -518,10 +523,11 @@ static int panfrost_mmu_map_fault_addr(struct panfr=
+ost_device *pfdev, int as,
+>  	if (ret)
+>  		goto err_map;
+> =20
+> -	mmu_map_sg(pfdev, bomapping->mmu, addr,
+> -		   IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
+> +	mapped_size =3D mmu_map_sg(pfdev, bomapping->mmu, addr,
+> +				 IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
+> =20
+>  	bomapping->active =3D true;
+> +	bo->rss_size +=3D mapped_size;
+> =20
+>  	dev_dbg(pfdev->dev, "mapped page fault @ AS%d %llx", as, addr);
+> =20
+
