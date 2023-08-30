@@ -2,80 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A14D578DF77
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9FA78E038
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242821AbjH3TMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        id S236846AbjH3THW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245212AbjH3Osq (ORCPT
+        with ESMTP id S245215AbjH3OuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:48:46 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C49FF
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:48:43 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso83806121fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693406921; x=1694011721; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=H0s5rdZ1FiTFkxNksF6bbHJ9HKt0mAK3Fjc6AoSjYvk=;
-        b=PYHG4ONBwLQw5Ra5s8YGR+F7DIdVvdg4isyAJn122P8+QoGOroUvBBY/v5itx6wtSy
-         1gY+8+lj1t1XfgTb0dArFUF/NOF9qVTmz+fpBu+5SGDMkpJl61J23efrWTfGdNJJBef4
-         EW9Y7YTQYbJmavrGOu06L+y+dGtx1y5WIv+ieNHkInG3tgz3bNGnOR3kVknqSlRlrRZa
-         TX3hFhzL4tZftTDE6e6Sbz+I/Ng6bzExX9WzD60YFy9D7gkOonwrpHIWdQ3R2sbYCSpy
-         J+cAJ3lZET0wIPiBwr1EwHPAOI2kyTqZEVdgtQseYX2OkGqsshSGZN6usgSWIIX2aaig
-         mggw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693406921; x=1694011721;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H0s5rdZ1FiTFkxNksF6bbHJ9HKt0mAK3Fjc6AoSjYvk=;
-        b=f21cldPk/LzodRLkwrYTSKsD0wiBTwVwUWsroQCh7jCucd3KNTJ7rbWHPyLYxVT+Gm
-         EzlSiMyLNXrmN03ICc53hydnviZYChNvWBNdkpfQV5FtQu9Mz51lpo447eET3B/qUiFX
-         /+GF94azlxO2q8OYntwuk2MglcQKjS3gqI7+0xl9ULc2RDD2TIeLBtsPbhy0dfHnh9Ev
-         cbyfFfY9ZrJN8j+knWNe3shTKWJYEwhbI5PqAjPmtzgH4qTXaUH4Y0luKY83uPwVhGW9
-         yL0kbCE4+/VzN5ApDy4zmIuWU0xkN8esQOTlASU3zzzQq02HjC/PlsBtSmmLhKPtvcDc
-         A12g==
-X-Gm-Message-State: AOJu0YzZ/qeMwvxYQFkWbJ0QifgFt7sX8nPG0/HR8PveFpR8TnrLiSjv
-        q8djo9Sb/dh0eWNwFGUsowc=
-X-Google-Smtp-Source: AGHT+IENIjdVHjEuVjroRVntHbePkfsyv+44mTXRHE3Eb7WYnwxYJ/210xRyEX6YKYcVkcvqFZs7+g==
-X-Received: by 2002:a2e:9d8d:0:b0:2bc:f41a:d9c6 with SMTP id c13-20020a2e9d8d000000b002bcf41ad9c6mr2012590ljj.0.1693406921097;
-        Wed, 30 Aug 2023 07:48:41 -0700 (PDT)
-Received: from pc636 (host-90-235-3-170.mobileonline.telia.com. [90.235.3.170])
-        by smtp.gmail.com with ESMTPSA id z4-20020a2e7e04000000b002b9ff8450aesm2574689ljc.91.2023.08.30.07.48.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 07:48:40 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 30 Aug 2023 16:48:37 +0200
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        oe-kbuild-all@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        Baoquan He <bhe@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 4/9] mm: vmalloc: Remove global vmap_area_root rb-tree
-Message-ID: <ZO9WxbYUVDfak/5H@pc636>
-References: <20230829081142.3619-5-urezki@gmail.com>
- <202308292228.RRrGUYyB-lkp@intel.com>
+        Wed, 30 Aug 2023 10:50:08 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 49228FF;
+        Wed, 30 Aug 2023 07:50:02 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FFF72F4;
+        Wed, 30 Aug 2023 07:50:41 -0700 (PDT)
+Received: from bogus (unknown [10.57.36.157])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E910F3F64C;
+        Wed, 30 Aug 2023 07:49:59 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 15:49:02 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Oza Pawandeep <quic_poza@quicinc.com>, catalin.marinas@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>, will@kernel.org,
+        rafael@kernel.org, lenb@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
+ timer
+Message-ID: <20230830144902.z4om5ltsmo4c6ij3@bogus>
+References: <20230829201101.3330337-1-quic_poza@quicinc.com>
+ <a4811a5e1df589573a27771749a68d34@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <202308292228.RRrGUYyB-lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a4811a5e1df589573a27771749a68d34@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,38 +48,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 10:30:19PM +0800, kernel test robot wrote:
-> Hi Uladzislau,
+On Wed, Aug 30, 2023 at 03:07:35PM +0100, Marc Zyngier wrote:
+> On 2023-08-29 21:11, Oza Pawandeep wrote:
+> > Arm® Functional Fixed Hardware Specification defines LPI states,
+> > which provide an architectural context loss flags field that can
+> > be used to describe the context that might be lost when an LPI
+> > state is entered.
+> > 
+> > - Core context Lost
+> >         - General purpose registers.
+> >         - Floating point and SIMD registers.
+> >         - System registers, include the System register based
+> >         - generic timer for the core.
+> >         - Debug register in the core power domain.
+> >         - PMU registers in the core power domain.
+> >         - Trace register in the core power domain.
+> > - Trace context loss
+> > - GICR
+> > - GICD
+> > 
+> > Qualcomm's custom CPUs preserves the architectural state,
+> > including keeping the power domain for local timers active.
+> > when core is power gated, the local timers are sufficient to
+> > wake the core up without needing broadcast timer.
 > 
-> kernel test robot noticed the following build warnings:
+> Isn't that what should be exposed by GTDT when ACPI_GTDT_ALWAYS_ON
+> is set on the relevant interrupt and EL? The arch timer already
+> deals with that.
 > 
-> [auto build test WARNING on akpm-mm/mm-everything]
-> [also build test WARNING on linus/master v6.5]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Why do we need anything else?
 > 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Uladzislau-Rezki-Sony/mm-vmalloc-Add-va_alloc-helper/20230829-161248
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-> patch link:    https://lore.kernel.org/r/20230829081142.3619-5-urezki%40gmail.com
-> patch subject: [PATCH v2 4/9] mm: vmalloc: Remove global vmap_area_root rb-tree
-> config: csky-randconfig-r024-20230829 (https://download.01.org/0day-ci/archive/20230829/202308292228.RRrGUYyB-lkp@intel.com/config)
-> compiler: csky-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230829/202308292228.RRrGUYyB-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308292228.RRrGUYyB-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    mm/vmalloc.c: In function 'vmap_init_free_space':
-> >> mm/vmalloc.c:4506:45: warning: ordered comparison of pointer with integer zero [-Wextra]
->     4506 |                 if (busy->addr - vmap_start > 0) {
->          |                                             ^
->
-Right. I will fix it. We should cast the busy->addr to unsigned long.
+
+OK, let me try to write down my understanding here:
+
+1. DT -> "always-on" property in the timer device node
+   ACPI -> ACPI_GTDT_ALWAYS_ON flags in GDTD table
+
+  The above 2 indicates if the timer is always on or will it stop in
+  (deeper) lower idle states. This flag is used in the driver to set the
+  clock source feature appropriate so that this clock source can be
+  selected as broadcast timer or not.
+
+2. DT-> "local-timer-stop" property in each idle state
+   ACPI -> Core context Lost and other flags as shown above in each _LPI
+
+   These above are used to indicate if the timer is stopped(in case of DT)
+   and other contexts (only in ACPI though not used in the kernel) are lost
+
+Not sure why the information was not used in both place(both with DT and
+ACPI). One of the discussion I can remember for ACPI was to ensure the
+flags can be set appropriately if the context was saved/restored by the
+firmware and not related to the hardware power domain related property.
+
+That said, I don't have a strong argument as why the other was not used
+here in this case. Since I added LPI support, I used this LPI flag(probably
+looking at the DT implementation) and this patch is just changing from
+blanket whole flags check to just "Core context Lost" bit in the flag as
+the other bits (GICR/GICD/Trace context loss) can be still set on this
+platform where core context is not lost as the timers are always on.
+
+Yes it is duplication of the data in the ACPI spec as well as DT. Not
+sure if this needs to be fixed though(bit worried about backward
+compatibility with broken firmware/DT)
 
 --
-Uladzislau Rezki
+Regards,
+Sudeep
