@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD17378E0C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D045178DF9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239378AbjH3Uek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        id S233710AbjH3TxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237231AbjH3Uej (ORCPT
+        with ESMTP id S231927AbjH3Twf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:34:39 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7B15B81
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:34:09 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34df9c2748eso26665ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693427578; x=1694032378; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:in-reply-to:date:references
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=neliSw7qoh+YUhiPFUyH0EEqS3rYdeTkzSKzjqUjw8A=;
-        b=Z65u+YRz1l6pJzF1+RoWCPc18jdeArFYsEpVczIgPMjManxRd5GvjJ9Nv6HRhJSAm1
-         1CA/3bB4lk+NOmjjBfJM8jfrMzDFoiB29/QRMAd3URa8TqmQIpRM8XsNj8GFjBjHGjUR
-         G6NmxZy2vc08/b5ctfpirZBnj4GyAar7F9vxO8MZK4SaoXIys610Eod+/GReq51TFiYq
-         /CdUNtSD5lS1hgVupLT03fPj17lVr1GAFyMLAZlk80REqw4auj0d65Q08UPO8dMbsTik
-         7+I1Z+bPuF/X3yIkM9j8C8S+Sd37GCHHl3j3tAOfOrZcAd1Tcq15AR2EnLIofOsGOkqD
-         sOjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693427578; x=1694032378;
-        h=mime-version:user-agent:message-id:in-reply-to:date:references
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=neliSw7qoh+YUhiPFUyH0EEqS3rYdeTkzSKzjqUjw8A=;
-        b=XpZeAVh535gskDtAvRgQOW0aaMufhNPrjMITytt7VKC/OS3sN7aRWrpa4YHilrXe77
-         UgnUif73y6COZwp6dvnYZwVQfVquMmbsTUx1qUz4J5rQvFXQ7lKgC0yc1cnCYHg8TWZy
-         vFp4Gq/eY1L9MK1Q1qfqTDwqkT3SScIJdJTBhqqravPVjhTpaJ5D5m5fPxcKWN4ZcUj8
-         3ckatnQ4lPkheRlATlbE8zijtMEoqZod6gexQ/2QkNyDEQFl+bHHr+08bASgfPjrdpGq
-         F/rW6ahnGSpPnIgo9B4diZjF11nhprz5y4tuONuY+FjrQCfD8D32M+lOldAWAamCMLzf
-         Lr5g==
-X-Gm-Message-State: AOJu0Yy/BrkpOFOjkqI98i0Yp+VO7D+YKNsbQJpXY8D75edG2stKJhag
-        NYNzXEmdzlS8LgUxMqKgj2oC40nXp+95Zbau04DVWA==
-X-Google-Smtp-Source: AGHT+IEtPBJyW+fxDSwfhZLVKMbrw+fx+hC8DUP+9B7LnqUilulxgXIOq0VIs7hNfhDbzxT0E54wrg==
-X-Received: by 2002:a17:902:e551:b0:1c1:efe5:cce5 with SMTP id n17-20020a170902e55100b001c1efe5cce5mr28280plf.3.1693422989246;
-        Wed, 30 Aug 2023 12:16:29 -0700 (PDT)
-Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
-        by smtp.gmail.com with ESMTPSA id f4-20020aa782c4000000b0068a0922b1f0sm10343368pfn.137.2023.08.30.12.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 12:16:28 -0700 (PDT)
-From:   Benjamin Segall <bsegall@google.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Hao Jia <jiahao.os@bytedance.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Igor Raits <igor.raits@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>
-Subject: Re: Fwd: WARNING: CPU: 13 PID: 3837105 at kernel/sched/sched.h:1561
- __cfsb_csd_unthrottle+0x149/0x160
-References: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
-Date:   Wed, 30 Aug 2023 12:16:24 -0700
-In-Reply-To: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com> (Bagas Sanjaya's
-        message of "Wed, 30 Aug 2023 07:37:49 +0700")
-Message-ID: <xm26cyz4ibnb.fsf@google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 30 Aug 2023 15:52:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D816659F76;
+        Wed, 30 Aug 2023 12:20:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27652649CA;
+        Wed, 30 Aug 2023 19:19:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D77CAC433C8;
+        Wed, 30 Aug 2023 19:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693423139;
+        bh=DQehdTj1zGLksZp0kH4qhiZqixjDifmmemA/25jnu/k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IpF2BjCs2PIj9Ct0u35NKMNrn09TpMuu6e/wZuJS2cC2da0YnsBlhfNChW9jqSzsx
+         ExtuqwcwbNTAGnrwC47fIwc8g3SL1VE1thytKlwXp97GlAPJIH+E2o+1aRxJW1wxos
+         0LVrRinXcXTZThoXIv8n2ZbPROs+r6vCN7/oHCWOiMR1Q//9qKiVcW/+8LTBx0FR4C
+         Xek1XSTFznkJD7ehJCFQC5RX7d0tq5O1OpuFHFw30Vyhj1i+QW5CJql4vNibs6cpYj
+         SePwub2fCA3qmUqDbtP4zHS0nkJ8yUIty9OQj2Wg3LQVbeRqhoBSvxobSkrwGxNLTI
+         AA//rMHYe1zvw==
+Date:   Wed, 30 Aug 2023 21:18:55 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/8] I2C: ali15x3: Do PCI error checks on own line
+Message-ID: <ZO+WH2LLkyM0PdM0@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230827133705.12991-1-ilpo.jarvinen@linux.intel.com>
+ <20230827133705.12991-6-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="35KUKm7IdQwcja9I"
+Content-Disposition: inline
+In-Reply-To: <20230827133705.12991-6-ilpo.jarvinen@linux.intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
-> Hi,
->
-> I notice a regression report on Bugzilla [1]. Quoting from it:
->
->> Hello, we recently got a few kernel crashes with following backtrace. Happened on 6.4.12 (and 6.4.11 I think) but did not happen (I think) on 6.4.4.
->> 
->> [293790.928007] ------------[ cut here ]------------
->> [293790.929905] rq->clock_update_flags & RQCF_ACT_SKIP
->> [293790.929919] WARNING: CPU: 13 PID: 3837105 at kernel/sched/sched.h:1561 __cfsb_csd_unthrottle+0x149/0x160
->> [293790.933694] Modules linked in: [...]
->> [293790.946262] Unloaded tainted modules: edac_mce_amd(E):1
->> [293790.956625] CPU: 13 PID: 3837105 Comm: QueryWorker-30f Tainted: G        W   E      6.4.12-1.gdc.el9.x86_64 #1
->> [293790.957963] Hardware name: RDO OpenStack Compute/RHEL, BIOS edk2-20230301gitf80f052277c8-2.el9 03/01/2023
->> [293790.959681] RIP: 0010:__cfsb_csd_unthrottle+0x149/0x160
->
-> See Bugzilla for the full thread.
->
-> Anyway, I'm adding this regression to regzbot:
->
-> #regzbot introduced: ebb83d84e49b54 https://bugzilla.kernel.org/show_bug.cgi?id=217843
->
-> Thanks.
->
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217843
+--35KUKm7IdQwcja9I
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The code in question is literally "rq_lock; update_rq_clock;
-rq_clock_start_loop_update (the warning)", which suggests to me that
-RQCF_ACT_SKIP is somehow leaking from somewhere else?
+On Sun, Aug 27, 2023 at 04:37:02PM +0300, Ilpo J=C3=A4rvinen wrote:
+> Instead of if conditions with line splits, use the usual error handling
+> pattern with a separate variable to improve readability.
+>=20
+> No functional changes intended.
+>=20
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+
+Applied to for-next, thanks!
+
+
+--35KUKm7IdQwcja9I
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTvlh8ACgkQFA3kzBSg
+KbYSXg//c8OcU6ixBEjPBdpYLtGQnTnzVraWKC3vVbipNSoeU9+vw7tN/m4YM3uv
+n0DUSlkmDGzmuxvxlXKDjINy8urJI2UbhhNCdSjgPz8PjdCLg2vqijPNFGcVNX7A
+DE9D6kBfb2hFlIlDYpmqBos9c6U4zgA31ypTD3K5bziVgyAS6PqK20qtes0jHqH6
+nD+HcKyNeMjborf6tnDQo2UPJNQlOo2KZXFD4kLBS4xqLcquGqDkueEjWi1CUX+H
+m16Ehqg2yo4eZ7PtrdCFBYBnK4uc51E81CKrws7pkBsUFdsuvXOQcfCz4c9zWK+9
+fES0hJx/NZbgs3JxJw5dLgwXufZcYCmw0v1k5ED8Mh5exyVuM1fFQMf+h0ytmEfz
+jPtbXw3bAJTHbutX8Bt5QK5tPEowM5LFReJkTXVRNN280ofFK+4kHUj8CIxkL2Iq
+65Fj+VEsDIQzKxHa6aefYS9ZTSGQrYMWokX1TwfP2StFNPSubbwyQF1fHmSfxyde
+57dO8pMBoCkq8r3ttv66lfAtv9IX73olx7OPUHelNax0qToRZErAXzVv37DB2CIQ
+o9O3QN2XZ/5kBaGrHj3TW5xFwHRg4YFOZ3Jvkrrl6Ak5O9rQhU4EWsOMJwra7YcN
+Bj1BRSFYRBiuXjGfEWIuHmj1blZCob5/PN3V2Y8Demli+2ZbX3Y=
+=osT3
+-----END PGP SIGNATURE-----
+
+--35KUKm7IdQwcja9I--
