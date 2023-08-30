@@ -2,124 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D66378E021
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE0E78E0DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243399AbjH3Tcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        id S240068AbjH3Unw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243151AbjH3SqU (ORCPT
+        with ESMTP id S240259AbjH3Unm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 14:46:20 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on20717.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::717])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A52810FF;
-        Wed, 30 Aug 2023 11:44:39 -0700 (PDT)
+        Wed, 30 Aug 2023 16:43:42 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B0549CA
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:30:25 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UInXRV032362;
+        Wed, 30 Aug 2023 18:50:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=STjuB//DGiYu0SsVjaSTCr94if90opeu8m7UAeTADmE=;
+ b=gwUTTtv/KL2nwpy5reEzy58WWGFh9LtJ/pRyqpSAmGvjEG3gexJtYdvbnXG1n1zjBZV5
+ Kb/jPUrsCtBm10iAWqbmxtIpEI1RcWEV6Dwk39V+NheZxZ/uSlGJL8GAmR4OCcpywAoN
+ BsUTe1Ow9QkOXRU/1zI5e93T4jwnTsD/RlvueaDnyciTfHv5wqpgUv8zHUuyrdp15vOB
+ Z8smGx4uWVYhjGE8aOGJFP3bcXPwh//h0Paok+TC0xBRLh0ApfFcmrmDpkSoqG0NkP7N
+ 4+YJsLZsfGRZJpe4crrtLWoQV/0nSd1Um7GCRtZb1sRZOiBAsU0dTmZtV9IHythIMdeJ CA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9k686b0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Aug 2023 18:50:06 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37UHkegk032779;
+        Wed, 30 Aug 2023 18:50:05 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sr6dqehb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Aug 2023 18:50:05 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bWo5iL27JgXkE/N1TcdMKa90qsDHvFiMS/UjMz1vJh0R3Jt5WtdptwFmOu80dZkxQ6ISzufdhc4l7xdNJi+aiiF7fUCqYkhIzYc5WnITWQBMroGdjpJjSPxT1OH4l41ISO4nCztanqGFAdfHTHDUdrM8saW5K1cYYt7hRw+KmVQTyHsxMb2PDAxF0//WAxCmCKV99jx5hkyNs824dcIkzgZCP/170RzT9gosFpOuXbmogMYjrR3+iPDkIxxmLEgYyRiKCmIxDWzh9kZOaUoozVISkqDQzBgGwP48LgNerzPsK5YBEJ952a06nUb6Fb1hkeakMt2WkCD9vFYvPdRQ5w==
+ b=dHFLRJCpCqDLcLtOEMcvU8AEqCjfW5zZOnEmiYsfn5pYhZeFBRuKJvf03vnDoXi2j/z8U82kgX3p+UVgAA0JUsqw3R0IOwTy/jO/fGV+6n6lU0YrcVvJRU1RPxpEVSfsWc8CVuIWlHt8fnGJVlXIb7RbmmaRRJi/u0uHo2hXuISns8mArNKf7XCoslTKublwPjy1mp5urgeiHaQqJYDrlG79PY7SBpIdFIRoJ1Q7OKPS1vPksi3MEtTdeFEiFX0xCKSw95i2gGQGQPpNEX+DQkmJAAquINXrNuNtR+kC0ZVEBMryy+i9BMfFdkF0KcP/OpsIKtixtKhwwdWYp0ecyw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VY5rr4fRuR/W2E4IDh55cQDh8mYna2XnENKF1qQd2ho=;
- b=DET0hJf8oSzQIjJPJJ81RU/zVIzovHtpvXUKcySN67dVsjOUE64cE5Iu1rY6DXMapVsRESbNg+qf/acbNfTrc/+OG2E7xnsZy4QljwXMcfJoJSjxjqOJUldTyz+6E8qNFP7FNcY4v/iCdcjmE2QXIM3tY58pKAYOfctHtvhhIZAzrMND39IHi3Fks3oFt99615YkgP72LxYdLGqimabxF8e7ftv6xaHRzKR8kByUnvkeQglwwpngBR+pfCY8sfIdfP4fs5ksX5mhrvhMneeJBTbEp8iwa4PVHYlqFDOmlBs8P3U3up8e9X1Iwr30moXzr/Ayjq0gy2vyqruIue1hBQ==
+ bh=STjuB//DGiYu0SsVjaSTCr94if90opeu8m7UAeTADmE=;
+ b=T2xqmRS+LWlaOeXK49MXP6fmB39rNUbDzFrQqPjGmySBb+zntKigJjw04QzlZvYd0PrgFmppxDp9H8LWfca+wXB0LsMgaT1jTk3h3pgmHT7EZvX5RVPlTjmHzNhnXUqhN3Tx8mfr8RB3Ta8h5i/vrHKO05rjZBf7f0fhC2pzWpPs1ewtx9cV5fGR0Glcbxf9M6I6Ak2KSw4cDML2Kt4N+qsfeYhS+IyE9AJlQIZ4dFykgh6PjMf0mFZfuZ/iHTeZ3ZIltPnUXQA0H17s5TPUZ9zvqQQg9VDetUc7MU+PRc2neeaJtdE0/88X1ppj731lv26uHiJK7dd/xgDu1Q5n5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VY5rr4fRuR/W2E4IDh55cQDh8mYna2XnENKF1qQd2ho=;
- b=N9QgHv9/XQ4NdT3NOlJynXFRe61XG/hR4k/d16nFvq+YyqdS/mDUqjSo9mciAr7tR45a1lyZvkQmqGNlmdeLIkqhqZmbjOOpkYeE1V+4VvtW4qLbduoRuifsbQBkM4n83zEOqPmEHN3ibugypaUPkDsQ3B4gweu6fB+9dGd4CqE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
- LV2PR01MB7599.prod.exchangelabs.com (2603:10b6:408:177::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.18; Wed, 30 Aug 2023 18:43:04 +0000
-Received: from DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::bfa4:8250:f526:5015]) by DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::bfa4:8250:f526:5015%6]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
- 18:43:04 +0000
-Date:   Wed, 30 Aug 2023 11:42:47 -0700 (PDT)
-From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To:     James Clark <james.clark@arm.com>
-cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2] perf vendor events arm64: Add AmpereOne metrics
-In-Reply-To: <1299e1ff-2543-6ee5-dc32-bc098bd6bfe1@arm.com>
-Message-ID: <e674954c-dc8-d961-8ff1-ebcde95813b7@os.amperecomputing.com>
-References: <20230826192352.3043220-1-ilkka@os.amperecomputing.com> <1299e1ff-2543-6ee5-dc32-bc098bd6bfe1@arm.com>
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-ClientProxiedBy: CH0PR03CA0025.namprd03.prod.outlook.com
- (2603:10b6:610:b0::30) To DM5PR0102MB3590.prod.exchangelabs.com
- (2603:10b6:4:a4::25)
+ bh=STjuB//DGiYu0SsVjaSTCr94if90opeu8m7UAeTADmE=;
+ b=iUeKoDF9rM2SgdD4KDp0VTJs45j3mAK44jjoGju3EpRuFuyOSm8hcHj79X4LS8tSNYuwZQUQF+2XkcgWwxMvi3rx4Lx1m8bCJRTprtIKI0DZyv6vi1o+ER7zH/jNBN5MArpHeq8w6oC0vpkmC0XuFVzlr0mpYosELADS6iXZkRE=
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
+ by BLAPR10MB5203.namprd10.prod.outlook.com (2603:10b6:208:30d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Wed, 30 Aug
+ 2023 18:50:01 +0000
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::238e:5e86:cbd0:7415]) by CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::238e:5e86:cbd0:7415%4]) with mapi id 15.20.6699.035; Wed, 30 Aug 2023
+ 18:50:01 +0000
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
+Cc:     akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, peterz@infradead.org,
+        rostedt@goodmis.org, tglx@linutronix.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        Ankur Arora <ankur.a.arora@oracle.com>
+Subject: [PATCH v2 0/9] x86/clear_huge_page: multi-page clearing
+Date:   Wed, 30 Aug 2023 11:49:49 -0700
+Message-Id: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ2PR07CA0024.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::14) To CO6PR10MB5409.namprd10.prod.outlook.com
+ (2603:10b6:5:357::14)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|LV2PR01MB7599:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9d3f433d-2f1b-457b-3f18-08dba988f1aa
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|BLAPR10MB5203:EE_
+X-MS-Office365-Filtering-Correlation-Id: 90710399-c4eb-4475-7858-08dba989ea88
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SisURiHUjzoTy/DdXAN5z/+7I6Cs0HXuJWyBWkObtvnbIZpmGi10t1e3zpQjgXFG7PMfpBybxrfRYUSx3vlykUyQvK4ZG44f+fhO+3fjR/l204DEs9hrIruXPNYxE/bnlN+L7qoCW+gpZwloHeCqKlD4jGMY7uKRGMUOWS5ZAO9Vy/egbjXHfNvL7egXih2srmqICKc60Pho+gaDubs8diPKxEHVstwNwqBX/C3BYC0ldfki50JxlqtJ8wZqEC/jMS9Na9DSxbFLHnWI0ZEavTDZcqTqsa8PAKPaJyYL7s6iDgzLC/EemIriKbQ0iY4aB92pZHoh+/xxz3G50yYpWk7/9s4LDf6Fbad02OK6B3pneqk+o7NG55Z9meC6Cra+pNFEmQeiZGeN+SbrFMtvjw2KkOAGtKjwMP4WfVdtZD65yUkFNcY/Eez8CA9DLqaxF8F5osBpXPxpKdiomKmsikT6JhrCOhqzhjWbSKehElOD4ywM91e2Yul8Yp13+lA+isd1ZDS2BcEPFAHRZ8JQ6tk5ATL0fAN+TCkP5RMJ9YOnZQpcecDyjBnIDt1EVRzExu552JMrl3Y/IsfjQzwt8NHqnLUtI0pCzmEkWUpZ/9cYy7MqdoY1hT9ZgO2yiKeG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(396003)(136003)(346002)(366004)(376002)(186009)(451199024)(1800799009)(2906002)(7416002)(54906003)(66556008)(66476007)(6916009)(66946007)(316002)(41300700001)(8936002)(4326008)(8676002)(5660300002)(53546011)(6506007)(38350700002)(2616005)(52116002)(6486002)(6512007)(38100700002)(86362001)(478600001)(26005)(6666004)(83380400001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: I6qVl30TiWkw6z3zoQgNDl/Sb9hUiBI/Qj2+exc7ciIGT+AipzRw9i4E4kvUFCGZTVrrmXDSKyXstE0f2Idd0NHM2wVMh4fZIu08dZgUPtB4aZp1glV+NcivYrPdkfazprG6k8E56pgYkrXB5HvVIkD4XOaRWBxlEC3kb6j6496uDGx9pt6FhAsQyhh7HGcceFvuxxOure4Kfrh5opOMBYun0dfX6AQQp0yic4A6TWAxRzXeCk8w2mk7Syab2f39Cj8bLWsvbMBr37JLMOz3CJWi14BU46Miv1UmUidU93azCSxoyTAnCH+HVdgWJHFpyc1Z0Yc2iDuFFY4VtYH80wujoRXWGG4rHfEan2Y6ADkQkfaomkcHdvcfYrj10x0aO2Cj78dEHIMByS8aW3m83Psv/35M75lpp3dwkuHCaExEhz/SbUFsCchoNW5X3AHlShctCWYYg9sg8wo8PaiyxGluE2EsmERG0hE+Rq/OQBhfoW11jhmu98V9MRgo7KwuVxhzj1N1O02yBs/uXzjmfxpav5HZPXQBY860LsCRE8OSVO47b/FB1kLbeB4b7yOBVJiVFo98RR1mJerZrGDzcE473w7atTdu9Fh6T/jRfstnhz6Z+gH1wuX7R0dRZBZmGO8fa8uInAYrl5nonoL1YA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(346002)(366004)(39860400002)(451199024)(1800799009)(186009)(6512007)(6666004)(6486002)(6506007)(107886003)(2616005)(26005)(1076003)(86362001)(38100700002)(7416002)(103116003)(5660300002)(4326008)(2906002)(8676002)(41300700001)(66946007)(8936002)(36756003)(66476007)(66556008)(316002)(478600001)(966005)(84970400001)(83380400001)(14583001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NN39IHBb4NQFFIP518DWfinyFtuQ1PdXIPQdQHsSZsrYGEP12C/WJw3si/T7?=
- =?us-ascii?Q?kG9+ltaHFL2JDLzQA/RcnvKwsHrpc32NWmLEBOsRenz49zzaOBL48ByBq9zy?=
- =?us-ascii?Q?SAanT5P0hw1iuQ9DrOClaCVUwqFBBtcH86bq+VnOCzF2YvT9rwN3NjMbiDvL?=
- =?us-ascii?Q?9kQ1TBLeXXnPv3tG+IHx4G9oMzgRPXlZ5w2/NF8ARsDimGTJw6boFQyzWbrE?=
- =?us-ascii?Q?u3U/xV+I7q3UG8+TyhF4VkMECDZk57zoZxB6HuyJcVLQyRM8JK0HutjeZQ1V?=
- =?us-ascii?Q?QMOudY2oh33XSQXNdzs+4DGaNzltGxbKRfxS6ywsvjY0A7xNg51HHKJEHXvy?=
- =?us-ascii?Q?weWxaMr1hjVDaE/Zuzm3bVPKSY3XkUhTyZHqohUqCsdh4sU9q5IlhHhHjdYL?=
- =?us-ascii?Q?83CmgXl+o7fh+tDq6gDYW/txCp86cFf9tg/aQCFxyvKxLvn6fDTX0+E9Aj7z?=
- =?us-ascii?Q?HenZM4R/ngr+PcqYkWaVzTTUPpxPRTYEHff1osl/pl4shPFKRnhoXb3lq3Dx?=
- =?us-ascii?Q?UKJjsMPiFu7mgXkq8CyuX9QN09L1rJGDalhhrF7uKYmx73Ee+hnhtg6glyaH?=
- =?us-ascii?Q?M74uqalm5oomMNPfFpMTnL8HzTATpTD7s6UAIsavDa0vpK0m192P4VhcP3NF?=
- =?us-ascii?Q?Yj21b1V2gcrS22tKxQB26j3vpiiP4qsZHE+9P2CsS/pbCmnYn3dw80yYSsXz?=
- =?us-ascii?Q?T6zr0RwJOPDriivt5vxpHceqsXwoajn1eix/tsfiPpErmhZnu9c6aG76TpCz?=
- =?us-ascii?Q?/JbAV34UZ/u4sasj5LStLzqF5+LncdA0qVnduFwyf9gyTdQs8h9G6BLSfaHR?=
- =?us-ascii?Q?BHbRHC4BwcdDm2JLyBahwtoVaEUvy8ip3VvW26lpfL268h0cMSTMtIkRoUmF?=
- =?us-ascii?Q?ueT7pg+TsHX9P2dScgpaGLH+4PF8NiiTf3bfh81kb8QS8OGPGcyON6ROv6/x?=
- =?us-ascii?Q?kQqTGKtHjiVtGrQUIwPu4VsthMjw4A3ZiSaMJANfbIkI+EkUeLa36iJ5+8jd?=
- =?us-ascii?Q?Q0sC7oJYJE09LDbccLhPVW86vRL4Zprs6r4NkrcpeNzBXN6+219+ab1gcN+2?=
- =?us-ascii?Q?ioJvSX9+CNfW3GDNlPEszz9ocUUrQzSnz9eZ7wzVMhERorQMvISVMKz1DdKk?=
- =?us-ascii?Q?pLOG70P0Os6LjYdlLSZXjqXSEXvMhXV7RwlhMtXntxqBQo+cJjbOiFqX90ie?=
- =?us-ascii?Q?tmww/yK2FGNvP3G206hQnY+0kXENVk3voczZtBTqXRloy6C0yyIquDr2JzyL?=
- =?us-ascii?Q?yFrIc67rboGRGGIeaDMYqH5XQfO/EYvBYCO+mJrwGuN1TrYHepvH4VC8NsmA?=
- =?us-ascii?Q?4/h9nTFL/2Xx2XnhPQGN/D4x8wpn7i3vgHr0zq8P6FuJKu86sZ1ygPnYHr/I?=
- =?us-ascii?Q?iqZv2iiHsNnB42LVHKK0lf31V94hzbZ+tszyw0rALY5Tl+S4H25Wbyq/AAp4?=
- =?us-ascii?Q?RVed2JNHqoRxKT7K6diQz1USjhHMQSwv8MJVQ4TRCx/fnuJXGmsgmPOuEdW7?=
- =?us-ascii?Q?RLwBHwM+tTHAQC5QAAlNooP/c3oqCbYeFxoF/WMyKJPdstIxYpruCb4VcjcW?=
- =?us-ascii?Q?jOuj0ipry8bBiiRqV1snvKqYM/t82GqAeUnBj0hboOuBax+MGYCZH5H37HlU?=
- =?us-ascii?Q?ufsXuez7ToRKv4jf5Edr/Cw=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d3f433d-2f1b-457b-3f18-08dba988f1aa
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?d7bLn2bYICDWTOaiQ+4OH+A8z+AOUUVvAdwjNqpBtLtKb1T+RCPoGDWCy4m3?=
+ =?us-ascii?Q?V4oODB7Cb3yUBIeBHXILodqJTR+owHq4fSkkP4a+RP6sGc/jCXIgYKbDNZZF?=
+ =?us-ascii?Q?rzvmX7u2RSOH2DBvGkw5mdsv/OYKroJc6WIIM90xQNYEx+/OzwNF9O7ABhbb?=
+ =?us-ascii?Q?ZLLYIgjJ5CvXxeHPyoD4OhuE0cQUtu9nY1bxTkD54yTjbKY7/GikjFhMqYda?=
+ =?us-ascii?Q?Bx31PmWYCZtoN5/9gCaW3udd0AiJaGraCEug7p2JijntRnWizLAEVv/vwV22?=
+ =?us-ascii?Q?jWY2q5n90xlR+/nNOQBaeHNX+3gqbqIkH1DcWVhshoYrYpVY7k9SRDaaUKEQ?=
+ =?us-ascii?Q?l0yu8ilQtHSpf2FeuNXaelT/J9p1bQ/at66vOdLS34aGggZGYqbfZC3R9bmw?=
+ =?us-ascii?Q?uqwc5vTquOjOyiuK+C4s/9ZaCA+Ah5vKUDzLbVf4DE7dWbRbz0CcG7YC9KyV?=
+ =?us-ascii?Q?dN0FWoB/pQ53unexJJLT0DbIukMSPcFjfflPkLOn78JdC3dBm8ksSY5uedh6?=
+ =?us-ascii?Q?y4g4iYzXPG6UDfAdv3uUjTqxhnq5f6g6DUErBM9nAjPy1bjsrTgS4tgXXxko?=
+ =?us-ascii?Q?x444CWunA62bs5SF2qIT4k5F0Ehnw4mJ3HSa3K662zhxR+pCCbXGnp5hzRbc?=
+ =?us-ascii?Q?YbM1FSJShcuge5AOAQaVCDGc5lSU7La7ebGtKCiVPtZRReLv6o+RA/CNhr+B?=
+ =?us-ascii?Q?hUruc9LwYhmNbzDnsW3kSS/p2TNSTWu2hsCJS2IDLu0YL3GNh7gP673fzGOf?=
+ =?us-ascii?Q?3ThNrbBLtLRVAM0rnMJO0KXDQ5UJ7VQ86+1f0E2ViiSdUt4hf3dlUV/NXnH8?=
+ =?us-ascii?Q?HMDsBmH+K3CMCQk6104HoXsh9XM5nq7DMwwoHXYMXsJBBg6nmtRWPAigDgKO?=
+ =?us-ascii?Q?ZJ6vq+sO9dE4XIGrx6Huc49Ei59E2N/Kp02DjTYG1zt5+GSv+iCG0E637EMp?=
+ =?us-ascii?Q?BmVQSHkTkN+3gV/+AByt5T9KBzenWcu9TKR4EYR2Y5bsnuMQ6/lwf5ClSeCn?=
+ =?us-ascii?Q?LS5qU2H9RgxOe01eTU1SLdvMOvHZcqaR7W3HpMBjDR21nSVhwumBtufGIjC0?=
+ =?us-ascii?Q?waFHnWp+zO+3WA5hXZoGJ+CAsjLDatCMKrYEHxp4QOJEdCgW6KSeV22u1Is4?=
+ =?us-ascii?Q?Ux3cvbztDHYjA3C4G1WecnRS4Hd0zDSndwxt94BPjpA6tbFIS4MJEE2u78hU?=
+ =?us-ascii?Q?k99hzSCGZVK83lLme2c+UGAUjlHvbqO/KYqBicItU8RTTcc/Z/XWmPx6RYHs?=
+ =?us-ascii?Q?g1bq3Kvgsek+XqwNIVYz3DuGVfHhQW82d4sD10uV4PzZGqWE+W7Tu275Y70l?=
+ =?us-ascii?Q?MaVuOQUUXpvE8IcBeuUaxvTNpEHYSWby+UKG8MMJuXq4ugjLhSiv/U57aD4w?=
+ =?us-ascii?Q?hLl+bBLg4z19qeF6cTJdusMxAWU1Z9Qs6MiH9Tiy00GvI0XGHdyNIGUQLdBa?=
+ =?us-ascii?Q?rL37fjnI8ggtsF2TFrir+HbZoLmyjjwH7Vin2mmEwVXe61Q42LrThUKbbmof?=
+ =?us-ascii?Q?Dyuiz+Q+ctTha2Z3TT7kLDy24qwnmSLHshIyOPRIvBpZnXB/MkjblSNb+ehN?=
+ =?us-ascii?Q?NHB0eBs6KaFQN697Qx8ENIsloX8vzPe+R86CUAhNvFHoKgNrxyN5aDxDHsQn?=
+ =?us-ascii?Q?vg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?W5PTQU9ZhNoJTzrHQum0/ibn/7dLuUOhlL6rRNTKzgj4+9HvjIL9dIKoVjv/?=
+ =?us-ascii?Q?B2JAz9+xEKAPK+h7jA1R8dqCiQAmCwjObQYW5+YehWg5BC4uD5XXA2txf+66?=
+ =?us-ascii?Q?h9otxN6z1z9bUHfIzZ+wcr44VZOH62igvFt83RWDwORjjEA8cO0SiJdFQZBs?=
+ =?us-ascii?Q?I0RKdDDKKnHG3Uvlm0ZcMitMiCIcI7Zp2MSGIu42GlCnmBqwEMObWZFAOrQG?=
+ =?us-ascii?Q?bzu0cJ9d4Gtd1bZq/qw1E6OoEZhV/tyit049p1zvKAutWXkZe5Mgzo+34Jv4?=
+ =?us-ascii?Q?8VUWFS2OO6vr/0IjQ/b/Q7HnFNI4lm6wLMNQp3UUi+XlBk+B73/gqiF3pLx5?=
+ =?us-ascii?Q?ooSNNacAM/FdzMm7wGXBHR6VGu+xaXIo1drSaHwtwt8Ee7RoBD1dvxt5J1Nu?=
+ =?us-ascii?Q?4WHWxKTwOP8XGvBnffFKpcaCBrwab1AX0ngobYsMsYYbe36ULNLia4prLk3W?=
+ =?us-ascii?Q?NCt3g9mFPRbQUoDUOx/lRcDPwap9+nxptpL+Ol5YrxjKL3PSU5rcUqu5nUyp?=
+ =?us-ascii?Q?0sm5YMRCNo0DewcgBOuWHLdcW86Tfqt9YaQyOKlCHGSw2CFtIIbvNcY+h6kw?=
+ =?us-ascii?Q?DhCyRusQWgkdIZnE00oGYS356iWy649+hMh/E/jZcNF53gh5hOE3A9T62YI1?=
+ =?us-ascii?Q?n55bts+JZ1G8JkhIUh4+CvDRyWbRL1NDQA+39tIpkvmYlUvxZaiJTov1K/3a?=
+ =?us-ascii?Q?I/WhfyNxArIOr9/fAtZnK14LXHibOPTcjX2hifnuaxSsujgGFbvm6V7SLp3J?=
+ =?us-ascii?Q?FbLaNmx96F86DBDB91ZD6T1HhTFfsNMDXsCUjNfVI/3jiPgYw1ovc19+58IA?=
+ =?us-ascii?Q?YrAhhLMNFuqngjGeV/LSEwgn64030JlmMmSoDlnC6dXZ+Ha6RaVG0nfyZ0z1?=
+ =?us-ascii?Q?wOjf1LhqEv9F8+P+C8Tq057QwAAkURroW62GCJ7gKjHCloUuCPVCBCUPwap9?=
+ =?us-ascii?Q?0q04gLrxTqN9nf9IWrNwYdNQA+0vWc3f8zr4J6jxCM7pueUVw6iJ2bbULs0n?=
+ =?us-ascii?Q?17oPxhzLOKKPzdZaNgo2HxV6NCwZZkeHPR6BVbeU2JECa2zMkKDWXG/7eWX7?=
+ =?us-ascii?Q?z0d2jgBLSPnpRUiWInFQL+6tO33WZqxMPySnBKVFPyjWov9GgoHsFWm9XVzS?=
+ =?us-ascii?Q?CU9lPXl/zUHRmJ6oh/gGOHgh1DGxUC/l7njk/5WUMGOj/kOma37pMF8=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90710399-c4eb-4475-7858-08dba989ea88
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 18:43:04.0535
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 18:50:01.6678
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xgpFu6VjxejL/sF0m4UcNymhcvAG6qt09/eJE7rVXhRVjd9XvkEwlSKVbfsUzhSkIJ+sfybugx+SVGBsMxgXrZIL4kfK1i5odspzeamB15ZlUVK2REKyFGHDWS8kLpeu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR01MB7599
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y39ROT3ScOPr8Gic0tQMKFYlA1y6KlYQMowVL0YMcMA//0c7wVlBVD9MD0j1CaVhWXImNIb7L4TOrnOjagxRmSP3y/uzOP/xDygMjYuSAAQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5203
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-30_15,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ adultscore=0 phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300170
+X-Proofpoint-GUID: O-k1aiO4XuQKK-XH7lsbSGqEZG6uRabD
+X-Proofpoint-ORIG-GUID: O-k1aiO4XuQKK-XH7lsbSGqEZG6uRabD
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,89 +170,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds a multi-page clearing primitive, clear_pages(),
+which enables more effective use of x86 string instructions by
+advertising the real region-size to be cleared. 
+
+Region-size can be used as a hint by uarchs to optimize the
+clearing.
+
+Also add allow_resched() which marks a code-section as allowing
+rescheduling in the irqentry_exit path. This allows clear_pages()
+to get by without having to call cond_sched() periodically.
+(preempt_model_full() already handles this via
+irqentry_exit_cond_resched(), so we handle this similarly for
+preempt_model_none() and preempt_model_voluntary().)
+
+Performance
+==
+
+With this demand fault performance gets a decent increase:
+
+  *Milan*     mm/clear_huge_page   x86/clear_huge_page   change    
+                          (GB/s)                (GB/s)             
+                                                                   
+  pg-sz=2MB                14.55                 19.29    +32.5%
+  pg-sz=1GB                19.34                 49.60   +156.4%  
+
+Milan (and some other AMD Zen uarchs tested) take advantage of the
+hint to elide cacheline allocation for pg-sz=1GB. The cut-off for
+this optimization seems to be at around region-size > LLC-size so
+the pg-sz=2MB load still allocates cachelines.
 
 
-Hi James,
+  *Icelakex*  mm/clear_huge_page   x86/clear_huge_page   change   
+                          (GB/s)                (GB/s)            
+                                                                  
+  pg-sz=2MB                 9.19                 12.94   +40.8%  
+  pg-sz=1GB                 9.36                 12.97   +38.5%  
 
-On Tue, 29 Aug 2023, James Clark wrote:
->
->
-> On 26/08/2023 20:23, Ilkka Koskinen wrote:
->> This patch adds AmpereOne metrics. The metrics also work around
->> the issue related to some of the events.
->>
->> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
->> ---
->>  .../arch/arm64/ampere/ampereone/metrics.json  | 396 ++++++++++++++++++
->>  1 file changed, 396 insertions(+)
->>  create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
->>
->> diff --git a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
->> new file mode 100644
->> index 000000000000..b623d8a9e3dc
->> --- /dev/null
->> +++ b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
->> @@ -0,0 +1,396 @@
->
-> [...]
->
->> +    {
->> +        "MetricExpr": "STALL_SLOT_BACKEND / (CPU_CYCLES * 4)",
->> +        "BriefDescription": "Fraction of slots backend bound",
->> +        "MetricGroup": "Default;TopDownL1",
->> +        "MetricName": "backend_bound",
->> +        "ScaleUnit": "100%"
->> +    },
->
-> Hi Ilkaa,
->
-> For these topdown metrics, as long as they are the same as the standard
-> one you can remove anything that is duplicated. This might make it
-> easier to make changes across all the topdown metrics in the future and
-> have consistent descriptions across CPUs. For example this backend_bound
-> one could look like this:
->
->    {
->        "ArchStdEvent": "backend_bound",
->    }
+Icelakex sees a decent improvement in performance but for both
+region-sizes does continue to allocate cachelines.
 
-Nice, basically the same way as architectured events.
 
->
-> This assumes that you have the slots sysfs file available, otherwise you
-> could leave only the formula in.
->
-> We also decided to make the units for the topdown metrics "percent of
-> slots" as we thought more specificity in the units was clearer.
+Negative: there is, a downside to clearing in larger chunks: the
+current approach clears page-at-a-time, narrowing towards
+the faulting subpage. This has better cache characteristics for
+some sequential access workloads where subpages near the faulting
+page have a greater likelihood of access.
 
-I'll take a look at those and update the patch accordingly.
+I'm not sure if there are real cases which care about this workload
+but one example is the vm-scalability/case-anon-w-seq-hugetlb test.
+This test starts a process for each online CPU, with each process
+writing sequentially to its set of hugepages.
 
-Cheers, Ilkka
+The bottleneck here is the memory pipe and so the improvement in
+stime is limited, and because the clearing is less cache-optimal 
+now, utime suffers from worse user cache misses.
 
->
-> Thanks
-> James
->
->> +    {
->> +        "MetricExpr": "1 - (retired_fraction + slots_lost_misspeculation_fraction + backend_bound)",
->> +        "BriefDescription": "Fraction of slots frontend bound",
->> +        "MetricGroup": "Default;TopDownL1",
->> +        "MetricName": "frontend_bound",
->> +        "ScaleUnit": "100%"
->> +    },
->> +    {
->> +        "MetricExpr": "(OP_SPEC - OP_RETIRED) / (CPU_CYCLES * 4)",
->> +        "BriefDescription": "Fraction of slots lost due to misspeculation",
->> +        "MetricGroup": "Default;TopDownL1",
->> +        "MetricName": "slots_lost_misspeculation_fraction",
->> +        "ScaleUnit": "100%"
->> +    },
->> +    {
->> +        "MetricExpr": "OP_RETIRED / (CPU_CYCLES * 4)",
->> +        "BriefDescription": "Fraction of slots retiring, useful work",
->> +        "MetricGroup": "Default;TopDownL1",
->> +        "MetricName": "retired_fraction",
->> +        "ScaleUnit": "100%"
->> +    },
->> +    {
->
+  *Icelakex*               mm/clear_huge_page  x86/clear_huge_page  change
+  (tasks=128, mem=4GB/task)
+
+  stime                        286.8 +- 3.6%      243.9 +- 4.1%     -14.9%
+  utime                        497.7 +- 4.1%      553.5 +- 2.0%     +11.2%
+  wall-clock                     6.9 +- 2.8%        7.0 +- 1.4%     + 1.4%
+
+
+  *Milan*                  mm/clear_huge_page  x86/clear_huge_page  change
+  (mem=1GB/task, tasks=512)
+
+  stime                        501.3 +- 1.4%      498.0 +- 0.9%      -0.5%
+  utime                        298.7 +- 1.1%      335.0 +- 2.2%     +12.1%
+  wall-clock                     3.5 +- 2.8%        3.8 +- 2.6%      +8.5%
+
+The same test performs better if we have a smaller number of processes,
+since there is more backend BW available, and thus the improved stime
+compensates for the worse utime.
+
+This could be improved by using more circuitous chunking (somewhat
+like this:
+https://lore.kernel.org/lkml/20220606203725.1313715-1-ankur.a.arora@oracle.com/).
+But I'm not sure if it is worth doing. Opinions?
+
+Patches
+==
+
+Patch 1, 2, 3:
+  "mm/clear_huge_page: allow arch override for clear_huge_page()",
+  "mm/huge_page: separate clear_huge_page() and copy_huge_page()",
+  "mm/huge_page: cleanup clear_/copy_subpage()"
+are minor. The first one allows clear_huge_page() to have an
+arch specific version and the other two are mechanical cleanup
+patches.
+
+Patches 3, 4, 5:
+  "x86/clear_page: extend clear_page*() for multi-page clearing",
+  "x86/clear_page: add clear_pages()",
+  "x86/clear_huge_page: multi-page clearing"
+define the x86 specific clear_pages() and clear_huge_pages().
+
+Patches 6, 7, 8:
+  "sched: define TIF_ALLOW_RESCHED"
+  "irqentry: define irqentry_exit_allow_resched()"
+which defines allow_resched() to demarcate preemptible sections.
+
+This gets used in patch 9:
+  "x86/clear_huge_page: make clear_contig_region() preemptible".
+
+Changelog:
+
+v2:
+  - Addressed review comments from peterz, tglx.
+  - Removed clear_user_pages(), and CONFIG_X86_32:clear_pages()
+  - General code cleanup
+
+Also at:
+  github.com/terminus/linux clear-pages.v2
+
+Comments appreciated!
+
+Ankur Arora (9):
+  mm/clear_huge_page: allow arch override for clear_huge_page()
+  mm/huge_page: separate clear_huge_page() and copy_huge_page()
+  mm/huge_page: cleanup clear_/copy_subpage()
+  x86/clear_page: extend clear_page*() for multi-page clearing
+  x86/clear_page: add clear_pages()
+  x86/clear_huge_page: multi-page clearing
+  sched: define TIF_ALLOW_RESCHED
+  irqentry: define irqentry_exit_allow_resched()
+  x86/clear_huge_page: make clear_contig_region() preemptible
+
+ arch/x86/include/asm/page_64.h     |  27 +++--
+ arch/x86/include/asm/thread_info.h |   2 +
+ arch/x86/lib/clear_page_64.S       |  52 ++++++---
+ arch/x86/mm/hugetlbpage.c          |  59 ++++++++++
+ include/linux/entry-common.h       |  13 +++
+ include/linux/sched.h              |  30 +++++
+ kernel/entry/common.c              |  13 ++-
+ kernel/sched/core.c                |  32 ++---
+ mm/memory.c                        | 181 +++++++++++++++++------------
+ 9 files changed, 297 insertions(+), 112 deletions(-)
+
+-- 
+2.31.1
+
