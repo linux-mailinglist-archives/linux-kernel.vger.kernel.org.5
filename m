@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B10178DEEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2522A78DFE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244647AbjH3TVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
+        id S241405AbjH3TK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343770AbjH3QvJ (ORCPT
+        with ESMTP id S1343795AbjH3Q7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:51:09 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A630C1A1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:51:06 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bed101b70so732497366b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:51:06 -0700 (PDT)
+        Wed, 30 Aug 2023 12:59:09 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149F919A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:59:05 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26f38171174so3676008a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:59:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693414264; x=1694019064; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cL4XVu3TuX+EzQAzzotoYtukO16KJle9C8DBmOifN0M=;
-        b=DaPT8lpr99dNx/gvZOYl5m98sppW1WQ7wHx1PTuQJ4S1lposTslokfT40C6px5Tvgh
-         GSN39q4qesNFrxrDt3JsAzu8njHq/zrkkyVhCPf8eeR/nZtN/O4afqaS7gG0EX+yiL02
-         pofd4rjeGO3feIfX4PmMECn/f7Emq7J/3G5uo=
+        d=gmail.com; s=20221208; t=1693414744; x=1694019544; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wgkRy2fHXk12I8uXbR8oF1JVRCE6YBpekWqJS8+t/SY=;
+        b=d4yyZUmyNTyacw+phcl6hkaLY+5PT1bZ+CtCRULah9RdxCdSif5Lgh6vytmZ9biVhm
+         2cwfO2HMdmxTRb1Mv4vJ8kWFVuqIsmRvebeOxQOqVAovVweaP0e8263tAX1PnYZ4lkk2
+         /9XJ5+enIeYnPidOw1rD7Q9TJ1KhRMMeDlbDdZqRMZ+cRieODsyjOSrTX8abxsGs5usk
+         0IoIcN6vKI/6XrpsZL/ry0PX5PepOVdmxorhcTDsQwehjtby11PDZUSmYnnSea1f9Ids
+         wTHUj3eLb74jZD1d5eqnDCcOPF3FtPz2NGSI3nOR5eA+wMMrnxwVeklZaEGIyOBjqpYt
+         uT4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693414264; x=1694019064;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cL4XVu3TuX+EzQAzzotoYtukO16KJle9C8DBmOifN0M=;
-        b=Y8jvkQmNfO/DnoDlDNbBgat8ZKQUS0fbTeeqS0LTvsZwUt3Fa8EEq/8qz8RJQRxeLs
-         7BETb4pl9WThUlmLhn8EU/5Ag2O8OUFMauA+OdtXYRAPL6bPX4kk2OTwhYGb65Coz7hd
-         B2odnEqjMlx2QR3sZyGzQHthWKj86XzOlZWShZLJEmOXluU8uohBiTXYgU0nmLelb+1Z
-         sd0nvlwsfcDlcrPWWG65IHgyTqHZYCyNDvVgPeWCvNKmoHsCQBnVOiRpQlj5JyGOalpg
-         N6pBfD4/EXU73E90+Bf3udnoWu5o3BYh7qsx848LLAzqXTMc3/4OLK5Bb3BjFuCOfBUf
-         TVfA==
-X-Gm-Message-State: AOJu0YyA0MeL9LaHEyNGwibtA+hLcPt3QfZOWCHzMCSYlcQslHQcL0mm
-        78RoLWZ2jAFExCBrFEOAXpvzKBtSQXKqPamK2dCaMUAU
-X-Google-Smtp-Source: AGHT+IEk8eaP3q8lbCc/Z64pCJe96PEzMMFhfETEC0DbyjDFGodMsy/o+USKbkXT4DSk2WrZXSiHPg==
-X-Received: by 2002:a17:906:9bc6:b0:9a5:7d24:de46 with SMTP id de6-20020a1709069bc600b009a57d24de46mr2060436ejc.15.1693414264276;
-        Wed, 30 Aug 2023 09:51:04 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170906831500b009828e26e519sm7320761ejx.122.2023.08.30.09.51.03
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1693414744; x=1694019544;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wgkRy2fHXk12I8uXbR8oF1JVRCE6YBpekWqJS8+t/SY=;
+        b=XoxlDFTHdX1KsuCA+XqVaFn033LofBjf3SKb8vL6amssZ/NHsn0XvkBbO5GBQSIc6D
+         IkMgQDvfykltjFOO/irULXvQnVic9bJQktZMflj0PgxkE7iAMWD+AaCfEtgz6x0qCQRY
+         wCEIpjBw7Bq64UCNj1l8sSloTCIQxyaUp4DPgD0JEMuE0DtyjZ95kEVNhsQjJTiLyHjZ
+         x5gqXVAb+4NR6zyYX2t9hN3VrOZTFm12Ibi77eWSVctj9tuBCeELr8mugrDH2YoYZddw
+         W5nAd/D5n/PWATT/LHRNW47Rl1NK16Ir0lcL6O0BcsF9JxJgwL+ma1lwZc4zeqkVlYEm
+         vrzw==
+X-Gm-Message-State: AOJu0YxqUJRr/tdp6BKeygFte05eUfxhpnP/PAzSpWdbnipCQYDZsYYp
+        5Xmc/xoLos296scDsUX9qVE=
+X-Google-Smtp-Source: AGHT+IEiBWKa3xloyf6eL2PYGoBgEH0g8SDOhM3inWHe4UsSlpRC7tRISmG4yyxSsF9If5WjYXUl6w==
+X-Received: by 2002:a17:90a:7345:b0:26b:4a9e:3c7e with SMTP id j5-20020a17090a734500b0026b4a9e3c7emr2738462pjs.4.1693414744444;
+        Wed, 30 Aug 2023 09:59:04 -0700 (PDT)
+Received: from [10.0.2.15] ([103.37.201.174])
+        by smtp.gmail.com with ESMTPSA id d13-20020a17090ad98d00b0025bfda134ccsm1496364pjv.16.2023.08.30.09.59.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 09:51:03 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99c4923195dso732538566b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:51:03 -0700 (PDT)
-X-Received: by 2002:a17:907:b68c:b0:9a1:bd82:de24 with SMTP id
- vm12-20020a170907b68c00b009a1bd82de24mr1743932ejc.12.1693414263316; Wed, 30
- Aug 2023 09:51:03 -0700 (PDT)
+        Wed, 30 Aug 2023 09:59:03 -0700 (PDT)
+Message-ID: <e655b722-f610-99dd-16c1-ed3235860a80@gmail.com>
+Date:   Wed, 30 Aug 2023 22:28:58 +0530
 MIME-Version: 1.0
-References: <20230830140315.2666490-1-mjguzik@gmail.com>
-In-Reply-To: <20230830140315.2666490-1-mjguzik@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 30 Aug 2023 09:50:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh5s3JbYKd4SsCsDQ8RxCEKXGG-d61Ab9hOev9wnyGbHg@mail.gmail.com>
-Message-ID: <CAHk-=wh5s3JbYKd4SsCsDQ8RxCEKXGG-d61Ab9hOev9wnyGbHg@mail.gmail.com>
-Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] jfs : fix shift-out-of-bounds in dbUpdatePMap
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>, liushixin2@huawei.com
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+91ad2b52815a08caf4ea@syzkaller.appspotmail.com
+References: <20230827050513.364567-1-ghandatmanas@gmail.com>
+ <edf10660-2e8a-4f5b-8eb5-16038f8adbcf@oracle.com>
+Content-Language: en-US
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+In-Reply-To: <edf10660-2e8a-4f5b-8eb5-16038f8adbcf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,24 +77,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Aug 2023 at 07:03, Mateusz Guzik <mjguzik@gmail.com> wrote:
->
-> Hand-rolled mov loops executing in this case are quite pessimal compared
-> to rep movsq for bigger sizes. While the upper limit depends on uarch,
-> everyone is well south of 1KB AFAICS and sizes bigger than that are
-> common.
->
-> While technically ancient CPUs may be suffering from rep usage, gcc has
-> been emitting it for years all over kernel code, so I don't think this
-> is a legitimate concern.
->
-> Sample result from read1_processes from will-it-scale (4KB reads/s):
-> before: 1507021
-> after:  1721828 (+14%)
+I checked for the v6.5. Its fixed there.
 
-Ok, patch looks fine to me now.
-
-So I applied this directly to my tree, since I was the one doing the
-x86 memcpy cleanups that removed the REP_GOOD hackery anyway.
-
-              Linus
+On 29/08/23 23:19, Dave Kleikamp wrote:
+> On 8/27/23 12:05AM, Manas Ghandat wrote:
+>> Currently there is no bound check for number of logical blocks per
+>> page (bmp->db_l2nbperpage). Added the required bound check for the
+>> calculation of dmap.
+>
+> This should already be fixed by 11509910c599 ("jfs: jfs_dmap: Validate 
+> db_l2nbperpage while mounting")
+>
+> Can you please verify if this problem still exists in v6.5?
+>
+> Shaggy
+>
