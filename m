@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3AE78DBA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8542178DE5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239703AbjH3Skl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
+        id S240962AbjH3TB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343824AbjH3RKK (ORCPT
+        with ESMTP id S1343809AbjH3RBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:10:10 -0400
-X-Greylist: delayed 564 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Aug 2023 10:10:02 PDT
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFC619A
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:10:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 71AEBCE1E17
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:00:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B8F3C433C7;
-        Wed, 30 Aug 2023 17:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693414833;
-        bh=kX3mbHSLmaQyCEL60tmf9cx9ZOhGXkKv6MDHN2D63vs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jF6UcKfH/Ijm8BSR75OyktOFykk2hCPJ+WW84zdAuI8LFdEyqrl7Ohkei3L30Y2Zf
-         otGqyih898gvIjejvVAGC+2UKXeyYWmcj4nuzrttxOPrf501BtbrB52+eHOSe4FLlN
-         E6ZWRiupNKoNyYHHoG1E7LuOKn+ttvWkzJc9yNHXyNqO4YEW1F8XVCbxkysmVJUGmw
-         6RQ+ZBT+fjuN4hpd2o6TfbTudgzRL4P1EWVCayRjSKcchD7A4Bg85EejZqw7bpLxtM
-         581+8pz6W3QmP+knhYUvvdmVvIV3LAhGRlWFXmjh4BkrCyDYQmTjy7r9Yo9iISD/Hd
-         r+A9OD4DZg+aQ==
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: [PATCH 1/2] MAINTAINERS: update Rust webpage
-Date:   Wed, 30 Aug 2023 18:59:48 +0200
-Message-ID: <20230830165949.127475-1-ojeda@kernel.org>
+        Wed, 30 Aug 2023 13:01:13 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E21FB19A;
+        Wed, 30 Aug 2023 10:01:05 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 396A392009C; Wed, 30 Aug 2023 19:01:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 2A5C692009B;
+        Wed, 30 Aug 2023 18:01:04 +0100 (BST)
+Date:   Wed, 30 Aug 2023 18:01:04 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Huacai Chen <chenhuacai@kernel.org>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v4 0/4] Modify die() for MIPS
+In-Reply-To: <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2308301619300.43104@angie.orcam.me.uk>
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn> <ZOxkt/6EkQIy+Jkt@alpha.franken.de> <ZO4Mdr9/XUkXDK9j@alpha.franken.de> <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few months ago we started a webpage for the Rust subsystem and
-the overall Rust for Linux project [1].
+On Wed, 30 Aug 2023, Huacai Chen wrote:
 
-The current `W:` field of the Rust entry points to the GitHub
-repository, since originally we kept information in a `README.md`
-file that got rendered by GitHub when visiting that URL.
+> > > series applied to mips-next.
+> >
+> > I've dropped the series again after feedback from Maciej, that this
+> > still needs more changes.
+> I feel a little surprised. This series has appeared for more than ten
+> days and received some R-b, and we haven't seen any objections from
+> Maciej. If there are really some bugs that need to be fixed, I think
+> the normal operation is making additional patches...
 
-That information was moved into the webpage and got expanded.
-The webpage is also nowadays the entry point to the project,
-and we pointed the "Website" GitHub metadata field to it.
+ You haven't received any ack from me either, and I stopped reviewing the 
+series as it was taking too much of my time and mental effort and yet 
+changes were going in the wrong direction.  Silence never means an ack.
 
-Thus update the `W:` field to point to the actual webpage.
+ It's up to the submitter to get things right and not to expect from the
+reviewer to get issues pointed at by finger one by one, effectively 
+demanding someone else's effort to get their own objectives complete even 
+with the most obvious things.
 
-Link: https://rust-for-linux.com [1]
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ And then for a hypothetical case only that the submitter is not able to 
+verify.  For such cases the usual approach is to do nothing until an 
+actual real case is found.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 12601a47c839..7c8088e9a11b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18558,7 +18558,7 @@ R:	Andreas Hindborg <a.hindborg@samsung.com>
- R:	Alice Ryhl <aliceryhl@google.com>
- L:	rust-for-linux@vger.kernel.org
- S:	Supported
--W:	https://github.com/Rust-for-Linux/linux
-+W:	https://rust-for-linux.com
- B:	https://github.com/Rust-for-Linux/linux/issues
- C:	zulip://rust-for-linux.zulipchat.com
- T:	git https://github.com/Rust-for-Linux/linux.git rust-next
+ Very simple such a change that one can verify to an acceptable degree
+that it is correct by just proofreading might be accepted anyway, but it 
+cannot be guaranteed.
 
-base-commit: 4af84c6a85c63bec24611e46bb3de2c0a6602a51
--- 
-2.42.0
+ The missed NMI case only proved the submitter didn't do their homework 
+and didn't track down all the call sites as expected with such a change, 
+and instead relied on reviewer's vigilance.
 
+ As to the changes, specifically:
+
+- 1/4 is bogus, the kernel must not BUG on user activities.  Most simply
+  die() should be told by the NMI caller that it must not return in this 
+  case and then it should ignore the NOTIFY_STOP condition.
+
+  I realise we may not be able to just return from the NMI handler to the 
+  location at CP0.ErrorEPC and continue, because owing to the privileged 
+  ISA design we won't be able to make such an NMI handler reentrant, let 
+  alone SMP-safe.  But it should have been given in the change description 
+  as rationale for not handling the NOTIFY_STOP condition for the NMI.
+
+  I leave it as an exercise to the reader to figure out why a returning 
+  NMI handler cannot be made reentrant.
+
+- 2/4 should be a one-liner to handle the NOTIFY_STOP condition just as 
+  with the x86 port, which I already (!) communicated, and which was (!!!) 
+  ignored.  There is no need to rewrite the rest of die() and make it more 
+  complex too just because it can be done.
+
+- 3/4 is not needed if 2/4 was done properly.  And as it stands it should 
+  have been folded into 2/4, because fixes to an own pending submission 
+  mustn't be made with a separate patch: the original change has to be 
+  corrected instead.
+
+- 4/4 is OK (and I believe the only one that actually got a Reviewed-by: 
+  tag).
+
+Most of these issues would have been avoided if the submitter made 
+themselves familiar with Documentation/process/submitting-patches.rst and 
+followed the rules specified there.
+
+ Otherwise this takes valuable reviewer resources that would best be used 
+elsewhere and it puts submitters of quality changes at a disadvantage, 
+which is not fair.
+
+ It is not our policy to accept known-broken changes and then fix them up 
+afterwards.  Changes are expected to be technically sound to the best of 
+everyone's involved knowledge and it's up to the submitter to prove that 
+it is the case and that a change is worth including.  You would have 
+learnt it from the document referred.  Nobody's perfect and issues may 
+slip through, but we need to make every effort so as to avoid it.
+
+ Mind that we're doing reviews as volunteers entirely in our free time we 
+might instead want to spend with friends or in another enjoyable way.  It 
+is not my day job to review random MIPS/Linux patches posted to a mailing 
+list.  Even composing this reply took a considerable amount of time and 
+effort, which would best be spent elsewhere, because I am talking obvious 
+things here and repeating Documentation/process/submitting-patches.rst 
+stuff.
+
+  Maciej
