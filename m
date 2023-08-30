@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA41178DF54
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADA678DFB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239833AbjH3TJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S1344031AbjH3T0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243036AbjH3KJC (ORCPT
+        with ESMTP id S243068AbjH3KKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:09:02 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCB41BF
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:08:58 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so694543766b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:08:58 -0700 (PDT)
+        Wed, 30 Aug 2023 06:10:43 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10CC1B7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:10:39 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4c0so1557948a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693390137; x=1693994937; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693390238; x=1693995038; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=a01//fw4C/o1Ax6ZZd2xqsEK3Vj5eisKt7KkBfMjlv4=;
-        b=neNK6eWeGTk61TdEJq6/56WDSi98uvh86dqK2+/Se+2XemxK8T6i+2QPysJ0XyR//Y
-         r+iPr9MTd2uEcnaeLdW/DEk++MaIJ5X+10G2vWY1qFrTvfjWqtOf/VYj7huFjRgOVdmV
-         JChIHuTX5ts/dzjSTUqzvsa6gl5NaaHIb2YOJLint53jUNZBJIu1ds0ukyOxU/VzMJ2m
-         wSJtt5S8ykIiaA3SgFgKcU6h4qz14uKeWHkvy5QNWqq4jlRz2dA9Q3Kuy8qxiK3YFW/V
-         AlFcXtrEFR2k05WdKpC8BEPRVmuG7KczW7ZgmUzFrHcXq3bexSxh8QwEUVRBjiUw+997
-         NFFA==
+        bh=K6fAYHYlD9Q4cP+9uuxhoOpBar+Sw6tLFQ7HlxyUaOA=;
+        b=LHWatOru0oTj90FU8rMxmwxUAobrtEdK9jeeQhJr+XnbpCKsTc2X0E9ijss4gdWj+t
+         bHQRDtmJUejQ8GAUMTY0MOwEQyBci+xhW2YvSxSZIcItAa1bf01UkfJHerhIUDtDr0vE
+         a7/B9LtTSy9ZQl+h2m01y8OyuWzi3B0cQR7S7PWIkaGw4CxXFimbXKCAlq7PC5wo6YsC
+         f8ePmAeq8RSpQSAnpgNcasfgZ2N3rgl8qtaQRSDKAs3i1Cn7GMw6monC/TsZflSR0ukI
+         a/xrZnUcsPVWdCp+zyQRLW0DMOKpYgOPC9k7gIjyYlvH9bboKeBhz/BubpNRs05XuBG/
+         qYUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693390137; x=1693994937;
+        d=1e100.net; s=20221208; t=1693390238; x=1693995038;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a01//fw4C/o1Ax6ZZd2xqsEK3Vj5eisKt7KkBfMjlv4=;
-        b=KZ8L8vu4oFCeeNBqEcD/vF0PK15+D/DZjfVGmx7XIhuP5RpRaN+IJ6dhZKF5GGejdS
-         mayEwn1dvNwJDlibI0Qh5zrhTe9rio7FVBW3Afa5FERdpg4oM+CywjibqRaAqPtqyXO+
-         +5d3ZsrDywNHVOdxGDH1FKR2Ep8p/yplN0GLcKIm4MdIhHYBLiCrdAjbCPw1wMsp2wLR
-         gXId+j9DCUVP3teZFw9N4pJ7OI+qpuu4oyobgH9H4Uay2zMCB2s0/i1KngBLBog0Hu3s
-         VOkotc0TYqYAlv/KKyhTfvAdLFvH2xYL+0CIeZfz1gqmZzzQn1m2lf+GIjxrQET5KbLb
-         Vjxg==
-X-Gm-Message-State: AOJu0Yw6Z13r3eaGnmJAi4OFrlpzcC771EjAs4LTNFcR1ptFtDPfPQHH
-        usZ1Gqrb1c6pJvGoSM0Uv8nxCg==
-X-Google-Smtp-Source: AGHT+IFUObuijfTAqYpf5OFv3XkT14r+q5WT8p2VJy471qW5Z6XW1Gcxtic0L8+1lZWXjo/qcqBvPQ==
-X-Received: by 2002:a17:906:cd1:b0:9a1:e011:1a62 with SMTP id l17-20020a1709060cd100b009a1e0111a62mr1204136ejh.38.1693390137090;
-        Wed, 30 Aug 2023 03:08:57 -0700 (PDT)
+        bh=K6fAYHYlD9Q4cP+9uuxhoOpBar+Sw6tLFQ7HlxyUaOA=;
+        b=OunwjpvBIGPThBd5RK0DDf1EmH+gUVklgLfOdnnTYLK1a65y6zdCJFSNkjfNhck8Q+
+         b8jlIKhc6b5z5uZ0J0UfbMrC1v6PwXh1NBw5wzoieRCIRtwuu4T7DYK7Cm1Hb1po4brn
+         Fmo7X3dbrpTtcVp9rYlmLAllzF6m7Y0vlMAfEHvE9wPt+K0wOCVAfaAva+zQrSAB1+Fp
+         uiX/hIMoekeUG+XRGR1Y7CLXXRLjHW2j8e6galE4+Vb3zLAR2xU032dy4yR+XlmLhcBq
+         F4VCkj0pvxxbL4CTm0XWcNsmVpXyE9MPauVZ+8HFnU2o0mnqiwGwEdwn8RhoqcCLAT6C
+         0kDA==
+X-Gm-Message-State: AOJu0Yw8Xig+372FYH0JvCwtmbchPsIR+vaZBpVyfx/OO7hVR4+Hy5gh
+        hgACytGZK6YsDtPsvaF/o63PDw==
+X-Google-Smtp-Source: AGHT+IFCwyfUmZdNpIfAR/2r8grquZf8w/lqNiLhyAhfpvYWkbd/+vc192a/XgLTwHSrcsc8zUTWUw==
+X-Received: by 2002:aa7:c903:0:b0:523:b37e:b83b with SMTP id b3-20020aa7c903000000b00523b37eb83bmr2026693edt.13.1693390238047;
+        Wed, 30 Aug 2023 03:10:38 -0700 (PDT)
 Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id s25-20020a170906bc5900b009a193a5acffsm6951329ejv.121.2023.08.30.03.08.55
+        by smtp.gmail.com with ESMTPSA id o8-20020aa7d3c8000000b0052544bca116sm6579125edr.13.2023.08.30.03.10.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 03:08:56 -0700 (PDT)
-Message-ID: <23d32e4f-ce08-b89a-fc5a-c5ec0cdb6b9e@linaro.org>
-Date:   Wed, 30 Aug 2023 12:08:55 +0200
+        Wed, 30 Aug 2023 03:10:37 -0700 (PDT)
+Message-ID: <6f339b46-9f75-9b76-28e9-e15b5c1c3590@linaro.org>
+Date:   Wed, 30 Aug 2023 12:10:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 07/11] dt-bindings: arm: qcom,ids: Add SoC ID for QCM6490
+Subject: Re: [PATCH 09/11] cpufreq: Add QCM6490 to cpufreq-dt-platdev
+ blocklist
 Content-Language: en-US
 To:     Luca Weiss <luca.weiss@fairphone.com>,
         cros-qcom-dts-watchers@chromium.org,
@@ -74,9 +75,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         linux-pm@vger.kernel.org
 References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-7-5a954519bbad@fairphone.com>
+ <20230830-fp5-initial-v1-9-5a954519bbad@fairphone.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230830-fp5-initial-v1-7-5a954519bbad@fairphone.com>
+In-Reply-To: <20230830-fp5-initial-v1-9-5a954519bbad@fairphone.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -90,12 +91,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 30/08/2023 11:58, Luca Weiss wrote:
-> Add the ID for the Qualcomm QCM6490 SoC.
+> The Qualcomm QCM6490 platform uses the qcom-cpufreq-hw driver, so add it
+> to the cpufreq-dt-platdev driver's blocklist.
 > 
 > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This patchset is collecting unnecessarily way too many subsystems. It
+creates some feeling of dependencies, which is not true and not correct.
+Putting DTS in the middle makes it more confusing - if driver depends on
+DTS, then it is NAK.
+
+Please split your patchset - independent changes touching separate
+subsystems should go to their own set.
 
 Best regards,
 Krzysztof
