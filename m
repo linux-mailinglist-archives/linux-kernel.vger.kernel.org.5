@@ -2,204 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 077F778DEFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA13E78DEE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344224AbjH3T0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        id S245707AbjH3TW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343624AbjH3QTw (ORCPT
+        with ESMTP id S1343628AbjH3QVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:19:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E7ED2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693412342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sGn9Fwe3ebvb2amdc5cegj/0/WNStRYvxlTjUfacLtM=;
-        b=UT/mz3oxcwJiLaagj3gmo+g1cnOV2PRX6ujqx2bOzEmYLZ8ORYDMhNYEMRBx0c1D02wE1f
-        rjQs4Z2qJKnwX+jKguEE0JUge6uPQV00oNFXK+zKQqGVerZUheDMURdT81kMciV9WmyZeq
-        wHkqmN1vx9Mb1A2V90GdZwfzBRIWE8A=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-329-gaC1RtcdO5qciKeXBc8zMA-1; Wed, 30 Aug 2023 12:19:00 -0400
-X-MC-Unique: gaC1RtcdO5qciKeXBc8zMA-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2bb99d9c60eso69761231fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:19:00 -0700 (PDT)
+        Wed, 30 Aug 2023 12:21:16 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673F9D2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:21:12 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d74a012e613so1438333276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:21:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693412471; x=1694017271; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y8t4NDTL8tjTNmKGj5DrXXHbIkAEVgr7Yc4doGgChuU=;
+        b=drmBViYSTTEHfFy5rVYTYp4cLAFqXojVKEtju53SnphOmLxtywlJGLHmRpaGCxznOS
+         InFC5sc+empVNZc7bXSyKzEu2zon6gI0gGc5d3a5npfGya5bQ7xk9VMPM8YZB68afugv
+         nLc0hrKUBxLU1apXx8WRVv4spfwuGVxYKVLdenQW/HGi7iSUZz+Rc9ObMqLS2hMft8bw
+         i3ufywJx802XmFQactWuHEVTz/O/zyt1fzDLN9Z0+gpzM1nE1UB0cKLMNqmP2bHPoIZ8
+         l5GemUbqUH5xlbsiZS/JhwEqlpPcfhQCxPwyijzkIk1/6+eqsehjDxcPqOMHc4vjl9o0
+         nMeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693412339; x=1694017139;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sGn9Fwe3ebvb2amdc5cegj/0/WNStRYvxlTjUfacLtM=;
-        b=AnL9OPC46ZOLsGinncb6pyxN7QvIHez/EL7C0I2JmXgCjwwLipdgvC1ZDjEFG6fI11
-         QmVHYeXGPv+vRojHQ8uq7gWe6uyUlLA1KNKHZYm4pfGWVCvTVy1QFY5XmtrGpqizcStV
-         HdMfyTujbbRmAJCYDCjXAVRFSJeyYGrThjmkQWtjbo3giTLhV1R0y2ptI8ki3X9zvGXk
-         KyurAVsVrjd32eLFU6T1m3/P/S5kTtbhkjld7S8rzkt/2jABLBOCaXy+1dlx6Mf6FWrb
-         54w/TA8WQM8HWVezwa+eWx2Tg4uFiF2PsXhSfBc3hLtjvvKKOGRmkjZJWvffy0jL2wIY
-         DXeg==
-X-Gm-Message-State: AOJu0YwBNrB/5OTirwgBpzT75xlXxAJydZM10QtDuOY/az2gZYkDXVic
-        pYSRqPRrlVF8oBYTNZ6ejr56Kfop3S6+af9xP0bYvs+CEUJBSn23WkPmqymZIcvFvJN2f1NK5dc
-        uvtxEJxLXObKfHm3pNWywYvSJ
-X-Received: by 2002:a2e:910e:0:b0:2bc:ed80:46e with SMTP id m14-20020a2e910e000000b002bced80046emr2239837ljg.31.1693412339311;
-        Wed, 30 Aug 2023 09:18:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEsgTspLT1jaKbifI4HxlpoF5oFgJluee3aU1mr+htbVSJGoAuR/2Gksu5nEhTIXq8D7sLRjQ==
-X-Received: by 2002:a2e:910e:0:b0:2bc:ed80:46e with SMTP id m14-20020a2e910e000000b002bced80046emr2239801ljg.31.1693412338443;
-        Wed, 30 Aug 2023 09:18:58 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id k11-20020a1709063e0b00b009a1a653770bsm7300061eji.87.2023.08.30.09.18.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 09:18:57 -0700 (PDT)
-Message-ID: <6734c409-89f1-89a1-3096-4054be29faf1@redhat.com>
-Date:   Wed, 30 Aug 2023 18:18:56 +0200
+        d=1e100.net; s=20221208; t=1693412471; x=1694017271;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y8t4NDTL8tjTNmKGj5DrXXHbIkAEVgr7Yc4doGgChuU=;
+        b=NYgstewlSb49RW/Cgk9LhUVrcjG+zF3wqsGpVYYZemEj3LxJc5sqk1RAPKYaFUoL61
+         +592qKv6OvrkQCIAKLVXcxthNIHeOpROjPMpqqYPv3FseOCIjBbqaZZ9lVqUAvFF5LY8
+         a+4qIzJj9Xrateowqt2rzU4lrUT2uWPy/G7FngRC34VUtaxErRO23TyHrH+4TXHUodz/
+         SFvwsGZ3m8pW8D9DxwnDaQqbh5aIqhBS+WOtGoLZKpVGiLnCD87ob1JAKucD78iQHfHm
+         XtgyosbYNhyuKmM2kj8IHAcWcPHA7xmrzSzcLdQ6ZJZ3lTs390sS18PMY7CIg0UZxM+a
+         26hg==
+X-Gm-Message-State: AOJu0YyVbtjdLElQBVd3u2ALRIAy5oTqSoblFaF4QwOKVqmKc2/Q8Mx4
+        1KhoaV6g5kUlrmcB0HOUQUNcU1z5frfKTz5MXH+Iyg==
+X-Google-Smtp-Source: AGHT+IElJAZT45ZG8CrP6h+DhojxGT+TpXkDTDNtFAlAw1u6QBD9r2uZ6vsEXIMTYsx11GQX6HZIq3oHVK5tY1mxZ9o=
+X-Received: by 2002:a25:ad9e:0:b0:d7b:b700:5d with SMTP id z30-20020a25ad9e000000b00d7bb700005dmr104054ybi.13.1693412471594;
+ Wed, 30 Aug 2023 09:21:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        linus.walleij@linaro.org
-Cc:     Shyam-sundar.S-k@amd.com, Basavaraj.Natikar@amd.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, lucapgl2001@gmail.com
-References: <20230829165627.156542-1-mario.limonciello@amd.com>
- <20230829165627.156542-4-mario.limonciello@amd.com>
- <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
- <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com>
- <811225f8-c505-7344-ac18-882472ee0348@redhat.com>
- <d232c11d-901f-4ebc-b408-bed042ed8da9@amd.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <d232c11d-901f-4ebc-b408-bed042ed8da9@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+ <20230828192507.117334-6-bartosz.golaszewski@linaro.org> <9b69a4a6-b011-f0e8-217f-5f91d9a00382@linaro.org>
+ <48feda07-525d-4319-ba09-14928ab1fd29@linaro.org> <CACMJSeuOigO38_jgjNLz6AiWK1BoLN+shDQHrubS5s-dkDFG7A@mail.gmail.com>
+ <3f7f6427-51eb-a251-f8dd-f7922b9fcfd7@linaro.org> <CACMJSevO7sGZ5Yj_wBrs6kV+eo7iW_aLwBj68zjbU3dS7tJ-sA@mail.gmail.com>
+ <72af9e51-3fc5-c2a8-b81b-7a7cbd0c9311@linaro.org>
+In-Reply-To: <72af9e51-3fc5-c2a8-b81b-7a7cbd0c9311@linaro.org>
+From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date:   Wed, 30 Aug 2023 18:21:00 +0200
+Message-ID: <CACMJSeu_wuz5eNS8z3WEtrsfSw7JpCiKUfeoXsp+rFjZW_r5Kg@mail.gmail.com>
+Subject: Re: [PATCH 05/11] dt-bindings: document the Qualcomm TEE Shared
+ Memory Bridge
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 30 Aug 2023 at 16:58, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 30/08/2023 16:39, Bartosz Golaszewski wrote:
+> > On Wed, 30 Aug 2023 at 16:31, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 30/08/2023 15:48, Bartosz Golaszewski wrote:
+> >>> On Tue, 29 Aug 2023 at 11:30, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+> >>>>
+> >>>> On 29.08.2023 10:02, Krzysztof Kozlowski wrote:
+> >>>>> On 28/08/2023 21:25, Bartosz Golaszewski wrote:
+> >>>>>> Add Device Tree bindings for Qualcomm TEE Shared Memory Brige - a
+> >>>>>> mechanism that allows sharing memory buffers between trustzone and the
+> >>>>>> kernel.
+> >>>>>
+> >>>>> Subject prefix:
+> >>>>> dt-bindings: firmware:
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>>>
+> >>>>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>>>>> ---
+> >>>>>>  .../bindings/firmware/qcom,shm-bridge.yaml    | 36 +++++++++++++++++++
+> >>>>>>  1 file changed, 36 insertions(+)
+> >>>>>>  create mode 100644 Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+> >>>>>>
+> >>>>>> diff --git a/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+> >>>>>> new file mode 100644
+> >>>>>> index 000000000000..f660962b7b86
+> >>>>>> --- /dev/null
+> >>>>>> +++ b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+> >>>>>> @@ -0,0 +1,36 @@
+> >>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>>>>> +%YAML 1.2
+> >>>>>> +---
+> >>>>>> +$id: http://devicetree.org/schemas/firmware/qcom,shm-bridge.yaml#
+> >>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>>>>> +
+> >>>>>> +title: QCOM Shared Memory Bridge
+> >>>>>> +
+> >>>>>> +description: |
+> >>>>>
+> >>>>> Do not need '|' unless you need to preserve formatting.
+> >>>>>
+> >>>>>> +  Qualcomm TEE Shared Memory Bridge allows sharing limited areas of kernel's
+> >>>>>> +  virtual memory with the trustzone in order to avoid mapping the entire RAM.
+> >>>>>> +
+> >>>>>> +maintainers:
+> >>>>>> +  - Bjorn Andersson <andersson@kernel.org>
+> >>>>>> +  - Konrad Dybcio <konrad.dybcio@linaro.org>
+> >>>>>> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>>>>> +
+> >>>>>> +properties:
+> >>>>>> +  compatible:
+> >>>>>> +    items:
+> >>>>>> +      - enum:
+> >>>>>> +          - qcom,shm-bridge-sa8775p
+> >>>>>> +          - qcom,shm-bridge-sm8150
+> >>>>>> +          - qcom,shm-bridge-sm8450
+> >>>>>> +      - const: qcom,shm-bridge
+> >>>>>> +
+> >>>>>
+> >>>>> Looks quite empty... Why this cannot be part of qcom,scm? IOW, why do
+> >>>>> you need new binding if you do not have any resources here and the block
+> >>>>> is essentially feature of qcom,scm firmware?
+> >>>> Since it's "discoverable" (via retval of an scm call), I'd second the
+> >>>> idea of probing this from within the SCM driver.
+> >>>>
+> >>>> Konrad
+> >>>
+> >>> Downstream has a bunch of DT switches that we don't support for now
+> >>> upstream. I disagree about shoehorning this into the SCM driver. It
+> >>> really is a layer on top of SCM but also SCM is a user of this
+> >>> interface.
+> >>
+> >> Sure, for the driver makes sense, but it does not really explain why DT
+> >> node is needed. It is not separate hardware. I doubt it is even separate
+> >> firmware, but part of SCM.
+> >>
+> >> Best regards,
+> >> Krzysztof
+> >>
+> >
+> > Because not all platforms support it and it's the simplest way of
+>
+> Platforms like SoCs or boards?
+>
+> > marking the ones that do. Both SHM and SCM nodes sit on the firmware
+> > node anyway. What do you recommend? A property of the SCM node? Like
+> > 'qcom,shm-bridge` or something?
+>
+> If the first - you talk about SoCs - then you have everything needed
+> already: SCM compatibles. This defines it fully.
+>
+> If it varies by boards with one SoC, would be different case, but I
+> really doubt it.
+>
 
-On 8/30/23 17:47, Mario Limonciello wrote:
-> On 8/30/2023 10:37, Hans de Goede wrote:
->> Hi,
->>
->> On 8/29/23 23:37, Mario Limonciello wrote:
->>> On 8/29/2023 14:54, Hans de Goede wrote:
->>>> Hi Mario,
->>>>
->>>> On 8/29/23 18:56, Mario Limonciello wrote:
->>>>> Lenovo ideapad 5 doesn't use interrupts for GPIO 0, and so internally
->>>>> debouncing with WinBlue debounce behavior means that the GPIO doesn't
->>>>> clear until a separate GPIO is used (such as touchpad).
->>>>>
->>>>> Prefer to use legacy debouncing to avoid problems.
->>>>>
->>>>> Reported-by: Luca Pigliacampo <lucapgl2001@gmail.com>
->>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217833
->>>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->>>>
->>>> I'm not happy to see yet another DMI quirk solution here.
->>>>
->>>> and I guess you're not happy with this either...
->>>
->>> Yeah I was really hoping the first patch was enough for the issue.
->>>
->>> If we can't come up with anything else we can potentially drop patches 2 and 3. Even patch 1 alone will "significantly" improve the situation.
->>>
->>> The other option I considered is to hardcode WinBlue debounce behavior "off" in Linux.
->>>
->>> I don't think this is a good idea though though because we will likely trade bugs because the debounce values in the AML for systems using _AEI aren't actually used in Windows and might not have good values.
->>
->> What if we turn off the WinBlue debounce behavior for GPIO0 and then just hardcode some sane debounce values for it, overriding whatever the DSDT _AEI entries contain ?
->>
-> 
-> I don't think this is a good idea.
-> 
-> Some vendors GPIO0 doesn't connect to the power button but instead to the EC.  If it's connected to the EC, the EC might instead trigger GPIO0 for lid or power button or whatever they decided for a design specific way.
-> 
-> I'd worry that we're going to end up with inconsistent results if they have their own debouncing put in place in the EC *because* they were relying upon the Winblue debounce behavior.
-> 
-> After all - this was fixed because of https://bugzilla.kernel.org/show_bug.cgi?id=217315
+Ok, makes sense. Thanks.
 
-Ok, that is fair.
-
-
->>>> Are we sure there is no other way? Did you check an acpidump
->>>> for the laptop and specifically for its ACPI powerbutton handling?
->>>
->>> I'm not sure there is another way or not, but yes there is an acpidump attached to the bug in case you or anyone else has some ideas.
->>>
->>>>
->>>> I would expect the ACPI powerbutton handler to somehow clear
->>>> the bit, like how patch 1/3 clears it from the GPIO chip's
->>>> own IRQ handler.
->>>>
->>>> I see that drivers/acpi/button.c does:
->>>>
->>>> static u32 acpi_button_event(void *data)
->>>> {
->>>>           acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
->>>>           return ACPI_INTERRUPT_HANDLED;
->>>> }
->>>>
->>>> So unless I'm misreading something here, there is some AML being
->>>> executed on power-button events. So maybe there is something wrong
->>>> with how Linux interprets that AML ?
->>>>
->>> The relevant ACPI spec section is here:
->>>
->>> https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/04_ACPI_Hardware_Specification/ACPI_Hardware_Specification.html#control-method-power-button
->>>
->>> I did look at the acpidump.  GPE 08 notifies \_SB.PWRB (a PNP0C0C device) with 0x2.  According to the spec this is specifically for letting the system know the power button is waking up the system from G1.
->>
->> Sorry, the acpi_os_execute() function name gave me the impression that this would actually call some ACPI defined function, since normally in acpi speak execute refers to an ACPI table defined method.
->>
->> But that is not the case here it is just a wrapper to deferred-exec the passed in function pointer.
->>
->> To be clear I was hoping that there was an ACPI defined (AML code) function which would maybe clear the GPIO for us and that that was maybe not working due to e.g. some opregion not being implemented by Linux. But no AML code is being executed at all, so this is all a red herring.
->>
->> Regards,
->>
->> Hans
->>
->>
-> 
-> Something we could do is add an extra callback for ACPI button driver to call the GPIO controller IRQ handler.  Worst case the IRQ handler does nothing, best case it fixes this issue.
-> I'm not sure how we'd tie it to something spec compliant.
-
-I was actually thinking the same thing. I think we should discuss going this route
-(ACPI button driver to call the GPIO controller IRQ handler) with Rafael.
-
-We can use the existing acpi_notifier_call_chain() mechanism and:
-
-1. Have the button code call acpi_notifier_call_chain() on the PNP0C0C
-event on button presses.
-
-2. Have the AMD pinctrl driver register a notifier_block with
-register_acpi_notifier() and then check if the source is a PNP0C0C
-device based on the device_class of the acpi_bus_event struct
-passed to the notifier and if it is check if GPIO0 needs
-clearing.
-
-I think this is preferable over the DMI quirk route, because this should
-fix the same issue also on other affected models which we don't know
-about.
-
-Regards,
-
-Hans
-
-
-
-
+Bartosz
