@@ -2,196 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2200278DF99
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7DD78DF8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242035AbjH3TLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S245006AbjH3TVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241811AbjH3HIG (ORCPT
+        with ESMTP id S241836AbjH3HKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:08:06 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3941E1A4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:08:04 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-594e8207103so54979477b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:08:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693379283; x=1693984083; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=q+8JLAKIBIn048cO3B8TYmgEefYduNPXi4aPzlXEsfM=;
-        b=uiy8q8sY8t6J5j4MbQ+/fF/jLis8Fa14Arru3Q/ilXQqhOYb337WLLSbSYc6IggOkc
-         eIE3DhsBFDM4/OOSnVDEbOv4kMJUfD5cfD/ooL8VBm0m9YntuCsesfFXj++DoZbm9OUc
-         9kfnZv5h+taMY0AiLtmOmhnsa/ENcVCzcfFC7ZPdVarfGJ+phddJI9aybwUJEYxEDxM7
-         Lgn0cgz858RaygaeEdFn2nqmbSP8lG3H7ymCR6wRLYhAr6KgXiEVWf7K/3nwNwI88DWF
-         ntI2t86Rrn7IDYxNiMvlzKQUZ63pJWLrAA263p8tcVNvTDCDrxmiUmZQn/wOUJzsdzxc
-         bzZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693379283; x=1693984083;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q+8JLAKIBIn048cO3B8TYmgEefYduNPXi4aPzlXEsfM=;
-        b=GOqQi4c0qjRkP/bNsbSkqCyAYkjY5/kX1kaIFVPVYbgcDWUuf9Z9wOXnh5e1Wuc7Z+
-         axSXEhY8CWL5rjyjvgFresRY6JPqBCU/wk5LZs6RnVON7defhQ6p0Nwc1MDYG9ZQyiSw
-         ZwkYqFA88juKV4GB0R90tRAXhCy6XBAZpu+cw+ZqdYTG5jt+KmgAC48gj1BwEhYNMj1g
-         ygmUvD8i73oIDKYu0nTf+EjdKYAyxPPWOUj2tQiwwTwfEcRjsW3ko8iMRIo1xvLPpYeX
-         VChUz3xVJqfLDAb85+NP9133uqFkhB0vEqVx8ON78EKKpp1O/0rY4aKAwwsdnHoRFDel
-         yskA==
-X-Gm-Message-State: AOJu0YwzcFD15K+sX+lnm61fKhLV7n67MHcVdb2uPfc1OwtlQ01ZL1ny
-        2HYwvszS90rGxodsL2opnznWXHnIEh30
-X-Google-Smtp-Source: AGHT+IGa4KqrG0JMXUrj92shCnvizPR/jPb6Je3MKgarqiiXASgu8g7j5hN7r28Ca/zboYqjEl/qgeCFNShf
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:d623:3cd7:ecbc:8798])
- (user=irogers job=sendgmr) by 2002:a25:34c3:0:b0:d0e:e780:81b3 with SMTP id
- b186-20020a2534c3000000b00d0ee78081b3mr31760yba.2.1693379283536; Wed, 30 Aug
- 2023 00:08:03 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 00:07:53 -0700
-In-Reply-To: <20230830070753.1821629-1-irogers@google.com>
-Message-Id: <20230830070753.1821629-3-irogers@google.com>
-Mime-Version: 1.0
-References: <20230830070753.1821629-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Subject: [PATCH v1 3/3] perf pmu: Remove str from perf_pmu_alias
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 03:10:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCD71AE;
+        Wed, 30 Aug 2023 00:10:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 362711F45F;
+        Wed, 30 Aug 2023 07:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693379427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WAyCzORlXQ671s55Fhl/O2JBvLDCXuVOy/Wf1tHQsfE=;
+        b=bj0t0YuiCNdeH/onBb45AL1SjWhzlArMc9u5tBi0hv+981JDUS89mmXWsEkQOzSGtAsK0s
+        Y9EGut/ZAxOgO4sY6NZbnA27CyeuxCD6fX2241t7v/VweDt2+E4Wh6X/CkhGb/jHQHMtzU
+        RFaLDob1Hwnlf7/tyr4TwYhTSoKbII8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693379427;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WAyCzORlXQ671s55Fhl/O2JBvLDCXuVOy/Wf1tHQsfE=;
+        b=Z5XRvkUk+x8TdcIKoCpOnuWtcbm0FIZxflYhX2YeIdIofEgVpdfI5lqyiRmZ8rXIR9Yx5I
+        QPYet/vWnLmmqnBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0DFB13441;
+        Wed, 30 Aug 2023 07:10:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LmmrOWLr7mQ+TwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 30 Aug 2023 07:10:26 +0000
+Message-ID: <d9a02d20-8b59-cbdd-d054-eac14f9771d2@suse.de>
+Date:   Wed, 30 Aug 2023 09:10:26 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] fbdev: Update fbdev source file paths
+Content-Language: en-US
+To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        linux-fbdev@vger.kernel.org
+Cc:     Helge Deller <deller@gmx.de>, Rob Clark <robdclark@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jingoo Han <jg1.han@samsung.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------nvOeQaTfZToRoXKsKk00BdEQ"
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the value is only used in perf list. Compute the value just
-when needed to avoid unnecessary overhead. Recycle the strbuf to avoid
-memory allocation overhead.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------nvOeQaTfZToRoXKsKk00BdEQ
+Content-Type: multipart/mixed; boundary="------------yrpywtRINvbudJVtaOfp07qV";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+ linux-fbdev@vger.kernel.org
+Cc: Helge Deller <deller@gmx.de>, Rob Clark <robdclark@gmail.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Jingoo Han <jg1.han@samsung.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <d9a02d20-8b59-cbdd-d054-eac14f9771d2@suse.de>
+Subject: Re: [PATCH] fbdev: Update fbdev source file paths
+References: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
+In-Reply-To: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/pmu.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+--------------yrpywtRINvbudJVtaOfp07qV
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 8dbb7008877e..152cda84f273 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -51,11 +51,6 @@ struct perf_pmu_alias {
- 	 * json events.
- 	 */
- 	char *topic;
--	/**
--	 * @str: Comma separated parameter list like
--	 * "event=0xcd,umask=0x1,ldlat=0x3".
--	 */
--	char *str;
- 	/** @terms: Owned list of the original parsed parameters. */
- 	struct list_head terms;
- 	/** @list: List element of struct perf_pmu aliases. */
-@@ -408,7 +403,6 @@ static void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
- 	zfree(&newalias->desc);
- 	zfree(&newalias->long_desc);
- 	zfree(&newalias->topic);
--	zfree(&newalias->str);
- 	zfree(&newalias->pmu_name);
- 	parse_events_terms__purge(&newalias->terms);
- 	free(newalias);
-@@ -489,7 +483,7 @@ static int update_alias(const struct pmu_event *pe,
- 	assign_str(pe->name, "long_desc", &data->alias->long_desc, pe->long_desc);
- 	assign_str(pe->name, "topic", &data->alias->topic, pe->topic);
- 	data->alias->per_pkg = pe->perpkg;
--	if (assign_str(pe->name, "value", &data->alias->str, pe->event)) {
-+	if (pe->event) {
- 		parse_events_terms__purge(&data->alias->terms);
- 		ret = parse_events_terms(&data->alias->terms, pe->event, /*input=*/NULL);
- 	}
-@@ -511,7 +505,6 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
- 	int ret;
- 	const char *long_desc = NULL, *topic = NULL, *unit = NULL, *pmu_name = NULL;
- 	bool deprecated = false, perpkg = false;
--	struct strbuf sb;
- 
- 	if (perf_pmu__find_alias(pmu, name, /*load=*/ false)) {
- 		/* Alias was already created/loaded. */
-@@ -531,7 +524,6 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
- 	if (!alias)
- 		return -ENOMEM;
- 
--	alias->str = NULL;
- 	INIT_LIST_HEAD(&alias->terms);
- 	alias->scale = 1.0;
- 	alias->unit[0] = '\0';
-@@ -574,17 +566,6 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
- 		}
- 	}
- 
--	/* Scan event and remove leading zeroes, spaces, newlines, some
--	 * platforms have terms specified as
--	 * event=0x0091 (read from files ../<PMU>/events/<FILE>
--	 * and terms specified as event=0x91 (read from JSON files).
--	 *
--	 * Rebuild string to make alias->str member comparable.
--	 */
--	zfree(&alias->str);
--	strbuf_init(&sb, /*hint=*/ 0);
--	parse_events_term__to_strbuf(&alias->terms, &sb);
--	alias->str = strbuf_detach(&sb, /*sz=*/ NULL);
- 	if (!pe)
- 		pmu->sysfs_aliases++;
- 	else
-@@ -1682,7 +1663,9 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
- 		.pmu = pmu,
- 	};
- 	int ret = 0;
-+	struct strbuf sb;
- 
-+	strbuf_init(&sb, /*hint=*/ 0);
- 	pmu_add_cpu_aliases(pmu);
- 	list_for_each_entry(event, &pmu->aliases, list) {
- 		size_t buf_used;
-@@ -1710,14 +1693,16 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
- 		info.desc = event->desc;
- 		info.long_desc = event->long_desc;
- 		info.encoding_desc = buf + buf_used;
-+		parse_events_term__to_strbuf(&event->terms, &sb);
- 		buf_used += snprintf(buf + buf_used, sizeof(buf) - buf_used,
--				"%s/%s/", info.pmu_name, event->str) + 1;
-+				"%s/%s/", info.pmu_name, sb.buf) + 1;
- 		info.topic = event->topic;
--		info.str = event->str;
-+		info.str = sb.buf;
- 		info.deprecated = event->deprecated;
- 		ret = cb(state, &info);
- 		if (ret)
--			return ret;
-+			goto out;
-+		strbuf_setlen(&sb, /*len=*/ 0);
- 	}
- 	if (pmu->selectable) {
- 		info.name = buf;
-@@ -1732,6 +1717,8 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
- 		info.deprecated = false;
- 		ret = cb(state, &info);
- 	}
-+out:
-+	strbuf_release(&sb);
- 	return ret;
- }
- 
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+SGkNCg0KQW0gMjkuMDguMjMgdW0gMjI6MDIgc2NocmllYiBKb25hdGhhbiBOZXVzY2jDpGZl
+cjoNCj4gVGhlIGZpbGVzIGZibWVtLmMsIGZiX2RlZmlvLmMsIGZic3lzZnMuYywgZmJtb24u
+YywgbW9kZWRiLmMsIGFuZA0KPiBmYmNtYXAuYyB3ZXJlIG1vdmVkIHRvIGRyaXZlcnMvdmlk
+ZW8vZmJkZXYsIGFuZCBzdWJzZXF1ZW50bHkgdG8NCj4gZHJpdmVycy92aWRlby9mYmRldi9j
+b3JlLCBpbiB0aGUgY29tbWl0cyBsaXN0ZWQgYmVsb3cuDQo+IA0KPiBSZXBvcnRlZCBieSBr
+YWxla2FsZSBpbiAja2VybmVsIChMaWJlcmEgSVJDKS4NCj4gDQo+IEZpeGVzOiBmNzAxOGMy
+MTM1MDIgKCJ2aWRlbzogbW92ZSBmYmRldiB0byBkcml2ZXJzL3ZpZGVvL2ZiZGV2IikNCj4g
+Rml4ZXM6IDE5NzU3ZmM4NDMyYSAoImZiZGV2OiBtb3ZlIGZiZGV2IGNvcmUgZmlsZXMgdG8g
+c2VwYXJhdGUgZGlyZWN0b3J5IikNCj4gU2lnbmVkLW9mZi1ieTogSm9uYXRoYW4gTmV1c2No
+w6RmZXIgPGoubmV1c2NoYWVmZXJAZ214Lm5ldD4NCg0KSU1ITyB0aGVzZSBjb21tZW50cyBt
+aWdodCBqdXN0IGJlIHJlbW92ZWQuDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gLS0t
+DQo+ICAgaW5jbHVkZS9saW51eC9mYi5oIHwgMTIgKysrKysrLS0tLS0tDQo+ICAgMSBmaWxl
+IGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYg
+LS1naXQgYS9pbmNsdWRlL2xpbnV4L2ZiLmggYi9pbmNsdWRlL2xpbnV4L2ZiLmgNCj4gaW5k
+ZXggY2U3ZDU4OGVkYzNlNi4uM2NkYTViOWYyNDY5YiAxMDA2NDQNCj4gLS0tIGEvaW5jbHVk
+ZS9saW51eC9mYi5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvZmIuaA0KPiBAQCAtNTkyLDcg
+KzU5Miw3IEBAIGV4dGVybiBzc2l6ZV90IGZiX3N5c193cml0ZShzdHJ1Y3QgZmJfaW5mbyAq
+aW5mbywgY29uc3QgY2hhciBfX3VzZXIgKmJ1ZiwNCj4gICAJX19GQl9ERUZBVUxUX1NZU19P
+UFNfRFJBVywgXA0KPiAgIAlfX0ZCX0RFRkFVTFRfU1lTX09QU19NTUFQDQo+IA0KPiAtLyog
+ZHJpdmVycy92aWRlby9mYm1lbS5jICovDQo+ICsvKiBkcml2ZXJzL3ZpZGVvL2ZiZGV2L2Nv
+cmUvZmJtZW0uYyAqLw0KPiAgIGV4dGVybiBpbnQgcmVnaXN0ZXJfZnJhbWVidWZmZXIoc3Ry
+dWN0IGZiX2luZm8gKmZiX2luZm8pOw0KPiAgIGV4dGVybiB2b2lkIHVucmVnaXN0ZXJfZnJh
+bWVidWZmZXIoc3RydWN0IGZiX2luZm8gKmZiX2luZm8pOw0KPiAgIGV4dGVybiBpbnQgZmJf
+cHJlcGFyZV9sb2dvKHN0cnVjdCBmYl9pbmZvICpmYl9pbmZvLCBpbnQgcm90YXRlKTsNCj4g
+QEAgLTYzNiw3ICs2MzYsNyBAQCBzdGF0aWMgaW5saW5lIHZvaWQgX19mYl9wYWRfYWxpZ25l
+ZF9idWZmZXIodTggKmRzdCwgdTMyIGRfcGl0Y2gsDQo+ICAgCX0NCj4gICB9DQo+IA0KPiAt
+LyogZHJpdmVycy92aWRlby9mYl9kZWZpby5jICovDQo+ICsvKiBkcml2ZXJzL3ZpZGVvL2Zi
+ZGV2L2NvcmUvZmJfZGVmaW8uYyAqLw0KPiAgIGludCBmYl9kZWZlcnJlZF9pb19tbWFwKHN0
+cnVjdCBmYl9pbmZvICppbmZvLCBzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSk7DQo+ICAg
+ZXh0ZXJuIGludCAgZmJfZGVmZXJyZWRfaW9faW5pdChzdHJ1Y3QgZmJfaW5mbyAqaW5mbyk7
+DQo+ICAgZXh0ZXJuIHZvaWQgZmJfZGVmZXJyZWRfaW9fb3BlbihzdHJ1Y3QgZmJfaW5mbyAq
+aW5mbywNCj4gQEAgLTczNSwxNCArNzM1LDE0IEBAIHN0YXRpYyBpbmxpbmUgYm9vbCBmYl9i
+ZV9tYXRoKHN0cnVjdCBmYl9pbmZvICppbmZvKQ0KPiAgICNlbmRpZiAvKiBDT05GSUdfRkJf
+Rk9SRUlHTl9FTkRJQU4gKi8NCj4gICB9DQo+IA0KPiAtLyogZHJpdmVycy92aWRlby9mYnN5
+c2ZzLmMgKi8NCj4gKy8qIGRyaXZlcnMvdmlkZW8vZmJkZXYvY29yZS9mYnN5c2ZzLmMgKi8N
+Cj4gICBleHRlcm4gc3RydWN0IGZiX2luZm8gKmZyYW1lYnVmZmVyX2FsbG9jKHNpemVfdCBz
+aXplLCBzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiAgIGV4dGVybiB2b2lkIGZyYW1lYnVmZmVy
+X3JlbGVhc2Uoc3RydWN0IGZiX2luZm8gKmluZm8pOw0KPiAgIGV4dGVybiBpbnQgZmJfaW5p
+dF9kZXZpY2Uoc3RydWN0IGZiX2luZm8gKmZiX2luZm8pOw0KPiAgIGV4dGVybiB2b2lkIGZi
+X2NsZWFudXBfZGV2aWNlKHN0cnVjdCBmYl9pbmZvICpoZWFkKTsNCj4gICBleHRlcm4gdm9p
+ZCBmYl9ibF9kZWZhdWx0X2N1cnZlKHN0cnVjdCBmYl9pbmZvICpmYl9pbmZvLCB1OCBvZmYs
+IHU4IG1pbiwgdTggbWF4KTsNCj4gDQo+IC0vKiBkcml2ZXJzL3ZpZGVvL2ZibW9uLmMgKi8N
+Cj4gKy8qIGRyaXZlcnMvdmlkZW8vZmJkZXYvY29yZS9mYm1vbi5jICovDQo+ICAgI2RlZmlu
+ZSBGQl9NQVhUSU1JTkdTCQkwDQo+ICAgI2RlZmluZSBGQl9WU1lOQ1RJTUlOR1MJCTENCj4g
+ICAjZGVmaW5lIEZCX0hTWU5DVElNSU5HUwkJMg0KPiBAQCAtNzc2LDcgKzc3Niw3IEBAIGV4
+dGVybiBpbnQgb2ZfZ2V0X2ZiX3ZpZGVvbW9kZShzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wLA0K
+PiAgIGV4dGVybiBpbnQgZmJfdmlkZW9tb2RlX2Zyb21fdmlkZW9tb2RlKGNvbnN0IHN0cnVj
+dCB2aWRlb21vZGUgKnZtLA0KPiAgIAkJCQkgICAgICAgc3RydWN0IGZiX3ZpZGVvbW9kZSAq
+ZmJtb2RlKTsNCj4gDQo+IC0vKiBkcml2ZXJzL3ZpZGVvL21vZGVkYi5jICovDQo+ICsvKiBk
+cml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvbW9kZWRiLmMgKi8NCj4gICAjZGVmaW5lIFZFU0Ff
+TU9ERURCX1NJWkUgNDMNCj4gICAjZGVmaW5lIERNVF9TSVpFIDB4NTANCj4gDQo+IEBAIC04
+MDIsNyArODAyLDcgQEAgZXh0ZXJuIHZvaWQgZmJfdmlkZW9tb2RlX3RvX21vZGVsaXN0KGNv
+bnN0IHN0cnVjdCBmYl92aWRlb21vZGUgKm1vZGVkYiwgaW50IG51bSwNCj4gICBleHRlcm4g
+Y29uc3Qgc3RydWN0IGZiX3ZpZGVvbW9kZSAqZmJfZmluZF9iZXN0X2Rpc3BsYXkoY29uc3Qg
+c3RydWN0IGZiX21vbnNwZWNzICpzcGVjcywNCj4gICAJCQkJCQkgICAgICAgc3RydWN0IGxp
+c3RfaGVhZCAqaGVhZCk7DQo+IA0KPiAtLyogZHJpdmVycy92aWRlby9mYmNtYXAuYyAqLw0K
+PiArLyogZHJpdmVycy92aWRlby9mYmRldi9jb3JlL2ZiY21hcC5jICovDQo+ICAgZXh0ZXJu
+IGludCBmYl9hbGxvY19jbWFwKHN0cnVjdCBmYl9jbWFwICpjbWFwLCBpbnQgbGVuLCBpbnQg
+dHJhbnNwKTsNCj4gICBleHRlcm4gaW50IGZiX2FsbG9jX2NtYXBfZ2ZwKHN0cnVjdCBmYl9j
+bWFwICpjbWFwLCBpbnQgbGVuLCBpbnQgdHJhbnNwLCBnZnBfdCBmbGFncyk7DQo+ICAgZXh0
+ZXJuIHZvaWQgZmJfZGVhbGxvY19jbWFwKHN0cnVjdCBmYl9jbWFwICpjbWFwKTsNCj4gLS0N
+Cj4gMi40MC4xDQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2
+ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZy
+YW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRv
+dGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpI
+UkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
+--------------yrpywtRINvbudJVtaOfp07qV--
+
+--------------nvOeQaTfZToRoXKsKk00BdEQ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTu62IFAwAAAAAACgkQlh/E3EQov+Cm
+uBAAq/JU7AkZhy9rNPZ7IbaLWKc3uyP4xQkoximJBypQZMnlCDePcRFzPlz7q0rAVcbgnbNZJvrD
+ohLUNfSedWgsB/I0oE3Ngqy5UwJ0gaLk9R0WGNR5agBzAkkALmLAediOw5jD16zSxKRk3hqO5Dku
+6IP6dFxSzBIEcoaaNUm1hZaotEbq1pjfotOcAITDgyl3or63gkjzOGm+Dri2JGfz2mZQJt3IuNQY
+L8gQgTUUFDTXh2MuVb7pzqcXDl4LqwHTL21JaX0z7pE1yly1o9frcnyRgmmrVXTkLLZEXRWfGMGZ
+Ty7QOCLUrD64FYtxFzdD+nenDcRC2RzYEw4xXeogQqHLdhpoqEbUC3MSZe8y8HGiPrgol35gCme1
+4/GGsMKOUvf2qtzPq3SycR5+EX9L/xZJaS2kW/SgR7ux1sQ7Hk13yoe6lXcXcmXcuaZyIbs/Cl+o
+2JdXdHNMBqRv5NDAxxVH1eeEUqZQvWh8I66nQo767+s1iDbXfmdBnPxju/BHLRgqC9pI4rZ10kR2
+jE1Qdtam7WuTKUQCI75G3bo/peVLt4z6yW3Zk9OKi174BvDjsIbqstc10psyQ6EciLwENDiRR2mQ
+ywjvSudAofqttmFaUBY6J9XUeQT9VMxKJC6y8bFkJP2OdkRsMzun4o9ZHgxKNGSAqTYn32g7S3O6
+sSY=
+=EeEj
+-----END PGP SIGNATURE-----
+
+--------------nvOeQaTfZToRoXKsKk00BdEQ--
