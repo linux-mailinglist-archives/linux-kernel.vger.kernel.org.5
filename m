@@ -2,92 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 224DE78E33A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6793678E340
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344450AbjH3X1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 19:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        id S1344492AbjH3X2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbjH3X1d (ORCPT
+        with ESMTP id S239422AbjH3X2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 19:27:33 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A5BBC;
-        Wed, 30 Aug 2023 16:27:31 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-564cd28d48dso263937a12.0;
-        Wed, 30 Aug 2023 16:27:31 -0700 (PDT)
+        Wed, 30 Aug 2023 19:28:37 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3ADCD7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:28:33 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7927611c54bso11130539f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693438050; x=1694042850; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XWSiG1Av0SGOVCmNfwg8ak2uSd5V4L3YZMCs5wa1VjU=;
-        b=B0Hf9HTyskdB7pUziynHnGeceCKocZMjPnlZm2eRurbsv2gK+BOJl2bLGvAIdHAaXY
-         +nFRhZNcA6cW2dT508NR+LuheN70DvveKkUC7MqCDb5nqLnj/k2RHouk6Np79jjBOUJf
-         QMUVLTiJlO/rGeh2mPeUwgRiSynOKIFVOXcphSDixpAVtQ7nG98BclKlS6UIZxfYRovx
-         yQR8JuHXDH2CCwHAHjq9G0z2HBBkIuz5uQc0hzFLSgAvkUtSTQy/ctvadMZYZiWO4min
-         RwBYUzpbAQgjYDc88xjXs/CFlg6nQsRGt1OOvege7k+j+RZyk7gYo8bqFBr/gy2iO9TO
-         UU8w==
+        d=purestorage.com; s=google2022; t=1693438113; x=1694042913; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qO4oHVMeF3PN/FsRZDW5+HN48tR0F4cYrDjxuervmcc=;
+        b=Eu0NVCbcNENxU4orBwSrtqGgmihSut/PWtGAPbw2wOyvpCJQdk7hA6lP1g+1k5d+C7
+         ae4Acdh+Fa3efuCr0CsyLWOOQpbtJ6O9GHm1jAJ24eZbnawbLwDTFOjH49qe1ma56c//
+         1OqWXvFVOJUSD881Qje3Xm91ynq7X286LsgY1SYf2Rr4aX2dDTTaJhIPhwigMKoWJ1m/
+         /bcH8wrXonwgGfg1MjaMBxTXXhjNdjlz6htRtPhHKU7PIDMrzpgOhJeoTJKhOKsQbXzx
+         22F/riaYP6Nm644PCunG8fGX7fl78eSIaqYk4oAz7dQnmakq3S6UAzjti2zC3H2kndfs
+         0AaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693438050; x=1694042850;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XWSiG1Av0SGOVCmNfwg8ak2uSd5V4L3YZMCs5wa1VjU=;
-        b=jsgnWgNkUmWmAauiDZCURGbieH1+CuX9onotez6udqWrew5e/l4lP1YYkTO/ACyoQj
-         YQ+no8iVzNvE5jqJ+5lHikAMX9YaeSKnffF0Ptw87V8nf/TFmEYBxJGpXIFnwcfvSj8B
-         715CSJLPjuqEpsjaO/cGGF3I05iqbrGbuIy5VJ932J7oXImtCSYiiS05QopUtu0YvqIT
-         csfHI7stAABjlfDjkyLMvMQT15+irMutCo3Gfno/barf2ZEMcMPpygt2DLrnNCh8iQDz
-         J4sDs9fEa2lVOeOgy1tdg+K9aRdjQGxTAbNVO4UzoFLxZZrI0VPiMAz44Sdd5RZrrGoq
-         p3NQ==
-X-Gm-Message-State: AOJu0Yzk/swS+x6m+lEtuSqF2LADBa5JiwGxo0tfReYQH5VIjHG0ZT3M
-        MhQoXnjrumkBpVnTkbKrOKE=
-X-Google-Smtp-Source: AGHT+IGS+jUQo9PxO2wxI6Fxu/H0FRAiL6/WHrxNIfww1PdXRhYWCf5+SHH4FmTdQj67QkjSoqDfLQ==
-X-Received: by 2002:a05:6a21:3292:b0:132:cd2d:16fd with SMTP id yt18-20020a056a21329200b00132cd2d16fdmr4842907pzb.38.1693438050434;
-        Wed, 30 Aug 2023 16:27:30 -0700 (PDT)
-Received: from ubuntu777.domain.name (36-228-82-184.dynamic-ip.hinet.net. [36.228.82.184])
-        by smtp.gmail.com with ESMTPSA id ju20-20020a170903429400b001b672af624esm41059plb.164.2023.08.30.16.27.28
+        d=1e100.net; s=20221208; t=1693438113; x=1694042913;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qO4oHVMeF3PN/FsRZDW5+HN48tR0F4cYrDjxuervmcc=;
+        b=I4ALk2SkEZyC2Zk7h5X4860RnnOzVtDZlncEqtwKYHttJZGLd5zyi0yizjjMDIdlPZ
+         o7BJzeWn+4zWOtnFO2SS3KQlr7cF87YUU+02jvFPl6z9BuSSLSOR1o3BgC1bNTb0ZyZ6
+         tdKGhogla9WBmuj1zoJfe3nJVMuKKhv7KPxX+gQyVe1vWyb4bQEST4Y9pB1Oq6jQJZqU
+         ym4wIexPvqvQdtXvIwvfe5FKqR7bOH5XgpvwORgsAAc5QQP0l4bx3K+kgW4FPd6Xpuub
+         f1lmBUhfUQgc87z9OWa3rJHocDb/CThzOZYku1s6y3XockoINIYZquPDWaxH7VQZxzIi
+         //yA==
+X-Gm-Message-State: AOJu0Yzg+6rAD+aRRgfbsFypJb5cVvhlo/2S7OmZEsKRanjZ/epltRLU
+        FpaSl5gTH67kEHZ4szpsm+35qg==
+X-Google-Smtp-Source: AGHT+IGHZX6zgxZVgpuwzmQ02MWpvEuUfxgBDG8q3JehNd8n4slhLq/nkl0RKY60VYpQx78mOh9ZbA==
+X-Received: by 2002:a6b:e914:0:b0:783:57ae:1894 with SMTP id u20-20020a6be914000000b0078357ae1894mr4089814iof.9.1693438113284;
+        Wed, 30 Aug 2023 16:28:33 -0700 (PDT)
+Received: from dev-mkhalfella2.dev.purestorage.com ([208.88.159.129])
+        by smtp.googlemail.com with ESMTPSA id x17-20020a029711000000b0041d73d0a412sm56753jai.19.2023.08.30.16.28.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 16:27:29 -0700 (PDT)
-From:   Min-Hua Chen <minhuadotchen@gmail.com>
-To:     corbet@lwn.net
-Cc:     linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        minhuadotchen@gmail.com, rdunlap@infradead.org, src.res@email.cn
-Subject: Re: [PATCH v2 0/3] convert TW translation sparse.txt to RST
-Date:   Thu, 31 Aug 2023 07:27:25 +0800
-Message-Id: <20230830232725.5655-1-minhuadotchen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <87y1hvyp8x.fsf@meer.lwn.net>
-References: <87y1hvyp8x.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 16:28:32 -0700 (PDT)
+From:   Mohamed Khalfella <mkhalfella@purestorage.com>
+To:     willemdebruijn.kernel@gmail.com
+Cc:     alexanderduyck@fb.com, bpf@vger.kernel.org, brouer@redhat.com,
+        davem@davemloft.net, dhowells@redhat.com, edumazet@google.com,
+        keescook@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mkhalfella@purestorage.com,
+        netdev@vger.kernel.org, pabeni@redhat.com, willemb@google.com,
+        stable@vger.kernel.org
+Subject: [PATCH v2] skbuff: skb_segment, Call zero copy functions before using skbuff frags
+Date:   Wed, 30 Aug 2023 17:28:11 -0600
+Message-Id: <20230830232811.9876-1-mkhalfella@purestorage.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <64ed7188a2745_9cf208e1@penguin.notmuch>
+References: <64ed7188a2745_9cf208e1@penguin.notmuch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>  .../translations/zh_TW/dev-tools/index.rst    | 40 +++++++++++++++++++
->>  .../{sparse.txt => dev-tools/sparse.rst}      |  2 +-
->>  Documentation/translations/zh_TW/index.rst    |  2 +-
->>  3 files changed, 42 insertions(+), 2 deletions(-)
->>  create mode 100644 Documentation/translations/zh_TW/dev-tools/index.rst
->>  rename Documentation/translations/zh_TW/{sparse.txt => dev-tools/sparse.rst} (99%)
->
->This series doesn't apply to docs-next (the final patch, in particular,
->is problematic).  Can you respin and resend, please?
+Commit bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions
+once per nskb") added the call to zero copy functions in skb_segment().
+The change introduced a bug in skb_segment() because skb_orphan_frags()
+may possibly change the number of fragments or allocate new fragments
+altogether leaving nrfrags and frag to point to the old values. This can
+cause a panic with stacktrace like the one below.
 
-No problem. I will respin and resend the patches.
+[  193.894380] BUG: kernel NULL pointer dereference, address: 00000000000000bc
+[  193.895273] CPU: 13 PID: 18164 Comm: vh-net-17428 Kdump: loaded Tainted: G           O      5.15.123+ #26
+[  193.903919] RIP: 0010:skb_segment+0xb0e/0x12f0
+[  194.021892] Call Trace:
+[  194.027422]  <TASK>
+[  194.072861]  tcp_gso_segment+0x107/0x540
+[  194.082031]  inet_gso_segment+0x15c/0x3d0
+[  194.090783]  skb_mac_gso_segment+0x9f/0x110
+[  194.095016]  __skb_gso_segment+0xc1/0x190
+[  194.103131]  netem_enqueue+0x290/0xb10 [sch_netem]
+[  194.107071]  dev_qdisc_enqueue+0x16/0x70
+[  194.110884]  __dev_queue_xmit+0x63b/0xb30
+[  194.121670]  bond_start_xmit+0x159/0x380 [bonding]
+[  194.128506]  dev_hard_start_xmit+0xc3/0x1e0
+[  194.131787]  __dev_queue_xmit+0x8a0/0xb30
+[  194.138225]  macvlan_start_xmit+0x4f/0x100 [macvlan]
+[  194.141477]  dev_hard_start_xmit+0xc3/0x1e0
+[  194.144622]  sch_direct_xmit+0xe3/0x280
+[  194.147748]  __dev_queue_xmit+0x54a/0xb30
+[  194.154131]  tap_get_user+0x2a8/0x9c0 [tap]
+[  194.157358]  tap_sendmsg+0x52/0x8e0 [tap]
+[  194.167049]  handle_tx_zerocopy+0x14e/0x4c0 [vhost_net]
+[  194.173631]  handle_tx+0xcd/0xe0 [vhost_net]
+[  194.176959]  vhost_worker+0x76/0xb0 [vhost]
+[  194.183667]  kthread+0x118/0x140
+[  194.190358]  ret_from_fork+0x1f/0x30
+[  194.193670]  </TASK>
 
-Cheers,
-Min-Hua
->
->Thanks,
->
->jon
+In this case calling skb_orphan_frags() updated nr_frags leaving nrfrags
+local variable in skb_segment() stale. This resulted in the code hitting
+i >= nrfrags prematurely and trying to move to next frag_skb using
+list_skb pointer, which was NULL, and caused kernel panic. Move the call
+to zero copy functions before using frags and nr_frags.
+
+Fixes: bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions once per nskb")
+Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
+Reported-by: Amit Goyal <agoyal@purestorage.com>
+Cc: stable@vger.kernel.org
+---
+ net/core/skbuff.c | 34 ++++++++++++++++++++--------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index a298992060e6..18a33dc2d6af 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4354,21 +4354,20 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 	struct sk_buff *segs = NULL;
+ 	struct sk_buff *tail = NULL;
+ 	struct sk_buff *list_skb = skb_shinfo(head_skb)->frag_list;
+-	skb_frag_t *frag = skb_shinfo(head_skb)->frags;
+ 	unsigned int mss = skb_shinfo(head_skb)->gso_size;
+ 	unsigned int doffset = head_skb->data - skb_mac_header(head_skb);
+-	struct sk_buff *frag_skb = head_skb;
+ 	unsigned int offset = doffset;
+ 	unsigned int tnl_hlen = skb_tnl_header_len(head_skb);
+ 	unsigned int partial_segs = 0;
+ 	unsigned int headroom;
+ 	unsigned int len = head_skb->len;
++	struct sk_buff *frag_skb;
++	skb_frag_t *frag;
+ 	__be16 proto;
+ 	bool csum, sg;
+-	int nfrags = skb_shinfo(head_skb)->nr_frags;
+ 	int err = -ENOMEM;
+ 	int i = 0;
+-	int pos;
++	int nfrags, pos;
+ 
+ 	if ((skb_shinfo(head_skb)->gso_type & SKB_GSO_DODGY) &&
+ 	    mss != GSO_BY_FRAGS && mss != skb_headlen(head_skb)) {
+@@ -4445,6 +4444,13 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 	headroom = skb_headroom(head_skb);
+ 	pos = skb_headlen(head_skb);
+ 
++	if (skb_orphan_frags(head_skb, GFP_ATOMIC))
++		return ERR_PTR(-ENOMEM);
++
++	nfrags = skb_shinfo(head_skb)->nr_frags;
++	frag = skb_shinfo(head_skb)->frags;
++	frag_skb = head_skb;
++
+ 	do {
+ 		struct sk_buff *nskb;
+ 		skb_frag_t *nskb_frag;
+@@ -4465,6 +4471,10 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 		    (skb_headlen(list_skb) == len || sg)) {
+ 			BUG_ON(skb_headlen(list_skb) > len);
+ 
++			nskb = skb_clone(list_skb, GFP_ATOMIC);
++			if (unlikely(!nskb))
++				goto err;
++
+ 			i = 0;
+ 			nfrags = skb_shinfo(list_skb)->nr_frags;
+ 			frag = skb_shinfo(list_skb)->frags;
+@@ -4483,12 +4493,8 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 				frag++;
+ 			}
+ 
+-			nskb = skb_clone(list_skb, GFP_ATOMIC);
+ 			list_skb = list_skb->next;
+ 
+-			if (unlikely(!nskb))
+-				goto err;
+-
+ 			if (unlikely(pskb_trim(nskb, len))) {
+ 				kfree_skb(nskb);
+ 				goto err;
+@@ -4564,12 +4570,16 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 		skb_shinfo(nskb)->flags |= skb_shinfo(head_skb)->flags &
+ 					   SKBFL_SHARED_FRAG;
+ 
+-		if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
+-		    skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
++		if (skb_zerocopy_clone(nskb, list_skb, GFP_ATOMIC))
+ 			goto err;
+ 
+ 		while (pos < offset + len) {
+ 			if (i >= nfrags) {
++				if (skb_orphan_frags(list_skb, GFP_ATOMIC) ||
++				    skb_zerocopy_clone(nskb, list_skb,
++						       GFP_ATOMIC))
++					goto err;
++
+ 				i = 0;
+ 				nfrags = skb_shinfo(list_skb)->nr_frags;
+ 				frag = skb_shinfo(list_skb)->frags;
+@@ -4583,10 +4593,6 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 					i--;
+ 					frag--;
+ 				}
+-				if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
+-				    skb_zerocopy_clone(nskb, frag_skb,
+-						       GFP_ATOMIC))
+-					goto err;
+ 
+ 				list_skb = list_skb->next;
+ 			}
+-- 
+2.17.1
+
