@@ -2,59 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB57378DE23
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C44478DC5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbjH3S6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
+        id S242892AbjH3SpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245641AbjH3Ppy (ORCPT
+        with ESMTP id S245650AbjH3PsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:45:54 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E0D11A3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:45:48 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxbesqZO9knSEdAA--.57301S3;
-        Wed, 30 Aug 2023 23:45:46 +0800 (CST)
-Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxviMqZO9kjVRnAA--.12491S5;
-        Wed, 30 Aug 2023 23:45:46 +0800 (CST)
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-To:     Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/gma500: Fix the failure to map the stolen memory
-Date:   Wed, 30 Aug 2023 23:45:46 +0800
-Message-Id: <20230830154546.499987-4-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230830154546.499987-1-suijingfeng@loongson.cn>
-References: <20230830154546.499987-1-suijingfeng@loongson.cn>
+        Wed, 30 Aug 2023 11:48:11 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E29CE122;
+        Wed, 30 Aug 2023 08:48:07 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B3462F4;
+        Wed, 30 Aug 2023 08:48:47 -0700 (PDT)
+Received: from bogus (unknown [10.57.36.157])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 472D53F64C;
+        Wed, 30 Aug 2023 08:48:04 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 16:47:07 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Radu Rendec <rrendec@redhat.com>
+Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        x86@kernel.org, Andreas Herrmann <aherrmann@suse.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chen Yu <yu.c.chen@intel.com>, Len Brown <len.brown@intel.com>,
+        Pierre Gondois <Pierre.Gondois@arm.com>,
+        Pu Wen <puwen@hygon.cn>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+        stable@vger.kernel.org, Ricardo Neri <ricardo.neri@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] cacheinfo: Allocate memory for memory if not done
+ from the primary CPU
+Message-ID: <20230830154707.dyeihenolc5nwmi2@bogus>
+References: <20230805012421.7002-1-ricardo.neri-calderon@linux.intel.com>
+ <20230805012421.7002-2-ricardo.neri-calderon@linux.intel.com>
+ <20230830114918.be4mvwfogdqmsxk6@bogus>
+ <23a1677c3df233c220df68ea429a2d0fec52e1d4.camel@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8DxviMqZO9kjVRnAA--.12491S5
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxWF13GFWkJF45uFW8uFy7XFc_yoW5XF4rpF
-        ZIqa12grWkJFWIyr4UWryUW3Way3Z7ua4xWr1fCryxuw43KFWkXr98JayYgrWrXr1DJrs2
-        v39rtw1S9w48AagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1a6r1DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAF
-        wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8C
-        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
-        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x02
-        67AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-        0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbCz
-        uJUUUUU==
+In-Reply-To: <23a1677c3df233c220df68ea429a2d0fec52e1d4.camel@redhat.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,67 +58,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When another discrete video card(SM750 or AST1400) is mounted into the mini
-PCIe slot of my ASRock AD2550B-ITX board, the gma500 drivers fails to work.
-It probably because the UEFI firmware of that board forget to initialize
-the PSB_PGETBL_CTL reg, therefore the value of dev_priv->pge_ctl is 0, then
-the value of gtt_phys_start is also 0.
+On Wed, Aug 30, 2023 at 08:13:09AM -0400, Radu Rendec wrote:
+> On Wed, 2023-08-30 at 12:49 +0100, Sudeep Holla wrote:
+> > On Fri, Aug 04, 2023 at 06:24:19PM -0700, Ricardo Neri wrote:
+> > > Commit 5944ce092b97 ("arch_topology: Build cacheinfo from primary CPU")
+> > > adds functionality that architectures can use to optionally allocate and
+> > > build cacheinfo early during boot. Commit 6539cffa9495 ("cacheinfo: Add
+> > > arch specific early level initializer") lets secondary CPUs correct (and
+> > > reallocate memory) cacheinfo data if needed.
+> > > 
+> > > If the early build functionality is not used and cacheinfo does not need
+> > > correction, memory for cacheinfo is never allocated. x86 does not use the
+> > > early build functionality. Consequently, during the cacheinfo CPU hotplug
+> > > callback, last_level_cache_is_valid() attempts to dereference a NULL
+> > > pointer:
+> > > 
+> > >      BUG: kernel NULL pointer dereference, address: 0000000000000100
+> > >      #PF: supervisor read access in kernel mode
+> > >      #PF: error_code(0x0000) - not present page
+> > >      PGD 0 P4D 0
+> > >      Oops: 0000 [#1] PREEPMT SMP NOPTI
+> > >      CPU: 0 PID 19 Comm: cpuhp/0 Not tainted 6.4.0-rc2 #1
+> > >      RIP: 0010: last_level_cache_is_valid+0x95/0xe0a
+> > > 
+> > > Allocate memory for cacheinfo during the cacheinfo CPU hotplug callback if
+> > > not done earlier.
+> > > 
+> > > Cc: Andreas Herrmann <aherrmann@suse.com>
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: Chen Yu <yu.c.chen@intel.com>
+> > > Cc: Len Brown <len.brown@intel.com>
+> > > Cc: Radu Rendec <rrendec@redhat.com>
+> > > Cc: Pierre Gondois <Pierre.Gondois@arm.com>
+> > > Cc: Pu Wen <puwen@hygon.cn>
+> > > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> > > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Zhang Rui <rui.zhang@intel.com>
+> > > Cc: linux-arm-kernel@lists.infradead.org
+> > > Cc: stable@vger.kernel.org
+> > > Acked-by: Len Brown <len.brown@intel.com>
+> > > Fixes: 6539cffa9495 ("cacheinfo: Add arch specific early level initializer")
+> > 
+> > Not sure if we strictly need this(details below), but I am fine either way.
+> > 
+> > > Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> > > ---
+> > > The motivation for commit 5944ce092b97 was to prevent a BUG splat in
+> > > PREEMPT_RT kernels during memory allocation. This splat is not observed on
+> > > x86 because the memory allocation for cacheinfo happens in
+> > > detect_cache_attributes() from the cacheinfo CPU hotplug callback.
+> > > 
+> > > The dereference of a NULL pointer is not observed today because
+> > > cache_leaves(cpu) is zero until after init_cache_level() is called (also
+> > > during the CPU hotplug callback). Patch2 will set it earlier and the NULL-
+> > > pointer dereference will be observed.
+> > 
+> > Right, this is the information I have been asking in the previous versions.
+> > This clarifies a lot. The trigger is in the patch 2/3 which is why it didn't
+> > make complete sense to me without it when you posted this patch independently.
+> > Thanks for posting it together and sorry for the delay(both reviewing this
+> > and in understanding the issue).
+> > 
+> > Given the trigger for NULL pointer dereference is in 2/3, I am not sure
+> > if it is really worth applying this to all the stable kernels with the
+> > commit 5944ce092b97 ("arch_topology: Build cacheinfo from primary CPU").
+> > That is the reason why I asked to drop fixes tag if you agree with me.
+> > It is simple fix, so I am OK if you prefer to see that in the stable kernels
+> > as well.
+> 
+> Thanks for reviewing, Sudeep. Since my previous commit 6539cffa9495
+> ("cacheinfo: Add arch specific early level initializer") opens a door
+> for the NULL pointer dereference, I would sleep better at night if the
+> fix was included in the stable kernels :) But seriously, I am concerned
+> that with the fix applied in mainline and not in stable, something else
+> could be backported to the stable in the future, that could trigger the
+> NULL pointer dereference there. Ricardo's patch 2/3 is one way to
+> trigger it, but you never know what other patch lands in mainline in
+> the future that assumes it's safe to set the cache leaves earlier.
+> 
 
-On normal case, the value of the dev_priv->stolen_base is 0xbf800000 for
-this board, so the value of the vram_stolen_size will be negative in this
-case, the calculation of the stolen vram size of drm/gma500 is pasted at
-below:
+Fair enough. I agree with you, so please retain the fixes tag as is.
+Please work with x86 maintainers to get it merged along with other patches.
+Let me know if you have other plans.
 
-vram_stolen_size = pg->gtt_phys_start - dev_priv->stolen_base - PAGE_SIZE;
-                 = 0 - 0xbf800000 - 4096 = 1056764 KiB
-
-Which is so large, so this cause the ioremap_wc() fail, see below dmesg for
-more information.
-
- gma500 0000:00:02.0: enabling device (0000 -> 0003)
- gma500 0000:00:02.0: GPU: power management timed out.
- gma500 0000:00:02.0: [drm] Phys start of GTT: 0x0
- gma500 0000:00:02.0: [drm] Stolen memory base 0xbf800000, size 1056764KiB
- x86/PAT: systemd-udevd:386 conflicting memory types bf800000-fffff000 write-combining<->uncached-minus
- x86/PAT: memtype_reserve failed [mem 0xbf800000-0xffffefff], track write-combining, req write-combining
- ioremap memtype_reserve failed -16
- gma500 0000:00:02.0: Failure to map stolen base.
- gma500: probe of 0000:00:02.0 failed with error -12
-
-Regardless, we want this driver works even there have another video card
-mounted. This patch solve this problem by given 8M stolen memory if the
-value of pg->gtt_phys_start is zero. And after apply this patch, it works
-fine.
-
-$ dmesg | grep drm
-
- gma500 0000:00:02.0: [drm] Phys start of GTT: 0x0
- gma500 0000:00:02.0: [drm] Stolen memory base 0xbf800000, size 8192KiB
- [drm] Initialized gma500 1.0.0 20140314 for 0000:00:02.0 on minor 0
- gma500 0000:00:02.0: [drm] fb1: gma500drmfb frame buffer device
-
-Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
----
- drivers/gpu/drm/gma500/gem.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/gma500/gem.c b/drivers/gpu/drm/gma500/gem.c
-index 6fe78f61e127..0e9971bb24fa 100644
---- a/drivers/gpu/drm/gma500/gem.c
-+++ b/drivers/gpu/drm/gma500/gem.c
-@@ -340,7 +340,11 @@ int psb_gem_mm_init(struct drm_device *dev)
- 	pg = &dev_priv->gtt;
- 
- 	pci_read_config_dword(pdev, PSB_BSM, &dev_priv->stolen_base);
--	vram_stolen_size = pg->gtt_phys_start - dev_priv->stolen_base - PAGE_SIZE;
-+
-+	if (pg->gtt_phys_start)
-+		vram_stolen_size = pg->gtt_phys_start - dev_priv->stolen_base - PAGE_SIZE;
-+	else
-+		vram_stolen_size = 8 * 1024 * 1024;
- 
- 	stolen_size = vram_stolen_size;
- 
 -- 
-2.34.1
-
+Regards,
+Sudeep
