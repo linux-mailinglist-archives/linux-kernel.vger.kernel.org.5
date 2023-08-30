@@ -2,118 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 457C078E0AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C4678DFEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238710AbjH3Uag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        id S237254AbjH3T5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239948AbjH3UaT (ORCPT
+        with ESMTP id S232601AbjH3T5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:30:19 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FF4CFC3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:28:23 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34cafafa50eso357315ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:28:23 -0700 (PDT)
+        Wed, 30 Aug 2023 15:57:15 -0400
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1674436D2A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:29:28 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-68bed8de5b9so11543b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1693423602; x=1694028402; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=R1jYqqYryQFVoqC0CvIasISxt5p5l9C337JF0IzaaeQ=;
-        b=AR2B+O1qqsO7VhfIGlSNTCIlhPsRCyWk3wjRLJxgXGAdWxCSsTrD7WP9mzErnguHiR
-         McFJMVVvtxum3pWex6KaBLUZIy6uXmblIJTt6ctafcmyDotq/KDj3V1SylFPEZNkUhgw
-         npwV5CSqiVPxF66vUKpQuFgj7a2DU6k46IFvw=
+        d=chromium.org; s=google; t=1693423625; x=1694028425; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YZMBO3cq35PjwKKIG6m42W7fw7Uuq0v6gb0qcGM7SrQ=;
+        b=hR0Ei8t6wqohymZFZGwguVrcTqVtJZs7bleS9AYXdH4FqSCAmOeUbe+6nWJdsJVcVj
+         +NGqjfviWqcLzMVx4MR+qo3AvhRMg2mja/X7yCBjjYmH6A0tEY8pLLPb+RZ78LrdXuJ2
+         KkgWpSTnXIXl5GSjUkNYqvxOABA1BA7hL2AfA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693423602; x=1694028402;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R1jYqqYryQFVoqC0CvIasISxt5p5l9C337JF0IzaaeQ=;
-        b=TrXiok8wubg0cUrkB90y3zIV19m+EHkTEteivigXmxs8RXvocMPcavTTbUZ2om9HhF
-         QIZDENHK2D7S7bZGa6Jf/RTsr4tL8pLqwL9mKRHW1N++qQlHslJg+yzbyMONJQRvQ6MT
-         e0Hu86zUki+vCIi9C+6kAN6Z+844ZN8xdklo7Ric0KHs/Ht3e9hM5+N8HwVJUqX/N5di
-         S5bPpYsGrZ73YQez7EU/UW/1zHbEDZq5bzZtmBL3sKyCFV0bmDUCtkiVZ71H92axwCfj
-         HPEfHeSj3tnbAq56BEIKXq5Y+3Iy1agxf63fJHsMlRaLjDwQvlILJcR605QVDPLbNSQB
-         Kqbg==
-X-Gm-Message-State: AOJu0YyC8BDM9i48QyrO5Xqob+EwdVIC2gBg3wmEB3SL3OOoSuZgZCB1
-        6IZWElixFEDaDvsh4NqOCKHiDaw907szROllmd8=
-X-Google-Smtp-Source: AGHT+IEOQuaCPRSlM4hl/aNm6eNbq7glyuDloY1WGu09H10YoJhpVGz0OCCWbXl2tZAJMU+ICD6XIA==
-X-Received: by 2002:a92:ce8a:0:b0:347:7421:9d85 with SMTP id r10-20020a92ce8a000000b0034774219d85mr3271193ilo.29.1693423602581;
-        Wed, 30 Aug 2023 12:26:42 -0700 (PDT)
-Received: from CMGLRV3 ([2a09:bac5:9478:4be::79:1b])
-        by smtp.gmail.com with ESMTPSA id m2-20020a924a02000000b0034ac1a32fd9sm3918084ilf.44.2023.08.30.12.26.41
+        d=1e100.net; s=20221208; t=1693423625; x=1694028425;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YZMBO3cq35PjwKKIG6m42W7fw7Uuq0v6gb0qcGM7SrQ=;
+        b=KKZ5Iz4SKrfjKD0o32bfQfO5g9X0i8JdXQoY+Hf5d2yuFYSswg+etHRTP1mezmTVNs
+         PBhaJi4vbkrjLtRHBzd+InbPv05+YvC5DxNnDi5DLbrcEi0c+zjahuYJkxjW81VkjlSV
+         3WdlBmlYHR55e6Jpn4yY+XY0tuMWvVBycwltekTFSGsSu1fem6I1kHYEl5XKi/PBdCpw
+         JpgS8qobzpgXQpBswmXIioXJcF77LXzg9MD+cmg+dG/2ZqBz/LAQEHxRom4YFKmV+K8b
+         Ft7elT+NCxIgEV5yStJJ8eJBME1yr0a5lJ+mNuIZ1lIetO/TxcViiiY+D06GpAf3t573
+         JjRg==
+X-Gm-Message-State: AOJu0YxYzXdjv/bouiXji8P7rhh+uMBGZmTXINrH01pen2HhF2crhfWf
+        GylkxRVTlVVCpdbaOZ0xzAXHuA==
+X-Google-Smtp-Source: AGHT+IGykiElXISO5VTbxBJsqAwOC0C4+ZKKK6xBNTjZEalBwc53bWlt/bicp+NzrhLj4nYHS0HvIg==
+X-Received: by 2002:a05:6a00:1ace:b0:68b:dfef:de8f with SMTP id f14-20020a056a001ace00b0068bdfefde8fmr3255663pfv.12.1693423625426;
+        Wed, 30 Aug 2023 12:27:05 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g10-20020a62e30a000000b00688965c5227sm10324255pfh.120.2023.08.30.12.27.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 12:26:42 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 14:26:39 -0500
-From:   Frederick Lawler <fred@cloudflare.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Daniel Dao <dqminh@cloudflare.com>, linux-fsdevel@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, djwong@kernel.org
-Subject: Re: Kernel NULL pointer deref and data corruptions with xfs on 6.1
-Message-ID: <ZO+X75hK24e0Plgk@CMGLRV3>
-References: <CA+wXwBRGab3UqbLqsr8xG=ZL2u9bgyDNNea4RGfTDjqB=J3geQ@mail.gmail.com>
- <ZMHkLA+r2K6hKsr5@casper.infradead.org>
- <CA+wXwBQur9DU7mVa961KWpL+cn1BNeZbU+oja+SKMHhEo1D0-g@mail.gmail.com>
- <ZMJizCdbm+JPZ8gp@casper.infradead.org>
- <ZM0t8rYZewA3dO0W@CMGLRV3>
+        Wed, 30 Aug 2023 12:27:04 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 12:27:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] vt: Fix potential read overflow of kernel memory
+Message-ID: <202308301222.3BD87A6@keescook>
+References: <20230830160410.3820390-1-azeemshaikh38@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZM0t8rYZewA3dO0W@CMGLRV3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+In-Reply-To: <20230830160410.3820390-1-azeemshaikh38@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+On Wed, Aug 30, 2023 at 04:04:10PM +0000, Azeem Shaikh wrote:
+> strlcpy() reads the entire source buffer first.
 
-On Fri, Aug 04, 2023 at 11:57:22AM -0500, Frederick Lawler wrote:
-> Hi Matthew,
-> 
-> On Thu, Jul 27, 2023 at 01:27:56PM +0100, Matthew Wilcox wrote:
-> > On Thu, Jul 27, 2023 at 11:25:33AM +0100, Daniel Dao wrote:
-> > > On Thu, Jul 27, 2023 at 4:27 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > On Fri, Jul 21, 2023 at 11:49:04AM +0100, Daniel Dao wrote:
-> > > > > We do not have a reproducer yet, but we now have more debugging data
-> > > > > which hopefully
-> > > > > should help narrow this down. Details as followed:
-> > > > >
-> > > > > 1. Kernel NULL pointer deferencences in __filemap_get_folio
-> > > > >
-> > > > > This happened on a few different hosts, with a few different repeated addresses.
-> > > > > The addresses are 0000000000000036, 0000000000000076,
-> > > > > 00000000000000f6. This looks
-> > > > > like the xarray is corrupted and we were trying to do some work on a
-> > > > > sibling entry.
-> > > >
-> > > > I think I have a fix for this one.  Please try the attached.
-> > > 
-> > > For some reason I do not see the attached patch. Can you resend it, or
-> > > is it the same
-> > > one as in https://bugzilla.kernel.org/show_bug.cgi?id=216646#c31 ?
-> > 
-> > Yes, that's the one, sorry.
-> 
-> I setup a kernel with this patch to deploy out. It'll take some time to
-> see any results from that. I did run your multiorder.c changes with/without
-> the change to lib/xarray.c and that seemed to work as intended. I didn't see
-> any regressions across multiple seeds with our kernel config.
-> 
-> Fred
+Perhaps add:
+"... and returns the size of the source string, not the destination
+string, which can be accidentally misused."
 
-We deployed out the xarray lib fix to our fleet and didn't notice any more
-issues cropping up wrt this error among other oddities. LGTM
+> This read may exceed the destination size limit if
+> a source string is not NUL-terminated [1].
+> 
+> The copy_to_user() call uses @len returned from strlcpy() directly
+> without checking its value. This could potentially lead to read
+> overflow.
 
-Fred
+Since the code as written today is "accidentally correct", it's worth
+clarifying this: there is no existing bug, but as written it is very
+fragile and specifically uses a strlcpy() result without sanity checking
+and using it to copy to userspace. (This is the exact anti-pattern for
+strlcpy(), and only because the source strings are known good is this
+safe.)
+
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> [2] https://github.com/KSPP/linux/issues/89
+> 
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> ---
+>  drivers/tty/vt/keyboard.c |    7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> index 358f216c6cd6..15359c328a23 100644
+> --- a/drivers/tty/vt/keyboard.c
+> +++ b/drivers/tty/vt/keyboard.c
+> @@ -2079,12 +2079,15 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+>  			return -ENOMEM;
+> 
+>  		spin_lock_irqsave(&func_buf_lock, flags);
+> -		len = strlcpy(kbs, func_table[kb_func] ? : "", len);
+> +		len = strscpy(kbs, func_table[kb_func] ? : "", len);
+>  		spin_unlock_irqrestore(&func_buf_lock, flags);
+> 
+> +		if (len < 0) {
+> +			ret = -EFAULT;
+
+I think this should be -ENOSPC as EFAULT implies an actual memory fault.
+
+> +			break;
+> +		}
+>  		ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
+>  			-EFAULT : 0;
+> -
+>  		break;
+>  	}
+>  	case KDSKBSENT:
+> --
+> 2.42.0.rc2.253.gd59a3bf2b4-goog
+> 
+> 
+
+Thanks for sticking with these refactorings; we're almost free from
+strlcpy. :)
+
+-Kees
+
+-- 
+Kees Cook
