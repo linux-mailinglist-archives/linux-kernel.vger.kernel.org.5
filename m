@@ -2,81 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9930C78DF16
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B3078DF9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244186AbjH3TOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        id S1344341AbjH3T1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343985AbjH3Rvi (ORCPT
+        with ESMTP id S1344088AbjH3SDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:51:38 -0400
-Received: from mail-oa1-x4a.google.com (mail-oa1-x4a.google.com [IPv6:2001:4860:4864:20::4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F35193
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:51:34 -0700 (PDT)
-Received: by mail-oa1-x4a.google.com with SMTP id 586e51a60fabf-1c8d4a5224eso6956457fac.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693417893; x=1694022693; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EYjQFc4xOJMLhqSY/15Eo/bkP9OF+XNV2qczMiBYtL4=;
-        b=aw9dPjDYPDyipNtu8Wxx18Dx9m/0Xd2cYgG3isygHJfTvcaiF7aSiPVrgFXiAdlEHI
-         MOl7xQcITcqAi8kEmkQZeVP9JhUFBg0Y2hDCV9jZsq8cACSTmPMEraSRDXAbcmMqdY2i
-         WIxR+ba/wJ6bZ4wyPiOW4TzGS8jBpZLI0frOzSqPgjKqtpiZ5C6LI5lBoE9vfLzV13aj
-         E4lG7ZDx8vddONjM/G4VsainecpOjvLzRVKLEvsU3WJDk6FNp5aQKPJ92qu7r95VTCNW
-         9e/ENAlk22sgytAuyCk8508oyLXZ9kbfQeWujtLs4VjfCSWOuyAW6qgMT+vSnUCqFzcu
-         fGQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693417893; x=1694022693;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EYjQFc4xOJMLhqSY/15Eo/bkP9OF+XNV2qczMiBYtL4=;
-        b=g2Xq3VBpOxzrgz2Fw+LX7sqONCxGLA5t5ebCCQm8PAJw0J14MQ/gZcoHJAAXT3JEKq
-         9+zudIIkGll5O79EDi8xaAhHXXEzvnTv5F5nknjKAd2fVw9kNgNvsVtG+2a8LwZgXdfn
-         ULyRdjVoPzhUMGzb1t9dUkGYj/rr0bxy4zH7Gi/OKzmKvT+bs6jsM55DRTkp8MTDc+74
-         Fi/Llfh1DXgTzpnOmJSU/wDVJ5mOweWzWbDeIwVkwXf5qEXwq9+5Ay+HRP/K4pBFNBDn
-         8D9anbtZ6U42j5hXaGTeSbGZ67H3v8puIAkyjEZpMlNObr+GHiLu59cLwCEEOK98wm7V
-         Dsbw==
-X-Gm-Message-State: AOJu0YwH5E4ILCysbbCT8PTifpG/r0lCtlLpSAYnlGBM022WeWAI51JT
-        x191LWGu2At2bg7P7NanNW+eCCm1ie6Y52s11A==
-X-Google-Smtp-Source: AGHT+IGL/3lcQ6hwMvsl4p1gk/LCm0paBP0RD6v6Kz3Tt1iisx7fE8BgSUyT/0wksBkGcJvZoAMVnrwDfWF9o8Lg1w==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6870:5b1b:b0:1c0:e9e9:ae91 with
- SMTP id ds27-20020a0568705b1b00b001c0e9e9ae91mr137879oab.3.1693417893238;
- Wed, 30 Aug 2023 10:51:33 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 17:51:29 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKCB72QC/32NTQrCMBSEr1Le2kh+TLWuvId0EZLX9EGblESCU
- nJ3Yw8gs/oG5psdMibCDPduh4SFMsXQQJ46sLMJHhm5xiC5VPwmB7ZSzhR8McmhXRhOxPSgeG+
- MndBdoA231Nr3IX2OjWfKr5g+x0cRv/avrgjWohzX2mgtrv3Dx+gXPNu4wlhr/QIVCrnRtQAAA A==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693417892; l=3644;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=+vRGVRwlIjkmcXJXBfhvIJnVrDxDHX9+bhatyE7XQZE=; b=tEmNmV0Gd9vM2MDL3PKKkeIiRgAoxL8apKcKfw1CvhU6tPKZlGnans1x4nL4cCT6uVZeVgfd6
- lVCgmhdzg/wB7MReF69x2zwkmSByyHgiMvfwCsafFz90SSsJqUm4woN
-X-Mailer: b4 0.12.3
-Message-ID: <20230830-missingvardecl-efi-v2-1-818081a204d2@google.com>
-Subject: [PATCH v2] efi: fix -Wmissing-variable-declarations warning
-From:   Justin Stitt <justinstitt@google.com>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        Wed, 30 Aug 2023 14:03:13 -0400
+X-Greylist: delayed 594 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Aug 2023 11:03:07 PDT
+Received: from hop.stappers.nl (hop.stappers.nl [141.105.120.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9338A193;
+        Wed, 30 Aug 2023 11:03:07 -0700 (PDT)
+Received: from gpm.stappers.nl (gpm.stappers.nl [82.168.249.201])
+        by hop.stappers.nl (Postfix) with ESMTP id B300D20167;
+        Wed, 30 Aug 2023 17:53:10 +0000 (UTC)
+Received: by gpm.stappers.nl (Postfix, from userid 1000)
+        id 471A430417C; Wed, 30 Aug 2023 19:53:10 +0200 (CEST)
+Date:   Wed, 30 Aug 2023 19:53:09 +0200
+From:   Geert Stappers <stappers@stappers.nl>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH 1/2] MAINTAINERS: update Rust webpage
+Message-ID: <ZO+CBdxxuDBrdDR8@gpm.stappers.nl>
+References: <20230830165949.127475-1-ojeda@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830165949.127475-1-ojeda@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,83 +49,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building x86/defconfig with Clang-18 I encounter the following warnings:
-| arch/x86/platform/efi/efi.c:934:23: warning: no previous extern declaration for non-static variable 'efi_attr_fw_vendor' [-Wmissing-variable-declarations]
-|   934 | struct kobj_attribute efi_attr_fw_vendor = __ATTR_RO(fw_vendor);
-| arch/x86/platform/efi/efi.c:935:23: warning: no previous extern declaration for non-static variable 'efi_attr_runtime' [-Wmissing-variable-declarations]
-|   935 | struct kobj_attribute efi_attr_runtime = __ATTR_RO(runtime);
-| arch/x86/platform/efi/efi.c:936:23: warning: no previous extern declaration for non-static variable 'efi_attr_config_table' [-Wmissing-variable-declarations]
-|   936 | struct kobj_attribute efi_attr_config_table = __ATTR_RO(config_table);
+On Wed, Aug 30, 2023 at 06:59:48PM +0200, Miguel Ojeda wrote:
+> A few months ago we started a webpage for the Rust subsystem and
+> the overall Rust for Linux project [1].
+> 
+> The current `W:` field of the Rust entry points to the GitHub
+> repository, since originally we kept information in a `README.md`
+> file that got rendered by GitHub when visiting that URL.
+> 
+> That information was moved into the webpage and got expanded.
 
-These symbols are declared extern in drivers/firmware/efi/efi.c. Move
-the declarations to linux/efi.h to resolve these warnings.
+It looks like "mdbook" and "webbrowser view-source" confirms it is.
 
-Also, trim a trailing space from efi_set_variable_t typedef.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1920
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- Don't use static. Instead move symbols to header file (thanks Ard)
-- Remove duplicated warnings output from b4 (thanks Ard)
-- Link to v1: https://lore.kernel.org/r/20230829-missingvardecl-efi-v1-1-13d055a55176@google.com
----
-Note: build-tested.
+> The webpage is also nowadays the entry point to the project,
+> and we pointed the "Website" GitHub metadata field to it.
+> 
+> Thus update the `W:` field to point to the actual webpage.
+> 
+> Link: https://rust-for-linux.com [1]
 
-Also, a question: Why does the compiler warn at all? The extern
-declarations _do_ exist as Ard points out [1].
+Where to find the source for the MarkDownBook?
 
-[1]: https://lore.kernel.org/all/CAMj1kXE_xs+wWno4G4U+6CFCOwO7JWcmNv4et5=W=ZRrQatWnQ@mail.gmail.com/
----
- drivers/firmware/efi/efi.c | 3 ---
- include/linux/efi.h        | 6 +++++-
- 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 1599f1176842..7b4e59ccf09e 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -161,9 +161,6 @@ static ssize_t fw_platform_size_show(struct kobject *kobj,
- 	return sprintf(buf, "%d\n", efi_enabled(EFI_64BIT) ? 64 : 32);
- }
- 
--extern __weak struct kobj_attribute efi_attr_fw_vendor;
--extern __weak struct kobj_attribute efi_attr_runtime;
--extern __weak struct kobj_attribute efi_attr_config_table;
- static struct kobj_attribute efi_attr_fw_platform_size =
- 	__ATTR_RO(fw_platform_size);
- 
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index ab088c662e88..32f7ca60b0e9 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -287,7 +287,7 @@ typedef efi_status_t efi_get_variable_t (efi_char16_t *name, efi_guid_t *vendor,
- 					 unsigned long *data_size, void *data);
- typedef efi_status_t efi_get_next_variable_t (unsigned long *name_size, efi_char16_t *name,
- 					      efi_guid_t *vendor);
--typedef efi_status_t efi_set_variable_t (efi_char16_t *name, efi_guid_t *vendor, 
-+typedef efi_status_t efi_set_variable_t (efi_char16_t *name, efi_guid_t *vendor,
- 					 u32 attr, unsigned long data_size,
- 					 void *data);
- typedef efi_status_t efi_get_next_high_mono_count_t (u32 *count);
-@@ -632,6 +632,10 @@ typedef struct {
- 
- extern unsigned long __ro_after_init efi_rng_seed;		/* RNG Seed table */
- 
-+extern __weak struct kobj_attribute efi_attr_fw_vendor;
-+extern __weak struct kobj_attribute efi_attr_runtime;
-+extern __weak struct kobj_attribute efi_attr_config_table;
-+
- /*
-  * All runtime access to EFI goes through this structure:
-  */
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 12601a47c839..7c8088e9a11b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18558,7 +18558,7 @@ R:	Andreas Hindborg <a.hindborg@samsung.com>
+>  R:	Alice Ryhl <aliceryhl@google.com>
+>  L:	rust-for-linux@vger.kernel.org
+>  S:	Supported
+> -W:	https://github.com/Rust-for-Linux/linux
+> +W:	https://rust-for-linux.com
+>  B:	https://github.com/Rust-for-Linux/linux/issues
+>  C:	zulip://rust-for-linux.zulipchat.com
+>  T:	git https://github.com/Rust-for-Linux/linux.git rust-next
+> 
+> base-commit: 4af84c6a85c63bec24611e46bb3de2c0a6602a51
+> -- 
+> 2.42.0
 
----
-base-commit: 706a741595047797872e669b3101429ab8d378ef
-change-id: 20230829-missingvardecl-efi-59306aacfed4
+Reviewed-by: Geert Stappers <stappers@stappers.nl>
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
 
+Groeten
+Geert Stappers
+-- 
+Silence is hard to parse
