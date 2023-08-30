@@ -2,142 +2,525 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDEE78E2E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2ED78E358
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344264AbjH3WzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        id S1344519AbjH3Xi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343886AbjH3WzS (ORCPT
+        with ESMTP id S1344511AbjH3Xi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:55:18 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4B0E6E
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:54:55 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4ff09632194so557858e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693436093; x=1694040893; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=msHyshj90vSnmjfMS+CD0pnHPjuRl2jy7F4rESiCNlg=;
-        b=tdhX3wBOglW/ArkbAbJH5/OpktMTOoqqr9uHJwt6UCMB2Je3SuyJUc/WTqJsTCa70S
-         zR9B+DPubKaLq7mH0qynRZQ1XssoNnpPNoa7Mqig4KOdkcmj39uLesnFbwnXgDLTpvYo
-         B+PJ2YQjrhAfCJQTpchDcKGKBRfKeRkIXqQG7m5/RRVRhrkx7Wl3ewoiZVCMJAH1SEYI
-         GeOM5mUfT+YLQGrhwTNYuOSXA/5zulWOTKzGcLEvJTMR4PwXAtIJhBDbui/4YdcSHyI7
-         Uue5o5ReW4FTUbUz2w/HskHyse1RCVccwmCWvtNH1+To3o3SilNido8Oah+JwtdDDUEM
-         Eu8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693436093; x=1694040893;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=msHyshj90vSnmjfMS+CD0pnHPjuRl2jy7F4rESiCNlg=;
-        b=PlRmnknwiFWm9f/se19tEvMBR0BW6G5iAa4NoyAsaUv6W2pN73/PwYMALkSqdm9WcJ
-         8y6A+AoWnxjROliLKgDANDoNZC3qyLjuqFFoz4k9/XdxF+SlrkgwQbIF2RJyDBipPAwd
-         ZdT0BNbp6xwK3R+HVzEp/VGv6q+LqDG4L2DpH5D5Vs2LhTJhamXyGvCZFpVcloUGhsDl
-         S/oA2XCwDlUi5mUTeI2+NTBmmCNQgjg1vXO3W4I8+qc7OcoJPG6KXoC+8ZK7okGYbWtz
-         sgu7yFUS2QUER2MVWa1StMtI+9WQ7OAXK2IPgtNKAz6iVFTe3FyszFaaXiP6slMaoKb4
-         3ETA==
-X-Gm-Message-State: AOJu0YxoOv8dVbFmUfhLJmaeb69/WMNlOPtLCa3BgP0n5F5ylZtS2/b2
-        v+ZtsZEuzdvKqoyxArF+DkYOZw17t2bjrWbKq3h7Bw==
-X-Google-Smtp-Source: AGHT+IFZN0XFLmTMVpli86I9XELxCx+opSVmKto0P8fKRgp/dvzpFqZUwlf4S3Ov+q1yxFaX3RGzDQ==
-X-Received: by 2002:a05:6512:3da6:b0:500:b2c9:7da9 with SMTP id k38-20020a0565123da600b00500b2c97da9mr2444317lfv.45.1693420497376;
-        Wed, 30 Aug 2023 11:34:57 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id l12-20020ac24a8c000000b004fe633bfcc7sm2473562lfp.17.2023.08.30.11.34.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 11:34:57 -0700 (PDT)
-Message-ID: <951a2f24-931a-4a25-a3b7-c3009e135d7d@linaro.org>
-Date:   Wed, 30 Aug 2023 20:34:52 +0200
+        Wed, 30 Aug 2023 19:38:28 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6873ACC;
+        Wed, 30 Aug 2023 16:38:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 18AEEB81FE5;
+        Wed, 30 Aug 2023 19:06:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DFCEC433C7;
+        Wed, 30 Aug 2023 19:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693422404;
+        bh=iRqnsv9y7tkmU32EaV3W3mQhTk6ohgWD7Qxama0hDCo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LAPR9e1+IWgBonCreNTCUd8xQL4P/L/FbPr6hq+x/y/cHiYVt0fUE6TpPu5i3MhZ3
+         +Jt/ufguSeLMm9dXIpfxuH6itMwhShLVVNXIxkhcAaQrc05dkB7Ar3Cc9C+HQ1lVuB
+         qPcjim+0Nt/Y66jHRKIFfSt0/tkFwkOYF92H25x/6BE5Fe/6scHyE1w/NW8QRv+Lqw
+         gBLWHgFllJaG9vT0G5SAYGmlWCjLg6oFo9CNybjZ9e0rY8y2mQ5r08uLXs79TS+2tg
+         I1crrKCTkCY/T8h5FbuRmhaB9frgEd/cAxDEByL+Vl6LRYg1+bzPYfNi0ioqO4H9b2
+         3ae05nKo+WZKA==
+Date:   Wed, 30 Aug 2023 14:06:42 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+Subject: [GIT PULL] PCI changes for v6.6
+Message-ID: <20230830190642.GA10547@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/7] leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data
- to support PPG
-Content-Language: en-US
-To:     Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz,
-        lee@kernel.org, thierry.reding@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org
-Cc:     luca.weiss@fairphone.com, u.kleine-koenig@pengutronix.de,
-        quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel@quicinc.com
-References: <20230830180600.1865-2-quic_amelende@quicinc.com>
- <20230830180600.1865-8-quic_amelende@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230830180600.1865-8-quic_amelende@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.2023 20:06, Anjelique Melendez wrote:
-> Update the pmi632 lpg_data struct so that pmi632 devices use PPG
-> for LUT pattern.
-> 
-> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-> ---
->  drivers/leds/rgb/leds-qcom-lpg.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-> index 90dc27d5eb7c..0b37d3b539f8 100644
-> --- a/drivers/leds/rgb/leds-qcom-lpg.c
-> +++ b/drivers/leds/rgb/leds-qcom-lpg.c
-> @@ -1672,11 +1672,14 @@ static const struct lpg_data pm8994_lpg_data = {
->  static const struct lpg_data pmi632_lpg_data = {
->  	.triled_base = 0xd000,
->  
-> +	.lut_size = 64,
-> +	.lut_sdam_base = 0x80,
-Is that a predefined space for use with LPG?
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-Or can it be reclaimed for something else?
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-Konrad
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.6-changes
+
+for you to fetch changes up to 43cc31da9146f9ce60e4a03d96ef0807c2cdac94:
+
+  Merge branch 'pci/misc' (2023-08-29 11:03:57 -0500)
+
+----------------------------------------------------------------
+
+Enumeration:
+
+  - Add locking to read/modify/write PCIe Capability Register accessors for
+    Link Control and Root Control
+
+  - Use pci_dev_id() when possible instead of manually composing ID from
+    dev->bus->number and dev->devfn
+
+Resource management:
+
+  - Move prototypes for __weak sysfs resource files to linux/pci.h to fix
+    "no previous prototype" warnings
+
+  - Make more I/O port accesses depend on HAS_IOPORT
+
+  - Use devm_platform_get_and_ioremap_resource() instead of open-coding
+    platform_get_resource() followed by devm_ioremap_resource()
+
+Power management:
+
+  - Ensure devices are powered up while accessing VPD
+
+  - If device is powered-up, keep it that way while polling for PME
+
+  - Only read PCI_PM_CTRL register when available, to avoid reading the
+    wrong register and corrupting dev->current_state
+
+Virtualization:
+
+  - Avoid Secondary Bus Reset on NVIDIA T4 GPUs
+
+Error handling:
+
+  - Remove unused pci_disable_pcie_error_reporting()
+
+  - Unexport pci_enable_pcie_error_reporting(), used only by aer.c
+
+  - Unexport pcie_port_bus_type, used only by PCI core
+
+VGA:
+
+  - Simplify and clean up typos in VGA arbiter
+
+Apple PCIe controller driver:
+
+  - Initialize pcie->nvecs (number of available MSIs) before use
+
+Broadcom iProc PCIe controller driver:
+
+  - Use of_property_read_bool() instead of low-level accessors for boolean
+    properties
+
+Broadcom STB PCIe controller driver:
+
+  - Assert PERST# when probing BCM2711 because some bootloaders don't do it
+
+Freescale i.MX6 PCIe controller driver:
+
+  - Add .host_deinit() callback so we can clean up things like regulators
+    on probe failure or driver unload
+
+Freescale Layerscape PCIe controller driver:
+
+  - Add support for link-down notification so the endpoint driver can
+    process LINK_DOWN events
+
+  - Add suspend/resume support, including manual PME_Turn_off/PME_TO_Ack
+    handshake
+
+  - Save Link Capabilities during probe so they can be restored when
+    handling a link-up event, since the controller loses the Link Width and
+    Link Speed values during reset
+
+Intel VMD host bridge driver:
+
+  - Fix disable of bridge windows during domain reset; previously we
+    cleared the base/limit registers, which actually left the windows
+    enabled
+
+Marvell MVEBU PCIe controller driver:
+
+  - Remove unused busn member
+
+Microchip PolarFlare PCIe controller driver:
+
+  - Fix interrupt bit definitions so the SEC and DED interrupt handlers
+    work correctly
+
+  - Make driver buildable as a module
+
+  - Read FPGA MSI configuration parameters from hardware instead of
+    hard-coding them
+
+Microsoft Hyper-V host bridge driver:
+
+  - To avoid a NULL pointer dereference, skip MSI restore after hibernate
+    if MSI/MSI-X hasn't been enabled
+
+NVIDIA Tegra194 PCIe controller driver:
+
+  - Revert "PCI: tegra194: Enable support for 256 Byte payload" because
+    Linux doesn't know how to reduce MPS from to 256 to 128 bytes for
+    Endpoints below a Switch (because other devices below the Switch might
+    already be operating), which leads to Malformed TLP errors
+
+Qualcomm PCIe controller driver:
+
+  - Add DT and driver support for interconnect bandwidth voting for
+    "pcie-mem" and "cpu-pcie" interconnects
+
+  - Fix broken SDX65 "compatible" DT property
+
+  - Configure controller so MHI bus master clock will be switched off while
+    in ASPM L1.x states
+
+  - Use alignment restriction from EPF core in EPF MHI driver
+
+  - Add Endpoint eDMA support
+
+  - Add MHI eDMA support
+
+  - Add Snapdragon SM8450 support to the EPF MHI driversupport
+
+  - Add MHI eDMA support
+
+  - Add Snapdragon SM8450 support to the EPF MHI driversupport
+
+  - Add MHI eDMA support
+
+  - Add Snapdragon SM8450 support to the EPF MHI driversupport
+
+  - Add MHI eDMA support
+
+  - Add Snapdragon SM8450 support to the EPF MHI driver
+
+  - Use iATU for EPF MHI transfers smaller than 4K to avoid eDMA setup
+    latency
+
+  - Add sa8775p DT binding and driver support
+
+Rockchip PCIe controller driver:
+
+  - Use 64-bit mask on MSI 64-bit PCI address to avoid zeroing out the
+    upper 32 bits
+
+SiFive FU740 PCIe controller driver:
+
+  - Set the supported number of MSI vectors so we can use all available MSI
+    interrupts
+
+Synopsys DesignWare PCIe controller driver:
+
+  - Add generic dwc suspend/resume APIs (dw_pcie_suspend_noirq() and
+    dw_pcie_resume_noirq()) to be called by controller driver
+    suspend/resume ops, and a controller callback to send PME_Turn_Off
+
+MicroSemi Switchtec management driver:
+
+  - Add support for PCIe Gen5 devices
+
+Miscellaneous:
+
+  - Reorder and compress to reduce size of struct pci_dev
+
+  - Fix race in DOE destroy_work_on_stack()
+
+  - Add stubs to avoid casts between incompatible function types
+
+  - Explicitly include correct DT includes to untangle headers
+
+----------------------------------------------------------------
+Alex Williamson (2):
+      PCI/VPD: Add runtime power management to sysfs interface
+      PCI: Fix runtime PM race with PME polling
+
+Arnd Bergmann (1):
+      PCI/sysfs: Move declarations to linux/pci.h
+
+Bjorn Helgaas (40):
+      PCI/AER: Drop unused pci_disable_pcie_error_reporting()
+      PCI/AER: Unexport pci_enable_pcie_error_reporting()
+      PCI: Unexport pcie_port_bus_type
+      PCI: Remove unnecessary initializations
+      PCI: Fix printk field formatting
+      PCI: Use consistent put_user() pointer types
+      PCI/AER: Simplify AER_RECOVER_RING_SIZE definition
+      PCI: Simplify pci_pio_to_address()
+      PCI: Simplify pci_dev_driver()
+      PCI: Fix pci_bus_resetable(), pci_slot_resetable() name typos
+      PCI: Fix typos in docs and comments
+      PCI: Fix code formatting inconsistencies
+      PCI: Tidy config space save/restore messages
+      PCI: Simplify pcie_capability_clear_and_set_word() control flow
+      Merge branch 'pci/aer'
+      Merge branch 'pci/hotplug'
+      Merge branch 'pci/ioport'
+      Merge branch 'pci/pcie-rmw'
+      Merge branch 'pci/pm'
+      Merge branch 'pci/virtualization'
+      Merge branch 'pci/vga'
+      Merge branch 'pci/vpd'
+      Merge branch 'pci/controller/apple'
+      Merge branch 'pci/controller/brcmstb'
+      Merge branch 'pci/controller/dwc'
+      Merge branch 'pci/controller/fu740'
+      Merge branch 'pci/controller/hv'
+      Merge branch 'pci/controller/iproc'
+      Merge branch 'pci/controller/layerscape'
+      Merge branch 'pci/controller/microchip'
+      Merge branch 'pci/controller/qcom'
+      Merge branch 'pci/controller/qcom-edma'
+      Merge branch 'pci/controller/qcom-ep'
+      Merge branch 'pci/controller/rockchip'
+      Merge branch 'pci/controller/tegra194'
+      Merge branch 'pci/controller/vmd'
+      Merge branch 'pci/controller/remove-void-cast'
+      Merge branch 'pci/controller/resources'
+      Merge branch 'pci/controller/switchtec'
+      Merge branch 'pci/misc'
+
+Christophe JAILLET (3):
+      PCI: Reorder pci_dev fields to reduce holes
+      PCI: Change pdev->rom_attr_enabled to single bit
+      x86/PCI: Use struct_size() in pirq_convert_irt_table()
+
+Colin Ian King (1):
+      PCI: ibmphp: Make read-only arrays static
+
+Daire McNamara (7):
+      PCI: microchip: Correct the DED and SEC interrupt bit offsets
+      PCI: microchip: Enable building driver as a module
+      PCI: microchip: Align register, offset, and mask names with HW docs
+      PCI: microchip: Enable event handlers to access bridge and control pointers
+      PCI: microchip: Clean up initialisation of interrupts
+      PCI: microchip: Gather MSI information from hardware config registers
+      PCI: microchip: Re-partition code between probe() and init()
+
+Dexuan Cui (1):
+      PCI: hv: Fix a crash in hv_pci_restore_msi_msg() during hibernation
+
+Feiyang Chen (1):
+      PCI/PM: Only read PCI_PM_CTRL register when available
+
+Frank Li (3):
+      PCI: layerscape: Add support for link-down notification
+      PCI: Add PCIE_PME_TO_L2_TIMEOUT_US L2 ready timeout value
+      PCI: dwc: Implement generic suspend/resume functionality
+
+Hou Zhiqiang (1):
+      PCI: layerscape: Add power management support for ls1028a
+
+Ilpo Järvinen (12):
+      PCI: Add locking to RMW PCI Express Capability Register accessors
+      PCI: Make link retraining use RMW accessors for changing LNKCTL
+      PCI: pciehp: Use RMW accessors for changing LNKCTL
+      PCI/ASPM: Use RMW accessors for changing LNKCTL
+      drm/amdgpu: Use RMW accessors for changing LNKCTL
+      drm/radeon: Use RMW accessors for changing LNKCTL
+      net/mlx5: Use RMW accessors for changing LNKCTL
+      wifi: ath11k: Use RMW accessors for changing LNKCTL
+      wifi: ath12k: Use RMW accessors for changing LNKCTL
+      wifi: ath10k: Use RMW accessors for changing LNKCTL
+      PCI: Document the Capability accessor RMW improvements
+      net/mlx5: Convert PCI error values to generic errnos
+
+Ira Weiny (1):
+      PCI/DOE: Fix destroy_work_on_stack() race
+
+Jim Quinlan (2):
+      PCI: brcmstb: Assert PERST# on BCM2711
+      PCI: brcmstb: Remove stale comment
+
+Kelvin Cao (2):
+      PCI: switchtec: Use normal comment style
+      PCI: switchtec: Add support for PCIe Gen5 devices
+
+Krishna chaitanya chundru (2):
+      dt-bindings: PCI: qcom: ep: Add interconnects path
+      PCI: qcom-ep: Add ICC bandwidth voting support
+
+Krzysztof Kozlowski (1):
+      dt-bindings: PCI: qcom: Fix SDX65 compatible
+
+Krzysztof Wilczyński (3):
+      PCI: meson: Remove cast between incompatible function type
+      PCI: keembay: Remove cast between incompatible function type
+      PCI: microchip: Remove cast between incompatible function type
+
+Manivannan Sadhasivam (9):
+      PCI: qcom-ep: Switch MHI bus master clock off during L1SS
+      PCI: qcom-ep: Pass alignment restriction to the EPF core
+      PCI: epf-mhi: Make use of the alignment restriction from EPF core
+      PCI: qcom-ep: Add eDMA support
+      PCI: epf-mhi: Add eDMA support
+      PCI: epf-mhi: Add support for SM8450
+      PCI: epf-mhi: Use iATU for small transfers
+      PCI: endpoint: Add kernel-doc for pci_epc_mem_init() API
+      PCI: qcom-ep: Treat unknown IRQ events as an error
+
+Mark Brown (1):
+      PCI: dwc: Provide deinit callback for i.MX
+
+Mrinmay Sarkar (2):
+      dt-bindings: PCI: qcom: Add sa8775p compatible
+      PCI: qcom: Add support for sa8775p SoC
+
+Niklas Schnelle (2):
+      PCI: Make quirk using inw() depend on HAS_IOPORT
+      PCI/sysfs: Make I/O resource depend on HAS_IOPORT
+
+Nirmal Patel (1):
+      PCI: vmd: Disable bridge window for domain reset
+
+Pali Rohár (1):
+      PCI: mvebu: Remove unused busn member
+
+Rick Wertenbroek (1):
+      PCI: rockchip: Use 64-bit mask on MSI 64-bit PCI address
+
+Rob Herring (2):
+      PCI: iproc: Use of_property_read_bool() for boolean properties
+      PCI: Explicitly include correct DT includes
+
+Sui Jingfeng (6):
+      PCI/VGA: Correct vga_str_to_iostate() io_state parameter type
+      PCI/VGA: Correct vga_update_device_decodes() parameter type
+      PCI/VGA: Simplify vga_arbiter_notify_clients()
+      PCI/VGA: Simplify vga_client_register()
+      PCI/VGA: Replace full MIT license text with SPDX identifier
+      PCI/VGA: Fix typos
+
+Sven Peter (1):
+      PCI: apple: Initialize pcie->nvecs before use
+
+Vidya Sagar (1):
+      Revert "PCI: tegra194: Enable support for 256 Byte payload"
+
+Wu Zongyong (1):
+      PCI: Mark NVIDIA T4 GPUs to avoid bus reset
+
+Xiaowei Bao (1):
+      PCI: layerscape: Add workaround for lost link capabilities during reset
+
+Xiongfeng Wang (3):
+      PCI: apple: Use pci_dev_id() to simplify the code
+      PCI/AER: Use pci_dev_id() to simplify the code
+      PCI/IOV: Use pci_dev_id() to simplify the code
+
+Yang Li (4):
+      PCI: rcar-gen2: Use devm_platform_get_and_ioremap_resource()
+      PCI: v3: Use devm_platform_get_and_ioremap_resource()
+      PCI: xgene-msi: Use devm_platform_get_and_ioremap_resource()
+      PCI: imx6: Use devm_platform_get_and_ioremap_resource()
+
+Yong-Xuan Wang (1):
+      PCI: fu740: Set the number of MSI vectors
+
+Yue Haibing (1):
+      PCI: Remove unused function declarations
+
+Zheng Zengkai (1):
+      PCI/P2PDMA: Use pci_dev_id() to simplify the code
+
+ Documentation/PCI/pci-error-recovery.rst           |  12 +-
+ Documentation/PCI/pciebus-howto.rst                |  14 +-
+ .../devicetree/bindings/pci/qcom,pcie-ep.yaml      |  27 +-
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |  28 ++
+ arch/alpha/include/asm/pci.h                       |   3 -
+ arch/x86/pci/irq.c                                 |   4 +-
+ drivers/gpu/drm/amd/amdgpu/cik.c                   |  36 +-
+ drivers/gpu/drm/amd/amdgpu/si.c                    |  36 +-
+ drivers/gpu/drm/radeon/cik.c                       |  36 +-
+ drivers/gpu/drm/radeon/si.c                        |  37 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c |  21 +-
+ drivers/net/wireless/ath/ath10k/pci.c              |   9 +-
+ drivers/net/wireless/ath/ath11k/pci.c              |  10 +-
+ drivers/net/wireless/ath/ath12k/pci.c              |  10 +-
+ drivers/pci/access.c                               |  40 +-
+ drivers/pci/controller/Kconfig                     |   2 +-
+ drivers/pci/controller/cadence/pci-j721e.c         |   2 +-
+ drivers/pci/controller/cadence/pcie-cadence-plat.c |   3 +-
+ drivers/pci/controller/cadence/pcie-cadence.c      |   1 +
+ drivers/pci/controller/cadence/pcie-cadence.h      |   2 +-
+ drivers/pci/controller/dwc/pci-dra7xx.c            |   2 +-
+ drivers/pci/controller/dwc/pci-exynos.c            |   2 +-
+ drivers/pci/controller/dwc/pci-imx6.c              |   6 +-
+ drivers/pci/controller/dwc/pci-keystone.c          |   1 -
+ drivers/pci/controller/dwc/pci-layerscape-ep.c     |  20 +
+ drivers/pci/controller/dwc/pci-layerscape.c        | 140 ++++++-
+ drivers/pci/controller/dwc/pci-meson.c             |  13 +-
+ drivers/pci/controller/dwc/pcie-artpec6.c          |   2 +-
+ drivers/pci/controller/dwc/pcie-designware-host.c  |  71 ++++
+ drivers/pci/controller/dwc/pcie-designware-plat.c  |   2 +-
+ drivers/pci/controller/dwc/pcie-designware.c       |   2 +-
+ drivers/pci/controller/dwc/pcie-designware.h       |  28 ++
+ drivers/pci/controller/dwc/pcie-dw-rockchip.c      |   2 +-
+ drivers/pci/controller/dwc/pcie-fu740.c            |   1 +
+ drivers/pci/controller/dwc/pcie-intel-gw.c         |   2 +
+ drivers/pci/controller/dwc/pcie-keembay.c          |  11 +-
+ drivers/pci/controller/dwc/pcie-kirin.c            |   3 +-
+ drivers/pci/controller/dwc/pcie-qcom-ep.c          |  81 +++-
+ drivers/pci/controller/dwc/pcie-qcom.c             |   3 +-
+ drivers/pci/controller/dwc/pcie-tegra194.c         |  11 -
+ drivers/pci/controller/dwc/pcie-uniphier-ep.c      |   2 +-
+ .../pci/controller/mobiveil/pcie-mobiveil-host.c   |   3 -
+ drivers/pci/controller/pci-ftpci100.c              |   3 +-
+ drivers/pci/controller/pci-host-common.c           |   2 +-
+ drivers/pci/controller/pci-hyperv.c                |   3 +
+ drivers/pci/controller/pci-ixp4xx.c                |   3 +-
+ drivers/pci/controller/pci-loongson.c              |   2 +-
+ drivers/pci/controller/pci-mvebu.c                 |   1 -
+ drivers/pci/controller/pci-rcar-gen2.c             |   3 +-
+ drivers/pci/controller/pci-v3-semi.c               |   6 +-
+ drivers/pci/controller/pci-xgene-msi.c             |   3 +-
+ drivers/pci/controller/pcie-altera.c               |   5 +-
+ drivers/pci/controller/pcie-apple.c                |  10 +-
+ drivers/pci/controller/pcie-brcmstb.c              |   6 +-
+ drivers/pci/controller/pcie-iproc-msi.c            |   5 +-
+ drivers/pci/controller/pcie-microchip-host.c       | 407 ++++++++++++---------
+ drivers/pci/controller/pcie-rockchip-host.c        |   4 +-
+ drivers/pci/controller/pcie-rockchip.c             |   1 +
+ drivers/pci/controller/pcie-rockchip.h             |   6 +-
+ drivers/pci/controller/vmd.c                       |  19 +-
+ drivers/pci/doe.c                                  |   2 +-
+ drivers/pci/endpoint/functions/pci-epf-mhi.c       | 286 ++++++++++++++-
+ drivers/pci/endpoint/functions/pci-epf-vntb.c      |  32 +-
+ drivers/pci/endpoint/pci-epc-core.c                |   1 -
+ drivers/pci/endpoint/pci-epc-mem.c                 |  10 +
+ drivers/pci/hotplug/acpiphp.h                      |   1 -
+ drivers/pci/hotplug/cpci_hotplug.h                 |   2 -
+ drivers/pci/hotplug/ibmphp.h                       |   2 -
+ drivers/pci/hotplug/ibmphp_pci.c                   |  10 +-
+ drivers/pci/hotplug/pciehp_hpc.c                   |  12 +-
+ drivers/pci/iov.c                                  |   3 +-
+ drivers/pci/msi/irqdomain.c                        |   4 +-
+ drivers/pci/p2pdma.c                               |   5 +-
+ drivers/pci/pci-driver.c                           |  18 +-
+ drivers/pci/pci-sysfs.c                            |   4 +
+ drivers/pci/pci.c                                  |  72 ++--
+ drivers/pci/pci.h                                  |  41 +--
+ drivers/pci/pcie/aer.c                             |  22 +-
+ drivers/pci/pcie/aspm.c                            |  30 +-
+ drivers/pci/probe.c                                |   4 +-
+ drivers/pci/quirks.c                               |  48 ++-
+ drivers/pci/setup-bus.c                            |   2 +-
+ drivers/pci/setup-res.c                            |   4 +-
+ drivers/pci/switch/switchtec.c                     | 158 +++++---
+ drivers/pci/syscall.c                              |  12 +-
+ drivers/pci/vgaarb.c                               | 358 +++++++++---------
+ drivers/pci/vpd.c                                  |  34 +-
+ include/linux/aer.h                                |  11 -
+ include/linux/pci.h                                |  46 ++-
+ include/linux/switchtec.h                          |   1 +
+ include/linux/vgaarb.h                             |  27 +-
+ 91 files changed, 1622 insertions(+), 870 deletions(-)
