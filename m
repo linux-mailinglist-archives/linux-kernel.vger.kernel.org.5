@@ -2,184 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 592BD78DDDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A69878DE52
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343497AbjH3Sy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
+        id S240032AbjH3TBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242600AbjH3JLa (ORCPT
+        with ESMTP id S242663AbjH3JNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:11:30 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2130.outbound.protection.outlook.com [40.107.6.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC202D2;
-        Wed, 30 Aug 2023 02:11:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gBu7MHYsxdxUwCyKBRFb6+sWmytHCVVNWieNs7Lv6d1GzQeRtVwi6WPG1iuRSrf7ZHbyXiOf1E7OiXx2CFNBkzYFYxuzyDe+XdmPs3aCpdI9+43WczpPXNMhsXTPwqHrUXFREBMH/mmNW7XWMU8S1h7ibrebVRBXzBHneEO1nAlcXBtulI3m91mfJk8yDrpt1DKADYjz4NV/m0swYOkCVRNfLm/s4XiOZZhzSJindR6dOXFZ+3iYTKccUM3b8bmzTOIcneN/10VhvGUbgNk6E99UvfT8S7vQE1U66PPzm/Zf9pOUhiEliUN6MXc0ESjBnbWwHnQcb9vVs6ZjPhLIQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YvgtR5/IMdD5JAMsq4on5dys8m7plz9QforTQ03W62U=;
- b=Rd83YWW2AsRROFriZVyPYL+T9RZh+6JrrTcxFNaD6SYCWfXrjrTyn+8yKQ9cB2cCXvocOt5wRJIHLRi4BRoumW+dZNZk0YzmMDtAbJroI73E+P9O/xtTTS/YsxpV9JRcPHr8mjn9OZZykHcPv+USI/0kzLKuP7PXIADIYjDppaMonzVbLZwBIXevVUC0Q3VUTwSejSVZBA+UaNgJFIVwjOkeeFfrHfUftYh0riXZtG7ZJ5MfbOkvDMu6eMnG0rheGnkr7WmMUUNtMprPrDMua5xZpt//avDEEUjCzHBGR1iebR958vgG8Rog6RZ3MYL/7P20CFgZRE5evrCFEkpYAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YvgtR5/IMdD5JAMsq4on5dys8m7plz9QforTQ03W62U=;
- b=GH91SDM4hU6vQXuZixKAgJkzlPswlcV9tf4fLnGFoxXblCGWO+GkNJbqwtYpvbL2k5I+UFB/hHLeaMkrZMDC5lREerghtAiFFQj0X5x6k8O61RuYSDPJqun0TiX2M08v++v4Unx9y2DfcQi/5VA+PXs1S5viV4XYPwv3xQMHOCY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axentia.se;
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
- by DB8PR02MB5899.eurprd02.prod.outlook.com (2603:10a6:10:118::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25; Wed, 30 Aug
- 2023 09:11:22 +0000
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::7b40:7a7d:595e:623c]) by AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::7b40:7a7d:595e:623c%4]) with mapi id 15.20.6699.035; Wed, 30 Aug 2023
- 09:11:22 +0000
-Message-ID: <39d52aef-d775-7e5c-95a3-52172326f5e4@axentia.se>
-Date:   Wed, 30 Aug 2023 11:11:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] iio: afe: rescale: Accept only offset channels
-Content-Language: sv-SE
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Liam Beguin <liambeguin@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230830-iio-rescale-only-offset-v1-1-40ab9f4436c7@linaro.org>
-From:   Peter Rosin <peda@axentia.se>
-In-Reply-To: <20230830-iio-rescale-only-offset-v1-1-40ab9f4436c7@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0030.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:a::28) To AM0PR02MB4436.eurprd02.prod.outlook.com
- (2603:10a6:208:ed::15)
+        Wed, 30 Aug 2023 05:13:35 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AA2D2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:13:32 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe32016bc8so47005885e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693386810; x=1693991610; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zhyEw/ePQDVdb4vOINYViLe53fZAlgyX/muJWosF9Kc=;
+        b=5zounGdaM/7md1ZI73fYdXUxPmTagfA37RqoztNO0Wsf7Q/C636DAjgTPEKvVkB+ag
+         /XUjA0BD07JcXkzofueZ1r4FmJ+Y1TYaP3qHHLI3nZCRKfcEie+lpAHFmNKOBlu8ip50
+         +kgCQnpF8aEbiG4wq9PejuM3ey4AFge/8MGrdFPwUafTNd6M+0xGotxfyA+Exf7QiUZt
+         raJ4gBz7LhCe20bkFFN8siGucSMJgEL0Pble/9mVtN3Z+VDLZE/snT+u1ojcjCr7kUN/
+         0e7vCbUZbeDN4h+HffY2TBs76yABOF4/HkVTF1qfkp8ny5pDalTrKTn+keGTrPYCNuDS
+         j4sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693386810; x=1693991610;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zhyEw/ePQDVdb4vOINYViLe53fZAlgyX/muJWosF9Kc=;
+        b=TwzLXUKughHMhAzDeQTi1iGd0SGmeil9MQGfZFKAVRTU0lxOkq7N3m4cJaPwjXIKs4
+         0TAo+ibgGDn785TNFy9fIvf2Si2z1gqSFkp5pmniSoelLfJ+x+MPRxH18oPIUHx1EwaE
+         CeEAiMO6kmGYszaBYtFBM2pGvoBWotLJHHfr615a3takUr2ZZRlWuqFtReL3OKzps41J
+         nPfL8icgG8AlGQkAZIgVD31UZpj9bXcQ3YCYZ6qIix63vwIuAcpbOiuUFzgrebpWyoFd
+         cOkONZHDBoazwSa9B8TeLW2xlpLDl/lVG3K+WFJH0wiIy3zDKXM9AbYMPVdOfDRXqV1r
+         sCJQ==
+X-Gm-Message-State: AOJu0YzdbQuDlUioSBgoNUI0qA/zOYDhcwfXkuhc3FRpD0BCd1vEsxfv
+        2pXzTtciXk4IQPdob+RtzIUveQ==
+X-Google-Smtp-Source: AGHT+IGgAbxwgYEoPhl4bJ2BDFMtfUkHB6K97Foi5ciCXfQt5NVDpODiy/rU94dxBruBEL0YTv+xtQ==
+X-Received: by 2002:a5d:69ce:0:b0:31c:7001:3873 with SMTP id s14-20020a5d69ce000000b0031c70013873mr1009604wrw.60.1693386810299;
+        Wed, 30 Aug 2023 02:13:30 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:9c:201:3380:af04:1905:46a])
+        by smtp.gmail.com with ESMTPSA id n8-20020a5d4c48000000b003140f47224csm16003124wrt.15.2023.08.30.02.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 02:13:29 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 11:13:23 +0200
+From:   Marco Elver <elver@google.com>
+To:     andrey.konovalov@linux.dev
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH 11/15] stackdepot: use read/write lock
+Message-ID: <ZO8IMysDIT7XnN9Z@elver.google.com>
+References: <cover.1693328501.git.andreyknvl@google.com>
+ <6db160185d3bd9b3312da4ccc073adcdac58709e.1693328501.git.andreyknvl@google.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR02MB4436:EE_|DB8PR02MB5899:EE_
-X-MS-Office365-Filtering-Correlation-Id: a37c5acf-1fe6-4872-de4f-08dba939144e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3SgHFuJMYYxm68GI3f00SaWJGT+CXHwDiVtvVY/xVBpd+Rc8gkqkxx7zJ+wgVNvYKBE3hdxRjPOjIskrC7ZGGgmY8mwMGypPuoEgjd2Ay4VV60ShUd0OM7balRygrQeEXPHE5U6ezEhNPWNMSzjGr0uX14Ig0ywhRZMrrL6bI1hWXW/0HR7qbgfgxg1kWvSJnwnVmGZ4nHifl6xp2kJ7zsXNMrp2/JEP+kSNqykNBfMtsB1ZFe3STDt+gvGlYy1NIqX/aUby8T+XD4k38s+XrUXdA7P0GCUPH2bdJQttY8KyejJNH/UHI08qkQmNXoNtIxPApuOjoGL+jbG48MwBgTSo42S4YFIO7R7lm178ObJ9hIG2UW2UFw2mIc7Th2FzqWIsTakb8reXUcHobDED1ncIzakr6N4urCvwCKJsMUttlrXmvVqLmi94p+9gJHS9YLcMlH7hJIHRQqPg6Ecoqsdl009LzLWjRG8AWNRby/UK0oxX0tLww/MNQsqIuz+vBDloeimIo3COU/ppp5W2LoOFMCsuCdxZNQ+oolVKUrpFHUKEk3Oj6svVMIxX/RQdRPWarXap4CU8fXBgN0NamwA5Z4+chd3vm9oLCzmRTz0lQymHyCP17jIEkJ94ysoWcaudEpZaUymXiXJAyH2t/g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4436.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(366004)(136003)(39840400004)(451199024)(186009)(1800799009)(83380400001)(8676002)(8936002)(6506007)(41300700001)(26005)(36756003)(2616005)(2906002)(5660300002)(31696002)(38100700002)(6512007)(110136005)(6486002)(66556008)(966005)(86362001)(478600001)(31686004)(4326008)(66476007)(66946007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L2o1NzNldkpBSE1QSUdIVEY1RUozcmFjOTZzT3JtelhRQ1JHVVNobkxndG54?=
- =?utf-8?B?RHJFMjN1bStKNGFZQU5TektWa0huL21JNm4vaE1OUGJla05HWUpvZTc2a2c5?=
- =?utf-8?B?aDJkTzVMRU85bWZVb1ovUW53KzNwL0pHOGg4c2JZNXg5UnJDV1dqMXJzUnZy?=
- =?utf-8?B?dWtWcnkxU2ZaY3p4YlpyU2xwMG9wSHJveTkwQUxPQ3R0UWpTVmszN0dhdFJk?=
- =?utf-8?B?ekRkb2lQSCtxUU5YSzA5UUZCeEkvM0o2alh6NTYxUHYwN3FiWjNoRjI2VC80?=
- =?utf-8?B?NzEvcnAraFVuMmR3azBYSms4bFZLaWxKODJGZC8zR3NSeE1SdC9nMGYwMmtF?=
- =?utf-8?B?MXVIQjlDMFh3OXhiSXRETVB6VHkzbWdKM2U3cDBqWTdLRXlSUkplNmNXK0Uw?=
- =?utf-8?B?QnQraEs1QkhzWVJpdDBPeURSMHNSUmcwRDRDMUkraC92MFlYUDEvajMyVEVz?=
- =?utf-8?B?eWt1VEQ4ZnFmZnRKb2FwaTRzZFpXUVdNb0pRLzByUVppS1Nwd1RRODNlVTE1?=
- =?utf-8?B?NWEwV0tmZCtpS2tTVDNMcHZmZTNHQVE0WFV3SHZHUWRjR0lvam1RaFluaUJC?=
- =?utf-8?B?WW4vVUdwaUlsazVNVCs3SFBKcno4TXlRdGFyM1RUS0lJYVF6TVNvTmhaQTZP?=
- =?utf-8?B?T3ovZklhTWVnNTRUTWZRcEdpLzJQeFlaWHFzSUpIZ2NjUzJmUjgyamRyRmpu?=
- =?utf-8?B?Z2QrM2dYeU8yaGJvUzRHSU54WVVEem93bS8zSVBqcEEwRlpNNVFqYWl4RU93?=
- =?utf-8?B?a2tpSVFoMVdROVF2VFRrV3RuRXFTR1BXN3pOZDU1Ym1nU2RkbTYvcElLa2Ey?=
- =?utf-8?B?dVdxVGpRVng3cTA3NE8wWm9qbzZ3dDNTUDVQVEpqTFZpbE9Ob2d0VVRyVkpX?=
- =?utf-8?B?QVVEdnlvV2dDeElwaG1mTWhwcWNKK3Q1QlI2M0xPMVN1SmRBZW1CM3M0cjhU?=
- =?utf-8?B?cmV2Z1ZXaE5SQ0pacGdGQk8wOXZGei9GTjlRcEY1ZTRJL2o0Vzh1RmVFbUhv?=
- =?utf-8?B?Y1NucHFXSWZnVDhBd0RHYm10NmI5aFEvNW5FM3p6MHdLSE5uQXBVcmhiYXZI?=
- =?utf-8?B?Tk1qSzlLVDlSMld4K282bXVsTWtWUWRxTzFIemJNanNhbWNFZ0VJb0JZM3RD?=
- =?utf-8?B?cDV1a25xZHpPMTkxRjVLQUR6cjFYcHJSYzlEbnorOE0zdDNiS080V2FOTTBJ?=
- =?utf-8?B?TkdzSmxWUjlZZDBWMUh6cncxT1ZVR3dHN2dHRENVWTNZNHJBanhNSGxhSXY3?=
- =?utf-8?B?eUxUeHE2WVBWbDZ4allBN2FMaWZaako3VXhndjhOVmhVT0NlMmovUXBteGxK?=
- =?utf-8?B?eVIweFI2RkFjeFB0UEZnc0x2MjVLSnFhOU01OGZOUUZQTk1pend0T09sNm9t?=
- =?utf-8?B?QUVuamkxRnlwdjJWWkk1TlRtOWIvV1NFb2x0emFpWURrQUVLbVkzUWZaY3V6?=
- =?utf-8?B?cFJyeXJaTERkejZKZ0w0dTZ3Yk0wSHdXVWxqcWRJZWl5amVWVFhmWFFSTTBO?=
- =?utf-8?B?UExaRzhIN1hoc3VVaDJiaXpQMnhiQUZIbTVqK0RZeHRYWlBTMnVCMVJ5QzRy?=
- =?utf-8?B?MzExa3JNd0NKQ2FqTUtjc0dwNTB2TmRxbmg4OFd3b3lKLzl3V0FUZ0drNFFV?=
- =?utf-8?B?MExhUXp4ZzI1TnNJUnhxeHJRUUpSUUpGWWZXdWVHdEpEclJNK2NOaDZHbDU2?=
- =?utf-8?B?RkMxTXV2WVJQejRQVDRHTGVqNVJBYmpCMnkzdndhMWxralp4MUxCZnpUWUhG?=
- =?utf-8?B?L2gveGd4UHFyZFFvOEJZQkhtbDF5S1c0ZzJBYkJtblU5UGpNYVdLSjVtMysx?=
- =?utf-8?B?MWhtR2VGOWFOeWJhNlJEemtNTCt5cUJNVldSYXIyaUJUcndiQjkyRFh2MXFk?=
- =?utf-8?B?UlRNaXhnVm1pV290RWM0WVhMZDIzbm1ad2VZb2lPVXNNUlhIcDZYWmNxcWxV?=
- =?utf-8?B?Z1JsQTQwckI1NkNwL0lIcExIZno4SHNWTE1OR1hTWnBGUkx3elRQZFp4WkRm?=
- =?utf-8?B?eWNLZGJhTXNLU2t2eVZqMDAydDlwbHVIUVk0eU9uZG9TUXlIckFtaU9VNUNv?=
- =?utf-8?B?NzhUSW85RHh1M3doQjVITGlWUnNUK2IwZHIvMGtXSVNDcWg1dkR4NGRkTFFB?=
- =?utf-8?Q?cJgKWfvvk1YJ8ZpngL1KqCRKm?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: a37c5acf-1fe6-4872-de4f-08dba939144e
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4436.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 09:11:22.3979
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EbYFigY1tr7QUXhqIQyRYrhcAETidEDoTCZ4UFijiQkf0ggnvSkKbWiZjDJuSvc6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR02MB5899
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6db160185d3bd9b3312da4ccc073adcdac58709e.1693328501.git.andreyknvl@google.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-2023-08-30 at 10:52, Linus Walleij wrote:
-> As noted by Jonathan Cameron: it is perfectly legal for a channel
-> to have an offset but no scale in addition to the raw interface.
-> The conversion will imply that scale is 1:1.
+On Tue, Aug 29, 2023 at 07:11PM +0200, andrey.konovalov@linux.dev wrote:
+> From: Andrey Konovalov <andreyknvl@google.com>
 > 
-> Make rescale_configure_channel() accept just scale, or just offset
-> to process a channel.
+> Currently, stack depot uses the following locking scheme:
 > 
-> The code to handle channels with just offset is already there.
+> 1. Lock-free accesses when looking up a stack record, which allows to
+>    have multiple users to look up records in parallel;
+> 2. Spinlock for protecting the stack depot pools and the hash table
+>    when adding a new record.
 > 
-> Link: https://lore.kernel.org/linux-iio/CACRpkdZXBjHU4t-GVOCFxRO-AHGxKnxMeHD2s4Y4PuC29gBq6g@mail.gmail.com/
-> Fixes: 53ebee949980 ("iio: afe: iio-rescale: Support processed channels")
-> Fixes: 9decacd8b3a4 ("iio: afe: rescale: Fix boolean logic bug")
-> Reported-by: Jonathan Cameron <jic23@kernel.org>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> For implementing the eviction of stack traces from stack depot, the
+> lock-free approach is not going to work anymore, as we will need to be
+> able to also remove records from the hash table.
+> 
+> Convert the spinlock into a read/write lock, and drop the atomic accesses,
+> as they are no longer required.
+> 
+> Looking up stack traces is now protected by the read lock and adding new
+> records - by the write lock. One of the following patches will add a new
+> function for evicting stack records, which will be protected by the write
+> lock as well.
+> 
+> With this change, multiple users can still look up records in parallel.
+> 
+> This is preparatory patch for implementing the eviction of stack records
+> from the stack depot.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 > ---
->  drivers/iio/afe/iio-rescale.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  lib/stackdepot.c | 76 ++++++++++++++++++++++--------------------------
+>  1 file changed, 35 insertions(+), 41 deletions(-)
 > 
-> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
-> index 1f280c360701..18aafb4bdda0 100644
-> --- a/drivers/iio/afe/iio-rescale.c
-> +++ b/drivers/iio/afe/iio-rescale.c
-> @@ -280,8 +280,9 @@ static int rescale_configure_channel(struct device *dev,
->  	chan->type = rescale->cfg->type;
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 9011f4adcf20..5ad454367379 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/percpu.h>
+>  #include <linux/printk.h>
+>  #include <linux/slab.h>
+> +#include <linux/spinlock.h>
+>  #include <linux/stacktrace.h>
+>  #include <linux/stackdepot.h>
+>  #include <linux/string.h>
+> @@ -92,15 +93,15 @@ static void *new_pool;
+>  static int pools_num;
+>  /* Next stack in the freelist of stack records within stack_pools. */
+>  static struct stack_record *next_stack;
+> -/* Lock that protects the variables above. */
+> -static DEFINE_RAW_SPINLOCK(pool_lock);
+>  /*
+>   * Stack depot tries to keep an extra pool allocated even before it runs out
+>   * of space in the currently used pool. This flag marks whether this extra pool
+>   * needs to be allocated. It has the value 0 when either an extra pool is not
+>   * yet allocated or if the limit on the number of pools is reached.
+>   */
+> -static int new_pool_required = 1;
+> +static bool new_pool_required = true;
+> +/* Lock that protects the variables above. */
+> +static DEFINE_RWLOCK(pool_rwlock);
+
+Despite this being a rwlock, it'll introduce tons of (cache) contention
+for the common case (stack depot entry exists).
+
+If creating new stack depot entries is only common during "warm-up" and
+then becomes exceedingly rare, I think a percpu-rwsem (read-lock is a
+CPU-local access, but write-locking is expensive) may be preferable.
+
+>  static int __init disable_stack_depot(char *str)
+>  {
+> @@ -248,12 +249,7 @@ static void depot_init_pool(void *pool)
 >  
->  	if (iio_channel_has_info(schan, IIO_CHAN_INFO_RAW) &&
-> -	    iio_channel_has_info(schan, IIO_CHAN_INFO_SCALE)) {
-> -		dev_info(dev, "using raw+scale source channel\n");
-> +	    (iio_channel_has_info(schan, IIO_CHAN_INFO_SCALE) ||
-> +	     iio_channel_has_info(schan, IIO_CHAN_INFO_OFFSET))) {
-> +		dev_info(dev, "using raw+scale/offset source channel\n");
+>  	/* Save reference to the pool to be used by depot_fetch_stack. */
+>  	stack_pools[pools_num] = pool;
+> -
+> -	/*
+> -	 * WRITE_ONCE pairs with potential concurrent read in
+> -	 * depot_fetch_stack.
+> -	 */
+> -	WRITE_ONCE(pools_num, pools_num + 1);
+> +	pools_num++;
+>  }
+>  
+>  /* Keeps the preallocated memory to be used for a new stack depot pool. */
+> @@ -262,10 +258,8 @@ static void depot_keep_new_pool(void **prealloc)
+>  	/*
+>  	 * If a new pool is already saved or the maximum number of
+>  	 * pools is reached, do not use the preallocated memory.
+> -	 * READ_ONCE is only used to mark the variable as atomic,
+> -	 * there are no concurrent writes.
+>  	 */
+> -	if (!READ_ONCE(new_pool_required))
+> +	if (!new_pool_required)
 
-I do not think it's that simple. The rescale_read_raw function, when asked
-for IIO_CHAN_INFO_OFFSET, must know the scale of the source channel in
-order to rescale the offset. After this patch, trying to get the rescaled
-scale/offset when the source channel has an offset but lacks a scale will
-simply return -EOPNOTSUPP.
+In my comment for the other patch I already suggested this change. Maybe
+move it there.
 
-Which is not what you intended, I think?
+>  		return;
+>  
+>  	/*
+> @@ -281,9 +275,8 @@ static void depot_keep_new_pool(void **prealloc)
+>  	 * At this point, either a new pool is kept or the maximum
+>  	 * number of pools is reached. In either case, take note that
+>  	 * keeping another pool is not required.
+> -	 * smp_store_release pairs with smp_load_acquire in stack_depot_save.
+>  	 */
+> -	smp_store_release(&new_pool_required, 0);
+> +	new_pool_required = false;
+>  }
+>  
+>  /* Updates refences to the current and the next stack depot pools. */
+> @@ -300,7 +293,7 @@ static bool depot_update_pools(void **prealloc)
+>  
+>  		/* Take note that we might need a new new_pool. */
+>  		if (pools_num < DEPOT_MAX_POOLS)
+> -			smp_store_release(&new_pool_required, 1);
+> +			new_pool_required = true;
+>  
+>  		/* Try keeping the preallocated memory for new_pool. */
+>  		goto out_keep_prealloc;
+> @@ -369,18 +362,13 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+>  static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
+>  {
+>  	union handle_parts parts = { .handle = handle };
+> -	/*
+> -	 * READ_ONCE pairs with potential concurrent write in
+> -	 * depot_init_pool.
+> -	 */
+> -	int pools_num_cached = READ_ONCE(pools_num);
+>  	void *pool;
+>  	size_t offset = parts.offset << DEPOT_STACK_ALIGN;
+>  	struct stack_record *stack;
 
-Cheers,
-Peter
+I'd add lockdep assertions to check that the lock is held appropriately
+when entering various helper functions that don't actually take the
+lock. Similarly for places that should not have the lock held you could
+assert the lock is not held.
 
->  	} else if (iio_channel_has_info(schan, IIO_CHAN_INFO_PROCESSED)) {
->  		dev_info(dev, "using processed channel\n");
->  		rescale->chan_processed = true;
+> -	if (parts.pool_index > pools_num_cached) {
+> +	if (parts.pool_index > pools_num) {
+>  		WARN(1, "pool index %d out of bounds (%d) for stack id %08x\n",
+> -			parts.pool_index, pools_num_cached, handle);
+> +			parts.pool_index, pools_num, handle);
+>  		return NULL;
+>  	}
+>  
+> @@ -439,6 +427,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  	depot_stack_handle_t handle = 0;
+>  	struct page *page = NULL;
+>  	void *prealloc = NULL;
+> +	bool need_alloc = false;
+>  	unsigned long flags;
+>  	u32 hash;
+>  
+> @@ -458,22 +447,26 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  	hash = hash_stack(entries, nr_entries);
+>  	bucket = &stack_table[hash & stack_hash_mask];
+>  
+> -	/*
+> -	 * Fast path: look the stack trace up without locking.
+> -	 * smp_load_acquire pairs with smp_store_release to |bucket| below.
+> -	 */
+> -	found = find_stack(smp_load_acquire(bucket), entries, nr_entries, hash);
+> -	if (found)
+> +	read_lock_irqsave(&pool_rwlock, flags);
+> +
+> +	/* Fast path: look the stack trace up without full locking. */
+> +	found = find_stack(*bucket, entries, nr_entries, hash);
+> +	if (found) {
+> +		read_unlock_irqrestore(&pool_rwlock, flags);
+>  		goto exit;
+> +	}
+> +
+> +	/* Take note if another stack pool needs to be allocated. */
+> +	if (new_pool_required)
+> +		need_alloc = true;
+> +
+> +	read_unlock_irqrestore(&pool_rwlock, flags);
+>  
+>  	/*
+> -	 * Check if another stack pool needs to be allocated. If so, allocate
+> -	 * the memory now: we won't be able to do that under the lock.
+> -	 *
+> -	 * smp_load_acquire pairs with smp_store_release
+> -	 * in depot_update_pools and depot_keep_new_pool.
+> +	 * Allocate memory for a new pool if required now:
+> +	 * we won't be able to do that under the lock.
+>  	 */
+> -	if (unlikely(can_alloc && smp_load_acquire(&new_pool_required))) {
+> +	if (unlikely(can_alloc && need_alloc)) {
+>  		/*
+>  		 * Zero out zone modifiers, as we don't have specific zone
+>  		 * requirements. Keep the flags related to allocation in atomic
+> @@ -487,7 +480,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  			prealloc = page_address(page);
+>  	}
+>  
+> -	raw_spin_lock_irqsave(&pool_lock, flags);
+> +	write_lock_irqsave(&pool_rwlock, flags);
+>  
+>  	found = find_stack(*bucket, entries, nr_entries, hash);
+>  	if (!found) {
+> @@ -496,11 +489,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  
+>  		if (new) {
+>  			new->next = *bucket;
+> -			/*
+> -			 * smp_store_release pairs with smp_load_acquire
+> -			 * from |bucket| above.
+> -			 */
+> -			smp_store_release(bucket, new);
+> +			*bucket = new;
+>  			found = new;
+>  		}
+>  	} else if (prealloc) {
+> @@ -511,7 +500,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  		depot_keep_new_pool(&prealloc);
+>  	}
+>  
+> -	raw_spin_unlock_irqrestore(&pool_lock, flags);
+> +	write_unlock_irqrestore(&pool_rwlock, flags);
+>  exit:
+>  	if (prealloc) {
+>  		/* Stack depot didn't use this memory, free it. */
+> @@ -535,6 +524,7 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+>  			       unsigned long **entries)
+>  {
+>  	struct stack_record *stack;
+> +	unsigned long flags;
+>  
+>  	*entries = NULL;
+>  	/*
+> @@ -546,8 +536,12 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+>  	if (!handle || stack_depot_disabled)
+>  		return 0;
+>  
+> +	read_lock_irqsave(&pool_rwlock, flags);
+> +
+>  	stack = depot_fetch_stack(handle);
+>  
+> +	read_unlock_irqrestore(&pool_rwlock, flags);
+> +
+>  	*entries = stack->entries;
+>  	return stack->size;
+>  }
+> -- 
+> 2.25.1
 > 
-> ---
-> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> change-id: 20230830-iio-rescale-only-offset-f28e05bd2deb
-> 
-> Best regards,
