@@ -2,175 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C157178D942
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAA878D864
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236724AbjH3Scn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
+        id S233835AbjH3SaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343616AbjH3QRB (ORCPT
+        with ESMTP id S1343614AbjH3QP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:17:01 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0CD1A1;
-        Wed, 30 Aug 2023 09:16:55 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 09f20c2cacebe463; Wed, 30 Aug 2023 18:16:54 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id A93FA66316E;
-        Wed, 30 Aug 2023 18:16:53 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: [PATCH v1 3/4] thermal: Use thermal_tripless_zone_device_register()
-Date:   Wed, 30 Aug 2023 18:14:57 +0200
-Message-ID: <8272147.T7Z3S40VBb@kreacher>
-In-Reply-To: <1870450.tdWV9SEqCh@kreacher>
-References: <1870450.tdWV9SEqCh@kreacher>
+        Wed, 30 Aug 2023 12:15:57 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67626A6;
+        Wed, 30 Aug 2023 09:15:54 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UD7to5022436;
+        Wed, 30 Aug 2023 16:15:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=zetl7mP51fMx4yxjezWmrc5AU4vb7/68QqbLJJXgDfg=;
+ b=codmonbldSpaXx7i1YOf/0eRReAEHR9GuTJn9RlcX7ADa27169OTIvzToEPMW0/+oGyY
+ LtvB8waQ/WnAsOq2Ldon/wvQA4hwe+8Wdo6ffgqyimbTdtbu4R65nomvgOXxIwhdK32L
+ vhSiDdJ2rx9+/Qb4PIUYX0+mIRWemTIiMi9OpHb2lW9noK609OUGuGBkWUduOemubrnx
+ 3kkE6G1ItErAxwwxja2CHbgJneV3Vi1LZxKnwxPa3wgOzUAxGajEYUGfH9h05rFfS+fa
+ OyPg1oVAOKH4/0d8IXwOsovkZsexOXjJ4rNFmmI+g6x55b0x5r9SWusLvbShwFzvpXx0 Gg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st6ct8f3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 16:15:44 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37UGFhEg029882
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 16:15:43 GMT
+Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 30 Aug
+ 2023 09:15:42 -0700
+From:   Oza Pawandeep <quic_poza@quicinc.com>
+To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
+CC:     Oza Pawandeep <quic_poza@quicinc.com>
+Subject: [PATCH v4] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+Date:   Wed, 30 Aug 2023 09:15:39 -0700
+Message-ID: <20230830161539.3864065-1-quic_poza@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhht
- vghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopegrmhhithhksehkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8O5MjMuRn-m_Skjcn6NZ582MsOy7Zgtt
+X-Proofpoint-ORIG-GUID: 8O5MjMuRn-m_Skjcn6NZ582MsOy7Zgtt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-30_12,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=14 priorityscore=1501
+ clxscore=1015 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=78
+ suspectscore=0 spamscore=14 lowpriorityscore=0 mlxscore=14 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300150
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Arm® Functional Fixed Hardware Specification defines LPI states,
+which provide an architectural context loss flags field that can
+be used to describe the context that might be lost when an LPI
+state is entered.
 
-All of the remaining callers of thermal_zone_device_register()
-can use thermal_tripless_zone_device_register(), so make them
-do so in order to allow the former to be dropped.
+- Core context Lost
+        - General purpose registers.
+        - Floating point and SIMD registers.
+        - System registers, include the System register based
+        - generic timer for the core.
+        - Debug register in the core power domain.
+        - PMU registers in the core power domain.
+        - Trace register in the core power domain.
+- Trace context loss
+- GICR
+- GICD
 
-No intentional functional impact.
+Qualcomm's custom CPUs preserves the architectural state,
+including keeping the power domain for local timers active.
+when core is power gated, the local timers are sufficient to
+wake the core up without needing broadcast timer.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/power/supply/power_supply_core.c                |    4 ++--
- drivers/thermal/armada_thermal.c                        |    5 +++--
- drivers/thermal/dove_thermal.c                          |    4 ++--
- drivers/thermal/intel/int340x_thermal/int3400_thermal.c |    6 +++---
- drivers/thermal/kirkwood_thermal.c                      |    4 ++--
- drivers/thermal/spear_thermal.c                         |    4 ++--
- 6 files changed, 14 insertions(+), 13 deletions(-)
+The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+broadcast timer if core context lost is defined in ACPI LPI.
 
-Index: linux-pm/drivers/power/supply/power_supply_core.c
-===================================================================
---- linux-pm.orig/drivers/power/supply/power_supply_core.c
-+++ linux-pm/drivers/power/supply/power_supply_core.c
-@@ -1305,8 +1305,8 @@ static int psy_register_thermal(struct p
- 
- 	/* Register battery zone device psy reports temperature */
- 	if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_TEMP)) {
--		psy->tzd = thermal_zone_device_register(psy->desc->name,
--				0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
-+		psy->tzd = thermal_tripless_zone_device_register(psy->desc->name,
-+				psy, &psy_tzd_ops, NULL);
- 		if (IS_ERR(psy->tzd))
- 			return PTR_ERR(psy->tzd);
- 		ret = thermal_zone_device_enable(psy->tzd);
-Index: linux-pm/drivers/thermal/armada_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/armada_thermal.c
-+++ linux-pm/drivers/thermal/armada_thermal.c
-@@ -876,8 +876,9 @@ static int armada_thermal_probe(struct p
- 		/* Wait the sensors to be valid */
- 		armada_wait_sensor_validity(priv);
- 
--		tz = thermal_zone_device_register(priv->zone_name, 0, 0, priv,
--						  &legacy_ops, NULL, 0, 0);
-+		tz = thermal_tripless_zone_device_register(priv->zone_name,
-+							   priv, &legacy_ops,
-+							   NULL);
- 		if (IS_ERR(tz)) {
- 			dev_err(&pdev->dev,
- 				"Failed to register thermal zone device\n");
-Index: linux-pm/drivers/thermal/dove_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/dove_thermal.c
-+++ linux-pm/drivers/thermal/dove_thermal.c
-@@ -139,8 +139,8 @@ static int dove_thermal_probe(struct pla
- 		return ret;
- 	}
- 
--	thermal = thermal_zone_device_register("dove_thermal", 0, 0,
--					       priv, &ops, NULL, 0, 0);
-+	thermal = thermal_tripless_zone_device_register("dove_thermal", priv,
-+							&ops, NULL);
- 	if (IS_ERR(thermal)) {
- 		dev_err(&pdev->dev,
- 			"Failed to register thermal zone device\n");
-Index: linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-+++ linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-@@ -609,9 +609,9 @@ static int int3400_thermal_probe(struct
- 
- 	evaluate_odvp(priv);
- 
--	priv->thermal = thermal_zone_device_register("INT3400 Thermal", 0, 0,
--						priv, &int3400_thermal_ops,
--						&int3400_thermal_params, 0, 0);
-+	priv->thermal = thermal_tripless_zone_device_register("INT3400 Thermal", priv,
-+							      &int3400_thermal_ops,
-+							      &int3400_thermal_params);
- 	if (IS_ERR(priv->thermal)) {
- 		result = PTR_ERR(priv->thermal);
- 		goto free_art_trt;
-Index: linux-pm/drivers/thermal/kirkwood_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/kirkwood_thermal.c
-+++ linux-pm/drivers/thermal/kirkwood_thermal.c
-@@ -71,8 +71,8 @@ static int kirkwood_thermal_probe(struct
- 	if (IS_ERR(priv->sensor))
- 		return PTR_ERR(priv->sensor);
- 
--	thermal = thermal_zone_device_register("kirkwood_thermal", 0, 0,
--					       priv, &ops, NULL, 0, 0);
-+	thermal = thermal_tripless_zone_device_register("kirkwood_thermal",
-+							priv, &ops, NULL);
- 	if (IS_ERR(thermal)) {
- 		dev_err(&pdev->dev,
- 			"Failed to register thermal zone device\n");
-Index: linux-pm/drivers/thermal/spear_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/spear_thermal.c
-+++ linux-pm/drivers/thermal/spear_thermal.c
-@@ -122,8 +122,8 @@ static int spear_thermal_probe(struct pl
- 	stdev->flags = val;
- 	writel_relaxed(stdev->flags, stdev->thermal_base);
- 
--	spear_thermal = thermal_zone_device_register("spear_thermal", 0, 0,
--				stdev, &ops, NULL, 0, 0);
-+	spear_thermal = thermal_tripless_zone_device_register("spear_thermal",
-+							      stdev, &ops, NULL);
- 	if (IS_ERR(spear_thermal)) {
- 		dev_err(&pdev->dev, "thermal zone device is NULL\n");
- 		ret = PTR_ERR(spear_thermal);
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
 
-
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index bd68e1b7f29f..0d455b02971e 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -9,6 +9,7 @@
+ #ifndef _ASM_ACPI_H
+ #define _ASM_ACPI_H
+ 
++#include <linux/cpuidle.h>
+ #include <linux/efi.h>
+ #include <linux/memblock.h>
+ #include <linux/psci.h>
+@@ -42,6 +43,26 @@
+ #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+ 	spe_interrupt) + sizeof(u16))
+ 
++/*
++ * Arm® Functional Fixed Hardware Specification Version 1.2.
++ * Table 2: Arm Architecture context loss flags
++ */
++#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
++
++#ifndef arch_update_idle_state_flags
++static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
++							unsigned int *sflags)
++{
++	if (arch_flags & CPUIDLE_CORE_CTXT)
++		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
++}
++#define arch_update_idle_state_flags _arch_update_idle_state_flags
++#endif
++
++#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
++#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
++#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
++
+ /* Basic configuration for ACPI */
+ #ifdef	CONFIG_ACPI
+ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index 9718d07cc2a2..420baec3465c 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -1221,8 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+ 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+ 		state->exit_latency = lpi->wake_latency;
+ 		state->target_residency = lpi->min_residency;
+-		if (lpi->arch_flags)
+-			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
++		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+ 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+ 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+ 		state->enter = acpi_idle_lpi_enter;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index d584f94409e1..c320b474ed56 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1471,6 +1471,10 @@ static inline int lpit_read_residency_count_address(u64 *address)
+ }
+ #endif
+ 
++#ifndef arch_update_idle_state_flags
++#define arch_update_idle_state_flags(af, sf)	do {} while (0)
++#endif
++
+ #ifdef CONFIG_ACPI_PPTT
+ int acpi_pptt_cpu_is_thread(unsigned int cpu);
+ int find_acpi_cpu_topology(unsigned int cpu, int level);
+-- 
+2.25.1
 
