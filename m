@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C054778E01A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108AC78DF63
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242296AbjH3TOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        id S1344391AbjH3T1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243857AbjH3L61 (ORCPT
+        with ESMTP id S243872AbjH3MCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:58:27 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53851BB
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 04:58:24 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52683da3f5cso7067807a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 04:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1693396703; x=1694001503; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xraLT5LJsBHpcTpLojfKH2C0VbKrtJqn2idXpO3Q7k4=;
-        b=fKbvTNAcYIqvUBvyQCGYCQZn7YLtQKydWCHBlKKCw+z0TYo8PbPLOk2L5DsvqTrOuu
-         hw/2Z4J58tcFB0Klb0u1IrtkMEQ6gt//damfvOWX2AZf/XFVlpkYFEPBpNavkexNxeD+
-         Aw9n3WSp5bI2zLjnpLjmXzXg6/taXmrE/6gpLtMVmoXKOVLZfSO7f6q1tmVbt88JOzkB
-         gB+I+Ff6ImldVV3XzKX+NIQktDDzJEU5LhrdrZmcPDWKs538vDUeurVwCiVWTVE5JiyZ
-         dq6tVYfNfXpHINrflzM1b+l9SPwOuwUEJ7E1B5THa5aNGPf4dYn/Y63NNv0sfamAB8S+
-         +32Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693396703; x=1694001503;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xraLT5LJsBHpcTpLojfKH2C0VbKrtJqn2idXpO3Q7k4=;
-        b=MQf43bF4LbuZyIMIIvTlSfbYX+xvVs++aHv9Fg5oen8nmiJhuEBs2j5d/rq2Y3wPhq
-         EXkWTa19hLxEwIafZjWMZXcvaLzDaLWrd+MaOmKDykjSge1sc7DgsQ6/gkxecvNODCIe
-         aWAIe5/WyUEX+kABu2WXXSjWiIzFxSnPqrrFutwLeT7VMKI2K5Ls6ZkJJnV8iUZB/nX+
-         3RI9t06CjZRNM3Ix5wLCM2nPoZO2FmQlxxenRRUqjHMN5utfmNq4vAKfPKX6XZWG+QbV
-         KMHYoKpOzaTX7O2s96KwBNcortBdkOkf42OTwr/TPq7ct7kcM+6b8ii4DDKJP+Vs5FTb
-         kivA==
-X-Gm-Message-State: AOJu0YxdsAq5QRhVizsFhnJ+60G9nBaUOJ07VjV3MZB194FHOdrPXGr+
-        9LyQY5CZnOwqrtmjd+9K6PYYUg==
-X-Google-Smtp-Source: AGHT+IHvDPZ/6vvBEBfGlIX7oJAvbPEoFEmwc2hCyzNLDGBhuPPNYL7+Ecr9I/J2Mc1Sq/3iq7xFGw==
-X-Received: by 2002:a05:6402:1206:b0:525:7da7:af10 with SMTP id c6-20020a056402120600b005257da7af10mr1907238edw.23.1693396703233;
-        Wed, 30 Aug 2023 04:58:23 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id u8-20020aa7d888000000b00527e7087d5dsm6681571edq.15.2023.08.30.04.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 04:58:22 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
-To:     Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] dt-binding: Add custom property for MAX7357
-Date:   Wed, 30 Aug 2023 13:57:42 +0200
-Message-ID: <20230830115744.4102929-1-Naresh.Solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 30 Aug 2023 08:02:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6A21B0;
+        Wed, 30 Aug 2023 05:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693396955; x=1724932955;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=1degSlUV8LRbIbk2hC2XASw2C2v2cLyXXAVR2XjG63I=;
+  b=HL2zdzEHWGjDIniG24gabe3BKC2YJy7bvTOZTRJbKv05PErp7k293Esh
+   1Gyx/B+xd9H2uvDPrKClCc/MUOvHCVdYJ6NLwq+Rt62vAriws7r0ezI49
+   6TU5cnC92H1kiav1C/FdxciO1NqxOB1ciP5kEwAY0ADQMSCrnSXuFYvuC
+   DNU1sVLcG5mcOGpkdwkA9BcbDxDiQytMemzFw5O1xpWA0L+fNGiiOcIGw
+   ri9qJLHiJ0AU9+5k8XI06ZkFdNAs6XbnZRYOO11MmZAbjCOfzP/cJHMSb
+   P4eTtgwv9qN7dACPmUvgXZa4bAVkefm53X1i9/T9DLE9jiQXLpTnMWCWy
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="375577493"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="375577493"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 05:02:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="774093734"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="774093734"
+Received: from aghiriba-mobl.ger.corp.intel.com ([10.251.213.104])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 05:02:19 -0700
+Date:   Wed, 30 Aug 2023 15:02:17 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+cc:     Shuah Khan <shuah@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>,
+        Wieczor-Retman@linux.intel.com, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/6] selftests/sigaltstack: Fix wrong format specifier
+In-Reply-To: <613189f12a8c15df7dc725e4b7ed66ffa4b30fb5.1693216959.git.maciej.wieczor-retman@intel.com>
+Message-ID: <46e34e14-165-348f-aefd-372afe2e492@linux.intel.com>
+References: <cover.1693216959.git.maciej.wieczor-retman@intel.com> <613189f12a8c15df7dc725e4b7ed66ffa4b30fb5.1693216959.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-454672902-1693396941=:1710"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Add a custom property "maxim,bus-lockup-fix" to enable proprietary
-features on MAX7357. The driver configures MAX7357 to isolate the
-failing channel and trigger a flush-out sequence for bus lock-up
-resolution.
+--8323329-454672902-1693396941=:1710
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
----
- .../devicetree/bindings/i2c/i2c-mux-pca954x.yaml  | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+On Mon, 28 Aug 2023, Wieczor-Retman, Maciej wrote:
 
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-index 2d7bb998b0e9..984d4614a270 100644
---- a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-+++ b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-@@ -71,6 +71,11 @@ properties:
-     description: A voltage regulator supplying power to the chip. On PCA9846
-       the regulator supplies power to VDD2 (core logic) and optionally to VDD1.
- 
-+  maxim,bus-lockup-fix:
-+    type: boolean
-+    description: Isolates only the stuck channel and generates a flush-out sequence
-+      to attempt to clear the bus lock-up.
-+
- required:
-   - compatible
-   - reg
-@@ -95,6 +100,16 @@ allOf:
-         "#interrupt-cells": false
-         interrupt-controller: false
- 
-+  - if:
-+      not:
-+        properties:
-+          compatible:
-+            contains:
-+              const: maxim,max7357
-+    then:
-+      properties:
-+        maxim,bus-lockup-fix: false
-+
- unevaluatedProperties: false
- 
- examples:
+> The format specifier inside ksft printing function expects a long
+> unsigned int but the passed variable is of unsigned int type.
+> 
+> Fix the format specifier so it matches the passed variable.
+> 
+> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
+> ---
+>  tools/testing/selftests/sigaltstack/sas.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/sigaltstack/sas.c b/tools/testing/selftests/sigaltstack/sas.c
+> index 98d37cb744fb..07227fab1cc9 100644
+> --- a/tools/testing/selftests/sigaltstack/sas.c
+> +++ b/tools/testing/selftests/sigaltstack/sas.c
+> @@ -111,7 +111,7 @@ int main(void)
+>  
+>  	/* Make sure more than the required minimum. */
+>  	stack_size = getauxval(AT_MINSIGSTKSZ) + SIGSTKSZ;
+> -	ksft_print_msg("[NOTE]\tthe stack size is %lu\n", stack_size);
+> +	ksft_print_msg("[NOTE]\tthe stack size is %u\n", stack_size);
+>  
+>  	ksft_print_header();
+>  	ksft_set_plan(3);
 
-base-commit: f9ea75e087b81081f33e34c4e1ba8b4abe841d9f
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
 -- 
-2.41.0
+ i.
 
+--8323329-454672902-1693396941=:1710--
