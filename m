@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1677A78DF92
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F148E78E00F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238378AbjH3TcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S240914AbjH3TbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244651AbjH3Njn (ORCPT
+        with ESMTP id S244689AbjH3NnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:39:43 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2D01B0;
-        Wed, 30 Aug 2023 06:39:40 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fee5ddc23eso52508305e9.1;
-        Wed, 30 Aug 2023 06:39:40 -0700 (PDT)
+        Wed, 30 Aug 2023 09:43:14 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84CAA3;
+        Wed, 30 Aug 2023 06:43:11 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdc19b782aso35692925ad.0;
+        Wed, 30 Aug 2023 06:43:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693402779; x=1694007579; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693402991; x=1694007791; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pL4AHGqRwUAH2UbRxdk/07qkcSparuw8rJPg7HDVZLk=;
-        b=fiPKj1qHsPPAn3Hnz19vDw+kMjhjPoxYh69l4pIL41vMR3q5GjZOTOAyPi9oUFN0ce
-         8u7xT8cylnF619LcYbP39H5KkBEvX09TkuwK7BbGxVlj55Ld6lOy5kvMRfg02PZLT+Gs
-         75Av1YNleEDKtQVKX6gz8boDP0iyL2kv08vMwPkz2eXovVa/FmF9ejcx2GZ1WJkYP9wM
-         sTlnjO2Cvgi/O55+Hzz4lcjOU7nE8wMSrVhVxzkq9eC/ekoZ47hOztAWaDhOpbO4up85
-         E9aJSDWCzet8V4D54JM9Tt6vuGFqTUScLIwtoDAwnR1hCvRhl6yfXt3pzWNIyYbC3sMy
-         d3mw==
+        bh=QtWgGFC8eXvRcZ4S/vmdUIxm0pQa8RJFaKyI9K5rklc=;
+        b=YroWy06pxP3SZipKqg9gBeW/XyliFA9qDR/0T0hAE9Opa3IlSyrXggz0eroXLXiyQv
+         SfNqi4YhutiWuzQcfb6FL9JviMT7QP0ujASaavP1FEP2kAQFkz9sGk/aSHB8FVLdxhPq
+         PClJ/p2nnwugKGwCr+0fxMrdgxlq8d2Ax4JSytlM0k0hDNcrRCwVHjyNb4IbUZ10AiOy
+         LucSgQOyxxVN0pCLv86auY2p1HtQT2VCqxq69Km3R9wt4mZ7aXXI1cGzRpkmOaMVFZH8
+         stXcRciREQDJCs0g94nC/Qlhe9bvc1FjPb/kfdBha6YcuWg0GiTkk9wdgJHkiijYg7W8
+         B+PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693402779; x=1694007579;
+        d=1e100.net; s=20221208; t=1693402991; x=1694007791;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pL4AHGqRwUAH2UbRxdk/07qkcSparuw8rJPg7HDVZLk=;
-        b=CGx7Mdvs+YIVUbK4jrNr1Dp4s7yLmJB4OWSm4LhbK8JTzPm23dHYl6gF2+VkgFIvTK
-         CLsp1ScRdlgfkOKm3de87gehk3/370tWA8fwxmymbzYW7WDuqy9pZDG6PF8+yKoGLneC
-         cmKPOeWFY4Ahdn5Eh7SXmVjfx/LUjhvadqx/3Fv1NnRduNnHq0bhcipMPGkIIgZe7mTl
-         ku5WfdepepAUkeJkeJPNf0pMWfg7g6EtLqCgasGHZT06mcWGx0b25TVBki+7hlprsxeQ
-         rOYSO/7KWmy1GbFSHgTEC4yWFVb/ye8FxngzL5mZL0k/gakSm+xqadT8TwMQbfFH9CAa
-         iZsA==
-X-Gm-Message-State: AOJu0Yycq5pnpFbJZgylCvZ4ZCy/HFFspui0Nrym7Lqi2i29ko+hiUXD
-        q3O7cgc2KE+gVFsLf8FfZsfH+5+UFA==
-X-Google-Smtp-Source: AGHT+IFmTJWYc2nF+k9N43mdYv3DixoSSezT3uaOMI8tivzPwvZJqspYDXCwnJy0/2KKR2+BqsD65w==
-X-Received: by 2002:a1c:7307:0:b0:3fc:9e:eead with SMTP id d7-20020a1c7307000000b003fc009eeeadmr1931954wmb.20.1693402779110;
-        Wed, 30 Aug 2023 06:39:39 -0700 (PDT)
-Received: from U4.lan ([2001:9e8:b963:7410:17bb:6f65:50d0:b82b])
-        by smtp.gmail.com with ESMTPSA id x14-20020a05600c2a4e00b003fed70fb09dsm2326343wme.26.2023.08.30.06.39.38
+        bh=QtWgGFC8eXvRcZ4S/vmdUIxm0pQa8RJFaKyI9K5rklc=;
+        b=cbDzY0rLISy3PWiTmEV5rQd9T/fLWPnCDHq4wYJSCF2WUsI2+2/u8GP0Od2AZ2lYO7
+         Nmu6j7ZiYiOmWWzMqH5RzT7EXGIB/oeL7WD/mTB2hcuENUuShn+cAdfYG/D2R477mTmq
+         sqY0NwuMtJQSrpbFTPR1+RUhTT1DXwMRwgvUYrAHNnzbEg4Pumxkdr63LwxqvkMHrqTh
+         T2nWceTwic60IFP82Szzr9+sXA7pPvfL1kODvsUcn7XCfMCnQaBit+eGjLHuilgY9BeB
+         0+iodvlrJiKxXuacZyBCFEMsck0+kOYw3t9cfiiNtbnM1WXBPQYEdRP4+WRsf8BG7WHZ
+         y+Zw==
+X-Gm-Message-State: AOJu0Yxp26VDHLcWCI7hWkaTkZUYwCfEQj8oFjdq5eBzCDeK+3JZM+Bj
+        z2RZ/PrnnSuASyBRYlWQOBTaVhZHz+MAqTbT
+X-Google-Smtp-Source: AGHT+IGhhQGaiczvMzbvcGOgfeWfIwYFWKkyxmisUaNMVWYOYp9q1YsFXLqI2SQiSWFEWhKejfZtDA==
+X-Received: by 2002:a17:903:2344:b0:1bf:73ec:b980 with SMTP id c4-20020a170903234400b001bf73ecb980mr2266783plh.66.1693402990946;
+        Wed, 30 Aug 2023 06:43:10 -0700 (PDT)
+Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001b86dd825e7sm11042280plh.108.2023.08.30.06.43.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:39:38 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Conor Dooley <conor+dt@kernel.org>,
+        Wed, 30 Aug 2023 06:43:10 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 5/5] ARM: dts: rockchip: Make usbphy the parent of SCLK_USB480M for RK3128
-Date:   Wed, 30 Aug 2023 15:36:29 +0200
-Message-ID: <20230830133623.83075-12-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230830133623.83075-2-knaerzche@gmail.com>
-References: <20230830133623.83075-2-knaerzche@gmail.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH v4 4/4] MAINTAINERS: Update MIPS/LOONGSON1 entry
+Date:   Wed, 30 Aug 2023 21:42:41 +0800
+Message-Id: <20230830134241.506464-5-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230830134241.506464-1-keguang.zhang@gmail.com>
+References: <20230830134241.506464-1-keguang.zhang@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,44 +84,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without setting the parent for SCLK_USB480M the clock will use xin24m as
-it's default parent.
-While this is generally not an issue for the usb blocks to work, it becomes
-an issue for RK3128 since SCLK_USB480M can be a parent for other HW blocks
-(GPU, VPU, VIO). They never will choose this clock as their parent, because
-it currently always runs at OSC frequency.
+Add two new F: entries for Loongson1 Ethernet driver
+and dt-binding document.
+Add a new F: entry for the rest Loongson-1 dt-binding documents.
 
-This sets usb480m_phy as SCLK_USB480M's parent, which now runs and outputs
-the expected frequency of 480 MHz and the other blocks can choose
-SCLK_USB480M as their parent if needed.
-
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- arch/arm/boot/dts/rockchip/rk3128.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+V3 -> V4: Update the dt-binding document entry of Loongson1 Ethernet
+V2 -> V3: Update the entries and the commit message
+V1 -> V2: Improve the commit message
 
-diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-index 119e89fef2a2..5590af6f42ad 100644
---- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-@@ -113,6 +113,8 @@ usb_host_ehci: usb@101c0000 {
- 		reg = <0x101c0000 0x20000>;
- 		interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru HCLK_HOST2>;
-+		assigned-clocks = <&cru SCLK_USB480M>;
-+		assigned-clock-parents = <&usb2phy>;
- 		phys = <&usb2phy_host>;
- 		phy-names = "usb";
- 		status = "disabled";
-@@ -123,6 +125,8 @@ usb_host_ohci: usb@101e0000 {
- 		reg = <0x101e0000 0x20000>;
- 		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru HCLK_HOST2>;
-+		assigned-clocks = <&cru SCLK_USB480M>;
-+		assigned-clock-parents = <&usb2phy>;
- 		phys = <&usb2phy_host>;
- 		phy-names = "usb";
- 		status = "disabled";
+ MAINTAINERS | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ff1f273b4f36..2519d06b5aab 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14344,9 +14344,12 @@ MIPS/LOONGSON1 ARCHITECTURE
+ M:	Keguang Zhang <keguang.zhang@gmail.com>
+ L:	linux-mips@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
++F:	Documentation/devicetree/bindings/net/loongson,ls1*.yaml
+ F:	arch/mips/include/asm/mach-loongson32/
+ F:	arch/mips/loongson32/
+ F:	drivers/*/*loongson1*
++F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+ 
+ MIPS/LOONGSON2EF ARCHITECTURE
+ M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
 -- 
-2.42.0
+2.39.2
 
