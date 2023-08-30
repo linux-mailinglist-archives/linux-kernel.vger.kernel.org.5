@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEBC78DCDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1AA78DA2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241844AbjH3Sq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
+        id S236068AbjH3Sfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244048AbjH3MXn (ORCPT
+        with ESMTP id S244051AbjH3MZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:23:43 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0D5CC5;
-        Wed, 30 Aug 2023 05:23:40 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbNj61Wk1z6HJcm;
-        Wed, 30 Aug 2023 20:22:34 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
- 2023 13:23:36 +0100
-Date:   Wed, 30 Aug 2023 13:23:35 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Navneet Singh <navneet.singh@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 18/18] tools/testing/cxl: Add Dynamic Capacity
- events
-Message-ID: <20230830132335.0000162e@Huawei.com>
-In-Reply-To: <20230604-dcd-type2-upstream-v2-18-f740c47e7916@intel.com>
-References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
-        <20230604-dcd-type2-upstream-v2-18-f740c47e7916@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 30 Aug 2023 08:25:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42450CCB;
+        Wed, 30 Aug 2023 05:25:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C13A462641;
+        Wed, 30 Aug 2023 12:25:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0634BC433C8;
+        Wed, 30 Aug 2023 12:25:10 +0000 (UTC)
+Message-ID: <01c299f2-8118-5d86-e9b6-a459c1b6c467@xs4all.nl>
+Date:   Wed, 30 Aug 2023 14:25:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 01/10] media: videobuf2: Rework offset 'cookie'
+ encoding pattern
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230824092133.39510-1-benjamin.gaignard@collabora.com>
+ <20230824092133.39510-2-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230824092133.39510-2-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,73 +56,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 22:21:09 -0700
-Ira Weiny <ira.weiny@intel.com> wrote:
-
-> OS software needs to be alerted when new extents arrive on a Dynamic
-> Capacity Device (DCD).  On test DCDs extents are added through sysfs.
+On 24/08/2023 11:21, Benjamin Gaignard wrote:
+> Change how offset 'cookie' field value is computed to make possible
+> to use more buffers (up to 0xffff).
+> With this encoding pattern we know the maximum number that a queue
+> could store so we can check ing at queue init time.
+> It also make easier and faster to find buffer and plane from using
+> the offset field.
 > 
-> Add events on DCD extent injection.  Directly call the event irq
-> callback to simulate irqs to process the test extents.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Trivial comments inline.
-
-Reviewed-by: Jonathan.Cameron@huawei.com>
-
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
->  tools/testing/cxl/test/mem.c | 57 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
+> v5:
+> - I haven't change DST_QUEUE_OFF_BASE definition because it used in
+>   v4l2-mem2mem and s5p_mfc driver with a shift.
 > 
-> diff --git a/tools/testing/cxl/test/mem.c b/tools/testing/cxl/test/mem.c
-> index d6041a2145c5..20364fee9df9 100644
-> --- a/tools/testing/cxl/test/mem.c
-> +++ b/tools/testing/cxl/test/mem.c
-> @@ -2008,6 +2008,41 @@ static bool new_extent_valid(struct device *dev, size_t new_start,
->  	return false;
+>  .../media/common/videobuf2/videobuf2-core.c   | 48 +++++++++----------
+>  1 file changed, 24 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index cf6727d9c81f..e06905533ef4 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -31,6 +31,10 @@
+>  
+>  #include <trace/events/vb2.h>
+>  
+> +#define PLANE_INDEX_SHIFT	3
+> +#define PLANE_INDEX_MASK	0x7
+> +#define MAX_BUFFERS		0xffff
+
+Very poor name, see below.
+
+> +
+>  static int debug;
+>  module_param(debug, int, 0644);
+>  
+> @@ -358,21 +362,23 @@ static void __setup_offsets(struct vb2_buffer *vb)
+>  	unsigned int plane;
+>  	unsigned long off = 0;
+>  
+> -	if (vb->index) {
+> -		struct vb2_buffer *prev = q->bufs[vb->index - 1];
+> -		struct vb2_plane *p = &prev->planes[prev->num_planes - 1];
+> -
+> -		off = PAGE_ALIGN(p->m.offset + p->length);
+> -	}
+> +	/*
+> +	 * Offsets cookies value have the following constraints:
+> +	 * - a buffer could have up to 8 planes.
+> +	 * - v4l2 mem2mem use bit 30 to distinguish between source and destination buffers.
+> +	 * - must be page aligned
+> +	 * That led to this bit mapping:
+> +	 * |30                |29        15|14       12|11 0|
+> +	 * |DST_QUEUE_OFF_BASE|buffer index|plane index| 0  |
+> +	 * where there is 16 bits to store buffer index.
+
+16 -> 15: there are 15 (not 16!) bits available for buffer indices. So the maximum
+number of buffers is 32768, given that the indices start at 0.
+
+> +	 */
+> +	off = vb->index << (PLANE_INDEX_SHIFT + PAGE_SHIFT);
+>  
+>  	for (plane = 0; plane < vb->num_planes; ++plane) {
+> -		vb->planes[plane].m.offset = off;
+> +		vb->planes[plane].m.offset = off + (plane << PAGE_SHIFT);
+>  
+>  		dprintk(q, 3, "buffer %d, plane %d offset 0x%08lx\n",
+>  				vb->index, plane, off);
+> -
+> -		off += vb->planes[plane].length;
+> -		off = PAGE_ALIGN(off);
+>  	}
 >  }
 >  
-> +struct dcd_event_dyn_cap dcd_event_rec_template = {
-> +	.hdr = {
-> +		.id = UUID_INIT(0xca95afa7, 0xf183, 0x4018,
-> +				0x8c, 0x2f, 0x95, 0x26, 0x8e, 0x10, 0x1a, 0x2a),
-> +		.length = sizeof(struct dcd_event_dyn_cap),
-> +	},
-> +};
-> +
-> +static int send_dc_event(struct mock_event_store *mes, enum dc_event type,
-> +			 u64 start, u64 length, const char *tag_str)
+> @@ -2209,21 +2215,15 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
+>  		return -EBUSY;
+>  	}
+>  
+> -	/*
+> -	 * Go over all buffers and their planes, comparing the given offset
+> -	 * with an offset assigned to each plane. If a match is found,
+> -	 * return its buffer and plane numbers.
+> -	 */
+> -	for (buffer = 0; buffer < q->num_buffers; ++buffer) {
+> -		vb = q->bufs[buffer];
+> +	/* Get buffer and plane from the offset */
+> +	buffer = (off >> (PLANE_INDEX_SHIFT + PAGE_SHIFT)) & MAX_BUFFERS;
 
-Arguably it's not sending the event, but rather adding it to the event log and
-flicking the irq. So maybe naming needs some thought?
+Hmm, you use it as a mask. The name MAX_BUFFERS is really confusing.
+How about BUFFER_INDEX_MASK? That is consistent with PLANE_INDEX_MASK.
 
-> +{
-> +	struct device *dev = mes->mds->cxlds.dev;
-> +	struct dcd_event_dyn_cap *dcd_event_rec;
-> +
-> +	dcd_event_rec = devm_kzalloc(dev, sizeof(*dcd_event_rec), GFP_KERNEL);
-> +	if (!dcd_event_rec)
-> +		return -ENOMEM;
-> +
-> +	memcpy(dcd_event_rec, &dcd_event_rec_template, sizeof(*dcd_event_rec));
+> +	plane = (off >> PAGE_SHIFT) & PLANE_INDEX_MASK;
+>  
+> -		for (plane = 0; plane < vb->num_planes; ++plane) {
+> -			if (vb->planes[plane].m.offset == off) {
+> -				*_buffer = buffer;
+> -				*_plane = plane;
+> -				return 0;
+> -			}
+> -		}
+> +	vb = q->bufs[buffer];
+> +	if (vb->planes[plane].m.offset == off) {
+> +		*_buffer = buffer;
+> +		*_plane = plane;
+> +		return 0;
+>  	}
+>  
+>  	return -EINVAL;
 
-devm_kmemdup?
+Regards,
 
-> +	dcd_event_rec->data.event_type = type;
-> +	dcd_event_rec->data.extent.start_dpa = cpu_to_le64(start);
-> +	dcd_event_rec->data.extent.length = cpu_to_le64(length);
-> +	memcpy(dcd_event_rec->data.extent.tag, tag_str,
-> +	       min(sizeof(dcd_event_rec->data.extent.tag),
-> +		   strlen(tag_str)));
-> +
-> +	mes_add_event(mes, CXL_EVENT_TYPE_DCD,
-> +		      (struct cxl_event_record_raw *)dcd_event_rec);
-> +
-> +	/* Fake the irq */
-> +	cxl_mem_get_event_records(mes->mds, CXLDEV_EVENT_STATUS_DCD);
-> +
-> +	return 0;
-> +}
-> +
-
-
+	Hans
