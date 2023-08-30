@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F5578E232
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCDE78E27C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245669AbjH3WRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        id S1344132AbjH3Wnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239693AbjH3WRL (ORCPT
+        with ESMTP id S1343986AbjH3Wnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:17:11 -0400
-X-Greylist: delayed 3495 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Aug 2023 15:16:45 PDT
-Received: from bues.ch (bues.ch [80.190.117.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7E911F;
-        Wed, 30 Aug 2023 15:16:45 -0700 (PDT)
-Received: by bues.ch with esmtpsa (Exim 4.96)
-        (envelope-from <m@bues.ch>)
-        id 1qbRx8-000JBj-2f;
-        Wed, 30 Aug 2023 22:38:13 +0200
-Date:   Wed, 30 Aug 2023 22:37:41 +0200
-From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Rand Deeb <deeb.rand@confident.ru>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org, voskresenski.stanislav@confident.ru
-Subject: Re: [PATCH] ssb-main: Fix division by zero in ssb_calc_clock_rate()
-Message-ID: <20230830223741.7a4684d5@barney>
-In-Reply-To: <4c6d01bf-1a0f-27de-54e1-4afdcf4bc8d5@lwfinger.net>
-References: <20230830082759.23336-1-deeb.rand@confident.ru>
- <4c6d01bf-1a0f-27de-54e1-4afdcf4bc8d5@lwfinger.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Wed, 30 Aug 2023 18:43:49 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84C1CEE
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:43:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5631CB8203D
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:46:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8C5EC433C8;
+        Wed, 30 Aug 2023 20:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693428405;
+        bh=9PpwDOZlrXxmM5h+/8DH4Tb0Qdk2qGewp9UCJh/JT3E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fgke78mPM5hsHAZDMRaxYQZQ1V/50qjDZkXY17NAIz8RR4li2IIZWpcDUhSXQvzx4
+         kieFOx+TOYG4fHJcspfcRe6YJuMPxsWV/zVkVYcN+mBHVrdW9sw1RX+zeOoTvPpUYj
+         UCFBDdXyZUeSu/OBR8vYd5YzRmB0BoQnA1oriqYo=
+Date:   Wed, 30 Aug 2023 22:46:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-coco@lists.linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH v3 4/5] mm/slab: Add __free() support for kvfree
+Message-ID: <2023083034-grimace-panhandle-f332@gregkh>
+References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
+ <169342401666.3934343.5520453508283712955.stgit@dwillia2-xfh.jf.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ab++gLz=cpsDQxgilphpite";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169342401666.3934343.5520453508283712955.stgit@dwillia2-xfh.jf.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ab++gLz=cpsDQxgilphpite
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 30, 2023 at 12:33:36PM -0700, Dan Williams wrote:
+> Allow for the declaration of variables that trigger kvfree() when they
+> go out of scope. The check for NULL and call to kvfree() can be elided
+> by the compiler in most cases, otherwise without the NULL check an
+> unnecessary call to kvfree() may be emitted. Peter proposed a comment
+> for this detail [1].
+> 
+> Link: http://lore.kernel.org/r/20230816103102.GF980931@hirez.programming.kicks-ass.net [1]
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>  include/linux/slab.h |    2 ++
+>  1 file changed, 2 insertions(+)
 
-On Wed, 30 Aug 2023 14:50:42 -0500
-Larry Finger <Larry.Finger@lwfinger.net> wrote:
-
-> I agree that clkfactor_f6_resolv() could return 0, but we have not
-> been overrun with reports of divide by zero errors, which suggests
-> that the branch is never taken. This patch will make your tool happy
-> and is much simpler:
->=20
-> diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
-> index ab080cf26c9f..b9934b9c2d70 100644
-> --- a/drivers/ssb/main.c
-> +++ b/drivers/ssb/main.c
-> @@ -837,7 +837,7 @@ static u32 clkfactor_f6_resolve(u32 v)
->          case SSB_CHIPCO_CLK_F6_7:
->                  return 7;
->          }
-> -       return 0;
-> +       return 1;
->   }
-
-Yes, I agree that this is the much simpler and also more sensible
-solution to this theoretical problem.
-
---=20
-Michael B=C3=BCsch
-https://bues.ch/
-
---Sig_/ab++gLz=cpsDQxgilphpite
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmTvqJUACgkQ9TK+HZCN
-iw5B/w//c1XdA0n/Bi6a1M0ycUPnd/PHcZyveH9Mh/ILjmHJNQMhYP+GHPo995TM
-zqwSA2r3z6K++DHCR1wTojX615ReD4bi77Um60a29VCa/JZGELJwewut5J+RhFAF
-rAUWf7KGX6AFEGoN9CE1CH3ZwiItvWJ1R48JpLLXR7iERrdBpjGCq7agjfxWqIqR
-iL4sqeujLa3uB78Wku/pJsVAY2b6613n35S7LfRS7B3hnFDb0uAzKSk7Bb+KANS/
-TUK2+3fiZ3Ya80dpIYo+UM2s4QNnzcsOVQibPe9Zsixtsj6UPJ5PrcdUJU2i0ziy
-TFNdMxRHrcew99z/jd7Mm04tLFNTBnda/0yBuSKav02802+zeSxyKFNYgC5o1zSz
-Q1BN6Z57ADwbvuQndsL3QywNXyhy7HPL7dCkB8XKDgmmNi24y99leLTpsHU1PpI9
-xC/OZk3bxuWJB72dhavAGOoWScFnK1XBFMpE+WFmpK2HU2oF1MKKH5Q2CXrmkTIJ
-AF4xWloUzgXqH4BYyZQHKl6YiM8But026536sIHl9zVc4zjF79W13ec41wWQgFmE
-7LewbUZJFx+8xa56MByZWazWKSPiTr7IvGXnA24FCN8XugLsMWw4eklCDmPK+SNh
-TXtz0qxrxCvIoIYV0zqzlYCI01847mtR7fnHa5dALKhgE16//ds=
-=bQTe
------END PGP SIGNATURE-----
-
---Sig_/ab++gLz=cpsDQxgilphpite--
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
