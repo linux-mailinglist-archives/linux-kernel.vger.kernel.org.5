@@ -2,395 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0BD78DCD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57F578D875
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241130AbjH3Sqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50378 "EHLO
+        id S234459AbjH3Sae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243196AbjH3KRx (ORCPT
+        with ESMTP id S243204AbjH3KUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:17:53 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0956193;
-        Wed, 30 Aug 2023 03:17:49 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 87814660319E;
-        Wed, 30 Aug 2023 11:17:47 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693390668;
-        bh=qfLXkuJgP4OPzQt9eNV1t9MKcbUqq1gaQq7BjtHZJR8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c0aB9TlD2LjL+Idd2Zuecx4cx2/3ZAsa2jcvcXoDrYEBI8iUYXQdpf/L/kzF/lScX
-         gjAr2jioUQHiU2+mwLNXd0ohpuLvJJwcsuG3TkcAdRf+/+nm/M24fC2Rf5Bc7R/bmt
-         qPpDk8KJrw/4+45ysECoR0pK1PX2KRzcpNRI/EkiureiMszVBN+Np/RxA34s2W5gPQ
-         S8D9qxPywe2BtJCJiPfLUJWMqEBqZLqE+7FEydat1/fQUuCVdI8vhvrC/HMgUjZJB5
-         YOdx6DokP7p2n8Z/vJv4wF3X4VO72d5ltJZsfu5+W6yLmZtUWzViOWDzvLHdRs3+mE
-         MwF84sEKpicuA==
-Date:   Wed, 30 Aug 2023 12:17:43 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        healych@amazon.com, kernel@collabora.com,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v2 2/6] drm/panfrost: Add fdinfo support GPU load
- metrics
-Message-ID: <20230830121743.15673d3d@collabora.com>
-In-Reply-To: <20230824013604.466224-3-adrian.larumbe@collabora.com>
-References: <20230824013604.466224-1-adrian.larumbe@collabora.com>
-        <20230824013604.466224-3-adrian.larumbe@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 30 Aug 2023 06:20:21 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2058.outbound.protection.outlook.com [40.107.13.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915C21B3;
+        Wed, 30 Aug 2023 03:20:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UdWNgBJacru58mPM3zvJkTJZuYweXNzR1no0Iwd9Oa/JDzUkHijYeqv5/HtMlSCWXaz+MEOduAf3iunY0zroFhONWh1zalDncj139hqFORTuIfnpyFhBjpKoebbxXsDu/Qcd0LC1AT8eJ5n3fWSAuNDV6w9HgTZR9+cN7phFVk9erKuQZdL/pN0E3q4dGxzM+X9cvyLL7budSuWpafD9vMynOadD+hvS/3NF+NPKLUyexUdkSsa6DxE6Y5sZMGL7A6oE54nke6A6Ge0z6emi4WxVFebciVZEeegJEySPV3PRYzC0fnEoIiU7VScYB1NTxLvNpCRzNTpGYSuTlYD1kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B+0HcKWjuxXmletq4olxIty0jTuOdyVBB30Nra2Afgk=;
+ b=UCzlu1obz7yf07BVaVdvTvH1YgOCYOF2qVz6O9yicjcKF86pXfm2xkEhITq6Z7XIvMYS3RLI7Gdu8g7cT69ChBXX/4bLNHAsbV942HDoGWBsaSCTqd7x8cswdp+KCpDZtOAHifTOeNaVgvvFZQREGEceakNtVN/ztNHK4V1/O+P4PZyxYSWdiCBv/Zc3GXsuvGfKOEwjVDCUIKReXuFGcUWPj/2glom/vaQ4yjIS86LY1/EbInEjY0S5PPK8NsdyEnd+KBZ0sKtZqH4vnB5fQGOw1NoFrGDLLr0MbWvMV3e2HOjPV3CnV09Qkzuf1zafDngUbKMlqYc22uz9GlWPkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B+0HcKWjuxXmletq4olxIty0jTuOdyVBB30Nra2Afgk=;
+ b=dEdR8GChVRHVKOt9M9KVwHcit/sakM2GXntHkUwilWZrIU1IMENFEfJuzgthKXLCm0O6FmGW+Q+Tta4y8qz418pjX6vaU090dnlSoTMB4yzggb7MjpGcenf2PgIsJDs8KEg9UrKyf+Jq0TOngvo5jy4R2MZjJRbpsxCeaJvIp40=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by AS4PR01MB10179.eurprd01.prod.exchangelabs.com
+ (2603:10a6:20b:4f8::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.17; Wed, 30 Aug
+ 2023 10:20:10 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::11d:15c1:fca6:e077]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::11d:15c1:fca6:e077%7]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
+ 10:20:10 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Topic: [PATCH v1 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Index: AQHZ2mHPrVopNJPC/kuEF9j2J1TebbABF34AgAAdZbCAAET+AIABJF6Q
+Date:   Wed, 30 Aug 2023 10:20:09 +0000
+Message-ID: <DU2PR01MB8034CED37F837F40601A8F7EF9E6A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20230829101546.483189-1-f.suligoi@asem.it>
+ <6dfae492-5533-df97-5c72-373d5e89444f@linaro.org>
+ <DU2PR01MB8034C85013ECF222D12BAAA4F9E7A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+ <4982cfd7-4930-f205-09e8-fc5028183dba@linaro.org>
+In-Reply-To: <4982cfd7-4930-f205-09e8-fc5028183dba@linaro.org>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|AS4PR01MB10179:EE_
+x-ms-office365-filtering-correlation-id: 3d81c7ca-2921-4b41-fcfc-08dba942b0b9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cVIgx2Sw+s+9SxHaaeBt8AU8PiDImxKk8ZtUVO1bsiZoYcwWXjEG/J/AgSLlFpFUlDPkWhV8LB33BDPuuvucCF0n8kGvWAAEppbjR6TCkyl0Npub8pSJCzb7kkYhffSLcxvn1Y6kfmVSPYy2woxGnK/f3JjWcH9BWy19lrcYUbMVLhiKDFVtQD0IEhigSh+qACds/SMgn0F8w7vpTNq98TPhJuUN9YYEmNeh7RQfdICab+FRiSKsW/1RnV9Lk/GbLNjMj7SXu2ev6F+xfTy+71onWbQfZjxEx1+txtqAq24zRaMtBFt6ShAvf+Xeambe4fWn6OtKAzC0FPR9VWofW+oysAD/zjZyDJZKt/mqXzMe/FUy2LeZ5ZKRd5qLVlrfg8KFFvaCOQtyPGLyIa9HGdmHEFwaYefiIrr9Sk/e0dLKlB7L1wA7/TLdBvlLlgdUUZoAY65PPgqfEadgHMKWxFWFMCxTIsmtiBEVQAArI1TmxbbuxEmBTEglBAG9SAA1gkoUqFBJ+yy32BTjwPgWk7KkEiL/UoyDMuiNLuFDpy+Ws3Hlen3ShUby+3gDusNa1tPWSt5WsxXOiIloPvv14QHor/Tpk/rlzS/GlW878Uw1lZZ0Stvoh+KXkPIO2nFx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(136003)(346002)(396003)(376002)(186009)(1800799009)(451199024)(41300700001)(38100700002)(478600001)(86362001)(122000001)(83380400001)(71200400001)(38070700005)(7416002)(26005)(9686003)(6506007)(7696005)(55016003)(64756008)(76116006)(66556008)(110136005)(54906003)(316002)(2906002)(66446008)(66946007)(33656002)(66476007)(5660300002)(8676002)(8936002)(4326008)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a2srRXlMYkdFRmxoUk5oaWZsd09yeFNFTUpzb2NYaUFkaDJqQjBKdE1pb3JY?=
+ =?utf-8?B?M2ZJNTFaeDI3UjIwQXRZQytsbndTTFd3VWhLOWhtRG81VWNYYXZacDhjMjB5?=
+ =?utf-8?B?VUxrR0lHdXh2SjZOa0lqTW9rOXVyK1NxZXBReXhwY21sTUh4SWc3dHY4eTZ2?=
+ =?utf-8?B?a3VPTHNwcGdvaEtXMlNsb2dEb2Njc3FEamd5NTFpM0c1NTVCdHErMG0rdzdM?=
+ =?utf-8?B?WU5tRDlqWHBkeFRhTk1PeStVKzE0YkM5bFZHQ0F4Zm9ROG9MZWtDY2I2L3BP?=
+ =?utf-8?B?SkhlSGRmTGxZNC9WdlZGUlJSS0xYTFpzTkhud0FCQzI2UnkzQjVlYjg4QVpp?=
+ =?utf-8?B?MGgwR3BKNUM3cWVMZnZybXpZTTZPQ1dMcTloeVJQNlRqNUhWWHdJaHVwSWxE?=
+ =?utf-8?B?MDg1c09UZXdkMkVTeDF0S0ZncjJjdzBFZ29teDk4V2RCcm9uUFNIU2pqTkc0?=
+ =?utf-8?B?YkljaUhDK2c2a2hsV0Y5NU1GTEhCRERuTmJ5K0g1OVRnNGUrWVhQUmxQaita?=
+ =?utf-8?B?cExnby9rSmtQanl1NGd5MlhiNklZOStlbzN2TUR5N3IzaHV3UEFnMk9uYTRV?=
+ =?utf-8?B?M2xjdkRKS0tOZkpoWm0rdmxWeGtNS1MyZUVoY3FrL2JFSTVPSDNlcUltMXN1?=
+ =?utf-8?B?ZzBHWGMyR0tzZFM0SDVVbFo0bVpnMEMzMnJTUEhRaGJZS3RjY2FpdkxES2RO?=
+ =?utf-8?B?Tis0YWx2TWY1SlkxVnMrYVc4enFKb3cvbnViMlhJOGczcWVidWxjOHNCWDN3?=
+ =?utf-8?B?VndVZWF1eFpiNU1rWkozVXVzVUF4cHVydkZXbnZQcWlaWmlsWVo3WkJWQXVV?=
+ =?utf-8?B?MUFUbDFNV1ZDTDJ5RFZ0VS9UVTdnS3REakxUcUNwMCs1WGRXcEg4QW5TRzNa?=
+ =?utf-8?B?ZzJvNnBlWFVvbDNlY3hrNk9XT2IwTi9YU3plYWtzckpZMEJMaEdKSGpoSFhD?=
+ =?utf-8?B?Sm1NY2VNeDhQd0wyeEdOMWJMeVF1RGV5dmh6QWRET0w4UXVJcmZJOGYvZlcr?=
+ =?utf-8?B?ZVR4VlBJNE96cTRQYnpXTU5WOXpUeGdMK25jYzZPYnJ1S2ZpV1VFay9iNG9X?=
+ =?utf-8?B?OHZkR2NYQnR0RVNxcHJxRHNVczc3QVB6SFBkMGZ5N2V0Z09VaVo4cVZqdWR3?=
+ =?utf-8?B?WndiMlZzVlMybGxHeHArY3ljZlZ4UHlQYVlsQUpuQ0p2V3M2RlMwOUhGUHhi?=
+ =?utf-8?B?WmhDa1l0VGQyQnpwQkFrN0RveHZRcFlGRU1mTGw1dzc5blRZVEVLRko1U2Iy?=
+ =?utf-8?B?YjkrajlGQ0lqa3EvTHB6R0F3cFRmZlFrbGVrY1ZHZktOZ0NaN1BZSTJDNWJn?=
+ =?utf-8?B?dzhXN2dvSmRpMWpRY0dnbndPVXBSbWNWUXgxdXpSUDMwWDNwb1FsTmFHSGF5?=
+ =?utf-8?B?MklHdS9QVmhCb29KWS8vNTUzSzM4NXE2cHJUOXB0UXh3Qk1rYk5xajF4YWJL?=
+ =?utf-8?B?NFFoMmh4S1UwTGVCbDQyVWxlSEJPTTgveGE0aGowb3JFbXFudy9FbHgwRTBm?=
+ =?utf-8?B?Y2k0c1IvVUplZ2lwNk9GTGNDM2l2UXNQRmsvanduRUJZMDVwc1p4Z2Z0UndL?=
+ =?utf-8?B?aUlld0YzSWJ0WDNQMytmVVA4d0dNOVNaVzlUbElVekk1YUFMOEp1NGNFeTRz?=
+ =?utf-8?B?Q3Qyc0M3c2hqN1F6czlhRzUwZldidnhXRmJHZXlHUHF3ZS9kRkdlL1E4Smpz?=
+ =?utf-8?B?SnlRSEZaWGpmQ1FzaHF3dWVNdWxrS1lpaVFGWUo1SC81TjNLazJUVWV6MU1V?=
+ =?utf-8?B?bHpyQjVEUkFkVDhuNldNUnRrejFGTG9GSVUwbzFJNmw5Q2VOU2drTEMrcWw0?=
+ =?utf-8?B?bEplVmtJemovbGYrVkJmbm9mR3l5dWgwNDJ3dC85UVBXcUFRUU5LYjduN1k4?=
+ =?utf-8?B?QUxFeG1MZFFHWnFVK0JPdEtPM0Rld3VKMWVuK2FRUTlmWGVVTitQd3BYSXVB?=
+ =?utf-8?B?TUZ4VVNOaC9nbUZjZ095b01UZHpjZXBFRVUreWR0K09WTmg1bHU0eTZuYVcr?=
+ =?utf-8?B?WHA0TFFSMGdkSTN0NDNBUm5ON21sbTRMd3p3blhyM2dzMVlRVVo0UCtnTC9I?=
+ =?utf-8?B?UFE5MDFTdjl3dmMyb2ZQdzEzTUkwZkJMZWpsdlpaMmhIeXdFUGMzMU5Pby80?=
+ =?utf-8?Q?yT2g=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d81c7ca-2921-4b41-fcfc-08dba942b0b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 10:20:10.0373
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n2nN9Bhn4xiP2q7VFv6AkWA1Gc+Rij2ip3TSC3QpeezmYfrcCVuloUNF5ZOggwx2WU2QtD4o4jYZhqoXxWROeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR01MB10179
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Aug 2023 02:34:45 +0100
-Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
-
-> The drm-stats fdinfo tags made available to user space are drm-engine,
-> drm-cycles, drm-max-freq and drm-curfreq, one per job slot.
-
-Pretty sure this has already been discussed, but it's probably worth
-mentioning that drm-cycles is not accurate, it just gives you a rough
-idea of how much GPU cycles were dedicated to a context (just like
-drm-engine elapsed-ns is giving you an approximation of the
-GPU utilization). This comes from 2 factors:
-
-1. We're dependent on the time the kernel/CPU takes to process the GPU
-interrupt.
-2. The pipelining done by the Job Manager (2 job slots per engine)
-implies that you can't really know how much time each job spent on the
-GPU. When these jobs are coming from the same context, that's not a
-problem, but when they don't, it's impossible to have a clear split.
-
-I'd really like to have that mentioned somewhere in the code+commit
-message to lower users expectation.
-
->=20
-> This deviates from standard practice in other DRM drivers, where a single
-> set of key:value pairs is provided for the whole render engine. However,
-> Panfrost has separate queues for fragment and vertex/tiler jobs, so a
-> decision was made to calculate bus cycles and workload times separately.
->=20
-> Maximum operating frequency is calculated at devfreq initialisation time.
-> Current frequency is made available to user space because nvtop uses it
-> when performing engine usage calculations.
->=20
-> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
-> ---
->  drivers/gpu/drm/panfrost/panfrost_devfreq.c |  8 ++++
->  drivers/gpu/drm/panfrost/panfrost_devfreq.h |  3 ++
->  drivers/gpu/drm/panfrost/panfrost_device.h  | 13 ++++++
->  drivers/gpu/drm/panfrost/panfrost_drv.c     | 45 ++++++++++++++++++++-
->  drivers/gpu/drm/panfrost/panfrost_job.c     | 30 ++++++++++++++
->  drivers/gpu/drm/panfrost/panfrost_job.h     |  4 ++
->  6 files changed, 102 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/dr=
-m/panfrost/panfrost_devfreq.c
-> index 58dfb15a8757..28caffc689e2 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> @@ -58,6 +58,7 @@ static int panfrost_devfreq_get_dev_status(struct devic=
-e *dev,
->  	spin_lock_irqsave(&pfdevfreq->lock, irqflags);
-> =20
->  	panfrost_devfreq_update_utilization(pfdevfreq);
-> +	pfdevfreq->current_frequency =3D status->current_frequency;
-> =20
->  	status->total_time =3D ktime_to_ns(ktime_add(pfdevfreq->busy_time,
->  						   pfdevfreq->idle_time));
-> @@ -117,6 +118,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfd=
-ev)
->  	struct devfreq *devfreq;
->  	struct thermal_cooling_device *cooling;
->  	struct panfrost_devfreq *pfdevfreq =3D &pfdev->pfdevfreq;
-> +	unsigned long freq =3D ULONG_MAX;
-> =20
->  	if (pfdev->comp->num_supplies > 1) {
->  		/*
-> @@ -172,6 +174,12 @@ int panfrost_devfreq_init(struct panfrost_device *pf=
-dev)
->  		return ret;
->  	}
-> =20
-> +	/* Find the fastest defined rate  */
-> +	opp =3D dev_pm_opp_find_freq_floor(dev, &freq);
-> +	if (IS_ERR(opp))
-> +		return PTR_ERR(opp);
-> +	pfdevfreq->fast_rate =3D freq;
-> +
->  	dev_pm_opp_put(opp);
-> =20
->  	/*
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/dr=
-m/panfrost/panfrost_devfreq.h
-> index 1514c1f9d91c..48dbe185f206 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> @@ -19,6 +19,9 @@ struct panfrost_devfreq {
->  	struct devfreq_simple_ondemand_data gov_data;
->  	bool opp_of_table_added;
-> =20
-> +	unsigned long current_frequency;
-> +	unsigned long fast_rate;
-> +
->  	ktime_t busy_time;
->  	ktime_t idle_time;
->  	ktime_t time_last_update;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm=
-/panfrost/panfrost_device.h
-> index b0126b9fbadc..680f298fd1a9 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -24,6 +24,7 @@ struct panfrost_perfcnt;
-> =20
->  #define NUM_JOB_SLOTS 3
->  #define MAX_PM_DOMAINS 5
-> +#define MAX_SLOT_NAME_LEN 10
-> =20
->  struct panfrost_features {
->  	u16 id;
-> @@ -135,12 +136,24 @@ struct panfrost_mmu {
->  	struct list_head list;
->  };
-> =20
-> +struct drm_info_gpu {
-> +	unsigned int maxfreq;
-> +
-> +	struct engine_info {
-> +		unsigned long long elapsed_ns;
-> +		unsigned long long cycles;
-> +		char name[MAX_SLOT_NAME_LEN];
-> +	} engines[NUM_JOB_SLOTS];
-> +};
-> +
->  struct panfrost_file_priv {
->  	struct panfrost_device *pfdev;
-> =20
->  	struct drm_sched_entity sched_entity[NUM_JOB_SLOTS];
-> =20
->  	struct panfrost_mmu *mmu;
-> +
-> +	struct drm_info_gpu fdinfo;
->  };
-> =20
->  static inline struct panfrost_device *to_panfrost_device(struct drm_devi=
-ce *ddev)
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/pa=
-nfrost/panfrost_drv.c
-> index a2ab99698ca8..3fd372301019 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -267,6 +267,7 @@ static int panfrost_ioctl_submit(struct drm_device *d=
-ev, void *data,
->  	job->requirements =3D args->requirements;
->  	job->flush_id =3D panfrost_gpu_get_latest_flush_id(pfdev);
->  	job->mmu =3D file_priv->mmu;
-> +	job->priv =3D file_priv;
-
-Uh, I'm not comfortable passing the file context here, unless you reset
-it to NULL in panfrost_job_close() and have code that's robust to
-job->priv being NULL. We've had cases in the past where jobs outlived
-the file context itself.
-
-> =20
->  	slot =3D panfrost_job_get_slot(job);
-> =20
-> @@ -483,6 +484,14 @@ panfrost_open(struct drm_device *dev, struct drm_fil=
-e *file)
->  		goto err_free;
->  	}
-> =20
-> +	snprintf(panfrost_priv->fdinfo.engines[0].name, MAX_SLOT_NAME_LEN, "frg=
-");
-> +	snprintf(panfrost_priv->fdinfo.engines[1].name, MAX_SLOT_NAME_LEN, "vtx=
-");
-> +#if 0
-> +	/* Add compute engine in the future */
-> +	snprintf(panfrost_priv->fdinfo.engines[2].name, MAX_SLOT_NAME_LEN, "cmp=
-");
-> +#endif
-> +	panfrost_priv->fdinfo.maxfreq =3D pfdev->pfdevfreq.fast_rate;
-> +
->  	ret =3D panfrost_job_open(panfrost_priv);
->  	if (ret)
->  		goto err_job;
-> @@ -523,7 +532,40 @@ static const struct drm_ioctl_desc panfrost_drm_driv=
-er_ioctls[] =3D {
->  	PANFROST_IOCTL(MADVISE,		madvise,	DRM_RENDER_ALLOW),
->  };
-> =20
-> -DEFINE_DRM_GEM_FOPS(panfrost_drm_driver_fops);
-> +
-> +static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
-> +				     struct panfrost_file_priv *panfrost_priv,
-> +				     struct drm_printer *p)
-> +{
-> +	int i;
-> +
-> +	for (i =3D 0; i < NUM_JOB_SLOTS - 1; i++) {
-> +		struct engine_info *ei =3D &panfrost_priv->fdinfo.engines[i];
-> +
-> +		drm_printf(p, "drm-engine-%s:\t%llu ns\n",
-> +			   ei->name, ei->elapsed_ns);
-> +		drm_printf(p, "drm-cycles-%s:\t%llu\n",
-> +			   ei->name, ei->cycles);
-> +		drm_printf(p, "drm-maxfreq-%s:\t%u Hz\n",
-> +			   ei->name, panfrost_priv->fdinfo.maxfreq);
-> +		drm_printf(p, "drm-curfreq-%s:\t%u Hz\n",
-> +			   ei->name, pfdev->pfdevfreq.current_frequency);
-> +	}
-> +}
-> +
-> +static void panfrost_show_fdinfo(struct drm_printer *p, struct drm_file =
-*file)
-> +{
-> +	struct drm_device *dev =3D file->minor->dev;
-> +	struct panfrost_device *pfdev =3D dev->dev_private;
-> +
-> +	panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
-> +}
-> +
-> +static const struct file_operations panfrost_drm_driver_fops =3D {
-> +	.owner =3D THIS_MODULE,
-> +	DRM_GEM_FOPS,
-> +	.show_fdinfo =3D drm_show_fdinfo,
-> +};
-> =20
->  /*
->   * Panfrost driver version:
-> @@ -535,6 +577,7 @@ static const struct drm_driver panfrost_drm_driver =
-=3D {
->  	.driver_features	=3D DRIVER_RENDER | DRIVER_GEM | DRIVER_SYNCOBJ,
->  	.open			=3D panfrost_open,
->  	.postclose		=3D panfrost_postclose,
-> +	.show_fdinfo		=3D panfrost_show_fdinfo,
->  	.ioctls			=3D panfrost_drm_driver_ioctls,
->  	.num_ioctls		=3D ARRAY_SIZE(panfrost_drm_driver_ioctls),
->  	.fops			=3D &panfrost_drm_driver_fops,
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/pa=
-nfrost/panfrost_job.c
-> index dbc597ab46fb..a847e183b5d0 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> @@ -153,10 +153,31 @@ panfrost_get_job_chain_flag(const struct panfrost_j=
-ob *job)
->  	return (f->seqno & 1) ? JS_CONFIG_JOB_CHAIN_FLAG : 0;
->  }
-> =20
-> +static inline unsigned long long read_cycles(struct panfrost_device *pfd=
-ev)
-> +{
-> +	u64 address =3D (u64) gpu_read(pfdev, GPU_CYCLE_COUNT_HI) << 32;
-> +
-> +	address |=3D gpu_read(pfdev, GPU_CYCLE_COUNT_LO);
-> +
-
-We probably want to handle the 32-bit overflow case with something like:
-
-	u32 hi, lo;
-
-	do {
-		hi =3D gpu_read(pfdev, GPU_CYCLE_COUNT_HI);
-		lo =3D gpu_read(pfdev, GPU_CYCLE_COUNT_LO);
-	} while (hi !=3D gpu_read(pfdev, GPU_CYCLE_COUNT_HI));
-
-	return ((u64)hi << 32) | lo;
-
-> +	return address;
-> +}
-> +
->  static struct panfrost_job *
->  panfrost_dequeue_job(struct panfrost_device *pfdev, int slot)
->  {
->  	struct panfrost_job *job =3D pfdev->jobs[slot][0];
-> +	struct engine_info *engine_info =3D &job->priv->fdinfo.engines[slot];
-> +
-> +	engine_info->elapsed_ns +=3D
-> +		ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
-> +	engine_info->cycles +=3D
-> +		read_cycles(pfdev) - job->start_cycles;
-> +
-> +	/* Reset in case the job has to be requeued */
-> +	job->start_time =3D 0;
-> +	/* A GPU reset puts the Cycle Counter register back to 0 */
-> +	job->start_cycles =3D atomic_read(&pfdev->reset.pending) ?
-> +		0 : read_cycles(pfdev);
-
-Do we need to reset these values? If the jobs are re-submitted, those
-fields will be re-assigned, and if the job is done, I don't see where
-we're using it after that point (might have missed something).
-
-> =20
->  	WARN_ON(!job);
->  	pfdev->jobs[slot][0] =3D pfdev->jobs[slot][1];
-> @@ -233,6 +254,9 @@ static void panfrost_job_hw_submit(struct panfrost_jo=
-b *job, int js)
->  	subslot =3D panfrost_enqueue_job(pfdev, js, job);
->  	/* Don't queue the job if a reset is in progress */
->  	if (!atomic_read(&pfdev->reset.pending)) {
-> +		job->start_time =3D ktime_get();
-> +		job->start_cycles =3D read_cycles(pfdev);
-> +
->  		job_write(pfdev, JS_COMMAND_NEXT(js), JS_COMMAND_START);
->  		dev_dbg(pfdev->dev,
->  			"JS: Submitting atom %p to js[%d][%d] with head=3D0x%llx AS %d",
-> @@ -297,6 +321,9 @@ int panfrost_job_push(struct panfrost_job *job)
-> =20
->  	kref_get(&job->refcount); /* put by scheduler job completion */
-> =20
-> +	if (panfrost_job_is_idle(pfdev))
-> +		gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_START);
-> +
->  	drm_sched_entity_push_job(&job->base);
-> =20
->  	mutex_unlock(&pfdev->sched_lock);
-> @@ -351,6 +378,9 @@ static void panfrost_job_free(struct drm_sched_job *s=
-ched_job)
-> =20
->  	drm_sched_job_cleanup(sched_job);
-> =20
-> +	if (panfrost_job_is_idle(job->pfdev))
-> +		gpu_write(job->pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_STOP);
-> +
->  	panfrost_job_put(job);
->  }
-> =20
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/pa=
-nfrost/panfrost_job.h
-> index 8becc1ba0eb9..038171c39dd8 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
-> @@ -32,6 +32,10 @@ struct panfrost_job {
-> =20
->  	/* Fence to be signaled by drm-sched once its done with the job */
->  	struct dma_fence *render_done_fence;
-> +
-> +	struct panfrost_file_priv *priv;
-> +	ktime_t start_time;
-> +	u64 start_cycles;
->  };
-> =20
->  int panfrost_job_init(struct panfrost_device *pfdev);
-
+SGkgS3J6eXN6dG9mLA0KDQouLi4NCg0KPiA+Pj4gKw0KPiA+Pj4gKyAgcmVnOg0KPiA+Pj4gKyAg
+ICBtYXhJdGVtczogMQ0KPiA+Pj4gKw0KPiA+Pj4gKyAgbXBzLGRpbW1pbmctbW9kZToNCj4gPj4+
+ICsgICAgZGVzY3JpcHRpb246IFRoZSBkaW1taW5nIG1vZGUgKFBXTSBvciBhbmFsb2cgYnkgSTJD
+IGNvbW1hbmRzKS4NCj4gPj4+ICsgICAgJHJlZjogJy9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmlu
+aXRpb25zL3N0cmluZycNCj4gPj4NCj4gPj4gRHJvcCBxdW90ZXMsIHlvdSBzaG91bGQgc2VlIHdh
+cm5pbmdzIGZvciB0aGlzLg0KPiA+Pg0KPiA+PiBJdCBkb2VzIG5vdCBsb29rIGxpa2UgeW91IHRl
+c3RlZCB0aGUgYmluZGluZ3MsIGF0IGxlYXN0IGFmdGVyIHF1aWNrDQo+ID4+IGxvb2suIFBsZWFz
+ZSBydW4gYG1ha2UgZHRfYmluZGluZ19jaGVja2AgKHNlZQ0KPiA+PiBEb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3Mvd3JpdGluZy1zY2hlbWEucnN0IGZvciBpbnN0cnVjdGlvbnMpLg0K
+PiA+PiBNYXliZSB5b3UgbmVlZCB0byB1cGRhdGUgeW91ciBkdHNjaGVtYSBhbmQgeWFtbGxpbnQu
+DQo+ID4+DQo+ID4+PiArICAgIGVudW06DQo+ID4+PiArICAgICAgLSBwd20NCj4gPj4+ICsgICAg
+ICAtIGFuYWxvZy1pMmMNCj4gPj4NCj4gPj4gV2h5IGRvIHlvdSB0aGluayB0aGlzIGlzIGEgcHJv
+cGVydHkgb2YgYSBib2FyZD8gSXMgUFdNIHNpZ25hbCBvcHRpb25hbD8NCj4gPj4gSWYgc28sIGl0
+cyBwcmVzZW5jZSB3b3VsZCBkZWZpbmUgaXQuIE90aGVyd2lzZSBpdCBzZWVtcyB5b3Ugd2FudCB0
+bw0KPiA+PiBjb250cm9sIHRoZSBkcml2ZXIuDQo+ID4+DQo+ID4NCj4gPiBUaGUgTVAzMzA5QyBk
+ZXZpY2UgYWx3YXlzIG5lZWQgYSBJMkMgYnVzIHRvIHJkL3dyIGl0cyBpbnRlcm5hbCByZWdpc3Rl
+cnMuDQo+ID4gQnV0IHRoZSBicmlnaHRuZXNzIGNhbiBiZSBjb250cm9sbGVkIGluIG9uZSBvZiB0
+aGUgZm9sbG93aW5nIHdheXMNCj4gPiAobXV0dWFsbHkgZXhjbHVzaXZlLCBidXQgbWFuZGF0b3J5
+KToNCj4gPiAtIGEgUFdNIGlucHV0IHNpZ25hbA0KPiA+ICAgICBvcg0KPiA+IC0gYSBJMkMgY29t
+bWFuZA0KPiA+IFNvLCB0aGUgZHJpdmVyIG5lZWRzIGEgcHJvcGVydHkgdG8gc2VsZWN0IHRoZSBk
+aW1taW5nIG1vZGUgdXNlZDsgdGhpcw0KPiBwcm9wZXJ0eSBpcyBtYW5kYXRvcnkuDQo+IA0KPiBO
+bywgaXQncyBub3QgYSBwcm9vZi4gRG9uJ3QgbWl4IHByb3BlcnRpZXMgYW5kIGhhcmR3YXJlIHNp
+Z25hbHMuDQo+IA0KPiA+IFRoaXMgaXMgdGhlIHJlYXNvbiBvZiB0aGUgZXhpc3RlbmNlIG9mIHRo
+ZSAnIG1wcyxkaW1taW5nLW1vZGUnIHByb3BlcnR5Lg0KPiA+IFBXTSBzaWduYWwgaXMgbm90IG9w
+dGlvbmFsLCBpdCBpcyByZXF1aXJlZCBpZiBhbmQgb25seSBpZiB0aGUgJ3B3bScgZGltbWluZw0K
+PiBtb2RlIGlzIHVzZWQuDQo+IA0KPiBTbyB0aGUgcHdtcyBkZXRlcm1pbmUgdGhlIG1vZGUuIFRo
+YXQncyBpdCwgbm8gbmVlZCBmb3IgdGhpcyBwcm9wZXJ0eS4NCj4gDQo+IA0KPiA+IElmIHRoZSAn
+YW5hbG9nLWkyYycgZGltbWluZyBtb2RlIGlzIHVzZWQsIGluc3RlYWQsIHRoZSBQV00gc2lnbmFs
+IG11c3Qgbm90DQo+IGJlIHVzZWQuDQo+ID4gU28gdGhlIHByb3BlcnR5ICdtcHMsZGltbWluZy1t
+b2RlJyBjb250cm9scyBob3cgdGhlIE1QMzMwOUMgaXMgdXNlZC4NCj4gPiBJIGNhbiBhZGQgbW9y
+ZSBkZXRhaWxzIGFib3V0IHRoaXMgaW4gdGhlIGRlc2NyaXB0aW9uIHNlY3Rpb24uDQo+IA0KPiBO
+bywgZHJvcCB0aGUgcHJvcGVydHkgb3IgZXhwbGFpbiBtb3JlLCBlLmcuIGlzIEkyQyBtb2RlIG9m
+IGNvbnRyb2wgdXNlZCB3aGlsZQ0KPiBoYXZpbmcgUFdNcyBzaWduYWxzIGNvbm5lY3RlZD8NCg0K
+T2ssIEkgdGhpbmsgSSB1bmRlcnN0YW5kIHdoYXQgeW91IG1lYW46DQpzaW5jZSB0aGUgSTJDIGJ1
+cyBpcyBhbHdheXMgcHJlc2VudCB0byBjb25maWd1cmUgdGhlIGNoaXAsIHRoZSAnYW5hbG9nLWky
+YycNCmRpbW1pbmcgbW9kZSBpcyB0aGUgZGVmYXVsdCBtb2RlLg0KVGhlIG90aGVyIHR5cGUgb2Yg
+ZGltbWluZyBtb2RlLCB0aGUgJ3B3bScgZGltbWluZyBtb2RlLCBpcyBhbiBvcHRpb24uDQpXaGVu
+IHRoZSBwd20gaXMgcHJlc2VudCBpbiB0aGUgRFQsIHRoZSBwd20gc2lnbmFsIGlzIHVzZWQgYXMg
+ZGltbWluZyBjb250cm9sIG1vZGUNCmluc3RlYWQgb2YgdGhlIGkyYyBkaW1taW5nIGNvbnRyb2wg
+bW9kZS4NCkluIHRoaXMgd2F5IHRoZSAnIG1wcyxkaW1taW5nLW1vZGUnIHByb3BlcnR5IGlzIG5v
+dCBtb3JlIG5lY2Vzc2FyeSBhbmQgY2FuIGJlIGVsaW1pbmF0ZWQuDQoNCj4gDQo+ID4gLi4uDQo+
+ID4NCj4gPj4+ICsNCj4gPj4+ICsgIG1wcyxvdmVydm9sdGFnZS1wcm90ZWN0aW9uLTEzdjoNCj4g
+Pj4+ICsgICAgZGVzY3JpcHRpb246IG92ZXJ2b2x0YWdlIHByb3RlY3Rpb24gc2V0IHRvIDEzLjVW
+Lg0KPiA+Pj4gKyAgICB0eXBlOiBib29sZWFuDQo+ID4+PiArICBtcHMsb3ZlcnZvbHRhZ2UtcHJv
+dGVjdGlvbi0yNHY6DQo+ID4+PiArICAgIGRlc2NyaXB0aW9uOiBvdmVydm9sdGFnZSBwcm90ZWN0
+aW9uIHNldCB0byAyNFYuDQo+ID4+PiArICAgIHR5cGU6IGJvb2xlYW4NCj4gPj4+ICsgIG1wcyxv
+dmVydm9sdGFnZS1wcm90ZWN0aW9uLTM1djoNCj4gPj4+ICsgICAgZGVzY3JpcHRpb246IG92ZXJ2
+b2x0YWdlIHByb3RlY3Rpb24gc2V0IHRvIDM1LjVWLg0KPiA+Pj4gKyAgICB0eXBlOiBib29sZWFu
+DQo+ID4+DQo+ID4+IE5vcGUgZm9yIHRoZXNlIHRocmVlLiBVc2UgLW1pY3Jvdm9sdCBzdWZmaXgg
+Zm9yIG9uZSBwcm9wZXJ0eS4NCj4gPg0KPiA+IE9rDQo+ID4NCj4gPj4NCj4gPj4+ICsNCj4gPj4+
+ICsgIG1wcyxyZXNldC1ncGlvczoNCj4gPj4+ICsgICAgZGVzY3JpcHRpb246IG9wdGlvbmFsIEdQ
+SU8gdG8gcmVzZXQgYW4gZXh0ZXJuYWwgZGV2aWNlIChMQ0QgcGFuZWwsDQo+IEZQR0EsDQo+ID4+
+PiArICAgICAgZXRjLikgd2hlbiB0aGUgYmFja2xpZ2h0IGlzIHN3aXRjaGVkIG9uLg0KPiA+Pj4g
+KyAgICBtYXhJdGVtczogMQ0KPiA+Pg0KPiA+PiBObywgeW91IHNob3VsZCBub3QgYWRkIGhlcmUg
+R1BJT3MgZm9yIG90aGVyIGRldmljZXMuDQo+ID4NCj4gPiBEbyB5b3UgbWVhbiB0aGF0IEkgaGF2
+ZSB0byByZW1vdmUgdGhpcyBwcm9wZXJ0eSBvciB0aGF0IEkgaGF2ZSB0byBtb3ZlIGl0DQo+IHNv
+bWV3aGVyZSBlbHNlPw0KPiA+IEkgYWRkZWQgdGhpcyBmZWF0dXJlIGJlY2F1c2Ugc29tZXRpbWVz
+LCBpbiBlbWJlZGRlZCBib2FyZHMsIHlvdSBuZWVkIGENCj4gPiBwdWxzZSBzaWduYWwgdG8NCj4g
+DQo+IEhvdyB5b3UgZGVzY3JpYmVkIGl0LCB0aGlzIGlzIG5vdCB0aGUgcHJvcGVydHkgb2YgdGhp
+cyBkZXZpY2UuDQo+IA0KPiA+IHVzZSBhZnRlciB0aGUgYmFja2xpZ2h0IHByb2JpbmcsIGZvciBl
+eGFtcGxlIHRvIHJlc2V0IGFub3RoZXIgZGV2aWNlDQo+ID4gaW4gc3luYyB3aXRoIHRoZSBiYWNr
+bGlnaHQgcHJvYmUuDQo+IA0KPiBUaGVyZSBpcyBubyB0ZXJtIGFzICJwcm9iZSIgaW4gaGFyZHdh
+cmUsIHNvIHlvdSBkZXNjcmliZSBkcml2ZXJzLg0KPiANCj4gPiBEbyB5b3UgdGhpbmsgSSBoYXZl
+IHRvIHJlbW92ZSB0aGlzIGZlYXR1cmUgZnJvbSB0aGUgZHJpdmVyPw0KPiANCj4gWW91IGNhbm5v
+dCByZXF1ZXN0IEdQSU8gYWZ0ZXIgcmVtb3ZpbmcgaXQgZnJvbSB0aGUgYmluZGluZ3MsIG9idmlv
+dXNseSwgYnV0DQo+IHdoZXRoZXIgeW91ciBiYWNrbGlnaHQgc2hvdWxkIHJlc2V0IHNvbWV0aGlu
+ZyBlbHNlPyBEb24ndCBjYXJlLCBkb24ndCBrbm93LiBJDQo+IHRhbGsgYWJvdXQgYmluZGluZ3Mu
+DQoNClRoaXMgR1BJTyB3YXMgdXNlZCBpbiBvbmUgb2Ygb3VyIGJvYXJkcyB0byBzb2x2ZSBhIHN5
+bmMgcHJvYmxlbSwgYnV0IGl0IGlzIG5vIG1vcmUNCm5lY2Vzc2FyeS4gSSdsbCBlbGltaW5hdGUg
+aXQsIHRoYW5rcy4NCg0KPiANCj4gPg0KPiA+IC4uLg0KPiA+DQo+ID4+PiArYWxsT2Y6DQo+ID4+
+PiArICAtICRyZWY6IGNvbW1vbi55YW1sIw0KPiA+Pj4gKyAgLSBpZjoNCj4gPj4+ICsgICAgICBw
+cm9wZXJ0aWVzOg0KPiA+Pj4gKyAgICAgICAgbXBzLGRpbW1pbmctbW9kZToNCj4gPj4+ICsgICAg
+ICAgICAgY29udGFpbnM6DQo+ID4+PiArICAgICAgICAgICAgZW51bToNCj4gPj4+ICsgICAgICAg
+ICAgICAgIC0gcHdtDQo+ID4+PiArICAgIHRoZW46DQo+ID4+PiArICAgICAgcmVxdWlyZWQ6DQo+
+ID4+PiArICAgICAgICAtIHB3bXMNCj4gPj4NCj4gPj4gU28gdGhpcyBwcm92ZXMgdGhlIHBvaW50
+IC0gbXBzLGRpbW1pbmctbW9kZSBsb29rcyByZWR1bmRhbnQgYW5kIG5vdA0KPiA+PiBoYXJkd2Fy
+ZSByZWxhdGVkLg0KPiA+DQo+ID4gU2VlIG15IHByZXZpb3VzIGNvbW1lbnQuDQo+IA0KPiBObywg
+aXQgc3RpbGwgcHJvdmVzIHRoZSBwb2ludCB0aWxsIHlvdSBleHBsYWluIHdoeSBwd21zIGNhbm5v
+dCBiZSB1c2VkIHRvDQo+IGRldGVybWluZSB0aGlzLiBSZWFkIG15IG1lc3NhZ2VzLg0KPiANCj4g
+QmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YNCg0KVGhhbmtzIGZvciB5b3VyIGhlbHAhDQpGbGF2
+aW8NCg0K
