@@ -2,56 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 992AE78E1A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA8178E0F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242869AbjH3Vw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
+        id S240100AbjH3Uto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242870AbjH3Vw5 (ORCPT
+        with ESMTP id S239566AbjH3Utl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:52:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6691FCD7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:52:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F1CEC61482
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:45:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D46FEC433C7;
-        Wed, 30 Aug 2023 20:45:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693428355;
-        bh=TqT9Cfnwh+ygT7+Q36jzRz6qPPhxjFw4O+Y4jAuDhY4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W3DzMfdkwsUo7rS3Py9nPQPIMP4TmsOeS9JfFgHlUxMFHPK1t+zdZdoeklydPnbRM
-         Eu3KuNS0QkC2zfvvZOlsPBOun1q/lLVrGTQOPnetsemi2nf4Lvl2869QtfpBRW4Esi
-         FBqyyKH4T/41WGAdBbqEmOQXW+/N7+RAfxOPiu8U=
-Date:   Wed, 30 Aug 2023 22:45:52 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-coco@lists.linux.dev,
+        Wed, 30 Aug 2023 16:49:41 -0400
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3691A2;
+        Wed, 30 Aug 2023 13:49:08 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-99bed101b70so5177366b.3;
+        Wed, 30 Aug 2023 13:49:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693428419; x=1694033219; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=H7+RNFydbYgwU33+rMvrroV0xhFvVbyEmKI0SQQ1IPc=;
+        b=HHFM+sl2xF5Cj6wCyYl68IGsUEtj+9hhhXHmkwL1xrPoWrSifRFSK6PXDgYJg9VK9q
+         gLDLodN3IyTugatel3QJlA4S7qBIJiJEmu8RwAbGqicqSMLI75pnTKhy9LKltifm/ntE
+         IXK4nkfhnQBwlxJMUrDX2ix9kWeLm5pksj42tZBFC+idKtmlsLVuB6IDqONjFxiRrbrV
+         QDrgu2XEJn+kg8afajmDT5jgAqe9+BfXN/iPlG1ntTH1QPLtPcFn08hwoPeE0xSj2leA
+         rf+QUfUu3UHOyBAo/h7Avbj/3BdsFAlZNwgE4xg1PZuudpTJnXx6yRZSsLmSD30XC+N0
+         NX1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693428419; x=1694033219;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H7+RNFydbYgwU33+rMvrroV0xhFvVbyEmKI0SQQ1IPc=;
+        b=ec2eX3QfZiUgUirpshgiZi1WuiQqs7TRnGxzj29lUOJvhIAq/kDFMGL9OSWAlKf32x
+         qb31cHir5i2YBtQSzTUidzzCkANzAQGjJoq+rIidTLEKbG8EIRyAkAtrPJisbcwG5qMA
+         N8qfAkEHQLS45E+x+ZrUDNFQ6YQT/PYsUhAauJTCtRQJUlLtYv60hxlqUzpuUta8GkE8
+         R4nJJa1tSXRNiXZpWIRwi+G4abWeDOlwc1RGlDrS2aZsV5fHGmDS83LMTvhSwM6pdDsw
+         6cFO55PM7cNxC8a7B4TY2ttE/smHiZS8TA5Nh15HdnDxr45fb4QoT9Qof89H+1EYLTlx
+         NjwQ==
+X-Gm-Message-State: AOJu0YzBzfIpLZuTT7puJ63vT5cWkZDfNN0uRDs5nvKOpM6NQ07zvJgs
+        5IxGRc9e5oSabw4bCSMULtQe31AToGe215Ftokw=
+X-Google-Smtp-Source: AGHT+IHiAZl/ZfM93EO73RMw6cC+cTC9r+ll2wJ6ots2bDFoCLwXyilxaxMGTvKxEz9IOIdQkqAjbZOzoFSbbp6GvN0=
+X-Received: by 2002:a17:906:cc:b0:99d:dc0b:a89a with SMTP id
+ 12-20020a17090600cc00b0099ddc0ba89amr2747411eji.63.1693428419039; Wed, 30 Aug
+ 2023 13:46:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <88ffb216-96f9-f232-7fe5-48bf82e6aa70@gmail.com>
+In-Reply-To: <88ffb216-96f9-f232-7fe5-48bf82e6aa70@gmail.com>
+From:   brett hassall <brett.hassall@gmail.com>
+Date:   Thu, 31 Aug 2023 06:46:47 +1000
+Message-ID: <CANiJ1U_eysXU+i+7w6O7f7t5d4kfyT+yM=NbMH82YOLpaaDmJg@mail.gmail.com>
+Subject: Re: upstream linux cannot achieve package C8 power saving
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
         Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Peter Gonda <pgonda@google.com>,
-        Samuel Ortiz <sameo@rivosinc.com>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v3 2/5] configfs-tsm: Introduce a shared ABI for
- attestation reports
-Message-ID: <2023083029-wackiness-lilac-39dd@gregkh>
-References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
- <169342400469.3934343.12316161608372095860.stgit@dwillia2-xfh.jf.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169342400469.3934343.12316161608372095860.stgit@dwillia2-xfh.jf.intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        Ajay Agarwal <ajayagarwal@google.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Michael Bottini <michael.a.bottini@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Power Management <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,78 +77,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 12:33:24PM -0700, Dan Williams wrote:
-> One of the common operations of a TSM (Trusted Security Module) is to
-> provide a way for a TVM (confidential computing guest execution
-> environment) to take a measurement of its launch state, sign it and
-> submit it to a verifying party. Upon successful attestation that
-> verifies the integrity of the TVM additional secrets may be deployed.
-> The concept is common across TSMs, but the implementations are
-> unfortunately vendor specific. While the industry grapples with a common
-> definition of this attestation format [1], Linux need not make this
-> problem worse by defining a new ABI per TSM that wants to perform a
-> similar operation. The current momentum has been to invent new ioctl-ABI
-> per TSM per function which at best is an abdication of the kernel's
-> responsibility to make common infrastructure concepts share common ABI.
-> 
-> The proposal, targeted to conceptually work with TDX, SEV-SNP, COVE if
-> not more, is to define a configfs interface to retrieve the TSM-specific
-> blob.
-> 
->     report=/sys/kernel/config/tsm/report/report0
->     mkdir $report
->     dd if=binary_userdata_plus_nonce > $report/inblob
->     hexdump $report/outblob
-> 
-> This approach later allows for the standardization of the attestation
-> blob format without needing to invent a new ABI. Once standardization
-> happens the standard format can be emitted by $report/outblob and
-> indicated by $report/provider, or a new attribute like
-> "$report/tcg_coco_report" can emit the standard format alongside the
-> vendor format.
-> 
-> Review of previous iterations of this interface identified that there is
-> a need to scale report generation for multiple container environments
-> [2]. Configfs enables a model where each container can bind mount one or
-> more report generation item instances. Still, within a container only a
-> single thread can be manipulating a given configuration instance at a
-> time. A 'generation' count is provided to detect conflicts between
-> multiple threads racing to configure a report instance.
-> 
-> The SEV-SNP concepts of "extended reports" and "privilege levels" are
-> optionally enabled by selecting 'tsm_report_ext_type' at register_tsm()
-> time. The expectation is that those concepts are generic enough that
-> they may be adopted by other TSM implementations. In other words,
-> configfs-tsm aims to address a superset of TSM specific functionality
-> with a common ABI where attributes may appear, or not appear, based on the set
-> of concepts the implementation supports.
-> 
-> Link: http://lore.kernel.org/r/64961c3baf8ce_142af829436@dwillia2-xfh.jf.intel.com.notmuch [1]
-> Link: http://lore.kernel.org/r/57f3a05e-8fcd-4656-beea-56bb8365ae64@linux.microsoft.com [2]
-> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Cc: Dionna Amalie Glaze <dionnaglaze@google.com>
-> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Cc: Peter Gonda <pgonda@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Samuel Ortiz <sameo@rivosinc.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  Documentation/ABI/testing/configfs-tsm |   68 ++++++
+Hi
 
-Nice, I like the use of configfs here.
+Ok, I will read into working up a formal patch.
 
-One very tiny naming nit, feel free to ignore if you don't want to
-change it:
+Thanks for the reply.
 
-> +int register_tsm(const struct tsm_ops *ops, void *priv,
-> +		 const struct config_item_type *type);
-> +int unregister_tsm(const struct tsm_ops *ops);
+Brett
 
-Usually it's "noun_verb" for stuff that you export to the global
-namespace these days.
 
-So perhaps tsm_register() and tsm_unregister()?
-
-Either way, it's your call:
-
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Wed, 30 Aug 2023 at 11:11, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>
+> Hi,
+>
+> I notice a bug report on Bugzilla [1]. Quoting from it:
+>
+> > v6.5 (and at least v5.15, v5.19 and v6.4 as well) will not go to a higher power saving level than package C3.
+> >
+> > With the inclusion of a patch that combines 3 Ubuntu commits related to VMD ASPM & LTR, package C8 is used.
+>
+> See Bugzilla for the full thread.
+>
+> FYI, the attached proposed fix is the same as Brett's another BZ report [2].
+> I include it for upstreaming.
+>
+> To Brett: Would you like to submit the proper, formal patch (see
+> Documentation/process/submitting-patches.rst for details)?
+>
+> Thanks.
+>
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217841
+> [2]: https://bugzilla.kernel.org/show_bug.cgi?id=217828
+>
+> --
+> An old man doll... just what I always wanted! - Clara
