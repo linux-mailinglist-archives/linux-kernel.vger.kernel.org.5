@@ -2,437 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AA478DBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44BE78DC55
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238534AbjH3Shy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
+        id S242737AbjH3Sol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245610AbjH3Pkt (ORCPT
+        with ESMTP id S245614AbjH3PmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:40:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63E6122
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:40:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E4F46068C
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:40:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA86C433C8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:40:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693410045;
-        bh=OfkHF940V8bVlz017j5dgKgrTL7TlTWtYOhd5+ZFIhc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MkefpL604gjUcgnnQWdj27r6PUEqsrYz3mbmOtnNPXuP8tlbA4sG0N8eFitSS7Liq
-         7gUmYBc+jRf/p14vIdo/n2vJbVr4vissQTeyluIQ6M24sQUosknBh0DzU1CfPDFrI9
-         YtIkMW8RkNk3la2P8C8Lw5G7IOoVPdJl1bHXjskIGBrdKJhCKFO/H/aIvWGAbJ+cmN
-         eSmHegLbPbQg8MwoCm3cQLmNBqMkjBPgc8JB0slf5hzcUMvOK0zC6yykoyroHQWt4o
-         g/xz0s56tkCwswqEwc25nAE6UdzB5usfGw9mMTQ0PYM1IWkoGK9HrprFmwLysorwm6
-         YJt2cYgsW+e4w==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2bd0a5a5abbso56683231fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:40:45 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwdfYNCoCUsclZpg9yzEDo2AEerW3Zy2rwnh6Zz+zuRbjY4e4pk
-        zgM0yv0dDwRXQKQmyqnmgNOiokTpFnoqEg8kKrM=
-X-Google-Smtp-Source: AGHT+IG5tHWG0k3aeYAtCZszmkxmntyxtcBLV8yCAF6paqzfA7s9enEriqovO6smlLObrCvsjA+Tyu317sDGb42XptI=
-X-Received: by 2002:a2e:90d6:0:b0:2bc:b9c7:7ba3 with SMTP id
- o22-20020a2e90d6000000b002bcb9c77ba3mr2429625ljg.12.1693410043510; Wed, 30
- Aug 2023 08:40:43 -0700 (PDT)
+        Wed, 30 Aug 2023 11:42:16 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6E423132
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:42:12 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D9D82F4;
+        Wed, 30 Aug 2023 08:42:51 -0700 (PDT)
+Received: from [10.57.64.173] (unknown [10.57.64.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73BAB3F64C;
+        Wed, 30 Aug 2023 08:42:09 -0700 (PDT)
+Message-ID: <1696b47d-fcaa-4d60-b9b2-3f2178127dcb@arm.com>
+Date:   Wed, 30 Aug 2023 16:42:07 +0100
 MIME-Version: 1.0
-References: <20230830010435.2969785-1-liweihao@loongson.cn>
-In-Reply-To: <20230830010435.2969785-1-liweihao@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 30 Aug 2023 23:40:32 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4T+od3DWKWRRb1QhFgMrPcXLeR90EOdjO15cjFrt4w8g@mail.gmail.com>
-Message-ID: <CAAhV-H4T+od3DWKWRRb1QhFgMrPcXLeR90EOdjO15cjFrt4w8g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] LoongArch: adjust copy/clear_user exception handler behavior
-To:     liweihao <liweihao@loongson.cn>
-Cc:     kernel@xen0n.name, wangrui@loongson.cn, masahiroy@kernel.org,
-        yijun@loongson.cn, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/5] mm: Implement folio_remove_rmap_range()
+Content-Language: en-GB
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230830095011.1228673-1-ryan.roberts@arm.com>
+ <20230830095011.1228673-2-ryan.roberts@arm.com>
+ <ZO9XgttGXnx5dxFZ@casper.infradead.org>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZO9XgttGXnx5dxFZ@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Weihao,
+On 30/08/2023 15:51, Matthew Wilcox wrote:
+> On Wed, Aug 30, 2023 at 10:50:07AM +0100, Ryan Roberts wrote:
+>> Like page_remove_rmap() but batch-removes the rmap for a range of pages
+>> belonging to a folio. This can provide a small speedup due to less
+>> manipuation of the various counters. But more crucially, if removing the
+>> rmap for all pages of a folio in a batch, there is no need to
+>> (spuriously) add it to the deferred split list, which saves significant
+>> cost when there is contention for the split queue lock.
+>>
+>> All contained pages are accounted using the order-0 folio (or base page)
+>> scheme.
+>>
+>> page_remove_rmap() is refactored so that it forwards to
+>> folio_remove_rmap_range() for !compound cases, and both functions now
+>> share a common epilogue function. The intention here is to avoid
+>> duplication of code.
+> 
+> What would you think to doing it like this instead?  This probably doesn't
+> even compile and it's definitely not sanity checked; just trying to get
+> across an idea of the shape of this code.  I think this is more like
+> what DavidH was asking for (but he's on holiday this week so won't be
+> able to confirm).
 
-The title should be "LoongArch: Adjust {copy, clear}_user exception
-handler behavior" and 1/1 is unnecessary. Commit logs also need
-similar adjustments.
+I think it was actually Yu Zhou who was arguing for something more like this?
 
-On Wed, Aug 30, 2023 at 9:04=E2=80=AFAM liweihao <liweihao@loongson.cn> wro=
-te:
->
-> The copy/clear_user function should returns number of bytes that could
-> not be copied/cleared. So, try to copy/clear byte by byte when ld.d/w/h
-> and st.d/w/h trapped into an exception.
->
-> Signed-off-by: liweihao <liweihao@loongson.cn>
-Your email format should be "Weihao Li  <liweihao@loongson.cn>"
+I don't love it, because as I've expressed previously, I don't think an API that
+operates on a "range" of pages has any business manipulating a PMD mapping,
+because it can't be subdivided. So my preference is for what I've already got.
 
-Huacai
-> ---
->  arch/loongarch/lib/clear_user.S |  87 ++++++++---------
->  arch/loongarch/lib/copy_user.S  | 161 ++++++++++++++++----------------
->  2 files changed, 127 insertions(+), 121 deletions(-)
->
-> diff --git a/arch/loongarch/lib/clear_user.S b/arch/loongarch/lib/clear_u=
-ser.S
-> index 0790eadce166..9b6eef569f89 100644
-> --- a/arch/loongarch/lib/clear_user.S
-> +++ b/arch/loongarch/lib/clear_user.S
-> @@ -11,19 +11,6 @@
->  #include <asm/cpu.h>
->  #include <asm/regdef.h>
->
-> -.irp to, 0, 1, 2, 3, 4, 5, 6, 7
-> -.L_fixup_handle_\to\():
-> -       sub.d   a0, a2, a0
-> -       addi.d  a0, a0, (\to) * (-8)
-> -       jr      ra
-> -.endr
+But certainly your proposal to use nr=-1 to mean compound is the nicest way I've
+seen since you no longer make nr redundant in this case.
+
+Given you and Yu both have a lot more experience with this code than me, I'll
+follow your advice and do it this way for the next rev.
+
+Thanks,
+Ryan
+
+
+> 
+> 
+> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> index a3825ce81102..d442d1e5425d 100644
+> --- a/include/linux/rmap.h
+> +++ b/include/linux/rmap.h
+> @@ -202,6 +202,8 @@ void folio_add_file_rmap_range(struct folio *, struct page *, unsigned int nr,
+>  		struct vm_area_struct *, bool compound);
+>  void page_remove_rmap(struct page *, struct vm_area_struct *,
+>  		bool compound);
+> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
+> +		int nr, struct vm_area_struct *vma);
+>  
+>  void hugepage_add_anon_rmap(struct page *, struct vm_area_struct *,
+>  		unsigned long address, rmap_t flags);
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index ec7f8e6c9e48..2592be47452e 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1380,24 +1380,26 @@ void page_add_file_rmap(struct page *page, struct vm_area_struct *vma,
+>  }
+>  
+>  /**
+> - * page_remove_rmap - take down pte mapping from a page
+> - * @page:	page to remove mapping from
+> - * @vma:	the vm area from which the mapping is removed
+> - * @compound:	uncharge the page as compound or small page
+> + * folio_remove_rmap_range - Take down PTE mappings from a range of pages.
+> + * @folio:	Folio containing all pages in range.
+> + * @page:	First page in range to unmap.
+> + * @nr:		Number of pages to unmap.  -1 to unmap a PMD.
+> + * @vma:	The VM area containing the range.
+>   *
+> - * The caller needs to hold the pte lock.
+> + * All pages in the range must belong to the same VMA & folio.
+> + *
+> + * Context: Caller holds the pte lock.
+>   */
+> -void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+> -		bool compound)
+> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
+> +			int pages, struct vm_area_struct *vma)
+>  {
+> -	struct folio *folio = page_folio(page);
+>  	atomic_t *mapped = &folio->_nr_pages_mapped;
+> +	int nr_unmapped = 0;
+> +	int nr_mapped = 0;
+>  	int nr = 0, nr_pmdmapped = 0;
+>  	bool last;
+>  	enum node_stat_item idx;
+>  
+> -	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
 > -
-> -.irp to, 0, 2, 4
-> -.L_fixup_handle_s\to\():
-> -       addi.d  a0, a1, -\to
-> -       jr      ra
-> -.endr
-> -
->  SYM_FUNC_START(__clear_user)
->         /*
->          * Some CPUs support hardware unaligned access
-> @@ -51,7 +38,7 @@ SYM_FUNC_START(__clear_user_generic)
->  2:     move    a0, a1
->         jr      ra
->
-> -       _asm_extable 1b, .L_fixup_handle_s0
-> +       _asm_extable 1b, 2b
->  SYM_FUNC_END(__clear_user_generic)
->
+>  	/* Hugetlb pages are not counted in NR_*MAPPED */
+>  	if (unlikely(folio_test_hugetlb(folio))) {
+>  		/* hugetlb pages are always mapped with pmds */
+> @@ -1405,14 +1407,25 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+>  		return;
+>  	}
+>  
+> -	/* Is page being unmapped by PTE? Is this its last map to be removed? */
+> -	if (likely(!compound)) {
+> -		last = atomic_add_negative(-1, &page->_mapcount);
+> -		nr = last;
+> -		if (last && folio_test_large(folio)) {
+> -			nr = atomic_dec_return_relaxed(mapped);
+> -			nr = (nr < COMPOUND_MAPPED);
+> +	/* Are we taking down a PMD mapping? */
+> +	if (likely(pages > 0)) {
+> +		VM_WARN_ON_ONCE(page < folio_page(folio, 0) ||
+> +				page + pages > folio_page(folio,
+> +						folio_nr_pages(folio)));
+> +		while (pages) {
+> +			/* Is this the page's last map to be removed? */
+> +			last = atomic_add_negative(-1, &page->_mapcount);
+> +			if (last)
+> +				nr_unmapped++;
+> +			pages--;
+> +			page++;
+>  		}
+> +
+> +		/* Pages still mapped if folio mapped entirely */
+> +		nr_mapped = atomic_sub_return_relaxed(nr_unmapped, mapped);
+> +		if (nr_mapped >= COMPOUND_MAPPED)
+> +			nr_unmapped = 0;
+> +
+>  	} else if (folio_test_pmd_mappable(folio)) {
+>  		/* That test is redundant: it's for safety or to optimize out */
+>  
+> @@ -1441,18 +1454,19 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+>  			idx = NR_FILE_PMDMAPPED;
+>  		__lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
+>  	}
+> +
+>  	if (nr) {
+>  		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
+>  		__lruvec_stat_mod_folio(folio, idx, -nr);
+>  
+>  		/*
+> -		 * Queue anon THP for deferred split if at least one
+> -		 * page of the folio is unmapped and at least one page
+> -		 * is still mapped.
+> +		 * Queue large anon folio for deferred split if at least one
+> +		 * page of the folio is unmapped and at least one page is still
+> +		 * mapped.
+>  		 */
+> -		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
+> -			if (!compound || nr < nr_pmdmapped)
+> -				deferred_split_folio(folio);
+> +		if (folio_test_large(folio) && folio_test_anon(folio) &&
+> +		    nr_mapped)
+> +			deferred_split_folio(folio);
+>  	}
+>  
+>  	/*
+> @@ -1466,6 +1480,20 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+>  	munlock_vma_folio(folio, vma, compound);
+>  }
+>  
+> +/**
+> + * page_remove_rmap - take down pte mapping from a page
+> + * @page:	page to remove mapping from
+> + * @vma:	the vm area from which the mapping is removed
+> + * @compound:	uncharge the page as compound or small page
+> + *
+> + * The caller needs to hold the pte lock.
+> + */
+> +void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+> +		bool compound)
+> +{
+> +	folio_remove_rmap_range(page_folio(page), page, compound ? -1 : 1, vma);
+> +}
+> +
 >  /*
-> @@ -173,33 +160,47 @@ SYM_FUNC_START(__clear_user_fast)
->         jr      ra
->
->         /* fixup and ex_table */
-> -       _asm_extable 0b, .L_fixup_handle_0
-> -       _asm_extable 1b, .L_fixup_handle_0
-> -       _asm_extable 2b, .L_fixup_handle_1
-> -       _asm_extable 3b, .L_fixup_handle_2
-> -       _asm_extable 4b, .L_fixup_handle_3
-> -       _asm_extable 5b, .L_fixup_handle_4
-> -       _asm_extable 6b, .L_fixup_handle_5
-> -       _asm_extable 7b, .L_fixup_handle_6
-> -       _asm_extable 8b, .L_fixup_handle_7
-> -       _asm_extable 9b, .L_fixup_handle_0
-> -       _asm_extable 10b, .L_fixup_handle_1
-> -       _asm_extable 11b, .L_fixup_handle_2
-> -       _asm_extable 12b, .L_fixup_handle_3
-> -       _asm_extable 13b, .L_fixup_handle_0
-> -       _asm_extable 14b, .L_fixup_handle_1
-> -       _asm_extable 15b, .L_fixup_handle_0
-> -       _asm_extable 16b, .L_fixup_handle_0
-> -       _asm_extable 17b, .L_fixup_handle_s0
-> -       _asm_extable 18b, .L_fixup_handle_s0
-> -       _asm_extable 19b, .L_fixup_handle_s0
-> -       _asm_extable 20b, .L_fixup_handle_s2
-> -       _asm_extable 21b, .L_fixup_handle_s0
-> -       _asm_extable 22b, .L_fixup_handle_s0
-> -       _asm_extable 23b, .L_fixup_handle_s4
-> -       _asm_extable 24b, .L_fixup_handle_s0
-> -       _asm_extable 25b, .L_fixup_handle_s4
-> -       _asm_extable 26b, .L_fixup_handle_s0
-> -       _asm_extable 27b, .L_fixup_handle_s4
-> -       _asm_extable 28b, .L_fixup_handle_s0
-> +.Llarge_fixup:
-> +       sub.d   a1, a2, a0
-> +
-> +.Lsmall_fixup:
-> +29:    st.b    zero, a0, 0
-> +       addi.d  a0, a0, 1
-> +       addi.d  a1, a1, -1
-> +       bgt     a1, zero, 1b
-> +
-> +.Lexit:
-> +       move    a0, a1
-> +       jr      ra
-> +
-> +       _asm_extable 0b, .Lsmall_fixup
-> +       _asm_extable 1b, .Llarge_fixup
-> +       _asm_extable 2b, .Llarge_fixup
-> +       _asm_extable 3b, .Llarge_fixup
-> +       _asm_extable 4b, .Llarge_fixup
-> +       _asm_extable 5b, .Llarge_fixup
-> +       _asm_extable 6b, .Llarge_fixup
-> +       _asm_extable 7b, .Llarge_fixup
-> +       _asm_extable 8b, .Llarge_fixup
-> +       _asm_extable 9b, .Llarge_fixup
-> +       _asm_extable 10b, .Llarge_fixup
-> +       _asm_extable 11b, .Llarge_fixup
-> +       _asm_extable 12b, .Llarge_fixup
-> +       _asm_extable 13b, .Llarge_fixup
-> +       _asm_extable 14b, .Llarge_fixup
-> +       _asm_extable 15b, .Llarge_fixup
-> +       _asm_extable 16b, .Llarge_fixup
-> +       _asm_extable 17b, .Lexit
-> +       _asm_extable 18b, .Lsmall_fixup
-> +       _asm_extable 19b, .Lsmall_fixup
-> +       _asm_extable 20b, .Lsmall_fixup
-> +       _asm_extable 21b, .Lsmall_fixup
-> +       _asm_extable 22b, .Lsmall_fixup
-> +       _asm_extable 23b, .Lsmall_fixup
-> +       _asm_extable 24b, .Lsmall_fixup
-> +       _asm_extable 25b, .Lsmall_fixup
-> +       _asm_extable 26b, .Lsmall_fixup
-> +       _asm_extable 27b, .Lsmall_fixup
-> +       _asm_extable 28b, .Lsmall_fixup
-> +       _asm_extable 29b, .Lexit
->  SYM_FUNC_END(__clear_user_fast)
-> diff --git a/arch/loongarch/lib/copy_user.S b/arch/loongarch/lib/copy_use=
-r.S
-> index bfe3d2793d00..feec3d362803 100644
-> --- a/arch/loongarch/lib/copy_user.S
-> +++ b/arch/loongarch/lib/copy_user.S
-> @@ -11,19 +11,6 @@
->  #include <asm/cpu.h>
->  #include <asm/regdef.h>
->
-> -.irp to, 0, 1, 2, 3, 4, 5, 6, 7
-> -.L_fixup_handle_\to\():
-> -       sub.d   a0, a2, a0
-> -       addi.d  a0, a0, (\to) * (-8)
-> -       jr      ra
-> -.endr
-> -
-> -.irp to, 0, 2, 4
-> -.L_fixup_handle_s\to\():
-> -       addi.d  a0, a2, -\to
-> -       jr      ra
-> -.endr
-> -
->  SYM_FUNC_START(__copy_user)
->         /*
->          * Some CPUs support hardware unaligned access
-> @@ -54,8 +41,8 @@ SYM_FUNC_START(__copy_user_generic)
->  3:     move    a0, a2
->         jr      ra
->
-> -       _asm_extable 1b, .L_fixup_handle_s0
-> -       _asm_extable 2b, .L_fixup_handle_s0
-> +       _asm_extable 1b, 3b
-> +       _asm_extable 2b, 3b
->  SYM_FUNC_END(__copy_user_generic)
->
->  /*
-> @@ -69,10 +56,10 @@ SYM_FUNC_START(__copy_user_fast)
->         sltui   t0, a2, 9
->         bnez    t0, .Lsmall
->
-> -       add.d   a3, a1, a2
-> -       add.d   a2, a0, a2
->  0:     ld.d    t0, a1, 0
->  1:     st.d    t0, a0, 0
-> +       add.d   a3, a1, a2
-> +       add.d   a2, a0, a2
->
->         /* align up destination address */
->         andi    t1, a0, 7
-> @@ -94,7 +81,6 @@ SYM_FUNC_START(__copy_user_fast)
->  7:     ld.d    t5, a1, 40
->  8:     ld.d    t6, a1, 48
->  9:     ld.d    t7, a1, 56
-> -       addi.d  a1, a1, 64
->  10:    st.d    t0, a0, 0
->  11:    st.d    t1, a0, 8
->  12:    st.d    t2, a0, 16
-> @@ -103,6 +89,7 @@ SYM_FUNC_START(__copy_user_fast)
->  15:    st.d    t5, a0, 40
->  16:    st.d    t6, a0, 48
->  17:    st.d    t7, a0, 56
-> +       addi.d  a1, a1, 64
->         addi.d  a0, a0, 64
->         bltu    a1, a4, .Lloop64
->
-> @@ -114,11 +101,11 @@ SYM_FUNC_START(__copy_user_fast)
->  19:    ld.d    t1, a1, 8
->  20:    ld.d    t2, a1, 16
->  21:    ld.d    t3, a1, 24
-> -       addi.d  a1, a1, 32
->  22:    st.d    t0, a0, 0
->  23:    st.d    t1, a0, 8
->  24:    st.d    t2, a0, 16
->  25:    st.d    t3, a0, 24
-> +       addi.d  a1, a1, 32
->         addi.d  a0, a0, 32
->
->  .Llt32:
-> @@ -126,9 +113,9 @@ SYM_FUNC_START(__copy_user_fast)
->         bgeu    a1, a4, .Llt16
->  26:    ld.d    t0, a1, 0
->  27:    ld.d    t1, a1, 8
-> -       addi.d  a1, a1, 16
->  28:    st.d    t0, a0, 0
->  29:    st.d    t1, a0, 8
-> +       addi.d  a1, a1, 16
->         addi.d  a0, a0, 16
->
->  .Llt16:
-> @@ -136,6 +123,7 @@ SYM_FUNC_START(__copy_user_fast)
->         bgeu    a1, a4, .Llt8
->  30:    ld.d    t0, a1, 0
->  31:    st.d    t0, a0, 0
-> +       addi.d  a1, a1, 8
->         addi.d  a0, a0, 8
->
->  .Llt8:
-> @@ -214,62 +202,79 @@ SYM_FUNC_START(__copy_user_fast)
->         jr      ra
->
->         /* fixup and ex_table */
-> -       _asm_extable 0b, .L_fixup_handle_0
-> -       _asm_extable 1b, .L_fixup_handle_0
-> -       _asm_extable 2b, .L_fixup_handle_0
-> -       _asm_extable 3b, .L_fixup_handle_0
-> -       _asm_extable 4b, .L_fixup_handle_0
-> -       _asm_extable 5b, .L_fixup_handle_0
-> -       _asm_extable 6b, .L_fixup_handle_0
-> -       _asm_extable 7b, .L_fixup_handle_0
-> -       _asm_extable 8b, .L_fixup_handle_0
-> -       _asm_extable 9b, .L_fixup_handle_0
-> -       _asm_extable 10b, .L_fixup_handle_0
-> -       _asm_extable 11b, .L_fixup_handle_1
-> -       _asm_extable 12b, .L_fixup_handle_2
-> -       _asm_extable 13b, .L_fixup_handle_3
-> -       _asm_extable 14b, .L_fixup_handle_4
-> -       _asm_extable 15b, .L_fixup_handle_5
-> -       _asm_extable 16b, .L_fixup_handle_6
-> -       _asm_extable 17b, .L_fixup_handle_7
-> -       _asm_extable 18b, .L_fixup_handle_0
-> -       _asm_extable 19b, .L_fixup_handle_0
-> -       _asm_extable 20b, .L_fixup_handle_0
-> -       _asm_extable 21b, .L_fixup_handle_0
-> -       _asm_extable 22b, .L_fixup_handle_0
-> -       _asm_extable 23b, .L_fixup_handle_1
-> -       _asm_extable 24b, .L_fixup_handle_2
-> -       _asm_extable 25b, .L_fixup_handle_3
-> -       _asm_extable 26b, .L_fixup_handle_0
-> -       _asm_extable 27b, .L_fixup_handle_0
-> -       _asm_extable 28b, .L_fixup_handle_0
-> -       _asm_extable 29b, .L_fixup_handle_1
-> -       _asm_extable 30b, .L_fixup_handle_0
-> -       _asm_extable 31b, .L_fixup_handle_0
-> -       _asm_extable 32b, .L_fixup_handle_0
-> -       _asm_extable 33b, .L_fixup_handle_0
-> -       _asm_extable 34b, .L_fixup_handle_s0
-> -       _asm_extable 35b, .L_fixup_handle_s0
-> -       _asm_extable 36b, .L_fixup_handle_s0
-> -       _asm_extable 37b, .L_fixup_handle_s0
-> -       _asm_extable 38b, .L_fixup_handle_s0
-> -       _asm_extable 39b, .L_fixup_handle_s0
-> -       _asm_extable 40b, .L_fixup_handle_s0
-> -       _asm_extable 41b, .L_fixup_handle_s2
-> -       _asm_extable 42b, .L_fixup_handle_s0
-> -       _asm_extable 43b, .L_fixup_handle_s0
-> -       _asm_extable 44b, .L_fixup_handle_s0
-> -       _asm_extable 45b, .L_fixup_handle_s0
-> -       _asm_extable 46b, .L_fixup_handle_s0
-> -       _asm_extable 47b, .L_fixup_handle_s4
-> -       _asm_extable 48b, .L_fixup_handle_s0
-> -       _asm_extable 49b, .L_fixup_handle_s0
-> -       _asm_extable 50b, .L_fixup_handle_s0
-> -       _asm_extable 51b, .L_fixup_handle_s4
-> -       _asm_extable 52b, .L_fixup_handle_s0
-> -       _asm_extable 53b, .L_fixup_handle_s0
-> -       _asm_extable 54b, .L_fixup_handle_s0
-> -       _asm_extable 55b, .L_fixup_handle_s4
-> -       _asm_extable 56b, .L_fixup_handle_s0
-> -       _asm_extable 57b, .L_fixup_handle_s0
-> +.Llarge_fixup:
-> +       sub.d   a2, a2, a0
-> +
-> +.Lsmall_fixup:
-> +58:    ld.b    t0, a1, 0
-> +59:    st.b    t0, a0, 0
-> +       addi.d  a0, a0, 1
-> +       addi.d  a1, a1, 1
-> +       addi.d  a2, a2, -1
-> +       bgt     a2, zero, 58b
-> +
-> +.Lexit:
-> +       move    a0, a2
-> +       jr      ra
-> +
-> +       _asm_extable 0b, .Lsmall_fixup
-> +       _asm_extable 1b, .Lsmall_fixup
-> +       _asm_extable 2b, .Llarge_fixup
-> +       _asm_extable 3b, .Llarge_fixup
-> +       _asm_extable 4b, .Llarge_fixup
-> +       _asm_extable 5b, .Llarge_fixup
-> +       _asm_extable 6b, .Llarge_fixup
-> +       _asm_extable 7b, .Llarge_fixup
-> +       _asm_extable 8b, .Llarge_fixup
-> +       _asm_extable 9b, .Llarge_fixup
-> +       _asm_extable 10b, .Llarge_fixup
-> +       _asm_extable 11b, .Llarge_fixup
-> +       _asm_extable 12b, .Llarge_fixup
-> +       _asm_extable 13b, .Llarge_fixup
-> +       _asm_extable 14b, .Llarge_fixup
-> +       _asm_extable 15b, .Llarge_fixup
-> +       _asm_extable 16b, .Llarge_fixup
-> +       _asm_extable 17b, .Llarge_fixup
-> +       _asm_extable 18b, .Llarge_fixup
-> +       _asm_extable 19b, .Llarge_fixup
-> +       _asm_extable 20b, .Llarge_fixup
-> +       _asm_extable 21b, .Llarge_fixup
-> +       _asm_extable 22b, .Llarge_fixup
-> +       _asm_extable 23b, .Llarge_fixup
-> +       _asm_extable 24b, .Llarge_fixup
-> +       _asm_extable 25b, .Llarge_fixup
-> +       _asm_extable 26b, .Llarge_fixup
-> +       _asm_extable 27b, .Llarge_fixup
-> +       _asm_extable 28b, .Llarge_fixup
-> +       _asm_extable 29b, .Llarge_fixup
-> +       _asm_extable 30b, .Llarge_fixup
-> +       _asm_extable 31b, .Llarge_fixup
-> +       _asm_extable 32b, .Llarge_fixup
-> +       _asm_extable 33b, .Llarge_fixup
-> +       _asm_extable 34b, .Lexit
-> +       _asm_extable 35b, .Lexit
-> +       _asm_extable 36b, .Lsmall_fixup
-> +       _asm_extable 37b, .Lsmall_fixup
-> +       _asm_extable 38b, .Lsmall_fixup
-> +       _asm_extable 39b, .Lsmall_fixup
-> +       _asm_extable 40b, .Lsmall_fixup
-> +       _asm_extable 41b, .Lsmall_fixup
-> +       _asm_extable 42b, .Lsmall_fixup
-> +       _asm_extable 43b, .Lsmall_fixup
-> +       _asm_extable 44b, .Lsmall_fixup
-> +       _asm_extable 45b, .Lsmall_fixup
-> +       _asm_extable 46b, .Lsmall_fixup
-> +       _asm_extable 47b, .Lsmall_fixup
-> +       _asm_extable 48b, .Lsmall_fixup
-> +       _asm_extable 49b, .Lsmall_fixup
-> +       _asm_extable 50b, .Lsmall_fixup
-> +       _asm_extable 51b, .Lsmall_fixup
-> +       _asm_extable 52b, .Lsmall_fixup
-> +       _asm_extable 53b, .Lsmall_fixup
-> +       _asm_extable 54b, .Lsmall_fixup
-> +       _asm_extable 55b, .Lsmall_fixup
-> +       _asm_extable 56b, .Lsmall_fixup
-> +       _asm_extable 57b, .Lsmall_fixup
-> +       _asm_extable 58b, .Lexit
-> +       _asm_extable 59b, .Lexit
->  SYM_FUNC_END(__copy_user_fast)
-> --
-> 2.39.2
->
->
+>   * @arg: enum ttu_flags will be passed to this argument
+>   */
+
