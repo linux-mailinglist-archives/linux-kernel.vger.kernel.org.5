@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5466878DF55
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B483578E011
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243728AbjH3TZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
+        id S239328AbjH3TIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241797AbjH3HHr (ORCPT
+        with ESMTP id S241799AbjH3HIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:07:47 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB6195
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:07:44 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbFjl0RS7z4f3nbx
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:07:39 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP3 (Coremail) with SMTP id _Ch0CgD3Eru76u5kEDVABw--.65276S2;
-        Wed, 30 Aug 2023 15:07:40 +0800 (CST)
-Subject: Re: [PATCH v2 5/7] mm/compaction: remove repeat
- compact_blockskip_flush check in reset_isolation_suitable
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        david@redhat.com, willy@infradead.org
-References: <20230826153617.4019189-1-shikemeng@huaweicloud.com>
- <20230826153617.4019189-6-shikemeng@huaweicloud.com>
- <20230829150523.ktn6ktdtl7n22akp@techsingularity.net>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <f91439b8-4740-c535-e21e-211cff3117ed@huaweicloud.com>
-Date:   Wed, 30 Aug 2023 15:07:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
-MIME-Version: 1.0
-In-Reply-To: <20230829150523.ktn6ktdtl7n22akp@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: _Ch0CgD3Eru76u5kEDVABw--.65276S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtrW5tr1kJry7tF43trW5Jrb_yoW3Crc_Gr
-        1F9rs7CrWUAw1kJFyayrnxursYgayUAF1UuryrKayYga45WrZ5Jws7J3W7ZF48JrWUuFy0
-        93Wfur45CFWjqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb78YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-        j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-        kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
-        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-        0EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 03:08:02 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82EA95
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:07:59 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d780a0d3cefso6188636276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693379279; x=1693984079; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5NaHsU6gXgFOenHk7MfqZGVTVXuRwf+WJ70Gj+1DurU=;
+        b=6/GxsNd9Kywu8N8XjZIO0gtCnLdeXgprY6VCHDrGvNdNtgmQWcqKTR+ASayOySQdea
+         oBuJMJ0bS8QA18CQxHCZuERQQQQTUoRXf4QY9jedpUkKPTXNsSsEmh0nYtpN6CihA2x7
+         7kMZwLwOc6AMLS8MOuxrhPupvQDVMbQOV3uOtfQntIvadA20eEHV1a4ncqemahlUoVKf
+         KJZfb+dWMC1ProTCP+xXsqpUHwq7upPdAhJL5FZrhstZ486VOWSB4MZ2TvMP6TGG5LGL
+         6nxwg9L455g7bJv8sTozqXuIxGezChegJOoEztWFkxvv42t20X7xV6+wdW3LiT6zdI7T
+         9liA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693379279; x=1693984079;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5NaHsU6gXgFOenHk7MfqZGVTVXuRwf+WJ70Gj+1DurU=;
+        b=SafuYpFgBWzaCUFmJnqVLLxOzut/AA9A2xBbMTV+iaJRxkzjacsvpvXxF+SoGFBJWY
+         dPob1QCdlhObpvH/pyOANWDrGi84ylQMNa+QFOp5gPvboZxnbcfLZWPsBUSddxiYiGFx
+         elQzL73j3mEuAg+qSCuBihzyFmW7njLLCh4F6XP5pl/t4YZDzMnntsdKr5t2cXJlfqhF
+         eIrXcVQ+5WyQwmjqsDemyMkWSxFI0AAAw0vYq3wBtMtASa93+NdFj6IkIbnqyK/H2KGn
+         uv+2sbycp3EJmd/hBaLmTB37ywPY1B+RxlL7YX/OHSlkoVK9sGjqFpvJ30MNUXFCsRKN
+         lSrQ==
+X-Gm-Message-State: AOJu0YzEAgr3vnzFykHLYreWwC0v4mio5B0nWBeO7OnBypQrm1gg+WGF
+        SWRsGhajBrCnrv8BJRnjmbQZXz3mYGs9
+X-Google-Smtp-Source: AGHT+IEsqhzZVskXpYnOT+qq+VkLTum6nBgxwvZomGfzTOhPcyfHGK9ecuI2vCBSfox/qM2B17EZrYy6QlAq
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:d623:3cd7:ecbc:8798])
+ (user=irogers job=sendgmr) by 2002:a25:d0e:0:b0:d63:8364:328 with SMTP id
+ 14-20020a250d0e000000b00d6383640328mr35188ybn.5.1693379278979; Wed, 30 Aug
+ 2023 00:07:58 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 00:07:51 -0700
+Message-Id: <20230830070753.1821629-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Subject: [PATCH v1 1/3] perf parse-events: Minor help message improvements
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Be more specific and fix a typo.
 
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/parse-events.y | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-on 8/29/2023 11:05 PM, Mel Gorman wrote:
-> On Sat, Aug 26, 2023 at 11:36:15PM +0800, Kemeng Shi wrote:
->> We have compact_blockskip_flush check in __reset_isolation_suitable, just
->> remove repeat check before __reset_isolation_suitable in
->> compact_blockskip_flush.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> 
-> The comment should move to __reset_isolation_suitable but otherwise
-> 
-Thanks for the review, I will move comment in next version.
-> Acked-by: Mel Gorman <mgorman@techsingularity.net>
-> 
-> As a complete aside, the reset_isolation_suitable and
-> __reset_isolation_suitable were badly named because locking is not
-> involved but it's meaningless churn to fix it.
-> 
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index 3a9d4e2513b5..4a370c36a0d5 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -342,7 +342,7 @@ PE_NAME opt_pmu_config
+ 			struct parse_events_error *error = parse_state->error;
+ 			char *help;
+ 
+-			if (asprintf(&help, "Unabled to find PMU or event on a PMU of '%s'", $1) < 0)
++			if (asprintf(&help, "Unable to find PMU or event on a PMU of '%s'", $1) < 0)
+ 				help = NULL;
+ 			parse_events_error__handle(error, @1.first_column,
+ 						   strdup("Bad event or PMU"),
+@@ -368,7 +368,7 @@ PE_NAME sep_dc
+ 		struct parse_events_error *error = parse_state->error;
+ 		char *help;
+ 
+-		if (asprintf(&help, "Unabled to find PMU or event on a PMU of '%s'", $1) < 0)
++		if (asprintf(&help, "Unable to find event on a PMU of '%s'", $1) < 0)
+ 			help = NULL;
+ 		parse_events_error__handle(error, @1.first_column, strdup("Bad event name"), help);
+ 		free($1);
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
