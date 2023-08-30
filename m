@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2B478D9EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D2B78DE2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234470AbjH3Sed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S233875AbjH3S64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242868AbjH3Jyw (ORCPT
+        with ESMTP id S242870AbjH3Jyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:54:52 -0400
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1563F1B1
+        Wed, 30 Aug 2023 05:54:53 -0400
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3ABCCB
         for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:54:50 -0700 (PDT)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-26b3d43a0bfso4944109a91.0
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-26d49dd574aso952433a91.1
         for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:54:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693389289; x=1693994089;
+        d=1e100.net; s=20221208; t=1693389290; x=1693994090;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7dOnceopneHFIwGJjPr+ZbkIEpTrg3pEXAn0bK5utkU=;
-        b=aUJA0KXRemZnIhpG8rIhXr4ZtkZ++ko8M6O1Hxxkei221xXK/mt7m+kinTLuGYvBh6
-         vVmf3lkG3z+tsLKlMbyIIMGU5eTBqiTKJRADKADG45Zg6kFO24rPdmMkuXxqw9jlEBKI
-         Nb0a9j4ykhlBXL7Dpwr+niIut91VP7Et2MzcbA1r0ynpmF/1oeI6/hhtXdFyNc6YTDD5
-         CX6VMdF2qTbTcKiXcPOADJamVhwmeAAe49hIEUYf+6C8uOyr2NE4flqzs6Ov9RdicYWb
-         8BNG8mcAExXYRqEvIlynYEEOYd/v+34bV3yvmnrDn2ba/++Jvtcl2Ik27x/qoypxXRuv
-         gXgw==
-X-Gm-Message-State: AOJu0Yxy0uhEkHxnZ6UJ5RBKS8vvr+xIMQWY7h3kCbLHmjmPJmId7f0T
-        SAalTWuGtUlA3V1YJAnlYpXD6DS5QJUbEovlCrioauGkuSZr
-X-Google-Smtp-Source: AGHT+IHE+85JmPsj7CXySs2bvJEktSQoEz/ARlemBnkgj1ziRCIw4KCxlNzjzGCoOWMvtjg+n6+IMzBASXi68eZPJ0QSHVnNW3o2
+        bh=J83eKid9nmgPa1YDakr2Vd524ULWmo0X9/PpiX7o1Kg=;
+        b=b8rY19tztgzYmJ2aHZAWm2t1sMcebm81SM3IzXExutT21qka+7nCDq8u0zkfppSgoF
+         UnkQ4WYJuFkc80FX47nL2/YtSqXrOXhA7ZZPJGSkTm9tYzFH0rehYMDsGFe7I85ms8JL
+         UhNLbpuaDQDzqBc6cmIAGbsxUILt8qahTdzbLplMf1731sFELbWUWcQWa+U8UdP05JUO
+         RcJaSDUtFVlh6xSE+uTDF2IvKt/pbnyngfWHJDUQxt5TXlc614xq8+7rso4zdqBpWD1e
+         5iqUoa2ah+IG+QT4pO+lE6feM5RlN89BFoEgCPoHXYjiwFHq9/VhGSQZGsiyBiFyA3OG
+         Y+wg==
+X-Gm-Message-State: AOJu0Yy5B7m+MW9h3vtMNj+AhyNhQRlVujxhjSoMsyVsr4ywYDPfjZqe
+        e/5NHjfvSaVJFvQzBg91zX7syyzNxXFFadE1A65z2/fjaA6q
+X-Google-Smtp-Source: AGHT+IEwWkrUsM+4csaZ+BZi3D8VHhIbBsJgTQIP7JAPtrTMQP8X2VVSfw3w+BnDK9PJRmlAts3ch4cf7T74+gGX1q60tE8T0yUw
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:314:b0:262:da02:8a27 with SMTP id
- ay20-20020a17090b031400b00262da028a27mr426994pjb.6.1693389289674; Wed, 30 Aug
- 2023 02:54:49 -0700 (PDT)
+X-Received: by 2002:a17:90a:609:b0:26b:4273:6a35 with SMTP id
+ j9-20020a17090a060900b0026b42736a35mr1373677pjj.0.1693389290013; Wed, 30 Aug
+ 2023 02:54:50 -0700 (PDT)
 Date:   Wed, 30 Aug 2023 02:54:49 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000013deeb060420eb13@google.com>
-Subject: [syzbot] Monthly jfs report (Aug 2023)
-From:   syzbot <syzbot+list2602cd20bb7c69a5a167@syzkaller.appspotmail.com>
-To:     jfs-discussion@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000190a5e060420ebae@google.com>
+Subject: [syzbot] Monthly nilfs report (Aug 2023)
+From:   syzbot <syzbot+listdd6f872a94cc2a668504@syzkaller.appspotmail.com>
+To:     konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
@@ -55,38 +55,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello jfs maintainers/developers,
+Hello nilfs maintainers/developers,
 
-This is a 31-day syzbot report for the jfs subsystem.
+This is a 31-day syzbot report for the nilfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/jfs
+https://syzkaller.appspot.com/upstream/s/nilfs
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 52 issues are still open and 14 have been fixed so far.
+During the period, 0 new issues were detected and 2 were fixed.
+In total, 9 issues are still open and 36 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref  Crashes Repro Title
-<1>  1086    Yes   general protection fault in lmLogSync (2)
-                   https://syzkaller.appspot.com/bug?extid=e14b1036481911ae4d77
-<2>  759     Yes   kernel BUG in jfs_evict_inode
-                   https://syzkaller.appspot.com/bug?extid=9c0c58ea2e4887ab502e
-<3>  629     Yes   general protection fault in write_special_inodes
-                   https://syzkaller.appspot.com/bug?extid=c732e285f8fc38d15916
-<4>  362     Yes   kernel BUG in txUnlock
-                   https://syzkaller.appspot.com/bug?extid=a63afa301d1258d09267
-<5>  352     Yes   UBSAN: array-index-out-of-bounds in txCommit
-                   https://syzkaller.appspot.com/bug?extid=0558d19c373e44da3c18
-<6>  236     Yes   general protection fault in jfs_flush_journal
-                   https://syzkaller.appspot.com/bug?extid=194bfe3476f96782c0b6
-<7>  162     Yes   KASAN: use-after-free Read in release_metapage
-                   https://syzkaller.appspot.com/bug?extid=f1521383cec5f7baaa94
-<8>  102     Yes   UBSAN: array-index-out-of-bounds in xtSearch
-                   https://syzkaller.appspot.com/bug?extid=76a072c2f8a60280bd70
-<9>  96      Yes   KASAN: use-after-free Read in diFree
-                   https://syzkaller.appspot.com/bug?extid=1964c915c8c3913b3d7a
-<10> 87      Yes   kernel BUG in dbFindLeaf
-                   https://syzkaller.appspot.com/bug?extid=dcea2548c903300a400e
+Ref Crashes Repro Title
+<1> 332     Yes   WARNING in nilfs_sufile_set_segment_usage
+                  https://syzkaller.appspot.com/bug?extid=14e9f834f6ddecece094
+<2> 304     Yes   kernel BUG at fs/buffer.c:LINE!
+                  https://syzkaller.appspot.com/bug?extid=cfed5b56649bddf80d6e
+<3> 89      Yes   INFO: task hung in nilfs_detach_log_writer
+                  https://syzkaller.appspot.com/bug?extid=e3973c409251e136fdd0
+<4> 6       Yes   kernel BUG in end_buffer_async_write
+                  https://syzkaller.appspot.com/bug?extid=5c04210f7c7f897c1e7f
 
 ---
 This report is generated by a bot. It may contain errors.
