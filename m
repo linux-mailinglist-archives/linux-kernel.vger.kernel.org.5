@@ -2,132 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5134D78DFC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF2378DF34
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244233AbjH3TOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
+        id S243502AbjH3TNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243379AbjH3Kuv (ORCPT
+        with ESMTP id S243387AbjH3Kwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:50:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BC21BE
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693392648; x=1724928648;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xZIAz4H04illlGVj1BWzvAHFTUBeqvwxJkL5gpigeyo=;
-  b=F9tFk+76Qqvvc+9LymF2U8QmFJCfOfHh9GLXCr5MhjW0zWGsLTxDh174
-   eFZCB02qyQVHYhx7i0cNJpcCiBvOsgVCJpdBbWEQM5sUoNUWPLA6HK/U1
-   +SQbZM3NwyTK5C4hz9O5eyC+F4kowF4XJpOse94i8sPK/lwqyXSRGcYTe
-   30sKlMZFRpkUqGLUpcLWsklTyTSi+iBBUFiaAkhI6PFvC3JGFhmQPLSI9
-   XQjqO1++xIh+8dFCQSIuDCRFQaQG9X35i1y6GXL62jLCECxspnCWukG2c
-   1Y4eb1CVBSAloxvNyM/TMg2ivrEPwEX5rWnKDQpNZnNO5OFj+GEfmQjG/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="375566729"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="375566729"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 03:50:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="985700320"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="985700320"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Aug 2023 03:50:45 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbIma-0009k9-24;
-        Wed, 30 Aug 2023 10:50:44 +0000
-Date:   Wed, 30 Aug 2023 18:50:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Naresh Solanki <naresh.solanki@9elements.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        zev@bewilderbeest.net,
-        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        Wed, 30 Aug 2023 06:52:36 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8801BF;
+        Wed, 30 Aug 2023 03:52:34 -0700 (PDT)
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 5D3EF86516;
+        Wed, 30 Aug 2023 12:52:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1693392752;
+        bh=4iy2dgBtv1IFl2QeVny+BMUypmk/B0kng10sRZaOjfo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=puhuMduyerGNtMY194xqhkJ38jVeZTe7/phaxlcILl2rKeRwH5j8ZWWtltatFXUCs
+         wIIM7TTP/HtEmumaB4mGjT3k0SRKysHGL4P+R5Ll4Vel3flFtyCm4hJ5xmVg0rfGcp
+         M5xwWjvbS5JKs1DJTM3VqgUd6jO7+cMa9LLROGj1qfYSjpajabWqAbtHwOGEtSGJlx
+         ibd6G2YxpFimgoJjiBdl6oTp1WaltC15dMRJltLE+NVGMwOwqIiC0TSoBE4Tv0+49H
+         9BoMCBePcmRRn+qeaDV65H4yHpQ1h5vTewUS6K+INQbrk9dtJT1s3HrX6mcWRMY9e0
+         5KGiTj5FAt/Eg==
+Date:   Wed, 30 Aug 2023 12:52:24 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
+        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>, Tristram.Ha@microchip.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Russell King <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] regulator: userspace-consumer: Retrieve supplies
- from DT
-Message-ID: <202308301833.WqS6n2RU-lkp@intel.com>
-References: <20230829141413.2605621-1-Naresh.Solanki@9elements.com>
+Subject: Re: [PATCH 2/2] net: phy: Provide Module 4 KSZ9477 errata
+ (DS80000754C)
+Message-ID: <20230830125224.1012459f@wsk>
+In-Reply-To: <20230830101813.GG31399@pengutronix.de>
+References: <20230830092119.458330-1-lukma@denx.de>
+        <20230830092119.458330-2-lukma@denx.de>
+        <20230830101813.GG31399@pengutronix.de>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829141413.2605621-1-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/h9eFv_ld1ej3r2/LQFcjcHy";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh,
+--Sig_/h9eFv_ld1ej3r2/LQFcjcHy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build errors:
+Hi Oleksij,
 
-[auto build test ERROR on 8950c4a350c188deb5f5b05df3244d4db82fe3d8]
+> On Wed, Aug 30, 2023 at 11:21:19AM +0200, Lukasz Majewski wrote:
+> > The KSZ9477 errata points out (in 'Module 4') the link up/down
+> > problem when EEE (Energy Efficient Ethernet) is enabled in the
+> > device to which the KSZ9477 tries to auto negotiate.
+> >=20
+> > The suggested workaround is to clear advertisement of EEE for PHYs
+> > in this chip driver.
+> >=20
+> > Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> > ---
+> >  drivers/net/phy/micrel.c | 31 ++++++++++++++++++++++++++++++-
+> >  1 file changed, 30 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> > index 87b090ad2874..469dcd8a5711 100644
+> > --- a/drivers/net/phy/micrel.c
+> > +++ b/drivers/net/phy/micrel.c
+> > @@ -1418,6 +1418,35 @@ static int ksz9131_get_features(struct
+> > phy_device *phydev) return 0;
+> >  }
+> > =20
+> > +static int ksz9477_get_features(struct phy_device *phydev)
+> > +{
+> > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(zero) =3D { 0, };
+> > +	int ret;
+> > +
+> > +	ret =3D genphy_read_abilities(phydev);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* KSZ9477 Errata DS80000754C
+> > +	 *
+> > +	 * Module 4: Energy Efficient Ethernet (EEE) feature
+> > select must be
+> > +	 * manually disabled
+> > +	 *   The EEE feature is enabled by default, but it is not
+> > fully
+> > +	 *   operational. It must be manually disabled through
+> > register
+> > +	 *   controls. If not disabled, the PHY ports can
+> > auto-negotiate
+> > +	 *   to enable EEE, and this feature can cause link drops
+> > when linked
+> > +	 *   to another device supporting EEE.
+> > +	 *
+> > +	 *   Although, the KSZ9477 MMD register
+> > +	 *   (MMD_DEVICE_ID_EEE_ADV.MMD_EEE_ADV) advertise that
+> > EEE is
+> > +	 *   operational one needs to manualy clear them to follow
+> > the chip
+> > +	 *   errata.
+> > +	 */
+> > +	linkmode_and(phydev->supported_eee, phydev->supported,
+> > zero); +
+> > +	return 0;
+> > +}
+> > +
+> >  #define KSZ8873MLL_GLOBAL_CONTROL_4	0x06
+> >  #define KSZ8873MLL_GLOBAL_CONTROL_4_DUPLEX	BIT(6)
+> >  #define KSZ8873MLL_GLOBAL_CONTROL_4_SPEED	BIT(4)
+> > @@ -4871,7 +4900,7 @@ static struct phy_driver ksphy_driver[] =3D {
+> >  	.handle_interrupt =3D kszphy_handle_interrupt,
+> >  	.suspend	=3D genphy_suspend,
+> >  	.resume		=3D genphy_resume,
+> > -	.get_features	=3D ksz9131_get_features,
+> > +	.get_features	=3D ksz9477_get_features, =20
+>=20
+> Sorry, i didn't described all details how to implement it.
+>=20
+> This code will break EEE support for the KSZ8563R switch.
+>=20
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/regulator-userspace-consumer-Retrieve-supplies-from-DT/20230829-222520
-base:   8950c4a350c188deb5f5b05df3244d4db82fe3d8
-patch link:    https://lore.kernel.org/r/20230829141413.2605621-1-Naresh.Solanki%409elements.com
-patch subject: [RESEND PATCH] regulator: userspace-consumer: Retrieve supplies from DT
-config: i386-buildonly-randconfig-001-20230830 (https://download.01.org/0day-ci/archive/20230830/202308301833.WqS6n2RU-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308301833.WqS6n2RU-lkp@intel.com/reproduce)
+And then another switch (KSZ8563R) pops up.... with regression....
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308301833.WqS6n2RU-lkp@intel.com/
+In the micrel.c the ksz9477_get_features was only present in:
+https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/micrel.c#L48=
+32
+https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/micrel.c#L48=
+74
+so I only changed it there.
 
-All errors (new ones prefixed by >>):
+Apparently the KSZ8563R re-uses the KSZ9477 code.
 
->> drivers/regulator/userspace-consumer.c:164:2: error: call to undeclared function 'for_each_property_of_node'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-           for_each_property_of_node(pdev->dev.of_node, prop) {
-           ^
->> drivers/regulator/userspace-consumer.c:164:52: error: expected ';' after expression
-           for_each_property_of_node(pdev->dev.of_node, prop) {
-                                                             ^
-                                                             ;
-   drivers/regulator/userspace-consumer.c:200:3: error: call to undeclared function 'for_each_property_of_node'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-                   for_each_property_of_node(pdev->dev.of_node, prop) {
-                   ^
-   drivers/regulator/userspace-consumer.c:200:53: error: expected ';' after expression
-                   for_each_property_of_node(pdev->dev.of_node, prop) {
-                                                                     ^
-                                                                     ;
-   4 errors generated.
+> Please search for MICREL_KSZ8_P1_ERRATA in the kernel source.
+> Then add new flag, for example MICREL_NO_EEE and use it in a similar
+> way how MICREL_KSZ8_P1_ERRATA was set and used. With this
+> implementation, first patch is not needed.
+>=20
+> The code will be something like this:
+>    if (dev_flags & MICREL_NO_EEE)
+>       /* lots of comments */
+>       linkmode_and(phydev->supported_eee, phydev->supported, zero);
+>    else
+>       /* lots of other comments */
+>       linkmode_and(phydev->supported_eee, phydev->supported,
+>                    PHY_EEE_CAP1_FEATURES);
+>=20
+> On the switch driver side i would expect something like this:
+> ksz_get_phy_flags(struct dsa_switch *ds, int port)
+>=20
+>        swtich (dev->chip_id)
+>        case KSZ8830_CHIP_ID:
+>          ....
+>          break;
+>        case KSZ9477_CHIP_ID:
+>          return MICREL_NO_EEE;
+>=20
+
+Ok.
+
+>=20
+> Regards,
+> Oleksij
 
 
-vim +/for_each_property_of_node +164 drivers/regulator/userspace-consumer.c
 
-   158	
-   159	static int get_num_supplies(struct platform_device *pdev)
-   160	{
-   161		struct  property *prop;
-   162		int num_supplies = 0;
-   163	
- > 164		for_each_property_of_node(pdev->dev.of_node, prop) {
-   165			const char *prop_name = prop->name;
-   166			int len = strlen(prop_name);
-   167	
-   168			if (len > SUPPLY_SUFFIX_LEN && \
-   169			    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
-   170				num_supplies++;
-   171			}
-   172		}
-   173		return num_supplies;
-   174	}
-   175	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/h9eFv_ld1ej3r2/LQFcjcHy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTvH2gACgkQAR8vZIA0
+zr03EAf/dzKX5xBDzxxf3gCzBx845qIrLKBbcefyefXWjwKRGvwRt+etzNPY0dAV
+W9AfR/hlRhVv5CZvZv8UtXNEKvscvf15vcjnNoEtu7ZRWyaaRoGbcBGSL6dlKt9q
+/FusYl39cP1yxJxavoYXDRfWtZyQLNbB1HipukrRy/SpBMMt9ixG8qnXRsnriEPW
+ID14Wa+AJbZX0CnbB9imG5u70zY624HFB62xRXcLVhoioNdIl6okSU/SmWIGl8Rl
+DCQy7Pz+JedrSiG/NoDyTKokITGDyvpYqaNAjV09IlpY2rF5aTxnt/obpRceAkls
+IZtIjE09lf7uuM3yFFYYR6NKIx5cCQ==
+=nFBB
+-----END PGP SIGNATURE-----
+
+--Sig_/h9eFv_ld1ej3r2/LQFcjcHy--
