@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCF378E0CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15E378E13D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238193AbjH3UiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S240883AbjH3VM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240116AbjH3UiB (ORCPT
+        with ESMTP id S240818AbjH3VMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:38:01 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70A559F7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:37:30 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-76d80d35762so7091485a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:37:30 -0700 (PDT)
+        Wed, 30 Aug 2023 17:12:25 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CE0E0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:11:55 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so9851f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1693427783; x=1694032583; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z9olKQHKl7i+BW/Fox3jX2swhAkTGXKGKjmjdi6zQOQ=;
-        b=iEbvh5rmlXtRk2WfXULEeyKAIyu1q5dBvl+L//yKJt1lVNRcanTm0Dw0h2H2UZbTu7
-         tCe1C3LFAOo6cudhqmkmmYFZ1GaLxs0yM3v+dXQtzLGEHfjMpEudDg4SpiEmMBLrcb0E
-         aoaD3msUu86WKs4SyVUeV5TPPnWCP1BYE2KMXNpjDI7+Xmzrwg0YpQekRKFnyg7CYg8l
-         Oy+Uj44Zyzo7y61l3+yqPHwoP51paOboY8UECqwmq+/iqae2+B53i88QOAhIHVVVlCPJ
-         Mi/uSe0JSrWg481BBXNKaExZoRmAcVB0OmZAB3mENEFeLzfhxzzucOOnRgjqzY6IIKGm
-         yYuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693427783; x=1694032583;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1693429841; x=1694034641; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
+         :from:references:in-reply-to:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z9olKQHKl7i+BW/Fox3jX2swhAkTGXKGKjmjdi6zQOQ=;
-        b=gUQyUuF9OyXiYs1m0e0og1AED//FmiVNX1UNgTb2vbp7EnmVY3gwlAQj5TdKzkZBnN
-         dH7VQvscZLXAE4jUPE9UgxZFzcXUjP9ViHFDk0PZ6FzFU+58bMXJmoaYwBbv0gSlyXuA
-         1qxEmhlunBfVn61fXCKWuworQGWDg+htNQIztEt+BzgMtfb7jm0iYsEZR4s9oDRItXvw
-         K2RwXg2w91MXMzK53Y4mAmL+lq2Uk0Hqp2z3bzy+OhfqTpxtlj5bzGfJBGz+8AX4U/7q
-         3O0M2wtcWJhxfY3p1xiLeTmnaw4P9MrtJ5ti0rEHux3AC3gPmrc0y3WOG97UGoKsWSbA
-         /XsA==
-X-Gm-Message-State: AOJu0Yx5psCFwBHtgGy52rjsmFfWSHqNWZPy2PZx/Jdjbz7hePTDRVdg
-        2ymDi4/Myj9+JYcA2cUIoHUQKg==
-X-Google-Smtp-Source: AGHT+IGF4MU0rD+iQwT0aCopRevdjBpeHCOTE0yYV5wWvsuXnz48NfHVfNaBhCyzBhEFTczQi1j9zA==
-X-Received: by 2002:a05:620a:3727:b0:768:1572:e9af with SMTP id de39-20020a05620a372700b007681572e9afmr1073374qkb.8.1693427783197;
-        Wed, 30 Aug 2023 13:36:23 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id pj37-20020a05620a1da500b0076da620166bsm3998312qkn.103.2023.08.30.13.36.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 13:36:22 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qbRvI-000DB0-Qb;
-        Wed, 30 Aug 2023 17:36:20 -0300
-Date:   Wed, 30 Aug 2023 17:36:20 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Vasant Hegde <vasant.hegde@amd.com>
-Cc:     Tina Zhang <tina.zhang@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Michael Shavit <mshavit@google.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] iommu: Support mm PASID 1:n with sva domains
-Message-ID: <ZO+oRPOf9jyNG2+B@ziepe.ca>
-References: <20230827084401.819852-1-tina.zhang@intel.com>
- <20230827084401.819852-5-tina.zhang@intel.com>
- <aa834f12-ce45-fe15-430b-2a9c3446a5ba@amd.com>
+        bh=Pe9mE2/R7T8IPvBnOwTKQXiumtbckNH2e0XcU/p62Jc=;
+        b=Xa7vLajBBN4Mz9gpCj6Ttmrp95kwDJZ2+9FF7xaAHh4Su/FpXEPpJ8wxuy5w3JuxsK
+         SpUrSucTnH7+v4Qw7I3pninJmJA50odGBTFViRFudHwcqsPsQ08nMCbMwncE9PfOE5K0
+         9kiekSx9dMMtu2OCc0Mt+7lpdZqnqVfZJLBTE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693429841; x=1694034641;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
+         :from:references:in-reply-to:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Pe9mE2/R7T8IPvBnOwTKQXiumtbckNH2e0XcU/p62Jc=;
+        b=MqMWR6uXvqZaCYiwfe7ArVkOg+ZrrvBYS1dr1u4IBVAxApZUTISIzptbNDXE4WL9n7
+         +wPCaN/r/zDRgtppkh2yx5iktkOybKsJ2t96CJyYhdZchftsul53IiS8D2/1xr0l2rK9
+         QsTpxMlnN19PvOt9pDY/Cgpd7ODQ2Ld7AbTxRGXPN5TuOMLiQzLKTak0cz28pCu1EGXz
+         utjRFR4EMwjA/ow3uCFgtBfkLZGZEJNIOM6WjwlqEdHXZXltFbLFvSkbKyhlKQP6ndOq
+         xTlWUarc4+2Kw5I3nKoW5nuBnbxpOyIE7q9ZfUpGATsdHKpMUJw5jbNeeRPrGd+VI8S9
+         pw3A==
+X-Gm-Message-State: AOJu0Yw+8e9BUN1efg6Jrat8J13cF03w5QvFCtkGD91aZ8lbAqPXVNRT
+        fOsGkOFvbzrjxBiQMPMaaMMqK2Txj8CAVNF8rUS/ogZ/dvDc87Qp
+X-Google-Smtp-Source: AGHT+IFD5g7uHW+PQQ52fzmo9RpI5X5M7wL4vmNsfIm0JgfxAR+W6KxZL+c8nYTvzXsc+N3Kl99q3/5CFIX0GKdazGQ=
+X-Received: by 2002:a19:504a:0:b0:4fb:8bea:f5f6 with SMTP id
+ z10-20020a19504a000000b004fb8beaf5f6mr2160145lfj.34.1693427798584; Wed, 30
+ Aug 2023 13:36:38 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 30 Aug 2023 13:36:38 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa834f12-ce45-fe15-430b-2a9c3446a5ba@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <56ae0bf828d942c92ca867afb3aae95fcabd5498.1693416477.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1693416477.git.mirq-linux@rere.qmqm.pl> <56ae0bf828d942c92ca867afb3aae95fcabd5498.1693416477.git.mirq-linux@rere.qmqm.pl>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Wed, 30 Aug 2023 13:36:38 -0700
+Message-ID: <CAE-0n53a75cgRNJOdn1=19OG_yJt9DDXHZ4quhZwCtZiQ1RUxQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] regulator/core: regulator_lock_nested: simplify
+ nested locking
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,19 +71,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 02:02:52PM +0530, Vasant Hegde wrote:
+Quoting Micha=C5=82 Miros=C5=82aw (2023-08-30 10:35:31)
+> Simplify regulator locking by removing locking around locking.
 
-> I am not sure whether I understood the flow completely. Just wondering why you
-> are not freeing pasid in iommu_sva_unbind_device().
-> I mean once iommu_mm->sva_domains becomes free shouldn't we free the
-> iommu_mm->pasid?
+Maybe this should say "Simplify regulator_lock_nested() by removing the
+`regulator_nesting_mutex` now that rdev is locked whenever rdev->ref_cnt or
+rdev->owner are modified"?
 
-No, for Intel use cases that PASID permanently becomes part of the
-ENQCMD MSR and cannot be revoked once it has been set
- 
-> Also in this function (mm_pasid_drop()), should we check/free sva domains?
+> rdev->ref check when unlocking is moved inside the critical section.
 
-No, the driver must support a SVA domain with an empty mm_struct, eg
-by hooking release.
+rdev->ref_cnt?
 
-Jason
+>
+> This patch depends on commit 12235da8c80a ("kernel/locking: Add context
+> to ww_mutex_trylock()").
+>
+> Note: return -EALREADY is removed as no caller depends on it and in that
+> case the lock count is incremented anyway.
+
+Where is -EALREADY removed in this patch? Perhaps "removed" should be
+"ignored"?
+
+Note: A return value of -EALREADY from ww_mutex_lock() in
+regulator_lock_nested() is ignored as no caller depends on it.
+
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
