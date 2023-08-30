@@ -2,136 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBC878E029
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC77D78DF5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344263AbjH3T07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S241323AbjH3TKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242282AbjH3Ht5 (ORCPT
+        with ESMTP id S242296AbjH3Hxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:49:57 -0400
-Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C4412D
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:49:54 -0700 (PDT)
-Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1c0888c175fso52733475ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:49:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693381794; x=1693986594;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cTDt+bYQ6/mSJ4jCUdcdtOg7X5im5pInz2MbzpCzUzU=;
-        b=QVQdQKZPQfi9De6cDhKaQ25IMCOO1w3F/3zqLBRtU1d4jsVv5ii/057RUXNXcpd3nT
-         M9herh2i+NBRPpLg2rVQG9ojKwurKY0uOYBKP6/KtAHtPZ2GEwwByaclgIp829LmIz/2
-         oqEQgg4ZXVdnT5oefkAVO1ok38dkwdPVwng5gc2v2k/5SI2VswV7JbF8xL7NxxEc3OeL
-         OOQI7DXXULRjW12qHFDfrsH5xg3D9ygyYQ25x/ouTKq7E23EY/vTnuIo1PuEnOj1sKN5
-         KbpgLh0JnBeFbot2VLKO80WMHOgR2BnJpRRx/TYbzVm0HvmnOKaTFcWDnn3rIQqn2xQD
-         4M7A==
-X-Gm-Message-State: AOJu0Yxljf15mVgjE/mngnHyenXMal5XgM1v2EBh6ULM4X4f8ERvPWti
-        2ConXPB6Vks71YVUU/1gwsg3lfTvFD/SrDYrOe+5OrBxkem+
-X-Google-Smtp-Source: AGHT+IGLGLtOU++31iOl3HsQ4ALkIEcFZFjlI33fIt3VEG5cMRJjGYewpLyhKZy4cEg5de/RAU2H2G6WzOKOsgBsZyCgQBXu++q2
-MIME-Version: 1.0
-X-Received: by 2002:a17:902:f68f:b0:1b8:a8f5:a97b with SMTP id
- l15-20020a170902f68f00b001b8a8f5a97bmr448638plg.7.1693381793779; Wed, 30 Aug
- 2023 00:49:53 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 00:49:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000049964e06041f2cbf@google.com>
-Subject: [syzbot] [btrfs?] UBSAN: array-index-out-of-bounds in FSE_decompress_wksp_body_bmi2
-From:   syzbot <syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        terrelln@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 03:53:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6BACD8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693382021; x=1724918021;
+  h=date:from:to:cc:subject:message-id;
+  bh=kWB31gXOQM1H7Y9CmGDC2cLlo80VdaPIlSv7yrAFXE4=;
+  b=g+XIvWw5RPU9CT0DAgP6GEkOmMlnBLZxEEg2Hs14ah22Q4b7DWL/tMPi
+   yEnxzUwyhNrlzr2fVyGJwkJSN3sE3D0grzTlXtCpODESr0qE2wGsT4p3V
+   SWPPturIe1fBrY0y5gL0ojP8QD4cWsKLxA4YIn/nTQ8n19bK+3sdQJFc0
+   vM+P9bz7mrwWBHTY1R9d2OEUbaTVeQhyVmb0kijyHaN+EaPZpdg1gxGa1
+   TCz2qAci1ZgjFHr1qnJ5OwrMrCvKhBw7b0+n9Vp3b0LriDqfvx22MRuhp
+   QMwqV4G1pZiNM4PUvx2dEA1n8Io6GhDWu4DJpnT8WwEacMbXqFd0ySrNK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="365779730"
+X-IronPort-AV: E=Sophos;i="6.02,212,1688454000"; 
+   d="scan'208";a="365779730"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 00:53:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="715804473"
+X-IronPort-AV: E=Sophos;i="6.02,212,1688454000"; 
+   d="scan'208";a="715804473"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 30 Aug 2023 00:53:40 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qbG1A-0009a3-24;
+        Wed, 30 Aug 2023 07:53:37 +0000
+Date:   Wed, 30 Aug 2023 15:52:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/core] BUILD SUCCESS
+ 97588df87b56e27fd2b5d928d61c7a53e38afbb0
+Message-ID: <202308301545.65l33U17-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+branch HEAD: 97588df87b56e27fd2b5d928d61c7a53e38afbb0  perf/x86/intel: Add common intel_pmu_init_hybrid()
 
-syzbot found the following issue on:
+elapsed time: 735m
 
-HEAD commit:    382d4cd18475 lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15979833a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f2eb3e8cd123ffce499
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+configs tested: 52
+configs skipped: 133
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/57260ac283ce/disk-382d4cd1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8be20b71d903/vmlinux-382d4cd1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/518fe2320c33/bzImage-382d4cd1.xz
+tested configs:
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230830   clang
+i386         buildonly-randconfig-002-20230830   clang
+i386         buildonly-randconfig-003-20230830   clang
+i386         buildonly-randconfig-004-20230830   clang
+i386         buildonly-randconfig-005-20230830   clang
+i386         buildonly-randconfig-006-20230830   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230830   clang
+i386                  randconfig-002-20230830   clang
+i386                  randconfig-003-20230830   clang
+i386                  randconfig-004-20230830   clang
+i386                  randconfig-005-20230830   clang
+i386                  randconfig-006-20230830   clang
+i386                  randconfig-011-20230830   gcc  
+i386                  randconfig-012-20230830   gcc  
+i386                  randconfig-013-20230830   gcc  
+i386                  randconfig-014-20230830   gcc  
+i386                  randconfig-015-20230830   gcc  
+i386                  randconfig-016-20230830   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230830   clang
+x86_64       buildonly-randconfig-002-20230830   clang
+x86_64       buildonly-randconfig-003-20230830   clang
+x86_64       buildonly-randconfig-004-20230830   clang
+x86_64       buildonly-randconfig-005-20230830   clang
+x86_64       buildonly-randconfig-006-20230830   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20230830   gcc  
+x86_64                randconfig-002-20230830   gcc  
+x86_64                randconfig-003-20230830   gcc  
+x86_64                randconfig-004-20230830   gcc  
+x86_64                randconfig-005-20230830   gcc  
+x86_64                randconfig-006-20230830   gcc  
+x86_64                randconfig-011-20230830   clang
+x86_64                randconfig-012-20230830   clang
+x86_64                randconfig-013-20230830   clang
+x86_64                randconfig-014-20230830   clang
+x86_64                randconfig-015-20230830   clang
+x86_64                randconfig-016-20230830   clang
+x86_64                randconfig-071-20230830   clang
+x86_64                randconfig-072-20230830   clang
+x86_64                randconfig-073-20230830   clang
+x86_64                randconfig-074-20230830   clang
+x86_64                randconfig-075-20230830   clang
+x86_64                randconfig-076-20230830   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com
-
-================================================================================
-UBSAN: array-index-out-of-bounds in lib/zstd/common/fse_decompress.c:345:30
-index 33 is out of range for type 'FSE_DTable[1]' (aka 'unsigned int[1]')
-CPU: 0 PID: 2895 Comm: kworker/u4:7 Not tainted 6.5.0-rc7-syzkaller-00164-g382d4cd18475 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: btrfs-endio btrfs_end_bio_work
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
- FSE_decompress_wksp_body lib/zstd/common/fse_decompress.c:345 [inline]
- FSE_decompress_wksp_body_bmi2+0x2e8/0x3790 lib/zstd/common/fse_decompress.c:370
- FSE_decompress_wksp_bmi2+0xc7/0x3670 lib/zstd/common/fse_decompress.c:378
- HUF_readStats_body lib/zstd/common/entropy_common.c:289 [inline]
- HUF_readStats_body_bmi2+0xba/0x620 lib/zstd/common/entropy_common.c:340
- HUF_readDTableX1_wksp_bmi2+0x161/0x2740 lib/zstd/decompress/huf_decompress.c:353
- HUF_decompress1X1_DCtx_wksp_bmi2+0x4e/0xe0 lib/zstd/decompress/huf_decompress.c:1693
- ZSTD_decodeLiteralsBlock+0x1009/0x1560 lib/zstd/decompress/zstd_decompress_block.c:195
- ZSTD_decompressBlock_internal+0x106/0xacc0 lib/zstd/decompress/zstd_decompress_block.c:1995
- ZSTD_decompressContinue+0x571/0x1690 lib/zstd/decompress/zstd_decompress.c:1184
- ZSTD_decompressContinueStream lib/zstd/decompress/zstd_decompress.c:1855 [inline]
- ZSTD_decompressStream+0x208f/0x3080 lib/zstd/decompress/zstd_decompress.c:2036
- zstd_decompress_bio+0x22b/0x570 fs/btrfs/zstd.c:573
- compression_decompress_bio fs/btrfs/compression.c:131 [inline]
- btrfs_decompress_bio fs/btrfs/compression.c:930 [inline]
- end_compressed_bio_read+0x145/0x400 fs/btrfs/compression.c:178
- btrfs_check_read_bio+0x138f/0x19b0 fs/btrfs/bio.c:324
- process_one_work+0x92c/0x12c0 kernel/workqueue.c:2600
- worker_thread+0xa63/0x1210 kernel/workqueue.c:2751
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-================================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
