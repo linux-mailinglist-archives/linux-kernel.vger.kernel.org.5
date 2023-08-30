@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8124A78E284
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8005B78E219
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241389AbjH3Wrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
+        id S244969AbjH3WJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbjH3Wrt (ORCPT
+        with ESMTP id S244924AbjH3WJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:47:49 -0400
+        Wed, 30 Aug 2023 18:09:23 -0400
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D929A1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:47:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95695E45
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:08:54 -0700 (PDT)
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd353Q2Qztn;
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd35658Czv2;
         Wed, 30 Aug 2023 23:38:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1693431537; bh=0FOuVXjqnIye1fzsxyeQ7447oMaVJyrA0BRuBkQGje8=;
+        t=1693431537; bh=2CekRNDkBbHu6pEmNg2eRQDOpdZjkPKnS4qq90AdQJU=;
         h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=pgSHbI7ytH98CI1tYlJpnH7Asw+T6ndG0u35fEbIv/z3L+QX7klUPLUuzDz+a3Ct+
-         tNUSBj9gAJxv+6xBFq3V8DloPeUlGFhdwqkmjiC8XGxULU0Oxr/BaqMfmUG64dAh9z
-         +HRkbyBTpoCjMkysZAxCZ6lgWWiik36oClne+ULXFWgg9lXbEqe2lZVgSeeWQbxnuI
-         ztHmNYC1ZMpi2N92Y9XAR43QqN6oYsedU+L5pzMfeACfe145FMoET+A4WXjwDXdI7v
-         Wfk+2wtC2ctVLigF31jOvnRhqac7+uYxYj6ykC8ld++FfKPXjTwyQwZ6ZrJjiZLRuz
-         tqmU+NI6fAKlA==
+        b=GBV8lCbuzNK75jX0HPgbylECXFm+1rk+oBaStXHSdAWuSBThBI9eyuYW+I0TepxWC
+         S5ygz5Pq0l3tx9y/Z0QRD13Pp+F8PK1/lwMup5o0N0RQ+joAC4Naa2p3fUNu0bdpFP
+         0THNoJ1vzE7lcyf7Pds7YdK5FokuRgrVFQn/DyewCP6yYk11hW/pgsCZuW1eXKcmj7
+         ++b17xbI/ssknVcbAHME21VE6ndzQi3cKEwjvJOfMo/ZVxIEa9H5aV9P4SwiQr5i9S
+         qbedp26ET39Ajl+ObzaoSgFrvQ8emFs3P0Mvpt4Bbc9ak7v3rafRJx4Ix1G6V3sWpq
+         rT2DP7pG3coPw==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.103.8 at mail
 Date:   Wed, 30 Aug 2023 23:38:57 +0200
-Message-Id: <edbe125df73698f44e6c0697b7c45dc5acb2d455.1693431144.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <5250762009b124470f07daa947f130ccff518f50.1693431144.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 8/9] regulator/core: set_consumer_device_supply: avoid copying
- const data
+Subject: [PATCH 9/9] regulator/core: make regulator_class const
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -51,45 +50,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As consumer_dev_name might as well be const, don't copy it if not
-required.
+The `struct class` is passed only to class_register() and a const
+pointer there.  Make the data also const.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/regulator/core.c     | 3 ++-
+ drivers/regulator/internal.h | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 7c4ba090d88d..8ab4de7cadcb 100644
+index 8ab4de7cadcb..fedda29a2176 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -1735,7 +1735,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 	new_node->supply = supply;
+@@ -5797,7 +5797,7 @@ static const struct dev_pm_ops __maybe_unused regulator_pm_ops = {
+ };
+ #endif
  
- 	if (consumer_dev_name != NULL) {
--		new_node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
-+		new_node->dev_name = kstrdup_const(consumer_dev_name, GFP_KERNEL);
- 		if (new_node->dev_name == NULL) {
- 			kfree(new_node);
- 			return -ENOMEM;
-@@ -1770,7 +1770,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
+-struct class regulator_class = {
++const struct class regulator_class = {
+ 	.name = "regulator",
+ 	.dev_release = regulator_dev_release,
+ 	.dev_groups = regulator_dev_groups,
+@@ -5805,6 +5805,7 @@ struct class regulator_class = {
+ 	.pm = &regulator_pm_ops,
+ #endif
+ };
++
+ /**
+  * regulator_has_full_constraints - the system has fully specified constraints
+  *
+diff --git a/drivers/regulator/internal.h b/drivers/regulator/internal.h
+index fb4433068d29..77a502141089 100644
+--- a/drivers/regulator/internal.h
++++ b/drivers/regulator/internal.h
+@@ -58,7 +58,7 @@ struct regulator {
+ 	struct dentry *debugfs;
+ };
  
- fail:
- 	mutex_unlock(&regulator_list_mutex);
--	kfree(new_node->dev_name);
-+	kfree_const(new_node->dev_name);
- 	kfree(new_node);
- 	return -EBUSY;
- }
-@@ -1782,7 +1782,7 @@ static void unset_regulator_supplies(struct regulator_dev *rdev)
- 	list_for_each_entry_safe(node, n, &regulator_map_list, list) {
- 		if (rdev == node->regulator) {
- 			list_del(&node->list);
--			kfree(node->dev_name);
-+			kfree_const(node->dev_name);
- 			kfree(node);
- 		}
- 	}
+-extern struct class regulator_class;
++extern const struct class regulator_class;
+ 
+ static inline struct regulator_dev *dev_to_rdev(struct device *dev)
+ {
 -- 
 2.39.2
 
