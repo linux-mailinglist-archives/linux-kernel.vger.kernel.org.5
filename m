@@ -2,230 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CC578DEE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AB678DF21
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236182AbjH3TRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        id S241126AbjH3TKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343999AbjH3Ry2 (ORCPT
+        with ESMTP id S1343990AbjH3Rxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:54:28 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE2B193
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:54:23 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UH038D000381;
-        Wed, 30 Aug 2023 17:53:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2023-03-30;
- bh=D0LrdN0tChad4xAkcBWuKXpX+t1Gj2l95BU4G6GaT7I=;
- b=cedplXK5OWKyKIbkaNZfG4X/d40cJiDfRIcXKod3/CqLtRoE8ahT4T1pOylH/3uI2DNf
- XDqo3OrJH0fHSS9ivcT0rDJn7D0X/1Bth+ACHeeTRBLaYcZLSDHuVS4TOimwcppSrG/0
- Hwc9YupfLkXHUwMwWRNcBR5wHE0EqW7eFKfS6p0Q4H4nMTwmqPDfjzRF2NpWLK0OSGKx
- GTMVg+TST3II7XJ2P3pOPozk5a2wTTAHOkQj3/OpxcP66QYBPgnb+byXe69l7OE56mH0
- yQ26ddOhJQRp2W/KRIiBDeENwixnqvRSBSuhor10hepLYWkG5H1Bj+4ZK1CE9W/ItkZO jw== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9gcqxt8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Aug 2023 17:53:30 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37UGlcRR024320;
-        Wed, 30 Aug 2023 17:53:29 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sr6dpv52f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Aug 2023 17:53:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=endTbrwCQf9kjmRSSLnkNisZwak9Nhq6WPt9rA31CBebd2JwQG5EETTYs53ErcmD6oUfBqAgu/XGBqDoEEm51j+11CJBpoAi05oNgD0T7sc4/PmjYhUVyRwjILlCCyo1/OZRKBH5shQgZSt+buWKqWkSk0axj9VAAcVvV1dLkDmqgB/fmFbDbiEzkhe8rHIqsAuVpX5iyxwSFJJM6uVRGNro0i8TnhlHgFYyIIY+xRSEZmJC5RAgFBWad891mjohhfmbLmIaFR0Aw4xx5BtlUuVRgZndNZ2torIVTW/RJTtgoz6umn68Zs8tF8kKpSLEKPqHwAnwfq1CrjvHmrismg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UpOHnHZlOSeYnMZ3m8jL3k0CsQgCfjUIil7u29Hl/O4=;
- b=XZvUOCT8gs9otZNpoqAkWUtmUfl5H9W/LOwQxpd6SPEUD1L46yaPgDyMJ764/qF4zeetHuU48crwvm4YW4502f0PR2A1FgzUXP/dkaHMsnYEFiiZ6FHonZ24kGgTcg1sra5zlvDRTmA3Gtso86DxXgZh0BQSfa6Ve9DT1i/PpirgnNkyQUA2s+w6FH0t2gyPYxKB/nDxucnx3KWXUX0XLZjUazYIfS8hI40SQsP/Xc643Y7VYcpMCWK+g7EyZ51Z+NsZG4PWULLcF+4QleUoLxirIi5VfH2AVoJGXZuS25ST8MlAtrgdSNW3430Oz2547xBF+G9uHDIAsSZqCUkrwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 30 Aug 2023 13:53:48 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B755A198
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:53:43 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26f51613d05so8644a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UpOHnHZlOSeYnMZ3m8jL3k0CsQgCfjUIil7u29Hl/O4=;
- b=HNfcsXRn8kZC1PFm+A+PfOqbY2s4d8mCVQQJ8pYmSYJVS5ahJqSo9Duius79pkAeXDqwJuIvglNWJOkurI4ru7HevXojWEI9rPFLYwx4r9CXdXUtlUbuxcazBmI8nR2ikUUNeEjQSFmv9B6qjzYWihw3Y3SUEqbHAcGBfUJ4uWw=
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by CYYPR10MB7571.namprd10.prod.outlook.com (2603:10b6:930:cb::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Wed, 30 Aug
- 2023 17:53:27 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::58d8:cf97:ae4b:1715]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::58d8:cf97:ae4b:1715%3]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
- 17:53:27 +0000
-Date:   Wed, 30 Aug 2023 10:53:23 -0700
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/12] hugetlb: perform vmemmap restoration on a list of
- pages
-Message-ID: <20230830175323.GA55006@monkey>
-References: <20230825190436.55045-1-mike.kravetz@oracle.com>
- <20230825190436.55045-8-mike.kravetz@oracle.com>
- <c8feb986-ae60-4d21-cc09-4afe49240710@linux.dev>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c8feb986-ae60-4d21-cc09-4afe49240710@linux.dev>
-X-ClientProxiedBy: MW4P222CA0023.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::28) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|CYYPR10MB7571:EE_
-X-MS-Office365-Filtering-Correlation-Id: 01dd6383-26fc-4f1e-81b2-08dba982032d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7LqzmJwPGt26etXAwKO/tueowhBmeoJdyd4Wlcw/FX257XDxCs7TeZNmwK4d+C6Hl5nlaLabru3UdEEET6/J3ZUUW3bLeJhhY7hZ2ilzwaAwOH9W7aam2MJehi1/JDMzfqOPEX9OefGoyfAv3twgcADvRs3RIcXK7nkiZVAPGieffG9E6knYDL9bBLIqnu84Wnu3PSYvlaun+9uNz2JYWwVPaab9Q6s/qE53/C6xR3uQTJtXlb18Xy5brEy7HnT4F7DKOLZ9Ju/bohiG1BcpRWZMi5HVi69GIGljF2fIaTCzzj4EMVv83eT9NR1QIyljqyTRaGpUg7Tr3Bvn1tNVj9IcM587iopYxcHl6HTWyEc89o5yeiTWmfKwrEbXkk4Y0HXSqg+uRiAlyJ7Mr1gPUHxCEOpAYZIXR/b+5C91UaAtdqu2fS0TOBOpmW5LKRkc5PF989m5JZN4ssyv7ZEVi8VZUcK46xy5CLXPwzkPty5COj9ZpXc0BC1fHi+bVBEtIIVUz6AYeOpkPkNr4284hoFP6icrfkm8cCqBfCp+V1mOTWGCgjpFL0NQtMBz4kKH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(39860400002)(376002)(346002)(366004)(396003)(186009)(1800799009)(451199024)(6512007)(33656002)(9686003)(53546011)(44832011)(6486002)(6506007)(316002)(5660300002)(1076003)(26005)(41300700001)(33716001)(6916009)(66946007)(54906003)(66556008)(66476007)(38100700002)(6666004)(4326008)(8936002)(8676002)(478600001)(83380400001)(86362001)(2906002)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?dv9EOYgD6YfOhEbYHWIXSkQ32FbdB92CPfIg8H2v+ltQb/NUKdlQtHAHUl?=
- =?iso-8859-1?Q?fLigTYv2TvoxX7D7hNrFkCZfzgtI1ZOwO94DhH1Dm5Tseha/uZCTVDp54c?=
- =?iso-8859-1?Q?whaPprcJ8jXvDzcVHFAPVv+UmUNxd3Z+KPlZMkdnXJmhthfuU8hr5GS+fs?=
- =?iso-8859-1?Q?7IPDMdzczCNWXf1LyLpI8adDMakHr5aeQTENzYU8c4mSrsJ8gROBau1luM?=
- =?iso-8859-1?Q?0iySxDZw1PIGtbyXcmsXUAjYJmkFpcg3nzMs2+5i9bCuj3wKTHTOtgl84x?=
- =?iso-8859-1?Q?5N7anufnq0iS/0pPV5K28Hq04BSe2Qq0kIx8b8ZfSbwPitYSSYcE6Za1gy?=
- =?iso-8859-1?Q?CTtMA/hfFdVJmJS0sF9ZhO9tmkM2tQvxZqiqlV705atv8iMT0e3qSSJwyx?=
- =?iso-8859-1?Q?x6CGZ2vKrhKtE/NEhWkVe9Tvs0mhT3ykmsVSkkeFmUXGr6A2HUuMAjaoyL?=
- =?iso-8859-1?Q?BDzxze6g8mN6er4aT5f3JjMhNggsOBdGrhpGPOayDnswxvZ6TEmP+mUmIp?=
- =?iso-8859-1?Q?apLAdLhtkqFCIVZGPK5cbNYgEfhrIf4SBgEdabNtLq+t/Y5rygbyNjb0Og?=
- =?iso-8859-1?Q?1jdmvxM6cIxc5vQUvERGm6SoumQ90zNhIJZ4B8HsK4vO+yAY7dxdM1H4dg?=
- =?iso-8859-1?Q?LpWOSzZj9fT6Ka6BxccWIVzhLL7XxmqVpstIwDxaBtPt2ljjCyWS5U8JcX?=
- =?iso-8859-1?Q?FmcipsTaZzT+DCH9LTJrIVzG7tQJPaJhc+dQWhn4y1C07UyC0d4eRzzowE?=
- =?iso-8859-1?Q?edT+9M1NPFI6mhMQi6J12gjDLdwfiXROiIj53InGTl/bEqRA/NW8DEc80D?=
- =?iso-8859-1?Q?XbSJ+1lLj501Vcf+eEvWxGG/SuNJqBI4+J5PG402o4ifbRNP7Ieoxm7wgT?=
- =?iso-8859-1?Q?P5GhJZBePu9hmYhy6SktmAKa+bQHdZ9os2p3RBLy+seKQfSVirT1thpTzH?=
- =?iso-8859-1?Q?aCbuDDebzK1eFYzJBQ1eSkABNWcRXP13R5CODz5efFQCwmOUR5oHtbHeY6?=
- =?iso-8859-1?Q?lABFW72AQHIafNJXcPc9LObGa/xUsNeT174pbhDcPN7TxNty24Xb5HUTI2?=
- =?iso-8859-1?Q?TOwWjRKYehB4yneGUuNYXkvKbyD32iGJYXGPsMHuQiykX+wO8PUCHLlLbP?=
- =?iso-8859-1?Q?gWdUhUyUUwVEOC9JfK4zvUy/6Iny5WzOHzoUjHWY7jLFGbYgn8eKo7J9Mi?=
- =?iso-8859-1?Q?+9atjlDukbrziMOtouUDrbpm5GBTxAumynWK7swoo+NVz1e7LZF46XzGxk?=
- =?iso-8859-1?Q?oLc0Nsm2HhhFXtz4qH4S6YlaNJ9YzUFQcaBVc4+UNEf4ub+/V9GTWE52AW?=
- =?iso-8859-1?Q?9rvOhaNBZ3Cj/kOgVdKIVYA3venp31sKQ/3uFys/u0aTKpe4jbpQ9wRPWy?=
- =?iso-8859-1?Q?ZwaHJY9bM+Qgih6ZzZRyXM5KPQnp5fUV/EqmuX0fjTU/v+/iUiiUrKG9KS?=
- =?iso-8859-1?Q?W0AstZfTbqUpSky7hJa0rWDmZKNydNQcDyNiItoR5Zq9Ja3uqSMcDbtf7I?=
- =?iso-8859-1?Q?NWG7BflL9/Ai2r4IqY6KA2RATx9HvOF6982NQIVyzxqKGyLLG+tVTUQ/se?=
- =?iso-8859-1?Q?9yl8kV/43BCc9vextXq6pTOE8nBo2o1HF5jJXrds1OA22HAP69on9rKlsr?=
- =?iso-8859-1?Q?IfbJRFWhHz0bDLX4pOvWbLf/drjjV3PHJR?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?iso-8859-1?Q?WCiyYF1s9mCFh2yW0WyrTq21KrLcGECZ1Vb8j8WomU2hNoMARBDM2rwbLw?=
- =?iso-8859-1?Q?TKJHVCmZP/mDBEXDnE5TN1C/u6WMeC1bJMushici+VJntuIThZ4NSMBQNE?=
- =?iso-8859-1?Q?m9n3yJh24qEj04UBw3IevcNt6O4KGcm1OSVjiXfvjJj6qjJnm3Jd4uNs9B?=
- =?iso-8859-1?Q?RM079GUcxsjY3g5ZNnt6HrnaxzXVntWNt+9YTRqLrazi6/efBATzsCNXuv?=
- =?iso-8859-1?Q?IIxKbnYaUFtJ4o7PEgHf3QFa1eZUoWEqGIGF3M5YCx+NU1t78the5VefHg?=
- =?iso-8859-1?Q?NUw07oZSkt5Jkc5odwEVYwDpL2UP1J9r50tQY+yJ/PF7R6BEVKJZzeTClu?=
- =?iso-8859-1?Q?VGt5WJ38LfUwNQXSBE4CAOfdMZlCQCfAZdsq6G+V9OXL/QNMSpw3ltYbMb?=
- =?iso-8859-1?Q?jg7NxAP2twOOITxxSzLCykDBlFF5Q+NzJtlFpYmUCdTCMOyN+9zIaI6PIw?=
- =?iso-8859-1?Q?BtGZ/Nhfn0cIq2WRFEMoFNYjw9yraNhwz8gN0bsm4dsL9Ii0b3slWXGuoz?=
- =?iso-8859-1?Q?5/57IpNEAaWSoqq/fL4V+LNKks+Sv/Q5uiwon6ytG+zs2ibX4jHNXpjI2G?=
- =?iso-8859-1?Q?vQZoFGbmBSiT1iXmf4OLFKo6FnfAIwRJdnyLjbTvYj1UiYWdjD/YMPB2Eo?=
- =?iso-8859-1?Q?gIH7tssVOilLY7Zc/Gy3rGZJPMXanqnOgTSV9l2iazIQX+ZM/cRir+CtmG?=
- =?iso-8859-1?Q?EujYSdRW3ZKhZkNSfLC3cNeaCqf+rCJ5BrJuu1U+CLBaWP5V8Fxh6/oeGw?=
- =?iso-8859-1?Q?eSQcHHRT1eDKWMK4452Qe8ab/fKfBCH7tnlkTTS/yjUcyzk7rkkkwlPSRb?=
- =?iso-8859-1?Q?MF9kYgobk/TYdQt32PB/zGZ+t7b6vqIdwtHGMqRWsunqFryfQFiMBvLHJ6?=
- =?iso-8859-1?Q?6MPn4uBPgsnOsrMaCis1T5KDQMErGts56QsZjq9+DmF/dVAXZsDrC2xnnh?=
- =?iso-8859-1?Q?J+0tbtMgsyF99aqLv2UekQKaitUhBbLJ/BQmdIX5uDnp2y34vyt1qA48fa?=
- =?iso-8859-1?Q?RNnFrbxJbVdO/VoojS2fni8H7FDa36SUcXLHYR8fu0kUk//07Jfv/zoxIe?=
- =?iso-8859-1?Q?TGJIqVsnZef9JQydqL2qMTtrHBYZ6qmc+7CrDMv637vREoP1T0fjJ5mwJQ?=
- =?iso-8859-1?Q?NNrdZuuWoAToKc2SKQyp0ijjTQE6HuRCmPTTbwqpf9xU3kmUxO?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01dd6383-26fc-4f1e-81b2-08dba982032d
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 17:53:26.9663
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5BinTlgT3g2shHB0Ekqu13BEsM3F/5WFEPQKjpqt4ms4dOg2Y3XLpMrjnvQ05mHS2i+3yeSuyrKjoAAE2R4g6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR10MB7571
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-30_15,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308300165
-X-Proofpoint-ORIG-GUID: YpgwyuBck6T5MY2CQWbS-FgO7EekzMos
-X-Proofpoint-GUID: YpgwyuBck6T5MY2CQWbS-FgO7EekzMos
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=google.com; s=20221208; t=1693418023; x=1694022823; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6NYJxZAD84nnU9JwFvW1AuIl8sWdu9iyZk6Te6FK6mM=;
+        b=mmoxOWcbgppwwLgDFaTszdxpjUuJAPehq9iBdvOlvmhX7/J3B3MYkub1TJxURvQ2UM
+         X9Eig3jTo3+RZr2I4pJRKtrqMNLxBn1s6KS1nc1k7Bw9mQIohnYVMeEL9gAtHj1PtXFJ
+         MiwGLM2GDQojL2E81g+QgCoMsnKnRsTs576FjOZIjNBvKMsCLt7OLE8qkNHq7zr0y5Xt
+         d6bFL8GN1fbkab2C/oy9BIOakCT1SWPG4Ctge7S0+aQx/VRf15Tx+diYzNNHuaHF1u5T
+         8gw+vX8cY6KDMPozJ6Sttd+KDNI9d58WG7zR9vERQ58P2zxvV0RjG5JElZpEy9gF1ad7
+         Rj6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693418023; x=1694022823;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6NYJxZAD84nnU9JwFvW1AuIl8sWdu9iyZk6Te6FK6mM=;
+        b=byFjGPfTpHRgGUo8+pQa+XylESdMOV5MyBMejo4hb+a8ioQ9iXjJ7UBchsFGo5RbIT
+         11E7dVp2BMB+GNdMvnt3TO8I+fJXS3obJtrS8YBmrZC/8GeuuKmq+8cBMGOCihZDJOTp
+         uIejXW2L+lM/5X5XiGi52nOkmNys/vlM1tk7DSGdMfD/PkSJRQKvw8lGwA7rE039fqqn
+         okcitAsIauPGyyWggY0MTWF4h1LqH8k5XRTTyXBqczUzw2gBBQhItAlx+MTs4GsvSmcL
+         bAxwgt0r3vwJnDUQbkCEhjbo3HKZjJlFs/VDPVgPeF8ePxx4ieLwrr9K3F6nV5P42Dfp
+         G/iA==
+X-Gm-Message-State: AOJu0YwDZZk3G22bEnHOnX5UBeP2eYN29C79l+NM7fppiyPX6Kx9rZF1
+        iQXTHl38ePeb7fcVxabfXnY2uiVkCwc9ijbD
+X-Google-Smtp-Source: AGHT+IFm03PF7l9othX5O2PNzU02Mo/Pftgs6NGOxw28476m+H2J4m+wbftCKNJqLkDpoptSWcWy0ycsXoD03X6k
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:90b:785:b0:26d:2637:b85f with SMTP
+ id l5-20020a17090b078500b0026d2637b85fmr650295pjz.5.1693418023080; Wed, 30
+ Aug 2023 10:53:43 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 17:53:32 +0000
+In-Reply-To: <20230830175335.1536008-1-yosryahmed@google.com>
+Mime-Version: 1.0
+References: <20230830175335.1536008-1-yosryahmed@google.com>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Message-ID: <20230830175335.1536008-2-yosryahmed@google.com>
+Subject: [PATCH v3 1/4] mm: memcg: properly name and document unified stats flushing
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/30/23 16:33, Muchun Song wrote:
-> 
-> 
-> On 2023/8/26 03:04, Mike Kravetz wrote:
-> > When removing hugetlb pages from the pool, we first create a list
-> > of removed pages and then free those pages back to low level allocators.
-> > Part of the 'freeing process' is to restore vmemmap for all base pages
-> > if necessary.  Pass this list of pages to a new routine
-> > hugetlb_vmemmap_restore_folios() so that vmemmap restoration can be
-> > performed in bulk.
-> > 
-> > Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > ---
-> >   mm/hugetlb.c         | 3 +++
-> >   mm/hugetlb_vmemmap.c | 8 ++++++++
-> >   mm/hugetlb_vmemmap.h | 6 ++++++
-> >   3 files changed, 17 insertions(+)
-> > 
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 3133dbd89696..1bde5e234d5c 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1833,6 +1833,9 @@ static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
-> >   {
-> >   	struct folio *folio, *t_folio;
-> > +	/* First restore vmemmap for all pages on list. */
-> > +	hugetlb_vmemmap_restore_folios(h, list);
-> > +
-> >   	list_for_each_entry_safe(folio, t_folio, list, lru) {
-> >   		update_and_free_hugetlb_folio(h, folio, false);
-> >   		cond_resched();
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > index 147018a504a6..d5e6b6c76dce 100644
-> > --- a/mm/hugetlb_vmemmap.c
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -479,6 +479,14 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
-> >   	return ret;
-> >   }
-> 
-> Because it is a void function, I'd like to add a comment here like:
-> 
->     This function only tries to restore a list of folios' vmemmap pages and
->     does not guarantee that the restoration will succeed after it returns.
+Most contexts that flush memcg stats use "unified" flushing, where
+basically all flushers attempt to flush the entire hierarchy, but only
+one flusher is allowed at a time, others skip flushing.
 
-Will do.  Thanks!
+This is needed because we need to flush the stats from paths such as
+reclaim or refaults, which may have high concurrency, especially on
+large systems. Serializing such performance-sensitive paths can
+introduce regressions, hence, unified flushing offers a tradeoff between
+stats staleness and the performance impact of flushing stats.
 
+Document this properly and explicitly by renaming the common flushing
+helper from do_flush_stats() to do_unified_stats_flush(), and adding
+documentation to describe unified flushing. Additionally, rename
+flushing APIs to add "try" in the name, which implies that flushing will
+not always happen. Also add proper documentation.
+
+No functional change intended.
+
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ include/linux/memcontrol.h |  8 ++---
+ mm/memcontrol.c            | 61 +++++++++++++++++++++++++-------------
+ mm/vmscan.c                |  2 +-
+ mm/workingset.c            |  4 +--
+ 4 files changed, 47 insertions(+), 28 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 11810a2cfd2d..d517b0cc5221 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1034,8 +1034,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ 	return x;
+ }
+ 
+-void mem_cgroup_flush_stats(void);
+-void mem_cgroup_flush_stats_ratelimited(void);
++void mem_cgroup_try_flush_stats(void);
++void mem_cgroup_try_flush_stats_ratelimited(void);
+ 
+ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			      int val);
+@@ -1519,11 +1519,11 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ 	return node_page_state(lruvec_pgdat(lruvec), idx);
+ }
+ 
+-static inline void mem_cgroup_flush_stats(void)
++static inline void mem_cgroup_try_flush_stats(void)
+ {
+ }
+ 
+-static inline void mem_cgroup_flush_stats_ratelimited(void)
++static inline void mem_cgroup_try_flush_stats_ratelimited(void)
+ {
+ }
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index cf57fe9318d5..2d0ec828a1c4 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -588,7 +588,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+ static void flush_memcg_stats_dwork(struct work_struct *w);
+ static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
+ static DEFINE_PER_CPU(unsigned int, stats_updates);
+-static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
++static atomic_t stats_unified_flush_ongoing = ATOMIC_INIT(0);
+ static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
+ static u64 flush_next_time;
+ 
+@@ -630,7 +630,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ 		/*
+ 		 * If stats_flush_threshold exceeds the threshold
+ 		 * (>num_online_cpus()), cgroup stats update will be triggered
+-		 * in __mem_cgroup_flush_stats(). Increasing this var further
++		 * in mem_cgroup_try_flush_stats(). Increasing this var further
+ 		 * is redundant and simply adds overhead in atomic update.
+ 		 */
+ 		if (atomic_read(&stats_flush_threshold) <= num_online_cpus())
+@@ -639,15 +639,19 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ 	}
+ }
+ 
+-static void do_flush_stats(void)
++/*
++ * do_unified_stats_flush - do a unified flush of memory cgroup statistics
++ *
++ * A unified flush tries to flush the entire hierarchy, but skips if there is
++ * another ongoing flush. This is meant for flushers that may have a lot of
++ * concurrency (e.g. reclaim, refault, etc), and should not be serialized to
++ * avoid slowing down performance-sensitive paths. A unified flush may skip, and
++ * hence may yield stale stats.
++ */
++static void do_unified_stats_flush(void)
+ {
+-	/*
+-	 * We always flush the entire tree, so concurrent flushers can just
+-	 * skip. This avoids a thundering herd problem on the rstat global lock
+-	 * from memcg flushers (e.g. reclaim, refault, etc).
+-	 */
+-	if (atomic_read(&stats_flush_ongoing) ||
+-	    atomic_xchg(&stats_flush_ongoing, 1))
++	if (atomic_read(&stats_unified_flush_ongoing) ||
++	    atomic_xchg(&stats_unified_flush_ongoing, 1))
+ 		return;
+ 
+ 	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+@@ -655,19 +659,34 @@ static void do_flush_stats(void)
+ 	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+ 
+ 	atomic_set(&stats_flush_threshold, 0);
+-	atomic_set(&stats_flush_ongoing, 0);
++	atomic_set(&stats_unified_flush_ongoing, 0);
+ }
+ 
+-void mem_cgroup_flush_stats(void)
++/*
++ * mem_cgroup_try_flush_stats - try to flush memory cgroup statistics
++ *
++ * Try to flush the stats of all memcgs that have stat updates since the last
++ * flush. We do not flush the stats if:
++ * - The magnitude of the pending updates is below a certain threshold.
++ * - There is another ongoing unified flush (see do_unified_stats_flush()).
++ *
++ * Hence, the stats may be stale, but ideally by less than FLUSH_TIME due to
++ * periodic flushing.
++ */
++void mem_cgroup_try_flush_stats(void)
+ {
+ 	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
+-		do_flush_stats();
++		do_unified_stats_flush();
+ }
+ 
+-void mem_cgroup_flush_stats_ratelimited(void)
++/*
++ * Like mem_cgroup_try_flush_stats(), but only flushes if the periodic flusher
++ * is late.
++ */
++void mem_cgroup_try_flush_stats_ratelimited(void)
+ {
+ 	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
+-		mem_cgroup_flush_stats();
++		mem_cgroup_try_flush_stats();
+ }
+ 
+ static void flush_memcg_stats_dwork(struct work_struct *w)
+@@ -676,7 +695,7 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
+ 	 * Always flush here so that flushing in latency-sensitive paths is
+ 	 * as cheap as possible.
+ 	 */
+-	do_flush_stats();
++	do_unified_stats_flush();
+ 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
+ }
+ 
+@@ -1576,7 +1595,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 	 *
+ 	 * Current memory state:
+ 	 */
+-	mem_cgroup_flush_stats();
++	mem_cgroup_try_flush_stats();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		u64 size;
+@@ -4018,7 +4037,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
+ 	int nid;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
+-	mem_cgroup_flush_stats();
++	mem_cgroup_try_flush_stats();
+ 
+ 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
+ 		seq_printf(m, "%s=%lu", stat->name,
+@@ -4093,7 +4112,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 
+ 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
+ 
+-	mem_cgroup_flush_stats();
++	mem_cgroup_try_flush_stats();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+ 		unsigned long nr;
+@@ -4595,7 +4614,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
+ 	struct mem_cgroup *parent;
+ 
+-	mem_cgroup_flush_stats();
++	mem_cgroup_try_flush_stats();
+ 
+ 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
+ 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
+@@ -6610,7 +6629,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
+ 	int i;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
+-	mem_cgroup_flush_stats();
++	mem_cgroup_try_flush_stats();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		int nid;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index c7c149cb8d66..457a18921fda 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2923,7 +2923,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
+ 	 * Flush the memory cgroup stats, so that we read accurate per-memcg
+ 	 * lruvec stats for heuristics.
+ 	 */
+-	mem_cgroup_flush_stats();
++	mem_cgroup_try_flush_stats();
+ 
+ 	/*
+ 	 * Determine the scan balance between anon and file LRUs.
+diff --git a/mm/workingset.c b/mm/workingset.c
+index da58a26d0d4d..affb8699e58d 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -520,7 +520,7 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 	}
+ 
+ 	/* Flush stats (and potentially sleep) before holding RCU read lock */
+-	mem_cgroup_flush_stats_ratelimited();
++	mem_cgroup_try_flush_stats_ratelimited();
+ 
+ 	rcu_read_lock();
+ 
+@@ -664,7 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
+ 		struct lruvec *lruvec;
+ 		int i;
+ 
+-		mem_cgroup_flush_stats();
++		mem_cgroup_try_flush_stats();
+ 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
+ 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
+ 			pages += lruvec_page_state_local(lruvec,
 -- 
-Mike Kravetz
+2.42.0.rc2.253.gd59a3bf2b4-goog
+
