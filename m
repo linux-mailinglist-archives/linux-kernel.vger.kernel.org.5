@@ -2,181 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4F478DB98
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5870F78DC53
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239175AbjH3SkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        id S242702AbjH3Soe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244623AbjH3NdA (ORCPT
+        with ESMTP id S244644AbjH3Ng5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:33:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F13A1B0;
-        Wed, 30 Aug 2023 06:32:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 184646239C;
-        Wed, 30 Aug 2023 13:32:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7D5CC433C8;
-        Wed, 30 Aug 2023 13:32:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693402376;
-        bh=bQhUUIZpx6QwTEhjZlfwsBCnaPFOUKTf69cRORtGYYk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oRF1w04uEtjeGHIeTQFcALFdnuYKRsY0cug/nrVM5Gtq7Iu+JvcqHwAH8jdExuLns
-         NngfwIWm7cnLEBo1nucvpD3E2oNV+b5i/hC2jaavBjdHZ8Hx/OpRo+F/tN1H4RBROZ
-         097DeXMBJZPxOYngC569L+5Mhx8ocqOR5WTgGGOXr1MrLX68mpdLuzPxRyaHLckK6o
-         MjhxJjDfc58TVBgd2kGOw2JfL1+zhfWe0s9H72aPUWuRggYAln7N+lmFNtC46YtX40
-         kpxOoVvYrtpMz5VWcwvO5NUnPLSiyuLNSv3txLduuUyTPmXHUA9Gu46UAtm4UPtHMt
-         AB9eBCqOQzSSg==
-Received: (nullmailer pid 117351 invoked by uid 1000);
-        Wed, 30 Aug 2023 13:32:53 -0000
-Date:   Wed, 30 Aug 2023 08:32:53 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Corey Minyard <minyard@acm.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Dipen Patel <dipenp@nvidia.com>, Peter Rosin <peda@axentia.se>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [GIT PULL] Devicetree include cleanups for v6.6
-Message-ID: <20230830133253.GA112890-robh@kernel.org>
+        Wed, 30 Aug 2023 09:36:57 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A3911F;
+        Wed, 30 Aug 2023 06:36:53 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401b3ea0656so50797865e9.0;
+        Wed, 30 Aug 2023 06:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693402612; x=1694007412; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/+yYt261pz+/xgkSEVEKFRDXXydq1rLbWs9CkNiRFcE=;
+        b=SkA2MQ0T3jHqj/Imwmt86BL42q36WabVeBWdSmOXo88rLz0HW4Q5tk6IZr95+SNoam
+         52s8k0iq7/tuQ8D68fNFOdq6LLgOoQJhCd+Oxu/wrayGlQC+4cwLzs/4cNzQD1pbfwBp
+         NCcxyrN3zDXVEHC6lzmWenVlbf8bKih27lMkr9KON0oIzbrKiKlF8KSRLG3rkKXylt33
+         lrxRriznpTgNBE86Wapfegj7r+vKEO0ak854U27hSiWJPDFmI1GUPvOvwWx1W2cX+aOb
+         h05/fRKQ7NT6oE/rQ8gAySDNpRpFT1KA4OkUl2Sws6HFmdy0u4eJDgzAaBsGLWMpHZzX
+         84MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693402612; x=1694007412;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/+yYt261pz+/xgkSEVEKFRDXXydq1rLbWs9CkNiRFcE=;
+        b=BLi805SaZeghHbeeeEzG9pZnxTk1Nwv2ZHGbDcVLOEC+o2ghJ+21CQ7qY1nqm8F45e
+         j0AaM43s/p+2raIDh3phliBFwhIcVnUR/LV0SL2OwYamcjEJrZxgWhKBff1+UrOM+Fnx
+         1US11rq5JtMICg45C3YQ8FbiMbTOm7NL8wMuNpSiqcnIlJOdnTH7jcB1zI+BJsJ/dgAO
+         c7Glss8JM1g0AsdzUW5MlI6r1EdVk9ueIFLyexOWHV3RUPaaz2G6eqDQuUq12exbq1mW
+         t4ZDkGXguxPaFoO6/t4gyCiSAR3q3PlbpFw7huTuVUOyNPnllHfdSl9GB202yrwgKj0k
+         QDzg==
+X-Gm-Message-State: AOJu0YzIwOlMO1k1Tv+688w98ZZoU0DA9wv32PMiRhIJcDgSSGd0aD0M
+        q66kaiOAzmCnaAsL0idBGQ==
+X-Google-Smtp-Source: AGHT+IFHs2vmbKqXRIV/i344l7tlR+MJQTafcUypRW0zFptWbaKo0LC9bhGXq9FZrklPdlc/NpOn9Q==
+X-Received: by 2002:a1c:7710:0:b0:401:bf87:989c with SMTP id t16-20020a1c7710000000b00401bf87989cmr1985691wmi.34.1693402611534;
+        Wed, 30 Aug 2023 06:36:51 -0700 (PDT)
+Received: from U4.lan ([2001:9e8:b963:7410:17bb:6f65:50d0:b82b])
+        by smtp.gmail.com with ESMTPSA id x14-20020a05600c2a4e00b003fed70fb09dsm2326343wme.26.2023.08.30.06.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 06:36:51 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 0/5] Add USB support for RK3128
+Date:   Wed, 30 Aug 2023 15:36:19 +0200
+Message-ID: <20230830133623.83075-2-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+While interestingly the dt-binding for the Innosilicon usb phy found in
+RK3128 SoC exists already and it is exposed in the SoC DT, it has never
+been added to the driver.
+This patch-set adds support for this early version of the phy and does
+some DT-fixups in order to make the 2-port host/otg phy and the respective
+controllers work.
 
-Please pull. Most of these changes are queued up in the subsystems. 
-These are what's left which I didn't get a response on (well, hte was 
-acked but not applied).
+Please see commit messages of the individual patches for details.
 
-Rob
+These patches have been part of the pretty huge RK3128 bring-up/fix-up
+series [0] which I've splitted-up now, as suggested.
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+[0] https://lore.kernel.org/linux-rockchip/20230829171647.187787-1-knaerzche@gmail.com
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+Alex Bee (5):
+  phy: rockchip-inno-usb2: Split ID interrupt phy registers
+  phy: phy-rockchip-inno-usb2: Add RK3128 support
+  ARM: dts: rockchip: Add USB host clocks for RK3128
+  ARM: dts: rockchip: Add dwc2 otg fifo siztes for RK3128
+  ARM: dts: rockchip: Make usbphy the parent of SCLK_USB480M for RK3128
 
-are available in the Git repository at:
+ arch/arm/boot/dts/rockchip/rk3128.dtsi        |   9 ++
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 147 ++++++++++++++----
+ 2 files changed, 127 insertions(+), 29 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-header-cleanups-for-6.6
+-- 
+2.42.0
 
-for you to fetch changes up to 86cdae14a58a877ee1ec79d39b1331bc98dace58:
-
-  ipmi: Explicitly include correct DT includes (2023-08-28 13:36:24 -0500)
-
-----------------------------------------------------------------
-Devicetree include cleanups for v6.6:
-
-These are the remaining few clean-ups of DT related includes which
-didn't get applied to subsystem trees.
-
-----------------------------------------------------------------
-Rob Herring (12):
-      riscv: Explicitly include correct DT includes
-      sparc: Explicitly include correct DT includes
-      clocksource: Explicitly include correct DT includes
-      EDAC: Explicitly include correct DT includes
-      hte: Explicitly include correct DT includes
-      macintosh: Explicitly include correct DT includes
-      mux: Explicitly include correct DT includes
-      sbus: Explicitly include correct DT includes
-      parport: Explicitly include correct DT includes
-      lib/genalloc: Explicitly include correct DT includes
-      tpm: Explicitly include correct DT includes
-      ipmi: Explicitly include correct DT includes
-
- arch/riscv/kernel/cpufeature.c            | 1 -
- arch/sparc/crypto/crop_devid.c            | 2 +-
- arch/sparc/include/asm/floppy_32.h        | 2 +-
- arch/sparc/include/asm/floppy_64.h        | 2 +-
- arch/sparc/include/asm/parport.h          | 3 ++-
- arch/sparc/kernel/apc.c                   | 2 +-
- arch/sparc/kernel/auxio_32.c              | 1 -
- arch/sparc/kernel/auxio_64.c              | 3 ++-
- arch/sparc/kernel/central.c               | 2 +-
- arch/sparc/kernel/chmc.c                  | 3 ++-
- arch/sparc/kernel/ioport.c                | 2 +-
- arch/sparc/kernel/leon_kernel.c           | 2 --
- arch/sparc/kernel/leon_pci.c              | 3 ++-
- arch/sparc/kernel/leon_pci_grpci1.c       | 3 ++-
- arch/sparc/kernel/leon_pci_grpci2.c       | 4 +++-
- arch/sparc/kernel/of_device_32.c          | 2 +-
- arch/sparc/kernel/of_device_64.c          | 4 ++--
- arch/sparc/kernel/of_device_common.c      | 4 ++--
- arch/sparc/kernel/pci.c                   | 3 ++-
- arch/sparc/kernel/pci_common.c            | 3 ++-
- arch/sparc/kernel/pci_fire.c              | 3 ++-
- arch/sparc/kernel/pci_impl.h              | 1 -
- arch/sparc/kernel/pci_msi.c               | 2 ++
- arch/sparc/kernel/pci_psycho.c            | 4 +++-
- arch/sparc/kernel/pci_sun4v.c             | 3 ++-
- arch/sparc/kernel/pmc.c                   | 2 +-
- arch/sparc/kernel/power.c                 | 3 ++-
- arch/sparc/kernel/prom_irqtrans.c         | 1 +
- arch/sparc/kernel/psycho_common.c         | 1 +
- arch/sparc/kernel/sbus.c                  | 3 ++-
- arch/sparc/kernel/time_32.c               | 1 -
- arch/sparc/mm/io-unit.c                   | 3 ++-
- arch/sparc/mm/iommu.c                     | 5 +++--
- drivers/char/ipmi/kcs_bmc_aspeed.c        | 1 -
- drivers/char/tpm/tpm_ftpm_tee.c           | 1 -
- drivers/char/tpm/tpm_tis.c                | 1 -
- drivers/char/tpm/tpm_tis_spi_main.c       | 2 +-
- drivers/char/tpm/tpm_tis_synquacer.c      | 1 -
- drivers/clocksource/bcm2835_timer.c       | 2 +-
- drivers/clocksource/nomadik-mtu.c         | 2 +-
- drivers/clocksource/sh_cmt.c              | 1 -
- drivers/clocksource/timer-cadence-ttc.c   | 1 +
- drivers/clocksource/timer-gxp.c           | 1 +
- drivers/clocksource/timer-integrator-ap.c | 2 +-
- drivers/clocksource/timer-tegra186.c      | 1 -
- drivers/clocksource/timer-ti-dm.c         | 1 -
- drivers/edac/fsl_ddr_edac.c               | 3 +--
- drivers/edac/highbank_l2_edac.c           | 3 ++-
- drivers/edac/highbank_mc_edac.c           | 3 ++-
- drivers/edac/mpc85xx_edac.c               | 3 +--
- drivers/edac/npcm_edac.c                  | 3 ++-
- drivers/edac/synopsys_edac.c              | 1 -
- drivers/hte/hte-tegra194.c                | 1 -
- drivers/hte/hte.c                         | 2 +-
- drivers/macintosh/ams/ams.h               | 1 -
- drivers/macintosh/macio_asic.c            | 1 +
- drivers/macintosh/smu.c                   | 1 +
- drivers/macintosh/therm_adt746x.c         | 2 ++
- drivers/macintosh/therm_windtunnel.c      | 2 ++
- drivers/macintosh/windfarm_lm75_sensor.c  | 2 +-
- drivers/mux/core.c                        | 1 -
- drivers/mux/mmio.c                        | 2 +-
- drivers/parport/parport_sunbpp.c          | 2 +-
- drivers/sbus/char/bbc_envctrl.c           | 2 +-
- drivers/sbus/char/bbc_i2c.c               | 3 ++-
- drivers/sbus/char/bbc_i2c.h               | 1 -
- drivers/sbus/char/display7seg.c           | 2 +-
- drivers/sbus/char/envctrl.c               | 2 +-
- drivers/sbus/char/flash.c                 | 2 +-
- drivers/sbus/char/uctrl.c                 | 2 +-
- lib/genalloc.c                            | 4 +++-
- 71 files changed, 83 insertions(+), 68 deletions(-)
