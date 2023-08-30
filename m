@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0B578DF42
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4A778DEDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbjH3THK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
+        id S243163AbjH3TMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343808AbjH3RAt (ORCPT
+        with ESMTP id S1343811AbjH3RFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:00:49 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1A319A
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:00:45 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a3ced3ec6so4605900b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:00:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693414845; x=1694019645; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=paqr7IEUngLUmzTVJvkle5mzcucO5xLM3OCyOtioyC8=;
-        b=SE+7XPT9i0QcBZZJAzF4Mdwsr9ZsBV3hrhZNJwftU6lHH2fjxLSgzXbzVlsNWcu03r
-         Cch2Mx0pZOgNjOQkJj4amljs4i5Ox2LQ9C3ve6JMDlRW5uLUY0HmocQZz8TdJa8R9ucQ
-         vbF52buatDeVFlZ42kI35Dzh7m/b7OBIwOFVU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693414845; x=1694019645;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=paqr7IEUngLUmzTVJvkle5mzcucO5xLM3OCyOtioyC8=;
-        b=gquH6UjDaFLhWod8yZpFMT+tzsf7vVRjZE1O4z2/p2LJ26FLyw/Ed05V8ZFAhVP2Y3
-         n6zypAWbbFu8+ZQEIR5DZ5JTilEfQeN2rkZq/dfoLO/L3S3UYlekd8J8UOnaYXRNv+f+
-         M7G0M6lp5NV7Tqc7GjIyxEC1HkoGJ5y070HkoU8tSPg5gxc1grtEp1mj9pGxr/Xjo6sI
-         0WVGhkoyb2VZmKl8FB05WAshy9aP/rgdrJaYEnG7fWUxwBBzKy1I+rem4c2xvKtpqdwm
-         WBbIoflrnWyg7JXESzDuRlO8cTChEwtXR0vX5VW2CkQUPsWDgr1rQ3eAlFf1kkBdVX5Q
-         yiNA==
-X-Gm-Message-State: AOJu0YypoWNDUYfec4XH3mPX89mqYCvaJRWxgk7rDgk9bJabG6Ly7Ylw
-        eZYkRrvKxrMZPb8eL1bbDlPMrg==
-X-Google-Smtp-Source: AGHT+IGXDbYwc6/HGX5fSa/1UeccMSrlYOvlNtS3oK4QC2iC/+wQWuDom34YcWAgVPT+FOM97fB4OA==
-X-Received: by 2002:a05:6a20:f384:b0:138:5a28:e8cc with SMTP id qr4-20020a056a20f38400b001385a28e8ccmr3121257pzb.37.1693414844691;
-        Wed, 30 Aug 2023 10:00:44 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a29-20020a056a001d1d00b0068c5bd3c3b4sm4748401pfx.206.2023.08.30.10.00.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 10:00:43 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 10:00:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org,
-        Enlin Mu <enlin.mu@unisoc.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yunlong Xing <yunlong.xing@unisoc.com>,
-        Yuxiao Zhang <yuxiaozhang@google.com>
-Subject: Re: [GIT PULL] pstore updates for v6.6-rc1
-Message-ID: <202308300957.BCD878259@keescook>
-References: <CAHk-=wi_WxZ2dEsQR0-wDtYAh4sxVEQkU7HK5JSboVv7v7NwcQ@mail.gmail.com>
- <B085ADB4-4B8C-4998-BB33-DA67C45483E9@kernel.org>
- <CAHk-=wjRD_LnCbwSRM20Fg54xhrFBLwgO=X23bdconx3wKokxg@mail.gmail.com>
- <202308282035.5AFD431B@keescook>
- <CAHk-=whbqsYC4nDc7HpWEYo7EnA603T35jSP4om6HMWpVZSc_w@mail.gmail.com>
- <CAMj1kXGJCBj2JQFkUgd26H-abagcpO+7z_--6HV42VeaqCsEnQ@mail.gmail.com>
- <CAHk-=wgaY2+_KyqVpRS+MrO6Y7bXQp69odTu7JT3XSpdUsgS=g@mail.gmail.com>
- <CAMj1kXHde34XNukpbCcbScetWKzv9m7nX2WCw8-zspPKc5g4zw@mail.gmail.com>
- <20230830060506.GA1015@sol.localdomain>
- <CAMj1kXGZ11VS=Tr8i5oKsdXkAuGt+k5GLUvVqzrYBg6UEs=HQA@mail.gmail.com>
+        Wed, 30 Aug 2023 13:05:09 -0400
+Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [IPv6:2001:1600:4:17::42aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD38719A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:05:05 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RbVz407CRzMqBgm;
+        Wed, 30 Aug 2023 17:05:04 +0000 (UTC)
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4RbVz343D9zMpp9q;
+        Wed, 30 Aug 2023 19:05:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1693415103;
+        bh=wQ8zlZUErtY4oxJgQA7X3pCQwgl+/9+Lou2t/f0PtGw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AyXUHpHh8v3MXsVgrb3g2LZ+YZX6JcfC6wbVq5fbt0122k2w7Ftmd6O2EWCmd17DS
+         lZvDM9s0Ju+rihmQbsxuhVpKc1S/t5nrJRN3E6gCOkI2D+TZY1i8623/zvWpllINuo
+         LUzX6s+8d7+vcGDOmyBY1Gdg8geGYrdl1YyYavKQ=
+Date:   Wed, 30 Aug 2023 19:04:59 +0200
+From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To:     Ding Xiang <dingxiang@cmss.chinamobile.com>
+Cc:     shuah@kernel.org, linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] selftests/landlock: Fix a resource leak
+Message-ID: <20230830.paiqu8Caew1X@digikod.net>
+References: <20230830101148.3738-1-dingxiang@cmss.chinamobile.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXGZ11VS=Tr8i5oKsdXkAuGt+k5GLUvVqzrYBg6UEs=HQA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230830101148.3738-1-dingxiang@cmss.chinamobile.com>
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 09:48:48AM +0200, Ard Biesheuvel wrote:
-> In any case, I'll rate limit the error so it doesn't clutter up the logs.
+Applied to my next tree. Thanks!
 
-Great; thanks for looking at it!
-
-A related issue I'm going to tackle is dealing with the risk of
-ever-growing record counts for backends that don't treat their storage
-as a circular buffer. (e.g. ramoops will overwrite the latest record
-when it runs out of empty areas, but EFI will just keep on writing new
-records.) It's clear we can't depend on userspace to do this clean-up.
-I think pstore tossing the oldest records above a (configurable) limit
-(say, 32) per dump type makes sense...
-
--- 
-Kees Cook
+On Wed, Aug 30, 2023 at 06:11:48PM +0800, Ding Xiang wrote:
+> The opened file should be closed before return,
+> otherwise resource leak will occur
+> 
+> Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
+> ---
+>  tools/testing/selftests/landlock/fs_test.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
+> index 83d565569512..251594306d40 100644
+> --- a/tools/testing/selftests/landlock/fs_test.c
+> +++ b/tools/testing/selftests/landlock/fs_test.c
+> @@ -113,7 +113,7 @@ static bool supports_filesystem(const char *const filesystem)
+>  {
+>  	char str[32];
+>  	int len;
+> -	bool res;
+> +	bool res = true;
+>  	FILE *const inf = fopen("/proc/filesystems", "r");
+>  
+>  	/*
+> @@ -125,14 +125,16 @@ static bool supports_filesystem(const char *const filesystem)
+>  
+>  	/* filesystem can be null for bind mounts. */
+>  	if (!filesystem)
+> -		return true;
+> +		goto out;
+>  
+>  	len = snprintf(str, sizeof(str), "nodev\t%s\n", filesystem);
+>  	if (len >= sizeof(str))
+>  		/* Ignores too-long filesystem names. */
+> -		return true;
+> +		goto out;
+>  
+>  	res = fgrep(inf, str);
+> +
+> +out:
+>  	fclose(inf);
+>  	return res;
+>  }
+> -- 
+> 2.38.1
+> 
+> 
+> 
