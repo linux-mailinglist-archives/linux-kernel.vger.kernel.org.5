@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C381978DBAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502F078DCC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236374AbjH3Sbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
+        id S240977AbjH3Sqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244512AbjH3NQT (ORCPT
+        with ESMTP id S244522AbjH3NTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:16:19 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2D9185
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:16:15 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76f066e4fffso276827885a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:16:15 -0700 (PDT)
+        Wed, 30 Aug 2023 09:19:47 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5631F137
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:19:43 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-410915344aeso34719321cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693401375; x=1694006175; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1693401582; x=1694006382; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=VhXmdfWOsT1AuoeB8jiJGDEZUVXJN1MaMKleTTfSTgc=;
-        b=H8Z0Ov7wo2mahO+yd13WXuuoQ6bDF4mvR8/ZD/UOd3X3wKbPfI7QV4e2hhnV7rk1RF
-         A4F5RO0X3Oz2GGoBqTeHlIhudB814Vmc9SUPt0yUmpUTwy8l7/3tfJn4LL7W+MFRqrDq
-         W7eifPd7qicEj4uvyQUlqd1lkmG66JGIv0PTI=
+        bh=3VppTGScjcO/zyi0Q3vWC5JDEzdT9McYSrDsY871CHE=;
+        b=N65NVxRTV5PLEoeS0mgjPc6LH/hCbVcPuqVN2w1W4/a2TPeTVpE5UdUMGkcSCuSGh4
+         FiPBsLcYBSW70HJ/8fCU6Yc7nCfUWaXGLyfCKiG4SqVOqydUKP1ROE7GyuJ9FHRykuI6
+         /4MS9YmA7jqM1U56EDpCt04bgwVIT/Yfgee5c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693401375; x=1694006175;
+        d=1e100.net; s=20221208; t=1693401582; x=1694006382;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VhXmdfWOsT1AuoeB8jiJGDEZUVXJN1MaMKleTTfSTgc=;
-        b=lpxzqkk/575CZwbvT3l3yG8+glnXXmEO/Kxx8JAKjiXFisLC2zHVnD69b5QwDyLOME
-         IojSnPWmuTlQMHlnPw8BNanGaaTzxS1EV6Ju0C7yNBBxThyqRexj0Oaw7aFMuJ0pNY3Z
-         9uLGEPsneQVgrL+x5+UAX1wjXyHApD1qOJqB5rILuhRIljV+g+maPhJSEV1Y26Cz60r/
-         34aCbAhdfqtPNFqw216SYI/4+KFoBBC4TL7DNrT0yPaPG03UWQIv+w8obd/nYYU/xt8y
-         GxjyFIbpllJAy/qw7lcdNra8fZanFbmQJOFZNChibMnWe/oFJUHxLYfZB7Gdnpas1zkK
-         y8hQ==
-X-Gm-Message-State: AOJu0YzbhYj+Y+Upgw1OMF/ZGm2AzWa0JJGS7AQiprR7V+egR7OfpDn9
-        Rj5RnIdMlokNDX4+0JrHxoSsgA==
-X-Google-Smtp-Source: AGHT+IHP6XK7dvFNy15lq1VQCGHGI0dJrlwxPgvgO9sb6JyB6ihs3ELhX3AJ40tSikZ1oNvema+aMw==
-X-Received: by 2002:a05:6214:2a9:b0:64f:3c68:98ea with SMTP id m9-20020a05621402a900b0064f3c6898eamr1965827qvv.2.1693401374883;
-        Wed, 30 Aug 2023 06:16:14 -0700 (PDT)
+        bh=3VppTGScjcO/zyi0Q3vWC5JDEzdT9McYSrDsY871CHE=;
+        b=N6oAJd3ecC/hemBY7dXLLqzKbVhsS15ja4PWoOsiXT7yAr3Ps+Cj5UqymfKuJcLAYA
+         7Z+/v8Xubo3WgBMrHysAmpWsTy15vY+XVGbZQxzqct6sI5JUIXLuGVi3XOwCIZhhdX1L
+         P4wJDRdizyISALw2hHWZaiTnaAV/XkXoCtVp0cd31FgDuk6eClsSy4mQWAkI935uilX4
+         zCWFsuYj//h5INTZk9kd2aY3QqZcBD3xOD0W0rGt1K10Gb1uLl7Ty4oGyh9QnUnAlTuL
+         SVFi3lWmjQ3kffNRAjNnX8ZwIT0KAUwYcu3APGY8+O++DD/Asz7PSdMOLJhqFfCh3s/u
+         w95Q==
+X-Gm-Message-State: AOJu0YzM4zHTUXFkPUOEvM1xrSp47bI8yy7z8okQeuv+f1Py1VKukmnA
+        86mPp2p7h9R21maR4GDMqmlGXAvcpPJZ5cGSwAw=
+X-Google-Smtp-Source: AGHT+IHdZ3NMK3MwfFMBnwS/7mU+BeeCDvKcGfPebjkhha/TtPhAoWgeToRmrOFWYGVqgmXQeMVWkg==
+X-Received: by 2002:ac8:5a45:0:b0:403:cecf:4ade with SMTP id o5-20020ac85a45000000b00403cecf4ademr2191865qta.32.1693401582376;
+        Wed, 30 Aug 2023 06:19:42 -0700 (PDT)
 Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id v2-20020a0c9c02000000b00647386a3234sm4151948qve.85.2023.08.30.06.16.13
+        by smtp.gmail.com with ESMTPSA id ha8-20020a05622a2b0800b0041087c90049sm3728468qtb.52.2023.08.30.06.19.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:16:14 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 09:16:13 -0400
+        Wed, 30 Aug 2023 06:19:41 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 09:19:41 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
@@ -57,27 +57,26 @@ Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
         jonathanh@nvidia.com, f.fainelli@gmail.com,
         sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
         conor@kernel.org
-Subject: Re: [PATCH 5.10 00/84] 5.10.193-rc1 review
-Message-ID: <20230830131613.GA2424687@joel-ThinkPad-X1-Carbon-4th>
-References: <20230828101149.146126827@linuxfoundation.org>
+Subject: Re: [PATCH 5.15 00/89] 5.15.129-rc1 review
+Message-ID: <20230830131941.GA2425542@joel-ThinkPad-X1-Carbon-4th>
+References: <20230828101150.163430842@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230828101149.146126827@linuxfoundation.org>
+In-Reply-To: <20230828101150.163430842@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:13:17PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.193 release.
-> There are 84 patches in this series, all will be posted as a response
+On Mon, Aug 28, 2023 at 12:13:01PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.129 release.
+> There are 89 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -85,9 +84,9 @@ On Mon, Aug 28, 2023 at 12:13:17PM +0200, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.193-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.129-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
 > and the diffstat can be found below.
 
 For RCU,
@@ -106,25 +105,16 @@ thanks,
 > Pseudo-Shortlog of commits:
 > 
 > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.10.193-rc1
+>     Linux 5.15.129-rc1
 > 
-> Oscar Salvador <osalvador@suse.de>
->     mm,hwpoison: fix printing of page flags
-> 
-> Bard Liao <yung-chuan.liao@linux.intel.com>
->     ASoC: Intel: sof_sdw: include rt711.h for RT711 JD mode
+> Rik van Riel <riel@surriel.com>
+>     mm,ima,kexec,of: use memblock_free_late from ima_free_kexec_buffer
 > 
 > Miaohe Lin <linmiaohe@huawei.com>
 >     mm: memory-failure: fix unexpected return value in soft_offline_page()
 > 
 > Kefeng Wang <wangkefeng.wang@huawei.com>
 >     mm: memory-failure: kill soft_offline_free_page()
-> 
-> Dan Williams <dan.j.williams@intel.com>
->     mm: fix page reference leak in soft_offline_page()
-> 
-> Oscar Salvador <osalvador@suse.de>
->     mm,hwpoison: refactor get_any_page
 > 
 > Rob Clark <robdclark@chromium.org>
 >     dma-buf/sw_sync: Avoid recursive lock during fence signal
@@ -141,8 +131,8 @@ thanks,
 > Zhu Wang <wangzhu9@huawei.com>
 >     scsi: snic: Fix double free in snic_tgt_create()
 > 
-> Shuming Fan <shumingf@realtek.com>
->     ASoC: rt711: add two jack detection modes
+> Oliver Hartkopp <socketcan@hartkopp.net>
+>     can: raw: add missing refcount for memory leak fix
 > 
 > Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
 >     drm/i915: Fix premature release of request's reusable memory
@@ -165,17 +155,20 @@ thanks,
 > Juri Lelli <juri.lelli@redhat.com>
 >     cgroup/cpuset: Rename functions dealing with DEADLINE accounting
 > 
-> Nicholas Piggin <npiggin@gmail.com>
->     timers/nohz: Switch to ONESHOT_STOPPED in the low-res handler when the tick is stopped
-> 
-> Frederic Weisbecker <frederic@kernel.org>
->     tick: Detect and fix jiffies update stall
-> 
 > Joel Fernandes (Google) <joel@joelfernandes.org>
 >     torture: Fix hang during kthread shutdown phase
 > 
+> Christian Brauner <brauner@kernel.org>
+>     nfsd: use vfs setgid helper
+> 
+> Christian Brauner <brauner@kernel.org>
+>     nfs: use vfs setgid helper
+> 
 > Feng Tang <feng.tang@intel.com>
 >     x86/fpu: Set X86_FEATURE_OSXSAVE feature after enabling OSXSAVE in CR4
+> 
+> Rick Edgecombe <rick.p.edgecombe@intel.com>
+>     x86/fpu: Invalidate FPU state correctly on exec()
 > 
 > Ankit Nautiyal <ankit.k.nautiyal@intel.com>
 >     drm/display/dp: Fix the DP DSC Receiver cap size
@@ -191,6 +184,9 @@ thanks,
 > 
 > Rob Herring <robh@kernel.org>
 >     of: dynamic: Refactor action prints to not use "%pOF" inside devtree_lock
+> 
+> Rob Herring <robh@kernel.org>
+>     of: unittest: Fix EXPECT for parse_phandle_with_args_map() test
 > 
 > Arnd Bergmann <arnd@arndb.de>
 >     radix tree: remove unused variable
@@ -228,6 +224,9 @@ thanks,
 > Alexandre Ghiti <alexghiti@rivosinc.com>
 >     mm: add a call to flush_cache_vmap() in vmap_pfn()
 > 
+> Takashi Iwai <tiwai@suse.de>
+>     ALSA: ymfpci: Fix the missing snd_card_free() call at probe error
+> 
 > Andrey Skvortsov <andrej.skvortzov@gmail.com>
 >     clk: Fix slab-out-of-bounds error in devm_clk_release()
 > 
@@ -236,6 +235,15 @@ thanks,
 > 
 > Michael Ellerman <mpe@ellerman.id.au>
 >     ibmveth: Use dcbf rather than dcbfl
+> 
+> Sean Christopherson <seanjc@google.com>
+>     Revert "KVM: x86: enable TDP MMU by default"
+> 
+> Ivan Mikhaylov <fr0st61te@gmail.com>
+>     net/ncsi: change from ndo_set_mac_address to dev_set_mac_address
+> 
+> Ivan Mikhaylov <fr0st61te@gmail.com>
+>     net/ncsi: make one oem_gma function for all mfr id
 > 
 > Hangbin Liu <liuhangbin@gmail.com>
 >     bonding: fix macvlan over alb bond support
@@ -252,8 +260,14 @@ thanks,
 > Florian Westphal <fw@strlen.de>
 >     netfilter: nf_tables: fix out of memory error handling
 > 
+> Pablo Neira Ayuso <pablo@netfilter.org>
+>     netfilter: nf_tables: flush pending destroy work before netlink notifier
+> 
 > Jamal Hadi Salim <jhs@mojatatu.com>
 >     net/sched: fix a qdisc modification with ambiguous command request
+> 
+> Sasha Neftin <sasha.neftin@intel.com>
+>     igc: Fix the typo in the PTM Control macro
 > 
 > Alessio Igor Bogani <alessio.bogani@elettra.eu>
 >     igb: Avoid starting unnecessary workqueues
@@ -288,17 +302,8 @@ thanks,
 > Zheng Yejian <zhengyejian1@huawei.com>
 >     tracing: Fix cpu buffers unavailable due to 'record_disabled' missed
 > 
-> Ilya Dryomov <idryomov@gmail.com>
->     rbd: prevent busy loop when requesting exclusive lock
-> 
-> Ilya Dryomov <idryomov@gmail.com>
->     rbd: retrieve and check lock owner twice before blocklisting
-> 
-> Ilya Dryomov <idryomov@gmail.com>
->     rbd: make get_lock_owner_info() return a single locker or NULL
-> 
-> Ilya Dryomov <idryomov@gmail.com>
->     libceph, rbd: ignore addr->type while comparing in some cases
+> Eric Dumazet <edumazet@google.com>
+>     can: raw: fix lockdep issue in raw_release()
 > 
 > Taimur Hassan <syed.hassan@amd.com>
 >     drm/amd/display: check TG is non-null before checking if enabled
@@ -306,14 +311,20 @@ thanks,
 > Josip Pavic <Josip.Pavic@amd.com>
 >     drm/amd/display: do not wait for mpc idle if tg is disabled
 > 
+> Ziyang Xuan <william.xuanziyang@huawei.com>
+>     can: raw: fix receiver memory leak
+> 
+> Zhang Yi <yi.zhang@huawei.com>
+>     jbd2: fix a race when checking checkpoint buffer busy
+> 
+> Zhang Yi <yi.zhang@huawei.com>
+>     jbd2: remove journal_clean_one_cp_list()
+> 
+> Zhang Yi <yi.zhang@huawei.com>
+>     jbd2: remove t_checkpoint_io_list
+> 
 > Takashi Iwai <tiwai@suse.de>
 >     ALSA: pcm: Fix potential data race at PCM memory allocation helpers
-> 
-> Mikulas Patocka <mpatocka@redhat.com>
->     dm integrity: reduce vmalloc space footprint on 32-bit architectures
-> 
-> Mikulas Patocka <mpatocka@redhat.com>
->     dm integrity: increase RECALC_SECTORS to improve recalculate speed
 > 
 > Zhang Shurong <zhang_shurong@foxmail.com>
 >     fbdev: fix potential OOB read in fast_imageblit()
@@ -357,6 +368,9 @@ thanks,
 > Fedor Pchelkin <pchelkin@ispras.ru>
 >     NFSv4: fix out path in __nfs4_get_acl_uncached
 > 
+> Fedor Pchelkin <pchelkin@ispras.ru>
+>     NFSv4.2: fix error handling in nfs42_proc_getxattr
+> 
 > Peter Zijlstra <peterz@infradead.org>
 >     objtool/x86: Fix SRSO mess
 > 
@@ -366,17 +380,18 @@ thanks,
 > Diffstat:
 > 
 >  Makefile                                           |   4 +-
->  arch/mips/include/asm/cpu-features.h               |  21 ++-
->  arch/x86/kernel/fpu/xstate.c                       |   8 +
->  drivers/block/rbd.c                                | 139 ++++++++++++------
+>  arch/mips/include/asm/cpu-features.h               |  21 +-
+>  arch/x86/include/asm/fpu/internal.h                |   3 +-
+>  arch/x86/kernel/fpu/core.c                         |   2 +-
+>  arch/x86/kernel/fpu/xstate.c                       |   7 +
+>  arch/x86/kvm/mmu/tdp_mmu.c                         |   2 +-
 >  drivers/clk/clk-devres.c                           |  13 +-
->  drivers/dma-buf/sw_sync.c                          |  18 +--
+>  drivers/dma-buf/sw_sync.c                          |  18 +-
 >  .../drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c  |   4 +-
->  drivers/gpu/drm/i915/i915_active.c                 |  99 +++++++++----
+>  drivers/gpu/drm/i915/i915_active.c                 |  99 ++++++---
 >  drivers/gpu/drm/i915/i915_request.c                |   2 +
->  drivers/gpu/drm/vmwgfx/vmwgfx_drv.h                |  13 ++
->  drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c            |  29 ++--
->  drivers/md/dm-integrity.c                          |   4 +-
+>  drivers/gpu/drm/vmwgfx/vmwgfx_drv.h                |  12 ++
+>  drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c            |  29 +--
 >  drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c |   2 +
 >  drivers/net/bonding/bond_alb.c                     |   6 +-
 >  drivers/net/can/vxcan.c                            |   7 +-
@@ -385,44 +400,55 @@ thanks,
 >  drivers/net/ethernet/ibm/ibmveth.c                 |   2 +-
 >  drivers/net/ethernet/intel/ice/ice_base.c          |   3 +-
 >  drivers/net/ethernet/intel/igb/igb_ptp.c           |  24 +--
+>  drivers/net/ethernet/intel/igc/igc_defines.h       |   2 +-
 >  .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |   3 +-
 >  drivers/net/ipvlan/ipvlan_main.c                   |   3 +-
 >  drivers/net/veth.c                                 |   5 +-
->  drivers/of/dynamic.c                               |  31 ++--
+>  drivers/of/dynamic.c                               |  31 +--
+>  drivers/of/kexec.c                                 |   4 +-
+>  drivers/of/unittest.c                              |   4 +-
 >  drivers/pci/hotplug/acpiphp_glue.c                 |   9 +-
->  drivers/pinctrl/renesas/pinctrl-rza2.c             |  17 ++-
->  drivers/scsi/raid_class.c                          |  48 ------
+>  drivers/pinctrl/renesas/pinctrl-rza2.c             |  17 +-
+>  drivers/scsi/raid_class.c                          |  48 -----
 >  drivers/scsi/snic/snic_disc.c                      |   3 +-
->  drivers/video/fbdev/core/sysimgblt.c               |  64 +++++++-
->  fs/dlm/lock.c                                      |  53 ++++---
->  fs/dlm/plock.c                                     |  89 ++++++++----
->  fs/dlm/recover.c                                   |  39 +++--
->  fs/nfs/direct.c                                    |  26 ++--
+>  drivers/video/fbdev/core/sysimgblt.c               |  64 +++++-
+>  fs/attr.c                                          |   1 +
+>  fs/dlm/lock.c                                      |  53 +++--
+>  fs/dlm/plock.c                                     |  89 +++++---
+>  fs/dlm/recover.c                                   |  39 ++--
+>  fs/internal.h                                      |   2 -
+>  fs/jbd2/checkpoint.c                               | 165 ++++++---------
+>  fs/jbd2/commit.c                                   |   3 +-
+>  fs/jbd2/transaction.c                              |  17 +-
+>  fs/nfs/direct.c                                    |  26 ++-
+>  fs/nfs/inode.c                                     |   4 +-
+>  fs/nfs/nfs42proc.c                                 |   5 +-
 >  fs/nfs/nfs4proc.c                                  |  14 +-
 >  fs/nfsd/nfs4state.c                                |   2 +-
+>  fs/nfsd/vfs.c                                      |   4 +-
 >  include/drm/drm_dp_helper.h                        |   2 +-
->  include/linux/ceph/msgr.h                          |   9 +-
->  include/linux/clk.h                                |  80 +++++-----
+>  include/linux/clk.h                                |  80 +++----
 >  include/linux/cpuset.h                             |  12 +-
+>  include/linux/fs.h                                 |   2 +
+>  include/linux/jbd2.h                               |   7 +-
 >  include/linux/raid_class.h                         |   4 -
 >  include/linux/sched.h                              |   4 +-
->  include/net/bonding.h                              |  25 +---
+>  include/net/bonding.h                              |  25 +--
 >  include/net/rtnetlink.h                            |   4 +-
 >  include/net/sock.h                                 |   7 +-
+>  include/trace/events/jbd2.h                        |  12 +-
 >  kernel/cgroup/cgroup.c                             |   4 +
->  kernel/cgroup/cpuset.c                             | 161 +++++++++++++++------
->  kernel/sched/core.c                                |  41 +++---
->  kernel/sched/deadline.c                            |  66 +++++++--
+>  kernel/cgroup/cpuset.c                             | 232 ++++++++++++++-------
+>  kernel/sched/core.c                                |  41 ++--
+>  kernel/sched/deadline.c                            |  66 ++++--
 >  kernel/sched/sched.h                               |   2 +-
->  kernel/time/tick-sched.c                           |  29 +++-
->  kernel/time/tick-sched.h                           |   4 +
 >  kernel/torture.c                                   |   2 +-
 >  kernel/trace/trace.c                               |  15 +-
 >  kernel/trace/trace_irqsoff.c                       |   3 +-
 >  kernel/trace/trace_sched_wakeup.c                  |   2 +
->  lib/clz_ctz.c                                      |  32 +---
+>  lib/clz_ctz.c                                      |  32 +--
 >  lib/radix-tree.c                                   |   1 -
->  mm/memory-failure.c                                | 134 ++++++++---------
+>  mm/memory-failure.c                                |  21 +-
 >  mm/vmalloc.c                                       |   4 +
 >  net/batman-adv/bat_v_elp.c                         |   3 +-
 >  net/batman-adv/bat_v_ogm.c                         |   7 +-
@@ -431,24 +457,22 @@ thanks,
 >  net/batman-adv/soft-interface.c                    |   3 +
 >  net/batman-adv/translation-table.c                 |   1 -
 >  net/batman-adv/types.h                             |   6 +
->  net/ceph/mon_client.c                              |   6 +-
->  net/core/rtnetlink.c                               |  43 +++++-
->  net/dccp/proto.c                                   |  20 ++-
+>  net/can/raw.c                                      |  76 ++++---
+>  net/core/rtnetlink.c                               |  43 +++-
+>  net/dccp/proto.c                                   |  20 +-
+>  net/ncsi/ncsi-rsp.c                                |  93 ++-------
+>  net/netfilter/nf_tables_api.c                      |   2 +-
 >  net/netfilter/nft_set_pipapo.c                     |  13 +-
->  net/sched/sch_api.c                                |  53 +++++--
+>  net/sched/sch_api.c                                |  53 +++--
 >  net/sctp/socket.c                                  |   2 +-
 >  net/sunrpc/xprtrdma/verbs.c                        |   9 +-
 >  security/selinux/ss/policydb.c                     |   2 +-
->  sound/core/pcm_memory.c                            |  44 +++++-
->  sound/soc/codecs/rt711-sdw.h                       |   2 +
->  sound/soc/codecs/rt711.c                           |  30 ++++
->  sound/soc/codecs/rt711.h                           |  29 +++-
->  sound/soc/intel/boards/sof_sdw.c                   |  23 +--
->  sound/soc/intel/boards/sof_sdw_common.h            |   5 -
->  tools/objtool/arch.h                               |   1 +
+>  sound/core/pcm_memory.c                            |  44 +++-
+>  sound/pci/ymfpci/ymfpci.c                          |  10 +-
 >  tools/objtool/arch/x86/decode.c                    |  11 +-
->  tools/objtool/check.c                              |  22 ++-
->  tools/objtool/elf.h                                |   1 +
->  84 files changed, 1140 insertions(+), 668 deletions(-)
+>  tools/objtool/check.c                              |  22 +-
+>  tools/objtool/include/objtool/arch.h               |   1 +
+>  tools/objtool/include/objtool/elf.h                |   1 +
+>  94 files changed, 1070 insertions(+), 834 deletions(-)
 > 
 > 
