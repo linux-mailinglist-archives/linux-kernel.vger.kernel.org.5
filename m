@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E63DB78D1D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182FB78D1D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241637AbjH3Bvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 21:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
+        id S241642AbjH3Bvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 21:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241633AbjH3BvQ (ORCPT
+        with ESMTP id S241634AbjH3BvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 21:51:16 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8994CD2;
-        Tue, 29 Aug 2023 18:51:12 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rb6ct37xTzLp7D;
-        Wed, 30 Aug 2023 09:47:58 +0800 (CST)
-Received: from [192.168.106.44] (10.90.31.46) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 30 Aug 2023 09:51:09 +0800
-Subject: Re: [PATCH v4] mm: vmscan: try to reclaim swapcache pages if no swap
- space
-To:     Yosry Ahmed <yosryahmed@google.com>
-References: <20230829024104.1505530-1-liushixin2@huawei.com>
- <CAJD7tkZafahYbBs9=HNy4QtFZ4aGTcECvvCt3bQgXaNPUYTOUg@mail.gmail.com>
-CC:     Huang Ying <ying.huang@intel.com>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <wangkefeng.wang@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
-From:   Liu Shixin <liushixin2@huawei.com>
-Message-ID: <a2a237a7-aff5-cf7e-d72f-67537c950448@huawei.com>
-Date:   Wed, 30 Aug 2023 09:51:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 29 Aug 2023 21:51:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A15194
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 18:51:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6617461DCF
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:51:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 646B3C433C8;
+        Wed, 30 Aug 2023 01:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693360273;
+        bh=DWBYA7oCvZki07DkGCjwenj2DTnQDU4zQfO0NImpIIo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=J9ujTFhFF4k1ZIMon55gd/JhFNw2FJ9/KoCG5ojGgf5lADVaQLCCPZPgQ31fvsLjB
+         8eq9CpsL3ulISyFjf1W9BNluqlv165RKtB7SZeBvMYzRiichmuPwe7S567G4mv4r8Q
+         4/G0Bwtr7W6UfJDzzgobdO+a8zT29CsLy6J4NgdI6XxYZyj+d9j7V6SO5T00TH7ggS
+         O1nX4EAdVY7juvxBBLUU3IOBdxhXqpGFVt3OW6Rad5qcJwb+mmV4S+oVV/mwkbHlJp
+         V/CCOk9iRruU5OvgMvXRd1yQ5etrNWdi8pswZTrAZQAlC36oNUup7/hCRkjXIQcJJx
+         aKe6gcZCrklFg==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     damon@lists.linux.dev, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm/damon/core: use number of passed access sampling as a timer
+Date:   Wed, 30 Aug 2023 01:51:10 +0000
+Message-Id: <20230830015110.46420-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230827003727.49369-1-sj@kernel.org>
+References: 
 MIME-Version: 1.0
-In-Reply-To: <CAJD7tkZafahYbBs9=HNy4QtFZ4aGTcECvvCt3bQgXaNPUYTOUg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.90.31.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,161 +55,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 27 Aug 2023 00:37:27 +0000 SeongJae Park <sj@kernel.org> wrote:
+
+> DAMON sleeps for sampling interval after each sampling, and check if
+> it's time for further doing aggregation and ops updating using
+> ktime_get_coarse_ts64() and baseline timestamps for the two periodic
+> operations.  That's for making the operations occur at deterministic
+> timing.  However, it turned out it could still result in indeterministic
+> and even not-that-intuitive results.
+> 
+> After all, timer functions, and especially sleep functions that DAMON
+> uses to wait for specific timing, could contain some errors.  Those
+> errors are legal, so no problem.  However, depending on such legal
+> timing errors, the nr_accesses can be larger than aggregation interval
+> divided by sampling interval.  For example, with the default setting (5
+> ms sampling interval and 100 ms aggregation interval) we frequently show
+> regions having nr_accesses larger than 20.  Also, if the execution of a
+> DAMOS scheme takes a long time, next aggregation could happen before
+> enough number of samples are collected.
+> 
+> Since access check sampling is the smallest unit work of DAMON, using
+> the number of passed sampling intervals as the DAMON-internal timer can
+> easily avoid these problems.  That is, convert aggregation and ops
+> update intervals to numbers of sampling intervals that need to be passed
+> before those operations be executed, count the number of passed sampling
+> intervals, and invoke the operations as soon as the specific amount of
+> sampling intervals passed.  Make the change.
+> 
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> ---
+>  include/linux/damon.h | 14 ++++++--
+>  mm/damon/core.c       | 84 +++++++++++++++++++------------------------
+>  2 files changed, 48 insertions(+), 50 deletions(-)
+> 
+> diff --git a/include/linux/damon.h b/include/linux/damon.h
+> index ab3089de1478..9a32b8fd0bd3 100644
+> --- a/include/linux/damon.h
+> +++ b/include/linux/damon.h
+> @@ -524,8 +524,18 @@ struct damon_ctx {
+>  	struct damon_attrs attrs;
+>  
+>  /* private: internal use only */
+> -	struct timespec64 last_aggregation;
+> -	struct timespec64 last_ops_update;
+> +	/* number of sample intervals that passed since this context started */
+> +	unsigned long passed_sample_intervals;
+> +	/*
+> +	 * number of sample intervals that should be passed before next
+> +	 * aggregation
+> +	 */
+> +	unsigned long next_aggregation_sis;
+> +	/*
+> +	 * number of sample intervals that should be passed before next ops
+> +	 * update
+> +	 */
+> +	unsigned long next_ops_update_sis;
+>  
+>  /* public: */
+>  	struct task_struct *kdamond;
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index 988dc39e44b1..83af336bb0e6 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+> @@ -456,8 +456,11 @@ struct damon_ctx *damon_new_ctx(void)
+>  	ctx->attrs.aggr_interval = 100 * 1000;
+>  	ctx->attrs.ops_update_interval = 60 * 1000 * 1000;
+>  
+> -	ktime_get_coarse_ts64(&ctx->last_aggregation);
+> -	ctx->last_ops_update = ctx->last_aggregation;
+> +	ctx->passed_sample_intervals = 0;
+> +	ctx->next_aggregation_sis = ctx->attrs.aggr_interval /
+> +		ctx->attrs.sample_interval;
+> +	ctx->next_ops_update_sis = ctx->attrs.ops_update_interval /
+> +		ctx->attrs.sample_interval;
+>  
+>  	mutex_init(&ctx->kdamond_lock);
+>  
+> @@ -577,6 +580,9 @@ static void damon_update_monitoring_results(struct damon_ctx *ctx,
+>   */
+>  int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+>  {
+> +	unsigned long sample_interval;
+> +	unsigned long remaining_interval_us;
+> +
+>  	if (attrs->min_nr_regions < 3)
+>  		return -EINVAL;
+>  	if (attrs->min_nr_regions > attrs->max_nr_regions)
+> @@ -584,6 +590,20 @@ int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+>  	if (attrs->sample_interval > attrs->aggr_interval)
+>  		return -EINVAL;
+>  
+> +	sample_interval = attrs->sample_interval ? attrs->sample_interval : 1;
+> +
+> +	/* adjust next_aggregation_sis */
+> +	remaining_interval_us = ctx->attrs.sample_interval *
+> +		(ctx->next_aggregation_sis - ctx->passed_sample_intervals);
+> +	ctx->next_aggregation_sis = ctx->passed_sample_intervals +
+> +		remaining_interval_us / sample_interval;
+> +
+> +	/* adjust next_ops_update_sis */
+> +	remaining_interval_us = ctx->attrs.sample_interval *
+> +		(ctx->next_ops_update_sis - ctx->passed_sample_intervals);
+> +	ctx->next_ops_update_sis = ctx->passed_sample_intervals +
+> +		remaining_interval_us / sample_interval;
+> +
+>  	damon_update_monitoring_results(ctx, attrs);
+>  	ctx->attrs = *attrs;
+>  	return 0;
+> @@ -757,38 +777,6 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs)
+>  	return err;
+>  }
+
+So, the new timer variables are initialized in damon_new_ctx() as the default
+(5ms sampling interval, 100ms aggregation interval, and 1s ops update interval)
+and adjusted in damon_set_attrs().  It means the first intervals will be the
+default ones always.  I will make those initialized at the beginning of
+kdamond_fn() from the next spin.
+
+[...]
+> @@ -1436,6 +1412,8 @@ static int kdamond_fn(void *data)
+>  	sz_limit = damon_region_sz_limit(ctx);
+
+As mentioned abovely, the timer variables will be initialized around here (at
+the beggining of kdamond_fn(), before going into the loop), in the next spin.
 
 
-On 2023/8/29 23:23, Yosry Ahmed wrote:
-> On Mon, Aug 28, 2023 at 6:46 PM Liu Shixin <liushixin2@huawei.com> wrote:
->> When spaces of swap devices are exhausted, only file pages can be reclaimed.
->> But there are still some swapcache pages in anon lru list. This can lead
->> to a premature out-of-memory.
->>
->> The problem is found with such step:
->>
->>  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
->>  memory limit, then runs an program to allocates about 15MB memory.
->>
->> The problem occurs occasionally, which may need about 100 times.
-> The reproducer I used in v2 reproduces this very reliably and simply,
-> could you link to it instead?
->
-> https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
-OK
->
->> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
->> If the number is not zero, return true either. Moreover, add a new bit
->> swapcache_only in struct scan_control to skip isolating anon pages that
->> are not swapcache when only swapcache pages can be reclaimed to accelerate
->> reclaim efficiency.
->>
->> Link: https://lore.kernel.org/linux-mm/14e15f31-f3d3-4169-8ed9-fb36e57cf578@huawei.com/
->> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->> Tested-by: Yosry Ahmed <yosryahmed@google.com>
-> Usually people add the difference from the previous version to make it
-> easy to know what changed.
->
-> I still prefer to add NR_SWAPCACHE to memcg1_stats. Anyway, the code
-> looks good to me. With the updated reproducer link feel free to add:
->
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 Thanks,
->
->> ---
->>  include/linux/swap.h |  6 ++++++
->>  mm/memcontrol.c      |  8 ++++++++
->>  mm/vmscan.c          | 29 +++++++++++++++++++++++++++--
->>  3 files changed, 41 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/swap.h b/include/linux/swap.h
->> index 456546443f1f..0318e918bfa4 100644
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
->>  }
->>
->>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
->> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
->>  extern bool mem_cgroup_swap_full(struct folio *folio);
->>  #else
->>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
->> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->>         return get_nr_swap_pages();
->>  }
->>
->> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
->> +{
->> +       return total_swapcache_pages();
->> +}
->> +
->>  static inline bool mem_cgroup_swap_full(struct folio *folio)
->>  {
->>         return vm_swap_full();
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index e8ca4bdcb03c..c465829db92b 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->>         return nr_swap_pages;
->>  }
->>
->> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
->> +{
->> +       if (mem_cgroup_disabled())
->> +               return total_swapcache_pages();
->> +
->> +       return memcg_page_state(memcg, NR_SWAPCACHE);
->> +}
->> +
->>  bool mem_cgroup_swap_full(struct folio *folio)
->>  {
->>         struct mem_cgroup *memcg;
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 1080209a568b..e73e2df8828d 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -137,6 +137,9 @@ struct scan_control {
->>         /* Always discard instead of demoting to lower tier memory */
->>         unsigned int no_demotion:1;
->>
->> +       /* Swap space is exhausted, only reclaim swapcache for anon LRU */
->> +       unsigned int swapcache_only:1;
->> +
->>         /* Allocation order */
->>         s8 order;
->>
->> @@ -613,10 +616,20 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->>                  */
->>                 if (get_nr_swap_pages() > 0)
->>                         return true;
->> +               /* Is there any swapcache pages to reclaim? */
->> +               if (total_swapcache_pages() > 0) {
->> +                       sc->swapcache_only = 1;
->> +                       return true;
->> +               }
->>         } else {
->>                 /* Is the memcg below its swap limit? */
->>                 if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
->>                         return true;
->> +               /* Is there any swapcache pages in memcg to reclaim? */
->> +               if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
->> +                       sc->swapcache_only = 1;
->> +                       return true;
->> +               }
->>         }
->>
->>         /*
->> @@ -2280,6 +2293,19 @@ static bool skip_cma(struct folio *folio, struct scan_control *sc)
->>  }
->>  #endif
->>
->> +static bool skip_isolate(struct folio *folio, struct scan_control *sc,
->> +                        enum lru_list lru)
->> +{
->> +       if (folio_zonenum(folio) > sc->reclaim_idx)
->> +               return true;
->> +       if (skip_cma(folio, sc))
->> +               return true;
->> +       if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
->> +           !folio_test_swapcache(folio)))
->> +               return true;
->> +       return false;
->> +}
->> +
->>  /*
->>   * Isolating page from the lruvec to fill in @dst list by nr_to_scan times.
->>   *
->> @@ -2326,8 +2352,7 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
->>                 nr_pages = folio_nr_pages(folio);
->>                 total_scan += nr_pages;
->>
->> -               if (folio_zonenum(folio) > sc->reclaim_idx ||
->> -                               skip_cma(folio, sc)) {
->> +               if (skip_isolate(folio, sc, lru)) {
->>                         nr_skipped[folio_zonenum(folio)] += nr_pages;
->>                         move_to = &folios_skipped;
->>                         goto move;
->> --
->> 2.25.1
->>
-> .
->
+SJ
 
+>  
+>  	while (!kdamond_need_stop(ctx)) {
+> +		unsigned long sample_interval;
+> +
+>  		if (kdamond_wait_activation(ctx))
+>  			break;
+>  
+> @@ -1446,11 +1424,17 @@ static int kdamond_fn(void *data)
+>  			break;
+>  
+>  		kdamond_usleep(ctx->attrs.sample_interval);
+> +		ctx->passed_sample_intervals++;
+>  
+>  		if (ctx->ops.check_accesses)
+>  			max_nr_accesses = ctx->ops.check_accesses(ctx);
+>  
+> -		if (kdamond_aggregate_interval_passed(ctx)) {
+> +		sample_interval = ctx->attrs.sample_interval ?
+> +			ctx->attrs.sample_interval : 1;
+> +		if (ctx->passed_sample_intervals ==
+> +				ctx->next_aggregation_sis) {
+> +			ctx->next_aggregation_sis +=
+> +				ctx->attrs.aggr_interval / sample_interval;
+>  			kdamond_merge_regions(ctx,
+>  					max_nr_accesses / 10,
+>  					sz_limit);
+> @@ -1465,7 +1449,11 @@ static int kdamond_fn(void *data)
+>  				ctx->ops.reset_aggregated(ctx);
+>  		}
+>  
+> -		if (kdamond_need_update_operations(ctx)) {
+> +		if (ctx->passed_sample_intervals ==
+> +				ctx->next_ops_update_sis) {
+> +			ctx->next_ops_update_sis +=
+> +				ctx->attrs.ops_update_interval /
+> +				sample_interval;
+>  			if (ctx->ops.update)
+>  				ctx->ops.update(ctx);
+>  			sz_limit = damon_region_sz_limit(ctx);
+> -- 
+> 2.25.1
+> 
+> 
