@@ -2,161 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5438378E048
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077F778DEFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243648AbjH3TNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
+        id S1344224AbjH3T0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343623AbjH3QSm (ORCPT
+        with ESMTP id S1343624AbjH3QTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:18:42 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A429D2;
-        Wed, 30 Aug 2023 09:18:39 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbTwG0jV1z67j6l;
-        Thu, 31 Aug 2023 00:17:34 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
- 2023 17:18:37 +0100
-Date:   Wed, 30 Aug 2023 17:18:36 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/6] iio: Add buffer write() support
-Message-ID: <20230830171836.000045c3@Huawei.com>
-In-Reply-To: <20230830171118.00007726@Huawei.com>
-References: <20230807112113.47157-1-paul@crapouillou.net>
-        <20230830171118.00007726@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 30 Aug 2023 12:19:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E7ED2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693412342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sGn9Fwe3ebvb2amdc5cegj/0/WNStRYvxlTjUfacLtM=;
+        b=UT/mz3oxcwJiLaagj3gmo+g1cnOV2PRX6ujqx2bOzEmYLZ8ORYDMhNYEMRBx0c1D02wE1f
+        rjQs4Z2qJKnwX+jKguEE0JUge6uPQV00oNFXK+zKQqGVerZUheDMURdT81kMciV9WmyZeq
+        wHkqmN1vx9Mb1A2V90GdZwfzBRIWE8A=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-329-gaC1RtcdO5qciKeXBc8zMA-1; Wed, 30 Aug 2023 12:19:00 -0400
+X-MC-Unique: gaC1RtcdO5qciKeXBc8zMA-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2bb99d9c60eso69761231fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:19:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693412339; x=1694017139;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sGn9Fwe3ebvb2amdc5cegj/0/WNStRYvxlTjUfacLtM=;
+        b=AnL9OPC46ZOLsGinncb6pyxN7QvIHez/EL7C0I2JmXgCjwwLipdgvC1ZDjEFG6fI11
+         QmVHYeXGPv+vRojHQ8uq7gWe6uyUlLA1KNKHZYm4pfGWVCvTVy1QFY5XmtrGpqizcStV
+         HdMfyTujbbRmAJCYDCjXAVRFSJeyYGrThjmkQWtjbo3giTLhV1R0y2ptI8ki3X9zvGXk
+         KyurAVsVrjd32eLFU6T1m3/P/S5kTtbhkjld7S8rzkt/2jABLBOCaXy+1dlx6Mf6FWrb
+         54w/TA8WQM8HWVezwa+eWx2Tg4uFiF2PsXhSfBc3hLtjvvKKOGRmkjZJWvffy0jL2wIY
+         DXeg==
+X-Gm-Message-State: AOJu0YwBNrB/5OTirwgBpzT75xlXxAJydZM10QtDuOY/az2gZYkDXVic
+        pYSRqPRrlVF8oBYTNZ6ejr56Kfop3S6+af9xP0bYvs+CEUJBSn23WkPmqymZIcvFvJN2f1NK5dc
+        uvtxEJxLXObKfHm3pNWywYvSJ
+X-Received: by 2002:a2e:910e:0:b0:2bc:ed80:46e with SMTP id m14-20020a2e910e000000b002bced80046emr2239837ljg.31.1693412339311;
+        Wed, 30 Aug 2023 09:18:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEsgTspLT1jaKbifI4HxlpoF5oFgJluee3aU1mr+htbVSJGoAuR/2Gksu5nEhTIXq8D7sLRjQ==
+X-Received: by 2002:a2e:910e:0:b0:2bc:ed80:46e with SMTP id m14-20020a2e910e000000b002bced80046emr2239801ljg.31.1693412338443;
+        Wed, 30 Aug 2023 09:18:58 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id k11-20020a1709063e0b00b009a1a653770bsm7300061eji.87.2023.08.30.09.18.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 09:18:57 -0700 (PDT)
+Message-ID: <6734c409-89f1-89a1-3096-4054be29faf1@redhat.com>
+Date:   Wed, 30 Aug 2023 18:18:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        linus.walleij@linaro.org
+Cc:     Shyam-sundar.S-k@amd.com, Basavaraj.Natikar@amd.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev, lucapgl2001@gmail.com
+References: <20230829165627.156542-1-mario.limonciello@amd.com>
+ <20230829165627.156542-4-mario.limonciello@amd.com>
+ <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
+ <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com>
+ <811225f8-c505-7344-ac18-882472ee0348@redhat.com>
+ <d232c11d-901f-4ebc-b408-bed042ed8da9@amd.com>
+Content-Language: en-US, nl
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <d232c11d-901f-4ebc-b408-bed042ed8da9@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Aug 2023 17:11:18 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+Hi,
 
-> On Mon,  7 Aug 2023 13:21:07 +0200
-> Paul Cercueil <paul@crapouillou.net> wrote:
+On 8/30/23 17:47, Mario Limonciello wrote:
+> On 8/30/2023 10:37, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 8/29/23 23:37, Mario Limonciello wrote:
+>>> On 8/29/2023 14:54, Hans de Goede wrote:
+>>>> Hi Mario,
+>>>>
+>>>> On 8/29/23 18:56, Mario Limonciello wrote:
+>>>>> Lenovo ideapad 5 doesn't use interrupts for GPIO 0, and so internally
+>>>>> debouncing with WinBlue debounce behavior means that the GPIO doesn't
+>>>>> clear until a separate GPIO is used (such as touchpad).
+>>>>>
+>>>>> Prefer to use legacy debouncing to avoid problems.
+>>>>>
+>>>>> Reported-by: Luca Pigliacampo <lucapgl2001@gmail.com>
+>>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217833
+>>>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>>>>
+>>>> I'm not happy to see yet another DMI quirk solution here.
+>>>>
+>>>> and I guess you're not happy with this either...
+>>>
+>>> Yeah I was really hoping the first patch was enough for the issue.
+>>>
+>>> If we can't come up with anything else we can potentially drop patches 2 and 3. Even patch 1 alone will "significantly" improve the situation.
+>>>
+>>> The other option I considered is to hardcode WinBlue debounce behavior "off" in Linux.
+>>>
+>>> I don't think this is a good idea though though because we will likely trade bugs because the debounce values in the AML for systems using _AEI aren't actually used in Windows and might not have good values.
+>>
+>> What if we turn off the WinBlue debounce behavior for GPIO0 and then just hardcode some sane debounce values for it, overriding whatever the DSDT _AEI entries contain ?
+>>
 > 
-> > [V3 was: "iio: new DMABUF based API, v3"][1]
-> > 
-> > Hi Jonathan,
-> > 
-> > This is a subset of my patchset that introduced a new interface based on
-> > DMABUF objects [1]. It adds write() support to the IIO buffer
-> > infrastructure.
-> > 
-> > The reason it is not the full IIO-DMABUF patchset, is because you
-> > requested performance benchmarks - and our current numbers are barely
-> > better (~ +10%) than the fileio interface. There is a good reason for
-> > that: V3 of the patchset switched from having the IIO core creating the
-> > DMABUFs backed by physically contiguous memory, to having the IIO core
-> > being a simple DMABUF importer, and having the DMABUFs created
-> > externally. We now use the udmabuf driver to create those, and they are
-> > allocated from paged memory. While this works perfectly fine, our
-> > buffers are now cut in 4 KiB chunks (pages), non-contiguous in memory,
-> > which causes the DMA hardware to create an IRQ storm, as it raises an
-> > interrupt after each 4 KiB in the worst case scenario.  
+> I don't think this is a good idea.
 > 
-> Interesting. I'm guessing you don't necessarily need contiguous memory
-> and huge pages would get rid of most of that overhead?
+> Some vendors GPIO0 doesn't connect to the power button but instead to the EC.  If it's connected to the EC, the EC might instead trigger GPIO0 for lid or power button or whatever they decided for a design specific way.
 > 
-> Given embedded target those huge pages are hard to get so you need
-> hugetlb support to improve the chances of it working.  Some quick searching
-> suggests there is possible support on the way.
-> https://lore.kernel.org/linux-mm/20230817064623.3424348-1-vivek.kasireddy@intel.com/
+> I'd worry that we're going to end up with inconsistent results if they have their own debouncing put in place in the EC *because* they were relying upon the Winblue debounce behavior.
 > 
-> 
-> > 
-> > Anyway, this is not directly a problem of the IIO-DMABUF code - but I
-> > can't really upstream a shiny new interface that I claim is much faster,
-> > without giving numbers.
-> > 
-> > So while we fix this (either by updating the DMA IP and driver to
-> > support scatter-gather)  
-> 
-> Long run you almost always end up needing that unless contig requirements
-> are small and you want a robust solution.  I'm guessing no IOMMU to pretend
-> it's all contiguous... 
-> 
-> > or by hacking something quick to give us
-> > physically contiguous DMABUFs just for the benchmark), I thought it
-> > would make sense to upstream the few patches of the V3 patchset that are
-> > needed for the IIO-DMABUF interface but aren't directly related.  
-> 
-> Good idea.
-> 
-> > 
-> > As for write() support, Nuno (Cc'd) said he will work on upstreaming the
-> > DAC counterpart of adc/adi-axi-adc.c in the next few weeks, so there
-> > will be a user for the buffer write() support. I hope you are okay with
-> > this - otherwise, we can just wait until this work is done and submit it
-> > all at once.  
-> 
-> Absolutely fine, though I won't pick this up without the user also being
-> ready to go.
+> After all - this was fixed because of https://bugzilla.kernel.org/show_bug.cgi?id=217315
+
+Ok, that is fair.
 
 
-Having looked through these again, they are straight forward so no changes
-requested from me.  Nuno, if you can add this set into appropriate
-point in your series that will make use of it that will make my life easier
-and ensure and minor rebasing etc happens without having to bother Paul.
-
-Thanks,
-
-Jonathan
-
+>>>> Are we sure there is no other way? Did you check an acpidump
+>>>> for the laptop and specifically for its ACPI powerbutton handling?
+>>>
+>>> I'm not sure there is another way or not, but yes there is an acpidump attached to the bug in case you or anyone else has some ideas.
+>>>
+>>>>
+>>>> I would expect the ACPI powerbutton handler to somehow clear
+>>>> the bit, like how patch 1/3 clears it from the GPIO chip's
+>>>> own IRQ handler.
+>>>>
+>>>> I see that drivers/acpi/button.c does:
+>>>>
+>>>> static u32 acpi_button_event(void *data)
+>>>> {
+>>>>           acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
+>>>>           return ACPI_INTERRUPT_HANDLED;
+>>>> }
+>>>>
+>>>> So unless I'm misreading something here, there is some AML being
+>>>> executed on power-button events. So maybe there is something wrong
+>>>> with how Linux interprets that AML ?
+>>>>
+>>> The relevant ACPI spec section is here:
+>>>
+>>> https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/04_ACPI_Hardware_Specification/ACPI_Hardware_Specification.html#control-method-power-button
+>>>
+>>> I did look at the acpidump.  GPE 08 notifies \_SB.PWRB (a PNP0C0C device) with 0x2.  According to the spec this is specifically for letting the system know the power button is waking up the system from G1.
+>>
+>> Sorry, the acpi_os_execute() function name gave me the impression that this would actually call some ACPI defined function, since normally in acpi speak execute refers to an ACPI table defined method.
+>>
+>> But that is not the case here it is just a wrapper to deferred-exec the passed in function pointer.
+>>
+>> To be clear I was hoping that there was an ACPI defined (AML code) function which would maybe clear the GPIO for us and that that was maybe not working due to e.g. some opregion not being implemented by Linux. But no AML code is being executed at all, so this is all a red herring.
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
 > 
-> > 
-> > Changelog since v3:
-> > - [PATCH 2/6] is new;
-> > - [PATCH 3/6]: Drop iio_dma_buffer_space_available() function, and
-> >   update patch description accordingly;
-> > - [PATCH 6/6]: .space_available is now set to iio_dma_buffer_usage
-> >   (which is functionally the exact same).
-> > 
-> > Cheers,
-> > -Paul
-> > 
-> > [1] https://lore.kernel.org/all/20230403154800.215924-1-paul@crapouillou.net/
-> > 
-> > Alexandru Ardelean (1):
-> >   iio: buffer-dma: split iio_dma_buffer_fileio_free() function
-> > 
-> > Paul Cercueil (5):
-> >   iio: buffer-dma: Get rid of outgoing queue
-> >   iio: buffer-dma: Rename iio_dma_buffer_data_available()
-> >   iio: buffer-dma: Enable buffer write support
-> >   iio: buffer-dmaengine: Support specifying buffer direction
-> >   iio: buffer-dmaengine: Enable write support
-> > 
-> >  drivers/iio/adc/adi-axi-adc.c                 |   3 +-
-> >  drivers/iio/buffer/industrialio-buffer-dma.c  | 187 ++++++++++++------
-> >  .../buffer/industrialio-buffer-dmaengine.c    |  28 ++-
-> >  include/linux/iio/buffer-dma.h                |  11 +-
-> >  include/linux/iio/buffer-dmaengine.h          |   5 +-
-> >  5 files changed, 160 insertions(+), 74 deletions(-)
-> >   
-> 
+> Something we could do is add an extra callback for ACPI button driver to call the GPIO controller IRQ handler.  Worst case the IRQ handler does nothing, best case it fixes this issue.
+> I'm not sure how we'd tie it to something spec compliant.
+
+I was actually thinking the same thing. I think we should discuss going this route
+(ACPI button driver to call the GPIO controller IRQ handler) with Rafael.
+
+We can use the existing acpi_notifier_call_chain() mechanism and:
+
+1. Have the button code call acpi_notifier_call_chain() on the PNP0C0C
+event on button presses.
+
+2. Have the AMD pinctrl driver register a notifier_block with
+register_acpi_notifier() and then check if the source is a PNP0C0C
+device based on the device_class of the acpi_bus_event struct
+passed to the notifier and if it is check if GPIO0 needs
+clearing.
+
+I think this is preferable over the DMI quirk route, because this should
+fix the same issue also on other affected models which we don't know
+about.
+
+Regards,
+
+Hans
+
+
+
 
