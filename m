@@ -2,128 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFA078D20C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C3478D215
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241700AbjH3C13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 22:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        id S241708AbjH3C3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 22:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241713AbjH3C1O (ORCPT
+        with ESMTP id S241707AbjH3C2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 22:27:14 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990E0CD2;
-        Tue, 29 Aug 2023 19:27:11 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52a4818db4aso6463484a12.2;
-        Tue, 29 Aug 2023 19:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693362430; x=1693967230; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5JE8hnIxCXr8U3qk0svTUe9K1s4/roIND9EZ2Jy2dqo=;
-        b=DSxweWxa9Qh2f7CnqJxG3DgbVeVqK/IKs9mfdmE2rIPKGiFmA63NtzJBm5+eljHsfD
-         b7puvs7YpQPgGb5yVSucWQ1ejGuBa3Lzwz/togtofUrFdcE4V4/SLndR4avMTq96lVLf
-         QKtZDEY2LIDoeDU8e+6SUC0QlXL7hAB4IX9F64ZafGXOMBqRAUsJbNwvdoVK45HZs1Vg
-         907N+P3BqltxnSU9JGfZlb9dWTyAOx6RKzcgUHl2EtdnE8aq2oGdrVh7C9k71HV+OK+A
-         L3Ypqc4gt1Tkf4OcBlScC2b6YreJflPulJQixV6kkydxXo4qLLAJEMmRFYCrsznwNhaO
-         Ug9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693362430; x=1693967230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5JE8hnIxCXr8U3qk0svTUe9K1s4/roIND9EZ2Jy2dqo=;
-        b=S+pLnyS+NEVEqdBhWTT57UPKoEfheE5CpQzfE0gidd+qyG8dhTIKNtjK1QNvybkwZ0
-         cWUxMRyvl4weXIv3keA1elIMqEVUD4T6EHCfX1pykE8oj5wfOOdVzVWyuf9Nf9pbxHoh
-         trc2BMkYuifL3W/rbe/zRGFa2JG+1fIIH/PueD3U4g1TvNYk//k+q9X2D2R8nc+mxWpG
-         wt6VnSfoRfVcg/m+abu0hzKRqQmPCMbjZ91GpdrYjJu2d0J9am49bsh4qqJcUkP4gWQK
-         9/VNxhxsnWD7zXmimiicstSLXfxPthQ9LpCiHwvXTs7KIYc2AhSSHSY86XmIL1ZBmWwp
-         zcHg==
-X-Gm-Message-State: AOJu0YyJ27VSbnFrxTzaTw2KFFhKbQoQe/tXs0pkdhL9FR4+whRHCKg6
-        oz9Ks1p0W9NiC2ydJ/WIzc1ysPjrnF++EyOCl7M=
-X-Google-Smtp-Source: AGHT+IH8LujHkY5DxX8PNSWnczR+zMlFkeA9IvuEfId5ZWsGHO109BtUJvyFnH1zqu1T3/muTPWzqG0CMUTETs3oOI8=
-X-Received: by 2002:a05:6402:8d0:b0:527:237d:3765 with SMTP id
- d16-20020a05640208d000b00527237d3765mr777624edz.26.1693362429902; Tue, 29 Aug
- 2023 19:27:09 -0700 (PDT)
+        Tue, 29 Aug 2023 22:28:44 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5071483
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:28:40 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id EA23B32009A3;
+        Tue, 29 Aug 2023 22:28:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 29 Aug 2023 22:28:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1693362515; x=1693448915; bh=1E
+        DY2NQiLlXzc7YlNTpLWctDA9Pad08qbCtx6qCAsrQ=; b=KFDiA98iz/meA5dCsQ
+        QU0NbYxxOIuT5Y5Wl8tRogqhQn3XUl9T7o4+MhMWkOoLAGF6WO0FJvb38U62xWOk
+        l3YjP6+ey/kP4i+yH9QEJJYQfnM379cjWI54kVhdW6cgDl5niCmqYjsQ+ASJOw3J
+        jJ2XS14HkPJlGpXZb4PecxykhDf6lSOtvmLJPwlR5O1zaU08EzNbid2nwhAI8Jau
+        Rzy6DBujPeNKdKHwdbV9yLP0v/QqV5gn1f5X0ixkQADH+R6D2V20jfll5vheDti7
+        O51jNvCqf1LxbKAR1MfAIPifv8dphOk/Yr/it/aIRwMDAv53BbutTnE6Obq0/72z
+        E+uw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1693362515; x=1693448915; bh=1EDY2NQiLlXzc
+        7YlNTpLWctDA9Pad08qbCtx6qCAsrQ=; b=GUSPIvKjPJgd1S3J9IalAV5iYFArY
+        JLwf4HokWeG5WAyScCKTebW6qgjZ6/V4Sn3Y1wjYxFDjVWb+yHr9JNy0DAD0VmsB
+        dj8auB+uz0NAke5Aef+AEh0earmXiCTbQNnhpuWCzj/EY7w69z/j+ODZMBwJD/Kr
+        BTsTWPpRinXDxE/YfUBJG2zq4lG6ZH87yfImmnw0FxypiiOunI2xGhDcaDGt3mTE
+        NYpVz9tMBwXQE1Q+WjmgSxbWu4m3enWH2YBNqU+QO73qBzUf7WqhKEcy/hRtDaXM
+        bhatwmDmah1e/0grS3K1vSz4tSKflwQo/KQxVwG+QsnV+b39hVODSWNRw==
+X-ME-Sender: <xms:U6nuZLv63h3ucPoyUibvm1gFmFO1ik2Qm7fizycwbeWXpDUniXlLsQ>
+    <xme:U6nuZMffjqML2mbIfYvdOWKlHrqjK6oP4pjcpU9sqZr49jHblWlYMryNPi4Nbd96w
+    E9B2FxN_4vNoi_vTfs>
+X-ME-Received: <xmr:U6nuZOxpttWWcY6nfW7j4E_frQw6e4-aFLW2fKsX8mx8_CQsv8KzdCSmyBsXEj1FLoBmjoYB>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefjedgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhuffvvefkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgv
+    ucflohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnh
+    ephfeigedtveefjeeukeetfeektdeffeefteekfeffieeiteeigeehhfdutdeitdehnecu
+    ffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:U6nuZKONSHRfYzLug43BJCMnzOqFy4EnfN1UaIxx8H-_wS_MZZHIMw>
+    <xmx:U6nuZL-ErNr7sYHcSFA2gSqr2TSYvwFQdNNenBk5Uu-Z05X4lQ83QA>
+    <xmx:U6nuZKW7sp1-RuDaYSlma_FnFZv2eQuUo4wJvyfBLdEejtdnB34wKQ>
+    <xmx:U6nuZFmKON6GKWfv8tH_hZBZYK4lvcpBS9bTDVCv8V1cToLS9U3rWw>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 29 Aug 2023 22:28:32 -0400 (EDT)
+Date:   Wed, 30 Aug 2023 14:28:18 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH] platform/x86: asus-wmi: corrections to egpu safety check
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     corentin.chary@gmail.com, markgross@kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <6VM60S.XT1JR051MC8P1@ljones.dev>
+In-Reply-To: <32942803-b0b9-ddcd-90f7-1fc37062a18f@redhat.com>
+References: <20230827231525.78693-1-luke@ljones.dev>
+        <32942803-b0b9-ddcd-90f7-1fc37062a18f@redhat.com>
+X-Mailer: geary/44.1
 MIME-Version: 1.0
-References: <391c4270-637a-2afb-210d-6b6dfef01efa@intel.com>
- <20230828100313.3051403-1-benchuanggli@gmail.com> <CAG-rBig+koxDf3TuC-0p=tcBY_2WM1sPCvRDtjRmR7AnikrN-A@mail.gmail.com>
- <CACT4zj-BaX4tHji8B8gS5jiKkd-2BcwfzHM4fS-OUn0f8DSxcw@mail.gmail.com> <CAG-rBihBkTeZR6yMSF+5zg-h1U1pxGuN-nv=Y7DXLvxV435hDw@mail.gmail.com>
-In-Reply-To: <CAG-rBihBkTeZR6yMSF+5zg-h1U1pxGuN-nv=Y7DXLvxV435hDw@mail.gmail.com>
-From:   Ben Chuang <benchuanggli@gmail.com>
-Date:   Wed, 30 Aug 2023 10:26:42 +0800
-Message-ID: <CACT4zj_84eCYOq56zdqaydaEGqyqBrXDrsTkDRyCntvVF78-0A@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix
- SoCs can suspend
-To:     Sven van Ashbrook <svenva@chromium.org>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        skardach@google.com, adrian.hunter@intel.com,
-        SeanHY.chen@genesyslogic.com.tw, ben.chuang@genesyslogic.com.tw,
-        greg.tu@genesyslogic.com.tw, jason.lai@genesyslogic.com.tw,
-        jasonlai.genesyslogic@gmail.com, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, reniuschengl@gmail.com,
-        stable@vger.kernel.org, ulf.hansson@linaro.org,
-        victor.shih@genesyslogic.com.tw, victorshihgli@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Wed, Aug 30, 2023 at 12:35=E2=80=AFAM Sven van Ashbrook <svenva@chromium=
-.org> wrote:
->
-> + Rafael for advice on runtime_pm corner cases.
->
-> On Mon, Aug 28, 2023 at 10:48=E2=80=AFPM Ben Chuang <benchuanggli@gmail.c=
-om> wrote:
-> >
-> >
-> > My concern is that when runtime_pm is false, gl9763e is disabled LPM
-> > negotiation, gl9763e can't enter L1.x and s0ix may fail.
-> > It seems that runtime_pm will always exist and that's ok.
-> >
->
-> Thank you. I believe we can address your concern.
->
-> - XXX_suspend/XXX_resume (i.e. classic suspend/resume) depends on
->   CONFIG_PM_SLEEP. This always selects CONFIG_PM. This always includes
->   the runtime_pm framework. So, if XXX_suspend/XXX_resume gets called,
->   the runtime_pm framework is always present, but may not be actively
->   managing the device.
-This is ok.
 
->
-> - "when runtime_pm is false" AFAIK the only way to disable runtime_pm
->   when CONFIG_PM is set, is to write "on" to /sys/devices/.../power/contr=
-ol.
->   See https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-devices-=
-power
->   In that case, the runtime_pm framework will activate the device, callin=
-g
->   XXX_runtime_resume() if necessary. Are there other ways of disabling it=
-?
->
-> - if /sys/devices/.../power/control is "on", then:
->   gl9763e_runtime_resume() always called -> LPM always disabled
->   gl9763e_suspend() -> LPM enabled -> gl9763e_resume() -> LPM disabled
->   In between "classic" XXX_suspend and XXX_resume, LPM will be enabled,
->   so the device can enter L1.x and S0ix.
-In this cas, after gl9763e_resume(), it is LPM disabled.
-Is there no chance for gl9763e to enter L1.x again when the system is idle?
 
->
-> And the LPM negotiation flags look correct.
-> Does that address your concerns?
+On Mon, Aug 28 2023 at 11:58:51 AM +02:00:00, Hans de Goede 
+<hdegoede@redhat.com> wrote:
+> Hi Luke,
+> 
+> On 8/28/23 01:15, Luke D. Jones wrote:
+>>  An incorrect if statement was preventing the enablement of the egpu.
+>> 
+>>  Fixes: 1bddf53ccac0 ("platform/x86: asus-wmi: don't allow eGPU 
+>> switching if eGPU not connected")
+>>  Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> 
+> Not sure which tree/branch this is based on but the commit-id for 
+> your Fixes:
+> is not correct.
+> 
+> in my tree this is commit d49f4d1a30ac (platform/x86: asus-wmi: don't 
+> allow
+> eGPU switching if eGPU not connected") .
+> 
+> 
+> 
+>>  ---
+>>   drivers/platform/x86/asus-wmi.c | 15 +++++++--------
+>>   1 file changed, 7 insertions(+), 8 deletions(-)
+>> 
+>>  diff --git a/drivers/platform/x86/asus-wmi.c 
+>> b/drivers/platform/x86/asus-wmi.c
+>>  index 6db2d18a61e0..b51586986450 100644
+>>  --- a/drivers/platform/x86/asus-wmi.c
+>>  +++ b/drivers/platform/x86/asus-wmi.c
+>>  @@ -731,19 +731,18 @@ static ssize_t egpu_enable_store(struct 
+>> device *dev,
+>>   		return -EINVAL;
+>> 
+>>   	result = asus_wmi_get_devstate_simple(asus, 
+>> ASUS_WMI_DEVID_EGPU_CONNECTED);
+> 
+> And this does not apply, because the:
+> 
+> 	result = asus_wmi_get_devstate_simple()
+> 
+> you have here has been fixed in my tree to be
+> 
+> 	err = asus_wmi_get_devstate_simple()
+> 
 
-Best regards,
-Ben Chuang
+Fixed.
+
+> to match the error checks below which actually check "err" not 
+> "result"
+> I guess that a fix for this being squashed into my tree is also what
+> has resulted in the different commit ids.
+> 
+> Please rebase on top of:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=for-next
+> 
+> and submit a new version.
+> 
+> And please also Cc: platform-driver-x86@vger.kernel.org for the next 
+> version.
+
+Thank you for the review Hans.
+
+> 
+>>  -	if (err < 0)
+>>  -		return err;
+>>  -	if (err < 1) {
+>>  -		err = -ENODEV;
+>>  -		pr_warn("Failed to set egpu disable: %d\n", err);
+>>  +	if (err < 0) {
+>>  +		pr_warn("Failed to get egpu connection status: %d\n", err);
+>>   		return err;
+>>   	}
+>> 
+>>   	if (asus->gpu_mux_mode_available) {
+>>   		result = asus_wmi_get_devstate_simple(asus, 
+>> ASUS_WMI_DEVID_GPU_MUX);
+>>  -		if (result < 0)
+>>  +		if (result < 0) {
+>>   			/* An error here may signal greater failure of GPU handling */
+>>  +			pr_warn("Failed to get gpu mux status: %d\n", err);
+>>   			return result;
+>>  +		}
+>>   		if (!result && enable) {
+>>   			err = -ENODEV;
+>>   			pr_warn("Can not enable eGPU when the MUX is in dGPU mode: 
+>> %d\n", err);
+>>  @@ -753,12 +752,12 @@ static ssize_t egpu_enable_store(struct 
+>> device *dev,
+>> 
+>>   	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_EGPU, enable, &result);
+>>   	if (err) {
+>>  -		pr_warn("Failed to set egpu disable: %d\n", err);
+>>  +		pr_warn("Failed to set egpu state: %d\n", err);
+>>   		return err;
+>>   	}
+>> 
+>>   	if (result > 1) {
+>>  -		pr_warn("Failed to set egpu disable (retval): 0x%x\n", result);
+>>  +		pr_warn("Failed to set egpu state (retval): 0x%x\n", result);
+>>   		return -EIO;
+>>   	}
+>> 
+> 
+
+
