@@ -2,122 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0AD78E09A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3360A78E134
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239315AbjH3U1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
+        id S240776AbjH3VLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239307AbjH3U1N (ORCPT
+        with ESMTP id S240686AbjH3VLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:27:13 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5E82D46
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:23:24 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so604555e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:23:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693426927; x=1694031727; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=axjZpoy0fsRceXZWl0+b6PXrTV3YKhJ6mUApTZrRnqQ=;
-        b=cNKruMfYhAldllF056NXfGtjONztSudMiNjwV9i/zWhYX8vD66/5Q0mpIPPYSrryFP
-         C/bhBoa2juGkLwnAuL38PHZr03O9HcGT9JKfJZW9YTdLs9u5YJIaF4897+T6gwsxu3Gk
-         3LyjPFwXZiXFoW2Xmsy7u0I6Y0KD8sBOyBQW4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693426927; x=1694031727;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=axjZpoy0fsRceXZWl0+b6PXrTV3YKhJ6mUApTZrRnqQ=;
-        b=l39IFGd/ivI8wmZXOjjAG95YNrv6kzaZmat8XrIQ4tSJbulvj58RglB7EQuXNVta0+
-         lBnnMhC6LhJcVEK+vYyyCqjuQ9kUv1Y5nz6dSb9R0HEAw3y2yMM4awuGCV+Y3FrU/lkg
-         vWqA4efEgT6hZGpR85qKrbKi5eOYJUTWDqWuh5ICGvf8ReXkGlS7qK/a56Ce22G0UW9O
-         YmXY0y0Ph8B74rNksgTln6bE5EjPQqEHcyl1L+9HMAHUfyAKiofmiF9DGdteeKA6YGvu
-         XJ3b+AXILJoJKf2AF3uHqwIcdcUPpPDnP3YorjTmC8Jomw7hSD0VK5Bm/IkHSOTBDK5d
-         aGew==
-X-Gm-Message-State: AOJu0YzK+FBT+cSlX1lTvBsc8uXIPdMEfpGGRiq1IZuLyyTDqCSfvL37
-        UGKkh5aihBNxW2wO1fGRm2160PXUNpn/ZldIgDiHHHPh
-X-Google-Smtp-Source: AGHT+IEwgyPWejueGtIUeqQbz7rCfz/1HZcSFvQiVPBChsLfUmFnsfYNBQK5dsbvmVsnGdY4CDWO6Q==
-X-Received: by 2002:adf:f108:0:b0:317:e766:d5e9 with SMTP id r8-20020adff108000000b00317e766d5e9mr2742030wro.3.1693426926997;
-        Wed, 30 Aug 2023 13:22:06 -0700 (PDT)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id t7-20020aa7d4c7000000b00529fa63ef6fsm7167808edr.57.2023.08.30.13.22.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 13:22:06 -0700 (PDT)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-3fef2fafee2so27535e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:22:06 -0700 (PDT)
-X-Received: by 2002:a05:600c:5113:b0:3fe:ef25:8b86 with SMTP id
- o19-20020a05600c511300b003feef258b86mr33014wms.4.1693426926192; Wed, 30 Aug
- 2023 13:22:06 -0700 (PDT)
+        Wed, 30 Aug 2023 17:11:13 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD67CC;
+        Wed, 30 Aug 2023 14:10:35 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UKIfLf016672;
+        Wed, 30 Aug 2023 20:24:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=/ccv1mYRsDGc54g1JHIaLOdjf2JwL4EK5wa6WQFkEAI=;
+ b=QgUvjSkkSxc0xL7BYc16d+YRhqxKeJ8fnWnfinPMfuP+EWyzAtrPFMB2rP4g30JydCac
+ oSd+RAJxPSdHK/L2PY6ChX0WJS/tqQMYTk6t+RdvFP8k6awWD/XDmCJigJe1j7Pgemre
+ +LrF/yGZMHYw9ZuGfD3U3lGL5MyGv5UYa9mAk4yfFYnk/1J8kofGJnwzD/biV+u1EFRV
+ r60oQeG863FpgWxezMsq0rMoj5UsRrUpFtNXSxjxP9mHXNs1JzItqhD7ju8g+8gjEEPi
+ U9/gZREfIqis6J4F+2LdHCkGLB8r2rqzJHbR7QpcTzB7Hbr4SLwdDUGNbXg1ZbtDQBK0 VA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssy5q1kr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 20:24:28 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37UKOQDm007314
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 20:24:26 GMT
+Received: from [10.111.178.80] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 30 Aug
+ 2023 13:22:46 -0700
+Message-ID: <9da7f41e-6d4a-452a-8042-0b09cad71bb8@quicinc.com>
+Date:   Wed, 30 Aug 2023 13:22:37 -0700
 MIME-Version: 1.0
-References: <cover.1693416477.git.mirq-linux@rere.qmqm.pl> <85bcd0af56521209f40e76e0cac626c4f02b7df5.1693416477.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <85bcd0af56521209f40e76e0cac626c4f02b7df5.1693416477.git.mirq-linux@rere.qmqm.pl>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 30 Aug 2023 13:21:51 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WXANhfLQfxYuuEWS_=ZcjR5LrmzAvXThrOECwqXhe5hw@mail.gmail.com>
-Message-ID: <CAD=FV=WXANhfLQfxYuuEWS_=ZcjR5LrmzAvXThrOECwqXhe5hw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/7] regulator/core: regulator_lock_contended: wrap
- ww_mutex lock sequence restart
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] mac80211: Use flexible array in struct
+ ieee80211_tim_ie
+Content-Language: en-US
+To:     Christian Lamparter <chunkeey@gmail.com>, <kernel@quicinc.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        "Stanislaw Gruszka" <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        "Ping-Ke Shih" <pkshih@realtek.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+References: <20230829-ieee80211_tim_ie-v2-0-fdaf19fb1c0e@quicinc.com>
+ <20230829-ieee80211_tim_ie-v2-2-fdaf19fb1c0e@quicinc.com>
+ <1774098a-5062-4f12-a760-f16036d095e3@gmail.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <1774098a-5062-4f12-a760-f16036d095e3@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1G_R_wCDKZ633AYsiVqaqHxd1GurX91f
+X-Proofpoint-GUID: 1G_R_wCDKZ633AYsiVqaqHxd1GurX91f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-30_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ suspectscore=0 priorityscore=1501 malwarescore=0 phishscore=0
+ clxscore=1011 adultscore=0 lowpriorityscore=0 mlxlogscore=955 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300184
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 8/30/2023 12:51 PM, Christian Lamparter wrote:
+> Hi,
+> 
+> On 8/29/23 15:29, Jeff Johnson wrote:
+>> Currently struct ieee80211_tim_ie defines:
+>>     u8 virtual_map[1];
+>>
+>> Per the guidance in [1] change this to be a flexible array.
+>>
+>> As a result of this change, adjust all related struct size tests to
+>> account for the fact that the sizeof(struct ieee80211_tim_ie) now
+>> accounts for the minimum size of the virtual_map.
+>>
+>> [1] 
+>> https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+>>
+>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>> ---
+>> diff --git a/include/linux/ieee80211.h b/include/linux/ieee80211.h
+>> index bd2f6e19c357..4cdc2eb98f16 100644
+>> --- a/include/linux/ieee80211.h
+>> +++ b/include/linux/ieee80211.h
+>> @@ -961,7 +961,7 @@ struct ieee80211_tim_ie {
+>>       u8 dtim_period;
+>>       u8 bitmap_ctrl;
+>>       /* variable size: 1 - 251 bytes */
+>> -    u8 virtual_map[1];
+>> +    u8 virtual_map[];
+>>   } __packed;
+> 
+> 
+> Uhh, the 802.11 (my 2012 Version has this in) spec in
+> 8.4.2.7 TIM Element demands this to be 1 - 251 bytes.
+> And this is why there's a comment above... With your
+> change this could be confusing. Would it be possible
+> to fix that somehow? Like in a anonymous union/group
+> with a flexible array and a u8?
 
-On Wed, Aug 30, 2023 at 10:35=E2=80=AFAM Micha=C5=82 Miros=C5=82aw
-<mirq-linux@rere.qmqm.pl> wrote:
->
-> Wrap locking a regulator after a failed ww_mutex locking sequence with a
-> new function.  This is to deduplicate occurrences of the pattern and make
-> it self-documenting.
->
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> ---
->  drivers/regulator/core.c | 28 +++++++++++++++++++---------
->  1 file changed, 19 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-> index e89c12d27a9d..7201927c5d5b 100644
-> --- a/drivers/regulator/core.c
-> +++ b/drivers/regulator/core.c
-> @@ -154,6 +154,22 @@ static inline int regulator_lock_nested(struct regul=
-ator_dev *rdev,
->         return 0;
->  }
->
-> +/**
-> + * regulator_lock_contended - retry locking a regulator
-> + * @rdev:              regulator source
-> + * @ww_ctx:            w/w mutex acquire context
-> + *
-> + * Locks a regulator after a failed locking sequence (aborted
-> + * with -EDEADLK).
-> + */
-> +static inline void regulator_lock_contended(struct regulator_dev *rdev,
-> +                                           struct ww_acquire_ctx *ww_ctx=
-)
+Adding Kees to the discussion for any advice. Yes, the virtual_map must 
+contain at least one octet but may contain more than one. And to 
+complicate matters, the information that tells us how many octets are 
+actually present is found outside the struct; the TLV header that 
+precedes the struct will contain the length of the struct, and hence the 
+length of the bitmap is that size - 2 (the size of the dtim_period and 
+bitmap_ctrl fields).
 
-nit: IMO "inline" should be reserved for places where it would be a
-serious problem if the function wasn't inlined. For cases like this,
-let the compiler do its job and decide whether we'll be better off
-with the code inlined or not.
+I don't think it is unique to this struct that an 802.11 element will 
+have optional octets for which one or more octets must always be 
+present. For that reason I've been updating ieee80211.h kdoc to point to 
+the latest specification since that ultimately provides the necessary 
+guidance.
 
-In any case:
+/jeff
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
