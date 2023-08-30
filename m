@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AF078D135
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2312478D142
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238370AbjH3AnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 20:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
+        id S239345AbjH3Aoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 20:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238328AbjH3Amd (ORCPT
+        with ESMTP id S241437AbjH3AoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 20:42:33 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1C819A;
-        Tue, 29 Aug 2023 17:42:30 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-56c250ff3d3so232511a12.1;
-        Tue, 29 Aug 2023 17:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693356150; x=1693960950; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nqBGU9u1vGB8q2WDmOt/P3uNLvgaRaNASZ7VqIyPuPA=;
-        b=m1I2JOaSxnYJ586wCUyU7xCaPU8oaz4fws6A5XcTyjBaG8VtwVJmNb2BjqVfhW8zQw
-         HEc/nVswEmA1imcPV58JduI1bi7Erp6eFWM2JAvk1KZPHK3YNMnqDy5zhoKYgcWGVpQY
-         vHSdtw/D+DZg3Ah+o8tLrtjaRRL2hCfPemv56hTKVf+0avG9NmP+ZdXcZyr0rZmzFXPc
-         MOKEgAB71T1Z7lD5OafGwOk267ahub3QP8ZCabmZR/uEwV+wprIB8GVTGDCodKk/6VOW
-         ILArsKRrV4ap/i2gjP5u9KFme/MTwciVk4uLPwj7lGMZ+4tehlF+Xjrj99pJPJEGUUiD
-         sSag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693356150; x=1693960950;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nqBGU9u1vGB8q2WDmOt/P3uNLvgaRaNASZ7VqIyPuPA=;
-        b=YKsLHepzVXNMaPgJ3uZMn1YtjGkL380UrNyfb0GcLMebv6Yb07LxjpQ6594TnFVwSC
-         pcw0XNmK5nknYtdkm0/jSAop/V7Ye53Y0PopEHhjUskWEVoUERUIk9VK5GLd6St0krYf
-         Z5dilTt/w7zM+XBDDO3hiSrDPtIiiIbFn6iuvGmurGHaqSCNI3onqKXOk43i3wzu0ou0
-         pxOP7Y261dgsUWusx1wb3HRQ+Gl7bsWbcrez7aEtkb8iX4uHF6mIDeBodhwFYoi1yJjf
-         hgN3/SaKmRxS8hsncnmDPyzYCSpJvBkldbgsuPpd6FG96sJXJ8W5bs+dsyrWD/c4Z65p
-         tIrA==
-X-Gm-Message-State: AOJu0YxTskYfiJpaxU9Bx1UJmkOZu7csqGNsIInXwnj2FxFskh2PJ1Fo
-        I9yH+esw2dXV0I8rXovuApE=
-X-Google-Smtp-Source: AGHT+IFI9e21DDk43+YPYhcUOd1/CtgBttiDPMm7ASOhe3wBqKJz22o2cMS7DIUdPGR2LbK2Yj7j0A==
-X-Received: by 2002:a17:90b:4c04:b0:26b:535e:fc12 with SMTP id na4-20020a17090b4c0400b0026b535efc12mr1318629pjb.7.1693356149943;
-        Tue, 29 Aug 2023 17:42:29 -0700 (PDT)
-Received: from [192.168.0.105] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id hi23-20020a17090b30d700b002636dfcc6f5sm167066pjb.3.2023.08.29.17.42.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 17:42:29 -0700 (PDT)
-Message-ID: <085d4cb6-dd7c-9093-1464-9e421961cb65@gmail.com>
-Date:   Wed, 30 Aug 2023 07:42:24 +0700
+        Tue, 29 Aug 2023 20:44:12 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0A319A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:44:09 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TNeQog005072;
+        Wed, 30 Aug 2023 00:43:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=JJx+iBCNiI2MMh8+aO3HVA8Wi5bYTILzpsCDdfw3eNM=;
+ b=v54ZhtI1evVq3FAVNushrhnL0Kw3dOcyPaJItg6u5o6ffWqQnk10PW58fVncxwS4aVBQ
+ GKORPZ6z8Vq9jAYXmhEAJVaDw4CFn3GoASyX2R3eugyyr59FVNIClctwv95bzZRKdHEv
+ FIW82SlcLFI2kGmyMgXb0tkVDP5hH6IuLIe0qyL2hnFMWd1+go8k8z2M7k+uf6B96fOc
+ oVcdSsJHjL5OumQkcSnPUz3BXZZZaMN+kYMjwYxe04awaJHWS+K3VKdwKEJ034cwHosj
+ jL2xxDxZxtGOUdKpx7asfOOuLpc03K4a4QNJvQx6p93VlhP0sxl26nABInaPwDz1aDju lg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9j4eaxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Aug 2023 00:43:53 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37TMmBZO000607;
+        Wed, 30 Aug 2023 00:43:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sr6gbw64y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Aug 2023 00:43:52 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37U0hpHt005857;
+        Wed, 30 Aug 2023 00:43:51 GMT
+Received: from localhost.us.oracle.com (dhcp-10-65-180-98.vpn.oracle.com [10.65.180.98])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sr6gbw5wk-1;
+        Wed, 30 Aug 2023 00:43:51 +0000
+From:   Anthony Yznaga <anthony.yznaga@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, Liam.Howlett@Oracle.com,
+        willy@infradead.org
+Subject: [PATCH] mm: fix unaccount of memory on vma_link() failure
+Date:   Tue, 29 Aug 2023 17:43:24 -0700
+Message-Id: <20230830004324.16101-1-anthony.yznaga@oracle.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: Fwd: WARNING: CPU: 13 PID: 3837105 at kernel/sched/sched.h:1561
- __cfsb_csd_unthrottle+0x149/0x160
-Content-Language: en-US
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Hao Jia <jiahao.os@bytedance.com>, Ben Segall <bsegall@google.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Igor Raits <igor.raits@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>
-References: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
-In-Reply-To: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ bulkscore=0 spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308300005
+X-Proofpoint-GUID: uqvqKtp2XM9GWbbfUHyH-pA6raDy475s
+X-Proofpoint-ORIG-GUID: uqvqKtp2XM9GWbbfUHyH-pA6raDy475s
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 07:37, Bagas Sanjaya wrote:
->> [293790.956625] CPU: 13 PID: 3837105 Comm: QueryWorker-30f Tainted: G        W   E      6.4.12-1.gdc.el9.x86_64 #1
->> [293790.957963] Hardware name: RDO OpenStack Compute/RHEL, BIOS edk2-20230301gitf80f052277c8-2.el9 03/01/2023
+Fix insert_vm_struct() so that only accounted memory is unaccounted
+if vma_link() fails.
 
-To Igor: Does vanilla v6.4.12 also exhibit this regression?
+Fixes: d4af56c5c7c6 ("mm: start tracking VMAs with maple tree")
+Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+---
+ mm/mmap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 514ced13c65c..f8c084017757 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3278,7 +3278,8 @@ int insert_vm_struct(struct mm_struct *mm, struct vm_area_struct *vma)
+ 	}
+ 
+ 	if (vma_link(mm, vma)) {
+-		vm_unacct_memory(charged);
++		if (vma->vm_flags & VM_ACCOUNT)
++			vm_unacct_memory(charged);
+ 		return -ENOMEM;
+ 	}
+ 
 -- 
-An old man doll... just what I always wanted! - Clara
+2.39.3
 
