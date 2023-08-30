@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0DA78D287
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 05:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D8678D28F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 05:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241889AbjH3D0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 23:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33636 "EHLO
+        id S240768AbjH3Dd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 23:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241573AbjH3DZ6 (ORCPT
+        with ESMTP id S237775AbjH3DdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 23:25:58 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D5ACAB
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 20:25:55 -0700 (PDT)
-Received: from loongson.cn (unknown [10.180.128.250])
-        by gateway (Coremail) with SMTP id _____8CxNvHCtu5kXfkcAA--.59008S3;
-        Wed, 30 Aug 2023 11:25:54 +0800 (CST)
-Received: from crazy.crazy.loongson.org (unknown [10.180.128.250])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxriPBtu5k9+5mAA--.12310S4;
-        Wed, 30 Aug 2023 11:25:53 +0800 (CST)
-From:   liweihao <liweihao@loongson.cn>
-To:     wangrui@loongson.cn
-Cc:     chenhuacai@kernel.org, kernel@xen0n.name,
-        linux-kernel@vger.kernel.org, liweihao@loongson.cn,
-        loongarch@lists.linux.dev, masahiroy@kernel.org, yijun@loongson.cn
-Subject: Re: [PATCH 1/1] LoongArch: adjust copy/clear_user exception handler behavior
-Date:   Wed, 30 Aug 2023 11:25:53 +0800
-Message-Id: <20230830032553.2974884-1-liweihao@loongson.cn>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <CAHirt9i0tcUCuQ5ZL657MOZ4CUg0bpfiNbo01WLhPAwsLjgM+g@mail.gmail.com>
-References: <CAHirt9i0tcUCuQ5ZL657MOZ4CUg0bpfiNbo01WLhPAwsLjgM+g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxriPBtu5k9+5mAA--.12310S4
-X-CM-SenderInfo: 5olzvxhkdrqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
-        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E
-        87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j8yCJUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 23:33:18 -0400
+Received: from out-246.mta1.migadu.com (out-246.mta1.migadu.com [IPv6:2001:41d0:203:375::f6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9861B0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 20:33:15 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693366393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S3uKzdW1DNd9/aFHR1lUQtctGFzoSLRbK9fu0L1Os2k=;
+        b=pj2D9fQOHXhvz+JX8x0nxO5LoRax4q/hU79z5JxJhJX7GHE8kupeE5pRYDBqaIcyPW35Mw
+        dDXCqFvquYBOCEjFkFNa3gAiElXhnIDe7m2hI2yavOWqkoqY34A9+SMRZNhvhWyiBC0sJ5
+        OlxVut84SYpb/AiPB9CdT+1Gy8TwQns=
+Mime-Version: 1.0
+Subject: Re: [PATCH] hugetlb: set hugetlb page flag before optimizing vmemmap
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230829213734.69673-1-mike.kravetz@oracle.com>
+Date:   Wed, 30 Aug 2023 11:32:27 +0800
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Usama Arif <usama.arif@bytedance.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        James Houghton <jthoughton@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <00753B00-69DB-499E-8BC3-5DF42DC5936B@linux.dev>
+References: <20230829213734.69673-1-mike.kravetz@oracle.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello WANG Rui,
 
-> > +.Lsmall_fixup:
-> > +29:    st.b    zero, a0, 0
-> > +       addi.d  a0, a0, 1
-> > +       addi.d  a1, a1, -1
-> > +       bgt     a1, zero, 1b
-> 
-> I'm sure the jump target here is 29b.
 
-You are right, this is a mistake.
+> On Aug 30, 2023, at 05:37, Mike Kravetz <mike.kravetz@oracle.com> =
+wrote:
+>=20
+> Currently, vmemmap optimization of hugetlb pages is performed before =
+the
+> hugetlb flag (previously hugetlb destructor) is set identifying it as =
+a
+> hugetlb folio.  This means there is a window of time where an ordinary
+> folio does not have all associated vmemmap present.  The core mm only
+> expects vmemmap to be potentially optimized for hugetlb  and device =
+dax.
+> This can cause problems in code such as memory error handling that may
+> want to write to tail struct pages.
+>=20
+> There is only one call to perform hugetlb vmemmap optimization today.
+> To fix this issue, simply set the hugetlb flag before that call.
+>=20
+> There was a similar issue in the free hugetlb path that was previously
+> addressed.  The two routines that optimize or restore hugetlb vmemmap
+> should only be passed hugetlb folios/pages.  To catch any callers not
+> following this rule, add VM_WARN_ON calls to the routines.  In the
+> hugetlb free code paths, some calls could be made to restore vmemmap
+> after clearing the hugetlb flag.  This was 'safe' as in these cases
+> vmemmap was already present and the call was a NOOP.  However, for
+> consistency these calls where eliminated so that we can add the
+> VM_WARN_ON checks.
+>=20
+> Fixes: f41f2ed43ca5 ("mm: hugetlb: free the vmemmap pages associated =
+with each HugeTLB page")
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-I'll correct it later. Thanks.
+Thanks for your fix.
+
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
 
