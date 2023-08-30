@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3890578DE84
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042A378DE1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239394AbjH3TEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
+        id S235559AbjH3S5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244809AbjH3OHl (ORCPT
+        with ESMTP id S244813AbjH3OIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:07:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3BAB9;
-        Wed, 30 Aug 2023 07:07:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E7F46222B;
-        Wed, 30 Aug 2023 14:07:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFD6DC433C8;
-        Wed, 30 Aug 2023 14:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693404457;
-        bh=gC7h2o8DgHf81V55Hr5r2OhHYYm/45JyKuio5PaFFPc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aAwWrGyRb2jklRlBUfr4I5S4y6Ybzv+C+F+pnwukkztG6Y9Y0xJ4CFQnjWKUMs7DK
-         drC3Ygd6i4NJsjcTuK/liuut36Yn/pJc5HwFZrRqhE4fziL4wQOy4RIO4Wp0PRFM0y
-         eJqIW79j7QT22tDBFLOAv6Hh39HdjrfhFnhIRRKq/XjLOE4mi8f9RcrhhT5pgGO+Er
-         Nuoo5aIHrOQma//4yf0jOCz3Q9mis/JTAvHyg9v5HEb5keDj2a+9Ovr00Vd4XH1oOK
-         SzNub1P1ospLCF7azOdfgUXVLLaDHUrKrBHVe/m7acyyY5i2YTk7e5L34pCzcYueTh
-         /LU670E69OxqQ==
-Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qbLr5-009KZQ-CL;
-        Wed, 30 Aug 2023 15:07:35 +0100
+        Wed, 30 Aug 2023 10:08:22 -0400
+Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDE5122
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
+        s=default; t=1693404499;
+        bh=2rPjSj4uwqIpKtOZtB9CZIjdRYw0Gfa1l2U++6sPXLI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=g07yWZlvRC0xVnKrJ2qCKZuJqL/F7wK5UDSGolEsBIfnPlQsCRz6SvpmavEL7pHT7
+         VG7dmix+TihOirgxoD8te1QG4deqBs8GR/ASkE8mUerDj0uTmOCA2/MGHHH/fwohxu
+         S5hyIdxcJsKUFiX75uvwXJejS4XuuV7DngxaOnC5kxm+Lnvitep01LCj9XJISGgJm5
+         kv9YKuy3p2yGxyuwZoMpI2kMqt4jcaAVRRyE72NmsNVoHzxm3RfJlt5fBqS8+dnP0l
+         2Ixs7mI8LmRC8LRcqNBZnaXoztPSg5bYvj8eSOd4SA25+SUGykEVerCD4oI6/jHOSV
+         3xYxM2ahr/1Mg==
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+        by gnuweeb.org (Postfix) with ESMTPSA id 2A28224B32C
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 21:08:19 +0700 (WIB)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-500c37d479aso2916103e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:08:19 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyhTksJLXueAg3kaQFWcb7LGUUfV3mqNyrtsQnhjYY8ZoYPciKv
+        te+eY1NsNd93mzxlA8T1rVkXJwkCUPrxC9oR/4A=
+X-Google-Smtp-Source: AGHT+IEbVPGFfSyhPzFLepWZwQvMOr16fe1WwB+fGC2q4nCTtbZAeJaaXsWM58fM5+tjMmjOPDmmCUJBM9ZOrGCQ0wE=
+X-Received: by 2002:a05:6512:402a:b0:500:9977:bdce with SMTP id
+ br42-20020a056512402a00b005009977bdcemr1945766lfb.62.1693404497078; Wed, 30
+ Aug 2023 07:08:17 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Wed, 30 Aug 2023 15:07:35 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Oza Pawandeep <quic_poza@quicinc.com>
-Cc:     sudeep.holla@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        rafael@kernel.org, lenb@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
- timer
-In-Reply-To: <20230829201101.3330337-1-quic_poza@quicinc.com>
-References: <20230829201101.3330337-1-quic_poza@quicinc.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <a4811a5e1df589573a27771749a68d34@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 217.182.43.188
-X-SA-Exim-Rcpt-To: quic_poza@quicinc.com, sudeep.holla@arm.com, catalin.marinas@arm.com, will@kernel.org, rafael@kernel.org, lenb@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830135726.1939997-1-ammarfaizi2@gnuweeb.org> <20230830135726.1939997-3-ammarfaizi2@gnuweeb.org>
+In-Reply-To: <20230830135726.1939997-3-ammarfaizi2@gnuweeb.org>
+From:   Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>
+Date:   Wed, 30 Aug 2023 21:08:05 +0700
+X-Gmail-Original-Message-ID: <CAOG64qMkQJ-znXbeBz=zubhbonzEKtzJ5y6xQZPvXUpkC-=TDg@mail.gmail.com>
+Message-ID: <CAOG64qMkQJ-znXbeBz=zubhbonzEKtzJ5y6xQZPvXUpkC-=TDg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 2/5] tools/nolibc: x86-64: Use `rep stosb` for `memset()`
+To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Nicholas Rosenberg <inori@vnlx.org>,
+        Michael William Jonathan <moe@gnuweeb.org>,
+        "GNU/Weeb Mailing List" <gwml@vger.gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-29 21:11, Oza Pawandeep wrote:
-> Arm® Functional Fixed Hardware Specification defines LPI states,
-> which provide an architectural context loss flags field that can
-> be used to describe the context that might be lost when an LPI
-> state is entered.
-> 
-> - Core context Lost
->         - General purpose registers.
->         - Floating point and SIMD registers.
->         - System registers, include the System register based
->         - generic timer for the core.
->         - Debug register in the core power domain.
->         - PMU registers in the core power domain.
->         - Trace register in the core power domain.
-> - Trace context loss
-> - GICR
-> - GICD
-> 
-> Qualcomm's custom CPUs preserves the architectural state,
-> including keeping the power domain for local timers active.
-> when core is power gated, the local timers are sufficient to
-> wake the core up without needing broadcast timer.
+On Wed, Aug 30, 2023 at 8:57=E2=80=AFPM Ammar Faizi wrote:
+> +".section .text.nolibc_memset\n"
+> +".weak memset\n"
+> +"memset:\n"
+> +       "movq %rsi, %rax\n"
+> +       "movq %rdx, %rcx\n"
+> +       "movq %rdi, %rdx\n"
+> +       "rep stosb\n"
+> +       "movq %rdx, %rax\n"
+> +       "retq\n"
 
-Isn't that what should be exposed by GTDT when ACPI_GTDT_ALWAYS_ON
-is set on the relevant interrupt and EL? The arch timer already
-deals with that.
+The first instruction could be:
 
-Why do we need anything else?
+   movl %esi, %eax
 
-Thanks,
+That's smaller. Also, the second argument of memset() is an int
+anyway, so there is no need to have a full 64-bit copy of %rsi in
+%rax.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+-- Viro
