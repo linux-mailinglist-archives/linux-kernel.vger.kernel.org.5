@@ -2,213 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0FA78E154
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C2F78E15D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbjH3VUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
+        id S241162AbjH3V0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241091AbjH3VUn (ORCPT
+        with ESMTP id S230381AbjH3V0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:20:43 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on20603.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e89::603])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEACE1B2;
-        Wed, 30 Aug 2023 14:20:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JMu9EanyucArc4WA/r4t+0xJ0Ho/DegB/2QWGNDBFUp/vOeAuwRwJ9twsOXmpH5l9jckGLvsndIE9mE5qGnAGQsBpBRgFUKjjftvZiB+9F8Ofqote0PU3jpSLaJTgFY/0/IDPYpQEC/HjybVnnktg9Zv684UQXoLrW/Nb9mgJPps3hynH0pxiZwQZrvrpRJS4wLTmXULnr/BqoeIswNYPFKA76oko8RrP0K+EXEK5ZIsUv1zwZF8OjWBvxs8Zt3OhOavQ2palhKkug73TU9IeMz0LFMvzPpSlb20vYzJxanWf/El7Mq0P+dqXQaDaDQLyx9XFB18cgMWgDM8zGeH5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tiAtgLIffFEj2CJNYwCzQtjD8bssEcJwGsip7fB78P0=;
- b=DaCFVYQU2KVRRm7uL0OxPHDnLICZ7L3hq/Naof+VOp4C/uHdtXpG7SwIopFWcGtUWUJ2k1vbt+EFEChP6A+N5xB1GLMoyKxR13JfQeQEa0T7TTS9QiR8OJ0NJHxKPxosoRpjXlrDe6qy09n2DqcBMYv31v/PY7N+hG6rwpitCiFhEUMjbfq3Jt8Z7Ps2vGSoeXh8peYiBPYJ2D3pSd+jf4Uxig6KokpfYIXclO7U9N2fzM/fGLJPuT12ZQQoWydF1DlJcUKHgp25vhcJ7qJTh5dzMzVegVmjT7FrfauntxF5XaBS6WMBtE3KWTI9xmJQBx51uG6aQbC/qQIFeIs4oQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tiAtgLIffFEj2CJNYwCzQtjD8bssEcJwGsip7fB78P0=;
- b=cnluwpWzQC5E494gTVfY+K5uusAg4wzXRU0WeglV+GVZB4UQQq+okU9JcvQUZELGy8wYbGszFoJHrEJQvNdWxWFBB2F9hRxVnPmlinCY5aw79BGYzJbaR+xmVJOz4TgYmmjG2T6NA0/SPYRYBCkB7CXGTQPsKXEfsyF1RgbYKsE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by IA0PR12MB8713.namprd12.prod.outlook.com (2603:10b6:208:48e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Wed, 30 Aug
- 2023 21:18:50 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::fbfe:ec9c:b106:437e]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::fbfe:ec9c:b106:437e%5]) with mapi id 15.20.6745.015; Wed, 30 Aug 2023
- 21:18:50 +0000
-Message-ID: <674d9d94-28a1-2468-b2d8-1bf784933d6e@amd.com>
-Date:   Wed, 30 Aug 2023 16:18:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v8 6/8] x86/resctrl: Move default group file creation to
- mount
-To:     Reinette Chatre <reinette.chatre@intel.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
-Cc:     fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
-        quic_neeraju@quicinc.com, rdunlap@infradead.org,
-        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
-        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
-        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
-        jmattson@google.com, daniel.sneddon@linux.intel.com,
-        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bagasdotme@gmail.com, eranian@google.com,
-        christophe.leroy@csgroup.eu, jarkko@kernel.org,
-        adrian.hunter@intel.com, quic_jiles@quicinc.com,
-        peternewman@google.com
-References: <20230821233048.434531-1-babu.moger@amd.com>
- <20230821233048.434531-7-babu.moger@amd.com>
- <972db626-1d74-679d-72f2-3e122f95c314@intel.com>
- <5e1c084a-e224-a798-65c1-60f827634ee4@amd.com>
- <05b312d1-9873-f006-cf40-1db695b4603f@intel.com>
-Content-Language: en-US
-From:   "Moger, Babu" <babu.moger@amd.com>
-In-Reply-To: <05b312d1-9873-f006-cf40-1db695b4603f@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR01CA0005.prod.exchangelabs.com (2603:10b6:805:b6::18)
- To MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+        Wed, 30 Aug 2023 17:26:01 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B2FCF
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:25:23 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6b9d8b76be5so349416a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:25:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693430629; x=1694035429;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LF5X2dX5JgaEV6smkE+eHIcyD8otOWlV/ygSISQwjoY=;
+        b=eQ/QWeM9f8S/3KMivfTRU/xZiKIVXFvsdU6HgEzu1m1CbA4vmqwZ6kTsOQmOy0ZrOe
+         uAYyWupFlpUAlzJzjjntQGooWiYaBt1/cxDOVq87kIFuaWI2wleNb+qZQ23hilLsR5zl
+         3NVMUxxuvW0taZNxRiR9MAsTXZl5qpDF5IPYb8eqKf02ljRFdnenDkWPqRS+j0v+GchG
+         ElYx3MYfzxOfYPSHOivIasQv22oKy98QNIU1dVp+i3om41pMbJpbef5p0q6w5owC9kI0
+         LUWPUZTdkrIe6eQHs9stUGcDKXvt0d/o6ijLRuRBPxt/kR/PNB+rnJE9D3mQIVOXlqN9
+         6QFA==
+X-Gm-Message-State: AOJu0YzhD2ds/494tw8hi0QMOjzUV7n3tfkhS86Xsh8G/zba3Pojc/wh
+        Evfwp9HRupafURkMernHyk+iv03VBGFkd4PM9fatDDnZ1O9D
+X-Google-Smtp-Source: AGHT+IHvQ0X1H7mClp53/EehJZsA4DiISYPN4bk29tIO2frPxeAGe6JGQLg/o3zjIXVilR0UzbzyNjLCk8MwGMBHpu2bjiZ0wfZb
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|IA0PR12MB8713:EE_
-X-MS-Office365-Filtering-Correlation-Id: f3d776e2-74f9-4162-9b4b-08dba99eb434
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tZFAdmOnQAj1BaT1l1w5bVgjL8Vn+LXAfPoydufMQ6OvPwkf+TeG6z/pDP1axp7Osvies2QYMJ9Wan7CYYtYPh077vT8pwQjq6pU3eMRgOxg6QObjI8QhkheKIhSs8NDvzfA9raDW1zMT7xYtqYRlZDHJ0x0LAAvFAS/uwWqSUKHnaX1qLi0Fn7QL57CbO5VO+ZS/gi1JGFn/QoIkoILHpUtv6psKXMd4VSCVd4xOJNGU8Or/qp2VMtFl5nSJQsOx1yid24Nm3OOEXqEIRe8p1dkOpxItgs27WuaviE9OjwXgkXJKQQUW4z8Ac35IvYLsbb+CMkuyXWOVvcGWvPsk/su/Yul2f+ypFhYwJy0qBcLRO6Dp6n4A2LH1woG5j3LTFpGnSk77Ws0fhCIWcltQweDBlyEg1BjVnu0YKXg54lpzmjsOpS7pviWKvdxIPtlUwrQWVpmhzCa0sx+lbyOW3gy5Bt7B3jAxt6QBh5WC08BVYSpW7Sv29MJkelfe7D3LiRUJmpJ3EUB6Dv49mRyFEBa/via3fV3gEvAfUw3kuOLIle4UrhgArsQLmd2csemOGSDUdy1320QCQL2BJkcmPiiwXYyX3MYbZNnLax09tzAeWf38gwcDkmUbp4/HBYxmNUnkDbI2fEhYXOYUBXK2w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(39860400002)(396003)(366004)(1800799009)(451199024)(186009)(31686004)(6512007)(6666004)(6486002)(6506007)(86362001)(36756003)(38100700002)(31696002)(2616005)(478600001)(3450700001)(83380400001)(53546011)(26005)(4326008)(8936002)(5660300002)(66476007)(66946007)(2906002)(7406005)(7416002)(41300700001)(66556008)(8676002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R0JSVWxuekg2MmwvMzg1Y0t3ekFSTWRoSFRnVmx1eE5aTUthUlRLM2xRd3ZJ?=
- =?utf-8?B?dG9kWmhUSDlISjN1Mk8wV0U5UFNTOVc4bE5EOUtzMzBJaUJQdHRMT2t3VnlS?=
- =?utf-8?B?ODdGaVM2U2EyM0ZlOFAzTjFWdFQxMGFQbVU5SWRmQ2RPYi84T3R6bUFVWnNN?=
- =?utf-8?B?THBYTFBYN0FwK2lOQUxlQkhTL0pRQ1EvYXRSR20yVkRsWUZZNHp0OXNNbFJw?=
- =?utf-8?B?V1JzZ3lvUGY5SUVTek5Lb2NTeVhhTmZkdEF4YkRvaWV4YTNWcmFrTWdVdnFz?=
- =?utf-8?B?c2Y1bWxBV3FHd1pKUldnM1MwL2ZTR0JCZmdraFhvcnV2TEF0QloxbllrSUc0?=
- =?utf-8?B?SldTQTFsSEpvRElRNDFvTzR5RS9waDNZTnpJVUxOV0tlZFdkWUFHK0xOUnIw?=
- =?utf-8?B?M1ZKSzdSWE4xb3BqRXExSWxJaVB0bzV0MnowOFhqQ0s3TGNRU245M2tlM1c2?=
- =?utf-8?B?QW4rdU5oSjkvN3BmdEpoSHRpeXpkTE1LNHVNeXFIRW9STFZQYVhsQ3MxL0ds?=
- =?utf-8?B?akpuM3FTOUFVZ2luMTQ1Rlk2eXZiV1dGamttcFFIZUFrMXEyem9hWjdNS2xx?=
- =?utf-8?B?K3V3T2ZFQTZwSTE0QVg4Skd2ZFFOTENpdldJWGNUbjc2ZU5CR1dNVWNWRnJC?=
- =?utf-8?B?TGRyTDEzSnd2K1Y3NG8yQWRQZngvVW5zM25jUlQ3VFFnbWFDQUpDdXU3eXBr?=
- =?utf-8?B?dkxXd29KZktjazNxb3J0bUh4TVByWGxFUi9QcGdxTGtsUlFoZWtsUDlVdHpJ?=
- =?utf-8?B?UXZuUG1XUENlNExEdytnWDRRMDd6UDdqT3k0cEl3NFZKUkVOOWlJMXh2ZCs5?=
- =?utf-8?B?NmcxcXNPUXR1QjBOcUdwYmJnMWg4a0oyV1R3QnJYSkdtOEZSYWpOMVlNN0RW?=
- =?utf-8?B?czhrOUJhMzJJM2srQVkydDVrZFp3bG5Da2JBNjZCbGJTL21SajNYTU81bm4y?=
- =?utf-8?B?Y2hYM2Z4WURXUlpkQWdzdUlpQ2pWU1ZkOU1YUFpRVmdhajQ3S1dKQXpzdjlW?=
- =?utf-8?B?K3RFZVNaMDNicnRFbFI4NUU5NVFXbHVoME9QRXJ6b0k3c2hyZXJzZHM3UzRu?=
- =?utf-8?B?QXVJWEthbVVhR2xKVXdZNXVaYTVZSEplU1FnK04vMjQvLzVMb3B4MjFZa0w0?=
- =?utf-8?B?a2xiOWVwUWVpc1NBbWlZRnEwbVFaS0drT0plUUJhdDdFSFYxZ0JMMGhFQkpJ?=
- =?utf-8?B?OTBucWRhVEl0TW92T1p5U2htYU1ONEFKVzlsN2pGblYxbFpPY3ZxdjdZMjBF?=
- =?utf-8?B?RlRvSXRrbGZ4QzByOWRGOHpkQndPYjBtSjVncEZFMXd2d2NxT3ROQWROdm42?=
- =?utf-8?B?SVg3RGdEVXlvS1pvYlNEdWJJZlJMRzFYUURHM1BFNTJRWnFWK29VZVZrWHdL?=
- =?utf-8?B?WWY5YlIyRTJUZW1IZVZWVElkUmV5clRiSDdZZkQ2dUl3TTdHMFlmRUszMnlL?=
- =?utf-8?B?MU0vcjNDdUV6eGpBN1JrZkZ2QS95eitVaGNCaW1LVlh3ajJoQjNFYnRhREJX?=
- =?utf-8?B?cUpWcW13aEF3M0VUM0hwRndRMlZNZTBOaWdwUG9xUVJURmlleXoweW15eE9k?=
- =?utf-8?B?d2ZuUWVvSTBWS3VZYzFYL1FqOTUzVDhzSTB1blRNWER0ZUtHSHlrbW1pblVF?=
- =?utf-8?B?N2dBM0czSFk5bWVLaGEyNndKM2pZUzRsZlhjZkJyTW9XV2tXcWxJbXN2WXRj?=
- =?utf-8?B?bWY3emgxVzJTVEpNZmxkM0VIOHFEZkpvZVQwR2RuQjJKbFdzTjBuZ252U1pO?=
- =?utf-8?B?KzB3b21FWmV3WE9keGN0UkJMaXpQUE9LdEkrcWl6aS9YUUc5a2htS1cwQ0lY?=
- =?utf-8?B?RGZiM0FVcnlDeEowK1FKMEpoc1NTQ2x3YnZUdjljUXdYZUFOWEhjdTJCL3BS?=
- =?utf-8?B?MXRzWDVKbVp6MzVXL2JxQytwTW5ia1QzQ3p4R2xhMG1EVlVLZ2YrczJoczNv?=
- =?utf-8?B?V25ZK1MvNEpjcldsTzFDMDlaM0xMS1JkRE5jNnRaNUpaSVJNNUVwUXBrOXRN?=
- =?utf-8?B?K2ZoSkVQalgxS1lhdHhRNktFTmNGZGpjaFk0NjFmT2ZzVmFzUUI5eHBzck1t?=
- =?utf-8?B?aFh3TTlDUlRFcnFYVnFSaGtLUXBFeWl5ejRpc1V4TE1XdFp5WDd1RXluTVg1?=
- =?utf-8?Q?hlfw=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3d776e2-74f9-4162-9b4b-08dba99eb434
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 21:18:49.9039
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3OwZnTwIZ/fYYoE4tscQkeT/fxsz61HpLQo8bon2N1pVYbO4iuoVEjUqFkX8D0ZL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8713
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:43:b0:6bd:178f:ef85 with SMTP id
+ d3-20020a056830004300b006bd178fef85mr283351otp.7.1693430629267; Wed, 30 Aug
+ 2023 14:23:49 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 14:23:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001bfca206042a8bbc@google.com>
+Subject: [syzbot] [kernel?] KASAN: slab-use-after-free Read in pwq_release_workfn
+From:   syzbot <syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com>
+To:     bp@alien8.de, brauner@kernel.org, dave.hansen@linux.intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+Hello,
 
-On 8/30/23 15:00, Reinette Chatre wrote:
-> Hi Babu,
-> 
-> On 8/30/2023 12:50 PM, Moger, Babu wrote:
->> Hi Reinette,
->>
->> On 8/29/23 15:11, Reinette Chatre wrote:
->>> Hi Babu,
->>>
->>> On 8/21/2023 4:30 PM, Babu Moger wrote:
->>>> The default resource group and its files are created during kernel
->>>> init time. Upcoming changes will make some resctrl files optional
->>>> based on a mount parameter. If optional files are to be added to the
->>>> default group based on the mount option, then each new file needs to
->>>> be created separately and call kernfs_activate() again.
->>>>
->>>> Create all files of the default resource group during resctrl
->>>> mount, destroyed during unmount, to avoid scattering resctrl
->>>> file addition across two separate code flows.
->>>>
->>>> Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
->>>> Signed-off-by: Babu Moger <babu.moger@amd.com>
->>>> ---
->>>>  arch/x86/kernel/cpu/resctrl/internal.h |  2 +
->>>>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 55 +++++++++++++++-----------
->>>>  2 files changed, 33 insertions(+), 24 deletions(-)
->>>>
->>>> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
->>>> index b09e7abd1299..44ad98f8c7af 100644
->>>> --- a/arch/x86/kernel/cpu/resctrl/internal.h
->>>> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
->>>> @@ -611,5 +611,7 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
->>>>  void __init thread_throttle_mode_init(void);
->>>>  void __init mbm_config_rftype_init(const char *config);
->>>>  void rdt_staged_configs_clear(void);
->>>> +int rdtgroup_setup_root(struct rdt_fs_context *ctx);
->>>> +void rdtgroup_destroy_root(void);
->>>>  
->>>
->>> From what I can tell these functions are only used in rdtgroup.c.
->>> Can this export be avoided by just moving these functions within
->>> rdtgroup.c and making them static?
->>
->> Yes. It is used only in rdtgroup.c. We can make this static by adding the
->> prototypes of these function in the beginning of rdtgroup.c file to avoid
->> implicit declaration compiler errors.
-> 
-> Why not just place the functions earlier in rdtgroup.c so that they are
-> located before all callers? 
+syzbot found the following issue on:
 
-Couple of problems with that.
-1.  rdtgroup_setup_root needs the the definition of
-rdtgroup_kf_syscall_ops which is defined later in the file.
+HEAD commit:    626932085009 Add linux-next specific files for 20230825
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12268740680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
+dashboard link: https://syzkaller.appspot.com/bug?extid=60db9f652c92d5bacba4
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e25db7a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b154c0680000
 
-Static struct kernfs_syscall_ops rdtgroup_kf_syscall_ops = {
-         .mkdir          = rdtgroup_mkdir,
-         .rmdir          = rdtgroup_rmdir,
-         .rename         = rdtgroup_rename,
-         .show_options   = rdtgroup_show_options,
-};
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
 
-2. rdtgroup_setup_root is called in rdt_get_tree which is defined earlier
-in the file.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com
 
-So, this needs re-arrange of all these functions. That is reason I made
-these functions global. Thought it may be too much a change for this purpose.
--- 
-Thanks
-Babu Moger
+==================================================================
+BUG: KASAN: slab-use-after-free in pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+Read of size 4 at addr ffff888027b831c0 by task pool_workqueue_/3
+
+CPU: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+ kthread_worker_fn+0x2fc/0xa80 kernel/kthread.c:823
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+
+Allocated by task 5054:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_workqueue+0x16f/0x1490 kernel/workqueue.c:4684
+ kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+ kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+ kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+ kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5054:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+ alloc_workqueue+0xe76/0x1490 kernel/workqueue.c:4746
+ kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+ kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+ kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+ kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff888027b83000
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 448 bytes inside of
+ freed 512-byte region [ffff888027b83000, ffff888027b83200)
+
+The buggy address belongs to the physical page:
+page:ffffea00009ee000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x27b80
+head:ffffea00009ee000 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c41c80 ffffea000084fd00 dead000000000002
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 3260, tgid 3260 (kworker/u4:1), ts 17219877730, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1530
+ prep_new_page mm/page_alloc.c:1537 [inline]
+ get_page_from_freelist+0xf17/0x2e50 mm/page_alloc.c:3200
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4456
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x251/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8be/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
+ kmalloc_trace+0x25/0xe0 mm/slab_common.c:1114
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_bprm+0x51/0xaf0 fs/exec.c:1514
+ kernel_execve+0xaf/0x4e0 fs/exec.c:1989
+ call_usermodehelper_exec_async+0x256/0x4c0 kernel/umh.c:110
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888027b83080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888027b83100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888027b83180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                           ^
+ ffff888027b83200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888027b83280: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
