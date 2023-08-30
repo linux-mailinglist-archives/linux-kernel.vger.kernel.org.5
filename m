@@ -2,217 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 788DF78DDFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD31078DDE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344006AbjH3S4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
+        id S1343635AbjH3Syy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244603AbjH3N1L (ORCPT
+        with ESMTP id S244604AbjH3N11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:27:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F3D137
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:27:08 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693402026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uv6OYWY0nm1PUIFRYH+6I4631UZPqwdrqQwv+spjLMU=;
-        b=ZYyJ5C+O53DaCqYMddolXPDB4+lzKuIjc+h55b3QPs01lNwQ07Y9xJqu249Ce4iLvN9sDK
-        L2OKzu/v1tXHlFDsXeIjwIsWbn5wAIBuEvCu1/+9cF7wQiqsJDHbwJL6i1hL3X5ZV/88yN
-        kv2xghyXKhoOIkLXKVU07qiRO+1ztckncZNVmyTeF1IXFKYyYAS8aFM/Ur/FslB2gVR4Ww
-        q7RtPFLxz3IR4ALQ9DaFCz34pDUheaU/FlC0Uumldc7S/P2foLECcBTiVnfWzZArz/xdHe
-        Hh27nv+FPXjaV3j7f6aJRUkGB2m/I2gUqjnLeqM7griV2H0Nc92NUuS0FUV7jA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693402026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uv6OYWY0nm1PUIFRYH+6I4631UZPqwdrqQwv+spjLMU=;
-        b=t64J0lZGWReNgTa7VD9SLvuBU7rYWV/haRNse47QRYZHMV903trbG6L75LDRDIFD9QRqnr
-        zeFwjyvApRrAKLBw==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull V2] x86/core for v6.6-rc1
-Message-ID: <169340012555.478565.16044726088347432378.tglx@xen13.tec.linutronix.de>
-References: <169339202558.475946.15795543318941920393.tglx@xen13>
-In-Reply-To: <169339202558.475946.15795543318941920393.tglx@xen13>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 30 Aug 2023 09:27:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A284137;
+        Wed, 30 Aug 2023 06:27:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DC9C6221F;
+        Wed, 30 Aug 2023 13:27:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EC7C433C7;
+        Wed, 30 Aug 2023 13:27:19 +0000 (UTC)
+Message-ID: <fbeb4316-462a-1e20-581d-a6c2d2c9a1c9@xs4all.nl>
+Date:   Wed, 30 Aug 2023 15:27:18 +0200
 MIME-Version: 1.0
-Date:   Wed, 30 Aug 2023 15:27:05 +0200 (CEST)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 03/10] media: videobuf2: Be more flexible on the number
+ of queue stored buffers
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230824092133.39510-1-benjamin.gaignard@collabora.com>
+ <20230824092133.39510-4-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230824092133.39510-4-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 24/08/2023 11:21, Benjamin Gaignard wrote:
+> Add 'max_allowed_buffers' field in vb2_queue struct to let drivers decide
+> how many buffers could be stored in a queue.
+> This request 'bufs' array to be allocated at queue init time and freed
+> when releasing the queue.
+> By default VB2_MAX_FRAME remains the limit.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  .../media/common/videobuf2/videobuf2-core.c   | 25 +++++++++++++------
+>  include/media/videobuf2-core.h                |  4 ++-
+>  2 files changed, 20 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 8aa13591b782..70e36389b704 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -411,7 +411,7 @@ static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
+>   */
+>  static bool vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, int index)
 
-please pull the latest x86/core branch from:
+Let's use 'unsigned int index' to avoid signedness issues.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-core-2023-08=
--30-v2
+>  {
+> -	if (index < VB2_MAX_FRAME && !q->bufs[index]) {
+> +	if (index < q->max_allowed_buffers && !q->bufs[index]) {
+>  		q->bufs[index] = vb;
+>  		vb->index = index;
+>  		vb->vb2_queue = q;
+> @@ -428,7 +428,7 @@ static bool vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, int
+>   */
+>  static void vb2_queue_remove_buffer(struct vb2_queue *q, struct vb2_buffer *vb)
+>  {
+> -	if (vb->index < VB2_MAX_FRAME) {
+> +	if (vb->index < q->max_allowed_buffers) {
+>  		q->bufs[vb->index] = NULL;
+>  		vb->vb2_queue = NULL;
+>  	}
+> @@ -449,9 +449,9 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
+>  	struct vb2_buffer *vb;
+>  	int ret;
+>  
+> -	/* Ensure that q->num_buffers+num_buffers is below VB2_MAX_FRAME */
+> +	/* Ensure that q->num_buffers+num_buffers is below q->max_allowed_buffers */
+>  	num_buffers = min_t(unsigned int, num_buffers,
+> -			    VB2_MAX_FRAME - q->num_buffers);
+> +			    q->max_allowed_buffers - q->num_buffers);
+>  
+>  	for (buffer = 0; buffer < num_buffers; ++buffer) {
+>  		/* Allocate vb2 buffer structures */
+> @@ -852,9 +852,9 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	/*
+>  	 * Make sure the requested values and current defaults are sane.
+>  	 */
+> -	WARN_ON(q->min_buffers_needed > VB2_MAX_FRAME);
+> +	WARN_ON(q->min_buffers_needed > q->max_allowed_buffers);
+>  	num_buffers = max_t(unsigned int, *count, q->min_buffers_needed);
+> -	num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
+> +	num_buffers = min_t(unsigned int, num_buffers, q->max_allowed_buffers);
+>  	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
+>  	/*
+>  	 * Set this now to ensure that drivers see the correct q->memory value
+> @@ -970,7 +970,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	bool no_previous_buffers = !q->num_buffers;
+>  	int ret;
+>  
+> -	if (q->num_buffers == VB2_MAX_FRAME) {
+> +	if (q->num_buffers == q->max_allowed_buffers) {
+>  		dprintk(q, 1, "maximum number of buffers already allocated\n");
+>  		return -ENOBUFS;
+>  	}
+> @@ -999,7 +999,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  			return -EINVAL;
+>  	}
+>  
+> -	num_buffers = min(*count, VB2_MAX_FRAME - q->num_buffers);
+> +	num_buffers = min(*count, q->max_allowed_buffers - q->num_buffers);
+>  
+>  	if (requested_planes && requested_sizes) {
+>  		num_planes = requested_planes;
+> @@ -2541,6 +2541,14 @@ int vb2_core_queue_init(struct vb2_queue *q)
+>  
+>  	q->memory = VB2_MEMORY_UNKNOWN;
+>  
+> +	if (!q->max_allowed_buffers)
+> +		q->max_allowed_buffers = VB2_MAX_FRAME;
+> +
+> +	/* The maximum is limited by offset cookie encoding pattern */
+> +	q->max_allowed_buffers = min_t(unsigned int, q->max_allowed_buffers, MAX_BUFFERS);
 
-up to:  b65413768abd: x86/kprobes: Prohibit probing on compiler generated CFI=
- checking code
+With the new MAX_BUFFERS define this probably will need to be adjusted.
 
+> +
+> +	q->bufs = kcalloc(q->max_allowed_buffers, sizeof(*q->bufs), GFP_KERNEL);
+> +
+>  	if (q->buf_struct_size == 0)
+>  		q->buf_struct_size = sizeof(struct vb2_buffer);
+>  
+> @@ -2565,6 +2573,7 @@ void vb2_core_queue_release(struct vb2_queue *q)
+>  	__vb2_queue_cancel(q);
+>  	mutex_lock(&q->mmap_lock);
+>  	__vb2_queue_free(q, q->num_buffers);
+> +	kfree(q->bufs);
+>  	mutex_unlock(&q->mmap_lock);
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_core_queue_release);
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 4b6a9d2ea372..ee9161b9fd64 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -558,6 +558,7 @@ struct vb2_buf_ops {
+>   * @dma_dir:	DMA mapping direction.
+>   * @bufs:	videobuf2 buffer structures
+>   * @num_buffers: number of allocated/used buffers
+> + * @max_allowed_buffers: upper limit of number of allocated/used buffers
+>   * @queued_list: list of buffers currently queued from userspace
+>   * @queued_count: number of buffers queued and ready for streaming.
+>   * @owned_by_drv_count: number of buffers owned by the driver
+> @@ -619,8 +620,9 @@ struct vb2_queue {
+>  	struct mutex			mmap_lock;
+>  	unsigned int			memory;
+>  	enum dma_data_direction		dma_dir;
+> -	struct vb2_buffer		*bufs[VB2_MAX_FRAME];
+> +	struct vb2_buffer		**bufs;
+>  	unsigned int			num_buffers;
+> +	unsigned int			max_allowed_buffers;
+>  
+>  	struct list_head		queued_list;
+>  	unsigned int			queued_count;
 
-X86 core updates:
+Regards,
 
-  - Prevent kprobes on compiler generated CFI checking code.
-
-    The compiler generates a instruction sequence for indirect call
-    checks. If this sequence is modified with a kprobe, then the check
-    fails. So the instructions must be protected against probing.
-
-  - A few minor cleanups for the SMP code
-
-Thanks,
-
-	tglx
-
-Thanks,
-
-	tglx
-
------------------->
-Masami Hiramatsu (1):
-      x86/kprobes: Prohibit probing on compiler generated CFI checking code
-
-Sohil Mehta (3):
-      x86/smpboot: Remove a stray comment about CPU hotplug
-      x86/smp: Remove a non-existent function declaration
-      x86/smpboot: Change smp_store_boot_cpu_info() to static
-
-
- arch/x86/include/asm/smp.h     |  3 ---
- arch/x86/kernel/kprobes/core.c | 34 ++++++++++++++++++++++++++++++++++
- arch/x86/kernel/smpboot.c      |  6 ++----
- include/linux/cfi.h            |  4 +++-
- 4 files changed, 39 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index 600cf25dbfc6..cf7217ad5701 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -132,11 +132,8 @@ void smp_kick_mwait_play_dead(void);
- void native_smp_send_reschedule(int cpu);
- void native_send_call_func_ipi(const struct cpumask *mask);
- void native_send_call_func_single_ipi(int cpu);
--void x86_idle_thread_init(unsigned int cpu, struct task_struct *idle);
-=20
- bool smp_park_other_cpus_in_init(void);
--
--void smp_store_boot_cpu_info(void);
- void smp_store_cpu_info(int id);
-=20
- asmlinkage __visible void smp_reboot_interrupt(void);
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index f7f6042eb7e6..e8babebad7b8 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -45,6 +45,7 @@
- #include <linux/vmalloc.h>
- #include <linux/pgtable.h>
- #include <linux/set_memory.h>
-+#include <linux/cfi.h>
-=20
- #include <asm/text-patching.h>
- #include <asm/cacheflush.h>
-@@ -293,7 +294,40 @@ static int can_probe(unsigned long paddr)
- #endif
- 		addr +=3D insn.length;
- 	}
-+	if (IS_ENABLED(CONFIG_CFI_CLANG)) {
-+		/*
-+		 * The compiler generates the following instruction sequence
-+		 * for indirect call checks and cfi.c decodes this;
-+		 *
-+		 *=C2=A0  movl    -<id>, %r10d       ; 6 bytes
-+		 *   addl    -4(%reg), %r10d    ; 4 bytes
-+		 *   je      .Ltmp1             ; 2 bytes
-+		 *   ud2                        ; <- regs->ip
-+		 *   .Ltmp1:
-+		 *
-+		 * Also, these movl and addl are used for showing expected
-+		 * type. So those must not be touched.
-+		 */
-+		__addr =3D recover_probed_instruction(buf, addr);
-+		if (!__addr)
-+			return 0;
-+
-+		if (insn_decode_kernel(&insn, (void *)__addr) < 0)
-+			return 0;
-+
-+		if (insn.opcode.value =3D=3D 0xBA)
-+			offset =3D 12;
-+		else if (insn.opcode.value =3D=3D 0x3)
-+			offset =3D 6;
-+		else
-+			goto out;
-+
-+		/* This movl/addl is used for decoding CFI. */
-+		if (is_cfi_trap(addr + offset))
-+			return 0;
-+	}
-=20
-+out:
- 	return (addr =3D=3D paddr);
- }
-=20
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index e1aa2cd7734b..28c590b4b1b1 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -422,7 +422,7 @@ int topology_update_die_map(unsigned int die, unsigned in=
-t cpu)
- 	return 0;
- }
-=20
--void __init smp_store_boot_cpu_info(void)
-+static void __init smp_store_boot_cpu_info(void)
- {
- 	int id =3D 0; /* CPU 0 */
- 	struct cpuinfo_x86 *c =3D &cpu_data(id);
-@@ -1614,9 +1614,7 @@ void play_dead_common(void)
- 	idle_task_exit();
-=20
- 	cpuhp_ap_report_dead();
--	/*
--	 * With physical CPU hotplug, we should halt the cpu
--	 */
-+
- 	local_irq_disable();
- }
-=20
-diff --git a/include/linux/cfi.h b/include/linux/cfi.h
-index 5e134f4ce8b7..3552ec82b725 100644
---- a/include/linux/cfi.h
-+++ b/include/linux/cfi.h
-@@ -19,11 +19,13 @@ static inline enum bug_trap_type report_cfi_failure_noadd=
-r(struct pt_regs *regs,
- {
- 	return report_cfi_failure(regs, addr, NULL, 0);
- }
-+#endif /* CONFIG_CFI_CLANG */
-=20
- #ifdef CONFIG_ARCH_USES_CFI_TRAPS
- bool is_cfi_trap(unsigned long addr);
-+#else
-+static inline bool is_cfi_trap(unsigned long addr) { return false; }
- #endif
--#endif /* CONFIG_CFI_CLANG */
-=20
- #ifdef CONFIG_MODULES
- #ifdef CONFIG_ARCH_USES_CFI_TRAPS
-
+	Hans
