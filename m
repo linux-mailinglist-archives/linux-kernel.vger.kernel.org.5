@@ -2,183 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBCC78DF25
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9E278E04D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242146AbjH3TLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
+        id S239740AbjH3TSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244283AbjH3Mvh (ORCPT
+        with ESMTP id S244286AbjH3Mws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:51:37 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70950132;
-        Wed, 30 Aug 2023 05:51:34 -0700 (PDT)
-Received: from [IPV6:2a01:e0a:120:3210:3c80:2375:ed1d:19ee] (unknown [IPv6:2a01:e0a:120:3210:3c80:2375:ed1d:19ee])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 78F0A660722B;
-        Wed, 30 Aug 2023 13:51:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693399892;
-        bh=ATFNlFErqZ0DT6q6oV6nUkS2hS/qdeMG0yqOrN3MSgk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=grBQL/Me/AQSKnGXDsM+f85KJNzEEFJDfQbBeuzCklPS0k9B0cmtilehE5zKRYu/t
-         TtV/dyQfppH74lB05sAV/VsXWgaDexMHs1RPCOCcCNZ+wkVPBEIymWDEX96+OSBOvZ
-         hcvl4UYaMfBYhNM1TzhmuweEvku6Ox/K8F+a+Y/mmO6tvueqjLpjoq+aE2OcT1m9Nh
-         qeR4oxhg+yIrXzde+Z+KiMuxBZaSgAZ4XQRFzOzuntRs5PJ/DpzBObPWs1gTGFe/i5
-         GqNZhQWD0fukRTvVQKnmo3zaxLeESSifUnsZr63gW6bt1RPa2UNzAUrnR3pwaYDVEi
-         BQwFKwll1kpHw==
-Message-ID: <643a7811-60ff-6ac9-be3d-edcd9a0b95cc@collabora.com>
-Date:   Wed, 30 Aug 2023 14:51:30 +0200
+        Wed, 30 Aug 2023 08:52:48 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD2E132;
+        Wed, 30 Aug 2023 05:52:44 -0700 (PDT)
+Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RbPJ560kqzLpBF;
+        Wed, 30 Aug 2023 20:49:25 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 30 Aug 2023 20:52:37 +0800
+Message-ID: <3fc45984-46f9-dec2-ecce-68d6897874a9@huawei.com>
+Date:   Wed, 30 Aug 2023 20:52:36 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 01/10] media: videobuf2: Rework offset 'cookie'
- encoding pattern
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, mchehab@kernel.org,
-        tfiga@chromium.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
-        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230824092133.39510-1-benjamin.gaignard@collabora.com>
- <20230824092133.39510-2-benjamin.gaignard@collabora.com>
- <01c299f2-8118-5d86-e9b6-a459c1b6c467@xs4all.nl>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] scsi:libsas: Simplify sas_queue_reset and remove unused
+ code
 Content-Language: en-US
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <01c299f2-8118-5d86-e9b6-a459c1b6c467@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     John Garry <john.g.garry@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <louhongxiang@huawei.com>
+References: <20230729102451.2452826-1-haowenchao2@huawei.com>
+From:   "haowenchao (C)" <haowenchao2@huawei.com>
+In-Reply-To: <20230729102451.2452826-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/7/29 18:24, Wenchao Hao wrote:
+> sas_queue_reset is always called with param "wait" set to 0, so
+> remove it from this function's param list. And remove unused
+> function sas_wait_eh.
+> 
 
-Le 30/08/2023 à 14:25, Hans Verkuil a écrit :
-> On 24/08/2023 11:21, Benjamin Gaignard wrote:
->> Change how offset 'cookie' field value is computed to make possible
->> to use more buffers (up to 0xffff).
->> With this encoding pattern we know the maximum number that a queue
->> could store so we can check ing at queue init time.
->> It also make easier and faster to find buffer and plane from using
->> the offset field.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> v5:
->> - I haven't change DST_QUEUE_OFF_BASE definition because it used in
->>    v4l2-mem2mem and s5p_mfc driver with a shift.
->>
->>   .../media/common/videobuf2/videobuf2-core.c   | 48 +++++++++----------
->>   1 file changed, 24 insertions(+), 24 deletions(-)
->>
->> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->> index cf6727d9c81f..e06905533ef4 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->> @@ -31,6 +31,10 @@
->>   
->>   #include <trace/events/vb2.h>
->>   
->> +#define PLANE_INDEX_SHIFT	3
->> +#define PLANE_INDEX_MASK	0x7
->> +#define MAX_BUFFERS		0xffff
-> Very poor name, see below.
->
->> +
->>   static int debug;
->>   module_param(debug, int, 0644);
->>   
->> @@ -358,21 +362,23 @@ static void __setup_offsets(struct vb2_buffer *vb)
->>   	unsigned int plane;
->>   	unsigned long off = 0;
->>   
->> -	if (vb->index) {
->> -		struct vb2_buffer *prev = q->bufs[vb->index - 1];
->> -		struct vb2_plane *p = &prev->planes[prev->num_planes - 1];
->> -
->> -		off = PAGE_ALIGN(p->m.offset + p->length);
->> -	}
->> +	/*
->> +	 * Offsets cookies value have the following constraints:
->> +	 * - a buffer could have up to 8 planes.
->> +	 * - v4l2 mem2mem use bit 30 to distinguish between source and destination buffers.
->> +	 * - must be page aligned
->> +	 * That led to this bit mapping:
->> +	 * |30                |29        15|14       12|11 0|
->> +	 * |DST_QUEUE_OFF_BASE|buffer index|plane index| 0  |
->> +	 * where there is 16 bits to store buffer index.
-> 16 -> 15: there are 15 (not 16!) bits available for buffer indices. So the maximum
-> number of buffers is 32768, given that the indices start at 0.
->
->> +	 */
->> +	off = vb->index << (PLANE_INDEX_SHIFT + PAGE_SHIFT);
->>   
->>   	for (plane = 0; plane < vb->num_planes; ++plane) {
->> -		vb->planes[plane].m.offset = off;
->> +		vb->planes[plane].m.offset = off + (plane << PAGE_SHIFT);
->>   
->>   		dprintk(q, 3, "buffer %d, plane %d offset 0x%08lx\n",
->>   				vb->index, plane, off);
->> -
->> -		off += vb->planes[plane].length;
->> -		off = PAGE_ALIGN(off);
->>   	}
->>   }
->>   
->> @@ -2209,21 +2215,15 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
->>   		return -EBUSY;
->>   	}
->>   
->> -	/*
->> -	 * Go over all buffers and their planes, comparing the given offset
->> -	 * with an offset assigned to each plane. If a match is found,
->> -	 * return its buffer and plane numbers.
->> -	 */
->> -	for (buffer = 0; buffer < q->num_buffers; ++buffer) {
->> -		vb = q->bufs[buffer];
->> +	/* Get buffer and plane from the offset */
->> +	buffer = (off >> (PLANE_INDEX_SHIFT + PAGE_SHIFT)) & MAX_BUFFERS;
-> Hmm, you use it as a mask. The name MAX_BUFFERS is really confusing.
-> How about BUFFER_INDEX_MASK? That is consistent with PLANE_INDEX_MASK.
+Ping...
 
-I will follow your advice and fix that in next version.
-I will until you have finish your review in this series before send it.
+> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+> ---
+>   drivers/scsi/libsas/sas_scsi_host.c | 41 +++--------------------------
+>   1 file changed, 3 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/scsi/libsas/sas_scsi_host.c b/drivers/scsi/libsas/sas_scsi_host.c
+> index 94c5f14f3c16..3f01e77eaee3 100644
+> --- a/drivers/scsi/libsas/sas_scsi_host.c
+> +++ b/drivers/scsi/libsas/sas_scsi_host.c
+> @@ -387,37 +387,7 @@ struct sas_phy *sas_get_local_phy(struct domain_device *dev)
+>   }
+>   EXPORT_SYMBOL_GPL(sas_get_local_phy);
+>   
+> -static void sas_wait_eh(struct domain_device *dev)
+> -{
+> -	struct sas_ha_struct *ha = dev->port->ha;
+> -	DEFINE_WAIT(wait);
+> -
+> -	if (dev_is_sata(dev)) {
+> -		ata_port_wait_eh(dev->sata_dev.ap);
+> -		return;
+> -	}
+> - retry:
+> -	spin_lock_irq(&ha->lock);
+> -
+> -	while (test_bit(SAS_DEV_EH_PENDING, &dev->state)) {
+> -		prepare_to_wait(&ha->eh_wait_q, &wait, TASK_UNINTERRUPTIBLE);
+> -		spin_unlock_irq(&ha->lock);
+> -		schedule();
+> -		spin_lock_irq(&ha->lock);
+> -	}
+> -	finish_wait(&ha->eh_wait_q, &wait);
+> -
+> -	spin_unlock_irq(&ha->lock);
+> -
+> -	/* make sure SCSI EH is complete */
+> -	if (scsi_host_in_recovery(ha->core.shost)) {
+> -		msleep(10);
+> -		goto retry;
+> -	}
+> -}
+> -
+> -static int sas_queue_reset(struct domain_device *dev, int reset_type,
+> -			   u64 lun, int wait)
+> +static int sas_queue_reset(struct domain_device *dev, int reset_type, u64 lun)
+>   {
+>   	struct sas_ha_struct *ha = dev->port->ha;
+>   	int scheduled = 0, tries = 100;
+> @@ -425,8 +395,6 @@ static int sas_queue_reset(struct domain_device *dev, int reset_type,
+>   	/* ata: promote lun reset to bus reset */
+>   	if (dev_is_sata(dev)) {
+>   		sas_ata_schedule_reset(dev);
+> -		if (wait)
+> -			sas_ata_wait_eh(dev);
+>   		return SUCCESS;
+>   	}
+>   
+> @@ -444,9 +412,6 @@ static int sas_queue_reset(struct domain_device *dev, int reset_type,
+>   		}
+>   		spin_unlock_irq(&ha->lock);
+>   
+> -		if (wait)
+> -			sas_wait_eh(dev);
+> -
+>   		if (scheduled)
+>   			return SUCCESS;
+>   	}
+> @@ -499,7 +464,7 @@ int sas_eh_device_reset_handler(struct scsi_cmnd *cmd)
+>   	struct sas_internal *i = to_sas_internal(host->transportt);
+>   
+>   	if (current != host->ehandler)
+> -		return sas_queue_reset(dev, SAS_DEV_LU_RESET, cmd->device->lun, 0);
+> +		return sas_queue_reset(dev, SAS_DEV_LU_RESET, cmd->device->lun);
+>   
+>   	int_to_scsilun(cmd->device->lun, &lun);
+>   
+> @@ -522,7 +487,7 @@ int sas_eh_target_reset_handler(struct scsi_cmnd *cmd)
+>   	struct sas_internal *i = to_sas_internal(host->transportt);
+>   
+>   	if (current != host->ehandler)
+> -		return sas_queue_reset(dev, SAS_DEV_RESET, 0, 0);
+> +		return sas_queue_reset(dev, SAS_DEV_RESET, 0);
+>   
+>   	if (!i->dft->lldd_I_T_nexus_reset)
+>   		return FAILED;
 
-Regards,
-Benjamin
-
->
->> +	plane = (off >> PAGE_SHIFT) & PLANE_INDEX_MASK;
->>   
->> -		for (plane = 0; plane < vb->num_planes; ++plane) {
->> -			if (vb->planes[plane].m.offset == off) {
->> -				*_buffer = buffer;
->> -				*_plane = plane;
->> -				return 0;
->> -			}
->> -		}
->> +	vb = q->bufs[buffer];
->> +	if (vb->planes[plane].m.offset == off) {
->> +		*_buffer = buffer;
->> +		*_plane = plane;
->> +		return 0;
->>   	}
->>   
->>   	return -EINVAL;
-> Regards,
->
-> 	Hans
->
