@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 411A578DA3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC0478DDBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237083AbjH3Sfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
+        id S243958AbjH3Sxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244200AbjH3Mo2 (ORCPT
+        with ESMTP id S244210AbjH3MpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:44:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289FDCD7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693399381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=woWU04N+glUzD420ymk+4+G9vxtbf/gGrQWI0ejKWmM=;
-        b=ZbypFH+UcZSjAadll98k1pYZRcw7sNciyKgtXAhUwyD6ydnZH69J1x6QtbqTYA1EV6cIZD
-        lm/Rx9gD69ABOknSQiYrhvAZ7+ainjMIQoJ9unxJmXAzoTv1ZoZaBUZVEEi5lAEFidM85a
-        R/xSvrcDy84Pdy13VCmHK40995n72oM=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-442-tEX4fSVcNq-3tP4VwYPVwQ-1; Wed, 30 Aug 2023 08:42:57 -0400
-X-MC-Unique: tEX4fSVcNq-3tP4VwYPVwQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 793751C0E4C4;
-        Wed, 30 Aug 2023 12:42:56 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.45.224.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F98E2026D35;
-        Wed, 30 Aug 2023 12:42:53 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 3/4] KVM: x86: add more information to kvm_exit tracepoint
-Date:   Wed, 30 Aug 2023 15:42:42 +0300
-Message-Id: <20230830124243.671152-4-mlevitsk@redhat.com>
-In-Reply-To: <20230830124243.671152-1-mlevitsk@redhat.com>
-References: <20230830124243.671152-1-mlevitsk@redhat.com>
+        Wed, 30 Aug 2023 08:45:24 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB254C2;
+        Wed, 30 Aug 2023 05:45:20 -0700 (PDT)
+Received: from fsav120.sakura.ne.jp (fsav120.sakura.ne.jp [27.133.134.247])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 37UCiu1T038329;
+        Wed, 30 Aug 2023 21:44:56 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav120.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav120.sakura.ne.jp);
+ Wed, 30 Aug 2023 21:44:56 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav120.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 37UCiuog038326
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 30 Aug 2023 21:44:56 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <f607a7d5-8075-f321-e3c0-963993433b14@I-love.SAKURA.ne.jp>
+Date:   Wed, 30 Aug 2023 21:44:57 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: selftests: net: pmtu.sh: Unable to handle kernel paging request
+ at virtual address
+Content-Language: en-US
+To:     Hillf Danton <hdanton@sina.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20230830112600.4483-1-hdanton@sina.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <20230830112600.4483-1-hdanton@sina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add:
-  - Flag that shows that the VM is in guest mode
-  - Bitmap of pending kvm requests.
-  - Flag showing that this VM exit is due to request to have
-    an immediate VM exit.
+On 2023/08/30 20:26, Hillf Danton wrote:
+>> <4>[  399.014716] Call trace:
+>> <4>[  399.015702]  percpu_counter_add_batch+0x28/0xd0
+>> <4>[  399.016399]  dst_destroy+0x44/0x1e4
+>> <4>[  399.016681]  dst_destroy_rcu+0x14/0x20
+>> <4>[  399.017009]  rcu_core+0x2d0/0x5e0
+>> <4>[  399.017311]  rcu_core_si+0x10/0x1c
+>> <4>[  399.017609]  __do_softirq+0xd4/0x23c
+>> <4>[  399.017991]  ____do_softirq+0x10/0x1c
+>> <4>[  399.018320]  call_on_irq_stack+0x24/0x4c
+>> <4>[  399.018723]  do_softirq_own_stack+0x1c/0x28
+>> <4>[  399.022639]  __irq_exit_rcu+0x6c/0xcc
+>> <4>[  399.023434]  irq_exit_rcu+0x10/0x1c
+>> <4>[  399.023962]  el1_interrupt+0x8c/0xc0
+>> <4>[  399.024810]  el1h_64_irq_handler+0x18/0x24
+>> <4>[  399.025324]  el1h_64_irq+0x64/0x68
+>> <4>[  399.025612]  _raw_spin_lock_bh+0x0/0x6c
+>> <4>[  399.026102]  cleanup_net+0x280/0x45c
+>> <4>[  399.026403]  process_one_work+0x1d4/0x310
+>> <4>[  399.027140]  worker_thread+0x248/0x470
+>> <4>[  399.027621]  kthread+0xfc/0x184
+>> <4>[  399.028068]  ret_from_fork+0x10/0x20
+> 
+> static void cleanup_net(struct work_struct *work)
+> {
+> 	...
+> 
+> 	synchronize_rcu();
+> 
+> 	/* Run all of the network namespace exit methods */
+> 	list_for_each_entry_reverse(ops, &pernet_list, list)
+> 		ops_exit_list(ops, &net_exit_list);
+> 	...
+> 
+> Why did the RCU sync above fail to work in this report, Eric?
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/trace.h | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+Why do you assume that synchronize_rcu() failed to work?
+The trace merely says that an interrupt handler ran somewhere from
+cleanup_net(), and something went wrong inside dst_destroy().
 
-diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-index f4c56f59f5c11b..0657a3a348b4ae 100644
---- a/arch/x86/kvm/trace.h
-+++ b/arch/x86/kvm/trace.h
-@@ -320,12 +320,18 @@ TRACE_EVENT(name,							     \
- 		__field(	u32,	        intr_info	)	     \
- 		__field(	u32,	        error_code	)	     \
- 		__field(	unsigned int,	vcpu_id         )	     \
-+		__field(	bool,		guest_mode      )	     \
-+		__field(	u64,		requests        )	     \
-+		__field(	bool,		req_imm_exit	)	     \
- 	),								     \
- 									     \
- 	TP_fast_assign(							     \
- 		__entry->guest_rip	= kvm_rip_read(vcpu);		     \
- 		__entry->isa            = isa;				     \
- 		__entry->vcpu_id        = vcpu->vcpu_id;		     \
-+		__entry->guest_mode     = is_guest_mode(vcpu);		     \
-+		__entry->requests       = READ_ONCE(vcpu->requests);	     \
-+		__entry->req_imm_exit   = vcpu->arch.req_immediate_exit;     \
- 		static_call(kvm_x86_get_exit_info)(vcpu,		     \
- 					  &__entry->exit_reason,	     \
- 					  &__entry->info1,		     \
-@@ -335,11 +341,15 @@ TRACE_EVENT(name,							     \
- 	),								     \
- 									     \
- 	TP_printk("vcpu %u reason %s%s%s rip 0x%lx info1 0x%016llx "	     \
--		  "info2 0x%016llx intr_info 0x%08x error_code 0x%08x",	     \
-+		  "info2 0x%016llx intr_info 0x%08x error_code 0x%08x "      \
-+		  "requests 0x%016llx%s%s",				     \
- 		  __entry->vcpu_id,					     \
- 		  kvm_print_exit_reason(__entry->exit_reason, __entry->isa), \
- 		  __entry->guest_rip, __entry->info1, __entry->info2,	     \
--		  __entry->intr_info, __entry->error_code)		     \
-+		  __entry->intr_info, __entry->error_code, 		     \
-+		  __entry->requests,					     \
-+		  __entry->guest_mode ? " [guest]" : "",		     \
-+		  __entry->req_imm_exit ? " [imm exit]" : "")		     \
- )
- 
- /*
--- 
-2.26.3
+Please decode the trace into filename:line format (like syzbot reports)
+using scripts/faddr2line tool, in order to find the exact location.
 
