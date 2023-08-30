@@ -2,150 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9E278E04D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A1778E009
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239740AbjH3TSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        id S243075AbjH3TMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244286AbjH3Mws (ORCPT
+        with ESMTP id S244309AbjH3M5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:52:48 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD2E132;
-        Wed, 30 Aug 2023 05:52:44 -0700 (PDT)
-Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RbPJ560kqzLpBF;
-        Wed, 30 Aug 2023 20:49:25 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 30 Aug 2023 20:52:37 +0800
-Message-ID: <3fc45984-46f9-dec2-ecce-68d6897874a9@huawei.com>
-Date:   Wed, 30 Aug 2023 20:52:36 +0800
+        Wed, 30 Aug 2023 08:57:23 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D71193
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:57:19 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bdc19b782aso35310335ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1693400239; x=1694005039; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dtd6q3SyxBvaZmQAvE8P+QtZVZRCjxwa7BoiOx4Ow2A=;
+        b=hXcYwd19n0oHlzatNp4OoAc9g+V+yogC6I0LGKFx/Mh/qFYIBfg0navOsaPrr2/Bwe
+         DwwOlGRaHQU9Tl7prr4Q0u4zjsubk3TYs6duoWEsqibWe3rCT39pvnzvxyw5+5qxCrTD
+         d+kxtTa2Ws5FpmUAS863F5h4NDx6nzaPMN6F5EscaWybPVkmTp9d6vkSq2oBzp7gG1Bs
+         9OoJXae9XkpnJ9t73GxwRk79qkbvjXTxy/6Fq+nc9MzwxAP8+4CNfLOxzLKY3nStnt7m
+         wpRRmwl9uGYmFA+kPTGmaZeyf4DQQI6gZGSwm+DjcEBgLTJ170ZK/hEz5JqnMjwREDbu
+         uhtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693400239; x=1694005039;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dtd6q3SyxBvaZmQAvE8P+QtZVZRCjxwa7BoiOx4Ow2A=;
+        b=dD4nFKg8MbcTWdUXmlmcGvaz6i9cQCGJMqQgux0CMxNozzfobJipf4nBbJvEsLHNrj
+         fNsilFhzUIqyVaJMVkc86yvBgrS5BmgoRJD0IMkzBMgiczVCY4bHEtVy/LPuW/moVToC
+         MXB6+7lfA1MQz99vjKII6v12hUOWDG8fI8cj8zO2h+P9p1xiBiuXjHGLGgyOqVMSA089
+         VWcMztw9m+IZ5CAEO0WPYRA4FdkVNJE3+hQlpPhMql7APFesLGZ5s3601T92YEyxr4uP
+         ML0f40dbfJKvEglOZ244+/aU4nBSBuKNXVb43a5f7hKBrqevKb9+q7wj5PnsJl+8ACfm
+         wrrA==
+X-Gm-Message-State: AOJu0Yw1Y5j80x9UPiMkZud3zp5TVrxVKOMvhFxAclBexiMzfMeq4QCq
+        LRnjHr4OJ2HJpAN6M1tepvrS0Q==
+X-Google-Smtp-Source: AGHT+IGKPuYQWBKa1a4+1P4c5NUAY3fS0w+iEhxnmdtT4j9dZZVQZKmRW9OE8TVjanTCPupqydzJDg==
+X-Received: by 2002:a17:903:110d:b0:1bf:6c4e:4d60 with SMTP id n13-20020a170903110d00b001bf6c4e4d60mr2040423plh.3.1693400238850;
+        Wed, 30 Aug 2023 05:57:18 -0700 (PDT)
+Received: from GL4FX4PXWL.bytedance.net ([139.177.225.247])
+        by smtp.gmail.com with ESMTPSA id iw1-20020a170903044100b001bbd8cf6b57sm11023265plb.230.2023.08.30.05.57.12
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 30 Aug 2023 05:57:18 -0700 (PDT)
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
+        willy@infradead.org, brauner@kernel.org, surenb@google.com,
+        michael.christie@oracle.com, peterz@infradead.org,
+        mathieu.desnoyers@efficios.com, npiggin@gmail.com, avagin@gmail.com
+Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Peng Zhang <zhangpeng.00@bytedance.com>
+Subject: [PATCH v2 0/6] Introduce __mt_dup() to improve the performance of fork()
+Date:   Wed, 30 Aug 2023 20:56:48 +0800
+Message-Id: <20230830125654.21257-1-zhangpeng.00@bytedance.com>
+X-Mailer: git-send-email 2.37.0 (Apple Git-136)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] scsi:libsas: Simplify sas_queue_reset and remove unused
- code
-Content-Language: en-US
-To:     John Garry <john.g.garry@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <louhongxiang@huawei.com>
-References: <20230729102451.2452826-1-haowenchao2@huawei.com>
-From:   "haowenchao (C)" <haowenchao2@huawei.com>
-In-Reply-To: <20230729102451.2452826-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600012.china.huawei.com (7.193.23.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/29 18:24, Wenchao Hao wrote:
-> sas_queue_reset is always called with param "wait" set to 0, so
-> remove it from this function's param list. And remove unused
-> function sas_wait_eh.
-> 
+In the process of duplicating mmap in fork(), VMAs will be inserted into the new
+maple tree one by one. When inserting into the maple tree, the maple tree will
+be rebalanced multiple times. The rebalancing of maple tree is not as fast as
+the rebalancing of red-black tree and will be slower. Therefore, __mt_dup() is
+introduced to directly duplicate the structure of the old maple tree, and then
+modify each element of the new maple tree. This avoids rebalancing and some extra
+copying, so is faster than the original method.
+More information can refer to [1].
 
-Ping...
+There is a "spawn" in byte-unixbench[2], which can be used to test the performance
+of fork(). I modified it slightly to make it work with different number of VMAs.
 
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-> ---
->   drivers/scsi/libsas/sas_scsi_host.c | 41 +++--------------------------
->   1 file changed, 3 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/scsi/libsas/sas_scsi_host.c b/drivers/scsi/libsas/sas_scsi_host.c
-> index 94c5f14f3c16..3f01e77eaee3 100644
-> --- a/drivers/scsi/libsas/sas_scsi_host.c
-> +++ b/drivers/scsi/libsas/sas_scsi_host.c
-> @@ -387,37 +387,7 @@ struct sas_phy *sas_get_local_phy(struct domain_device *dev)
->   }
->   EXPORT_SYMBOL_GPL(sas_get_local_phy);
->   
-> -static void sas_wait_eh(struct domain_device *dev)
-> -{
-> -	struct sas_ha_struct *ha = dev->port->ha;
-> -	DEFINE_WAIT(wait);
-> -
-> -	if (dev_is_sata(dev)) {
-> -		ata_port_wait_eh(dev->sata_dev.ap);
-> -		return;
-> -	}
-> - retry:
-> -	spin_lock_irq(&ha->lock);
-> -
-> -	while (test_bit(SAS_DEV_EH_PENDING, &dev->state)) {
-> -		prepare_to_wait(&ha->eh_wait_q, &wait, TASK_UNINTERRUPTIBLE);
-> -		spin_unlock_irq(&ha->lock);
-> -		schedule();
-> -		spin_lock_irq(&ha->lock);
-> -	}
-> -	finish_wait(&ha->eh_wait_q, &wait);
-> -
-> -	spin_unlock_irq(&ha->lock);
-> -
-> -	/* make sure SCSI EH is complete */
-> -	if (scsi_host_in_recovery(ha->core.shost)) {
-> -		msleep(10);
-> -		goto retry;
-> -	}
-> -}
-> -
-> -static int sas_queue_reset(struct domain_device *dev, int reset_type,
-> -			   u64 lun, int wait)
-> +static int sas_queue_reset(struct domain_device *dev, int reset_type, u64 lun)
->   {
->   	struct sas_ha_struct *ha = dev->port->ha;
->   	int scheduled = 0, tries = 100;
-> @@ -425,8 +395,6 @@ static int sas_queue_reset(struct domain_device *dev, int reset_type,
->   	/* ata: promote lun reset to bus reset */
->   	if (dev_is_sata(dev)) {
->   		sas_ata_schedule_reset(dev);
-> -		if (wait)
-> -			sas_ata_wait_eh(dev);
->   		return SUCCESS;
->   	}
->   
-> @@ -444,9 +412,6 @@ static int sas_queue_reset(struct domain_device *dev, int reset_type,
->   		}
->   		spin_unlock_irq(&ha->lock);
->   
-> -		if (wait)
-> -			sas_wait_eh(dev);
-> -
->   		if (scheduled)
->   			return SUCCESS;
->   	}
-> @@ -499,7 +464,7 @@ int sas_eh_device_reset_handler(struct scsi_cmnd *cmd)
->   	struct sas_internal *i = to_sas_internal(host->transportt);
->   
->   	if (current != host->ehandler)
-> -		return sas_queue_reset(dev, SAS_DEV_LU_RESET, cmd->device->lun, 0);
-> +		return sas_queue_reset(dev, SAS_DEV_LU_RESET, cmd->device->lun);
->   
->   	int_to_scsilun(cmd->device->lun, &lun);
->   
-> @@ -522,7 +487,7 @@ int sas_eh_target_reset_handler(struct scsi_cmnd *cmd)
->   	struct sas_internal *i = to_sas_internal(host->transportt);
->   
->   	if (current != host->ehandler)
-> -		return sas_queue_reset(dev, SAS_DEV_RESET, 0, 0);
-> +		return sas_queue_reset(dev, SAS_DEV_RESET, 0);
->   
->   	if (!i->dft->lldd_I_T_nexus_reset)
->   		return FAILED;
+Below are the test numbers. There are 21 VMAs by default. The first row indicates
+the number of added VMAs. The following two lines are the number of fork() calls
+every 10 seconds. These numbers are different from the test results in v1 because
+this time the benchmark is bound to a CPU. This way the numbers are more stable.
+
+  Increment of VMAs: 0      100     200     400     800     1600    3200    6400
+6.5.0-next-20230829: 111878 75531   53683   35282   20741   11317   6110    3158
+Apply this patchset: 114531 85420   64541   44592   28660   16371   9038    4831
+                     +2.37% +13.09% +20.23% +26.39% +38.18% +44.66% +47.92% +52.98%
+
+Todo:
+  - Update the documentation.
+
+Changes since v1:
+ - Reimplement __mt_dup() and mtree_dup(). Loops are implemented without using
+   goto instructions.
+ - The new tree also needs to be locked to avoid some lockdep warnings.
+ - Drop and add some helpers.
+ - Add test for duplicating full tree.
+ - Drop mas_replace_entry(), it doesn't seem to have a big impact on the
+   performance of fork().
+
+[1] https://lore.kernel.org/lkml/463899aa-6cbd-f08e-0aca-077b0e4e4475@bytedance.com/
+[2] https://github.com/kdlucas/byte-unixbench/tree/master
+
+v1: https://lore.kernel.org/lkml/20230726080916.17454-1-zhangpeng.00@bytedance.com/
+
+Peng Zhang (6):
+  maple_tree: Add two helpers
+  maple_tree: Introduce interfaces __mt_dup() and mtree_dup()
+  maple_tree: Add test for mtree_dup()
+  maple_tree: Skip other tests when BENCH is enabled
+  maple_tree: Update check_forking() and bench_forking()
+  fork: Use __mt_dup() to duplicate maple tree in dup_mmap()
+
+ include/linux/maple_tree.h       |   3 +
+ kernel/fork.c                    |  34 ++-
+ lib/maple_tree.c                 | 277 ++++++++++++++++++++++++-
+ lib/test_maple_tree.c            |  69 +++---
+ mm/mmap.c                        |  14 +-
+ tools/testing/radix-tree/maple.c | 346 +++++++++++++++++++++++++++++++
+ 6 files changed, 697 insertions(+), 46 deletions(-)
+
+-- 
+2.20.1
 
