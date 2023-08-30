@@ -2,184 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0522A78DE3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAF378DD64
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237641AbjH3TAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
+        id S243669AbjH3StU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242492AbjH3IwV (ORCPT
+        with ESMTP id S242493AbjH3Iw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:52:21 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0818CC9
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:52:16 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4BEE4C0005;
-        Wed, 30 Aug 2023 08:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1693385535;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K3IPdpdNAX0heK2EMwiRVGcgLnPwKyCy4SVQ40VHFd8=;
-        b=cW3eD0wTfmK9yzIdEgMv3RfiJ9U4DJGSduiSl1991omQCdYwjwgeyX4xnZzpgOwexa5CTW
-        S8oUWbXT63DheDhiXrntg+/tGlhmq5WJndCFT6fsTY13oNTEyo+Kx+aD/NsiVGxHHyh8Ni
-        RvcaMS+2ZRr7zo4Co2w5mWsS5YwwDz4zseNxKWj9YTgz805tR1RgcGUKUC0hbKJdZ6Ox2w
-        10ePVbaw5dN9qzwHy2B+aIcJapyzFsc3gROekZlGx2TINsKW0ex3aCirVXE+mVOxX1PIzq
-        HF0KX+ufo9OvdRXS7uatq3Ybwc/zg3p7IMQQKis+DwGGMNF5ONCp+cq0uPJuFw==
-Date:   Wed, 30 Aug 2023 10:52:11 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     Conor Culhane <conor.culhane@silvaco.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "moderated list:SILVACO I3C DUAL-ROLE MASTER" 
-        <linux-i3c@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 2/2] i3c: master: svc: fix probe failure when no i3c
- device exist
-Message-ID: <20230830105211.07a2c790@xps-13>
-In-Reply-To: <ZO4OMnPNCYecYImQ@lizhi-Precision-Tower-5810>
-References: <20230828192502.3525418-1-Frank.Li@nxp.com>
-        <20230828192502.3525418-2-Frank.Li@nxp.com>
-        <20230829111611.12f91348@xps-13>
-        <ZO4OMnPNCYecYImQ@lizhi-Precision-Tower-5810>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Wed, 30 Aug 2023 04:52:28 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B501CC9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:52:24 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CCFD2F4;
+        Wed, 30 Aug 2023 01:53:03 -0700 (PDT)
+Received: from [10.57.3.66] (unknown [10.57.3.66])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB9ED3F64C;
+        Wed, 30 Aug 2023 01:52:22 -0700 (PDT)
+Message-ID: <034c226d-7d0f-849c-45ae-a909839a4d2e@arm.com>
+Date:   Wed, 30 Aug 2023 09:52:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH] coresight: tmc-etr: Don't fail probe when non-secure
+ access is disabled
+To:     Yabin Cui <yabinc@google.com>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230825233930.1875819-1-yabinc@google.com>
+ <382193a4-4f30-d804-47da-a9c705b6bee5@arm.com>
+ <CALJ9ZPNQAWCLrK4u+j3vMZmu3TaLUN_Ne+yqetkquU2QS_XQFQ@mail.gmail.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <CALJ9ZPNQAWCLrK4u+j3vMZmu3TaLUN_Ne+yqetkquU2QS_XQFQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+Hi Yabin
 
-Frank.li@nxp.com wrote on Tue, 29 Aug 2023 11:26:42 -0400:
+On 29/08/2023 22:16, Yabin Cui wrote:
+>> How can this be enabled ? Why not enable it before probing the ETR ?
+> How can a user know if this has been done or not ?
+> 
+> Pixel devices (like Pixel 6, 7) support enabling some debugging features
+> (including granting non-secure access to ETM/ETR) even on devices with
+> secure boot. It is only used internally and has strict requirements,
+> needing to connect to a server to verify identification after booting.
+> So it can't be established when probing ETR at device boot time.
 
-> On Tue, Aug 29, 2023 at 11:16:11AM +0200, Miquel Raynal wrote:
-> > Hi Frank,
-> >=20
-> > Frank.Li@nxp.com wrote on Mon, 28 Aug 2023 15:25:02 -0400:
-> >  =20
-> > > If there are not i3c device, all ccc command will get NACK. Set =20
-> >=20
-> > 		no					NACKed?
-> >  =20
-> > > i3c_ccc_cmd::err as I3C_ERROR_M2. =20
-> >=20
-> > This sentence should come last and be slightly more explicit.
-> >  =20
-> > > Return success when no i3c device found at svc_i3c_master_do_daa_lock=
-ed(). =20
-> >=20
-> > Please explain why this is important/useful. =20
->=20
-> If return failure, driver will probe failure when there are no any i3c
-> devices. I3C master supposed support hot join. The probe failure don't
-> make sense if no i3c devices found when master driver probe.
->=20
-> How about rewrite commit log as
+Are you not able to build the coresight drivers as modules and load
+them after the device has been authenticated and NS access enabled ?
+Running a trace session without NS access enabled on a normal device
+would be asking for trouble in the "normal world".
 
-Much better, let me propose something slightly clearer.
+Suzuki
 
-> "I3C master supports device hot join, it doesn't make sense master driver
-> probe failure when there are no I3C devices.
->
-> When there are no I3C devices attached, all CCC commands are NACKed. So
-> SVC I3C master fails to probe.
+> 
+> 
+> On Sun, Aug 27, 2023 at 2:37 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>>
+>> On 26/08/2023 00:39, Yabin Cui wrote:
+>>> Because the non-secure access can be enabled later on some devices.
+>>
+>> How can this be enabled ? Why not enable it before probing the ETR ?
+>> How can a user know if this has been done or not ? It is asking for
+>> trouble to continue without this.
+>>
+>> Suzuki
+>>
+>>>
+>>> Signed-off-by: Yabin Cui <yabinc@google.com>
+>>> ---
+>>>    drivers/hwtracing/coresight/coresight-tmc-core.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+>>> index c106d142e632..5ebfd12b627b 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+>>> @@ -370,7 +370,7 @@ static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
+>>>        struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
+>>>
+>>>        if (!tmc_etr_has_non_secure_access(drvdata))
+>>> -             return -EACCES;
+>>> +             dev_warn(parent, "TMC ETR doesn't have non-secure access\n");
+>>>
+>>>        /* Set the unadvertised capabilities */
+>>>        tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
+>>
 
-What about:
-
-I3C masters are expected to support hot-join. This means at
-initialization time we might not yet discover any device and this
-should not be treated as a fatal error.
-
-During the DAA procedure which happens at probe time, if no device has
-joined, all CCC will be NACKed (from a bus perspective). This leads to
-an early return with an error code which fails the probe of the master.
-
-Let's avoid this by just telling the core through an I3C_ERROR_M2
-return command code that no device was discovered, which is a valid
-situation. This way the master will no longer bail out and fail to
-probe for a wrong reason.
-
-> Set i3c_cc_cmd:err as I3C_ERROR_M2. So I3C master framework
-> i3c_master_rstdaa_locked() can return expected ERROR code and continue
-> driver probe process.
->=20
-> Return success at svc_i3c_master_do_daa_locked() if no i3c devices found.
-> So SVC master driver can probe successfully even if no I3C devices are
-> attached"
->=20
-> >  =20
-> > > Fixes: dd3c52846d59 ("i3c: master: svc: Add Silvaco I3C master driver=
-") =20
-> >=20
-> > Shall we consider a backport into stable kernels? =20
->=20
-> Yes, I can add stable tag at next version.
-
-Yes, please.
-
-> >  =20
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  drivers/i3c/master/svc-i3c-master.c | 13 +++++++++++--
-> > >  1 file changed, 11 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master=
-/svc-i3c-master.c
-> > > index 770b40e28015e..a5620103acb73 100644
-> > > --- a/drivers/i3c/master/svc-i3c-master.c
-> > > +++ b/drivers/i3c/master/svc-i3c-master.c
-> > > @@ -789,6 +789,9 @@ static int svc_i3c_master_do_daa_locked(struct sv=
-c_i3c_master *master,
-> > >  				 */
-> > >  				break;
-> > >  			} else if (SVC_I3C_MSTATUS_NACKED(reg)) {
-> > > +				/* No I3C devices attached */
-> > > +				if (dev_nb =3D=3D 0)
-> > > +					break; =20
-> >=20
-> > \n ?
-> >  =20
-> > >  				/*
-> > >  				 * A slave device nacked the address, this is
-> > >  				 * allowed only once, DAA will be stopped and
-> > > @@ -1263,11 +1266,17 @@ static int svc_i3c_master_send_ccc_cmd(struct=
- i3c_master_controller *m,
-> > >  {
-> > >  	struct svc_i3c_master *master =3D to_svc_i3c_master(m);
-> > >  	bool broadcast =3D cmd->id < 0x80;
-> > > +	int ret;
-> > > =20
-> > >  	if (broadcast)
-> > > -		return svc_i3c_master_send_bdcast_ccc_cmd(master, cmd);
-> > > +		ret =3D svc_i3c_master_send_bdcast_ccc_cmd(master, cmd);
-> > >  	else
-> > > -		return svc_i3c_master_send_direct_ccc_cmd(master, cmd);
-> > > +		ret =3D svc_i3c_master_send_direct_ccc_cmd(master, cmd);
-> > > +
-> > > +	if (ret)
-> > > +		cmd->err =3D I3C_ERROR_M2;
-> > > +
-> > > +	return ret;
-> > >  }
-> > > =20
-> > >  static int svc_i3c_master_priv_xfers(struct i3c_dev_desc *dev, =20
-> >=20
-> >=20
-> > Thanks,
-> > Miqu=C3=A8l =20
-
-
-Thanks,
-Miqu=C3=A8l
