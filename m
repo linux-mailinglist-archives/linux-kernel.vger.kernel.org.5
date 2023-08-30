@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 345FB78E0A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E4578E07E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239692AbjH3U3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        id S230299AbjH3UVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239566AbjH3U2y (ORCPT
+        with ESMTP id S237683AbjH3UAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:28:54 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A59873052;
-        Wed, 30 Aug 2023 12:33:07 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-792623074edso30088739f.1;
-        Wed, 30 Aug 2023 12:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693423937; x=1694028737; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=phKhrjG7sXSAjhn653McWF0Xp9kDLF4E5/rGNJ97Y4k=;
-        b=iaqimD4gB7qmOLd6a3coQzU+ciA8nwIbWgq+ir17l5uJDP2hFTmBHaqHVUuPZHqg3g
-         +kNunaCZrj988vhf+P9ZBR/yoQ+fn09FFzQf/NSbgzKlaBEkrFJ2I2GMR5mIir24M2KX
-         8U/TrSr59Ik6bezjgbY6nMQHaFOsCnTr1FnwxHR+XXVRueObfVxAl7YkqJbBHxZLnGkN
-         IxDohJkUfDlXOdGX3DsTyw4KKvskSbbDxesDRnU5Cikh/KXzp6sU5tvvYSyjByZObhh/
-         sON2tEq2DEwNLxbk1p8EJp9GYI90L+U7nJcF/NWc17fJbeYSEkIpDCABf6M9+JpHIt9e
-         viJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693423937; x=1694028737;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=phKhrjG7sXSAjhn653McWF0Xp9kDLF4E5/rGNJ97Y4k=;
-        b=E7HL6iCX29ETcqp/WZWPy3RgVPD/HVboXPApbXqjAjSbHayriblvv82LH1ggVbM//N
-         JP2HKRy2FSTNw3E0qcy5Nlw5CN7vtWPSnlYaxzPPXjm6X8SqcEjBK0Ni89VILxCirIsP
-         hhwE7btA93aY3d91ra+noNH7a53URF+4qb0v7ARI2SE452Oib/us866ockymUtdKCg/i
-         91uD4e8KR2vQeJJyiG7bJnTfEZtXA9+scBPLW3Gp030oFQ/Yk7t73NR8UC211pd/Arkk
-         bA7d7tfXdbFKUHKocQFjElgp+F5iTH87Jh0C44sx20OqUFwZPQ5eR/nKT61FTzRi2Xp8
-         tRIA==
-X-Gm-Message-State: AOJu0YwFV8PAxX4GITjV2MomyeHPWdDCHJw53jUdVUMQPzNseiAqTn7a
-        1+vsd0fAQuwvrOwYDbcaFQx6PpSCNWE=
-X-Google-Smtp-Source: AGHT+IE31EKHM80PdXHF58NCuY7SQ8l1WyQLE2oZUZir0KdXHAlu86zL4NC4+NFUHfHufL2C15OPsA==
-X-Received: by 2002:a05:6e02:184e:b0:34d:ecbb:9cc4 with SMTP id b14-20020a056e02184e00b0034decbb9cc4mr529528ilv.3.1693423936749;
-        Wed, 30 Aug 2023 12:32:16 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ft19-20020a056638661300b0042b0de0b976sm3900085jab.154.2023.08.30.12.32.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 12:32:16 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <1efe9234-a97f-6df2-c47d-e153dc362599@roeck-us.net>
-Date:   Wed, 30 Aug 2023 12:32:14 -0700
+        Wed, 30 Aug 2023 16:00:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA5544718
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693424071; x=1724960071;
+  h=subject:from:to:cc:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=o93wNKer2be7oqO3RsMGZMQCNhI39E5QvgMKNtPbL8I=;
+  b=Sqy05hHIu8uEHWxQCKv536vO34MKYgsAc/SGHLq5RldYqIq9zqlRaG1u
+   vUDbA/pw1UpswGgp3vBJ/BbWqgb9/bhzazIeBEGt1T2i85di0bPquo6cd
+   CSFfS8mnScZwVMbZWrvGocolU2XCZXTu+3nz89Yo7CpsPEhvJtT/II2za
+   RDq0fxlDmPHFqrOpcEh26GOlZ/TIur6LxmjkbmOp1YlJbMGzKB/PplcZp
+   FZHJmb9c7mfZpiG+vKLF25VuPFlNTACeKdD8UUavgqClIpYZX9FyDxZn0
+   jx0DT1B2SujhJPFzhOxaNAGrfjbiKS2QHnniXofH+LlPDc7huFeIjbWFf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="360723591"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="360723591"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="853844756"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="853844756"
+Received: from nivakuma-mobl.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.212.238.163])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:12 -0700
+Subject: [PATCH v3 0/5] configfs-tsm: Attestation Report ABI
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-coco@lists.linux.dev
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Peter Gonda <pgonda@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de
+Date:   Wed, 30 Aug 2023 12:33:12 -0700
+Message-ID: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] regulator (max5970): Add hwmon support
-Content-Language: en-US
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>, zev@bewilderbeest.net,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-References: <20230830111319.3882281-1-Naresh.Solanki@9elements.com>
- <0bfbbbb3-6144-fc9a-c8ab-423a8865591b@roeck-us.net>
- <CABqG17ig1VRJYqbrOvPKAYS8iUFwY9J3tYcgYGtnnXw+vrnoRA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <CABqG17ig1VRJYqbrOvPKAYS8iUFwY9J3tYcgYGtnnXw+vrnoRA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,24 +72,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/23 12:14, Naresh Solanki wrote:
-> Hi
-> 
-[ ... ]
->>> +                     /*
->>> +                      * Calculate voltage from ADC value and MON range.
->>> +                      * ddata->mon_rng holds the voltage corresponding to the maximum value the
->>> +                      * 10-bit ADC can measure.
->>> +                      * To obtain the output, multiply the ADC value by the MON range (in
->>> +                      * microvolts) and then divide it by the maximum value of the 10-bit ADC.
->>> +                      */
->>> +                     *val = mul_u64_u32_shr(*val, ddata->mon_rng[channel], 10);
->>
->> Why do you use mul_u64_u32_shr() here but a direct shift above ?
-> There is possibility of overflow due to large value of ddata->mon_rng
+Note that I am sending this during the merge window due to the high
+level of interest. My current expectation, barring major review
+concerns, is that this intercepts Linux-next soon after v6.6-rc1 for a
+v6.7 merge. Given the switch to configfs I did not carry forward
+Reviewed-by's from v2.
 
-Does the right shift guarantee that the result fits into 32 bit ?
+Changes since v2 [1]:
+- Switch from sysfs to configfs to scale the interface for containers
+  (Jeremi)
+- Fix locking in outblob_read() to avoid racing freeing and generation
+  of ->outblob (Jeremi)
+- Add missing mutex to sev_report_new() (Jeremi)
+- Fix incorrect usage of no_free_ptr(), switch to return_ptr() (Peter)
+- Drop hex input parsing (configfs bin attributes are not seekable which
+  eliminates the concern) (Greg)
+- Note why DEFINE_FREE() for kvfree() includes a NULL check (Greg)
+- Document the permissible values of privlevel in the ABI documentation
+  (Greg)
+- Bump column limit to 100 for sev-guest changes, since that's existing
+  code, for tsm.c use the .clang_format default. (Tom)
+- Drop report buffer size to 4K (Tom)
+- Fix uninitialized variable @rc in register_tsm() (Tom)
+- Fix collision detection confusion, always increment write_generation
+  on successful write regardless if old data is being re-written (Tom)
+- Switch to sockptr_t for sharing {get,get_ext}_report() between the
+  ioctl and configfs paths (Andy)
 
-Thanks,
-Guenter
+[1]: http://lore.kernel.org/r/169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com
 
+An attestation report is signed evidence of how a Trusted Virtual
+Machine (TVM) was launched and its current state. A verifying party uses
+the report to make judgements of the confidentiality and integrity of
+that execution environment. Upon successful attestation the verifying
+party may, for example, proceed to deploy secrets to the TVM to carry
+out a workload. Multiple confidential computing platforms share this
+similar flow.
+
+The approach of adding adding new char devs and new ioctls, for what
+amounts to the same logical functionality with minor formatting
+differences across vendors [2], is untenable. Common concepts and the
+community benefit from common infrastructure. 
+ 
+Use configfs for this facility for maintainability compared to ioctl(),
+and for its scalability compared to sysfs. Atomicity can be enforced at
+item creation time, and a conflict detection mechanism is included for
+scenarios where multiple threads may share a single configuration
+instance.
+ 
+[2]: http://lore.kernel.org/r/cover.1684048511.git.sathyanarayanan.kuppuswamy@linux.intel.com
+
+---
+
+Dan Williams (5):
+      virt: coco: Add a coco/Makefile and coco/Kconfig
+      configfs-tsm: Introduce a shared ABI for attestation reports
+      virt: sevguest: Prep for kernel internal {get,get_ext}_report()
+      mm/slab: Add __free() support for kvfree
+      virt: sevguest: Add TSM_REPORTS support for SNP_{GET,GET_EXT}_REPORT
+
+
+ Documentation/ABI/testing/configfs-tsm  |   68 +++++
+ MAINTAINERS                             |    8 +
+ drivers/virt/Kconfig                    |    6
+ drivers/virt/Makefile                   |    4
+ drivers/virt/coco/Kconfig               |   14 +
+ drivers/virt/coco/Makefile              |    8 +
+ drivers/virt/coco/sev-guest/Kconfig     |    1
+ drivers/virt/coco/sev-guest/sev-guest.c |  133 +++++++++--
+ drivers/virt/coco/tdx-guest/Kconfig     |    1
+ drivers/virt/coco/tsm.c                 |  391 +++++++++++++++++++++++++++++++
+ include/linux/slab.h                    |    2
+ include/linux/tsm.h                     |   54 ++++
+ 12 files changed, 665 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/ABI/testing/configfs-tsm
+ create mode 100644 drivers/virt/coco/Kconfig
+ create mode 100644 drivers/virt/coco/Makefile
+ create mode 100644 drivers/virt/coco/tsm.c
+ create mode 100644 include/linux/tsm.h
+
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
