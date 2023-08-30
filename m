@@ -2,75 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4284678DFA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFF778DF53
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240908AbjH3TJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
+        id S242371AbjH3TUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244982AbjH3OPs (ORCPT
+        with ESMTP id S244983AbjH3OPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:15:48 -0400
+        Wed, 30 Aug 2023 10:15:49 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24880122;
-        Wed, 30 Aug 2023 07:15:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0586D122;
+        Wed, 30 Aug 2023 07:15:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693404942; x=1724940942;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=9nUsW9E756XKH/ZqO1z7yXlVxgWZzxBiBpaF8uclgFg=;
-  b=DunAO0krIXvY6VN1VojUmTvRU/W8gUyGm2VWI755G4BIcF46yNbrNe6k
-   uAn+KndoPkqTOtsmfIE7WxgO00F2rLNsV1yQYWeYufd5rKHcyow7XohEz
-   dp9z8YBWSrULCNqICBtllkHZHfJVgat/UYIqA5BSWhUt5qgGTBGlcir9w
-   Iyu8earbprqu7wTA74ryeg3HXLvb9AhkhDUkcpsMb8eFg5u4BmHf5PmCJ
-   TeHaC3TN/sj9Z/IyoEJ9NDLW3xECwoELqmbsUSj0Oeq6XwBukmhH9eW7y
-   mgeMi1pbIjs790jc3yzzp7XNloVKIhcFyGglHrKz2oSQu28WkwtVo2Uk8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="365858269"
+  t=1693404947; x=1724940947;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2OcooeeYZEppi0287uIjHFRkbVzdWl+yYaQ6dX0OBKk=;
+  b=oIZ6F9INLONW8DnJ/UStuARDHGud6j1DceSwngSjPonRRts2y2AmUqNH
+   +gMPW0FX1DxHrJenvCIPShp7hF5rGXfu1Knghm3htKi0abRL98StPDpFB
+   2Uo8hxjb45YwcA23GAdgA1FI0Gnnrlw4Q2p9Yn0OjLGvEbIUdEqaTKbIE
+   A30/7BzmWs4rdV0cooc6ht2kDuaGzmmAtREgmuLNJNI5yEdGCH1qA2D2Z
+   YJtiZPIBOgoapHmZvsz2VwNQ+v51Zy7evkKARx/FPi9H8ioojAC9paxop
+   e1oZGpdKLp1PPERgvrtzsZeEJXITqUaA6uCF1Wb1eSvmsTcPC2ZWLBkNu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="365858284"
 X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="365858269"
+   d="scan'208";a="365858284"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 07:11:16 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 07:11:20 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="985755279"
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="985755296"
 X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="985755279"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Aug 2023 07:11:14 -0700
-Received: from [10.213.187.192] (kliang2-mobl1.ccr.corp.intel.com [10.213.187.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 4F3F2580C73;
-        Wed, 30 Aug 2023 07:11:13 -0700 (PDT)
-Message-ID: <4de84370-29f3-75ed-9c91-330636cdd790@linux.intel.com>
-Date:   Wed, 30 Aug 2023 10:11:11 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1 2/3] perf parse-events: Make common term list to strbuf
- helper
+   d="scan'208";a="985755296"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Aug 2023 07:11:18 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 30 Aug 2023 07:11:18 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 30 Aug 2023 07:11:18 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 30 Aug 2023 07:11:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mteWAhuT06RGnp2oqpWwOAG5bJV3p29gfqkhzqYN23vq1UnRitF2iL45ylnacnpZwvsdXsg6BrWeQkDn+rNeK5diMSSdhKi6StdPB/C7UrirY0kjKTIGx9ZScP7FB8BfpPfOpEZbI5qPKW5M8qYnXtwFYHX1OIIWG4PMi8SM+wVBZEaCSePdgP0LpNhMIIarOk7MhFtMIUyonFkT5ggL/lEPAcEW13F7eyuIAPlKsV9bdLhS5WexeSMjGufwa5NaVLDhSk2eBsNSjqy4yhrV4FmxdkZkVbS4ijTeWXYmDuqjPnL/jA4fTpo0vRsTlbQdb5zce4s6OeMbPMGdtY1wow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BIJXoWyLntdaf9+CDSYvYpilZpDd6olgZ91EKBKT9u8=;
+ b=dOjRxygNOd+wVPdDVZIvTFd6zasUYvjPiw8proUezkF9GuRox6VfZ70uqn8l7tAs2/sUngdEthS9mtGVpJYNM+SL60RtHSQZhid/bVE2w45GMTFCZstsow8SK6XbobVnF2/+d0yL5710sxVuRcmxhOHavTOWhDbrXg8UlZ3BG2RuNaNo3wXVCuLOpq3Qk3jQXi387e0zim01G69AOumeLYXtP4kH3sVMq8vKjmCr9ClNPbeglYyP43Q9MlrWUgJ7NxBhXoSx8ZzYOdLgLYz1e8JHFtvALMsNcGV7876jkEq/Rxi2Xww3kfsF35Np/pcSXNYtKOHYwqzl6CI6rEUKBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by DM6PR11MB4675.namprd11.prod.outlook.com (2603:10b6:5:2ac::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Wed, 30 Aug
+ 2023 14:11:15 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::b163:747e:e3c2:7087]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::b163:747e:e3c2:7087%3]) with mapi id 15.20.6699.034; Wed, 30 Aug 2023
+ 14:11:15 +0000
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+CC:     "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        "Babu Moger" <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: RE: [PATCH v5 1/8] x86/resctrl: Prepare for new domain scope
+Thread-Topic: [PATCH v5 1/8] x86/resctrl: Prepare for new domain scope
+Thread-Index: AQHZ2tLJaZzqU2XJm0W9Zs4AKdu/JrACiWEAgABVEdA=
+Date:   Wed, 30 Aug 2023 14:11:14 +0000
+Message-ID: <SJ1PR11MB6083A9F0B30A6009BF00235EFCE6A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <20230722190740.326190-1-tony.luck@intel.com>
+ <20230829234426.64421-1-tony.luck@intel.com>
+ <20230829234426.64421-2-tony.luck@intel.com>
+ <bssbtlnjbytqoraiamg7igvawtmlnimzthud5mlacbmjotivhj@hrrabdpmkbjx>
+In-Reply-To: <bssbtlnjbytqoraiamg7igvawtmlnimzthud5mlacbmjotivhj@hrrabdpmkbjx>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230830070753.1821629-1-irogers@google.com>
- <20230830070753.1821629-2-irogers@google.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20230830070753.1821629-2-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|DM6PR11MB4675:EE_
+x-ms-office365-filtering-correlation-id: 9dfa8799-233e-49c7-6247-08dba962f8e1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: khNlL5LIBVZB4SPdEyOwfKv4RNUE39ywf1lVCPdrssu4mOC03eUwMNeAP2bODsAdJRAgPjG5JO4YYUNELF7Rmy4kVyf+X8+4zGB4xLMBUzfXTzkZqjlt1IT+VazGcYhaA7x0Xsc4xm2D+uJPA3PTGawp9NbRMv6y4vqr6ik9TDwZRP/kKPXF8gcBtsWDICHPEx6IgCNdXcutLV5zlb0jWK+UY8afoCfgC4tQds69ShLFpRq+9uCZcWQVW9UGRHdv3L3l0uFzdoTUV9tG8EngodZ18W65rH+W0vJZHAbK8sS/szI0BjADC6RPpP+qX966voIfsulZntRvNGHdpbmCrRb9fZLkEcF26bhpBzXWpkeNApXmwJlYWZ98vKXMFl682J3Vt7gO9OxGGz5zr8xQWU2LEi+6cpi2BMPmPhiLjzm7PzJrpAtNR+cupvKWu6Wy4Zc48fhJnQ2TYcxnow/5yPfcvpj1ZAIu5u7GMZl9HWQm+6i1oE2V0RLl5B6X1y15zKpusncShqChDIaOUdUvGXTAmxHTQad3niXkDFNSI1Na9NItdxCkldQlqCFv2ykQcJ8FrxYoJbmigqa5jV1ert7KtN04cDne+vsHk37kiC826VBEQzXtEyLPZ7UEcRVF
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(366004)(39860400002)(346002)(1800799009)(186009)(451199024)(2906002)(5660300002)(7416002)(33656002)(86362001)(122000001)(38070700005)(82960400001)(38100700002)(52536014)(55016003)(8676002)(4326008)(6862004)(41300700001)(8936002)(83380400001)(66556008)(26005)(316002)(9686003)(6636002)(6506007)(7696005)(54906003)(66446008)(66476007)(478600001)(71200400001)(64756008)(76116006)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ZN/HDV3GzCpOTBgQnpg6CzQCGsaie1WWE7wAHEOiICTRXquoiTHWpJFT8+2l?=
+ =?us-ascii?Q?h4yTyTnskaTgwQ5hm+Fe3qOQ4dosy/esOD0FsfszNINHIhZVeu5arlsIRqZx?=
+ =?us-ascii?Q?HXYKpN57s9Vaj5Sb+E0771JlpL3bsz/MYA9RB6h26S3jIunluWTlP7kLMgul?=
+ =?us-ascii?Q?pzNphGLmer/3fNbmzjkrNjQB8WdEcxtXFUVEXEE/+Nuwevp6Ypn7TmY2MVPT?=
+ =?us-ascii?Q?Eribiw99RkJ1J/NoTPOaMydnvrx/vGA0SuTTRmE8Pp3xH3OuMJMImG8kUpHs?=
+ =?us-ascii?Q?QLPMSgBy48+0zeHD1bsT3Riez6JMzdV+BI9cDBFYtha9gQklHtCGqkBls636?=
+ =?us-ascii?Q?YoKDe93wq7sybA4QDogPQ1Gc58DcdoxzdTyZiRCb1DXi3ySBxCC4Q4UFKCdz?=
+ =?us-ascii?Q?b5nb9rrHf8abDUJ1reJA3F6Owf0mFPm2MgUII5O5w3o5BeMNweEoFLeoJ5rb?=
+ =?us-ascii?Q?l3dOA883BoS4j62IQ3Yo1A3WS9KJILI57m75W1d0Na9SdRTXHTnnsijzIrDw?=
+ =?us-ascii?Q?pP1Cetar8j2PNwsaAFOFBjDdMdevspC4HGY5Xc9rgjoezuAUo/bZwVcYtW1r?=
+ =?us-ascii?Q?LFW+bQomtH7rnRo45J8B7TvNuTh8yrf6MfFZKrFcbvxjxb60aTWpT0WGF3hg?=
+ =?us-ascii?Q?VqsUZTwilQZc5k+17XkUBj1FhO8u//2JKRIqORzQpKyCTPsaDyJtxWehR5W6?=
+ =?us-ascii?Q?1DVghxNa2A7ntFg60Ditv3KsT1WH8cWMTKl+FYYWrXIjSo5Bp2dl4W9Mr0oO?=
+ =?us-ascii?Q?VjyrT6j4zP4kk1vKDmuFtnEGZxaqKBN2Up0eZjiXnzb8Ra4dqT+YaXBsCgbW?=
+ =?us-ascii?Q?MoPL0haYVGSGs2BzylAt06TXuw6RbIorUr+QDGWPEbWqhweZZpzm1yeZ3Fu5?=
+ =?us-ascii?Q?+bhzW8bKzLRJbZqXvA1es8Yq3CicV5uoyd8fr28HINZbc5EyyuSsLWWWLh+M?=
+ =?us-ascii?Q?IRCnOISHqtyUzUJkl7hU3kRP7uYdLahds1M3m/huIRYv6jXxDXlZ8H2UsIew?=
+ =?us-ascii?Q?Adm3JsY5cxDS3P87JbI3/JAeNZEpbVv0KvyjYE1sthzPkek0bhI9MR9QK6fM?=
+ =?us-ascii?Q?mOFmAiGbZie+E7NgDO7umcgURCPNKnpFb0zP9GABnXYsY1Cu+QHd1RN3dcDB?=
+ =?us-ascii?Q?Wjkei5T5SMpvME6TX29XswfgwLPawlT7VEDIiw4cX6fNJdD/bnJRQSYDERui?=
+ =?us-ascii?Q?Tlkj9RWbdBPolKK9rMtDHeCGIyeYEFDGHcrWBJxNHmDqc9JyfC3hK4G1TRbV?=
+ =?us-ascii?Q?8vcXje7kGXW1SExeOr+bBSdK+6+Glms3z+CHDGXNwH2TWgioDBEiN+Af169s?=
+ =?us-ascii?Q?SWH5MvPhk7/F4PUda6zfACi3hOJUp31KPsjNTc5XEVDMiv6yj4kAfXlWXc5O?=
+ =?us-ascii?Q?kHC4YsWRbw1uFCyNCDqvCavlpi0pNK8FecebF5uNWRabEAEaOllWXvqviUv+?=
+ =?us-ascii?Q?FlPgboRcmSAABnpuMHmQoXMHwdUYzkeN02oJyDcrROIhPUQV8+ntTGFXA7qY?=
+ =?us-ascii?Q?bR6xy/2YdJErDrJ+Xaz6YMmmgZYDa9nQ2YsrlFzafpMyNqx5jGu64taaj7YO?=
+ =?us-ascii?Q?qEDGtViiFJQ4XkuwSpc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9dfa8799-233e-49c7-6247-08dba962f8e1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 14:11:14.9892
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W8IYVUkGdtmc9rjGrzmyq6RlfqJjj+PrEUNNkST4UX0iFuZp2xvGvrEnu14PR1pAPe49ErHGUJDQiA6owRrWJQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4675
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,272 +162,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> >+static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
+> >+{
+> >+    switch (scope) {
+> >+    case RESCTRL_L3_CACHE:
+> >+            return get_cpu_cacheinfo_id(cpu, 3);
+> >+    case RESCTRL_L2_CACHE:
+> >+            return get_cpu_cacheinfo_id(cpu, 2);
+> >+    default:
+> >+            WARN_ON_ONCE(1);
+> >+            break;
+> >+    }
+> >+
+> >+    return -1;
+> >+}
+>
+> Is there some reason the "return -1" is outside of the default switch
+> case?
+>
+> Other switch statements in this patch do have returns inside the default
+> case, is this one different in some way?
+
+I've sometimes had compilers complain about code written:
+
+static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
+{
+        switch (scope) {
+        case RESCTRL_L3_CACHE:
+                return get_cpu_cacheinfo_id(cpu, 3);
+        case RESCTRL_L2_CACHE:
+                return get_cpu_cacheinfo_id(cpu, 2);
+        default:
+                WARN_ON_ONCE(1);
+                return -1;
+        }
+}
+
+because they failed to notice that every path in the switch does a "return =
+and they
+issue a warning that the function has no return value because they don't re=
+alize
+that the end of the function can't be reached.
+
+So it's defensive programming against possible complier issues.
+
+-Tony
 
 
-On 2023-08-30 3:07 a.m., Ian Rogers wrote:
-> A term list is turned into a string for debug output and for the str
-> value in the alias. Add a helper to do this based on existing code,
-> but then fix for situations like events being identified. Use strbuf
-> to manage the dynamic memory allocation and remove the 256 byte
-> limit. Use in various places the string of the term list is required.
-> 
-> Before:
-> ```
-> $ sudo perf stat -vv -e inst_retired.any true
-> Using CPUID GenuineIntel-6-8D-1
-> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
-> Attempting to add event pmu 'cpu' with 'inst_retired.any,' that may result in non-fatal errors
-> After aliases, add event pmu 'cpu' with 'event,period,' that may result in non-fatal errors
-> inst_retired.any -> cpu/inst_retired.any/
-> ...
-> ```
-> 
-> After:
-> ```
-> $ sudo perf stat -vv -e inst_retired.any true
-> Using CPUID GenuineIntel-6-8D-1
-> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
-> Attempt to add: cpu/inst_retired.any/
-> ..after resolving event: cpu/event=0xc0,period=0x1e8483/
-> inst_retired.any -> cpu/event=0xc0,period=0x1e8483/
-> ...
-> ```
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/parse-events.c | 101 ++++++++++++++++++++++++---------
->  tools/perf/util/parse-events.h |   2 +
->  tools/perf/util/pmu.c          |  19 ++-----
->  3 files changed, 81 insertions(+), 41 deletions(-)
 
-Which branch should I use to apply the patch?
-I tried the perf-tools-next branch, but there is some conflict.
-I'd like to do some tests on a hybrid machine.
 
-Thanks,
-Kan
-> 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 4c812fbe0cf9..0b941b58bdc0 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -13,7 +13,7 @@
->  #include <subcmd/parse-options.h>
->  #include "parse-events.h"
->  #include "string2.h"
-> -#include "strlist.h"
-> +#include "strbuf.h"
->  #include "debug.h"
->  #include <api/fs/tracing_path.h>
->  #include <perf/cpumap.h>
-> @@ -1303,19 +1303,6 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
->  
->  	pmu = parse_state->fake_pmu ?: perf_pmus__find(name);
->  
-> -	if (verbose > 1 && !(pmu && pmu->selectable)) {
-> -		fprintf(stderr, "Attempting to add event pmu '%s' with '",
-> -			name);
-> -		if (head_config) {
-> -			struct parse_events_term *term;
-> -
-> -			list_for_each_entry(term, head_config, list) {
-> -				fprintf(stderr, "%s,", term->config);
-> -			}
-> -		}
-> -		fprintf(stderr, "' that may result in non-fatal errors\n");
-> -	}
-> -
->  	if (!pmu) {
->  		char *err_str;
->  
-> @@ -1325,6 +1312,21 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
->  			parse_events_error__handle(err, loc->first_column, err_str, NULL);
->  		return -EINVAL;
->  	}
-> +
-> +	if (verbose > 1) {
-> +		struct strbuf sb;
-> +
-> +		strbuf_init(&sb, /*hint=*/ 0);
-> +		if (pmu->selectable && !head_config) {
-> +			strbuf_addf(&sb, "%s//", name);
-> +		} else {
-> +			strbuf_addf(&sb, "%s/", name);
-> +			parse_events_term__to_strbuf(head_config, &sb);
-> +			strbuf_addch(&sb, '/');
-> +		}
-> +		fprintf(stderr, "Attempt to add: %s\n", sb.buf);
-> +		strbuf_release(&sb);
-> +	}
->  	if (head_config)
->  		fix_raw(head_config, pmu);
->  
-> @@ -1349,16 +1351,12 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
->  		return -EINVAL;
->  
->  	if (verbose > 1) {
-> -		fprintf(stderr, "After aliases, add event pmu '%s' with '",
-> -			name);
-> -		if (head_config) {
-> -			struct parse_events_term *term;
-> +		struct strbuf sb;
->  
-> -			list_for_each_entry(term, head_config, list) {
-> -				fprintf(stderr, "%s,", term->config);
-> -			}
-> -		}
-> -		fprintf(stderr, "' that may result in non-fatal errors\n");
-> +		strbuf_init(&sb, /*hint=*/ 0);
-> +		parse_events_term__to_strbuf(head_config, &sb);
-> +		fprintf(stderr, "..after resolving event: %s/%s/\n", name, sb.buf);
-> +		strbuf_release(&sb);
->  	}
->  
->  	/*
-> @@ -1460,7 +1458,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
->  		parse_events_copy_term_list(head, &orig_head);
->  		if (!parse_events_add_pmu(parse_state, list, pmu->name,
->  					  orig_head, auto_merge_stats, loc)) {
-> -			pr_debug("%s -> %s/%s/\n", str, pmu->name, str);
-> +			struct strbuf sb;
-> +
-> +			strbuf_init(&sb, /*hint=*/ 0);
-> +			parse_events_term__to_strbuf(orig_head, &sb);
-> +			pr_debug("%s -> %s/%s/\n", str, pmu->name, sb.buf);
-> +			strbuf_release(&sb);
->  			ok++;
->  		}
->  		parse_events_terms__delete(orig_head);
-> @@ -1469,7 +1472,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
->  	if (parse_state->fake_pmu) {
->  		if (!parse_events_add_pmu(parse_state, list, str, head,
->  					  /*auto_merge_stats=*/true, loc)) {
-> -			pr_debug("%s -> %s/%s/\n", str, "fake_pmu", str);
-> +			struct strbuf sb;
-> +
-> +			strbuf_init(&sb, /*hint=*/ 0);
-> +			parse_events_term__to_strbuf(head, &sb);
-> +			pr_debug("%s -> %s/%s/\n", str, "fake_pmu", sb.buf);
-> +			strbuf_release(&sb);
->  			ok++;
->  		}
->  	}
-> @@ -2085,7 +2093,7 @@ void parse_events_error__handle(struct parse_events_error *err, int idx,
->  		break;
->  	default:
->  		pr_debug("Multiple errors dropping message: %s (%s)\n",
-> -			err->str, err->help);
-> +			err->str, err->help ?: "<no help>");
->  		free(err->str);
->  		err->str = str;
->  		free(err->help);
-> @@ -2502,6 +2510,47 @@ void parse_events_terms__delete(struct list_head *terms)
->  	free(terms);
->  }
->  
-> +int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb)
-> +{
-> +	struct parse_events_term *term;
-> +	bool first = true;
-> +
-> +	if (!term_list)
-> +		return 0;
-> +
-> +	list_for_each_entry(term, term_list, list) {
-> +		int ret;
-> +
-> +		if (!first) {
-> +			ret = strbuf_addch(sb, ',');
-> +			if (ret < 0)
-> +				return ret;
-> +		}
-> +		first = false;
-> +
-> +		if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
-> +			if (term->type_term == PARSE_EVENTS__TERM_TYPE_USER && term->val.num == 1)
-> +				ret = strbuf_addf(sb, "%s", term->config);
-> +			else
-> +				ret = strbuf_addf(sb, "%s=%#"PRIx64, term->config, term->val.num);
-> +		else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR) {
-> +			if (term->config) {
-> +				ret = strbuf_addf(sb, "%s=", term->config);
-> +				if (ret < 0)
-> +					return ret;
-> +			} else if (term->type_term < __PARSE_EVENTS__TERM_TYPE_NR) {
-> +				ret = strbuf_addf(sb, "%s=", config_term_names[term->type_term]);
-> +				if (ret < 0)
-> +					return ret;
-> +			}
-> +			ret = strbuf_addf(sb, "%s", term->val.str);
-> +		}
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +	return 0;
-> +}
-> +
->  void parse_events_evlist_error(struct parse_events_state *parse_state,
->  			       int idx, const char *str)
->  {
-> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> index 6d75d853ce00..20bdc35d6112 100644
-> --- a/tools/perf/util/parse-events.h
-> +++ b/tools/perf/util/parse-events.h
-> @@ -18,6 +18,7 @@ struct parse_events_error;
->  
->  struct option;
->  struct perf_pmu;
-> +struct strbuf;
->  
->  const char *event_type(int type);
->  
-> @@ -152,6 +153,7 @@ int parse_events_term__clone(struct parse_events_term **new,
->  void parse_events_term__delete(struct parse_events_term *term);
->  void parse_events_terms__delete(struct list_head *terms);
->  void parse_events_terms__purge(struct list_head *terms);
-> +int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb);
->  int parse_events__modifier_event(struct list_head *list, char *str, bool add);
->  int parse_events__modifier_group(struct list_head *list, char *event_mod);
->  int parse_events_name(struct list_head *list, const char *name);
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index b3f8f3f1e900..8dbb7008877e 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -507,12 +507,11 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
->  				const char *desc, const char *val, FILE *val_fd,
->  				const struct pmu_event *pe)
->  {
-> -	struct parse_events_term *term;
->  	struct perf_pmu_alias *alias;
->  	int ret;
-> -	char newval[256];
->  	const char *long_desc = NULL, *topic = NULL, *unit = NULL, *pmu_name = NULL;
->  	bool deprecated = false, perpkg = false;
-> +	struct strbuf sb;
->  
->  	if (perf_pmu__find_alias(pmu, name, /*load=*/ false)) {
->  		/* Alias was already created/loaded. */
-> @@ -582,20 +581,10 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
->  	 *
->  	 * Rebuild string to make alias->str member comparable.
->  	 */
-> -	ret = 0;
-> -	list_for_each_entry(term, &alias->terms, list) {
-> -		if (ret)
-> -			ret += scnprintf(newval + ret, sizeof(newval) - ret,
-> -					 ",");
-> -		if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
-> -			ret += scnprintf(newval + ret, sizeof(newval) - ret,
-> -					 "%s=%#x", term->config, term->val.num);
-> -		else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
-> -			ret += scnprintf(newval + ret, sizeof(newval) - ret,
-> -					 "%s=%s", term->config, term->val.str);
-> -	}
->  	zfree(&alias->str);
-> -	alias->str = strdup(newval);
-> +	strbuf_init(&sb, /*hint=*/ 0);
-> +	parse_events_term__to_strbuf(&alias->terms, &sb);
-> +	alias->str = strbuf_detach(&sb, /*sz=*/ NULL);
->  	if (!pe)
->  		pmu->sysfs_aliases++;
->  	else
+
+
