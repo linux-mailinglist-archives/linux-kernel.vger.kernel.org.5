@@ -2,184 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CB778E2F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D08B78E305
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344381AbjH3XCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 19:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
+        id S1344399AbjH3XGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344333AbjH3XCF (ORCPT
+        with ESMTP id S1343729AbjH3XGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 19:02:05 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57ACCC;
-        Wed, 30 Aug 2023 16:01:38 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68c576d35feso148811b3a.2;
-        Wed, 30 Aug 2023 16:01:38 -0700 (PDT)
+        Wed, 30 Aug 2023 19:06:12 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E684CF3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:06:02 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c0ecb9a075so1313355ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:06:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693436496; x=1694041296; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZvBgmxNy928oacmNI77J4OtVBnWVUvcPN3MQLBE4mjE=;
-        b=RNqyd+CjUxd1VCUxYpKJu7MucmcDE3KkwijUACz+G5V9Lhn42bdAbKtePfdhEn7vuC
-         IPlSuOYjiXpW/JNUZYIDt0YxzH8hb/q6pJuM6AKZVMjxjNowCv7mhEaf0GNXISmpvDae
-         Wv5zDw3Vxv/XBrpeg94iihJLAFJcJHNo4fxqI5fgp7u53l1EGt4hvbglX7+RBGFZePN8
-         Uj2ftcYPEsodhJ5ggvL974gCeG5cSi6gq47t6oxgDxU/0S7CYCHnIbc7R1IQ1AkP/FNQ
-         kRB5E3HfpBe5ZsRunU09dUq0oKWGOW1QI7p0svng+jk7QLtWiwADqAgAHkp/PLskttS/
-         i+1Q==
+        d=chromium.org; s=google; t=1693436761; x=1694041561; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9JYKIPS2a/Iw0xLgRaWe30NqFEvhVB2/VIw8SYtFzVk=;
+        b=D+hjtrkTRWseAG60mGPALZ4IIorEBJ2o0krbkPxCb6UlzTr7y8SnOmQSanjeWCG5x4
+         HZFORxb+guZWshHiM2yEPaA+hzTdm4gjk4qn2lUsDYKPWRDI5jfC0kupC8pq5qN14ooL
+         tKZ2mgle4yNJYDuYPqJqtcwhjKifbCMWa0BVo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693436496; x=1694041296;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZvBgmxNy928oacmNI77J4OtVBnWVUvcPN3MQLBE4mjE=;
-        b=Bko1CsrG+LdjLJr379xYylOmzescVKiuD5Fb3j+z4b0s2dMqbvspR9zMNZp0RzvHxV
-         QWrv+smhZz7WXqdj2zAW1ZWHoDVWKXtM0q3Th/enI+omyg4gJuctClMcKYeG98u+RKVO
-         GIS31KMrXkelovuuKihXgOx1JNrHkafQqT2ViR+3+TvGY9fE289avzpvYnlJFni4Eaeg
-         wOvDkUBwJW4ySx5THtDt9/wH1AMRq84MedIk7Z+8t5oYT8wNdncb/x8HSaxLLD61ma1s
-         BS7JaEPJU4w3BOlxBzLgmEFyOQ8jH/un5trvWQKuLFK8v+rRQxVj5orjqJYVdV6Gvgab
-         pyIw==
-X-Gm-Message-State: AOJu0YwUYal6j8WMjWNMKAvkbSqOucvPUkNvFCP2PoPzfNifWk+tzUa2
-        C0slHPO9f3V0JciKbI6rutA=
-X-Google-Smtp-Source: AGHT+IFpmKYs7Zw0+pm0J10242Ax3PiMji8ib4QqZ3UTtY7hUmsedOoS6Y5fP90od5L+sEgDk0InWw==
-X-Received: by 2002:a05:6a20:4cf:b0:137:5a89:daf5 with SMTP id 15-20020a056a2004cf00b001375a89daf5mr3406430pzd.28.1693436496062;
-        Wed, 30 Aug 2023 16:01:36 -0700 (PDT)
-Received: from bangji.corp.google.com ([2620:15c:2c0:5:4366:cd91:1c34:2aa7])
-        by smtp.gmail.com with ESMTPSA id j13-20020aa7928d000000b00689f8dc26c2sm92531pfa.133.2023.08.30.16.01.34
+        d=1e100.net; s=20221208; t=1693436761; x=1694041561;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9JYKIPS2a/Iw0xLgRaWe30NqFEvhVB2/VIw8SYtFzVk=;
+        b=W+zuB5A3UhKEO3TGngzrQaSA9duPqOPJl7EMpDDCWhilIttl4mG4jRPt29gW9tw3ft
+         02CQgYLGv9rUpH/jzO1j8X7kwLaQbN1VDt3VIv54D/MGYOETXTcjpJPbDBuUuI68hAM3
+         c3Z0xPkr3Cl2RAvI3VQlStD+CV3uuIBsnlEQcP8BIRYXjj3vW471zFV/+OVYfNvAF4dy
+         xEhTxiGNpF1yOGpGzWb3Y/f6k/6xXfqCiiZvwmq3Ou0CrG2059DWFssq1zAqW6kDJgST
+         u6/GofPKSsZGo5lWPZQj7H1Vtvc6eJ/q+OL4GwF+94F0mH5F1QX9OKGJeN3q2+tzWyaq
+         Sf4w==
+X-Gm-Message-State: AOJu0YymUzgyigoZJdNYRzeibebRqQQCUPbCLkS3c6f3eU2R7Afc4YhU
+        8VcIzzqG1PnM7w+oTf9u7QY49g==
+X-Google-Smtp-Source: AGHT+IHvcjsgESxgjsBsANNslu2fblYGTWQZibmYJFtloK+JU+1ZiyL/2CGqueDw+/3m2eLV8JFmhg==
+X-Received: by 2002:a17:902:a40a:b0:1c0:cb31:d76 with SMTP id p10-20020a170902a40a00b001c0cb310d76mr2761512plq.58.1693436761703;
+        Wed, 30 Aug 2023 16:06:01 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a5-20020a170902ee8500b001bd62419744sm26037pld.147.2023.08.30.16.06.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 16:01:35 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: [PATCH 5/5] perf test: Improve perf lock contention test
-Date:   Wed, 30 Aug 2023 16:01:26 -0700
-Message-ID: <20230830230126.260508-6-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-In-Reply-To: <20230830230126.260508-1-namhyung@kernel.org>
-References: <20230830230126.260508-1-namhyung@kernel.org>
+        Wed, 30 Aug 2023 16:06:01 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 16:06:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        linux-hardening@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH 2/2] ocfs2: Replace strlcpy with strscpy
+Message-ID: <202308301601.8A8EE6B653@keescook>
+References: <20230830215426.4181755-1-azeemshaikh38@gmail.com>
+ <20230830215426.4181755-3-azeemshaikh38@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830215426.4181755-3-azeemshaikh38@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cgroup aggregation and filter tests.
+On Wed, Aug 30, 2023 at 09:54:26PM +0000, Azeem Shaikh wrote:
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
+> 
+> Direct replacement is assumed to be safe here since
+> it's ok for `kernel_param_ops.get()` to return -errno [3].
+> This changes the behavior such that instead of silently ignoring the
+> case when sizeof(@buffer) < DLMFS_CAPABILITIES, we now return error.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> [2] https://github.com/KSPP/linux/issues/89
+> [3] https://elixir.bootlin.com/linux/v6.5/source/include/linux/moduleparam.h#L52
+> 
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> ---
+>  fs/ocfs2/dlmfs/dlmfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
+> index 33e529de93b2..b001eccdd2f3 100644
+> --- a/fs/ocfs2/dlmfs/dlmfs.c
+> +++ b/fs/ocfs2/dlmfs/dlmfs.c
+> @@ -80,7 +80,7 @@ static int param_set_dlmfs_capabilities(const char *val,
+>  static int param_get_dlmfs_capabilities(char *buffer,
+>  					const struct kernel_param *kp)
+>  {
+> -	return strlcpy(buffer, DLMFS_CAPABILITIES,
+> +	return strscpy(buffer, DLMFS_CAPABILITIES,
+>  		       strlen(DLMFS_CAPABILITIES) + 1);
+>  }
 
-  $ sudo ./perf test -v contention
-   84: kernel lock contention analysis test                            :
-  --- start ---
-  test child forked, pid 222423
-  Testing perf lock record and perf lock contention
-  Testing perf lock contention --use-bpf
-  Testing perf lock record and perf lock contention at the same time
-  Testing perf lock contention --threads
-  Testing perf lock contention --lock-addr
-  Testing perf lock contention --lock-cgroup
-  Testing perf lock contention --type-filter (w/ spinlock)
-  Testing perf lock contention --lock-filter (w/ tasklist_lock)
-  Testing perf lock contention --callstack-filter (w/ unix_stream)
-  Testing perf lock contention --callstack-filter with task aggregation
-  Testing perf lock contention --cgroup-filter
-  Testing perf lock contention CSV output
-  test child finished with 0
-  ---- end ----
-  kernel lock contention analysis test: Ok
+This is another case of "accidentally correct".
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/shell/lock_contention.sh | 45 +++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
 
-diff --git a/tools/perf/tests/shell/lock_contention.sh b/tools/perf/tests/shell/lock_contention.sh
-index d120e83db7d9..966e67db75f3 100755
---- a/tools/perf/tests/shell/lock_contention.sh
-+++ b/tools/perf/tests/shell/lock_contention.sh
-@@ -123,6 +123,24 @@ test_aggr_addr()
- 	fi
- }
- 
-+test_aggr_cgroup()
-+{
-+	echo "Testing perf lock contention --lock-cgroup"
-+
-+	if ! perf lock con -b true > /dev/null 2>&1 ; then
-+		echo "[Skip] No BPF support"
-+		return
-+	fi
-+
-+	# the perf lock contention output goes to the stderr
-+	perf lock con -a -b -g -E 1 -q -- perf bench sched messaging > /dev/null 2> ${result}
-+	if [ "$(cat "${result}" | wc -l)" != "1" ]; then
-+		echo "[Fail] BPF result count is not 1:" "$(cat "${result}" | wc -l)"
-+		err=1
-+		exit
-+	fi
-+}
-+
- test_type_filter()
- {
- 	echo "Testing perf lock contention --type-filter (w/ spinlock)"
-@@ -232,6 +250,31 @@ test_aggr_task_stack_filter()
- 		exit
- 	fi
- }
-+test_cgroup_filter()
-+{
-+	echo "Testing perf lock contention --cgroup-filter"
-+
-+	if ! perf lock con -b true > /dev/null 2>&1 ; then
-+		echo "[Skip] No BPF support"
-+		return
-+	fi
-+
-+	perf lock con -a -b -g -E 1 -F wait_total -q -- perf bench sched messaging > /dev/null 2> ${result}
-+	if [ "$(cat "${result}" | wc -l)" != "1" ]; then
-+		echo "[Fail] BPF result should have a cgroup result:" "$(cat "${result}")"
-+		err=1
-+		exit
-+	fi
-+
-+	cgroup=$(cat "${result}" | awk '{ print $3 }')
-+	perf lock con -a -b -g -E 1 -G "${cgroup}" -q -- perf bench sched messaging > /dev/null 2> ${result}
-+	if [ "$(cat "${result}" | wc -l)" != "1" ]; then
-+		echo "[Fail] BPF result should have a result with cgroup filter:" "$(cat "${cgroup}")"
-+		err=1
-+		exit
-+	fi
-+}
-+
- 
- test_csv_output()
- {
-@@ -275,10 +318,12 @@ test_bpf
- test_record_concurrent
- test_aggr_task
- test_aggr_addr
-+test_aggr_cgroup
- test_type_filter
- test_lock_filter
- test_stack_filter
- test_aggr_task_stack_filter
-+test_cgroup_filter
- test_csv_output
- 
- exit ${err}
+param->get() is hooked here, in the sysfs "show" callback:
+
+static ssize_t param_attr_show(struct module_attribute *mattr,
+                               struct module_kobject *mk, char *buf)
+{
+        int count;
+        struct param_attribute *attribute = to_param_attr(mattr);
+
+        if (!attribute->param->ops->get)
+                return -EPERM;
+
+        kernel_param_lock(mk->mod);
+        count = attribute->param->ops->get(buf, attribute->param);
+        kernel_param_unlock(mk->mod);
+        return count;
+}
+
+Meaning ultimately this will show up here, if I'm reading names right:
+/sys/module/ocfs/parameters/dlmfs_capabilities
+
+Anyway, the "count" being returned would be quite bad if
+DLMFS_CAPABILITIES were dynamic and larger than PAGE_SIZE (the size of
+the sysfs buffer).
+
+For this case, I would say replace strlcpy with sysfs_emit:
+
+	return sysfs_emit(buffer, DLMFS_CAPABILITIES);
+
+(Also, ew, existing code doesn't include a trailing "\n". Oh well.)
+
+-Kees
+
 -- 
-2.42.0.283.g2d96d420d3-goog
-
+Kees Cook
