@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7875C78E330
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C09A78E296
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344471AbjH3XZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 19:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        id S1343837AbjH3Wtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344439AbjH3XZO (ORCPT
+        with ESMTP id S243869AbjH3Wth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 19:25:14 -0400
-X-Greylist: delayed 4130 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Aug 2023 16:25:02 PDT
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF22C5;
-        Wed, 30 Aug 2023 16:25:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 30863CE1F31;
-        Wed, 30 Aug 2023 21:00:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89589C433C9;
-        Wed, 30 Aug 2023 20:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693429198;
-        bh=oZMG6qL+Cu510IHDOLGg0aYCjrQvUEyoDQ865p6UfDY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OB4uqQ962pARB6pbatc4FmftlW6tKKcmCeBxCx6Eq1S4NhQOhXxEcsEN8JIiNjeOF
-         7pkba2CcWngAGDN8v9sorAjxwbmroDYlgeKSu8c+yg0BKHc4kdx7bK8bsEJQe6uSd2
-         LLKqTQya6xEYJUtRIM4iagEb0+KGvavUM7aYTLnFSMTD9++E3LYc9u1lH8tVqDKEiV
-         5jooumYpngLMAYBd/I+tixLEqrjnpUza/V264FcShy13PyEhVqKhhSba6+DyEhWmLt
-         IsXoDLS4r/bP4d+ev3W6YRdW76fxwJJK1eoqN54ucGt1at+BQPSW54TnQxnDXRwI0B
-         08F1buRuVzu5g==
-Date:   Wed, 30 Aug 2023 21:59:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>
-Cc:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
-Subject: Re: [PATCH v2 1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
-Message-ID: <737c4114-5b54-444c-8a6a-de4e98566513@sirena.org.uk>
-References: <20230830195536.448884-1-vkarpovi@opensource.cirrus.com>
+        Wed, 30 Aug 2023 18:49:37 -0400
+Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 09817E6E
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:49:18 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id bSOGqx2PaDlJebSOGqE9lA; Wed, 30 Aug 2023 23:06:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693429580;
+        bh=RzybfU0boxWYJNuGa1CY2Ynec75IhyC3G31hAEGouPc=;
+        h=From:To:Cc:Subject:Date;
+        b=mPrO5hn5GG5LU77t1k7/5WO5l+CvjJ29N7m9UBTflaCTVNouFpmoUL4y4lf3E3h8m
+         ovmhshCs/5nFfv+13c172HABJvt+Mycl8lymXklGe4kDwQZbwx7GhsuNVENRtPpJCi
+         s+UjqoGzWyHK+pAqfhfhP/VMgN0NZDYoMZEGUaZ+pi0N25nLmnsi+JLOVY1A5Uyiy+
+         Loj8GV28MUlbOiOJ55JPXeS0v/lrF/NC83cg82rQbBA92VoZYCfwrBVL+xBpstl8/t
+         NSC1RCgTCI2l66yzce+gpfX+5v/nGoRQqZl9rfjnrHHjdAqd0AR2WYxTPo2UBp5wpt
+         oz9s9SiN9iAvA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 30 Aug 2023 23:06:20 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Rui Miguel Silva <rmfrfs@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        Purism Kernel Team <kernel@puri.sm>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] media: imx-mipi-csis: Remove an incorrect fwnode_handle_put() call
+Date:   Wed, 30 Aug 2023 23:06:14 +0200
+Message-Id: <dd5b741f496d074d342958f14baff5bae8c71531.1693429556.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AUDHTcx1/kKY0ynM"
-Content-Disposition: inline
-In-Reply-To: <20230830195536.448884-1-vkarpovi@opensource.cirrus.com>
-X-Cookie: Immanuel doesn't pun, he Kant.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit in Fixes has removed an fwnode_graph_get_endpoint_by_id() call
+in mipi_csis_subdev_init().
+So the reference that was taken should not be released anymore in the
+error handling path of the probe and in the remove function.
 
---AUDHTcx1/kKY0ynM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Remove the now incorrect fwnode_handle_put() calls.
 
-On Wed, Aug 30, 2023 at 02:55:33PM -0500, Vlad Karpovich wrote:
-> Checks the index computed by the virq offset before printing the
-> error condition in cs35l45_spk_safe_err() handler.
->=20
-> Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
-> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/media/platform/nxp/imx-mipi-csis.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Who actually wrote this patch?
+diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
+index 16f19a640130..5f93712bf485 100644
+--- a/drivers/media/platform/nxp/imx-mipi-csis.c
++++ b/drivers/media/platform/nxp/imx-mipi-csis.c
+@@ -1490,7 +1490,6 @@ static int mipi_csis_probe(struct platform_device *pdev)
+ 	v4l2_async_unregister_subdev(&csis->sd);
+ err_disable_clock:
+ 	mipi_csis_clk_disable(csis);
+-	fwnode_handle_put(csis->sd.fwnode);
+ 
+ 	return ret;
+ }
+@@ -1510,7 +1509,6 @@ static void mipi_csis_remove(struct platform_device *pdev)
+ 	mipi_csis_clk_disable(csis);
+ 	v4l2_subdev_cleanup(&csis->sd);
+ 	media_entity_cleanup(&csis->sd.entity);
+-	fwnode_handle_put(csis->sd.fwnode);
+ 	pm_runtime_set_suspended(&pdev->dev);
+ }
+ 
+-- 
+2.34.1
 
---AUDHTcx1/kKY0ynM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTvrccACgkQJNaLcl1U
-h9Bcpgf+NYLkQOJ3teKC3UN/Bwy5w9yMYjIu3JvSBXR1ejzGVt3epy7Dbb09yaU0
-eASqB/UndJgt2v2lasHruMx/WXZlwFRkjhGwFb9KlkUclsn1cSlwo7fEim/ZDorq
-p71rxw7E5Eg25KnSshbR3JHnsyr7IiQ3fzp+Fl/Lkl2Nf5JCM0X+iAfCmhUhjF0n
-sf60aQvyfST6HJrhxh6+opioyPvwDSJtKcYicJpYNjsbphj1Sew2zN9meoR8SBBv
-IuZGEXSRkuUGB5phFR7T/crx2SXZoNAAWoe+0vEl8bNaeCIZo3PXUcydNgJeJmWk
-jcT+DHEnQhtac3PYlhxuQ39wI3g5qw==
-=mocu
------END PGP SIGNATURE-----
-
---AUDHTcx1/kKY0ynM--
