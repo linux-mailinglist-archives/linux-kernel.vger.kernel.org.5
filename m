@@ -2,128 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E1978D286
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 05:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0DA78D287
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 05:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241841AbjH3D0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 23:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        id S241889AbjH3D0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 23:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjH3DZv (ORCPT
+        with ESMTP id S241573AbjH3DZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 23:25:51 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9231EAB;
-        Tue, 29 Aug 2023 20:25:45 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 37U3PVPD024054;
-        Wed, 30 Aug 2023 05:25:31 +0200
-Date:   Wed, 30 Aug 2023 05:25:31 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, david.laight@aculab.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de
-Subject: Re: [RFC] tools/nolibc: replace duplicated -ENOSYS return with
- single -ENOSYS return
-Message-ID: <ZO62q1lm7HSdcILu@1wt.eu>
-References: <ZO2QWPYpo1fdXjX+@1wt.eu>
- <20230830001907.67499-1-falcon@tinylab.org>
+        Tue, 29 Aug 2023 23:25:58 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D5ACAB
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 20:25:55 -0700 (PDT)
+Received: from loongson.cn (unknown [10.180.128.250])
+        by gateway (Coremail) with SMTP id _____8CxNvHCtu5kXfkcAA--.59008S3;
+        Wed, 30 Aug 2023 11:25:54 +0800 (CST)
+Received: from crazy.crazy.loongson.org (unknown [10.180.128.250])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxriPBtu5k9+5mAA--.12310S4;
+        Wed, 30 Aug 2023 11:25:53 +0800 (CST)
+From:   liweihao <liweihao@loongson.cn>
+To:     wangrui@loongson.cn
+Cc:     chenhuacai@kernel.org, kernel@xen0n.name,
+        linux-kernel@vger.kernel.org, liweihao@loongson.cn,
+        loongarch@lists.linux.dev, masahiroy@kernel.org, yijun@loongson.cn
+Subject: Re: [PATCH 1/1] LoongArch: adjust copy/clear_user exception handler behavior
+Date:   Wed, 30 Aug 2023 11:25:53 +0800
+Message-Id: <20230830032553.2974884-1-liweihao@loongson.cn>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <CAHirt9i0tcUCuQ5ZL657MOZ4CUg0bpfiNbo01WLhPAwsLjgM+g@mail.gmail.com>
+References: <CAHirt9i0tcUCuQ5ZL657MOZ4CUg0bpfiNbo01WLhPAwsLjgM+g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830001907.67499-1-falcon@tinylab.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxriPBtu5k9+5mAA--.12310S4
+X-CM-SenderInfo: 5olzvxhkdrqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+        BjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
+        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
+        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E
+        87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j8yCJUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 08:19:07AM +0800, Zhangjin Wu wrote:
-> Yes, as also suggested by Willy, the old proposed method redefined
-> NOLIBC__NR_* macros for every __NR_* and it must be avoided, and now,
-> the __is_nr_defined() and __get_nr() macros will simply avoid defining
-> new NOLIBC__NR_* for exisitng __NR_*, they can be used to test and get
-> the existing __NR_* directly.
+Hello WANG Rui,
+
+> > +.Lsmall_fixup:
+> > +29:    st.b    zero, a0, 0
+> > +       addi.d  a0, a0, 1
+> > +       addi.d  a1, a1, -1
+> > +       bgt     a1, zero, 1b
 > 
-> In my local repo, we have saved 500+ lines ;-)
-> 
->     $ git show nolibc/next:tools/include/nolibc/sys.h | wc -l
->     1190
->     $ cat tools/include/nolibc/sys.h | wc -l
->     690
-> 
-> Including all of the -ENOSYS and #ifdef's:
-> 
->     $ git grep -r ENOSYS nolibc/next:tools/include/nolibc/sys.h | wc -l
->     17
->     $ git grep -Er "#ifdef|#el|#endif" nolibc/next:tools/include/nolibc/sys.h | wc -l
->     77
+> I'm sure the jump target here is 29b.
 
-And how many hacks or bugs for the rare special cases ? I'm not kidding,
-this obsession for removing lines has already caused us quite some trouble
-around sysret() in the previous cycle, and I yet have to see the gain for
-maintenance.
+You are right, this is a mistake.
 
-I do have comparable macros that I never employed in my projects just
-because each time I needed them I found a corner case at one particular
-optimization level or with a particular compiler version where you manage
-to break them, and suddenly all the world falls apart. I'm fine for taking
-that risk when there is a *real* benefit, but here we're speaking about
-replacing existing, readable and auditable code by something more compact
-that becomes completely unauditable. I could understand that if it was
-a specific required step in a more long-term project of factorizing
-something, but there still hasn't been any such project defined, so all
-we're doing is "let's see if we can do this or that and see if it looks
-better". I continue to strongly disagree with this approach, it causes
-all of us a lot of extra work, introduces regressions and nobody sees
-the benefits in the end.
+I'll correct it later. Thanks.
 
-Instead of using tricks here and there to remove lines, I'd rather have
-an approach centered on the code's architecture and modularity to see
-what are the current problems and how they should be addressed.
-
-For now I still find it complicated to explain other maintainers how
-to test their changes on all architectures. I've found it difficult to
-switch between arm and thumb modes for arm when trying to explain it
-lately (now with more analysis I'm seeing that I could have placed it
-into CFLAGS_arm for example) so it means we're missing some doc in the
-makefile itself or on the usage in general. I've faced the problem you
-met with some builds failing on "you need to run mrproper first", which
-makes me think that in fact it should probably be "make defconfig" or
-"make prepare" that does this. Just checking the makefile and that's
-already the case, yet I faced the issue, so maybe it's caused by -j
-being passed through all the chain and we need to serialize the
-operations, I don't know.
-
-I would also like that we clarify some use cases. Originally the project
-started as the single-file zero-installation file that allowed to build
-static binaries, retrieving the linux/ subdir from wherever it was (i.e.
-from the local system libc for native builds or from the toolchain used
-for cross-builds). Since we've started to focus a bit too much on the
-nolibc-test program only with its preparation stages, I think we've lost
-this focus a little bit, and I'd like to add some tests to make sure this
-continues to work (I know that my primary usage already got broken by
-the statx change with the toolchain I was using).
-
-Also, maybe it could be useful to make it easier to produce tar.gz
-sysroots form tools/include/nolibc for various (even all?) archs to
-make it easier for users to test their own code against it.
-
-So in short, we need to make it easier to use and easier to test, not
-to just remove lines that nobody needs to maintain.
-
-> Yeah, for the sys_* definitions, it is ok for us to use explicit arguments
-> intead of the '...'/__VA_ARGS__ to avoid losing some arguments sometimes, let's
-> do it in the RFC patchset but it should come after the tinyconfig patchset.
-> 
-> BTW, Willy, when will you prepare the branch for v6.7 developmlent? ;-)
-
-You can continue to use the latest branch as a starting point, we'll create
-the new for-6.7 branch once 6.6-rc1 is out.
-
-Thanks,
-Willy
