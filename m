@@ -2,155 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C04AD78D0E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA2078D0E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240226AbjH3ADu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 20:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S240309AbjH3AF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 20:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239708AbjH3ADm (ORCPT
+        with ESMTP id S241299AbjH3AFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 20:03:42 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42E01BD;
-        Tue, 29 Aug 2023 17:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mhHf9bnOddbdauFdwTiNvB2pCJGntgXJjGP69XrW3To=; b=Bog5SZG0TYg0s2MQQfbUs9uVXk
-        XdtKROAwAGEUaoPB8IuJVEXbl9mZlm0jEhEk3H4E+vKRQyFUUSOp4nTdUWPuxI7Hp4HjDNA443+/y
-        /0fOLJMKC2WIb2tS4b+Rt+QMGMmK7PEfbf7jtUs42sJFP5+vBQdLHF+vLX+GuQ5QG1n3CXTQMflpP
-        3DlTErG3FOwEjKOWr7tFZ3fPuvJ3DhE+vRtnrlv2iBll7kd62LGwN6s1l2hycllZ+6XxX/OrWlMoY
-        fxqTZRWZnCLTwYTWHz4AyRowlDGrc1MtyEFAz5FrKLMLieuTK/6uE/WBBD7mLUNv8cYmrCXKVybDc
-        uCQ9Bpgw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qb8f7-001xNh-0Q;
-        Wed, 30 Aug 2023 00:02:21 +0000
-Date:   Wed, 30 Aug 2023 01:02:21 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
-Message-ID: <20230830000221.GB3390869@ZenIV>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
- <20230829224454.GA461907@ZenIV>
- <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 20:05:52 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13E41BC
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:05:49 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59504967e00so43921447b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693353949; x=1693958749; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2UDc2NK3XlTUwXsReE+naes966j+l1MiNSkWpg4Kd34=;
+        b=VPmM2wXi7jGNvYmPpEraraopuW2tLna96+tYWV8JErzKHpSqmIVOtGSYyuPne80+q4
+         EX6UWlSM57dELr77wx6PPHmgfQ73OL5tGJuYxXggqSh7URKzSKFk6mjqpt9bQSIKx+ec
+         xkHo9zwCNjxMATnxpn6GnjLVsTAUbqSr8n3FVgMSv9R3QRyW7iryulLyzBKOwKzBqoic
+         5lAh4ZtJj3i5IMFLbscMsVrtY86XfCNWXCo7+i1EqoSndnqUueNdrl+fJwGAzpMCz5Mn
+         MtxA6zGKAUtYLRuJHcP4NGq3N18a0Am1S2fl9vASQfKz859+b7+d2ukmSEjmJf7ZMAwB
+         K+mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693353949; x=1693958749;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2UDc2NK3XlTUwXsReE+naes966j+l1MiNSkWpg4Kd34=;
+        b=fQshSHx/W7e9+Z4sZQexHqbex4sXcvbHgpJPQKKxCm2ow01yi1zniSMusJe2NvMhmD
+         0+lZRfEOqre2xRuS4dpWP/8DwHzPsx39WapsWW+t5MMW6j/Y5LgPWyw/ASAo45cmXq/L
+         QU8VkdjPlSEgSy1TRFY+QpRJwXzgfJPXN5UBIvATMBzEvyvQQSrxyTWGzrD/X7kW525f
+         CCyq5omHTxUqFKcaVQiOD20g7cK62J01Y4Fxc6obp4xMV1rUyN2sDSs47uhzB8WK7MJQ
+         5+o3NUsWXEthpif3RnXrAXY44c05EncSwrkIAKEwTrCdSM/mSZKQnC1Mmb5kj6tkB8UT
+         2Nvg==
+X-Gm-Message-State: AOJu0YxBXd7Th0S2+pZmrGPt1jSSYQLS9c378tJFtoBXXFbcq+sZ1nIi
+        yb0RW6A3D/Rv6Q1pphth1CPNSxX6ZWnX
+X-Google-Smtp-Source: AGHT+IEJh99y0GSLoGMM96YsdXu2S3vQccr3hi26MSzWpxQlhPxea8QqIJkEwtT6IcAiOEeezLyrQ5grsLd2
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:d623:3cd7:ecbc:8798])
+ (user=irogers job=sendgmr) by 2002:a81:bd41:0:b0:576:b244:5a4e with SMTP id
+ n1-20020a81bd41000000b00576b2445a4emr16748ywk.10.1693353949201; Tue, 29 Aug
+ 2023 17:05:49 -0700 (PDT)
+Date:   Tue, 29 Aug 2023 17:05:45 -0700
+Message-Id: <20230830000545.1638964-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Subject: [PATCH v1] perf pmu: Avoid uninitialized use of alias->str
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 06:58:47PM -0400, Jeff Layton wrote:
-> On Tue, 2023-08-29 at 23:44 +0100, Al Viro wrote:
-> > On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
-> > > generic_fillattr just fills in the entire stat struct indiscriminately
-> > > today, copying data from the inode. There is at least one attribute
-> > > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
-> > > and we're looking at adding more with the addition of multigrain
-> > > timestamps.
-> > > 
-> > > Add a request_mask argument to generic_fillattr and have most callers
-> > > just pass in the value that is passed to getattr. Have other callers
-> > > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
-> > > STATX_CHANGE_COOKIE into generic_fillattr.
-> > 
-> > Out of curiosity - how much PITA would it be to put request_mask into
-> > kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
-> > on smbd side) and don't bother with that kind of propagation boilerplate
-> > - just have generic_fillattr() pick it there...
-> > 
-> > Reduces the patchset size quite a bit...
-> 
-> It could be done. To do that right, I think we'd want to drop
-> request_mask from the ->getattr prototype as well and just have
-> everything use the mask in the kstat.
-> 
-> I don't think it'd reduce the size of the patchset in any meaningful
-> way, but it might make for a more sensible API over the long haul.
+alias is allocated with malloc allowing uninitialized memory to be
+accessed. The initialization of str was moved late after it could have
+been updated by a JSON event, however, this create a potential for an
+uninitialized use. Fix this by assigning str to NULL early. Testing on
+ARM (Raspberry Pi) showed a memory leak in the same code so add a
+zfree.
 
-->getattr() prototype change would be decoupled from that - for your
-patchset you'd only need the field addition + setting in vfs_getattr_nosec()
-(and possibly in ksmbd), with the remainders of both series being
-independent from each other.
+Fixes: f63a536f03a2 ("perf pmu: Merge JSON events with sysfs at load time")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/pmu.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-What I suggest is
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index cde33e01959a..b3f8f3f1e900 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -532,6 +532,7 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
+ 	if (!alias)
+ 		return -ENOMEM;
+ 
++	alias->str = NULL;
+ 	INIT_LIST_HEAD(&alias->terms);
+ 	alias->scale = 1.0;
+ 	alias->unit[0] = '\0';
+@@ -593,6 +594,7 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
+ 			ret += scnprintf(newval + ret, sizeof(newval) - ret,
+ 					 "%s=%s", term->config, term->val.str);
+ 	}
++	zfree(&alias->str);
+ 	alias->str = strdup(newval);
+ 	if (!pe)
+ 		pmu->sysfs_aliases++;
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
-branchpoint -> field addition (trivial commit) -> argument removal
-		|
-		V
-your series, starting with "use stat->request_mask in generic_fillattr()"
-
-Total size would be about the same, but it would be easier to follow
-the less trivial part of that.  Nothing in your branch downstream of
-that touches any ->getattr() instances, so it should have no
-conflicts with the argument removal side of things.
