@@ -2,50 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D936378D24C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 05:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDF378D2A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 05:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241803AbjH3DCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 23:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        id S241920AbjH3D60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 23:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241848AbjH3DCA (ORCPT
+        with ESMTP id S241856AbjH3D6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 23:02:00 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AC9185;
-        Tue, 29 Aug 2023 20:01:50 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rb8DB6NnLz1L9B2;
-        Wed, 30 Aug 2023 11:00:10 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
- 2023 11:01:48 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <wangkefeng.wang@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH v5] mm: vmscan: try to reclaim swapcache pages if no swap space
-Date:   Wed, 30 Aug 2023 11:56:00 +0800
-Message-ID: <20230830035600.1656792-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        Tue, 29 Aug 2023 23:58:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B427ECC;
+        Tue, 29 Aug 2023 20:58:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5209761849;
+        Wed, 30 Aug 2023 03:58:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ACE4FC433C7;
+        Wed, 30 Aug 2023 03:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693367894;
+        bh=8eJm2umkBvn6T+8obX8Fe/8clowchwHQAEIUxR9hPf4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Nh9j1H/EsI0xm+ObwygKrU9tQD9abAxLFn14aY+qFi6QVoQmZS063Mln7i43vE56g
+         dBS8Y+Vi9ceCQIfP1rnyl8GwCDKDBeSEMtDgjunoxUnaUJdOzE/8V75NApSpQ/Cjv5
+         /s6WaJHf1OXY6lcmsMWZZ39uOu9z56VTCOUQWjbwlUOEYKqwvzZw2rp0ek7lEt1Q9P
+         AAvE8NHwMknt22+Y/J+oa0MGYqqSEbVLVHm42VrvunadFlyCcVwLwQNU0j/4cm6bc/
+         wpetxY5B0f1dAoW/pI1N77W8AiViKJTWSbVc+K5LGwfIzS4m5TWjc6NoZiBvQ0iM53
+         blagCdrmNw/NA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9ADD5E29F34;
+        Wed, 30 Aug 2023 03:58:14 +0000 (UTC)
+Subject: Re: [GIT PULL] Modules changes for v6.6-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZO5M45JsJYzNF59H@bombadil.infradead.org>
+References: <ZO5M45JsJYzNF59H@bombadil.infradead.org>
+X-PR-Tracked-List-Id: <linux-modules.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZO5M45JsJYzNF59H@bombadil.infradead.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ tags/modules-6.6-rc1
+X-PR-Tracked-Commit-Id: a419beac4a070aff63c520f36ebf7cb8a76a8ae5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: daa22f5a78c27412e88d31780c4a6262cda559cd
+Message-Id: <169336789462.6268.1786295356990012160.pr-tracker-bot@kernel.org>
+Date:   Wed, 30 Aug 2023 03:58:14 +0000
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-modules@vger.kernel.org, patches@lists.linux.dev,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, gregkh@linuxfoundation.org, manuel.lauss@gmail.com,
+        kuba@kernel.org, kumba@gentoo.org, palmer@rivosinc.com,
+        masahiroy@kernel.org, rdunlap@infradead.org, zeming@nfschina.com,
+        rongtao@cestc.cn, arnd@arndb.de, pmladek@suse.com,
+        chenjiahao16@huawei.com, christian@bricart.de,
+        peterz@infradead.org, song@kernel.org, keescook@chromium.org,
+        thunder.leizhen@huawei.com, mcgrof@kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,145 +69,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When spaces of swap devices are exhausted, only file pages can be reclaimed.
-But there are still some swapcache pages in anon lru list. This can lead
-to a premature out-of-memory.
+The pull request you sent on Tue, 29 Aug 2023 12:54:11 -0700:
 
-The problem is found with such step:
+> git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ tags/modules-6.6-rc1
 
- Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
- memory limit, then runs an program to allocates about 15MB memory.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/daa22f5a78c27412e88d31780c4a6262cda559cd
 
-The problem occurs occasionally, which may need about 100 times.
+Thank you!
 
-Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
-If the number is not zero, return true either. Moreover, add a new bit
-swapcache_only in struct scan_control to skip isolating anon pages that
-are not swapcache when only swapcache pages can be reclaimed to accelerate
-reclaim efficiency.
-
-Link: https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-Tested-by: Yosry Ahmed <yosryahmed@google.com>
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
----
-v3->v4: Add describe and link about how to reproduce the problem.
-v4->v5: Add Reviewed-by and reproducer link.
-
- include/linux/swap.h |  6 ++++++
- mm/memcontrol.c      |  8 ++++++++
- mm/vmscan.c          | 29 +++++++++++++++++++++++++++--
- 3 files changed, 41 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 456546443f1f..0318e918bfa4 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
- }
- 
- extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-+extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
- extern bool mem_cgroup_swap_full(struct folio *folio);
- #else
- static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
-@@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return get_nr_swap_pages();
- }
- 
-+static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	return total_swapcache_pages();
-+}
-+
- static inline bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	return vm_swap_full();
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..c465829db92b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return nr_swap_pages;
- }
- 
-+long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	if (mem_cgroup_disabled())
-+		return total_swapcache_pages();
-+
-+	return memcg_page_state(memcg, NR_SWAPCACHE);
-+}
-+
- bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	struct mem_cgroup *memcg;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 1080209a568b..e73e2df8828d 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -137,6 +137,9 @@ struct scan_control {
- 	/* Always discard instead of demoting to lower tier memory */
- 	unsigned int no_demotion:1;
- 
-+	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
-+	unsigned int swapcache_only:1;
-+
- 	/* Allocation order */
- 	s8 order;
- 
-@@ -613,10 +616,20 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
- 		 */
- 		if (get_nr_swap_pages() > 0)
- 			return true;
-+		/* Is there any swapcache pages to reclaim? */
-+		if (total_swapcache_pages() > 0) {
-+			sc->swapcache_only = 1;
-+			return true;
-+		}
- 	} else {
- 		/* Is the memcg below its swap limit? */
- 		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
- 			return true;
-+		/* Is there any swapcache pages in memcg to reclaim? */
-+		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
-+			sc->swapcache_only = 1;
-+			return true;
-+		}
- 	}
- 
- 	/*
-@@ -2280,6 +2293,19 @@ static bool skip_cma(struct folio *folio, struct scan_control *sc)
- }
- #endif
- 
-+static bool skip_isolate(struct folio *folio, struct scan_control *sc,
-+			 enum lru_list lru)
-+{
-+	if (folio_zonenum(folio) > sc->reclaim_idx)
-+		return true;
-+	if (skip_cma(folio, sc))
-+		return true;
-+	if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
-+	    !folio_test_swapcache(folio)))
-+		return true;
-+	return false;
-+}
-+
- /*
-  * Isolating page from the lruvec to fill in @dst list by nr_to_scan times.
-  *
-@@ -2326,8 +2352,7 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
- 		nr_pages = folio_nr_pages(folio);
- 		total_scan += nr_pages;
- 
--		if (folio_zonenum(folio) > sc->reclaim_idx ||
--				skip_cma(folio, sc)) {
-+		if (skip_isolate(folio, sc, lru)) {
- 			nr_skipped[folio_zonenum(folio)] += nr_pages;
- 			move_to = &folios_skipped;
- 			goto move;
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
