@@ -2,169 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE0278DCB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD0778DE87
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243175AbjH3Sq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        id S240060AbjH3TEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241899AbjH3HL0 (ORCPT
+        with ESMTP id S242040AbjH3HNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:11:26 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32E195
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:11:23 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-522dd6b6438so6880868a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:11:23 -0700 (PDT)
+        Wed, 30 Aug 2023 03:13:14 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A411AE;
+        Wed, 30 Aug 2023 00:13:12 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34dee07e676so3826035ab.3;
+        Wed, 30 Aug 2023 00:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693379482; x=1693984282; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20221208; t=1693379591; x=1693984391; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4X810Sd+FAfinOuDeQjJFxdDeSuw3tPSc7gW/bUxxmc=;
-        b=a9Y5QTZNXXKs9nPMXo417JCz/QKAcQy1xgeBcXtqVuXe8uLKIF/yrOaNpEqX5Pf/io
-         qnuGi5UXluXpNgEWOMuiC4+Ggl2M0NZOjzcklz6pcZqj+UgvxAwRdDyqwSPJTKtQ8gCi
-         E6r3gXNYg6pZmJvhTzV41yfhyS6mfmHJfZug5MngAZFOj+hp5fdpWHyOdjUH1IiXNCv1
-         jalUgZPSNf/zajd4QppFkTKpi287wr+TGEa7xceG9zzvCugTzra0mSuN02GSSlhpIOtL
-         4YIlKRcCf3Rof4g2Z8+IuqizM6pf39m6nGuhIissvFGfQ12UQghjwZd5INmkAZngSYHK
-         5SgQ==
+        bh=FOo62IJdDzvF7uZuAvu3wjLRfyhiLnIykyk4B9I2bl0=;
+        b=AhmmZD50n2sp1Z6HTpWom+wk0H0JjkdPjyNP2zJ1LlNihZoEkz0L+1DT1KzruyUMIU
+         aXVBr31Y/xHqJYRuNRXbHDf2gjotlZzUOaio5mTuOBWzICM5hzEXdwaXq7KhXedTcyYr
+         nfnmd/B1lAR0cGRcbfsBhkCdGNYaFBYeO05x0ZFAbT2KoL+y3l9moJ5veb7QVCiXHanl
+         YvcBsLjhhC2C1oDGZCYatqBwQFxRBGLlFFWHzbjq1Hdh/RsBYjTE+r3vlmS956PTlgYu
+         vtYwuMcNcOateU+jrvRshhB0KgOcQxw27/uxRn9JtIzJX0arAdgGa41W30/V2tEhfbHG
+         Fb2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693379482; x=1693984282;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693379591; x=1693984391;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4X810Sd+FAfinOuDeQjJFxdDeSuw3tPSc7gW/bUxxmc=;
-        b=g0JMbOKOanZxMWPS1myKxAQrA85nEqOpdwZMH7SIqohpaNINDLlWlCcxHgE6i6xS1G
-         tFw3AdyeXiXjxmWjASSgkCDzLk63SsjVkgoRwyYftB05Rmz3YIO8rAsy4GowIV8H66Ap
-         WSJfIdYmgskRlZc1LlSrC9RsXki2GW9UeMP3GYufyFt1F/eMvk99WADkNPrJq/MNzbRs
-         PEpElvceZyAOxRQHTgwYAXtjgJaEP6S7IRqG3uYqFAx6oCvtTYbe08Z+DTfx0MrxlSSb
-         8zUaRA3133gtMNfTVLaDlUUz/kt7JO047IbyfWmAIvgC279UFIf8YfcLcWsUbuO8sVeo
-         OX/w==
-X-Gm-Message-State: AOJu0Ywmu7q4ouxp1NX7bIYVD9O6ai7/nlahTY69MESpzAIyK6xPF3Od
-        lznPuYCfawTOWSM2NUuqvewktw==
-X-Google-Smtp-Source: AGHT+IEYCPnvQKeOC3qIczHiEZucOO/GNEh252whblJjg9K7h3SNi2mOr9jig7a/o2KtxMadPr1MLQ==
-X-Received: by 2002:a17:906:76c8:b0:9a1:d67c:b4eb with SMTP id q8-20020a17090676c800b009a1d67cb4ebmr913139ejn.48.1693379482411;
-        Wed, 30 Aug 2023 00:11:22 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id n11-20020a17090625cb00b009934855d8f1sm6910043ejb.34.2023.08.30.00.11.21
+        bh=FOo62IJdDzvF7uZuAvu3wjLRfyhiLnIykyk4B9I2bl0=;
+        b=C1iKKTdeYtJfslKqqJjapBfNNImUroT6fGS+3BilJwEyx5eGa/wvNmh71U46BJjk5j
+         jNz/uTqKG/GdBGl1MEDb7AQ03DFCD1EKdVr7A2wianOjAyN7mNy3tlxt60sf1icnpx1H
+         ynS40ttC3iziLWeq2PeLzLw+76gi7I44GUmb/K7ZR4u7ZQ28K1a4fnjMV2yUrTf42t/F
+         So1S0c9PK1bhOXNeN7wb3y44MG1wlF7rAfZOe/vjwIGQvVSP494OXBo/bTFWBu5BM87/
+         hOSU+QK9/VuNpewEQvTDth4MgzBZRRuCPMISGOQUk3KVt+zFhIfqXQ3iEbnZ2QaoM7CB
+         zs7Q==
+X-Gm-Message-State: AOJu0YysGqWeP5n368Wmk8v0I403ILR+Prggg7NlPfQk1JrTLle5e6+G
+        0uQVcrITKdjzW65FVnjYgrAddbmdorQ=
+X-Google-Smtp-Source: AGHT+IEvSfnF8jHlR+J/Z8FkFF/Opui6zecxDp5Jgq8Bk7gLVtei0PNQR+LQ9iwKSCBmTOkP3rcEWg==
+X-Received: by 2002:a05:6e02:c74:b0:34c:e84b:4c63 with SMTP id f20-20020a056e020c7400b0034ce84b4c63mr1537554ilj.1.1693379591610;
+        Wed, 30 Aug 2023 00:13:11 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q24-20020a02c8d8000000b0042b4437d857sm3764197jao.106.2023.08.30.00.13.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 00:11:21 -0700 (PDT)
-Message-ID: <db8d5123-19d7-50d0-935b-a25d235e6e2e@linaro.org>
-Date:   Wed, 30 Aug 2023 09:11:20 +0200
+        Wed, 30 Aug 2023 00:13:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <afa30d68-4f53-4903-b470-0d337c9aa7aa@roeck-us.net>
+Date:   Wed, 30 Aug 2023 00:13:09 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
+ Thunderbird/102.13.0
 Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com, workflows@vger.kernel.org,
-        tools@linux.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-References: <cover.1693037031.git.quic_gurus@quicinc.com>
- <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
- <2efba6b3-2399-9deb-d0ce-78f7b5e12f30@linaro.org>
- <20230828175629.GC23466@quicinc.com>
- <78aa33f9-ead8-b128-2a7a-40530a1a3ed0@linaro.org>
- <ZOz4XtX3DFRQpvQY@finisterre.sirena.org.uk>
- <670a87e9-2f0c-ec9e-ebb4-9041c8972ace@linaro.org>
- <20230829231638.GA27843@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230829231638.GA27843@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Benson Leung <bleung@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <jstultz@google.com>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>
+References: <20230817225537.4053865-1-linux@roeck-us.net>
+ <20230817225537.4053865-3-linux@roeck-us.net>
+ <6991631008bab403e957534d6d05360c.sboyd@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2 2/7] rtc: alarmtimer: Use maximum alarm time offset
+In-Reply-To: <6991631008bab403e957534d6d05360c.sboyd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 01:16, Guru Das Srinagesh wrote:
-> On Aug 28 2023 21:45, Krzysztof Kozlowski wrote:
->> On 28/08/2023 21:41, Mark Brown wrote:
->>> On Mon, Aug 28, 2023 at 07:59:54PM +0200, Krzysztof Kozlowski wrote:
->>>> On 28/08/2023 19:56, Guru Das Srinagesh wrote:
->>>
->>>>> Your function adds mailing lists also in "To:" which is not ideal, in my view.
->>>>> You've mentioned before that To or Cc doesn't matter [1] which I disagree
->>>>> with: it doesn't matter, why does Cc exist as a concept at all?
->>>
->>>> To/Cc does not matter when sending new patch, because maintainers know
->>>> they are maintainers of which parts. I know what I handle.
->>>
->>> That might be true for you (and also is for me) but I know there are
->>> people who pay attention to if they're in the To: for various reasons, I
->>> gather it's mostly about triaging their emails and is especially likely
->>> in cases where trees have overlaps in the code they cover.
+On 8/29/23 14:50, Stephen Boyd wrote:
+> Quoting Guenter Roeck (2023-08-17 15:55:32)
+>> Some userspace applications use timerfd_create() to request wakeups after
+>> a long period of time. For example, a backup application may request a
+>> wakeup once per week. This is perfectly fine as long as the system does
+>> not try to suspend. However, if the system tries to suspend and the
+>> system's RTC does not support the required alarm timeout, the suspend
+>> operation will fail with an error such as
 >>
->> True, there can be cases where people pay attention to addresses of
->> emails. Just like there are cases where people pay attention to "To/Cc"
->> difference.
+>> rtc_cmos 00:01: Alarms can be up to one day in the future
+>> PM: dpm_run_callback(): platform_pm_suspend+0x0/0x4a returns -22
+>> alarmtimer alarmtimer.4.auto: platform_pm_suspend+0x0/0x4a returned -22 after 117 usecs
+>> PM: Device alarmtimer.4.auto failed to suspend: error -22
 >>
->> In my short experience with a few patches sent, no one complained to me
->> that I put him/her/they in "To" field of a patch instead of "Cc" (with
->> remark to not spamming to much, so imagine I send a patch for regulator
->> and DTS). Big, multi-subsystem patchsets are different case and this
->> script does not solve it either.
+>> This results in a refusal to suspend the system, causing substantial
+>> battery drain on affected systems.
+>>
+>> To fix the problem, use the maximum alarm time offset as reported by rtc
+>> drivers to set the maximum alarm time. While this will result in brief
+>> spurious wakeups from suspend, it is still much better than not suspending
+>> at all.
+>>
+>> Cc: Brian Norris <briannorris@chromium.org>
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>> v2: Rename range_max_offset -> alarm_offset_max
+>>
+>>   kernel/time/alarmtimer.c | 13 +++++++++++++
+>>
+>> diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+>> index 8d9f13d847f0..895e3a6d6444 100644
+>> --- a/kernel/time/alarmtimer.c
+>> +++ b/kernel/time/alarmtimer.c
+>> @@ -290,6 +290,19 @@ static int alarmtimer_suspend(struct device *dev)
+>>          rtc_timer_cancel(rtc, &rtctimer);
+>>          rtc_read_time(rtc, &tm);
+>>          now = rtc_tm_to_ktime(tm);
+>> +
+>> +       /*
+>> +        * If the RTC alarm timer only supports a limited time offset, set
+>> +        * the alarm time to the maximum supported value.
+>> +        * The system will wake up earlier than necessary and is expected
+>> +        * to go back to sleep if it has nothing to do.
 > 
-> Not sure what you mean by "does not solve it" - what is the problem being
-> referred to here?
-
-Exactly, no one even knows what problem you want to solve by swapping
-To-Cc between patches...
-
+> Does this assume that the kernel is configured for autosuspend
+> (CONFIG_PM_AUTOSLEEP)? Maybe we should only do this when that config is
+> enabled.
 > 
-> In case of multi-subsystem patches in a series, the commit message of this
-> patch explains exactly the actions taken.
+
+It doesn't really assume anything. It standardizes behavior if the rtc
+does not support the requested alarm time. Today that either fails
+or the rtc silently adjusts the alarm time (sometimes to 1 day + 1 minute ->
+one minute) depending on the implementation in the rtc driver. With this
+patch in place, the the rtc driver informing the rtc core about the limit,
+the alarm would fire at the maximum time supported by the rtc if the
+requested alarm time is larger than its limit.
+
+I see that as improvement, no matter if CONFIG_PM_AUTOSLEEP is enabled or not.
+
+> If userspace is the one autosuspending, then I don't know what we do, or
+> how the kernel knows it is OK. Maybe we need another alarmtimer clock id
+> that will fail creation if the wakeup time is larger than what the rtc
+> can be programmed for? Or maybe that new clock id can have this fixed
+> behavior to wakeup early with the assumption that userspace will go back
+> to sleep, and outdated userspace can use the original alarmtimer clock
+> id if they don't care about suspend failing?
 > 
->> Anyway, if it is not ideal for Guru, I wonder how his LKML maintainer
->> filters work that it is not ideal? What is exactly not ideal in
->> maintainer workflow?
-> 
-> I am not a maintainer - only an individual contributor - and as such, even
-> though I may get patches on files I've contributed to, I deeply appreciate the
-> distinction between being Cc-ed in a patch vs To-ed in one. The distinction
-> being that if I'm in "To:" I ascribe higher priority to it and lesser if I'm in
-> "Cc:".
 
-That's your feeling, quite subjective. I understand it comes from
-corporate world, but again...
+I don't know how to answer this. Again, I see my suggested patch as improvement
+over not suspending at all or resuming at a more or less random time, which
+is what you get today depending on the rtc driver.
 
-> 
-> If this script is accepted and gains adoption, maintainers like yourself will
-> only be To-ed in patches that touch files that you're a direct "Maintainer" or
-> "Reviewer" of. 
+Actually, I would argue that the above situation applies even if the rtc supports
+the requested alarm time. Currently, if userspace is the one autosuspending,
+the system wakes up after the alarm time expires (assuming the rtc supports it).
+Then what ? Your above question applies to that situation as well and is
+really independent of the alarm time limit supported by the rtc.
 
-It will not get traction because:
-1. People should use b4, not this script.
-2. Remaining people will just use get_maintainers.pl.
-3. People cannot get right even basic commands, so we will never be able
-to rely on To or Cc distinction. I can give you example: my email
-address in get_maintainers.pl is a bit different. Does it matter? Often
-not. Entire bunch of folks were Ccing me on different address. Even
-though every tool told them not to...
+I would agree that various improvements on how to handle the situation where
+the requested alarm time is larger than the rtc limit may be possible,
+but I see those as independent and orthogonal to this patch.
 
-> For all other patches in the series you'll be in "Cc:". I
-> imagine that this can be very useful regardless of the specifics of your
-> workflow.
+> I see another problem too. What do we do if an alarmtimer is created,
+> the rtc device is unregistered, and then we enter suspend? It looks like
+> alarmtimer_suspend() bails out early with no error, so suspend
+> continues. That looks wrong. Presumably we should fail suspend entirely
+> at that point because we'll never be able to wakeup to run the
+> alarmtimer.
 
-Zero usefulness for me.
+Maybe I am missing something, but I think this is equivalent of not having
+an rtc in the system, or for CONFIG_RTC_CLASS=n. Currently the system just
+suspends without waking up in those situations. Changing that would be a
+substantial functional change since suddenly systems without rtc would
+simply fail to suspend if there is a pending alarm.
 
-Best regards,
-Krzysztof
+Thanks,
+Guenter
 
