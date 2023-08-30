@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C29178DE25
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A2778DB1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbjH3S6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
+        id S234922AbjH3Sif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243733AbjH3Lht (ORCPT
+        with ESMTP id S243735AbjH3Lh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:37:49 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E186D2;
-        Wed, 30 Aug 2023 04:37:47 -0700 (PDT)
+        Wed, 30 Aug 2023 07:37:58 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99473D2;
+        Wed, 30 Aug 2023 04:37:55 -0700 (PDT)
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37UBbctA068266;
-        Wed, 30 Aug 2023 06:37:38 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37UBbiDi037424;
+        Wed, 30 Aug 2023 06:37:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693395458;
-        bh=ePd7Pnx0lF2UxLXWVNhA8WKPtHyWa8ugtbHcr43onsQ=;
+        s=ti-com-17Q1; t=1693395464;
+        bh=+IuvtcMd1sFlLqqC+3ASlwRUxQpLaQqflNX7KZMmrkA=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZrGDv4OWjTpsGrUIBOSEznjQIuX41kJMUeV3mhGV89cKi4Ru+YS2WxXxzALYEkkLU
-         C3Vz0+jPUbHQX9uTOpM2WVFgCIEFvA53taKtMhPe9KOaULqgIPlHFNed2tlonZ8g3z
-         jNQ16a3deXDKI3yd2nFdunF6J5sQs19jdVOXc6co=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37UBbcPF041799
+        b=uvAODyNuwHJW4n5M9Fn27pz/oY00RoFsEA0sEpPNVLJVloB7Yhe+yg5V7oK6G8j+c
+         IhaPzCVJSGA7vTxHqgL1kQhIOJmj+HIL6j9R+EIu0wLH9+NiM2QPCArzKd93zPsM9W
+         QGj2MmhXul2rxTtuP/Dl8/2zomrW4WFd1tvND1Aw=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37UBbiFV041851
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Aug 2023 06:37:38 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 30 Aug 2023 06:37:44 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 30
- Aug 2023 06:37:37 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ Aug 2023 06:37:44 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
  (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 30 Aug 2023 06:37:37 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37UBbbQb021481;
-        Wed, 30 Aug 2023 06:37:37 -0500
+ Frontend Transport; Wed, 30 Aug 2023 06:37:44 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37UBbirI077275;
+        Wed, 30 Aug 2023 06:37:44 -0500
 Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.35])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37UBbbBX010822;
-        Wed, 30 Aug 2023 06:37:37 -0500
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37UBbhHY001546;
+        Wed, 30 Aug 2023 06:37:44 -0500
 From:   MD Danish Anwar <danishanwar@ti.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -59,9 +59,9 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <netdev@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
-Subject: [RFC PATCH net-next 1/2] dt-bindings: net: Add compatible for AM64x in ICSSG
-Date:   Wed, 30 Aug 2023 17:07:23 +0530
-Message-ID: <20230830113724.1228624-2-danishanwar@ti.com>
+Subject: [RFC PATCH net-next 2/2] net: ti: icssg-prueth: Add AM64x icssg support
+Date:   Wed, 30 Aug 2023 17:07:24 +0530
+Message-ID: <20230830113724.1228624-3-danishanwar@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230830113724.1228624-1-danishanwar@ti.com>
 References: <20230830113724.1228624-1-danishanwar@ti.com>
@@ -79,26 +79,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible for AM64x in icssg-prueth dt bindings. AM64x supports
-ICSSG similar to AM65x SR2.0.
+Add AM64x ICSSG support which is similar to am65x SR2.0, but required:
+- all ring configured in exposed ring mode
+- always fill both original and buffer fields in cppi5 desc
 
 Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 ---
- Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
-index 311c570165f9..13371159515a 100644
---- a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
-+++ b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
-@@ -20,6 +20,7 @@ properties:
-   compatible:
-     enum:
-       - ti,am654-icssg-prueth  # for AM65x SoC family
-+      - ti,am642-icssg-prueth  # for AM64x SoC family
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+index 3236af45aa4e..c2d1d0c7deb0 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+@@ -2676,8 +2676,13 @@ static const struct prueth_pdata am654_icssg_pdata = {
+ 	.switch_mode = 1,
+ };
  
-   sram:
-     $ref: /schemas/types.yaml#/definitions/phandle
++static const struct prueth_pdata am64x_icssg_pdata = {
++	.fdqring_mode = K3_RINGACC_RING_MODE_RING,
++};
++
+ static const struct of_device_id prueth_dt_match[] = {
+ 	{ .compatible = "ti,am654-icssg-prueth", .data = &am654_icssg_pdata },
++	{ .compatible = "ti,am642-icssg-prueth", .data = &am64x_icssg_pdata },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, prueth_dt_match);
 -- 
 2.34.1
 
