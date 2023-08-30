@@ -2,165 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2AC78E37D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B6878E38A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239883AbjH3Xst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 19:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
+        id S1344548AbjH3XxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344548AbjH3Xss (ORCPT
+        with ESMTP id S229935AbjH3XxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 19:48:48 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58A4198
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:48:37 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d746ea563f9so90369276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693439317; x=1694044117; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KIXBc71uKxSxe6iurnFTvwcLV9QQp1uK3k3HIPwq90Y=;
-        b=hcXSBLqovlC6W6RiCEK+ctPph9DDVH4NGBNKaGx6TkSHf08MAUhR2MGrvn3Xh0vy2t
-         cRzTITVjtHZnRKY2/C8UCafeNS9799hkCIJDVQCYTssWCjwlwxhPFXmGxX7ioZi1eNC6
-         eVykABeuyU805Xp21m4wsGgKX823a523HieIwqzf2BPFgTjmUmeE+3nCXZ4q1dij4jLk
-         igStNpLnAE1+TFzxx7dqfqnwlbroghQFB5UxAd2RFuhGa/RpfFDARjj72Fm0bWQ1cEqc
-         G2Oq4Nw0rGceCxsjfpejy+GlTPphgTzTRk5OP2TxicfpE6yErXmodmZkmRBkT1BIRlns
-         4FVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693439317; x=1694044117;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KIXBc71uKxSxe6iurnFTvwcLV9QQp1uK3k3HIPwq90Y=;
-        b=c+9OOZXnrX3fI1vD5DwwNFlhz05DjpOqr+yUlKVYUShZpzdGkjzV/QodORRkjo391v
-         LQOBBEJFyKr8bcZG+HfUjZlpehmZAHx0MRuJHEYpEZIb5uExJ41fq364sEH/z/CYrmnf
-         +QnXgd5LJMTOf14EXYeNIi/KZvzA0M80g4Dq1iJkYBi76WpYpGF2WzLcC9ST3gMESQd4
-         QFL945X7DJXrku1Yc7Ew4OBpq45aigG5L80FlhwjB90ELOFuY3QQhbePuBJggktZmZfN
-         gmpwRnBgtKhRl5I8CiEF8ky5T4Gj7Gwhn874z1+27M7mMkTxlqll1K571bW48bu2yC3v
-         Ce1w==
-X-Gm-Message-State: AOJu0Yz9uqcoCZeyADkl9v+mUcD0hDRswwDB2d91NXZ6HJ23My2rBdJK
-        SB0jytiCSWQhsMNbi3haPEyWgBuhp3leZ+BnvYh1HA==
-X-Google-Smtp-Source: AGHT+IHTzXVzK/5FqCy1xL2xl8K3p1akBKR/g7LahJuj92gVr2cLENA8eYL7vTXOPqWIdOjggJ8S+j+nCSqDTS2cWHk=
-X-Received: by 2002:a25:9092:0:b0:d74:6163:db8c with SMTP id
- t18-20020a259092000000b00d746163db8cmr3737036ybl.41.1693439316955; Wed, 30
- Aug 2023 16:48:36 -0700 (PDT)
+        Wed, 30 Aug 2023 19:53:23 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52719CC;
+        Wed, 30 Aug 2023 16:53:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1693439599;
+        bh=rmE3bYoZQwbV4e4pcm7x0OPaiSbVU4DIydrmIoyceUQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tzXRsNOyUVRneqedHHJLADwZ3FI149Kj6pg1MVkPmMaCD3LN8xSTmx0ceJOiLfNld
+         UOYrBcRaymteHI63gAWYoLgo7O7rpNKOzelVcUSPyDvVFYjFAxAEyafiilzDZRC86m
+         f05Nd5CNCaBB7Jhm7cY39TBi8b+DZ87Y5qovsorBGZRfXqVdtrbZglLYd5vd/skWhW
+         vU1KktHId65EWgGZJF3Gt2Epz+p71GqLngQapIbYh7e94xecWMpSc5xA0X1azHAz/w
+         b6gZE+ni6BnroHRQCxlr4crXiYEqFbAjB/91QkPFQbnHl6eVRvn3KeQN98237LrPLr
+         r3qSMHbwu9Stw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rbh264QR2z4wbP;
+        Thu, 31 Aug 2023 09:53:17 +1000 (AEST)
+Date:   Thu, 31 Aug 2023 09:53:15 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul@pwsan.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Evan Green <evan@rivosinc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the jc_docs tree with the risc-v tree
+Message-ID: <20230831095315.7a171be8@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com> <20230830224910.8091-8-quic_abhinavk@quicinc.com>
-In-Reply-To: <20230830224910.8091-8-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 31 Aug 2023 02:48:25 +0300
-Message-ID: <CAA8EJpoRcdHtyp3mym5HB2A=O6V4qUNTpnMkvm+OiSt7nHuXJw@mail.gmail.com>
-Subject: Re: [PATCH 07/16] drm/msm/dpu: add cdm blocks to RM
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, quic_khsieh@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/eYPlNMXd4wQBt0A10dS_Z.f";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> Add the RM APIs necessary to initialize and allocate CDM
-> blocks by the rest of the DPU pipeline.
+--Sig_/eYPlNMXd4wQBt0A10dS_Z.f
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-... to be used by the rest?
+Hi all,
 
->
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 17 +++++++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h |  2 ++
->  2 files changed, 19 insertions(+)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> index f9215643c71a..7b6444a3fcb1 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> @@ -8,6 +8,7 @@
->  #include "dpu_kms.h"
->  #include "dpu_hw_lm.h"
->  #include "dpu_hw_ctl.h"
-> +#include "dpu_hw_cdm.h"
->  #include "dpu_hw_pingpong.h"
->  #include "dpu_hw_sspp.h"
->  #include "dpu_hw_intf.h"
-> @@ -90,6 +91,9 @@ int dpu_rm_destroy(struct dpu_rm *rm)
->                 }
->         }
->
-> +       if (rm->cdm_blk)
-> +               dpu_hw_cdm_destroy(to_dpu_hw_cdm(rm->cdm_blk));
-> +
->         for (i = 0; i < ARRAY_SIZE(rm->hw_wb); i++)
->                 dpu_hw_wb_destroy(rm->hw_wb[i]);
->
-> @@ -240,6 +244,19 @@ int dpu_rm_init(struct dpu_rm *rm,
->                 rm->hw_sspp[sspp->id - SSPP_NONE] = hw;
->         }
->
-> +       if (cat->cdm) {
-> +               struct dpu_hw_cdm *hw;
-> +
-> +               hw = dpu_hw_cdm_init(cat->cdm, mmio);
-> +               /* CDM is optional so no need to bail out */
-> +               if (IS_ERR(hw)) {
-> +                       rc = PTR_ERR(hw);
-> +                       DPU_DEBUG("failed cdm object creation: err %d\n", rc);
+Today's linux-next merge of the jc_docs tree got a conflict in:
 
-No. If it is a part of the catalog, we should fail here as we do in other cases.
+  Documentation/riscv/hwprobe.rst
 
+between commit:
 
-> +               } else {
-> +                       rm->cdm_blk = &hw->base;
-> +               }
-> +       }
-> +
->         return 0;
->
->  fail:
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> index 2b551566cbf4..29b221491926 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> @@ -22,6 +22,7 @@ struct dpu_global_state;
->   * @hw_wb: array of wb hardware resources
->   * @dspp_blks: array of dspp hardware resources
->   * @hw_sspp: array of sspp hardware resources
-> + * @cdm_blk: cdm hardware resource
->   */
->  struct dpu_rm {
->         struct dpu_hw_blk *pingpong_blks[PINGPONG_MAX - PINGPONG_0];
-> @@ -33,6 +34,7 @@ struct dpu_rm {
->         struct dpu_hw_blk *merge_3d_blks[MERGE_3D_MAX - MERGE_3D_0];
->         struct dpu_hw_blk *dsc_blks[DSC_MAX - DSC_0];
->         struct dpu_hw_sspp *hw_sspp[SSPP_MAX - SSPP_NONE];
-> +       struct dpu_hw_blk *cdm_blk;
+  b98673c5b037 ("RISC-V: Probe for unaligned access speed")
 
-struct dpu_hw_cdm *cdm (or cdm_blk), please.
+from the risc-v tree and commit:
 
->  };
->
->  /**
-> --
-> 2.40.1
->
+  d56b699d76d1 ("Documentation: Fix typos")
 
+from the jc_docs tree.
 
---
-With best wishes
-Dmitry
+I fixed it up (I just used the former) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/eYPlNMXd4wQBt0A10dS_Z.f
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTv1msACgkQAVBC80lX
+0GxpqQf/a1hPWq+8UjakgTTBhTfAGfCUnUuGjT7n8+oKHq+kMZ5+C/wQodCyh8t0
+A6FKzSQJNoLTfuJl79LC2t65W/Mkw6xNZixHgT8dcxVfDSd2NuaMxhoFYSW7T7k8
++qzZBUArmQXwFSELpg7t/KelcNEX2uihe2oOWEet35JuHemfjqsD7t1y6c48gIir
+qCm4KairM+3qedGyGhwuXvi16KJMqSrNCXQoCGmOnKZs8MQXro5KfS1qFLPqBhfp
++4udD4tmiJcR0SiHC5BLL5ZXe5NrtHKkVlMmC/hxK3ADlp1b0fRGh3NDcEnvYkhz
+/ldaKslsyU1A+uw9s7P5dtOpUay52Q==
+=pS/J
+-----END PGP SIGNATURE-----
+
+--Sig_/eYPlNMXd4wQBt0A10dS_Z.f--
