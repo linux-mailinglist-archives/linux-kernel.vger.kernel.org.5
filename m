@@ -2,149 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BED78DE60
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529D278D8D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241006AbjH3TCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
+        id S233168AbjH3SbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243225AbjH3KYb (ORCPT
+        with ESMTP id S243234AbjH3K00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:24:31 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2083.outbound.protection.outlook.com [40.107.101.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7FBC0;
-        Wed, 30 Aug 2023 03:24:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L5eFqbNfey8GFcmM8iJFTA27RvQgX3wL+m987+gNdzZYciYg3z59mEhmUwzbkFHnC/dCHfA4A9ysn4gPvWKgg24Yg2iwPtQrWBSOuvaYyZX4RrLQ7hzqTh2lhfyz5cuR4VzI1O4CxvIznYp29HKQafwcg6dSgT5Ff+vO28z9aJv4HXn/UolMyGWr2wwOftE1uJYuWINWiosJZLUMFLIkx3S5926sQJjNlwx/ECnCjnWbU6j/Nt2BtPSsNeF1ofUQX5HgPVkItTNeNhEDmppfpmHm/ucH8ZVTRvm+UzSTKDfkES75g09pP27duwMUWFfSZmNXNPm256TMLVecwRBcVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1GC4Whf3kcKa4Q8DsFJyc5VCHSPZDL6BnQHnYBF63rA=;
- b=OF94MESakvRgVfnZOLd6n9vHpVpru9Q8kKIEevHrFSGjK9svuEiSqKxPGvBJmhbkl16FO9/tJ0RbugNsInvGUHpyRK16ixYB2cNEFkncQIRfxsqmclmKryb0/lQTBTnD5AnMasH7wsIZttttWePk3PMG8APaQ0pzQuDKOohpApxgEbisT9RrHv+pAhyCtW/fCWIf14Q9wAW8+qaCKX9ecd3E5VSjBof6dZmzjPJB0PO7LpQo+qA4azrUr8P6HGnxr6Yj53BxpClwKPl1Vv+JH4ImoBvzfMaANbXl50N+CRKnNRoJkMulWF0t9jsGZtIkkOPMNTu+J9VYotUXjVx7/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1GC4Whf3kcKa4Q8DsFJyc5VCHSPZDL6BnQHnYBF63rA=;
- b=kMdMyx11KJXi4I5rFz47hQOn0v2q/aaE/SUHoRJ5LrMBO6Vbo1WpEovY92IzLKyK4srg9jOHVN0mnocTH9vrDhGt+YB8+jTQxwKc8RBfx/JTK5NPOEWXmUDsJ9scxbrrXZad9gx0lDVjHj679NiIVCyi7w5Wr030uJj3hIhzCA7FBK01NjdiU/r3r4sUoUtsjuKboF7ll8v8ARmFbNFmJvcRP5UqJ+ZX352o6mAwIn20XImXbyXjwgNdu4L6AhjPUc15uEORV/r8iLrf9tO9AEhF6+sGLMXojekgFo6Cb7apDdxLqQxCXX+pSLcqaBsPpvL2Df4VTHIWuPmVEplEDw==
-Received: from DM6PR12CA0031.namprd12.prod.outlook.com (2603:10b6:5:1c0::44)
- by SJ2PR12MB8109.namprd12.prod.outlook.com (2603:10b6:a03:4f5::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Wed, 30 Aug
- 2023 10:24:27 +0000
-Received: from CY4PEPF0000EE30.namprd05.prod.outlook.com
- (2603:10b6:5:1c0:cafe::6) by DM6PR12CA0031.outlook.office365.com
- (2603:10b6:5:1c0::44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20 via Frontend
- Transport; Wed, 30 Aug 2023 10:24:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000EE30.mail.protection.outlook.com (10.167.242.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.17 via Frontend Transport; Wed, 30 Aug 2023 10:24:26 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 30 Aug 2023
- 03:24:14 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 30 Aug
- 2023 03:24:14 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Wed, 30 Aug 2023 03:24:13 -0700
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 6.1 000/122] 6.1.50-rc1 review
-In-Reply-To: <20230828101156.480754469@linuxfoundation.org>
-References: <20230828101156.480754469@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 30 Aug 2023 06:26:26 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61546C0;
+        Wed, 30 Aug 2023 03:26:22 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so82118381fa.2;
+        Wed, 30 Aug 2023 03:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693391180; x=1693995980; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QIXCLg0hwpHbeiH0A783o6Qt6FNWASfzco1qAUgQXkc=;
+        b=C39Y1J5lMi2knaCAOxR8+OTpy4LnNslwbcSSqA9aHZgSlIFz06iFNUwOO4QhZ1LpUI
+         lIFhk2jwPgxV5qSErkmKoY+xahY0uCuojsb4RgYt5XqG9ZAllcP60+m+DdZbopW7lJQR
+         zZ2GPckkjIBa6bp1hjksz98y3UQJ3E8vgjlk4ceUIzYQbHZGBUyuNNHmR9vsGR4aygHh
+         GeNJcTRx+6EfRLOou+jQQLFai/izXcat0cj6KrRwO2mZUiBQPlWTP0sgs+UTXm1K9876
+         02m/UScniVYTZvhRAP5Q/chC2+roDWaQxtG1v+H+YALxc4+POoTStBTahTpt6L0FN49J
+         tstg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693391180; x=1693995980;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QIXCLg0hwpHbeiH0A783o6Qt6FNWASfzco1qAUgQXkc=;
+        b=VVXV6XLBNCVXQk+IaDDPLeIxAP/uv18abC0Qg4IfNc1SU7q/YhaTrCjHOnJ9JXrCYJ
+         lQXtDPuA3nQJv3Ni2BedkPG63uqFnHfAWnDY8SN6exXrbpSrl6GuoUbh8WDnxkGbajaJ
+         PGgfQjghdQ6hSMWTZm4Ota/EuzklmDdQ92p1YRNCcIn7eqAx8ugAZiBcl1RLxLWPP1yT
+         8pGR52/9suOZWxZdCfsWDFtVEEKSfXkFIY5wAOj2GFZeEnaxbYl8FjjQHksFS87qHgMV
+         6teXgiD4O8rLpczbz4jYY7Nf/paVexL92/IER8b3jI9139HfNHlKYjlCt6UNgFNeWLGf
+         /A6w==
+X-Gm-Message-State: AOJu0YxqNwrHc6+DObFyImZVApn5Kc/fowihghVg7+M8vwFPDVvuNEru
+        T7dBD1veZ5HRjbLxjZXKnjc=
+X-Google-Smtp-Source: AGHT+IFOMIX/EKJolcvqYh3uDcQSsEpOgptxSp5kdMQbbilG0BSCQCBqtmrYF/z3DBglm0wuXQLtcQ==
+X-Received: by 2002:a2e:9990:0:b0:2bc:dab2:c7dc with SMTP id w16-20020a2e9990000000b002bcdab2c7dcmr1316591lji.47.1693391180347;
+        Wed, 30 Aug 2023 03:26:20 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id z19-20020a2e9653000000b002ba0497cc99sm2522952ljh.70.2023.08.30.03.26.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 03:26:19 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 13:26:16 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 6/7] net: stmmac: Fix comment about default
+ addend calculation
+Message-ID: <bdliy63ifn7npbpqpk4twwzsxjulwe4druo5nwhaymbrdwv3cu@khb3zhn3npaf>
+References: <20230824-stmmac-subsecond-inc-cleanup-v1-0-e0b9f7c18b37@redhat.com>
+ <20230824-stmmac-subsecond-inc-cleanup-v1-6-e0b9f7c18b37@redhat.com>
+ <krvdz4filnpzhdy7tjkaisa2uzeh2sjzc2krno2rns24ldka37@abay33wdcck4>
+ <matyki35liqllsiokgn4xrfxabk4wzelif56vtlkvauhkpssor@ohy5a25yk6ja>
+ <b5jay65dndlpzdu7qjxa5ty5vudz62h3xosiu7mjdjvzieoylq@sk7h7erb25bd>
 MIME-Version: 1.0
-Message-ID: <c2cf0ab4-c8d0-4023-831d-bda6ab46183e@rnnvmail205.nvidia.com>
-Date:   Wed, 30 Aug 2023 03:24:13 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE30:EE_|SJ2PR12MB8109:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b4c0a07-bec0-4a95-9ced-08dba94349ac
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9IdRN6t6TZXDQOFnTAouRcNgQMPVfhfcLlxKp/3AEX6GPHlfwVnZ10ZBvQ1g1PCi5f8NYe5IkpOA/sfqU1d8ddirqV2XmaFgt5YYG3qqrMLyUmzYYbXGuoVmZPMsbFyxMimsofV5xZPG+G9IyNJIRmaDycTcPYSyY7vlQmdX8NTDcaBj6BgjfatxAL3tWsYotjpBQoKPQiIdJg+zMgVf4m58NIsgnZj8/gIwCHp2T70ZNdT8gDNyOT3sv9QOpeQpUAyy9saQYlvKlVdbS7jslAQ6BNPnfPqw77zb0P7YhuK2Lm5LRkvg9/IV5+E/97sWNtbEcJYG5mbfHNwYPAzwEj+Yx6AaiHPZv5wZG3I2Q/sXdf8S4ESOND3uenDZtAAQoaKAV/Xj0ZxZolLupcuZ6PNzG7ex3q0v8F8/6VWSjimLrzMEjrUdPI/V8la40MtEN1veZItLT8fLN92oUT+900EEyt2MKp+NzwGa6pSPBpxRGk0dSbVtFuFAMrDzoK8XvzSq9YTPvMgwLZhnPe1CIUs8wWzVTHGzDMB/WdZ0eYfvtza/5CXttTQg2ir/1m1gIEvUKJzLKiwsqbDUpqy8fGP87Nnp9pQLL+WgNLCzxRJvdQ0V2LijZ67Oz3PSCBLwrzezH8d9NisSS9vu/f2/NCnPZvDQGjKVsY2c2gUnXClgQ486uVVqzOTs4GpsN7v3sJ329Bh9r58anRCQsESeCdyHoKQTfaCa0Q/IxxD3WugeeYGPUN6aTwcYU9+0Y4Ux3JQcDS+Ij1GendsLBi43TlJklWOqVPoDV8Dhn8ly3kw=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(82310400011)(451199024)(1800799009)(186009)(40470700004)(36840700001)(46966006)(31686004)(40460700003)(40480700001)(8676002)(31696002)(86362001)(7416002)(5660300002)(41300700001)(4326008)(8936002)(26005)(426003)(336012)(36860700001)(47076005)(82740400003)(478600001)(7636003)(2906002)(966005)(356005)(54906003)(70586007)(70206006)(6916009)(316002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 10:24:26.5602
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b4c0a07-bec0-4a95-9ced-08dba94349ac
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE30.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8109
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5jay65dndlpzdu7qjxa5ty5vudz62h3xosiu7mjdjvzieoylq@sk7h7erb25bd>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 12:11:55 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.50 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Aug 30, 2023 at 01:16:31PM +0300, Serge Semin wrote:
+> On Tue, Aug 29, 2023 at 10:01:20AM -0500, Andrew Halaney wrote:
+> > On Sun, Aug 27, 2023 at 03:02:07AM +0300, Serge Semin wrote:
+> > > Hi Andrew
+> > > 
+> > > On Thu, Aug 24, 2023 at 01:32:57PM -0500, Andrew Halaney wrote:
+> > > > The comment neglects that freq_div_ratio is the ratio between
+> > > > the subsecond increment frequency and the clk_ptp_rate frequency.
+> > > > 
+> > > > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> > > > ---
+> > > >  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++++----
+> > > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > > index dfead0df6163..64185753865f 100644
+> > > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > > @@ -853,10 +853,12 @@ int stmmac_init_tstamp_counter(struct stmmac_priv *priv, u32 systime_flags)
+> > > >  	/* Store sub second increment for later use */
+> > > >  	priv->sub_second_inc = sub_second_inc;
+> > > >  
+> > > 
+> > > > -	/* calculate default addend value:
+> > > > -	 * formula is :
+> > > > -	 * addend = (2^32)/freq_div_ratio;
+> > > > -	 * where, freq_div_ratio = 1e9ns/sub_second_inc
+> > > > +	/* Calculate default addend so the accumulator overflows (2^32) in
+> > > > +	 * sub_second_inc (ns). The addend is added to the accumulator
+> > > > +	 * every clk_ptp cycle.
+> > > > +	 *
+> > > > +	 * addend = (2^32) / freq_div_ratio
+> > > > +	 * where, freq_div_ratio = (1e9ns / sub_second_inc) / clk_ptp_rate
+> > > >  	 */
+> > > >  	temp = div_u64(NSEC_PER_SEC, sub_second_inc);
+> > > >  	temp = temp << 32;
+> > > 
+> > > I am not well familiar with the way PTP works but at my naked eyes the
+> > > calculation implemented here looks a bit different than what is
+> > > described in the comment.
+> > > 
+> > > Basically config_sub_second_increment(clk_ptp_rate, sub_second_inc)
+> > > returns clk_ptp_rate period in nanoseconds or twice that period, or have it
+> > > scaled up on 0.465. So we have one of the next formulae:
+> > > X1 = NSEC_PER_SEC / clk_ptp_rate
+> > > X2 = 2 * NSEC_PER_SEC / clk_ptp_rate
+> > > X3 = X1 / 0.465
+> > > X4 = X2 / 0.465
+> > 
 > 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
+> > X5 = PTP_SSIR_SSINC_MAX (0xFF) is a case as well to consider
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.50-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+> I noticed that option too, but then I thought it must have been not
+> that much probable to be considered as a real case seeing it's a
+> boundary case. The clamping happens if
+> if (X1 > 255 || X2 > 255 || X3 > 255 || X4 > 255)
+> 	X5 = 255
+> so in the worst case PTP-rate period in nanoseconds multiplied by 4.3
+> must be greater than 255 which is equivalent to X1 >= 60. It means
+> PTP clock rate must be greater than 16.6MHz to avoid the clamping. In
+> the best case - 3.9MHz. I doubted that these limits are crossed in
+> reality. But in anyways you are right saying that it still needs to be
+> taken into account in case if the implemented algo would be a subject
+> for optimizations.
 > 
-> thanks,
+> > > 
+> > > Then stmmac_init_tstamp_counter() handles the retrieved period in the
+> > > next manner:
+> > > temp = div_u64(NSEC_PER_SEC, sub_second_inc);     // Convert back to frequency
+> > > temp = temp << 32;                                // multiply by 2^32
+> > > addend = div_u64(temp, priv->plat->clk_ptp_rate); // Divide by clk_ptp_rate
+> > > 
+> > > The code above is equivalent:
+> > > 
+> > > addend = ((NSEC_PER_SEC / X) * 2^32 ) / clk_ptp_rate = 
+> > >          (2^32 * NSEC_PER_SEC / X) / clk_ptp_rate = 
+> > >          2^32 / (clk_ptp_rate / (NSEC_PER_SEC / X))
+> > > 
+> > > AFAICS this doesn't match to what is in the comment (X = sub_second_inc).
+> > > freq_div_ratio gets to be inverted. Does it?
+> > 
 > 
-> greg k-h
+> > You're right, my comment needs to be inverted to match all of the above
+> > (which is a great recap, thank you!).
+> 
+> Good. Then an hour spent for decyphering of that stuff wasn't a waste
+> of time after all.)
+> 
+> > 
+> > > 
+> > > Substituting X to the formulae above we'll have just four possible results:
+> > > addend1 = 2^32
+> > > addend2 = 2^32 / 2
+> > > addend3 = 0.465 * 2^32
+> > > addend4 = 0.465 * 2^32 / 2
+> >
+> > addend5 = 2^32 / (clk_ptp_rate / (NSEC_PER_SEC / 0xFF))
+> > 
+> > I think that would be the PTP_SSIR_SSINC_MAX case (X5) I inserted above
+> > 
+> > > 
+> > > So basically clk_ptp_rate is irrelevant (neglecting all the
+> > > integer divisions rounding). Is that what implied by the implemented
+> > > algo?
+> > > 
+> > > Am I missing something? (it's quite possible since it's long past
+> > > midnight already.)
+> > 
+> > I believe you've captured everything, minus the one conditional I added.
+> > 
+> > I think because of that conditional we can't just nicely code up some
+> > contants here independent of sub_second_inc. Now I can blame the morning
+> > and not enough coffee, do you see anything wrong with that thought
+> 
+> I am not that much aware of the PTP internals but it just seems weird
+> to have clk_ptp_rate not affecting anything except the boundary case.
+> Do you have a DW *MAC HW databook with the PTP-engine chapter
+> describing the way the System Time Register Module works?
+> 
 
-All tests passing for Tegra ...
+> > process? I'm all ears for suggestions for cleaning this up, especially
+> > since others like Richard have indicated that it could use some love,
+> 
+> * I would have said more definitive - some _hard_ love.)
+> 
+> > but right now I'm hung up thinking the best I can do is fix the bad
+> > comment in this patch.
+> 
+> Just at the first very swift glance:
+> 1. See attached patch.
+> 2. Exporting stmmac_init_tstamp_counter() isn't necessary. It doesn't
+> seem like being utilized anywhere except in the stmmac_main.c module.
+> 3. stmmac_hwtimestamp-based abstraction seems redundant since: just a
+> single PTP implementation is provided; DW GMAC, DW XGMAC and DW QoS
+> Eth PTP implementations don't seem like very much different (XGMAC and
+> QoS Eth seems to have some additional features but the basics looks
+> the same). Moreover developing a HW-abstraction without having all the
+> IP-core databooks at hands and having at least two different engines
+> description seems like a needless over-complication of the code. I
+> have doubts it was possible to create a comprehensive enough
+> sub-module to be suitable for the real and any other not yet known PTP
+> engine.)
+> 4. For the same reason as 2. splitting up the PTP support into two
+> files seems redundant. stmmac_hwtstamp.c content can be moved to
+> stmmac_ptp.c .
+> 5. ...
 
-Test results for stable-v6.1:
-    11 builds:	11 pass, 0 fail
-    28 boots:	28 pass, 0 fail
-    116 tests:	116 pass, 0 fail
+Ah, if you were talking about the Sub-second Increment part and the
+System Time Register module then alas I can't help with that much
+since I have only a very shallow knowledge about PTP in general, not
+to say about that particular module.
 
-Linux version:	6.1.50-rc1-g1aa86af84d82
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
+-Serge(y)
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> 
+> 3 and 5 imply bulky and delicate work which I would have attempted
+> only after much deeper PTP engine studying in all the DW *MAC IP-cores
+> (I might have missed something) and only having a real PTP-charged
+> device at hands.
+> 
+> -Serge(y)
+> 
+> > 
+> > Thanks for the review!
+> > - Andrew
+> > 
+> > 
 
-Jon
+
