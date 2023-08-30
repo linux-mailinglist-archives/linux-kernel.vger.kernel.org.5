@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F148E78E00F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF5478DF68
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240914AbjH3TbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
+        id S234968AbjH3TIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244689AbjH3NnO (ORCPT
+        with ESMTP id S244690AbjH3Nor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:43:14 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84CAA3;
-        Wed, 30 Aug 2023 06:43:11 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdc19b782aso35692925ad.0;
-        Wed, 30 Aug 2023 06:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693402991; x=1694007791; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QtWgGFC8eXvRcZ4S/vmdUIxm0pQa8RJFaKyI9K5rklc=;
-        b=YroWy06pxP3SZipKqg9gBeW/XyliFA9qDR/0T0hAE9Opa3IlSyrXggz0eroXLXiyQv
-         SfNqi4YhutiWuzQcfb6FL9JviMT7QP0ujASaavP1FEP2kAQFkz9sGk/aSHB8FVLdxhPq
-         PClJ/p2nnwugKGwCr+0fxMrdgxlq8d2Ax4JSytlM0k0hDNcrRCwVHjyNb4IbUZ10AiOy
-         LucSgQOyxxVN0pCLv86auY2p1HtQT2VCqxq69Km3R9wt4mZ7aXXI1cGzRpkmOaMVFZH8
-         stXcRciREQDJCs0g94nC/Qlhe9bvc1FjPb/kfdBha6YcuWg0GiTkk9wdgJHkiijYg7W8
-         B+PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693402991; x=1694007791;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QtWgGFC8eXvRcZ4S/vmdUIxm0pQa8RJFaKyI9K5rklc=;
-        b=cbDzY0rLISy3PWiTmEV5rQd9T/fLWPnCDHq4wYJSCF2WUsI2+2/u8GP0Od2AZ2lYO7
-         Nmu6j7ZiYiOmWWzMqH5RzT7EXGIB/oeL7WD/mTB2hcuENUuShn+cAdfYG/D2R477mTmq
-         sqY0NwuMtJQSrpbFTPR1+RUhTT1DXwMRwgvUYrAHNnzbEg4Pumxkdr63LwxqvkMHrqTh
-         T2nWceTwic60IFP82Szzr9+sXA7pPvfL1kODvsUcn7XCfMCnQaBit+eGjLHuilgY9BeB
-         0+iodvlrJiKxXuacZyBCFEMsck0+kOYw3t9cfiiNtbnM1WXBPQYEdRP4+WRsf8BG7WHZ
-         y+Zw==
-X-Gm-Message-State: AOJu0Yxp26VDHLcWCI7hWkaTkZUYwCfEQj8oFjdq5eBzCDeK+3JZM+Bj
-        z2RZ/PrnnSuASyBRYlWQOBTaVhZHz+MAqTbT
-X-Google-Smtp-Source: AGHT+IGhhQGaiczvMzbvcGOgfeWfIwYFWKkyxmisUaNMVWYOYp9q1YsFXLqI2SQiSWFEWhKejfZtDA==
-X-Received: by 2002:a17:903:2344:b0:1bf:73ec:b980 with SMTP id c4-20020a170903234400b001bf73ecb980mr2266783plh.66.1693402990946;
-        Wed, 30 Aug 2023 06:43:10 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001b86dd825e7sm11042280plh.108.2023.08.30.06.43.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:43:10 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Wed, 30 Aug 2023 09:44:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D3DA3;
+        Wed, 30 Aug 2023 06:44:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B35562602;
+        Wed, 30 Aug 2023 13:44:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B945AC433C8;
+        Wed, 30 Aug 2023 13:44:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693403083;
+        bh=lHfKq4d/r4SkrYm1cDQVZR/6CiTUPBxZkFaWTRcy388=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MqECSlqX6hFw56rkBs5PwaqxFW5vDHVOVW9fWeYcnkfsfOtiOWWsMM0vd7cVD1t32
+         cbL1l/BofoYTHcfwKWRKJEQY93zavSvuwj382K4kgQbUXR7dwe7WI7nShK/8O4zlOP
+         C56rhnItr2uEJSYKPRUjukPvPiQ3HIlOQkZIcHgk7pQtv8x/frbI/qwW4BDxvdpXp8
+         b68mc4Jg5L5MT/i+8kCrgpggMF9WjfP+nf8O14CzmgZhCTip5IXnwPPEmB8jiU71N7
+         +iFP43i0H2bxXrxfmd0aE63lF/BrJ+CuWM2+cpW3VbpWYjPK/IYD7qVGz7PqkR7vJ7
+         +/LBT3GBNRFXQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qbLUv-009KQh-8k;
+        Wed, 30 Aug 2023 14:44:41 +0100
+Date:   Wed, 30 Aug 2023 14:44:40 +0100
+Message-ID: <86wmxcejav.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH v4 4/4] MAINTAINERS: Update MIPS/LOONGSON1 entry
-Date:   Wed, 30 Aug 2023 21:42:41 +0800
-Message-Id: <20230830134241.506464-5-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230830134241.506464-1-keguang.zhang@gmail.com>
-References: <20230830134241.506464-1-keguang.zhang@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc: Fix warnings about liointc-2.0
+In-Reply-To: <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+        <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
+        <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+        <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+        <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+        <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
+        <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jiaxun.yang@flygoat.com, krzysztof.kozlowski@linaro.org, zhoubb.aaron@gmail.com, zhoubinbin@loongson.cn, chenhuacai@loongson.cn, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chenhuacai@kernel.org, loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org, tsbogend@alpha.franken.de, linux-mips@vger.kernel.org, diasyzhang@tencent.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two new F: entries for Loongson1 Ethernet driver
-and dt-binding document.
-Add a new F: entry for the rest Loongson-1 dt-binding documents.
+On Wed, 30 Aug 2023 04:59:20 +0100,
+Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>=20
+>=20
+>=20
+> =E5=9C=A8 2023/8/25 20:56, Krzysztof Kozlowski =E5=86=99=E9=81=93:
+> [...]
+> > How did you sneak this property? The version - v2 - which was reviewed
+> > by Rob:
+> > https://lore.kernel.org/all/20190905144316.12527-7-jiaxun.yang@flygoat.=
+com/
+> > did not have it.
+> >=20
+> > Now v3 suddenly appears with Rob's review and this property:
+> > https://lore.kernel.org/all/20200112081416.722218-4-jiaxun.yang@flygoat=
+.com/
+> >=20
+> > Please help me understand this property appeared there and how did you
+> > get it reviewed?
+> Hi all,
+>=20
+> It has been some years since this series was merged.
+> My vague memory tells me there was some off-list discussion made in IRC w=
+ith
+> linux-arch folks and IRQ folks to come up with this binding design.
+>=20
+> In this case I guess I forgot to drop Rob's R-b tag when updating this pa=
+tch
+> between reversions. I=C2=A0 apologize for any inconvenience this may have=
+ caused.
+>=20
+> >=20
+> >>                                                  <0xffffffff>, /* int1=
+ */
+> >>                                                  <0x00000000>, /* int2=
+ */
+> >>                                                  <0x00000000>; /* int3=
+ */
+> > So now you will keep bringing more hacks for a hacky property. No, this
+> > cannot go on.
+>=20
+> What's the best way, in your opinion, to overhaul this property? As we do=
+n't
+> really care backward compatibility of DTBs on those systems we can
+> just redesign it.
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
----
-V3 -> V4: Update the dt-binding document entry of Loongson1 Ethernet
-V2 -> V3: Update the entries and the commit message
-V1 -> V2: Improve the commit message
+You may not care about backward compatibility, but I do. We don't
+break existing systems, full stop.
 
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+As for the offending property, it has no place here either. DT is not
+the place where you put "performance knobs".
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ff1f273b4f36..2519d06b5aab 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14344,9 +14344,12 @@ MIPS/LOONGSON1 ARCHITECTURE
- M:	Keguang Zhang <keguang.zhang@gmail.com>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
-+F:	Documentation/devicetree/bindings/net/loongson,ls1*.yaml
- F:	arch/mips/include/asm/mach-loongson32/
- F:	arch/mips/loongson32/
- F:	drivers/*/*loongson1*
-+F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
- 
- MIPS/LOONGSON2EF ARCHITECTURE
- M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
--- 
-2.39.2
+	M.
 
+--=20
+Without deviation from the norm, progress is not possible.
