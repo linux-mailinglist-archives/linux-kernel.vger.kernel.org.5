@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED1378DD7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65A578DD86
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244357AbjH3Suw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        id S244833AbjH3Sv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245307AbjH3PH5 (ORCPT
+        with ESMTP id S245441AbjH3PQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:07:57 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C74C2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:07:51 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bcfdadd149so70528291fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:07:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693408069; x=1694012869; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gsv2vy0NbRUitL+DqdxFoOF89HcPlyA0hr/AZRAjcvs=;
-        b=Beflx1uLMM8QWOA/AXulwxMsQBLj2h9RxVihZxZ3QTjSCmhtOscjQD4+pPafLuS46I
-         Ll/ApEsVa39WaHdJlbrTu0Db03gmi5Zs2+INKQcGR6y8PVUrGS4LaFXUyeSGEMiPXq+c
-         0Ml6DCCO9LWtS26HCsjRQM4vvqtEaylnXxfBo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693408069; x=1694012869;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gsv2vy0NbRUitL+DqdxFoOF89HcPlyA0hr/AZRAjcvs=;
-        b=OcQHQO3cuxbyk+fcnhfLxccWbrU+UuQoN18ACRpEB5PTjpAjTpeLj+j9oOiHm677YO
-         rehFO1dzgfFSWNqUKTNaHvCtk8yCYxLRD81PQKzJHtb3f/xV7HAe5bK/1g26mVXo70Qx
-         +Sdr/YAGeo5B/OmweLUvV6NakU10Kql62OAIyp0/uCBupDwizq3MH4990forsn0ITWLr
-         G1YTlJCem5myrOAmzQR2xxzIGTndbV/8mrw4SDjkWpjH9iNh8J+dFtjYrR3BbuXH7QCG
-         y4ppaRxwcCNFksAVto6u0IcqXR8L7ygridK0oJdzCAG389oZ6YoG9N/z1Fxx+M4Hfcfg
-         /O/w==
-X-Gm-Message-State: AOJu0Yz2kM3/7UigIeFKfcMPmaOdFYwSblsW+jL/JaiO444LlRh4igZ5
-        uW0UfQG54KJ+VkLEpk9yGMweBwbJiLsIgOpGnVZzD0EC
-X-Google-Smtp-Source: AGHT+IFNcWc4Gtn/SEotDtEpJ3pjGfdGAnfbxpwjZ5ELhczp4JYFFNUWPFiV7MerAaIdt18LI9SJ1Q==
-X-Received: by 2002:a2e:721a:0:b0:2bc:d507:af with SMTP id n26-20020a2e721a000000b002bcd50700afmr1759611ljc.28.1693408069310;
-        Wed, 30 Aug 2023 08:07:49 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id q22-20020a170906361600b0099cadcf13cesm7285924ejb.66.2023.08.30.08.07.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 08:07:48 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-99c0cb7285fso740249666b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:07:48 -0700 (PDT)
-X-Received: by 2002:a17:906:cb:b0:9a2:1ec1:625d with SMTP id
- 11-20020a17090600cb00b009a21ec1625dmr2019888eji.64.1693408068433; Wed, 30 Aug
- 2023 08:07:48 -0700 (PDT)
+        Wed, 30 Aug 2023 11:16:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D141A4;
+        Wed, 30 Aug 2023 08:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693408582; x=1724944582;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=kuhHM9Pb2S9UA4HVLvALcSSOlQFsYNKCJA5urnK1yJE=;
+  b=UD8Pz/HW6JEgt3jfst5cGqUwsolyeM3zHBuRKLVpMHbbrSNMcE+aBj3W
+   3Fa+Zzh/aIBXDqbryWR92GLddKLUc9ssOiqe4tOpiyBS1bPto3qSqCdPw
+   bwPB0G0ymDT5MYS+qPQD7fzcKLUObuMb8innymM/cAcT3Qab8x4/+eFiA
+   JfF+T2bjINQkH9xmWwWmJiDUW/novaUDcovM7mC5f5vVh/XrKHH0zVmQ2
+   7l+EVAXcIhQzX368CPDakO74+T5pTCMMSaiTEr0r7dcsbM7fXtwzgr1hK
+   Vgvts1Ns/bVeOesVs76vX7V2YIBHuFXUL4tRRN1sD2RleY8DFSDjZJ3wI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="439614385"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="439614385"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 08:12:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="804574149"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="804574149"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.25.116]) ([10.93.25.116])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 08:12:21 -0700
+Message-ID: <30ffe039-c9e2-b996-500d-5e11bf6ea789@linux.intel.com>
+Date:   Wed, 30 Aug 2023 23:12:19 +0800
 MIME-Version: 1.0
-References: <20230829213441.310655-1-ulf.hansson@linaro.org>
- <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
- <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
- <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
- <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
-In-Reply-To: <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 30 Aug 2023 08:07:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj1j0HuNWKLEzi74zEr2rGnMLEFZjLvV=rzdqzQPqOzdQ@mail.gmail.com>
-Message-ID: <CAHk-=wj1j0HuNWKLEzi74zEr2rGnMLEFZjLvV=rzdqzQPqOzdQ@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-13-seanjc@google.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20230718234512.1690985-13-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,68 +97,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Aug 2023 at 01:34, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> *) The new subsystem is solely intended for the generic PM domain
-> providers. Other PM domains providers, like the ACPI PM domains for
-> example (drivers/acpi/*), don't really belong here, at least in my
-> opinion. So, maybe "domain" isn't specific enough? Although, if not
-> using "genpd", I have no better suggestion.
 
-I'm perfectly fine spelling out longer names. "drivers/power/generic"
-would be fine to me too, for example.
 
-We can even use names that are longer than 8.3 or - this is heretical
-- the 14 characters of the original Unix filesystem. So it could be
-something even more descriptive.
+On 7/19/2023 7:44 AM, Sean Christopherson wrote:
 
-I personally always use tab-completion when doing filenames, so at
-least to me, longer descriptive names that don't all start with the
-same thing are perfectly fine. Others may have more of a typing issue,
-so maybe 'generic' is better than 'generic-power-domain'.
+[...]
+> +
+> +static struct folio *kvm_gmem_get_folio(struct file *file, pgoff_t index)
+> +{
+> +	struct folio *folio;
+> +
+> +	/* TODO: Support huge pages. */
+> +	folio = filemap_grab_folio(file->f_mapping, index);
+> +	if (!folio)
+Should use  if ((IS_ERR(folio)) instead.
 
-(On that note, exactly *because* I use tab-completion, I hate things like this:
+> +		return NULL;
+> +
+> +	/*
+> +	 * Use the up-to-date flag to track whether or not the memory has been
+> +	 * zeroed before being handed off to the guest.  There is no backing
+> +	 * storage for the memory, so the folio will remain up-to-date until
+> +	 * it's removed.
+> +	 *
+> +	 * TODO: Skip clearing pages when trusted firmware will do it when
+> +	 * assigning memory to the guest.
+> +	 */
+> +	if (!folio_test_uptodate(folio)) {
+> +		unsigned long nr_pages = folio_nr_pages(folio);
+> +		unsigned long i;
+> +
+> +		for (i = 0; i < nr_pages; i++)
+> +			clear_highpage(folio_page(folio, i));
+> +
+> +		folio_mark_uptodate(folio);
+> +	}
+> +
+> +	/*
+> +	 * Ignore accessed, referenced, and dirty flags.  The memory is
+> +	 * unevictable and there is no storage to write back to.
+> +	 */
+> +	return folio;
+> +}
+[...]
+> +
+> +static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
+> +{
+> +	struct address_space *mapping = inode->i_mapping;
+> +	pgoff_t start, index, end;
+> +	int r;
+> +
+> +	/* Dedicated guest is immutable by default. */
+> +	if (offset + len > i_size_read(inode))
+> +		return -EINVAL;
+> +
+> +	filemap_invalidate_lock_shared(mapping);
+> +
+> +	start = offset >> PAGE_SHIFT;
+> +	end = (offset + len) >> PAGE_SHIFT;
+> +
+> +	r = 0;
+> +	for (index = start; index < end; ) {
+> +		struct folio *folio;
+> +
+> +		if (signal_pending(current)) {
+> +			r = -EINTR;
+> +			break;
+> +		}
+> +
+> +		folio = kvm_gmem_get_folio(inode, index);
+> +		if (!folio) {
+> +			r = -ENOMEM;
+> +			break;
+> +		}
+> +
+> +		index = folio_next_index(folio);
+> +
+> +		folio_unlock(folio);
+> +		folio_put(folio);
+May be a dumb question, why we get the folio and then put it immediately?
+Will it make the folio be released back to the page allocator?
 
-   drivers/scsi/scsi_{common,debug,error,ioctl,...}.c
+> +
+> +		/* 64-bit only, wrapping the index should be impossible. */
+> +		if (WARN_ON_ONCE(!index))
+> +			break;
+> +
+> +		cond_resched();
+> +	}
+> +
+> +	filemap_invalidate_unlock_shared(mapping);
+> +
+> +	return r;
+> +}
+> +
+[...]
+> +
+> +int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+> +		  unsigned int fd, loff_t offset)
+> +{
+> +	loff_t size = slot->npages << PAGE_SHIFT;
+> +	unsigned long start, end, flags;
+> +	struct kvm_gmem *gmem;
+> +	struct inode *inode;
+> +	struct file *file;
+> +
+> +	BUILD_BUG_ON(sizeof(gfn_t) != sizeof(slot->gmem.pgoff));
+> +
+> +	file = fget(fd);
+> +	if (!file)
+> +		return -EINVAL;
+> +
+> +	if (file->f_op != &kvm_gmem_fops)
+> +		goto err;
+> +
+> +	gmem = file->private_data;
+> +	if (gmem->kvm != kvm)
+> +		goto err;
+> +
+> +	inode = file_inode(file);
+> +	flags = (unsigned long)inode->i_private;
+> +
+> +	/*
+> +	 * For simplicity, require the offset into the file and the size of the
+> +	 * memslot to be aligned to the largest possible page size used to back
+> +	 * the file (same as the size of the file itself).
+> +	 */
+> +	if (!kvm_gmem_is_valid_size(offset, flags) ||
+> +	    !kvm_gmem_is_valid_size(size, flags))
+> +		goto err;
+> +
+> +	if (offset + size > i_size_read(inode))
+> +		goto err;
+> +
+> +	filemap_invalidate_lock(inode->i_mapping);
+> +
+> +	start = offset >> PAGE_SHIFT;
+> +	end = start + slot->npages;
+> +
+> +	if (!xa_empty(&gmem->bindings) &&
+> +	    xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT)) {
+> +		filemap_invalidate_unlock(inode->i_mapping);
+> +		goto err;
+> +	}
+> +
+> +	/*
+> +	 * No synchronize_rcu() needed, any in-flight readers are guaranteed to
+> +	 * be see either a NULL file or this new file, no need for them to go
+> +	 * away.
+> +	 */
+> +	rcu_assign_pointer(slot->gmem.file, file);
+> +	slot->gmem.pgoff = start;
+> +
+> +	xa_store_range(&gmem->bindings, start, end - 1, slot, GFP_KERNEL);
+> +	filemap_invalidate_unlock(inode->i_mapping);
+> +
+> +	/*
+> +	 * Drop the reference to the file, even on success.  The file pins KVM,
+> +	 * not the other way 'round.  Active bindings are invalidated if the
+an extra ',  or maybe around?
 
-which is entirely redundant in how it just repeats the "scsi" part
-pointlessly, causes more typing, _and_ then also causes tab-completion
-to not work well. But that's a separate issue).
 
-> I get your point. I was indeed trying to obey the current naming
-> strategy, but I think it's not entirely easy to understand what is
-> prefered.
+> +	 * file is closed before memslots are destroyed.
+> +	 */
+> +	fput(file);
+> +	return 0;
+> +
+> +err:
+> +	fput(file);
+> +	return -EINVAL;
+> +}
+> +
+[...]
+> []
 
-It's not like we have any hard rules. Most of our naming ends up being
-pretty random, and everybody thinks that *their* TLA is so obvious,
-because they've been using it for ages.
-
-But the "please use common and industry-wide TLA's, write things out
-otherwise" is a good rule both when it comes to docs and to filenames.
-
-And that "industry-wide" is pretty important. Not some kind of "local
-jargon TLA".
-
-We as kernel people hopefully all know what "TLB" or "VM" means, but
-every time somebody sends me something like "x86 SEV" patches, I have
-to remind myself, and that's despite me being fairly intimate with
-x86.
-
-> Please advise me on how to move forward.
-
-Just to not cause pain during the merge window, I think I'll take the
-current trees (eventually - I still have other things pending first),
-but I would like
-
- (a) a new pull request message that actually spells things out and
-does *not* use 'genpd' as if it was meaningful so that I can at least
-have documentation in the merge window
-
- (b) a plan to rename that directory to something saner and more descriptive
-
-I don't care deeply about what the exact name in (b) is, but it should
-be real words that make sense in context. Or a very standard
-abbreviations (ie I consider "misc" to be a word, not an abbreviation,
-because I'd rather not see everybody butcher the spelling of it).
-
-                   Linus
