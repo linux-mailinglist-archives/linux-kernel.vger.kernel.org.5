@@ -2,267 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D73E278E36E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5326D78E371
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344047AbjH3Xnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 19:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        id S1344325AbjH3XsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244582AbjH3Xno (ORCPT
+        with ESMTP id S238669AbjH3XsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 19:43:44 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58DE11B
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:43:39 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf55a81eeaso1522205ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693439019; x=1694043819; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rfuzHnmA/2/YVK6PLoXiL1kOIJ/ZFhVyk3JopXec8Pw=;
-        b=BcmD+j0IwIV3ZK0bsXEy2GqmD4vA+Pq4Uz/+9ykZI5J+ps6aRBoVfQczIxEkDCAtfD
-         UjQJdVrkCSKowXr3Lem8VrqwxmQqGX0+fwLJW2cNnyj7ddW+JC6GCLCGcVKxOXaBGF2u
-         mbPEhzMXVO/4WDzPEkx2NDxsOV4XRUjDt0pOY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693439019; x=1694043819;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rfuzHnmA/2/YVK6PLoXiL1kOIJ/ZFhVyk3JopXec8Pw=;
-        b=DVl66G9RDvyaRyXZwQrEJj1xc4qZ7dSY8bH/YQxMfxRppBFmNquUKekVgmG1jTYRzy
-         j7FPyHsXxzzHqY03pott5GZUgxyRrplWVtlzf8yt8bbvONzDN3RWrs5F9isiglGZ78KQ
-         ZwKHJxNWDPC6dNBqdplPtR5kNYjdwfyUPNmO8AyMs/JzG1RHKw54sOnqzsnWHvd00+R7
-         yFNyQ5uNIe3xnv9sXJeViEKhdxFT+OCS2L5VCVaU6970EQ+rhknJk7nYErSiY5Z4q1YO
-         YwAlDZtx3U5Ow4M4qE9zOQLnLz7nEuqRNWeHiwAbw5bFZLTdoevtP3SPm0TiImLKBqgq
-         /RFQ==
-X-Gm-Message-State: AOJu0Yx8wfzEZFNP2azoMkADen0MNuBGmoKHUQEzfDwj8oHJcbsz4Qy3
-        xmhbccLljLify9nJsCXL1tZixQ==
-X-Google-Smtp-Source: AGHT+IGDYue2wbW4Pk0nkv3oXMC6lK30iPB1b1i/if1H5uYTRJQ34qxRwb1klw1ovgh6PRdRcPxjnA==
-X-Received: by 2002:a17:903:25d4:b0:1c0:9bef:4bbd with SMTP id jc20-20020a17090325d400b001c09bef4bbdmr3525017plb.14.1693439019174;
-        Wed, 30 Aug 2023 16:43:39 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n16-20020a170902e55000b001c0af36dd64sm53153plf.162.2023.08.30.16.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 16:43:38 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 16:43:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: Re: [PATCH] pstore: Base compression input buffer size on estimated
- compressed size
-Message-ID: <202308301608.739BFA8@keescook>
-References: <20230830212238.135900-1-ardb@kernel.org>
+        Wed, 30 Aug 2023 19:48:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6FECF
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:47:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693439277; x=1724975277;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=L0wej8rPj9anMXxjV/59tYFfOhZsGJInwPKEAM/ce60=;
+  b=Gjo+tZqfeC1e6ri4UUhuz6L7I+QcEVN2b2nk9Z9p3hFzz3uWC/nSCPYr
+   OXHvhpHnnee0ugpSBAVgTWSq+a+6LN293rIKPDfpP4BUurjU0OFLMZKsq
+   Gzb7qVdE+EWklP0ksqf1Fn9hHnSGmDHStFzdfUc+xmIQyg55j5Bh3rbB2
+   xxwsJq43+/TIw5v7JiqcPwQxtoFmlahiNY4+hLDdgCkAIWxQDYqIYR3RG
+   OWlfD8zZECNE6PwyasAmuY+KeMRy/nuFGb7+iGIgX6PLEBHPRJD3Fvzlm
+   7Pa3D5Q5AH/v2vyyBC+/7Jsi13qaIY3rqIVPbKYDGHzBMlrMhBvTeSYRE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="462153735"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="462153735"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 16:47:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="809327675"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="809327675"
+Received: from viggo.jf.intel.com (HELO ray2.intel.com) ([10.54.77.144])
+  by fmsmga004.fm.intel.com with ESMTP; 30 Aug 2023 16:47:55 -0700
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+To:     torvalds@linux-foundation.org
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [GIT PULL] x86/shstk for 6.6-rc1
+Date:   Wed, 30 Aug 2023 16:47:52 -0700
+Message-Id: <20230830234752.19858-1-dave.hansen@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830212238.135900-1-ardb@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 11:22:38PM +0200, Ard Biesheuvel wrote:
-> Commit 1756ddea6916 ("pstore: Remove worst-case compression size logic")
-> removed some clunky per-algorithm worst case size estimation routines on
-> the basis that we can always store pstore records uncompressed, and
-> these worst case estimations are about how much the size might
-> inadvertently *increase* due to encapsulation overhead when the input
-> cannot be compressed at all. So if compression results in a size
-> increase, we just store the original data instead.
+Hi Linus,
 
-Does the Z_FINISH vs Z_SYNC_FLUSH thing need to be fixed as well, or
-does that become a non-issue with this change?
+This is the long awaited x86 shadow stack support.  We first sent this
+your way for 6.4 in a form that was harder to review.
 
-> 
-> However, it seems that the the original code was misinterpreting these
-> calculations as an estimation of how much uncompressed data might fit
-> into a compressed buffer of a given size, and it was using the results
-> to consume the input data in larger chunks than the pstore record size,
-> relying on the compression to ensure that what ultimately gets stored
-> fits into the available space.
-> 
-> One result of this, as observed and reported by Linus, is that upgrading
-> to a newer kernel that includes the given commit may result in pstore
-> decompression errors reported in the kernel log. This is due to the fact
-> that the existing records may unexpectedly decompress to a size that is
-> larger than the pstore record size.
-> 
-> Another potential problem caused by this change is that we may
-> underutilize the fixed sized records on pstore backends such as ramoops.
-> And on pstore backends with variable sized records such as EFI, we will
-> end up creating many more entries than before to store the same amount
-> of compressed data.
-> 
-> So let's fix both issues, by bringing back the typical case estimation of
-> how much ASCII text captured from the dmesg log might fit into a pstore
-> record of a given size after compression. The original implementation
-> used the computation given below for zlib, and so simply taking 2x as a
-> ballpark number seems appropriate here.
-> 
->   switch (size) {
->   /* buffer range for efivars */
->   case 1000 ... 2000:
->   	cmpr = 56;
->   	break;
->   case 2001 ... 3000:
->   	cmpr = 54;
->   	break;
->   case 3001 ... 3999:
->   	cmpr = 52;
->   	break;
->   /* buffer range for nvram, erst */
->   case 4000 ... 10000:
->   	cmpr = 45;
->   	break;
->   default:
->   	cmpr = 60;
->   	break;
->   }
-> 
->   return (size * 100) / cmpr;
-> 
-> While at it, rate limit the error message so we don't flood the log
-> unnecessarily on systems that have accumulated a lot of pstore history.
-> 
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  fs/pstore/platform.c | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-> index 62356d542ef67f60..a866b70ea5933a1d 100644
-> --- a/fs/pstore/platform.c
-> +++ b/fs/pstore/platform.c
-> @@ -98,7 +98,14 @@ MODULE_PARM_DESC(kmsg_bytes, "amount of kernel log to snapshot (in bytes)");
->  
->  static void *compress_workspace;
->  
-> +/*
-> + * Compression is only used for dmesg output, which consists of low-entropy
-> + * ASCII text, and so we can assume a 2x compression factor is achievable.
-> + */
-> +#define DMESG_COMP_FACTOR	2
-> +
->  static char *big_oops_buf;
-> +static size_t max_uncompressed_size;
->  
->  void pstore_set_kmsg_bytes(int bytes)
->  {
-> @@ -216,7 +223,7 @@ static void allocate_buf_for_compression(void)
->  	 * uncompressed record size, since any record that would be expanded by
->  	 * compression is just stored uncompressed.
->  	 */
-> -	buf = kvzalloc(psinfo->bufsize, GFP_KERNEL);
-> +	buf = kvzalloc(DMESG_COMP_FACTOR * psinfo->bufsize, GFP_KERNEL);
->  	if (!buf) {
->  		pr_err("Failed %zu byte compression buffer allocation for: %s\n",
->  		       psinfo->bufsize, compress);
-> @@ -233,6 +240,7 @@ static void allocate_buf_for_compression(void)
->  
->  	/* A non-NULL big_oops_buf indicates compression is available. */
->  	big_oops_buf = buf;
-> +	max_uncompressed_size = DMESG_COMP_FACTOR * psinfo->bufsize;
->  
->  	pr_info("Using crash dump compression: %s\n", compress);
->  }
-> @@ -246,6 +254,7 @@ static void free_buf_for_compression(void)
->  
->  	kvfree(big_oops_buf);
->  	big_oops_buf = NULL;
-> +	max_uncompressed_size = 0;
->  }
->  
->  void pstore_record_init(struct pstore_record *record,
-> @@ -305,7 +314,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
->  		record.buf = psinfo->buf;
->  
->  		dst = big_oops_buf ?: psinfo->buf;
-> -		dst_size = psinfo->bufsize;
-> +		dst_size = max_uncompressed_size ?: psinfo->bufsize;
->  
->  		/* Write dump header. */
->  		header_size = snprintf(dst, dst_size, "%s#%d Part%u\n", why,
-> @@ -326,8 +335,15 @@ static void pstore_dump(struct kmsg_dumper *dumper,
->  				record.compressed = true;
->  				record.size = zipped_len;
->  			} else {
-> -				record.size = header_size + dump_size;
-> -				memcpy(psinfo->buf, dst, record.size);
-> +				/*
-> +				 * Compression failed, so the buffer is most
-> +				 * likely filled with binary data that does not
-> +				 * compress as well as ASCII text. Copy as much
-> +				 * of the uncompressed data as possible into
-> +				 * the pstore record, and discard the rest.
-> +				 */
-> +				record.size = psinfo->bufsize;
-> +				memcpy(psinfo->buf, dst, psinfo->bufsize);
+Since then, the main deltas addressed concerns around pte_mkwrite()
+and the Dirty bit shifting logic. These are mostly unchanged from the
+v9 version of the patchset in June[0].
 
-I don't think this is "friendly" enough. :P
+There is one last-minute fix in here to clean up a sparse warnings,
+but it should not even affect code generation.
 
-In the compression failure case, we've got a larger dst_size (and
-dump_size, but technically it might not be true if something else went
-wrong) than psinfo->bufsize, so we want to take the trailing bytes
-(i.e. panic details are more likely at the end). And we should keep
-the header, which is already present in "dst". I think we need to do
-something like this:
+There's also a fix in here to silence an objtool warning originating
+from the IBT selftest.  IBT is functionally quite orthogonal to shadow
+stacks except for their shared control protection handler (#CP), which
+got moved around by the shadow stack series.  Since the fix touches
+that handler, it was easiest to just provide it on top of shadow
+stacks, so here it is.
 
-	size_t buf_size_available = psinfo->bufsize - header_size;
-	size_t dump_size_wanted = min(dump_size, buf_size_available);
+[0] https://lore.kernel.org/lkml/CAHk-=whY0ggV9P+3Ch1LcqefnS3=O7FmWkOPoiABD7QJGtwSHg@mail.gmail.com/
 
-	record.size = header_size + dump_size_wanted;
-	memcpy(psinfo->buf, dst, header_size);
-	memcpy(psinfo->buf + header_size,
-	       dst + header_size + (dump_size - dump_size_wanted),
-	       dump_size_wanted);
+--
 
-My eyes, my eyes.
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
->  			}
->  		} else {
->  			record.size = header_size + dump_size;
-> @@ -583,7 +599,7 @@ static void decompress_record(struct pstore_record *record,
->  	}
->  
->  	/* Allocate enough space to hold max decompression and ECC. */
-> -	workspace = kvzalloc(psinfo->bufsize + record->ecc_notice_size,
-> +	workspace = kvzalloc(max_uncompressed_size + record->ecc_notice_size,
->  			     GFP_KERNEL);
->  	if (!workspace)
->  		return;
-> @@ -591,11 +607,11 @@ static void decompress_record(struct pstore_record *record,
->  	zstream->next_in	= record->buf;
->  	zstream->avail_in	= record->size;
->  	zstream->next_out	= workspace;
-> -	zstream->avail_out	= psinfo->bufsize;
-> +	zstream->avail_out	= max_uncompressed_size;
->  
->  	ret = zlib_inflate(zstream, Z_FINISH);
->  	if (ret != Z_STREAM_END) {
-> -		pr_err("zlib_inflate() failed, ret = %d!\n", ret);
-> +		pr_err_ratelimited("zlib_inflate() failed, ret = %d!\n", ret);
->  		kvfree(workspace);
->  		return;
->  	}
-> -- 
-> 2.39.2
-> 
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-Otherwise, yes, this should do nicely. :)
+are available in the Git repository at:
 
--- 
-Kees Cook
+  https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_shstk_for_6.6-rc1
+
+for you to fetch changes up to 1fe428d3692fb10a0e8d85fafe719b154e43ad4e:
+
+  x86/shstk: Change order of __user in type (2023-08-30 10:35:53 -0700)
+
+----------------------------------------------------------------
+Add x86 shadow stack support
+Convert IBT selftest to asm to fix objtool warning
+
+----------------------------------------------------------------
+Dave Hansen (1):
+      x86/kbuild: Fix Documentation/ reference
+
+Josh Poimboeuf (1):
+      x86/ibt: Convert IBT selftest to asm
+
+Mike Rapoport (1):
+      x86/shstk: Add ARCH_SHSTK_UNLOCK
+
+Rick Edgecombe (41):
+      mm: Rename arch pte_mkwrite()'s to pte_mkwrite_novma()
+      mm: Move pte/pmd_mkwrite() callers with no VMA to _novma()
+      mm: Make pte_mkwrite() take a VMA
+      x86/shstk: Add Kconfig option for shadow stack
+      x86/traps: Move control protection handler to separate file
+      x86/cpufeatures: Add CPU feature flags for shadow stacks
+      x86/mm: Move pmd_write(), pud_write() up in the file
+      x86/mm: Introduce _PAGE_SAVED_DIRTY
+      x86/mm: Update ptep/pmdp_set_wrprotect() for _PAGE_SAVED_DIRTY
+      x86/mm: Start actually marking _PAGE_SAVED_DIRTY
+      x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+      x86/mm: Check shadow stack page fault errors
+      mm: Add guard pages around a shadow stack.
+      mm: Warn on shadow stack memory in wrong vma
+      x86/mm: Warn if create Write=0,Dirty=1 with raw prot
+      mm/mmap: Add shadow stack pages to memory accounting
+      x86/mm: Introduce MAP_ABOVE4G
+      x86/mm: Teach pte_mkwrite() about stack memory
+      mm: Don't allow write GUPs to shadow stack memory
+      Documentation/x86: Add CET shadow stack description
+      x86/fpu/xstate: Introduce CET MSR and XSAVES supervisor states
+      x86/fpu: Add helper for modifying xstate
+      x86: Introduce userspace API for shadow stack
+      x86/shstk: Add user control-protection fault handler
+      x86/shstk: Add user-mode shadow stack support
+      x86/shstk: Handle thread shadow stack
+      x86/shstk: Introduce routines modifying shstk
+      x86/shstk: Handle signals for shadow stack
+      x86/shstk: Check that SSP is aligned on sigreturn
+      x86/shstk: Check that signal frame is shadow stack mem
+      x86/shstk: Introduce map_shadow_stack syscall
+      x86/shstk: Support WRSS for userspace
+      x86: Expose thread features in /proc/$PID/status
+      x86/shstk: Wire in shadow stack interface
+      x86/cpufeatures: Enable CET CR4 bit for shadow stack
+      selftests/x86: Add shadow stack test
+      x86: Add PTRACE interface for shadow stack
+      x86/shstk: Add ARCH_SHSTK_STATUS
+      x86/shstk: Move arch detail comment out of core mm
+      x86/shstk: Don't retry vm_munmap() on -EINTR
+      x86/shstk: Change order of __user in type
+
+Yu-cheng Yu (3):
+      mm: Re-introduce vm_flags to do_mmap()
+      mm: Move VM_UFFD_MINOR_BIT from 37 to 38
+      mm: Introduce VM_SHADOW_STACK for shadow stack memory
+
+ Documentation/arch/x86/index.rst                |   1 +
+ Documentation/arch/x86/shstk.rst                | 179 +++++
+ Documentation/filesystems/proc.rst              |   1 +
+ Documentation/mm/arch_pgtable_helpers.rst       |  12 +-
+ arch/Kconfig                                    |   8 +
+ arch/alpha/include/asm/pgtable.h                |   2 +-
+ arch/arc/include/asm/hugepage.h                 |   2 +-
+ arch/arc/include/asm/pgtable-bits-arcv2.h       |   2 +-
+ arch/arm/include/asm/pgtable-3level.h           |   2 +-
+ arch/arm/include/asm/pgtable.h                  |   2 +-
+ arch/arm/kernel/signal.c                        |   2 +-
+ arch/arm64/include/asm/pgtable.h                |   4 +-
+ arch/arm64/kernel/signal.c                      |   2 +-
+ arch/arm64/kernel/signal32.c                    |   2 +-
+ arch/arm64/mm/trans_pgd.c                       |   4 +-
+ arch/csky/include/asm/pgtable.h                 |   2 +-
+ arch/hexagon/include/asm/pgtable.h              |   2 +-
+ arch/ia64/include/asm/pgtable.h                 |   2 +-
+ arch/loongarch/include/asm/pgtable.h            |   4 +-
+ arch/m68k/include/asm/mcf_pgtable.h             |   2 +-
+ arch/m68k/include/asm/motorola_pgtable.h        |   2 +-
+ arch/m68k/include/asm/sun3_pgtable.h            |   2 +-
+ arch/microblaze/include/asm/pgtable.h           |   2 +-
+ arch/mips/include/asm/pgtable.h                 |   6 +-
+ arch/nios2/include/asm/pgtable.h                |   2 +-
+ arch/openrisc/include/asm/pgtable.h             |   2 +-
+ arch/parisc/include/asm/pgtable.h               |   2 +-
+ arch/powerpc/include/asm/book3s/32/pgtable.h    |   2 +-
+ arch/powerpc/include/asm/book3s/64/pgtable.h    |   4 +-
+ arch/powerpc/include/asm/nohash/32/pgtable.h    |   4 +-
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h    |   4 +-
+ arch/powerpc/include/asm/nohash/64/pgtable.h    |   2 +-
+ arch/riscv/include/asm/pgtable.h                |   6 +-
+ arch/s390/Kconfig                               |   1 +
+ arch/s390/include/asm/hugetlb.h                 |   2 +-
+ arch/s390/include/asm/pgtable.h                 |   4 +-
+ arch/s390/mm/pageattr.c                         |   4 +-
+ arch/sh/include/asm/pgtable_32.h                |   4 +-
+ arch/sparc/include/asm/pgtable_32.h             |   2 +-
+ arch/sparc/include/asm/pgtable_64.h             |   6 +-
+ arch/sparc/kernel/signal32.c                    |   2 +-
+ arch/sparc/kernel/signal_64.c                   |   2 +-
+ arch/um/include/asm/pgtable.h                   |   2 +-
+ arch/x86/Kconfig                                |  24 +
+ arch/x86/Kconfig.assembler                      |   5 +
+ arch/x86/entry/syscalls/syscall_64.tbl          |   1 +
+ arch/x86/include/asm/cpufeatures.h              |   2 +
+ arch/x86/include/asm/disabled-features.h        |  16 +-
+ arch/x86/include/asm/fpu/api.h                  |   9 +
+ arch/x86/include/asm/fpu/regset.h               |   7 +-
+ arch/x86/include/asm/fpu/sched.h                |   3 +-
+ arch/x86/include/asm/fpu/types.h                |  16 +-
+ arch/x86/include/asm/fpu/xstate.h               |   6 +-
+ arch/x86/include/asm/idtentry.h                 |   2 +-
+ arch/x86/include/asm/mmu_context.h              |   2 +
+ arch/x86/include/asm/pgtable.h                  | 302 +++++++-
+ arch/x86/include/asm/pgtable_types.h            |  42 +-
+ arch/x86/include/asm/processor.h                |   8 +
+ arch/x86/include/asm/shstk.h                    |  38 +
+ arch/x86/include/asm/special_insns.h            |  13 +
+ arch/x86/include/asm/tlbflush.h                 |   3 +-
+ arch/x86/include/asm/trap_pf.h                  |   2 +
+ arch/x86/include/asm/traps.h                    |  15 +-
+ arch/x86/include/uapi/asm/mman.h                |   4 +
+ arch/x86/include/uapi/asm/prctl.h               |  12 +
+ arch/x86/kernel/Makefile                        |   5 +
+ arch/x86/kernel/cet.c                           | 131 ++++
+ arch/x86/kernel/cpu/common.c                    |  35 +-
+ arch/x86/kernel/cpu/cpuid-deps.c                |   1 +
+ arch/x86/kernel/cpu/proc.c                      |  23 +
+ arch/x86/kernel/fpu/core.c                      |  54 +-
+ arch/x86/kernel/fpu/regset.c                    |  81 +++
+ arch/x86/kernel/fpu/xstate.c                    |  90 ++-
+ arch/x86/kernel/ibt_selftest.S                  |  17 +
+ arch/x86/kernel/idt.c                           |   2 +-
+ arch/x86/kernel/process.c                       |  21 +-
+ arch/x86/kernel/process_64.c                    |   8 +
+ arch/x86/kernel/ptrace.c                        |  12 +
+ arch/x86/kernel/shstk.c                         | 550 +++++++++++++++
+ arch/x86/kernel/signal.c                        |   1 +
+ arch/x86/kernel/signal_32.c                     |   2 +-
+ arch/x86/kernel/signal_64.c                     |   8 +-
+ arch/x86/kernel/sys_x86_64.c                    |   6 +-
+ arch/x86/kernel/traps.c                         |  87 ---
+ arch/x86/mm/fault.c                             |  22 +
+ arch/x86/mm/pat/set_memory.c                    |   4 +-
+ arch/x86/mm/pgtable.c                           |  40 ++
+ arch/x86/xen/enlighten_pv.c                     |   2 +-
+ arch/x86/xen/mmu_pv.c                           |   2 +-
+ arch/x86/xen/xen-asm.S                          |   2 +-
+ arch/xtensa/include/asm/pgtable.h               |   2 +-
+ fs/aio.c                                        |   2 +-
+ fs/proc/array.c                                 |   6 +
+ fs/proc/task_mmu.c                              |   3 +
+ include/asm-generic/hugetlb.h                   |   2 +-
+ include/linux/mm.h                              |  47 +-
+ include/linux/mman.h                            |   4 +
+ include/linux/pgtable.h                         |  28 +
+ include/linux/proc_fs.h                         |   1 +
+ include/linux/syscalls.h                        |   1 +
+ include/uapi/asm-generic/siginfo.h              |   3 +-
+ include/uapi/linux/elf.h                        |   2 +
+ ipc/shm.c                                       |   2 +-
+ kernel/sys_ni.c                                 |   1 +
+ mm/debug_vm_pgtable.c                           |  12 +-
+ mm/gup.c                                        |   2 +-
+ mm/huge_memory.c                                |  11 +-
+ mm/internal.h                                   |   4 +-
+ mm/memory.c                                     |   5 +-
+ mm/migrate.c                                    |   2 +-
+ mm/migrate_device.c                             |   2 +-
+ mm/mmap.c                                       |  14 +-
+ mm/mprotect.c                                   |   2 +-
+ mm/nommu.c                                      |   4 +-
+ mm/userfaultfd.c                                |   2 +-
+ mm/util.c                                       |   2 +-
+ tools/testing/selftests/x86/Makefile            |   2 +-
+ tools/testing/selftests/x86/test_shadow_stack.c | 884 ++++++++++++++++++++++++
+ 118 files changed, 2789 insertions(+), 307 deletions(-)
+ create mode 100644 Documentation/arch/x86/shstk.rst
+ create mode 100644 arch/x86/include/asm/shstk.h
+ create mode 100644 arch/x86/kernel/cet.c
+ create mode 100644 arch/x86/kernel/ibt_selftest.S
+ create mode 100644 arch/x86/kernel/shstk.c
+ create mode 100644 tools/testing/selftests/x86/test_shadow_stack.c
