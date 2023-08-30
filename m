@@ -2,259 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CC578D351
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0F578D353
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbjH3GWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 02:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42182 "EHLO
+        id S236202AbjH3GYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 02:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjH3GV5 (ORCPT
+        with ESMTP id S231588AbjH3GYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:21:57 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3669FE9;
-        Tue, 29 Aug 2023 23:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1693376512;
-        bh=jAC7zdPl6J/oupWD8g3GrVUHLLz+k4Rn+GTZrriAvqs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hXdsmEwJBPxlmUWo9byETFQW3nJxb/+cCg1QWzkSxKJ3rEa7EKaIGPmx+Hvmd1bxt
-         GLXjpY09nZy5E2F944RpfrpDzcyEIyRTJfHY9Xyth1nR+TjQgBtOjOyTK35EhFP9Ha
-         M2/Dn77LYSSAqPR9X5VsGFSNz5lagmSUzhOz078w=
-Date:   Wed, 30 Aug 2023 08:21:51 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Shuah Khan <shuah@kernel.org>, Zhangjin Wu <falcon@tinylab.org>,
-        Yuan Tan <tanyuan@tinylab.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] tools/nolibc: add stdarg.h header
-Message-ID: <3663d244-627f-4928-ab2e-0328cd6a8fb1@t-8ch.de>
-References: <20230827-nolibc-nostdinc-v1-0-995d1811f1f3@weissschuh.net>
- <20230827-nolibc-nostdinc-v1-1-995d1811f1f3@weissschuh.net>
- <ZO2QC/fw6LKdtLSb@1wt.eu>
- <2b6c62f1-c1f1-4f2c-ba0c-981e066f4268@t-8ch.de>
- <ZO25u3crGixkGKWe@1wt.eu>
- <b2c2ca69-b9bb-40b1-a05a-6d2f66e01034@t-8ch.de>
- <ZO3gvcoe8wZM+f5A@1wt.eu>
+        Wed, 30 Aug 2023 02:24:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD43E9;
+        Tue, 29 Aug 2023 23:23:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DE6A62A11;
+        Wed, 30 Aug 2023 06:23:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADCB1C433C7;
+        Wed, 30 Aug 2023 06:23:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693376636;
+        bh=RYSnPcWKe633760Uix59PDBhfOKOvleACAnROEZxNeE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W0JiNj0qryyt6+tgjN+v22hFaVrF4TtDXaTGhshK1A60gI+oEBquXQ24WyIvRlFlo
+         XMsD3Ece5ktC+vLU1xTnx4D8GbmlOxXUjIHlrDSry7RnM9t+JKEGVlQuj2579tHDj2
+         9slPeuf0x/+6HTRp7wCn+x+1j/Z08l7bFC9Onmnz+DBZtkmHrx75R0XiR2SbJOBGuP
+         zqC0Lf1GS6bXD5+dV4uneWoKUARtTkKqVXzyncenZs3jJ45l5HPTyuaf045VhvMqwR
+         jCIifF6sops5o7jj3zwqrdeUptG87YMPvLDUriZO54fDYUhHxfwMhH3L2UOTnmr0p0
+         2Vo4L9kX4XYAw==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-99bf1f632b8so702763466b.1;
+        Tue, 29 Aug 2023 23:23:56 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxpfFSjEDz1z/0E2mMymphgyvPs8tCzbfn2IpXZfUx/4zXEdv69
+        EaiR0N/T8DVvuhgTMRS5OJCMB6JnaIGMAK4myn8=
+X-Google-Smtp-Source: AGHT+IHw34WkfmCXFTSf4XA+iMg7UzvONtAWWlBKIoZBaadfF6M0zvmKa9Ot/m5tpS4tEkMHn3FvLUJXjo6h9oxNiVs=
+X-Received: by 2002:a17:906:cc18:b0:9a1:ddb9:6547 with SMTP id
+ ml24-20020a170906cc1800b009a1ddb96547mr936705ejb.57.1693376634841; Tue, 29
+ Aug 2023 23:23:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZO3gvcoe8wZM+f5A@1wt.eu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
+ <ZOxkt/6EkQIy+Jkt@alpha.franken.de> <ZO4Mdr9/XUkXDK9j@alpha.franken.de>
+In-Reply-To: <ZO4Mdr9/XUkXDK9j@alpha.franken.de>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Wed, 30 Aug 2023 14:23:42 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
+Message-ID: <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] Modify die() for MIPS
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-29 14:12:45+0200, Willy Tarreau wrote:
-> On Tue, Aug 29, 2023 at 12:16:23PM +0200, Thomas Weißschuh wrote:
-> > > OK. But then, doesn't it mean that if we don't provide our stdarg.h,
-> > > the compilers' will be used ? I'm asking because we're already using
-> > > va_list and va_args, for example in vfprintf() in stdio.h, which
-> > > precisely includes <stdarg.h> so it must indeed come from the compiler.
-> > 
-> > It will be used *iff* -nostdinc is *not* passed.
-> > 
-> > I think we need to clarify the definition of the word "provided".
-> > For me it means that the compiler ships an implementation of this header
-> > file in the compiler-specific include directory.
-> > 
-> > If -nostdinc is passed this include directory is not actually usable.
-> 
-> OK I understand better now. I thought it was always usable.
-> 
-> > If a user wants to avoid the implicit usage of any system-provided
-> > headers they need to pass -nostdinc, as far as I know there is no flag
-> > to keep only the compiler-specific include directories.
-> 
-> So that means we may also have to implement our own stddef.h to move
-> size_t there, and limits.h and move *MAX there as well if we want to
-> support this. I'm not necessarily against this, it's just that we need
-> to be consistent.
+Hi, Thomas,
 
-We would have to, *iff* the goal is to provide *all* headers in nolibc.
-May goal was more limited:
-nolibc should be self-contained, it should be able to work at all
-with -nostdinc.
-If users need more standard headers for their application they can add
-those either as shim, custom implementation or from the compiler.
+On Tue, Aug 29, 2023 at 11:44=E2=80=AFPM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Mon, Aug 28, 2023 at 11:11:19AM +0200, Thomas Bogendoerfer wrote:
+> > On Sat, Aug 19, 2023 at 04:36:19PM +0800, Tiezhu Yang wrote:
+> > > v4:
+> > >   -- Add BUG() at the end of nmi_exception_handler()
+> > >   -- Return earlier in die() if notify_die() returns NOTIFY_STOP
+> > >   -- Update the patch titles and commit messages
+> > >
+> > > v3:
+> > >   -- Make each patch can be built without errors and warnings.
+> > >
+> > > v2:
+> > >   -- Update the commit message to give more detailed info, split into
+> > >      three individual patches, suggested by Maciej, thank you.
+> > >
+> > > Tiezhu Yang (4):
+> > >   MIPS: Add BUG() at the end of nmi_exception_handler()
+> > >   MIPS: Do not kill the task in die() if notify_die() returns
+> > >     NOTIFY_STOP
+> > >   MIPS: Return earlier in die() if notify_die() returns NOTIFY_STOP
+> > >   MIPS: Add identifier names to arguments of die() declaration
+> > >
+> > >  arch/mips/include/asm/ptrace.h |  2 +-
+> > >  arch/mips/kernel/traps.c       | 15 +++++++++------
+> > >  2 files changed, 10 insertions(+), 7 deletions(-)
+> >
+> > series applied to mips-next.
+>
+> I've dropped the series again after feedback from Maciej, that this
+> still needs more changes.
+I feel a little surprised. This series has appeared for more than ten
+days and received some R-b, and we haven't seen any objections from
+Maciej. If there are really some bugs that need to be fixed, I think
+the normal operation is making additional patches...
 
-> Also something is puzzling me. If a normal program builds with -nostdinc,
-> it means it does *not* want the libc's (nor the compiler's) headers to be
-> included, probably because it comes with its own. In this case why would
-> we impose ours ? For example, let's consider this tiny code snippet:
-> 
->   $ cat arg.c
->   #include <stdarg.h>
->   va_list blah;
-> 
->   $ gcc -c arg.c 
->   $ gcc -nostdinc -c arg.c
->   arg.c:1:20: error: no include path in which to search for stdarg.h
->       1 | #include <stdarg.h>
->         |                    ^
->   arg.c:2:1: error: unknown type name 'va_list'
->       2 | va_list blah;
->         | ^~~~~~~
->   arg.c:1:1: note: 'va_list' is defined in header '<stdarg.h>'; did you forget to '#include <stdarg.h>'?
->     +++ |+#include <stdarg.h>
->       1 | #include <stdarg.h>
->  
-> You see, that's why I'm finding it confusing that we define headers that
-> are supposed *not* to be defined with -nostdinc.
+Huacai
 
-I'm confused.
-
-If the user doesn't want to use nolibc they should not explicitly add it
-to the include path.
-
-> I think we need to carefully check what is supposed to be defined and
-> what not when -nostdinc is used normally so that we defined what programs
-> expect and not what they expect us *not* to define. Recently we've been
-> empirically fixing nolibc-test build failures but it's just a test program
-> that comes with its own biases. Maybe trying to build some portable libs
-> that use very little from a libc (e.g. xxhash, liblzo etc) could give us
-> some hints about certain basic assumptions that we do not fulfill.
-
-It makes sense to figure out what is needed by larger projects from a
-libc. But it feels to me like a bug vs. feature discussion.
-
-Making larger real-world applications work is a feature while making the
-following work is a bugfix:
-
-$ cat nolibc.c
-#include "nolibc.h"
-
-int main(void)
-{
-	return 0;
-}
-
-$ gcc -nostdinc -Isysroot/x86/include -c nolibc.c
-In file included from sysroot/x86/include/nolibc.h:98,
-                 from nolibc-test.c:1:
-sysroot/x86/include/sys.h:10:10: fatal error: stdarg.h: No such file or directory
-   10 | #include <stdarg.h>
-      |          ^~~~~~~~~~
-
-> > One usecase is in nolibc-test itself, where Zhangjin ran into weird
-> > and inconsistent behavior of system includes being pulled in.
-> > By using -nostdinc we avoid this.
-> 
-> I see but a normal libc ought not to build with -nostdinc. I mean, we
-> can define whatever we want once we know why we're doing it, but I think
-> that as long as we find it confusing between those how are modifying this
-> code, it will be very difficult to explain correctly to users. We're
-> definitely missing some design rules I think. Maybe -nostdinc should be
-> needed only when using -include nolibc.h for example, I don't know, but
-> I still find that we're papering over a wider problem.
-> 
-> > I can also see this being useful for normal users.
-> 
-> I agree, that's also my concern actually.
-> 
-> > > > I could not find anybody doing this differently.
-> > > > Using builtins seems to me to be the normal way to expose compiler
-> > > > implementation specifics.
-> > > 
-> > > OK but it's already what the compiler does itself in its own stdarg that
-> > > is provided. That's why I don't understand what specific case we're trying
-> > > to cover here, I feel like we're providing an alternate stdarg in case the
-> > > compiler doesn't provide one except that I've not seen a compiler not
-> > > provide it (even tcc comes with it), it's like stddef.
-> > 
-> > It's all about supporting -nostdinc.
-> 
-> But unless I'm mistaken (and my example above seems to support this),
-> a normal libc doesn't build with -nostdinc. That's the point I'd like
-> us to clarify.
-
-musl:
-
-$ cat /usr/lib/musl/lib/musl-gcc.specs
-...
-*cc1:
-%(cc1_cpu) -nostdinc -isystem /usr/lib/musl/include -isystem include%s
-...
-
-
-dietlibc:
-
-$ cat Makefile
-...
-DEFAULTCFLAGS=-pipe -nostdinc -D_REENTRANT $(EXTRACFLAGS)
-...
-
-
-klibc re-adds the compilers include path,
-This is an alternative we could also use:
-
-$ cat Makefile
-...
-NOSTDINC_FLAGS := -nostdlib -nostdinc -isystem $(shell $(CC) -print-file-name=include)
-...
-
-(these are all I checked)
-
-> > FYI stdint.h is also provided by nolibc, gcc and glibc.
-> 
-> True but that one didn't surprise me because it came with C99 and was
-> usually shipped by the libc when compilers targetting previous versions
-> were used, so I didn't see this as a replacement for the compiler's
-> definition actually.
-> 
-> I don't know what dictates what goes in the compiler and what in the
-> libc.  I'm fine with having to redefine everything that's missing if
-> that's needed, but as indicated above, stddef.h and limits.h are
-> missing despite being quite common.
-
-I think it's not really clearly defined what goes where.
-
-There was also a longer discussion on LKML about linux/stdarg.h [0]
-
-The gcc authors argue that Linux should not ship a custom stdarg.h.
-But in reality Linux, musl, dietlibc (and probably some more) today are
-shipping their own stdarg.h.
-
-> We have an interesting comment at the top of nolibc.h which says:
-> 
->  * The available standard (but limited) include files are:
->  *   ctype.h, errno.h, signal.h, stdio.h, stdlib.h, string.h, time.h
-
-This is out of date. It's missing signal.h, stdint.h, unistd.h.
-
->  *
->  * In addition, the following ones are expected to be provided by the compiler:
->  *   float.h, stdarg.h, stddef.h
-
-What does "expected" mean here?
-nolibc itself is perfectly fine without float.h and stddef.h.
-
->  *
->  * The following ones which are part to the C standard are not provided:
->  *   assert.h, locale.h, math.h, setjmp.h, limits.h
-
-While true, a lot of other headers are also not provided.
-
-> I think I draw the line based on what my compilers have always provided.
-> That's definitely something we can redefine (and update the comment),
-> I'm just seeking consistency, and I think you can understand :-/
-
-I do understand.
-
-To reiterate it here explicitly, in my opinion it's a worthwhile and
-consistent goal to make "nolibc usable standalone with -nostdinc" for
-maximal control by the user.
-
-If not, I'd like to use the "-nostdinc -I$(cc -print-file-name=include)"
-method to avoid dependencies on system header for nolibc-test
-specifically.
-
-Thomas
-
-[0] https://lore.kernel.org/lkml/CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com/
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessaril=
+y a
+> good idea.                                                [ RFC1925, 2.3 =
+]
