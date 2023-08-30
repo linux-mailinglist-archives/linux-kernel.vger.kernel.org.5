@@ -2,116 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D9A78DEE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E12578E037
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239781AbjH3TbU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Aug 2023 15:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
+        id S241708AbjH3TKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242392AbjH3IZN (ORCPT
+        with ESMTP id S242448AbjH3IdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:25:13 -0400
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE979FB;
-        Wed, 30 Aug 2023 01:25:10 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-d776e1f181bso5103783276.3;
-        Wed, 30 Aug 2023 01:25:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693383910; x=1693988710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XG62sgnGcJnF0tJvK3oQY2fo6A4TDxZZoS0niAlQiv4=;
-        b=eRMhonpmGnX232Do1R5TZv0N/KbRNzA2UPVWBvQmAMw4Biz5fr8lsbMdHphZfHMrma
-         UNXtEHg9lTCQV1ggA4KNKJhTQKfO+ZgEK/MJEAV4FTWuYxIvcXxmlC+OABNlr5Q5cRrp
-         Np4NuHMKchENUIif4UHBTALWQNVz4Rem7dDXVdS/VLg/y2wAgc0lrW9gmAtuBWwV2/Nd
-         2ip81AavPYAT6sqRrOfpuNojZnoRqE0zPPdqGe5gMOb9hN5YkvQIiNSB1Cw603BtPQ0/
-         lj4nBL3/J74R68BUrlrH9bAEwrCJuUS3GwL5TWWLUsDgkvHOn5PXWdZd9cL20PLduMzk
-         t0JQ==
-X-Gm-Message-State: AOJu0YwlDRiFBXNkxZQOOh9dSQ0tvFW8KdolZ5h88oZkLSF/l0AWfdyu
-        q/9RpT7qLzVOlLzcdM2gyZUQYZ6nIyu0kw==
-X-Google-Smtp-Source: AGHT+IHEKIvo7RqAvDW9hLlit5YrOP/L1nNlkCXkCCq2nKLWOdNpSG/790pQjr+1+cpCxEwgnx5/aQ==
-X-Received: by 2002:a25:2fd5:0:b0:d09:f934:f2fe with SMTP id v204-20020a252fd5000000b00d09f934f2femr1262232ybv.18.1693383909791;
-        Wed, 30 Aug 2023 01:25:09 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id u6-20020a250946000000b00d7473b81a2csm2490394ybm.26.2023.08.30.01.25.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 01:25:09 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d7d50ba994eso28980276.1;
-        Wed, 30 Aug 2023 01:25:09 -0700 (PDT)
-X-Received: by 2002:a25:dcf:0:b0:d6b:8ea4:b8a1 with SMTP id
- 198-20020a250dcf000000b00d6b8ea4b8a1mr1475047ybn.12.1693383909143; Wed, 30
- Aug 2023 01:25:09 -0700 (PDT)
+        Wed, 30 Aug 2023 04:33:25 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D24D1AE;
+        Wed, 30 Aug 2023 01:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1693384399; x=1724920399;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=bfmrUaSGPf9ipBu9qeBDcmyUnsXpGFOnV0R+qwcKPaA=;
+  b=XW4lGz3gSQ1s7FzBZNWEd6GA0tGQuDadZy5b87n/2dOii0/rrb+iAOtA
+   /IGR6f0U1TlSPJcx8EwwP4gRyI64MRoO8eC2oommLMPXI2TMJ4J77Pvy3
+   WVdfBkATgqXHJZ02OORyiKopUhIJ9PLEbL3WHdwjITC7DT6umSq7RDpYK
+   cABTRX5iExb9+DW4aPWu2y4PRKpqqd6630/+gJdLZ3xWWzcAcp/GgGkwL
+   s3ugaHqdFfTarkz5wvCBvW8NGdQfHx7g6TLxVjgXspNte1ZnEdQj4ndWY
+   t3PisZ8DcYxI7PHLnnGA/AFynOGH4c3e38+LJC4/L8tfOMLyxQcykT9a0
+   A==;
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="1999082"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Aug 2023 01:33:18 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 30 Aug 2023 01:33:14 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 30 Aug 2023 01:33:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fZ356RW8E47r2UmgD4vQKzRK8RJDZNKL2dqNuMLJo0XDJwGxHZslp/ZRg0H/IsaWip7/zp/73mHVhMzB16T9z9GMi3A9z8aKGjrXzNNGeHcxvPPQh+b4d9oCogaXRzAaHd5pDm5XbajAq5M359FOsUIKmV3shGRIzAUYzId+PP8f63rOqM2tiU1+1UUreV0CcI0MwzN8SpiCOnmG5OlSIPBSAuWM64RAhXjh1dBtR5B2rRvayGaxOWGZPlvApZ5nI5fNyYAfeCxYeQ7ArbYx17SQZ05gdBXoeovyRH9o6YMUXjKdjDIyWW3KFyXk3a0OM0HN3HWzYvs9YJyz+DvGtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bfmrUaSGPf9ipBu9qeBDcmyUnsXpGFOnV0R+qwcKPaA=;
+ b=HnMaRCJkGxjStGy2J8QIqoiNnUG6y0gu85yHkuH4Eor3Q+IEEiU40xaJdQbho+buvRb5kjkqCVCO0xOT6uVyJa5u45oUgVzcR1ZDAKuzTNlbAU+ehbzpp+KdQXqtn9eG0z+njMUktoVk4h3S58fomI3GxN8w5vYAHVHStVtEEb9sMP5+c1k79AQVc5QnzNxnlRXtGOXTjVkGwjs+DQ6dJjNfN0RFaRQfDbc86zNcRfasTQzcEh/bJQv1dol8QraC0HQ/svaRN8j6fCHuv8ylVBKKv0B86MHaogMMoR/npcccc5UD1UQQx4EsLnpQxaRXDoH4AnEtyl/4nCID/w3mDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bfmrUaSGPf9ipBu9qeBDcmyUnsXpGFOnV0R+qwcKPaA=;
+ b=FzoV9wvCGtgJ7n722k8lAngtJJcTHg2AfNVzpJ0joxTrTbaXP46z+iqRGzHzBwwxWfqfHwU4Vp6XCR5Wwm+CS03e/If1TlderjuI3DFvEf45FvFhU/QnUXhMDF0MXN33r6Nea2hO1TjRM225rb0RMGtUJ+L5XNOTzlr9IeqVMPs=
+Received: from IA1PR11MB6395.namprd11.prod.outlook.com (2603:10b6:208:3ac::14)
+ by CH3PR11MB7896.namprd11.prod.outlook.com (2603:10b6:610:131::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Wed, 30 Aug
+ 2023 08:33:13 +0000
+Received: from IA1PR11MB6395.namprd11.prod.outlook.com
+ ([fe80::6ca0:521:dd8e:b296]) by IA1PR11MB6395.namprd11.prod.outlook.com
+ ([fe80::6ca0:521:dd8e:b296%7]) with mapi id 15.20.6699.034; Wed, 30 Aug 2023
+ 08:33:12 +0000
+From:   <Marius.Cristea@microchip.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>,
+        <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>
+CC:     <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/2] dt-bindings: iio: adc: adding MCP3564 ADC
+Thread-Topic: [PATCH v5 1/2] dt-bindings: iio: adc: adding MCP3564 ADC
+Thread-Index: AQHZ2o9SDk1SI69KHkCZzOSMXZ1LCbABgmKAgAEBuAA=
+Date:   Wed, 30 Aug 2023 08:33:12 +0000
+Message-ID: <ac2296410c46aac0166252defdf4dd5082c67ebe.camel@microchip.com>
+References: <20230829154133.40716-1-marius.cristea@microchip.com>
+         <20230829154133.40716-2-marius.cristea@microchip.com>
+         <ab0d99ca-54b9-2535-a783-967a3b2443bf@linaro.org>
+In-Reply-To: <ab0d99ca-54b9-2535-a783-967a3b2443bf@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6395:EE_|CH3PR11MB7896:EE_
+x-ms-office365-filtering-correlation-id: ded832cb-50f5-481f-1727-08dba933bfce
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uLpELdQwhRWZSe3e9QBG2iFNy0+4s05OJHBz49aCOUNgGACmOJaT0Qd1qNXoAKuajS4e/dwIJSsiOzMnFNY3eebgABmvhA4OtEX6bRoX5I0e9JybM7xPm2bh/xOqvIPYVTFn4ISiB1yLsPa93iQKMgj1V88twoNIWYP7o0sMwcCrtJGJnn7kOw8zlk2Opa2dzMVvVRbZ8yi6H6ty3tTVP48ORMc2PquycP6bCZ4EGfJ/bHTqfN3N9ViS7U7mVMrcVZ2rFIv3KEYIPinShCCHeveFW5yRZTtubdi/aqZtbYrFrLuCTi/36jL4NKebJrlII+eBeJsU+H//N4sM4usYc0qfLewNo73e15EKdenmvDC9kshdpFvMKOFG/jMmRWIxeXOCOJpZFQm8V7BJMsIpiuJ8RvAahXQWD9zx1KNKdizwYb+xFI8W12tKLaef9TdkWf2/c99Qyd0LOm5/DMvgRvAi4WNsZX1f28SVPKzMcjnGkDV3VComBEYzHm9sFfz0tz0vykoGyJ4RGmnaoVL8qbYf1zIiANWOjaq/ydrM0lPUC4zCn72g1af9ONrLeNQkXor/4u8UqnR9BWHxkago36H+9+1qLrmGobU2iXabElcEa69WYIjL7DsdwvftIDOX
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6395.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(366004)(39860400002)(1800799009)(186009)(451199024)(8936002)(122000001)(91956017)(66946007)(76116006)(478600001)(110136005)(53546011)(6506007)(71200400001)(66556008)(66476007)(64756008)(54906003)(6486002)(66446008)(316002)(38070700005)(38100700002)(41300700001)(6512007)(5660300002)(8676002)(26005)(36756003)(2906002)(2616005)(86362001)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a282M3pneCszODJOUFAyWW5RTUR2NkFmdWtkbVNRMGNBTTh1U1RLczYwWE54?=
+ =?utf-8?B?WE8vOTE2Q2hYVlVjczloaDkxKzUwRCtrTXoyNnVZY3cvMGdtUHdlYzZWOVlx?=
+ =?utf-8?B?NmJjZk9XQ0FkYU42bk9FR2kxSTNsZlJjd0puYmpobVNHOGRBclNmL3Z0aTMz?=
+ =?utf-8?B?YWVTaTc1VUNMRVp4bWRsTzRUMXVzbGg2ME9KM00wTlo2Umd3TWlQcU5waWti?=
+ =?utf-8?B?dEpnK0thZ0w0VkxCRWJtTTU5eUxaM1cwdGtQazI0SjBRTDNGSFNpQWVnZlZO?=
+ =?utf-8?B?eWlOSjNOaFJVYlE1QS9ZYnB6TXRwaUJSRktudzFzNHVtYUpqakUxaUs5RjFN?=
+ =?utf-8?B?VjhWamsyQkQ2a1pITWs3TGk2bVE0MldIRjlHajIvd0duQnRaSzJrZ2lJQnEv?=
+ =?utf-8?B?N1N1cFdQTm5RYTJFdjhwTEtQNFNjVy9LRHY1VXpIR1pKbEdXcjZIQkNqWXQ3?=
+ =?utf-8?B?UHJJMEZqeVJnUGFpVGRVdml4aHA0ekhCZjg5U3JUVVpiK24xOVMvSE1wenh4?=
+ =?utf-8?B?MCtmS09aenpFSm8wNWF0NVdSZ0tKaDJVZGtvM0ZPYmJQbnlTV3dITTBSaFBy?=
+ =?utf-8?B?K1dRZzJmYlo3UDRINmpTMFFRS1dObjFDT3g2YnNsd0ZLRmZZR2lyZHhCU0Vy?=
+ =?utf-8?B?RnM5WklETzA5K2syZ0htY1hIeS9zbWxuZUZCQklUVjRZSkpzdXhyemxUUmx6?=
+ =?utf-8?B?YXJmOFJWd0JCYUQ0U3NnRERaRTV3dWhCemsxLzdDdG9KcFJuY2pXcEg1bzlh?=
+ =?utf-8?B?ZHo3ajJTYVdnMjMzNWtHZHpMemhmaVhtTyt0U3FxdHZOOTVPYkR3VWpUWmR4?=
+ =?utf-8?B?ZFo2UVB3Z1Bpb3padnhINm4xNWVTTnRwdUxzS2hob3I3SFgvcExydHFJUTlU?=
+ =?utf-8?B?czJnTWl5eEZOMU96K0hwTEJ6dUl2dVVuZVFyQUJ1eVRIWGpCdDd3R2VzeWEy?=
+ =?utf-8?B?VXVOY2xlblE3aFNGTlpzVytQbm95NmYxd05pMndDQmc3dGY3UituLzdaeDUz?=
+ =?utf-8?B?MytRd3hzYXBhS0c5ZFFORlQrVldFUVVHMEdIS2RITUVPWnBsMzlXVzV3VHVG?=
+ =?utf-8?B?bEJ4b0Zrdmh4Z2V5dXh3OFIyQUJ2Z1J6U1AwNmExZkNURUl0TWcrb3E3ckpG?=
+ =?utf-8?B?RUk4ZTY0ZUtnaENMMlpkbENYMzBoalVYOHQzU3NENHJXMlhQcWxydzIwRXB0?=
+ =?utf-8?B?eHZLRFZJalBKbUZ5RlJ1VGdKRGhIV1RwUVRFNmpuOXNBUE5nMFRsVVN4dWRO?=
+ =?utf-8?B?T2RSYm1iVTg5MzJNUUFwckpQV3RGL1V5N2NsNi9hMTZWcGFuSHJpTEs4WDJK?=
+ =?utf-8?B?RkQ3Z3d1TDFaUHRuNDBCNXVQRGhiWmVnc0dsY0pZWnkxOEZ5TlgxUEc1SE53?=
+ =?utf-8?B?Z2puMmFXQ05VNnJkNlBkajI3bnNSN29ZVm8vTExyOWVPR1hhbnkxUEJKOHhm?=
+ =?utf-8?B?NWd5NWNuOGp6dzRMODA3V01LUkZocjBFNXVONVdrR0pXczlJeGlXeTlYb05F?=
+ =?utf-8?B?cUpOc1RSWkxEZ3IvbVZmTno4a3lSb1JkcHh4MTlkTVgxTVE0U0JjdU1MMzVn?=
+ =?utf-8?B?VVZQWmYyWGZSZlNRcUVtcUxhN2F6c2VGa0swY1FtZUhubVZiWXQ5ZG5OVEhN?=
+ =?utf-8?B?WnJtV25XVDByY3NvMzVFZm1xVGgzTmhvUWw0eHJ5d21oOGs0Z012MHgxbFpS?=
+ =?utf-8?B?Ym5LSi96ZG9SN29LMzRZcEc3ZnFpNFlnOU1HNXNCK2JPUXNHYTJMb200ZHJ2?=
+ =?utf-8?B?QXFLTkJvZnJrWDdYUkhWOGZTamNGZC85Uit3aEQxTDRhUGFOS0pNRmZzV2Jm?=
+ =?utf-8?B?Z21RcUxVMUx0ZGNJRjFxQXJFZ2tudFozSy9mWkdJaGUxSXZWQm80Q2RlS3hy?=
+ =?utf-8?B?REt0UDNCRjRFQkhYNUYyK2pwMmJLVVdwZzgxNkhiemRjbVlVZkJJcVVWUkNn?=
+ =?utf-8?B?RWVDcGRaeEJOazV2SEdtVGhxZFlzNWFrMEFBRUsrSTI4Um1FeUFmQUZDWVll?=
+ =?utf-8?B?UWpSSytxRlNubUdxWCsrMXpaTldJci8yNDk2QnhRV1JjaVhiZmlPVGlCUzln?=
+ =?utf-8?B?MEpqeGpDWGpzajJOeHpXcTlhTkJuV2Mzc0dYcnExd2c1eWxrVlFxeG5ESWpE?=
+ =?utf-8?B?VHdyeFhKTlJTTWlWMEVTSmN1V1duSlBXUHE2alVsRS9FRVErZEZ2NW82aE1Y?=
+ =?utf-8?Q?HXrEvJP8h+RfiTaSRFvPRHc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <926C283C9292CC478C3EA680EB2148F0@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230814-void-drivers-soc-renesas-rmobile-sysc-v1-1-6648dfd854de@google.com>
-In-Reply-To: <20230814-void-drivers-soc-renesas-rmobile-sysc-v1-1-6648dfd854de@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 30 Aug 2023 10:24:56 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWiC4v9fctp18bRrEH-m_-0VjMg9+XpON8vdRYwniTU3g@mail.gmail.com>
-Message-ID: <CAMuHMdWiC4v9fctp18bRrEH-m_-0VjMg9+XpON8vdRYwniTU3g@mail.gmail.com>
-Subject: Re: [PATCH] soc: renesas: rmobile-sysc: fix -Wvoid-pointer-to-enum-cast
- warning
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6395.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ded832cb-50f5-481f-1727-08dba933bfce
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 08:33:12.9341
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KEhemOki9CS9PH3E2O7K9P/HGcBavForkQXZ+3hjioTBYXUSv21NRJP20cAydqCfsSjan+Lgxxtg8wBG7uKYnmoa7nVRqSeGxdWFLOQPGHY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7896
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
-
-On Tue, Aug 15, 2023 at 12:11 AM Justin Stitt <justinstitt@google.com> wrote:
-> When building with clang 18 I see the following warning:
-> |      drivers/soc/renesas/rmobile-sysc.c:193:22: warning: cast to smaller integer
-> |               type 'enum pd_types' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-> |        193 |                 add_special_pd(np, (enum pd_types)id->data);
->
-> This is due to the fact that `id->data` is a void* and `enum pd_types`
-> has the size of an integer. This cast from pointer-width to int-width
-> causes truncation and possible data loss. Instead, cast to `uintptr_t`
-> which has the same width as void*.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1910
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-
-scripts/checkpatch.pl:
-
-    WARNING: Reported-by: should be immediately followed by Closes:
-with a URL to the report
-
-Hence changing the Link: tag to a Closes: tag.
-
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: It should be noted that there is likely no data loss occurring in
-> this case since the enum only has a few fields. The narrowing cast from
-> pointer to int will not lose any data.
-
-Indeed, the theoretical narrowing could only happen on a 64-bit
-platform, while this driver is only used on arm32.
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.7.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGkgS3J6eXN6dG9mLA0KDQoNCk9uIFR1ZSwgMjAyMy0wOC0yOSBhdCAxOToxMCArMDIwMCwgS3J6
+eXN6dG9mIEtvemxvd3NraSB3cm90ZToNCj4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBs
+aW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UNCj4ga25vdyB0aGUgY29udGVudCBp
+cyBzYWZlDQo+IA0KPiBPbiAyOS8wOC8yMDIzIDE3OjQxLCBtYXJpdXMuY3Jpc3RlYUBtaWNyb2No
+aXAuY29twqB3cm90ZToNCj4gPiBGcm9tOiBNYXJpdXMgQ3Jpc3RlYSA8bWFyaXVzLmNyaXN0ZWFA
+bWljcm9jaGlwLmNvbT4NCj4gPiANCj4gPiBUaGlzIGlzIHRoZSBkZXZpY2UgdHJlZSBzY2hlbWEg
+Zm9yIGlpbyBkcml2ZXIgZm9yDQo+ID4gTWljcm9jaGlwIGZhbWlseSBvZiAxNTMuNiBrc3BzLCBM
+b3ctTm9pc2UgMTYvMjQtQml0DQo+ID4gRGVsdGEtU2lnbWEgQURDcyB3aXRoIGFuIFNQSSBpbnRl
+cmZhY2UgKE1pY3JvY2hpcCdzDQo+ID4gTUNQMzQ2MSwgTUNQMzQ2MiwgTUNQMzQ2NCwgTUNQMzQ2
+MVIsIE1DUDM0NjJSLA0KPiA+IE1DUDM0NjRSLCBNQ1AzNTYxLCBNQ1AzNTYyLCBNQ1AzNTY0LCBN
+Q1AzNTYxUiwNCj4gPiBNQ1AzNTYyUiBhbmQgTUNQMzU2NFIgYW5hbG9nIHRvIGRpZ2l0YWwgY29u
+dmVydGVycykuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTWFyaXVzIENyaXN0ZWEgPG1hcml1
+cy5jcmlzdGVhQG1pY3JvY2hpcC5jb20+DQo+ID4gLS0tDQo+ID4gwqAuLi4vYmluZGluZ3MvaWlv
+L2FkYy9taWNyb2NoaXAsbWNwMzU2NC55YW1swqDCoCB8IDIwNQ0KPiA+ICsrKysrKysrKysrKysr
+KysrKw0KPiANCj4gV2hhdCBjaGFuZ2VkPyBDb3ZlciBsZXR0ZXIgc2F5cyBub3RoaW5nIGFib3V0
+IGJpbmRpbmcsIHNvIHRoaXMgcGF0Y2gNCj4gbXVzdCBzYXkuIEVzcGVjaWFsbHkgdGhhdCB5b3Ug
+ZGVjaWRlZCB0byBpZ25vcmUgcmV2aWV3Lg0KPiANCg0KICBNeSBiYWQuIEkgd2FzIGJhZCBoYW5k
+bGluZyB0aGUgcmVzdWJtaXRpb24gb2YgdGhlIHBhdGNoLiBJIHdhcyBub3QNCiJhd2FyZSIgdGhh
+dCBJIG5lZWQgdG8ga2VlcCB0aGUgInJldmlld2VkLWJ5IiBmb3IgdGhlIGZvbGxvd2luZw0KcGF0
+Y2hlcy4NCg0KVGhpcyBwYXRjaCBkaWRuJ3QgY2hhbmdlIGFueXRoaW5nIHRvIHRoZSAibWljcm9j
+aGlwLG1jcDM1NjQueWFtbCIgZmlsZS4NCg0KDQoNCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0
+b2YNCj4gDQoNCg==
