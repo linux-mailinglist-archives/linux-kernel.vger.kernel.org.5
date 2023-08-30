@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDED78DC58
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA86578DF00
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242817AbjH3Sow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        id S242970AbjH3TMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344207AbjH3S2Y (ORCPT
+        with ESMTP id S239361AbjH3Gfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 14:28:24 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025D6198;
-        Wed, 30 Aug 2023 11:28:22 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 70DC23200942;
-        Wed, 30 Aug 2023 14:28:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 30 Aug 2023 14:28:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1693420099; x=1693506499; bh=UaWYMjZoz/qbv6HU3P8JXTg44k1buzeqH5W
-        8mgla10I=; b=EYBx63EvFZjpL4B27TvMy7dGqT0pwxAoSEQMIg8pIUrC14oW5Qe
-        NQQkav+XRQAccBSjDYtL6wGLdshSlcg1rzwDN10arpEUSJWVjaH6IgApWfE4wz2k
-        NJrHO5LIciwfDdoPDOe6ZjYQxyAx+9Qp/yhg90D1Mu/zDRHBh+usGjHa8kak61BH
-        +wRtghRwUfwcK5/g4dAMCzoN5W7fRgb6/Fc0s9E42Y4N6bQRYuO/UkeirPUMSiZp
-        yZ2IN3lwvHgVsMMyVUZL8ujlFJZVEXlmSYvbJK3v4JmwYHq8eQAgRitNdVAr72K/
-        83+G2VVVKYJBkgGYIUdzl6PFgre20wJhuxw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1693420099; x=1693506499; bh=UaWYMjZoz/qbv6HU3P8JXTg44k1buzeqH5W
-        8mgla10I=; b=cIqp7OcqR9mAO5om8208dHU0wNnEriPSq/ag/Nx4a6D5SqamN6H
-        u5pPrVI3kn3E2aS0lJco43LEkbh81xEEzrwAjk1UPuFe/Q1Gu0D3lR1Jd20Zu1Mb
-        gdjd18scjP00w/1McZqpwobB31v+bdGi+n1BVFMzoHn//F67+rVg9YaYsXDC1vi1
-        b49vnbHA72x2FuM7RHMCZpxiG9NycXuTOEiki0emG1ppfM0lGJf6JXWoJSRt9xrv
-        eX/aAvXfHx1aQbS9TyPhFAOhk0jRQP0Bm66uUGmD/P3FdC5dkgxYpXaV/oKOBN+Y
-        D5N/biYochIaLDXNgUc6e45rtgmFJlOkXGw==
-X-ME-Sender: <xms:Q4rvZK2ThFYHPgkFHwMbRXTHhzc9BTSa4gJ-nUYJ3WT4ARHSKKo7Ow>
-    <xme:Q4rvZNFqkmTEzG-Ob_osEiA9AJZEUzGn706jadaI56xRdlcznCo_ma30Qe8cTgy0k
-    hpvjo59WMifcCalYw>
-X-ME-Received: <xmr:Q4rvZC6ZWwz8ycvKHrjZIRY_fvfASIWEQhJtur8MfQMSbEhJTZGtQUNU1tA4XNKq3-25_37qCXAoXRz4hdJgC16NoG29j2lvng7c_Kd01KM8qKXuwDphTbog>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddvjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogfuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvvefufffkofgjfhhr
-    ggfgsedtqhertdertddtnecuhfhrohhmpegkihcujggrnhcuoeiiihdrhigrnhesshgvnh
-    htrdgtohhmqeenucggtffrrghtthgvrhhnpeeggeehudfgudduvdelheehteegledtteei
-    veeuhfffveekhfevueefieeijeegvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
-X-ME-Proxy: <xmx:Q4rvZL346u1_UfBpWjzl87Rw7CyGhd0RDxasHMhGKfpImbsnOq-Y-w>
-    <xmx:Q4rvZNF6BdmO2rFxg6wRJ3qYNy7hEOIJFJn_U7Iwm5oQNp66gJ9Q9Q>
-    <xmx:Q4rvZE-tP0tveb64gnIifFzwKegTZyfdHQXCopNAlJ9sqJO-3y7aKw>
-    <xmx:Q4rvZMDCU_EPWqv6N6ufuNZGBXo8iVzJpOXRWJL1cpdCW6UGiOWS3A>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 30 Aug 2023 14:28:19 -0400 (EDT)
-From:   Zi Yan <zi.yan@sent.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>
-Subject: [PATCH 3/3] mips: use nth_page() in place of direct struct page manipulation.
-Date:   Wed, 30 Aug 2023 14:27:53 -0400
-Message-Id: <20230830182753.55367-4-zi.yan@sent.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230830182753.55367-1-zi.yan@sent.com>
-References: <20230830182753.55367-1-zi.yan@sent.com>
-Reply-To: Zi Yan <ziy@nvidia.com>
+        Wed, 30 Aug 2023 02:35:40 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBBB107;
+        Tue, 29 Aug 2023 23:35:36 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37U4ia24002441;
+        Wed, 30 Aug 2023 06:35:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=JwFIxzI2vXWfXOrxQgmwxLc0t+CtOeyqIOpES/sxJVw=;
+ b=ggn4lncbkmzVF1ALWKOZqVocsJGWaBpnWC/OXCtEkCAScofHdg5zZl6LVAO0FBGHFDdE
+ 1NH+WwMHjdU+zQ1kPi5o4Hq0YajzHplZtc6QXXZcuhp4yxXt+w2hLRePt2edk2VNA78U
+ VjsSYWbMK15MWyR1pE7mSJO0xAxn/fAXUZ86I8sJhiHNbeLCWjUVCaTs9RI+YAs2Xoel
+ 5l7I1a3OmXv3jiEGSLrXBZq3Fb9FK36nHdtAfSG92m3lZEvU3gfvMqDfQqOVMvhn6sK+
+ GtEgrU8Wo7vKZfNqV4YP3Yj9RdD8uEjU6aS94vzsuRG9nQXSnIC9N503/3VV9DU9Zk8X sg== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss2xbbug9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 06:35:28 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37U6ZRWo007667
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 06:35:27 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 29 Aug 2023 23:35:24 -0700
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: [PATCH] clk: qcom: ipq5332: Drop set rate parent from gpll0 dependent clocks
+Date:   Wed, 30 Aug 2023 12:05:10 +0530
+Message-ID: <1693377310-8540-1-git-send-email-quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dfhj6oJtMB0NBxcjDvy0RAYe2iKrVdXz
+X-Proofpoint-GUID: dfhj6oJtMB0NBxcjDvy0RAYe2iKrVdXz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ mlxscore=0 clxscore=1011 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=935 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308300060
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zi Yan <ziy@nvidia.com>
+IPQ5332's GPLL0's nominal/turbo frequency is 800MHz.
+This must not be scaled based on the requirement of
+dependent clocks. Hence remove the CLK_SET_RATE_PARENT
+flag.
 
-__flush_dcache_pages() is called during hugetlb migration via
-migrate_pages() -> migrate_hugetlbs() -> unmap_and_move_huge_page()
--> move_to_new_folio() -> flush_dcache_folio(). And with hugetlb and
-without sparsemem vmemmap, struct page is not guaranteed to be contiguous
-beyond a section. Use nth_page() instead.
-
-Signed-off-by: Zi Yan <ziy@nvidia.com>
+Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 ---
- arch/mips/mm/cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/qcom/gcc-ipq5332.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 02042100e267..7f830634dbe7 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -117,7 +117,7 @@ void __flush_dcache_pages(struct page *page, unsigned i=
-nt nr)
- 	 * get faulted into the tlb (and thus flushed) anyways.
- 	 */
- 	for (i =3D 0; i < nr; i++) {
--		addr =3D (unsigned long)kmap_local_page(page + i);
-+		addr =3D (unsigned long)kmap_local_page(nth_page(page, i));
- 		flush_data_cache_page(addr);
- 		kunmap_local((void *)addr);
- 	}
---=20
-2.40.1
+diff --git a/drivers/clk/qcom/gcc-ipq5332.c b/drivers/clk/qcom/gcc-ipq5332.c
+index b02026f..b836159 100644
+--- a/drivers/clk/qcom/gcc-ipq5332.c
++++ b/drivers/clk/qcom/gcc-ipq5332.c
+@@ -71,7 +71,6 @@ static struct clk_fixed_factor gpll0_div2 = {
+ 				&gpll0_main.clkr.hw },
+ 		.num_parents = 1,
+ 		.ops = &clk_fixed_factor_ops,
+-		.flags = CLK_SET_RATE_PARENT,
+ 	},
+ };
+ 
+@@ -85,7 +84,6 @@ static struct clk_alpha_pll_postdiv gpll0 = {
+ 				&gpll0_main.clkr.hw },
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_postdiv_ro_ops,
+-		.flags = CLK_SET_RATE_PARENT,
+ 	},
+ };
+ 
+-- 
+2.7.4
 
