@@ -2,256 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131BD78E233
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8240178E236
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241855AbjH3WRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
+        id S1343535AbjH3WSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245648AbjH3WRU (ORCPT
+        with ESMTP id S1343537AbjH3WSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:17:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A377AC5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:16:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693433700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BvLcRrgbS93qCwOb6Dq41wAHdRdQIMERBbEHIY8sTms=;
-        b=a6WJQZT2NLJTvzS0JXT0LneCnVkhv2wJD4TvRz3XbpcV6YwpuUg7jnaxD9wG1SNP/ErJ+i
-        /A5d48UiIUSR4x//vV0smNidY72SmrR99xhCNfAumeQ+mV6IxZb+liLzqOz3oEzQ7+tLGc
-        p8oRO1HKnqylwiYjFN5y2ma7aHUw684=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-91-Pby5J-OXO9ikGws7B5h0jQ-1; Wed, 30 Aug 2023 18:14:58 -0400
-X-MC-Unique: Pby5J-OXO9ikGws7B5h0jQ-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7916aa85aa2so19819339f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:14:58 -0700 (PDT)
+        Wed, 30 Aug 2023 18:18:33 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEC4BE
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:18:05 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-349a94f3d69so3579225ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693433877; x=1694038677; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eUAmAIfHsOOy8zS6TdEt3xyRCqjjcX1SJ2/1LstkkSY=;
+        b=5RNKAGaudUZwQoGbtOK5zrirwuh+BbCGATe4chEu1Zt9U2PrARMa48B6YE111O3Nfh
+         P2rCfbKhyiMN37bNfDzNlJfeG0YgYkiivub3+gFr6qH+aJBbPTdwMWUOpcGbq0+sMmEe
+         c2xaMPjgCcFNig3KcJ+GlNnXZZ0O+mG8sQ+TlnLQ8hlIrQu1ZdzKMIUpUTb7N/KyAz2R
+         cixh9crsY2Ko/sAgqz2cWa5sik5ljF2i8qK2zPS+mqwrgCzOxROsOZtSap/x73hzwXhW
+         LfHXrbFtgbjVpZ1lqzdRoSx+2YQg7+LdK0SEgBkBQzCaueCNgo1U9g5hZDp/gBfpAdG0
+         szlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693433697; x=1694038497;
-        h=content-transfer-encoding:mime-version:organization:message-id
+        d=1e100.net; s=20221208; t=1693433877; x=1694038677;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BvLcRrgbS93qCwOb6Dq41wAHdRdQIMERBbEHIY8sTms=;
-        b=bKDnzRG0ATt9OUfeouOifzY77vUNhyM/VMCXRs3o/dGhhqqsbnpExOU+TiqKLgSc9W
-         VcD9/HXu48+5Pz4urmrmIux4TJiZ3g6X49dokwTat5eQ7lL9ICcguUttjfTh0SM+XWsC
-         U0+Ig3W83OYgRbrl4yulPCmxqaPB1pzWWK8Dk+K29X/fpdRFQytBFRMV2loKh2+xB/RB
-         KaI/PiG8kAc6HEtFeNeFcPkfBAq6B9TDmM6ycUZOsQL5qbehWWmBkc8h1aJRr45gyr60
-         O3YGVbN5VZ7AGoFOaEVeZg0NupR5+dKnr0pkMrZ+0PumoUely3Pz12mmVBTe2NWqSP7B
-         ydgg==
-X-Gm-Message-State: AOJu0YwuArJznXJ0BJQ9JuQ9z/yAi8s73gxOTDk/quDC1n3OF8FNMatI
-        mQoxbIxN6oJICD7Wfc9jNzqncQckrSejncww8K9hAG1hS2G501C0IuMXxsBRSp9nREqeIJkHZUy
-        oyNrzMk7xBDQNI+zFUGx3o0xL
-X-Received: by 2002:a5e:a813:0:b0:794:efb0:83d6 with SMTP id c19-20020a5ea813000000b00794efb083d6mr4083102ioa.12.1693433697611;
-        Wed, 30 Aug 2023 15:14:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEbbwbaTj/Wk1h/aBt2tZP10zzHBBTmtAxo43C+S2GX8oSFo/vvtCw+FTIH6mNsjq4C6NpXIw==
-X-Received: by 2002:a5e:a813:0:b0:794:efb0:83d6 with SMTP id c19-20020a5ea813000000b00794efb083d6mr4083091ioa.12.1693433697348;
-        Wed, 30 Aug 2023 15:14:57 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id r11-20020a02c84b000000b00433dd6c78b0sm18379jao.97.2023.08.30.15.14.56
+        bh=eUAmAIfHsOOy8zS6TdEt3xyRCqjjcX1SJ2/1LstkkSY=;
+        b=LTRsw+Tyl4LREaaYihZjdEYP0zNgZas6qDhsHD7FaG1OE/GXguQ4SNVp5/wKHmlQKO
+         g9oOo19Xl5qKyJa0AW1D4A7PedLWLnzg2GCSBsY64lSKEXBLrvt/+p/GaH635Vy8ouXb
+         piPWiTZv0lx5JY3cXUPMnCRzMUyq8xr5aLiugsDABcbLsDLwjKFOy0jdUT1a8GlrhTqM
+         80i7ceDi7frOL9AKqULxQw5lEl9p+UQtihWI4ZdgfcIPmMURI4OffsGMHoJiPzAZ0GUP
+         DA5DiK6zXRFgk2eskv3mMO8Zgyp4ovzX9Su+S72bPwu+jUqADml2CekfydG9rKFSp9dE
+         dtjg==
+X-Gm-Message-State: AOJu0YyEedv459Ifqzc61MGa+x1He9WJoX8MdDiYw5nOOtJSJbonCeCN
+        7U+1M9yQ/TSf5TbMuQM7DH0Syw==
+X-Google-Smtp-Source: AGHT+IEJl2Gy/UlH0rjOjWUj+pyrp/3+xYSPOMHsZ83QRaizwW1QDk1RZG+FSAw+dDLKsUqFelUKBA==
+X-Received: by 2002:a05:6e02:16c6:b0:348:b07e:fdac with SMTP id 6-20020a056e0216c600b00348b07efdacmr881860ilx.3.1693433877356;
+        Wed, 30 Aug 2023 15:17:57 -0700 (PDT)
+Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id t6-20020a056e02010600b0034632ab31c9sm60981ilm.21.2023.08.30.15.17.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 15:14:56 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 16:14:56 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] VFIO updates for v6.6-rc1
-Message-ID: <20230830161456.646826da.alex.williamson@redhat.com>
-Organization: Red Hat
+        Wed, 30 Aug 2023 15:17:56 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 22:17:54 +0000
+From:   Justin Stitt <justinstitt@google.com>
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        linux-hardening@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH 2/2] ocfs2: Replace strlcpy with strscpy
+Message-ID: <20230830221754.3bhdz4qipppihoxz@google.com>
+References: <20230830215426.4181755-1-azeemshaikh38@gmail.com>
+ <20230830215426.4181755-3-azeemshaikh38@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830215426.4181755-3-azeemshaikh38@gmail.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Aug 30, 2023 at 09:54:26PM +0000, Azeem Shaikh wrote:
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
+>
+> Direct replacement is assumed to be safe here since
+> it's ok for `kernel_param_ops.get()` to return -errno [3].
+> This changes the behavior such that instead of silently ignoring the
+> case when sizeof(@buffer) < DLMFS_CAPABILITIES, we now return error.
 
-The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
+Not super familiar with the semantics of `kernel_param_ops.get()` but do
+note that strscpy can only return -E2BIG and not -ERRNO specifically. Is
+this still OK?
 
-  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/awilliam/linux-vfio.git tags/vfio-v6.6-rc1
-
-for you to fetch changes up to 642265e22ecc7fe05c49cb8e1e0000a049df9857:
-
-  vfio/pds: Send type for SUSPEND_STATUS command (2023-08-22 13:11:57 -0600)
-
-----------------------------------------------------------------
-VFIO updates for v6.6-rc1
-
- - VFIO direct character device (cdev) interface support.  This extracts
-   the vfio device fd from the container and group model, and is intended
-   to be the native uAPI for use with IOMMUFD. (Yi Liu)
-
- - Enhancements to the PCI hot reset interface in support of cdev usage.
-   (Yi Liu)
-
- - Fix a potential race between registering and unregistering vfio files
-   in the kvm-vfio interface and extend use of a lock to avoid extra
-   drop and acquires. (Dmitry Torokhov)
-
- - A new vfio-pci variant driver for the AMD/Pensando Distributed Services
-   Card (PDS) Ethernet device, supporting live migration. (Brett Creeley)
-
- - Cleanups to remove redundant owner setup in cdx and fsl bus drivers,
-   and simplify driver init/exit in fsl code. (Li Zetao)
-
- - Fix uninitialized hole in data structure and pad capability structures
-   for alignment. (Stefan Hajnoczi)
-
-----------------------------------------------------------------
-Brett Creeley (10):
-      vfio: Commonize combine_ranges for use in other VFIO drivers
-      vfio/pds: Initial support for pds VFIO driver
-      pds_core: Require callers of register/unregister to pass PF drvdata
-      vfio/pds: register with the pds_core PF
-      vfio/pds: Add VFIO live migration support
-      vfio/pds: Add support for dirty page tracking
-      vfio/pds: Add support for firmware recovery
-      vfio/pds: Add Kconfig and documentation
-      pds_core: Fix function header descriptions
-      vfio/pds: Send type for SUSPEND_STATUS command
-
-Dmitry Torokhov (2):
-      kvm/vfio: ensure kvg instance stays around in kvm_vfio_group_add()
-      kvm/vfio: avoid bouncing the mutex when adding and deleting groups
-
-Li Zetao (2):
-      vfio/cdx: Remove redundant initialization owner in vfio_cdx_driver
-      vfio/fsl-mc: Use module_fsl_mc_driver macro to simplify the code
-
-Nicolin Chen (1):
-      iommufd/device: Add iommufd_access_detach() API
-
-Stefan Hajnoczi (2):
-      vfio/type1: fix cap_migration information leak
-      vfio: align capability structures
-
-Yang Yingliang (1):
-      vfio/pds: fix return value in pds_vfio_get_lm_file()
-
-Yi Liu (35):
-      vfio/pci: Update comment around group_fd get in vfio_pci_ioctl_pci_hot_reset()
-      vfio/pci: Move the existing hot reset logic to be a helper
-      iommufd: Reserve all negative IDs in the iommufd xarray
-      iommufd: Add iommufd_ctx_has_group()
-      iommufd: Add helper to retrieve iommufd_ctx and devid
-      vfio: Mark cdev usage in vfio_device
-      vfio: Add helper to search vfio_device in a dev_set
-      vfio/pci: Extend VFIO_DEVICE_GET_PCI_HOT_RESET_INFO for vfio device cdev
-      vfio/pci: Copy hot-reset device info to userspace in the devices loop
-      vfio/pci: Allow passing zero-length fd array in VFIO_DEVICE_PCI_HOT_RESET
-      vfio: Allocate per device file structure
-      vfio: Refine vfio file kAPIs for KVM
-      vfio: Accept vfio device file in the KVM facing kAPI
-      kvm/vfio: Prepare for accepting vfio device fd
-      kvm/vfio: Accept vfio device file from userspace
-      vfio: Pass struct vfio_device_file * to vfio_device_open/close()
-      vfio: Block device access via device fd until device is opened
-      vfio: Add cdev_device_open_cnt to vfio_group
-      vfio: Make vfio_df_open() single open for device cdev path
-      vfio-iommufd: Move noiommu compat validation out of vfio_iommufd_bind()
-      vfio-iommufd: Split bind/attach into two steps
-      vfio: Record devid in vfio_device_file
-      vfio-iommufd: Add detach_ioas support for physical VFIO devices
-      vfio-iommufd: Add detach_ioas support for emulated VFIO devices
-      vfio: Move vfio_device_group_unregister() to be the first operation in unregister
-      vfio: Move device_del() before waiting for the last vfio_device registration refcount
-      vfio: Add cdev for vfio_device
-      vfio: Test kvm pointer in _vfio_device_get_kvm_safe()
-      iommufd: Add iommufd_ctx_from_fd()
-      vfio: Avoid repeated user pointer cast in vfio_device_fops_unl_ioctl()
-      vfio: Add VFIO_DEVICE_BIND_IOMMUFD
-      vfio: Add VFIO_DEVICE_[AT|DE]TACH_IOMMUFD_PT
-      vfio: Move the IOMMU_CAP_CACHE_COHERENCY check in __vfio_register_dev()
-      vfio: Compile vfio_group infrastructure optionally
-      docs: vfio: Add vfio device cdev description
-
- Documentation/driver-api/vfio.rst                  | 147 +++++-
- .../device_drivers/ethernet/amd/pds_vfio_pci.rst   |  79 +++
- .../networking/device_drivers/ethernet/index.rst   |   1 +
- Documentation/virt/kvm/devices/vfio.rst            |  47 +-
- MAINTAINERS                                        |   7 +
- drivers/gpu/drm/i915/gvt/kvmgt.c                   |   1 +
- drivers/iommu/iommufd/Kconfig                      |   4 +-
- drivers/iommu/iommufd/device.c                     | 116 ++++-
- drivers/iommu/iommufd/iommufd_private.h            |   2 +
- drivers/iommu/iommufd/main.c                       |  26 +-
- drivers/iommu/iommufd/vfio_compat.c                |   2 +
- drivers/net/ethernet/amd/pds_core/auxbus.c         |  24 +-
- drivers/s390/cio/vfio_ccw_ops.c                    |   1 +
- drivers/s390/crypto/vfio_ap_ops.c                  |   1 +
- drivers/vfio/Kconfig                               |  27 +
- drivers/vfio/Makefile                              |   3 +-
- drivers/vfio/cdx/main.c                            |   1 -
- drivers/vfio/device_cdev.c                         | 228 +++++++++
- drivers/vfio/fsl-mc/vfio_fsl_mc.c                  |  15 +-
- drivers/vfio/group.c                               | 173 ++++---
- drivers/vfio/iommufd.c                             | 138 +++--
- drivers/vfio/pci/Kconfig                           |   2 +
- drivers/vfio/pci/Makefile                          |   2 +
- drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c     |   2 +
- drivers/vfio/pci/mlx5/cmd.c                        |  48 +-
- drivers/vfio/pci/mlx5/main.c                       |   1 +
- drivers/vfio/pci/pds/Kconfig                       |  19 +
- drivers/vfio/pci/pds/Makefile                      |  11 +
- drivers/vfio/pci/pds/cmds.c                        | 510 +++++++++++++++++++
- drivers/vfio/pci/pds/cmds.h                        |  25 +
- drivers/vfio/pci/pds/dirty.c                       | 564 +++++++++++++++++++++
- drivers/vfio/pci/pds/dirty.h                       |  39 ++
- drivers/vfio/pci/pds/lm.c                          | 434 ++++++++++++++++
- drivers/vfio/pci/pds/lm.h                          |  41 ++
- drivers/vfio/pci/pds/pci_drv.c                     | 209 ++++++++
- drivers/vfio/pci/pds/pci_drv.h                     |   9 +
- drivers/vfio/pci/pds/vfio_dev.c                    | 227 +++++++++
- drivers/vfio/pci/pds/vfio_dev.h                    |  39 ++
- drivers/vfio/pci/vfio_pci.c                        |   1 +
- drivers/vfio/pci/vfio_pci_core.c                   | 261 ++++++----
- drivers/vfio/platform/vfio_amba.c                  |   1 +
- drivers/vfio/platform/vfio_platform.c              |   1 +
- drivers/vfio/vfio.h                                | 218 +++++++-
- drivers/vfio/vfio_iommu_type1.c                    |  13 +-
- drivers/vfio/vfio_main.c                           | 307 ++++++++++-
- include/linux/iommufd.h                            |   7 +
- include/linux/pds/pds_adminq.h                     | 375 ++++++++++++++
- include/linux/pds/pds_common.h                     |   9 +-
- include/linux/vfio.h                               |  69 ++-
- include/uapi/linux/kvm.h                           |  13 +-
- include/uapi/linux/vfio.h                          | 144 +++++-
- samples/vfio-mdev/mbochs.c                         |   1 +
- samples/vfio-mdev/mdpy.c                           |   1 +
- samples/vfio-mdev/mtty.c                           |   1 +
- virt/kvm/vfio.c                                    | 161 +++---
- 55 files changed, 4350 insertions(+), 458 deletions(-)
- create mode 100644 Documentation/networking/device_drivers/ethernet/amd/pds_vfio_pci.rst
- create mode 100644 drivers/vfio/device_cdev.c
- create mode 100644 drivers/vfio/pci/pds/Kconfig
- create mode 100644 drivers/vfio/pci/pds/Makefile
- create mode 100644 drivers/vfio/pci/pds/cmds.c
- create mode 100644 drivers/vfio/pci/pds/cmds.h
- create mode 100644 drivers/vfio/pci/pds/dirty.c
- create mode 100644 drivers/vfio/pci/pds/dirty.h
- create mode 100644 drivers/vfio/pci/pds/lm.c
- create mode 100644 drivers/vfio/pci/pds/lm.h
- create mode 100644 drivers/vfio/pci/pds/pci_drv.c
- create mode 100644 drivers/vfio/pci/pds/pci_drv.h
- create mode 100644 drivers/vfio/pci/pds/vfio_dev.c
- create mode 100644 drivers/vfio/pci/pds/vfio_dev.h
-
+>
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> [2] https://github.com/KSPP/linux/issues/89
+> [3] https://elixir.bootlin.com/linux/v6.5/source/include/linux/moduleparam.h#L52
+>
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> ---
+>  fs/ocfs2/dlmfs/dlmfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
+> index 33e529de93b2..b001eccdd2f3 100644
+> --- a/fs/ocfs2/dlmfs/dlmfs.c
+> +++ b/fs/ocfs2/dlmfs/dlmfs.c
+> @@ -80,7 +80,7 @@ static int param_set_dlmfs_capabilities(const char *val,
+>  static int param_get_dlmfs_capabilities(char *buffer,
+>  					const struct kernel_param *kp)
+>  {
+> -	return strlcpy(buffer, DLMFS_CAPABILITIES,
+> +	return strscpy(buffer, DLMFS_CAPABILITIES,
+>  		       strlen(DLMFS_CAPABILITIES) + 1);
+>  }
+>  static const struct kernel_param_ops dlmfs_capabilities_ops = {
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
