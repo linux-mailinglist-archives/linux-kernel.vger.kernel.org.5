@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3E878E189
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0596878E1A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242009AbjH3Vkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        id S242920AbjH3Vxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242037AbjH3Vkk (ORCPT
+        with ESMTP id S231540AbjH3Vxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:40:40 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E54ECFC
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:40:10 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd330fnTzTw;
-        Wed, 30 Aug 2023 23:38:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1693431535; bh=myJ3VN4kme6b3IyeciKx5wc/7mhpCeWqhBkhEBhrxQA=;
-        h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=V0Vzy/vb1FI56RGjX/1c+/higRB1MqWSNbbmkAPVn6oS2hiGumONNuy5eFHyBt7G0
-         2O7iqQAZuiUJlLT+SxIX5RBbJtg9AA+eoVpFn7QMIzC8TEBpuEYFrXtmEN2XV/2VOR
-         yaRJWmHsLPqusX5noYPO0JiXbvOoVBlLuAql2VUGAkVzRmi+UW8fUdn4AyUrjofQey
-         pDN1XSVIAPokAFoefVlyf6gSgbn9f3X/DHC9Zw3tJMVT79quyYsRgNR7e+dgmFdc3O
-         mdANqOhrh7qOM4FjuBsY/pFDhX3ioB37SurwQZkrGYg+boH8jwgeDVZf0kXIcbMzD7
-         WpvHd3CcUcL3A==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Wed, 30 Aug 2023 23:38:54 +0200
-Message-Id: <5fb938f4a07063fbca4893db2e6da1b63da87dc9.1693431144.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 2/9] regulator/core: set_consumer_device_supply: remove
- `has_dev`
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 17:53:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A328F
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:53:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 00D9263CD3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 21:40:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C7C17C433C7;
+        Wed, 30 Aug 2023 21:40:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693431646;
+        bh=2YqB2pheC0MTEY+s9TZ1CUVqBOPY3yxPNIM6CbS6sgI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=RsV8EKSx4Niu1BJnyTQgQVoHwXERGczOEMTzRH12eE3UycVT4kuVfVeKyrIPFWG0M
+         ap8UZ5CzemaIFQ68x9rqxyDbl1DR4VBYQT8zyJxzNQ6F+k6JLvrw1B6JP1nCLkWgzk
+         LpT94FmA/PyT8YKnR/tXWp6NZxpJFVs1MtkUCOPMRXzV+DKzJI1g9UeKhf4rQKEIcg
+         G1pK9y1AbZJvueglGOyAO2DmFADQYwZxEvNrX+2pxFQjZrPkREs0Eah6FBa0WlApJD
+         nHhC66hUCZLCOIBZlICDqAY2gSH9KukiNflwBq46xsf5OwDWEKVPb4zw/yFsVZZj6t
+         n10fLvKzwTwVg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B43E7C64457;
+        Wed, 30 Aug 2023 21:40:46 +0000 (UTC)
+Subject: Re: [git pull] drm for 6.6-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPM=9tw+0kKGEnCnCTmv8soNA_Kh13DoGs-G-TF7d_kOXWzaGw@mail.gmail.com>
+References: <CAPM=9tw+0kKGEnCnCTmv8soNA_Kh13DoGs-G-TF7d_kOXWzaGw@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAPM=9tw+0kKGEnCnCTmv8soNA_Kh13DoGs-G-TF7d_kOXWzaGw@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-next-2023-08-30
+X-PR-Tracked-Commit-Id: 3698a75f5a98d0a6599e2878ab25d30a82dd836a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 461f35f014466c4e26dca6be0f431f57297df3f2
+Message-Id: <169343164671.19418.11925741247385922668.pr-tracker-bot@kernel.org>
+Date:   Wed, 30 Aug 2023 21:40:46 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`has_dev` is only ever used once to check if the name is non-NULL.
-Inline the check and make the intent obvious.
+The pull request you sent on Wed, 30 Aug 2023 11:03:03 +1000:
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- drivers/regulator/core.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+> git://anongit.freedesktop.org/drm/drm tags/drm-next-2023-08-30
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index d440cd137c38..a467be1f198b 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1726,16 +1726,10 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 				      const char *supply)
- {
- 	struct regulator_map *node, *new_node;
--	int has_dev;
- 
- 	if (supply == NULL)
- 		return -EINVAL;
- 
--	if (consumer_dev_name != NULL)
--		has_dev = 1;
--	else
--		has_dev = 0;
--
- 	new_node = kzalloc(sizeof(struct regulator_map), GFP_KERNEL);
- 	if (new_node == NULL)
- 		return -ENOMEM;
-@@ -1743,7 +1737,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 	new_node->regulator = rdev;
- 	new_node->supply = supply;
- 
--	if (has_dev) {
-+	if (consumer_dev_name != NULL) {
- 		new_node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
- 		if (new_node->dev_name == NULL) {
- 			kfree(new_node);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/461f35f014466c4e26dca6be0f431f57297df3f2
+
+Thank you!
+
 -- 
-2.39.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
