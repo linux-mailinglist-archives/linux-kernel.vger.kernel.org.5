@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C01278D1AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4408178D1B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241543AbjH3BU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 21:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
+        id S241560AbjH3BYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 21:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241596AbjH3BU0 (ORCPT
+        with ESMTP id S237222AbjH3BY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 21:20:26 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674B2CEE
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 18:20:16 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c1c66876aso648796866b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 18:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693358415; x=1693963215; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=61Qie5c2kDF2Zc0oY6tB5adEIVm20BboiMQ31ckJkUM=;
-        b=Dm0UPSa3jPEbQQYt62uZoCkELjxCzBjY+OpNQKNsx3n8ljcYuBGYBGXpOqUYouA1tM
-         aFDilkYfwNIjb6fUF5YZGoKU76pIYWzDCgy6XADipQjHKbbyOOgiGHw9KfCHEHyl/reE
-         PmgRc+6SO+Jvc5rDKkjEg0V5o37ZxvQSUmv3c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693358415; x=1693963215;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=61Qie5c2kDF2Zc0oY6tB5adEIVm20BboiMQ31ckJkUM=;
-        b=Ylr2DX6HAbjYJVhIqEICQhDpc02DcfOK8GyG22r0yV7z88fSZZNAjKkV/+RtZKFZN7
-         Vgob5PmYAbsDsnszaVxkhAVmIBhxy1pTrNLVBV28yKgIiO/5vVsxI8QakZzXSLOp893D
-         CpyLPBwyjTdOooy2kUlavxx19SM9EgeVK5OyFLe4XaTJ8jpCVbsBgdGcIy7xoIcAT+Tb
-         Sm+v16x7/FBM4aA9RKF0mGAll5yiC2kpqIX5jbktnTc5eRjntlQRE4kne3USHShQLmJU
-         d94HdYz5ja2qzVvrVOtkTUqjE7KDEqxBeLV+9IqtAQrPVmMx6mnZwUv6xdMdhDlnpF/x
-         pvBQ==
-X-Gm-Message-State: AOJu0YyDbFXN/B1vBWIUrVopeWBl9gRE7HzuTx/GUgYjeJFUQOkzlElk
-        SFz65nL4U7Z2nwGrBen+sIa8lvE3Ey/gP+MZQeBgnFU1
-X-Google-Smtp-Source: AGHT+IFRDWAOCvX//Qjwb91B7vSB9xgLaQEnl2lJzcud9I64HQ/LWyux9VObvmylxMpda5PW9FH2KQ==
-X-Received: by 2002:a17:906:3d22:b0:99b:4a29:fb6a with SMTP id l2-20020a1709063d2200b0099b4a29fb6amr444601ejf.59.1693358414803;
-        Tue, 29 Aug 2023 18:20:14 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id z21-20020a1709064e1500b0098f99048053sm6667452eju.148.2023.08.29.18.20.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 18:20:13 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9a21b6d105cso646161766b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 18:20:13 -0700 (PDT)
-X-Received: by 2002:a17:907:9687:b0:99c:85af:7aa6 with SMTP id
- hd7-20020a170907968700b0099c85af7aa6mr547689ejc.28.1693358412962; Tue, 29 Aug
- 2023 18:20:12 -0700 (PDT)
+        Tue, 29 Aug 2023 21:24:29 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A42FE0;
+        Tue, 29 Aug 2023 18:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UGL8Hs7wie/83TbDi9sHxBsPaDb/+1IP8lK74uZbCKw=; b=VMCLMK1iXxNHLo2tyoSLb1HI/I
+        ygrNcHqe5LWzcSOicXKiXv7+aZW1BJ7dB0vjqMCV0MnziRQDnoZOz3XgmiNQiiDnA13PUlmOVrxc4
+        WpSk9x7uA8R3KciGWN7qJ88utnJ3QSHSvYKWfoJJvhO0U1H1/cqwYZYmtvld8BDA8iqcXv8CBaGId
+        erqQdPcYkjIFz/hBJqwMuB/rDK2BOMTdgnlCwnIMFpdDxv6wkG8Wn7rLsnAYsC5D7sc1BRtVulXjw
+        RcKjf3m9ODmy0yW/y+LgeKEyGIU6PCqX4XrC83Co4MtcnJcvY9SuxDXgB2k0Ps8NGdX3ExJB41/fI
+        ibsynONQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qb9v5-001yGw-2Z;
+        Wed, 30 Aug 2023 01:22:55 +0000
+Date:   Wed, 30 Aug 2023 02:22:55 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
+Message-ID: <20230830012255.GC3390869@ZenIV>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+ <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+ <20230829224454.GA461907@ZenIV>
+ <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
+ <20230830000221.GB3390869@ZenIV>
+ <1005e30582138e203a99f49564e2ef244b8d56aa.camel@kernel.org>
 MIME-Version: 1.0
-References: <20230829213441.310655-1-ulf.hansson@linaro.org>
- <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
- <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com> <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com>
-In-Reply-To: <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 29 Aug 2023 18:19:56 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
-Message-ID: <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1005e30582138e203a99f49564e2ef244b8d56aa.camel@kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 17:48, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> How about moving it to drivers/power/domain/ instead?
+On Tue, Aug 29, 2023 at 08:43:31PM -0400, Jeff Layton wrote:
+> On Wed, 2023-08-30 at 01:02 +0100, Al Viro wrote:
+> > On Tue, Aug 29, 2023 at 06:58:47PM -0400, Jeff Layton wrote:
+> > > On Tue, 2023-08-29 at 23:44 +0100, Al Viro wrote:
+> > > > On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
+> > > > > generic_fillattr just fills in the entire stat struct indiscriminately
+> > > > > today, copying data from the inode. There is at least one attribute
+> > > > > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
+> > > > > and we're looking at adding more with the addition of multigrain
+> > > > > timestamps.
+> > > > > 
+> > > > > Add a request_mask argument to generic_fillattr and have most callers
+> > > > > just pass in the value that is passed to getattr. Have other callers
+> > > > > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
+> > > > > STATX_CHANGE_COOKIE into generic_fillattr.
+> > > > 
+> > > > Out of curiosity - how much PITA would it be to put request_mask into
+> > > > kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
+> > > > on smbd side) and don't bother with that kind of propagation boilerplate
+> > > > - just have generic_fillattr() pick it there...
+> > > > 
+> > > > Reduces the patchset size quite a bit...
+> > > 
+> > > It could be done. To do that right, I think we'd want to drop
+> > > request_mask from the ->getattr prototype as well and just have
+> > > everything use the mask in the kstat.
+> > > 
+> > > I don't think it'd reduce the size of the patchset in any meaningful
+> > > way, but it might make for a more sensible API over the long haul.
+> > 
+> > ->getattr() prototype change would be decoupled from that - for your
+> > patchset you'd only need the field addition + setting in vfs_getattr_nosec()
+> > (and possibly in ksmbd), with the remainders of both series being
+> > independent from each other.
+> > 
+> > What I suggest is
+> > 
+> > branchpoint -> field addition (trivial commit) -> argument removal
+> > 		|
+> > 		V
+> > your series, starting with "use stat->request_mask in generic_fillattr()"
+> > 
+> > Total size would be about the same, but it would be easier to follow
+> > the less trivial part of that.  Nothing in your branch downstream of
+> > that touches any ->getattr() instances, so it should have no
+> > conflicts with the argument removal side of things.
+> 
+> The only problem with this plan is that Linus has already merged this.
+> I've no issue with adding the request_mask to the kstat and removing it
+> as a separate parameter elsewhere, but I think we'll need to do it on
+> top of what's already been merged.
 
-That sounds like a sensible name and would seem to fit logically with
-our existing tree structure quite well.
-
-> I don't think we can easily rename the interfaces that have been
-> in use for the past 12 years
-
-I actually think the interface names are much less of an issue, since
-anybody using them is presumably familiar with the naming.
-
-It was only with the directory structure that I reacted to it, because
-that kind of exposes the naming to people who definitely are *not*
-familiar with it (ie me, but presumably anybody else who sees the
-diffstats etc fly past).
-
-And yes, we have a number of other pretty obscure driver names in our
-tree (I end up having to remind myself what "ntb" and "hsi" etc mean),
-and I don't tend to love them either, but at least they tend to be
-industry / vendor names.
-
-            Linus
+D'oh...  My apologies; I'll do a branch on top of that (and rebase on
+top of -rc1 once the window closes).
