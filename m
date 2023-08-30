@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C461478D1DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDC678D1E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241646AbjH3B5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 21:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56608 "EHLO
+        id S241648AbjH3CB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 22:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238208AbjH3B44 (ORCPT
+        with ESMTP id S238208AbjH3CBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 21:56:56 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345EAFC;
-        Tue, 29 Aug 2023 18:56:53 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34b4b2608e3so17918475ab.3;
-        Tue, 29 Aug 2023 18:56:53 -0700 (PDT)
+        Tue, 29 Aug 2023 22:01:04 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5562719A;
+        Tue, 29 Aug 2023 19:01:02 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7950fac19f2so45626539f.3;
+        Tue, 29 Aug 2023 19:01:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693360612; x=1693965412; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693360861; x=1693965661; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dohu8JcCYbtfCQEoNAJu4CBtsaFe5TpGhloC7g3jQYI=;
-        b=RcL7MDNw5n48pBvEJYQuCru+gd2xzFJJOsErgwMhwFK77PghjVX3+aT//P9bispxrD
-         mDVlveDXJjK4SV7ZjVDCXa8KW21YokHEUfjSRm/YbQSAMsYXGymStczb7c1CD5l+ebo0
-         EzM8UhLzpn2/h8QnYsdSVFwi1rmtRnasThnhlzqLnnLJxJ6Goy0SSBWVQ3mmP03p1Ced
-         sjmEzPUJhb83e3orrjFjx+vVdbwo+zMkyM5Cxjbb5/zflOmItmjRohcVbVISDzL4MxUx
-         NDA1XSjOqH1rtwOx6WFfctI65369v9LynWZsPBThEiyBkLBSta1i23pasqndcHpnTv6W
-         e/cg==
+        bh=uBJ3hYsypardy5bqovi6u1iDRftB1teY+ENziJZCw2U=;
+        b=GVHYK3wFFqNgpHbzZsRJF2drNfPQi2MqxkOEi9Jj/aLlsmR6Gl2WWZHOQ5EY4Z8eN8
+         9BMfHHBPNkDDA09ZnaHiSXN73XA+5VSrm/3PwAEAVeUFsSfvg2469DV+NsvN4Avcj/Wd
+         me9igT5n5mb3/qZzupino6jnLaZ/UMPqbncKdmm8I49YwIJ5fs6/GFLb7OGf1FwGCwbb
+         cgltHJonAcEbTYqzgbv/xe4fjJV5Kboz8fAZpiPxWrvibUBbtiv77e2pjvvRJpwpX74X
+         oohNy2GjLaDc0B5Hna1OKVe49iomxpmn8GPXT6Z0fzbtrzhUTyx8j1jjK5aXaFtZHtIi
+         OkQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693360612; x=1693965412;
+        d=1e100.net; s=20221208; t=1693360861; x=1693965661;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dohu8JcCYbtfCQEoNAJu4CBtsaFe5TpGhloC7g3jQYI=;
-        b=XVkTvz9qwIBd3P6LqXeVQEJbGdVfgNta1LFJX57gHvm/chsLBlzZBO2cV/e6k4IuIc
-         +/cmcch13Wu0QOLtk+l6oTWb2K4gATv0tnQaZOwVIJKPs/v+YbbCoBsNS4/COaaSsNvm
-         Dgow0kHB/3YQdYpqrGJA+BQS102IsLIMLY9Mvf81I6GcrRgJ+3f0h9uMeI9mCDDZpqiQ
-         hqSqxrqOkyWXhPiZTGNRAEvFSrnNkGqBmk+ZXdroPriTCKGHVlR2bU2EovwXwHaa8dsV
-         YoJ6B99Qawl7eoY/x+9E6Cn1E+BbJ5myXLsD64aXaf7rOCpl60K5vUqUY9D3leHNPYqB
-         PbvQ==
-X-Gm-Message-State: AOJu0YzsBUh6mN2R7MWtaHUn9OwuzxMbaYiXhNFywPP4Z+oqD+VmFhzK
-        s8Q8AMJtf1TBiemh2CgbPsU=
-X-Google-Smtp-Source: AGHT+IESZC0XichRF7tbayUE0qjAYkv7esnNqWRRnO232/hCeng+/RC1mg/YD9CIJhuoqmrh/uuIGg==
-X-Received: by 2002:a92:dc87:0:b0:348:8576:15b5 with SMTP id c7-20020a92dc87000000b00348857615b5mr1017781iln.3.1693360612586;
-        Tue, 29 Aug 2023 18:56:52 -0700 (PDT)
+        bh=uBJ3hYsypardy5bqovi6u1iDRftB1teY+ENziJZCw2U=;
+        b=Bx31+f3H//gSTnaRevfgc+0RQx56USMxnT30iQtUDufzVuMo8qjDTNlR2cprQwsLjH
+         3HmpRXExAJ+XRO5NHJRMWka9y4RKS7clIif2Q5stxg65+w/z95mcS5KIzH9K5bexw4WA
+         W4hwf6tHDCGSUKPTB7IFgbnaSjBygo44r4uHg66BbaP6Xh6OIxoniXabVcM4ZqM73Q10
+         Yhj7QOytGuoBSzztB8H6giG362Ysyg2gsIAaSq2HTkVjg41owzoJf53sNok2/NIETxGK
+         Y2WTg79IXOnCB3yL/pK1jyl96pAwVG5aCFefnbQt+5kTmk2BB5Wc4MyFZdgqVFw1sM3H
+         mVaA==
+X-Gm-Message-State: AOJu0YzsQ7w9iyuqku7eYzI+R4qCDO6SHfcwOH1lJGPBIkr51QzzeGJ9
+        kbyDt8jli467ePmwx8oTnKg=
+X-Google-Smtp-Source: AGHT+IFdlpuCa4wtV8m0eRng+0OGcJQWEFhqL8ck+0oeWUOSlJixI0fx7ITrQM+GCCMpTlnajilveQ==
+X-Received: by 2002:a5e:d713:0:b0:786:4795:30c9 with SMTP id v19-20020a5ed713000000b00786479530c9mr1220078iom.20.1693360861663;
+        Tue, 29 Aug 2023 19:01:01 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u4-20020a02c044000000b0042b0ce92dddsm3560561jam.161.2023.08.29.18.56.51
+        by smtp.gmail.com with ESMTPSA id k13-20020a6b6f0d000000b0078680780694sm3612024ioc.34.2023.08.29.19.01.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 18:56:52 -0700 (PDT)
+        Tue, 29 Aug 2023 19:01:01 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 29 Aug 2023 18:56:51 -0700
+Date:   Tue, 29 Aug 2023 19:01:00 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
@@ -60,13 +60,13 @@ Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
         lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
         f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
         srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 4.14 00/57] 4.14.324-rc1 review
-Message-ID: <98dbc981-56fa-4919-afcc-fdf63e0a1c53@roeck-us.net>
-References: <20230828101144.231099710@linuxfoundation.org>
+Subject: Re: [PATCH 4.19 000/129] 4.19.293-rc1 review
+Message-ID: <59f19613-990c-4e58-b53d-c5f764483119@roeck-us.net>
+References: <20230828101153.030066927@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230828101144.231099710@linuxfoundation.org>
+In-Reply-To: <20230828101153.030066927@linuxfoundation.org>
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -78,9 +78,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:12:20PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.324 release.
-> There are 57 patches in this series, all will be posted as a response
+On Mon, Aug 28, 2023 at 12:11:34PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.293 release.
+> There are 129 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -89,40 +89,31 @@ On Mon, Aug 28, 2023 at 12:12:20PM +0200, Greg Kroah-Hartman wrote:
 > 
 
 Build results:
-	total: 139 pass: 133 fail: 6
+	total: 149 pass: 144 fail: 5
 Failed builds:
+	arm:allmodconfig
+	arm:omap2plus_defconfig
 	arm:ep93xx_defconfig
 	mips:mtx1_defconfig
 	mips:db1xxx_defconfig
-	powerpc:defconfig
-	powerpc:allmodconfig
-	powerpc:cell_defconfig
 Qemu test results:
-	total: 431 pass: 414 fail: 17
+	total: 438 pass: 407 fail: 31
 Failed tests:
-	<all ppc64:pseries>
+	<lots of arm>
+
+arm:allmodconfig and others
+
+drivers/bus/ti-sysc.c: In function 'sysc_reset':
+drivers/bus/ti-sysc.c:982:15: error: implicit declaration of function 'sysc_read_sysconfig'
+
+arm boot tests fail with the same build error.
 
 arm:ep93xx_defconfig
 
-Error log:
 arch/arm/mach-ep93xx/timer-ep93xx.c:12:10: fatal error: platform.h
-
-That is really an older problem, caused by commit 2e50d55578b0 ("ARM:
-ep93xx: fix missing-prototype warnings") which instead of fixing
-anything in v4.14.y broke its build.
 
 mips:mtx1_defconfig
 
-arch/mips/alchemy/common/dbdma.c:33:10: fatal error: linux/dma-map-ops.h: No such file or directory
-
-Again, an older problem, caused by commit 10130470bb0 ("MIPS: Alchemy:
-fix dbdma2").
-
-powerpc:defconfig, powerpc:allmodconfig, powerpc:cell_defconfig
-
-arch/powerpc/kernel/rtas_flash.c: In function 'rtas_flash_init':
-arch/powerpc/kernel/rtas_flash.c:717:29: error: implicit declaration of function 'kmem_cache_create_usercopy'
-
-ppc64 boot tests fail to compile with the same error.
+arch/mips/alchemy/common/dbdma.c:33:10: fatal error: linux/dma-map-ops.h
 
 Guenter
