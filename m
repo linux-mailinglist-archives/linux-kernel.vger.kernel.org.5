@@ -2,97 +2,521 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A61078D1ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2F278D1EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239150AbjH3CEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 22:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
+        id S241659AbjH3CGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 22:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241670AbjH3CEW (ORCPT
+        with ESMTP id S241671AbjH3CGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 22:04:22 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5168CDA;
-        Tue, 29 Aug 2023 19:04:18 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-792979d4cb5so120311039f.2;
-        Tue, 29 Aug 2023 19:04:18 -0700 (PDT)
+        Tue, 29 Aug 2023 22:06:02 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4CD1A6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:05:58 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-58d41109351so5531577b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:05:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693361058; x=1693965858; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CTtXfWy3siOXzQeZ46HnlLwi43B/raOmYWONvMXKE+I=;
-        b=F41ptmRQiu1rTdFUc9H/3nEljNO+MTjZkYCvgfJjhSJiPcTGYcwsr4Pu8AkPQ1IjSa
-         mdDGpYLQxFQKT2S1M9qcqdOipw7VA9qSoJ1LR+w2NRCBUh+YI/PmILssfibtvFBQsWlJ
-         4znBdiXdN9ummBBg1ynpddSyYdMa4qM52gy0dpIIQqyj8mhffm9N60MbBSlvc6m0Edov
-         OQQZUF4Wr/TXZtr3pa6enz76FX+VSpZbOYyBlkSpEpA6HS7U1DYk9nfS7DU8M/KKZRSM
-         tCx03JA8yNlbIKcAiP4Cazu8gJ+4JCtcAt3p1AtYFXRrBWoDEK60+PmOqBbB6oCnCrDu
-         cfwA==
+        d=linaro.org; s=google; t=1693361157; x=1693965957; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gAtPMmbUdFUxvUjVkZrsRZXmbstvvHY5HPiOzCReDOE=;
+        b=qjHrwL+U/hHy3SdQUf8vwG/fGhVD/30eYXCL5TL3iyv9NgTP31eI3I8+0rD9wiI4g8
+         iLsPw/+2nZaLepIVnBE42IJ8gNj7hChQVJEVnXtGWWXhSovZpRH+ipAIQyyxNZPxUNKQ
+         WFWhXnzDMB/b6fzEtRXLppeaZ3hs67V062R5igqHvuoDptmyEnuZcYMoR24LsGZVREOu
+         Ffv428mVY/bSsuGAc0vevZp3pIWyjobl7raiAa4eXW2WZ8sR2zTiNpiuauVHAhaESTP3
+         TtpvkMiJlg9RFcIGBdsobD164yzNqKEeT9U7D5iu1mVRwQch8OzgwXejMYtEYPLO4o10
+         728w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693361058; x=1693965858;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693361157; x=1693965957;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CTtXfWy3siOXzQeZ46HnlLwi43B/raOmYWONvMXKE+I=;
-        b=jgKlehcnpVJreBQKN8+aqcBmke1WLym9A7fKxZr8aeg+rvGEob0aqUM5hZKBCKa8RS
-         wmreSLEtd4aaylRq48nshIn1VZ1Hb5nnLaYhoDbGCfUhIWLJNAMj9KhB5olTzft5oVkh
-         wYtBZaTOkl62ph+uHL9GxArpazUXD/BpUaLPhWlKxzKTZxFCr1yeSq5AcSA+/sZb5RGp
-         vnQr1wkNkaOVqyHH/spiG6E0R8Goum8/EQunmJnSzJq3a6DIYNcnCnc0UjN7Im6oeYp/
-         HuRGnWl0KnHNm3fC/YnSDYuINXa5h5+XmU7x8ONHQ4uhwrdL/PLLZm/oDO1DPfBGR0Ht
-         qUWg==
-X-Gm-Message-State: AOJu0Yx6MY6gsPnOenUU9fRoL5495WHAatwwm2bvpuhpRhbKCxyyTkYn
-        CEWQ7dIbAz7OjYJvui1Yhj8=
-X-Google-Smtp-Source: AGHT+IG8nMrw/xTXVOLdRnwnw6/1vDoK/H4V6wWT02ni4GkNDQhr6SwQmKDGyjzyPHC0i1BW5WbkPw==
-X-Received: by 2002:a5e:a804:0:b0:790:f866:d71b with SMTP id c4-20020a5ea804000000b00790f866d71bmr1147268ioa.13.1693361058123;
-        Tue, 29 Aug 2023 19:04:18 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f22-20020a02a816000000b0042bb09e9345sm3472062jaj.90.2023.08.29.19.04.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 19:04:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 29 Aug 2023 19:04:16 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.4 000/129] 6.4.13-rc1 review
-Message-ID: <6b336824-42b3-443f-8c3d-356626caf7fa@roeck-us.net>
-References: <20230828101157.383363777@linuxfoundation.org>
+        bh=gAtPMmbUdFUxvUjVkZrsRZXmbstvvHY5HPiOzCReDOE=;
+        b=Py1z2xN4Sejgk1qBY7hiYMs9GfyzTQHaOeIt2CI4PzxWqc021TgGhv0wyAQSbnV/GU
+         LjV9q03oCZrmNnVjti64N/62uCYJlCF+WTHF0yaSrEQu6jv5JJ6hC3fWVIQRGXJmkDtA
+         z7G7nvzHi1sA070KTErSGpEYUG0m85X5rabzx+PySpHMUNi1JRNm0Qemug5Iw6WiGQgB
+         hHrkRp/SlVlrlcqxCZWcwH55eqYb0CM1mGBEvJ5TaijEBcgl/aczKiWYOI7GmHmZuiNf
+         vt2UPLJBIaSA/fHPnMMSZ58cwRrHhOk8q8a+8dNr6ShAAkUF12n4dC/MJOY14QQShCCC
+         xrqA==
+X-Gm-Message-State: AOJu0Yz5SJ6zCXgoDY+T7luibkJRwRGIQy5MhMB0D3zU5o8hXQjpQMAD
+        QzJEwFXKcLUQTHJDxITcRsKE1+YS1ovGeXcXFIYbZDmKcL/TG9/R
+X-Google-Smtp-Source: AGHT+IFCI090Pi3E1PGbOTeMsCDc/MYvqxMARidXhBnryn2q8LveoUDjFmJN+wsSrPNRlfU0FYScHyPeeJB1Af7qcN4=
+X-Received: by 2002:a25:f81b:0:b0:d61:44f9:5d1e with SMTP id
+ u27-20020a25f81b000000b00d6144f95d1emr4376704ybd.12.1693361157482; Tue, 29
+ Aug 2023 19:05:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828101157.383363777@linuxfoundation.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org> <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
+ <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org> <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
+ <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org> <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
+ <0cb96702-b396-4223-870f-b798d32991ee@linaro.org> <7571be78-5560-13bf-d754-cabc8ad6140d@quicinc.com>
+ <56c11316-57ce-45d5-927c-84f65a1c227e@linaro.org> <CAA8EJpqQkb1wumNJWkKV2o5+52FopHyPRvxBewLxGFXnTJFA9A@mail.gmail.com>
+ <5512f228-680b-0259-cfc5-6dae6d4da392@quicinc.com> <CAA8EJpr8WPmsgiXb16OipvtouwztKYjVWLYK04Z0DvQ7frtJiw@mail.gmail.com>
+ <e52d9a0a-f748-22fb-e68c-4b819d97d0cd@quicinc.com> <CAA8EJpohD05+JuHoGai9NoM-GH8JN9MGtf4CKtBJpPm5n25dwA@mail.gmail.com>
+ <c522a944-4ae1-098b-0205-b0810325114c@quicinc.com> <CAA8EJpoEQAjRPnZD5uErSUO=3v-J3yHwZCEU2WcX8RXjV_ZcsQ@mail.gmail.com>
+ <7c424643-79b6-7eb1-cf6f-21c5decc76ba@quicinc.com>
+In-Reply-To: <7c424643-79b6-7eb1-cf6f-21c5decc76ba@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 30 Aug 2023 05:05:46 +0300
+Message-ID: <CAA8EJpqWs18K5_asuHvpCUFo_NCbZAg5QkcwE6CqqgtKGfup2g@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox VTDR6130
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     neil.armstrong@linaro.org,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:11:19PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.13 release.
-> There are 129 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-> 
+On Tue, 29 Aug 2023 at 22:21, Abhinav Kumar <quic_abhinavk@quicinc.com> wro=
+te:
+>
+>
+>
+> On 8/29/2023 12:15 PM, Dmitry Baryshkov wrote:
+> > On Tue, 29 Aug 2023 at 22:09, Abhinav Kumar <quic_abhinavk@quicinc.com>=
+ wrote:
+> >>
+> >>
+> >>
+> >> On 8/29/2023 11:51 AM, Dmitry Baryshkov wrote:
+> >>> On Tue, 29 Aug 2023 at 20:22, Abhinav Kumar <quic_abhinavk@quicinc.co=
+m> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 8/29/2023 9:43 AM, Dmitry Baryshkov wrote:
+> >>>>> On Tue, 29 Aug 2023 at 19:37, Abhinav Kumar <quic_abhinavk@quicinc.=
+com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 8/29/2023 2:26 AM, Dmitry Baryshkov wrote:
+> >>>>>>> On Tue, 29 Aug 2023 at 12:22, <neil.armstrong@linaro.org> wrote:
+> >>>>>>>>
+> >>>>>>>> On 28/08/2023 19:07, Abhinav Kumar wrote:
+> >>>>>>>>> Hi Neil
+> >>>>>>>>>
+> >>>>>>>>> Sorry I didnt respond earlier on this thread.
+> >>>>>>>>>
+> >>>>>>>>> On 8/28/2023 1:49 AM, neil.armstrong@linaro.org wrote:
+> >>>>>>>>>> Hi Jessica,
+> >>>>>>>>>>
+> >>>>>>>>>> On 25/08/2023 20:37, Jessica Zhang wrote:
+> >>>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
+> >>>>>>>>>>>> Hi Maxime,
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> On 21/08/2023 10:17, Maxime Ripard wrote:
+> >>>>>>>>>>>>> Hi,
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@li=
+naro.org wrote:
+> >>>>>>>>>>>>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
+> >>>>>>>>>>>>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
+> >>>>>>>>>>>>>>>> Sending HS commands will always work on any controller, =
+it's all
+> >>>>>>>>>>>>>>>> about LP commands. The Samsung panels you listed only se=
+nd HS
+> >>>>>>>>>>>>>>>> commands so they can use prepare_prev_first and work on =
+any
+> >>>>>>>>>>>>>>>> controllers.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> I think there is some misunderstanding there, supported b=
+y the
+> >>>>>>>>>>>>>>> description of the flag.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> If I remember correctly, some hosts (sunxi) can not send =
+DCS
+> >>>>>>>>>>>>>>> commands after enabling video stream and switching to HS =
+mode, see
+> >>>>>>>>>>>>>>> [1]. Thus, as you know, most of the drivers have all DSI =
+panel setup
+> >>>>>>>>>>>>>>> commands in drm_panel_funcs::prepare() /
+> >>>>>>>>>>>>>>> drm_bridge_funcs::pre_enable() callbacks, not paying atte=
+ntion
+> >>>>>>>>>>>>>>> whether these commands are to be sent in LP or in HS mode=
+.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> Previously DSI source drivers could power on the DSI link=
+ either in
+> >>>>>>>>>>>>>>> mode_set() or in pre_enable() callbacks, with mode_set() =
+being the
+> >>>>>>>>>>>>>>> hack to make panel/bridge drivers to be able to send comm=
+ands from
+> >>>>>>>>>>>>>>> their prepare() / pre_enable() callbacks.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> With the prev_first flags being introduced, we have estab=
+lished that
+> >>>>>>>>>>>>>>> DSI link should be enabled in DSI host's pre_enable() cal=
+lback and
+> >>>>>>>>>>>>>>> switched to HS mode (be it command or video) in the enabl=
+e()
+> >>>>>>>>>>>>>>> callback.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> So far so good.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> It seems coherent, I would like first to have a state of a=
+ll DSI host
+> >>>>>>>>>>>>>> drivers and make this would actually work first before add=
+ing the
+> >>>>>>>>>>>>>> prev_first flag to all the required panels.
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> This is definitely what we should do in an ideal world, but=
+ at least for
+> >>>>>>>>>>>>> sunxi there's no easy way for it at the moment. There's no =
+documentation
+> >>>>>>>>>>>>> for it and the driver provided doesn't allow this to happen=
+.
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Note that I'm not trying to discourage you or something her=
+e, I'm simply
+> >>>>>>>>>>>>> pointing out that this will be something that we will have =
+to take into
+> >>>>>>>>>>>>> account. And it's possible that other drivers are in a simi=
+lar
+> >>>>>>>>>>>>> situation.
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> Unfortunately this change is not fully backwards-compatib=
+le. This
+> >>>>>>>>>>>>>>> requires that all DSI panels sending commands from prepar=
+e() should
+> >>>>>>>>>>>>>>> have the prepare_prev_first flag. In some sense, all such=
+ patches
+> >>>>>>>>>>>>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_p=
+rev_first
+> >>>>>>>>>>>>>>> flag to drm_panel").
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> This kind of migration should be done *before* any possibl=
+e
+> >>>>>>>>>>>>>> regression, not the other way round.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> If all panels sending commands from prepare() should have =
+the
+> >>>>>>>>>>>>>> prepare_prev_first flag, then it should be first, check fo=
+r
+> >>>>>>>>>>>>>> regressions then continue.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> <snip>
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> I understand, but this patch doesn't qualify as a fix fo=
+r
+> >>>>>>>>>>>>>>>> 9e15123eca79 and is too late to be merged in drm-misc-ne=
+xt for
+> >>>>>>>>>>>>>>>> v6.6, and since 9e15123eca79 actually breaks some suppor=
+t it
+> >>>>>>>>>>>>>>>> should be reverted (+ deps) since we are late in the rc =
+cycles.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> If we go this way, we can never reapply these patches. Th=
+ere will be
+> >>>>>>>>>>>>>>> no guarantee that all panel drivers are completely conver=
+ted. We
+> >>>>>>>>>>>>>>> already have a story without an observable end -
+> >>>>>>>>>>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> I don't understand this point, who would block re-applying=
+ the patches ?
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done o=
+ver multiple
+> >>>>>>>>>>>>>> Linux version and went smoothly because we reverted regres=
+sing patches
+> >>>>>>>>>>>>>> and restarted when needed, I don't understand why we can't=
+ do this
+> >>>>>>>>>>>>>> here aswell.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> I'd consider that the DSI driver is correct here and it i=
+s about the
+> >>>>>>>>>>>>>>> panel drivers that require fixes patches. If you care abo=
+ut the
+> >>>>>>>>>>>>>>> particular Fixes tag, I have provided one several lines a=
+bove.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> Unfortunately it should be done in the other way round, pr=
+epare for
+> >>>>>>>>>>>>>> migration, then migrate,
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> I mean if it's a required migration, then it should be don=
+e and I'll
+> >>>>>>>>>>>>>> support it from both bridge and panel PoV.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> So, first this patch has the wrong Fixes tag, and I would =
+like a
+> >>>>>>>>>>>>>> better explanation on the commit message in any case. Then=
+ I would
+> >>>>>>>>>>>>>> like to have an ack from some drm-misc maintainers before =
+applying it
+> >>>>>>>>>>>>>> because it fixes a patch that was sent via the msm tree th=
+us per the
+> >>>>>>>>>>>>>> drm-misc rules I cannot apply it via the drm-misc-next-fix=
+es tree.
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Sorry, it's not clear to me what you'd like our feedback on=
+ exactly?
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> So let me resume the situation:
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> - pre_enable_prev_first was introduced in [1]
+> >>>>>>>>>>>> - some panels made use of pre_enable_prev_first
+> >>>>>>>>>>>> - Visionox VTDR6130 was enabled on SM8550 systems and works =
+on v6.5 kernels and before
+> >>>>>>>>>>>> - patch [2] was introduced on MSM DRM tree, breaking VTDR613=
+0 on SM8550 systems (and probably other Video mode panels on Qcom platforms=
+)
+> >>>>>>>>>>>> - this fix was sent late, and is now too late to be merged v=
+ia drm-misc-next
+> >>>>>>>>>>>
+> >>>>>>>>>>> Hi Neil and Maxime,
+> >>>>>>>>>>>
+> >>>>>>>>>>> I agree with Neil that 9e15123eca79 was the commit that intro=
+duced the issue (since it changed the MSM DSI host behavior).
+> >>>>>>>>>>>
+> >>>>>>>>>>> However, I'm not too keen on simply reverting that patch beca=
+use
+> >>>>>>>>>>>
+> >>>>>>>>>>> 1) it's not wrong to have the dsi_power_on in pre_enable. Arg=
+uably, it actually makes more sense to power on DSI host in pre_enable than=
+ in modeset (since modeset is meant for setting the bridge mode), and
+> >>>>>>>>>>
+> >>>>>>>>>> I never objected that, it's the right path to go.
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> Ack.
+> >>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> 2) I think it would be good practice to keep specific bridge =
+chip checks out of the DSI host driver.
+> >>>>>>>>>>
+> >>>>>>>>>> We discussed about a plan with Maxime and Dmitry about that, a=
+nd it would require adding
+> >>>>>>>>>> a proper atomic panel API to handle a "negociation" with the h=
+ost controller.
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> May I know what type of negotiation is needed here?
+> >>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> That being said, what do you think about setting the default =
+value of prepare_prev_first to true (possibly in panel_bridge_attach)?
+> >>>>>>>>>>
+> >>>>>>>>>> As Dmitry pointed, all panels sending LP commands in pre_enabl=
+e() should have prepare_prev_first to true.
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> I wanted to respond to this earlier but didnt get a chance.
+> >>>>>>>>>
+> >>>>>>>>>      From the documentation of this flag, this has nothing to d=
+o whether panels are sending the LP commands (commands sent in LP mode) OR =
+HS commands (commands sent in HS mode).
+> >>>>>>>>>
+> >>>>>>>>> This is more about sending the commands whether the lanes are i=
+n LP11 state before sending the ON commands.
+> >>>>>>>>>
+> >>>>>>>>> 195      * The previous controller should be prepared first, be=
+fore the prepare
+> >>>>>>>>> 196      * for the panel is called. This is largely required fo=
+r DSI panels
+> >>>>>>>>> 197      * where the DSI host controller should be initialised =
+to LP-11 before
+> >>>>>>>>> 198      * the panel is powered up.
+> >>>>>>>>> 199      */
+> >>>>>>>>> 200     bool prepare_prev_first;
+> >>>>>>>>>
+> >>>>>>>>> These are conceptually different and thats what I explained Dmi=
+try in our call.
+> >>>>>>>>>
+> >>>>>>>>> Sending ON commands in LP11 state is a requirement I have seen =
+with many panels and its actually the right expectation as well to send the=
+ commands when the lanes are in a well-defined LP11 state.
+> >>>>>>>>>
+> >>>>>>>>>      From the panels which I have seen, the opposite is never t=
+rue (OR i have never seen it this way).
+> >>>>>>>>>
+> >>>>>>>>> The parade chip was the only exception and that issue was never=
+ root-caused leading us to have bridge specific handling in MSM driver.
+> >>>>>>>>>
+> >>>>>>>>> In other words, it would be very unlikely that a panel should b=
+e broken or shouldn't work when the ON commands are sent when the lanes are=
+ in LP11 state.
+> >>>>>>>>>
+> >>>>>>>>> So I agree with Jessica, that we should set the default value o=
+f this flag to true in the framework so that only the bridges/panels which =
+need this to be false do that explicitly. From the examples I pointed out i=
+ncluding MTK, even those vendors are powering on their DSI in pre_enable() =
+which means none of these panels will work there too.
+> >>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> It seems to me that most panel drivers send DCS commands duri=
+ng pre_enable, so maybe it would make more sense to power on DSI host befor=
+e panel enable() by default. Any panel that needs DSI host to be powered on=
+ later could then explicitly set the flag to false in their respective driv=
+ers.
+> >>>>>>>>>>
+> >>>>>>>>>> A proper migration should be done, yes, but not as a fix on to=
+p of v6.5.
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> I am fine to drop this fix in favor of making the prepare_prev_=
+first as default true but we need an agreement first. From what I can see, =
+parade chip will be the only one which will need this to be set to false an=
+d we can make that change.
+> >>>>>>>>>
+> >>>>>>>>> Let me know if this works as a migration plan.
+> >>>>>>>>
+> >>>>>>>> Yep agreed, let's do this
+> >>>>>>>>
+> >>>>>>>> The panel's prepare_prev_first should be reversed to something l=
+ike not_prepare_prev_first to make it an exception.
+> >>>>>>>
+> >>>>>>> This will break all non-DSI panels, which might depend on the cur=
+rent
+> >>>>>>> bridge calling order.
+> >>>>>>>
+> >>>>>>> I started looking at the explicit DSI power up sequencing, but it=
+ will
+> >>>>>>> take a few more days to mature.
+> >>>>>>>
+> >>>>>>
+> >>>>>> May I know why this would break all non-DSI panels?
+> >>>>>
+> >>>>> Existing panel drivers might be depending on the init order. Do we
+> >>>>> know for sure that none of DPI panels will be broken if there is a
+> >>>>> video stream ongoing during the reset procedure?
+> >>>>> Or the panel-edp, which I'm pretty sure will require not_prepare_pr=
+ev_first.
+> >>>>>
+> >>>>
+> >>>> Can you please explain why would video stream be ON in pre_enable()?
+> >>>>
+> >>>> Even though we call msm_dsi_host_enable() in the DSI's pre_enable(),=
+ the
+> >>>> timing engine is not enabled until the encoder's enable and the firs=
+t
+> >>>> commit after that so video stream wont be sent till then.
+> >>>
+> >>> You are describing the MSM DSI case. I was pointing to the fact that
+> >>> parent's pre_enable if called too early might conflict with the next
+> >>> bridge driver in the _generic_ case. E.g. eDP or DPI. Even if is not =
+a
+> >>> full-featured video stream, this state might confuse the panel. So we
+> >>> can not blindly switch the order of pre_enable callbacks for the
+> >>> bridge-panel pair.
+> >>>
+> >>
+> >> Even if the end connector was a eDP or DPI, the input to the bridge wa=
+s
+> >> DSI so I think its unlikely that video stream was on before encoder's
+> >> enable but I cannot speak for all these interfaces/vendors.
+> >>
+> >> So, to accommodate both worlds, does this work?
+> >>
+> >> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/p=
+anel.c
+> >> index 9316384b4474..2b38388d4e56 100644
+> >> --- a/drivers/gpu/drm/bridge/panel.c
+> >> +++ b/drivers/gpu/drm/bridge/panel.c
+> >> @@ -416,7 +416,10 @@ struct drm_bridge
+> >> *devm_drm_panel_bridge_add_typed(struct device *dev,
+> >>                   return bridge;
+> >>           }
+> >>
+> >> -       bridge->pre_enable_prev_first =3D panel->prepare_prev_first;
+> >> +       if (connector_type =3D=3D DRM_MODE_CONNECTOR_DSI)
+> >> +               bridge->pre_enable_prev_first =3D true;
+> >> +       else
+> >> +               bridge->pre_enable_prev_first =3D panel->prepare_prev_=
+first;
+> >
+> > looks like a hack.
+> >
+>
+> Nope its not, DSI spec has clear mentions about LP11 state to be used
+> during initialization.
+>
+> "After power-up, the host processor shall observe an initialization
+> period, TINIT, during which it shall drive a
+> sustained TX-Stop state (LP-11) on all Lanes of the Link. See [MIPI04]
+> for descriptions of TINIT and the TX-Stop state.
+>
+> Peripherals shall power up in the RX-Stop state and monitor the Link to
+> determine if the host processor has
+> asserted a TX-Stop state for at least the TINIT period. The peripheral
+> shall ignore all Link states prior to
+> detection of a TINIT event. The peripheral shall be ready to accept bus
+> transactions immediately following the end of the TINIT period."
+>
+> I am only extending this statement by mandating that the DSI PHY /
+> controller be powered up so that its able to drive the lanes to LP11 stat=
+e.
+>
+> Now, pls explain why this is a hack
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 522 pass: 522 fail: 0
+Because it centers DSI panels only, not taking bridges into account.
+Because doesn't allow the panel to override this decision, etc.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+>
+> >>
+> >>           *ptr =3D bridge;
+> >>           devres_add(dev, ptr);
+> >>
+> >>>>
+> >>>> drm_atomic_bridge_chain_pre_enable() is called before the encoder's =
+enable.
+> >>>>
+> >>>> drm_atomic_bridge_chain_enable() is the one which is called after th=
+e
+> >>>> encoder's enable().
+> >>>>
+> >>>>>>
+> >>>>>> Like I said, we dont know the full details of the parade issue but=
+ I do
+> >>>>>> not see any reason why powering on a bridge chip with the DSI lane=
+s
+> >>>>>> being in proper LP11 state should cause an issue. Its a well defin=
+ed and
+> >>>>>> documented state in DSI spec.
+> >>>>>>
+> >>>>>> On the contrary, trying to turn on a bridge chip before powering o=
+n a
+> >>>>>> controller could have more issues as we do not know what state the=
+ lanes
+> >>>>>> are in when the MIPI devices (panel or bridge) are powered up.
+> >>>>>>
+> >>>>>> This sets the expectation and handshake straight.
+> >>>>>
+> >>>>>
+> >>>
+> >>>
+> >>>
+> >
+> >
+> >
 
-Guenter
+
+
+--=20
+With best wishes
+Dmitry
