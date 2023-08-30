@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B79378DE42
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96FC78DD0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbjH3TAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
+        id S242953AbjH3Sre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242821AbjH3Jst (ORCPT
+        with ESMTP id S242823AbjH3Jub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:48:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7351B3;
-        Wed, 30 Aug 2023 02:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693388926; x=1724924926;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=orlWb/RTxKwxmmASqoBVNPU97JJXkwjIwCGq+9b7IOI=;
-  b=gdtnRX8Qq4wUugYquYr/o/zeVJtMak6Ssb4r+ruzHn/jGz0UW0vxww1h
-   gpFAkG4SCYVMBKOgqyoQvb19NaHx1ToZij6owjF9fGad7sHD3dNz3Vw9B
-   pUd53TN6htMaKrjNRW6wBidt6DutVVToJdQHEK4zCCUZPKwm19IM2+67W
-   AhMXSK1C0CvgeuxvSpC6a4Cwwx/g95OILPGIOanu9t6FqdR1FNKdpNo9i
-   3uAp5xHXF3lPy+tTOEwLdITOCLztICcQhdUApWZ+Z10csOQyh2miWSc0m
-   AJp5dmuRZeVd2zmw4bjkwwStKY8R0LEIUnjpGkcgsFuLGl98Oao5uv8ae
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="461970656"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="461970656"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 02:48:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="732552815"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="732552815"
-Received: from unknown (HELO localhost.localdomain) ([10.237.112.144])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 02:48:39 -0700
-Date:   Wed, 30 Aug 2023 11:48:31 +0200
-From:   Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
-        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        Wed, 30 Aug 2023 05:50:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5EFE1B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:50:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C95182F4;
+        Wed, 30 Aug 2023 02:51:07 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C852A3F64C;
+        Wed, 30 Aug 2023 02:50:25 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: phy: Provide Module 4 KSZ9477 errata
- (DS80000754C)
-Message-ID: <ZO8QbyKphyTmuv/g@localhost.localdomain>
-References: <20230830092119.458330-1-lukma@denx.de>
- <20230830092119.458330-2-lukma@denx.de>
+Subject: [PATCH v2 0/5] Optimize mmap_exit for large folios
+Date:   Wed, 30 Aug 2023 10:50:06 +0100
+Message-Id: <20230830095011.1228673-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830092119.458330-2-lukma@denx.de>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 11:21:19AM +0200, Lukasz Majewski wrote:
-> The KSZ9477 errata points out (in 'Module 4') the link up/down problem
-> when EEE (Energy Efficient Ethernet) is enabled in the device to which
-> the KSZ9477 tries to auto negotiate.
-> 
-> The suggested workaround is to clear advertisement of EEE for PHYs in
-> this chip driver.
-> 
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
-Hi,
+Hi All,
 
-As the net is target you should add fixes tag which the commit that your
-changes is fixing (workarounding :) )
+This is v2 of a series to improve performance of process teardown,
+taking advantage of the fact that large folios are increasingly
+regularly pte-mapped in user space; supporting filesystems already use
+large folios for pagecache memory, and large folios for anonymous memory
+are (hopefully) on the horizon.
 
-> ---
->  drivers/net/phy/micrel.c | 31 ++++++++++++++++++++++++++++++-
->  1 file changed, 30 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> index 87b090ad2874..469dcd8a5711 100644
-> --- a/drivers/net/phy/micrel.c
-> +++ b/drivers/net/phy/micrel.c
-> @@ -1418,6 +1418,35 @@ static int ksz9131_get_features(struct phy_device *phydev)
->  	return 0;
->  }
->  
-> +static int ksz9477_get_features(struct phy_device *phydev)
-> +{
-> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(zero) = { 0, };
-= { 0 };
+See last patch for performance numbers, including measurements that show
+this approach doesn't regress (and actually improves a little bit) when
+all folios are small.
 
-> +	int ret;
-> +
-> +	ret = genphy_read_abilities(phydev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* KSZ9477 Errata DS80000754C
-> +	 *
-> +	 * Module 4: Energy Efficient Ethernet (EEE) feature select must be
-> +	 * manually disabled
-> +	 *   The EEE feature is enabled by default, but it is not fully
-> +	 *   operational. It must be manually disabled through register
-> +	 *   controls. If not disabled, the PHY ports can auto-negotiate
-> +	 *   to enable EEE, and this feature can cause link drops when linked
-> +	 *   to another device supporting EEE.
-> +	 *
-> +	 *   Although, the KSZ9477 MMD register
-> +	 *   (MMD_DEVICE_ID_EEE_ADV.MMD_EEE_ADV) advertise that EEE is
-> +	 *   operational one needs to manualy clear them to follow the chip
-> +	 *   errata.
-> +	 */
-> +	linkmode_and(phydev->supported_eee, phydev->supported, zero);
-> +
-> +	return 0;
-> +}
-> +
->  #define KSZ8873MLL_GLOBAL_CONTROL_4	0x06
->  #define KSZ8873MLL_GLOBAL_CONTROL_4_DUPLEX	BIT(6)
->  #define KSZ8873MLL_GLOBAL_CONTROL_4_SPEED	BIT(4)
-> @@ -4871,7 +4900,7 @@ static struct phy_driver ksphy_driver[] = {
->  	.handle_interrupt = kszphy_handle_interrupt,
->  	.suspend	= genphy_suspend,
->  	.resume		= genphy_resume,
-> -	.get_features	= ksz9131_get_features,
-> +	.get_features	= ksz9477_get_features,
->  } };
->  
->  module_phy_driver(ksphy_driver);
-> -- 
-> 2.20.1
-> 
+The basic approach is to accumulate contiguous ranges of pages in the
+mmu_gather structure (instead of storing each individual page pointer),
+then take advantage of this internal format to efficiently batch rmap
+removal, swapcache removal and page release - see the commit messages
+for more details.
+
+This series replaces the previous approach I took at [2], which was much
+smaller in scope, only attempting to batch rmap removal for anon pages.
+Feedback was that I should do something more general that would also
+batch-remove pagecache pages from the rmap. But while designing that, I
+found it was also possible to improve swapcache removal and page
+release. Hopefully I haven't gone too far the other way now! Note that
+patch 1 is unchanged from that originl series.
+
+Note that this series will conflict with Matthew's series at [3]. I
+figure we both race to mm-unstable and the loser has to do the conflict
+resolution?
+
+This series is based on mm-unstable (b93868dbf9bc).
+
+
+Changes since v1 [1]
+--------------------
+
+- Now using pfns for start and end of page ranges within a folio.
+  `struct page`s may not be contiguous on some setups so using pointers
+  breaks these systems. (Thanks to Zi Yan).
+- Fixed zone_device folio reference putting. (Thanks to Matthew and
+  David).
+- Refactored release_pages() and folios_put_refs() so that they now
+  share a common implementation.
+
+
+[1] https://lore.kernel.org/linux-mm/20230810103332.3062143-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20230727141837.3386072-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/20230825135918.4164671-1-willy@infradead.org/
+
+
+Thanks,
+Ryan
+
+Ryan Roberts (5):
+  mm: Implement folio_remove_rmap_range()
+  mm/mmu_gather: generalize mmu_gather rmap removal mechanism
+  mm/mmu_gather: Remove encoded_page infrastructure
+  mm: Refector release_pages()
+  mm/mmu_gather: Store and process pages in contig ranges
+
+ arch/s390/include/asm/tlb.h |   9 +-
+ include/asm-generic/tlb.h   |  49 ++++-----
+ include/linux/mm.h          |  11 +-
+ include/linux/mm_types.h    |  34 +-----
+ include/linux/rmap.h        |   2 +
+ include/linux/swap.h        |   6 +-
+ mm/memory.c                 |  24 +++--
+ mm/mmu_gather.c             | 114 ++++++++++++++------
+ mm/rmap.c                   | 125 ++++++++++++++++------
+ mm/swap.c                   | 201 ++++++++++++++++++++++--------------
+ mm/swap_state.c             |  11 +-
+ 11 files changed, 367 insertions(+), 219 deletions(-)
+
+--
+2.25.1
+
