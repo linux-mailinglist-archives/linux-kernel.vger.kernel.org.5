@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBE078DF6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388B378DF4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbjH3TRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
+        id S242532AbjH3TUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245468AbjH3PQe (ORCPT
+        with ESMTP id S245477AbjH3PRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:16:34 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03B21A3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:16:30 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401b3ea0656so51980065e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:16:30 -0700 (PDT)
+        Wed, 30 Aug 2023 11:17:08 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE641A2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:17:06 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-500cfb168c6so440687e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693408589; x=1694013389; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mDUjhNsZiKuiQHQHANm264fa/+Px+b5VJ7MlnK/AAX8=;
-        b=HQzHNxAPNqgPUiCbt2Mb/fHWWjH1lEu3w9iT0MiF7ZaUrpPL4VpcU3wdgROTAbDtif
-         BBiuetDGn+FyV/f/A44dPXbTncbEfu95DB7pJviL9UWjQY1eDlMFYK4UPxsAi6FhuH3/
-         65Q2WePwRm498+VOVrgQpYBOgnZqJ4EJGFZ0oMJcmeE0eZrkIDosYc6eiwj/UaM8pjn+
-         FbP90e1GYiRqsHkW9ilf/gd66lOXaERd5vUJWtd9vRBffLxyTcycHFQqM093nzkfWVax
-         /utKuj0E4GN0OmuX9MT4iOCtQJOJ7SumXdDP+hE42n7yTlb1gi8O5jUG3TVH/i7fwxk4
-         C5tg==
+        d=linux-foundation.org; s=google; t=1693408624; x=1694013424; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=y2Lq1UEtVYfmaVSMBjGqn/DzODksXNcJpAcn5BFpVcs=;
+        b=FrL8PZoOTKhvBQCb/ps0/nguEEcD1PSLXsKLPMluaW6y/mmsB7kdyiKibPdCT10hmr
+         TqSK8DPhdyWIELIyKf2bmYapyVrGX6aQ2uvfas68BIGbLbzH1rq/1HPN9veKjlO+nCz5
+         79R9i2dpYEqaOfFeKmYb8CXxNlOEbbeDE/NyI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693408589; x=1694013389;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mDUjhNsZiKuiQHQHANm264fa/+Px+b5VJ7MlnK/AAX8=;
-        b=Q8LYG9jMh0QDkEv2c+jtBYAFgbIeo3cUkjbsRzYG8Q58u6pmMh6tzfBg8FBl4KB04G
-         bKLRjwxfX2R/Oj06/+wFinK+9z1zjf8pUUzISrnttG1LYt6FKcNniH18r/DHctB6t27g
-         zLD2n/mAxB0JF/ntzi7MndIhmU9kti686MZlYc4tifV4UnScT6b7na66/8Jcq5A8UeJR
-         Zctzc7luMgat6eUKvjQTUsftWdrVXOOFE5TZEcimhxv+l+ufQhewaml2w0HhjwUZKe7T
-         QBHEfHbAFs3bKQKxcljxZDAr7TdghJ1In/HI62UtSBMVmrf/TG4/aFbvbuY50AL7+/FJ
-         4D+w==
-X-Gm-Message-State: AOJu0Yx4XtF4eoHLCx7+eJcLpw3j96KOZRZe2U9+neIV0enkCITT1k5a
-        xcS5nFXlI0WhuQ/83VSPbaUF9w==
-X-Google-Smtp-Source: AGHT+IE9UqrL+pPJP8W2yTx9xqQ4WDHOKHVlKEroNve58lNQAMRLQBg5uzkYo4wAbnbWJdjNwG1UjQ==
-X-Received: by 2002:a5d:4e43:0:b0:317:5182:7b55 with SMTP id r3-20020a5d4e43000000b0031751827b55mr1910128wrt.42.1693408589200;
-        Wed, 30 Aug 2023 08:16:29 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id b16-20020a5d4d90000000b0030fd03e3d25sm16989961wru.75.2023.08.30.08.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 08:16:28 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH v3 09/10] media: qcom: camss: Fix set CSI2_RX_CFG1_VC_MODE when VC is greater than 3
-Date:   Wed, 30 Aug 2023 16:16:14 +0100
-Message-ID: <20230830151615.3012325-10-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230830151615.3012325-1-bryan.odonoghue@linaro.org>
-References: <20230830151615.3012325-1-bryan.odonoghue@linaro.org>
+        d=1e100.net; s=20221208; t=1693408624; x=1694013424;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y2Lq1UEtVYfmaVSMBjGqn/DzODksXNcJpAcn5BFpVcs=;
+        b=Htb8RxWK2VAY7TZlxQIqZM/W1T4dLdWEb5NBYlaTVFXRJTnob4vRwO7sD7iCP0FNXA
+         nd03KELXKTjLQ/F/clyOUlwk2OCDibT7MpfQiaF7NIi18/DNziGQTJrDjt+3TXyOcsew
+         T+7iSHC3FxRrAiiE5sauKrVDCqZsCbYK+JbXWy2I3skC3lqu+LK49Hm3Jms1MEhjBHMi
+         tp1Btt0TkPfCxbPhhdAlaP4UHy4SaQEMnfg2lofHmJTAbMFzUPxAue0T5ocgiPXHZcA3
+         KqKNBT0jV6LY8QELqgd+c7bDfpv0J2lUgnd5Ty1wdo5ZqyEyPDW7A9Oh+9zBj46vNFki
+         sJpg==
+X-Gm-Message-State: AOJu0YzRNdukt7fPvpYiPWqWstWBicKankUoVgYkuIUstBsUJhM6hkbf
+        AHoA9rkJShzKwHRxASXdWF7NzifDEarortr8fSwmtXoO
+X-Google-Smtp-Source: AGHT+IENI90AbZiz7XYMgTMAKH89YSRaNZinsTh+12Unv6ovMoi60kbNoD61iSGqPSe9FtVNUUvshg==
+X-Received: by 2002:ac2:4650:0:b0:500:b5db:990b with SMTP id s16-20020ac24650000000b00500b5db990bmr1798843lfo.47.1693408624451;
+        Wed, 30 Aug 2023 08:17:04 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id 18-20020ac24852000000b0050089b26ea1sm2404703lfy.276.2023.08.30.08.17.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 08:17:04 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2bcc187e0b5so87713421fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:17:03 -0700 (PDT)
+X-Received: by 2002:a2e:7e09:0:b0:2b6:cdfb:d06a with SMTP id
+ z9-20020a2e7e09000000b002b6cdfbd06amr2210430ljc.22.1693408623545; Wed, 30 Aug
+ 2023 08:17:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <ZO4NUZ+k4Q4zPu6X@infradead.org> <CAHk-=wik9Df4Si7aYOqgyhf=io2OaP=7Yur-xpbNe6oHuxSFAg@mail.gmail.com>
+ <ZO7iy/Ei+wZK0I/d@infradead.org>
+In-Reply-To: <ZO7iy/Ei+wZK0I/d@infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 30 Aug 2023 08:16:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiwuJckhd76veFTJeDefktAdbpWrZh-U+AGb+NN3B_XLg@mail.gmail.com>
+Message-ID: <CAHk-=wiwuJckhd76veFTJeDefktAdbpWrZh-U+AGb+NN3B_XLg@mail.gmail.com>
+Subject: Re: [GIT PULL] dma-mapping updates for Linux 6.6
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Yajun Deng <yajun.deng@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VC_MODE = 0 implies a two bit VC address.
-VC_MODE = 1 is required for VCs with a larger address than two bits.
+On Tue, 29 Aug 2023 at 23:33, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> It actually does..
 
-Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
-Cc: stable@vger.kernel.org
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
----
- drivers/media/platform/qcom/camss/camss-csid-gen2.c | 2 ++
- 1 file changed, 2 insertions(+)
+Ahh, bah, mea culpa. That's what I get for having mindlessly looked at
+the config part (which was, in my defense, about 90% of it), and
+missed the one-liner that actually moved the call from the arm64 init
+to the dma init.
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-index 45c7986d4a8d0..140c584bfb8b1 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-@@ -449,6 +449,8 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
- 	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG0);
- 
- 	val = 1 << CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN;
-+	if (vc > 3)
-+		val |= 1 << CSI2_RX_CFG1_VC_MODE;
- 	val |= 1 << CSI2_RX_CFG1_MISR_EN;
- 	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1);
- 
--- 
-2.41.0
+But yes, please do look out for making things 'default y' - even if
+that 'y' is then a bit indirect.
 
+          Linus
