@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E038278E0FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7153878E13C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240322AbjH3Uvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        id S240863AbjH3VMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238405AbjH3Uvm (ORCPT
+        with ESMTP id S240757AbjH3VME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:51:42 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEFEC0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:51:13 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401b3ea0656so947495e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:51:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693428577; x=1694033377; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yjZbtMDwHgL6rOhEs0+hOR39TSbPZ+yWdgFCyClCTgM=;
-        b=DgPBn2P+CqJfaEWTvcwXA9fxlxRC6r9bzxjOC4rFleOkSpioVAlp/CcN1fIeMz7UOt
-         /31nHafienSF78tr+NXgVYfEB52v9bguQ75XyaD3SyxTTzoWrntvpIygC24BqA/OxOMd
-         OQUng+LVR39xZ5X3PMnBadP0sGuqCNl0UVSrQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693428577; x=1694033377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yjZbtMDwHgL6rOhEs0+hOR39TSbPZ+yWdgFCyClCTgM=;
-        b=E2jYqknA0j8P89aCwzBBKuFbobCLXNEAyirFOQ0e22cPlmrTmcBEIX97v1ewR7SQ2U
-         KZF5zvNdnkE7XZEKc2E0H47zcaN6uqMRGT75IEicrxSw/Z0TB+ZSS/C7tXGkRMC44ifD
-         Qt0E3cLNrR22jRpaNRga5YZwexPKqIb/5pcJ6d8r6n0CreESNlu+5F9cIU9jSYPUgX/q
-         plV3GskDAOFCGsx8QYG6ItrXhaJMbFwz0r9RlJaip7+9Hi374pxJtZ+d7Yytew1aajaC
-         YuFWAnrwtXnSofVUfFgDZ22J6T5xcCKR8igqQ7k4KiIqArqNdfCKTdWmHrTTicHfUjAB
-         Kmrw==
-X-Gm-Message-State: AOJu0YwzGxCQlnTuThtkEeqCjtKaIgL6ukzS1oY4nAJUZHWS+DwWBeB0
-        9hd2UFqVZm7a7Lx8GJ8A72723EIVr+KjfI+9R5dWq8hA
-X-Google-Smtp-Source: AGHT+IHg7BLyyrwKYEqmnFe60kmZepuGCBlvTOKt45zJeCBpZg097BtNDuy8Us5zOsquQvoCluFpGw==
-X-Received: by 2002:a17:907:75cd:b0:9a2:739:3aa1 with SMTP id jl13-20020a17090775cd00b009a207393aa1mr2673432ejc.61.1693427651407;
-        Wed, 30 Aug 2023 13:34:11 -0700 (PDT)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id li22-20020a170906f99600b009a198078c53sm7533315ejb.214.2023.08.30.13.34.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 13:34:10 -0700 (PDT)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-52c1d861c5eso1075a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:34:10 -0700 (PDT)
-X-Received: by 2002:a50:935e:0:b0:522:4741:d992 with SMTP id
- n30-20020a50935e000000b005224741d992mr34289eda.4.1693427650661; Wed, 30 Aug
- 2023 13:34:10 -0700 (PDT)
+        Wed, 30 Aug 2023 17:12:04 -0400
+Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 25B95185
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:11:27 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id bRtwq9Cq9LJHlbRtxqZvkj; Wed, 30 Aug 2023 22:34:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693427699;
+        bh=ukX6nIzTyaosUbrTkIXJsNBtFe8mTALHzfMVVvM42bc=;
+        h=From:To:Cc:Subject:Date;
+        b=tU2kvuBiW/eMCF/tn/6aangRq7DihAInl+uRWuVrVN6dJggGpARY3DvpgCM+yCtwC
+         vba8qjDthJoeGKkNKxh2tlEhFKVIaUzW0irEWjA8IVUcbY7Ln89PQxzCpc/nfLmjBf
+         uHcaOo78+807a8dM9rj7uHizW915ThG0BjY1bGnjpU4V6mOxJX514C92zu58N/tQY9
+         EqXgPtDLws83Lku51aBt9/uwLU4/RSxBLH7E2YeSL1ZSbjQ6p+hCYPVEcqsX5XICmS
+         5SPxqwmXJ0kKeMDrGHrYbBwlGWn428Ekau1G7pcupynJVG938rH9aweYLbIhmLfUP2
+         eqH7LVw/cOn3g==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 30 Aug 2023 22:34:59 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        linux-media@vger.kernel.org
+Subject: [PATCH v2] media: i2c: rdacm21: Remove an incorrect fwnode_handle_put() call
+Date:   Wed, 30 Aug 2023 22:34:51 +0200
+Message-Id: <d9230082a1f5b7bab6363c51408508ec5ab6acfc.1693037086.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <cover.1693416477.git.mirq-linux@rere.qmqm.pl> <711d447ac7160ca275975f6aba51e19bfcb4f742.1693416477.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <711d447ac7160ca275975f6aba51e19bfcb4f742.1693416477.git.mirq-linux@rere.qmqm.pl>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 30 Aug 2023 13:33:58 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UekHUmY5u=mhx9XE8o8bU65ACkjEeao8bhWArqXMZWng@mail.gmail.com>
-Message-ID: <CAD=FV=UekHUmY5u=mhx9XE8o8bU65ACkjEeao8bhWArqXMZWng@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] regulator/core: regulator_lock_two: remove
- duplicate locking code
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The commit in Fixes has removed an fwnode_handle_put() call in the error
+handling path of the probe.
 
-On Wed, Aug 30, 2023 at 10:35=E2=80=AFAM Micha=C5=82 Miros=C5=82aw
-<mirq-linux@rere.qmqm.pl> wrote:
->
-> Make regulator_lock_two() shorter by observing that we have only two
-> locks and when swapped earlier the retry code becomes identical to the
-> normal (optimistic) path.
->
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> ---
->  drivers/regulator/core.c | 30 +++++++++-------------------
->  1 file changed, 11 insertions(+), 19 deletions(-)
+Remove the same call from the remove function.
 
-FWIW, I'm leaving this one to Stephen to review since he had strong
-opinions on some of the style issues here.
+Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+---
+v2: s/rdacm2/rdacm21/ in the subject    [Laurent Pinchart]
+    Add R-b tags
 
--Doug
+v1:
+   https://lore.kernel.org/all/d9230082aefcb7bab6363c51c08598eb5ab62cfc.1693037086.git.christophe.jaillet@wanadoo.fr/
+---
+ drivers/media/i2c/rdacm21.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+index a36a709243fd..3e22df36354f 100644
+--- a/drivers/media/i2c/rdacm21.c
++++ b/drivers/media/i2c/rdacm21.c
+@@ -608,7 +608,6 @@ static void rdacm21_remove(struct i2c_client *client)
+ 	v4l2_async_unregister_subdev(&dev->sd);
+ 	v4l2_ctrl_handler_free(&dev->ctrls);
+ 	i2c_unregister_device(dev->isp);
+-	fwnode_handle_put(dev->sd.fwnode);
+ }
+ 
+ static const struct of_device_id rdacm21_of_ids[] = {
+-- 
+2.34.1
+
