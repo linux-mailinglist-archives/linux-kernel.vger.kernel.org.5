@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6866F78E008
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F263678DFCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240985AbjH3TJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S239156AbjH3TR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243887AbjH3MGy (ORCPT
+        with ESMTP id S243888AbjH3MHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:06:54 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B561B0;
-        Wed, 30 Aug 2023 05:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=14UPWfWyHDR8jpQfLIsE1AHR7QeHn2xjLd6uBNjzZCo=; b=xaF4O9l0w8PZ4R8HMjPPUL5QS3
-        NMmylAo9FTCzxO0CIC17vgVAdsuaghNDujeTsJKrSUckrU+/O/JMZjQ4C7L9gcyLrEOXwnTBWkbkV
-        sPxKXwUzEZvJV0nAwBrggx+8bea5ww83j1zFJZ10/9YS8d+5+MX62C243EHpXXy+GgpenA0Dsk73D
-        hQE9xtdHHFw7viB1Z3Rt1WBjXz5EtOw0mojI57/eAljELAoPb+TUfJ2t8xcYM6rpxOLxJ2T2XoLQK
-        x0v9GrxyRB3o7Ninp+q9PuMdyIpwKvY/2ICRqMQTEeXQdeWalo5frMqbljJMUEr8zT/vjnTqmLmQI
-        +yD7sBCw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54800)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qbJy3-0001Zg-3D;
-        Wed, 30 Aug 2023 13:06:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qbJy3-0005fa-Am; Wed, 30 Aug 2023 13:06:39 +0100
-Date:   Wed, 30 Aug 2023 13:06:39 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>,
-        Sabrina Dubroca <sd@queasysnail.net>, hkallweit1@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com,
-        sebastian.tobuschat@nxp.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next v2 3/5] net: phy: nxp-c45-tja11xx add MACsec
- support
-Message-ID: <ZO8wz9KwCbSHATFm@shell.armlinux.org.uk>
-References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
- <20230824091615.191379-4-radu-nicolae.pirea@oss.nxp.com>
- <ZOikKUjRvces_vVj@hog>
- <95f66997-c6dd-4bbc-b1ef-dad1e7ed533e@lunn.ch>
- <a1baef3d-ad81-5e10-6b8f-7578b3b8d5b8@oss.nxp.com>
- <e2e26d30-86fb-4005-9a0e-ac9b793df86a@lunn.ch>
+        Wed, 30 Aug 2023 08:07:24 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F9AB1B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:07:21 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41E8A2F4;
+        Wed, 30 Aug 2023 05:08:00 -0700 (PDT)
+Received: from [10.57.64.173] (unknown [10.57.64.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C7A53F738;
+        Wed, 30 Aug 2023 05:07:03 -0700 (PDT)
+Message-ID: <5c9ba378-2920-4892-bdf0-174e47d528b7@arm.com>
+Date:   Wed, 30 Aug 2023 13:07:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e2e26d30-86fb-4005-9a0e-ac9b793df86a@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/5] mm: LARGE_ANON_FOLIO for improved performance
+Content-Language: en-GB
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230810142942.3169679-1-ryan.roberts@arm.com>
+ <20230810142942.3169679-4-ryan.roberts@arm.com>
+ <87v8dg6lfu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87v8dg6lfu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 03:50:06PM +0200, Andrew Lunn wrote:
-> > > > > +static bool nxp_c45_rx_sc_valid(struct nxp_c45_secy *phy_secy,
-> > > > > +				struct macsec_rx_sc *rx_sc)
-> > > > > +{
-> > > > > +	u16 port =  (__force u64)rx_sc->sci >> (ETH_ALEN * 8);
-> > > > 
-> > > > u64 sci = be64_to_cpu((__force __be64)rx_sc->sci);
-> > > 
-> > > why is the __force needed? What happens with a normal cast?
-> > > 
-> > 
-> > Sparse will print warnings if __force is missing.
+On 15/08/2023 22:32, Huang, Ying wrote:
+> Hi, Ryan,
 > 
-> What is the warning? I just want to make sure __force is the correct
-> solution, not that something has the wrong type and we should be
-> fixing a design issue.
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
+>> allocated in large folios of a determined order. All pages of the large
+>> folio are pte-mapped during the same page fault, significantly reducing
+>> the number of page faults. The number of per-page operations (e.g. ref
+>> counting, rmap management lru list management) are also significantly
+>> reduced since those ops now become per-folio.
+>>
+>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
+>> which defaults to disabled for now; The long term aim is for this to
+>> defaut to enabled, but there are some risks around internal
+>> fragmentation that need to be better understood first.
+>>
+>> Large anonymous folio (LAF) allocation is integrated with the existing
+>> (PMD-order) THP and single (S) page allocation according to this policy,
+>> where fallback (>) is performed for various reasons, such as the
+>> proposed folio order not fitting within the bounds of the VMA, etc:
+>>
+>>                 | prctl=dis | prctl=ena   | prctl=ena     | prctl=ena
+>>                 | sysfs=X   | sysfs=never | sysfs=madvise | sysfs=always
+>> ----------------|-----------|-------------|---------------|-------------
+>> no hint         | S         | LAF>S       | LAF>S         | THP>LAF>S
+>> MADV_HUGEPAGE   | S         | LAF>S       | THP>LAF>S     | THP>LAF>S
+>> MADV_NOHUGEPAGE | S         | S           | S             | S
+> 
+> IMHO, we should use the following semantics as you have suggested
+> before.
+> 
+>                 | prctl=dis | prctl=ena   | prctl=ena     | prctl=ena
+>                 | sysfs=X   | sysfs=never | sysfs=madvise | sysfs=always
+> ----------------|-----------|-------------|---------------|-------------
+> no hint         | S         | S           | LAF>S         | THP>LAF>S
+> MADV_HUGEPAGE   | S         | S           | THP>LAF>S     | THP>LAF>S
+> MADV_NOHUGEPAGE | S         | S           | S             | S
+> 
+> Or even,
+> 
+>                 | prctl=dis | prctl=ena   | prctl=ena     | prctl=ena
+>                 | sysfs=X   | sysfs=never | sysfs=madvise | sysfs=always
+> ----------------|-----------|-------------|---------------|-------------
+> no hint         | S         | S           | S             | THP>LAF>S
+> MADV_HUGEPAGE   | S         | S           | THP>LAF>S     | THP>LAF>S
+> MADV_NOHUGEPAGE | S         | S           | S             | S
+> 
+> From the implementation point of view, PTE mapped PMD-sized THP has
+> almost no difference with LAF (just some small sized THP).  It will be
+> confusing to distinguish them from the interface point of view.
+> 
+> So, IMHO, the real difference is the policy.  For example, prefer
+> PMD-sized THP, prefer small sized THP, or fully auto.  The sysfs
+> interface is used to specify system global policy.  In the long term, it
+> can be something like below,
+> 
+> never:      S               # disable all THP
+> madvise:                    # never by default, control via madvise()
+> always:     THP>LAF>S       # prefer PMD-sized THP in fact
+> small:      LAF>S           # prefer small sized THP
+> auto:                       # use in-kernel heuristics for THP size
+> 
+> But it may be not ready to add new policies now.  So, before the new
+> policies are ready, we can add a debugfs interface to override the
+> original policy in /sys/kernel/mm/transparent_hugepage/enabled.  After
+> we have tuned enough workloads, collected enough data, we can add new
+> policies to the sysfs interface.
 
-Hi Andrew,
+I think we can all imagine many policy options. But we don't really have much
+evidence yet for what it best. The policy I'm currently using is intended to
+give some flexibility for testing (use LAF without THP by setting sysfs=never,
+use THP without LAF by compiling without LAF) without adding any new knobs at
+all. Given that, surely we can defer these decisions until we have more data?
 
-rx_sc->sci is sci_t, which is defined as:
+In the absence of data, your proposed solution sounds very sensible to me. But
+for the purposes of scaling up perf testing, I don't think its essential given
+the current policy will also produce the same options.
 
-typedef u64 __bitwise sci_t;
+If we were going to add a debugfs knob, I think the higher priority would be a
+knob to specify the folio order. (but again, I would rather avoid if possible).
 
-Sparse documentation (Documentation/dev-tools/sparse.rst) states that:
+Thanks,
+Ryan
 
-  "__bitwise" is a type attribute, so you have to do something like this::
-...
-  which makes PM_SUSPEND and PM_RESUME "bitwise" integers (the "__force"
-  is there because sparse will complain about casting to/from a bitwise
-  type, but in this case we really _do_ want to force the conversion).
 
-So basically, sci is a bitwise type, which means sparse gives it
-special properties that ensures it can only be operated on using
-similarly typed integers.
-
-So, those __force casts are needed to convert sci to something else.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
