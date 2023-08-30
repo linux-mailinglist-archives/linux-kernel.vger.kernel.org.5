@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A34D778DE4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE75278DE19
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239550AbjH3TAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
+        id S235386AbjH3S5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241446AbjH3GzX (ORCPT
+        with ESMTP id S241532AbjH3G4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:55:23 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2584619A;
-        Tue, 29 Aug 2023 23:55:20 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37U6Q9kp009047;
-        Wed, 30 Aug 2023 06:55:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=EyMaeB6OQzrO3y97poWIDcd5bnpsn0P5m5IO1SfK+U0=;
- b=RCgGpld+0tkmlpXcMn4r6hts+bojy3482TsjsMeOTJswJxALj6eaoYMxOsyA/AYuDrbm
- 7nECRu7IZQQrnkRqGpmWAz2Q8/fEb8uF8XlS/wZNJxjFVTnn8qZZjuk9rj9HGggzAw0B
- gVtjw7UT+2o5Fe5cOYdGI8xLcdOUVNpgH9S6XgwCFR0I9A7afl/xGiAeyt4AptBlXSe8
- omZ8773yz7IqAUH9CQ8EYHv0ZTWnn2DSsBkaYJozNAl62XTrTNt+etmyBmx1c4zZL/o8
- KnB1jyjTfJrFE5Hpm8WzPps2+X9qvQR0uxYpiD+WBwSYEd99x2VyLKp9TlwPAyfuxj/U 1w== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss4wq39tc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 06:55:13 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37U6tC7C031608
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 06:55:12 GMT
-Received: from [10.50.47.209] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
- 2023 23:55:06 -0700
-Message-ID: <58d5122f-7b4e-3294-10df-eee79d39e0a3@quicinc.com>
-Date:   Wed, 30 Aug 2023 12:25:03 +0530
+        Wed, 30 Aug 2023 02:56:51 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE32194
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:56:45 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-500b66f8b27so5206059e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693378604; x=1693983404; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FKNC/Ecmczb+pprJRVI/jNOGGup4YFMq8hyWzf6I3EM=;
+        b=WIZ3OTUSveMvOL3e8mB9fiGf40833DgAgSns8ITCk1NuhavzY113ObI2EtVdVLKZwW
+         KJ5Znhbc5YhmbaPQsbM/ynXrLP4jiU68w5mmnJuogg4XdlnIdfzlbMcCVGJuOQG7qEu9
+         f8UPlpchyx5p2pIb2bK7YuqloVQTuj+tQ1UGGjygSDq6UYPOUIZkY+rNH1pXgH0NJO2C
+         d8AySKR2JOXlWe45qmqmspOXqE1USwlKd341A85AcqnSvrbnVu774/ToRcW6/yrhGzmP
+         VZVm5EgHhKNCDBrNoQh0gACbhxSEHNv4U3FSQc1ToeabwFOQLK6UELU7XoL2y5DESWa2
+         unrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693378604; x=1693983404;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FKNC/Ecmczb+pprJRVI/jNOGGup4YFMq8hyWzf6I3EM=;
+        b=RIDC5cv7DicCw6sltwBQuQIgMi4IhlF0uEMe9tX4WZ3V5Hka3UjrPKa00PB1zD+Zz3
+         AAnM0GOJpsVcQv9gos7vZwpXh47XD5by3TIoaDOOLLJpoPsrVrnIeh4CErwdWIjUh4xX
+         Hqr1EUGwZQjD4NwKrlfSoksdIA32JRtfK81yiwnn9qrNB/x9tnED603x+SXiFey2p2Rs
+         5giCYoxkE4GeP78a4q/G4Yp1Q1of3LfbVhB662q3ins0h//oBGoJ0ZBNgK1Arl5nylmi
+         sI1GwtRypnzF+F3+FfIYMnOvcYsMBv9qAYwVnGLHGObhrU7+D+Dgl0QF7QtTQVoKAxTk
+         7iWQ==
+X-Gm-Message-State: AOJu0Yw6C7tRCnHvPfpGAhKI8VPM8IPYnGRpMfuUnB8z0vsyHX2yq8Xc
+        WM2ItfSHPc5+M6KOLxJz+LVaDQ==
+X-Google-Smtp-Source: AGHT+IEkicIQuRpUPzDVnA0JHWBk+8C+LPUAUHJor3ONxVqWsbLcrf8WjtNGb6UOKF8JDaWBm8ZWqA==
+X-Received: by 2002:a2e:8619:0:b0:2bd:10d3:214 with SMTP id a25-20020a2e8619000000b002bd10d30214mr1105105lji.11.1693378603617;
+        Tue, 29 Aug 2023 23:56:43 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id fx19-20020a1709069e9300b0098e0a937a6asm6796450ejc.69.2023.08.29.23.56.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 23:56:43 -0700 (PDT)
+Message-ID: <03729949-1994-6ce1-253b-886a254ac0af@linaro.org>
+Date:   Wed, 30 Aug 2023 08:56:41 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 4/5] arm64: dts: qcom: ipq5018: Add USB related nodes
+Subject: Re: [PATCH v3 1/1] ARM: dts: aspeed: Minerva: Add Facebook Minerva
+ (AST2600) BMC
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-CC:     Amandeep Singh <quic_amansing@quicinc.com>
-References: <20230825093531.7399-1-quic_nsekar@quicinc.com>
- <20230825093531.7399-5-quic_nsekar@quicinc.com>
- <7c0dbf30-295f-6735-88d1-f4e524936c72@linaro.org>
-From:   Nitheesh Sekar <quic_nsekar@quicinc.com>
-In-Reply-To: <7c0dbf30-295f-6735-88d1-f4e524936c72@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     peteryin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
+        daniel-hsu@quantatw.com
+References: <20230830025133.3756506-1-peteryin.openbmc@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230830025133.3756506-1-peteryin.openbmc@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 1e_Z5dv1vaAJFriwUYUoTRE2ZdjWPBlG
-X-Proofpoint-ORIG-GUID: 1e_Z5dv1vaAJFriwUYUoTRE2ZdjWPBlG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
- spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0 adultscore=0
- mlxlogscore=906 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308300062
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -89,47 +84,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30/08/2023 04:51, peteryin wrote:
+> Add linux device tree entry related to
+> Minerva specific devices connected to BMC SoC.
+> 
+> Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
+> ---
+> v1 link : https://lore.kernel.org/all/fb09f5e6-8381-312f-2f1e-f2b471cec68a@linaro.org/
+> v2 link : https://lore.kernel.org/lkml/9f499fe5-db59-f4c8-6a50-93725b7287fd@linaro.org/
+> 
+> Change log:
+> 
+> v3:
+>     1.Fixed commit description.
+>     2.Add sgpio line name to sgpioP.
+>     3.Add ipmb debug card bus.
+> 
+> v2:
+>     1.Add facebook,minerva-bmc in aspeed.yaml
+>     2.Use stdout-path
+>     3.Add Makefile
+> 
+> v1:
+>     1. Create minerva dts file.
+> 
+> ---
+>  .../bindings/arm/aspeed/aspeed.yaml           |   1 +
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 384 ++++++++++++++++++
+>  3 files changed, 386 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> index fb4ce5df2fa0..9d1b26e7ca6b 100644
+> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> @@ -79,6 +79,7 @@ properties:
+>                - facebook,elbert-bmc
+>                - facebook,fuji-bmc
+>                - facebook,greatlakes-bmc
+> +              - facebook,minerva-bmc
+>                - ibm,everest-bmc
+>                - ibm,rainier-bmc
+>                - ibm,tacoma-bmc
 
-On 8/25/2023 4:08 PM, Krzysztof Kozlowski wrote:
-> On 25/08/2023 11:35, Nitheesh Sekar wrote:
->> Add USB phy and controller nodes.
->>
->> Co-developed-by: Amandeep Singh <quic_amansing@quicinc.com>
->> Signed-off-by: Amandeep Singh <quic_amansing@quicinc.com>
->> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq5018.dtsi | 54 +++++++++++++++++++++++++++
->>   1 file changed, 54 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> index 9f13d2dcdfd5..ff477923a823 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> @@ -238,6 +238,60 @@
->>   				status = "disabled";
->>   			};
->>   		};
->> +
->> +		usbphy0: phy@5b000 {
->> +			compatible = "qcom,ipq5018-usb-hsphy";
->> +			reg = <0x0005b000 0x120>;
->> +
->> +			clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>;
->> +
->> +			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
->> +
->> +			#phy-cells = <0>;
->> +
->> +			status = "disabled";
->> +		};
->> +
->> +		usb: usb2@8a00000 {
-> usb@
->
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-Sure, will update.
+Nothing improved here. Checkpatch still complains. Bindings are always
+separate patches.
 
-Regards,
-Nitheesh
+Also, this patch does not apply to any tree.
+
+Best regards,
+Krzysztof
+
