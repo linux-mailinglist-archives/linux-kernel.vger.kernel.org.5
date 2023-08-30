@@ -2,111 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D0F78DC65
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3104B78DD6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242310AbjH3Spf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        id S243805AbjH3Stt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243826AbjH3Lsy (ORCPT
+        with ESMTP id S243828AbjH3Luc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:48:54 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16481BB
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 04:48:50 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-44d56d26c32so2316674137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 04:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1693396130; x=1694000930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BUEjMt/8gQISEBJ9n8m7X9z7I5hN+ItDdhTAq683G6c=;
-        b=DvOkbKRsSbb0wfQeyPAZukyIGi30OVQ3Ah9ST1Ho1ugOcm+HfcTTqpHhTYknwaJ635
-         bjZxtn7XolTtTCdTtESZ2ih+bC8kkOZAHdbu6L0ZzF5NKextXE60hS+oOwqGD3DnynTX
-         mWO3sk56h3xmx8IIRgOY5ZXJF8eVkc4wV6Bex2U/IxRi/EO1PL1hsepeGiIhxIvZYIAj
-         bW9jrNCTI3KtlhwMAbmuXjBOEkwcADGIilvb1QD4TlcV4aWnK9Hf/bBKbU1TNOK2iTI/
-         tEKQh9xcMuaGxch0fKItMgvxstdRyHtrsSWRCIxyLRXnjsen/oqY3zhncjA3ii6WH+n7
-         s7Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693396130; x=1694000930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BUEjMt/8gQISEBJ9n8m7X9z7I5hN+ItDdhTAq683G6c=;
-        b=OpU39Aq4MbXqyxGk+WmZcgsZb53KHHL8vbPVs48OHW0jZQEUSWFYVdg3AAUyGwWwY0
-         NM0AL7n1/ZPqq+OKtad9OZyMDbbXagT1r1mNH+819PDkj3JqZwDksa9T8rb6dwMUGgNA
-         B/KH8/Z6U/F+a3dxAEwYFCKszLYrnoEG6hH0yHcK4ewF8q6zJUAImRAZD7/AOR2pr5IZ
-         +E1ovjMbJXSzl8PkpWMi2UZ9NabCJb1AuPB9XIYDR2k5gHJfjwpZENFI/JTfGVYHKSqN
-         asoLrjnDBPwSPixZZcN9iPgZPLMetC12d8Jn8lUO8FGkZi8FuAc/kRpmJvJk2ZTjJ1rS
-         OQ7w==
-X-Gm-Message-State: AOJu0YzKP/dU6/Scg46M4mq/eKBaxZJtSNiZHIDjSPHG05VxAWEqzdYO
-        RimfnDIfn4aqqIEN/Uy4POZBAo1EUfgfbIf7WDKWpQ==
-X-Google-Smtp-Source: AGHT+IFV9dQcsM+38+/FNEpB96SHGugYRFcvM44VlQQUJLvoNTgY8bbVDzAm2LXi5GhcwqyuMmb+KG704wzn8csJ22U=
-X-Received: by 2002:a67:eeda:0:b0:44d:3bc0:f0bf with SMTP id
- o26-20020a67eeda000000b0044d3bc0f0bfmr1577013vsp.8.1693396129942; Wed, 30 Aug
- 2023 04:48:49 -0700 (PDT)
+        Wed, 30 Aug 2023 07:50:32 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983E71B0;
+        Wed, 30 Aug 2023 04:50:28 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbMyq6GGTz6HJcW;
+        Wed, 30 Aug 2023 19:49:23 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
+ 2023 12:50:26 +0100
+Date:   Wed, 30 Aug 2023 12:50:25 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 14/18] dax/region: Support DAX device creation on
+ dynamic DAX regions
+Message-ID: <20230830125025.00000fea@Huawei.com>
+In-Reply-To: <20230604-dcd-type2-upstream-v2-14-f740c47e7916@intel.com>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+        <20230604-dcd-type2-upstream-v2-14-f740c47e7916@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-References: <20230829114301.10450-1-brgl@bgdev.pl> <CAHk-=wigZt6kVkY0HU1j_LJ5H1KzwPiYnwwk6CbqXqT=sGenjg@mail.gmail.com>
-In-Reply-To: <CAHk-=wigZt6kVkY0HU1j_LJ5H1KzwPiYnwwk6CbqXqT=sGenjg@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 30 Aug 2023 13:48:39 +0200
-Message-ID: <CAMRc=Mcbaw9A1sdU3VtPvuThaCm6woPtGaCp0xRT6AcK2UzDkA@mail.gmail.com>
-Subject: Re: [GIT PULL] gpio: updates for v6.6
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 10:29=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, 29 Aug 2023 at 04:43, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > Driver improvements:
-> > - use autopointers and guards from cleanup.h in gpio-sim
->
-> So I've pulled this, but I'm not entirely convinced some of this was a cl=
-eanup.
->
-> That gpio_sim_config_make_device_group() change is "interesting". Doing
->
->         return &no_free_ptr(dev)->group;
->
-> looks a bit crazy. My first reaction to it was 'that can't be right".
-> It _is_ right, but I'm not convinced that getting rid of one kfree()
-> call in the error path above it is worth that kind of semantic
-> complexity.
->
-> I guess we'll get more used to this - and it will look a bit less
-> crazy in the process - but I did want to just note that I'm not
-> entirely convinced we should encourage things like this.
->
->               Linus
+On Mon, 28 Aug 2023 22:21:05 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-I on the other hand absolutely love SBRM in C. I have been using
-autopointers a lot in user-space when coding in GLib/GObject and it
-quickly becomes second nature with no_free_ptr() not being much
-different from g_steal_pointer(). It's an even better pattern when
-used with reference counted objects where the cleanup function just
-drops the reference so you can do a less "crazy" return
-object_ref(obj);
+> Dynamic Capacity (DC) DAX regions have a list of extents which define
+> the memory of the region which is available.
+> 
+> Now that DAX region extents are fully realized support DAX device
+> creation on dynamic regions by adjusting the allocation algorithms
+> to account for the extents.  Remember also references must be held on
+> the extents until the DAX devices are done with the memory.
+> 
+> Redefine the region available size to include only extent space.  Reuse
+> the size allocation algorithm by defining sub-resources for each extent
+> and limiting range allocation to those extents which have space.  Do not
+> support direct mapping of DAX devices on dynamic devices.
+> 
+> Enhance DAX device range objects to hold references on the extents until
+> the DAX device is destroyed.
+> 
+> NOTE: At this time all extents within a region are created equally.
+> However, labels are associated with extents which can be used with
+> future DAX device labels to group which extents are used.
 
-Maybe this particular example doesn't save a lot of code but I think
-it's worth using SBRM consistently across a given file, otherwise
-mixing both styles will lead to an unreadable mess.
+This sound like a bad place to start to me as we are enabling something
+that is probably 'wrong' in the long term as opposed to just not enabling it
+until we have appropriate support.
+I'd argue better to just reject any extents with different labels for now.
 
-Bartosz
+As this is an RFC meh ;)
+
+Whilst this looks fine to me, I'm rather out of my depth wrt to the DAX
+side of things so take that with a pinch of salt.
+
+Jonathan
+
+
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  drivers/dax/bus.c         | 157 +++++++++++++++++++++++++++++++++++++++-------
+>  drivers/dax/cxl.c         |  44 +++++++++++++
+>  drivers/dax/dax-private.h |   5 ++
+>  3 files changed, 182 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index ea7ae82b4687..a9ea6a706702 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+
+...
+
+
+> @@ -1183,7 +1290,7 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
+>  	to_alloc = range_len(&r);
+>  	if (alloc_is_aligned(dev_dax, to_alloc))
+>  		rc = alloc_dev_dax_range(&dax_region->res, dev_dax, r.start,
+> -					 to_alloc);
+> +					 to_alloc, NULL);
+>  	device_unlock(dev);
+>  	device_unlock(dax_region->dev);
+>  
+> @@ -1400,8 +1507,10 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>  	device_initialize(dev);
+>  	dev_set_name(dev, "dax%d.%d", dax_region->id, dev_dax->id);
+>  
+> +	dev_WARN_ONCE(parent, is_dynamic(dax_region) && data->size,
+> +		      "Dynamic DAX devices are created initially with 0 size");
+
+dev_info() maybe more appropriate?   Is this common enough that we need the
+_ONCE?
+
+
+>  	rc = alloc_dev_dax_range(&dax_region->res, dev_dax, dax_region->res.start,
+> -				 data->size);
+> +				 data->size, NULL);
+>  	if (rc)
+>  		goto err_range;
+>  
+> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
+> index 44cbd28668f1..6394a3531e25 100644
+> --- a/drivers/dax/cxl.c
+> +++ b/drivers/dax/cxl.c
+...
+
+
+>  static int cxl_dax_region_create_extent(struct dax_region *dax_region,
+>  					struct cxl_dr_extent *cxl_dr_ext)
+>  {
+> @@ -45,11 +80,20 @@ static int cxl_dax_region_create_extent(struct dax_region *dax_region,
+>  	/* device manages the dr_extent on success */
+>  	kref_init(&dr_extent->ref);
+>  
+> +	rc = dax_region_add_resource(dax_region, dr_extent,
+> +				     cxl_dr_ext->hpa_offset,
+> +				     cxl_dr_ext->hpa_length);
+> +	if (rc) {
+> +		kfree(dr_extent);
+
+goto for these and single unwinding block?
+
+> +		return rc;
+> +	}
+> +
+>  	rc = dax_region_ext_create_dev(dax_region, dr_extent,
+>  				       cxl_dr_ext->hpa_offset,
+>  				       cxl_dr_ext->hpa_length,
+>  				       cxl_dr_ext->label);
+>  	if (rc) {
+> +		dax_region_rm_resource(dr_extent);
+>  		kfree(dr_extent);
+as above.
+
+>  		return rc;
+>  	}
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index 250babd6e470..ad73b53aa802 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -44,12 +44,16 @@ struct dax_region {
+>  /*
+>   * struct dax_region_extent - extent data defined by the low level region
+>   * driver.
+> + * @region: cache of dax_region
+> + * @res: cache of resource tree for this extent
+>   * @private_data: lower level region driver data
+
+Not sure 'lower level' is well defined here. Is "region driver data"
+not enough?
+
+>   * @ref: track number of dax devices which are using this extent
+>   * @get: get reference to low level data
+>   * @put: put reference to low level data
+>   */
+>  struct dax_region_extent {
+> +	struct dax_region *region;
+> +	struct resource *res;
+>  	void *private_data;
+>  	struct kref ref;
+>  	void (*get)(struct dax_region_extent *dr_extent);
+> @@ -131,6 +135,7 @@ struct dev_dax {
+>  		unsigned long pgoff;
+>  		struct range range;
+>  		struct dax_mapping *mapping;
+> +		struct dax_region_extent *dr_extent;
+
+Huh. Seems that ranges is in the kernel doc but not the
+bits that make that up.  Maybe good to add the docs
+whilst here?
+
+>  	} *ranges;
+>  };
+>  
+> 
+
