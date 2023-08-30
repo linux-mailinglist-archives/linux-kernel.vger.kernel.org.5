@@ -2,199 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EC978DEE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6107678DFD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239560AbjH3TXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
+        id S235076AbjH3TQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242364AbjH3IOB (ORCPT
+        with ESMTP id S242374AbjH3ITJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:14:01 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22758113;
-        Wed, 30 Aug 2023 01:13:57 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 3308480274;
-        Wed, 30 Aug 2023 10:13:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693383235;
-        bh=+mFU7DD8ePRlmYcxB+4/hAOdsHi4ePNBSIitHx85tT0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mmuwb8HP8UgItHG8i6PkxyzV50lmXVwAHjqsnj/irTiZPE56rkVDqpE5Ek8cAvAt8
-         2XdoPxxPdwQ5QHfgGiVwZVL5NJXnuSqzaAQDYJGEMPNjPs6wZRYv+EVcGJ96gyjPHo
-         B4Ik/0oJz9jICQBxlRAVU2WlMT4xKUDPe+q6bXxdhagrtMsmVK0gQVEUXJWcfYs9ta
-         tqgPKTzOZgEuYB0U9JM5dfgrl0YzMiyyimy9GCQjAdx1GvlwF/Ns2hl4Vtd7e8B2Yc
-         Bb9Sx2xTvbwKHUlA7BZ0L3Rx0BLY0BrVWA/vl/2t7JaU8MfsYOGz6/sVS3g2j3MObw
-         ZUXSjV/s9xMow==
-Date:   Wed, 30 Aug 2023 10:13:47 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Tristram.Ha@microchip.com, olteanv@gmail.com,
-        linux@rempel-privat.de, Arun.Ramadoss@microchip.com,
-        f.fainelli@gmail.com, andrew@lunn.ch, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, Woojung.Huh@microchip.com,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH 2/2] net: dsa: microchip: Provide Module 4 KSZ9477
- errata (DS80000754C)
-Message-ID: <20230830101347.0f2aad73@wsk>
-In-Reply-To: <20230830061626.GF31399@pengutronix.de>
-References: <20230826104910.voaw3ndvs52yoy2v@skbuf>
-        <20230829103533.7966f332@wsk>
-        <20230829101851.435pxwwse2mo5fwi@skbuf>
-        <20230829132429.529283be@wsk>
-        <20230829114739.GC31399@pengutronix.de>
-        <20230829143829.68410966@wsk>
-        <20230829144209.GD31399@pengutronix.de>
-        <20230829172913.518210b0@wsk>
-        <20230829171205.GE31399@pengutronix.de>
-        <BYAPR11MB3558DDEACCFE005DA1D41CDCECE7A@BYAPR11MB3558.namprd11.prod.outlook.com>
-        <20230830061626.GF31399@pengutronix.de>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 30 Aug 2023 04:19:09 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A24113;
+        Wed, 30 Aug 2023 01:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=O9EyrupNC1cPG8dIbNiwNdmsPYVLCMLAowMe5c2S8cU=; b=CRXxNnhwzQlwIdbqc3u4df2wuB
+        fgp0EGZKhU570pmWt/gkHiFZV3+fL9iiwFpwbXHvjHjljnxnd7QZguGdT+7ORoin5mMuUIGwRkrvl
+        A2RGAPa7FBMYipur0eDh2YGItgzMaceInwr4fJRhFHtjfOk1n+sL/SDPeCtZ62HYIqJWWeC4qThxr
+        dEuGBjq2AURKcWN5gdXuXxFN1oSUU/2nZb3ePiuWDsl/qfS/kk83NlBpUKSNn0Of72u1+u+JnAhSv
+        51J1j2lYBu+lF906AXu5i3df7uKavJQYIBbDo1dqLSaC0VIrtYak8B5lS+x4jOb/EuBdZBMIATayk
+        4xZtJqNw==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qbGPW-0007dN-VQ; Wed, 30 Aug 2023 10:18:47 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qbGPW-000WJW-Mv; Wed, 30 Aug 2023 10:18:46 +0200
+Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
+ in BPF JIT
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, pulehui@huawei.com,
+        conor.dooley@microchip.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230828165958.1714079-1-puranjay12@gmail.com>
+ <87edjmb1t8.fsf@all.your.base.are.belong.to.us>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9ab91c63-0712-d2d8-9b2b-6f2098287baa@iogearbox.net>
+Date:   Wed, 30 Aug 2023 10:18:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8iJol8LLxRQX+TMNVMkgaqO";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87edjmb1t8.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27015/Tue Aug 29 09:39:45 2023)
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8iJol8LLxRQX+TMNVMkgaqO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 8/29/23 12:06 PM, Björn Töpel wrote:
+> Puranjay Mohan <puranjay12@gmail.com> writes:
+> 
+>> Changes in v2 -> v3:
+>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
+>> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
+>> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
+>>     [Patch 1 and 2]
+>> 4. Add reviewed-by in patches.
+>> 5. Adding results of selftest here:
+>>     Using the command: ./test_progs on qemu
+>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>
+>> Changes in v1 -> v2:
+>> 1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
+>>     The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
+>>     call flush_icache_range() for every word making it really slow. This was found by running
+>>     the test_tag selftest which would take forever to complete.
+>>
+>> Here is some data to prove the V2 fixes the problem:
+>>
+>> Without this series:
+>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
+>> test_tag: OK (40945 tests)
+>>
+>> real    7m47.562s
+>> user    0m24.145s
+>> sys     6m37.064s
+>>
+>> With this series applied:
+>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
+>> test_tag: OK (40945 tests)
+>>
+>> real    7m29.472s
+>> user    0m25.865s
+>> sys     6m18.401s
+>>
+>> BPF programs currently consume a page each on RISCV. For systems with many BPF
+>> programs, this adds significant pressure to instruction TLB. High iTLB pressure
+>> usually causes slow down for the whole system.
+>>
+>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
+>> It packs multiple BPF programs into a single huge page. It is currently only
+>> enabled for the x86_64 BPF JIT.
+>>
+>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
+>>
+>> This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
+>> This series needs a patch[3] from the ARM64 series to work.
+>>
+>> ======================================================
+>> Performance Analysis of prog pack allocator on RISCV64
+>> ======================================================
+>>
+>> Test setup:
+>> ===========
+>>
+>> Host machine: Debian GNU/Linux 11 (bullseye)
+>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+>> u-boot-qemu Version: 2023.07+dfsg-1
+>> opensbi Version: 1.3-1
+>>
+>> To test the performance of the BPF prog pack allocator on RV, a stresser
+>> tool[4] linked below was built. This tool loads 8 BPF programs on the system and
+>> triggers 5 of them in an infinite loop by doing system calls.
+>>
+>> The runner script starts 20 instances of the above which loads 8*20=160 BPF
+>> programs on the system, 5*20=100 of which are being constantly triggered.
+>> The script is passed a command which would be run in the above environment.
+>>
+>> The script was run with following perf command:
+>> ./run.sh "perf stat -a \
+>>          -e iTLB-load-misses \
+>>          -e dTLB-load-misses  \
+>>          -e dTLB-store-misses \
+>>          -e instructions \
+>>          --timeout 60000"
+>>
+>> The output of the above command is discussed below before and after enabling the
+>> BPF prog pack allocator.
+>>
+>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
+>> was created using Bjorn's riscv-cross-builder[5] docker container linked below.
+>>
+>> Results
+>> =======
+>>
+>> Before enabling prog pack allocator:
+>> ------------------------------------
+>>
+>> Performance counter stats for 'system wide':
+>>
+>>             4939048      iTLB-load-misses
+>>             5468689      dTLB-load-misses
+>>              465234      dTLB-store-misses
+>>       1441082097998      instructions
+>>
+>>        60.045791200 seconds time elapsed
+>>
+>> After enabling prog pack allocator:
+>> -----------------------------------
+>>
+>> Performance counter stats for 'system wide':
+>>
+>>             3430035      iTLB-load-misses
+>>             5008745      dTLB-load-misses
+>>              409944      dTLB-store-misses
+>>       1441535637988      instructions
+>>
+>>        60.046296600 seconds time elapsed
+>>
+>> Improvements in metrics
+>> =======================
+>>
+>> It was expected that the iTLB-load-misses would decrease as now a single huge
+>> page is used to keep all the BPF programs compared to a single page for each
+>> program earlier.
+>>
+>> --------------------------------------------
+>> The improvement in iTLB-load-misses: -30.5 %
+>> --------------------------------------------
+>>
+>> I repeated this expriment more than 100 times in different setups and the
+>> improvement was always greater than 30%.
+>>
+>> This patch series is boot tested on the Starfive VisionFive 2 board[6].
+>> The performance analysis was not done on the board because it doesn't
+>> expose iTLB-load-misses, etc. The stresser program was run on the board to test
+>> the loading and unloading of BPF programs
+>>
+>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
+>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
+>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+>> [5] https://github.com/bjoto/riscv-cross-builder
+>> [6] https://www.starfivetech.com/en/site/boards
+>>
+>> Puranjay Mohan (3):
+>>    riscv: extend patch_text_nosync() for multiple pages
+>>    riscv: implement a memset like function for text
+>>    bpf, riscv: use prog pack allocator in the BPF JIT
+> 
+> Thank you! For the series:
+> 
+> Acked-by: Björn Töpel <bjorn@kernel.org>
+> Tested-by: Björn Töpel <bjorn@rivosinc.com>
+> 
+> @Alexei @Daniel This series depends on a core BPF patch from the Arm
+>                  series [3].
+> 
+> @Palmer LMK if you have any concerns taking the RISC-V text patching
+>          stuff via the BPF tree.
 
-Hi Oleksij,
+Palmer, did the riscv PR already go to Linus?
 
-> On Tue, Aug 29, 2023 at 10:23:26PM +0000, Tristram.Ha@microchip.com
-> wrote:
-> > > Yes, removing linkmod_and() will not should not help. I said, "The
-> > > phydev->supported_eee should be cleared."
-> > >=20
-> > > For example like this:
-> > > --- a/drivers/net/phy/micrel.c
-> > > +++ b/drivers/net/phy/micrel.c
-> > > @@ -1400,6 +1400,7 @@ static int ksz9131_config_aneg(struct
-> > > phy_device *phydev)
-> > >=20
-> > >  static int ksz9477_get_features(struct phy_device *phydev)
-> > >  {
-> > > +       __ETHTOOL_DECLARE_LINK_MODE_MASK(zero) =3D { 0, };
-> > >         int ret;
-> > >=20
-> > >         ret =3D genphy_read_abilities(phydev);
-> > > @@ -1413,7 +1414,7 @@ static int ksz9477_get_features(struct
-> > > phy_device *phydev)
-> > >          * KSZ8563R should have 100BaseTX/Full only.
-> > >          */
-> > >         linkmode_and(phydev->supported_eee, phydev->supported,
-> > > -                    PHY_EEE_CAP1_FEATURES);
-> > > +                    zero);
-> > >=20
-> > >         return 0;
-> > >  }
-> > >=20
-> > > You will need to clear it only on KSZ9477 variants with this bug.
-> > > This change is tested and it works on my KSZ9477-EVB. =20
-> > =20
-> > I think this is best for disabling EEE support.
-> > I think before some customers asked for Ethtool EEE support not
-> > because they want to use it but to disable it because of link
-> > instability. KSZ9893/KSZ9563 switches should have the same problem.
-> >  The EEE problem depends on the link partner.  For example my
-> > laptop does not have problem even though EEE is enabled, although I
-> > am not sure if EEE is really active.  The problem here is just
-> > using two KSZ9477 switches and programming those PHY setup values
-> > and enabling EEE will make the link unstable.  Management decided
-> > to disable EEE feature to avoid customer support issues.
-> > Another issue is EEE should be disabled when using 1588 PTP.
-> >  =20
->=20
-> I'd like to share my thoughts on the concerns raised:
->=20
-> - KSZ9477 & EEE: Disabling EEE for the KSZ9477 makes sense,
-> especially since the datasheet doesn't list it as supported.
->=20
+If not yet, perhaps you could ship this series along with your PR to Linus
+during this merge window given the big net PR (incl. bpf) was already merged
+yesterday. So from our side only fixes ship to Linus.
 
-+1
+Otherwise we could take it into bpf-next for the next dev cycle if there are
+no objections, let us know.
 
-I will prepare proper patch
-
-> - EEE Support for KSZ9893 & KSZ9563: The datasheets for the KSZ9893
-> indicate support for EEE. The erratum recommends making adjustments
-> to the "transmit Refresh Time for Waketx to meet the IEEE Refresh
-> Time specification" instead of turning it off completely. The same
-> applies to KSZ9563. We should consider these adjustments.
->=20
-> - General Experience with KSZ Chips*: From my experience with these
-> chips, irrespective of the EEE functionality, only the 1000/full and
-> 100/full link modes tend to be stable enough.
->=20
-> - Responsibility to Customers and Certifications: As a part of the
-> product supply chain, I believe in our commitment to honesty with our
-> customers. When we select components for end products, we trust their
-> listed features. For instance, designing for ENERGY STAR
-> certification requires that all copper-based physical network ports
-> in an LNE product must be compliant with IEEE 802.3 Clause 78, which
-> mandates Energy Efficient Ethernet. If Microchip promotes a KSZ* chip
-> with EEE as a feature, it becomes a cornerstone of the end product.
-> Negating a key functionality, which was sold and then incorporated
-> into the product, could risk non-compliance with certification
-> criteria.
->=20
-> - Consistency in Product Representation: If the overarching company
-> decision is to disable the EEE feature for all chips to preempt
-> potential customer support issues, our product information should
-> mirror this change. It's crucial that we neither misrepresent nor
-> over-promise on features. Your deeper insights, given your
-> involvement with Microchip's strategy, would be most enlightening.
->=20
-
-For the last two - at least the KSZ9477 Errata was clear about the
-issue. Other (switch IC) vendors have even problems to admit that
-something is wrong with their silicon design...
-
-> Regards,
-> Oleksij
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/8iJol8LLxRQX+TMNVMkgaqO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTu+jsACgkQAR8vZIA0
-zr33AwgAw10PcBeJ75ZUx46FN4xfGugdqpKnq4OacPNQh/C2moRKWgaxUGFYovb0
-4ZDuzp8P7CNL83p1SSETWHzy5rN6CihH9vMaHb5Imwo9l/k9fv7hRr/BbCwLBzoF
-jzN5qu0aVwrXePo4fMjlrYE7Bsa9eYr5VgdvMd1uuZIsco98WI4kIkeNDNbQM2b6
-nIt6PWZHJYNjiMwlRMSZ2W04Q6xEO3/Gdw3LN4q+UysoYIrSu0a+BCrkDxdMaWBf
-4qgh7klA2078xK42r0XxTFhhhmfhmOG7xJ+u6xNDBLxPW68MU/ziId0m/V23ahjB
-XcKrfrM1U2ThE9lm5YXqYTQ+KLQqZA==
-=QcwB
------END PGP SIGNATURE-----
-
---Sig_/8iJol8LLxRQX+TMNVMkgaqO--
+Thanks,
+Daniel
