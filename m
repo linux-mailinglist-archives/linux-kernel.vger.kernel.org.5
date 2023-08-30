@@ -2,155 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B9178D8DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C2278DE67
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235909AbjH3Sb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        id S241293AbjH3TCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242349AbjH3ILQ (ORCPT
+        with ESMTP id S242371AbjH3ISJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:11:16 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDE41A2;
-        Wed, 30 Aug 2023 01:11:13 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-792918c5f33so127214639f.3;
-        Wed, 30 Aug 2023 01:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693383073; x=1693987873; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eYDzreiruH6qbDLXg2iLXCvSh9G4cLtJs9x6gJkSy4U=;
-        b=VRc3L/YJmlEqi9nW+I4BpFQV2geuHX+gL4RmSF1Kpn5C2lL1mM/eEZ+2Q5rp63om0i
-         tfwHJ+BW52bA2/hqzMh1h+3BX7tDIB6yEEzDkVrk5CIip3PesyNRFMjLATpMxeD5DIgV
-         HhSjv1NHEsvuqukPoeIWnCEsmmFwx8HHv+ZKuuDCgembecfxXd2a1bpOq84/IFtpfbMt
-         ae4so5eQo4oP62KoeQu4SL5KGP+pGhedeM7Lji4bepydO0ATJp2wtdcxclPN3sOND6Bi
-         dhuCDkKBDM8MTLjZR5nS4Ejja7WtvIsRovlBlTe3ZNaUWJ109Cs1EN6t4VCbky+m6mxH
-         9Isg==
+        Wed, 30 Aug 2023 04:18:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6797B113
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693383439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bar+WKz4EarAB8Ac37g0Uj2o6cVBqwkH3VXs7Pt3Pzg=;
+        b=Plj8lfGz4todUuIYSXmHED5defJWju0R2td25hejyMTf5UBs/PlMRcOZUyijkYCZxuHycy
+        dT1/+JaZ9qQgELykBLCHvM0RY5up3QymE8z2m1GakYtIH++glTNmYdg2+oo/JANWgH5yXM
+        WJZAA2mZAti0Ci6fITwXww4Y4KaXMqE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-3-rVinnf97PHWjJuUsnsD5aQ-1; Wed, 30 Aug 2023 04:17:17 -0400
+X-MC-Unique: rVinnf97PHWjJuUsnsD5aQ-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-52a3e9c53e7so4197848a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:17:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693383073; x=1693987873;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693383435; x=1693988235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eYDzreiruH6qbDLXg2iLXCvSh9G4cLtJs9x6gJkSy4U=;
-        b=fdp8SgkKLtvsYmXLPoro6bKgkHq0IJnIv+/kA6oajjP+fHNcFa6OWNWlcDg15MZw6m
-         wci6GpSeoGqW+sBARcLj9zSrorl2SefLkT6sTG4XdhzKgHjb24jDMzcTB/wbf9bbMKf6
-         cHwc6ypfXBy0vpVlqUp0GUTejMSUXmkrDMVX1O3ibCdqa4oP+TucI/rJyY/jr5QJb8ii
-         YfYLdrAmUogsEH6oOLifdFGzb++YYHDWyQLd0L1WNShOX/e9mXBB6u28c/35WDmrzdcL
-         rp79aJzpwj187SKAuQ7Qk8r7YH34VPqIaAYmchfpn/yQ/4kmA7aLqTd3XS28mVeQj8Jc
-         kAfg==
-X-Gm-Message-State: AOJu0YxBJS/XJak0lBCnaeZ7PPNCAHxJOX5e8G0LT73rVBTVGT/G9Cr+
-        B3DXVUV1ELU3ItXarzaQeObP0koP8i4=
-X-Google-Smtp-Source: AGHT+IFLukJjgPDCF+6dPVVFCsQtUYJRqy8yK01NHrroGa5RFO41C2WL5CPpF/m8ShUQRg8pSqKOLw==
-X-Received: by 2002:a6b:7a03:0:b0:787:34d:f1ea with SMTP id h3-20020a6b7a03000000b00787034df1eamr1946784iom.8.1693383072910;
-        Wed, 30 Aug 2023 01:11:12 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h12-20020a6b7a0c000000b007836c7e8dccsm3762285iom.17.2023.08.30.01.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 01:11:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 30 Aug 2023 01:11:10 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     guoren@kernel.org
-Cc:     arnd@arndb.de, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH] csky: Fixup -Wmissing-prototypes warning
-Message-ID: <cd3924fb-8639-4fa5-8aae-bc2b20a63dec@roeck-us.net>
-References: <20230811030750.1335526-1-guoren@kernel.org>
+        bh=bar+WKz4EarAB8Ac37g0Uj2o6cVBqwkH3VXs7Pt3Pzg=;
+        b=lmC7m9laIFQ/1AEykyz2i9MZvdZy0uQ5hr0FLdaz8zeh97guuOtjTuQ1TavwLMzWk/
+         Y5aZpveTY8S87538/IPTzpuz9kr4mVa34+OmgFU33KFBthl+sa8gY0S8okBLYpHUDWhD
+         Pa4DfYxXT9kkBHmZdOd7+4opLpcfCFwqIr9VzQUmlDT4EnPoBMLowsO/n4SOJfPqz8M1
+         kBawXmBiUHgfsjOZgZqO1K/yqdaImhR31pvBlsqwH/qTxKCReFAAv7V2d9uVcCplvpgO
+         75KRyzyqZaesezfLxPZftdOj+R2TF0tpc9OXnFrpC/zFm2q+nYmvhxVVOCTdv+vstdLY
+         KbIg==
+X-Gm-Message-State: AOJu0Ywn9Pbo4kwAt64TxWFMVzzcXOGmKc/1VxBumMHsIfZRDNX1bGMG
+        ZngD1ZvXf1y4xokZXC7tMBN1X9GGE93qNJ0Tk2rZ75bBCIWUVCj390Pppm4sDXq3gEaNFalc1Sq
+        bE15+8EGT9aXAb03C7bKA5iDg4Rc2ipZ2J4vSWF+N
+X-Received: by 2002:aa7:d309:0:b0:522:27ea:58b with SMTP id p9-20020aa7d309000000b0052227ea058bmr1235980edq.39.1693383435625;
+        Wed, 30 Aug 2023 01:17:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE6/LInntBhml1RhECdv+jKaWODZOhnz8jouuiowLxhc/PAy4Lz8MdbiTpXX0KtN5lbcxZ4VViU+Moq9sFeXZw=
+X-Received: by 2002:aa7:d309:0:b0:522:27ea:58b with SMTP id
+ p9-20020aa7d309000000b0052227ea058bmr1235966edq.39.1693383435291; Wed, 30 Aug
+ 2023 01:17:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811030750.1335526-1-guoren@kernel.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230829015421.920511-1-gshan@redhat.com> <55cb12bf-12e4-8da6-629c-5518f8abe85e@redhat.com>
+In-Reply-To: <55cb12bf-12e4-8da6-629c-5518f8abe85e@redhat.com>
+From:   Zhenyu Zhang <zhenyzha@redhat.com>
+Date:   Wed, 30 Aug 2023 16:16:39 +0800
+Message-ID: <CAJFLiBK+PyvJrENd-=9gPDfVJ-MPL9RpkzyM_+wFrwxU=7qagA@mail.gmail.com>
+Subject: Re: [PATCH] virtio_balloon: Fix endless deflation and inflation on arm64
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        xuanzhuo@linux.alibaba.com, mst@redhat.com,
+        linux-kernel@vger.kernel.org, shan.gavin@gmail.com,
+        David Hildenbrand <david@redhat.com>, jasowang@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:07:50PM -0400, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> Cleanup the warnings:
-> 
-> arch/csky/kernel/ptrace.c:320:16: error: no previous prototype for 'syscall_trace_enter' [-Werror=missing-prototypes]
-> arch/csky/kernel/ptrace.c:336:17: error: no previous prototype for 'syscall_trace_exit' [-Werror=missing-prototypes]
-> arch/csky/kernel/setup.c:116:34: error: no previous prototype for 'csky_start' [-Werror=missing-prototypes]
-> arch/csky/kernel/signal.c:255:17: error: no previous prototype for 'do_notify_resume' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:150:15: error: no previous prototype for 'do_trap_unknown' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:152:15: error: no previous prototype for 'do_trap_zdiv' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:154:15: error: no previous prototype for 'do_trap_buserr' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:157:17: error: no previous prototype for 'do_trap_misaligned' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:168:17: error: no previous prototype for 'do_trap_bkpt' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:187:17: error: no previous prototype for 'do_trap_illinsn' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:210:17: error: no previous prototype for 'do_trap_fpe' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:220:17: error: no previous prototype for 'do_trap_priv' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:230:17: error: no previous prototype for 'trap_c' [-Werror=missing-prototypes]
-> arch/csky/kernel/traps.c:57:13: error: no previous prototype for 'trap_init' [-Werror=missing-prototypes]
-> arch/csky/kernel/vdso/vgettimeofday.c:12:5: error: no previous prototype for '__vdso_clock_gettime64' [-Werror=missing-prototypes]
-> arch/csky/kernel/vdso/vgettimeofday.c:18:5: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
-> arch/csky/kernel/vdso/vgettimeofday.c:24:5: error: no previous prototype for '__vdso_clock_getres' [-Werror=missing-prototypes]
-> arch/csky/kernel/vdso/vgettimeofday.c:6:5: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
-> arch/csky/mm/fault.c:187:17: error: no previous prototype for 'do_page_fault' [-Werror=missing-prototypes]
-> 
-> Link: https://lore.kernel.org/lkml/20230810141947.1236730-17-arnd@kernel.org/
-> Reported-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
+[PATCH] virtio_balloon: Fix endless deflation and inflation on arm64
 
-I get the following build errors in linux-next. Bisect points to this patch.
+The patches work well on my arm Ampere host.
+The test results are as expected.
 
-Building csky:defconfig ... failed
---------------
-Error log:
-In file included from arch/csky/include/asm/ptrace.h:7,
-                 from arch/csky/include/asm/elf.h:6,
-                 from include/linux/elf.h:6,
-                 from kernel/extable.c:6:
-arch/csky/include/asm/traps.h:43:11: error: expected ';' before 'void'
-   43 | asmlinkage void do_trap_unknown(struct pt_regs *regs);
-      |           ^~~~~
+Testing
+=3D=3D=3D=3D=3D=3D=3D
+(1) boot 64KB base page size guest, deflation balloon.
+/home/zhenyzha/sandbox/qemu.main/build/qemu-system-aarch64 \
+-device '{"id": "pcie-root-port-0", "driver": "pcie-root-port",
+"multifunction": true, "bus": "pcie.0", "addr": "0x1", "chassis": 1}'
+\
+-device '{"id": "pcie-pci-bridge-0", "driver": "pcie-pci-bridge",
+"addr": "0x0", "bus": "pcie-root-port-0"}'  \
+-nodefaults \
+-device '{"id": "pcie-root-port-1", "port": 1, "driver":
+"pcie-root-port", "addr": "0x1.0x1", "bus": "pcie.0", "chassis": 2}' \
+-device '{"driver": "virtio-gpu-pci", "bus": "pcie-root-port-1",
+"addr": "0x0"}' \
+-m 8192 \
+-object '{"size": 4294967296, "id": "mem-machine_mem0", "qom-type":
+"memory-backend-ram"}'  \
+-object '{"size": 4294967296, "id": "mem-machine_mem1", "qom-type":
+"memory-backend-ram"}'  \
+-numa node,nodeid=3D0,memdev=3Dmem-machine_mem0,cpus=3D0-3 \
+-numa node,nodeid=3D1,memdev=3Dmem-machine_mem1,cpus=3D4-7 \
+-smp 8,maxcpus=3D8,cores=3D2,threads=3D1,clusters=3D2,sockets=3D2  \
+-cpu 'host' \
+-enable-kvm \
+    :       \
+-device '{"id": "pcie-root-port-5", "port": 5, "driver":
+"pcie-root-port", "addr": "0x1.0x5", "bus": "pcie.0", "chassis": 6}' \
+-device '{"driver": "virtio-balloon-pci", "id": "balloon0",
+"free-page-reporting": true, "bus": "pcie-root-port-5", "addr":
+"0x0"}' \
 
-[ and many more similar errors ]
+{ "execute" : "balloon", "arguments": { "value" : 7515705344 }}
+{"return": {}}
+{"timestamp": {"seconds": 1693284182, "microseconds": 597003},
+"event": "BALLOON_CHANGE", "data": {"actual": 8588886016}}
+{"timestamp": {"seconds": 1693284183, "microseconds": 598037},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
+{"timestamp": {"seconds": 1693284184, "microseconds": 599116},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515734016}}
+{"timestamp": {"seconds": 1693284185, "microseconds": 600167},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
+{"timestamp": {"seconds": 1693284186, "microseconds": 601226},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515734016}}
+{"timestamp": {"seconds": 1693284187, "microseconds": 602287},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
+{"timestamp": {"seconds": 1693284188, "microseconds": 603386},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
+{"timestamp": {"seconds": 1693284189, "microseconds": 604401},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
+{"timestamp": {"seconds": 1693284190, "microseconds": 605467},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515734016}}
+    :
+ <The similar QMP events repeat>
 
-Guenter
+git am this patch
+{ "execute" : "balloon", "arguments": { "value" : 7515705344 }}
+{"return": {}}
+{"timestamp": {"seconds": 1693301553, "microseconds": 809765},
+"event": "BALLOON_CHANGE", "data": {"actual": 8588886016}}
+{"timestamp": {"seconds": 1693301553, "microseconds": 986697},
+"event": "BALLOON_CHANGE", "data": {"actual": 7515668480}}
 
----
-# bad: [56585460cc2ec44fc5d66924f0a116f57080f0dc] Add linux-next specific files for 20230830
-# good: [2dde18cd1d8fac735875f2e4987f11817cc0bc2c] Linux 6.5
-git bisect start 'HEAD' 'v6.5'
-# bad: [17582b16f00f2ca3f84f1c9dadef1529895ddd9a] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git
-git bisect bad 17582b16f00f2ca3f84f1c9dadef1529895ddd9a
-# good: [bd6c11bc43c496cddfc6cf603b5d45365606dbd5] Merge tag 'net-next-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
-git bisect good bd6c11bc43c496cddfc6cf603b5d45365606dbd5
-# bad: [b22935905f9c5830bfd1c66ad3638ffdf6f80da7] Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
-git bisect bad b22935905f9c5830bfd1c66ad3638ffdf6f80da7
-# good: [692f5510159c79bfa312a4e27a15e266232bfb4c] Merge tag 'asoc-v6.6' of https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into for-linus
-git bisect good 692f5510159c79bfa312a4e27a15e266232bfb4c
-# good: [b91742d84d29c39b643992b95560cfb7337eab18] mm/shmem.c: use helper macro K()
-git bisect good b91742d84d29c39b643992b95560cfb7337eab18
-# good: [19134bc23500a01bfdb77a804fc8e4bf8808d0cc] mm: fix kernel-doc warning from tlb_flush_rmaps()
-git bisect good 19134bc23500a01bfdb77a804fc8e4bf8808d0cc
-# bad: [858e6c6fd1960650c6a44b8158e1ac26ee63e26d] Merge branch 'for-curr' of git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git
-git bisect bad 858e6c6fd1960650c6a44b8158e1ac26ee63e26d
-# bad: [9d6b14cd1e993d2ff98df0cef6d935ce6fd4dbec] Merge tag 'flex-array-transformations-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux
-git bisect bad 9d6b14cd1e993d2ff98df0cef6d935ce6fd4dbec
-# good: [3b425dd2aeb8c876805a4cc29d84a6c455b43530] parisc: led: Move register_led_regions() to late_initcall()
-git bisect good 3b425dd2aeb8c876805a4cc29d84a6c455b43530
-# good: [48d25d382643a9d8867f8eb13af231268ab10db5] Merge tag 'parisc-for-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux
-git bisect good 48d25d382643a9d8867f8eb13af231268ab10db5
-# bad: [c8171a86b27401aa1f492dd1f080f3102264f1ab] csky: Fixup -Wmissing-prototypes warning
-git bisect bad c8171a86b27401aa1f492dd1f080f3102264f1ab
-# good: [1362d15ffb59db65b2df354b548b7915686cb05c] csky: pgtable: Invalidate stale I-cache lines in update_mmu_cache
-git bisect good 1362d15ffb59db65b2df354b548b7915686cb05c
-# good: [c1884e1e116409dafce84df38134aa2d7cdb719d] csky: Make pfn accessors static inlines
-git bisect good c1884e1e116409dafce84df38134aa2d7cdb719d
-# first bad commit: [c8171a86b27401aa1f492dd1f080f3102264f1ab] csky: Fixup -Wmissing-prototypes warning
+{ "execute" : "query-balloon" }
+{"return": {"actual": 7515668480}}
+
+
+(2) Run kvm-unit-tests:
+      6 cases skip, 32 cases pass.
+
+(3) Run selftests TARGETS=3Dkvm:
+      23 cases all pass
+
+Tested-by: Zhenyu Zhang <zhenzha@redhat.com>
+
+On Wed, Aug 30, 2023 at 12:24=E2=80=AFPM Gavin Shan <gshan@redhat.com> wrot=
+e:
+>
+> On 8/29/23 11:54, Gavin Shan wrote:
+> > The deflation request to the target, which isn't unaligned to the
+> > guest page size causes endless deflation and inflation actions. For
+> > example, we receive the flooding QMP events for the changes on memory
+> > balloon's size after a deflation request to the unaligned target is
+> > sent for the ARM64 guest, where we have 64KB base page size.
+> >
+> >    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
+> >    -accel kvm -machine virt,gic-version=3Dhost -cpu host          \
+> >    -smp maxcpus=3D8,cpus=3D8,sockets=3D2,clusters=3D2,cores=3D2,threads=
+=3D1 \
+> >    -m 1024M,slots=3D16,maxmem=3D64G                                 \
+> >    -object memory-backend-ram,id=3Dmem0,size=3D512M                 \
+> >    -object memory-backend-ram,id=3Dmem1,size=3D512M                 \
+> >    -numa node,nodeid=3D0,memdev=3Dmem0,cpus=3D0-3                     \
+> >    -numa node,nodeid=3D1,memdev=3Dmem1,cpus=3D4-7                     \
+> >      :                                                          \
+> >    -device virtio-balloon-pci,id=3Dballoon0,bus=3Dpcie.10
+> >
+> >    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
+> >    {"return": {}}
+> >    {"timestamp": {"seconds": 1693272173, "microseconds": 88667},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272174, "microseconds": 89704},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272175, "microseconds": 90819},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272176, "microseconds": 91961},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272177, "microseconds": 93040},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
+> >    {"timestamp": {"seconds": 1693272178, "microseconds": 94117},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
+> >    {"timestamp": {"seconds": 1693272179, "microseconds": 95337},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272180, "microseconds": 96615},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
+> >    {"timestamp": {"seconds": 1693272181, "microseconds": 97626},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272182, "microseconds": 98693},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
+> >    {"timestamp": {"seconds": 1693272183, "microseconds": 99698},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272184, "microseconds": 100727},  \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272185, "microseconds": 90430},   \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    {"timestamp": {"seconds": 1693272186, "microseconds": 102999},  \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
+> >       :
+> >    <The similar QMP events repeat>
+> >
+> > Fix it by having the target aligned to the guest page size, 64KB
+> > in this specific case. With this applied, no flooding QMP event
+> > is observed and the memory balloon's size can be stablizied to
+> > 0x3ffe0000 soon after the deflation request is sent.
+> >
+> >    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
+> >    {"return": {}}
+> >    {"timestamp": {"seconds": 1693273328, "microseconds": 793075},  \
+> >     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
+> >    { "execute" : "query-balloon" }
+> >    {"return": {"actual": 1073610752}}
+> >
+> > Signed-off-by: Gavin Shan <gshan@redhat.com>
+> > ---
+> >   drivers/virtio/virtio_balloon.c | 13 ++++++++++++-
+> >   1 file changed, 12 insertions(+), 1 deletion(-)
+> >
+>
+> It was supposed to copy David, Jason and Zhenyu. I don't know how they ha=
+ve been
+> missed. My script may run into problems temporarily. Amending for it.
+>
+> Thanks,
+> Gavin
+>
+> > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_ba=
+lloon.c
+> > index 5b15936a5214..625caac35264 100644
+> > --- a/drivers/virtio/virtio_balloon.c
+> > +++ b/drivers/virtio/virtio_balloon.c
+> > @@ -386,6 +386,17 @@ static void stats_handle_request(struct virtio_bal=
+loon *vb)
+> >       virtqueue_kick(vq);
+> >   }
+> >
+> > +static inline s64 align_pages_up(s64 diff)
+> > +{
+> > +     if (diff =3D=3D 0)
+> > +             return diff;
+> > +
+> > +     if (diff > 0)
+> > +             return ALIGN(diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
+> > +
+> > +     return -ALIGN(-diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
+> > +}
+> > +
+> >   static inline s64 towards_target(struct virtio_balloon *vb)
+> >   {
+> >       s64 target;
+> > @@ -396,7 +407,7 @@ static inline s64 towards_target(struct virtio_ball=
+oon *vb)
+> >                       &num_pages);
+> >
+> >       target =3D num_pages;
+> > -     return target - vb->num_pages;
+> > +     return align_pages_up(target - vb->num_pages);
+> >   }
+> >
+> >   /* Gives back @num_to_return blocks of free pages to mm. */
+>
+
