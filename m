@@ -2,51 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF08A78DBA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E863778D9AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239443AbjH3Sk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
+        id S235817AbjH3Sdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242720AbjH3JVm (ORCPT
+        with ESMTP id S242726AbjH3JYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:21:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F1BCCF;
-        Wed, 30 Aug 2023 02:21:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07A126068B;
-        Wed, 30 Aug 2023 09:21:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 241C4C433C8;
-        Wed, 30 Aug 2023 09:21:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693387298;
-        bh=siIZODpxnuFofigGdK4dwZYoGFyU6ZVlCj0AGqstUXY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NgYUZygmBVLwFbvipWgScmV9bhRY4kEtxv+LxE1ZR+6xyl9Ra9l+OKjTkwsKUnCLD
-         beOWKm9nyL1Va+AILsLgv0NtwJ2QtqXMLv8ynDEuGiIwgZVZMt16SIOHzWgxPuZsVN
-         xeLpsiLkB27M4lZ/rwqit+jHi9YByXMQjBcgdZxxb19C2y+hzqxYHKYG7Sd6rgWYJB
-         K58+CwM9JjdL3H3y/i5yaHv7FD8sfAfdnK17j8OSiwPXnt7bFmP5S7jI+0rEoCdy1F
-         nppDZS0xW0zmchJck+DBVrBKJVLogG9rnkW+0dtk7EMGUAWgGLjnalXMzHZwviC1QH
-         wy9DkZFZ+4FVw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Ross Lagerwall <ross.lagerwall@citrix.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath11k@lists.infradead.org, regressions@lists.linux.dev
-Subject: [regression v6.5-rc1] PCI: comm "swapper/0" leaking memory
-Date:   Wed, 30 Aug 2023 12:21:34 +0300
-Message-ID: <878r9sga1t.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 30 Aug 2023 05:24:38 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481C0B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:24:36 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bcb50e194dso81553111fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:24:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693387474; x=1693992274; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UI7fXVlKfpB5b5W3nvIcPqt6ERVpjXtyoJBz3Uqak/4=;
+        b=5SLu/DKt4o/4NDuqRF1I/3yhM2POmSvnQ3PvoPZfY+T34UtscqE3ZzJGRvvbErPbXr
+         7vqGInz8yXYuMGsVg36Ifh+T7uEDCGu0yQiYNCXzvFJsuWrzF7mmnvuHBpvTkaf+yt+z
+         0GbvDL6okXBJRu1mlGYFUtwS0DhD2m3bJXgTWr3gym/hBPsHstnnS/s4QMaqpog6KWmt
+         X3aatGuRP7OoQhiNxFnXT+TyNv2zARjH4PZE23y9GgCNQlTqyZOfvKS+TL3hfExPAEOl
+         zt2utt7PC4eN+AfQfq0FX1FTM2KroR9UTD3PpaK8yZiDDvPZj5E2j53hgXWZrS0gn5oi
+         xLYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693387474; x=1693992274;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UI7fXVlKfpB5b5W3nvIcPqt6ERVpjXtyoJBz3Uqak/4=;
+        b=Q6SfQmaOSaUBvv3iLBhmMYEZMOP1qho1AVNOqp7M08jXEmdOJOwUEZ9f/iujmB63Wt
+         BE/Wpya4k4/IzBpX4/r+1GU25urLXvDMMOFmGGDEJrk9X7p7eGcqllxwz5dsZ1bpF7HU
+         cbHm73CU6PnQtVY8df/v9eUZ34YWEm670v6UfVB9E81MCN67BUK9EMKgNFE1DILvrVf4
+         al8b2ncQTJQHFK7bRPTVIWPBAFc3uMTVbYtVTSj6ein75DVmOp2dBHBDxRXxQYMz+lgh
+         FsQUOxo9CYs6ymCnYt/Mr7/PLjltP+6gRMdGDx/RoZuJNOjMRzCZTio8OD0GdE/MropT
+         pDRg==
+X-Gm-Message-State: AOJu0Yx9EBUw+GNugxYDQM/h5cTtpwVutHvOIuS2Eu3S9GNwuRQnGslZ
+        l2vYS0oHP+l7APIu6vTvVuZ0lA==
+X-Google-Smtp-Source: AGHT+IHP8e0ig5H8HhbPig62CSIBHh9eunykH8szviNxNp+jDo0jaFW7BQzj1bXxxJ0VICLY2FnW2w==
+X-Received: by 2002:a05:651c:10cf:b0:2bb:b56b:f67e with SMTP id l15-20020a05651c10cf00b002bbb56bf67emr1392650ljn.19.1693387474397;
+        Wed, 30 Aug 2023 02:24:34 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:9c:201:3380:af04:1905:46a])
+        by smtp.gmail.com with ESMTPSA id x1-20020a05600c21c100b003fe3674bb39sm1652429wmj.2.2023.08.30.02.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 02:24:33 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 11:24:28 +0200
+From:   Marco Elver <elver@google.com>
+To:     andrey.konovalov@linux.dev
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH 13/15] stackdepot: add backwards links to hash table
+ buckets
+Message-ID: <ZO8KzKWszioRKrks@elver.google.com>
+References: <cover.1693328501.git.andreyknvl@google.com>
+ <e9ed24afd386d12e01c1169c17531f9ce54c0044.1693328501.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9ed24afd386d12e01c1169c17531f9ce54c0044.1693328501.git.andreyknvl@google.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,56 +82,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 29, 2023 at 07:11PM +0200, andrey.konovalov@linux.dev wrote:
+> From: Andrey Konovalov <andreyknvl@google.com>
+> 
+> Maintain links in the stack records to previous entries within the
+> hash table buckets.
+> 
+> This is preparatory patch for implementing the eviction of stack records
+> from the stack depot.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
+>  lib/stackdepot.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index a84c0debbb9e..641db97d8c7c 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -58,6 +58,7 @@ union handle_parts {
+>  
+>  struct stack_record {
+>  	struct stack_record *next;	/* Link in hash table or freelist */
+> +	struct stack_record *prev;	/* Link in hash table */
 
-I noticed that starting from v6.5-rc1 my ath11k tests reported several
-memory leaks from swapper/0:
+At this point this could be a normal list_head? Then you don't have to
+roll your own doubly-linked list manipulation (and benefit from things
+like CONFIG_LIST_DEBUG).
 
-unreferenced object 0xffff88810a02b7a8 (size 96):
-  comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
-  hex dump (first 32 bytes):
-    80 b8 02 0a 81 88 ff ff b8 72 07 00 00 c9 ff ff  .........r......
-    c8 b7 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-unreferenced object 0xffff88810a02b880 (size 96):
-  comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
-  hex dump (first 32 bytes):
-    58 b9 02 0a 81 88 ff ff a8 b7 02 0a 81 88 ff ff  X...............
-    a0 b8 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-unreferenced object 0xffff88810a02b958 (size 96):
-  comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
-  hex dump (first 32 bytes):
-    30 ba 02 0a 81 88 ff ff 80 b8 02 0a 81 88 ff ff  0...............
-    78 b9 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  x...............
-  backtrace:
-unreferenced object 0xffff88810a02ba30 (size 96):
-  comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
-  hex dump (first 32 bytes):
-    08 bb 02 0a 81 88 ff ff 58 b9 02 0a 81 88 ff ff  ........X.......
-    50 ba 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  P...............
-  backtrace:
-unreferenced object 0xffff88810a02bb08 (size 96):
-  comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
-  hex dump (first 32 bytes):
-    e0 bb 02 0a 81 88 ff ff 30 ba 02 0a 81 88 ff ff  ........0.......
-    28 bb 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  (...............
-  backtrace:
-
-I can easily reproduce this by doing a simple insmod and rmmod of ath11k
-and it's dependencies (mac80211, MHI etc). I can reliability reproduce
-the leaks but I only see them once after a boot, I need to reboot the
-host to see the leaks again. v6.4 has no leaks.
-
-I did a bisect and found the commit below. I verified reverting the
-commit makes the leaks go away.
-
-commit e54223275ba1bc6f704a6bab015fcd2ae4f72572
-Author:     Ross Lagerwall <ross.lagerwall@citrix.com>
-AuthorDate: Thu May 25 16:32:48 2023 +0100
-Commit:     Bjorn Helgaas <bhelgaas@google.com>
-CommitDate: Fri Jun 9 15:06:16 2023 -0500
-
-    PCI: Release resource invalidated by coalescing
-
-Kalle
+>  	u32 hash;			/* Hash in hash table */
+>  	u32 size;			/* Number of stored frames */
+>  	union handle_parts handle;
+> @@ -493,6 +494,9 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  
+>  		if (new) {
+>  			new->next = *bucket;
+> +			new->prev = NULL;
+> +			if (*bucket)
+> +				(*bucket)->prev = new;
+>  			*bucket = new;
+>  			found = new;
+>  		}
+> -- 
+> 2.25.1
+> 
