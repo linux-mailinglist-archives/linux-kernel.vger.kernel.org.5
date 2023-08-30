@@ -2,288 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2C178D35B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D5E78D35A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239671AbjH3G1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 02:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        id S238787AbjH3G0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 02:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjH3G0o (ORCPT
+        with ESMTP id S231316AbjH3G0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:26:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5EBE9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693376754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7Bck91h4ecr3Co3tJzlcq1wsKaOVtegEctcyU5tCF8E=;
-        b=Na8yfC6CSDLQ0Eb/Ksv/6lXAjSizNXdLzbrzLszTSX6TRYxTquIIpOoddyMk3yubK2wq4V
-        Jvrh2QzoB1hsUyBZqN7zViOjwbJmTnc4uAKgxcI9yKlvWp2K/mNrdJX1wPehtBMfBBOviy
-        W+6f42cvOtCO+WN2Pw8yqV/oeVhTCo0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-142-v6fW-8mBNBmeAYc3Y8-mxQ-1; Wed, 30 Aug 2023 02:25:52 -0400
-X-MC-Unique: v6fW-8mBNBmeAYc3Y8-mxQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31adc3ca07aso3154478f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:25:52 -0700 (PDT)
+        Wed, 30 Aug 2023 02:26:03 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F9A1BB;
+        Tue, 29 Aug 2023 23:26:01 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-792726d3aeeso177061139f.0;
+        Tue, 29 Aug 2023 23:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693376760; x=1693981560; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=7xbJc1r68PN8GsQ7bbtmLEqUkBNyKM4blhwGomh3nI4=;
+        b=WGiyCgJDmf8Dtm1gpVA+UM6y/5jWlo9iYtOOUIaZB1fhpHqGAiDncqkusAEf6Cwe7S
+         uXgkd6IcMtyI8OaKG4VxZkjtX2auiwQi36Pho/4oyVD8tm4P00/egUZLdXSOQT2A8hWd
+         8T8z22GnuouTF6uXVls6LPKKgFttrE5z3W9kOz8ycyfoijixDB0+FNRgJwolkIvd0z4G
+         sZSKQy5lYEVKbce9YljqF/jTvlQkF44ZCM4wo7yq4JFewdhR6xpcPfvZ774ykpMRTdw+
+         8xlZSqlzOVYrjIKA9laa4CrhhG+WFqrRyyDARJDSQxZkQT3kVFVT4O3jaypE2Y155Hv5
+         AO+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693376751; x=1693981551;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693376760; x=1693981560;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7Bck91h4ecr3Co3tJzlcq1wsKaOVtegEctcyU5tCF8E=;
-        b=b9IXRMEMotYSOESmM4h0ewmAPCU1WB9KCy0XTxAdEv/+vAeiG0UFSXp2tsJx95KbOB
-         seZbKxh304PcOu8JOrWOZRoBPB171rgwywTBlIgRT0Tg/H9emnDmxGEOT9hnu1fFH6Ft
-         jChMqK7k22v6GlLzLIRkwbUulW9ILZfz4RdzxlsP57av+5pR2cVgvxKEYbzpqfziua1K
-         3gkYE6FdMSSQ/Vc08tqGIW6oEDVHKoWrJM55uolmMKLJ7u895dEDBqm0y3hK/rr70PG4
-         tlp4204yfoQah4G+IXJjQPNs3VEGvVrMfdXwhAhnyoF0jZ3IU+O85cFuAN1ls0DVpEZ7
-         SVsg==
-X-Gm-Message-State: AOJu0Yyxu7i8AvU01fY3shjWjNHD+4iY2obwqxZT7/aQ1YXa0OF55IlD
-        JCUrrjS+VWdGy4uc+7cAcPiCwjakQ1eXtIDdJlY3cDJjhRXyGkI6EcIuRiDPkMO4gJje75v7p5m
-        u8dQB+1QPM7Usxo8lNqxBU8Ru7KorGwYbIyEZHkU+Ld2oDFjrOdi5gJ87LL8Q3D5JzzUlzf9DtQ
-        wcKNuFFy0=
-X-Received: by 2002:a5d:4c47:0:b0:31d:cf59:8de with SMTP id n7-20020a5d4c47000000b0031dcf5908demr877100wrt.19.1693376751220;
-        Tue, 29 Aug 2023 23:25:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFGkjHuOu5s6UltQpdDLgmsZ2+vkqG0rncWb93cDUvjACjGuAGSQurlsw0WrKhuai7PTZUJtg==
-X-Received: by 2002:a5d:4c47:0:b0:31d:cf59:8de with SMTP id n7-20020a5d4c47000000b0031dcf5908demr877068wrt.19.1693376750276;
-        Tue, 29 Aug 2023 23:25:50 -0700 (PDT)
-Received: from minerva.home (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id x16-20020a5d6510000000b003143c9beeaesm15663899wru.44.2023.08.29.23.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 23:25:50 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's .atomic_check() callback
-Date:   Wed, 30 Aug 2023 08:25:08 +0200
-Message-ID: <20230830062546.720679-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        bh=7xbJc1r68PN8GsQ7bbtmLEqUkBNyKM4blhwGomh3nI4=;
+        b=lO9xQFAjN4v47kzRYsaCLFtPczmVFaH6EE+t/AwgmGMELw28eCZK0y5XYNjKSBeVvy
+         nV/dTBj84x9PckhLBR4iuSpCyQ/BMs8CaBJ66dY1s+VLxeEmLnPNpm1+PGcCsJiQq4Gz
+         F3xqFCVokCxj0vcp4ravS7xYhdsvWdUx50oTT1eC915Nn+xnUJ+8HR7EmMBlsuqvGa6A
+         JtDTHRs9fiPCnJIZDAMymMeM3neKoGtxFL3lqwV9RZJ8CA9aCPhVj3bdMouMbA13oQW3
+         Z2sK0iLX0ExL7bDHaIum8GgX3o1etGy7dL9XZFpvt2Fh2gBUkmG18A16WiUU5UDQN6r8
+         kqYg==
+X-Gm-Message-State: AOJu0YzDpDMvjSfN9zW8opbPi1dt1dA3sYYZ5EGEwQRjKI92HAfy5rND
+        PfPwkU5fDXFkOIy2/Y+ezPs=
+X-Google-Smtp-Source: AGHT+IF2BFXcuV65Sil8IN/9tLakBbbH0aMEM/VOpAOmEba+qdMlzb3ohQzG3d/gZzsGmCqQ7ftIjA==
+X-Received: by 2002:a6b:e801:0:b0:783:6272:afbb with SMTP id f1-20020a6be801000000b007836272afbbmr1718833ioh.9.1693376760389;
+        Tue, 29 Aug 2023 23:26:00 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q6-20020a02a306000000b0042bb394c249sm3502711jai.38.2023.08.29.23.25.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 23:25:59 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <a2353ce6-bd39-f5ca-ad81-63b061147400@roeck-us.net>
+Date:   Tue, 29 Aug 2023 23:25:57 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4] usb: typec: qcom: Update the logic of regulator enable
+ and disable
+Content-Language: en-US
+To:     quic_huliu@quicinc.com,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
+        subbaram@quicinc.com
+References: <20230830-qcom-tcpc-v4-1-c19b0984879b@quicinc.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230830-qcom-tcpc-v4-1-c19b0984879b@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
-.atomic_check() callback") moved the allocation of the intermediate and
-HW buffers from the encoder's .atomic_enable callback to primary plane's
-.atomic_check callback.
+On 8/29/23 20:00, Hui Liu via B4 Relay wrote:
+> From: Hui Liu <quic_huliu@quicinc.com>
+> 
+> Removed the call logic of disable and enable regulator
+> in reset function. Enable the regulator in qcom_pmic_typec_start
+> function and disable it in qcom_pmic_typec_stop function to
+> avoid unbalanced regulator disable warnings.
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-This was suggested by Maxime Ripard because drivers aren't allowed to fail
-after drm_atomic_helper_swap_state() has been called, and the encoder's
-.atomic_enable happens after the new atomic state has been swapped.
+Please drop.
 
-But that change caused a performance regression in very slow platforms,
-since now the allocation happens for every plane's atomic state commit.
-For example, Geert Uytterhoeven reports that is the case on a VexRiscV
-softcore (RISC-V CPU implementation on an FPGA).
+> Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> ---
+> Changes in v4:
+> - Removed regulator_enable and regulator_diable from
+> pmic_typec_pdphy_reset function. And enable regulator in
 
-To prevent that, move the move the buffers' allocation and free to the
-CRTC's .atomic_check and .atomic_destroy_state callbacks, so that only
-happens on a modeset. Since the intermediate buffer is only needed when
-not using the controller native format (R1), doing the buffer allocation
-at that CRTC's .atomic_check time would be enough.
+... because I do not see the above change, and way too much changed
+in the code since I sent a Reviewed-by: to make it appropriate
+to keep it.
 
-Fixes: 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's .atomic_check() callback")
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-Hello,
+Actually, I don't see a difference between v3 and v4 of your patch.
 
-This is a RFC because I'm not sure if there is a net benefit after this
-change. I find the currect code much cleaner and less error prone, even
-when Geert reports that performs worse on his (very slow) platform.
+Guenter
 
-But I'm still posting it to see what others think. I've tested the patch
-on an I2C ssd1306 OLED and found no regressions.
-
-The patch is on top on Geert's latest patch-set that adds support for the
-DRM_FORMAT_R1 to the ssd130x driver:
-
-https://lore.kernel.org/dri-devel/cover.1692888745.git.geert@linux-m68k.org
-
-Best regards,
-Javier
-
- drivers/gpu/drm/solomon/ssd130x.c | 106 ++++++++++++++++--------------
- 1 file changed, 56 insertions(+), 50 deletions(-)
-
-diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
-index 0d2b36ba4011..60536cd0c42d 100644
---- a/drivers/gpu/drm/solomon/ssd130x.c
-+++ b/drivers/gpu/drm/solomon/ssd130x.c
-@@ -650,46 +650,6 @@ static int ssd130x_fb_blit_rect(struct drm_plane_state *state,
- 	return ret;
- }
- 
--static int ssd130x_primary_plane_helper_atomic_check(struct drm_plane *plane,
--						     struct drm_atomic_state *state)
--{
--	struct drm_device *drm = plane->dev;
--	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
--	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
--	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(plane_state);
--	unsigned int page_height = ssd130x->device_info->page_height;
--	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
--	const struct drm_format_info *fi;
--	unsigned int pitch;
--	int ret;
--
--	ret = drm_plane_helper_atomic_check(plane, state);
--	if (ret)
--		return ret;
--
--	ssd130x_state->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
--	if (!ssd130x_state->data_array)
--		return -ENOMEM;
--
--	if (plane_state->fb->format->format != DRM_FORMAT_R1) {
--		fi = drm_format_info(DRM_FORMAT_R1);
--		if (!fi)
--			return -EINVAL;
--
--		pitch = drm_format_info_min_pitch(fi, 0, ssd130x->width);
--
--		ssd130x_state->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
--		if (!ssd130x_state->buffer) {
--			kfree(ssd130x_state->data_array);
--			/* Set to prevent a double free in .atomic_destroy_state() */
--			ssd130x_state->data_array = NULL;
--			return -ENOMEM;
--		}
--	}
--
--	return 0;
--}
--
- static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
- 						       struct drm_atomic_state *state)
- {
-@@ -762,10 +722,6 @@ static struct drm_plane_state *ssd130x_primary_plane_duplicate_state(struct drm_
- 	if (!ssd130x_state)
- 		return NULL;
- 
--	/* The buffers are not duplicated and are allocated in .atomic_check */
--	ssd130x_state->buffer = NULL;
--	ssd130x_state->data_array = NULL;
--
- 	new_shadow_plane_state = &ssd130x_state->base;
- 
- 	__drm_gem_duplicate_shadow_plane_state(plane, new_shadow_plane_state);
-@@ -778,9 +734,6 @@ static void ssd130x_primary_plane_destroy_state(struct drm_plane *plane,
- {
- 	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(state);
- 
--	kfree(ssd130x_state->data_array);
--	kfree(ssd130x_state->buffer);
--
- 	__drm_gem_destroy_shadow_plane_state(&ssd130x_state->base);
- 
- 	kfree(ssd130x_state);
-@@ -788,7 +741,7 @@ static void ssd130x_primary_plane_destroy_state(struct drm_plane *plane,
- 
- static const struct drm_plane_helper_funcs ssd130x_primary_plane_helper_funcs = {
- 	DRM_GEM_SHADOW_PLANE_HELPER_FUNCS,
--	.atomic_check = ssd130x_primary_plane_helper_atomic_check,
-+	.atomic_check = drm_plane_helper_atomic_check,
- 	.atomic_update = ssd130x_primary_plane_helper_atomic_update,
- 	.atomic_disable = ssd130x_primary_plane_helper_atomic_disable,
- };
-@@ -818,6 +771,59 @@ static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc
- 	return MODE_OK;
- }
- 
-+int ssd130x_crtc_helper_atomic_check(struct drm_crtc *crtc, struct drm_atomic_state *state)
-+{
-+	struct drm_device *drm = crtc->dev;
-+	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
-+	struct drm_plane *plane = crtc->primary;
-+	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
-+	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(plane_state);
-+	unsigned int page_height = ssd130x->device_info->page_height;
-+	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
-+	const struct drm_format_info *fi;
-+	unsigned int pitch;
-+	int ret;
-+
-+	ret = drm_crtc_helper_atomic_check(crtc, state);
-+	if (ret)
-+		return ret;
-+
-+	ssd130x_state->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
-+	if (!ssd130x_state->data_array)
-+		return -ENOMEM;
-+
-+	if (plane_state->fb->format->format != DRM_FORMAT_R1) {
-+		fi = drm_format_info(DRM_FORMAT_R1);
-+		if (!fi)
-+			return -EINVAL;
-+
-+		pitch = drm_format_info_min_pitch(fi, 0, ssd130x->width);
-+
-+		ssd130x_state->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
-+		if (!ssd130x_state->buffer) {
-+			kfree(ssd130x_state->data_array);
-+			/* Set to prevent a double free in .atomic_destroy_state() */
-+			ssd130x_state->data_array = NULL;
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void ssd130x_crtc_destroy_state(struct drm_crtc *crtc,
-+				       struct drm_crtc_state *state)
-+{
-+	struct drm_plane *plane = crtc->primary;
-+	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state->state, plane);
-+	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(plane_state);
-+
-+	drm_atomic_helper_crtc_destroy_state(crtc, state);
-+
-+	kfree(ssd130x_state->data_array);
-+	kfree(ssd130x_state->buffer);
-+}
-+
- /*
-  * The CRTC is always enabled. Screen updates are performed by
-  * the primary plane's atomic_update function. Disabling clears
-@@ -825,7 +831,7 @@ static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc
-  */
- static const struct drm_crtc_helper_funcs ssd130x_crtc_helper_funcs = {
- 	.mode_valid = ssd130x_crtc_helper_mode_valid,
--	.atomic_check = drm_crtc_helper_atomic_check,
-+	.atomic_check = ssd130x_crtc_helper_atomic_check,
- };
- 
- static const struct drm_crtc_funcs ssd130x_crtc_funcs = {
-@@ -834,7 +840,7 @@ static const struct drm_crtc_funcs ssd130x_crtc_funcs = {
- 	.set_config = drm_atomic_helper_set_config,
- 	.page_flip = drm_atomic_helper_page_flip,
- 	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
--	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
-+	.atomic_destroy_state = ssd130x_crtc_destroy_state,
- };
- 
- static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
--- 
-2.41.0
+> qcom_pmic_typec_pdphy_start function and disable it in
+> qcom_pmic_typec_pdphy_stop function.
+> - Link to v3: https://lore.kernel.org/r/20230828-qcom-tcpc-v3-1-e95b7afa34d9@quicinc.com
+> 
+> Changes in v3:
+> - Take Bryan's proposal to remove enable/disable operation in pdphy
+> enable and pdphy disable function, then enable regulator in pdphy start
+> function and disable it in pdphy stop function.
+> - Link to v2: https://lore.kernel.org/r/20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com
+> 
+> Changes in v2:
+> - Add Fixes tag
+> - Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
+> ---
+>   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+> index bb0b8479d80f..52c81378e36e 100644
+> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+> @@ -381,10 +381,6 @@ static int qcom_pmic_typec_pdphy_enable(struct pmic_typec_pdphy *pmic_typec_pdph
+>   	struct device *dev = pmic_typec_pdphy->dev;
+>   	int ret;
+>   
+> -	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
+> -	if (ret)
+> -		return ret;
+> -
+>   	/* PD 2.0, DR=TYPEC_DEVICE, PR=TYPEC_SINK */
+>   	ret = regmap_update_bits(pmic_typec_pdphy->regmap,
+>   				 pmic_typec_pdphy->base + USB_PDPHY_MSG_CONFIG_REG,
+> @@ -422,8 +418,6 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
+>   	ret = regmap_write(pmic_typec_pdphy->regmap,
+>   			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
+>   
+> -	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+> -
+>   	return ret;
+>   }
+>   
+> @@ -447,6 +441,10 @@ int qcom_pmic_typec_pdphy_start(struct pmic_typec_pdphy *pmic_typec_pdphy,
+>   	int i;
+>   	int ret;
+>   
+> +	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
+> +	if (ret)
+> +		return ret;
+> +
+>   	pmic_typec_pdphy->tcpm_port = tcpm_port;
+>   
+>   	ret = pmic_typec_pdphy_reset(pmic_typec_pdphy);
+> @@ -467,6 +465,8 @@ void qcom_pmic_typec_pdphy_stop(struct pmic_typec_pdphy *pmic_typec_pdphy)
+>   		disable_irq(pmic_typec_pdphy->irq_data[i].irq);
+>   
+>   	qcom_pmic_typec_pdphy_reset_on(pmic_typec_pdphy);
+> +
+> +	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+>   }
+>   
+>   struct pmic_typec_pdphy *qcom_pmic_typec_pdphy_alloc(struct device *dev)
+> 
+> ---
+> base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
+> change-id: 20230822-qcom-tcpc-d41954ac65fa
+> 
+> Best regards,
 
