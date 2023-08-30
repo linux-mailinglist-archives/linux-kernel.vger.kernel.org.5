@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF5F78D125
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED8578D129
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241404AbjH3Acw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 20:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
+        id S241431AbjH3Ae6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 20:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239118AbjH3AcV (ORCPT
+        with ESMTP id S234328AbjH3Aew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 20:32:21 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58EB107
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:32:18 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31c73c21113so4450895f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693355537; x=1693960337; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gzg4UEp9aD0VDjzsHgbVhYzgvlS+KiuyM3pgV5dY23Q=;
-        b=I71ugWh8HmgN/6dQmBXYKc6S5YQ388t958bJeXOn1lptPqNfBlFUBp2+/5UndDp0sS
-         I2qCKPQ7ScAESVhtNU5svFD0RLaMhGxclfd8MiYS3Zxn6YU9OZw5OIrHZw0yrGrEJQ6V
-         ex3fwcW5ySPA0qXNsOcH42S3kRKqBz/4oSdVU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693355537; x=1693960337;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gzg4UEp9aD0VDjzsHgbVhYzgvlS+KiuyM3pgV5dY23Q=;
-        b=ZNtNE+KVSL8bnTpPAdkrItrFKLGqrCG7qlq2G7OgaSVGN7we2kMA8f9ZA/uzKrIDdA
-         ljLOhxlCBJ0OTA5SwGuoUCgu+//8UroGMMwptNjhgnUBcYICon/ISxt0qMoDLx0NsfEe
-         h4trklyUf8iC1xVB03Ue7N58XaEF1bj4XaVMLZzqYV4+7dDHJZ5+U6tbHzCj5n5tRDzU
-         v/lb786cYW8zk0jALwF1LYYALjoMSaX1WW29PhPdrJsdnqFEG0nvawUYqlH8yK0aJ5Zx
-         cIbVPHd4S1k2ozo9exUq85uJ8LJQD3NEj16OV9dQ4QsDEaQOMqt/Kb3I+uDRqyXCxO5O
-         B+cA==
-X-Gm-Message-State: AOJu0YxJ9MM1xummS4xbSx+XNUNSVADQgoUCxHjGenaPdnc4l+87G+P5
-        t4xaJsdOzyuQUMzaXrxr7upQ3NWcXEts8NIf3zjinV/w
-X-Google-Smtp-Source: AGHT+IF8OmH9LeKECwy+9qDtxdVweOJELuhC+rtHfN0y/pfKhUW9Y10V3ppa2JkGAQDBtmJgSzp9YQ==
-X-Received: by 2002:adf:fed1:0:b0:319:71be:9248 with SMTP id q17-20020adffed1000000b0031971be9248mr491740wrs.19.1693355537106;
-        Tue, 29 Aug 2023 17:32:17 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id mh3-20020a170906eb8300b0099bcdfff7cbsm6480300ejb.160.2023.08.29.17.32.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 17:32:16 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99bcf2de59cso663759666b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:32:16 -0700 (PDT)
-X-Received: by 2002:a17:906:2092:b0:9a1:b5fc:8c56 with SMTP id
- 18-20020a170906209200b009a1b5fc8c56mr412325ejq.55.1693355535843; Tue, 29 Aug
- 2023 17:32:15 -0700 (PDT)
+        Tue, 29 Aug 2023 20:34:52 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254F6107;
+        Tue, 29 Aug 2023 17:34:49 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TNjf06015808;
+        Wed, 30 Aug 2023 00:33:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=zf7L9MvxmjbWQSiof5mmYp7kywmOzRvcWTDpK/u39ws=;
+ b=jOddOX6OG9hvaOOXQw9Zo+WC2LGEz2IID4P8OUbmGIGwpGnCmU/kJJ8SeR9gMVUEr9s8
+ TPdL08Qa8c03hPvBYXRMYG3n08Q4HwyRj7zQ1Ih1jujRSyNXFxj8n72mCAxUwD8gf09Z
+ OFR17n9BJkKo5autB7g0FU20F74EmliY8IveKyQ/8x/afD1FJNDNiHix2hiQTpMRlWe9
+ 1/ueIeOYzxN0bi29q1uIwuJhIHH7aerLsq3uU6RNFBG+RbUzGclb65yeXB5NCUyXgRMA
+ f+5HmnZes0s6cgXZ5c39tWIW7ojx17rS/g2oZDNiCe7OKHHYbJ2g76fDn9tnf8uzfWmc Ug== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssmcv8tnj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 00:33:42 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37U0Xfsg000585
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 00:33:41 GMT
+Received: from [10.71.110.139] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
+ 2023 17:33:37 -0700
+Message-ID: <ae8942f9-fe89-e059-fe83-f2a6d133f8e0@quicinc.com>
+Date:   Tue, 29 Aug 2023 17:33:37 -0700
 MIME-Version: 1.0
-References: <20230829213441.310655-1-ulf.hansson@linaro.org> <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 29 Aug 2023 17:31:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
-Message-ID: <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] freezer,sched: Use saved_state to reduce some spurious
+ wakeups
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Thomas Gleixner" <tglx@linutronix.de>, <kernel@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        Prakash Viswalingam <quic_prakashv@quicinc.com>
+References: <20230828-avoid-spurious-freezer-wakeups-v1-1-8be8cf761472@quicinc.com>
+ <f7d23e37-8c09-43ea-83fb-0731a3439c1a@quicinc.com>
+Content-Language: en-US
+From:   Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <f7d23e37-8c09-43ea-83fb-0731a3439c1a@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: G1ch5QS0YkX_dIdFGkX70RU9eD8ukhEs
+X-Proofpoint-GUID: G1ch5QS0YkX_dIdFGkX70RU9eD8ukhEs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
+ mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300003
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,30 +87,218 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 17:18, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Please don't use random letter combinations that have absolutely
-> no meaning to anybody else, and that aren't even explained.
 
-Side note: at least to me, 'gen' is short for 'generate'. Looking at
-existing kernel naming, that's how we've used it (lots of examples of
-that from different areas).
 
-Do we also have "generic"? Yes. And because 'gen' does not mean
-'generic' to anybody, we've typically spelled it out - as in
-asm-generic, but also 'sound/soc/generic', or in fact a _lot_ of other
-examples.
+On 8/28/2023 10:22 PM, Pavan Kondeti wrote:
+> On Mon, Aug 28, 2023 at 10:33:04AM -0700, Elliot Berman wrote:
+>> After commit f5d39b020809 ("freezer,sched: Rewrite core freezer logic"),
+>> tasks that are in TASK_FREEZABLE state and end up getting frozen are
+> 
+> TASK_FREEZABLE state and what? Pls check once.
+> 
+>> always woken up. Prior to that commit, tasks could ask freezer to
+>> consider them "frozen enough" via freezer_do_not_conut(). As described
+>> in Peter's commit, the reason for this change is to prevent these tasks
+>> from being woken before SMP is back. The commit introduced a
+>> TASK_FREEZABLE state which allows freezer to immediately mark the task
+>> as TASK_FROZEN without waking up the task. On the thaw path, the task is
+>> woken up even if the task didn't need to wake up and goes back to its
+>> TASK_(UN)INTERRUPTIBLE state. Although these tasks are capable of
+>> handling of the wakeup, we can observe a power/perf impact from the
+>> extra wakeup.
+>>
+>> We observed on Android many tasks wait in the TASK_FREEZABLE state
+>> (particularly due to many of them being binder clients). We observed
+>> nearly 4x the number of tasks and a corresponding (almost) linear increase in
+>> latency and power consumption when thawing the system. The latency
+>> increased from ~15ms to ~50ms.
+>>
+>> Save the state of TASK_FREEZABLE tasks and restore it after thawing the
+>> task without waking the task up. If the task received a wake up for the
+>> saved_state before thawing, then the task is still woken upon thawing.
+>>
+>> Re-use saved_state from RT sleeping spinlocks because freezer doesn't
+>> consider TASK_RTLOCK_WAIT freezable.
+>>
+>> Reported-by: Prakash Viswalingam <quic_prakashv@quicinc.com>
+>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+>> ---
+>> For testing purposes, I use these commands can help see how many tasks were
+>> woken during thawing:
+>>
+>> 1. Setup:
+>>     mkdir /sys/kernel/tracing/instances/freezer
+>>     cd /sys/kernel/tracing/instances/freezer
+>>     echo 0 > tracing_on ; echo > trace
+>>     echo power:suspend_resume > set_event
+>>     echo 'enable_event:sched:sched_wakeup if action == \"thaw_processes\" && start == 1' > events/power/suspend_resume/trigger
+>>     echo 'traceoff if action == \"thaw_processes\" && start == 0' > events/power/suspend_resume/trigger
+>>     echo 1 > tracing_on
+>>
+>> 2. Let kernel go to suspend
+>>
+>> 3. After kernel's back up:
+>>     cat /sys/kernel/tracing/instances/freezer/trace | grep sched_wakeup | grep -o "pid=[0-9]*" | sort -u | wc -l
+>> ---
+>>   include/linux/sched.h |  4 ++--
+>>   kernel/freezer.c      | 15 +++++++++++++--
+>>   kernel/sched/core.c   | 21 +++++++++++++--------
+>>   3 files changed, 28 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index eed5d65b8d1f..e4ade5a18df2 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -746,8 +746,8 @@ struct task_struct {
+>>   #endif
+>>   	unsigned int			__state;
+>>   
+>> -#ifdef CONFIG_PREEMPT_RT
+>> -	/* saved state for "spinlock sleepers" */
+>> +#if IS_ENABLED(CONFIG_PREEMPT_RT) || IS_ENABLED(CONFIG_FREEZER)
+>> +	/* saved state for "spinlock sleepers" and freezer */
+>>   	unsigned int			saved_state;
+>>   #endif
+>>   
+>> diff --git a/kernel/freezer.c b/kernel/freezer.c
+>> index 4fad0e6fca64..6222cbfd97ab 100644
+>> --- a/kernel/freezer.c
+>> +++ b/kernel/freezer.c
+>> @@ -71,7 +71,11 @@ bool __refrigerator(bool check_kthr_stop)
+>>   	for (;;) {
+>>   		bool freeze;
+>>   
+>> +		raw_spin_lock_irq(&current->pi_lock);
+>>   		set_current_state(TASK_FROZEN);
+>> +		/* unstale saved_state so that __thaw_task() will wake us up */
+>> +		current->saved_state = TASK_RUNNING;
+>> +		raw_spin_unlock_irq(&current->pi_lock);
+>>   
+>>   		spin_lock_irq(&freezer_lock);
+>>   		freeze = freezing(current) && !(check_kthr_stop && kthread_should_stop());
+>> @@ -129,6 +133,7 @@ static int __set_task_frozen(struct task_struct *p, void *arg)
+>>   		WARN_ON_ONCE(debug_locks && p->lockdep_depth);
+>>   #endif
+>>   
+>> +	p->saved_state = p->__state;
+>>   	WRITE_ONCE(p->__state, TASK_FROZEN);
+>>   	return TASK_FROZEN;
+>>   }
+>> @@ -174,10 +179,16 @@ bool freeze_task(struct task_struct *p)
+>>    * state in p->jobctl. If either of them got a wakeup that was missed because
+>>    * TASK_FROZEN, then their canonical state reflects that and the below will
+>>    * refuse to restore the special state and instead issue the wakeup.
+>> + *
+>> + * Otherwise, restore the saved_state before the task entered freezer. For
+>> + * typical tasks in the __refrigerator(), saved_state == 0 so nothing happens
+>> + * here. For tasks which were TASK_NORMAL | TASK_FREEZABLE, their initial state
+>> + * is returned unless they got an expected wakeup. Then they will be woken up as
+>> + * TASK_FROZEN back in __thaw_task().
+>>    */
+> 
+> Thanks for the detailed comment. The change looks good to me.
+> 
+>>   static int __set_task_special(struct task_struct *p, void *arg)
+>>   {
+>> -	unsigned int state = 0;
+>> +	unsigned int state = p->saved_state;
+>>   
+>>   	if (p->jobctl & JOBCTL_TRACED)
+>>   		state = TASK_TRACED;
+>> @@ -188,7 +199,7 @@ static int __set_task_special(struct task_struct *p, void *arg)
+>>   	if (state)
+>>   		WRITE_ONCE(p->__state, state);
+>>   
+>> -	return state;
+>> +	return state & ~TASK_FROZEN;
+>>   }
+> 
+> void __thaw_task(struct task_struct *p)
+> {
+> 
+> ...
+> 
+> 	if (lock_task_sighand(p, &flags2)) {
+> 		/* TASK_FROZEN -> TASK_{STOPPED,TRACED} */
+> 		bool ret = task_call_func(p, __set_task_special, NULL);
+> 		unlock_task_sighand(p, &flags2);
+> 		if (ret)
+> 			goto unlock;
+> 	}
+> 
+> 	wake_up_state(p, TASK_FROZEN);
+> unlock:
+> 	spin_unlock_irqrestore(&freezer_lock, flags);
+> }
+> 
+> 
+> The comment there about task change needs update. I feel the "ret"
+> should be renamed approriately to indicate whether wakeup is needed
+> or not.
+> 
+> Now that we have saved_state capturing the previous and any state change
+> while task is frozen, can that be used and remove the job control and
+> associated locking here? for ex: if saved_state is running, we need to
+> wakeup otherwise, simply restore the __state from saved_state.
+> 
+>>   
+>>   void __thaw_task(struct task_struct *p)
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index a68d1276bab0..815d955764a5 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -3992,13 +3992,17 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
+>>    * The caller holds p::pi_lock if p != current or has preemption
+>>    * disabled when p == current.
+>>    *
+>> - * The rules of PREEMPT_RT saved_state:
+>> + * The rules of saved_state:
+>>    *
+>>    *   The related locking code always holds p::pi_lock when updating
+>>    *   p::saved_state, which means the code is fully serialized in both cases.
+>>    *
+>> - *   The lock wait and lock wakeups happen via TASK_RTLOCK_WAIT. No other
+>> - *   bits set. This allows to distinguish all wakeup scenarios.
+>> + *   For PREEMPT_RT, the lock wait and lock wakeups happen via TASK_RTLOCK_WAIT.
+>> + *   No other bits set. This allows to distinguish all wakeup scenarios.
+>> + *
+>> + *   For FREEZER, the wakeup happens via TASK_FROZEN. No other bits set. This
+>> + *   allows us to prevent early wakeup of tasks before they can be run on
+>> + *   asymmetric ISA architectures (eg ARMv9).
+>>    */
+>>   static __always_inline
+>>   bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+>> @@ -4013,13 +4017,14 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+>>   		return true;
+>>   	}
+>>   
+>> -#ifdef CONFIG_PREEMPT_RT
+>> +#if IS_ENABLED(CONFIG_PREEMPT_RT) || IS_ENABLED(CONFIG_FREEZER)
+>>   	/*
+>>   	 * Saved state preserves the task state across blocking on
+>> -	 * an RT lock.  If the state matches, set p::saved_state to
+>> -	 * TASK_RUNNING, but do not wake the task because it waits
+>> -	 * for a lock wakeup. Also indicate success because from
+>> -	 * the regular waker's point of view this has succeeded.
+>> +	 * an RT lock or TASK_FREEZABLE tasks.  If the state matches,
+>> +	 * set p::saved_state to TASK_RUNNING, but do not wake the task
+>> +	 * because it waits for a lock wakeup or __thaw_task(). Also
+>> +	 * indicate success because from the regular waker's point of
+>> +	 * view this has succeeded.
+>>   	 *
+>>   	 * After acquiring the lock the task will restore p::__state
+>>   	 * from p::saved_state which ensures that the regular
+>>
+>> ---
+>> base-commit: 6995e2de6891c724bfeb2db33d7b87775f913ad1
+>> change-id: 20230817-avoid-spurious-freezer-wakeups-9f8619680b3a
+> 
+> Your patch seems based on v6.4. You might want to resend the patch on
+> v6.5 to take the below commit into account.
+> 
+> 1c06918788e8a ("sched: Consider task_struct::saved_state in
+> wait_task_inactive()")
 
-Because we really aren't that close to running out of letters.
-
-As to the 'pd' part, it actually has a fairly widely used meaning in
-the industry, but it tends to be 'power delivery', in the USB-C sense.
-
-So I really find that short-hand actively misleading,
-
-I realize that the SoC code has used that shorthand internally, but
-once you expose it like this, I really think you should do a much
-better job at naming.
-
-                 Linus
+Thanks for pointing this out! I am pretty sure that with that change, we 
+can remove the checks for the jobctl and also remove the 
+lock_task_sighand(). I'll run some tests.
