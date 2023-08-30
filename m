@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15E378E13D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713B078E173
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240883AbjH3VM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50170 "EHLO
+        id S241474AbjH3Vac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240818AbjH3VMZ (ORCPT
+        with ESMTP id S239596AbjH3Vaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:12:25 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CE0E0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:11:55 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so9851f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:11:55 -0700 (PDT)
+        Wed, 30 Aug 2023 17:30:30 -0400
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8B91B2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:29:59 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2b974031aeaso5001221fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693429841; x=1694034641; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
-         :from:references:in-reply-to:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pe9mE2/R7T8IPvBnOwTKQXiumtbckNH2e0XcU/p62Jc=;
-        b=Xa7vLajBBN4Mz9gpCj6Ttmrp95kwDJZ2+9FF7xaAHh4Su/FpXEPpJ8wxuy5w3JuxsK
-         SpUrSucTnH7+v4Qw7I3pninJmJA50odGBTFViRFudHwcqsPsQ08nMCbMwncE9PfOE5K0
-         9kiekSx9dMMtu2OCc0Mt+7lpdZqnqVfZJLBTE=
+        d=linaro.org; s=google; t=1693430590; x=1694035390; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y3GFJJ1bfzLehaaeYWZmxq+4HqJybFC3hIxDo2a5s3w=;
+        b=zVprf3BIjb9SfWQecVfjDKCqHPOmUUY/KcO8bzULbNNnx0FO+U+XRF3Zb8JmqvuW5o
+         07NeJ7vwXhIWPakcfx/gOt2DD8C5dft/n+6ywb0qWEZvK6GGiLjQhaRdaTgcynjZmTJ1
+         qU+tm2K3c4XnMFuZjbFsDy2bXIwsf6Kx0OzMTdoo5zPKeNTo5ERjoNA8Yn2l9Hg3ylQB
+         0sRCQCyeQwLaVNZy+nQ/nyfVGFA7ALYV5M1uF7lCdOUQ+WzvcJWmoc6bIxLB9Egp1IbA
+         vUhX5sM++CMaqK/ratxpji5XcEiG38xT8nP4iTE+fsejbVLlY5b18xTcFWISTgMlxccj
+         svBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693429841; x=1694034641;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
-         :from:references:in-reply-to:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Pe9mE2/R7T8IPvBnOwTKQXiumtbckNH2e0XcU/p62Jc=;
-        b=MqMWR6uXvqZaCYiwfe7ArVkOg+ZrrvBYS1dr1u4IBVAxApZUTISIzptbNDXE4WL9n7
-         +wPCaN/r/zDRgtppkh2yx5iktkOybKsJ2t96CJyYhdZchftsul53IiS8D2/1xr0l2rK9
-         QsTpxMlnN19PvOt9pDY/Cgpd7ODQ2Ld7AbTxRGXPN5TuOMLiQzLKTak0cz28pCu1EGXz
-         utjRFR4EMwjA/ow3uCFgtBfkLZGZEJNIOM6WjwlqEdHXZXltFbLFvSkbKyhlKQP6ndOq
-         xTlWUarc4+2Kw5I3nKoW5nuBnbxpOyIE7q9ZfUpGATsdHKpMUJw5jbNeeRPrGd+VI8S9
-         pw3A==
-X-Gm-Message-State: AOJu0Yw+8e9BUN1efg6Jrat8J13cF03w5QvFCtkGD91aZ8lbAqPXVNRT
-        fOsGkOFvbzrjxBiQMPMaaMMqK2Txj8CAVNF8rUS/ogZ/dvDc87Qp
-X-Google-Smtp-Source: AGHT+IFD5g7uHW+PQQ52fzmo9RpI5X5M7wL4vmNsfIm0JgfxAR+W6KxZL+c8nYTvzXsc+N3Kl99q3/5CFIX0GKdazGQ=
-X-Received: by 2002:a19:504a:0:b0:4fb:8bea:f5f6 with SMTP id
- z10-20020a19504a000000b004fb8beaf5f6mr2160145lfj.34.1693427798584; Wed, 30
- Aug 2023 13:36:38 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 30 Aug 2023 13:36:38 -0700
+        d=1e100.net; s=20221208; t=1693430590; x=1694035390;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y3GFJJ1bfzLehaaeYWZmxq+4HqJybFC3hIxDo2a5s3w=;
+        b=iptcB7msWUb2bQOQovmAt6lx9hR0PirOUhAz1yU6KZZGB8cfLkQJqDTHWiijk/heU+
+         lCnPfUvENqLAHQNY04Rw48OckX+sycjKffC1deZGTXOqlWIccJzc5jTDttGG7aQdsjxV
+         suakgGIrmhtet4sJjg22D+9T+LOJeoaPftMfLENBXA74cNC7d81Q36KQY+gGNQvDOUSz
+         lWkLUsQIZJONCmPuXSju54Q/m16aBmbEGl3jrLHRZJsWgnK2AA5yOnO/0oHmfaAzf7ie
+         VGw6HHmcO7G2JWaBBIt16SJ1nWiWzGx/6ojcPG+F1bkBBnoBgsKJnj/ezIAbeIrbOV5b
+         Km2Q==
+X-Gm-Message-State: AOJu0YwEE2D0SP83JF1U4GD5YQPj85btsD3TGLYifXsTKpqvEBFAQtul
+        4UyBDePJAFECJ/q+8JzI+G65yDdyszqrjiec0+fEuA==
+X-Google-Smtp-Source: AGHT+IH4Z7UrMwAyZU+QqUGLEJoZhWtcSAx2hm7E8zMd7lpC2rhpEwQnFlI4FNEiuWAKjw6WBo1OoA==
+X-Received: by 2002:a2e:95d8:0:b0:2b9:e24d:21f6 with SMTP id y24-20020a2e95d8000000b002b9e24d21f6mr2624039ljh.20.1693427809203;
+        Wed, 30 Aug 2023 13:36:49 -0700 (PDT)
+Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
+        by smtp.gmail.com with ESMTPSA id w8-20020a2e9988000000b002b9f4841913sm2742873lji.1.2023.08.30.13.36.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 13:36:48 -0700 (PDT)
+Message-ID: <672c7e89-1514-4b7a-a8b7-47f318ec188a@linaro.org>
+Date:   Wed, 30 Aug 2023 22:36:47 +0200
 MIME-Version: 1.0
-In-Reply-To: <56ae0bf828d942c92ca867afb3aae95fcabd5498.1693416477.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1693416477.git.mirq-linux@rere.qmqm.pl> <56ae0bf828d942c92ca867afb3aae95fcabd5498.1693416477.git.mirq-linux@rere.qmqm.pl>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Wed, 30 Aug 2023 13:36:38 -0700
-Message-ID: <CAE-0n53a75cgRNJOdn1=19OG_yJt9DDXHZ4quhZwCtZiQ1RUxQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] regulator/core: regulator_lock_nested: simplify
- nested locking
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/7] arm64: dts: qcom: sm8550: Mark APPS SMMU as
+ dma-coherent
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
+ <20230830-topic-8550_dmac2-v1-5-49bb25239fb1@linaro.org>
+ <CAA8EJpp2UbiknJ876ccCiSV2hDYdiGVRiQBdAEMM7e9z5OqK3A@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <CAA8EJpp2UbiknJ876ccCiSV2hDYdiGVRiQBdAEMM7e9z5OqK3A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Micha=C5=82 Miros=C5=82aw (2023-08-30 10:35:31)
-> Simplify regulator locking by removing locking around locking.
+On 30.08.2023 22:04, Dmitry Baryshkov wrote:
+> On Wed, 30 Aug 2023 at 21:32, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>
+>> Like on earlier flagship Qualcomm SoCs, the SMMU is dma-coherent.
+>> Mark it as such.
+> 
+> On earlier SoCs we marked Adreno SMMU as dma-coherent, not the apps
+> one. Only on sm8250 you've added dma-coherent to the apps smmu.
+Also applies to 83450, perhaps I just haven't sent them yet or
+it's not been merged, don't remember
 
-Maybe this should say "Simplify regulator_lock_nested() by removing the
-`regulator_nesting_mutex` now that rdev is locked whenever rdev->ref_cnt or
-rdev->owner are modified"?
-
-> rdev->ref check when unlocking is moved inside the critical section.
-
-rdev->ref_cnt?
-
->
-> This patch depends on commit 12235da8c80a ("kernel/locking: Add context
-> to ww_mutex_trylock()").
->
-> Note: return -EALREADY is removed as no caller depends on it and in that
-> case the lock count is incremented anyway.
-
-Where is -EALREADY removed in this patch? Perhaps "removed" should be
-"ignored"?
-
-Note: A return value of -EALREADY from ww_mutex_lock() in
-regulator_lock_nested() is ignored as no caller depends on it.
-
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+Konrad
