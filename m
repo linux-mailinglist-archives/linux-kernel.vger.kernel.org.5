@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F5578D2C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 06:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C52D78D2C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 06:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242003AbjH3Eam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 00:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
+        id S242018AbjH3EcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 00:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241941AbjH3Eai (ORCPT
+        with ESMTP id S241941AbjH3Eby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 00:30:38 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721EACD2;
-        Tue, 29 Aug 2023 21:30:29 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-26d4e1ba2dbso2948818a91.1;
-        Tue, 29 Aug 2023 21:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693369829; x=1693974629; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pnYWkTXfRyVeeYgLLXstaC/GdYz4SXqmNKJW5ZQfQUY=;
-        b=EPjYGsWPMkgYt/AxO7whMJDlqvelgLkVFUrZ8qQE6myMc+ofmngI6Icv34tUGpPlyE
-         FDGBL3gk8GPBZ7WDWeLRz3kG2ZjVQubicPgW9xEZW5X71Edtt2U1F6Aytjzz4yx8iISh
-         Id22lh0NIsIUwq7rOqOINxeT+pr/9OB44djTgCnkVwVjkYX91c18ecTPLXBuSo59cvmA
-         2GrqyYR9ezsnpgqZ0BqjGYXWjm4L6Db2aaBAkCUZSzvlFr6Shr0RYz4rOJq0+Yp/HphP
-         7FDouuldACO1r1gkFVJPnnCuFGC2DVfbv8wWhnCzrievHnjOBcRoxFUOQyxD1I2t9AdT
-         MqAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693369829; x=1693974629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pnYWkTXfRyVeeYgLLXstaC/GdYz4SXqmNKJW5ZQfQUY=;
-        b=OLsGALp43GDwQW/ja9gdPOJCQi+X0mCdygqURF4sh6QuVTH4woVktELEod9sjtCVDV
-         PtUcuNxvGYicmx7wiZOEX8iaZZ4beQD4tESXyVGKdNx5Xd66H29VJWiO5r6zrMDmCVQJ
-         NnIJV/wxx4ueHOPCvN1Yj01dbAryRZpsFIaluXGJPMVBmPYJX/PRQE9qZ9JLdEtbo567
-         oSvXkVnkXRo+SzU6UF7n+UK/bsNsFfEx3N2aM3Xb6WL1v4gJRSuugRbT9g+kQNpkw+Rq
-         tcRvQ3L2gnILVvquzmL/Vk2XXS2xVHbmhhLpFsxpgLWPFKIXeh+iqZcixfBzWeWq7CG1
-         Ul/w==
-X-Gm-Message-State: AOJu0Yx2Q+U71WoGpw8Lx0XdvNNv53rYmaShdhfcLI6mQtOwMe7WCLAM
-        KCjRrNI3+b9ZBMepLNFfMQImzLdkss7Wr9YWEzo=
-X-Google-Smtp-Source: AGHT+IE0m+TewUb+YqF0jpT02UbdDTlFCmxrBqWej0lVTwR0+LgjXhBZv2n+y7uiJVQsMLe65g+JCU7iKaA3NgWgddw=
-X-Received: by 2002:a17:90a:e2c9:b0:26b:f18:799a with SMTP id
- fr9-20020a17090ae2c900b0026b0f18799amr1065576pjb.16.1693369828648; Tue, 29
- Aug 2023 21:30:28 -0700 (PDT)
+        Wed, 30 Aug 2023 00:31:54 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415741A3;
+        Tue, 29 Aug 2023 21:31:52 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37U3MFL6019945;
+        Wed, 30 Aug 2023 04:31:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GG+8rS5o/dkMg3A1S4Xqd2avN1fZPIm69Ii7YyiRhH4=;
+ b=UAKB1eDrrdU23EGylsTqpbQnoQZxXr6PGXYWxzCSwWpcWFivm5AQXH/ukQ80FyIDn4JY
+ NSWOKrev1hNkxM90ttoMlUWkNVb2NHxlgTumq0RzDEz2idJlCJN74z9TF7C+y62zwKo7
+ m9lVPHY9HJ7SpGZu0B1equZl0RgWHm3gWpk1gDqbEOCuqPbUlsyDhfsTnEIVjC2rfQJ5
+ IH1HGYEHgz9EzceMinUlCbYGUxLo9Cr+S2AD6M0n7M0joe5lQkO/XfLNnx0pZjftr2Cu
+ cNo/QZtM/eU1+vzDLIE5FKC7Y/rZuIU8sP5vuxSGEWynFebdRsR/suMelCUi9rr5CtV2 Bg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ss3fr3hfj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 04:31:43 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37U4VgFu025885
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 04:31:42 GMT
+Received: from [10.110.49.169] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
+ 2023 21:31:41 -0700
+Message-ID: <d30a8d6a-236a-b6eb-76d7-115cc9950ce1@quicinc.com>
+Date:   Tue, 29 Aug 2023 21:31:41 -0700
 MIME-Version: 1.0
-References: <20230725030026.1664873-1-zyytlz.wz@163.com> <20230815100844.GA495519@google.com>
- <20230829134616.GA215597@google.com>
-In-Reply-To: <20230829134616.GA215597@google.com>
-From:   Zheng Hacker <hackerzheng666@gmail.com>
-Date:   Wed, 30 Aug 2023 12:30:17 +0800
-Message-ID: <CAJedcCyFqJiXa9QHM6-Mg1ezF2tOKkyv2ukoOu+_T3YAdEhWdQ@mail.gmail.com>
-Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
-To:     Lee Jones <lee@kernel.org>
-Cc:     Zheng Wang <zyytlz.wz@163.com>, s.shtylyov@omp.ru,
-        linyunsheng@huawei.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
-        p.zabel@pengutronix.de, geert+renesas@glider.be,
-        magnus.damm@gmail.com, yoshihiro.shimoda.uh@renesas.com,
-        biju.das.jz@bp.renesas.com, wsa+renesas@sang-engineering.com,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, 1395428693sheep@gmail.com,
-        alex000young@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
+ runtime-suspend-on-usb-suspend property
+Content-Language: en-US
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+References: <20230814185043.9252-3-quic_eserrao@quicinc.com>
+ <a77403f5-8b99-3012-3843-1999ee8d12ce@linaro.org>
+ <6b27cd55-4e44-7a26-30ff-9692344cae4c@quicinc.com>
+ <31fa930a-51fb-6a7f-300d-e71f6b399eb1@linaro.org>
+ <a0a6c561-6319-00ba-c6db-f1dec9f0f0aa@quicinc.com>
+ <5dfae814-7233-eb1f-cae7-f335e54ce1b6@linaro.org>
+ <cf0227c8-cd02-81b6-9e13-2e7fe6f505f2@kernel.org>
+ <20230826015257.mbogiefsbz5474ft@synopsys.com>
+ <afd4843b-427a-8535-78e2-f81879378371@linaro.org>
+ <969988f6-f01f-0e31-6a98-7d02c5a3a4ad@quicinc.com>
+ <20230830013739.srnh2uyhly66yvu2@synopsys.com>
+From:   Elson Serrao <quic_eserrao@quicinc.com>
+In-Reply-To: <20230830013739.srnh2uyhly66yvu2@synopsys.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qzqKFfHXJD-tRXbkZY4dDpgzkLlz0gPc
+X-Proofpoint-ORIG-GUID: qzqKFfHXJD-tRXbkZY4dDpgzkLlz0gPc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ adultscore=0 spamscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300041
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for my late reply. I'll update another patch later today.
 
-Best regards,
-Zheng
 
-Lee Jones <lee@kernel.org> =E4=BA=8E2023=E5=B9=B48=E6=9C=8829=E6=97=A5=E5=
-=91=A8=E4=BA=8C 21:46=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Tue, 15 Aug 2023, Lee Jones wrote:
->
-> > On Tue, 25 Jul 2023, Zheng Wang wrote:
-> >
-> > > In ravb_probe, priv->work was bound with ravb_tx_timeout_work.
-> > > If timeout occurs, it will start the work. And if we call
-> > > ravb_remove without finishing the work, there may be a
-> > > use-after-free bug on ndev.
-> > >
-> > > Fix it by finishing the job before cleanup in ravb_remove.
-> > >
-> > > Note that this bug is found by static analysis, it might be
-> > > false positive.
-> > >
-> > > Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> > > Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-> > > Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> > > ---
-> > > v4:
-> > > - add information about the bug was found suggested by Yunsheng Lin
-> > > v3:
-> > > - fix typo in commit message
-> > > v2:
-> > > - stop dev_watchdog so that handle no more timeout work suggested by =
-Yunsheng Lin,
-> > > add an empty line to make code clear suggested by Sergey Shtylyov
-> > > ---
-> > >  drivers/net/ethernet/renesas/ravb_main.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> >
-> > Trying my best not to sound like a broken record, but ...
-> >
-> > What's the latest with this fix?  Is a v5 en route?
->
-> Any update please Zheng Wang?
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+On 8/29/2023 6:37 PM, Thinh Nguyen wrote:
+> Just want to clarify, there are dwc3 properties and there are dt binding
+> properties. Often the case that dt binding matches 1-to-1 with dwc3
+> driver property. Now, we need to enhance the checkers so that the dwc3
+> driver property to match cases where it is platform specific and through
+> compatible string.
+> 
+
+Thank you for the clarification Thinh.
+To confirm, we would need to modify the driver to parse a new compatible 
+string (say "snps,dwc3-ext-wakeup") and add .data field so that the 
+driver is aware that this particular platform supports external wakeup 
+detection.Right ?
+
+Regards
+Elson
+
