@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 403DF78DC5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E607278DB9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242925AbjH3SpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
+        id S239343AbjH3SkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343718AbjH3Qmk (ORCPT
+        with ESMTP id S1343735AbjH3QoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:42:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FEA19A;
-        Wed, 30 Aug 2023 09:42:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 81AD762119;
-        Wed, 30 Aug 2023 16:42:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F379C433C7;
-        Wed, 30 Aug 2023 16:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693413751;
-        bh=+cegdjpC7G5umSHFHbrmT1BIlMdov4rtt+v2oJEk1tM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VjbX4CCwh2T7VRmcGdTip7u/f/TaIxuYGePqe7e+D4VSLmbiZHbmccKJEensZqdYd
-         /SkVtQoHfFek1l/akYZpl6ne+8eKdaeb9A2TuvGKtHgX54qQvFDVWxI1azmcGgWe2A
-         TCS6C1oK4Z9Yi4kRDMDic1bnoquUGBouKD5MDQ3AY/kt+9FcjbvW5qvdsxbxoapCQj
-         m6CelcYTizHCgj7uEUvmooKRW1IDpuIbzMXpLTY63MW/y+bD0wODuEHfxQZ27KwMGs
-         UK+r1H9fjVVo3zf7MJOTbhSZBfN9GnYmDVX/HSF7zUQGGf3T2s6/zw2yHd96jP9gqw
-         cyxOybFWimvpA==
-Date:   Wed, 30 Aug 2023 17:42:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <9992beaf-f57d-41f8-9dbb-8044c783ddf4@sirena.org.uk>
-References: <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
- <ZOTnL1SDJWZjHPUW@arm.com>
- <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
- <ZOXa98SqwYPwxzNP@arm.com>
- <227e6552-353c-40a9-86c1-280587a40e3c@sirena.org.uk>
- <ZOY3lz+Zyhd5ZyQ9@arm.com>
- <ZOZEmO6WGyVAcOqK@arm.com>
- <ef7272d2-d807-428f-9915-6fc9febadb5c@sirena.org.uk>
- <ZOd6lzj29VksAp7L@arm.com>
- <ZO84DWEiYk6dU3iR@arm.com>
+        Wed, 30 Aug 2023 12:44:03 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC20119A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:43:59 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bdc19b782aso37284565ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:43:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1693413839; x=1694018639; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lys1zqL5/DflOY2CEUv0l1jES6B5BHfh+5mdgRFaHc0=;
+        b=ntbkGJohnq2XiW0I7u5T7Q03wI2URgpZlXyZrEuCKaZXTL20wzvXjK/322qf5U+47I
+         rJ67qJiNxdCcfhTgQaDSKkgH1ZNMwaj6qF6F0HQ6fr/eS89DKEDQ+Jz3JEl8KuXH7+zv
+         O3mg+bb6gjNUvvSpd/t6h/eDTzxaiNQKgNcUekFruP9EpAahPBo9wXco3hgfDpltYglA
+         yqIXlrnlRRAoBxH2Kyi47NvyVgRxObfyWh410kwb0iSXje6nDN5/Ray2/J5zivoIQVSO
+         9s55bgrT/1nXQt0poinw2DU0kvnoMc2tptog5BxPqMwPwM5Tj5zhr/8djliM/xwuERI7
+         Gtdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693413839; x=1694018639;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lys1zqL5/DflOY2CEUv0l1jES6B5BHfh+5mdgRFaHc0=;
+        b=QK7OtD75PQuEu3TnM3Jz7cxbyUB4di6kKglaGT7IQyf/8Vs9vZCnCS1RQ1NUdTCqHF
+         +hbg6d7TROXa52ugJUtOF2eh9pyKkoQyUPKAiEx9u+dwbwksL7zMDcqUBtO9wtDbzsAY
+         MSRXUU9A25KoWB6p0qk6rs+Fh3JWkcQzGbqE8tGLsLR6HkvWpf4QwcxHOo1cTSpJlgLe
+         7IM+/VDWebVVm59ykjvunFeUubTSLvIeEEDkncrFJhohS4BUsaXCViFIC3RGWX0loBhx
+         Opy+CyKYBM/xpPSyMNLdLecd0T6gMGJKxGWvsMFA+Buk5aOm4LSf73ivBxJVTSFa+ezm
+         r/gw==
+X-Gm-Message-State: AOJu0YxCBQSg8CmfPcI/Ax4ez1BDvwf5kfn9lkhMoyAPtEdfeuNuiJsT
+        i8RY+2zK8t+JkMLp82GWdQDDUA==
+X-Google-Smtp-Source: AGHT+IEgvTm6ZPGyWF9D7X3ASVWWGrWtPIK9lG2unX/1lX5zpfNCJ9O15xyfLMCZkZhVk6ehLCACdA==
+X-Received: by 2002:a17:903:22ca:b0:1bf:d92e:c5a7 with SMTP id y10-20020a17090322ca00b001bfd92ec5a7mr3002630plg.28.1693413839424;
+        Wed, 30 Aug 2023 09:43:59 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id b18-20020a170902d31200b001b53c8659fesm11280968plc.30.2023.08.30.09.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 09:43:58 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qbOIP-0005rb-8y;
+        Wed, 30 Aug 2023 13:43:57 -0300
+Date:   Wed, 30 Aug 2023 13:43:57 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Anle Pan <anle.pan@nxp.com>, m.szyprowski@samsung.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hui.fang@nxp.com
+Subject: Re: [PATCH] media: videobuf2-dma-sg: limit the sg segment size
+Message-ID: <ZO9xzf727b/YvZB/@ziepe.ca>
+References: <20230828075420.2009568-1-anle.pan@nxp.com>
+ <CAAFQd5Cn3xQroyYtC+m+pk1jOE5i3H+FGr-y8zqhaf0Yo5p-1Q@mail.gmail.com>
+ <deb735ce-7de1-e59a-9de4-1365b374b417@arm.com>
+ <20230829150442.GA3929@lst.de>
+ <CAAFQd5CiHXvsJugSi+hXY9ESsmxUzBzmbhF6G48iVsOcL5eMtQ@mail.gmail.com>
+ <20230830143341.GA25574@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="K/vjy3MP44rS/waF"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZO84DWEiYk6dU3iR@arm.com>
-X-Cookie: Immanuel doesn't pun, he Kant.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <20230830143341.GA25574@lst.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,66 +82,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 30, 2023 at 04:33:41PM +0200, Christoph Hellwig wrote:
+> On Wed, Aug 30, 2023 at 12:47:57PM +0900, Tomasz Figa wrote:
+> > Do we see anything replacing it widely anywhere on the short-middle
+> > term horizon? I think we could possibly migrate vb2 to use that new
+> > thing internally and just provide some compatibility X to scatterlist
+> > conversion function for the drivers.
+> 
+> Jason said at LSF/MM that he had a prototype for a mapping API that
+> takes a phys/len array as input and dma_addr/len a output, which really
+> is the right thing to do, especially for dmabuf.
 
---K/vjy3MP44rS/waF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, still a prototype. Given the change in direction some of the
+assumptions of the list design will need some adjusting.
 
-On Wed, Aug 30, 2023 at 01:37:33PM +0100, Szabolcs Nagy wrote:
-> The 08/24/2023 16:43, Catalin Marinas wrote:
+I felt there wasn't much justification to add a list without also
+supporting the P2P and it was not looking very good to give the DMA
+API proper p2p support without also connecting it to lists somehow.
 
-> > Is there a use-case for the unlocked configuration to allow disabling
-> > the GCS implicitly via a clone syscall?
+Anyhow, I had drafted a basic list datastructure and starting
+implementation that is sort of structured in away that is similar to
+xarray (eg with fixed chunks, generic purpose, etc)
 
-> how would you handle clone or clone3 without gcs specified?
-> (in the cases when clone creates a new thread with new stack)
+https://github.com/jgunthorpe/linux/commit/58d7e0578a09d9cd2360be515208bcd74ade5958
 
-> (1) fail.
-> (2) allocate gcs.
-> (3) disable gcs.
+I would still call it an experiment as the auto-sizing entry approach
+needs benchmarking to see what it costs.
 
-...
+> Jason, what's the status of your work?
 
-> problem with (2) is that the size policy and lifetime management
-> is in the kernel then. (since only special cases are affected i
-> guess that is ok, but i assumed we want to avoid this by moving
-> to clone3 and user managed gcs).
+After we talked I changed the order of the work, instead of starting
+with the SG list side, I wanted to progress on the DMA API side and
+then build any list infrastructure on that new API.
 
-Right, it seems like if we go with this then we may as well just allow
-plain clone() too.
+Your idea to use a new API that could allocate IOVA and then map phys
+to IOVA as a DMA API entry point looked good to me, and it is a
+perfect map for what RDMA's ODP stuff needs. So I changed direction to
+rework ODP and introduce the DMA API parts as the first step.
 
-> the problem with (3) is escaping the security measure, however
-> it only applies to very special threads that can always decide
-> to opt-in to gcs, so i don't see this as such a bad option and
-> at least bw compat with existing code. (in my threat model the
-> attacker cannot hijack clone syscalls as that seems stronger
-> than hijacking return addresses.)
+I had to put it aside due to the volume of iommu/vfio stuff going on
+right now. However, I think I will have someone who can work on the
+ODP driver part this month
 
-It doesn't seem great to have a feature which is to a large extent a
-security feature where we provide a fairly straightforward mechanism for
-disabling the feature and actively expect things to be using it.
+Regardless, RDMA really needs some kind of generic lists to hold CPU
+and physical address ranges, so I still see that as being part of the
+ultimate solution.
 
-Given the timescales until this gets practically deployed on arm64 I
-would be inclined to go with making things fail and forcing updates in
-the users, though obviously that's less helpful for x86 where the
-hardware is in user hands already so it's more of a pressing issue (and
-there's already what is effectively option 2 in the code).  We could
-have the architectures diverge, as you say the effect is likely to be
-mainly in very low level code rather than general software.
-
---K/vjy3MP44rS/waF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTvcWkACgkQJNaLcl1U
-h9BrNwf/ZAr2lf9jr/JbNkYpu9zm6Fga4tZrLQoMWCDnP9PGxphhBn9iAMWz6X+F
-0X05x9pIN7D4g7qLffjEzsFOpfukbLwIQ4wH/AdjNW7MvFpuH+4kt7iWwiDparY/
-wliRfw6VyCf8lMA40bSac+jlTEJowbBmX+nh1z+EI924BOUXDONu/PGGfoVtn9U0
-mOVw+DFx3lACf5cjCPKSE9JfYf74s+y9cH8fk9x1/D6jHuJuX5IOafLld3PytL/v
-Yxbc/C9XY0Qa9If9yV/NWPb7irX1i7vTMOcHJ8AAzwzHV7LjOOk2cBgRj0IJ2TBI
-1fuiPsv3RNuj2GUC01Od5Md0pPjifQ==
-=qSdV
------END PGP SIGNATURE-----
-
---K/vjy3MP44rS/waF--
+Jason
