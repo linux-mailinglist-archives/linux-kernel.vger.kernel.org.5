@@ -2,100 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 422E478DEFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE2378DFF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242426AbjH3TUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
+        id S239398AbjH3TIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242860AbjH3JxO (ORCPT
+        with ESMTP id S242864AbjH3JyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:53:14 -0400
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0833ACD2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c0c3ccd3d6so60365275ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
+        Wed, 30 Aug 2023 05:54:06 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80551B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:54:02 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-401c90ed2ecso31202665e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:54:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693389241; x=1693994041; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TQrf16cg+NiqdMGdtFVNJcxqedj4vde246HAhKjb6+Y=;
+        b=SMBkeqqOQFDMPKH1I5KsrsGzYIz7jVfnkdI/okqApJgAzupnKzEZm3Mmr6sDG/888W
+         PKWDiH+gG/VcE43uLOd8i9oBPLrwQcw6OmMoUrEZ1KPSa9e1Cbw4RlI3HgWlC5xz1icJ
+         OuVqXdS2R+qryJOUc39u1AdlAHEdu7kv5XdjU04o7eETiHidsVKw0bpC6a73r/8iqgj+
+         Sa5qlpg4uXJ4k/p2ZPssfw5kkH211lGURZCCUHKui5mQFGqieXw0zwrY34Gn1h7xWKti
+         szqK0Y8/bVVff0JBtDtp5EprOoGFUczFpU8iszW0ceqnsQ6UJppOpWlSP+CvmRMwm+j8
+         aH3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693389189; x=1693993989;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w8oA+37JCMv8f315VpTn3fZR5Yd47+q297lZ55yMlOY=;
-        b=TSzQd1JdmPbT5mH7NqQUxRPFFMfBOSQsqZL4hJny3TO6kp/2aaSa9mIBlyK78uSCEe
-         8eNsesWlKhQcwXWlsDhUhEPOyv6L6NDqt8yM67VaO0/kIg1mt+i1PUzN+znycwkSUMe6
-         ratxfWOm4GAczGCvQjWQ6fAWHgacncXhgKMcsEOekY3xBuy7YyAEE2aahbBaNUFrjV2G
-         8LuuGHy3ntDFbgZ04Qj0zBFG2J7/jniv4J3Vlya+vLT/xK7q0I8Hgs6V0x2xr8MO2aP0
-         8Y3Ja3YuntzXm26gT838vg4WfHoCoRL+vbpnyU2NBX2vEWz82nV2shtTjnKpj91T185F
-         dnag==
-X-Gm-Message-State: AOJu0Yx1F5cnHZQ7M2fkCQ2Bm4EHSSk/nFFTbo+Y/w06zc5bPZ+spwXH
-        GZR4BLzVRMlfUYVkBPaJwNbORFTIuq6Q+4hneUXg1mjgjz/a
-X-Google-Smtp-Source: AGHT+IEuEfb6FTNI21OTNjSbZGx2u+8it4g188GpM39nlhHaN0XEtRl2LWvw6Gl2mOiebEy/sMwUNBXMx1TzNzecp47bNPCRvWd9
+        d=1e100.net; s=20221208; t=1693389241; x=1693994041;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TQrf16cg+NiqdMGdtFVNJcxqedj4vde246HAhKjb6+Y=;
+        b=cCqgPPuacni0mUNo543b6HpVk3TCZfQbktNsD4ZNUAZ3yqJIONbgP4y4DTVsdWmO02
+         EvG4zotADm5/lcm/zn58LLWgF4PCRjdxulpst3ripFFMNozS69Ayowk6+Ut4o5+ziK0/
+         W9ABwbFRvllzRh9MR9l/1lHsScr2Zcuhdaqh6xoX8o/lifI45a5bxYXMmyTIkWNDS8ez
+         rPNYbXk59Vvrt5hP2IZoLhBzO504R/g+mqtdW7cJAVr34lET1Rdv4Kn1x7JZ7YOV0au/
+         IuC56L7iTBFULsv2xY7d7uHQ2eLDdsQumKVd9ZZzBGkLEedV8MQnB/ErqTBUa0mQMY5L
+         RPrg==
+X-Gm-Message-State: AOJu0YxZTEWG8ym/quSj5s+OURCf+5ulKVPR6oIX972pigeLbfdIFwQZ
+        MdATgAvphZRe9AZPdPi56kVtOfCFjRF4AzDVQ+w=
+X-Google-Smtp-Source: AGHT+IH+QX2uRpED63uPhWYhweJ0cWpNkPglQheXInf45HGQ9LkmLBDlmGod1hs8yCfFV8wKBunKpQ==
+X-Received: by 2002:a05:600c:b57:b0:401:73b2:f039 with SMTP id k23-20020a05600c0b5700b0040173b2f039mr1530156wmr.7.1693389241342;
+        Wed, 30 Aug 2023 02:54:01 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id z23-20020a1c4c17000000b00401d8181f8bsm1729781wmf.25.2023.08.30.02.54.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 02:54:00 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 10:53:59 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kgdb: Flush console before entering kgdb on panic
+Message-ID: <20230830095359.GA44243@aspen.lan>
+References: <20230822131945.1.I5b460ae8f954e4c4f628a373d6e74713c06dd26f@changeid>
+ <20230825100854.GC270740@aspen.lan>
+ <CAD=FV=VHa1arysMgqZcGFGFi2N8i0BeKWD6BM8dSsg0Xq2LUFQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f68f:b0:1b5:2871:cd1 with SMTP id
- l15-20020a170902f68f00b001b528710cd1mr575322plg.0.1693389189503; Wed, 30 Aug
- 2023 02:53:09 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 02:53:09 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001b6032060420e5a9@google.com>
-Subject: [syzbot] Monthly hfs report (Aug 2023)
-From:   syzbot <syzbot+list116a8a577418be09ca84@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=VHa1arysMgqZcGFGFi2N8i0BeKWD6BM8dSsg0Xq2LUFQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello hfs maintainers/developers,
+On Fri, Aug 25, 2023 at 07:18:44AM -0700, Doug Anderson wrote:
+> Hi,
+>
+> On Fri, Aug 25, 2023 at 3:09 AM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > On Tue, Aug 22, 2023 at 01:19:46PM -0700, Douglas Anderson wrote:
+> > > When entering kdb/kgdb on a kernel panic, it was be observed that the
+> > > console isn't flushed before the `kdb` prompt came up. Specifically,
+> > > when using the buddy lockup detector on arm64 and running:
+> > >   echo HARDLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT
+> > >
+> > > I could see:
+> > >   [   26.161099] lkdtm: Performing direct entry HARDLOCKUP
+> > >   [   32.499881] watchdog: Watchdog detected hard LOCKUP on cpu 6
+> > >   [   32.552865] Sending NMI from CPU 5 to CPUs 6:
+> > >   [   32.557359] NMI backtrace for cpu 6
+> > >   ... [backtrace for cpu 6] ...
+> > >   [   32.558353] NMI backtrace for cpu 5
+> > >   ... [backtrace for cpu 5] ...
+> > >   [   32.867471] Sending NMI from CPU 5 to CPUs 0-4,7:
+> > >   [   32.872321] NMI backtrace forP cpuANC: Hard LOCKUP
+> > >
+> > >   Entering kdb (current=..., pid 0) on processor 5 due to Keyboard Entry
+> > >   [5]kdb>
+> > >
+> > > As you can see, backtraces for the other CPUs start printing and get
+> > > interleaved with the kdb PANIC print.
+> > >
+> > > Let's replicate the commands to flush the console in the kdb panic
+> > > entry point to avoid this.
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> > >
+> > >  kernel/debug/debug_core.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> > > index d5e9ccde3ab8..3a904d8697c8 100644
+> > > --- a/kernel/debug/debug_core.c
+> > > +++ b/kernel/debug/debug_core.c
+> > > @@ -1006,6 +1006,9 @@ void kgdb_panic(const char *msg)
+> > >       if (panic_timeout)
+> > >               return;
+> > >
+> > > +     debug_locks_off();
+> > > +     console_flush_on_panic(CONSOLE_FLUSH_PENDING);
+> > > +
+> > >       if (dbg_kdb_mode)
+> > >               kdb_printf("PANIC: %s\n", msg);
+> >
+> > I'm somewhat included to say *this* (calling kdb_printf() when not
+> > actually in the debugger) is the cause of the problem. kdb_printf()
+> > does some pretty horid things to the console and isn't intended to
+> > run while the system is active.
+> >
+> > I'd therefore be more tempted to defer the print to the b.p. trap
+> > handler itself and make this part of kgdb_panic() look more like:
+> >
+> >         kgdb_panic_msg = msg;
+> >         kgdb_breakpoint();
+> >         kgdb_panic_msg = NULL;
+>
+> Unfortunately I think that only solves half the problem. As a quick
+> test, I tried simply commenting out the "kdb_printf" line in
+> kgdb_panic(). While that avoids the interleaved panic message and
+> backtrace, it does nothing to actually get the backtraces printed out
+> before you end up in kdb. As an example, this is what happened when I
+> used `echo HARDLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT` and
+> had the "kdb_printf" in kgdb_panic() commented out:
+>
+> [   72.658424] lkdtm: Performing direct entry HARDLOCKUP
+> [   82.181857] watchdog: Watchdog detected hard LOCKUP on cpu 6
+> ...
+> [   82.234801] Sending NMI from CPU 5 to CPUs 6:
+> [   82.239296] NMI backtrace for cpu 6
+> ... [ stack trace for CPU 6 ] ...
+> [   82.240294] NMI backtrace for cpu 5
+> ... [ stack trace for CPU 5 ] ...
+> [   82.576443] Sending NMI from CPU 5 to CPUs 0-4,7:
+> [   82.581291] NMI backtrace
+> Entering kdb (current=0xffffff80da5a1080, pid 6978) on processor 5 due
+> to Keyboard Entry
+> [5]kdb>
+>
+> As you can see, I don't see the traces for CPUs 0-4 and 7. Those do
+> show up if I use the "dmesg" command but it's a bit of a hassle to run
+> "dmesg" to look for any extra debug messages every time I drop in kdb.
+>
+> I guess perhaps that part isn't obvious from the commit message?
 
-This is a 31-day syzbot report for the hfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/hfs
+I figured it was a risk.
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 42 issues are still open and 12 have been fixed so far.
+In fact it's an area where my instinct to honour console messages and my
+instinct to get into the kernel as soon as possible after the decision
+to invoke it has been made come into conflict.
 
-Some of the still happening issues:
+In other words does it matter that the console buffers are not flushed
+before entering kgdb? However having thought about it for a little while
+(and knowing the console code tends to be written to be decently robust)
+I can come to the view the flushing is best.
 
-Ref  Crashes Repro Title
-<1>  4838    Yes   possible deadlock in hfsplus_file_truncate
-                   https://syzkaller.appspot.com/bug?extid=6030b3b1b9bf70e538c4
-<2>  4554    Yes   possible deadlock in hfsplus_file_extend
-                   https://syzkaller.appspot.com/bug?extid=325b61d3c9a17729454b
-<3>  4005    Yes   possible deadlock in hfsplus_get_block
-                   https://syzkaller.appspot.com/bug?extid=b7ef7c0c8d8098686ae2
-<4>  2022    Yes   KMSAN: uninit-value in hfs_revalidate_dentry
-                   https://syzkaller.appspot.com/bug?extid=3ae6be33a50b5aae4dab
-<5>  1002    Yes   kernel BUG in __hfsplus_setxattr
-                   https://syzkaller.appspot.com/bug?extid=1107451c16b9eb9d29e6
-<6>  825     Yes   KASAN: slab-out-of-bounds Read in hfsplus_uni2asc
-                   https://syzkaller.appspot.com/bug?extid=076d963e115823c4b9be
-<7>  651     Yes   KMSAN: uninit-value in hfsplus_delete_cat
-                   https://syzkaller.appspot.com/bug?extid=fdedff847a0e5e84c39f
-<8>  594     Yes   kernel BUG in hfs_write_inode
-                   https://syzkaller.appspot.com/bug?extid=97e301b4b82ae803d21b
-<9>  386     Yes   WARNING in hfs_bnode_create
-                   https://syzkaller.appspot.com/bug?extid=a19ca73b21fe8bc69101
-<10> 380     Yes   general protection fault in hfs_find_init
-                   https://syzkaller.appspot.com/bug?extid=7ca256d0da4af073b2e2
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> Should I send a new version with an updated commit message indicating
+> that it's not just the jumbled text that's a problem but also the lack
+> of stack traces?
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+No real need.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+I don't really like seeing kdb_printf() being called from here but
+having reviewed a bit of console code I think we can might be able
+to use the new infrastructure to make kdb_printf() a slightly less
+hateful ;-).
 
-You may send multiple commands in a single email message.
+
+Daniel.
