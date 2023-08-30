@@ -2,168 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1AA78DA2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142B078DA7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbjH3Sfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        id S232637AbjH3Sg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244051AbjH3MZV (ORCPT
+        with ESMTP id S244063AbjH3M06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:25:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42450CCB;
-        Wed, 30 Aug 2023 05:25:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C13A462641;
-        Wed, 30 Aug 2023 12:25:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0634BC433C8;
-        Wed, 30 Aug 2023 12:25:10 +0000 (UTC)
-Message-ID: <01c299f2-8118-5d86-e9b6-a459c1b6c467@xs4all.nl>
-Date:   Wed, 30 Aug 2023 14:25:09 +0200
+        Wed, 30 Aug 2023 08:26:58 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F7BCC5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:26:51 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UCA5OQ011729;
+        Wed, 30 Aug 2023 12:26:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=FeSWwQ0ZmyjKMd+Q/FObBJyqnwyudAvTUPrauZ0cAVs=;
+ b=beUSCGmfxm6HhKbapRorjQO+rdWuT5XwU1eNY13uxEzLONk1fTuRXvnB1q84En968dwL
+ Xg2AoVi2nQ3i7QSZxzrckdLoFio9yW9gDnWOtm/nMGV5Yaw+mkLIMZER2UZj+Zky028O
+ tmMvnY9+N/JqmHKvjOS5s43kqmUi4m6SuiBcCjTM9+OiUMeLHQ1d3HHEt/L+qQ3sa4/n
+ +B1cDoqnBoGiz8VNoFCP9n3L1PczZMziQXVYnCYMnX6Si2QhYWm/Oo2RQ2OlvP8Ei6yg
+ kyYSwWPzoFRmYVXQeZWRf61XrJk6S6dkDdob9ECgOyLDCjW8JJtFHIhWIK2T4qi/xoUn nA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st3c2kxf9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 12:26:30 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37UCJ6Wc015451;
+        Wed, 30 Aug 2023 12:26:30 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st3c2kxem-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 12:26:30 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37UA1X4x020514;
+        Wed, 30 Aug 2023 12:26:28 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqv3yky3w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 12:26:28 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37UCQQWC41878186
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Aug 2023 12:26:26 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BE5A2004B;
+        Wed, 30 Aug 2023 12:26:26 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B38BD20043;
+        Wed, 30 Aug 2023 12:26:23 +0000 (GMT)
+Received: from saptarishi.in.ibm.com (unknown [9.43.8.96])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Aug 2023 12:26:23 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Peter Zijlstra <peterz@infradead.org>, ndesaulniers@google.com,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc/smp: Dynamically build powerpc topology
+Date:   Wed, 30 Aug 2023 17:56:14 +0530
+Message-ID: <20230830122614.73067-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v5 01/10] media: videobuf2: Rework offset 'cookie'
- encoding pattern
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230824092133.39510-1-benjamin.gaignard@collabora.com>
- <20230824092133.39510-2-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230824092133.39510-2-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: OJMIQrGKRXFtXv3QRrfK3N4AUOyQgFdp
+X-Proofpoint-ORIG-GUID: Qkqh6uqLUBG6jFF3K99Q25RwCN70fvEV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ malwarescore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308300113
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 11:21, Benjamin Gaignard wrote:
-> Change how offset 'cookie' field value is computed to make possible
-> to use more buffers (up to 0xffff).
-> With this encoding pattern we know the maximum number that a queue
-> could store so we can check ing at queue init time.
-> It also make easier and faster to find buffer and plane from using
-> the offset field.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
-> v5:
-> - I haven't change DST_QUEUE_OFF_BASE definition because it used in
->   v4l2-mem2mem and s5p_mfc driver with a shift.
-> 
->  .../media/common/videobuf2/videobuf2-core.c   | 48 +++++++++----------
->  1 file changed, 24 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index cf6727d9c81f..e06905533ef4 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -31,6 +31,10 @@
->  
->  #include <trace/events/vb2.h>
->  
-> +#define PLANE_INDEX_SHIFT	3
-> +#define PLANE_INDEX_MASK	0x7
-> +#define MAX_BUFFERS		0xffff
+Currently there are four powerpc specific sched topologies.  These are
+all statically defined.  However not all these topologies are used by
+all powerpc systems.
 
-Very poor name, see below.
+To avoid unnecessary degenerations by the scheduler , masks and flags
+are compared. However if the sched topologies are build dynamically then
+the code is simpler and there are greater chances of avoiding
+degenerations.
 
-> +
->  static int debug;
->  module_param(debug, int, 0644);
->  
-> @@ -358,21 +362,23 @@ static void __setup_offsets(struct vb2_buffer *vb)
->  	unsigned int plane;
->  	unsigned long off = 0;
->  
-> -	if (vb->index) {
-> -		struct vb2_buffer *prev = q->bufs[vb->index - 1];
-> -		struct vb2_plane *p = &prev->planes[prev->num_planes - 1];
-> -
-> -		off = PAGE_ALIGN(p->m.offset + p->length);
-> -	}
-> +	/*
-> +	 * Offsets cookies value have the following constraints:
-> +	 * - a buffer could have up to 8 planes.
-> +	 * - v4l2 mem2mem use bit 30 to distinguish between source and destination buffers.
-> +	 * - must be page aligned
-> +	 * That led to this bit mapping:
-> +	 * |30                |29        15|14       12|11 0|
-> +	 * |DST_QUEUE_OFF_BASE|buffer index|plane index| 0  |
-> +	 * where there is 16 bits to store buffer index.
+Even x86 builds its sched topologies dynamically and new changes are
+very similar to the way x86 is building its topologies.
 
-16 -> 15: there are 15 (not 16!) bits available for buffer indices. So the maximum
-number of buffers is 32768, given that the indices start at 0.
+System Configuration
+type=Shared mode=Uncapped smt=8 lcpu=128 mem=1063126592 kB cpus=96 ent=40.00
 
-> +	 */
-> +	off = vb->index << (PLANE_INDEX_SHIFT + PAGE_SHIFT);
->  
->  	for (plane = 0; plane < vb->num_planes; ++plane) {
-> -		vb->planes[plane].m.offset = off;
-> +		vb->planes[plane].m.offset = off + (plane << PAGE_SHIFT);
->  
->  		dprintk(q, 3, "buffer %d, plane %d offset 0x%08lx\n",
->  				vb->index, plane, off);
-> -
-> -		off += vb->planes[plane].length;
-> -		off = PAGE_ALIGN(off);
->  	}
->  }
->  
-> @@ -2209,21 +2215,15 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
->  		return -EBUSY;
->  	}
->  
-> -	/*
-> -	 * Go over all buffers and their planes, comparing the given offset
-> -	 * with an offset assigned to each plane. If a match is found,
-> -	 * return its buffer and plane numbers.
-> -	 */
-> -	for (buffer = 0; buffer < q->num_buffers; ++buffer) {
-> -		vb = q->bufs[buffer];
-> +	/* Get buffer and plane from the offset */
-> +	buffer = (off >> (PLANE_INDEX_SHIFT + PAGE_SHIFT)) & MAX_BUFFERS;
+$ lscpu
+Architecture:                    ppc64le
+Byte Order:                      Little Endian
+CPU(s):                          1024
+On-line CPU(s) list:             0-1023
+Model name:                      POWER10 (architected), altivec supported
+Model:                           2.0 (pvr 0080 0200)
+Thread(s) per core:              8
+Core(s) per socket:              32
+Socket(s):                       4
+Hypervisor vendor:               pHyp
+Virtualization type:             para
+L1d cache:                       8 MiB (256 instances)
+L1i cache:                       12 MiB (256 instances)
+NUMA node(s):                    4
 
-Hmm, you use it as a mask. The name MAX_BUFFERS is really confusing.
-How about BUFFER_INDEX_MASK? That is consistent with PLANE_INDEX_MASK.
+From dmesg of v6.5
+[    0.174444] smp: Bringing up secondary CPUs ...
+[    3.918535] smp: Brought up 4 nodes, 1024 CPUs
+[   38.001402] sysrq: Changing Loglevel
+[   38.001446] sysrq: Loglevel set to 9
 
-> +	plane = (off >> PAGE_SHIFT) & PLANE_INDEX_MASK;
->  
-> -		for (plane = 0; plane < vb->num_planes; ++plane) {
-> -			if (vb->planes[plane].m.offset == off) {
-> -				*_buffer = buffer;
-> -				*_plane = plane;
-> -				return 0;
-> -			}
-> -		}
-> +	vb = q->bufs[buffer];
-> +	if (vb->planes[plane].m.offset == off) {
-> +		*_buffer = buffer;
-> +		*_plane = plane;
-> +		return 0;
->  	}
->  
->  	return -EINVAL;
+From dmesg of v6.5 + patch
+[    0.174462] smp: Bringing up secondary CPUs ...
+[    3.421462] smp: Brought up 4 nodes, 1024 CPUs
+[   35.417917] sysrq: Changing Loglevel
+[   35.417959] sysrq: Loglevel set to 9
 
-Regards,
+5 runs of ppc64_cpu --smt=1 (time measured: lesser is better)
+Kernel  N  Min     Max     Median  Avg      Stddev     %Change
+v6.5    5  518.08  574.27  528.61  535.388  22.341542
++patch  5  481.73  495.47  484.21  486.402  5.7997     -9.14963
 
-	Hans
+5 runs of ppc64_cpu --smt=8 (time measured: lesser is better)
+Kernel  N  Min      Max      Median   Avg       Stddev     %Change
+v6.5    5  1094.12  1117.1   1108.97  1106.3    8.606361
++patch  5  1067.5   1090.03  1073.89  1076.574  9.4189347  -2.68697
+
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+---
+ arch/powerpc/kernel/smp.c | 78 ++++++++++++++-------------------------
+ 1 file changed, 28 insertions(+), 50 deletions(-)
+
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index 48b8161179a8..c16443a04c26 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -92,15 +92,6 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
+ EXPORT_PER_CPU_SYMBOL(cpu_core_map);
+ EXPORT_SYMBOL_GPL(has_big_cores);
+ 
+-enum {
+-#ifdef CONFIG_SCHED_SMT
+-	smt_idx,
+-#endif
+-	cache_idx,
+-	mc_idx,
+-	die_idx,
+-};
+-
+ #define MAX_THREAD_LIST_SIZE	8
+ #define THREAD_GROUP_SHARE_L1   1
+ #define THREAD_GROUP_SHARE_L2_L3 2
+@@ -1048,16 +1039,6 @@ static const struct cpumask *cpu_mc_mask(int cpu)
+ 	return cpu_coregroup_mask(cpu);
+ }
+ 
+-static struct sched_domain_topology_level powerpc_topology[] = {
+-#ifdef CONFIG_SCHED_SMT
+-	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
+-#endif
+-	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
+-	{ cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC) },
+-	{ cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(DIE) },
+-	{ NULL, },
+-};
+-
+ static int __init init_big_cores(void)
+ {
+ 	int cpu;
+@@ -1676,9 +1657,11 @@ void start_secondary(void *unused)
+ 	BUG();
+ }
+ 
+-static void __init fixup_topology(void)
++static struct sched_domain_topology_level powerpc_topology[6];
++
++static void __init build_sched_topology(void)
+ {
+-	int i;
++	int i = 0;
+ 
+ 	if (is_shared_processor()) {
+ 		asym_pack_flag = SD_ASYM_PACKING;
+@@ -1690,36 +1673,33 @@ static void __init fixup_topology(void)
+ #ifdef CONFIG_SCHED_SMT
+ 	if (has_big_cores) {
+ 		pr_info("Big cores detected but using small core scheduling\n");
+-		powerpc_topology[smt_idx].mask = smallcore_smt_mask;
++		powerpc_topology[i++] = (struct sched_domain_topology_level){
++			smallcore_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
++		};
++	} else {
++		powerpc_topology[i++] = (struct sched_domain_topology_level){
++			cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
++		};
+ 	}
+ #endif
++	if (shared_caches) {
++		powerpc_topology[i++] = (struct sched_domain_topology_level){
++			shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE)
++		};
++	}
++	if (has_coregroup_support()) {
++		powerpc_topology[i++] = (struct sched_domain_topology_level){
++			cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC)
++		};
++	}
++	powerpc_topology[i++] = (struct sched_domain_topology_level){
++		cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(DIE)
++	};
+ 
+-	if (!has_coregroup_support())
+-		powerpc_topology[mc_idx].mask = powerpc_topology[cache_idx].mask;
+-
+-	/*
+-	 * Try to consolidate topology levels here instead of
+-	 * allowing scheduler to degenerate.
+-	 * - Dont consolidate if masks are different.
+-	 * - Dont consolidate if sd_flags exists and are different.
+-	 */
+-	for (i = 1; i <= die_idx; i++) {
+-		if (powerpc_topology[i].mask != powerpc_topology[i - 1].mask)
+-			continue;
+-
+-		if (powerpc_topology[i].sd_flags && powerpc_topology[i - 1].sd_flags &&
+-				powerpc_topology[i].sd_flags != powerpc_topology[i - 1].sd_flags)
+-			continue;
+-
+-		if (!powerpc_topology[i - 1].sd_flags)
+-			powerpc_topology[i - 1].sd_flags = powerpc_topology[i].sd_flags;
++	/* There must be one trailing NULL entry left.  */
++	BUG_ON(i >= ARRAY_SIZE(powerpc_topology) - 1);
+ 
+-		powerpc_topology[i].mask = powerpc_topology[i + 1].mask;
+-		powerpc_topology[i].sd_flags = powerpc_topology[i + 1].sd_flags;
+-#ifdef CONFIG_SCHED_DEBUG
+-		powerpc_topology[i].name = powerpc_topology[i + 1].name;
+-#endif
+-	}
++	set_sched_topology(powerpc_topology);
+ }
+ 
+ void __init smp_cpus_done(unsigned int max_cpus)
+@@ -1734,9 +1714,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
+ 		smp_ops->bringup_done();
+ 
+ 	dump_numa_cpu_topology();
+-
+-	fixup_topology();
+-	set_sched_topology(powerpc_topology);
++	build_sched_topology();
+ }
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
+-- 
+2.41.0
+
