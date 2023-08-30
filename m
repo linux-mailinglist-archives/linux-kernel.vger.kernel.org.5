@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD3C78D9A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEBC78DCDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbjH3Sdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        id S241844AbjH3Sq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244049AbjH3MYZ (ORCPT
+        with ESMTP id S244048AbjH3MXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:24:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613E8CC5;
-        Wed, 30 Aug 2023 05:24:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693398262; x=1724934262;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=/DxvYklHe20nQbJbPnAFJlahY5gcOY8BRtA5KbVsT14=;
-  b=YzqDbZbgkEm8RG4ar9WNc+5G7K1wxSGSBdQFCV23VbLiuje36zXmRkmH
-   Bhw04G03iIp/kMeia9UOtQ4Xxs/5NIhjUjLMAP6NbibqmmrMoLp7l6hmi
-   5Xj7knpe+NOrSBkfpJMWTGlGy/KJElDDfHqrDhDgP5iJZb2uBGKa3w6GR
-   JRHmvqgkaQ1AaU+jBgQB3zlxfus9I3nGPcYlPP5GYCEifn/Sq160+KMq4
-   uxEqWrL3lgxDPCzwm4JvlIcTf+J2My74yD1h8UX1aKwRb8VwEGWlE2v8B
-   abwbH1CzcZS30ksLtmaWhioSO1caFppHlyz+kkXkvOTWle6qCePSYGoqc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="374537192"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="374537192"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 05:23:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="853710746"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="853710746"
-Received: from aghiriba-mobl.ger.corp.intel.com ([10.251.213.104])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 05:22:59 -0700
-Date:   Wed, 30 Aug 2023 15:22:57 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
-cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/6] selftests/kvm: Replace attribute with macro
-In-Reply-To: <82ed62dd7070203701b4ca326e62862404dd5f72.1693216959.git.maciej.wieczor-retman@intel.com>
-Message-ID: <fc618e8c-f8b-c339-9aa6-1d2c2865b42e@linux.intel.com>
-References: <cover.1693216959.git.maciej.wieczor-retman@intel.com> <82ed62dd7070203701b4ca326e62862404dd5f72.1693216959.git.maciej.wieczor-retman@intel.com>
+        Wed, 30 Aug 2023 08:23:43 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0D5CC5;
+        Wed, 30 Aug 2023 05:23:40 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbNj61Wk1z6HJcm;
+        Wed, 30 Aug 2023 20:22:34 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
+ 2023 13:23:36 +0100
+Date:   Wed, 30 Aug 2023 13:23:35 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 18/18] tools/testing/cxl: Add Dynamic Capacity
+ events
+Message-ID: <20230830132335.0000162e@Huawei.com>
+In-Reply-To: <20230604-dcd-type2-upstream-v2-18-f740c47e7916@intel.com>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+        <20230604-dcd-type2-upstream-v2-18-f740c47e7916@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023, Wieczor-Retman, Maciej wrote:
+On Mon, 28 Aug 2023 22:21:09 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-> The __printf() macro is used in many tools in the linux kernel to
-> validate the format specifiers in functions that use printf. Some
-> selftests use it without putting it in a macro definition and some tests
-> import the kselftests.h header.
+> OS software needs to be alerted when new extents arrive on a Dynamic
+> Capacity Device (DCD).  On test DCDs extents are added through sysfs.
+> 
+> Add events on DCD extent injection.  Directly call the event irq
+> callback to simulate irqs to process the test extents.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Trivial comments inline.
 
-"Some" and yet this only converts one? Please be more precise in the 
-wording.
+Reviewed-by: Jonathan.Cameron@huawei.com>
 
-> Use __printf() attribute instead of the full attribute since the macro
-> is inside kselftests.h and the header is already imported.
-
-IMO, this would be enough:
-
-Use __printf() from kselftests.h instead of the full attribute.
-
-Was there a reason why you didn't convert mm/pkey-helpers.h one?
-
--- 
- i.
-
-
-> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
 > ---
->  tools/testing/selftests/kvm/include/test_util.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/testing/cxl/test/mem.c | 57 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-> index a6e9f215ce70..710a8a78e8ce 100644
-> --- a/tools/testing/selftests/kvm/include/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/test_util.h
-> @@ -33,7 +33,7 @@ static inline int _no_printf(const char *format, ...) { return 0; }
->  #define pr_info(...) _no_printf(__VA_ARGS__)
->  #endif
+> diff --git a/tools/testing/cxl/test/mem.c b/tools/testing/cxl/test/mem.c
+> index d6041a2145c5..20364fee9df9 100644
+> --- a/tools/testing/cxl/test/mem.c
+> +++ b/tools/testing/cxl/test/mem.c
+> @@ -2008,6 +2008,41 @@ static bool new_extent_valid(struct device *dev, size_t new_start,
+>  	return false;
+>  }
 >  
-> -void print_skip(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
-> +void __printf(1, 2) print_skip(const char *fmt, ...);
->  #define __TEST_REQUIRE(f, fmt, ...)				\
->  do {								\
->  	if (!(f))						\
-> 
+> +struct dcd_event_dyn_cap dcd_event_rec_template = {
+> +	.hdr = {
+> +		.id = UUID_INIT(0xca95afa7, 0xf183, 0x4018,
+> +				0x8c, 0x2f, 0x95, 0x26, 0x8e, 0x10, 0x1a, 0x2a),
+> +		.length = sizeof(struct dcd_event_dyn_cap),
+> +	},
+> +};
+> +
+> +static int send_dc_event(struct mock_event_store *mes, enum dc_event type,
+> +			 u64 start, u64 length, const char *tag_str)
+
+Arguably it's not sending the event, but rather adding it to the event log and
+flicking the irq. So maybe naming needs some thought?
+
+> +{
+> +	struct device *dev = mes->mds->cxlds.dev;
+> +	struct dcd_event_dyn_cap *dcd_event_rec;
+> +
+> +	dcd_event_rec = devm_kzalloc(dev, sizeof(*dcd_event_rec), GFP_KERNEL);
+> +	if (!dcd_event_rec)
+> +		return -ENOMEM;
+> +
+> +	memcpy(dcd_event_rec, &dcd_event_rec_template, sizeof(*dcd_event_rec));
+
+devm_kmemdup?
+
+> +	dcd_event_rec->data.event_type = type;
+> +	dcd_event_rec->data.extent.start_dpa = cpu_to_le64(start);
+> +	dcd_event_rec->data.extent.length = cpu_to_le64(length);
+> +	memcpy(dcd_event_rec->data.extent.tag, tag_str,
+> +	       min(sizeof(dcd_event_rec->data.extent.tag),
+> +		   strlen(tag_str)));
+> +
+> +	mes_add_event(mes, CXL_EVENT_TYPE_DCD,
+> +		      (struct cxl_event_record_raw *)dcd_event_rec);
+> +
+> +	/* Fake the irq */
+> +	cxl_mem_get_event_records(mes->mds, CXLDEV_EVENT_STATUS_DCD);
+> +
+> +	return 0;
+> +}
+> +
+
+
