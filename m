@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2563E78DFCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC89178DF51
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343865AbjH3T0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        id S239615AbjH3TXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245545AbjH3PbS (ORCPT
+        with ESMTP id S245547AbjH3Pcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:31:18 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D60FB;
-        Wed, 30 Aug 2023 08:31:15 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6A0BF5C00D4;
-        Wed, 30 Aug 2023 11:31:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 30 Aug 2023 11:31:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1693409475; x=1693495875; bh=Q9MVoYIonRyskRfBCIP9y88rEy7hbWTJP9D
-        lDE+1Rek=; b=TFmdkdxDJCh6QTuwU3AGuzXumkMQLdaMGMTXZeMFQ9IJuH2+F61
-        1R6ExZnDwuJiA1eo5bcYmSqlUyuUeoL5lC+ioCfUoVhn6gh8Gfbs5eWCwYP78cZE
-        1qYiJjkUGK/u7CfbVTw2PKCo/tDuGTUeHp2RbU05cJnl+rob3rNkoPSxW72qwvvG
-        2CyBbisd4y8c4xSu4g66cB8t5UIw0U4VSizlH+21WI/QXOl7dn2PPZp6XKCT2QuH
-        Lmm7AHsgwWUqm77rLgXcMkuj7RipbSg2xsr3TTp1hijDnoQTkDPOBt+BKeJc8XEV
-        iaKvtPG8ijD0diOkC12baF7K6TIkWlGo6dQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1693409475; x=1693495875; bh=Q9MVoYIonRyskRfBCIP9y88rEy7hbWTJP9D
-        lDE+1Rek=; b=XDcjE7uz8kS7bQYQhlN8VpeCymR09Xs6qfFDE74Ru+FWXsan+ES
-        p5Z3+kB4Xp+vgmWW68wdwDkHIiLZow3wNbr6dGOOP4ISjtlQ88yDsaf916YwYjSr
-        ZE17fBp/h6bx57e/eWZ1co1hJ4SDFT+Pb+wJdMv5NIzdgvTzBTOisqQ7rHXLmo5Q
-        e0UFUiNGubH3z6ogzMKd/ecTblIZC8gVbSmg0vAkBa1qCdITn1xqalcTUb0e8a+C
-        0luTc1x4KuKNSOqRoUK+c39g/jPtNDQetoNrvL5vk03nZCs36bPqHXVU8c5cnjQ3
-        it0vkrIpXSXd/VgIeEwJBW6Q1CYVwCc31ag==
-X-ME-Sender: <xms:wmDvZH_TC-KVSfxtykkyEc2-g85qjUg7wfM731Eg3csCfXbVzmmn6w>
-    <xme:wmDvZDtDF0LGeGMH9-HrHiXT1tiT3GHUNnLGxs72PbHbwLQFrGL0wHtJvpbUfC0JW
-    202RJaGZDy0j7k0HfI>
-X-ME-Received: <xmr:wmDvZFD6EiZ1zh49iOvuFmx7X_RM0od-iLwDSREW_uEEvdfKsTv64fPYEynSIPt6cJsz>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedgleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepudfhkeevvddtueekfeefgfetlefgueegueeltddtieejgeei
-    heevgfehgfdvfeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:wmDvZDfgm6ms3MhGnJL8V4W5wwEQT8kblLRdegrkdKvym_dK1istKw>
-    <xmx:wmDvZMOlx-PrcPBbNwKAoO_AIN49dIYUMnIckfJIJwYUfhIPoU4o3g>
-    <xmx:wmDvZFlimcU7bZzDX6ygYUJH1PmLmFOctTYjth6aLZCLPtlGWgc6Nw>
-    <xmx:w2DvZDlOME3JwXCFUc3VbCUN8nzunuyLJB2lVv3FOhUch0Bv0GaA8w>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 30 Aug 2023 11:31:08 -0400 (EDT)
-Message-ID: <a3e934eb-7517-f313-46d9-fd5335ce305e@flygoat.com>
-Date:   Wed, 30 Aug 2023 23:31:07 +0800
+        Wed, 30 Aug 2023 11:32:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6AD71FB
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:32:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9280E2F4;
+        Wed, 30 Aug 2023 08:33:07 -0700 (PDT)
+Received: from [10.57.64.173] (unknown [10.57.64.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 896133F64C;
+        Wed, 30 Aug 2023 08:32:25 -0700 (PDT)
+Message-ID: <ba05ec7a-e49c-4dbb-abc6-1662a7f5ff30@arm.com>
+Date:   Wed, 30 Aug 2023 16:32:24 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
- Fix warnings about liointc-2.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] mm/mmu_gather: Store and process pages in contig
+ ranges
 Content-Language: en-GB
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Binbin Zhou <zhoubb.aaron@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
-        linux-kernel@vger.kernel.org
-References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
- <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
- <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
- <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
- <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
- <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
- <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
- <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-In-Reply-To: <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230830095011.1228673-1-ryan.roberts@arm.com>
+ <20230830095011.1228673-6-ryan.roberts@arm.com>
+ <ZO9bGbsrveOIyeAA@casper.infradead.org>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZO9bGbsrveOIyeAA@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30/08/2023 16:07, Matthew Wilcox wrote:
+> On Wed, Aug 30, 2023 at 10:50:11AM +0100, Ryan Roberts wrote:
+>> +++ b/include/asm-generic/tlb.h
+>> @@ -246,11 +246,11 @@ struct mmu_gather_batch {
+>>  	struct mmu_gather_batch	*next;
+>>  	unsigned int		nr;
+>>  	unsigned int		max;
+>> -	struct page		*pages[];
+>> +	struct pfn_range	folios[];
+> 
+> I think it's dangerous to call this 'folios' as it lets you think that
+> each entry is a single folio.  But as I understand this patch, you can
+> coagulate contiguous ranges across multiple folios.
 
+No that's not quite the case; each contiguous range only ever spans a *single*
+folio. If there are 2 contiguous folios, they will be represented as separate
+ranges. This is done so that we can subsequently do the per-folio operations
+without having to figure out how many folios are within each range - one range =
+one (contiguous part of a) folio.
 
-在 2023/8/30 22:35, Krzysztof Kozlowski 写道:
->> What's the best way, in your opinion, to overhaul this property? As we don't
->> really care backward compatibility of DTBs on those systems we can just
->> redesign it.
-> Deprecate the property in the bindings, allow driver to work with or
-> without it and finally drop it entirely from DTS.
+On naming, I was calling this variable "ranges" in v1 but thought folios was
+actually clearer. How about "folio_regions"?
 
-I'd love to have such configuration flexibility so I'd be sad to see it go.
-+ Huacai and Binbin, what's your opinion?
+> 
+>> -void free_pages_and_swap_cache(struct page **pages, int nr)
+>> +void free_folios_and_swap_cache(struct pfn_range *folios, int nr)
+>>  {
+>>  	lru_add_drain();
+>>  	for (int i = 0; i < nr; i++)
+>> -		free_swap_cache(pages[i]);
+>> -	release_pages(pages, nr);
+>> +		free_swap_cache(pfn_to_page(folios[i].start));
+> 
+> ... but here, you only put the swapcache for the first folio covered by
+> the range, not for each folio.
 
-If dropping such functionality in kernel is a must go, we can hardcode
-to route all downstream interrupt to the first pin that passed to DT.
+Yes that's intentional - one range only ever covers one folio, so I only need to
+call free_swap_cache() once for the folio. Unless I've misunderstood and
+free_swap_cache() is actually decrementing a reference count and needs to be
+called for every page? (but it doesn't look like that in the code).
 
-Thanks
-- Jiaxun
-> Best regards,
-> Krzysztof
->
+> 
+>> +	folios_put_refs(folios, nr);
+> 
+> It's kind of confusing to have folios_put() which takes a struct folio *
+> and then folios_put_refs() which takes a struct pfn_range *.
+> pfn_range_put()?
+
+I think it's less confusing if you know that each pfn_range represents a single
+contig range of pages within a *single* folio. pfn_range_put() would make it
+sound like its ok to pass a pfn_range that spans multiple folios (this would
+break). I could rename `struct pfn_range` to `struct sub_folio` or something
+like that. Would that help make the semantic clearer?
+
 
