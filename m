@@ -2,82 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F5078DE83
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D1B78DDA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237977AbjH3TEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        id S245194AbjH3SwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243707AbjH3LeS (ORCPT
+        with ESMTP id S243723AbjH3Lfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:34:18 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B498132;
-        Wed, 30 Aug 2023 04:34:16 -0700 (PDT)
-Received: from nazgul.tnic (unknown [78.130.214.203])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6D4D81EC08F9;
-        Wed, 30 Aug 2023 13:34:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1693395254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kyrJuOePM6iTnqDG/fqXmuj6BgFDXnc1OpummGdqoKk=;
-        b=Rv5vok3kkjHpodzGz6dXlJ08m3i9Xxymtas3l8jZ+cnHwNA7rBknQfHyQA8I1G2ZBVSw1n
-        3WeBwD7f19u4zN6vw8Te1ShmYUlNvJ/BpHRkKrqvMHO7oTGGBanvzdZ9WeIq1aoTRSA2jf
-        ZDaTb1N7DYuqzLqBhvCeufB9+Ju4h5I=
-Date:   Wed, 30 Aug 2023 13:34:21 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shravan Kumar Ramani <shravankr@nvidia.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] EDAC/bluefield_edac: Use ARM SMC for EMI access
-Message-ID: <20230830113421.GBZO8pPUILVoBUVlki@fat_crate.local>
-References: <7a67e5fd25664f4c2277283e15b438e826b3c163.1693392576.git.shravankr@nvidia.com>
+        Wed, 30 Aug 2023 07:35:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E02132;
+        Wed, 30 Aug 2023 04:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693395350; x=1724931350;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=h3ZazSER22rib2B9TYZzPIsIlIRyHDfzHJ5qdZQmJFY=;
+  b=jvcdbe2CrJhKIHfOiQIwPBxJsnLKt9D2hugknRyumlv4mzF0tdW5tiyq
+   C8cqm4diCGsCNTTgaCMMBM27vQTFxPg23jpNoJ24YEJ+i6WU9Ws9oaw29
+   xQgp29uRPaau4Irh3inYPJG8d230779wlyQLcmCBbqIhdMC+Oa95SvFVW
+   Jss2hFQ5EtjoP7Uan7QOSHBtBSKV+6wstnZm0wJnYYmQSCWWiG9tvcmia
+   jPjGpZqn+8xHHj7ddK+VXxh2KlDNBt2LiBpvS6ibc3rUX5iXUqxuSEfTi
+   UMSIiRw9mkzCc4vJJbM4spfZiPmuAqWP3uAtXdQqOG/SYtzeN9ztR6GbI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="441981272"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="441981272"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 04:35:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="732585103"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="732585103"
+Received: from jkrzyszt-mobl2.ger.corp.intel.com ([10.213.15.207])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 04:35:47 -0700
+From:   Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] kunit: Fix test log size limit too low for some tests
+Date:   Wed, 30 Aug 2023 13:35:45 +0200
+Message-ID: <4506938.LvFx2qVVIh@jkrzyszt-mobl2.ger.corp.intel.com>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173,
+ 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
+In-Reply-To: <CABVgOSmZ56p8BBFHNXqigNrH95O_YjMZxfpbhWcZJFrSMS3CDA@mail.gmail.com>
+References: <20230830075419.26484-2-janusz.krzysztofik@linux.intel.com>
+ <CABVgOSmZ56p8BBFHNXqigNrH95O_YjMZxfpbhWcZJFrSMS3CDA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7a67e5fd25664f4c2277283e15b438e826b3c163.1693392576.git.shravankr@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 06:56:14AM -0400, Shravan Kumar Ramani wrote:
-> Add secure read/write calls (arm_smccc_smc) to bluefield_edac.
-> The ACPI table entry decides whether SMC is need for accessing
+On Wednesday, 30 August 2023 11:23:43 CEST David Gow wrote:
+> On Wed, 30 Aug 2023 at 15:55, Janusz Krzysztofik
+> <janusz.krzysztofik@linux.intel.com> wrote:
+> >
+> > Now we have memory space available to a kunit test case log exposed via
+> > debugfs limited to 2048 bytes, while some parametrized test cases, e.g.,
+> > drm_framebuffer.drm_test_framebuffer_create, need more.  For this reason,
+> > debugfs results from affected test cases get truncated silently, and
+> > external tools that rely on parsing of debugfs results can fail.
+> >
+> > Increase kunit test case log size limit to 4096 bytes.
+> >
+> > Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+> > ---
+> 
+> There's a patch series we're hoping to take for 6.7 which allows the
+> log to grow to fit whatever's written into it, which should make this
+> patch obsolete:
+> https://lore.kernel.org/linux-kselftest/20230828104111.2394344-1-rf@opensource.cirrus.com/T/
+> 
+> Would that work for you?
 
-SMC? Self-Modifying Code?
+Yeah, that's going to work perfectly for us, thank you.
 
-> the registers in the External Memory Interface block. If not,
-> the registers may be mapped and accessed directly.
+Janusz
 
-I'm sure there's a human readable explanation for the above.
+> 
+> -- David
+> 
+> >  include/kunit/test.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/include/kunit/test.h b/include/kunit/test.h
+> > index d33114097d0d0..d20eb1884edfa 100644
+> > --- a/include/kunit/test.h
+> > +++ b/include/kunit/test.h
+> > @@ -34,7 +34,7 @@ DECLARE_STATIC_KEY_FALSE(kunit_running);
+> >  struct kunit;
+> >
+> >  /* Size of log associated with test. */
+> > -#define KUNIT_LOG_SIZE 2048
+> > +#define KUNIT_LOG_SIZE 4096
+> >
+> >  /* Maximum size of parameter description string. */
+> >  #define KUNIT_PARAM_DESC_SIZE 128
+> > --
+> > 2.41.0
+> >
+> 
 
-> v0 -> v1
-> Updated commit message
 
-I still have no clue what those secure calls are.
 
-I'm sure there's some ARM documentation which you use in order to
-explain why those are needed.
 
-> +static int edac_readl(void __iomem *addr, uint32_t *result,
-
-No "edac_" previxes to driver-local functions. They belong to the EDAC
-subsystem.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
