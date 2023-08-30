@@ -2,122 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C811678DD76
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BDA78DE26
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244168AbjH3Sug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        id S233293AbjH3S6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343636AbjH3Q2C (ORCPT
+        with ESMTP id S245663AbjH3PvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:28:02 -0400
-Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150A5B9;
-        Wed, 30 Aug 2023 09:27:58 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 437C0900F0A;
-        Wed, 30 Aug 2023 16:27:58 +0000 (UTC)
-Received: from pdx1-sub0-mail-a204.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id BD2BC9004E1;
-        Wed, 30 Aug 2023 16:27:57 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1693412877; a=rsa-sha256;
-        cv=none;
-        b=H4dTlF1ZhpSWKLwLBeyZimfRa351+sBRCe8MQuSmMwaokJR/hJ2G3qHTy/gZEgECIZDjot
-        gQSTY71NtoRmCev5fatR/B/ciXFXoEYXOLHp19V6Kvefn4/73N9BKBGoOIylITOYuWYjsc
-        gf3L6YDJKMyPD/gFumkY32S2wHEFgWY8nSZTSCdhMjyAy5TdfGiazzP5Hqyk+eNrgmZct5
-        /QB2lqOGDi5V4sqvsV3y9m85ZMwBgtMwOsTmdivQMtE3GVElX3aEmvlsreFVFFn+r+Cyxj
-        lLtcXCNPl6hiJciKdJCmyYNsOuwVUYNIO/vLKI2KHll1x8c+3pp50Ct/G7PRFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1693412877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=aRWRZ6nCWmC/bKztsak+ItGZcWnENbj+WAmkTqUrQWk=;
-        b=krRAL5y3yDkoB92zx7zibnfLi1ad/WrBpe+OIpAey+KexZewhQ1mpoWhT7cFJGB1t1y2ES
-        TdcOJNZd4tW9NQhF8oowsku2c8ROt5uw7xDccMAFS4drhw7gvUrnNcTvtaAA9P8Qm0RIO9
-        c7jTNQRQVMSDIfamFLL/PminKlNJiNKzVgkHq37Kyjs1BGdnj5XjzWX/D12pH9dxaiAKlo
-        caSxtHayDvbavQaL5X4w8K8CBiaH+y62B0Ls5eZrtCpxZaY46A27u2YNOcZiqvpH3UmTn5
-        bTLRwCtC5h3TLqAtulgSsr4NpsJsbQI8ho7HdK7hEOQxkoWjqQlnLA1V7xAk3g==
-ARC-Authentication-Results: i=1;
-        rspamd-6fd95854bb-m87fk;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Abortive-White: 033784c548e8b77a_1693412878064_951284777
-X-MC-Loop-Signature: 1693412878064:1738632074
-X-MC-Ingress-Time: 1693412878064
-Received: from pdx1-sub0-mail-a204.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.116.104.140 (trex/6.9.1);
-        Wed, 30 Aug 2023 16:27:58 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+        Wed, 30 Aug 2023 11:51:22 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6758B122;
+        Wed, 30 Aug 2023 08:51:19 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: dave@stgolabs.net)
-        by pdx1-sub0-mail-a204.dreamhost.com (Postfix) with ESMTPSA id 4RbV8F0jdHz2f;
-        Wed, 30 Aug 2023 09:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-        s=dreamhost; t=1693412877;
-        bh=aRWRZ6nCWmC/bKztsak+ItGZcWnENbj+WAmkTqUrQWk=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=Y8vQDNU2V7B5Y6CgBnAqXi7lruMvKu90CJo7mM2tqOkDdvRLJiQ0Zfs4SCk0LnXcu
-         BVFL0xZ2/JNi3CR37/nnkVjlAI6I1qi85tM6ulGz8OGM8hq1nv5cLDJ+tZIa4k8gjK
-         y07QPP3tR3/6vSLWLvcouDDEiMZHGxpp2emZTjqKC4Pazo9ShfwdJqkdlMZFKZ5987
-         ZCYm9BA+ZdhplFSiFlHiVR/89973O1mHe55mEACnHb49S3yoTthz7Nqd4k7XW6bRQ2
-         Jzf02HyQ5DMMtfao5B/jvh3PZqsPgkUIXqsy7gnkkjndYp5z686tK+rPDgN25wlgA6
-         fnANXHWU07G1Q==
-Date:   Wed, 30 Aug 2023 08:48:37 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Widawsky <bwidawsk@kernel.org>
-Subject: Re: [PATCH] cxl/region: Clarify pointers in unregister_region()
-Message-ID: <uksugjuktrlak5uvbndrtho7gwhvnxe2xftwxlqg4o4bemuar2@3gyuczh6n7dq>
-References: <20230829-cxl-clarify-ptrs-v1-1-40e0705c6188@intel.com>
+        (Authenticated sender: alarumbe)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C084D66071C9;
+        Wed, 30 Aug 2023 16:51:17 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693410677;
+        bh=kjUaL5VR03TEh1MPjIv78EGFfK/hRCmMtUCTAAdazBc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GukEUIfKnpFKvAszreQSRQAt6GYkCQaSzGgV7+bPCcAEFLBL1TsDtLAgZ4Uu6B9Ck
+         S4JzqnYTBrMnTsl3nON6wFXADZAZ9ZV4gtS+R3Y2WBEwMH4jN//LLVtZYE8cfcGPmE
+         9x9J6KOX/jdB2LsHF3BdFkd4HifeIs9D5hqZgkt3S537FFnJWObNqYETpCxK4qMBAN
+         LU4Y/LbaZDn9p6svH8gBC5xD4u9oIrVWE4onSyqUPBrYVty56x3V/qbaBAmJkxPx5W
+         vGkg5/PO7rmy+LBwQSc3U1QpydyVmMzE/tyPyKchthI7INU1KefPF3CIUP3Ap2zao4
+         d9UK9/dxkQ4pA==
+Date:   Wed, 30 Aug 2023 16:51:15 +0100
+From:   =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        sean@poorly.run, marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, healych@amazon.com,
+        kernel@collabora.com, Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [PATCH v2 6/6] drm/drm-file: Allow size unit selection in
+ drm_show_memory_stats
+Message-ID: <tc7x4uzxvfwakzoqxgaxbkzh3nyhub56ksrgaqmrb4uaq4rruw@7xwan7qfofw7>
+References: <20230824013604.466224-1-adrian.larumbe@collabora.com>
+ <20230824013604.466224-7-adrian.larumbe@collabora.com>
+ <CAF6AEGtXUTs3ta0N+0hiORa+Tsyh94AXPYm9XdaK6xZbqf+nzA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230829-cxl-clarify-ptrs-v1-1-40e0705c6188@intel.com>
-User-Agent: NeoMutt/20230517
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGtXUTs3ta0N+0hiORa+Tsyh94AXPYm9XdaK6xZbqf+nzA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023, Ira Weiny wrote:
+>> The current implementation will try to pick the highest available
+>> unit. This is rather unflexible, and allowing drivers to display BO size
+>> statistics through fdinfo in units of their choice might be desirable.
+>>
+>> The new argument to drm_show_memory_stats is to be interpreted as the
+>> integer multiplier of a 10-power of 2, so 1 would give us size in Kib and 2
+>> in Mib. If we want drm-file functions to pick the highest unit, then 0
+>> should be passed.
+>>
+>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+>> ---
+>>  drivers/gpu/drm/drm_file.c              | 22 +++++++++++++---------
+>>  drivers/gpu/drm/msm/msm_drv.c           |  2 +-
+>>  drivers/gpu/drm/panfrost/panfrost_drv.c |  2 +-
+>>  include/drm/drm_file.h                  |  5 +++--
+>>  4 files changed, 18 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+>> index 762965e3d503..517e1fb8072a 100644
+>> --- a/drivers/gpu/drm/drm_file.c
+>> +++ b/drivers/gpu/drm/drm_file.c
+>> @@ -873,7 +873,7 @@ void drm_send_event(struct drm_device *dev, struct drm_pending_event *e)
+>>  EXPORT_SYMBOL(drm_send_event);
+>>
+>>  static void print_size(struct drm_printer *p, const char *stat,
+>> -                      const char *region, u64 sz)
+>> +                      const char *region, u64 sz, unsigned int unit)
+>>  {
+>>         const char *units[] = {"", " KiB", " MiB"};
+>>         unsigned u;
+>> @@ -881,6 +881,8 @@ static void print_size(struct drm_printer *p, const char *stat,
+>>         for (u = 0; u < ARRAY_SIZE(units) - 1; u++) {
+>>                 if (sz < SZ_1K)
+>>                         break;
+>> +               if (unit > 0 && unit == u)
+>> +                       break;
+>>                 sz = div_u64(sz, SZ_1K);
+>>         }
+>>
+>> @@ -898,17 +900,18 @@ static void print_size(struct drm_printer *p, const char *stat,
+>>  void drm_print_memory_stats(struct drm_printer *p,
+>>                             const struct drm_memory_stats *stats,
+>>                             enum drm_gem_object_status supported_status,
+>> -                           const char *region)
+>> +                           const char *region,
+>> +                           unsigned int unit)
+>
+>I'm not really adverse to changing what units we use.. or perhaps
+>changing the threshold to go to higher units to be 10000x or 100000x
+>of the previous unit.  But I'm less excited about having different
+>drivers using different units.
+>
+>BR,
+>-R
 
->devm_add_action_or_reset() passes a void * data parameter to the
->callback.  In the case of CXL regions, unregister_region() is passed a
->struct cxl_region *.
->
->unregister_region() incorrectly interprets this as a struct device
->pointer.  Fortunately the device structure was the first member of
->cxl_region.  Therefore the code still works.  However, should struct
->cxl_region change the bug could be subtle.
->
->Use the proper types in unregister_region() and extract the device
->pointer correctly.
->
->Fixes: 779dd20cfb56 ("cxl/region: Add region creation support")
->Cc: Ben Widawsky <bwidawsk@kernel.org>
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Would it be alright if I left it set to the default unit, and allow changing it
+at runtime with a debugfs file?
 
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+>>  {
+>> -       print_size(p, "total", region, stats->private + stats->shared);
+>> -       print_size(p, "shared", region, stats->shared);
+>> -       print_size(p, "active", region, stats->active);
+>> +       print_size(p, "total", region, stats->private + stats->shared, unit);
+>> +       print_size(p, "shared", region, stats->shared, unit);
+>> +       print_size(p, "active", region, stats->active, unit);
+>>
+>>         if (supported_status & DRM_GEM_OBJECT_RESIDENT)
+>> -               print_size(p, "resident", region, stats->resident);
+>> +               print_size(p, "resident", region, stats->resident, unit);
+>>
+>>         if (supported_status & DRM_GEM_OBJECT_PURGEABLE)
+>> -               print_size(p, "purgeable", region, stats->purgeable);
+>> +               print_size(p, "purgeable", region, stats->purgeable, unit);
+>>  }
+>>  EXPORT_SYMBOL(drm_print_memory_stats);
+>>
+>> @@ -916,11 +919,12 @@ EXPORT_SYMBOL(drm_print_memory_stats);
+>>   * drm_show_memory_stats - Helper to collect and show standard fdinfo memory stats
+>>   * @p: the printer to print output to
+>>   * @file: the DRM file
+>> + * @unit: multipliyer of power of two exponent of desired unit
+>>   *
+>>   * Helper to iterate over GEM objects with a handle allocated in the specified
+>>   * file.
+>>   */
+>> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
+>> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file, unsigned int unit)
+>>  {
+>>         struct drm_gem_object *obj;
+>>         struct drm_memory_stats status = {};
+>> @@ -967,7 +971,7 @@ void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
+>>         }
+>>         spin_unlock(&file->table_lock);
+>>
+>> -       drm_print_memory_stats(p, &status, supported_status, "memory");
+>> +       drm_print_memory_stats(p, &status, supported_status, "memory", unit);
+>>  }
+>>  EXPORT_SYMBOL(drm_show_memory_stats);
+>>
+>> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+>> index 2a0e3529598b..cd1198151744 100644
+>> --- a/drivers/gpu/drm/msm/msm_drv.c
+>> +++ b/drivers/gpu/drm/msm/msm_drv.c
+>> @@ -1067,7 +1067,7 @@ static void msm_show_fdinfo(struct drm_printer *p, struct drm_file *file)
+>>
+>>         msm_gpu_show_fdinfo(priv->gpu, file->driver_priv, p);
+>>
+>> -       drm_show_memory_stats(p, file);
+>> +       drm_show_memory_stats(p, file, 0);
+>>  }
+>>
+>>  static const struct file_operations fops = {
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> index 93d5f5538c0b..79c08cee3e9d 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> @@ -563,7 +563,7 @@ static void panfrost_show_fdinfo(struct drm_printer *p, struct drm_file *file)
+>>
+>>         panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
+>>
+>> -       drm_show_memory_stats(p, file);
+>> +       drm_show_memory_stats(p, file, 1);
+>>  }
+>>
+>>  static const struct file_operations panfrost_drm_driver_fops = {
+>> diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
+>> index 010239392adf..21a3b022dd63 100644
+>> --- a/include/drm/drm_file.h
+>> +++ b/include/drm/drm_file.h
+>> @@ -466,9 +466,10 @@ enum drm_gem_object_status;
+>>  void drm_print_memory_stats(struct drm_printer *p,
+>>                             const struct drm_memory_stats *stats,
+>>                             enum drm_gem_object_status supported_status,
+>> -                           const char *region);
+>> +                           const char *region,
+>> +                           unsigned int unit);
+>>
+>> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file);
+>> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file, unsigned int unit);
+>>  void drm_show_fdinfo(struct seq_file *m, struct file *f);
+>>
+>>  struct file *mock_drm_getfile(struct drm_minor *minor, unsigned int flags);
+>> --
+>> 2.42.0
+>>
