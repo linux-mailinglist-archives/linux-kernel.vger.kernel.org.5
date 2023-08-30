@@ -2,124 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A367878DDB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C5E78DE79
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245565AbjH3Sx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51482 "EHLO
+        id S234006AbjH3TDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244717AbjH3Nr7 (ORCPT
+        with ESMTP id S244720AbjH3Ns4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:47:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACDCCC2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693403203;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w7XXAxDLUmZdx81fESQwCFLbPlVQDp3wBmzbmeWO24M=;
-        b=L6k7jZsZXblYV+GORLNd/Q6avmeL6q27K/1eF1gu/lc61SSUzOMv1hMxDCrj2YbdM/FvFU
-        ytBSviJ2jkyygjXvuz67eCcessNgugbueyvRC9Lg3It3EyxpF62//yx/z7CegKBMcLp6hK
-        zW6YRqcBdiSP9hU/Nxey7dTbfWm/Za0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-295-FCtJ_KAjMSqGfYmmn7g7Pg-1; Wed, 30 Aug 2023 09:46:41 -0400
-X-MC-Unique: FCtJ_KAjMSqGfYmmn7g7Pg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a1aaaf6460so87012366b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:46:41 -0700 (PDT)
+        Wed, 30 Aug 2023 09:48:56 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7D0E8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:48:53 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d746ea563f9so5225750276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693403332; x=1694008132; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bmDbfaUQlbEK+YwLPVvf1B5npyIMZNGFC67fQJu+cXY=;
+        b=OglMEbYZdhKMaOtTbDedbcZkbcTcJ0I4EM5eITxqsr9PH3Q9L7SOTR4Bb2Uuhhd46c
+         NR0xpnCf1Vnu6ak+LF6eKjBnyvMihtezLIU1B9UaFbz+zNVn9tecU0rHhbOkG08nNAdc
+         MKeaKNo0V1y3zHIeg/2Erwudgcgkv6OopkFHDpxfYmSJe8goQE9KWxvOHcRX6qKoeS1i
+         5O0ZpIZle9XD/jGHQfm4YZjmXhSrbjRqcmC7l5/pnatPlZyEbnqFjImbyp9pmKeOnamC
+         gxpDX1yXrI2H17BcaHufa4cfLnpoGCIbD79dVxT5eK4h3j+TP+mSx4n3UmDp/odf/+VT
+         hB3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693403200; x=1694008000;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w7XXAxDLUmZdx81fESQwCFLbPlVQDp3wBmzbmeWO24M=;
-        b=XH7w8S1eEa8b79VSKInRdIez9dLgAGTop2phN2FhYtAwEuFqFlH/9qP+xw66ZitRv4
-         Lq/fNXxXGr3E2+qLC2i7irXnV6RTx7wsPHYe+BtnNucXqqpKu0b8jl2eRCNdqjztgLN3
-         fK6fpreyXwgns32QiaCmwz3plgHq5QOGdzUPhvlMbSBAHtyfrwF+v1InMiQ7obWnVLjI
-         VyHvTTryXdqzDIg4m+AQio7X2s+y7HOBYSUiTX+owMKbvurgqdP+GnYPVwDxYVwafXG9
-         AmRDBIIqPDMERQCK0toXyIdhldflix0YcESgj5KanpHUQuqzi/xLsbM9ymzlO0k8AYC2
-         +FHw==
-X-Gm-Message-State: AOJu0YxjKdmLdA6d3dJxCS8FRNJ+qb9UHvlPnP1ERnaxt0MSplObd+hJ
-        bcRoFcXMzVD1cuoA4vEKWJIqAZYP2gYecppziAkwtWMPOQ39+gt5icrw3E6HMr1EF85m+FIc7nO
-        IUpEnDZhBGJKSv8GX+KkNy0El
-X-Received: by 2002:a17:906:1011:b0:9a1:aea8:cb5a with SMTP id 17-20020a170906101100b009a1aea8cb5amr1574505ejm.1.1693403200684;
-        Wed, 30 Aug 2023 06:46:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFovveJ1gRkNa/hbpuOdO660EpmuFNfSfZvj7MduSJ07LTCEG5M6k7oeDfsA0MPBedrGa9vw==
-X-Received: by 2002:a17:906:1011:b0:9a1:aea8:cb5a with SMTP id 17-20020a170906101100b009a1aea8cb5amr1574480ejm.1.1693403200487;
-        Wed, 30 Aug 2023 06:46:40 -0700 (PDT)
-Received: from fedorinator.fritz.box ([2001:9e8:32e4:1500:aa40:e745:b6c9:7081])
-        by smtp.gmail.com with ESMTPSA id gy25-20020a170906f25900b0098951bb4dc3sm7218566ejb.184.2023.08.30.06.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:46:40 -0700 (PDT)
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Christian Brauner <brauner@kernel.org>,
-        David Disseldorp <ddiss@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Siddh Raman Pant <code@siddh.me>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>
-Cc:     VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
-        Philipp Stanner <pstanner@redhat.com>,
-        David Airlie <airlied@redhat.com>
-Subject: [PATCH 5/5] drm: vmgfx_surface.c: copy user-array safely
-Date:   Wed, 30 Aug 2023 15:45:56 +0200
-Message-ID: <6f9397d6af919b7e8325c2945385c13aaa3dc5f1.1693386602.git.pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1693386602.git.pstanner@redhat.com>
-References: <cover.1693386602.git.pstanner@redhat.com>
+        d=1e100.net; s=20221208; t=1693403332; x=1694008132;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bmDbfaUQlbEK+YwLPVvf1B5npyIMZNGFC67fQJu+cXY=;
+        b=Gken/3fwzz8xzBmf9I9tVvkTmTIOnUwcCrXtb68iYEeRMGWi+pYUiIA4u8JGonf1GG
+         U3lZaxlWXVjJVe4UurAey/UaMu3PiQeOepWmAxfukHEu+Wyb9H/1FmoEznIz66mhneEG
+         WULCfOjhXaUhI3FtrSA/sm5NaWkexD3N8Plopc0Q5Cp/m3/avWC4JmvLQmaV4L5WWKz+
+         3vuHD+8lbk4l3pYefdIq70nsvZ5Ug0z64vNhqBY1m0MHue5SmuwJT76Dngy74ecBuLCD
+         1oZHYRtwz3btZ00qwr1QoTzM3XUDCiVyWNfQljsay//ixhqBshnNn0Qt0f5pgG8Zzhsx
+         TWJA==
+X-Gm-Message-State: AOJu0YypS6ybuzB04AQkcf3Bp4c2ZmbcZxk7k0aywMTKKteaCDcsMi0f
+        9M5upUkZiWDcjXMDrvP4db1h3gcygpOco6vrtcmIMA==
+X-Google-Smtp-Source: AGHT+IHlMvC0xiLqI09ca+xpteK5AXoqqkRQfTvX+t7kMRxQYclnhcIORHZgLG5E7mynM+cLCl9UhhtEQu1wrVLfcAw=
+X-Received: by 2002:a25:e0ca:0:b0:d71:7cb4:8293 with SMTP id
+ x193-20020a25e0ca000000b00d717cb48293mr2266093ybg.44.1693403332289; Wed, 30
+ Aug 2023 06:48:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+ <20230828192507.117334-6-bartosz.golaszewski@linaro.org> <9b69a4a6-b011-f0e8-217f-5f91d9a00382@linaro.org>
+ <48feda07-525d-4319-ba09-14928ab1fd29@linaro.org>
+In-Reply-To: <48feda07-525d-4319-ba09-14928ab1fd29@linaro.org>
+From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date:   Wed, 30 Aug 2023 15:48:41 +0200
+Message-ID: <CACMJSeuOigO38_jgjNLz6AiWK1BoLN+shDQHrubS5s-dkDFG7A@mail.gmail.com>
+Subject: Re: [PATCH 05/11] dt-bindings: document the Qualcomm TEE Shared
+ Memory Bridge
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there is no overflow-check with memdup_user().
+On Tue, 29 Aug 2023 at 11:30, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+> On 29.08.2023 10:02, Krzysztof Kozlowski wrote:
+> > On 28/08/2023 21:25, Bartosz Golaszewski wrote:
+> >> Add Device Tree bindings for Qualcomm TEE Shared Memory Brige - a
+> >> mechanism that allows sharing memory buffers between trustzone and the
+> >> kernel.
+> >
+> > Subject prefix:
+> > dt-bindings: firmware:
+> >
+> >
+> >
+> >>
+> >> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >> ---
+> >>  .../bindings/firmware/qcom,shm-bridge.yaml    | 36 +++++++++++++++++++
+> >>  1 file changed, 36 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+> >> new file mode 100644
+> >> index 000000000000..f660962b7b86
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+> >> @@ -0,0 +1,36 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/firmware/qcom,shm-bridge.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: QCOM Shared Memory Bridge
+> >> +
+> >> +description: |
+> >
+> > Do not need '|' unless you need to preserve formatting.
+> >
+> >> +  Qualcomm TEE Shared Memory Bridge allows sharing limited areas of kernel's
+> >> +  virtual memory with the trustzone in order to avoid mapping the entire RAM.
+> >> +
+> >> +maintainers:
+> >> +  - Bjorn Andersson <andersson@kernel.org>
+> >> +  - Konrad Dybcio <konrad.dybcio@linaro.org>
+> >> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    items:
+> >> +      - enum:
+> >> +          - qcom,shm-bridge-sa8775p
+> >> +          - qcom,shm-bridge-sm8150
+> >> +          - qcom,shm-bridge-sm8450
+> >> +      - const: qcom,shm-bridge
+> >> +
+> >
+> > Looks quite empty... Why this cannot be part of qcom,scm? IOW, why do
+> > you need new binding if you do not have any resources here and the block
+> > is essentially feature of qcom,scm firmware?
+> Since it's "discoverable" (via retval of an scm call), I'd second the
+> idea of probing this from within the SCM driver.
+>
+> Konrad
 
-Use the new function memdup_array_user() instead of memdup_user() for
-duplicating the user-space array safely.
+Downstream has a bunch of DT switches that we don't support for now
+upstream. I disagree about shoehorning this into the SCM driver. It
+really is a layer on top of SCM but also SCM is a user of this
+interface.
 
-Suggested-by: David Airlie <airlied@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- drivers/gpu/drm/vmwgfx/vmwgfx_surface.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I will send a v2 with QCom ICE as a second user so that exporting
+symbols pointed out by Krzysztof as having no users make more sense.
+Hopefully keeping it separate will make more sense too.
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-index 5db403ee8261..9be185b094cb 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-@@ -777,9 +777,9 @@ int vmw_surface_define_ioctl(struct drm_device *dev, void *data,
- 	       sizeof(metadata->mip_levels));
- 	metadata->num_sizes = num_sizes;
- 	metadata->sizes =
--		memdup_user((struct drm_vmw_size __user *)(unsigned long)
-+		memdup_array_user((struct drm_vmw_size __user *)(unsigned long)
- 			    req->size_addr,
--			    sizeof(*metadata->sizes) * metadata->num_sizes);
-+			    metadata->num_sizes, sizeof(*metadata->sizes));
- 	if (IS_ERR(metadata->sizes)) {
- 		ret = PTR_ERR(metadata->sizes);
- 		goto out_no_sizes;
--- 
-2.41.0
+If anything, the SHM Bridge code should stay in a separate compilation
+unit even as part of SCM.
 
+Bart
