@@ -2,149 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3733678D31F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E3778D324
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239205AbjH3GFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 02:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
+        id S239462AbjH3GGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 02:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239077AbjH3GFM (ORCPT
+        with ESMTP id S240768AbjH3GGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:05:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759BBCCA
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:05:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EECA962A06
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:05:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A41C433C8;
-        Wed, 30 Aug 2023 06:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693375508;
-        bh=pIEAeMZU01cu0V/hi9qtT63KB+MWUtdcr1EXhtHOuRk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L8OsP4zv5gzmP0uGgcaIUG2DAQ0joO2f/CK6fbztCn0jfdksVQo5gAYHk+oH/MrR/
-         lRm9VHJKmtt40ME7QrBDJTwrEQg4H35WualfNFeVeASfHdZY9y+SsrjSjkJDs458Z0
-         yL6MRusr7zwvmNRShKVDXaL21Fgxg92ojLW/ADuI5Mh+jNL7KabkJtUP/VxZ83s9OT
-         3ip+bUlaOfSCG6YSLGILSBBaW34wFy5KIAtU7oN0ShKz/xrtKgpltOcMzAtzjiUcFc
-         Fes8/pQKkmhDHSGGCYF8wOzMz4xL8E3D5HKx42HyOpsSVYfG+6Z2BTHqQHrgDzDMpl
-         IuIXyz5rHXaYw==
-Date:   Tue, 29 Aug 2023 23:05:06 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, Kees Cook <kees@kernel.org>,
-        linux-kernel@vger.kernel.org, Enlin Mu <enlin.mu@unisoc.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yunlong Xing <yunlong.xing@unisoc.com>,
-        Yuxiao Zhang <yuxiaozhang@google.com>
-Subject: Re: [GIT PULL] pstore updates for v6.6-rc1
-Message-ID: <20230830060506.GA1015@sol.localdomain>
-References: <202308281119.10472FC7@keescook>
- <CAHk-=wi_WxZ2dEsQR0-wDtYAh4sxVEQkU7HK5JSboVv7v7NwcQ@mail.gmail.com>
- <B085ADB4-4B8C-4998-BB33-DA67C45483E9@kernel.org>
- <CAHk-=wjRD_LnCbwSRM20Fg54xhrFBLwgO=X23bdconx3wKokxg@mail.gmail.com>
- <202308282035.5AFD431B@keescook>
- <CAHk-=whbqsYC4nDc7HpWEYo7EnA603T35jSP4om6HMWpVZSc_w@mail.gmail.com>
- <CAMj1kXGJCBj2JQFkUgd26H-abagcpO+7z_--6HV42VeaqCsEnQ@mail.gmail.com>
- <CAHk-=wgaY2+_KyqVpRS+MrO6Y7bXQp69odTu7JT3XSpdUsgS=g@mail.gmail.com>
- <CAMj1kXHde34XNukpbCcbScetWKzv9m7nX2WCw8-zspPKc5g4zw@mail.gmail.com>
+        Wed, 30 Aug 2023 02:06:31 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2084.outbound.protection.outlook.com [40.107.223.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98ADCE0;
+        Tue, 29 Aug 2023 23:06:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gSAscC2h/vJ/MHaDbkRxovPqYqulIsLq89jaFecE7697yHOEqAkW7gXzj28Hv3qJjodo9eAYcTiZyw51TzAB2+93EXFhmt/RUjQjNBOFZohSEUZvAo4kP8yf02Sa/t7yBkgudEBdwDwKpW1/KdGOUCluy6Byrt8cqNa1PHNjpbEaOjFlH+X8Qs+6oSS9Mox4Jz557YRKrF99MJBOeRCleozHiMPgdx2VtpPVyPW2oYzopvrF4hiYvk2aL7u+D62OxkRc4VchDWfTYoD2afC82NH+wCMss0ZTk8Cy0MfxPc2XIiPamf8pTZHX4zOqu9Sn3vDIKrHrs0yRGT2IoCVrDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8jdRkH40Wmi0x56X5Kx0Z/BhOpNUpHW0v+C8m3lZaNw=;
+ b=fIsa1jGsSVBACuhPOhqy8tT2H1gzRH+nO/G1x5/KXuwiHzTwJBnb/GWMZpKeSqwl0cONuNz47CfYHLhj44KFT/C5UvmDDqM42xmzIXLsqDUC768ipFDjSxHrBsfs/03aUvSUVED6j7ybxIoDoNK+IWCCBQdkX7WHAgBVjVzr6uDPeKAE6y1GSrVP7eCscNdnAzkZ1BpAlpw62DXDDpvTavrXtYAXoGfjgKGiBKOcjuci+zI0gqr1p5w2YXlQqyIde4zZz4cuobKuU16Hqt6m+V630EnVhjXXvUwET03481vA8EVN6fCczCz81JZA+sLByMvR0R5AqjvXEex+2hlBWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8jdRkH40Wmi0x56X5Kx0Z/BhOpNUpHW0v+C8m3lZaNw=;
+ b=lDHP+ziQBE9pjOlW+CStByOnA2azC787zxDX8DiwoJ/ekYanAPnyyDb9c4foPGWUxyUkV6Onga3iQW0VNE4ojbC8bZznKnOhqxznPltiYXlKPhEpwAsXTtvScyMVP8v8bYAiQ2s3pj/Xtlz9rolqnI2uvVnp3ixUoK5Hc85QcC0=
+Received: from PH8PR12MB6675.namprd12.prod.outlook.com (2603:10b6:510:1c2::15)
+ by IA1PR12MB6116.namprd12.prod.outlook.com (2603:10b6:208:3e8::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Wed, 30 Aug
+ 2023 06:06:19 +0000
+Received: from PH8PR12MB6675.namprd12.prod.outlook.com
+ ([fe80::3a16:8b71:150d:5e82]) by PH8PR12MB6675.namprd12.prod.outlook.com
+ ([fe80::3a16:8b71:150d:5e82%4]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
+ 06:06:18 +0000
+From:   "Goud, Srinivas" <srinivas.goud@amd.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "wg@grandegger.com" <wg@grandegger.com>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "git (AMD-Xilinx)" <git@amd.com>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "appana.durga.rao@xilinx.com" <appana.durga.rao@xilinx.com>,
+        "naga.sureshkumar.relli@xilinx.com" 
+        <naga.sureshkumar.relli@xilinx.com>
+Subject: RE: [PATCH v3 1/3] dt-bindings: can: xilinx_can: Add ECC property
+ 'xlnx,has-ecc'
+Thread-Topic: [PATCH v3 1/3] dt-bindings: can: xilinx_can: Add ECC property
+ 'xlnx,has-ecc'
+Thread-Index: AQHZ2cBiFgY83WJUzUyA4MeJwK/v66//2S+AgAKA3EA=
+Date:   Wed, 30 Aug 2023 06:06:18 +0000
+Message-ID: <PH8PR12MB6675C31C6D1DCD3281FE8A10E1E6A@PH8PR12MB6675.namprd12.prod.outlook.com>
+References: <1693234725-3615719-1-git-send-email-srinivas.goud@amd.com>
+ <1693234725-3615719-2-git-send-email-srinivas.goud@amd.com>
+ <20230828154309.GA604444-robh@kernel.org>
+In-Reply-To: <20230828154309.GA604444-robh@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH8PR12MB6675:EE_|IA1PR12MB6116:EE_
+x-ms-office365-filtering-correlation-id: 8171a4af-35ef-4728-e026-08dba91f39c8
+x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nktevzhfNn042/vzbMGmF93RTXA+gunlsTTHtMUD/IyVuIeyv2C4Lxny0hgljEz3EVvuWGF8MHEyWZR5/3cEM44txwjiPPu4EjK8a15aI9suP5ZK63kyVuuQonx94+fwCDIq2hlJT9NntwqNPRUBABXQZe4HTesbiuLyHK7008iqmYZ77QW6L7tl9W9aeSKr7HTpHaO10NhDZNWA2TOdnn+MWFhkqj0EJ4l0HnAI+jY4k/9AH8ajaDWbv3g3NpuGWsr0HU43FfG2aI5arjXjUE1JYi71mjE0aNOBW4po0w82BIrNE7OsgSlIJMd6+InRJQK6CPdr1p72Wa9zLgOpebifE9I2TCW1g3FOCZ0NHwXAcqCdWgPhFSLkgGjHFWytrDfRE0ndXisr9iyVSSxl2CTICwvMlpc2FQm6/HiUYDLBkHes9kjntPT3KmRp1PTq6EitkeujsqT6fO8JqB8PoSB8IY7Zm7E6f4ANXTd/IaFB1HryZUPG+NFfgTM/0gzr3uilZ7N6KlzRiJQaeH6GleqJZmU7a+dMRtdKHFsyEkGuPglwYrBiwFNv6ucL5T3yAJKpNWPcr06JRYzTbSDf55G6qpzSVSeW6msA7xseBCo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6675.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(366004)(136003)(451199024)(1800799009)(186009)(9686003)(26005)(316002)(38100700002)(6916009)(38070700005)(41300700001)(4326008)(33656002)(7416002)(55016003)(2906002)(52536014)(86362001)(5660300002)(8676002)(83380400001)(8936002)(71200400001)(66446008)(7696005)(966005)(6506007)(64756008)(66476007)(54906003)(66556008)(76116006)(66946007)(478600001)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?1M0Ie0xntR7NpchwXJa+iXPOrWjo24LNZB5aUsZZ69485yZzZkpzClh5Enlu?=
+ =?us-ascii?Q?kKVfrBi3JqYQqGZKmv5wNemZjmIFillpRCDE49CwfCxHHtDJfri8lLlvTGIR?=
+ =?us-ascii?Q?gDsQnMKGClC/+E+0xUm85bHyneO6CeatC+zoCWxPI2k+ZUPVAoRtld4EKRRV?=
+ =?us-ascii?Q?0m9YV5UBvQtm9R+kHkLeovClnv+fD0peQa7rOh7+ChrJVoh05e5salT5p++V?=
+ =?us-ascii?Q?tDcIti/hlIgKA8LToYL7md4qt2te3q8UoRX7hjYaFP7xaWGfqQODinYoxsm4?=
+ =?us-ascii?Q?tGkJBxif4zc+4dqEEge6diwuiH0HrfSaJEvGscdPc/t2qQwpyioQgZMm1aoL?=
+ =?us-ascii?Q?114NcDfr+2rSYkctmgjlCw2zCbN6mynDBlVleq6eATG9KaL4TVR/+5ece0Ii?=
+ =?us-ascii?Q?l1z8P1vtZ5q+fmzlppcr3gVH0Sb9Y75O6398zMaHc8riw2DnuN9OXFUWGQx/?=
+ =?us-ascii?Q?uvaTqw15m68J34PcaSZCcyqLDhkJWEEUAkWmfAfkXTRzPS4o41in6crdbZJa?=
+ =?us-ascii?Q?8raObcJSHzzvBgu9HmeLmqbUKOKObRUPkivM9lIg91yB8mpol1diTgRMFRtQ?=
+ =?us-ascii?Q?Ik7nE9h16g3L+jrmUW+3GMgTrtOHj1qTNPUyi4J7nSA1GyET+KGBLzGGNVVe?=
+ =?us-ascii?Q?NXfgogm6Kwe4BIk+Wf9+5JZ3ff288ivRI3dm3vs0rr2ZaYriA824GLlK5KE3?=
+ =?us-ascii?Q?3w1fSXdV71c8VlTNgPsVrXvqRTiZNReNCtjElBGDNLrXf9pYdSxqo+CQFBHp?=
+ =?us-ascii?Q?S4p4/jqjAxZXpakheMYOnBay4N5l+QqAJbJPHxqKioLi8B3i2QoEKZOzIJ9N?=
+ =?us-ascii?Q?8TxSRb0GQ22lmS1X4g6QXFsgUFv7N3x54ZDRJm3uAhyq6NDojMAwA4Nutnbl?=
+ =?us-ascii?Q?1mYD6ltTtkhU8Iz3+ApaT41TFtNiMwXx0owKFNmgSumc9pF6sXaUGV/hHSAf?=
+ =?us-ascii?Q?SpzygmKYpmS1YRpRDLx3G6FNDiCtzsEayj1Z1XYOKRXXKMSzLDgN5a2VTHEv?=
+ =?us-ascii?Q?2ALuWTn2v46tEx5dol+nuoLR4b0XPUDErrLaxRYgdzJ+y24/dGS+u5+M17Jg?=
+ =?us-ascii?Q?tjIHzlEFLnnWfpwG6FjbqVgrTDNlkpRImNqJHrgST7iVNrZDdE4tKwhXb5bf?=
+ =?us-ascii?Q?aNOcUd3iQvHTlc6YLNuUwaCnseYuDpLCUG4owuA1suyzcYlUP87KXTo/BM8H?=
+ =?us-ascii?Q?4ciaCXk8VAoyKpaj6z26qT3WosHiy0HCGm/egZ3d4UNyDCkx/PggC91V4jib?=
+ =?us-ascii?Q?cWbWDHvE64wJB6AWCMMR5DbDJJ0gEDkqPBdaD7opXhFqYZXn4gYB96kPmB4K?=
+ =?us-ascii?Q?ZpmqwIip5wwzGPVA52BXl6kV2CV+0430BtLzskHDaL7xHAglcQ/7IVYPYVj9?=
+ =?us-ascii?Q?AQiLvbVMpuMTHwG0y/HNePtIt5cQk4+nmhz8jR43hsvfoJeVv7IkUaUGlnV6?=
+ =?us-ascii?Q?b+9E7KnsI2smxCCppD5HlEjzBuoZSg1uwfIyoE7/aNjuc9HdDmpnM7qcXTZS?=
+ =?us-ascii?Q?2womVlid7WsGcNZFU3Z+eJjTioASuP158YYLcPjh8gYsvP86Ay+8jCpTt1tJ?=
+ =?us-ascii?Q?r/tezVd6VGReBtKSatk=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHde34XNukpbCcbScetWKzv9m7nX2WCw8-zspPKc5g4zw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6675.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8171a4af-35ef-4728-e026-08dba91f39c8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 06:06:18.1409
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: V3P0CaKSEBO222bH1cctvlUWevWvS7/aYJfVVWgKm80yYJo21mk4AbEHFhEAQsFL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6116
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Rob,
 
-On Tue, Aug 29, 2023 at 11:43:37PM +0200, Ard Biesheuvel wrote:
-> On Tue, 29 Aug 2023 at 20:04, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Tue, 29 Aug 2023 at 10:29, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > This is an oversight on my part. The diff below plugs this into the pstore code
-> >
-> > Hmm. My reaction is that you should also add the comment about the
-> > "Work around a bug in zlib" issue, because this code makes no sense
-> > otherwise.
-> >
-> 
-> Naturally. But pasting the comment into the email body seemed unnecessary.
-> 
-> > Of course, potentially even better would be to actually move this fix
-> > into our copy of zlib. Does the bug / misfeature still exist in
-> > upstream zlib?
-> >
-> 
-> I have no idea. You are the one sitting on the only [potential]
-> reproducer I am aware of, and there is nothing in the git (or prior)
-> history that sheds any light on this. Could you copy one of those EFI
-> variables to a file and share it so I can try and reproduce this?
-> 
-> > Also, grepping around a bit, I note that btrfs, for example, just does
-> > that Z_SYNC_FLUSH, and then checks for Z_OK. None of this Z_STREAM_END
-> > stuff.
-> >
-> > Similarly, going off to the debian code search, I find other code that
-> > just accepts either Z_OK or Z_STREAM_END.
-> >
-> > So what's so magical about how pstore uses zlib? This is just very odd.
-> >
-> 
-> AIUI, zlib can be used in raw mode and with a header/footer. Passing
-> the wbits parameter as a negative number (!) will switch into raw
-> mode.
-> 
-> The btrfs and jffs2 occurrences both default to positive wbits, and
-> switch to negative in a very specific case that involves zlib
-> internals that I don't understand. crypto/deflate.c implements both
-> modes, and pstore always used the raw one in all cases.
-> 
-> The workaround in crypto/deflate.c is documented as being specific to
-> the raw mode, which is why it makes sense to at least verify whether
-> the same workaround that pstore-deflate was using when doing raw zlib
-> through the crypto API is still needed now that it calls zlib
-> directly.
+>-----Original Message-----
+>From: Rob Herring <robh@kernel.org>
+>Sent: Monday, August 28, 2023 9:13 PM
+>To: Goud, Srinivas <srinivas.goud@amd.com>
+>Cc: wg@grandegger.com; mkl@pengutronix.de; davem@davemloft.net;
+>edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+>krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>p.zabel@pengutronix.de; git (AMD-Xilinx) <git@amd.com>; Simek, Michal
+><michal.simek@amd.com>; linux-can@vger.kernel.org; linux-arm-
+>kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+>netdev@vger.kernel.org; devicetree@vger.kernel.org;
+>appana.durga.rao@xilinx.com; naga.sureshkumar.relli@xilinx.com
+>Subject: Re: [PATCH v3 1/3] dt-bindings: can: xilinx_can: Add ECC property
+>'xlnx,has-ecc'
+>
+>On Mon, Aug 28, 2023 at 08:28:43PM +0530, Srinivas Goud wrote:
+>> ECC feature added to Tx and Rx FIFOs for Xilinx AXI CAN Controller.
+>> Part of this feature configuration and counter registers added in IP
+>> for 1bit/2bit ECC errors.
+>>
+>> xlnx,has-ecc is optional property and added to Xilinx AXI CAN
+>> Controller node if ECC block enabled in the HW
+>>
+>> Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
+>> ---
+>> Changes in v3:
+>> Update commit description
+>>
+>> Changes in v2:
+>> None
+>
+>Doesn't apply, dependency?
+This patch is created on top of below commit and this is part of the=20
+linux-can-next/master and Linux torvalds GIT
+https://lore.kernel.org/all/bfaed896cc51af02fe5f290675313ab4dcab0d33.168916=
+4442.git.michal.simek@amd.com/
 
-I get the "pstore: zlib_inflate() failed, ret = -5!" messages on my system too,
-so I looked into it.  What's happening is that the pstore records are coming
-from the efi_pstore backend, which has pstore_info::bufsize of 1024 bytes, but
-they decompress to more than 1024 bytes.  Since pstore now sizes the buffer for
-decompressed data to only pstore_info::bufsize, lib/zlib_inflate correctly
-returns Z_BUF_ERROR.  (BTW, I write "lib/zlib_inflate", not "zlib", since it was
-forked from the real zlib 25 years ago.  Regardless, the problem isn't there.)
+>
+>>
+>>  Documentation/devicetree/bindings/net/can/xilinx,can.yaml | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+>> b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+>> index 64d57c3..c842610 100644
+>> --- a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+>> +++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+>> @@ -49,6 +49,10 @@ properties:
+>>    resets:
+>>      maxItems: 1
+>>
+>> +  xlnx,has-ecc:
+>> +    $ref: /schemas/types.yaml#/definitions/flag
+>> +    description: CAN Tx and Rx fifo ECC enable flag (AXI CAN)
+>
+>has ECC or enable ECC?
+Will update description with "has ECC"
 
-I think we partially misinterpreted the functions like zbufsize_deflate() that
-Ard's patches removed.  They seemed to be used only for getting the worst case
-compressed size for an uncompressed size of pstore_info::bufsize.  Actually,
-they were used both for that, *and* for getting the uncompressed size to try to
-compress into pstore_info::bufsize.  (Which is very weird, as these are two very
-different concepts.)
+>
+>> +
+>>  required:
+>>    - compatible
+>>    - reg
+>> @@ -137,6 +141,7 @@ examples:
+>>          interrupts =3D <GIC_SPI 59 IRQ_TYPE_EDGE_RISING>;
+>>          tx-fifo-depth =3D <0x40>;
+>>          rx-fifo-depth =3D <0x40>;
+>> +        xlnx,has-ecc
+>
+>Obviously not tested.
+Will fix it.
 
-So I think first we need to decide whether pstore should try to use compression
-to fit more than pstore_info::bufsize of data in each pstore record, as opposed
-to just shrinking the size of the record actually written.  If yes, then this
-really needs some more thought than the previous code which seemed to do this by
-accident.  If no, then the new approach is fine.
-
-BTW, what happens if someone was using a non-DEFLATE algorithm and then upgrades
-their kernel?  Decompression can fail for that too.  So maybe pstore just needs
-to consider that decompression of pstore records written by an older kernel can
-fail -- either due to the algorithm changing or due to the uncompressed size
-being too large for the new code -- and silence the error messages accordingly?
-How "persistent" do these persistent store records really have to be?
-
-- Eric
+Thanks,
+Srinivas
