@@ -2,212 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3104B78DD6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E332078DD7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243805AbjH3Stt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
+        id S244485AbjH3SvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243828AbjH3Luc (ORCPT
+        with ESMTP id S243839AbjH3Lv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:50:32 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983E71B0;
-        Wed, 30 Aug 2023 04:50:28 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbMyq6GGTz6HJcW;
-        Wed, 30 Aug 2023 19:49:23 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
- 2023 12:50:26 +0100
-Date:   Wed, 30 Aug 2023 12:50:25 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Navneet Singh <navneet.singh@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 14/18] dax/region: Support DAX device creation on
- dynamic DAX regions
-Message-ID: <20230830125025.00000fea@Huawei.com>
-In-Reply-To: <20230604-dcd-type2-upstream-v2-14-f740c47e7916@intel.com>
-References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
-        <20230604-dcd-type2-upstream-v2-14-f740c47e7916@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 30 Aug 2023 07:51:57 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9D91BB;
+        Wed, 30 Aug 2023 04:51:54 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37UBpTFM070701;
+        Wed, 30 Aug 2023 06:51:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693396289;
+        bh=gMOLJwOXNOhAvc5RONqLHk+5pNmuIPJLrheBybFhFIM=;
+        h=From:To:CC:Subject:In-Reply-To:References:Date;
+        b=iZqM6Avd9IBWZ1sRwAwnWV7xvEp6l2RFaarlcGUGTGoUuD2R8oD8W1qWYspEBT/8o
+         UMo1JNGZBYTuKp4LTxK/cSBoU+w8HQQNiqvGnjsiZWI9NGrE9owat7bpjmvT/zRSxQ
+         u4eKafROn3/BP2QFwvW6kCqFHJmSQyxdjHqJmYqw=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37UBpTkf050947
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Aug 2023 06:51:29 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 30
+ Aug 2023 06:51:28 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 30 Aug 2023 06:51:29 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37UBpS8Q000383;
+        Wed, 30 Aug 2023 06:51:28 -0500
+From:   Kamlesh Gurudasani <kamlesh@ti.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH v2 0/6] Add support for
+ Texas Instruments MCRC64 engine
+In-Reply-To: <20230822051710.GC1661@sol.localdomain>
+References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
+ <20230812030116.GF971@sol.localdomain>
+ <87h6owen39.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+ <20230822051710.GC1661@sol.localdomain>
+Date:   Wed, 30 Aug 2023 17:21:27 +0530
+Message-ID: <87zg28d9z4.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 22:21:05 -0700
-Ira Weiny <ira.weiny@intel.com> wrote:
+Eric Biggers <ebiggers@kernel.org> writes:
 
-> Dynamic Capacity (DC) DAX regions have a list of extents which define
-> the memory of the region which is available.
-> 
-> Now that DAX region extents are fully realized support DAX device
-> creation on dynamic regions by adjusting the allocation algorithms
-> to account for the extents.  Remember also references must be held on
-> the extents until the DAX devices are done with the memory.
-> 
-> Redefine the region available size to include only extent space.  Reuse
-> the size allocation algorithm by defining sub-resources for each extent
-> and limiting range allocation to those extents which have space.  Do not
-> support direct mapping of DAX devices on dynamic devices.
-> 
-> Enhance DAX device range objects to hold references on the extents until
-> the DAX device is destroyed.
-> 
-> NOTE: At this time all extents within a region are created equally.
-> However, labels are associated with extents which can be used with
-> future DAX device labels to group which extents are used.
+> On Fri, Aug 18, 2023 at 02:36:34PM +0530, Kamlesh Gurudasani wrote:
+>> Hi Eric,
+>> 
+>> We are more interested in offload than performance, with splice system
+>> call and DMA mode in driver(will be implemented after this series gets
+>> merged), good amount of cpu cycles will be saved.
+>
+> So it's for power usage, then?  Or freeing up CPU for other tasks?
+It is for freeing CPU for other tasks
 
-This sound like a bad place to start to me as we are enabling something
-that is probably 'wrong' in the long term as opposed to just not enabling it
-until we have appropriate support.
-I'd argue better to just reject any extents with different labels for now.
+>
+>> There is one more mode(auto mode) in mcrc64 which helps to verify crc64
+>> values against pre calculated crc64, saving the efforts of comparing in
+>> userspace.
+>
+> Is there any path forward to actually support this?
+>
+>> 
+>> Current generic implementation of crc64-iso(part of this series)
+>> gives 173 Mb/s of speed as opposed to mcrc64 which gives speed of 812
+>> Mb/s when tested with tcrypt.
+>
+> This doesn't answer my question, which to reiterate was:
+>
+>     How does performance compare to a properly optimized software CRC
+>     implementation on your platform, i.e. an implementation using carryless
+>     multiplication instructions (e.g. ARMv8 CE) if available on your platform,
+>     otherwise an implementation using the slice-by-8 or slice-by-16 method?
+>
+> The implementation you tested was slice-by-1.  Compared to that, it's common for
+> slice-by-8 to speed up CRCs by about 4 times and for folding with carryless
+> multiplication to speed up CRCs by 10-30 times, sometimes limited only by memory
+> bandwidth.  I don't know what specific results you would get on your specific
+> CPU and for this specific CRC, and you could certainly see something different
+> if you e.g. have some low-end embedded CPU.  But those are the typical results
+> I've seen for other CRCs on different CPUs.  So, a software implementation may
+> be more attractive than you realize.  It could very well be the case that a
+> PMULL based CRC implementation actually ends up with less CPU load than your
+> "hardware offload", when taking into syscall, algif_hash, and driver overhead...
+>
+> - Eric
+Hi Eric, thanks for your detailed and valuable inputs.
 
-As this is an RFC meh ;)
+As per your suggestion, we did some profiling. 
 
-Whilst this looks fine to me, I'm rather out of my depth wrt to the DAX
-side of things so take that with a pinch of salt.
+Use case is to calculate crc32/crc64 for file input from user space.
 
-Jonathan
+Instead of directly implementing PMULL based CRC64, we made first comparison between 
+Case 1.
+CRC32 (splice() + kernel space SW driver) 
+https://gist.github.com/ti-kamlesh/5be75dbde292e122135ddf795fad9f21
 
+Case 2.
+CRC32(mmap() + userspace armv8 crc32 instruction implementation)
+(tried read() as well to get contents of file, but that lost to mmap() so not mentioning number here)
+https://gist.github.com/ti-kamlesh/002df094dd522422c6cb62069e15c40d
 
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  drivers/dax/bus.c         | 157 +++++++++++++++++++++++++++++++++++++++-------
->  drivers/dax/cxl.c         |  44 +++++++++++++
->  drivers/dax/dax-private.h |   5 ++
->  3 files changed, 182 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index ea7ae82b4687..a9ea6a706702 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-
-...
-
-
-> @@ -1183,7 +1290,7 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
->  	to_alloc = range_len(&r);
->  	if (alloc_is_aligned(dev_dax, to_alloc))
->  		rc = alloc_dev_dax_range(&dax_region->res, dev_dax, r.start,
-> -					 to_alloc);
-> +					 to_alloc, NULL);
->  	device_unlock(dev);
->  	device_unlock(dax_region->dev);
->  
-> @@ -1400,8 +1507,10 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
->  	device_initialize(dev);
->  	dev_set_name(dev, "dax%d.%d", dax_region->id, dev_dax->id);
->  
-> +	dev_WARN_ONCE(parent, is_dynamic(dax_region) && data->size,
-> +		      "Dynamic DAX devices are created initially with 0 size");
-
-dev_info() maybe more appropriate?   Is this common enough that we need the
-_ONCE?
+Case 3.
+CRC64 (splice() + MCRC64 HW)
+https://gist.github.com/ti-kamlesh/98b1fc36c9a7c3defcc2dced4136b8a0
 
 
->  	rc = alloc_dev_dax_range(&dax_region->res, dev_dax, dax_region->res.start,
-> -				 data->size);
-> +				 data->size, NULL);
->  	if (rc)
->  		goto err_range;
->  
-> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
-> index 44cbd28668f1..6394a3531e25 100644
-> --- a/drivers/dax/cxl.c
-> +++ b/drivers/dax/cxl.c
-...
+Overall, overhead of userspace + af_alg + driver in (Case 1) and
+( Case 3) is ~0.025s, which is constant for any file size.
+This is calculated using real time to calculate crc  -
+driver time (time spend inside init() + update() +final()) = overhead ~0.025s    
 
 
->  static int cxl_dax_region_create_extent(struct dax_region *dax_region,
->  					struct cxl_dr_extent *cxl_dr_ext)
->  {
-> @@ -45,11 +80,20 @@ static int cxl_dax_region_create_extent(struct dax_region *dax_region,
->  	/* device manages the dr_extent on success */
->  	kref_init(&dr_extent->ref);
->  
-> +	rc = dax_region_add_resource(dax_region, dr_extent,
-> +				     cxl_dr_ext->hpa_offset,
-> +				     cxl_dr_ext->hpa_length);
-> +	if (rc) {
-> +		kfree(dr_extent);
 
-goto for these and single unwinding block?
++-------------------+-----------------------------+-----------------------+------------------------+------------------------+
+|                   |                             |                       |                        |                        |
+| File size         | 120mb(ideal size for us)    | 20mb                  | 15mb                   | 5mb                    |
++===================+=============================+=======================+========================+========================+
+|                   |                             |                       |                        |                        |
+| CRC32 (Case 1)    | Driver time 0.155s          | Driver time 0.0325s   | Driver time 0.019s     | Driver time 0.0062s    |
+|                   |    real time 0.18s          |    real time 0.06s    |    real time 0.04s     |    real time 0.03s     |
+|                   |    overhead 0.025s          |    overhead 0.025s    |    overhead 0.021s     |    overhead ~0.023s    |
++-------------------+-----------------------------+-----------------------+------------------------+------------------------+
+|                   |                             |                       |                        |                        |
+| CRC32 (Case 2)    | Real time 0.30s             | Real time 0.05s       | Real time 0.04s        | Real time 0.02s        |
++-------------------+-----------------------------+-----------------------+------------------------+------------------------+
+|                   |                             |                       |                        |                        |
+| CRC64 (Case 3)    | Driver time   0.385s        | Driver time 0.0665s   | Driver time 0.0515s    | Driver time 0.019s     |
+|                   |    real time 0.41s          |    real time 0.09s    |    real time 0.08s     |    real time 0.04s     |
+|                   |    overhead 0.025s          |    overhead 0.025s    |    overhead ~0.025s    |    overhead ~0.021s    |
++-------------------+-----------------------------+-----------------------+------------------------+------------------------+
 
-> +		return rc;
-> +	}
-> +
->  	rc = dax_region_ext_create_dev(dax_region, dr_extent,
->  				       cxl_dr_ext->hpa_offset,
->  				       cxl_dr_ext->hpa_length,
->  				       cxl_dr_ext->label);
->  	if (rc) {
-> +		dax_region_rm_resource(dr_extent);
->  		kfree(dr_extent);
-as above.
+Here, if we consider similar numbers for crc64 PMULL implementation as
+crc32 (case 2) , we save good number of cpu cycles using mcrc64
+in case of files bigger than 5-10mb as most of the time is being spent in HW offload.
 
->  		return rc;
->  	}
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index 250babd6e470..ad73b53aa802 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -44,12 +44,16 @@ struct dax_region {
->  /*
->   * struct dax_region_extent - extent data defined by the low level region
->   * driver.
-> + * @region: cache of dax_region
-> + * @res: cache of resource tree for this extent
->   * @private_data: lower level region driver data
-
-Not sure 'lower level' is well defined here. Is "region driver data"
-not enough?
-
->   * @ref: track number of dax devices which are using this extent
->   * @get: get reference to low level data
->   * @put: put reference to low level data
->   */
->  struct dax_region_extent {
-> +	struct dax_region *region;
-> +	struct resource *res;
->  	void *private_data;
->  	struct kref ref;
->  	void (*get)(struct dax_region_extent *dr_extent);
-> @@ -131,6 +135,7 @@ struct dev_dax {
->  		unsigned long pgoff;
->  		struct range range;
->  		struct dax_mapping *mapping;
-> +		struct dax_region_extent *dr_extent;
-
-Huh. Seems that ranges is in the kernel doc but not the
-bits that make that up.  Maybe good to add the docs
-whilst here?
-
->  	} *ranges;
->  };
->  
-> 
-
+Regards,
+Kamlesh
