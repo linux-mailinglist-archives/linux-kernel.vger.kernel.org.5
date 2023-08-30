@@ -2,233 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B15478E188
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD17378E0C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242029AbjH3Vkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
+        id S239378AbjH3Uek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242012AbjH3Vkg (ORCPT
+        with ESMTP id S237231AbjH3Uej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:40:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7015D194
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693431480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iBV0HnyI31Hv2AWMsxadgPSfaYJpOZDq2RNuu2t2Z+8=;
-        b=Sii7o0qcuwUGQJSz+ZnYZl0x3txDnt5Oqr7pMzZ5BVaXmxyEsk93PAzwjWxIS+rwMyd0J4
-        a/H+EFgPtWiSYxhGljWO0CzApJJHtyD7dmTFq0yPSg4Iv8RkfCyr72fIpma54/nD6L03/y
-        XnPa2z1QHRo4rV1tSJKt8hrVwIercPA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-126-1yG1VppTPqmInWynvsc84Q-1; Wed, 30 Aug 2023 15:15:31 -0400
-X-MC-Unique: 1yG1VppTPqmInWynvsc84Q-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a1c4506e1eso98158266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:15:31 -0700 (PDT)
+        Wed, 30 Aug 2023 16:34:39 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7B15B81
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:34:09 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34df9c2748eso26665ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693427578; x=1694032378; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=neliSw7qoh+YUhiPFUyH0EEqS3rYdeTkzSKzjqUjw8A=;
+        b=Z65u+YRz1l6pJzF1+RoWCPc18jdeArFYsEpVczIgPMjManxRd5GvjJ9Nv6HRhJSAm1
+         1CA/3bB4lk+NOmjjBfJM8jfrMzDFoiB29/QRMAd3URa8TqmQIpRM8XsNj8GFjBjHGjUR
+         G6NmxZy2vc08/b5ctfpirZBnj4GyAar7F9vxO8MZK4SaoXIys610Eod+/GReq51TFiYq
+         /CdUNtSD5lS1hgVupLT03fPj17lVr1GAFyMLAZlk80REqw4auj0d65Q08UPO8dMbsTik
+         7+I1Z+bPuF/X3yIkM9j8C8S+Sd37GCHHl3j3tAOfOrZcAd1Tcq15AR2EnLIofOsGOkqD
+         sOjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693422930; x=1694027730;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iBV0HnyI31Hv2AWMsxadgPSfaYJpOZDq2RNuu2t2Z+8=;
-        b=VYDmf4Km95ovU4P3r8qTI7t99c8ievBvN79liFWQ20VX2Hi9Y0h/6l3veKzp1JriNz
-         4lnabUBNYXrdpvnobEo9/jEerFl8A9w03QmC2Mhine7d76umcuRM6ysSgMByyNsv1CO8
-         CjSOri4VL7tjRpU/jfOt+novcYPhbrUDJiwFNpWDoiwzoAtzCOvE3bECcMuiu6gKbHTl
-         ZY+u32bB5mMt75Vn/RBTZbjiKmjua09bgT6RUU2RmyTQPcEZbntYSgccffeojd/HXRLT
-         JtRx7EFZinp7/0qxsaJZ9Er/3yr2kXK14fw1WwNWvUt90EmfLmgaPe2cRbyclaYC76f7
-         njiA==
-X-Gm-Message-State: AOJu0YzfM/I4Zp4jeeA3c0dEqy2bjsB/B9NDZoREIBqYORiebw91A5Ch
-        T2os4eJzN0uRLGplOahG2lr3e88rYihGAWTYnDspeWMhcDXl5iKz/2TlS1tmLPIskDFl1uEXXdV
-        qtNRBrrqr5siE/3RY8WaJRYkU
-X-Received: by 2002:a05:6402:51c8:b0:523:37cf:6f37 with SMTP id r8-20020a05640251c800b0052337cf6f37mr2290527edd.4.1693422930284;
-        Wed, 30 Aug 2023 12:15:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHjUvAuvkykbuXvqA8bQi1z8q8Gj4+iVBJgsW7l3Dh0c5JlqxFhMaKRno+cvmE8+cDwXXn9mg==
-X-Received: by 2002:a05:6402:51c8:b0:523:37cf:6f37 with SMTP id r8-20020a05640251c800b0052337cf6f37mr2290516edd.4.1693422929985;
-        Wed, 30 Aug 2023 12:15:29 -0700 (PDT)
-Received: from ?IPv6:2001:9e8:32e4:1500:aa40:e745:b6c9:7081? ([2001:9e8:32e4:1500:aa40:e745:b6c9:7081])
-        by smtp.gmail.com with ESMTPSA id i9-20020aa7c709000000b0052a198d8a4dsm7116533edq.52.2023.08.30.12.15.28
+        d=1e100.net; s=20221208; t=1693427578; x=1694032378;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=neliSw7qoh+YUhiPFUyH0EEqS3rYdeTkzSKzjqUjw8A=;
+        b=XpZeAVh535gskDtAvRgQOW0aaMufhNPrjMITytt7VKC/OS3sN7aRWrpa4YHilrXe77
+         UgnUif73y6COZwp6dvnYZwVQfVquMmbsTUx1qUz4J5rQvFXQ7lKgC0yc1cnCYHg8TWZy
+         vFp4Gq/eY1L9MK1Q1qfqTDwqkT3SScIJdJTBhqqravPVjhTpaJ5D5m5fPxcKWN4ZcUj8
+         3ckatnQ4lPkheRlATlbE8zijtMEoqZod6gexQ/2QkNyDEQFl+bHHr+08bASgfPjrdpGq
+         F/rW6ahnGSpPnIgo9B4diZjF11nhprz5y4tuONuY+FjrQCfD8D32M+lOldAWAamCMLzf
+         Lr5g==
+X-Gm-Message-State: AOJu0Yy/BrkpOFOjkqI98i0Yp+VO7D+YKNsbQJpXY8D75edG2stKJhag
+        NYNzXEmdzlS8LgUxMqKgj2oC40nXp+95Zbau04DVWA==
+X-Google-Smtp-Source: AGHT+IEtPBJyW+fxDSwfhZLVKMbrw+fx+hC8DUP+9B7LnqUilulxgXIOq0VIs7hNfhDbzxT0E54wrg==
+X-Received: by 2002:a17:902:e551:b0:1c1:efe5:cce5 with SMTP id n17-20020a170902e55100b001c1efe5cce5mr28280plf.3.1693422989246;
+        Wed, 30 Aug 2023 12:16:29 -0700 (PDT)
+Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
+        by smtp.gmail.com with ESMTPSA id f4-20020aa782c4000000b0068a0922b1f0sm10343368pfn.137.2023.08.30.12.16.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 12:15:29 -0700 (PDT)
-Message-ID: <a4ba0493965ad32fcf95cd6e2439096668a9ed46.camel@redhat.com>
-Subject: Re: [PATCH 1/5] string.h: add array-wrappers for (v)memdup_user()
-From:   pstanner@redhat.com
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Christian Brauner <brauner@kernel.org>,
-        David Disseldorp <ddiss@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Siddh Raman Pant <code@siddh.me>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
-        David Airlie <airlied@redhat.com>
-Date:   Wed, 30 Aug 2023 21:15:28 +0200
-In-Reply-To: <CAHp75VdS=kSWnz8FzHcdrZPaeZKsQNbzjE9mNN7BDvZA_nQpaA@mail.gmail.com>
-References: <cover.1693386602.git.pstanner@redhat.com>
-         <46f667e154393a930a97d2218d8e90286d93a062.1693386602.git.pstanner@redhat.com>
-         <CAHp75VfkzV-=XuEZwipYzfHNu4EXuwzbu6vfEKh1Uueseo2=wA@mail.gmail.com>
-         <721a70c347d82931d12e5b75b19d132f82ee5ed2.camel@redhat.com>
-         <CAHp75VdS=kSWnz8FzHcdrZPaeZKsQNbzjE9mNN7BDvZA_nQpaA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 30 Aug 2023 12:16:28 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Hao Jia <jiahao.os@bytedance.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Igor Raits <igor.raits@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Stable <stable@vger.kernel.org>
+Subject: Re: Fwd: WARNING: CPU: 13 PID: 3837105 at kernel/sched/sched.h:1561
+ __cfsb_csd_unthrottle+0x149/0x160
+References: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
+Date:   Wed, 30 Aug 2023 12:16:24 -0700
+In-Reply-To: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com> (Bagas Sanjaya's
+        message of "Wed, 30 Aug 2023 07:37:49 +0700")
+Message-ID: <xm26cyz4ibnb.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-30 at 17:29 +0300, Andy Shevchenko wrote:
-> On Wed, Aug 30, 2023 at 5:19=E2=80=AFPM <pstanner@redhat.com> wrote:
-> > On Wed, 2023-08-30 at 17:11 +0300, Andy Shevchenko wrote:
-> > > On Wed, Aug 30, 2023 at 4:46=E2=80=AFPM Philipp Stanner
-> > > <pstanner@redhat.com>
-> > > wrote:
->=20
-> > > > --- a/include/linux/string.h
-> > > > +++ b/include/linux/string.h
-> > >=20
-> > > I'm wondering if this has no side-effects as string.h/string.c
-> > > IIRC
-> > > is
-> > > used also for early stages where some of the APIs are not
-> > > available.
-> > >=20
-> > > > @@ -6,6 +6,8 @@
-> > > > =C2=A0#include <linux/types.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-/* for size_t */
-> > > > =C2=A0#include <linux/stddef.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* fo=
-r NULL */
-> > > > =C2=A0#include <linux/errno.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-/* for E2BIG */
-> > > > +#include <linux/overflow.h>=C2=A0=C2=A0=C2=A0 /* for check_mul_ove=
-rflow() */
-> > > > +#include <linux/err.h>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 /* for ERR_PTR() */
-> > >=20
-> > > Can we preserve order (to some extent)?
-> >=20
-> > Sure. I just put it there so the comments build a congruent block.
-> > Which order would you prefer?
->=20
-> Alphabetical.
->=20
-> compiler.h
-> err.h
-> overflow.h
-> ...the rest that is a bit unordered...
->=20
-> > > > =C2=A0#include <linux/stdarg.h>
-> > > > =C2=A0#include <uapi/linux/string.h>
->=20
-> ...
+Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
-I mean I could include my own in a sorted manner =E2=80=93 but the existing
-ones are not sorted:
+> Hi,
+>
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+>
+>> Hello, we recently got a few kernel crashes with following backtrace. Happened on 6.4.12 (and 6.4.11 I think) but did not happen (I think) on 6.4.4.
+>> 
+>> [293790.928007] ------------[ cut here ]------------
+>> [293790.929905] rq->clock_update_flags & RQCF_ACT_SKIP
+>> [293790.929919] WARNING: CPU: 13 PID: 3837105 at kernel/sched/sched.h:1561 __cfsb_csd_unthrottle+0x149/0x160
+>> [293790.933694] Modules linked in: [...]
+>> [293790.946262] Unloaded tainted modules: edac_mce_amd(E):1
+>> [293790.956625] CPU: 13 PID: 3837105 Comm: QueryWorker-30f Tainted: G        W   E      6.4.12-1.gdc.el9.x86_64 #1
+>> [293790.957963] Hardware name: RDO OpenStack Compute/RHEL, BIOS edk2-20230301gitf80f052277c8-2.el9 03/01/2023
+>> [293790.959681] RIP: 0010:__cfsb_csd_unthrottle+0x149/0x160
+>
+> See Bugzilla for the full thread.
+>
+> Anyway, I'm adding this regression to regzbot:
+>
+> #regzbot introduced: ebb83d84e49b54 https://bugzilla.kernel.org/show_bug.cgi?id=217843
+>
+> Thanks.
+>
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217843
 
-/* SPDX-License-Identifier: GPL-2.0 */
-#ifndef _LINUX_STRING_H_
-#define _LINUX_STRING_H_
-
-#include <linux/compiler.h>	/* for inline */
-#include <linux/types.h>	/* for size_t */
-#include <linux/stddef.h>	/* for NULL */
-#include <linux/errno.h>	/* for E2BIG */
-#include <linux/stdarg.h>
-#include <uapi/linux/string.h>
-
-extern char *strndup_user(const char __user *, long);
-
-We could sort them all, but I'd prefer to do that in a separate patch
-so that this commit does not make the impression of doing anything else
-than including the two new headers
-
-Such a separate patch could also unify the docstring style, see below
-
->=20
-> > > > +/**
-> > > > + * memdup_array_user - duplicate array from user space
-> > >=20
-> > > > + *
-> > >=20
-> > > Do we need this blank line?
-> >=20
-> > I more or less directly copied the docstring format from the
-> > original
-> > functions (v)memdup_user() in mm/util.c
-> > I guess this is common style?
->=20
-> I think it's not. But you may grep kernel source tree and tell which
-> one occurs more often with or without this (unneeded) blank line.
-
-
-It seems to be very much mixed. string.h itself is mixed.
-When you look at the bottom of string.h, you'll find functions such as
-kbasename() that have the extra line.
-
-That's not really a super decisive point for me, though. We can remove
-the line I guess
-
-
-P.
-
-
->=20
-> > > > + * @src: source address in user space
-> > > > + * @n: number of array members to copy
-> > > > + * @size: size of one array member
-> > > > + *
-> > > > + * Return: an ERR_PTR() on failure.=C2=A0 Result is physically
-> > > > + * contiguous, to be freed by kfree().
-> > > > + */
->=20
-> ...
->=20
-> > > > +/**
-> > > > + * vmemdup_array_user - duplicate array from user space
-> > >=20
-> > > > + *
-> > >=20
-> > > Redundant?
-> >=20
-> > No, there are two functions:
-> > =C2=A0* memdup_array_user()
-> > =C2=A0* vmemdup_array_user()
-> >=20
-> > On the deeper layers they utilize kmalloc() or kvmalloc(),
-> > respectively.
->=20
-> I guess you misunderstood my comment. I was talking about kernel doc
-> (as in the previous function).
->=20
-> > > > + * @src: source address in user space
-> > > > + * @n: number of array members to copy
-> > > > + * @size: size of one array member
-> > > > + *
-> > > > + * Return: an ERR_PTR() on failure.=C2=A0 Result may be not
-> > > > + * physically contiguous.=C2=A0 Use kvfree() to free.
-> > > > + */
->=20
->=20
-
+The code in question is literally "rq_lock; update_rq_clock;
+rq_clock_start_loop_update (the warning)", which suggests to me that
+RQCF_ACT_SKIP is somehow leaking from somewhere else?
