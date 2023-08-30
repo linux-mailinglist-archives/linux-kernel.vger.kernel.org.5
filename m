@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 160D478DD97
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B79378DE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245456AbjH3SwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
+        id S238337AbjH3TAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242807AbjH3Jph (ORCPT
+        with ESMTP id S242821AbjH3Jst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:45:37 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC601A6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:45:31 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9936b3d0286so727199366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693388730; x=1693993530; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=suKY6OufGdFjOXeITy2SI/gqtW5sC+Q15RnB0RhvKmQ=;
-        b=zgg+hP8+5RbKE+9C/OljN/XYSwKfsRkAj6TBuk/ypTZFbdtSDWwnYCXbVrOyK6gTRI
-         gTVWQpC3EXgIZ9XfUTAP/HdePubMG3xS+zPhefaJ1y+g+hwxRbP/ckaHpT0OUI1Tdm2S
-         kFcP7rwkDazuoPrjLilxBk2W5q5gVbxc7Wmn8uao7rOBzwqzPihGJR+madM2DYl3qZGm
-         Wn2QcygdXb8cfPaTFFA4wPdmTdMk7zJomeZVibhPe2lP7LRDyPZP05uUl8VJhwgKyneK
-         /Zx86VIpR+VIqsPXrWNaFtjTf9f4XwaOcYIqoFs6YWLQwSkfTSzRz6BqjVvInYgg1pPl
-         4wEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693388730; x=1693993530;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=suKY6OufGdFjOXeITy2SI/gqtW5sC+Q15RnB0RhvKmQ=;
-        b=JeA60827d8+eSNDn7OmPIREjCIIVT8qam1VznljWjwYuSShOi/EDdMewWCD+vhagvi
-         LVX1PiSGB8uSeCOCGuDjdcX9YspIEXNweovfnVQv9DsoWcyeobtPO2WorJduZQU5+6Lq
-         h9Ob4js/JnIa5z5MtEi4TRDqE279cJ7qtArsloILGXVGVnDzq5zKjiIGdfsfZtchwS0K
-         jDPkmP6Hxd0SP0q7G1eikOEly9WZ5m+7cv9pLypzIS53xjpkLvdk5DkdpI8xgvprVzau
-         3vBvRcuQKICRSBXjfsgIosDPEOZF8wr5F9Suqu9s61HQB9WetaRfiqT6xFhqtYs7/iWo
-         q50Q==
-X-Gm-Message-State: AOJu0Ywgdh8i/X8S/AtSKrDetzmiTVl31EmzTxr/Dmtm+942lCMh8+Lg
-        8Sf8ZVkvfAbwdyxVHLtvjWFyUQ==
-X-Google-Smtp-Source: AGHT+IEJc1E1Orxis2sVRcoNfH2DjYDXEvgRu8kKboCKIIWJBA0TxFoly1iyx8MPZDRkDacSyA528g==
-X-Received: by 2002:a17:906:3d22:b0:9a1:bb8f:17de with SMTP id l2-20020a1709063d2200b009a1bb8f17demr1526973ejf.35.1693388730278;
-        Wed, 30 Aug 2023 02:45:30 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id w24-20020a17090649d800b009930308425csm6973974ejv.31.2023.08.30.02.45.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 02:45:29 -0700 (PDT)
-Message-ID: <1d531692-5455-fbfd-0775-50856bf0fbc7@linaro.org>
-Date:   Wed, 30 Aug 2023 11:45:28 +0200
+        Wed, 30 Aug 2023 05:48:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7351B3;
+        Wed, 30 Aug 2023 02:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693388926; x=1724924926;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=orlWb/RTxKwxmmASqoBVNPU97JJXkwjIwCGq+9b7IOI=;
+  b=gdtnRX8Qq4wUugYquYr/o/zeVJtMak6Ssb4r+ruzHn/jGz0UW0vxww1h
+   gpFAkG4SCYVMBKOgqyoQvb19NaHx1ToZij6owjF9fGad7sHD3dNz3Vw9B
+   pUd53TN6htMaKrjNRW6wBidt6DutVVToJdQHEK4zCCUZPKwm19IM2+67W
+   AhMXSK1C0CvgeuxvSpC6a4Cwwx/g95OILPGIOanu9t6FqdR1FNKdpNo9i
+   3uAp5xHXF3lPy+tTOEwLdITOCLztICcQhdUApWZ+Z10csOQyh2miWSc0m
+   AJp5dmuRZeVd2zmw4bjkwwStKY8R0LEIUnjpGkcgsFuLGl98Oao5uv8ae
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="461970656"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="461970656"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 02:48:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="732552815"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="732552815"
+Received: from unknown (HELO localhost.localdomain) ([10.237.112.144])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 02:48:39 -0700
+Date:   Wed, 30 Aug 2023 11:48:31 +0200
+From:   Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
+        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Russell King <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: phy: Provide Module 4 KSZ9477 errata
+ (DS80000754C)
+Message-ID: <ZO8QbyKphyTmuv/g@localhost.localdomain>
+References: <20230830092119.458330-1-lukma@denx.de>
+ <20230830092119.458330-2-lukma@denx.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4 2/2] dt-bindings: arm: aspeed: add Meta Minerva board
-Content-Language: en-US
-To:     peteryin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
-        daniel-hsu@quantatw.com
-References: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
- <20230830090212.3880559-3-peteryin.openbmc@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230830090212.3880559-3-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830092119.458330-2-lukma@denx.de>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 11:02, peteryin wrote:
-> Document the new compatibles used on Meta Minerva.
+On Wed, Aug 30, 2023 at 11:21:19AM +0200, Lukasz Majewski wrote:
+> The KSZ9477 errata points out (in 'Module 4') the link up/down problem
+> when EEE (Energy Efficient Ethernet) is enabled in the device to which
+> the KSZ9477 tries to auto negotiate.
 > 
-> Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
+> The suggested workaround is to clear advertisement of EEE for PHYs in
+> this chip driver.
+> 
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+Hi,
+
+As the net is target you should add fixes tag which the commit that your
+changes is fixing (workarounding :) )
+
 > ---
->  Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/net/phy/micrel.c | 31 ++++++++++++++++++++++++++++++-
+>  1 file changed, 30 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-> index 6b0a6683ccae..b681bbf960d1 100644
-> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-> @@ -80,6 +80,7 @@ properties:
->                - facebook,fuji-bmc
->                - facebook,greatlakes-bmc
->                - facebook,yosemite4-bmc
-> +              - facebook,minerva-bmc
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index 87b090ad2874..469dcd8a5711 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -1418,6 +1418,35 @@ static int ksz9131_get_features(struct phy_device *phydev)
+>  	return 0;
+>  }
+>  
+> +static int ksz9477_get_features(struct phy_device *phydev)
+> +{
+> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(zero) = { 0, };
+= { 0 };
 
-m is not after y. Keep things sorted, I already wrote this in your v2.
-
-Best regards,
-Krzysztof
-
+> +	int ret;
+> +
+> +	ret = genphy_read_abilities(phydev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* KSZ9477 Errata DS80000754C
+> +	 *
+> +	 * Module 4: Energy Efficient Ethernet (EEE) feature select must be
+> +	 * manually disabled
+> +	 *   The EEE feature is enabled by default, but it is not fully
+> +	 *   operational. It must be manually disabled through register
+> +	 *   controls. If not disabled, the PHY ports can auto-negotiate
+> +	 *   to enable EEE, and this feature can cause link drops when linked
+> +	 *   to another device supporting EEE.
+> +	 *
+> +	 *   Although, the KSZ9477 MMD register
+> +	 *   (MMD_DEVICE_ID_EEE_ADV.MMD_EEE_ADV) advertise that EEE is
+> +	 *   operational one needs to manualy clear them to follow the chip
+> +	 *   errata.
+> +	 */
+> +	linkmode_and(phydev->supported_eee, phydev->supported, zero);
+> +
+> +	return 0;
+> +}
+> +
+>  #define KSZ8873MLL_GLOBAL_CONTROL_4	0x06
+>  #define KSZ8873MLL_GLOBAL_CONTROL_4_DUPLEX	BIT(6)
+>  #define KSZ8873MLL_GLOBAL_CONTROL_4_SPEED	BIT(4)
+> @@ -4871,7 +4900,7 @@ static struct phy_driver ksphy_driver[] = {
+>  	.handle_interrupt = kszphy_handle_interrupt,
+>  	.suspend	= genphy_suspend,
+>  	.resume		= genphy_resume,
+> -	.get_features	= ksz9131_get_features,
+> +	.get_features	= ksz9477_get_features,
+>  } };
+>  
+>  module_phy_driver(ksphy_driver);
+> -- 
+> 2.20.1
+> 
