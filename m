@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F0678D359
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF45778D35E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239455AbjH3G0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 02:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        id S240188AbjH3G2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 02:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjH3G0K (ORCPT
+        with ESMTP id S240768AbjH3G1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:26:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275CD1BB;
-        Tue, 29 Aug 2023 23:26:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA32360E05;
-        Wed, 30 Aug 2023 06:26:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BABDC433C8;
-        Wed, 30 Aug 2023 06:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693376764;
-        bh=5CTRaQi87lWjlnEJg7LzQ49T5UnzTi0vTd1SjwA50cw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a6CVy3vAwAqiqNjRcl44SAEIcqzREnVPXyBJHY2g9sZmbunT1GBDyATpX6TB1ZKeL
-         iftxn9XFvTMVnKLs9ChzY61M2kWqd8B0a0+KXc9+xgggCOtyAwbngSAuTAYFxOCgqn
-         k4ZF1DMAD8Ie6vlwkTONkSA8kswHZDt2kw89j/Oo=
-Date:   Wed, 30 Aug 2023 08:26:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Maximilian Heyne <mheyne@amazon.de>
-Cc:     stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Larabel <Michael@michaellarabel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] mm: allow a controlled amount of unfairness in the page
- lock
-Message-ID: <2023083048-eraser-imprison-5cbd@gregkh>
-References: <20230823061642.76949-1-mheyne@amazon.de>
- <2023082731-crunching-second-ad89@gregkh>
- <20230828101420.GA54787@dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com>
+        Wed, 30 Aug 2023 02:27:52 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44362FF
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:27:39 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbDqV2spWz4f3pJZ
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:27:34 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgD3zqFW4e5ku2KyBw--.65512S2;
+        Wed, 30 Aug 2023 14:27:35 +0800 (CST)
+Subject: Re: [PATCH v2 1/3] mm/page_alloc: correct start page when guard page
+ debug is enabled
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, willy@infradead.org,
+        naoya.horiguchi@nec.com, osalvador@suse.de
+References: <20230826154745.4019371-1-shikemeng@huaweicloud.com>
+ <20230826154745.4019371-2-shikemeng@huaweicloud.com>
+ <20230828152113.GA886794@ik1-406-35019.vs.sakura.ne.jp>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <b42625d1-4c50-5c61-ef92-5008383f8682@huaweicloud.com>
+Date:   Wed, 30 Aug 2023 14:27:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828101420.GA54787@dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230828152113.GA886794@ik1-406-35019.vs.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgD3zqFW4e5ku2KyBw--.65512S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw48XFW8XFW7Gr45ur18AFb_yoWrAFy8pa
+        4xC3WYyw4kt3y3Can7Za9rCr1ftws09FWUCryfZw1rXw13tryak3s7Kr17uF18ur15GFW8
+        XF4qvr93Za4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,90 +66,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 10:14:20AM +0000, Maximilian Heyne wrote:
-> On Sun, Aug 27, 2023 at 10:54:03AM +0200, Greg KH wrote:
-> > On Wed, Aug 23, 2023 at 06:16:42AM +0000, Maximilian Heyne wrote:
-> > > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > >
-> > > [ upstream commit 5ef64cc8987a9211d3f3667331ba3411a94ddc79 ]
-> > >
-> > > Commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic") made
-> > > the page locking entirely fair, in that if a waiter came in while the
-> > > lock was held, the lock would be transferred to the lockers strictly in
-> > > order.
-> > >
-> > > That was intended to finally get rid of the long-reported watchdog
-> > > failures that involved the page lock under extreme load, where a process
-> > > could end up waiting essentially forever, as other page lockers stole
-> > > the lock from under it.
-> > >
-> > > It also improved some benchmarks, but it ended up causing huge
-> > > performance regressions on others, simply because fair lock behavior
-> > > doesn't end up giving out the lock as aggressively, causing better
-> > > worst-case latency, but potentially much worse average latencies and
-> > > throughput.
-> > >
-> > > Instead of reverting that change entirely, this introduces a controlled
-> > > amount of unfairness, with a sysctl knob to tune it if somebody needs
-> > > to.  But the default value should hopefully be good for any normal load,
-> > > allowing a few rounds of lock stealing, but enforcing the strict
-> > > ordering before the lock has been stolen too many times.
-> > >
-> > > There is also a hint from Matthieu Baerts that the fair page coloring
-> > > may end up exposing an ABBA deadlock that is hidden by the usual
-> > > optimistic lock stealing, and while the unfairness doesn't fix the
-> > > fundamental issue (and I'm still looking at that), it avoids it in
-> > > practice.
-> > >
-> > > The amount of unfairness can be modified by writing a new value to the
-> > > 'sysctl_page_lock_unfairness' variable (default value of 5, exposed
-> > > through /proc/sys/vm/page_lock_unfairness), but that is hopefully
-> > > something we'd use mainly for debugging rather than being necessary for
-> > > any deep system tuning.
-> > >
-> > > This whole issue has exposed just how critical the page lock can be, and
-> > > how contended it gets under certain locks.  And the main contention
-> > > doesn't really seem to be anything related to IO (which was the origin
-> > > of this lock), but for things like just verifying that the page file
-> > > mapping is stable while faulting in the page into a page table.
-> > >
-> > > Link: https://lore.kernel.org/linux-fsdevel/ed8442fd-6f54-dd84-cd4a-941e8b7ee603@MichaelLarabel.com/
-> > > Link: https://www.phoronix.com/scan.php?page=article&item=linux-50-59&num=1
-> > > Link: https://lore.kernel.org/linux-fsdevel/c560a38d-8313-51fb-b1ec-e904bd8836bc@tessares.net/
-> > > Reported-and-tested-by: Michael Larabel <Michael@michaellarabel.com>
-> > > Tested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> > > Cc: Dave Chinner <david@fromorbit.com>
-> > > Cc: Matthew Wilcox <willy@infradead.org>
-> > > Cc: Chris Mason <clm@fb.com>
-> > > Cc: Jan Kara <jack@suse.cz>
-> > > Cc: Amir Goldstein <amir73il@gmail.com>
-> > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > CC: <stable@vger.kernel.org> # 5.4
-> > > [ mheyne: fixed contextual conflict in mm/filemap.c due to missing
-> > >   commit c7510ab2cf5c ("mm: abstract out wake_page_match() from
-> > >   wake_page_function()"). Added WQ_FLAG_CUSTOM due to missing commit
-> > >   7f26482a872c ("locking/percpu-rwsem: Remove the embedded rwsem") ]
-> > > Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-> > > ---
-> > >  include/linux/mm.h   |   2 +
-> > >  include/linux/wait.h |   2 +
-> > >  kernel/sysctl.c      |   8 +++
-> > >  mm/filemap.c         | 160 ++++++++++++++++++++++++++++++++++---------
-> > >  4 files changed, 141 insertions(+), 31 deletions(-)
-> > 
-> > This was also backported here:
-> >         https://lore.kernel.org/r/20230821222547.483583-1-saeed.mirzamohammadi@oracle.com
-> > before yours.
-> > 
-> > I took that one, can you verify that it is identical to yours and works
-> > properly as well?
-> 
-> Yes it's identical and fixes the performance regression seen. Therefore,
-> 
->   Tested-by: Maximilian Heyne <mheyne@amazon.de>
-> 
-> for the other patch.
 
-Thanks, I've added this to the patch now.
 
-greg k-h
+on 8/28/2023 11:21 PM, Naoya Horiguchi wrote:
+> On Sat, Aug 26, 2023 at 11:47:43PM +0800, Kemeng Shi wrote:
+>> When guard page debug is enabled and set_page_guard returns success, we
+>> miss to forward page to point to start of next split range and we will do
+>> split unexpectedly in page range without target page. Move start page
+>> update before set_page_guard to fix this.
+>>
+>> As we split to wrong target page, then splited pages are not able to merge
+>> back to original order when target page is put back and splited pages
+>> except target page is not usable. To be specific:
+>>
+>> Consider target page is the third page in buddy page with order 2.
+>> | buddy-2 | Page | Target | Page |
+>>
+>> After break down to target page, we will only set first page to Guard
+>> because of bug.
+>> | Guard   | Page | Target | Page |
+>>
+>> When we try put_page_back_buddy with target page, the buddy page of target
+>> if neither guard nor buddy, Then it's not able to construct original page
+>> with order 2
+>> | Guard | Page | buddy-0 | Page |
+>>
+>> All pages except target page is not in free list and is not usable.
+>>
+>> Fixes: 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> 
+> Thank you for finding the problem and writing patches.  I think the patch
+> fixes the reported problem, But I wonder that we really need guard page
+> mechanism in break_down_buddy_pages() which is only called from memory_failure.
+> As stated in Documentation/admin-guide/kernel-parameters.txt, this is a
+> debugging feature to detect memory corruption due to buggy kernel or drivers
+> code.  So if HW memory failrue seems to be out of the scope, and I feel that
+> we could simply remove it from break_down_buddy_pages().
+> 
+>         debug_guardpage_minorder=
+>                         [KNL] When CONFIG_DEBUG_PAGEALLOC is set, this
+>                         parameter allows control of the order of pages that will
+>                         be intentionally kept free (and hence protected) by the
+>                         buddy allocator. Bigger value increase the probability
+>                         of catching random memory corruption, but reduce the
+>                         amount of memory for normal system use. The maximum
+>                         possible value is MAX_ORDER/2.  Setting this parameter
+>                         to 1 or 2 should be enough to identify most random
+>                         memory corruption problems caused by bugs in kernel or
+>                         driver code when a CPU writes to (or reads from) a
+>                         random memory location. Note that there exists a class
+>                         of memory corruptions problems caused by buggy H/W or
+>                         F/W or by drivers badly programming DMA (basically when
+>                         memory is written at bus level and the CPU MMU is
+>                         bypassed) which are not detectable by
+>                         CONFIG_DEBUG_PAGEALLOC, hence this option will not help
+>                         tracking down these problems.
+> 
+> If you have any idea about how guard page mechanism helps memory_failrue,
+> could you share it?
+> 
+Hi Naoya, thanks for feedback. Commit c0a32fc5a2e47 ("mm: more intensive
+memory corruption debugging") menthioned we konw that with
+CONFIG_DEBUG_PAGEALLOC configured, the CPU will generate an exception on
+access (read,write) to an unallocated page, which permits us to catch code
+which corrupts memory; Guard page aims to keep more free/protected pages
+and to interlace free/protected and allocated pages to increase the
+probability of catching corruption. Keep guard page around failrue looks
+helpful to catch random access. Wish this can help.
+
+> Thanks,
+> Naoya Horiguchi
+> 
+>> ---
+>>  mm/page_alloc.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index fefc4074d9d0..88c5f5aea9b0 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -6505,6 +6505,7 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
+>>  			next_page = page;
+>>  			current_buddy = page + size;
+>>  		}
+>> +		page = next_page;
+>>  
+>>  		if (set_page_guard(zone, current_buddy, high, migratetype))
+>>  			continue;
+>> @@ -6512,7 +6513,6 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
+>>  		if (current_buddy != target) {
+>>  			add_to_free_list(current_buddy, zone, high, migratetype);
+>>  			set_buddy_order(current_buddy, high);
+>> -			page = next_page;
+>>  		}
+>>  	}
+>>  }
+>> -- 
+>> 2.30.0
+>>
+>>
+>>
+> 
+
