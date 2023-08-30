@@ -2,192 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0836178D2BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 06:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5E178D2BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 06:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241915AbjH3EZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 00:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
+        id S241981AbjH3E0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 00:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239282AbjH3EZZ (ORCPT
+        with ESMTP id S241941AbjH3E0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 00:25:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563891A3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 21:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693369477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kj1j2W7Rncwakl8+uaZCa8ACzieIXsTkub/0MwTanec=;
-        b=gq8AeV2W8TiDhQZBVZm1bQE71uiIDvVXV2qrWcyHI859CvyCrIhc6y9E4QjuwAKt2soNF4
-        23hsjeXZVL3gTCJ6Cj+P1d32EvD5KVK1i/2szovfrBQft/OhfHjs4qFvACxfsPW0qVVe12
-        o7Y6V/kuoDNtl6Ig3x3G6SfPSi3Qba4=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-335-7uK2zf7zNL6inuxhMC4zMg-1; Wed, 30 Aug 2023 00:24:34 -0400
-X-MC-Unique: 7uK2zf7zNL6inuxhMC4zMg-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c0a90de7a2so63714445ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 21:24:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693369473; x=1693974273;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kj1j2W7Rncwakl8+uaZCa8ACzieIXsTkub/0MwTanec=;
-        b=hI6G27LIvlbIbiBv1MwlgkUzHc9U1UY+70SEusJIM8jR3SE6YTJHLVpUzXxM51LsOd
-         wmIMHtjAbQPZjlbsmvsd2BdB8wuqMPtT/s/KxU5Ow3kKaZQK6pKIUClVH/SxlPv0sSVj
-         dgh0/71rut9g8phLwtG+atAf+Mu7OpFxRWh9SBP8vF6FHXKCGPfRHQ6seQDTib/Hjid4
-         TnpFgGiTNy728zUM0ZopdUZkddC7KQTqUeHOK92WJxiETNiNGQgt11s3nS7mt9zGJ0lB
-         lixx4++zBFC+YWa/TEgpYQB1BKm/0+2m1iEch7P6pv4oRp9/wP6n9fPBJRtzGTZrW3cI
-         DTSA==
-X-Gm-Message-State: AOJu0YwX6B+NrDU4H3rJjC7RTo8zxqMd0mfKk420z3YWZz0x79n5Gtvn
-        2/cWaEpM/uQ23ULThNMpjZqZrQXail9CRL3fSqfyvEVhKU0tyDGc2jFwf/0ohbdqJZEAVOkROtR
-        jE0mF791YCyoQglm9Z5xGgLrY
-X-Received: by 2002:a17:902:8f8e:b0:1bc:16cf:fc30 with SMTP id z14-20020a1709028f8e00b001bc16cffc30mr960181plo.63.1693369473711;
-        Tue, 29 Aug 2023 21:24:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG4oZ5RU+i1Ya/foOIIWYjMTJ1600KCLxPq/800allU07bEPXQNtyHlYba2jpFLQGMrX6HJ4A==
-X-Received: by 2002:a17:902:8f8e:b0:1bc:16cf:fc30 with SMTP id z14-20020a1709028f8e00b001bc16cffc30mr960173plo.63.1693369473421;
-        Tue, 29 Aug 2023 21:24:33 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id jw15-20020a170903278f00b001bc6536051bsm10130790plb.184.2023.08.29.21.24.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 21:24:32 -0700 (PDT)
-Message-ID: <55cb12bf-12e4-8da6-629c-5518f8abe85e@redhat.com>
-Date:   Wed, 30 Aug 2023 14:24:28 +1000
+        Wed, 30 Aug 2023 00:26:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8221A3;
+        Tue, 29 Aug 2023 21:26:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4EA9760B00;
+        Wed, 30 Aug 2023 04:26:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9CD3C433CB;
+        Wed, 30 Aug 2023 04:26:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693369570;
+        bh=AGWJXrk34QfKCluDOSZ+qIvzRL4oGvSVWcF+e6r8B1s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W76f79cbhYNV1HaLoPPw6ChQQGlxQMXa6Vp/C4KsueuwI7mUTXe0THLP3uYWWaRCN
+         0PVw+pLlTrHd6SfMUoJ5lx7WJ+VL4Gmq1h815u0eHe1oNnsz06oU1E25l5BKXnqvWx
+         BVKUvGLCZ8w7u9Ce+jKEoHC/Fw9DPhObOfnMlKs3RYSQR7QHe036dRSFMEXErUnSul
+         hO4jyRTrtMLlJcvmZJ02TPvYGh/hC9rh9AKpU5dBHBGFFDuMwaFO+j2LtVZhxZ/ZlE
+         w2tI57tvHEH04r9Ibc584u+JIIO4WcHA2fcVmwtc3/0fuXBqfEyv429/ZutNtL9B2f
+         3hnQj5L/L6FQA==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-9a1de3417acso104949066b.0;
+        Tue, 29 Aug 2023 21:26:10 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yzcmgw6rkJWs1OPy3S1XYpUc/thgkqqRu9/R4KC4Jrlf3ucuKca
+        fT6bGSOSYRDmnda7r5A7o/BgmiIdWGfqZf8nAD0=
+X-Google-Smtp-Source: AGHT+IENS5XKygzRXhsGNpGVrGYIDfiJDdTZarMiH5CvLSCIUBmBLXQNPKyN/6mMRxVY6PJNEKu/kFeu0CZnUzrVOzo=
+X-Received: by 2002:a17:906:7688:b0:9a5:a543:2744 with SMTP id
+ o8-20020a170906768800b009a5a5432744mr1210778ejm.33.1693369568864; Tue, 29 Aug
+ 2023 21:26:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] virtio_balloon: Fix endless deflation and inflation on
- arm64
-Content-Language: en-US
-From:   Gavin Shan <gshan@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     xuanzhuo@linux.alibaba.com, mst@redhat.com,
-        linux-kernel@vger.kernel.org, shan.gavin@gmail.com,
-        David Hildenbrand <david@redhat.com>, jasowang@redhat.com,
-        Zhenyu Zhang <zhenyzha@redhat.com>
-References: <20230829015421.920511-1-gshan@redhat.com>
-In-Reply-To: <20230829015421.920511-1-gshan@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop>
+ <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
+ <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop> <CAAhV-H5pfDG_tsRDL4dUYykaQ1ZwQYRDrQccpULBM5+kF4i2fA@mail.gmail.com>
+ <20230825232807.GA97898@google.com> <CAEXW_YSock304V471X_A7WrxCWtHJGx3APmSy0k7Lc0o69D9Hg@mail.gmail.com>
+ <CAAhV-H6PM_KZj4_h-SdJAaseMDK2nMqqJWL8fWHhL4vUA50bQg@mail.gmail.com>
+ <CAEXW_YS5dVVOQvO6tWwF7mrgtHiYgVKP_TAipzBNiaFqWDzdeQ@mail.gmail.com>
+ <2681134d-cc88-49a0-a1bc-4ec0816288f6@paulmck-laptop> <20230828133348.GA1553000@google.com>
+ <142b4bff-6a2e-4ea0-928c-3cfe9befa403@paulmck-laptop> <CAAhV-H4MrUm2xZdZyAALV-r+aKMRQ50v6me6hybpR1pRijirqw@mail.gmail.com>
+ <CAEXW_YT-z6s+4MnxTnwFk2-mPba65dbnZogdPDSr14LmOW-h-g@mail.gmail.com>
+ <CAAhV-H5tYV=ezPY_O7c=sd3DULB6BjoiYnw9nE2EzDFaBHcKPw@mail.gmail.com>
+ <CAEXW_YTfV1NVb3tOhunHZK_6oeUHxz_azv6uVq3k0O2UEAX5OQ@mail.gmail.com>
+ <CAAhV-H6oN69rV2OyGzUganRv4KbS7a3_gNyWhCqVp51Ay9Q_=g@mail.gmail.com> <CAEXW_YRpT8wcLmsaHA6yMQ-ZCNYG7v4b4m-qvLHVxcbOJJcrPg@mail.gmail.com>
+In-Reply-To: <CAEXW_YRpT8wcLmsaHA6yMQ-ZCNYG7v4b4m-qvLHVxcbOJJcrPg@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Wed, 30 Aug 2023 12:25:56 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H62o96sgwWK7JAh+GOP=KNtZGS0HjVgHR19jJS1ONJW2Q@mail.gmail.com>
+Message-ID: <CAAhV-H62o96sgwWK7JAh+GOP=KNtZGS0HjVgHR19jJS1ONJW2Q@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     paulmck@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 11:54, Gavin Shan wrote:
-> The deflation request to the target, which isn't unaligned to the
-> guest page size causes endless deflation and inflation actions. For
-> example, we receive the flooding QMP events for the changes on memory
-> balloon's size after a deflation request to the unaligned target is
-> sent for the ARM64 guest, where we have 64KB base page size.
-> 
->    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
->    -accel kvm -machine virt,gic-version=host -cpu host          \
->    -smp maxcpus=8,cpus=8,sockets=2,clusters=2,cores=2,threads=1 \
->    -m 1024M,slots=16,maxmem=64G                                 \
->    -object memory-backend-ram,id=mem0,size=512M                 \
->    -object memory-backend-ram,id=mem1,size=512M                 \
->    -numa node,nodeid=0,memdev=mem0,cpus=0-3                     \
->    -numa node,nodeid=1,memdev=mem1,cpus=4-7                     \
->      :                                                          \
->    -device virtio-balloon-pci,id=balloon0,bus=pcie.10
-> 
->    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
->    {"return": {}}
->    {"timestamp": {"seconds": 1693272173, "microseconds": 88667},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272174, "microseconds": 89704},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272175, "microseconds": 90819},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272176, "microseconds": 91961},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272177, "microseconds": 93040},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272178, "microseconds": 94117},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272179, "microseconds": 95337},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272180, "microseconds": 96615},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272181, "microseconds": 97626},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272182, "microseconds": 98693},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272183, "microseconds": 99698},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272184, "microseconds": 100727},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272185, "microseconds": 90430},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272186, "microseconds": 102999},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->       :
->    <The similar QMP events repeat>
-> 
-> Fix it by having the target aligned to the guest page size, 64KB
-> in this specific case. With this applied, no flooding QMP event
-> is observed and the memory balloon's size can be stablizied to
-> 0x3ffe0000 soon after the deflation request is sent.
-> 
->    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
->    {"return": {}}
->    {"timestamp": {"seconds": 1693273328, "microseconds": 793075},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    { "execute" : "query-balloon" }
->    {"return": {"actual": 1073610752}}
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->   drivers/virtio/virtio_balloon.c | 13 ++++++++++++-
->   1 file changed, 12 insertions(+), 1 deletion(-)
-> 
+On Tue, Aug 29, 2023 at 10:46=E2=80=AFPM Joel Fernandes <joel@joelfernandes=
+.org> wrote:
+>
+> On Tue, Aug 29, 2023 at 12:08=E2=80=AFAM Huacai Chen <chenhuacai@kernel.o=
+rg> wrote:
+> >
+> > Hi, Joel,
+> >
+> > On Tue, Aug 29, 2023 at 4:47=E2=80=AFAM Joel Fernandes <joel@joelfernan=
+des.org> wrote:
+> > >
+> > > Hi Huacai,
+> > >
+> > > On Mon, Aug 28, 2023 at 11:13=E2=80=AFAM Huacai Chen <chenhuacai@kern=
+el.org> wrote:
+> > > >
+> > > [...]
+> > > > >
+> > > > > > [Huacai]
+> > > > > > I also think the original patch should be OK, but I have anothe=
+r
+> > > > > > question: what will happen if the current GP ends before
+> > > > > > nr_fqs_jiffies_stall reaches zero?
+> > > > >
+> > > > > Nothing should happen. Stall detection only happens when a GP is =
+in
+> > > > > progress. If a new GP starts, it resets nr_fqs_jiffies_stall.
+> > > > >
+> > > > > Or can you elaborate your concern more?
+> > > > OK, I will test your patch these days. Maybe putting
+> > > > nr_fqs_jiffies_stall before jiffies_force_qs is better, because I
+> > > > think putting an 'int' between two 'long' is wasting space. :)
+> > >
+> > > That's a good point and I'll look into that.
+> > Another point, is it better to replace ULONG_MAX with ULONG_MAX/4 as
+> > Paul suggested?
+> >
+>
+> I could do that but I don't feel too strongly about it. I will keep it
+> at ULONG_MAX if it's OK with everyone.
+>
+> > > Meanwhile I pushed the patch out to my 6.4 stable tree for testing on=
+ my fleet.
+> > >
+> > > Ideally, I'd like to change the stall detection test in the rcutortur=
+e
+> > > to actually fail rcutorture if stalls don't happen in time. But at
+> > > least I verified this manually using rcutorture.
+> > >
+> > > I should also add a documentation patch for stallwarn.rst to document
+> > > the understandable sensitivity of RCU stall detection to jiffies
+> > > updates (or lack thereof). Or if you have time, I'd appreciate suppor=
+t
+> > > on such a patch (not mandatory but I thought it would not hurt to
+> > > ask).
+> > >
+> > > Looking forward to how your testing goes as well!
+> > I have tested, it works for KGDB.
+>
+> Thanks! If you don't mind, I will add your Tested-by tag to the patch
+> and send it out soon. My tests also look good!
+You can add my Tested-by, but Reported-by should be "Binbin Zhou
+<zhoubinbin@loongson.cn>"
 
-It was supposed to copy David, Jason and Zhenyu. I don't know how they have been
-missed. My script may run into problems temporarily. Amending for it.
-
-Thanks,
-Gavin
-
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 5b15936a5214..625caac35264 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -386,6 +386,17 @@ static void stats_handle_request(struct virtio_balloon *vb)
->   	virtqueue_kick(vq);
->   }
->   
-> +static inline s64 align_pages_up(s64 diff)
-> +{
-> +	if (diff == 0)
-> +		return diff;
-> +
-> +	if (diff > 0)
-> +		return ALIGN(diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-> +
-> +	return -ALIGN(-diff, VIRTIO_BALLOON_PAGES_PER_PAGE);
-> +}
-> +
->   static inline s64 towards_target(struct virtio_balloon *vb)
->   {
->   	s64 target;
-> @@ -396,7 +407,7 @@ static inline s64 towards_target(struct virtio_balloon *vb)
->   			&num_pages);
->   
->   	target = num_pages;
-> -	return target - vb->num_pages;
-> +	return align_pages_up(target - vb->num_pages);
->   }
->   
->   /* Gives back @num_to_return blocks of free pages to mm. */
-
+Huacai
+>
+>
+>  - Joel
