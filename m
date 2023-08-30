@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7BB78E2E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FA178E283
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344258AbjH3W6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        id S242302AbjH3Wru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344001AbjH3W6O (ORCPT
+        with ESMTP id S241389AbjH3Wrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:58:14 -0400
+        Wed, 30 Aug 2023 18:47:49 -0400
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C663DCEE
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:57:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEACCF1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:47:41 -0700 (PDT)
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd336L6rzbv;
-        Wed, 30 Aug 2023 23:38:55 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd341VwFzgk;
+        Wed, 30 Aug 2023 23:38:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1693431535; bh=FYuckVdeNnQG0dQ1V8vJDI3IwA2LopJS6jGJcl/QN2s=;
+        t=1693431536; bh=3j5YwA8sQZLPwKcy65ogiVFJLRLsV0GO/Ut6EzwlnMQ=;
         h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=rpEDtYWP2WNBQfERxLVeQc7Ps6AGTPfkf8U5JNfxiPD727bblYBeF5p5Nnj6yJBvp
-         wuJxhmn2Cdiz377NkRD3ojJZJx/ecP7xcewtscz5zoqZ7ONZhqudU183/dOCY2hybv
-         oroiQUs9bqypQN1oJsJjEVcA6OjfopOSsnOKUYO2VBbF9ntzNLoZm+2eIRgrHM/iQG
-         X8fI+kn3oi3xzM9m0kqQDNHmoFTbOBpTFGOyOh3EE+/qtwrPYthFxjSSrhEOReDHCR
-         aURefb3mOV2pzSATbAN32V2StpT8tgE5upWxUFUcmXpX/9hPNEr70l22eUxVAndYRz
-         QEnOtg/IH9vsA==
+        b=BKvxto3e/ZjAZxKx4FTEFDuoMlZOIAIUrlU9OI0wCEyCgbcE9chjRj2nveFserEAo
+         rm3+XV8qEhLdOTCgx4ScIXHWLL9xLoNLti0wkEni52XWYyQ8RmHk0NVoQ48n/rWfz1
+         +AbnSxOnHiYJmFzpA9UoyW1nV+J+6JetCoblaboPTHtGzAparZBv2cPHCv55+VknNy
+         /P4No4b4/C7a4izgDQvUJ39+n1X+Jd3NSE42h5kbq4moLjqpMZ6NSJXeAYSmo5u6IM
+         Omo2lGAQA9YgnHqep1ZkNwxnk+2rNcYtxpnofc2bfANfSMn5Sk5gdOFsfsnXILeYCK
+         +WilOrOpnSTsg==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Wed, 30 Aug 2023 23:38:55 +0200
-Message-Id: <e51b655230a90f5809d197d166fa0931ad186279.1693431144.git.mirq-linux@rere.qmqm.pl>
+Date:   Wed, 30 Aug 2023 23:38:56 +0200
+Message-Id: <c2551b3da420ab9b69f80ec7a0d646ff69bd0a03.1693431144.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 4/9] regulator/core: regulator_bulk_get: remove redundant NULL
- stores
+Subject: [PATCH 5/9] regulator/core: regulator_ena_gpio_ctrl: pull in ena_gpio
+ state handling
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -51,43 +51,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On error, callers of regulator_bulk_get() pass the error up and don't
-use the pointers in consumers[]. The function is documented to release
-all regulators if any request fails.
-
-Note: if an i-th regulator_get() failed only the i-th pointer was
-cleared. This is another suggestion that the clearing was unnecessary.
+Deduplicate `ena_gpio_state` handling by pulling it into
+regulator_ena_gpio_ctrl().
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/regulator/core.c | 30 +++++++++++-------------------
+ 1 file changed, 11 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 3703aa3f5636..63d16fe59e84 100644
+index 63d16fe59e84..c8d1b12ee43b 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -4829,11 +4829,7 @@ static int _notifier_call_chain(struct regulator_dev *rdev,
- int _regulator_bulk_get(struct device *dev, int num_consumers,
- 			struct regulator_bulk_data *consumers, enum regulator_get_type get_type)
- {
--	int i;
--	int ret;
+@@ -2601,6 +2601,9 @@ static int regulator_ena_gpio_ctrl(struct regulator_dev *rdev, bool enable)
+ 	if (!pin)
+ 		return -EINVAL;
+ 
++	if (rdev->ena_gpio_state == enable)
++		return 0;
++
+ 	if (enable) {
+ 		/* Enable GPIO at initial use */
+ 		if (pin->enable_count == 0)
+@@ -2608,18 +2611,14 @@ static int regulator_ena_gpio_ctrl(struct regulator_dev *rdev, bool enable)
+ 
+ 		pin->enable_count++;
+ 	} else {
+-		if (pin->enable_count > 1) {
+-			pin->enable_count--;
+-			return 0;
+-		}
 -
--	for (i = 0; i < num_consumers; i++)
--		consumers[i].consumer = NULL;
-+	int ret, i;
- 
- 	for (i = 0; i < num_consumers; i++) {
- 		consumers[i].consumer = _regulator_get(dev,
-@@ -4842,7 +4838,6 @@ int _regulator_bulk_get(struct device *dev, int num_consumers,
- 			ret = dev_err_probe(dev, PTR_ERR(consumers[i].consumer),
- 					    "Failed to get supply '%s'",
- 					    consumers[i].supply);
--			consumers[i].consumer = NULL;
- 			goto err;
+ 		/* Disable GPIO if not used */
+-		if (pin->enable_count <= 1) {
++		if (pin->enable_count-- <= 1) {
+ 			gpiod_set_value_cansleep(pin->gpiod, 0);
+ 			pin->enable_count = 0;
  		}
+ 	}
  
++	rdev->ena_gpio_state = enable;
+ 	return 0;
+ }
+ 
+@@ -2720,12 +2719,9 @@ static int _regulator_do_enable(struct regulator_dev *rdev)
+ 	}
+ 
+ 	if (rdev->ena_pin) {
+-		if (!rdev->ena_gpio_state) {
+-			ret = regulator_ena_gpio_ctrl(rdev, true);
+-			if (ret < 0)
+-				return ret;
+-			rdev->ena_gpio_state = 1;
+-		}
++		ret = regulator_ena_gpio_ctrl(rdev, true);
++		if (ret < 0)
++			return ret;
+ 	} else if (rdev->desc->ops->enable) {
+ 		ret = rdev->desc->ops->enable(rdev);
+ 		if (ret < 0)
+@@ -2938,13 +2934,9 @@ static int _regulator_do_disable(struct regulator_dev *rdev)
+ 	trace_regulator_disable(rdev_get_name(rdev));
+ 
+ 	if (rdev->ena_pin) {
+-		if (rdev->ena_gpio_state) {
+-			ret = regulator_ena_gpio_ctrl(rdev, false);
+-			if (ret < 0)
+-				return ret;
+-			rdev->ena_gpio_state = 0;
+-		}
+-
++		ret = regulator_ena_gpio_ctrl(rdev, false);
++		if (ret < 0)
++			return ret;
+ 	} else if (rdev->desc->ops->disable) {
+ 		ret = rdev->desc->ops->disable(rdev);
+ 		if (ret != 0)
 -- 
 2.39.2
 
