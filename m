@@ -2,123 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6F978E276
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601E378E270
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344096AbjH3Wkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S1344036AbjH3WkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344042AbjH3Wk0 (ORCPT
+        with ESMTP id S1343910AbjH3WkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:40:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC7AE42;
-        Wed, 30 Aug 2023 15:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693435208; x=1724971208;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=GK/Q/uf/haO+6KNrJ6HUIfr5l3xBXK8Be8e4LfgWE10=;
-  b=D8333CrQoeiNG/kKC0iuidkjVCh2y9qYaPO5BwLdo2VyapJBRpEjGFzc
-   SrD1pHHct+QN2RKEZ7gkb6BpZgLF5weJIuAG3aLOrRAtmoZkqGIPTsVAN
-   194dpMIfgh8CpO6V6R8OMzGu42RMpgMXD9TXNnsOqLxkjeKOfZpXljvyp
-   aE7W3Bll5xdnGzlm6xabG8Kmb88xcCzRubRUgygFQpGqNRM9h9PnFLMQw
-   hODjmZExliSxuqmCoBttcRVMr7rQIBoQu8z6lP7OIjVOuyGnP1uyBTUQI
-   6sRSI/zrAhbIP5NI79MfZfxR7vP+PepFZORy98+Jby2OEDAAU8dLpeX8c
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="374677353"
-X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="374677353"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 15:39:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="774259658"
-X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="774259658"
-Received: from uhpatel-desk4.jf.intel.com ([10.23.15.97])
-  by orsmga001.jf.intel.com with ESMTP; 30 Aug 2023 15:39:46 -0700
-From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, pmalani@chromium.org,
-        chrome-platform@lists.linux.dev
-Cc:     andriy.shevchenko@linux.intel.com, bleung@chromium.org,
-        Utkarsh Patel <utkarsh.h.patel@intel.com>
-Subject: [PATCH v2 5/5] usb: typec: intel_pmc_mux: Configure Displayport Alternate mode 2.1
-Date:   Wed, 30 Aug 2023 15:39:50 -0700
-Message-Id: <20230830223950.1360865-6-utkarsh.h.patel@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230830223950.1360865-1-utkarsh.h.patel@intel.com>
-References: <20230830223950.1360865-1-utkarsh.h.patel@intel.com>
+        Wed, 30 Aug 2023 18:40:19 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DF41A3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:40:05 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68c0d886ea0so150682b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693435204; x=1694040004; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rGoN+7ftyg9+iA8OLms4ykMa+abn+xpZnImA1JV+0nM=;
+        b=TQdRhcxFF3Dphj1sDkK7sniQ99R7uXXL/XpoHnhuUokJ62pemsF+bDmiRlhtDGCDkX
+         G4VUv4uWdLUId/UVC37BzV5X79EDM9aGwtAb1MUvjMVjM65e1Vx8h5y8FdFZx56pcqoF
+         AL9DUdAMDQz+8ASOWq3PthdZu7PwRADRF1uDY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693435204; x=1694040004;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rGoN+7ftyg9+iA8OLms4ykMa+abn+xpZnImA1JV+0nM=;
+        b=RUg8wzMS8E9T09Doss6Qf3U1vk+hStWo5FN900WTa21hk0l1DzQ72szefMGVbEsWzC
+         KdCrjG3oObTIxS9Cb6dgeMnapEEoth2+ebt1lzYBWpJdrdYlgVVrlEbpnf9C6EtC4rJ4
+         MtmE9WRA5iaTOrJt19jEQfD+jOk1kEUJnD1SH6a9/5xPfzwF22EBL5IffrY1/xB8gB3z
+         G30IFZiaSVUM2vi3Cf3mNSipuhhEFhluVfdR3SWVwttgrPA/l2A4aJoD6anlLO7WembU
+         TVuZFaDSGWVcwEWh+pDwGzvzrAfEMIMPmCvqc3oW0DHa/09fHDs6VTyPJ/71f07lBGET
+         ekhQ==
+X-Gm-Message-State: AOJu0Yyl3W+qQKbt7+9gh5OGLMgEn+8tv9SCwCDyVQLzTaVavvDwAVQY
+        lkSHPbjKakMjFv8jAmZJJ33Olw==
+X-Google-Smtp-Source: AGHT+IGRKWyzdhU3vc5FYi1/P9ug7Q9xN1iOv2w05gAbb5nV2uv60V6ITd/C5QgGFEa+QRTb8kRA1Q==
+X-Received: by 2002:a05:6a00:1355:b0:68a:4312:e0d6 with SMTP id k21-20020a056a00135500b0068a4312e0d6mr4657813pfu.10.1693435204510;
+        Wed, 30 Aug 2023 15:40:04 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j17-20020a62b611000000b0066a2e8431a0sm75593pff.183.2023.08.30.15.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 15:40:03 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 15:40:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Azeem Shaikh <azeemshaikh38@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scsi: target: Replace strlcpy with strscpy
+Message-ID: <202308301538.F89E1E5E23@keescook>
+References: <20230830210724.4156575-1-azeemshaikh38@gmail.com>
+ <20230830215330.6gyhpq3ohkbbtsam@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830215330.6gyhpq3ohkbbtsam@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mux agent driver can configure cable details such as cable type and
-cable speed received as a part of displayport configuration to support
-Displayport Alternate mode 2.1.
+On Wed, Aug 30, 2023 at 09:53:30PM +0000, Justin Stitt wrote:
+> On Wed, Aug 30, 2023 at 09:07:24PM +0000, Azeem Shaikh wrote:
+> > strlcpy() reads the entire source buffer first.
+> > This read may exceed the destination size limit.
+> > This is both inefficient and can lead to linear read
+> > overflows if a source string is not NUL-terminated [1].
+> > In an effort to remove strlcpy() completely [2], replace
+> > strlcpy() here with strscpy().
+> >
+> > Direct replacement is safe here since return value of -errno
+> > is used to check for truncation instead of sizeof(dest).
+> >
+> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> > [2] https://github.com/KSPP/linux/issues/89
+> >
+> > Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> > ---
+> > v2:
+> >  * Replace all instances of strlcpy in this file instead of just 1.
+> >
+> > v1:
+> >  * https://lore.kernel.org/all/20230830200717.4129442-1-azeemshaikh38@gmail.com/
+> >
+> >  drivers/target/target_core_configfs.c |   27 ++++++++++++---------------
+> >  1 file changed, 12 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+> > index 936e5ff1b209..10a22a428267 100644
+> > --- a/drivers/target/target_core_configfs.c
+> > +++ b/drivers/target/target_core_configfs.c
+> > @@ -1392,16 +1392,15 @@ static ssize_t target_wwn_vendor_id_store(struct config_item *item,
+> >  	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+> >  	unsigned char buf[INQUIRY_VENDOR_LEN + 2];
+> >  	char *stripped = NULL;
+> > -	size_t len;
+> > +	ssize_t len;
+> >  	ssize_t ret;
+> >
+> > -	len = strlcpy(buf, page, sizeof(buf));
+> > -	if (len < sizeof(buf)) {
+> > +	len = strscpy(buf, page, sizeof(buf));
+> > +	if (len > 0) {
+> >  		/* Strip any newline added from userspace. */
+> >  		stripped = strstrip(buf);
+> > -		len = strlen(stripped);
+> >  	}
+> > -	if (len > INQUIRY_VENDOR_LEN) {
+> > +	if (len < 0 || strlen(stripped) > INQUIRY_VENDOR_LEN) {
+> >  		pr_err("Emulated T10 Vendor Identification exceeds"
+> >  			" INQUIRY_VENDOR_LEN: " __stringify(INQUIRY_VENDOR_LEN)
+> >  			"\n");
+> 
+> Should we be explicitly checking for `len == -E2BIG` instead of the more
+> generic `len < 0`? Perhaps this is a nitpick but I prefer the former.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
----
-Changes in v2:
-- No change.
+For robustness, we want to just do the "< 0" test -- that way if
+strscpy() gains a new errno (for some unimaginable reason) then all the
+code testing for "< 0" will continue to work sanely.
 
- drivers/usb/typec/mux/intel_pmc_mux.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+-Kees
 
-diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-index 60ed1f809130..233958084b43 100644
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -191,6 +191,12 @@ static int hsl_orientation(struct pmc_usb_port *port)
- 	return port->orientation - 1;
- }
- 
-+static bool is_pmc_mux_tbt(struct acpi_device *adev)
-+{
-+	return acpi_dev_hid_uid_match(adev, "INTC1072", NULL) ||
-+	       acpi_dev_hid_uid_match(adev, "INTC1079", NULL);
-+}
-+
- static int pmc_usb_send_command(struct intel_scu_ipc_dev *ipc, u8 *msg, u32 len)
- {
- 	u8 response[4];
-@@ -293,6 +299,24 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
- 	req.mode_data |= (state->mode - TYPEC_STATE_MODAL) <<
- 			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
- 
-+	if (!is_pmc_mux_tbt(port->pmc->iom_adev)) {
-+		u8 cable_speed = (data->conf & DP_CONF_SIGNALLING_MASK) >>
-+				  DP_CONF_SIGNALLING_SHIFT;
-+
-+		u8 cable_type = (data->conf & DP_CONF_CABLE_TYPE_MASK) >>
-+				 DP_CONF_CABLE_TYPE_SHIFT;
-+
-+		req.mode_data |= PMC_USB_ALTMODE_CABLE_SPD(cable_speed);
-+
-+		if (cable_type == DP_CONF_CABLE_TYPE_OPTICAL)
-+			req.mode_data |= PMC_USB_ALTMODE_CABLE_TYPE;
-+		else if (cable_type == DP_CONF_CABLE_TYPE_RE_TIMER)
-+			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE |
-+					 PMC_USB_ALTMODE_RETIMER_CABLE;
-+		else if (cable_type == DP_CONF_CABLE_TYPE_RE_DRIVER)
-+			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
-+	}
-+
- 	ret = pmc_usb_command(port, (void *)&req, sizeof(req));
- 	if (ret)
- 		return ret;
 -- 
-2.25.1
-
+Kees Cook
