@@ -2,248 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B63E978DC79
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ED078DBDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237800AbjH3Spv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
+        id S238573AbjH3Sh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244645AbjH3Nh6 (ORCPT
+        with ESMTP id S244646AbjH3NiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:37:58 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8047011B;
-        Wed, 30 Aug 2023 06:37:54 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5ACE52F4;
-        Wed, 30 Aug 2023 06:38:33 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BC093F738;
-        Wed, 30 Aug 2023 06:37:51 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 14:37:48 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "oleksii_moisieiev@epam.com" <oleksii_moisieiev@epam.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
+        Wed, 30 Aug 2023 09:38:12 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857AD1B0;
+        Wed, 30 Aug 2023 06:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1693402688; x=1724938688;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=XxD+oyz5sNvFB4npsD15z1OsVvfTty3wBEXpT07aPRQ=;
+  b=czk8Zx7aoggYXQf09fgWTUfjIXNfazB52XiQCgLCCkAJS1Qnu7Fshank
+   +MH/Oaot8V/K7qrS0OB63J2OkaFumpcq2SH3rsJlvjjU/ZXr4Z54PSHMF
+   zTSa4bNqsfuqp3UZH83lQOa6hKScHNEy7gI7jAv0thvl3SP96S1Lp7gxw
+   F4Tb94YmzCNSSlb8KtUWsEzk9hdO3uawWU5YaXWBBXanR1HDgwi3uAEW3
+   o7442bgPG7Aup1vEtbnfFS3wJjFNfO+xkviWHBuGQhlF9lGS9+uBAq9Ie
+   796Cp90yD58Krx0gQRucOv42b5xjnFbSOIuFmh2i9lj9hq5ABeK8KUOgV
+   A==;
+X-IronPort-AV: E=Sophos;i="6.02,213,1688400000"; 
+   d="scan'208";a="347771448"
+Received: from mail-dm6nam12lp2168.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.168])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Aug 2023 21:38:06 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g5t3bokukoGqrW4iHECNvpXnXFRevDzw1q3MxnbSCy7k+p0wiom1Ez52ModB1Idr91vXaLDfhS89xxVJi8QTYvH12dJJnbyuVh/siaWtz+pxwdXZRx/QVV5orUWK9fF8vavCULsfIjaqZ422SD1SMfo4vlb3nonm0NPO/dXTFIPnqPFx/r4QNnmVc5+6HmOds6FBGsF/rQOyyUGVtukzaP+/hu8StYrw4u3zeUupPlDqJ05qka/mdWoV2rGYyLBEx52xQ68XczvHcXeuAhfWLXXN0Qr/EdQueYq6zYKkexsdzSZDcd4+mEPf9IkEmo671equbiQd00PzgV+pALbCAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ms3xnnyByKdosR/SJeiQchiLbMQCLRMOWa2E5ATnkkg=;
+ b=THpIQmrPwTZhD6XE79TNIp0npXvek3Haf8i3LCUcJ3saEhLwl6Wjna6K9XfRFQjbU8TLIARhU8wDbtNu4rVYcAwTnc1zwirB0mSbZpqefEVwN7WSHXMT47Yi4n1YVPxWHyiO0n5AqiZy+Oq34l+LSAv46D31zE0+f0IbUJrrQaXvj3+KEO5gDQ2lTXkYDFVBz7P1hS6GqqB8BMtb5955RmBe0RVWFNvJK/RxzIkNDVXqv/xDPT+m0CSSbNwPTRYETM407dEChlJf3CmKiBAGMK9WefPjCcwrEGEY2kojYaYt/sq8eUvQYerCCQ79TieAjHKPPMrXb/ARq7tdAhOuDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ms3xnnyByKdosR/SJeiQchiLbMQCLRMOWa2E5ATnkkg=;
+ b=J3EaclX7tF5xBLvdzmfiCYakikFzF2xKC4Pz5YFlcJCnCmcq+1Mpt1EjtR8GmaSr3MAkKT8WbaRb4EsOFO9TkPiL0LkI1kS2EokwHja9+nCUtGN5nwgSkiVyzOrVD/nuEbGiJzwryaGCQgjdrB3fV/amXdfy445yWZ9muWyQueU=
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
+ SA0PR04MB7452.namprd04.prod.outlook.com (2603:10b6:806:e2::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6745.18; Wed, 30 Aug 2023 13:38:04 +0000
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::f92a:6d40:fe94:34e9]) by DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::f92a:6d40:fe94:34e9%7]) with mapi id 15.20.6768.009; Wed, 30 Aug 2023
+ 13:38:03 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: Re: [RFC] scmi: pinctrl: support i.MX9
-Message-ID: <ZO9GLG5tQynYyAvR@pluto>
-References: <20230824070611.3335107-1-peng.fan@oss.nxp.com>
- <CACRpkdYU7MRXRV3Uw1w300sdxv=9XT=P1vFFarHfpSM6BT20Hg@mail.gmail.com>
- <DU0PR04MB9417B3CB9638F936DF19C523881DA@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <CACRpkdZKMsC1Wyi+nOf7idAWMTUe8w2XbtpWnbDKrCLD75ND1g@mail.gmail.com>
- <DU0PR04MB94178923DFC8E71287E560E888E3A@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <ZO8sRknW-6vdKoDd@pluto>
- <DU0PR04MB941726AF86EEB0BBB55B9A2A88E6A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH blktests v4 3/3] nvme: introduce
+ nvmet_target_{setup/cleanup} common code
+Thread-Topic: [PATCH blktests v4 3/3] nvme: introduce
+ nvmet_target_{setup/cleanup} common code
+Thread-Index: AQHZ2yM7D30ZgvpqvUqaelpgiH585LAC2B4A
+Date:   Wed, 30 Aug 2023 13:38:03 +0000
+Message-ID: <fhwbcvhmm57c55ozfgtczcix42zri63cswjavre46l42tmzgo7@3krpokexbslw>
+References: <20230830092019.9846-1-dwagner@suse.de>
+ <20230830092019.9846-4-dwagner@suse.de>
+In-Reply-To: <20230830092019.9846-4-dwagner@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|SA0PR04MB7452:EE_
+x-ms-office365-filtering-correlation-id: 651351db-8d09-4bd6-8c16-08dba95e55fe
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kyzsyzkSAUKpZKQGhkAWQZDsuTvYsZnvrdUzwdLTh344drHcTPugR12pzlkkv8RIhtGh40+TD9ch9VuaZ/n9kNuyCnqJWGACM0jtgHbIgxfXU3ib/BKMLtLNJncJ7auDDxvG5eSaMHmHUD45f5dVQm67OBvCOl1J9vaptXJq/Nq2n0C6f3++NzyGbmfM6SM2rDli4CCHj3C4UrB73alw8QPghdfqR13YuutRkSatvMmp7DhZXV5uZY8CHxpPlyumanRB8HZJM3VP+YkZgJZBp6vV/emFBJRDIiVaws+JQmz8h42SSEq2FLejAj8CVZh7A7sb3na70eeczOve5YQXHuGhb4Qbbx6YZ2ktsWho6Be6vRlGsLeVoEmgaeYxn9ESnSbBGoMEYvoJBqGy/3zptjAyuTbf+Be+iuMvc7zMe/S1589KTd6j9cP6G53atdpXyRFBvL99bzumojDccmJW0nFIHu7wS59dxOyqCFQvUjrSvja5ecAoZMEIyBflx8+L8vPKhzYsUTg/4jJSO/lssLPesGE30U4zBiOYixk9r5bBbdUNGoVCupwnQ21DdFFd1EYTrfHd4/PJBzvI6BFtRmuiTuwTzuEcwg2AX/dW9E6MFQMio2HkDPl7RlJ0KW9U
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(346002)(136003)(39860400002)(366004)(1800799009)(186009)(451199024)(8936002)(122000001)(91956017)(66946007)(76116006)(478600001)(6506007)(71200400001)(66556008)(64756008)(66476007)(54906003)(6486002)(66446008)(316002)(38100700002)(38070700005)(41300700001)(82960400001)(6512007)(9686003)(5660300002)(8676002)(44832011)(26005)(2906002)(6916009)(33716001)(86362001)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?a8cyhGk7YHgjA/6UGZtF/r8whK5VujILrJjATDY7wYCcDfumaETY8Cpi0t+u?=
+ =?us-ascii?Q?aPwa9xoaKqXNauRVAW3IonNdKpgX4rtRic425V+emFctKBM+WLWfJsHF67BW?=
+ =?us-ascii?Q?RHGW+5CieDwpF1QEpgdRzCtGwalaV7R8OtTcj31YWwRy9fpeiIW41dNFe08K?=
+ =?us-ascii?Q?VHbJO+H0KW4v0R/2Tf5HNwMCOir7wXwFPYpwEreiS2FgeO5SLQ9xjkINr3BB?=
+ =?us-ascii?Q?8K0r+fY8fUWp2ZESzebVpHzcCg5EQO7KdklqUDz3lmk2u5Oh6QlmziRUklst?=
+ =?us-ascii?Q?JC7JjuJvKzU/1wXEidIPKGw5xuxtCNsNNaBcQ3jaDFIo94Or0u6Enwdx6gbK?=
+ =?us-ascii?Q?JM+xg/18qelD3LBFQg8aII0nd3u7VrBL6NExfUc5rJ53JrKhf8C/MTbPvkNV?=
+ =?us-ascii?Q?L9E/5mgJohZ2umMwC5bcYiTNVye2Nd4o7eUiKqabcEkQkPoFmEb0CnlDcL9/?=
+ =?us-ascii?Q?Jwj69iuD8tdbgwIAkWE53UwG+I/yapeLKcywYOj3ZlVw84fKEDXHhrY7f4Ks?=
+ =?us-ascii?Q?sp17ovIXCkKJr9sjStnOm3v968US+EW0uDrmY3ou/t1xOVPgcDLB4QcKFGKk?=
+ =?us-ascii?Q?aTFBt1RwHWfVjvF629heYP6sFHTbLQDD5zhnquQaFGOdztYu9Fbmk04Bnp9O?=
+ =?us-ascii?Q?2hRuo/iNclH+GTQ9SbXukTR12AikVyppg2cBNccxjNX3kZBFkzafXbkbZqUv?=
+ =?us-ascii?Q?odgk0VQFWNnNPjzjtuPx8fh/cfGZJxJKqGcpgPsjm10IP1JDfqw/vNA1KN0Z?=
+ =?us-ascii?Q?Prg7qqgWgVx4qiEl9xeEq13hF72mP69aS18XEe6AKSvLGbvaggNpra8WGEc8?=
+ =?us-ascii?Q?qktJcF1xr5JiVI++WH9wrVk8eKrTH1nHzZFxAeXbBbWnkQB5FCEUN3QvrfqH?=
+ =?us-ascii?Q?DXUnLUyDV9zdoeSAAGV23Evz/eCxSwaodQ30AquEy2d9HJbTymWVj0NQdl6F?=
+ =?us-ascii?Q?LN+3Xj5UHkc+EiQ11Q8U06CgiBJOs7XDhryQ6uoSZ7tc5eUz49KNAh858a/h?=
+ =?us-ascii?Q?y0KKIfEy5Aio0f6JpFDQpAGna5xsr5Z5l0U9hfkn8FOaR7h8fH6NUx6pfHRg?=
+ =?us-ascii?Q?zB8CCR4W0eGQrrAX2x/wsisHbUBOWt/Z66ONLr44ew8XaU57zngayZuEimUK?=
+ =?us-ascii?Q?MQ0fqpNfAsE9IThPI100MVMaeqnWkXewccXZFB5X6DazJo9Ghd0CYWS1WBNw?=
+ =?us-ascii?Q?nmp07Aw5KgOirqRQcmD+LHMGMBuDBMoq154W5b2AdsnxlFCGBuH8BKBw3TiT?=
+ =?us-ascii?Q?dUZ/myc0wAD/sCSsYqjrTkO+CQkuwMgM9Ww20aCFN+1d27Pa9LMnc6OBuJV2?=
+ =?us-ascii?Q?5AJFtWZOdD4H2dSpLamlRiJmRp/NC5QwNiXJYi5w66iVM5LyiC688gj9rx79?=
+ =?us-ascii?Q?VSnO1iqhoNpJtZK6CKUFRUkIp8dCOeHjgi5i14vkyMZ6CJeYgoSsXUdwoFPE?=
+ =?us-ascii?Q?bhgKsjwq3LmcMnP8zp/1q6Iuaw0fT6i7njazybmGatsvrNZZhAQY/OeqmIoB?=
+ =?us-ascii?Q?mVAM3V2AikYB8IfhhvlmWfTxnGMczB0b4ZbdO/TqEZFxJ40PBe0TyVJkJmy/?=
+ =?us-ascii?Q?AfZzV3SQdKLqR5iRN4vf9lJQIC38MvOTUFzIH32LvWDdovooBXqMz8tQyKWO?=
+ =?us-ascii?Q?AIs/hfZStF7BDA6pTyy5Cvg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0B15C4976A4D30419F80A85CD31E814F@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DU0PR04MB941726AF86EEB0BBB55B9A2A88E6A@DU0PR04MB9417.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?GJxjsPUGQXzjuFa3TbjrQwDxOSLTNEbVeKdCdMxCudX6IwwcRSIUas4xrLSB?=
+ =?us-ascii?Q?JZ+Ug+PFzuyYvfO1/0usq0GnXInIKfaArFUreq5cRC6PvBWD1dHwBIPkumZH?=
+ =?us-ascii?Q?zu59MmglCEcPvHCCEWDYGYDKvPWxirb9Y+g2f1HXq7xBlyK2YkWKPRgozRO8?=
+ =?us-ascii?Q?J6LLBbwtEDdUTf1RY0HD3eF0dRO4zYpZefqTTOXsMDiQIQhL6s4zs2lueJ8R?=
+ =?us-ascii?Q?LpI0IKBEQpELJ1W7cYvYuSR6aFRki5Z7EUd4SZdqS6spSgbMxDi2t8/IZ9+0?=
+ =?us-ascii?Q?wyGIHKntU7lJdy/Ad3w3v1P+d1MkFDHbarWbcyY9qKVAtPyl3xkxx3jfqa8Z?=
+ =?us-ascii?Q?zgoA9aMxXUl+6H8iuCQJ/YOLViylZlaz3frAG5OrHivmuNP7sSCrdn0grrIK?=
+ =?us-ascii?Q?Hchk9Eyt4arZfMhn6STUDuhzVfrV3Gu1bj+AKh+Bx+gCWJTCVvGPtDj7DBZD?=
+ =?us-ascii?Q?TUzxP0Sr9T5hShYcK0r3yhUwdrXHZtly0XUudRhrIEzoPqmCLmKl3YXf4GHj?=
+ =?us-ascii?Q?qXy9OmjCaw3XzqkFu1OM3GejAC3CrtKXBZHUTihARLEQEMIdmDMEddAWabwr?=
+ =?us-ascii?Q?TVjk7884xtvSuf2682d3vUm6Bb8r4CR1fxNty5uykoEZDh3K0AIRofhlRa3R?=
+ =?us-ascii?Q?1uWClzYEHOZN747z09b5/xx5ZA8jOt0TwrTJfX4cHc/qNLscNOEMBS+0iMqe?=
+ =?us-ascii?Q?gt5bFM3ZFjUYg9rV6+uZvKr+BeM8EI6MakU4aqT/KQG7KtxPHafFI4u9rGoo?=
+ =?us-ascii?Q?9tNqPtzejcJ4C3b0MOb2yhLLUWBjb8G2Af61Ycq34xG4RPaQVNKKmpxdJ/C3?=
+ =?us-ascii?Q?eYkpnTyAPBONwe/GItq5kTqXPdUuFFeYVdKKJjj3xKiHKDkjn62oHr2jGja9?=
+ =?us-ascii?Q?asUQrpg992EfikqoqZVWO9Z4SlpSyCXxMSQob6ifWo5dWog0f9a2UTy6cuDa?=
+ =?us-ascii?Q?EMF8LQtd9OzAjNJ2oF2ujQ=3D=3D?=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 651351db-8d09-4bd6-8c16-08dba95e55fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 13:38:03.7539
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z5/tBbV07GNGWnPVs7MxXY53TMOp8tP6R0WTVAG7/SQe1j9KU8/Bhsrxxmkn1am4U+sDqoHPlQ4O8A5YukoZm4gSPDRiNlwRAEl5ZYyA/sA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7452
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 12:48:37PM +0000, Peng Fan wrote:
-> Hi Cristian,
-> 
+On Aug 30, 2023 / 11:20, Daniel Wagner wrote:
+> Almost all fabric tests have the identically code for
+> setting up and cleaning up the target side. Introduce
+> two new helpers.
+>=20
+> Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
 
-Hi,
+Thanks Daniel for this v4 series. All patches looks good, except one thing
+in this patch.
 
-> > Subject: Re: [RFC] scmi: pinctrl: support i.MX9
-> > 
-> > On Fri, Aug 25, 2023 at 08:43:38AM +0000, Peng Fan wrote:
-> > > > Subject: Re: [RFC] scmi: pinctrl: support i.MX9
-> > > >
-> > > > On Thu, Aug 24, 2023 at 2:47 PM Peng Fan <peng.fan@nxp.com> wrote:
-> > > > > Me:
-> > 
-> > Hi Peng,
-> > 
-> > > >
-> > > > >> it is merely making things more complex and also slower
-> > > > > > bymaking the registers only accessible from this SCMI link.
-> > > > >
-> > > > > This is for safety reason, the pinctrl hardware must be handled by
-> > > > > a system manager entity. So mmio direct access not allowed from
-> > > > > Cortex-A side.
-> > > >
-> > > > Yeah I understood as much. But I don't think that the firmware is
-> > > > really filtering any of the access, it will just poke into any
-> > > > pinctrl register as instructed anyway so what's the point. Just looks like a
-> > layer of indirection.
-> > >
-> > > No, the firmware has a check on whether a pin is allowed to be
-> > > configured by the agent that wanna to configure the pin.
-> > >
-> > > > But I'm not your system manager, so it's not my decision.
-> > > >
-> > > > > The SCMI firmware is very straightforward, there is no group or
-> > > > > function.
-> > > > >
-> > > > > It just accepts the format as this:
-> > > > > MUX_TYPE, MUX VALUE, CONF_TYPE, CONF_VAL, DAISY_TYPE, DAISY
-> > ID,
-> > > > > DAISY_CFG, DAISY_VALUE.
-> > > > >
-> > > > > Similar as linux MMIO format.
-> > > > >
-> > > > > Our i.MX95 platform will support two settings, one with SCMI
-> > > > > firmware, one without SCMI. These two settings will share the same
-> > > > > pinctrl header file.
-> > > > >
-> > > > > And to simplify the scmi firmware design(anyway I am not owner of
-> > > > > the firmware), to make pinctrl header shared w/o scmi, we take the
-> > > > > current in-upstream freescale imx binding format.
-> > > >
-> > > > The SCMI people will have to state their position on this.
-> > > > Like what they consider conformance and what extensions are allowed.
-> > > > This is more a standardization question than an implementation
-> > > > question so it's not really my turf.
-> > >
-> > > The i.MX95 SCMI firmware uses OEM extension type. So I just follow
-> > > what the firmware did and support it in linux. Anyway let's wait
-> > > Sudeep's reply.
-> > >
-> > 
-> > So my unsderstanding on this matter as of now is that:
-> > 
-> > 1. the current SCMI Pinctrl specification can support your usecase by using
-> >    OEM Types and multiple pins/values CONFIG_GET/SET commands
-> 
-> Yes, based on the Oleksii patchset with my local multiple configs support.
-> 
+[...]
 
-Yes, I know, I pointed out on his series that the protocol has still to
-be fixed to be aligned with the latest BETA2 spec (we changed the spec
-on the fly while he was already posting indeed..)
+> diff --git a/tests/nvme/018 b/tests/nvme/018
+> index 68729c3cb070..19e439f3f3e0 100755
+> --- a/tests/nvme/018
+> +++ b/tests/nvme/018
+> @@ -21,16 +21,9 @@ test() {
+> =20
+>  	_setup_nvmet
+> =20
+> -	local port
+>  	local nvmedev
+> =20
+> -	truncate -s "${nvme_img_size}" "${def_file_path}"
+> -
+> -	_create_nvmet_subsystem "${def_subsysnqn}" "${def_file_path}" \
+> -		 "${def_subsys_uuid}"
+> -	port=3D"$(_create_nvmet_port "${nvme_trtype}")"
+> -	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
+> -	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
+> +	_nvmet_target_setup
 
-> > 
-> > 2. the Kernel SCMI protocol layer (driver/firmware/arm_scmi/pinctrl.c)
-> >    is equally fine and can support your usecase, AFTER Oleksii fixes it to
-> >    align it to the latest v3.2-BETA2 specification changes.
-> >    IOW, this means that, using the SCMI Pinctrl protocol operations
-> >    exposed in scmi_protocol.h, from somewhere, you are able to properly
-> >    configure multiple pins/values with your specific OEM types.
-> 
-> Yes.
+As I noted for v3, I think the line above should be,
 
-Good.
+	_nvmet_target_setup --blkdev file
 
-> 
-> > 
-> > 3. The SCMI Pinctrl driver (by Oleksii) built on top of the pinctrl protocol
-> >    operations is instead NOT suitable for your usecase since it uses the Linux
-> >    Generic Pinconf and IMX does not make use of it, and instead IMX has
-> >    its own bindings and related parsing logic.
-> 
-> Yes.
-> 
-> > 
-> > Am I right ?
-> 
-> You are right.
-> 
-> > 
-> > If this is the case, I would NOT try to abuse the current SCMI Pinctrl Generic
-> > driver (by Oleksii) by throwing into it a bunch of IMX specific DT parsing,
-> > also because you'll end-up NOT using most of the generic SCMI Pinctrl driver
-> > but just reusing a bit of the probe (customized with your own DT maps
-> > parsing)
-> 
-> Only DT map to parse the dts and map to config array. Others are same,
-> so need to export some symbols for pinctrl-scmi-imx.c driver if build imx
-> scmi driver.
->
+If the change is ok for you, I'll add this fix up and apply the series.
 
-Yes, but you are basically using some exported symbol to parse the DT in
-your way and then you do not use anything of the various
-functions/groups stuff...you just leverage some of the probing stuff and
-then issue you OEM Type configs....I mean most of the picntrl-scmi
-driver would be unused anyway in this scenario.
-
-> > 
-> > Instead, given that the spec[1.] and the protocol layer[2.] are fine for your
-> > use case and you indeed have already a custom way to parse your DT
-> > mappings, I would say that you could just write your own custom SCMI
-> > driver ( ? pinctrl-imx-scmi), distinct and much more simple than the generic
-> > one, that does its own IMX DT parsing and calls just the SCMI protocol
-> > operations that it needs in the way that your platform expects: so basically
-> > another Pinctrl SCMI driver that does not use the generic pinconf DT
-> > configuration BUT DO USE the underlying SCMI Pinctrl protocol (via its
-> > exposed protocol operations...)
-> 
-> I am ok with this approach, but I need use the other ID, saying 0x99, not 0x19,
-> because 0x19 will bind with the pinctrl-scmi.c driver, I could not reuse
-> this ID for i.MX pinctrl-scmi-imx driver. Otherwise there will be issue if both
-> driver are built in kernel image.
-> 
-
-Ok here I lost you.
-
-The protocol ID 0x19 is bound to the protocol layer and identifies the
-standard Pinctrl protocol: usually you use a 0x99 to define and describe
-you own specific NEW vendor protocol, BUT here you are saying you are fine to
-use std Pinctrl spec AND the protocol operations as exposed in pinctrl.c, so
-I dont see why you should use a new vendor protocol_id to basically
-expose the same operations. (and I also dont see how you can do that
-without hacks in the current codebase)
-
-You CAN have multiple SCMI drivers using the same protocol at the same
-time (even more than one protocol at the same time), even though we try
-to avoid it if there are no good reason to have more than one driver, there
-is nothing in the spec or in the current SCMI platform or agent stacks that
-inhibits such scenario (and I use iot heavily for my offline testing
-indeed.)
-
-Look at:
-
- - drivers/hwmon/scmi-hwmon 
- - drivers/iio/common/scmi_sensors/scmi_iio.c
-
-and you'll see that these 2 drivers uses the same SENSOR protocol, just for
-different sensor types so they do not interfere one with each other.
-
-What happens is that the first driver using a protocol causes its
-protocol_init to be called once for all.
-
-This should work flawlessly like this, if this is not the case for some
-reason, this will have to be fixed in the protocol implementation: you
-are supposed to be able to grab the same protocol from different
-drivers without any issue.
-
-I agree that you have to be careful not to share the same pins across 2
-different drivers using the same Pinctrl driver, but even if both driver
-are compiled in, nothing is really happening until the related DT
-binding are parsed, and so unless you mismatch your DT and assign same
-pins to both the Generic SCMI Pinctrl and to the IMX SCMI Pinctrl I dont
-see how they can interfere. You could indeed, have a set of pins managed
-by your custom IMX driver and one distinct other set of pins handled by
-the SCMI Generic driver by Oleksii, both magically handled by the same
-SCMI Server backend :P !
-
-BUT to be on the safe side you could anyway force a conflict in Kconfig
-to mutually exclude one driver when the other is built and vice-versa.
-
-Am I missing something ? Why would you need a new vendor ID to define a
-new protocol without not really having any new protocol ?
-
-Thanks,
-Cristian
+> =20
+>  	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
+> =20
+> @@ -48,12 +41,7 @@ test() {
+> =20
+>  	_nvme_disconnect_subsys "${def_subsysnqn}"
+> =20
+> -	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
+> -	_remove_nvmet_subsystem "${def_subsysnqn}"
+> -	_remove_nvmet_port "${port}"
+> -	_remove_nvmet_host "${def_hostnqn}"
+> -
+> -	rm "${def_file_path}"
+> +	_nvmet_target_cleanup
+> =20
+>  	echo "Test complete"
+>  }=
