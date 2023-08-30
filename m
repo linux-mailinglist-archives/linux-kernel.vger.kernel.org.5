@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 760C878DE37
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A2878DD89
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbjH3S7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
+        id S244927AbjH3Svj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244959AbjH3ONZ (ORCPT
+        with ESMTP id S244980AbjH3OPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:13:25 -0400
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95FC122
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:13:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-        s=default; t=1693404802;
-        bh=e8EboqZptFPY7KxQhU7IuozNgzgxOwr0ilKOSAn1id4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=l+2JYOAbqKiK/KGYWNDCQ/Z8hsfwQkZnLPIY1RJPPUh+ZmtaLP6NTewZrH4xM3UNu
-         8JH1b0TqfcfmxRmr9f3RRmc1yjFjxyAQPXsloX8L+gFVN3oBiELEArGjtB83Qrstfn
-         C+pk+aOydsLI6FkCXfG/WJHsdRlSKj+oU6Pv3Md46mA3Z9aXKPeCfkAObeDagTqsUD
-         R7rAAU9R96DDCEAKWyhY5N/27nky05ZLkZYqnNIrAJaMMk1rQhbs1yLjS0sT53hBDi
-         MrPeMNmtRsZYBLT1VtF+ZxXrB7XgcusU8nMZ62gYyknDkCniQGvgiFMoDFd+Hp3VpH
-         6ZWCP+dybvlTQ==
-Received: from biznet-home.integral.gnuweeb.org (unknown [182.253.126.208])
-        by gnuweeb.org (Postfix) with ESMTPSA id 7921E24B2B0;
-        Wed, 30 Aug 2023 21:13:19 +0700 (WIB)
-Date:   Wed, 30 Aug 2023 21:13:14 +0700
-From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
-To:     Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Nicholas Rosenberg <inori@vnlx.org>,
-        Michael William Jonathan <moe@gnuweeb.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 2/5] tools/nolibc: x86-64: Use `rep stosb` for
- `memset()`
-Message-ID: <ZO9Oeq0bHU+NU29D@biznet-home.integral.gnuweeb.org>
-References: <20230830135726.1939997-1-ammarfaizi2@gnuweeb.org>
- <20230830135726.1939997-3-ammarfaizi2@gnuweeb.org>
- <CAOG64qMkQJ-znXbeBz=zubhbonzEKtzJ5y6xQZPvXUpkC-=TDg@mail.gmail.com>
+        Wed, 30 Aug 2023 10:15:42 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766B1CC2;
+        Wed, 30 Aug 2023 07:15:39 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-5733d431209so3436000eaf.0;
+        Wed, 30 Aug 2023 07:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693404938; x=1694009738; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yCpeAPS/CibFq665kaK2mvNCIQFGx1fXEcmTzAPISWc=;
+        b=Ebq/sZ8K1DskKXc0Ci050dJg+t6fK1BsIPhrEeX3GpFkrWupeVc1LwE/SPcVM1yk42
+         v1aBKw2x+VO8tIr/2KIXqkzeopIOGRY4wra8y6mDe9Yri6AYcaWWAGky9qZPY2FN2AN/
+         ZmnWhaUp7A+abU25oIxu+aiXqBTu899GeeIazsFxN/WFogwGNwlYwiUBFP1+Xr9F5QQd
+         Q/MarxafLUOddF44LwQYaeu5IIv8pIdZJhx70qTIc8grrxLbBoP07xzdoDkNA8GWnxlq
+         IrfBUuCbPT0PcB3Q03iVflgkWXRpID0C+pr5lgiopuC1mRbLai3W+Zw4qISpPp1mZkvQ
+         n9HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693404938; x=1694009738;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yCpeAPS/CibFq665kaK2mvNCIQFGx1fXEcmTzAPISWc=;
+        b=jj8OhaAoBQZonOrBOLn0Jm5PREDzCcdxVu9b20cGahFWJ1kb97VLH9+cMfxOfrvTfM
+         xwuMJQZ2mffh7Hq91s3WDUcv7FUOx7w7bxbIxpbu7sE7mUgRUc1IB8Gnvlu6x55KtYWA
+         jVC3wWDrx3bVMeuoL+ngaVkbx5eU+1EIaH2DGg7BHuQ8ausXkrA+yW04xvh51NCdnGcB
+         JApoJh7g35mSfoxTVvWE00gXlsd5ny9WvNduY8gHwlDuWARCEKvpv7btKmfR2WbK0wOW
+         3FE7GEfKL55HN6vGJ2bl74xIQLphKiZQFYkwJ87N9db02d8zSFbyME/GLC/B5rWHEULP
+         URVQ==
+X-Gm-Message-State: AOJu0Yy5WMo9mZYFYOTGAVXPkvPRfr2Unas83dd66UrPFCiPEO4yVAEg
+        etFl0j+Sr3pwG+4ntPJEUYfZX3uvW9shrwLmapk=
+X-Google-Smtp-Source: AGHT+IFFDnRR2uY0HMprngD3qnR0QCHLsvwLy0H6o8N6F5irKWos3ZRHDcMLDSu3VnmsJJtI9HCVvtNsuy0h6t1SXXo=
+X-Received: by 2002:a4a:9196:0:b0:571:28d5:2c77 with SMTP id
+ d22-20020a4a9196000000b0057128d52c77mr2188112ooh.5.1693404938283; Wed, 30 Aug
+ 2023 07:15:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOG64qMkQJ-znXbeBz=zubhbonzEKtzJ5y6xQZPvXUpkC-=TDg@mail.gmail.com>
-X-Bpl:  hUx9VaHkTWcLO7S8CQCslj6OzqBx2hfLChRz45nPESx5VSB/xuJQVOKOB1zSXE3yc9ntP27bV1M1
+References: <cover.1693386602.git.pstanner@redhat.com> <46f667e154393a930a97d2218d8e90286d93a062.1693386602.git.pstanner@redhat.com>
+In-Reply-To: <46f667e154393a930a97d2218d8e90286d93a062.1693386602.git.pstanner@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 30 Aug 2023 17:15:02 +0300
+Message-ID: <CAHp75Vc72uuNvFxq4TGO=nXoGhbqVxyqvQ67ioL8ajtZwMUBgA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] string.h: add array-wrappers for (v)memdup_user()
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Siddh Raman Pant <code@siddh.me>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
+        David Airlie <airlied@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 09:08:05PM +0700, Alviro Iskandar Setiawan wrote:
-> The first instruction could be:
-> 
->    movl %esi, %eax
-> 
-> That's smaller. Also, the second argument of memset() is an int
-> anyway, so there is no need to have a full 64-bit copy of %rsi in
-> %rax.
+On Wed, Aug 30, 2023 at 4:46=E2=80=AFPM Philipp Stanner <pstanner@redhat.co=
+m> wrote:
 
-Agree, noted.
+> +       if (unlikely(check_mul_overflow(n, size, &nbytes)))
+> +               return ERR_PTR(-EINVAL);
 
--- 
-Ammar Faizi
+> +       if (unlikely(check_mul_overflow(n, size, &nbytes)))
+> +               return ERR_PTR(-EINVAL);
 
+Btw, why not -EOVERFLOW ?
+
+--=20
+With Best Regards,
+Andy Shevchenko
