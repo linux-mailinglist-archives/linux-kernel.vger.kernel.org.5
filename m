@@ -2,123 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBF778DA10
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F5078DE83
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbjH3SfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        id S237977AbjH3TEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243708AbjH3Leg (ORCPT
+        with ESMTP id S243707AbjH3LeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:34:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDB7132;
-        Wed, 30 Aug 2023 04:34:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 30 Aug 2023 07:34:18 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B498132;
+        Wed, 30 Aug 2023 04:34:16 -0700 (PDT)
+Received: from nazgul.tnic (unknown [78.130.214.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A6A9362947;
-        Wed, 30 Aug 2023 11:34:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B934C433CD;
-        Wed, 30 Aug 2023 11:34:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693395273;
-        bh=8PWPyT185nAtNOY9ZfIuQmYypEHvEnAKXob/fzJFzmU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UFbSR3+TrzjNWYwzynS+zz3AR+ROQkYYb8Jc1Y3bhCI9RN14hL/dH0F7/VtbK/2sd
-         nHJ9bzuvjxVaFEPH82m7v9FlnhBCfRob3tlO07d2X5eK1wQqxLxTmbenus8BSKxe5v
-         lXi8V++xXhIAW0v381yj8wDgiMu2o9AuQE/wMwXFmMLIo4N0Shf2xyriNS3mquojQ4
-         hivIeh4RBAP7sSL1+gU4F6vURm+zhixSZcW22i3G9LgKv6XQ4asQvHmVgX8v6BLL+z
-         hGTeSQXJGbLUViQ2bW6BbibUcjPyz/jd+ylMS/csxK6gsPw0x9Aos8OP4tosjJFP7x
-         OZAFbwz2RLmtg==
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3a9f87adfe1so133853b6e.1;
-        Wed, 30 Aug 2023 04:34:32 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy5xBhoPz0onTjIEIyUNCbOILHqjOkaztGvOu83Fjlw4sliMfu1
-        BMYt7f+EwDc8CY7mkl2oLzE8k4FwRmeBUqpZARY=
-X-Google-Smtp-Source: AGHT+IGGq5Rqco8PApfnoN6MY05uD7oJkUFoXYsw6ftS35VEXOIjGOHW2RlK6KWUSGFFkiYpsLeyv5+GV14iOu/km8A=
-X-Received: by 2002:a05:6808:a09:b0:3a8:1012:89d6 with SMTP id
- n9-20020a0568080a0900b003a8101289d6mr1682501oij.34.1693395272281; Wed, 30 Aug
- 2023 04:34:32 -0700 (PDT)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6D4D81EC08F9;
+        Wed, 30 Aug 2023 13:34:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1693395254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kyrJuOePM6iTnqDG/fqXmuj6BgFDXnc1OpummGdqoKk=;
+        b=Rv5vok3kkjHpodzGz6dXlJ08m3i9Xxymtas3l8jZ+cnHwNA7rBknQfHyQA8I1G2ZBVSw1n
+        3WeBwD7f19u4zN6vw8Te1ShmYUlNvJ/BpHRkKrqvMHO7oTGGBanvzdZ9WeIq1aoTRSA2jf
+        ZDaTb1N7DYuqzLqBhvCeufB9+Ju4h5I=
+Date:   Wed, 30 Aug 2023 13:34:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shravan Kumar Ramani <shravankr@nvidia.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] EDAC/bluefield_edac: Use ARM SMC for EMI access
+Message-ID: <20230830113421.GBZO8pPUILVoBUVlki@fat_crate.local>
+References: <7a67e5fd25664f4c2277283e15b438e826b3c163.1693392576.git.shravankr@nvidia.com>
 MIME-Version: 1.0
-References: <20230829113531.4004730-1-masahiroy@kernel.org> <ZO3d7DrfKfsDXqa5@bergen.fjasle.eu>
-In-Reply-To: <ZO3d7DrfKfsDXqa5@bergen.fjasle.eu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 30 Aug 2023 20:33:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATvUo7gKFG9NjtJarTBM508ntf2v6yo5tXsmDoMcUrJVA@mail.gmail.com>
-Message-ID: <CAK7LNATvUo7gKFG9NjtJarTBM508ntf2v6yo5tXsmDoMcUrJVA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: single-quote the format string of printf
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7a67e5fd25664f4c2277283e15b438e826b3c163.1693392576.git.shravankr@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 10:00=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu>=
- wrote:
->
-> On Tue 29 Aug 2023 20:35:31 GMT, Masahiro Yamada wrote:
-> > Use single-quotes to avoid escape sequences (\\n).
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
->
-> Is this really necessary?  Testing w/ GNU Make 4.3, bash 5.2.15 or
-> dash 0.5.12-6 and a stupid Makefile snippet I cannot see any difference
-> between these three:
->
-> print:
->         @printf "hello med single-backslash and double quotes\n"
->         @printf 'hello med single-backslash and single quotes\n'
->         @printf "hello med double-backslash and double quotes\\n"
->
-> Only double-backslash+n in single-quotes does not work, for obvious
-> reasons.
+On Wed, Aug 30, 2023 at 06:56:14AM -0400, Shravan Kumar Ramani wrote:
+> Add secure read/write calls (arm_smccc_smc) to bluefield_edac.
+> The ACPI table entry decides whether SMC is need for accessing
 
+SMC? Self-Modifying Code?
 
-You are right.
+> the registers in the External Memory Interface block. If not,
+> the registers may be mapped and accessed directly.
 
-I was misunderstanding the backslash-escaping in double-quotes.
+I'm sure there's a human readable explanation for the above.
 
-I always used single-quotes when I wanted to avoid
-escape sequences.
+> v0 -> v1
+> Updated commit message
 
-The following POSIX spec applies here:
+I still have no clue what those secure calls are.
 
+I'm sure there's some ARM documentation which you use in order to
+explain why those are needed.
 
-  2.2.3 Double-Quotes
+> +static int edac_readl(void __iomem *addr, uint32_t *result,
 
-  The <backslash> shall retain its special meaning as an escape character
-  (see Escape Character (Backslash)) only when followed by one of the
-  following characters when considered special:
+No "edac_" previxes to driver-local functions. They belong to the EDAC
+subsystem.
 
-  $   `   "   \   <newline>
+-- 
+Regards/Gruss,
+    Boris.
 
-
-
-
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
-
-
-All of "\\n", "\n", '\n' are the same.
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+https://people.kernel.org/tglx/notes-about-netiquette
