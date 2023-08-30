@@ -2,156 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD4478DA15
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F65478DB6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjH3SfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        id S238782AbjH3SjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245259AbjH3O6P (ORCPT
+        with ESMTP id S245261AbjH3O63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:58:15 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30352AC
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:58:12 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bfcf4c814so747328566b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:58:12 -0700 (PDT)
+        Wed, 30 Aug 2023 10:58:29 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91511A2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:58:26 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso737284166b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693407487; x=1694012287; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w/+k6PD4xwGQdkLa4KX0Kf1ry0F1EIye4pGxjvLn9W4=;
-        b=FE97Tt2vSFMwg0aorFk+5wkpNYRog7AbyH36pH6EqP6pU5jjOew0gkpabEciZA8tv8
-         vfjv6v6TDjN0bKe8PsdejEy79wcTHZ0mP7At9zz+rA/Cof4ef3sQRrbH7YGWJ+UpofAu
-         URjbLwNdW2qzkHkbW8PVZHNTOWAECgS9u2L8I=
+        d=linaro.org; s=google; t=1693407505; x=1694012305; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WLDIxOJaEszasiCn1zcMVYnWQkwKtpMOaSPTUz6xA1E=;
+        b=eh4ssLoH8099Kx8G3/qkDV7kqk3McS4IlJZ7glfOW+jX61IM4ggmU9zOb5TmN2c/MI
+         xIRKvM8aYiDTCvbqJiaV4ainKNL8jHFJX3acf0Ia7yTnoELl29DPJ+S10+hroi2/SHeT
+         oiS/nw6DUkQekpV0Xuaj9vrZt9FAXqcDEY8v5KR0JGw90M1FUT514RliveyFCKy8h+bF
+         QPcVaFKJ8Q8W4kf/8TOlIJU47lprirUeuA30e7VJXEbWjCNkUi5uoE4M1fHMIP2QhOfP
+         5iDDUxSgjSvsVCsDYJg3jAGYuscJ02qojK5wmrz2fdmFMn0WWNTrEqtM+4S//6YUz/Ta
+         Vl5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693407487; x=1694012287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w/+k6PD4xwGQdkLa4KX0Kf1ry0F1EIye4pGxjvLn9W4=;
-        b=Qs6gWG9M4F5eBSLCuEJgC9K8L1Vlue4Bl9cRUSGpqhwOTvM6LnIVIGGNYVH8kXKmj7
-         ZAOJ/pJ5eOXnOss4QFJGHEOn3F6ZptDuMtlgFMIQIkTNE2fXhISmjZuFeTMXobKGXrv5
-         lHQN9BJkdhP9npuvaGdsFmtKqyg5BGokUfvC9W7uEX9nXXxejYORcjmlVheEhJUJ1Wct
-         gv5Nt8L/QlxCk+lO4j2t/66xMIonjPIOL8nAFQVBlftJnLlD5oIJxGpLP3tQMq63BDUa
-         y6ZPzw6xrXOc10v5ii+bnghq+tzcm/xHv5AATcYGWqmDEfQaBmbGLXjpEj1/X5Ee/2xQ
-         7qgg==
-X-Gm-Message-State: AOJu0YziPIHvlhAZnMAbeOCH3kzlZScEBAguSB0BCM6DOvCKLVSYz0JQ
-        c5LE2vH68Ogu85v1OKjzraQ14MMIsVSEAD8n+EWWzMVh
-X-Google-Smtp-Source: AGHT+IFh9ZrX6C0u6ctrDv066BLlE/eoScgNOnETPUmcu+xNlIMDQSvxywxz+Ib7zsAmJlZ+UVTabQ==
-X-Received: by 2002:a17:906:109:b0:99b:f820:5d0e with SMTP id 9-20020a170906010900b0099bf8205d0emr1513666eje.25.1693407487488;
-        Wed, 30 Aug 2023 07:58:07 -0700 (PDT)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id qc10-20020a170906d8aa00b0099ce188be7fsm7273010ejb.3.2023.08.30.07.58.06
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1693407505; x=1694012305;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WLDIxOJaEszasiCn1zcMVYnWQkwKtpMOaSPTUz6xA1E=;
+        b=ViAIMQ1HYWc38xlB7hZbprff2R8S2w4CHypjRCtcmSBFZG/8BDX9obAeZ4lqHMh9LN
+         LOvo5XSW0Viquu6S6Iu4BNxhlT/LVta922snhhXzqyRc8oA3cyoMuVhLErTZFouISqC3
+         zL6ONHR9pufGDyETewutFlbCmaynwIiqx9yjlsEnd97ACgBakoWKIBT4HXb49PYb2aS+
+         6YvpKFNcQiedbNGurzDWlEY1oSmygiRFM3O68zpMglJy9a22gHpwCHscdGLV1R1dVEa/
+         RSng0/zUJQxbUTRpTj9URxYIb+An5j/5UDCh/SDoRopqyI/QKtW56Xe1yo0h3jicI0gJ
+         lRNg==
+X-Gm-Message-State: AOJu0YwfkelHWupg8BN0n79qqa+zyx1SnREXlYSCLxBDCkOCVqUWQQuO
+        EsJj1+kjfL2EDiub2xMatlcZ+Q==
+X-Google-Smtp-Source: AGHT+IExqtAvw85uOYoISyCNcaiIGfaHR43JUwoyg6pAOWLwnTCuf1Jc31Ui+I5CLnUlgMVI9kPReQ==
+X-Received: by 2002:a17:906:20dc:b0:9a5:9f8d:770 with SMTP id c28-20020a17090620dc00b009a59f8d0770mr1504462ejc.46.1693407505160;
+        Wed, 30 Aug 2023 07:58:25 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id f24-20020a1709067f9800b00977eec7b7e8sm7291810ejr.68.2023.08.30.07.58.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 07:58:06 -0700 (PDT)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso78825e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:58:06 -0700 (PDT)
-X-Received: by 2002:a05:600c:520e:b0:3fe:eb42:7ec with SMTP id
- fb14-20020a05600c520e00b003feeb4207ecmr336994wmb.1.1693407486198; Wed, 30 Aug
- 2023 07:58:06 -0700 (PDT)
+        Wed, 30 Aug 2023 07:58:24 -0700 (PDT)
+Message-ID: <72af9e51-3fc5-c2a8-b81b-7a7cbd0c9311@linaro.org>
+Date:   Wed, 30 Aug 2023 16:58:23 +0200
 MIME-Version: 1.0
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-2-5a954519bbad@fairphone.com> <CAD=FV=WS2hgY=bQjLOs3Fdp8pbZyMsaS-0BpoxPq90Etfi+Xuw@mail.gmail.com>
- <CV5YJVXIL8OT.1ZWW3KVCHPTA5@otso>
-In-Reply-To: <CV5YJVXIL8OT.1ZWW3KVCHPTA5@otso>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 30 Aug 2023 07:57:54 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XhdORH=naTtoc+kCC4A7UdAJKwq=Te6B3qvXNGBwBieg@mail.gmail.com>
-Message-ID: <CAD=FV=XhdORH=naTtoc+kCC4A7UdAJKwq=Te6B3qvXNGBwBieg@mail.gmail.com>
-Subject: Re: [PATCH 02/11] nvmem: qfprom: Mark core clk as optional
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     cros-qcom-dts-watchers@chromium.org,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 05/11] dt-bindings: document the Qualcomm TEE Shared
+ Memory Bridge
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+ <20230828192507.117334-6-bartosz.golaszewski@linaro.org>
+ <9b69a4a6-b011-f0e8-217f-5f91d9a00382@linaro.org>
+ <48feda07-525d-4319-ba09-14928ab1fd29@linaro.org>
+ <CACMJSeuOigO38_jgjNLz6AiWK1BoLN+shDQHrubS5s-dkDFG7A@mail.gmail.com>
+ <3f7f6427-51eb-a251-f8dd-f7922b9fcfd7@linaro.org>
+ <CACMJSevO7sGZ5Yj_wBrs6kV+eo7iW_aLwBj68zjbU3dS7tJ-sA@mail.gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CACMJSevO7sGZ5Yj_wBrs6kV+eo7iW_aLwBj68zjbU3dS7tJ-sA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 30/08/2023 16:39, Bartosz Golaszewski wrote:
+> On Wed, 30 Aug 2023 at 16:31, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 30/08/2023 15:48, Bartosz Golaszewski wrote:
+>>> On Tue, 29 Aug 2023 at 11:30, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>>>
+>>>> On 29.08.2023 10:02, Krzysztof Kozlowski wrote:
+>>>>> On 28/08/2023 21:25, Bartosz Golaszewski wrote:
+>>>>>> Add Device Tree bindings for Qualcomm TEE Shared Memory Brige - a
+>>>>>> mechanism that allows sharing memory buffers between trustzone and the
+>>>>>> kernel.
+>>>>>
+>>>>> Subject prefix:
+>>>>> dt-bindings: firmware:
+>>>>>
+>>>>>
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>>>> ---
+>>>>>>  .../bindings/firmware/qcom,shm-bridge.yaml    | 36 +++++++++++++++++++
+>>>>>>  1 file changed, 36 insertions(+)
+>>>>>>  create mode 100644 Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..f660962b7b86
+>>>>>> --- /dev/null
+>>>>>> +++ b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
+>>>>>> @@ -0,0 +1,36 @@
+>>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>>>> +%YAML 1.2
+>>>>>> +---
+>>>>>> +$id: http://devicetree.org/schemas/firmware/qcom,shm-bridge.yaml#
+>>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>>> +
+>>>>>> +title: QCOM Shared Memory Bridge
+>>>>>> +
+>>>>>> +description: |
+>>>>>
+>>>>> Do not need '|' unless you need to preserve formatting.
+>>>>>
+>>>>>> +  Qualcomm TEE Shared Memory Bridge allows sharing limited areas of kernel's
+>>>>>> +  virtual memory with the trustzone in order to avoid mapping the entire RAM.
+>>>>>> +
+>>>>>> +maintainers:
+>>>>>> +  - Bjorn Andersson <andersson@kernel.org>
+>>>>>> +  - Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>>>> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>>>> +
+>>>>>> +properties:
+>>>>>> +  compatible:
+>>>>>> +    items:
+>>>>>> +      - enum:
+>>>>>> +          - qcom,shm-bridge-sa8775p
+>>>>>> +          - qcom,shm-bridge-sm8150
+>>>>>> +          - qcom,shm-bridge-sm8450
+>>>>>> +      - const: qcom,shm-bridge
+>>>>>> +
+>>>>>
+>>>>> Looks quite empty... Why this cannot be part of qcom,scm? IOW, why do
+>>>>> you need new binding if you do not have any resources here and the block
+>>>>> is essentially feature of qcom,scm firmware?
+>>>> Since it's "discoverable" (via retval of an scm call), I'd second the
+>>>> idea of probing this from within the SCM driver.
+>>>>
+>>>> Konrad
+>>>
+>>> Downstream has a bunch of DT switches that we don't support for now
+>>> upstream. I disagree about shoehorning this into the SCM driver. It
+>>> really is a layer on top of SCM but also SCM is a user of this
+>>> interface.
+>>
+>> Sure, for the driver makes sense, but it does not really explain why DT
+>> node is needed. It is not separate hardware. I doubt it is even separate
+>> firmware, but part of SCM.
+>>
+>> Best regards,
+>> Krzysztof
+>>
+> 
+> Because not all platforms support it and it's the simplest way of
 
-On Wed, Aug 30, 2023 at 7:43=E2=80=AFAM Luca Weiss <luca.weiss@fairphone.co=
-m> wrote:
->
-> On Wed Aug 30, 2023 at 4:30 PM CEST, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Wed, Aug 30, 2023 at 2:58=E2=80=AFAM Luca Weiss <luca.weiss@fairphon=
-e.com> wrote:
-> > >
-> > > On some platforms like sc7280 on non-ChromeOS devices the core clock
-> > > cannot be touched by Linux so we cannot provide it. Mark it as option=
-al
-> > > as accessing qfprom works without it.
-> > >
-> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > > ---
-> > >  drivers/nvmem/qfprom.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > Are you actually testing burning fuses from the OS, or are you just
-> > using the nvmem in "read-only" mode? From comments in the bindings, if
-> > you're trying to burn the fuses then the clock is required. If things
-> > are in read-only mode then the clock isn't required.
->
-> Hi Doug,
->
-> I definitely don't plan on burning any fuses on this phone. Not even
-> sure that's allowed by the TZ / boot stack.
->
-> >
-> > When I compare to the driver, it seems like the driver assumes that if
-> > more than one memory region is provided then you must be supporting
-> > burning fuses. The bindings agree that having 4 memory regions
-> > specified means that the nvmem supports burning and 1 memory region
-> > specified means read-only. The extra 3 memory regions in the nvmem are
-> > all about fuse burning, I believe.
-> >
-> > So maybe the right fix here is to just change your dts to specify one
-> > memory region?
->
-> I got feedback from Konrad that this here would be the preferred
-> approach compared to having a different dts for ChromeOS vs non-ChromeOS
-> devices. I don't feel strongly to either, for me it's also okay to
-> remove the extra memory regions and only have the main one used on
-> regular qcom devices.
->
-> Let me know what you think.
+Platforms like SoCs or boards?
 
-I don't hate the idea of leaving the extra memory regions in the dts.
-They do describe the hardware, after all, even if the main OS can't
-actually access those memory regions. ...though the same could also be
-said about the clock you've removed. Said another way: if you want to
-fully describe the hardware then the dts should have the extra memory
-regions and the clock. If you are OK w/ just describing the hardware
-in the way that the OS has access to then the dts should not have the
-extra memory regions and not have the clock. Does that sound right?
+> marking the ones that do. Both SHM and SCM nodes sit on the firmware
+> node anyway. What do you recommend? A property of the SCM node? Like
+> 'qcom,shm-bridge` or something?
 
-If somehow you do end up with something like your patch, though,
-you're still missing a bit. Specifically, you don't want to "enable
-writing" a few lines below if you didn't get the clock, right?
+If the first - you talk about SoCs - then you have everything needed
+already: SCM compatibles. This defines it fully.
 
--Doug
+If it varies by boards with one SoC, would be different case, but I
+really doubt it.
+
+Best regards,
+Krzysztof
+
