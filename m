@@ -2,180 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1455478DFAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22B678E017
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240682AbjH3Tci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45854 "EHLO
+        id S239061AbjH3Tvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240565AbjH3Slq (ORCPT
+        with ESMTP id S238289AbjH3TvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 14:41:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA1FA3;
-        Wed, 30 Aug 2023 11:28:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Wed, 30 Aug 2023 15:51:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E89C1FEC;
+        Wed, 30 Aug 2023 11:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693420320; x=1724956320;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=UbGPAEXN7yfVCF+K7mc6tv4ql+AAY+yqcjPAa7pVsoI=;
+  b=ModfCCHU4lvdjBEAXZn2kkXKELta8QhJE+ztaQPjrRkdp7OacUnxxfMx
+   YNFDVF8Dhi8jItIWbQ8B5y8P03XBo98c7DVVMAnKxiosCusFAnwlQwKno
+   6d7c3YQo2GeyjRrex9lqtfwgascBkclxcPI+jmpau3FainGes08ZbSewv
+   pSw4EbdEyDlIvQjEKs2FxLiR8t+WYVe0SoXbZMVPslChrFSF/sdASzVD2
+   6a4taY+UYLLclrrEjWSvox1qfnucjKQ5DtVh6NPMZnQbSVH+7Z+KxQj23
+   9KmejzOGG5VjMMiojJLWkABg0PQkc0O9gfGTl7LMp3XmUOuDZDKBy+UP/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="442080854"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="442080854"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 11:29:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="853825698"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="853825698"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Aug 2023 11:29:54 -0700
+Received: from [10.212.2.57] (kliang2-mobl1.ccr.corp.intel.com [10.212.2.57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 436F0612AF;
-        Wed, 30 Aug 2023 18:28:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37208C433C9;
-        Wed, 30 Aug 2023 18:28:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693420130;
-        bh=rEAPvYU4MwSkvBKxGKCKmGZYh4Dc+YPUfa1bf0LFA0o=;
-        h=From:Date:Subject:To:Cc:From;
-        b=Mxdgfg0Szuu03us5SXGBsvD07gbRBlbelfO7aFFQghkUSPEDfZDoq+EASq3WUNzrg
-         YB5QyBFnEc1Crzr4Vk71HsP84y0pb9E7hIvWLdGatIrHn80CbRp4MIWp9lG4jlA4h7
-         3qN4pxztaw6oR6EZqaYKiWWko8ot+OVvAwJCcml1D9vg0syXsN56qKU9B3k06sg7Vz
-         QL0OXOmZdD8+PmA4Gw32p1rVFnyVoJDPjq2yV/H5DCq6ge2G1ftMyIB18vL6iG4Abn
-         PUpewXcBLkJkjyNgSQ2rD1u2VRFKdJJmwMidUIzLZauq0DF2mrqbPnUGiGNnh0GF3M
-         7zR7W2E+dAI2A==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Wed, 30 Aug 2023 14:28:43 -0400
-Subject: [PATCH] fs: have setattr_copy handle multigrain timestamps
- appropriately
+        by linux.intel.com (Postfix) with ESMTPS id 0FD38580C73;
+        Wed, 30 Aug 2023 11:29:51 -0700 (PDT)
+Message-ID: <b976ef43-25ea-f24a-2c22-0976fafcf0f0@linux.intel.com>
+Date:   Wed, 30 Aug 2023 14:29:50 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230830-kdevops-v1-1-ef2be57755dd@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAFqK72QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDC2MD3eyU1LL8gmJdozRDUxMTY5O0tBRjJaDqgqLUtMwKsEnRsbW1AFL
- BCm9ZAAAA
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3444; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=rEAPvYU4MwSkvBKxGKCKmGZYh4Dc+YPUfa1bf0LFA0o=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBk74phUaUcOMlN97H0RCFi/ryQ91nTIjRDD69NV
- EurUnmIW52JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZO+KYQAKCRAADmhBGVaC
- FcKMD/487xVSNRPFtmh3BuR09cvDvXHJx4dJiKTbFFTu2MbN2Wzh9poD7WyfGic+a8uKu+OnFRK
- 1t7EFIpu1s+OyBtreAq328cQFCUa3XcZ6GR4u6NMPlnks8jP1miLGcBlIbqo0wrEggD9biFBFh7
- Z5+2bxt4UwWaJZVhkhZhJe/wk+6oPsuR3VkUEKNnkk/VbimkwdSiqugN+TZIvgNCsZkHHVxJPnx
- bnHDSZFCn0OaB6HTKU7L4ydbkUBT4HNTorXrDC38lqNBeCCeJhtY5FAyrJIZ3GPYYX+vlqXcFvF
- eBybPuyTrFdKEp9VWDMqhrljDj40N8acbummVQ8QFDQhTCEO9cuUMr/xjBaPzOPBx+ji2Sa/31s
- C/Y5TOsMKxMb6lbqU2PUTfmeiAUYo10P46i+NIpATGopl5NFVxAFR8AD9YYbAowHCJg05jsuzAZ
- K2XIFDtbsE53tzZnjfYh+vyIw0evBTBc34jHKnnJsUU2YnkncSlt3xxVTKj+Bex/Tl3VMG94+5B
- oKnaedfnVVKWddQbJlZd5+EJJcF1v4TeJYsdDse80XJnuRIIjqw9bh2ZzzQOxDgtl5hqOo6N00b
- w2kmjhF92ZC41AGsHCO3DieMXblw1lBrR9Pn9XU1qtbo3spgRg0bJGnCOCJ4PWHs0PlpH5ERB+T
- CuknfDNbR3np6tw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 2/3] perf parse-events: Make common term list to strbuf
+ helper
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230830070753.1821629-1-irogers@google.com>
+ <20230830070753.1821629-2-irogers@google.com>
+ <4de84370-29f3-75ed-9c91-330636cdd790@linux.intel.com>
+ <CAP-5=fXMgeER2FkAF2jZOAP0c=sxqhU8scxew6jXQrEYjN_S=Q@mail.gmail.com>
+ <CAP-5=fUXG9tfN2nahiVpBDiggkhmhFiBZYubCSN6vG4voJ_X2A@mail.gmail.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAP-5=fUXG9tfN2nahiVpBDiggkhmhFiBZYubCSN6vG4voJ_X2A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The setattr codepath is still using coarse-grained timestamps, even on
-multigrain filesystems. To fix this, we need to fetch the timestamp for
-ctime updates later, at the point where the assignment occurs in
-setattr_copy.
 
-On a multigrain inode, ignore the ia_ctime in the attrs, and always
-update the ctime to the current clock value. Update the atime and mtime
-with the same value (if needed) unless they are being set to other
-specific values, a'la utimes().
 
-Note that we don't want to do this universally however, as some
-filesystems (e.g. most networked fs) want to do an explicit update
-elsewhere before updating the local inode.
+On 2023-08-30 11:04 a.m., Ian Rogers wrote:
+> On Wed, Aug 30, 2023 at 7:40 AM Ian Rogers <irogers@google.com> wrote:
+>>
+>> On Wed, Aug 30, 2023 at 7:15 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>>
+>>>
+>>>
+>>> On 2023-08-30 3:07 a.m., Ian Rogers wrote:
+>>>> A term list is turned into a string for debug output and for the str
+>>>> value in the alias. Add a helper to do this based on existing code,
+>>>> but then fix for situations like events being identified. Use strbuf
+>>>> to manage the dynamic memory allocation and remove the 256 byte
+>>>> limit. Use in various places the string of the term list is required.
+>>>>
+>>>> Before:
+>>>> ```
+>>>> $ sudo perf stat -vv -e inst_retired.any true
+>>>> Using CPUID GenuineIntel-6-8D-1
+>>>> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
+>>>> Attempting to add event pmu 'cpu' with 'inst_retired.any,' that may result in non-fatal errors
+>>>> After aliases, add event pmu 'cpu' with 'event,period,' that may result in non-fatal errors
+>>>> inst_retired.any -> cpu/inst_retired.any/
+>>>> ...
+>>>> ```
+>>>>
+>>>> After:
+>>>> ```
+>>>> $ sudo perf stat -vv -e inst_retired.any true
+>>>> Using CPUID GenuineIntel-6-8D-1
+>>>> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
+>>>> Attempt to add: cpu/inst_retired.any/
+>>>> ..after resolving event: cpu/event=0xc0,period=0x1e8483/
+>>>> inst_retired.any -> cpu/event=0xc0,period=0x1e8483/
+>>>> ...
+>>>> ```
+>>>>
+>>>> Signed-off-by: Ian Rogers <irogers@google.com>
+>>>> ---
+>>>>  tools/perf/util/parse-events.c | 101 ++++++++++++++++++++++++---------
+>>>>  tools/perf/util/parse-events.h |   2 +
+>>>>  tools/perf/util/pmu.c          |  19 ++-----
+>>>>  3 files changed, 81 insertions(+), 41 deletions(-)
+>>>
+>>> Which branch should I use to apply the patch?
+>>> I tried the perf-tools-next branch, but there is some conflict.
+>>> I'd like to do some tests on a hybrid machine.
+>>
+>> I was working on tmp.perf-tools-next but it is the same as
+>> perf-tools-next currently [1]. I had this 2 line patch in place:
+>> https://lore.kernel.org/lkml/20230830000545.1638964-1-irogers@google.com/
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/attr.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 46 insertions(+), 6 deletions(-)
+Yes, on top of this patch, I don't see the conflict anymore.
 
-diff --git a/fs/attr.c b/fs/attr.c
-index a8ae5f6d9b16..8ba330e6a582 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -275,6 +275,42 @@ int inode_newsize_ok(const struct inode *inode, loff_t offset)
- }
- EXPORT_SYMBOL(inode_newsize_ok);
- 
-+/**
-+ * setattr_copy_mgtime - update timestamps for mgtime inodes
-+ * @inode: inode timestamps to be updated
-+ * @attr: attrs for the update
-+ *
-+ * With multigrain timestamps, we need to take more care to prevent races
-+ * when updating the ctime. Always update the ctime to the very latest
-+ * using the standard mechanism, and use that to populate the atime and
-+ * mtime appropriately (unless we're setting those to specific values).
-+ */
-+static void setattr_copy_mgtime(struct inode *inode, const struct iattr *attr)
-+{
-+	unsigned int ia_valid = attr->ia_valid;
-+	struct timespec64 now;
-+
-+	/*
-+	 * If the ctime isn't being updated then nothing else should be
-+	 * either.
-+	 */
-+	if (!(ia_valid & ATTR_CTIME)) {
-+		WARN_ON_ONCE(ia_valid & (ATTR_ATIME|ATTR_MTIME));
-+		return;
-+	}
-+
-+	now = inode_set_ctime_current(inode);
-+	if (ia_valid & ATTR_ATIME_SET)
-+		inode->i_atime = attr->ia_atime;
-+	else if (ia_valid & ATTR_ATIME)
-+		inode->i_atime = now;
-+
-+	if (ia_valid & ATTR_MTIME_SET)
-+		inode->i_mtime = attr->ia_mtime;
-+	else if (ia_valid & ATTR_MTIME)
-+		inode->i_mtime = now;
-+}
-+
- /**
-  * setattr_copy - copy simple metadata updates into the generic inode
-  * @idmap:	idmap of the mount the inode was found from
-@@ -307,12 +343,6 @@ void setattr_copy(struct mnt_idmap *idmap, struct inode *inode,
- 
- 	i_uid_update(idmap, attr, inode);
- 	i_gid_update(idmap, attr, inode);
--	if (ia_valid & ATTR_ATIME)
--		inode->i_atime = attr->ia_atime;
--	if (ia_valid & ATTR_MTIME)
--		inode->i_mtime = attr->ia_mtime;
--	if (ia_valid & ATTR_CTIME)
--		inode_set_ctime_to_ts(inode, attr->ia_ctime);
- 	if (ia_valid & ATTR_MODE) {
- 		umode_t mode = attr->ia_mode;
- 		if (!in_group_or_capable(idmap, inode,
-@@ -320,6 +350,16 @@ void setattr_copy(struct mnt_idmap *idmap, struct inode *inode,
- 			mode &= ~S_ISGID;
- 		inode->i_mode = mode;
- 	}
-+
-+	if (is_mgtime(inode))
-+		return setattr_copy_mgtime(inode, attr);
-+
-+	if (ia_valid & ATTR_ATIME)
-+		inode->i_atime = attr->ia_atime;
-+	if (ia_valid & ATTR_MTIME)
-+		inode->i_mtime = attr->ia_mtime;
-+	if (ia_valid & ATTR_CTIME)
-+		inode_set_ctime_to_ts(inode, attr->ia_ctime);
- }
- EXPORT_SYMBOL(setattr_copy);
- 
+>> so that may be the conflict.
+>>
+>> Thanks,
+>> Ian
+>>
+>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/log/?h=tmp.perf-tools-next
+> 
+> Hmm.. for some reason I'm not seeing the message on LKML and so b4
+> fails. Anyway, applying the patches and running on an Alderlake I see:
+> ```
+> $ perf stat -vv -e inst_retired.any true
+> Using CPUID GenuineIntel-6-97-2
+> Attempt to add: cpu_atom/inst_retired.any/
+> ..after resolving event: cpu_atom/event=0xc0,period=0x1e8483/
+> inst_retired.any -> cpu_atom/event=0xc0,period=0x1e8483/
+> Attempt to add: cpu_core/inst_retired.any/
+> ..after resolving event: cpu_core/event=0xc0,period=0x1e8483/
+> inst_retired.any -> cpu_core/event=0xc0,period=0x1e8483/
+> ...
+> ```
+> The previous output was like:
+> ```
+> $ perf stat -vv -e inst_retired.any true
+> Using CPUID GenuineIntel-6-97-2
+> Attempting to add event pmu 'cpu_core' with 'inst_retired.any,' that
+> may result in non-fatal errors
+> After aliases, add event pmu 'cpu_core' with 'event,period,' that may
+> result in non-fatal errors
+> inst_retired.any -> cpu_core/event=0xc0,period=0x1e8483/
+> Attempting to add event pmu 'cpu_atom' with 'inst_retired.any,' that
+> may result in non-fatal errors
+> After aliases, add event pmu 'cpu_atom' with 'event,period,' that may
+> result in non-fatal errors
+> inst_retired.any -> cpu_atom/event=0xc0,period=0x1e8483/
+> ...
+> ```
+> Perhaps a more interesting example is:
+> ```
+> $ perf stat -vv -e UOPS_RETIRED.MS true
+> Using CPUID GenuineIntel-6-97-2
+> Attempt to add: cpu_atom/UOPS_RETIRED.MS/
+> ..after resolving event: cpu_atom/event=0xc2,period=0x1e8483,umask/
+> UOPS_RETIRED.MS -> cpu_atom/event=0xc2,period=0x1e8483,umask/
+> Attempt to add: cpu_core/UOPS_RETIRED.MS/
+> ..after resolving event:
+> cpu_core/event=0xc2,period=0x1e8483,umask=0x4,frontend=0x8/
+> UOPS_RETIRED.MS -> cpu_core/event=0xc2,period=0x1e8483,umask=0x4,frontend=0x8/
+> ...
+> ```
+> The umask not being printed for the cpu_atom is an issue. 
 
----
-base-commit: c5d9e87c18026d4caee80cd60a143f2b6564d446
-change-id: 20230830-kdevops-2f154434ffd3
+Yes, I observed it as well.
 
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
+> The problem
+> is how we encode terms of an event name, it is indistinguishable when
+> the of the user field is 1. I'll probably add something to fix this
+> later, but it only impacts debug output and perf list, so I'm not
+> overly worried. 
 
+It should be OK for the debug output.
+
+> We could go in the other direction and instead of
+> printing say cpu_atom/UOPS_RETIRED.MS/ print
+> cpu_atom/UOPS_RETIRED.MS=1/, but I thought that was uglier and more
+> confusing.
+
+If there is no plan to fix it for now, it's better to keep it as is. The
+UOPS_RETIRED.MS=1 is confusing.
+
+Thanks,
+Kan
+> 
+> Thanks,
+> Ian
+> 
+>>> Thanks,
+>>> Kan
+>>>>
+>>>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+>>>> index 4c812fbe0cf9..0b941b58bdc0 100644
+>>>> --- a/tools/perf/util/parse-events.c
+>>>> +++ b/tools/perf/util/parse-events.c
+>>>> @@ -13,7 +13,7 @@
+>>>>  #include <subcmd/parse-options.h>
+>>>>  #include "parse-events.h"
+>>>>  #include "string2.h"
+>>>> -#include "strlist.h"
+>>>> +#include "strbuf.h"
+>>>>  #include "debug.h"
+>>>>  #include <api/fs/tracing_path.h>
+>>>>  #include <perf/cpumap.h>
+>>>> @@ -1303,19 +1303,6 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>>>>
+>>>>       pmu = parse_state->fake_pmu ?: perf_pmus__find(name);
+>>>>
+>>>> -     if (verbose > 1 && !(pmu && pmu->selectable)) {
+>>>> -             fprintf(stderr, "Attempting to add event pmu '%s' with '",
+>>>> -                     name);
+>>>> -             if (head_config) {
+>>>> -                     struct parse_events_term *term;
+>>>> -
+>>>> -                     list_for_each_entry(term, head_config, list) {
+>>>> -                             fprintf(stderr, "%s,", term->config);
+>>>> -                     }
+>>>> -             }
+>>>> -             fprintf(stderr, "' that may result in non-fatal errors\n");
+>>>> -     }
+>>>> -
+>>>>       if (!pmu) {
+>>>>               char *err_str;
+>>>>
+>>>> @@ -1325,6 +1312,21 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>>>>                       parse_events_error__handle(err, loc->first_column, err_str, NULL);
+>>>>               return -EINVAL;
+>>>>       }
+>>>> +
+>>>> +     if (verbose > 1) {
+>>>> +             struct strbuf sb;
+>>>> +
+>>>> +             strbuf_init(&sb, /*hint=*/ 0);
+>>>> +             if (pmu->selectable && !head_config) {
+>>>> +                     strbuf_addf(&sb, "%s//", name);
+>>>> +             } else {
+>>>> +                     strbuf_addf(&sb, "%s/", name);
+>>>> +                     parse_events_term__to_strbuf(head_config, &sb);
+>>>> +                     strbuf_addch(&sb, '/');
+>>>> +             }
+>>>> +             fprintf(stderr, "Attempt to add: %s\n", sb.buf);
+>>>> +             strbuf_release(&sb);
+>>>> +     }
+>>>>       if (head_config)
+>>>>               fix_raw(head_config, pmu);
+>>>>
+>>>> @@ -1349,16 +1351,12 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>>>>               return -EINVAL;
+>>>>
+>>>>       if (verbose > 1) {
+>>>> -             fprintf(stderr, "After aliases, add event pmu '%s' with '",
+>>>> -                     name);
+>>>> -             if (head_config) {
+>>>> -                     struct parse_events_term *term;
+>>>> +             struct strbuf sb;
+>>>>
+>>>> -                     list_for_each_entry(term, head_config, list) {
+>>>> -                             fprintf(stderr, "%s,", term->config);
+>>>> -                     }
+>>>> -             }
+>>>> -             fprintf(stderr, "' that may result in non-fatal errors\n");
+>>>> +             strbuf_init(&sb, /*hint=*/ 0);
+>>>> +             parse_events_term__to_strbuf(head_config, &sb);
+>>>> +             fprintf(stderr, "..after resolving event: %s/%s/\n", name, sb.buf);
+>>>> +             strbuf_release(&sb);
+>>>>       }
+>>>>
+>>>>       /*
+>>>> @@ -1460,7 +1458,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
+>>>>               parse_events_copy_term_list(head, &orig_head);
+>>>>               if (!parse_events_add_pmu(parse_state, list, pmu->name,
+>>>>                                         orig_head, auto_merge_stats, loc)) {
+>>>> -                     pr_debug("%s -> %s/%s/\n", str, pmu->name, str);
+>>>> +                     struct strbuf sb;
+>>>> +
+>>>> +                     strbuf_init(&sb, /*hint=*/ 0);
+>>>> +                     parse_events_term__to_strbuf(orig_head, &sb);
+>>>> +                     pr_debug("%s -> %s/%s/\n", str, pmu->name, sb.buf);
+>>>> +                     strbuf_release(&sb);
+>>>>                       ok++;
+>>>>               }
+>>>>               parse_events_terms__delete(orig_head);
+>>>> @@ -1469,7 +1472,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
+>>>>       if (parse_state->fake_pmu) {
+>>>>               if (!parse_events_add_pmu(parse_state, list, str, head,
+>>>>                                         /*auto_merge_stats=*/true, loc)) {
+>>>> -                     pr_debug("%s -> %s/%s/\n", str, "fake_pmu", str);
+>>>> +                     struct strbuf sb;
+>>>> +
+>>>> +                     strbuf_init(&sb, /*hint=*/ 0);
+>>>> +                     parse_events_term__to_strbuf(head, &sb);
+>>>> +                     pr_debug("%s -> %s/%s/\n", str, "fake_pmu", sb.buf);
+>>>> +                     strbuf_release(&sb);
+>>>>                       ok++;
+>>>>               }
+>>>>       }
+>>>> @@ -2085,7 +2093,7 @@ void parse_events_error__handle(struct parse_events_error *err, int idx,
+>>>>               break;
+>>>>       default:
+>>>>               pr_debug("Multiple errors dropping message: %s (%s)\n",
+>>>> -                     err->str, err->help);
+>>>> +                     err->str, err->help ?: "<no help>");
+>>>>               free(err->str);
+>>>>               err->str = str;
+>>>>               free(err->help);
+>>>> @@ -2502,6 +2510,47 @@ void parse_events_terms__delete(struct list_head *terms)
+>>>>       free(terms);
+>>>>  }
+>>>>
+>>>> +int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb)
+>>>> +{
+>>>> +     struct parse_events_term *term;
+>>>> +     bool first = true;
+>>>> +
+>>>> +     if (!term_list)
+>>>> +             return 0;
+>>>> +
+>>>> +     list_for_each_entry(term, term_list, list) {
+>>>> +             int ret;
+>>>> +
+>>>> +             if (!first) {
+>>>> +                     ret = strbuf_addch(sb, ',');
+>>>> +                     if (ret < 0)
+>>>> +                             return ret;
+>>>> +             }
+>>>> +             first = false;
+>>>> +
+>>>> +             if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
+>>>> +                     if (term->type_term == PARSE_EVENTS__TERM_TYPE_USER && term->val.num == 1)
+>>>> +                             ret = strbuf_addf(sb, "%s", term->config);
+>>>> +                     else
+>>>> +                             ret = strbuf_addf(sb, "%s=%#"PRIx64, term->config, term->val.num);
+>>>> +             else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR) {
+>>>> +                     if (term->config) {
+>>>> +                             ret = strbuf_addf(sb, "%s=", term->config);
+>>>> +                             if (ret < 0)
+>>>> +                                     return ret;
+>>>> +                     } else if (term->type_term < __PARSE_EVENTS__TERM_TYPE_NR) {
+>>>> +                             ret = strbuf_addf(sb, "%s=", config_term_names[term->type_term]);
+>>>> +                             if (ret < 0)
+>>>> +                                     return ret;
+>>>> +                     }
+>>>> +                     ret = strbuf_addf(sb, "%s", term->val.str);
+>>>> +             }
+>>>> +             if (ret < 0)
+>>>> +                     return ret;
+>>>> +     }
+>>>> +     return 0;
+>>>> +}
+>>>> +
+>>>>  void parse_events_evlist_error(struct parse_events_state *parse_state,
+>>>>                              int idx, const char *str)
+>>>>  {
+>>>> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+>>>> index 6d75d853ce00..20bdc35d6112 100644
+>>>> --- a/tools/perf/util/parse-events.h
+>>>> +++ b/tools/perf/util/parse-events.h
+>>>> @@ -18,6 +18,7 @@ struct parse_events_error;
+>>>>
+>>>>  struct option;
+>>>>  struct perf_pmu;
+>>>> +struct strbuf;
+>>>>
+>>>>  const char *event_type(int type);
+>>>>
+>>>> @@ -152,6 +153,7 @@ int parse_events_term__clone(struct parse_events_term **new,
+>>>>  void parse_events_term__delete(struct parse_events_term *term);
+>>>>  void parse_events_terms__delete(struct list_head *terms);
+>>>>  void parse_events_terms__purge(struct list_head *terms);
+>>>> +int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb);
+>>>>  int parse_events__modifier_event(struct list_head *list, char *str, bool add);
+>>>>  int parse_events__modifier_group(struct list_head *list, char *event_mod);
+>>>>  int parse_events_name(struct list_head *list, const char *name);
+>>>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>>>> index b3f8f3f1e900..8dbb7008877e 100644
+>>>> --- a/tools/perf/util/pmu.c
+>>>> +++ b/tools/perf/util/pmu.c
+>>>> @@ -507,12 +507,11 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
+>>>>                               const char *desc, const char *val, FILE *val_fd,
+>>>>                               const struct pmu_event *pe)
+>>>>  {
+>>>> -     struct parse_events_term *term;
+>>>>       struct perf_pmu_alias *alias;
+>>>>       int ret;
+>>>> -     char newval[256];
+>>>>       const char *long_desc = NULL, *topic = NULL, *unit = NULL, *pmu_name = NULL;
+>>>>       bool deprecated = false, perpkg = false;
+>>>> +     struct strbuf sb;
+>>>>
+>>>>       if (perf_pmu__find_alias(pmu, name, /*load=*/ false)) {
+>>>>               /* Alias was already created/loaded. */
+>>>> @@ -582,20 +581,10 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
+>>>>        *
+>>>>        * Rebuild string to make alias->str member comparable.
+>>>>        */
+>>>> -     ret = 0;
+>>>> -     list_for_each_entry(term, &alias->terms, list) {
+>>>> -             if (ret)
+>>>> -                     ret += scnprintf(newval + ret, sizeof(newval) - ret,
+>>>> -                                      ",");
+>>>> -             if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
+>>>> -                     ret += scnprintf(newval + ret, sizeof(newval) - ret,
+>>>> -                                      "%s=%#x", term->config, term->val.num);
+>>>> -             else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
+>>>> -                     ret += scnprintf(newval + ret, sizeof(newval) - ret,
+>>>> -                                      "%s=%s", term->config, term->val.str);
+>>>> -     }
+>>>>       zfree(&alias->str);
+>>>> -     alias->str = strdup(newval);
+>>>> +     strbuf_init(&sb, /*hint=*/ 0);
+>>>> +     parse_events_term__to_strbuf(&alias->terms, &sb);
+>>>> +     alias->str = strbuf_detach(&sb, /*sz=*/ NULL);
+>>>>       if (!pe)
+>>>>               pmu->sysfs_aliases++;
+>>>>       else
