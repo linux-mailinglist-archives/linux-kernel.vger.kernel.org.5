@@ -2,209 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BDA78DE26
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D4678DE6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbjH3S6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        id S241724AbjH3TCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245663AbjH3PvW (ORCPT
+        with ESMTP id S245666AbjH3PwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:51:22 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6758B122;
-        Wed, 30 Aug 2023 08:51:19 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: alarumbe)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C084D66071C9;
-        Wed, 30 Aug 2023 16:51:17 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693410677;
-        bh=kjUaL5VR03TEh1MPjIv78EGFfK/hRCmMtUCTAAdazBc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GukEUIfKnpFKvAszreQSRQAt6GYkCQaSzGgV7+bPCcAEFLBL1TsDtLAgZ4Uu6B9Ck
-         S4JzqnYTBrMnTsl3nON6wFXADZAZ9ZV4gtS+R3Y2WBEwMH4jN//LLVtZYE8cfcGPmE
-         9x9J6KOX/jdB2LsHF3BdFkd4HifeIs9D5hqZgkt3S537FFnJWObNqYETpCxK4qMBAN
-         LU4Y/LbaZDn9p6svH8gBC5xD4u9oIrVWE4onSyqUPBrYVty56x3V/qbaBAmJkxPx5W
-         vGkg5/PO7rmy+LBwQSc3U1QpydyVmMzE/tyPyKchthI7INU1KefPF3CIUP3Ap2zao4
-         d9UK9/dxkQ4pA==
-Date:   Wed, 30 Aug 2023 16:51:15 +0100
-From:   =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-        sean@poorly.run, marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, healych@amazon.com,
-        kernel@collabora.com, Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: Re: [PATCH v2 6/6] drm/drm-file: Allow size unit selection in
- drm_show_memory_stats
-Message-ID: <tc7x4uzxvfwakzoqxgaxbkzh3nyhub56ksrgaqmrb4uaq4rruw@7xwan7qfofw7>
-References: <20230824013604.466224-1-adrian.larumbe@collabora.com>
- <20230824013604.466224-7-adrian.larumbe@collabora.com>
- <CAF6AEGtXUTs3ta0N+0hiORa+Tsyh94AXPYm9XdaK6xZbqf+nzA@mail.gmail.com>
+        Wed, 30 Aug 2023 11:52:04 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 560EC122
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:52:01 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 37UFpq87028074;
+        Wed, 30 Aug 2023 17:51:52 +0200
+Date:   Wed, 30 Aug 2023 17:51:52 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc:     Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Nicholas Rosenberg <inori@vnlx.org>,
+        Michael William Jonathan <moe@gnuweeb.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v1 2/5] tools/nolibc: x86-64: Use `rep stosb` for
+ `memset()`
+Message-ID: <ZO9lmGoMDh10jdsk@1wt.eu>
+References: <20230830135726.1939997-1-ammarfaizi2@gnuweeb.org>
+ <20230830135726.1939997-3-ammarfaizi2@gnuweeb.org>
+ <CAOG64qNGdPjXHTvrpYxjizOYvMRaB9_2t2raw6DJ3kK852KUHg@mail.gmail.com>
+ <ZO9bv+GvgpphtGEi@biznet-home.integral.gnuweeb.org>
+ <ZO9e6h2jjVIMpBJP@1wt.eu>
+ <ZO9j9WhSj7PmsM8b@biznet-home.integral.gnuweeb.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF6AEGtXUTs3ta0N+0hiORa+Tsyh94AXPYm9XdaK6xZbqf+nzA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZO9j9WhSj7PmsM8b@biznet-home.integral.gnuweeb.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> The current implementation will try to pick the highest available
->> unit. This is rather unflexible, and allowing drivers to display BO size
->> statistics through fdinfo in units of their choice might be desirable.
->>
->> The new argument to drm_show_memory_stats is to be interpreted as the
->> integer multiplier of a 10-power of 2, so 1 would give us size in Kib and 2
->> in Mib. If we want drm-file functions to pick the highest unit, then 0
->> should be passed.
->>
->> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
->> ---
->>  drivers/gpu/drm/drm_file.c              | 22 +++++++++++++---------
->>  drivers/gpu/drm/msm/msm_drv.c           |  2 +-
->>  drivers/gpu/drm/panfrost/panfrost_drv.c |  2 +-
->>  include/drm/drm_file.h                  |  5 +++--
->>  4 files changed, 18 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
->> index 762965e3d503..517e1fb8072a 100644
->> --- a/drivers/gpu/drm/drm_file.c
->> +++ b/drivers/gpu/drm/drm_file.c
->> @@ -873,7 +873,7 @@ void drm_send_event(struct drm_device *dev, struct drm_pending_event *e)
->>  EXPORT_SYMBOL(drm_send_event);
->>
->>  static void print_size(struct drm_printer *p, const char *stat,
->> -                      const char *region, u64 sz)
->> +                      const char *region, u64 sz, unsigned int unit)
->>  {
->>         const char *units[] = {"", " KiB", " MiB"};
->>         unsigned u;
->> @@ -881,6 +881,8 @@ static void print_size(struct drm_printer *p, const char *stat,
->>         for (u = 0; u < ARRAY_SIZE(units) - 1; u++) {
->>                 if (sz < SZ_1K)
->>                         break;
->> +               if (unit > 0 && unit == u)
->> +                       break;
->>                 sz = div_u64(sz, SZ_1K);
->>         }
->>
->> @@ -898,17 +900,18 @@ static void print_size(struct drm_printer *p, const char *stat,
->>  void drm_print_memory_stats(struct drm_printer *p,
->>                             const struct drm_memory_stats *stats,
->>                             enum drm_gem_object_status supported_status,
->> -                           const char *region)
->> +                           const char *region,
->> +                           unsigned int unit)
->
->I'm not really adverse to changing what units we use.. or perhaps
->changing the threshold to go to higher units to be 10000x or 100000x
->of the previous unit.  But I'm less excited about having different
->drivers using different units.
->
->BR,
->-R
+On Wed, Aug 30, 2023 at 10:44:53PM +0700, Ammar Faizi wrote:
+> On Wed, Aug 30, 2023 at 05:23:22PM +0200, Willy Tarreau wrote:
+> > Then "xchg %esi, %eax" is just one byte with no memory access ;-)
+> 
+> Perfect!
+> 
+> Now I got this, shorter than "movl %esi, %eax":
+> ```
+> 0000000000001500 <memset>:
+>     1500: 96          xchg   %eax,%esi
+>     1501: 48 89 d1    mov    %rdx,%rcx
+>     1504: 57          push   %rdi
+>     1505: f3 aa       rep stos %al,%es:(%rdi)
+>     1507: 58          pop    %rax
+>     1508: c3          ret
+> ```
+> 
+> Unfortunately, the xchg trick doesn't yield smaller machine code for
+> %rdx, %rcx. Lol.
 
-Would it be alright if I left it set to the default unit, and allow changing it
-at runtime with a debugfs file?
+Normal, that's because historically "xchg ax, regX" was a single-byte 0x9X
+on 8086, then it turned to 32-bit keeping the same encoding, like many
+instructions (note that NOP is encoded as xchg ax,ax). It remains short
+when you can sacrifice the other register, or restore it later using yet
+another xchg. For rcx/rdx a push/pop could do it as they should also be
+a single-byte 0x5X even in long mode unless I'm mistaken. Thus if you
+absolutely want to squeeze that 9th byte to end up with a 8-byte function
+you could probably do:
 
->>  {
->> -       print_size(p, "total", region, stats->private + stats->shared);
->> -       print_size(p, "shared", region, stats->shared);
->> -       print_size(p, "active", region, stats->active);
->> +       print_size(p, "total", region, stats->private + stats->shared, unit);
->> +       print_size(p, "shared", region, stats->shared, unit);
->> +       print_size(p, "active", region, stats->active, unit);
->>
->>         if (supported_status & DRM_GEM_OBJECT_RESIDENT)
->> -               print_size(p, "resident", region, stats->resident);
->> +               print_size(p, "resident", region, stats->resident, unit);
->>
->>         if (supported_status & DRM_GEM_OBJECT_PURGEABLE)
->> -               print_size(p, "purgeable", region, stats->purgeable);
->> +               print_size(p, "purgeable", region, stats->purgeable, unit);
->>  }
->>  EXPORT_SYMBOL(drm_print_memory_stats);
->>
->> @@ -916,11 +919,12 @@ EXPORT_SYMBOL(drm_print_memory_stats);
->>   * drm_show_memory_stats - Helper to collect and show standard fdinfo memory stats
->>   * @p: the printer to print output to
->>   * @file: the DRM file
->> + * @unit: multipliyer of power of two exponent of desired unit
->>   *
->>   * Helper to iterate over GEM objects with a handle allocated in the specified
->>   * file.
->>   */
->> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
->> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file, unsigned int unit)
->>  {
->>         struct drm_gem_object *obj;
->>         struct drm_memory_stats status = {};
->> @@ -967,7 +971,7 @@ void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
->>         }
->>         spin_unlock(&file->table_lock);
->>
->> -       drm_print_memory_stats(p, &status, supported_status, "memory");
->> +       drm_print_memory_stats(p, &status, supported_status, "memory", unit);
->>  }
->>  EXPORT_SYMBOL(drm_show_memory_stats);
->>
->> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
->> index 2a0e3529598b..cd1198151744 100644
->> --- a/drivers/gpu/drm/msm/msm_drv.c
->> +++ b/drivers/gpu/drm/msm/msm_drv.c
->> @@ -1067,7 +1067,7 @@ static void msm_show_fdinfo(struct drm_printer *p, struct drm_file *file)
->>
->>         msm_gpu_show_fdinfo(priv->gpu, file->driver_priv, p);
->>
->> -       drm_show_memory_stats(p, file);
->> +       drm_show_memory_stats(p, file, 0);
->>  }
->>
->>  static const struct file_operations fops = {
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
->> index 93d5f5538c0b..79c08cee3e9d 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
->> @@ -563,7 +563,7 @@ static void panfrost_show_fdinfo(struct drm_printer *p, struct drm_file *file)
->>
->>         panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
->>
->> -       drm_show_memory_stats(p, file);
->> +       drm_show_memory_stats(p, file, 1);
->>  }
->>
->>  static const struct file_operations panfrost_drm_driver_fops = {
->> diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
->> index 010239392adf..21a3b022dd63 100644
->> --- a/include/drm/drm_file.h
->> +++ b/include/drm/drm_file.h
->> @@ -466,9 +466,10 @@ enum drm_gem_object_status;
->>  void drm_print_memory_stats(struct drm_printer *p,
->>                             const struct drm_memory_stats *stats,
->>                             enum drm_gem_object_status supported_status,
->> -                           const char *region);
->> +                           const char *region,
->> +                           unsigned int unit);
->>
->> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file);
->> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file, unsigned int unit);
->>  void drm_show_fdinfo(struct seq_file *m, struct file *f);
->>
->>  struct file *mock_drm_getfile(struct drm_minor *minor, unsigned int flags);
->> --
->> 2.42.0
->>
+    xchg %eax, %esi      1
+    push %rdx            1
+    pop %rcx             1
+    push %rdi            1
+    rep movsb            2
+    pop %rax             1
+    ret                  1
+    ------------- Total: 8 bytes :-)
+
+Willy
