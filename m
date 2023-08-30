@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC16D78E083
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0AD78E09A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjH3UWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        id S239315AbjH3U1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbjH3UWF (ORCPT
+        with ESMTP id S239307AbjH3U1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:22:05 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6681BD5;
-        Wed, 30 Aug 2023 13:21:31 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-792707f78b5so6957039f.1;
-        Wed, 30 Aug 2023 13:21:31 -0700 (PDT)
+        Wed, 30 Aug 2023 16:27:13 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5E82D46
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:23:24 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so604555e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:23:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693426832; x=1694031632; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Z4JICYPyprUjqWySgKr+yoLytnJucks9de9gSK2KLo=;
-        b=PUU9HrJqYUlxQTmzf2qVn4aAhIn95YNF5zHwCfY522VAhJ5iv1RCNmtLSliuqfIX8Q
-         avEU1CEdMKKjjY4sA+2rVnkj4mdNpwj6T2EICwr+mDsvtJaH50mcWSfVaojp3b6Hmtn2
-         rmoBWYtYmHXrbKEf84oKWOn381+9RP9uHNj89woudnZxv3rpjJjxGK7uMT6p0w4FymcR
-         DtTg4WsQKABLtb0IW37oJO0tVu6Tz3Rk315yzKWfm7Tbl1jr8Kq9Isqmsu3SsSsJLNHR
-         gECFO04Kyb2/HyNzXUMeCp7D7GLUs+wK1I3D1vubskQ0tpbYiV8G4yn/geSsAw2klu+7
-         I06g==
+        d=chromium.org; s=google; t=1693426927; x=1694031727; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=axjZpoy0fsRceXZWl0+b6PXrTV3YKhJ6mUApTZrRnqQ=;
+        b=cNKruMfYhAldllF056NXfGtjONztSudMiNjwV9i/zWhYX8vD66/5Q0mpIPPYSrryFP
+         C/bhBoa2juGkLwnAuL38PHZr03O9HcGT9JKfJZW9YTdLs9u5YJIaF4897+T6gwsxu3Gk
+         3LyjPFwXZiXFoW2Xmsy7u0I6Y0KD8sBOyBQW4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693426832; x=1694031632;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Z4JICYPyprUjqWySgKr+yoLytnJucks9de9gSK2KLo=;
-        b=Eh3YneOKg/vl6QS1VvQ+Wh9VM3VgWaIR4ZnXpZEKmK3zGTISnRERbhVCMMzmVoO/Hj
-         loG2KkoJ7lmi/I/eXHvlYs9ym5qp4wmTPEE731ornN/ZH86KsYCVkkz/gV7kuGFn2Bp+
-         HS73NfdExaNYyIi4apeeEAd8JievMfoRRhaKtJNoxdh7K/1S0Y6uo5kg7KSwOUD9lLWX
-         TU7aEWss4p5IS2S5q2ZEo2R3239FcH0KTIja6OWTTjRGCYjP4Qm+WMzI4A7gHSG9CHuk
-         PK8HrTLic4q1vz+RPLiPKWE7TN6nEH01GNmqY4k0Jj5XU2W04fEVE1bDGWp+C/Xkp25O
-         MxzA==
-X-Gm-Message-State: AOJu0Yzhglj52ilvRUFsXQDoT5upPUEhdvonsFgSKCTsbjo2pSIhBD8o
-        slbfbgYriPR4XdoCLZDn/nw=
-X-Google-Smtp-Source: AGHT+IHsYjwRoqRZqSkKyQkvwQXLT7GJggloVjV7k0+2ZWPVrbeNlqVTvlgZFgXjWH22AHWbNVCFJQ==
-X-Received: by 2002:a6b:e801:0:b0:783:6272:afbb with SMTP id f1-20020a6be801000000b007836272afbbmr3846961ioh.9.1693426832173;
-        Wed, 30 Aug 2023 13:20:32 -0700 (PDT)
-Received: from azeems-kspp.c.googlers.com.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id s24-20020a02cc98000000b0042b4f1c08desm4132304jap.27.2023.08.30.13.20.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 13:20:31 -0700 (PDT)
-From:   Azeem Shaikh <azeemshaikh38@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Laight <David.Laight@aculab.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] kobject: Replace strlcpy with strscpy
-Date:   Wed, 30 Aug 2023 20:20:21 +0000
-Message-ID: <20230830202021.4134348-1-azeemshaikh38@gmail.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+        d=1e100.net; s=20221208; t=1693426927; x=1694031727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=axjZpoy0fsRceXZWl0+b6PXrTV3YKhJ6mUApTZrRnqQ=;
+        b=l39IFGd/ivI8wmZXOjjAG95YNrv6kzaZmat8XrIQ4tSJbulvj58RglB7EQuXNVta0+
+         lBnnMhC6LhJcVEK+vYyyCqjuQ9kUv1Y5nz6dSb9R0HEAw3y2yMM4awuGCV+Y3FrU/lkg
+         vWqA4efEgT6hZGpR85qKrbKi5eOYJUTWDqWuh5ICGvf8ReXkGlS7qK/a56Ce22G0UW9O
+         YmXY0y0Ph8B74rNksgTln6bE5EjPQqEHcyl1L+9HMAHUfyAKiofmiF9DGdteeKA6YGvu
+         XJ3b+AXILJoJKf2AF3uHqwIcdcUPpPDnP3YorjTmC8Jomw7hSD0VK5Bm/IkHSOTBDK5d
+         aGew==
+X-Gm-Message-State: AOJu0YzK+FBT+cSlX1lTvBsc8uXIPdMEfpGGRiq1IZuLyyTDqCSfvL37
+        UGKkh5aihBNxW2wO1fGRm2160PXUNpn/ZldIgDiHHHPh
+X-Google-Smtp-Source: AGHT+IEwgyPWejueGtIUeqQbz7rCfz/1HZcSFvQiVPBChsLfUmFnsfYNBQK5dsbvmVsnGdY4CDWO6Q==
+X-Received: by 2002:adf:f108:0:b0:317:e766:d5e9 with SMTP id r8-20020adff108000000b00317e766d5e9mr2742030wro.3.1693426926997;
+        Wed, 30 Aug 2023 13:22:06 -0700 (PDT)
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id t7-20020aa7d4c7000000b00529fa63ef6fsm7167808edr.57.2023.08.30.13.22.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 13:22:06 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-3fef2fafee2so27535e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:22:06 -0700 (PDT)
+X-Received: by 2002:a05:600c:5113:b0:3fe:ef25:8b86 with SMTP id
+ o19-20020a05600c511300b003feef258b86mr33014wms.4.1693426926192; Wed, 30 Aug
+ 2023 13:22:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1693416477.git.mirq-linux@rere.qmqm.pl> <85bcd0af56521209f40e76e0cac626c4f02b7df5.1693416477.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <85bcd0af56521209f40e76e0cac626c4f02b7df5.1693416477.git.mirq-linux@rere.qmqm.pl>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 30 Aug 2023 13:21:51 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WXANhfLQfxYuuEWS_=ZcjR5LrmzAvXThrOECwqXhe5hw@mail.gmail.com>
+Message-ID: <CAD=FV=WXANhfLQfxYuuEWS_=ZcjR5LrmzAvXThrOECwqXhe5hw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] regulator/core: regulator_lock_contended: wrap
+ ww_mutex lock sequence restart
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
+Hi,
 
-Direct replacement is safe here since return value of -errno
-is used to check for truncation instead of sizeof(dest).
+On Wed, Aug 30, 2023 at 10:35=E2=80=AFAM Micha=C5=82 Miros=C5=82aw
+<mirq-linux@rere.qmqm.pl> wrote:
+>
+> Wrap locking a regulator after a failed ww_mutex locking sequence with a
+> new function.  This is to deduplicate occurrences of the pattern and make
+> it self-documenting.
+>
+> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> ---
+>  drivers/regulator/core.c | 28 +++++++++++++++++++---------
+>  1 file changed, 19 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+> index e89c12d27a9d..7201927c5d5b 100644
+> --- a/drivers/regulator/core.c
+> +++ b/drivers/regulator/core.c
+> @@ -154,6 +154,22 @@ static inline int regulator_lock_nested(struct regul=
+ator_dev *rdev,
+>         return 0;
+>  }
+>
+> +/**
+> + * regulator_lock_contended - retry locking a regulator
+> + * @rdev:              regulator source
+> + * @ww_ctx:            w/w mutex acquire context
+> + *
+> + * Locks a regulator after a failed locking sequence (aborted
+> + * with -EDEADLK).
+> + */
+> +static inline void regulator_lock_contended(struct regulator_dev *rdev,
+> +                                           struct ww_acquire_ctx *ww_ctx=
+)
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
+nit: IMO "inline" should be reserved for places where it would be a
+serious problem if the function wasn't inlined. For cases like this,
+let the compiler do its job and decide whether we'll be better off
+with the code inlined or not.
 
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
----
-v3:
- * Fixed weird indentation.
+In any case:
 
-v2:
- * Updated error message to remove @len which is errno now.
- * https://lore.kernel.org/all/20230830150136.3798414-1-azeemshaikh38@gmail.com/
-
-v1:
- * https://lore.kernel.org/all/20230703180528.3709258-1-azeemshaikh38@gmail.com/
-
- lib/kobject_uevent.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
-index 7c44b7ae4c5c..032d81b959f0 100644
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
-@@ -254,10 +254,10 @@ static int init_uevent_argv(struct kobj_uevent_env *env, const char *subsystem)
- 	int buffer_size = sizeof(env->buf) - env->buflen;
- 	int len;
-
--	len = strlcpy(&env->buf[env->buflen], subsystem, buffer_size);
--	if (len >= buffer_size) {
--		pr_warn("init_uevent_argv: buffer size of %d too small, needed %d\n",
--			buffer_size, len);
-+	len = strscpy(&env->buf[env->buflen], subsystem, buffer_size);
-+	if (len < 0) {
-+		pr_warn("init_uevent_argv: insufficient buffer space "
-+			"(%u left) for %s\n", buffer_size, subsystem);
- 		return -ENOMEM;
- 	}
-
---
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
