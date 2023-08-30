@@ -2,521 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2F278D1EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5371578D1F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241659AbjH3CGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 22:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
+        id S241670AbjH3CPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 22:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241671AbjH3CGC (ORCPT
+        with ESMTP id S241664AbjH3CP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 22:06:02 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4CD1A6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:05:58 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-58d41109351so5531577b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:05:58 -0700 (PDT)
+        Tue, 29 Aug 2023 22:15:26 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD8B1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:15:16 -0700 (PDT)
+X-UUID: 0c6db47e46db11ee9cb5633481061a41-20230830
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=mUCpY1LMqYfM+LemNHpYXLr6h7OENNCaLYNxSRERgng=;
+        b=BryrxvBLDfH5gQrGb4st6npJPdIqE4bKZARM3Fnns+XOEAuQXalAUQJISK1BEDYIUlSKFUon1U6R9q/L2Tiqb5jfzlyjheHOYLLqJX2YIiYEvgIVbdxWC2SIdBZHltuypCVGKer3dQ74VRKXq9HcVg/igyNeWHRH7kInGFqpiOI=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:b7d5bbfa-bdf2-4be5-bb76-caa319172fd2,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:cfcfe51f-33fd-4aaa-bb43-d3fd68d9d5ae,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 0c6db47e46db11ee9cb5633481061a41-20230830
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1484584395; Wed, 30 Aug 2023 10:15:11 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 30 Aug 2023 10:15:10 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 30 Aug 2023 10:15:10 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PdsilkFAKi5J9OoG/jOzC6RdYn3Iuc2My3Gq11SaIpmrf9cS40Wq/QZYQqopI+PjpVfC/j2iq+nThlQSpj+EsM8SgBCRPJ9nsoEiJk18DPScx3aNiuZlTPzVJu60QHFwrKfeQrLfgntfL8+pWr8lfwekzup1DeB+ejnQcr57ZY68XV9n2ZsKurZxz7cSvz8rsOcgBBjTupk+Ij6dQo+AcVyW+QWHJqet4YcTMEK8w1VOsAaRgRJB8c/yVRb74dc+xeGHfN8GeLFCeC7n+tONNSTkWASyHh/JynXPXvx8IijzA8j1Pyj9NwmmQQVvXd2DNRA2qkudcQtMhyIGiaw10A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mUCpY1LMqYfM+LemNHpYXLr6h7OENNCaLYNxSRERgng=;
+ b=h/IcCczcyCmQvYLiiOD6KpEpBWtlSdhPAOO8wpEDNxmmYzhA4xJ4sc/mCYNmJu0w+qOzdSwWJnR9FApqlapN8Z5IK7hDpkTKkbMSg+rdIVwGDP6X1hFkEczzqTIsAduYDQOgWtYuSqZD6PUij8SXF/pZwVMv+nS+e62gNORadLqJYbB1UmI4rTorRoHiXonPKkvoJazTpFNG8ZPx0ZAIPsbhjrPz5bRa9uvU/txAtLV/64psimbpJi0W5kesq3SFALijqYRQFKw/8GV084LdSCPC1MFLaQoA7vMqKdlrE4fc7gyEbp33RIRwY4mh7NuoqwfoNwpHTI4IeduDL2N+hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693361157; x=1693965957; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gAtPMmbUdFUxvUjVkZrsRZXmbstvvHY5HPiOzCReDOE=;
-        b=qjHrwL+U/hHy3SdQUf8vwG/fGhVD/30eYXCL5TL3iyv9NgTP31eI3I8+0rD9wiI4g8
-         iLsPw/+2nZaLepIVnBE42IJ8gNj7hChQVJEVnXtGWWXhSovZpRH+ipAIQyyxNZPxUNKQ
-         WFWhXnzDMB/b6fzEtRXLppeaZ3hs67V062R5igqHvuoDptmyEnuZcYMoR24LsGZVREOu
-         Ffv428mVY/bSsuGAc0vevZp3pIWyjobl7raiAa4eXW2WZ8sR2zTiNpiuauVHAhaESTP3
-         TtpvkMiJlg9RFcIGBdsobD164yzNqKEeT9U7D5iu1mVRwQch8OzgwXejMYtEYPLO4o10
-         728w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693361157; x=1693965957;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gAtPMmbUdFUxvUjVkZrsRZXmbstvvHY5HPiOzCReDOE=;
-        b=Py1z2xN4Sejgk1qBY7hiYMs9GfyzTQHaOeIt2CI4PzxWqc021TgGhv0wyAQSbnV/GU
-         LjV9q03oCZrmNnVjti64N/62uCYJlCF+WTHF0yaSrEQu6jv5JJ6hC3fWVIQRGXJmkDtA
-         z7G7nvzHi1sA070KTErSGpEYUG0m85X5rabzx+PySpHMUNi1JRNm0Qemug5Iw6WiGQgB
-         hHrkRp/SlVlrlcqxCZWcwH55eqYb0CM1mGBEvJ5TaijEBcgl/aczKiWYOI7GmHmZuiNf
-         vt2UPLJBIaSA/fHPnMMSZ58cwRrHhOk8q8a+8dNr6ShAAkUF12n4dC/MJOY14QQShCCC
-         xrqA==
-X-Gm-Message-State: AOJu0Yz5SJ6zCXgoDY+T7luibkJRwRGIQy5MhMB0D3zU5o8hXQjpQMAD
-        QzJEwFXKcLUQTHJDxITcRsKE1+YS1ovGeXcXFIYbZDmKcL/TG9/R
-X-Google-Smtp-Source: AGHT+IFCI090Pi3E1PGbOTeMsCDc/MYvqxMARidXhBnryn2q8LveoUDjFmJN+wsSrPNRlfU0FYScHyPeeJB1Af7qcN4=
-X-Received: by 2002:a25:f81b:0:b0:d61:44f9:5d1e with SMTP id
- u27-20020a25f81b000000b00d6144f95d1emr4376704ybd.12.1693361157482; Tue, 29
- Aug 2023 19:05:57 -0700 (PDT)
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mUCpY1LMqYfM+LemNHpYXLr6h7OENNCaLYNxSRERgng=;
+ b=ricm3juv8VVpkA7dH+nQnyzqGKOrTVh2mlwraTDsSPvnLNbM2+Y64Xui9p+bY2XwSQ89DJeemNdTNyDZ0mV5zZ2Mj2yvc7KNJaR+bwXOCWumHYgnoSoj9GPZVy3Ti7APSSGURaQxPA44oVnmynlNRGlkCDMPrsGMxOejwgkZj3Y=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by JH0PR03MB7975.apcprd03.prod.outlook.com (2603:1096:990:3f::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Wed, 30 Aug
+ 2023 02:15:07 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::d126:7f34:9e4f:a95]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::d126:7f34:9e4f:a95%4]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
+ 02:15:07 +0000
+From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To:     "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        =?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
+        <Singo.Chang@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: Re: [PATCH 03/15] soc: mediatek: Support GCE thread loop
+Thread-Topic: [PATCH 03/15] soc: mediatek: Support GCE thread loop
+Thread-Index: AQHZ1dTJ7ZnGVh2PU0mkRDVN13twfbACI+wA
+Date:   Wed, 30 Aug 2023 02:15:07 +0000
+Message-ID: <3813feae1052428045e9897694521e790974d3a7.camel@mediatek.com>
+References: <20230823151332.28811-1-shawn.sung@mediatek.com>
+         <20230823151332.28811-4-shawn.sung@mediatek.com>
+In-Reply-To: <20230823151332.28811-4-shawn.sung@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|JH0PR03MB7975:EE_
+x-ms-office365-filtering-correlation-id: d4195bf1-08b8-4d61-c897-08dba8feee03
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hntIQSXCDySXHG/obS1GvwvdztLk+7A+G52EXbfIFA2NCn16j/5XkzP3rQJMkxp4l8lMnflzVJBAZfXsPkjKOd6rVQZ1NZ4a2ts4eeAuo5jwUlt1FQRZJwiOAuKkHo/vlZgO9i3WfziV5gztDK5lRwcb+UEChWpsKJpi7kl8Nz8mYrxGzTURTpg4hHsZYs5c5JkPT9qNs0GO7ftMN83XP6mjA3kZlQg/2KlOcMx7+QZYfzXZyG97Qr9QCnkQ40anilZRCOkwv7uVp4XvRuZG1qhgFvTp10efC86xtevQbsk3g/vo08fs07pMK6YZMNeXwaOuZVcQpFZ0bojctKcUM6BCcNBxDLYPYqgvsYGMQub6M2HPT9bw17RTLb8R0BzE3QGS5PgLtyP9cTiEhzo2Zy/aduycbSrL+H77miCUMnsWGx9zF6Ob4USkvLadBwOxyb6sE8WREsnXUGMgHoiyJq/pp6MPrXzh99M36LPPC94Ohq+S9pewWbdISLOClhpJ6O8XgXMiNxfsT6TALdwKh+GPqfKTYB8+tf+mFRlQMomq0Rs82Xgx6Ddydx3bfRoiw/uVHV4P7bRZmVp2QDoLG8v+iugIZnlyivcc6DLDJenGl6Ht+cZPfYbyvh/wbWRromrDEcx1C0XIO5LkM6Bx/j2O4tum/JnMVGBgOCeGAgg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(136003)(376002)(39860400002)(451199024)(186009)(1800799009)(6512007)(6486002)(6506007)(71200400001)(107886003)(83380400001)(76116006)(26005)(7416002)(8936002)(2616005)(316002)(66446008)(41300700001)(8676002)(66556008)(66946007)(5660300002)(66476007)(54906003)(2906002)(4326008)(478600001)(36756003)(85182001)(86362001)(64756008)(110136005)(38100700002)(122000001)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?enNzUGlTdTdOMWVXTDE4c3VkRkZaVEdJVWJueG9QS2Z0SFduL0tIaUpYUlVS?=
+ =?utf-8?B?bHEyV2VpczlpOU9GajdDcFMrVkpZTzFTTTVQRGE0L0RkK1RuT1I3dXhZdzZC?=
+ =?utf-8?B?U0tnMWwveVVjVnV0TjBVYThpdWVucGpoNThwaVRaSHpUdHd3dXlCSDRhanlI?=
+ =?utf-8?B?aGxpSEFTcnd1dG44OWR0eXBxcHhlQlU1a0lPR1hManR3d2poOHBWckhyb3NL?=
+ =?utf-8?B?akh2eXhlaVBCTzRIT0hGWXNXK0JYWkZNVWVkendLZjU1cW4zZHZaVFBXdUFH?=
+ =?utf-8?B?TE5WQXM5M0RpSExib1lyYzZlM0dNNEVyODA4Z2dIcXhwR1BjVktRTkF4YTlI?=
+ =?utf-8?B?V0gyMm9ucHIxd3VoZkdqaW5zVWw3QTAyWEdVMlJIU2lLMVdsTmRQSTNlWk5O?=
+ =?utf-8?B?SGl4eXF2di9QMW1JT3NWZ1diSkxKeG9QN1lObXh4ZXZLSGQwS1BEZWs2SG5Q?=
+ =?utf-8?B?VGtOSUZpN3RRWkJheVRiQzE0K0dITys4cm1WcWdUdEJDdHIyYm1FQW04d0dR?=
+ =?utf-8?B?VHNDTDhwa0FjVjNHTVhnaXhxMFBpMlhEdEZnWEJNWEQzVmZQRnRCNHh2Zk05?=
+ =?utf-8?B?VFhLQ1p2VktHdWliMVRLaHZQNTVXd0lyVnl2U0swWThtbXcwa0xEc2VTMHZv?=
+ =?utf-8?B?WEd6Z3VuMUhPWmg1REpXeU1vNGozUFZSeExSdEVCdzB3VUpzODF2eWxlZCtC?=
+ =?utf-8?B?UlMrNUdyUXZ2dzZDSEJIR3BpN0pzb01QcjRKeVhVaE1SWldBMmgxaG9zRVFw?=
+ =?utf-8?B?ZXdFZ0kyMTJGNzBHM0FGNW5ERUtSeFowVnJwTjhjc1F5bWlEUFkyRFN4Ykhi?=
+ =?utf-8?B?Q0F5V1JXK2Erd1ExM0psaG95U3YvRjEzTjVRd1hza2IwNFU1TVRpZEhBQ3ZZ?=
+ =?utf-8?B?QldlbVI0NXhtMnE3TzBlNkUzT2JNNGtFK0ErUCtNSW1pNnFSZ0hBdkZUdklH?=
+ =?utf-8?B?bTNMaDVQV3daOGJiMEovc0ZRU1RpUFo1USs5UDcxakwvNkhBeGE4SGtsWERP?=
+ =?utf-8?B?ZUFRZ3MvZUtzOVZuR3Y0dkk5Qm5QekxraThwUDU4OTlYOU5OOGYwN21nSlFn?=
+ =?utf-8?B?eE51Mm5sejdUamprOEFkYnlWK20rb1V0UVk3YzR6eitrTFpobk5ESjlhU0t4?=
+ =?utf-8?B?S09DNytQM0Urb0tlN3JweDBXN0N4djMyYkt1K0l2azQvVDVvb2dsUUJBSDEy?=
+ =?utf-8?B?YURqa1o4OW9tN3MvRk5rcVdTZ3NQUUxxTnd0NXgvTXN3RkNxWnhtWHA2aUNV?=
+ =?utf-8?B?aXZxS3U5TStNRStCZlY0OTZ4S21jc05qem1Ud2hzcE9ad08yaEdjSTJaSG52?=
+ =?utf-8?B?dW84UnZkYmlSUGYvRjhSTFVVSThxZklUMldCaVl2ckMrQXd1WldtZUZzYldD?=
+ =?utf-8?B?VjF5cGJuZTcwY3Q3MUViZCsrNHo0d2xaa1V0NVo5RVZSTUJra21SSUZRSCtB?=
+ =?utf-8?B?eWMxMEZJdkpDZnZkMSt5enJZNlpkTWpVeS9qK05oTDA1N2tCK2RZTHFDN3FD?=
+ =?utf-8?B?eGsyMVM5em1JdUwwdkovVGlWSk5EZk4ydXhtak96eGo1ZDh4aGhpT2FLSmNs?=
+ =?utf-8?B?VENQMzFiSFUyQjU3bTJoWlZGQWRFOVI4c1NSSzFPQU5waDZmdHRKbTd0MTU2?=
+ =?utf-8?B?N2dhQzM5b0RrcmwyNmJvME9pcG5nV2NCRUEwbUlzNjRYZDN1UVJxbkRURml0?=
+ =?utf-8?B?YlI1QzJRaEhJZVIzV0w0aVlzSTYxV1VNb1pJSU13TDlqSEpaOExwSzFCb2Vu?=
+ =?utf-8?B?WnRGRlRiUzRDOFQ2dmN0Z3NjVGxsUWk5RjZCcjMyMGMwbXUyZ3V1TXRyOEpJ?=
+ =?utf-8?B?Vlc0ZlMrRHVKaG5SN1REZ2FYeUdpVEVVK1R6WjU0bml4RWx6UHFyWnFYOHFR?=
+ =?utf-8?B?aTN6UkFyM3NydEtkdXpDanZ3RUtaK0hLZnVUSUV5c2k0Zk5CbSt2L1VtSmM2?=
+ =?utf-8?B?ODFHYmtPQlhRNldpSDNZclltaHB1WXhic09BS3ZZZ2R2eFJSZEhGQUt5ekVU?=
+ =?utf-8?B?TnNvOTNEY3E0WmtHc0VnVzVrWWphU2RHRFkwRnpQNE5yTFNaNzJKU243bXc3?=
+ =?utf-8?B?ZUNSOFNQUitPS2gxVm1yMGxpTWpLMW42TFVmWkdrY3lyUFJxeURzUlNuVUVo?=
+ =?utf-8?Q?b1vQnP/Pm3o0XxEez70PVbPNk?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3273C9D18D01214D99CCBBAE46FAA68A@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org> <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
- <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org> <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
- <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org> <54b37d60-61b1-e939-c71d-30aecad65598@quicinc.com>
- <0cb96702-b396-4223-870f-b798d32991ee@linaro.org> <7571be78-5560-13bf-d754-cabc8ad6140d@quicinc.com>
- <56c11316-57ce-45d5-927c-84f65a1c227e@linaro.org> <CAA8EJpqQkb1wumNJWkKV2o5+52FopHyPRvxBewLxGFXnTJFA9A@mail.gmail.com>
- <5512f228-680b-0259-cfc5-6dae6d4da392@quicinc.com> <CAA8EJpr8WPmsgiXb16OipvtouwztKYjVWLYK04Z0DvQ7frtJiw@mail.gmail.com>
- <e52d9a0a-f748-22fb-e68c-4b819d97d0cd@quicinc.com> <CAA8EJpohD05+JuHoGai9NoM-GH8JN9MGtf4CKtBJpPm5n25dwA@mail.gmail.com>
- <c522a944-4ae1-098b-0205-b0810325114c@quicinc.com> <CAA8EJpoEQAjRPnZD5uErSUO=3v-J3yHwZCEU2WcX8RXjV_ZcsQ@mail.gmail.com>
- <7c424643-79b6-7eb1-cf6f-21c5decc76ba@quicinc.com>
-In-Reply-To: <7c424643-79b6-7eb1-cf6f-21c5decc76ba@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 30 Aug 2023 05:05:46 +0300
-Message-ID: <CAA8EJpqWs18K5_asuHvpCUFo_NCbZAg5QkcwE6CqqgtKGfup2g@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox VTDR6130
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     neil.armstrong@linaro.org,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4195bf1-08b8-4d61-c897-08dba8feee03
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2023 02:15:07.1287
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7TyZIIc1ZpFqO2A0dbaqFypdvnT0Y4hd/6Gdk11ToTgq0MXeLFVCcdO1yjbrIX+oFZBmV1gQQVHy9TW/VWsxiA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR03MB7975
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 22:21, Abhinav Kumar <quic_abhinavk@quicinc.com> wro=
-te:
->
->
->
-> On 8/29/2023 12:15 PM, Dmitry Baryshkov wrote:
-> > On Tue, 29 Aug 2023 at 22:09, Abhinav Kumar <quic_abhinavk@quicinc.com>=
- wrote:
-> >>
-> >>
-> >>
-> >> On 8/29/2023 11:51 AM, Dmitry Baryshkov wrote:
-> >>> On Tue, 29 Aug 2023 at 20:22, Abhinav Kumar <quic_abhinavk@quicinc.co=
-m> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 8/29/2023 9:43 AM, Dmitry Baryshkov wrote:
-> >>>>> On Tue, 29 Aug 2023 at 19:37, Abhinav Kumar <quic_abhinavk@quicinc.=
-com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On 8/29/2023 2:26 AM, Dmitry Baryshkov wrote:
-> >>>>>>> On Tue, 29 Aug 2023 at 12:22, <neil.armstrong@linaro.org> wrote:
-> >>>>>>>>
-> >>>>>>>> On 28/08/2023 19:07, Abhinav Kumar wrote:
-> >>>>>>>>> Hi Neil
-> >>>>>>>>>
-> >>>>>>>>> Sorry I didnt respond earlier on this thread.
-> >>>>>>>>>
-> >>>>>>>>> On 8/28/2023 1:49 AM, neil.armstrong@linaro.org wrote:
-> >>>>>>>>>> Hi Jessica,
-> >>>>>>>>>>
-> >>>>>>>>>> On 25/08/2023 20:37, Jessica Zhang wrote:
-> >>>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>> On 8/21/2023 3:01 AM, neil.armstrong@linaro.org wrote:
-> >>>>>>>>>>>> Hi Maxime,
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> On 21/08/2023 10:17, Maxime Ripard wrote:
-> >>>>>>>>>>>>> Hi,
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@li=
-naro.org wrote:
-> >>>>>>>>>>>>>> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
-> >>>>>>>>>>>>>>> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
-> >>>>>>>>>>>>>>>> Sending HS commands will always work on any controller, =
-it's all
-> >>>>>>>>>>>>>>>> about LP commands. The Samsung panels you listed only se=
-nd HS
-> >>>>>>>>>>>>>>>> commands so they can use prepare_prev_first and work on =
-any
-> >>>>>>>>>>>>>>>> controllers.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> I think there is some misunderstanding there, supported b=
-y the
-> >>>>>>>>>>>>>>> description of the flag.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> If I remember correctly, some hosts (sunxi) can not send =
-DCS
-> >>>>>>>>>>>>>>> commands after enabling video stream and switching to HS =
-mode, see
-> >>>>>>>>>>>>>>> [1]. Thus, as you know, most of the drivers have all DSI =
-panel setup
-> >>>>>>>>>>>>>>> commands in drm_panel_funcs::prepare() /
-> >>>>>>>>>>>>>>> drm_bridge_funcs::pre_enable() callbacks, not paying atte=
-ntion
-> >>>>>>>>>>>>>>> whether these commands are to be sent in LP or in HS mode=
-.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> Previously DSI source drivers could power on the DSI link=
- either in
-> >>>>>>>>>>>>>>> mode_set() or in pre_enable() callbacks, with mode_set() =
-being the
-> >>>>>>>>>>>>>>> hack to make panel/bridge drivers to be able to send comm=
-ands from
-> >>>>>>>>>>>>>>> their prepare() / pre_enable() callbacks.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> With the prev_first flags being introduced, we have estab=
-lished that
-> >>>>>>>>>>>>>>> DSI link should be enabled in DSI host's pre_enable() cal=
-lback and
-> >>>>>>>>>>>>>>> switched to HS mode (be it command or video) in the enabl=
-e()
-> >>>>>>>>>>>>>>> callback.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> So far so good.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> It seems coherent, I would like first to have a state of a=
-ll DSI host
-> >>>>>>>>>>>>>> drivers and make this would actually work first before add=
-ing the
-> >>>>>>>>>>>>>> prev_first flag to all the required panels.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> This is definitely what we should do in an ideal world, but=
- at least for
-> >>>>>>>>>>>>> sunxi there's no easy way for it at the moment. There's no =
-documentation
-> >>>>>>>>>>>>> for it and the driver provided doesn't allow this to happen=
-.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Note that I'm not trying to discourage you or something her=
-e, I'm simply
-> >>>>>>>>>>>>> pointing out that this will be something that we will have =
-to take into
-> >>>>>>>>>>>>> account. And it's possible that other drivers are in a simi=
-lar
-> >>>>>>>>>>>>> situation.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> Unfortunately this change is not fully backwards-compatib=
-le. This
-> >>>>>>>>>>>>>>> requires that all DSI panels sending commands from prepar=
-e() should
-> >>>>>>>>>>>>>>> have the prepare_prev_first flag. In some sense, all such=
- patches
-> >>>>>>>>>>>>>>> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_p=
-rev_first
-> >>>>>>>>>>>>>>> flag to drm_panel").
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> This kind of migration should be done *before* any possibl=
-e
-> >>>>>>>>>>>>>> regression, not the other way round.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> If all panels sending commands from prepare() should have =
-the
-> >>>>>>>>>>>>>> prepare_prev_first flag, then it should be first, check fo=
-r
-> >>>>>>>>>>>>>> regressions then continue.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> <snip>
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>> I understand, but this patch doesn't qualify as a fix fo=
-r
-> >>>>>>>>>>>>>>>> 9e15123eca79 and is too late to be merged in drm-misc-ne=
-xt for
-> >>>>>>>>>>>>>>>> v6.6, and since 9e15123eca79 actually breaks some suppor=
-t it
-> >>>>>>>>>>>>>>>> should be reverted (+ deps) since we are late in the rc =
-cycles.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> If we go this way, we can never reapply these patches. Th=
-ere will be
-> >>>>>>>>>>>>>>> no guarantee that all panel drivers are completely conver=
-ted. We
-> >>>>>>>>>>>>>>> already have a story without an observable end -
-> >>>>>>>>>>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> I don't understand this point, who would block re-applying=
- the patches ?
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done o=
-ver multiple
-> >>>>>>>>>>>>>> Linux version and went smoothly because we reverted regres=
-sing patches
-> >>>>>>>>>>>>>> and restarted when needed, I don't understand why we can't=
- do this
-> >>>>>>>>>>>>>> here aswell.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> I'd consider that the DSI driver is correct here and it i=
-s about the
-> >>>>>>>>>>>>>>> panel drivers that require fixes patches. If you care abo=
-ut the
-> >>>>>>>>>>>>>>> particular Fixes tag, I have provided one several lines a=
-bove.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> Unfortunately it should be done in the other way round, pr=
-epare for
-> >>>>>>>>>>>>>> migration, then migrate,
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> I mean if it's a required migration, then it should be don=
-e and I'll
-> >>>>>>>>>>>>>> support it from both bridge and panel PoV.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> So, first this patch has the wrong Fixes tag, and I would =
-like a
-> >>>>>>>>>>>>>> better explanation on the commit message in any case. Then=
- I would
-> >>>>>>>>>>>>>> like to have an ack from some drm-misc maintainers before =
-applying it
-> >>>>>>>>>>>>>> because it fixes a patch that was sent via the msm tree th=
-us per the
-> >>>>>>>>>>>>>> drm-misc rules I cannot apply it via the drm-misc-next-fix=
-es tree.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Sorry, it's not clear to me what you'd like our feedback on=
- exactly?
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> So let me resume the situation:
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> - pre_enable_prev_first was introduced in [1]
-> >>>>>>>>>>>> - some panels made use of pre_enable_prev_first
-> >>>>>>>>>>>> - Visionox VTDR6130 was enabled on SM8550 systems and works =
-on v6.5 kernels and before
-> >>>>>>>>>>>> - patch [2] was introduced on MSM DRM tree, breaking VTDR613=
-0 on SM8550 systems (and probably other Video mode panels on Qcom platforms=
-)
-> >>>>>>>>>>>> - this fix was sent late, and is now too late to be merged v=
-ia drm-misc-next
-> >>>>>>>>>>>
-> >>>>>>>>>>> Hi Neil and Maxime,
-> >>>>>>>>>>>
-> >>>>>>>>>>> I agree with Neil that 9e15123eca79 was the commit that intro=
-duced the issue (since it changed the MSM DSI host behavior).
-> >>>>>>>>>>>
-> >>>>>>>>>>> However, I'm not too keen on simply reverting that patch beca=
-use
-> >>>>>>>>>>>
-> >>>>>>>>>>> 1) it's not wrong to have the dsi_power_on in pre_enable. Arg=
-uably, it actually makes more sense to power on DSI host in pre_enable than=
- in modeset (since modeset is meant for setting the bridge mode), and
-> >>>>>>>>>>
-> >>>>>>>>>> I never objected that, it's the right path to go.
-> >>>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> Ack.
-> >>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>> 2) I think it would be good practice to keep specific bridge =
-chip checks out of the DSI host driver.
-> >>>>>>>>>>
-> >>>>>>>>>> We discussed about a plan with Maxime and Dmitry about that, a=
-nd it would require adding
-> >>>>>>>>>> a proper atomic panel API to handle a "negociation" with the h=
-ost controller.
-> >>>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> May I know what type of negotiation is needed here?
-> >>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>> That being said, what do you think about setting the default =
-value of prepare_prev_first to true (possibly in panel_bridge_attach)?
-> >>>>>>>>>>
-> >>>>>>>>>> As Dmitry pointed, all panels sending LP commands in pre_enabl=
-e() should have prepare_prev_first to true.
-> >>>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> I wanted to respond to this earlier but didnt get a chance.
-> >>>>>>>>>
-> >>>>>>>>>      From the documentation of this flag, this has nothing to d=
-o whether panels are sending the LP commands (commands sent in LP mode) OR =
-HS commands (commands sent in HS mode).
-> >>>>>>>>>
-> >>>>>>>>> This is more about sending the commands whether the lanes are i=
-n LP11 state before sending the ON commands.
-> >>>>>>>>>
-> >>>>>>>>> 195      * The previous controller should be prepared first, be=
-fore the prepare
-> >>>>>>>>> 196      * for the panel is called. This is largely required fo=
-r DSI panels
-> >>>>>>>>> 197      * where the DSI host controller should be initialised =
-to LP-11 before
-> >>>>>>>>> 198      * the panel is powered up.
-> >>>>>>>>> 199      */
-> >>>>>>>>> 200     bool prepare_prev_first;
-> >>>>>>>>>
-> >>>>>>>>> These are conceptually different and thats what I explained Dmi=
-try in our call.
-> >>>>>>>>>
-> >>>>>>>>> Sending ON commands in LP11 state is a requirement I have seen =
-with many panels and its actually the right expectation as well to send the=
- commands when the lanes are in a well-defined LP11 state.
-> >>>>>>>>>
-> >>>>>>>>>      From the panels which I have seen, the opposite is never t=
-rue (OR i have never seen it this way).
-> >>>>>>>>>
-> >>>>>>>>> The parade chip was the only exception and that issue was never=
- root-caused leading us to have bridge specific handling in MSM driver.
-> >>>>>>>>>
-> >>>>>>>>> In other words, it would be very unlikely that a panel should b=
-e broken or shouldn't work when the ON commands are sent when the lanes are=
- in LP11 state.
-> >>>>>>>>>
-> >>>>>>>>> So I agree with Jessica, that we should set the default value o=
-f this flag to true in the framework so that only the bridges/panels which =
-need this to be false do that explicitly. From the examples I pointed out i=
-ncluding MTK, even those vendors are powering on their DSI in pre_enable() =
-which means none of these panels will work there too.
-> >>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>> It seems to me that most panel drivers send DCS commands duri=
-ng pre_enable, so maybe it would make more sense to power on DSI host befor=
-e panel enable() by default. Any panel that needs DSI host to be powered on=
- later could then explicitly set the flag to false in their respective driv=
-ers.
-> >>>>>>>>>>
-> >>>>>>>>>> A proper migration should be done, yes, but not as a fix on to=
-p of v6.5.
-> >>>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> I am fine to drop this fix in favor of making the prepare_prev_=
-first as default true but we need an agreement first. From what I can see, =
-parade chip will be the only one which will need this to be set to false an=
-d we can make that change.
-> >>>>>>>>>
-> >>>>>>>>> Let me know if this works as a migration plan.
-> >>>>>>>>
-> >>>>>>>> Yep agreed, let's do this
-> >>>>>>>>
-> >>>>>>>> The panel's prepare_prev_first should be reversed to something l=
-ike not_prepare_prev_first to make it an exception.
-> >>>>>>>
-> >>>>>>> This will break all non-DSI panels, which might depend on the cur=
-rent
-> >>>>>>> bridge calling order.
-> >>>>>>>
-> >>>>>>> I started looking at the explicit DSI power up sequencing, but it=
- will
-> >>>>>>> take a few more days to mature.
-> >>>>>>>
-> >>>>>>
-> >>>>>> May I know why this would break all non-DSI panels?
-> >>>>>
-> >>>>> Existing panel drivers might be depending on the init order. Do we
-> >>>>> know for sure that none of DPI panels will be broken if there is a
-> >>>>> video stream ongoing during the reset procedure?
-> >>>>> Or the panel-edp, which I'm pretty sure will require not_prepare_pr=
-ev_first.
-> >>>>>
-> >>>>
-> >>>> Can you please explain why would video stream be ON in pre_enable()?
-> >>>>
-> >>>> Even though we call msm_dsi_host_enable() in the DSI's pre_enable(),=
- the
-> >>>> timing engine is not enabled until the encoder's enable and the firs=
-t
-> >>>> commit after that so video stream wont be sent till then.
-> >>>
-> >>> You are describing the MSM DSI case. I was pointing to the fact that
-> >>> parent's pre_enable if called too early might conflict with the next
-> >>> bridge driver in the _generic_ case. E.g. eDP or DPI. Even if is not =
-a
-> >>> full-featured video stream, this state might confuse the panel. So we
-> >>> can not blindly switch the order of pre_enable callbacks for the
-> >>> bridge-panel pair.
-> >>>
-> >>
-> >> Even if the end connector was a eDP or DPI, the input to the bridge wa=
-s
-> >> DSI so I think its unlikely that video stream was on before encoder's
-> >> enable but I cannot speak for all these interfaces/vendors.
-> >>
-> >> So, to accommodate both worlds, does this work?
-> >>
-> >> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/p=
-anel.c
-> >> index 9316384b4474..2b38388d4e56 100644
-> >> --- a/drivers/gpu/drm/bridge/panel.c
-> >> +++ b/drivers/gpu/drm/bridge/panel.c
-> >> @@ -416,7 +416,10 @@ struct drm_bridge
-> >> *devm_drm_panel_bridge_add_typed(struct device *dev,
-> >>                   return bridge;
-> >>           }
-> >>
-> >> -       bridge->pre_enable_prev_first =3D panel->prepare_prev_first;
-> >> +       if (connector_type =3D=3D DRM_MODE_CONNECTOR_DSI)
-> >> +               bridge->pre_enable_prev_first =3D true;
-> >> +       else
-> >> +               bridge->pre_enable_prev_first =3D panel->prepare_prev_=
-first;
-> >
-> > looks like a hack.
-> >
->
-> Nope its not, DSI spec has clear mentions about LP11 state to be used
-> during initialization.
->
-> "After power-up, the host processor shall observe an initialization
-> period, TINIT, during which it shall drive a
-> sustained TX-Stop state (LP-11) on all Lanes of the Link. See [MIPI04]
-> for descriptions of TINIT and the TX-Stop state.
->
-> Peripherals shall power up in the RX-Stop state and monitor the Link to
-> determine if the host processor has
-> asserted a TX-Stop state for at least the TINIT period. The peripheral
-> shall ignore all Link states prior to
-> detection of a TINIT event. The peripheral shall be ready to accept bus
-> transactions immediately following the end of the TINIT period."
->
-> I am only extending this statement by mandating that the DSI PHY /
-> controller be powered up so that its able to drive the lanes to LP11 stat=
-e.
->
-> Now, pls explain why this is a hack
-
-Because it centers DSI panels only, not taking bridges into account.
-Because doesn't allow the panel to override this decision, etc.
-
->
-> >>
-> >>           *ptr =3D bridge;
-> >>           devres_add(dev, ptr);
-> >>
-> >>>>
-> >>>> drm_atomic_bridge_chain_pre_enable() is called before the encoder's =
-enable.
-> >>>>
-> >>>> drm_atomic_bridge_chain_enable() is the one which is called after th=
-e
-> >>>> encoder's enable().
-> >>>>
-> >>>>>>
-> >>>>>> Like I said, we dont know the full details of the parade issue but=
- I do
-> >>>>>> not see any reason why powering on a bridge chip with the DSI lane=
-s
-> >>>>>> being in proper LP11 state should cause an issue. Its a well defin=
-ed and
-> >>>>>> documented state in DSI spec.
-> >>>>>>
-> >>>>>> On the contrary, trying to turn on a bridge chip before powering o=
-n a
-> >>>>>> controller could have more issues as we do not know what state the=
- lanes
-> >>>>>> are in when the MIPI devices (panel or bridge) are powered up.
-> >>>>>>
-> >>>>>> This sets the expectation and handshake straight.
-> >>>>>
-> >>>>>
-> >>>
-> >>>
-> >>>
-> >
-> >
-> >
-
-
-
---=20
-With best wishes
-Dmitry
+SGksIEhzaWFvLWNoaWVuOg0KDQpPbiBXZWQsIDIwMjMtMDgtMjMgYXQgMjM6MTMgKzA4MDAsIEhz
+aWFvIENoaWVuIFN1bmcgd3JvdGU6DQo+IEFkZCBhIG5ldyBBUEkgdG8gY3JlYXRlIEdDRSB0aHJl
+YWQgbG9vcCBieQ0KPiBhcHBlbmRpbmcgYSBjb21tYW5kIGF0IHRoZSBlbmQgb2YgQ01EUSBwYWNr
+ZXQNCj4gdG8ganVtcCB0byB0aGUgaGVhZCBvZiBpdC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEhz
+aWFvIENoaWVuIFN1bmcgPHNoYXduLnN1bmdAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gIGRyaXZl
+cnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jIHwgMzANCj4gKysrKysrKysrKysrKysr
+KysrKysrKysrKysNCj4gIGluY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL210ay1jbWRxLmggIHwg
+IDIgKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgMzIgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jDQo+IGIvZHJpdmVy
+cy9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEtaGVscGVyLmMNCj4gaW5kZXggYzE4MzdhNDY4MjY3Li43
+ZDUwM2Q0OTFjMGQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRx
+LWhlbHBlci5jDQo+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5j
+DQo+IEBAIC00MzAsNiArNDMwLDkgQEAgaW50IGNtZHFfcGt0X2ZsdXNoX2FzeW5jKHN0cnVjdCBj
+bWRxX3BrdCAqcGt0KQ0KPiAgCWludCBlcnI7DQo+ICAJc3RydWN0IGNtZHFfY2xpZW50ICpjbGll
+bnQgPSAoc3RydWN0IGNtZHFfY2xpZW50ICopcGt0LT5jbDsNCj4gIA0KPiArCWRtYV9zeW5jX3Np
+bmdsZV9mb3JfZGV2aWNlKGNsaWVudC0+Y2hhbi0+bWJveC0+ZGV2LCBwa3QtDQo+ID5wYV9iYXNl
+LA0KPiArCQkJCSAgIHBrdC0+Y21kX2J1Zl9zaXplLCBETUFfVE9fREVWSUNFKTsNCg0KVGhpcyBm
+dW5jdGlvbiBoYXMgYmVlbiBjYWxsZWQgYnkgY2xpZW50IGRyaXZlciwgc28gZHJvcCB0aGlzLg0K
+DQpSZWdhcmRzLA0KQ0sNCg0KPiArDQo+ICAJZXJyID0gbWJveF9zZW5kX21lc3NhZ2UoY2xpZW50
+LT5jaGFuLCBwa3QpOw0KPiAgCWlmIChlcnIgPCAwKQ0KPiAgCQlyZXR1cm4gZXJyOw0KPiBAQCAt
+NDQwLDQgKzQ0MywzMSBAQCBpbnQgY21kcV9wa3RfZmx1c2hfYXN5bmMoc3RydWN0IGNtZHFfcGt0
+ICpwa3QpDQo+ICB9DQo+ICBFWFBPUlRfU1lNQk9MKGNtZHFfcGt0X2ZsdXNoX2FzeW5jKTsNCj4g
+IA0KPiAraW50IGNtZHFfcGt0X2ZpbmFsaXplX2xvb3Aoc3RydWN0IGNtZHFfcGt0ICpwa3QpDQo+
+ICt7DQo+ICsJc3RydWN0IGNtZHFfaW5zdHJ1Y3Rpb24gaW5zdCA9IHsgezB9IH07DQo+ICsJaW50
+IGVycjsNCj4gKwl1OCBzaGlmdF9wYSA9IDA7DQo+ICsNCj4gKwlzaGlmdF9wYSA9IGNtZHFfZ2V0
+X3NoaWZ0X3BhKCgoc3RydWN0IGNtZHFfY2xpZW50ICopcGt0LT5jbCktDQo+ID5jaGFuKTsNCj4g
+Kw0KPiArCS8qIGluc2VydCBFT0MgYW5kIGdlbmVyYXRlIElSUSBmb3IgY29tbWFuZCBpdGVyYXRp
+b24gKi8NCj4gKwlpbnN0Lm9wID0gQ01EUV9DT0RFX0VPQzsNCj4gKwlpbnN0LnZhbHVlID0gQ01E
+UV9FT0NfSVJRX0VOOw0KPiArCWVyciA9IGNtZHFfcGt0X2FwcGVuZF9jb21tYW5kKHBrdCwgaW5z
+dCk7DQo+ICsJaWYgKGVyciA8IDApDQo+ICsJCXJldHVybiBlcnI7DQo+ICsNCj4gKwkvKiBqdW1w
+IHRvIGhlYWQgb2YgdGhlIHBhY2tldCAqLw0KPiArCWluc3Qub3AgPSBDTURRX0NPREVfSlVNUDsN
+Cj4gKwlpbnN0Lm9mZnNldCA9IENNRFFfSlVNUF9SRUxBVElWRTsNCj4gKwlpbnN0LnZhbHVlID0g
+cGt0LT5wYV9iYXNlID4+IHNoaWZ0X3BhOw0KPiArCWVyciA9IGNtZHFfcGt0X2FwcGVuZF9jb21t
+YW5kKHBrdCwgaW5zdCk7DQo+ICsNCj4gKwlwa3QtPmxvb3AgPSB0cnVlOw0KPiArDQo+ICsJcmV0
+dXJuIGVycjsNCj4gK30NCj4gK0VYUE9SVF9TWU1CT0woY21kcV9wa3RfZmluYWxpemVfbG9vcCk7
+DQo+ICsNCj4gIE1PRFVMRV9MSUNFTlNFKCJHUEwgdjIiKTsNCj4gZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvbGludXgvc29jL21lZGlhdGVrL210ay1jbWRxLmgNCj4gYi9pbmNsdWRlL2xpbnV4L3NvYy9t
+ZWRpYXRlay9tdGstY21kcS5oDQo+IGluZGV4IDNlYjk1ZWYzNGM2Yy4uNGMzMGY4OTFkOTI0IDEw
+MDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGstY21kcS5oDQo+ICsr
+KyBiL2luY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL210ay1jbWRxLmgNCj4gQEAgLTI3Myw2ICsy
+NzMsOCBAQCBpbnQgY21kcV9wa3RfanVtcChzdHJ1Y3QgY21kcV9wa3QgKnBrdCwNCj4gZG1hX2Fk
+ZHJfdCBhZGRyKTsNCj4gICAqLw0KPiAgaW50IGNtZHFfcGt0X2ZpbmFsaXplKHN0cnVjdCBjbWRx
+X3BrdCAqcGt0KTsNCj4gIA0KPiAraW50IGNtZHFfcGt0X2ZpbmFsaXplX2xvb3Aoc3RydWN0IGNt
+ZHFfcGt0ICpwa3QpOw0KPiArDQo+ICAvKioNCj4gICAqIGNtZHFfcGt0X2ZsdXNoX2FzeW5jKCkg
+LSB0cmlnZ2VyIENNRFEgdG8gYXN5bmNocm9ub3VzbHkgZXhlY3V0ZQ0KPiB0aGUgQ01EUQ0KPiAg
+ICogICAgICAgICAgICAgICAgICAgICAgICAgIHBhY2tldCBhbmQgY2FsbCBiYWNrIGF0IHRoZSBl
+bmQgb2YgZG9uZQ0KPiBwYWNrZXQNCg==
