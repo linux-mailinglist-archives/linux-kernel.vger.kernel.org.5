@@ -2,181 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D6B78DF11
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D63478DFCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244800AbjH3TP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        id S241131AbjH3TTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243243AbjH3K2h (ORCPT
+        with ESMTP id S243246AbjH3KaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:28:37 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2057.outbound.protection.outlook.com [40.107.95.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FEFC0;
-        Wed, 30 Aug 2023 03:28:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BgYGVYGm1eVlJ8818+uOYkowMyRbXjmG2PHLgMjM6OxUuJgCqf1LoBzeOQIyCkBTJ05C3+LkIleWPjJM0cZQpHCgJjuHdI+sbs45OHHO2qTeDb47IgmNK9w0zPZLl0kDVQ9VjcBGo2/PcapaBTLdEo990nYtVFTX1sh0MhAOdxNjN4vGStxHxaP7B4b0gWYV/b3CNKzuSwWpMrliZpQo8jo+Og4HafrJTMfx9kHQXqb8ymSmjn/p7AnOccV9Y0snY29qt7+AXB6Co/LbbU2O/YYQqBf3Uf18uaVEw50yMWXS0N4zP2PEm2KcDOcQblt3LI/NmgWP/mm48+8jHqxZdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4F7kxonofKg3ZOSMP4L376m1hEgIF0ujxX+WxtRmZG4=;
- b=g0ZlnB+74u+RVD8Btv8o73sOrR8rV9+ns3dpmHOTdEje9VlgQBRSRodZN8Xc6eys7GSUG5ocb7MdoXg+Q2VBesiepdQ7saQq8ir8CeQjTjMd46yd9amLHXTppcrzzF/NRRtUTEbznEfCXi3dv2PzoY9RalUccDeJoy1b40xiZ02+r/TAszqW/tWLuynICxVx2AnivBWwuLBDtuque0cKux/5i9l7lXkeUB59bl3XWvI47UzCGa6tAnZEcPHAihhsai/JZrgm+Tu78soCgO6qQBgQFdsxU37WcPvGwt3qSeiTWmKLYIWz93VnUbKi8e+MxmJFT4LrPGR9Wv7khR+VJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linux-watchdog.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4F7kxonofKg3ZOSMP4L376m1hEgIF0ujxX+WxtRmZG4=;
- b=NQff9iTM7ZDj5LB+GnMP+ctygkzEiZkGXlTyfrDm5Qz9lKMM3n+/1VQ8BjwA3YnLgij4RYYdltNP92+bN1IspRQ1JgbC8xuX+fCdI/3oSmnnYvctR6ClWgdEeQ2uoBhxNbqt5VxdMijLh30XCMzyyu3+VZU75dtOY3grp9JNIlg=
-Received: from MW4PR03CA0079.namprd03.prod.outlook.com (2603:10b6:303:b6::24)
- by CY8PR12MB7172.namprd12.prod.outlook.com (2603:10b6:930:5b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Wed, 30 Aug
- 2023 10:28:32 +0000
-Received: from CO1PEPF000042AA.namprd03.prod.outlook.com
- (2603:10b6:303:b6:cafe::5d) by MW4PR03CA0079.outlook.office365.com
- (2603:10b6:303:b6::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.36 via Frontend
- Transport; Wed, 30 Aug 2023 10:28:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1PEPF000042AA.mail.protection.outlook.com (10.167.243.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6745.16 via Frontend Transport; Wed, 30 Aug 2023 10:28:31 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 30 Aug
- 2023 05:28:30 -0500
-Received: from xhdsneeli40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Wed, 30 Aug 2023 05:28:27 -0500
-From:   Srinivas Neeli <srinivas.neeli@amd.com>
-To:     <shubhrajyoti.datta@amd.com>, <michal.simek@amd.com>,
-        <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <christophe.jaillet@wanadoo.fr>
-CC:     <linux-watchdog@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@amd.com>,
-        <neelisrinivas18@gmail.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>
-Subject: [PATCH V4] watchdog: of_xilinx_wdt: Remove unnecessary clock disable call in the remove path
-Date:   Wed, 30 Aug 2023 15:58:25 +0530
-Message-ID: <20230830102825.3743755-1-srinivas.neeli@amd.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 30 Aug 2023 06:30:04 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BB8C0;
+        Wed, 30 Aug 2023 03:30:00 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 10:29:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693391399;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qiHeCeWMqDfMSLrY6Ovkw5z04+RV1jb4Pn6ptsA182g=;
+        b=C7zeWOUFsIxIOmrcGuA8IfFFwpcUzR2rVivjQI4/pT4xX9yEq6w5+H5ODHp/6EQujgdV80
+        CodiI1EZdivpvPRUGqjLf4/pgJ5Av9Ta6tgGMM30VdTaWu1v2kXd+FVaX/VzQ3IjepvLMc
+        TdoZKaRA5MuMu9qB3RaPonvBcs2NaGtmvv6KJE3GNLPGBGwejWarKv7mDm/7/qb7kG6fvv
+        MzNqqau1d6NUZBqCfKkjPOy980SVmgRWw9ay8yrnxvyC8cGjM3QUoxrFpKtF7gfEkQiYkk
+        TGQDsBCl8XknJYvq/WVOWTnlNaBU+UG4Ic49nkqDCTy6Lk4Ngs+csvLD5AmJXw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693391399;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qiHeCeWMqDfMSLrY6Ovkw5z04+RV1jb4Pn6ptsA182g=;
+        b=CvDNKDlmsb+IHEd3R72G0w2INwWC9axP1vaDZvpoeUlOA0ojqtGDxJ975TiP8Zsi1Y+5y0
+        vqo+XOIrEc9aYnCA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: smp/urgent] cpu/hotplug: Prevent self deadlock on CPU hot-unplug
+Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yu Liao <liaoyu15@huawei.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com>
+References: <8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042AA:EE_|CY8PR12MB7172:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7ca74ca3-f082-4720-0c1d-08dba943db7e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iYB04P2fu1sN9LbZXLX5dA1yau9ui1wh5Q/I0Jg4ADBX2MhM/aRypYYeR4zn+9Euu90O4DRqJCBn0sinX/em3//t3IOAc5SAXF4848a0WJdo5p5VoaVZv1GyAJZaZJThnUi5MmEWMHqQ69PIC4AeuejP++dyl41pgIKatcLLdGNeCPjRTs1jskm63Cpx8WozPJplVQOXzDNgNirIVB4Ih3pDzV98A754y57wkW0UjpP/uhzbURj+reT+fbxBrgKiyVGsUIXXNfNe5xmJl5uzN0vcGiDn1sBOZtFjz5+0c7dbRZTehd/wntX0Pxa8ww6fxNUt0wnCikeQlRDQt3SarV/oHlPYXIu2oNtrnoggTDUBhCouswlTjbk01SmEm1TXIhlEMjV1ynt/auPn4LxY2gn1HWYEt0UqsIMg7Lyteb+RrwdUu0Hpry7uob9JJmuqbJPSrY2mpLxKBsXXzPQ9UsHari037/AipuXSAiTvHAZKGpRwD4UH9WSEei5P1bxN8ure8Y/J5CK4QcoueOIwe1fxHtlRbR6fqpQ0X9JdlhggSAgTlKL/w7ah9a+8Q9kTMHOxJoO2XIML3OeCBPaoxhQEgMqJLXZCplNFkgbn3JJ2CUwV2VwaQ0gVp9iV4IspGsUcA4XiXsImPAc/2z3ncVyhecLgh/t7CwYnqaESl5Db7I4AQ8a2xblk29trgfTK7/ojL+K0VKd4OoRM7ga/UV6PbZCfkD/GzZBLcTyAeK1HHiGDv7HvqceDqge7qLTJpuL9Ms/W1c5QwXZ/lXXZJw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(346002)(39860400002)(376002)(451199024)(82310400011)(186009)(1800799009)(40470700004)(46966006)(36840700001)(82740400003)(86362001)(40460700003)(40480700001)(36756003)(356005)(47076005)(36860700001)(81166007)(426003)(478600001)(336012)(26005)(83380400001)(2906002)(70206006)(1076003)(41300700001)(8676002)(4326008)(44832011)(110136005)(70586007)(5660300002)(2616005)(316002)(54906003)(8936002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 10:28:31.1556
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ca74ca3-f082-4720-0c1d-08dba943db7e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AA.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7172
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <169339139819.27769.17621875462076784482.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a mismatch in axi clock enable and disable calls.
-The axi clock is enabled and disabled by the probe function,
-then it is again disabled in the remove path.
-So observed the call trace while removing the module.
-Use the clk_enable() and devm_clk_get_prepared() functions
-instead of devm_clk_get_enable() to avoid an extra clock disable
-call from the remove path.
+The following commit has been merged into the smp/urgent branch of tip:
 
- Call trace:
-  clk_core_disable+0xb0/0xc0
-  clk_disable+0x30/0x4c
-  clk_disable_unprepare+0x18/0x30
-  devm_clk_release+0x24/0x40
-  devres_release_all+0xc8/0x190
-  device_unbind_cleanup+0x18/0x6c
-  device_release_driver_internal+0x20c/0x250
-  device_release_driver+0x18/0x24
-  bus_remove_device+0x124/0x130
-  device_del+0x174/0x440
+Commit-ID:     2b8272ff4a70b866106ae13c36be7ecbef5d5da2
+Gitweb:        https://git.kernel.org/tip/2b8272ff4a70b866106ae13c36be7ecbef5d5da2
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 23 Aug 2023 10:47:02 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 30 Aug 2023 12:24:22 +02:00
 
-Fixes: b6bc41645547 ("watchdog: of_xilinx_wdt: Add support for reading freq via CCF")
-Signed-off-by: Srinivas Neeli <srinivas.neeli@amd.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+cpu/hotplug: Prevent self deadlock on CPU hot-unplug
+
+Xiongfeng reported and debugged a self deadlock of the task which initiates
+and controls a CPU hot-unplug operation vs. the CFS bandwidth timer.
+
+    CPU1      			                 	 CPU2
+
+T1 sets cfs_quota
+   starts hrtimer cfs_bandwidth 'period_timer'
+T1 is migrated to CPU2				
+						T1 initiates offlining of CPU1
+Hotplug operation starts
+  ...
+'period_timer' expires and is re-enqueued on CPU1
+  ...
+take_cpu_down()
+  CPU1 shuts down and does not handle timers
+  anymore. They have to be migrated in the
+  post dead hotplug steps by the control task.
+
+						T1 runs the post dead offline operation
+					      	T1 is scheduled out
+						T1 waits for 'period_timer' to expire
+
+T1 waits there forever if it is scheduled out before it can execute the hrtimer
+offline callback hrtimers_dead_cpu().
+
+Cure this by delegating the hotplug control operation to a worker thread on
+an online CPU. This takes the initiating user space task, which might be
+affected by the bandwidth timer, completely out of the picture.
+
+Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Yu Liao <liaoyu15@huawei.com>
+Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/lkml/8e785777-03aa-99e1-d20e-e956f5685be6@huawei.com
+Link: https://lore.kernel.org/r/87h6oqdq0i.ffs@tglx
+
 ---
-Changes in V4:
--> Corrected fixes tag Id.
-Changes in V3:
--> Added "clk_disable() in xwdt_selftest() error path.
-Changes in V2:
--> Fixed typo in "To" list(linux@roeck-us.net).
----
- drivers/watchdog/of_xilinx_wdt.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ kernel/cpu.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/watchdog/of_xilinx_wdt.c b/drivers/watchdog/of_xilinx_wdt.c
-index 05657dc1d36a..352853e6fe71 100644
---- a/drivers/watchdog/of_xilinx_wdt.c
-+++ b/drivers/watchdog/of_xilinx_wdt.c
-@@ -187,7 +187,7 @@ static int xwdt_probe(struct platform_device *pdev)
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index f6811c8..6de7c6b 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1487,8 +1487,22 @@ out:
+ 	return ret;
+ }
  
- 	watchdog_set_nowayout(xilinx_wdt_wdd, enable_once);
- 
--	xdev->clk = devm_clk_get_enabled(dev, NULL);
-+	xdev->clk = devm_clk_get_prepared(dev, NULL);
- 	if (IS_ERR(xdev->clk)) {
- 		if (PTR_ERR(xdev->clk) != -ENOENT)
- 			return PTR_ERR(xdev->clk);
-@@ -218,18 +218,25 @@ static int xwdt_probe(struct platform_device *pdev)
- 	spin_lock_init(&xdev->spinlock);
- 	watchdog_set_drvdata(xilinx_wdt_wdd, xdev);
- 
-+	rc = clk_enable(xdev->clk);
-+	if (rc) {
-+		dev_err(dev, "unable to enable clock\n");
-+		return rc;
-+	}
++struct cpu_down_work {
++	unsigned int		cpu;
++	enum cpuhp_state	target;
++};
 +
- 	rc = xwdt_selftest(xdev);
- 	if (rc == XWT_TIMER_FAILED) {
- 		dev_err(dev, "SelfTest routine error\n");
-+		clk_disable(xdev->clk);
- 		return rc;
- 	}
- 
-+	clk_disable(xdev->clk);
++static long __cpu_down_maps_locked(void *arg)
++{
++	struct cpu_down_work *work = arg;
 +
- 	rc = devm_watchdog_register_device(dev, xilinx_wdt_wdd);
- 	if (rc)
- 		return rc;
++	return _cpu_down(work->cpu, 0, work->target);
++}
++
+ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
+ {
++	struct cpu_down_work work = { .cpu = cpu, .target = target, };
++
+ 	/*
+ 	 * If the platform does not support hotplug, report it explicitly to
+ 	 * differentiate it from a transient offlining failure.
+@@ -1497,7 +1511,15 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
+ 		return -EOPNOTSUPP;
+ 	if (cpu_hotplug_disabled)
+ 		return -EBUSY;
+-	return _cpu_down(cpu, 0, target);
++
++	/*
++	 * Ensure that the control task does not run on the to be offlined
++	 * CPU to prevent a deadlock against cfs_b->period_timer.
++	 */
++	cpu = cpumask_any_but(cpu_online_mask, cpu);
++	if (cpu >= nr_cpu_ids)
++		return -EBUSY;
++	return work_on_cpu(cpu, __cpu_down_maps_locked, &work);
+ }
  
--	clk_disable(xdev->clk);
--
- 	dev_info(dev, "Xilinx Watchdog Timer with timeout %ds\n",
- 		 xilinx_wdt_wdd->timeout);
- 
--- 
-2.25.1
-
+ static int cpu_down(unsigned int cpu, enum cpuhp_state target)
