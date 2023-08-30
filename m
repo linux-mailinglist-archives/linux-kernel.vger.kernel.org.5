@@ -2,104 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6768878DFC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC10A78DF91
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245138AbjH3TPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
+        id S1344326AbjH3T1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242800AbjH3Jnl (ORCPT
+        with ESMTP id S242803AbjH3JpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:43:41 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6221A1;
-        Wed, 30 Aug 2023 02:43:39 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37U9Bq1w032128;
-        Wed, 30 Aug 2023 05:43:28 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3sswp9jajc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 05:43:28 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 37U9hRCl007491
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Aug 2023 05:43:27 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Wed, 30 Aug
- 2023 05:43:26 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Wed, 30 Aug 2023 05:43:26 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 37U9hFrj006777;
-        Wed, 30 Aug 2023 05:43:18 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <linus.walleij@linaro.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH] iio: addac: ad74413r: fix function prefix typo
-Date:   Wed, 30 Aug 2023 12:43:14 +0300
-Message-ID: <20230830094314.26353-1-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 30 Aug 2023 05:45:05 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3017E1A1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:45:02 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a5e1812378so58214966b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:45:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693388700; x=1693993500; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GinLhIkYK1eux6i+cjheW/SanM1hfGzP7zFFV4Pq7CI=;
+        b=FJgx5T2mvEQ9S2G1/fVHLtuSDiGBknSUWu2FGlEV2agXp5QBa6/cjbYmUbPK0OoIa4
+         jcVlz1KjeX5KKTrGtj4LT5V/tRzSEWCnGrjHuV/A7f/zqkyB1zA3EYEb8pJdB4cIIPcJ
+         QmoZQ06e5h15/m0El6jA3h+WRcxKiRsjSpImJh7no3ZmBDDU/uxfVpFax7sa03I2w62J
+         6fn4SBmhjGdkKJONvul6Ylc2FCawehGoDtWDbRgtxrPggl5tiWgkO6cYTqT8qhWc63mF
+         AdCUYL2Gu0vF+eebe/3SPXq+fuRGIaUJepR9KDlwgRcfJFHj/fhMgKM+9xgEsj1lfSRi
+         FADQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693388700; x=1693993500;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GinLhIkYK1eux6i+cjheW/SanM1hfGzP7zFFV4Pq7CI=;
+        b=BpJuSoYNx25rxTdsoKXgvhNSYH8U4fi71i1gFZnZ3hEJcMIdWMDpxLALe7PdxxZkkZ
+         19nTilK21yLSatY56MQIAhldJsCnlP068mMrYvF3rK36bKs8M/XCaJHbHejHrU6eFK7u
+         0icEHMV5AQabzYCbP4D8UJWt4Isk55tCW/VG8elJ+QKRH1J6BH2k/bXVd1DZR41T933O
+         ncNa1/RoA8WWNv4m2xwiox9GTamUgglPI8rpoNB3cq8JqRIZnN1R5XpUNYGhqgiFC1j2
+         gWKg4aVgvOMMELCQtZriyYnslmoq+A5Mz3jDTg8LqJf7XHQoaHexc2NWQjGbvV9GyIsw
+         8oRw==
+X-Gm-Message-State: AOJu0Yw6JnOMRPK7PSE+bjfC2VIlQFqkMHXK1bhb5J8IWG6Zsiyfy6nB
+        yn+gWw10IwOiX7LhbvmN3hnMjg==
+X-Google-Smtp-Source: AGHT+IErP0xuXzSAW/p+xjsBaBQUM/72RL+nvycu+pslby5SCw0FQTJk9JH2ZdMQgx3+rxaEkK5Myw==
+X-Received: by 2002:a17:906:3152:b0:9a5:874a:9745 with SMTP id e18-20020a170906315200b009a5874a9745mr1129087eje.26.1693388700643;
+        Wed, 30 Aug 2023 02:45:00 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id a8-20020a1709066d4800b0098e422d6758sm6930455ejt.219.2023.08.30.02.44.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 02:44:59 -0700 (PDT)
+Message-ID: <b9cbe9be-b03e-6c7a-d06c-b75b012b5b25@linaro.org>
+Date:   Wed, 30 Aug 2023 11:44:57 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: Ia-XIoSHDFHQsbr_y3Sq5mUpPSOa6W4F
-X-Proofpoint-ORIG-GUID: Ia-XIoSHDFHQsbr_y3Sq5mUpPSOa6W4F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 clxscore=1011 spamscore=0 mlxlogscore=891
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2308100000
- definitions=main-2308300090
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4 1/2] ARM: dts: aspeed: Minerva: Add Facebook Minerva
+ (AST2600) BMC
+Content-Language: en-US
+To:     peteryin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
+        daniel-hsu@quantatw.com
+References: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
+ <20230830090212.3880559-2-peteryin.openbmc@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230830090212.3880559-2-peteryin.openbmc@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use complete device name prefix in the input current offset getter
-function.
+On 30/08/2023 11:02, peteryin wrote:
+> Add linux device tree entry related to
+> Minerva specific devices connected to BMC SoC.
+> 
+> Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
 
-Fixes: fea251b6a5db ("iio: addac: add AD74413R driver")
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- drivers/iio/addac/ad74413r.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+To clarify: your full name or known identity is "peteryin"?
 
-diff --git a/drivers/iio/addac/ad74413r.c b/drivers/iio/addac/ad74413r.c
-index 6b0e8218f150..75216ece7ad6 100644
---- a/drivers/iio/addac/ad74413r.c
-+++ b/drivers/iio/addac/ad74413r.c
-@@ -705,8 +705,8 @@ static int ad74413r_get_input_current_scale(struct ad74413r_state *st,
- 	return IIO_VAL_FRACTIONAL;
- }
- 
--static int ad74413_get_input_current_offset(struct ad74413r_state *st,
--					    unsigned int channel, int *val)
-+static int ad74413r_get_input_current_offset(struct ad74413r_state *st,
-+					     unsigned int channel, int *val)
- {
- 	unsigned int range;
- 	int voltage_range;
-@@ -991,7 +991,7 @@ static int ad74413r_read_raw(struct iio_dev *indio_dev,
- 			return ad74413r_get_input_voltage_offset(st,
- 				chan->channel, val);
- 		case IIO_CURRENT:
--			return ad74413_get_input_current_offset(st,
-+			return ad74413r_get_input_current_offset(st,
- 				chan->channel, val);
- 		default:
- 			return -EINVAL;
--- 
-2.42.0
+> ---
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 385 ++++++++++++++++++
+>  2 files changed, 386 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 9e1d7bf3cff6..edb0b2105333 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1604,6 +1604,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>  	aspeed-bmc-facebook-wedge400.dtb \
+>  	aspeed-bmc-facebook-yamp.dtb \
+>  	aspeed-bmc-facebook-yosemitev2.dtb \
+> +	aspeed-bmc-facebook-minerva.dtb \
+
+Nothing improved here.
+
+>  	aspeed-bmc-ibm-bonnell.dtb \
+>  	aspeed-bmc-ibm-everest.dtb \
+>  	aspeed-bmc-ibm-rainier.dtb \
+
+
+> +	"","","","","","","","",
+> +	/*O0-O3 line 224-231*/
+> +	"","","","","","","","",
+> +	/*O4-O7 line 232-239*/
+> +	"","","","","","","","",
+> +	/*P0-P3 line 240-247*/
+> +	"","","","","","","","",
+> +	/*P4-P7 line 248-255*/
+> +	"","","","","","","","";
+> +};
+> +
+
+Nor here.
+
+This is a friendly reminder during the review process.
+
+It seems my previous comments were not fully addressed. Maybe my
+feedback got lost between the quotes, maybe you just forgot to apply it.
+Please go back to the previous discussion and either implement all
+requested changes or keep discussing them.
+
+Thank you.
+
+Best regards,
+Krzysztof
 
