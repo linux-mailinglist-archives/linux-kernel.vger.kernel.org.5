@@ -2,173 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F0B78DF29
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFAC78DFA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243936AbjH3TNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
+        id S245549AbjH3TWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245583AbjH3PhS (ORCPT
+        with ESMTP id S245592AbjH3PjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:37:18 -0400
-Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562AD113
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:16 -0700 (PDT)
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: [PATCH v4 11/11] ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
-Date:   Wed, 30 Aug 2023 17:36:52 +0200
-Message-Id: <20230830153652.217855-12-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
-References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+        Wed, 30 Aug 2023 11:39:14 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E00122;
+        Wed, 30 Aug 2023 08:39:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bvtTpP9jn19cj+RRXofx21k0cl+r2o4K2S/rM9+I4RjOvaW5mSM3I8uaG0sb/GcdecbEVm6Yb7t39muLPykVI0YFQCANKTX/ekALJz60BK0/oWPlEPkLrfG849r+F99R/4htIyYDk3dtPMugu8FjXMqzuLU/6EzefJVpQChe92Mer5CCDtLUZNPVa0rfgIiIhTndBfS25QnPkqBSbMlwZiEjo4dQMBw7L+HZuuQhvNLqkD3ZysU3uYtCsJR9M+Jj8J7EZgacz7twkx6m4oBRcMPJP/aHrkFEZkdI/NjxFquScDS4MnLvvNoInLTOUoGEr4Uu2ztA4jcEfBtl2aIkcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f80zHBH33jh0UHWVEcSjDiyba7Okf0sMouXu9LTk5PA=;
+ b=kmFOahForVg+08G4aRzhxFE+TnBPCLnni5fcJnbGEULGQW3nsiB+fHWAW4QdHwkKdBsJ8ND/Cq5EcKlTtXDP+pKX99rYaKWXwsfiaxe+M2NLO78hZrNeB+EE8C6DE4HDAyEkEmES9e/rni6SET6MjVlLUfZ6OaEsYNDKVtvUf0tE3y0Uf3vylkOGKkl5yVB2FEvGru9XaF0wbYyucwhkSlq8t7pS6QMZjqoC2FYSX/tYOx/OrJWEmxuA5/L9h7UsJFP+RARFQGMblcAyORNeNnZDsmU0dzp+jNgpuPmuYIPX1pzWlpmc2clP2SUa7PIDKR5laMUNTbgWNqtRx94xZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f80zHBH33jh0UHWVEcSjDiyba7Okf0sMouXu9LTk5PA=;
+ b=XZ/cSE/KaOKAnFYdclgqPcIGbFxSdmFztDgY9fKEE3C1Ne8Z7/2bAPBYHAk3wDQfjUJ4lp8iQF8lZ23ZJjW4gdwMpyu6NKhCjjuiu4Oq9sVKC61AMyXaNKFijLwiLSi+fYJ/9SQUJ7bWCmlcnHFq97Zy8WhX9PtOY2536Sl1DFIF0o+4NufFDgzj1PyE92GirTfCUzFaJat5B4mMAWswTSSyqlc/RRGeGOKhdjbrOgcsX5npKZBmdqyRQTm9/JdKMrAOaQ4AVg1Szx475vHcduUJcWV795PJRsQyG3K1Dc+owiLzEfgatms837/F+rvb1+9TQ2w6aDQLL5TgD0PuXQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SN7PR12MB7882.namprd12.prod.outlook.com (2603:10b6:806:348::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Wed, 30 Aug
+ 2023 15:39:09 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
+ 15:39:08 +0000
+Date:   Wed, 30 Aug 2023 12:39:05 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     ankita@nvidia.com, alex.williamson@redhat.com, yishaih@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Airlie <airlied@redhat.com>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+Message-ID: <ZO9imcoN5l28GE9+@nvidia.com>
+References: <20230822202303.19661-1-ankita@nvidia.com>
+ <ZO9JKKurjv4PsmXh@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZO9JKKurjv4PsmXh@infradead.org>
+X-ClientProxiedBy: BY3PR04CA0028.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::33) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SN7PR12MB7882:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a07154b-6dea-456b-eb07-08dba96f3ffa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Nu1gbJIuX0KO7Ls5WT6hxiBCIApO5yBuOBEi/OMT0hZEuDBULd+WC70GPk59gXFE8gJGFuKR1o50FA1TwpwFYhI9MoIZhS+5a3SaF/lwmal8uYpT8ZnZAN+id4EF2QhcHZ//HAk65o5hClQAOWYtfJxsltc54HrJaoCfLeOapNqE0C71h6PnKCwohMaQf1+3t3s/TXy+JvfVAzqAGyuadHbKFdL5inKKJwUhELq9V1GaY97KpJdpUrYpAcI8tdJsOi4n7l3e+ZJhKwKd4yjl6KEzvtYtEQ0NdsG+qBkHX+pToabt7tC2lY+44evhtg/VH+o2jD0lV4fqoKNb9UM35p2yV6HG8WDsFDOhV40YBKrT2Unhn0EYPeZyYgHbyry4B3CcTMOOLyDmTF5CB67eyEyMZ5bTIouf4HhLEXgjNF2p8gwjMlGv3ORvTH1hk5RaYYrVne/pCPrELFONo35FXhvITMPqcBnvvg2t6jBF3RqRBUc4wmzCdX1VKPGS3bTOFGvV6B+KHROIDc3oP4MN2++Q7S8exe60Zh6i3R0sAk2U05X1GPuOLjyQ2X95y9ap
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(396003)(366004)(136003)(376002)(451199024)(1800799009)(186009)(26005)(6512007)(6666004)(6506007)(6486002)(5660300002)(38100700002)(8676002)(4326008)(8936002)(478600001)(86362001)(2616005)(2906002)(66556008)(36756003)(316002)(54906003)(6916009)(66476007)(7416002)(66946007)(41300700001)(4744005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?px36TNw+FXvNut7l6Y6WPytoON4DuAByp4BjWnyMLQw44DRTjnocwjMfiNPS?=
+ =?us-ascii?Q?g2eikeaoBn7Vc+K3P0wrbPynY6V6RAhXVB6tNVEyU4O+KYgpcsw+6ByPaGZo?=
+ =?us-ascii?Q?vdvVNUdbq8xVc/wSx29Nj74dkuQ7+U88MsKqa6Y2/uGsNVLMObgi5WA0H2Iq?=
+ =?us-ascii?Q?Vefzj5fuT2XEMKgCu+fbLyS2Ghp7CAvmbW6AiGE5qi35GnTS/Ye9YPR7OCva?=
+ =?us-ascii?Q?oFRhP9dpbpwX2NN/XHD4jWWFohXavWZb3bUZyk0LEoDMbMmhDXscnQ/mPIA8?=
+ =?us-ascii?Q?VFIhPcNUg9psJgqK+MlM8GuJT4AZ1z3TAle+lu7+q4s6nlXeLfN+gY3GcIXB?=
+ =?us-ascii?Q?qD//VGulpiI1clZII9fE3rm4TdlBal9BIJTgtDuS8GYkQ8AzgtnVH4jRVXUE?=
+ =?us-ascii?Q?8ok0ppSFnD8j2cvgg1gEAL+hCWKVN9HYef5l/p/Xy3wvbqkGFCG0ppN0QPXK?=
+ =?us-ascii?Q?JhiuR5LqH2oooXFll31GLrSy5/o17XcaZ91WMdXcsWjbJNUUkp7WU308gQcX?=
+ =?us-ascii?Q?g7Ii+NH4gmchmAbXuRFpDG6vD6B63ftex+cJMiGr2EPUewz/3Ouhu0eYl/fA?=
+ =?us-ascii?Q?F1qCpAu10Ikkwm8KbN7nggSK7NGNDcpHojUnKJrx6JOwkwuxFGbJFf3Ii+ab?=
+ =?us-ascii?Q?yMXEDLG63NSngohY7XisKojx6cmWjSdkQhmJowP+J4fRHim5j14YaDxBo8cE?=
+ =?us-ascii?Q?mnQpiFDes8y64wENsivd2du3oRX48yZUV0dsXNiSxnCA//PEvDXO/9hc1it0?=
+ =?us-ascii?Q?7uMx4WCxsWw6MNkhJFW+kVupGb82762lWiGMIe0vJb6TqVxd4MY1Nk9mC9bX?=
+ =?us-ascii?Q?LTJ6PA9KOdfCD7NxOp3GBNl3/WLgvttZZaEXrXBiGRAoDlPkApsxZ+O0PiOo?=
+ =?us-ascii?Q?6v0xLeBM+tdHUnKtEUjeVyh6MmsXW/VqHMs5NdpiJobz5+0VnXlBcXzpoH4N?=
+ =?us-ascii?Q?jHwwtX0kCwdKsDr/WTeIFNE5ZLH2Z8mrNveKKs50EqP/uP1SK+GoNc4b5uMU?=
+ =?us-ascii?Q?4mdxGcJqpYRyTZSQ8yKFIbvrq0qn3roLP6Y6Wo4mydPQb5NICFue918smK0s?=
+ =?us-ascii?Q?/AvM76aDOKcequgyWmZBzjvqF/pgWSxt7gzZviNnE7SDsD6BYdmHTMLI1vKi?=
+ =?us-ascii?Q?jCzPcHeKoCt/hGZLnOwJYfhRQJb/7Jid4zZd1hufj/IcRfaisYPw9OJf/3f7?=
+ =?us-ascii?Q?K1ZM9LY81oQQZkdvjgMlPi5suXvYBGOdHONiy64zCdxFg2+fjvFFxN9u9sbJ?=
+ =?us-ascii?Q?t1zG3Qn0h55G4GK7KDj5FmItOqSZKfc9d+tV5OaBbH6yzupEfldjN+wk2A3Y?=
+ =?us-ascii?Q?+/u8gXhMEYFCmDik0bp3WzPCvTTj13rx/Oy3YLAIcWoPLxnQnrq42xz+HWk3?=
+ =?us-ascii?Q?hh93GDvq5Hhjv+6QW9x4DV7hPDNfiw5ZwnBoh1KNuCaEOXxsLTA+0i5buaMT?=
+ =?us-ascii?Q?juPskl+FwIrJ/S7/q1fAafwruOBx3D2txIPPc0ZFiHBzzgj9nJB+04KhoYpv?=
+ =?us-ascii?Q?p9lsJ+aMr55LE9L26qZlHP0vghcRnKrgUyuSDX3PC+9+7Fw8RkY2/SuLKxFe?=
+ =?us-ascii?Q?3K8SFILDAjXkbzAqMjwzRf/mcJR7CXYxoyDGbDli?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a07154b-6dea-456b-eb07-08dba96f3ffa
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 15:39:08.5252
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YS0qWO5qoQSsvjdaHIT4GBnK5AQoGwzoHx/fc1ahYQDnAM+YIkxZ86h+T3WYz5mX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7882
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all drivers have moved from modprobe loading to
-handling -EPROBE_DEFER, we can remove the argument again.
+On Wed, Aug 30, 2023 at 06:50:32AM -0700, Christoph Hellwig wrote:
+> I know I'm chiming in a bit late, but what ultimate user space is going
+> to use this?  We should not add anything to the kernel that can't
+> be used without fully open user space.
 
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
-Changes since v1:
-- Use dev_err_probe() to set reason in debugfs for deferred probe.
----
- include/sound/hda_i915.h        |  4 ++--
- sound/hda/hdac_i915.c           | 14 +++-----------
- sound/pci/hda/hda_intel.c       |  2 +-
- sound/soc/intel/avs/core.c      |  2 +-
- sound/soc/intel/skylake/skl.c   |  2 +-
- sound/soc/sof/intel/hda-codec.c |  2 +-
- 6 files changed, 9 insertions(+), 17 deletions(-)
+qemu will get the matching VFIO userspace patches, I think they were
+posted someplace already.
 
-diff --git a/include/sound/hda_i915.h b/include/sound/hda_i915.h
-index f91bd66360865..6b79614a893b9 100644
---- a/include/sound/hda_i915.h
-+++ b/include/sound/hda_i915.h
-@@ -9,12 +9,12 @@
- 
- #ifdef CONFIG_SND_HDA_I915
- void snd_hdac_i915_set_bclk(struct hdac_bus *bus);
--int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe);
-+int snd_hdac_i915_init(struct hdac_bus *bus);
- #else
- static inline void snd_hdac_i915_set_bclk(struct hdac_bus *bus)
- {
- }
--static inline int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
-+static inline int snd_hdac_i915_init(struct hdac_bus *bus)
- {
- 	return -ENODEV;
- }
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 0765e5350e7ba..365c36fdf2058 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -156,7 +156,7 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
-  *
-  * Returns zero for success or a negative error code.
-  */
--int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
-+int snd_hdac_i915_init(struct hdac_bus *bus)
- {
- 	struct drm_audio_component *acomp;
- 	int err;
-@@ -172,18 +172,10 @@ int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
- 	acomp = bus->audio_component;
- 	if (!acomp)
- 		return -ENODEV;
--	if (allow_modprobe && !acomp->ops) {
--		if (!IS_ENABLED(CONFIG_MODULES) ||
--		    !request_module("i915")) {
--			/* 60s timeout */
--			wait_for_completion_killable_timeout(&acomp->master_bind_complete,
--							     msecs_to_jiffies(60 * 1000));
--		}
--	}
- 	if (!acomp->ops) {
--		int err = allow_modprobe ? -ENODEV : -EPROBE_DEFER;
- 		snd_hdac_acomp_exit(bus);
--		return dev_err_probe(bus->dev, err, "couldn't bind with audio component\n");
-+		return dev_err_probe(bus->dev, -EPROBE_DEFER,
-+				     "couldn't bind with audio component\n");
- 	}
- 	return 0;
- }
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index d529ef21f033a..e0f01a3ab231c 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2138,7 +2138,7 @@ static int azx_probe(struct pci_dev *pci,
- #ifdef CONFIG_SND_HDA_I915
- 	/* bind with i915 if needed */
- 	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
--		err = snd_hdac_i915_init(azx_bus(chip), false);
-+		err = snd_hdac_i915_init(azx_bus(chip));
- 		if (err < 0) {
- 			/* if the controller is bound only with HDMI/DP
- 			 * (for HSW and BDW), we need to abort the probe;
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 8a20639582487..33044f353575d 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -461,7 +461,7 @@ static int avs_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
- 	pci_set_drvdata(pci, bus);
- 	device_disable_async_suspend(dev);
- 
--	ret = snd_hdac_i915_init(bus, false);
-+	ret = snd_hdac_i915_init(bus);
- 	if (ret == -EPROBE_DEFER)
- 		goto err_i915_init;
- 	else if (ret < 0)
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 24bdbe2a53bec..f46f109d5856e 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1056,7 +1056,7 @@ static int skl_probe(struct pci_dev *pci,
- 	}
- 
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = snd_hdac_i915_init(bus, false);
-+		err = snd_hdac_i915_init(bus);
- 		if (err < 0)
- 			goto out_dmic_unregister;
- 	}
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index f1fd5b44aaac9..8a5e99a898ecb 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
- 		return 0;
- 
- 	/* i915 exposes a HDA codec for HDMI audio */
--	ret = snd_hdac_i915_init(bus, true);
-+	ret = snd_hdac_i915_init(bus);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.39.2
+> vfio has traditionally been a bit special as it "just" passes devices
+> through, so any user space could just be a user space driver for a
+> random device on $FOO bus, including an actual Linux driver in a VM,
+> but this driver has very specific semantics for a very specific piece
+> of hardware, so it really needs to be treated like a generic GPU driver
+> or accelerator driver.
 
+This is basically a pre-CXL driver. It takes a PCI device and some
+non-standard CXL-ish metadata and adapts it to VFIO.
+
+In a post-CXL world this same functionality of managing the 'cache
+coherent BAR' for VFIO would be done generically by some generic
+vfio-cxl driver.
+
+Jason
