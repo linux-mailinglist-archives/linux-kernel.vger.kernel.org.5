@@ -2,175 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1688178E0B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9276778E028
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239841AbjH3UcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S240388AbjH3UFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239840AbjH3UcK (ORCPT
+        with ESMTP id S240215AbjH3UFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:32:10 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A618EE99
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:45:20 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d746ea563f9so5623847276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:45:20 -0700 (PDT)
+        Wed, 30 Aug 2023 16:05:39 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F35298664
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:48:55 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7814efcccbso7079529276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:48:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693424624; x=1694029424; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VJiEYvthVUOcpYJPy9yFGFD2aO5cf2VHnVMOssUOmRg=;
-        b=ePdmGT9H+NNcqRumPz2z4DfI1stmMgT0TFsHhZg9dyx2Dbv4vAchsHZfwe1mabq9T5
-         Xxz/NGz3MtpIzP/2MgoIKFydpia5KtjtiGcr1vlkk762rVmSm2cMs5C9oP9J/+/Du2dm
-         XOYzN0gEsukkbZ/eWCg8fic+fe9Z1JBdJJ1QZKGLs1EBfP/iykHjJvICwNB4S60dSSi1
-         rNT+AiHCUiP/Va12JdHHFWo94zWbqhVLJV0Y0bVetMOHYnUf8wZGpgfc27+C362mwnSU
-         4kccF/9YWX58jJUfef2T+v31A0LHtqH79diMC3nwLGtTCOkyQr5cU+bNDdr9jtKSEzJR
-         MqTw==
+        d=google.com; s=20221208; t=1693424849; x=1694029649; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JE+0J4LE2Y9WLJA4sbzDU6bKkGcfTw3IfTNM4aZ8RZg=;
+        b=PqdZ8KaaSnkkn5TOnRYNzK4qbtGvGk+xfoms7rwsaHQci8OqcdlxIqWYnW9ObzV6ub
+         y6v7pCMn4a21vvTXQvqL6ow+fP3MMuhfCXly49t/IQ6XaUkUQwpbUopA/+2FbSeCMeIi
+         hS1D7PrndnFMVua6MC/qaJSuD3ywlx+zvC//+MGeccE55nmAwsP7lP3qG8dO8G1dmbNg
+         04Xm4nxUzXdFwwS3OPgsZsAXbt9+jYx9qDxCP5mwmXBkZmfYhZIz4WrEwBl3BXLJ8tyk
+         iH1EMix4gPiZk/0MwrUT0fZ6WdZ7tWy2cL96yxubBHlwy1Gi+NDgI2VOLPfsJnk4V0/B
+         QMeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693424624; x=1694029424;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VJiEYvthVUOcpYJPy9yFGFD2aO5cf2VHnVMOssUOmRg=;
-        b=ltzXFTZS1tJGG6omCzQ/5i81yPe9N7ZPbRAVkbEg2AyQE1MmCSUKLU3A5wzoJdzc9x
-         Ayp5LT5hd76lyAqEyg2iKB0S+R8wgK120zR/qkIU5UnUs/k3H89wt0SbaVI2P7H9SDnl
-         FztwwxhpidiB4IBl9Lleb+Q6mJHWJqYhGZXmd/zrprGtOMpdr4MrG81dxkjXZUMeMPTe
-         do2VnguUwgya7rG3LX9WMh9/76gfuXQW9oNVg5lrMxZw1PHkWvAmZ6leBPkS5w6CS6C8
-         0hm4sFbyOiLDxEpEdBI7RhE4txlJutJkbzeoTdp+vxMURBz1K73O686LW3q7tToYy4Lm
-         PTKQ==
-X-Gm-Message-State: AOJu0YwNLqak0i2ufPcypIvtfQWf4v4PWB+Ak5KWdTTNMtEnGls8+qXR
-        K/icvmPfWFfRzDhwrTwRSQB5pj0nUjsxpS2jFnz4GQ==
-X-Google-Smtp-Source: AGHT+IE2iDDTjFTVDoB3gZ4fX5lg6uyzcQRItrwWgsQ3B9T43cbbiyZMI0KSJ+aavpFonXZjy3iNu1t/WvVG3AWOXxc=
-X-Received: by 2002:a05:6902:18cd:b0:d78:48b0:21d2 with SMTP id
- ck13-20020a05690218cd00b00d7848b021d2mr3630806ybb.3.1693424624644; Wed, 30
- Aug 2023 12:43:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230830111722.19380-1-quic_nsekar@quicinc.com> <20230830111722.19380-4-quic_nsekar@quicinc.com>
-In-Reply-To: <20230830111722.19380-4-quic_nsekar@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 30 Aug 2023 22:43:33 +0300
-Message-ID: <CAA8EJpr3SnEXRENAgzdemANnYWvwM7Z-xyZYe335O45Jps91kg@mail.gmail.com>
-Subject: Re: [PATCH V2 3/4] arm64: dts: qcom: ipq5018: Add USB related nodes
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        Amandeep Singh <quic_amansing@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1693424849; x=1694029649;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JE+0J4LE2Y9WLJA4sbzDU6bKkGcfTw3IfTNM4aZ8RZg=;
+        b=BZLT/emeMQnMxTKoE0+bjDfi2nFkGZY/c7KdAAa+5A81W4q2Fitkz2/JCa3bw84Nmu
+         k8Tk6JFDOA0jJ47yNLtE7o8cP8/kyuniko2mXc3cE+lcHTcgyVAjwLCupxGk4+yXzmwk
+         b+/H72YbxMDN2UbNtfSAoR2IHf2IHjkRmkPllrmc/XYHeYH3fGN5BzviCHYRV5/UvW1u
+         3J8rD4zLBjwk8K6wUFx+chIZ0UQtFi12LMZqQ0b9jQCOy3AsrCL9gG55M2WVD5qjeb7c
+         kEoYFanNwCa4oUhDNYwydOZ+3knWZZ6EZ/ompTG9qztsZbCZg9VS+8o7ajFl7ZknBf5r
+         y7Bg==
+X-Gm-Message-State: AOJu0YzpMLG3MGoq7I18417cLPgR1oqctPfnlC9O/5ePQNH1gU97Ac91
+        Z/YCYYshelXIKXmx5BCjVlRwidU+T2zLmmnNAA==
+X-Google-Smtp-Source: AGHT+IHs+RWMaNtA93jfYo5odypjlgOLH3hb204BRKjTj2NCRouc7VuVWQozkwCmR1nmpUaVeTHB/jrtkwAiF+KhVg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:1287:b0:d7b:92d7:5629 with
+ SMTP id i7-20020a056902128700b00d7b92d75629mr109004ybu.8.1693424849002; Wed,
+ 30 Aug 2023 12:47:29 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 19:47:06 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALmc72QC/x3MTQqDMBAG0KvIrDuQn43tVYqLkEz0gzotGZGCe
+ HeDy7d5B5k0iNFrOKjJDsNXO/xjoLwknYVRuim4EN0YHa8wg857akXyJzAUG68JypmfsWTvfKx 1TNSHX5OK/72/p/O8AFfl655tAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693424848; l=2357;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=GIGvI2tq5BYA3OyOut6s0LymlGqm3neCSz8tHLPc2Nw=; b=4KSwwoIvqS8EU5l3yCMv60/x1oUuI+qdr3mOXLmSXbCSA/rG1Q6mfxjytKCd/Cwa5MZki1/Tt
+ u3meMQNbnlwBfXxiAse3Eqxqa2iuxvKCHAz+Iqtn37lXFZ85ufdHtch
+X-Mailer: b4 0.12.3
+Message-ID: <20230830-missingvardecl2-init-main-c-v1-1-59007a637259@google.com>
+Subject: [PATCH] init: fix -Wmissing-variable-declarations clang warning
+From:   Justin Stitt <justinstitt@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Aug 2023 at 21:30, Nitheesh Sekar <quic_nsekar@quicinc.com> wrote:
->
-> Add USB phy and controller nodes.
->
-> Co-developed-by: Amandeep Singh <quic_amansing@quicinc.com>
-> Signed-off-by: Amandeep Singh <quic_amansing@quicinc.com>
-> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
-> ---
-> V2:
->         Fix ordering of the USB related nodes and use
->         generic node names.
-> ---
->  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 54 +++++++++++++++++++++++++++
->  1 file changed, 54 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> index 9f13d2dcdfd5..917e4a2d8e64 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> @@ -93,6 +93,19 @@
->                 #size-cells = <1>;
->                 ranges = <0 0 0 0xffffffff>;
->
-> +               usbphy0: phy@5b000 {
-> +                       compatible = "qcom,ipq5018-usb-hsphy";
-> +                       reg = <0x0005b000 0x120>;
-> +
-> +                       clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>;
-> +
-> +                       resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
-> +
-> +                       #phy-cells = <0>;
-> +
-> +                       status = "disabled";
-> +               };
-> +
->                 tlmm: pinctrl@1000000 {
->                         compatible = "qcom,ipq5018-tlmm";
->                         reg = <0x01000000 0x300000>;
-> @@ -155,6 +168,47 @@
->                         status = "disabled";
->                 };
->
-> +               usb: usb@8af8800 {
-> +                       compatible = "qcom,ipq5018-dwc3", "qcom,dwc3";
-> +                       reg = <0x08af8800 0x400>;
-> +
-> +                       interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "hs_phy_irq";
-> +
-> +                       clocks = <&gcc GCC_USB0_MASTER_CLK>,
-> +                                <&gcc GCC_SYS_NOC_USB0_AXI_CLK>,
-> +                                <&gcc GCC_USB0_SLEEP_CLK>,
-> +                                <&gcc GCC_USB0_MOCK_UTMI_CLK>;
-> +                       clock-names = "core",
-> +                                     "iface",
-> +                                     "sleep",
-> +                                     "mock_utmi";
-> +
-> +                       resets = <&gcc GCC_USB0_BCR>;
-> +
-> +                       qcom,select-utmi-as-pipe-clk;
-> +                       #address-cells = <1>;
-> +                       #size-cells = <1>;
-> +                       ranges;
-> +
-> +                       status = "disabled";
-> +
-> +                       usb2_0_dwc: usb@8a00000 {
+When building x86/defconfig with Clang-18 I encounter the following warning:
+| init/main.c:189:13: warning: no previous extern declaration for non-static variable 'envp_init' [-Wmissing-variable-declarations]
+|   189 | const char *envp_init[MAX_INIT_ENVS+2] = { "HOME=/", "TERM=linux", NULL, };
+| init/main.c:189:7: note: declare 'static' if the variable is not intended to be used outside of this translation unit
+|   189 | const char *envp_init[MAX_INIT_ENVS+2] = { "HOME=/", "TERM=linux", NULL, };
 
-As we have seen from the next patchset, this host supports USB 3.0.
-Can you please drop the 2_0 part of the label?
+Move the extern declaration to a header file so that the compiler can find it
+when compiling init/main.c.
 
-> +                               compatible = "snps,dwc3";
-> +                               reg = <0x08a00000 0xe000>;
-> +                               clocks = <&gcc GCC_USB0_MOCK_UTMI_CLK>;
-> +                               clock-names = "ref";
-> +                               interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-> +                               phy-names = "usb2-phy";
-> +                               phys = <&usbphy0>;
-> +                               tx-fifo-resize;
-> +                               snps,is-utmi-l1-suspend;
-> +                               snps,hird-threshold = /bits/ 8 <0x0>;
-> +                               snps,dis_u2_susphy_quirk;
-> +                               snps,dis_u3_susphy_quirk;
-> +                       };
-> +               };
-> +
->                 intc: interrupt-controller@b000000 {
->                         compatible = "qcom,msm-qgic2";
->                         reg = <0x0b000000 0x1000>,  /* GICD */
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+Add `const` qualifier to extern declaration so that the types match and
+we follow the One-Definition Rule (ODR).
 
+Link: https://github.com/ClangBuiltLinux/linux/issues/1920
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
--- 
-With best wishes
-Dmitry
+There's a previous RFC [1] wherein the kernel test robot reported some
+build errors which lead me to creating this patch which both fixes the
+errors as well as the -Wmissing-variable-declarations warning.
+
+[1]: https://lore.kernel.org/all/20230829-missingvardecl-init-main-c-v1-1-ddf0f1a71215@google.com/
+
+Also, get_maintainer.pl had a hard time finding folks to Cc here, not sure why.
+---
+ include/linux/initrd.h  | 2 ++
+ init/do_mounts_initrd.c | 1 -
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/initrd.h b/include/linux/initrd.h
+index f1a1f4c92ded..0114f1acbb45 100644
+--- a/include/linux/initrd.h
++++ b/include/linux/initrd.h
+@@ -34,4 +34,6 @@ extern unsigned long __initramfs_size;
+ 
+ void console_on_rootfs(void);
+ 
++extern const char *envp_init[];
++
+ #endif /* __LINUX_INITRD_H */
+diff --git a/init/do_mounts_initrd.c b/init/do_mounts_initrd.c
+index 425f4bcf4b77..b35c1b0babc2 100644
+--- a/init/do_mounts_initrd.c
++++ b/init/do_mounts_initrd.c
+@@ -87,7 +87,6 @@ static void __init handle_initrd(char *root_device_name)
+ {
+ 	struct subprocess_info *info;
+ 	static char *argv[] = { "linuxrc", NULL, };
+-	extern char *envp_init[];
+ 	int error;
+ 
+ 	pr_warn("using deprecated initrd support, will be removed in 2021.\n");
+
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230830-missingvardecl2-init-main-c-93dc1013ff8a
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
