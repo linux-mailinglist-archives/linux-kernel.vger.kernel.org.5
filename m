@@ -2,235 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1238678DE7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2F378DE0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238727AbjH3TDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S1344108AbjH3S5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242174AbjH3HU4 (ORCPT
+        with ESMTP id S242180AbjH3HWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:20:56 -0400
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B021BB;
-        Wed, 30 Aug 2023 00:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1693380052; x=1724916052;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WqdW8Qj2xK46E3UyrwcROMadSGBZGtNxIQEEI9MRaS0=;
-  b=edMQRAdCRmENkOwDAZnd63tncJDJRIIen2VqxP90EJPjRnPkG2+3QjHF
-   Ftdl65nk7sXQ/YVvLUWLVmVubT12ozcNF9EzF6+15sOvJSuv/L8Vkhizq
-   QLBTq/xx5SUgukPCDAXQB9sbl8ZR1SnY4HhtxvUkvxbKz77+V36B321Fl
-   I=;
-X-IronPort-AV: E=Sophos;i="6.02,212,1688428800"; 
-   d="scan'208";a="25907343"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 07:20:50 +0000
-Received: from EX19MTAUWB002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com (Postfix) with ESMTPS id 319AF806B6;
-        Wed, 30 Aug 2023 07:20:49 +0000 (UTC)
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 30 Aug 2023 07:20:41 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 30 Aug
- 2023 07:20:37 +0000
-Message-ID: <82416797-01aa-471a-a737-471297e37c4c@amazon.de>
-Date:   Wed, 30 Aug 2023 09:20:34 +0200
+        Wed, 30 Aug 2023 03:22:53 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1FB1BB;
+        Wed, 30 Aug 2023 00:22:50 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RbG373tXHz4f3nq2;
+        Wed, 30 Aug 2023 15:22:43 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgCHYaRB7u5ktJa1Bw--.25701S2;
+        Wed, 30 Aug 2023 15:22:43 +0800 (CST)
+Subject: Re: [PATCH v6 00/11] cleanups and unit test for mballoc
+To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <87v8cx8yee.fsf@doe.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <c92574b5-1441-645c-4824-723545e45845@huaweicloud.com>
+Date:   Wed, 30 Aug 2023 15:22:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] Introduce persistent memory pool
-Content-Language: en-GB
-To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
-CC:     "Gowans, James" <jgowans@amazon.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "madvenka@linux.microsoft.com" <madvenka@linux.microsoft.com>,
-        "anthony.yznaga@oracle.com" <anthony.yznaga@oracle.com>,
-        "steven.sistare@oracle.com" <steven.sistare@oracle.com>,
-        "stanislav.kinsburskii@gmail.com" <stanislav.kinsburskii@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "anrayabh@linux.microsoft.com" <anrayabh@linux.microsoft.com>,
-        "dragan.cvetic@amd.com" <dragan.cvetic@amd.com>,
-        "jinankjain@linux.microsoft.com" <jinankjain@linux.microsoft.com>,
-        "derek.kiernan@amd.com" <derek.kiernan@amd.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <kexec@lists.infradead.org>, <iommu@lists.linux.dev>,
-        kvm <kvm@vger.kernel.org>
-References: <64e7cbf7.050a0220.114c7.b70dSMTPIN_ADDED_BROKEN@mx.google.com>
- <2023082506-enchanted-tripping-d1d5@gregkh>
- <c26ad989dcc6737dd295e980c78ef53740098810.camel@amazon.com>
- <20230823024500.GA25462@skinsburskii.>
- <e0ed9fb9-8e7a-44ad-976a-27362f6e537a@amazon.de>
- <20230829220740.GA26605@skinsburskii.>
-From:   Alexander Graf <graf@amazon.de>
-In-Reply-To: <20230829220740.GA26605@skinsburskii.>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D038UWC001.ant.amazon.com (10.13.139.213) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SPF_PERMERROR
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87v8cx8yee.fsf@doe.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCHYaRB7u5ktJa1Bw--.25701S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gr47Gry8CF48KF4fXF1xAFb_yoWfGrW8pr
+        Z2kF4DKr1xJr1qvan3C347ur1xKw4xta17GF1fK34xuFy3Wr97CFsrKFWY9a4DKr4DZFyY
+        vF15CFy5uw1v9aDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU3RhbmlzbGF2LAoKT24gMzAuMDguMjMgMDA6MDcsIFN0YW5pc2xhdiBLaW5zYnVyc2tpaSB3
-cm90ZToKPgo+IE9uIE1vbiwgQXVnIDI4LCAyMDIzIGF0IDEwOjUwOjE5UE0gKzAyMDAsIEFsZXhh
-bmRlciBHcmFmIHdyb3RlOgo+PiAra2V4ZWMsIGlvbW11LCBrdm0KPj4KPj4gT24gMjMuMDguMjMg
-MDQ6NDUsIFN0YW5pc2xhdiBLaW5zYnVyc2tpaSB3cm90ZToKPj4+ICtha3BtLCArbGludXgtbW0K
-Pj4+Cj4+PiBPbiBGcmksIEF1ZyAyNSwgMjAyMyBhdCAwMTozMjo0MFBNICswMDAwLCBHb3dhbnMs
-IEphbWVzIHdyb3RlOgo+Pj4+IE9uIEZyaSwgMjAyMy0wOC0yNSBhdCAxMDowNSArMDIwMCwgR3Jl
-ZyBLcm9haC1IYXJ0bWFuIHdyb3RlOgo+Pj4+Cj4+Pj4gVGhhbmtzIGZvciBhZGRpbmcgbWUgdG8g
-dGhpcyB0aHJlYWQgR3JlZyEKPj4+Pgo+Pj4+PiBPbiBUdWUsIEF1ZyAyMiwgMjAyMyBhdCAxMToz
-NDozNEFNIC0wNzAwLCBTdGFuaXNsYXYgS2luc2J1cnNraWkgd3JvdGU6Cj4+Pj4+PiBUaGlzIHBh
-dGNoIGFkZHJlc3NlcyB0aGUgbmVlZCBmb3IgYSBtZW1vcnkgYWxsb2NhdG9yIGRlZGljYXRlZCB0
-bwo+Pj4+Pj4gcGVyc2lzdGVudCBtZW1vcnkgd2l0aGluIHRoZSBrZXJuZWwuIFRoaXMgYWxsb2Nh
-dG9yIHdpbGwgcHJlc2VydmUKPj4+Pj4+IGtlcm5lbC1zcGVjaWZpYyBzdGF0ZXMgbGlrZSBETUEg
-cGFzc3Rocm91Z2ggZGV2aWNlIHN0YXRlcywgSU9NTVUgc3RhdGUsIGFuZAo+Pj4+Pj4gbW9yZSBh
-Y3Jvc3Mga2V4ZWMuCj4+Pj4+PiBUaGUgcHJvcG9zZWQgc29sdXRpb24gb2ZmZXJzIGEgZm91bmRh
-dGlvbmFsIGltcGxlbWVudGF0aW9uIGZvciBwb3RlbnRpYWwKPj4+Pj4+IGN1c3RvbSBzb2x1dGlv
-bnMgdGhhdCBtaWdodCBmb2xsb3cuIFRob3VnaCB0aGUgaW1wbGVtZW50YXRpb24gaXMKPj4+Pj4+
-IGludGVudGlvbmFsbHkga2VwdCBjb25jaXNlIGFuZCBzdHJhaWdodGZvcndhcmQgdG8gZm9zdGVy
-IGRpc2N1c3Npb24gYW5kCj4+Pj4+PiBmZWVkYmFjaywgaXQncyBmdWxseSBmdW5jdGlvbmFsIGlu
-IGl0cyBjdXJyZW50IHN0YXRlLgo+Pj4+IEhpIFN0YW5pc2xhdiwgaXQgbG9va3MgbGlrZSB3ZSdy
-ZSB3b3JraW5nIG9uIHNpbWlsYXIgdGhpbmdzLiBJJ20gbG9va2luZwo+Pj4+IHRvIGRldmVsb3Ag
-YSBtZWNoYW5pc20gdG8gc3VwcG9ydCBoeXBlcnZpc29yIGxpdmUgdXBkYXRlIGZvciB3aGVuIEtW
-TSBpcwo+Pj4+IHJ1bm5pbmcgVk1zIHdpdGggUENJIGRldmljZSBwYXNzdGhyb3VnaC4gVk1zIHdp
-dGggZGV2aWNlIHBhc3N0aHJvdWdoCj4+Pj4gYWxzbyBuZWNlc3NpdGF0ZXMgcGFzc2luZyBhbmQg
-cmUtaHlkcmF0aW5nIElPTU1VIHN0YXRlIHNvIHRoYXQgRE1BIGNhbgo+Pj4+IGNvbnRpbnVlIGR1
-cmluZyBsaXZlIHVwZGF0ZS4KPj4+Pgo+Pj4+IFBsYW5uaW5nIG9uIGhhdmluZyBhbiBMUEMgc2Vz
-c2lvbiBvbiB0aGlzIHRvcGljOgo+Pj4+IGh0dHBzOi8vbHBjLmV2ZW50cy9ldmVudC8xNy9hYnN0
-cmFjdHMvMTYyOS8gKGN1cnJlbnRseSBpdCdzIG9ubHkgYQo+Pj4+IHN1Ym1pdHRlZCBhYnN0cmFj
-dCBzbyBub3Qgc3VyZSBpZiB2aXNpYmxlLCBob3BlZnVsbHkgaXQgd2lsbCBiZSBzb29uKS4KPj4+
-Pgo+Pj4+IFdlIGFyZSBsb29raW5nIGF0IGltcGxlbWVudGluZyBwZXJzaXN0ZW5jZSBhY3Jvc3Mg
-a2V4ZWMgdmlhIGFuIGluLW1lbW9yeQo+Pj4+IGZpbGVzeXN0ZW0gb24gdG9wIG9mIHJlc2VydmVk
-IG1lbW9yeS4gVGhpcyB3b3VsZCBoYXZlIGZpbGVzIGZvciBhbnl0aGluZwo+Pj4+IHRoYXQgbmVl
-ZHMgdG8gYmUgcGVyc2lzdGVkLiBUaGF0IGluY2x1ZGVzIGZpbGVzIGZvciBJT01NVSBwZ3RhYmxl
-cywgZm9yCj4+Pj4gZ3Vlc3QgbWVtb3J5IG9yIHVzZXJzcGFjZS1hY2Nlc3NpYmxlIG1lbW9yeS4K
-Pj4+Pgo+Pj4+IEl0IG1heSBiZSBuaWNlIHRvIHNvbHZlIGFsbCBrZXhlYyBwZXJzaXN0ZW5jZSBy
-ZXF1aXJlbWVudHMgd2l0aCBvbmUKPj4+PiBzb2x1dGlvbiwgYnV0IHdlIGNhbiBjb25zaWRlciBJ
-T01NVSBzZXBhcmF0ZWx5LiBUaGVyZSBhcmUgYXQgbGVhc3QgdGhyZWUKPj4+PiB3YXlzIHRoYXQg
-dGhpcyBjYW4gYmUgZG9uZToKPj4+PiBhKSBjYXJ2aW5nIG91dCByZXNlcnZlZCBtZW1vcnkgZm9y
-IHBndGFibGVzLiBUaGlzIGlzIGRvbmUgYnkgeW91cgo+Pj4+IHByb3Bvc2FsIGhlcmUsIGFzIHdl
-bGwgYXMgbXkgc3VnZ2VzdGlvbiBvZiBhIGZpbGVzeXN0ZW0uCj4+Pj4gYikgcHJlL3Bvc3Qga2V4
-ZWMgaG9va3MgZm9yIGRyaXZlcnMgdG8gc2VyaWFsaXNlIHN0YXRlIGFuZCBwYXNzIGl0Cj4+Pj4g
-YWNyb3NzIGluIGEgc3RydWN0dXJlZCBmb3JtYXQgZnJvbSBvbGQgdG8gbmV3IGtlcm5lbC4KPj4+
-PiBjKSBSZWNvbnN0cnVjdGluZyBJT01NVSBzdGF0ZSBpbiB0aGUgbmV3IGtlcm5lbCBieSBzdGFy
-dGluZyBhdCB0aGUKPj4+PiBoYXJkd2FyZSByZWdpc3RlcnMgYW5kIHdhbGtpbmcgdGhlIHBhZ2Ug
-dGFibGVzLiBObyBzdGF0ZSBwYXNzaW5nIG5lZWRlZC4KPj4+Pgo+Pj4+IEhhdmUgeW91IGNvbnNp
-ZGVyZWQgb3B0aW9uIChiKSBhbmQgKGMpIGhlcmU/IE9uZSBvZiB0aGUgaW1wbGljYXRpb25zIG9m
-Cj4+Pj4gKGIpIGFuZCAoYykgYXJlIHRoYXQgdGhleSB3b3VsZCBuZWVkIHRvIGhvb2sgaW50byB0
-aGUgYnVkZHkgYWxsb2NhdG9yCj4+Pj4gcmVhbGx5IGVhcmx5IHRvIGJlIGFibGUgdG8gY2FydmUg
-b3V0IHRoZSByZWNvbnN0cnVjdGVkIHBhZ2UgdGFibGVzCj4+Pj4gYmVmb3JlIHRoZSBhbGxvY2F0
-b3IgaXMgdXNlZC4gU2ltaWxhciB0byBob3cgcGtyYW0gWzBdIGhvb2tzIGluIGVhcmx5IHRvCj4+
-Pj4gY2FydmUgb3V0IHBhZ2VzIHVzZWQgZm9yIGl0cyBmaWxlc3lzdGVtLgo+Pj4+Cj4+PiBIaSBK
-YW1lcywKPj4+Cj4+PiBXZSBhcmUgaW5kZWVkIHdvcmtpbmcgb24gc2ltaWxhciB0aGluZ3MsIHNv
-IHRoYW5rcyBmb3IgY2hpbWluZyBpbi4KPj4+IEkndmUgc2VlbiBwa3JhbSBwcm9wb3NhbCBhcyB3
-ZWxsIGFzIHlvdXIgY29tbWVudHMgdGhlcmUuCj4+Pgo+Pj4gSSB0aGluayAoYikgd2lsbCBuZWVk
-IHNvbWUgcGVyc2lzdGVudC1vdmVyLWtleGVjIG1lbW9yeSB0byBwYXNzIHRoZQo+Pj4gc3RhdGUg
-YWNyb3NzIGtleGVjIGFzIHdlbGwgYXMgc29tZSBrZXktdmFsdWUgc3RvcmUgcGVyc2lzdGVkIGFz
-IHdlbGwuCj4+PiBBbmQgdGhlIHByb3Bvc2VkIHBlcnNpc3RlbnQgbWVtb3J5IHBvb2wgaXMgYWlt
-ZWQgZXhhY3RseSBmb3IgdGhpcwo+Pj4gcHVycG9zZS4KPj4+IE9yIGRvIHlvdSBpbXBseSBzb21l
-IG90aGVyIHdheSB0byBwYXNzIGRyaXZlcidzIGRhdGEgYWNjcm9zcyBrZXhlYz8KPj4KPj4gSWYg
-SSBoYWQgdG8gYnVpbGQgdGhpcywgSSdkIHByb2JhYmx5IGRvIGl0IGp1c3QgbGlrZSBkZXZpY2Ug
-dHJlZSBwYXNzaW5nIG9uCj4+IEFSTS4gSXQncyBhIHNpbmdsZSwgcGh5c2ljYWxseSBjb250aWd1
-b3VzIGJsb2Igb2YgZGF0YSB3aG9zZSBlbnRyeSBwb2ludCB5b3UKPj4gcGFzcyB0byB0aGUgdGFy
-Z2V0IGtlcm5lbC4gSUlSQyBBQ1BJIHBhc3Npbmcgd29ya3Mgc2ltaWxhcmx5LiBUaGlzIHdvdWxk
-Cj4+IGp1c3QgYmUgb25lIG1vcmUgb3BhcXVlIGRhdGEgc3RydWN0dXJlIHRoYXQgdGhlbiBuZWVk
-cyB2ZXJ5IHN0cmljdAo+PiB2ZXJzaW9uaW5nIGFuZCBmb3J3YXJkL2JhY2t3YXJkIGNvbXBhdCBn
-dWFyYW50ZWVzLgo+Pgo+IERldmljZSB0cmVlIG9yIEFDUEkgYXJlIG9wdGlvbnMgaW5kZWVkLiBI
-b3dldmVyIEFGQUlVIGluIGNhc2Ugb2YgRFQgdXNlcgo+IHNwYWNlIGhhcyB0byBpbnZvbHZlZCBp
-bnRvIHRoZSBwaWN0dXJlIHRvIG1vZGlmeSBhbmQgY29tcGxpZSBpdCwgd2hpbGUKPiBBQ1BJIGlz
-bid0IGZsZXhpYmxlIG9yIGVhc2lseSBleHRlbmRhYmxlLgo+IEFsc28sIEFGQUlVIGJvdGggdGhl
-c2Ugc3RhbmRhcmRzIHdlcmUgZGVzaWduZWQgd2l0aCBwYXNzaW5nCj4gaGFyZHdhcmUtc3BlY2lm
-aWMgZGF0YSBpbiBtaW5kIGZyb20gYm9vdHN0cmFwIHNvZnR3YXJlIHRvIGFuIE9TIGtlcm5lbAo+
-IGFuZCB0aHVzIHdlcmUgbmV2ZXIgcmVhbGx5IGludGVuZGVkIHRvIGJlIHVzZWQgZm9yIGNyZWF0
-aW5nIGEgcGVyc2lzdGVudAo+IHN0YXRlIGFjY3Jvc3Mga2V4ZWMuCj4gVG8gbWUsIGFuIGF0dGVt
-cHQgdG8gdXNlIGVpdGhlciBvZiB0aGVtIHRvIHBhc3Mga2VybmVsLXNwZWNpZmljIGRhdGEgbG9v
-a3MKPiBsaWtlIGFuIGFidXNlIChvciBtaXN1c2UpIGV4Y3VzZWQgYnkgdGhlIHNpbXBsaWNpdHkg
-b2YgaW1wbGVtZW50YXRpb24uCgoKV2hhdCBJIHdhcyBkZXNjcmliaW5nIGFib3ZlIGlzIHRoYXQg
-dGhlIExpbnV4IGJvb3QgcHJvdG9jb2wgYWxyZWFkeSBoYXMgCm5hdHVyYWwgd2F5cyB0byBwYXNz
-IGEgRFQgKGFybSkgb3Igc2V0IG9mIEFDUEkgdGFibGVzICh4ODYpIHRvIHRoZSAKdGFyZ2V0IGtl
-cm5lbC4gV2hhdGV2ZXIgd2UgZG8gaGVyZSBzaG91bGQgZWl0aGVyIHBpZ2d5IGJhY2sgb24gdG9w
-IG9mIAp0aG9zZSBuYXR1cmFsIG1lY2hhbmlzbXMgKGUuZy4gL2Nob3NlbiBub2RlIGluIERUKSBv
-ciBiZSBvbiB0aGUgc2FtZSAKbGV2ZWwgKGUuZy4gcGFzcyBEVCBpbiBvbmUgcmVnaXN0ZXIsIHBh
-c3MgbWV0YWRhdGEgc3RydWN0dXJlIGluIGFub3RoZXIgCnJlZ2lzdGVyKS4KCldoZW4gaXQgY29t
-ZXMgdG8gdGhlIGFjdHVhbCBjb250ZW50IG9mIHRoZSBtZXRhZGF0YSwgSSdtIHBlcnNvbmFsbHkg
-YWxzbyAKbGVhbmluZyB0b3dhcmRzIERULiBXZSBhbHJlYWR5IGhhdmUgbGliZmR0IGluc2lkZSB0
-aGUga2VybmVsLiBJdCBnaXZlcyAKaXMgYSB2ZXJ5IHNpbXBsZSwgd2VsbCB1bmRlcnN0b29kIHN0
-cnVjdHVyZWQgZmlsZSBmb3JtYXQgdGhhdCB5b3UgY2FuIApleHRlbmQsIHZlcnNpb24sIGV0YyBl
-dGMuIEFuZCB0aGUga2VybmVsIGhhcyBtZWNoYW5pc21zIHRvIG1vZGlmeSBmZHQgCmNvbnRlbnRz
-LgoKCj4KPj4+IEkgZGluZCd0IGNvbnNpZGVyIChjKSB5ZXQsIHRoYW5rcyBmb3IgZm9yIHRoZSBw
-b2ludGVyLgo+Pj4KPj4+IEkgaGF2ZSBhIHF1ZXN0aW9uIGluIHRoaXMgc2NvcGU6IGhvdyBpcyBQ
-Q0kgZGV2aWNlcyByZWdpc3RlcnMgc3RhdGUgaXMgcGVyc2lzdGVkCj4+PiBhY3Jvc3Mga2V4ZWMg
-d2l0aCB0aGUgZmlsZXMgc3lzdGVtIHlvdSBhcmUgd29ya2luZyBvbj8gSS5lLiBob3cgZG9lcwo+
-Pj4gZHJpdmVyIGtub3csIHRoYXQgdGhlIGRldmljZSBzaG91bGRuJ3Qgbm90IGJlIHJlaW5pdGlh
-bGl6ZWQ/Cj4+Cj4+IFRoZSBlYXNpZXN0IHdheSB0byBkbyBpdCBpbml0aWFsbHkgd291bGQgYmUg
-a2VybmVsIGNvbW1hbmQgbGluZSBvcHRpb25zIHRoYXQKPj4gaGFjayB1cCB0aGUgZHJpdmVycy4g
-QnV0IEkgc3VwcG9zZSBkZXBlbmRpbmcgb24gdGhlIG9wdGlvbiB3ZSBnbyB3aXRoLCB5b3UKPj4g
-Y2FuIGFsc28gdXNlIHRoZSByZXNwZWN0aXZlICJuYXR1cmFsIiBwYXRoOgo+Pgo+PiAoYSkgQSBz
-cGVjaWFsIG1ldGFkYXRhIGZpbGUgdGhhdCBleHBsYWlucyB0aGUgc3RhdGUgdG8gdGhlIGRyaXZl
-cgo+PiAoYikgQW4gZW50cnkgaW4gdGhlIHN0cnVjdHVyZWQgZmlsZSBmb3JtYXQgdGhhdCBleHBs
-YWlucyB0aGUgc3RhdGUgdG8gdGhlCj4+IHRhcmdldCBkcml2ZXIKPj4gKGMpIENvbXBhdGlibGUg
-dGFyZ2V0IGRyaXZlcnMgdHJ5IHRvIGVudW1lcmF0ZSBzdGF0ZSBmcm9tIHRoZSB0YXJnZXQKPj4g
-ZGV2aWNlJ3MgcmVnaXN0ZXIgZmlsZQo+Pgo+IENvbW1hbmQgbGluZSBvcHRpb24gaXMgdGhlIHNp
-bXBsZXN0IHdheSB0byBnbyBpbmRlZWQsIGJ1dCBmcm9tIG15IFBPVgo+IGl0J3MgZ29vZCBvbmx5
-IGZvciBwb2ludGluZyB0byBhIHBhcnRpY3VhbHIgb2JqZWN0LCB3aGljaCBpcyBwZXJzaXN0ZWQK
-PiBzb21laG93IGVsc2UuIEJ1dCBpdCB3ZSBoYXZlIGEgcGVyc2lzdGVuY2UgbWVjaGFuaXNtLCB0
-aGVuIEkgdGhpbmsgd2UKPiBjYW4gbWFrZSBhbm90aGVyIHN0ZXAgZm9yd2FyZCBhbmQgZG9uJ3Qg
-dXNlIGNvbW1hbmQgbGluZSBhdCBhbGwgKHdoaWNoCj4gaXMgYSBiaXQgY3VtYmVyc29tZSBhbmQg
-ZXJyb3Jwcm9uZSBkdWUgdG8gaXQncyBodW1hbi1yZWFkYWJsZSBhbmQKPiBzZXJpYWxpemVkIG5h
-dHVyZSkuCj4KPiBJJ20gbGVhbmluZyB0b3dhcmRzIHNvbWUga2luZCBvZiAibmF0dXJhbCIgcGF0
-aCB5b3UgbWVudGlvbmVkLi4uIEkgZ3Vlc3MKPiBJJ20gYSBiaXQgY29uZnVzZWQgd2l0aCB0aGUg
-d29yZCAiZmlsZSIgaGVyZSwgYXMgaXQgc291bmRzIGxpbmUgaXQKPiBpbXBsaWVzIGEgZmlsZSBz
-eXN0ZW0gZHJpdmVyLCBhbmQgSSdtIG5vdCBzdXJlIHRoYXQncyB3aGF0IHdlIHdhbnQgZm9yCj4g
-ZHJpdmVyIHNwZWNpZmljIGRhdGEuCgoKT2gsIEkgd2FzIGp1c3QgcmVmZXJyaW5nIHRvIHRoZSBz
-ZXQgb2YgcmVnaXN0ZXJzIGEgZGV2aWNlIGV4cG9zZXMgOikuCgoKPgo+Pj4+Pj4gUG90ZW50aWFs
-IGFwcGxpY2F0aW9ucyBpbmNsdWRlOgo+Pj4+Pj4KPj4+Pj4+ICAgICAxLiBBbGxvd2luZyB2YXJp
-b3VzIGluLWtlcm5lbCBlbnRpdGllcyB0byBhbGxvY2F0ZSBwZXJzaXN0ZW50IHBhZ2VzIGZyb20K
-Pj4+Pj4+ICAgICAgICBhIHNpbmd1bGFyIG1lbW9yeSBwb29sLCBlbGltaW5hdGluZyB0aGUgbmVl
-ZCBmb3IgbXVsdGlwbGUgcmVnaW9uCj4+Pj4+PiAgICAgICAgcmVzZXJ2YXRpb25zLgo+Pj4+Pj4K
-Pj4+Pj4+ICAgICAyLiBGb3IgaW4ta2VybmVsIGNvbXBvbmVudHMgdGhhdCByZXF1aXJlIHRoZSBh
-bGxvY2F0aW9uIGFkZHJlc3MgdG8gYmUKPj4+Pj4+ICAgICAgICBhdmFpbGFibGUgb24ga2VybmVs
-IGtleGVjLCB0aGlzIGFkZHJlc3MgY2FuIGJlIGV4cG9zZWQgdG8gdXNlciBzcGFjZSBhbmQKPj4+
-Pj4+ICAgICAgICB0aGVuIHBhc3NlZCB2aWEgdGhlIGNvbW1hbmQgbGluZS4KPj4+PiBEbyB5b3Ug
-aGF2ZSBzcGVjaWZpYyBleGFtcGxlcyBvZiBvdGhlciBzdGF0ZSB0aGF0IG5lZWRzIHRvIGJlIHBh
-c3NlZAo+Pj4+IGFjcm9zcz8gVHJ5aW5nIHRvIHNlZSB3aGV0aGVyIHRhaWxvcmluZyBzcGVjaWZp
-Y2FsbHkgdG8gdGhlIElPTU1VIGNhc2UKPj4+PiBpcyBva2F5LiBDb25jZXB0dWFsbHkgSU9NTVUg
-c3RhdGUgY2FuIGJlIHJlY29uc3RydWN0ZWQgc3RhcnRpbmcgd2l0aAo+Pj4+IGhhcmR3YXJlIHJl
-Z2lzdGVycywgbm90IG5lZWRpbmcgcmVzZXJ2ZWQgbWVtb3J5LiBPdGhlciB1c2UtY2FzZXMgbWF5
-IG5vdAo+Pj4+IGhhdmUgdGhpcyBvcHRpb24uCj4+Pj4KPj4+IFdlbGwsIGJhc2ljYWxseSBpdCdz
-IElPTU1VIHN0YXRlIGFuZCBQQ0kgZGV2aWNlcyB0byBza2lwL2F2b2lkCj4+PiBpbml0aWFsaXpp
-bmcuCj4+PiBJIGJldCB0aGVyZSBjYW4gYmUgb3RoZXIgbWlzYyAoYW5kIHVucmVsYXRlZCB0aGlu
-Z3MpIGxpa2UgcGVyc2lzdGVudAo+Pj4gZmlsZXN5c3RlbXMsIGJsb2NrIGRldmljZXMsIGV0Yy4g
-QnV0IEkgZG9uJ3QgaGF2ZSBhIHNvbGlkIHNldCBvZiB1c2UKPj4+IGNhc2VzIHRvIHByZXNlbnQu
-Cj4+Cj4+IFdvdWxkIGJlIGdyZWF0IGlmIHlvdSBjb3VsZCB0aGluayB0aHJvdWdoIHRoZSBwcm9i
-bGVtIHNwYWNlIHVudGlsIExQQyBzbyB3ZQo+PiBjYW4gaGF2ZSBhIHNvbGlkIGNvbnZlcnNhdGlv
-biB0aGVyZSA6KQo+Pgo+IFllYWgsIEkgaGF2ZSBhIGZldyBpZGVhcyBJJ2xsIHRyeSB0byBpbXBs
-ZW1lbnQgYW5kIHNoYXJlIGJlZm9yZSBMUEMuCj4gVW5mb3J0dW5hdGVsbHkgSSdtIG5vdCBwbGFu
-bmluZyB0byBhdHRlbmQgaXQgdGhpcyB5ZWFyLCBzbyB0aGlzCj4gY29udmVyc2F0aW9uIHdpbGwg
-YmUgd2l0aG91dCBtZS4KPiBCdXQgSSdsbCBkbyBteSBiZXN0IHRvIHByb3ZpZGUgYXMgbXVjaCBj
-b250ZW50IHRvIGRpc2N1c3MgYXMgSSBjYW4uCgoKVGhhbmtzLCBsb29raW5nIGZvcndhcmQgdG8g
-aXQhIDopCgoKQWxleAoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgK
-S3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFu
-IFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hh
-cmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4
-OSAyMzcgODc5CgoK
+
+
+on 8/30/2023 3:02 AM, Ritesh Harjani wrote:
+> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+> 
+>> v5-v6:
+>>
+> 
+> Hi Kemeng,
+> 
+> Sorry for the delay in getting started on this. I am going through the
+> series now.
+> 
+>> 1. Separate block bitmap and buddy bitmap freeing in individual patch
+>> and rewrite the descriptions.
+>> 2. Remove #ifdef around KUNIT_STATIC_STUB_REDIRECT which should be
+>> only defined when CONFIG_KUNIT is enabled after fix [7] which was merged
+>> into kunit-next/kunit
+Hi ritesh, thanks for feedback. I think the compilation problem below is
+relevant to this change which relie on fix [7]. I'm not sure if I need to
+include fix [7] in this set to fix the compilation error. Would like to
+hear any advise!
+
+>> 3. Use mbt prefix to distiguish test APIs from actual kernel APIs.
+>> 4. Add prepare function for ext4_mark_context and rename
+>> ext4_mb_mark_group_bb to ext4_mb_mark_context
+>> 5. Support to run mballoc test with different layouts setting and
+>> different block size is tested.
+>>
+>> v4->v5:
+>> 1. WARN on free blocks to uninitialized group is removed as normal
+>> fast commit route may triggers this, see [1] for details. The review
+>> tag from Ojaswin of changed patch is also removed and a futher review
+>> is needed.
+>>
+>> v3->v4:
+>> 1. Collect Reviewed-by from Ojaswin
+>> 2. Do improve as Ojaswin kindly suggested: Fix typo in commit,
+>> WARN if try to clear bit of uninitialized group and improve
+>> refactoring of AGGRESSIVE_CHECK code.
+>> 3. Fix conflic on patch 16
+>> 4. Improve git log in patch 16,17
+>>
+>> v2->v3:
+>> 1. Fix build warnings on "ext4: add some kunit stub for mballoc kunit
+>> test" and "ext4: add first unit test for ext4_mb_new_blocks_simple in
+>> mballoc"
+>>
+>> This series is a new version of unmerged patches from [1]. The first 6
+>> patches of this series factor out codes to mark blocks used or freed
+>> which will update on disk block bitmap and group descriptor. Several
+>> reasons to do this:
+>> 1. pair behavior of alloc/free bits. For example,
+>> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+>> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+>> 2. remove repeat code to read from disk, update and write back to disk.
+>> 3. reduce future unit test mocks to avoid real IO to update structure
+>> on disk.
+>>
+>> The last 2 patches add a unit test for mballoc. Before more unit tests
+>> are added, there are something should be discussed:
+>> 1. How to test static function in mballoc.c
+>> Currently, include mballoc-test.c in mballoc.c to test static function
+>> in mballoc.c from mballoc-test.c which is one way suggested in [2].
+>> Not sure if there is any more elegant way to test static function without
+>> touch mballoc.c.
+>> 2. How to add mocks to function in mballoc.c which may issue IO to disk
+>> Currently, KUNIT_STATIC_STUB_REDIRECT is added to functions as suggested
+>> in kunit document [3].
+> 
+> I will get back to this, after reviwing some of the initial few
+> refactoring patches.
+> 
+> But FYI - I noticed some compilation errors, when building w/o
+> CONFIG_KUNIT.
+> 
+> ../fs/ext4/balloc.c: In function ‘ext4_get_group_desc’:
+> ../fs/ext4/balloc.c:278:2: error: implicit declaration of function ‘KUNIT_STATIC_STUB_REDIRECT’ [-Werror=implicit-function-declaration]
+>   278 |  KUNIT_STATIC_STUB_REDIRECT(ext4_get_group_desc,
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> -ritesh
+> 
+>> 3. How to simulate a block bitmap.
+>> Currently, a fake buffer_head with bitmap data is returned, then no
+>> futher change is needed.
+>> If we simulate a block bitmap with an array of data structure like:
+>> struct test_bitmap {
+>>        unsigned int	start;
+>>        unsigned int	len;
+>> }
+>> which is suggested by Theodore in [4], then we need to add mocks to
+>> function which expected bitmap from bitmap_bh->b_data, like
+>> mb_find_next_bit, mb_find_next_zero_bit and maybe more.
+>>
+>> Would like to hear any suggestion! Thanks!
+>>
+>> I run kvm-xfstest with config "ext4/all" and "-g auto" together with
+>> patchset for resize, you can see detail report in [6].
+>>
+>> Unit test result is as followings:
+>> # ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4/.kunitconfig --raw_output
+>> [18:23:36] Configuring KUnit Kernel ...
+>> [18:23:36] Building KUnit Kernel ...
+>> Populating config with:
+>> $ make ARCH=um O=.kunit olddefconfig
+>> Building with:
+>> $ make ARCH=um O=.kunit --jobs=88
+>> [18:23:40] Starting KUnit Kernel (1/1)...
+>> KTAP version 1
+>> 1..2
+>>     KTAP version 1
+>>     # Subtest: ext4_mballoc_test
+>>     1..1
+>>         KTAP version 1
+>>         # Subtest: test_new_blocks_simple
+>>         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+>>         ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+>>         ok 3 block_bits=18 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+>>     # test_new_blocks_simple: pass:3 fail:0 skip:0 total:3
+>>     ok 1 test_new_blocks_simple
+>> # Totals: pass:3 fail:0 skip:0 total:3
+>> ok 1 ext4_mballoc_test
+>>     KTAP version 1
+>>     # Subtest: ext4_inode_test
+>>     1..1
+>>         KTAP version 1
+>>         # Subtest: inode_test_xtimestamp_decoding
+>>         ok 1 1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits
+>>         ok 2 1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits
+>>         ok 3 1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits
+>>         ok 4 2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits
+>>         ok 5 2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on
+>>         ok 6 2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on
+>>         ok 7 2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on
+>>         ok 8 2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on
+>>         ok 9 2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on
+>>         ok 10 2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on
+>>         ok 11 2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on
+>>         ok 12 2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on
+>>         ok 13 2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns
+>>         ok 14 2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns
+>>         ok 15 2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on
+>>         ok 16 2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on
+>>     # inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16
+>>     ok 1 inode_test_xtimestamp_decoding
+>> # Totals: pass:16 fail:0 skip:0 total:16
+>> ok 2 ext4_inode_test
+>> [18:23:41] Elapsed time: 4.960s total, 0.001s configuring, 4.842s building, 0.072s running
+>>
+>> [1]
+>> https://lore.kernel.org/linux-ext4/20230603150327.3596033-1-shikemeng@huaweicloud.com/T/#m5ff8e3a058ce1cb272dfef3262cd3202ce6e4358
+>> [2]
+>> https://lore.kernel.org/linux-ext4/ZC3MoWn2UO6p+Swp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+>> [3]
+>> https://docs.kernel.org/dev-tools/kunit/usage.html#testing-static-functions
+>> [4]
+>> https://docs.kernel.org/dev-tools/kunit/api/functionredirection.html#c.KUNIT_STATIC_STUB_REDIRECT
+>> [5]
+>> https://lore.kernel.org/linux-ext4/20230317155047.GB3270589@mit.edu/
+>> [6]
+>> https://lore.kernel.org/linux-ext4/20230629120044.1261968-1-shikemeng@huaweicloud.com/T/#mcc8fb0697fd54d9267c02c027e1eb3468026ae56
+>> [7]
+>> https://lore.kernel.org/lkml/20230725172051.2142641-1-shikemeng@huaweicloud.com/
+>>
+>> Kemeng Shi (11):
+>>   ext4: factor out codes to update block bitmap and group descriptor on
+>>     disk from ext4_mb_mark_bb
+>>   ext4: call ext4_mb_mark_context in ext4_free_blocks_simple
+>>   ext4: extent ext4_mb_mark_context to support allocation under journal
+>>   ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used
+>>   ext4: Separate block bitmap and buddy bitmap freeing in
+>>     ext4_mb_clear_bb()
+>>   ext4: call ext4_mb_mark_context in ext4_mb_clear_bb
+>>   ext4: Separate block bitmap and buddy bitmap freeing in
+>>     ext4_group_add_blocks()
+>>   ext4: call ext4_mb_mark_context in ext4_group_add_blocks()
+>>   ext4: add some kunit stub for mballoc kunit test
+>>   ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
+>>   ext4: run mballoc test with different layouts setting
+>>
+>>  fs/ext4/balloc.c       |  10 +
+>>  fs/ext4/mballoc-test.c | 351 ++++++++++++++++++++++++++++
+>>  fs/ext4/mballoc.c      | 505 ++++++++++++++++-------------------------
+>>  3 files changed, 557 insertions(+), 309 deletions(-)
+>>  create mode 100644 fs/ext4/mballoc-test.c
+>>
+>> -- 
+>> 2.30.0
+> 
 
