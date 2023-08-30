@@ -2,188 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEA778DF5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4284678DFA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344378AbjH3T1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S240908AbjH3TJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244814AbjH3OJG (ORCPT
+        with ESMTP id S244982AbjH3OPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:09:06 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30630122
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:09:01 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 0192910000A;
-        Wed, 30 Aug 2023 17:08:58 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0192910000A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1693404538;
-        bh=ZQuVbTceDJhV/D756QtsxPuAvKXLmIA2HTloQ25Xbdw=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=vBzi5TFYlg9GnSdaJQP6Iq7s66cADSWqKmGXHWOTQPON0tzNoLTDrEwdxWOsihszW
-         qbz7Aj1cHipz3tiJmpzBW1Pcao1nhiUsIXb1njbbzHdVoqNOQcFhe+IrY+BI8mMamY
-         fNQtz/AKSxVEYUDJiaZG7MNIMjOEgvtN11WNTBFChtrnsAfNlU4y1EdXE0caSkwD+Z
-         +qSqX5ttQTC+T09sDRaibobA7y0Eb0Ic4X7Yy9bH/wVbgCHnMx85eB54ezNe+BJT02
-         yHw22LHTHHnbtqrA0m+vQf7ghJRR268im9v1Qb1Lha0aF/Do2hZE8tLvFvKf4EUXKH
-         7TTzcWf3eZK9Q==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 30 Aug 2023 10:15:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24880122;
+        Wed, 30 Aug 2023 07:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693404942; x=1724940942;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=9nUsW9E756XKH/ZqO1z7yXlVxgWZzxBiBpaF8uclgFg=;
+  b=DunAO0krIXvY6VN1VojUmTvRU/W8gUyGm2VWI755G4BIcF46yNbrNe6k
+   uAn+KndoPkqTOtsmfIE7WxgO00F2rLNsV1yQYWeYufd5rKHcyow7XohEz
+   dp9z8YBWSrULCNqICBtllkHZHfJVgat/UYIqA5BSWhUt5qgGTBGlcir9w
+   Iyu8earbprqu7wTA74ryeg3HXLvb9AhkhDUkcpsMb8eFg5u4BmHf5PmCJ
+   TeHaC3TN/sj9Z/IyoEJ9NDLW3xECwoELqmbsUSj0Oeq6XwBukmhH9eW7y
+   mgeMi1pbIjs790jc3yzzp7XNloVKIhcFyGglHrKz2oSQu28WkwtVo2Uk8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="365858269"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="365858269"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 07:11:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="985755279"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="985755279"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Aug 2023 07:11:14 -0700
+Received: from [10.213.187.192] (kliang2-mobl1.ccr.corp.intel.com [10.213.187.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 30 Aug 2023 17:08:57 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 30 Aug 2023 17:08:35 +0300
-From:   Alexey Romanov <avromanov@salutedevices.com>
-To:     <khilman@baylibre.com>, <jbrunet@baylibre.com>,
-        <miles.chen@mediatek.com>, <martin.blumenstingl@googlemail.com>,
-        <neil.armstrong@linaro.org>, <narmstrong@baylibre.com>
-CC:     <kernel@sberdevices.ru>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexey Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v1] drivers: meson: sm: correct meson_sm_* API retval handling
-Date:   Wed, 30 Aug 2023 17:08:50 +0300
-Message-ID: <20230830140850.17130-1-avromanov@salutedevices.com>
-X-Mailer: git-send-email 2.33.0
+        by linux.intel.com (Postfix) with ESMTPS id 4F3F2580C73;
+        Wed, 30 Aug 2023 07:11:13 -0700 (PDT)
+Message-ID: <4de84370-29f3-75ed-9c91-330636cdd790@linux.intel.com>
+Date:   Wed, 30 Aug 2023 10:11:11 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179535 [Aug 30 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/30 10:10:00 #21746118
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 2/3] perf parse-events: Make common term list to strbuf
+ helper
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230830070753.1821629-1-irogers@google.com>
+ <20230830070753.1821629-2-irogers@google.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20230830070753.1821629-2-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Following the ARM SMC32 calling convention, the return value
-from secure monitor is a 32-bit signed integer. This patch changes
-the type of the return value of the function meson_sm_call().
 
-2. Now, when meson_sm_call() returns a 32-bit signed integer, we need
-to ensure that this value is not negative. It is important to check
-that the return value is not negative in both the meson_sm_call_read()
-and meson_sm_call_write() functions.
 
-3. Add a comment explaining why it is necessary to check if the SMC
-return value is equal to 0 in the function meson_sm_call_read().
-It is not obvious when reading this code.
+On 2023-08-30 3:07 a.m., Ian Rogers wrote:
+> A term list is turned into a string for debug output and for the str
+> value in the alias. Add a helper to do this based on existing code,
+> but then fix for situations like events being identified. Use strbuf
+> to manage the dynamic memory allocation and remove the 256 byte
+> limit. Use in various places the string of the term list is required.
+> 
+> Before:
+> ```
+> $ sudo perf stat -vv -e inst_retired.any true
+> Using CPUID GenuineIntel-6-8D-1
+> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
+> Attempting to add event pmu 'cpu' with 'inst_retired.any,' that may result in non-fatal errors
+> After aliases, add event pmu 'cpu' with 'event,period,' that may result in non-fatal errors
+> inst_retired.any -> cpu/inst_retired.any/
+> ...
+> ```
+> 
+> After:
+> ```
+> $ sudo perf stat -vv -e inst_retired.any true
+> Using CPUID GenuineIntel-6-8D-1
+> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
+> Attempt to add: cpu/inst_retired.any/
+> ..after resolving event: cpu/event=0xc0,period=0x1e8483/
+> inst_retired.any -> cpu/event=0xc0,period=0x1e8483/
+> ...
+> ```
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/parse-events.c | 101 ++++++++++++++++++++++++---------
+>  tools/perf/util/parse-events.h |   2 +
+>  tools/perf/util/pmu.c          |  19 ++-----
+>  3 files changed, 81 insertions(+), 41 deletions(-)
 
-Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
----
- drivers/firmware/meson/meson_sm.c       | 20 +++++++++++++-------
- include/linux/firmware/meson/meson_sm.h |  2 +-
- 2 files changed, 14 insertions(+), 8 deletions(-)
+Which branch should I use to apply the patch?
+I tried the perf-tools-next branch, but there is some conflict.
+I'd like to do some tests on a hybrid machine.
 
-diff --git a/drivers/firmware/meson/meson_sm.c b/drivers/firmware/meson/meson_sm.c
-index 798bcdb05d84..27a8cd4747f8 100644
---- a/drivers/firmware/meson/meson_sm.c
-+++ b/drivers/firmware/meson/meson_sm.c
-@@ -67,7 +67,7 @@ static u32 meson_sm_get_cmd(const struct meson_sm_chip *chip,
- 	return cmd->smc_id;
- }
- 
--static u32 __meson_sm_call(u32 cmd, u32 arg0, u32 arg1, u32 arg2,
-+static s32 __meson_sm_call(u32 cmd, u32 arg0, u32 arg1, u32 arg2,
- 			   u32 arg3, u32 arg4)
- {
- 	struct arm_smccc_res res;
-@@ -102,9 +102,10 @@ static void __iomem *meson_sm_map_shmem(u32 cmd_shmem, unsigned int size)
-  * Return:	0 on success, a negative value on error
-  */
- int meson_sm_call(struct meson_sm_firmware *fw, unsigned int cmd_index,
--		  u32 *ret, u32 arg0, u32 arg1, u32 arg2, u32 arg3, u32 arg4)
-+		  s32 *ret, u32 arg0, u32 arg1, u32 arg2, u32 arg3, u32 arg4)
- {
--	u32 cmd, lret;
-+	u32 cmd;
-+	s32 lret;
- 
- 	if (!fw->chip)
- 		return -ENOENT;
-@@ -143,7 +144,7 @@ int meson_sm_call_read(struct meson_sm_firmware *fw, void *buffer,
- 		       unsigned int bsize, unsigned int cmd_index, u32 arg0,
- 		       u32 arg1, u32 arg2, u32 arg3, u32 arg4)
- {
--	u32 size;
-+	s32 size;
- 	int ret;
- 
- 	if (!fw->chip)
-@@ -158,11 +159,16 @@ int meson_sm_call_read(struct meson_sm_firmware *fw, void *buffer,
- 	if (meson_sm_call(fw, cmd_index, &size, arg0, arg1, arg2, arg3, arg4) < 0)
- 		return -EINVAL;
- 
--	if (size > bsize)
-+	if (size < 0 || size > bsize)
- 		return -EINVAL;
- 
- 	ret = size;
- 
-+	/* In some cases (for example GET_CHIP_ID command),
-+	 * SMC doesn't return the number of bytes read, even
-+	 * though the bytes were actually read into sm_shmem_out.
-+	 * So this check is needed.
-+	 */
- 	if (!size)
- 		size = bsize;
- 
-@@ -192,7 +198,7 @@ int meson_sm_call_write(struct meson_sm_firmware *fw, void *buffer,
- 			unsigned int size, unsigned int cmd_index, u32 arg0,
- 			u32 arg1, u32 arg2, u32 arg3, u32 arg4)
- {
--	u32 written;
-+	s32 written;
- 
- 	if (!fw->chip)
- 		return -ENOENT;
-@@ -208,7 +214,7 @@ int meson_sm_call_write(struct meson_sm_firmware *fw, void *buffer,
- 	if (meson_sm_call(fw, cmd_index, &written, arg0, arg1, arg2, arg3, arg4) < 0)
- 		return -EINVAL;
- 
--	if (!written)
-+	if (written <= 0 || written > size)
- 		return -EINVAL;
- 
- 	return written;
-diff --git a/include/linux/firmware/meson/meson_sm.h b/include/linux/firmware/meson/meson_sm.h
-index 95b0da2326a9..8eaf8922ab02 100644
---- a/include/linux/firmware/meson/meson_sm.h
-+++ b/include/linux/firmware/meson/meson_sm.h
-@@ -19,7 +19,7 @@ enum {
- struct meson_sm_firmware;
- 
- int meson_sm_call(struct meson_sm_firmware *fw, unsigned int cmd_index,
--		  u32 *ret, u32 arg0, u32 arg1, u32 arg2, u32 arg3, u32 arg4);
-+		  s32 *ret, u32 arg0, u32 arg1, u32 arg2, u32 arg3, u32 arg4);
- int meson_sm_call_write(struct meson_sm_firmware *fw, void *buffer,
- 			unsigned int b_size, unsigned int cmd_index, u32 arg0,
- 			u32 arg1, u32 arg2, u32 arg3, u32 arg4);
--- 
-2.25.1
-
+Thanks,
+Kan
+> 
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 4c812fbe0cf9..0b941b58bdc0 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -13,7 +13,7 @@
+>  #include <subcmd/parse-options.h>
+>  #include "parse-events.h"
+>  #include "string2.h"
+> -#include "strlist.h"
+> +#include "strbuf.h"
+>  #include "debug.h"
+>  #include <api/fs/tracing_path.h>
+>  #include <perf/cpumap.h>
+> @@ -1303,19 +1303,6 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>  
+>  	pmu = parse_state->fake_pmu ?: perf_pmus__find(name);
+>  
+> -	if (verbose > 1 && !(pmu && pmu->selectable)) {
+> -		fprintf(stderr, "Attempting to add event pmu '%s' with '",
+> -			name);
+> -		if (head_config) {
+> -			struct parse_events_term *term;
+> -
+> -			list_for_each_entry(term, head_config, list) {
+> -				fprintf(stderr, "%s,", term->config);
+> -			}
+> -		}
+> -		fprintf(stderr, "' that may result in non-fatal errors\n");
+> -	}
+> -
+>  	if (!pmu) {
+>  		char *err_str;
+>  
+> @@ -1325,6 +1312,21 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>  			parse_events_error__handle(err, loc->first_column, err_str, NULL);
+>  		return -EINVAL;
+>  	}
+> +
+> +	if (verbose > 1) {
+> +		struct strbuf sb;
+> +
+> +		strbuf_init(&sb, /*hint=*/ 0);
+> +		if (pmu->selectable && !head_config) {
+> +			strbuf_addf(&sb, "%s//", name);
+> +		} else {
+> +			strbuf_addf(&sb, "%s/", name);
+> +			parse_events_term__to_strbuf(head_config, &sb);
+> +			strbuf_addch(&sb, '/');
+> +		}
+> +		fprintf(stderr, "Attempt to add: %s\n", sb.buf);
+> +		strbuf_release(&sb);
+> +	}
+>  	if (head_config)
+>  		fix_raw(head_config, pmu);
+>  
+> @@ -1349,16 +1351,12 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>  		return -EINVAL;
+>  
+>  	if (verbose > 1) {
+> -		fprintf(stderr, "After aliases, add event pmu '%s' with '",
+> -			name);
+> -		if (head_config) {
+> -			struct parse_events_term *term;
+> +		struct strbuf sb;
+>  
+> -			list_for_each_entry(term, head_config, list) {
+> -				fprintf(stderr, "%s,", term->config);
+> -			}
+> -		}
+> -		fprintf(stderr, "' that may result in non-fatal errors\n");
+> +		strbuf_init(&sb, /*hint=*/ 0);
+> +		parse_events_term__to_strbuf(head_config, &sb);
+> +		fprintf(stderr, "..after resolving event: %s/%s/\n", name, sb.buf);
+> +		strbuf_release(&sb);
+>  	}
+>  
+>  	/*
+> @@ -1460,7 +1458,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
+>  		parse_events_copy_term_list(head, &orig_head);
+>  		if (!parse_events_add_pmu(parse_state, list, pmu->name,
+>  					  orig_head, auto_merge_stats, loc)) {
+> -			pr_debug("%s -> %s/%s/\n", str, pmu->name, str);
+> +			struct strbuf sb;
+> +
+> +			strbuf_init(&sb, /*hint=*/ 0);
+> +			parse_events_term__to_strbuf(orig_head, &sb);
+> +			pr_debug("%s -> %s/%s/\n", str, pmu->name, sb.buf);
+> +			strbuf_release(&sb);
+>  			ok++;
+>  		}
+>  		parse_events_terms__delete(orig_head);
+> @@ -1469,7 +1472,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
+>  	if (parse_state->fake_pmu) {
+>  		if (!parse_events_add_pmu(parse_state, list, str, head,
+>  					  /*auto_merge_stats=*/true, loc)) {
+> -			pr_debug("%s -> %s/%s/\n", str, "fake_pmu", str);
+> +			struct strbuf sb;
+> +
+> +			strbuf_init(&sb, /*hint=*/ 0);
+> +			parse_events_term__to_strbuf(head, &sb);
+> +			pr_debug("%s -> %s/%s/\n", str, "fake_pmu", sb.buf);
+> +			strbuf_release(&sb);
+>  			ok++;
+>  		}
+>  	}
+> @@ -2085,7 +2093,7 @@ void parse_events_error__handle(struct parse_events_error *err, int idx,
+>  		break;
+>  	default:
+>  		pr_debug("Multiple errors dropping message: %s (%s)\n",
+> -			err->str, err->help);
+> +			err->str, err->help ?: "<no help>");
+>  		free(err->str);
+>  		err->str = str;
+>  		free(err->help);
+> @@ -2502,6 +2510,47 @@ void parse_events_terms__delete(struct list_head *terms)
+>  	free(terms);
+>  }
+>  
+> +int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb)
+> +{
+> +	struct parse_events_term *term;
+> +	bool first = true;
+> +
+> +	if (!term_list)
+> +		return 0;
+> +
+> +	list_for_each_entry(term, term_list, list) {
+> +		int ret;
+> +
+> +		if (!first) {
+> +			ret = strbuf_addch(sb, ',');
+> +			if (ret < 0)
+> +				return ret;
+> +		}
+> +		first = false;
+> +
+> +		if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
+> +			if (term->type_term == PARSE_EVENTS__TERM_TYPE_USER && term->val.num == 1)
+> +				ret = strbuf_addf(sb, "%s", term->config);
+> +			else
+> +				ret = strbuf_addf(sb, "%s=%#"PRIx64, term->config, term->val.num);
+> +		else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR) {
+> +			if (term->config) {
+> +				ret = strbuf_addf(sb, "%s=", term->config);
+> +				if (ret < 0)
+> +					return ret;
+> +			} else if (term->type_term < __PARSE_EVENTS__TERM_TYPE_NR) {
+> +				ret = strbuf_addf(sb, "%s=", config_term_names[term->type_term]);
+> +				if (ret < 0)
+> +					return ret;
+> +			}
+> +			ret = strbuf_addf(sb, "%s", term->val.str);
+> +		}
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+>  void parse_events_evlist_error(struct parse_events_state *parse_state,
+>  			       int idx, const char *str)
+>  {
+> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+> index 6d75d853ce00..20bdc35d6112 100644
+> --- a/tools/perf/util/parse-events.h
+> +++ b/tools/perf/util/parse-events.h
+> @@ -18,6 +18,7 @@ struct parse_events_error;
+>  
+>  struct option;
+>  struct perf_pmu;
+> +struct strbuf;
+>  
+>  const char *event_type(int type);
+>  
+> @@ -152,6 +153,7 @@ int parse_events_term__clone(struct parse_events_term **new,
+>  void parse_events_term__delete(struct parse_events_term *term);
+>  void parse_events_terms__delete(struct list_head *terms);
+>  void parse_events_terms__purge(struct list_head *terms);
+> +int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb);
+>  int parse_events__modifier_event(struct list_head *list, char *str, bool add);
+>  int parse_events__modifier_group(struct list_head *list, char *event_mod);
+>  int parse_events_name(struct list_head *list, const char *name);
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index b3f8f3f1e900..8dbb7008877e 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -507,12 +507,11 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
+>  				const char *desc, const char *val, FILE *val_fd,
+>  				const struct pmu_event *pe)
+>  {
+> -	struct parse_events_term *term;
+>  	struct perf_pmu_alias *alias;
+>  	int ret;
+> -	char newval[256];
+>  	const char *long_desc = NULL, *topic = NULL, *unit = NULL, *pmu_name = NULL;
+>  	bool deprecated = false, perpkg = false;
+> +	struct strbuf sb;
+>  
+>  	if (perf_pmu__find_alias(pmu, name, /*load=*/ false)) {
+>  		/* Alias was already created/loaded. */
+> @@ -582,20 +581,10 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
+>  	 *
+>  	 * Rebuild string to make alias->str member comparable.
+>  	 */
+> -	ret = 0;
+> -	list_for_each_entry(term, &alias->terms, list) {
+> -		if (ret)
+> -			ret += scnprintf(newval + ret, sizeof(newval) - ret,
+> -					 ",");
+> -		if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
+> -			ret += scnprintf(newval + ret, sizeof(newval) - ret,
+> -					 "%s=%#x", term->config, term->val.num);
+> -		else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
+> -			ret += scnprintf(newval + ret, sizeof(newval) - ret,
+> -					 "%s=%s", term->config, term->val.str);
+> -	}
+>  	zfree(&alias->str);
+> -	alias->str = strdup(newval);
+> +	strbuf_init(&sb, /*hint=*/ 0);
+> +	parse_events_term__to_strbuf(&alias->terms, &sb);
+> +	alias->str = strbuf_detach(&sb, /*sz=*/ NULL);
+>  	if (!pe)
+>  		pmu->sysfs_aliases++;
+>  	else
