@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C945D78E0AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4324878DF43
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239991AbjH3Uae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S238946AbjH3Tzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239867AbjH3UaQ (ORCPT
+        with ESMTP id S238701AbjH3Tz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:30:16 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7A7322FD
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:24:55 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-64f387094ddso544236d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:24:55 -0700 (PDT)
+        Wed, 30 Aug 2023 15:55:26 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70C732B5C
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:25:12 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a85b9deeb3so4033952b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693423443; x=1694028243; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1693423450; x=1694028250; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=noX4yZdaLohQeeiEyvyLjmGW8lnsNXNGq5GJE9PggTY=;
-        b=mvzmUEnk65x4gEjEyF3rhbv6Atmm/zyrhIJFS0fgmlFGJ89Q4acjwNlYqjKm3+BMWy
-         phQEj29lNzfiQF02/b49CEwWL8R1J+HG+dA3bIqHgArRMul6ymn/0LvW/LsizgwkBbPI
-         BpJOShbxKcN6IDeV4/Rt/KQMTDzyUUM63us7s=
+        bh=lm34Kk+maPdNp9rFuwAAy5O1fZmlUwsB3d8wqfk31DQ=;
+        b=Cc7bzK3foUHBf/0juo6aLEYQziud+YCqD9zbpiHgcs9WHajtePd+NiVSmlR7O7HLX4
+         7p0mRwKGDgY6PSAV1gVEr1uL81NYmJqH5w7uDywwEn0S9Ji+2Sl/ZI6QDReUQCxPmoIz
+         go+Xia+Ts4nqpfuisedsBsi1VWzoowtS0MhbY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693423443; x=1694028243;
+        d=1e100.net; s=20221208; t=1693423450; x=1694028250;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=noX4yZdaLohQeeiEyvyLjmGW8lnsNXNGq5GJE9PggTY=;
-        b=MuTCMx0mR1cKCHiLzR8jasOwpAWdZfffQdRejTUa72OYoVyb0vv232wjgJUk2JA7GX
-         XUJ9dNn1N0izQUGOUvXp3yKtlyORAekAxtnI0M3Rvgc2bqw9WfYsxCiRzQLSyxcgYqcA
-         Vk8GSQEcIwdj7/fZSuNCmh3knVGK6MihIaqNbuJ4rI7C8TYb+WahB3a1ySqYd9m/WysE
-         SFD8D88V5ESrrkY8Cd3dGASKYtiQW7uDHLNNhPxP6bSFDAtmHogOAto8syweaobg5G87
-         hzqlCZVatgO2lAiQgC/XgHZeG3qwesgPvzO5MNAemA9WRz4kVCmP7Jwu6dFIVUGjZh/n
-         JPpw==
-X-Gm-Message-State: AOJu0YwGhHv2NAk5VejJ0g2w9SRJFa9qtygxnJS+imqkzJqRA8XAhMlb
-        C2UwZEdv0qfcHo9aPEf9rNCuMoObcmmQeannMLRt3okL
-X-Google-Smtp-Source: AGHT+IGdb5Mb2GxsmI1BOhJNHIBP+oW3B+qOgeklBIYfkq+/l/caGuTOikwQNy7fuKfgn5kIZmdgGA==
-X-Received: by 2002:a17:902:ef93:b0:1b7:e49f:1d with SMTP id iz19-20020a170902ef9300b001b7e49f001dmr3090765plb.62.1693422829677;
-        Wed, 30 Aug 2023 12:13:49 -0700 (PDT)
+        bh=lm34Kk+maPdNp9rFuwAAy5O1fZmlUwsB3d8wqfk31DQ=;
+        b=bmI59HJyTEWXO1hayuAM2NhahyxellGGaCXARh5jNfUjniUJq/PMmF8mxccirA3oev
+         Y643ChxV3lEWMn2lZxmlM7LFTQLEueP83yiGkk/58MlXkhjuGaBlYlAf2iaH1KllHzDf
+         h7hKROo2UKyZZftsB1/QXMNJOv54ruc3UvD36vYQ+XGVTPinAljFVDsNPblw6WFZJ8Ps
+         nVhUZniIzeqJNkzLoSuknGKt18dwqHzMa4MTdYqU9V8u3LYIWqI2h77d2AnTpOEqGvjD
+         wfyoQphilwrkEImf/op1EZap11loXRsVrCCSHuCNoJ5BNqXR8jfubrI6chH3bzmC5Pbs
+         fa2g==
+X-Gm-Message-State: AOJu0Yy0r6FC9kO5I197wEfA63j102E/NOpjtwhskb1oTxsvHkGV7Wis
+        UAjVKTXqD4mFOfef/aFG1xLo1LPOnMA/EEjWrvZPWoSe
+X-Google-Smtp-Source: AGHT+IEt4V9Q3kKv3ps387mUFelpzuS3AhZ1ooWe7nWHiUV3yMAAUWymDyit8Cg7nWN79LlkVQ4iHQ==
+X-Received: by 2002:a17:902:b18d:b0:1b5:1467:c4e8 with SMTP id s13-20020a170902b18d00b001b51467c4e8mr2658054plr.15.1693422833430;
+        Wed, 30 Aug 2023 12:13:53 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:e315:dec6:467c:83c5])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001bbdf32f011sm11338928plg.269.2023.08.30.12.13.47
+        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001bbdf32f011sm11338928plg.269.2023.08.30.12.13.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 12:13:49 -0700 (PDT)
+        Wed, 30 Aug 2023 12:13:52 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -71,9 +71,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Josh Poimboeuf <jpoimboe@kernel.org>,
         Valentin Schneider <vschneid@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v12 6/7] arm64: kgdb: Implement kgdb_roundup_cpus() to enable pseudo-NMI roundup
-Date:   Wed, 30 Aug 2023 12:11:27 -0700
-Message-ID: <20230830121115.v12.6.I2ef26d1b3bfbed2d10a281942b0da7d9854de05e@changeid>
+Subject: [PATCH v12 7/7] arm64: smp: Mark IPI globals as __ro_after_init
+Date:   Wed, 30 Aug 2023 12:11:28 -0700
+Message-ID: <20230830121115.v12.7.I625d393afd71e1766ef73d3bfaac0b347a4afd19@changeid>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 In-Reply-To: <20230830191314.1618136-1-dianders@chromium.org>
 References: <20230830191314.1618136-1-dianders@chromium.org>
@@ -89,110 +89,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Up until now we've been using the generic (weak) implementation for
-kgdb_roundup_cpus() when using kgdb on arm64. Let's move to a custom
-one. The advantage here is that, when pseudo-NMI is enabled on a
-device, we'll be able to round up CPUs using pseudo-NMI. This allows
-us to debug CPUs that are stuck with interrupts disabled. If
-pseudo-NMIs are not enabled then we'll fallback to just using an IPI,
-which is still slightly better than the generic implementation since
-it avoids the potential situation described in the generic
-kgdb_call_nmi_hook().
+Mark the three IPI-related globals in smp.c as "__ro_after_init" since
+they are only ever set in set_smp_ipi_range(), which is marked
+"__init". This is a better and more secure marking than the old
+"__read_mostly".
 
-Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Suggested-by: Stephen Boyd <swboyd@chromium.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
-I debated whether this should be in "arch/arm64/kernel/smp.c" or if I
-should try to find a way for it to go into "arch/arm64/kernel/kgdb.c".
-In the end this is so little code that it didn't seem worth it to find
-a way to export the IPI defines or to otherwise come up with some API
-between kgdb.c and smp.c. If someone has strong feelings and wants
-this to change, please shout and give details of your preferred
-solution.
+This patch is almost completely unrelated to the rest of the series
+other than the fact that it would cause a merge conflict with the
+series if sent separately. I tacked it on to this series in response
+to Stephen's feedback on v11 of this series [1]. If someone hates it
+(not sure why they would), it could be dropped. If someone loves it,
+it could be promoted to the start of the series and/or land on its own
+(resolving merge conflicts).
 
-FWIW, it seems like ~half the other platforms put this in "smp.c" with
-an ifdef for KGDB and the other half put it in "kgdb.c" with an ifdef
-for SMP. :-P
+[1] https://lore.kernel.org/r/CAE-0n52iVDgZa8XT8KTMj12c_ESSJt7f7A0fuZ_oAMMqpGcSzA@mail.gmail.com
 
-(no changes since v10)
+Changes in v12:
+- ("arm64: smp: Mark IPI globals as __ro_after_init") new for v12.
 
-Changes in v10:
-- Don't allocate the cpumask on the stack; just iterate.
-- Moved kgdb calls to smp.c to avoid needing to export IPI info.
-- kgdb now has its own IPI.
-
-Changes in v9:
-- Remove fallback for when debug IPI isn't available.
-- Renamed "NMI IPI" to "debug IPI" since it might not be backed by NMI.
-
- arch/arm64/kernel/smp.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ arch/arm64/kernel/smp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 800c59cf9b64..1a53e57c81d0 100644
+index 1a53e57c81d0..814d9aa93b21 100644
 --- a/arch/arm64/kernel/smp.c
 +++ b/arch/arm64/kernel/smp.c
-@@ -32,6 +32,7 @@
- #include <linux/irq_work.h>
- #include <linux/kernel_stat.h>
- #include <linux/kexec.h>
-+#include <linux/kgdb.h>
- #include <linux/kvm_host.h>
- #include <linux/nmi.h>
- 
-@@ -79,6 +80,7 @@ enum ipi_msg_type {
- 	 * with trace_ipi_*
- 	 */
- 	IPI_CPU_BACKTRACE = NR_IPI,
-+	IPI_KGDB_ROUNDUP,
+@@ -84,9 +84,9 @@ enum ipi_msg_type {
  	MAX_IPI
  };
  
-@@ -868,6 +870,22 @@ void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
- 	nmi_trigger_cpumask_backtrace(mask, exclude_cpu, arm64_backtrace_ipi);
- }
+-static int ipi_irq_base __read_mostly;
+-static int nr_ipi __read_mostly = NR_IPI;
+-static struct irq_desc *ipi_desc[MAX_IPI] __read_mostly;
++static int ipi_irq_base __ro_after_init;
++static int nr_ipi __ro_after_init = NR_IPI;
++static struct irq_desc *ipi_desc[MAX_IPI] __ro_after_init;
  
-+#ifdef CONFIG_KGDB
-+void kgdb_roundup_cpus(void)
-+{
-+	int this_cpu = raw_smp_processor_id();
-+	int cpu;
-+
-+	for_each_online_cpu(cpu) {
-+		/* No need to roundup ourselves */
-+		if (cpu == this_cpu)
-+			continue;
-+
-+		__ipi_send_single(ipi_desc[IPI_KGDB_ROUNDUP], cpu);
-+	}
-+}
-+#endif
-+
- /*
-  * Main handler for inter-processor interrupts
-  */
-@@ -919,6 +937,10 @@ static void do_handle_IPI(int ipinr)
- 		nmi_cpu_backtrace(get_irq_regs());
- 		break;
+ static void ipi_setup(int cpu);
  
-+	case IPI_KGDB_ROUNDUP:
-+		kgdb_nmicallback(cpu, get_irq_regs());
-+		break;
-+
- 	default:
- 		pr_crit("CPU%u: Unknown IPI message 0x%x\n", cpu, ipinr);
- 		break;
-@@ -949,6 +971,7 @@ static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
- 	case IPI_CPU_STOP:
- 	case IPI_CPU_CRASH_STOP:
- 	case IPI_CPU_BACKTRACE:
-+	case IPI_KGDB_ROUNDUP:
- 		return true;
- 	default:
- 		return false;
 -- 
 2.42.0.283.g2d96d420d3-goog
 
