@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F7E78DA0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C6A78DDDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbjH3SfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S245752AbjH3SyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245749AbjH3QL1 (ORCPT
+        with ESMTP id S1343619AbjH3QRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:11:27 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DC8198;
-        Wed, 30 Aug 2023 09:11:22 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbTh41dKRz67Nln;
-        Thu, 31 Aug 2023 00:07:00 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
- 2023 17:11:19 +0100
-Date:   Wed, 30 Aug 2023 17:11:18 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/6] iio: Add buffer write() support
-Message-ID: <20230830171118.00007726@Huawei.com>
-In-Reply-To: <20230807112113.47157-1-paul@crapouillou.net>
-References: <20230807112113.47157-1-paul@crapouillou.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 30 Aug 2023 12:17:02 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E821A4;
+        Wed, 30 Aug 2023 09:16:57 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id c6d608aedefc88a6; Wed, 30 Aug 2023 18:16:55 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 4D08866316E;
+        Wed, 30 Aug 2023 18:16:55 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: [PATCH v1 1/4] thermal: core: Clean up headers of thermal zone registration functions
+Date:   Wed, 30 Aug 2023 18:11:38 +0200
+Message-ID: <13345552.uLZWGnKmhe@kreacher>
+In-Reply-To: <1870450.tdWV9SEqCh@kreacher>
+References: <1870450.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhht
+ vghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopegrmhhithhksehkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  7 Aug 2023 13:21:07 +0200
-Paul Cercueil <paul@crapouillou.net> wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> [V3 was: "iio: new DMABUF based API, v3"][1]
-> 
-> Hi Jonathan,
-> 
-> This is a subset of my patchset that introduced a new interface based on
-> DMABUF objects [1]. It adds write() support to the IIO buffer
-> infrastructure.
-> 
-> The reason it is not the full IIO-DMABUF patchset, is because you
-> requested performance benchmarks - and our current numbers are barely
-> better (~ +10%) than the fileio interface. There is a good reason for
-> that: V3 of the patchset switched from having the IIO core creating the
-> DMABUFs backed by physically contiguous memory, to having the IIO core
-> being a simple DMABUF importer, and having the DMABUFs created
-> externally. We now use the udmabuf driver to create those, and they are
-> allocated from paged memory. While this works perfectly fine, our
-> buffers are now cut in 4 KiB chunks (pages), non-contiguous in memory,
-> which causes the DMA hardware to create an IRQ storm, as it raises an
-> interrupt after each 4 KiB in the worst case scenario.
+For consistency, add a missing thermal_zone_device_register_with_trips()
+stub for the CONFIG_THERMAL unset case, specify argument names in all of
+the thermal zone registration and unregistration function headers and
+make all of them use white space consistently.
 
-Interesting. I'm guessing you don't necessarily need contiguous memory
-and huge pages would get rid of most of that overhead?
+No intentional functional impact.
 
-Given embedded target those huge pages are hard to get so you need
-hugetlb support to improve the chances of it working.  Some quick searching
-suggests there is possible support on the way.
-https://lore.kernel.org/linux-mm/20230817064623.3424348-1-vivek.kasireddy@intel.com/
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ include/linux/thermal.h |   53 +++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 37 insertions(+), 16 deletions(-)
+
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -300,16 +300,24 @@ int thermal_acpi_critical_trip_temp(stru
+ #endif
+ 
+ #ifdef CONFIG_THERMAL
+-struct thermal_zone_device *thermal_zone_device_register(const char *, int, int,
+-		void *, struct thermal_zone_device_ops *,
+-		const struct thermal_zone_params *, int, int);
+-
+-void thermal_zone_device_unregister(struct thermal_zone_device *);
+-
+-struct thermal_zone_device *
+-thermal_zone_device_register_with_trips(const char *, struct thermal_trip *, int, int,
+-					void *, struct thermal_zone_device_ops *,
+-					const struct thermal_zone_params *, int, int);
++struct thermal_zone_device *thermal_zone_device_register(
++					const char *type,
++					int num_trips, int mask,
++					void *devdata,
++					struct thermal_zone_device_ops *ops,
++					const struct thermal_zone_params *tzp,
++					int passive_delay, int polling_delay);
++
++struct thermal_zone_device *thermal_zone_device_register_with_trips(
++					const char *type,
++					struct thermal_trip *trips,
++					int num_trips, int mask,
++					void *devdata,
++					struct thermal_zone_device_ops *ops,
++					const struct thermal_zone_params *tzp,
++					int passive_delay, int polling_delay);
++
++void thermal_zone_device_unregister(struct thermal_zone_device *tz);
+ 
+ void *thermal_zone_device_priv(struct thermal_zone_device *tzd);
+ const char *thermal_zone_device_type(struct thermal_zone_device *tzd);
+@@ -351,14 +359,27 @@ int thermal_zone_device_disable(struct t
+ void thermal_zone_device_critical(struct thermal_zone_device *tz);
+ #else
+ static inline struct thermal_zone_device *thermal_zone_device_register(
+-	const char *type, int trips, int mask, void *devdata,
+-	struct thermal_zone_device_ops *ops,
+-	const struct thermal_zone_params *tzp,
+-	int passive_delay, int polling_delay)
++					const char *type,
++					int num_trips, int mask,
++					void *devdata,
++					struct thermal_zone_device_ops *ops,
++					const struct thermal_zone_params *tzp,
++					int passive_delay, int polling_delay)
++{ return ERR_PTR(-ENODEV); }
++
++static inline struct thermal_zone_device *thermal_zone_device_register_with_trips(
++					const char *type,
++					struct thermal_trip *trips,
++					int num_trips, int mask,
++					void *devdata,
++					struct thermal_zone_device_ops *ops,
++					const struct thermal_zone_params *tzp,
++					int passive_delay, int polling_delay);
+ { return ERR_PTR(-ENODEV); }
+-static inline void thermal_zone_device_unregister(
+-	struct thermal_zone_device *tz)
++
++static inline void thermal_zone_device_unregister(struct thermal_zone_device *tz)
+ { }
++
+ static inline struct thermal_cooling_device *
+ thermal_cooling_device_register(const char *type, void *devdata,
+ 	const struct thermal_cooling_device_ops *ops)
 
 
-> 
-> Anyway, this is not directly a problem of the IIO-DMABUF code - but I
-> can't really upstream a shiny new interface that I claim is much faster,
-> without giving numbers.
-> 
-> So while we fix this (either by updating the DMA IP and driver to
-> support scatter-gather)
-
-Long run you almost always end up needing that unless contig requirements
-are small and you want a robust solution.  I'm guessing no IOMMU to pretend
-it's all contiguous... 
-
-> or by hacking something quick to give us
-> physically contiguous DMABUFs just for the benchmark), I thought it
-> would make sense to upstream the few patches of the V3 patchset that are
-> needed for the IIO-DMABUF interface but aren't directly related.
-
-Good idea.
-
-> 
-> As for write() support, Nuno (Cc'd) said he will work on upstreaming the
-> DAC counterpart of adc/adi-axi-adc.c in the next few weeks, so there
-> will be a user for the buffer write() support. I hope you are okay with
-> this - otherwise, we can just wait until this work is done and submit it
-> all at once.
-
-Absolutely fine, though I won't pick this up without the user also being
-ready to go.
-
-> 
-> Changelog since v3:
-> - [PATCH 2/6] is new;
-> - [PATCH 3/6]: Drop iio_dma_buffer_space_available() function, and
->   update patch description accordingly;
-> - [PATCH 6/6]: .space_available is now set to iio_dma_buffer_usage
->   (which is functionally the exact same).
-> 
-> Cheers,
-> -Paul
-> 
-> [1] https://lore.kernel.org/all/20230403154800.215924-1-paul@crapouillou.net/
-> 
-> Alexandru Ardelean (1):
->   iio: buffer-dma: split iio_dma_buffer_fileio_free() function
-> 
-> Paul Cercueil (5):
->   iio: buffer-dma: Get rid of outgoing queue
->   iio: buffer-dma: Rename iio_dma_buffer_data_available()
->   iio: buffer-dma: Enable buffer write support
->   iio: buffer-dmaengine: Support specifying buffer direction
->   iio: buffer-dmaengine: Enable write support
-> 
->  drivers/iio/adc/adi-axi-adc.c                 |   3 +-
->  drivers/iio/buffer/industrialio-buffer-dma.c  | 187 ++++++++++++------
->  .../buffer/industrialio-buffer-dmaengine.c    |  28 ++-
->  include/linux/iio/buffer-dma.h                |  11 +-
->  include/linux/iio/buffer-dmaengine.h          |   5 +-
->  5 files changed, 160 insertions(+), 74 deletions(-)
-> 
 
