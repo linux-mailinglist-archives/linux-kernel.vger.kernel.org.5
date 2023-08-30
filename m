@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5A778DDAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C157178D942
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244398AbjH3SxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
+        id S236724AbjH3Scn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343608AbjH3QO1 (ORCPT
+        with ESMTP id S1343616AbjH3QRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:14:27 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D6A1A1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:14:23 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52a1132b685so7913001a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693412062; x=1694016862; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=J+IbjS4hQ1xrZMoTCi3gEShIbmawdzOCZjpHyuEsjwE=;
-        b=Gnl7aNzYPtrmKPd2soG+AnuedyHsV2D6aANBFj+BUNr8B2CVnLSa/KzP4KnFrXWXbf
-         Z+EvRqCVV8h5nV0fAfnHXwovd3gIxFK5nzgV8k4/DTh+HBtLMR7xYpbO1MsjfoqYT4EX
-         ooJGRfidtAMiAXmB9L5UaRJBhTFbI7ttviMCA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693412062; x=1694016862;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J+IbjS4hQ1xrZMoTCi3gEShIbmawdzOCZjpHyuEsjwE=;
-        b=QYz0bjBS/pGaReHABp/fKRXkaqPRx4dX/YwGw01/i+jw5Rc+dlna+SMnfX9Je6D9x6
-         ErzM4o+zSEZYeGJiJV0XbVZfjUs3q4s3c8r840yBHE41KpRAQx260/2pxrM/IJwGeFg2
-         lDSDMrjimNCsu5SFkBsXAyvqmqJbFxkP+euT4IZmsxLgseD1zzrX5u6OG5BJB3DsUlQB
-         cRFTJi9TcFqY+CtLb0fuaR8oPLvJePxfk6aHA7L/9M9XPJEIVsVK8lrtI4jp+5FdBX5O
-         1r3cBQSqzJIJGRzx/SWUNTIjySonvG+c+wNOGVZcwHxmpQDMKMbeQGsm1CID0agsuo1v
-         a1MQ==
-X-Gm-Message-State: AOJu0Ywh/TcVuugorzt7wXIGNNAf5r4QLx3HXSIwSNpDooYdnutzEGqT
-        Xgb8F7VO1OIZoP2wsWrU1vPhGRwax9bvmPcF3wY5qpU8
-X-Google-Smtp-Source: AGHT+IGveq16x6/uiYztit4L7O3HjpgfrHZDkhtKafzHvP5+gQmBN4O6GT+aNCyU9gkNRcqriCfWaA==
-X-Received: by 2002:a17:906:113:b0:9a5:9f8d:764 with SMTP id 19-20020a170906011300b009a59f8d0764mr2095589eje.77.1693412061661;
-        Wed, 30 Aug 2023 09:14:21 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id rk17-20020a170907215100b00988c0c175c6sm7320790ejb.189.2023.08.30.09.14.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 09:14:21 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-99c4923195dso727853566b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:14:21 -0700 (PDT)
-X-Received: by 2002:a17:906:518e:b0:99e:1201:48bc with SMTP id
- y14-20020a170906518e00b0099e120148bcmr2002148ejk.64.1693412060814; Wed, 30
- Aug 2023 09:14:20 -0700 (PDT)
+        Wed, 30 Aug 2023 12:17:01 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0CD1A1;
+        Wed, 30 Aug 2023 09:16:55 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 09f20c2cacebe463; Wed, 30 Aug 2023 18:16:54 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id A93FA66316E;
+        Wed, 30 Aug 2023 18:16:53 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: [PATCH v1 3/4] thermal: Use thermal_tripless_zone_device_register()
+Date:   Wed, 30 Aug 2023 18:14:57 +0200
+Message-ID: <8272147.T7Z3S40VBb@kreacher>
+In-Reply-To: <1870450.tdWV9SEqCh@kreacher>
+References: <1870450.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-References: <CAHC9VhQQqQCdcSdb7G8v1ZHU8zn0XJZ6hS0rbGufAuZyPSCDCA@mail.gmail.com>
-In-Reply-To: <CAHC9VhQQqQCdcSdb7G8v1ZHU8zn0XJZ6hS0rbGufAuZyPSCDCA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 30 Aug 2023 09:14:03 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgvT9yJT+QwWHArnO7c64_g3kXzMi5xr7j-a55kZAdGhg@mail.gmail.com>
-Message-ID: <CAHk-=wgvT9yJT+QwWHArnO7c64_g3kXzMi5xr7j-a55kZAdGhg@mail.gmail.com>
-Subject: Re: [GIT PULL] LSM patches for v6.6
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhht
+ vghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopegrmhhithhksehkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,32 +60,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 at 16:37, Paul Moore <paul@paul-moore.com> wrote:
->
-> Ten LSM patches for the Linux v6.6 merge window, and while most of
-> them are fairly minor, there is at least one merge conflict involving
-> security_sk_classify_flow() in security/security.c; it looks like a
-> netdev constification patch collided with a LSM documentation patch,
-> thankfully the solution is relatively simple but if for some odd
-> reason you need a respin let me know.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Oh, no, trivial things like these are truly not a problem at all.
+All of the remaining callers of thermal_zone_device_register()
+can use thermal_tripless_zone_device_register(), so make them
+do so in order to allow the former to be dropped.
 
-The only time I may ask people to help with the resolution (or, more
-commonly, ask them to just double-check what I did) is when there is
-an actual and subtle code conflict where the code in question has been
-re-organized a lot, and both sides did something fairly involved, and
-the end result isn't really obvious.
+No intentional functional impact.
 
-For something like this, I do ask for it to be noted in the pull
-request - exactly like  you did - but even that is mainly so that
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/power/supply/power_supply_core.c                |    4 ++--
+ drivers/thermal/armada_thermal.c                        |    5 +++--
+ drivers/thermal/dove_thermal.c                          |    4 ++--
+ drivers/thermal/intel/int340x_thermal/int3400_thermal.c |    6 +++---
+ drivers/thermal/kirkwood_thermal.c                      |    4 ++--
+ drivers/thermal/spear_thermal.c                         |    4 ++--
+ 6 files changed, 14 insertions(+), 13 deletions(-)
 
- (a) I don't get surprised when I do the pull and see that I need to
-resolve something, and
+Index: linux-pm/drivers/power/supply/power_supply_core.c
+===================================================================
+--- linux-pm.orig/drivers/power/supply/power_supply_core.c
++++ linux-pm/drivers/power/supply/power_supply_core.c
+@@ -1305,8 +1305,8 @@ static int psy_register_thermal(struct p
+ 
+ 	/* Register battery zone device psy reports temperature */
+ 	if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_TEMP)) {
+-		psy->tzd = thermal_zone_device_register(psy->desc->name,
+-				0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
++		psy->tzd = thermal_tripless_zone_device_register(psy->desc->name,
++				psy, &psy_tzd_ops, NULL);
+ 		if (IS_ERR(psy->tzd))
+ 			return PTR_ERR(psy->tzd);
+ 		ret = thermal_zone_device_enable(psy->tzd);
+Index: linux-pm/drivers/thermal/armada_thermal.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/armada_thermal.c
++++ linux-pm/drivers/thermal/armada_thermal.c
+@@ -876,8 +876,9 @@ static int armada_thermal_probe(struct p
+ 		/* Wait the sensors to be valid */
+ 		armada_wait_sensor_validity(priv);
+ 
+-		tz = thermal_zone_device_register(priv->zone_name, 0, 0, priv,
+-						  &legacy_ops, NULL, 0, 0);
++		tz = thermal_tripless_zone_device_register(priv->zone_name,
++							   priv, &legacy_ops,
++							   NULL);
+ 		if (IS_ERR(tz)) {
+ 			dev_err(&pdev->dev,
+ 				"Failed to register thermal zone device\n");
+Index: linux-pm/drivers/thermal/dove_thermal.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/dove_thermal.c
++++ linux-pm/drivers/thermal/dove_thermal.c
+@@ -139,8 +139,8 @@ static int dove_thermal_probe(struct pla
+ 		return ret;
+ 	}
+ 
+-	thermal = thermal_zone_device_register("dove_thermal", 0, 0,
+-					       priv, &ops, NULL, 0, 0);
++	thermal = thermal_tripless_zone_device_register("dove_thermal", priv,
++							&ops, NULL);
+ 	if (IS_ERR(thermal)) {
+ 		dev_err(&pdev->dev,
+ 			"Failed to register thermal zone device\n");
+Index: linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
++++ linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+@@ -609,9 +609,9 @@ static int int3400_thermal_probe(struct
+ 
+ 	evaluate_odvp(priv);
+ 
+-	priv->thermal = thermal_zone_device_register("INT3400 Thermal", 0, 0,
+-						priv, &int3400_thermal_ops,
+-						&int3400_thermal_params, 0, 0);
++	priv->thermal = thermal_tripless_zone_device_register("INT3400 Thermal", priv,
++							      &int3400_thermal_ops,
++							      &int3400_thermal_params);
+ 	if (IS_ERR(priv->thermal)) {
+ 		result = PTR_ERR(priv->thermal);
+ 		goto free_art_trt;
+Index: linux-pm/drivers/thermal/kirkwood_thermal.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/kirkwood_thermal.c
++++ linux-pm/drivers/thermal/kirkwood_thermal.c
+@@ -71,8 +71,8 @@ static int kirkwood_thermal_probe(struct
+ 	if (IS_ERR(priv->sensor))
+ 		return PTR_ERR(priv->sensor);
+ 
+-	thermal = thermal_zone_device_register("kirkwood_thermal", 0, 0,
+-					       priv, &ops, NULL, 0, 0);
++	thermal = thermal_tripless_zone_device_register("kirkwood_thermal",
++							priv, &ops, NULL);
+ 	if (IS_ERR(thermal)) {
+ 		dev_err(&pdev->dev,
+ 			"Failed to register thermal zone device\n");
+Index: linux-pm/drivers/thermal/spear_thermal.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/spear_thermal.c
++++ linux-pm/drivers/thermal/spear_thermal.c
+@@ -122,8 +122,8 @@ static int spear_thermal_probe(struct pl
+ 	stdev->flags = val;
+ 	writel_relaxed(stdev->flags, stdev->thermal_base);
+ 
+-	spear_thermal = thermal_zone_device_register("spear_thermal", 0, 0,
+-				stdev, &ops, NULL, 0, 0);
++	spear_thermal = thermal_tripless_zone_device_register("spear_thermal",
++							      stdev, &ops, NULL);
+ 	if (IS_ERR(spear_thermal)) {
+ 		dev_err(&pdev->dev, "thermal zone device is NULL\n");
+ 		ret = PTR_ERR(spear_thermal);
 
- (b) to give me the warm and fuzzies that the maintainers in question
-have actually noticed and followed up on the reports from linux-next.
 
-So absolutely no need for any re-spin, and you did the right thing. Thanks,
 
-                      Linus
