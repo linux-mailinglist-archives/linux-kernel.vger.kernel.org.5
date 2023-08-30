@@ -2,125 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0012178DF04
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862E878DF28
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243471AbjH3TNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
+        id S242858AbjH3TMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245618AbjH3Pnb (ORCPT
+        with ESMTP id S245625AbjH3PpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:43:31 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD63122
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:43:27 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-269304c135aso3602627a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693410206; x=1694015006; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hos3zNX5Io5VszHAL6d9NfCD5Tpud5Aief4IW0Tj/2M=;
-        b=IZkblzV6cY/ISsDtmJfeCIYJFpeg06vZvW9Xq9Xp24AFnIyzpU5YZd8sqQFUEG9TIP
-         SkFJ1LZNYtbhgYFySeAtYrMTL4LfEcWJDhdStINsH0rrvKVKz8+bwZMQ5e5MYGFdKV7S
-         LhjjfMU0qsWOocr8NBeLeYh46MpqYkZatfZx3qmFZ+0DGnhybIAVtT+o/BFo9y1o8ja3
-         L/hiBnteZy9HLYyNh4opa+oYsubAGTM+sRUaFOy3SbnHkL4pbMV6cYSJ3cGBj7iCGcT4
-         chW4z95kZ7GqQZhRGXErJ8m2VQ7hz3Op7bvSZDF6I5Cfa2l93B1l0v/aWcV36EDrb3eT
-         hzng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693410206; x=1694015006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hos3zNX5Io5VszHAL6d9NfCD5Tpud5Aief4IW0Tj/2M=;
-        b=Z3c819Rxs/LF/EHeGuA/D4jAgOM7afIwic3Zj5BXmBTYJs5D53dEzcr3hZow4W+rkA
-         aOobVgh6Lt+GJlxCcsQRbX6Wg4/LUnr1bgf8hlOsT1Vj3ypT96P2dOfVdD10RuF+19bS
-         5YXhX4EfWHIVqiBPbhpu83iYf1/qXVBXrSkPKWsXSKGWc3FR8zckLRdQoEVTduVzmF2j
-         Fm/It6iRKVRe2WPcfgKBS7MVp18HQpiIEHOYtT/xqkZQyEvo/7aIf82npXBzJewoOTX7
-         0HA98gRGW+CEShx9g0xGi13JFFvU6aNk2hIZr5fj4F21PAc2z0ISwX775DYJnf3iNps8
-         IOvQ==
-X-Gm-Message-State: AOJu0YxjbkzRB6PmOgzsuresgcf5jZ1ZASihTKdPcVNGcXEi+5ecyfmq
-        ZYJVAGVH7VaNj7AJkWII3t38PoFxR7fAi+Y6msEb4Q==
-X-Google-Smtp-Source: AGHT+IEsJ1Cl8XaoVMweojYTDPN11CHHEkD8agAJrPI6cbuCn2+rGf8ONpDPUvLR8wSaPSnOZX1qf1oGAV4C2TLEokU=
-X-Received: by 2002:a17:90b:3b48:b0:26d:1e2d:51a7 with SMTP id
- ot8-20020a17090b3b4800b0026d1e2d51a7mr2465522pjb.37.1693410206364; Wed, 30
- Aug 2023 08:43:26 -0700 (PDT)
+        Wed, 30 Aug 2023 11:45:04 -0400
+Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E205B122
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
+        s=default; t=1693410301;
+        bh=C+m0B3MqZ+rrcZQO51wczW2Uy/Wthx7qnrlmeTa0W9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=ieGNKi2w+gVGTboyK8clI32Zwfk7Yfv129ChX6HCXNl1SQ7vZ0QjpcI8c3rp+nfyy
+         /JaZlnOd28sUbs2+ZdhSKIXk20mtdefMlRRblElXfHQNKIKgCT9DMKbuc/JVf3+KF1
+         2uFurtuAAa2em17tpIpelP5pZMqECR6z+czXacSW4QQb0QduMNi1U9fvs27Linhh73
+         n/7EfgbNQ6RY/Hf6bA4acGAJSWRHve6wt5EaOZ/zLbVgNYbuSQttFGr+V735W2pZoF
+         vWWsqs9JMP0WOkpWtihYK/EoApJQydW+qzJeji3YosfuQPS2SUYmtOHH3q8tF1BuvQ
+         HFX+zZLZ711nA==
+Received: from biznet-home.integral.gnuweeb.org (unknown [182.253.126.208])
+        by gnuweeb.org (Postfix) with ESMTPSA id 7148C24B32D;
+        Wed, 30 Aug 2023 22:44:58 +0700 (WIB)
+Date:   Wed, 30 Aug 2023 22:44:53 +0700
+From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Nicholas Rosenberg <inori@vnlx.org>,
+        Michael William Jonathan <moe@gnuweeb.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v1 2/5] tools/nolibc: x86-64: Use `rep stosb` for
+ `memset()`
+Message-ID: <ZO9j9WhSj7PmsM8b@biznet-home.integral.gnuweeb.org>
+References: <20230830135726.1939997-1-ammarfaizi2@gnuweeb.org>
+ <20230830135726.1939997-3-ammarfaizi2@gnuweeb.org>
+ <CAOG64qNGdPjXHTvrpYxjizOYvMRaB9_2t2raw6DJ3kK852KUHg@mail.gmail.com>
+ <ZO9bv+GvgpphtGEi@biznet-home.integral.gnuweeb.org>
+ <ZO9e6h2jjVIMpBJP@1wt.eu>
 MIME-Version: 1.0
-References: <20230830004549.16131-1-anthony.yznaga@oracle.com>
-In-Reply-To: <20230830004549.16131-1-anthony.yznaga@oracle.com>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Wed, 30 Aug 2023 11:42:50 -0400
-Message-ID: <CADyq12xd+o0fjkjh-MzDmopC94XSxMCKVnQ+jcBr3yJdx+v7sg@mail.gmail.com>
-Subject: Re: [PATCH] mm/mremap: fix unaccount of memory on vma_merge() failure
-To:     Anthony Yznaga <anthony.yznaga@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, 0x7f454c46@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZO9e6h2jjVIMpBJP@1wt.eu>
+X-Bpl:  hUx9VaHkTWcLO7S8CQCslj6OzqBx2hfLChRz45nPESx5VSB/xuJQVOKOB1zSXE3yc9ntP27bV1M1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 8:46=E2=80=AFPM Anthony Yznaga
-<anthony.yznaga@oracle.com> wrote:
->
-> Fix mremap so that only accounted memory is unaccounted if the
-> mapping is expandable but vma_merge() fails.
->
-> Fixes: fdbef6149135 ("mm/mremap: don't account pages in vma_to_resize()")
-> Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+On Wed, Aug 30, 2023 at 05:23:22PM +0200, Willy Tarreau wrote:
+> Then "xchg %esi, %eax" is just one byte with no memory access ;-)
 
-Looks correct to me.
+Perfect!
 
-Acked-by: Brian Geffon <bgeffon@google.com>
+Now I got this, shorter than "movl %esi, %eax":
+```
+0000000000001500 <memset>:
+    1500: 96          xchg   %eax,%esi
+    1501: 48 89 d1    mov    %rdx,%rcx
+    1504: 57          push   %rdi
+    1505: f3 aa       rep stos %al,%es:(%rdi)
+    1507: 58          pop    %rax
+    1508: c3          ret
+```
 
-> ---
->  mm/mremap.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index 056478c106ee..07cdb04d4ab5 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -1037,12 +1037,14 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsi=
-gned long, old_len,
->                         pgoff_t extension_pgoff =3D vma->vm_pgoff +
->                                 ((extension_start - vma->vm_start) >> PAG=
-E_SHIFT);
->                         VMA_ITERATOR(vmi, mm, extension_start);
-> +                       long charged =3D 0;
->
->                         if (vma->vm_flags & VM_ACCOUNT) {
->                                 if (security_vm_enough_memory_mm(mm, page=
-s)) {
->                                         ret =3D -ENOMEM;
->                                         goto out;
->                                 }
-> +                               charged =3D pages;
->                         }
->
->                         /*
-> @@ -1058,7 +1060,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsign=
-ed long, old_len,
->                                 vma->vm_file, extension_pgoff, vma_policy=
-(vma),
->                                 vma->vm_userfaultfd_ctx, anon_vma_name(vm=
-a));
->                         if (!vma) {
-> -                               vm_unacct_memory(pages);
-> +                               vm_unacct_memory(charged);
->                                 ret =3D -ENOMEM;
->                                 goto out;
->                         }
-> --
-> 2.39.3
->
+Unfortunately, the xchg trick doesn't yield smaller machine code for
+%rdx, %rcx. Lol.
+
+-- 
+Ammar Faizi
+
