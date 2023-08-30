@@ -2,238 +2,496 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9B378E00B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9936B78DF02
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244206AbjH3TOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44464 "EHLO
+        id S241241AbjH3TKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242529AbjH3JAV (ORCPT
+        with ESMTP id S242580AbjH3JFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:00:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCF63CC9;
-        Wed, 30 Aug 2023 02:00:17 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F28D32F4;
-        Wed, 30 Aug 2023 02:00:56 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DC903F64C;
-        Wed, 30 Aug 2023 02:00:15 -0700 (PDT)
-Message-ID: <4f493093-fe3e-0d17-1bdb-3c3545734f0c@arm.com>
-Date:   Wed, 30 Aug 2023 10:00:17 +0100
+        Wed, 30 Aug 2023 05:05:49 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42117CCB;
+        Wed, 30 Aug 2023 02:05:46 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bf298ef1f5so894632a34.0;
+        Wed, 30 Aug 2023 02:05:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693386345; x=1693991145; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=271U2jn1bqk5vL1cDgUVfI2CpxpE7QGD304qXVGmMGE=;
+        b=dXaT8h7iZ9UsnxFrkHTomQWPqzHn9vvhMlZBOGAED6lqavoeFBWV5naBshiOwnnGFb
+         dmnEfM6qA3llbOMs8ZYG9DxuHtt6ql7QyajAXlS72cM1V8cgx7QYCNkn1ut4Crci3CBS
+         so90ZF9NsldJ2TzuEchhmyxsF4s+K9U4xkJf0AS++n6vuXzjvOFhhcipwJCwn6+UVt/Q
+         e5uxwBu5rfl+D7TwviSH6ShV2br1q4YE5A1GBJRcmFNurAHajigrp5Fgf7R2+XZ8DmfG
+         HoIjDJfD8wzR9o6HnuPAuWmAGSXO7HWRIlsD2QPFQEhoiBSRy88/p28fBmHw5IrKi0m2
+         lQxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693386345; x=1693991145;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=271U2jn1bqk5vL1cDgUVfI2CpxpE7QGD304qXVGmMGE=;
+        b=SwYcBGKhu4DYIzZ8yBn5jCLrVPCLcR/s+1G3zu79irYkMmXOGDJkntYt60VQX+KPhA
+         e6olEO1SuD5aGuTq8fen5MeG+Xm65VVfd9r7IxHMo23TjndbIJZHvtAMD68FYNS4ikft
+         WOa1MqxUokC+PNPbKFMiLTdzKcWbh6UeQWupT2hDbUTNntyADNd07u0LjReVypJl3vrs
+         5u0sXkTO3jbJhHDmvmvSg5LzjZ4uuU5g5nbT2xJlKWsqglaNRKAmmkh74g8vTo19qLrn
+         4BBdYgsUfyfUUkw9Mq1tGTJkp7XD6RhtcRYotSHzkIDCUpT1uPeylQwKu7hjC3+O+oQt
+         6JcQ==
+X-Gm-Message-State: AOJu0YwKL1gN1l4Dw7L91hHt4qeQ1BEKmpU3QTWH5LtkvmdAjOM32OZM
+        2V4rMGfyeuzCZTaEjRmzCQQ=
+X-Google-Smtp-Source: AGHT+IF4ddVBYAGpkCN6qWlgT/1SRbV3jfj1DTmKEJ1GQijmK48/527aEwZEkZ2EC4ZW2/fGsgACew==
+X-Received: by 2002:a05:6358:918e:b0:135:99fa:a118 with SMTP id j14-20020a056358918e00b0013599faa118mr1395048rwa.4.1693386345314;
+        Wed, 30 Aug 2023 02:05:45 -0700 (PDT)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id x4-20020a656aa4000000b00553dcfc2179sm9263226pgu.52.2023.08.30.02.05.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 02:05:44 -0700 (PDT)
+From:   peteryin <peteryin.openbmc@gmail.com>
+To:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
+        daniel-hsu@quantatw.com, peteryin <peteryin.openbmc@gmail.com>
+Subject: [PATCH v4 1/2] ARM: dts: aspeed: Minerva: Add Facebook Minerva (AST2600) BMC
+Date:   Wed, 30 Aug 2023 17:02:10 +0800
+Message-Id: <20230830090212.3880559-2-peteryin.openbmc@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
+References: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-From:   James Clark <james.clark@arm.com>
-Subject: Re: [PATCH v1] perf jevents: Use "default_core" for events with no
- Unit
-To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230826062203.1058041-1-irogers@google.com>
-Content-Language: en-US
-In-Reply-To: <20230826062203.1058041-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add linux device tree entry related to
+Minerva specific devices connected to BMC SoC.
 
+Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
+---
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 385 ++++++++++++++++++
+ 2 files changed, 386 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
 
-On 26/08/2023 07:22, Ian Rogers wrote:
-> The json Unit field encodes the name of the PMU to match the events
-> to. When no name is given it has meant the "cpu" core PMU except for
-> tests. On ARM, Intel hybrid and s390 the core PMU is named differently
-> which means that using "cpu" for this case causes the events not to
-> get matched to the PMU. Introduce a new "default_core" string for this
-> case and in the pmu__name_match force all core PMUs to match this
-> name.
-> 
-> Reported-by: Thomas Richter <tmricht@linux.ibm.com>
-> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Fixes: 2e255b4f9f41 ("perf jevents: Group events by PMU")
-> Signed-off-by: Ian Rogers <irogers@google.com>
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 9e1d7bf3cff6..edb0b2105333 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1604,6 +1604,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-bmc-facebook-wedge400.dtb \
+ 	aspeed-bmc-facebook-yamp.dtb \
+ 	aspeed-bmc-facebook-yosemitev2.dtb \
++	aspeed-bmc-facebook-minerva.dtb \
+ 	aspeed-bmc-ibm-bonnell.dtb \
+ 	aspeed-bmc-ibm-everest.dtb \
+ 	aspeed-bmc-ibm-rainier.dtb \
+diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+new file mode 100644
+index 000000000000..42087764e9e9
+--- /dev/null
++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+@@ -0,0 +1,385 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright (c) 2023 Facebook Inc.
++/dts-v1/;
++
++#include "aspeed-g6.dtsi"
++#include <dt-bindings/gpio/aspeed-gpio.h>
++#include <dt-bindings/i2c/i2c.h>
++
++/ {
++	model = "Facebook Minerva";
++	compatible = "facebook,minerva-bmc", "aspeed,ast2600";
++
++	aliases {
++		serial0 = &uart1;
++		serial4 = &uart5;
++	};
++
++	chosen {
++		stdout-path = &uart5;
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x80000000>;
++	};
++
++	iio-hwmon {
++		compatible = "iio-hwmon";
++		io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
++			<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
++			<&adc1 2>;
++	};
++
++};
++
++// HOST BIOS Debug
++&uart1 {
++	status = "okay";
++};
++
++
++// SOL Host Console
++&uart2 {
++	status = "okay";
++	pinctrl-0 = <>;
++
++};
++
++// SOL BMC Console
++&uart4 {
++	status = "okay";
++	pinctrl-0 = <>;
++};
++
++// BMC Debug Console
++&uart5 {
++	status = "okay";
++};
++
++//MTIA
++&uart6 {
++	status = "okay";
++};
++
++&uart_routing {
++	status = "okay";
++};
++
++&vuart1 {
++	status = "okay";
++	virtual;
++	port=<0x3e8>;
++	sirq = <7>;
++	sirq-polarity = <0>;
++	dma-mode;
++	dma-channel = <12>;
++};
++
++&wdt1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wdtrst1_default>;
++	aspeed,reset-type = "soc";
++	aspeed,external-signal;
++	aspeed,ext-push-pull;
++	aspeed,ext-active-high;
++	aspeed,ext-pulse-duration = <256>;
++};
++
++
++&mac3 {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rmii4_default>;
++	no-hw-checksum;
++	use-ncsi;
++	ncsi-ctrl,start-redo-probe;
++	ncsi-ctrl,no-channel-monitor;
++	mlx,multi-host;
++	ncsi-package = <1>;
++	ncsi-channel = <1>;
++	ncsi-rexmit = <1>;
++	ncsi-timeout = <2>;
++};
++
++&rtc {
++	status = "okay";
++};
++
++&fmc {
++	status = "okay";
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "bmc";
++		spi-max-frequency = <50000000>;
++#include "openbmc-flash-layout-128.dtsi"
++	};
++	flash@1 {
++		status = "okay";
++		m25p,fast-read;
++		label = "alt-bmc";
++		spi-max-frequency = <50000000>;
++	};
++};
++
++
++//BIOS Flash
++&spi2 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_spi2_default>;
++
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "pnor";
++		spi-max-frequency = <12000000>;
++		spi-tx-bus-width = <2>;
++		spi-rx-bus-width = <2>;
++	};
++};
++
++
++&kcs2 {
++	status = "okay";
++	aspeed,lpc-io-reg = <0xca8>;
++};
++
++&kcs3 {
++	status = "okay";
++	aspeed,lpc-io-reg = <0xca2>;
++};
++
++
++&lpc_snoop {
++	status = "okay";
++	snoop-ports = <0x80>;
++};
++
++&peci0 {
++	status = "okay";
++	clock-frequency = <1000000>;
++};
++
++
++&i2c0 {
++	status = "okay";
++};
++
++&i2c1 {
++	status = "okay";
++	tmp75@4B {
++		compatible = "ti,tmp75";
++		reg = <0x4B>;
++	};
++};
++
++&i2c2 {
++	status = "okay";
++};
++
++&i2c3 {
++	status = "okay";
++};
++
++&i2c4 {
++	status = "okay";
++};
++
++&i2c5 {
++	status = "okay";
++};
++
++&i2c6 {
++	status = "okay";
++};
++
++&i2c7 {
++	status = "okay";
++};
++
++&i2c8 {
++	status = "okay";
++};
++
++&i2c9 {
++	status = "okay";
++};
++
++&i2c11 {
++	status = "okay";
++};
++
++&i2c12 {
++	status = "okay";
++};
++
++&i2c13 {
++	status = "okay";
++};
++
++// To Debug card
++&i2c14 {
++	status = "okay";
++	multi-master;
++
++	ipmb@10 {
++		compatible = "ipmb-dev";
++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
++		i2c-protocol;
++	};
++};
++
++&i2c15 {
++	status = "okay";
++	// SCM FRU
++	eeprom@50 {
++		compatible = "atmel,24c64";
++		reg = <0x50>;
++	};
++	// BSM FRU
++	eeprom@56 {
++		compatible = "atmel,24c64";
++		reg = <0x56>;
++	};
++};
++
++&adc0 {
++	ref_voltage = <2500>;
++	status = "okay";
++
++	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
++		&pinctrl_adc2_default &pinctrl_adc3_default
++		&pinctrl_adc4_default &pinctrl_adc5_default
++		&pinctrl_adc6_default &pinctrl_adc7_default>;
++};
++
++&adc1 {
++	ref_voltage = <2500>;
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_adc10_default>;
++};
++
++&jtag1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_jtagm_default>;
++};
++
++&ehci1 {
++	status = "okay";
++};
++
++&gpio0 {
++	pinctrl-names = "default";
++	gpio-line-names =
++	/*A0-A7*/	"","","","","","","","",
++	/*B0-B7*/	"","","","","","FM_ID_LED_N","","",
++	/*C0-C7*/	"","","","","","","","",
++	/*D0-D7*/	"","","SOL_UART_SET","","","","","",
++	/*E0-E7*/	"","","","","","","","",
++	/*F0-F7*/	"","","","","","","","",
++	/*G0-G7*/	"","","","","","","","",
++	/*H0-H7*/	"","","","","","","","",
++	/*I0-I7*/	"","","","","","","","",
++	/*J0-J7*/	"","","","","","","","",
++	/*K0-K7*/	"","","","","","","","",
++	/*L0-L7*/	"","","","","","","","",
++	/*M0-M7*/	"","","","","","","","",
++	/*N0-N7*/	"LED_POSTCODE_0","LED_POSTCODE_1",
++			"LED_POSTCODE_2","LED_POSTCODE_3",
++			"LED_POSTCODE_4","LED_POSTCODE_5",
++			"LED_POSTCODE_6","LED_POSTCODE_7",
++	/*O0-O7*/	"","","","","","","","",
++	/*P0-P7*/	"FP_SYS_PWRBTN_IN_N","BMC_SYS_PWRBTN_OUT_N",
++			"FP_RST_BTN_IN_N","","","","","",
++	/*Q0-Q7*/	"","","","","","","","",
++	/*R0-R7*/	"","","","","","","","",
++	/*S0-S7*/	"","","","","","","","",
++	/*T0-T7*/	"","","","","","","","",
++	/*U0-U7*/	"","","","","","","","",
++	/*V0-V7*/	"","","","","","","","",
++	/*W0-W7*/	"","","","","","","","",
++	/*X0-X7*/	"","","","","","","","",
++	/*Y0-Y7*/	"","","","","","","","",
++	/*Z0-Z7*/	"","","","","","","","";
++};
++
++&sgpiom0 {
++	status = "okay";
++	max-ngpios = <128>;
++	ngpios = <128>;
++	bus-frequency = <2000000>;
++	gpio-line-names =
++	/*in - out - in - out */
++	/*A0-A3 line 0-7*/
++	"","","","","","ENABLE_SENSORS","","",
++	/*A4-A7 line 8-15*/
++	"","","","","","","","",
++	/*B0-B3 line 16-23*/
++	"","","","","","BMC_RST_BTN_OUT_N","","",
++	/*B4-B7 line 24-31*/
++	"","","","","","","","",
++	/*C0-C3 line 32-39*/
++	"","","","","","","","",
++	/*C4-C7 line 40-47*/
++	"","","","","","","","",
++	/*D0-D3 line 48-55*/
++	"","","","","","","","",
++	/*D4-D7 line 56-63*/
++	"","","","","","","","",
++	/*E0-E3 line 64-71*/
++	"","","","","","","","",
++	/*E4-E7 line 72-79*/
++	"","","","","","","","",
++	/*F0-F3 line 80-87*/
++	"","","","","","","","",
++	/*F4-F7 line 88-95*/
++	"","","","","","","","",
++	/*G0-G3 line 96-103*/
++	"","","","","","","","",
++	/*G4-G7 line 104-111*/
++	"","","","","","","","",
++	/*H0-H3 line 112-119*/
++	"","","","","PLD_SYS_POWER_GOOD","","","",
++	/*H4-H7 line 120-127*/
++	"","","","","","","","",
++	/*I0-I3 line 128-135*/
++	"","","","","","","","",
++	/*I4-I7 line 136-143*/
++	"","","","","","","","",
++	/*J0-J3 line 144-151*/
++	"","","PLD_BIOS_POST_CMPLT_N","","","","","",
++	/*J4-J7 line 152-159*/
++	"","","","","","","","",
++	/*K0-K3 line 160-167*/
++	"","","","","","","","",
++	/*K4-K7 line 168-175*/
++	"","","","","","","","",
++	/*L0-L3 line 176-183*/
++	"","","","","","","","",
++	/*L4-L7 line 184-191*/
++	"","","","","","","","",
++	/*M0-M3 line 192-199*/
++	"","","","","","","","",
++	/*M4-M7 line 200-207*/
++	"","","","","","","","",
++	/*N0-N3 line 208-215*/
++	"","","","","","","","",
++	/*N4-N7 line 216-223*/
++	"","","","","","","","",
++	/*O0-O3 line 224-231*/
++	"","","","","","","","",
++	/*O4-O7 line 232-239*/
++	"","","","","","","","",
++	/*P0-P3 line 240-247*/
++	"","","","","","","","",
++	/*P4-P7 line 248-255*/
++	"","","","","","","","";
++};
++
+-- 
+2.25.1
 
-Hi Ian,
-
-Running 'perf list' with this change I get "munmap_chunk(): invalid
-pointer". It's probably related to an earlier change though.
-
-Here's the stack:
-
-Program received signal SIGABRT, Aborted.
-__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
-50	../sysdeps/unix/sysv/linux/raise.c: No such file or directory.
-(gdb) bt
-#0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
-#1  0x0000fffff70adaac in __GI_abort () at abort.c:79
-#2  0x0000fffff70faf40 in __libc_message (action=action@entry=do_abort, fmt=fmt@entry=0xfffff71bc518 "%s\n")
-     at ../sysdeps/posix/libc_fatal.c:155
-#3  0x0000fffff7102344 in malloc_printerr (str=str@entry=0xfffff71b7ae0 "munmap_chunk(): invalid pointer") at malloc.c:5347
-#4  0x0000fffff7102644 in munmap_chunk (p=<optimized out>) at malloc.c:2830
-#5  0x0000aaaaaadc727c in __zfree (ptr=0xaaaaaaf89db0) at ../../lib/zalloc.c:13
-#6  0x0000aaaaaacbbbcc in assign_str (name=0xaaaaaae878c2 "l1d_cache_refill", field=0xaaaaaae4fb78 "value", old_str=0xaaaaaaf89db0,
-     new_str=0xaaaaaae878f7 "event=0x3") at util/pmu.c:454
-#7  0x0000aaaaaacbbdf4 in update_alias (pe=0xffffffffd450, table=0xaaaaaaf43870 <pmu_events_map+592>, vdata=0xffffffffd598)
-     at util/pmu.c:490
-#8  0x0000aaaaaadbc37c in pmu_events_table__find_event_pmu (table=0xaaaaaaf43870 <pmu_events_map+592>,
-     pmu=0xaaaaaaf43400 <pmu_events.arm_neoverse_n1>, name=0xaaaaaaf900b3 "l1d_cache_refill", fn=0xaaaaaacbbcc0 <update_alias>,
-     data=0xffffffffd598) at pmu-events/pmu-events.c:5359
-#9  0x0000aaaaaadbc598 in pmu_events_table__find_event (table=0xaaaaaaf43870 <pmu_events_map+592>, pmu=0xaaaaaaf8fcd0,
-     name=0xaaaaaaf900b3 "l1d_cache_refill", fn=0xaaaaaacbbcc0 <update_alias>, data=0xffffffffd598)
-     at pmu-events/pmu-events.c:5398
-#10 0x0000aaaaaacbc1f0 in perf_pmu__new_alias (pmu=0xaaaaaaf8fcd0, name=0xaaaaaaf900b3 "l1d_cache_refill", desc=0x0, val=0x0,
-     val_fd=0xaaaaaaf8a2e0, pe=0x0) at util/pmu.c:569
-#11 0x0000aaaaaacbc710 in pmu_aliases_parse (pmu=0xaaaaaaf8fcd0) at util/pmu.c:673
-#12 0x0000aaaaaacbf168 in perf_pmu__num_events (pmu=0xaaaaaaf8fcd0) at util/pmu.c:1633
-#13 0x0000aaaaaacc1e00 in perf_pmus__print_pmu_events (print_cb=0xffffffffe878, print_state=0xffffffffe898) at util/pmus.c:359
-#14 0x0000aaaaaac53810 in print_events (print_cb=0xffffffffe878, print_state=0xffffffffe898) at util/print-events.c:407
-#15 0x0000aaaaaab1cc30 in cmd_list (argc=0, argv=0xfffffffff0c0) at builtin-list.c:524
-#16 0x0000aaaaaac106f0 in run_builtin (p=0xaaaaaaf59580 <commands+240>, argc=2, argv=0xfffffffff0c0) at perf.c:322
-#17 0x0000aaaaaac109a4 in handle_internal_command (argc=2, argv=0xfffffffff0c0) at perf.c:375
-#18 0x0000aaaaaac10b5c in run_argv (argcp=0xffffffffeebc, argv=0xffffffffeeb0) at perf.c:419
-#19 0x0000aaaaaac10e84 in main (argc=2, argv=0xfffffffff0c0) at perf.c:535
-
-> ---
->  tools/perf/pmu-events/jevents.py |  2 +-
->  tools/perf/tests/pmu-events.c    | 19 ++++++++++---------
->  tools/perf/util/pmu.c            |  7 ++++++-
->  3 files changed, 17 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-> index 712f80d7d071..a7e88332276d 100755
-> --- a/tools/perf/pmu-events/jevents.py
-> +++ b/tools/perf/pmu-events/jevents.py
-> @@ -266,7 +266,7 @@ class JsonEvent:
->      def unit_to_pmu(unit: str) -> Optional[str]:
->        """Convert a JSON Unit to Linux PMU name."""
->        if not unit:
-> -        return 'cpu'
-> +        return 'default_core'
->        # Comment brought over from jevents.c:
->        # it's not realistic to keep adding these, we need something more scalable ...
->        table = {
-> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> index ce4da9b1d115..f5321fbdee79 100644
-> --- a/tools/perf/tests/pmu-events.c
-> +++ b/tools/perf/tests/pmu-events.c
-> @@ -44,7 +44,7 @@ struct perf_pmu_test_pmu {
->  
->  static const struct perf_pmu_test_event bp_l1_btb_correct = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "bp_l1_btb_correct",
->  		.event = "event=0x8a",
->  		.desc = "L1 BTB Correction",
-> @@ -56,7 +56,7 @@ static const struct perf_pmu_test_event bp_l1_btb_correct = {
->  
->  static const struct perf_pmu_test_event bp_l2_btb_correct = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "bp_l2_btb_correct",
->  		.event = "event=0x8b",
->  		.desc = "L2 BTB Correction",
-> @@ -68,7 +68,7 @@ static const struct perf_pmu_test_event bp_l2_btb_correct = {
->  
->  static const struct perf_pmu_test_event segment_reg_loads_any = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "segment_reg_loads.any",
->  		.event = "event=0x6,period=200000,umask=0x80",
->  		.desc = "Number of segment register loads",
-> @@ -80,7 +80,7 @@ static const struct perf_pmu_test_event segment_reg_loads_any = {
->  
->  static const struct perf_pmu_test_event dispatch_blocked_any = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "dispatch_blocked.any",
->  		.event = "event=0x9,period=200000,umask=0x20",
->  		.desc = "Memory cluster signals to block micro-op dispatch for any reason",
-> @@ -92,7 +92,7 @@ static const struct perf_pmu_test_event dispatch_blocked_any = {
->  
->  static const struct perf_pmu_test_event eist_trans = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "eist_trans",
->  		.event = "event=0x3a,period=200000,umask=0x0",
->  		.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
-> @@ -104,7 +104,7 @@ static const struct perf_pmu_test_event eist_trans = {
->  
->  static const struct perf_pmu_test_event l3_cache_rd = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "l3_cache_rd",
->  		.event = "event=0x40",
->  		.desc = "L3 cache access, read",
-> @@ -391,8 +391,8 @@ static int compare_alias_to_test_event(struct pmu_event_info *alias,
->  		return -1;
->  	}
->  
-> -
-> -	if (!is_same(alias->pmu_name, test_event->event.pmu)) {
-> +	if (!is_same(alias->pmu_name, test_event->event.pmu) &&
-> +	    !is_same(alias->pmu_name, "default_core")) {
->  		pr_debug("testing aliases PMU %s: mismatched pmu_name, %s vs %s\n",
->  			  pmu_name, alias->pmu_name, test_event->event.pmu);
->  		return -1;
-> @@ -409,7 +409,7 @@ static int test__pmu_event_table_core_callback(const struct pmu_event *pe,
->  	struct perf_pmu_test_event const **test_event_table;
->  	bool found = false;
->  
-> -	if (strcmp(pe->pmu, "cpu"))
-> +	if (strcmp(pe->pmu, "default_core"))
->  		test_event_table = &uncore_events[0];
->  	else
->  		test_event_table = &core_events[0];
-> @@ -543,6 +543,7 @@ static int __test_core_pmu_event_aliases(const char *pmu_name, int *count)
->  	INIT_LIST_HEAD(&pmu->caps);
->  	INIT_LIST_HEAD(&pmu->list);
->  	pmu->name = strdup(pmu_name);
-> +	pmu->is_core = true;
->  
->  	pmu->events_table = table;
->  	pmu_add_cpu_aliases_table(pmu, table);
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 502fd58c3ea7..cde33e01959a 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1747,7 +1747,12 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
->  bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
->  {
->  	return !strcmp(pmu->name, pmu_name) ||
-> -		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name));
-> +		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name)) ||
-> +		/*
-> +		 * jevents and tests use default_core as a marker for any core
-> +		 * PMU as the PMU name varies across architectures.
-> +		 */
-> +	        (pmu->is_core && !strcmp(pmu_name, "default_core"));
->  }
->  
->  bool perf_pmu__is_software(const struct perf_pmu *pmu)
