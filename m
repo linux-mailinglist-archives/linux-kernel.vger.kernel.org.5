@@ -2,200 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2799678E288
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D897478E28F
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245007AbjH3Wsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S1343662AbjH3WtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244087AbjH3Wsi (ORCPT
+        with ESMTP id S1343603AbjH3WtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:48:38 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F4DE49;
-        Wed, 30 Aug 2023 15:48:15 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf55a81eeaso1303965ad.0;
-        Wed, 30 Aug 2023 15:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693435695; x=1694040495; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ubwb8ZkSJEXL4N31fP6n7OBgqr01nG/Maz7pQ2R1NuQ=;
-        b=V5SwwZTQn9kQCU0v9X8V5JNj0q2P4M00n22CBqCt5C2XA47yqgvMU4nBZNdxbaOGkg
-         qNKbrDLTYqNSPqkgy38BzL+AUeXh7qgPruOSoW1PzGvWa6bH0oxA7LbQNmqCaz6X54qW
-         Nfcqah26E8XuxvKHtLQP6+ko6fs65B3N1vDLY4PV01qOljIJP1mZX7w0jO7zB0IDcwly
-         QN91uGjTNKh2+LQo5jg1arh8uACXaIKW+nnv+A9szAN23bSdtL9JOoVoiGdLohyEzgWM
-         65iAdE1UGo9VoDd1W//yBJaGFZ8I6HLk18w1HxV0LBSroDqCi+ae6gHk5Kp3b+MxkMA9
-         V0Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693435695; x=1694040495;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ubwb8ZkSJEXL4N31fP6n7OBgqr01nG/Maz7pQ2R1NuQ=;
-        b=FYdAijkYJbecyp/gTJ43l9j/DQ7g2k7m0GS6nSAPTVl2Bahc578Ho3h9LGTl/Igu2X
-         QnhMO/3FO3mYedtcJ7WiJ8xEgEiuwWDITYRoZPPT4V8ElYCGufR52TT1aaNcD8mwNt3x
-         fSuBibsHzf11JVcuIctVvPL2E4cIZWavLrow+oxT5ozx7RQf//hf7Q9VZviKnjJRyBO6
-         E/urBENNwIr6o3YiKiGQKhSFl8TRgDC4DPRMucQWIZEbH1FFrO5kd6mo3dLzJ/X+C5CH
-         go1CVl0XCjSKUcaBDmVBjAPHjn7E0JaTb+NeJhAvvcRoa9676ba9N2pYbZ2mTxWc9uq+
-         xxIQ==
-X-Gm-Message-State: AOJu0YyNIU1xvTyssH9QCBTcTlIQAQM+Ed7Daehj77juWRUWT9vsZkRK
-        m0nB4+9tf1eMVESMSdX6zlE=
-X-Google-Smtp-Source: AGHT+IEg7W8QFA14h0a2Pzn6H/lPyU7ZJTbFvU8hcWHYERy18kUYUQ8TOQ4nF9eY3kKjASknNVu4Mw==
-X-Received: by 2002:a17:903:32ce:b0:1bf:120a:a29e with SMTP id i14-20020a17090332ce00b001bf120aa29emr4106996plr.10.1693435694678;
-        Wed, 30 Aug 2023 15:48:14 -0700 (PDT)
-Received: from stbirv-lnx-1.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id j22-20020a170902759600b001b8ad8382a4sm13010pll.216.2023.08.30.15.48.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 15:48:13 -0700 (PDT)
-From:   Doug Berger <opendmb@gmail.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-rtc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Doug Berger <opendmb@gmail.com>
-Subject: [PATCH] rtc: brcmstb-waketimer: support level alarm_irq
-Date:   Wed, 30 Aug 2023 15:47:47 -0700
-Message-Id: <20230830224747.1663044-1-opendmb@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 30 Aug 2023 18:49:04 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A83CFF;
+        Wed, 30 Aug 2023 15:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=J9+c6lHcxjXQTF5hwF7rOA41PnMBLRCg0uifQFKOozw=; b=p67pKYTcd9ysaiO1NOxyqmdqwT
+        6sfOPBCdPTHJ4l50G+v/B+lCZD9TN8qp3AUA1u7AXr9xqUyAWcUZVK+T/GkiVApyT8JD0JALfe23z
+        PuVSBB/B5FH+WQi/OeleSSkB/J7SlRcs/lUMl5zMP1aTInjUCPqiiiAxgLBHKleV41wKNNJTr3HPd
+        meQqjx555TPI992mdYHY9OtVOEKrnQw0+SWGUHeEYQVa8q+LNiEXtB/Dq8HIZetwjW8mKONExBh6n
+        uczMCLpRzyZpSmrg+UxccWGNOfdbMn/+ck2WMfUS7OxiM5sRtlj5Pq+NDvjWkqG7uorAoCkp15ccG
+        hbsSkKjw==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qbTyz-0000Ow-MJ; Thu, 31 Aug 2023 00:48:18 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qbTyz-000QfR-D9; Thu, 31 Aug 2023 00:48:17 +0200
+Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
+ in BPF JIT
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     bjorn@kernel.org, puranjay12@gmail.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, pulehui@huawei.com,
+        Conor Dooley <conor.dooley@microchip.com>, ast@kernel.org,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <mhng-ac1c6e6a-8f27-4539-83bb-6c10ff4d264e@palmer-ri-x1c9>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9e31c290-f1f0-ecfd-c68b-51f8d706db2c@iogearbox.net>
+Date:   Thu, 31 Aug 2023 00:48:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <mhng-ac1c6e6a-8f27-4539-83bb-6c10ff4d264e@palmer-ri-x1c9>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27016/Wed Aug 30 09:37:04 2023)
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices (e.g. BCM72112) use an alarm_irq interrupt that is
-connected to a level interrupt controller rather than an edge
-interrupt controller. In this case, the interrupt cannot be left
-enabled by the irq handler while preserving the hardware wake-up
-signal on wake capable devices or an interrupt storm will occur.
+On 8/30/23 3:54 PM, Palmer Dabbelt wrote:
+> On Wed, 30 Aug 2023 01:18:46 PDT (-0700), daniel@iogearbox.net wrote:
+>> On 8/29/23 12:06 PM, Björn Töpel wrote:
+>>> Puranjay Mohan <puranjay12@gmail.com> writes:
+>>>
+>>>> Changes in v2 -> v3:
+>>>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
+>>>> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
+>>>> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
+>>>>     [Patch 1 and 2]
+>>>> 4. Add reviewed-by in patches.
+>>>> 5. Adding results of selftest here:
+>>>>     Using the command: ./test_progs on qemu
+>>>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>>>
+>>>> Changes in v1 -> v2:
+>>>> 1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
+>>>>     The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
+>>>>     call flush_icache_range() for every word making it really slow. This was found by running
+>>>>     the test_tag selftest which would take forever to complete.
+>>>>
+>>>> Here is some data to prove the V2 fixes the problem:
+>>>>
+>>>> Without this series:
+>>>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
+>>>> test_tag: OK (40945 tests)
+>>>>
+>>>> real    7m47.562s
+>>>> user    0m24.145s
+>>>> sys     6m37.064s
+>>>>
+>>>> With this series applied:
+>>>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
+>>>> test_tag: OK (40945 tests)
+>>>>
+>>>> real    7m29.472s
+>>>> user    0m25.865s
+>>>> sys     6m18.401s
+>>>>
+>>>> BPF programs currently consume a page each on RISCV. For systems with many BPF
+>>>> programs, this adds significant pressure to instruction TLB. High iTLB pressure
+>>>> usually causes slow down for the whole system.
+>>>>
+>>>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
+>>>> It packs multiple BPF programs into a single huge page. It is currently only
+>>>> enabled for the x86_64 BPF JIT.
+>>>>
+>>>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
+>>>>
+>>>> This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
+>>>> This series needs a patch[3] from the ARM64 series to work.
+>>>>
+>>>> ======================================================
+>>>> Performance Analysis of prog pack allocator on RISCV64
+>>>> ======================================================
+>>>>
+>>>> Test setup:
+>>>> ===========
+>>>>
+>>>> Host machine: Debian GNU/Linux 11 (bullseye)
+>>>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+>>>> u-boot-qemu Version: 2023.07+dfsg-1
+>>>> opensbi Version: 1.3-1
+>>>>
+>>>> To test the performance of the BPF prog pack allocator on RV, a stresser
+>>>> tool[4] linked below was built. This tool loads 8 BPF programs on the system and
+>>>> triggers 5 of them in an infinite loop by doing system calls.
+>>>>
+>>>> The runner script starts 20 instances of the above which loads 8*20=160 BPF
+>>>> programs on the system, 5*20=100 of which are being constantly triggered.
+>>>> The script is passed a command which would be run in the above environment.
+>>>>
+>>>> The script was run with following perf command:
+>>>> ./run.sh "perf stat -a \
+>>>>          -e iTLB-load-misses \
+>>>>          -e dTLB-load-misses  \
+>>>>          -e dTLB-store-misses \
+>>>>          -e instructions \
+>>>>          --timeout 60000"
+>>>>
+>>>> The output of the above command is discussed below before and after enabling the
+>>>> BPF prog pack allocator.
+>>>>
+>>>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
+>>>> was created using Bjorn's riscv-cross-builder[5] docker container linked below.
+>>>>
+>>>> Results
+>>>> =======
+>>>>
+>>>> Before enabling prog pack allocator:
+>>>> ------------------------------------
+>>>>
+>>>> Performance counter stats for 'system wide':
+>>>>
+>>>>             4939048      iTLB-load-misses
+>>>>             5468689      dTLB-load-misses
+>>>>              465234      dTLB-store-misses
+>>>>       1441082097998      instructions
+>>>>
+>>>>        60.045791200 seconds time elapsed
+>>>>
+>>>> After enabling prog pack allocator:
+>>>> -----------------------------------
+>>>>
+>>>> Performance counter stats for 'system wide':
+>>>>
+>>>>             3430035      iTLB-load-misses
+>>>>             5008745      dTLB-load-misses
+>>>>              409944      dTLB-store-misses
+>>>>       1441535637988      instructions
+>>>>
+>>>>        60.046296600 seconds time elapsed
+>>>>
+>>>> Improvements in metrics
+>>>> =======================
+>>>>
+>>>> It was expected that the iTLB-load-misses would decrease as now a single huge
+>>>> page is used to keep all the BPF programs compared to a single page for each
+>>>> program earlier.
+>>>>
+>>>> --------------------------------------------
+>>>> The improvement in iTLB-load-misses: -30.5 %
+>>>> --------------------------------------------
+>>>>
+>>>> I repeated this expriment more than 100 times in different setups and the
+>>>> improvement was always greater than 30%.
+>>>>
+>>>> This patch series is boot tested on the Starfive VisionFive 2 board[6].
+>>>> The performance analysis was not done on the board because it doesn't
+>>>> expose iTLB-load-misses, etc. The stresser program was run on the board to test
+>>>> the loading and unloading of BPF programs
+>>>>
+>>>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+>>>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
+>>>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
+>>>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+>>>> [5] https://github.com/bjoto/riscv-cross-builder
+>>>> [6] https://www.starfivetech.com/en/site/boards
+>>>>
+>>>> Puranjay Mohan (3):
+>>>>    riscv: extend patch_text_nosync() for multiple pages
+>>>>    riscv: implement a memset like function for text
+>>>>    bpf, riscv: use prog pack allocator in the BPF JIT
+>>>
+>>> Thank you! For the series:
+>>>
+>>> Acked-by: Björn Töpel <bjorn@kernel.org>
+>>> Tested-by: Björn Töpel <bjorn@rivosinc.com>
+>>>
+>>> @Alexei @Daniel This series depends on a core BPF patch from the Arm
+>>>                  series [3].
+>>>
+>>> @Palmer LMK if you have any concerns taking the RISC-V text patching
+>>>          stuff via the BPF tree.
+>>
+>> Palmer, did the riscv PR already go to Linus?
+> 
+> Not yet, I usually send on Friday mornings -- and I also generally send two, as there's some stragglers/fixes for the second week.  I'm fine taking it (Bjorn just poked me), can someone provide a base commit? Bjorn says it depends on something in Linus' tree, so I'll just pick it up as a straggler for next week.
 
-The alarm_expired flag is introduced to allow the disabling of
-the interrupt when an alarm expires and to support balancing the
-calls to disable_irq() and enable_irq() in accordance with the
-existing design.
+Okay, sgtm.
 
-Fixes: 24304a87158a ("rtc: brcmstb-waketimer: allow use as non-wake alarm")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
----
- drivers/rtc/rtc-brcmstb-waketimer.c | 47 ++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 5 deletions(-)
+> Also, do you mind sending an Ack?
 
-diff --git a/drivers/rtc/rtc-brcmstb-waketimer.c b/drivers/rtc/rtc-brcmstb-waketimer.c
-index 3cdc015692ca..1a65a4e0dc00 100644
---- a/drivers/rtc/rtc-brcmstb-waketimer.c
-+++ b/drivers/rtc/rtc-brcmstb-waketimer.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright © 2014-2017 Broadcom
-+ * Copyright © 2014-2023 Broadcom
-  */
- 
- #define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
-@@ -34,6 +34,7 @@ struct brcmstb_waketmr {
- 	u32 rate;
- 	unsigned long rtc_alarm;
- 	bool alarm_en;
-+	bool alarm_expired;
- };
- 
- #define BRCMSTB_WKTMR_EVENT		0x00
-@@ -64,6 +65,11 @@ static inline void brcmstb_waketmr_clear_alarm(struct brcmstb_waketmr *timer)
- 	writel_relaxed(reg - 1, timer->base + BRCMSTB_WKTMR_ALARM);
- 	writel_relaxed(WKTMR_ALARM_EVENT, timer->base + BRCMSTB_WKTMR_EVENT);
- 	(void)readl_relaxed(timer->base + BRCMSTB_WKTMR_EVENT);
-+	if (timer->alarm_expired) {
-+		timer->alarm_expired = false;
-+		/* maintain call balance */
-+		enable_irq(timer->alarm_irq);
-+	}
- }
- 
- static void brcmstb_waketmr_set_alarm(struct brcmstb_waketmr *timer,
-@@ -105,10 +111,17 @@ static irqreturn_t brcmstb_alarm_irq(int irq, void *data)
- 		return IRQ_HANDLED;
- 
- 	if (timer->alarm_en) {
--		if (!device_may_wakeup(timer->dev))
-+		if (device_may_wakeup(timer->dev)) {
-+			disable_irq_nosync(irq);
-+			timer->alarm_expired = true;
-+		} else {
- 			writel_relaxed(WKTMR_ALARM_EVENT,
- 				       timer->base + BRCMSTB_WKTMR_EVENT);
-+		}
- 		rtc_update_irq(timer->rtc, 1, RTC_IRQF | RTC_AF);
-+	} else {
-+		writel_relaxed(WKTMR_ALARM_EVENT,
-+			       timer->base + BRCMSTB_WKTMR_EVENT);
- 	}
- 
- 	return IRQ_HANDLED;
-@@ -221,8 +234,14 @@ static int brcmstb_waketmr_alarm_enable(struct device *dev,
- 		    !brcmstb_waketmr_is_pending(timer))
- 			return -EINVAL;
- 		timer->alarm_en = true;
--		if (timer->alarm_irq)
-+		if (timer->alarm_irq) {
-+			if (timer->alarm_expired) {
-+				timer->alarm_expired = false;
-+				/* maintain call balance */
-+				enable_irq(timer->alarm_irq);
-+			}
- 			enable_irq(timer->alarm_irq);
-+		}
- 	} else if (!enabled && timer->alarm_en) {
- 		if (timer->alarm_irq)
- 			disable_irq(timer->alarm_irq);
-@@ -352,6 +371,17 @@ static int brcmstb_waketmr_suspend(struct device *dev)
- 	return brcmstb_waketmr_prepare_suspend(timer);
- }
- 
-+static int brcmstb_waketmr_suspend_noirq(struct device *dev)
-+{
-+	struct brcmstb_waketmr *timer = dev_get_drvdata(dev);
-+
-+	/* Catch any alarms occurring prior to noirq */
-+	if (timer->alarm_expired && device_may_wakeup(dev))
-+		return -EBUSY;
-+
-+	return 0;
-+}
-+
- static int brcmstb_waketmr_resume(struct device *dev)
- {
- 	struct brcmstb_waketmr *timer = dev_get_drvdata(dev);
-@@ -368,10 +398,17 @@ static int brcmstb_waketmr_resume(struct device *dev)
- 
- 	return ret;
- }
-+#else
-+#define brcmstb_waketmr_suspend		NULL
-+#define brcmstb_waketmr_suspend_noirq	NULL
-+#define brcmstb_waketmr_resume		NULL
- #endif /* CONFIG_PM_SLEEP */
- 
--static SIMPLE_DEV_PM_OPS(brcmstb_waketmr_pm_ops,
--			 brcmstb_waketmr_suspend, brcmstb_waketmr_resume);
-+static const struct dev_pm_ops brcmstb_waketmr_pm_ops = {
-+	.suspend	= brcmstb_waketmr_suspend,
-+	.suspend_noirq	= brcmstb_waketmr_suspend_noirq,
-+	.resume		= brcmstb_waketmr_resume,
-+};
- 
- static const __maybe_unused struct of_device_id brcmstb_waketmr_of_match[] = {
- 	{ .compatible = "brcm,brcmstb-waketimer" },
--- 
-2.34.1
+Björn / Puranjay, just to clarify since the arm64 series did not land, you are referring
+to this one as a dependency [0], right? Meaning, you'd route [0] + this series via riscv
+PR to Linus then during this merge win.
 
+If yes, could one of you send the complete 4-patch series with the prior Acks from [0] + this
+series collected to both bpf+riscv list (with the small request to extend the commit desc
+in [0] a bit to better document implications of the change itself for other JITs)? After a
+final look and if BPF CI goes through we can then ack as well and unblock the routing.
+
+Thanks,
+Daniel
+
+   [0] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
