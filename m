@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A7E78E032
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B082278DF71
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343879AbjH3T0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
+        id S245217AbjH3TWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242842AbjH3Jul (ORCPT
+        with ESMTP id S242852AbjH3Jup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:50:41 -0400
+        Wed, 30 Aug 2023 05:50:45 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3BE9ACDA
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:50:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 08682CCB
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:50:40 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 646692F4;
-        Wed, 30 Aug 2023 02:51:16 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CB9DFEC;
+        Wed, 30 Aug 2023 02:51:19 -0700 (PDT)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 659443F64C;
-        Wed, 30 Aug 2023 02:50:34 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A5003F64C;
+        Wed, 30 Aug 2023 02:50:37 -0700 (PDT)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Will Deacon <will@kernel.org>,
         "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
@@ -39,9 +39,9 @@ To:     Will Deacon <will@kernel.org>,
         "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
 Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/5] mm/mmu_gather: Remove encoded_page infrastructure
-Date:   Wed, 30 Aug 2023 10:50:09 +0100
-Message-Id: <20230830095011.1228673-4-ryan.roberts@arm.com>
+Subject: [PATCH v2 4/5] mm: Refector release_pages()
+Date:   Wed, 30 Aug 2023 10:50:10 +0100
+Message-Id: <20230830095011.1228673-5-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230830095011.1228673-1-ryan.roberts@arm.com>
 References: <20230830095011.1228673-1-ryan.roberts@arm.com>
@@ -56,296 +56,212 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 70fb4fdff582 ("mm: introduce 'encoded' page pointers with
-embedded extra bits") and commit 7cc8f9c7146a ("mm: mmu_gather: prepare
-to gather encoded page pointers with flags") converted mmu_gather for
-dealing with encoded_page, where the bottom 2 bits could encode extra
-flags. Only 1 bit was ever used; to flag whether the page should
-participate in a delayed rmap removal.
+In preparation for implementing folios_put_refs() in the next patch,
+refactor release_pages() into a set of helper functions, which can be
+reused. The primary difference between release_pages() and
+folios_put_refs() is how they iterate over the set of folios. The
+per-folio actions are identical.
 
-Now that the mmu_gather batched rmap removal mechanism has been
-generalized, all pages participate and therefore the flag is unused. So
-let's remove encoded_page to simplify the code. It also gets in the way
-of further optimization which will be done in a follow up patch.
+No functional change intended.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/s390/include/asm/tlb.h |  9 +++------
- include/asm-generic/tlb.h   | 10 +++++-----
- include/linux/mm.h          |  4 +---
- include/linux/mm_types.h    | 34 +---------------------------------
- include/linux/swap.h        |  2 +-
- mm/memory.c                 |  2 +-
- mm/mmu_gather.c             | 11 +++++------
- mm/swap.c                   |  8 +++-----
- mm/swap_state.c             |  4 ++--
- 9 files changed, 22 insertions(+), 62 deletions(-)
+ mm/swap.c | 167 +++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 97 insertions(+), 70 deletions(-)
 
-diff --git a/arch/s390/include/asm/tlb.h b/arch/s390/include/asm/tlb.h
-index 383b1f91442c..c40b44f6a31b 100644
---- a/arch/s390/include/asm/tlb.h
-+++ b/arch/s390/include/asm/tlb.h
-@@ -25,7 +25,7 @@
- void __tlb_remove_table(void *_table);
- static inline void tlb_flush(struct mmu_gather *tlb);
- static inline bool __tlb_remove_page_size(struct mmu_gather *tlb,
--					  struct encoded_page *page,
-+					  struct page *page,
- 					  int page_size);
- 
- #define tlb_flush tlb_flush
-@@ -41,15 +41,12 @@ static inline bool __tlb_remove_page_size(struct mmu_gather *tlb,
-  * Release the page cache reference for a pte removed by
-  * tlb_ptep_clear_flush. In both flush modes the tlb for a page cache page
-  * has already been freed, so just do free_page_and_swap_cache.
-- *
-- * s390 doesn't delay rmap removal, so there is nothing encoded in
-- * the page pointer.
-  */
- static inline bool __tlb_remove_page_size(struct mmu_gather *tlb,
--					  struct encoded_page *page,
-+					  struct page *page,
- 					  int page_size)
- {
--	free_page_and_swap_cache(encoded_page_ptr(page));
-+	free_page_and_swap_cache(page);
- 	return false;
- }
- 
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index f339d68cf44f..d874415aaa33 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -246,7 +246,7 @@ struct mmu_gather_batch {
- 	struct mmu_gather_batch	*next;
- 	unsigned int		nr;
- 	unsigned int		max;
--	struct encoded_page	*encoded_pages[];
-+	struct page		*pages[];
- };
- 
- #define MAX_GATHER_BATCH	\
-@@ -261,7 +261,7 @@ struct mmu_gather_batch {
- #define MAX_GATHER_BATCH_COUNT	(10000UL/MAX_GATHER_BATCH)
- 
- extern bool __tlb_remove_page_size(struct mmu_gather *tlb,
--				   struct encoded_page *page,
-+				   struct page *page,
- 				   int page_size);
- 
- #ifdef CONFIG_SMP
-@@ -464,13 +464,13 @@ static inline void tlb_flush_mmu_tlbonly(struct mmu_gather *tlb)
- static inline void tlb_remove_page_size(struct mmu_gather *tlb,
- 					struct page *page, int page_size)
- {
--	if (__tlb_remove_page_size(tlb, encode_page(page, 0), page_size))
-+	if (__tlb_remove_page_size(tlb, page, page_size))
- 		tlb_flush_mmu(tlb);
- }
- 
--static __always_inline bool __tlb_remove_page(struct mmu_gather *tlb, struct page *page, unsigned int flags)
-+static __always_inline bool __tlb_remove_page(struct mmu_gather *tlb, struct page *page)
- {
--	return __tlb_remove_page_size(tlb, encode_page(page, flags), PAGE_SIZE);
-+	return __tlb_remove_page_size(tlb, page, PAGE_SIZE);
- }
- 
- /* tlb_remove_page
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 53efddc4d178..9cd20a38089c 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1481,8 +1481,7 @@ static inline void folio_put_refs(struct folio *folio, int refs)
-  *
-  * release_pages() releases a simple array of multiple pages, and
-  * accepts various different forms of said page array: either
-- * a regular old boring array of pages, an array of folios, or
-- * an array of encoded page pointers.
-+ * a regular old boring array of pages or an array of folios.
-  *
-  * The transparent union syntax for this kind of "any of these
-  * argument types" is all kinds of ugly, so look away.
-@@ -1490,7 +1489,6 @@ static inline void folio_put_refs(struct folio *folio, int refs)
- typedef union {
- 	struct page **pages;
- 	struct folio **folios;
--	struct encoded_page **encoded_pages;
- } release_pages_arg __attribute__ ((__transparent_union__));
- 
- void release_pages(release_pages_arg, int nr);
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 5a995089cbf5..e9a0daf0c8d4 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -68,7 +68,7 @@ struct mem_cgroup;
- #ifdef CONFIG_HAVE_ALIGNED_STRUCT_PAGE
- #define _struct_page_alignment	__aligned(2 * sizeof(unsigned long))
- #else
--#define _struct_page_alignment	__aligned(sizeof(unsigned long))
-+#define _struct_page_alignment
- #endif
- 
- struct page {
-@@ -216,38 +216,6 @@ struct page {
- #endif
- } _struct_page_alignment;
- 
--/*
-- * struct encoded_page - a nonexistent type marking this pointer
-- *
-- * An 'encoded_page' pointer is a pointer to a regular 'struct page', but
-- * with the low bits of the pointer indicating extra context-dependent
-- * information. Not super-common, but happens in mmu_gather and mlock
-- * handling, and this acts as a type system check on that use.
-- *
-- * We only really have two guaranteed bits in general, although you could
-- * play with 'struct page' alignment (see CONFIG_HAVE_ALIGNED_STRUCT_PAGE)
-- * for more.
-- *
-- * Use the supplied helper functions to endcode/decode the pointer and bits.
-- */
--struct encoded_page;
--#define ENCODE_PAGE_BITS 3ul
--static __always_inline struct encoded_page *encode_page(struct page *page, unsigned long flags)
--{
--	BUILD_BUG_ON(flags > ENCODE_PAGE_BITS);
--	return (struct encoded_page *)(flags | (unsigned long)page);
--}
--
--static inline unsigned long encoded_page_flags(struct encoded_page *page)
--{
--	return ENCODE_PAGE_BITS & (unsigned long)page;
--}
--
--static inline struct page *encoded_page_ptr(struct encoded_page *page)
--{
--	return (struct page *)(~ENCODE_PAGE_BITS & (unsigned long)page);
--}
--
- /*
-  * A swap entry has to fit into a "unsigned long", as the entry is hidden
-  * in the "index" field of the swapper address space.
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 493487ed7c38..9e12c6d49997 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -451,7 +451,7 @@ static inline unsigned long total_swapcache_pages(void)
- 
- extern void free_swap_cache(struct page *page);
- extern void free_page_and_swap_cache(struct page *);
--extern void free_pages_and_swap_cache(struct encoded_page **, int);
-+extern void free_pages_and_swap_cache(struct page **, int);
- /* linux/mm/swapfile.c */
- extern atomic_long_t nr_swap_pages;
- extern long total_swap_pages;
-diff --git a/mm/memory.c b/mm/memory.c
-index 823c8a6813d1..3d5d395caba4 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1460,7 +1460,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 				if (unlikely(page_mapcount(page) < 0))
- 					print_bad_pte(vma, addr, ptent, page);
- 			}
--			if (unlikely(__tlb_remove_page(tlb, page, 0))) {
-+			if (unlikely(__tlb_remove_page(tlb, page))) {
- 				force_flush = 1;
- 				addr += PAGE_SIZE;
- 				break;
-diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-index fb34151c0da9..cdebb5b9f5c4 100644
---- a/mm/mmu_gather.c
-+++ b/mm/mmu_gather.c
-@@ -49,8 +49,7 @@ static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch,
- 				 struct vm_area_struct *vma)
- {
- 	for (int i = first; i < batch->nr; i++) {
--		struct encoded_page *enc = batch->encoded_pages[i];
--		struct page *page = encoded_page_ptr(enc);
-+		struct page *page = batch->pages[i];
- 
- 		page_remove_rmap(page, vma, false);
- 	}
-@@ -95,7 +94,7 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
- 	struct mmu_gather_batch *batch;
- 
- 	for (batch = &tlb->local; batch && batch->nr; batch = batch->next) {
--		struct encoded_page **pages = batch->encoded_pages;
-+		struct page **pages = batch->pages;
- 
- 		do {
- 			/*
-@@ -125,7 +124,7 @@ static void tlb_batch_list_free(struct mmu_gather *tlb)
- 	tlb->local.next = NULL;
- }
- 
--bool __tlb_remove_page_size(struct mmu_gather *tlb, struct encoded_page *page, int page_size)
-+bool __tlb_remove_page_size(struct mmu_gather *tlb, struct page *page, int page_size)
- {
- 	struct mmu_gather_batch *batch;
- 
-@@ -140,13 +139,13 @@ bool __tlb_remove_page_size(struct mmu_gather *tlb, struct encoded_page *page, i
- 	 * Add the page and check if we are full. If so
- 	 * force a flush.
- 	 */
--	batch->encoded_pages[batch->nr++] = page;
-+	batch->pages[batch->nr++] = page;
- 	if (batch->nr == batch->max) {
- 		if (!tlb_next_batch(tlb))
- 			return true;
- 		batch = tlb->active;
- 	}
--	VM_BUG_ON_PAGE(batch->nr > batch->max, encoded_page_ptr(page));
-+	VM_BUG_ON_PAGE(batch->nr > batch->max, page);
- 
- 	return false;
- }
 diff --git a/mm/swap.c b/mm/swap.c
-index cd8f0150ba3a..b05cce475202 100644
+index b05cce475202..5d3e35668929 100644
 --- a/mm/swap.c
 +++ b/mm/swap.c
-@@ -953,14 +953,12 @@ void lru_cache_disable(void)
-  * Decrement the reference count on all the pages in @arg.  If it
-  * fell to zero, remove the page from the LRU and free it.
-  *
-- * Note that the argument can be an array of pages, encoded pages,
-- * or folio pointers. We ignore any encoded bits, and turn any of
-- * them into just a folio that gets free'd.
-+ * Note that the argument can be an array of pages or folio pointers.
-  */
- void release_pages(release_pages_arg arg, int nr)
+@@ -945,6 +945,98 @@ void lru_cache_disable(void)
+ #endif
+ }
+ 
++struct folios_put_refs_ctx {
++	struct list_head pages_to_free;
++	struct lruvec *lruvec;
++	unsigned long flags;
++	unsigned int lock_batch;
++};
++
++static void __folios_put_refs_init(struct folios_put_refs_ctx *ctx)
++{
++	*ctx = (struct folios_put_refs_ctx) {
++		.pages_to_free = LIST_HEAD_INIT(ctx->pages_to_free),
++		.lruvec = NULL,
++		.flags = 0,
++	};
++}
++
++static void __folios_put_refs_complete(struct folios_put_refs_ctx *ctx)
++{
++	if (ctx->lruvec)
++		unlock_page_lruvec_irqrestore(ctx->lruvec, ctx->flags);
++
++	mem_cgroup_uncharge_list(&ctx->pages_to_free);
++	free_unref_page_list(&ctx->pages_to_free);
++}
++
++static void __folios_put_refs_do_one(struct folios_put_refs_ctx *ctx,
++					struct folio *folio, int refs)
++{
++	/*
++	 * Make sure the IRQ-safe lock-holding time does not get
++	 * excessive with a continuous string of pages from the
++	 * same lruvec. The lock is held only if lruvec != NULL.
++	 */
++	if (ctx->lruvec && ++ctx->lock_batch == SWAP_CLUSTER_MAX) {
++		unlock_page_lruvec_irqrestore(ctx->lruvec, ctx->flags);
++		ctx->lruvec = NULL;
++	}
++
++	if (is_huge_zero_page(&folio->page))
++		return;
++
++	if (folio_is_zone_device(folio)) {
++		if (ctx->lruvec) {
++			unlock_page_lruvec_irqrestore(ctx->lruvec, ctx->flags);
++			ctx->lruvec = NULL;
++		}
++		if (put_devmap_managed_page_refs(&folio->page, refs))
++			return;
++		if (folio_ref_sub_and_test(folio, refs))
++			free_zone_device_page(&folio->page);
++		return;
++	}
++
++	if (!folio_ref_sub_and_test(folio, refs))
++		return;
++
++	if (folio_test_large(folio)) {
++		if (ctx->lruvec) {
++			unlock_page_lruvec_irqrestore(ctx->lruvec, ctx->flags);
++			ctx->lruvec = NULL;
++		}
++		__folio_put_large(folio);
++		return;
++	}
++
++	if (folio_test_lru(folio)) {
++		struct lruvec *prev_lruvec = ctx->lruvec;
++
++		ctx->lruvec = folio_lruvec_relock_irqsave(folio, ctx->lruvec,
++								&ctx->flags);
++		if (prev_lruvec != ctx->lruvec)
++			ctx->lock_batch = 0;
++
++		lruvec_del_folio(ctx->lruvec, folio);
++		__folio_clear_lru_flags(folio);
++	}
++
++	/*
++	 * In rare cases, when truncation or holepunching raced with
++	 * munlock after VM_LOCKED was cleared, Mlocked may still be
++	 * found set here.  This does not indicate a problem, unless
++	 * "unevictable_pgs_cleared" appears worryingly large.
++	 */
++	if (unlikely(folio_test_mlocked(folio))) {
++		__folio_clear_mlocked(folio);
++		zone_stat_sub_folio(folio, NR_MLOCK);
++		count_vm_event(UNEVICTABLE_PGCLEARED);
++	}
++
++	list_add(&folio->lru, &ctx->pages_to_free);
++}
++
+ /**
+  * release_pages - batched put_page()
+  * @arg: array of pages to release
+@@ -959,10 +1051,9 @@ void release_pages(release_pages_arg arg, int nr)
  {
  	int i;
--	struct encoded_page **encoded = arg.encoded_pages;
-+	struct page **pages = arg.pages;
- 	LIST_HEAD(pages_to_free);
- 	struct lruvec *lruvec = NULL;
- 	unsigned long flags = 0;
-@@ -970,7 +968,7 @@ void release_pages(release_pages_arg arg, int nr)
+ 	struct page **pages = arg.pages;
+-	LIST_HEAD(pages_to_free);
+-	struct lruvec *lruvec = NULL;
+-	unsigned long flags = 0;
+-	unsigned int lock_batch;
++	struct folios_put_refs_ctx ctx;
++
++	__folios_put_refs_init(&ctx);
+ 
+ 	for (i = 0; i < nr; i++) {
  		struct folio *folio;
- 
+@@ -970,74 +1061,10 @@ void release_pages(release_pages_arg arg, int nr)
  		/* Turn any of the argument types into a folio */
--		folio = page_folio(encoded_page_ptr(encoded[i]));
-+		folio = page_folio(pages[i]);
+ 		folio = page_folio(pages[i]);
  
- 		/*
- 		 * Make sure the IRQ-safe lock-holding time does not get
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index b3b14bd0dd64..2132340c6e61 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -307,11 +307,11 @@ void free_page_and_swap_cache(struct page *page)
-  * Passed an array of pages, drop them all from swapcache and then release
-  * them.  They are removed from the LRU and freed if this is their last use.
-  */
--void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
-+void free_pages_and_swap_cache(struct page **pages, int nr)
- {
- 	lru_add_drain();
- 	for (int i = 0; i < nr; i++)
--		free_swap_cache(encoded_page_ptr(pages[i]));
-+		free_swap_cache(pages[i]);
- 	release_pages(pages, nr);
+-		/*
+-		 * Make sure the IRQ-safe lock-holding time does not get
+-		 * excessive with a continuous string of pages from the
+-		 * same lruvec. The lock is held only if lruvec != NULL.
+-		 */
+-		if (lruvec && ++lock_batch == SWAP_CLUSTER_MAX) {
+-			unlock_page_lruvec_irqrestore(lruvec, flags);
+-			lruvec = NULL;
+-		}
+-
+-		if (is_huge_zero_page(&folio->page))
+-			continue;
+-
+-		if (folio_is_zone_device(folio)) {
+-			if (lruvec) {
+-				unlock_page_lruvec_irqrestore(lruvec, flags);
+-				lruvec = NULL;
+-			}
+-			if (put_devmap_managed_page(&folio->page))
+-				continue;
+-			if (folio_put_testzero(folio))
+-				free_zone_device_page(&folio->page);
+-			continue;
+-		}
+-
+-		if (!folio_put_testzero(folio))
+-			continue;
+-
+-		if (folio_test_large(folio)) {
+-			if (lruvec) {
+-				unlock_page_lruvec_irqrestore(lruvec, flags);
+-				lruvec = NULL;
+-			}
+-			__folio_put_large(folio);
+-			continue;
+-		}
+-
+-		if (folio_test_lru(folio)) {
+-			struct lruvec *prev_lruvec = lruvec;
+-
+-			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
+-									&flags);
+-			if (prev_lruvec != lruvec)
+-				lock_batch = 0;
+-
+-			lruvec_del_folio(lruvec, folio);
+-			__folio_clear_lru_flags(folio);
+-		}
+-
+-		/*
+-		 * In rare cases, when truncation or holepunching raced with
+-		 * munlock after VM_LOCKED was cleared, Mlocked may still be
+-		 * found set here.  This does not indicate a problem, unless
+-		 * "unevictable_pgs_cleared" appears worryingly large.
+-		 */
+-		if (unlikely(folio_test_mlocked(folio))) {
+-			__folio_clear_mlocked(folio);
+-			zone_stat_sub_folio(folio, NR_MLOCK);
+-			count_vm_event(UNEVICTABLE_PGCLEARED);
+-		}
+-
+-		list_add(&folio->lru, &pages_to_free);
++		__folios_put_refs_do_one(&ctx, folio, 1);
+ 	}
+-	if (lruvec)
+-		unlock_page_lruvec_irqrestore(lruvec, flags);
+ 
+-	mem_cgroup_uncharge_list(&pages_to_free);
+-	free_unref_page_list(&pages_to_free);
++	__folios_put_refs_complete(&ctx);
  }
+ EXPORT_SYMBOL(release_pages);
  
 -- 
 2.25.1
