@@ -2,117 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 342C478DECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3652078E033
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242442AbjH3TY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S242886AbjH3TMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344095AbjH3SHN (ORCPT
+        with ESMTP id S1344199AbjH3SU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 14:07:13 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3681A2;
-        Wed, 30 Aug 2023 11:07:10 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UHQN1H032622;
-        Wed, 30 Aug 2023 18:07:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=d6XkxGnXGdhYD+yZ9yuGftHdbixcTwTNHVcT8grv4eQ=;
- b=FQLIwJ6h3YcPelLr4s99w/vdkN9PqBEt09sWh4TuwpUqapx/DH2UeNe7n6stYpitumQ9
- VmC7B+zgtuH5V/UIbL+m0BC2Xmsl6Kp/0u+Y1/rBMs0YxiVbDPsjzgqAS2qT8QVKVwyB
- +cdd01R3WenPf3NmYIykEq6AuGQRguyFu70ltBlTUt4Rj/GzjKukqKzjHUZ0JNq5cOCc
- HIv2uai0cQSd23c7E1mTM2o9uarFSsS76LtbVXHbkTliikvTqLDAk8w71vlcWw9zM66u
- 4plDdVj7psp2peTyCS42vHvk6o39ZYLBZ17ucvpYuxXE76LGAsn7y/z1DnITtAs9sEXt FQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssmcvag5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 18:07:02 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37UI71SB007366
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 18:07:01 GMT
-Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 30 Aug 2023 11:06:58 -0700
-From:   Anjelique Melendez <quic_amelende@quicinc.com>
-To:     <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>
-CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <quic_gurus@quicinc.com>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <kernel@quicinc.com>,
-        Anjelique Melendez <quic_amelende@quicinc.com>
-Subject: [PATCH v4 7/7] leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
-Date:   Wed, 30 Aug 2023 11:06:02 -0700
-Message-ID: <20230830180600.1865-10-quic_amelende@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230830180600.1865-2-quic_amelende@quicinc.com>
-References: <20230830180600.1865-2-quic_amelende@quicinc.com>
+        Wed, 30 Aug 2023 14:20:56 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB06D194;
+        Wed, 30 Aug 2023 11:20:51 -0700 (PDT)
+Received: from p200300ccff199c001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff19:9c00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qbPo3-003BYi-Ge; Wed, 30 Aug 2023 20:20:43 +0200
+Received: from andi by aktux with local (Exim 4.96)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qbPo3-003gU1-0Z;
+        Wed, 30 Aug 2023 20:20:43 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     lee@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        bcousson@baylibre.com, tony@atomide.com, mturquette@baylibre.com,
+        sboyd@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v2 1/5] dt-bindings: mfd: convert twl-family.tx to json-schema
+Date:   Wed, 30 Aug 2023 20:20:34 +0200
+Message-Id: <20230830182038.878265-2-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230830182038.878265-1-andreas@kemnade.info>
+References: <20230830182038.878265-1-andreas@kemnade.info>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xA-um-k7Qhjoxl9CkRd91v8ccKXYCJTh
-X-Proofpoint-GUID: xA-um-k7Qhjoxl9CkRd91v8ccKXYCJTh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-30_13,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308300165
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the pm8350c lpg_data struct so that pm8350c devices are treated as
-PWM devices that support two-nvmem PPG scheme.
+Convert the TWL[46]030 binding to DT schema format. To do it as a step by
+step work, do not include / handle nodes for subdevices yet, just convert
+things with minimal corrections. There are already some bindings for its
+subdevices in the tree.
 
-Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
 ---
- drivers/leds/rgb/leds-qcom-lpg.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/mfd/ti,twl.yaml       | 69 +++++++++++++++++++
+ .../devicetree/bindings/mfd/twl-family.txt    | 46 -------------
+ 2 files changed, 69 insertions(+), 46 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,twl.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mfd/twl-family.txt
 
-diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-index 9f1580e81ab0..b2435693b50e 100644
---- a/drivers/leds/rgb/leds-qcom-lpg.c
-+++ b/drivers/leds/rgb/leds-qcom-lpg.c
-@@ -1808,11 +1808,14 @@ static const struct lpg_data pm8150l_lpg_data = {
- static const struct lpg_data pm8350c_pwm_data = {
- 	.triled_base = 0xef00,
- 
-+	.lut_size = 122,
-+	.lut_sdam_base = 0x45,
+diff --git a/Documentation/devicetree/bindings/mfd/ti,twl.yaml b/Documentation/devicetree/bindings/mfd/ti,twl.yaml
+new file mode 100644
+index 0000000000000..3d7b3e0addafa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/ti,twl.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/ti,twl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	.num_channels = 4,
- 	.channels = (const struct lpg_channel_data[]) {
--		{ .base = 0xe800, .triled_mask = BIT(7) },
--		{ .base = 0xe900, .triled_mask = BIT(6) },
--		{ .base = 0xea00, .triled_mask = BIT(5) },
-+		{ .base = 0xe800, .triled_mask = BIT(7), .sdam_offset = 0x48 },
-+		{ .base = 0xe900, .triled_mask = BIT(6), .sdam_offset = 0x56 },
-+		{ .base = 0xea00, .triled_mask = BIT(5), .sdam_offset = 0x64 },
- 		{ .base = 0xeb00 },
- 	},
- };
++title: Texas Instruments TWL family
++
++maintainers:
++  - Tony Lindgren <tony@atomide.com>
++
++description: |
++  The TWLs are Integrated Power Management Chips.
++  Some version might contain much more analog function like
++  USB transceiver or Audio amplifier.
++  These chips are connected to an i2c bus.
++
++properties:
++  compatible:
++    description:
++      TWL4030 for integrated power-management/audio CODEC device used in OMAP3
++      based boards
++      TWL6030/32 for integrated power-management used in OMAP4 based boards
++    enum:
++      - ti,twl4030
++      - ti,twl6030
++      - ti,twl6032
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 1
++
++additionalProperties: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - "#interrupt-cells"
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      pmic@48 {
++        compatible = "ti,twl6030";
++        reg = <0x48>;
++        interrupts = <39>; /* IRQ_SYS_1N cascaded to gic */
++        interrupt-controller;
++        #interrupt-cells = <1>;
++        interrupt-parent = <&gic>;
++
++        rtc {
++          compatible = "ti,twl4030-rtc";
++          interrupts = <11>;
++        };
++      };
++    };
++
+diff --git a/Documentation/devicetree/bindings/mfd/twl-family.txt b/Documentation/devicetree/bindings/mfd/twl-family.txt
+deleted file mode 100644
+index c2f9302965dea..0000000000000
+--- a/Documentation/devicetree/bindings/mfd/twl-family.txt
++++ /dev/null
+@@ -1,46 +0,0 @@
+-Texas Instruments TWL family
+-
+-The TWLs are Integrated Power Management Chips.
+-Some version might contain much more analog function like
+-USB transceiver or Audio amplifier.
+-These chips are connected to an i2c bus.
+-
+-
+-Required properties:
+-- compatible : Must be "ti,twl4030";
+-  For Integrated power-management/audio CODEC device used in OMAP3
+-  based boards
+-- compatible : Must be "ti,twl6030";
+-  For Integrated power-management used in OMAP4 based boards
+-- interrupts : This i2c device has an IRQ line connected to the main SoC
+-- interrupt-controller : Since the twl support several interrupts internally,
+-  it is considered as an interrupt controller cascaded to the SoC one.
+-- #interrupt-cells = <1>;
+-
+-Optional node:
+-- Child nodes contain in the twl. The twl family is made of several variants
+-  that support a different number of features.
+-  The children nodes will thus depend of the capability of the variant.
+-
+-
+-Example:
+-/*
+- * Integrated Power Management Chip
+- * https://www.ti.com/lit/ds/symlink/twl6030.pdf
+- */
+-twl@48 {
+-    compatible = "ti,twl6030";
+-    reg = <0x48>;
+-    interrupts = <39>; /* IRQ_SYS_1N cascaded to gic */
+-    interrupt-controller;
+-    #interrupt-cells = <1>;
+-    interrupt-parent = <&gic>;
+-    #address-cells = <1>;
+-    #size-cells = <0>;
+-
+-    twl_rtc {
+-        compatible = "ti,twl_rtc";
+-        interrupts = <11>;
+-        reg = <0>;
+-    };
+-};
 -- 
-2.41.0
+2.39.2
 
