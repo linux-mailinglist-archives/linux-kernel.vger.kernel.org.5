@@ -2,195 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9197D78DDAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B1378DD4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244069AbjH3Su3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        id S243567AbjH3Ssu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243366AbjH3Kri (ORCPT
+        with ESMTP id S243388AbjH3Kwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:47:38 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF0F1BB
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:47:34 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbLVS5vXWz6J7gc;
-        Wed, 30 Aug 2023 18:43:12 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
- 2023 11:47:32 +0100
-Date:   Wed, 30 Aug 2023 11:47:31 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Amit Singh Tomar <amitsinght@marvell.com>
-CC:     Reinette Chatre <reinette.chatre@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        George Cherian <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "peternewman@google.com" <peternewman@google.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: resctrl2 - status
-Message-ID: <20230830114731.00003590@Huawei.com>
-In-Reply-To: <MW4PR18MB50847485155B226B07DABEAAC6E7A@MW4PR18MB5084.namprd18.prod.outlook.com>
-References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
-        <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
-        <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-        <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
-        <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-        <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
-        <20230829112321.00002b55@Huawei.com>
-        <MW4PR18MB50847485155B226B07DABEAAC6E7A@MW4PR18MB5084.namprd18.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 30 Aug 2023 06:52:37 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26D1A1BE;
+        Wed, 30 Aug 2023 03:52:34 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12BDB2F4;
+        Wed, 30 Aug 2023 03:53:12 -0700 (PDT)
+Received: from bogus (unknown [10.57.36.157])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AF933F64C;
+        Wed, 30 Aug 2023 03:52:31 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 11:51:34 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Oza Pawandeep <quic_poza@quicinc.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, rafael@kernel.org,
+        lenb@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
+ timer
+Message-ID: <20230830105134.dskqqq55npsclibq@bogus>
+References: <20230829201101.3330337-1-quic_poza@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230829201101.3330337-1-quic_poza@quicinc.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 17:18:53 +0000
-Amit Singh Tomar <amitsinght@marvell.com> wrote:
+On Tue, Aug 29, 2023 at 01:11:01PM -0700, Oza Pawandeep wrote:
+> Arm® Functional Fixed Hardware Specification defines LPI states,
+> which provide an architectural context loss flags field that can
+> be used to describe the context that might be lost when an LPI
+> state is entered.
+> 
+> - Core context Lost
+>         - General purpose registers.
+>         - Floating point and SIMD registers.
+>         - System registers, include the System register based
+>         - generic timer for the core.
+>         - Debug register in the core power domain.
+>         - PMU registers in the core power domain.
+>         - Trace register in the core power domain.
+> - Trace context loss
+> - GICR
+> - GICD
+> 
+> Qualcomm's custom CPUs preserves the architectural state,
+> including keeping the power domain for local timers active.
+> when core is power gated, the local timers are sufficient to
+> wake the core up without needing broadcast timer.
+> 
+> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+> broadcast timer if core context lost is defined in ACPI LPI.
+> 
+> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+> 
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index bd68e1b7f29f..0d455b02971e 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -9,6 +9,7 @@
+>  #ifndef _ASM_ACPI_H
+>  #define _ASM_ACPI_H
+>  
+> +#include <linux/cpuidle.h>
+>  #include <linux/efi.h>
+>  #include <linux/memblock.h>
+>  #include <linux/psci.h>
+> @@ -42,6 +43,26 @@
+>  #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+>  	spe_interrupt) + sizeof(u16))
+>  
+> +/*
+> + * Arm® Functional Fixed Hardware Specification Version 1.2.
+> + * Table 2: Arm Architecture context loss flags
+> + */
+> +#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
+> +
+> +#ifndef arch_update_idle_state_flags
+> +static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
+> +							unsigned int *sflags)
+> +{
+> +	if (arch_flags & CPUIDLE_CORE_CTXT)
+> +		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
+> +}
+> +#define arch_update_idle_state_flags _arch_update_idle_state_flags
+> +#endif
+> +
+> +#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
+> +#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
+> +#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
+> +
+>  /* Basic configuration for ACPI */
+>  #ifdef	CONFIG_ACPI
+>  pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 9718d07cc2a2..420baec3465c 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -1221,8 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+>  		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+>  		state->exit_latency = lpi->wake_latency;
+>  		state->target_residency = lpi->min_residency;
+> -		if (lpi->arch_flags)
+> -			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> +		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+>  		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+>  			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+>  		state->enter = acpi_idle_lpi_enter;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index d584f94409e1..d49488fdbc49 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1471,6 +1471,10 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  }
+>  #endif
+>  
+> +#ifndef arch_update_idle_state_flags
+> +#define arch_update_idle_state_flags	do {} while (0);
 
-> -----Original Message-----
-> From: Jonathan Cameron <Jonathan.Cameron@Huawei.com> 
-> Sent: Tuesday, August 29, 2023 3:53 PM
-> To: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Luck, Tony <tony.luck@intel.com>; Amit Singh Tomar <amitsinght@marvell.com>; Yu, Fenghua <fenghua.yu@intel.com>; james.morse@arm.com; George Cherian <gcherian@marvell.com>; robh@kernel.org; peternewman@google.com; Drew Fustini <dfustini@baylibre.com>; linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> Subject: [EXT] Re: resctrl2 - status
-> 
-> External Email
-> 
-> ----------------------------------------------------------------------
-> On Fri, 25 Aug 2023 13:20:22 -0700
-> Reinette Chatre <reinette.chatre@intel.com> wrote:
-> 
-> > Hi Tony,
-> > 
-> > On 8/25/2023 12:44 PM, Luck, Tony wrote:  
-> > >>>> Alternatively, can user space just take a "load all resctrl 
-> > >>>> modules and see what sticks" (even modules of different 
-> > >>>> architectures since a user space may want to be generic) approach?  
-> > >>>
-> > >>> This mostly works. Except for the cases where different modules 
-> > >>> access the same underlying hardware, so can't be loaded together.
-> > >>>
-> > >>> Examples:
-> > >>>
-> > >>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CDP or not.
-> > >>> But this is already true ... they have to decide whether to pass 
-> > >>> the "-o cdp" option to mount.
-> > >>>
-> > >>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control 
-> > >>> memory bandwidth with percentages, or with MB/sec values. Again 
-> > >>> the user already has to make this decision when choosing mount options.
-> > >>>
-> > >>>
-> > >>> Maybe the "What resctrl options does this machine support?" 
-> > >>> question would be best answered with a small utility?  
-> > >>
-> > >> A user space utility or a kernel provided utility? If it is a user 
-> > >> space utility I think it would end up needing to duplicate what the 
-> > >> kernel is required to do to know if a particular feature is 
-> > >> supported. It seems appropriate that this could be a kernel utility 
-> > >> that can share this existing information with user space. resctrl already supports the interface for this via /sys/fs/resctrl/info.  
-> > > 
-> > > I was imagining a user space utility. Even though /proc/cpuinfo 
-> > > doesn't show all features, a utility has access to all the CPUID 
-> > > leaves that contain the details of each feature enumeration.  
-> > 
-> > For x86 that may work (in some scenarios, see later) for now but as I 
-> > understand Arm would need a different solution where I believe the 
-> > information is obtained via ACPI. I think it is unnecessary to require 
-> > user space to have parsers for CPUID and ACPI if that same information 
-> > needs to be parsed by the kernel and there already exists an interface 
-> > with which the information is communicated from kernel to user space. 
-> > Also, just because information CPUID shows a feature is supported by 
-> > the hardware does not mean that the kernel has support for that 
-> > feature. This could be because of a feature mismatch between user 
-> > space and kernel, or even some features disabled for use via the, for example "rdt=!l3cat", kernel parameter.  
-> 
-> James probably also has views on this, but I wouldn't expect userspace to go anywhere near ACPI parsing. If the description of what MPAM features are supported (before resctrl is running) is necessary, then we should add it to the existing description of the various caches etc.  Maybe somewhere in /sys/bus/node/devices/nodeX/cpuY/cache/indexZ/
-> for the caches
-> and
-> /sys/bus/node/devices/nodeX for the DRAM controllers.
-> [>>] Or may be all the MPAM features list is unified at one place, something like this ?  
-> https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=mpam/snapshot/v6.5-rc1&id=c32874cd1d68241c481a9d0c32c8c65d019c247e
+I think I suggested it in v2 as without that you will get the warnings the
+kernel build bot has posted now.
 
-Fine for debug, not for generic tooling.
+#define arch_update_idle_state_flags(af, sf)	do {} while (0)
 
-Might be possible to do something separate but I would expect to see this
-info associated with the entities being controlled, not off on it's own
-somewhere else in sysfs or similar.
+Add the parameters and drop the leading ';'.
 
-Jonathan
-
-
-> 
-> I'm sure we can find somewhere sensible for other things covered by MPAM.
-> The MPAM table parsers and some early code to query features from the hardware should be able to figure out what is needed.
-> 
-> Perhaps x86 systems could provide similar descriptions but originating from CPUID etc.
-> 
-> Jonathan
-> 
-> >   
-> > >> fyi ... as with previous attempts to discuss this work I find it 
-> > >> difficult to discuss this work when you are selective about what 
-> > >> you want to discuss/answer and just wipe the rest. Through this I 
-> > >> understand that I am not your target audience.  
-> > > 
-> > > Not my intent. I value your input highly. I'm maybe too avid a 
-> > > follower of the "trim your replies" school of e-mail etiquette. I 
-> > > thought I'd covered the gist of your message.
-> > > 
-> > > I'll try to be more thorough in responding in the future.    
-> > 
-> > Two items from my previous email remain open:
-> > 
-> > First, why does making the code modular require everything to be 
-> > loadable modules?
-> > I think that it is great that the code is modular. Ideally it will 
-> > help to support the other architectures. As you explain this modular 
-> > design also has the benefit that "modules" can be loaded and unloaded after resctrl mount.
-> > Considering your example of MBA and MBA_MBps support ... if I 
-> > understand correctly with code being modular it enables changes from 
-> > one to the other after resctrl mount. User can start with MBA and then 
-> > switch to MBA_MBps without needing to unmount resctrl. What I do not 
-> > understand is why does the code being modular require everything to be 
-> > modules? Why, for example, could a user not interact with a resctrl 
-> > file that enables the user to make this switch from, for example, MBA 
-> > to MBA_MBps? With this the existing interfaces can remain to be 
-> > respected, the existing mount parameters need to remain anyway, while enabling future "more modular" usages.
-> > 
-> > Second, copied from my previous email, what is the plan to deal with 
-> > current users that just mount resctrl and expect to learn from it what 
-> > features are supported?
-> > 
-> > Reinette
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > https://urldefense.proofpoint.com/v2/url?u=http-3A__lists.infradead.or
-> > g_mailman_listinfo_linux-2Darm-2Dkernel&d=DwICAg&c=nKjWec2b6R0mOyPaz7x
-> > tfQ&r=V_GK7jRuCHDErm6txmgDK1-MbUihtnSQ3gPgB-A-JKU&m=ri5Ay9ia3NmwAS6P94yjZ7rPIR1dIqrIAIjpslfwcd5ulIIs5BNEG9jmTlq6H6o8&s=KZMxmC8InOxAyxgrDig96R2aKf2hc1C_hk_1413pjCI&e=
-> >   
-> 
-
+-- 
+Regards,
+Sudeep
