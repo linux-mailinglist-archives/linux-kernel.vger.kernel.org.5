@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 013F178E07F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FD078E17F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbjH3UVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S241527AbjH3Vco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240102AbjH3UAb (ORCPT
+        with ESMTP id S241577AbjH3Vck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:00:31 -0400
+        Wed, 30 Aug 2023 17:32:40 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559C745B19
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:35:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD708465DC
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:36:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693424130; x=1724960130;
+  t=1693424161; x=1724960161;
   h=subject:from:to:cc:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4UKbNpagiAq35d+VrOb37UzA4eObE0g/YZSbZ4ms0Dw=;
-  b=gqoFDNszzBxHmodL7kzgX6AlPVDhvam+22ztBxDSRtZ3WTB+1LRgz2cV
-   ZLaR5wgut6M9Rz9g/7OnlQirElqtjFEZdnNAXwHfgSquRG1QCRSHc2lwn
-   nbsxAPdHRK8q+QE/N+T17ImNEm/2upIunDihWk+U/yJio8GAqwz9kJlGK
-   ERgqc9anO0TAxDS063yCgu5/jUBOFm3AhEymvSKs92bfFulRxDVnF8Hmv
-   qWMTgp6Rlc0QbK3nrMLjfahFLmiqUqjaw6hkr89zw4/4TLJEaa95vLcJn
-   bDADCRLnQ8C/Yme331j9URnZrWKqvNRYcxP+vytLnXT4DoehlQDrYvnUK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="360723620"
+  bh=yHkxxHhfcS/p1Zj4sNJBN+HXPs+0Ubf8u2ycubsIO3g=;
+  b=kRRDhxO1xfa5WXeHxjBP+Skoj9EAnfmjwKjetZp/sYsENECWPc65yBeI
+   ITPNCnTtkGoSrNMCdHetHxSYzR1wMfQrcwkUDDnnJN1SCH4I4a7umnhNn
+   TxPCmECT2DY7qToPfB6PStGQTOBaZxFaiUb2GtvStDJRuxNbtTdy1OE+5
+   Il1raEaK9UI67hYBG0kiYMCY7cxwi9c5xtwI8rrlj9DzeEe0ns1Zp0p30
+   TUs2rOUIyKOec69dMdVhOdtqEmkY+jfX5iy1tEz8+oYok+OgZuZ7XcytB
+   OIZD+Ma4ssSkL90PvEabddwfgzGwuaSkHl4CYThtrt5VO1VmgyL5EfzTM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="360723643"
 X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="360723620"
+   d="scan'208";a="360723643"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:25 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="853844805"
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="853844831"
 X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="853844805"
+   d="scan'208";a="853844831"
 Received: from nivakuma-mobl.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.212.238.163])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:25 -0700
-Subject: [PATCH v3 2/5] configfs-tsm: Introduce a shared ABI for attestation
- reports
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:31 -0700
+Subject: [PATCH v3 3/5] virt: sevguest: Prep for kernel internal {get,
+ get_ext}_report()
 From:   Dan Williams <dan.j.williams@intel.com>
 To:     linux-coco@lists.linux.dev
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Peter Gonda <pgonda@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Samuel Ortiz <sameo@rivosinc.com>, peterz@infradead.org,
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, peterz@infradead.org,
         linux-kernel@vger.kernel.org, tglx@linutronix.de
-Date:   Wed, 30 Aug 2023 12:33:24 -0700
-Message-ID: <169342400469.3934343.12316161608372095860.stgit@dwillia2-xfh.jf.intel.com>
+Date:   Wed, 30 Aug 2023 12:33:30 -0700
+Message-ID: <169342401062.3934343.10039181536465702635.stgit@dwillia2-xfh.jf.intel.com>
 In-Reply-To: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
 References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
 User-Agent: StGit/0.18-3-g996c
@@ -69,661 +66,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One of the common operations of a TSM (Trusted Security Module) is to
-provide a way for a TVM (confidential computing guest execution
-environment) to take a measurement of its launch state, sign it and
-submit it to a verifying party. Upon successful attestation that
-verifies the integrity of the TVM additional secrets may be deployed.
-The concept is common across TSMs, but the implementations are
-unfortunately vendor specific. While the industry grapples with a common
-definition of this attestation format [1], Linux need not make this
-problem worse by defining a new ABI per TSM that wants to perform a
-similar operation. The current momentum has been to invent new ioctl-ABI
-per TSM per function which at best is an abdication of the kernel's
-responsibility to make common infrastructure concepts share common ABI.
+In preparation for using the configs-tsm facility to convey attestation
+blobs to userspace, switch to using the 'sockptr' api for copying
+payloads to provided buffers where 'sockptr' handles user vs kernel
+buffers.
 
-The proposal, targeted to conceptually work with TDX, SEV-SNP, COVE if
-not more, is to define a configfs interface to retrieve the TSM-specific
-blob.
+While configfs-tsm is meant to replace existing confidential computing
+ioctl() implementations for attestation report retrieval the old ioctl()
+path needs to stick around for a deprecation period.
 
-    report=/sys/kernel/config/tsm/report/report0
-    mkdir $report
-    dd if=binary_userdata_plus_nonce > $report/inblob
-    hexdump $report/outblob
+No behavior change intended.
 
-This approach later allows for the standardization of the attestation
-blob format without needing to invent a new ABI. Once standardization
-happens the standard format can be emitted by $report/outblob and
-indicated by $report/provider, or a new attribute like
-"$report/tcg_coco_report" can emit the standard format alongside the
-vendor format.
-
-Review of previous iterations of this interface identified that there is
-a need to scale report generation for multiple container environments
-[2]. Configfs enables a model where each container can bind mount one or
-more report generation item instances. Still, within a container only a
-single thread can be manipulating a given configuration instance at a
-time. A 'generation' count is provided to detect conflicts between
-multiple threads racing to configure a report instance.
-
-The SEV-SNP concepts of "extended reports" and "privilege levels" are
-optionally enabled by selecting 'tsm_report_ext_type' at register_tsm()
-time. The expectation is that those concepts are generic enough that
-they may be adopted by other TSM implementations. In other words,
-configfs-tsm aims to address a superset of TSM specific functionality
-with a common ABI where attributes may appear, or not appear, based on the set
-of concepts the implementation supports.
-
-Link: http://lore.kernel.org/r/64961c3baf8ce_142af829436@dwillia2-xfh.jf.intel.com.notmuch [1]
-Link: http://lore.kernel.org/r/57f3a05e-8fcd-4656-beea-56bb8365ae64@linux.microsoft.com [2]
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Dionna Amalie Glaze <dionnaglaze@google.com>
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Samuel Ortiz <sameo@rivosinc.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Dionna Glaze <dionnaglaze@google.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
 Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
- Documentation/ABI/testing/configfs-tsm |   68 ++++++
- MAINTAINERS                            |    8 +
- drivers/virt/coco/Kconfig              |    5 
- drivers/virt/coco/Makefile             |    1 
- drivers/virt/coco/tdx-guest/Kconfig    |    1 
- drivers/virt/coco/tsm.c                |  391 ++++++++++++++++++++++++++++++++
- include/linux/tsm.h                    |   54 ++++
- 7 files changed, 528 insertions(+)
- create mode 100644 Documentation/ABI/testing/configfs-tsm
- create mode 100644 drivers/virt/coco/tsm.c
- create mode 100644 include/linux/tsm.h
+ drivers/virt/coco/sev-guest/sev-guest.c |   50 ++++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/ABI/testing/configfs-tsm b/Documentation/ABI/testing/configfs-tsm
-new file mode 100644
-index 000000000000..0f137039643b
---- /dev/null
-+++ b/Documentation/ABI/testing/configfs-tsm
-@@ -0,0 +1,68 @@
-+What:		/sys/kernel/config/tsm/report/$name/inblob
-+Date:		August, 2023
-+KernelVersion:	v6.7
-+Contact:	linux-coco@lists.linux.dev
-+Description:
-+		(WO) Up to 64 bytes of user specified binary data. For replay
-+		protection this should include a nonce, but the kernel does not
-+		place any restrictions on the content.
-+
-+What:		/sys/kernel/config/tsm/report/$name/outblob
-+Date:		August, 2023
-+KernelVersion:	v6.7
-+Contact:	linux-coco@lists.linux.dev
-+Description:
-+		(RO) Binary attestation report generated from @inblob and other
-+		options The format of the report is implementation specific
-+		(modulo options like @format and @privlevel) where the
-+		implementation is conveyed via the @provider attribute.
-+
-+What:		/sys/kernel/config/tsm/report/$name/provider
-+Date:		August, 2023
-+KernelVersion:	v6.7
-+Contact:	linux-coco@lists.linux.dev
-+Description:
-+		(RO) A name for the format-specification of @outblob like
-+		"sev-snp" or "tdx" in the near term, or a common standard format
-+		in the future.
-+
-+What:		/sys/kernel/config/tsm/report/$name/generation
-+Date:		August, 2023
-+KernelVersion:	v6.7
-+Contact:	linux-coco@lists.linux.dev
-+Description:
-+		(RO) The value in this attribute increments each time @inblob or
-+		any option is written. Userspace can detect conflicts by
-+		checking generation before writing to any attribute and making
-+		sure the number of writes matches expectations after reading
-+		@outblob, or it can prevent conflicts by creating a report
-+		instance per requesting context.
-+
-+What:		/sys/kernel/config/tsm/report/$name/privlevel
-+Date:		August, 2023
-+KernelVersion:	v6.7
-+Contact:	linux-coco@lists.linux.dev
-+Description:
-+		(WO) If a TSM implementation supports the concept of attestation
-+		reports for TVMs running at different privilege levels, like
-+		SEV-SNP "VMPL", specify the privilege level via this attribute.
-+		The minimum acceptable value is conveyed via @privlevel_floor
-+		and the maximum acceptable value is TSM_PRIVLEVEL_MAX (3).
-+
-+What:		/sys/kernel/config/tsm/report/$name/privlevel_floor
-+Date:		August, 2023
-+KernelVersion:	v6.7
-+Contact:	linux-coco@lists.linux.dev
-+Description:
-+		(RO) Indicates the minimum permissible value that can be written
-+		to @privlevel.
-+
-+What:		/sys/kernel/config/tsm/report/$name/format
-+Date:		August, 2023
-+KernelVersion:	v6.7
-+Contact:	linux-coco@lists.linux.dev
-+Description:
-+		(WO) If a TSM implementation supports the concept of attestation
-+		reports with "extended" contents, like SEV-SNP extended reports
-+		with certificate chains, specify "extended" vs "default" via
-+		this attribute.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4cc6bf79fdd8..996122ab62ab 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21671,6 +21671,14 @@ W:	https://github.com/srcres258/linux-doc
- T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
- F:	Documentation/translations/zh_TW/
+diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
+index 97dbe715e96a..c3c9e9ea691f 100644
+--- a/drivers/virt/coco/sev-guest/sev-guest.c
++++ b/drivers/virt/coco/sev-guest/sev-guest.c
+@@ -19,6 +19,7 @@
+ #include <crypto/aead.h>
+ #include <linux/scatterlist.h>
+ #include <linux/psp-sev.h>
++#include <linux/sockptr.h>
+ #include <uapi/linux/sev-guest.h>
+ #include <uapi/linux/psp-sev.h>
  
-+TRUSTED SECURITY MODULE (TSM) ATTESTATION REPORTS
-+M:	Dan Williams <dan.j.williams@intel.com>
-+L:	linux-coco@lists.linux.dev
-+S:	Maintained
-+F:	Documentation/ABI/testing/configfs-tsm
-+F:	drivers/virt/coco/tsm.c
-+F:	include/linux/tsm.h
-+
- TTY LAYER AND SERIAL DRIVERS
- M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
- M:	Jiri Slaby <jirislaby@kernel.org>
-diff --git a/drivers/virt/coco/Kconfig b/drivers/virt/coco/Kconfig
-index fc5c64f04c4a..87d142c1f932 100644
---- a/drivers/virt/coco/Kconfig
-+++ b/drivers/virt/coco/Kconfig
-@@ -2,6 +2,11 @@
- #
- # Confidential computing related collateral
- #
-+
-+config TSM_REPORTS
-+	select CONFIGFS_FS
-+	tristate
-+
- source "drivers/virt/coco/efi_secret/Kconfig"
+@@ -470,7 +471,13 @@ static int handle_guest_request(struct snp_guest_dev *snp_dev, u64 exit_code,
+ 	return 0;
+ }
  
- source "drivers/virt/coco/sev-guest/Kconfig"
-diff --git a/drivers/virt/coco/Makefile b/drivers/virt/coco/Makefile
-index 55302ef719ad..18c1aba5edb7 100644
---- a/drivers/virt/coco/Makefile
-+++ b/drivers/virt/coco/Makefile
-@@ -2,6 +2,7 @@
- #
- # Confidential computing related collateral
- #
-+obj-$(CONFIG_TSM_REPORTS)	+= tsm.o
- obj-$(CONFIG_EFI_SECRET)	+= efi_secret/
- obj-$(CONFIG_SEV_GUEST)		+= sev-guest/
- obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx-guest/
-diff --git a/drivers/virt/coco/tdx-guest/Kconfig b/drivers/virt/coco/tdx-guest/Kconfig
-index 14246fc2fb02..22dd59e19431 100644
---- a/drivers/virt/coco/tdx-guest/Kconfig
-+++ b/drivers/virt/coco/tdx-guest/Kconfig
-@@ -1,6 +1,7 @@
- config TDX_GUEST_DRIVER
- 	tristate "TDX Guest driver"
- 	depends on INTEL_TDX_GUEST
-+	select TSM_REPORTS
- 	help
- 	  The driver provides userspace interface to communicate with
- 	  the TDX module to request the TDX guest details like attestation
-diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
-new file mode 100644
-index 000000000000..da19257797d7
---- /dev/null
-+++ b/drivers/virt/coco/tsm.c
-@@ -0,0 +1,391 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright(c) 2023 Intel Corporation. All rights reserved. */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/tsm.h>
-+#include <linux/err.h>
-+#include <linux/slab.h>
-+#include <linux/rwsem.h>
-+#include <linux/string.h>
-+#include <linux/module.h>
-+#include <linux/cleanup.h>
-+#include <linux/configfs.h>
-+
-+static struct tsm_provider {
-+	const struct tsm_ops *ops;
-+	const struct config_item_type *type;
-+	void *data;
-+} provider;
-+static DECLARE_RWSEM(tsm_rwsem);
-+
-+/**
-+ * DOC: Trusted Security Module (TSM) Attestation Report Interface
-+ *
-+ * The TSM report interface is a common provider of blobs that facilitate
-+ * attestation of a TVM (confidential computing guest) by an attestation
-+ * service. A TSM report combines a user-defined blob (likely a public-key with
-+ * a nonce for a key-exchange protocol) with a signed attestation report. That
-+ * combined blob is then used to obtain secrets provided by an agent that can
-+ * validate the attestation report. The expectation is that this interface is
-+ * invoked infrequently, likely only once at TVM boot time.
-+ *
-+ * The attestation report format is TSM provider specific, when / if a standard
-+ * materializes that can be published instead of the vendor layout. Until then
-+ * the 'provider' attribute indicates the format of 'outblob'.
-+ */
-+
-+/**
-+ * struct tsm_report - track state of report generation relative to options
-+ * @desc: report generation options / cached report state
-+ * @outblob: generated evidence to provider to the attestation agent
-+ * @outblob_len: sizeof(outblob)
-+ * @write_generation: conflict detection, and report regeneration tracking
-+ * @read_generation: cached report invalidation tracking
-+ * @cfg: configfs interface
-+ */
-+struct tsm_report {
-+	struct tsm_desc desc;
-+	size_t outblob_len;
-+	u8 *outblob;
-+	unsigned long write_generation;
-+	unsigned long read_generation;
-+	struct config_item cfg;
+-static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
++struct snp_req_resp {
++	sockptr_t req_data;
++	sockptr_t resp_data;
 +};
 +
-+static struct tsm_report *to_tsm_report(struct config_item *cfg)
-+{
-+	return container_of(cfg, struct tsm_report, cfg);
-+}
++static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg,
++		      struct snp_req_resp *io)
+ {
+ 	struct snp_guest_crypto *crypto = snp_dev->crypto;
+ 	struct snp_report_resp *resp;
+@@ -479,10 +486,10 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
+ 
+ 	lockdep_assert_held(&snp_cmd_mutex);
+ 
+-	if (!arg->req_data || !arg->resp_data)
++	if (sockptr_is_null(io->req_data) || sockptr_is_null(io->resp_data))
+ 		return -EINVAL;
+ 
+-	if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
++	if (copy_from_sockptr(&req, io->req_data, sizeof(req)))
+ 		return -EFAULT;
+ 
+ 	/*
+@@ -501,7 +508,7 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
+ 	if (rc)
+ 		goto e_free;
+ 
+-	if (copy_to_user((void __user *)arg->resp_data, resp, sizeof(*resp)))
++	if (copy_to_sockptr(io->resp_data, resp, sizeof(*resp)))
+ 		rc = -EFAULT;
+ 
+ e_free:
+@@ -550,22 +557,25 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_reque
+ 	return rc;
+ }
+ 
+-static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
++static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg,
++			  struct snp_req_resp *io)
 +
-+static int try_advance_write_generation(struct tsm_report *report)
-+{
-+	lockdep_assert_held_write(&tsm_rwsem);
-+
-+	/*
-+	 * malicious or broken userspace is attempting to wrap read_generation,
-+	 * stop accepting updates until current report configuration is read.
-+	 */
-+	if (report->write_generation == report->read_generation - 1)
-+		return -EBUSY;
-+	report->write_generation++;
-+	return 0;
-+}
-+
-+static ssize_t tsm_report_privlevel_store(struct config_item *cfg,
-+					  const char *buf, size_t len)
-+{
-+	struct tsm_report *report = to_tsm_report(cfg);
-+	unsigned int val;
-+	int rc;
-+
-+	rc = kstrtouint(buf, 0, &val);
-+	if (rc)
-+		return rc;
-+
-+	/*
-+	 * The valid privilege levels that a TSM might accept, if it accepts a
-+	 * privilege level setting at all, are a max of TSM_PRIVLEVEL_MAX (see
-+	 * SEV-SNP GHCB) and a minimum of a TSM selected floor value no less
-+	 * than 0.
-+	 */
-+	if (provider.ops->privlevel_floor > val || val > TSM_PRIVLEVEL_MAX)
-+		return -EINVAL;
-+
-+	guard(rwsem_write)(&tsm_rwsem);
-+	rc = try_advance_write_generation(report);
-+	if (rc)
-+		return rc;
-+	report->desc.privlevel = val;
-+
-+	return len;
-+}
-+CONFIGFS_ATTR_WO(tsm_report_, privlevel);
-+
-+static ssize_t tsm_report_privlevel_floor_show(struct config_item *cfg,
-+					       char *buf)
-+{
-+	guard(rwsem_read)(&tsm_rwsem);
-+	return sysfs_emit(buf, "%u\n", provider.ops->privlevel_floor);
-+}
-+CONFIGFS_ATTR_RO(tsm_report_, privlevel_floor);
-+
-+static ssize_t tsm_report_format_store(struct config_item *cfg, const char *buf,
-+				       size_t len)
-+{
-+	struct tsm_report *report = to_tsm_report(cfg);
-+	enum tsm_format format;
-+	int rc;
-+
-+	if (sysfs_streq(buf, "default"))
-+		format = TSM_FORMAT_DEFAULT;
-+	else if (sysfs_streq(buf, "extended"))
-+		format = TSM_FORMAT_EXTENDED;
-+	else
-+		return -EINVAL;
-+
-+	guard(rwsem_write)(&tsm_rwsem);
-+	rc = try_advance_write_generation(report);
-+	if (rc)
-+		return rc;
-+	report->desc.outblob_format = format;
-+
-+	return len;
-+}
-+CONFIGFS_ATTR_WO(tsm_report_, format);
-+
-+static ssize_t tsm_report_inblob_write(struct config_item *cfg,
-+				       const void *buf, size_t count)
-+{
-+	struct tsm_report *report = to_tsm_report(cfg);
-+	int rc;
-+
-+	guard(rwsem_write)(&tsm_rwsem);
-+	rc = try_advance_write_generation(report);
-+	if (rc)
-+		return rc;
-+
-+	report->desc.inblob_len = count;
-+	memcpy(report->desc.inblob, buf, count);
-+	return count;
-+}
-+CONFIGFS_BIN_ATTR_WO(tsm_report_, inblob, NULL, TSM_INBLOB_MAX);
-+
-+static ssize_t tsm_report_generation_show(struct config_item *cfg, char *buf)
-+{
-+	struct tsm_report *report = to_tsm_report(cfg);
-+
-+	guard(rwsem_read)(&tsm_rwsem);
-+	return sysfs_emit(buf, "%lu\n", report->write_generation);
-+}
-+CONFIGFS_ATTR_RO(tsm_report_, generation);
-+
-+static ssize_t tsm_report_provider_show(struct config_item *cfg, char *buf)
-+{
-+	guard(rwsem_read)(&tsm_rwsem);
-+	return sysfs_emit(buf, "%s\n", provider.ops->name);
-+}
-+CONFIGFS_ATTR_RO(tsm_report_, provider);
-+
-+static ssize_t read_cached_report(struct tsm_report *report, void *buf, size_t count)
-+{
-+	loff_t offset = 0;
-+
-+	guard(rwsem_read)(&tsm_rwsem);
-+	if (!report->desc.inblob_len)
-+		return -EINVAL;
-+
-+	if (!report->outblob ||
-+	    report->read_generation != report->write_generation)
-+		return -EWOULDBLOCK;
-+
-+	if (!buf)
-+		return report->outblob_len;
-+	return memory_read_from_buffer(buf, count, &offset, report->outblob,
-+				       report->outblob_len);
-+}
-+
-+static ssize_t tsm_report_outblob_read(struct config_item *cfg, void *buf,
-+				       size_t count)
-+{
-+	struct tsm_report *report = to_tsm_report(cfg);
-+	const struct tsm_ops *ops;
-+	size_t outblob_len;
-+	loff_t offset = 0;
-+	u8 *outblob;
-+	ssize_t rc;
-+
-+	/* try to read from the existing report if present and valid... */
-+	rc = read_cached_report(report, buf, count);
-+	if (rc >= 0 || rc != -EWOULDBLOCK)
-+		return rc;
-+
-+	/* slow path, report may need to be regenerated... */
-+	guard(rwsem_write)(&tsm_rwsem);
-+	ops = provider.ops;
-+	if (!report->desc.inblob_len)
-+		return -EINVAL;
-+
-+	/* did another thread already generate this report? */
-+	if (report->outblob &&
-+	    report->read_generation == report->write_generation)
-+		goto out;
-+
-+	kvfree(report->outblob);
-+	report->outblob = NULL;
-+	outblob = ops->report_new(&report->desc, provider.data, &outblob_len);
-+	if (IS_ERR(outblob))
-+		return PTR_ERR(outblob);
-+	report->outblob_len = outblob_len;
-+	report->outblob = outblob;
-+	report->read_generation = report->write_generation;
-+
-+out:
-+	if (!buf)
-+		return report->outblob_len;
-+	return memory_read_from_buffer(buf, count, &offset, report->outblob,
-+				       report->outblob_len);
-+}
-+CONFIGFS_BIN_ATTR_RO(tsm_report_, outblob, NULL, TSM_OUTBLOB_MAX);
-+
-+#define TSM_DEFAULT_ATTRS() \
-+	&tsm_report_attr_generation, \
-+	&tsm_report_attr_provider
-+
-+static struct configfs_attribute *tsm_report_attrs[] = {
-+	TSM_DEFAULT_ATTRS(),
-+	NULL,
-+};
-+
-+static struct configfs_bin_attribute *tsm_report_bin_attrs[] = {
-+	&tsm_report_attr_inblob,
-+	&tsm_report_attr_outblob,
-+	NULL,
-+};
-+
-+static struct configfs_attribute *tsm_report_extra_attrs[] = {
-+	TSM_DEFAULT_ATTRS(),
-+	&tsm_report_attr_format,
-+	&tsm_report_attr_privlevel,
-+	&tsm_report_attr_privlevel_floor,
-+	NULL,
-+};
-+
-+static void tsm_report_item_release(struct config_item *cfg)
-+{
-+	struct tsm_report *report = to_tsm_report(cfg);
-+
-+	kvfree(report->outblob);
-+	kfree(report);
-+}
-+
-+static struct configfs_item_operations tsm_report_item_ops = {
-+	.release = tsm_report_item_release,
-+};
-+
-+const struct config_item_type tsm_report_default_type = {
-+	.ct_owner = THIS_MODULE,
-+	.ct_bin_attrs = tsm_report_bin_attrs,
-+	.ct_attrs = tsm_report_attrs,
-+	.ct_item_ops = &tsm_report_item_ops,
-+};
-+EXPORT_SYMBOL_GPL(tsm_report_default_type);
-+
-+const struct config_item_type tsm_report_ext_type = {
-+	.ct_owner = THIS_MODULE,
-+	.ct_bin_attrs = tsm_report_bin_attrs,
-+	.ct_attrs = tsm_report_extra_attrs,
-+	.ct_item_ops = &tsm_report_item_ops,
-+};
-+EXPORT_SYMBOL_GPL(tsm_report_ext_type);
-+
-+static struct config_item *tsm_report_make_item(struct config_group *group,
-+						const char *name)
-+{
-+	struct tsm_report *report;
-+
-+	guard(rwsem_read)(&tsm_rwsem);
-+	if (!provider.ops)
-+		return ERR_PTR(-ENXIO);
-+
-+	report = kzalloc(sizeof(*report), GFP_KERNEL);
-+	if (!report)
-+		return ERR_PTR(-ENOMEM);
-+
-+	config_item_init_type_name(&report->cfg, name, provider.type);
-+	return &report->cfg;
-+}
-+
-+static struct configfs_group_operations tsm_report_group_ops = {
-+	.make_item = tsm_report_make_item,
-+};
-+
-+static const struct config_item_type tsm_reports_type = {
-+	.ct_owner = THIS_MODULE,
-+	.ct_group_ops = &tsm_report_group_ops,
-+};
-+
-+static const struct config_item_type tsm_root_group_type = {
-+	.ct_owner = THIS_MODULE,
-+};
-+
-+static struct configfs_subsystem tsm_configfs = {
-+	.su_group = {
-+		.cg_item = {
-+			.ci_namebuf = "tsm",
-+			.ci_type = &tsm_root_group_type,
-+		},
-+	},
-+	.su_mutex = __MUTEX_INITIALIZER(tsm_configfs.su_mutex),
-+};
-+
-+static struct config_group *tsm_report_group;
-+
-+int register_tsm(const struct tsm_ops *ops, void *priv,
-+		 const struct config_item_type *type)
-+{
-+	const struct tsm_ops *conflict;
-+
-+	if (!type)
-+		type = &tsm_report_default_type;
-+	if (!(type == &tsm_report_default_type || type == &tsm_report_ext_type))
-+		return -EINVAL;
-+
-+	guard(rwsem_write)(&tsm_rwsem);
-+	conflict = provider.ops;
-+	if (conflict) {
-+		pr_err("\"%s\" ops already registered\n", conflict->name);
-+		return -EBUSY;
+ {
+ 	struct snp_guest_crypto *crypto = snp_dev->crypto;
+ 	struct snp_ext_report_req req;
+ 	struct snp_report_resp *resp;
+ 	int ret, npages = 0, resp_len;
++	sockptr_t certs_address;
+ 
+ 	lockdep_assert_held(&snp_cmd_mutex);
+ 
+-	if (!arg->req_data || !arg->resp_data)
++	if (sockptr_is_null(io->req_data) || sockptr_is_null(io->resp_data))
+ 		return -EINVAL;
+ 
+-	if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
++	if (copy_from_sockptr(&req, io->req_data, sizeof(req)))
+ 		return -EFAULT;
+ 
+-	/* userspace does not want certificate data */
++	/* caller does not want certificate data */
+ 	if (!req.certs_len || !req.certs_address)
+ 		goto cmd;
+ 
+@@ -573,8 +583,13 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
+ 	    !IS_ALIGNED(req.certs_len, PAGE_SIZE))
+ 		return -EINVAL;
+ 
+-	if (!access_ok((const void __user *)req.certs_address, req.certs_len))
+-		return -EFAULT;
++	if (sockptr_is_kernel(io->resp_data)) {
++		certs_address = KERNEL_SOCKPTR((void *)req.certs_address);
++	} else {
++		certs_address = USER_SOCKPTR((void __user *)req.certs_address);
++		if (!access_ok(certs_address.user, req.certs_len))
++			return -EFAULT;
 +	}
-+
-+	provider.ops = ops;
-+	provider.data = priv;
-+	provider.type = type;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(register_tsm);
-+
-+int unregister_tsm(const struct tsm_ops *ops)
-+{
-+	guard(rwsem_write)(&tsm_rwsem);
-+	if (ops != provider.ops)
-+		return -EBUSY;
-+	provider.ops = NULL;
-+	provider.data = NULL;
-+	provider.type = NULL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(unregister_tsm);
-+
-+static int __init tsm_init(void)
-+{
-+	struct config_group *root = &tsm_configfs.su_group;
-+	struct config_group *tsm;
-+	int rc;
-+
-+	config_group_init(root);
-+	rc = configfs_register_subsystem(&tsm_configfs);
-+	if (rc)
-+		return rc;
-+
-+	tsm = configfs_register_default_group(root, "report",
-+					      &tsm_reports_type);
-+	if (IS_ERR(tsm)) {
-+		configfs_unregister_subsystem(&tsm_configfs);
-+		return PTR_ERR(tsm);
-+	}
-+	tsm_report_group = tsm;
-+
-+	return 0;
-+}
-+module_init(tsm_init);
-+
-+static void __exit tsm_exit(void)
-+{
-+	configfs_unregister_default_group(tsm_report_group);
-+	configfs_unregister_subsystem(&tsm_configfs);
-+}
-+module_exit(tsm_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Provide Trusted Security Module attestation reports via configfs");
-diff --git a/include/linux/tsm.h b/include/linux/tsm.h
-new file mode 100644
-index 000000000000..4b110b69a330
---- /dev/null
-+++ b/include/linux/tsm.h
-@@ -0,0 +1,54 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __TSM_H
-+#define __TSM_H
-+
-+#include <linux/sizes.h>
-+#include <linux/types.h>
-+#include <linux/device.h>
-+
-+#define TSM_INBLOB_MAX 64
-+#define TSM_OUTBLOB_MAX SZ_32K
-+
-+/*
-+ * Privilege level is a nested permission concept to allow confidential
-+ * guests to partition address space, 4-levels are supported.
-+ */
-+#define TSM_PRIVLEVEL_MAX 3
-+
-+enum tsm_format {
-+	TSM_FORMAT_DEFAULT,
-+	TSM_FORMAT_EXTENDED,
-+};
-+
-+/**
-+ * struct tsm_desc - option descriptor for generating tsm report blobs
-+ * @privlevel: optional privilege level to associate with @outblob
-+ * @inblob_len: sizeof @inblob
-+ * @inblob: arbitrary input data
-+ * @outblob_format: for TSMs with an "extended" format
-+ */
-+struct tsm_desc {
-+	unsigned int privlevel;
-+	size_t inblob_len;
-+	u8 inblob[TSM_INBLOB_MAX];
-+	enum tsm_format outblob_format;
-+};
-+
-+/*
-+ * arch specific ops, only one is expected to be registered at a time
-+ * i.e. only one of SEV, TDX, COVE, etc.
-+ */
-+struct tsm_ops {
-+	const char *name;
-+	const int privlevel_floor;
-+	u8 *(*report_new)(const struct tsm_desc *desc, void *data,
-+			  size_t *outblob_len);
-+};
-+
-+extern const struct config_item_type tsm_report_ext_type;
-+extern const struct config_item_type tsm_report_default_type;
-+
-+int register_tsm(const struct tsm_ops *ops, void *priv,
-+		 const struct config_item_type *type);
-+int unregister_tsm(const struct tsm_ops *ops);
-+#endif /* __TSM_H */
+ 
+ 	/*
+ 	 * Initialize the intermediate buffer with all zeros. This buffer
+@@ -604,21 +619,19 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
+ 	if (arg->vmm_error == SNP_GUEST_VMM_ERR_INVALID_LEN) {
+ 		req.certs_len = snp_dev->input.data_npages << PAGE_SHIFT;
+ 
+-		if (copy_to_user((void __user *)arg->req_data, &req, sizeof(req)))
++		if (copy_to_sockptr(io->req_data, &req, sizeof(req)))
+ 			ret = -EFAULT;
+ 	}
+ 
+ 	if (ret)
+ 		goto e_free;
+ 
+-	if (npages &&
+-	    copy_to_user((void __user *)req.certs_address, snp_dev->certs_data,
+-			 req.certs_len)) {
++	if (npages && copy_to_sockptr(certs_address, snp_dev->certs_data, req.certs_len)) {
+ 		ret = -EFAULT;
+ 		goto e_free;
+ 	}
+ 
+-	if (copy_to_user((void __user *)arg->resp_data, resp, sizeof(*resp)))
++	if (copy_to_sockptr(io->resp_data, resp, sizeof(*resp)))
+ 		ret = -EFAULT;
+ 
+ e_free:
+@@ -631,6 +644,7 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
+ 	struct snp_guest_dev *snp_dev = to_snp_dev(file);
+ 	void __user *argp = (void __user *)arg;
+ 	struct snp_guest_request_ioctl input;
++	struct snp_req_resp io;
+ 	int ret = -ENOTTY;
+ 
+ 	if (copy_from_user(&input, argp, sizeof(input)))
+@@ -651,15 +665,17 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
+ 		return -ENOTTY;
+ 	}
+ 
++	io.req_data = USER_SOCKPTR((void __user *)input.req_data);
++	io.resp_data = USER_SOCKPTR((void __user *)input.resp_data);
+ 	switch (ioctl) {
+ 	case SNP_GET_REPORT:
+-		ret = get_report(snp_dev, &input);
++		ret = get_report(snp_dev, &input, &io);
+ 		break;
+ 	case SNP_GET_DERIVED_KEY:
+ 		ret = get_derived_key(snp_dev, &input);
+ 		break;
+ 	case SNP_GET_EXT_REPORT:
+-		ret = get_ext_report(snp_dev, &input);
++		ret = get_ext_report(snp_dev, &input, &io);
+ 		break;
+ 	default:
+ 		break;
 
