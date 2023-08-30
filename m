@@ -2,261 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCF078E309
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C2278E30E
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344368AbjH3XIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 19:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59952 "EHLO
+        id S239347AbjH3XKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344422AbjH3XHp (ORCPT
+        with ESMTP id S233221AbjH3XKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 19:07:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487E8B8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693436854; x=1724972854;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DM6+flIcD8OEGBYhKO07Kjcz9dVXaSyFaEs+hcpmUfs=;
-  b=lDNphFkBAj/fEzKAG54Y5KJPZ8N3tpDpbdDoOFiHIS4Gl8dHBsFmCEcO
-   D3badnUwX0j7QDg18gWGsznJ89JrpirLtJ7iP/B9RqKZt2hc/xU3A++sy
-   Jo2NUcAQbToVH4+pwu8ZKFdABoDYHl61cxk3C8V2CIGm7zY1oaGw5r3LW
-   YX5uAAGQw1w4BXIpESXhuJCCEcy3Qdos6Gh4iPq7YRHn1Eck9HRkLqC3t
-   G3AroOM2AdPNupGgOCY5hRtzNifiwJTk8oZRC4S/pLNLMqTKQe3tltsaL
-   fb84QlVYZbf/ykVC9UvHk78A8sLAZFjlixGylBknQ9Z7KLXbSgyBW+7pd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="360756523"
-X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="360756523"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 16:07:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="985946655"
-X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="985946655"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Aug 2023 16:07:29 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbUHY-000AJT-1V;
-        Wed, 30 Aug 2023 23:07:28 +0000
-Date:   Thu, 31 Aug 2023 07:06:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH v4 10/11] ASoC: SOF: Intel: Move binding to display
- driver outside of deferred probe
-Message-ID: <202308310618.kqqYvniK-lkp@intel.com>
-References: <20230830153652.217855-11-maarten.lankhorst@linux.intel.com>
+        Wed, 30 Aug 2023 19:10:41 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12EF8F
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:10:36 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50087d47d4dso585331e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:10:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693437034; x=1694041834; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f1He+K1JiC8cosFsoTmSeNWYx/xdJJEuHrtfUOyTaJ8=;
+        b=GsZJ022/++aeTu29tRi4njodlOavULOgcxq1DQaN7dy0Y+XHiV4z7kXO0gWkv0fFu3
+         dBzBDHXwi7Pp5H8LXEgTxVQvT+EKM1l8oCNIBTJxHqhxJMRRWdUpLAuRyK0+6+18DZB8
+         U+MRvQf1ttTWv8fqRondyt0P0KGsH5RRtGOG8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693437034; x=1694041834;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f1He+K1JiC8cosFsoTmSeNWYx/xdJJEuHrtfUOyTaJ8=;
+        b=ctHQx5/RVeJ2p41o1x8Kbl9/amGqm+zFzlItu5b/mEk0Z/M9gP8wHGIWCjfktluraA
+         wMV3v2kEYlLSHadMl4QbBxHeuYDRbUbVKbqVuNTaTMTcN31A1hxFsZDZnQbf7YCMrgds
+         byKChEUjtkYh2At5KHLL2RkfyE+2IZ4ffg6FhbI2CuPzrKX0AGgdxjuRAtTvPIhlSTMt
+         kqowY+Y661BXl3nBlNDfYgW4bM0DAeUxYM1i0SQgsWIjbVpLTGWgs9qCMvgIw509grxC
+         NniEX4XOHYn9S9sHtdiMQ2m4NK/W/4SnVqtRylzb/MWNTgQvARE6v2UG0w8Z7T4e4lhn
+         JWtA==
+X-Gm-Message-State: AOJu0Yyf1WvUcjdO1QGObXVT/vn5dY3nWLaWf70gPYFSckPHnFZNsMNZ
+        AfQVL6Ls9AJt/qievRKWNx7/vFZKUlHdjoJJlwopu94j
+X-Google-Smtp-Source: AGHT+IHvMh9mhYkhXhh62sGsrVuz6ujwAC59M8yj6vHJUQ2tEyLYZeSwjXi03lSzl6rJ7GDdx4WAcw==
+X-Received: by 2002:a05:6512:a83:b0:4fb:8bab:48b6 with SMTP id m3-20020a0565120a8300b004fb8bab48b6mr2810026lfu.52.1693437034282;
+        Wed, 30 Aug 2023 16:10:34 -0700 (PDT)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id p27-20020a17090635db00b009a168ab6ee2sm70229ejb.164.2023.08.30.16.10.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 16:10:33 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso18575e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:10:33 -0700 (PDT)
+X-Received: by 2002:a05:600c:1d19:b0:401:a494:2bbb with SMTP id
+ l25-20020a05600c1d1900b00401a4942bbbmr30179wms.5.1693437033358; Wed, 30 Aug
+ 2023 16:10:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830153652.217855-11-maarten.lankhorst@linux.intel.com>
+References: <20230804210644.1862287-1-dianders@chromium.org>
+ <20230804140605.RFC.4.I930069a32baab6faf46d6b234f89613b5cec0f14@changeid>
+ <bphkopaq76imqzut7xrx7aprqybhx3veajdympqhig2wqlix6c@64ck23rc5cv7>
+ <CAD=FV=XiVkoCsjin4R74nkcd8vzOq9uPq+o5cRjd=YOoPXuQkg@mail.gmail.com>
+ <lhd6ai7d6swlxhisjhikytguor7pptrymo3bmfwej4k7zqrnv4@hp2gvhw7mh3m>
+ <CAD=FV=XUhzguFCC=aKzHFMV0bBnZzkHXP_tx+P=PNkVr=8SnTA@mail.gmail.com> <mumiep5q7x7qj7k64h3cyodxrgk737iy5rum5keguquwymf2gy@3qruwfrqjgy7>
+In-Reply-To: <mumiep5q7x7qj7k64h3cyodxrgk737iy5rum5keguquwymf2gy@3qruwfrqjgy7>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 30 Aug 2023 16:10:20 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VEene+nr1us87iA+bomxzQ039r-E+wqvizvFGbxXjDvA@mail.gmail.com>
+Message-ID: <CAD=FV=VEene+nr1us87iA+bomxzQ039r-E+wqvizvFGbxXjDvA@mail.gmail.com>
+Subject: Re: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maarten,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On Tue, Aug 29, 2023 at 1:38=E2=80=AFAM Maxime Ripard <mripard@kernel.org> =
+wrote:
+>
+> On Mon, Aug 28, 2023 at 09:06:29AM -0700, Doug Anderson wrote:
+> > > > Shutdown is called any time you reboot a device. That means that if=
+ a
+> > > > DRM driver is _not_ calling drm_atomic_helper_shutdown() on the
+> > > > panel's behalf at shutdown time then the panel won't be powered off
+> > > > properly. This feels to me like something that might actually matte=
+r.
+> > >
+> > > It does matter. What I disagree on is that you suggest working around
+> > > that brokenness in the core framework. What I'm saying is driver is
+> > > broken, we should keep the core framework sane and fix it in the driv=
+er.
+> > >
+> > > It should be fairly easy with a coccinelle script to figure out which
+> > > panels are affected, and to add that call in remove.
+> >
+> > I think I'm confused here. I've already figured out which panels are
+> > affected in my patch series, right? It's the set of panels that today
+> > try to power the panel off in their shutdown call, right? ...but I
+> > think we can't add the call you're suggesting,
+> > drm_atomic_helper_shutdown(), to the _panel_'s shutdown callback, can
+> > we? We need to add it to the shutdown callback of the top-level DRM
+> > driver, right?
+>
+> I have no idea what happens if we just unbind the panel device from its
+> driver.
+>
+> If we can't, then it's all fine. If we can, then we need figure out how
+> to unregister the DRM device (or block the unbinding from happening).
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on tiwai-sound/for-next tiwai-sound/for-linus linus/master next-20230830]
-[cannot apply to v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Nothing prevents unbinding the panel driver directly. I just confirmed
+on my sc7180-lazor:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Maarten-Lankhorst/ASoC-SOF-core-add-no_wq-probe-and-remove-callbacks/20230831-033512
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230830153652.217855-11-maarten.lankhorst%40linux.intel.com
-patch subject: [PATCH v4 10/11] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230831/202308310618.kqqYvniK-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308310618.kqqYvniK-lkp@intel.com/reproduce)
+cd /sys/bus/dp-aux/drivers/panel-simple-dp-aux
+echo aux-2-0008 > unbind
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308310618.kqqYvniK-lkp@intel.com/
+...no errors happened and the panel unbound. I think this is as
+expected since I'm not aware of a way to prevent unbinding a driver. I
+think the relevant function is unbind_store() in bus.c, right? There
+is no failure code returned by device_driver_detach(). Presumably this
+is by design?
 
-All warnings (new ones prefixed by >>):
+FWIW, also trying to re-bind didn't work, also as expected (I think).
+I think the whole bridge chain would need to be resolved again and
+nothing I'm aware of makes that happen. Maybe I'm simply missing
+something in my understanding, of course.
 
-   sound/soc/sof/intel/hda.c: In function 'hda_dsp_probe':
->> sound/soc/sof/intel/hda.c:1173:26: warning: variable 'bus' set but not used [-Wunused-but-set-variable]
-    1173 |         struct hdac_bus *bus;
-         |                          ^~~
+If you want to attempt to tackle some of these issues then I'd be more
+than happy. I'm already waist deep in yak hair and I think this is too
+big of a task for me to add on.
+
+Should this issue block my work, then? Today, panels will at least
+cleanly power themselves off if someone tries to unbind them like
+that. If I remove the clean power off at driver unbind time and rely
+on the DRM driver to power panels off cleanly then if someone directly
+unbinds a panel like I've done above then it won't be power sequenced
+properly, right?
 
 
-vim +/bus +1173 sound/soc/sof/intel/hda.c
+> > > > Panels tend to be one of those things that really care about their
+> > > > power sequencing and can even get damaged (or not turn on properly
+> > > > next time) if sequencing is not done properly, so just removing thi=
+s
+> > > > code and putting the blame on the DRM driver seems scary to me.
+> > >
+> > > Sure, it's bad. But there's no difference compared to the approach yo=
+u
+> > > suggest in that patch: you created a helper, yes, but every driver wi=
+ll
+> > > still have to call that helper and if they don't, the panel will stil=
+l
+> > > be called and it's a bug. And we would have to convert everything to
+> > > that new helper.
+> > >
+> > > It's fundamentally the same discussion than what you were opposed to
+> > > above.
+> >
+> > I think the key difference here is that, if I understand correctly,
+> > drm_atomic_helper_shutdown() needs to be added to the top-level DRM
+> > driver, not to the panel itself. I guess I'm worried that I'll either
+> > miss a case or that simply adding a call to
+> > drm_atomic_helper_shutdown() in the top-level DRM driver will break
+> > something. Well, I suppose I can try it and see what happens...
+>
+> The more I think about this discussion, the more I think that the
+> original intent of the prepared/enabled flags were precisely there to
+> prevent a double-disable for drivers with drm_atomic_helper_shutdown(),
+> while still shutting down the panel resources when the panel is used
+> with a driver that doesn't call it.
 
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1168  
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1169  int hda_dsp_probe(struct snd_sof_dev *sdev)
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1170  {
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1171  	struct pci_dev *pci = to_pci_dev(sdev->dev);
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1172  	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-47f868f27a979a Pierre-Louis Bossart  2023-08-30 @1173  	struct hdac_bus *bus;
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1174  	int ret = 0;
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1175  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1176  	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
-dd96daca6c83ec Liam Girdwood         2019-04-12  1177  						       PLATFORM_DEVID_NONE,
-dd96daca6c83ec Liam Girdwood         2019-04-12  1178  						       NULL, 0);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1179  	if (IS_ERR(hdev->dmic_dev)) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1180  		dev_err(sdev->dev, "error: failed to create DMIC device\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1181  		return PTR_ERR(hdev->dmic_dev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1182  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1183  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1184  	/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1185  	 * use position update IPC if either it is forced
-dd96daca6c83ec Liam Girdwood         2019-04-12  1186  	 * or we don't have other choice
-dd96daca6c83ec Liam Girdwood         2019-04-12  1187  	 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1188  #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_FORCE_IPC_POSITION)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1189  	hdev->no_ipc_position = 0;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1190  #else
-dd96daca6c83ec Liam Girdwood         2019-04-12  1191  	hdev->no_ipc_position = sof_ops(sdev)->pcm_pointer ? 1 : 0;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1192  #endif
-dd96daca6c83ec Liam Girdwood         2019-04-12  1193  
-1f7b5d52be130e Peter Ujfalusi        2023-04-04  1194  	if (sdev->dspless_mode_selected)
-1f7b5d52be130e Peter Ujfalusi        2023-04-04  1195  		hdev->no_ipc_position = 1;
-1f7b5d52be130e Peter Ujfalusi        2023-04-04  1196  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1197  	/* set up HDA base */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1198  	bus = sof_to_bus(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1199  
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1200  	if (sdev->dspless_mode_selected)
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1201  		goto skip_dsp_setup;
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1202  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1203  	/* DSP base */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1204  	sdev->bar[HDA_DSP_BAR] = pci_ioremap_bar(pci, HDA_DSP_BAR);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1205  	if (!sdev->bar[HDA_DSP_BAR]) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1206  		dev_err(sdev->dev, "error: ioremap error\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1207  		ret = -ENXIO;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1208  		goto hdac_bus_unmap;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1209  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1210  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1211  	sdev->mmio_bar = HDA_DSP_BAR;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1212  	sdev->mailbox_bar = HDA_DSP_BAR;
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1213  skip_dsp_setup:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1214  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1215  	/* allow 64bit DMA address if supported by H/W */
-ab152afa2427bb Takashi Iwai          2021-01-14  1216  	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(64))) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1217  		dev_dbg(sdev->dev, "DMA mask is 32 bit\n");
-ab152afa2427bb Takashi Iwai          2021-01-14  1218  		dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32));
-dd96daca6c83ec Liam Girdwood         2019-04-12  1219  	}
-8872fc0d045929 Takashi Iwai          2022-02-15  1220  	dma_set_max_seg_size(&pci->dev, UINT_MAX);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1221  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1222  	/* init streams */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1223  	ret = hda_dsp_stream_init(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1224  	if (ret < 0) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1225  		dev_err(sdev->dev, "error: failed to init streams\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1226  		/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1227  		 * not all errors are due to memory issues, but trying
-dd96daca6c83ec Liam Girdwood         2019-04-12  1228  		 * to free everything does not harm
-dd96daca6c83ec Liam Girdwood         2019-04-12  1229  		 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1230  		goto free_streams;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1231  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1232  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1233  	/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1234  	 * register our IRQ
-dd96daca6c83ec Liam Girdwood         2019-04-12  1235  	 * let's try to enable msi firstly
-dd96daca6c83ec Liam Girdwood         2019-04-12  1236  	 * if it fails, use legacy interrupt mode
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1237  	 * TODO: support msi multiple vectors
-dd96daca6c83ec Liam Girdwood         2019-04-12  1238  	 */
-bb67dd1878de57 Pierre-Louis Bossart  2019-08-06  1239  	if (hda_use_msi && pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_MSI) > 0) {
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1240  		dev_info(sdev->dev, "use msi interrupt mode\n");
-7c11af9fcdc425 Bard Liao             2019-12-04  1241  		sdev->ipc_irq = pci_irq_vector(pci, 0);
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1242  		/* initialised to "false" by kzalloc() */
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1243  		sdev->msi_enabled = true;
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1244  	}
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1245  
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1246  	if (!sdev->msi_enabled) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1247  		dev_info(sdev->dev, "use legacy interrupt mode\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1248  		/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1249  		 * in IO-APIC mode, hda->irq and ipc_irq are using the same
-dd96daca6c83ec Liam Girdwood         2019-04-12  1250  		 * irq number of pci->irq
-dd96daca6c83ec Liam Girdwood         2019-04-12  1251  		 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1252  		sdev->ipc_irq = pci->irq;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1253  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1254  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1255  	dev_dbg(sdev->dev, "using IPC IRQ %d\n", sdev->ipc_irq);
-7c11af9fcdc425 Bard Liao             2019-12-04  1256  	ret = request_threaded_irq(sdev->ipc_irq, hda_dsp_interrupt_handler,
-7c11af9fcdc425 Bard Liao             2019-12-04  1257  				   hda_dsp_interrupt_thread,
-7c11af9fcdc425 Bard Liao             2019-12-04  1258  				   IRQF_SHARED, "AudioDSP", sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1259  	if (ret < 0) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1260  		dev_err(sdev->dev, "error: failed to register IPC IRQ %d\n",
-dd96daca6c83ec Liam Girdwood         2019-04-12  1261  			sdev->ipc_irq);
-7c11af9fcdc425 Bard Liao             2019-12-04  1262  		goto free_irq_vector;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1263  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1264  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1265  	pci_set_master(pci);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1266  	synchronize_irq(pci->irq);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1267  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1268  	/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1269  	 * clear TCSEL to clear playback on some HD Audio
-dd96daca6c83ec Liam Girdwood         2019-04-12  1270  	 * codecs. PCI TCSEL is defined in the Intel manuals.
-dd96daca6c83ec Liam Girdwood         2019-04-12  1271  	 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1272  	snd_sof_pci_update_bits(sdev, PCI_TCSEL, 0x07, 0);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1273  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1274  	/* init HDA capabilities */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1275  	ret = hda_init_caps(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1276  	if (ret < 0)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1277  		goto free_ipc_irq;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1278  
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1279  	if (!sdev->dspless_mode_selected) {
-1f5253b08e06bc Zhu Yingjiang         2019-05-22  1280  		/* enable ppcap interrupt */
-1f5253b08e06bc Zhu Yingjiang         2019-05-22  1281  		hda_dsp_ctrl_ppcap_enable(sdev, true);
-1f5253b08e06bc Zhu Yingjiang         2019-05-22  1282  		hda_dsp_ctrl_ppcap_int_enable(sdev, true);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1283  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1284  		/* set default mailbox offset for FW ready message */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1285  		sdev->dsp_box.offset = HDA_DSP_MBOX_UPLINK_OFFSET;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1286  
-63e51fd33fef04 Ranjani Sridharan     2020-01-29  1287  		INIT_DELAYED_WORK(&hdev->d0i3_work, hda_dsp_d0i3_work);
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1288  	}
-63e51fd33fef04 Ranjani Sridharan     2020-01-29  1289  
-e2379d4a83da44 Pierre-Louis Bossart  2022-09-20  1290  	init_waitqueue_head(&hdev->waitq);
-e2379d4a83da44 Pierre-Louis Bossart  2022-09-20  1291  
-95fa7a62e16463 Pierre-Louis Bossart  2022-04-21  1292  	hdev->nhlt = intel_nhlt_init(sdev->dev);
-95fa7a62e16463 Pierre-Louis Bossart  2022-04-21  1293  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1294  	return 0;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1295  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1296  free_ipc_irq:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1297  	free_irq(sdev->ipc_irq, sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1298  free_irq_vector:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1299  	if (sdev->msi_enabled)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1300  		pci_free_irq_vectors(pci);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1301  free_streams:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1302  	hda_dsp_stream_free(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1303  /* dsp_unmap: not currently used */
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1304  	if (!sdev->dspless_mode_selected)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1305  		iounmap(sdev->bar[HDA_DSP_BAR]);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1306  hdac_bus_unmap:
-5bb0ecddb2a7f6 Pierre-Louis Bossart  2021-03-01  1307  	platform_device_unregister(hdev->dmic_dev);
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1308  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1309  	return ret;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1310  }
-dd96daca6c83ec Liam Girdwood         2019-04-12  1311  
+Sure, that makes sense.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+> Honestly, I think the right thing to do here is to make every driver
+> call shutdown, and then you don't need the reference counting anymore.
+>
+> I had a shot at a (possibly very suboptimal) coccinelle script to look
+> for drivers that are KMS drivers but don't call
+> drm_atomic_helper_shutdown() at shutdown.
+>
+> https://paste.ack.tf/bb42e6@raw
+
+Your paste seems to have expired. Maybe you used the default and had
+it expire in 1 day? Maybe you could just paste the script in email so
+it'll be archived for posterity on lore?
+
+
+> The result is:
+>
+> $ make coccicheck COCCI=3D./test-drm-shutdown.cocci MODE=3Dreport
+>
+> ...
+>
+> ./drivers/gpu/drm/sti/sti_drv.c:262:30-49: ERROR: KMS driver sti_platform=
+_driver is missing shutdown implementation
+> ./drivers/gpu/drm/armada/armada_drv.c:245:30-56: ERROR: KMS driver armada=
+_drm_platform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:1637:25-39: ERROR: KMS driver vmw_p=
+ci_driver is missing shutdown implementation
+> ./drivers/gpu/drm/vboxvideo/vbox_drv.c:163:25-40: ERROR: KMS driver vbox_=
+pci_driver is missing shutdown implementation
+> ./drivers/gpu/drm/tiny/arcpgu.c:424:30-52: ERROR: KMS driver arcpgu_platf=
+orm_driver is missing shutdown implementation
+> ./drivers/gpu/drm/omapdrm/omap_drv.c:856:30-34: ERROR: KMS driver pdev is=
+ missing shutdown implementation
+> ./drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c:361:30-57: ERROR: KMS driver =
+fsl_dcu_drm_platform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/tve200/tve200_drv.c:261:30-43: ERROR: KMS driver tve200=
+_driver is missing shutdown implementation
+> ./drivers/gpu/drm/stm/drv.c:235:30-53: ERROR: KMS driver stm_drm_platform=
+_driver is missing shutdown implementation
+> ./drivers/gpu/drm/qxl/qxl_drv.c:267:25-39: ERROR: KMS driver qxl_pci_driv=
+er is missing shutdown implementation
+> ./drivers/gpu/drm/logicvc/logicvc_drm.c:494:30-57: ERROR: KMS driver logi=
+cvc_drm_platform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/sun4i/sun4i_drv.c:439:30-55: ERROR: KMS driver sun4i_dr=
+v_platform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c:827:30-60: ERROR: KMS driv=
+er atmel_hlcdc_dc_platform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/mcde/mcde_drv.c:471:30-41: ERROR: KMS driver mcde_drive=
+r is missing shutdown implementation
+> ./drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c:366:25-41: ERROR: KMS d=
+river hibmc_pci_driver is missing shutdown implementation
+> ./drivers/gpu/drm/aspeed/aspeed_gfx_drv.c:365:30-56: ERROR: KMS driver as=
+peed_gfx_platform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/ingenic/ingenic-drm-drv.c:1607:30-48: ERROR: KMS driver=
+ ingenic_drm_driver is missing shutdown implementation
+> ./drivers/gpu/drm/arm/malidp_drv.c:982:30-52: ERROR: KMS driver malidp_pl=
+atform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/arm/hdlcd_drv.c:400:30-51: ERROR: KMS driver hdlcd_plat=
+form_driver is missing shutdown implementation
+> ./drivers/gpu/drm/kmb/kmb_drv.c:622:30-49: ERROR: KMS driver kmb_platform=
+_driver is missing shutdown implementation
+> ./drivers/gpu/drm/exynos/exynos_drm_drv.c:356:30-56: ERROR: KMS driver ex=
+ynos_drm_platform_driver is missing shutdown implementation
+> ./drivers/gpu/drm/tiny/bochs.c:718:25-41: ERROR: KMS driver bochs_pci_dri=
+ver is missing shutdown implementation
+> ./drivers/gpu/drm/tiny/cirrus.c:746:25-42: ERROR: KMS driver cirrus_pci_d=
+river is missing shutdown implementation
+> ./drivers/gpu/drm/mediatek/mtk_drm_drv.c:954:30-53: ERROR: KMS driver mtk=
+_drm_platform_driver is missing shutdown implementation
+>
+> It's a significant number of drivers, but it's not the end of the world,
+> really.
+
+My own analysis shows more than that, actually. I can't look at your
+script since it's expired, but as one example your list seems to have
+neither imx/ipuv3 nor imx/dcss. imx/ipuv3 seems to be missing
+drm_atomic_helper_shutdown() at both unbind and system shutdown time.
+imx/dcss seems to be missing drm_atomic_helper_shutdown() at system
+shutdown time, though it does have it at driver remove time. Did I
+mess up in identifying those two drivers as ones that need fixing?
+
+I can't give you an exact list because I don't have a great search
+that identifies the problem. I'm mostly looking for all instances of
+drm_dev_register() where the driver is "DRIVER_MODESET" and then
+manually checking their use of drm_atomic_helper_shutdown(). Until I
+get through them all I won't know the count, and it's a manual
+process.
+
+
+-Doug
