@@ -2,184 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D5E78D35A
+	by mail.lfdr.de (Postfix) with ESMTP id 26F0678D359
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238787AbjH3G0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 02:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        id S239455AbjH3G0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 02:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjH3G0D (ORCPT
+        with ESMTP id S231588AbjH3G0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:26:03 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F9A1BB;
-        Tue, 29 Aug 2023 23:26:01 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-792726d3aeeso177061139f.0;
-        Tue, 29 Aug 2023 23:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693376760; x=1693981560; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=7xbJc1r68PN8GsQ7bbtmLEqUkBNyKM4blhwGomh3nI4=;
-        b=WGiyCgJDmf8Dtm1gpVA+UM6y/5jWlo9iYtOOUIaZB1fhpHqGAiDncqkusAEf6Cwe7S
-         uXgkd6IcMtyI8OaKG4VxZkjtX2auiwQi36Pho/4oyVD8tm4P00/egUZLdXSOQT2A8hWd
-         8T8z22GnuouTF6uXVls6LPKKgFttrE5z3W9kOz8ycyfoijixDB0+FNRgJwolkIvd0z4G
-         sZSKQy5lYEVKbce9YljqF/jTvlQkF44ZCM4wo7yq4JFewdhR6xpcPfvZ774ykpMRTdw+
-         8xlZSqlzOVYrjIKA9laa4CrhhG+WFqrRyyDARJDSQxZkQT3kVFVT4O3jaypE2Y155Hv5
-         AO+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693376760; x=1693981560;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7xbJc1r68PN8GsQ7bbtmLEqUkBNyKM4blhwGomh3nI4=;
-        b=lO9xQFAjN4v47kzRYsaCLFtPczmVFaH6EE+t/AwgmGMELw28eCZK0y5XYNjKSBeVvy
-         nV/dTBj84x9PckhLBR4iuSpCyQ/BMs8CaBJ66dY1s+VLxeEmLnPNpm1+PGcCsJiQq4Gz
-         F3xqFCVokCxj0vcp4ravS7xYhdsvWdUx50oTT1eC915Nn+xnUJ+8HR7EmMBlsuqvGa6A
-         JtDTHRs9fiPCnJIZDAMymMeM3neKoGtxFL3lqwV9RZJ8CA9aCPhVj3bdMouMbA13oQW3
-         Z2sK0iLX0ExL7bDHaIum8GgX3o1etGy7dL9XZFpvt2Fh2gBUkmG18A16WiUU5UDQN6r8
-         kqYg==
-X-Gm-Message-State: AOJu0YzDpDMvjSfN9zW8opbPi1dt1dA3sYYZ5EGEwQRjKI92HAfy5rND
-        PfPwkU5fDXFkOIy2/Y+ezPs=
-X-Google-Smtp-Source: AGHT+IF2BFXcuV65Sil8IN/9tLakBbbH0aMEM/VOpAOmEba+qdMlzb3ohQzG3d/gZzsGmCqQ7ftIjA==
-X-Received: by 2002:a6b:e801:0:b0:783:6272:afbb with SMTP id f1-20020a6be801000000b007836272afbbmr1718833ioh.9.1693376760389;
-        Tue, 29 Aug 2023 23:26:00 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q6-20020a02a306000000b0042bb394c249sm3502711jai.38.2023.08.29.23.25.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 23:25:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a2353ce6-bd39-f5ca-ad81-63b061147400@roeck-us.net>
-Date:   Tue, 29 Aug 2023 23:25:57 -0700
+        Wed, 30 Aug 2023 02:26:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275CD1BB;
+        Tue, 29 Aug 2023 23:26:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BA32360E05;
+        Wed, 30 Aug 2023 06:26:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BABDC433C8;
+        Wed, 30 Aug 2023 06:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693376764;
+        bh=5CTRaQi87lWjlnEJg7LzQ49T5UnzTi0vTd1SjwA50cw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a6CVy3vAwAqiqNjRcl44SAEIcqzREnVPXyBJHY2g9sZmbunT1GBDyATpX6TB1ZKeL
+         iftxn9XFvTMVnKLs9ChzY61M2kWqd8B0a0+KXc9+xgggCOtyAwbngSAuTAYFxOCgqn
+         k4ZF1DMAD8Ie6vlwkTONkSA8kswHZDt2kw89j/Oo=
+Date:   Wed, 30 Aug 2023 08:26:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Maximilian Heyne <mheyne@amazon.de>
+Cc:     stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Larabel <Michael@michaellarabel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] mm: allow a controlled amount of unfairness in the page
+ lock
+Message-ID: <2023083048-eraser-imprison-5cbd@gregkh>
+References: <20230823061642.76949-1-mheyne@amazon.de>
+ <2023082731-crunching-second-ad89@gregkh>
+ <20230828101420.GA54787@dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4] usb: typec: qcom: Update the logic of regulator enable
- and disable
-Content-Language: en-US
-To:     quic_huliu@quicinc.com,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        subbaram@quicinc.com
-References: <20230830-qcom-tcpc-v4-1-c19b0984879b@quicinc.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230830-qcom-tcpc-v4-1-c19b0984879b@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230828101420.GA54787@dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 20:00, Hui Liu via B4 Relay wrote:
-> From: Hui Liu <quic_huliu@quicinc.com>
+On Mon, Aug 28, 2023 at 10:14:20AM +0000, Maximilian Heyne wrote:
+> On Sun, Aug 27, 2023 at 10:54:03AM +0200, Greg KH wrote:
+> > On Wed, Aug 23, 2023 at 06:16:42AM +0000, Maximilian Heyne wrote:
+> > > From: Linus Torvalds <torvalds@linux-foundation.org>
+> > >
+> > > [ upstream commit 5ef64cc8987a9211d3f3667331ba3411a94ddc79 ]
+> > >
+> > > Commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic") made
+> > > the page locking entirely fair, in that if a waiter came in while the
+> > > lock was held, the lock would be transferred to the lockers strictly in
+> > > order.
+> > >
+> > > That was intended to finally get rid of the long-reported watchdog
+> > > failures that involved the page lock under extreme load, where a process
+> > > could end up waiting essentially forever, as other page lockers stole
+> > > the lock from under it.
+> > >
+> > > It also improved some benchmarks, but it ended up causing huge
+> > > performance regressions on others, simply because fair lock behavior
+> > > doesn't end up giving out the lock as aggressively, causing better
+> > > worst-case latency, but potentially much worse average latencies and
+> > > throughput.
+> > >
+> > > Instead of reverting that change entirely, this introduces a controlled
+> > > amount of unfairness, with a sysctl knob to tune it if somebody needs
+> > > to.  But the default value should hopefully be good for any normal load,
+> > > allowing a few rounds of lock stealing, but enforcing the strict
+> > > ordering before the lock has been stolen too many times.
+> > >
+> > > There is also a hint from Matthieu Baerts that the fair page coloring
+> > > may end up exposing an ABBA deadlock that is hidden by the usual
+> > > optimistic lock stealing, and while the unfairness doesn't fix the
+> > > fundamental issue (and I'm still looking at that), it avoids it in
+> > > practice.
+> > >
+> > > The amount of unfairness can be modified by writing a new value to the
+> > > 'sysctl_page_lock_unfairness' variable (default value of 5, exposed
+> > > through /proc/sys/vm/page_lock_unfairness), but that is hopefully
+> > > something we'd use mainly for debugging rather than being necessary for
+> > > any deep system tuning.
+> > >
+> > > This whole issue has exposed just how critical the page lock can be, and
+> > > how contended it gets under certain locks.  And the main contention
+> > > doesn't really seem to be anything related to IO (which was the origin
+> > > of this lock), but for things like just verifying that the page file
+> > > mapping is stable while faulting in the page into a page table.
+> > >
+> > > Link: https://lore.kernel.org/linux-fsdevel/ed8442fd-6f54-dd84-cd4a-941e8b7ee603@MichaelLarabel.com/
+> > > Link: https://www.phoronix.com/scan.php?page=article&item=linux-50-59&num=1
+> > > Link: https://lore.kernel.org/linux-fsdevel/c560a38d-8313-51fb-b1ec-e904bd8836bc@tessares.net/
+> > > Reported-and-tested-by: Michael Larabel <Michael@michaellarabel.com>
+> > > Tested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> > > Cc: Dave Chinner <david@fromorbit.com>
+> > > Cc: Matthew Wilcox <willy@infradead.org>
+> > > Cc: Chris Mason <clm@fb.com>
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Cc: Amir Goldstein <amir73il@gmail.com>
+> > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > CC: <stable@vger.kernel.org> # 5.4
+> > > [ mheyne: fixed contextual conflict in mm/filemap.c due to missing
+> > >   commit c7510ab2cf5c ("mm: abstract out wake_page_match() from
+> > >   wake_page_function()"). Added WQ_FLAG_CUSTOM due to missing commit
+> > >   7f26482a872c ("locking/percpu-rwsem: Remove the embedded rwsem") ]
+> > > Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+> > > ---
+> > >  include/linux/mm.h   |   2 +
+> > >  include/linux/wait.h |   2 +
+> > >  kernel/sysctl.c      |   8 +++
+> > >  mm/filemap.c         | 160 ++++++++++++++++++++++++++++++++++---------
+> > >  4 files changed, 141 insertions(+), 31 deletions(-)
+> > 
+> > This was also backported here:
+> >         https://lore.kernel.org/r/20230821222547.483583-1-saeed.mirzamohammadi@oracle.com
+> > before yours.
+> > 
+> > I took that one, can you verify that it is identical to yours and works
+> > properly as well?
 > 
-> Removed the call logic of disable and enable regulator
-> in reset function. Enable the regulator in qcom_pmic_typec_start
-> function and disable it in qcom_pmic_typec_stop function to
-> avoid unbalanced regulator disable warnings.
+> Yes it's identical and fixes the performance regression seen. Therefore,
 > 
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Please drop.
-
-> Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
-> ---
-> Changes in v4:
-> - Removed regulator_enable and regulator_diable from
-> pmic_typec_pdphy_reset function. And enable regulator in
-
-... because I do not see the above change, and way too much changed
-in the code since I sent a Reviewed-by: to make it appropriate
-to keep it.
-
-Actually, I don't see a difference between v3 and v4 of your patch.
-
-Guenter
-
-> qcom_pmic_typec_pdphy_start function and disable it in
-> qcom_pmic_typec_pdphy_stop function.
-> - Link to v3: https://lore.kernel.org/r/20230828-qcom-tcpc-v3-1-e95b7afa34d9@quicinc.com
+>   Tested-by: Maximilian Heyne <mheyne@amazon.de>
 > 
-> Changes in v3:
-> - Take Bryan's proposal to remove enable/disable operation in pdphy
-> enable and pdphy disable function, then enable regulator in pdphy start
-> function and disable it in pdphy stop function.
-> - Link to v2: https://lore.kernel.org/r/20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com
-> 
-> Changes in v2:
-> - Add Fixes tag
-> - Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
-> ---
->   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> index bb0b8479d80f..52c81378e36e 100644
-> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-> @@ -381,10 +381,6 @@ static int qcom_pmic_typec_pdphy_enable(struct pmic_typec_pdphy *pmic_typec_pdph
->   	struct device *dev = pmic_typec_pdphy->dev;
->   	int ret;
->   
-> -	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
-> -	if (ret)
-> -		return ret;
-> -
->   	/* PD 2.0, DR=TYPEC_DEVICE, PR=TYPEC_SINK */
->   	ret = regmap_update_bits(pmic_typec_pdphy->regmap,
->   				 pmic_typec_pdphy->base + USB_PDPHY_MSG_CONFIG_REG,
-> @@ -422,8 +418,6 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
->   	ret = regmap_write(pmic_typec_pdphy->regmap,
->   			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
->   
-> -	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
-> -
->   	return ret;
->   }
->   
-> @@ -447,6 +441,10 @@ int qcom_pmic_typec_pdphy_start(struct pmic_typec_pdphy *pmic_typec_pdphy,
->   	int i;
->   	int ret;
->   
-> +	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
-> +	if (ret)
-> +		return ret;
-> +
->   	pmic_typec_pdphy->tcpm_port = tcpm_port;
->   
->   	ret = pmic_typec_pdphy_reset(pmic_typec_pdphy);
-> @@ -467,6 +465,8 @@ void qcom_pmic_typec_pdphy_stop(struct pmic_typec_pdphy *pmic_typec_pdphy)
->   		disable_irq(pmic_typec_pdphy->irq_data[i].irq);
->   
->   	qcom_pmic_typec_pdphy_reset_on(pmic_typec_pdphy);
-> +
-> +	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
->   }
->   
->   struct pmic_typec_pdphy *qcom_pmic_typec_pdphy_alloc(struct device *dev)
-> 
-> ---
-> base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
-> change-id: 20230822-qcom-tcpc-d41954ac65fa
-> 
-> Best regards,
+> for the other patch.
 
+Thanks, I've added this to the patch now.
+
+greg k-h
