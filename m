@@ -2,164 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3740E78D147
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536EE78D149
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 02:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239437AbjH3AqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 20:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
+        id S241469AbjH3Aqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 20:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240015AbjH3Apl (ORCPT
+        with ESMTP id S240106AbjH3AqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 20:45:41 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B5219A
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:45:38 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-27178b6417fso2215286a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693356338; x=1693961138; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=03m2A+TmUzgwhqrt9lI9ZZVbFhAvl2ARTiZlbzfRzC0=;
-        b=Uix+AnNQO6XxqHVpvEolVOeSvw3DGoCXo7B7OWveMONkzJ9dS5uzMnvyhxz58r6sEd
-         olztLVgw6tPViA2LYIPny7ID4YyFPvXm0aRwQdMgOUP/3zz8DxrHNV4sRyopcXl0E4Ph
-         9lyCF9eiWsDxD6P77u+P//Cqr6WNZvhUzep80=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693356338; x=1693961138;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=03m2A+TmUzgwhqrt9lI9ZZVbFhAvl2ARTiZlbzfRzC0=;
-        b=OL5X2ULSo1fW6I39K5L242Iy+lecr7anQ71so3OqJOnRusSlWSDBvXIi0KstUT1Sb/
-         nj9oyMfBtErkmWBfRBaBq/tro3M9LnXDUfrJrsAsHff1h6X0yavMSY7s/sX88HFLOQjN
-         RAT6SRBTyHLgIqKcRdxGZaVVjCgPFF/iz75NSiyyUMEf3451BfXgzfoZriXHzhLciPZX
-         A7kBLJfh86i+NXE2HobPnRz5SUIOh1QxeW9unmoSUjXvtt6ZL/AG0z8EiAPscqYHwO2J
-         KpYvdV2lYuHeDbrRURcEd0UycujqCMtRjwXwvlc31akOhOMkCkNaBKwGRdzXklDr2hCq
-         8PKQ==
-X-Gm-Message-State: AOJu0Yw67r3Zq4+Xfnrm8r4lvwx/fSm1xMSXKJ4DtPeVnxOt/qrEzIzS
-        9natsqbwvfl9QnLtk52BW6DwZw==
-X-Google-Smtp-Source: AGHT+IHYjpZQOYH32iyhG+dAWZLq6k37sN9+T4hVIVxiqFu/DJ8Z4UetURj4TiF4f5nBLcGIckVxDQ==
-X-Received: by 2002:a17:90a:ea87:b0:268:3ea0:7160 with SMTP id h7-20020a17090aea8700b002683ea07160mr850064pjz.0.1693356337723;
-        Tue, 29 Aug 2023 17:45:37 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id t24-20020a17090aba9800b0026b4ca7f62csm162223pjr.39.2023.08.29.17.45.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 17:45:37 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 09:45:33 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kconfig: add warn-unknown-symbols sanity check
-Message-ID: <20230830004533.GG3913@google.com>
-References: <20230826071359.2060501-1-senozhatsky@chromium.org>
- <CAK7LNAROnZpZiOC4eS5kTcv4Q2YDrE9KYBD-dVcfXwBPQWvbmg@mail.gmail.com>
+        Tue, 29 Aug 2023 20:46:14 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ADACD6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 17:46:09 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37TNdYmW016406;
+        Wed, 30 Aug 2023 00:45:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=PhGhyYE8rmDQgefAGYRE87G5qSJoJ4aDuH/NIUFX7f4=;
+ b=HF/9BymVSG3hRuoIsfY6qWq8Q1SpEA/ZAuF7LYD3c2/9oIQttJFPIEo9aDGZHIq2pUgy
+ YyQHZGzMVLMJqlL2qoe29l6jm3Kv5VzzODf+MybM7LquzhDUtt9vVdeZdhb36KKVsbU6
+ EPnOovz081O+CgWqtOpAJFGJwbsgInsSf1ERLvpAOGLQ/kjnwSutX1les9kjCxkivH/n
+ ojbjYhhfkXPCaTqqUMq++LKf3mC0qIurqupc3aBZk5+zAt9x54C7g5/tbYp1Sc9dnSLa
+ ziBW3Ozry9omgwvtnec+th4GQWKFxrrrUsIWD1KTTZ6TX4q+42o9zoF4Sr2t43ZG8zTw WA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9xt6aea-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Aug 2023 00:45:52 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37TMguDG037459;
+        Wed, 30 Aug 2023 00:45:51 GMT
+Received: from localhost.us.oracle.com (dhcp-10-65-180-98.vpn.oracle.com [10.65.180.98])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sr6mnvyk1-1;
+        Wed, 30 Aug 2023 00:45:51 +0000
+From:   Anthony Yznaga <anthony.yznaga@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, 0x7f454c46@gmail.com, bgeffon@google.com
+Subject: [PATCH] mm/mremap: fix unaccount of memory on vma_merge() failure
+Date:   Tue, 29 Aug 2023 17:45:49 -0700
+Message-Id: <20230830004549.16131-1-anthony.yznaga@oracle.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAROnZpZiOC4eS5kTcv4Q2YDrE9KYBD-dVcfXwBPQWvbmg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=860 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300005
+X-Proofpoint-ORIG-GUID: -fY7Djomw6iorEFyRNUJoiX52HsYwb2C
+X-Proofpoint-GUID: -fY7Djomw6iorEFyRNUJoiX52HsYwb2C
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/29 22:13), Masahiro Yamada wrote:
-> > +KCONFIG_WARN_UNKNOWN_SYMBOLS
-> > +----------------------------
-> > +This environment variable makes Kconfig warn about all unrecognized
-> > +symbols in the .config file.
-> 
-> 
-> This warns not only for the .config but also defconfig files.
-> 
-> Could you reword it?
-> 
-> For example,
-> 
->  "symbols in the config input".
+Fix mremap so that only accounted memory is unaccounted if the
+mapping is expandable but vma_merge() fails.
 
-Done.
+Fixes: fdbef6149135 ("mm/mremap: don't account pages in vma_to_resize()")
+Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+---
+ mm/mremap.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> 
-> 
-> > +
-> > +KCONFIG_WERROR
-> > +--------------
-> > +If set, Kconfig will treat `KCONFIG_WARN_UNKNOWN_SYMBOLS` warnings as
-> > +errors.
-> 
-> My hope is to turn other warnings in the config file into errors.
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 056478c106ee..07cdb04d4ab5 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -1037,12 +1037,14 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+ 			pgoff_t extension_pgoff = vma->vm_pgoff +
+ 				((extension_start - vma->vm_start) >> PAGE_SHIFT);
+ 			VMA_ITERATOR(vmi, mm, extension_start);
++			long charged = 0;
+ 
+ 			if (vma->vm_flags & VM_ACCOUNT) {
+ 				if (security_vm_enough_memory_mm(mm, pages)) {
+ 					ret = -ENOMEM;
+ 					goto out;
+ 				}
++				charged = pages;
+ 			}
+ 
+ 			/*
+@@ -1058,7 +1060,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+ 				vma->vm_file, extension_pgoff, vma_policy(vma),
+ 				vma->vm_userfaultfd_ctx, anon_vma_name(vma));
+ 			if (!vma) {
+-				vm_unacct_memory(pages);
++				vm_unacct_memory(charged);
+ 				ret = -ENOMEM;
+ 				goto out;
+ 			}
+-- 
+2.39.3
 
-Done.
-
-> > +++ b/scripts/kconfig/confdata.c
-> > @@ -349,7 +349,12 @@ int conf_read_simple(const char *name, int def)
-> >         char *p, *p2;
-> >         struct symbol *sym;
-> >         int i, def_flags;
-> > +       bool found_unknown = false;
-> > +       const char *warn_unknown;
-> > +       const char *werror;
-> >
-> > +       warn_unknown = getenv("KCONFIG_WARN_UNKNOWN_SYMBOLS");
-> > +       werror = getenv("KCONFIG_WERROR");
-> >         if (name) {
-> >                 in = zconf_fopen(name);
-> >         } else {
-> > @@ -437,6 +442,13 @@ int conf_read_simple(const char *name, int def)
-> >                         if (def == S_DEF_USER) {
-> >                                 sym = sym_find(line + 2 + strlen(CONFIG_));
-> >                                 if (!sym) {
-> > +                                       if (warn_unknown) {
-> > +                                               conf_warning("unknown symbol: %s",
-> > +                                                            line + 2 + strlen(CONFIG_));
-> > +                                               found_unknown = true;
-> > +                                               continue;
-> 
-> Please drop this 'continue' because it would skip
-> conf_set_changed(true).
-
-My bad. Those 'continue' are left-overs from previous version.
-
-> > +                                       }
-> > +
-> >                                         conf_set_changed(true);
-> >                                         continue;
-> >                                 }
-> > @@ -471,6 +483,13 @@ int conf_read_simple(const char *name, int def)
-> >
-> >                         sym = sym_find(line + strlen(CONFIG_));
-> >                         if (!sym) {
-> > +                               if (warn_unknown && def != S_DEF_AUTO) {
-> > +                                       conf_warning("unknown symbol: %s",
-> > +                                                    line + strlen(CONFIG_));
-> > +                                       found_unknown = true;
-> > +                                       continue;
-> 
-> Same here.
-
-Same here. My bad.
-
-> > @@ -519,6 +538,10 @@ int conf_read_simple(const char *name, int def)
-> >         }
-> >         free(line);
-> >         fclose(in);
-> > +
-> > +       if (found_unknown && werror)
-> > +               exit(1);
-> 
-> 
-> I like to reuse 'conf_warnings' as you did in the previous version.
-
-Done.
