@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0230D78DE72
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3AE78DBA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242049AbjH3TCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
+        id S239703AbjH3Skl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343772AbjH3Qvp (ORCPT
+        with ESMTP id S1343824AbjH3RKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:51:45 -0400
-Received: from kozue.soulik.info (kozue.soulik.info [108.61.200.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1612B19A
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:51:40 -0700 (PDT)
-Received: from [192.168.10.7] (unknown [10.0.12.132])
-        by kozue.soulik.info (Postfix) with ESMTPSA id 94C17300258;
-        Thu, 31 Aug 2023 01:51:33 +0900 (JST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 kozue.soulik.info 94C17300258
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=soulik.info; s=mail;
-        t=1693414296; bh=/p9VbuiL48VdjIKgkEFVOwtf0FRTsbtp/z+i1lPIXp4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=iOG+SETOO2liVEdglTsDBAsW0Y93hYVT8hy0hjuMXEyzPcVkUrSMbacRWuYnPDiDu
-         w6849G+MeYHtGkbZXKqwOE4tTS+7UR9AprY+0uMCtqWlT6DEWoh3S/eF76I1xV1i22
-         e97JjPwyom0slXk7kvtj7XrFwBPF/4sGuOosTfJs=
-Message-ID: <e9f01000-d2ed-8193-420c-fb80f0b96f8f@soulik.info>
-Date:   Thu, 31 Aug 2023 00:51:33 +0800
+        Wed, 30 Aug 2023 13:10:10 -0400
+X-Greylist: delayed 564 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Aug 2023 10:10:02 PDT
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFC619A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:10:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 71AEBCE1E17
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:00:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B8F3C433C7;
+        Wed, 30 Aug 2023 17:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693414833;
+        bh=kX3mbHSLmaQyCEL60tmf9cx9ZOhGXkKv6MDHN2D63vs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jF6UcKfH/Ijm8BSR75OyktOFykk2hCPJ+WW84zdAuI8LFdEyqrl7Ohkei3L30Y2Zf
+         otGqyih898gvIjejvVAGC+2UKXeyYWmcj4nuzrttxOPrf501BtbrB52+eHOSe4FLlN
+         E6ZWRiupNKoNyYHHoG1E7LuOKn+ttvWkzJc9yNHXyNqO4YEW1F8XVCbxkysmVJUGmw
+         6RQ+ZBT+fjuN4hpd2o6TfbTudgzRL4P1EWVCayRjSKcchD7A4Bg85EejZqw7bpLxtM
+         581+8pz6W3QmP+knhYUvvdmVvIV3LAhGRlWFXmjh4BkrCyDYQmTjy7r9Yo9iISD/Hd
+         r+A9OD4DZg+aQ==
+From:   Miguel Ojeda <ojeda@kernel.org>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: [PATCH 1/2] MAINTAINERS: update Rust webpage
+Date:   Wed, 30 Aug 2023 18:59:48 +0200
+Message-ID: <20230830165949.127475-1-ojeda@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Stateless Encoding uAPI Discussion and Proposal
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Hsia-Jun Li <Randy.Li@synaptics.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <ZK2NiQd1KnraAr20@aptenodytes> <ZNTp1e4gJ2zeYmS-@aptenodytes>
- <a2e8e01ea754232dd3562b34702b6600d7358605.camel@collabora.com>
- <ZNaVQ-zxIuCpGGha@aptenodytes>
- <720c476189552596cbd61dd74d6fa12818718036.camel@collabora.com>
- <39270c5e-24ab-8ff6-d925-7718b1fef3c4@synaptics.com>
- <a0fa6559c3933a5a4c8b7502282adae3429e0b57.camel@collabora.com>
- <52e9b710-5011-656b-aebf-8d57e6496ddd@synaptics.com>
- <4d08d98d853d78bbb6dba826d30c3386fe0b31e8.camel@collabora.com>
-Content-Language: en-US
-From:   Randy Li <ayaka@soulik.info>
-In-Reply-To: <4d08d98d853d78bbb6dba826d30c3386fe0b31e8.camel@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A few months ago we started a webpage for the Rust subsystem and
+the overall Rust for Linux project [1].
 
-On 2023/8/30 23:10, Nicolas Dufresne wrote:
-> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
->
->
-> Le mercredi 23 août 2023 à 11:04 +0800, Hsia-Jun Li a écrit :
->>> Though, if we drop the GOP structure and favour this approach, the latency could
->>> be regain later by introducing fence base streaming. The technique would be for
->>> a video source (like a capture driver) to pass dmabuf that aren't filled yet,
->>> but have a companion fence. This would allow queuing requests ahead of time, and
->>> all we need is enough pre-allocation to accommodate the desired look ahead. Only
->>> issue is that perhaps this violates the fundamental of "short term" delivery of
->>> fences. But fences can also fail I think, in case the capture was stopped.
->>>
->> I don't think it would help. Fence is a thing for DRM/GPU without a queue.
->> Even with a fence, would the video sink tell us the motion delta here?
-> It helps with the latency since the encoder can start its search and analyzes as
-> soon as frames are available, instead of until you have all N frames available
-> (refer to the MIN_BUFFER_FOR controls used when lookahead is needed).
+The current `W:` field of the Rust entry points to the GitHub
+repository, since originally we kept information in a `README.md`
+file that got rendered by GitHub when visiting that URL.
 
-I think the fence in GPU is something attached to per frame 
-buffer(IN_FENCE) or completing the render(OUT_FENCE).
+That information was moved into the webpage and got expanded.
+The webpage is also nowadays the entry point to the project,
+and we pointed the "Website" GitHub metadata field to it.
 
-So when we enqueue a buffer, what are expecting from the fence?
+Thus update the `W:` field to point to the actual webpage.
 
-I think in KMS, you can't enqueue two buffers for the same plane, you 
-have to wait the OUT_FENCE.
+Link: https://rust-for-linux.com [1]
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
->>> We can certainly move forward with this as a future solution, or just don't
->>> implement future aware RC algorithm in term to avoid the huge task this involves
->>> (and possibly patents?)
->>>
->> I think we should not restrict how the userspace(vendor) operate the
->> hardware.
-> Omitting is not restricting. Vendors have to learn to be community members and
-> propose/add the tools and APIs they need to support their features. We cannot
-> fix vendors in this regard, those who jumps over that fence are wining.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 12601a47c839..7c8088e9a11b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18558,7 +18558,7 @@ R:	Andreas Hindborg <a.hindborg@samsung.com>
+ R:	Alice Ryhl <aliceryhl@google.com>
+ L:	rust-for-linux@vger.kernel.org
+ S:	Supported
+-W:	https://github.com/Rust-for-Linux/linux
++W:	https://rust-for-linux.com
+ B:	https://github.com/Rust-for-Linux/linux/issues
+ C:	zulip://rust-for-linux.zulipchat.com
+ T:	git https://github.com/Rust-for-Linux/linux.git rust-next
 
-That is not about what vendor would do. I was thinking we are planning 
-how we manage the lifetime of the reconstruction buffer, reference 
-selecting based on a simple GOP model.
-What was designed here would become a barrier for a vendor whose 
-hardware has a little capability than this.
+base-commit: 4af84c6a85c63bec24611e46bb3de2c0a6602a51
+-- 
+2.42.0
 
-All I want to do here is offer my ideas about how we could achieve an 
-open interfaces that could cover the future need.
-
-Especially it is hard to expand the V4L2 uAPIs.
-
->
-> Nicolas
