@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1717678DABE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F5878DE8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbjH3ShC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S238334AbjH3TFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241269AbjH3GtO (ORCPT
+        with ESMTP id S241307AbjH3Gva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:49:14 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5726194;
-        Tue, 29 Aug 2023 23:49:11 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37U6J9JY022057;
-        Wed, 30 Aug 2023 06:49:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=sjcB/zP1GlW4bSweX/jHCt6rr1IvV2ny/ysyC9tku/Y=;
- b=Hj4LmG3IHQn5Z+skrvp+R5RL0aaaPo7xxmRhPL2zXkxeYWdT+tPW8j5MXHqa3ho48R1R
- xMQM6c3YYB89vmykQep119hi7ccZ6fk9oyzR6V+Q61phyt0smHqHoUe+8+17csswOq5g
- I7ZRozgCvY+R5gkZTit0R4frjD+7ija6m2NT6ZujARl/YOEtybgUQiQmwLlmsdY09ATm
- gPPTvAxwO3GR19d79ksaXq5NGUxYJnqlImZxq4CfJo0CKLMRK9G84wtKfgdrWLbA2g+A
- WgMg30m2Uu6rcKinSROmsYxKiLfBAdeH67FDvvRS0hOrjn5M+tfH3YVri8Y5vtIdcTBb bQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssy5q036v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 06:49:06 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37U6n5dV005748
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 06:49:05 GMT
-Received: from [10.201.2.48] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
- 2023 23:49:00 -0700
-Message-ID: <f7a350a9-5580-c3b9-a917-69a9b16dbf41@quicinc.com>
-Date:   Wed, 30 Aug 2023 12:18:57 +0530
+        Wed, 30 Aug 2023 02:51:30 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13CD194;
+        Tue, 29 Aug 2023 23:51:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1693378287; x=1724914287;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iJiqQM/21AbbfFTBJGuHIq/kCZ7VDhCQMZ/MLtlN5jI=;
+  b=KFPUYuEA6zBCEdE2XJdykEejjZAAF+U6jRoxYSIA8dd/qs7YrTjC0Zp0
+   qoJWG+K63BCw/4Xk6wf6DrOkfoqouQU1xWY0a/klgS8g/O/78QaXFU6Ae
+   IQo14RlhSyYciqUSrJRfgXc8ZOk3BCnHul8TvcCXAwq/PDz4syfLy2HvE
+   yHN/E8C/D59rAem1yog3khS7g+hHppZDXVl5JrcAJJh23GOYoa2PZoIoC
+   Y+Bt+0nfcLfqC5TROkZUFjYX5xIJqg8lwShaz90KaAamvqtEMHIMtnoQh
+   unAKrwg8vau74I4ObwcfgDPILDKVRoSnhSjNOGMkjKZfawy0lGeM7n2GY
+   w==;
+X-IronPort-AV: E=Sophos;i="6.02,212,1688454000"; 
+   d="asc'?scan'208";a="169011728"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Aug 2023 23:51:26 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 29 Aug 2023 23:51:22 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Tue, 29 Aug 2023 23:51:20 -0700
+Date:   Wed, 30 Aug 2023 07:50:37 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     William Qiu <william.qiu@starfivetech.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-mmc@vger.kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
+Message-ID: <20230830-commence-trickery-40eaa193cb15@wendy>
+References: <20230830031846.127957-1-william.qiu@starfivetech.com>
+ <20230830031846.127957-2-william.qiu@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq support
-Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>
-References: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
- <20230829095423.760641-4-quic_gokulsri@quicinc.com>
- <f457ee94-81d0-bd28-1432-ba2828dabb79@linaro.org>
- <efe09cb6-7b67-9307-28e7-99e238a3672b@gmail.com>
- <0941e2f4-6b58-a4e7-3dda-c1723f5503ac@linaro.org>
- <CAOX2RU4j57H51ceYdKk9K-2ZNO7N4MDA6BOKrP2N3DNbphQAow@mail.gmail.com>
-From:   Gokul Sriram P <quic_gokulsri@quicinc.com>
-In-Reply-To: <CAOX2RU4j57H51ceYdKk9K-2ZNO7N4MDA6BOKrP2N3DNbphQAow@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 7b3YUJ90RD9dh2J_8E-_Nb9OYsHfkzr7
-X-Proofpoint-GUID: 7b3YUJ90RD9dh2J_8E-_Nb9OYsHfkzr7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- suspectscore=0 priorityscore=1501 malwarescore=0 phishscore=0
- clxscore=1011 adultscore=0 lowpriorityscore=0 mlxlogscore=726 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308300062
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VGI59nk8mzz/pDkD"
+Content-Disposition: inline
+In-Reply-To: <20230830031846.127957-2-william.qiu@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--VGI59nk8mzz/pDkD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->>>>>    #include <dt-bindings/interrupt-controller/arm-gic.h>
->>>>>    #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
->>>>>    #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
->>>>> +#include <dt-bindings/clock/qcom,apss-ipq.h>
->>>> c is before r.
-  Sure, will update.
+On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
+> Due to the change of tuning implementation, it's no longer necessary to
+> use the "starfive,sysreg" property in dts, so drop the relevant
+> description in dt-bindings here.
 
-[...]
->>>>
->>>>> +   cpu_opp_table: opp-table-cpu {
->>>>> +           compatible = "operating-points-v2";
->>>>> +           opp-shared;
->>>>> +
->>>>> +           opp-1008000000 {
->>>>> +                   opp-hz = /bits/ 64 <1008000000>;
->>>>> +                   opp-microvolt = <1100000>;
->>>>> +                   clock-latency-ns = <200000>;
->>>> And the rest of OPPs?
->>> Hi Krzysztof,
->>> IPQ5018 only supports running at 1.1GHz, but its running at 800MHz
->>> by default from the bootloader so there is only one OPP.
->> Isn't this contradictory? If it is running at 800 initially, then it
->> supports running at 800...
-> I can only guess that it's not validated at 800MHz.
-As per the h/w design team, there is negligible power or thermal benefit 
-by lowering to 800MHz clock.
-Hence, 800MHz opp wasn't included here.
->
-> Regards,
-> Robert
->>
->> Best regards,
->> Krzysztof
->>
+How does changing your software implantation invalidate a description of
+the hardware?
+
+>=20
+> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> ---
+>  .../bindings/mmc/starfive,jh7110-mmc.yaml         | 15 ---------------
+>  1 file changed, 15 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.ya=
+ml b/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.yaml
+> index 51e1b04e799f..10df41941331 100644
+> --- a/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.yaml
+> @@ -36,26 +36,12 @@ properties:
+>    interrupts:
+>      maxItems: 1
+> =20
+> -  starfive,sysreg:
+> -    $ref: /schemas/types.yaml#/definitions/phandle-array
+> -    items:
+> -      - items:
+> -          - description: phandle to System Register Controller syscon no=
+de
+> -          - description: offset of SYS_SYSCONSAIF__SYSCFG register for M=
+MC controller
+> -          - description: shift of SYS_SYSCONSAIF__SYSCFG register for MM=
+C controller
+> -          - description: mask of SYS_SYSCONSAIF__SYSCFG register for MMC=
+ controller
+> -    description:
+> -      Should be four parameters, the phandle to System Register Controll=
+er
+> -      syscon node and the offset/shift/mask of SYS_SYSCONSAIF__SYSCFG re=
+gister
+> -      for MMC controller.
+> -
+>  required:
+>    - compatible
+>    - reg
+>    - clocks
+>    - clock-names
+>    - interrupts
+> -  - starfive,sysreg
+> =20
+>  unevaluatedProperties: false
+> =20
+> @@ -73,5 +59,4 @@ examples:
+>          fifo-depth =3D <32>;
+>          fifo-watermark-aligned;
+>          data-addr =3D <0>;
+> -        starfive,sysreg =3D <&sys_syscon 0x14 0x1a 0x7c000000>;
+>      };
+> --=20
+> 2.34.1
+>=20
+
+--VGI59nk8mzz/pDkD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZO7mswAKCRB4tDGHoIJi
+0j0ZAPoD8g3POZOxVjU8MHAqAQsVrGSXh9a5G6ibHoCJuX5zqQD+OwU3VEu8ihr1
+DsPdiiCV8fgivVirHHYW8sFlFgF+jQg=
+=iZHY
+-----END PGP SIGNATURE-----
+
+--VGI59nk8mzz/pDkD--
