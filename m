@@ -2,122 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AB878DFE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D9278DFEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343628AbjH3TZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
+        id S245040AbjH3TPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243014AbjH3KHF (ORCPT
+        with ESMTP id S243021AbjH3KHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:07:05 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20B61B3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:07:02 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-986d8332f50so699788766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693390021; x=1693994821; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=z0QDt8EBpEbkK9eM1eqblOra9xMFCfCG0zgEGNvO4kk=;
-        b=iknhdr+RtT51/E9pRpCGXYg8VKSsjn8eD6bbYy5EPLyBxYubJoc/ADhuQVfG8xjwdy
-         jBnl2TSrnrGB3ir9o9I5/aJUJRSHYqt2n6cZ2N1pW0/XMHC5usD7CWN27MuJT9ND6tBV
-         ob6lZjCu7fOefUDIhPQtU7waXbLAZhCClABdkXQQD5C0XxHwyvHiZF+QKiknZnZ4hHFI
-         nozbAycdbnrCu4dh38u3YdPHJKs/pU+DZOfG0zZvMMYbi21TBQsIJGc88TyTULI6mPw0
-         HHgAHTtHBevZZRUE6sXO0bzvJu9rcpVoVIuHrPnxEoX46mSYoWLVcqiNq0Eyk/Ys+gM9
-         1kYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693390021; x=1693994821;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z0QDt8EBpEbkK9eM1eqblOra9xMFCfCG0zgEGNvO4kk=;
-        b=lZMlEm6VQnJsEFpMJXHObcbScCv+9R56R7PoQ85HiVgUprxBPssoOftcmOzVXnTAIJ
-         go2VTH3UK/iGqS1vt4ydLKqzTll0qHun8Mk9dFSwoDQ5JCU9D9RMEndyZfkVnBmc4vwQ
-         EXm9P5dPnq8t6dnga2+mviGmhuzgNU1W38K8IOwmEV2/NpE0mEdQe9Adf5p5czwsS8LA
-         mHeT81Y7JwsdQoshjTBP7TmnAtezimE6vB1LinMACsglpaAN882SmN+7QaE6JoQlPva1
-         Z4PLbtIUg49Z0BA5rQErbkiBoMLzDiHYyI8RiHDJ99CSF3Rb5q9cfRszvclHGUs9SAsJ
-         PYVQ==
-X-Gm-Message-State: AOJu0YzzeeQWqYsL0+qEebp9INNfMPkhZlzU7Z7UDsbxAY8hiA3lK7iS
-        AnR2r7V3oglme/kSf/Z8J3OHcQ==
-X-Google-Smtp-Source: AGHT+IFv/0eMRaF8EMn6yKSAU640SOXFjwBHm7nT9hJcJOrflNyyJnp5etXNA0N+OfyvOIj+/VbXmw==
-X-Received: by 2002:a17:907:9719:b0:99d:f5dd:6b3 with SMTP id jg25-20020a170907971900b0099df5dd06b3mr1572959ejc.76.1693390021173;
-        Wed, 30 Aug 2023 03:07:01 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id cl7-20020a170906c4c700b009a5f1d15642sm228320ejb.158.2023.08.30.03.06.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 03:07:00 -0700 (PDT)
-Message-ID: <b82f4683-e8b5-b424-8f7a-6d2ba1cab61f@linaro.org>
-Date:   Wed, 30 Aug 2023 12:06:59 +0200
+        Wed, 30 Aug 2023 06:07:47 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28817107;
+        Wed, 30 Aug 2023 03:07:44 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qbI6u-00059M-41; Wed, 30 Aug 2023 12:07:40 +0200
+Message-ID: <e9644f38-57be-5d26-0c08-08a74eee7cb1@leemhuis.info>
+Date:   Wed, 30 Aug 2023 12:07:39 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 04/11] arm64: dts: qcom: pm7250b: make SID configurable
-Content-Language: en-US
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-4-5a954519bbad@fairphone.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230830-fp5-initial-v1-4-5a954519bbad@fairphone.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Unexplainable packet drop starting at v6.4
+Content-Language: en-US, de-DE
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Intel Ethernet Drivers 
+        <intel-wired-lan@lists.osuosl.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+References: <e79edb0f-de89-5041-186f-987d30e0187c@gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <e79edb0f-de89-5041-186f-987d30e0187c@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693390064;6dc12fb9;
+X-HE-SMSGID: 1qbI6u-00059M-41
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 11:58, Luca Weiss wrote:
-> Like other Qualcomm PMICs the PM7250B can be used on different addresses
-> on the SPMI bus. Use similar defines like the PMK8350 to make this
-> possible.
+[replying with a heavily adjust set of recipients]
+
+On 18.07.23 02:51, Bagas Sanjaya wrote:
 > 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
->  arch/arm64/boot/dts/qcom/pm7250b.dtsi | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+
+Tirthendu Sarkar, turned out this regressions reported in
+https://bugzilla.kernel.org/show_bug.cgi?id=217678 is caused by your
+change e9031f2da1a ("i40e: introduce next_to_process to i40e_ring")
+[v6.4-rc1] that Tony applied in March.
+
+Could you (or someone else) please take a look? The bugzilla ticket has
+details and a comment from a second person that seems to be affected by
+the same problem. And 6.5 seems to still show the problem.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+>> Hi,
+>>
+>> After I updated to 6.4 through Archlinux kernel update, suddenly I noticed random packet losses on my routers like nodes. I have these networking relevant config on my nodes
+>>
+>> 1. Using archlinux
+>> 2. Network config through systemd-networkd
+>> 3. Using bird2 for BGP routing, but not relevant to this bug.
+>> 4. Using nftables for traffic control, but seems not relevant to this bug. 
+>> 5. Not using fail2ban like dymanic filtering tools, at least at L3/L4 level
+>>
+>> After I ruled out systemd-networkd, nftables related issues. I tracked down issues to kernel.
+>>
+>> Here's the tcpdump I'm seeing on one side of my node ""
+>>
+>> ```
+>> sudo tcpdump -i fios_wan port 38851
+>> tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+>> listening on fios_wan, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+>> 10:33:06.073236 IP [BOS1_NODE].38851 > [REDACTED_PUBLIC_IPv4_1].38851: UDP, length 148
+>> 10:33:11.406607 IP [BOS1_NODE].38851 > [REDACTED_PUBLIC_IPv4_1].38851: UDP, length 148
+>> 10:33:16.739969 IP [BOS1_NODE].38851 > [REDACTED_PUBLIC_IPv4_1].38851: UDP, length 148
+>> 10:33:21.859856 IP [BOS1_NODE].38851 > [REDACTED_PUBLIC_IPv4_1].38851: UDP, length 148
+>> 10:33:27.193176 IP [BOS1_NODE].38851 > [REDACTED_PUBLIC_IPv4_1].38851: UDP, length 148
+>> 5 packets captured
+>> 5 packets received by filter
+>> 0 packets dropped by kernel
+>> ```
+>>
+>> But on the other side "[REDACTED_PUBLIC_IPv4_1]", tcpdump is replying packets in this wireguard stream. So packet is lost somewhere in the link.
+>>
+>> From the otherside, I can do "mtr" to "[BOS1_NODE]"'s public IP and found the moment the link got lost is right at "[BOS1_NODE]", that means "[BOS1_NODE]"'s networking stack completely drop the inbound packets from specific ip addresses.
+>>
+>> Some more digging
+>>
+>> 1. This situation began after booting in different delays. Sometimes can trigger after 30 seconds after booting, and sometimes will be after 18 hours or more.
+>> 2. It can envolve into worse case that when I do "ip neigh show", the ipv4 ARP table and ipv6 neighbor discovery start to appear as "invalid", meaning the internet is completely loss.
+>> 3. When this happened to wan facing interface, it seems OK with lan facing interfaces. WAN interface was using Intel X710-T4L using i40e and lan side was using virtio
+>> 4. I tried to bisect in between 6.3 and 6.4, and the first bad commit it reports was "a3efabee5878b8d7b1863debb78cb7129d07a346". But this is not relevant to networking at all, maybe it's the wrong commit to look at. At the meantime, because I haven't found a reproducible way of 100% trigger the issue, it may be the case during bisect some "good" commits are actually bad. 
+>> 5. I also tried to look at "dmesg", nothing interesting pop up. But I'll make it available upon request.
+>>
+>> This is my first bug reports. Sorry for any confusion it may lead to and thanks for reading.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/pm7250b.dtsi b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
-> index e8540c36bd99..3514de536baa 100644
-> --- a/arch/arm64/boot/dts/qcom/pm7250b.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
-> @@ -7,6 +7,15 @@
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/spmi/spmi.h>
->  
-> +/* This PMIC can be configured to be at different SIDs */
-> +#ifndef PM7250B_SID
-> +	#define PM7250B_SID 2
-> +#endif
+> See Bugzilla for the full thread.
+> 
+> Thorsten: The reporter had a bad bisect (some bad commits were marked as good
+> instead), hence SoB chain for culprit (unrelated) ipvu commit is in To:
+> list. I also asked the reporter (also in To:) to provide dmesg and request
+> rerunning bisection, but he doesn't currently have a reliable reproducer.
+> Is it the best I can do?
+> 
+> Anyway, I'm adding this regression to be tracked in regzbot:
+> 
+> #regzbot introduced: a3efabee5878b8 https://bugzilla.kernel.org/show_bug.cgi?id=217678
+> #regzbot title: packet drop on Intel X710-T4L due to ipvu boot fix
+> 
+> Thanks.
+> 
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217678
+> 
 
-Why do you send the same patch as v1, without any reference to previous
-discussions?
-
-You got here feedback already.
-
-https://lore.kernel.org/linux-arm-msm/f52524da-719b-790f-ad2c-0c3f313d9fe9@linaro.org/
-
-Best regards,
-Krzysztof
-
+#regzbot introduced: e9031f2da1a
+#regzbot poke
