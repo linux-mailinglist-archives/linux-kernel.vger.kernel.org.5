@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E7578DFC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC49278E02B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244590AbjH3TPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        id S242143AbjH3TbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244578AbjH3NYG (ORCPT
+        with ESMTP id S244596AbjH3NZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:24:06 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAC4137
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:24:03 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bc83a96067so34672365ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:24:03 -0700 (PDT)
+        Wed, 30 Aug 2023 09:25:15 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0150B137;
+        Wed, 30 Aug 2023 06:25:12 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-573ac2fa37aso1042977eaf.3;
+        Wed, 30 Aug 2023 06:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693401843; x=1694006643; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693401911; x=1694006711; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jl5m/u5DBSkuFPju71gMtPySMQtwHuHyHO7Z+IRR/0E=;
-        b=dwZjoA+X0AzMhWhp4T4B6ecuH6cdhSkFZaHm9TTe6Ourx7gEru//EPLF3Sgg8gh3vW
-         yiUbAwEUwyvlJjyg3v6EfP3/ihwbQ6O1LxIzfQEhEleWq6Un/QXDM1hi6XqUQbl6pwt1
-         Lk2eGnUZ7QFqnnQJYsVbngOFC9+Ff4eM0TiGNaO4zw/9enU9fN1qxQSMTjzHWm2HScCH
-         pkgNLITINbtdsgPezAxItzXfGyuhjj9GLosbmx5SXcJcXwuTSWSUdXGb3N/NMA2C0VkG
-         k9VmMak7lZ3I+FYH+n3K4d4EcFWYigaMNUcqqatshoEHTuzBO9YWALfmIkrrwBTrJxpr
-         WYvw==
+        bh=CmogliSTtL2RB5d6BjlDVGsgCldCZrhobb3z+lU+kTo=;
+        b=swRqPUmcO44iiWQ5MgqCQfbQmcu++UPi9CJ/44UZ+e+sJymaH81+5H128BdbFciiss
+         LeiWuvIfpoV8G1NW+nyTYaTvNoIjWjitHyaq8t+VIeg1Fd1aH6tHc1w5kRJVYQABZ+bV
+         Dp+wCaelk/sz+bfPjYW3dYXhyCz2Dge1NY15QHTkUCa9mmCaQfbOoZcS8p4OXarCMhhd
+         jZgIK8VS5H3059Xr84PWkhYB8HU6JtYvyu40IjQgjXtSD2inRmX63mA6in1Ct0gC/cBv
+         Qs8PnhIRwytKLsI+kZytfA8j8usPz9qEiXO6ICgdd4Faqhm+mPlqySD+UaTRu/Pki9za
+         BZMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693401843; x=1694006643;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693401911; x=1694006711;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jl5m/u5DBSkuFPju71gMtPySMQtwHuHyHO7Z+IRR/0E=;
-        b=GhPjRywzs/UMzum3TYYFeUqqwIeThHTPNjxp129oBTgRiFUsHTHPmja5QHm/At1bZb
-         9EeWrL3D8JcoURNPTG0gvuo+yAMGSMjK1E4lAkBrBUIpnTu2GWzaOmKnjJ0qt3MKIpqS
-         jXI9393a0Iw7gUoEexCOUAvEts67ONwLt+Uq6ueiGRuGPDSKlEpu+wN2vaWmveVn+8/M
-         0CJL0tMZ5siaTo/HjF+4W8noYxWiS187oy0dcSsN9hpAedVFjStSvr7YjBN3lhrgpGLl
-         00+l2lvc9zMXTvhIv97Wk92DBzymfuF9qLr2le6pST/nxRcOPhWtDb0ZG1QTdad7/ai4
-         gc7Q==
-X-Gm-Message-State: AOJu0YwQVgoPKNMd3qkxdgIuehnK9E4pxG1/auejn3DQruekGdOZ3WUm
-        u02Veh5rTBV+FTYzwlGYlxc=
-X-Google-Smtp-Source: AGHT+IHvPjbC6cQ6R7dwzx5G8ASsbdBYGcjoPd4otAgobSujUbK+P1uF8x96ng8HnaiZoyXjPKfupw==
-X-Received: by 2002:a17:903:444:b0:1c0:b17a:7554 with SMTP id iw4-20020a170903044400b001c0b17a7554mr1640671plb.64.1693401842513;
-        Wed, 30 Aug 2023 06:24:02 -0700 (PDT)
-Received: from [127.0.0.1] ([103.135.102.124])
-        by smtp.gmail.com with ESMTPSA id ja11-20020a170902efcb00b001c0a4146961sm11148028plb.19.2023.08.30.06.24.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Aug 2023 06:24:02 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH v1] firmware: arm_scmi: Fix NULL pointer dereference in
- mailbox_clear_channel
-From:   Qiujun Huang <hqjagain@gmail.com>
-In-Reply-To: <20230830093902.duvvjimgwddh7qbt@bogus>
-Date:   Wed, 30 Aug 2023 21:23:58 +0800
-Cc:     cristian.marussi@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+        bh=CmogliSTtL2RB5d6BjlDVGsgCldCZrhobb3z+lU+kTo=;
+        b=SvtjBNS0Vju462r0nd4+BsvAVvbhxX3r3GcRzAg4jmfa/dWdavOwN8pRzaqn/GMNsR
+         mzZ/JbXgrsHwFCUADWLcWMZOBol3LMFBvQCQ2jLD405ODwrtif8lUX9ddGt0SQBNiyx6
+         peDhYGNu30fuDRJi9jzm0WWLlcwktKPGC32sbGYG0qPFF1hHVHsBdE6BtGYPnE26YXaJ
+         +xc5QXoURrl0SRV159HRRz5Vo9DKYo6zyF8Nd2lkpci1gI74r8vRT5qsRWte3sF6H7PL
+         Z/U6L80+FzB8DcMo2AnwbOHm3vD8lnQtXIVCzGw3HPzvcZcF1t+OlITNq8FVYqsOPZLJ
+         2Psg==
+X-Gm-Message-State: AOJu0YxGqmimBDsUDRgqWx9RVB/bYEw4o1SG3qNmt/Pcx9HrIivg7EaW
+        ibAGKT7+3ElQBl9tmIeMbpS1Bbfs+TNBL5+Juos=
+X-Google-Smtp-Source: AGHT+IGcm+fuYV6DElZl0ERELQLCKFcV4jDm/YiJBfQen9r6vTRbRZD6JbCmADX4a3ozRdhakxdldUDiTEXW6Kpe6p0=
+X-Received: by 2002:a4a:2a1c:0:b0:573:55f4:516a with SMTP id
+ k28-20020a4a2a1c000000b0057355f4516amr1923557oof.3.1693401911143; Wed, 30 Aug
+ 2023 06:25:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230829-missingvardecl-efi-v1-1-13d055a55176@google.com> <CAMj1kXE_xs+wWno4G4U+6CFCOwO7JWcmNv4et5=W=ZRrQatWnQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXE_xs+wWno4G4U+6CFCOwO7JWcmNv4et5=W=ZRrQatWnQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 30 Aug 2023 16:24:34 +0300
+Message-ID: <CAHp75VeEvWXQoMwfmMixw_DHWrXq3=eSPkxgzJaKTT0L3G_Fpg@mail.gmail.com>
+Subject: Re: [PATCH] efi: fix -Wmissing-variable-declarations warning
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <F59FC6AB-40E6-4BBA-A0BD-C7221160854B@gmail.com>
-References: <ED5DC8DB-AE81-4380-8AE5-588F370CD4B0@gmail.com>
- <20230830093902.duvvjimgwddh7qbt@bogus>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,99 +79,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 30, 2023 at 2:04=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wr=
+ote:
+> On Wed, 30 Aug 2023 at 00:54, Justin Stitt <justinstitt@google.com> wrote=
+:
 
+...
 
-> 2023=E5=B9=B48=E6=9C=8830=E6=97=A5 =E4=B8=8B=E5=8D=885:39=EF=BC=8CSudeep=
- Holla <sudeep.holla@arm.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Wed, Aug 30, 2023 at 01:07:47AM +0800, Qiujun Huang wrote:
->> There is a race between the failure of probe and rx_callback (due to =
-a
->> delayed response).
->>=20
->> scmi_probe
->> scmi_acquire_protocal
->> do_xfer
->> timeout
->> mailbox_chan_free
->>                                                    <--- delay =
-response
->>                                                           rx_callback
->> mbox_free_channel
->> cinfo->transport_info =3D NULL
->>                                                          =
-mailbox_clear_channel
->>                                                         dereference =
-cinfo->transport_info
->=20
-> It is always good to provide the kernel stacktrace which you get when =
-a
-> NULL pointer is dereference. It helps for review and also to document =
-it.
->=20
-> --=20
-> Regards,
-> Sudeep
+> > When building x86/defconfig with Clang-18 I encounter the following war=
+nings:
+> > | arch/x86/platform/efi/efi.c:934:23: warning: no previous extern decla=
+ration for non-static variable 'efi_attr_fw_vendor' [-Wmissing-variable-dec=
+larations]
+> > |   934 | struct kobj_attribute efi_attr_fw_vendor =3D __ATTR_RO(fw_ven=
+dor);
+> > | arch/x86/platform/efi/efi.c:935:23: warning: no previous extern decla=
+ration for non-static variable 'efi_attr_runtime' [-Wmissing-variable-decla=
+rations]
+> > |   935 | struct kobj_attribute efi_attr_runtime =3D __ATTR_RO(runtime)=
+;
+> > | arch/x86/platform/efi/efi.c:936:23: warning: no previous extern decla=
+ration for non-static variable 'efi_attr_config_table' [-Wmissing-variable-=
+declarations]
+> > |   936 | struct kobj_attribute efi_attr_config_table =3D __ATTR_RO(con=
+fig_table);
+> >
+> > These variables are not externally declared anywhere (AFAIK)
+>
+> They are:
+>
+> drivers/firmware/efi/efi.c:extern __weak struct kobj_attribute
+> efi_attr_fw_vendor;
+> drivers/firmware/efi/efi.c:extern __weak struct kobj_attribute efi_attr_r=
+untime;
+> drivers/firmware/efi/efi.c:extern __weak struct kobj_attribute
+> efi_attr_config_table;
+>
+> > so let's add the static keyword and ensure we follow the ODR.
 
-Get it. Here is the splat.
+> This won't work.
+>
+> Those variables are referenced via weak references in generic code.
+> The idea is that the weak references resolve to NULL pointers on
+> architectures other than x86, terminating the array early and hiding
+> the non-existent variables.
+>
+> Making them static in arch/x86/platform/efi/efi.c means that these
+> references will remain unsatisfied, and so the variables will no
+> longer be exposed on x86 either.
 
-[    1.942240][    C0] Unable to handle kernel NULL pointer dereference =
-at virtual address 0000000000000048
-[    1.942241][    C0] Mem abort info:
-[    1.942243][    C0]   ESR =3D 0x96000005
-[    1.944888][    T9] spmi spmi-1: PMIC arbiter version v7 (0x70000000)
-[    1.950652][    C0]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-[    1.950653][    C0]   SET =3D 0, FnV =3D 0
-[    1.950654][    C0]   EA =3D 0, S1PTW =3D 0
-[    1.950656][    C0] Data abort info:
-[    1.950657][    C0]   ISV =3D 0, ISS =3D 0x00000005
-[    1.950658][    C0]   CM =3D 0, WnR =3D 0
-[    1.950660][    C0] [0000000000000048] user address but active_mm is =
-swapper
-[    1.950663][    C0] Internal error: Oops: 96000005 [#1] PREEMPT SMP
-[    2.338929][    C0] pc : mailbox_clear_channel+0x18/0x64
-[    2.344384][    C0] lr : scmi_handle_response+0x17c/0x4f4
-[    2.349923][    C0] sp : ffffffc010003db0
-[    2.354045][    C0] x29: ffffffc010003dc0 x28: ffffffd85263f000=20
-[    2.360216][    C0] x27: ffffffd851621068 x26: ffffffd84ec815c8=20
-[    2.366386][    C0] x25: ffffffd85263bf80 x24: ffffffd85263d230=20
-[    2.372556][    C0] x23: ffffff803cd70cc0 x22: 0000000000000008=20
-[    2.378726][    C0] x21: ffffff8036cf0df8 x20: ffffffd85161bac8=20
-[    2.384896][    C0] x19: ffffff8043ffa580 x18: ffffffc010005050=20
-[    2.391065][    C0] x17: 0000000000000000 x16: 00000000000000d8=20
-[    2.397234][    C0] x15: ffffffd8507965e8 x14: ffffffd84eaebdf0=20
-[    2.403404][    C0] x13: 00000000000001ea x12: 0000000000007ffb=20
-[    2.409574][    C0] x11: 000000000000ffff x10: ffffffd852c5a000=20
-[    2.415744][    C0] x9 : d7be1a9b75f29500 x8 : 0000000000000000=20
-[    2.421914][    C0] x7 : 382e31202020205b x6 : ffffffd852c57e7c=20
-[    2.428084][    C0] x5 : ffffffffffffffff x4 : 0000000000000000=20
-[    2.434254][    C0] x3 : ffffffd84eae6668 x2 : 0000000000000001=20
-[    2.440424][    C0] x1 : 0000000000000000 x0 : ffffff8043ffa580=20
-[    2.446594][    C0] Call trace:
-[    2.449819][    C0]  mailbox_clear_channel+0x18/0x64
-[    2.454916][    C0]  scmi_handle_response+0x17c/0x4f4
-[    2.460100][    C0]  rx_callback+0x60/0xec
-[    2.464311][    C0]  mbox_chan_received_data+0x44/0x94
-[    2.469584][    C0]  qcom_rimps_rx_interrupt+0xc0/0x144 [qcom_rimps]
-[    2.476111][    C0]  __handle_irq_event_percpu+0xa0/0x414
-[    2.481652][    C0]  handle_irq_event+0x84/0x1cc
-[    2.486393][    C0]  handle_fasteoi_irq+0x150/0x394
-[    2.491403][    C0]  __handle_domain_irq+0x114/0x1e4
-[    2.496500][    C0]  gic_handle_irq.33979+0x6c/0x2b8
-[    2.501597][    C0]  el1_irq+0xe4/0x1c0
-[    2.505537][    C0]  cpuidle_enter_state+0x3a4/0xa04
-[    2.510634][    C0]  do_idle+0x308/0x574
-[    2.514661][    C0]  cpu_startup_entry+0x84/0x90
-[    2.519402][    C0]  kernel_init+0x0/0x310
-[    2.523611][    C0]  start_kernel+0x0/0x648
-[    2.527908][    C0]  start_kernel+0x52c/0x648
-[    2.532390][    C0] Code: f800865e a9017bfd 910043fd f9400808 =
-(f9402508)=20
-[    2.539360][    C0] ---[ end trace da7fdd5fdd7f7f09 ]---
-[    2.550088][    C0] Kernel panic - not syncing: Oops: Fatal exception =
-in interrupt
+So it means that we have no definitions in the header for these, right?
 
-
-- - -
-thanks
-
+--=20
+With Best Regards,
+Andy Shevchenko
