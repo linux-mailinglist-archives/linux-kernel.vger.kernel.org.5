@@ -2,170 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E222B78DFC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5134D78DFC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242116AbjH3TLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
+        id S244233AbjH3TOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243333AbjH3KpG (ORCPT
+        with ESMTP id S243379AbjH3Kuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:45:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5C81BB;
-        Wed, 30 Aug 2023 03:45:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 82D5360FE8;
-        Wed, 30 Aug 2023 10:45:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECBC4C433C7;
-        Wed, 30 Aug 2023 10:44:58 +0000 (UTC)
-Message-ID: <d4b12bc1-65b8-6881-3648-85099d9319ec@xs4all.nl>
-Date:   Wed, 30 Aug 2023 12:44:57 +0200
+        Wed, 30 Aug 2023 06:50:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BC21BE
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693392648; x=1724928648;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xZIAz4H04illlGVj1BWzvAHFTUBeqvwxJkL5gpigeyo=;
+  b=F9tFk+76Qqvvc+9LymF2U8QmFJCfOfHh9GLXCr5MhjW0zWGsLTxDh174
+   eFZCB02qyQVHYhx7i0cNJpcCiBvOsgVCJpdBbWEQM5sUoNUWPLA6HK/U1
+   +SQbZM3NwyTK5C4hz9O5eyC+F4kowF4XJpOse94i8sPK/lwqyXSRGcYTe
+   30sKlMZFRpkUqGLUpcLWsklTyTSi+iBBUFiaAkhI6PFvC3JGFhmQPLSI9
+   XQjqO1++xIh+8dFCQSIuDCRFQaQG9X35i1y6GXL62jLCECxspnCWukG2c
+   1Y4eb1CVBSAloxvNyM/TMg2ivrEPwEX5rWnKDQpNZnNO5OFj+GEfmQjG/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="375566729"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="375566729"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 03:50:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="985700320"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="985700320"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Aug 2023 03:50:45 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qbIma-0009k9-24;
+        Wed, 30 Aug 2023 10:50:44 +0000
+Date:   Wed, 30 Aug 2023 18:50:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Naresh Solanki <naresh.solanki@9elements.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        zev@bewilderbeest.net,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] regulator: userspace-consumer: Retrieve supplies
+ from DT
+Message-ID: <202308301833.WqS6n2RU-lkp@intel.com>
+References: <20230829141413.2605621-1-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v8 3/8] media: staging: media: starfive: camss: Add core
- driver
-Content-Language: en-US, nl
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
-        changhuang.liang@starfivetech.com
-References: <20230824080109.89613-1-jack.zhu@starfivetech.com>
- <20230824080109.89613-4-jack.zhu@starfivetech.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230824080109.89613-4-jack.zhu@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829141413.2605621-1-Naresh.Solanki@9elements.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 10:01, Jack Zhu wrote:
-> Add core driver for StarFive Camera Subsystem. The code parses
-> the device platform resources and registers related devices.
-> 
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
-> ---
->  MAINTAINERS                                   |   1 +
->  drivers/staging/media/Kconfig                 |   2 +
->  drivers/staging/media/Makefile                |   1 +
->  drivers/staging/media/starfive/Kconfig        |   5 +
->  drivers/staging/media/starfive/Makefile       |   2 +
->  drivers/staging/media/starfive/camss/Kconfig  |  17 +
->  drivers/staging/media/starfive/camss/Makefile |   9 +
->  .../staging/media/starfive/camss/stf_camss.c  | 316 ++++++++++++++++++
->  .../staging/media/starfive/camss/stf_camss.h  | 129 +++++++
->  9 files changed, 482 insertions(+)
->  create mode 100644 drivers/staging/media/starfive/Kconfig
->  create mode 100644 drivers/staging/media/starfive/Makefile
->  create mode 100644 drivers/staging/media/starfive/camss/Kconfig
->  create mode 100644 drivers/staging/media/starfive/camss/Makefile
->  create mode 100644 drivers/staging/media/starfive/camss/stf_camss.c
->  create mode 100644 drivers/staging/media/starfive/camss/stf_camss.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4c63c0a85301..97d3054416ed 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20258,6 +20258,7 @@ L:	linux-media@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/admin-guide/media/starfive_camss.rst
->  F:	Documentation/devicetree/bindings/media/starfive,jh7110-camss.yaml
-> +F:	drivers/staging/media/starfive/camss
->  
->  STARFIVE CRYPTO DRIVER
->  M:	Jia Jie Ho <jiajie.ho@starfivetech.com>
-> diff --git a/drivers/staging/media/Kconfig b/drivers/staging/media/Kconfig
-> index bc6c7b248f86..554c2e475ce3 100644
-> --- a/drivers/staging/media/Kconfig
-> +++ b/drivers/staging/media/Kconfig
-> @@ -36,6 +36,8 @@ source "drivers/staging/media/omap4iss/Kconfig"
->  
->  source "drivers/staging/media/rkvdec/Kconfig"
->  
-> +source "drivers/staging/media/starfive/Kconfig"
-> +
->  source "drivers/staging/media/sunxi/Kconfig"
->  
->  source "drivers/staging/media/tegra-video/Kconfig"
-> diff --git a/drivers/staging/media/Makefile b/drivers/staging/media/Makefile
-> index 1a4c3a062e3d..dcaeeca0ee6d 100644
-> --- a/drivers/staging/media/Makefile
-> +++ b/drivers/staging/media/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_VIDEO_MAX96712)	+= max96712/
->  obj-$(CONFIG_VIDEO_MESON_VDEC)	+= meson/vdec/
->  obj-$(CONFIG_VIDEO_OMAP4)	+= omap4iss/
->  obj-$(CONFIG_VIDEO_ROCKCHIP_VDEC)	+= rkvdec/
-> +obj-$(CONFIG_VIDEO_STARFIVE_CAMSS)	+= starfive/
->  obj-$(CONFIG_VIDEO_SUNXI)	+= sunxi/
->  obj-$(CONFIG_VIDEO_TEGRA)	+= tegra-video/
->  obj-$(CONFIG_VIDEO_IPU3_IMGU)	+= ipu3/
-> diff --git a/drivers/staging/media/starfive/Kconfig b/drivers/staging/media/starfive/Kconfig
-> new file mode 100644
-> index 000000000000..34727cf56072
-> --- /dev/null
-> +++ b/drivers/staging/media/starfive/Kconfig
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +comment "StarFive media platform drivers"
-> +
-> +source "drivers/staging/media/starfive/camss/Kconfig"
-> diff --git a/drivers/staging/media/starfive/Makefile b/drivers/staging/media/starfive/Makefile
-> new file mode 100644
-> index 000000000000..4639fa1bca32
-> --- /dev/null
-> +++ b/drivers/staging/media/starfive/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-y += camss/
-> diff --git a/drivers/staging/media/starfive/camss/Kconfig b/drivers/staging/media/starfive/camss/Kconfig
-> new file mode 100644
-> index 000000000000..8d20e2bd2559
-> --- /dev/null
-> +++ b/drivers/staging/media/starfive/camss/Kconfig
-> @@ -0,0 +1,17 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config VIDEO_STARFIVE_CAMSS
-> +	tristate "Starfive Camera Subsystem driver"
-> +	depends on V4L_PLATFORM_DRIVERS
-> +	depends on VIDEO_DEV && OF
-> +	depends on HAS_DMA
-> +	depends on PM
-> +	select MEDIA_CONTROLLER
-> +	select VIDEO_V4L2_SUBDEV_API
-> +	select VIDEOBUF2_DMA_CONTIG
-> +	select V4L2_FWNODE
-> +	help
-> +	   Enable this to support for the Starfive Camera subsystem
-> +	   found on Starfive JH7110 SoC.
-> +
-> +	   To compile this driver as a module, choose M here: the
-> +	   module will be called stf-camss.
+Hi Naresh,
 
-This is actually called starfive-camss.ko!
+kernel test robot noticed the following build errors:
 
-Regards,
+[auto build test ERROR on 8950c4a350c188deb5f5b05df3244d4db82fe3d8]
 
-	Hans
+url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/regulator-userspace-consumer-Retrieve-supplies-from-DT/20230829-222520
+base:   8950c4a350c188deb5f5b05df3244d4db82fe3d8
+patch link:    https://lore.kernel.org/r/20230829141413.2605621-1-Naresh.Solanki%409elements.com
+patch subject: [RESEND PATCH] regulator: userspace-consumer: Retrieve supplies from DT
+config: i386-buildonly-randconfig-001-20230830 (https://download.01.org/0day-ci/archive/20230830/202308301833.WqS6n2RU-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308301833.WqS6n2RU-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308301833.WqS6n2RU-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/regulator/userspace-consumer.c:164:2: error: call to undeclared function 'for_each_property_of_node'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           for_each_property_of_node(pdev->dev.of_node, prop) {
+           ^
+>> drivers/regulator/userspace-consumer.c:164:52: error: expected ';' after expression
+           for_each_property_of_node(pdev->dev.of_node, prop) {
+                                                             ^
+                                                             ;
+   drivers/regulator/userspace-consumer.c:200:3: error: call to undeclared function 'for_each_property_of_node'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                   for_each_property_of_node(pdev->dev.of_node, prop) {
+                   ^
+   drivers/regulator/userspace-consumer.c:200:53: error: expected ';' after expression
+                   for_each_property_of_node(pdev->dev.of_node, prop) {
+                                                                     ^
+                                                                     ;
+   4 errors generated.
+
+
+vim +/for_each_property_of_node +164 drivers/regulator/userspace-consumer.c
+
+   158	
+   159	static int get_num_supplies(struct platform_device *pdev)
+   160	{
+   161		struct  property *prop;
+   162		int num_supplies = 0;
+   163	
+ > 164		for_each_property_of_node(pdev->dev.of_node, prop) {
+   165			const char *prop_name = prop->name;
+   166			int len = strlen(prop_name);
+   167	
+   168			if (len > SUPPLY_SUFFIX_LEN && \
+   169			    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
+   170				num_supplies++;
+   171			}
+   172		}
+   173		return num_supplies;
+   174	}
+   175	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
