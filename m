@@ -2,278 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 142B078DA7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4062978D859
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbjH3Sg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        id S233612AbjH3SaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244063AbjH3M06 (ORCPT
+        with ESMTP id S244065AbjH3M2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:26:58 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F7BCC5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:26:51 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UCA5OQ011729;
-        Wed, 30 Aug 2023 12:26:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=FeSWwQ0ZmyjKMd+Q/FObBJyqnwyudAvTUPrauZ0cAVs=;
- b=beUSCGmfxm6HhKbapRorjQO+rdWuT5XwU1eNY13uxEzLONk1fTuRXvnB1q84En968dwL
- Xg2AoVi2nQ3i7QSZxzrckdLoFio9yW9gDnWOtm/nMGV5Yaw+mkLIMZER2UZj+Zky028O
- tmMvnY9+N/JqmHKvjOS5s43kqmUi4m6SuiBcCjTM9+OiUMeLHQ1d3HHEt/L+qQ3sa4/n
- +B1cDoqnBoGiz8VNoFCP9n3L1PczZMziQXVYnCYMnX6Si2QhYWm/Oo2RQ2OlvP8Ei6yg
- kyYSwWPzoFRmYVXQeZWRf61XrJk6S6dkDdob9ECgOyLDCjW8JJtFHIhWIK2T4qi/xoUn nA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st3c2kxf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 12:26:30 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37UCJ6Wc015451;
-        Wed, 30 Aug 2023 12:26:30 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st3c2kxem-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 12:26:30 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37UA1X4x020514;
-        Wed, 30 Aug 2023 12:26:28 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqv3yky3w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 12:26:28 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37UCQQWC41878186
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Aug 2023 12:26:26 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7BE5A2004B;
-        Wed, 30 Aug 2023 12:26:26 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B38BD20043;
-        Wed, 30 Aug 2023 12:26:23 +0000 (GMT)
-Received: from saptarishi.in.ibm.com (unknown [9.43.8.96])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Aug 2023 12:26:23 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Peter Zijlstra <peterz@infradead.org>, ndesaulniers@google.com,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc/smp: Dynamically build powerpc topology
-Date:   Wed, 30 Aug 2023 17:56:14 +0530
-Message-ID: <20230830122614.73067-1-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 30 Aug 2023 08:28:39 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D85ACCF;
+        Wed, 30 Aug 2023 05:28:31 -0700 (PDT)
+X-UUID: b6c5b9ee473011eeb20a276fd37b9834-20230830
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=AWvQXGpiHRQf+kFSEUvTHSu75pX9oCjeaDF6wySaVIc=;
+        b=bgNEHIB7uEeJZjec76Prga0Cb/GrW8McVqSti515nQ2xoQqAEzo8ROmCgDB2kOdJqPL/OPzdSDOClC7jV18eCbWjsxZe0NExJDHjZcaZDz/UOMDwmGo2Kd8weTB9MMvSXzpyKiPqiN4y/X8/bN6U/tr0NmwgxaCtycNnKg8GqKQ=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:e6f7e766-ba51-487f-abee-e4a4cbfba5c7,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:98995c13-4929-4845-9571-38c601e9c3c9,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: b6c5b9ee473011eeb20a276fd37b9834-20230830
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1534289783; Wed, 30 Aug 2023 20:28:24 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 30 Aug 2023 20:28:23 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 30 Aug 2023 20:28:22 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] usb: xhci-mtk: add a bandwidth budget table
+Date:   Wed, 30 Aug 2023 20:28:19 +0800
+Message-ID: <20230830122820.18859-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OJMIQrGKRXFtXv3QRrfK3N4AUOyQgFdp
-X-Proofpoint-ORIG-GUID: Qkqh6uqLUBG6jFF3K99Q25RwCN70fvEV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- bulkscore=0 suspectscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- malwarescore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308300113
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,RDNS_NONE,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there are four powerpc specific sched topologies.  These are
-all statically defined.  However not all these topologies are used by
-all powerpc systems.
+In order to estimate when fs/ls transactions appear on a downstream bus,
+the host must calculate a best case full-speed budget, use a table to
+track how many bytes occure in each microframe.
+This patch is prepared for introducing an improved bandwidth scheduling.
 
-To avoid unnecessary degenerations by the scheduler , masks and flags
-are compared. However if the sched topologies are build dynamically then
-the code is simpler and there are greater chances of avoiding
-degenerations.
-
-Even x86 builds its sched topologies dynamically and new changes are
-very similar to the way x86 is building its topologies.
-
-System Configuration
-type=Shared mode=Uncapped smt=8 lcpu=128 mem=1063126592 kB cpus=96 ent=40.00
-
-$ lscpu
-Architecture:                    ppc64le
-Byte Order:                      Little Endian
-CPU(s):                          1024
-On-line CPU(s) list:             0-1023
-Model name:                      POWER10 (architected), altivec supported
-Model:                           2.0 (pvr 0080 0200)
-Thread(s) per core:              8
-Core(s) per socket:              32
-Socket(s):                       4
-Hypervisor vendor:               pHyp
-Virtualization type:             para
-L1d cache:                       8 MiB (256 instances)
-L1i cache:                       12 MiB (256 instances)
-NUMA node(s):                    4
-
-From dmesg of v6.5
-[    0.174444] smp: Bringing up secondary CPUs ...
-[    3.918535] smp: Brought up 4 nodes, 1024 CPUs
-[   38.001402] sysrq: Changing Loglevel
-[   38.001446] sysrq: Loglevel set to 9
-
-From dmesg of v6.5 + patch
-[    0.174462] smp: Bringing up secondary CPUs ...
-[    3.421462] smp: Brought up 4 nodes, 1024 CPUs
-[   35.417917] sysrq: Changing Loglevel
-[   35.417959] sysrq: Loglevel set to 9
-
-5 runs of ppc64_cpu --smt=1 (time measured: lesser is better)
-Kernel  N  Min     Max     Median  Avg      Stddev     %Change
-v6.5    5  518.08  574.27  528.61  535.388  22.341542
-+patch  5  481.73  495.47  484.21  486.402  5.7997     -9.14963
-
-5 runs of ppc64_cpu --smt=8 (time measured: lesser is better)
-Kernel  N  Min      Max      Median   Avg       Stddev     %Change
-v6.5    5  1094.12  1117.1   1108.97  1106.3    8.606361
-+patch  5  1067.5   1090.03  1073.89  1076.574  9.4189347  -2.68697
-
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- arch/powerpc/kernel/smp.c | 78 ++++++++++++++-------------------------
- 1 file changed, 28 insertions(+), 50 deletions(-)
+ drivers/usb/host/xhci-mtk-sch.c | 113 +++++++++++++++++++++++---------
+ drivers/usb/host/xhci-mtk.h     |   4 +-
+ 2 files changed, 85 insertions(+), 32 deletions(-)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 48b8161179a8..c16443a04c26 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -92,15 +92,6 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
- EXPORT_PER_CPU_SYMBOL(cpu_core_map);
- EXPORT_SYMBOL_GPL(has_big_cores);
+diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+index 579899eb24c1..93d962b159b4 100644
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -19,6 +19,13 @@
+ #define HS_BW_BOUNDARY	6144
+ /* usb2 spec section11.18.1: at most 188 FS bytes per microframe */
+ #define FS_PAYLOAD_MAX 188
++/*
++ * max number of microframes for split transfer, assume extra-cs budget is 0
++ * for fs isoc in : 1 ss + 1 idle + 6 cs (roundup(1023/188))
++ */
++#define TT_MICROFRAMES_MAX	8
++/* offset from SS for fs/ls isoc/intr ep (ss + idle) */
++#define CS_OFFSET	2
  
--enum {
--#ifdef CONFIG_SCHED_SMT
--	smt_idx,
--#endif
--	cache_idx,
--	mc_idx,
--	die_idx,
--};
--
- #define MAX_THREAD_LIST_SIZE	8
- #define THREAD_GROUP_SHARE_L1   1
- #define THREAD_GROUP_SHARE_L2_L3 2
-@@ -1048,16 +1039,6 @@ static const struct cpumask *cpu_mc_mask(int cpu)
- 	return cpu_coregroup_mask(cpu);
- }
+ #define DBG_BUF_EN	64
  
--static struct sched_domain_topology_level powerpc_topology[] = {
--#ifdef CONFIG_SCHED_SMT
--	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
--#endif
--	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
--	{ cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC) },
--	{ cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(DIE) },
--	{ NULL, },
--};
--
- static int __init init_big_cores(void)
+@@ -237,17 +244,26 @@ static void drop_tt(struct usb_device *udev)
+ 
+ static struct mu3h_sch_ep_info *
+ create_sch_ep(struct xhci_hcd_mtk *mtk, struct usb_device *udev,
+-	      struct usb_host_endpoint *ep)
++	      struct usb_host_endpoint *ep, struct xhci_ep_ctx *ep_ctx)
  {
- 	int cpu;
-@@ -1676,9 +1657,11 @@ void start_secondary(void *unused)
- 	BUG();
- }
+ 	struct mu3h_sch_ep_info *sch_ep;
+ 	struct mu3h_sch_bw_info *bw_info;
+ 	struct mu3h_sch_tt *tt = NULL;
++	u32 len;
  
--static void __init fixup_topology(void)
-+static struct sched_domain_topology_level powerpc_topology[6];
+ 	bw_info = get_bw_info(mtk, udev, ep);
+ 	if (!bw_info)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	sch_ep = kzalloc(sizeof(*sch_ep), GFP_KERNEL);
++	if (is_fs_or_ls(udev->speed))
++		len = TT_MICROFRAMES_MAX;
++	else if ((udev->speed >= USB_SPEED_SUPER) &&
++		 usb_endpoint_xfer_isoc(&ep->desc))
++		len = get_esit(ep_ctx);
++	else
++		len = 1;
 +
-+static void __init build_sched_topology(void)
- {
--	int i;
-+	int i = 0;
++	sch_ep = kzalloc(struct_size(sch_ep, bw_budget_table, len), GFP_KERNEL);
+ 	if (!sch_ep)
+ 		return ERR_PTR(-ENOMEM);
  
- 	if (is_shared_processor()) {
- 		asym_pack_flag = SD_ASYM_PACKING;
-@@ -1690,36 +1673,33 @@ static void __init fixup_topology(void)
- #ifdef CONFIG_SCHED_SMT
- 	if (has_big_cores) {
- 		pr_info("Big cores detected but using small core scheduling\n");
--		powerpc_topology[smt_idx].mask = smallcore_smt_mask;
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			smallcore_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
-+		};
-+	} else {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
-+		};
+@@ -279,7 +295,11 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
+ 	u32 mult;
+ 	u32 esit_pkts;
+ 	u32 max_esit_payload;
++	u32 bw_per_microframe;
++	u32 *bwb_table;
++	int i;
+ 
++	bwb_table = sch_ep->bw_budget_table;
+ 	ep_type = CTX_TO_EP_TYPE(le32_to_cpu(ep_ctx->ep_info2));
+ 	maxpkt = MAX_PACKET_DECODED(le32_to_cpu(ep_ctx->ep_info2));
+ 	max_burst = CTX_TO_MAX_BURST(le32_to_cpu(ep_ctx->ep_info2));
+@@ -313,7 +333,7 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
+ 		 * opportunities per microframe
+ 		 */
+ 		sch_ep->pkts = max_burst + 1;
+-		sch_ep->bw_cost_per_microframe = maxpkt * sch_ep->pkts;
++		bwb_table[0] = maxpkt * sch_ep->pkts;
+ 	} else if (sch_ep->speed >= USB_SPEED_SUPER) {
+ 		/* usb3_r1 spec section4.4.7 & 4.4.8 */
+ 		sch_ep->cs_count = 0;
+@@ -330,6 +350,7 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
+ 		if (ep_type == INT_IN_EP || ep_type == INT_OUT_EP) {
+ 			sch_ep->pkts = esit_pkts;
+ 			sch_ep->num_budget_microframes = 1;
++			bwb_table[0] = maxpkt * sch_ep->pkts;
+ 		}
+ 
+ 		if (ep_type == ISOC_IN_EP || ep_type == ISOC_OUT_EP) {
+@@ -346,18 +367,52 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
+ 				DIV_ROUND_UP(esit_pkts, sch_ep->pkts);
+ 
+ 			sch_ep->repeat = !!(sch_ep->num_budget_microframes > 1);
++			bw_per_microframe = maxpkt * sch_ep->pkts;
++
++			for (i = 0; i < sch_ep->num_budget_microframes - 1; i++)
++				bwb_table[i] = bw_per_microframe;
++
++			/* last one <= bw_per_microframe */
++			bwb_table[i] = maxpkt * esit_pkts - i * bw_per_microframe;
+ 		}
+-		sch_ep->bw_cost_per_microframe = maxpkt * sch_ep->pkts;
+ 	} else if (is_fs_or_ls(sch_ep->speed)) {
+ 		sch_ep->pkts = 1; /* at most one packet for each microframe */
+ 
+ 		/*
+-		 * num_budget_microframes and cs_count will be updated when
++		 * @cs_count will be updated to add extra-cs when
+ 		 * check TT for INT_OUT_EP, ISOC/INT_IN_EP type
++		 * @maxpkt <= 1023;
+ 		 */
+ 		sch_ep->cs_count = DIV_ROUND_UP(maxpkt, FS_PAYLOAD_MAX);
+ 		sch_ep->num_budget_microframes = sch_ep->cs_count;
+-		sch_ep->bw_cost_per_microframe = min_t(u32, maxpkt, FS_PAYLOAD_MAX);
++
++		/* init budget table */
++		if (ep_type == ISOC_OUT_EP) {
++			for (i = 0; i < sch_ep->cs_count - 1; i++)
++				bwb_table[i] = FS_PAYLOAD_MAX;
++
++			bwb_table[i] = maxpkt - i * FS_PAYLOAD_MAX;
++		} else if (ep_type == INT_OUT_EP) {
++			/* only first one used (maxpkt <= 64), others zero */
++			bwb_table[0] = maxpkt;
++		} else { /* INT_IN_EP or ISOC_IN_EP */
++			bwb_table[0] = 0; /* start split */
++			bwb_table[1] = 0; /* idle */
++			/*
++			 * @cs_count will be updated according to cs position
++			 * (add 1 or 2 extra-cs), but assume only first
++			 * @num_budget_microframes elements will be used later,
++			 * although in fact it does not (extra-cs budget many receive
++			 * some data for IN ep);
++			 * @cs_count is 1 for INT_IN_EP (maxpkt <= 64);
++			 */
++			for (i = 0; i < sch_ep->cs_count - 1; i++)
++				bwb_table[i + CS_OFFSET] = FS_PAYLOAD_MAX;
++
++			bwb_table[i + CS_OFFSET] = maxpkt - i * FS_PAYLOAD_MAX;
++			/* ss + idle */
++			sch_ep->num_budget_microframes += CS_OFFSET;
++		}
  	}
- #endif
-+	if (shared_caches) {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE)
-+		};
-+	}
-+	if (has_coregroup_support()) {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC)
-+		};
-+	}
-+	powerpc_topology[i++] = (struct sched_domain_topology_level){
-+		cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(DIE)
-+	};
- 
--	if (!has_coregroup_support())
--		powerpc_topology[mc_idx].mask = powerpc_topology[cache_idx].mask;
--
--	/*
--	 * Try to consolidate topology levels here instead of
--	 * allowing scheduler to degenerate.
--	 * - Dont consolidate if masks are different.
--	 * - Dont consolidate if sd_flags exists and are different.
--	 */
--	for (i = 1; i <= die_idx; i++) {
--		if (powerpc_topology[i].mask != powerpc_topology[i - 1].mask)
--			continue;
--
--		if (powerpc_topology[i].sd_flags && powerpc_topology[i - 1].sd_flags &&
--				powerpc_topology[i].sd_flags != powerpc_topology[i - 1].sd_flags)
--			continue;
--
--		if (!powerpc_topology[i - 1].sd_flags)
--			powerpc_topology[i - 1].sd_flags = powerpc_topology[i].sd_flags;
-+	/* There must be one trailing NULL entry left.  */
-+	BUG_ON(i >= ARRAY_SIZE(powerpc_topology) - 1);
- 
--		powerpc_topology[i].mask = powerpc_topology[i + 1].mask;
--		powerpc_topology[i].sd_flags = powerpc_topology[i + 1].sd_flags;
--#ifdef CONFIG_SCHED_DEBUG
--		powerpc_topology[i].name = powerpc_topology[i + 1].name;
--#endif
--	}
-+	set_sched_topology(powerpc_topology);
  }
  
- void __init smp_cpus_done(unsigned int max_cpus)
-@@ -1734,9 +1714,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
- 		smp_ops->bringup_done();
+@@ -374,7 +429,7 @@ static u32 get_max_bw(struct mu3h_sch_bw_info *sch_bw,
  
- 	dump_numa_cpu_topology();
+ 		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
+ 			k = XHCI_MTK_BW_INDEX(base + j);
+-			bw = sch_bw->bus_bw[k] + sch_ep->bw_cost_per_microframe;
++			bw = sch_bw->bus_bw[k] + sch_ep->bw_budget_table[j];
+ 			if (bw > max_bw)
+ 				max_bw = bw;
+ 		}
+@@ -385,16 +440,18 @@ static u32 get_max_bw(struct mu3h_sch_bw_info *sch_bw,
+ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
+ 	struct mu3h_sch_ep_info *sch_ep, bool used)
+ {
+-	int bw_updated;
+ 	u32 base;
+-	int i, j;
 -
--	fixup_topology();
--	set_sched_topology(powerpc_topology);
-+	build_sched_topology();
+-	bw_updated = sch_ep->bw_cost_per_microframe * (used ? 1 : -1);
++	int i, j, k;
+ 
+ 	for (i = 0; i < sch_ep->num_esit; i++) {
+ 		base = sch_ep->offset + i * sch_ep->esit;
+-		for (j = 0; j < sch_ep->num_budget_microframes; j++)
+-			sch_bw->bus_bw[XHCI_MTK_BW_INDEX(base + j)] += bw_updated;
++		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
++			k = XHCI_MTK_BW_INDEX(base + j);
++			if (used)
++				sch_bw->bus_bw[k] += sch_ep->bw_budget_table[j];
++			else
++				sch_bw->bus_bw[k] -= sch_ep->bw_budget_table[j];
++		}
+ 	}
  }
  
- #ifdef CONFIG_HOTPLUG_CPU
+@@ -414,7 +471,7 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
+ 		 */
+ 		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
+ 			k = XHCI_MTK_BW_INDEX(base + j);
+-			tmp = tt->fs_bus_bw[k] + sch_ep->bw_cost_per_microframe;
++			tmp = tt->fs_bus_bw[k] + sch_ep->bw_budget_table[j];
+ 			if (tmp > FS_PAYLOAD_MAX)
+ 				return -ESCH_BW_OVERFLOW;
+ 		}
+@@ -454,25 +511,18 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ 			return -ESCH_SS_Y6;
+ 
+ 		/* one uframe for ss + one uframe for idle */
+-		start_cs = (start_ss + 2) % 8;
++		start_cs = (start_ss + CS_OFFSET) % 8;
+ 		last_cs = start_cs + cs_count - 1;
+-
+ 		if (last_cs > 7)
+ 			return -ESCH_CS_OVERFLOW;
+ 
++		/* add extra-cs */
++		cs_count += (last_cs == 7) ? 1 : 2;
+ 		if (cs_count > 7)
+ 			cs_count = 7; /* HW limit */
+ 
+ 		sch_ep->cs_count = cs_count;
+-		/* ss, idle are ignored */
+-		sch_ep->num_budget_microframes = cs_count;
+ 
+-		/*
+-		 * if interval=1, maxp >752, num_budge_micoframe is larger
+-		 * than sch_ep->esit, will overstep boundary
+-		 */
+-		if (sch_ep->num_budget_microframes > sch_ep->esit)
+-			sch_ep->num_budget_microframes = sch_ep->esit;
+ 	}
+ 
+ 	return check_fs_bus_bw(sch_ep, offset);
+@@ -481,17 +531,20 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
+ {
+ 	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+-	int bw_updated;
+ 	u32 base;
+-	int i, j;
++	int i, j, k;
+ 
+-	bw_updated = sch_ep->bw_cost_per_microframe * (used ? 1 : -1);
+ 
+ 	for (i = 0; i < sch_ep->num_esit; i++) {
+ 		base = sch_ep->offset + i * sch_ep->esit;
+ 
+-		for (j = 0; j < sch_ep->num_budget_microframes; j++)
+-			tt->fs_bus_bw[XHCI_MTK_BW_INDEX(base + j)] += bw_updated;
++		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
++			k = XHCI_MTK_BW_INDEX(base + j);
++			if (used)
++				tt->fs_bus_bw[k] += (u16)sch_ep->bw_budget_table[j];
++			else
++				tt->fs_bus_bw[k] -= (u16)sch_ep->bw_budget_table[j];
++		}
+ 	}
+ 
+ 	if (used)
+@@ -651,7 +704,7 @@ static int add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 
+ 	xhci_dbg(xhci, "%s %s\n", __func__, decode_ep(ep, udev->speed));
+ 
+-	sch_ep = create_sch_ep(mtk, udev, ep);
++	sch_ep = create_sch_ep(mtk, udev, ep, ep_ctx);
+ 	if (IS_ERR_OR_NULL(sch_ep))
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+index faaaf05e36ce..ef8af20b5e88 100644
+--- a/drivers/usb/host/xhci-mtk.h
++++ b/drivers/usb/host/xhci-mtk.h
+@@ -58,7 +58,6 @@ struct mu3h_sch_bw_info {
+  * @num_esit: number of @esit in a period
+  * @num_budget_microframes: number of continuous uframes
+  *		(@repeat==1) scheduled within the interval
+- * @bw_cost_per_microframe: bandwidth cost per microframe
+  * @hentry: hash table entry
+  * @endpoint: linked into bandwidth domain which it belongs to
+  * @tt_endpoint: linked into mu3h_sch_tt's list which it belongs to
+@@ -83,12 +82,12 @@ struct mu3h_sch_bw_info {
+  *		times; 1: distribute the (bMaxBurst+1)*(Mult+1) packets
+  *		according to @pkts and @repeat. normal mode is used by
+  *		default
++ * @bw_budget_table: table to record bandwidth budget per microframe
+  */
+ struct mu3h_sch_ep_info {
+ 	u32 esit;
+ 	u32 num_esit;
+ 	u32 num_budget_microframes;
+-	u32 bw_cost_per_microframe;
+ 	struct list_head endpoint;
+ 	struct hlist_node hentry;
+ 	struct list_head tt_endpoint;
+@@ -108,6 +107,7 @@ struct mu3h_sch_ep_info {
+ 	u32 pkts;
+ 	u32 cs_count;
+ 	u32 burst_mode;
++	u32 bw_budget_table[];
+ };
+ 
+ #define MU3C_U3_PORT_MAX 4
 -- 
-2.41.0
+2.18.0
 
