@@ -2,226 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A1278E000
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9B378E00B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbjH3TRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S244206AbjH3TOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242528AbjH3I7w (ORCPT
+        with ESMTP id S242529AbjH3JAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:59:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB32ECC9;
-        Wed, 30 Aug 2023 01:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693385988; x=1724921988;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=z8x/3nfrUutct/LzfYQeniWhx4NZGD8mqmiFRcdPHEk=;
-  b=MdYEsNCxuiTqF6FphzThHQd0G2bCArAiSjRXW6xKVU19OonDWEnhghTa
-   sJjEH8VXDFdGKPiHotb8+vxJk84nGUZMeCWonGNCfGMZHwdvLAf1XAlcn
-   JLWU/27YRuTDAabxFDqhwEX7QEhwdgPzjpyTsymrNLa35KouJctDWba2u
-   lF6ovzJRxH7HKLzdLYuv4s+sPoA52KWBWKgvL17jPIM1+ilEGyN1BTHNV
-   DLMoJrAD214KTDWi7YW2aUk9AESaaShzyrYRfXCMYlfVbZ5yAmFRhstBI
-   Pb/s7I8FhL6KAFJpjH0jJYMF9lrD2uY3oaZdDz3In2ols6CHLZg4EB8QT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="355901947"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="355901947"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 01:59:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="715824203"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="715824203"
-Received: from aghiriba-mobl.ger.corp.intel.com ([10.251.213.104])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 01:59:45 -0700
-Date:   Wed, 30 Aug 2023 11:59:39 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Subject: Re: [PATCH v3 5/7] selftests/resctrl: Make benchmark command const
- and build it with pointers
-In-Reply-To: <bafde7cd-01ae-56ff-c1f5-53be610c2b10@intel.com>
-Message-ID: <184bd8bb-5622-64f9-9f65-6674db935a21@linux.intel.com>
-References: <20230823131556.27617-1-ilpo.jarvinen@linux.intel.com> <20230823131556.27617-6-ilpo.jarvinen@linux.intel.com> <bafde7cd-01ae-56ff-c1f5-53be610c2b10@intel.com>
+        Wed, 30 Aug 2023 05:00:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCF63CC9;
+        Wed, 30 Aug 2023 02:00:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F28D32F4;
+        Wed, 30 Aug 2023 02:00:56 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DC903F64C;
+        Wed, 30 Aug 2023 02:00:15 -0700 (PDT)
+Message-ID: <4f493093-fe3e-0d17-1bdb-3c3545734f0c@arm.com>
+Date:   Wed, 30 Aug 2023 10:00:17 +0100
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1703911292-1693385988=:1710"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+From:   James Clark <james.clark@arm.com>
+Subject: Re: [PATCH v1] perf jevents: Use "default_core" for events with no
+ Unit
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230826062203.1058041-1-irogers@google.com>
+Content-Language: en-US
+In-Reply-To: <20230826062203.1058041-1-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1703911292-1693385988=:1710
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
 
-On Tue, 29 Aug 2023, Reinette Chatre wrote:
-> On 8/23/2023 6:15 AM, Ilpo Järvinen wrote:
-> ...
-> > diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-> > index bcd0d2060f81..32d23e665697 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl.h
-> > +++ b/tools/testing/selftests/resctrl/resctrl.h
-> > @@ -97,11 +100,11 @@ int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
-> >  int perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu,
-> >  		    int group_fd, unsigned long flags);
-> >  int run_fill_buf(size_t span, int memflush, int op, bool once);
-> > -int resctrl_val(char **benchmark_cmd, struct resctrl_val_param *param);
-> > -int mbm_bw_change(int cpu_no, char **benchmark_cmd);
-> > +int resctrl_val(const char * const *benchmark_cmd, struct resctrl_val_param *param);
-> > +int mbm_bw_change(int cpu_no, const char * const *benchmark_cmd);
-> >  void tests_cleanup(void);
-> >  void mbm_test_cleanup(void);
-> > -int mba_schemata_change(int cpu_no, char **benchmark_cmd);
-> > +int mba_schemata_change(int cpu_no, const char *const *benchmark_cmd);
+On 26/08/2023 07:22, Ian Rogers wrote:
+> The json Unit field encodes the name of the PMU to match the events
+> to. When no name is given it has meant the "cpu" core PMU except for
+> tests. On ARM, Intel hybrid and s390 the core PMU is named differently
+> which means that using "cpu" for this case causes the events not to
+> get matched to the PMU. Introduce a new "default_core" string for this
+> case and in the pmu__name_match force all core PMUs to match this
+> name.
 > 
-> Could you please use consistent spacing ("char * const" vs "char *const")?
->
-> > @@ -120,7 +117,7 @@ static void run_mba_test(char **benchmark_cmd, int cpu_no)
-> >  	umount_resctrlfs();
-> >  }
-> >  
-> > -static void run_cmt_test(char **benchmark_cmd, int cpu_no)
-> > +static void run_cmt_test(const char **benchmark_cmd, int cpu_no)
-> >  {
-> >  	int res;
-> >  
+> Reported-by: Thomas Richter <tmricht@linux.ibm.com>
+> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Fixes: 2e255b4f9f41 ("perf jevents: Group events by PMU")
+> Signed-off-by: Ian Rogers <irogers@google.com>
+
+Hi Ian,
+
+Running 'perf list' with this change I get "munmap_chunk(): invalid
+pointer". It's probably related to an earlier change though.
+
+Here's the stack:
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+50	../sysdeps/unix/sysv/linux/raise.c: No such file or directory.
+(gdb) bt
+#0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x0000fffff70adaac in __GI_abort () at abort.c:79
+#2  0x0000fffff70faf40 in __libc_message (action=action@entry=do_abort, fmt=fmt@entry=0xfffff71bc518 "%s\n")
+     at ../sysdeps/posix/libc_fatal.c:155
+#3  0x0000fffff7102344 in malloc_printerr (str=str@entry=0xfffff71b7ae0 "munmap_chunk(): invalid pointer") at malloc.c:5347
+#4  0x0000fffff7102644 in munmap_chunk (p=<optimized out>) at malloc.c:2830
+#5  0x0000aaaaaadc727c in __zfree (ptr=0xaaaaaaf89db0) at ../../lib/zalloc.c:13
+#6  0x0000aaaaaacbbbcc in assign_str (name=0xaaaaaae878c2 "l1d_cache_refill", field=0xaaaaaae4fb78 "value", old_str=0xaaaaaaf89db0,
+     new_str=0xaaaaaae878f7 "event=0x3") at util/pmu.c:454
+#7  0x0000aaaaaacbbdf4 in update_alias (pe=0xffffffffd450, table=0xaaaaaaf43870 <pmu_events_map+592>, vdata=0xffffffffd598)
+     at util/pmu.c:490
+#8  0x0000aaaaaadbc37c in pmu_events_table__find_event_pmu (table=0xaaaaaaf43870 <pmu_events_map+592>,
+     pmu=0xaaaaaaf43400 <pmu_events.arm_neoverse_n1>, name=0xaaaaaaf900b3 "l1d_cache_refill", fn=0xaaaaaacbbcc0 <update_alias>,
+     data=0xffffffffd598) at pmu-events/pmu-events.c:5359
+#9  0x0000aaaaaadbc598 in pmu_events_table__find_event (table=0xaaaaaaf43870 <pmu_events_map+592>, pmu=0xaaaaaaf8fcd0,
+     name=0xaaaaaaf900b3 "l1d_cache_refill", fn=0xaaaaaacbbcc0 <update_alias>, data=0xffffffffd598)
+     at pmu-events/pmu-events.c:5398
+#10 0x0000aaaaaacbc1f0 in perf_pmu__new_alias (pmu=0xaaaaaaf8fcd0, name=0xaaaaaaf900b3 "l1d_cache_refill", desc=0x0, val=0x0,
+     val_fd=0xaaaaaaf8a2e0, pe=0x0) at util/pmu.c:569
+#11 0x0000aaaaaacbc710 in pmu_aliases_parse (pmu=0xaaaaaaf8fcd0) at util/pmu.c:673
+#12 0x0000aaaaaacbf168 in perf_pmu__num_events (pmu=0xaaaaaaf8fcd0) at util/pmu.c:1633
+#13 0x0000aaaaaacc1e00 in perf_pmus__print_pmu_events (print_cb=0xffffffffe878, print_state=0xffffffffe898) at util/pmus.c:359
+#14 0x0000aaaaaac53810 in print_events (print_cb=0xffffffffe878, print_state=0xffffffffe898) at util/print-events.c:407
+#15 0x0000aaaaaab1cc30 in cmd_list (argc=0, argv=0xfffffffff0c0) at builtin-list.c:524
+#16 0x0000aaaaaac106f0 in run_builtin (p=0xaaaaaaf59580 <commands+240>, argc=2, argv=0xfffffffff0c0) at perf.c:322
+#17 0x0000aaaaaac109a4 in handle_internal_command (argc=2, argv=0xfffffffff0c0) at perf.c:375
+#18 0x0000aaaaaac10b5c in run_argv (argcp=0xffffffffeebc, argv=0xffffffffeeb0) at perf.c:419
+#19 0x0000aaaaaac10e84 in main (argc=2, argv=0xfffffffff0c0) at perf.c:535
+
+> ---
+>  tools/perf/pmu-events/jevents.py |  2 +-
+>  tools/perf/tests/pmu-events.c    | 19 ++++++++++---------
+>  tools/perf/util/pmu.c            |  7 ++++++-
+>  3 files changed, 17 insertions(+), 11 deletions(-)
 > 
-> Could you please elaborate why the above functions have
-> "const char **" instead of "const char * const *"?
-
-Thanks for the review!
-
-Sure. I'll make them consistent.
-
-> > @@ -173,11 +170,13 @@ static void run_cat_test(int cpu_no, int no_of_bits)
-> >  int main(int argc, char **argv)
-> >  {
-> >  	bool has_ben = false, mbm_test = true, mba_test = true, cmt_test = true;
-> > -	char benchmark_cmd_area[BENCHMARK_ARGS][BENCHMARK_ARG_SIZE];
-> >  	int c, cpu_no = 1, argc_new = argc, i, no_of_bits = 0;
-> > -	char *benchmark_cmd[BENCHMARK_ARGS];
-> > +	const char *benchmark_cmd[BENCHMARK_ARGS];
-> >  	int ben_ind, ben_count, tests = 0;
-> > +	char *span_str = NULL;
-> >  	bool cat_test = true;
-> > +	char *skip_reason;
-> > +	int ret;
-> >  
-> >  	for (i = 0; i < argc; i++) {
-> >  		if (strcmp(argv[i], "-b") == 0) {
-> > @@ -257,31 +256,31 @@ int main(int argc, char **argv)
-> >  			ksft_exit_fail_msg("Too long benchmark command.\n");
-> >  
-> >  		/* Extract benchmark command from command line. */
-> > -		for (i = ben_ind; i < argc; i++) {
-> > -			benchmark_cmd[i - ben_ind] = benchmark_cmd_area[i];
-> > -			if (strlen(argv[i]) >= BENCHMARK_ARG_SIZE - 1)
-> > -				ksft_exit_fail_msg("Too long benchmark command argument.\n");
-> > -			sprintf(benchmark_cmd[i - ben_ind], "%s", argv[i]);
-> > -		}
-> > +		for (i = 0; i < argc - ben_ind; i++)
-> > +			benchmark_cmd[i] = argv[i + ben_ind];
-> >  		benchmark_cmd[ben_count] = NULL;
-> >  	} else {
-> >  		/* If no benchmark is given by "-b" argument, use fill_buf. */
-> > -		for (i = 0; i < 5; i++)
-> > -			benchmark_cmd[i] = benchmark_cmd_area[i];
-> > -
-> > -		strcpy(benchmark_cmd[0], "fill_buf");
-> > -		sprintf(benchmark_cmd[1], "%u", DEFAULT_SPAN);
-> > -		strcpy(benchmark_cmd[2], "1");
-> > -		strcpy(benchmark_cmd[3], "0");
-> > -		strcpy(benchmark_cmd[4], "false");
-> > +		benchmark_cmd[0] = "fill_buf";
-> > +		ret = asprintf(&span_str, "%u", DEFAULT_SPAN);
-> > +		if (ret < 0)
-> > +			ksft_exit_fail_msg("Out of memory!\n");
-> > +		benchmark_cmd[1] = span_str;
-> > +		benchmark_cmd[2] = "1";
-> > +		benchmark_cmd[3] = "0";
-> > +		benchmark_cmd[4] = "false";
-> >  		benchmark_cmd[5] = NULL;
-> >  	}
-> >  
-> > -	if (!check_resctrlfs_support())
-> > -		return ksft_exit_skip("resctrl FS does not exist. Enable X86_CPU_RESCTRL config option.\n");
-> > +	if (!check_resctrlfs_support()) {
-> > +		skip_reason = "resctrl FS does not exist. Enable X86_CPU_RESCTRL config option.\n";
-> > +		goto free_span;
-> > +	}
-> >  
-> > -	if (umount_resctrlfs())
-> > -		return ksft_exit_skip("resctrl FS unmount failed.\n");
-> > +	if (umount_resctrlfs()) {
-> > +		skip_reason = "resctrl FS unmount failed.\n";
-> > +		goto free_span;
-> > +	}
-> >  
-> >  	filter_dmesg();
-> >  
-> > @@ -299,5 +298,10 @@ int main(int argc, char **argv)
-> >  	if (cat_test)
-> >  		run_cat_test(cpu_no, no_of_bits);
-> >  
-> > +	free(span_str);
-> >  	ksft_finished();
-> > +
-> > +free_span:
-> > +	free(span_str);
-> > +	return ksft_exit_skip(skip_reason);
-> >  }
-> 
-> This is a tricky one. If I understand correctly this goto target makes
-> some assumptions about the state (no test plan created yet) and exit
-> reason (it has to be skipped). A temporary variable is also thrown into
-> the mix.
-
-So in the end the symmetry proved to be not as simple as was depicted 
-earlier but "tricky"... I tried to warn about this and it's why I wished 
-to avoid the allocation entirely. Without allocation, there would have not 
-been need for the temporary variable nor adjusting the control flow with 
-that label.
-
-> Can this not be simplified by moving the snippet where
-> benchmark_cmd[] is initialized to fill_buf to be just before the tests 
-> are run? Perhaps right before ksft_set_plan()?
-
-So I throw a temporary variable into the mix (has_ben) to keep track when 
-benchmark_cmd needs to be initialized to the default command? It doesn't 
-play well with what I've in queue after this when user parameters are 
-collected into a struct which is initialized to default value by a helper 
-function before any argument processing. That is, initializing the 
-parameters to defaults needs to be split before and after the parameter 
-parsing code.
-
-> This may be an easier move to consider
-> when the changes in patch 7 are taken into account.
-
-Perhaps you could consider accepting my earlier approach which avoided 
-the allocation entirely now that you've seen where this leads to? ...At 
-least you should understand my reasoning for that on much deeper level 
-now.
-
-
--- 
- i.
-
---8323329-1703911292-1693385988=:1710--
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+> index 712f80d7d071..a7e88332276d 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -266,7 +266,7 @@ class JsonEvent:
+>      def unit_to_pmu(unit: str) -> Optional[str]:
+>        """Convert a JSON Unit to Linux PMU name."""
+>        if not unit:
+> -        return 'cpu'
+> +        return 'default_core'
+>        # Comment brought over from jevents.c:
+>        # it's not realistic to keep adding these, we need something more scalable ...
+>        table = {
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index ce4da9b1d115..f5321fbdee79 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -44,7 +44,7 @@ struct perf_pmu_test_pmu {
+>  
+>  static const struct perf_pmu_test_event bp_l1_btb_correct = {
+>  	.event = {
+> -		.pmu = "cpu",
+> +		.pmu = "default_core",
+>  		.name = "bp_l1_btb_correct",
+>  		.event = "event=0x8a",
+>  		.desc = "L1 BTB Correction",
+> @@ -56,7 +56,7 @@ static const struct perf_pmu_test_event bp_l1_btb_correct = {
+>  
+>  static const struct perf_pmu_test_event bp_l2_btb_correct = {
+>  	.event = {
+> -		.pmu = "cpu",
+> +		.pmu = "default_core",
+>  		.name = "bp_l2_btb_correct",
+>  		.event = "event=0x8b",
+>  		.desc = "L2 BTB Correction",
+> @@ -68,7 +68,7 @@ static const struct perf_pmu_test_event bp_l2_btb_correct = {
+>  
+>  static const struct perf_pmu_test_event segment_reg_loads_any = {
+>  	.event = {
+> -		.pmu = "cpu",
+> +		.pmu = "default_core",
+>  		.name = "segment_reg_loads.any",
+>  		.event = "event=0x6,period=200000,umask=0x80",
+>  		.desc = "Number of segment register loads",
+> @@ -80,7 +80,7 @@ static const struct perf_pmu_test_event segment_reg_loads_any = {
+>  
+>  static const struct perf_pmu_test_event dispatch_blocked_any = {
+>  	.event = {
+> -		.pmu = "cpu",
+> +		.pmu = "default_core",
+>  		.name = "dispatch_blocked.any",
+>  		.event = "event=0x9,period=200000,umask=0x20",
+>  		.desc = "Memory cluster signals to block micro-op dispatch for any reason",
+> @@ -92,7 +92,7 @@ static const struct perf_pmu_test_event dispatch_blocked_any = {
+>  
+>  static const struct perf_pmu_test_event eist_trans = {
+>  	.event = {
+> -		.pmu = "cpu",
+> +		.pmu = "default_core",
+>  		.name = "eist_trans",
+>  		.event = "event=0x3a,period=200000,umask=0x0",
+>  		.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+> @@ -104,7 +104,7 @@ static const struct perf_pmu_test_event eist_trans = {
+>  
+>  static const struct perf_pmu_test_event l3_cache_rd = {
+>  	.event = {
+> -		.pmu = "cpu",
+> +		.pmu = "default_core",
+>  		.name = "l3_cache_rd",
+>  		.event = "event=0x40",
+>  		.desc = "L3 cache access, read",
+> @@ -391,8 +391,8 @@ static int compare_alias_to_test_event(struct pmu_event_info *alias,
+>  		return -1;
+>  	}
+>  
+> -
+> -	if (!is_same(alias->pmu_name, test_event->event.pmu)) {
+> +	if (!is_same(alias->pmu_name, test_event->event.pmu) &&
+> +	    !is_same(alias->pmu_name, "default_core")) {
+>  		pr_debug("testing aliases PMU %s: mismatched pmu_name, %s vs %s\n",
+>  			  pmu_name, alias->pmu_name, test_event->event.pmu);
+>  		return -1;
+> @@ -409,7 +409,7 @@ static int test__pmu_event_table_core_callback(const struct pmu_event *pe,
+>  	struct perf_pmu_test_event const **test_event_table;
+>  	bool found = false;
+>  
+> -	if (strcmp(pe->pmu, "cpu"))
+> +	if (strcmp(pe->pmu, "default_core"))
+>  		test_event_table = &uncore_events[0];
+>  	else
+>  		test_event_table = &core_events[0];
+> @@ -543,6 +543,7 @@ static int __test_core_pmu_event_aliases(const char *pmu_name, int *count)
+>  	INIT_LIST_HEAD(&pmu->caps);
+>  	INIT_LIST_HEAD(&pmu->list);
+>  	pmu->name = strdup(pmu_name);
+> +	pmu->is_core = true;
+>  
+>  	pmu->events_table = table;
+>  	pmu_add_cpu_aliases_table(pmu, table);
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 502fd58c3ea7..cde33e01959a 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -1747,7 +1747,12 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
+>  bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
+>  {
+>  	return !strcmp(pmu->name, pmu_name) ||
+> -		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name));
+> +		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name)) ||
+> +		/*
+> +		 * jevents and tests use default_core as a marker for any core
+> +		 * PMU as the PMU name varies across architectures.
+> +		 */
+> +	        (pmu->is_core && !strcmp(pmu_name, "default_core"));
+>  }
+>  
+>  bool perf_pmu__is_software(const struct perf_pmu *pmu)
