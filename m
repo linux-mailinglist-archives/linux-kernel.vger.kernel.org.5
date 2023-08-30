@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D87578DDD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7885D78D9F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245732AbjH3SyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S234307AbjH3Set (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245128AbjH3ObL (ORCPT
+        with ESMTP id S245131AbjH3Ob2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:31:11 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D830B193
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:31:03 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso8311479e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:31:03 -0700 (PDT)
+        Wed, 30 Aug 2023 10:31:28 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D05919A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:31:25 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99c93638322so202966966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:31:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693405862; x=1694010662; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693405883; x=1694010683; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZY0deiTnO9HqTmhq+9BgjkHv5GVPaKmFZj60VWc3fuQ=;
-        b=Sp4Qp1INlwluUcKwE3TVFel+MWI64hDyTegxnv46kLJLmosTA3vq2rttm2Lbit8HPL
-         p8Tl6QpJqz47uzwXurUbJIh+KVu/Sz8OpW6ERVRxOCY6WS/pH3lH/SAvDWVYnIoMOX34
-         524OrLL28vrDEWOLid/jNE912TB9kWfI/uv98vrDkhRuBUfk+ETV4rAwFEqO4JTtdEhb
-         es4d5PGmeTJH8M4J97PuFZiM4cQ0uRRMgqYUhQuc9Cv690UZHPA/S7JwJDE/c2ZeXoTC
-         2L6SPclqCvzVbgtz9VoVmis01G2lQc3KQ4IEMojdpPsxdH2oImP/GXWPJRRT9nqsYXdx
-         95eg==
+        bh=k7MRgYxQ/rskHMSwacRwQkPlWa4q6KhrBYjtpS5/K2k=;
+        b=wpCgh2IXpcYDznF3K9ZFs4oSXTsbpDj8USbQzL7RXBGwd955+rVWxztkVYIipByKx5
+         ASV9ddV9sqz1Ay4lNVjiW/x+nIR+vBPhhWocHkFNW0TP4+hF54ZKOA01qskecl8/pAen
+         M6tmKgLvnToliVewgFabFk0Gs271Qqhani7DfHcKsOhdYzfWbHaq383Nv/2Ke15bb3+h
+         7siE5iDH0LrfYj/7yy+ebqDcSv/z2Mn0uO00M4cVFC9J5jJqgRI+8jHT9ooA1tvm4QSJ
+         supdSu9KHGYw7ve9Eu0FpRK98VfW1WJaU8uD8YsBwAUsOSDSv3En/7swKi4RvaOuICot
+         9W5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693405862; x=1694010662;
+        d=1e100.net; s=20221208; t=1693405883; x=1694010683;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZY0deiTnO9HqTmhq+9BgjkHv5GVPaKmFZj60VWc3fuQ=;
-        b=VYDPSlnaLZFnlXwKhChA5GkavrV89T6QzmiBOna8R0Ti9/da6ZVBIpXG6HbJzrZrpG
-         U9WUDQHB0KdwTkc09utC/DFzSxwPbGOYdDe/cX+8RtOsnLbVOrXoK3dSjbiBRpAh83k9
-         CK0j8ePrrhXjCo1xyt73pwdO0ZKBrm9chT7KsbC0i2I2BOqneAKlfLSiiEmCEE/VirWO
-         aDcLU8uM3xKC238Y0gw6jiP+18lx6ZwRXl7JnWz6mtIb06Rxah5xBAO4IGnW9RuD2KKu
-         UhQO+cOfyB9ldcrfbS3OxclhG1LK+EU4EouBljij8Xtd2Bjd00QF1j2bb7ZUNeNOk0Eo
-         L4gw==
-X-Gm-Message-State: AOJu0Ywt6YJZBA3TRphU7Gqeej+XzI2VtY4ZuQo3QI4UZWGdMfKhcTWT
-        IAczBAApKNoW2976w8ZjglhOVg==
-X-Google-Smtp-Source: AGHT+IGWIQNzv/lcLcwsBoqxI/zsSA+mv5sN7MpUDDHR/4HMuhQG491t3VHz0giePI4M6CLRnRQv0g==
-X-Received: by 2002:a05:6512:220d:b0:4f8:752f:df48 with SMTP id h13-20020a056512220d00b004f8752fdf48mr1753066lfu.29.1693405862090;
-        Wed, 30 Aug 2023 07:31:02 -0700 (PDT)
+        bh=k7MRgYxQ/rskHMSwacRwQkPlWa4q6KhrBYjtpS5/K2k=;
+        b=XHgeQC3LurWYDxn5Ah6cT7vS89yl3Z6atO8hq3npiTSoCOcLEIsRNQP9+/UDGG9zb2
+         FF9dWUeyvhSbzBSe43nJ8/k2rUDfeoNCAYTLbbp+7LbXccLZUB1nbr8UVkCbw/z9XV2a
+         tP6FMEO4MM2o3CnSy44Z4uTW3jRbw8kZuy/uiVXxYo0VG8RwpEY63KfJZJftLveJddL1
+         5WUnf2jQuV6SpKzdRXIxzGuv+iDdrBlygwMnZcq3KBAxG0IOEoGwWkz8E1YqcGIpmQLC
+         MQUFNc3RaJKkEa3mALtpRUJ+n/J175/I+qpiI7DHhLykIEl8kJr+aNRiOFsvluzIf6Ho
+         ur/Q==
+X-Gm-Message-State: AOJu0YxRgqTRQ3uB8bBKDz1vgKnPd8/aUqHImPqMaUdkxEB2UkPxbFue
+        ycP4g5X2ODl7MSaCeuWC04jdvg==
+X-Google-Smtp-Source: AGHT+IEYuob+ogJ2cn3jEWJnDOBU0Ct0kNqfWrlOusL37c4JbyVAYrGnYOxwg04hk2/YDSj8e21Uhw==
+X-Received: by 2002:a17:906:51c6:b0:9a1:f1b2:9f2e with SMTP id v6-20020a17090651c600b009a1f1b29f2emr2690005ejk.2.1693405883593;
+        Wed, 30 Aug 2023 07:31:23 -0700 (PDT)
 Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id b17-20020a1709062b5100b009a219ecbaf1sm7241362ejg.85.2023.08.30.07.31.00
+        by smtp.gmail.com with ESMTPSA id pk18-20020a170906d7b200b00997e00e78e6sm7249902ejb.112.2023.08.30.07.31.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 07:31:01 -0700 (PDT)
-Message-ID: <3f7f6427-51eb-a251-f8dd-f7922b9fcfd7@linaro.org>
-Date:   Wed, 30 Aug 2023 16:31:00 +0200
+        Wed, 30 Aug 2023 07:31:22 -0700 (PDT)
+Message-ID: <587b738c-118a-5e1e-bb6b-ea3ca2b93234@linaro.org>
+Date:   Wed, 30 Aug 2023 16:31:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 05/11] dt-bindings: document the Qualcomm TEE Shared
- Memory Bridge
+Subject: Re: [PATCH 06/11] firmware: qcom-shm-bridge: new driver
 Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
@@ -73,12 +72,13 @@ Cc:     Andy Gross <agross@kernel.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
- <20230828192507.117334-6-bartosz.golaszewski@linaro.org>
- <9b69a4a6-b011-f0e8-217f-5f91d9a00382@linaro.org>
- <48feda07-525d-4319-ba09-14928ab1fd29@linaro.org>
- <CACMJSeuOigO38_jgjNLz6AiWK1BoLN+shDQHrubS5s-dkDFG7A@mail.gmail.com>
+ <20230828192507.117334-7-bartosz.golaszewski@linaro.org>
+ <8b7bada9-3898-1b60-3dea-766a760412f7@linaro.org>
+ <CACMJSetObp0k312DmqhTCkw7jsf05OHX1yxbyYj+sVfbtwRcVQ@mail.gmail.com>
+ <86bb50fd-72f3-7c76-c4fe-f8e4765e33d5@linaro.org>
+ <CACMJSes9Lwgh+xSDQo4KQhOHdcLigYgi=scFTeCtiqKFt1QNnw@mail.gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CACMJSeuOigO38_jgjNLz6AiWK1BoLN+shDQHrubS5s-dkDFG7A@mail.gmail.com>
+In-Reply-To: <CACMJSes9Lwgh+xSDQo4KQhOHdcLigYgi=scFTeCtiqKFt1QNnw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -90,79 +90,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 15:48, Bartosz Golaszewski wrote:
-> On Tue, 29 Aug 2023 at 11:30, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> On 29.08.2023 10:02, Krzysztof Kozlowski wrote:
->>> On 28/08/2023 21:25, Bartosz Golaszewski wrote:
->>>> Add Device Tree bindings for Qualcomm TEE Shared Memory Brige - a
->>>> mechanism that allows sharing memory buffers between trustzone and the
->>>> kernel.
->>>
->>> Subject prefix:
->>> dt-bindings: firmware:
->>>
->>>
->>>
->>>>
->>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>> ---
->>>>  .../bindings/firmware/qcom,shm-bridge.yaml    | 36 +++++++++++++++++++
->>>>  1 file changed, 36 insertions(+)
->>>>  create mode 100644 Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
->>>> new file mode 100644
->>>> index 000000000000..f660962b7b86
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/firmware/qcom,shm-bridge.yaml
->>>> @@ -0,0 +1,36 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/firmware/qcom,shm-bridge.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: QCOM Shared Memory Bridge
->>>> +
->>>> +description: |
->>>
->>> Do not need '|' unless you need to preserve formatting.
->>>
->>>> +  Qualcomm TEE Shared Memory Bridge allows sharing limited areas of kernel's
->>>> +  virtual memory with the trustzone in order to avoid mapping the entire RAM.
->>>> +
->>>> +maintainers:
->>>> +  - Bjorn Andersson <andersson@kernel.org>
->>>> +  - Konrad Dybcio <konrad.dybcio@linaro.org>
->>>> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    items:
->>>> +      - enum:
->>>> +          - qcom,shm-bridge-sa8775p
->>>> +          - qcom,shm-bridge-sm8150
->>>> +          - qcom,shm-bridge-sm8450
->>>> +      - const: qcom,shm-bridge
->>>> +
->>>
->>> Looks quite empty... Why this cannot be part of qcom,scm? IOW, why do
->>> you need new binding if you do not have any resources here and the block
->>> is essentially feature of qcom,scm firmware?
->> Since it's "discoverable" (via retval of an scm call), I'd second the
->> idea of probing this from within the SCM driver.
->>
->> Konrad
-> 
-> Downstream has a bunch of DT switches that we don't support for now
-> upstream. I disagree about shoehorning this into the SCM driver. It
-> really is a layer on top of SCM but also SCM is a user of this
-> interface.
+On 30/08/2023 15:09, Bartosz Golaszewski wrote:
 
-Sure, for the driver makes sense, but it does not really explain why DT
-node is needed. It is not separate hardware. I doubt it is even separate
-firmware, but part of SCM.
+>>>>> +
+>>>>> +     return gen_pool_virt_to_phys(pool->genpool, (unsigned long)vaddr);
+>>>>> +}
+>>>>> +EXPORT_SYMBOL_GPL(qcom_shm_bridge_to_phys_addr);
+>>>>> +
+>>>>> +static int qcom_shm_bridge_probe(struct platform_device *pdev)
+>>>>> +{
+>>>>> +     struct qcom_shm_bridge_pool *default_pool;
+>>>>> +     struct device *dev = &pdev->dev;
+>>>>> +     int ret;
+>>>>> +
+>>>>> +     /*
+>>>>> +      * We need to wait for the SCM device to be created and bound to the
+>>>>> +      * SCM driver.
+>>>>> +      */
+>>>>> +     if (!qcom_scm_is_available())
+>>>>> +             return -EPROBE_DEFER;
+>>>>
+>>>> I think we miss here (and in all other drivers) device links to qcm.
+>>>>
+>>>
+>>> Well, SCM, once probed, cannot be unbound. What would device links
+>>> guarantee above that?
+>>
+>> Runtime PM, probe ordering (dependencies) detection.
+>>
+> 
+> Shouldn't we cross that bridge when we get there? SCM has no support
+> for runtime PM. Probe ordering is quite well handled with a simple
+> probe deferral. This is also not a parent-child relationship. SHM
+> Bridge calls into the trustzone using SCM, but SCM is also a user of
+> SHM Bridge.
+
+OK
 
 Best regards,
 Krzysztof
