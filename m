@@ -2,155 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C48478D9C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221ED78DDE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237326AbjH3SeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
+        id S1343688AbjH3Szz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245580AbjH3PhP (ORCPT
+        with ESMTP id S245587AbjH3PiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:37:15 -0400
-Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6B5122
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:13 -0700 (PDT)
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: [PATCH v4 09/11] ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
-Date:   Wed, 30 Aug 2023 17:36:50 +0200
-Message-Id: <20230830153652.217855-10-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
-References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+        Wed, 30 Aug 2023 11:38:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311301A3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693409846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iYwaBfh6sscVjiErhjaJgNSKOVZZxtHF3M2zAzhYOOw=;
+        b=Vohm9keeOadBF5SIovbucYNaqmEuImvqeG8bw3Mpi1fkv+PvWncCf9HWh/SDpCqm1WTMsD
+        RkLchL5cwBumU+O8aWkxOLs6Zl8PeZ564WaXSBNACuOWH1UtS67NK3vsSrcI1C3O/4zDye
+        CNH4OrgnEUztTEQ5IfpGJ2TuBrHkE9E=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-587-zLQddH5iNhOjQkJEgdTNnw-1; Wed, 30 Aug 2023 11:37:25 -0400
+X-MC-Unique: zLQddH5iNhOjQkJEgdTNnw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-993831c639aso416321866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693409844; x=1694014644;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iYwaBfh6sscVjiErhjaJgNSKOVZZxtHF3M2zAzhYOOw=;
+        b=inXcbMzgxAMLgyKh3BWvpSKZnXdyt5NaSGOo0vFKCRAKtsVpWFwSfKmGbUtnjiHsfg
+         mVK8GkDYeJBBCtx507iFvwxXJKQ7zpKaTTR3dXal7o7Rx+gskHQsH9h6w+nFYylwyQ/B
+         CoVmb0N+ClDOP8JwzyOZtuYi7YGXDxdLGT41ge6rfbioIJ5qRBM3qXXtuZdH+jeNw1A2
+         QUP2nxeoymOiMA2jlsWBqdzRhzwOl2hht+crGxv/5ixSuFyFGAaERWfRPP6+IftIv77K
+         3+mi7qf3coOvVIZeJ4849D53bGp07dl8ZC4rCX9ucfQ+0B+kRxjKdVDzUUTuOqWfeDUh
+         F/1Q==
+X-Gm-Message-State: AOJu0YwR0p/AZTebehB7J5A8lyx6A33m6cpuJ9y/VDNHTZebx7wq0AKj
+        o6TcXbtuYyF3KQKfmX/v4qtjEZzPGJS8qdQuPDTZIInLQnQmxxMQFOciVS5NZnXpqswxOt9ntmM
+        ++jTk/cYf+EkAw2WjnZaHwItX
+X-Received: by 2002:a17:906:3015:b0:9a2:256a:65cd with SMTP id 21-20020a170906301500b009a2256a65cdmr1927898ejz.4.1693409843784;
+        Wed, 30 Aug 2023 08:37:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH9cnAwvraUnaJMwV3BLLN/i+/KDdw+7I7E1kIl3M59eUSFKr9WPGS1l2wZxe7D1GJv4GZ/Bg==
+X-Received: by 2002:a17:906:3015:b0:9a2:256a:65cd with SMTP id 21-20020a170906301500b009a2256a65cdmr1927884ejz.4.1693409843446;
+        Wed, 30 Aug 2023 08:37:23 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id i15-20020a1709064ecf00b009a2202bfce5sm7275283ejv.118.2023.08.30.08.37.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 08:37:22 -0700 (PDT)
+Message-ID: <811225f8-c505-7344-ac18-882472ee0348@redhat.com>
+Date:   Wed, 30 Aug 2023 17:37:21 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
+Content-Language: en-US, nl
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        linus.walleij@linaro.org
+Cc:     Shyam-sundar.S-k@amd.com, Basavaraj.Natikar@amd.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev, lucapgl2001@gmail.com
+References: <20230829165627.156542-1-mario.limonciello@amd.com>
+ <20230829165627.156542-4-mario.limonciello@amd.com>
+ <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
+ <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-the snd_hdac_i915_init into a workqueue.
+Hi,
 
-Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-probe function.
+On 8/29/23 23:37, Mario Limonciello wrote:
+> On 8/29/2023 14:54, Hans de Goede wrote:
+>> Hi Mario,
+>>
+>> On 8/29/23 18:56, Mario Limonciello wrote:
+>>> Lenovo ideapad 5 doesn't use interrupts for GPIO 0, and so internally
+>>> debouncing with WinBlue debounce behavior means that the GPIO doesn't
+>>> clear until a separate GPIO is used (such as touchpad).
+>>>
+>>> Prefer to use legacy debouncing to avoid problems.
+>>>
+>>> Reported-by: Luca Pigliacampo <lucapgl2001@gmail.com>
+>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217833
+>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>>
+>> I'm not happy to see yet another DMI quirk solution here.
+>>
+>> and I guess you're not happy with this either...
+> 
+> Yeah I was really hoping the first patch was enough for the issue.
+> 
+> If we can't come up with anything else we can potentially drop patches 2 and 3. Even patch 1 alone will "significantly" improve the situation.
+> 
+> The other option I considered is to hardcode WinBlue debounce behavior "off" in Linux.
+> 
+> I don't think this is a good idea though though because we will likely trade bugs because the debounce values in the AML for systems using _AEI aren't actually used in Windows and might not have good values.
 
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+What if we turn off the WinBlue debounce behavior for GPIO0 and then just hardcode some sane debounce values for it, overriding whatever the DSDT _AEI entries contain ?
 
----
-Changes since v1:
-- Use dev_err_probe()
-- Don't move probed_devs bitmap unnecessarily. (tiwai)
-- Move snd_hdac_i915_init slightly upward, to ensure
-  it's always initialised before vga-switcheroo is called.
----
- sound/pci/hda/hda_intel.c | 59 ++++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 29 deletions(-)
+>> Are we sure there is no other way? Did you check an acpidump
+>> for the laptop and specifically for its ACPI powerbutton handling?
+> 
+> I'm not sure there is another way or not, but yes there is an acpidump attached to the bug in case you or anyone else has some ideas.
+> 
+>>
+>> I would expect the ACPI powerbutton handler to somehow clear
+>> the bit, like how patch 1/3 clears it from the GPIO chip's
+>> own IRQ handler.
+>>
+>> I see that drivers/acpi/button.c does:
+>>
+>> static u32 acpi_button_event(void *data)
+>> {
+>>          acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
+>>          return ACPI_INTERRUPT_HANDLED;
+>> }
+>>
+>> So unless I'm misreading something here, there is some AML being
+>> executed on power-button events. So maybe there is something wrong
+>> with how Linux interprets that AML ?
+>>
+> The relevant ACPI spec section is here:
+> 
+> https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/04_ACPI_Hardware_Specification/ACPI_Hardware_Specification.html#control-method-power-button
+> 
+> I did look at the acpidump.  GPE 08 notifies \_SB.PWRB (a PNP0C0C device) with 0x2.  According to the spec this is specifically for letting the system know the power button is waking up the system from G1.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 85fa15bbd8513..d529ef21f033a 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2135,6 +2135,36 @@ static int azx_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(pci, card);
- 
-+#ifdef CONFIG_SND_HDA_I915
-+	/* bind with i915 if needed */
-+	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
-+		err = snd_hdac_i915_init(azx_bus(chip), false);
-+		if (err < 0) {
-+			/* if the controller is bound only with HDMI/DP
-+			 * (for HSW and BDW), we need to abort the probe;
-+			 * for other chips, still continue probing as other
-+			 * codecs can be on the same link.
-+			 */
-+			if (HDA_CONTROLLER_IN_GPU(pci)) {
-+				dev_err_probe(card->dev, err,
-+					     "HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
-+
-+				goto out_free;
-+			} else {
-+				/* don't bother any longer */
-+				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
-+			}
-+		}
-+
-+		/* HSW/BDW controllers need this power */
-+		if (HDA_CONTROLLER_IN_GPU(pci))
-+			hda->need_i915_power = true;
-+	}
-+#else
-+	if (HDA_CONTROLLER_IN_GPU(pci))
-+		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
-+#endif
-+
- 	err = register_vga_switcheroo(chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "Error registering vga_switcheroo client\n");
-@@ -2162,11 +2192,6 @@ static int azx_probe(struct pci_dev *pci,
- 	}
- #endif /* CONFIG_SND_HDA_PATCH_LOADER */
- 
--#ifndef CONFIG_SND_HDA_I915
--	if (HDA_CONTROLLER_IN_GPU(pci))
--		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
--#endif
--
- 	if (schedule_probe)
- 		schedule_delayed_work(&hda->probe_work, 0);
- 
-@@ -2263,30 +2288,6 @@ static int azx_probe_continue(struct azx *chip)
- 	to_hda_bus(bus)->bus_probing = 1;
- 	hda->probe_continued = 1;
- 
--	/* bind with i915 if needed */
--	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
--		err = snd_hdac_i915_init(bus, true);
--		if (err < 0) {
--			/* if the controller is bound only with HDMI/DP
--			 * (for HSW and BDW), we need to abort the probe;
--			 * for other chips, still continue probing as other
--			 * codecs can be on the same link.
--			 */
--			if (HDA_CONTROLLER_IN_GPU(pci)) {
--				dev_err(chip->card->dev,
--					"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
--				goto out_free;
--			} else {
--				/* don't bother any longer */
--				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
--			}
--		}
--
--		/* HSW/BDW controllers need this power */
--		if (HDA_CONTROLLER_IN_GPU(pci))
--			hda->need_i915_power = true;
--	}
--
- 	/* Request display power well for the HDA controller or codec. For
- 	 * Haswell/Broadwell, both the display HDA controller and codec need
- 	 * this power. For other platforms, like Baytrail/Braswell, only the
--- 
-2.39.2
+Sorry, the acpi_os_execute() function name gave me the impression that this would actually call some ACPI defined function, since normally in acpi speak execute refers to an ACPI table defined method.
+
+But that is not the case here it is just a wrapper to deferred-exec the passed in function pointer.
+
+To be clear I was hoping that there was an ACPI defined (AML code) function which would maybe clear the GPIO for us and that that was maybe not working due to e.g. some opregion not being implemented by Linux. But no AML code is being executed at all, so this is all a red herring.
+
+Regards,
+
+Hans
+
 
