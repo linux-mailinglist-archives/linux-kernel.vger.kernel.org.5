@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A81D778DED3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1261E78DFFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245305AbjH3TZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44742 "EHLO
+        id S243383AbjH3TM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241301AbjH3GvK (ORCPT
+        with ESMTP id S241337AbjH3GxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:51:10 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A97219A;
-        Tue, 29 Aug 2023 23:51:08 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37U3oDlD006509;
-        Wed, 30 Aug 2023 06:50:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tSZudSx08f9+CBtOs+1Ugw6FeBgTDW2acM0JToePn/o=;
- b=YAzo8VBYM1xPNbkLYld/QkPP2tiTCLyAEOJGCyM8V3HHlJq7QKb37fEaZRPN3pS7lgjr
- Gq7Z6yBzxflH7tV9SE+8s3aBJRyMQw8YQLBf8cCLWe+1IKNtDOHNMMGI6LNo86iQ4xQr
- wDKTmVW/bhJUc1KFtsIQI2W1Yg4vMOGGGWD9m2NXgkIgcKT15gvFpud1wROqrf6Bb+3Z
- Z/pNc9djkOTiyjSoUQeZzpifqFNgoqnlJd1jKehh5zlmQ4rIzmQdN9WlHbzsTuzVOf9F
- UPNzgQcv1N2PkGfSuPuh33v+fEgi101YHP7HdnQWmD6Q9DuMzk+4PGFtySupsj5CFZFi gw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssv0y0hhs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 06:50:54 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37U6orI5023675
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 06:50:53 GMT
-Received: from [10.201.2.48] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
- 2023 23:50:49 -0700
-Message-ID: <ded5b9fd-1437-f179-d9d7-86be6847b8e6@quicinc.com>
-Date:   Wed, 30 Aug 2023 12:20:46 +0530
+        Wed, 30 Aug 2023 02:53:11 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D891B1A2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:53:07 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bf1f632b8so705758666b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693378386; x=1693983186; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9pOJN0Q6wkLvMewxsTy82PsqahQrqDIj24ECvJdWCSo=;
+        b=hFPOrGSG6AL5SBXwq3saM68KoWP6qmzTIlrRUhkIZiCAhFd0j0qZMLGk++XHS8YnRp
+         ad9FAeprO9wlMAJQHLbQBCXJ4eh6hBlJlopnXZ/uG86awguRGOgC7F1HZfjic/mWPSnp
+         6t2sHZkEvhhen+BDjtvgocdIJiBH5MRC+7pnzsqSjUcZTy2CPt5/mYC7xBLyzJmI1WAx
+         8jpKOckvpWLodIDixV0UI0kHjuCsiE+K9XbYDT3k/VE6mGus2LPwKwpbzRb4BPgDNy34
+         rauVepznllVEFvjA1v+lbNT7p4Z9ATbdNSodIfevbfNwMhonpzUkO4XCkC/r0ljVGfBX
+         J63w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693378386; x=1693983186;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9pOJN0Q6wkLvMewxsTy82PsqahQrqDIj24ECvJdWCSo=;
+        b=jJs6kwA05bwi3wBxkIVlnN7BAPrs5zzJa34WP9onxPJQU4aPleZ0QjLHLJIhfpRHlg
+         irA8a2uMIqZHY37uoyZAaxQ7fRJd8Lt9lvDlZ5QN5eJYhSw6H2oChYr7h84u5aFPwJVp
+         nvMJGNpLwq1YRfR/R7SU8a66yJXyRtG7Q0zaMkADF54AjSKq9AJf9esyuhPjuBCrA8Jx
+         ivxO74oCQMtZE1wd4nj4r/xR1Rkz1Pv3jS5OWoX22/mjYCm9XHH4EfnJBR4SIyr4hcTS
+         /AfQ5isjJzcRhBZo2akfo9/nUnwDp3EBcuGqnw5nnjD+rZCPe/LnNd0Ui3kS0cD6ONFN
+         3Jsw==
+X-Gm-Message-State: AOJu0YyJ+gYmDscEMVEA8dbsf/n/HZtrbyj/gXwpmBLNRMxV/BQkDoZf
+        i4rcR0nV1Uf+T9CyT0NovyvpOw==
+X-Google-Smtp-Source: AGHT+IH7By/K8X7TFjmuxWQpjwkhFG9OOMBqvVumSGucfH7kiTRm0wx4GZG99lfl8UxbibAn1Rk6Wg==
+X-Received: by 2002:a17:907:7750:b0:9a1:9284:11b with SMTP id kx16-20020a170907775000b009a19284011bmr990508ejc.7.1693378386280;
+        Tue, 29 Aug 2023 23:53:06 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id d12-20020a170906344c00b00982a92a849asm6833731ejb.91.2023.08.29.23.53.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 23:53:05 -0700 (PDT)
+Message-ID: <90723ba8-c511-f90c-3a1a-3c33215fe27b@linaro.org>
+Date:   Wed, 30 Aug 2023 08:53:04 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq support
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 0/2] arm64: dts: exynos: Enable USB for E850-96 board
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        JaeHun Jung <jh0801.jung@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230825215445.28309-1-semen.protsenko@linaro.org>
+ <6fd3a9ab-667d-934b-f1c2-03776be93d4d@linaro.org>
+ <CAPLW+4njcwODXoA3Gj=48E-DPOqofcPnJkYMv6yzF5JjyOshDA@mail.gmail.com>
 Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>
-References: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
- <20230829095423.760641-4-quic_gokulsri@quicinc.com>
- <f457ee94-81d0-bd28-1432-ba2828dabb79@linaro.org>
- <efe09cb6-7b67-9307-28e7-99e238a3672b@gmail.com>
-From:   Gokul Sriram P <quic_gokulsri@quicinc.com>
-In-Reply-To: <efe09cb6-7b67-9307-28e7-99e238a3672b@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAPLW+4njcwODXoA3Gj=48E-DPOqofcPnJkYMv6yzF5JjyOshDA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: APNCzlVQoJT8u__rDBEUsru3NHL5jpR-
-X-Proofpoint-ORIG-GUID: APNCzlVQoJT8u__rDBEUsru3NHL5jpR-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- phishscore=0 mlxlogscore=560 suspectscore=0 priorityscore=1501
- malwarescore=0 lowpriorityscore=0 mlxscore=0 spamscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308300062
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -88,18 +83,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
->>>   +        a53pll: clock@b116000 {
->>> +            compatible = "qcom,ipq5018-a53pll";
->>> +            reg = <0x0b116000 0x40>;
->>> +            #clock-cells = <0>;
->>> +            clocks = <&xo_board_clk>;
->>> +            clock-names = "xo";
->>> +        };
->>> +
->>> +        apcs_glb: mailbox@b111000 {
->> 0xb111000 looks lower than 0x116000.
-Sure, will update.
+On 30/08/2023 02:44, Sam Protsenko wrote:
+> On Sat, Aug 26, 2023 at 1:10 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 25/08/2023 23:54, Sam Protsenko wrote:
+>>> This patch series enables USB gadget, USB host and Ethernet support for
+>>> E850-96 board. The most major change was done in USB PHY driver, as the
+>>> register layout of PHY block in Exynos850 is very different from
+>>> Exynos5 one.
+>>>
+>>> Changes in v2:
+>>
+>> Thank you for the patch. Looks good.
+>> It is too late in the cycle for me to pick it up. I will take it after
+>> the merge window.
+>>
+> 
+> Thanks, Krzysztof! So we can expect these to get into v6.6, correct?
 
-Regards,
-Gokul
+No, this is v6.6 merge window and it already started. I will take it
+after, thus v6.7.
+
+> Also, I'm trying to keep track of all my patches, so please let me
+> know if you are going to apply this series to your trees soon, and
+> which exactly (I presume krzk/linux-dt.git/for-next?).
+
+I always send confirmation of applied patches with reference to repo and
+commit (although not branch).
+
+Best regards,
+Krzysztof
+
