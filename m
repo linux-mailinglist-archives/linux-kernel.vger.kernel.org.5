@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2744378DFDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F0B78DF29
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245087AbjH3TPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        id S243936AbjH3TNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245582AbjH3PhR (ORCPT
+        with ESMTP id S245583AbjH3PhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:37:17 -0400
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94D6113
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:14 -0700 (PDT)
+        Wed, 30 Aug 2023 11:37:18 -0400
+Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562AD113
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:16 -0700 (PDT)
 From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -30,9 +30,9 @@ Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Daniel Baluta <daniel.baluta@nxp.com>,
         linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: [PATCH v4 10/11] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
-Date:   Wed, 30 Aug 2023 17:36:51 +0200
-Message-Id: <20230830153652.217855-11-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v4 11/11] ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
+Date:   Wed, 30 Aug 2023 17:36:52 +0200
+Message-Id: <20230830153652.217855-12-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
 References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
@@ -47,102 +47,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-the snd_hdac_i915_init into a workqueue.
-
-Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-probe function.
-
-The previously added probe_no_wq can be used for this,
-and we also use the newly added remove_no_wq for unbinding afterwards.
+Now that all drivers have moved from modprobe loading to
+handling -EPROBE_DEFER, we can remove the argument again.
 
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-common-ops.c |  1 +
- sound/soc/sof/intel/hda.c            | 15 ++++++---------
- sound/soc/sof/intel/hda.h            |  1 +
- 3 files changed, 8 insertions(+), 9 deletions(-)
+Changes since v1:
+- Use dev_err_probe() to set reason in debugfs for deferred probe.
+---
+ include/sound/hda_i915.h        |  4 ++--
+ sound/hda/hdac_i915.c           | 14 +++-----------
+ sound/pci/hda/hda_intel.c       |  2 +-
+ sound/soc/intel/avs/core.c      |  2 +-
+ sound/soc/intel/skylake/skl.c   |  2 +-
+ sound/soc/sof/intel/hda-codec.c |  2 +-
+ 6 files changed, 9 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-common-ops.c b/sound/soc/sof/intel/hda-common-ops.c
-index 803b5e9087782..1e2e9b6a5c1c2 100644
---- a/sound/soc/sof/intel/hda-common-ops.c
-+++ b/sound/soc/sof/intel/hda-common-ops.c
-@@ -17,6 +17,7 @@
- struct snd_sof_dsp_ops sof_hda_common_ops = {
- 	/* probe/remove/shutdown */
- 	.probe_no_wq	= hda_dsp_probe_no_wq,
-+	.remove_no_wq	= hda_dsp_remove_no_wq,
- 	.probe		= hda_dsp_probe,
- 	.remove		= hda_dsp_remove,
+diff --git a/include/sound/hda_i915.h b/include/sound/hda_i915.h
+index f91bd66360865..6b79614a893b9 100644
+--- a/include/sound/hda_i915.h
++++ b/include/sound/hda_i915.h
+@@ -9,12 +9,12 @@
  
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index e918b5dadfa02..886073598e40f 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1160,6 +1160,7 @@ int hda_dsp_probe_no_wq(struct snd_sof_dev *sdev)
- 		return -ENOMEM;
- 	sdev->pdata->hw_pdata = hdev;
- 	hdev->desc = chip;
-+	ret = hda_init(sdev);
- 
- err:
- 	return ret;
-@@ -1195,9 +1196,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 
- 	/* set up HDA base */
- 	bus = sof_to_bus(sdev);
--	ret = hda_init(sdev);
--	if (ret < 0)
--		goto hdac_bus_unmap;
- 
- 	if (sdev->dspless_mode_selected)
- 		goto skip_dsp_setup;
-@@ -1307,8 +1305,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 		iounmap(sdev->bar[HDA_DSP_BAR]);
- hdac_bus_unmap:
- 	platform_device_unregister(hdev->dmic_dev);
--	iounmap(bus->remap_addr);
--	hda_codec_i915_exit(sdev);
- 
- 	return ret;
- }
-@@ -1317,7 +1313,6 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ #ifdef CONFIG_SND_HDA_I915
+ void snd_hdac_i915_set_bclk(struct hdac_bus *bus);
+-int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe);
++int snd_hdac_i915_init(struct hdac_bus *bus);
+ #else
+ static inline void snd_hdac_i915_set_bclk(struct hdac_bus *bus)
  {
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
- 	const struct sof_intel_dsp_desc *chip = hda->desc;
--	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct pci_dev *pci = to_pci_dev(sdev->dev);
- 	struct nhlt_acpi_table *nhlt = hda->nhlt;
- 
-@@ -1368,10 +1363,12 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- 	if (!sdev->dspless_mode_selected)
- 		iounmap(sdev->bar[HDA_DSP_BAR]);
- 
--	iounmap(bus->remap_addr);
--
--	sof_hda_bus_exit(sdev);
-+	return 0;
-+}
- 
-+int hda_dsp_remove_no_wq(struct snd_sof_dev *sdev)
-+{
-+	iounmap(sof_to_bus(sdev)->remap_addr);
- 	hda_codec_i915_exit(sdev);
- 
- 	return 0;
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 89b8c239e9a5e..26ae11e4e1240 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -574,6 +574,7 @@ struct sof_intel_hda_stream {
-  * DSP Core services.
+ }
+-static inline int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
++static inline int snd_hdac_i915_init(struct hdac_bus *bus)
+ {
+ 	return -ENODEV;
+ }
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index 0765e5350e7ba..365c36fdf2058 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -156,7 +156,7 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+  *
+  * Returns zero for success or a negative error code.
   */
- int hda_dsp_probe_no_wq(struct snd_sof_dev *sdev);
-+int hda_dsp_remove_no_wq(struct snd_sof_dev *sdev);
- int hda_dsp_probe(struct snd_sof_dev *sdev);
- int hda_dsp_remove(struct snd_sof_dev *sdev);
- int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask);
+-int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
++int snd_hdac_i915_init(struct hdac_bus *bus)
+ {
+ 	struct drm_audio_component *acomp;
+ 	int err;
+@@ -172,18 +172,10 @@ int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
+ 	acomp = bus->audio_component;
+ 	if (!acomp)
+ 		return -ENODEV;
+-	if (allow_modprobe && !acomp->ops) {
+-		if (!IS_ENABLED(CONFIG_MODULES) ||
+-		    !request_module("i915")) {
+-			/* 60s timeout */
+-			wait_for_completion_killable_timeout(&acomp->master_bind_complete,
+-							     msecs_to_jiffies(60 * 1000));
+-		}
+-	}
+ 	if (!acomp->ops) {
+-		int err = allow_modprobe ? -ENODEV : -EPROBE_DEFER;
+ 		snd_hdac_acomp_exit(bus);
+-		return dev_err_probe(bus->dev, err, "couldn't bind with audio component\n");
++		return dev_err_probe(bus->dev, -EPROBE_DEFER,
++				     "couldn't bind with audio component\n");
+ 	}
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index d529ef21f033a..e0f01a3ab231c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2138,7 +2138,7 @@ static int azx_probe(struct pci_dev *pci,
+ #ifdef CONFIG_SND_HDA_I915
+ 	/* bind with i915 if needed */
+ 	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
+-		err = snd_hdac_i915_init(azx_bus(chip), false);
++		err = snd_hdac_i915_init(azx_bus(chip));
+ 		if (err < 0) {
+ 			/* if the controller is bound only with HDMI/DP
+ 			 * (for HSW and BDW), we need to abort the probe;
+diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+index 8a20639582487..33044f353575d 100644
+--- a/sound/soc/intel/avs/core.c
++++ b/sound/soc/intel/avs/core.c
+@@ -461,7 +461,7 @@ static int avs_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+ 	pci_set_drvdata(pci, bus);
+ 	device_disable_async_suspend(dev);
+ 
+-	ret = snd_hdac_i915_init(bus, false);
++	ret = snd_hdac_i915_init(bus);
+ 	if (ret == -EPROBE_DEFER)
+ 		goto err_i915_init;
+ 	else if (ret < 0)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 24bdbe2a53bec..f46f109d5856e 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1056,7 +1056,7 @@ static int skl_probe(struct pci_dev *pci,
+ 	}
+ 
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		err = snd_hdac_i915_init(bus, false);
++		err = snd_hdac_i915_init(bus);
+ 		if (err < 0)
+ 			goto out_dmic_unregister;
+ 	}
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index f1fd5b44aaac9..8a5e99a898ecb 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+ 		return 0;
+ 
+ 	/* i915 exposes a HDA codec for HDMI audio */
+-	ret = snd_hdac_i915_init(bus, true);
++	ret = snd_hdac_i915_init(bus);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.39.2
 
