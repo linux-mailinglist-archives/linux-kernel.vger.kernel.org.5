@@ -2,172 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E5E78DD79
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51FA78DE75
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244106AbjH3Sub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
+        id S242160AbjH3TDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243398AbjH3KyA (ORCPT
+        with ESMTP id S243419AbjH3K5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:54:00 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CDB198
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:53:57 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UADi4X024752;
-        Wed, 30 Aug 2023 10:53:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=H7sB8FNo2hCMDf3fAD1CSdM7f7rOQLfvI5hlgRjL4xI=;
- b=UG/YQaGjaXDYFtnE/IKm+kx/YQfnEZMN36mmK2vwGWrp4nDvL62DSHpeRXE+re3n68jm
- 8XmQ0VLQZTPWuS4USyUTDQ93CsopjkvQ6TJiqe435DokPz9hNPgTHYsfjE5sZ7Jry2Qt
- 7/0O6mWPSVzeMmYCbWnMo2I0B0EF+H4fIcIMPAMjZqF+R3kwnOojG/Nz/XOwkv9FZUq0
- P4otOaUrcOUlsVsVcmHXVqhsdRg4P9obtOIsUj+Zv/QJLOsyI6g1xJ8uQ3mVxeq4EZ5e
- V6Qv/p2q2A3jkBweoo8Ns5dLaAnKZ73mQw88AnU2qoFI+ycWrdVMbmxw2qdc7qh6C+rY sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st360j1jw-1
+        Wed, 30 Aug 2023 06:57:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7391BF;
+        Wed, 30 Aug 2023 03:57:28 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UA9Ho9008407;
+        Wed, 30 Aug 2023 10:57:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=qcppdkim1;
+ bh=yQraFZLceyDLNtwoD79g6otydNPhFws0Uc28A8hi9co=;
+ b=NpqzbyG4OnDUsmD0/3Sb0Jbhp1BuesBrP81yvd8z4zW74H0Y2oM8yny5Kp0IaNWffKL7
+ NacCcu9nOv9DnBhtaL6rOVJLTRZMqJFwf8U5tBp5DbdEZup6cgt32aAo7axNObbK3mLl
+ 3YZiKzZZeXTTryX8WF1A64Ib8h/OGQOZKcS40TtU6mJ4wUcLmJyIu9TlD5bKe3MYWK/q
+ 3labm5DTkWpjbWidRIEIdzJ5KIMZ73q28wGhVtVA8aonnIyXF6ya/6E3jIM5iILwII7b
+ gjacv3oYxqtUYZZSh51JLVqPwBDbCcye973nAu/UyYrFFYPQvtU+RyxnLaJC4swxo6kK 7g== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssy5q0fun-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 10:53:37 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37UAa4LP029312;
-        Wed, 30 Aug 2023 10:53:36 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st360j1j5-1
+        Wed, 30 Aug 2023 10:57:24 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37UAvNYO011311
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 10:53:36 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37U8cHWu009967;
-        Wed, 30 Aug 2023 10:53:34 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqw7kk1xp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 10:53:34 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37UArWGB15663618
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Aug 2023 10:53:32 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BC7BD2004D;
-        Wed, 30 Aug 2023 10:53:32 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 253F220040;
-        Wed, 30 Aug 2023 10:53:28 +0000 (GMT)
-Received: from saptarishi.in.ibm.com (unknown [9.43.8.96])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Aug 2023 10:53:27 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Juergen Gross <jgross@suse.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul E McKenney <paulmck@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] powerpc/smp: Move shared_processor static key to smp.h
-Date:   Wed, 30 Aug 2023 16:22:42 +0530
-Message-ID: <20230830105244.62477-3-srikar@linux.vnet.ibm.com>
+        Wed, 30 Aug 2023 10:57:23 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 30 Aug 2023 03:57:19 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>, <bryan.odonoghue@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v8 1/6] dt-bindings: cache: qcom,llcc: Add LLCC compatible for QDU1000/QRU1000
+Date:   Wed, 30 Aug 2023 16:26:49 +0530
+Message-ID: <20230830105654.28057-2-quic_kbajaj@quicinc.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230830105244.62477-1-srikar@linux.vnet.ibm.com>
-References: <20230830105244.62477-1-srikar@linux.vnet.ibm.com>
+In-Reply-To: <20230830105654.28057-1-quic_kbajaj@quicinc.com>
+References: <20230830105654.28057-1-quic_kbajaj@quicinc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: A2uaoWiWyjL7ha3P5cIJwy2m8KwOCNVs
-X-Proofpoint-ORIG-GUID: aJibNW_AvqP4RJZbSxOOnRuYtDMNszS9
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: plGxWrdMRIMmBC9C-pV0V_C346UoLNH0
+X-Proofpoint-GUID: plGxWrdMRIMmBC9C-pV0V_C346UoLNH0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=729
- clxscore=1015 lowpriorityscore=0 spamscore=0 malwarescore=0
- impostorscore=0 priorityscore=1501 adultscore=0 bulkscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308300098
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ suspectscore=0 priorityscore=1501 malwarescore=0 phishscore=0
+ clxscore=1015 adultscore=0 lowpriorityscore=0 mlxlogscore=920 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300102
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ability to detect if the system is running in a shared processor
-mode is helpful in few more generic cases not just in
-paravirtualization.
-For example: At boot time, different scheduler/ topology flags may be
-set based on the processor mode. Hence move it to a more generic file.
+Add LLCC compatible for QDU1000/QRU1000 SoCs and add optional
+nvmem-cells and nvmem-cell-names properties to support multiple
+configurations for multi channel DDR.
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/powerpc/include/asm/paravirt.h | 12 ------------
- arch/powerpc/include/asm/smp.h      | 14 ++++++++++++++
- 2 files changed, 14 insertions(+), 12 deletions(-)
+ Documentation/devicetree/bindings/cache/qcom,llcc.yaml | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-index f5ba1a3c41f8..3bc8cff97f9a 100644
---- a/arch/powerpc/include/asm/paravirt.h
-+++ b/arch/powerpc/include/asm/paravirt.h
-@@ -14,13 +14,6 @@
- #include <asm/kvm_guest.h>
- #include <asm/cputhreads.h>
- 
--DECLARE_STATIC_KEY_FALSE(shared_processor);
--
--static inline bool is_shared_processor(void)
--{
--	return static_branch_unlikely(&shared_processor);
--}
--
- #ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
- extern struct static_key paravirt_steal_enabled;
- extern struct static_key paravirt_steal_rq_enabled;
-@@ -71,11 +64,6 @@ static inline void yield_to_any(void)
- 	plpar_hcall_norets_notrace(H_CONFER, -1, 0);
- }
- #else
--static inline bool is_shared_processor(void)
--{
--	return false;
--}
--
- static inline u32 yield_count_of(int cpu)
- {
- 	return 0;
-diff --git a/arch/powerpc/include/asm/smp.h b/arch/powerpc/include/asm/smp.h
-index aaaa576d0e15..08631b2a4528 100644
---- a/arch/powerpc/include/asm/smp.h
-+++ b/arch/powerpc/include/asm/smp.h
-@@ -34,6 +34,20 @@ extern bool coregroup_enabled;
- extern int cpu_to_chip_id(int cpu);
- extern int *chip_id_lookup_table;
- 
-+#ifdef CONFIG_PPC_SPLPAR
-+DECLARE_STATIC_KEY_FALSE(shared_processor);
+diff --git a/Documentation/devicetree/bindings/cache/qcom,llcc.yaml b/Documentation/devicetree/bindings/cache/qcom,llcc.yaml
+index 44892aa589fd..580f9a97ddf7 100644
+--- a/Documentation/devicetree/bindings/cache/qcom,llcc.yaml
++++ b/Documentation/devicetree/bindings/cache/qcom,llcc.yaml
+@@ -20,6 +20,7 @@ description: |
+ properties:
+   compatible:
+     enum:
++      - qcom,qdu1000-llcc
+       - qcom,sc7180-llcc
+       - qcom,sc7280-llcc
+       - qcom,sc8180x-llcc
+@@ -44,6 +45,14 @@ properties:
+   interrupts:
+     maxItems: 1
+
++  nvmem-cells:
++    items:
++      - description: Reference to an nvmem node for multi channel DDR
 +
-+static inline bool is_shared_processor(void)
-+{
-+	return static_branch_unlikely(&shared_processor);
-+}
-+#else
-+static inline bool is_shared_processor(void)
-+{
-+	return false;
-+}
-+#endif
++  nvmem-cell-names:
++    items:
++      - const: multi-chan-ddr
 +
- DECLARE_PER_CPU(cpumask_var_t, thread_group_l1_cache_map);
- DECLARE_PER_CPU(cpumask_var_t, thread_group_l2_cache_map);
- DECLARE_PER_CPU(cpumask_var_t, thread_group_l3_cache_map);
--- 
+ required:
+   - compatible
+   - reg
+@@ -92,6 +101,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - qcom,qdu1000-llcc
+               - qcom,sc8180x-llcc
+               - qcom,sc8280xp-llcc
+     then:
+--
 2.41.0
 
