@@ -2,185 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEBF78E09E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3266C78E11E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbjH3U1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S240065AbjH3VE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239068AbjH3U1i (ORCPT
+        with ESMTP id S239392AbjH3VEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:27:38 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C374B03
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:24:49 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bcac140aaaso178326a34.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 13:24:49 -0700 (PDT)
+        Wed, 30 Aug 2023 17:04:24 -0400
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA081A4;
+        Wed, 30 Aug 2023 14:03:53 -0700 (PDT)
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1c8c44053e8so47995fac.1;
+        Wed, 30 Aug 2023 14:03:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693427009; x=1694031809; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aJIb62bEI+abOZ0+u4aCxcyg1D1ywbkZPjZNGK2GZY0=;
-        b=Y+vVUFVXuPTRKH9+KGJtFvPMhLlmUtk1DfF3Z++Spiy3MmRzKszw5mFb7eJZCenXze
-         URpo+T/e6sz6gkpRLlp8IaDC/3vGe68V0YtGZk+5LG42RS+1yGfAKrAzkJITwweTNwid
-         bFoAXOnjsFHev96QV6Oo+wtQLVqYTrxv01eASSSakOg1EjgUhBFuQZJoX2xjI+YDCjHS
-         ek3CfTeM4EMEkXw7t+S/hi+tbZ7kaRJLlGkCTzcRa3rAjXXfe5SQGhKv2tT38S9dslp5
-         nGHQhtBul/Wy92G75RHbWMR2X3LMij0RUtq4H4uYyllAwpmo8vXq1EhpChjRDtbmlLM1
-         yVmQ==
+        d=gmail.com; s=20221208; t=1693429049; x=1694033849; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6USKCRgwFTnMr5JZyE+WRG85qO3YFB4j+6ZOgnTQjlU=;
+        b=q/Kpciv+NrW3EJBoWEdXwkxWV5vQdU//vTFoxEXijs0XiON94y2guranPhonheB/mG
+         1xRAEgpqmJ1UiU0V2hXO347Mm3lRVy78IIfoYdVWsPEzD9Gz8qig/HOfQE8HtTT6Ncnc
+         kINZEv1lnCG8qCcMVuxFLymAzB9/j9+h7+Sb/dxjegVXP8Qwef8nsbd6/jDpyyz8C2uR
+         tSywtv+e0KYAwApzgt7lR3f+a9XC0h5tmYB5+P/qRvk9vx/2S5FJbUcGVQ7Lp/MjCWhW
+         iIg8spCkGPutOWqk4k+Wa0yNwHhjTEmDVDuFRumevziq0uIVIxiQIbXyCG2VoDTe0ZvH
+         vn/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693427009; x=1694031809;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aJIb62bEI+abOZ0+u4aCxcyg1D1ywbkZPjZNGK2GZY0=;
-        b=MP0O8veXPyag298CeId2wFAWkOSFBy3blPl4VA+DlnwTqubGsy5PE/D4bMS+Ei8Usn
-         zSati/J84RARtmSmQoTe3nYLN2Lo1128c20h0Ueas1DwY1TyIt0Gr8Q9ej9rRE1OLw0d
-         MlrC+qw2ATonPf+QGByqV9w70ZU0Ezj2lMs2S8O/Ms/lh0/rdPpwf7lgE8/IfP3H+4id
-         iFvKAnaOdAtdhU9smZQGQzRRAwGTgAr5E+8W3L85M+zhM7soLbPOEjGM7PVMoNWgnqS/
-         tZI7HO93JuPw6AqlWQd02HuiqvvacAuHAkBRPtGHNQZZjoPXh+/wHfV8kh5M2Ll8CHie
-         MjaQ==
-X-Gm-Message-State: AOJu0YyhMBH+rtN8pQ6sm0vZVavJWcmz1k2qpW2SiacAOIbHsbdX7WCP
-        2s7Odb3oGKfEE2A6FMcItQyBQC86SbqyBmZPZlqT1trHwk+drqFs
-X-Google-Smtp-Source: AGHT+IGZVwnuEqzyqkBgaq+ePEab/gUlpPuMtKnej5Gso+diHBC4efLmP1AVk+hUUq9mcyqV6DF3d9cFfKSKASs5OEo=
-X-Received: by 2002:a25:b06:0:b0:d78:26a0:ab8b with SMTP id
- 6-20020a250b06000000b00d7826a0ab8bmr3151567ybl.55.1693426180516; Wed, 30 Aug
- 2023 13:09:40 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693429049; x=1694033849;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6USKCRgwFTnMr5JZyE+WRG85qO3YFB4j+6ZOgnTQjlU=;
+        b=QxEKXkA4v9Ro8AKbS34tIzw+Jcj6UvITviH2zn6NmNr001zKmGT6uwqXzn1Dia6nZi
+         CNgbC0SfAZ2YEt2pPqwA/PQDmN8xT+4ufh0cdjCImj01efh/rrFaiPnHPyNKhmFQQ9WY
+         haTkPeZv0AMmxLgrVAh67zSVjXfiu+2YWgKvLElWhqlIBxHt0OJTLLTj+oTaCHQi9RNC
+         ku+bf1WBs/p8NIbXWZ2zQ0rJPpFuWmvnb4xOEk7jB0/EeKjGZ5MdrTpU2VkvYMHqL5Af
+         TOS2DQ/wk3b9zTly90CguvvPzYwdTu3hd7wys5oJGw966wKbO0w4rQBYAUvPYnQQaMLG
+         pC4Q==
+X-Gm-Message-State: AOJu0YxJeg92ZGdE9GPvZ887RpNNlBRZgownBHFJ0Wy1kE/uyFl3pUga
+        q6hOVdx9eCHwkehtKWb5EkOMsluQ3mMAsw0Um2WG6jAviVWH2/SN
+X-Google-Smtp-Source: AGHT+IGo8bBpm9gH4Qw0N4LG6dV9LXJofj/Vhyv+pLhvc5DT0+EA2AxG8JZUwOz8DwLQ8qgDfsOHeWL8WKM7Pu3+QTI=
+X-Received: by 2002:a25:557:0:b0:d7b:97c7:c537 with SMTP id
+ 84-20020a250557000000b00d7b97c7c537mr488807ybf.32.1693426305012; Wed, 30 Aug
+ 2023 13:11:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230830111722.19380-1-quic_nsekar@quicinc.com> <20230830111722.19380-3-quic_nsekar@quicinc.com>
-In-Reply-To: <20230830111722.19380-3-quic_nsekar@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 30 Aug 2023 23:09:29 +0300
-Message-ID: <CAA8EJpohi35ic7Lwb29cz17n2gLqxWQ2WUAQfkBSvX3wkOHaEA@mail.gmail.com>
-Subject: Re: [PATCH V2 2/4] phy: qcom-m31: Add compatible, phy init sequence
- for IPQ5018
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
+References: <20230830200717.4129442-1-azeemshaikh38@gmail.com>
+In-Reply-To: <20230830200717.4129442-1-azeemshaikh38@gmail.com>
+From:   Azeem Shaikh <azeemshaikh38@gmail.com>
+Date:   Wed, 30 Aug 2023 16:11:34 -0400
+Message-ID: <CADmuW3Wfryaj7gGLQhVwJm4eWbEoaQ50k_BwgEWfO+ETKWkNvA@mail.gmail.com>
+Subject: Re: [PATCH] scsi: target: Replace strlcpy with strscpy
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Aug 2023 at 21:32, Nitheesh Sekar <quic_nsekar@quicinc.com> wrote:
->
-> Add phy init sequence and compatible string for IPQ5018
-> chipset.
->
-> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
-> ---
-> V2:
->         Updated the commit message.
-> ---
->  drivers/phy/qualcomm/phy-qcom-m31.c | 60 +++++++++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-m31.c b/drivers/phy/qualcomm/phy-qcom-m31.c
-> index ed08072ca032..81b72ebde305 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-m31.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-m31.c
-> @@ -82,6 +82,59 @@ struct m31_priv_data {
->         unsigned int                    nregs;
->  };
->
-> +struct m31_phy_regs m31_ipq5018_regs[] = {
-> +       {
-> +               USB_PHY_CFG0,
-> +               UTMI_PHY_OVERRIDE_EN,
-> +               0
-> +       },
+Please ignore this patch. There are more strlcpy()->strscpy()
+replacement in the same file that did not get included here. Will send
+out a v2 with all the changes to make it easier for reviewers.
 
-c99 initialisers? And maybe drop the 0 delay inits.
-
-> +       {
-> +               USB_PHY_UTMI_CTRL5,
-> +               POR_EN,
-> +               15
-> +       },
-> +       {
-> +               USB_PHY_FSEL_SEL,
-> +               FREQ_SEL,
-> +               0
-> +       },
-> +       {
-> +               USB_PHY_HS_PHY_CTRL_COMMON0,
-> +               COMMONONN | FSEL | RETENABLEN,
-> +               0
-> +       },
-> +       {
-> +               USB_PHY_REFCLK_CTRL,
-> +               CLKCORE,
-> +               0
-> +       },
-> +       {
-> +               USB_PHY_UTMI_CTRL5,
-> +               POR_EN,
-> +               0
-> +       },
-> +       {
-> +               USB_PHY_HS_PHY_CTRL2,
-> +               USB2_SUSPEND_N_SEL | USB2_SUSPEND_N | USB2_UTMI_CLK_EN,
-> +               0
-> +       },
-> +       {
-> +               USB_PHY_UTMI_CTRL5,
-> +               0x0,
-> +               0
-> +       },
-> +       {
-> +               USB_PHY_HS_PHY_CTRL2,
-> +               USB2_SUSPEND_N | USB2_UTMI_CLK_EN,
-> +               0
-> +       },
-> +       {
-> +               USB_PHY_CFG0,
-> +               0x0,
-> +               0
-> +       },
-> +};
-> +
->  struct m31_phy_regs m31_ipq5332_regs[] = {
->         {
->                 USB_PHY_CFG0,
-> @@ -268,6 +321,12 @@ static int m31usb_phy_probe(struct platform_device *pdev)
->         return PTR_ERR_OR_ZERO(phy_provider);
->  }
+On Wed, Aug 30, 2023 at 4:07=E2=80=AFPM Azeem Shaikh <azeemshaikh38@gmail.c=
+om> wrote:
 >
-> +static const struct m31_priv_data m31_ipq5018_data = {
-> +       .ulpi_mode = false,
-> +       .regs = m31_ipq5018_regs,
-> +       .nregs = ARRAY_SIZE(m31_ipq5018_regs),
-> +};
-> +
->  static const struct m31_priv_data m31_ipq5332_data = {
->         .ulpi_mode = false,
->         .regs = m31_ipq5332_regs,
-> @@ -275,6 +334,7 @@ static const struct m31_priv_data m31_ipq5332_data = {
->  };
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
 >
->  static const struct of_device_id m31usb_phy_id_table[] = {
-> +       { .compatible = "qcom,ipq5018-usb-hsphy", .data = &m31_ipq5018_data },
->         { .compatible = "qcom,ipq5332-usb-hsphy", .data = &m31_ipq5332_data },
->         { },
->  };
+> Direct replacement is safe here since return value of -errno
+> is used to check for truncation instead of sizeof(dest).
+>
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcp=
+y
+> [2] https://github.com/KSPP/linux/issues/89
+>
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> ---
+>  drivers/target/target_core_configfs.c |    9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/target/target_core_configfs.c b/drivers/target/targe=
+t_core_configfs.c
+> index 936e5ff1b209..b3d2c14e2ea9 100644
+> --- a/drivers/target/target_core_configfs.c
+> +++ b/drivers/target/target_core_configfs.c
+> @@ -1392,16 +1392,15 @@ static ssize_t target_wwn_vendor_id_store(struct =
+config_item *item,
+>         /* +2 to allow for a trailing (stripped) '\n' and null-terminator=
+ */
+>         unsigned char buf[INQUIRY_VENDOR_LEN + 2];
+>         char *stripped =3D NULL;
+> -       size_t len;
+> +       ssize_t len;
+>         ssize_t ret;
+>
+> -       len =3D strlcpy(buf, page, sizeof(buf));
+> -       if (len < sizeof(buf)) {
+> +       len =3D strscpy(buf, page, sizeof(buf));
+> +       if (len > 0) {
+>                 /* Strip any newline added from userspace. */
+>                 stripped =3D strstrip(buf);
+> -               len =3D strlen(stripped);
+>         }
+> -       if (len > INQUIRY_VENDOR_LEN) {
+> +       if (len < 0 || strlen(stripped) > INQUIRY_VENDOR_LEN) {
+>                 pr_err("Emulated T10 Vendor Identification exceeds"
+>                         " INQUIRY_VENDOR_LEN: " __stringify(INQUIRY_VENDO=
+R_LEN)
+>                         "\n");
 > --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> 2.42.0.283.g2d96d420d3-goog
 >
-
-
--- 
-With best wishes
-Dmitry
+>
