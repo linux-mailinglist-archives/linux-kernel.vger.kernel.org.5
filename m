@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3295078DFE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C6B78DFF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241597AbjH3TYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        id S239319AbjH3TXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245266AbjH3O7c (ORCPT
+        with ESMTP id S245271AbjH3PAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:59:32 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8632BAC
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:59:29 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c93638322so209642766b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693407568; x=1694012368; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7Pco8x0/hB6HILgwz4l+QxrVcbf7lyLFRRGNnwxfq1o=;
-        b=DFnGUkMUdckJSEvk0DYjBHlb8SLhK5xwz45g0/PXDKt92rYsX967kXil3GFHjAIncX
-         6veCSWzBivI3w4C9x3sBULE0bVvr0EFcdbdGQkugCZQbx8z7zDzhMKmohFVqNfqCNmZj
-         3BmdkQU3ZjOdVoFN3O4vVSgaMrGw7rY+5b2ynN0Z7WdeIjgaDHqfMScTuqi2k+ZzRi3a
-         wttkveX/suTN43/PcDz0ORMUlWCMIrAf+b/8tQrclU28gfNlVEt1CSkRLJt92B2oJXIY
-         iA6//A5zkk8q9k1JywjKBeTX+hhXAEiN5gKt0c4Qwc79wggMeAY00sHaSQmFJknEYM1c
-         WuYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693407568; x=1694012368;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Pco8x0/hB6HILgwz4l+QxrVcbf7lyLFRRGNnwxfq1o=;
-        b=hGAbBzeHR+wpZY2ID5NDr4NNbPjqfzGe0ZXCPjE52yntGamVaKuOh2ki42NQEVc9oj
-         7fw0Tbvb88JHB0lrGQvf4vQ/YF8pGXEoD/NA4uujG/5YlfHOEtfZHep5iGf7FbT+4/bf
-         5d3ck/CJUP0xNC9PfXNxiYiD2fEZi0GYthkBYKVtLv/6JOjL5zx/KlN2IwrttEISodO2
-         l4noFw70pcrkJnxl88jZdoj/h+Uk/FzOEFU/3OV1gumLNxvGK1pwYADjoE6PG+D91KPC
-         WyZ88ClE8HF7mZneCyw3fx4xrBjpR43f86h2KUbOqIStgpBcHVDJFepPxidNBIF2OINM
-         Ecmw==
-X-Gm-Message-State: AOJu0YxGWb8aYFAbwAbkoETukAN52q1OS7nyqsRLjJr1pop69eYX8KgW
-        tiVtj11baFNoR8LVLYj1WGLCCQ==
-X-Google-Smtp-Source: AGHT+IHETt+a5mNQcfbBOmCAbA2hvQdIyYaQzqqvLslZC+7ZinOVUto65zFfrT5R8AQJ/hYEOPcVPQ==
-X-Received: by 2002:a17:906:518a:b0:9a2:295a:9bbc with SMTP id y10-20020a170906518a00b009a2295a9bbcmr2363706ejk.37.1693407568044;
-        Wed, 30 Aug 2023 07:59:28 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id qm15-20020a170907674f00b0099290e2c163sm7209415ejc.204.2023.08.30.07.59.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 07:59:27 -0700 (PDT)
-Message-ID: <6d124ccd-97d9-d431-0350-fa1445da62b2@linaro.org>
-Date:   Wed, 30 Aug 2023 16:59:26 +0200
+        Wed, 30 Aug 2023 11:00:43 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58F9AC
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:00:40 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:6c13:6b1b:7366:87c0])
+        by albert.telenet-ops.be with bizsmtp
+        id fr0c2A0063874jb06r0cMN; Wed, 30 Aug 2023 17:00:38 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qbMgC-0023nG-5c;
+        Wed, 30 Aug 2023 17:00:36 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qbMgO-005Lno-0I;
+        Wed, 30 Aug 2023 17:00:36 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Ricardo Ribalda <ribalda@kernel.org>
+Cc:     linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] mtd: physmap-core: Restore map_rom fallback
+Date:   Wed, 30 Aug 2023 17:00:34 +0200
+Message-Id: <550e8c8c1da4c4baeb3d71ff79b14a18d4194f9e.1693407371.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] dt-bindings: mfd: stericsson,db8500-prcmu: Spelling
- s/Cortex A-/Cortex-A/
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0789000f012122a7fa27ef709c738101b00cd834.1693407196.git.geert+renesas@glider.be>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <0789000f012122a7fa27ef709c738101b00cd834.1693407196.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 16:53, Geert Uytterhoeven wrote:
-> Fix a misspelling of "Cortex-A9".
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  .../devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml        | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+When the exact mapping type driver was not available, the old
+physmap_of_core driver fell back to mapping the region as ROM.
+Unfortunately this feature was lost when the DT and pdata cases were
+merged.  Revive this useful feature.
 
+Fixes: 642b1e8dbed7bbbf ("mtd: maps: Merge physmap_of.c into physmap-core.c")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/mtd/maps/physmap-core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 78710fbc8e7f638c..fc872133928247de 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -551,6 +551,17 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		if (info->probe_type) {
+ 			info->mtds[i] = do_map_probe(info->probe_type,
+ 						     &info->maps[i]);
++
++			/* Fall back to mapping region as ROM */
++			if (!info->mtds[i] && IS_ENABLED(CONFIG_MTD_ROM) &&
++			    strcmp(info->probe_type, "map_rom")) {
++				dev_warn(&dev->dev,
++					 "map_probe() failed for type %s\n",
++					 info->probe_type);
++
++				info->mtds[i] = do_map_probe("map_rom",
++							     &info->maps[i]);
++			}
+ 		} else {
+ 			int j;
+ 
+-- 
+2.34.1
 
