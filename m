@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8240178E236
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2877B78E238
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343535AbjH3WSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
+        id S1343572AbjH3WSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343537AbjH3WSd (ORCPT
+        with ESMTP id S1343560AbjH3WSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:18:33 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEC4BE
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:18:05 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-349a94f3d69so3579225ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693433877; x=1694038677; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eUAmAIfHsOOy8zS6TdEt3xyRCqjjcX1SJ2/1LstkkSY=;
-        b=5RNKAGaudUZwQoGbtOK5zrirwuh+BbCGATe4chEu1Zt9U2PrARMa48B6YE111O3Nfh
-         P2rCfbKhyiMN37bNfDzNlJfeG0YgYkiivub3+gFr6qH+aJBbPTdwMWUOpcGbq0+sMmEe
-         c2xaMPjgCcFNig3KcJ+GlNnXZZ0O+mG8sQ+TlnLQ8hlIrQu1ZdzKMIUpUTb7N/KyAz2R
-         cixh9crsY2Ko/sAgqz2cWa5sik5ljF2i8qK2zPS+mqwrgCzOxROsOZtSap/x73hzwXhW
-         LfHXrbFtgbjVpZ1lqzdRoSx+2YQg7+LdK0SEgBkBQzCaueCNgo1U9g5hZDp/gBfpAdG0
-         szlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693433877; x=1694038677;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eUAmAIfHsOOy8zS6TdEt3xyRCqjjcX1SJ2/1LstkkSY=;
-        b=LTRsw+Tyl4LREaaYihZjdEYP0zNgZas6qDhsHD7FaG1OE/GXguQ4SNVp5/wKHmlQKO
-         g9oOo19Xl5qKyJa0AW1D4A7PedLWLnzg2GCSBsY64lSKEXBLrvt/+p/GaH635Vy8ouXb
-         piPWiTZv0lx5JY3cXUPMnCRzMUyq8xr5aLiugsDABcbLsDLwjKFOy0jdUT1a8GlrhTqM
-         80i7ceDi7frOL9AKqULxQw5lEl9p+UQtihWI4ZdgfcIPmMURI4OffsGMHoJiPzAZ0GUP
-         DA5DiK6zXRFgk2eskv3mMO8Zgyp4ovzX9Su+S72bPwu+jUqADml2CekfydG9rKFSp9dE
-         dtjg==
-X-Gm-Message-State: AOJu0YyEedv459Ifqzc61MGa+x1He9WJoX8MdDiYw5nOOtJSJbonCeCN
-        7U+1M9yQ/TSf5TbMuQM7DH0Syw==
-X-Google-Smtp-Source: AGHT+IEJl2Gy/UlH0rjOjWUj+pyrp/3+xYSPOMHsZ83QRaizwW1QDk1RZG+FSAw+dDLKsUqFelUKBA==
-X-Received: by 2002:a05:6e02:16c6:b0:348:b07e:fdac with SMTP id 6-20020a056e0216c600b00348b07efdacmr881860ilx.3.1693433877356;
-        Wed, 30 Aug 2023 15:17:57 -0700 (PDT)
-Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id t6-20020a056e02010600b0034632ab31c9sm60981ilm.21.2023.08.30.15.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 15:17:56 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 22:17:54 +0000
-From:   Justin Stitt <justinstitt@google.com>
-To:     Azeem Shaikh <azeemshaikh38@gmail.com>
-Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        linux-hardening@vger.kernel.org, ocfs2-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH 2/2] ocfs2: Replace strlcpy with strscpy
-Message-ID: <20230830221754.3bhdz4qipppihoxz@google.com>
-References: <20230830215426.4181755-1-azeemshaikh38@gmail.com>
- <20230830215426.4181755-3-azeemshaikh38@gmail.com>
+        Wed, 30 Aug 2023 18:18:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B49CFB;
+        Wed, 30 Aug 2023 15:18:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A160962C0A;
+        Wed, 30 Aug 2023 22:18:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BF95C433C8;
+        Wed, 30 Aug 2023 22:18:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693433901;
+        bh=r2S4tcK1nsnRmvP4S5aT+PK15LEdeTY3R3y2UJ7u114=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rvKmXxaVTmqRs2XtFrlEw88MbycRV5aYKyJWhnqiNxepcsp7/HEN3VJ8rvgAOAHw4
+         C3V8dQTXicHO+/SjemWfmW0WZKWxM1THLDY2WmEAnn2HhRY9bV94T9GAn5lViyzxMF
+         RhIIU15JZyspxFRUrfENOTYgip7uoeO2GBXEX7KxjJQBUZiSBt+OORjycrXruTWCe6
+         X+9kucXmM6glY7QdF2ybDQYt/Y46xsT49VdUeceJKvtD/QyJcQtPFNp8ss8YSpnCei
+         OKLchxIbrl3C8O6WCsKdprKpjY4o1wHERUdGZDPCdL7fW8S2ACecIaRYVX3m3XYwrN
+         ec2PeOqAQZ/Ww==
+Date:   Wed, 30 Aug 2023 23:18:14 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Subject: Re: [PATCH] HWPOISON: add a pr_err message when forcibly send a
+ sigbus
+Message-ID: <20230830221814.GB30121@willie-the-truck>
+References: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
+ <20230821105025.GB19469@willie-the-truck>
+ <44c4d801-3e21-426b-2cf0-a7884d2bf5ff@linux.alibaba.com>
+ <54114b64-4726-da46-8ffa-16749ec0887a@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230830215426.4181755-3-azeemshaikh38@gmail.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <54114b64-4726-da46-8ffa-16749ec0887a@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 09:54:26PM +0000, Azeem Shaikh wrote:
-> strlcpy() reads the entire source buffer first.
-> This read may exceed the destination size limit.
-> This is both inefficient and can lead to linear read
-> overflows if a source string is not NUL-terminated [1].
-> In an effort to remove strlcpy() completely [2], replace
-> strlcpy() here with strscpy().
->
-> Direct replacement is assumed to be safe here since
-> it's ok for `kernel_param_ops.get()` to return -errno [3].
-> This changes the behavior such that instead of silently ignoring the
-> case when sizeof(@buffer) < DLMFS_CAPABILITIES, we now return error.
+On Mon, Aug 28, 2023 at 09:41:55AM +0800, Shuai Xue wrote:
+> On 2023/8/22 09:15, Shuai Xue wrote:
+> > On 2023/8/21 18:50, Will Deacon wrote:
+> >>> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> >>> index 3fe516b32577..38e2186882bd 100644
+> >>> --- a/arch/arm64/mm/fault.c
+> >>> +++ b/arch/arm64/mm/fault.c
+> >>> @@ -679,6 +679,8 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
+> >>>  	} else if (fault & (VM_FAULT_HWPOISON_LARGE | VM_FAULT_HWPOISON)) {
+> >>>  		unsigned int lsb;
+> >>>  
+> >>> +		pr_err("MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
+> >>> +		       current->comm, current->pid, far);
+> >>>  		lsb = PAGE_SHIFT;
+> >>>  		if (fault & VM_FAULT_HWPOISON_LARGE)
+> >>>  			lsb = hstate_index_to_shift(VM_FAULT_GET_HINDEX(fault));
+> >>
+> >> Hmm, I'm not convinced by this. We have 'show_unhandled_signals' already,
+> >> and there's plenty of code in memory-failure.c for handling poisoned pages
+> >> reported by e.g. GHES. I don't think dumping extra messages in dmesg from
+> >> the arch code really adds anything.
+> > 
+> > I see the show_unhandled_signals() will dump the stack but it rely on
+> > /proc/sys/debug/exception-trace be set.
+> > 
+> > The memory failure is the top issue in our production cloud and also other hyperscalers.
+> > We have received complaints from our operations engineers and end users that processes
+> > are being inexplicably killed :(. Could you please consider add a message?
 
-Not super familiar with the semantics of `kernel_param_ops.get()` but do
-note that strscpy can only return -E2BIG and not -ERRNO specifically. Is
-this still OK?
+I don't have any objection to logging this stuff somehow, I'm just not
+convinced that the console is the best place for that information in 2023.
+Is there really nothing better?
 
->
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> [2] https://github.com/KSPP/linux/issues/89
-> [3] https://elixir.bootlin.com/linux/v6.5/source/include/linux/moduleparam.h#L52
->
-> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-> ---
->  fs/ocfs2/dlmfs/dlmfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
-> index 33e529de93b2..b001eccdd2f3 100644
-> --- a/fs/ocfs2/dlmfs/dlmfs.c
-> +++ b/fs/ocfs2/dlmfs/dlmfs.c
-> @@ -80,7 +80,7 @@ static int param_set_dlmfs_capabilities(const char *val,
->  static int param_get_dlmfs_capabilities(char *buffer,
->  					const struct kernel_param *kp)
->  {
-> -	return strlcpy(buffer, DLMFS_CAPABILITIES,
-> +	return strscpy(buffer, DLMFS_CAPABILITIES,
->  		       strlen(DLMFS_CAPABILITIES) + 1);
->  }
->  static const struct kernel_param_ops dlmfs_capabilities_ops = {
-> --
-> 2.42.0.283.g2d96d420d3-goog
->
+Will
