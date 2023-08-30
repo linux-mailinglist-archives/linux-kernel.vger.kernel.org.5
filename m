@@ -2,155 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F5878DE8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B399F78D9D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238334AbjH3TFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
+        id S237445AbjH3SeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241307AbjH3Gva (ORCPT
+        with ESMTP id S241298AbjH3GvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:51:30 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13CD194;
-        Tue, 29 Aug 2023 23:51:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1693378287; x=1724914287;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iJiqQM/21AbbfFTBJGuHIq/kCZ7VDhCQMZ/MLtlN5jI=;
-  b=KFPUYuEA6zBCEdE2XJdykEejjZAAF+U6jRoxYSIA8dd/qs7YrTjC0Zp0
-   qoJWG+K63BCw/4Xk6wf6DrOkfoqouQU1xWY0a/klgS8g/O/78QaXFU6Ae
-   IQo14RlhSyYciqUSrJRfgXc8ZOk3BCnHul8TvcCXAwq/PDz4syfLy2HvE
-   yHN/E8C/D59rAem1yog3khS7g+hHppZDXVl5JrcAJJh23GOYoa2PZoIoC
-   Y+Bt+0nfcLfqC5TROkZUFjYX5xIJqg8lwShaz90KaAamvqtEMHIMtnoQh
-   unAKrwg8vau74I4ObwcfgDPILDKVRoSnhSjNOGMkjKZfawy0lGeM7n2GY
-   w==;
-X-IronPort-AV: E=Sophos;i="6.02,212,1688454000"; 
-   d="asc'?scan'208";a="169011728"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Aug 2023 23:51:26 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 29 Aug 2023 23:51:22 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Tue, 29 Aug 2023 23:51:20 -0700
-Date:   Wed, 30 Aug 2023 07:50:37 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     William Qiu <william.qiu@starfivetech.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-mmc@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
-Message-ID: <20230830-commence-trickery-40eaa193cb15@wendy>
-References: <20230830031846.127957-1-william.qiu@starfivetech.com>
- <20230830031846.127957-2-william.qiu@starfivetech.com>
+        Wed, 30 Aug 2023 02:51:06 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C511BB
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:51:03 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbFLV4Fdfz4f3l8n
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:50:58 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP3 (Coremail) with SMTP id _Ch0CgBXecHS5u5kO1E_Bw--.63649S2;
+        Wed, 30 Aug 2023 14:50:59 +0800 (CST)
+Subject: Re: [PATCH v2 3/7] mm/compaction: correctly return failure with bogus
+ compound_order in strict mode
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+        david@redhat.com, willy@infradead.org
+References: <20230826153617.4019189-1-shikemeng@huaweicloud.com>
+ <20230826153617.4019189-4-shikemeng@huaweicloud.com>
+ <20230829093909.4hpria3qtouvdv6a@techsingularity.net>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <f95b565a-796c-8d97-566b-d7877c9c1006@huaweicloud.com>
+Date:   Wed, 30 Aug 2023 14:50:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VGI59nk8mzz/pDkD"
-Content-Disposition: inline
-In-Reply-To: <20230830031846.127957-2-william.qiu@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230829093909.4hpria3qtouvdv6a@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: _Ch0CgBXecHS5u5kO1E_Bw--.63649S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF4rtw43tr4xCFyftr1DJrb_yoWDGrbE9r
+        WkAFs7Aw1FgrnxA347uw17tF4fK3yxCr15Cry8GFyUu3yqvF43J3ZrAr13Za15Ja4xZwnx
+        C3Wruw4jyw1YvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7xYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---VGI59nk8mzz/pDkD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
-> Due to the change of tuning implementation, it's no longer necessary to
-> use the "starfive,sysreg" property in dts, so drop the relevant
-> description in dt-bindings here.
 
-How does changing your software implantation invalidate a description of
-the hardware?
+on 8/29/2023 5:39 PM, Mel Gorman wrote:
+> On Sat, Aug 26, 2023 at 11:36:13PM +0800, Kemeng Shi wrote:
+>> In strict mode, we should return 0 if there is any hole in pageblock. If
+>> we successfully isolated pages at beginning at pageblock and then have a
+>> bogus compound_order outside pageblock in next page. We will abort search
+>> loop with blockpfn > end_pfn. Although we will limit blockpfn to end_pfn,
+>> we will treat it as a successful isolation in strict mode as blockpfn is
+>> not < end_pfn and return partial isolated pages. Then
+>> isolate_freepages_range may success unexpectly with hole in isolated
+>> range.
+>>
+>> Fixes: 9fcd6d2e052ee ("mm, compaction: skip compound pages by order in free scanner")
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> 
+> Modify the (likely(order <= MAX_ORDER)) block to avoid ever updating
+> blockpfn past the end of the pageblock. Then remove the second redundant
+> check.
+> 
+Sure, I will improve this in next version.
 
->=20
-> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-> ---
->  .../bindings/mmc/starfive,jh7110-mmc.yaml         | 15 ---------------
->  1 file changed, 15 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.ya=
-ml b/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.yaml
-> index 51e1b04e799f..10df41941331 100644
-> --- a/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/starfive,jh7110-mmc.yaml
-> @@ -36,26 +36,12 @@ properties:
->    interrupts:
->      maxItems: 1
-> =20
-> -  starfive,sysreg:
-> -    $ref: /schemas/types.yaml#/definitions/phandle-array
-> -    items:
-> -      - items:
-> -          - description: phandle to System Register Controller syscon no=
-de
-> -          - description: offset of SYS_SYSCONSAIF__SYSCFG register for M=
-MC controller
-> -          - description: shift of SYS_SYSCONSAIF__SYSCFG register for MM=
-C controller
-> -          - description: mask of SYS_SYSCONSAIF__SYSCFG register for MMC=
- controller
-> -    description:
-> -      Should be four parameters, the phandle to System Register Controll=
-er
-> -      syscon node and the offset/shift/mask of SYS_SYSCONSAIF__SYSCFG re=
-gister
-> -      for MMC controller.
-> -
->  required:
->    - compatible
->    - reg
->    - clocks
->    - clock-names
->    - interrupts
-> -  - starfive,sysreg
-> =20
->  unevaluatedProperties: false
-> =20
-> @@ -73,5 +59,4 @@ examples:
->          fifo-depth =3D <32>;
->          fifo-watermark-aligned;
->          data-addr =3D <0>;
-> -        starfive,sysreg =3D <&sys_syscon 0x14 0x1a 0x7c000000>;
->      };
-> --=20
-> 2.34.1
->=20
-
---VGI59nk8mzz/pDkD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZO7mswAKCRB4tDGHoIJi
-0j0ZAPoD8g3POZOxVjU8MHAqAQsVrGSXh9a5G6ibHoCJuX5zqQD+OwU3VEu8ihr1
-DsPdiiCV8fgivVirHHYW8sFlFgF+jQg=
-=iZHY
------END PGP SIGNATURE-----
-
---VGI59nk8mzz/pDkD--
