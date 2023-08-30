@@ -2,231 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D808478DC93
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6934078DD28
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbjH3SqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
+        id S243384AbjH3SsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343997AbjH3Rxx (ORCPT
+        with ESMTP id S1344000AbjH3Ryb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:53:53 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B2F198
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:53:49 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-563ab574cb5so93055a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693418029; x=1694022829; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ogw2uZiCm/cMvQMuQo8tpOc+9Ut9ubidtzhSqT66zzA=;
-        b=fZgmV0PC3o4SJvvy85lmytwI2Y6MM31miKftQCxc9opLz9rcfn/2Y+PHR71hs8wyn+
-         39aQ4U/ciEMXDw4i00dtbprEnR1HSsm1Cnze+Z7EJEffrz56lzwOakUUY46UY2tZdPAu
-         3qtBubwRTMv4KJBTPv4NqFOcAt0epDTxX2ptfN+FMrTx1J+KwaF5xewUHspDlOj4TrDJ
-         5acoCIHs0nSiq/V6bd68NS8nw1VT/IyLWMFWBHJ4g9xjhfcOVDGlkjzGhZ4LpJU4Jf5w
-         nDvZ/+lsjt6JWv/qHUaVp4SgCu+SCPcvJ0zz3aaTeKUbmvQXE1tT0yyoyllVnN8XXKMv
-         O5Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693418029; x=1694022829;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ogw2uZiCm/cMvQMuQo8tpOc+9Ut9ubidtzhSqT66zzA=;
-        b=EASSubLjMspW/mvIO9z/5lIYP2QgY4f4kekoIu+9Wi9Si6GIh40t0EPzp7XbNTUJgS
-         bmyWP6pHLqab77dV4360EjjqkUcGXGHFnDXsqkZXo2De+1HG2yt8A61zEyvMwU+dd50p
-         3tlXClYKgzwDwz2eaBOZ7rcN74LOSLHd1yUQuAFeXlAds506EsWvmY6BbfzOXVUnmL+X
-         Lkn/dOM2cAM1/jHaDZYximKuMSAbYRm9jnjsYbY9cDAsG26Jf097w60at0TuBxAYuxcM
-         e+GEFRvK2ZYQ1/m6H8qtlKoNLbXk/uNrARkfgQ6w4Cyb6Cz2TwbrSNlaEL0S7gAIL9gU
-         cuVA==
-X-Gm-Message-State: AOJu0YwcDPpNdBv76WhCv9QKBse2u+dVol2Pv2H5vDl9p0iXQBbC/8Sh
-        vYGAZBoldt24mUTVWMqlyaCnIPxbBISpqMx4
-X-Google-Smtp-Source: AGHT+IEDvg6/Dv2ZCiJE47oEUfI2O/1AZvAH6hhLiJqKfB4icsZoJ0gRHnfLWPgfZWkICJoRQkM/9BaaldrxU8Ck
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a63:3c54:0:b0:56c:24c2:488d with SMTP
- id i20-20020a633c54000000b0056c24c2488dmr486119pgn.4.1693418029016; Wed, 30
- Aug 2023 10:53:49 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 17:53:35 +0000
-In-Reply-To: <20230830175335.1536008-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20230830175335.1536008-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230830175335.1536008-5-yosryahmed@google.com>
-Subject: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>
+        Wed, 30 Aug 2023 13:54:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F98193;
+        Wed, 30 Aug 2023 10:54:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 35CC9622A8;
+        Wed, 30 Aug 2023 17:54:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB38C433CD;
+        Wed, 30 Aug 2023 17:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693418067;
+        bh=rt/hnc5Zf5SvOK4V7TwKX86XH/xhfkZIEuWMAJko7Oo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Np2zGK4TLWp0cphvLVxcUlj5wXDzTyjj5YxDnjeCxuvyrjDbgLgWvhSZkXk5vCmFs
+         NDp7omZg21RY2TTKlpXpT2RUyo6epc8oZBDdbDbu1SFOI3Nkci3O/E7iqjYNe4J8Ay
+         6aTwpm+3voALdVhQptWSD2O8YslVbIv/e6lKUokdwzoFPo/Zp8bJ4l0FredImpl8BP
+         N6gZXPdJ93XSpj6LzRzjLXFJZBv/fg4ooibDFDWDcfyU/BTvmLfMqy9rSqbJHzYlx0
+         vLJFBlrv116pFEum1qt4zIu62R5mMrt5stOsRfzQv4dvw7JIwBwMfFxELHcWsCPu1n
+         eUKk4flJKZEMg==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-4ff9b389677so147117e87.3;
+        Wed, 30 Aug 2023 10:54:27 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxE+Q6WLdG/Z9QXHnXBp7bh1gpMQwWomx5xX9ja7888itCyB7uk
+        QA6/7gVprND1VaZJR57M30GUIq5EJjsEu+eGKaA=
+X-Google-Smtp-Source: AGHT+IEqQMN+IcRmtTMXd59iAF9ILtW7KZkiubAGa7hIsI/KtNSzlic4NfqcZz+mVUoS/phIzlMP38SZKD0dScnHdWk=
+X-Received: by 2002:a05:6512:3d9e:b0:4fe:993:2218 with SMTP id
+ k30-20020a0565123d9e00b004fe09932218mr2879577lfv.31.1693418065528; Wed, 30
+ Aug 2023 10:54:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230830-missingvardecl-efi-v2-1-818081a204d2@google.com>
+In-Reply-To: <20230830-missingvardecl-efi-v2-1-818081a204d2@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 30 Aug 2023 19:54:14 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGbBx=gWsDJ7nXPwygOvX=Ek3tPQmZ_fQpBNmVg5_7u9A@mail.gmail.com>
+Message-ID: <CAMj1kXGbBx=gWsDJ7nXPwygOvX=Ek3tPQmZ_fQpBNmVg5_7u9A@mail.gmail.com>
+Subject: Re: [PATCH v2] efi: fix -Wmissing-variable-declarations warning
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unified flushing allows for great concurrency for paths that attempt to
-flush the stats, at the expense of potential staleness and a single
-flusher paying the extra cost of flushing the full tree.
+On Wed, 30 Aug 2023 at 19:51, Justin Stitt <justinstitt@google.com> wrote:
+>
+> When building x86/defconfig with Clang-18 I encounter the following warnings:
+> | arch/x86/platform/efi/efi.c:934:23: warning: no previous extern declaration for non-static variable 'efi_attr_fw_vendor' [-Wmissing-variable-declarations]
+> |   934 | struct kobj_attribute efi_attr_fw_vendor = __ATTR_RO(fw_vendor);
+> | arch/x86/platform/efi/efi.c:935:23: warning: no previous extern declaration for non-static variable 'efi_attr_runtime' [-Wmissing-variable-declarations]
+> |   935 | struct kobj_attribute efi_attr_runtime = __ATTR_RO(runtime);
+> | arch/x86/platform/efi/efi.c:936:23: warning: no previous extern declaration for non-static variable 'efi_attr_config_table' [-Wmissing-variable-declarations]
+> |   936 | struct kobj_attribute efi_attr_config_table = __ATTR_RO(config_table);
+>
+> These symbols are declared extern in drivers/firmware/efi/efi.c. Move
+> the declarations to linux/efi.h to resolve these warnings.
+>
+> Also, trim a trailing space from efi_set_variable_t typedef.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1920
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-This tradeoff makes sense for in-kernel flushers that may observe high
-concurrency (e.g. reclaim, refault). For userspace readers, stale stats
-may be unexpected and problematic, especially when such stats are used
-for critical paths such as userspace OOM handling. Additionally, a
-userspace reader will occasionally pay the cost of flushing the entire
-hierarchy, which also causes problems in some cases [1].
+Thanks, I'll take this as a fix.
 
-Opt userspace reads out of unified flushing. This makes the cost of
-reading the stats more predictable (proportional to the size of the
-subtree), as well as the freshness of the stats. Userspace readers are
-not expected to have similar concurrency to in-kernel flushers,
-serializing them among themselves and among in-kernel flushers should be
-okay. Nonetheless, for extra safety, introduce a mutex when flushing for
-userspace readers to make sure only a single userspace reader can compete
-with in-kernel flushers at a time. This takes away userspace ability to
-directly influence or hurt in-kernel lock contention.
+> ---
+> Changes in v2:
+> - Don't use static. Instead move symbols to header file (thanks Ard)
+> - Remove duplicated warnings output from b4 (thanks Ard)
+> - Link to v1: https://lore.kernel.org/r/20230829-missingvardecl-efi-v1-1-13d055a55176@google.com
+> ---
+> Note: build-tested.
+>
+> Also, a question: Why does the compiler warn at all? The extern
+> declarations _do_ exist as Ard points out [1].
+>
+> [1]: https://lore.kernel.org/all/CAMj1kXE_xs+wWno4G4U+6CFCOwO7JWcmNv4et5=W=ZRrQatWnQ@mail.gmail.com/
 
-An alternative is to remove flushing from the stats reading path
-completely, and rely on the periodic flusher. This should be accompanied
-by making the periodic flushing period tunable, and providing an
-interface for userspace to force a flush, following a similar model to
-/proc/vmstat. However, such a change will be hard to reverse if the
-implementation needs to be changed because:
-- The cost of reading stats will be very cheap and we won't be able to
-  take that back easily.
-- There are user-visible interfaces involved.
+Those declarations are not observed by the compiler when building .c
+files other than drivers/firmware/efi/efi.c, so they essentially don't
+exist when compiling arch/x86/platform/efi/efi.c.
 
-Hence, let's go with the change that's most reversible first and revisit
-as needed.
 
-This was tested on a machine with 256 cpus by running a synthetic test
-script [2] that creates 50 top-level cgroups, each with 5 children (250
-leaf cgroups). Each leaf cgroup has 10 processes running that allocate
-memory beyond the cgroup limit, invoking reclaim (which is an in-kernel
-unified flusher). Concurrently, one thread is spawned per-cgroup to read
-the stats every second (including root, top-level, and leaf cgroups --
-so total 251 threads). No significant regressions were observed in the
-total run time, which means that userspace readers are not significantly
-affecting in-kernel flushers:
-
-Base (mm-unstable):
-
-real	0m22.500s
-user	0m9.399s
-sys	73m41.381s
-
-real	0m22.749s
-user	0m15.648s
-sys	73m13.113s
-
-real	0m22.466s
-user	0m10.000s
-sys	73m11.933s
-
-With this patch:
-
-real	0m23.092s
-user	0m10.110s
-sys	75m42.774s
-
-real	0m22.277s
-user	0m10.443s
-sys	72m7.182s
-
-real	0m24.127s
-user	0m12.617s
-sys	78m52.765s
-
-[1]https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
-[2]https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
-
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/memcontrol.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 94d5a6751a9e..1544c3964f19 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -588,6 +588,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
- static void flush_memcg_stats_dwork(struct work_struct *w);
- static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
- static DEFINE_PER_CPU(unsigned int, stats_updates);
-+static DEFINE_MUTEX(stats_user_flush_mutex);
- static atomic_t stats_unified_flush_ongoing = ATOMIC_INIT(0);
- static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
- static u64 flush_next_time;
-@@ -655,6 +656,21 @@ static void do_stats_flush(struct mem_cgroup *memcg)
- 	cgroup_rstat_flush(memcg->css.cgroup);
- }
- 
-+/*
-+ * mem_cgroup_user_flush_stats - do a stats flush for a user read
-+ * @memcg: memory cgroup to flush
-+ *
-+ * Flush the subtree of @memcg. A mutex is used for userspace readers to gate
-+ * the global rstat spinlock. This protects in-kernel flushers from userspace
-+ * readers hogging the lock.
-+ */
-+void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-+{
-+	mutex_lock(&stats_user_flush_mutex);
-+	do_stats_flush(memcg);
-+	mutex_unlock(&stats_user_flush_mutex);
-+}
-+
- /*
-  * do_unified_stats_flush - do a unified flush of memory cgroup statistics
-  *
-@@ -1608,7 +1624,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	 *
- 	 * Current memory state:
- 	 */
--	mem_cgroup_try_flush_stats();
-+	mem_cgroup_user_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
-@@ -4050,7 +4066,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
- 	int nid;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_try_flush_stats();
-+	mem_cgroup_user_flush_stats(memcg);
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
- 		seq_printf(m, "%s=%lu", stat->name,
-@@ -4125,7 +4141,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
- 
--	mem_cgroup_try_flush_stats();
-+	mem_cgroup_user_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
-@@ -6642,7 +6658,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 	int i;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_try_flush_stats();
-+	mem_cgroup_user_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		int nid;
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
+> ---
+>  drivers/firmware/efi/efi.c | 3 ---
+>  include/linux/efi.h        | 6 +++++-
+>  2 files changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> index 1599f1176842..7b4e59ccf09e 100644
+> --- a/drivers/firmware/efi/efi.c
+> +++ b/drivers/firmware/efi/efi.c
+> @@ -161,9 +161,6 @@ static ssize_t fw_platform_size_show(struct kobject *kobj,
+>         return sprintf(buf, "%d\n", efi_enabled(EFI_64BIT) ? 64 : 32);
+>  }
+>
+> -extern __weak struct kobj_attribute efi_attr_fw_vendor;
+> -extern __weak struct kobj_attribute efi_attr_runtime;
+> -extern __weak struct kobj_attribute efi_attr_config_table;
+>  static struct kobj_attribute efi_attr_fw_platform_size =
+>         __ATTR_RO(fw_platform_size);
+>
+> diff --git a/include/linux/efi.h b/include/linux/efi.h
+> index ab088c662e88..32f7ca60b0e9 100644
+> --- a/include/linux/efi.h
+> +++ b/include/linux/efi.h
+> @@ -287,7 +287,7 @@ typedef efi_status_t efi_get_variable_t (efi_char16_t *name, efi_guid_t *vendor,
+>                                          unsigned long *data_size, void *data);
+>  typedef efi_status_t efi_get_next_variable_t (unsigned long *name_size, efi_char16_t *name,
+>                                               efi_guid_t *vendor);
+> -typedef efi_status_t efi_set_variable_t (efi_char16_t *name, efi_guid_t *vendor,
+> +typedef efi_status_t efi_set_variable_t (efi_char16_t *name, efi_guid_t *vendor,
+>                                          u32 attr, unsigned long data_size,
+>                                          void *data);
+>  typedef efi_status_t efi_get_next_high_mono_count_t (u32 *count);
+> @@ -632,6 +632,10 @@ typedef struct {
+>
+>  extern unsigned long __ro_after_init efi_rng_seed;             /* RNG Seed table */
+>
+> +extern __weak struct kobj_attribute efi_attr_fw_vendor;
+> +extern __weak struct kobj_attribute efi_attr_runtime;
+> +extern __weak struct kobj_attribute efi_attr_config_table;
+> +
+>  /*
+>   * All runtime access to EFI goes through this structure:
+>   */
+>
+> ---
+> base-commit: 706a741595047797872e669b3101429ab8d378ef
+> change-id: 20230829-missingvardecl-efi-59306aacfed4
+>
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+>
