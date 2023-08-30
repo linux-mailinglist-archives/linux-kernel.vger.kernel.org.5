@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD7078D9CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DD278DA5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237363AbjH3SeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
+        id S234797AbjH3SgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245497AbjH3PVj (ORCPT
+        with ESMTP id S245507AbjH3PXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:21:39 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67399E8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:21:36 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401d2e11dacso6675565e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:21:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1693408895; x=1694013695; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g3CtT48jPlJIgusYzTnrLdg/99F2+CEON4UsLWqQKko=;
-        b=PTndykky8SKmMRVa5wJO30iumxi4Lb2OpAoYzFfYTFpw9ZubZSzfnYBymf8lUNhyJW
-         zqttAdCC9VCrk6umAHFliAGPuDCVO/Q2XHr/CQkec0nRASvTS5sUsLqISy9hxSfLcwt0
-         F0ymHP8oCZy2B+D2066kMSYpXh9+69CW5dbTF4ooShZNT39pDe8xoiy2FjT6tjMlUdvH
-         tXXXcVM6zEuqEP199hVWNNskvjrBeUcoeZ0QQzE0Jq6Eh3XsXnaPUhzbwvy4QeFIh3tB
-         aH18EJrY/Yng2ykQ8rFJIeTzw/JTo6AF4/o16Tfuwy0zUW7qm4aIGKR1eq+ZFNzcbeLk
-         uA5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693408895; x=1694013695;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g3CtT48jPlJIgusYzTnrLdg/99F2+CEON4UsLWqQKko=;
-        b=LRy47eRaGHE3iD98R3CvTRdZY+f2VQaaOQeuqrm/r9Tio7C45jR0OczH7ou4BztbwE
-         IzSgmVbO6gZ/fIhdNedlEoX02v/ieNe3Yc/pa2NPcZKv0B508SQJvZrJZQFZSY1UJtZ7
-         f0nmZfRUX3R+47HfgnLUxSJTIKhOFUDyvHSFiLM+z5++eqfIcmzdvJS760/vtzxD9V8C
-         lJEXHHOqKwjtGYmk3kdVPeBiRQRxNRPkZfrT3e0N7zP48K4QYs/yJdF3Lw5Mc7lOyKn4
-         YwM8IemJfOV1yt91DvIJti0BVaUrLzPQ+GnCxmoEfxSbUQ6nUfCKxS8gYQNEurpdYMup
-         81oA==
-X-Gm-Message-State: AOJu0YyjwdgeEDCj/laK46e3Gr0ayRpqgiwpF039LsE/iMHyVn4Joxh/
-        zud/VXCMaNMMhBOCH1l5rAas0A==
-X-Google-Smtp-Source: AGHT+IEzQMej866IzE8FCkgk6gCxfjVeFksIip5jMrjrfICUSVE6k6l/gLx7wW7sFI65pTLcljpopg==
-X-Received: by 2002:a7b:cb90:0:b0:3ff:516b:5c4c with SMTP id m16-20020a7bcb90000000b003ff516b5c4cmr2126478wmi.18.1693408894839;
-        Wed, 30 Aug 2023 08:21:34 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:ab9c:c93c:ba9e:7ca? ([2a02:8011:e80c:0:ab9c:c93c:ba9e:7ca])
-        by smtp.gmail.com with ESMTPSA id r19-20020a05600c299300b003fe539b83f2sm2556800wmd.42.2023.08.30.08.21.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 08:21:34 -0700 (PDT)
-Message-ID: <2195c267-619e-4877-af5e-48ef56b81d4c@isovalent.com>
-Date:   Wed, 30 Aug 2023 16:21:33 +0100
+        Wed, 30 Aug 2023 11:23:46 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E92783
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:23:40 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 37UFNMms027896;
+        Wed, 30 Aug 2023 17:23:22 +0200
+Date:   Wed, 30 Aug 2023 17:23:22 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc:     Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Nicholas Rosenberg <inori@vnlx.org>,
+        Michael William Jonathan <moe@gnuweeb.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v1 2/5] tools/nolibc: x86-64: Use `rep stosb` for
+ `memset()`
+Message-ID: <ZO9e6h2jjVIMpBJP@1wt.eu>
+References: <20230830135726.1939997-1-ammarfaizi2@gnuweeb.org>
+ <20230830135726.1939997-3-ammarfaizi2@gnuweeb.org>
+ <CAOG64qNGdPjXHTvrpYxjizOYvMRaB9_2t2raw6DJ3kK852KUHg@mail.gmail.com>
+ <ZO9bv+GvgpphtGEi@biznet-home.integral.gnuweeb.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Fix invalid escape sequence warnings
-Content-Language: en-GB
-To:     Vishal Chourasia <vishalc@linux.ibm.com>
-Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-        netdev@vger.kernel.org, sachinp@linux.ibm.com, sdf@google.com,
-        song@kernel.org, srikar@linux.vnet.ibm.com, yhs@fb.com
-References: <e640e5f2-381c-4f65-40b9-c2e3e94696f9@linux.ibm.com>
- <20230829074931.2511204-1-vishalc@linux.ibm.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230829074931.2511204-1-vishalc@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZO9bv+GvgpphtGEi@biznet-home.integral.gnuweeb.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/08/2023 08:49, Vishal Chourasia wrote:
-> The script bpf_doc.py generates multiple SyntaxWarnings related to invalid
-> escape sequences when executed with Python 3.12. These warnings do not appear in
-> Python 3.10 and 3.11 and do not affect the kernel build, which completes
-> successfully.
+On Wed, Aug 30, 2023 at 10:09:51PM +0700, Ammar Faizi wrote:
+> On Wed, Aug 30, 2023 at 09:24:45PM +0700, Alviro Iskandar Setiawan wrote:
+> > Just a small idea to shrink this more, "mov %rdi, %rdx" and "mov %rdx,
+> > %rax" can be replaced with "push %rdi" and "pop %rax" (they are just a
+> > byte). So we can save 4 bytes more.
+> > 
+> > 0000000000001500 <memset>:
+> >     1500: 48 89 f0     mov    %rsi,%rax
+> >     1503: 48 89 d1     mov    %rdx,%rcx
+> >     1506: 57           push   %rdi
+> >     1507: f3 aa        rep stos %al,%es:(%rdi)
+> >     1509: 58           pop    %rax
+> >     150a: c3           ret
+> > 
+> > But I know you don't like it because it costs extra memory access.
 > 
-> This patch resolves these SyntaxWarnings by converting the relevant string
-> literals to raw strings or by escaping backslashes. This ensures that
-> backslashes are interpreted as literal characters, eliminating the warnings.
-> 
-> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
-> Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> Yes, that's an extra memory access. But I believe it doesn't hurt
+> someone targetting -Os. In many cases, the compilers use push/pop to
+> align the stack before a 'call' instruction. If they want to avoid extra
+> memory access, they could have used "subq $8, %rsp" and "addq $8, %rsp".
 
-Thanks! I observed that this patch fixes warnings reported by pyright in
-my editor. I've also validated that the generated files (helpers man
-page, syscall man page, bpf_helper_defs.h) remain unchanged.
+Then "xchg %esi, %eax" is just one byte with no memory access ;-)
 
-Tested-by: Quentin Monnet <quentin@isovalent.com>
-
+Willy
