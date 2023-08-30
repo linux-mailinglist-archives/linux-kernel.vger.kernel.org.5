@@ -2,244 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBA778E01F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A8C78E0AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239292AbjH3UBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
+        id S239964AbjH3UaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 16:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238293AbjH3UAt (ORCPT
+        with ESMTP id S240571AbjH3U3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:00:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFAA4EE3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:37:02 -0700 (PDT)
+        Wed, 30 Aug 2023 16:29:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3405A813B1;
+        Wed, 30 Aug 2023 12:38:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693424222; x=1724960222;
-  h=subject:from:to:cc:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=c+jEDPqTHm9uescgnXUEsEv+dnWGPwPiDy6A7HSsyBA=;
-  b=bRxOJuPHzQMsBFrFvRi0n4OV0PVxmaxz1+7BUY1unwTFfF5FJsdQTuY+
-   u2QsbRAnHcqgph/1zwST8lT4xNcrDnJbVe8fxNp3kYzCmzW/M5k8y6PUw
-   yaPp8atkOwI0iFvbwkArNV7KDQmsV0LglZjzCI20plDhY35/LuMUoggan
-   ulOwjTIO4Bb+XIDY1CbVY0bFpi4ICbFlAR+FMLWdgxk9OgReZ/AmRQDMv
-   ayPHzrklOQL/3a036t7r+MvJz4mC2AVzFH14FDX5b5Rct0qKLYMeDvt26
-   LZ1OEp1iC5eEd9JkHJKGl8aHiKtAL28eNTo21Gfi7KjbVzQmTw8TgLivF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="360723672"
+  t=1693424298; x=1724960298;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=AJ3HcgOEMdGaxD6ckht/79+NbXli1Xb4U4idLGp5F08=;
+  b=GylPcb34+V5PLcrSZF4T/uzb5Ht4/3x+rqjogAe6jBkt9yMg/iTU6P/A
+   3s839Nh8EuH4Znqe7ywxntb4G5CdtcL6ov8VUHhd4Bv3pa6ljId7u29wF
+   Llq4PpyrjMafIzEeB9YEQnHXTjJ9vbiJpQM0mOIBDPRZGUtCxbWx0EmVJ
+   JF9e1uiKxubY2LUukEkoGOD0RptT1t2hrvEn7R+0scqrC5wP7kbBf11fb
+   Ln2k8gTZbjUKIxcFP5poyoktBrE1+oVNXKbRAEjkVf/kMLXajqmQAF/TD
+   r1WA4b+L0Sa+5aYdvBiEmDZgNTvlp8gOsqjUXE9Uzo4aU4W8CUOVRrQLX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="365937678"
 X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="360723672"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:43 -0700
+   d="scan'208";a="365937678"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:35:00 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="853844918"
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="768517898"
 X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="853844918"
-Received: from nivakuma-mobl.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.212.238.163])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 12:33:43 -0700
-Subject: [PATCH v3 5/5] virt: sevguest: Add TSM_REPORTS support for SNP_{GET,
- GET_EXT}_REPORT
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-coco@lists.linux.dev
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-Date:   Wed, 30 Aug 2023 12:33:42 -0700
-Message-ID: <169342402274.3934343.11704206926819634506.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
-References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
-User-Agent: StGit/0.18-3-g996c
+   d="scan'208";a="768517898"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 30 Aug 2023 12:35:00 -0700
+Received: from [10.212.2.57] (kliang2-mobl1.ccr.corp.intel.com [10.212.2.57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 41997580C73;
+        Wed, 30 Aug 2023 12:34:58 -0700 (PDT)
+Message-ID: <127766c6-033c-dedb-2c56-7e1e7f8bd01b@linux.intel.com>
+Date:   Wed, 30 Aug 2023 15:34:56 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 2/3] perf parse-events: Make common term list to strbuf
+ helper
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230830070753.1821629-1-irogers@google.com>
+ <20230830070753.1821629-2-irogers@google.com>
+ <4de84370-29f3-75ed-9c91-330636cdd790@linux.intel.com>
+ <CAP-5=fXMgeER2FkAF2jZOAP0c=sxqhU8scxew6jXQrEYjN_S=Q@mail.gmail.com>
+ <CAP-5=fUXG9tfN2nahiVpBDiggkhmhFiBZYubCSN6vG4voJ_X2A@mail.gmail.com>
+ <b976ef43-25ea-f24a-2c22-0976fafcf0f0@linux.intel.com>
+Content-Language: en-US
+In-Reply-To: <b976ef43-25ea-f24a-2c22-0976fafcf0f0@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sevguest driver was a first mover in the confidential computing
-space. As a first mover that afforded some leeway to build the driver
-without concern for common infrastructure.
 
-Now that sevguest is no longer a singleton [1] the common operation of
-building and transmitting attestation report blobs can / should be made
-common. In this model the so called "TSM-provider" implementations can
-share a common envelope ABI even if the contents of that envelope remain
-vendor-specific. When / if the industry agrees on an attestation record
-format, that definition can also fit in the same ABI. In the meantime
-the kernel's maintenance burden is reduced and collaboration on the
-commons is increased.
 
-Convert sevguest to use CONFIG_TSM_REPORTS to retrieve the blobs that
-the SNP_{GET,GET_EXT}_REPORT ioctls produce. An example flow follows for
-retrieving the SNP_GET_REPORT blob via the TSM interface utility,
-assuming no nonce and VMPL==2:
+On 2023-08-30 2:29 p.m., Liang, Kan wrote:
+>> The problem
+>> is how we encode terms of an event name, it is indistinguishable when
+>> the of the user field is 1. I'll probably add something to fix this
+>> later, but it only impacts debug output and perf list, so I'm not
+>> overly worried. 
+> It should be OK for the debug output.
+>
 
-    report=/sys/kernel/config/tsm/report/report0
-    mkdir $report
-    echo 2 > $report/privlevel
-    dd if=/dev/urandom bs=64 count=1 > $report/inblob
-    hexdump -C $report/outblob
-    rmdir $report
+Not just the debug output. It also impacts the perf list --detail.
 
-...while the SNP_GET_EXT_REPORT flow needs to additionally set the
-format to "extended":
+With the patch,
+perf list --detail | grep uops_retired.heavy -A 2
+  uops_retired.heavy
+       [Retired uops except the last uop of each instruction. Unit:
+cpu_core]
+        cpu_core/event=0xc2,period=0x1e8483,umask/
 
-    report=/sys/kernel/config/tsm/report/report1
-    mkdir $report
-    echo extended > $report/format
-    dd if=/dev/urandom bs=64 count=1 > $report/inblob
-    hexdump -C $report/outblob
-    rmdir $report
+Without the patch,
+perf list --detail | grep uops_retired.heavy -A 2
+  uops_retired.heavy
+       [Retired uops except the last uop of each instruction. Unit:
+cpu_core]
+        cpu_core/event=0xc2,period=0x1e8483,umask=0x1/
 
-The old ioctls can be lazily deprecated, the main motivation of this
-effort is to stop the proliferation of new ioctls, and to increase
-cross-vendor collaboration.
+Thanks,
+Kan
 
-Note, only compile-tested.
 
-Link: http://lore.kernel.org/r/64961c3baf8ce_142af829436@dwillia2-xfh.jf.intel.com.notmuch [1]
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Dionna Glaze <dionnaglaze@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/virt/coco/sev-guest/Kconfig     |    1 
- drivers/virt/coco/sev-guest/sev-guest.c |   83 +++++++++++++++++++++++++++++++
- 2 files changed, 84 insertions(+)
-
-diff --git a/drivers/virt/coco/sev-guest/Kconfig b/drivers/virt/coco/sev-guest/Kconfig
-index da2d7ca531f0..1cffc72c41cb 100644
---- a/drivers/virt/coco/sev-guest/Kconfig
-+++ b/drivers/virt/coco/sev-guest/Kconfig
-@@ -5,6 +5,7 @@ config SEV_GUEST
- 	select CRYPTO
- 	select CRYPTO_AEAD2
- 	select CRYPTO_GCM
-+	select TSM_REPORTS
- 	help
- 	  SEV-SNP firmware provides the guest a mechanism to communicate with
- 	  the PSP without risk from a malicious hypervisor who wishes to read,
-diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-index c3c9e9ea691f..c7bbb8f372a3 100644
---- a/drivers/virt/coco/sev-guest/sev-guest.c
-+++ b/drivers/virt/coco/sev-guest/sev-guest.c
-@@ -16,10 +16,12 @@
- #include <linux/miscdevice.h>
- #include <linux/set_memory.h>
- #include <linux/fs.h>
-+#include <linux/tsm.h>
- #include <crypto/aead.h>
- #include <linux/scatterlist.h>
- #include <linux/psp-sev.h>
- #include <linux/sockptr.h>
-+#include <linux/cleanup.h>
- #include <uapi/linux/sev-guest.h>
- #include <uapi/linux/psp-sev.h>
- 
-@@ -759,6 +761,79 @@ static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno
- 	return key;
- }
- 
-+static u8 *sev_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
-+{
-+	struct snp_guest_dev *snp_dev = data;
-+	const int report_size = SZ_4K;
-+	const int ext_size = SZ_16K;
-+	int ret, size;
-+
-+	if (desc->inblob_len != 64)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (desc->outblob_format == TSM_FORMAT_EXTENDED)
-+		size = report_size + ext_size;
-+	else
-+		size = report_size;
-+
-+	u8 *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
-+
-+	guard(mutex)(&snp_cmd_mutex);
-+	if (desc->outblob_format == TSM_FORMAT_EXTENDED) {
-+		struct snp_ext_report_req ext_req = {
-+			.data = { .vmpl = desc->privlevel },
-+			.certs_address = (__u64)buf + report_size,
-+			.certs_len = ext_size,
-+		};
-+		memcpy(&ext_req.data.user_data, desc->inblob, desc->inblob_len);
-+
-+		struct snp_guest_request_ioctl input = {
-+			.msg_version = 1,
-+			.req_data = (__u64)&ext_req,
-+			.resp_data = (__u64)buf,
-+		};
-+		struct snp_req_resp io = {
-+			.req_data = KERNEL_SOCKPTR(&ext_req),
-+			.resp_data = KERNEL_SOCKPTR(buf),
-+		};
-+
-+		ret = get_ext_report(snp_dev, &input, &io);
-+	} else {
-+		struct snp_report_req req = {
-+			.vmpl = desc->privlevel,
-+		};
-+		memcpy(&req.user_data, desc->inblob, desc->inblob_len);
-+
-+		struct snp_guest_request_ioctl input = {
-+			.msg_version = 1,
-+			.req_data = (__u64)&req,
-+			.resp_data = (__u64)buf,
-+		};
-+		struct snp_req_resp io = {
-+			.req_data = KERNEL_SOCKPTR(&req),
-+			.resp_data = KERNEL_SOCKPTR(buf),
-+		};
-+
-+		ret = get_report(snp_dev, &input, &io);
-+	}
-+
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	*outblob_len = size;
-+	return_ptr(buf);
-+}
-+
-+static const struct tsm_ops sev_tsm_ops = {
-+	.name = KBUILD_MODNAME,
-+	.report_new = sev_report_new,
-+};
-+
-+static void unregister_sev_tsm(void *data)
-+{
-+	unregister_tsm(&sev_tsm_ops);
-+}
-+
- static int __init sev_guest_probe(struct platform_device *pdev)
- {
- 	struct snp_secrets_page_layout *layout;
-@@ -832,6 +907,14 @@ static int __init sev_guest_probe(struct platform_device *pdev)
- 	snp_dev->input.resp_gpa = __pa(snp_dev->response);
- 	snp_dev->input.data_gpa = __pa(snp_dev->certs_data);
- 
-+	ret = register_tsm(&sev_tsm_ops, snp_dev, &tsm_report_ext_type);
-+	if (ret)
-+		goto e_free_cert_data;
-+
-+	ret = devm_add_action_or_reset(&pdev->dev, unregister_sev_tsm, NULL);
-+	if (ret)
-+		goto e_free_cert_data;
-+
- 	ret =  misc_register(misc);
- 	if (ret)
- 		goto e_free_cert_data;
 
