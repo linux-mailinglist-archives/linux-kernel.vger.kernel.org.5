@@ -2,46 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93B378DD95
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D589778D99F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245383AbjH3SwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42908 "EHLO
+        id S230227AbjH3Sdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239047AbjH3GfD (ORCPT
+        with ESMTP id S240231AbjH3Gkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:35:03 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C7D107
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:34:57 -0700 (PDT)
-X-QQ-mid: bizesmtp72t1693377284t20dyyw5
-Received: from localhost.localdomain ( [221.226.144.218])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 30 Aug 2023 14:34:42 +0800 (CST)
-X-QQ-SSF: 01200000000000B0B000000A0000000
-X-QQ-FEAT: I8hG9CuxGDLVX4zYenMnZzfme72U6h6VUyCmh7+o/2/nV1SicSheCqLWUS/6f
-        6UBdxSE+5weyB8T4IXrP/HkOLySS94hUiIsCzTvD5UBUakxSArtJyUcT73pGsZfVR2aAx0u
-        X0NTTXxVE8YaME/T4o2p69r3PUsGs8E+PX+KlZWNJ/aCopGnPy+twcWgkdCRkQpOrGtxObS
-        t92LfKJyicKmsjEyxI21m68yYxHg416+39bO+IFEE4HEKtqI6EJqhBzGEPTuID98pPHXO/1
-        LQFFbENG8KfWdMSZD/8Yz9zNVHUAzjpcW4PKTXPvbaQx1JrNVtCamJ1z0lr1rby48BJ9pXB
-        L9dc0jYTFpe1jkv8MAvQrXdmPa4760QS2i6adCK
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 10736640701935298722
-From:   Song Shuai <songshuaishuai@tinylab.org>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, mick@ics.forth.gr, alex@ghiti.fr
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Song Shuai <songshuaishuai@tinylab.org>
-Subject: [PATCH] riscv: kexec: Cleanup riscv_kexec_relocate
-Date:   Wed, 30 Aug 2023 14:34:35 +0800
-Message-Id: <20230830063435.1105726-1-songshuaishuai@tinylab.org>
-X-Mailer: git-send-email 2.20.1
+        Wed, 30 Aug 2023 02:40:47 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3943412F;
+        Tue, 29 Aug 2023 23:40:45 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37U6HmFM013139;
+        Wed, 30 Aug 2023 06:40:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Gc356nwaZlUkVPvvBH95X/64U+rJsRez8uhG8j3O0Kc=;
+ b=RutMc7LfaTCdSGgRDXagFmotxCIrWwtpz9wKUa1ngTRPo1bSQiZAfODDQ2sq0yGwuQGO
+ gK5m4YT/eVOl9P6PzTV2jqudc9b5YsdoJyajycSZitnq9cMQeXT+xIzVqhopHnJpPGVF
+ caRzu/fqw2E2TZVE8R6hs1CfHif4qcicVVERXJPbbULGYSTvxBCZF06U4UNygKuqQ/TY
+ pctgTBmNGZWYqxnW5gLknnyc2Q5hp+foLMnSgzaycbeaEnpJYzyiZ95GKdKuiW1SRNIM
+ GvFqmWLS75MySwipIBC9cl+p/TtwE7LvGr9KIpng9LwXE8EVvbU3TiePRQdLY809EUhx /w== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssmcv97ws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 06:40:40 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37U6eba4012365
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 06:40:37 GMT
+Received: from [10.201.2.48] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 29 Aug
+ 2023 23:40:33 -0700
+Message-ID: <d2080d0b-f0d2-b5f2-4fd5-c929735e406c@quicinc.com>
+Date:   Wed, 30 Aug 2023 12:10:30 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 1/3] dt-bindings: clock: qcom,a53pll: add IPQ5018
+ compatible
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>
+References: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
+ <20230829095423.760641-2-quic_gokulsri@quicinc.com>
+ <3722a8f6-8f63-fe7c-6983-ac96caa18c87@linaro.org>
+From:   Gokul Sriram P <quic_gokulsri@quicinc.com>
+In-Reply-To: <3722a8f6-8f63-fe7c-6983-ac96caa18c87@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: wjhIsYPDLTM3-tF1rBFvLRqg4NGr_alt
+X-Proofpoint-GUID: wjhIsYPDLTM3-tF1rBFvLRqg4NGr_alt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 clxscore=1011
+ mlxlogscore=600 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300060
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -50,129 +87,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For readability and simplicity, cleanup the riscv_kexec_relocate code:
 
-- Re-sort the first 4 `mv` instructions against `riscv_kexec_method()`
-- Eliminate registers for debugging (s9,s10,s11) and storing const-value (s5,s6)
-- Replace `jalr` with `jr` for no-link jump
+On 8/29/2023 3:39 PM, Krzysztof Kozlowski wrote:
+> On 29/08/2023 11:54, Gokul Sriram Palanisamy wrote:
+>> Add IPQ5018 compatible to A53 PLL bindings.
+>>
+>> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Knowing that this patch could not come from downstream (it's some old
+> kernel without this file), I really wonder why two people were involved
+> in developing trivial one line change.
+Sure, I had kept this co-developed-by for this whole series of patches. 
+will remove co-developed-by for this patch.
 
-I tested this on Qemu virt machine and works as it was.
-
-Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
----
- arch/riscv/kernel/kexec_relocate.S | 52 +++++++++++++-----------------
- 1 file changed, 23 insertions(+), 29 deletions(-)
-
-diff --git a/arch/riscv/kernel/kexec_relocate.S b/arch/riscv/kernel/kexec_relocate.S
-index 059c5e216ae7..de0a4b35d01e 100644
---- a/arch/riscv/kernel/kexec_relocate.S
-+++ b/arch/riscv/kernel/kexec_relocate.S
-@@ -17,27 +17,17 @@ SYM_CODE_START(riscv_kexec_relocate)
- 	 * s1: (const) Phys address to jump to after relocation
- 	 * s2: (const) Phys address of the FDT image
- 	 * s3: (const) The hartid of the current hart
--	 * s4: Pointer to the destination address for the relocation
--	 * s5: (const) Number of words per page
--	 * s6: (const) 1, used for subtraction
--	 * s7: (const) kernel_map.va_pa_offset, used when switching MMU off
--	 * s8: (const) Physical address of the main loop
--	 * s9: (debug) indirection page counter
--	 * s10: (debug) entry counter
--	 * s11: (debug) copied words counter
-+	 * s4: (const) kernel_map.va_pa_offset, used when switching MMU off
-+	 * s5: Pointer to the destination address for the relocation
-+	 * s6: (const) Physical address of the main loop
- 	 */
- 	mv	s0, a0
- 	mv	s1, a1
- 	mv	s2, a2
- 	mv	s3, a3
--	mv	s4, zero
--	li	s5, (PAGE_SIZE / RISCV_SZPTR)
--	li	s6, 1
--	mv	s7, a4
--	mv	s8, zero
--	mv	s9, zero
--	mv	s10, zero
--	mv	s11, zero
-+	mv	s4, a4
-+	mv	s5, zero
-+	mv	s6, zero
- 
- 	/* Disable / cleanup interrupts */
- 	csrw	CSR_SIE, zero
-@@ -52,21 +42,27 @@ SYM_CODE_START(riscv_kexec_relocate)
- 	 * the start of the loop below so that we jump there in
- 	 * any case.
- 	 */
--	la	s8, 1f
--	sub	s8, s8, s7
--	csrw	CSR_STVEC, s8
-+	la	s6, 1f
-+	sub	s6, s6, s4
-+	csrw	CSR_STVEC, s6
-+
-+	/*
-+	 * With C-extension, here we get 42 Bytes and the next
-+	 * .align directive would pad zeros here up to 44 Bytes.
-+	 * So manually put a nop here to avoid zeros padding.
-+	*/
-+	nop
- 
- 	/* Process entries in a loop */
- .align 2
- 1:
--	addi	s10, s10, 1
- 	REG_L	t0, 0(s0)		/* t0 = *image->entry */
- 	addi	s0, s0, RISCV_SZPTR	/* image->entry++ */
- 
- 	/* IND_DESTINATION entry ? -> save destination address */
- 	andi	t1, t0, 0x1
- 	beqz	t1, 2f
--	andi	s4, t0, ~0x1
-+	andi	s5, t0, ~0x1
- 	j	1b
- 
- 2:
-@@ -74,9 +70,8 @@ SYM_CODE_START(riscv_kexec_relocate)
- 	andi	t1, t0, 0x2
- 	beqz	t1, 2f
- 	andi	s0, t0, ~0x2
--	addi	s9, s9, 1
- 	csrw	CSR_SATP, zero
--	jalr	zero, s8, 0
-+	jr	s6
- 
- 2:
- 	/* IND_DONE entry ? -> jump to done label */
-@@ -92,14 +87,13 @@ SYM_CODE_START(riscv_kexec_relocate)
- 	andi	t1, t0, 0x8
- 	beqz	t1, 1b		/* Unknown entry type, ignore it */
- 	andi	t0, t0, ~0x8
--	mv	t3, s5		/* i = num words per page */
-+	li	t3, (PAGE_SIZE / RISCV_SZPTR)	/* i = num words per page */
- 3:	/* copy loop */
- 	REG_L	t1, (t0)	/* t1 = *src_ptr */
--	REG_S	t1, (s4)	/* *dst_ptr = *src_ptr */
-+	REG_S	t1, (s5)	/* *dst_ptr = *src_ptr */
- 	addi	t0, t0, RISCV_SZPTR /* stc_ptr++ */
--	addi	s4, s4, RISCV_SZPTR /* dst_ptr++ */
--	sub	t3, t3, s6	/* i-- */
--	addi	s11, s11, 1	/* c++ */
-+	addi	s5, s5, RISCV_SZPTR /* dst_ptr++ */
-+	addi	t3, t3, -0x1	/* i-- */
- 	beqz	t3, 1b		/* copy done ? */
- 	j	3b
- 
-@@ -146,7 +140,7 @@ SYM_CODE_START(riscv_kexec_relocate)
- 	 */
- 	fence.i
- 
--	jalr	zero, a2, 0
-+	jr	a2
- 
- SYM_CODE_END(riscv_kexec_relocate)
- riscv_kexec_relocate_end:
--- 
-2.20.1
-
+Regards,
+Gokul
