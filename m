@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2E878DF2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422E478DEFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240040AbjH3TTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
+        id S242426AbjH3TUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242861AbjH3JxO (ORCPT
+        with ESMTP id S242860AbjH3JxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Aug 2023 05:53:14 -0400
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD601B3
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0833ACD2
         for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-68bec43ec0cso6708837b3a.2
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c0c3ccd3d6so60365275ad.1
         for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1693389189; x=1693993989;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bzHfCFTnMqiRc3QC+Ez91qszxdCPJ8z3TEmrMibThBo=;
-        b=ks1WJhTa06By76Fqdbqfuo+l7onjrNERX0oXcMvSGqqxXz4Q+2OGxz08z/4ze2vE9m
-         hbquRfP3cB58xBoBmS/TfPEAeXsHbaqsaYe2qdLyGcxJoh+PHvLPoFaCUdjRs0GLKh0J
-         0j6DXFwF/Fi17waQ1KuHLKXQDixY0l1cImfA0sMWF2IMVUzz4kdu5qjZ0D+ZPUV6QxZ5
-         ZZ+UZyOMX0DkfLyyQChC9/IBMGNzJVrSNLk7j8msK3GQ6ckkEwAAzn2cKy7cPlNy1pid
-         Rcujwl/3dnanYWnmRA40lXo9H+IgHIcQwmdtbcVyXUnbLJkjLxf3Zcbo+5OIFFFZZspQ
-         enYg==
-X-Gm-Message-State: AOJu0YwAxnVrVkL3oDgceLi4X/X+VQhANS7KBrULhl/MjVB6xYw8HAK4
-        u+v7wKTseRbm4v8zyBtADcUnP5CXvRekIXXnBQu7961OC1Oh
-X-Google-Smtp-Source: AGHT+IEFbtW9dUlVtXjbvzQEeZ3dBkPMebb+v/x8PTR70mT5YNAC4VJuW4mF4Sl+HGZj2RTmt4R+j6UhLQLFI1PLR7U4bup+E6wz
+        bh=w8oA+37JCMv8f315VpTn3fZR5Yd47+q297lZ55yMlOY=;
+        b=TSzQd1JdmPbT5mH7NqQUxRPFFMfBOSQsqZL4hJny3TO6kp/2aaSa9mIBlyK78uSCEe
+         8eNsesWlKhQcwXWlsDhUhEPOyv6L6NDqt8yM67VaO0/kIg1mt+i1PUzN+znycwkSUMe6
+         ratxfWOm4GAczGCvQjWQ6fAWHgacncXhgKMcsEOekY3xBuy7YyAEE2aahbBaNUFrjV2G
+         8LuuGHy3ntDFbgZ04Qj0zBFG2J7/jniv4J3Vlya+vLT/xK7q0I8Hgs6V0x2xr8MO2aP0
+         8Y3Ja3YuntzXm26gT838vg4WfHoCoRL+vbpnyU2NBX2vEWz82nV2shtTjnKpj91T185F
+         dnag==
+X-Gm-Message-State: AOJu0Yx1F5cnHZQ7M2fkCQ2Bm4EHSSk/nFFTbo+Y/w06zc5bPZ+spwXH
+        GZR4BLzVRMlfUYVkBPaJwNbORFTIuq6Q+4hneUXg1mjgjz/a
+X-Google-Smtp-Source: AGHT+IEuEfb6FTNI21OTNjSbZGx2u+8it4g188GpM39nlhHaN0XEtRl2LWvw6Gl2mOiebEy/sMwUNBXMx1TzNzecp47bNPCRvWd9
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:21cf:b0:68a:5cf8:dadd with SMTP id
- t15-20020a056a0021cf00b0068a5cf8daddmr631221pfj.4.1693389189024; Wed, 30 Aug
+X-Received: by 2002:a17:902:f68f:b0:1b5:2871:cd1 with SMTP id
+ l15-20020a170902f68f00b001b528710cd1mr575322plg.0.1693389189503; Wed, 30 Aug
  2023 02:53:09 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 02:53:08 -0700
+Date:   Wed, 30 Aug 2023 02:53:09 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001411fa060420e5f4@google.com>
-Subject: [syzbot] Monthly btrfs report (Aug 2023)
-From:   syzbot <syzbot+list902b4a7ca2aca212df12@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000001b6032060420e5a9@google.com>
+Subject: [syzbot] Monthly hfs report (Aug 2023)
+From:   syzbot <syzbot+list116a8a577418be09ca84@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,38 +54,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello btrfs maintainers/developers,
+Hello hfs maintainers/developers,
 
-This is a 31-day syzbot report for the btrfs subsystem.
+This is a 31-day syzbot report for the hfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+https://syzkaller.appspot.com/upstream/s/hfs
 
-During the period, 8 new issues were detected and 1 were fixed.
-In total, 55 issues are still open and 37 have been fixed so far.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 42 issues are still open and 12 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref  Crashes Repro Title
-<1>  8234    Yes   VFS: Busy inodes after unmount (use-after-free)
-                   https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
-<2>  5325    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<3>  1042    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<4>  809     Yes   WARNING in __kernel_write_iter
-                   https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
-<5>  310     Yes   kernel BUG at fs/inode.c:LINE! (2)
-                   https://syzkaller.appspot.com/bug?extid=c92c93d1f1aaaacdb9db
-<6>  273     Yes   WARNING in lookup_inline_extent_backref
-                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-<7>  211     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<8>  202     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<9>  147     Yes   INFO: task hung in lock_extent
-                   https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
-<10> 89      Yes   WARNING in cleanup_transaction
-                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
+<1>  4838    Yes   possible deadlock in hfsplus_file_truncate
+                   https://syzkaller.appspot.com/bug?extid=6030b3b1b9bf70e538c4
+<2>  4554    Yes   possible deadlock in hfsplus_file_extend
+                   https://syzkaller.appspot.com/bug?extid=325b61d3c9a17729454b
+<3>  4005    Yes   possible deadlock in hfsplus_get_block
+                   https://syzkaller.appspot.com/bug?extid=b7ef7c0c8d8098686ae2
+<4>  2022    Yes   KMSAN: uninit-value in hfs_revalidate_dentry
+                   https://syzkaller.appspot.com/bug?extid=3ae6be33a50b5aae4dab
+<5>  1002    Yes   kernel BUG in __hfsplus_setxattr
+                   https://syzkaller.appspot.com/bug?extid=1107451c16b9eb9d29e6
+<6>  825     Yes   KASAN: slab-out-of-bounds Read in hfsplus_uni2asc
+                   https://syzkaller.appspot.com/bug?extid=076d963e115823c4b9be
+<7>  651     Yes   KMSAN: uninit-value in hfsplus_delete_cat
+                   https://syzkaller.appspot.com/bug?extid=fdedff847a0e5e84c39f
+<8>  594     Yes   kernel BUG in hfs_write_inode
+                   https://syzkaller.appspot.com/bug?extid=97e301b4b82ae803d21b
+<9>  386     Yes   WARNING in hfs_bnode_create
+                   https://syzkaller.appspot.com/bug?extid=a19ca73b21fe8bc69101
+<10> 380     Yes   general protection fault in hfs_find_init
+                   https://syzkaller.appspot.com/bug?extid=7ca256d0da4af073b2e2
 
 ---
 This report is generated by a bot. It may contain errors.
