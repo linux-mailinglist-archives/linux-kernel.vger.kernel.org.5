@@ -2,263 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6C378DD9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC2578D9BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239047AbjH3Sw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49330 "EHLO
+        id S237228AbjH3SeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242428AbjH3Ia5 (ORCPT
+        with ESMTP id S242447AbjH3IcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:30:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9A61A4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:30:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 313B660FCB
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:30:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B111C433C7;
-        Wed, 30 Aug 2023 08:30:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693384253;
-        bh=lAVk6c1+p9O2qSt5rKI5PqpuZY72+W78iTkgLcschGk=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=parAkT0Ds18TJwR+j7UWPJnms792Pv8js1LYPxxGM2z6f1T4f4VAmCCq4MMn/mXu4
-         NDfxvgfuaoWiTuAlHNUprD10kV+cQXAsPh7WuE4O3thWXEtfTaCxJIlkKh1LBw+hM/
-         HV3xydmxr+QTtOjJDxqz+PE+j3Vl3VR+a1l31O5SStz0hql7zFB3vk5IZN/DjazBSm
-         TzWHg/owO5vV6ZENJaltw/S082HA/f2PlC3NL1gFPvteOHxkyw/h4m5cvRLQ2OMyzr
-         kKkIUX9QxLk8pAPNwlYTXanYVxkdwNbPEWesxjIWjfafJVjtpXzfvvkvakMYmRdy0T
-         re66oz8u8pu6Q==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
- in BPF JIT
-In-Reply-To: <9ab91c63-0712-d2d8-9b2b-6f2098287baa@iogearbox.net>
-References: <20230828165958.1714079-1-puranjay12@gmail.com>
- <87edjmb1t8.fsf@all.your.base.are.belong.to.us>
- <9ab91c63-0712-d2d8-9b2b-6f2098287baa@iogearbox.net>
-Date:   Wed, 30 Aug 2023 10:30:50 +0200
-Message-ID: <87h6oh2apx.fsf@all.your.base.are.belong.to.us>
+        Wed, 30 Aug 2023 04:32:07 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A280E1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:32:03 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-180-yiGGdh7OPvy0IRObXaug9g-1; Wed, 30 Aug 2023 09:32:01 +0100
+X-MC-Unique: yiGGdh7OPvy0IRObXaug9g-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 30 Aug
+ 2023 09:32:00 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 30 Aug 2023 09:32:00 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Stefan Hajnoczi' <stefanha@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: RE: [PATCH v2 0/3] vfio: use __aligned_u64 for ioctl structs
+Thread-Topic: [PATCH v2 0/3] vfio: use __aligned_u64 for ioctl structs
+Thread-Index: AQHZ2qaF1qG+4kBOEE2IVTLh2JS7F7ABw8lggAC+u/A=
+Date:   Wed, 30 Aug 2023 08:32:00 +0000
+Message-ID: <6d0a1d479db3477e9bf6937b5a9b71af@AcuMS.aculab.com>
+References: <20230829182720.331083-1-stefanha@redhat.com>
+ <3e8b6e0503a84c93b6dd44c0d311abfe@AcuMS.aculab.com>
+In-Reply-To: <3e8b6e0503a84c93b6dd44c0d311abfe@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRGF2aWQgTGFpZ2h0IDxE
+YXZpZC5MYWlnaHRAQUNVTEFCLkNPTT4NCj4gU2VudDogMjkgQXVndXN0IDIwMjMgMjI6MTANCj4g
+VG86ICdTdGVmYW4gSGFqbm9jemknIDxzdGVmYW5oYUByZWRoYXQuY29tPjsga3ZtQHZnZXIua2Vy
+bmVsLm9yZw0KPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgVGlhbiwgS2V2aW4g
+PGtldmluLnRpYW5AaW50ZWwuY29tPjsgQWxleCBXaWxsaWFtc29uDQo+IDxhbGV4LndpbGxpYW1z
+b25AcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3JwZSA8amdnQHppZXBlLmNhPg0KPiBTdWJqZWN0
+OiBSRTogW1BBVENIIHYyIDAvM10gdmZpbzogdXNlIF9fYWxpZ25lZF91NjQgZm9yIGlvY3RsIHN0
+cnVjdHMNCj4gDQo+IEZyb206IFN0ZWZhbiBIYWpub2N6aQ0KPiA+IFNlbnQ6IDI5IEF1Z3VzdCAy
+MDIzIDE5OjI3DQo+ID4NCj4gPiB2MjoNCj4gPiAtIFJlYmFzZWQgb250byBodHRwczovL2dpdGh1
+Yi5jb20vYXdpbGxpYW0vbGludXgtdmZpby5naXQgbmV4dCB0byBnZXQgdGhlDQo+ID4gICB2Zmlv
+X2lvbW11X3R5cGUxX2luZm8gcGFkIGZpZWxkIFtLZXZpbl0NCj4gPiAtIEZpeGVkIG1pbihtaW5z
+eiwgc2l6ZW9mKGRtYWJ1ZikpIC0+IG1pbihkbWFidWYuYXJnc3osIHNpemVvZihkbWFidWYpKSBb
+SmFzb24sIEtldmluXQ0KPiANCj4gWW91IG1hbmFnZWQgdG8gdXNlIG1pbl90KCkgaW5zdGVhZCBv
+ZiBmaXhpbmcgdGhlIHR5cGVzIHRvIG1hdGNoLg0KPiANCj4gPiAtIFNxdWFzaGVkIFBhdGNoIDMg
+KHZmaW9faW9tbXVfdHlwZTFfaW5mbykgaW50byBQYXRjaCAxIHNpbmNlIGl0IGlzIHRyaXZpYWwg
+bm93DQo+ID4gICB0aGF0IHRoZSBwYWRkaW5nIGZpZWxkIGlzIGFscmVhZHkgdGhlcmUuDQo+ID4N
+Cj4gPiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BudmlkaWEuY29tPiBwb2ludGVkIG91dCB0aGF0IHU2
+NCBWRklPIGlvY3RsIHN0cnVjdCBmaWVsZHMNCj4gPiBoYXZlIGFyY2hpdGVjdHVyZS1kZXBlbmRl
+bnQgYWxpZ25tZW50LiBpb21tdWZkIGFscmVhZHkgdXNlcyBfX2FsaWduZWRfdTY0IHRvDQo+ID4g
+YXZvaWQgdGhpcyBwcm9ibGVtLg0KPiA+DQo+ID4gU2VlIHRoZSBfX2FsaWduZWRfdTY0IHR5cGVk
+ZWYgaW4gPHVhcGkvbGludXgvdHlwZXMuaD4gZm9yIGRldGFpbHMgb24gd2h5IGl0IGlzDQo+ID4g
+YSBnb29kIGlkZWEgZm9yIGtlcm5lbDwtPnVzZXIgaW50ZXJmYWNlcy4NCj4gPg0KPiA+IFRoaXMg
+c2VyaWVzIG1vZGlmaWVzIHRoZSBWRklPIGlvY3RsIHN0cnVjdHMgdG8gdXNlIF9fYWxpZ25lZF91
+NjQuIFNvbWUgb2YgdGhlDQo+ID4gY2hhbmdlcyBwcmVzZXJ2ZSB0aGUgZXhpc3RpbmcgbWVtb3J5
+IGxheW91dCBvbiBhbGwgYXJjaGl0ZWN0dXJlcywgc28gSSBwdXQgdGhlbQ0KPiA+IHRvZ2V0aGVy
+IGludG8gdGhlIGZpcnN0IHBhdGNoLiBUaGUgcmVtYWluaW5nIHBhdGNoZXMgYXJlIGZvciBzdHJ1
+Y3RzIHdoZXJlDQo+ID4gZXhwbGFuYXRpb24gaXMgbmVjZXNzYXJ5IGFib3V0IHdoeSBjaGFuZ2lu
+ZyB0aGUgbWVtb3J5IGxheW91dCBkb2VzIG5vdCBicmVhaw0KPiA+IHRoZSB1YXBpLg0KPiANCj4g
+QnV0IHlvdSBhcmUgZXh0ZW5kaW5nIGEgZmllbGQgaW4gdGhlIG1pZGRsZSBvZiB0aGUgdWFwaSBz
+dHJ1Y3R1cmUuDQo+IFRoaXMgY29tcGxldGVseSBicmVha3MgYW55IGFwcGxpY2F0aW9ucy4NCg0K
+SSd2ZSBoYWQgYSBjbG9zZXIgbG9vayB0aGlzIG1vcm5pbmcuDQpZb3VyIGV4cGxhbmF0aW9ucyBh
+cmVuJ3QgdmVyeSBnb29kLg0KVGhlIHN0cnVjdHVyZXMgYWxsIGhhdmUgdGhlIDY0Yml0IGZpZWxk
+cyBvbiB0aGVpciBuYXR1cmFsIGJvdW5kYXJ5DQpzbyB0aGUgbWVtb3J5IGxheW91dCBpc24ndCBy
+ZWFsbHkgY2hhbmdlZCAtIGp1c3QgZXh0cmEgcGFkZGluZw0KYXQgdGhlIGVuZC4NCg0KCURhdmlk
+DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
+YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
+IChXYWxlcykNCg==
 
-> On 8/29/23 12:06 PM, Bj=C3=B6rn T=C3=B6pel wrote:
->> Puranjay Mohan <puranjay12@gmail.com> writes:
->>=20
->>> Changes in v2 -> v3:
->>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
->>> 2. Add checks for ctx->ro_insns =3D=3D NULL. [Patch 3]
->>> 3. Fix check for edge condition where amount of text to set > 2 * pages=
-ize
->>>     [Patch 1 and 2]
->>> 4. Add reviewed-by in patches.
->>> 5. Adding results of selftest here:
->>>     Using the command: ./test_progs on qemu
->>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>
->>> Changes in v1 -> v2:
->>> 1. Implement a new function patch_text_set_nosync() to be used in bpf_a=
-rch_text_invalidate().
->>>     The implementation in v1 called patch_text_nosync() in a loop and i=
-t was bad as it would
->>>     call flush_icache_range() for every word making it really slow. Thi=
-s was found by running
->>>     the test_tag selftest which would take forever to complete.
->>>
->>> Here is some data to prove the V2 fixes the problem:
->>>
->>> Without this series:
->>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
->>> test_tag: OK (40945 tests)
->>>
->>> real    7m47.562s
->>> user    0m24.145s
->>> sys     6m37.064s
->>>
->>> With this series applied:
->>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
->>> test_tag: OK (40945 tests)
->>>
->>> real    7m29.472s
->>> user    0m25.865s
->>> sys     6m18.401s
->>>
->>> BPF programs currently consume a page each on RISCV. For systems with m=
-any BPF
->>> programs, this adds significant pressure to instruction TLB. High iTLB =
-pressure
->>> usually causes slow down for the whole system.
->>>
->>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the abov=
-e issue.
->>> It packs multiple BPF programs into a single huge page. It is currently=
- only
->>> enabled for the x86_64 BPF JIT.
->>>
->>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed =
-now.
->>>
->>> This patch series enables the BPF prog pack allocator for the RISCV BPF=
- JIT.
->>> This series needs a patch[3] from the ARM64 series to work.
->>>
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->>> Performance Analysis of prog pack allocator on RISCV64
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->>>
->>> Test setup:
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>
->>> Host machine: Debian GNU/Linux 11 (bullseye)
->>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->>> u-boot-qemu Version: 2023.07+dfsg-1
->>> opensbi Version: 1.3-1
->>>
->>> To test the performance of the BPF prog pack allocator on RV, a stresser
->>> tool[4] linked below was built. This tool loads 8 BPF programs on the s=
-ystem and
->>> triggers 5 of them in an infinite loop by doing system calls.
->>>
->>> The runner script starts 20 instances of the above which loads 8*20=3D1=
-60 BPF
->>> programs on the system, 5*20=3D100 of which are being constantly trigge=
-red.
->>> The script is passed a command which would be run in the above environm=
-ent.
->>>
->>> The script was run with following perf command:
->>> ./run.sh "perf stat -a \
->>>          -e iTLB-load-misses \
->>>          -e dTLB-load-misses  \
->>>          -e dTLB-store-misses \
->>>          -e instructions \
->>>          --timeout 60000"
->>>
->>> The output of the above command is discussed below before and after ena=
-bling the
->>> BPF prog pack allocator.
->>>
->>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The =
-rootfs
->>> was created using Bjorn's riscv-cross-builder[5] docker container linke=
-d below.
->>>
->>> Results
->>> =3D=3D=3D=3D=3D=3D=3D
->>>
->>> Before enabling prog pack allocator:
->>> ------------------------------------
->>>
->>> Performance counter stats for 'system wide':
->>>
->>>             4939048      iTLB-load-misses
->>>             5468689      dTLB-load-misses
->>>              465234      dTLB-store-misses
->>>       1441082097998      instructions
->>>
->>>        60.045791200 seconds time elapsed
->>>
->>> After enabling prog pack allocator:
->>> -----------------------------------
->>>
->>> Performance counter stats for 'system wide':
->>>
->>>             3430035      iTLB-load-misses
->>>             5008745      dTLB-load-misses
->>>              409944      dTLB-store-misses
->>>       1441535637988      instructions
->>>
->>>        60.046296600 seconds time elapsed
->>>
->>> Improvements in metrics
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>
->>> It was expected that the iTLB-load-misses would decrease as now a singl=
-e huge
->>> page is used to keep all the BPF programs compared to a single page for=
- each
->>> program earlier.
->>>
->>> --------------------------------------------
->>> The improvement in iTLB-load-misses: -30.5 %
->>> --------------------------------------------
->>>
->>> I repeated this expriment more than 100 times in different setups and t=
-he
->>> improvement was always greater than 30%.
->>>
->>> This patch series is boot tested on the Starfive VisionFive 2 board[6].
->>> The performance analysis was not done on the board because it doesn't
->>> expose iTLB-load-misses, etc. The stresser program was run on the board=
- to test
->>> the loading and unloading of BPF programs
->>>
->>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
->>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gma=
-il.com/
->>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gma=
-il.com/
->>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
->>> [5] https://github.com/bjoto/riscv-cross-builder
->>> [6] https://www.starfivetech.com/en/site/boards
->>>
->>> Puranjay Mohan (3):
->>>    riscv: extend patch_text_nosync() for multiple pages
->>>    riscv: implement a memset like function for text
->>>    bpf, riscv: use prog pack allocator in the BPF JIT
->>=20
->> Thank you! For the series:
->>=20
->> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
->> Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->>=20
->> @Alexei @Daniel This series depends on a core BPF patch from the Arm
->>                  series [3].
->>=20
->> @Palmer LMK if you have any concerns taking the RISC-V text patching
->>          stuff via the BPF tree.
->
-> Palmer, did the riscv PR already go to Linus?
->
-> If not yet, perhaps you could ship this series along with your PR to Linus
-> during this merge window given the big net PR (incl. bpf) was already mer=
-ged
-> yesterday. So from our side only fixes ship to Linus.
->
-> Otherwise we could take it into bpf-next for the next dev cycle if there =
-are
-> no objections, let us know.
-
-Daniel, I'll bring this up on the RISC-V patchwork sync meeting [1]
-today.
-
-[1] https://lore.kernel.org/linux-riscv/mhng-775d4068-6c1e-48a4-a1dc-b4a76f=
-f26bb3@palmer-ri-x1c9a/
