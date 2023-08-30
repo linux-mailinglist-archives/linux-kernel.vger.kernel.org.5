@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C70478DB99
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B46078DBBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239195AbjH3SkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        id S238278AbjH3Shb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245574AbjH3PhM (ORCPT
+        with ESMTP id S245576AbjH3PhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:37:12 -0400
+        Wed, 30 Aug 2023 11:37:13 -0400
 Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5031A6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B1A1A3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:37:10 -0700 (PDT)
 From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -30,9 +30,9 @@ Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Daniel Baluta <daniel.baluta@nxp.com>,
         linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: [PATCH v4 03/11] ALSA: hda/intel: Fix error handling in azx_probe()
-Date:   Wed, 30 Aug 2023 17:36:44 +0200
-Message-Id: <20230830153652.217855-4-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v4 06/11] ALSA: hda/i915: Allow xe as match for i915_component_master_match
+Date:   Wed, 30 Aug 2023 17:36:47 +0200
+Message-Id: <20230830153652.217855-7-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
 References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
@@ -47,28 +47,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing pci_set_drv to NULL call on error.
+Xe is a new driver for intel GPU's that shares the sound related code
+with i915.
+
+The modprobe mechanism is being replaced by the -EPROBE_DEFER mechanism,
+so we don't need to add a modprobe xe call. Adding this would have
+required a telepathy module to correctly guess whether to load i915 or
+xe.
 
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/hda/hdac_i915.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 765d95e798617..bf6210506a2da 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2176,6 +2176,7 @@ static int azx_probe(struct pci_dev *pci,
- 	return 0;
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index ffa35d7a367c0..0765e5350e7ba 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -115,7 +115,8 @@ static int i915_component_master_match(struct device *dev, int subcomponent,
+ 	hdac_pci = to_pci_dev(bus->dev);
+ 	i915_pci = to_pci_dev(dev);
  
- out_free:
-+	pci_set_drvdata(pci, NULL);
- 	snd_card_free(card);
- 	return err;
- }
+-	if (!strcmp(dev->driver->name, "i915") &&
++	if ((!strcmp(dev->driver->name, "i915") ||
++		 !strcmp(dev->driver->name, "xe")) &&
+ 	    subcomponent == I915_COMPONENT_AUDIO &&
+ 	    connectivity_check(i915_pci, hdac_pci))
+ 		return 1;
 -- 
 2.39.2
 
