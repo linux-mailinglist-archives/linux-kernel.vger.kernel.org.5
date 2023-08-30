@@ -2,190 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD31078DDE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC44E78DDDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343635AbjH3Syy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
+        id S1343517AbjH3Syd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244604AbjH3N11 (ORCPT
+        with ESMTP id S244620AbjH3Nb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:27:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A284137;
-        Wed, 30 Aug 2023 06:27:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DC9C6221F;
-        Wed, 30 Aug 2023 13:27:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EC7C433C7;
-        Wed, 30 Aug 2023 13:27:19 +0000 (UTC)
-Message-ID: <fbeb4316-462a-1e20-581d-a6c2d2c9a1c9@xs4all.nl>
-Date:   Wed, 30 Aug 2023 15:27:18 +0200
+        Wed, 30 Aug 2023 09:31:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03201B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693402239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QrmtevR+OHspc/c545A2F7OAMYEjllnCprVaLeVCRbQ=;
+        b=Oi4msi9VB3j0ZgJuqCfU42WZObDCxWJQgAsZSl+Ouk+H2iUVnUXEzIGaL5vwsQk/KvfAk+
+        Sr4GcZdrMPg08zs5kLCFGQoaMKuXUfz9yJjGHRsG29qALHoCv4Fb+tdDPJPSONkvCBUdry
+        EIquKv6LZqSAsIYytV/oq6fMaN3Xd9c=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-gR0P0xu6OIuwaV7qYvrhCA-1; Wed, 30 Aug 2023 09:30:38 -0400
+X-MC-Unique: gR0P0xu6OIuwaV7qYvrhCA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a355cf318so428861666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:30:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693402237; x=1694007037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QrmtevR+OHspc/c545A2F7OAMYEjllnCprVaLeVCRbQ=;
+        b=Y2QiYCQB7m1w+7iYKIhkDvrflt1hrp9rBH5DtphfC0E2mBFSggjdv4/6sZ/wmTWnez
+         MD/+ZCFRLRtfgpDktnm3drE6MHBLCbaWeS5aVHgXLFY3cZppiHGcUurnSZwRezVVQN8d
+         1GxH7drzcPeHluNEh01vcASEPvD++J288JrbH0LMkLG8vCygNnFG8+Z37psWyYNxElue
+         IdbjRhjWVIHRcBUHHenab1oLcBJzPY1vICbmrnvpcqI+Q4Z41kj1fmiAiwmfjlMwJnRQ
+         34ymlNvZINgU0PuHCd9zKrUWgGhCjrgzE8EqqzmEcmZQpIWogn4AChB/kvFu5WNNuhGU
+         /RTw==
+X-Gm-Message-State: AOJu0Yxfsbthoh6vjyBtYpGSKgBnDOqR/qNvmluCGAv7wZkuhay5AAiq
+        S+IdEnCp/vACRcq+/6jCvkn1ZXVykvMxC2fG57EBCWNk2g2WgHSjQRIluG09VVtPxrPt3zcnUTN
+        onpkehLFxXZizmnlgtdFK4pNK
+X-Received: by 2002:a17:906:8b:b0:9a5:7887:ef09 with SMTP id 11-20020a170906008b00b009a57887ef09mr1872773ejc.32.1693402237183;
+        Wed, 30 Aug 2023 06:30:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEYxUHeyUiFVorh4ZDehN292nCkRvDukdS6QYJWdvud4F+ML6iNTqT9rYxTEkbhUobIqpPlWg==
+X-Received: by 2002:a17:906:8b:b0:9a5:7887:ef09 with SMTP id 11-20020a170906008b00b009a57887ef09mr1872753ejc.32.1693402236839;
+        Wed, 30 Aug 2023 06:30:36 -0700 (PDT)
+Received: from redhat.com ([2.55.167.22])
+        by smtp.gmail.com with ESMTPSA id ju26-20020a17090798ba00b00982a352f078sm7183100ejc.124.2023.08.30.06.30.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 06:30:35 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 09:30:31 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Maxime Coquelin <maxime.coquelin@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, xieyongji@bytedance.com,
+        jasowang@redhat.com, david.marchand@redhat.com, lulu@redhat.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        xuanzhuo@linux.alibaba.com, eperezma@redhat.com
+Subject: Re: [PATCH v3 0/3] vduse: add support for networking devices
+Message-ID: <20230830091607-mutt-send-email-mst@kernel.org>
+References: <20230705100430.61927-1-maxime.coquelin@redhat.com>
+ <20230810150347-mutt-send-email-mst@kernel.org>
+ <20230810142949.074c9430@kernel.org>
+ <20230810174021-mutt-send-email-mst@kernel.org>
+ <20230810150054.7baf34b7@kernel.org>
+ <ad2b2f93-3598-cffc-0f0d-fe20b2444011@redhat.com>
+ <20230829130430-mutt-send-email-mst@kernel.org>
+ <651476f1-ccae-0ba1-4778-1a63f34aa65d@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v5 03/10] media: videobuf2: Be more flexible on the number
- of queue stored buffers
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230824092133.39510-1-benjamin.gaignard@collabora.com>
- <20230824092133.39510-4-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230824092133.39510-4-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <651476f1-ccae-0ba1-4778-1a63f34aa65d@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2023 11:21, Benjamin Gaignard wrote:
-> Add 'max_allowed_buffers' field in vb2_queue struct to let drivers decide
-> how many buffers could be stored in a queue.
-> This request 'bufs' array to be allocated at queue init time and freed
-> when releasing the queue.
-> By default VB2_MAX_FRAME remains the limit.
+On Wed, Aug 30, 2023 at 01:27:18PM +0200, Maxime Coquelin wrote:
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../media/common/videobuf2/videobuf2-core.c   | 25 +++++++++++++------
->  include/media/videobuf2-core.h                |  4 ++-
->  2 files changed, 20 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 8aa13591b782..70e36389b704 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -411,7 +411,7 @@ static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
->   */
->  static bool vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, int index)
+> On 8/29/23 19:05, Michael S. Tsirkin wrote:
+> > On Tue, Aug 29, 2023 at 03:34:06PM +0200, Maxime Coquelin wrote:
+> > > 
+> > > 
+> > > On 8/11/23 00:00, Jakub Kicinski wrote:
+> > > > On Thu, 10 Aug 2023 17:42:11 -0400 Michael S. Tsirkin wrote:
+> > > > > > Directly into the stack? I thought VDUSE is vDPA in user space,
+> > > > > > meaning to get to the kernel the packet has to first go thru
+> > > > > > a virtio-net instance.
+> > > > > 
+> > > > > yes. is that a sufficient filter in your opinion?
+> > > > 
+> > > > Yes, the ability to create the device feels stronger than CAP_NET_RAW,
+> > > > and a bit tangential to CAP_NET_ADMIN. But I don't have much practical
+> > > > experience with virt so no strong opinion, perhaps it does make sense
+> > > > for someone's deployment? Dunno..
+> > > > 
+> > > 
+> > > I'm not sure CAP_NET_ADMIN should be required for creating the VDUSE
+> > > devices, as the device could be attached to vhost-vDPA and so not
+> > > visible to the Kernel networking stack.
+> > > 
+> > > However, CAP_NET_ADMIN should be required to attach the VDUSE device to
+> > > virtio-vdpa/virtio-net.
+> > > 
+> > > Does that make sense?
+> > > 
+> > > Maxime
+> > 
+> > OK. How are we going to enforce it?
+> 
+> Actually, it seems already enforced for all VDPA devices types.
+> Indeed, the VDPA_CMD_DEV_NEW Netlink command used to add the device to
+> the VDPA bus has the GENL_ADMIN_PERM flag set, and so require
+> CAT_NET_ADMIN.
 
-Let's use 'unsigned int index' to avoid signedness issues.
+Hmm good point. Pity I didn't notice earlier. Oh well there's always
+the next release.
 
->  {
-> -	if (index < VB2_MAX_FRAME && !q->bufs[index]) {
-> +	if (index < q->max_allowed_buffers && !q->bufs[index]) {
->  		q->bufs[index] = vb;
->  		vb->index = index;
->  		vb->vb2_queue = q;
-> @@ -428,7 +428,7 @@ static bool vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, int
->   */
->  static void vb2_queue_remove_buffer(struct vb2_queue *q, struct vb2_buffer *vb)
->  {
-> -	if (vb->index < VB2_MAX_FRAME) {
-> +	if (vb->index < q->max_allowed_buffers) {
->  		q->bufs[vb->index] = NULL;
->  		vb->vb2_queue = NULL;
->  	}
-> @@ -449,9 +449,9 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->  	struct vb2_buffer *vb;
->  	int ret;
->  
-> -	/* Ensure that q->num_buffers+num_buffers is below VB2_MAX_FRAME */
-> +	/* Ensure that q->num_buffers+num_buffers is below q->max_allowed_buffers */
->  	num_buffers = min_t(unsigned int, num_buffers,
-> -			    VB2_MAX_FRAME - q->num_buffers);
-> +			    q->max_allowed_buffers - q->num_buffers);
->  
->  	for (buffer = 0; buffer < num_buffers; ++buffer) {
->  		/* Allocate vb2 buffer structures */
-> @@ -852,9 +852,9 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  	/*
->  	 * Make sure the requested values and current defaults are sane.
->  	 */
-> -	WARN_ON(q->min_buffers_needed > VB2_MAX_FRAME);
-> +	WARN_ON(q->min_buffers_needed > q->max_allowed_buffers);
->  	num_buffers = max_t(unsigned int, *count, q->min_buffers_needed);
-> -	num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
-> +	num_buffers = min_t(unsigned int, num_buffers, q->max_allowed_buffers);
->  	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
->  	/*
->  	 * Set this now to ensure that drivers see the correct q->memory value
-> @@ -970,7 +970,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  	bool no_previous_buffers = !q->num_buffers;
->  	int ret;
->  
-> -	if (q->num_buffers == VB2_MAX_FRAME) {
-> +	if (q->num_buffers == q->max_allowed_buffers) {
->  		dprintk(q, 1, "maximum number of buffers already allocated\n");
->  		return -ENOBUFS;
->  	}
-> @@ -999,7 +999,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  			return -EINVAL;
->  	}
->  
-> -	num_buffers = min(*count, VB2_MAX_FRAME - q->num_buffers);
-> +	num_buffers = min(*count, q->max_allowed_buffers - q->num_buffers);
->  
->  	if (requested_planes && requested_sizes) {
->  		num_planes = requested_planes;
-> @@ -2541,6 +2541,14 @@ int vb2_core_queue_init(struct vb2_queue *q)
->  
->  	q->memory = VB2_MEMORY_UNKNOWN;
->  
-> +	if (!q->max_allowed_buffers)
-> +		q->max_allowed_buffers = VB2_MAX_FRAME;
-> +
-> +	/* The maximum is limited by offset cookie encoding pattern */
-> +	q->max_allowed_buffers = min_t(unsigned int, q->max_allowed_buffers, MAX_BUFFERS);
+> > Also, we need a way for selinux to enable/disable some of these things
+> > but not others.
+> 
+> Ok, I can do it in a patch on top.
+> Do you have a pointer where it is done for Virtio Block devices?
+> 
+> Maxime
 
-With the new MAX_BUFFERS define this probably will need to be adjusted.
+It's not done yet - at the moment vduse device is always block so we
+didn't need the distinction.
 
-> +
-> +	q->bufs = kcalloc(q->max_allowed_buffers, sizeof(*q->bufs), GFP_KERNEL);
-> +
->  	if (q->buf_struct_size == 0)
->  		q->buf_struct_size = sizeof(struct vb2_buffer);
->  
-> @@ -2565,6 +2573,7 @@ void vb2_core_queue_release(struct vb2_queue *q)
->  	__vb2_queue_cancel(q);
->  	mutex_lock(&q->mmap_lock);
->  	__vb2_queue_free(q, q->num_buffers);
-> +	kfree(q->bufs);
->  	mutex_unlock(&q->mmap_lock);
->  }
->  EXPORT_SYMBOL_GPL(vb2_core_queue_release);
-> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-> index 4b6a9d2ea372..ee9161b9fd64 100644
-> --- a/include/media/videobuf2-core.h
-> +++ b/include/media/videobuf2-core.h
-> @@ -558,6 +558,7 @@ struct vb2_buf_ops {
->   * @dma_dir:	DMA mapping direction.
->   * @bufs:	videobuf2 buffer structures
->   * @num_buffers: number of allocated/used buffers
-> + * @max_allowed_buffers: upper limit of number of allocated/used buffers
->   * @queued_list: list of buffers currently queued from userspace
->   * @queued_count: number of buffers queued and ready for streaming.
->   * @owned_by_drv_count: number of buffers owned by the driver
-> @@ -619,8 +620,9 @@ struct vb2_queue {
->  	struct mutex			mmap_lock;
->  	unsigned int			memory;
->  	enum dma_data_direction		dma_dir;
-> -	struct vb2_buffer		*bufs[VB2_MAX_FRAME];
-> +	struct vb2_buffer		**bufs;
->  	unsigned int			num_buffers;
-> +	unsigned int			max_allowed_buffers;
->  
->  	struct list_head		queued_list;
->  	unsigned int			queued_count;
+-- 
+MST
 
-Regards,
-
-	Hans
