@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7885D78D9F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD06878D8B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbjH3Set (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        id S234831AbjH3SbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245131AbjH3Ob2 (ORCPT
+        with ESMTP id S245141AbjH3OfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:31:28 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D05919A
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:31:25 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99c93638322so202966966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:31:25 -0700 (PDT)
+        Wed, 30 Aug 2023 10:35:12 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9698C19A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:35:08 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bcf2de59cso750867366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693405883; x=1694010683; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693406107; x=1694010907; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=k7MRgYxQ/rskHMSwacRwQkPlWa4q6KhrBYjtpS5/K2k=;
-        b=wpCgh2IXpcYDznF3K9ZFs4oSXTsbpDj8USbQzL7RXBGwd955+rVWxztkVYIipByKx5
-         ASV9ddV9sqz1Ay4lNVjiW/x+nIR+vBPhhWocHkFNW0TP4+hF54ZKOA01qskecl8/pAen
-         M6tmKgLvnToliVewgFabFk0Gs271Qqhani7DfHcKsOhdYzfWbHaq383Nv/2Ke15bb3+h
-         7siE5iDH0LrfYj/7yy+ebqDcSv/z2Mn0uO00M4cVFC9J5jJqgRI+8jHT9ooA1tvm4QSJ
-         supdSu9KHGYw7ve9Eu0FpRK98VfW1WJaU8uD8YsBwAUsOSDSv3En/7swKi4RvaOuICot
-         9W5Q==
+        bh=HWEvSMgNacJqUkTieejzfG9YUtgYVDcl76TESgQKKR4=;
+        b=fXoT+9vAMmL8/ramgzQkUNoMjGWwLV54SUJyCrrxE5FYpJa9edxgRiNkFI3rXg4ai5
+         1meMnsFWXsUFENt6l5vtZlNvZsnBcPPUU5p3GKlETQ/sIocRBM+xN+Wxfs/abZmsHlhm
+         Y5BmHTTBOno5UgJ1wDwuOLQOBKRH9r7bBuMFnVEbDeFh6Tg7mU+SO5DGXFxHhdo7fVdU
+         isy1a5aYsO7Jg8B2dR7JfOhYuGj8AYg6B4Oh3EurO3AaBi9TqfzulWoRyR05sc4Xc579
+         2zNBvzca/UbsqtamuRkeYhH0jFNw5lHx06mdF34XUwZKgtEvs+tuTWJTRqiQ/BLsohrP
+         W8rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693405883; x=1694010683;
+        d=1e100.net; s=20221208; t=1693406107; x=1694010907;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k7MRgYxQ/rskHMSwacRwQkPlWa4q6KhrBYjtpS5/K2k=;
-        b=XHgeQC3LurWYDxn5Ah6cT7vS89yl3Z6atO8hq3npiTSoCOcLEIsRNQP9+/UDGG9zb2
-         FF9dWUeyvhSbzBSe43nJ8/k2rUDfeoNCAYTLbbp+7LbXccLZUB1nbr8UVkCbw/z9XV2a
-         tP6FMEO4MM2o3CnSy44Z4uTW3jRbw8kZuy/uiVXxYo0VG8RwpEY63KfJZJftLveJddL1
-         5WUnf2jQuV6SpKzdRXIxzGuv+iDdrBlygwMnZcq3KBAxG0IOEoGwWkz8E1YqcGIpmQLC
-         MQUFNc3RaJKkEa3mALtpRUJ+n/J175/I+qpiI7DHhLykIEl8kJr+aNRiOFsvluzIf6Ho
-         ur/Q==
-X-Gm-Message-State: AOJu0YxRgqTRQ3uB8bBKDz1vgKnPd8/aUqHImPqMaUdkxEB2UkPxbFue
-        ycP4g5X2ODl7MSaCeuWC04jdvg==
-X-Google-Smtp-Source: AGHT+IEYuob+ogJ2cn3jEWJnDOBU0Ct0kNqfWrlOusL37c4JbyVAYrGnYOxwg04hk2/YDSj8e21Uhw==
-X-Received: by 2002:a17:906:51c6:b0:9a1:f1b2:9f2e with SMTP id v6-20020a17090651c600b009a1f1b29f2emr2690005ejk.2.1693405883593;
-        Wed, 30 Aug 2023 07:31:23 -0700 (PDT)
+        bh=HWEvSMgNacJqUkTieejzfG9YUtgYVDcl76TESgQKKR4=;
+        b=UPVUk3GqwR+jrPZd4MgNlPbA3X9zPh4JhV3i9gocLu+PhZNPinSvKMS93GYY+4AmcN
+         /F4DoqQ/CyaqvPOw+qboAABfJbsv9S1kHgPx2edOeIKc+3X4G9cqu6YsX07MEPOGqN5J
+         /9KsRLRgoNdDlQIiimk8SoeyRutbGS/VzoKSx54F+WCxVg4JmUTCkeDRzmyqvq5bht+c
+         +bkPOloJN9oHY3noGwjOPz8pyhTW6Nq3oOUfF2/7vWASTi9kSYA8WLdPojmREp8xNEHI
+         msrfojaWSIRtBPkBb49QzPe+U72X+VyH8e7SMxGandRyj+P/ZRQ52mvhb4n2AjOBLgCG
+         bmDQ==
+X-Gm-Message-State: AOJu0Yyscs8ZeR66d/SYZV+BkyplXzGaRuAxFww+Lrr9IQrOLpHZRQV+
+        vjYId0qcoTeI8tIbJHA9kpV+bw==
+X-Google-Smtp-Source: AGHT+IG61XeRKRMr0t+dXqrDi4RK7A9HWvGFxAWqK1wi7P7kP2CltaFkStkaGLtj0eMm3le5F8DlFA==
+X-Received: by 2002:a17:906:5301:b0:9a5:a247:5bbc with SMTP id h1-20020a170906530100b009a5a2475bbcmr1564429ejo.28.1693406107032;
+        Wed, 30 Aug 2023 07:35:07 -0700 (PDT)
 Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id pk18-20020a170906d7b200b00997e00e78e6sm7249902ejb.112.2023.08.30.07.31.22
+        by smtp.gmail.com with ESMTPSA id q22-20020a170906361600b0099bd6026f45sm7292611ejb.198.2023.08.30.07.35.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 07:31:22 -0700 (PDT)
-Message-ID: <587b738c-118a-5e1e-bb6b-ea3ca2b93234@linaro.org>
-Date:   Wed, 30 Aug 2023 16:31:21 +0200
+        Wed, 30 Aug 2023 07:35:06 -0700 (PDT)
+Message-ID: <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
+Date:   Wed, 30 Aug 2023 16:35:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 06/11] firmware: qcom-shm-bridge: new driver
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
 Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Binbin Zhou <zhoubb.aaron@gmail.com>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
- <20230828192507.117334-7-bartosz.golaszewski@linaro.org>
- <8b7bada9-3898-1b60-3dea-766a760412f7@linaro.org>
- <CACMJSetObp0k312DmqhTCkw7jsf05OHX1yxbyYj+sVfbtwRcVQ@mail.gmail.com>
- <86bb50fd-72f3-7c76-c4fe-f8e4765e33d5@linaro.org>
- <CACMJSes9Lwgh+xSDQo4KQhOHdcLigYgi=scFTeCtiqKFt1QNnw@mail.gmail.com>
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
+ <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+ <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
+ <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CACMJSes9Lwgh+xSDQo4KQhOHdcLigYgi=scFTeCtiqKFt1QNnw@mail.gmail.com>
+In-Reply-To: <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 15:09, Bartosz Golaszewski wrote:
-
->>>>> +
->>>>> +     return gen_pool_virt_to_phys(pool->genpool, (unsigned long)vaddr);
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(qcom_shm_bridge_to_phys_addr);
->>>>> +
->>>>> +static int qcom_shm_bridge_probe(struct platform_device *pdev)
->>>>> +{
->>>>> +     struct qcom_shm_bridge_pool *default_pool;
->>>>> +     struct device *dev = &pdev->dev;
->>>>> +     int ret;
->>>>> +
->>>>> +     /*
->>>>> +      * We need to wait for the SCM device to be created and bound to the
->>>>> +      * SCM driver.
->>>>> +      */
->>>>> +     if (!qcom_scm_is_available())
->>>>> +             return -EPROBE_DEFER;
->>>>
->>>> I think we miss here (and in all other drivers) device links to qcm.
->>>>
->>>
->>> Well, SCM, once probed, cannot be unbound. What would device links
->>> guarantee above that?
->>
->> Runtime PM, probe ordering (dependencies) detection.
->>
+On 30/08/2023 05:59, Jiaxun Yang wrote:
 > 
-> Shouldn't we cross that bridge when we get there? SCM has no support
-> for runtime PM. Probe ordering is quite well handled with a simple
-> probe deferral. This is also not a parent-child relationship. SHM
-> Bridge calls into the trustzone using SCM, but SCM is also a user of
-> SHM Bridge.
+> 
+> 在 2023/8/25 20:56, Krzysztof Kozlowski 写道:
+> [...]
+>> How did you sneak this property? The version - v2 - which was reviewed
+>> by Rob:
+>> https://lore.kernel.org/all/20190905144316.12527-7-jiaxun.yang@flygoat.com/
+>> did not have it.
+>>
+>> Now v3 suddenly appears with Rob's review and this property:
+>> https://lore.kernel.org/all/20200112081416.722218-4-jiaxun.yang@flygoat.com/
+>>
+>> Please help me understand this property appeared there and how did you
+>> get it reviewed?
+> Hi all,
+> 
+> It has been some years since this series was merged.
+> My vague memory tells me there was some off-list discussion made in IRC with
+> linux-arch folks and IRQ folks to come up with this binding design.
 
-OK
+We would not suggest you property which in the name has underscores and
+duplicates interrupt-map property.
+
+> 
+> In this case I guess I forgot to drop Rob's R-b tag when updating this patch
+> between reversions. I  apologize for any inconvenience this may have caused.
+
+
+> 
+>>
+>>>                                                  <0xffffffff>, /* int1 */
+>>>                                                  <0x00000000>, /* int2 */
+>>>                                                  <0x00000000>; /* int3 */
+>> So now you will keep bringing more hacks for a hacky property. No, this
+>> cannot go on.
+> 
+> What's the best way, in your opinion, to overhaul this property? As we don't
+> really care backward compatibility of DTBs on those systems we can just 
+> redesign it.
+
+Deprecate the property in the bindings, allow driver to work with or
+without it and finally drop it entirely from DTS.
+> 
+> A little bit background about this property, LIOINTC can route a 
+> interrupt to any of
+> 4 upstream core interrupt pins. Downstream interrupt devicies should not 
+> care about
+> which pin the interrupt go but we want to leave a knob in devicetree for 
+> performance
+> tuning. So we designed such property that use masks corresponding to 
+> each upsteam
+> interrupt pins to tell where should a interrupt go.
+
 
 Best regards,
 Krzysztof
