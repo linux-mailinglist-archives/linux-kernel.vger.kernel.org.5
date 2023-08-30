@@ -2,181 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 633CD78E228
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E422978E36D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245390AbjH3WM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        id S1343854AbjH3Xnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245367AbjH3WMz (ORCPT
+        with ESMTP id S244582AbjH3Xnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:12:55 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54B4E4F
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:12:28 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bcb50e194dso5054241fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693433472; x=1694038272; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:content-language
-         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RQcM6QzSDrdw05zBYqyUQ1YoaP9zqQVZwczUVAgTjDI=;
-        b=mUvEr/d8ejHfAlS5FKLWClyFkRSMowYdsR7o2jgl3Wl1vFOQmBBh6tUyLZG4Z1s/dF
-         BY71ehH4OIVUhmLrf6uvNHX7/oMCL9o4F7TmS4G5JH8k5u5RGKM6zrifz88APE5UhTxt
-         aZt4dHfM+Oob41x9xCAxV4l9ZsPI1dlk32AFWszHbdzdyOnxd18i01NyUNBA9dm+uQk2
-         SOfxRlNQ3619fH44Tg9xXJ9dfzqQ2dWF2uqqun4xMPoR3xiuqygseNsAX2ZaWm7iEP5K
-         WNga2mJw8JkCstmaFOhgAUooe0yOmyiCFmHfCKMyOwSqz9ahqYhJmygBvmFmd9fYapmY
-         +8Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693433472; x=1694038272;
-        h=content-transfer-encoding:in-reply-to:subject:from:content-language
-         :references:cc:to:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RQcM6QzSDrdw05zBYqyUQ1YoaP9zqQVZwczUVAgTjDI=;
-        b=N2TVl9kBF0iTxaypEVQ4qA6f6xk3QSZdraEhIWqGi5XPW2xdIZ3BjTlMU7dBNHdZ7H
-         1MqkpTG1VkpLB7TO2nS4BiQWLKIpCumvfc51F4lnRiuDfoSPSxgcAnqGvXpSTEENuR8a
-         AkNOl84VZh8MRPvppncvM5g0iZlpGc1SbsikYhAy2P3UNMbJgnmgaBYr6kHTxN5v3Ttt
-         16dth2zFENCTHrCReYaiu2ZF9zLh7DMbiXpIrjk565pLzbw7CS1ERRPYGGZtO/vIUcE0
-         dOVhoucW52PnGtAYO6xlto4KgKcwpas1b9t2LnBtVF7Gv37MSyapQiSLJDt4GJRyg+tk
-         +YMQ==
-X-Gm-Message-State: AOJu0YyMA9vyvOnSsxDhtp1ykQ/LFjSYgwdawPZesO4kZQcAjkY4Ikrs
-        7gA+CgYu/upoZci5OdCQmuaRwewrmk4=
-X-Google-Smtp-Source: AGHT+IEKTx5QIs7BavwcZ95zC6a1N2eVgZo+TpMoQFooW8DueLhLak8FN677a7iQrMuiBcy49cc70g==
-X-Received: by 2002:a19:2d45:0:b0:500:96fc:129d with SMTP id t5-20020a192d45000000b0050096fc129dmr2048436lft.14.1693424874737;
-        Wed, 30 Aug 2023 12:47:54 -0700 (PDT)
-Received: from ?IPV6:2a01:c23:b8a0:2d00:e558:bad6:b660:31e3? (dynamic-2a01-0c23-b8a0-2d00-e558-bad6-b660-31e3.c23.pool.telefonica.de. [2a01:c23:b8a0:2d00:e558:bad6:b660:31e3])
-        by smtp.googlemail.com with ESMTPSA id e1-20020a1709062c0100b0099df2ddfc37sm7454502ejh.165.2023.08.30.12.47.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 12:47:54 -0700 (PDT)
-Message-ID: <af18507c-8d22-f33d-a5b2-c59f6cf5058b@gmail.com>
-Date:   Wed, 30 Aug 2023 21:47:52 +0200
+        Wed, 30 Aug 2023 19:43:32 -0400
+X-Greylist: delayed 7053 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Aug 2023 16:43:26 PDT
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACE5CF;
+        Wed, 30 Aug 2023 16:43:26 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4RbZdC575gz1sCHT;
+        Wed, 30 Aug 2023 21:49:48 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+        by mail.m-online.net (Postfix) with ESMTP id 4RbZd83ty8z1qqlb;
+        Wed, 30 Aug 2023 21:49:48 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id PaI3XmDZtnS9; Wed, 30 Aug 2023 21:49:47 +0200 (CEST)
+X-Auth-Info: Pbpxk8dOWlbPEEBN/noqaoWZixAIgLuZJUPRLWT+r811XAsiT63LvvaA3kzBJABK
+Received: from igel.home (aftr-62-216-205-244.dynamic.mnet-online.de [62.216.205.244])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Wed, 30 Aug 2023 21:49:47 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 3018C2C0D30; Wed, 30 Aug 2023 21:49:47 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+In-Reply-To: <20230819004356.1454718-2-Liam.Howlett@oracle.com> (Liam
+        R. Howlett's message of "Fri, 18 Aug 2023 20:43:55 -0400")
+References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
+        <20230819004356.1454718-2-Liam.Howlett@oracle.com>
+X-Yow:  Hmmm..  a CRIPPLED ACCOUNTANT with a FALAFEL sandwich is HIT
+ by a TROLLEY-CAR..
+Date:   Wed, 30 Aug 2023 21:49:47 +0200
+Message-ID: <87bkeotin8.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-To:     imre.deak@intel.com, Tejun Heo <tj@kernel.org>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-References: <f7e21caa-e98d-e5b5-932a-fe12d27fde9b@gmail.com>
- <ZO-BkaGuVCgdr3wc@slm.duckdns.org> <ZO+Q0Oaw/1GkDx6T@ideak-desk.fi.intel.com>
-Content-Language: en-US
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [Intel-gfx] WQ_UNBOUND warning since recent workqueue refactoring
-In-Reply-To: <ZO+Q0Oaw/1GkDx6T@ideak-desk.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=3.2 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.2023 20:56, Imre Deak wrote:
-> On Wed, Aug 30, 2023 at 07:51:13AM -1000, Tejun Heo wrote:
-> Hi,
-> 
->> Hello,
->>
->> (cc'ing i915 folks)
->>
->> On Wed, Aug 30, 2023 at 04:57:42PM +0200, Heiner Kallweit wrote:
->>> Recently I started to see the following warning on linux-next and presumably
->>> this may be related to the refactoring of the workqueue core code.
->>>
->>> [   56.900223] workqueue: output_poll_execute [drm_kms_helper] hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
->>> [   56.923226] workqueue: i915_hpd_poll_init_work [i915] hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
->>> [   97.860430] workqueue: output_poll_execute [drm_kms_helper] hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
->>> [   97.884453] workqueue: i915_hpd_poll_init_work [i915] hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
->>>
->>> Adding WQ_UNBOUND to these queues didn't change the behavior.
->>
->> That should have made them go away as the code path isn't active at all for
->> WQ_UNBOUND workqueues. Can you please double check?
->>
+This breaks booting on ppc32:
 
-I tried the patch given below and double-checked. No change in behavior.
+Kernel attemptd to writ user page (1ff0) - exploit attempt? (uid: 0)
+BUG: Unable to handle kernel data access on write at 0x00001ff0
+Faulting instruction address: 0xc0009554
+Vector: 300 (Data Access) at [c0b09d10]
+    pc: c0009554: do_softirq_own_stack+0x18/0x30
+    lr: c004f480: __irq_exit_rcu+0x70/0xc0
+    sp: c0b09dd0
+   msr: 1032
+   dar: 1ff0
+ dsisr: 42000000
+  current = 0xc0a08360
+    pid   = 0, comm = swapper
+Linux version 6.5.0 ...
+enter ? for help
+[c0b09de0] c00ff480 __irq_exit_rcu+0x70/0xc0
+[c0b09df0] c0005a98 Decrementer_virt+0x108/0x10c
+--- Exception: 900 (Decrementer) at c06cfa0c __schedule+0x4fc/0x510
+[c0b09ec0] c06cf75c __schedule+0x1cc/0x510 (unreliable)
+[c0b09ef0] c06cfc90 __cond_resched+0x2c/0x54
+[c0b09f00] c06d07f8 mutex_lock_killable+0x18/0x5c
+[c0b09f10] c013c404 pcpu_alloc+0x110/0x4dc
+[c0b09f70] c000cc34 alloc_descr.isra.18+0x48/0x144
+[c0b09f90] c0988aa0 early_irq_init+0x64/0x8c
+[c0b09fa0] c097a5a4 start_kernel+0x5b4/0x7b0
+[c0b09ff0] 00003dc0
+mon>
 
->>> Maybe relevant: I run the affected system headless.
->>
->> i915 folks, workqueue recently added debug warnings which trigger when a
->> per-cpu work item hogs the CPU for too long - 10ms in this case. This is
->> problematic because such work item can stall other per-cpu work items.
->>
->> * Is it expected for the above two work functions to occupy the CPU for over
->>   10ms repeatedly?
-> 
-> No, this shouldn't happen.
-> 
-> I assume it happens in
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> 
-> after cfd48ad8c4a9 ("drm/i915: Fix HPD polling, reenabling the output poll work as needed")
-> 
-> which could result in the above problem.
-> 
-> Could you give a try to
-> https://lore.kernel.org/all/20230809104307.1218058-1-imre.deak@intel.com/
-> 
-Didn't help
-
-> and if that doesn't help provide more information/logs, by opening a
-> ticket at:
-> https://gitlab.freedesktop.org/drm/intel/-/issues/new
-> 
-> Thanks,
-> Imre
-> 
->> * If so, can we make them use an unbound workqueue instead?
->>
->> Thanks.
->>
->> -- 
->> tejun
-
-
-
-diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
-index 3f479483d..ac28b8d0f 100644
---- a/drivers/gpu/drm/drm_probe_helper.c
-+++ b/drivers/gpu/drm/drm_probe_helper.c
-@@ -279,7 +279,7 @@ static void reschedule_output_poll_work(struct drm_device *dev)
- 		 */
- 		delay = HZ;
- 
--	schedule_delayed_work(&dev->mode_config.output_poll_work, delay);
-+	queue_delayed_work(system_unbound_wq, &dev->mode_config.output_poll_work, delay);
- }
- 
- /**
-@@ -614,7 +614,7 @@ int drm_helper_probe_single_connector_modes(struct drm_connector *connector,
- 		 */
- 		dev->mode_config.delayed_event = true;
- 		if (dev->mode_config.poll_enabled)
--			mod_delayed_work(system_wq,
-+			mod_delayed_work(system_unbound_wq,
- 					 &dev->mode_config.output_poll_work,
- 					 0);
- 	}
-diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
-index ec4d26b3c..c0592b77b 100644
---- a/drivers/gpu/drm/i915/i915_driver.c
-+++ b/drivers/gpu/drm/i915/i915_driver.c
-@@ -138,7 +138,7 @@ static int i915_workqueues_init(struct drm_i915_private *dev_priv)
- 	 * to be scheduled on the system_wq before moving to a driver
- 	 * instance due deprecation of flush_scheduled_work().
- 	 */
--	dev_priv->unordered_wq = alloc_workqueue("i915-unordered", 0, 0);
-+	dev_priv->unordered_wq = alloc_workqueue("i915-unordered", WQ_UNBOUND, 0);
- 	if (dev_priv->unordered_wq == NULL)
- 		goto out_free_dp_wq;
- 
 -- 
-2.42.0
-
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
