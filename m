@@ -2,88 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B10AD78DE3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1973478D8C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237335AbjH3TAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
+        id S235639AbjH3SbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243386AbjH3Kw1 (ORCPT
+        with ESMTP id S243395AbjH3Kxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:52:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53331BE;
-        Wed, 30 Aug 2023 03:52:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45B0062692;
-        Wed, 30 Aug 2023 10:52:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2384DC433C7;
-        Wed, 30 Aug 2023 10:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693392743;
-        bh=HkmR4WgVFZiZO7iDk5txTDhY7eZdDEzHI12HCpTFiQ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M0d8l5h7KWzt9bGt0L3p2LA0kZwmhmUUpXZSByTmPw04dRaSd3QlsWjijShdZBXj/
-         oEgTvBfHz5EgRKEaj8PSLuy0jAz5rNl0d0VYv8sEt/YCxpwL3792qtiEB7d62+/3fu
-         hJsutYNiMM6UiykILQmssKzU4FzZdu6ZNpc64fH4=
-Date:   Wed, 30 Aug 2023 12:52:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH 5.10 00/84] 5.10.193-rc1 review
-Message-ID: <2023083014-barley-upscale-518e@gregkh>
-References: <20230828101149.146126827@linuxfoundation.org>
- <5b30ff73-46cb-1d1e-3823-f175dbfbd91b@roeck-us.net>
+        Wed, 30 Aug 2023 06:53:53 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB8A198
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:53:51 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UAlxh0004676;
+        Wed, 30 Aug 2023 10:53:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=WZbNLZ6BUq5IR8IIqhAv0z7Wo4CfMYZ+rFojnZ7/+os=;
+ b=hdAvZ3SqAic6r2Bub/SbndoCT+0TIrJo+crHG7Dc6qQPHA9VOta9M0lvzcuyFNF8eaVe
+ x4VMkuRpETUsexKFSNqSBWxCC0jfCnQdYe/OS8/XAcYSxbqDphBd/IDtWHwHbf+1etiU
+ JTFkPMuCLUep6p4lIylACFeuQ+jJLS0E5aSub2VhfAeoxE/X3gL4/a9cwRVijv0N1Rxi
+ 3P+/vZ3Mc+b8d2eudpbu0J4wsjY7BNghQo+9DstdFuMoxOD9e30p+5rX2Nt+3Iicw33N
+ b5NJGNbKrFoS04zNAnCB8D4eMcJbgxvw10AkEhbcMqniMemaMC8HmoSCsleOt7e7pIoe Qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st4aw0317-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 10:53:30 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37UAmBJv005329;
+        Wed, 30 Aug 2023 10:53:30 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3st4aw030s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 10:53:30 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37UA6Ebp019258;
+        Wed, 30 Aug 2023 10:53:29 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sqxe1tnk2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 10:53:29 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37UArR8e61407494
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Aug 2023 10:53:27 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B75912004B;
+        Wed, 30 Aug 2023 10:53:27 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B7CDE20043;
+        Wed, 30 Aug 2023 10:53:23 +0000 (GMT)
+Received: from saptarishi.in.ibm.com (unknown [9.43.8.96])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Aug 2023 10:53:23 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul E McKenney <paulmck@kernel.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] powerpc/smp: Cache CPU has Asymmetric SMP
+Date:   Wed, 30 Aug 2023 16:22:41 +0530
+Message-ID: <20230830105244.62477-2-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230830105244.62477-1-srikar@linux.vnet.ibm.com>
+References: <20230830105244.62477-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b30ff73-46cb-1d1e-3823-f175dbfbd91b@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: v-Ta_8zjOXq3bB_YeeXSJfwiY_AKl7H1
+X-Proofpoint-ORIG-GUID: DSKCAnDHWcUMyqqvUffQ3ptz5Sb-bMzW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
+ spamscore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300098
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 09:42:11AM -0700, Guenter Roeck wrote:
-> On 8/28/23 03:13, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.193 release.
-> > There are 84 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> FWIW, commit 619672bf2d04 ("MIPS: Alchemy: fix dbdma2") should be reverted
-> v5.10.y since it doesn't fix anything but breaks the build for affected boards
-> completely.
-> 
-> arch/mips/alchemy/common/dbdma.c: In function 'au1xxx_dbdma_put_source':
-> arch/mips/alchemy/common/dbdma.c:632:14: error: 'dma_default_coherent' undeclared
-> 
-> There is no 'dma_default_coherent' in v5.10.y.
+Currently cpu feature flag is checked whenever powerpc_smt_flags gets
+called. This is an unnecessary overhead. CPU_FTR_ASYM_SMT is set based
+on the processor and all processors will either have this set or will
+have it unset.
 
-But that was added in 5.10.185, from back in June.  What changed to
-suddenly cause this to fail now?
+Hence only check for the feature flag once and cache it to be used
+subsequently. This commit will help avoid a branch in powerpc_smt_flags
 
-As this isn't a new regression, I'll hold off on fixing this here and
-just do so in a future release.
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+---
+ arch/powerpc/kernel/smp.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-thanks,
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index fbbb695bae3d..c7d1484ed230 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -987,18 +987,13 @@ static int __init init_thread_group_cache_map(int cpu, int cache_property)
+ }
+ 
+ static bool shared_caches;
++static int asym_pack_flag;
+ 
+ #ifdef CONFIG_SCHED_SMT
+ /* cpumask of CPUs with asymmetric SMT dependency */
+ static int powerpc_smt_flags(void)
+ {
+-	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
+-
+-	if (cpu_has_feature(CPU_FTR_ASYM_SMT)) {
+-		printk_once(KERN_INFO "Enabling Asymmetric SMT scheduling\n");
+-		flags |= SD_ASYM_PACKING;
+-	}
+-	return flags;
++	return SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES | asym_pack_flag;
+ }
+ #endif
+ 
+@@ -1676,6 +1671,11 @@ static void __init fixup_topology(void)
+ {
+ 	int i;
+ 
++	if (cpu_has_feature(CPU_FTR_ASYM_SMT)) {
++		printk_once(KERN_INFO "Enabling Asymmetric SMT scheduling\n");
++		asym_pack_flag = SD_ASYM_PACKING;
++	}
++
+ #ifdef CONFIG_SCHED_SMT
+ 	if (has_big_cores) {
+ 		pr_info("Big cores detected but using small core scheduling\n");
+-- 
+2.41.0
 
-greg k-h
