@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 808E878DDA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BFF78DDF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244739AbjH3SvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
+        id S1343973AbjH3S4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242581AbjH3JFz (ORCPT
+        with ESMTP id S242582AbjH3JF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:05:55 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C21CC9;
-        Wed, 30 Aug 2023 02:05:52 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6bca66e6c44so4243685a34.0;
-        Wed, 30 Aug 2023 02:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693386352; x=1693991152; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LJ+Y7CXqKbGK1IYq1UEYCIh7uYK50Z8X6EK6Ai4bZgE=;
-        b=YPPZ0nWOr7WTQL7eQJZL7/rEAVFKMwdXbTspMy3hh1ckfdwueKFlLGip11Ojzn/mWe
-         AuN5wxW2Ndk6cqFOgjmKGU57Psrz5VAGeR5XerWrMumgBtlEiUbPYkQ5w0Y9cNn81Gbu
-         NKStLEIkEnoYoH+DDUgupiWOcDizTgeBmmAGmw7wL6+rYwMHUm9VONYi4kTycUGMZxeS
-         SvEGrfzFl25AV4DZ6NACZ+WTi9NkBOKJQ1eOcdUZ1KZfno2e1OgOSzpk9BuQEIl7E/ik
-         IUQ/Bu3asa+NZQeBhGcsOp7YwPBnRuomVm9gX1tEZIhrDoYw8opKb6q56Sg+kbRWJelB
-         P+LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693386352; x=1693991152;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LJ+Y7CXqKbGK1IYq1UEYCIh7uYK50Z8X6EK6Ai4bZgE=;
-        b=J7sdlQ4r5ZRKWtYjVYIoOrNSUtNioDwQkDEba9f6/n+RWNLBtwh/+Xo2OLgNmXUHfu
-         ub6Y6/6pODQQ08GUNGLxUC9Zz5liz5F43rBCZB/UtKFIsuTMePk3Gy+HMZ65X1ozZzqe
-         txddU0svgSVT8vHbZuHTt8uA3xwR5wY96VhvcGf0unR0y+gDXavnFrYdvEh9h7fNdnzo
-         SbybkrjUGn+mVwZiIPgk32Wb/MBi9G438oBh0Kb6NbZamcCCG3YYFGzL6UupsQQRNVig
-         xLfzmhItdblmwsKLDIGoZtUTUw4p33hIF6FNT6OvQLO86A2h0s8hkSxCVTviSC9oWpin
-         mdLA==
-X-Gm-Message-State: AOJu0YwxQCc9b25ZpNqGs1nF53NsiEzUGpEvgcYuUmf+s0O5Od7+zrFJ
-        jN1mCgjd4InWDeKRbDk//q0=
-X-Google-Smtp-Source: AGHT+IHBi4wWX18II858/6D5KjNsEuV47hc5ZmyFbvALqMzO+3lIqlPuTfCfgYY/EmoJoJ1gBDaM8g==
-X-Received: by 2002:a05:6358:9318:b0:135:57d0:d171 with SMTP id x24-20020a056358931800b0013557d0d171mr1313065rwa.15.1693386351915;
-        Wed, 30 Aug 2023 02:05:51 -0700 (PDT)
-Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id x4-20020a656aa4000000b00553dcfc2179sm9263226pgu.52.2023.08.30.02.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 02:05:51 -0700 (PDT)
-From:   peteryin <peteryin.openbmc@gmail.com>
-To:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
-        daniel-hsu@quantatw.com, peteryin <peteryin.openbmc@gmail.com>
-Subject: [PATCH v4 2/2] dt-bindings: arm: aspeed: add Meta Minerva board
-Date:   Wed, 30 Aug 2023 17:02:11 +0800
-Message-Id: <20230830090212.3880559-3-peteryin.openbmc@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
-References: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
+        Wed, 30 Aug 2023 05:05:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7409ECCF;
+        Wed, 30 Aug 2023 02:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693386353; x=1724922353;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=B3xJHByR9FLreUMgknnXx21neDGe39Jnr+0yJmg88DY=;
+  b=Wnsq8t0eWFDSQ/6Esj30a0w7XuAj44dMDJsG+7cJNs4VOwNJ4DAKLqNF
+   pbNeSuwc1ml5oBxHdzXjRj/crzu2vG1db6yVHgqrWT9Jzhaw24DuMPZHz
+   UBjE7V6Kb0v25aLTusAm3r0u6QYdZQkIR7x6o+ZQWLY+597JLi67bPKVs
+   Kbm/vUCZ1uQZDjjXQFUvKDZrOhsEMWKfgNbx0hap1Cohe2Hek+g1P7YzP
+   qJFtzECyDLAnmBhlh/0AcvTxhZ0RmK723kuQLf7pu8xvMzokpt/ADJ2DB
+   fh+urvEb8KKa1ii2uAniPDvTjsRj+u6owkoeLi75Yw9EgbwoYRYscQeIK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="375545132"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="375545132"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 02:05:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="739032896"
+X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
+   d="scan'208";a="739032896"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.47.102])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 02:05:49 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH] perf dlfilter: Avoid leak in v0 API test use of resolve_address()
+Date:   Wed, 30 Aug 2023 12:05:39 +0300
+Message-Id: <20230830090539.68206-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,25 +61,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the new compatibles used on Meta Minerva.
+The introduction of reference counting causes the v0 API
+perf_dlfilter_fns.resolve_address() to leak. v2 API introduced
+perf_dlfilter_fns.al_cleanup() to prevent that. For the v0 API, avoid the
+leak by exiting the addr_location immediately, since the documentation
+makes it clear that pointers obtained via perf_dlfilter_fns are not
+necessarily valid (dereferenceable) after 'filter_event' and
+'filter_event_early' return.
 
-Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202308232146.94d82cb4-oliver.sang@intel.com
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/util/dlfilter.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-index 6b0a6683ccae..b681bbf960d1 100644
---- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-+++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-@@ -80,6 +80,7 @@ properties:
-               - facebook,fuji-bmc
-               - facebook,greatlakes-bmc
-               - facebook,yosemite4-bmc
-+              - facebook,minerva-bmc
-               - ibm,everest-bmc
-               - ibm,rainier-bmc
-               - ibm,tacoma-bmc
+diff --git a/tools/perf/util/dlfilter.c b/tools/perf/util/dlfilter.c
+index e0f822ebb9b9..1dbf27822ee2 100644
+--- a/tools/perf/util/dlfilter.c
++++ b/tools/perf/util/dlfilter.c
+@@ -187,6 +187,8 @@ static __s32 dlfilter__resolve_address(void *ctx, __u64 address, struct perf_dlf
+ 
+ 	if (has_priv(d_al_p))
+ 		d_al_p->priv = memdup(&al, sizeof(al));
++	else /* Avoid leak for v0 API */
++		addr_location__exit(&al);
+ 
+ 	return 0;
+ }
 -- 
-2.25.1
+2.34.1
 
