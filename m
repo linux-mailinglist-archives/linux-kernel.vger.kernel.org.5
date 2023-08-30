@@ -2,105 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5E578D938
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13A178DBE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbjH3Sch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S238894AbjH3SjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242212AbjH3H2B (ORCPT
+        with ESMTP id S242226AbjH3Haq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:28:01 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 948751BB;
-        Wed, 30 Aug 2023 00:27:58 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 37U7Rjoa025275;
-        Wed, 30 Aug 2023 09:27:45 +0200
-Date:   Wed, 30 Aug 2023 09:27:45 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Shuah Khan <shuah@kernel.org>, Zhangjin Wu <falcon@tinylab.org>,
-        Yuan Tan <tanyuan@tinylab.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] tools/nolibc: add stdarg.h header
-Message-ID: <ZO7vcTwa4GjWkPDe@1wt.eu>
-References: <20230827-nolibc-nostdinc-v1-0-995d1811f1f3@weissschuh.net>
- <20230827-nolibc-nostdinc-v1-1-995d1811f1f3@weissschuh.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230827-nolibc-nostdinc-v1-1-995d1811f1f3@weissschuh.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 03:30:46 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3A9CC9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:30:41 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-591138c0978so74478417b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693380640; x=1693985440; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+VcEgrVJw9/Cn1VwNm/CzRA0xRzxNz/P7Du2BYg5res=;
+        b=WSOZtGRlcVXviTqT41lJUNAIQIVzdsLhT2HHtM+7Ff85C3UWIaThqt2tkZrjnSMyMp
+         ORbhkeNJaV0XYzJiDk6W/8MrOLDn7t7dZQyUd5TqnM/rBb5OsiSHSgFJbDODvlqznux9
+         HAo7VuloSEwZItdCANDP07jcAFDzUfAw4mORE5vsiWszdvHauanlhoYq2mQmXcEZM2kq
+         uVc8EAodSnnGetQvgBvTDM+EE23LGFB5x3atsH+8yxAFrwGfInmr8Q5Aw8SmdE4UarE3
+         ox3MBylZ1Xf4btY/keBe+pL8bhmuZ+i5Y6fbaX6/dG/Dhtw6mvEnLB7doWxl+P/p+wUc
+         6g/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693380640; x=1693985440;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+VcEgrVJw9/Cn1VwNm/CzRA0xRzxNz/P7Du2BYg5res=;
+        b=Yu1QJ/DolroZJVFF79CAf80exaQKtYHJBUUWzGYW36hlLuGYyaFMTLk4gvUHabp0ZY
+         NL762FtInh7TsvtvTS3rbhK4JBniNRPH0sVpJbukb51nl/a8ovLhfwCluH+7DmtbN8up
+         0Ni96g4XI6NwWTckW3YLoUDrrAUxk400YoFDyZFkbnKHCaXyM1A7oBf7hd7dFhzZWtsr
+         B2mTZuIyPMZWOP9vSS52lVTdYIwcOGHcerqPgko1XIlZ3J2tAjVs063uS474hpMMyE5J
+         Yjy/I0nabZxBZmZ3l9txEovtEnW5jMCiC1+APluSaHeqB2Hq/RGspwmcqmgdKAH/SHnQ
+         5ldA==
+X-Gm-Message-State: AOJu0YzghE61wk7AXT8osrY2s28k6+hQrrwrhz/JDzS5ooM3NOBQqzvC
+        SyWNt7XynQMT8cx+8dtAyzwdpFRJJfSm
+X-Google-Smtp-Source: AGHT+IGhjWpqdd6O0tWiW4u/Z4O9VmB0rjp/VgcmWd5FXOz24gEhwSmvRHVNBFKW+bu0uIcIsOcCfbsAlaRl
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:d623:3cd7:ecbc:8798])
+ (user=irogers job=sendgmr) by 2002:a25:dc05:0:b0:d47:8db3:8bc9 with SMTP id
+ y5-20020a25dc05000000b00d478db38bc9mr40344ybe.0.1693380640610; Wed, 30 Aug
+ 2023 00:30:40 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 00:30:26 -0700
+Message-Id: <20230830073026.1829912-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Subject: [PATCH v1] perf metric: Add #num_cpus_online literal
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 10:00:15AM +0200, Thomas Weiﬂschuh wrote:
-> This allows nolic to work with `-nostdinc` avoiding any reliance on
-> system headers.
-> 
-> The implementation has been lifted from musl libc 1.2.4.
-> There is already an implementation of stdarg.h in include/linux/stdarg.h
-> but that is GPL licensed and therefore not suitable for nolibc.
-> 
-> The used compiler builtins have been validated to be at least available
-> since GCC 4.1.2 and clang 3.0.0.
-> 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> ---
->  tools/include/nolibc/Makefile |  1 +
->  tools/include/nolibc/stdarg.h | 16 ++++++++++++++++
->  2 files changed, 17 insertions(+)
-> 
-> diff --git a/tools/include/nolibc/Makefile b/tools/include/nolibc/Makefile
-> index 909b6eb500fe..e69c26abe1ea 100644
-> --- a/tools/include/nolibc/Makefile
-> +++ b/tools/include/nolibc/Makefile
-> @@ -34,6 +34,7 @@ all_files := \
->  		signal.h \
->  		stackprotector.h \
->  		std.h \
-> +		stdarg.h \
->  		stdint.h \
->  		stdlib.h \
->  		string.h \
-> diff --git a/tools/include/nolibc/stdarg.h b/tools/include/nolibc/stdarg.h
-> new file mode 100644
-> index 000000000000..c628b5783da6
-> --- /dev/null
-> +++ b/tools/include/nolibc/stdarg.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-> +/*
-> + * Variadic argument support for NOLIBC
-> + * Copyright (C) 2005-2020 Rich Felker, et al.
-> + */
-> +
-> +#ifndef _NOLIBC_STDARG_H
-> +#define _NOLIBC_STDARG_H
-> +
-> +typedef __builtin_va_list va_list;
-> +#define va_start(v, l)   __builtin_va_start(v, l)
-> +#define va_end(v)        __builtin_va_end(v)
-> +#define va_arg(v, l)     __builtin_va_arg(v, l)
-> +#define va_copy(d, s)    __builtin_va_copy(d, s)
-> +
-> +#endif /* _NOLIBC_STDARG_H */
+Returns the number of CPUs online, unlike #num_cpus that returns the
+number present. Add a test of the property. This will be used in
+future Intel metrics.
 
-Now with your other explanation I agree, however we need to change:
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/expr.c | 5 ++++-
+ tools/perf/util/expr.c  | 7 +++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-  #include <stdarg.h>
+diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
+index c1c3fcbc2753..81229fa4f1e9 100644
+--- a/tools/perf/tests/expr.c
++++ b/tools/perf/tests/expr.c
+@@ -70,7 +70,7 @@ static int test__expr(struct test_suite *t __maybe_unused, int subtest __maybe_u
+ {
+ 	struct expr_id_data *val_ptr;
+ 	const char *p;
+-	double val, num_cpus, num_cores, num_dies, num_packages;
++	double val, num_cpus_online, num_cpus, num_cores, num_dies, num_packages;
+ 	int ret;
+ 	struct expr_parse_ctx *ctx;
+ 	bool is_intel = false;
+@@ -227,7 +227,10 @@ static int test__expr(struct test_suite *t __maybe_unused, int subtest __maybe_u
+ 
+ 	/* Test toplogy constants appear well ordered. */
+ 	expr__ctx_clear(ctx);
++	TEST_ASSERT_VAL("#num_cpus_online",
++			expr__parse(&num_cpus_online, ctx, "#num_cpus_online") == 0);
+ 	TEST_ASSERT_VAL("#num_cpus", expr__parse(&num_cpus, ctx, "#num_cpus") == 0);
++	TEST_ASSERT_VAL("#num_cpus >= #num_cpus_online", num_cpus >= num_cpus_online);
+ 	TEST_ASSERT_VAL("#num_cores", expr__parse(&num_cores, ctx, "#num_cores") == 0);
+ 	TEST_ASSERT_VAL("#num_cpus >= #num_cores", num_cpus >= num_cores);
+ 	TEST_ASSERT_VAL("#num_dies", expr__parse(&num_dies, ctx, "#num_dies") == 0);
+diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+index 0985a3cbc6f9..4488f306de78 100644
+--- a/tools/perf/util/expr.c
++++ b/tools/perf/util/expr.c
+@@ -427,6 +427,13 @@ double expr__get_literal(const char *literal, const struct expr_scanner_ctx *ctx
+ 		result = cpu__max_present_cpu().cpu;
+ 		goto out;
+ 	}
++	if (!strcmp("#num_cpus_online", literal)) {
++		struct perf_cpu_map *online = cpu_map__online();
++
++		if (online)
++			result = perf_cpu_map__nr(online);
++		goto out;
++	}
+ 
+ 	if (!strcasecmp("#system_tsc_freq", literal)) {
+ 		result = arch_get_tsc_freq();
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
-to
-
-  #include "stdarg.h"
-
-in stdio.h and sys.h so that we always use ours from now on.
-
-Willy
