@@ -2,50 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F5478E04E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D0978E045
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245518AbjH3TQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        id S243972AbjH3TNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242818AbjH3JrD (ORCPT
+        with ESMTP id S242824AbjH3Jue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:47:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602161A4;
-        Wed, 30 Aug 2023 02:47:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F3265615A0;
-        Wed, 30 Aug 2023 09:47:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A3CFC433C8;
-        Wed, 30 Aug 2023 09:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693388820;
-        bh=kTGYHnWJ3gzPlhXKqsUN9bUzT388h/9DiQuE8wCZUho=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FWT31d/f0mCee+oe2RpoHRWuy7BaEhYxxWMFJaiZAN6CR0tJNLANokteDrW4eThQT
-         UsOJ9R3xmuZnfB53mDG1PFU06C6Uzfw799Fvw4pPcHf0ydZ2LVE4PfRIVvQDj3IxEz
-         v96Ot9FTGUw18MLSYOyr1QZi7pYgKSwO3iupMAf2vW5QPYJq/aZ5s0i8rG1/4vE5Lf
-         ZmmwbstV/QOF5y0CgCw08qsJNiWaelMqn4uDThCdEnSNZ6oIEkTJstTcI1ch67J8ZZ
-         0nHWIdtBAOEyXw43Yr9XLEJTl76oU3bUR7rY/bV4QDJ2IFu8xMXH7VDFFxqMhCewJt
-         ppQ5UqdKp34aw==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, arnd@arndb.de, linux@roeck-us.net
-Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH] csky: Fixup compile error
-Date:   Wed, 30 Aug 2023 05:46:53 -0400
-Message-Id: <20230830094653.2833443-1-guoren@kernel.org>
-X-Mailer: git-send-email 2.36.1
+        Wed, 30 Aug 2023 05:50:34 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 778B41B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:50:31 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D1C1FEC;
+        Wed, 30 Aug 2023 02:51:10 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E2F23F64C;
+        Wed, 30 Aug 2023 02:50:28 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/5] mm: Implement folio_remove_rmap_range()
+Date:   Wed, 30 Aug 2023 10:50:07 +0100
+Message-Id: <20230830095011.1228673-2-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230830095011.1228673-1-ryan.roberts@arm.com>
+References: <20230830095011.1228673-1-ryan.roberts@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,39 +56,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Like page_remove_rmap() but batch-removes the rmap for a range of pages
+belonging to a folio. This can provide a small speedup due to less
+manipuation of the various counters. But more crucially, if removing the
+rmap for all pages of a folio in a batch, there is no need to
+(spuriously) add it to the deferred split list, which saves significant
+cost when there is contention for the split queue lock.
 
-Add header file for asmlinkage macro.
+All contained pages are accounted using the order-0 folio (or base page)
+scheme.
 
-Error log:
-In file included from arch/csky/include/asm/ptrace.h:7,
-                 from arch/csky/include/asm/elf.h:6,
-                 from include/linux/elf.h:6,
-                 from kernel/extable.c:6:
-arch/csky/include/asm/traps.h:43:11: error: expected ';' before 'void'
-   43 | asmlinkage void do_trap_unknown(struct pt_regs *regs);
-      |           ^~~~~
+page_remove_rmap() is refactored so that it forwards to
+folio_remove_rmap_range() for !compound cases, and both functions now
+share a common epilogue function. The intention here is to avoid
+duplication of code.
 
-Fixes: c8171a86b274 ("csky: Fixup -Wmissing-prototypes warning")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/csky/include/asm/traps.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/rmap.h |   2 +
+ mm/rmap.c            | 125 ++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 97 insertions(+), 30 deletions(-)
 
-diff --git a/arch/csky/include/asm/traps.h b/arch/csky/include/asm/traps.h
-index 1e7d303b91e9..732c4aaa2e26 100644
---- a/arch/csky/include/asm/traps.h
-+++ b/arch/csky/include/asm/traps.h
-@@ -3,6 +3,8 @@
- #ifndef __ASM_CSKY_TRAPS_H
- #define __ASM_CSKY_TRAPS_H
+diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+index 51cc21ebb568..f2e5af3c0e7f 100644
+--- a/include/linux/rmap.h
++++ b/include/linux/rmap.h
+@@ -202,6 +202,8 @@ void folio_add_file_rmap_range(struct folio *, struct page *, unsigned int nr,
+ 		struct vm_area_struct *, bool compound);
+ void page_remove_rmap(struct page *, struct vm_area_struct *,
+ 		bool compound);
++void folio_remove_rmap_range(struct folio *folio, struct page *page,
++		int nr, struct vm_area_struct *vma);
  
-+#include <linux/linkage.h>
+ void hugepage_add_anon_rmap(struct page *, struct vm_area_struct *,
+ 		unsigned long address, rmap_t flags);
+diff --git a/mm/rmap.c b/mm/rmap.c
+index ec7f8e6c9e48..5ea51c70ecd6 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1379,6 +1379,94 @@ void page_add_file_rmap(struct page *page, struct vm_area_struct *vma,
+ 	folio_add_file_rmap_range(folio, page, nr_pages, vma, compound);
+ }
+ 
++/**
++ * __remove_rmap_finish - common operations when taking down a mapping.
++ * @folio:	Folio containing all pages taken down.
++ * @vma:	The VM area containing the range.
++ * @compound:	True if pages were taken down from PMD or false if from PTE(s).
++ * @nr_unmapped: Number of pages within folio that are now unmapped.
++ * @nr_mapped:	Number of pages within folio that are still mapped.
++ */
++static void __remove_rmap_finish(struct folio *folio,
++				struct vm_area_struct *vma, bool compound,
++				int nr_unmapped, int nr_mapped)
++{
++	enum node_stat_item idx;
 +
- #define VEC_RESET	0
- #define VEC_ALIGN	1
- #define VEC_ACCESS	2
++	if (nr_unmapped) {
++		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
++		__lruvec_stat_mod_folio(folio, idx, -nr_unmapped);
++
++		/*
++		 * Queue large anon folio for deferred split if at least one
++		 * page of the folio is unmapped and at least one page is still
++		 * mapped.
++		 */
++		if (folio_test_large(folio) &&
++		    folio_test_anon(folio) && nr_mapped)
++			deferred_split_folio(folio);
++	}
++
++	/*
++	 * It would be tidy to reset folio_test_anon mapping when fully
++	 * unmapped, but that might overwrite a racing page_add_anon_rmap
++	 * which increments mapcount after us but sets mapping before us:
++	 * so leave the reset to free_pages_prepare, and remember that
++	 * it's only reliable while mapped.
++	 */
++
++	munlock_vma_folio(folio, vma, compound);
++}
++
++/**
++ * folio_remove_rmap_range - Take down PTE mappings from a range of pages.
++ * @folio:	Folio containing all pages in range.
++ * @page:	First page in range to unmap.
++ * @nr:		Number of pages to unmap.
++ * @vma:	The VM area containing the range.
++ *
++ * All pages in the range must belong to the same VMA & folio. They must be
++ * mapped with PTEs, not a PMD.
++ *
++ * Context: Caller holds the pte lock.
++ */
++void folio_remove_rmap_range(struct folio *folio, struct page *page,
++					int nr, struct vm_area_struct *vma)
++{
++	atomic_t *mapped = &folio->_nr_pages_mapped;
++	int nr_unmapped = 0;
++	int nr_mapped = 0;
++	bool last;
++
++	if (unlikely(folio_test_hugetlb(folio))) {
++		VM_WARN_ON_FOLIO(1, folio);
++		return;
++	}
++
++	VM_WARN_ON_ONCE(page < &folio->page ||
++			page + nr > (&folio->page + folio_nr_pages(folio)));
++
++	if (!folio_test_large(folio)) {
++		/* Is this the page's last map to be removed? */
++		last = atomic_add_negative(-1, &page->_mapcount);
++		nr_unmapped = last;
++	} else {
++		for (; nr != 0; nr--, page++) {
++			/* Is this the page's last map to be removed? */
++			last = atomic_add_negative(-1, &page->_mapcount);
++			if (last)
++				nr_unmapped++;
++		}
++
++		/* Pages still mapped if folio mapped entirely */
++		nr_mapped = atomic_sub_return_relaxed(nr_unmapped, mapped);
++		if (nr_mapped >= COMPOUND_MAPPED)
++			nr_unmapped = 0;
++	}
++
++	__remove_rmap_finish(folio, vma, false, nr_unmapped, nr_mapped);
++}
++
+ /**
+  * page_remove_rmap - take down pte mapping from a page
+  * @page:	page to remove mapping from
+@@ -1405,15 +1493,13 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+ 		return;
+ 	}
+ 
+-	/* Is page being unmapped by PTE? Is this its last map to be removed? */
++	/* Is page being unmapped by PTE? */
+ 	if (likely(!compound)) {
+-		last = atomic_add_negative(-1, &page->_mapcount);
+-		nr = last;
+-		if (last && folio_test_large(folio)) {
+-			nr = atomic_dec_return_relaxed(mapped);
+-			nr = (nr < COMPOUND_MAPPED);
+-		}
+-	} else if (folio_test_pmd_mappable(folio)) {
++		folio_remove_rmap_range(folio, page, 1, vma);
++		return;
++	}
++
++	if (folio_test_pmd_mappable(folio)) {
+ 		/* That test is redundant: it's for safety or to optimize out */
+ 
+ 		last = atomic_add_negative(-1, &folio->_entire_mapcount);
+@@ -1441,29 +1527,8 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+ 			idx = NR_FILE_PMDMAPPED;
+ 		__lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
+ 	}
+-	if (nr) {
+-		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
+-		__lruvec_stat_mod_folio(folio, idx, -nr);
+-
+-		/*
+-		 * Queue anon THP for deferred split if at least one
+-		 * page of the folio is unmapped and at least one page
+-		 * is still mapped.
+-		 */
+-		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
+-			if (!compound || nr < nr_pmdmapped)
+-				deferred_split_folio(folio);
+-	}
+-
+-	/*
+-	 * It would be tidy to reset folio_test_anon mapping when fully
+-	 * unmapped, but that might overwrite a racing page_add_anon_rmap
+-	 * which increments mapcount after us but sets mapping before us:
+-	 * so leave the reset to free_pages_prepare, and remember that
+-	 * it's only reliable while mapped.
+-	 */
+ 
+-	munlock_vma_folio(folio, vma, compound);
++	__remove_rmap_finish(folio, vma, compound, nr, nr_pmdmapped - nr);
+ }
+ 
+ /*
 -- 
-2.36.1
+2.25.1
 
