@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2711578E03C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F142A78DFDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234701AbjH3TGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S238726AbjH3THx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243473AbjH3LJV (ORCPT
+        with ESMTP id S243477AbjH3LJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:09:21 -0400
+        Wed, 30 Aug 2023 07:09:35 -0400
 Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79D6CC9;
-        Wed, 30 Aug 2023 04:09:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E08CC9;
+        Wed, 30 Aug 2023 04:09:31 -0700 (PDT)
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37UB97vl031894;
-        Wed, 30 Aug 2023 06:09:07 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37UB9L3u031932;
+        Wed, 30 Aug 2023 06:09:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693393747;
-        bh=RnBikyZAnIc+ZL8nSNz4B0TJYq9Df1Vo4LH2vpJvH54=;
+        s=ti-com-17Q1; t=1693393761;
+        bh=Kqr5dLZzkBx6wyWnqci/ghP0iyaEO83iLV+pRYlW/RE=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=SLjqpc20e+f34ZG3uIPhLlzbAvUvj2Yc1DRMG2BSS9wpgop5BvBxbFfBNd8b87NcE
-         lijrkmwoYuvxx3uZPaskGkLmXLNVD66ooTtZ+qSry1E0CMVwRkLYnkpBRX5r1ogiqz
-         w7sgdI2BST10ophnA0RhQaKPdsGjtNoXTj2c34uU=
+        b=McQTqf2dbEFz6oGw5/Aw1oh2zx+i4ULgfDBEaacRJ6SVBeWYlCapIi3bM1JpGIiDy
+         hxWj+001cMwBanTv0G5cLwWyG3L6fW1YifO0JYIPXYEbiOmM9CMvSD0Srl2pl4NERc
+         MoWsy6M//nQzLHbjBzTTuDoQEz+Vr5pt44BdZPB4=
 Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37UB970r021757
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37UB9Lif021857
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Aug 2023 06:09:07 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE105.ent.ti.com
+        Wed, 30 Aug 2023 06:09:21 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
  (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 30
- Aug 2023 06:09:07 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 06:09:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 30 Aug 2023 06:09:07 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37UB978k100458;
-        Wed, 30 Aug 2023 06:09:07 -0500
+ Frontend Transport; Wed, 30 Aug 2023 06:09:20 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37UB9Li4054807;
+        Wed, 30 Aug 2023 06:09:21 -0500
 Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.35])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37UB96nV006010;
-        Wed, 30 Aug 2023 06:09:07 -0500
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37UB9KNF028948;
+        Wed, 30 Aug 2023 06:09:20 -0500
 From:   MD Danish Anwar <danishanwar@ti.com>
 To:     Simon Horman <horms@kernel.org>, Roger Quadros <rogerq@kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -56,15 +56,15 @@ To:     Simon Horman <horms@kernel.org>, Roger Quadros <rogerq@kernel.org>,
         "David S. Miller" <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
         <srk@ti.com>, <r-gunasekaran@ti.com>
-Subject: [RFC PATCH net-next 2/4] net: ti: icssg-switch: Add switchdev based driver for ethernet switch support
-Date:   Wed, 30 Aug 2023 16:38:45 +0530
-Message-ID: <20230830110847.1219515-3-danishanwar@ti.com>
+Subject: [RFC PATCH net-next 4/4] net: ti: icssg_prueth: add TAPRIO offload support
+Date:   Wed, 30 Aug 2023 16:38:47 +0530
+Message-ID: <20230830110847.1219515-5-danishanwar@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230830110847.1219515-1-danishanwar@ti.com>
 References: <20230830110847.1219515-1-danishanwar@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -76,616 +76,531 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ICSSG can operating in switch mode with 2 ext port and 1 host port with
-VLAN/FDB/MDB and STP offloading. Add switchdev based driver to
-support the same.
+From: Roger Quadros <rogerq@kernel.org>
 
-Driver itself will be integrated with icssg_prueth in future commits
+ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
+in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+configuration. EST allows express queue traffic to be scheduled
+(placed) on the wire at specific repeatable time intervals. In
+Linux kernel, EST configuration is done through tc command and
+the taprio scheduler in the net core implements a software only
+scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
+user indicate "flag 2" in the command which is then parsed by
+taprio scheduler in net core and indicate that the command is to
+be offloaded to h/w. taprio then offloads the command to the
+driver by calling ndo_setup_tc() ndo ops. This patch implements
+ndo_setup_tc() to offload EST configuration to ICSSG.
 
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 ---
- drivers/net/ethernet/ti/icssg/icssg_prueth.c  |   1 +
- drivers/net/ethernet/ti/icssg/icssg_prueth.h  |  36 ++
- .../net/ethernet/ti/icssg/icssg_switchdev.c   | 478 ++++++++++++++++++
- .../net/ethernet/ti/icssg/icssg_switchdev.h   |  13 +
- 4 files changed, 528 insertions(+)
- create mode 100644 drivers/net/ethernet/ti/icssg/icssg_switchdev.c
- create mode 100644 drivers/net/ethernet/ti/icssg/icssg_switchdev.h
+ drivers/net/ethernet/ti/Makefile             |   3 +-
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c |   5 +-
+ drivers/net/ethernet/ti/icssg/icssg_prueth.h |   7 +
+ drivers/net/ethernet/ti/icssg/icssg_qos.c    | 294 +++++++++++++++++++
+ drivers/net/ethernet/ti/icssg/icssg_qos.h    | 119 ++++++++
+ 5 files changed, 426 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.c
+ create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.h
 
+diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+index 3adceff760ce..de348c20eff9 100644
+--- a/drivers/net/ethernet/ti/Makefile
++++ b/drivers/net/ethernet/ti/Makefile
+@@ -38,5 +38,6 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
+ 		  icssg/icssg_mii_cfg.o \
+ 		  icssg/icssg_stats.o \
+ 		  icssg/icssg_ethtool.o \
+-		  icssg/icssg_switchdev.o
++		  icssg/icssg_switchdev.o \
++		  icssg/icssg_qos.o
+ obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
 diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index 410612f43cbd..c35fb51f08af 100644
+index 5b7e7297ce23..3236af45aa4e 100644
 --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
 +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -30,6 +30,7 @@
+@@ -1179,7 +1179,7 @@ static int emac_phy_connect(struct prueth_emac *emac)
+ 	return 0;
+ }
  
- #include "icssg_prueth.h"
- #include "icssg_mii_rt.h"
-+#include "icssg_switchdev.h"
- #include "../k3-cppi-desc-pool.h"
+-static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
++u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+ {
+ 	u32 hi_rollover_count, hi_rollover_count_r;
+ 	struct prueth_emac *emac = clockops_data;
+@@ -1416,6 +1416,8 @@ static int emac_ndo_open(struct net_device *ndev)
+ 		napi_enable(&emac->tx_chns[i].napi_tx);
+ 	napi_enable(&emac->napi_rx);
  
- #define PRUETH_MODULE_DESCRIPTION "PRUSS ICSSG Ethernet driver"
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-index 1011917924c8..6e18da06c786 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-@@ -118,6 +118,15 @@ struct prueth_rx_chn {
- 	char name[32];
++	icssg_qos_init(ndev);
++
+ 	/* start PHY */
+ 	phy_start(ndev->phydev);
+ 
+@@ -1695,6 +1697,7 @@ static const struct net_device_ops emac_netdev_ops = {
+ 	.ndo_set_rx_mode = emac_ndo_set_rx_mode,
+ 	.ndo_eth_ioctl = emac_ndo_ioctl,
+ 	.ndo_get_stats64 = emac_ndo_get_stats64,
++	.ndo_setup_tc = icssg_qos_ndo_setup_tc,
  };
  
-+enum prueth_devlink_param_id {
-+	PRUETH_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
-+	PRUETH_DL_PARAM_SWITCH_MODE,
-+};
-+
-+struct prueth_devlink {
-+	struct prueth *prueth;
-+};
-+
- /* There are 4 Tx DMA channels, but the highest priority is CH3 (thread 3)
-  * and lower three are lower priority channels or threads.
-  */
-@@ -173,6 +182,10 @@ struct prueth_emac {
+ /* get emac_port corresponding to eth_node name */
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+index 6e18da06c786..43b67213d8c7 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+@@ -37,6 +37,7 @@
+ #include "icssg_config.h"
+ #include "icss_iep.h"
+ #include "icssg_switch_map.h"
++#include "icssg_qos.h"
  
- 	struct pruss_mem_region dram;
+ #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
+ #define PRUETH_MIN_PKT_SIZE     (VLAN_ETH_ZLEN)
+@@ -186,6 +187,9 @@ struct prueth_emac {
+ 	struct devlink_port devlink_port;
+ 	int port_vlan;
  
-+	bool offload_fwd_mark;
-+	struct devlink_port devlink_port;
-+	int port_vlan;
++	struct prueth_qos qos;
++	struct work_struct ts_work;
 +
  	struct delayed_work stats_work;
  	u64 stats[ICSSG_NUM_STATS];
  };
-@@ -181,10 +194,12 @@ struct prueth_emac {
-  * struct prueth_pdata - PRUeth platform data
-  * @fdqring_mode: Free desc queue mode
-  * @quirk_10m_link_issue: 10M link detect errata
-+ * @switch_mode: switch firmware support
-  */
- struct prueth_pdata {
- 	enum k3_ring_mode fdqring_mode;
- 	u32	quirk_10m_link_issue:1;
-+	u32	switch_mode:1;
- };
- 
- /**
-@@ -210,6 +225,16 @@ struct prueth_pdata {
-  * @iep0: pointer to IEP0 device
-  * @iep1: pointer to IEP1 device
-  * @vlan_tbl: VLAN-FID table pointer
-+ * @hw_bridge_dev: pointer to HW bridge net device
-+ * @br_members: bitmask of bridge member ports
-+ * @prueth_netdevice_nb: netdevice notifier block
-+ * @prueth_switchdevice_nb: switchdev notifier block
-+ * @prueth_switchdev_bl_nb: switchdev blocking notifier block
-+ * @is_switch_mode: flag to indicate if device is in Switch mode
-+ * @is_switchmode_supported: indicates platform support for switch mode
-+ * @switch_id: ID for mapping switch ports to bridge
-+ * @default_vlan: Default VLAN for host
-+ * @devlink: pointer to devlink
-  */
- struct prueth {
- 	struct device *dev;
-@@ -235,6 +260,17 @@ struct prueth {
- 	struct icss_iep *iep0;
- 	struct icss_iep *iep1;
- 	struct prueth_vlan_tbl *vlan_tbl;
+@@ -331,4 +335,7 @@ void icssg_set_pvid(struct prueth *prueth, u8 vid, u8 port);
+ void emac_stats_work_handler(struct work_struct *work);
+ void emac_update_hardware_stats(struct prueth_emac *emac);
+ int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
 +
-+	struct net_device *hw_bridge_dev;
-+	u8 br_members;
-+	struct notifier_block prueth_netdevice_nb;
-+	struct notifier_block prueth_switchdev_nb;
-+	struct notifier_block prueth_switchdev_bl_nb;
-+	bool is_switch_mode;
-+	bool is_switchmode_supported;
-+	unsigned char switch_id[MAX_PHYS_ITEM_ID_LEN];
-+	int default_vlan;
-+	struct devlink *devlink;
- };
- 
- struct emac_tx_ts_response {
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_switchdev.c b/drivers/net/ethernet/ti/icssg/icssg_switchdev.c
++u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts);
++
+ #endif /* __NET_TI_ICSSG_PRUETH_H */
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.c b/drivers/net/ethernet/ti/icssg/icssg_qos.c
 new file mode 100644
-index 000000000000..48d8ed4fa7a8
+index 000000000000..e8102703e257
 --- /dev/null
-+++ b/drivers/net/ethernet/ti/icssg/icssg_switchdev.c
-@@ -0,0 +1,478 @@
++++ b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+@@ -0,0 +1,294 @@
 +// SPDX-License-Identifier: GPL-2.0
-+
-+/* Texas Instruments K3 ICSSG Ethernet Switchdev Driver
-+ *
-+ * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com/
-+ *
++/* Texas Instruments ICSSG PRUETH QoS submodule
++ * Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
 + */
 +
-+#include <linux/etherdevice.h>
-+#include <linux/if_bridge.h>
-+#include <linux/netdevice.h>
-+#include <linux/workqueue.h>
-+#include <net/switchdev.h>
-+
++#include <linux/printk.h>
 +#include "icssg_prueth.h"
-+#include "icssg_switchdev.h"
-+#include "icss_mii_rt.h"
++#include "icssg_switch_map.h"
 +
-+struct prueth_switchdev_event_work {
-+	struct work_struct work;
-+	struct switchdev_notifier_fdb_info fdb_info;
-+	struct prueth_emac *emac;
-+	unsigned long event;
-+};
++static void icssg_qos_tas_init(struct net_device *ndev);
 +
-+static int prueth_switchdev_stp_state_set(struct prueth_emac *emac,
-+					  u8 state)
++void icssg_qos_init(struct net_device *ndev)
 +{
-+	enum icssg_port_state_cmd emac_state;
-+	int ret = 0;
++	icssg_qos_tas_init(ndev);
++
++	/* IET init goes here */
++}
++
++static void tas_update_fw_list_pointers(struct prueth_emac *emac)
++{
++	struct tas_config *tas = &emac->qos.tas.config;
++
++	if ((readb(tas->active_list)) == TAS_LIST0) {
++		tas->fw_active_list = (struct tas_firmware_list __force *)emac->dram.va +
++				       TAS_GATE_MASK_LIST0;
++		tas->fw_shadow_list = (struct tas_firmware_list __force *)emac->dram.va +
++				       TAS_GATE_MASK_LIST1;
++	} else {
++		tas->fw_active_list = (struct tas_firmware_list __force *)emac->dram.va +
++				       TAS_GATE_MASK_LIST1;
++		tas->fw_shadow_list = (struct tas_firmware_list __force *)emac->dram.va +
++				       TAS_GATE_MASK_LIST0;
++	}
++}
++
++static void tas_update_maxsdu_table(struct prueth_emac *emac)
++{
++	struct tas_config *tas = &emac->qos.tas.config;
++	u16 __iomem *max_sdu_tbl_ptr;
++	u8 gate_idx;
++
++	/* update the maxsdu table */
++	max_sdu_tbl_ptr = emac->dram.va + TAS_QUEUE_MAX_SDU_LIST;
++
++	for (gate_idx = 0; gate_idx < TAS_MAX_NUM_QUEUES; gate_idx++)
++		writew(tas->max_sdu_table.max_sdu[gate_idx], &max_sdu_tbl_ptr[gate_idx]);
++}
++
++static void tas_reset(struct prueth_emac *emac)
++{
++	struct tas_config *tas = &emac->qos.tas.config;
++	int i;
++
++	for (i = 0; i < TAS_MAX_NUM_QUEUES; i++)
++		tas->max_sdu_table.max_sdu[i] = 2048;
++
++	tas_update_maxsdu_table(emac);
++
++	writeb(TAS_LIST0, tas->active_list);
++
++	memset_io((void __iomem __force *)tas->fw_active_list, 0, sizeof(*tas->fw_active_list));
++	memset_io((void __iomem __force *)tas->fw_shadow_list, 0, sizeof(*tas->fw_shadow_list));
++}
++
++static int tas_set_state(struct prueth_emac *emac, enum tas_state state)
++{
++	struct tas_config *tas = &emac->qos.tas.config;
++	int ret;
++
++	if (tas->state == state)
++		return 0;
 +
 +	switch (state) {
-+	case BR_STATE_FORWARDING:
-+		emac_state = ICSSG_EMAC_PORT_FORWARD;
++	case TAS_STATE_RESET:
++		tas_reset(emac);
++		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_RESET);
++		tas->state = TAS_STATE_RESET;
 +		break;
-+	case BR_STATE_DISABLED:
-+		emac_state = ICSSG_EMAC_PORT_DISABLE;
++	case TAS_STATE_ENABLE:
++		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_ENABLE);
++		tas->state = TAS_STATE_ENABLE;
 +		break;
-+	case BR_STATE_LEARNING:
-+	case BR_STATE_LISTENING:
-+	case BR_STATE_BLOCKING:
-+		emac_state = ICSSG_EMAC_PORT_BLOCK;
++	case TAS_STATE_DISABLE:
++		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_DISABLE);
++		tas->state = TAS_STATE_DISABLE;
 +		break;
 +	default:
++		netdev_err(emac->ndev, "%s: unsupported state\n", __func__);
++		ret = -EINVAL;
++		break;
++	}
++
++	if (ret)
++		netdev_err(emac->ndev, "TAS set state failed %d\n", ret);
++	return ret;
++}
++
++static int tas_set_trigger_list_change(struct prueth_emac *emac)
++{
++	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
++	struct tas_config *tas = &emac->qos.tas.config;
++	struct ptp_system_timestamp sts;
++	u32 change_cycle_count;
++	u32 cycle_time;
++	u64 base_time;
++	u64 cur_time;
++
++	cycle_time = admin_list->cycle_time - 4; /* -4ns to compensate for IEP wraparound time */
++	base_time = admin_list->base_time;
++	cur_time = prueth_iep_gettime(emac, &sts);
++
++	if (base_time > cur_time)
++		change_cycle_count = DIV_ROUND_UP_ULL(base_time - cur_time, cycle_time);
++	else
++		change_cycle_count = 1;
++
++	writel(cycle_time, emac->dram.va + TAS_ADMIN_CYCLE_TIME);
++	writel(change_cycle_count, emac->dram.va + TAS_CONFIG_CHANGE_CYCLE_COUNT);
++	writeb(admin_list->num_entries, emac->dram.va + TAS_ADMIN_LIST_LENGTH);
++
++	/* config_change cleared by f/w to ack reception of new shadow list */
++	writeb(1, &tas->config_list->config_change);
++	/* config_pending cleared by f/w when new shadow list is copied to active list */
++	writeb(1, &tas->config_list->config_pending);
++
++	return emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_TRIGGER);
++}
++
++static int tas_update_oper_list(struct prueth_emac *emac)
++{
++	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
++	struct tas_config *tas = &emac->qos.tas.config;
++	u32 tas_acc_gate_close_time = 0;
++	u8 idx, gate_idx, val;
++	int ret;
++
++	tas_update_fw_list_pointers(emac);
++
++	for (idx = 0; idx < admin_list->num_entries; idx++) {
++		tas->fw_shadow_list->gate_mask_list[idx] = admin_list->entries[idx].gate_mask;
++		tas_acc_gate_close_time += admin_list->entries[idx].interval;
++
++		/* extend last entry till end of cycle time */
++		if (idx == admin_list->num_entries - 1)
++			tas->fw_shadow_list->win_end_time_list[idx] = admin_list->cycle_time;
++		else
++			tas->fw_shadow_list->win_end_time_list[idx] = tas_acc_gate_close_time;
++	}
++
++	/* clear remaining entries */
++	for (idx = admin_list->num_entries; idx < TAS_MAX_CMD_LISTS; idx++) {
++		tas->fw_shadow_list->gate_mask_list[idx] = 0;
++		tas->fw_shadow_list->win_end_time_list[idx] = 0;
++	}
++
++	/* update the Array of gate close time for each queue in each window */
++	for (idx = 0 ; idx < admin_list->num_entries; idx++) {
++		/* On Linux, only PRUETH_MAX_TX_QUEUES are supported per port */
++		for (gate_idx = 0; gate_idx < PRUETH_MAX_TX_QUEUES; gate_idx++) {
++			u32 gate_close_time = 0;
++
++			if (tas->fw_shadow_list->gate_mask_list[idx] & BIT(gate_idx))
++				gate_close_time = tas->fw_shadow_list->win_end_time_list[idx];
++
++			tas->fw_shadow_list->gate_close_time_list[idx][gate_idx] = gate_close_time;
++		}
++	}
++
++	/* tell f/w to swap active & shadow list */
++	ret = tas_set_trigger_list_change(emac);
++	if (ret) {
++		netdev_err(emac->ndev, "failed to swap f/w config list: %d\n", ret);
++		return ret;
++	}
++
++	/* Wait for completion */
++	ret = readb_poll_timeout(&tas->config_list->config_change, val, !val,
++				 USEC_PER_MSEC, 10 * USEC_PER_MSEC);
++	if (ret) {
++		netdev_err(emac->ndev, "TAS list change completion time out\n");
++		return ret;
++	}
++
++	tas_update_fw_list_pointers(emac);
++
++	return 0;
++}
++
++static int emac_set_taprio(struct prueth_emac *emac)
++{
++	struct tc_taprio_qopt_offload *taprio = emac->qos.tas.taprio_admin;
++	int ret;
++
++	if (taprio->cmd == TAPRIO_CMD_DESTROY)
++		return tas_set_state(emac, TAS_STATE_DISABLE);
++
++	if (taprio->cmd != TAPRIO_CMD_REPLACE)
++		return -EOPNOTSUPP;
++
++	ret = tas_update_oper_list(emac);
++	if (ret)
++		return ret;
++
++	return tas_set_state(emac, TAS_STATE_ENABLE);
++}
++
++static void emac_cp_taprio(struct tc_taprio_qopt_offload *from,
++			   struct tc_taprio_qopt_offload *to)
++{
++	int i;
++
++	*to = *from;
++	for (i = 0; i < from->num_entries; i++)
++		to->entries[i] = from->entries[i];
++}
++
++static int emac_setup_taprio(struct net_device *ndev, struct tc_taprio_qopt_offload *taprio)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct tc_taprio_qopt_offload *est_new;
++	int ret, idx;
++
++	if (!netif_running(ndev)) {
++		netdev_err(ndev, "interface is down, link speed unknown\n");
++		return -ENETDOWN;
++	}
++
++	if (taprio->cycle_time_extension) {
++		netdev_err(ndev, "Failed to set cycle time extension");
 +		return -EOPNOTSUPP;
 +	}
 +
-+	emac_set_port_state(emac, emac_state);
-+	netdev_dbg(emac->ndev, "STP state: %u\n", emac_state);
-+
-+	return ret;
-+}
-+
-+static int prueth_switchdev_attr_br_flags_set(struct prueth_emac *emac,
-+					      struct net_device *orig_dev,
-+					      struct switchdev_brport_flags brport_flags)
-+{
-+	enum icssg_port_state_cmd emac_state;
-+
-+	if (brport_flags.mask & BR_MCAST_FLOOD)
-+		emac_state = ICSSG_EMAC_PORT_MC_FLOODING_ENABLE;
-+	else
-+		emac_state = ICSSG_EMAC_PORT_MC_FLOODING_DISABLE;
-+
-+	netdev_dbg(emac->ndev, "BR_MCAST_FLOOD: %d port %u\n",
-+		   emac_state, emac->port_id);
-+
-+	emac_set_port_state(emac, emac_state);
-+
-+	return 0;
-+}
-+
-+static int prueth_switchdev_attr_br_flags_pre_set(struct net_device *netdev,
-+						  struct switchdev_brport_flags brport_flags)
-+{
-+	if (brport_flags.mask & ~(BR_LEARNING | BR_MCAST_FLOOD))
++	if (taprio->num_entries == 0 ||
++	    taprio->num_entries > TAS_MAX_CMD_LISTS) {
++		netdev_err(ndev, "unsupported num_entries %ld in taprio config\n",
++			   taprio->num_entries);
 +		return -EINVAL;
++	}
 +
-+	return 0;
++	/* If any time_interval is 0 in between the list, then exit */
++	for (idx = 0; idx < taprio->num_entries; idx++) {
++		if (taprio->entries[idx].interval == 0) {
++			netdev_err(ndev, "0 interval in taprio config not supported\n");
++			return -EINVAL;
++		}
++	}
++
++	if (emac->qos.tas.taprio_admin)
++		devm_kfree(&ndev->dev, emac->qos.tas.taprio_admin);
++
++	est_new = devm_kzalloc(&ndev->dev,
++			       struct_size(est_new, entries, taprio->num_entries),
++			       GFP_KERNEL);
++	emac_cp_taprio(taprio, est_new);
++	emac->qos.tas.taprio_admin = est_new;
++	ret = emac_set_taprio(emac);
++	if (ret)
++		devm_kfree(&ndev->dev, est_new);
++
++	return ret;
 +}
 +
-+static int prueth_switchdev_attr_set(struct net_device *ndev, const void *ctx,
-+				     const struct switchdev_attr *attr,
-+				     struct netlink_ext_ack *extack)
++int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
++			   void *type_data)
++{
++	switch (type) {
++	case TC_SETUP_QDISC_TAPRIO:
++		return emac_setup_taprio(ndev, type_data);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static void icssg_qos_tas_init(struct net_device *ndev)
 +{
 +	struct prueth_emac *emac = netdev_priv(ndev);
-+	int ret;
++	bool need_setup = false;
++	struct tas_config *tas;
 +
-+	netdev_dbg(ndev, "attr: id %u port: %u\n", attr->id, emac->port_id);
++	tas = &emac->qos.tas.config;
 +
-+	switch (attr->id) {
-+	case SWITCHDEV_ATTR_ID_PORT_PRE_BRIDGE_FLAGS:
-+		ret = prueth_switchdev_attr_br_flags_pre_set(ndev,
-+							     attr->u.brport_flags);
-+		break;
-+	case SWITCHDEV_ATTR_ID_PORT_STP_STATE:
-+		ret = prueth_switchdev_stp_state_set(emac,
-+						     attr->u.stp_state);
-+		netdev_dbg(ndev, "stp state: %u\n", attr->u.stp_state);
-+		break;
-+	case SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS:
-+		ret = prueth_switchdev_attr_br_flags_set(emac, attr->orig_dev,
-+							 attr->u.brport_flags);
-+		break;
-+	default:
-+		ret = -EOPNOTSUPP;
-+		break;
-+	}
++	if (tas->state == TAS_STATE_ENABLE)
++		need_setup = true;
 +
-+	return ret;
++	tas->config_list = emac->dram.va + TAS_CONFIG_CHANGE_TIME;
++	tas->active_list = emac->dram.va + TAS_ACTIVE_LIST_INDEX;
++
++	tas_update_fw_list_pointers(emac);
++
++	tas_set_state(emac, TAS_STATE_RESET);
++
++	if (need_setup)
++		emac_set_taprio(emac);
 +}
-+
-+static void prueth_switchdev_fdb_offload_notify(struct net_device *ndev,
-+						struct switchdev_notifier_fdb_info *rcv)
-+{
-+	struct switchdev_notifier_fdb_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.addr = rcv->addr;
-+	info.vid = rcv->vid;
-+	info.offloaded = true;
-+	call_switchdev_notifiers(SWITCHDEV_FDB_OFFLOADED,
-+				 ndev, &info.info, NULL);
-+}
-+
-+static void prueth_switchdev_event_work(struct work_struct *work)
-+{
-+	struct prueth_switchdev_event_work *switchdev_work =
-+		container_of(work, struct prueth_switchdev_event_work, work);
-+	struct prueth_emac *emac = switchdev_work->emac;
-+	struct switchdev_notifier_fdb_info *fdb;
-+	int port_id = emac->port_id;
-+	int ret;
-+
-+	rtnl_lock();
-+	switch (switchdev_work->event) {
-+	case SWITCHDEV_FDB_ADD_TO_DEVICE:
-+		fdb = &switchdev_work->fdb_info;
-+
-+		netdev_dbg(emac->ndev, "prueth_fdb_add: MACID = %pM vid = %u flags = %u %u -- port %d\n",
-+			   fdb->addr, fdb->vid, fdb->added_by_user,
-+			   fdb->offloaded, port_id);
-+
-+		if (!fdb->added_by_user)
-+			break;
-+		if (memcmp(emac->mac_addr, (u8 *)fdb->addr, ETH_ALEN) == 0)
-+			break;
-+
-+		ret = icssg_fdb_add_del(emac, fdb->addr, fdb->vid,
-+					BIT(port_id), true);
-+		if (!ret)
-+			prueth_switchdev_fdb_offload_notify(emac->ndev, fdb);
-+		break;
-+	case SWITCHDEV_FDB_DEL_TO_DEVICE:
-+		fdb = &switchdev_work->fdb_info;
-+
-+		netdev_dbg(emac->ndev, "prueth_fdb_del: MACID = %pM vid = %u flags = %u %u -- port %d\n",
-+			   fdb->addr, fdb->vid, fdb->added_by_user,
-+			   fdb->offloaded, port_id);
-+
-+		if (!fdb->added_by_user)
-+			break;
-+		if (memcmp(emac->mac_addr, (u8 *)fdb->addr, ETH_ALEN) == 0)
-+			break;
-+		icssg_fdb_add_del(emac, fdb->addr, fdb->vid,
-+				  BIT(port_id), false);
-+		break;
-+	default:
-+		break;
-+	}
-+	rtnl_unlock();
-+
-+	kfree(switchdev_work->fdb_info.addr);
-+	kfree(switchdev_work);
-+	dev_put(emac->ndev);
-+}
-+
-+static int prueth_switchdev_event(struct notifier_block *unused,
-+				  unsigned long event, void *ptr)
-+{
-+	struct net_device *ndev = switchdev_notifier_info_to_dev(ptr);
-+	struct prueth_switchdev_event_work *switchdev_work;
-+	struct switchdev_notifier_fdb_info *fdb_info = ptr;
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	int err;
-+
-+	if (!prueth_dev_check(ndev))
-+		return NOTIFY_DONE;
-+
-+	if (event == SWITCHDEV_PORT_ATTR_SET) {
-+		err = switchdev_handle_port_attr_set(ndev, ptr,
-+						     prueth_dev_check,
-+						     prueth_switchdev_attr_set);
-+		return notifier_from_errno(err);
-+	}
-+
-+	switchdev_work = kzalloc(sizeof(*switchdev_work), GFP_ATOMIC);
-+	if (WARN_ON(!switchdev_work))
-+		return NOTIFY_BAD;
-+
-+	INIT_WORK(&switchdev_work->work, prueth_switchdev_event_work);
-+	switchdev_work->emac = emac;
-+	switchdev_work->event = event;
-+
-+	switch (event) {
-+	case SWITCHDEV_FDB_ADD_TO_DEVICE:
-+	case SWITCHDEV_FDB_DEL_TO_DEVICE:
-+		memcpy(&switchdev_work->fdb_info, ptr,
-+		       sizeof(switchdev_work->fdb_info));
-+		switchdev_work->fdb_info.addr = kzalloc(ETH_ALEN, GFP_ATOMIC);
-+		if (!switchdev_work->fdb_info.addr)
-+			goto err_addr_alloc;
-+		ether_addr_copy((u8 *)switchdev_work->fdb_info.addr,
-+				fdb_info->addr);
-+		dev_hold(ndev);
-+		break;
-+	default:
-+		kfree(switchdev_work);
-+		return NOTIFY_DONE;
-+	}
-+
-+	queue_work(system_long_wq, &switchdev_work->work);
-+
-+	return NOTIFY_DONE;
-+
-+err_addr_alloc:
-+	kfree(switchdev_work);
-+	return NOTIFY_BAD;
-+}
-+
-+static int prueth_switchdev_vlan_add(struct prueth_emac *emac, bool untag, bool pvid,
-+				     u8 vid, struct net_device *orig_dev)
-+{
-+	bool cpu_port = netif_is_bridge_master(orig_dev);
-+	int untag_mask = 0;
-+	int port_mask;
-+	int ret = 0;
-+
-+	if (cpu_port)
-+		port_mask = BIT(PRUETH_PORT_HOST);
-+	else
-+		port_mask = BIT(emac->port_id);
-+
-+	if (untag)
-+		untag_mask = port_mask;
-+
-+	icssg_vtbl_modify(emac, vid, port_mask, untag_mask, true);
-+
-+	netdev_dbg(emac->ndev, "VID add vid:%u port_mask:%X untag_mask %X PVID %d\n",
-+		   vid, port_mask, untag_mask, pvid);
-+
-+	if (!pvid)
-+		return ret;
-+
-+	icssg_set_pvid(emac->prueth, vid, emac->port_id);
-+
-+	return ret;
-+}
-+
-+static int prueth_switchdev_vlan_del(struct prueth_emac *emac, u16 vid,
-+				     struct net_device *orig_dev)
-+{
-+	bool cpu_port = netif_is_bridge_master(orig_dev);
-+	int port_mask;
-+	int ret = 0;
-+
-+	if (cpu_port)
-+		port_mask = BIT(PRUETH_PORT_HOST);
-+	else
-+		port_mask = BIT(emac->port_id);
-+
-+	icssg_vtbl_modify(emac, vid, port_mask, 0, false);
-+
-+	if (cpu_port)
-+		icssg_fdb_add_del(emac, emac->mac_addr, vid,
-+				  BIT(PRUETH_PORT_HOST), false);
-+
-+	if (vid == icssg_get_pvid(emac))
-+		icssg_set_pvid(emac->prueth, 0, emac->port_id);
-+
-+	netdev_dbg(emac->ndev, "VID del vid:%u port_mask:%X\n",
-+		   vid, port_mask);
-+
-+	return ret;
-+}
-+
-+static int prueth_switchdev_vlans_add(struct prueth_emac *emac,
-+				      const struct switchdev_obj_port_vlan *vlan)
-+{
-+	bool untag = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-+	struct net_device *orig_dev = vlan->obj.orig_dev;
-+	bool cpu_port = netif_is_bridge_master(orig_dev);
-+	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
-+
-+	netdev_dbg(emac->ndev, "VID add vid:%u flags:%X\n",
-+		   vlan->vid, vlan->flags);
-+
-+	if (cpu_port && !(vlan->flags & BRIDGE_VLAN_INFO_BRENTRY))
-+		return 0;
-+
-+	if (vlan->vid > 0xff)
-+		return 0;
-+
-+	return prueth_switchdev_vlan_add(emac, untag, pvid, vlan->vid,
-+					 orig_dev);
-+}
-+
-+static int prueth_switchdev_vlans_del(struct prueth_emac *emac,
-+				      const struct switchdev_obj_port_vlan *vlan)
-+{
-+	if (vlan->vid > 0xff)
-+		return 0;
-+
-+	return prueth_switchdev_vlan_del(emac, vlan->vid,
-+					 vlan->obj.orig_dev);
-+}
-+
-+static int prueth_switchdev_mdb_add(struct prueth_emac *emac,
-+				    struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct net_device *orig_dev = mdb->obj.orig_dev;
-+	u8 port_mask, fid_c2;
-+	bool cpu_port;
-+	int err;
-+
-+	cpu_port = netif_is_bridge_master(orig_dev);
-+
-+	if (cpu_port)
-+		port_mask = BIT(PRUETH_PORT_HOST);
-+	else
-+		port_mask = BIT(emac->port_id);
-+
-+	fid_c2 = icssg_fdb_lookup(emac, mdb->addr, mdb->vid);
-+
-+	err = icssg_fdb_add_del(emac, mdb->addr, mdb->vid, fid_c2 | port_mask, true);
-+	netdev_dbg(emac->ndev, "MDB add vid %u:%pM  ports: %X\n",
-+		   mdb->vid, mdb->addr, port_mask);
-+
-+	return err;
-+}
-+
-+static int prueth_switchdev_mdb_del(struct prueth_emac *emac,
-+				    struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct net_device *orig_dev = mdb->obj.orig_dev;
-+	int del_mask, ret, fid_c2;
-+	bool cpu_port;
-+
-+	cpu_port = netif_is_bridge_master(orig_dev);
-+
-+	if (cpu_port)
-+		del_mask = BIT(PRUETH_PORT_HOST);
-+	else
-+		del_mask = BIT(emac->port_id);
-+
-+	fid_c2 = icssg_fdb_lookup(emac, mdb->addr, mdb->vid);
-+
-+	if (fid_c2 & ~del_mask)
-+		ret = icssg_fdb_add_del(emac, mdb->addr, mdb->vid, fid_c2 & ~del_mask, true);
-+	else
-+		ret = icssg_fdb_add_del(emac, mdb->addr, mdb->vid, 0, false);
-+
-+	netdev_dbg(emac->ndev, "MDB del vid %u:%pM  ports: %X\n",
-+		   mdb->vid, mdb->addr, del_mask);
-+
-+	return ret;
-+}
-+
-+static int prueth_switchdev_obj_add(struct net_device *ndev, const void *ctx,
-+				    const struct switchdev_obj *obj,
-+				    struct netlink_ext_ack *extack)
-+{
-+	struct switchdev_obj_port_vlan *vlan = SWITCHDEV_OBJ_PORT_VLAN(obj);
-+	struct switchdev_obj_port_mdb *mdb = SWITCHDEV_OBJ_PORT_MDB(obj);
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	int err = 0;
-+
-+	netdev_dbg(ndev, "obj_add: id %u port: %u\n", obj->id, emac->port_id);
-+
-+	switch (obj->id) {
-+	case SWITCHDEV_OBJ_ID_PORT_VLAN:
-+		err = prueth_switchdev_vlans_add(emac, vlan);
-+		break;
-+	case SWITCHDEV_OBJ_ID_PORT_MDB:
-+	case SWITCHDEV_OBJ_ID_HOST_MDB:
-+		err = prueth_switchdev_mdb_add(emac, mdb);
-+		break;
-+	default:
-+		err = -EOPNOTSUPP;
-+		break;
-+	}
-+
-+	return err;
-+}
-+
-+static int prueth_switchdev_obj_del(struct net_device *ndev, const void *ctx,
-+				    const struct switchdev_obj *obj)
-+{
-+	struct switchdev_obj_port_vlan *vlan = SWITCHDEV_OBJ_PORT_VLAN(obj);
-+	struct switchdev_obj_port_mdb *mdb = SWITCHDEV_OBJ_PORT_MDB(obj);
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	int err = 0;
-+
-+	netdev_dbg(ndev, "obj_del: id %u port: %u\n", obj->id, emac->port_id);
-+
-+	switch (obj->id) {
-+	case SWITCHDEV_OBJ_ID_PORT_VLAN:
-+		err = prueth_switchdev_vlans_del(emac, vlan);
-+		break;
-+	case SWITCHDEV_OBJ_ID_PORT_MDB:
-+	case SWITCHDEV_OBJ_ID_HOST_MDB:
-+		err = prueth_switchdev_mdb_del(emac, mdb);
-+		break;
-+	default:
-+		err = -EOPNOTSUPP;
-+		break;
-+	}
-+
-+	return err;
-+}
-+
-+static int prueth_switchdev_blocking_event(struct notifier_block *unused,
-+					   unsigned long event, void *ptr)
-+{
-+	struct net_device *dev = switchdev_notifier_info_to_dev(ptr);
-+	int err;
-+
-+	switch (event) {
-+	case SWITCHDEV_PORT_OBJ_ADD:
-+		err = switchdev_handle_port_obj_add(dev, ptr,
-+						    prueth_dev_check,
-+						    prueth_switchdev_obj_add);
-+		return notifier_from_errno(err);
-+	case SWITCHDEV_PORT_OBJ_DEL:
-+		err = switchdev_handle_port_obj_del(dev, ptr,
-+						    prueth_dev_check,
-+						    prueth_switchdev_obj_del);
-+		return notifier_from_errno(err);
-+	case SWITCHDEV_PORT_ATTR_SET:
-+		err = switchdev_handle_port_attr_set(dev, ptr,
-+						     prueth_dev_check,
-+						     prueth_switchdev_attr_set);
-+		return notifier_from_errno(err);
-+	default:
-+		break;
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
-+int prueth_switchdev_register_notifiers(struct prueth *prueth)
-+{
-+	int ret = 0;
-+
-+	prueth->prueth_switchdev_nb.notifier_call = &prueth_switchdev_event;
-+	ret = register_switchdev_notifier(&prueth->prueth_switchdev_nb);
-+	if (ret) {
-+		dev_err(prueth->dev, "register switchdev notifier fail ret:%d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	prueth->prueth_switchdev_bl_nb.notifier_call = &prueth_switchdev_blocking_event;
-+	ret = register_switchdev_blocking_notifier(&prueth->prueth_switchdev_bl_nb);
-+	if (ret) {
-+		dev_err(prueth->dev, "register switchdev blocking notifier ret:%d\n",
-+			ret);
-+		unregister_switchdev_notifier(&prueth->prueth_switchdev_nb);
-+	}
-+
-+	return ret;
-+}
-+
-+void prueth_switchdev_unregister_notifiers(struct prueth *prueth)
-+{
-+	unregister_switchdev_blocking_notifier(&prueth->prueth_switchdev_bl_nb);
-+	unregister_switchdev_notifier(&prueth->prueth_switchdev_nb);
-+}
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_switchdev.h b/drivers/net/ethernet/ti/icssg/icssg_switchdev.h
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.h b/drivers/net/ethernet/ti/icssg/icssg_qos.h
 new file mode 100644
-index 000000000000..0e64e7760a00
+index 000000000000..645c367bf9d0
 --- /dev/null
-+++ b/drivers/net/ethernet/ti/icssg/icssg_switchdev.h
-@@ -0,0 +1,13 @@
++++ b/drivers/net/ethernet/ti/icssg/icssg_qos.h
+@@ -0,0 +1,119 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com/
++/* Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
 + */
-+#ifndef __NET_TI_ICSSG_SWITCHDEV_H
-+#define __NET_TI_ICSSG_SWITCHDEV_H
 +
-+#include "icssg_prueth.h"
++#ifndef __NET_TI_ICSSG_QOS_H
++#define __NET_TI_ICSSG_QOS_H
 +
-+int prueth_switchdev_register_notifiers(struct prueth *prueth);
-+void prueth_switchdev_unregister_notifiers(struct prueth *prueth);
-+bool prueth_dev_check(const struct net_device *ndev);
++#include <linux/atomic.h>
++#include <linux/netdevice.h>
++#include <net/pkt_sched.h>
 +
-+#endif /* __NET_TI_ICSSG_SWITCHDEV_H */
++/**
++ * Maximum number of gate command entries in each list.
++ */
++#define TAS_MAX_CMD_LISTS   (16)
++
++/**
++ * Maximum number of transmit queues supported by implementation
++ */
++#define TAS_MAX_NUM_QUEUES  (8)
++
++/**
++ * Minimum cycle time supported by implementation (in ns)
++ */
++#define TAS_MIN_CYCLE_TIME  (1000000)
++
++/**
++ * Minimum TAS window duration supported by implementation (in ns)
++ */
++#define TAS_MIN_WINDOW_DURATION  (10000)
++
++/**
++ * List number 0 or 1. Also the value at memory location TAS_ACTIVE_LIST_INDEX
++ */
++enum tas_list_num {
++	TAS_LIST0 = 0,
++	TAS_LIST1 = 1
++};
++
++/**
++ * state of TAS in f/w
++ */
++enum tas_state {
++	/* PRU's are idle */
++	TAS_STATE_DISABLE = 0,
++	/* Enable TAS */
++	TAS_STATE_ENABLE = 1,
++	/* Firmware will reset the state machine */
++	TAS_STATE_RESET = 2,
++};
++
++/**
++ * Config state machine variables. See IEEE Std 802.1Q-2018 8.6.8.4
++ */
++struct tas_config_list {
++	/* New list is copied at this time */
++	u64 config_change_time;
++	/* config change error counter, incremented if
++	 * admin->BaseTime < current time and TAS_enabled is true
++	 */
++	u32 config_change_error_counter;
++	/* True if list update is pending */
++	u8 config_pending;
++	/* Set to true when application trigger updating of admin list
++	 * to active list, cleared when configChangeTime is updated
++	 */
++	u8 config_change;
++};
++
++/**
++ * Max SDU table. See IEEE Std 802.1Q-2018 12.29.1.1
++ */
++struct tas_max_sdu_table {
++	u16 max_sdu[TAS_MAX_NUM_QUEUES];
++};
++
++/**
++ * TAS List Structure based on firmware memory map
++ */
++struct tas_firmware_list {
++	/* window gate mask list */
++	u8 gate_mask_list[TAS_MAX_CMD_LISTS];
++	/* window end time list */
++	u32 win_end_time_list[TAS_MAX_CMD_LISTS];
++	/* Array of gate close time for each queue in each window */
++	u32 gate_close_time_list[TAS_MAX_CMD_LISTS][TAS_MAX_NUM_QUEUES];
++};
++
++/**
++ * Main Time Aware Shaper Handle
++ */
++struct tas_config {
++	enum tas_state state;
++	struct tas_max_sdu_table max_sdu_table;
++	/* Config change variables */
++	struct tas_config_list __iomem *config_list;
++	/* Whether list 1 or list 2 is the operating list */
++	u8 __iomem *active_list;
++	/* active List pointer, used by firmware */
++	struct tas_firmware_list *fw_active_list;
++	/* shadow List pointer, used by driver */
++	struct tas_firmware_list *fw_shadow_list;
++};
++
++struct prueth_qos_tas {
++	struct tc_taprio_qopt_offload *taprio_admin;
++	struct tc_taprio_qopt_offload *taprio_oper;
++	struct tas_config config;
++};
++
++struct prueth_qos {
++	/* IET data structure goes here */
++	struct prueth_qos_tas tas;
++};
++
++void icssg_qos_init(struct net_device *ndev);
++int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
++			   void *type_data);
++#endif /* __NET_TI_ICSSG_QOS_H */
 -- 
 2.34.1
 
