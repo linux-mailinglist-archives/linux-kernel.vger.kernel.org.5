@@ -2,48 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4234378D924
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5DE78DB95
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjH3Sc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S239097AbjH3Sjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242110AbjH3HTZ (ORCPT
+        with ESMTP id S242172AbjH3HUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:19:25 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926441BB;
-        Wed, 30 Aug 2023 00:19:22 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 34C654E6;
-        Wed, 30 Aug 2023 09:17:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693379877;
-        bh=ebYMIXSud5++a5TF9waHihcGKaRw+z3M0sYuJ7iKXlE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IoFOVVsZvrsw3nPoP4ayfGt6FAoG8dZHmmBaxx1AUkRVnE+T5vPNOxTB2yrPoWgmY
-         rLaDciZw3GEYUZXsljjBFHJ8bXvCBsSUBFoY6C68qL6I8X29xbsFWWUTbqGqcNVte4
-         hPD7E2UFKSE3ccvymA+oojg4RufaQEhEVp6LJEug=
-Date:   Wed, 30 Aug 2023 10:19:29 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Umang Jain <umang.jain@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH 1/2] media: i2c: imx214: Use v4l2_subdev_get_fmt()
-Message-ID: <20230830071929.GI6477@pendragon.ideasonboard.com>
-References: <20230830045323.71768-1-umang.jain@ideasonboard.com>
- <20230830045323.71768-2-umang.jain@ideasonboard.com>
+        Wed, 30 Aug 2023 03:20:47 -0400
+Received: from out-245.mta1.migadu.com (out-245.mta1.migadu.com [IPv6:2001:41d0:203:375::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8561BB
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:20:42 -0700 (PDT)
+Message-ID: <79f4d305-bddb-9042-d15f-a683fd6003d9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693380041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+KxXdpail2mUes3X2GO5ePhGNuXuJJMiMuAOXzmAzYc=;
+        b=aZ+Z5jUW0UiBQjucRr8I9dLYv+mLaEatzF+k1jv5iLH/PrYXqTWx/26G99LPjtNI9FY+Ax
+        s5JOQ/LJQatTC6oM11424/ff+b4hvkwea6VEwQyXL8SsAgMKnuEhhJ5/YytE24Vb169Upx
+        OJOD2oEOZ26U2+XtZIJqGJ0aubcZh1M=
+Date:   Wed, 30 Aug 2023 15:20:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230830045323.71768-2-umang.jain@ideasonboard.com>
+Subject: Re: [PATCH 08/12] hugetlb: batch freeing of vmemmap pages
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20230825190436.55045-1-mike.kravetz@oracle.com>
+ <20230825190436.55045-9-mike.kravetz@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230825190436.55045-9-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,58 +61,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 10:23:22AM +0530, Umang Jain wrote:
-> The imx214 driver uses the subdev active state, there's no
 
-Does it ? I don't see a call to v4l2_subdev_init_finalize(), and the
-imx214 struct has fmt and crop fields in which it stores the active
-format.
 
-> need to implement the .get_fmt() operation manually. Use the
-> v4l2_subdev_get_fmt() helper instead.
-> 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+On 2023/8/26 03:04, Mike Kravetz wrote:
+> Now that batching of hugetlb vmemmap optimization processing is possible,
+> batch the freeing of vmemmap pages.  When freeing vmemmap pages for a
+> hugetlb page, we add them to a list that is freed after the entire batch
+> has been processed.
+>
+> This enhances the ability to return contiguous ranges of memory to the
+> low level allocators.
+>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 > ---
->  drivers/media/i2c/imx214.c | 17 +----------------
->  1 file changed, 1 insertion(+), 16 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx214.c b/drivers/media/i2c/imx214.c
-> index 2f9c8582f940..d8bdc52f552a 100644
-> --- a/drivers/media/i2c/imx214.c
-> +++ b/drivers/media/i2c/imx214.c
-> @@ -548,21 +548,6 @@ __imx214_get_pad_format(struct imx214 *imx214,
->  	}
->  }
->  
-> -static int imx214_get_format(struct v4l2_subdev *sd,
-> -			     struct v4l2_subdev_state *sd_state,
-> -			     struct v4l2_subdev_format *format)
-> -{
-> -	struct imx214 *imx214 = to_imx214(sd);
-> -
-> -	mutex_lock(&imx214->mutex);
-> -	format->format = *__imx214_get_pad_format(imx214, sd_state,
-> -						  format->pad,
-> -						  format->which);
-> -	mutex_unlock(&imx214->mutex);
-> -
-> -	return 0;
-> -}
-> -
->  static struct v4l2_rect *
->  __imx214_get_pad_crop(struct imx214 *imx214,
->  		      struct v4l2_subdev_state *sd_state,
-> @@ -842,7 +827,7 @@ static const struct v4l2_subdev_pad_ops imx214_subdev_pad_ops = {
->  	.enum_mbus_code = imx214_enum_mbus_code,
->  	.enum_frame_size = imx214_enum_frame_size,
->  	.enum_frame_interval = imx214_enum_frame_interval,
-> -	.get_fmt = imx214_get_format,
-> +	.get_fmt = v4l2_subdev_get_fmt,
->  	.set_fmt = imx214_set_format,
->  	.get_selection = imx214_get_selection,
->  	.init_cfg = imx214_entity_init_cfg,
+>   mm/hugetlb_vmemmap.c | 56 ++++++++++++++++++++++++++++++++------------
+>   1 file changed, 41 insertions(+), 15 deletions(-)
+>
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index d5e6b6c76dce..e390170c0887 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -305,11 +305,14 @@ static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
+>    * @end:	end address of the vmemmap virtual address range that we want to
+>    *		remap.
+>    * @reuse:	reuse address.
+> + * @bulk_pages: list to deposit vmemmap pages to be freed in bulk operations
+> + *		or NULL in non-bulk case;
 
--- 
-Regards,
+I'd like to rename bulk_pages to vmemmap_pages. Always add the vmemmap
+pages to this list and let the caller (hugetlb_vmemmap_optimize and
+hugetlb_vmemmap_optimize_folios) to help us to free them. It will be
+clear to me.
 
-Laurent Pinchart
+>    *
+>    * Return: %0 on success, negative error code otherwise.
+>    */
+>   static int vmemmap_remap_free(unsigned long start, unsigned long end,
+> -			      unsigned long reuse)
+> +			      unsigned long reuse,
+> +			      struct list_head *bulk_pages)
+>   {
+>   	int ret;
+>   	LIST_HEAD(vmemmap_pages);
+> @@ -372,7 +375,14 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
+>   	}
+>   	mmap_read_unlock(&init_mm);
+>   
+> -	free_vmemmap_page_list(&vmemmap_pages);
+> +	/*
+> +	 * if performing bulk operation, do not free pages here.
+> +	 * rather add them to the bulk list
+> +	 */
+> +	if (!bulk_pages)
+> +		free_vmemmap_page_list(&vmemmap_pages);
+> +	else
+> +		list_splice(&vmemmap_pages, bulk_pages);
+
+Here, always add vmemmap_pages to the list.
+
+>   
+>   	return ret;
+>   }
+> @@ -546,17 +556,9 @@ static bool vmemmap_should_optimize(const struct hstate *h, const struct page *h
+>   	return true;
+>   }
+>   
+> -/**
+> - * hugetlb_vmemmap_optimize - optimize @head page's vmemmap pages.
+> - * @h:		struct hstate.
+> - * @head:	the head page whose vmemmap pages will be optimized.
+> - *
+> - * This function only tries to optimize @head's vmemmap pages and does not
+> - * guarantee that the optimization will succeed after it returns. The caller
+> - * can use HPageVmemmapOptimized(@head) to detect if @head's vmemmap pages
+> - * have been optimized.
+> - */
+> -void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+> +static void __hugetlb_vmemmap_optimize(const struct hstate *h,
+> +					struct page *head,
+> +					struct list_head *bulk_pages)
+
+Also struct list_head *vmemmap_pages.
+
+>   {
+>   	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
+>   	unsigned long vmemmap_reuse;
+> @@ -575,18 +577,42 @@ void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+>   	 * to the page which @vmemmap_reuse is mapped to, then free the pages
+>   	 * which the range [@vmemmap_start, @vmemmap_end] is mapped to.
+>   	 */
+> -	if (vmemmap_remap_free(vmemmap_start, vmemmap_end, vmemmap_reuse))
+> +	if (vmemmap_remap_free(vmemmap_start, vmemmap_end, vmemmap_reuse, bulk_pages))
+>   		static_branch_dec(&hugetlb_optimize_vmemmap_key);
+>   	else
+>   		SetHPageVmemmapOptimized(head);
+>   }
+>   
+> +/**
+> + * hugetlb_vmemmap_optimize - optimize @head page's vmemmap pages.
+> + * @h:		struct hstate.
+> + * @head:	the head page whose vmemmap pages will be optimized.
+> + *
+> + * This function only tries to optimize @head's vmemmap pages and does not
+> + * guarantee that the optimization will succeed after it returns. The caller
+> + * can use HPageVmemmapOptimized(@head) to detect if @head's vmemmap pages
+> + * have been optimized.
+> + */
+> +void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+> +{
+> +	__hugetlb_vmemmap_optimize(h, head, NULL);
+
+Use free_vmemmap_page_list to free vmemmap pages here.
+
+> +}
+> +
+> +void hugetlb_vmemmap_optimize_bulk(const struct hstate *h, struct page *head,
+> +			struct list_head *bulk_pages)
+> +{
+> +	__hugetlb_vmemmap_optimize(h, head, bulk_pages);
+> +}
+> +
+>   void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list)
+>   {
+>   	struct folio *folio;
+> +	LIST_HEAD(vmemmap_pages);
+>   
+>   	list_for_each_entry(folio, folio_list, lru)
+> -		hugetlb_vmemmap_optimize(h, &folio->page);
+> +		hugetlb_vmemmap_optimize_bulk(h, &folio->page, &vmemmap_pages);
+
+Directly use __hugetlb_vmemmap_optimize and delete 
+hugetlb_vmemmap_optimize_bulk.
+In the future, we could rename hugetlb_vmemmap_optimize to 
+hugetlb_vmemmap_optimize_folio,
+then, both function names are more consistent. E.g.
+
+   1) hugetlb_vmemmap_optimize_folio(): used to free one folio's vmemmap 
+pages.
+   2) hugetlb_vmemmap_optimize_folios(): used to free multiple folio's 
+vmemmap pages.
+
+Thanks.
+
+> +
+> +	free_vmemmap_page_list(&vmemmap_pages);
+>   }
+>   
+>   static struct ctl_table hugetlb_vmemmap_sysctls[] = {
+
