@@ -2,145 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3276C78E257
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C9B78E25B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343818AbjH3Wbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
+        id S1343823AbjH3Wdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239250AbjH3Wbs (ORCPT
+        with ESMTP id S237283AbjH3Wdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:31:48 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066C510D5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:31:13 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68a3f1d8be2so144208b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693434671; x=1694039471; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wLDN7invAXGpseGpdDIIZ1SIKjfNtH5ZhUlLs7bFFN0=;
-        b=G+D+893AUA3w7U7FwsSee1/qSn5MIl3e5oCnBQwN+SvV4FlCbIY6NZJRTkrGOyq+Kq
-         huqtpO3Q/73VrRzkX2bC4W355wngK8EPdj0yjWmC4b9PAWUS3s5NCqQnamY80LkkwiCL
-         wdhsSEdRxT0/xzIcgM48yv2sb1o83+tOGXztk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693434671; x=1694039471;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wLDN7invAXGpseGpdDIIZ1SIKjfNtH5ZhUlLs7bFFN0=;
-        b=Kx4/s4FtFAjWyNaQk3x789tfUnRZsEDqKowUmO86xoe5DkRrtpG0dkzhZdZY9mivjl
-         4+ukhq0CQIw0zbmO145p2SsBzAF64RUoGgkG+92YP3PBluTxWZCeCAj6Rb4D9c6dvzay
-         rFaUTbdR2pEe5Ygm0pRNnLld3yw6dZMvlTzOrbIjTF+/35NJyfl5W9WUqDKqVAFIoQrR
-         IYl71C9bSXAu4gewmHU9gcJuSzCHd0vxREUqe4p0XtF1QTGQgtYuc3Lc0rPvtDfVzeKJ
-         BvdUje1bNQL7uslA6jeBryskQ497JkQIqHo0a7RxCxWxbsVXz9NTlHxxWCcE1pnTQLCH
-         ygEA==
-X-Gm-Message-State: AOJu0YwxPP1CiVx8vsBYc2cOhiNEJH/Es9/ckSdwZKyv4//qIQE6CmTV
-        XTAh54wzhepnuXKwItBVlDnRBw==
-X-Google-Smtp-Source: AGHT+IHrlwyuuGG2TNqsxkvlcHDbOA6H/Roidvdt8I8o1ntXeNMScdFrJueXW8h5EV6g+ONFbgkLTQ==
-X-Received: by 2002:a05:6a00:189b:b0:68c:638b:e2c6 with SMTP id x27-20020a056a00189b00b0068c638be2c6mr4193982pfh.9.1693434671611;
-        Wed, 30 Aug 2023 15:31:11 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p22-20020a62ab16000000b006870721fcc5sm73775pff.175.2023.08.30.15.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 15:31:11 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 15:31:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     Christian Lamparter <chunkeey@gmail.com>, kernel@quicinc.com,
-        Kalle Valo <kvalo@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Helmut Schaa <helmut.schaa@googlemail.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mac80211: Use flexible array in struct
- ieee80211_tim_ie
-Message-ID: <202308301529.AC90A9EF98@keescook>
-References: <20230829-ieee80211_tim_ie-v2-0-fdaf19fb1c0e@quicinc.com>
- <20230829-ieee80211_tim_ie-v2-2-fdaf19fb1c0e@quicinc.com>
- <1774098a-5062-4f12-a760-f16036d095e3@gmail.com>
- <9da7f41e-6d4a-452a-8042-0b09cad71bb8@quicinc.com>
+        Wed, 30 Aug 2023 18:33:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E361BF
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693434808; x=1724970808;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8/L/PFxdivB0WJisZaNCROLvCiEtHqm8cWTc4ukTnJU=;
+  b=O/aOX7Y+aQHjE94O3DB1CQHznOAL+Bv5fJInASYtazc9v6IteW80NMcN
+   Yau6p3Uo25E0xWXmfHkimAaVz52F2xhLHkBlPs4kmaKvJ/nbp0COjcAES
+   fLTietepIgS/Ht9+2z8pOwOApf7II4naRh3bNYTdl8qREFz7z0PIH1NnC
+   3DcdKcAdZ26JWe5nWONwyR85YEqNgs+0VzQdgXa9YuPELAD2Z32MtJaMf
+   /5jG5cao8/MUaU6fumAtTw2FT+62YjhCRXXh43CnoLdAuhZXVOnn5xite
+   3aozxwQzRZF/2xhssG5al2b30Z7PMBvVWx7UK9OAYMDPmqpyPDXqjp1h2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="378480955"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="378480955"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 15:32:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="829390726"
+X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
+   d="scan'208";a="829390726"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 15:32:43 -0700
+Date:   Wed, 30 Aug 2023 15:32:42 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     James Morse <james.morse@arm.com>
+Cc:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com
+Subject: Re: [PATCH v5 06/24] x86/resctrl: Track the number of dirty RMID a
+ CLOSID has
+Message-ID: <ZO/DiqemqXqj8P3u@agluck-desk3>
+References: <20230728164254.27562-1-james.morse@arm.com>
+ <20230728164254.27562-7-james.morse@arm.com>
+ <03cd7ac4-b58d-c7a8-7cb9-ebcc770d21f0@intel.com>
+ <20b566d9-448b-5367-b4db-593466e7a2f8@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9da7f41e-6d4a-452a-8042-0b09cad71bb8@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20b566d9-448b-5367-b4db-593466e7a2f8@arm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 01:22:37PM -0700, Jeff Johnson wrote:
-> On 8/30/2023 12:51 PM, Christian Lamparter wrote:
-> > Hi,
-> > 
-> > On 8/29/23 15:29, Jeff Johnson wrote:
-> > > Currently struct ieee80211_tim_ie defines:
-> > >     u8 virtual_map[1];
-> > > 
-> > > Per the guidance in [1] change this to be a flexible array.
-> > > 
-> > > As a result of this change, adjust all related struct size tests to
-> > > account for the fact that the sizeof(struct ieee80211_tim_ie) now
-> > > accounts for the minimum size of the virtual_map.
-> > > 
-> > > [1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
-> > > 
-> > > Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> > > ---
-> > > diff --git a/include/linux/ieee80211.h b/include/linux/ieee80211.h
-> > > index bd2f6e19c357..4cdc2eb98f16 100644
-> > > --- a/include/linux/ieee80211.h
-> > > +++ b/include/linux/ieee80211.h
-> > > @@ -961,7 +961,7 @@ struct ieee80211_tim_ie {
-> > >       u8 dtim_period;
-> > >       u8 bitmap_ctrl;
-> > >       /* variable size: 1 - 251 bytes */
-> > > -    u8 virtual_map[1];
-> > > +    u8 virtual_map[];
-> > >   } __packed;
-> > 
-> > 
-> > Uhh, the 802.11 (my 2012 Version has this in) spec in
-> > 8.4.2.7 TIM Element demands this to be 1 - 251 bytes.
-> > And this is why there's a comment above... With your
-> > change this could be confusing. Would it be possible
-> > to fix that somehow? Like in a anonymous union/group
-> > with a flexible array and a u8?
-> 
-> Adding Kees to the discussion for any advice. Yes, the virtual_map must
-> contain at least one octet but may contain more than one. And to complicate
-> matters, the information that tells us how many octets are actually present
-> is found outside the struct; the TLV header that precedes the struct will
-> contain the length of the struct, and hence the length of the bitmap is that
-> size - 2 (the size of the dtim_period and bitmap_ctrl fields).
+On Thu, Aug 24, 2023 at 05:53:03PM +0100, James Morse wrote:
+> Something on my eternal-todo-list is to make the filesystem parts of resctrl a loadable
+> module (if Tony doesn't get there first!). That would flush this sort of thing out.
+> Last time I triggered resctrl_exit() manually not all of the files got cleaned up - I
+> haven't investigated it further.
 
-Bummer about the count variable being elsewhere, but we'll deal with
-that later. :)
+James,
 
-For the array declaration, though, yes, we can do a "minimum size 1" like
-this:
+I looked at going to a full loadable module approach for about 3 seconds,
+and found none of the kernfs support functions are exported. So I also
+put that on the eternal-todo-list :-)
 
-	union {
-		u8 required_byte;
-		DECLARE_FLEX_ARRAY(u8, virtual_map);
-	};
+There are possibly a few other functions that need exporting like
+get_cpu_cacheinfo(), and two or three others from the "perf"
+code for pseudo-lock debugfs support.
 
--- 
-Kees Cook
+-Tony
+
+P.S. Latest version of my re-write is at:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git/log/?h=resctrl2_v65rc7
+
+Well, almost latest. I haven't pushed the changes to auto-load all the
+modules for basic X86 functions based on X86_FEATURE_* bits.
