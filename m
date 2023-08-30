@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2E578E262
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8124A78E284
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237336AbjH3WiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        id S241389AbjH3Wrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbjH3WiI (ORCPT
+        with ESMTP id S232242AbjH3Wrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:38:08 -0400
+        Wed, 30 Aug 2023 18:47:49 -0400
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87FA9C
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:37:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D929A1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:47:41 -0700 (PDT)
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd346CkXzkh;
-        Wed, 30 Aug 2023 23:38:56 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd353Q2Qztn;
+        Wed, 30 Aug 2023 23:38:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1693431536; bh=xYl17I+K4wwzgyiz7kt9ZmAtiqFq9MsVBbItAFx3V0A=;
+        t=1693431537; bh=0FOuVXjqnIye1fzsxyeQ7447oMaVJyrA0BRuBkQGje8=;
         h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=r6kVIleCqglHZlbLhc/FYoJBnRTlxyUjY9DAbOgPEpjk3j3YxcdYRANIWQ1MCsVe+
-         BQ5Idgab6JjUMB1xazx+4K+efQZrWQN6oNqanAcdt7btdSY6IY53OVncN2656Qwt8t
-         DRNBmib0ybN8AJT04SYyHmgI9lyHusKJd9UlRfuzFnaCkSs4Z6+LTNJPE615csmtw7
-         j8+blDEZOhAPKaP9YbMHD88mRjy01OJfxfS4W+2p1K8gZbNwXQYgO0u2xLAJ/Eyxr8
-         LVPyJQVTYq/otNwvVoVpdENcQtJRaZ+R6iEtU1MN+XVKHw3F0nwtnQifCy/I0CJv5m
-         owLm8R2n+9uIg==
+        b=pgSHbI7ytH98CI1tYlJpnH7Asw+T6ndG0u35fEbIv/z3L+QX7klUPLUuzDz+a3Ct+
+         tNUSBj9gAJxv+6xBFq3V8DloPeUlGFhdwqkmjiC8XGxULU0Oxr/BaqMfmUG64dAh9z
+         +HRkbyBTpoCjMkysZAxCZ6lgWWiik36oClne+ULXFWgg9lXbEqe2lZVgSeeWQbxnuI
+         ztHmNYC1ZMpi2N92Y9XAR43QqN6oYsedU+L5pzMfeACfe145FMoET+A4WXjwDXdI7v
+         Wfk+2wtC2ctVLigF31jOvnRhqac7+uYxYj6ykC8ld++FfKPXjTwyQwZ6ZrJjiZLRuz
+         tqmU+NI6fAKlA==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Wed, 30 Aug 2023 23:38:56 +0200
-Message-Id: <5bcecac45e38eaec2c7df25996f518444279520c.1693431144.git.mirq-linux@rere.qmqm.pl>
+Date:   Wed, 30 Aug 2023 23:38:57 +0200
+Message-Id: <edbe125df73698f44e6c0697b7c45dc5acb2d455.1693431144.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 7/9] regulator/core: remove regulator_get_init_drvdata()
+Subject: [PATCH 8/9] regulator/core: set_consumer_device_supply: avoid copying
+ const data
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -50,43 +51,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no in-tree users.
+As consumer_dev_name might as well be const, don't copy it if not
+required.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c         | 6 ------
- include/linux/regulator/driver.h | 1 -
- 2 files changed, 7 deletions(-)
+ drivers/regulator/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index c8d1b12ee43b..7c4ba090d88d 100644
+index 7c4ba090d88d..8ab4de7cadcb 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -5881,12 +5881,6 @@ struct regmap *rdev_get_regmap(struct regulator_dev *rdev)
- }
- EXPORT_SYMBOL_GPL(rdev_get_regmap);
+@@ -1735,7 +1735,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
+ 	new_node->supply = supply;
  
--void *regulator_get_init_drvdata(struct regulator_init_data *reg_init_data)
--{
--	return reg_init_data->driver_data;
--}
--EXPORT_SYMBOL_GPL(regulator_get_init_drvdata);
--
- #ifdef CONFIG_DEBUG_FS
- static int supply_map_show(struct seq_file *sf, void *data)
- {
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
-index 4b7eceb3828b..827888b4b16c 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -758,7 +758,6 @@ int regulator_set_active_discharge_regmap(struct regulator_dev *rdev,
- int regulator_set_current_limit_regmap(struct regulator_dev *rdev,
- 				       int min_uA, int max_uA);
- int regulator_get_current_limit_regmap(struct regulator_dev *rdev);
--void *regulator_get_init_drvdata(struct regulator_init_data *reg_init_data);
- int regulator_find_closest_bigger(unsigned int target, const unsigned int *table,
- 				  unsigned int num_sel, unsigned int *sel);
- int regulator_set_ramp_delay_regmap(struct regulator_dev *rdev, int ramp_delay);
+ 	if (consumer_dev_name != NULL) {
+-		new_node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
++		new_node->dev_name = kstrdup_const(consumer_dev_name, GFP_KERNEL);
+ 		if (new_node->dev_name == NULL) {
+ 			kfree(new_node);
+ 			return -ENOMEM;
+@@ -1770,7 +1770,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
+ 
+ fail:
+ 	mutex_unlock(&regulator_list_mutex);
+-	kfree(new_node->dev_name);
++	kfree_const(new_node->dev_name);
+ 	kfree(new_node);
+ 	return -EBUSY;
+ }
+@@ -1782,7 +1782,7 @@ static void unset_regulator_supplies(struct regulator_dev *rdev)
+ 	list_for_each_entry_safe(node, n, &regulator_map_list, list) {
+ 		if (rdev == node->regulator) {
+ 			list_del(&node->list);
+-			kfree(node->dev_name);
++			kfree_const(node->dev_name);
+ 			kfree(node);
+ 		}
+ 	}
 -- 
 2.39.2
 
