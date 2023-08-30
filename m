@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF45778D35E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CF778D360
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240188AbjH3G2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 02:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
+        id S235017AbjH3G2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 02:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240768AbjH3G1w (ORCPT
+        with ESMTP id S241310AbjH3G2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:27:52 -0400
+        Wed, 30 Aug 2023 02:28:36 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44362FF
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:27:39 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbDqV2spWz4f3pJZ
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:27:34 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3263CE0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:28:32 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbDrW4SGhz4f3kpQ
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:28:27 +0800 (CST)
 Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgD3zqFW4e5ku2KyBw--.65512S2;
-        Wed, 30 Aug 2023 14:27:35 +0800 (CST)
-Subject: Re: [PATCH v2 1/3] mm/page_alloc: correct start page when guard page
- debug is enabled
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org,
-        naoya.horiguchi@nec.com, osalvador@suse.de
-References: <20230826154745.4019371-1-shikemeng@huaweicloud.com>
- <20230826154745.4019371-2-shikemeng@huaweicloud.com>
- <20230828152113.GA886794@ik1-406-35019.vs.sakura.ne.jp>
+        by APP3 (Coremail) with SMTP id _Ch0CgDH5b2L4e5klx0+Bw--.62156S2;
+        Wed, 30 Aug 2023 14:28:28 +0800 (CST)
+Subject: Re: [PATCH v2 7/7] mm/compaction: factor out code to test if we
+ should run compaction for target order
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
+References: <20230826153617.4019189-1-shikemeng@huaweicloud.com>
+ <20230826153617.4019189-8-shikemeng@huaweicloud.com>
+ <940a7978-ebbb-f232-b536-7c8d16c0d1f1@linux.alibaba.com>
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <b42625d1-4c50-5c61-ef92-5008383f8682@huaweicloud.com>
-Date:   Wed, 30 Aug 2023 14:27:33 +0800
+Message-ID: <63028022-560d-278e-d7b5-3cdd93467c99@huaweicloud.com>
+Date:   Wed, 30 Aug 2023 14:28:27 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.5.0
 MIME-Version: 1.0
-In-Reply-To: <20230828152113.GA886794@ik1-406-35019.vs.sakura.ne.jp>
+In-Reply-To: <940a7978-ebbb-f232-b536-7c8d16c0d1f1@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgD3zqFW4e5ku2KyBw--.65512S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw48XFW8XFW7Gr45ur18AFb_yoWrAFy8pa
-        4xC3WYyw4kt3y3Can7Za9rCr1ftws09FWUCryfZw1rXw13tryak3s7Kr17uF18ur15GFW8
-        XF4qvr93Za4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgDH5b2L4e5klx0+Bw--.62156S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WrW7WF1fJFyxCrW5Ww1ftFb_yoW7Cw1kpF
+        18JryUJry8Xr1rGr1UJF1UJFy5Jr48J3WDJr10qF1UJr1ayr1qvr1qqr1q9F1UJr48Jr4U
+        Jr1UXrnrZFnrArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
         vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
         xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
         0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
         Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
         64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
         8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+        7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
@@ -68,104 +67,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-on 8/28/2023 11:21 PM, Naoya Horiguchi wrote:
-> On Sat, Aug 26, 2023 at 11:47:43PM +0800, Kemeng Shi wrote:
->> When guard page debug is enabled and set_page_guard returns success, we
->> miss to forward page to point to start of next split range and we will do
->> split unexpectedly in page range without target page. Move start page
->> update before set_page_guard to fix this.
+on 8/29/2023 11:48 AM, Baolin Wang wrote:
+> 
+> 
+> On 8/26/2023 11:36 PM, Kemeng Shi wrote:
+>> We always do zone_watermark_ok check and compaction_suitable check
+>> together to test if compaction for target order should be runned.
+>> Factor these code out to remove repeat code.
 >>
->> As we split to wrong target page, then splited pages are not able to merge
->> back to original order when target page is put back and splited pages
->> except target page is not usable. To be specific:
->>
->> Consider target page is the third page in buddy page with order 2.
->> | buddy-2 | Page | Target | Page |
->>
->> After break down to target page, we will only set first page to Guard
->> because of bug.
->> | Guard   | Page | Target | Page |
->>
->> When we try put_page_back_buddy with target page, the buddy page of target
->> if neither guard nor buddy, Then it's not able to construct original page
->> with order 2
->> | Guard | Page | buddy-0 | Page |
->>
->> All pages except target page is not in free list and is not usable.
->>
->> Fixes: 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
 >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> 
-> Thank you for finding the problem and writing patches.  I think the patch
-> fixes the reported problem, But I wonder that we really need guard page
-> mechanism in break_down_buddy_pages() which is only called from memory_failure.
-> As stated in Documentation/admin-guide/kernel-parameters.txt, this is a
-> debugging feature to detect memory corruption due to buggy kernel or drivers
-> code.  So if HW memory failrue seems to be out of the scope, and I feel that
-> we could simply remove it from break_down_buddy_pages().
-> 
->         debug_guardpage_minorder=
->                         [KNL] When CONFIG_DEBUG_PAGEALLOC is set, this
->                         parameter allows control of the order of pages that will
->                         be intentionally kept free (and hence protected) by the
->                         buddy allocator. Bigger value increase the probability
->                         of catching random memory corruption, but reduce the
->                         amount of memory for normal system use. The maximum
->                         possible value is MAX_ORDER/2.  Setting this parameter
->                         to 1 or 2 should be enough to identify most random
->                         memory corruption problems caused by bugs in kernel or
->                         driver code when a CPU writes to (or reads from) a
->                         random memory location. Note that there exists a class
->                         of memory corruptions problems caused by buggy H/W or
->                         F/W or by drivers badly programming DMA (basically when
->                         memory is written at bus level and the CPU MMU is
->                         bypassed) which are not detectable by
->                         CONFIG_DEBUG_PAGEALLOC, hence this option will not help
->                         tracking down these problems.
-> 
-> If you have any idea about how guard page mechanism helps memory_failrue,
-> could you share it?
-> 
-Hi Naoya, thanks for feedback. Commit c0a32fc5a2e47 ("mm: more intensive
-memory corruption debugging") menthioned we konw that with
-CONFIG_DEBUG_PAGEALLOC configured, the CPU will generate an exception on
-access (read,write) to an unallocated page, which permits us to catch code
-which corrupts memory; Guard page aims to keep more free/protected pages
-and to interlace free/protected and allocated pages to increase the
-probability of catching corruption. Keep guard page around failrue looks
-helpful to catch random access. Wish this can help.
-
-> Thanks,
-> Naoya Horiguchi
-> 
 >> ---
->>  mm/page_alloc.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>   mm/compaction.c | 63 ++++++++++++++++++++++++++++---------------------
+>>   1 file changed, 36 insertions(+), 27 deletions(-)
 >>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index fefc4074d9d0..88c5f5aea9b0 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -6505,6 +6505,7 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
->>  			next_page = page;
->>  			current_buddy = page + size;
->>  		}
->> +		page = next_page;
->>  
->>  		if (set_page_guard(zone, current_buddy, high, migratetype))
->>  			continue;
->> @@ -6512,7 +6513,6 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
->>  		if (current_buddy != target) {
->>  			add_to_free_list(current_buddy, zone, high, migratetype);
->>  			set_buddy_order(current_buddy, high);
->> -			page = next_page;
->>  		}
->>  	}
->>  }
->> -- 
->> 2.30.0
->>
->>
->>
+>> diff --git a/mm/compaction.c b/mm/compaction.c
+>> index 00b7bba6c72e..6f2b87b026b8 100644
+>> --- a/mm/compaction.c
+>> +++ b/mm/compaction.c
+>> @@ -2374,6 +2374,30 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
+>>       return false;
+>>   }
+>>   +/*
+>> + * Should we do compaction for target allocation order.
+>> + * Return COMPACT_SUCCESS if allocation for target order can be already
+>> + * satisfied
+>> + * Return COMPACT_SKIPPED if compaction for target order is likely to fail
+>> + * Return COMPACT_CONTINUE if compaction for target order should be runned
+>> + */
+>> +static inline enum compact_result
+> 
+> I think you should drop the 'inline' to let the compiler make the decision.
+> 
+Sure, I will drop this in next version. Thanks for feedback.
+>> +compaction_suit_allocation_order(struct zone *zone, unsigned int order,
+>> +                 int highest_zoneidx, unsigned int alloc_flags)
+> 
+> The changes look good to me. So please feel free to add:
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> 
+>> +{
+>> +    unsigned long watermark;
+>> +
+>> +    watermark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+>> +    if (zone_watermark_ok(zone, order, watermark, highest_zoneidx,
+>> +                  alloc_flags))
+>> +        return COMPACT_SUCCESS;
+>> +
+>> +    if (!compaction_suitable(zone, order, highest_zoneidx))
+>> +        return COMPACT_SKIPPED;
+>> +
+>> +    return COMPACT_CONTINUE;
+>> +}
+>> +
+>>   static enum compact_result
+>>   compact_zone(struct compact_control *cc, struct capture_control *capc)
+>>   {
+>> @@ -2399,19 +2423,11 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>>       cc->migratetype = gfp_migratetype(cc->gfp_mask);
+>>         if (!is_via_compact_memory(cc->order)) {
+>> -        unsigned long watermark;
+>> -
+>> -        /* Allocation can already succeed, nothing to do */
+>> -        watermark = wmark_pages(cc->zone,
+>> -                    cc->alloc_flags & ALLOC_WMARK_MASK);
+>> -        if (zone_watermark_ok(cc->zone, cc->order, watermark,
+>> -                      cc->highest_zoneidx, cc->alloc_flags))
+>> -            return COMPACT_SUCCESS;
+>> -
+>> -        /* Compaction is likely to fail */
+>> -        if (!compaction_suitable(cc->zone, cc->order,
+>> -                     cc->highest_zoneidx))
+>> -            return COMPACT_SKIPPED;
+>> +        ret = compaction_suit_allocation_order(cc->zone, cc->order,
+>> +                               cc->highest_zoneidx,
+>> +                               cc->alloc_flags);
+>> +        if (ret != COMPACT_CONTINUE)
+>> +            return ret;
+>>       }
+>>         /*
+>> @@ -2917,14 +2933,10 @@ static bool kcompactd_node_suitable(pg_data_t *pgdat)
+>>           if (!populated_zone(zone))
+>>               continue;
+>>   -        /* Allocation can already succeed, check other zones */
+>> -        if (zone_watermark_ok(zone, pgdat->kcompactd_max_order,
+>> -                      min_wmark_pages(zone),
+>> -                      highest_zoneidx, 0))
+>> -            continue;
+>> -
+>> -        if (compaction_suitable(zone, pgdat->kcompactd_max_order,
+>> -                    highest_zoneidx))
+>> +        if (compaction_suit_allocation_order(zone,
+>> +                pgdat->kcompactd_max_order,
+>> +                highest_zoneidx, ALLOC_WMARK_MIN) ==
+>> +                COMPACT_CONTINUE)
+>>               return true;
+>>       }
+>>   @@ -2961,12 +2973,9 @@ static void kcompactd_do_work(pg_data_t *pgdat)
+>>           if (compaction_deferred(zone, cc.order))
+>>               continue;
+>>   -        /* Allocation can already succeed, nothing to do */
+>> -        if (zone_watermark_ok(zone, cc.order,
+>> -                      min_wmark_pages(zone), zoneid, 0))
+>> -            continue;
+>> -
+>> -        if (!compaction_suitable(zone, cc.order, zoneid))
+>> +        if (compaction_suit_allocation_order(zone,
+>> +                cc.order, zoneid, ALLOC_WMARK_MIN) !=
+>> +                COMPACT_CONTINUE)
+>>               continue;
+>>             if (kthread_should_stop())
 > 
 
