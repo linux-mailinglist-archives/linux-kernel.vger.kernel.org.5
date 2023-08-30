@@ -2,291 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CDF78DF01
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBCC78DF25
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242454AbjH3TLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
+        id S242146AbjH3TLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244281AbjH3MvI (ORCPT
+        with ESMTP id S244283AbjH3Mvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:51:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C228D132;
-        Wed, 30 Aug 2023 05:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693399864; x=1724935864;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=RSyj81n43sFmtQjzuHfNNauGPkAW6fiLijQd+FzizcA=;
-  b=iKtgWQVKbZGOI6SoRQWdACyuHirlarsbd0gH85UJJ3pFkn2wJZXVXcCP
-   JwsaxRsKfg8VmKLOPUZHEW/Y4heWbhvR1KKWi9qFQ3KdRNMeEaG23W175
-   X4nV5kvNmjGhxvTnXWPxucd1dnp/E7dGAPKQTJfleRg8AG8iKNcEHaiFF
-   mD2xWqlW7XOI+0quOAiKzsL9keBuedhLRYFs+fiN36z3AJA2rVrnEfjVB
-   15YyOTdRlTJoVMl9lIt+JHNeThJyYfNE5w9mJOm1gH+S9I8aeCJAhu7Jp
-   0anQCmwfI3m1gPbCh7HqkTOx198glpDDXFPuLiskZWAyLRKQERt9Z6guu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="365839418"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="365839418"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 05:51:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="739082012"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="739082012"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.91]) ([10.94.0.91])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 05:50:58 -0700
-Message-ID: <5a5eb3a8-1379-116b-ca17-eac573207c57@linux.intel.com>
-Date:   Wed, 30 Aug 2023 14:50:57 +0200
+        Wed, 30 Aug 2023 08:51:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70950132;
+        Wed, 30 Aug 2023 05:51:34 -0700 (PDT)
+Received: from [IPV6:2a01:e0a:120:3210:3c80:2375:ed1d:19ee] (unknown [IPv6:2a01:e0a:120:3210:3c80:2375:ed1d:19ee])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 78F0A660722B;
+        Wed, 30 Aug 2023 13:51:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693399892;
+        bh=ATFNlFErqZ0DT6q6oV6nUkS2hS/qdeMG0yqOrN3MSgk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=grBQL/Me/AQSKnGXDsM+f85KJNzEEFJDfQbBeuzCklPS0k9B0cmtilehE5zKRYu/t
+         TtV/dyQfppH74lB05sAV/VsXWgaDexMHs1RPCOCcCNZ+wkVPBEIymWDEX96+OSBOvZ
+         hcvl4UYaMfBYhNM1TzhmuweEvku6Ox/K8F+a+Y/mmO6tvueqjLpjoq+aE2OcT1m9Nh
+         qeR4oxhg+yIrXzde+Z+KiMuxBZaSgAZ4XQRFzOzuntRs5PJ/DpzBObPWs1gTGFe/i5
+         GqNZhQWD0fukRTvVQKnmo3zaxLeESSifUnsZr63gW6bt1RPa2UNzAUrnR3pwaYDVEi
+         BQwFKwll1kpHw==
+Message-ID: <643a7811-60ff-6ac9-be3d-edcd9a0b95cc@collabora.com>
+Date:   Wed, 30 Aug 2023 14:51:30 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v5 12/32] sound: usb: Export USB SND APIs for modules
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 01/10] media: videobuf2: Rework offset 'cookie'
+ encoding pattern
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, mchehab@kernel.org,
+        tfiga@chromium.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230824092133.39510-1-benjamin.gaignard@collabora.com>
+ <20230824092133.39510-2-benjamin.gaignard@collabora.com>
+ <01c299f2-8118-5d86-e9b6-a459c1b6c467@xs4all.nl>
 Content-Language: en-US
-To:     Wesley Cheng <quic_wcheng@quicinc.com>,
-        srinivas.kandagatla@linaro.org, mathias.nyman@intel.com,
-        perex@perex.cz, lgirdwood@gmail.com, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org,
-        Thinh.Nguyen@synopsys.com, broonie@kernel.org,
-        bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org,
-        agross@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, quic_jackp@quicinc.com,
-        quic_plai@quicinc.com
-References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
- <20230829210657.9904-13-quic_wcheng@quicinc.com>
-From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20230829210657.9904-13-quic_wcheng@quicinc.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <01c299f2-8118-5d86-e9b6-a459c1b6c467@xs4all.nl>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/2023 11:06 PM, Wesley Cheng wrote:
-> Some vendor modules will utilize useful parsing and endpoint management
-> APIs to start audio playback/capture.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->   sound/usb/card.c     |  4 +++
->   sound/usb/endpoint.c |  1 +
->   sound/usb/helper.c   |  1 +
->   sound/usb/pcm.c      | 67 +++++++++++++++++++++++++++++++++-----------
->   sound/usb/pcm.h      | 11 ++++++++
->   5 files changed, 67 insertions(+), 17 deletions(-)
-> 
-> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index 067a1e82f4bf..b45b6daee7b7 100644
-> --- a/sound/usb/card.c
-> +++ b/sound/usb/card.c
-> @@ -1053,6 +1053,7 @@ int snd_usb_lock_shutdown(struct snd_usb_audio *chip)
->   		wake_up(&chip->shutdown_wait);
->   	return err;
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_lock_shutdown);
->   
->   /* autosuspend and unlock the shutdown */
->   void snd_usb_unlock_shutdown(struct snd_usb_audio *chip)
-> @@ -1061,6 +1062,7 @@ void snd_usb_unlock_shutdown(struct snd_usb_audio *chip)
->   	if (atomic_dec_and_test(&chip->usage_count))
->   		wake_up(&chip->shutdown_wait);
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_unlock_shutdown);
->   
->   int snd_usb_autoresume(struct snd_usb_audio *chip)
->   {
-> @@ -1083,6 +1085,7 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
->   	}
->   	return 0;
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_autoresume);
->   
->   void snd_usb_autosuspend(struct snd_usb_audio *chip)
->   {
-> @@ -1096,6 +1099,7 @@ void snd_usb_autosuspend(struct snd_usb_audio *chip)
->   	for (i = 0; i < chip->num_interfaces; i++)
->   		usb_autopm_put_interface(chip->intf[i]);
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_autosuspend);
->   
->   static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
->   {
-> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-> index a385e85c4650..aac92e0b8aa2 100644
-> --- a/sound/usb/endpoint.c
-> +++ b/sound/usb/endpoint.c
-> @@ -1503,6 +1503,7 @@ int snd_usb_endpoint_prepare(struct snd_usb_audio *chip,
->   	mutex_unlock(&chip->mutex);
->   	return err;
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_endpoint_prepare);
->   
->   /* get the current rate set to the given clock by any endpoint */
->   int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
-> diff --git a/sound/usb/helper.c b/sound/usb/helper.c
-> index bf80e55d013a..4322ae3738e6 100644
-> --- a/sound/usb/helper.c
-> +++ b/sound/usb/helper.c
-> @@ -62,6 +62,7 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
->   	}
->   	return NULL;
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_find_csint_desc);
->   
->   /*
->    * Wrapper for usb_control_msg().
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index 08bf535ed163..999f66080649 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -148,6 +148,16 @@ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
->   	return found;
->   }
->   
-> +const struct audioformat *
-> +snd_usb_find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
-> +	    unsigned int rate, unsigned int channels, bool strict_match,
-> +	    struct snd_usb_substream *subs)
-> +{
-> +	return find_format(fmt_list_head, format, rate, channels, strict_match,
-> +			subs);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_usb_find_format);
-> +
->   static const struct audioformat *
->   find_substream_format(struct snd_usb_substream *subs,
->   		      const struct snd_pcm_hw_params *params)
-> @@ -157,6 +167,14 @@ find_substream_format(struct snd_usb_substream *subs,
->   			   true, subs);
->   }
->   
-> +const struct audioformat *
-> +snd_usb_find_substream_format(struct snd_usb_substream *subs,
-> +		      const struct snd_pcm_hw_params *params)
-> +{
-> +	return find_substream_format(subs, params);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_usb_find_substream_format);
-> +
->   bool snd_usb_pcm_has_fixed_rate(struct snd_usb_substream *subs)
->   {
->   	const struct audioformat *fp;
-> @@ -461,20 +479,9 @@ static void close_endpoints(struct snd_usb_audio *chip,
->   	}
->   }
->   
-> -/*
-> - * hw_params callback
-> - *
-> - * allocate a buffer and set the given audio format.
-> - *
-> - * so far we use a physically linear buffer although packetize transfer
-> - * doesn't need a continuous area.
-> - * if sg buffer is supported on the later version of alsa, we'll follow
-> - * that.
-> - */
-> -static int snd_usb_hw_params(struct snd_pcm_substream *substream,
-> -			     struct snd_pcm_hw_params *hw_params)
-> +int snd_usb_attach_endpoints(struct snd_usb_substream *subs,
-> +				struct snd_pcm_hw_params *hw_params)
->   {
-> -	struct snd_usb_substream *subs = substream->runtime->private_data;
->   	struct snd_usb_audio *chip = subs->stream->chip;
->   	const struct audioformat *fmt;
->   	const struct audioformat *sync_fmt;
-> @@ -499,7 +506,7 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
->   	if (fmt->implicit_fb) {
->   		sync_fmt = snd_usb_find_implicit_fb_sync_format(chip, fmt,
->   								hw_params,
-> -								!substream->stream,
-> +								!subs->direction,
->   								&sync_fixed_rate);
->   		if (!sync_fmt) {
->   			usb_audio_dbg(chip,
-> @@ -579,15 +586,28 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
->   
->   	return ret;
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_attach_endpoints);
->   
->   /*
-> - * hw_free callback
-> + * hw_params callback
->    *
-> - * reset the audio format and release the buffer
-> + * allocate a buffer and set the given audio format.
-> + *
-> + * so far we use a physically linear buffer although packetize transfer
-> + * doesn't need a continuous area.
-> + * if sg buffer is supported on the later version of alsa, we'll follow
-> + * that.
->    */
-> -static int snd_usb_hw_free(struct snd_pcm_substream *substream)
-> +static int snd_usb_hw_params(struct snd_pcm_substream *substream,
-> +			     struct snd_pcm_hw_params *hw_params)
->   {
->   	struct snd_usb_substream *subs = substream->runtime->private_data;
-> +
-> +	return snd_usb_attach_endpoints(subs, hw_params);
-> +}
-> +
-> +int snd_usb_detach_endpoint(struct snd_usb_substream *subs)
-> +{
->   	struct snd_usb_audio *chip = subs->stream->chip;
->   
->   	snd_media_stop_pipeline(subs);
-> @@ -603,6 +623,19 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
->   
->   	return 0;
->   }
-> +EXPORT_SYMBOL_GPL(snd_usb_detach_endpoint);
-> +
-> +/*
-> + * hw_free callback
-> + *
-> + * reset the audio format and release the buffer
-> + */
-> +static int snd_usb_hw_free(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_usb_substream *subs = substream->runtime->private_data;
-> +
-> +	return snd_usb_detach_endpoint(subs);
-> +}
->   
->   /* free-wheeling mode? (e.g. dmix) */
->   static int in_free_wheeling_mode(struct snd_pcm_runtime *runtime)
-> diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
-> index 388fe2ba346d..e36df3611a05 100644
-> --- a/sound/usb/pcm.h
-> +++ b/sound/usb/pcm.h
-> @@ -15,4 +15,15 @@ void snd_usb_preallocate_buffer(struct snd_usb_substream *subs);
->   int snd_usb_audioformat_set_sync_ep(struct snd_usb_audio *chip,
->   				    struct audioformat *fmt);
->   
-> +const struct audioformat *
-> +snd_usb_find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
-> +	    unsigned int rate, unsigned int channels, bool strict_match,
-> +	    struct snd_usb_substream *subs);
-> +const struct audioformat *
-> +snd_usb_find_substream_format(struct snd_usb_substream *subs,
-> +		      const struct snd_pcm_hw_params *params);
-> +
-> +int snd_usb_attach_endpoints(struct snd_usb_substream *subs,
-> +				struct snd_pcm_hw_params *hw_params);
-> +int snd_usb_detach_endpoint(struct snd_usb_substream *subs);
->   #endif /* __USBAUDIO_PCM_H */
 
-Why is it multiple "endpoints" when attaching, but only one "endpoint" 
-when detaching? Both seem to be getting similar arguments.
+Le 30/08/2023 à 14:25, Hans Verkuil a écrit :
+> On 24/08/2023 11:21, Benjamin Gaignard wrote:
+>> Change how offset 'cookie' field value is computed to make possible
+>> to use more buffers (up to 0xffff).
+>> With this encoding pattern we know the maximum number that a queue
+>> could store so we can check ing at queue init time.
+>> It also make easier and faster to find buffer and plane from using
+>> the offset field.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>> v5:
+>> - I haven't change DST_QUEUE_OFF_BASE definition because it used in
+>>    v4l2-mem2mem and s5p_mfc driver with a shift.
+>>
+>>   .../media/common/videobuf2/videobuf2-core.c   | 48 +++++++++----------
+>>   1 file changed, 24 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+>> index cf6727d9c81f..e06905533ef4 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>> @@ -31,6 +31,10 @@
+>>   
+>>   #include <trace/events/vb2.h>
+>>   
+>> +#define PLANE_INDEX_SHIFT	3
+>> +#define PLANE_INDEX_MASK	0x7
+>> +#define MAX_BUFFERS		0xffff
+> Very poor name, see below.
+>
+>> +
+>>   static int debug;
+>>   module_param(debug, int, 0644);
+>>   
+>> @@ -358,21 +362,23 @@ static void __setup_offsets(struct vb2_buffer *vb)
+>>   	unsigned int plane;
+>>   	unsigned long off = 0;
+>>   
+>> -	if (vb->index) {
+>> -		struct vb2_buffer *prev = q->bufs[vb->index - 1];
+>> -		struct vb2_plane *p = &prev->planes[prev->num_planes - 1];
+>> -
+>> -		off = PAGE_ALIGN(p->m.offset + p->length);
+>> -	}
+>> +	/*
+>> +	 * Offsets cookies value have the following constraints:
+>> +	 * - a buffer could have up to 8 planes.
+>> +	 * - v4l2 mem2mem use bit 30 to distinguish between source and destination buffers.
+>> +	 * - must be page aligned
+>> +	 * That led to this bit mapping:
+>> +	 * |30                |29        15|14       12|11 0|
+>> +	 * |DST_QUEUE_OFF_BASE|buffer index|plane index| 0  |
+>> +	 * where there is 16 bits to store buffer index.
+> 16 -> 15: there are 15 (not 16!) bits available for buffer indices. So the maximum
+> number of buffers is 32768, given that the indices start at 0.
+>
+>> +	 */
+>> +	off = vb->index << (PLANE_INDEX_SHIFT + PAGE_SHIFT);
+>>   
+>>   	for (plane = 0; plane < vb->num_planes; ++plane) {
+>> -		vb->planes[plane].m.offset = off;
+>> +		vb->planes[plane].m.offset = off + (plane << PAGE_SHIFT);
+>>   
+>>   		dprintk(q, 3, "buffer %d, plane %d offset 0x%08lx\n",
+>>   				vb->index, plane, off);
+>> -
+>> -		off += vb->planes[plane].length;
+>> -		off = PAGE_ALIGN(off);
+>>   	}
+>>   }
+>>   
+>> @@ -2209,21 +2215,15 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
+>>   		return -EBUSY;
+>>   	}
+>>   
+>> -	/*
+>> -	 * Go over all buffers and their planes, comparing the given offset
+>> -	 * with an offset assigned to each plane. If a match is found,
+>> -	 * return its buffer and plane numbers.
+>> -	 */
+>> -	for (buffer = 0; buffer < q->num_buffers; ++buffer) {
+>> -		vb = q->bufs[buffer];
+>> +	/* Get buffer and plane from the offset */
+>> +	buffer = (off >> (PLANE_INDEX_SHIFT + PAGE_SHIFT)) & MAX_BUFFERS;
+> Hmm, you use it as a mask. The name MAX_BUFFERS is really confusing.
+> How about BUFFER_INDEX_MASK? That is consistent with PLANE_INDEX_MASK.
+
+I will follow your advice and fix that in next version.
+I will until you have finish your review in this series before send it.
+
+Regards,
+Benjamin
+
+>
+>> +	plane = (off >> PAGE_SHIFT) & PLANE_INDEX_MASK;
+>>   
+>> -		for (plane = 0; plane < vb->num_planes; ++plane) {
+>> -			if (vb->planes[plane].m.offset == off) {
+>> -				*_buffer = buffer;
+>> -				*_plane = plane;
+>> -				return 0;
+>> -			}
+>> -		}
+>> +	vb = q->bufs[buffer];
+>> +	if (vb->planes[plane].m.offset == off) {
+>> +		*_buffer = buffer;
+>> +		*_plane = plane;
+>> +		return 0;
+>>   	}
+>>   
+>>   	return -EINVAL;
+> Regards,
+>
+> 	Hans
+>
