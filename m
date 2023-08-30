@@ -2,111 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A94078E055
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9930C78DF16
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240730AbjH3Tai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S244186AbjH3TOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343984AbjH3RvT (ORCPT
+        with ESMTP id S1343985AbjH3Rvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:51:19 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABA3193
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:51:16 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27183f4ccc1so6287a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:51:16 -0700 (PDT)
+        Wed, 30 Aug 2023 13:51:38 -0400
+Received: from mail-oa1-x4a.google.com (mail-oa1-x4a.google.com [IPv6:2001:4860:4864:20::4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F35193
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:51:34 -0700 (PDT)
+Received: by mail-oa1-x4a.google.com with SMTP id 586e51a60fabf-1c8d4a5224eso6956457fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 10:51:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693417876; x=1694022676; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mWxHZBHe+McomQO2YHa9mxYrBp2VqVWidmsS0Hpwi+s=;
-        b=SN/zYNMbx+ezV1EayCdP8voonBBDg6SwlypnEjXKu8qrYWhWlTOBZkWc1VHh8qa+lJ
-         rz0iwG4TlPbBvMFHveEiUlbKWIKAl0Z/hnKSjoE4YydXYZnHY/bdcrDinQ1+iWC3pYQf
-         Fq1TikPEVnG8AS4e/vHOb/Wp+XvtPIfTC6lUZpFSf1HecZ7wiIxmKdOt0pL5AQ09appS
-         tsoDK8nNvdkYZu6bg+YA7UwmKOZYFuhbve0+rGVOtLdZCPxTJilDsCCAgv2xW9IAXVEz
-         hm4EYrLnp0rcjPTzceiugYyY5E8b++NmTPmSMFaGRhZsE2FaTLFsehtMPeDOidNN11AO
-         p0Ig==
+        d=google.com; s=20221208; t=1693417893; x=1694022693; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EYjQFc4xOJMLhqSY/15Eo/bkP9OF+XNV2qczMiBYtL4=;
+        b=aw9dPjDYPDyipNtu8Wxx18Dx9m/0Xd2cYgG3isygHJfTvcaiF7aSiPVrgFXiAdlEHI
+         MOl7xQcITcqAi8kEmkQZeVP9JhUFBg0Y2hDCV9jZsq8cACSTmPMEraSRDXAbcmMqdY2i
+         WIxR+ba/wJ6bZ4wyPiOW4TzGS8jBpZLI0frOzSqPgjKqtpiZ5C6LI5lBoE9vfLzV13aj
+         E4lG7ZDx8vddONjM/G4VsainecpOjvLzRVKLEvsU3WJDk6FNp5aQKPJ92qu7r95VTCNW
+         9e/ENAlk22sgytAuyCk8508oyLXZ9kbfQeWujtLs4VjfCSWOuyAW6qgMT+vSnUCqFzcu
+         fGQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693417876; x=1694022676;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mWxHZBHe+McomQO2YHa9mxYrBp2VqVWidmsS0Hpwi+s=;
-        b=CEgC8PgPvJ70BKe8AtrUJGhXEaq/vs7JJ6EUwMb0msjPRcV1PCSF+0d568/XxUvDWs
-         igvPVpJX8sF7wcBaSJj3HUP2QYm38H0HrHOnlNg82AkQNXc6afijbCB9xBWMiSsX82p5
-         lMicyJLN3bfg2GCMaKEuC08CI5Rvi4eXltccCDIoyJEbUmdo5wg1kMI2LDUZl8igUS7Q
-         rx+eSr/iSmh5xvqYlJT1qZVZIcHK3Ex9qX60MF/m9LBcaoYH/em9GzesCrSFVu/OOIOd
-         LHBnRalBGKj/JeIfoTuiZ++3EAWBXsHC1gM7XXLVOycf2L4MulIi9LfuDxBdL/7bSxe1
-         uhTA==
-X-Gm-Message-State: AOJu0YwUZlG2fTuDTFxYh2GVlfmrbZXQIQuMVp0RYu7tzyaWGS/iOLhs
-        05fsuibPFjXfC3D3Z+fr3Qbme0vGPR0=
-X-Google-Smtp-Source: AGHT+IFOnDLb75qnIk8shTUqbVkDhI7QMBhXtBxk+doHCAIlVlzWjbe70pnsbZITl3aGZjTkxhiRNA==
-X-Received: by 2002:a17:90b:196:b0:268:81c6:a01f with SMTP id t22-20020a17090b019600b0026881c6a01fmr2926973pjs.26.1693417875803;
-        Wed, 30 Aug 2023 10:51:15 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id nh5-20020a17090b364500b0026b0b4ed7b1sm1525450pjb.15.2023.08.30.10.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 10:51:15 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 30 Aug 2023 07:51:13 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: WQ_UNBOUND warning since recent workqueue refactoring
-Message-ID: <ZO-BkaGuVCgdr3wc@slm.duckdns.org>
-References: <f7e21caa-e98d-e5b5-932a-fe12d27fde9b@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7e21caa-e98d-e5b5-932a-fe12d27fde9b@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693417893; x=1694022693;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EYjQFc4xOJMLhqSY/15Eo/bkP9OF+XNV2qczMiBYtL4=;
+        b=g2Xq3VBpOxzrgz2Fw+LX7sqONCxGLA5t5ebCCQm8PAJw0J14MQ/gZcoHJAAXT3JEKq
+         9+zudIIkGll5O79EDi8xaAhHXXEzvnTv5F5nknjKAd2fVw9kNgNvsVtG+2a8LwZgXdfn
+         ULyRdjVoPzhUMGzb1t9dUkGYj/rr0bxy4zH7Gi/OKzmKvT+bs6jsM55DRTkp8MTDc+74
+         Fi/Llfh1DXgTzpnOmJSU/wDVJ5mOweWzWbDeIwVkwXf5qEXwq9+5Ay+HRP/K4pBFNBDn
+         8D9anbtZ6U42j5hXaGTeSbGZ67H3v8puIAkyjEZpMlNObr+GHiLu59cLwCEEOK98wm7V
+         Dsbw==
+X-Gm-Message-State: AOJu0YwH5E4ILCysbbCT8PTifpG/r0lCtlLpSAYnlGBM022WeWAI51JT
+        x191LWGu2At2bg7P7NanNW+eCCm1ie6Y52s11A==
+X-Google-Smtp-Source: AGHT+IGL/3lcQ6hwMvsl4p1gk/LCm0paBP0RD6v6Kz3Tt1iisx7fE8BgSUyT/0wksBkGcJvZoAMVnrwDfWF9o8Lg1w==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:5b1b:b0:1c0:e9e9:ae91 with
+ SMTP id ds27-20020a0568705b1b00b001c0e9e9ae91mr137879oab.3.1693417893238;
+ Wed, 30 Aug 2023 10:51:33 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 17:51:29 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAKCB72QC/32NTQrCMBSEr1Le2kh+TLWuvId0EZLX9EGblESCU
+ nJ3Yw8gs/oG5psdMibCDPduh4SFMsXQQJ46sLMJHhm5xiC5VPwmB7ZSzhR8McmhXRhOxPSgeG+
+ MndBdoA231Nr3IX2OjWfKr5g+x0cRv/avrgjWohzX2mgtrv3Dx+gXPNu4wlhr/QIVCrnRtQAAA A==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693417892; l=3644;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=+vRGVRwlIjkmcXJXBfhvIJnVrDxDHX9+bhatyE7XQZE=; b=tEmNmV0Gd9vM2MDL3PKKkeIiRgAoxL8apKcKfw1CvhU6tPKZlGnans1x4nL4cCT6uVZeVgfd6
+ lVCgmhdzg/wB7MReF69x2zwkmSByyHgiMvfwCsafFz90SSsJqUm4woN
+X-Mailer: b4 0.12.3
+Message-ID: <20230830-missingvardecl-efi-v2-1-818081a204d2@google.com>
+Subject: [PATCH v2] efi: fix -Wmissing-variable-declarations warning
+From:   Justin Stitt <justinstitt@google.com>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+When building x86/defconfig with Clang-18 I encounter the following warnings:
+| arch/x86/platform/efi/efi.c:934:23: warning: no previous extern declaration for non-static variable 'efi_attr_fw_vendor' [-Wmissing-variable-declarations]
+|   934 | struct kobj_attribute efi_attr_fw_vendor = __ATTR_RO(fw_vendor);
+| arch/x86/platform/efi/efi.c:935:23: warning: no previous extern declaration for non-static variable 'efi_attr_runtime' [-Wmissing-variable-declarations]
+|   935 | struct kobj_attribute efi_attr_runtime = __ATTR_RO(runtime);
+| arch/x86/platform/efi/efi.c:936:23: warning: no previous extern declaration for non-static variable 'efi_attr_config_table' [-Wmissing-variable-declarations]
+|   936 | struct kobj_attribute efi_attr_config_table = __ATTR_RO(config_table);
 
-(cc'ing i915 folks)
+These symbols are declared extern in drivers/firmware/efi/efi.c. Move
+the declarations to linux/efi.h to resolve these warnings.
 
-On Wed, Aug 30, 2023 at 04:57:42PM +0200, Heiner Kallweit wrote:
-> Recently I started to see the following warning on linux-next and presumably
-> this may be related to the refactoring of the workqueue core code.
-> 
-> [   56.900223] workqueue: output_poll_execute [drm_kms_helper] hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
-> [   56.923226] workqueue: i915_hpd_poll_init_work [i915] hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
-> [   97.860430] workqueue: output_poll_execute [drm_kms_helper] hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
-> [   97.884453] workqueue: i915_hpd_poll_init_work [i915] hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
-> 
-> Adding WQ_UNBOUND to these queues didn't change the behavior.
+Also, trim a trailing space from efi_set_variable_t typedef.
 
-That should have made them go away as the code path isn't active at all for
-WQ_UNBOUND workqueues. Can you please double check?
+Link: https://github.com/ClangBuiltLinux/linux/issues/1920
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- Don't use static. Instead move symbols to header file (thanks Ard)
+- Remove duplicated warnings output from b4 (thanks Ard)
+- Link to v1: https://lore.kernel.org/r/20230829-missingvardecl-efi-v1-1-13d055a55176@google.com
+---
+Note: build-tested.
 
-> Maybe relevant: I run the affected system headless.
+Also, a question: Why does the compiler warn at all? The extern
+declarations _do_ exist as Ard points out [1].
 
-i915 folks, workqueue recently added debug warnings which trigger when a
-per-cpu work item hogs the CPU for too long - 10ms in this case. This is
-problematic because such work item can stall other per-cpu work items.
+[1]: https://lore.kernel.org/all/CAMj1kXE_xs+wWno4G4U+6CFCOwO7JWcmNv4et5=W=ZRrQatWnQ@mail.gmail.com/
+---
+ drivers/firmware/efi/efi.c | 3 ---
+ include/linux/efi.h        | 6 +++++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-* Is it expected for the above two work functions to occupy the CPU for over
-  10ms repeatedly?
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index 1599f1176842..7b4e59ccf09e 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -161,9 +161,6 @@ static ssize_t fw_platform_size_show(struct kobject *kobj,
+ 	return sprintf(buf, "%d\n", efi_enabled(EFI_64BIT) ? 64 : 32);
+ }
+ 
+-extern __weak struct kobj_attribute efi_attr_fw_vendor;
+-extern __weak struct kobj_attribute efi_attr_runtime;
+-extern __weak struct kobj_attribute efi_attr_config_table;
+ static struct kobj_attribute efi_attr_fw_platform_size =
+ 	__ATTR_RO(fw_platform_size);
+ 
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index ab088c662e88..32f7ca60b0e9 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -287,7 +287,7 @@ typedef efi_status_t efi_get_variable_t (efi_char16_t *name, efi_guid_t *vendor,
+ 					 unsigned long *data_size, void *data);
+ typedef efi_status_t efi_get_next_variable_t (unsigned long *name_size, efi_char16_t *name,
+ 					      efi_guid_t *vendor);
+-typedef efi_status_t efi_set_variable_t (efi_char16_t *name, efi_guid_t *vendor, 
++typedef efi_status_t efi_set_variable_t (efi_char16_t *name, efi_guid_t *vendor,
+ 					 u32 attr, unsigned long data_size,
+ 					 void *data);
+ typedef efi_status_t efi_get_next_high_mono_count_t (u32 *count);
+@@ -632,6 +632,10 @@ typedef struct {
+ 
+ extern unsigned long __ro_after_init efi_rng_seed;		/* RNG Seed table */
+ 
++extern __weak struct kobj_attribute efi_attr_fw_vendor;
++extern __weak struct kobj_attribute efi_attr_runtime;
++extern __weak struct kobj_attribute efi_attr_config_table;
++
+ /*
+  * All runtime access to EFI goes through this structure:
+  */
 
-* If so, can we make them use an unbound workqueue instead?
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230829-missingvardecl-efi-59306aacfed4
 
-Thanks.
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
--- 
-tejun
