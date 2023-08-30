@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1812778E31D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC2E78E320
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 01:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239899AbjH3XSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 19:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
+        id S1344403AbjH3XSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 19:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbjH3XSO (ORCPT
+        with ESMTP id S1344402AbjH3XSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 19:18:14 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B66A1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:18:10 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7928ba24936so11977239f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:18:10 -0700 (PDT)
+        Wed, 30 Aug 2023 19:18:21 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D79C2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:18:15 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7927f36120cso11966539f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 16:18:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693437489; x=1694042289; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IomW+Mec9sthmR9cu2/c2HOTyUZrOLUcRUv85KAO91E=;
-        b=HeGKYJiVQcey1hhJvHAPgIWumyvkUl7DzP3F21rzsplSxBigebVkhwe08kAbeBQRxf
-         BtpZx0wKFbXDts9uRh953LzYYHha8EQaQPq1uaeLh7EfncrEBlGlnVmyHCSh9pPpnKX8
-         rSNjJGqoSWi+r6YgytUKv8fYf8tVQe2mg+ytQ=
+        d=chromium.org; s=google; t=1693437495; x=1694042295; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eHtRVfZdazalwXF7/K/X+IK1quBJnoh9ttNrkKe1UhE=;
+        b=MyqsxcjLJHpDx+Zuo9Crtc2OR4po45WncypPEfOpEPkTUhzHbjl7K0V5dcg2fiEn23
+         TqFBlVSVrj5/ClksIcvWTJIdRDCAdSkJehN2yIpkLZ/myDaJTD7eKP/NKl2hVZn91FMB
+         9c2GjWRAMTmPvkd0/NMUhF3kwdEmY3TJiqtJ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693437489; x=1694042289;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IomW+Mec9sthmR9cu2/c2HOTyUZrOLUcRUv85KAO91E=;
-        b=PolIrFdJ+hJ1YqGdRytRGH5wjR0Bxykrs41Dg2n8JxPco2XeI0Hozf/mz4R2dEPkp0
-         aXRfFuyZGDLmAk7C6Q1feeaRJIJjTINuzbspwEJv+InBrG25uZX6dAP96M31nT3oFCEs
-         /St41pSfSrcUwaVSi0Qvpq3WD5zq2HIY3RWvpz/QYbReRiqAQvcg1te65fnk7b+FpkEc
-         ktRWdfMaht/zHiMsgmEkaurGbBW1fcJwOAYE/ekWU6XfR0JXnP+UPT6jTRzcpuxNpJTZ
-         lO2qlI6I+pqfWpGutHDxuYj7t52nuUYR12oCE6aMayjYIOP1A+7G24ufbnxn49v8Ys+7
-         7nvg==
-X-Gm-Message-State: AOJu0YwjLPJ+NRQA74ZtZ7G7xqw22JKl0MDmL1+AjpvfNk80OJHb7gIR
-        8Wq3mMaVL5B9VA6rzPTGQC4OiA==
-X-Google-Smtp-Source: AGHT+IEYGJNH1CGCeQsbWkow001Dg/4CtvKV/pF2SGqYbrCiviXf5gzS1igFQo1OGrX4mpY8x0Tnlg==
-X-Received: by 2002:a5e:a706:0:b0:78b:d0a9:34fb with SMTP id b6-20020a5ea706000000b0078bd0a934fbmr3795029iod.20.1693437489546;
-        Wed, 30 Aug 2023 16:18:09 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693437495; x=1694042295;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eHtRVfZdazalwXF7/K/X+IK1quBJnoh9ttNrkKe1UhE=;
+        b=FpHo72rtVymqbjX9urVrl6YRRvlp8x/tK2ntKs4a/UZI/g/OCjM9FlgtJHLrDrVYbE
+         jGjkYdnJKkg6AD0UyDzezPg4S8oKeAuyskfcNY2FpJ0NNqbvRTJ6ohNNDbJR4YNoPQlJ
+         X3pO0ia4dEIZ3MCzHeIGGWxXB3t+EIVye1QopW9LF10nkvO5TXMGKLes2Mapmg3cYLDS
+         ouikSkggL5uIgN/lCWtZzX2mzfwoPnSAhSWu+V+QmrWNbnDCE60bM6DN8dzDNs0J2Qbo
+         NI7LwNUE4hLG6XtJq6ZpKO4kqy9dxiUyRQbjLwxBIl1K+UeMDxOKtpB9cmxKgOxyp2zN
+         44Yw==
+X-Gm-Message-State: AOJu0YwsO1jH9R/Q1inPq6op1RvH4+lPMNXF7E9hmmAtqujsXa0ciEKe
+        le6RTu5xFwQFkFxkVFXvnT8lrQ==
+X-Google-Smtp-Source: AGHT+IEakavImaUnpU6sdboDG8r+uspqLawPT8R+8zuQfCmFsnJ9iwEhtG5lpm0/Jpn3CMcMbrd35w==
+X-Received: by 2002:a5e:d510:0:b0:783:6eef:1496 with SMTP id e16-20020a5ed510000000b007836eef1496mr3804390iom.19.1693437494858;
+        Wed, 30 Aug 2023 16:18:14 -0700 (PDT)
 Received: from kea.bld.corp.google.com ([2620:15c:183:200:b147:266a:7359:2232])
-        by smtp.gmail.com with ESMTPSA id z25-20020a5ec919000000b007951e14b951sm73360iol.25.2023.08.30.16.18.08
+        by smtp.gmail.com with ESMTPSA id z25-20020a5ec919000000b007951e14b951sm73360iol.25.2023.08.30.16.18.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 16:18:09 -0700 (PDT)
+        Wed, 30 Aug 2023 16:18:14 -0700 (PDT)
 From:   Simon Glass <sjg@chromium.org>
 To:     devicetree@vger.kernel.org
 Cc:     Maximilian Brune <maximilian.brune@9elements.com>,
@@ -63,10 +64,12 @@ Cc:     Maximilian Brune <maximilian.brune@9elements.com>,
         Rob Herring <robh@kernel.org>,
         Chiu Chasel <chasel.chiu@intel.com>,
         Simon Glass <sjg@chromium.org>
-Subject: [PATCH v5 1/4] Add reserved-memory
-Date:   Wed, 30 Aug 2023 17:17:49 -0600
-Message-ID: <20230830231758.2561402-1-sjg@chromium.org>
+Subject: [PATCH v5 2/4] Bring in some other reserved-memory files
+Date:   Wed, 30 Aug 2023 17:17:50 -0600
+Message-ID: <20230830231758.2561402-2-sjg@chromium.org>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+In-Reply-To: <20230830231758.2561402-1-sjg@chromium.org>
+References: <20230830231758.2561402-1-sjg@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -79,206 +82,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bring in this file from Linux v6.5
+Add schema yaml files from v6.5 which are not vendor-specific, nor
+Linux-specific.
 
 Signed-off-by: Simon Glass <sjg@chromium.org>
 ---
 
-(no changes since v4)
+Changes in v5:
+- Trim back to just a subset of mostly generic schemas
 
 Changes in v4:
 - New patch
 
- .../reserved-memory/reserved-memory.yaml      | 181 ++++++++++++++++++
- 1 file changed, 181 insertions(+)
- create mode 100644 dtschema/schemas/reserved-memory/reserved-memory.yaml
+ .../schemas/reserved-memory/framebuffer.yaml  | 52 ++++++++++
+ .../reserved-memory/memory-region.yaml        | 40 ++++++++
+ .../reserved-memory/shared-dma-pool.yaml      | 97 +++++++++++++++++++
+ 3 files changed, 189 insertions(+)
+ create mode 100644 dtschema/schemas/reserved-memory/framebuffer.yaml
+ create mode 100644 dtschema/schemas/reserved-memory/memory-region.yaml
+ create mode 100644 dtschema/schemas/reserved-memory/shared-dma-pool.yaml
 
-diff --git a/dtschema/schemas/reserved-memory/reserved-memory.yaml b/dtschema/schemas/reserved-memory/reserved-memory.yaml
+diff --git a/dtschema/schemas/reserved-memory/framebuffer.yaml b/dtschema/schemas/reserved-memory/framebuffer.yaml
 new file mode 100644
-index 0000000..c680e39
+index 0000000..851ec24
 --- /dev/null
-+++ b/dtschema/schemas/reserved-memory/reserved-memory.yaml
-@@ -0,0 +1,181 @@
++++ b/dtschema/schemas/reserved-memory/framebuffer.yaml
+@@ -0,0 +1,52 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/reserved-memory/reserved-memory.yaml#
++$id: http://devicetree.org/schemas/reserved-memory/framebuffer.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: /reserved-memory Child Node Common
++title: /reserved-memory framebuffer node
 +
 +maintainers:
 +  - devicetree-spec@vger.kernel.org
 +
-+description: >
-+  Reserved memory is specified as a node under the /reserved-memory node. The
-+  operating system shall exclude reserved memory from normal usage one can
-+  create child nodes describing particular reserved (excluded from normal use)
-+  memory regions. Such memory regions are usually designed for the special
-+  usage by various device drivers.
-+
-+  Each child of the reserved-memory node specifies one or more regions
-+  of reserved memory. Each child node may either use a 'reg' property to
-+  specify a specific range of reserved memory, or a 'size' property with
-+  optional constraints to request a dynamically allocated block of
-+  memory.
-+
-+  Following the generic-names recommended practice, node names should
-+  reflect the purpose of the node (ie. "framebuffer" or "dma-pool").
-+  Unit address (@<address>) should be appended to the name if the node
-+  is a static allocation.
++allOf:
++  - $ref: reserved-memory.yaml
 +
 +properties:
-+  reg: true
-+
-+  size:
-+    oneOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+      - $ref: /schemas/types.yaml#/definitions/uint64
++  compatible:
++    const: framebuffer
 +    description: >
-+      Length based on parent's \#size-cells. Size in bytes of memory to
-+      reserve.
++      This indicates a region of memory meant to be used as a framebuffer for
++      a set of display devices. It can be used by an operating system to keep
++      the framebuffer from being overwritten and use it as the backing memory
++      for a display device (such as simple-framebuffer).
 +
-+  alignment:
-+    oneOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+      - $ref: /schemas/types.yaml#/definitions/uint64
-+    description: >
-+      Length based on parent's \#size-cells. Address boundary for
-+      alignment of allocation.
++unevaluatedProperties: false
 +
-+  alloc-ranges:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description: >
-+      Address and Length pairs. Specifies regions of memory that are
-+      acceptable to allocate from.
++examples:
++  - |
++    / {
++        compatible = "foo";
++        model = "foo";
++        #address-cells = <1>;
++        #size-cells = <1>;
 +
-+  iommu-addresses:
++        chosen {
++            framebuffer {
++                compatible = "simple-framebuffer";
++                memory-region = <&fb>;
++            };
++        };
++
++        reserved-memory {
++            #address-cells = <1>;
++            #size-cells = <1>;
++            ranges;
++
++            fb: framebuffer@80000000 {
++                compatible = "framebuffer";
++                reg = <0x80000000 0x007e9000>;
++            };
++        };
++    };
++...
+diff --git a/dtschema/schemas/reserved-memory/memory-region.yaml b/dtschema/schemas/reserved-memory/memory-region.yaml
+new file mode 100644
+index 0000000..592f180
+--- /dev/null
++++ b/dtschema/schemas/reserved-memory/memory-region.yaml
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/reserved-memory/memory-region.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Reserved Memory Region
++
++maintainers:
++  - devicetree-spec@vger.kernel.org
++
++description: |
++  Regions in the /reserved-memory node may be referenced by other device
++  nodes by adding a memory-region property to the device node.
++
++select: true
++
++properties:
++  memory-region:
 +    $ref: /schemas/types.yaml#/definitions/phandle-array
 +    description: >
-+      A list of phandle and specifier pairs that describe static IO virtual
-+      address space mappings and carveouts associated with a given reserved
-+      memory region. The phandle in the first cell refers to the device for
-+      which the mapping or carveout is to be created.
++      Phandle to a /reserved-memory child node assigned to the device.
 +
-+      The specifier consists of an address/size pair and denotes the IO
-+      virtual address range of the region for the given device. The exact
-+      format depends on the values of the "#address-cells" and "#size-cells"
-+      properties of the device referenced via the phandle.
-+
-+      When used in combination with a "reg" property, an IOVA mapping is to
-+      be established for this memory region. One example where this can be
-+      useful is to create an identity mapping for physical memory that the
-+      firmware has configured some hardware to access (such as a bootsplash
-+      framebuffer).
-+
-+      If no "reg" property is specified, the "iommu-addresses" property
-+      defines carveout regions in the IOVA space for the given device. This
-+      can be useful if a certain memory region should not be mapped through
-+      the IOMMU.
-+
-+  no-map:
-+    type: boolean
++  memory-region-names:
++    $ref: /schemas/types.yaml#/definitions/string-array
 +    description: >
-+      Indicates the operating system must not create a virtual mapping
-+      of the region as part of its standard mapping of system memory,
-+      nor permit speculative access to it under any circumstances other
-+      than under the control of the device driver using the region.
-+
-+  reusable:
-+    type: boolean
-+    description: >
-+      The operating system can use the memory in this region with the
-+      limitation that the device driver(s) owning the region need to be
-+      able to reclaim it back. Typically that means that the operating
-+      system can use that region to store volatile or cached data that
-+      can be otherwise regenerated or migrated elsewhere.
-+
-+allOf:
-+  - if:
-+      required:
-+        - no-map
-+
-+    then:
-+      not:
-+        required:
-+          - reusable
-+
-+  - if:
-+      required:
-+        - reusable
-+
-+    then:
-+      not:
-+        required:
-+          - no-map
-+
-+oneOf:
-+  - oneOf:
-+      - required:
-+          - reg
-+
-+      - required:
-+          - size
-+
-+  - oneOf:
-+      # IOMMU reservations
-+      - required:
-+          - iommu-addresses
-+
-+      # IOMMU mappings
-+      - required:
-+          - reg
-+          - iommu-addresses
++      A list of names, one for each corresponding entry in the
++      memory-region property
 +
 +additionalProperties: true
 +
 +examples:
 +  - |
-+    / {
-+      compatible = "foo";
-+      model = "foo";
-+
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      reserved-memory {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+        ranges;
-+
-+        adsp_resv: reservation-adsp {
-+          /*
-+           * Restrict IOVA mappings for ADSP buffers to the 512 MiB region
-+           * from 0x40000000 - 0x5fffffff. Anything outside is reserved by
-+           * the ADSP for I/O memory and private memory allocations.
-+           */
-+          iommu-addresses = <&adsp 0x0 0x00000000 0x00 0x40000000>,
-+                            <&adsp 0x0 0x60000000 0xff 0xa0000000>;
-+        };
-+
-+        fb: framebuffer@90000000 {
-+          reg = <0x0 0x90000000 0x0 0x00800000>;
-+          iommu-addresses = <&dc0 0x0 0x90000000 0x0 0x00800000>;
-+        };
-+      };
-+
-+      bus@0 {
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges = <0x0 0x0 0x0 0x40000000>;
-+
-+        adsp: adsp@2990000 {
-+          reg = <0x2990000 0x2000>;
-+          memory-region = <&adsp_resv>;
-+        };
-+
-+        dc0: display@15200000 {
-+          reg = <0x15200000 0x10000>;
-+          memory-region = <&fb>;
-+        };
-+      };
++    fb0: video@12300000 {
++        /* ... */
++        reg = <0x12300000 0x1000>;
++        memory-region = <&display_reserved>;
 +    };
++
++...
+diff --git a/dtschema/schemas/reserved-memory/shared-dma-pool.yaml b/dtschema/schemas/reserved-memory/shared-dma-pool.yaml
+new file mode 100644
+index 0000000..457de09
+--- /dev/null
++++ b/dtschema/schemas/reserved-memory/shared-dma-pool.yaml
+@@ -0,0 +1,97 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: /reserved-memory DMA pool
++
++maintainers:
++  - devicetree-spec@vger.kernel.org
++
++allOf:
++  - $ref: reserved-memory.yaml
++
++properties:
++  compatible:
++    oneOf:
++      - const: shared-dma-pool
++        description: >
++          This indicates a region of memory meant to be used as a shared
++          pool of DMA buffers for a set of devices. It can be used by an
++          operating system to instantiate the necessary pool management
++          subsystem if necessary.
++
++      - const: restricted-dma-pool
++        description: >
++          This indicates a region of memory meant to be used as a pool
++          of restricted DMA buffers for a set of devices. The memory
++          region would be the only region accessible to those devices.
++          When using this, the no-map and reusable properties must not
++          be set, so the operating system can create a virtual mapping
++          that will be used for synchronization. The main purpose for
++          restricted DMA is to mitigate the lack of DMA access control
++          on systems without an IOMMU, which could result in the DMA
++          accessing the system memory at unexpected times and/or
++          unexpected addresses, possibly leading to data leakage or
++          corruption. The feature on its own provides a basic level of
++          protection against the DMA overwriting buffer contents at
++          unexpected times. However, to protect against general data
++          leakage and system memory corruption, the system needs to
++          provide way to lock down the memory access, e.g., MPU. Note
++          that since coherent allocation needs remapping, one must set
++          up another device coherent pool by shared-dma-pool and use
++          dma_alloc_from_dev_coherent instead for atomic coherent
++          allocation.
++
++  linux,cma-default:
++    type: boolean
++    description: >
++      If this property is present, then Linux will use the region for
++      the default pool of the contiguous memory allocator.
++
++  linux,dma-default:
++    type: boolean
++    description: >
++      If this property is present, then Linux will use the region for
++      the default pool of the consistent DMA allocator.
++
++if:
++  properties:
++    compatible:
++      contains:
++        const: restricted-dma-pool
++then:
++  properties:
++    no-map: false
++    reusable: false
++
++unevaluatedProperties: false
++
++examples:
++  - |
++      reserved-memory {
++          #address-cells = <1>;
++          #size-cells = <1>;
++          ranges;
++
++          /* global autoconfigured region for contiguous allocations */
++          linux,cma {
++              compatible = "shared-dma-pool";
++              reusable;
++              size = <0x4000000>;
++              alignment = <0x2000>;
++              linux,cma-default;
++          };
++
++          display_reserved: framebuffer@78000000 {
++              reg = <0x78000000 0x800000>;
++          };
++
++          restricted_dma_reserved: restricted-dma-pool@50000000 {
++              compatible = "restricted-dma-pool";
++              reg = <0x50000000 0x4000000>;
++          };
++      };
++
 +...
 -- 
 2.42.0.rc2.253.gd59a3bf2b4-goog
