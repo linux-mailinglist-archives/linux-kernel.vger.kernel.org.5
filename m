@@ -2,68 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B0678E03F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E02778DFF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbjH3TQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        id S242932AbjH3TOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243744AbjH3LkI (ORCPT
+        with ESMTP id S243756AbjH3LmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:40:08 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194D81B0;
-        Wed, 30 Aug 2023 04:40:05 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-401da71b7c5so12957785e9.2;
-        Wed, 30 Aug 2023 04:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693395603; x=1694000403; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IXiOAz/5YldoVo6YMY0MxhgKtPGOmCvkDjVmYV3HYIQ=;
-        b=BGNaxjOmAEMdR/I75dUCQ2Rli93aAo60g7FLg2BUM8HFmFroBLlLk9trSmceKZPG0B
-         y5XSTcZEoS4LR92UV4fmFV1Mz11isDvPvYF6b/6KgGTIy8ZCxLlHJQQa8zhFkTdA/IEX
-         SPMSHXmS1g6/kgY7B3Cr+oF42jgKh4GOPXVg76VILpO3hd2GCe66rix1mCA4pWSBhr5y
-         S+TpHP15o3yAJcNhlkloSr/QXRbm8lPMxxd9tY+gLxSj4GF8LAsGUXNKacxAfGUuu5B4
-         5+tD1MjFQlyW6orHZyJGzbHdVFotKA974aK2ksmat+zNNHOmufIsvBnyhCda2JINkDbf
-         Pk9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693395603; x=1694000403;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IXiOAz/5YldoVo6YMY0MxhgKtPGOmCvkDjVmYV3HYIQ=;
-        b=Tric1sHA41uSoT0VoHb4LNL6eLFBndWsuLToB3KMaChFdDEs1N57dxOh+A3zghSiS2
-         yej/tR89gz5fiM8muddZF9Sp79RnJKj8hj3fIh+iFZCeVVi07V+/+JFq9lJpRbwJH9yT
-         EC5hWMc7zjsGuukz0jTswYHvB5UdgCBZm5CtSpzt+MOb5ee3Fu6k0KlpePROtA4r3y43
-         x8A1pGmdJNCtRO578iqLnakSJ7sdt6RRpF0LofegVutieoXJlUL63n7UKm2NwR2JhM4O
-         zpudrrQZaR8gg4HISPfVKaawnBWkEzOhQJcH5Kph6NhsHPoKfcTKtg690KbGwqhCsUHJ
-         cA6g==
-X-Gm-Message-State: AOJu0YylLwNb/xwYIYBf6M87lUsNfSE+/OZvfJsg8ync3Xp3dVOmuWpS
-        zgSHfVrx7WiB02zwLa/G85zXDoW7j62Ejw==
-X-Google-Smtp-Source: AGHT+IHkuPMEpQJgVFAWz/Fgk+XKScfrDr/wI7OXLhwOUAYdh7hAgUFiEqgxB7A6vvAQv0JSJMfCog==
-X-Received: by 2002:a7b:cbc6:0:b0:3fe:18be:76f8 with SMTP id n6-20020a7bcbc6000000b003fe18be76f8mr1744032wmi.38.1693395603237;
-        Wed, 30 Aug 2023 04:40:03 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id f7-20020a1c6a07000000b003fe407ca05bsm2023455wmc.37.2023.08.30.04.40.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 04:40:02 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 12:40:01 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Guo Ren <guoren@linux.alibaba.com>,
-        Oleg Nesterov <oleg@redhat.com>, Guo Ren <guoren@kernel.org>
-Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        regressions@lists.linux.dev
-Subject: mainline build failure due to c8171a86b274 ("csky: Fixup
- -Wmissing-prototypes warning")
-Message-ID: <ZO8qkS0Skg9L4xzr@debian>
+        Wed, 30 Aug 2023 07:42:16 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADC401B0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 04:42:13 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E26402F4;
+        Wed, 30 Aug 2023 04:42:52 -0700 (PDT)
+Received: from [10.163.57.203] (unknown [10.163.57.203])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C3E33F64C;
+        Wed, 30 Aug 2023 04:42:09 -0700 (PDT)
+Message-ID: <e4b260cf-e0bd-d593-c630-e3b8e0d11253@arm.com>
+Date:   Wed, 30 Aug 2023 17:12:07 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V6 0/2] coresight: trbe: Enable ACPI based devices
+Content-Language: en-US
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>
+Cc:     Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20230829135405.1159449-1-anshuman.khandual@arm.com>
+ <76135689-79c3-9845-15ad-847cdac8ac59@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <76135689-79c3-9845-15ad-847cdac8ac59@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,76 +51,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On 8/30/23 14:32, Suzuki K Poulose wrote:
+> Hi Will
+> 
+> On 29/08/2023 14:54, Anshuman Khandual wrote:
+>> These are remaining coresight patches after fixing the merge conflict which
+>> applies on coresight/next coresight-next-v6.6.
+>>
+>> Changes in V6:
+>>
+>> - Fixed te merge conflict
+>>
+> 
+> 
+> Please could you confirm if the commits [0] in your for-next/perf branch
+> are stable ? Accordingly I could merge these patches on top of your
+> commits and send them to Greg.
+> 
+> [0] https://git.kernel.org/will/c/1aa3d0274a4a
 
-The latest mainline kernel branch fails to build csky allmodconfig with
-the error:
+Both these patches are already in the mainline kernel.
 
-In file included from ./arch/csky/include/asm/ptrace.h:7,
-                 from ./arch/csky/include/asm/processor.h:8,
-                 from ./include/linux/prefetch.h:15,
-                 from drivers/net/ethernet/intel/i40e/i40e_txrx.c:4:
-./arch/csky/include/asm/traps.h:43:11: error: expected ';' before 'void'
-   43 | asmlinkage void do_trap_unknown(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:44:11: error: expected ';' before 'void'
-   44 | asmlinkage void do_trap_zdiv(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:45:11: error: expected ';' before 'void'
-   45 | asmlinkage void do_trap_buserr(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:46:11: error: expected ';' before 'void'
-   46 | asmlinkage void do_trap_misaligned(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:47:11: error: expected ';' before 'void'
-   47 | asmlinkage void do_trap_bkpt(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:48:11: error: expected ';' before 'void'
-   48 | asmlinkage void do_trap_illinsn(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:49:11: error: expected ';' before 'void'
-   49 | asmlinkage void do_trap_fpe(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:50:11: error: expected ';' before 'void'
-   50 | asmlinkage void do_trap_priv(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:51:11: error: expected ';' before 'void'
-   51 | asmlinkage void trap_c(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
-./arch/csky/include/asm/traps.h:53:11: error: expected ';' before 'void'
-   53 | asmlinkage void do_notify_resume(struct pt_regs *regs,
-      |           ^~~~~
-      |           ;
-In file included from ./arch/csky/include/asm/processor.h:8,
-                 from ./include/linux/prefetch.h:15,
-                 from drivers/net/ethernet/intel/i40e/i40e_txrx.c:4:
-./arch/csky/include/asm/ptrace.h:99:11: error: expected ';' before 'int'
-   99 | asmlinkage int syscall_trace_enter(struct pt_regs *regs);
-      |           ^~~~
-      |           ;
-./arch/csky/include/asm/ptrace.h:100:11: error: expected ';' before 'void'
-  100 | asmlinkage void syscall_trace_exit(struct pt_regs *regs);
-      |           ^~~~~
-      |           ;
+commit 1aa3d0274a4aac338ee45a3dfc3b17c944bcc2bc
+Author: Anshuman Khandual <anshuman.khandual@arm.com>
+Date:   Thu Aug 17 11:24:03 2023 +0530
 
-git bisect pointed to c8171a86b274 ("csky: Fixup -Wmissing-prototypes warning").
+    arm_pmu: acpi: Add a representative platform device for TRBE
+    
+    ACPI TRBE does not have a HID for identification which could create and add
+    a platform device into the platform bus. Also without a platform device, it
+    cannot be probed and bound to a platform driver.
+    
+    This creates a dummy platform device for TRBE after ascertaining that ACPI
+    provides required interrupts uniformly across all cpus on the system. This
+    device gets created inside drivers/perf/arm_pmu_acpi.c to accommodate TRBE
+    being built as a module.
+    
+    Cc: Catalin Marinas <catalin.marinas@arm.com>
+    Cc: Will Deacon <will@kernel.org>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: linux-arm-kernel@lists.infradead.org
+    Cc: linux-kernel@vger.kernel.org
+    Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+    Link: https://lore.kernel.org/r/20230817055405.249630-3-anshuman.khandual@arm.com
+    Signed-off-by: Will Deacon <will@kernel.org>
 
-Reverting the commit has fixed the build failure.
+commit 81e5ee471609848ee1ebf3beb2a46788113fe0eb
+Author: Anshuman Khandual <anshuman.khandual@arm.com>
+Date:   Thu Aug 17 11:24:02 2023 +0530
 
-I will be happy to test any patch or provide any extra log if needed.
-
-#regzbot introduced: c8171a86b27401aa1f492dd1f080f3102264f1ab
-
-
--- 
-Regards
-Sudip
+    arm_pmu: acpi: Refactor arm_spe_acpi_register_device()
+    
+    Sanity checking all the GICC tables for same interrupt number, and ensuring
+    a homogeneous ACPI based machine, could be used for other platform devices
+    as well. Hence this refactors arm_spe_acpi_register_device() into a common
+    helper arm_acpi_register_pmu_device().
+    
+    Cc: Catalin Marinas <catalin.marinas@arm.com>
+    Cc: Will Deacon <will@kernel.org>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: linux-arm-kernel@lists.infradead.org
+    Cc: linux-kernel@vger.kernel.org
+    Co-developed-by: Will Deacon <will@kernel.org>
+    Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+    Link: https://lore.kernel.org/r/20230817055405.249630-2-anshuman.khandual@arm.com
+    Signed-off-by: Will Deacon <will@kernel.org>
