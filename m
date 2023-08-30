@@ -2,116 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFC478DC56
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5985D78DE5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242776AbjH3Soo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
+        id S240554AbjH3TBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244268AbjH3MtA (ORCPT
+        with ESMTP id S244271AbjH3Mt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:49:00 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E045CD2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:48:57 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bd0d19a304so52069801fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:48:57 -0700 (PDT)
+        Wed, 30 Aug 2023 08:49:27 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D53132
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:49:24 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401f503b529so3618215e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 05:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693399735; x=1694004535; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qcnhbfxFM27/YYGpjtvsx/QJ64Wrwp+MNdL+XQ3gmi0=;
-        b=mao3j/LfnX3WA+olYxDSiF9ldkCv8iqzX1KMZG/3CPoUxWJebGkwK+hq6eeOX+fot6
-         lg/J4FXhT5CYP8eMhTaL7lIAqWNu37pkDl/Jw829kLoGvtMOpzImXWtddNTaS/3cpRiC
-         vi0avOs/nZXXaF58nO6ycumDgkB0v/ycYZK4FAVuegWrQjjrSUen/r3L5JEeP0ruoSsx
-         HLuqdWI+9NC1K1oSI9PpH4wQC1BjxqiNyspJ0MNU8835iPMzJdb+B1yL7kAuPvWxnNGN
-         6uJ8uilLZjLYv3sCGxUi5VGXhClf1/hwAGqqrxvu0s7IUB7i1vkUj1NPlfpr9uRbJ5JE
-         afqA==
+        d=linaro.org; s=google; t=1693399763; x=1694004563; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=icItx3AAoUpU7OYRWsoDm1Wmtkp4XHu2/zCUAdAv9gQ=;
+        b=TXIwL0vczLsOzeT9kYFOIfoIiOUJ4+zDFqAmhxTXWXLQc4LBWY5rbf6udQ/b1SlTeU
+         b/I/ZfTRDsq5wN2a6kqhhx68xCGuglwHFqU7Yuogo30bJRALBuQa7BOizre6CEKDut++
+         zHW+XnssN7ga+qa0keUmxkZgL4ashpBohmY3wakR8ZmYYJNtsIK08RpJyZPG9dEQkeJp
+         FbUPOwgc8KpdjPwUfbDfDFonZaLEMiaDMVRHPJvx1qnaqnigfcl52fdhBUjBZjhZSRsq
+         7KN8uOiMiV+BPHIv3SU1sy+i4GcqXVro+9hxkAeClvRPxFHYMQ1AkxZfqtKKoKYD2TSm
+         xnSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693399735; x=1694004535;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qcnhbfxFM27/YYGpjtvsx/QJ64Wrwp+MNdL+XQ3gmi0=;
-        b=RmL602QqrtEXmagb+z3piFKOgaHk9v3hWrqrHXkNnaw6tWObPZjSjSj7ZNsfs/Lpoc
-         1m4O/CqtMehqjnzpKNgK1zLN5BFI8LYDauGkHUKEoP8Dy+Z+aO+uPFJFcMLS3ydu/DaC
-         k4EItkFSBBuwK8dH0z1UxPagj/GPozypgQ1U5OQB2OkytwRhvStumiW1JTpPFpNdTAgh
-         DXELmeMOMaAgWZoHgbXUPJOmbJr7PnIyJwAXG1OkiDyFNbBSZKnEeecIyYKi+k39IBrW
-         xC3lzvirRHReUoEKyH+K+QJNLuAJdJJ+2ZGIbD0ldt3Bt60wcwkBT+ygRK0LnNCB6wW9
-         LqIg==
-X-Gm-Message-State: AOJu0YwM3HZhM918HkSIWkdGA51yOV0jtB2wArT5UIzK4YR6KfCdQsET
-        IP9Ug7S0iVynh0y+JH4o98loNg==
-X-Google-Smtp-Source: AGHT+IGuEf/6YYmry7qMXTc0R82etA6M+I8h4gEU9tlVVfSLYuGUNUbYuHBtbqImj5xG1Rsfod5A9g==
-X-Received: by 2002:a2e:9097:0:b0:2bc:df55:eec7 with SMTP id l23-20020a2e9097000000b002bcdf55eec7mr1471279ljg.40.1693399735467;
-        Wed, 30 Aug 2023 05:48:55 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id y23-20020a2e7d17000000b002b94b355527sm2602662ljc.32.2023.08.30.05.48.54
+        d=1e100.net; s=20221208; t=1693399763; x=1694004563;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=icItx3AAoUpU7OYRWsoDm1Wmtkp4XHu2/zCUAdAv9gQ=;
+        b=LhGtHBvT4pAAafF+H6501u6RmGMg+gKhkpra/MHLD6Z05YxYAMuDBXWSjn2DsEFRcE
+         eHYYVNPk8YIKdT4MGajgubJew/CEXYDk+HpOjU8L407Kr6W6DdYtVBT2Qcw2k30eqSMp
+         kJLfby9//MB3OEhFpuE7nGvmIc2X2CMIJ3On7y4q9mD/XPoYR6ykz0NIj5BCiN7LyW7R
+         8Jfdb7ZgSSbkLwmrK3D1kqXLz8uFoY6UK24hMjEcCkYg14NWpag2U176bm5nhDGuZA7Q
+         RHR4VrLYLAtTZKO3WxXSEhVaFAeYxsK4TbPlLzIsObbB3kWmYiAK85GR5W98iPMELjgl
+         Kvng==
+X-Gm-Message-State: AOJu0YwsDpIbhYVoTaCU/iVTHhcxGM4CKN0j+leZokiwjc6EeDBoaNOw
+        BOqLuLzF7XrfzHFPucDBVyDdwS49fOdN4nszrzk=
+X-Google-Smtp-Source: AGHT+IFlrU3LzNvhPuoIhYIOnZuXm+ouW+s6lNZGIAycwz4s7bnL1qAxU7DUK56J7UtJR+G7QVKLVA==
+X-Received: by 2002:adf:efc7:0:b0:319:6d91:28bf with SMTP id i7-20020adfefc7000000b003196d9128bfmr1741339wrp.60.1693399762716;
+        Wed, 30 Aug 2023 05:49:22 -0700 (PDT)
+Received: from myrica ([2.220.83.24])
+        by smtp.gmail.com with ESMTPSA id n9-20020a5d6609000000b0030647449730sm16542269wru.74.2023.08.30.05.49.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 05:48:55 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 30 Aug 2023 14:48:46 +0200
-Subject: [PATCH 7/7] arm64: dts: qcom: sm8550: Mark DWC3 as dma-coherent
+        Wed, 30 Aug 2023 05:49:22 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 13:49:19 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Vasant Hegde <vasant.hegde@amd.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Baolu Lu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
+Message-ID: <20230830124919.GA2855675@myrica>
+References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
+ <20230825023026.132919-10-baolu.lu@linux.intel.com>
+ <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <cbfbe969-1a92-52bf-f00c-3fb89feefd66@linux.intel.com>
+ <BN9PR11MB52768891BC89107AD291E45C8CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <a4fc5fa2-a234-286b-e108-7f54a7c70862@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230830-topic-8550_dmac2-v1-7-49bb25239fb1@linaro.org>
-References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
-In-Reply-To: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693399725; l=756;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=dnJcWN3O+4dW4BpW8WVC+TsWF2Kag9dSFf6u/P+2HPs=;
- b=KDPX0N5yhosxV7DxLW8v3QII3Iz3liG/NKaGK/vHLOmuih4YpdWfTsqd/ayF91PW+S56K/H4K
- XCytdh3vAcxBOt/+OrH8x6tmK7ntcZZOgz6Vk1YDjK8MpoyRm3PcN65
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a4fc5fa2-a234-286b-e108-7f54a7c70862@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a fairly new development, Qualcomm somehow made the DWC3 block
-cache-coherent. Annotate that.
+On Wed, Aug 30, 2023 at 04:32:47PM +0530, Vasant Hegde wrote:
+> Tian, Baolu,
+> 
+> On 8/30/2023 1:13 PM, Tian, Kevin wrote:
+> >> From: Baolu Lu <baolu.lu@linux.intel.com>
+> >> Sent: Saturday, August 26, 2023 4:01 PM
+> >>
+> >> On 8/25/23 4:17 PM, Tian, Kevin wrote:
+> >>>> +
+> >>>>   /**
+> >>>>    * iopf_queue_flush_dev - Ensure that all queued faults have been
+> >>>> processed
+> >>>>    * @dev: the endpoint whose faults need to be flushed.
+> >>> Presumably we also need a flush callback per domain given now
+> >>> the use of workqueue is optional then flush_workqueue() might
+> >>> not be sufficient.
+> >>>
+> >>
+> >> The iopf_queue_flush_dev() function flushes all pending faults from the
+> >> IOMMU queue for a specific device. It has no means to flush fault queues
+> >> out of iommu core.
+> >>
+> >> The iopf_queue_flush_dev() function is typically called when a domain is
+> >> detaching from a PASID. Hence it's necessary to flush the pending faults
+> >> from top to bottom. For example, iommufd should flush pending faults in
+> >> its fault queues after detaching the domain from the pasid.
+> >>
+> > 
+> > Is there an ordering problem? The last step of intel_svm_drain_prq()
+> > in the detaching path issues a set of descriptors to drain page requests
+> > and responses in hardware. It cannot complete if not all software queues
+> > are drained and it's counter-intuitive to drain a software queue after 
+> > the hardware draining has already been completed.
+> > 
+> > btw just flushing requests is probably insufficient in iommufd case since
+> > the responses are received asynchronously. It requires an interface to
+> > drain both requests and responses (presumably with timeouts in case
+> > of a malicious guest which never responds) in the detach path.
+> > 
+> > it's not a problem for sva as responses are synchrounsly delivered after
+> > handling mm fault. So fine to not touch it in this series but certainly
+> > this area needs more work when moving to support iommufd. 😊
+> > 
+> > btw why is iopf_queue_flush_dev() called only in intel-iommu driver?
+> > Isn't it a common requirement for all sva-capable drivers?
 
-Fixes: 7f7e5c1b037f ("arm64: dts: qcom: sm8550: Add USB PHYs and controller nodes")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+It's not needed by the SMMUv3 driver because it doesn't implement PRI yet,
+only the Arm-specific stall fault model where DMA transactions are held in
+the SMMU while waiting for the OS to handle IOPFs. Since a device driver
+must complete all DMA transactions before calling unbind(), with the stall
+model there are no pending IOPFs to flush on unbind(). PRI support with
+Stop Markers would add a call to iopf_queue_flush_dev() after flushing the
+SMMU PRI queue [2].
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index 8ee61c9383ec..95ba9a9ac78e 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -2944,6 +2944,7 @@ usb_1_dwc3: usb@a600000 {
- 				snps,usb2-lpm-disable;
- 				snps,has-lpm-erratum;
- 				tx-fifo-resize;
-+				dma-coherent;
- 
- 				ports {
- 					#address-cells = <1>;
+Moving the flush to the core shouldn't be a problem, as long as the driver
+gets a chance to flush the hardware queue first.
 
--- 
-2.42.0
+Thanks,
+Jean
 
+[2] https://jpbrucker.net/git/linux/commit/?h=sva/2020-12-14&id=bba76fb4ec631bec96f98f14a6cd13b2df81e5ce
+
+> 
+> I had same question when we did SVA implementation for AMD IOMMU [1]. Currently
+> we call queue_flush from remove_dev_pasid() path. Since PASID can be enabled
+> without ATS/PRI, I thought its individual drivers responsibility.
+> But looking this series, does it make sense to handle queue_flush in core layer?
+> 
+> [1]
+> https://lore.kernel.org/linux-iommu/20230823140415.729050-1-vasant.hegde@amd.com/T/#t
+> 
+> -Vasant
+> 
+> 
