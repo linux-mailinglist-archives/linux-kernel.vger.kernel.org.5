@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA31978E143
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A7978E14F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240957AbjH3VPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
+        id S241068AbjH3VSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240921AbjH3VPg (ORCPT
+        with ESMTP id S241046AbjH3VSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:15:36 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2183C110
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:15:05 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5008d16cc36so464920e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:15:05 -0700 (PDT)
+        Wed, 30 Aug 2023 17:18:41 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20203CF1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:18:11 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-ccc462deca6so15057276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693430037; x=1694034837; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lUJsE/IbwViG0qWxyMqWmvpU5f67FtToTgIAN58/gnQ=;
-        b=SU4TFEU5iPw8jHWmK8wq7KY9zoCgSHFSA3x+bPI3j9pJAvIlHHJBOY/6E9OtahIBuh
-         0iaAd3OHRPx5/wl+I9RWRU5/87wwKRg6012+DDeeyIEcQLOs3jNJK8v4Fz+16APN7FAk
-         /jplIHtuq3Mm41LVYu8oCeihZuyTI4en+p853JAPucR87iiYq5Y9O9/MnJkDrCIqKtyq
-         nEbY2PTcRZ15/vS6DQZnLPp5dqIdnB2zkO06NQnz6n14g7EH7dX1Ma5caaEyesCY5a2o
-         qHuZ/w8McnrsLkBOnRIYlgl6DLjp29chh/w2Qmjbi8/jtSf/VhM1ZLJB2c1IsYRT3JYZ
-         1Uvw==
+        d=linaro.org; s=google; t=1693430205; x=1694035005; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xP1G3N95SJQabxQlJ+eLhOCwSvJQ3rpYZFxHjeJYZ+A=;
+        b=se1k+StiiAItSkoNCnL0G1Fwv7pDL0qazzODseMRTzY5fQVUHUd/Qhl26vTBlxHw+/
+         q601xrurDCndtzfzk7ItulYjdvguAOnM52QK9jdQRC8HE5CJZeMAi0t0UrsyveGJv2lt
+         JwRscmga3FXa04VSLsPWcntb39A0+JIrVvnaj37W0KUmCAF0253aIkkic4oKMUROqBcK
+         +ZWVVMjymz53LKGCQYLbMMUuFYRNR0iGoDGcpfEOjWCTlVNzvQylQ7rgyr2hBz8sBNWU
+         RcB/apTfudKuR4rwepRDsBkJO/kp4mOq0U/wT9OTZLUOUbnNza0dD9ROB2jHDaWAo01o
+         oJqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693430037; x=1694034837;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lUJsE/IbwViG0qWxyMqWmvpU5f67FtToTgIAN58/gnQ=;
-        b=E/ubl3JtUJbmjDT7USHuHI6Ur+CP2RnbHAWpsG424J/+EjNFm/uTzuWn9xHeiaI6Lr
-         KK2XNRvBYM2MSRslJArmUXAlYDgwEuXOAkPmqjJBqOHawar7og9eGrf5GxdRHZTa8yR5
-         qZuhgZuTc06vxq2V5MMTisPL+2JFtWPnd/eVXDjuRqneclL7xC3GCwszwUqPd6JNQ9W7
-         eWcM3tLBcc1XNmGJvaUpmTTYYj73bKmFvHHOE6CV3IVYu+MhtcnHkuYSh0iZ1GQ4k93R
-         bVI9AjNMzFU/+eLcnKaU7lC4aG5YaCPanR8Ose88lYgXPtQPiK7AmY+H75MZiAA1As1v
-         1wnw==
-X-Gm-Message-State: AOJu0YzW9gQW9mY1VXqCC3luzusJJxT12oyouLIDn7qT9OzVcMhfhPhH
-        A5D2cBYBaxwbV7Wq/ZUWP5wLUQ==
-X-Google-Smtp-Source: AGHT+IFuvtSZyC/ZyAVYMYRqzuHbaGDwuwbCQZ6x1uKvm1iYzoVAGQXN7HtASDV8xE7fWPnZS3n/IA==
-X-Received: by 2002:a19:e04a:0:b0:500:8f66:5941 with SMTP id g10-20020a19e04a000000b005008f665941mr2475516lfj.50.1693430036872;
-        Wed, 30 Aug 2023 14:13:56 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id b3-20020ac25623000000b004f37bd02a89sm2516351lff.287.2023.08.30.14.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 14:13:56 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 30 Aug 2023 23:13:52 +0200
-Subject: [PATCH 2/2] phy: qcom-snps-femto-v2: Add REFGEN supply
+        d=1e100.net; s=20221208; t=1693430205; x=1694035005;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xP1G3N95SJQabxQlJ+eLhOCwSvJQ3rpYZFxHjeJYZ+A=;
+        b=PeimPDprUZCN/WSi3ATN6DhMeZNmxU5JRrN0bt/Rdf2JEVW1/wY+oZCS8fuzLuxV61
+         gIY3Aa9uJYYMUpy19AJukGihIML+lWmER6K20/pD3n0UlfWzu4CUcX83HNAB5uBTklY7
+         oe9YI8d9j7Bk+g04d7882SlwnIZhq1BicTll97VCwzbMDNXc/X409sNfrUrsRYuA+2JQ
+         D1FUlQvvaflFnT06DEuBAwi9qippX0TBGuFbIHvjLHVNeKC15GWp1Y5If26w7YkdmPQV
+         LYFz8dRBEwnrRxaBcAbd5BOWmInDDLzip6iVONnTL2UXOA6nwX8uPrzB5X5gxRS3YZTK
+         ibAA==
+X-Gm-Message-State: AOJu0YzY+ZfSEkn8XkqsQTBkCQhHCGaGAZwa0R/8J2clksCrsBVDhz59
+        sXgLujn9IT54Lk++qEF3ZLDU8WAa8bDN7gpjkpefjA==
+X-Google-Smtp-Source: AGHT+IH/CoTzgEqYKC0G3tVTVTxlFII4TRiKmoS1Mk5vUlf8PI/wpGXsKNUTh4M9uDYfrpxRz4f2Hv88QrkHlQj8aG8=
+X-Received: by 2002:a25:dbd2:0:b0:d7b:a834:3b2c with SMTP id
+ g201-20020a25dbd2000000b00d7ba8343b2cmr3039268ybf.1.1693430205549; Wed, 30
+ Aug 2023 14:16:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230830-topic-refgenphy-v1-2-892db196a1c0@linaro.org>
-References: <20230830-topic-refgenphy-v1-0-892db196a1c0@linaro.org>
-In-Reply-To: <20230830-topic-refgenphy-v1-0-892db196a1c0@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
+References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
+ <20230830-topic-8550_dmac2-v1-3-49bb25239fb1@linaro.org> <CAA8EJpp7bxq4=i1CMPYvz99ZuKLz+th6zSFhhRhFMjDwGB5Z8Q@mail.gmail.com>
+ <6bcb460b-6deb-4918-9058-67536e0af0ad@linaro.org>
+In-Reply-To: <6bcb460b-6deb-4918-9058-67536e0af0ad@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 31 Aug 2023 00:16:33 +0300
+Message-ID: <CAA8EJppZ+kyoL6yM58qY6V0gsoSpX6b=L+Xp0-m0QMMhLFTG4A@mail.gmail.com>
+Subject: Re: [PATCH 3/7] arm64: dts: qcom: sm8550: Fix up CPU idle states
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693430032; l=869;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=rkGvm/uP3o+BPrXZ9OASaeUpr1X+J5fisqT1wJhd350=;
- b=nSuP6yC0wDbMiE97URjPi35b+qJ0KBMSeb/782bW8hUoixfduLz+NGIGXGWm0pI28AQBW/tWH
- CKJTBw7V3RlBkF1jGQOQXgGAKe5MgezRkaYRhIKsZrClHrTorwABIaa
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+        Abel Vesa <abel.vesa@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -88,30 +78,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HSPHY is (or at least can be) one of the users of the reference
-voltage generating regulator.
+On Wed, 30 Aug 2023 at 23:35, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+> On 30.08.2023 22:13, Dmitry Baryshkov wrote:
+> > On Wed, 30 Aug 2023 at 22:04, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+> >>
+> >> The idle residency times are largely too low according to the vendor
+> >> kernel (maybe they came from an earlier release or something), especially
+> >> for the prime X2 core. Fix them.
+> >>
+> >> Fixes: ffc50b2d3828 ("arm64: dts: qcom: Add base SM8550 dtsi")
+> >> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> >> ---
+> >>  arch/arm64/boot/dts/qcom/sm8550.dtsi | 32 +++++++++++++++++++++-----------
+> >>  1 file changed, 21 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> >> index d115960bdeec..c21ba6afa752 100644
+> >> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> >> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> >> @@ -283,9 +283,9 @@ LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
+> >>                                 compatible = "arm,idle-state";
+> >>                                 idle-state-name = "silver-rail-power-collapse";
+> >>                                 arm,psci-suspend-param = <0x40000004>;
+> >> -                               entry-latency-us = <800>;
+> >> +                               entry-latency-us = <550>;
+> >>                                 exit-latency-us = <750>;
+> >> -                               min-residency-us = <4090>;
+> >> +                               min-residency-us = <6700>;
+> >>                                 local-timer-stop;
+> >>                         };
+> >>
+> >> @@ -294,8 +294,18 @@ BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
+> >>                                 idle-state-name = "gold-rail-power-collapse";
+> >>                                 arm,psci-suspend-param = <0x40000004>;
+> >>                                 entry-latency-us = <600>;
+> >> -                               exit-latency-us = <1550>;
+> >> -                               min-residency-us = <4791>;
+> >> +                               exit-latency-us = <1300>;
+> >> +                               min-residency-us = <8136>;
+> >> +                               local-timer-stop;
+> >> +                       };
+> >> +
+> >> +                       PRIME_CPU_SLEEP_0: cpu-sleep-2-0 {
+> >> +                               compatible = "arm,idle-state";
+> >> +                               idle-state-name = "gold-plus-rail-power-collapse";
+> >> +                               arm,psci-suspend-param = <0x40000004>;
+> >> +                               entry-latency-us = <500>;
+> >> +                               exit-latency-us = <1350>;
+> >> +                               min-residency-us = <7480>;
+> >>                                 local-timer-stop;
+> >
+> > This isn't only fixing the time properties, but also adds the whole
+> > new sleep state!
+> It does add a "new" sleep state with the exact same parameters,
+> the only thing being that it's exclusive to the prime core and
+> the only thing that differs is the residencies.
 
-Add it to the regulator bulk data.
+Then it should be stated in the commit message.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+With that fixed,
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-index eb0b0f61d98e..2bc9aeef26f9 100644
---- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-+++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-@@ -79,7 +79,7 @@
- #define LS_FS_OUTPUT_IMPEDANCE_MASK		GENMASK(3, 0)
- 
- static const char * const qcom_snps_hsphy_vreg_names[] = {
--	"vdda-pll", "vdda33", "vdda18",
-+	"vdda-pll", "vdda33", "vdda18", "refgen",
- };
- 
- #define SNPS_HS_NUM_VREGS		ARRAY_SIZE(qcom_snps_hsphy_vreg_names)
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
 -- 
-2.42.0
-
+With best wishes
+Dmitry
