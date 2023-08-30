@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC2878DE1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CE678DD3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbjH3S50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
+        id S243475AbjH3Sse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242271AbjH3Hqn (ORCPT
+        with ESMTP id S242272AbjH3HrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:46:43 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EEDCD8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:46:40 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6A2CC211F0;
-        Wed, 30 Aug 2023 07:46:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693381599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EanoFzDaTgMOXfxRNHB3pneacsX9gjh73UwzM6zHsNY=;
-        b=RGKsMd137LZvFuwE2UMMnEwPTDchyrEcqjNhU8q/CQRBO9QhsUQCYaCLOSBV8lXjYk/wt5
-        zwin6CRrkjyorL+MrsY6txHoednnKHUlC/jFeJ9Lg3LfdrUiuIqwewQH4Kz8NC1pfj6j5c
-        Moff718SbPh0UzkCjd+XLwIO+x9xogg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693381599;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EanoFzDaTgMOXfxRNHB3pneacsX9gjh73UwzM6zHsNY=;
-        b=cIVPYGUGjHHR1r+owsycvW3ch6HxCt7bozmDHlJasyzELFISfGRZoT/mFQJKTgsRxEwyaQ
-        NgmSP4RkIYQbQ4Bw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2EF0A1353E;
-        Wed, 30 Aug 2023 07:46:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cD+pCt/z7mTlYQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 30 Aug 2023 07:46:39 +0000
-Message-ID: <3948766e-5ebd-5e13-3c0d-f5e30c3ed724@suse.cz>
-Date:   Wed, 30 Aug 2023 09:46:38 +0200
+        Wed, 30 Aug 2023 03:47:09 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C8DCD8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:47:06 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5694a117254so3284858a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693381626; x=1693986426; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vCs5oUbQ1jJL1mASlnk3DDNvqxPdGJwje0jZ0qvyXiA=;
+        b=o7JijE7FBykuYSQxJV7v18glR3nUlfw9UDMUeOUMrN5aJcZp5m+xZG8sbJexsMC2EK
+         sdTLBnPH9ncTwKcro/EyhK5ces3/YUg/vfeKh5/IcM1yXllfv0ai9z4gQuqCe/G5TvFE
+         J7TRXCuYVhsAkaEFNAlnKoZTtVqtKbjnMg6XIxz/ExG2oUku3OkAAXBptfkcA4VlV4qY
+         tnrWfGEO8ql+XcH5PmmHfVNdPDWsiTqOoNLidUChoRlll/mVvL/LQXifBRbon7OUeIml
+         l+xhexkX8AxJxPNatoSMEl7SQJ/IHuhEQmlv3Ef47mbTUrwaB3heZpOxnr8HmhxS20XP
+         3hRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693381626; x=1693986426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vCs5oUbQ1jJL1mASlnk3DDNvqxPdGJwje0jZ0qvyXiA=;
+        b=BHZXwI8c6PpMTrvdWC95bXaMi0/xveVbU6YAAfd5R5m5ZdLSNKFeTmEkGWeifNFAxg
+         fQd/utuNWBu/5QsoDpkkjr25kDdFD8VvmBgDb8014kyRPDJP3v4OwvqENly1QReMd7WA
+         TD73i8jBsBmRB49oi/fc2KhZbGX0zfGF5pWkQcustgyyiTGpa1qRY5YKS4wafCyO9o5O
+         d+M8iNzG9OZxa9hdQVpIkHHwKMyTTO0NdU572HVJVyrPxizwj3VNeOoqAFApgpCeyK1U
+         1CiBi401PQTLBHWekswtzDki/KQ6WUrHYKGMAgIGDM9SlFrsrS3NV8IRxAwPfwIksu5s
+         WUdQ==
+X-Gm-Message-State: AOJu0Yz9QnobznyN1XTFmaGVuC/R5IdF4wAA5VMH65mZecjV2/EbAJwE
+        WlwLpsv9Ur6kC177MM+br/F4Ok/KiG5ZTGCymhA=
+X-Google-Smtp-Source: AGHT+IFzKz0Ti7vI4CKRwOqZP7MwOhQS4dbp7cvjcvGpgnK8C0GTkeCPqS/KzD/64rmO2llKXoRa/9f7xiFr7uo1dJw=
+X-Received: by 2002:a17:90a:fe8b:b0:267:a859:dfef with SMTP id
+ co11-20020a17090afe8b00b00267a859dfefmr1352320pjb.27.1693381625844; Wed, 30
+ Aug 2023 00:47:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 00/15] stackdepot: allow evicting stack traces
-Content-Language: en-US
-To:     andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <cover.1693328501.git.andreyknvl@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <cover.1693328501.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20230827205641.46836-1-namcaov@gmail.com> <874jkjl4e1.fsf@all.your.base.are.belong.to.us>
+ <ZOyhozSq3S36eRSq@nam-dell> <ZOymDqhE9STgx4Mm@nam-dell> <87edjmz864.fsf@all.your.base.are.belong.to.us>
+ <ZO4+/P9B29Bpb0Yz@nam-dell> <87il8xm1d1.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87il8xm1d1.fsf@all.your.base.are.belong.to.us>
+From:   Nam Cao <namcaov@gmail.com>
+Date:   Wed, 30 Aug 2023 09:46:54 +0200
+Message-ID: <CA+sZ8B8uMqYOE56T3TqDnGGyaEo+sffC_7rWFH78M8OsWc6BSg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: provide riscv-specific is_trap_insn()
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        guoren@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,98 +74,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 19:11, andrey.konovalov@linux.dev wrote:
-> From: Andrey Konovalov <andreyknvl@google.com>
-> 
-> Currently, the stack depot grows indefinitely until it reaches its
-> capacity. Once that happens, the stack depot stops saving new stack
-> traces.
-> 
-> This creates a problem for using the stack depot for in-field testing
-> and in production.
-> 
-> For such uses, an ideal stack trace storage should:
-> 
-> 1. Allow saving fresh stack traces on systems with a large uptime while
->    limiting the amount of memory used to store the traces;
-> 2. Have a low performance impact.
+On Wed, Aug 30, 2023 at 9:32=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
+.org> wrote:
+>
+> Nam Cao <namcaov@gmail.com> writes:
+>
+> > On Tue, Aug 29, 2023 at 08:14:59AM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
+> >> Nam Cao <namcaov@gmail.com> writes:
+> >>
+> >> > On Mon, Aug 28, 2023 at 03:31:15PM +0200, Nam Cao wrote:
+> >> >> On Mon, Aug 28, 2023 at 02:48:06PM +0200, Bj=C3=B6rn T=C3=B6pel wro=
+te:
+> >> >> > Nam Cao <namcaov@gmail.com> writes:
+> >> >> >
+> >> >> > > uprobes expects is_trap_insn() to return true for any trap inst=
+ructions,
+> >> >> > > not just the one used for installing uprobe. The current defaul=
+t
+> >> >> > > implementation only returns true for 16-bit c.ebreak if C exten=
+sion is
+> >> >> > > enabled. This can confuse uprobes if a 32-bit ebreak generates =
+a trap
+> >> >> > > exception from userspace: uprobes asks is_trap_insn() who says =
+there is no
+> >> >> > > trap, so uprobes assume a probe was there before but has been r=
+emoved, and
+> >> >> > > return to the trap instruction. This cause an infinite loop of =
+entering
+> >> >> > > and exiting trap handler.
+> >> >> > >
+> >> >> > > Instead of using the default implementation, implement this fun=
+ction
+> >> >> > > speficially for riscv which checks for both ebreak and c.ebreak=
+.
+> >> >> >
+> >> >> > I took this for a spin, and it indeed fixes this new hang! Nice!
+> >> >>
+> >> >> Great! Thanks for testing it.
+> >> >>
+> >> >> > However, when I tried setting an uprobe on the ebreak instruction
+> >> >> > (offset 0x118) from your example [1], the probe does not show up =
+in the
+> >> >> > trace buffer.
+> >> >> >
+> >> >> > Any ideas?
+> >> >>
+> >> >> >From my understanding, both uprobes and kprobes refuse to install =
+break points
+> >> >> into existing trap instructions. Otherwise, we may conflict with so=
+mething else
+> >> >> that is also using trap instructions.
+> >> >
+> >> > I just realize you probably ask this because uprobe can still be ins=
+talled before
+> >> > applying the patch. But I think that is another bug that my patch al=
+so
+> >> > accidentally fix: uprobes should not install breakpoint into ebreak =
+instructions,
+> >> > but it incorrectly does so because it does not even know about the e=
+xistence of
+> >> > 32-bit ebreak.
+> >>
+> >> FWIW, I can still install the uprobe at an ebreak with you patch. It's
+> >> not hit, but succeeds to install.
+> >
+> > It seems uprobes install failures are completely silent (see uprobe_mma=
+p() in
+> > kernel/events/uprobes.c). So I think although uprobes install seems fin=
+e, it
+> > actually is not.
+>
+> Huh, so there's no check if the instruction is a valid one at event
+> register point?
 
-I wonder if there's also another thing to consider for the future:
+There are some checks (eg. if the probe is within the binary), but
+they are not complete.
 
-3. With the number of stackdepot users increasing, each having their
-distinct set of stacks from others, would it make sense to create separate
-"storage instance" for each user instead of putting everything in a single
-shared one?
+The actual checks for the validity of the instruction is not done
+until installation.
 
-In any case, evicting support is a good development, thanks!
-
-> Implementing #1 in the stack depot is impossible with the current
-> keep-forever approach. This series targets to address that. Issue #2 is
-> left to be addressed in a future series.
-> 
-> This series changes the stack depot implementation to allow evicting
-> unneeded stack traces from the stack depot. The users of the stack depot
-> can do that via a new stack_depot_evict API.
-> 
-> Internal changes to the stack depot code include:
-> 
-> 1. Storing stack traces in 32-frame-sized slots (vs precisely-sized slots
->    in the current implementation);
-> 2. Keeping available slots in a freelist (vs keeping an offset to the next
->    free slot);
-> 3. Using a read/write lock for synchronization (vs a lock-free approach
->    combined with a spinlock).
-> 
-> This series also integrates the eviction functionality in the tag-based
-> KASAN modes. (I will investigate integrating it into the Generic mode as
-> well in the following iterations of this series.)
-> 
-> Despite wasting some space on rounding up the size of each stack record
-> to 32 frames, with this change, the tag-based KASAN modes end up
-> consuming ~5% less memory in stack depot during boot (with the default
-> stack ring size of 32k entries). The reason for this is the eviction of
-> irrelevant stack traces from the stack depot, which frees up space for
-> other stack traces.
-> 
-> For other tools that heavily rely on the stack depot, like Generic KASAN
-> and KMSAN, this change leads to the stack depot capacity being reached
-> sooner than before. However, as these tools are mainly used in fuzzing
-> scenarios where the kernel is frequently rebooted, this outcome should
-> be acceptable.
-> 
-> There is no measurable boot time performace impact of these changes for
-> KASAN on x86-64. I haven't done any tests for arm64 modes (the stack
-> depot without performance optimizations is not suitable for intended use
-> of those anyway), but I expect a similar result. Obtaining and copying
-> stack trace frames when saving them into stack depot is what takes the
-> most time.
-> 
-> This series does not yet provide a way to configure the maximum size of
-> the stack depot externally (e.g. via a command-line parameter). This will
-> either be added in the following iterations of this series (if the used
-> approach gets approval) or will be added together with the performance
-> improvement changes.
-> 
-> Andrey Konovalov (15):
->   stackdepot: check disabled flag when fetching
->   stackdepot: simplify __stack_depot_save
->   stackdepot: drop valid bit from handles
->   stackdepot: add depot_fetch_stack helper
->   stackdepot: use fixed-sized slots for stack records
->   stackdepot: fix and clean-up atomic annotations
->   stackdepot: rework helpers for depot_alloc_stack
->   stackdepot: rename next_pool_required to new_pool_required
->   stackdepot: store next pool pointer in new_pool
->   stackdepot: store free stack records in a freelist
->   stackdepot: use read/write lock
->   stackdepot: add refcount for records
->   stackdepot: add backwards links to hash table buckets
->   stackdepot: allow users to evict stack traces
->   kasan: use stack_depot_evict for tag-based modes
-> 
->  include/linux/stackdepot.h |  11 ++
->  lib/stackdepot.c           | 361 ++++++++++++++++++++++++-------------
->  mm/kasan/tags.c            |   7 +-
->  3 files changed, 249 insertions(+), 130 deletions(-)
-> 
-
+Best regards,
+Nam
