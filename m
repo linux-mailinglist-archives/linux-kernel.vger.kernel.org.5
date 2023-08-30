@@ -2,97 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA57978D204
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E5D78D205
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 04:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241697AbjH3CZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 22:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
+        id S241706AbjH3CZY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Aug 2023 22:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239290AbjH3CYu (ORCPT
+        with ESMTP id S241698AbjH3CZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Aug 2023 22:24:50 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE637CC9;
-        Tue, 29 Aug 2023 19:24:47 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-792965813e7so124220339f.2;
-        Tue, 29 Aug 2023 19:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693362287; x=1693967087; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lIPqgFvDaI9bwZtognGowvWWbSTHbXBUdbdWIzJhIjY=;
-        b=eB662TuLRe1aBIf9WUVIgRzeRkHtSnAthd5h5h1wT8pbyZZl4nFmrWg9UzIGDfrXjL
-         RIalzUstqytmSi19Mdaxtf2fngAk05BNyQI46SNJoR8l2k6Xx0xhCQlVR2WBHa/YaLjQ
-         9iDbtc2qkgsBgwBxbEEQxeY6ykAClAcCD8KWaEDYLad0uJLioxoeE6PnpVTXpngKal5X
-         1k4t7KhP/GCj1xOjZiTRYvbVW4FFqIohe7WsGOQfBHtFCdy0KI1yccqKAdeOKPU9RfqN
-         A9QOU1m+NqH6k6FTv5+Y1c6PtwuGuvQhkh170+8vzqI9sJHPq6LXufFP+sBWt+2u29q0
-         rAcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693362287; x=1693967087;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lIPqgFvDaI9bwZtognGowvWWbSTHbXBUdbdWIzJhIjY=;
-        b=SIU1TM0vXe94vSSy7YTPA3B4/TLZ+fwVKCnbBBooxAl/IrQwxujh40Z9HRlzyUBRjB
-         HV3XGiRuhoOfQemoXqllyryBLQy4eHAuMZqTcqV8zGCzlL6+SHROp8n/X+4oMp6FVm9C
-         6/dfNB9cGZfQQtUPBHfh75XTWRVQB/FgYiL2fr/bFEHixNFNY4rejnID/MF9U6CJ0l/t
-         MggyuMAGBqXWCIcvv4VmeBil6w1Kfuf68MdIgxnsoFy2ZQJTxu7Pu2LDuqZIBfC/9kcn
-         E+p06vJhRHOS9a5Zwk0UKPzsBiRnWDXmf0mD1svZI+MgCw8QUuA8XQRwCXwvawSIUz4w
-         unCg==
-X-Gm-Message-State: AOJu0YxiJrFM/Anh7Bg7GMl8LavTqOYBPQExzvCsi6sKxqL88Zyqs2oY
-        R6VlWyB6XEVXC0VOIZyx8Mk=
-X-Google-Smtp-Source: AGHT+IHqfFMD5BTfKENln/kG2oDw8tsQJmbAo9w8IHgr0LcdjC8+0MpqVAkynVn2NOAHHvxjv40C/g==
-X-Received: by 2002:a92:de08:0:b0:34b:b16d:aa38 with SMTP id x8-20020a92de08000000b0034bb16daa38mr1206283ilm.29.1693362287171;
-        Tue, 29 Aug 2023 19:24:47 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v2-20020a92c6c2000000b0034ab6f53e23sm3492402ilm.28.2023.08.29.19.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 19:24:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 29 Aug 2023 19:24:45 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.15 00/89] 5.15.129-rc1 review
-Message-ID: <f2b014ac-707e-4c78-836d-b0ccf46a4de6@roeck-us.net>
-References: <20230828101150.163430842@linuxfoundation.org>
+        Tue, 29 Aug 2023 22:25:14 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4ADFFCD6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:25:09 -0700 (PDT)
+Received: from loongson.cn (unknown [209.85.128.177])
+        by gateway (Coremail) with SMTP id _____8AxTeuCqO5kMfYcAA--.53800S3;
+        Wed, 30 Aug 2023 10:25:07 +0800 (CST)
+Received: from mail-yw1-f177.google.com (unknown [209.85.128.177])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxrM5_qO5kUudmAA--.52386S3;
+        Wed, 30 Aug 2023 10:25:05 +0800 (CST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-59254e181a2so57171547b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 19:25:05 -0700 (PDT)
+X-Gm-Message-State: AOJu0Ywi5OlVcCzXKytvW1H1mGSzwSeQdInfSrT5DWu3Upf1Tdzl0q62
+        jAtJXJyUI3xx35ERh9vCPsAxCg2gh230Xa66WIhx5g==
+X-Google-Smtp-Source: AGHT+IHwn3cnwbRbMtDklB0MxCXJuVfILjzfHk14nmRQkuifQSiZdsDYSve+CjViqkipLWbpIVFH0w8x/jg4DlRT1Cs=
+X-Received: by 2002:a0d:d4c9:0:b0:595:863:3852 with SMTP id
+ w192-20020a0dd4c9000000b0059508633852mr837392ywd.19.1693362303032; Tue, 29
+ Aug 2023 19:25:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828101150.163430842@linuxfoundation.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230830010435.2969785-1-liweihao@loongson.cn>
+In-Reply-To: <20230830010435.2969785-1-liweihao@loongson.cn>
+From:   WANG Rui <wangrui@loongson.cn>
+Date:   Wed, 30 Aug 2023 10:24:51 +0800
+X-Gmail-Original-Message-ID: <CAHirt9i0tcUCuQ5ZL657MOZ4CUg0bpfiNbo01WLhPAwsLjgM+g@mail.gmail.com>
+Message-ID: <CAHirt9i0tcUCuQ5ZL657MOZ4CUg0bpfiNbo01WLhPAwsLjgM+g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] LoongArch: adjust copy/clear_user exception handler behavior
+To:     liweihao <liweihao@loongson.cn>
+Cc:     chenhuacai@kernel.org, kernel@xen0n.name, masahiroy@kernel.org,
+        yijun@loongson.cn, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-CM-TRANSID: AQAAf8BxrM5_qO5kUudmAA--.52386S3
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWFykZFW5ZF45tr4rCw45Jwc_yoW5WFy3pr
+        yYy3Z3KF4rWayfXa1Y9F1Dtr9xZr40grWDAr4xJryrJ3WUurnYkry5J39agFnxt3ykXryj
+        qayrKF1rCF48trbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWHqcUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:13:01PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.129 release.
-> There are 89 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
-> Anything received after that time might be too late.
-> 
+Hello weihao,
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 501 pass: 501 fail: 0
+On Wed, Aug 30, 2023 at 9:04 AM liweihao <liweihao@loongson.cn> wrote:
+>
+> The copy/clear_user function should returns number of bytes that could
+> not be copied/cleared. So, try to copy/clear byte by byte when ld.d/w/h
+> and st.d/w/h trapped into an exception.
+>
+> Signed-off-by: liweihao <liweihao@loongson.cn>
+> ---
+>  arch/loongarch/lib/clear_user.S |  87 ++++++++---------
+>  arch/loongarch/lib/copy_user.S  | 161 ++++++++++++++++----------------
+>  2 files changed, 127 insertions(+), 121 deletions(-)
+>
+> diff --git a/arch/loongarch/lib/clear_user.S b/arch/loongarch/lib/clear_user.S
+> index 0790eadce166..9b6eef569f89 100644
+> --- a/arch/loongarch/lib/clear_user.S
+> +++ b/arch/loongarch/lib/clear_user.S
+> @@ -11,19 +11,6 @@
+>  #include <asm/cpu.h>
+>  #include <asm/regdef.h>
+>
+> -.irp to, 0, 1, 2, 3, 4, 5, 6, 7
+> -.L_fixup_handle_\to\():
+> -       sub.d   a0, a2, a0
+> -       addi.d  a0, a0, (\to) * (-8)
+> -       jr      ra
+> -.endr
+> -
+> -.irp to, 0, 2, 4
+> -.L_fixup_handle_s\to\():
+> -       addi.d  a0, a1, -\to
+> -       jr      ra
+> -.endr
+> -
+>  SYM_FUNC_START(__clear_user)
+>         /*
+>          * Some CPUs support hardware unaligned access
+> @@ -51,7 +38,7 @@ SYM_FUNC_START(__clear_user_generic)
+>  2:     move    a0, a1
+>         jr      ra
+>
+> -       _asm_extable 1b, .L_fixup_handle_s0
+> +       _asm_extable 1b, 2b
+>  SYM_FUNC_END(__clear_user_generic)
+>
+>  /*
+> @@ -173,33 +160,47 @@ SYM_FUNC_START(__clear_user_fast)
+>         jr      ra
+>
+>         /* fixup and ex_table */
+> -       _asm_extable 0b, .L_fixup_handle_0
+> -       _asm_extable 1b, .L_fixup_handle_0
+> -       _asm_extable 2b, .L_fixup_handle_1
+> -       _asm_extable 3b, .L_fixup_handle_2
+> -       _asm_extable 4b, .L_fixup_handle_3
+> -       _asm_extable 5b, .L_fixup_handle_4
+> -       _asm_extable 6b, .L_fixup_handle_5
+> -       _asm_extable 7b, .L_fixup_handle_6
+> -       _asm_extable 8b, .L_fixup_handle_7
+> -       _asm_extable 9b, .L_fixup_handle_0
+> -       _asm_extable 10b, .L_fixup_handle_1
+> -       _asm_extable 11b, .L_fixup_handle_2
+> -       _asm_extable 12b, .L_fixup_handle_3
+> -       _asm_extable 13b, .L_fixup_handle_0
+> -       _asm_extable 14b, .L_fixup_handle_1
+> -       _asm_extable 15b, .L_fixup_handle_0
+> -       _asm_extable 16b, .L_fixup_handle_0
+> -       _asm_extable 17b, .L_fixup_handle_s0
+> -       _asm_extable 18b, .L_fixup_handle_s0
+> -       _asm_extable 19b, .L_fixup_handle_s0
+> -       _asm_extable 20b, .L_fixup_handle_s2
+> -       _asm_extable 21b, .L_fixup_handle_s0
+> -       _asm_extable 22b, .L_fixup_handle_s0
+> -       _asm_extable 23b, .L_fixup_handle_s4
+> -       _asm_extable 24b, .L_fixup_handle_s0
+> -       _asm_extable 25b, .L_fixup_handle_s4
+> -       _asm_extable 26b, .L_fixup_handle_s0
+> -       _asm_extable 27b, .L_fixup_handle_s4
+> -       _asm_extable 28b, .L_fixup_handle_s0
+> +.Llarge_fixup:
+> +       sub.d   a1, a2, a0
+> +
+> +.Lsmall_fixup:
+> +29:    st.b    zero, a0, 0
+> +       addi.d  a0, a0, 1
+> +       addi.d  a1, a1, -1
+> +       bgt     a1, zero, 1b
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+I'm sure the jump target here is 29b.
 
-Guenter
+-- 
+WANG Rui
+
