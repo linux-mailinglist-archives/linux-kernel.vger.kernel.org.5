@@ -2,101 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC35F78DE39
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803FE78DB86
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236650AbjH3S7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39676 "EHLO
+        id S238987AbjH3Sji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243676AbjH3L0a (ORCPT
+        with ESMTP id S243680AbjH3L1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:26:30 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFF8132;
-        Wed, 30 Aug 2023 04:26:27 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37UAKIU5021502;
-        Wed, 30 Aug 2023 11:26:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=39FSy9iMArq4qwujTHj5LNIHuUSVAhx3F/QVlkULB20=;
- b=HALMrjKWsXLkQj6ygdDezub4Y/KPZquEMvsH44LYDDN9N1HGAxLXx97o2X0lm0gq22Zh
- VcePBzMMiN/beu3hm5qSzhX9sc5y8Fjs1X5ysilJ4eh3LhOdguMlSIA04FRfIumEVG6o
- nkoztBeBCuvlZyYg/0xSvrIerfn8rxVctzAX5o92pbgcmOwjO5P83uOqXNQ/pk+E+TOp
- vMp8tUQf870o/xFpQEteWAByQsXKMl22SIHJ2IbgDdzBEIhlqT/+7O7IaqfRuZ6d3aqS
- Vl9IdJ6cl0Jxn0Ay2TNLI3dAGTiZzaOGwP4ZgH3tIvLh1XM1M2Voawrwlyw2nZ77wpSI GA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st3whr3dt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 11:26:23 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37UBQMqc004209
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 11:26:22 GMT
-Received: from [10.50.47.209] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 30 Aug
- 2023 04:26:18 -0700
-Message-ID: <3f0d3997-effd-4f51-7aeb-a52428eca47e@quicinc.com>
-Date:   Wed, 30 Aug 2023 16:56:15 +0530
+        Wed, 30 Aug 2023 07:27:48 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD3C1B0;
+        Wed, 30 Aug 2023 04:27:45 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbMNG5m90z6K6J8;
+        Wed, 30 Aug 2023 19:22:54 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
+ 2023 12:27:42 +0100
+Date:   Wed, 30 Aug 2023 12:27:41 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 13/18] dax/bus: Factor out dev dax resize logic
+Message-ID: <20230830122741.00007628@Huawei.com>
+In-Reply-To: <20230604-dcd-type2-upstream-v2-13-f740c47e7916@intel.com>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+        <20230604-dcd-type2-upstream-v2-13-f740c47e7916@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] dt-bindings: usb: dwc3: Add IPQ5018 compatible
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <gregkh@linuxfoundation.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <quic_wcheng@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230830111641.19293-1-quic_nsekar@quicinc.com>
- <3b4c873a-a091-51dd-4ce1-84b40886b5cd@linaro.org>
-From:   Nitheesh Sekar <quic_nsekar@quicinc.com>
-In-Reply-To: <3b4c873a-a091-51dd-4ce1-84b40886b5cd@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Fcegh49H6YntyNDQ36BoE_Mw_vIvi6R6
-X-Proofpoint-ORIG-GUID: Fcegh49H6YntyNDQ36BoE_Mw_vIvi6R6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- bulkscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 malwarescore=0
- mlxlogscore=696 priorityscore=1501 impostorscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308300107
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Aug 2023 22:21:04 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-On 8/30/2023 4:48 PM, Krzysztof Kozlowski wrote:
-> On 30/08/2023 13:16, Nitheesh Sekar wrote:
->> Document the IPQ5018 dwc3 compatible.
->>
->> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
->> ---
->> Link: https://lore.kernel.org/all/3e4e03b6-380c-ce61-dd93-30669e6f9b5c@linaro.org/
->> As per the review comments in the above series
->> created a new series for this patchset as per subsystem.
-> Please provide changelog. This is not v1 anymore.
-ok. Will add tag "V2" and post another version.
+> Dynamic Capacity regions must limit dev dax resources to those areas
+> which have extents backing real memory.  Four alternatives were
+> considered to manage the intersection of region space and extents:
+> 
+> 1) Create a single region resource child on region creation which
+>    reserves the entire region.  Then as extents are added punch holes in
+>    this reservation.  This requires new resource manipulation to punch
+>    the holes and still requires an additional iteration over the extent
+>    areas which may already have existing dev dax resources used.
+> 
+> 2) Maintain an ordered xarray of extents which can be queried while
+>    processing the resize logic.  The issue is that existing region->res
+>    children may artificially limit the allocation size sent to
+>    alloc_dev_dax_range().  IE the resource children can't be directly
+>    used in the resize logic to find where space in the region is.
+> 
+> 3) Maintain a separate resource tree with extents.  This option is the
+>    same as 2) but with a different data structure.  Most ideally we have
+>    some unified representation of the resource tree.
+> 
+> 4) Create region resource children for each extent.  Manage the dax dev
+>    resize logic in the same way as before but use a region child
+>    (extent) resource as the parents to find space within each extent.
+> 
+> Option 4 can leverage the existing resize algorithm to find space within
+> the extents.
+> 
+> In preparation for this change, factor out the dev_dax_resize logic.
+> For static regions use dax_region->res as the parent to find space for
+> the dax ranges.  Future patches will use the same algorithm with
+> individual extent resources as the parent.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Hi Ira,
 
-Regards,
-Nitheesh
+Some trivial comments on comments, but in general this indeed seems to be doing what you
+say and factoring out the static allocation part.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+
+> ---
+>  drivers/dax/bus.c | 128 +++++++++++++++++++++++++++++++++---------------------
+>  1 file changed, 79 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index b76e49813a39..ea7ae82b4687 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -817,11 +817,10 @@ static int devm_register_dax_mapping(struct dev_dax *dev_dax, int range_id)
+>  	return 0;
+>  }
+>  
+
+> -static ssize_t dev_dax_resize(struct dax_region *dax_region,
+> -		struct dev_dax *dev_dax, resource_size_t size)
+> +/*
+
+/**
+
+Suitable builds will then check this doc matches the function etc
+even if this is never included into any of the docs build.
+
+> + * dev_dax_resize_static - Expand the device into the unused portion of the
+> + * region. This may involve adjusting the end of an existing resource, or
+> + * allocating a new resource.
+> + *
+> + * @parent: parent resource to allocate this range in.
+> + * @dev_dax: DAX device we are creating this range for
+
+Trivial: Doesn't seem to be consistent on . or not
+
+> + * @to_alloc: amount of space to alloc; must be <= space available in @parent
+> + *
+> + * Return the amount of space allocated or -ERRNO on failure
+> + */
+> +static ssize_t dev_dax_resize_static(struct resource *parent,
+> +				     struct dev_dax *dev_dax,
+> +				     resource_size_t to_alloc)
+
