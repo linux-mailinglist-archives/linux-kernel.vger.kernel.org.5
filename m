@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C6B78DFF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F50A78DF41
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239319AbjH3TXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
+        id S244430AbjH3TVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245271AbjH3PAn (ORCPT
+        with ESMTP id S245273AbjH3PBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:00:43 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58F9AC
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:00:40 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:6c13:6b1b:7366:87c0])
-        by albert.telenet-ops.be with bizsmtp
-        id fr0c2A0063874jb06r0cMN; Wed, 30 Aug 2023 17:00:38 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qbMgC-0023nG-5c;
-        Wed, 30 Aug 2023 17:00:36 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qbMgO-005Lno-0I;
-        Wed, 30 Aug 2023 17:00:36 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Ricardo Ribalda <ribalda@kernel.org>
-Cc:     linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] mtd: physmap-core: Restore map_rom fallback
-Date:   Wed, 30 Aug 2023 17:00:34 +0200
-Message-Id: <550e8c8c1da4c4baeb3d71ff79b14a18d4194f9e.1693407371.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Wed, 30 Aug 2023 11:01:16 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92FE1A2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:01:13 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37U7gEVE026115;
+        Wed, 30 Aug 2023 10:00:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=nY6mVvv6rW6BhL4
+        MqzQFYP/NvGfCvBh5V3UfYUMt3Qc=; b=STvijXg8VhtiCnXcKhtViWah2cFCb2w
+        hipYvB/Xhno62yxDTxCb6e3aVIsWXxLZUZNFWT/GD+/zdGkhZ788C2Xvwo/4NxEL
+        JsNf1URvi2HaZGcLV6rdAdmltF274DDr7/rqu4ij5nO9oQsC5DTcPlO/jIa49Brn
+        FLx23DwLcoKNY3ruu0L+X4ZdR1wwGVKWO3J7u3B3nWUyzvUIb+IK2IjCje5yTbC5
+        kklzbWUq+RqjJ6WQVrGMBxwg/RRo3hGmC2lVkhwA6F0xsNCjYogRtZp5H732XwXp
+        aD63dgYXQAXq2MbOa6p0zdraSuSbmf6zOxPE6/bepdaruNFaVWbR1XA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sqesyd38v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 10:00:40 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 30 Aug
+ 2023 16:00:38 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Wed, 30 Aug 2023 16:00:38 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E6F183561;
+        Wed, 30 Aug 2023 15:00:37 +0000 (UTC)
+Date:   Wed, 30 Aug 2023 15:00:37 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
+        Lee Jones <lee@kernel.org>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        <regressions@lists.linux.dev>
+Subject: Re: mainline build failure due to ace6d1448138 ("mfd: cs42l43: Add
+ support for cs42l43 core driver")
+Message-ID: <20230830150037.GW103419@ediswmail.ad.cirrus.com>
+References: <ZO8oNb2hpegB6BbE@debian>
+ <87cyz4he2u.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87cyz4he2u.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: NK8Mq90hyYK6qZ7mtTDHX5VrG2uIuS3d
+X-Proofpoint-GUID: NK8Mq90hyYK6qZ7mtTDHX5VrG2uIuS3d
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the exact mapping type driver was not available, the old
-physmap_of_core driver fell back to mapping the region as ROM.
-Unfortunately this feature was lost when the DT and pdata cases were
-merged.  Revive this useful feature.
+On Wed, Aug 30, 2023 at 03:09:13PM +0200, Takashi Iwai wrote:
+> On Wed, 30 Aug 2023 13:29:57 +0200,
+> Sudip Mukherjee (Codethink) wrote:
+> > 
+> > Hi All,
+> > 
+> > The latest mainline kernel branch fails to build alpha, csky and s390
+> > allmodconfig with the error:
+> > 
+> > drivers/mfd/cs42l43.c:1138:12: error: 'cs42l43_runtime_resume' defined but not used [-Werror=unused-function]
+> >  1138 | static int cs42l43_runtime_resume(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~~~~~~~~~
+> > drivers/mfd/cs42l43.c:1124:12: error: 'cs42l43_runtime_suspend' defined but not used [-Werror=unused-function]
+> >  1124 | static int cs42l43_runtime_suspend(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/mfd/cs42l43.c:1106:12: error: 'cs42l43_resume' defined but not used [-Werror=unused-function]
+> >  1106 | static int cs42l43_resume(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~
+> > drivers/mfd/cs42l43.c:1076:12: error: 'cs42l43_suspend' defined but not used [-Werror=unused-function]
+> >  1076 | static int cs42l43_suspend(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~~
+> > 
+> > git bisect pointed to ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+> > 
+> > I will be happy to test any patch or provide any extra log if needed.
+> 
+> Adding __maybe_unused for those PM functions should work around it,
+> something like below.  Could you check it?
+> If it's confirmed to work, I'll submit properly.
+> 
+> 
 
-Fixes: 642b1e8dbed7bbbf ("mtd: maps: Merge physmap_of.c into physmap-core.c")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/mtd/maps/physmap-core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+This is probably the correct fix:
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 78710fbc8e7f638c..fc872133928247de 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -551,6 +551,17 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		if (info->probe_type) {
- 			info->mtds[i] = do_map_probe(info->probe_type,
- 						     &info->maps[i]);
-+
-+			/* Fall back to mapping region as ROM */
-+			if (!info->mtds[i] && IS_ENABLED(CONFIG_MTD_ROM) &&
-+			    strcmp(info->probe_type, "map_rom")) {
-+				dev_warn(&dev->dev,
-+					 "map_probe() failed for type %s\n",
-+					 info->probe_type);
-+
-+				info->mtds[i] = do_map_probe("map_rom",
-+							     &info->maps[i]);
-+			}
- 		} else {
- 			int j;
- 
--- 
-2.34.1
+https://lore.kernel.org/lkml/20230822114914.340359-1-ckeepax@opensource.cirrus.com/
 
+Just waiting on it to be reviewed.
+
+Thanks,
+Charles
