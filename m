@@ -2,107 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6F978E186
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1F478E167
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241809AbjH3Vi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
+        id S241306AbjH3V2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241759AbjH3Vi1 (ORCPT
+        with ESMTP id S241267AbjH3V2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:38:27 -0400
-Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1A1CE6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:37:55 -0700 (PDT)
-Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
-   signature) header.d=sapience.com header.i=@sapience.com 
-   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
-   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
-Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by s1.sapience.com (Postfix) with ESMTPS id D737B480A54;
-        Wed, 30 Aug 2023 17:09:07 -0400 (EDT)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1693429747;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=JAQWYBmETROLjbPGuqGIMm8OdFb4xMwJG4FqWN0oL6A=;
- b=fM1Bq4eNemLcyRcbzAy8Q+wojExGbY8BB5+74Y2nwKJ4OgcBukkkb9FIMv9tSHxVQEwv1
- /4a14wBFfDk1PFLCg==
-ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1693429747;
-        cv=none; b=u9x97SgH2/mzbicAoyiCc70vrsQgu/pwyoxQsqmlx0/8nG0fcff/msnPxzxrmVLbxO9dH1srLSXI1HT786DhmfTFOmKR3EhCQQ4Y5JdfPiBGKlfaO+bc9YSgKqcJP/VbUW+Ycd3a/RH+aNsbdS2/AzbH/zZ6AqpbPujjSr5YbkbtXNGd+ZXz0yHjPuRa5D10e4egL/GTJKBucBRz+/pk815GJJgOvDDv3YD/ljH1TE851iX9cUjCGoB2ta3SBWR1wvocEVZXIwU1nLTQYZAa9s/i4QeHGv66wMIw0Z1UYxP15XbPFfEc4XUnQX820dzezwP28Q5104bhyRrwezZ5BA==
-ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
-        t=1693429747; c=relaxed/simple;
-        bh=bx/1ye1ATCuKlYf8lNYXgl0XOYb5h0RDxuCDSH1XrAY=;
-        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
-         User-Agent:Subject:Content-Language:To:Cc:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=hZwQNQC0DN0iTB/FC0Jr/UnUoTcwUz8an4BmNJs2b3mdwBkEK1gpZsWsMBh2NiA3HMJvxeJ3hKxodAlqRFZpCCIg7JQYKBU4ZO1gDT+PGKbcJ2hpJZii7GQrsMPuZASfqQ6yoOvDWnqrEd4jnGsJJpsijjNHT7x0R5JDQpMqAgDF8WG7z4BBkNjH6k2ha2FXMyGnVcs6qzAKn4MwPzRInpdTJTpVUrMxf7zDAtXKcY04O52DRQA8M0Hepo7POWwuLdBpqOsL37EJi7i7mwS9PjqqMG4x0Z2zuV2YoVt6oGvztGnoQobA2ovld2Nt5mUdDM2QREdaphe5lvLthy9y/A==
-ARC-Authentication-Results: i=1; arc-srv8.sapience.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1693429747;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=JAQWYBmETROLjbPGuqGIMm8OdFb4xMwJG4FqWN0oL6A=;
- b=cLbAIERhmhwAtcDdtpbtePCREplLgq9j6EIT267NRbrok72WqlW9WW8EC5L+mQ9h4mMa8
- R9hHPI9h/sYnhSDCYy873UwG3ZUadu39zAmIMpn0q9ABdUagio2PSNx9M7b6QqXo+SsJKJy
- fuyM+mBvskMdNYSyIm7qWODsdfTSvF3QBG3FkkRxr2v5lHpWpSwQKqL4DAEv0vBVkUQPnBA
- FgkvSIw20LbnQ8ldmSYYgdc20Im1+iLGrtCySZOF3wxbgDe2ArK9u+sJj00+i3O+YRxyCt7
- Pxtt4vurKiFVuNGDaWPV/U3cO1W/b4t1eXW/a2xeOqSXnZWFkLmYWqMzwABA==
-Message-ID: <5d38cf11-114a-4997-a0fc-4627402468f8@sapience.com>
-Date:   Wed, 30 Aug 2023 17:09:07 -0400
+        Wed, 30 Aug 2023 17:28:42 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7333CD2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:28:14 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-991c786369cso10297266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693430822; x=1694035622; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qsmmyr5OFzyMVcMpEFVBPPKJRXoUjcjNdTuQLnrGF48=;
+        b=KX1sF7MzPw+guJ+/Nfm+vSAyX1GrGihZolzOPVMRj6CAYRo4VaKkWQ9tHoHYI7BH+5
+         HwQFEMP9ni95lW2d//2hZV1Z8lniPHMoYm2MS1LFS0FQWCXI25s59rw4x6L/uueY1k2O
+         LqZIhYmDm2W+NTvUpHfRVs6C7f148chSPCuj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693430822; x=1694035622;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qsmmyr5OFzyMVcMpEFVBPPKJRXoUjcjNdTuQLnrGF48=;
+        b=OIcmyvMPo7aAR6up5r0T5/0ahn8IhG16EZkbMPvn1+4xfx/bwjLxL7momlclPIaEHg
+         fAM5+tv/n4l1IDHStUxbMeJaUYh3ofjFYgdr1kKyfAgIcXuoJGofgaEiGn9uUQILztNe
+         2ENQCZWnLqfNnVLUPNlR/nss6WPVkSZqW7XYD6Gi8s8jMeBF6J7PTPXzaF3I/ytsNeHJ
+         7uvfQABhDKH88gC6eVKWxWgL5mw6RoGX6LqqDzV6dZUulgs4AfV+BK3zEr6VWkj12UhE
+         8Ge75JciFgnTW6p3FD77fxxtBZsOryXiQN0+jW8lLcRPkYRu/sCtHAyBYTZOj5ZXNirO
+         G4eA==
+X-Gm-Message-State: AOJu0YwH7G+s9dWkiqJsJMnDy+OnPx/U67hmg2YEx6MaT50fs1WMLCky
+        jN5gjzoIt/gh7ZOqDNG9Vrs66SptV1PmKjf9BI45JOFFfxVLKQEttDymaw==
+X-Google-Smtp-Source: AGHT+IFDRoXLXPrIZmwI2bs476erTEre4LDDRoGLiwdLjD+TCzsvOulU+GzGz8j1hshodfcQrQVfKGCcCkOqp5X7yDU=
+X-Received: by 2002:ac2:5f02:0:b0:500:77c4:108 with SMTP id
+ 2-20020ac25f02000000b0050077c40108mr1924403lfq.9.1693429856927; Wed, 30 Aug
+ 2023 14:10:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Possible nvme regression in 6.4.11
-Content-Language: en-US
-To:     Ricky WU <ricky_wu@realtek.com>, Keith Busch <kbusch@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "hch@lst.de" <hch@lst.de>, "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
- <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
- <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
- <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
- <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
- <7cf188d0-77b4-4e80-8da6-2045a7f29866@sapience.com>
- <180a2bbd2c314ede8f6c4c16cc4603bf@realtek.com>
- <903830f8-9f9a-4071-9ced-761a55018c5a@sapience.com>
- <97cee217-e438-4fff-836a-186f59d6d256@sapience.com>
- <fa82d9dcbe83403abc644c20922b47f9@realtek.com>
-From:   Genes Lists <lists@sapience.com>
-In-Reply-To: <fa82d9dcbe83403abc644c20922b47f9@realtek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
+ <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
+ <CAPnjgZ1S8G=7eCBF9PcDk4H5sk3AcxSSWXO575jK8SjA9dR8qw@mail.gmail.com>
+ <CAMj1kXH83_TB4S0PL3jswxjCP+907YpgS7FRuVTO3G62s7nn5w@mail.gmail.com>
+ <CAPnjgZ2kkUt1eOWX8K+EsbjcQZPefNvj5DSaFb9QrvRg0t2h7w@mail.gmail.com> <CAMj1kXGe84uaJ9j9ic0V4HC43p7QBoKQ5ssTYd5DMBGtZ3++Jw@mail.gmail.com>
+In-Reply-To: <CAMj1kXGe84uaJ9j9ic0V4HC43p7QBoKQ5ssTYd5DMBGtZ3++Jw@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Wed, 30 Aug 2023 15:10:45 -0600
+Message-ID: <CAPnjgZ3L-jGxoXNHnsXY0MXU=jTAN66KNAxSLHPVeHinHMjzkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> I think maybe it is a system power saving issue....
-> In the past if the BIOS(config space) not set L1-substate, our driver will keep drive low CLKREQ# when HOST want to enter power saving state that make whole system not enter the power saving state.
-> But this patch we release the CLKREQ# to HOST, make whole system can enter power saving state success when the HOST want to enter the power saving state, but I don't  know why your system can not wake out success from power saving stat on the platform
-> 
-> Ricky
->      
+Hi Ard,
 
-Hi
+On Tue, 29 Aug 2023 at 15:32, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Tue, 29 Aug 2023 at 21:18, Simon Glass <sjg@chromium.org> wrote:
+> >
+> > Hi Ard,
+> >
+> > On Thu, 24 Aug 2023 at 03:10, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Wed, 23 Aug 2023 at 22:04, Simon Glass <sjg@chromium.org> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On Wed, 23 Aug 2023 at 08:24, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > >
+> > > > > On Wed, 23 Aug 2023 at 10:59, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > >
+> > > > > > On Tue, Aug 22, 2023 at 02:34:42PM -0600, Simon Glass wrote:
+> > > > > > > The Devicetree specification skips over handling of a logical view of
+> > > > > > > the memory map, pointing users to the UEFI specification.
+> > > > > > >
+> > > > > > > It is common to split firmware into 'Platform Init', which does the
+> > > > > > > initial hardware setup and a "Payload" which selects the OS to be booted.
+> > > > > > > Thus an handover interface is required between these two pieces.
+> > > > > > >
+> > > > > > > Where UEFI boot-time services are not available, but UEFI firmware is
+> > > > > > > present on either side of this interface, information about memory usage
+> > > > > > > and attributes must be presented to the "Payload" in some form.
+> > > > >
+> > > > > Not quite.
+> > > > >
+> > > > > This seems to be intended for consumption by Linux booting in ACPI
+> > > > > mode, but not via UEFI, right?
+> > > >
+> > > > Actually, this is for consumption by firmware. The goal is to allow
+> > > > edk2 to boot into U-Boot and vice versa, i.e. provide some
+> > > > interoperability between firmware projects. I will use the "Platform
+> > > > Init" and "Payload" terminology here too.
+> > > >
+> > >
+> > > OK. It was the cc to linux-acpi@ and the authors of the
+> > > ACPI/SMBIOS-without-UEFI patches that threw me off here.
+> > >
+> > > If we are talking about an internal interface for firmware components,
+> > > I'd be inclined to treat this as an implementation detail, as long as
+> > > the OS is not expected to consume these DT nodes.
+> > >
+> > > However, I struggle to see the point of framing this information as a
+> > > 'UEFI memory map'. Neither EDK2 nor u-boot consume this information
+> > > natively, and there is already prior art in both projects to consume
+> > > nodes following the existing bindings for device_type=memory and the
+> > > /reserved-memory node. UEFI runtime memory is generally useless
+> > > without UEFI runtime services, and UEFI boot services memory is just
+> > > free memory.
+> > >
+> > > There is also an overlap with the handover between secure and
+> > > non-secure firmware on arm64, which is also DT based, and communicates
+> > > available memory as well as RAM regions that are reserved for firmware
+> > > use.
+> > >
+> > > In summary, I don't see why a non-UEFI payload would care about UEFI
+> > > semantics for pre-existing memory reservations, or vice versa. Note
+> > > that EDK2 will manage its own memory map, and expose it via UEFI boot
+> > > services and not via DT.
+> >
+> > Bear in mind that one or both sides of this interface may be UEFI.
+> > There is no boot-services link between the two parts that I have
+> > outlined.
+> >
+>
+> I don't understand what this means.
+>
+> UEFI specifies how one component invokes another, and it is not based
+> on a DT binding. If the second component calls UEFI boot or runtime
+> services, it should be invoked in this manner. If it doesn't, then it
+> doesn't care about these memory reservations (and the OS will not be
+> booted via UEFI either)
+>
+> So I feel I am missing something here. Perhaps a practical example
+> would be helpful?
 
-    Thanks for continuing to look into this. Can you share your thoughts 
-on best way to proceed going forward - do you plan to revert or 
-something else?
+Let's say we want to support these combinations:
 
-thanks
+Platform Init -> Payload
+--------------------------------
+U-Boot -> Tianocore
+coreboot -> U-Boot
+Tianocore -> U-Boot
+Tianocore -> Tianocore
+U-Boot -> U-Boot
 
-gene
+Some of the above things have UEFI interfaces, some don't. But in the
+case of Tianocore -> Tianocore we want things to work as if it were
+Tianocore -> (its own handoff mechanism) Tiancore.
 
+Some Platform Init may create runtime code which needs to accessible later.
+
+The way I think of it is that we need to generalise the memory map a
+bit. Saying that you must use UEFI boot services to discover it is too
+UEFI-specific.
+
+>
+>
+> > >
+> > > ...
+> > > >
+> > > > There is no intent to implement the UEFI spec, here. It is simply that
+> > > > some payloads (EDK2) are used to having this information.
+> > > >
+> > > > Imagine splitting EDK2 into two parts, one of which does platform init
+> > > > and the other which (the payload) boots the OS. The payload wants
+> > > > information from Platform Init and it needs to be in a devicetree,
+> > > > since that is what we have chosen for this interface. So to some
+> > > > extent this is unrelated to whether you have EFI boot services. We
+> > > > just need to be able to pass the information across the interface.
+> > > > Note that the user can (without recompilation, etc.) replace the
+> > > > second part with U-Boot (for example) and it must still work.
+> > > >
+> > >
+> > > OK, so device tree makes sense for this. This is how I implemented the
+> > > EDK2 port that targets QEMU/mach-virt - it consumes the DT to discover
+> > > the UART, RTC,, memory, PCI host bridge, etc.
+> > >
+> > > But I don't see a use case for a UEFI memory map here.
+> > >
+> > >
+> ...
+> > > >
+> > > > Here I believe you are talking about booting the kernel in EFI mode,
+> > > > but that is not the intent of this patch. This is all about things
+> > > > happening in firmware. Now, if the payload (second) part of the
+> > > > firmware decides it wants to offer EFI boot services and boot the
+> > > > kernel via the EFI stub, then it may very well pack this information
+> > > > (with a few changes) into a system table and make it available to the
+> > > > kernel stub. But by then this FDT binding is irrelevant, since it has
+> > > > served its purpose (which, to reiterate, is to facilitate information
+> > > > passage from platform init to 'payload').
+> > > >
+> > >
+> > > Indeed. As long as this binding is never consumed by the OS, I don't
+> > > have any objections to it - I just fail to see the point.
+> >
+> > OK thanks.
+> >
+> > The point is that Platform Init and the payload need to agree about
+> > where certain things are in memory. It is true that this is coming
+> > from an EFI context, but that is just an example. Platform Init
+> > doesn't necessarily know whether its payload is EFI, but may set this
+> > up for use by the payload, just in case.
+> >
+>
+> Platform init can communicate memory reservations to a UEFI payload if
+> needed, and there is prior art for this.
+>
+> Platform init *cannot* communicate UEFI specific boot or runtime
+> reservations in this manner, as this doesn't make sense: either
+> Platform Init is UEFI and invokes a UEFI payload, in which case the
+> UEFI spec applies. In other cases, the UEFI memory regions either
+> don't exist or are irrelevant. The only EFI-agnostic aspect here is
+> RAM reservation for use by firmware in general, and this does not have
+> these UEFI semantics and does not need to be framed as such.
+
+How does one do the handoff if we don't know whether the payload
+supports UEFI or not? I am coming from an interoperability POV here.
+
+Regards,
+Simon
