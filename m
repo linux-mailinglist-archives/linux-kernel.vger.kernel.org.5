@@ -2,219 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDFF78DFDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B202878DEED
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238010AbjH3TRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
+        id S237756AbjH3THf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245649AbjH3Pri (ORCPT
+        with ESMTP id S245711AbjH3P4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:47:38 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF15B122;
-        Wed, 30 Aug 2023 08:47:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CZN/AVinUn1qV8EbQMFy93kE3l5Hc/Epr25UgNUgUUMuqOQkasn6nGx4KWc9SyFS7u21SYkI/DZC+vC1qY20US9ac+GmiVPdpDZyvPSITbyaA2iNt8UZ1nOWwucIcM6W07YSRs5MOwIInNbZ2fNP8/CguNH4ckz0IRSdmXOHHZrQOlcA4thgU/TqJ7WSHsYXdS95gRUF1i6Jk/0Fgnd+/Q+KaBJffTzZD3m7KPw2ipbvtTQ4DzNFPKqjHCAv5H5yUU7f/mi/DfvXnhzRj4atM/Xrf0FN8FK5/3SPbE8n+SV4l6XagHzazPFO4nedIWMz7HCbOzuLuZiiu+WBxHp5wA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C9ExJ8yE4v9Ksz7uydifjCz0uXxOl4r5RgPMLRw792U=;
- b=OIVUsmUjRdjfDot/0MByd37msNy/Z7sZL6KGzF1gD88oQbqQxtjfXO3RySDVlcmY3vvemhLJSO0jvmEHSVb+FT1CAdpotCozhSHDQ6b8qFT6yzM+bdun47XKHcsuDGFxxTyKKZtO4k7sli/8GNN9pZvWGTM8hpm2tZFOVjpDQj7Z4WexHGHiMSfXlic3Qu8acwbOaEqLi9Y9BtaFrwuuJ8tomzFaxBkKh8Oxx/j3R7dCQba1OnlXdCwp+jNRcZ+vOsETxL0f2dcMeEQWyYjlYjHbleE0GsyyD9qhwVhFymQIuDYAGcWn2GrKqEz12MzYUvGsQ6Fw++2bMdC+aP577w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C9ExJ8yE4v9Ksz7uydifjCz0uXxOl4r5RgPMLRw792U=;
- b=o304/brYTHGgmq13NXkOTeBANWA6hzkM6Bb3nPDQCxDM/Uc8Cz7A2e1+RNcvZ5fJOhZemsrTP0wzwU/2wWF+ZdUvV0qAGvz4IgKsPFNY9tb6D+/lT0kO7s16Pxp396QAdmi04eVEvCAagVVVz7FncrQFPicgza+hYV1Ja9a34wQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by SA1PR12MB9247.namprd12.prod.outlook.com (2603:10b6:806:3af::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Wed, 30 Aug
- 2023 15:47:32 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6745.020; Wed, 30 Aug 2023
- 15:47:32 +0000
-Message-ID: <d232c11d-901f-4ebc-b408-bed042ed8da9@amd.com>
-Date:   Wed, 30 Aug 2023 10:47:28 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
-Content-Language: en-US
-To:     Hans de Goede <hdegoede@redhat.com>, linus.walleij@linaro.org
-Cc:     Shyam-sundar.S-k@amd.com, Basavaraj.Natikar@amd.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, lucapgl2001@gmail.com
-References: <20230829165627.156542-1-mario.limonciello@amd.com>
- <20230829165627.156542-4-mario.limonciello@amd.com>
- <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
- <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com>
- <811225f8-c505-7344-ac18-882472ee0348@redhat.com>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <811225f8-c505-7344-ac18-882472ee0348@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN6PR2101CA0010.namprd21.prod.outlook.com
- (2603:10b6:805:106::20) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Wed, 30 Aug 2023 11:56:38 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D907C193;
+        Wed, 30 Aug 2023 08:56:34 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34bbc5eb310so19208485ab.2;
+        Wed, 30 Aug 2023 08:56:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693410994; x=1694015794; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=luyD1p5JmVUmw7nJjtInUcMJ1swr6a3B/SKZIUhECg4=;
+        b=mKIbyqgtUCfFOAduJbz1ubsOujOH4FJcg6jY+W07gBkcm8r2w+OMFEa5qMuGpTniZl
+         hEsOUfnDFdZ82YFa7CnP2HbkdzQHe9YadYcgwb4gOHgJTlZoNy57po2vRaSmkg9juV0P
+         TBOV2aUAaSa/IfsF5nfmZBnKgguviObarwlX33x+UVBrR0cJ93A2twrOwywOBe+Dg5aZ
+         mXcCM+msykM+isX1flG74KdmfNmRuQluVEVxElpBzO/M6Ut30vEGC46VZxislTupfKeZ
+         hmANLVCns+iKIeVysV5Hussej6l04hq8Z1H/CHJczsJHZgGMZYy1OAYO/Nk2xgKZgGSp
+         gmBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693410994; x=1694015794;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=luyD1p5JmVUmw7nJjtInUcMJ1swr6a3B/SKZIUhECg4=;
+        b=aGJBYc5JQ/hPW4gkmDl+sI5cw42Lfp25kk4TW7gor5tOtyMnTP/1sK2AAhjBFb+kVx
+         J/PijdOjv61YqOw+9ARVioFxyWtM37C0hZ7GWIsEhIwI+M7V8jkzXfoLfI0t8kzJ5dZu
+         sjPyiJS+xhA4lJ3nEk1EdIcSDy6f/lF0x6a/pBIQYMd8/u7W+umn7GI468tDFbrutC75
+         dRFv4faTGO2BdvEIXFRSlHhx2ELWY7sespv8bH3uVlwP8jFL/qxwQenDIyIeP0sk60hb
+         nLRkyO/GBwVYiWTIWhDKFGM3mfX1uocku8oVtjXf8aXGfbJ0ODPjZrY91CDGm1nJqtcl
+         jFSg==
+X-Gm-Message-State: AOJu0YxPvRS3BAu+Pb8v17TPxmSP/VPVPTs3BvH/xXXYb7rKVv7I9hJS
+        y7MxAdTJjzOaJyXVwhUrvK4=
+X-Google-Smtp-Source: AGHT+IFQXeYZ34vQa1o1bGHTu3FNDHxfdJgx9pyisFUG2ONSxwcvGKBQzV/KQ9kbcgpFLjjUbpPJJA==
+X-Received: by 2002:a92:d991:0:b0:34c:cc37:3064 with SMTP id r17-20020a92d991000000b0034ccc373064mr2856366iln.15.1693410994138;
+        Wed, 30 Aug 2023 08:56:34 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i25-20020a02c619000000b0042b068d921esm3961475jan.16.2023.08.30.08.56.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 08:56:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <0bfbbbb3-6144-fc9a-c8ab-423a8865591b@roeck-us.net>
+Date:   Wed, 30 Aug 2023 08:56:31 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SA1PR12MB9247:EE_
-X-MS-Office365-Filtering-Correlation-Id: bcca1bcf-1c71-4cbf-e4e8-08dba9706c1c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2GP9ORYvreJ3waWFciyipy/A/b3JdFItGJ6tmYTvtleS7GYkrzRPloOgHfDOPr0VLRrSg7GOoMY+8SPWpiakrsBx/92HOr7XN1aTleJTrDN52BGwQMT+qHwuga7Vya577vXsRg+EE0GfotSwdwUuAxcPuhkheHelCUGgvTLBsrT9zfNr5z/YRH/IZGOL5sCqqR7KIVJJoOUfLOmhlj3pK0EG9thVUnrVN09nj9f2uPrmW0GkkN8KM+M6GaRWJ3Zf9rMQTaN0dY0fOxVeJYafvUIYXlmvGWAD2SdD8qVey6QEoVWFiJi5mAXfnxNMyqgVF8FwAYY80CA06Qrxr0Q1BTPUtitQvCA6vLDHgM1OvTkR5BYYHoIpFwAy7KGnh3teluvy4+4HyTA4ckQbodbcl42hmbv7KPU1/w+q74TkIvNlhptotFQ2gfavaJJc0lOvvO4InF6SFcMfQT6b6ovpA+iOgj2p2DnWaXjLDrNEAoVuYcs2+sUIFufe9+Tvcq0OwioaPRDbdzdnM8Q27A3khu9NictYy0IiEhx9210xU74QkQx7GYHVsQhHy09VRJg9C0WkHEOj/6Hkk9HXUNYue6PWf1JUOTFOMmEZPuuOHnQxHJXbEnIzm/Ol+RsYnqVxnoV+VV2Jb5FVUZ3f9qXQ7ft1bCHAc+cLbz9GmAPK0Gw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(396003)(376002)(39860400002)(451199024)(1800799009)(186009)(5660300002)(2906002)(44832011)(4326008)(31696002)(38100700002)(478600001)(86362001)(966005)(83380400001)(2616005)(26005)(36756003)(53546011)(6666004)(66476007)(6506007)(6486002)(6512007)(316002)(41300700001)(31686004)(66946007)(66556008)(8676002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z0w2S1dtbHBSQkcyREdBOFRwQllyU29PMU1nOEFWMjlSQzFuemJ4Umd4M2Mz?=
- =?utf-8?B?NVJvSDNlNkpUNUErVEVoMzI5SXc3dEZ2bVpOUXhaYWxNckNKQ0thRXQ1dTIv?=
- =?utf-8?B?czRQVjJzNCtiTHhyYlgxMGtIcWxhL0Q4aCtkdDEySmdwTkRKOHE3ZisxUVUz?=
- =?utf-8?B?ZHM2WFZVQW5YVnJxb1V1TnhVVnNXSXEvQlMzRFdCUDkyMXd6cTJJeUZRYmRs?=
- =?utf-8?B?dGxQQWZJcmpNK2FkMk1RV3FHSEY3Vk5BbmwzbHZxaGJsWUgwdHJ0WE5hb0RH?=
- =?utf-8?B?S2J6cDU2dlZUM2s0YTkzY1UydDZmeDhsRFNocGlHbGJTY0NKRWhKVGI5UEFr?=
- =?utf-8?B?UjdENk5CQ3JUdm9IbGFLLzBReVlVaHpNUmRCcGN1clZmczZ2Wkc5alZtbEli?=
- =?utf-8?B?WTB3dHpBVi9xK0Y1b24rdWlxZDNLZjdnelh2Mi9KVktKMURvaFdQSTVaYVNs?=
- =?utf-8?B?aFZaU3hxaG8vK3JKQmFSSDZEVGpQcUJQQXB4a09vall0YWsrUlp4SzhNWE5a?=
- =?utf-8?B?U0gwUlNZempabU80UlAwbGRVZjhYZWhuWkJiV1NkV0ZSUEF5MGtIVzE3aEo3?=
- =?utf-8?B?MCs1VVBkVVVvS3RQdjBLaVNlNTF3K0J6c28yUitWZEs5ZE5aYWdQU0E3bSty?=
- =?utf-8?B?cW1jQXZkWitnLzZYdUtuYjZ2NkpIem5UTEo4MkZjUSs5Z3dMWTIrU1pvYTdW?=
- =?utf-8?B?N25oVGlMZTFnKzNYVmI0aERDNWdBT0RBTS8xOTVTdE5rRWpORzFBaFptZ3VL?=
- =?utf-8?B?ZmV0UHZOZDlrbUNIdmIwVzNrcUtXZmJFOTkyQ0h5czJTRktreFl5NDJnNk02?=
- =?utf-8?B?WEZlRnJKTC9SYlZNSTlEM0Vnb1dHc3BlN1dMN01HNkNkdDV1bXU0a1N1ZnBI?=
- =?utf-8?B?NkM1eUsxZStoVFQ4cHBHOTVlRHBucXhVQmJhUWJCeVV6Y3BaRUFQVFovc2ZT?=
- =?utf-8?B?Rk5JN2k1akNEVGVWK1AzeVNEYkpBOVRIa0IwbDFvcUN1d1Z4Q2FvdjR3YU5u?=
- =?utf-8?B?NnkvUjhCNnFUQ1VhdGV6WU05RGY1R3lHMWtBZUpTb2xxUXNPRmhTZGVyTE8z?=
- =?utf-8?B?NWFkZ3BCNFovemtCMjRreXRoQ0R0alNpRklERWVJNVQ0YkhhZk5QamxaaGc3?=
- =?utf-8?B?b0lwbGo2L0M0Sy9qTW16bE5keHQ3YWxSMkJZQ1VzYmtzdUw1YmFBOFpqNmEw?=
- =?utf-8?B?WWhrcW1FUlV0V1VxbVVPc2NUT09GQWZHQU0zSmp3NHhFbUhVeEx1d0taTGhl?=
- =?utf-8?B?ZFNQdm1NQmJJa3pyeXY1dHpKRU82UkJ3QlBsVzd1TGJqaHJ3ei85cW1SdVlJ?=
- =?utf-8?B?b0crK3podzByY0hMR3RpL0JkL3AvKy93akx6T3hib2xNY2hhL0Q4UnoxcTdE?=
- =?utf-8?B?TTRiaVFFWTROVzlBbng4RmdwZkxIUTE1ZnNodzdmVXc2b0FJVGhFMm5HaVFv?=
- =?utf-8?B?UHlRVFhtbGJkaXprMk5uWHNyVVppUGVWR2hlV2xWMG9tN0JJamlBRFg0SU1D?=
- =?utf-8?B?MnhiRDdjRW0vcEtOMlUvSG1Wb2tPbGFnMkRMWjloQzEyQkRFc2FnYlRuMHlT?=
- =?utf-8?B?Nlo4Nk5sYUZmUC8vdkF3bkp2NUVBOXo1ek1wTjZJNWorOW5kZ1JrMFhzQTRh?=
- =?utf-8?B?cDZuNUc1Y2FWd1JOOTc3TjFscmF2VUZteU9pdzlTT2t1bk5rcE8wZy9JYjlL?=
- =?utf-8?B?UXdpUW80c09pTDJSZWpCZkdTRnFoVXhQOGJuRVVMTWs3eTBPMkFXM01xU21u?=
- =?utf-8?B?MjRNK1pHeFEwcDc2aDVVY1FjOGJpcjBYaE1hU3U1ekdqcnlhRHROc2pUL1g3?=
- =?utf-8?B?RDk0RDRWZUdLNHlKcEtsREZBZWMzTnUzUWRFZ09JaXZXS0xNd0hjZTZBaW82?=
- =?utf-8?B?dEJ3bGN0Q2ZhYlFRazlDcVhVUWliLy8ydGxQUDkrRmtWV0dYUVRVU0tRc0J2?=
- =?utf-8?B?bDFqK2orYlBmaFZXUDFxcXVNVkVaUVFSY1o3MmtuaURLbzNGRTU5TEVHTWdC?=
- =?utf-8?B?YXdNcjc0aFZXYUxtWDBaMmI4UmNweHIxMjNBcWZJQmhVN1hDTEtoV0w4cUlH?=
- =?utf-8?B?Y0kzZjVlYzBDUnZMQ3JGZDZraUxSZzRpbndwRWg5RnNtaFgxMWNQbXBXVXoy?=
- =?utf-8?Q?GuQrGXzVRxkccxlkhEkWW5DIf?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bcca1bcf-1c71-4cbf-e4e8-08dba9706c1c
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 15:47:32.0505
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1KtUAIEVL+xlzUv4qMVBdVJGTmCJawdMfFy0Iksi3gbCs5wIhpXiA7INMTpDd0ASPAY9geStymsZdWW/Ev1FGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB9247
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Naresh Solanki <naresh.solanki@9elements.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     zev@bewilderbeest.net, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20230830111319.3882281-1-Naresh.Solanki@9elements.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] regulator (max5970): Add hwmon support
+In-Reply-To: <20230830111319.3882281-1-Naresh.Solanki@9elements.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/2023 10:37, Hans de Goede wrote:
-> Hi,
+On 8/30/23 04:13, Naresh Solanki wrote:
+> Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
+> and current monitoring. This feature is seamlessly integrated through
+> the hwmon subsystem.
 > 
-> On 8/29/23 23:37, Mario Limonciello wrote:
->> On 8/29/2023 14:54, Hans de Goede wrote:
->>> Hi Mario,
->>>
->>> On 8/29/23 18:56, Mario Limonciello wrote:
->>>> Lenovo ideapad 5 doesn't use interrupts for GPIO 0, and so internally
->>>> debouncing with WinBlue debounce behavior means that the GPIO doesn't
->>>> clear until a separate GPIO is used (such as touchpad).
->>>>
->>>> Prefer to use legacy debouncing to avoid problems.
->>>>
->>>> Reported-by: Luca Pigliacampo <lucapgl2001@gmail.com>
->>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217833
->>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->>>
->>> I'm not happy to see yet another DMI quirk solution here.
->>>
->>> and I guess you're not happy with this either...
->>
->> Yeah I was really hoping the first patch was enough for the issue.
->>
->> If we can't come up with anything else we can potentially drop patches 2 and 3. Even patch 1 alone will "significantly" improve the situation.
->>
->> The other option I considered is to hardcode WinBlue debounce behavior "off" in Linux.
->>
->> I don't think this is a good idea though though because we will likely trade bugs because the debounce values in the AML for systems using _AEI aren't actually used in Windows and might not have good values.
+> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> ---
+>   drivers/regulator/max5970-regulator.c | 119 ++++++++++++++++++++++++++
+>   1 file changed, 119 insertions(+)
 > 
-> What if we turn off the WinBlue debounce behavior for GPIO0 and then just hardcode some sane debounce values for it, overriding whatever the DSDT _AEI entries contain ?
-> 
+> diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
+> index b56a174cde3d..3a6f7c293526 100644
+> --- a/drivers/regulator/max5970-regulator.c
+> +++ b/drivers/regulator/max5970-regulator.c
+> @@ -10,6 +10,7 @@
+>   #include <linux/bitops.h>
+>   #include <linux/device.h>
+>   #include <linux/err.h>
+> +#include <linux/hwmon.h>
+>   #include <linux/module.h>
+>   #include <linux/io.h>
+>   #include <linux/of.h>
+> @@ -32,6 +33,116 @@ enum max597x_regulator_id {
+>   	MAX597X_SW1,
+>   };
+>   
+> +static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
+> +{
+> +	u8 reg_data[2];
+> +	int ret;
+> +
+> +	ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*val = (reg_data[0] << 2) | (reg_data[1] & 3);
+> +
+> +	return 0;
+> +}
+> +
+> +static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
+> +			u32 attr, int channel, long *val)
+> +{
+> +	struct max5970_data *ddata = dev_get_drvdata(dev);
+> +	struct regmap *regmap = dev_get_regmap(dev->parent, NULL);
+> +	int ret;
+> +
+> +	switch (type) {
+> +	case hwmon_curr:
+> +		switch (attr) {
+> +		case hwmon_curr_input:
+> +			ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
+> +			/*
+> +			 * Calculate current from ADC value, IRNG range & shunt resistor value.
+> +			 * ddata->irng holds the voltage corresponding to the maximum value the
+> +			 * 10-bit ADC can measure.
+> +			 * To obtain the output, multiply the ADC value by the IRNG range (in
+> +			 * millivolts) and then divide it by the maximum value of the 10-bit ADC.
+> +			 */
+> +			*val = (*val * ddata->irng[channel]) >> 10;
+> +			/* Convert the voltage meansurement across shunt resistor to current */
+> +			*val = (*val * 1000) / ddata->shunt_micro_ohms[channel];
+> +			return ret;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +
+> +	case hwmon_in:
+> +		switch (attr) {
+> +		case hwmon_in_input:
+> +			ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
+> +			/*
+> +			 * Calculate voltage from ADC value and MON range.
+> +			 * ddata->mon_rng holds the voltage corresponding to the maximum value the
+> +			 * 10-bit ADC can measure.
+> +			 * To obtain the output, multiply the ADC value by the MON range (in
+> +			 * microvolts) and then divide it by the maximum value of the 10-bit ADC.
+> +			 */
+> +			*val = mul_u64_u32_shr(*val, ddata->mon_rng[channel], 10);
 
-I don't think this is a good idea.
+Why do you use mul_u64_u32_shr() here but a direct shift above ?
 
-Some vendors GPIO0 doesn't connect to the power button but instead to 
-the EC.  If it's connected to the EC, the EC might instead trigger GPIO0 
-for lid or power button or whatever they decided for a design specific way.
+> +			/* uV to mV */
+> +			*val = *val / 1000;
+> +			return ret;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static umode_t max5970_is_visible(const void *data,
+> +				  enum hwmon_sensor_types type,
+> +				  u32 attr, int channel)
+> +{
+> +	struct max5970_data *ddata = (struct max5970_data *)data;
+> +
+> +	if (channel >= ddata->num_switches)
+> +		return 0;
+> +
+> +	switch (type) {
+> +	case hwmon_in:
+> +		switch (attr) {
+> +		case hwmon_in_input:
+> +			return 0444;
 
-I'd worry that we're going to end up with inconsistent results if they 
-have their own debouncing put in place in the EC *because* they were 
-relying upon the Winblue debounce behavior.
+		default:
+			break;
 
-After all - this was fixed because of 
-https://bugzilla.kernel.org/show_bug.cgi?id=217315
+> +		}
+> +		break;
+> +	case hwmon_curr:
+> +		switch (attr) {
+> +		case hwmon_curr_input:
+> +			/* Current measurement requires knowledge of the shunt resistor value. */
+> +			if (ddata->shunt_micro_ohms[channel])
+> +				return 0444;
+		default:
+			break;
 
->>> Are we sure there is no other way? Did you check an acpidump
->>> for the laptop and specifically for its ACPI powerbutton handling?
->>
->> I'm not sure there is another way or not, but yes there is an acpidump attached to the bug in case you or anyone else has some ideas.
->>
->>>
->>> I would expect the ACPI powerbutton handler to somehow clear
->>> the bit, like how patch 1/3 clears it from the GPIO chip's
->>> own IRQ handler.
->>>
->>> I see that drivers/acpi/button.c does:
->>>
->>> static u32 acpi_button_event(void *data)
->>> {
->>>           acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
->>>           return ACPI_INTERRUPT_HANDLED;
->>> }
->>>
->>> So unless I'm misreading something here, there is some AML being
->>> executed on power-button events. So maybe there is something wrong
->>> with how Linux interprets that AML ?
->>>
->> The relevant ACPI spec section is here:
->>
->> https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/04_ACPI_Hardware_Specification/ACPI_Hardware_Specification.html#control-method-power-button
->>
->> I did look at the acpidump.  GPE 08 notifies \_SB.PWRB (a PNP0C0C device) with 0x2.  According to the spec this is specifically for letting the system know the power button is waking up the system from G1.
-> 
-> Sorry, the acpi_os_execute() function name gave me the impression that this would actually call some ACPI defined function, since normally in acpi speak execute refers to an ACPI table defined method.
-> 
-> But that is not the case here it is just a wrapper to deferred-exec the passed in function pointer.
-> 
-> To be clear I was hoping that there was an ACPI defined (AML code) function which would maybe clear the GPIO for us and that that was maybe not working due to e.g. some opregion not being implemented by Linux. But no AML code is being executed at all, so this is all a red herring.
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static const struct hwmon_ops max5970_hwmon_ops = {
+> +	.is_visible = max5970_is_visible,
+> +	.read = max5970_read,
+> +};
+> +
+> +static const struct hwmon_channel_info *max5970_info[] = {
+> +	HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
+> +	HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
 
-Something we could do is add an extra callback for ACPI button driver to 
-call the GPIO controller IRQ handler.  Worst case the IRQ handler does 
-nothing, best case it fixes this issue.
-I'm not sure how we'd tie it to something spec compliant.
+Your call, but the chip does support limit and status registers, so you
+could add reporting those as well since you are at it, possibly even including
+notifications.
+
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_chip_info max5970_chip_info = {
+> +	.ops = &max5970_hwmon_ops,
+> +	.info = max5970_info,
+> +};
+> +
+>   static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
+>   {
+>   	int ret, reg;
+> @@ -432,6 +543,7 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+>   	struct regulator_config config = { };
+>   	struct regulator_dev *rdev;
+>   	struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
+> +	struct device *hwmon_dev;
+>   	int num_switches;
+>   	int ret, i;
+>   
+> @@ -485,6 +597,13 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+>   		max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
+>   	}
+>   
+> +	hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970_hwmon", max597x,
+> +							 &max5970_chip_info, NULL);
+
+This makes the driver dependent on hwmon, so you either need a strict
+	depends on HWMON
+in Kconfig, or
+	depends on HWMON || HWMON=n
+and add #if IS_ENABLED(CONFIG_HWMON) as appropriate into the code.
+
+
+> +	if (IS_ERR(hwmon_dev)) {
+> +		return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev), \
+> +				     "Unable to register hwmon device\n");
+> +	}
+> +
+>   	if (i2c->irq) {
+>   		ret =
+>   		    max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
+> 
+> base-commit: 35d0d2350d774fecf596cfb2fb050559fe5e1850
+
