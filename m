@@ -2,156 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7607478D35C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3733678D31F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 08:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239905AbjH3G1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 02:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S239205AbjH3GFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 02:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241392AbjH3G1i (ORCPT
+        with ESMTP id S239077AbjH3GFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:27:38 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE6DE49
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:27:24 -0700 (PDT)
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
+        Wed, 30 Aug 2023 02:05:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759BBCCA
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:05:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7532A3F62B
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1693376842;
-        bh=RnIQo3VWGKo2jYdOWLsqgEFSEpzbuJCL+ZC0RfYr8WY=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=vSlXrT/eplq2NN0sXHzu2c4ITmS+8uHg1mVFN9OL4WUHiqPcKX9yNdVdPSzf0xoiX
-         yWmbDjPwrVv+BW4bKu4KEeCeRhHPK0SmT/lhlXH19o+1HGlGz5FskLCcw46bNfk4S9
-         lRswdg6K5JVPs6RkoQUKxwrLQi/BYil5z941mRSMQF3owiUEkflOyeCmnJ+i9iLnUB
-         rbst4WLMa3bKGSA4P0Ms1BNP0sTWOamyd2P4/VuUQjDbWUYxhmpTnZHFNuaEyLTyb4
-         42Dn7pLDDkSFriBXfZxPwB2uvgpRNCAzWDJ/RdOFCCOivcjAOTSwLxpiRqLctLGb1Y
-         Hdzbro0LR511Q==
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b8405aace3so56170201fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:27:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693376841; x=1693981641;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RnIQo3VWGKo2jYdOWLsqgEFSEpzbuJCL+ZC0RfYr8WY=;
-        b=AndtuJZd8qq+ksL+B+lXgD0+6w6W52Cx97wNLAIZHG8uNWtxjDweFhn2pjCIQRj5VW
-         rKc7NleR5Uu2Wuznzk7LV+x6wGZHdeScC0gLAoz8Fn7YLczFZpA9IpJ9mAjiTmOK3ifP
-         ZDXODmtBPm/QNihSdFP84dIdikwI8bs3A9hDqziHk2sCdtqTaTTJ+w2RWDjwSwbRRt2K
-         rzamBcGIoqXjAWRdDsT+xHoriSnD6K7Igi2jt6nSy5FPrVo2Xd0O+3q8V5muK9Tuz+se
-         a44KzB9iA5r9/6GDCPj/46qGtNVrdrnsJCdM20ywrJ6G6YgpvfWk1OJoMIa2d7Vxy9t/
-         Iv1w==
-X-Gm-Message-State: AOJu0YxIinQjHsz4zG/Cbu+XXPJt9Va28yfOzHnlwxNaoch3aqAXJ22w
-        TZfi4/Zj/V4s/tw58C4kP0/tNQQEgQnf9Cxpbl4GCXd3HKxrN64ptVCqsHzS+YoXxsOwfJDbTn6
-        bKjgKN8Iqejosc81lNMdCNa9TI+tWj65o3yHPtm9szBPXCVVDKUbT8pH5Eg==
-X-Received: by 2002:a17:906:20e:b0:9a1:f6e0:12f4 with SMTP id 14-20020a170906020e00b009a1f6e012f4mr779898ejd.15.1693375202759;
-        Tue, 29 Aug 2023 23:00:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE8gKaL+YTHivPq1mxOTBt++hqwWULRhM6kPnw84P9cKjCmAliTJntlMQqIhVlZJxduCXn6AEPZik7LmYorxTo=
-X-Received: by 2002:a17:906:20e:b0:9a1:f6e0:12f4 with SMTP id
- 14-20020a170906020e00b009a1f6e012f4mr779878ejd.15.1693375202465; Tue, 29 Aug
- 2023 23:00:02 -0700 (PDT)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EECA962A06
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:05:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A41C433C8;
+        Wed, 30 Aug 2023 06:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693375508;
+        bh=pIEAeMZU01cu0V/hi9qtT63KB+MWUtdcr1EXhtHOuRk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L8OsP4zv5gzmP0uGgcaIUG2DAQ0joO2f/CK6fbztCn0jfdksVQo5gAYHk+oH/MrR/
+         lRm9VHJKmtt40ME7QrBDJTwrEQg4H35WualfNFeVeASfHdZY9y+SsrjSjkJDs458Z0
+         yL6MRusr7zwvmNRShKVDXaL21Fgxg92ojLW/ADuI5Mh+jNL7KabkJtUP/VxZ83s9OT
+         3ip+bUlaOfSCG6YSLGILSBBaW34wFy5KIAtU7oN0ShKz/xrtKgpltOcMzAtzjiUcFc
+         Fes8/pQKkmhDHSGGCYF8wOzMz4xL8E3D5HKx42HyOpsSVYfG+6Z2BTHqQHrgDzDMpl
+         IuIXyz5rHXaYw==
+Date:   Tue, 29 Aug 2023 23:05:06 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, Kees Cook <kees@kernel.org>,
+        linux-kernel@vger.kernel.org, Enlin Mu <enlin.mu@unisoc.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yunlong Xing <yunlong.xing@unisoc.com>,
+        Yuxiao Zhang <yuxiaozhang@google.com>
+Subject: Re: [GIT PULL] pstore updates for v6.6-rc1
+Message-ID: <20230830060506.GA1015@sol.localdomain>
+References: <202308281119.10472FC7@keescook>
+ <CAHk-=wi_WxZ2dEsQR0-wDtYAh4sxVEQkU7HK5JSboVv7v7NwcQ@mail.gmail.com>
+ <B085ADB4-4B8C-4998-BB33-DA67C45483E9@kernel.org>
+ <CAHk-=wjRD_LnCbwSRM20Fg54xhrFBLwgO=X23bdconx3wKokxg@mail.gmail.com>
+ <202308282035.5AFD431B@keescook>
+ <CAHk-=whbqsYC4nDc7HpWEYo7EnA603T35jSP4om6HMWpVZSc_w@mail.gmail.com>
+ <CAMj1kXGJCBj2JQFkUgd26H-abagcpO+7z_--6HV42VeaqCsEnQ@mail.gmail.com>
+ <CAHk-=wgaY2+_KyqVpRS+MrO6Y7bXQp69odTu7JT3XSpdUsgS=g@mail.gmail.com>
+ <CAMj1kXHde34XNukpbCcbScetWKzv9m7nX2WCw8-zspPKc5g4zw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230828055310.21391-1-chengen.du@canonical.com>
- <CAPza5qe0NBWiKZ1yLyfdPGOsmM=VGqWMs=oWJqVzLRcd8AFyJQ@mail.gmail.com> <73E82F73-1621-4553-8019-2946EA573415@redhat.com>
-In-Reply-To: <73E82F73-1621-4553-8019-2946EA573415@redhat.com>
-From:   Chengen Du <chengen.du@canonical.com>
-Date:   Wed, 30 Aug 2023 13:59:51 +0800
-Message-ID: <CAPza5qeYvrn49Ow9TQ4WL=aO+5+p1SgP4dN3coRRX+hYxkgpzQ@mail.gmail.com>
-Subject: Re: [PATCH v3 RESEND] NFS: Add mount option 'fasc'
-To:     Benjamin Coddington <bcodding@redhat.com>
-Cc:     trond.myklebust@hammerspace.com, anna@kernel.org,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHde34XNukpbCcbScetWKzv9m7nX2WCw8-zspPKc5g4zw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+Hi,
 
-I'd like to provide some context about the new behavior introduced by
-the commit - 0eb43812c027 "NFS: Clear the file access cache upon
-login."
-This recent adoption has successfully resolved a long-standing issue.
-The current outcome is that the file access cache gets cleared when a
-user logs out and subsequently logs back in.
-
-In specific scenarios, users might access NFS-mounted folders via a
-'sudo'-like behavior, inadvertently adding to the NFS server's load
-due to the inability to use the file cache efficiently.
-
-To alleviate this performance overhead, my proposal centers on
-reverting to the original behavior, where the file access cache
-remains untouched upon user login.
-This stems from the rationale that the cache should only be cleared
-when the server's group membership changes after a user has already
-logged in on the client.
-This alteration rarely occurs in stable environments, thus rendering
-the file access cache reliable.
-With this in mind, my suggestion involves adding a mount option that
-empowers administrators to dictate which NFS-mounted folders adhere to
-the POSIX behavior - one that refreshes a user's supplementary group
-information upon login.
-
-The genesis of this patch places a premium on performance while also
-maintaining alignment with the original behavior prior to the adoption
-of the commit 0eb43812c027.
-Transitioning to adhere strictly to the POSIX policy also carries merit.
-I believe that further discussion can facilitate a consensus on this matter=
-.
-
-Thank you for lending your perspective to this discourse.
-
-Best regards,
-Chengen Du
-
-On Tue, Aug 29, 2023 at 9:35=E2=80=AFPM Benjamin Coddington <bcodding@redha=
-t.com> wrote:
->
-> On 28 Aug 2023, at 3:14, Chengen Du wrote:
->
-> > Hi,
+On Tue, Aug 29, 2023 at 11:43:37PM +0200, Ard Biesheuvel wrote:
+> On Tue, 29 Aug 2023 at 20:04, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 > >
-> > The performance issue has been brought to our attention by users
-> > within the Ubuntu community.
-> > However, it seems to be confined to specific user scenarios.
-> > Canonical has taken proactive measures to tackle the problem by
-> > implementing a temporary solution [1], which has effectively resolved
-> > the issue at hand.
-> > Nonetheless, our earnest desire is for a definitive resolution of the
-> > performance concern at its source upstream.
+> > On Tue, 29 Aug 2023 at 10:29, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > This is an oversight on my part. The diff below plugs this into the pstore code
 > >
-> > I've taken the initiative to send the patches addressing this matter.
-> > Regrettably, as of now, I've yet to receive any response.
-> > This situation leads me to consider the possibility of reservations or
-> > deliberations surrounding this issue.
-> > I am genuinely keen to gain insights and perspectives from the
-> > upstream community.
+> > Hmm. My reaction is that you should also add the comment about the
+> > "Work around a bug in zlib" issue, because this code makes no sense
+> > otherwise.
 > >
-> > I kindly ask for your valuable input on this matter.
-> > Your thoughts would significantly aid my progress and contribute to a
-> > collective consensus.
->
-> Hi Chengen Du,
->
-> This patch changes the default behavior for everyone.  Instead of that,
-> perhaps the new option should change the behavior.  That would reduce the
-> change surface for all NFS users.
->
-> The default behavior has already been hotly debated on this list and so I
-> think changing the default would need to be accompanied by excellent
-> reasons.
->
-> Ben
->
+> 
+> Naturally. But pasting the comment into the email body seemed unnecessary.
+> 
+> > Of course, potentially even better would be to actually move this fix
+> > into our copy of zlib. Does the bug / misfeature still exist in
+> > upstream zlib?
+> >
+> 
+> I have no idea. You are the one sitting on the only [potential]
+> reproducer I am aware of, and there is nothing in the git (or prior)
+> history that sheds any light on this. Could you copy one of those EFI
+> variables to a file and share it so I can try and reproduce this?
+> 
+> > Also, grepping around a bit, I note that btrfs, for example, just does
+> > that Z_SYNC_FLUSH, and then checks for Z_OK. None of this Z_STREAM_END
+> > stuff.
+> >
+> > Similarly, going off to the debian code search, I find other code that
+> > just accepts either Z_OK or Z_STREAM_END.
+> >
+> > So what's so magical about how pstore uses zlib? This is just very odd.
+> >
+> 
+> AIUI, zlib can be used in raw mode and with a header/footer. Passing
+> the wbits parameter as a negative number (!) will switch into raw
+> mode.
+> 
+> The btrfs and jffs2 occurrences both default to positive wbits, and
+> switch to negative in a very specific case that involves zlib
+> internals that I don't understand. crypto/deflate.c implements both
+> modes, and pstore always used the raw one in all cases.
+> 
+> The workaround in crypto/deflate.c is documented as being specific to
+> the raw mode, which is why it makes sense to at least verify whether
+> the same workaround that pstore-deflate was using when doing raw zlib
+> through the crypto API is still needed now that it calls zlib
+> directly.
+
+I get the "pstore: zlib_inflate() failed, ret = -5!" messages on my system too,
+so I looked into it.  What's happening is that the pstore records are coming
+from the efi_pstore backend, which has pstore_info::bufsize of 1024 bytes, but
+they decompress to more than 1024 bytes.  Since pstore now sizes the buffer for
+decompressed data to only pstore_info::bufsize, lib/zlib_inflate correctly
+returns Z_BUF_ERROR.  (BTW, I write "lib/zlib_inflate", not "zlib", since it was
+forked from the real zlib 25 years ago.  Regardless, the problem isn't there.)
+
+I think we partially misinterpreted the functions like zbufsize_deflate() that
+Ard's patches removed.  They seemed to be used only for getting the worst case
+compressed size for an uncompressed size of pstore_info::bufsize.  Actually,
+they were used both for that, *and* for getting the uncompressed size to try to
+compress into pstore_info::bufsize.  (Which is very weird, as these are two very
+different concepts.)
+
+So I think first we need to decide whether pstore should try to use compression
+to fit more than pstore_info::bufsize of data in each pstore record, as opposed
+to just shrinking the size of the record actually written.  If yes, then this
+really needs some more thought than the previous code which seemed to do this by
+accident.  If no, then the new approach is fine.
+
+BTW, what happens if someone was using a non-DEFLATE algorithm and then upgrades
+their kernel?  Decompression can fail for that too.  So maybe pstore just needs
+to consider that decompression of pstore records written by an older kernel can
+fail -- either due to the algorithm changing or due to the uncompressed size
+being too large for the new code -- and silence the error messages accordingly?
+How "persistent" do these persistent store records really have to be?
+
+- Eric
