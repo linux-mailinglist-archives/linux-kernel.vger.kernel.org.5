@@ -2,79 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D2278DD16
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE9478D845
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243327AbjH3Sro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
+        id S232944AbjH3SaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343630AbjH3QVQ (ORCPT
+        with ESMTP id S1343635AbjH3QZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:21:16 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7B21A3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:21:13 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-76-NLkRhACHMZubfs6D4dRRWg-1; Wed, 30 Aug 2023 17:21:10 +0100
-X-MC-Unique: NLkRhACHMZubfs6D4dRRWg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 30 Aug
- 2023 17:21:02 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 30 Aug 2023 17:21:02 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Ammar Faizi' <ammarfaizi2@gnuweeb.org>,
-        Zhangjin Wu <falcon@tinylab.org>, Willy Tarreau <w@1wt.eu>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        =?utf-8?B?VGhvbWFzIFdlacOfc2NodWg=?= <thomas@t-8ch.de>,
-        Yuan Tan <tanyuan@tinylab.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kselftest Mailing List 
-        <linux-kselftest@vger.kernel.org>
-Subject: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with single
- -ENOSYS return
-Thread-Topic: [RFC] tools/nolibc: replace duplicated -ENOSYS return with
- single -ENOSYS return
-Thread-Index: AdnbXfVru8RTG9gTQ+SsAG5ax7hYow==
-Date:   Wed, 30 Aug 2023 16:21:02 +0000
-Message-ID: <2d52dbd55e6240d5a91ebdce67fe0b7b@AcuMS.aculab.com>
-References: <20230827083225.7534-1-falcon@tinylab.org>
- <4bbdea1710464fa2943663a25bf370c9@AcuMS.aculab.com>
- <6f93ea82-f157-e921-2028-5b4fae4ad341@gnuweeb.org>
-In-Reply-To: <6f93ea82-f157-e921-2028-5b4fae4ad341@gnuweeb.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 30 Aug 2023 12:25:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D53F4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693412664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sgQnGhEZJ0yoOE5a8Oq+mztnWmGg/SOlXBzDljzJzy4=;
+        b=W9vh7henX3e2bF2R7p4T/XSEDpsVeN+K+hOv1qvx7cICDP8KF2IzCK339rl1ZUM/XNkPOH
+        E4iNFNW+vFHZLwtxYqa+UnzxkuIvY9sHrGofpMuIZJWtDplx3cshpCylKx5PPz5TG6QzSv
+        8GnKAFD3FpOOx5F1w3Q3iUJlM2UJm6s=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-570-nFFnzjDtO5m-mDlASdmHYg-1; Wed, 30 Aug 2023 12:24:22 -0400
+X-MC-Unique: nFFnzjDtO5m-mDlASdmHYg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-30932d15a30so3858306f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:24:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693412661; x=1694017461;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sgQnGhEZJ0yoOE5a8Oq+mztnWmGg/SOlXBzDljzJzy4=;
+        b=NyvmzHbGcwndzv3VvYuzKrddfE4wqXSCAuEeKLJYFoqnxa+xwmHnb9esC8VX1cfhh/
+         zxayOa7bzHbkSxOCbyK8BEKRorce9rztduAcbz80pHYxxheXTUOn9+/GWv8qZVW6G86N
+         toKN4vzLHXgQP8x+Z4RizTwlmLY3DqBKO9Q+H4vI6LZzq9bASmgvnjZ375EFPXsNXrfE
+         OqlCx1iU7Dk0wnEkhpxup57Km/qIiVwbFiAzeKohqrFYH4uAmAbWmG0aZBg9jcWm/yd9
+         tfHFLjTMVwjAQ+pPCobpLedyhMILroGYdBgtkoh9zfWd8gZxhyXmsT28Rz5CBmFJxcsO
+         MSaA==
+X-Gm-Message-State: AOJu0YzA2M7Gg7UKYuWqfQlNpaYopgVun2wsoJmHF9Mnwafsy9mdm70a
+        Jux18y+JfJ9kxxeP1EiJ4dpkxRpFFXeDm3oY1opFK1rfTHjGcjxnZOxFinItnT2m0tk+951IVms
+        Eji8OZLY/c6OsYVTKQWlxC2+B
+X-Received: by 2002:adf:f4c3:0:b0:31d:d3db:4566 with SMTP id h3-20020adff4c3000000b0031dd3db4566mr1974307wrp.4.1693412661407;
+        Wed, 30 Aug 2023 09:24:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF/wXxa1hj4nkT4+KwE8RvCJfSVM6DqTxAvYR7jNalLGSk9aAL20Ta1x9gNDbBRH6bd4tZDBw==
+X-Received: by 2002:adf:f4c3:0:b0:31d:d3db:4566 with SMTP id h3-20020adff4c3000000b0031dd3db4566mr1974281wrp.4.1693412661006;
+        Wed, 30 Aug 2023 09:24:21 -0700 (PDT)
+Received: from [10.59.19.200] (pd956a06e.dip0.t-ipconnect.de. [217.86.160.110])
+        by smtp.gmail.com with ESMTPSA id n8-20020a5d4c48000000b003140f47224csm17003722wrt.15.2023.08.30.09.24.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 09:24:20 -0700 (PDT)
+Message-ID: <06110ce1-4638-2438-c17e-8f1dc3173522@redhat.com>
+Date:   Wed, 30 Aug 2023 18:24:16 +0200
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/5] mm: Implement folio_remove_rmap_range()
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230830095011.1228673-1-ryan.roberts@arm.com>
+ <20230830095011.1228673-2-ryan.roberts@arm.com>
+ <ZO9XgttGXnx5dxFZ@casper.infradead.org>
+ <1696b47d-fcaa-4d60-b9b2-3f2178127dcb@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <1696b47d-fcaa-4d60-b9b2-3f2178127dcb@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW1tYXIgRmFpemkNCj4gU2VudDogMzAgQXVndXN0IDIwMjMgMTU6NDENCj4gDQo+IE9u
-IDgvMjgvMjMgNDo1MSBBTSwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0KPiA+IEkganVzdCBmb3VuZCBh
-KG5vdGhlcikgY2xhbmcgYnVnOg0KPiA+IAlpbnQgZih2b2lkKSB7IHJldHVybiAiYSJbMl07IH0N
-Cj4gPiBjb21waWxlcyB0byBqdXN0IGEgJ3JldHVybicuDQo+IA0KPiBJIGRvbid0IHRoaW5rIHRo
-YXQncyBhIGJ1Zy4gSXQncyB1bmRlZmluZWQgYmVoYXZpb3IgZHVlIHRvIGFuDQo+IG91dC1vZi1i
-b3VuZCByZWFkLiBXaGF0IGRvIHlvdSBleHBlY3QgaXQgdG8gcmV0dXJuPw0KDQpJIHdhcyBhY3R1
-YWxseSBleHBlY3RpbmcgYSB3YXJuaW5nL2Vycm9yIGlmIGl0IGRpZG4ndCBqdXN0IHJlYWQNCnRo
-ZSBieXRlIGFmdGVyIHRoZSBlbmQgb2YgdGhlIHN0cmluZy4NCg0KSnVzdCBzaWxlbnRseSBkb2lu
-ZyBub3RoaW5nIGRpZG4ndCBzZWVtIHJpZ2h0IGZvciBhIG1vZGVybiBjb21waWxlci4NCg0KCURh
-dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
-dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
-Mzg2IChXYWxlcykNCg==
+On 30.08.23 17:42, Ryan Roberts wrote:
+> On 30/08/2023 15:51, Matthew Wilcox wrote:
+>> On Wed, Aug 30, 2023 at 10:50:07AM +0100, Ryan Roberts wrote:
+>>> Like page_remove_rmap() but batch-removes the rmap for a range of pages
+>>> belonging to a folio. This can provide a small speedup due to less
+>>> manipuation of the various counters. But more crucially, if removing the
+>>> rmap for all pages of a folio in a batch, there is no need to
+>>> (spuriously) add it to the deferred split list, which saves significant
+>>> cost when there is contention for the split queue lock.
+>>>
+>>> All contained pages are accounted using the order-0 folio (or base page)
+>>> scheme.
+>>>
+>>> page_remove_rmap() is refactored so that it forwards to
+>>> folio_remove_rmap_range() for !compound cases, and both functions now
+>>> share a common epilogue function. The intention here is to avoid
+>>> duplication of code.
+>>
+>> What would you think to doing it like this instead?  This probably doesn't
+>> even compile and it's definitely not sanity checked; just trying to get
+>> across an idea of the shape of this code.  I think this is more like
+>> what DavidH was asking for (but he's on holiday this week so won't be
+>> able to confirm).
+> 
+> I think it was actually Yu Zhou who was arguing for something more like this?
+
+I think so, not me.
+
+... but the second variant is certainly shorter.
+
+-- 
+Cheers,
+
+David / dhildenb
 
