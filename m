@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 469D578DE43
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C18778DD87
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238558AbjH3TAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        id S244877AbjH3Sve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242825AbjH3Juh (ORCPT
+        with ESMTP id S242862AbjH3Jxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:50:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5BDD71B0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 02:50:34 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F9451424;
-        Wed, 30 Aug 2023 02:51:13 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 732523F64C;
-        Wed, 30 Aug 2023 02:50:31 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/5] mm/mmu_gather: generalize mmu_gather rmap removal mechanism
-Date:   Wed, 30 Aug 2023 10:50:08 +0100
-Message-Id: <20230830095011.1228673-3-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230830095011.1228673-1-ryan.roberts@arm.com>
-References: <20230830095011.1228673-1-ryan.roberts@arm.com>
+        Wed, 30 Aug 2023 05:53:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F276D1B0;
+        Wed, 30 Aug 2023 02:53:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 801C260F0C;
+        Wed, 30 Aug 2023 09:53:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B009C433C8;
+        Wed, 30 Aug 2023 09:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693389219;
+        bh=nknoL9w3Y4YI7sgEzXEgy31hHjSBtW5t6+EKdvixVT4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PGeSqtlADXPNsSRMnED5y2bc51bStrsRKgRLsG0vFmeuS7ZjsjtBx9snAHe0G8Vr2
+         puIswmGZMwYKKpvbAUG4hgCkBPfAo5LnG+Zqi6zCKquDATicIUaBHr5eqdyzNoLlT+
+         eDLqK7F5l64Ce6vhg3+b1Cyvv77qi6SuOOpM4UfSj8i00ym6zp0iNwdRQNPeW8AsCh
+         s7jTGiZrttnG7dc7MMCLuv2nzzC2OWwW1dpk2JWvAsdtCdcLabRj31KBbnR0Ga2XvP
+         vjAjcw2evRgbmv/HS/X8EAdywyIIJ9VzMleY3re1+0iiynu1XGC3tw9hN+y2/tEsbr
+         Pj2cy6RWLJA5g==
+Date:   Wed, 30 Aug 2023 11:53:32 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
+        chuck.lever@oracle.com, jlayton@kernel.org,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stefanb@linux.ibm.com, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH 15/28] security: Introduce inode_post_removexattr hook
+Message-ID: <20230830-kultfigur-verrohen-a689c59911d6@brauner>
+References: <20230303181842.1087717-1-roberto.sassu@huaweicloud.com>
+ <20230303181842.1087717-16-roberto.sassu@huaweicloud.com>
+ <f5a61c0f09c1b8d8aaeb99ad7ba4aab15818c5ed.camel@linux.ibm.com>
+ <9d482f25475a9d9bc0c93a8cbaf8bd4bb67d2cd6.camel@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9d482f25475a9d9bc0c93a8cbaf8bd4bb67d2cd6.camel@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,309 +66,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5df397dec7c4 ("mm: delay page_remove_rmap() until after the TLB
-has been flushed") added a mechanism whereby pages added to the
-mmu_gather buffer could indicate whether they should also be removed
-from the rmap. Then a call to the new tlb_flush_rmaps() API would
-iterate though the buffer and remove each flagged page from the rmap.
-This mechanism was intended for use with !PageAnon(page) pages only.
+On Wed, Aug 30, 2023 at 11:31:35AM +0200, Roberto Sassu wrote:
+> On Wed, 2023-03-08 at 10:43 -0500, Mimi Zohar wrote:
+> > Hi Roberto,
+> > 
+> > On Fri, 2023-03-03 at 19:18 +0100, Roberto Sassu wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > 
+> > > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> > > the inode_post_removexattr hook.
+> > > 
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > ---
+> > >  fs/xattr.c                    |  1 +
+> > >  include/linux/lsm_hook_defs.h |  2 ++
+> > >  include/linux/security.h      |  5 +++++
+> > >  security/security.c           | 14 ++++++++++++++
+> > >  4 files changed, 22 insertions(+)
+> > > 
+> > > diff --git a/fs/xattr.c b/fs/xattr.c
+> > > index 14a7eb3c8fa..10c959d9fc6 100644
+> > > --- a/fs/xattr.c
+> > > +++ b/fs/xattr.c
+> > > @@ -534,6 +534,7 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
+> > >  
+> > >  	if (!error) {
+> > >  		fsnotify_xattr(dentry);
+> > > +		security_inode_post_removexattr(dentry, name);
+> > >  		evm_inode_post_removexattr(dentry, name);
+> > >  	}
+> > 
+> > Nothing wrong with this, but other places in this function test "if
+> > (error) goto ...".   Perhaps it is time to clean this up.
+> > 
+> > >  
+> > > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> > > index eedefbcdde3..2ae5224d967 100644
+> > > --- a/include/linux/lsm_hook_defs.h
+> > > +++ b/include/linux/lsm_hook_defs.h
+> > > @@ -147,6 +147,8 @@ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
+> > >  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
+> > >  LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
+> > >  	 struct dentry *dentry, const char *name)
+> > > +LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
+> > > +	 const char *name)
+> > 
+> > @Christian should the security_inode_removexattr() and
+> > security_inode_post_removexattr() arguments be the same?
+> 
+> Probably this got lost.
+> 
+> Christian, should security_inode_post_removexattr() have the idmap
+> parameter as well?
 
-Let's generalize this rmap removal mechanism so that any type of page
-can be removed from the rmap. This is done as preparation for batching
-rmap removals with folio_remove_rmap_range(), whereby we will pass a
-contiguous range of pages belonging to the same folio to be removed in
-one shot for a performance improvement.
-
-The mmu_gather now maintains a "pointer" that points to batch and index
-within that batch of the next page in the queue that is yet to be
-removed from the rmap. tlb_discard_rmaps() resets this "pointer" to the
-first empty location in the queue. Whenever tlb_flush_rmaps() is called,
-every page from "pointer" to the end of the queue is removed from the
-rmap. Once the mmu is flushed (tlb_flush_mmu()/tlb_finish_mmu()) any
-pending rmap removals are discarded. This pointer mechanism ensures that
-tlb_flush_rmaps() only has to walk the part of the queue for which rmap
-removal is pending, avoids the (potentially large) early portion of the
-queue for which rmap removal has already been performed but for which
-tlb invalidation/page freeing is still pending.
-
-tlb_flush_rmaps() must always be called under the same PTL as was used
-to clear the corresponding PTEs. So in practice rmap removal will be
-done in a batch for each PTE table, while the tlbi/freeing can continue
-to be done in much bigger batches outside the PTL. See this example
-flow:
-
-tlb_gather_mmu()
-	for each pte table {
-		with ptl held {
-			for each pte {
-				tlb_remove_tlb_entry()
-				__tlb_remove_page()
-			}
-
-			if (any removed pages require rmap after tlbi)
-				tlb_flush_mmu_tlbonly()
-
-			tlb_flush_rmaps()
-		}
-
-		if (full)
-			tlb_flush_mmu()
-	}
-tlb_finish_mmu()
-
-So this more general mechanism is no longer just for delaying rmap
-removal until after tlbi, but can be used that way when required.
-
-Note that s390 does not gather pages, but does immediate tlbi and page
-freeing. In this case we continue to do the rmap removal page-by-page
-without gathering them in the mmu_gather.
-
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- include/asm-generic/tlb.h | 34 ++++++++++++------------
- mm/memory.c               | 24 ++++++++++-------
- mm/mmu_gather.c           | 54 +++++++++++++++++++++++----------------
- 3 files changed, 65 insertions(+), 47 deletions(-)
-
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 129a3a759976..f339d68cf44f 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -266,25 +266,30 @@ extern bool __tlb_remove_page_size(struct mmu_gather *tlb,
- 
- #ifdef CONFIG_SMP
- /*
-- * This both sets 'delayed_rmap', and returns true. It would be an inline
-- * function, except we define it before the 'struct mmu_gather'.
-+ * For configurations that support batching the rmap removal, the removal is
-+ * triggered by calling tlb_flush_rmaps(), which must be called after the pte(s)
-+ * are cleared and the page has been added to the mmu_gather, and before the ptl
-+ * lock that was held for clearing the pte is released.
-  */
--#define tlb_delay_rmap(tlb) (((tlb)->delayed_rmap = 1), true)
-+#define tlb_batch_rmap(tlb) (true)
- extern void tlb_flush_rmaps(struct mmu_gather *tlb, struct vm_area_struct *vma);
-+extern void tlb_discard_rmaps(struct mmu_gather *tlb);
- #endif
- 
- #endif
- 
- /*
-- * We have a no-op version of the rmap removal that doesn't
-- * delay anything. That is used on S390, which flushes remote
-- * TLBs synchronously, and on UP, which doesn't have any
-- * remote TLBs to flush and is not preemptible due to this
-- * all happening under the page table lock.
-+ * We have a no-op version of the rmap removal that doesn't do anything. That is
-+ * used on S390, which flushes remote TLBs synchronously, and on UP, which
-+ * doesn't have any remote TLBs to flush and is not preemptible due to this all
-+ * happening under the page table lock. Here, the caller must manage each rmap
-+ * removal separately.
-  */
--#ifndef tlb_delay_rmap
--#define tlb_delay_rmap(tlb) (false)
--static inline void tlb_flush_rmaps(struct mmu_gather *tlb, struct vm_area_struct *vma) { }
-+#ifndef tlb_batch_rmap
-+#define tlb_batch_rmap(tlb) (false)
-+static inline void tlb_flush_rmaps(struct mmu_gather *tlb,
-+				   struct vm_area_struct *vma) { }
-+static inline void tlb_discard_rmaps(struct mmu_gather *tlb) { }
- #endif
- 
- /*
-@@ -317,11 +322,6 @@ struct mmu_gather {
- 	 */
- 	unsigned int		freed_tables : 1;
- 
--	/*
--	 * Do we have pending delayed rmap removals?
--	 */
--	unsigned int		delayed_rmap : 1;
--
- 	/*
- 	 * at which levels have we cleared entries?
- 	 */
-@@ -343,6 +343,8 @@ struct mmu_gather {
- 	struct mmu_gather_batch *active;
- 	struct mmu_gather_batch	local;
- 	struct page		*__pages[MMU_GATHER_BUNDLE];
-+	struct mmu_gather_batch *rmap_pend;
-+	unsigned int		rmap_pend_first;
- 
- #ifdef CONFIG_MMU_GATHER_PAGE_SIZE
- 	unsigned int page_size;
-diff --git a/mm/memory.c b/mm/memory.c
-index 12647d139a13..823c8a6813d1 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1405,6 +1405,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	swp_entry_t entry;
- 
- 	tlb_change_page_size(tlb, PAGE_SIZE);
-+	tlb_discard_rmaps(tlb);
- 	init_rss_vec(rss);
- 	start_pte = pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
- 	if (!pte)
-@@ -1423,7 +1424,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			break;
- 
- 		if (pte_present(ptent)) {
--			unsigned int delay_rmap;
-+			unsigned int batch_rmap;
- 
- 			page = vm_normal_page(vma, addr, ptent);
- 			if (unlikely(!should_zap_page(details, page)))
-@@ -1438,12 +1439,15 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 				continue;
- 			}
- 
--			delay_rmap = 0;
-+			batch_rmap = tlb_batch_rmap(tlb);
- 			if (!PageAnon(page)) {
- 				if (pte_dirty(ptent)) {
- 					set_page_dirty(page);
--					if (tlb_delay_rmap(tlb)) {
--						delay_rmap = 1;
-+					if (batch_rmap) {
-+						/*
-+						 * Ensure tlb flush happens
-+						 * before rmap remove.
-+						 */
- 						force_flush = 1;
- 					}
- 				}
-@@ -1451,12 +1455,12 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 					mark_page_accessed(page);
- 			}
- 			rss[mm_counter(page)]--;
--			if (!delay_rmap) {
-+			if (!batch_rmap) {
- 				page_remove_rmap(page, vma, false);
- 				if (unlikely(page_mapcount(page) < 0))
- 					print_bad_pte(vma, addr, ptent, page);
- 			}
--			if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-+			if (unlikely(__tlb_remove_page(tlb, page, 0))) {
- 				force_flush = 1;
- 				addr += PAGE_SIZE;
- 				break;
-@@ -1517,10 +1521,12 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	arch_leave_lazy_mmu_mode();
- 
- 	/* Do the actual TLB flush before dropping ptl */
--	if (force_flush) {
-+	if (force_flush)
- 		tlb_flush_mmu_tlbonly(tlb);
--		tlb_flush_rmaps(tlb, vma);
--	}
-+
-+	/* Rmap removal must always happen before dropping ptl */
-+	tlb_flush_rmaps(tlb, vma);
-+
- 	pte_unmap_unlock(start_pte, ptl);
- 
- 	/*
-diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-index 4f559f4ddd21..fb34151c0da9 100644
---- a/mm/mmu_gather.c
-+++ b/mm/mmu_gather.c
-@@ -19,10 +19,6 @@ static bool tlb_next_batch(struct mmu_gather *tlb)
- {
- 	struct mmu_gather_batch *batch;
- 
--	/* Limit batching if we have delayed rmaps pending */
--	if (tlb->delayed_rmap && tlb->active != &tlb->local)
--		return false;
--
- 	batch = tlb->active;
- 	if (batch->next) {
- 		tlb->active = batch->next;
-@@ -48,37 +44,49 @@ static bool tlb_next_batch(struct mmu_gather *tlb)
- }
- 
- #ifdef CONFIG_SMP
--static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch, struct vm_area_struct *vma)
-+static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch,
-+				 unsigned int first,
-+				 struct vm_area_struct *vma)
- {
--	for (int i = 0; i < batch->nr; i++) {
-+	for (int i = first; i < batch->nr; i++) {
- 		struct encoded_page *enc = batch->encoded_pages[i];
-+		struct page *page = encoded_page_ptr(enc);
- 
--		if (encoded_page_flags(enc)) {
--			struct page *page = encoded_page_ptr(enc);
--			page_remove_rmap(page, vma, false);
--		}
-+		page_remove_rmap(page, vma, false);
- 	}
- }
- 
- /**
-- * tlb_flush_rmaps - do pending rmap removals after we have flushed the TLB
-+ * tlb_flush_rmaps - do pending rmap removals
-  * @tlb: the current mmu_gather
-  * @vma: The memory area from which the pages are being removed.
-  *
-- * Note that because of how tlb_next_batch() above works, we will
-- * never start multiple new batches with pending delayed rmaps, so
-- * we only need to walk through the current active batch and the
-- * original local one.
-+ * Removes rmap from all pages added via (e.g.) __tlb_remove_page_size() since
-+ * the last call to tlb_discard_rmaps() or tlb_flush_rmaps(). All of those pages
-+ * must have been mapped by vma. Must be called after the pte(s) are cleared,
-+ * and before the ptl lock that was held for clearing the pte is released. Pages
-+ * are accounted using the order-0 folio (or base page) scheme.
-  */
- void tlb_flush_rmaps(struct mmu_gather *tlb, struct vm_area_struct *vma)
- {
--	if (!tlb->delayed_rmap)
--		return;
-+	struct mmu_gather_batch *batch = tlb->rmap_pend;
- 
--	tlb_flush_rmap_batch(&tlb->local, vma);
--	if (tlb->active != &tlb->local)
--		tlb_flush_rmap_batch(tlb->active, vma);
--	tlb->delayed_rmap = 0;
-+	tlb_flush_rmap_batch(batch, tlb->rmap_pend_first, vma);
-+
-+	for (batch = batch->next; batch && batch->nr; batch = batch->next)
-+		tlb_flush_rmap_batch(batch, 0, vma);
-+
-+	tlb_discard_rmaps(tlb);
-+}
-+
-+/**
-+ * tlb_discard_rmaps - discard any pending rmap removals
-+ * @tlb: the current mmu_gather
-+ */
-+void tlb_discard_rmaps(struct mmu_gather *tlb)
-+{
-+	tlb->rmap_pend = tlb->active;
-+	tlb->rmap_pend_first = tlb->active->nr;
- }
- #endif
- 
-@@ -103,6 +111,7 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
- 		} while (batch->nr);
- 	}
- 	tlb->active = &tlb->local;
-+	tlb_discard_rmaps(tlb);
- }
- 
- static void tlb_batch_list_free(struct mmu_gather *tlb)
-@@ -313,8 +322,9 @@ static void __tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm,
- 	tlb->local.max  = ARRAY_SIZE(tlb->__pages);
- 	tlb->active     = &tlb->local;
- 	tlb->batch_count = 0;
-+	tlb->rmap_pend	= &tlb->local;
-+	tlb->rmap_pend_first = 0;
- #endif
--	tlb->delayed_rmap = 0;
- 
- 	tlb_table_init(tlb);
- #ifdef CONFIG_MMU_GATHER_PAGE_SIZE
--- 
-2.25.1
-
+Only if you call anything from any implementers of the hook that needs
+access to the idmap.
