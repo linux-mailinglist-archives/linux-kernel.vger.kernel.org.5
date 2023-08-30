@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A7678DFFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3D378DF85
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344146AbjH3T0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
+        id S241186AbjH3TKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245420AbjH3PMS (ORCPT
+        with ESMTP id S245419AbjH3PMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:12:18 -0400
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E919E8;
-        Wed, 30 Aug 2023 08:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1693408336; x=1724944336;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=MjUZcxZ7RsuvcZ9EFUr1kf2dnv7Em04ZkKJ/d4jJHEg=;
-  b=BaK11JJ9J1oBzaOjLRK//bzS+y/PD/Bw8owqlv5cNqRNVsiK9FGfYaW5
-   fzLemFlT1JtDUP0LhW+PrFJDD4xkjAE2VWlBUn6tfsspe5CNE6t+GgRzc
-   kdtnViMrCJABe8xgrYPgy6hC0YCX4gYoCNTBIcJll2C6RhLUH0EH+Ln6L
-   A=;
-X-IronPort-AV: E=Sophos;i="6.02,214,1688428800"; 
-   d="scan'208";a="348522557"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 15:12:13 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com (Postfix) with ESMTPS id 93CFAA1013;
-        Wed, 30 Aug 2023 15:12:09 +0000 (UTC)
-Received: from EX19D002ANA003.ant.amazon.com (10.37.240.141) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 30 Aug 2023 15:12:08 +0000
-Received: from b0f1d8753182.ant.amazon.com (10.106.83.32) by
- EX19D002ANA003.ant.amazon.com (10.37.240.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 30 Aug 2023 15:12:04 +0000
-From:   Takahiro Itazuri <itazur@amazon.com>
-To:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>
-CC:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Takahiro Itazuri <zulinx86@gmail.com>,
-        Takahiro Itazuri <itazur@amazon.com>
-Subject: Re: [PATCH] docs: Add desc for best effort mode of mmio_stale_data
-Date:   Wed, 30 Aug 2023 16:11:53 +0100
-Message-ID: <20230830151153.84489-1-itazur@amazon.com>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <87msy8r3cj.fsf@meer.lwn.net>
-References: <87msy8r3cj.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.106.83.32]
-X-ClientProxiedBy: EX19D046UWB003.ant.amazon.com (10.13.139.174) To
- EX19D002ANA003.ant.amazon.com (10.37.240.141)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
+        Wed, 30 Aug 2023 11:12:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F8CE8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:12:13 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9231D1F45F;
+        Wed, 30 Aug 2023 15:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693408332; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t40XEzRpGZfp8+6J4H0kh7K0iLROTuGTa5ymi1tx/M0=;
+        b=gRw3ufwXH6OqCSLN/K6J41i6LBXT7DwyDRBuMPqUJE4gATTr0RORMpbcwMGVZ6eD4srqXS
+        CQypot+pjPbmJ+0bhTW/tb1x9OpOuEKmPq0adD6JrYigOc0qJwumOjkwTZK6XK3XDnEvB7
+        z/K5QSEyGNob4fkRRVHDf/1tHhoVUTc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693408332;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t40XEzRpGZfp8+6J4H0kh7K0iLROTuGTa5ymi1tx/M0=;
+        b=rK20637WNo/ZH/uBEcLA79DHUR4xqEXK41LWHUt1E8q/X8U2TfD7EpambQLfPE4q6GYX6L
+        RCsZNREfUBYi5wAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 701A71353E;
+        Wed, 30 Aug 2023 15:12:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /sraGkxc72RzJgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 30 Aug 2023 15:12:12 +0000
+Date:   Wed, 30 Aug 2023 17:12:12 +0200
+Message-ID: <87ledsfttf.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
+        Lee Jones <lee@kernel.org>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        <regressions@lists.linux.dev>
+Subject: Re: mainline build failure due to ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+In-Reply-To: <20230830150037.GW103419@ediswmail.ad.cirrus.com>
+References: <ZO8oNb2hpegB6BbE@debian>
+        <87cyz4he2u.wl-tiwai@suse.de>
+        <20230830150037.GW103419@ediswmail.ad.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan Corbet <corbet@lwn.net> wrote:
-> So the change seems OK, but why not just describe the "best effort" mode
-> in the place where you refer to it, rather than creating a forward
-> reference?
+On Wed, 30 Aug 2023 17:00:37 +0200,
+Charles Keepax wrote:
+> 
+> On Wed, Aug 30, 2023 at 03:09:13PM +0200, Takashi Iwai wrote:
+> > On Wed, 30 Aug 2023 13:29:57 +0200,
+> > Sudip Mukherjee (Codethink) wrote:
+> > > 
+> > > Hi All,
+> > > 
+> > > The latest mainline kernel branch fails to build alpha, csky and s390
+> > > allmodconfig with the error:
+> > > 
+> > > drivers/mfd/cs42l43.c:1138:12: error: 'cs42l43_runtime_resume' defined but not used [-Werror=unused-function]
+> > >  1138 | static int cs42l43_runtime_resume(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~~~~~~~~~
+> > > drivers/mfd/cs42l43.c:1124:12: error: 'cs42l43_runtime_suspend' defined but not used [-Werror=unused-function]
+> > >  1124 | static int cs42l43_runtime_suspend(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~~~~~~~~~~
+> > > drivers/mfd/cs42l43.c:1106:12: error: 'cs42l43_resume' defined but not used [-Werror=unused-function]
+> > >  1106 | static int cs42l43_resume(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~
+> > > drivers/mfd/cs42l43.c:1076:12: error: 'cs42l43_suspend' defined but not used [-Werror=unused-function]
+> > >  1076 | static int cs42l43_suspend(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~~
+> > > 
+> > > git bisect pointed to ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+> > > 
+> > > I will be happy to test any patch or provide any extra log if needed.
+> > 
+> > Adding __maybe_unused for those PM functions should work around it,
+> > something like below.  Could you check it?
+> > If it's confirmed to work, I'll submit properly.
+> > 
+> > 
+> 
+> This is probably the correct fix:
+> 
+> https://lore.kernel.org/lkml/20230822114914.340359-1-ckeepax@opensource.cirrus.com/
+> 
+> Just waiting on it to be reviewed.
 
-tbh, I just followed the docs for mds and tsx_async_abort. Of course, I
-can do it! Would it better to do the same thing for mds and
-tsx_async_abort docs as well?
+Thanks, that looks better.  Let's wait for the patch acceptance.
 
-Best regards,
-Takahiro Itazuri
 
+Takashi
