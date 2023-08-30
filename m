@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D02C78DF12
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0370278DF3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245703AbjH3TQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48252 "EHLO
+        id S242593AbjH3Tbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244555AbjH3NUj (ORCPT
+        with ESMTP id S244577AbjH3NYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 09:20:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC48CD6;
-        Wed, 30 Aug 2023 06:20:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 30 Aug 2023 09:24:02 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D4D137
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:23:57 -0700 (PDT)
+Received: from [192.168.2.137] (bband-dyn191.178-41-225.t-com.sk [178.41.225.191])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BC40062000;
-        Wed, 30 Aug 2023 13:20:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B455FC433AB;
-        Wed, 30 Aug 2023 13:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693401634;
-        bh=7gwrtueLyswihMZE2JPWq840cyLUSNmg9lpfnOQrhcA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=e6k88Cc/TU9FsjqPbaaGCT3TAzQdnDwcDOCQJGAriL1cZQXOG4+kR1DdXkS48R6M7
-         Qxba6cHLNS3Ao3zXNddcWauycZsPvdoqu4L5M8bJ9ssjb33I78NaKVtyMgVwOyz9gY
-         a4/QeqIQ0Jq03INtemWCeDpxp7083w0LCObbld2ORbGY3WB67LDE0OmdVU6VaI5Mpz
-         n/nXRXvpdXcRG31hJitTpXeVjEqGZJetn0ueGsKq/0gPfvIQOm5DHGzIAjep9bnQGj
-         HOsRt/kTDI6PA54ysAZ1ss0laEbbCqT53KBmN2Xt72Pjo0djq7zRkp85DfC+IRtz/s
-         kdicHPHCKDg3w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9C9A9E49FAF;
-        Wed, 30 Aug 2023 13:20:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 8E0903F272;
+        Wed, 30 Aug 2023 15:23:53 +0200 (CEST)
+From:   Martin Botka <martin.botka@somainline.org>
+Date:   Wed, 30 Aug 2023 15:23:50 +0200
+Subject: [PATCH] firmware: smccc: Export both soc_id functions
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v10 0/4] RISC-V: mm: Make SV48 the default address space
-From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169340163463.19859.14293662814940071934.git-patchwork-notify@kernel.org>
-Date:   Wed, 30 Aug 2023 13:20:34 +0000
-References: <20230809232218.849726-1-charlie@rivosinc.com>
-In-Reply-To: <20230809232218.849726-1-charlie@rivosinc.com>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@rivosinc.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org,
-        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
-        alexghiti@rivosinc.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230830-smccc_export-v1-1-6ecc7661bc94@somainline.org>
+X-B4-Tracking: v=1; b=H4sIAOVC72QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDC2MD3eLc5OTk+NSKgvyiEt3ERDOLFItEI1NTY0sloJaCotS0zAqwcdG
+ xtbUAodOYyl4AAAA=
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Alan Ma <tech@biqu3d.com>,
+        Luke Harrison <bttuniversity@biqu3d.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin@biqu3d.com>,
+        Martin Botka <martin.botka@somainline.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693401833; l=1040;
+ i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
+ bh=jv62ejhR//CO1W8JyTnPBC5mJNMBfMpgPpnjrb0F1bM=;
+ b=s6K2nGpp/paQjgFdfS6v5fipmr7ioGdeCcckHHHvFuQUIzS3NiDPrzMa7HLRfxle5oFD8HTpa
+ 1OF6A13YIGhBlnnbUvm9cEREZkhH/pNetpm0rNZJeRTP/KA08X2VNNi
+X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
+ pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+arm_smccc_get_soc_id_version and arm_smccc_get_soc_id_revision
+need to be exported so they can be used by modules.
+Currently sun50i cpu freq driver is planning to use these functions.
 
-This series was applied to riscv/linux.git (for-next)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+Signed-off-by: Martin Botka <martin.botka@somainline.org>
+---
+ drivers/firmware/smccc/smccc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Wed,  9 Aug 2023 16:22:00 -0700 you wrote:
-> Make sv48 the default address space for mmap as some applications
-> currently depend on this assumption. Users can now select a
-> desired address space using a non-zero hint address to mmap. Previously,
-> requesting the default address space from mmap by passing zero as the hint
-> address would result in using the largest address space possible. Some
-> applications depend on empty bits in the virtual address space, like Go and
-> Java, so this patch provides more flexibility for application developers.
-> 
-> [...]
+diff --git a/drivers/firmware/smccc/smccc.c b/drivers/firmware/smccc/smccc.c
+index db818f9dcb8e..b4224da46988 100644
+--- a/drivers/firmware/smccc/smccc.c
++++ b/drivers/firmware/smccc/smccc.c
+@@ -64,11 +64,13 @@ s32 arm_smccc_get_soc_id_version(void)
+ {
+ 	return smccc_soc_id_version;
+ }
++EXPORT_SYMBOL_GPL(arm_smccc_get_soc_id_version);
+ 
+ s32 arm_smccc_get_soc_id_revision(void)
+ {
+ 	return smccc_soc_id_revision;
+ }
++EXPORT_SYMBOL_GPL(arm_smccc_get_soc_id_revision);
+ 
+ static int __init smccc_devices_init(void)
+ {
 
-Here is the summary with links:
-  - [v10,1/4] RISC-V: mm: Restrict address space for sv39,sv48,sv57
-    https://git.kernel.org/riscv/c/add2cc6b6515
-  - [v10,2/4] RISC-V: mm: Add tests for RISC-V mm
-    https://git.kernel.org/riscv/c/4d0c04eac0c2
-  - [v10,3/4] RISC-V: mm: Update pgtable comment documentation
-    https://git.kernel.org/riscv/c/26eee2bfc477
-  - [v10,4/4] RISC-V: mm: Document mmap changes
-    https://git.kernel.org/riscv/c/7998abe69d3c
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230830-smccc_export-aa68d8a25539
 
-You are awesome, thank you!
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Martin Botka <martin.botka@somainline.org>
 
