@@ -2,97 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1417A78DE15
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E690678D932
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344126AbjH3S5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
+        id S236200AbjH3ScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245710AbjH3P4Y (ORCPT
+        with ESMTP id S245717AbjH3P6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:56:24 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27645193;
-        Wed, 30 Aug 2023 08:56:22 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37U6pHfg024626;
-        Wed, 30 Aug 2023 10:55:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=3dzD33JpTIb1IXTJYjGhku5OWoUY4QPiqST5/HxVc5E=; b=
-        A5P3fCv344ZfEcILzif6wwUNn+lfKIwYlJoH5t2jPJ2XQhLSK5Bw+/Pbn8lzNqsk
-        JlFCvN/YlcUOyMeerHoq7gkZ3YbJUERSYxTFgPbMz7y9Cx92xEeWECrdLG8tOndD
-        dIeZ4kW+FZ8j/dJxTY+IbKBXRo95w2H2p5ZxULjmeOttVk2AhSi0ud28bUcjKrQP
-        yM4wexvPspQvHaUKC7+D7BPmi7CNhuaudWbInhcb+zEdWI/5ZdVRiFtiXUmPyT+l
-        x6oB3bhmv20As4mWjo5Odj7kQQhfUSXg2uFTRltlHhnJjuYQtHM4Pnlyd+pD4TRz
-        sf0gwLwkwbkHec2pgbOShw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sqesyd5yy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Aug 2023 10:55:56 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 30 Aug
- 2023 16:55:54 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Wed, 30 Aug 2023 16:55:54 +0100
-Received: from [141.131.145.49] (vkarpovich-ThinkStation-P620.ad.cirrus.com [141.131.145.49])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8BB6B3561;
-        Wed, 30 Aug 2023 15:55:52 +0000 (UTC)
-Message-ID: <d1ed5bf6-24e7-53d7-512b-ceab9e0a7e3d@opensource.cirrus.com>
-Date:   Wed, 30 Aug 2023 10:55:51 -0500
+        Wed, 30 Aug 2023 11:58:39 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F02419A
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:58:35 -0700 (PDT)
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6C6563F177
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1693411113;
+        bh=kNl44J2ZpGtCg94K9UACjS58K5Vqnr8rgjyDZbU7cks=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=AdC/2E0roNN+6OR32B4t1a77YI+T7dEdLwaY/YtJjHsNbRCbwutgfydNyWwx9cMw7
+         C3cgn9uh/JWB4VV13s9VPu7lRgviWTAWjQO0KA/9J8XajPZThsun28T0UJ3QhSBAoI
+         LYr1M4tau/mqI6EEvnBdHqhwKfHujnW8H+T7Sa93AKfBQdvKdiwo1sc/+Z9niINfVQ
+         SA5d7WIaruF3U87h86NM9NsJ8O9fSnkbbA75BhguS6EluLju72GdT4AZiy5FV3KBDz
+         +fCTPjjT1/jQtvS1umb9+ClJGuQ5upKH7LWuOVvJK85uhim6VF4HnJjlfgBJkILCKU
+         qZ93ba0tMWtuw==
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-50daa85e940so4568133a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:58:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693411113; x=1694015913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kNl44J2ZpGtCg94K9UACjS58K5Vqnr8rgjyDZbU7cks=;
+        b=kQPLkh37gdWr/2ODYVizVsvYWOJa2t8uKh0ILBE+v7p1RGejJxhkLIVMRU+Xm+1hUQ
+         ESaarivs7Mts18vL93wO1oQNpqAjmy+L2zK1rkqDZEstcPWj1W5vb1iTXoMyjWpyrjGX
+         qLwBihboadftCW5TfdBVps9l4Tf0L7wY186YfNxKvXs9fxRLQek6El0W1wl/m4Za6l+k
+         79ejkUWAuawZvPKLb5sIILG6LBKKpH4Y/ZZggeVUY50WJ3WaVFKrGKAj+wAxxZMMYQqc
+         h/V2h/9khD6qpH2NO5nT/Ht+rqrid4kQE3YDEH4T5Gy/GwGLY6DIuxL8s2L14WSIvJ3n
+         Cdxg==
+X-Gm-Message-State: AOJu0Yymiwgg+EsKenItJsmwyzUKDcpqwLiS9nHPvkUYTM/pvPTANeaW
+        Gsx2ywO9Z7Qiw41GHoidOT8bUWgx3Ac9nWUzYjhI9OHg1akzkBaUEGKFeaLi5Fi95XH59ky/ib4
+        6wE5/YJZhdAKTQAcOZvA1ku8twrtBBcsyd2NaT+pWpQ==
+X-Received: by 2002:aa7:db54:0:b0:523:b225:701a with SMTP id n20-20020aa7db54000000b00523b225701amr2358936edt.11.1693411113072;
+        Wed, 30 Aug 2023 08:58:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEsdD7OzcrsdeyrB/2Brhvlhgug8gC90+0ErPZscEzGSa0PRuYEokx7nmqzcPnfwSlgGRmjuA==
+X-Received: by 2002:aa7:db54:0:b0:523:b225:701a with SMTP id n20-20020aa7db54000000b00523b225701amr2358915edt.11.1693411112729;
+        Wed, 30 Aug 2023 08:58:32 -0700 (PDT)
+Received: from localhost.localdomain (host-95-252-65-153.retail.telecomitalia.it. [95.252.65.153])
+        by smtp.gmail.com with ESMTPSA id c21-20020aa7d615000000b005256aaa6e7asm6906970edr.78.2023.08.30.08.58.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 08:58:32 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Lucas De Marchi <lucas.demarchi@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] module/decompress: use vmalloc() for gzip decompression workspace
+Date:   Wed, 30 Aug 2023 17:58:20 +0200
+Message-Id: <20230830155820.138178-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4/7] ASoC: cs35l45: Analog PCM Volume and Amplifier Mode
- controls
-To:     Mark Brown <broonie@kernel.org>
-CC:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20230828170525.335671-1-vkarpovi@opensource.cirrus.com>
- <20230828170525.335671-4-vkarpovi@opensource.cirrus.com>
- <ZOz35ABAsLYROJ4c@finisterre.sirena.org.uk>
-Content-Language: en-US
-From:   Vlad Karpovich <vkarpovi@opensource.cirrus.com>
-In-Reply-To: <ZOz35ABAsLYROJ4c@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: e2iMeLiTaODRK9vNMFprx6UEquKePOdE
-X-Proofpoint-GUID: e2iMeLiTaODRK9vNMFprx6UEquKePOdE
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use a similar approach as commit a419beac4a07 ("module/decompress: use
+vmalloc() for zstd decompression workspace") and replace kmalloc() with
+vmalloc() also for the gzip module decompression workspace.
 
-On 8/28/23 14:39, Mark Brown wrote:
-> On Mon, Aug 28, 2023 at 12:05:22PM -0500, Vlad Karpovich wrote:
->
->> +static int cs35l45_amplifier_mode_put(struct snd_kcontrol *kcontrol,
->> +				      struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	snd_soc_component_enable_pin_unlocked(component, "SPK");
->> +	snd_soc_dapm_sync_unlocked(dapm);
->> +	snd_soc_dapm_mutex_unlock(dapm);
->> +	cs35l45->amplifier_mode = ucontrol->value.integer.value[0];
->> +	return 0;
->> +}
-> This should return 1 on change (I did see that there's some code which
-> generates notifications but it would still be better to flag changes
-> here, it makes review a lot easier).
-Thanks. I will update patch.
+In this case the workspace is represented by struct inflate_workspace
+that can be fairly large for kmalloc() and it can potentially lead to
+allocation errors on certain systems:
+
+$ pahole inflate_workspace
+struct inflate_workspace {
+	struct inflate_state       inflate_state;        /*     0  9544 */
+	/* --- cacheline 149 boundary (9536 bytes) was 8 bytes ago --- */
+	unsigned char              working_window[32768]; /*  9544 32768 */
+
+	/* size: 42312, cachelines: 662, members: 2 */
+	/* last cacheline: 8 bytes */
+};
+
+Considering that there is no need to use continuous physical memory,
+simply switch to vmalloc() to provide a more reliable in-kernel module
+decompression.
+
+Fixes: b1ae6dc41eaa ("module: add in-kernel support for decompressing")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ kernel/module/decompress.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/module/decompress.c b/kernel/module/decompress.c
+index 87440f714c0c..4156d59be440 100644
+--- a/kernel/module/decompress.c
++++ b/kernel/module/decompress.c
+@@ -100,7 +100,7 @@ static ssize_t module_gzip_decompress(struct load_info *info,
+ 	s.next_in = buf + gzip_hdr_len;
+ 	s.avail_in = size - gzip_hdr_len;
+ 
+-	s.workspace = kmalloc(zlib_inflate_workspacesize(), GFP_KERNEL);
++	s.workspace = vmalloc(zlib_inflate_workspacesize());
+ 	if (!s.workspace)
+ 		return -ENOMEM;
+ 
+@@ -138,7 +138,7 @@ static ssize_t module_gzip_decompress(struct load_info *info,
+ out_inflate_end:
+ 	zlib_inflateEnd(&s);
+ out:
+-	kfree(s.workspace);
++	vfree(s.workspace);
+ 	return retval;
+ }
+ #elif defined(CONFIG_MODULE_COMPRESS_XZ)
+-- 
+2.40.1
+
