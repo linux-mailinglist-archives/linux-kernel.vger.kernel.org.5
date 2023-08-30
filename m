@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E6D78DADE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD7078D9CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236060AbjH3ShT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
+        id S237363AbjH3SeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245488AbjH3PT2 (ORCPT
+        with ESMTP id S245497AbjH3PVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 11:19:28 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE891E8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:19:24 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4RbSd40xTdz9sqG;
-        Wed, 30 Aug 2023 17:19:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1693408760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7WVr6sfDlpT+GcV4fVg5JZuFi7yMzbTGXcyHxed6FE0=;
-        b=ECCXCyFcA0Z9AtLh4GVXYwvmh0ILfOF0IsPNnDYeXa865+ppe/T+TKmnEuo8rdavdc+GNl
-        LJzvUM+lBrtuu//KNoH9/9U/xiDW9sVQb6HSZANVor5TTdI+HkD0HjGT7cxO79TfuQTvOJ
-        PEAP6PMLX0Ur6mqXxD5dqaDuQa2jrD8JFIXPsZ9zk3Wo/TULizxhuBtt2DIIuYYdfFMeIk
-        frPr+uxDZ7XVgOZ5NwPYxpQW5wEqLE9Fx68+vg4UMEBj/CaBHMGFEGBX/PdWGvVhxBFB9/
-        ZcMRNicBuEOcStC2hdLtJD4ykdiUO5kF9T+nJ6YCnT9IGC7gUML4098MfTcorA==
-Message-ID: <1f311318-aaf5-85fa-8f2c-dd0fafb8bfbb@mailbox.org>
-Date:   Wed, 30 Aug 2023 17:19:17 +0200
+        Wed, 30 Aug 2023 11:21:39 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67399E8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:21:36 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401d2e11dacso6675565e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 08:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1693408895; x=1694013695; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g3CtT48jPlJIgusYzTnrLdg/99F2+CEON4UsLWqQKko=;
+        b=PTndykky8SKmMRVa5wJO30iumxi4Lb2OpAoYzFfYTFpw9ZubZSzfnYBymf8lUNhyJW
+         zqttAdCC9VCrk6umAHFliAGPuDCVO/Q2XHr/CQkec0nRASvTS5sUsLqISy9hxSfLcwt0
+         F0ymHP8oCZy2B+D2066kMSYpXh9+69CW5dbTF4ooShZNT39pDe8xoiy2FjT6tjMlUdvH
+         tXXXcVM6zEuqEP199hVWNNskvjrBeUcoeZ0QQzE0Jq6Eh3XsXnaPUhzbwvy4QeFIh3tB
+         aH18EJrY/Yng2ykQ8rFJIeTzw/JTo6AF4/o16Tfuwy0zUW7qm4aIGKR1eq+ZFNzcbeLk
+         uA5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693408895; x=1694013695;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g3CtT48jPlJIgusYzTnrLdg/99F2+CEON4UsLWqQKko=;
+        b=LRy47eRaGHE3iD98R3CvTRdZY+f2VQaaOQeuqrm/r9Tio7C45jR0OczH7ou4BztbwE
+         IzSgmVbO6gZ/fIhdNedlEoX02v/ieNe3Yc/pa2NPcZKv0B508SQJvZrJZQFZSY1UJtZ7
+         f0nmZfRUX3R+47HfgnLUxSJTIKhOFUDyvHSFiLM+z5++eqfIcmzdvJS760/vtzxD9V8C
+         lJEXHHOqKwjtGYmk3kdVPeBiRQRxNRPkZfrT3e0N7zP48K4QYs/yJdF3Lw5Mc7lOyKn4
+         YwM8IemJfOV1yt91DvIJti0BVaUrLzPQ+GnCxmoEfxSbUQ6nUfCKxS8gYQNEurpdYMup
+         81oA==
+X-Gm-Message-State: AOJu0YyjwdgeEDCj/laK46e3Gr0ayRpqgiwpF039LsE/iMHyVn4Joxh/
+        zud/VXCMaNMMhBOCH1l5rAas0A==
+X-Google-Smtp-Source: AGHT+IEzQMej866IzE8FCkgk6gCxfjVeFksIip5jMrjrfICUSVE6k6l/gLx7wW7sFI65pTLcljpopg==
+X-Received: by 2002:a7b:cb90:0:b0:3ff:516b:5c4c with SMTP id m16-20020a7bcb90000000b003ff516b5c4cmr2126478wmi.18.1693408894839;
+        Wed, 30 Aug 2023 08:21:34 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:ab9c:c93c:ba9e:7ca? ([2a02:8011:e80c:0:ab9c:c93c:ba9e:7ca])
+        by smtp.gmail.com with ESMTPSA id r19-20020a05600c299300b003fe539b83f2sm2556800wmd.42.2023.08.30.08.21.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 08:21:34 -0700 (PDT)
+Message-ID: <2195c267-619e-4877-af5e-48ef56b81d4c@isovalent.com>
+Date:   Wed, 30 Aug 2023 16:21:33 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 0/7] GPU workload hints for better performance
-Content-Language: de-CH-frami, en-CA
-To:     "Lazar, Lijo" <Lijo.Lazar@amd.com>,
-        "Yadav, Arvind" <Arvind.Yadav@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Sharma, Shashank" <Shashank.Sharma@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230828122614.3815122-1-Arvind.Yadav@amd.com>
- <BYAPR12MB4614D2C51DD24B7163B3652397E0A@BYAPR12MB4614.namprd12.prod.outlook.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <BYAPR12MB4614D2C51DD24B7163B3652397E0A@BYAPR12MB4614.namprd12.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] Fix invalid escape sequence warnings
+Content-Language: en-GB
+To:     Vishal Chourasia <vishalc@linux.ibm.com>
+Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+        netdev@vger.kernel.org, sachinp@linux.ibm.com, sdf@google.com,
+        song@kernel.org, srikar@linux.vnet.ibm.com, yhs@fb.com
+References: <e640e5f2-381c-4f65-40b9-c2e3e94696f9@linux.ibm.com>
+ <20230829074931.2511204-1-vishalc@linux.ibm.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230829074931.2511204-1-vishalc@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: f95517fd879b3f33af4
-X-MBO-RS-META: sajakrcg4hnowsbo5jugcgcqtuxus9uj
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -67,29 +79,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 17:02, Lazar, Lijo wrote:
-> [AMD Official Use Only - General]
+On 29/08/2023 08:49, Vishal Chourasia wrote:
+> The script bpf_doc.py generates multiple SyntaxWarnings related to invalid
+> escape sequences when executed with Python 3.12. These warnings do not appear in
+> Python 3.10 and 3.11 and do not affect the kernel build, which completes
+> successfully.
 > 
+> This patch resolves these SyntaxWarnings by converting the relevant string
+> literals to raw strings or by escaping backslashes. This ensures that
+> backslashes are interpreted as literal characters, eliminating the warnings.
 > 
-> As mentioned with an older version of this series, this is an 'abuse' of power profile interface.
-> 
-> This series is oversimplifying what PMFW algorithms are supposed to be doing. Whatever this series is doing, FW can do it better.
-> 
-> To explain in simpler terms - it just tries to boost a profile based on ring type without even knowing how much of activity a job can trigger on a particular ring. A job scheduled to a GFX ring doesn't deserve a profile boost unless it can create a certain level of activity. In CPU terms, a job scheduled to a processor doesn't mean it deserves a frequency boost of that CPU.  At minimum it depends on more details like whether that job is compute bound or memory bound or memory bound. 
-> 
-> While FW algorithms are designed to do that, this series tries to trivialise all such things.
-> 
-> Unless you are able to show the tangible benefits in some terms like performance, power, or performance per watt,  I don't think this should be the default behaviour where driver tries to override FW just based on job submissions to rings.
+> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+> Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-I know at least one tangible benefit this would have: a snappier GNOME desktop with lower input → output latency on many laptops. The bootup default profile doesn't work well for that IME.
+Thanks! I observed that this patch fixes warnings reported by pyright in
+my editor. I've also validated that the generated files (helpers man
+page, syscall man page, bpf_helper_defs.h) remain unchanged.
 
-It should also help for issues like
-https://gitlab.freedesktop.org/drm/amd/-/issues/1500 .
-
-That said, I agree this approach is very aggressive. I think it might be acceptable with AC power, not sure about on battery though. (There might be better performance/power profile mechanisms to hook into than AC vs battery)
-
-
--- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+Tested-by: Quentin Monnet <quentin@isovalent.com>
 
