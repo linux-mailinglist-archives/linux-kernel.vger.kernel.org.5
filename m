@@ -2,263 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F28278DBA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378FD78DE5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239390AbjH3Sk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57820 "EHLO
+        id S240897AbjH3TBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243861AbjH3L6r (ORCPT
+        with ESMTP id S243892AbjH3MIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:58:47 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2055.outbound.protection.outlook.com [40.107.237.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8911B0;
-        Wed, 30 Aug 2023 04:58:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZvDQeu86MpBjf8qBId14xgmVZ3hiS5+48/KLPKMLNmYLbt4hTxDNpqj6l2uHtMvSDn+gshtp/0GARe7fCT5ZHomDtExTCyd04RoVkkLH2CXRhqUGN3PG599KnktlNOJq9wDNX+9BhC4fkUr56IeZzhdpgsNjsXrdiZRSIIT7TmGfyo3chEeH3DdS3lQOv3FotMt2IGayiZpQjzs1DQ0RvQwoK47lxMyZK7Sh8ijg6VzVuX6zMRBhJPV2iF8xVAaSsHWIm9x/+MREVCvTY3XBOLEqrBkLpLmS9b83GT3y8eGtPwP+R/vYcFOjWYOG9nfeEY3OWr4eDlZHmgJP3ZUV5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h+Sabd2z4EN9K5LGigJTA3hTk3qNf3pWhPH8nWmVAHI=;
- b=FgUwMZkzSBfyUBm9BpjFi8ZMMbj4crKYiBhJHG1RqfLGk/ROtwdEP4dfh4maqBP/XbnidJMK3qHZ20UO8BhcPYRkPWvp+s8hTGbsubQ+ORNVS4ZzA2e+6k5+oX8YiVQFbOUi9xzcB49gZ37I1Ne/7NK+Pk83I9bZZKyZoU5A8YyxxRwpCM5w6mmAVCNyy5DHv2JnfGpfMCBsA77g15SLN8II9W/JCAOIKu/nab2jNpIwSAScefYxz/mfd2/zE3+RYQTub5MgdMQyJBZ5ALzbMv5bPqM7xDyxYvGNsD2hMU7XF9dH0aPEB1DLPNzpzmQ5kJ2gWZtYv53sTZHrsacZKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h+Sabd2z4EN9K5LGigJTA3hTk3qNf3pWhPH8nWmVAHI=;
- b=dkoun+Sc20gAsRYaSatn9TwXdvtnCn+vNwF5MWeS547sOIuG1rB4KxyllZhGVThpS3Ol39rEwwMJs+kFaTdbZgyzWYz9HoqxzbCtGDD416rM8iDwrxB3e39zVSeB6fz+U+sYQc8RgaQZctQxpTRsYRzFDeGG0EBM07hE8vcPUuxRUONzn6VSg0FDZ3/LUW0qrJICwbGdK36vToDFG/IENdt1sjD4rJvOnZoTa9VI4NSMXC/mIMk45Aj+qYcgiJWALnBr/4ALdaXRi1mqxAFHdN32gq+lUTtpki32Oa8MdXOpQRmay2KwMk777hD8/GenaKikOI58sw58z/voUq610w==
-Received: from BY3PR04CA0014.namprd04.prod.outlook.com (2603:10b6:a03:217::19)
- by PH7PR12MB9104.namprd12.prod.outlook.com (2603:10b6:510:2f3::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Wed, 30 Aug
- 2023 11:58:42 +0000
-Received: from MWH0EPF000971E3.namprd02.prod.outlook.com
- (2603:10b6:a03:217:cafe::9c) by BY3PR04CA0014.outlook.office365.com
- (2603:10b6:a03:217::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20 via Frontend
- Transport; Wed, 30 Aug 2023 11:58:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- MWH0EPF000971E3.mail.protection.outlook.com (10.167.243.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.17 via Frontend Transport; Wed, 30 Aug 2023 11:58:42 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 30 Aug 2023
- 04:58:34 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Wed, 30 Aug 2023 04:58:33 -0700
-Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Wed, 30 Aug 2023 04:58:31 -0700
-From:   Sumit Gupta <sumitg@nvidia.com>
-To:     <treding@nvidia.com>, <jonathanh@nvidia.com>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sivaramn@nvidia.com>, <talho@nvidia.com>, <bbasu@nvidia.com>,
-        <sumitg@nvidia.com>
-Subject: [Patch] firmware: tegra: reset BPMP IPC channels early during resume
-Date:   Wed, 30 Aug 2023 17:28:29 +0530
-Message-ID: <20230830115829.23977-1-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-X-NVConfidentiality: public
+        Wed, 30 Aug 2023 08:08:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC7F1B0;
+        Wed, 30 Aug 2023 05:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NbJWoCOx2Ft9OMUClG80nlQLFeZZUsdNl4uLp0OM5Og=; b=ZjtW3pIgr7xhXH5l8qea/OAzAu
+        XBG7uMdCv4+47puQN+F1oPJh+WjiVusDa5RJRYUjlh9BAhzqF4iC0DqjQrhrrAKH5p2R0DGOxTq+E
+        hjrwQzZYlgtQ/Eq1eVo7R9nykn34zitpgxU9/fA8t/XIaz2lOEr5CBEu2htNZ3YCneU65eF/UBYVG
+        MWo1H1gwvi+bNpaF3czbOvQ238xDmloZiI3ladTsgt0VcXsUfbHnqa7hsYhljPEmDGmqCa9CMZHi8
+        oTdZCdCj/LwKeivjqfPZK7SUbLu6FLEHL1xVhlU0rCUIXliUWttXKxZNuSrI83W6+Bm2yDJzpqIZY
+        PB8jRBKg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qbJzv-00Ced0-EY; Wed, 30 Aug 2023 12:08:35 +0000
+Date:   Wed, 30 Aug 2023 13:08:35 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 2/2] rcu: Dump vmalloc memory info safely
+Message-ID: <ZO8xQ+7BQpA/u+Cg@casper.infradead.org>
+References: <20230830110402.386898-1-joel@joelfernandes.org>
+ <20230830110402.386898-2-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E3:EE_|PH7PR12MB9104:EE_
-X-MS-Office365-Filtering-Correlation-Id: da6e6d57-b820-4e89-41f0-08dba950748f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hYxUmMJHlSsVtwTzRkvnpAW7kTDkJQHGS6IuQ1qubzi5KZnVhwDy6xonadqgBe0ebMwrzuq1gwkk1pJrIwlv2xbocXKKZqUbTmlBIq5MIlDG3WhEaXMKvUdtryuQcgrT2tXQx5T5YF8yFhoe4bltYA4tMrG6KhIwC4objs5pHNEyZD8VBGB4s7jVBcN8YnF43r12vAWxeu9f/6B+qu+ht1ZxE4w+PVpKQ9e2CrsK5cBDCyH87VTpAEG8D0S4IGruNhUCVEC1Vmt7nYXqwxqjawuPxYvsC+JV/HOdSFbLp/eKWctVV8YhdnGuGnbLa2uW40ECTzdgMZgjiCzwk+TxqW8LnfNC4cEVZTaPdtvCQoeMBjx11HnXrt5TzdVxjc2u4Q0WY0O3JM0EiZj/7Pq2pQtlhDUcsPc7iib0l6hWdJBWQ6cfuUnKJtOzfcrTKi+P9GvVrfW/tyt9DNk3riaMted89DchEkPVqFM1cbcHIDXFEjqVjBUHBmELpjA2pMw+d227sCtUI0Qb1QZbXErvrhFlZFbP3IBlZLDx7Twk/QGtTYR3W6GUJsD90slS/r/te8bO+9SxUIWWGKxGEWlqBnZivBmbH+i1F4CvXrBNHgX0vXd2FSGJoLPx6u9tOaAoCECSvFIxsJ9mt8tuN+RLRLLc+lYkvDdgS/YFxfLTq5cvKCZeubEnuO8E+JTFrisc3QmKoMQByKxNXsWu2DohLt9IQoJau+o4clSNKSIGrYtydQ1s6Pt0LfiWFabTgDhd
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(376002)(396003)(346002)(186009)(82310400011)(1800799009)(451199024)(46966006)(40470700004)(36840700001)(40480700001)(40460700003)(7636003)(316002)(54906003)(70206006)(70586007)(356005)(478600001)(110136005)(82740400003)(2906002)(86362001)(8936002)(8676002)(450100002)(7696005)(41300700001)(5660300002)(4326008)(83380400001)(107886003)(36860700001)(47076005)(1076003)(26005)(426003)(2616005)(336012)(36756003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 11:58:42.0143
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: da6e6d57-b820-4e89-41f0-08dba950748f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E3.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9104
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830110402.386898-2-joel@joelfernandes.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'tegra_bpmp_reset()' function to reset the IPC channels for BPMP
-on first call to tegra_bpmp_transfer() API after system resumes. This
-allows us to handle any requests that might be sent too soon as they
-can cause hang during system resume. One case where we see BPMP requests
-being sent before the BPMP driver has resumed is the memory bandwidth
-requests which are triggered by onlining the CPUs during system resume.
-The CPUs are onlined before the BPMP has resumed and we need to reset
-the BPMP IPC channels to handle these requests.
+On Wed, Aug 30, 2023 at 11:04:00AM +0000, Joel Fernandes (Google) wrote:
+> From: Zqiang <qiang.zhang1211@gmail.com>
+> 
+> Currently, for double invoke call_rcu(), will dump rcu_head objects
+> memory info, if the objects is not allocated from the slab allocator,
+> the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+> need to be held, since the call_rcu() can be invoked in interrupt context,
+> therefore, there is a possibility of spinlock deadlock scenarios.
+> 
+> And in Preempt-RT kernel, the rcutorture test also trigger the following
+> lockdep warning:
+> 
+> BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+> preempt_count: 1, expected: 0
+> RCU nest depth: 1, expected: 1
+> 3 locks held by swapper/0/1:
+>  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
+>  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
+>  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
+> irq event stamp: 565512
+> hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
+> hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
+> softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
+> softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
+> Preemption disabled at:
+> [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
+> CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  <TASK>
+>  dump_stack_lvl+0x68/0xb0
+>  dump_stack+0x14/0x20
+>  __might_resched+0x1aa/0x280
+>  ? __pfx_rcu_torture_err_cb+0x10/0x10
+>  rt_spin_lock+0x53/0x130
+>  ? find_vmap_area+0x1f/0x70
+>  find_vmap_area+0x1f/0x70
+>  vmalloc_dump_obj+0x20/0x60
+>  mem_dump_obj+0x22/0x90
+>  __call_rcu_common+0x5bf/0x940
+>  ? debug_smp_processor_id+0x1b/0x30
+>  call_rcu_hurry+0x14/0x20
+>  rcu_torture_init+0x1f82/0x2370
+>  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+>  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+>  ? __pfx_rcu_torture_init+0x10/0x10
+>  do_one_initcall+0x6c/0x300
+>  ? debug_smp_processor_id+0x1b/0x30
+>  kernel_init_freeable+0x2b9/0x540
+>  ? __pfx_kernel_init+0x10/0x10
+>  kernel_init+0x1f/0x150
+>  ret_from_fork+0x40/0x50
+>  ? __pfx_kernel_init+0x10/0x10
+>  ret_from_fork_asm+0x1b/0x30
+>  </TASK>
+> 
+> The previous patch fixes this by using the deadlock-safe best-effort
+> version of find_vm_area. However, in case of failure print the fact that
+> the pointer was a vmalloc pointer so that we print at least something.
+> 
+> Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: rcu@vger.kernel.org
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
-Signed-off-by: Jonathan Hunter <jonathanh@nvidia.com>
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
----
- drivers/firmware/tegra/bpmp-private.h  |  2 +-
- drivers/firmware/tegra/bpmp-tegra186.c |  4 +--
- drivers/firmware/tegra/bpmp.c          | 45 ++++++++++++++++++++++----
- include/soc/tegra/bpmp.h               |  2 ++
- 4 files changed, 44 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/firmware/tegra/bpmp-private.h b/drivers/firmware/tegra/bpmp-private.h
-index 182bfe396516..8f59bbe990dc 100644
---- a/drivers/firmware/tegra/bpmp-private.h
-+++ b/drivers/firmware/tegra/bpmp-private.h
-@@ -20,7 +20,7 @@ struct tegra_bpmp_ops {
- 	int (*post_response)(struct tegra_bpmp_channel *channel);
- 	int (*post_request)(struct tegra_bpmp_channel *channel);
- 	int (*ring_doorbell)(struct tegra_bpmp *bpmp);
--	int (*resume)(struct tegra_bpmp *bpmp);
-+	int (*reset)(struct tegra_bpmp *bpmp);
- };
- 
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
-diff --git a/drivers/firmware/tegra/bpmp-tegra186.c b/drivers/firmware/tegra/bpmp-tegra186.c
-index 6f0d0511b486..122d0c630863 100644
---- a/drivers/firmware/tegra/bpmp-tegra186.c
-+++ b/drivers/firmware/tegra/bpmp-tegra186.c
-@@ -366,7 +366,7 @@ static void tegra186_bpmp_deinit(struct tegra_bpmp *bpmp)
- 	tegra186_bpmp_teardown_channels(bpmp);
- }
- 
--static int tegra186_bpmp_resume(struct tegra_bpmp *bpmp)
-+static int tegra186_bpmp_reset(struct tegra_bpmp *bpmp)
- {
- 	tegra186_bpmp_reset_channels(bpmp);
- 
-@@ -385,5 +385,5 @@ const struct tegra_bpmp_ops tegra186_bpmp_ops = {
- 	.post_response = tegra186_bpmp_post_message,
- 	.post_request = tegra186_bpmp_post_message,
- 	.ring_doorbell = tegra186_bpmp_ring_doorbell,
--	.resume = tegra186_bpmp_resume,
-+	.reset = tegra186_bpmp_reset,
- };
-diff --git a/drivers/firmware/tegra/bpmp.c b/drivers/firmware/tegra/bpmp.c
-index 51d062e0c3f1..6a269a66175e 100644
---- a/drivers/firmware/tegra/bpmp.c
-+++ b/drivers/firmware/tegra/bpmp.c
-@@ -313,6 +313,14 @@ static ssize_t tegra_bpmp_channel_write(struct tegra_bpmp_channel *channel,
- 	return __tegra_bpmp_channel_write(channel, mrq, flags, data, size);
- }
- 
-+static int tegra_bpmp_reset(struct tegra_bpmp *bpmp)
-+{
-+	if (bpmp->soc->ops->reset)
-+		return bpmp->soc->ops->reset(bpmp);
-+
-+	return 0;
-+}
-+
- int tegra_bpmp_transfer_atomic(struct tegra_bpmp *bpmp,
- 			       struct tegra_bpmp_message *msg)
- {
-@@ -325,6 +333,15 @@ int tegra_bpmp_transfer_atomic(struct tegra_bpmp *bpmp,
- 	if (!tegra_bpmp_message_valid(msg))
- 		return -EINVAL;
- 
-+	if (bpmp->needs_reset) {
-+		err = tegra_bpmp_reset(bpmp);
-+		if (err < 0) {
-+			dev_err(bpmp->dev, "Failed to reset the BPMP!\n");
-+			return err;
-+		}
-+		bpmp->needs_reset = false;
-+	}
-+
- 	channel = bpmp->tx_channel;
- 
- 	spin_lock(&bpmp->atomic_tx_lock);
-@@ -364,6 +381,15 @@ int tegra_bpmp_transfer(struct tegra_bpmp *bpmp,
- 	if (!tegra_bpmp_message_valid(msg))
- 		return -EINVAL;
- 
-+	if (bpmp->needs_reset) {
-+		err = tegra_bpmp_reset(bpmp);
-+		if (err < 0) {
-+			dev_err(bpmp->dev, "Failed to reset the BPMP!\n");
-+			return err;
-+		}
-+		bpmp->needs_reset = false;
-+	}
-+
- 	channel = tegra_bpmp_write_threaded(bpmp, msg->mrq, msg->tx.data,
- 					    msg->tx.size);
- 	if (IS_ERR(channel))
-@@ -740,6 +766,8 @@ static int tegra_bpmp_probe(struct platform_device *pdev)
- 	if (err < 0)
- 		return err;
- 
-+	bpmp->needs_reset = false;
-+
- 	err = tegra_bpmp_request_mrq(bpmp, MRQ_PING,
- 				     tegra_bpmp_mrq_handle_ping, bpmp);
- 	if (err < 0)
-@@ -796,18 +824,23 @@ static int tegra_bpmp_probe(struct platform_device *pdev)
- 	return err;
- }
- 
--static int __maybe_unused tegra_bpmp_resume(struct device *dev)
-+static int __maybe_unused tegra_bpmp_suspend(struct device *dev)
- {
- 	struct tegra_bpmp *bpmp = dev_get_drvdata(dev);
- 
--	if (bpmp->soc->ops->resume)
--		return bpmp->soc->ops->resume(bpmp);
--	else
--		return 0;
-+	/*
-+	 * If the BPMP has a reset handler then mark as
-+	 * not ready until on entry to suspend. This flag
-+	 * is used to trigger the reset after resume.
-+	 */
-+	if (bpmp->soc->ops->reset)
-+		bpmp->needs_reset = true;
-+
-+	return 0;
- }
- 
- static const struct dev_pm_ops tegra_bpmp_pm_ops = {
--	.resume_noirq = tegra_bpmp_resume,
-+	.suspend_noirq = tegra_bpmp_suspend,
- };
- 
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
-diff --git a/include/soc/tegra/bpmp.h b/include/soc/tegra/bpmp.h
-index 5842e38bb288..932f7fd1edfb 100644
---- a/include/soc/tegra/bpmp.h
-+++ b/include/soc/tegra/bpmp.h
-@@ -102,6 +102,8 @@ struct tegra_bpmp {
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_mirror;
- #endif
-+
-+	bool needs_reset;
- };
- 
- struct tegra_bpmp_message {
--- 
-2.17.1
-
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
