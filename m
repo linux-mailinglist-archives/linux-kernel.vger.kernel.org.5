@@ -2,70 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4B478DD67
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88E778DBE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243740AbjH3Stf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
+        id S239115AbjH3Sj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245180AbjH3Okt (ORCPT
+        with ESMTP id S245186AbjH3OoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 10:40:49 -0400
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE57193;
-        Wed, 30 Aug 2023 07:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-        s=default; t=1693406445;
-        bh=Sqm9WGzqpqqQN5xhJwy1ko4NvRStWPPRXC3trcKcTWs=;
-        h=Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=qRgJN3yC0fglpLslA5ZUye7ZKns6b1Ra5JEIUommdVq4UVaO2lKtUc1k7bJezAHPM
-         s/rJh0IhZ13MvjP3MIUwsybBeMgdeX3d6DQ8MjQbvOMejFwlLk/bEJbz9jwLkx0miR
-         XEPZagMOcPgQVdVESLea3yOp8LAJk7ND9r6dJiVunzOG511D1X4Ho6UpZzNj3N0Ydx
-         TJBCtz1if77C05+267Od7MvqHufkhFNfaHmSBPXf0VGO735dCVATn4qN+HcUV1UdUD
-         cT4t867tbcFxKHyH80MtmNwFxThJHEaG0Fyu/2hZ1bQfBah1OKg/KGq78iBtxiDWay
-         R//vJfyn5ZNag==
-Received: from [10.20.0.2] (unknown [182.253.126.208])
-        by gnuweeb.org (Postfix) with ESMTPSA id 40FAE24B336;
-        Wed, 30 Aug 2023 21:40:41 +0700 (WIB)
-Message-ID: <6f93ea82-f157-e921-2028-5b4fae4ad341@gnuweeb.org>
-Date:   Wed, 30 Aug 2023 21:40:37 +0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Zhangjin Wu <falcon@tinylab.org>, Willy Tarreau <w@1wt.eu>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>,
-        Yuan Tan <tanyuan@tinylab.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kselftest Mailing List 
-        <linux-kselftest@vger.kernel.org>
-References: <20230827083225.7534-1-falcon@tinylab.org>
- <4bbdea1710464fa2943663a25bf370c9@AcuMS.aculab.com>
-Content-Language: en-US
-From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Subject: Re: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with
- single -ENOSYS return
-In-Reply-To: <4bbdea1710464fa2943663a25bf370c9@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 10:44:02 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429351A3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:43:57 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso8872632e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 07:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1693406635; x=1694011435; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7y1PTlMIpI19ndr06GdGR/gezHXVIuarLmJLhteMMeY=;
+        b=LYzzjbHgvGqKeGAc0j1Jmdyyz6FO1+DODQ4KJ9WUt6w2aRG++2plKYtoEyWxDiX8en
+         lHIkhRnCXgg9AJdb2BHPr5i1HXPeYojczAsnVzbWKiQgsSqlkT6VcV6QoT3xyGm92WGP
+         n5LhkCdaqb9m5AK9vgcTV1mWYC1HQy9F1DxjIkiF3zrEE8d5yy1jNscF8ER54RpbOkRb
+         hqD0Hsu/kkelpidCNm5Zpe4GU/tK9JrNiInNtl16JLxRkvwcU2PSzwkn7bE/57iOKCWA
+         J4Js6VPp5/baHjwIzrLzIsNWRTdMhRSG/CMSeVqmUfApjrXFRNKqQzx+TZcwj9qEUWec
+         N5/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693406635; x=1694011435;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7y1PTlMIpI19ndr06GdGR/gezHXVIuarLmJLhteMMeY=;
+        b=OOGyHMmN7rdwBgLXOc4DCuFsud0nJljjQsVrQnliBZdhBr88mzoS89rBFtch2kv1kk
+         4c6V8kyS8W+BBjX7/iy2BHLjtsz67zyESl3gk4hAJH+4rwKBOXIjvP2j4UFNZuxGVbD1
+         c6Bcc/duRKlXoHpWkdrJKQDS6MTTH1S4zx3TL1WaD499gS/PqQ0QJEXTX/2ZakEQQOfJ
+         uDnoCgYrvBt1bE83vDfKYyqMXTbir1IlLwLJ8oYZ0J4yiP4TcMf9BIS0KUQyhlyKklGH
+         JjAO3hgWntT4QNgvUHNlnEAj5CpN21yLYgllwQt27jDHq74Se9wktFFRrTwMHi7D3oLI
+         nE0A==
+X-Gm-Message-State: AOJu0YxxuaDG0QSJAn/5H+hXgOJDFAMJcP63EJF5ll4ey8YtyspAsJAt
+        Z51I7EjF9iaybrWLJy3lHUa24A==
+X-Google-Smtp-Source: AGHT+IHeygykVFMcBkeCr9Jim8Aiw37Bu4dqw61S/Zwn8g9GABuB2bPsegjI40haOVmM0BZ3MWr+/Q==
+X-Received: by 2002:a19:5e18:0:b0:500:95f7:c416 with SMTP id s24-20020a195e18000000b0050095f7c416mr1823828lfb.7.1693406634763;
+        Wed, 30 Aug 2023 07:43:54 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id l15-20020aa7d94f000000b0052568bf9411sm6787493eds.68.2023.08.30.07.43.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 07:43:54 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 30 Aug 2023 16:43:53 +0200
+Message-Id: <CV5YJVXIL8OT.1ZWW3KVCHPTA5@otso>
+Cc:     <cros-qcom-dts-watchers@chromium.org>,
+        "Andy Gross" <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Viresh Kumar" <viresh.kumar@linaro.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH 02/11] nvmem: qfprom: Mark core clk as optional
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+To:     "Doug Anderson" <dianders@chromium.org>
+X-Mailer: aerc 0.15.2
+References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
+ <20230830-fp5-initial-v1-2-5a954519bbad@fairphone.com>
+ <CAD=FV=WS2hgY=bQjLOs3Fdp8pbZyMsaS-0BpoxPq90Etfi+Xuw@mail.gmail.com>
+In-Reply-To: <CAD=FV=WS2hgY=bQjLOs3Fdp8pbZyMsaS-0BpoxPq90Etfi+Xuw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 4:51 AM, David Laight wrote:
-> I just found a(nother) clang bug:
-> 	int f(void) { return "a"[2]; }
-> compiles to just a 'return'.
+On Wed Aug 30, 2023 at 4:30 PM CEST, Doug Anderson wrote:
+> Hi,
+>
+> On Wed, Aug 30, 2023 at 2:58=E2=80=AFAM Luca Weiss <luca.weiss@fairphone.=
+com> wrote:
+> >
+> > On some platforms like sc7280 on non-ChromeOS devices the core clock
+> > cannot be touched by Linux so we cannot provide it. Mark it as optional
+> > as accessing qfprom works without it.
+> >
+> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > ---
+> >  drivers/nvmem/qfprom.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Are you actually testing burning fuses from the OS, or are you just
+> using the nvmem in "read-only" mode? From comments in the bindings, if
+> you're trying to burn the fuses then the clock is required. If things
+> are in read-only mode then the clock isn't required.
 
-I don't think that's a bug. It's undefined behavior due to an
-out-of-bound read. What do you expect it to return?
+Hi Doug,
 
--- 
-Ammar Faizi
+I definitely don't plan on burning any fuses on this phone. Not even
+sure that's allowed by the TZ / boot stack.
+
+>
+> When I compare to the driver, it seems like the driver assumes that if
+> more than one memory region is provided then you must be supporting
+> burning fuses. The bindings agree that having 4 memory regions
+> specified means that the nvmem supports burning and 1 memory region
+> specified means read-only. The extra 3 memory regions in the nvmem are
+> all about fuse burning, I believe.
+>
+> So maybe the right fix here is to just change your dts to specify one
+> memory region?
+
+I got feedback from Konrad that this here would be the preferred
+approach compared to having a different dts for ChromeOS vs non-ChromeOS
+devices. I don't feel strongly to either, for me it's also okay to
+remove the extra memory regions and only have the main one used on
+regular qcom devices.
+
+Let me know what you think.
+
+Regards
+Luca
+
+>
+> -Doug
+
