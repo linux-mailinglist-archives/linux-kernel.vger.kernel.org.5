@@ -2,121 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CAF78DC72
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD4F78DD2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbjH3Spt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:45:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
+        id S243405AbjH3SsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242454AbjH3Ifc (ORCPT
+        with ESMTP id S242453AbjH3Ie2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:35:32 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D23F1AE;
-        Wed, 30 Aug 2023 01:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1693384528; x=1724920528;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1rr15Edf/mJdMl4aJdngCeF31+Nb5/f0kCNlVbqGRGc=;
-  b=rVXoFatN+nhu2iJqnRLaeWPV1cdY4pd3cpuiBepSIiEf+WiXpDi7ouzN
-   ztv1MilIMdiPV/qkq0FPxUFAmb5/vAtRHvulLCzDv4oMnnzLYuv9v6QmB
-   OH/dIh/tgLNWycgy7uzxt7ZV1GiQ38euBzN4cIwyTdANaMq1DPkOr9wTi
-   pyjDGVUJsh6Wq5Ec+HgY1mOPN/YaQjQw/M2wE3EpZe0GvEp3XO921L9LD
-   VZurzOwAlo3EJPVF/IyQsRJLeRVaTS7Pgcwez6NVH7Ud8naJjqAtfrYoc
-   rFjOCbiaMx1VFyWDsNUe5omuqJLdYdFmldvk/0/ehO8dGhYCg9pPcgyif
-   A==;
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="asc'?scan'208";a="169026622"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Aug 2023 01:35:25 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 30 Aug 2023 01:34:51 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 30 Aug 2023 01:34:48 -0700
-Date:   Wed, 30 Aug 2023 09:34:06 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     William Qiu <william.qiu@starfivetech.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-mmc@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
-Message-ID: <20230830-procedure-frostbite-56c751f7c276@wendy>
-References: <20230830031846.127957-1-william.qiu@starfivetech.com>
- <20230830031846.127957-2-william.qiu@starfivetech.com>
- <20230830-commence-trickery-40eaa193cb15@wendy>
- <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
+        Wed, 30 Aug 2023 04:34:28 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD32F1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:34:25 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bcd7a207f7so77762091fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693384464; x=1693989264; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pt0PhngddEXeQF55w8XLKCuMlgv9f/y2sGmaKeHMR1g=;
+        b=tTmscnd+oynfYWjkUgI1XblzLq07ZzL8Eutb6nwE4ZoQ1Mbbx7i0GSyq9mbVYEdKM9
+         T5iK9ZNg3yeIUVMQoY3AnolHnbqKLc/3iDbZzQ2zmvlgvYh5yh8vTUBvzk1T6KjMpBA0
+         JCUNfgKyOqohItRwepAffQnRME6kwf27niO4DzOP2VyAx+NvnJmO10tdSUh8hugA0UqW
+         WhFzdqKgrgVcppQgdJ6Axv7/Q861DnvZ0ohC91vF84i8DkAH6qU2mfqh9N2631/fh84K
+         H46rPbS9BBXvb3IUcDDKXZGw3ycFpRj/yUPZdpbR6YG3IWe64aK/QsZKr7ZOcR12Y+Qh
+         xiNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693384464; x=1693989264;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pt0PhngddEXeQF55w8XLKCuMlgv9f/y2sGmaKeHMR1g=;
+        b=ReL+0k2F3oP07ZKPDI9b8P9p1yEAhzdTvVIAeQft8ZwYv2YmPnUirDQxUNDmLSNWlZ
+         ASJEiXq8zt4vIHuVlmi9Nrq470T8D3f4vSUpe0ePrmdGveXv/6u5b2gGLdvZyOcFK7Tu
+         qq3b8vmMX99zoGDoig0yh0g2uSTfVtsOTD9lWwXo0ABUOhrFZrO1wQGRIPrabmRGLj4y
+         1QIgEBDKvEPCKnKQsZZoMI06FHXBX4uxj2ze39jT/8Y/HxutGn1tGK5k3Df3xEWn8o93
+         gx498WXE6qpyF7g0Gpe4/eccTC99bLIGZI5Pi8sRa2jvOumy2H+X46p22d88/KZsfecR
+         158A==
+X-Gm-Message-State: AOJu0YyNitwhGRG9dmnzt0LBRIxQjb0Z7PtfSoD0jBOBkFxI1mRMI4gU
+        FPmU8apSjhCqeFm5iueYIOrSZA==
+X-Google-Smtp-Source: AGHT+IF5mj6CqUUVIWOYpJZkiR0PfqRBvcfVsy6nzRFSq/akc1Lk4stw6BD+EnUfeCleyyR0MIOHyg==
+X-Received: by 2002:a2e:b60e:0:b0:2bc:d3a8:974a with SMTP id r14-20020a2eb60e000000b002bcd3a8974amr1259289ljn.24.1693384463909;
+        Wed, 30 Aug 2023 01:34:23 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:9c:201:3380:af04:1905:46a])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05600c379200b003fee65091fdsm1505056wmr.40.2023.08.30.01.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 01:34:23 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 10:34:18 +0200
+From:   Marco Elver <elver@google.com>
+To:     andrey.konovalov@linux.dev
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH 06/15] stackdepot: fix and clean-up atomic annotations
+Message-ID: <ZO7/CqwhzqulWP7K@elver.google.com>
+References: <cover.1693328501.git.andreyknvl@google.com>
+ <8ad8f778b43dab49e4e6214b8d90bed31b75436f.1693328501.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="h1favm8wo5hVWnmt"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+In-Reply-To: <8ad8f778b43dab49e4e6214b8d90bed31b75436f.1693328501.git.andreyknvl@google.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---h1favm8wo5hVWnmt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 29, 2023 at 07:11PM +0200, andrey.konovalov@linux.dev wrote:
+> From: Andrey Konovalov <andreyknvl@google.com>
+> 
+> Simplify comments accompanying the use of atomic accesses in the
+> stack depot code.
+> 
+> Also turn smp_load_acquire from next_pool_required in depot_init_pool
+> into READ_ONCE, as both depot_init_pool and the all smp_store_release's
+> to this variable are executed under the stack depot lock.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> 
+> ---
+> 
+> This patch is not strictly required, as the atomic accesses are fully
+> removed in one of the latter patches. However, I decided to keep the
+> patch just in case we end up needing these atomics in the following
+> iterations of this series.
+> ---
+>  lib/stackdepot.c | 27 +++++++++++++--------------
+>  1 file changed, 13 insertions(+), 14 deletions(-)
+> 
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 93191ee70fc3..9ae71e1ef1a7 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -226,10 +226,10 @@ static void depot_init_pool(void **prealloc)
+>  	/*
+>  	 * If the next pool is already initialized or the maximum number of
+>  	 * pools is reached, do not use the preallocated memory.
+> -	 * smp_load_acquire() here pairs with smp_store_release() below and
+> -	 * in depot_alloc_stack().
+> +	 * READ_ONCE is only used to mark the variable as atomic,
+> +	 * there are no concurrent writes.
 
-On Wed, Aug 30, 2023 at 09:29:20AM +0200, Krzysztof Kozlowski wrote:
-> On 30/08/2023 08:50, Conor Dooley wrote:
-> > On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
-> >> Due to the change of tuning implementation, it's no longer necessary to
-> >> use the "starfive,sysreg" property in dts, so drop the relevant
-> >> description in dt-bindings here.
-> >=20
-> > How does changing your software implantation invalidate a description of
-> > the hardware?
-> >=20
->=20
-> Which is kind of proof that this syscon was just to substitute
-> incomplete hardware description (e.g. missing clocks and phys). We
-> should have rejected it. Just like we should reject them in the future.
+This doesn't make sense. If there are no concurrent writes, we should
+drop the marking, so that if there are concurrent writes, tools like
+KCSAN can tell us about it if our assumption was wrong.
 
-:s I dunno what to do with this... I'm inclined to say not to remove it
-=66rom the binding or dts at all & only change the software.
+>  	 */
+> -	if (!smp_load_acquire(&next_pool_required))
+> +	if (!READ_ONCE(next_pool_required))
+>  		return;
+>  
+>  	/* Check if the current pool is not yet allocated. */
+> @@ -250,8 +250,8 @@ static void depot_init_pool(void **prealloc)
+>  		 * At this point, either the next pool is initialized or the
+>  		 * maximum number of pools is reached. In either case, take
+>  		 * note that initializing another pool is not required.
+> -		 * This smp_store_release pairs with smp_load_acquire() above
+> -		 * and in stack_depot_save().
+> +		 * smp_store_release pairs with smp_load_acquire in
+> +		 * stack_depot_save.
+>  		 */
+>  		smp_store_release(&next_pool_required, 0);
+>  	}
+> @@ -275,15 +275,15 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+>  		/*
+>  		 * Move on to the next pool.
+>  		 * WRITE_ONCE pairs with potential concurrent read in
+> -		 * stack_depot_fetch().
+> +		 * stack_depot_fetch.
+>  		 */
+>  		WRITE_ONCE(pool_index, pool_index + 1);
+>  		pool_offset = 0;
+>  		/*
+>  		 * If the maximum number of pools is not reached, take note
+>  		 * that the next pool needs to initialized.
+> -		 * smp_store_release() here pairs with smp_load_acquire() in
+> -		 * stack_depot_save() and depot_init_pool().
+> +		 * smp_store_release pairs with smp_load_acquire in
+> +		 * stack_depot_save.
+>  		 */
+>  		if (pool_index + 1 < DEPOT_MAX_POOLS)
+>  			smp_store_release(&next_pool_required, 1);
+> @@ -414,8 +414,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  
+>  	/*
+>  	 * Fast path: look the stack trace up without locking.
+> -	 * The smp_load_acquire() here pairs with smp_store_release() to
+> -	 * |bucket| below.
+> +	 * smp_load_acquire pairs with smp_store_release to |bucket| below.
+>  	 */
+>  	found = find_stack(smp_load_acquire(bucket), entries, nr_entries, hash);
+>  	if (found)
+> @@ -425,8 +424,8 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  	 * Check if another stack pool needs to be initialized. If so, allocate
+>  	 * the memory now - we won't be able to do that under the lock.
+>  	 *
+> -	 * The smp_load_acquire() here pairs with smp_store_release() to
+> -	 * |next_pool_inited| in depot_alloc_stack() and depot_init_pool().
+> +	 * smp_load_acquire pairs with smp_store_release
+> +	 * in depot_alloc_stack and depot_init_pool.
 
-> There are just few cases where syscon is reasonable. All others is just
-> laziness. It's not only starfivetech, of course. Several other
-> contributors do the same.
+Reflow comment to match 80 cols used by comments elsewhere.
 
-I'm not sure if laziness is fair, lack of understanding is usually more
-likely.
-
---h1favm8wo5hVWnmt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZO7++gAKCRB4tDGHoIJi
-0u4KAP0Vf98t3HptgWUDxzyfGqUIFcjfe/j2Dbq8eR0D637TbAEA0mpYQNoVYT5e
-3uimUjgIT7U4Gkf664SMkKGV+ED1Zgs=
-=cvPO
------END PGP SIGNATURE-----
-
---h1favm8wo5hVWnmt--
+>  	 */
+>  	if (unlikely(can_alloc && smp_load_acquire(&next_pool_required))) {
+>  		/*
+> @@ -452,8 +451,8 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>  		if (new) {
+>  			new->next = *bucket;
+>  			/*
+> -			 * This smp_store_release() pairs with
+> -			 * smp_load_acquire() from |bucket| above.
+> +			 * smp_store_release pairs with smp_load_acquire
+> +			 * from |bucket| above.
+>  			 */
+>  			smp_store_release(bucket, new);
+>  			found = new;
+> -- 
+> 2.25.1
+> 
