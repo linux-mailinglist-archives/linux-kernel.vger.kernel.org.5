@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 684A678DF07
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AECF78DEE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240201AbjH3UH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 16:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
+        id S231927AbjH3Tys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239795AbjH3UHL (ORCPT
+        with ESMTP id S241094AbjH3Ty1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:07:11 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A832119AE
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:52:43 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-58dce1f42d6so17573097b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:52:43 -0700 (PDT)
+        Wed, 30 Aug 2023 15:54:27 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279876A4C
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:23:13 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-4107e6fb0e8so281451cf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 12:23:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693425093; x=1694029893; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDyOflW/myJYlvUctAoCcIDpgS4q3OQICcXlfqcE06A=;
-        b=KjPm9HUnIzmsqi0ZUENwPY3IIbbh4pJV50jM3ONPSjyHwnRaSHmQqVo4iV2QkNJqel
-         VA/V7zApej0MWgt7Xs9D8t5Cle7D2h/SF2hn0VEgwr96nsLO3xiAUnwjgYR+1Kvh7E3/
-         SA6BCjUR1+MG0GObhK3lgBFpO0HfeWSqpKupE=
+        d=chromium.org; s=google; t=1693423297; x=1694028097; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yfL7hyBseirw2ULKrzVmWf2hUa/6+UsGULqRK6gzzdQ=;
+        b=Zm+uAGzPvbJsEEp700xFergIXBX4V6oBP94hDbrVJma8sHqtVujJRdmr7eujAmlV8d
+         zeu4sOHErQXpdNNCizii1TboCHnTcesPNP6jFxeFvykF3ynHOwoBWd/1N9ShnWC0m5IZ
+         gsC+fzfRjz4TYhWgbniPQ32tgngiel/xVZ5HQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693425093; x=1694029893;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JDyOflW/myJYlvUctAoCcIDpgS4q3OQICcXlfqcE06A=;
-        b=JC60edQdV0jfuGPcqad/sv3NnnNcXyrieve1DLObBpFT0ZtLb4qEaxZTV9C7vzyHUL
-         jQ/d3+CSJgihAWwDnFOmjj7MVKNFc/5W4AfpVCHw8a6VOavyf+W8xKkDJFy0xI8r9EqE
-         Sw1P7XOx1gbMkEahnbTyy/bkDuW2BZs7tux4waYmep0t/WZOXqLXh8u0WF5TJz90Eixm
-         RlEx9nbn2RYJ3VcleLrMEz0ufcCMqk4dSv1ugXDGzYouTHNLBEg/9xKmBZ3ynMEOkhfp
-         yJ9oIdbEc+yQCe9kjr/sjTgZocl2EUt6n+rsw8DN5urNvg2mpOFApeuA142aI43HIvUm
-         jduw==
-X-Gm-Message-State: AOJu0Yxx4J92Dp4JsTi27qNS3p95/rl5+ni/Y1o8q314mWZj0LkjjRfA
-        K1eu1f4Xg2friYK+pg87b1kmWNmfDsu+VCS/iJ/Izj5R
-X-Google-Smtp-Source: AGHT+IGIFKcBlvPX1UPhPdOymNrV4WzWDOO5asyuyncWbRsGOmjSkkWcqoVmoyXrNeHfI0T2bMbH7A==
-X-Received: by 2002:a17:902:c941:b0:1c0:bcbc:d67 with SMTP id i1-20020a170902c94100b001c0bcbc0d67mr767212pla.22.1693422815685;
-        Wed, 30 Aug 2023 12:13:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693423297; x=1694028097;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yfL7hyBseirw2ULKrzVmWf2hUa/6+UsGULqRK6gzzdQ=;
+        b=f7Q9CxnKjKzTHmbAVPh2qodEDgqJAl4YMZKX8+skeGBrfwNAogU8C+sAe7msM2BJHy
+         U53VQbcOtQ2oK4FP3mhS425L3w22NExd7NEa5GlUh8UDzdnwsXya6dlAm9QRMscllzra
+         XHXo7qx8c+OARTipNqBhR1BBBRz1v90y7HAX0q9fU1cMLq5xI60Rrwjb1nNdA/ZPbJ8g
+         TDjkvZvqSOMY4/3ieYYzIwGyewjLIuib+p6A72Rj5mafRcv7iXDA7vCdYUnfsQyBiJx9
+         s1v+p0eu1x1m3NHqEp1eiiPnkVbXF6xenl0mBGh0UxfAoXS0xcWrxPyK18z/3oxDdo3a
+         llGA==
+X-Gm-Message-State: AOJu0YwY/UrouDWvUNcFpJ/4sZtxIgBCP27YXfxusNlo9EWJutpYnVv/
+        u4XrJVvvHblkgCY/MVX3a9zXphG5iPzGdowv8uG39+pI
+X-Google-Smtp-Source: AGHT+IGsRVBhxDwcrTroEG3U48LgMw7Y7iXGf6tvH99XoYoezCk7L0nZpJx4PQuaXGFWu2v93kvrxQ==
+X-Received: by 2002:a05:6a21:35c8:b0:14d:8dbe:1960 with SMTP id ba8-20020a056a2135c800b0014d8dbe1960mr2942041pzc.55.1693422817689;
+        Wed, 30 Aug 2023 12:13:37 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:e315:dec6:467c:83c5])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001bbdf32f011sm11338928plg.269.2023.08.30.12.13.33
+        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001bbdf32f011sm11338928plg.269.2023.08.30.12.13.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 12:13:34 -0700 (PDT)
+        Wed, 30 Aug 2023 12:13:37 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -66,19 +67,13 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Stephen Boyd <swboyd@chromium.org>, ito-yuichi@fujitsu.com,
         linux-perf-users@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
         Douglas Anderson <dianders@chromium.org>,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Valentin Schneider <vschneid@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v12 0/7] arm64: Add IPI for backtraces / kgdb; try to use NMI for some IPIs
-Date:   Wed, 30 Aug 2023 12:11:21 -0700
-Message-ID: <20230830191314.1618136-1-dianders@chromium.org>
+Subject: [PATCH v12 1/7] irqchip/gic-v3: Enable support for SGIs to act as NMIs
+Date:   Wed, 30 Aug 2023 12:11:22 -0700
+Message-ID: <20230830121115.v12.1.I1223c11c88937bd0cbd9b086d4ef216985797302@changeid>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+In-Reply-To: <20230830191314.1618136-1-dianders@chromium.org>
+References: <20230830191314.1618136-1-dianders@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -91,130 +86,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an attempt to resurrect Sumit's old patch series [1] that
-allowed us to use the arm64 pseudo-NMI to get backtraces of CPUs and
-also to round up CPUs in kdb/kgdb. The last post from Sumit that I
-could find was v7, so I started my series at v8. I haven't copied all
-of his old changelongs here, but you can find them from the link.
+As of commit 6abbd6988971 ("irqchip/gic, gic-v3: Make SGIs use
+handle_percpu_devid_irq()") SGIs are treated the same as PPIs/EPPIs
+and use handle_percpu_devid_irq() by default. Unfortunately,
+handle_percpu_devid_irq() isn't NMI safe, and so to run in an NMI
+context those should use handle_percpu_devid_fasteoi_nmi().
 
-This patch series targets v6.6. Specifically it can't land in v6.5
-since it depends on commit 8d539b84f1e3 ("nmi_backtrace: allow
-excluding an arbitrary CPU").
+In order to accomplish this, we just have to make room for SGIs in the
+array of refcounts that keeps track of which interrupts are set as
+NMI. We also rename the array and create a new indexing scheme that
+accounts for SGIs.
 
-It should be noted that Mark still feels there might be some corner
-cases where pseudo-NMI is not production ready [2] [3], but as far as
-I'm aware there are no concrete/documented issues. Regardless of
-whether this should be enabled for production, though, this series
-will be invaluable to anyone trying to debug crashes on arm64
-machines.
+Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
+as IRQs/NMIs happen as part of this routine.
 
-v12 of this series collects tags, fixes a few small nits in comments
-and commit messages from v11 and adds a new (and somewhat unrelated)
-small patch to the end of the series. There are no code changes other
-than the last patch, which is tiny.
+Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+I'll note that this change is a little more black magic to me than
+others in this series. I don't have a massive amounts of familiarity
+with all the moving parts of gic-v3, so I mostly just followed Mark
+Rutland's advice [1]. Please pay extra attention to make sure I didn't
+do anything too terrible.
 
-v11 of this series addressed Stephen Boyd's feedback on v10 and added
-a missing "static" that the patches robot found.
+Mark's advice wasn't a full patch and I ended up doing a bit of work
+to translate it to reality, so I did not add him as "Co-developed-by"
+here. Mark: if you would like this tag then please provide it and your
+Signed-off-by. I certainly won't object.
 
-v10 of this series attempted to address all of Mark's feedback on
-v9. As a quick summary:
-- It includes his patch to remove IPI_WAKEUP, freeing up an extra IPI.
-- It no longer combines the "kgdb" and "backtrace" IPIs. If we need
-  another IPI these could always be recombined later.
-- It promotes IPI_CPU_STOP and IPI_CPU_CRASH_STOP to NMI.
-- It puts nearly all the code directly in smp.c.
-- Several of the patches are squashed together.
-- Patch #6 ("kgdb: Provide a stub kgdb_nmicallback() if !CONFIG_KGDB")
-  was dropped from the series since it landed.
-
-Between v8 and v9, I had cleaned up this patch series by integrating
-the 10th patch from v8 [4] into the whole series. As part of this, I
-renamed the "NMI IPI" to the "debug IPI" since it could now be backed
-by a regular IPI in the case that pseudo NMIs weren't available. With
-the fallback, this allowed me to drop some extra patches from the
-series. This feels (to me) to be pretty clean and hopefully others
-agree. Any patch I touched significantly I removed Masayoshi and
-Chen-Yu's tags from.
-
-...also in v8, I reorderd the patches a bit in a way that seemed a
-little cleaner to me.
-
-Since v7, I have:
-* Addressed the small amount of feedback that was there for v7.
-* Rebased.
-* Added a new patch that prevents us from spamming the logs with idle
-  tasks.
-* Added an extra patch to gracefully fall back to regular IPIs if
-  pseudo-NMIs aren't there.
-
-It can be noted that this patch series works very well with the recent
-"hardlockup" patches that have landed through Andrew Morton's tree and
-are currently in mainline. It works especially well with the "buddy"
-lockup detector.
-
-[1] https://lore.kernel.org/linux-arm-kernel/1604317487-14543-1-git-send-email-sumit.garg@linaro.org/
-[2] https://lore.kernel.org/lkml/ZFvGqD%2F%2Fpm%2FlZb+p@FVFF77S0Q05N.cambridge.arm.com/
-[3] https://lore.kernel.org/lkml/ZNDKVP2m-iiZCz3v@FVFF77S0Q05N.cambridge.arm.com
-[4] https://lore.kernel.org/r/20230419155341.v8.10.Ic3659997d6243139d0522fc3afcdfd88d7a5f030@changeid/
+[1] https://lore.kernel.org/r/ZNC-YRQopO0PaIIo@FVFF77S0Q05N.cambridge.arm.com
 
 Changes in v12:
-- ("arm64: smp: Mark IPI globals as __ro_after_init") new for v12.
 - Added a comment about why we account for 16 SGIs when Linux uses 8.
-- Minor comment change to add "()" after nmi_trigger_cpumask_backtrace.
-- Updated the commit hash of the commit this depends on.
-
-Changes in v11:
-- Adjust comment about NR_IPI/MAX_IPI.
-- Don't use confusing "backed by" idiom in comment.
-- Made arm64_backtrace_ipi() static.
-- Updated commit message as per Stephen.
-- arch_send_wakeup_ipi() now takes an unsigned int.
 
 Changes in v10:
-- ("IPI_CPU_STOP and IPI_CPU_CRASH_STOP should try for NMI") new for v10.
-- ("arm64: smp: Remove dedicated wakeup IPI") new for v10.
-- Backtrace now directly supported in smp.c
-- Don't allocate the cpumask on the stack; just iterate.
-- Moved kgdb calls to smp.c to avoid needing to export IPI info.
 - Rewrite as needed for 5.11+ as per Mark Rutland and Sumit.
-- Squash backtrace into patch adding support for pseudo-NMI IPIs.
-- kgdb now has its own IPI.
 
-Changes in v9:
-- Added comments that we might not be using NMI always.
-- Added to commit message that this doesn't catch all cases.
-- Fold in v8 patch #10 ("Fallback to a regular IPI if NMI isn't enabled")
-- Moved header file out of "include" since it didn't need to be there.
-- Remove arm64_supports_nmi()
-- Remove fallback for when debug IPI isn't available.
-- Renamed "NMI IPI" to "debug IPI" since it might not be backed by NMI.
-- arch_trigger_cpumask_backtrace() no longer returns bool
+ drivers/irqchip/irq-gic-v3.c | 59 +++++++++++++++++++++++++-----------
+ 1 file changed, 41 insertions(+), 18 deletions(-)
 
-Changes in v8:
-- "Tag the arm64 idle functions as __cpuidle" new for v8
-- Removed "#ifdef CONFIG_SMP" since arm64 is always SMP
-- debug_ipi_setup() and debug_ipi_teardown() no longer take cpu param
-
-Douglas Anderson (6):
-  irqchip/gic-v3: Enable support for SGIs to act as NMIs
-  arm64: idle: Tag the arm64 idle functions as __cpuidle
-  arm64: smp: Add arch support for backtrace using pseudo-NMI
-  arm64: smp: IPI_CPU_STOP and IPI_CPU_CRASH_STOP should try for NMI
-  arm64: kgdb: Implement kgdb_roundup_cpus() to enable pseudo-NMI
-    roundup
-  arm64: smp: Mark IPI globals as __ro_after_init
-
-Mark Rutland (1):
-  arm64: smp: Remove dedicated wakeup IPI
-
- arch/arm64/include/asm/irq.h              |   3 +
- arch/arm64/include/asm/smp.h              |   4 +-
- arch/arm64/kernel/acpi_parking_protocol.c |   2 +-
- arch/arm64/kernel/idle.c                  |   4 +-
- arch/arm64/kernel/smp.c                   | 139 +++++++++++++++++-----
- drivers/irqchip/irq-gic-v3.c              |  59 ++++++---
- 6 files changed, 160 insertions(+), 51 deletions(-)
-
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index eedfa8e9f077..8d20122ba0a8 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -78,6 +78,13 @@ static DEFINE_STATIC_KEY_TRUE(supports_deactivate_key);
+ #define GIC_LINE_NR	min(GICD_TYPER_SPIS(gic_data.rdists.gicd_typer), 1020U)
+ #define GIC_ESPI_NR	GICD_TYPER_ESPIS(gic_data.rdists.gicd_typer)
+ 
++/*
++ * There are 16 SGIs, though we only actually use 8 in Linux. The other 8 SGIs
++ * are potentially stolen by the secure side. Some code, especially code dealing
++ * with hwirq IDs, is simplified by accounting for all 16.
++ */
++#define SGI_NR		16
++
+ /*
+  * The behaviours of RPR and PMR registers differ depending on the value of
+  * SCR_EL3.FIQ, and the behaviour of non-secure priority registers of the
+@@ -125,8 +132,8 @@ EXPORT_SYMBOL(gic_nonsecure_priorities);
+ 		__priority;						\
+ 	})
+ 
+-/* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
+-static refcount_t *ppi_nmi_refs;
++/* rdist_nmi_refs[n] == number of cpus having the rdist interrupt n set as NMI */
++static refcount_t *rdist_nmi_refs;
+ 
+ static struct gic_kvm_info gic_v3_kvm_info __initdata;
+ static DEFINE_PER_CPU(bool, has_rss);
+@@ -519,9 +526,22 @@ static u32 __gic_get_ppi_index(irq_hw_number_t hwirq)
+ 	}
+ }
+ 
+-static u32 gic_get_ppi_index(struct irq_data *d)
++static u32 __gic_get_rdist_idx(irq_hw_number_t hwirq)
++{
++	switch (__get_intid_range(hwirq)) {
++	case SGI_RANGE:
++	case PPI_RANGE:
++		return hwirq;
++	case EPPI_RANGE:
++		return hwirq - EPPI_BASE_INTID + 32;
++	default:
++		unreachable();
++	}
++}
++
++static u32 gic_get_rdist_idx(struct irq_data *d)
+ {
+-	return __gic_get_ppi_index(d->hwirq);
++	return __gic_get_rdist_idx(d->hwirq);
+ }
+ 
+ static int gic_irq_nmi_setup(struct irq_data *d)
+@@ -545,11 +565,14 @@ static int gic_irq_nmi_setup(struct irq_data *d)
+ 
+ 	/* desc lock should already be held */
+ 	if (gic_irq_in_rdist(d)) {
+-		u32 idx = gic_get_ppi_index(d);
++		u32 idx = gic_get_rdist_idx(d);
+ 
+-		/* Setting up PPI as NMI, only switch handler for first NMI */
+-		if (!refcount_inc_not_zero(&ppi_nmi_refs[idx])) {
+-			refcount_set(&ppi_nmi_refs[idx], 1);
++		/*
++		 * Setting up a percpu interrupt as NMI, only switch handler
++		 * for first NMI
++		 */
++		if (!refcount_inc_not_zero(&rdist_nmi_refs[idx])) {
++			refcount_set(&rdist_nmi_refs[idx], 1);
+ 			desc->handle_irq = handle_percpu_devid_fasteoi_nmi;
+ 		}
+ 	} else {
+@@ -582,10 +605,10 @@ static void gic_irq_nmi_teardown(struct irq_data *d)
+ 
+ 	/* desc lock should already be held */
+ 	if (gic_irq_in_rdist(d)) {
+-		u32 idx = gic_get_ppi_index(d);
++		u32 idx = gic_get_rdist_idx(d);
+ 
+ 		/* Tearing down NMI, only switch handler for last NMI */
+-		if (refcount_dec_and_test(&ppi_nmi_refs[idx]))
++		if (refcount_dec_and_test(&rdist_nmi_refs[idx]))
+ 			desc->handle_irq = handle_percpu_devid_irq;
+ 	} else {
+ 		desc->handle_irq = handle_fasteoi_irq;
+@@ -1279,10 +1302,10 @@ static void gic_cpu_init(void)
+ 	rbase = gic_data_rdist_sgi_base();
+ 
+ 	/* Configure SGIs/PPIs as non-secure Group-1 */
+-	for (i = 0; i < gic_data.ppi_nr + 16; i += 32)
++	for (i = 0; i < gic_data.ppi_nr + SGI_NR; i += 32)
+ 		writel_relaxed(~0, rbase + GICR_IGROUPR0 + i / 8);
+ 
+-	gic_cpu_config(rbase, gic_data.ppi_nr + 16, gic_redist_wait_for_rwp);
++	gic_cpu_config(rbase, gic_data.ppi_nr + SGI_NR, gic_redist_wait_for_rwp);
+ 
+ 	/* initialise system registers */
+ 	gic_cpu_sys_reg_init();
+@@ -1939,12 +1962,13 @@ static void gic_enable_nmi_support(void)
+ 		return;
+ 	}
+ 
+-	ppi_nmi_refs = kcalloc(gic_data.ppi_nr, sizeof(*ppi_nmi_refs), GFP_KERNEL);
+-	if (!ppi_nmi_refs)
++	rdist_nmi_refs = kcalloc(gic_data.ppi_nr + SGI_NR,
++				 sizeof(*rdist_nmi_refs), GFP_KERNEL);
++	if (!rdist_nmi_refs)
+ 		return;
+ 
+-	for (i = 0; i < gic_data.ppi_nr; i++)
+-		refcount_set(&ppi_nmi_refs[i], 0);
++	for (i = 0; i < gic_data.ppi_nr + SGI_NR; i++)
++		refcount_set(&rdist_nmi_refs[i], 0);
+ 
+ 	pr_info("Pseudo-NMIs enabled using %s ICC_PMR_EL1 synchronisation\n",
+ 		gic_has_relaxed_pmr_sync() ? "relaxed" : "forced");
+@@ -2061,6 +2085,7 @@ static int __init gic_init_bases(phys_addr_t dist_phys_base,
+ 
+ 	gic_dist_init();
+ 	gic_cpu_init();
++	gic_enable_nmi_support();
+ 	gic_smp_init();
+ 	gic_cpu_pm_init();
+ 
+@@ -2073,8 +2098,6 @@ static int __init gic_init_bases(phys_addr_t dist_phys_base,
+ 			gicv2m_init(handle, gic_data.domain);
+ 	}
+ 
+-	gic_enable_nmi_support();
+-
+ 	return 0;
+ 
+ out_free:
 -- 
 2.42.0.283.g2d96d420d3-goog
 
