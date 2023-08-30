@@ -2,63 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A7578DC5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD9278DCA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242954AbjH3SpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        id S231269AbjH3SqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241648AbjH3HC2 (ORCPT
+        with ESMTP id S241679AbjH3HFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:02:28 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBFE1A3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:02:24 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RbFbY48jWz4f3jY4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:02:17 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP1 (Coremail) with SMTP id cCh0CgAnnip76e5kzm5HBw--.65103S2;
-        Wed, 30 Aug 2023 15:02:21 +0800 (CST)
-Subject: Re: [PATCH v2 4/7] mm/compaction: simplify pfn iteration in
- isolate_freepages_range
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        david@redhat.com, willy@infradead.org
-References: <20230826153617.4019189-1-shikemeng@huaweicloud.com>
- <20230826153617.4019189-5-shikemeng@huaweicloud.com>
- <20230829150153.j4lw36s7yx5be7al@techsingularity.net>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <fd145323-6418-2a8a-484b-20f83f42e2d1@huaweicloud.com>
-Date:   Wed, 30 Aug 2023 15:02:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Wed, 30 Aug 2023 03:05:40 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8523B1BE
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:05:36 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a2a4a5472dso115097266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693379135; x=1693983935; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BvAK6jjE3YzRP6mlz2y2Vxt0E/0zHEbo4pXAcUmbFmY=;
+        b=xR3+tphzOq4LAh31HwDyHeEOvhg6YSPDvVC97ovXTOBm+I7dZ6lTGAxsE44dDn+g3l
+         LpQLgURqvPgZw8VBkh2F+WtCUBVIMC9cV+YJH8qKp54WCrGG0ItiZSyIqx9vTIFwUGXl
+         0g8Gvxwtyxvje8eYog3qDthpOIlrRdbZjKIfg12W4MPxrfO/wz/1Yaq1BejhE4gDAYUJ
+         qBGAYAFcQA8hMFWucDkddXau/GoREtJAw74ffqacNubcF0xgOaw/657/M/oJgeIHVSJ9
+         +yoaom1Dlug0k9rIdJ3tGhrJ9wGoQ4ZH2JNeEtD9Ppap9mj0dXzY3hv8+g5EcWVDcdzu
+         ctMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693379135; x=1693983935;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BvAK6jjE3YzRP6mlz2y2Vxt0E/0zHEbo4pXAcUmbFmY=;
+        b=IpJcq605PFuC3NmKGJFgitMcFgP45b6zwfyB5IGc6RvfUjkrItYz/VeyGgp+4reWuD
+         DRXAlUh0yOp3lsAdUFGq/5uMpBArS5ZLIqB+kvYH0tCEi34q93gxUssqDWmf4QJ9KHX9
+         0gzLU7rd6FQZ6KxhwgzIlGhLZCp8Fu6FaWhq0zT64ZqgGGjV/TEEH7OHB4fUs0Fy/wrK
+         p4qNVbrHCfUx6BA9GiwPHXm4uLlvWrPlhYbLplXROJqGtsB1WlgpELF81URZHUZ75WWF
+         z++/aF0l8clQiTLJmPOTxAuHbbbbxSbO55rA+hATLiUOZc9zLpQY33Ihrhj6kQU7SCyH
+         nnnA==
+X-Gm-Message-State: AOJu0Yx5zk3MmVBgAK/tWAI2qJoIO093+SLk88jS6R261QZHq1v5DFop
+        jqyurJxfjVmULK0+WYNq4NsHXA==
+X-Google-Smtp-Source: AGHT+IGs9RuawEvgzuln7v19oDV9TpEAvyCRWM8dqn7lFgSkk+mtqzbjb3PtujKk1zwiA5AOyeD2tQ==
+X-Received: by 2002:a17:906:518a:b0:9a2:295a:9bbc with SMTP id y10-20020a170906518a00b009a2295a9bbcmr1415763ejk.37.1693379135039;
+        Wed, 30 Aug 2023 00:05:35 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id s21-20020a170906355500b0098d2d219649sm6936092eja.174.2023.08.30.00.05.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 00:05:34 -0700 (PDT)
+Message-ID: <6f70a710-c409-23c0-890b-370ccd23e088@linaro.org>
+Date:   Wed, 30 Aug 2023 09:05:33 +0200
 MIME-Version: 1.0
-In-Reply-To: <20230829150153.j4lw36s7yx5be7al@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
+ runtime-suspend-on-usb-suspend property
+Content-Language: en-US
+To:     Elson Serrao <quic_eserrao@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Roger Quadros <rogerq@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+References: <20230814185043.9252-3-quic_eserrao@quicinc.com>
+ <a77403f5-8b99-3012-3843-1999ee8d12ce@linaro.org>
+ <6b27cd55-4e44-7a26-30ff-9692344cae4c@quicinc.com>
+ <31fa930a-51fb-6a7f-300d-e71f6b399eb1@linaro.org>
+ <a0a6c561-6319-00ba-c6db-f1dec9f0f0aa@quicinc.com>
+ <5dfae814-7233-eb1f-cae7-f335e54ce1b6@linaro.org>
+ <cf0227c8-cd02-81b6-9e13-2e7fe6f505f2@kernel.org>
+ <20230826015257.mbogiefsbz5474ft@synopsys.com>
+ <afd4843b-427a-8535-78e2-f81879378371@linaro.org>
+ <969988f6-f01f-0e31-6a98-7d02c5a3a4ad@quicinc.com>
+ <20230830013739.srnh2uyhly66yvu2@synopsys.com>
+ <d30a8d6a-236a-b6eb-76d7-115cc9950ce1@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <d30a8d6a-236a-b6eb-76d7-115cc9950ce1@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: cCh0CgAnnip76e5kzm5HBw--.65103S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uryUKw4Utr4kZr1rtrW7twb_yoW8Ww4xpa
-        y5Ga1I9r1kGayUWFnxAw1DZ3WrK39IvF47XrW5Xr1fX395Xa4xZF93Ar4YkFyxtrnrCr1q
-        vrZFgrZ2q3WDXa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,40 +95,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-on 8/29/2023 11:01 PM, Mel Gorman wrote:
-> On Sat, Aug 26, 2023 at 11:36:14PM +0800, Kemeng Shi wrote:
->> We call isolate_freepages_block in strict mode, continuous pages in
->> pageblock will be isolated if isolate_freepages_block successed.
->> Then pfn + isolated will point to start of next pageblock to scan
->> no matter how many pageblocks are isolated in isolate_freepages_block.
->> Use pfn + isolated as start of next pageblock to scan to simplify the
->> iteration.
->>
->> The pfn + isolated always points to start of next pageblock as:
->> In case isolated buddy page has order higher than pageblock:
->> 1. page in buddy page is aligned with it's order
->> 2. order of page is higher than pageblock order
->> Then page is aligned with pageblock order. So pfn of page and isolated
->> pages count are both aligned pageblock order. So pfn + isolated is
->> pageblock order aligned.
->>
->> In case isolated buddy page has order lower than pageblock:
->> Buddy page with order N contains two order N - 1 pages as following:
->> |        order N        |
->> |order N - 1|order N - 1|
->> So buddy pages with order N - 1 will never cross boudary of order N.
->> Similar, buddy pages with order N - 2 will never cross boudary of order
->> N - 1 and so on. Then any pages with order less than pageblock order
->> will never crosa boudary of pageblock.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+On 30/08/2023 06:31, Elson Serrao wrote:
 > 
-> While I don't think the patch is wrong, I also don't think it
-> meaningfully simplifies the code or optimises enough to be justified.
-> Even though a branch is eliminated, the whole path is not cheap.
 > 
-OK, I will drop this in next version if you insistant.
+> On 8/29/2023 6:37 PM, Thinh Nguyen wrote:
+>> Just want to clarify, there are dwc3 properties and there are dt binding
+>> properties. Often the case that dt binding matches 1-to-1 with dwc3
+>> driver property. Now, we need to enhance the checkers so that the dwc3
+>> driver property to match cases where it is platform specific and through
+>> compatible string.
+>>
+> 
+> Thank you for the clarification Thinh.
+> To confirm, we would need to modify the driver to parse a new compatible 
+> string (say "snps,dwc3-ext-wakeup") and add .data field so that the 
+> driver is aware that this particular platform supports external wakeup 
+> detection.Right ?
+
+No, it's not then platform specific. You said it depends on each
+platform. Platform is Qualcomm SM8450 for example.
+
+Best regards,
+Krzysztof
 
