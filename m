@@ -2,137 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE75278DE19
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3E178DE44
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235386AbjH3S5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
+        id S238713AbjH3TAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241532AbjH3G4v (ORCPT
+        with ESMTP id S241601AbjH3HAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 02:56:51 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE32194
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:56:45 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-500b66f8b27so5206059e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Aug 2023 23:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693378604; x=1693983404; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FKNC/Ecmczb+pprJRVI/jNOGGup4YFMq8hyWzf6I3EM=;
-        b=WIZ3OTUSveMvOL3e8mB9fiGf40833DgAgSns8ITCk1NuhavzY113ObI2EtVdVLKZwW
-         KJ5Znhbc5YhmbaPQsbM/ynXrLP4jiU68w5mmnJuogg4XdlnIdfzlbMcCVGJuOQG7qEu9
-         f8UPlpchyx5p2pIb2bK7YuqloVQTuj+tQ1UGGjygSDq6UYPOUIZkY+rNH1pXgH0NJO2C
-         d8AySKR2JOXlWe45qmqmspOXqE1USwlKd341A85AcqnSvrbnVu774/ToRcW6/yrhGzmP
-         VZVm5EgHhKNCDBrNoQh0gACbhxSEHNv4U3FSQc1ToeabwFOQLK6UELU7XoL2y5DESWa2
-         unrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693378604; x=1693983404;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FKNC/Ecmczb+pprJRVI/jNOGGup4YFMq8hyWzf6I3EM=;
-        b=RIDC5cv7DicCw6sltwBQuQIgMi4IhlF0uEMe9tX4WZ3V5Hka3UjrPKa00PB1zD+Zz3
-         AAnM0GOJpsVcQv9gos7vZwpXh47XD5by3TIoaDOOLLJpoPsrVrnIeh4CErwdWIjUh4xX
-         Hqr1EUGwZQjD4NwKrlfSoksdIA32JRtfK81yiwnn9qrNB/x9tnED603x+SXiFey2p2Rs
-         5giCYoxkE4GeP78a4q/G4Yp1Q1of3LfbVhB662q3ins0h//oBGoJ0ZBNgK1Arl5nylmi
-         sI1GwtRypnzF+F3+FfIYMnOvcYsMBv9qAYwVnGLHGObhrU7+D+Dgl0QF7QtTQVoKAxTk
-         7iWQ==
-X-Gm-Message-State: AOJu0Yw6C7tRCnHvPfpGAhKI8VPM8IPYnGRpMfuUnB8z0vsyHX2yq8Xc
-        WM2ItfSHPc5+M6KOLxJz+LVaDQ==
-X-Google-Smtp-Source: AGHT+IEkicIQuRpUPzDVnA0JHWBk+8C+LPUAUHJor3ONxVqWsbLcrf8WjtNGb6UOKF8JDaWBm8ZWqA==
-X-Received: by 2002:a2e:8619:0:b0:2bd:10d3:214 with SMTP id a25-20020a2e8619000000b002bd10d30214mr1105105lji.11.1693378603617;
-        Tue, 29 Aug 2023 23:56:43 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id fx19-20020a1709069e9300b0098e0a937a6asm6796450ejc.69.2023.08.29.23.56.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 23:56:43 -0700 (PDT)
-Message-ID: <03729949-1994-6ce1-253b-886a254ac0af@linaro.org>
-Date:   Wed, 30 Aug 2023 08:56:41 +0200
+        Wed, 30 Aug 2023 03:00:18 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C171A3;
+        Wed, 30 Aug 2023 00:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1693378815; x=1724914815;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Mvg/nUDtYhEADCoBEFukMvDaTm/pr0NPS2b3VR6z3RM=;
+  b=WjyZGU+XgyG9qhZTcgB8fizMjjN1agKm5S2SuuZ1kv18+92/aJWJ61wW
+   SdCLdMGwEXU4jlRL5MREljKt+higARoxObIbrdR306UUPFVSlHie72NyW
+   6nlZfCMQYkawWY0yoklFaj7d8GrnNpuXuDQwc/KcdYhQGjnZHwjgFKHDV
+   OQRRkG2pXNjhoIc0Ra8xItOI65eUv5mc8vsFuP3+o1ZKutipv8E5A/EBz
+   7JkenMtFpGRiSM+q06lDEpZAUXdVHLMZNWPHcTYo8AP6oldpnFG75C2m4
+   mPxfz0npNOj3s9Cm25ub2i8wSeIEKOPLJzGAJNjWBsgZZcRwBR///qiqs
+   w==;
+X-IronPort-AV: E=Sophos;i="6.02,212,1688454000"; 
+   d="asc'?scan'208";a="169013177"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Aug 2023 00:00:15 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 30 Aug 2023 00:00:03 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 30 Aug 2023 00:00:01 -0700
+Date:   Wed, 30 Aug 2023 07:59:19 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
+CC:     Anup Patel <anup@brainfault.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "Li, Haicheng" <haicheng.li@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+Message-ID: <20230830-breeze-washboard-ef496d5c9d5a@wendy>
+References: <20230806024715.3061589-1-xiao.w.wang@intel.com>
+ <CAAhSdy2_djw2JX+8tmF2V190+x9KLvt7u8rCX-TaGCKQrUVOYQ@mail.gmail.com>
+ <DM8PR11MB57512001CAFA07EC58203A7BB8E6A@DM8PR11MB5751.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/1] ARM: dts: aspeed: Minerva: Add Facebook Minerva
- (AST2600) BMC
-Content-Language: en-US
-To:     peteryin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
-        daniel-hsu@quantatw.com
-References: <20230830025133.3756506-1-peteryin.openbmc@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230830025133.3756506-1-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BxCw0DgMJ3ArtR6u"
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB57512001CAFA07EC58203A7BB8E6A@DM8PR11MB5751.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 04:51, peteryin wrote:
-> Add linux device tree entry related to
-> Minerva specific devices connected to BMC SoC.
-> 
-> Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
-> ---
-> v1 link : https://lore.kernel.org/all/fb09f5e6-8381-312f-2f1e-f2b471cec68a@linaro.org/
-> v2 link : https://lore.kernel.org/lkml/9f499fe5-db59-f4c8-6a50-93725b7287fd@linaro.org/
-> 
-> Change log:
-> 
-> v3:
->     1.Fixed commit description.
->     2.Add sgpio line name to sgpioP.
->     3.Add ipmb debug card bus.
-> 
-> v2:
->     1.Add facebook,minerva-bmc in aspeed.yaml
->     2.Use stdout-path
->     3.Add Makefile
-> 
-> v1:
->     1. Create minerva dts file.
-> 
-> ---
->  .../bindings/arm/aspeed/aspeed.yaml           |   1 +
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 384 ++++++++++++++++++
->  3 files changed, 386 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-> index fb4ce5df2fa0..9d1b26e7ca6b 100644
-> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-> @@ -79,6 +79,7 @@ properties:
->                - facebook,elbert-bmc
->                - facebook,fuji-bmc
->                - facebook,greatlakes-bmc
-> +              - facebook,minerva-bmc
->                - ibm,everest-bmc
->                - ibm,rainier-bmc
->                - ibm,tacoma-bmc
+--BxCw0DgMJ3ArtR6u
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Nothing improved here. Checkpatch still complains. Bindings are always
-separate patches.
+On Wed, Aug 30, 2023 at 06:14:12AM +0000, Wang, Xiao W wrote:
+> Hi,
+>=20
+> > -----Original Message-----
+> > From: Anup Patel <anup@brainfault.org>
+> > Sent: Tuesday, August 29, 2023 7:08 PM
+> > To: Wang, Xiao W <xiao.w.wang@intel.com>
+> > Cc: paul.walmsley@sifive.com; palmer@dabbelt.com;
+> > aou@eecs.berkeley.edu; ardb@kernel.org; Li, Haicheng
+> > <haicheng.li@intel.com>; linux-riscv@lists.infradead.org; linux-
+> > efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> >=20
+> > On Sun, Aug 6, 2023 at 8:09=E2=80=AFAM Xiao Wang <xiao.w.wang@intel.com=
+> wrote:
+> > >
+> > > This patch leverages the alternative mechanism to dynamically optimize
+> > > bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
+> > > Zbb ext is not supported by the runtime CPU, legacy implementation is
+> > > used. If Zbb is supported, then the optimized variants will be select=
+ed
+> > > via alternative patching.
+> > >
+> > > The legacy bitops support is taken from the generic C implementation =
+as
+> > > fallback.
+> > >
+> > > If the parameter is a build-time constant, we leverage compiler built=
+in to
+> > > calculate the result directly, this approach is inspired by x86 bitops
+> > > implementation.
+> > >
+> > > EFI stub runs before the kernel, so alternative mechanism should not =
+be
+> > > used there, this patch introduces a macro EFI_NO_ALTERNATIVE for this
+> > > purpose.
+> >=20
+> > I am getting the following compile error with this patch:
+> >=20
+> >   GEN     Makefile
+> >   UPD     include/config/kernel.release
+> >   UPD     include/generated/utsrelease.h
+> >   CC      kernel/bounds.s
+> > In file included from /home/anup/Work/riscv-
+> > test/linux/include/linux/bitmap.h:9,
+> >                  from
+> > /home/anup/Work/riscv-test/linux/arch/riscv/include/asm/cpufeature.h:9,
+> >                  from
+> > /home/anup/Work/riscv-test/linux/arch/riscv/include/asm/hwcap.h:90,
+>=20
+>=20
+> It looks there's a cyclic header including, which leads to this build err=
+or.
+> I checked https://github.com/kvm-riscv/linux/tree/master and
+> https://github.com/torvalds/linux/tree/master, but I don't see
+> "asm/cpufeature.h" is included in asm/hwcap.h:90, maybe I miss something,
+> could you help point me to the repo/branch I should work on?
 
-Also, this patch does not apply to any tree.
+=46rom MAINTAINERS:
+	RISC-V ARCHITECTURE
+	...
+	T:	git git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git
 
-Best regards,
-Krzysztof
+The for-next branch there is what you should be basing work on top of.
+AFAICT, you've made bitops.h include hwcap.h while cpufeature.h includes
+both bitops.h (indirectly) and hwcap.h.
 
+Hope that helps,
+Conor.
+
+> >                  from
+> > /home/anup/Work/riscv-test/linux/arch/riscv/include/asm/bitops.h:26,
+> >                  from
+> > /home/anup/Work/riscv-test/linux/include/linux/bitops.h:68,
+> >                  from /home/anup/Work/riscv-test/linux/include/linux/lo=
+g2.h:12,
+> >                  from /home/anup/Work/riscv-test/linux/kernel/bounds.c:=
+13:
+> > /home/anup/Work/riscv-test/linux/include/linux/find.h: In function
+> > 'find_next_bit':
+> > /home/anup/Work/riscv-test/linux/include/linux/find.h:64:30: error:
+> > implicit declaration of function '__ffs'
+> > [-Werror=3Dimplicit-function-declaration]
+> >    64 |                 return val ? __ffs(val) : size;
+> >=20
+> > Regards,
+> > Anup
+> >=20
+> >=20
+> > >
+> > > Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> > > ---
+> > >  arch/riscv/include/asm/bitops.h       | 266 ++++++++++++++++++++++++=
++-
+> > >  drivers/firmware/efi/libstub/Makefile |   2 +-
+> > >  2 files changed, 264 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/arch/riscv/include/asm/bitops.h
+> > b/arch/riscv/include/asm/bitops.h
+> > > index 3540b690944b..f727f6489cd5 100644
+> > > --- a/arch/riscv/include/asm/bitops.h
+> > > +++ b/arch/riscv/include/asm/bitops.h
+> > > @@ -15,13 +15,273 @@
+> > >  #include <asm/barrier.h>
+> > >  #include <asm/bitsperlong.h>
+> > >
+> > > +#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(EFI_NO_ALTERNATIVE)
+> > >  #include <asm-generic/bitops/__ffs.h>
+> > > -#include <asm-generic/bitops/ffz.h>
+> > > -#include <asm-generic/bitops/fls.h>
+> > >  #include <asm-generic/bitops/__fls.h>
+> > > +#include <asm-generic/bitops/ffs.h>
+> > > +#include <asm-generic/bitops/fls.h>
+> > > +
+> > > +#else
+> > > +#include <asm/alternative-macros.h>
+> > > +#include <asm/hwcap.h>
+> > > +
+> > > +#if (BITS_PER_LONG =3D=3D 64)
+> > > +#define CTZW   "ctzw "
+> > > +#define CLZW   "clzw "
+> > > +#elif (BITS_PER_LONG =3D=3D 32)
+> > > +#define CTZW   "ctz "
+> > > +#define CLZW   "clz "
+> > > +#else
+> > > +#error "Unexpected BITS_PER_LONG"
+> > > +#endif
+> > > +
+> > > +static __always_inline unsigned long variable__ffs(unsigned long wor=
+d)
+> > > +{
+> > > +       int num;
+> > > +
+> > > +       asm_volatile_goto(
+> > > +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_Z=
+BB, 1)
+> > > +               : : : : legacy);
+> > > +
+> > > +       asm volatile (
+> > > +               ".option push\n"
+> > > +               ".option arch,+zbb\n"
+> > > +               "ctz %0, %1\n"
+> > > +               ".option pop\n"
+> > > +               : "=3Dr" (word) : "r" (word) :);
+> > > +
+> > > +       return word;
+> > > +
+> > > +legacy:
+> > > +       num =3D 0;
+> > > +#if BITS_PER_LONG =3D=3D 64
+> > > +       if ((word & 0xffffffff) =3D=3D 0) {
+> > > +               num +=3D 32;
+> > > +               word >>=3D 32;
+> > > +       }
+> > > +#endif
+> > > +       if ((word & 0xffff) =3D=3D 0) {
+> > > +               num +=3D 16;
+> > > +               word >>=3D 16;
+> > > +       }
+> > > +       if ((word & 0xff) =3D=3D 0) {
+> > > +               num +=3D 8;
+> > > +               word >>=3D 8;
+> > > +       }
+> > > +       if ((word & 0xf) =3D=3D 0) {
+> > > +               num +=3D 4;
+> > > +               word >>=3D 4;
+> > > +       }
+> > > +       if ((word & 0x3) =3D=3D 0) {
+> > > +               num +=3D 2;
+> > > +               word >>=3D 2;
+> > > +       }
+> > > +       if ((word & 0x1) =3D=3D 0)
+> > > +               num +=3D 1;
+> > > +       return num;
+> > > +}
+> > > +
+> > > +/**
+> > > + * __ffs - find first set bit in a long word
+> > > + * @word: The word to search
+> > > + *
+> > > + * Undefined if no set bit exists, so code should check against 0 fi=
+rst.
+> > > + */
+> > > +#define __ffs(word)                            \
+> > > +       (__builtin_constant_p(word) ?           \
+> > > +        (unsigned long)__builtin_ctzl(word) :  \
+> > > +        variable__ffs(word))
+> > > +
+> [...]
+
+--BxCw0DgMJ3ArtR6u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZO7oxwAKCRB4tDGHoIJi
+0ozlAQDIl5mI7ovdiMJADRIobwVL0Wabj7o88Y28I+1sghdKfAEAx17o0kYzHC1p
+TWhYbjU4Mgdz6pbu5yyaDwqyyD44qw0=
+=MI7l
+-----END PGP SIGNATURE-----
+
+--BxCw0DgMJ3ArtR6u--
