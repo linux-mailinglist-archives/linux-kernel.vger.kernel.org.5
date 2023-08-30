@@ -2,135 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 713B078E173
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1645F78E14C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 23:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbjH3Vac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 17:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S241018AbjH3VRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 17:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239596AbjH3Vaa (ORCPT
+        with ESMTP id S231174AbjH3VRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:30:30 -0400
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8B91B2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:29:59 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2b974031aeaso5001221fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693430590; x=1694035390; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3GFJJ1bfzLehaaeYWZmxq+4HqJybFC3hIxDo2a5s3w=;
-        b=zVprf3BIjb9SfWQecVfjDKCqHPOmUUY/KcO8bzULbNNnx0FO+U+XRF3Zb8JmqvuW5o
-         07NeJ7vwXhIWPakcfx/gOt2DD8C5dft/n+6ywb0qWEZvK6GGiLjQhaRdaTgcynjZmTJ1
-         qU+tm2K3c4XnMFuZjbFsDy2bXIwsf6Kx0OzMTdoo5zPKeNTo5ERjoNA8Yn2l9Hg3ylQB
-         0sRCQCyeQwLaVNZy+nQ/nyfVGFA7ALYV5M1uF7lCdOUQ+WzvcJWmoc6bIxLB9Egp1IbA
-         vUhX5sM++CMaqK/ratxpji5XcEiG38xT8nP4iTE+fsejbVLlY5b18xTcFWISTgMlxccj
-         svBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693430590; x=1694035390;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3GFJJ1bfzLehaaeYWZmxq+4HqJybFC3hIxDo2a5s3w=;
-        b=iptcB7msWUb2bQOQovmAt6lx9hR0PirOUhAz1yU6KZZGB8cfLkQJqDTHWiijk/heU+
-         lCnPfUvENqLAHQNY04Rw48OckX+sycjKffC1deZGTXOqlWIccJzc5jTDttGG7aQdsjxV
-         suakgGIrmhtet4sJjg22D+9T+LOJeoaPftMfLENBXA74cNC7d81Q36KQY+gGNQvDOUSz
-         lWkLUsQIZJONCmPuXSju54Q/m16aBmbEGl3jrLHRZJsWgnK2AA5yOnO/0oHmfaAzf7ie
-         VGw6HHmcO7G2JWaBBIt16SJ1nWiWzGx/6ojcPG+F1bkBBnoBgsKJnj/ezIAbeIrbOV5b
-         Km2Q==
-X-Gm-Message-State: AOJu0YwEE2D0SP83JF1U4GD5YQPj85btsD3TGLYifXsTKpqvEBFAQtul
-        4UyBDePJAFECJ/q+8JzI+G65yDdyszqrjiec0+fEuA==
-X-Google-Smtp-Source: AGHT+IH4Z7UrMwAyZU+QqUGLEJoZhWtcSAx2hm7E8zMd7lpC2rhpEwQnFlI4FNEiuWAKjw6WBo1OoA==
-X-Received: by 2002:a2e:95d8:0:b0:2b9:e24d:21f6 with SMTP id y24-20020a2e95d8000000b002b9e24d21f6mr2624039ljh.20.1693427809203;
-        Wed, 30 Aug 2023 13:36:49 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id w8-20020a2e9988000000b002b9f4841913sm2742873lji.1.2023.08.30.13.36.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 13:36:48 -0700 (PDT)
-Message-ID: <672c7e89-1514-4b7a-a8b7-47f318ec188a@linaro.org>
-Date:   Wed, 30 Aug 2023 22:36:47 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] arm64: dts: qcom: sm8550: Mark APPS SMMU as
- dma-coherent
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
+        Wed, 30 Aug 2023 17:17:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6192CE8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 14:16:59 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EB4452D8;
+        Wed, 30 Aug 2023 22:36:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693427814;
+        bh=w4+pDGg4A1xcuvMXkOpdT0G3fedDIjjTTZZ9xWTuDTY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ue3LRcWcsrr2zVLKt4WKB29r46N/I73/p9ISbY3c1NiT+V0uS4dBtbShEWJd0utjr
+         KvuPl3MME623fVBQw1MLG1BOJU3zMn2xoLQKUtIa+Ux5R0OREtqQOZqW3L2bUpXoZQ
+         HbZjfBGRiXR5PT5/N/Q7bvDT0Njs/3fk7okNJTAw=
+Date:   Wed, 30 Aug 2023 23:38:25 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
- <20230830-topic-8550_dmac2-v1-5-49bb25239fb1@linaro.org>
- <CAA8EJpp2UbiknJ876ccCiSV2hDYdiGVRiQBdAEMM7e9z5OqK3A@mail.gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <CAA8EJpp2UbiknJ876ccCiSV2hDYdiGVRiQBdAEMM7e9z5OqK3A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Robert Foss <rfoss@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v5 2/3] drm/bridge: Drop conditionals around of_node
+ pointers
+Message-ID: <20230830203825.GP6477@pendragon.ideasonboard.com>
+References: <20230830170819.309269-1-biju.das.jz@bp.renesas.com>
+ <20230830170819.309269-3-biju.das.jz@bp.renesas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230830170819.309269-3-biju.das.jz@bp.renesas.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.2023 22:04, Dmitry Baryshkov wrote:
-> On Wed, 30 Aug 2023 at 21:32, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> Like on earlier flagship Qualcomm SoCs, the SMMU is dma-coherent.
->> Mark it as such.
-> 
-> On earlier SoCs we marked Adreno SMMU as dma-coherent, not the apps
-> one. Only on sm8250 you've added dma-coherent to the apps smmu.
-Also applies to 83450, perhaps I just haven't sent them yet or
-it's not been merged, don't remember
+Hi Biju,
 
-Konrad
+Thank you for the patch.
+
+In the commit message, s/pointers/pointer/ as you're only touching a
+single one.
+
+On Wed, Aug 30, 2023 at 06:08:18PM +0100, Biju Das wrote:
+> The commit c9e358dfc4a8 ("driver-core: remove conditionals around
+> devicetree pointers") supposed to remove conditionals around of_node
+> pointer, but it missed out drm/bridge.h. So drop #if conditionals by
+> adding struct device_node forward declaration.
+
+You can hardly blame commit c9e358dfc4a8 for forgetting drm_bridge, as
+that commit dates back from 2011 and the drm_bridge of_node field was
+added in 2015 :-)
+
+I would simply copy the rationale from the commit message of
+c9e358dfc4a8 and write something like
+
+--------
+Having conditional around the of_node pointer of the drm_bridge
+structure turns out to make driver code use ugly #ifdef blocks. Drop the
+conditionals to simplify drivers. While this slightly increases the size
+of struct drm_bridge on non-OF system, the number of bridges used today
+and foreseen tomorrow on those systems is very low, so this shouldn't be
+an issue.
+--------
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+
+> Suggested-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+
+> ---
+> v5:
+>  * Split from patch#2
+>  * Updated commit description
+>  * Added struct device_node forward declaration.
+> ---
+>  include/drm/drm_bridge.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index c339fc85fd07..843736627f60 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -32,6 +32,8 @@
+>  #include <drm/drm_mode_object.h>
+>  #include <drm/drm_modes.h>
+>  
+> +struct device_node;
+> +
+>  struct drm_bridge;
+>  struct drm_bridge_timings;
+>  struct drm_connector;
+> @@ -716,10 +718,8 @@ struct drm_bridge {
+>  	struct drm_encoder *encoder;
+>  	/** @chain_node: used to form a bridge chain */
+>  	struct list_head chain_node;
+> -#ifdef CONFIG_OF
+>  	/** @of_node: device node pointer to the bridge */
+>  	struct device_node *of_node;
+> -#endif
+>  	/** @list: to keep track of all added bridges */
+>  	struct list_head list;
+>  	/**
+
+-- 
+Regards,
+
+Laurent Pinchart
