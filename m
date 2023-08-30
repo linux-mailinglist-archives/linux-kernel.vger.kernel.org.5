@@ -2,185 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A80A78DBC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823D478DE5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238379AbjH3Shl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
+        id S240794AbjH3TBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243244AbjH3K3U (ORCPT
+        with ESMTP id S243248AbjH3KaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:29:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB487C0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:29:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693391356; x=1724927356;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=hlCHDwzO9I7pdjBo3fG2owpnDQOc0e1ih0Ar6il9ukk=;
-  b=J2P8hXaASNt/c2pMs/Z7t9fhu6AiHnGUyuo6ggSeobF9J1Ty1QYJK6Ou
-   ngECrETByX/JZhDQObR6D36AxmUNT9/Dc3hdmlai6ZXv4PmK2mxj7dtsw
-   lCys+QghjDtLNzWKCrlT2rQ0cTcWGgEwZv65JlV/hBOKSvOwVN5X4BLHH
-   4jV1wgxjUFXJR76h8iLU6GjIpkdoQ2VQ7iJLioYXg35QKAy3nJptPyII6
-   3+FMnLUkiwCnKWD4xzF/tG6O5o6s3uBfo0j6EV63w50niLTGotGuKw6CK
-   kuwLuJazUMuMClCURBcAulQwRJAzfAU14uMi7U1Up6LTzWt9sGEISNMYt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="355113897"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="355113897"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 03:29:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="768366973"
-X-IronPort-AV: E=Sophos;i="6.02,213,1688454000"; 
-   d="scan'208";a="768366973"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 30 Aug 2023 03:29:04 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbIRa-0009iO-2Q;
-        Wed, 30 Aug 2023 10:29:03 +0000
-Date:   Wed, 30 Aug 2023 18:28:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: kernel/fork.c:1962: warning: bad line:
-Message-ID: <202308301820.d4bxzPI0-lkp@intel.com>
+        Wed, 30 Aug 2023 06:30:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09FFC0;
+        Wed, 30 Aug 2023 03:30:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 483126236B;
+        Wed, 30 Aug 2023 10:30:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 835A5C433C8;
+        Wed, 30 Aug 2023 10:30:14 +0000 (UTC)
+Message-ID: <393ee19f-22a3-d309-11ba-51710015b518@xs4all.nl>
+Date:   Wed, 30 Aug 2023 12:30:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v8 0/8] Add StarFive Camera Subsystem driver
+Content-Language: en-US, nl
+To:     Jack Zhu <jack.zhu@starfivetech.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
+        changhuang.liang@starfivetech.com
+References: <20230824080109.89613-1-jack.zhu@starfivetech.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230824080109.89613-1-jack.zhu@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6c1b980a7e79e55e951b4b2c47eefebc75071209
-commit: 6ae930d9dbf2d093157be33428538c91966d8a9f pid: add pidfd_prepare()
-date:   5 months ago
-config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20230830/202308301820.d4bxzPI0-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230830/202308301820.d4bxzPI0-lkp@intel.com/reproduce)
+Hi Jack,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308301820.d4bxzPI0-lkp@intel.com/
+On 24/08/2023 10:01, Jack Zhu wrote:
+> Hi,
+> 
+> This series is the v8 series that attempts to support the Camera Subsystem
+> found on StarFive JH7110 SoC.
+> 
+> The following are the media graph for the device and the v4l2-compliance
+> output.
 
-All warnings (new ones prefixed by >>):
+Please note that this driver no longer compiles after v4l2-async changes were
+merged to our media_stage tree.
 
-   kernel/fork.c:1261: warning: Function parameter or member 'mm' not described in 'set_mm_exe_file'
-   kernel/fork.c:1261: warning: Function parameter or member 'new_exe_file' not described in 'set_mm_exe_file'
-   kernel/fork.c:1298: warning: Function parameter or member 'mm' not described in 'replace_mm_exe_file'
-   kernel/fork.c:1298: warning: Function parameter or member 'new_exe_file' not described in 'replace_mm_exe_file'
-   kernel/fork.c:1350: warning: Function parameter or member 'mm' not described in 'get_mm_exe_file'
-   kernel/fork.c:1369: warning: Function parameter or member 'task' not described in 'get_task_exe_file'
-   kernel/fork.c:1393: warning: Function parameter or member 'task' not described in 'get_task_mm'
->> kernel/fork.c:1962: warning: bad line: 
->> kernel/fork.c:1983: warning: Function parameter or member 'ret' not described in '__pidfd_prepare'
->> kernel/fork.c:1983: warning: Excess function parameter 'pidfd' description in '__pidfd_prepare'
->> kernel/fork.c:2032: warning: Function parameter or member 'ret' not described in 'pidfd_prepare'
->> kernel/fork.c:2032: warning: Excess function parameter 'pidfd' description in 'pidfd_prepare'
-   kernel/fork.c:3048: warning: expecting prototype for clone3(). Prototype was for sys_clone3() instead
+Make sure you base your v9 on top of the master branch of
+https://git.linuxtv.org/media_stage.git/
 
+Regards,
 
-vim +1962 kernel/fork.c
+	Hans
 
-  1953	
-  1954	/**
-  1955	 * __pidfd_prepare - allocate a new pidfd_file and reserve a pidfd
-  1956	 * @pid:   the struct pid for which to create a pidfd
-  1957	 * @flags: flags of the new @pidfd
-  1958	 * @pidfd: the pidfd to return
-  1959	 *
-  1960	 * Allocate a new file that stashes @pid and reserve a new pidfd number in the
-  1961	 * caller's file descriptor table. The pidfd is reserved but not installed yet.
-> 1962	
-  1963	 * The helper doesn't perform checks on @pid which makes it useful for pidfds
-  1964	 * created via CLONE_PIDFD where @pid has no task attached when the pidfd and
-  1965	 * pidfd file are prepared.
-  1966	 *
-  1967	 * If this function returns successfully the caller is responsible to either
-  1968	 * call fd_install() passing the returned pidfd and pidfd file as arguments in
-  1969	 * order to install the pidfd into its file descriptor table or they must use
-  1970	 * put_unused_fd() and fput() on the returned pidfd and pidfd file
-  1971	 * respectively.
-  1972	 *
-  1973	 * This function is useful when a pidfd must already be reserved but there
-  1974	 * might still be points of failure afterwards and the caller wants to ensure
-  1975	 * that no pidfd is leaked into its file descriptor table.
-  1976	 *
-  1977	 * Return: On success, a reserved pidfd is returned from the function and a new
-  1978	 *         pidfd file is returned in the last argument to the function. On
-  1979	 *         error, a negative error code is returned from the function and the
-  1980	 *         last argument remains unchanged.
-  1981	 */
-  1982	static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
-> 1983	{
-  1984		int pidfd;
-  1985		struct file *pidfd_file;
-  1986	
-  1987		if (flags & ~(O_NONBLOCK | O_RDWR | O_CLOEXEC))
-  1988			return -EINVAL;
-  1989	
-  1990		pidfd = get_unused_fd_flags(O_RDWR | O_CLOEXEC);
-  1991		if (pidfd < 0)
-  1992			return pidfd;
-  1993	
-  1994		pidfd_file = anon_inode_getfile("[pidfd]", &pidfd_fops, pid,
-  1995						flags | O_RDWR | O_CLOEXEC);
-  1996		if (IS_ERR(pidfd_file)) {
-  1997			put_unused_fd(pidfd);
-  1998			return PTR_ERR(pidfd_file);
-  1999		}
-  2000		get_pid(pid); /* held by pidfd_file now */
-  2001		*ret = pidfd_file;
-  2002		return pidfd;
-  2003	}
-  2004	
-  2005	/**
-  2006	 * pidfd_prepare - allocate a new pidfd_file and reserve a pidfd
-  2007	 * @pid:   the struct pid for which to create a pidfd
-  2008	 * @flags: flags of the new @pidfd
-  2009	 * @pidfd: the pidfd to return
-  2010	 *
-  2011	 * Allocate a new file that stashes @pid and reserve a new pidfd number in the
-  2012	 * caller's file descriptor table. The pidfd is reserved but not installed yet.
-  2013	 *
-  2014	 * The helper verifies that @pid is used as a thread group leader.
-  2015	 *
-  2016	 * If this function returns successfully the caller is responsible to either
-  2017	 * call fd_install() passing the returned pidfd and pidfd file as arguments in
-  2018	 * order to install the pidfd into its file descriptor table or they must use
-  2019	 * put_unused_fd() and fput() on the returned pidfd and pidfd file
-  2020	 * respectively.
-  2021	 *
-  2022	 * This function is useful when a pidfd must already be reserved but there
-  2023	 * might still be points of failure afterwards and the caller wants to ensure
-  2024	 * that no pidfd is leaked into its file descriptor table.
-  2025	 *
-  2026	 * Return: On success, a reserved pidfd is returned from the function and a new
-  2027	 *         pidfd file is returned in the last argument to the function. On
-  2028	 *         error, a negative error code is returned from the function and the
-  2029	 *         last argument remains unchanged.
-  2030	 */
-  2031	int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
-> 2032	{
-  2033		if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-  2034			return -EINVAL;
-  2035	
-  2036		return __pidfd_prepare(pid, flags, ret);
-  2037	}
-  2038	
+> 
+> ===========================================================================
+> [the media graph]:
+> 
+> digraph board {
+> 	rankdir=TB
+> 	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
+> 	n00000001:port1 -> n00000008 [style=dashed]
+> 	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
+> 	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
+> 	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
+> 	n0000000e:port1 -> n00000001:port0 [style=dashed]
+> 	n0000000e:port1 -> n00000004 [style=dashed]
+> 	n00000018 [label="{{} | imx219 6-0010\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
+> 	n00000018:port0 -> n0000000e:port0 [style=bold]
+> }
+> 
+> [the device topology]:
+> 
+> Media controller API version 6.5.0
+> 
+> Media device information
+> ------------------------
+> driver          starfive-camss
+> model           Starfive Camera Subsystem
+> serial          
+> bus info        platform:19840000.camss
+> hw revision     0x0
+> driver version  6.5.0
+> 
+> Device topology
+> - entity 1: stf_isp (2 pads, 2 links)
+>             type V4L2 subdev subtype Unknown flags 0
+>             device node name /dev/v4l-subdev0
+> 	pad0: Sink
+> 		[fmt:SRGGB10_1X10/1920x1080 field:none colorspace:srgb
+> 		 crop.bounds:(0,0)/1920x1080
+> 		 crop:(0,0)/1920x1080]
+> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
+> 	pad1: Source
+> 		[fmt:YUYV8_1_5X8/1920x1080 field:none colorspace:srgb
+> 		 crop.bounds:(0,0)/1920x1080
+> 		 crop:(0,0)/1920x1080]
+> 		-> "capture_yuv":0 []
+> 
+> - entity 4: capture_raw (1 pad, 1 link)
+>             type Node subtype V4L flags 0
+>             device node name /dev/video0
+> 	pad0: Sink
+> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
+> 
+> - entity 8: capture_yuv (1 pad, 1 link)
+>             type Node subtype V4L flags 0
+>             device node name /dev/video1
+> 	pad0: Sink
+> 		<- "stf_isp":1 []
+> 
+> - entity 14: cdns_csi2rx.19800000.csi-bridge (5 pads, 3 links)
+>              type V4L2 subdev subtype Unknown flags 0
+> 	pad0: Sink
+> 		<- "imx219 6-0010":0 [ENABLED,IMMUTABLE]
+> 	pad1: Source
+> 		-> "stf_isp":0 []
+> 		-> "capture_raw":0 []
+> 	pad2: Source
+> 	pad3: Source
+> 	pad4: Source
+> 
+> - entity 24: imx219 6-0010 (1 pad, 1 link)
+>              type V4L2 subdev subtype Sensor flags 0
+>              device node name /dev/v4l-subdev1
+> 	pad0: Source
+> 		[fmt:SRGGB10_1X10/3280x2464 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range
+> 		 crop.bounds:(8,8)/3280x2464
+> 		 crop:(8,8)/3280x2464]
+> 		-> "cdns_csi2rx.19800000.csi-bridge":0 [ENABLED,IMMUTABLE]
+> 
+> ===========================================================================
+> [the v4l2-compliance output]:
+> 
+> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
+> 
+> Compliance test for stf camss device /dev/video1:
+> 
+> Driver Info:
+> 	Driver name      : stf camss
+> 	Card type        : Starfive Camera Subsystem
+> 	Bus info         : platform:19840000.camss
+> 	Driver version   : 6.5.0
+> 	Capabilities     : 0x84200001
+> 		Video Capture
+> 		Streaming
+> 		Extended Pix Format
+> 		Device Capabilities
+> 	Device Caps      : 0x04200001
+> 		Video Capture
+> 		Streaming
+> 		Extended Pix Format
+> Media Driver Info:
+> 	Driver name      : starfive-camss
+> 	Model            : Starfive Camera Subsystem
+> 	Serial           : 
+> 	Bus info         : platform:19840000.camss
+> 	Media version    : 6.5.0
+> 	Hardware revision: 0x00000000 (0)
+> 	Driver version   : 6.5.0
+> Interface Info:
+> 	ID               : 0x0300000a
+> 	Type             : V4L Video
+> Entity Info:
+> 	ID               : 0x00000008 (8)
+> 	Name             : capture_yuv
+> 	Function         : V4L2 I/O
+> 	Pad 0x01000009   : 0: Sink
+> 	  Link 0x0200000c: from remote pad 0x1000003 of entity 'stf_isp' (Unknown Function (00004009)): Data, Enabled
+> 
+> Required ioctls:
+> 	test MC information (see 'Media Driver Info' above): OK
+> 	test VIDIOC_QUERYCAP: OK
+> 	test invalid ioctls: OK
+> 
+> Allow for multiple opens:
+> 	test second /dev/video1 open: OK
+> 	test VIDIOC_QUERYCAP: OK
+> 	test VIDIOC_G/S_PRIORITY: OK
+> 	test for unlimited opens: OK
+> 
+> Debug ioctls:
+> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
+> 
+> Input ioctls:
+> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
+> 
+> Output ioctls:
+> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
+> 
+> Input/Output configuration ioctls:
+> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+> 	test VIDIOC_G/S_EDID: OK (Not Supported)
+> 
+> Control ioctls:
+> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+> 	test VIDIOC_QUERYCTRL: OK (Not Supported)
+> 	test VIDIOC_G/S_CTRL: OK (Not Supported)
+> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+> 	Standard Controls: 0 Private Controls: 0
+> 
+> Format ioctls:
+> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+> 	test VIDIOC_G/S_PARM: OK (Not Supported)
+> 	test VIDIOC_G_FBUF: OK (Not Supported)
+> 	test VIDIOC_G_FMT: OK
+> 	test VIDIOC_TRY_FMT: OK
+> 	test VIDIOC_S_FMT: OK
+> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+> 	test Cropping: OK (Not Supported)
+> 	test Composing: OK (Not Supported)
+> 	test Scaling: OK
+> 
+> Codec ioctls:
+> 	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+> 	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+> 
+> Buffer ioctls:
+> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+> 	test VIDIOC_EXPBUF: OK
+> 	test Requests: OK (Not Supported)
+> 
+> Test input 0:
+> 
+> Streaming ioctls:
+> 	test read/write: OK (Not Supported)
+> 	test blocking wait: OK
+> 	test MMAP (no poll): OK                           
+> 	test MMAP (select): OK                            
+> 	test MMAP (epoll): OK                             
+> 	test USERPTR (no poll): OK (Not Supported)
+> 	test USERPTR (select): OK (Not Supported)
+> 	test DMABUF: Cannot test, specify --expbuf-device
+> 
+> Total for stf camss device /dev/video1: 53, Succeeded: 53, Failed: 0, Warnings: 0
+> 
+> ===========================================================================
+> 
+> Changes in v8:
+> - Rebased on v6.5-rc7.
+> - Dropped VIN subdev.
+> - Created two new video devices: capture_raw and capture_yuv, to replace
+>   the previous video devices.
+> - Dropped VB2_READ io methods.
+> - Recursively called .s_stream() on subdevs.
+> 
+> v7 link: https://lore.kernel.org/all/20230619112838.19797-1-jack.zhu@starfivetech.com/
+> 
+> Changes in v7:
+> - HAS_DMA is used instead of DMA_CMA in Kconfig.
+> - Dropped some non-essential member variables.
+> - Used v4l2_async_nf_add_fwnode_remote() to simplify the relevant code.
+> - Modified some Local variable types in the function.
+> - Used v4l2_create_fwnode_links_to_pad() to simplify the relevant code.
+> - Added error handling for clk_prepare_enable().
+> - Simplified stfcamss_format_info struct and modified the relevant code.
+> - Dropped enum_input, g_input and s_input.
+> - Unified v4l2_ioctl_ops struct.
+> - Used v4l2_fh_open()/vb2_fop_release to replace deprecated APIs.
+> - Added a camss directory under the starfive directory and modified the
+>   patch title.
+> 
+> v6 link: https://lore.kernel.org/all/20230525083202.67933-1-jack.zhu@starfivetech.com/
+> 
+> Changes in v6:
+> - Added 'bus-type' in bindings example.
+> - Corrected spelling errors.
+> - As reviewed by Bryan, used 'nclks' and 'nrsts' variables.
+> - Added lccf config for ISP.
+> 
+> v5 link: https://lore.kernel.org/all/20230512102844.51084-1-jack.zhu@starfivetech.com/
+> 
+> Changes in v5:
+> - Rebased on v6.4-rc1.
+> - Added new patch.
+> - Modified ISP driver.
+> 
+> v4 link: https://lore.kernel.org/all/20230413035541.62129-1-jack.zhu@starfivetech.com/
+> 
+> Previous cover letter from v4:
+> 
+> This patch series adds support for the StarFive Camera Subsystem
+> found on StarFive JH7110 SoC.
+> 
+> The driver implements V4L2, Media controller and V4L2 subdev interfaces.
+> Camera sensor using V4L2 subdev interface in the kernel is supported.
+> 
+> The driver is tested on VisionFive V2 board with IMX219 camera sensor.
+> GStreamer 1.18.5 with v4l2src plugin is supported.
+> 
+> Previous version link, missing v1 version:
+> 
+>   v3: https://lore.kernel.org/all/20230331121826.96973-1-jack.zhu@starfivetech.com/
+>   v2: https://lore.kernel.org/all/20230310120553.60586-1-jack.zhu@starfivetech.com/
+> 
+> Jack Zhu (8):
+>   media: dt-bindings: Add JH7110 Camera Subsystem
+>   media: admin-guide: Add starfive_camss.rst for Starfive Camera
+>     Subsystem
+>   media: staging: media: starfive: camss: Add core driver
+>   media: staging: media: starfive: camss: Add video driver
+>   media: staging: media: starfive: camss: Add ISP driver
+>   media: staging: media: starfive: camss: Add capture driver
+>   media: staging: media: starfive: camss: Add interrupt handling
+>   media: staging: media: starfive: camss: Register devices
+> 
+>  .../admin-guide/media/starfive_camss.rst      |  72 +++
+>  .../media/starfive_camss_graph.dot            |  12 +
+>  .../admin-guide/media/v4l-drivers.rst         |   1 +
+>  .../bindings/media/starfive,jh7110-camss.yaml | 180 ++++++
+>  MAINTAINERS                                   |   9 +
+>  drivers/staging/media/Kconfig                 |   2 +
+>  drivers/staging/media/Makefile                |   1 +
+>  drivers/staging/media/starfive/Kconfig        |   5 +
+>  drivers/staging/media/starfive/Makefile       |   2 +
+>  drivers/staging/media/starfive/camss/Kconfig  |  17 +
+>  drivers/staging/media/starfive/camss/Makefile |  13 +
+>  .../staging/media/starfive/camss/stf_camss.c  | 432 +++++++++++++
+>  .../staging/media/starfive/camss/stf_camss.h  | 134 ++++
+>  .../media/starfive/camss/stf_capture.c        | 603 ++++++++++++++++++
+>  .../media/starfive/camss/stf_capture.h        |  87 +++
+>  .../staging/media/starfive/camss/stf_isp.c    | 407 ++++++++++++
+>  .../staging/media/starfive/camss/stf_isp.h    | 428 +++++++++++++
+>  .../media/starfive/camss/stf_isp_hw_ops.c     | 445 +++++++++++++
+>  .../staging/media/starfive/camss/stf_video.c  | 557 ++++++++++++++++
+>  .../staging/media/starfive/camss/stf_video.h  | 100 +++
+>  20 files changed, 3507 insertions(+)
+>  create mode 100644 Documentation/admin-guide/media/starfive_camss.rst
+>  create mode 100644 Documentation/admin-guide/media/starfive_camss_graph.dot
+>  create mode 100644 Documentation/devicetree/bindings/media/starfive,jh7110-camss.yaml
+>  create mode 100644 drivers/staging/media/starfive/Kconfig
+>  create mode 100644 drivers/staging/media/starfive/Makefile
+>  create mode 100644 drivers/staging/media/starfive/camss/Kconfig
+>  create mode 100644 drivers/staging/media/starfive/camss/Makefile
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_camss.c
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_camss.h
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_capture.c
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_capture.h
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_isp.c
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_isp.h
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_isp_hw_ops.c
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_video.c
+>  create mode 100644 drivers/staging/media/starfive/camss/stf_video.h
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
