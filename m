@@ -2,196 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF5678DF81
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203F578DFA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 22:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244514AbjH3TZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        id S244836AbjH3TP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242312AbjH3H7l (ORCPT
+        with ESMTP id S242325AbjH3IEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:59:41 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFA7A6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:59:37 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-401da71b7c5so11033885e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:59:37 -0700 (PDT)
+        Wed, 30 Aug 2023 04:04:47 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12458F4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:04:43 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id d75a77b69052e-41206fd9717so34554071cf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 01:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693382376; x=1693987176; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pMMQyokSBoYi+7NtlQGYb+yVajJvpYPKJBULBUddiXM=;
-        b=3uiKl5PfYWRpzSYKHy3QPtVLLKXSmsWonpdImDI3XL1mQRj2Q2Fh7ujqIAojBCT8Vw
-         Tx62FY1x8dkztef++CPwmDFCN9ByDs7sP9igs+5zuYGzQ0HqlK3dC3G/iDtl95h0jMyW
-         p2nB3BUlEt5g1c9sMYae0Q0p05J8SZbJf8rAqYEJM1uhCp1TToSbTSPMqZfZR2oSG2ls
-         XtAGUvaBTm5NIQUm54Q/HMY7W7yjnLfVPZC1lf8ggSLCmK37XMVUnBnRlomp1S8o08M3
-         IYxVgda0Fm7yB+BCFzTU/KFiX4NFf6vvk7pBgdXXFdj3Tll9rK46YaFyg5WK7wmYxK6h
-         FkBw==
+        d=gmail.com; s=20221208; t=1693382682; x=1693987482; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OGuPs2HAW5Kc9EAlBZmlCe2PoQii+LuASoE3r9n3wKk=;
+        b=aKkNAZdYC1OfVdwXudx785oPKLI8x5EHiscSX9ZlJazuXu7Q5JhxpVFaCORxlSB5ak
+         uVsKupI5bIdOfGRNkB/bxdGsAqoZ3YwQRiYXaL4y86o/qHH9yn9qPZDzYvEWU3W8IOFA
+         Hp2rOmPU4pZb+4RHnW85pWsJ7lGV/+LJQWpjMMINqZXDfSLuOR5rCyLFYYSaZq+eBN5U
+         rIcPfDHEt9ZK7vZhi829yPV3shwqTXtk8hgH+a6zb+/bAm17GpOwoER4CHGRrK5p98Sr
+         s0DHRaHOjkAxXSDBmuPm8QW/i3Yq8ukn5WINGv/zSwnupreZcztdCD0/QV6WYsUZ/DuT
+         JrMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693382376; x=1693987176;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pMMQyokSBoYi+7NtlQGYb+yVajJvpYPKJBULBUddiXM=;
-        b=QhIYAZl6iKQ6sv9pCNe7hP7CJxhWUZv+NE7dSZCllfuFcVl9JXOGU+zAbGpgmsGHL/
-         KbM+CpRs67TVUoQ1RRprKubUDcHxGW6tSt7+/G5V0ar4+xgmUS5Yfzk03ahDfSsDSAtM
-         c4Dq7cJuSXEEWXKHgyriPYUxK7KZQkzGh2O9nOh+PFhk9ncaL7gFYuvxpqBBCv6jy34/
-         LGd/+AfF/i1f/tgfFxeuIDaO4+IA+g4uHeBwrMEPGt70n6QokznSmR44JbbqjfzAvkpy
-         Fq3x+ebex7w9HgEWvuz8wlmjzxaZRwpsOmT3681Aa8wHm4+B+i28Zjxv4ECJk8VW60B/
-         7+DQ==
-X-Gm-Message-State: AOJu0YzYi32CUkd6UW2ThCwwAK1c9XDn/jOkIn8RNcr78GZQZz/PWxlC
-        b27wGH41Y0k9Ne52jHSRDx6GNQ==
-X-Google-Smtp-Source: AGHT+IEjcIizQH3HgpknpZ6G1AFB4laTKJh2Uyrdj3Zs0MAtHyfmRBdqpsjNPzBAd35S2HBtWY8ifA==
-X-Received: by 2002:a05:600c:2256:b0:400:6bee:f4fe with SMTP id a22-20020a05600c225600b004006beef4femr1225816wmm.21.1693382375870;
-        Wed, 30 Aug 2023 00:59:35 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:9c:201:3380:af04:1905:46a])
-        by smtp.gmail.com with ESMTPSA id z6-20020a5d4406000000b003143c6e09ccsm15889160wrq.16.2023.08.30.00.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 00:59:35 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 09:59:30 +0200
-From:   Marco Elver <elver@google.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     syzbot <syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com>,
-        davem@davemloft.net, edumazet@google.com, ericvh@kernel.org,
-        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux_oss@crudebyte.com,
-        lucho@ionkov.net, netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
-Subject: Re: [syzbot] [net?] [v9fs?] KCSAN: data-race in p9_fd_create /
- p9_fd_create (2)
-Message-ID: <ZO724hKaHLCrSOa/@elver.google.com>
-References: <000000000000d26ff606040c9719@google.com>
- <ZO3PFO_OpNfBW7bd@codewreck.org>
- <ZO38mqkS0TYUlpFp@elver.google.com>
- <ZO55o4lE2rKO5AlI@codewreck.org>
+        d=1e100.net; s=20221208; t=1693382682; x=1693987482;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OGuPs2HAW5Kc9EAlBZmlCe2PoQii+LuASoE3r9n3wKk=;
+        b=I/UDqIqVoqyTUhHL0UzkZk70jnu+PDogEujdiuhDwOD4D7IVyfvi8PuymqGV4+2a2V
+         nr319uHyopN3bX+yZeWTocZlj4Ccc6VplfTP3GsxINKFLCVBt1rmJeSbn9FT97oZxAK+
+         PiOIUxEAFa71vbWg3KbnWjGSK2rnPn1EB6Q37ms7d6RoZN/ZWDANlqsrlh+G89L5+9J1
+         86pMQYn/gLBiM7fSFpDUPl7dHvYvBDu0m2bki93pVjJu/s+puc94hrcYvBo3czmZonmI
+         Hdn3rYSjNWt6Jpyd1ShGLgZSfa9Yb7Q8LkRBwd6v6o3oNzkDTI93athXyQyIsmR+Fpxv
+         HpRg==
+X-Gm-Message-State: AOJu0Yx3UVlC/O1PjGISqL372z2ej4s4NO1qgCICyOsEtZ7UtHu7+TVi
+        tMfLa4hADM9TFxMTUf73xvLO08hhsoT53+cdeGo=
+X-Google-Smtp-Source: AGHT+IFzV/CljXJiMvYU5b/Gde5vuMUGi8qOH8TBj+ynDOPOZfbb0I1dEuKYjUEbLiLstXL1GAcYXRHN8MM+isaTBug=
+X-Received: by 2002:ac8:59d1:0:b0:403:a338:2aa0 with SMTP id
+ f17-20020ac859d1000000b00403a3382aa0mr1874229qtf.45.1693382682060; Wed, 30
+ Aug 2023 01:04:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZO55o4lE2rKO5AlI@codewreck.org>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Sender: daliamog17@gmail.com
+Received: by 2002:a05:622a:1354:b0:405:5648:1b66 with HTTP; Wed, 30 Aug 2023
+ 01:04:41 -0700 (PDT)
+From:   "Mrs. Lenny Tatiana" <mrslenytati44@gmail.com>
+Date:   Wed, 30 Aug 2023 10:04:41 +0200
+X-Google-Sender-Auth: dbGE1qNzTSmmAd6bad9gWTunpp4
+Message-ID: <CAB1EUCdQ77U9td01hK1y7hdOaFQFJ-yXN645ESuLZcs-APY+8w@mail.gmail.com>
+Subject: Greetings dear friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.4 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,HK_SCAM,LOTS_OF_MONEY,
+        MONEY_FRAUD_8,MONEY_NOHTML,RCVD_IN_DNSWL_BLOCKED,RISK_FREE,
+        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,UNDISC_MONEY,URG_BIZ
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [2607:f8b0:4864:20:0:0:0:844 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [daliamog17[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [daliamog17[at]gmail.com]
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.6 URG_BIZ Contains urgent matter
+        *  0.2 HK_SCAM No description available.
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.0 MONEY_NOHTML Lots of money in plain text
+        *  0.0 RISK_FREE No risk!
+        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
+        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
+        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 08:05AM +0900, Dominique Martinet wrote:
-> Marco Elver wrote on Tue, Aug 29, 2023 at 04:11:38PM +0200:
-> > On Tue, Aug 29, 2023 at 07:57PM +0900, Dominique Martinet wrote:
-> > [...]
-> > > Yes well that doesn't seem too hard to hit, both threads are just
-> > > setting O_NONBLOCK to the same fd in parallel (0x800 is 04000,
-> > > O_NONBLOCK)
-> > > 
-> > > I'm not quite sure why that'd be a problem; and I'm also pretty sure
-> > > that wouldn't work anyway (9p has no muxing or anything that'd allow
-> > > sharing the same fd between multiple mounts)
-> > > 
-> > > Can this be flagged "don't care" ?
-> > 
-> > If it's an intentional data race, it could be marked data_race() [1].
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
-> 
-> Thanks!
-> 
-> > However, staring at this code for a bit, I wonder why the f_flags are
-> > set on open, and not on initialization somewhere...
-> 
-> This open is during the mount initialization (mount/p9_client_create,
-> full path in the stack); there's no more initialization-ish code we
-> have.
-> The problem here is that we allow to pass any old arbitrary fd, so the
-> user can open their fd how they want and abuse mount to use it on
-> multiple mounts, even if that has no way of working (as I mentionned,
-> there's no control flow at all -- you'll create two completely separate
-> client state machines that'll both try to read and/or write (separate
-> fds) on the same fd, and it'll all get jumbled up.
-> > 
-> > Anyway, a patch like the below would document that the data race is
-> > intended and we assume that there is no way (famous last words) the
-> > compiler or the CPU can mess it up (and KCSAN won't report it again).
-> 
-> That's good enough for me as my position really is just "don't do
-> that"... Would that also protect from syzcaller sending the fd to mount
-> on one side, and calling fcntl(F_SETFL) on the side?
+Greetings dear friend,
 
-No, data_race() is only for marking intentional data races. In a
-production kernel, it's a no-op (generated code is identical). In a
-KCSAN kernel, it will make the tool not report such data races.
+Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
+CHRIST the giver of every good thing. Good day and compliments of the
+seasons, i know this letter will definitely come to you as a huge
+surprise, but I implore you to take the time to go through it
+carefully as the decision you make will go off a long way to determine
+my future and continued existence. I am Mrs. Lenny Tatiana aging widow
+of
+57 years old suffering from long time illness.I have some funds I
+inherited from my late husband, the sum of (19.2Million Dollars) and I
+needed a very honest and God fearing who can withdraw this money then
+use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
+CHARITY WORKS. I found your email address from the internet after
+honest prayers to the LORD to bring me a helper and i decided to
+contact you if you may be willing and interested to handle these trust
+funds in good faith before anything happens to me.
 
-syzkaller doesn't care, and can still produce such programs (so that
-other bug detectors can still see an issue if there is one somewhere).
+I accept this decision because I do not have any child who will
+inherit this money after I die. I want your urgent reply to me so that
+I will give you the deposit receipt which the SECURITY COMPANY issued
+to me as next of kin for immediate transfer of the money to your
+account in your country, to start the good work of God, I want you to
+use the 25/percent of the total amount to help yourself in doing the
+project. I am desperately in keen need of assistance and I have
+summoned up courage to contact you for this task, you must not fail me
+and the millions of the poor people in our todays WORLD. This is no
+stolen money and there are no dangers involved,100% RISK FREE with
+full legal proof. Please if you would be able to use the funds for the
+Charity works kindly let me know immediately.I will appreciate your
+utmost confidentiality and trust in this matter to accomplish my heart
+desire, as I don't want anything that will jeopardize my last wish.
 
-> At this rate we might as well just take the file's f_lock as setfl does,
-> but perhaps there's a way to steal the fd from userspace somehow?
-> 
-> It's not just "don't use this fd for another mount", it really is "don't
-> use this fd anymore while it is used by a mount".
-> 
-> This is made complicated that we only want to steal half of the fd, you
-> could imagine a weird setup like this:
-> 
->  ┌────────────────────────────────────┐         ┌─────────────────┐
->  │                                    │         │                 │
->  │                                    │         │  kernel client  │
->  │   fd3 tcp to server                │         │                 │
->  │       write end  ◄─────────────────┼─────────┤                 │
->  │                                    │         │                 │
->  │       read end   ──┐               │         │                 │
->  │                    │               │         │                 │
->  │   fd4 pipeA        │ MITMing...    │         │                 │
->  │                    │               │         │                 │
->  │       write end  ◄─┘               │         │                 │
->  │                                    │         │                 │
->  │   fd5 pipeB                        │         │                 │
->  │                                    │         │                 │
->  │       read end  ───────────────────┼────────►│                 │
->  │                                    │         │                 │
->  │                                    │         │                 │
->  └────────────────────────────────────┘         └─────────────────┘
-> 
-> I'm not sure we actually want to support something like that, but it's
-> currently possible and making mount act like close() on the fd would
-> break this... :|
-> 
-> So, yeah, well; this is one of these "please don't do this" that
-> syzcaller has no way of knowing about; it's good to test (please don't
-> do this has no security guarantee so the kernel shouldn't blow up!),
-> but if the only fallout is breakage then yeah data_race() is fine.
+Please kindly respond quickly for further details.
 
-Right, if the only breakage is some corruption of the particular file in
-user space, and the kernel is still in a good state, then I think this
-is fine. However, if the kernel can potentially crash or corrupt
-completely unrelated data, it may be a problem.
-
-> Compilers and/or CPU might be able to blow this out of proportion, but
-> hopefully they won't go around modifying another unrelated value in
-> memory somewhere, and we do fdget so it shouldn't turn into a UAF, so I
-> guess it's fine?...
-
-No, the kernel strongly assumes "locally undefined behaviour" for data
-races in the worst case, i.e. some garbage value being written into
-f_flags. To guard against that we'd have to use READ_ONCE/WRITE_ONCE.
-
-But given the best-effort nature of this based on "don't do this" i.e.
-not really supported, data_race() is probably more than enough. You may
-want to amend the patch I sent to clarify that (I wasn't aware of it).
-
-> Just taking f_lock here won't solve anything and
-> might give the impression we support concurrent uses.
-> 
-> 
-> Sorry for rambling, and thanks for the patch; I'm not sure if Eric has
-> anything planned for next cycle but either of us can take it and call it
-> a day.
-
-Thanks for the explanation!
+best Regards,
+Mrs. Lenny Tatiana
