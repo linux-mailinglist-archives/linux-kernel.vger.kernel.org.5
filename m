@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9D278D1C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFB878D1C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 03:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241590AbjH3BhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Aug 2023 21:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
+        id S241595AbjH3BhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Aug 2023 21:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241582AbjH3BhF (ORCPT
+        with ESMTP id S241581AbjH3BhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Aug 2023 21:37:05 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5BBCCF;
-        Tue, 29 Aug 2023 18:37:02 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rb6N73cMFz4f4XWd;
-        Wed, 30 Aug 2023 09:36:55 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6k1ne5kuWmhBw--.59943S3;
-        Wed, 30 Aug 2023 09:36:55 +0800 (CST)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-To:     Dragan Stancevic <dragan@stancevic.com>,
-        Yu Kuai <yukuai1@huaweicloud.com>, song@kernel.org
-Cc:     buczek@molgen.mpg.de, guoqing.jiang@linux.dev,
-        it+raid@molgen.mpg.de, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, msmith626@gmail.com,
-        "yangerkun@huawei.com" <yangerkun@huawei.com>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <CAPhsuW6R11y6vETeZ4vmFGmV6DRrj2gwhp1-Nm+csvtHb2nQYg@mail.gmail.com>
- <20230822211627.1389410-1-dragan@stancevic.com>
- <ab757e2b-3ff0-33d9-d30c-61669b738664@huaweicloud.com>
- <2061b123-6332-1456-e7c3-b713752527fb@stancevic.com>
- <07d5c7c2-c444-8747-ed6d-ca24231decd8@huaweicloud.com>
- <cf765117-7270-1b98-7e82-82a1ca1daa2a@stancevic.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <0d79d1f9-00e8-93be-3c7c-244030521cd7@huaweicloud.com>
-Date:   Wed, 30 Aug 2023 09:36:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E7DCC5;
+        Tue, 29 Aug 2023 18:37:00 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-76c64da0e46so173831639f.0;
+        Tue, 29 Aug 2023 18:37:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693359420; x=1693964220; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YcVzJ1hbhq9Ov/W8Ofp/tN+KBi3VQ+ExZZ65FircAyo=;
+        b=G9571n01fbFDw1loYE6OJdVeeX0G7mqKNuwX+KdUfb447I3RxTdJURh5QEWRqTJ92q
+         tf8NejmUmgnKgyGC9nlp9VCfgSm9s8wDq11KrUC8PGnT76JhtZEsbF+hg2Yn++TvNtjK
+         pXXVu7jEYrSnph6IPqaqn2S36diKIat5kJm98pBMFdKJ+5nz/lzsCGYEKftTnET++rN8
+         44XY4cjN8pzQZeY0agWxvQUqvs1K/HxD4oVbdzEagTeY1JpiUVAPcWdyOrC0F1sn3ESx
+         8dLzwGTxoTbfryaIfAd6creENWYnOSZErWS3zZkcDnwzoMukkW+wcXrDxGJbkqtRhPSP
+         zGHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693359420; x=1693964220;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YcVzJ1hbhq9Ov/W8Ofp/tN+KBi3VQ+ExZZ65FircAyo=;
+        b=AAw66sVdTPm0wcFKPpFW5v0EYA8RDyVS7PiJBrgNU5Vxpgx4whrG0V7fxo3F82j7RT
+         GqyvqfzxMZScDAH/yjDyQmThpc6Xaky/a1ZiUjksAPaibIaFIUXAAEWCCkJxtfPYfIXA
+         at31M6swYGPI94hGGv/TMufKAtMfav46M/RMluHEhE3WFp0wY8xPbUBOWw80kx2DHMeB
+         KOvLC0Li/3GQyfQRLZaVaoPsQzK2rn3cEq76+dVXgladIJaShxQHWGjjw/KW4IPNH7wt
+         odOera0qCvx+iB+QWuOjhkiYNQuQI2rwZ3GZ45bRP4op8qJ/WBflJ/oR/Tee5MO0dzpD
+         lOMw==
+X-Gm-Message-State: AOJu0YzgI9Pk0fVbVb7dvlmlw8gS92JxFS8Yzgld/B/bhCmuuQU151HU
+        SZMyEMnjoHdebv8WrlqiZpY=
+X-Google-Smtp-Source: AGHT+IFnKU9/P7PLg9OvuUJYiT+ycpH/CeV4Mv42jUxWMGaUeno1rEjvBEcEwsnP1QGLNTKQLXm95A==
+X-Received: by 2002:a6b:d213:0:b0:792:70c2:9db1 with SMTP id q19-20020a6bd213000000b0079270c29db1mr889185iob.1.1693359419893;
+        Tue, 29 Aug 2023 18:36:59 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z21-20020a6b0a15000000b0079187c8524asm3556839ioi.3.2023.08.29.18.36.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 18:36:59 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Aug 2023 18:36:57 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Huibin Shi <henrys@silicom-usa.com>
+Cc:     Henry Shi <henryshi2018@gmail.com>,
+        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
+        Wen Wang <wenw@silicom-usa.com>
+Subject: Re: [PATCH v5] Add Silicom Platform Driver
+Message-ID: <b47b79c7-1ddc-4336-8bbc-f524872198ca@roeck-us.net>
+References: <20230828212622.32485-1-henryshi2018@gmail.com>
+ <15039461-6099-40a1-952f-fc31d65a0d3f@roeck-us.net>
+ <PA4PR04MB92225C42CC763DCBA622C6579AE7A@PA4PR04MB9222.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <cf765117-7270-1b98-7e82-82a1ca1daa2a@stancevic.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXp6k1ne5kuWmhBw--.59943S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFyxXryfCr4rZF1kAFykAFb_yoWfuFX_ur
-        45KFyxKw13J3Wjya1UGFnavFs3KFy7W34kJrW0kFsF9r1fZan3CFsagr98Ca48Kan5Zwsx
-        ta98Jw4DXr1YyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PA4PR04MB92225C42CC763DCBA622C6579AE7A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,35 +90,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-在 2023/08/29 4:32, Dragan Stancevic 写道:
-
-> Just a followup on 6.1 testing. I tried reproducing this problem for 5 
-> days with 6.1.42 kernel without your patches and I was not able to 
-> reproduce it.
+On Tue, Aug 29, 2023 at 10:17:47PM +0000, Huibin Shi wrote:
+> Hi Guenter,
 > 
-> It seems that 6.1 has some other code that prevents this from happening.
+> Appreciate your feedback. Please see my comments below.
 > 
-
-I see that there are lots of patches for raid456 between 5.10 and 6.1,
-however, I remember that I used to reporduce the deadlock after 6.1, and
-it's true it's not easy to reporduce, see below:
-
-https://lore.kernel.org/linux-raid/e9067438-d713-f5f3-0d3d-9e6b0e9efa0e@huaweicloud.com/
-
-My guess is that 6.1 is harder to reporduce than 5.10 due to some
-changes inside raid456.
-
-By the way, raid10 had a similiar deadlock, and can be fixed the same
-way, so it make sense to backport these patches.
-
-https://lore.kernel.org/r/20230529132037.2124527-5-yukuai1@huaweicloud.com
-
-Thanks,
-Kuai
-
-
-> On 5.10 I can reproduce it within minutes to an hour.
+> Thanks
+> Henry
 > 
+> -----Original Message-----
+> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
+> Sent: Monday, August 28, 2023 8:41 PM
+> To: Henry Shi <henryshi2018@gmail.com>
+> Cc: hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org; hb_shi2003@yahoo.com; Huibin Shi <henrys@silicom-usa.com>; Wen Wang <wenw@silicom-usa.com>
+> Subject: Re: [PATCH v5] Add Silicom Platform Driver
+> 
+> Caution: This is an external email. Please take care when clicking links or opening attachments.
+> 
+> 
+> On Mon, Aug 28, 2023 at 05:26:22PM -0400, Henry Shi wrote:
+> > The Silicom platform (silicom-platform) Linux driver for Swisscom 
+> > Business Box (Swisscom BB) as well as Cordoba family products is a 
+> > software solution designed to facilitate the efficient management and 
+> > control of devices through the integration of various Linux 
+> > frameworks. This platform driver provides seamless support for device 
+> > management via the Linux LED framework, GPIO framework, Hardware 
+> > Monitoring (HWMON), and device attributes. The Silicom platform 
+> > driver's compatibility with these Linux frameworks allows applications 
+> > to access and control Cordoba family devices using existing software 
+> > that is compatible with these frameworks. This compatibility 
+> > simplifies the development process, reduces dependencies on 
+> > proprietary solutions, and promotes interoperability with other 
+> > Linux-based systems and software.
+> >
+> > Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+> 
+> Again, my feedback is only for hwmon code.
+> 
+> [ ... ]
+> 
+> > +
+> > +static int silicom_fan_control_read(struct device *dev,
+> > +                                                                     enum hwmon_sensor_types type,
+> > +                                                                     u32 attr, int channel,
+> > +                                                                     
+> > +long *val)
+> 
+> Excessively long continuation lines.
+> That seeme to be the case for almost all continuation lines, except where it is too short. I'd suggest to run the patch through checkpatch --strict and fix what it reports.
+> 
+> total: 0 errors, 9 warnings, 18 checks, 1077 lines checked
+> 
+> is really a bit much.
+> 
+> Henry: OK, I will fix those warnings.
+> 
+> [ ... ]
+> 
+> > +
+> > +     hwmon_dev = devm_hwmon_device_register_with_info(&device->dev, name, NULL,
+> > +                             &silicom_chip_info, NULL);
+> 
+> Did you try to compile this with CONFIG_HWMON=n or with CONFIG_HWMON=m and SILICOM_PLATFORM=y ?
+> 
+> Henry: Great question. I did not try that before. When I force "CONFIG_HWMON=m and SILICOM_PLATFORM=y" and compile kernel, the build failed with message "silicom-platform.c:(.init.text+0x8ff5b): undefined reference to `devm_hwmon_device_register_with_info'". I tried following change in drivers/platform/x86/Kconfig:
+> 
+> config SILICOM_PLATFORM
+> 	tristate "Silicom Edge Networking device support"
+> 	depends on DMI
+> 	select LEDS_CLASS_MULTICOLOR
+> 	select GPIOLIB
+> 	select HWMON  ----> added 
 
+No, that is wrong. It needs to be "depends on HWMON",
+or the hwmon code needs to be conditional and the dependency
+must be something like "depends on HWMON || HWMON=n".
+
+Guenter
