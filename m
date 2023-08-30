@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FA178E283
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385ED78E2DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 00:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242302AbjH3Wru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 18:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
+        id S239942AbjH3WyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 18:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241389AbjH3Wrt (ORCPT
+        with ESMTP id S230166AbjH3WyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:47:49 -0400
+        Wed, 30 Aug 2023 18:54:23 -0400
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEACCF1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:47:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3430CE75
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 15:53:56 -0700 (PDT)
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd341VwFzgk;
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rbd344GpXzjJ;
         Wed, 30 Aug 2023 23:38:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1693431536; bh=3j5YwA8sQZLPwKcy65ogiVFJLRLsV0GO/Ut6EzwlnMQ=;
+        t=1693431536; bh=hkfhe/JYkH9cOp8sfK6wVmut5qBxlqVOGzXU+gWw05A=;
         h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=BKvxto3e/ZjAZxKx4FTEFDuoMlZOIAIUrlU9OI0wCEyCgbcE9chjRj2nveFserEAo
-         rm3+XV8qEhLdOTCgx4ScIXHWLL9xLoNLti0wkEni52XWYyQ8RmHk0NVoQ48n/rWfz1
-         +AbnSxOnHiYJmFzpA9UoyW1nV+J+6JetCoblaboPTHtGzAparZBv2cPHCv55+VknNy
-         /P4No4b4/C7a4izgDQvUJ39+n1X+Jd3NSE42h5kbq4moLjqpMZ6NSJXeAYSmo5u6IM
-         Omo2lGAQA9YgnHqep1ZkNwxnk+2rNcYtxpnofc2bfANfSMn5Sk5gdOFsfsnXILeYCK
-         +WilOrOpnSTsg==
+        b=o9AhdExoWOHdimJ4LTYTZDhDpdYGM+By+cxe4w8a9N+N91u6n1y/nn72qhs/3raN8
+         QBcxcCrfRQEfABvEcukG27T5ChutxzYYsi+fUf3FJIbfj8iNnp7UOKQx7e75bRBY7Z
+         RifXQz78LnuhJivb0pBiJ3Gn5C9QVGQ/ZwtHc7jSMb1bXS9PHAcwnky6v0zrkgzM86
+         UCBM2xNR8aQDV+OaJfik8rAMxloiH30KiSpMX7lH53csLdgwTueMct+Uh55R1iSUK2
+         URkdGKGmhVIr0eXfKqR0BJzCUgwI5XnhOnA+XvKp5ORCuCamN57yW147swetuIUkZs
+         CKrnucwUBMmBQ==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.103.8 at mail
 Date:   Wed, 30 Aug 2023 23:38:56 +0200
-Message-Id: <c2551b3da420ab9b69f80ec7a0d646ff69bd0a03.1693431144.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <67b78825385762957b121db2c5d71b119517a7ce.1693431144.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 5/9] regulator/core: regulator_ena_gpio_ctrl: pull in ena_gpio
- state handling
+Subject: [PATCH 6/9] regulator/core: remove regulator_init callback
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -51,82 +50,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Deduplicate `ena_gpio_state` handling by pulling it into
-regulator_ena_gpio_ctrl().
+There are no in-tree users. The only usage went away in 2019 in commit
+8c44e448583c ("regulator: stpmic1: Simplify regulators registration").
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 30 +++++++++++-------------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
+ include/linux/regulator/machine.h | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 63d16fe59e84..c8d1b12ee43b 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -2601,6 +2601,9 @@ static int regulator_ena_gpio_ctrl(struct regulator_dev *rdev, bool enable)
- 	if (!pin)
- 		return -EINVAL;
+diff --git a/include/linux/regulator/machine.h b/include/linux/regulator/machine.h
+index 621b7f4a3639..2d4ae9c01cde 100644
+--- a/include/linux/regulator/machine.h
++++ b/include/linux/regulator/machine.h
+@@ -256,8 +256,7 @@ struct regulator_consumer_supply {
+  * @num_consumer_supplies: Number of consumer device supplies.
+  * @consumer_supplies: Consumer device supply configuration.
+  *
+- * @regulator_init: Callback invoked when the regulator has been registered.
+- * @driver_data: Data passed to regulator_init.
++ * @driver_data: Pointer copied to regulator_dev.reg_data.
+  */
+ struct regulator_init_data {
+ 	const char *supply_regulator;        /* or NULL for system supply */
+@@ -267,9 +266,7 @@ struct regulator_init_data {
+ 	int num_consumer_supplies;
+ 	struct regulator_consumer_supply *consumer_supplies;
  
-+	if (rdev->ena_gpio_state == enable)
-+		return 0;
-+
- 	if (enable) {
- 		/* Enable GPIO at initial use */
- 		if (pin->enable_count == 0)
-@@ -2608,18 +2611,14 @@ static int regulator_ena_gpio_ctrl(struct regulator_dev *rdev, bool enable)
+-	/* optional regulator machine specific init */
+-	int (*regulator_init)(void *driver_data);
+-	void *driver_data;	/* core does not touch this */
++	void *driver_data;
+ };
  
- 		pin->enable_count++;
- 	} else {
--		if (pin->enable_count > 1) {
--			pin->enable_count--;
--			return 0;
--		}
--
- 		/* Disable GPIO if not used */
--		if (pin->enable_count <= 1) {
-+		if (pin->enable_count-- <= 1) {
- 			gpiod_set_value_cansleep(pin->gpiod, 0);
- 			pin->enable_count = 0;
- 		}
- 	}
- 
-+	rdev->ena_gpio_state = enable;
- 	return 0;
- }
- 
-@@ -2720,12 +2719,9 @@ static int _regulator_do_enable(struct regulator_dev *rdev)
- 	}
- 
- 	if (rdev->ena_pin) {
--		if (!rdev->ena_gpio_state) {
--			ret = regulator_ena_gpio_ctrl(rdev, true);
--			if (ret < 0)
--				return ret;
--			rdev->ena_gpio_state = 1;
--		}
-+		ret = regulator_ena_gpio_ctrl(rdev, true);
-+		if (ret < 0)
-+			return ret;
- 	} else if (rdev->desc->ops->enable) {
- 		ret = rdev->desc->ops->enable(rdev);
- 		if (ret < 0)
-@@ -2938,13 +2934,9 @@ static int _regulator_do_disable(struct regulator_dev *rdev)
- 	trace_regulator_disable(rdev_get_name(rdev));
- 
- 	if (rdev->ena_pin) {
--		if (rdev->ena_gpio_state) {
--			ret = regulator_ena_gpio_ctrl(rdev, false);
--			if (ret < 0)
--				return ret;
--			rdev->ena_gpio_state = 0;
--		}
--
-+		ret = regulator_ena_gpio_ctrl(rdev, false);
-+		if (ret < 0)
-+			return ret;
- 	} else if (rdev->desc->ops->disable) {
- 		ret = rdev->desc->ops->disable(rdev);
- 		if (ret != 0)
+ #ifdef CONFIG_REGULATOR
 -- 
 2.39.2
 
