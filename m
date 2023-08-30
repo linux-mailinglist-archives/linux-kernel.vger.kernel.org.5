@@ -2,340 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC18078D891
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A655878DB73
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbjH3Sas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        id S238821AbjH3SjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241808AbjH3HIF (ORCPT
+        with ESMTP id S241825AbjH3HI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:08:05 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D3395
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:08:01 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d77fa2e7771so6214018276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693379281; x=1693984081; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UWjR07DslEHoxFkUFyN0zk+/sh01QB5CImJEAdjEgaI=;
-        b=gWa6jtDYt2nnNVW71I/ujO7LKvN5KybGe78HYoeqlkxrlE7cvuCCBfiy6jxf7DHFl7
-         OJ7yMfCxrzSS//iFre3iEtDXtWWxqIowlQDrrt2l5GomNqJNxrYRZKp58xJzDKnmp7Fj
-         viv1qYwBH7TiIyip2Uw2mCAlc7si3yeWGbUhcqYYaeIZYrAN6HvKMB5fJSM1fPmsrBBZ
-         pMVD5HS4DFMs+Wtvi5gcQ87JZzSUDKzic4nSNLLGfm+FuXBJgdg1yURU9TORip/GFCSo
-         EgTEm6wEtsQ9bE2/qjkll4DOKTglRPspSqRhfeRDNcYiRbhk1vhxvKEpEekJyplnoXlZ
-         Kgcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693379281; x=1693984081;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UWjR07DslEHoxFkUFyN0zk+/sh01QB5CImJEAdjEgaI=;
-        b=EpATlNHqcTNAz3mlrvdyWCpMzDzee2zVnzoET7WDri9Wl05V1iNhjvM/p3R+vRBg9s
-         1otx3Aib2e559EHQGWkPj0kzD05v0zHpJ6cXMV9980d2sswrTlcJKPktaDliDZpEcbpW
-         rfbbI1n8Rg+uV01YpKg38XBSSLT3Xow98aUiI9n5exFAgF/BpPc9ThZqLMb3EvyVoBX/
-         iX8X2vaSy1dCvE2heXIAN06HFFAsws6IPLkmo3e3mKV+o0GrSZgs2qxL/DSe3KhBKOBp
-         c7ndTsLOQSjnozgGVgbCuMGU8WApMhfebdzS3d7s7d4Di1bFeNUQr2O7Fu+SigM/rkoF
-         MvJA==
-X-Gm-Message-State: AOJu0Yx4sm91NBVJe3rOjimeTOV4hxAk+4W/+YbdZQsIRaSYQPMBIecq
-        eZOZmtnJAEPvn5pcaXUVdTjUwvK4OG57
-X-Google-Smtp-Source: AGHT+IEiUIFYUkfVscPBJkODC6Qx/HUecER+pV/0rBrDnPCwkgaDU4OzTNBwXJyn+ptjwi+2rNPWt+FGCqQL
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:d623:3cd7:ecbc:8798])
- (user=irogers job=sendgmr) by 2002:a25:cc44:0:b0:d18:73fc:40af with SMTP id
- l65-20020a25cc44000000b00d1873fc40afmr33179ybf.5.1693379281209; Wed, 30 Aug
- 2023 00:08:01 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 00:07:52 -0700
-In-Reply-To: <20230830070753.1821629-1-irogers@google.com>
-Message-Id: <20230830070753.1821629-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20230830070753.1821629-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Subject: [PATCH v1 2/3] perf parse-events: Make common term list to strbuf helper
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 03:08:59 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDE895
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 00:08:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DAFA721854;
+        Wed, 30 Aug 2023 07:08:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693379330; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GotytGeEx9CK9pJDBXWSABsYWixgazWhUaS5pCXoYqE=;
+        b=OHXG7U2kSJWzwRBXVwaH1/JZjd25jMmcqP5fTROmv+597MOiN27LR6KjY6EEVNj85gUqem
+        P7buOMMx/Nj6xRaKT37aNk9Z7ycQHL4Vu1Mam/6syXIi0GZYJSusHRH8ZOYyshQWQ94WUC
+        X4lgoCwyUOQmY6R9uVr7hZNi7VB/FbA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693379330;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GotytGeEx9CK9pJDBXWSABsYWixgazWhUaS5pCXoYqE=;
+        b=cbKNzfEkymQAdtdQQ+wKa52gPVlgcpBLKYWmJuINYcPUu3tAU0BfdTRBbJLPUezAmnhfM9
+        fYIZqf4u6ZHHNPBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B744513441;
+        Wed, 30 Aug 2023 07:08:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KQ2eKwLr7mRsTgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 30 Aug 2023 07:08:50 +0000
+Message-ID: <6a43a18a-bdef-5595-e9f4-38f2d1eac12e@suse.de>
+Date:   Wed, 30 Aug 2023 09:08:49 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org
+References: <20230830062546.720679-1-javierm@redhat.com>
+Content-Language: en-US
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230830062546.720679-1-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------EOhSCMXn2DDAR0RYiajuU20I"
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A term list is turned into a string for debug output and for the str
-value in the alias. Add a helper to do this based on existing code,
-but then fix for situations like events being identified. Use strbuf
-to manage the dynamic memory allocation and remove the 256 byte
-limit. Use in various places the string of the term list is required.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------EOhSCMXn2DDAR0RYiajuU20I
+Content-Type: multipart/mixed; boundary="------------5VDEGRJHNjHYzP1mc7zj2e0U";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: Maxime Ripard <mripard@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, dri-devel@lists.freedesktop.org
+Message-ID: <6a43a18a-bdef-5595-e9f4-38f2d1eac12e@suse.de>
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+References: <20230830062546.720679-1-javierm@redhat.com>
+In-Reply-To: <20230830062546.720679-1-javierm@redhat.com>
 
-Before:
-```
-$ sudo perf stat -vv -e inst_retired.any true
-Using CPUID GenuineIntel-6-8D-1
-intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
-Attempting to add event pmu 'cpu' with 'inst_retired.any,' that may result in non-fatal errors
-After aliases, add event pmu 'cpu' with 'event,period,' that may result in non-fatal errors
-inst_retired.any -> cpu/inst_retired.any/
-...
-```
+--------------5VDEGRJHNjHYzP1mc7zj2e0U
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-After:
-```
-$ sudo perf stat -vv -e inst_retired.any true
-Using CPUID GenuineIntel-6-8D-1
-intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
-Attempt to add: cpu/inst_retired.any/
-..after resolving event: cpu/event=0xc0,period=0x1e8483/
-inst_retired.any -> cpu/event=0xc0,period=0x1e8483/
-...
-```
+SGkgSmF2aWVyDQoNCkFtIDMwLjA4LjIzIHVtIDA4OjI1IHNjaHJpZWIgSmF2aWVyIE1hcnRp
+bmV6IENhbmlsbGFzOg0KPiBUaGUgY29tbWl0IDQ1YjU4NjY5ZTUzMiAoImRybS9zc2QxMzB4
+OiBBbGxvY2F0ZSBidWZmZXIgaW4gdGhlIHBsYW5lJ3MNCj4gLmF0b21pY19jaGVjaygpIGNh
+bGxiYWNrIikgbW92ZWQgdGhlIGFsbG9jYXRpb24gb2YgdGhlIGludGVybWVkaWF0ZSBhbmQN
+Cj4gSFcgYnVmZmVycyBmcm9tIHRoZSBlbmNvZGVyJ3MgLmF0b21pY19lbmFibGUgY2FsbGJh
+Y2sgdG8gcHJpbWFyeSBwbGFuZSdzDQo+IC5hdG9taWNfY2hlY2sgY2FsbGJhY2suDQo+IA0K
+PiBUaGlzIHdhcyBzdWdnZXN0ZWQgYnkgTWF4aW1lIFJpcGFyZCBiZWNhdXNlIGRyaXZlcnMg
+YXJlbid0IGFsbG93ZWQgdG8gZmFpbA0KPiBhZnRlciBkcm1fYXRvbWljX2hlbHBlcl9zd2Fw
+X3N0YXRlKCkgaGFzIGJlZW4gY2FsbGVkLCBhbmQgdGhlIGVuY29kZXIncw0KPiAuYXRvbWlj
+X2VuYWJsZSBoYXBwZW5zIGFmdGVyIHRoZSBuZXcgYXRvbWljIHN0YXRlIGhhcyBiZWVuIHN3
+YXBwZWQuDQo+IA0KPiBCdXQgdGhhdCBjaGFuZ2UgY2F1c2VkIGEgcGVyZm9ybWFuY2UgcmVn
+cmVzc2lvbiBpbiB2ZXJ5IHNsb3cgcGxhdGZvcm1zLA0KPiBzaW5jZSBub3cgdGhlIGFsbG9j
+YXRpb24gaGFwcGVucyBmb3IgZXZlcnkgcGxhbmUncyBhdG9taWMgc3RhdGUgY29tbWl0Lg0K
+PiBGb3IgZXhhbXBsZSwgR2VlcnQgVXl0dGVyaG9ldmVuIHJlcG9ydHMgdGhhdCBpcyB0aGUg
+Y2FzZSBvbiBhIFZleFJpc2NWDQo+IHNvZnRjb3JlIChSSVNDLVYgQ1BVIGltcGxlbWVudGF0
+aW9uIG9uIGFuIEZQR0EpLg0KPiANCj4gVG8gcHJldmVudCB0aGF0LCBtb3ZlIHRoZSBtb3Zl
+IHRoZSBidWZmZXJzJyBhbGxvY2F0aW9uIGFuZCBmcmVlIHRvIHRoZQ0KDQpEb3VibGUgJ21v
+dmUgdGhlJw0KDQpBbmQgbWF5YmUgYnVmZmVyJ3MgcmF0aGVyIHRoYW4gYnVmZmVycycNCg0K
+PiBDUlRDJ3MgLmF0b21pY19jaGVjayBhbmQgLmF0b21pY19kZXN0cm95X3N0YXRlIGNhbGxi
+YWNrcywgc28gdGhhdCBvbmx5DQo+IGhhcHBlbnMgb24gYSBtb2Rlc2V0LiBTaW5jZSB0aGUg
+aW50ZXJtZWRpYXRlIGJ1ZmZlciBpcyBvbmx5IG5lZWRlZCB3aGVuDQo+IG5vdCB1c2luZyB0
+aGUgY29udHJvbGxlciBuYXRpdmUgZm9ybWF0IChSMSksIGRvaW5nIHRoZSBidWZmZXIgYWxs
+b2NhdGlvbg0KPiBhdCB0aGF0IENSVEMncyAuYXRvbWljX2NoZWNrIHRpbWUgd291bGQgYmUg
+ZW5vdWdoLg0KPiANCj4gRml4ZXM6IDQ1YjU4NjY5ZTUzMiAoImRybS9zc2QxMzB4OiBBbGxv
+Y2F0ZSBidWZmZXIgaW4gdGhlIHBsYW5lJ3MgLmF0b21pY19jaGVjaygpIGNhbGxiYWNrIikN
+Cj4gU3VnZ2VzdGVkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsu
+b3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmll
+cm1AcmVkaGF0LmNvbT4NCj4gLS0tDQo+IEhlbGxvLA0KPiANCj4gVGhpcyBpcyBhIFJGQyBi
+ZWNhdXNlIEknbSBub3Qgc3VyZSBpZiB0aGVyZSBpcyBhIG5ldCBiZW5lZml0IGFmdGVyIHRo
+aXMNCj4gY2hhbmdlLiBJIGZpbmQgdGhlIGN1cnJlY3QgY29kZSBtdWNoIGNsZWFuZXIgYW5k
+IGxlc3MgZXJyb3IgcHJvbmUsIGV2ZW4NCj4gd2hlbiBHZWVydCByZXBvcnRzIHRoYXQgcGVy
+Zm9ybXMgd29yc2Ugb24gaGlzICh2ZXJ5IHNsb3cpIHBsYXRmb3JtLg0KPiANCj4gQnV0IEkn
+bSBzdGlsbCBwb3N0aW5nIGl0IHRvIHNlZSB3aGF0IG90aGVycyB0aGluay4gSSd2ZSB0ZXN0
+ZWQgdGhlIHBhdGNoDQo+IG9uIGFuIEkyQyBzc2QxMzA2IE9MRUQgYW5kIGZvdW5kIG5vIHJl
+Z3Jlc3Npb25zLg0KPiANCj4gVGhlIHBhdGNoIGlzIG9uIHRvcCBvbiBHZWVydCdzIGxhdGVz
+dCBwYXRjaC1zZXQgdGhhdCBhZGRzIHN1cHBvcnQgZm9yIHRoZQ0KPiBEUk1fRk9STUFUX1Ix
+IHRvIHRoZSBzc2QxMzB4IGRyaXZlcjoNCj4gDQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3Jn
+L2RyaS1kZXZlbC9jb3Zlci4xNjkyODg4NzQ1LmdpdC5nZWVydEBsaW51eC1tNjhrLm9yZw0K
+PiANCj4gQmVzdCByZWdhcmRzLA0KPiBKYXZpZXINCj4gDQo+ICAgZHJpdmVycy9ncHUvZHJt
+L3NvbG9tb24vc3NkMTMweC5jIHwgMTA2ICsrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0t
+LQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA1NiBpbnNlcnRpb25zKCspLCA1MCBkZWxldGlvbnMo
+LSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vc29sb21vbi9zc2QxMzB4
+LmMgYi9kcml2ZXJzL2dwdS9kcm0vc29sb21vbi9zc2QxMzB4LmMNCj4gaW5kZXggMGQyYjM2
+YmE0MDExLi42MDUzNmNkMGM0MmQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9z
+b2xvbW9uL3NzZDEzMHguYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vc29sb21vbi9zc2Qx
+MzB4LmMNCj4gQEAgLTY1MCw0NiArNjUwLDYgQEAgc3RhdGljIGludCBzc2QxMzB4X2ZiX2Js
+aXRfcmVjdChzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlICpzdGF0ZSwNCj4gICAJcmV0dXJuIHJl
+dDsNCj4gICB9DQo+ICAgDQo+IC1zdGF0aWMgaW50IHNzZDEzMHhfcHJpbWFyeV9wbGFuZV9o
+ZWxwZXJfYXRvbWljX2NoZWNrKHN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lLA0KPiAtCQkJCQkJ
+ICAgICBzdHJ1Y3QgZHJtX2F0b21pY19zdGF0ZSAqc3RhdGUpDQo+IC17DQo+IC0Jc3RydWN0
+IGRybV9kZXZpY2UgKmRybSA9IHBsYW5lLT5kZXY7DQo+IC0Jc3RydWN0IHNzZDEzMHhfZGV2
+aWNlICpzc2QxMzB4ID0gZHJtX3RvX3NzZDEzMHgoZHJtKTsNCj4gLQlzdHJ1Y3QgZHJtX3Bs
+YW5lX3N0YXRlICpwbGFuZV9zdGF0ZSA9IGRybV9hdG9taWNfZ2V0X25ld19wbGFuZV9zdGF0
+ZShzdGF0ZSwgcGxhbmUpOw0KPiAtCXN0cnVjdCBzc2QxMzB4X3BsYW5lX3N0YXRlICpzc2Qx
+MzB4X3N0YXRlID0gdG9fc3NkMTMweF9wbGFuZV9zdGF0ZShwbGFuZV9zdGF0ZSk7DQo+IC0J
+dW5zaWduZWQgaW50IHBhZ2VfaGVpZ2h0ID0gc3NkMTMweC0+ZGV2aWNlX2luZm8tPnBhZ2Vf
+aGVpZ2h0Ow0KPiAtCXVuc2lnbmVkIGludCBwYWdlcyA9IERJVl9ST1VORF9VUChzc2QxMzB4
+LT5oZWlnaHQsIHBhZ2VfaGVpZ2h0KTsNCj4gLQljb25zdCBzdHJ1Y3QgZHJtX2Zvcm1hdF9p
+bmZvICpmaTsNCj4gLQl1bnNpZ25lZCBpbnQgcGl0Y2g7DQo+IC0JaW50IHJldDsNCj4gLQ0K
+PiAtCXJldCA9IGRybV9wbGFuZV9oZWxwZXJfYXRvbWljX2NoZWNrKHBsYW5lLCBzdGF0ZSk7
+DQo+IC0JaWYgKHJldCkNCj4gLQkJcmV0dXJuIHJldDsNCj4gLQ0KPiAtCXNzZDEzMHhfc3Rh
+dGUtPmRhdGFfYXJyYXkgPSBrY2FsbG9jKHNzZDEzMHgtPndpZHRoLCBwYWdlcywgR0ZQX0tF
+Uk5FTCk7DQo+IC0JaWYgKCFzc2QxMzB4X3N0YXRlLT5kYXRhX2FycmF5KQ0KPiAtCQlyZXR1
+cm4gLUVOT01FTTsNCj4gLQ0KPiAtCWlmIChwbGFuZV9zdGF0ZS0+ZmItPmZvcm1hdC0+Zm9y
+bWF0ICE9IERSTV9GT1JNQVRfUjEpIHsNCj4gLQkJZmkgPSBkcm1fZm9ybWF0X2luZm8oRFJN
+X0ZPUk1BVF9SMSk7DQo+IC0JCWlmICghZmkpDQo+IC0JCQlyZXR1cm4gLUVJTlZBTDsNCj4g
+LQ0KPiAtCQlwaXRjaCA9IGRybV9mb3JtYXRfaW5mb19taW5fcGl0Y2goZmksIDAsIHNzZDEz
+MHgtPndpZHRoKTsNCj4gLQ0KPiAtCQlzc2QxMzB4X3N0YXRlLT5idWZmZXIgPSBrY2FsbG9j
+KHBpdGNoLCBzc2QxMzB4LT5oZWlnaHQsIEdGUF9LRVJORUwpOw0KPiAtCQlpZiAoIXNzZDEz
+MHhfc3RhdGUtPmJ1ZmZlcikgew0KPiAtCQkJa2ZyZWUoc3NkMTMweF9zdGF0ZS0+ZGF0YV9h
+cnJheSk7DQo+IC0JCQkvKiBTZXQgdG8gcHJldmVudCBhIGRvdWJsZSBmcmVlIGluIC5hdG9t
+aWNfZGVzdHJveV9zdGF0ZSgpICovDQo+IC0JCQlzc2QxMzB4X3N0YXRlLT5kYXRhX2FycmF5
+ID0gTlVMTDsNCj4gLQkJCXJldHVybiAtRU5PTUVNOw0KPiAtCQl9DQo+IC0JfQ0KPiAtDQo+
+IC0JcmV0dXJuIDA7DQo+IC19DQo+IC0NCj4gICBzdGF0aWMgdm9pZCBzc2QxMzB4X3ByaW1h
+cnlfcGxhbmVfaGVscGVyX2F0b21pY191cGRhdGUoc3RydWN0IGRybV9wbGFuZSAqcGxhbmUs
+DQo+ICAgCQkJCQkJICAgICAgIHN0cnVjdCBkcm1fYXRvbWljX3N0YXRlICpzdGF0ZSkNCj4g
+ICB7DQo+IEBAIC03NjIsMTAgKzcyMiw2IEBAIHN0YXRpYyBzdHJ1Y3QgZHJtX3BsYW5lX3N0
+YXRlICpzc2QxMzB4X3ByaW1hcnlfcGxhbmVfZHVwbGljYXRlX3N0YXRlKHN0cnVjdCBkcm1f
+DQo+ICAgCWlmICghc3NkMTMweF9zdGF0ZSkNCj4gICAJCXJldHVybiBOVUxMOw0KPiAgIA0K
+PiAtCS8qIFRoZSBidWZmZXJzIGFyZSBub3QgZHVwbGljYXRlZCBhbmQgYXJlIGFsbG9jYXRl
+ZCBpbiAuYXRvbWljX2NoZWNrICovDQo+IC0Jc3NkMTMweF9zdGF0ZS0+YnVmZmVyID0gTlVM
+TDsNCj4gLQlzc2QxMzB4X3N0YXRlLT5kYXRhX2FycmF5ID0gTlVMTDsNCj4gLQ0KPiAgIAlu
+ZXdfc2hhZG93X3BsYW5lX3N0YXRlID0gJnNzZDEzMHhfc3RhdGUtPmJhc2U7DQo+ICAgDQo+
+ICAgCV9fZHJtX2dlbV9kdXBsaWNhdGVfc2hhZG93X3BsYW5lX3N0YXRlKHBsYW5lLCBuZXdf
+c2hhZG93X3BsYW5lX3N0YXRlKTsNCj4gQEAgLTc3OCw5ICs3MzQsNiBAQCBzdGF0aWMgdm9p
+ZCBzc2QxMzB4X3ByaW1hcnlfcGxhbmVfZGVzdHJveV9zdGF0ZShzdHJ1Y3QgZHJtX3BsYW5l
+ICpwbGFuZSwNCj4gICB7DQo+ICAgCXN0cnVjdCBzc2QxMzB4X3BsYW5lX3N0YXRlICpzc2Qx
+MzB4X3N0YXRlID0gdG9fc3NkMTMweF9wbGFuZV9zdGF0ZShzdGF0ZSk7DQo+ICAgDQo+IC0J
+a2ZyZWUoc3NkMTMweF9zdGF0ZS0+ZGF0YV9hcnJheSk7DQo+IC0Ja2ZyZWUoc3NkMTMweF9z
+dGF0ZS0+YnVmZmVyKTsNCj4gLQ0KPiAgIAlfX2RybV9nZW1fZGVzdHJveV9zaGFkb3dfcGxh
+bmVfc3RhdGUoJnNzZDEzMHhfc3RhdGUtPmJhc2UpOw0KPiAgIA0KPiAgIAlrZnJlZShzc2Qx
+MzB4X3N0YXRlKTsNCj4gQEAgLTc4OCw3ICs3NDEsNyBAQCBzdGF0aWMgdm9pZCBzc2QxMzB4
+X3ByaW1hcnlfcGxhbmVfZGVzdHJveV9zdGF0ZShzdHJ1Y3QgZHJtX3BsYW5lICpwbGFuZSwN
+Cj4gICANCj4gICBzdGF0aWMgY29uc3Qgc3RydWN0IGRybV9wbGFuZV9oZWxwZXJfZnVuY3Mg
+c3NkMTMweF9wcmltYXJ5X3BsYW5lX2hlbHBlcl9mdW5jcyA9IHsNCj4gICAJRFJNX0dFTV9T
+SEFET1dfUExBTkVfSEVMUEVSX0ZVTkNTLA0KPiAtCS5hdG9taWNfY2hlY2sgPSBzc2QxMzB4
+X3ByaW1hcnlfcGxhbmVfaGVscGVyX2F0b21pY19jaGVjaywNCj4gKwkuYXRvbWljX2NoZWNr
+ID0gZHJtX3BsYW5lX2hlbHBlcl9hdG9taWNfY2hlY2ssDQo+ICAgCS5hdG9taWNfdXBkYXRl
+ID0gc3NkMTMweF9wcmltYXJ5X3BsYW5lX2hlbHBlcl9hdG9taWNfdXBkYXRlLA0KPiAgIAku
+YXRvbWljX2Rpc2FibGUgPSBzc2QxMzB4X3ByaW1hcnlfcGxhbmVfaGVscGVyX2F0b21pY19k
+aXNhYmxlLA0KPiAgIH07DQo+IEBAIC04MTgsNiArNzcxLDU5IEBAIHN0YXRpYyBlbnVtIGRy
+bV9tb2RlX3N0YXR1cyBzc2QxMzB4X2NydGNfaGVscGVyX21vZGVfdmFsaWQoc3RydWN0IGRy
+bV9jcnRjICpjcnRjDQo+ICAgCXJldHVybiBNT0RFX09LOw0KPiAgIH0NCj4gICANCj4gK2lu
+dCBzc2QxMzB4X2NydGNfaGVscGVyX2F0b21pY19jaGVjayhzdHJ1Y3QgZHJtX2NydGMgKmNy
+dGMsIHN0cnVjdCBkcm1fYXRvbWljX3N0YXRlICpzdGF0ZSkNCj4gK3sNCj4gKwlzdHJ1Y3Qg
+ZHJtX2RldmljZSAqZHJtID0gY3J0Yy0+ZGV2Ow0KPiArCXN0cnVjdCBzc2QxMzB4X2Rldmlj
+ZSAqc3NkMTMweCA9IGRybV90b19zc2QxMzB4KGRybSk7DQo+ICsJc3RydWN0IGRybV9wbGFu
+ZSAqcGxhbmUgPSBjcnRjLT5wcmltYXJ5Ow0KDQpVc2luZyAncHJpbWFyeScgaXMgZGVwcmVj
+YXRlZC4gWW91IGNhbiBvbmx5IHJlZmVyIGZyb20gcGxhbmUgdG8gY3J0YyANCmVhc2lseS4g
+VGhlIG90aGVyIGRpcmVjdGlvbiBpcyBjb21wbGljYXRlZC4NCg0KPiArCXN0cnVjdCBkcm1f
+cGxhbmVfc3RhdGUgKnBsYW5lX3N0YXRlID0gZHJtX2F0b21pY19nZXRfbmV3X3BsYW5lX3N0
+YXRlKHN0YXRlLCBwbGFuZSk7DQo+ICsJc3RydWN0IHNzZDEzMHhfcGxhbmVfc3RhdGUgKnNz
+ZDEzMHhfc3RhdGUgPSB0b19zc2QxMzB4X3BsYW5lX3N0YXRlKHBsYW5lX3N0YXRlKTsNCg0K
+SSdkIHN0b3JlIHRoZXNlIHBvaW50ZXJzIGluIHRoZSBDUlRDIHN0YXRlIGFuZCBmZXRjaCB0
+aGVtIGZyb20gd2l0aGluIA0Kc3NkMTMweF9wcmltYXJ5X3BsYW5lX2hlbHBlcl9hdG9taWNf
+dXBkYXRlKCkgZHVyaW5nIHRoZSBkaXNwbGF5IHVwZGF0ZS4gDQpUaGlzIGd1YXJhbnRlZXMg
+dGhhdCB0aGUgcG9pbnRlciBhZGRyZXNzZXMgYXJlIGFsd2F5cyBsZWdhbC4NCg0KQmVzaWRl
+cyB0aGUgcG9pbnRlcnMsIHRoZSBDUlRDIHN0YXRlIGNhbiBhbHNvIHN0b3JlIHRoZSBwcmlt
+YXJ5IHBsYW5lIA0KZm9ybWF0LCB3aGljaCB5b3UgdXBkYXRlIGZyb20gdGhlIHBsYW5lJ3Mg
+YXRvbWljIGNoZWNrLiBCeSBkb2luZyBzbywgeW91IA0Kd29udCBuZWVkIHRvIHJlZmVyIHRv
+IHRoZSBwbGFuZSBzdGF0ZSBmcm9tIHRoZSBDUlRDJ3MgYXRvbWljX2NoZWNrLiBUaGUgDQpw
+bGFuZSdzIGF0b21pY19jaGVjayBydW5zIGJlZm9yZSB0aGUgQ1JUQydzIGF0b21pY19jaGVj
+ay4gWzFdDQoNClRoZSBzdHJ1Y3Qgc3NkMTMweF9wbGFuZV9zdGF0ZSBjYW4gdGhlbiBiZSBy
+ZXBsYWNlZCBieSBzdGFyZGFyZCBEUk0gDQpzaGFkb3ctcGxhbmUgc3RhdGUuIEl0IGFsc28g
+c29sdmVzIHRoZSBwcm9ibGVtIHdpdGggJ2NydGMtPnByaW1hcnknLg0KDQpbMV0gDQpodHRw
+czovL2VsaXhpci5ib290bGluLmNvbS9saW51eC92Ni41L3NvdXJjZS9kcml2ZXJzL2dwdS9k
+cm0vZHJtX2F0b21pY19oZWxwZXIuYyNMOTc0DQoNCj4gKwl1bnNpZ25lZCBpbnQgcGFnZV9o
+ZWlnaHQgPSBzc2QxMzB4LT5kZXZpY2VfaW5mby0+cGFnZV9oZWlnaHQ7DQo+ICsJdW5zaWdu
+ZWQgaW50IHBhZ2VzID0gRElWX1JPVU5EX1VQKHNzZDEzMHgtPmhlaWdodCwgcGFnZV9oZWln
+aHQpOw0KPiArCWNvbnN0IHN0cnVjdCBkcm1fZm9ybWF0X2luZm8gKmZpOw0KPiArCXVuc2ln
+bmVkIGludCBwaXRjaDsNCj4gKwlpbnQgcmV0Ow0KPiArDQo+ICsJcmV0ID0gZHJtX2NydGNf
+aGVscGVyX2F0b21pY19jaGVjayhjcnRjLCBzdGF0ZSk7DQo+ICsJaWYgKHJldCkNCj4gKwkJ
+cmV0dXJuIHJldDsNCj4gKw0KPiArCXNzZDEzMHhfc3RhdGUtPmRhdGFfYXJyYXkgPSBrY2Fs
+bG9jKHNzZDEzMHgtPndpZHRoLCBwYWdlcywgR0ZQX0tFUk5FTCk7DQoNCkRvIHlvdSByZWFs
+bHkgbmVlZCBrY2FsbG9jIGhlcmU/IGttYWxsb2Mgc2VlbXMgZ29vZCBlbm91Z2guDQoNCj4g
+KwlpZiAoIXNzZDEzMHhfc3RhdGUtPmRhdGFfYXJyYXkpDQo+ICsJCXJldHVybiAtRU5PTUVN
+Ow0KPiArDQo+ICsJaWYgKHBsYW5lX3N0YXRlLT5mYi0+Zm9ybWF0LT5mb3JtYXQgIT0gRFJN
+X0ZPUk1BVF9SMSkgew0KPiArCQlmaSA9IGRybV9mb3JtYXRfaW5mbyhEUk1fRk9STUFUX1Ix
+KTsNCj4gKwkJaWYgKCFmaSkNCj4gKwkJCXJldHVybiAtRUlOVkFMOw0KPiArDQo+ICsJCXBp
+dGNoID0gZHJtX2Zvcm1hdF9pbmZvX21pbl9waXRjaChmaSwgMCwgc3NkMTMweC0+d2lkdGgp
+Ow0KPiArDQo+ICsJCXNzZDEzMHhfc3RhdGUtPmJ1ZmZlciA9IGtjYWxsb2MocGl0Y2gsIHNz
+ZDEzMHgtPmhlaWdodCwgR0ZQX0tFUk5FTCk7DQoNClNhbWUgcXVlc3Rpb24gYWJvdXQga2Nh
+bGxvYy4NCg0KPiArCQlpZiAoIXNzZDEzMHhfc3RhdGUtPmJ1ZmZlcikgew0KPiArCQkJa2Zy
+ZWUoc3NkMTMweF9zdGF0ZS0+ZGF0YV9hcnJheSk7DQo+ICsJCQkvKiBTZXQgdG8gcHJldmVu
+dCBhIGRvdWJsZSBmcmVlIGluIC5hdG9taWNfZGVzdHJveV9zdGF0ZSgpICovDQo+ICsJCQlz
+c2QxMzB4X3N0YXRlLT5kYXRhX2FycmF5ID0gTlVMTDsNCj4gKwkJCXJldHVybiAtRU5PTUVN
+Ow0KPiArCQl9DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0
+YXRpYyB2b2lkIHNzZDEzMHhfY3J0Y19kZXN0cm95X3N0YXRlKHN0cnVjdCBkcm1fY3J0YyAq
+Y3J0YywNCj4gKwkJCQkgICAgICAgc3RydWN0IGRybV9jcnRjX3N0YXRlICpzdGF0ZSkNCj4g
+K3sNCj4gKwlzdHJ1Y3QgZHJtX3BsYW5lICpwbGFuZSA9IGNydGMtPnByaW1hcnk7DQo+ICsJ
+c3RydWN0IGRybV9wbGFuZV9zdGF0ZSAqcGxhbmVfc3RhdGUgPSBkcm1fYXRvbWljX2dldF9u
+ZXdfcGxhbmVfc3RhdGUoc3RhdGUtPnN0YXRlLCBwbGFuZSk7DQo+ICsJc3RydWN0IHNzZDEz
+MHhfcGxhbmVfc3RhdGUgKnNzZDEzMHhfc3RhdGUgPSB0b19zc2QxMzB4X3BsYW5lX3N0YXRl
+KHBsYW5lX3N0YXRlKTsNCj4gKw0KPiArCWRybV9hdG9taWNfaGVscGVyX2NydGNfZGVzdHJv
+eV9zdGF0ZShjcnRjLCBzdGF0ZSk7DQo+ICsNCj4gKwlrZnJlZShzc2QxMzB4X3N0YXRlLT5k
+YXRhX2FycmF5KTsNCj4gKwlrZnJlZShzc2QxMzB4X3N0YXRlLT5idWZmZXIpOw0KDQpUaGlz
+IGNyb3NzIHJlZmVyZW5jZXMgYW1vbmcgc3RhdGUtaGVscGVycyBoYXMgdGhlIHBvdGVudGlh
+bCB0byBibG93IHVwLiANCkl0J3Mgbm90IHJlYWxseSBjbGVhciBpZiB0aGVyZSBldmVuIGlz
+IGEgcGxhbmUgc3RhdGUgaGVyZS4NCg0KQWxzbyBzZWUgbXkgY29tbWVudCBvbiB0aGUgYWxs
+b2NhdGlvbiBvZiB0aGVzZSBidWZmZXJzLiwgd2hpY2ggd291bGQgDQpzb2x2ZSB0aGlzIHBy
+b2JsZW0gYXMgd2VsbC4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiArfQ0KPiArDQo+
+ICAgLyoNCj4gICAgKiBUaGUgQ1JUQyBpcyBhbHdheXMgZW5hYmxlZC4gU2NyZWVuIHVwZGF0
+ZXMgYXJlIHBlcmZvcm1lZCBieQ0KPiAgICAqIHRoZSBwcmltYXJ5IHBsYW5lJ3MgYXRvbWlj
+X3VwZGF0ZSBmdW5jdGlvbi4gRGlzYWJsaW5nIGNsZWFycw0KPiBAQCAtODI1LDcgKzgzMSw3
+IEBAIHN0YXRpYyBlbnVtIGRybV9tb2RlX3N0YXR1cyBzc2QxMzB4X2NydGNfaGVscGVyX21v
+ZGVfdmFsaWQoc3RydWN0IGRybV9jcnRjICpjcnRjDQo+ICAgICovDQo+ICAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBkcm1fY3J0Y19oZWxwZXJfZnVuY3Mgc3NkMTMweF9jcnRjX2hlbHBlcl9m
+dW5jcyA9IHsNCj4gICAJLm1vZGVfdmFsaWQgPSBzc2QxMzB4X2NydGNfaGVscGVyX21vZGVf
+dmFsaWQsDQo+IC0JLmF0b21pY19jaGVjayA9IGRybV9jcnRjX2hlbHBlcl9hdG9taWNfY2hl
+Y2ssDQo+ICsJLmF0b21pY19jaGVjayA9IHNzZDEzMHhfY3J0Y19oZWxwZXJfYXRvbWljX2No
+ZWNrLA0KPiAgIH07DQo+ICAgDQo+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBkcm1fY3J0Y19m
+dW5jcyBzc2QxMzB4X2NydGNfZnVuY3MgPSB7DQo+IEBAIC04MzQsNyArODQwLDcgQEAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBkcm1fY3J0Y19mdW5jcyBzc2QxMzB4X2NydGNfZnVuY3MgPSB7
+DQo+ICAgCS5zZXRfY29uZmlnID0gZHJtX2F0b21pY19oZWxwZXJfc2V0X2NvbmZpZywNCj4g
+ICAJLnBhZ2VfZmxpcCA9IGRybV9hdG9taWNfaGVscGVyX3BhZ2VfZmxpcCwNCj4gICAJLmF0
+b21pY19kdXBsaWNhdGVfc3RhdGUgPSBkcm1fYXRvbWljX2hlbHBlcl9jcnRjX2R1cGxpY2F0
+ZV9zdGF0ZSwNCj4gLQkuYXRvbWljX2Rlc3Ryb3lfc3RhdGUgPSBkcm1fYXRvbWljX2hlbHBl
+cl9jcnRjX2Rlc3Ryb3lfc3RhdGUsDQo+ICsJLmF0b21pY19kZXN0cm95X3N0YXRlID0gc3Nk
+MTMweF9jcnRjX2Rlc3Ryb3lfc3RhdGUsDQo+ICAgfTsNCj4gICANCj4gICBzdGF0aWMgdm9p
+ZCBzc2QxMzB4X2VuY29kZXJfaGVscGVyX2F0b21pY19lbmFibGUoc3RydWN0IGRybV9lbmNv
+ZGVyICplbmNvZGVyLA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2
+ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZy
+YW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRv
+dGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpI
+UkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/parse-events.c | 101 ++++++++++++++++++++++++---------
- tools/perf/util/parse-events.h |   2 +
- tools/perf/util/pmu.c          |  19 ++-----
- 3 files changed, 81 insertions(+), 41 deletions(-)
+--------------5VDEGRJHNjHYzP1mc7zj2e0U--
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 4c812fbe0cf9..0b941b58bdc0 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -13,7 +13,7 @@
- #include <subcmd/parse-options.h>
- #include "parse-events.h"
- #include "string2.h"
--#include "strlist.h"
-+#include "strbuf.h"
- #include "debug.h"
- #include <api/fs/tracing_path.h>
- #include <perf/cpumap.h>
-@@ -1303,19 +1303,6 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 
- 	pmu = parse_state->fake_pmu ?: perf_pmus__find(name);
- 
--	if (verbose > 1 && !(pmu && pmu->selectable)) {
--		fprintf(stderr, "Attempting to add event pmu '%s' with '",
--			name);
--		if (head_config) {
--			struct parse_events_term *term;
--
--			list_for_each_entry(term, head_config, list) {
--				fprintf(stderr, "%s,", term->config);
--			}
--		}
--		fprintf(stderr, "' that may result in non-fatal errors\n");
--	}
--
- 	if (!pmu) {
- 		char *err_str;
- 
-@@ -1325,6 +1312,21 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 			parse_events_error__handle(err, loc->first_column, err_str, NULL);
- 		return -EINVAL;
- 	}
-+
-+	if (verbose > 1) {
-+		struct strbuf sb;
-+
-+		strbuf_init(&sb, /*hint=*/ 0);
-+		if (pmu->selectable && !head_config) {
-+			strbuf_addf(&sb, "%s//", name);
-+		} else {
-+			strbuf_addf(&sb, "%s/", name);
-+			parse_events_term__to_strbuf(head_config, &sb);
-+			strbuf_addch(&sb, '/');
-+		}
-+		fprintf(stderr, "Attempt to add: %s\n", sb.buf);
-+		strbuf_release(&sb);
-+	}
- 	if (head_config)
- 		fix_raw(head_config, pmu);
- 
-@@ -1349,16 +1351,12 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 		return -EINVAL;
- 
- 	if (verbose > 1) {
--		fprintf(stderr, "After aliases, add event pmu '%s' with '",
--			name);
--		if (head_config) {
--			struct parse_events_term *term;
-+		struct strbuf sb;
- 
--			list_for_each_entry(term, head_config, list) {
--				fprintf(stderr, "%s,", term->config);
--			}
--		}
--		fprintf(stderr, "' that may result in non-fatal errors\n");
-+		strbuf_init(&sb, /*hint=*/ 0);
-+		parse_events_term__to_strbuf(head_config, &sb);
-+		fprintf(stderr, "..after resolving event: %s/%s/\n", name, sb.buf);
-+		strbuf_release(&sb);
- 	}
- 
- 	/*
-@@ -1460,7 +1458,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
- 		parse_events_copy_term_list(head, &orig_head);
- 		if (!parse_events_add_pmu(parse_state, list, pmu->name,
- 					  orig_head, auto_merge_stats, loc)) {
--			pr_debug("%s -> %s/%s/\n", str, pmu->name, str);
-+			struct strbuf sb;
-+
-+			strbuf_init(&sb, /*hint=*/ 0);
-+			parse_events_term__to_strbuf(orig_head, &sb);
-+			pr_debug("%s -> %s/%s/\n", str, pmu->name, sb.buf);
-+			strbuf_release(&sb);
- 			ok++;
- 		}
- 		parse_events_terms__delete(orig_head);
-@@ -1469,7 +1472,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
- 	if (parse_state->fake_pmu) {
- 		if (!parse_events_add_pmu(parse_state, list, str, head,
- 					  /*auto_merge_stats=*/true, loc)) {
--			pr_debug("%s -> %s/%s/\n", str, "fake_pmu", str);
-+			struct strbuf sb;
-+
-+			strbuf_init(&sb, /*hint=*/ 0);
-+			parse_events_term__to_strbuf(head, &sb);
-+			pr_debug("%s -> %s/%s/\n", str, "fake_pmu", sb.buf);
-+			strbuf_release(&sb);
- 			ok++;
- 		}
- 	}
-@@ -2085,7 +2093,7 @@ void parse_events_error__handle(struct parse_events_error *err, int idx,
- 		break;
- 	default:
- 		pr_debug("Multiple errors dropping message: %s (%s)\n",
--			err->str, err->help);
-+			err->str, err->help ?: "<no help>");
- 		free(err->str);
- 		err->str = str;
- 		free(err->help);
-@@ -2502,6 +2510,47 @@ void parse_events_terms__delete(struct list_head *terms)
- 	free(terms);
- }
- 
-+int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb)
-+{
-+	struct parse_events_term *term;
-+	bool first = true;
-+
-+	if (!term_list)
-+		return 0;
-+
-+	list_for_each_entry(term, term_list, list) {
-+		int ret;
-+
-+		if (!first) {
-+			ret = strbuf_addch(sb, ',');
-+			if (ret < 0)
-+				return ret;
-+		}
-+		first = false;
-+
-+		if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
-+			if (term->type_term == PARSE_EVENTS__TERM_TYPE_USER && term->val.num == 1)
-+				ret = strbuf_addf(sb, "%s", term->config);
-+			else
-+				ret = strbuf_addf(sb, "%s=%#"PRIx64, term->config, term->val.num);
-+		else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR) {
-+			if (term->config) {
-+				ret = strbuf_addf(sb, "%s=", term->config);
-+				if (ret < 0)
-+					return ret;
-+			} else if (term->type_term < __PARSE_EVENTS__TERM_TYPE_NR) {
-+				ret = strbuf_addf(sb, "%s=", config_term_names[term->type_term]);
-+				if (ret < 0)
-+					return ret;
-+			}
-+			ret = strbuf_addf(sb, "%s", term->val.str);
-+		}
-+		if (ret < 0)
-+			return ret;
-+	}
-+	return 0;
-+}
-+
- void parse_events_evlist_error(struct parse_events_state *parse_state,
- 			       int idx, const char *str)
- {
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index 6d75d853ce00..20bdc35d6112 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -18,6 +18,7 @@ struct parse_events_error;
- 
- struct option;
- struct perf_pmu;
-+struct strbuf;
- 
- const char *event_type(int type);
- 
-@@ -152,6 +153,7 @@ int parse_events_term__clone(struct parse_events_term **new,
- void parse_events_term__delete(struct parse_events_term *term);
- void parse_events_terms__delete(struct list_head *terms);
- void parse_events_terms__purge(struct list_head *terms);
-+int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb);
- int parse_events__modifier_event(struct list_head *list, char *str, bool add);
- int parse_events__modifier_group(struct list_head *list, char *event_mod);
- int parse_events_name(struct list_head *list, const char *name);
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index b3f8f3f1e900..8dbb7008877e 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -507,12 +507,11 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
- 				const char *desc, const char *val, FILE *val_fd,
- 				const struct pmu_event *pe)
- {
--	struct parse_events_term *term;
- 	struct perf_pmu_alias *alias;
- 	int ret;
--	char newval[256];
- 	const char *long_desc = NULL, *topic = NULL, *unit = NULL, *pmu_name = NULL;
- 	bool deprecated = false, perpkg = false;
-+	struct strbuf sb;
- 
- 	if (perf_pmu__find_alias(pmu, name, /*load=*/ false)) {
- 		/* Alias was already created/loaded. */
-@@ -582,20 +581,10 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
- 	 *
- 	 * Rebuild string to make alias->str member comparable.
- 	 */
--	ret = 0;
--	list_for_each_entry(term, &alias->terms, list) {
--		if (ret)
--			ret += scnprintf(newval + ret, sizeof(newval) - ret,
--					 ",");
--		if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
--			ret += scnprintf(newval + ret, sizeof(newval) - ret,
--					 "%s=%#x", term->config, term->val.num);
--		else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
--			ret += scnprintf(newval + ret, sizeof(newval) - ret,
--					 "%s=%s", term->config, term->val.str);
--	}
- 	zfree(&alias->str);
--	alias->str = strdup(newval);
-+	strbuf_init(&sb, /*hint=*/ 0);
-+	parse_events_term__to_strbuf(&alias->terms, &sb);
-+	alias->str = strbuf_detach(&sb, /*sz=*/ NULL);
- 	if (!pe)
- 		pmu->sysfs_aliases++;
- 	else
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+--------------EOhSCMXn2DDAR0RYiajuU20I
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTu6wEFAwAAAAAACgkQlh/E3EQov+Br
+bQ//fZyVNuY0w42tn0pcRLHbc8oG7XPt16rYrd3Q0MO2jyEdS5g6G29yrDLJR8aZtnOIgU4/nRex
+tdu//oMGlat5QGPxubH32mlVuc8A6nwqGrMRyTHa37V2PXeuKXthyAS5jsJC4KeTZmlLL9D8ZFM1
+wANS5IKtnuNjC7+PsqgaMoOZBy8a7e+WUJoAeOQKliBN2KLHpLriHeiZocDs5RwchiAx+xNV6sKh
+voLT8U9E3/nS3LaOkxRY5b4tw9PLWfmg0DnHZl0osgRSSRwL1QZqtinfFdZpo34u3ZDkDPkzM4xm
+tJtKl5UTfVSHYOe5vmVhnJhykzXEs8tiBwCryTG3i7HG7W8hThkY25/zHk0Jfm9aoVZMlBaC2nyk
+6wUafvvnl1w0vZD/oFTKGdPMS0P6SgBfdzh3RIZixF99tTaXmK/1DRiAWzn1mRRWchyCng2Izlpw
+KDDpYksAWjxiMo/IozpZ61ABDbLmdB5nuOG63BLe5lwby4Gss7XlXvw5A6JpJiuO/CzZwGO9FfKR
+JFa2tO5NWUiIIli+gsgSIOiEYjsk7yWbtpoNx5uVvpBtO588E3iiVMbwesEIAWXcKHkNhEWS6VfM
+g4urnJtOew5Wq3Z2dF1AlPqeGFBAlS/1OHwG1bTYVVmibAmKWqp9t7vQzsaNwbdcqft2JaG/QKMo
+xME=
+=AegE
+-----END PGP SIGNATURE-----
+
+--------------EOhSCMXn2DDAR0RYiajuU20I--
