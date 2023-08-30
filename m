@@ -2,100 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC4378DE7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9FA78DE71
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbjH3TD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
+        id S241987AbjH3TCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 15:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343974AbjH3RnG (ORCPT
+        with ESMTP id S1343975AbjH3RnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:43:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16221107;
-        Wed, 30 Aug 2023 10:43:03 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 17:43:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693417381;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2HSt0lqIAYiAozzRD8m8t6/pcsc2XWenMSpuUgh813w=;
-        b=murchX7cUNbwJx7eysAtlDUtCKfUXCsOqHZvyAX47J+DKX8c+93k79RzH0+KCqQhLtmxyg
-        IXlLMAXR/E45NpQ0MZt89vX/834A9X23CuckCexRCJIurz7D38tpMEb1XN+lT2n0LFLkdC
-        XPOkFlWth1fdywuDSYnA+7eQPRlynGafPkDYG+FzFTg2IDnEOcgPwzCvanTFjVl7P2XpQh
-        k0hlQwunQ6RNf+aqYpVLx98c2V3mJNO6SX9LiDDWGSOyqapzS5Kd3zyMnqJ9eAm8KCjUx+
-        0O1tZ2+HfApt7lNLkYepuyoyGjTpHDjXnoaDCVlviFSPa64urRTaVXReIQ5MHg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693417381;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2HSt0lqIAYiAozzRD8m8t6/pcsc2XWenMSpuUgh813w=;
-        b=AZNRqqY8hjTPrmqDQ99fQFVEOqBA+qRdkGC0l+5BdH+lBravDo2WDFu3XhmFoRW75YO8Wg
-        Qiaw3c3lYo4tPNBg==
-From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/shstk: Change order of __user in type
-Cc:     kernel test robot <lkp@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Wed, 30 Aug 2023 13:43:10 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30771107;
+        Wed, 30 Aug 2023 10:43:07 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401c90ed2ecso36481975e9.0;
+        Wed, 30 Aug 2023 10:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693417385; x=1694022185; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3JSXWasOYO+IgsYBMXFWCY2VQ2JeAF0ezZhUsdBIZOU=;
+        b=VxvboSVngPIpuHNXkFJjZE2g8K1qwlGOtrG/y5i4laJsjKGTMOE9C14jybMmI3Cpke
+         D3YpzLUaPV4pcIpIFU7/JbijWCxUc+BPl2f1IOJ8TyRrhrVxU9agxWJqvQz/qDOTbznC
+         HNLtXcOEb1x762GfH17WQ9dwxvnBDawFye2QTanSJkVa2aAkKV8zuIryuIbTFzEeOY6f
+         qYXHwhSJRVdF3y2neXpKrv95dE3ewOOctDhgwVS5JMg2Ye2opIOIqyjv01cIN22eXqPt
+         TJ3AkVkHm7R1b5v8U+ac13IZtVhChX79OdVb65i1P4POB0lP9MtdiRa3pPDbAFmuwuU3
+         bBXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693417385; x=1694022185;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3JSXWasOYO+IgsYBMXFWCY2VQ2JeAF0ezZhUsdBIZOU=;
+        b=NhT/uQepDv5TU6ezX5hc1qG2TeLQtXEFuPi6udrkOSyWFFQI2p+kwbTnEgD0i3PRsG
+         ZtFIwq+p3P8gb+qZvJIEeKlEmpY36dczEq7WO0URD5PVeicXleIhk4SkUoqwXcuEon2C
+         8G8NpevrTu2rVCGnOwhW2XIWu+4qOzwDfxllWyKsGA7dskoqJJnxYnfib+QbC4VVARG4
+         vrWVbekksmlXluwg4zQm0LIy3SnFKpLtN0j0r96Icuy1nBJDGMj0U5kfziuFU/eGxtLe
+         rpqIzYC/c8Ma0p+0kryqxAQ5xrTCXs2xwR9vQsxgliW9kS8aZjKC9AhmIYVt6Xcd8HIF
+         /mYA==
+X-Gm-Message-State: AOJu0Yx4rtbjuP7NQB3FO1mKiGHh5Ud8PRtaICMKnDP53bsoeshi9P8e
+        vynq8kT0o/At163/idZRRVw=
+X-Google-Smtp-Source: AGHT+IGGn543ToY4d/XKjEsPa+tBnkoKxtYRQQQgLpPrRGf7ypUN2BHLOr9JUzJFAvm4rOwksQgWTw==
+X-Received: by 2002:a7b:ca47:0:b0:401:b6f6:d8fd with SMTP id m7-20020a7bca47000000b00401b6f6d8fdmr2578193wml.6.1693417385402;
+        Wed, 30 Aug 2023 10:43:05 -0700 (PDT)
+Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id o9-20020a05600c510900b003fbe791a0e8sm3043822wms.0.2023.08.30.10.43.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 10:43:04 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     gregkh@linuxfoundation.org, johan@kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        david@ixit.cz, Corentin Labbe <clabbe@baylibre.com>
+Subject: Re: [PATCH v6 0/2] usb: serial: add support for CH348
+Date:   Wed, 30 Aug 2023 19:43:03 +0200
+Message-ID: <2595072.9XhBIDAVAK@archbook>
+In-Reply-To: <20230628133834.1527941-1-clabbe@baylibre.com>
+References: <20230628133834.1527941-1-clabbe@baylibre.com>
 MIME-Version: 1.0
-Message-ID: <169341738043.27769.17879474325654123719.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/shstk branch of tip:
+On Mittwoch, 28. Juni 2023 15:38:32 CEST Corentin Labbe wrote:
+> Hello
+> 
+> The CH348 is an octo serial to USB adapter.
+> The following patch adds a driver for supporting it.
+> Since there is no public datasheet, unfortunatly it remains some magic values.
+> 
+> It was tested with a large range of baud from 1200 to 1500000 and used with
+> success in one of our kernel CI testlab.
+> 
+> Regards
+> 
+> [...]
 
-Commit-ID:     1fe428d3692fb10a0e8d85fafe719b154e43ad4e
-Gitweb:        https://git.kernel.org/tip/1fe428d3692fb10a0e8d85fafe719b154e43ad4e
-Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Thu, 24 Aug 2023 18:45:54 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 30 Aug 2023 10:35:53 -07:00
+Hello,
 
-x86/shstk: Change order of __user in type
+thank you for your work on this. I recently made myself a CH348
+board and used this patchset with a small test application[1]
+to see how it performs. Specifically, I ran this on an RK3566
+single board computer, connecting one serial adapter to the
+other, with the test as follows:
 
-0day reports a sparse warning:
-arch/x86/kernel/shstk.c:295:55: sparse: sparse: cast removes address space
-'__user' of expression
+ ./serialtest /dev/ttyUSB0 9600 # UART0 of 1st CH348 board
+ ./serialtest /dev/ttyUSB8 9600 # UART0 of 2nd CH348 board
 
-The __user is in the wrong spot. Move it to right spot and make sparse
-happy.
+One problem I've noticed is that writes to the tty fd never
+seem to block. On two CH340 adapters I have, they do seem to
+block, whereas here, you can see from the statistics at the
+end that magnitudes more bytes were written than read, with
+seemingly most of them being discarded. From my reading of
+the termios parameters I set, this shouldn't be the case,
+right?
 
-Closes: https://lore.kernel.org/oe-kbuild-all/202308222312.Jt4Tog5T-lkp@intel.com/
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/20230825014554.1769194-1-rick.p.edgecombe%40intel.com
----
- arch/x86/kernel/shstk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You can see from the error percentage that it gets less
+bad as you increase the serial baudrate; I've tested up
+to 6 mbaud like this. I assume that's because less written
+bytes get discarded.
 
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index cd10d07..fd68992 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -275,7 +275,7 @@ static int shstk_push_sigframe(unsigned long *ssp)
- 		return -EINVAL;
- 
- 	*ssp -= SS_FRAME_SIZE;
--	if (put_shstk_data((void *__user)*ssp, target_ssp))
-+	if (put_shstk_data((void __user *)*ssp, target_ssp))
- 		return -EFAULT;
- 
- 	return 0;
+Any ideas on whether I'm relying on weird driver behaviour
+with the blocking here or if this driver actually has a
+defect whereby it never signals to userspace that less
+bytes were written than have been submitted?
+
+Kind regards,
+Nicolas Frattaroli
+
+[1]: https://github.com/CounterPillow/serialtest
+
+
