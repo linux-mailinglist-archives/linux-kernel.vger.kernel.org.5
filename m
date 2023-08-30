@@ -2,143 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A81A778DD99
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9197D78DDAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245535AbjH3SwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
+        id S244069AbjH3Su3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243357AbjH3Kpo (ORCPT
+        with ESMTP id S243366AbjH3Kri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:45:44 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1831BE
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:45:41 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5009d4a4897so8445931e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693392340; x=1693997140; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fT/ozBf9lp5RAcCZGbAfkxmq5EWCKLUOVIlRGJ+e7rE=;
-        b=JVs8lX1Su1ICcNnoB0jqqAS2B75Jh8bq/4tv0MnVldY2xbAt6SjbIHlgnNspOjcItz
-         LB5WrCtUIUj3d3zP7pNaD/SS3gSs/7rJEKOKO1YVoDYpbd73rHUP5UMtK3z/kQ94ZJ+/
-         lBUqMpFixMW1IrjFfH7cLIo/1XX+fhmZxWOF/yt9jnawQGgBRc39Iz5hvI7iOcB5oV9n
-         a6yt31gzYPhK7AdAt0DT76wBG/g87NU960OuOay19p8hvhWgdOLvEQoQ7PrTJB7Uy659
-         bew+O7lMyN+Ysu0A8NP374YH179eCDEFy49SrvuiEeghbC0nb/C6+YxiwOzjWetZCpZo
-         xDaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693392340; x=1693997140;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fT/ozBf9lp5RAcCZGbAfkxmq5EWCKLUOVIlRGJ+e7rE=;
-        b=YBVbHMsKYIggBG/r08K5VqLzm+ZuRYWRrCTN6fQapKLXMrbgq3MHvaMSOhp9+jHq8c
-         TEcI1PRSQRLjd68FZIANXALduFvSw7ZzStu4+VUXjNwq6PH+usdgalgY35pqM8HSncNR
-         68Twe6vth+6QbGCAg7jiYpR/hhzpoGh/fZac56YRhcv70rloIEZ9VDqEdFzmK8UG0kLw
-         D+cLx3QKzFN8+uJFA3OKgWI4ins3MPavUGR6e53H1eIMvUd+p0ttNYm35p768l7YnqBG
-         g/GjfDrDrSZeAJRa7qSMuB3J9/30bBQ71pGzfD9rJbJ3WUiYThIdU8IWUXeurWfe+deD
-         zozw==
-X-Gm-Message-State: AOJu0YwyLqRFWYm+EPFHmoM1zwPicDaBKxdea9bdcJNuo+6ii/Tu+o32
-        uZldj8RtbUgktbyeMFbBb29jYg==
-X-Google-Smtp-Source: AGHT+IF1Bzc5p983+o6I1vBO6KSa4P7wHAmsv8YtZghMA+otHk7k6+kPCCfKX9dMUQW5mXfLnzLENA==
-X-Received: by 2002:a05:6512:310a:b0:4ff:8f12:c4d7 with SMTP id n10-20020a056512310a00b004ff8f12c4d7mr1357921lfb.31.1693392339844;
-        Wed, 30 Aug 2023 03:45:39 -0700 (PDT)
-Received: from [192.168.1.101] (abyl195.neoplus.adsl.tpnet.pl. [83.9.31.195])
-        by smtp.gmail.com with ESMTPSA id j17-20020a19f511000000b004ff6fa3f038sm2316808lfb.144.2023.08.30.03.45.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 03:45:39 -0700 (PDT)
-Message-ID: <1c95f61c-7460-43aa-9858-37e8799a1e5d@linaro.org>
-Date:   Wed, 30 Aug 2023 12:45:38 +0200
+        Wed, 30 Aug 2023 06:47:38 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF0F1BB
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 03:47:34 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RbLVS5vXWz6J7gc;
+        Wed, 30 Aug 2023 18:43:12 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 30 Aug
+ 2023 11:47:32 +0100
+Date:   Wed, 30 Aug 2023 11:47:31 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Amit Singh Tomar <amitsinght@marvell.com>
+CC:     Reinette Chatre <reinette.chatre@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        George Cherian <gcherian@marvell.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "peternewman@google.com" <peternewman@google.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: resctrl2 - status
+Message-ID: <20230830114731.00003590@Huawei.com>
+In-Reply-To: <MW4PR18MB50847485155B226B07DABEAAC6E7A@MW4PR18MB5084.namprd18.prod.outlook.com>
+References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
+        <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
+        <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+        <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
+        <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+        <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+        <20230829112321.00002b55@Huawei.com>
+        <MW4PR18MB50847485155B226B07DABEAAC6E7A@MW4PR18MB5084.namprd18.prod.outlook.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/11] arm64: dts: qcom: sc7280: Mark some nodes as
- 'reserved'
-Content-Language: en-US
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-1-5a954519bbad@fairphone.com>
- <160d6151-914b-4f2f-9f7c-d14cbb901619@linaro.org>
- <CV5T9FXMWOAT.2ZXS0CZ8S0EUM@otso>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <CV5T9FXMWOAT.2ZXS0CZ8S0EUM@otso>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.2023 12:35, Luca Weiss wrote:
-> On Wed Aug 30, 2023 at 12:08 PM CEST, Konrad Dybcio wrote:
->> On 30.08.2023 11:58, Luca Weiss wrote:
->>> With the standard Qualcomm TrustZone setup, components such as lpasscc,
->>> pdc_reset and watchdog shouldn't be touched by Linux. Mark them with
->>> the status 'reserved' and reeable them in the chrome-common dtsi.
->>>
->>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
->>> ---
->> Could probably use /* Owned by ADSP firmware */ or /* Owned by Gunyah hyp */
-> 
-> Do you know which one is more fitting for these nodes? I don't really
-> have a reference to if the ADSP or Gunyah (is this even used here?) owns
-> this.
-ADSP owns the audio hw, Gunyah owns the wdog
+On Tue, 29 Aug 2023 17:18:53 +0000
+Amit Singh Tomar <amitsinght@marvell.com> wrote:
 
-Konrad
+> -----Original Message-----
+> From: Jonathan Cameron <Jonathan.Cameron@Huawei.com> 
+> Sent: Tuesday, August 29, 2023 3:53 PM
+> To: Reinette Chatre <reinette.chatre@intel.com>
+> Cc: Luck, Tony <tony.luck@intel.com>; Amit Singh Tomar <amitsinght@marvell.com>; Yu, Fenghua <fenghua.yu@intel.com>; james.morse@arm.com; George Cherian <gcherian@marvell.com>; robh@kernel.org; peternewman@google.com; Drew Fustini <dfustini@baylibre.com>; linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> Subject: [EXT] Re: resctrl2 - status
+> 
+> External Email
+> 
+> ----------------------------------------------------------------------
+> On Fri, 25 Aug 2023 13:20:22 -0700
+> Reinette Chatre <reinette.chatre@intel.com> wrote:
+> 
+> > Hi Tony,
+> > 
+> > On 8/25/2023 12:44 PM, Luck, Tony wrote:  
+> > >>>> Alternatively, can user space just take a "load all resctrl 
+> > >>>> modules and see what sticks" (even modules of different 
+> > >>>> architectures since a user space may want to be generic) approach?  
+> > >>>
+> > >>> This mostly works. Except for the cases where different modules 
+> > >>> access the same underlying hardware, so can't be loaded together.
+> > >>>
+> > >>> Examples:
+> > >>>
+> > >>> rdt_l3_cat vs. rdt_l3_cdp - user needs to decide whether they want CDP or not.
+> > >>> But this is already true ... they have to decide whether to pass 
+> > >>> the "-o cdp" option to mount.
+> > >>>
+> > >>> rdt_l3_mba vs. rdt_l3_mba_MBps - does the user want to control 
+> > >>> memory bandwidth with percentages, or with MB/sec values. Again 
+> > >>> the user already has to make this decision when choosing mount options.
+> > >>>
+> > >>>
+> > >>> Maybe the "What resctrl options does this machine support?" 
+> > >>> question would be best answered with a small utility?  
+> > >>
+> > >> A user space utility or a kernel provided utility? If it is a user 
+> > >> space utility I think it would end up needing to duplicate what the 
+> > >> kernel is required to do to know if a particular feature is 
+> > >> supported. It seems appropriate that this could be a kernel utility 
+> > >> that can share this existing information with user space. resctrl already supports the interface for this via /sys/fs/resctrl/info.  
+> > > 
+> > > I was imagining a user space utility. Even though /proc/cpuinfo 
+> > > doesn't show all features, a utility has access to all the CPUID 
+> > > leaves that contain the details of each feature enumeration.  
+> > 
+> > For x86 that may work (in some scenarios, see later) for now but as I 
+> > understand Arm would need a different solution where I believe the 
+> > information is obtained via ACPI. I think it is unnecessary to require 
+> > user space to have parsers for CPUID and ACPI if that same information 
+> > needs to be parsed by the kernel and there already exists an interface 
+> > with which the information is communicated from kernel to user space. 
+> > Also, just because information CPUID shows a feature is supported by 
+> > the hardware does not mean that the kernel has support for that 
+> > feature. This could be because of a feature mismatch between user 
+> > space and kernel, or even some features disabled for use via the, for example "rdt=!l3cat", kernel parameter.  
+> 
+> James probably also has views on this, but I wouldn't expect userspace to go anywhere near ACPI parsing. If the description of what MPAM features are supported (before resctrl is running) is necessary, then we should add it to the existing description of the various caches etc.  Maybe somewhere in /sys/bus/node/devices/nodeX/cpuY/cache/indexZ/
+> for the caches
+> and
+> /sys/bus/node/devices/nodeX for the DRAM controllers.
+> [>>] Or may be all the MPAM features list is unified at one place, something like this ?  
+> https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=mpam/snapshot/v6.5-rc1&id=c32874cd1d68241c481a9d0c32c8c65d019c247e
+
+Fine for debug, not for generic tooling.
+
+Might be possible to do something separate but I would expect to see this
+info associated with the entities being controlled, not off on it's own
+somewhere else in sysfs or similar.
+
+Jonathan
+
+
+> 
+> I'm sure we can find somewhere sensible for other things covered by MPAM.
+> The MPAM table parsers and some early code to query features from the hardware should be able to figure out what is needed.
+> 
+> Perhaps x86 systems could provide similar descriptions but originating from CPUID etc.
+> 
+> Jonathan
+> 
+> >   
+> > >> fyi ... as with previous attempts to discuss this work I find it 
+> > >> difficult to discuss this work when you are selective about what 
+> > >> you want to discuss/answer and just wipe the rest. Through this I 
+> > >> understand that I am not your target audience.  
+> > > 
+> > > Not my intent. I value your input highly. I'm maybe too avid a 
+> > > follower of the "trim your replies" school of e-mail etiquette. I 
+> > > thought I'd covered the gist of your message.
+> > > 
+> > > I'll try to be more thorough in responding in the future.    
+> > 
+> > Two items from my previous email remain open:
+> > 
+> > First, why does making the code modular require everything to be 
+> > loadable modules?
+> > I think that it is great that the code is modular. Ideally it will 
+> > help to support the other architectures. As you explain this modular 
+> > design also has the benefit that "modules" can be loaded and unloaded after resctrl mount.
+> > Considering your example of MBA and MBA_MBps support ... if I 
+> > understand correctly with code being modular it enables changes from 
+> > one to the other after resctrl mount. User can start with MBA and then 
+> > switch to MBA_MBps without needing to unmount resctrl. What I do not 
+> > understand is why does the code being modular require everything to be 
+> > modules? Why, for example, could a user not interact with a resctrl 
+> > file that enables the user to make this switch from, for example, MBA 
+> > to MBA_MBps? With this the existing interfaces can remain to be 
+> > respected, the existing mount parameters need to remain anyway, while enabling future "more modular" usages.
+> > 
+> > Second, copied from my previous email, what is the plan to deal with 
+> > current users that just mount resctrl and expect to learn from it what 
+> > features are supported?
+> > 
+> > Reinette
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > https://urldefense.proofpoint.com/v2/url?u=http-3A__lists.infradead.or
+> > g_mailman_listinfo_linux-2Darm-2Dkernel&d=DwICAg&c=nKjWec2b6R0mOyPaz7x
+> > tfQ&r=V_GK7jRuCHDErm6txmgDK1-MbUihtnSQ3gPgB-A-JKU&m=ri5Ay9ia3NmwAS6P94yjZ7rPIR1dIqrIAIjpslfwcd5ulIIs5BNEG9jmTlq6H6o8&s=KZMxmC8InOxAyxgrDig96R2aKf2hc1C_hk_1413pjCI&e=
+> >   
+> 
+
