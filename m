@@ -2,105 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2BD78DBE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030D378DB35
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbjH3Sjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 14:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S238668AbjH3Sio convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Aug 2023 14:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343613AbjH3QPs (ORCPT
+        with ESMTP id S1343627AbjH3QUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 12:15:48 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D3D1A3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:15:43 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34bb0e34fbdso1892035ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 09:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1693412143; x=1694016943; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=84+SP1mxCxPsszug4wWaDlsL3ZFBxN4ycBABvZrJaYs=;
-        b=hmUElf4JG9R8Kjx9ZWVWNw+hT/pPkZgpgWENArPKg/gWpP/k/gpKOqMC4Wi4kdG7kJ
-         I1gK8bx9hsfXv+uthThnLVcDepqXJz0TR5VAgS6yyF0sBD6En11UR6zITsyKD8m1r5ce
-         4reyFvRGZjYHP3V6AoU+Pq8SJeObjQGYXeE32eD4pYpcw2BeDvNoU0oU+6ATpswJdkVr
-         dpbIbQJfsWZ8BeqgBR9I5yh1xXE5tqenXo8ViY2eLz6nf+lxq2mS8N5Mo02kr/MQ4hz3
-         75abj6z1ioLre/Cj0qk8lS7vEvkJ2f770J1k/m9KYxAYT9jrLduWQjoSXfQ8lsfJVwQa
-         iDvQ==
+        Wed, 30 Aug 2023 12:20:55 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D689D2;
+        Wed, 30 Aug 2023 09:20:53 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bc9353be9bso1443483a34.1;
+        Wed, 30 Aug 2023 09:20:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693412143; x=1694016943;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693412452; x=1694017252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=84+SP1mxCxPsszug4wWaDlsL3ZFBxN4ycBABvZrJaYs=;
-        b=GVIzHlXVKXxj/3/0WTK063N3klzM39W6YIMYlDIcR7QO+VT7xydTXoDQYuUNrHgQs/
-         Cm7Vsv9OgjrYZ58e4T714cb7xsxj/DoVvQMU83s4jd8+HJMtmp/xhldLxTSkaW0YcPht
-         7NcDEREbkR2s4ZpShAmluY+WIZX896smtLgiNJToy1XgIZ+yg8/EiWoJd/7iCFZqIAet
-         IcthX185e85PnZzbGyMIfDJBZyVMNJlPOymPMRSPkvA9i5zUt4yO5zoJQlnCdZLN5GJj
-         DZxgoeHhhMCFaZWbQ4IOVUJ9Vx28t4BEJnKdh9li6b3p1ichbg3adEbToWvv8F7iLkcX
-         /DeA==
-X-Gm-Message-State: AOJu0YyrD9FiJvF1HVHbclF0/MNNCfkm5SFAKSgP0vu6T4xbsc/Iab3L
-        2iqUeBLGv29ofVpqAH76wzM4OQ==
-X-Google-Smtp-Source: AGHT+IEl8p2IgLICIsJT+23ZrmKW3BqwOkbzIiIU2IlnywZSRPG4k0lU/hHjB2p+kNiPS+cFrjhaaA==
-X-Received: by 2002:a05:6602:3789:b0:794:da1e:b249 with SMTP id be9-20020a056602378900b00794da1eb249mr2751297iob.1.1693412142788;
-        Wed, 30 Aug 2023 09:15:42 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id n26-20020a02a91a000000b004165ac64e0asm3996341jam.40.2023.08.30.09.15.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 09:15:41 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     tj@kernel.org, josef@toxicpanda.com, yukuai3@huawei.com,
-        mkoutny@suse.com, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-In-Reply-To: <20230816012708.1193747-1-yukuai1@huaweicloud.com>
-References: <20230816012708.1193747-1-yukuai1@huaweicloud.com>
-Subject: Re: [PATCH -next v2 0/4] cleanup and fixes for
- 'carryover_ios/bytes'
-Message-Id: <169341214128.126809.887499172246974697.b4-ty@kernel.dk>
-Date:   Wed, 30 Aug 2023 10:15:41 -0600
+        bh=CeS9OdEd68YpyalTdlPZMygmVCYg7KL4ZpDyn/xRe/4=;
+        b=WoekO6vnwNoSIo6QNnKfk2wvZOPC+eVHQ8AoN7YLfbD6na4Go2C/uUXBn6USkCRVUm
+         FrC5WAPq7X/2B5PWgZH4h2LOyUFyYmuHVK+TBDf4ar6ImjHxIpM9BQ+75WGwR87qXzV2
+         JlZXpY2wLlkHmSMqoMKVnv+sEbUddeu0p+GIZNpzXRpSXkreyGsv1tXl4Hn78vYd9Ssu
+         EUMxyOXCmhH2KQXydpl1prcjnLErzRW+rgsu4EsoaB2TKqmuupJ5Afv1rm0ADu9sl4kD
+         siBtIFnfc+f82Op8BvInsKebB0/B1KafKEVueftMSsxTCZYWU1gmVhke2ye0NJWPDUvE
+         zluQ==
+X-Gm-Message-State: AOJu0YweeBiGltrcZELXlQPq63TZszfDKv+7vmXTlcJacWY27O6vMDKg
+        hfXHVE4tjsHp870zR75Rzg0Ljaxoy+mUkEAzh+w=
+X-Google-Smtp-Source: AGHT+IH7TEnfirEhx1gwGguuo2Dzd1et6vj1TBhatbD8UHOw6mPS4F5+8/4Z5y4aVW7DqlbyShcDP4i3A6P7NkHJkKQ=
+X-Received: by 2002:a4a:de8f:0:b0:573:55af:777c with SMTP id
+ v15-20020a4ade8f000000b0057355af777cmr2802339oou.0.1693412452678; Wed, 30 Aug
+ 2023 09:20:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230830161539.3864065-1-quic_poza@quicinc.com>
+In-Reply-To: <20230830161539.3864065-1-quic_poza@quicinc.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 30 Aug 2023 18:20:41 +0200
+Message-ID: <CAJZ5v0hurpTXp_x3rGjuZX4KMmoU3Gf9Jb9Zf+anjs__tpcw4w@mail.gmail.com>
+Subject: Re: [PATCH v4] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+To:     Oza Pawandeep <quic_poza@quicinc.com>
+Cc:     sudeep.holla@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        rafael@kernel.org, lenb@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 30, 2023 at 6:15 PM Oza Pawandeep <quic_poza@quicinc.com> wrote:
+>
+> Arm® Functional Fixed Hardware Specification defines LPI states,
+> which provide an architectural context loss flags field that can
+> be used to describe the context that might be lost when an LPI
+> state is entered.
+>
+> - Core context Lost
+>         - General purpose registers.
+>         - Floating point and SIMD registers.
+>         - System registers, include the System register based
+>         - generic timer for the core.
+>         - Debug register in the core power domain.
+>         - PMU registers in the core power domain.
+>         - Trace register in the core power domain.
+> - Trace context loss
+> - GICR
+> - GICD
+>
+> Qualcomm's custom CPUs preserves the architectural state,
+> including keeping the power domain for local timers active.
+> when core is power gated, the local timers are sufficient to
+> wake the core up without needing broadcast timer.
+>
+> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+> broadcast timer if core context lost is defined in ACPI LPI.
+>
+> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
 
-On Wed, 16 Aug 2023 09:27:04 +0800, Yu Kuai wrote:
-> changes in v2:
->  - fix missing adjustment in throtl_log().
-> 
-> Patch 1 print signed value for 'carryover_ios/bytes' to user.
-> 
-> Patch 2 fix that comparation ”unsigned value < negative value“ will
-> pass, causing that io won't be throttled in the silce.
-> 
-> [...]
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Applied, thanks!
+for the ACPI core changes in this patch and I would prefer it to go in
+via ARM64.
 
-[1/4] blk-throttle: print signed value 'carryover_bytes/ios' for user
-      commit: ef100397fac3e2e403d5d510e66f36e242654073
-[2/4] blk-throttle: fix wrong comparation while 'carryover_ios/bytes' is negative
-      commit: bb8d5587bdc3ab211e1eae2eeb966f7a7d1f9c0b
-[3/4] blk-throttle: use calculate_io/bytes_allowed() for throtl_trim_slice()
-      commit: e8368b57c006dc0e02dcd8a9dc9f2060ff5476fe
-[4/4] blk-throttle: consider 'carryover_ios/bytes' in throtl_trim_slice()
-      commit: eead0056648cef49d7b15c07ae612fa217083165
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+>
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index bd68e1b7f29f..0d455b02971e 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -9,6 +9,7 @@
+>  #ifndef _ASM_ACPI_H
+>  #define _ASM_ACPI_H
+>
+> +#include <linux/cpuidle.h>
+>  #include <linux/efi.h>
+>  #include <linux/memblock.h>
+>  #include <linux/psci.h>
+> @@ -42,6 +43,26 @@
+>  #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+>         spe_interrupt) + sizeof(u16))
+>
+> +/*
+> + * Arm® Functional Fixed Hardware Specification Version 1.2.
+> + * Table 2: Arm Architecture context loss flags
+> + */
+> +#define CPUIDLE_CORE_CTXT              BIT(0) /* Core context Lost */
+> +
+> +#ifndef arch_update_idle_state_flags
+> +static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
+> +                                                       unsigned int *sflags)
+> +{
+> +       if (arch_flags & CPUIDLE_CORE_CTXT)
+> +               *sflags |= CPUIDLE_FLAG_TIMER_STOP;
+> +}
+> +#define arch_update_idle_state_flags _arch_update_idle_state_flags
+> +#endif
+> +
+> +#define CPUIDLE_TRACE_CTXT             BIT(1) /* Trace context loss */
+> +#define CPUIDLE_GICR_CTXT              BIT(2) /* GICR */
+> +#define CPUIDLE_GICD_CTXT              BIT(3) /* GICD */
+> +
+>  /* Basic configuration for ACPI */
+>  #ifdef CONFIG_ACPI
+>  pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 9718d07cc2a2..420baec3465c 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -1221,8 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+>                 strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+>                 state->exit_latency = lpi->wake_latency;
+>                 state->target_residency = lpi->min_residency;
+> -               if (lpi->arch_flags)
+> -                       state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> +               arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+>                 if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+>                         state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+>                 state->enter = acpi_idle_lpi_enter;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index d584f94409e1..c320b474ed56 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1471,6 +1471,10 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  }
+>  #endif
+>
+> +#ifndef arch_update_idle_state_flags
+> +#define arch_update_idle_state_flags(af, sf)   do {} while (0)
+> +#endif
+> +
+>  #ifdef CONFIG_ACPI_PPTT
+>  int acpi_pptt_cpu_is_thread(unsigned int cpu);
+>  int find_acpi_cpu_topology(unsigned int cpu, int level);
+> --
