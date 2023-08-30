@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 269DE78DE3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 21:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A367878DDB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Aug 2023 20:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237148AbjH3TAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 15:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
+        id S245565AbjH3Sx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 14:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244715AbjH3Nr7 (ORCPT
+        with ESMTP id S244717AbjH3Nr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Aug 2023 09:47:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBF51BB
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:46:40 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACDCCC2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693403199;
+        s=mimecast20190719; t=1693403203;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UOJpuwbwTVfs+j95sEE93OpkqtbclA96WzipEC/nM14=;
-        b=Ajc4RXTRaqs5I0UDdsHHKD6sy/q7kOld/OnuN2CnAkzTkUoH/k7h2hGcasWHD0mplFqWls
-        yhRX5UGKO4hQsWFhBhopYsCTPtdn8DJ6eOPhPB69sviPXt0xt7zUFBgQT0ybMxd81HDTCs
-        GVODes/oVN/NS4SfvSQg4sY2JO+pxMM=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=w7XXAxDLUmZdx81fESQwCFLbPlVQDp3wBmzbmeWO24M=;
+        b=L6k7jZsZXblYV+GORLNd/Q6avmeL6q27K/1eF1gu/lc61SSUzOMv1hMxDCrj2YbdM/FvFU
+        ytBSviJ2jkyygjXvuz67eCcessNgugbueyvRC9Lg3It3EyxpF62//yx/z7CegKBMcLp6hK
+        zW6YRqcBdiSP9hU/Nxey7dTbfWm/Za0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-570-8YP4AMB-P8ucjMNdzh10jw-1; Wed, 30 Aug 2023 09:46:38 -0400
-X-MC-Unique: 8YP4AMB-P8ucjMNdzh10jw-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b6fdb8d0acso19452151fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:46:37 -0700 (PDT)
+ us-mta-295-FCtJ_KAjMSqGfYmmn7g7Pg-1; Wed, 30 Aug 2023 09:46:41 -0400
+X-MC-Unique: FCtJ_KAjMSqGfYmmn7g7Pg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a1aaaf6460so87012366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 06:46:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693403196; x=1694007996;
+        d=1e100.net; s=20221208; t=1693403200; x=1694008000;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UOJpuwbwTVfs+j95sEE93OpkqtbclA96WzipEC/nM14=;
-        b=dHitNMAbMAew/ADm2z0fpaeSsRJBdjtqNE5+FIIRPXwjU/FS7vxGNitX6BfUzpTPEY
-         +2Xcg7rpNTu92MWCS+MDn280ThZoRb5Sg9ClVqXIr1IaqtkfZl/w/PGVYIk+njaeM50d
-         Y5fe7zT7/VrZbeQJWGr0TXs85Vzozd4jhloLQ4aQhSMhzeUR+DOUuhxBzRRClt3fHp9M
-         wCsfzJEME+q8kWu+LMMIuC7+oP+CH3hPqaqnQWQj5ubBQK3RaeL4KaIzSEAW9gNhL2dC
-         Mo5wIuWfz4Q0G2Dnx3e0Mx33tp29rhrb2weJw+9ZHpxWOujlIdBwayIB0YBgbQ6cPh+0
-         l99g==
-X-Gm-Message-State: AOJu0YyJFEqFGDM5kdt90gsxcGnadmxQS5O4hJDCRYV7FU5WNQHK7Eaw
-        UUw6kdPrNg25QnBnFwwbIOJi/ar6j9m9mwC3oa3mlbhzkldP/pTQ/O80TCiMb2vMYSDk1eDABTv
-        PAwuSFBh8z2BJfk3GLoD2MhUA
-X-Received: by 2002:a05:651c:1182:b0:2bc:fc2e:766c with SMTP id w2-20020a05651c118200b002bcfc2e766cmr1857340ljo.3.1693403196828;
-        Wed, 30 Aug 2023 06:46:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHNBSsy/iFndvURQgQS9ZCnlQ9lW+9HBjOb1QIZNMn1l3Gt7cB24Ma8x0ITyx+CEVBlGHtj+A==
-X-Received: by 2002:a05:651c:1182:b0:2bc:fc2e:766c with SMTP id w2-20020a05651c118200b002bcfc2e766cmr1857319ljo.3.1693403196642;
-        Wed, 30 Aug 2023 06:46:36 -0700 (PDT)
+        bh=w7XXAxDLUmZdx81fESQwCFLbPlVQDp3wBmzbmeWO24M=;
+        b=XH7w8S1eEa8b79VSKInRdIez9dLgAGTop2phN2FhYtAwEuFqFlH/9qP+xw66ZitRv4
+         Lq/fNXxXGr3E2+qLC2i7irXnV6RTx7wsPHYe+BtnNucXqqpKu0b8jl2eRCNdqjztgLN3
+         fK6fpreyXwgns32QiaCmwz3plgHq5QOGdzUPhvlMbSBAHtyfrwF+v1InMiQ7obWnVLjI
+         VyHvTTryXdqzDIg4m+AQio7X2s+y7HOBYSUiTX+owMKbvurgqdP+GnYPVwDxYVwafXG9
+         AmRDBIIqPDMERQCK0toXyIdhldflix0YcESgj5KanpHUQuqzi/xLsbM9ymzlO0k8AYC2
+         +FHw==
+X-Gm-Message-State: AOJu0YxjKdmLdA6d3dJxCS8FRNJ+qb9UHvlPnP1ERnaxt0MSplObd+hJ
+        bcRoFcXMzVD1cuoA4vEKWJIqAZYP2gYecppziAkwtWMPOQ39+gt5icrw3E6HMr1EF85m+FIc7nO
+        IUpEnDZhBGJKSv8GX+KkNy0El
+X-Received: by 2002:a17:906:1011:b0:9a1:aea8:cb5a with SMTP id 17-20020a170906101100b009a1aea8cb5amr1574505ejm.1.1693403200684;
+        Wed, 30 Aug 2023 06:46:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEFovveJ1gRkNa/hbpuOdO660EpmuFNfSfZvj7MduSJ07LTCEG5M6k7oeDfsA0MPBedrGa9vw==
+X-Received: by 2002:a17:906:1011:b0:9a1:aea8:cb5a with SMTP id 17-20020a170906101100b009a1aea8cb5amr1574480ejm.1.1693403200487;
+        Wed, 30 Aug 2023 06:46:40 -0700 (PDT)
 Received: from fedorinator.fritz.box ([2001:9e8:32e4:1500:aa40:e745:b6c9:7081])
-        by smtp.gmail.com with ESMTPSA id li22-20020a170906f99600b009a198078c53sm7167678ejb.214.2023.08.30.06.46.35
+        by smtp.gmail.com with ESMTPSA id gy25-20020a170906f25900b0098951bb4dc3sm7218566ejb.184.2023.08.30.06.46.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:46:36 -0700 (PDT)
+        Wed, 30 Aug 2023 06:46:40 -0700 (PDT)
 From:   Philipp Stanner <pstanner@redhat.com>
 To:     Kees Cook <keescook@chromium.org>,
         Andy Shevchenko <andy@kernel.org>,
@@ -75,9 +75,9 @@ Cc:     VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>,
         kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
         Philipp Stanner <pstanner@redhat.com>,
         David Airlie <airlied@redhat.com>
-Subject: [PATCH 4/5] drm_lease.c: copy user-array safely
-Date:   Wed, 30 Aug 2023 15:45:55 +0200
-Message-ID: <34e14523c9cea13e2f63afabf2938c89d2e84776.1693386602.git.pstanner@redhat.com>
+Subject: [PATCH 5/5] drm: vmgfx_surface.c: copy user-array safely
+Date:   Wed, 30 Aug 2023 15:45:56 +0200
+Message-ID: <6f9397d6af919b7e8325c2945385c13aaa3dc5f1.1693386602.git.pstanner@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1693386602.git.pstanner@redhat.com>
 References: <cover.1693386602.git.pstanner@redhat.com>
@@ -101,24 +101,25 @@ duplicating the user-space array safely.
 Suggested-by: David Airlie <airlied@redhat.com>
 Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 ---
- drivers/gpu/drm/drm_lease.c | 4 ++--
+ drivers/gpu/drm/vmwgfx/vmwgfx_surface.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
-index 150fe1555068..94375c6a5425 100644
---- a/drivers/gpu/drm/drm_lease.c
-+++ b/drivers/gpu/drm/drm_lease.c
-@@ -510,8 +510,8 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 	/* Handle leased objects, if any */
- 	idr_init(&leases);
- 	if (object_count != 0) {
--		object_ids = memdup_user(u64_to_user_ptr(cl->object_ids),
--					 array_size(object_count, sizeof(__u32)));
-+		object_ids = memdup_array_user(u64_to_user_ptr(cl->object_ids),
-+					       object_count, sizeof(__u32));
- 		if (IS_ERR(object_ids)) {
- 			ret = PTR_ERR(object_ids);
- 			idr_destroy(&leases);
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+index 5db403ee8261..9be185b094cb 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+@@ -777,9 +777,9 @@ int vmw_surface_define_ioctl(struct drm_device *dev, void *data,
+ 	       sizeof(metadata->mip_levels));
+ 	metadata->num_sizes = num_sizes;
+ 	metadata->sizes =
+-		memdup_user((struct drm_vmw_size __user *)(unsigned long)
++		memdup_array_user((struct drm_vmw_size __user *)(unsigned long)
+ 			    req->size_addr,
+-			    sizeof(*metadata->sizes) * metadata->num_sizes);
++			    metadata->num_sizes, sizeof(*metadata->sizes));
+ 	if (IS_ERR(metadata->sizes)) {
+ 		ret = PTR_ERR(metadata->sizes);
+ 		goto out_no_sizes;
 -- 
 2.41.0
 
