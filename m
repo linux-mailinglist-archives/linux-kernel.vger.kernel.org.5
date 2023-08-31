@@ -2,170 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B89778E965
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC6178E967
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244672AbjHaJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
+        id S244802AbjHaJ3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238163AbjHaJ32 (ORCPT
+        with ESMTP id S238163AbjHaJ3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:29:28 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79847CEA;
-        Thu, 31 Aug 2023 02:29:24 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 3D11B86556;
-        Thu, 31 Aug 2023 11:29:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693474162;
-        bh=1D3Qgb3Pi6YnUtvh04RQFkgAJbK1KQQ0PEsZIO0c6W0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N3DCE24p+3/frfNRwhmRtciInUxjmkqmRSCmPmqUQbcs3zYhieAAGHm4o7av1k+eC
-         Op15I/GeshFQJ0X5IRpLfVG3fWAM6VYuKLWxd4yxcEXiud3+uNwptYv+d0qYbFtCEW
-         I0lQYu/fnkib38Clj1tnqQ/q+m9o57Ui5OXPiyoWbvmt/eT/cdrAXGVVom04UNl29p
-         w1oBCHRjdDf2nN6ZnRn/YntmMaJi3s8Dl2zI+Qbj6gULmFMxLMQCVMS2hfFAAv78a0
-         FcqwMDCtKS2j+OQ8cjIve+ZqbBk/JcipuI0+Qzh1vwJFi1OxdEDkfDAnwT2DCoo9UR
-         CFgq4iEdsrVqg==
-Date:   Thu, 31 Aug 2023 11:29:15 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: dsa: Extend the dsa_switch structure to hold
- info about HSR ports
-Message-ID: <20230831112915.5b114379@wsk>
-In-Reply-To: <6b4733f4a5bedd465b7ee5ea435dcdaf12a61321.camel@redhat.com>
-References: <20230829121132.414335-1-lukma@denx.de>
-        <20230829121132.414335-2-lukma@denx.de>
-        <6b4733f4a5bedd465b7ee5ea435dcdaf12a61321.camel@redhat.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 31 Aug 2023 05:29:48 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36C2CF2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 02:29:42 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 91366223;
+        Thu, 31 Aug 2023 11:28:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693474096;
+        bh=mmnCc3usX68hnUMuwcOIGkPfRe9piFESiry8XIREDig=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OAeOv++2BFnN1qI03k2/aReiZ72KzGhxZOBWTvm+75qqO7s8OoW2knicCyGZGxbt/
+         srvFt9qge3PU4SyuwNbmakWpKZcUA0QLksetsWEjDoj8PO3lM2q+sY5zKKalio7tlL
+         boyzq/4E6XpWjJlcPvkEbZrFZd+p1gc6VBfN1pOA=
+Date:   Thu, 31 Aug 2023 12:29:49 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Zhu Wang <wangzhu9@huawei.com>,
+        =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Guillaume BRUN <the.cheaterman@gmail.com>,
+        Rob Herring <robh@kernel.org>, Sandor Yu <Sandor.yu@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Ondrej Jirman <megi@xff.cz>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v6 3/4] drm/bridge: Drop CONFIG_OF conditionals around
+ of_node pointers
+Message-ID: <20230831092949.GE2698@pendragon.ideasonboard.com>
+References: <20230831080938.47454-1-biju.das.jz@bp.renesas.com>
+ <20230831080938.47454-4-biju.das.jz@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/660TvqHPzRjNY.MftTFaPm.";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230831080938.47454-4-biju.das.jz@bp.renesas.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/660TvqHPzRjNY.MftTFaPm.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Biju,
 
-Hi Paolo,
+Thank you for the patch.
 
-> On Tue, 2023-08-29 at 14:11 +0200, Lukasz Majewski wrote:
-> > Information about HSR aware ports in a DSA switch can be helpful
-> > when one needs tags to be adjusted before the HSR frame is sent.
-> >=20
-> > For example - with ksz9477 switch - the TAG needs to be adjusted to
-> > have both HSR ports marked in tag to allow execution of HW based
-> > frame duplication.
-> >=20
-> > Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> > ---
-> >  include/net/dsa.h | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >=20
-> > diff --git a/include/net/dsa.h b/include/net/dsa.h
-> > index d309ee7ed04b..15274afc42bb 100644
-> > --- a/include/net/dsa.h
-> > +++ b/include/net/dsa.h
-> > @@ -470,6 +470,9 @@ struct dsa_switch {
-> >  	/* Number of switch port queues */
-> >  	unsigned int		num_tx_queues;
-> > =20
-> > +	/* Bitmask indicating ports supporting HSR */
-> > +	u16                     hsr_ports;
-> > +
-> >  	/* Drivers that benefit from having an ID associated with
-> > each
-> >  	 * offloaded LAG should set this to the maximum number of
-> >  	 * supported IDs. DSA will then maintain a mapping of _at =20
->=20
-> Out of sheer ignorance, I think this new field does not belong to
-> dsa_switch, at least not in this form. AFAICS there is no current hard
-> limitation on the number of ports a DSA switch can handle at the API
-> level, and this will introduce an hard one.
->=20
-> I think you are better off keeping this field in the KSZ-specific
-> struct.
+On Thu, Aug 31, 2023 at 09:09:37AM +0100, Biju Das wrote:
+> Having conditional around the of_node pointers turns out to make driver
+> code use ugly #ifdef and #if blocks. So drop the conditionals.
+> 
+> Suggested-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-That was mine first idea - to move it to struct ksz_device from
-./drivers/net/dsa/ksz_common.h
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-However, this file and this struct is not easily accessible from
-net/dsa/tag_ksz.c
+> ---
+> v5->v6:
+>  * Added Rb tag from Douglas Anderson.
+>  * Dropped conditionals from remaining drm/bridge drivers.
+> v5:
+>  * Split from patch#2
+> ---
+>  drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 2 --
+>  drivers/gpu/drm/bridge/panel.c                     | 2 --
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c          | 2 --
+>  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c      | 2 --
+>  4 files changed, 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+> index 6169db73d2fe..ad8241758896 100644
+> --- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+> +++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+> @@ -1231,9 +1231,7 @@ static int anx78xx_i2c_probe(struct i2c_client *client)
+>  
+>  	mutex_init(&anx78xx->lock);
+>  
+> -#if IS_ENABLED(CONFIG_OF)
+>  	anx78xx->bridge.of_node = client->dev.of_node;
+> -#endif
+>  
+>  	anx78xx->client = client;
+>  	i2c_set_clientdata(client, anx78xx);
+> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
+> index 9316384b4474..7f41525f7a6e 100644
+> --- a/drivers/gpu/drm/bridge/panel.c
+> +++ b/drivers/gpu/drm/bridge/panel.c
+> @@ -302,9 +302,7 @@ struct drm_bridge *drm_panel_bridge_add_typed(struct drm_panel *panel,
+>  	panel_bridge->panel = panel;
+>  
+>  	panel_bridge->bridge.funcs = &panel_bridge_bridge_funcs;
+> -#ifdef CONFIG_OF
+>  	panel_bridge->bridge.of_node = panel->dev->of_node;
+> -#endif
+>  	panel_bridge->bridge.ops = DRM_BRIDGE_OP_MODES;
+>  	panel_bridge->bridge.type = connector_type;
+>  
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> index 6c1d79474505..52d91a0df85e 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> @@ -3541,9 +3541,7 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
+>  			 | DRM_BRIDGE_OP_HPD;
+>  	hdmi->bridge.interlace_allowed = true;
+>  	hdmi->bridge.ddc = hdmi->ddc;
+> -#ifdef CONFIG_OF
+>  	hdmi->bridge.of_node = pdev->dev.of_node;
+> -#endif
+>  
+>  	memset(&pdevinfo, 0, sizeof(pdevinfo));
+>  	pdevinfo.parent = dev;
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> index 04d4a1a10698..a8dd2a2e7c7b 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> @@ -1182,9 +1182,7 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>  
+>  	dsi->bridge.driver_private = dsi;
+>  	dsi->bridge.funcs = &dw_mipi_dsi_bridge_funcs;
+> -#ifdef CONFIG_OF
+>  	dsi->bridge.of_node = pdev->dev.of_node;
+> -#endif
+>  
+>  	return dsi;
+>  }
 
-One idea was to use an exported function - e.g. ksz_get_hsr_ports() and
-in it I would read the hsr_ports member ?
+-- 
+Regards,
 
-Another option would be to loop through all switch ports with
-hsr_for_each_port(), but this would affect overall network performance.
-
-> If you really want to keep it here you should remove the above
-> limitation somehow (possibly a query op to check if a given port is
-> HSR aware???)
-
-I will use the idea of exported helper function to get HSR members
-ports.
-
->=20
-> In any case this series looks like net-next material, does not apply
-> correctly to net-next and net-next is currently closed. You can share
-> a new version as RFC or wait for net-next to re-open in ~2w.
->=20
-
-I will prepare v2 and then adjust it to net-next when required.
-
-> Cheers,
->=20
-> Paolo
->=20
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/660TvqHPzRjNY.MftTFaPm.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTwXWsACgkQAR8vZIA0
-zr3diQgA3y/D/XBRsPzCT0wKoUyGMoext1WPk/GH4t9IQJAHHVtRZgBU7Y5B1Gh0
-ADbhxOxQUOqfR7avWZR6n4S46/3LD2E5xiA9Y36ZtXrxFibDgLhYWtuLiu0mG0nT
-eqWcZEKnPl6jpf6V+kGFBJSqGJxlIFKLJW5iBHZEgrAc3FIAu+oVv+0JUnAv9C4d
-Kna3Cp4ifwpLd9yGBHVphhXrV4HISoGctpsBCXyNdf6Pqsu/5gxXLF2yPYe+dAUT
-uZS2SYYx6cI/HtoMQRVHOK8HQl7jYYZD7TwueuMHBTIhWOE622aR2Ho1S7CCkmKN
-GyCG9p1E4hWH89wWXKmx5qZrV117YA==
-=YLWD
------END PGP SIGNATURE-----
-
---Sig_/660TvqHPzRjNY.MftTFaPm.--
+Laurent Pinchart
