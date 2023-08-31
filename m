@@ -2,218 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C265578E68E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0AC78E6C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344492AbjHaGba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 02:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        id S239438AbjHaGuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 02:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbjHaGb3 (ORCPT
+        with ESMTP id S233852AbjHaGuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 02:31:29 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2054.outbound.protection.outlook.com [40.107.95.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DB2A4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:31:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bAPAal8mCHwyWCH17FphX/7v7jVJgUb5WibwLo+C99t6ZmQPQokiskwxzQJykZO9nysOmg1k3rGczIubGo7I4VlSX3pLX4kIv3cSncALuXBXZJLUd+MWvfW5r6G03sMeIr3FXTlNDsDvvrMAtG7wWuwSlGs4+7iM4XDjH3A9mrG++EUgBwtDDoN2srrdmVmFsH/sQ91z3vYdlRNNNOsqsTlercf+DP4dB4bhpSZesOw1m0g1oLmUy4Hsp72vAR+mCMXuEBrp2sL0qnAnm5L5x5+E6A1Az//Xk3rDbC6evbx9WN9n8qMwTE19puouKpEybMEZYqdVsNBPtsWoSY+Z0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LRnwTB6e4UprRvmIQK26IrUM9GbqgxJCLeh8dW4tBCU=;
- b=Lv59YG9F7GztKcEzDLusuhFiwC15gouqg6Bh7G61EtfKkp/t7B+r58NaFHpARW82B9g2uQvsfa/4pGEuZXMXL6SQEGeQzRE+mRGrOJnZSSJe+QEdkFHqkJgI63MAaN2TmEPnzZtDOQcxqNQKGXLmobFJjTenIugQG8Fz3jhx3gYVR9v1vnfMf/2+N8QYIxp9vwDMRzAAw/7ObQ3Tw3EysiDuhGjOdyuhEbyW2KlNV0+G59EJQc8iGRdb0QGNTYOQIdsXmNRAWnUpTucHjLvXYPEzUq09Q7uL0vvKRS21XZ01WL8BSuEWWYeesQvnsFuI4oOeNfDIFCbSyBG7GeDSvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LRnwTB6e4UprRvmIQK26IrUM9GbqgxJCLeh8dW4tBCU=;
- b=vtaZDaJzLWVNcHXHHQKd8BJE/Q77dvAbajC5plHxEAMhJQgs9YC4rCjgaWbdYVnwaRQaExw6KgDxPJtbtzdaqI7yNIaKMfp9hrSlFrlGsvZjznPHa9zltX9ixK9Z7CRpWsWJa/n+37ksbEDwU1coiyhtyOrBbqPuQycs+6YMnYc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by SJ0PR12MB5408.namprd12.prod.outlook.com (2603:10b6:a03:305::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Thu, 31 Aug
- 2023 06:31:23 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6745.021; Thu, 31 Aug 2023
- 06:31:23 +0000
-Message-ID: <5b9f24d0-00b3-4581-826d-0bce8c9349ce@amd.com>
-Date:   Thu, 31 Aug 2023 08:31:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] drm/amdgpu: Create an option to disable soft
- recovery
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>
-References: <20230830220808.421935-1-andrealmeid@igalia.com>
- <20230830220808.421935-3-andrealmeid@igalia.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20230830220808.421935-3-andrealmeid@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0242.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:af::12) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Thu, 31 Aug 2023 02:50:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F9FAB
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:49:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693464570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=a0j4n2f1vvayV+xcAyvLcHnKmq3B9Kju9cEAHJNe8NI=;
+        b=hO84rlnlwj+8x0HwoNjYYwPgfT5Si2NQ3tsQmo0d3PQ5aZBByQ3PaGmM5h+XiEG2ubiPAj
+        CFNYjlrFwGENTY5Mr7n3DhW900VErVsaqVN4DV2XBHPicl1W9N8z6j+3YQ6YW8GVVAvTwL
+        RTaF1iyn4TmaGkuh/zq4cJ7kBJZ9XwY=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-P6M_U51_NHyTk2NOS-ddQg-1; Thu, 31 Aug 2023 02:31:45 -0400
+X-MC-Unique: P6M_U51_NHyTk2NOS-ddQg-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a7292a2ad5so586472b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:31:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693463504; x=1694068304;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a0j4n2f1vvayV+xcAyvLcHnKmq3B9Kju9cEAHJNe8NI=;
+        b=eaFLk+LV+joYDXNMkuSQ4+oiPpks6pKJnGGpUPZ421S+ZNZw7XyQfeprNT1hSNHsuc
+         9Pglg9wf04YszTs4AQsbsAa/1L16W/rayc+7G8i72SaXCFS2UopMhHZMaZI2QR90l3MC
+         Pdm84vUQfs+lmnuTmUrG4xj7WA+8vnZ2HJVq5jchFFsJvuUBYocEYfwc0CQew4kCDUMv
+         LSultYpcbadcdyasa+VPOhR5MNg1lhDhtI4AyW4c0Qt0Ix87E7xhQdgaxkUcMqW/14Gt
+         e/EJO8CeWOwuxFndP7ctlmiENy0xbtmmq5sE56zLNninp3lnWhFq9hTZ3iCzkyErKpZY
+         6bYA==
+X-Gm-Message-State: AOJu0YzgatYpzijzTvakmFJwbM2KSBKooBx996BsWS3CwoItuUfAvwxP
+        4ReZY/FDq1ZDGqAWYGuPxg7F84d5LVqagc77HDTowY0DBKT0pSm22DC+9YzNsUNct5HCBeAn1sv
+        EjbFInlbWcHHVnfqPg2t+n0sK
+X-Received: by 2002:a05:6808:238f:b0:3a1:e85f:33ee with SMTP id bp15-20020a056808238f00b003a1e85f33eemr5621618oib.56.1693463504369;
+        Wed, 30 Aug 2023 23:31:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFWGPbpGZOjZ1PVSXOQOOFe4pOZuYRECY9B070QswchEb6V81KoAeJA5CjZWgpMx6HCqme1wA==
+X-Received: by 2002:a05:6808:238f:b0:3a1:e85f:33ee with SMTP id bp15-20020a056808238f00b003a1e85f33eemr5621611oib.56.1693463504114;
+        Wed, 30 Aug 2023 23:31:44 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a802:98e3:3c98:3d83:9703:4411])
+        by smtp.gmail.com with ESMTPSA id fa28-20020a0568082a5c00b003a9a35349b1sm404009oib.24.2023.08.30.23.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 23:31:43 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Guo Ren <guoren@kernel.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Leonardo Bras <leobras@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: [RFC PATCH 1/1] smp: Change function signatures to use call_single_data_t
+Date:   Thu, 31 Aug 2023 03:31:28 -0300
+Message-ID: <20230831063129.335425-1-leobras@redhat.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ0PR12MB5408:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11e0b0c8-fe4c-4536-826e-08dba9ebe561
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eX6niz1kds1VJHN8QL5wKa5omfgLlgVdFa1kggCsQICthdyHrY3J7cT7A3VpNFBe0fP/vHhSN0p/2VQE9o0mmF9lC9DF+HV/rH1vZl+s3q3iZUCUVb2uHPKoz0Dyauow92nXdnZkEPrL5VfN+De1nlSEfc8xZZifz/9bmn5Gj2t+Dqz2J5IE+2WjMlZ1ed8JB+J9im0ZqiMrluhjrshRf8YtgdOdxsHoWOzIv3txcjizMhVtJeSx5kySjqUc7f28tSRhrtbg4SPw6280p6TjhEtTQyxNx7RaGwKpnPG2NWcTpSvkq5yIMpi+HTqLgqJstFXsMYaENbE6owVRebEBdfDBVGkL5odhJkgJp+WQNG5F5QPoX+319GV5Hu4k2kKU6Irz5DuWNd1YmFd/buFeONYat8wy9bWrh/MUN6gzBehZzcqaUxihrWWyhtl6UeRinAXbi5fszBIaPEFc11x37xTkLSvF6+WvjbE3QWxAvjj6VqQVwCpsfdi69Ag+AGGdIMFRgWxrMz7Hgy52p42wPM8JQ2Rkd5W7KY/pTrEa6nohzRw9p76nooo3GW5KYF6x5SVRT4jE9s5aBI4RVK2qfkF6dvcNYZBeH9c4jhc7UmrUmXXOqj3XhcaQRuTgPjm8LkEcxUKRubtaOJoJLQw6dQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(366004)(396003)(346002)(186009)(451199024)(1800799009)(6512007)(6486002)(6506007)(6666004)(83380400001)(478600001)(2906002)(26005)(316002)(66476007)(4326008)(66574015)(66556008)(8676002)(41300700001)(66946007)(5660300002)(8936002)(86362001)(36756003)(31696002)(38100700002)(2616005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2hTZUNmU2tzZVc2eW5sL2YzN0trYUx1RjhVNmJOVVJQQjlXQ0RLZmZvalNP?=
- =?utf-8?B?VldlL0NXZVV5YnFzK21NNVZLMW5LWDNGV21ZNEEzZ3NUdkN3cDFEbUFVTHhB?=
- =?utf-8?B?b1ZDZ1kvUjN2S0gxd09BRkxYK0YrL0RFSTFQN1RJSnNTWTBsREFxcUM5SWM5?=
- =?utf-8?B?RGllaVE1blJLQWpBQ1k0cEpvRWUyTHpTZWVwR0VKeW0zNmNaYVRSM2dmWm45?=
- =?utf-8?B?OUVScXdSTTN4cG5EVkYvM2t6VUtrQ05OZDZRV0ZKZkl5RHJlVWoya0FjZHZ1?=
- =?utf-8?B?eHJSMncwRmJubW96TFJGYTlQemJGVEFFSU5ZWVpJNERaaVd6REQxdXNKaGdH?=
- =?utf-8?B?YUJXYWhlRVQwdmMySUVLcjJKcTVwR3lCRnhCOUpHMWgwbzlPVndnR2ZSSy8y?=
- =?utf-8?B?STY1dmF4L1dneHBBV3B4ejFEcXYrTEozWFVIZkFxR2hzMnBZTXdRMnowZXNj?=
- =?utf-8?B?Q0lwelJxVWROUTJ4SGp4TXRycmZyZ3ExSU11MWI0TzVWZkdRV1NwKy8weXF4?=
- =?utf-8?B?b3VjWGxEUHBtR1hWVGU0eWpBbGRMS2pmcE5hcDA4VTljUGtsMzJOUTIxNUls?=
- =?utf-8?B?dXd6KzNqaUxEenVZV1dWQUNpTU5rTGxVc3lLZ3pMdmJTVkIwOUtuUytPaWo5?=
- =?utf-8?B?R2dxRVRiZWJhUlpneEh0YUIrTE5yZkt2dnN3UXNqOG56dnJZSWFCZ0pzWTR3?=
- =?utf-8?B?aUZ6cGlmV202d0dKbUN4alBhVGxWS2JYVjB1aFdROXRRQVk0VnJGYXhrUGRC?=
- =?utf-8?B?R0RDTGVLMG1IdXFxdEFQcmRtS2loUTBvV1B0TVpERFBtdCtNR3pGRllpL1h6?=
- =?utf-8?B?ZWNVSlhzYzZhcWprckJadXlIU2FuTXYvM2t0RGVnZ0RvZ1Y0c3lBYnpLWkRh?=
- =?utf-8?B?WElYSUVOTnAyS1JYdkwwMzBQSWRQbWRFb3VZYmxMWW16YVJYTk5ocE4zVSto?=
- =?utf-8?B?YVp2c2JNMXZDUFgyK2dvNkY0V0Q5NTB4Q2dOc2lFYVkwUUh3QjBCOVdVN203?=
- =?utf-8?B?elZRMHRpSmlPUzRNUWFhdXUxTkdwQmg0OG95clNPK3ZEWk1HRmMrdTlERXdQ?=
- =?utf-8?B?dEJMa3lXdlNNSVNKWWxMUkMrN2lyMFovRVlVZXBhMjR0SFpFejlKQXBSa2pI?=
- =?utf-8?B?Zkp6Z2U0UEZ3RXM3S3J2VE1mRStPUXBJQkxFR1RjclovTlEyTWlWbUE2dHc3?=
- =?utf-8?B?SkdHK3lVVWF0QUtGWG42aXJEVjR2QmIvL2dQTE9Eb1BxdTZpSDAvRmRrelZC?=
- =?utf-8?B?bGk0b21GaVRiM1hKUUdORmRTeUZrTDJWVVBTaFZ1cDQrbFRyTHlrWmlUbWJm?=
- =?utf-8?B?cU9vVDg4SGlXMW9LZlNLMkpvWmE1MkVDM0d2OFNoclBsYlZyWG4zN1o3a1Jj?=
- =?utf-8?B?Sk5XcWRaYXJRNEIvRzBJZlVTR0UxUFROc2hWbFl2VUwwMXo1aUxRMDlCSmZu?=
- =?utf-8?B?UFVYN0QwOEVIQmpVRlNBZ05ZVEdncFpmdGVFT29pT3hVd2RNWUpQamxpNGpp?=
- =?utf-8?B?Qll2K1VCY2RvN0lxUHdKWW9TWFd2bUM4TktxWW1iSHlpejNvS2o0Wk1lazVW?=
- =?utf-8?B?cXlObzdnSnVkVmhvcFNvSkNCU1hzK054bm90V1B3c04xV213L0ZXT0dCbFhM?=
- =?utf-8?B?SmRXYzNvVnh4cEo1TkhoUGpBVXdkMnJSOXJENUt5bTlHcTNaWVRMZ1hNRTdQ?=
- =?utf-8?B?Z2VybXpIaDMvb09kNlp0cVYxTjdDTG5WMTRtbytQR3JHTm5SQmdvOEhhcDVF?=
- =?utf-8?B?a1RRbk85YytMRk9MUzR4LzBlcDVyQTVWZXNtU25YeVFoVmh1U0UxbW5YRU1l?=
- =?utf-8?B?WGFRYThpMm9SbHJHK2tzajR4TGg5NUo1Ulh6T2JIdkhqSnlYTHlRMDV3UVE5?=
- =?utf-8?B?dFBKc3Rsend5cXpjdGwrWXRMRE1LWFpId2dxbmtlMktKbGhqWTU4ems2WEpS?=
- =?utf-8?B?SmxoSTVkTnB0aktUSS9XTyt3QWdqdU5FYVJnN2twcWtLcE5sdno4UWVTcFNm?=
- =?utf-8?B?SmVIZkVQRy9GSjRDMkRXOXBXQTVJaTQvY1BsUytnenI5U2ZxdmZPT09xV2FQ?=
- =?utf-8?B?NWxWMFloSk1RSFdiaWJLMnRtQkYzbUszSGVjTXMwZVdMNXpqa210Z2ZXUGd0?=
- =?utf-8?Q?DsOsyPnw94UCYUxIp2kxhG/Xu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11e0b0c8-fe4c-4536-826e-08dba9ebe561
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 06:31:23.6261
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EBfj/TZKme+f/+X4DdwkAA1KqWPmTM7nsyOvPT0JbyEs7dwqk5Rs3nxfogjdZa2t
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5408
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 31.08.23 um 00:08 schrieb André Almeida:
-> Create a module option to disable soft recoveries on amdgpu, making
-> every recovery go through the device reset path. This option makes
-> easier to force device resets for testing and debugging purposes.
->
-> Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu.h      | 1 +
->   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 6 ++++++
->   drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c | 6 +++++-
->   drivers/gpu/drm/amd/include/amd_shared.h | 1 +
->   4 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> index 82eaccfce347..5f49e2c0ae7a 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -1105,6 +1105,7 @@ struct amdgpu_device {
->   	/* Debug */
->   	bool                            debug_vm;
->   	bool                            debug_largebar;
-> +	bool                            debug_disable_soft_recovery;
->   };
->   
->   static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> index 0cd48c025433..59e9fe594b51 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> @@ -927,6 +927,7 @@ MODULE_PARM_DESC(enforce_isolation, "enforce process isolation between graphics
->    * - 0x2: Enable simulating large-bar capability on non-large bar system. This
->    *   limits the VRAM size reported to ROCm applications to the visible
->    *   size, usually 256MB.
-> + * - 0x4: Disable GPU soft recovery
+call_single_data_t is a size-aligned typedef of struct __call_single_data.
 
-"Disable GPU soft recovery, always do a full reset."
+This alignment is desirable in order to have smp_call_function*() avoid
+bouncing an extra cacheline in case of an unaligned csd, given this
+would hurt performance.
 
-Apart from that Reviewed-by: Christian König <christian.koenig@amd.com>.
+Since the removal of struct request->csd in commit 660e802c76c8
+("blk-mq: use percpu csd to remote complete instead of per-rq csd") there
+are no current users of smp_call_function*() with unaligned csd.
 
-Regards,
-Christian.
+Change every 'struct __call_single_data' function parameter to
+'call_single_data_t', so we have warnings if any new code tries to
+introduce an smp_call_function*() call with unaligned csd.
 
->    */
->   MODULE_PARM_DESC(debug_mask, "debug options for amdgpu, disabled by default");
->   module_param_named(debug_mask, amdgpu_debug_mask, uint, 0444);
-> @@ -2046,6 +2047,11 @@ static void amdgpu_init_debug_options(struct amdgpu_device *adev)
->   		pr_info("debug: enabled simulating large-bar capability on non-large bar system\n");
->   		adev->debug_largebar = true;
->   	}
-> +
-> +	if (amdgpu_debug_mask & AMDGPU_DEBUG_DISABLE_GPU_SOFT_RECOVERY) {
-> +		pr_info("debug: soft reset for GPU recovery disabled\n");
-> +		adev->debug_disable_soft_recovery = true;
-> +	}
->   }
->   
->   static int amdgpu_pci_probe(struct pci_dev *pdev,
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-> index 80d6e132e409..6a80d3ec887e 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-> @@ -434,8 +434,12 @@ bool amdgpu_ring_soft_recovery(struct amdgpu_ring *ring, unsigned int vmid,
->   			       struct dma_fence *fence)
->   {
->   	unsigned long flags;
-> +	ktime_t deadline;
->   
-> -	ktime_t deadline = ktime_add_us(ktime_get(), 10000);
-> +	if (unlikely(ring->adev->debug_disable_soft_recovery))
-> +		return false;
-> +
-> +	deadline = ktime_add_us(ktime_get(), 10000);
->   
->   	if (amdgpu_sriov_vf(ring->adev) || !ring->funcs->soft_recovery || !fence)
->   		return false;
-> diff --git a/drivers/gpu/drm/amd/include/amd_shared.h b/drivers/gpu/drm/amd/include/amd_shared.h
-> index 2fd6af2183cc..32ee982be99e 100644
-> --- a/drivers/gpu/drm/amd/include/amd_shared.h
-> +++ b/drivers/gpu/drm/amd/include/amd_shared.h
-> @@ -263,6 +263,7 @@ enum amd_dpm_forced_level;
->   enum AMDGPU_DEBUG_MASK {
->   	AMDGPU_DEBUG_VM = BIT(0),
->   	AMDGPU_DEBUG_LARGEBAR = BIT(1),
-> +	AMDGPU_DEBUG_DISABLE_GPU_SOFT_RECOVERY = BIT(2),
->   };
->   
->   /**
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+---
+ include/linux/smp.h        |  2 +-
+ include/trace/events/csd.h |  8 ++++----
+ kernel/smp.c               | 26 +++++++++++++-------------
+ kernel/up.c                |  2 +-
+ 4 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/include/linux/smp.h b/include/linux/smp.h
+index 91ea4a67f8ca..e87520dc2959 100644
+--- a/include/linux/smp.h
++++ b/include/linux/smp.h
+@@ -53,7 +53,7 @@ int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
+ void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
+ 			   void *info, bool wait, const struct cpumask *mask);
+ 
+-int smp_call_function_single_async(int cpu, struct __call_single_data *csd);
++int smp_call_function_single_async(int cpu, call_single_data_t *csd);
+ 
+ /*
+  * Cpus stopping functions in panic. All have default weak definitions.
+diff --git a/include/trace/events/csd.h b/include/trace/events/csd.h
+index 67e9d01f80c2..58cc83b99c34 100644
+--- a/include/trace/events/csd.h
++++ b/include/trace/events/csd.h
+@@ -12,7 +12,7 @@ TRACE_EVENT(csd_queue_cpu,
+ 	TP_PROTO(const unsigned int cpu,
+ 		unsigned long callsite,
+ 		smp_call_func_t func,
+-		struct __call_single_data *csd),
++		call_single_data_t *csd),
+ 
+ 	TP_ARGS(cpu, callsite, func, csd),
+ 
+@@ -39,7 +39,7 @@ TRACE_EVENT(csd_queue_cpu,
+  */
+ DECLARE_EVENT_CLASS(csd_function,
+ 
+-	TP_PROTO(smp_call_func_t func, struct __call_single_data *csd),
++	TP_PROTO(smp_call_func_t func, call_single_data_t *csd),
+ 
+ 	TP_ARGS(func, csd),
+ 
+@@ -57,12 +57,12 @@ DECLARE_EVENT_CLASS(csd_function,
+ );
+ 
+ DEFINE_EVENT(csd_function, csd_function_entry,
+-	TP_PROTO(smp_call_func_t func, struct __call_single_data *csd),
++	TP_PROTO(smp_call_func_t func, call_single_data_t *csd),
+ 	TP_ARGS(func, csd)
+ );
+ 
+ DEFINE_EVENT(csd_function, csd_function_exit,
+-	TP_PROTO(smp_call_func_t func, struct __call_single_data *csd),
++	TP_PROTO(smp_call_func_t func, call_single_data_t *csd),
+ 	TP_ARGS(func, csd)
+ );
+ 
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 8455a53465af..8c714583786b 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -127,7 +127,7 @@ send_call_function_ipi_mask(struct cpumask *mask)
+ }
+ 
+ static __always_inline void
+-csd_do_func(smp_call_func_t func, void *info, struct __call_single_data *csd)
++csd_do_func(smp_call_func_t func, void *info, call_single_data_t *csd)
+ {
+ 	trace_csd_function_entry(func, csd);
+ 	func(info);
+@@ -174,7 +174,7 @@ module_param(csd_lock_timeout, ulong, 0444);
+ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+ 
+ /* Record current CSD work for current CPU, NULL to erase. */
+-static void __csd_lock_record(struct __call_single_data *csd)
++static void __csd_lock_record(call_single_data_t *csd)
+ {
+ 	if (!csd) {
+ 		smp_mb(); /* NULL cur_csd after unlock. */
+@@ -189,13 +189,13 @@ static void __csd_lock_record(struct __call_single_data *csd)
+ 		  /* Or before unlock, as the case may be. */
+ }
+ 
+-static __always_inline void csd_lock_record(struct __call_single_data *csd)
++static __always_inline void csd_lock_record(call_single_data_t *csd)
+ {
+ 	if (static_branch_unlikely(&csdlock_debug_enabled))
+ 		__csd_lock_record(csd);
+ }
+ 
+-static int csd_lock_wait_getcpu(struct __call_single_data *csd)
++static int csd_lock_wait_getcpu(call_single_data_t *csd)
+ {
+ 	unsigned int csd_type;
+ 
+@@ -210,7 +210,7 @@ static int csd_lock_wait_getcpu(struct __call_single_data *csd)
+  * the CSD_TYPE_SYNC/ASYNC types provide the destination CPU,
+  * so waiting on other types gets much less information.
+  */
+-static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *ts1, int *bug_id)
++static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, int *bug_id)
+ {
+ 	int cpu = -1;
+ 	int cpux;
+@@ -276,7 +276,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+  * previous function call. For multi-cpu calls its even more interesting
+  * as we'll have to ensure no other cpu is observing our csd.
+  */
+-static void __csd_lock_wait(struct __call_single_data *csd)
++static void __csd_lock_wait(call_single_data_t *csd)
+ {
+ 	int bug_id = 0;
+ 	u64 ts0, ts1;
+@@ -290,7 +290,7 @@ static void __csd_lock_wait(struct __call_single_data *csd)
+ 	smp_acquire__after_ctrl_dep();
+ }
+ 
+-static __always_inline void csd_lock_wait(struct __call_single_data *csd)
++static __always_inline void csd_lock_wait(call_single_data_t *csd)
+ {
+ 	if (static_branch_unlikely(&csdlock_debug_enabled)) {
+ 		__csd_lock_wait(csd);
+@@ -300,17 +300,17 @@ static __always_inline void csd_lock_wait(struct __call_single_data *csd)
+ 	smp_cond_load_acquire(&csd->node.u_flags, !(VAL & CSD_FLAG_LOCK));
+ }
+ #else
+-static void csd_lock_record(struct __call_single_data *csd)
++static void csd_lock_record(call_single_data_t *csd)
+ {
+ }
+ 
+-static __always_inline void csd_lock_wait(struct __call_single_data *csd)
++static __always_inline void csd_lock_wait(call_single_data_t *csd)
+ {
+ 	smp_cond_load_acquire(&csd->node.u_flags, !(VAL & CSD_FLAG_LOCK));
+ }
+ #endif
+ 
+-static __always_inline void csd_lock(struct __call_single_data *csd)
++static __always_inline void csd_lock(call_single_data_t *csd)
+ {
+ 	csd_lock_wait(csd);
+ 	csd->node.u_flags |= CSD_FLAG_LOCK;
+@@ -323,7 +323,7 @@ static __always_inline void csd_lock(struct __call_single_data *csd)
+ 	smp_wmb();
+ }
+ 
+-static __always_inline void csd_unlock(struct __call_single_data *csd)
++static __always_inline void csd_unlock(call_single_data_t *csd)
+ {
+ 	WARN_ON(!(csd->node.u_flags & CSD_FLAG_LOCK));
+ 
+@@ -376,7 +376,7 @@ void __smp_call_single_queue(int cpu, struct llist_node *node)
+  * for execution on the given CPU. data must already have
+  * ->func, ->info, and ->flags set.
+  */
+-static int generic_exec_single(int cpu, struct __call_single_data *csd)
++static int generic_exec_single(int cpu, call_single_data_t *csd)
+ {
+ 	if (cpu == smp_processor_id()) {
+ 		smp_call_func_t func = csd->func;
+@@ -667,7 +667,7 @@ EXPORT_SYMBOL(smp_call_function_single);
+  *
+  * Return: %0 on success or negative errno value on error
+  */
+-int smp_call_function_single_async(int cpu, struct __call_single_data *csd)
++int smp_call_function_single_async(int cpu, call_single_data_t *csd)
+ {
+ 	int err = 0;
+ 
+diff --git a/kernel/up.c b/kernel/up.c
+index a38b8b095251..df50828cc2f0 100644
+--- a/kernel/up.c
++++ b/kernel/up.c
+@@ -25,7 +25,7 @@ int smp_call_function_single(int cpu, void (*func) (void *info), void *info,
+ }
+ EXPORT_SYMBOL(smp_call_function_single);
+ 
+-int smp_call_function_single_async(int cpu, struct __call_single_data *csd)
++int smp_call_function_single_async(int cpu, call_single_data_t *csd)
+ {
+ 	unsigned long flags;
+ 
+-- 
+2.42.0
 
