@@ -2,81 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7592F78E58F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E85E78E594
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242586AbjHaFBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 01:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
+        id S237977AbjHaFLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 01:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239792AbjHaFBQ (ORCPT
+        with ESMTP id S229924AbjHaFLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 01:01:16 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E62EE
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 22:01:12 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bf5c314a57so2749515ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 22:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693458072; x=1694062872; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LG57Ipqd8qnPkHXmEM2qU3rXEf7cPd3YjyUXTm2SJUY=;
-        b=ZW7uzyAA3Mj4dWvC2R0TadSaGLhea/1SJyIyxX1ek9CNtwKfUFk1/EVyLrKPT1pAr3
-         y5J0UEF8eSaWE+KjtBFWZ8hjCARAFpy7phcCrj/HG//iXJX3TJ+/lx88DvOnsaY42rXd
-         cq0EzWV3FvR8Z/0wtPxW256BQXfFoCNSByabYVlQOIpAU3UfkQW7LGvGpCHw53p1UraX
-         gcZEtgEkbkaY591Jd7nVKwKVRC8jyWh9/y79UMHhzX9eSjWLwTmjcXAfYhKLqSynZRyw
-         O31PiLfPEWxOJp7j+uy1Xp30ytdc+hhvZQwmGTTrS36vkgoPZtqTzqo3PL/ozt4B8RbV
-         GMtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693458072; x=1694062872;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LG57Ipqd8qnPkHXmEM2qU3rXEf7cPd3YjyUXTm2SJUY=;
-        b=cLdL0qV1bzQycoOQtYoSUpm1Wo7odZtdYf5dybKjjM4GhF4Y5pUO/lIYiuCvNGwQM1
-         yh8mP359gtsKXL5yXNS6TC1BhaIuWjOuOpRfuzlCdjL7Qz2Qxg6KJbXa8CPy7mwldpw7
-         rKr6M3zu9G4v3MRCq2ohFiXAmrB4CwQwKD1MmaDz9zQ9ZFm7ixZ7weQqYimpICpxHAYv
-         OnARQS+A1nVDSyRy1mq/HnpI3Mj2fQzSqTJ8Qo1peDcGQvXm1Bm3vYXEwtaGn5qI960w
-         O92Y8SskvouAMK0YZ14oa3J3W9iAz7mkVAbNQ/HoaubmYs6xtMMTWxNlvDXr4Hk66lvS
-         bduA==
-X-Gm-Message-State: AOJu0Yz6/JSKk3UO/sIQr84pbdsOoq7/AVYdDD7GcbyjMz6kPXK74/eP
-        jqKrWvCdTjxzWGQmvKK2+BEeMw==
-X-Google-Smtp-Source: AGHT+IFQZQgyo7Kbxxv4n+DzGhsaV/YCZE33tGBr+rqZ2mBEdrv8HmDOp79McCilJd8OH8ltr0xGIg==
-X-Received: by 2002:a17:902:c409:b0:1bc:6266:d0e4 with SMTP id k9-20020a170902c40900b001bc6266d0e4mr5133728plk.69.1693458072003;
-        Wed, 30 Aug 2023 22:01:12 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id i2-20020a170902eb4200b001bf2dcfe352sm370068pli.234.2023.08.30.22.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 22:01:11 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 10:31:08 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH 09/11] cpufreq: Add QCM6490 to cpufreq-dt-platdev
- blocklist
-Message-ID: <20230831050108.yt7obgdqmcz73brn@vireshk-i7>
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-9-5a954519bbad@fairphone.com>
+        Thu, 31 Aug 2023 01:11:43 -0400
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797ECD2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 22:11:40 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 05:11:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1693458696; x=1693717896;
+        bh=3AWNvZqnHsH6wi1Lh1SKvV1psBdLmMxP1h3OGeuHQ3U=;
+        h=Date:To:From:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=iGlN/BQN9c70toLk7aZIXvIi3DtCEbqKQjR1ipXvHmh4E5JUyBnBkEwmeHlUE8SWu
+         VsQJv95/XuiGVakG9yQtRY7Y/JkjMS0Enkaoq7tKUHIH50BgzqtrbBTU4u2JRSm19C
+         ju+AKEXi9vE8/QrOgreDXRdGNWylJigAIPKIGAcwQM2d7Zlc4k8BadjcfgIYGBJ5oG
+         AWorg0iTw+EpYLxq/uHfI3TA36Xy2aR40Ha2NNtVXYnzmAJPhECuwcgrMyCpiueMWg
+         mJnJ4AzRtMlIZTtjqFBFKM1W9qFu+3xOiueiVsYJYr7JjVMm8exd4ej9VKmi7J7Abp
+         H1KAo1yDKURDQ==
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   youngbludproductions <youngbludproductions@proton.me>
+Subject: Re: (No Subject)
+Message-ID: <QUwGs_pwt5Xjh0Y1CH4d-h1oKypmGqSgHgjfzBqkXIq1sP0s4vlXF-Cuv2oPf6B9OCkqtIxuEyZUuwZraI_NrsYQ7a2c-QmlbirEn1h0hgg=@proton.me>
+In-Reply-To: <d7Wc_tEUfBLXGYg2Ej0E-lC0V1_ygSvaRHvYcixYzaV8pX_F5sNhrxCDkL_SZ4El76JBqkAJPTrpnlBY01wOLHrRIuD3Pc-qDnQUC-qsArM=@proton.me>
+References: <d7Wc_tEUfBLXGYg2Ej0E-lC0V1_ygSvaRHvYcixYzaV8pX_F5sNhrxCDkL_SZ4El76JBqkAJPTrpnlBY01wOLHrRIuD3Pc-qDnQUC-qsArM=@proton.me>
+Feedback-ID: 85224644:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830-fp5-initial-v1-9-5a954519bbad@fairphone.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,29 +47,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-08-23, 11:58, Luca Weiss wrote:
-> The Qualcomm QCM6490 platform uses the qcom-cpufreq-hw driver, so add it
-> to the cpufreq-dt-platdev driver's blocklist.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
->  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-> index fb2875ce1fdd..02ec58a8603b 100644
-> --- a/drivers/cpufreq/cpufreq-dt-platdev.c
-> +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-> @@ -145,6 +145,7 @@ static const struct of_device_id blocklist[] __initconst = {
->  	{ .compatible = "qcom,msm8996", },
->  	{ .compatible = "qcom,msm8998", },
->  	{ .compatible = "qcom,qcm2290", },
-> +	{ .compatible = "qcom,qcm6490", },
->  	{ .compatible = "qcom,qcs404", },
->  	{ .compatible = "qcom,qdu1000", },
->  	{ .compatible = "qcom,sa8155p" },
+[Intro]
+Desert you
+Ooh-ooh-ooh-ooh
+Hurt you
 
-Applied. Thanks.
+[Verse 1]
+We're no strangers to love
+You know the rules and so do I (Do I)
+A full commitment's what I'm thinking of
+You wouldn't get this from any other guy
 
--- 
-viresh
+[Pre-Chorus]
+I just wanna tell you how I'm feeling
+Gotta make you understand
+
+[Chorus]
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+
+[Verse 2]
+We've known each other for so long
+Your heart's been aching, but you're too shy to say it (To say it)
+Inside, we both know what's been going on (Going on)
+We know the game, and we're gonna play it
+See Rick Astley Live
+Get tickets as low as $53
+[Pre-Chorus]
+And if you ask me how I'm feeling
+Don't tell me you're too blind to see
+
+[Chorus]
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+
+[Post-Chorus]
+Ooh (Give you up)
+Ooh-ooh (Give you up)
+Ooh-ooh
+Never gonna give, never gonna give (Give you up)
+Ooh-ooh
+Never gonna give, never gonna give (Give you up)
+[Bridge]
+We've known each other for so long
+Your heart's been aching, but you're too shy to say it (To say it)
+Inside, we both know what's been going on (Going on)
+We know the game, and we're gonna play it
+
+[Pre-Chorus]
+I just wanna tell you how I'm feeling
+Gotta make you understand
+
+[Chorus]
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
