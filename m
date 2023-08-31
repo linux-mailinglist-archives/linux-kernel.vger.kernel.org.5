@@ -2,176 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4A378E442
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E689278E445
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345523AbjHaBPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 21:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        id S1345511AbjHaBRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 21:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345514AbjHaBPt (ORCPT
+        with ESMTP id S241784AbjHaBRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 21:15:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FE2CDA;
-        Wed, 30 Aug 2023 18:15:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Wed, 30 Aug 2023 21:17:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E785CE0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693444554;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=odZnguih+1sKH7RU7hZzlw1XKvfaTqNPqIZZXjyDxXQ=;
+        b=E+BaU+/DrR+NI1GiR8VvDyThGUWsIs7fxMiw4RcoW+v1GsUcMR70IJFoVBjvog3n/QWyFm
+        bmYvqSEqkzJ2KayGGSOc8ZBq+UN6ZGobJP4hzxN2M3OgaaEj8H64DjV7+F5GzdI+7XkP7s
+        ydN1+f9NscpEyKQu/lTW+I5B6jzHsDc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-306-Lq1zLEZwMbye5ne76NqVkQ-1; Wed, 30 Aug 2023 21:15:52 -0400
+X-MC-Unique: Lq1zLEZwMbye5ne76NqVkQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 94F3362BFE;
-        Thu, 31 Aug 2023 01:15:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06ACAC433C8;
-        Thu, 31 Aug 2023 01:15:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693444545;
-        bh=/GzOoeS9IMqEaWMOStyGqmqIPHMn2UclD/Jy+ErIxqQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SR04DyWk+8bpGGOEP5ZNNkMHaB/Qd1OzdznW7sCYASPDR10mru69Lmoq9TBj30cEz
-         fL2qBKXKUT1NpK1zAfPsn6BNG/+XGs/nLTtU076Xn/5zJAp2w6Q3xVOCG1NRgcZZHW
-         iFkTugblkqUfzuERq59bjBAUZ2EBLOuOJxYsbwSTOFQrKYMT5SMchvibK8XfP5Y+DK
-         SnUnu5hDlXluOGzgCxZhip3LlD3rWD6bLN6220gYEjBXpTuEnzqlvAgLbbOo1qODm6
-         7R+pH3oZ6Y9umh9y4CzZ4laHiXnZ1cgCV8VN1041aneZCgPT5GnGlfvCEqDZqTpYtb
-         2BdYpDx4n/vUQ==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-500cd6261fdso691689e87.3;
-        Wed, 30 Aug 2023 18:15:44 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzkwljhlZeG8jDqsLYGKb0+4cijoB55k04HoBr7s0KUKfiINBBS
-        a50QM77vRyKkIfT6TCxEbfatNUZ/oFjEODwnvW4=
-X-Google-Smtp-Source: AGHT+IFMI0XICvOxep1KkiT7TXvtmbnTrF2Hinm9tQH3PUqzjE1OWf8hlGEdMkT/79MzecgXSwMIBXNRce+hOjeOmSU=
-X-Received: by 2002:a05:6512:1196:b0:500:adc6:141d with SMTP id
- g22-20020a056512119600b00500adc6141dmr3178899lfr.45.1693444543034; Wed, 30
- Aug 2023 18:15:43 -0700 (PDT)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B882E8028B2;
+        Thu, 31 Aug 2023 01:15:51 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F11642026D35;
+        Thu, 31 Aug 2023 01:15:50 +0000 (UTC)
+Date:   Thu, 31 Aug 2023 09:15:46 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 0/9] Mitigate a vmap lock contention v2
+Message-ID: <ZO/pwqWyxEoluNXv@MiWiFi-R3L-srv>
+References: <20230829081142.3619-1-urezki@gmail.com>
 MIME-Version: 1.0
-References: <ZO8qkS0Skg9L4xzr@debian> <527df158-7d32-42ba-d5f1-9dad30704cc1@leemhuis.info>
-In-Reply-To: <527df158-7d32-42ba-d5f1-9dad30704cc1@leemhuis.info>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 31 Aug 2023 09:15:30 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQWWi_Cb1iQiLOr4114kZW7L93KNwjCu3ArKb7ffxcO+A@mail.gmail.com>
-Message-ID: <CAJF2gTQWWi_Cb1iQiLOr4114kZW7L93KNwjCu3ArKb7ffxcO+A@mail.gmail.com>
-Subject: Re: mainline build failure due to c8171a86b274 ("csky: Fixup
- -Wmissing-prototypes warning")
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230829081142.3619-1-urezki@gmail.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 9:07=E2=80=AFPM Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> On 30.08.23 13:40, Sudip Mukherjee (Codethink) wrote:
-> >
-> > The latest mainline kernel branch fails to build csky allmodconfig with
-> > the error:
->
-> Thx for the report and involving regzbot. To make one thing more obvious:
->
-> Guo Ren, it seems to be caused by a commit of yours.
->
-> And fun fact: seem 0day bot found the same problem nearly thee weeks
-> ago, but nobody cared afaics:
-> https://lore.kernel.org/all/202308120502.MXpchFC1-lkp@intel.com/
->
-> Ciao, Thorsten
->
-> > In file included from ./arch/csky/include/asm/ptrace.h:7,
-> >                  from ./arch/csky/include/asm/processor.h:8,
-> >                  from ./include/linux/prefetch.h:15,
-> >                  from drivers/net/ethernet/intel/i40e/i40e_txrx.c:4:
-> > ./arch/csky/include/asm/traps.h:43:11: error: expected ';' before 'void=
-'
-> >    43 | asmlinkage void do_trap_unknown(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:44:11: error: expected ';' before 'void=
-'
-> >    44 | asmlinkage void do_trap_zdiv(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:45:11: error: expected ';' before 'void=
-'
-> >    45 | asmlinkage void do_trap_buserr(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:46:11: error: expected ';' before 'void=
-'
-> >    46 | asmlinkage void do_trap_misaligned(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:47:11: error: expected ';' before 'void=
-'
-> >    47 | asmlinkage void do_trap_bkpt(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:48:11: error: expected ';' before 'void=
-'
-> >    48 | asmlinkage void do_trap_illinsn(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:49:11: error: expected ';' before 'void=
-'
-> >    49 | asmlinkage void do_trap_fpe(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:50:11: error: expected ';' before 'void=
-'
-> >    50 | asmlinkage void do_trap_priv(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:51:11: error: expected ';' before 'void=
-'
-> >    51 | asmlinkage void trap_c(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> > ./arch/csky/include/asm/traps.h:53:11: error: expected ';' before 'void=
-'
-> >    53 | asmlinkage void do_notify_resume(struct pt_regs *regs,
-> >       |           ^~~~~
-> >       |           ;
-> > In file included from ./arch/csky/include/asm/processor.h:8,
-> >                  from ./include/linux/prefetch.h:15,
-> >                  from drivers/net/ethernet/intel/i40e/i40e_txrx.c:4:
-> > ./arch/csky/include/asm/ptrace.h:99:11: error: expected ';' before 'int=
-'
-> >    99 | asmlinkage int syscall_trace_enter(struct pt_regs *regs);
-> >       |           ^~~~
-> >       |           ;
-> > ./arch/csky/include/asm/ptrace.h:100:11: error: expected ';' before 'vo=
-id'
-> >   100 | asmlinkage void syscall_trace_exit(struct pt_regs *regs);
-> >       |           ^~~~~
-> >       |           ;
-> >
-> > git bisect pointed to c8171a86b274 ("csky: Fixup -Wmissing-prototypes w=
-arning").
-> >
-> > Reverting the commit has fixed the build failure.
-> >
-> > I will be happy to test any patch or provide any extra log if needed.
-> >
-> > #regzbot introduced: c8171a86b27401aa1f492dd1f080f3102264f1ab
->
-> #regzbot monitor:
-> https://lore.kernel.org/all/202308120502.MXpchFC1-lkp@intel.com/
+On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
+> Hello, folk!
+> 
+> This is the v2, the series which tends to minimize the vmap
+> lock contention. It is based on the tag: v6.5-rc6. Here you
+> can find a documentation about it:
+> 
+> wget ftp://vps418301.ovh.net/incoming/Fix_a_vmalloc_lock_contention_in_SMP_env_v2.pdf
 
-Sorry, Fixes have been sent, I'm waiting for it into the linux-next,
-and then I will send 2nd pull request.
+Seems the wget command doesn't work for me. Not sure if other people can
+retrieve it successfully.
 
-https://lore.kernel.org/linux-csky/20230830094653.2833443-1-guoren@kernel.o=
-rg/
+--2023-08-30 21:14:20--  ftp://vps418301.ovh.net/incoming/Fix_a_vmalloc_lock_contention_in_SMP_env_v2.pdf
+           => ‘Fix_a_vmalloc_lock_contention_in_SMP_env_v2.pdf’
+Resolving vps418301.ovh.net (vps418301.ovh.net)... 37.187.244.100
+Connecting to vps418301.ovh.net (vps418301.ovh.net)|37.187.244.100|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /incoming ... done.
+==> SIZE Fix_a_vmalloc_lock_contention_in_SMP_env_v2.pdf ... done.
 
---=20
-Best Regards
- Guo Ren
+==> PASV ... done.    ==> RETR Fix_a_vmalloc_lock_contention_in_SMP_env_v2.pdf ... 
+No such file ‘Fix_a_vmalloc_lock_contention_in_SMP_env_v2.pdf’.
+
