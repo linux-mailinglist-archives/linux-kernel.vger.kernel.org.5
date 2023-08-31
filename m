@@ -2,135 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A09878F244
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C8478F249
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346714AbjHaSDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 14:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
+        id S1346878AbjHaSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 14:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243025AbjHaSDn (ORCPT
+        with ESMTP id S240921AbjHaSH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 14:03:43 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34ABEE45;
-        Thu, 31 Aug 2023 11:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1693505018;
-        bh=bPA4ClrlMQANXr+Freikpg2xbHc7Gg1HKd1kLS21duw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SIqYDXHQL9s2/HqZbokHGNrK8ZSm9hf3CW3tJOSex7H+op1PWZIcYW6HmO9V8kLmy
-         VhQsUEcS5qEm+KetAet1Zn1jthq66K7I8WGR/RJUcdBIjGhXXzE2xXCS4yHA8v7O5A
-         YJi4FEghJM3jKuBKIKT0yL8YdQO2i4S5/pCbX3nA=
-Date:   Thu, 31 Aug 2023 20:03:37 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: add POWER-Z driver
-Message-ID: <ecb91dd0-1b0e-4227-b4ab-79f85a93f43a@t-8ch.de>
-References: <20230831-powerz-v2-1-5c62c53debd4@weissschuh.net>
- <ca72a21b-af05-c754-99a0-34d913edf304@roeck-us.net>
+        Thu, 31 Aug 2023 14:07:28 -0400
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA75E5F
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:07:26 -0700 (PDT)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-68a3b41fa66so1202768b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:07:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693505245; x=1694110045;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=njfYBBE85fdBpuB5EzpnYY/diSr1FYw5dCw1nUvq2Vk=;
+        b=FVAjuHkUf5c/CrKcH6su2O5GaV0EOa0raghUPEuztEiJnT9ek97sT9emzNGdVwKQtJ
+         3qa+Hp6kK2/xKJ49ygstY6i3MIvVdngS4lJu9yMj5WciA029/PtoAXCeszSelxMvlCSC
+         1TYaJdR5asKW44U5HlRCrkAQs5jG6qg/ZX4GfDziUYiukKyMdzOtejM517OKdJ07oFdo
+         NzbnKlVq/sUBZzg1BKBdt/DCHc4f4NhV9VpVJsOsRlWzMPYqcuoUSrfxq86TxtOwpxZy
+         qj9oyHVvYdfxlF8oh12e2R8dTiuADyMnKq1YkV9unzokYgBsEXfPwlVZ4kAsIs/uOf0H
+         EEUw==
+X-Gm-Message-State: AOJu0Yx+yrg+ZzwoC9vnAG9To01Rgn/XNKNYWCj7/YQo6t6UPPB9c93u
+        ooV1yE2mmCBni2oy+FZl5xsxejdvQNxofX9NNkq5XXScQzLX
+X-Google-Smtp-Source: AGHT+IH8JEjKbyJOwR1AlsPkocQN5FnvA4GhXUZ7IAxgSPkZ0enwK1JVxfvdTuJyfySOUsuV1deb5dA+CsZkb7VxauvFD9EKxUhZ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca72a21b-af05-c754-99a0-34d913edf304@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:3997:b0:68a:58e1:ebf5 with SMTP id
+ fi23-20020a056a00399700b0068a58e1ebf5mr176877pfb.2.1693505245662; Thu, 31 Aug
+ 2023 11:07:25 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 11:07:25 -0700
+In-Reply-To: <0000000000005ab984060371583e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000097e45506043beaeb@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
+From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, luiz.von.dentz@intel.com,
+        marcel@holtmann.org, pav@iki.fi, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+syzbot has bisected this issue to:
 
-thanks for your review!
+commit 45c37c4e9c9aab5bb1cf5778d8e5ebd9f9ad820a
+Author: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Date:   Wed Aug 9 23:49:33 2023 +0000
 
-Ack to most of your points.
+    Bluetooth: hci_sync: Fix UAF in hci_disconnect_all_sync
 
-> [..]
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1042c5ffa80000
+start commit:   7271b2a53042 Add linux-next specific files for 20230818
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1242c5ffa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1442c5ffa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13506923a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147569efa80000
 
-> > +
-> > +#define DRIVER_NAME	"powerz"
-> > +#define POWERZ_EP_CMD_OUT	0x01
-> > +#define POWERZ_EP_DATA_IN	0x81
-> > +
-> > +struct powerz_sensor_data {
-> > +	u8 _unknown_1[8];
-> > +	__le32 Vbus;
-> 
-> CHECK: Avoid CamelCase: <Vbus>
-> #160: FILE: drivers/hwmon/powerz.c:18:
-> +	__le32 Vbus;
-> 
-> Please run your patches through checkpatch --strict.
+Reported-by: syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com
+Fixes: 45c37c4e9c9a ("Bluetooth: hci_sync: Fix UAF in hci_disconnect_all_sync")
 
-I did. Weird that it didn't show. I'll investigate.
-(And fix it)
-
-> 
-> > +	__le32 Ibus;
-> > +	__le32 Vbus_avg;
-> > +	__le32 Ibus_avg;
-> > +	u8 _unknown_2[8];
-> > +	u8 temp[2];
-> > +	__le16 cc1;
-> > +	__le16 cc2;
-> > +	__le16 dp;
-> > +	__le16 dm;
-> > +	u8 _unknown_3[6];
-> > +} __packed;
-> > +
-
-> [..]
-
-> > +static int powerz_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
-> > +		       int channel, long *val)
-> > +{
-> > +	struct usb_interface *intf = to_usb_interface(dev->parent);
-> > +	struct usb_device *udev = interface_to_usbdev(intf);
-> > +	struct powerz_sensor_data *data;
-> > +	struct powerz_usb_ctx *ctx;
-> > +
-> > +	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
-> > +	if (!ctx)
-> > +		return -ENOMEM;
-> > +
-> 
-> I think it would be much better to allocate ctx once as part of
-> struct powerz_priv and keep it around. Sure, that means that this
-> function requires a lock, but I don't see that as problem (and who
-> knows how the device reacts to multiple pending usb transactions).
-> 
-> You'd need to allocate transfer_buffer separately because it needs to be
-> dma aligned, but that should not be a problem either.
-
-What is your opinion on making the transfer buffer the first member of
-struct powerz_priv? It would simplify the code and still provide a
-DMA-capable buffer.
-
-> [..]
-
-> > +static int powerz_probe(struct usb_interface *intf, const struct usb_device_id *id)
-> > +{
-> > +	struct usb_device *udev = interface_to_usbdev(intf);
-> > +	struct powerz_priv *priv;
-> > +	struct device *parent;
-> > +	const char *name;
-> > +	int ret;
-> > +
-> > +	parent = &intf->dev;
-> > +
-> > +	priv = devm_kzalloc(parent, sizeof(*priv), GFP_KERNEL);
-> > +	if (!priv)
-> > +		return -ENOMEM;
-> > +
-> > +	name = devm_hwmon_sanitize_name(parent, udev->product ?: DRIVER_NAME);
-> 
-> Why not just use DRIVER_NAME ? This would be much more consistent.
-
-I liked the more detailed name better.
-But if you prefer otherwise I'll simplify it.
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
