@@ -2,171 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF5E78EF7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA0578EF83
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346415AbjHaOVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
+        id S1346419AbjHaOVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346416AbjHaOVa (ORCPT
+        with ESMTP id S1346435AbjHaOVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:21:30 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A8DD7;
-        Thu, 31 Aug 2023 07:21:27 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59234aaca15so10554727b3.3;
-        Thu, 31 Aug 2023 07:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693491686; x=1694096486; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q2a3XR6Sxq68ivrZUK8VS9LH8RbQHO6YRGsSIW18ikA=;
-        b=YOO6O7fGw1yGo3fcOpw89x3zWk40ZzbnaarVjSAqe5KA5PIeBVO+2uRZ40gV0sSl50
-         +I0kB6ClS9tpjD0cd5iMgldbLQAGNBxeBYD6eUFhjoilkyZlTC6M4/Kuwi2X7I2wna7y
-         t7mrP7Zj9DjszlHn+8BD6ez737hXtvF6kjNqgrbSv6MbCAnbUMZih3MX5KZE/+A5AHxq
-         3/NDqn9eejg8BzS4eJvAnEZ8cga+XA9D64DrPPO6YKS6XP6CL2o2PZW3Jp7/HuQhkdNz
-         xG6w1s32hwTQNAQaAGJ9oAhxTQEdBT4fL8Das9NXOUyChfXZ2koiP0X5pgE3fDKDLGbQ
-         vjOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693491686; x=1694096486;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q2a3XR6Sxq68ivrZUK8VS9LH8RbQHO6YRGsSIW18ikA=;
-        b=V8Bm38x6tQY+zknwCICCJzLUMqCIKPlaBs2FBwr9FYMiDjdM+N4FkWGvpEbZ3r+eui
-         2rQGKiBujfA7Yzj8mxhUPe/dKMsnrE2B8zi82NWFnw12VLkX8va4O7q+DpBaUaYQ7X6y
-         y0vloMh9x2knYqj08L06RMgt/Rhd0GViBs85D2neOimCIosgFQtuT2YfWUc/BtXuAe09
-         ZxEQ/wlVQkW28Wvs137BJnKagteqISsVLuwjeMx1iOJBczrOZ6DoX3NcnvR282lp+IOi
-         3IWScj+uPW18yVsP7KOPIZI//LmQ9KOmeqCuU0nKhxuU9s/sR2UhstDckCIchsMLziQL
-         NJQw==
-X-Gm-Message-State: AOJu0YwFhmhtfEQs/GP6mOtLwauzy3Bn39QDGxWBgas9nkS7xI1iv869
-        51KTqHofi727t9TSZSKoUzeykNDDUgdgTvc3N4cBDMIFdE17rlWGDXM=
-X-Google-Smtp-Source: AGHT+IGXcwwbgrsUZKDHJdFfQU1lco8UH9gbJaaC38YdwnxwHR2XRd3yfkhSHc4P+JxDW8VsNXxUxmTeqAD+b5T/Tfk=
-X-Received: by 2002:a25:2d1a:0:b0:bfe:e383:6297 with SMTP id
- t26-20020a252d1a000000b00bfee3836297mr5454726ybt.19.1693491686348; Thu, 31
- Aug 2023 07:21:26 -0700 (PDT)
+        Thu, 31 Aug 2023 10:21:48 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7045DE79
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:21:38 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 698991BF212;
+        Thu, 31 Aug 2023 14:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1693491696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aByMOVFmM+SkUtrpBTr+ttq0hQzvoU/QCipPW40qS2o=;
+        b=nvJAln9SgXRKA5Lz+jYUK/tvyRDj8d4nXwORPilNm7f2P56SAK0bEnDKXouUpvtK+wX6XX
+        GwapBu/sS6LpjH0UHlteMJUFELqVM20JGwx01yuxCCsENH5lMe1QKZd7JX7GOAk0Qw/0DI
+        Pj06mWEPK3PZDRC5TMcUZyzBhcUTZw1XVIhmKIwbVm361RxvBHsgloX74JjeidFd5Zg0pL
+        HFPdJf6X50CAaHfYDEa8yGSZmCC5D6wOPKshWtlLcLGipYYSJS0Pa+USRDpOxDlddTQs1/
+        QXWYHZP/rWv88h82GM3/o6jKZJKjjiQ4cw7zwfif3PDlFSUhelUA45fi+7Gx7A==
+Date:   Thu, 31 Aug 2023 16:21:34 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        imx@lists.linux.dev, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] i3c: master: svc: fix probe failure when no i3c
+ device exist
+Message-ID: <20230831162134.6ccbaf23@xps-13>
+In-Reply-To: <20230831141324.2841525-1-Frank.Li@nxp.com>
+References: <20230831141324.2841525-1-Frank.Li@nxp.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230830160410.3820390-1-azeemshaikh38@gmail.com>
- <2023083035-unpadded-amulet-8c7e@gregkh> <CADmuW3Wbgb7s+jRm8F0hcjzreWysVdzNvv778yUbGCOxAJHwjQ@mail.gmail.com>
- <202308301421.997C4034B5@keescook> <c44d1f9f-90e0-3e83-8394-854feb449539@kernel.org>
-In-Reply-To: <c44d1f9f-90e0-3e83-8394-854feb449539@kernel.org>
-From:   Azeem Shaikh <azeemshaikh38@gmail.com>
-Date:   Thu, 31 Aug 2023 10:21:15 -0400
-Message-ID: <CADmuW3V1vDvukASPtpS2NVN=vLyQY4fXVDMbq=Gpn54qQEYtCw@mail.gmail.com>
-Subject: Re: [PATCH] vt: Fix potential read overflow of kernel memory
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 1:32=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> w=
-rote:
->
-> On 30. 08. 23, 23:28, Kees Cook wrote:
-> > On Wed, Aug 30, 2023 at 03:25:54PM -0400, Azeem Shaikh wrote:
-> >> On Wed, Aug 30, 2023 at 1:57=E2=80=AFPM Greg Kroah-Hartman
-> >> <gregkh@linuxfoundation.org> wrote:
-> >>>
-> >>> On Wed, Aug 30, 2023 at 04:04:10PM +0000, Azeem Shaikh wrote:
-> >>>> strlcpy() reads the entire source buffer first.
-> >>>> This read may exceed the destination size limit if
-> >>>> a source string is not NUL-terminated [1].
-> >>>
-> >>> But that's not the case here, right?  So your "potential read overflo=
-w"
-> >>> isn't relevant here.
-> >>>
-> >>>> The copy_to_user() call uses @len returned from strlcpy() directly
-> >>>> without checking its value. This could potentially lead to read
-> >>>> overflow.
-> >>>
-> >>> But can it?  How?
-> >>>
-> >>
-> >> The case I was considering is when the null-terminated hardcoded
-> >> string @func_table[kb_func] has length @new_len > @len. In this case,
-> >> strlcpy() will assign @len =3D @new_len and copy_to_user() would read
-> >> @new_len from the kmalloc-ed memory of @len. This is the potential
-> >> read overflow I was referring to. Let me know if I'm mistaken.
-> >
-> > First there is:
-> >
-> > ssize_t len =3D sizeof(user_kdgkb->kb_string);
-> >
-> > "struct user_kdgkb" is UAPI (therefore unlikely to change), and kb_stri=
-ng
-> > is 512:
-> >
-> > struct kbsentry {
-> >          unsigned char kb_func;
-> >          unsigned char kb_string[512];
-> > };
-> >
-> > Then we do:
-> >
-> >                  len =3D strlcpy(kbs, func_table[kb_func] ? : "", len);
-> >
-> > This is the anti-pattern (take the length of the _source_) we need to
-> > remove.
->
-> But len is the length of kbs, i.e. the destination. Or what am I missing?
->
->                  kbs =3D kmalloc(len, GFP_KERNEL);
->                  len =3D strlcpy(kbs, func_table[kb_func] ? : "", len);
->
-> > However, func_table[] is made up of either %NUL-terminated
-> > strings:
-> >
-> > char func_buf[] =3D {
-> >          '\033', '[', '[', 'A', 0,
-> >          '\033', '[', '[', 'B', 0,
-> > ...
-> > char *func_table[MAX_NR_FUNC] =3D {
-> >          func_buf + 0,
-> >          func_buf + 5,
-> > ...
-> >
-> > Or a NULL address itself. The ?: operator handles the NULL case, so
-> > "len" can only ever be 0 through the longest string in func_buf. So it'=
-s
-> > what I'd call "accidentally correct". i.e. it's using a fragile
-> > anti-pattern, but in this case everything is hard-coded and less than
-> > 512.
-> >
-> > Regardless, we need to swap for a sane pattern, which you've done. But
-> > the commit log is misleading, so it needs some more detail. :)
->
-> I am still missing what is wrong in the above code with strlcpy(). The
-> dest is deliberately made as long as the source, so the returned len is
-> never less then the passed len. No checking needed IMO. Perhaps, we
-> might switch to strcpy()?
->
-> FWIW I introduced this in commit 82e61c3909db5. So if it needs fixing,
-> the patch deserves a Fixes: 82e61c3909db5 tag.
->
+Hi Frank,
 
-As explained by Kees in previous comments, this is not actually a bug,
-just a fragile anti-pattern. So we shouldn't need the Fixes: tag on
-this patch.
+Frank.Li@nxp.com wrote on Thu, 31 Aug 2023 10:13:24 -0400:
 
-> thanks,
-> --
-> js
-> suse labs
->
+> I3C masters are expected to support hot-join. This means at initialization
+> time we might not yet discover any device and this should not be treated
+> as a fatal error.
+>=20
+> During the DAA procedure which happens at probe time, if no device has
+> joined, all CCC will be NACKed (from a bus perspective). This leads to an
+> early return with an error code which fails the probe of the master.
+>=20
+> Let's avoid this by just telling the core through an I3C_ERROR_M2
+> return command code that no device was discovered, which is a valid
+> situation. This way the master will no longer bail out and fail to probe
+> for a wrong reason.
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: dd3c52846d59 ("i3c: master: svc: Add Silvaco I3C master driver")
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thanks,
+Miqu=C3=A8l
